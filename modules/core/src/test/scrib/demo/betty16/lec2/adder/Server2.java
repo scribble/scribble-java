@@ -12,7 +12,7 @@ import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 
 import demo.betty16.lec2.adder.Adder.Adder.Adder;
 import demo.betty16.lec2.adder.Adder.Adder.channels.S.Adder_S_1;
@@ -29,7 +29,7 @@ public class Server2 implements Adder_S_1_Handler {
 		try (ScribServerSocket ss = new SocketChannelServer(8888)) {
 			while (true) {
 				Adder adder = new Adder();
-				try (SessionEndpoint<Adder, S> server = new SessionEndpoint<>(adder, S, new ObjectStreamFormatter())) {
+				try (MPSTEndpoint<Adder, S> server = new MPSTEndpoint<>(adder, S, new ObjectStreamFormatter())) {
 					server.accept(ss, C);
 
 					new Adder_S_1(server).branch(C, new Server2());

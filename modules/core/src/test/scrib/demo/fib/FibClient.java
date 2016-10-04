@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.fib.Fib.Adder.Adder;
@@ -27,7 +27,7 @@ public class FibClient
 		Buf<Integer> i2 = new Buf<>(1);
 		
 		Adder adder = new Adder();
-		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
 		{
 			se.connect(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
 

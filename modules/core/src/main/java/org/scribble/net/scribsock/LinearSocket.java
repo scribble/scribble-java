@@ -14,6 +14,7 @@ public abstract class LinearSocket<S extends Session, R extends Role> extends Sc
 {
 	private boolean used = false;
 	
+	//protected LinearSocket(MPSTEndpoint<S, R> ep)
 	protected LinearSocket(SessionEndpoint<S, R> ep)
 	{
 		super(ep);

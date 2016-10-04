@@ -11,7 +11,7 @@ import static demo.abcd.smtp.Smtp.Smtp.Smtp._250d;
 import org.scribble.net.Buf;
 import org.scribble.net.scribsock.LinearSocket;
 import org.scribble.net.session.SSLSocketChannelWrapper;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.abcd.smtp.Smtp.Smtp.Smtp;
@@ -50,7 +50,7 @@ public class Client2
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		try (MPSTEndpoint<Smtp, C> se = new MPSTEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
 		{
 			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
 

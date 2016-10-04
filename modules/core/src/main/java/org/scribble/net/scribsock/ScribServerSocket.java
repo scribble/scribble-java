@@ -17,6 +17,7 @@ public abstract class ScribServerSocket implements AutoCloseable
 		this.port = port;
 	}
 	
+	//public abstract BinaryChannelEndpoint accept(MPSTEndpoint<?, ?> se) throws IOException;  // synchronize
 	public abstract BinaryChannelEndpoint accept(SessionEndpoint<?, ?> se) throws IOException;  // synchronize
 	
 	public synchronized void bind() throws ScribbleRuntimeException

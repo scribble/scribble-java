@@ -18,7 +18,7 @@ import static demo.http.longvers.HttpLong.Http.Http._200;
 import static demo.http.longvers.HttpLong.Http.Http._404;
 
 import org.scribble.net.Buf;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 import org.scribble.util.Caller;
 
@@ -54,7 +54,7 @@ public class HttpClient
 	public void run() throws Exception
 	{
 		Http http = new Http();
-		try (SessionEndpoint<Http, C> client = new SessionEndpoint<>(http, C, new HttpLongMessageFormatter()))
+		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C, new HttpLongMessageFormatter()))
 		{
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;
@@ -120,7 +120,7 @@ public class HttpClient
 		Buf<Server> b_serv = new Buf<>();
 		
 		Http http = new Http();
-		try (SessionEndpoint<Http, C> se = new SessionEndpoint<>(http, Http.C, new HttpLongMessageFormatter()))
+		try (MPSTEndpoint<Http, C> se = new MPSTEndpoint<>(http, Http.C, new HttpLongMessageFormatter()))
 		{
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;

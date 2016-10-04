@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.betty16.lec2.smtp.Smtp.Smtp.Smtp;
@@ -34,7 +34,7 @@ public class Client4 {
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> client = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		try (MPSTEndpoint<Smtp, C> client = new MPSTEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
 		{
 			client.connect(S, SocketChannelEndpoint::new, host, port);
 			new Client4().run(new Smtp_C_1(client));

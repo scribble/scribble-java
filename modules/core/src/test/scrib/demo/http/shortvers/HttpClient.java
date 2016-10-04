@@ -1,7 +1,7 @@
 package demo.http.shortvers;
 
 import org.scribble.net.Buf;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.http.shortvers.HttpShort.Http.Http;
@@ -28,7 +28,7 @@ public class HttpClient
 	public void run() throws Exception
 	{
 		Http http = new Http();
-		try (SessionEndpoint<Http, C> client = new SessionEndpoint<>(http, C, new HttpShortMessageFormatter()))
+		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C, new HttpShortMessageFormatter()))
 		{
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;

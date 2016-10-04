@@ -8,7 +8,7 @@ import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 
 import demo.fib.Fib.Adder.Adder;
 import demo.fib.Fib.Adder.channels.S.Adder_S_1;
@@ -28,7 +28,7 @@ public class AdderServer
 			while (true)
 			{
 				Adder foo = new Adder();
-				try (SessionEndpoint<Adder, S> se = new SessionEndpoint<>(foo, Adder.S, new ObjectStreamFormatter()))
+				try (MPSTEndpoint<Adder, S> se = new MPSTEndpoint<>(foo, Adder.S, new ObjectStreamFormatter()))
 				{
 					se.accept(ss, Adder.C);
 

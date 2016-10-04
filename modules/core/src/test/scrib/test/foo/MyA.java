@@ -4,7 +4,7 @@
 package test.foo;
 
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import test.foo.Foo.Foo.Foo;
@@ -19,7 +19,7 @@ public class MyA
 		//Buff<Integer> i1 = new Buff<>(0);
 		
 		Foo foo = new Foo();
-		try (SessionEndpoint<Foo, A> se = new SessionEndpoint<>(foo, Foo.A, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Foo, A> se = new MPSTEndpoint<>(foo, Foo.A, new ObjectStreamFormatter()))
 		{
 			se.connect(Foo.B, SocketChannelEndpoint::new, "localhost", 8888);
 			se.connect(Foo.C, SocketChannelEndpoint::new, "localhost", 9999);

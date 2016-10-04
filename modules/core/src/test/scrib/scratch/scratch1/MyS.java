@@ -7,7 +7,7 @@ import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 
 import scratch.scratch1.Scratch1.Proto1.Proto1;
 import scratch.scratch1.Scratch1.Proto1.channels.S.EndSocket;
@@ -36,7 +36,7 @@ public class MyS
 			{
 				Proto1 foo = new Proto1();
 				//SessionEndpoint<S> se = foo.project(Proto1.S, new ObjectStreamFormatter(), ss);
-				try (SessionEndpoint<Proto1, S> se = new SessionEndpoint<>(foo, Proto1.S, new ObjectStreamFormatter()))
+				try (MPSTEndpoint<Proto1, S> se = new MPSTEndpoint<>(foo, Proto1.S, new ObjectStreamFormatter()))
 				{
 					se.accept(ss, Proto1.C);
 

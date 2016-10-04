@@ -4,7 +4,7 @@
 package demo.fib;
 
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.fib.Fib.Adder.Adder;
@@ -16,7 +16,7 @@ public class MyC
 	public static void main(String[] args) throws Exception
 	{
 		Adder adder = new Adder();
-		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
 		{
 			se.connect(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
 

@@ -6,7 +6,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 
 import test.foo.Foo.Foo.Foo;
 import test.foo.Foo.Foo.channels.B.Foo_B_1;
@@ -33,7 +33,7 @@ public class MyBC
 				{
 					public void run()
 					{
-						try (SessionEndpoint<Foo, B> se_B = new SessionEndpoint<>(foo, Foo.B, new ObjectStreamFormatter()))
+						try (MPSTEndpoint<Foo, B> se_B = new MPSTEndpoint<>(foo, Foo.B, new ObjectStreamFormatter()))
 						{
 							se_B.accept(ss_B, Foo.A);
 							Foo_B_1 s1_B = new Foo_B_1(se_B);
@@ -65,7 +65,7 @@ public class MyBC
 				{
 					public void run()
 					{
-						try (SessionEndpoint<Foo, C> se_C = new SessionEndpoint<>(foo, Foo.C, new ObjectStreamFormatter()))
+						try (MPSTEndpoint<Foo, C> se_C = new MPSTEndpoint<>(foo, Foo.C, new ObjectStreamFormatter()))
 						{
 							se_C.accept(ss_C, Foo.A);
 

@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ScribMessage;
 import org.scribble.net.session.BinaryChannelEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Op;
@@ -14,6 +15,7 @@ import org.scribble.sesstype.name.Role;
 
 public abstract class OutputSocket<S extends Session, R extends Role> extends LinearSocket<S, R>
 {
+	//protected OutputSocket(MPSTEndpoint<S, R> ep)
 	protected OutputSocket(SessionEndpoint<S, R> ep)
 	{
 		super(ep);
@@ -32,16 +34,20 @@ public abstract class OutputSocket<S extends Session, R extends Role> extends Li
 		this.se.getChannelEndpoint(peer).write(msg);
 	}
 
+	// FIXME: check if MPST/ExplicitEndpoint
 	protected void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
 		use();
-		this.se.connect(role, cons, host, port);
+		//this.se.connect(role, cons, host, port);
+		MPSTEndpoint.connect(this.se, role, cons, host, port);
 	}
 
+	// FIXME: check if MPST/ExplicitEndpoint
 	protected void disconnect(Role role) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
 		use();
-		this.se.disconnect(role);
+		//this.se.disconnect(role);
+		MPSTEndpoint.disconnect(this.se, role);
 	}
 	
 	//public void wrap(Callable<? extends BinaryChannelEndpoint> cons, Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException

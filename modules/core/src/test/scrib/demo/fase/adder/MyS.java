@@ -13,7 +13,7 @@ import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 
 import demo.fase.adder.Adder.Adder.Adder;
 import demo.fase.adder.Adder.Adder.channels.S.Adder_S_1;
@@ -33,7 +33,7 @@ public class MyS
 			while (true)
 			{
 				Adder adder = new Adder();
-				try (SessionEndpoint<Adder, S> se = new SessionEndpoint<>(adder, S, new ObjectStreamFormatter()))
+				try (MPSTEndpoint<Adder, S> se = new MPSTEndpoint<>(adder, S, new ObjectStreamFormatter()))
 				{
 					se.accept(ss, C);
 

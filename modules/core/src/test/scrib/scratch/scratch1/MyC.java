@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import scratch.scratch1.Scratch1.Proto1.Proto1;
@@ -30,7 +30,7 @@ public class MyC
 	public static void main(String[] args) throws Exception
 	{
 		Proto1 adder = new Proto1();
-		try (SessionEndpoint<Proto1, C> se = new SessionEndpoint<>(adder, Proto1.C, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Proto1, C> se = new MPSTEndpoint<>(adder, Proto1.C, new ObjectStreamFormatter()))
 		{
 			se.connect(Proto1.S, SocketChannelEndpoint::new, "localhost", 8888);
 

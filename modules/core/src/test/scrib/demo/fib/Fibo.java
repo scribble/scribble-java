@@ -9,7 +9,7 @@ import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.fib.Fib.Fibonacci.Fibonacci;
@@ -48,7 +48,7 @@ class MyB extends Thread implements Fibonacci_B_1_Handler
 	{
 		try (
 			ScribServerSocket ss = new SocketChannelServer(8888);
-			SessionEndpoint<Fibonacci, B> se = new SessionEndpoint<>(this.fib, Fibonacci.B, new ObjectStreamFormatter()))
+			MPSTEndpoint<Fibonacci, B> se = new MPSTEndpoint<>(this.fib, Fibonacci.B, new ObjectStreamFormatter()))
 		{
 			se.accept(ss, Fibonacci.A);
 			new Fibonacci_B_1(se).branch(Fibonacci.A, this);
@@ -85,7 +85,7 @@ class MyA extends Thread
 	@Override
 	public void run()
 	{
-		try (SessionEndpoint<Fibonacci, A> se = new SessionEndpoint<>(this.fib, Fibonacci.A, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Fibonacci, A> se = new MPSTEndpoint<>(this.fib, Fibonacci.A, new ObjectStreamFormatter()))
 		{
 			se.connect(Fibonacci.B, SocketChannelEndpoint::new, "localhost", 8888);
 			run(new Fibonacci_A_1(se), 19);  // 4184
