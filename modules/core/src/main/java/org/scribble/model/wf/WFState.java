@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.model.global.GIOAction;
+import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
@@ -107,13 +108,13 @@ public class WFState
 		return Collections.unmodifiableList(this.succs);
 	}
 	
-	public boolean isError()
+	/*public boolean isError()
 	{
 		/*return this.config.getReceptionErrors().isEmpty()
 				&& this.config.getDeadlocks().isEmpty()
-				&& this.config.getOrphanMessages().isEmpty();*/
-		return isTerminal() && !this.config.isSafeTermination();  // FIXME: is this characterisation more "complete"?
-	}
+				&& this.config.getOrphanMessages().isEmpty();* /
+		return isTerminal() && !this.config.isSafeTermination();  // FIXME: is this characterisation more "complete"?  // FIXME: isTerminal not considering non-initiated accepts
+	}*/
 	
 	public WFStateErrors getErrors()
 	{
@@ -121,7 +122,8 @@ public class WFState
 		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
 		//Set<Set<Role>> waitfor = Collections.emptySet();
 		Map<Role, Set<Send>> orphs = this.config.getOrphanMessages();
-		return new WFStateErrors(stuck, waitfor, orphs);
+		Map<Role, EndpointState> unfinished = this.config.getUnfinishedRoles();
+		return new WFStateErrors(stuck, waitfor, orphs, unfinished);
 	}
 	
 	public boolean isTerminal()

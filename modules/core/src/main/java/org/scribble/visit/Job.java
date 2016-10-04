@@ -30,12 +30,13 @@ public class Job
 	public final boolean minEfsm;  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 	public final boolean fair;
 	public final boolean noLocalChoiceSubjectCheck;
+	public final boolean noAcceptCorrelationCheck;
 	
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck)
+	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck)
 	{
 		//this.jUnit = jUnit;
 		this.debug = debug;
@@ -44,6 +45,7 @@ public class Job
 		this.minEfsm = minEfsm;
 		this.fair = fair;
 		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
+		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
 
 		this.jcontext = new JobContext(this, parsed, main);  // Single instance per Job and should never be shared
 	}
@@ -94,7 +96,10 @@ public class Job
 	{
 		runVisitorPassOnAllModules(Projector.class);
 		runProjectionContextBuildingPasses();
-		runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
+		if (!noAcceptCorrelationCheck)
+		{
+			runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
+		}
 	}
 
   // To be done as a barrier pass after projection done on all Modules -- N.B. Module context building, no other validation (so "fixing" can be done in following passes) 

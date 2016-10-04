@@ -15,6 +15,7 @@ import org.scribble.model.local.Accept;
 import org.scribble.model.local.Connect;
 import org.scribble.model.local.Disconnect;
 import org.scribble.model.local.EndpointFSM;
+import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
@@ -54,6 +55,7 @@ public class WFConfig
 		return true;
 	}
 
+	// Should work both with and without accept-correlation?
 	public boolean canSafelyTerminate(Role r)
 	{
 		//EndpointState s = this.states.get(r);
@@ -434,6 +436,24 @@ public class WFConfig
 						}
 					}
 				}); 
+			}
+		}
+		return res;
+	}
+	
+	// Not just "unfinished", but also "non-initiated" (accept guarded) -- though could be non-initiated after some previous completions
+	// Maybe not needed -- previously not used (even without accept-correlation check)
+	public Map<Role, EndpointState> getUnfinishedRoles()
+	{
+		Map<Role, EndpointState> res = new HashMap<>();
+		if (getTakeable().isEmpty() && !isSafeTermination())
+		{
+			for (Role r : this.states.keySet())
+			{
+				if (!canSafelyTerminate(r))
+				{
+					res.put(r, this.states.get(r).curr);
+				}
 			}
 		}
 		return res;

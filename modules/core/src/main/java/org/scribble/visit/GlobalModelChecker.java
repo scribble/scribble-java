@@ -161,6 +161,10 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			{
 				errorMsg += "\n    Orphan messages: " + errors.orphans;  // FIXME: add sender of orphan to error message 
 			}
+			if (!errors.unfinished.isEmpty())
+			{
+				errorMsg += "\n    Unfinished roles: " + errors.unfinished;
+			}
 		}
 		job.debugPrintln("(" + fullname + ") Checked all states: " + count);
 		//*/

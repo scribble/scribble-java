@@ -12,7 +12,7 @@
 module Test;
 
 
-/*
+/* // TODO: more unfinished (and accept-correlation) role tests
 global protocol Proto1(role A, role B)
 {
 	choice at A
@@ -33,10 +33,12 @@ global protocol Proto1(role A, role B)
 //*/
 
 
+/* Testing aux protocol as CommandLine root protocol
 aux global protocol Proto1(role A, role B)
 {
 	1() from A to B;
 }
+//*/
 
 
 /*
@@ -45,7 +47,7 @@ global protocol Proto1(role A, role B, role C)
 	choice at A
 	{
 		1() from A to B;
-		5() from A to C;
+		5() from A to C;  // A "non-det merge" that cannot be refactored by prefixing/sequencing
 		3() from B to A;
 	}
 	or
@@ -162,6 +164,13 @@ aux global protocol Proto1Aux(role A, role B)
 	//connect A to B;  // Bad
 }
 //*/
+
+explicit global protocol Proto1(role A, role B)
+{
+	1() connect A to B;
+	disconnect A and B;
+	1() connect A to B;
+}
 
 //---correlation
 
