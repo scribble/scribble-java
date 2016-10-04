@@ -1,6 +1,5 @@
 package org.scribble.ast.global;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.scribble.ast.AstFactoryImpl;
@@ -13,19 +12,11 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 
-// FIXME: visitChildren for modifiers
 public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 {
-	public static enum Modifiers { EXPLICIT, AUX }  // FIXME: factor out?  Header?
-
-	// FIXME: project modifiers to locals
-	// FIXME: lookup routines, e.g. isExplicit
-	public final List<Modifiers> modifiers;
-	
 	public GProtocolDecl(List<Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)
 	{
-		super(header, def);
-		this.modifiers = Collections.unmodifiableList(modifiers);
+		super(modifiers, header, def);
 	}
 
 	@Override
@@ -83,15 +74,5 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	public Global getKind()
 	{
 		return GNode.super.getKind();
-	}
-	
-	public boolean isExplicitModifier()
-	{
-		return this.modifiers.contains(Modifiers.EXPLICIT);
-	}
-
-	public boolean isAuxModifier()
-	{
-		return this.modifiers.contains(Modifiers.AUX);
 	}
 }

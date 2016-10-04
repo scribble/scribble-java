@@ -77,7 +77,7 @@ public interface AstFactory
 	MessageSigNameDecl MessageSigNameDecl(String schema, String extName, String source, MessageSigNameNode name);
 	DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNode name);
 
-	GProtocolDecl GProtocolDecl(List<GProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def);
+	GProtocolDecl GProtocolDecl(List<ProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def);
 	GProtocolHeader GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
 
 	RoleDeclList RoleDeclList(List<RoleDecl> rds);
@@ -112,7 +112,7 @@ public interface AstFactory
 	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(K kind, String identifier);
 	DummyProjectionRoleNode DummyProjectionRoleNode();
 
-	LProtocolDecl LProtocolDecl(LProtocolHeader header, LProtocolDef def);
+	LProtocolDecl LProtocolDecl(List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def);
 	LProtocolHeader LProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
 	SelfRoleDecl SelfRoleDecl(RoleNode namenode);
 	LProtocolDef LProtocolDef(LProtocolBlock block);
@@ -133,5 +133,5 @@ public interface AstFactory
 	LContinue LContinue(RecVarNode recvar);
 	LDo LDo(RoleArgList roles, NonRoleArgList args, LProtocolNameNode proto);
 
-	LProtocolDecl LProjectionDecl(GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def);  // del extends that of LProtocolDecl 
+	LProtocolDecl LProjectionDecl(List<ProtocolDecl.Modifiers> modifiers, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def);  // del extends that of LProtocolDecl 
 }

@@ -33,7 +33,8 @@ public class TravelA
 				TravelAgent sess = new TravelAgent();
 				try (ExplicitEndpoint<TravelAgent, A> se = new ExplicitEndpoint<>(sess, A, new ObjectStreamFormatter()))
 				{
-					run(new TravelAgent_A_1(se)
+					run(
+						new TravelAgent_A_1(se)
 							.accept(C, ss)
 							.branch(C));
 				}

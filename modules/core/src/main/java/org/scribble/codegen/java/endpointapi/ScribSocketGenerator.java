@@ -2,6 +2,7 @@ package org.scribble.codegen.java.endpointapi;
 
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
@@ -19,6 +20,8 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	public static final String JAVA_SCHEMA = "java";  // FIXME: factor out
 	
 	public static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
+	public static final String MPSTENDPOINT_CLASS = "org.scribble.net.session.MPSTEndpoint";
+	public static final String EXPLICITENDPOINT_CLASS = "org.scribble.net.session.ExplicitEndpoint";
 	public static final String BUF_CLASS = "org.scribble.net.Buf";
 	public static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
 
@@ -133,7 +136,11 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
-		ConstructorBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
+
+		GProtocolDecl gpd = (GProtocolDecl) this.apigen.getJob().getContext().getModule(this.apigen.gpn.getPrefix()).getProtocolDecl(this.apigen.gpn.getSimpleName());
+		String epClass = gpd.isExplicitModifier() ? EXPLICITENDPOINT_CLASS : MPSTENDPOINT_CLASS;
+		ConstructorBuilder ctor2 = cb.newConstructor(epClass + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
+
 		ctor2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		ctor2.addModifiers(JavaBuilder.PUBLIC);
 		ctor2.addBodyLine(JavaBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");

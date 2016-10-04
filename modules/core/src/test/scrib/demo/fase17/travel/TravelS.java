@@ -13,7 +13,6 @@ import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.ExplicitEndpoint;
-import org.scribble.net.session.SessionEndpoint;
 
 import demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent;
 import demo.fase17.travel.TravelAgent.TravelAgent.channels.S.TravelAgent_S_1;
@@ -30,7 +29,7 @@ public class TravelS
 			while (true)
 			{
 				TravelAgent sess = new TravelAgent();
-				try (SessionEndpoint<TravelAgent, S> se = new ExplicitEndpoint<>(sess, S, new ObjectStreamFormatter()))
+				try (ExplicitEndpoint<TravelAgent, S> se = new ExplicitEndpoint<>(sess, S, new ObjectStreamFormatter()))
 				{
 					new TravelAgent_S_1(se)
 						.accept(C, ss)
