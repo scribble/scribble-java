@@ -440,7 +440,7 @@ public class CommandLine //implements Runnable
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
 		}
-		if (pd.isAuxModifier())  // FIXME: maybe don't check for all, e.g. -project
+		if (pd.isAuxModifier())  // CHECKME: maybe don't check for all, e.g. -project
 		{
 			throw new CommandLineException("Invalid aux protocol specified as root: " + simpname);
 		}
