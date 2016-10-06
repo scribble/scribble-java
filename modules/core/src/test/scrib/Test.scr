@@ -12,6 +12,35 @@
 module Test;
 
 
+// CHECKME: playing multiple roles in the same session instance (but what is the concrete notion of "process id"? -- if actually try to use, e.g., ThreadID, then have to track ownership of endpoints)
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A  // Testing unfair transform of recursive non-det choice
+		{
+			1() from A to B;
+			choice at A
+			{
+				2() from A to B;
+			}
+			or
+			{
+				3() from A to B;
+			}
+		}
+		or
+		{
+			1() from A to B;
+			4() from A to B;
+		}
+		continue X;
+	}
+}
+
+
 /* // TODO: more unfinished (and accept-correlation) role tests
 global protocol Proto1(role A, role B)
 {
@@ -151,6 +180,7 @@ explicit global protocol Proto1(role A, role B)
 }
 //*/
 
+
 /*
 explicit global protocol Proto1(role A, role B)
 {
@@ -165,12 +195,15 @@ aux global protocol Proto1Aux(role A, role B)
 }
 //*/
 
+
+/*
 explicit global protocol Proto1(role A, role B)
 {
 	1() connect A to B;
 	disconnect A and B;
 	1() connect A to B;
 }
+//*/
 
 //---correlation
 
@@ -219,6 +252,7 @@ global protocol Proto1(role A, role B)
 		do Proto1Aux(A, B);  // Testing recvar name disambiguation
 	}
 }
+
 
 global protocol Proto1Aux(role A, role B)
 {

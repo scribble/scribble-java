@@ -36,10 +36,10 @@ aux global protocol Pay(role C, role A, role S)
 		connect C to S;
 		payment(String) from C to S;
 		confirm(Int) from S to C;
-		yes(Int) from C to A;
+		accpt(Int) from C to A;
 	}
 	or
 	{
-		no() from C to A;
+		reject() from C to A;
 	}
 }

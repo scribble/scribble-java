@@ -7,7 +7,7 @@ import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.confirm;
 import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.payment;
 import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.query;
 import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.quote;
-import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.yes;
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.accpt;
 
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
@@ -41,7 +41,7 @@ public class TravelC
 			C2.connect(S, SocketChannelEndpoint::new, "localhost", 9999)
 				.send(S, payment, "efgh")
 				.receive(S, confirm, b)
-				.send(A, yes, b.val);  // Forward payment ref number
+				.send(A, accpt, b.val);  // Forward payment ref number
 			
 			System.out.println("(C) confirm: " + b.val);
 		}

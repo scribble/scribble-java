@@ -4,8 +4,8 @@ import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.A;
 import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.C;
 import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.query;
 import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.quote;
-import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.yes;
-import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.no;
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.accpt;
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.reject;
 
 import java.io.IOException;
 
@@ -52,8 +52,8 @@ public class TravelA
 		switch (A2.op)
 		{
 			case query: A2 = A2.receive(query, b).send(C, quote, 1234).branch(C); System.out.println("(A) query: " + b.val); return run(A2);
-			case yes:   EndSocket end = A2.receive(yes, b); System.out.println("(A) yes: " + b.val); return end;
-			case no:    return A2.receive(no);
+			case accpt:   EndSocket end = A2.receive(accpt, b); System.out.println("(A) yes: " + b.val); return end;
+			case reject:    return A2.receive(reject);
 			default:    throw new RuntimeException("Shouldn't get in here: " + A2.op);
 		}
 	}
