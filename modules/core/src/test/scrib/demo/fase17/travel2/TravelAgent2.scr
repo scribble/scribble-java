@@ -2,7 +2,7 @@
 //$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/core/src/test/scrib -subpackages demo.fase17.travel2.TravelAgent2.TravelAgent2 -d test/doc/fase17/travel2
 
 
-module demo.fase17.travel.TravelAgent2;
+module demo.fase17.travel2.TravelAgent2;
 
 type <java> "java.lang.Integer" from "rt.jar" as Int;
 type <java> "java.lang.String" from "rt.jar" as String;
@@ -36,7 +36,12 @@ aux global protocol Pay(role C, role A, role S)
 		connect A to S;
 		port(Int) from S to A;
 		port(Int) from A to C;           // A should forward prev Int to C
-		payment(String) connect C to S;  // C should connect to S at prev Int port
+		payment(String) connect C to S;  // C should connect to S at prev Int port  // FIXME: connect/accept message
+
+//		port(p:Int) from S to A;
+//		port(p) from A to C;
+//		payment(String) connect C to S;  @port=p
+
 		confirm(Int) from S to C;
 	}
 	or
