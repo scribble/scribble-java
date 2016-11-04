@@ -1,4 +1,4 @@
-module bad.liveness.roleprog.Test03;
+module bad.liveness.roleprog.Test02;
 
 
 global protocol Proto1(role A, role B, role C)

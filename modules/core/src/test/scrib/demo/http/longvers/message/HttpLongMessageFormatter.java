@@ -16,6 +16,7 @@ import demo.http.longvers.message.client.Connection;
 import demo.http.longvers.message.client.DoNotTrack;
 import demo.http.longvers.message.client.Host;
 import demo.http.longvers.message.client.RequestLine;
+import demo.http.longvers.message.client.UpgradeInsecureRequests;
 import demo.http.longvers.message.client.UserAgent;
 import demo.http.longvers.message.server.AcceptRanges;
 import demo.http.longvers.message.server.ContentLength;
@@ -162,6 +163,7 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 					case HttpLongMessage.ACCEPT_ENCODING: return new AcceptEncoding(value);
 					case HttpLongMessage.DO_NOT_TRACK: return new DoNotTrack(Integer.parseInt(value));     
 					case HttpLongMessage.CONNECTION: return new Connection(value);
+					case HttpLongMessage.UPGRADE_INSECURE_REQUESTS: return new UpgradeInsecureRequests(Integer.parseInt(value));
 					
 					case HttpLongMessage.DATE: return new Date(value);
 					case HttpLongMessage.SERVER: return new Server(value);

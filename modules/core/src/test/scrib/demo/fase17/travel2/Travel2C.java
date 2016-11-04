@@ -32,16 +32,15 @@ public class Travel2C
 			TravelAgent2_C_2 C2 = new TravelAgent2_C_1(se)
 				.connect(A, SocketChannelEndpoint::new, "localhost", 8888);
 
-			//Stream.of(queries).forEach((q) -> C2.send(A, query, q).receive(A, quote, b));  // C2 not reassigned; exceptions not handled
 			for (int i = 0; i < queries.length; i++)
 			{
 				C2 = C2.send(A, query, queries[i]).receive(A, quote, b);
 			}
 
 			C2.send(A, accpt)
-			.receive(A, port, b)
-			.connect(S, SocketChannelEndpoint::new, "localhost", (Integer) b.val)
-			.receive(S, confirm, b);
+				.receive(A, port, b)
+				.connect(S, SocketChannelEndpoint::new, "localhost", (Integer) b.val)  // FIXME: connect message
+				.receive(S, confirm, b);
 			
 			System.out.println("(C) confirm: " + b.val);
 		}

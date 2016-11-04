@@ -36,7 +36,7 @@ public class Travel2S
 					new TravelAgent2_S_1(se)
 						.accept(A, ss)
 						.send(A, port, 7777)
-						.accept(C, ss2)  // FIXME: connect/accept message
+						.accept(C, ss2)  // FIXME: accept message
 						.send(C, confirm, 4567);
 					
 					System.out.println("(S) payment: " + b.val);

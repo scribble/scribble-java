@@ -97,6 +97,7 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 		String acceptE = null;
 		String dnt = null;
 		String connection = null;
+		String upgradeIR = null;
 
 		for (boolean eoh = false; !eoh; )
 		{
@@ -136,6 +137,7 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 					case Request.ACCEPT_ENCODING: acceptE = msg.substring(0, j); break;
 					case Request.DO_NOT_TRACK: dnt = msg.substring(0, j); break;     
 					case Request.CONNECTION: connection = msg.substring(0, j); break;
+					case Request.UPGRADE_INSECURE_REQUESTS: upgradeIR = msg.substring(0, j); break;
 					default: throw new RuntimeException("Cannot parse header field: " + msg.substring(0, j));
 				}
 				msg = msg.substring(j+2);
@@ -145,7 +147,7 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 		{
 			throw new RuntimeException("Shouldn't get in here: " + msg);
 		}
-		return new Request(get, http, host, userA, accept, acceptL, acceptE, dnt, connection);
+		return new Request(get, http, host, userA, accept, acceptL, acceptE, dnt, connection, upgradeIR);
 	}
 	
 	private static HttpShortMessage parseResponse(String msg)

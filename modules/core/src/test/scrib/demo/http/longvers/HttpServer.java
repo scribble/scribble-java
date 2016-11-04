@@ -19,6 +19,7 @@ import demo.http.longvers.message.client.Connection;
 import demo.http.longvers.message.client.DoNotTrack;
 import demo.http.longvers.message.client.Host;
 import demo.http.longvers.message.client.RequestLine;
+import demo.http.longvers.message.client.UpgradeInsecureRequests;
 import demo.http.longvers.message.client.UserAgent;
 import demo.http.longvers.message.server.ContentLength;
 import demo.http.longvers.message.server.HttpVersion;
@@ -41,6 +42,7 @@ public class HttpServer
 		Buf<AcceptEncoding> b_acce = new Buf<>();
 		Buf<DoNotTrack> b_dnt = new Buf<>();
 		Buf<Connection> b_conn = new Buf<>();
+		Buf<UpgradeInsecureRequests> b_upgradeir = new Buf<>();
 		Buf<Body> b_body = new Buf<>();
 		
 		try (ScribServerSocket ss = new SocketChannelServer(8080))
@@ -96,6 +98,11 @@ public class HttpServer
 							case DNT:
 							{
 								s2 = s2cases.receive(Http.DNT, b_dnt);
+								break;
+							}
+							case UPGRADEIR:
+							{
+								s2 = s2cases.receive(Http.UPGRADEIR, b_upgradeir);
 								break;
 							}
 							case HOST:

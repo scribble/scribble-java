@@ -19,6 +19,92 @@ global protocol Proto1(role A, role B)
 {
 	rec X
 	{
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+	/*rec X
+	{
+		1() from A to B;
+		1() from B to C;
+		choice at A
+		{
+			2() from A to B;  // Testing projection -- just X for C, but under a non-empty recursive prefix
+			continue X;
+		}
+		or
+		{
+			3() from A to B;
+			3() from B to C;
+		}
+	}*/
+}
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	// Testing unfair transform
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at A
+			{
+				1a() from A to B;
+			}
+			or
+			{
+				1b() from A to B;
+				continue X;
+			}
+		}
+		or
+		{
+			1c() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			choice at A
+			{
+				2a() from A to B;
+				continue X;
+			}
+			or
+			{
+				2b() from A to B;
+				continue X;
+			}
+		}
+		or
+		{
+			choice at A
+			{
+				3() from A to B;
+			}
+			or
+			{
+				4() from A to B;
+			}
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
 		choice at A  // Testing unfair transform of recursive non-det choice
 		{
 			1() from A to B;
@@ -39,6 +125,7 @@ global protocol Proto1(role A, role B)
 		continue X;
 	}
 }
+//*/
 
 
 /* // TODO: more unfinished (and accept-correlation) role tests

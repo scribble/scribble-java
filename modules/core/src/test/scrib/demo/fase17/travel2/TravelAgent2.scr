@@ -34,6 +34,7 @@ aux global protocol Pay(role C, role A, role S)
 	{
 		accpt() from C to A;
 		connect A to S;
+
 		port(Int) from S to A;
 		port(Int) from A to C;           // A should forward prev Int to C
 		payment(String) connect C to S;  // C should connect to S at prev Int port  // FIXME: connect/accept message

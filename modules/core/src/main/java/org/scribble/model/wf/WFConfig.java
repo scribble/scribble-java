@@ -60,18 +60,34 @@ public class WFConfig
 	{
 		//EndpointState s = this.states.get(r);
 		EndpointFSM s = this.states.get(r);
-		return
-				!((s.isTerminal() && !this.buffs.isEmpty(r))
+		//return
+		/*boolean cannotSafelyTerminate =  // FIXME: check and cleanup
+				(s.isTerminal() && !this.buffs.isEmpty(r))
 					||
 					(!s.isTerminal() &&
 						//(!(s.getStateKind().equals(Kind.UNARYINPUT) && s.getTakeable().iterator().next().isAccept())  // Accept state now distinguished
-						(!(s.getStateKind().equals(Kind.ACCEPT) && s.isInitial())
+						(
+							!(s.getStateKind().equals(Kind.ACCEPT) && s.isInitial())  // FIXME: check stable
 								// FIXME: needs initial state check -- although if there is an accept, there should a connect, and waitfor-errors checked via connects) -- this should be OK because connect/accept are sync -- but not fully sufficient by itself, see next
-								// So could be blocked on unary accept part way through the protocol -- but if 
-						|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
+								// So could be blocked on unary accept part way through the protocol -- but also could be unfolded initial accept
+							////|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
+							//&& this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))
 									// FIXME: isConnected is not symmetric, and could disconnect all part way through protocol -- but can't happen?
-					// Above assumes initial is not terminal (holds for EFSMs), and doesn't check buffer is empty (i.e. for orphan messages)
-				);
+							// Above assumes initial is not terminal (holds for EFSMs), and doesn't check buffer is empty (i.e. for orphan messages)
+						)
+					)
+					||
+					(!s.isTerminal() && this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr)))
+					;*/
+		//return !cannotSafelyTerminate;
+		boolean canSafelyTerminate =
+				(s.isTerminal() && this.buffs.isEmpty(r))
+			|| (s.getStateKind().equals(Kind.ACCEPT) && s.isInitial())  // FIXME: should be empty buffs
+				
+				// FIXME: incorrectly allows stuck accepts?  if inactive not initial, should be clone of initial?
+			//|| (s.getStateKind().equals(Kind.ACCEPT) && this.states.keySet().stream().noneMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr)))
+			;
+		return canSafelyTerminate;
 	}
 	
 	public List<WFConfig> take(Role r, IOAction a)
