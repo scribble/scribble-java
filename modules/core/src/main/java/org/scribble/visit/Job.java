@@ -26,7 +26,7 @@ public class Job
 	//public final boolean jUnit;
 	public final boolean debug;
 	public final boolean useOldWf;
-	public final boolean noLiveness;
+	public final boolean noLiveness;  // FIXME: deprecate
 	public final boolean minEfsm;  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 	public final boolean fair;
 	public final boolean noLocalChoiceSubjectCheck;

@@ -85,11 +85,24 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	// Refactor to GProtocolDeclDel
 	private GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
 	{
+		Job job = getJob();
 		GProtocolDecl gpd = (GProtocolDecl) child;
 		GProtocolName fullname = gpd.getFullMemberName(parent);
+
+		job.debugPrintln("(" + fullname + ") Build and check fair output choices: ");
+		buildAndCheck(gpd, fullname, true);
+		if (!getJob().fair)
+		{
+			job.debugPrintln("(" + fullname + ") Build and check unfair output choices: ");
+			buildAndCheck(gpd, fullname, false);
+		}
+		return gpd;
+	}
 		
+	private GProtocolDecl buildAndCheck(GProtocolDecl gpd, GProtocolName fullname, boolean fair) throws ScribbleException
+	{
 		//Map<Role, EndpointState> egraphs = getEndpointGraphs(fullname, gpd);
-		Map<Role, EndpointFSM> egraphs = getEndpointFSMs(fullname, gpd);
+		Map<Role, EndpointFSM> egraphs = getEndpointFSMs(fullname, gpd, fair);
 			
 		//Set<WFState> seen = buildGlobalModel(job, fullname, init);  // Returns set of all states
 		//Set<WFState> seen = new HashSet<>();
@@ -100,8 +113,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		/*Set<WFState> all = new HashSet<>();
 		getAllNodes(init, all);*/
 		checkGlobalModel(fullname, init, seen);
-
-		return child;
+		
+		return gpd;
 	}
 
 	//private void checkGlobalModel(GProtocolName fullname, WFState init, Set<WFState> all) throws ScribbleException
@@ -147,7 +160,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				// FIXME: getTrace can get stuck when local choice subjects are disabled
 				//List<GIOAction> trace = getTrace(init, s, reach);  // FIXME: getTrace broken on non-det self loops?
 				List<GIOAction> trace = getTrace(all, init, s, reach);  // FIXME: getTrace broken on non-det self loops?
-				errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
+				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
+				errorMsg += "\nSafety violation(s) at " + s.id + ":\n    Trace=" + trace;
 			}
 			if (!errors.stuck.isEmpty())
 			{
@@ -190,16 +204,16 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				if (!safety.isEmpty())
 				{
 					// Redundant
-					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n    " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
+					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n    " + termSetToString(termset, all);
 				}
 				if (!roleLiveness.isEmpty())
 				{
-					errorMsg += "\nRole progress violation for " + roleLiveness + " in terminal set:\n    " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
+					errorMsg += "\nRole progress violation for " + roleLiveness + " in terminal set:\n    " + termSetToString(termset, all);
 				}
 				Map<Role, Set<Send>> msgLiveness = checkMessageLiveness(all, init, termset);
 				if (!msgLiveness.isEmpty())
 				{
-					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n    " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
+					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n    " + termSetToString(termset, all);
 				}
 			}
 		}
@@ -209,6 +223,13 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			//throw new ScribbleException("\n" + init.toDot() + errorMsg);
 			throw new ScribbleException(errorMsg);
 		}
+	}
+	
+	private String termSetToString(Set<Integer> termset, Map<Integer, WFState> all)
+	{
+		return getJob().debug
+				? termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","))
+				: termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(","));
 	}
 
 	//private Set<WFState> buildGlobalModel(Job job, GProtocolName fullname, WFState init) throws ScribbleException
@@ -344,7 +365,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	}
 
 	//private Map<Role, EndpointState> getEndpointGraphs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
-	private Map<Role, EndpointFSM> getEndpointFSMs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
+	private Map<Role, EndpointFSM> getEndpointFSMs(GProtocolName fullname, GProtocolDecl gpd, boolean fair) throws ScribbleException
 	{
 		Job job = getJob();
 
@@ -374,7 +395,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				graph = job.getContext().getEndpointGraph(fullname, self);
 			}*/
 
-			EndpointGraph graph = job.getContext().getEndpointGraph(fullname, self);
+			/*EndpointGraph graph = job.getContext().getEndpointGraph(fullname, self);
 
 			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + graph);
 
@@ -383,7 +404,10 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				graph = job.getContext().getUnfairEndpointGraph(fullname, self);
 
 				job.debugPrintln("(" + fullname + ") Non-fair EFSM for " + self + ":\n" + graph.init.toDot());
-			}
+			}*/
+			
+			EndpointGraph graph = fair ? job.getContext().getEndpointGraph(fullname, self) : job.getContext().getUnfairEndpointGraph(fullname, self);
+			job.debugPrintln("(" + fullname + ") EFSM (fair=" + fair + ") for " + self + ":\n" + graph.init.toDot());
 			
 			//egraphs.put(self, fsm.init);
 			egraphs.put(self, graph.toFsm());
