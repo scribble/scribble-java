@@ -69,7 +69,6 @@ sig <java> "demo.http.longvers.message.client.UpgradeInsecureRequests"
 		as UPGRADEIR;  // Upgrade-Insecure-Requests: 1 
 		
 		
-		
 sig <java> "demo.http.longvers.message.server.HttpVersion"
 		from "demo/http/longvers/message/HttpVersion.java"
 		as HTTPV;  // HTTP/1.1 

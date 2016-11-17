@@ -11,6 +11,7 @@ import static demo.betty16.lec1.httplong.HttpLong.Http.Http.HOST;
 import static demo.betty16.lec1.httplong.HttpLong.Http.Http.REQUESTL;
 import static demo.betty16.lec1.httplong.HttpLong.Http.Http.S;
 import static demo.betty16.lec1.httplong.HttpLong.Http.Http.USERA;
+import static demo.betty16.lec1.httplong.HttpLong.Http.Http.UPGRADEIR;
 
 import java.io.IOException;
 
@@ -75,6 +76,7 @@ public class Server
 				}
 				case CONNECTION: s2 = cases.receive(CONNECTION, buf); break;
 				case DNT:        s2 = cases.receive(DNT, buf); break;
+				case UPGRADEIR:  s2 = cases.receive(UPGRADEIR, buf); break;
 				case HOST:       s2 = cases.receive(HOST, buf); break;
 				case USERA:      s2 = cases.receive(USERA, buf); break;
 			}

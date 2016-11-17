@@ -42,6 +42,11 @@ sig <java> "demo.betty16.lec1.httplong.message.client.Connection"
 		from "demo/betty16/lec1/httplong/message/Connection.java"
 		as CONNECTION;  // Connection: keep-alive
 
+sig <java> "demo.betty16.lec1.httplong.message.client.UpgradeInsecureRequests"
+		from "demo/betty16/lec1/httplong/message/UpgradeInsecureRequests.java"
+		as UPGRADEIR;  // Upgrade-Insecure-Requests: 1 
+		
+		
 sig <java> "demo.betty16.lec1.httplong.message.server.HttpVersion"
 		from "demo/betty16/lec1/httplong/message/HttpVersion.java"
 		as HTTPV;  // HTTP/1.1 
@@ -124,6 +129,9 @@ aux global protocol Request(role C, role S) {
 				continue X;
 			} or {
 				CONNECTION from C to S;  // Connection: keep-alive
+				continue X;
+			} or {
+				UPGRADEIR from C to S;  // Upgrade-Insecure-Requests: 1 
 				continue X;
 			} or {
 				BODY from C to S;

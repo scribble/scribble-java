@@ -16,6 +16,7 @@ import demo.betty16.lec1.httplong.message.client.Connection;
 import demo.betty16.lec1.httplong.message.client.DoNotTrack;
 import demo.betty16.lec1.httplong.message.client.Host;
 import demo.betty16.lec1.httplong.message.client.RequestLine;
+import demo.betty16.lec1.httplong.message.client.UpgradeInsecureRequests;
 import demo.betty16.lec1.httplong.message.client.UserAgent;
 import demo.betty16.lec1.httplong.message.server.AcceptRanges;
 import demo.betty16.lec1.httplong.message.server.ContentLength;
@@ -162,6 +163,7 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 					case HttpLongMessage.ACCEPT_ENCODING: return new AcceptEncoding(value);
 					case HttpLongMessage.DO_NOT_TRACK: return new DoNotTrack(Integer.parseInt(value));     
 					case HttpLongMessage.CONNECTION: return new Connection(value);
+					case HttpLongMessage.UPGRADE_INSECURE_REQUESTS: return new UpgradeInsecureRequests(Integer.parseInt(value));
 					
 					case HttpLongMessage.DATE: return new Date(value);
 					case HttpLongMessage.SERVER: return new Server(value);

@@ -14,16 +14,17 @@ public class Request extends HttpShortMessage {
 	public static final String ACCEPT_ENCODING = "Accept-Encoding";
 	public static final String DO_NOT_TRACK = "DNT";     
 	public static final String CONNECTION = "Connection";
+	public static final String UPGRADE_INSECURE_REQUESTS = "Upgrade-Insecure-Requests";
 
-	public Request(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection) {
-		super(Http.Request, getHeadersAndBody(get, http, host, userA, accept, acceptL, acceptE, dnt, connection));
+	public Request(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection, String upgradeIR) {
+		super(Http.Request, getHeadersAndBody(get, http, host, userA, accept, acceptL, acceptE, dnt, connection, upgradeIR));
 	}
 	
 	public Request(String get, String http, String host) {
-		this(get, http, host, null, null, null, null, null, null);
+		this(get, http, host, null, null, null, null, null, null, null);
 	}
 
-	protected static String getHeadersAndBody(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection) {
+	protected static String getHeadersAndBody(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection, String upgradeIR) {
 		return " "
 				+ get + " " + HttpShortMessage.HTTP + "/" + http + HttpShortMessage.CRLF
 				+ Request.HOST + ": " + host + HttpShortMessage.CRLF
@@ -33,6 +34,7 @@ public class Request extends HttpShortMessage {
 				+ ((acceptE == null) ? "" : Request.ACCEPT_ENCODING + ": " + acceptE + HttpShortMessage.CRLF)
 				+ ((dnt == null) ? "" : Request.DO_NOT_TRACK + ": " + dnt + HttpShortMessage.CRLF)
 				+ ((connection == null) ? "" : Request.CONNECTION + ": " + connection + HttpShortMessage.CRLF)
+				+ ((upgradeIR == null) ? "" : Request.UPGRADE_INSECURE_REQUESTS + ": " + upgradeIR + HttpShortMessage.CRLF)
 				+ "" + HttpShortMessage.CRLF;  // Empty body
 	}
 }
