@@ -55,7 +55,8 @@ public class LAcceptDel extends LConnectionActionDel implements LSimpleInteracti
 		ExplicitCorrelationEnv env = checker.popEnv();
 		if (!env.canAccept())
 		{
-			throw new ScribbleException("Invalid accept action: " + la);
+			//throw new ScribbleException("Invalid accept action: " + la);
+			checker.getJob().warningPrintln("Session correlation warning for: " + la);
 		}
 		checker.pushEnv(env.disableAccept());
 		return la;

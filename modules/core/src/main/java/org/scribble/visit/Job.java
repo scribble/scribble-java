@@ -176,7 +176,7 @@ public class Job
 		catch (RuntimeScribbleException e)  // FIXME: use IOInterfacesGenerator.skipIOInterfacesGeneration
 		{
 			//System.err.println("[Warning] Skipping I/O Interface generation for protocol featuring: " + fullname);
-			System.err.println("[Warning] Skipping I/O Interface generation for: " + fullname + "\n  Cause: " + e.getMessage());
+			warningPrintln("Skipping I/O Interface generation for: " + fullname + "\n  Cause: " + e.getMessage());
 		}
 		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)
 		Map<String, String> api = new HashMap<>(); // filepath -> class source  // Store results?
@@ -234,6 +234,11 @@ public class Job
 	public boolean isDebug()
 	{
 		return this.debug;
+	}
+	
+	public void warningPrintln(String s)
+	{
+		System.err.println("[Warning] " + s);
 	}
 	
 	public void debugPrintln(String s)
