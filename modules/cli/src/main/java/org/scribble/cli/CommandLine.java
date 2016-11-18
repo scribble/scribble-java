@@ -286,6 +286,8 @@ public class CommandLine //implements Runnable
 		}
 	}
 
+	// Duplicated from outputGlobalModel
+	// FIXME: state ids may not match other tool output (e.g. errors)
 	private void outputGlobalModelAut(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
