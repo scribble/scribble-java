@@ -53,6 +53,10 @@ public class ExplicitCorrelationEnv extends Env<ExplicitCorrelationEnv>
 	
 	public ExplicitCorrelationEnv disableAccept()
 	{
+		if (!this.canAccept)
+		{
+			return this;
+		}
 		ExplicitCorrelationEnv copy = copy();
 		copy.canAccept = false;
 		return copy;

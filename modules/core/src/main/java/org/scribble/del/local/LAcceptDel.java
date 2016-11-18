@@ -3,7 +3,6 @@ package org.scribble.del.local;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LAccept;
-import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.Accept;
 import org.scribble.sesstype.Payload;
@@ -16,7 +15,7 @@ import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.ExplicitCorrelationEnv;
 import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
-public class LAcceptDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
+public class LAcceptDel extends LConnectionActionDel implements LSimpleInteractionNodeDel
 {
 	@Override
 	public LAccept leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder builder, ScribNode visited) throws ScribbleException

@@ -49,6 +49,7 @@ aux global protocol BookingExpAux(role C, role A, role S)
 //*/
 
 
+//*
 global protocol Booking(role C, role A, role S)
 {
 	choice at C
@@ -75,3 +76,4 @@ global protocol Booking(role C, role A, role S)
 		Bye() from C to A;
 	}
 }
+//*/
