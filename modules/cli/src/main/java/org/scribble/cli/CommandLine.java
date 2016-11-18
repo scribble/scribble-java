@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.main.Job;
+import org.scribble.main.JobContext;
 import org.scribble.main.MainContext;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
@@ -25,8 +27,6 @@ import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribUtil;
-import org.scribble.visit.Job;
-import org.scribble.visit.JobContext;
 
 // Maybe no point to be a Runnable
 public class CommandLine //implements Runnable

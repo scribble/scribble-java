@@ -1,8 +1,9 @@
-package org.scribble.visit;
+package org.scribble.visit.collector;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
 

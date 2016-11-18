@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.visit.context;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
@@ -7,10 +7,12 @@ import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LProtocolBlock;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
+import org.scribble.visit.SubprotocolVisitor;
 import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 // FIXME: refactor as a choice subject candidate collector (i.e. NameCollector -- thought that is an OffsetSubprotocolCollector, does that make a difference?)

@@ -4,12 +4,12 @@ import java.util.Iterator;
 
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.AstVisitor;
-import org.scribble.visit.JobContext;
 
 public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K> //implements ScopedNode
 {

@@ -3,6 +3,7 @@ package org.scribble.visit;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.global.GDependencyMap;
 import org.scribble.ast.context.local.LDependencyMap;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;

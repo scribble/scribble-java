@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.visit.wf;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,9 +8,11 @@ import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.UnfoldingVisitor;
+import org.scribble.visit.wf.env.WFChoiceEnv;
 
 // Note: now only used for choice subject and enabled checking 
 // FIXME: refactor as distinct enabling messages checker (cf. GChoiceDel, WFChoicePathChecker)

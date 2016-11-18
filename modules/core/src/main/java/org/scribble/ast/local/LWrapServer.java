@@ -15,7 +15,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LWrapServer extends LConnectionAction implements LSimpleInteractionNode
 {

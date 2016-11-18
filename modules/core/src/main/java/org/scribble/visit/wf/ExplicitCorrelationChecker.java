@@ -1,13 +1,15 @@
-package org.scribble.visit;
+package org.scribble.visit.wf;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.SubprotocolVisitor;
 import org.scribble.visit.env.ExplicitCorrelationEnv;
 
 //public class ExplicitCorrelationChecker extends InlinedProtocolVisitor<ExplicitCorrelationEnv>

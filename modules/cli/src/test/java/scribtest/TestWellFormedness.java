@@ -21,17 +21,18 @@ import java.util.List;
 
 
 
+
 //import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.scribble.main.Job;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.util.ScribParserException;
-import org.scribble.visit.Job;
 
 /**
  * Runs good and bad tests in Scribble.

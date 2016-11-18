@@ -23,9 +23,9 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ModuleContextBuilder;
-import org.scribble.visit.NameDisambiguator;
-import org.scribble.visit.Projector;
+import org.scribble.visit.context.ModuleContextBuilder;
+import org.scribble.visit.context.Projector;
+import org.scribble.visit.wf.NameDisambiguator;
 
 public class ModuleDel extends ScribDelBase
 {

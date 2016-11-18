@@ -3,6 +3,7 @@ package org.scribble.visit;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ScribNode;
 import org.scribble.del.ProtocolDefDel;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.env.Env;
 

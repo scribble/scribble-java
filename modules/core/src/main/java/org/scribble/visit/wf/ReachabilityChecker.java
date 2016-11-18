@@ -1,11 +1,13 @@
-package org.scribble.visit;
+package org.scribble.visit.wf;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.local.LInteractionSeqDel;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.UnfoldingVisitor;
 import org.scribble.visit.env.ReachabilityEnv;
 
 public class ReachabilityChecker extends UnfoldingVisitor<ReachabilityEnv>

@@ -7,15 +7,15 @@ import java.util.Set;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
+import org.scribble.main.Job;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
 import org.scribble.model.endpoint.actions.LMIOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.Job;
-import org.scribble.visit.JobContext;
-import org.scribble.visit.Projector;
+import org.scribble.visit.context.Projector;
 
 // TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
 // TODO: "functional state interfaces", e.g. for smtp ehlo and quit actions

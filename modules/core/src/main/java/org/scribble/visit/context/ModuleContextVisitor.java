@@ -1,10 +1,12 @@
-package org.scribble.visit;
+package org.scribble.visit.context;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.del.ModuleDel;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.AstVisitor;
 
 
 // Maybe ModuleContextVisitor

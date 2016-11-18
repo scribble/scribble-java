@@ -1,4 +1,4 @@
-package org.scribble.visit.env;
+package org.scribble.visit.wf.env;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,6 +13,7 @@ import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ConnectedMap;
 import org.scribble.util.MessageIdMap;
+import org.scribble.visit.env.Env;
 
 public class WFChoiceEnv extends Env<WFChoiceEnv>
 {

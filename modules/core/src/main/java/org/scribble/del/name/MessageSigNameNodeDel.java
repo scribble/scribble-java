@@ -9,7 +9,7 @@ import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.wf.NameDisambiguator;
 
 public class MessageSigNameNodeDel extends ScribDelBase
 {

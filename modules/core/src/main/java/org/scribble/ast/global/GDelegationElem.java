@@ -12,7 +12,7 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.GDelegationType;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.AstVisitor;
-import org.scribble.visit.Projector;
+import org.scribble.visit.context.Projector;
 
 // A "binary name pair" payload elem (current AST hierarchy induces this pattern), cf. UnaryPayloadElem (also differs in no parsing ambig against parameters)
 // The this.name will be global kind, but overall this node is local kind

@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.visit.context;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.scribble.ast.ScribNode;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;

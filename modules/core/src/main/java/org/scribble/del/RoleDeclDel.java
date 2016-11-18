@@ -4,8 +4,8 @@ import org.scribble.ast.RoleDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.wf.WFChoiceChecker;
 
 public class RoleDeclDel extends ScribDelBase
 {

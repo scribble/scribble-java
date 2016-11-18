@@ -13,6 +13,8 @@ import org.scribble.ast.local.LDo;
 import org.scribble.del.ProtocolDefDel;
 import org.scribble.del.global.GDoDel;
 import org.scribble.del.local.LDoDel;
+import org.scribble.main.Job;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.ProtocolKind;

@@ -15,11 +15,11 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
 import org.scribble.model.endpoint.actions.LMIOAction;
 import org.scribble.sesstype.name.RecVar;
-import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.context.EndpointGraphBuilder;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
+import org.scribble.visit.wf.ReachabilityChecker;
 
 public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeDel
 {

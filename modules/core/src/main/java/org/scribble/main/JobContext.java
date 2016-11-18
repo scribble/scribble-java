@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.main;
 
 import java.io.File;
 import java.util.HashMap;
@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.AutParser;
 import org.scribble.model.endpoint.EndpointGraph;
 import org.scribble.model.global.GMState;
@@ -17,6 +16,8 @@ import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
+import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.Projector;
 
 // Global "static" context information for a Job -- single instance per Job and should never be shared
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter

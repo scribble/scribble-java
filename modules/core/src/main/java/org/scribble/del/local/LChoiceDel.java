@@ -15,15 +15,15 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.ProjectedChoiceDoPruner;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.ReachabilityChecker;
-import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
+import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.ProjectedChoiceDoPruner;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
 import org.scribble.visit.env.UnguardedChoiceDoEnv;
+import org.scribble.visit.wf.ReachabilityChecker;
 
 public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 {

@@ -1,6 +1,7 @@
-package org.scribble.visit;
+package org.scribble.visit.context;
 
 import org.scribble.ast.ScribNode;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 
 public class ProjectedRoleDeclFixer extends ModuleContextVisitor

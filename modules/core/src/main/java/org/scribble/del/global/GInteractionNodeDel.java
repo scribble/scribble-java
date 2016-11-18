@@ -4,7 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.del.InteractionNodeDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.Projector;
+import org.scribble.visit.context.Projector;
 
 public interface GInteractionNodeDel extends InteractionNodeDel
 {

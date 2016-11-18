@@ -2,25 +2,25 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.DelegationProtocolRefChecker;
-import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.ExplicitCorrelationChecker;
-import org.scribble.visit.GlobalModelChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.MessageIdCollector;
-import org.scribble.visit.ModuleContextBuilder;
-import org.scribble.visit.NameDisambiguator;
-import org.scribble.visit.ProjectedChoiceDoPruner;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.ProjectedRoleDeclFixer;
-import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.ReachabilityChecker;
-import org.scribble.visit.RoleCollector;
-import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
-import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.collector.MessageIdCollector;
+import org.scribble.visit.collector.RoleCollector;
+import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.ModuleContextBuilder;
+import org.scribble.visit.context.ProjectedChoiceDoPruner;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.ProjectedRoleDeclFixer;
+import org.scribble.visit.context.Projector;
+import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.Env;
+import org.scribble.visit.validation.GMChecker;
+import org.scribble.visit.wf.DelegationProtocolRefChecker;
+import org.scribble.visit.wf.ExplicitCorrelationChecker;
+import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.wf.ReachabilityChecker;
+import org.scribble.visit.wf.WFChoiceChecker;
 
 // Immutable except for pass-specific Envs (by visitors) only -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
 // Parameterise by AstNode type?  Would inhibit del sharing between types (but that's not currently needed)
@@ -212,12 +212,12 @@ public interface ScribDel
 		return visited;
 	}*/
 	
-	default void enterCompatCheck(ScribNode parent, ScribNode child, GlobalModelChecker coll) throws ScribbleException
+	default void enterCompatCheck(ScribNode parent, ScribNode child, GMChecker coll) throws ScribbleException
 	{
 		
 	}
 
-	default ScribNode leaveCompatCheck(ScribNode parent, ScribNode child, GlobalModelChecker coll, ScribNode visited) throws ScribbleException
+	default ScribNode leaveCompatCheck(ScribNode parent, ScribNode child, GMChecker coll, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

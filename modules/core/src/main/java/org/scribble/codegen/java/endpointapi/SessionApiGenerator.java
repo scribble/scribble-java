@@ -14,12 +14,12 @@ import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.del.ModuleDel;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.Job;
-import org.scribble.visit.MessageIdCollector;
+import org.scribble.visit.collector.MessageIdCollector;
 
 public class SessionApiGenerator extends ApiGenerator
 {

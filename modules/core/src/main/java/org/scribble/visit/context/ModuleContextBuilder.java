@@ -1,8 +1,10 @@
-package org.scribble.visit;
+package org.scribble.visit.context;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.AstVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
 public class ModuleContextBuilder extends AstVisitor

@@ -5,7 +5,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.RoleCollector;
+import org.scribble.visit.collector.RoleCollector;
 import org.scribble.visit.env.UnfoldingEnv;
 
 // FIXME: factor with MessageTransferDel

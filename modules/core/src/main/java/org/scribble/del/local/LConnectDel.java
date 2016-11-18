@@ -9,8 +9,8 @@ import org.scribble.model.endpoint.actions.LMConnect;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LConnectDel extends LConnectionActionDel implements LSimpleInteractionNodeDel
 {

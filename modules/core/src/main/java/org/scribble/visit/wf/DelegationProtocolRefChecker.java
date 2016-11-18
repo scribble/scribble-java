@@ -1,11 +1,13 @@
-package org.scribble.visit;
+package org.scribble.visit.wf;
 
 import java.util.Deque;
 import java.util.LinkedList;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.context.ModuleContextVisitor;
 
 // Checks for recursive protocoldecl dependencies in the presence of delegations (currently, both via the delegation, and in of the protocoldelcs themselves -- FIXME over restrictive)
 public class DelegationProtocolRefChecker extends ModuleContextVisitor

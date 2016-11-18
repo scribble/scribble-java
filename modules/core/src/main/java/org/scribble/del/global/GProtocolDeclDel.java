@@ -18,15 +18,15 @@ import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.JobContext;
-import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDeclContextBuilder;
-import org.scribble.visit.RoleCollector;
+import org.scribble.visit.collector.RoleCollector;
+import org.scribble.visit.context.Projector;
 import org.scribble.visit.env.ProjectionEnv;
 
 public class GProtocolDeclDel extends ProtocolDeclDel<Global>

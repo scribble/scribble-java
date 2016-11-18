@@ -20,6 +20,8 @@ import org.scribble.ast.ScopedNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.main.Job;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.SubprotocolSig;

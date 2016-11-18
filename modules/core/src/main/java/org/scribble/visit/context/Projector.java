@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.visit.context;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +11,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ModuleKind;
@@ -19,6 +20,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.EnvVisitor;
 import org.scribble.visit.env.ProjectionEnv;
 
 // Uses visitor infrastructure to traverse AST and generate local nodes from global with original nodes unchanged (so does not use normal visitChildren pattern -- env used to pass the working projections)

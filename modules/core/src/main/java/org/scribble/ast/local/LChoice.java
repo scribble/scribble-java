@@ -16,7 +16,7 @@ import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 {

@@ -9,12 +9,12 @@ import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.context.Projector;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ProjectionEnv;
-import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.wf.WFChoiceChecker;
+import org.scribble.visit.wf.env.WFChoiceEnv;
 
 public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
 {

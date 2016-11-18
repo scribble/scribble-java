@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.main;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -12,12 +12,26 @@ import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
 import org.scribble.del.local.LProtocolDeclDel;
-import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.AstVisitor;
+import org.scribble.visit.InlinedProtocolUnfolder;
+import org.scribble.visit.ProtocolDeclContextBuilder;
+import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.collector.RoleCollector;
+import org.scribble.visit.context.ModuleContextBuilder;
+import org.scribble.visit.context.ProjectedChoiceDoPruner;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.ProjectedRoleDeclFixer;
+import org.scribble.visit.context.Projector;
+import org.scribble.visit.validation.GMChecker;
+import org.scribble.visit.wf.DelegationProtocolRefChecker;
+import org.scribble.visit.wf.ExplicitCorrelationChecker;
+import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.wf.ReachabilityChecker;
+import org.scribble.visit.wf.WFChoiceChecker;
 
 // A "compiler job" front-end that supports operations comprising one or more visitor passes over the AST
 public class Job
@@ -72,7 +86,7 @@ public class Job
 		runVisitorPassOnAllModules(ReachabilityChecker.class);  // Moved before GlobalModelChecker.class, OK?
 		if (!this.useOldWf)
 		{
-			runVisitorPassOnAllModules(GlobalModelChecker.class);
+			runVisitorPassOnAllModules(GMChecker.class);
 		}
 		//runVisitorPassOnAllModules(ReachabilityChecker.class);
 	}

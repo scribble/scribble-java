@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.visit.context;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
@@ -6,8 +6,10 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.local.LChoiceDel;
 import org.scribble.del.local.LInteractionSeqDel;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointGraphBuilderUtil;
+import org.scribble.visit.NoEnvInlinedProtocolVisitor;
 
 // Changed from offsetsubprot visitor to inlined visitor to reduce state label accumulation to rec only -- then, wfc-checking for "unguarded" recursive-do-as-continue in choice blocks handled by unfolding inlineds
 // Inlined visitor, not unfolding -- but the inlined is already statically unfolded; this just means we don't do a "dynamic" unfolding as part of the AST visit

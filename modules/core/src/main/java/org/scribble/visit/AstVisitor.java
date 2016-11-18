@@ -1,6 +1,8 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
+import org.scribble.main.Job;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 
 // Pattern: node accepts visitor and calls visitor back (standard visitor pattern -- adding a new operation doesn't affect the Ast classes), but then visitor delegates back to node delegate (so routines for handling each node type not centralised in visitor, but decentralised to delegates)

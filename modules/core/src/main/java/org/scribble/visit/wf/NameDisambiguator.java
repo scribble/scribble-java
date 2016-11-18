@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.visit.wf;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,12 +8,14 @@ import java.util.Set;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.del.global.GDelegationElemDel;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.context.ModuleContextVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
 // Also canonicalises recvars

@@ -12,9 +12,9 @@ import org.scribble.model.endpoint.actions.LMSend;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.ExplicitCorrelationChecker;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.wf.ExplicitCorrelationChecker;
 
 public class LSendDel extends LMessageTransferDel
 {

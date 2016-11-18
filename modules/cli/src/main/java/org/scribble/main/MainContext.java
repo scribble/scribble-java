@@ -18,7 +18,6 @@ import org.scribble.parser.ScribParser;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
-import org.scribble.visit.Job;
 
 
 // Scribble tool context for main module

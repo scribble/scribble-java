@@ -2,10 +2,10 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.ExplicitCorrelationChecker;
-import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
+import org.scribble.visit.wf.ExplicitCorrelationChecker;
+import org.scribble.visit.wf.WFChoiceChecker;
 
 // For CompoundInteractionNode and ProtocolBlock
 public abstract class CompoundInteractionDel extends ScribDelBase

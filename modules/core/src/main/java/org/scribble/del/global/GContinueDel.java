@@ -9,8 +9,8 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.context.Projector;
 import org.scribble.visit.env.InlineProtocolEnv;
 
 public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeDel

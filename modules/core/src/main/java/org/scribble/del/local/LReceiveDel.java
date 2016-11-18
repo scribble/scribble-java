@@ -8,9 +8,9 @@ import org.scribble.model.endpoint.actions.LMReceive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
+import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 public class LReceiveDel extends LMessageTransferDel

@@ -3,15 +3,15 @@ package org.scribble.del;
 import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.ExplicitCorrelationChecker;
-import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.ExplicitCorrelationEnv;
 import org.scribble.visit.env.UnguardedChoiceDoEnv;
 import org.scribble.visit.env.UnfoldingEnv;
-import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.wf.ExplicitCorrelationChecker;
+import org.scribble.visit.wf.WFChoiceChecker;
+import org.scribble.visit.wf.env.WFChoiceEnv;
 
 public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel implements InteractionNodeDel
 {

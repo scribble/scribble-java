@@ -8,10 +8,10 @@ import org.scribble.ast.HeaderParamDeclList;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.visit.JobContext;
-import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.wf.NameDisambiguator;
 
 public abstract class DoArgListDel extends ScribDelBase
 {

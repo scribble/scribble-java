@@ -19,6 +19,7 @@ import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
@@ -26,11 +27,10 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
-import org.scribble.visit.JobContext;
-import org.scribble.visit.ProjectedRoleDeclFixer;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.context.ProjectedRoleDeclFixer;
+import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 
 public class LDoDel extends DoDel implements LSimpleInteractionNodeDel

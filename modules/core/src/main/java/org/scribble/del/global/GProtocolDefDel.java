@@ -17,8 +17,8 @@ import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.context.Projector;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ProjectionEnv;
 

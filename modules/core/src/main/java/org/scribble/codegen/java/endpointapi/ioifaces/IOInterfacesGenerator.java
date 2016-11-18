@@ -24,6 +24,7 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
+import org.scribble.main.JobContext;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
@@ -31,7 +32,6 @@ import org.scribble.model.endpoint.EndpointState.Kind;
 import org.scribble.model.endpoint.actions.LMIOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.JobContext;
 
 // Cf. StateChannelApiGenerator
 // TODO: concrete state channel "to" casts for supertype i/f's (the info is there in the Java type hierachy though)

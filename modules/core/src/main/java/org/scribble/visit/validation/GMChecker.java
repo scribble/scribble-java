@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.visit.validation;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +16,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointFSM;
 import org.scribble.model.endpoint.EndpointGraph;
@@ -29,10 +30,11 @@ import org.scribble.model.global.GMStateErrors;
 import org.scribble.model.global.actions.GMIOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.context.ModuleContextVisitor;
 
-public class GlobalModelChecker extends ModuleContextVisitor
+public class GMChecker extends ModuleContextVisitor
 {
-	public GlobalModelChecker(Job job)
+	public GMChecker(Job job)
 	{
 		super(job);
 	}

@@ -11,7 +11,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.AmbigName;
-import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.wf.NameDisambiguator;
 
 public class AmbigNameNodeDel extends ScribDelBase
 {

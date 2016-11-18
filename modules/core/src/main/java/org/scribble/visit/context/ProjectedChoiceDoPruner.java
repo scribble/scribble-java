@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.visit.context;
 
 import java.util.List;
 
@@ -12,6 +12,8 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.del.ModuleDel;
+import org.scribble.main.Job;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.env.UnguardedChoiceDoEnv;
 

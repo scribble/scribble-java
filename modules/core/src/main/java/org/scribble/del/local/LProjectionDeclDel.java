@@ -13,7 +13,7 @@ import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ProjectedRoleDeclFixer;
+import org.scribble.visit.context.ProjectedRoleDeclFixer;
 
 public class LProjectionDeclDel extends LProtocolDeclDel
 {

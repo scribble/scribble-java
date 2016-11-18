@@ -4,7 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LMessageTransfer;
 import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.ExplicitCorrelationChecker;
+import org.scribble.visit.wf.ExplicitCorrelationChecker;
 
 public abstract class LMessageTransferDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {

@@ -7,8 +7,8 @@ import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.actions.LMWrapClient;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LWrapClientDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
 {

@@ -1,6 +1,7 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.main.Job;
 import org.scribble.visit.env.DummyEnv;
 
 public abstract class NoEnvOffsetSubprotocolVisitor extends OffsetSubprotocolVisitor<DummyEnv>
