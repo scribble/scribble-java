@@ -1,4 +1,4 @@
-package org.scribble.model.local.actions;
+package org.scribble.model.endpoint.actions;
 
 import org.scribble.model.global.actions.GMReceive;
 import org.scribble.sesstype.Payload;

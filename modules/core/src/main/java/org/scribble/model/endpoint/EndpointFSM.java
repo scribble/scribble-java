@@ -1,10 +1,10 @@
-package org.scribble.model.local;
+package org.scribble.model.endpoint;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.model.local.EndpointState.Kind;
-import org.scribble.model.local.actions.LMIOAction;
+import org.scribble.model.endpoint.EndpointState.Kind;
+import org.scribble.model.endpoint.actions.LMIOAction;
 
 public class EndpointFSM extends EndpointGraph
 {

@@ -1,4 +1,4 @@
-package org.scribble.model.local;
+package org.scribble.model.endpoint;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.main.ScribbleException;
-import org.scribble.model.ModelState;
-import org.scribble.model.local.actions.LMIOAction;
+import org.scribble.model.MState;
+import org.scribble.model.endpoint.actions.LMIOAction;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.RecVar;
 
 // http://sandbox.kidstrythisathome.com/erdos/
-public class EndpointState extends ModelState<LMIOAction, EndpointState, Local>
+public class EndpointState extends MState<LMIOAction, EndpointState, Local>
 {
 	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL, ACCEPT, WRAP_SERVER, //CONNECT
 		}  // CONNECTION should just be sync?
@@ -56,7 +56,7 @@ public class EndpointState extends ModelState<LMIOAction, EndpointState, Local>
 	{
 		EndpointState init = this.clone();
 		
-		EndpointState term = ModelState.getTerminal(init);
+		EndpointState term = MState.getTerminal(init);
 		Set<EndpointState> seen = new HashSet<>();
 		Set<EndpointState> todo = new LinkedHashSet<>();
 		todo.add(init);
@@ -177,7 +177,7 @@ public class EndpointState extends ModelState<LMIOAction, EndpointState, Local>
 		//EndpointState succ = take(a);
 		Set<EndpointState> all = new HashSet<>();
 		all.add(succ);
-		all.addAll(ModelState.getAllReachable(succ));
+		all.addAll(MState.getAllReachable(succ));
 		Map<Integer, EndpointState> map = new HashMap<>();  // original s.id -> clones
 		for (EndpointState s : all)
 		{

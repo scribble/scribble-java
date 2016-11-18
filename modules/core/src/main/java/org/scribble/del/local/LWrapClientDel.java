@@ -5,7 +5,7 @@ import org.scribble.ast.local.LWrapClient;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.actions.LMWrapClient;
+import org.scribble.model.endpoint.actions.LMWrapClient;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;

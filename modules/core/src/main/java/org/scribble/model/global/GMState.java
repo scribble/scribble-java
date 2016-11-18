@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.LMReceive;
+import org.scribble.model.endpoint.actions.LMSend;
 import org.scribble.model.global.actions.GMIOAction;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.actions.LMIOAction;
-import org.scribble.model.local.actions.LMReceive;
-import org.scribble.model.local.actions.LMSend;
 import org.scribble.sesstype.name.Role;
 
 

@@ -4,7 +4,7 @@ import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LReceive;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.actions.LMReceive;
+import org.scribble.model.endpoint.actions.LMReceive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;

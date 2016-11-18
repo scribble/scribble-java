@@ -13,7 +13,7 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.EndpointState;
+import org.scribble.model.endpoint.EndpointState;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceDoPruner;

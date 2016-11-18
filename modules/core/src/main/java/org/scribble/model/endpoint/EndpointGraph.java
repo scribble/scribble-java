@@ -1,4 +1,4 @@
-package org.scribble.model.local;
+package org.scribble.model.endpoint;
 
 
 public class EndpointGraph

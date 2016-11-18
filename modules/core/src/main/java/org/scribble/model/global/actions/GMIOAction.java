@@ -4,13 +4,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble.model.ModelAction;
+import org.scribble.model.MAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public abstract class GMIOAction extends ModelAction<Global>
+public abstract class GMIOAction extends MAction<Global>
 {
 	public final Role subj;
 

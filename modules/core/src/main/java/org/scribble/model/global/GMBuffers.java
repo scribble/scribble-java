@@ -9,15 +9,15 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.actions.LMAccept;
-import org.scribble.model.local.actions.LMConnect;
-import org.scribble.model.local.actions.LMDisconnect;
-import org.scribble.model.local.actions.LMIOAction;
-import org.scribble.model.local.actions.LMReceive;
-import org.scribble.model.local.actions.LMSend;
-import org.scribble.model.local.actions.LMWrapClient;
-import org.scribble.model.local.actions.LMWrapServer;
+import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.actions.LMAccept;
+import org.scribble.model.endpoint.actions.LMConnect;
+import org.scribble.model.endpoint.actions.LMDisconnect;
+import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.LMReceive;
+import org.scribble.model.endpoint.actions.LMSend;
+import org.scribble.model.endpoint.actions.LMWrapClient;
+import org.scribble.model.endpoint.actions.LMWrapServer;
 import org.scribble.sesstype.name.Role;
 
 public class GMBuffers

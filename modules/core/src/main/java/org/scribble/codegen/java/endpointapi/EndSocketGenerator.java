@@ -1,6 +1,6 @@
 package org.scribble.codegen.java.endpointapi;
 
-import org.scribble.model.local.EndpointState;
+import org.scribble.model.endpoint.EndpointState;
 
 public class EndSocketGenerator extends ScribSocketGenerator
 {

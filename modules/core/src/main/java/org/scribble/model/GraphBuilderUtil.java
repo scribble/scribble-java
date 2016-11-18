@@ -16,7 +16,7 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of S
-public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
+public abstract class GraphBuilderUtil<A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
 {
 	private final Map<RecVar, Deque<S>> recvars = new HashMap<>();  // Should be a stack of S?
 	private final Map<RecVar, Deque<Set<A>>> enacting = new HashMap<>();  // first action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
@@ -32,7 +32,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	protected S entry;
 	protected S exit;  // Good for merges (otherwise have to generate dummy merge nodes)
 	
-	public GraphBuilder()
+	public GraphBuilderUtil()
 	{
 		clear();
 	}

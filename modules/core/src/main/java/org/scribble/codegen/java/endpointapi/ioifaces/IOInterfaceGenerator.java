@@ -2,7 +2,7 @@ package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelTypeGenerator;
-import org.scribble.model.local.EndpointState;
+import org.scribble.model.endpoint.EndpointState;
 
 public abstract class IOInterfaceGenerator extends StateChannelTypeGenerator
 {

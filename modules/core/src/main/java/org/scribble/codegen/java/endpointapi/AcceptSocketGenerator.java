@@ -4,8 +4,8 @@ import java.util.Set;
 
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.actions.LMIOAction;
+import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.actions.LMIOAction;
 
 public class AcceptSocketGenerator extends ScribSocketGenerator
 {

@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.main.ScribbleException;
+import org.scribble.model.endpoint.AutParser;
+import org.scribble.model.endpoint.EndpointGraph;
 import org.scribble.model.global.GMState;
-import org.scribble.model.local.AutParser;
-import org.scribble.model.local.EndpointGraph;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;

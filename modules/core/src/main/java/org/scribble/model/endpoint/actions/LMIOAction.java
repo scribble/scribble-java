@@ -1,13 +1,13 @@
-package org.scribble.model.local.actions;
+package org.scribble.model.endpoint.actions;
 
-import org.scribble.model.ModelAction;
+import org.scribble.model.MAction;
 import org.scribble.model.global.actions.GMIOAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public abstract class LMIOAction extends ModelAction<Local>
+public abstract class LMIOAction extends MAction<Local>
 {
 	public final Role peer;
 	/*public final MessageId<?> mid;

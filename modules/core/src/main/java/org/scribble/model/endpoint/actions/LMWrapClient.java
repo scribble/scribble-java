@@ -1,40 +1,40 @@
-package org.scribble.model.local.actions;
+package org.scribble.model.endpoint.actions;
 
-import org.scribble.model.global.actions.GMWrapServer;
+import org.scribble.model.global.actions.GMWrapClient;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
 // Duplicated from Disconnect
-public class LMWrapServer extends LMIOAction
+public class LMWrapClient extends LMIOAction
 {
-	public LMWrapServer(Role peer)
+	public LMWrapClient(Role peer)
 	{
 		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
-	public LMWrapClient toDual(Role self)
+	public LMWrapServer toDual(Role self)
 	{
-		return new LMWrapClient(self);
+		return new LMWrapServer(self);
 	}
 
 	@Override
-	public GMWrapServer toGlobal(Role self)
+	public GMWrapClient toGlobal(Role self)
 	{
-		return new GMWrapServer(self, this.peer);
+		return new GMWrapClient(self, this.peer);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 1063;
+		int hash = 1061;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 	
 	@Override
-	public boolean isWrapServer()
+	public boolean isWrapClient()
 	{
 		return true;
 	}
@@ -46,21 +46,22 @@ public class LMWrapServer extends LMIOAction
 		{
 			return true;
 		}
-		if (!(o instanceof LMWrapServer))
+		if (!(o instanceof LMWrapClient))
 		{
 			return false;
 		}
-		return ((LMWrapServer) o).canEqual(this) && super.equals(o);
+		return ((LMWrapClient) o).canEqual(this) && super.equals(o);
 	}
 
+	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof LMWrapServer;
+		return o instanceof LMWrapClient;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "(??)";
+		return "(!!)";
 	}
 }

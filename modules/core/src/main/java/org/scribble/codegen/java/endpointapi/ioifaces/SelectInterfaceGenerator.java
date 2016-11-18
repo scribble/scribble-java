@@ -5,8 +5,8 @@ import java.util.Map;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.actions.LMIOAction;
+import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.actions.LMIOAction;
 
 public class SelectInterfaceGenerator extends IOStateInterfaceGenerator
 {

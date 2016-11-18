@@ -18,7 +18,7 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 
 //public class ModelState<K extends ProtocolKind>
-public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
+public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
 {
 	private static int count = 0;  // FIXME: factor out with ModelAction
 	
@@ -32,11 +32,11 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	protected final List<A> actions;
 	protected final List<S> succs;
 	
-	public ModelState(Set<RecVar> labs)  // Immutable singleton node
+	public MState(Set<RecVar> labs)  // Immutable singleton node
 	//public GModelState(Set<String> labs)  // Immutable singleton node
 	//public GModelState()  // Immutable singleton node
 	{
-		this.id = ModelState.count++;
+		this.id = MState.count++;
 		this.labs = new HashSet<>(labs);
 		//this.edges = new LinkedHashMap<>();
 		this.actions = new LinkedList<>();
@@ -167,11 +167,11 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 		{
 			return true;
 		}
-		if (!(o instanceof ModelState))
+		if (!(o instanceof MState))
 		{
 			return false;
 		}
-		return this.id == ((ModelState<?, ?, ?>) o).id;  // Good to use id, due to edge mutability
+		return this.id == ((MState<?, ?, ?>) o).id;  // Good to use id, due to edge mutability
 	}
 	
 	public String toLongString()
@@ -197,7 +197,7 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	}
 
 	//protected final String toDot(Set<S> seen)
-	protected final String toDot(Set<ModelState<A, S, K>> seen)
+	protected final String toDot(Set<MState<A, S, K>> seen)
 	{
 		seen.add(this);
 		String dot = toNodeDot();
@@ -254,14 +254,14 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 		return "label=\"" + msg + "\"";
 	}
 
-	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
+	public static <A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
 			S getTerminal(S start)
 	{
 		if (start.isTerminal())
 		{
 			return start;
 		}
-		Set<S> terms = ModelState.getAllReachable(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
+		Set<S> terms = MState.getAllReachable(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
 		if (terms.size() > 1)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + terms);
@@ -293,8 +293,8 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	/*public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			Set<S> getAllReachable(S start)*/
 	@SuppressWarnings("unchecked")
-	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
-			Set<S> getAllReachable(ModelState<A, S, K> start)
+	public static <A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
+			Set<S> getAllReachable(MState<A, S, K> start)
 	{
 		Map<Integer, S> all = new HashMap<>();
 		Map<Integer, S> todo = new LinkedHashMap<>();
@@ -329,13 +329,13 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
+	public static <A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
 			//Set<A> getAllReachableActions(S start)
-			Set<A> getAllReachableActions(ModelState<A, S, K> start)
+			Set<A> getAllReachableActions(MState<A, S, K> start)
 	{
 		Set<S> all = new HashSet<>();
 		all.add((S) start);  // Suppressed: assumes ModelState subclass correctly instantiates S parameter
-		all.addAll(ModelState.getAllReachable(start));
+		all.addAll(MState.getAllReachable(start));
 		Set<A> as = new HashSet<>();
 		for (S s : all)
 		{
@@ -346,13 +346,13 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	
 	public String toAut()
 	{
-		Set<ModelState<A, S, K>> all = new HashSet<>();
+		Set<MState<A, S, K>> all = new HashSet<>();
 		all.add(this);
 		all.addAll(getAllReachable(this));
 		String aut = "";
 		int edges = 0;
 		Set<Integer> seen = new HashSet<>();
-		for (ModelState<A, S, K> s : all)
+		for (MState<A, S, K> s : all)
 		{
 			if (seen.contains(s.id))
 			{
@@ -374,15 +374,15 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	
 	public S clone()
 	{
-		Set<ModelState<A, S, K>> all = new HashSet<>();
+		Set<MState<A, S, K>> all = new HashSet<>();
 		all.add(this);
-		all.addAll(ModelState.getAllReachable(this));
+		all.addAll(MState.getAllReachable(this));
 		Map<Integer, S> map = new HashMap<>();  // original s.id -> clones
-		for (ModelState<A, S, K> s : all)
+		for (MState<A, S, K> s : all)
 		{
 			map.put(s.id, newState(s.labs));
 		}
-		for (ModelState<A, S, K> s : all)
+		for (MState<A, S, K> s : all)
 		{
 			Iterator<A> as = s.getAllTakeable().iterator();
 			Iterator<S> ss = s.getSuccessors().iterator();
@@ -397,9 +397,9 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 		return map.get(this.id);
 	}
 	
-	public boolean canReach(ModelState<A, S, K> s)
+	public boolean canReach(MState<A, S, K> s)
 	{
-		return ModelState.getAllReachable(this).contains(s);
+		return MState.getAllReachable(this).contains(s);
 	}
 	
 	/*protected Map<ModelAction, ModelState> getEdges()

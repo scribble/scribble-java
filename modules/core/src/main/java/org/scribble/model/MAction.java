@@ -5,7 +5,7 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public abstract class ModelAction<K extends ProtocolKind>
+public abstract class MAction<K extends ProtocolKind>
 {
 	/*private static int count = 0;
 	
@@ -15,7 +15,7 @@ public abstract class ModelAction<K extends ProtocolKind>
 	public final MessageId<?> mid;
 	public final Payload payload;  // EMPTY_PAYLOAD for MessageSigNames
 	
-	public ModelAction(Role obj, MessageId<?> mid, Payload payload)
+	public MAction(Role obj, MessageId<?> mid, Payload payload)
 	{
 		//this.id = ModelAction.count++;
 
@@ -78,11 +78,11 @@ public abstract class ModelAction<K extends ProtocolKind>
 		{
 			return true;
 		}
-		if (!(o instanceof ModelAction))
+		if (!(o instanceof MAction))
 		{
 			return false;
 		}
-		ModelAction<?> a = (ModelAction<?>) o;  // Refactor as "compatible"
+		MAction<?> a = (MAction<?>) o;  // Refactor as "compatible"
 		return a.canEqual(this) && 
 				this.obj.equals(a.obj) && this.mid.equals(a.mid) && this.payload.equals(a.payload);
 		//return this.id == ((ModelAction<?>) o).id;

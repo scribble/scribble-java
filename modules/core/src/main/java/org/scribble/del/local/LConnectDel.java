@@ -5,7 +5,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LConnect;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.actions.LMConnect;
+import org.scribble.model.endpoint.actions.LMConnect;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
