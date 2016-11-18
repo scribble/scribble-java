@@ -14,12 +14,15 @@ module Test;
 
 // CHECKME: playing multiple roles in the same session instance (but what is the concrete notion of "process id"? -- if actually try to use, e.g., ThreadID, then have to track ownership of endpoints)
 
+// - API gen for connection-with-message
+// - API gen for shared channel passing
+
 
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
 	connect B to C;
-	connect C to A;  // FIXME: should be correlation warning (and refactor error as warning)
+	connect C to A;  // Testing accept-correlation check
 }
 
 /*
