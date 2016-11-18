@@ -18,8 +18,8 @@ import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
+import org.scribble.model.global.GMState;
 import org.scribble.model.local.EndpointGraph;
-import org.scribble.model.wf.WFState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -268,7 +268,7 @@ public class CommandLine //implements Runnable
 		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			WFState model = getGlobalModel(job, fullname);
+			GMState model = getGlobalModel(job, fullname);
 			System.out.println("\n" + model.toDot());  // FIXME: make a global equiv to EndpointGraph
 		}
 	}
@@ -281,7 +281,7 @@ public class CommandLine //implements Runnable
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			String png = args[i+1];
-			WFState model = getGlobalModel(job, fullname);
+			GMState model = getGlobalModel(job, fullname);
 			runDot(model.toDot(), png);
 		}
 	}
@@ -295,15 +295,15 @@ public class CommandLine //implements Runnable
 		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			WFState model = getGlobalModel(job, fullname);
+			GMState model = getGlobalModel(job, fullname);
 			System.out.println("\n" + model.toAut());  // FIXME: make a global equiv to EndpointGraph
 		}
 	}
 	
-	private static WFState getGlobalModel(Job job, GProtocolName fullname) throws ScribbleException
+	private static GMState getGlobalModel(Job job, GProtocolName fullname) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		WFState model = jcontext.getGlobalModel(fullname);
+		GMState model = jcontext.getGlobalModel(fullname);
 		if (model == null)
 		{
 			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure

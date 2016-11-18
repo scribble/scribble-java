@@ -1,11 +1,11 @@
-package org.scribble.model.local;
+package org.scribble.model.local.actions;
 
-import org.scribble.model.global.GReceive;
+import org.scribble.model.global.actions.GMReceive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public class Receive extends IOAction
+public class LMReceive extends LMIOAction
 {
 	/*protected static final Set<Receive> RECEIVES = new HashSet<>();
 	
@@ -28,26 +28,26 @@ public class Receive extends IOAction
 		super(peer, mid, payload);
 	}*/
 
-	public Receive(Role peer, MessageId<?> mid, Payload payload)
+	public LMReceive(Role peer, MessageId<?> mid, Payload payload)
 	{
 		super(peer, mid, payload);
 		//Receive.RECEIVES.add(this);
 	}
 	
 	@Override
-	public Send toDual(Role self)
+	public LMSend toDual(Role self)
 	{
-		return new Send(self, this.mid, this.payload);
+		return new LMSend(self, this.mid, this.payload);
 		//return Send.get(self, this.mid, this.payload);
 	}
 
 	@Override
 	//public GModelAction toGlobal(Role self)
-	public GReceive toGlobal(Role self)
+	public GMReceive toGlobal(Role self)
 	{
 		//return new GModelAction(this.peer, self, this.mid, this.payload);
 		////return GModelAction.get(this.peer, self, this.mid, this.payload);
-		return new GReceive(self, this.peer, this.mid, this.payload);
+		return new GMReceive(self, this.peer, this.mid, this.payload);
 
 	}
 	
@@ -72,16 +72,16 @@ public class Receive extends IOAction
 		{
 			return true;
 		}
-		if (!(o instanceof Receive))
+		if (!(o instanceof LMReceive))
 		{
 			return false;
 		}
-		return ((Receive) o).canEqual(this) && super.equals(o);
+		return ((LMReceive) o).canEqual(this) && super.equals(o);
 	}
 
 	public boolean canEqual(Object o)
 	{
-		return o instanceof Receive;
+		return o instanceof LMReceive;
 	}
 
 	@Override

@@ -1,28 +1,28 @@
-package org.scribble.model.local;
+package org.scribble.model.local.actions;
 
-import org.scribble.model.global.GWrapServer;
+import org.scribble.model.global.actions.GMWrapServer;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
 // Duplicated from Disconnect
-public class WrapServer extends IOAction
+public class LMWrapServer extends LMIOAction
 {
-	public WrapServer(Role peer)
+	public LMWrapServer(Role peer)
 	{
 		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
-	public WrapClient toDual(Role self)
+	public LMWrapClient toDual(Role self)
 	{
-		return new WrapClient(self);
+		return new LMWrapClient(self);
 	}
 
 	@Override
-	public GWrapServer toGlobal(Role self)
+	public GMWrapServer toGlobal(Role self)
 	{
-		return new GWrapServer(self, this.peer);
+		return new GMWrapServer(self, this.peer);
 	}
 	
 	@Override
@@ -46,16 +46,16 @@ public class WrapServer extends IOAction
 		{
 			return true;
 		}
-		if (!(o instanceof WrapServer))
+		if (!(o instanceof LMWrapServer))
 		{
 			return false;
 		}
-		return ((WrapServer) o).canEqual(this) && super.equals(o);
+		return ((LMWrapServer) o).canEqual(this) && super.equals(o);
 	}
 
 	public boolean canEqual(Object o)
 	{
-		return o instanceof WrapServer;
+		return o instanceof LMWrapServer;
 	}
 
 	@Override

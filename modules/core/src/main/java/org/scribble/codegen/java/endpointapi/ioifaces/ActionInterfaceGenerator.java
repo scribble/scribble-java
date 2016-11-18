@@ -9,17 +9,17 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Receive;
+import org.scribble.model.local.actions.LMIOAction;
+import org.scribble.model.local.actions.LMReceive;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.PayloadType;
 
 public class ActionInterfaceGenerator extends IOInterfaceGenerator
 {
-	private final IOAction a;
+	private final LMIOAction a;
 	private final InterfaceBuilder ib = new InterfaceBuilder();
 
-	public ActionInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, IOAction a)
+	public ActionInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, LMIOAction a)
 	{
 		super(apigen, curr);
 		this.a = a;
@@ -40,7 +40,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		this.ib.addParameters("__Succ extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.a));
 		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with ReceiveSocketBuilder
 		//AbstractMethodBuilder mb2 = null;
-		if (this.a instanceof Receive)
+		if (this.a instanceof LMReceive)
 		{
 			/*if (this.curr.getAcceptable().size() > 1)
 			{
@@ -87,14 +87,14 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 	}
 	
 	// FIXME: curr unnecessary
-	public static String getActionInterfaceName(IOAction a)
+	public static String getActionInterfaceName(LMIOAction a)
 	{
 		/*String name = (a instanceof Receive)
 				? "In"
 				: "Out";*/
 		String name;
 		//if (curr.getAcceptable().iterator().next() instanceof Receive)
-		if (a instanceof Receive)
+		if (a instanceof LMReceive)
 		{
 			/*if (curr.getAcceptable().size() > 1)
 			{
@@ -113,7 +113,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		return name;
 	}
 
-	public static String getActionString(IOAction a)  // FIXME: peer not needed for inputs
+	public static String getActionString(LMIOAction a)  // FIXME: peer not needed for inputs
 	{
 		//String name = a.peer + "$" + a.mid;
 		String name = a.obj + "_" + a.mid;

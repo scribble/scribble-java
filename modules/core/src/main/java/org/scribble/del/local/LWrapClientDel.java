@@ -5,7 +5,7 @@ import org.scribble.ast.local.LWrapClient;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.WrapClient;
+import org.scribble.model.local.actions.LMWrapClient;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
@@ -18,7 +18,7 @@ public class LWrapClientDel extends ConnectionActionDel implements LSimpleIntera
 		LWrapClient lc = (LWrapClient) visited;
 		RoleNode dest = lc.dest;
 		Role peer = dest.toName();
-		graph.builder.addEdge(graph.builder.getEntry(), new WrapClient(peer), graph.builder.getExit());
+		graph.builder.addEdge(graph.builder.getEntry(), new LMWrapClient(peer), graph.builder.getExit());
 		return (LWrapClient) super.leaveEndpointGraphBuilding(parent, child, graph, lc);
 	}
 

@@ -12,7 +12,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
+import org.scribble.model.local.actions.LMIOAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.Role;
@@ -78,7 +78,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		fb2.addModifiers(JavaBuilder.PRIVATE, JavaBuilder.FINAL);
 		fb2.setType(StateChannelApiGenerator.SCRIBMESSAGE_CLASS);
 
-		for (IOAction a : this.curr.getTakeable())
+		for (LMIOAction a : this.curr.getTakeable())
 		{
 			EndpointState succ = this.curr.take(a);
 			addReceiveMethod(this.cb, a, succ);
@@ -103,7 +103,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 	}
 
 	// Same as in ReceiveSocketGenerator
-	private MethodBuilder makeReceiveHeader(ClassBuilder cb, IOAction a, EndpointState succ) throws ScribbleException
+	private MethodBuilder makeReceiveHeader(ClassBuilder cb, LMIOAction a, EndpointState succ) throws ScribbleException
 	{
 		MethodBuilder mb = cb.newMethod();
 		ReceiveSocketGenerator.setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -111,7 +111,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		return mb;
 	}
 
-	private void addReceiveMethod(ClassBuilder cb, IOAction a, EndpointState succ) throws ScribbleException
+	private void addReceiveMethod(ClassBuilder cb, LMIOAction a, EndpointState succ) throws ScribbleException
 	{
 		Module main = this.apigen.getMainModule();
 
@@ -132,7 +132,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		addReturnNextSocket(mb, succ);
 	}
 
-	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, IOAction a, EndpointState succ) throws ScribbleException
+	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, LMIOAction a, EndpointState succ) throws ScribbleException
 	{
 		MethodBuilder mb = cb.newMethod();
 		setCaseReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -140,7 +140,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		return mb;
 	}
 
-	private void addCaseReceiveMethod(ClassBuilder cb, IOAction a, EndpointState succ) throws ScribbleException
+	private void addCaseReceiveMethod(ClassBuilder cb, LMIOAction a, EndpointState succ) throws ScribbleException
 	{
 		MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
 		String ln = JavaBuilder.RETURN + " " + "receive(" + getSessionApiRoleConstant(a.obj) + ", ";
@@ -165,7 +165,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		mb.addBodyLine(ln + ");");
 	}
 
-	private void addCaseReceiveDiscardMethod(ClassBuilder cb, IOAction a, EndpointState succ)
+	private void addCaseReceiveDiscardMethod(ClassBuilder cb, LMIOAction a, EndpointState succ)
 	{
 		Module main = this.apigen.getMainModule();
 
@@ -198,7 +198,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 	}
 
 	// As for ReceiveSocket, but without peer param
-	public static void setCaseReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb) throws ScribbleException
+	public static void setCaseReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, LMIOAction a, MethodBuilder mb) throws ScribbleException
 	{
 		//final String ROLE_PARAM = "role";
 		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?
@@ -219,7 +219,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		}
 	}
 
-	public static void setCaseReceiveDiscardHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
+	public static void setCaseReceiveDiscardHeaderWithoutReturnType(StateChannelApiGenerator apigen, LMIOAction a, MethodBuilder mb)
 	{
 		// Duplicated from makeCaseReceiveHeader, without parameters
 		final String opClass = SessionApiGenerator.getOpClassName(a.mid);

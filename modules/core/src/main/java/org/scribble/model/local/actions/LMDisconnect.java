@@ -1,27 +1,27 @@
-package org.scribble.model.local;
+package org.scribble.model.local.actions;
 
-import org.scribble.model.global.GDisconnect;
+import org.scribble.model.global.actions.GMDisconnect;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public class Disconnect extends IOAction
+public class LMDisconnect extends LMIOAction
 {
-	public Disconnect(Role peer)
+	public LMDisconnect(Role peer)
 	{
 		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GDisconnect.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
-	public Disconnect toDual(Role self)
+	public LMDisconnect toDual(Role self)
 	{
-		return new Disconnect(self);  // return this?
+		return new LMDisconnect(self);  // return this?
 	}
 
 	@Override
-	public GDisconnect toGlobal(Role self)
+	public GMDisconnect toGlobal(Role self)
 	{
-		return new GDisconnect(self, this.peer);
+		return new GMDisconnect(self, this.peer);
 	}
 	
 	@Override
@@ -45,17 +45,17 @@ public class Disconnect extends IOAction
 		{
 			return true;
 		}
-		if (!(o instanceof Disconnect))
+		if (!(o instanceof LMDisconnect))
 		{
 			return false;
 		}
-		return ((Disconnect) o).canEqual(this) && super.equals(o);
+		return ((LMDisconnect) o).canEqual(this) && super.equals(o);
 	}
 
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof Disconnect;
+		return o instanceof LMDisconnect;
 	}
 
 	@Override

@@ -1,20 +1,18 @@
-package org.scribble.model.global;
+package org.scribble.model.global.actions;
 
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public class GAccept extends GIOAction
+public class GMSend extends GMIOAction
 {
-	public GAccept(Role subj, Role obj, MessageId<?> mid, Payload payload)
-	//public GAccept(Role subj, Role obj)
+	public GMSend(Role subj, Role obj, MessageId<?> mid, Payload payload)
 	{
 		super(subj, obj, mid, payload);
-		//super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
-	public boolean isAccept()
+	public boolean isSend()
 	{
 		return true;
 	}
@@ -22,7 +20,7 @@ public class GAccept extends GIOAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 967;
+		int hash = 977;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -34,22 +32,22 @@ public class GAccept extends GIOAction
 		{
 			return true;
 		}
-		if (!(o instanceof GAccept))
+		if (!(o instanceof GMSend))
 		{
 			return false;
 		}
-		return ((GAccept) o).canEqual(this) && super.equals(o);
+		return ((GMSend) o).canEqual(this) && super.equals(o);
 	}
 
+	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GAccept;
+		return o instanceof GMSend;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		//return "??";
-		return "<<-";
+		return "!";
 	}
 }

@@ -1,13 +1,13 @@
-package org.scribble.model.local;
+package org.scribble.model.local.actions;
 
-import org.scribble.model.global.GConnect;
+import org.scribble.model.global.actions.GMConnect;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public class Connect extends IOAction
+public class LMConnect extends LMIOAction
 {
-	public Connect(Role peer, MessageId<?> mid, Payload payload)
+	public LMConnect(Role peer, MessageId<?> mid, Payload payload)
 	//public Connect(Role peer)
 	{
 		super(peer, mid, payload);
@@ -15,17 +15,17 @@ public class Connect extends IOAction
 	}
 	
 	@Override
-	public Accept toDual(Role self)
+	public LMAccept toDual(Role self)
 	{
 		//return new Accept(self);
-		return new Accept(self, this.mid, this.payload);
+		return new LMAccept(self, this.mid, this.payload);
 	}
 
 	@Override
-	public GConnect toGlobal(Role self)
+	public GMConnect toGlobal(Role self)
 	{
 		//return new GConnect(self, this.peer);
-		return new GConnect(self, this.peer, this.mid, this.payload);
+		return new GMConnect(self, this.peer, this.mid, this.payload);
 	}
 	
 	@Override
@@ -49,17 +49,17 @@ public class Connect extends IOAction
 		{
 			return true;
 		}
-		if (!(o instanceof Connect))
+		if (!(o instanceof LMConnect))
 		{
 			return false;
 		}
-		return ((Connect) o).canEqual(this) && super.equals(o);
+		return ((LMConnect) o).canEqual(this) && super.equals(o);
 	}
 
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof Connect;
+		return o instanceof LMConnect;
 	}
 
 	@Override

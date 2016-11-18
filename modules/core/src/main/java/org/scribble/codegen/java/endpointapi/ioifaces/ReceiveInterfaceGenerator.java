@@ -11,12 +11,12 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
+import org.scribble.model.local.actions.LMIOAction;
 import org.scribble.sesstype.name.GProtocolName;
 
 public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public ReceiveInterfaceGenerator(StateChannelApiGenerator apigen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr)
+	public ReceiveInterfaceGenerator(StateChannelApiGenerator apigen, Map<LMIOAction, InterfaceBuilder> actions, EndpointState curr)
 	{
 		super(apigen, actions, curr);
 	}
@@ -42,7 +42,7 @@ public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addAsyncDiscardMethod()
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
-		IOAction first = this.curr.getTakeable().iterator().next();
+		LMIOAction first = this.curr.getTakeable().iterator().next();
 
 		MethodBuilder mb = this.ib.newAbstractMethod();
 		ReceiveSocketGenerator.setAsyncDiscardHeaderWithoutReturnType(this.apigen, first, mb, InputFutureGenerator.getInputFutureName(this.apigen.getSocketClassName(this.curr)));

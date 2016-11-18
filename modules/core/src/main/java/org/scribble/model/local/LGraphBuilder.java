@@ -8,11 +8,12 @@ import java.util.Set;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.model.GraphBuilder;
+import org.scribble.model.local.actions.LMIOAction;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.RecVar;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of EndpointState
-public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
+public class LGraphBuilder extends GraphBuilder<LMIOAction, EndpointState, Local>
 {
 	/*private EndpointState root;
 	
@@ -31,13 +32,13 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 
 	}
 
-	public void removeEdgeFromPredecessor(EndpointState s, IOAction a) throws ScribbleException
+	public void removeEdgeFromPredecessor(EndpointState s, LMIOAction a) throws ScribbleException
 	{
 		super.removeEdgeFromPredecessor(s, a);
 	}
 	
 	// Choice-guarded continues (can be done in one pass)
-	public void addRecursionEdge(EndpointState s, IOAction a, EndpointState succ)
+	public void addRecursionEdge(EndpointState s, LMIOAction a, EndpointState succ)
 	{
 		super.addRecursionEdge(s, a, succ);
 	}
@@ -80,11 +81,11 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 			return;
 		}
 		seen.add(curr);
-		Iterator<IOAction> as = curr.getAllTakeable().iterator();
+		Iterator<LMIOAction> as = curr.getAllTakeable().iterator();
 		Iterator<EndpointState> ss = curr.getSuccessors().iterator();
 		while (as.hasNext())
 		{
-			IOAction a = as.next();
+			LMIOAction a = as.next();
 			EndpointState succ = ss.next();
 			EndpointState next;
 			next = getNext(map, succ);
@@ -100,7 +101,7 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 				IntermediateContinueEdge ice = (IntermediateContinueEdge) a;
 				//for (IOAction e : this.enactingMap.get(succ))
 				RecVar rv = new RecVar(ice.mid.toString());
-				for (IOAction e : this.enactingMap.get(succ).get(rv))
+				for (LMIOAction e : this.enactingMap.get(succ).get(rv))
 				{
 					for (EndpointState n : succ.takeAll(e))
 					{

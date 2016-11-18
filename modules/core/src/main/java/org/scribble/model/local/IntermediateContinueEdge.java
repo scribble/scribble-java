@@ -1,12 +1,13 @@
 package org.scribble.model.local;
 
-import org.scribble.model.global.GIOAction;
+import org.scribble.model.global.actions.GMIOAction;
+import org.scribble.model.local.actions.LMIOAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
-public class IntermediateContinueEdge extends IOAction
+public class IntermediateContinueEdge extends LMIOAction
 {
 	/*public IntermediateContinueEdge()
 	{
@@ -18,13 +19,13 @@ public class IntermediateContinueEdge extends IOAction
 	}
 	
 	@Override
-	public IOAction toDual(Role self)
+	public LMIOAction toDual(Role self)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}
 
 	@Override
-	public GIOAction toGlobal(Role self)
+	public GMIOAction toGlobal(Role self)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}

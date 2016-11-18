@@ -13,7 +13,7 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.IOAction;
+import org.scribble.model.local.actions.LMIOAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
@@ -23,10 +23,10 @@ public class InputFutureGenerator extends AuxStateChannelTypeGenerator
 {
 	protected static final String SCRIBFUTURE_CLASS = "org.scribble.net.ScribFuture";
 
-	private final IOAction a;
+	private final LMIOAction a;
 
 	// Pre: cb is ReceiveSocketBuilder
-	public InputFutureGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, IOAction a)
+	public InputFutureGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, LMIOAction a)
 	{
 		super(apigen, parent);
 		this.a = a;

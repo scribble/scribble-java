@@ -1,18 +1,18 @@
-package org.scribble.model.global;
+package org.scribble.model.global.actions;
 
 import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.Op;
+import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public class GDisconnect extends GIOAction
+public class GMReceive extends GMIOAction
 {
-	public GDisconnect(Role subj, Role obj)
+	public GMReceive(Role subj, Role obj, MessageId<?> mid, Payload payload)
 	{
-		super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(subj, obj, mid, payload);
 	}
 	
 	@Override
-	public boolean isConnect()
+	public boolean isReceive()
 	{
 		return true;
 	}
@@ -20,7 +20,7 @@ public class GDisconnect extends GIOAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 1013;
+		int hash = 977;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -32,23 +32,21 @@ public class GDisconnect extends GIOAction
 		{
 			return true;
 		}
-		if (!(o instanceof GDisconnect))
+		if (!(o instanceof GMReceive))
 		{
 			return false;
 		}
-		return ((GDisconnect) o).canEqual(this) && super.equals(o);
+		return ((GMReceive) o).canEqual(this) && super.equals(o);
 	}
 
-	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GDisconnect;
+		return o instanceof GMReceive;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		//return "\u00A1\u00A1abc";
-		return "-/-";
+		return "?";
 	}
 }

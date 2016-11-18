@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.main.ScribbleException;
+import org.scribble.model.global.GMState;
 import org.scribble.model.local.AutParser;
 import org.scribble.model.local.EndpointGraph;
-import org.scribble.model.wf.WFState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
@@ -34,7 +34,7 @@ public class JobContext
 
 	private final Map<LProtocolName, EndpointGraph> graphs = new HashMap<>();
 	//private final Map<GProtocolName, GModel> gmodels = new HashMap<>();
-	private final Map<GProtocolName, WFState> gmodels = new HashMap<>();
+	private final Map<GProtocolName, GMState> gmodels = new HashMap<>();
 	
 	private final Map<LProtocolName, EndpointGraph> unfair = new HashMap<>();
 	private final Map<LProtocolName, EndpointGraph> minimised = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
@@ -166,13 +166,13 @@ public class JobContext
 	}
 	
 	//public void addGlobalModel(GProtocolName fullname, GModel model)
-	public void addGlobalModel(GProtocolName fullname, WFState model)
+	public void addGlobalModel(GProtocolName fullname, GMState model)
 	{
 		this.gmodels.put(fullname, model);
 	}
 	
 	//public GModel getGlobalModel(GProtocolName fullname)
-	public WFState getGlobalModel(GProtocolName fullname)
+	public GMState getGlobalModel(GProtocolName fullname)
 	{
 		return this.gmodels.get(fullname);
 	}

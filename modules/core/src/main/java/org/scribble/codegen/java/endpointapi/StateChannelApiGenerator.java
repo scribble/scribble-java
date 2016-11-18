@@ -9,7 +9,7 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
+import org.scribble.model.local.actions.LMIOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -69,7 +69,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 	// Cf. IOInterfacesGenerator constructor
 	private static boolean skipIOInterfacesGeneration(EndpointState init)
 	{
-		Set<IOAction> as = EndpointState.getAllReachableActions(init);
+		Set<LMIOAction> as = EndpointState.getAllReachableActions(init);
 		if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 		{
 			return true;

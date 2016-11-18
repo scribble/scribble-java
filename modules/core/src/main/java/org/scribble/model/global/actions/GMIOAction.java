@@ -1,4 +1,4 @@
-package org.scribble.model.global;
+package org.scribble.model.global.actions;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -10,11 +10,11 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public abstract class GIOAction extends ModelAction<Global>
+public abstract class GMIOAction extends ModelAction<Global>
 {
 	public final Role subj;
 
-	public GIOAction(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public GMIOAction(Role subj, Role obj, MessageId<?> mid, Payload payload)
 	{
 		super(obj, mid, payload);
 		this.subj = subj; 
@@ -104,17 +104,17 @@ public abstract class GIOAction extends ModelAction<Global>
 		{
 			return true;
 		}
-		if (!(o instanceof GIOAction))
+		if (!(o instanceof GMIOAction))
 		{
 			return false;
 		}
-		GIOAction a = (GIOAction) o;
+		GMIOAction a = (GMIOAction) o;
 		return super.equals(o) && this.subj.equals(a.subj);
 	}
 
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GIOAction;
+		return o instanceof GMIOAction;
 	}
 }

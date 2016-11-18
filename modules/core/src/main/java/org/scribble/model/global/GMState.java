@@ -1,4 +1,4 @@
-package org.scribble.model.wf;
+package org.scribble.model.global;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,32 +10,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.model.global.GIOAction;
+import org.scribble.model.global.actions.GMIOAction;
 import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Receive;
-import org.scribble.model.local.Send;
+import org.scribble.model.local.actions.LMIOAction;
+import org.scribble.model.local.actions.LMReceive;
+import org.scribble.model.local.actions.LMSend;
 import org.scribble.sesstype.name.Role;
 
 
 // FIXME: make a WFModel front end class (cf. EndpointGraph)
 // FIXME: refactor to use ModelState?
 // FIXME: refactor to model.global package
-public class WFState
+public class GMState
 {
 	private static int count = 0;  // FIXME: factor out with ModelAction
 	
 	public final int id;
 
-	public final WFConfig config;
+	public final GMConfig config;
 	//protected final LinkedHashMap<GModelAction, WFState> edges;
 	//protected final List<GModelAction> actions;
-	protected final List<GIOAction> actions;
-	protected final List<WFState> succs;
+	protected final List<GMIOAction> actions;
+	protected final List<GMState> succs;
 	
-	public WFState(WFConfig config)
+	public GMState(GMConfig config)
 	{
-		this.id = WFState.count++;
+		this.id = GMState.count++;
 		this.config = config;
 		//this.edges = new LinkedHashMap<>();
 		this.actions = new LinkedList<>();
@@ -43,15 +43,15 @@ public class WFState
 	}
 	
 	//public void addEdge(GModelAction a, WFState s)
-	public void addEdge(GIOAction a, WFState s)
+	public void addEdge(GMIOAction a, GMState s)
 	{
 		//this.edges.put(a, s);
-		Iterator<GIOAction> as = this.actions.iterator();
-		Iterator<WFState> ss = this.succs.iterator();
+		Iterator<GMIOAction> as = this.actions.iterator();
+		Iterator<GMState> ss = this.succs.iterator();
 		while (as.hasNext())
 		{
-			GIOAction tmpa = as.next();
-			WFState tmps = ss.next();
+			GMIOAction tmpa = as.next();
+			GMState tmps = ss.next();
 			if (tmpa.equals(a) && tmps.equals(s))
 			{
 				return;
@@ -61,13 +61,13 @@ public class WFState
 		this.succs.add(s);
 	}
 	
-	public List<GIOAction> getActions()
+	public List<GMIOAction> getActions()
 	{
 		return Collections.unmodifiableList(this.actions);
 	}
 
 	//public Set<GModelAction> getAcceptable()
-	public Map<Role, List<IOAction>> getTakeable()  // NB: config semantics, not graph edges (cf, ModelState) -- getActions for that
+	public Map<Role, List<LMIOAction>> getTakeable()  // NB: config semantics, not graph edges (cf, ModelState) -- getActions for that
 	{
 		//return Collections.unmodifiableSet(this.edges.keySet());
 		return this.config.getTakeable();
@@ -79,12 +79,12 @@ public class WFState
 	}*/
 
 	//public WFState accept(GModelAction a)
-	public List<WFConfig> take(Role r, IOAction a)
+	public List<GMConfig> take(Role r, LMIOAction a)
 	{
 		return this.config.take(r, a);
 	}
 
-	public List<WFConfig> sync(Role r1, IOAction a1, Role r2, IOAction a2)
+	public List<GMConfig> sync(Role r1, LMIOAction a1, Role r2, LMIOAction a2)
 	{
 		return this.config.sync(r1, a1, r2, a2);
 	}
@@ -104,7 +104,7 @@ public class WFState
 		return null;
 	}*/
 
-	public List<WFState> getSuccessors()  // NB graph edges, not config semantics (cf, getAcceptable)
+	public List<GMState> getSuccessors()  // NB graph edges, not config semantics (cf, getAcceptable)
 	{
 		//return Collections.unmodifiableCollection(this.edges.values());
 		return Collections.unmodifiableList(this.succs);
@@ -118,14 +118,14 @@ public class WFState
 		return isTerminal() && !this.config.isSafeTermination();  // FIXME: is this characterisation more "complete"?  // FIXME: isTerminal not considering non-initiated accepts
 	}*/
 	
-	public WFStateErrors getErrors()
+	public GMStateErrors getErrors()
 	{
-		Map<Role, Receive> stuck = this.config.getStuckMessages();
+		Map<Role, LMReceive> stuck = this.config.getStuckMessages();
 		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
 		//Set<Set<Role>> waitfor = Collections.emptySet();
-		Map<Role, Set<Send>> orphs = this.config.getOrphanMessages();
+		Map<Role, Set<LMSend>> orphs = this.config.getOrphanMessages();
 		Map<Role, EndpointState> unfinished = this.config.getUnfinishedRoles();
-		return new WFStateErrors(stuck, waitfor, orphs, unfinished);
+		return new GMStateErrors(stuck, waitfor, orphs, unfinished);
 	}
 	
 	public boolean isTerminal()
@@ -149,11 +149,11 @@ public class WFState
 		{
 			return true;
 		}
-		if (!(o instanceof WFState))
+		if (!(o instanceof GMState))
 		{
 			return false;
 		}
-		return this.config.equals(((WFState) o).config);  
+		return this.config.equals(((GMState) o).config);  
 				// Not using id, cf. ModelState -- FIXME: use a factory pattern that associates unique states and ids? -- use id for hash, and make a separate "semantic equals"
 				// Care is needed if hashing, since mutable (currently better to manually use ids, c.f. ModelState)
 	}
@@ -175,7 +175,7 @@ public class WFState
 	}
 
 	//protected final String toDot(Set<S> seen)
-	protected final String toDot(Set<WFState> seen)
+	protected final String toDot(Set<GMState> seen)
 	{
 		seen.add(this);
 		String s = toNodeDot();
@@ -184,8 +184,8 @@ public class WFState
 		{
 			/*GModelAction msg = e.getKey();
 			WFState p = e.getValue();*/
-			GIOAction msg = this.actions.get(i);
-			WFState p = this.succs.get(i);
+			GMIOAction msg = this.actions.get(i);
+			GMState p = this.succs.get(i);
 			s += "\n" + toEdgeDot(msg, p);
 			if (!seen.contains(p))
 			{
@@ -221,7 +221,7 @@ public class WFState
 
 	// Override to change edge drawing from "this" as src
 	//protected String toEdgeDot(GModelAction msg, WFState next)
-	protected String toEdgeDot(GIOAction msg, WFState next)
+	protected String toEdgeDot(GMIOAction msg, GMState next)
 	{
 		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));
 	}
@@ -229,7 +229,7 @@ public class WFState
 	// "this" is the dest node of the edge
 	// Override to change edge drawing to "this" as dest
 	//protected String getEdgeLabel(GModelAction msg)
-	protected String getEdgeLabel(GIOAction msg)
+	protected String getEdgeLabel(GMIOAction msg)
 	{
 		return "label=\"" + msg + "\"";
 	}
@@ -257,17 +257,17 @@ public class WFState
 		}
 	}*/
 	
-	public static Set<WFState> getAllReachable(WFState start)
+	public static Set<GMState> getAllReachable(GMState start)
 	{
-		Map<Integer, WFState> all = new HashMap<>();
-		Map<Integer, WFState> todo = new LinkedHashMap<>();
+		Map<Integer, GMState> all = new HashMap<>();
+		Map<Integer, GMState> todo = new LinkedHashMap<>();
 		todo.put(start.id, start);  // Suppressed: assumes ModelState subclass correctly instantiates S parameter
 		while (!todo.isEmpty())
 		{
-			Iterator<WFState> i = todo.values().iterator();
-			WFState next = i.next();
+			Iterator<GMState> i = todo.values().iterator();
+			GMState next = i.next();
 			todo.remove(next.id);
-			for (WFState s : next.getSuccessors())
+			for (GMState s : next.getSuccessors())
 			{
 				if (!all.containsKey(s.id))
 				{	
@@ -284,25 +284,25 @@ public class WFState
 
 	public String toAut()
 	{
-		Set<WFState> all = new HashSet<>();
+		Set<GMState> all = new HashSet<>();
 		all.add(this);
 		all.addAll(getAllReachable(this));
 		String aut = "";
 		int edges = 0;
 		Set<Integer> seen = new HashSet<>();
-		for (WFState s : all)
+		for (GMState s : all)
 		{
 			if (seen.contains(s.id))
 			{
 				continue;
 			}
 			seen.add(s.id);
-			Iterator<GIOAction> as = s.getActions().iterator();
-			Iterator<WFState> ss = s.getSuccessors().iterator();
+			Iterator<GMIOAction> as = s.getActions().iterator();
+			Iterator<GMState> ss = s.getSuccessors().iterator();
 			for (; as.hasNext(); edges++)
 			{
-				GIOAction a = as.next();
-				WFState succ = ss.next();
+				GMIOAction a = as.next();
+				GMState succ = ss.next();
 				String msg = a.toStringWithMessageIdHack();  // HACK
 				aut += "\n(" + s.id + ",\"" + msg + "\"," + succ.id + ")";
 			}

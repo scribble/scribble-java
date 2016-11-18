@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.model.local.EndpointState.Kind;
+import org.scribble.model.local.actions.LMIOAction;
 
 public class EndpointFSM extends EndpointGraph
 {
@@ -51,18 +52,18 @@ public class EndpointFSM extends EndpointGraph
 		return this.curr.getStateKind();
 	}
 
-	public List<EndpointFSM> takeAll(IOAction a)
+	public List<EndpointFSM> takeAll(LMIOAction a)
 	{
 		//return this.curr.takeAll(a).stream().map((s) -> new EndpointFSM(this.init, this.term, s)).collect(Collectors.toList());
 		return this.curr.takeAll(a).stream().map((s) -> new EndpointFSM(this.init, this.term, s)).collect(Collectors.toList());
 	}
 
-	public List<IOAction> getAllTakeable()
+	public List<LMIOAction> getAllTakeable()
 	{
 		return this.curr.getAllTakeable();
 	}
 	
-	public boolean isTakeable(IOAction a)
+	public boolean isTakeable(LMIOAction a)
 	{
 		return this.curr.isTakeable(a);
 	}

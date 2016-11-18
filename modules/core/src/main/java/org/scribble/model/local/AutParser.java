@@ -13,6 +13,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.model.local.actions.LMAccept;
+import org.scribble.model.local.actions.LMConnect;
+import org.scribble.model.local.actions.LMDisconnect;
+import org.scribble.model.local.actions.LMIOAction;
+import org.scribble.model.local.actions.LMReceive;
+import org.scribble.model.local.actions.LMSend;
+import org.scribble.model.local.actions.LMWrapClient;
+import org.scribble.model.local.actions.LMWrapServer;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageId;
@@ -145,7 +153,7 @@ public class AutParser
 	
 	// Cf. getCommSymbol of IOActions
 	// FIXME: simply do a match for getCommSymbol?
-	private static IOAction parseIOAction(String a)
+	private static LMIOAction parseIOAction(String a)
 	{
 		String peer;
 		String action;
@@ -224,36 +232,36 @@ public class AutParser
 			case "!":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new Send(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames? -- currently OK, treated as empty payload (cf. ModelAction)
+				return new LMSend(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames? -- currently OK, treated as empty payload (cf. ModelAction)
 			}
 			case "?":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new Receive(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
+				return new LMReceive(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
 			}
 			case "!!":
 			{
 				//return new Connect(new Role(peer));
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new Connect(new Role(peer), getMessageIdHack(msg), payload);
+				return new LMConnect(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "??":
 			{
 				//return new Accept(new Role(peer));
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new Accept(new Role(peer), getMessageIdHack(msg), payload);
+				return new LMAccept(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "(!!)":
 			{				
-				return new WrapClient(new Role(peer));
+				return new LMWrapClient(new Role(peer));
 			}
 			case "(??)":
 			{				
-				return new WrapServer(new Role(peer));
+				return new LMWrapServer(new Role(peer));
 			}
 			case "-/-":
 			{				
-				return new Disconnect(new Role(peer));
+				return new LMDisconnect(new Role(peer));
 			}
 			default:
 			{

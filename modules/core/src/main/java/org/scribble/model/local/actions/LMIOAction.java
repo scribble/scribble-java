@@ -1,19 +1,19 @@
-package org.scribble.model.local;
+package org.scribble.model.local.actions;
 
 import org.scribble.model.ModelAction;
-import org.scribble.model.global.GIOAction;
+import org.scribble.model.global.actions.GMIOAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public abstract class IOAction extends ModelAction<Local>
+public abstract class LMIOAction extends ModelAction<Local>
 {
 	public final Role peer;
 	/*public final MessageId<?> mid;
 	public final Payload payload;  // Empty for MessageSigNames*/
 	
-	public IOAction(Role peer, MessageId<?> mid, Payload payload)
+	public LMIOAction(Role peer, MessageId<?> mid, Payload payload)
 	{
 		/*this.mid = mid;
 		this.payload = payload;*/
@@ -21,10 +21,10 @@ public abstract class IOAction extends ModelAction<Local>
 		this.peer = peer;
 	}
 	
-	public abstract IOAction toDual(Role self);
+	public abstract LMIOAction toDual(Role self);
 
 	//public abstract GModelAction toGlobal(Role self);
-	public abstract GIOAction toGlobal(Role self);
+	public abstract GMIOAction toGlobal(Role self);
 
 	public boolean isSend()
 	{

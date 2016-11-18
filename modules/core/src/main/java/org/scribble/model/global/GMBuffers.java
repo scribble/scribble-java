@@ -1,4 +1,4 @@
-package org.scribble.model.wf;
+package org.scribble.model.global;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,23 +9,23 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.model.local.Accept;
-import org.scribble.model.local.Connect;
-import org.scribble.model.local.Disconnect;
 import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Receive;
-import org.scribble.model.local.Send;
-import org.scribble.model.local.WrapClient;
-import org.scribble.model.local.WrapServer;
+import org.scribble.model.local.actions.LMAccept;
+import org.scribble.model.local.actions.LMConnect;
+import org.scribble.model.local.actions.LMDisconnect;
+import org.scribble.model.local.actions.LMIOAction;
+import org.scribble.model.local.actions.LMReceive;
+import org.scribble.model.local.actions.LMSend;
+import org.scribble.model.local.actions.LMWrapClient;
+import org.scribble.model.local.actions.LMWrapServer;
 import org.scribble.sesstype.name.Role;
 
-public class WFBuffers
+public class GMBuffers
 {
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();
-	private final Map<Role, Map<Role, Send>> buffs = new HashMap<>();  // dest -> src -> msg
+	private final Map<Role, Map<Role, LMSend>> buffs = new HashMap<>();  // dest -> src -> msg
 
-	public WFBuffers(Set<Role> roles, boolean implicit)
+	public GMBuffers(Set<Role> roles, boolean implicit)
 	{
 		this(roles);
 		if (implicit)
@@ -45,12 +45,12 @@ public class WFBuffers
 		}
 	}
 
-	public WFBuffers(Set<Role> roles)
+	public GMBuffers(Set<Role> roles)
 	{
 		// FIXME: do the same for connected
 		roles.forEach((k) -> 
 		{
-			HashMap<Role, Send> tmp = new HashMap<>();
+			HashMap<Role, LMSend> tmp = new HashMap<>();
 			this.buffs.put(k, tmp);
 			roles.forEach((k2) -> 
 			{
@@ -62,7 +62,7 @@ public class WFBuffers
 		});
 	}
 
-	public WFBuffers(WFBuffers buffs)
+	public GMBuffers(GMBuffers buffs)
 	{
 		Set<Role> roles = buffs.buffs.keySet();
 		roles.forEach((k) ->
@@ -80,13 +80,13 @@ public class WFBuffers
 	}
 	
 	// FIXME factor out properly with constructor
-	public Map<Role, Map<Role, Send>> getBuffers()
+	public Map<Role, Map<Role, LMSend>> getBuffers()
 	{
 		//return this.buffs;
-		return new WFBuffers(this).buffs;
+		return new GMBuffers(this).buffs;
 	}
 
-	public Map<Role, Send> get(Role r)
+	public Map<Role, LMSend> get(Role r)
 	{
 		return Collections.unmodifiableMap(this.buffs.get(r));
 	}
@@ -111,39 +111,39 @@ public class WFBuffers
 		return b != null && b;
 	}
 
-	public boolean canAccept(Role self, Accept a)
+	public boolean canAccept(Role self, LMAccept a)
 	//public boolean canAccept(Role r1, Role r2)
 	{
 		return !isConnected(self, a.peer);
 		//return canConnect(r2, r1);
 	}
 
-	public boolean canConnect(Role self, Connect c)
+	public boolean canConnect(Role self, LMConnect c)
 	//public boolean canConnect(Role r1, Role r2)
 	{
 		return !isConnected(self, c.peer);
 		//return !isConnected(r1, r2);
 	}
 
-	public boolean canDisconnect(Role self, Disconnect d)
+	public boolean canDisconnect(Role self, LMDisconnect d)
 	{
 		return isConnected(self, d.peer);
 	}
 
-	public boolean canWrapClient(Role self, WrapClient wc)
+	public boolean canWrapClient(Role self, LMWrapClient wc)
 	{
 		return isConnected(self, wc.peer);
 	}
 
-	public boolean canWrapServer(Role self, WrapServer ws)
+	public boolean canWrapServer(Role self, LMWrapServer ws)
 	{
 		return isConnected(self, ws.peer);
 	}
 	
 	//public WFBuffers connect(Role src, Connect c, Role dest)
-	public WFBuffers connect(Role src, Role dest)
+	public GMBuffers connect(Role src, Role dest)
 	{
-		WFBuffers copy = new WFBuffers(this);
+		GMBuffers copy = new GMBuffers(this);
 		Map<Role, Boolean> tmp1 = copy.connected.get(src);
 		if (tmp1 == null)
 		{
@@ -162,21 +162,21 @@ public class WFBuffers
 		return copy;
 	}
 
-	public WFBuffers disconnect(Role self, Disconnect d)
+	public GMBuffers disconnect(Role self, LMDisconnect d)
 	{
-		WFBuffers copy = new WFBuffers(this);
+		GMBuffers copy = new GMBuffers(this);
 		copy.connected.get(self).put(d.peer, false);
 		return copy;
 	}
 
-	public boolean canSend(Role self, Send a)
+	public boolean canSend(Role self, LMSend a)
 	{
 		return isConnected(self, a.peer) && (this.buffs.get(a.peer).get(self) == null);
 	}
 
-	public WFBuffers send(Role self, Send a)
+	public GMBuffers send(Role self, LMSend a)
 	{
-		WFBuffers copy = new WFBuffers(this);
+		GMBuffers copy = new GMBuffers(this);
 		copy.buffs.get(a.peer).put(self, a);
 		return copy;
 	}
@@ -188,14 +188,14 @@ public class WFBuffers
 	}*/
 
 	//public Set<Receive> receivable(Role r) 
-	public Set<IOAction> inputable(Role r)   // FIXME: IAction  // FIXME: OAction version?
+	public Set<LMIOAction> inputable(Role r)   // FIXME: IAction  // FIXME: OAction version?
 	{
 		/*Map<Role, Boolean> tmp = this.connected.get(r); 
 		if (tmp == null)
 		{
 			return Collections.emptySet();  // Not needed, guarded by state kind
 		}*/
-		Set<IOAction> res = this.buffs.get(r).entrySet().stream()
+		Set<LMIOAction> res = this.buffs.get(r).entrySet().stream()
 				.filter((e) -> e.getValue() != null)
 				.map((e) -> e.getValue().toDual(e.getKey()))
 				.collect(Collectors.toSet());
@@ -216,9 +216,9 @@ public class WFBuffers
 	// FIXME: rename model "acceptable" actions to "consumable" (here is really "acceptable")
 	//public Set<IOAction> acceptable(Role r)  // Means connection accept actions
 	// Pre: curr is Accept state, r is accept peer
-	public Set<IOAction> acceptable(Role r, EndpointState curr)  // Means connection accept actions
+	public Set<LMIOAction> acceptable(Role r, EndpointState curr)  // Means connection accept actions
 	{
-		Set<IOAction> res = new HashSet<>();
+		Set<LMIOAction> res = new HashSet<>();
 		Map<Role, Boolean> tmp = this.connected.get(r);
 		/*if (tmp == null)
 		{
@@ -238,23 +238,23 @@ public class WFBuffers
 				return res;
 			}
 		}
-		List<IOAction> as = curr.getAllTakeable();
-		for (IOAction a : as)
+		List<LMIOAction> as = curr.getAllTakeable();
+		for (LMIOAction a : as)
 		{
-			res.add((Accept) a);
+			res.add((LMAccept) a);
 		}
 		return res;
 	}
 
-	public Set<IOAction> wrapable(Role r)
+	public Set<LMIOAction> wrapable(Role r)
 	{
-		Set<IOAction> res = new HashSet<>();
+		Set<LMIOAction> res = new HashSet<>();
 		Map<Role, Boolean> tmp = this.connected.get(r);
 		if (tmp != null)
 		{
 			this.connected.keySet().stream()
 				.filter((k) -> tmp.containsKey(k) && tmp.get(k))
-				.forEach((k) -> res.add(new WrapServer(k)));
+				.forEach((k) -> res.add(new LMWrapServer(k)));
 		}
 		return res;
 	}
@@ -275,9 +275,9 @@ public class WFBuffers
 		return tmp;
 	}*/
 
-	public WFBuffers receive(Role self, Receive a)
+	public GMBuffers receive(Role self, LMReceive a)
 	{
-		WFBuffers copy = new WFBuffers(this);
+		GMBuffers copy = new GMBuffers(this);
 		copy.buffs.get(self).put(a.peer, null);
 		return copy;
 	}
@@ -298,11 +298,11 @@ public class WFBuffers
 		{
 			return true;
 		}
-		if (!(o instanceof WFBuffers))
+		if (!(o instanceof GMBuffers))
 		{
 			return false;
 		}
-		WFBuffers b = (WFBuffers) o;
+		GMBuffers b = (GMBuffers) o;
 		return this.buffs.equals(b.buffs) && this.connected.equals(b.connected);
 	}
 	
@@ -316,7 +316,7 @@ public class WFBuffers
 						(e) -> (e.getValue().entrySet().stream()
 								.filter((f) -> f.getValue() != null)
 								//.collect(Collectors.toMap((f) -> f.getKey(), (f) -> f.getValue())))  // Inference not working?
-								.collect(Collectors.toMap((Entry<Role, Send> f) -> f.getKey(), (f) -> f.getValue())))
+								.collect(Collectors.toMap((Entry<Role, LMSend> f) -> f.getKey(), (f) -> f.getValue())))
 					)).toString();
 	}
 }

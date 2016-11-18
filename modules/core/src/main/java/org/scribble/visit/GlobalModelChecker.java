@@ -17,16 +17,16 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GIOAction;
+import org.scribble.model.global.GMBuffers;
+import org.scribble.model.global.GMConfig;
+import org.scribble.model.global.GMState;
+import org.scribble.model.global.GMStateErrors;
+import org.scribble.model.global.actions.GMIOAction;
 import org.scribble.model.local.EndpointFSM;
 import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState.Kind;
-import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Send;
-import org.scribble.model.wf.WFBuffers;
-import org.scribble.model.wf.WFConfig;
-import org.scribble.model.wf.WFState;
-import org.scribble.model.wf.WFStateErrors;
+import org.scribble.model.local.actions.LMIOAction;
+import org.scribble.model.local.actions.LMSend;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
@@ -106,8 +106,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			
 		//Set<WFState> seen = buildGlobalModel(job, fullname, init);  // Returns set of all states
 		//Set<WFState> seen = new HashSet<>();
-		Map<Integer, WFState> seen = new HashMap<>();
-		WFState init = buildGlobalModel(fullname, gpd, egraphs, seen);  // Post: seen contains all states
+		Map<Integer, GMState> seen = new HashMap<>();
+		GMState init = buildGlobalModel(fullname, gpd, egraphs, seen);  // Post: seen contains all states
 		this.getJobContext().addGlobalModel(fullname, init);
 
 		/*Set<WFState> all = new HashSet<>();
@@ -118,7 +118,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	}
 
 	//private void checkGlobalModel(GProtocolName fullname, WFState init, Set<WFState> all) throws ScribbleException
-	private void checkGlobalModel(GProtocolName fullname, WFState init, Map<Integer, WFState> all) throws ScribbleException
+	private void checkGlobalModel(GProtocolName fullname, GMState init, Map<Integer, GMState> all) throws ScribbleException
 	{
 		Job job = getJob();
 		String errorMsg = "";
@@ -144,7 +144,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		}
 		/*/
 		int count = 0;
-		for (WFState s : all.values())
+		for (GMState s : all.values())
 		{
 			if (job.debug)
 			{
@@ -154,12 +154,12 @@ public class GlobalModelChecker extends ModuleContextVisitor
 					job.debugPrintln("(" + fullname + ") Checking global states: " + count);
 				}
 			}
-			WFStateErrors errors = s.getErrors();
+			GMStateErrors errors = s.getErrors();
 			if (!errors.isEmpty())
 			{
 				// FIXME: getTrace can get stuck when local choice subjects are disabled
 				//List<GIOAction> trace = getTrace(init, s, reach);  // FIXME: getTrace broken on non-det self loops?
-				List<GIOAction> trace = getTrace(all, init, s, reach);  // FIXME: getTrace broken on non-det self loops?
+				List<GMIOAction> trace = getTrace(all, init, s, reach);  // FIXME: getTrace broken on non-det self loops?
 				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
 				errorMsg += "\nSafety violation(s) at " + s.id + ":\n    Trace=" + trace;
 			}
@@ -210,7 +210,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				{
 					errorMsg += "\nRole progress violation for " + roleLiveness + " in terminal set:\n    " + termSetToString(termset, all);
 				}
-				Map<Role, Set<Send>> msgLiveness = checkMessageLiveness(all, init, termset);
+				Map<Role, Set<LMSend>> msgLiveness = checkMessageLiveness(all, init, termset);
 				if (!msgLiveness.isEmpty())
 				{
 					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n    " + termSetToString(termset, all);
@@ -225,7 +225,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		}
 	}
 	
-	private String termSetToString(Set<Integer> termset, Map<Integer, WFState> all)
+	private String termSetToString(Set<Integer> termset, Map<Integer, GMState> all)
 	{
 		return getJob().debug
 				? termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","))
@@ -235,7 +235,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	//private Set<WFState> buildGlobalModel(Job job, GProtocolName fullname, WFState init) throws ScribbleException
 	//private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointState> egraphs, Set<WFState> seen) throws ScribbleException
 	//private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointFSM> egraphs, Set<WFState> seen) throws ScribbleException
-	private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointFSM> egraphs, Map<Integer, WFState> seen) throws ScribbleException
+	private GMState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointFSM> egraphs, Map<Integer, GMState> seen) throws ScribbleException
 	{
 		Job job = getJob();
 		//JobContext jc = job.getContext();
@@ -253,21 +253,21 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 		}*/
 
-		WFBuffers b0 = new WFBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
+		GMBuffers b0 = new GMBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
 		//WFConfig c0 = new WFConfig(egraphs, b0);
-		WFConfig c0 = new WFConfig(egraphs, b0);
-		WFState init = new WFState(c0);
+		GMConfig c0 = new GMConfig(egraphs, b0);
+		GMState init = new GMState(c0);
 
 		//Set<WFState> seen = new HashSet<>();
-		LinkedHashSet<WFState> todo = new LinkedHashSet<>();
+		LinkedHashSet<GMState> todo = new LinkedHashSet<>();
 		todo.add(init);
 
 		// FIXME: factor out model building and integrate with getAllNodes (seen == all)
 		int count = 0;
 		while (!todo.isEmpty())
 		{
-			Iterator<WFState> i = todo.iterator();
-			WFState curr = i.next();
+			Iterator<GMState> i = todo.iterator();
+			GMState curr = i.next();
 			i.remove();
 			//seen.add(curr);
 			seen.put(curr.id, curr);
@@ -281,13 +281,13 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				}
 			}
 			
-			Map<Role, List<IOAction>> takeable = curr.getTakeable();
+			Map<Role, List<LMIOAction>> takeable = curr.getTakeable();
 
 			//job.debugPrintln("Acceptable at (" + curr.id + "): " + acceptable);
 
 			for (Role r : takeable.keySet())
 			{
-				List<IOAction> acceptable_r = takeable.get(r);
+				List<LMIOAction> acceptable_r = takeable.get(r);
 				
 				// Hacky?  // FIXME: factor out and make more robust (e.g. for new state kinds) -- e.g. "hasPayload" in IOAction
 				//EndpointState currstate = curr.config.states.get(r);
@@ -295,7 +295,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				Kind k = currfsm.getStateKind();
 				if (k == Kind.OUTPUT)
 				{
-					for (IOAction a : acceptable_r)  // Connect implicitly has no payload (also accept, so skip)
+					for (LMIOAction a : acceptable_r)  // Connect implicitly has no payload (also accept, so skip)
 					{
 						if (acceptable_r.stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
@@ -306,7 +306,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				}
 				else if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT || k == Kind.ACCEPT)
 				{
-					for (IOAction a : acceptable_r)
+					for (LMIOAction a : acceptable_r)
 					{
 						if (currfsm.getAllTakeable().stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
@@ -319,9 +319,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 
 			for (Role r : takeable.keySet())
 			{
-				List<IOAction> acceptable_r = takeable.get(r);
+				List<LMIOAction> acceptable_r = takeable.get(r);
 				
-				for (IOAction a : acceptable_r)
+				for (LMIOAction a : acceptable_r)
 				{
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
@@ -329,24 +329,24 @@ public class GlobalModelChecker extends ModuleContextVisitor
 					}
 					else if (a.isAccept() || a.isConnect())
 					{	
-						List<IOAction> as = takeable.get(a.peer);
-						IOAction d = a.toDual(r);
+						List<LMIOAction> as = takeable.get(a.peer);
+						LMIOAction d = a.toDual(r);
 						if (as != null && as.contains(d))
 						{
 							as.remove(d);  // Removes one occurrence
 							//getNextStates(seen, todo, curr.sync(r, a, a.peer, d));
-							GIOAction g = (a.isConnect()) ? a.toGlobal(r) : d.toGlobal(a.peer);
+							GMIOAction g = (a.isConnect()) ? a.toGlobal(r) : d.toGlobal(a.peer);
 							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, d));
 						}
 					}
 					else if (a.isWrapClient() || a.isWrapServer())
 					{
-						List<IOAction> as = takeable.get(a.peer);
-						IOAction w = a.toDual(r);
+						List<LMIOAction> as = takeable.get(a.peer);
+						LMIOAction w = a.toDual(r);
 						if (as != null && as.contains(w))
 						{
 							as.remove(w);  // Removes one occurrence
-							GIOAction g = (a.isConnect()) ? a.toGlobal(r) : w.toGlobal(a.peer);
+							GMIOAction g = (a.isConnect()) ? a.toGlobal(r) : w.toGlobal(a.peer);
 							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, w));
 						}
 					}
@@ -417,12 +417,12 @@ public class GlobalModelChecker extends ModuleContextVisitor
 
 	//private void foo(Set<WFState> seen, LinkedHashSet<WFState> todo, WFState curr, Role r, IOAction a)
 	//private void getNextStates(LinkedHashSet<WFState> todo, Set<WFState> seen, WFState curr, GIOAction a, List<WFConfig> nexts)
-	private void getNextStates(LinkedHashSet<WFState> todo, Map<Integer, WFState> seen, WFState curr, GIOAction a, List<WFConfig> nexts)
+	private void getNextStates(LinkedHashSet<GMState> todo, Map<Integer, GMState> seen, GMState curr, GMIOAction a, List<GMConfig> nexts)
 	{
-		for (WFConfig next : nexts)
+		for (GMConfig next : nexts)
 		{
-			WFState news = new WFState(next);
-			WFState succ = null; 
+			GMState news = new GMState(next);
+			GMState succ = null; 
 			//if (seen.contains(succ))  // FIXME: make a WFModel builder
 			/*if (seen.containsValue(succ))
 			{
@@ -434,7 +434,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 					}
 				}
 			}*/
-			for (WFState tmp : seen.values())  // Key point: checking "semantically" if model state already created
+			for (GMState tmp : seen.values())  // Key point: checking "semantically" if model state already created
 			{
 				if (tmp.equals(news))
 				{
@@ -443,7 +443,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			if (succ == null)
 			{
-				for (WFState tmp : todo)  // If state created but not "seen" yet, then it will be "todo"
+				for (GMState tmp : todo)  // If state created but not "seen" yet, then it will be "todo"
 				{
 					if (tmp.equals(news))
 					{
@@ -469,19 +469,19 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	// FIXME: this is now just "role liveness"
 	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but probably not good)
 	//private static void checkTerminalSet(WFState init, Set<WFState> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
-	private static void checkTerminalSet(Map<Integer, WFState> all, WFState init, Set<Integer> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
+	private static void checkTerminalSet(Map<Integer, GMState> all, GMState init, Set<Integer> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
 	{
 		/*Iterator<WFState> i = termset.iterator();
 		WFState s = i.next();*/
 		Iterator<Integer> i = termset.iterator();
-		WFState s = all.get(i.next());
+		GMState s = all.get(i.next());
 		//Map<Role, EndpointState> ss = new HashMap<>(s.config.states);
-		Map<Role, WFState> ss = new HashMap<>();
+		Map<Role, GMState> ss = new HashMap<>();
 		s.config.states.keySet().forEach((r) -> ss.put(r, s));
 		while (i.hasNext())
 		{
 			//WFState next = i.next();
-			WFState next = all.get(i.next());
+			GMState next = all.get(i.next());
 			//Map<Role, EndpointState> tmp = next.config.states;
 			Map<Role, EndpointFSM> tmp = next.config.states;
 			for (Role r : tmp.keySet())
@@ -494,7 +494,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 					}
 					else*/
 					{
-						for (GIOAction a : next.getActions())
+						for (GMIOAction a : next.getActions())
 						{
 							if (a.containsRole(r))
 							{
@@ -508,7 +508,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		}
 		for (Role r : ss.keySet())
 		{
-			WFState foo = ss.get(r);
+			GMState foo = ss.get(r);
 			if (foo != null)
 			{
 				//EndpointState tmp = foo.config.states.get(r);
@@ -538,7 +538,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	// "message liveness"
 	//private static Set<Send> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
 	//private static Map<Role, Set<Send>> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
-	private static Map<Role, Set<Send>> checkMessageLiveness(Map<Integer, WFState> all, WFState init, Set<Integer> termset) throws ScribbleException
+	private static Map<Role, Set<LMSend>> checkMessageLiveness(Map<Integer, GMState> all, GMState init, Set<Integer> termset) throws ScribbleException
 	{
 		//Set<Send> res = new HashSet<>();
 		//Set<Role> roles = termset.iterator().next().config.states.keySet();
@@ -547,20 +547,20 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		/*Iterator<WFState> i = termset.iterator();
 		Map<Role, Map<Role, Send>> b0 = i.next().config.buffs.getBuffers();*/
 		Iterator<Integer> i = termset.iterator();
-		Map<Role, Map<Role, Send>> b0 = all.get(i.next()).config.buffs.getBuffers();
+		Map<Role, Map<Role, LMSend>> b0 = all.get(i.next()).config.buffs.getBuffers();
 		while (i.hasNext())
 		{
 			//WFState s = i.next();
-			WFState s = all.get(i.next());
-			WFBuffers b = s.config.buffs;
+			GMState s = all.get(i.next());
+			GMBuffers b = s.config.buffs;
 			for (Role r1 : roles)
 			{
 				for (Role r2 : roles)
 				{
-					Send s0 = b0.get(r1).get(r2);
+					LMSend s0 = b0.get(r1).get(r2);
 					if (s0 != null)
 					{
-						Send tmp = b.get(r1).get(r2);
+						LMSend tmp = b.get(r1).get(r2);
 						if (tmp == null)
 						{
 							b0.get(r1).put(r2, null);
@@ -570,15 +570,15 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 		}
 	
-		Map<Role, Set<Send>> res = new HashMap<>();
+		Map<Role, Set<LMSend>> res = new HashMap<>();
 		for (Role r1 : roles)
 		{
 			for (Role r2 : roles)
 			{
-				Send m = b0.get(r1).get(r2);
+				LMSend m = b0.get(r1).get(r2);
 				if (m != null)
 				{
-					Set<Send> tmp = res.get(r2);
+					Set<LMSend> tmp = res.get(r2);
 					if (tmp == null)
 					{
 						tmp = new HashSet<>();
@@ -592,14 +592,14 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	}
 	
 	//private static void findTerminalSets(Map<WFState, Set<WFState>> reach, Set<Set<WFState>> termsets)
-	private static void findTerminalSets(Map<Integer, WFState> all, Map<Integer, Set<Integer>> reach, Set<Set<Integer>> termsets)
+	private static void findTerminalSets(Map<Integer, GMState> all, Map<Integer, Set<Integer>> reach, Set<Set<Integer>> termsets)
 	{
 		//Set<Set<WFState>> checked = new HashSet<>();
 		Set<Set<Integer>> checked = new HashSet<>();
 		//for (WFState s : reach.keySet())
 		for (Integer i : reach.keySet())
 		{
-			WFState s = all.get(i);
+			GMState s = all.get(i);
 			/*Set<WFState> rs = reach.get(s);
 			if (!checked.contains(rs) && rs.contains(s))*/
 			Set<Integer> rs = reach.get(s.id);
@@ -615,7 +615,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	}
 
 	//private static boolean isTerminalSetMember(Map<WFState, Set<WFState>> reach, WFState s)
-	private static boolean isTerminalSetMember(Map<Integer, WFState> all, Map<Integer, Set<Integer>> reach, WFState s)
+	private static boolean isTerminalSetMember(Map<Integer, GMState> all, Map<Integer, Set<Integer>> reach, GMState s)
 	{
 		/*Set<WFState> rs = reach.get(s);
 		Set<WFState> tmp = new HashSet<>(rs);
@@ -636,7 +636,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 
 	// Pre: reach.get(start).contains(end)  // FIXME: will return null if initial state is error
 	//private static List<GIOAction> getTrace(WFState start, WFState end, Map<WFState, Set<WFState>> reach)
-	private static List<GIOAction> getTrace(Map<Integer, WFState> all, WFState start, WFState end, Map<Integer, Set<Integer>> reach)
+	private static List<GMIOAction> getTrace(Map<Integer, GMState> all, GMState start, GMState end, Map<Integer, Set<Integer>> reach)
 	{
 		/*List<WFState> seen = new LinkedList<WFState>();
 		seen.add(start);*/
@@ -660,7 +660,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	}
 
 	// Djikstra's
-	private static List<GIOAction> getTraceAux(List<GIOAction> trace, Map<Integer, WFState> all, Set<Integer> seen, SortedMap<Integer, Set<Integer>> candidates, WFState end, Map<Integer, Set<Integer>> reach)
+	private static List<GMIOAction> getTraceAux(List<GMIOAction> trace, Map<Integer, GMState> all, Set<Integer> seen, SortedMap<Integer, Set<Integer>> candidates, GMState end, Map<Integer, Set<Integer>> reach)
 	{
 		Integer dis = candidates.keySet().iterator().next();
 		Set<Integer> cs = candidates.get(dis);
@@ -672,13 +672,13 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			candidates.remove(dis);
 		}
 
-		WFState curr = all.get(currid);
-		Iterator<GIOAction> as = curr.getActions().iterator();
-		Iterator<WFState> ss = curr.getSuccessors().iterator();
+		GMState curr = all.get(currid);
+		Iterator<GMIOAction> as = curr.getActions().iterator();
+		Iterator<GMState> ss = curr.getSuccessors().iterator();
 		while (as.hasNext())
 		{
-			GIOAction a = as.next();
-			WFState s = ss.next();
+			GMIOAction a = as.next();
+			GMState s = ss.next();
 			if (s.id == end.id)
 			{
 				trace.add(a);
@@ -695,9 +695,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 					candidates.put(dis+1, tmp1);
 				}
 				tmp1.add(s.id);
-				List<GIOAction> tmp2 = new LinkedList<>(trace);
+				List<GMIOAction> tmp2 = new LinkedList<>(trace);
 				tmp2.add(a);
-				List<GIOAction> res = getTraceAux(tmp2, all, seen, candidates, end, reach);
+				List<GMIOAction> res = getTraceAux(tmp2, all, seen, candidates, end, reach);
 				if (res != null)
 				{
 					return res;
@@ -811,14 +811,14 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	
 	//private static Map<WFState, Set<WFState>> getReachability(Job job, Set<WFState> all)
 	//private static Map<Integer, Set<Integer>> getReachability(Job job, Set<WFState> all)
-	private static Map<Integer, Set<Integer>> getReachability(Job job, Map<Integer, WFState> all)
+	private static Map<Integer, Set<Integer>> getReachability(Job job, Map<Integer, GMState> all)
 	{
 		/*Map<WFState, Integer> all1 = new HashMap<>();  // FIXME: use Integers
 		Map<Integer, WFState> all2 = new HashMap<>();*/
 		Map<Integer, Integer> all1 = new HashMap<>();  // Map state ids to array indices and vice versa
 		Map<Integer, Integer> all2 = new HashMap<>();
 		int i = 0;
-		for (WFState s : all.values())
+		for (GMState s : all.values())
 		{
 			/*all1.put(s, i);
 			all2.put(i, s);*/
@@ -831,7 +831,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 
 	//private static Map<WFState, Set<WFState>> getReachabilityAux(Job job, Map<WFState, Integer> all1, Map<Integer, WFState> all2)
 	//private static Map<Integer, Set<Integer>> getReachabilityAux(Job job, Map<WFState, Integer> all1, Map<Integer, WFState> all2)
-	private static Map<Integer, Set<Integer>> getReachabilityAux(Job job, Map<Integer, WFState> all, Map<Integer, Integer> all1, Map<Integer, Integer> all2)
+	private static Map<Integer, Set<Integer>> getReachabilityAux(Job job, Map<Integer, GMState> all, Map<Integer, Integer> all1, Map<Integer, Integer> all2)
 	{
 		int size = all1.keySet().size();
 		boolean[][] reach = new boolean[size][size];
@@ -839,7 +839,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		for (Integer s1id : all1.keySet())
 		{
 			//for (WFState s2 : s1.getSuccessors())
-			for (WFState s2 : all.get(s1id).getSuccessors())
+			for (GMState s2 : all.get(s1id).getSuccessors())
 			{
 				//reach[all1.get(s1)][all1.get(s2)] = true;
 				reach[all1.get(s1id)][all1.get(s2.id)] = true;

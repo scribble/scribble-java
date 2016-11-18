@@ -1,18 +1,18 @@
-package org.scribble.model.global;
+package org.scribble.model.global.actions;
 
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public class GWrapServer extends GIOAction
+public class GMDisconnect extends GMIOAction
 {
-	public GWrapServer(Role subj, Role obj)
+	public GMDisconnect(Role subj, Role obj)
 	{
 		super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
-	public boolean isAccept()
+	public boolean isConnect()
 	{
 		return true;
 	}
@@ -20,7 +20,7 @@ public class GWrapServer extends GIOAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 1087;
+		int hash = 1013;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -32,21 +32,23 @@ public class GWrapServer extends GIOAction
 		{
 			return true;
 		}
-		if (!(o instanceof GWrapServer))
+		if (!(o instanceof GMDisconnect))
 		{
 			return false;
 		}
-		return ((GWrapServer) o).canEqual(this) && super.equals(o);
+		return ((GMDisconnect) o).canEqual(this) && super.equals(o);
 	}
 
+	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GWrapServer;
+		return o instanceof GMDisconnect;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "(<<-)";
+		//return "\u00A1\u00A1abc";
+		return "-/-";
 	}
 }

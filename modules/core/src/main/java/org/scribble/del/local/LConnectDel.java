@@ -5,7 +5,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LConnect;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.Connect;
+import org.scribble.model.local.actions.LMConnect;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -24,7 +24,7 @@ public class LConnectDel extends LConnectionActionDel implements LSimpleInteract
 		Payload payload = lc.msg.isMessageSigNode()  // Hacky?
 					? ((MessageSigNode) lc.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
-		graph.builder.addEdge(graph.builder.getEntry(), new Connect(peer, mid, payload), graph.builder.getExit());
+		graph.builder.addEdge(graph.builder.getEntry(), new LMConnect(peer, mid, payload), graph.builder.getExit());
 		//graph.builder.addEdge(graph.builder.getEntry(), new Connect(peer), graph.builder.getExit());
 		////builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());
 		return (LConnect) super.leaveEndpointGraphBuilding(parent, child, graph, lc);

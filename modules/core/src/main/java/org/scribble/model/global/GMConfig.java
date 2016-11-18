@@ -1,4 +1,4 @@
-package org.scribble.model.wf;
+package org.scribble.model.global;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,28 +11,28 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.model.local.Accept;
-import org.scribble.model.local.Connect;
-import org.scribble.model.local.Disconnect;
 import org.scribble.model.local.EndpointFSM;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
-import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Receive;
-import org.scribble.model.local.Send;
-import org.scribble.model.local.WrapClient;
-import org.scribble.model.local.WrapServer;
+import org.scribble.model.local.actions.LMAccept;
+import org.scribble.model.local.actions.LMConnect;
+import org.scribble.model.local.actions.LMDisconnect;
+import org.scribble.model.local.actions.LMIOAction;
+import org.scribble.model.local.actions.LMReceive;
+import org.scribble.model.local.actions.LMSend;
+import org.scribble.model.local.actions.LMWrapClient;
+import org.scribble.model.local.actions.LMWrapServer;
 import org.scribble.sesstype.name.Role;
 
-public class WFConfig
+public class GMConfig
 {
 	//public final Map<Role, EndpointState> states;
 	public final Map<Role, EndpointFSM> states;
-	public final WFBuffers buffs;
+	public final GMBuffers buffs;
 	
 	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> buff)
 	//public WFConfig(Map<Role, EndpointState> state, WFBuffers buffs)
-	public WFConfig(Map<Role, EndpointFSM> state, WFBuffers buffs)
+	public GMConfig(Map<Role, EndpointFSM> state, GMBuffers buffs)
 	{
 		this.states = Collections.unmodifiableMap(state);
 		//this.buffs = Collections.unmodifiableMap(buff.keySet().stream() .collect(Collectors.toMap((k) -> k, (k) -> Collections.unmodifiableMap(buff.get(k)))));
@@ -90,9 +90,9 @@ public class WFConfig
 		return canSafelyTerminate;
 	}
 	
-	public List<WFConfig> take(Role r, IOAction a)
+	public List<GMConfig> take(Role r, LMIOAction a)
 	{
-		List<WFConfig> res = new LinkedList<>();
+		List<GMConfig> res = new LinkedList<>();
 		
 		//List<EndpointState> succs = this.states.get(r).takeAll(a);
 		List<EndpointFSM> succs = this.states.get(r).takeAll(a);
@@ -116,24 +116,24 @@ public class WFConfig
 			{
 				tmp3.put(r, null);
 			}*/
-			WFBuffers tmp2 = 
-					a.isSend()       ? this.buffs.send(r, (Send) a)
-				: a.isReceive()    ? this.buffs.receive(r, (Receive) a)
-				: a.isDisconnect() ? this.buffs.disconnect(r, (Disconnect) a)
+			GMBuffers tmp2 = 
+					a.isSend()       ? this.buffs.send(r, (LMSend) a)
+				: a.isReceive()    ? this.buffs.receive(r, (LMReceive) a)
+				: a.isDisconnect() ? this.buffs.disconnect(r, (LMDisconnect) a)
 				: null;
 			if (tmp2 == null)
 			{
 				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
-			res.add(new WFConfig(tmp1, tmp2));
+			res.add(new GMConfig(tmp1, tmp2));
 		}
 
 		return res;
 	}
 
-	public List<WFConfig> sync(Role r1, IOAction a1, Role r2, IOAction a2)
+	public List<GMConfig> sync(Role r1, LMIOAction a1, Role r2, LMIOAction a2)
 	{
-		List<WFConfig> res = new LinkedList<>();
+		List<GMConfig> res = new LinkedList<>();
 		
 		/*List<EndpointState> succs1 = this.states.get(r1).takeAll(a1);
 		List<EndpointState> succs2 = this.states.get(r2).takeAll(a2);
@@ -149,7 +149,7 @@ public class WFConfig
 				Map<Role, EndpointFSM> tmp1 = new HashMap<>(this.states);
 				tmp1.put(r1, succ1);
 				tmp1.put(r2, succ2);
-				WFBuffers tmp2;
+				GMBuffers tmp2;
 				if (((a1.isConnect() && a2.isAccept()) || (a1.isAccept() && a2.isConnect())))
 						//&& this.buffs.canConnect(r1, r2))
 				{
@@ -163,7 +163,7 @@ public class WFConfig
 				{
 					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
 				}
-				res.add(new WFConfig(tmp1, tmp2));
+				res.add(new GMConfig(tmp1, tmp2));
 			}
 		}
 
@@ -171,9 +171,9 @@ public class WFConfig
 	}
 
 	// Deadlock from non handleable messages (reception errors)
-	public Map<Role, Receive> getStuckMessages()
+	public Map<Role, LMReceive> getStuckMessages()
 	{
-		Map<Role, Receive> res = new HashMap<>();
+		Map<Role, LMReceive> res = new HashMap<>();
 		for (Role r : this.states.keySet())
 		{
 			//EndpointState s = this.states.get(r);
@@ -190,10 +190,10 @@ public class WFConfig
 					break;
 				}*/
 				Role peer = s.getAllTakeable().iterator().next().peer;
-				Send send = this.buffs.get(r).get(peer);
+				LMSend send = this.buffs.get(r).get(peer);
 				if (send != null)
 				{
-					Receive recv = send.toDual(peer);
+					LMReceive recv = send.toDual(peer);
 					if (!s.isTakeable(recv))
 					//res.put(r, new IOError(peer));
 					res.put(r, recv);
@@ -328,8 +328,8 @@ public class WFConfig
 		Kind k = s.getStateKind();
 		if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
 		{
-			List<IOAction> all = s.getAllTakeable();
-			IOAction a = all.get(0);  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
+			List<LMIOAction> all = s.getAllTakeable();
+			LMIOAction a = all.get(0);  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
 			/*if (a.isAccept())  // Sound?
 			{
 				return null;
@@ -353,7 +353,7 @@ public class WFConfig
 			// FIXME TODO: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
 			if (!s.isInitial())
 			{
-				List<IOAction> all = s.getAllTakeable();  // Should be singleton -- no: not any more
+				List<LMIOAction> all = s.getAllTakeable();  // Should be singleton -- no: not any more
 				/*Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
 				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Connect(r))))  // cf. getTakeable
 									//if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
@@ -361,7 +361,7 @@ public class WFConfig
 					return rs;
 				}*/
 				Set<Role> res = new HashSet<Role>();
-				for (IOAction a : all)  // Accept  // FIXME: WrapServer
+				for (LMIOAction a : all)  // Accept  // FIXME: WrapServer
 				{
 					if (this.states.get(a.peer).getAllTakeable().contains(a.toDual(r)))
 					{
@@ -382,14 +382,14 @@ public class WFConfig
 			//List<IOAction> all = s.getAllAcceptable();
 			if (s.isConnectOrWrapClientOnly())
 			{
-				List<IOAction> all = s.getAllTakeable();
+				List<LMIOAction> all = s.getAllTakeable();
 				/*Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());  // Should be singleton by enabling conditions
 				if (peers.stream().noneMatch((p) -> this.states.get(p).getAllTakeable().contains(new Accept(r))))  // cf. getTakeable
 				{
 					return peers;
 				}*/
 				Set<Role> res = new HashSet<Role>();
-				for (IOAction a : all)  // Connect or WrapClient
+				for (LMIOAction a : all)  // Connect or WrapClient
 				{
 					if (this.states.get(a.peer).getAllTakeable().contains(a.toDual(r)))
 					{
@@ -408,19 +408,19 @@ public class WFConfig
 	}
 
 	// Generalised to include "unconnected" messages -- should unconnected messages be treated via stuck instead?
-	public Map<Role, Set<Send>> getOrphanMessages()
+	public Map<Role, Set<LMSend>> getOrphanMessages()
 	{
-		Map<Role, Set<Send>> res = new HashMap<>();
+		Map<Role, Set<LMSend>> res = new HashMap<>();
 		for (Role r : this.states.keySet())
 		{
 			//EndpointState s = this.states.get(r);
 			EndpointFSM s = this.states.get(r);
 			if (s.isTerminal())  // Local termination of r, i.e. not necessarily "full deadlock"
 			{
-				Set<Send> orphs = this.buffs.get(r).values().stream().filter((v) -> v != null).collect(Collectors.toSet());
+				Set<LMSend> orphs = this.buffs.get(r).values().stream().filter((v) -> v != null).collect(Collectors.toSet());
 				if (!orphs.isEmpty())
 				{
-					Set<Send> tmp = res.get(r);
+					Set<LMSend> tmp = res.get(r);
 					if (tmp == null)
 					{
 						tmp = new HashSet<>();
@@ -438,10 +438,10 @@ public class WFConfig
 						// Connection direction doesn't matter? -- wrong: matters because of async. disconnect
 						if (!this.buffs.isConnected(r, rr))
 						{
-							Send send = this.buffs.get(r).get(rr);
+							LMSend send = this.buffs.get(r).get(rr);
 							if (send != null)
 							{
-								Set<Send> tmp = res.get(r);
+								Set<LMSend> tmp = res.get(r);
 								if (tmp == null)
 								{
 									tmp = new HashSet<>();
@@ -475,9 +475,9 @@ public class WFConfig
 		return res;
 	}
 
-	public Map<Role, List<IOAction>> getTakeable()
+	public Map<Role, List<LMIOAction>> getTakeable()
 	{
-		Map<Role, List<IOAction>> res = new HashMap<>();
+		Map<Role, List<LMIOAction>> res = new HashMap<>();
 		for (Role r : this.states.keySet())
 		{
 			//EndpointState s = this.states.get(r);
@@ -486,14 +486,14 @@ public class WFConfig
 			{
 				case OUTPUT:
 				{
-					List<IOAction> as = fsm.getAllTakeable();
-					for (IOAction a : as)
+					List<LMIOAction> as = fsm.getAllTakeable();
+					for (LMIOAction a : as)
 					{
 						if (a.isSend())
 						{
-							if (this.buffs.canSend(r, (Send) a))
+							if (this.buffs.canSend(r, (LMSend) a))
 							{
-								List<IOAction> tmp = res.get(r);  // FIXME: factor out
+								List<LMIOAction> tmp = res.get(r);  // FIXME: factor out
 								if (tmp == null)
 								{
 									tmp = new LinkedList<>();
@@ -505,17 +505,17 @@ public class WFConfig
 						else if (a.isConnect())
 						{
 							// FIXME: factor out
-							Connect c = (Connect) a;
+							LMConnect c = (LMConnect) a;
 							//EndpointState speer = this.states.get(c.peer);
 							EndpointFSM speer = this.states.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
-								List<IOAction> peeras = speer.getAllTakeable();
-								for (IOAction peera : peeras)
+								List<LMIOAction> peeras = speer.getAllTakeable();
+								for (LMIOAction peera : peeras)
 								{
 									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))  // Cf. isWaitingFor
 									{
-										List<IOAction> tmp = res.get(r);
+										List<LMIOAction> tmp = res.get(r);
 										if (tmp == null)
 										{
 											tmp = new LinkedList<>();
@@ -529,9 +529,9 @@ public class WFConfig
 						else if (a.isDisconnect())
 						{
 							// Duplicated from Send
-							if (this.buffs.canDisconnect(r, (Disconnect) a))
+							if (this.buffs.canDisconnect(r, (LMDisconnect) a))
 							{
-								List<IOAction> tmp = res.get(r);  // FIXME: factor out
+								List<LMIOAction> tmp = res.get(r);  // FIXME: factor out
 								if (tmp == null)
 								{
 									tmp = new LinkedList<>();
@@ -543,14 +543,14 @@ public class WFConfig
 						else if (a.isWrapClient())
 						{
 							// FIXME: factor out
-							WrapClient wc = (WrapClient) a;
+							LMWrapClient wc = (LMWrapClient) a;
 							EndpointFSM speer = this.states.get(wc.peer);
-							List<IOAction> peeras = speer.getAllTakeable();
-							for (IOAction peera : peeras)
+							List<LMIOAction> peeras = speer.getAllTakeable();
+							for (LMIOAction peera : peeras)
 							{
 								if (peera.equals(wc.toDual(r)) && this.buffs.canWrapClient(r, wc))  // Cf. isWaitingFor
 								{
-									List<IOAction> tmp = res.get(r);
+									List<LMIOAction> tmp = res.get(r);
 									if (tmp == null)
 									{
 										tmp = new LinkedList<>();
@@ -570,13 +570,13 @@ public class WFConfig
 				case UNARY_INPUT:
 				case POLY_INPUT:
 				{
-					for (IOAction a : this.buffs.inputable(r))
+					for (LMIOAction a : this.buffs.inputable(r))
 					{
 						if (a.isReceive())
 						{
 							if (fsm.isTakeable(a))
 							{
-								List<IOAction> tmp = res.get(r);
+								List<LMIOAction> tmp = res.get(r);
 								if (tmp == null)
 								{
 									tmp = new LinkedList<>();
@@ -657,22 +657,22 @@ public class WFConfig
 				}*/
 				case ACCEPT:
 				{
-					for (IOAction a : this.buffs.acceptable(r, fsm.curr))
+					for (LMIOAction a : this.buffs.acceptable(r, fsm.curr))
 					{
 						if (a.isAccept())
 						{
 							// FIXME: factor out
-							Accept c = (Accept) a;
+							LMAccept c = (LMAccept) a;
 							//EndpointState speer = this.states.get(c.peer);
 							EndpointFSM speer = this.states.get(c.peer);
 							//if (speer.getStateKind() == Kind.OUTPUT)
 							{
-								List<IOAction> peeras = speer.getAllTakeable();
-								for (IOAction peera : peeras)
+								List<LMIOAction> peeras = speer.getAllTakeable();
+								for (LMIOAction peera : peeras)
 								{
 									if (peera.equals(c.toDual(r)) && this.buffs.canAccept(r, c))
 									{
-										List<IOAction> tmp = res.get(r);
+										List<LMIOAction> tmp = res.get(r);
 										if (tmp == null)
 										{
 											tmp = new LinkedList<>();
@@ -693,19 +693,19 @@ public class WFConfig
 				}
 				case WRAP_SERVER:
 				{
-					for (IOAction a : this.buffs.wrapable(r))
+					for (LMIOAction a : this.buffs.wrapable(r))
 					{
 						if (a.isWrapServer())
 						{
-							WrapServer ws = (WrapServer) a;
+							LMWrapServer ws = (LMWrapServer) a;
 							EndpointFSM speer = this.states.get(ws.peer);
 							{
-								List<IOAction> peeras = speer.getAllTakeable();
-								for (IOAction peera : peeras)
+								List<LMIOAction> peeras = speer.getAllTakeable();
+								for (LMIOAction peera : peeras)
 								{
 									if (peera.equals(ws.toDual(r)) && this.buffs.canWrapServer(r, ws))
 									{
-										List<IOAction> tmp = res.get(r);
+										List<LMIOAction> tmp = res.get(r);
 										if (tmp == null)
 										{
 											tmp = new LinkedList<>();
@@ -748,11 +748,11 @@ public class WFConfig
 		{
 			return true;
 		}
-		if (!(o instanceof WFConfig))
+		if (!(o instanceof GMConfig))
 		{
 			return false;
 		}
-		WFConfig c = (WFConfig) o;
+		GMConfig c = (GMConfig) o;
 		return this.states.equals(c.states) && this.buffs.equals(c.buffs);
 	}
 	

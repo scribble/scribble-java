@@ -5,7 +5,7 @@ import java.util.Set;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
+import org.scribble.model.local.actions.LMIOAction;
 
 public class AcceptSocketGenerator extends ScribSocketGenerator
 {
@@ -30,24 +30,24 @@ public class AcceptSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected void addMethods()
 	{
-		Set<IOAction> as = curr.getTakeable();
+		Set<LMIOAction> as = curr.getTakeable();
 		if (as.size() > 1)
 		{
 			throw new RuntimeException("AcceptSocket generation not yet supported for accept-branches: " + as);
 		}
-		IOAction a = as.iterator().next();
+		LMIOAction a = as.iterator().next();
 		EndpointState succ = curr.take(a);
 		makeAcceptMethod(a, succ);
 	}
 
-	private void makeAcceptMethod(IOAction a, EndpointState succ)
+	private void makeAcceptMethod(LMIOAction a, EndpointState succ)
 	{
 		MethodBuilder mb = makeAcceptHeader(a, succ);
 		mb.addBodyLine(JavaBuilder.SUPER + ".accept(ss, " + getSessionApiRoleConstant(a.obj) + ");");
 		addReturnNextSocket(mb, succ);
 	}
 
-	private MethodBuilder makeAcceptHeader(IOAction a, EndpointState succ)
+	private MethodBuilder makeAcceptHeader(LMIOAction a, EndpointState succ)
 	{
 		MethodBuilder mb = this.cb.newMethod();
 		setAcceptHeaderWithoutReturnType(this.apigen, a, mb);
@@ -57,7 +57,7 @@ public class AcceptSocketGenerator extends ScribSocketGenerator
 
 	// Doesn't include return type
 	//public static void makeReceiveHeader(StateChannelApiGenerator apigen, IOAction a, EndpointState succ, MethodBuilder mb)
-	public static void setAcceptHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
+	public static void setAcceptHeaderWithoutReturnType(StateChannelApiGenerator apigen, LMIOAction a, MethodBuilder mb)
 	{
 		final String ROLE_PARAM = "role";
 			
