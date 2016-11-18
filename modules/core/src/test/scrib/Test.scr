@@ -15,6 +15,7 @@ module Test;
 // CHECKME: playing multiple roles in the same session instance (but what is the concrete notion of "process id"? -- if actually try to use, e.g., ThreadID, then have to track ownership of endpoints)
 
 // - API gen for connection-with-message
+// - API gen for wrap (SMTP)
 // - API gen for shared channel passing
 
 
