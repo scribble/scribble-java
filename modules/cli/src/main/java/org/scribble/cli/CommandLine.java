@@ -38,17 +38,20 @@ public class CommandLine //implements Runnable
 		PROJECT,
 		JUNIT,
 		VERBOSE,
-		FSM,              // The FSM for API gen (and general tool output to user)
-		FSM_DOT,
-		CHECKED_FSM,      // The FSM used (internally) for global model checking (fair/unfair)
-		CHECKED_FSM_DOT,
+		DOT,              // The FSM for API gen (and general tool output to user)
+		DOT_PNG,
+		CHECKED_DOT,      // The FSM used (internally) for global model checking (fair/unfair)
+		CHECKED_DOT_PNG,
+		AUT,
+		CHECKED_AUT,
 		SESS_API,
 		SCHAN_API,
 		EP_API,
 		API_OUTPUT,
 		SCHAN_API_SUBTYPES,
-		GLOBAL_MODEL,
 		GLOBAL_MODEL_DOT,
+		GLOBAL_MODEL_DOT_PNG,
+		GLOBAL_MODEL_AUT,
 		OLD_WF,
 		NO_LIVENESS,
 		MIN_EFSM,  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
@@ -109,35 +112,47 @@ public class CommandLine //implements Runnable
 				{
 					outputProjections(job);
 				}
-				if (this.args.containsKey(ArgFlag.FSM))
+				if (this.args.containsKey(ArgFlag.DOT))
 				{
 					outputGraph(job, true);
 				}
-				if (this.args.containsKey(ArgFlag.FSM_DOT))
+				if (this.args.containsKey(ArgFlag.DOT_PNG))
 				{
 					drawGraph(job, true);
 				}
-				if (this.args.containsKey(ArgFlag.CHECKED_FSM))
+				if (this.args.containsKey(ArgFlag.CHECKED_DOT))
 				{
 					outputGraph(job, false);
 				}
-				if (this.args.containsKey(ArgFlag.CHECKED_FSM_DOT))
+				if (this.args.containsKey(ArgFlag.CHECKED_DOT_PNG))
 				{
 					drawGraph(job, false);
 				}
-				if (this.args.containsKey(ArgFlag.GLOBAL_MODEL) || this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT))
+				if (this.args.containsKey(ArgFlag.AUT))
+				{
+					outputAut(job, true);
+				}
+				if (this.args.containsKey(ArgFlag.CHECKED_AUT))
+				{
+					outputAut(job, false);
+				}
+				if (this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT) || this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT_PNG) || this.args.containsKey(ArgFlag.GLOBAL_MODEL_AUT))
 				{
 					if (job.useOldWf)
 					{
-						throw new CommandLineException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
-					}
-					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
-					{
-						outputGlobalModel(job);
+						throw new CommandLineException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_DOT_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
 					}
 					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT))
 					{
+						outputGlobalModel(job);
+					}
+					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT_PNG))
+					{
 						drawGlobalModel(job);
+					}
+					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL_AUT))
+					{
+						outputGlobalModelAut(job);
 					}
 				}
 				/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
@@ -201,17 +216,32 @@ public class CommandLine //implements Runnable
 		}
 	}
 
+	// dot
 	private void outputGraph(Job job, boolean forUser) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = forUser ? this.args.get(ArgFlag.FSM) : this.args.get(ArgFlag.CHECKED_FSM);
+		String[] args = forUser ? this.args.get(ArgFlag.DOT) : this.args.get(ArgFlag.CHECKED_DOT);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
 			EndpointGraph fsm = getEndointGraph(forUser, job, fullname, role);
 			//System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
-			System.out.println("\n" + fsm);  // Endpoint graphs are "inlined" (a single graph is built)
+			System.out.println("\n" + fsm.toDot());  // Endpoint graphs are "inlined" (a single graph is built)
+		}
+	}
+
+	// Duplicated from outputGraph
+	private void outputAut(Job job, boolean forUser) throws ScribbleException, CommandLineException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = forUser ? this.args.get(ArgFlag.AUT) : this.args.get(ArgFlag.CHECKED_AUT);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			EndpointGraph fsm = getEndointGraph(forUser, job, fullname, role);
+			System.out.println("\n" + fsm.toAut());
 		}
 	}
 
@@ -219,7 +249,7 @@ public class CommandLine //implements Runnable
 	private void drawGraph(Job job, boolean forUser) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = forUser ? this.args.get(ArgFlag.FSM_DOT) : this.args.get(ArgFlag.CHECKED_FSM_DOT);
+		String[] args = forUser ? this.args.get(ArgFlag.DOT_PNG) : this.args.get(ArgFlag.CHECKED_DOT_PNG);
 		for (int i = 0; i < args.length; i += 3)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -227,14 +257,14 @@ public class CommandLine //implements Runnable
 			String png = args[i+2];
 			EndpointGraph fsm = getEndointGraph(forUser, job, fullname, role);
 			//jcontext.getEndpointGraph(fullname, role);
-			runDot(fsm.init.toDot(), png);
+			runDot(fsm.toDot(), png);
 		}
 	}
 
 	private void outputGlobalModel(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL);
+		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL_DOT);
 		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -246,13 +276,25 @@ public class CommandLine //implements Runnable
 	private void drawGlobalModel(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL_DOT);
+		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL_DOT_PNG);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			String png = args[i+1];
 			WFState model = getGlobalModel(job, fullname);
 			runDot(model.toDot(), png);
+		}
+	}
+
+	private void outputGlobalModelAut(Job job) throws ScribbleException, CommandLineException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL_AUT);
+		for (int i = 0; i < args.length; i += 1)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			WFState model = getGlobalModel(job, fullname);
+			System.out.println("\n" + model.toAut());  // FIXME: make a global equiv to EndpointGraph
 		}
 	}
 	
@@ -370,7 +412,7 @@ public class CommandLine //implements Runnable
 		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
 		if (gpd == null || !gpd.header.roledecls.getRoles().contains(role))
 		{
-			throw new CommandLineException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.FSM)));
+			throw new CommandLineException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.DOT)));
 		}
 		//job.buildGraph(fullname, role);  // Already built (if valid) as part of global model checking
 		EndpointGraph graph;

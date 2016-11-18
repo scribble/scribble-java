@@ -1,8 +1,10 @@
 package org.scribble.model.wf;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -254,4 +256,57 @@ public class WFState
 			}
 		}
 	}*/
+	
+	public static Set<WFState> getAllReachable(WFState start)
+	{
+		Map<Integer, WFState> all = new HashMap<>();
+		Map<Integer, WFState> todo = new LinkedHashMap<>();
+		todo.put(start.id, start);  // Suppressed: assumes ModelState subclass correctly instantiates S parameter
+		while (!todo.isEmpty())
+		{
+			Iterator<WFState> i = todo.values().iterator();
+			WFState next = i.next();
+			todo.remove(next.id);
+			for (WFState s : next.getSuccessors())
+			{
+				if (!all.containsKey(s.id))
+				{	
+					all.put(s.id, s);
+					//if (!todo.containsKey(s.id))  // Redundant
+					{
+						todo.put(s.id, s);
+					}
+				}
+			}
+		}
+		return new HashSet<>(all.values());
+	}
+
+	public String toAut()
+	{
+		Set<WFState> all = new HashSet<>();
+		all.add(this);
+		all.addAll(getAllReachable(this));
+		String aut = "";
+		int edges = 0;
+		Set<Integer> seen = new HashSet<>();
+		for (WFState s : all)
+		{
+			if (seen.contains(s.id))
+			{
+				continue;
+			}
+			seen.add(s.id);
+			Iterator<GIOAction> as = s.getActions().iterator();
+			Iterator<WFState> ss = s.getSuccessors().iterator();
+			for (; as.hasNext(); edges++)
+			{
+				GIOAction a = as.next();
+				WFState succ = ss.next();
+				String msg = a.toStringWithMessageIdHack();  // HACK
+				aut += "\n(" + s.id + ",\"" + msg + "\"," + succ.id + ")";
+			}
+		}
+		return "des (" + this.id + "," + edges + "," + all.size() + ")" + aut + "\n";
+	}
 }

@@ -17,10 +17,21 @@ public class EndpointGraph
 		return new EndpointFSM(this);
 	}
 	
+	public String toAut()
+	{
+		return this.init.toAut();
+	}
+
+	public String toDot()
+	{
+		return this.init.toDot();
+	}
+	
 	@Override
 	public String toString()
 	{
-		return this.init.toDot();
+		//return this.init.toDot();
+		return this.init.toString();
 	}
 	
 	/*public static EndpointGraph getOutputSubtypes(EndpointGraph g)

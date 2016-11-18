@@ -185,7 +185,7 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	@Override
 	public String toString()
 	{
-		return Integer.toString(this.id);  // FIXME
+		return Integer.toString(this.id);  // FIXME -- ?
 	}
 	
 	public final String toDot()
