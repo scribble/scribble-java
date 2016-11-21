@@ -1,4 +1,4 @@
-package org.scribble.visit.collector;
+package org.scribble.visit.util;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;

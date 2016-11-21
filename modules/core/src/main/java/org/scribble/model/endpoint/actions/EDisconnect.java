@@ -5,17 +5,17 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public class LMDisconnect extends LMIOAction
+public class EDisconnect extends EAction
 {
-	public LMDisconnect(Role peer)
+	public EDisconnect(Role peer)
 	{
 		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GDisconnect.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
-	public LMDisconnect toDual(Role self)
+	public EDisconnect toDual(Role self)
 	{
-		return new LMDisconnect(self);  // return this?
+		return new EDisconnect(self);  // return this?
 	}
 
 	@Override
@@ -45,17 +45,17 @@ public class LMDisconnect extends LMIOAction
 		{
 			return true;
 		}
-		if (!(o instanceof LMDisconnect))
+		if (!(o instanceof EDisconnect))
 		{
 			return false;
 		}
-		return ((LMDisconnect) o).canEqual(this) && super.equals(o);
+		return ((EDisconnect) o).canEqual(this) && super.equals(o);
 	}
 
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof LMDisconnect;
+		return o instanceof EDisconnect;
 	}
 
 	@Override

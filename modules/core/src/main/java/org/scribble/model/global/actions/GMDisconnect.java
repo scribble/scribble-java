@@ -4,7 +4,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public class GMDisconnect extends GMIOAction
+public class GMDisconnect extends GMAction
 {
 	public GMDisconnect(Role subj, Role obj)
 	{

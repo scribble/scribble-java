@@ -4,7 +4,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public class GMConnect extends GMIOAction
+public class GMConnect extends GMAction
 {
 	public GMConnect(Role subj, Role obj, MessageId<?> mid, Payload payload)
 	//public GConnect(Role subj, Role obj)

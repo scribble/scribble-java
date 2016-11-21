@@ -4,7 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.actions.LMDisconnect;
+import org.scribble.model.endpoint.actions.EDisconnect;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.context.EndpointGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
@@ -16,7 +16,7 @@ public class LDisconnectDel extends ConnectionActionDel implements LSimpleIntera
 	{
 		LDisconnect ld = (LDisconnect) visited;
 		Role peer = ld.peer.toName();
-		builder.builder.addEdge(builder.builder.getEntry(), new LMDisconnect(peer), builder.builder.getExit());
+		builder.builder.addEdge(builder.builder.getEntry(), new EDisconnect(peer), builder.builder.getExit());
 		return (LDisconnect) super.leaveEndpointGraphBuilding(parent, child, builder, ld);
 	}
 

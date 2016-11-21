@@ -10,10 +10,10 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.collector.MessageIdCollector;
-import org.scribble.visit.collector.RoleCollector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.env.UnfoldingEnv;
+import org.scribble.visit.util.MessageIdCollector;
+import org.scribble.visit.util.RoleCollector;
 
 public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 {

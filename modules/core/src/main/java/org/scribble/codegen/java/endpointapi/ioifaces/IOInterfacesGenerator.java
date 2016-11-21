@@ -29,7 +29,7 @@ import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
 import org.scribble.model.endpoint.EndpointState.Kind;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
@@ -43,18 +43,18 @@ public class IOInterfacesGenerator extends ApiGenerator
 	
 	protected StateChannelApiGenerator apigen;
 
-	private final Map<LMIOAction, InterfaceBuilder> actions = new HashMap<>();
-	private final Map<LMIOAction, InterfaceBuilder> succs = new HashMap<>();
+	private final Map<EAction, InterfaceBuilder> actions = new HashMap<>();
+	private final Map<EAction, InterfaceBuilder> succs = new HashMap<>();
 	private final Map<String, InterfaceBuilder> iostates = new HashMap<>();  // Key is interface simple name
 	
-	private final Map<LMIOAction, InterfaceBuilder> caseActions = new HashMap<>();
+	private final Map<EAction, InterfaceBuilder> caseActions = new HashMap<>();
 	
-	private final Map<EndpointState, Set<LMIOAction>> preActions = new HashMap<>();  // Pre set: the actions that lead to each state
+	private final Map<EndpointState, Set<EAction>> preActions = new HashMap<>();  // Pre set: the actions that lead to each state
 	private final Map<EndpointState, Set<InterfaceBuilder>> preds = new HashMap<>();
 	
-	private final Map<EndpointState, Set<LMIOAction>> branchPostActions = new HashMap<>();
+	private final Map<EndpointState, Set<EAction>> branchPostActions = new HashMap<>();
 	//private final Map<EndpointState, Set<InterfaceBuilder>> branchSuccs = new HashMap<>();
-	private final Map<String, List<LMIOAction>> branchSuccs = new HashMap<>();  // key: HandleInterface name  // Sorted when collected
+	private final Map<String, List<EAction>> branchSuccs = new HashMap<>();  // key: HandleInterface name  // Sorted when collected
 	
 	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes) throws RuntimeScribbleException, ScribbleException
 	{
@@ -71,7 +71,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{
 			// FIXME: factor out with skipIOInterfacesGeneration
-			Set<LMIOAction> as = EndpointState.getAllReachableActions(init);
+			Set<EAction> as = EndpointState.getAllReachableActions(init);
 			if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 			{
 				throw new RuntimeScribbleException("[TODO] I/O Interface generation not supported for: " + as.stream().filter((a) -> !a.isSend() && !a.isReceive()).collect(Collectors.toList()));
@@ -188,8 +188,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		visited.add(s);
 
-		Set<LMIOAction> as = s.getTakeable();
-		for (LMIOAction a : as.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+		Set<EAction> as = s.getTakeable();
+		for (EAction a : as.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (!a.isSend() && !a.isReceive())  // TODO (connect/disconnect)
 			{
@@ -275,7 +275,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		visited.add(s);
-		for (LMIOAction a : s.getTakeable())
+		for (EAction a : s.getTakeable())
 		{
 			generateIOStateInterfacesFirstPass(visited, s.take(a));
 		}
@@ -329,7 +329,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 
 		visited.add(s);
-		for (LMIOAction a : s.getTakeable())
+		for (EAction a : s.getTakeable())
 		{
 			generateIOStateInterfacesSecondPass(visited, s.take(a));
 		}
@@ -354,7 +354,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		visited.add(s);
-		for (LMIOAction a : s.getTakeable())
+		for (EAction a : s.getTakeable())
 		{
 			generateHandleInterfaces(visited, s.take(a));
 		}
@@ -374,7 +374,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 
 			//String foo = HandlerInterfaceGenerator.getHandlerInterfaceName(IOStateInterfaceGenerator.getIOStateInterfaceName(self, s)); 
 			String key = HandleInterfaceGenerator.getHandleInterfaceName(self, s);
-			List<LMIOAction> succifs = this.branchSuccs.get(key);
+			List<EAction> succifs = this.branchSuccs.get(key);
 			if (succifs != null)
 			{
 				////InterfaceBuilder handleif = this.iostates.get(HandleInterfaceGenerator.getHandleInterfaceName(self, s));
@@ -428,7 +428,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 				
 		visited.add(s);
-		for (LMIOAction a : s.getTakeable())
+		for (EAction a : s.getTakeable())
 		{
 			generateHandleInterfacesSecondPass(visited, s.take(a));
 		}
@@ -504,7 +504,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			System.out.println("BBB: " + handle);*/
 			//for (IOAction a : this.branchSuccs.get(handle))
 			// FIXME: move back into HandlerInterfaceGenerator
-			for (LMIOAction a : s.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+			for (EAction a : s.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
 				if (first)
 				{
@@ -614,7 +614,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		visited.add(s);
-		for (LMIOAction a : s.getTakeable())
+		for (EAction a : s.getTakeable())
 		{
 			addIOStateInterfacesToStateChannels(visited, s.take(a));
 		}
@@ -916,12 +916,12 @@ public class IOInterfacesGenerator extends ApiGenerator
 				+ ">";
 	}
 	
-	private void putPreAction(EndpointState s, LMIOAction a)
+	private void putPreAction(EndpointState s, EAction a)
 	{
 		putMapSet(this.preActions, s, a);
 	}
 
-	private void putBranchPostAction(EndpointState s, LMIOAction a)
+	private void putBranchPostAction(EndpointState s, EAction a)
 	{
 		putMapSet(this.branchPostActions, s, a);
 	}
@@ -943,7 +943,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		for (EndpointState s : this.preActions.keySet())
 		{
 			Set<InterfaceBuilder> tmp = new HashSet<>();
-			for (LMIOAction a : this.preActions.get(s))  // sort?
+			for (EAction a : this.preActions.get(s))  // sort?
 			{
 				if (!a.isSend() && !a.isReceive())  // TODO (connect/disconnect)
 				{
@@ -963,11 +963,11 @@ public class IOInterfacesGenerator extends ApiGenerator
 			//String key = HandlerInterfaceGenerator.getHandlerInterfaceName(IOStateInterfaceGenerator.getIOStateInterfaceName(self, s));
 			String key = HandleInterfaceGenerator.getHandleInterfaceName(self, s);  // HandleInterface name
 
-			List<LMIOAction> curr1 = new LinkedList<>();
+			List<EAction> curr1 = new LinkedList<>();
 			this.branchPostActions.get(s).forEach((a) -> curr1.addAll(s.take(a).getTakeable()));  // TODO: flatmap
 			//List<IOAction> curr2 = curr1.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList());
 			
-			List<LMIOAction> tmp = this.branchSuccs.get(key);
+			List<EAction> tmp = this.branchSuccs.get(key);
 			if (tmp == null)
 			{
 				tmp = new LinkedList<>();
@@ -976,7 +976,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			}
 			else
 			{
-				for (LMIOAction a : curr1)
+				for (EAction a : curr1)
 				{
 					long n = curr1.stream().filter((x) -> x.equals(a)).count();
 					long m = tmp.stream().filter((x) -> x.equals(a)).count();

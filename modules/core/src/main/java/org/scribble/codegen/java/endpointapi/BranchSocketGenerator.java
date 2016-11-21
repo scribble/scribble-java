@@ -15,7 +15,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
@@ -101,7 +101,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		mb.addBodyLine(enumClass + " " + OPENUM_VAR + ";");
 		boolean first = true;
-		for (LMIOAction a : this.curr.getTakeable())
+		for (EAction a : this.curr.getTakeable())
 		{
 			mb.addBodyLine(((first) ? "" : "else ") + "if (" + OP + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
 			mb.addBodyLine(1, OPENUM_VAR + " = "
@@ -130,7 +130,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		first = true;
 		handleif += "<";
-		for (LMIOAction a : this.curr.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (first)
 			{
@@ -171,7 +171,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb3.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
-		for (LMIOAction a : this.curr.getTakeable())
+		for (EAction a : this.curr.getTakeable())
 		{
 			EndpointState succ = this.curr.take(a);
 			if (first)
@@ -241,7 +241,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb4.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
-		for (LMIOAction a : this.curr.getTakeable())
+		for (EAction a : this.curr.getTakeable())
 		{
 			EndpointState succ = this.curr.take(a);
 			if (first)

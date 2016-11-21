@@ -19,7 +19,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.collector.MessageIdCollector;
+import org.scribble.visit.util.MessageIdCollector;
 
 public class SessionApiGenerator extends ApiGenerator
 {

@@ -11,7 +11,7 @@ import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -69,7 +69,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 	// Cf. IOInterfacesGenerator constructor
 	private static boolean skipIOInterfacesGeneration(EndpointState init)
 	{
-		Set<LMIOAction> as = EndpointState.getAllReachableActions(init);
+		Set<EAction> as = EndpointState.getAllReachableActions(init);
 		if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 		{
 			return true;

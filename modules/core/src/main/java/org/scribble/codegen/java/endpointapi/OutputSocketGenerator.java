@@ -12,7 +12,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
@@ -47,7 +47,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		// Mixed sends and connects
 		boolean hasConnect = false;
 		boolean hasWrap = false;
-		for (LMIOAction a : curr.getTakeable())  // (Scribble ensures all "a" are input or all are output)
+		for (EAction a : curr.getTakeable())  // (Scribble ensures all "a" are input or all are output)
 		{
 			EndpointState succ = curr.take(a);
 			
@@ -134,14 +134,14 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		}
 	}
 
-	private static List<String> getSendPayloadArgs(LMIOAction a)
+	private static List<String> getSendPayloadArgs(EAction a)
 	{
 		final String ARG_PREFIX = "arg";
 
 		return IntStream.range(0, a.payload.elems.size()).mapToObj((i) -> ARG_PREFIX + i++).collect(Collectors.toList());  // FIXME: factor out with params
 	}
 
-	public static void setSendHeaderWithoutReturnType(StateChannelApiGenerator apigen, LMIOAction a, MethodBuilder mb) throws ScribbleException
+	public static void setSendHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribbleException
 	{
 		final String ROLE_PARAM = "role";
 		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?
@@ -161,7 +161,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		}
 	}
 
-	public static void setConnectHeaderWithoutReturnType(StateChannelApiGenerator apigen, LMIOAction a, MethodBuilder mb)
+	public static void setConnectHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb)
 	{
 		final String ROLE_PARAM = "role";
 
@@ -174,7 +174,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		mb.addParameters("int port");
 	}
 
-	public static void setDisconnectHeaderWithoutReturnType(StateChannelApiGenerator apigen, LMIOAction a, MethodBuilder mb)
+	public static void setDisconnectHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb)
 	{
 		final String ROLE_PARAM = "role";
 
@@ -184,7 +184,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.obj) + " " + ROLE_PARAM);
 	}
 
-	public static void setWrapClientHeaderWithoutReturnType(StateChannelApiGenerator apigen, LMIOAction a, MethodBuilder mb)
+	public static void setWrapClientHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb)
 	{
 		final String ROLE_PARAM = "role";
 
@@ -195,7 +195,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		mb.addParameters("Callable<? extends BinaryChannelWrapper> wrapper");
 	}
 
-	protected static void addSendOpParams(StateChannelApiGenerator apigen, MethodBuilder mb, Module main, LMIOAction a) throws ScribbleException
+	protected static void addSendOpParams(StateChannelApiGenerator apigen, MethodBuilder mb, Module main, EAction a) throws ScribbleException
 	{
 		List<String> args = getSendPayloadArgs(a);
 		mb.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " op");  // opClass -- op param not actually used in body

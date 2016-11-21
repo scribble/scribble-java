@@ -5,7 +5,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public class LMReceive extends LMIOAction
+public class EReceive extends EAction
 {
 	/*protected static final Set<Receive> RECEIVES = new HashSet<>();
 	
@@ -28,16 +28,16 @@ public class LMReceive extends LMIOAction
 		super(peer, mid, payload);
 	}*/
 
-	public LMReceive(Role peer, MessageId<?> mid, Payload payload)
+	public EReceive(Role peer, MessageId<?> mid, Payload payload)
 	{
 		super(peer, mid, payload);
 		//Receive.RECEIVES.add(this);
 	}
 	
 	@Override
-	public LMSend toDual(Role self)
+	public ESend toDual(Role self)
 	{
-		return new LMSend(self, this.mid, this.payload);
+		return new ESend(self, this.mid, this.payload);
 		//return Send.get(self, this.mid, this.payload);
 	}
 
@@ -72,16 +72,16 @@ public class LMReceive extends LMIOAction
 		{
 			return true;
 		}
-		if (!(o instanceof LMReceive))
+		if (!(o instanceof EReceive))
 		{
 			return false;
 		}
-		return ((LMReceive) o).canEqual(this) && super.equals(o);
+		return ((EReceive) o).canEqual(this) && super.equals(o);
 	}
 
 	public boolean canEqual(Object o)
 	{
-		return o instanceof LMReceive;
+		return o instanceof EReceive;
 	}
 
 	@Override

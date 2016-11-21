@@ -13,7 +13,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.EndpointGraphBuilder;
@@ -73,7 +73,7 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 			/*graph.builder.removeLastEdge(graph.builder.getPredecessors());  // Hacky? -- cannot implicitly overwrite (addEdge) given non-det machines
 			graph.builder.addEdge(graph.builder.getPredecessors(), graph.builder.getPreviousActions(), graph.builder.getRecursionEntry(rv));*/
 			Iterator<EndpointState> preds = graph.builder.getPredecessors().iterator();
-			Iterator<LMIOAction> prevs = graph.builder.getPreviousActions().iterator();
+			Iterator<EAction> prevs = graph.builder.getPreviousActions().iterator();
 			EndpointState entry = graph.builder.getEntry();
 
 			Set<List<Object>> removed = new HashSet<>();  
@@ -82,7 +82,7 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 			while (preds.hasNext())
 			{
 				EndpointState pred = preds.next();
-				LMIOAction prev = prevs.next();
+				EAction prev = prevs.next();
 				List<Object> tmp = Arrays.asList(pred, prev, entry);
 				if (!removed.contains(tmp))
 				{

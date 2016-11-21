@@ -14,13 +14,13 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
 public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public CaseInterfaceGenerator(StateChannelApiGenerator apigen, Map<LMIOAction, InterfaceBuilder> actions, EndpointState curr)
+	public CaseInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EndpointState curr)
 	{
 		super(apigen, actions, curr);
 	}
@@ -64,11 +64,11 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addCaseReceiveDiscardMethods()
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
-		Set<LMIOAction> as = this.curr.getTakeable();
+		Set<EAction> as = this.curr.getTakeable();
 
 		int i = 1;
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
-		for (LMIOAction a : as.stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : as.stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			MethodBuilder mb = this.ib.newAbstractMethod();
 			CaseSocketGenerator.setCaseReceiveDiscardHeaderWithoutReturnType(this.apigen, a, mb); 

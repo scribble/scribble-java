@@ -12,12 +12,12 @@ import java.util.Set;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.model.MState;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.RecVar;
 
 // http://sandbox.kidstrythisathome.com/erdos/
-public class EndpointState extends MState<LMIOAction, EndpointState, Local>
+public class EndpointState extends MState<EAction, EndpointState, Local>
 {
 	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL, ACCEPT, WRAP_SERVER, //CONNECT
 		}  // CONNECTION should just be sync?
@@ -76,16 +76,16 @@ public class EndpointState extends MState<LMIOAction, EndpointState, Local>
 			{
 				//if (curr.getAllTakeable().size() > 1)
 				{
-					Iterator<LMIOAction> as = curr.getAllTakeable().iterator();
+					Iterator<EAction> as = curr.getAllTakeable().iterator();
 					Iterator<EndpointState> ss = curr.getSuccessors().iterator();
 					//Map<IOAction, EndpointState> clones = new HashMap<>();
-					List<LMIOAction> cloneas = new LinkedList<>();
+					List<EAction> cloneas = new LinkedList<>();
 					List<EndpointState> cloness = new LinkedList<>();
 					//LinkedHashMap<EndpointState, EndpointState> cloness = new LinkedHashMap<>();  // clone -> original
-					Map<EndpointState, List<LMIOAction>> toRemove = new HashMap<>();  // List needed for multiple edges to remove to the same state: e.g. mu X . (A->B:1 + A->B:2).X
+					Map<EndpointState, List<EAction>> toRemove = new HashMap<>();  // List needed for multiple edges to remove to the same state: e.g. mu X . (A->B:1 + A->B:2).X
 					while (as.hasNext())
 					{
-						LMIOAction a = as.next();
+						EAction a = as.next();
 						EndpointState s = ss.next();
 						if (!s.canReach(curr))
 						{
@@ -101,7 +101,7 @@ public class EndpointState extends MState<LMIOAction, EndpointState, Local>
 							//cloness.put(clone, s);
 							
 							//toRemove.put(s, a);
-							List<LMIOAction> tmp = toRemove.get(s);
+							List<EAction> tmp = toRemove.get(s);
 							if (tmp == null)
 							{
 								tmp = new LinkedList<>();
@@ -132,7 +132,7 @@ public class EndpointState extends MState<LMIOAction, EndpointState, Local>
 							try
 							{
 								//curr.removeEdge(toRemove.get(s), s);
-								for (LMIOAction tmp : toRemove.get(s))
+								for (EAction tmp : toRemove.get(s))
 								{
 									curr.removeEdge(tmp, s);
 								}
@@ -140,12 +140,12 @@ public class EndpointState extends MState<LMIOAction, EndpointState, Local>
 							catch (ScribbleException e) { throw new RuntimeException(e); }
 						}
 						//for (Entry<IOAction, EndpointState> e : clones.entrySet())
-						Iterator<LMIOAction> icloneas = cloneas.iterator();
+						Iterator<EAction> icloneas = cloneas.iterator();
 						Iterator<EndpointState> icloness = cloness.iterator();
 						//Iterator<EndpointState> icloness = cloness.keySet().iterator();
 						while (icloneas.hasNext())
 						{
-							LMIOAction a = icloneas.next();
+							EAction a = icloneas.next();
 							EndpointState s = icloness.next();
 							/*curr.addEdge(e.getKey(), e.getValue());
 							todo.add(e.getValue());
@@ -172,7 +172,7 @@ public class EndpointState extends MState<LMIOAction, EndpointState, Local>
 	// i.e., this -a-> succ (maybe non-det)
 	// Returns the clone of the subgraph rooted at succ, with all non- "this-a->succ" actions pruned from the clone of "this" state
 	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
-	protected EndpointState unfairClone(EndpointState term, LMIOAction a, EndpointState succ) // Need succ param for non-det
+	protected EndpointState unfairClone(EndpointState term, EAction a, EndpointState succ) // Need succ param for non-det
 	{
 		//EndpointState succ = take(a);
 		Set<EndpointState> all = new HashSet<>();
@@ -193,12 +193,12 @@ public class EndpointState extends MState<LMIOAction, EndpointState, Local>
 		}
 		for (EndpointState s : all)
 		{
-			Iterator<LMIOAction> as = s.getAllTakeable().iterator();
+			Iterator<EAction> as = s.getAllTakeable().iterator();
 			Iterator<EndpointState> ss = s.getSuccessors().iterator();
 			EndpointState clone = map.get(s.id);
 			while (as.hasNext())
 			{
-				LMIOAction tmpa = as.next();
+				EAction tmpa = as.next();
 				EndpointState tmps = ss.next();
 				if (s.id != this.id
 						|| (tmpa.equals(a) && tmps.equals(succ)))  // Non-det also pruned from clone of this -- but OK? non-det still preserved on original state, so any safety violations due to non-det will still come out?
@@ -225,14 +225,14 @@ public class EndpointState extends MState<LMIOAction, EndpointState, Local>
 	
 	public Kind getStateKind()
 	{
-		List<LMIOAction> as = this.getAllTakeable();
+		List<EAction> as = this.getAllTakeable();
 		if (as.size() == 0)
 		{
 			return Kind.TERMINAL;
 		}
 		else
 		{
-			LMIOAction a = as.iterator().next();
+			EAction a = as.iterator().next();
 			return (a.isSend() || a.isConnect() || a.isDisconnect() || a.isWrapClient() ) ? Kind.OUTPUT
 						//: (a.isConnect() || a.isAccept()) ? Kind.CONNECTION  // FIXME: states can have mixed connects and sends
 						//: (a.isConnect()) ? Kind.CONNECT

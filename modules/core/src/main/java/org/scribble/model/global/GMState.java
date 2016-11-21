@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMIOAction;
-import org.scribble.model.endpoint.actions.LMReceive;
-import org.scribble.model.endpoint.actions.LMSend;
-import org.scribble.model.global.actions.GMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.model.endpoint.actions.EReceive;
+import org.scribble.model.endpoint.actions.ESend;
+import org.scribble.model.global.actions.GMAction;
 import org.scribble.sesstype.name.Role;
 
 
@@ -30,7 +30,7 @@ public class GMState
 	public final GMConfig config;
 	//protected final LinkedHashMap<GModelAction, WFState> edges;
 	//protected final List<GModelAction> actions;
-	protected final List<GMIOAction> actions;
+	protected final List<GMAction> actions;
 	protected final List<GMState> succs;
 	
 	public GMState(GMConfig config)
@@ -43,14 +43,14 @@ public class GMState
 	}
 	
 	//public void addEdge(GModelAction a, WFState s)
-	public void addEdge(GMIOAction a, GMState s)
+	public void addEdge(GMAction a, GMState s)
 	{
 		//this.edges.put(a, s);
-		Iterator<GMIOAction> as = this.actions.iterator();
+		Iterator<GMAction> as = this.actions.iterator();
 		Iterator<GMState> ss = this.succs.iterator();
 		while (as.hasNext())
 		{
-			GMIOAction tmpa = as.next();
+			GMAction tmpa = as.next();
 			GMState tmps = ss.next();
 			if (tmpa.equals(a) && tmps.equals(s))
 			{
@@ -61,13 +61,13 @@ public class GMState
 		this.succs.add(s);
 	}
 	
-	public List<GMIOAction> getActions()
+	public List<GMAction> getActions()
 	{
 		return Collections.unmodifiableList(this.actions);
 	}
 
 	//public Set<GModelAction> getAcceptable()
-	public Map<Role, List<LMIOAction>> getTakeable()  // NB: config semantics, not graph edges (cf, ModelState) -- getActions for that
+	public Map<Role, List<EAction>> getTakeable()  // NB: config semantics, not graph edges (cf, ModelState) -- getActions for that
 	{
 		//return Collections.unmodifiableSet(this.edges.keySet());
 		return this.config.getTakeable();
@@ -79,12 +79,12 @@ public class GMState
 	}*/
 
 	//public WFState accept(GModelAction a)
-	public List<GMConfig> take(Role r, LMIOAction a)
+	public List<GMConfig> take(Role r, EAction a)
 	{
 		return this.config.take(r, a);
 	}
 
-	public List<GMConfig> sync(Role r1, LMIOAction a1, Role r2, LMIOAction a2)
+	public List<GMConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
 	{
 		return this.config.sync(r1, a1, r2, a2);
 	}
@@ -120,10 +120,10 @@ public class GMState
 	
 	public GMStateErrors getErrors()
 	{
-		Map<Role, LMReceive> stuck = this.config.getStuckMessages();
+		Map<Role, EReceive> stuck = this.config.getStuckMessages();
 		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
 		//Set<Set<Role>> waitfor = Collections.emptySet();
-		Map<Role, Set<LMSend>> orphs = this.config.getOrphanMessages();
+		Map<Role, Set<ESend>> orphs = this.config.getOrphanMessages();
 		Map<Role, EndpointState> unfinished = this.config.getUnfinishedRoles();
 		return new GMStateErrors(stuck, waitfor, orphs, unfinished);
 	}
@@ -184,7 +184,7 @@ public class GMState
 		{
 			/*GModelAction msg = e.getKey();
 			WFState p = e.getValue();*/
-			GMIOAction msg = this.actions.get(i);
+			GMAction msg = this.actions.get(i);
 			GMState p = this.succs.get(i);
 			s += "\n" + toEdgeDot(msg, p);
 			if (!seen.contains(p))
@@ -221,7 +221,7 @@ public class GMState
 
 	// Override to change edge drawing from "this" as src
 	//protected String toEdgeDot(GModelAction msg, WFState next)
-	protected String toEdgeDot(GMIOAction msg, GMState next)
+	protected String toEdgeDot(GMAction msg, GMState next)
 	{
 		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));
 	}
@@ -229,7 +229,7 @@ public class GMState
 	// "this" is the dest node of the edge
 	// Override to change edge drawing to "this" as dest
 	//protected String getEdgeLabel(GModelAction msg)
-	protected String getEdgeLabel(GMIOAction msg)
+	protected String getEdgeLabel(GMAction msg)
 	{
 		return "label=\"" + msg + "\"";
 	}
@@ -297,11 +297,11 @@ public class GMState
 				continue;
 			}
 			seen.add(s.id);
-			Iterator<GMIOAction> as = s.getActions().iterator();
+			Iterator<GMAction> as = s.getActions().iterator();
 			Iterator<GMState> ss = s.getSuccessors().iterator();
 			for (; as.hasNext(); edges++)
 			{
-				GMIOAction a = as.next();
+				GMAction a = as.next();
 				GMState succ = ss.next();
 				String msg = a.toStringWithMessageIdHack();  // HACK
 				aut += "\n(" + s.id + ",\"" + msg + "\"," + succ.id + ")";

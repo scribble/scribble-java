@@ -8,8 +8,8 @@ import java.util.Set;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.model.GraphBuilderUtil;
-import org.scribble.model.endpoint.actions.LMIOAction;
-import org.scribble.model.global.actions.GMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.model.global.actions.GMAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Op;
@@ -17,7 +17,7 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of EndpointState
-public class EndpointGraphBuilderUtil extends GraphBuilderUtil<LMIOAction, EndpointState, Local>
+public class EndpointGraphBuilderUtil extends GraphBuilderUtil<EAction, EndpointState, Local>
 {
 	/*private EndpointState root;
 	
@@ -36,13 +36,13 @@ public class EndpointGraphBuilderUtil extends GraphBuilderUtil<LMIOAction, Endpo
 
 	}
 
-	public void removeEdgeFromPredecessor(EndpointState s, LMIOAction a) throws ScribbleException
+	public void removeEdgeFromPredecessor(EndpointState s, EAction a) throws ScribbleException
 	{
 		super.removeEdgeFromPredecessor(s, a);
 	}
 	
 	// Choice-guarded continues (can be done in one pass)
-	public void addRecursionEdge(EndpointState s, LMIOAction a, EndpointState succ)
+	public void addRecursionEdge(EndpointState s, EAction a, EndpointState succ)
 	{
 		super.addRecursionEdge(s, a, succ);
 	}
@@ -85,11 +85,11 @@ public class EndpointGraphBuilderUtil extends GraphBuilderUtil<LMIOAction, Endpo
 			return;
 		}
 		seen.add(curr);
-		Iterator<LMIOAction> as = curr.getAllTakeable().iterator();
+		Iterator<EAction> as = curr.getAllTakeable().iterator();
 		Iterator<EndpointState> ss = curr.getSuccessors().iterator();
 		while (as.hasNext())
 		{
-			LMIOAction a = as.next();
+			EAction a = as.next();
 			EndpointState succ = ss.next();
 			EndpointState next;
 			next = getNext(map, succ);
@@ -105,7 +105,7 @@ public class EndpointGraphBuilderUtil extends GraphBuilderUtil<LMIOAction, Endpo
 				IntermediateContinueEdge ice = (IntermediateContinueEdge) a;
 				//for (IOAction e : this.enactingMap.get(succ))
 				RecVar rv = new RecVar(ice.mid.toString());
-				for (LMIOAction e : this.enactingMap.get(succ).get(rv))
+				for (EAction e : this.enactingMap.get(succ).get(rv))
 				{
 					for (EndpointState n : succ.takeAll(e))
 					{
@@ -399,7 +399,7 @@ public class EndpointGraphBuilderUtil extends GraphBuilderUtil<LMIOAction, Endpo
 }
 
 
-class IntermediateContinueEdge extends LMIOAction
+class IntermediateContinueEdge extends EAction
 {
 	/*public IntermediateContinueEdge()
 	{
@@ -411,13 +411,13 @@ class IntermediateContinueEdge extends LMIOAction
 	}
 	
 	@Override
-	public LMIOAction toDual(Role self)
+	public EAction toDual(Role self)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}
 
 	@Override
-	public GMIOAction toGlobal(Role self)
+	public GMAction toGlobal(Role self)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}

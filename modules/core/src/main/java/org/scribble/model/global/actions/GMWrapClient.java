@@ -4,7 +4,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public class GMWrapClient extends GMIOAction
+public class GMWrapClient extends GMAction
 {
 	public GMWrapClient(Role subj, Role obj)
 	{

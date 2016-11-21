@@ -9,7 +9,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 
@@ -38,7 +38,7 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 		ib.setName(getHandlerInterfaceName(this.parent.getName()));
 		ib.addModifiers(InterfaceBuilder.PUBLIC);
 
-		for (LMIOAction a : this.curr.getTakeable())  // Doesn't need to be sorted
+		for (EAction a : this.curr.getTakeable())  // Doesn't need to be sorted
 		{
 			EndpointState succ = this.curr.take(a);
 			String nextClass = this.apigen.getSocketClassName(succ);
@@ -79,7 +79,7 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
 	}
 	
-	public static void addHandleMethodOpAndPayloadParams(StateChannelApiGenerator apigen, LMIOAction a, MethodBuilder mb) throws ScribbleException
+	public static void addHandleMethodOpAndPayloadParams(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribbleException
 	{
 		Module main = apigen.getMainModule();
 		String opClass = SessionApiGenerator.getOpClassName(a.mid);

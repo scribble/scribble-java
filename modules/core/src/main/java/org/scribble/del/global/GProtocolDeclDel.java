@@ -24,10 +24,10 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.collector.RoleCollector;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.context.env.ProjectionEnv;
+import org.scribble.visit.util.RoleCollector;
 
 public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 {

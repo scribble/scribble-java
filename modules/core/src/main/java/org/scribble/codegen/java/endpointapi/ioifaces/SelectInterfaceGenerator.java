@@ -6,11 +6,11 @@ import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 
 public class SelectInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public SelectInterfaceGenerator(StateChannelApiGenerator apigen, Map<LMIOAction, InterfaceBuilder> actions, EndpointState curr)
+	public SelectInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EndpointState curr)
 	{
 		super(apigen, actions, curr);
 	}

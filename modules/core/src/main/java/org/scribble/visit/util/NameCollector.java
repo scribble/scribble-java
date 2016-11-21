@@ -1,4 +1,4 @@
-package org.scribble.visit.collector;
+package org.scribble.visit.util;
 
 import java.util.HashSet;
 import java.util.Set;

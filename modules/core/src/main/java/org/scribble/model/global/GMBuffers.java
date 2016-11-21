@@ -10,20 +10,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMAccept;
-import org.scribble.model.endpoint.actions.LMConnect;
-import org.scribble.model.endpoint.actions.LMDisconnect;
-import org.scribble.model.endpoint.actions.LMIOAction;
-import org.scribble.model.endpoint.actions.LMReceive;
-import org.scribble.model.endpoint.actions.LMSend;
-import org.scribble.model.endpoint.actions.LMWrapClient;
-import org.scribble.model.endpoint.actions.LMWrapServer;
+import org.scribble.model.endpoint.actions.EAccept;
+import org.scribble.model.endpoint.actions.EConnect;
+import org.scribble.model.endpoint.actions.EDisconnect;
+import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.model.endpoint.actions.EReceive;
+import org.scribble.model.endpoint.actions.ESend;
+import org.scribble.model.endpoint.actions.EWrapClient;
+import org.scribble.model.endpoint.actions.EWrapServer;
 import org.scribble.sesstype.name.Role;
 
 public class GMBuffers
 {
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();
-	private final Map<Role, Map<Role, LMSend>> buffs = new HashMap<>();  // dest -> src -> msg
+	private final Map<Role, Map<Role, ESend>> buffs = new HashMap<>();  // dest -> src -> msg
 
 	public GMBuffers(Set<Role> roles, boolean implicit)
 	{
@@ -50,7 +50,7 @@ public class GMBuffers
 		// FIXME: do the same for connected
 		roles.forEach((k) -> 
 		{
-			HashMap<Role, LMSend> tmp = new HashMap<>();
+			HashMap<Role, ESend> tmp = new HashMap<>();
 			this.buffs.put(k, tmp);
 			roles.forEach((k2) -> 
 			{
@@ -80,13 +80,13 @@ public class GMBuffers
 	}
 	
 	// FIXME factor out properly with constructor
-	public Map<Role, Map<Role, LMSend>> getBuffers()
+	public Map<Role, Map<Role, ESend>> getBuffers()
 	{
 		//return this.buffs;
 		return new GMBuffers(this).buffs;
 	}
 
-	public Map<Role, LMSend> get(Role r)
+	public Map<Role, ESend> get(Role r)
 	{
 		return Collections.unmodifiableMap(this.buffs.get(r));
 	}
@@ -111,31 +111,31 @@ public class GMBuffers
 		return b != null && b;
 	}
 
-	public boolean canAccept(Role self, LMAccept a)
+	public boolean canAccept(Role self, EAccept a)
 	//public boolean canAccept(Role r1, Role r2)
 	{
 		return !isConnected(self, a.peer);
 		//return canConnect(r2, r1);
 	}
 
-	public boolean canConnect(Role self, LMConnect c)
+	public boolean canConnect(Role self, EConnect c)
 	//public boolean canConnect(Role r1, Role r2)
 	{
 		return !isConnected(self, c.peer);
 		//return !isConnected(r1, r2);
 	}
 
-	public boolean canDisconnect(Role self, LMDisconnect d)
+	public boolean canDisconnect(Role self, EDisconnect d)
 	{
 		return isConnected(self, d.peer);
 	}
 
-	public boolean canWrapClient(Role self, LMWrapClient wc)
+	public boolean canWrapClient(Role self, EWrapClient wc)
 	{
 		return isConnected(self, wc.peer);
 	}
 
-	public boolean canWrapServer(Role self, LMWrapServer ws)
+	public boolean canWrapServer(Role self, EWrapServer ws)
 	{
 		return isConnected(self, ws.peer);
 	}
@@ -162,19 +162,19 @@ public class GMBuffers
 		return copy;
 	}
 
-	public GMBuffers disconnect(Role self, LMDisconnect d)
+	public GMBuffers disconnect(Role self, EDisconnect d)
 	{
 		GMBuffers copy = new GMBuffers(this);
 		copy.connected.get(self).put(d.peer, false);
 		return copy;
 	}
 
-	public boolean canSend(Role self, LMSend a)
+	public boolean canSend(Role self, ESend a)
 	{
 		return isConnected(self, a.peer) && (this.buffs.get(a.peer).get(self) == null);
 	}
 
-	public GMBuffers send(Role self, LMSend a)
+	public GMBuffers send(Role self, ESend a)
 	{
 		GMBuffers copy = new GMBuffers(this);
 		copy.buffs.get(a.peer).put(self, a);
@@ -188,14 +188,14 @@ public class GMBuffers
 	}*/
 
 	//public Set<Receive> receivable(Role r) 
-	public Set<LMIOAction> inputable(Role r)   // FIXME: IAction  // FIXME: OAction version?
+	public Set<EAction> inputable(Role r)   // FIXME: IAction  // FIXME: OAction version?
 	{
 		/*Map<Role, Boolean> tmp = this.connected.get(r); 
 		if (tmp == null)
 		{
 			return Collections.emptySet();  // Not needed, guarded by state kind
 		}*/
-		Set<LMIOAction> res = this.buffs.get(r).entrySet().stream()
+		Set<EAction> res = this.buffs.get(r).entrySet().stream()
 				.filter((e) -> e.getValue() != null)
 				.map((e) -> e.getValue().toDual(e.getKey()))
 				.collect(Collectors.toSet());
@@ -216,9 +216,9 @@ public class GMBuffers
 	// FIXME: rename model "acceptable" actions to "consumable" (here is really "acceptable")
 	//public Set<IOAction> acceptable(Role r)  // Means connection accept actions
 	// Pre: curr is Accept state, r is accept peer
-	public Set<LMIOAction> acceptable(Role r, EndpointState curr)  // Means connection accept actions
+	public Set<EAction> acceptable(Role r, EndpointState curr)  // Means connection accept actions
 	{
-		Set<LMIOAction> res = new HashSet<>();
+		Set<EAction> res = new HashSet<>();
 		Map<Role, Boolean> tmp = this.connected.get(r);
 		/*if (tmp == null)
 		{
@@ -238,23 +238,23 @@ public class GMBuffers
 				return res;
 			}
 		}
-		List<LMIOAction> as = curr.getAllTakeable();
-		for (LMIOAction a : as)
+		List<EAction> as = curr.getAllTakeable();
+		for (EAction a : as)
 		{
-			res.add((LMAccept) a);
+			res.add((EAccept) a);
 		}
 		return res;
 	}
 
-	public Set<LMIOAction> wrapable(Role r)
+	public Set<EAction> wrapable(Role r)
 	{
-		Set<LMIOAction> res = new HashSet<>();
+		Set<EAction> res = new HashSet<>();
 		Map<Role, Boolean> tmp = this.connected.get(r);
 		if (tmp != null)
 		{
 			this.connected.keySet().stream()
 				.filter((k) -> tmp.containsKey(k) && tmp.get(k))
-				.forEach((k) -> res.add(new LMWrapServer(k)));
+				.forEach((k) -> res.add(new EWrapServer(k)));
 		}
 		return res;
 	}
@@ -275,7 +275,7 @@ public class GMBuffers
 		return tmp;
 	}*/
 
-	public GMBuffers receive(Role self, LMReceive a)
+	public GMBuffers receive(Role self, EReceive a)
 	{
 		GMBuffers copy = new GMBuffers(this);
 		copy.buffs.get(self).put(a.peer, null);
@@ -316,7 +316,7 @@ public class GMBuffers
 						(e) -> (e.getValue().entrySet().stream()
 								.filter((f) -> f.getValue() != null)
 								//.collect(Collectors.toMap((f) -> f.getKey(), (f) -> f.getValue())))  // Inference not working?
-								.collect(Collectors.toMap((Entry<Role, LMSend> f) -> f.getKey(), (f) -> f.getValue())))
+								.collect(Collectors.toMap((Entry<Role, ESend> f) -> f.getKey(), (f) -> f.getValue())))
 					)).toString();
 	}
 }

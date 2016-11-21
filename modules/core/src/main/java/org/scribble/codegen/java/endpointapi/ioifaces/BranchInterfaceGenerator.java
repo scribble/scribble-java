@@ -14,12 +14,12 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.Role;
 
 public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public BranchInterfaceGenerator(StateChannelApiGenerator apigen, Map<LMIOAction, InterfaceBuilder> actions, EndpointState curr)
+	public BranchInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EndpointState curr)
 	{
 		super(apigen, actions, curr);
 	}
@@ -35,7 +35,7 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addBranchMethods()
 	{
 		Role self = this.apigen.getSelf();
-		Set<LMIOAction> as = this.curr.getTakeable();
+		Set<EAction> as = this.curr.getTakeable();
 
 		// FIXME: factor out with BranchSocketGenerator
 		AbstractMethodBuilder bra = this.ib.newAbstractMethod("branch");
@@ -78,7 +78,7 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addSuccessorParamsAndActionInterfaces()
 	{
 		int i = 1;
-		for (LMIOAction a : this.curr.getTakeable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getTakeable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
 			i++;

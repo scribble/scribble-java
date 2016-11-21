@@ -8,7 +8,7 @@ import org.scribble.ast.local.LMessageTransfer;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.actions.LMSend;
+import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -32,7 +32,7 @@ public class LSendDel extends LMessageTransferDel
 		Payload payload = ls.msg.isMessageSigNode()  // Hacky?
 					? ((MessageSigNode) ls.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
-		graph.builder.addEdge(graph.builder.getEntry(), new LMSend(peer, mid, payload), graph.builder.getExit());
+		graph.builder.addEdge(graph.builder.getEntry(), new ESend(peer, mid, payload), graph.builder.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());
 		return (LSend) super.leaveEndpointGraphBuilding(parent, child, graph, ls);
 	}

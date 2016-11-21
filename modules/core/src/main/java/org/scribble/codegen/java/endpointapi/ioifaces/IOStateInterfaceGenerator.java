@@ -16,7 +16,7 @@ import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.actions.LMIOAction;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
@@ -24,21 +24,21 @@ import org.scribble.sesstype.name.Role;
 // Partial I/O State I/f generator -- Successor Interfaces and cast methods added later
 public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 {
-	public static final Comparator<LMIOAction> IOACTION_COMPARATOR = new Comparator<LMIOAction>()
+	public static final Comparator<EAction> IOACTION_COMPARATOR = new Comparator<EAction>()
 			{
 				@Override
-				public int compare(LMIOAction a1, LMIOAction a2)
+				public int compare(EAction a1, EAction a2)
 				{
 					return ActionInterfaceGenerator.getActionInterfaceName(a1).compareTo(ActionInterfaceGenerator.getActionInterfaceName(a2));
 				}
 			};
 
-	protected final Map<LMIOAction, InterfaceBuilder> actions;
+	protected final Map<EAction, InterfaceBuilder> actions;
 	
 	protected final InterfaceBuilder ib = new InterfaceBuilder();
 
 	// Preds can be null
-	public IOStateInterfaceGenerator(StateChannelApiGenerator apigen, Map<LMIOAction, InterfaceBuilder> actions, EndpointState curr)
+	public IOStateInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EndpointState curr)
 	{
 		super(apigen, curr);
 		this.actions = Collections.unmodifiableMap(actions);
@@ -75,7 +75,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	protected void addCastField()
 	{
 		String ifname = getIOStateInterfaceName(this.apigen.getSelf(), this.curr);
-		Set<LMIOAction> as = this.curr.getTakeable();
+		Set<EAction> as = this.curr.getTakeable();
 
 		FieldBuilder cast = this.ib.newField("cast");
 		cast.addModifiers(TypeBuilder.PUBLIC, TypeBuilder.STATIC, TypeBuilder.FINAL);
@@ -86,7 +86,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	protected void addSuccessorParamsAndActionInterfaces()
 	{
 		int i = 1;
-		for (LMIOAction a : this.curr.getTakeable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getTakeable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (a.isSend() || a.isReceive())  // HACK FIXME
 			{

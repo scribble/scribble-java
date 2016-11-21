@@ -21,13 +21,13 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EndpointFSM;
 import org.scribble.model.endpoint.EndpointGraph;
 import org.scribble.model.endpoint.EndpointState.Kind;
-import org.scribble.model.endpoint.actions.LMIOAction;
-import org.scribble.model.endpoint.actions.LMSend;
+import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.global.GMBuffers;
 import org.scribble.model.global.GMConfig;
 import org.scribble.model.global.GMState;
 import org.scribble.model.global.GMStateErrors;
-import org.scribble.model.global.actions.GMIOAction;
+import org.scribble.model.global.actions.GMAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.context.ModuleContextVisitor;
@@ -161,7 +161,7 @@ public class GMChecker extends ModuleContextVisitor
 			{
 				// FIXME: getTrace can get stuck when local choice subjects are disabled
 				//List<GIOAction> trace = getTrace(init, s, reach);  // FIXME: getTrace broken on non-det self loops?
-				List<GMIOAction> trace = getTrace(all, init, s, reach);  // FIXME: getTrace broken on non-det self loops?
+				List<GMAction> trace = getTrace(all, init, s, reach);  // FIXME: getTrace broken on non-det self loops?
 				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
 				errorMsg += "\nSafety violation(s) at " + s.id + ":\n    Trace=" + trace;
 			}
@@ -212,7 +212,7 @@ public class GMChecker extends ModuleContextVisitor
 				{
 					errorMsg += "\nRole progress violation for " + roleLiveness + " in terminal set:\n    " + termSetToString(termset, all);
 				}
-				Map<Role, Set<LMSend>> msgLiveness = checkMessageLiveness(all, init, termset);
+				Map<Role, Set<ESend>> msgLiveness = checkMessageLiveness(all, init, termset);
 				if (!msgLiveness.isEmpty())
 				{
 					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n    " + termSetToString(termset, all);
@@ -283,13 +283,13 @@ public class GMChecker extends ModuleContextVisitor
 				}
 			}
 			
-			Map<Role, List<LMIOAction>> takeable = curr.getTakeable();
+			Map<Role, List<EAction>> takeable = curr.getTakeable();
 
 			//job.debugPrintln("Acceptable at (" + curr.id + "): " + acceptable);
 
 			for (Role r : takeable.keySet())
 			{
-				List<LMIOAction> acceptable_r = takeable.get(r);
+				List<EAction> acceptable_r = takeable.get(r);
 				
 				// Hacky?  // FIXME: factor out and make more robust (e.g. for new state kinds) -- e.g. "hasPayload" in IOAction
 				//EndpointState currstate = curr.config.states.get(r);
@@ -297,7 +297,7 @@ public class GMChecker extends ModuleContextVisitor
 				Kind k = currfsm.getStateKind();
 				if (k == Kind.OUTPUT)
 				{
-					for (LMIOAction a : acceptable_r)  // Connect implicitly has no payload (also accept, so skip)
+					for (EAction a : acceptable_r)  // Connect implicitly has no payload (also accept, so skip)
 					{
 						if (acceptable_r.stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
@@ -308,7 +308,7 @@ public class GMChecker extends ModuleContextVisitor
 				}
 				else if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT || k == Kind.ACCEPT)
 				{
-					for (LMIOAction a : acceptable_r)
+					for (EAction a : acceptable_r)
 					{
 						if (currfsm.getAllTakeable().stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
@@ -321,9 +321,9 @@ public class GMChecker extends ModuleContextVisitor
 
 			for (Role r : takeable.keySet())
 			{
-				List<LMIOAction> acceptable_r = takeable.get(r);
+				List<EAction> acceptable_r = takeable.get(r);
 				
-				for (LMIOAction a : acceptable_r)
+				for (EAction a : acceptable_r)
 				{
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
@@ -331,24 +331,24 @@ public class GMChecker extends ModuleContextVisitor
 					}
 					else if (a.isAccept() || a.isConnect())
 					{	
-						List<LMIOAction> as = takeable.get(a.peer);
-						LMIOAction d = a.toDual(r);
+						List<EAction> as = takeable.get(a.peer);
+						EAction d = a.toDual(r);
 						if (as != null && as.contains(d))
 						{
 							as.remove(d);  // Removes one occurrence
 							//getNextStates(seen, todo, curr.sync(r, a, a.peer, d));
-							GMIOAction g = (a.isConnect()) ? a.toGlobal(r) : d.toGlobal(a.peer);
+							GMAction g = (a.isConnect()) ? a.toGlobal(r) : d.toGlobal(a.peer);
 							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, d));
 						}
 					}
 					else if (a.isWrapClient() || a.isWrapServer())
 					{
-						List<LMIOAction> as = takeable.get(a.peer);
-						LMIOAction w = a.toDual(r);
+						List<EAction> as = takeable.get(a.peer);
+						EAction w = a.toDual(r);
 						if (as != null && as.contains(w))
 						{
 							as.remove(w);  // Removes one occurrence
-							GMIOAction g = (a.isConnect()) ? a.toGlobal(r) : w.toGlobal(a.peer);
+							GMAction g = (a.isConnect()) ? a.toGlobal(r) : w.toGlobal(a.peer);
 							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, w));
 						}
 					}
@@ -419,7 +419,7 @@ public class GMChecker extends ModuleContextVisitor
 
 	//private void foo(Set<WFState> seen, LinkedHashSet<WFState> todo, WFState curr, Role r, IOAction a)
 	//private void getNextStates(LinkedHashSet<WFState> todo, Set<WFState> seen, WFState curr, GIOAction a, List<WFConfig> nexts)
-	private void getNextStates(LinkedHashSet<GMState> todo, Map<Integer, GMState> seen, GMState curr, GMIOAction a, List<GMConfig> nexts)
+	private void getNextStates(LinkedHashSet<GMState> todo, Map<Integer, GMState> seen, GMState curr, GMAction a, List<GMConfig> nexts)
 	{
 		for (GMConfig next : nexts)
 		{
@@ -496,7 +496,7 @@ public class GMChecker extends ModuleContextVisitor
 					}
 					else*/
 					{
-						for (GMIOAction a : next.getActions())
+						for (GMAction a : next.getActions())
 						{
 							if (a.containsRole(r))
 							{
@@ -540,7 +540,7 @@ public class GMChecker extends ModuleContextVisitor
 	// "message liveness"
 	//private static Set<Send> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
 	//private static Map<Role, Set<Send>> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
-	private static Map<Role, Set<LMSend>> checkMessageLiveness(Map<Integer, GMState> all, GMState init, Set<Integer> termset) throws ScribbleException
+	private static Map<Role, Set<ESend>> checkMessageLiveness(Map<Integer, GMState> all, GMState init, Set<Integer> termset) throws ScribbleException
 	{
 		//Set<Send> res = new HashSet<>();
 		//Set<Role> roles = termset.iterator().next().config.states.keySet();
@@ -549,7 +549,7 @@ public class GMChecker extends ModuleContextVisitor
 		/*Iterator<WFState> i = termset.iterator();
 		Map<Role, Map<Role, Send>> b0 = i.next().config.buffs.getBuffers();*/
 		Iterator<Integer> i = termset.iterator();
-		Map<Role, Map<Role, LMSend>> b0 = all.get(i.next()).config.buffs.getBuffers();
+		Map<Role, Map<Role, ESend>> b0 = all.get(i.next()).config.buffs.getBuffers();
 		while (i.hasNext())
 		{
 			//WFState s = i.next();
@@ -559,10 +559,10 @@ public class GMChecker extends ModuleContextVisitor
 			{
 				for (Role r2 : roles)
 				{
-					LMSend s0 = b0.get(r1).get(r2);
+					ESend s0 = b0.get(r1).get(r2);
 					if (s0 != null)
 					{
-						LMSend tmp = b.get(r1).get(r2);
+						ESend tmp = b.get(r1).get(r2);
 						if (tmp == null)
 						{
 							b0.get(r1).put(r2, null);
@@ -572,15 +572,15 @@ public class GMChecker extends ModuleContextVisitor
 			}
 		}
 	
-		Map<Role, Set<LMSend>> res = new HashMap<>();
+		Map<Role, Set<ESend>> res = new HashMap<>();
 		for (Role r1 : roles)
 		{
 			for (Role r2 : roles)
 			{
-				LMSend m = b0.get(r1).get(r2);
+				ESend m = b0.get(r1).get(r2);
 				if (m != null)
 				{
-					Set<LMSend> tmp = res.get(r2);
+					Set<ESend> tmp = res.get(r2);
 					if (tmp == null)
 					{
 						tmp = new HashSet<>();
@@ -638,7 +638,7 @@ public class GMChecker extends ModuleContextVisitor
 
 	// Pre: reach.get(start).contains(end)  // FIXME: will return null if initial state is error
 	//private static List<GIOAction> getTrace(WFState start, WFState end, Map<WFState, Set<WFState>> reach)
-	private static List<GMIOAction> getTrace(Map<Integer, GMState> all, GMState start, GMState end, Map<Integer, Set<Integer>> reach)
+	private static List<GMAction> getTrace(Map<Integer, GMState> all, GMState start, GMState end, Map<Integer, Set<Integer>> reach)
 	{
 		/*List<WFState> seen = new LinkedList<WFState>();
 		seen.add(start);*/
@@ -662,7 +662,7 @@ public class GMChecker extends ModuleContextVisitor
 	}
 
 	// Djikstra's
-	private static List<GMIOAction> getTraceAux(List<GMIOAction> trace, Map<Integer, GMState> all, Set<Integer> seen, SortedMap<Integer, Set<Integer>> candidates, GMState end, Map<Integer, Set<Integer>> reach)
+	private static List<GMAction> getTraceAux(List<GMAction> trace, Map<Integer, GMState> all, Set<Integer> seen, SortedMap<Integer, Set<Integer>> candidates, GMState end, Map<Integer, Set<Integer>> reach)
 	{
 		Integer dis = candidates.keySet().iterator().next();
 		Set<Integer> cs = candidates.get(dis);
@@ -675,11 +675,11 @@ public class GMChecker extends ModuleContextVisitor
 		}
 
 		GMState curr = all.get(currid);
-		Iterator<GMIOAction> as = curr.getActions().iterator();
+		Iterator<GMAction> as = curr.getActions().iterator();
 		Iterator<GMState> ss = curr.getSuccessors().iterator();
 		while (as.hasNext())
 		{
-			GMIOAction a = as.next();
+			GMAction a = as.next();
 			GMState s = ss.next();
 			if (s.id == end.id)
 			{
@@ -697,9 +697,9 @@ public class GMChecker extends ModuleContextVisitor
 					candidates.put(dis+1, tmp1);
 				}
 				tmp1.add(s.id);
-				List<GMIOAction> tmp2 = new LinkedList<>(trace);
+				List<GMAction> tmp2 = new LinkedList<>(trace);
 				tmp2.add(a);
-				List<GMIOAction> res = getTraceAux(tmp2, all, seen, candidates, end, reach);
+				List<GMAction> res = getTraceAux(tmp2, all, seen, candidates, end, reach);
 				if (res != null)
 				{
 					return res;

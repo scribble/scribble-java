@@ -4,7 +4,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public class GMReceive extends GMIOAction
+public class GMReceive extends GMAction
 {
 	public GMReceive(Role subj, Role obj, MessageId<?> mid, Payload payload)
 	{

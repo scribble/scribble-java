@@ -1,43 +1,43 @@
 package org.scribble.model.endpoint.actions;
 
-import org.scribble.model.global.actions.GMConnect;
+import org.scribble.model.global.actions.GMAccept;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public class LMConnect extends LMIOAction
+public class EAccept extends EAction
 {
-	public LMConnect(Role peer, MessageId<?> mid, Payload payload)
-	//public Connect(Role peer)
+	public EAccept(Role peer, MessageId<?> mid, Payload payload)
+	//public Accept(Role peer)
 	{
 		super(peer, mid, payload);
 		//super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
-	public LMAccept toDual(Role self)
+	public EConnect toDual(Role self)
 	{
-		//return new Accept(self);
-		return new LMAccept(self, this.mid, this.payload);
+		//return new Connect(self);
+		return new EConnect(self, this.mid, this.payload);
 	}
 
 	@Override
-	public GMConnect toGlobal(Role self)
+	public GMAccept toGlobal(Role self)
 	{
-		//return new GConnect(self, this.peer);
-		return new GMConnect(self, this.peer, this.mid, this.payload);
+		return new GMAccept(self, this.peer, this.mid, this.payload);
+		//return new GAccept(self, this.peer);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 929;
+		int hash = 937;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 	
 	@Override
-	public boolean isConnect()
+	public boolean isAccept()
 	{
 		return true;
 	}
@@ -49,22 +49,21 @@ public class LMConnect extends LMIOAction
 		{
 			return true;
 		}
-		if (!(o instanceof LMConnect))
+		if (!(o instanceof EAccept))
 		{
 			return false;
 		}
-		return ((LMConnect) o).canEqual(this) && super.equals(o);
+		return ((EAccept) o).canEqual(this) && super.equals(o);
 	}
 
-	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof LMConnect;
+		return o instanceof EAccept;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "!!";
+		return "??";
 	}
 }

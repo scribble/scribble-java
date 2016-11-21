@@ -6,17 +6,17 @@ import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
 // Duplicated from Disconnect
-public class LMWrapClient extends LMIOAction
+public class EWrapClient extends EAction
 {
-	public LMWrapClient(Role peer)
+	public EWrapClient(Role peer)
 	{
 		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
-	public LMWrapServer toDual(Role self)
+	public EWrapServer toDual(Role self)
 	{
-		return new LMWrapServer(self);
+		return new EWrapServer(self);
 	}
 
 	@Override
@@ -46,17 +46,17 @@ public class LMWrapClient extends LMIOAction
 		{
 			return true;
 		}
-		if (!(o instanceof LMWrapClient))
+		if (!(o instanceof EWrapClient))
 		{
 			return false;
 		}
-		return ((LMWrapClient) o).canEqual(this) && super.equals(o);
+		return ((EWrapClient) o).canEqual(this) && super.equals(o);
 	}
 
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof LMWrapClient;
+		return o instanceof EWrapClient;
 	}
 
 	@Override

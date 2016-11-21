@@ -4,7 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LWrapServer;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.actions.LMWrapServer;
+import org.scribble.model.endpoint.actions.EWrapServer;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.context.EndpointGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
@@ -18,7 +18,7 @@ public class LWrapServerDel extends ConnectionActionDel implements LSimpleIntera
 	{
 		LWrapServer la = (LWrapServer) visited;
 		Role peer = la.src.toName();
-		builder.builder.addEdge(builder.builder.getEntry(), new LMWrapServer(peer), builder.builder.getExit());
+		builder.builder.addEdge(builder.builder.getEntry(), new EWrapServer(peer), builder.builder.getExit());
 		return (LWrapServer) super.leaveEndpointGraphBuilding(parent, child, builder, la);
 	}
 

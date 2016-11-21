@@ -1,4 +1,4 @@
-package org.scribble.visit.collector;
+package org.scribble.visit.util;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
