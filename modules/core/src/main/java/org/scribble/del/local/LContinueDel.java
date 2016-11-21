@@ -12,7 +12,7 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.ProtocolDefInliner;
@@ -72,16 +72,16 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 			// ** "Overwrites" previous edge built by send/receive(s) leading to this continue
 			/*graph.builder.removeLastEdge(graph.builder.getPredecessors());  // Hacky? -- cannot implicitly overwrite (addEdge) given non-det machines
 			graph.builder.addEdge(graph.builder.getPredecessors(), graph.builder.getPreviousActions(), graph.builder.getRecursionEntry(rv));*/
-			Iterator<EndpointState> preds = graph.builder.getPredecessors().iterator();
+			Iterator<EState> preds = graph.builder.getPredecessors().iterator();
 			Iterator<EAction> prevs = graph.builder.getPreviousActions().iterator();
-			EndpointState entry = graph.builder.getEntry();
+			EState entry = graph.builder.getEntry();
 
 			Set<List<Object>> removed = new HashSet<>();  
 					// HACK: for identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  // FIXME: do here, or refactor into GraphBuilder?
 					// Because duplicate edges preemptively pruned by ModelState.addEdge, but corresponding predecessors not pruned  // FIXME: make uniform
 			while (preds.hasNext())
 			{
-				EndpointState pred = preds.next();
+				EState pred = preds.next();
 				EAction prev = prevs.next();
 				List<Object> tmp = Arrays.asList(pred, prev, entry);
 				if (!removed.contains(tmp))

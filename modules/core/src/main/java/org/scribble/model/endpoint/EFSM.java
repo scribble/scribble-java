@@ -3,22 +3,22 @@ package org.scribble.model.endpoint;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.model.endpoint.EndpointState.Kind;
+import org.scribble.model.endpoint.EState.Kind;
 import org.scribble.model.endpoint.actions.EAction;
 
-public class EndpointFSM extends EndpointGraph
+public class EFSM extends EGraph
 {
-	public final EndpointState curr;
+	public final EState curr;
 	
 	//public EndpointFSM(EndpointState init, EndpointState term)
-	protected EndpointFSM(EndpointGraph graph)
+	protected EFSM(EGraph graph)
 	{
 		this(graph.init, graph.term, graph.init);
 	}
 
 	//public EndpointFSM(EndpointState init, EndpointState term, EndpointState curr)
 	//public EndpointFSM(EndpointGraph graph, EndpointState curr)
-	protected EndpointFSM(EndpointState init, EndpointState term, EndpointState curr)
+	protected EFSM(EState init, EState term, EState curr)
 	{
 		super(init, term);
 		this.curr = curr;
@@ -52,10 +52,10 @@ public class EndpointFSM extends EndpointGraph
 		return this.curr.getStateKind();
 	}
 
-	public List<EndpointFSM> takeAll(EAction a)
+	public List<EFSM> takeAll(EAction a)
 	{
 		//return this.curr.takeAll(a).stream().map((s) -> new EndpointFSM(this.init, this.term, s)).collect(Collectors.toList());
-		return this.curr.takeAll(a).stream().map((s) -> new EndpointFSM(this.init, this.term, s)).collect(Collectors.toList());
+		return this.curr.takeAll(a).stream().map((s) -> new EFSM(this.init, this.term, s)).collect(Collectors.toList());
 	}
 
 	public List<EAction> getAllTakeable()
@@ -89,11 +89,11 @@ public class EndpointFSM extends EndpointGraph
 		{
 			return true;
 		}
-		if (!(o instanceof EndpointFSM))
+		if (!(o instanceof EFSM))
 		{
 			return false;
 		}
-		EndpointFSM them = (EndpointFSM) o;
+		EFSM them = (EFSM) o;
 		return this.init.equals(them.init) && this.curr.equals(them.curr);
 	}
 }

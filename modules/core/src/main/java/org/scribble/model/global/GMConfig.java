@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.model.endpoint.EndpointFSM;
-import org.scribble.model.endpoint.EndpointState;
-import org.scribble.model.endpoint.EndpointState.Kind;
+import org.scribble.model.endpoint.EFSM;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.EState.Kind;
 import org.scribble.model.endpoint.actions.EAccept;
 import org.scribble.model.endpoint.actions.EConnect;
 import org.scribble.model.endpoint.actions.EDisconnect;
@@ -27,12 +27,12 @@ import org.scribble.sesstype.name.Role;
 public class GMConfig
 {
 	//public final Map<Role, EndpointState> states;
-	public final Map<Role, EndpointFSM> states;
+	public final Map<Role, EFSM> states;
 	public final GMBuffers buffs;
 	
 	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> buff)
 	//public WFConfig(Map<Role, EndpointState> state, WFBuffers buffs)
-	public GMConfig(Map<Role, EndpointFSM> state, GMBuffers buffs)
+	public GMConfig(Map<Role, EFSM> state, GMBuffers buffs)
 	{
 		this.states = Collections.unmodifiableMap(state);
 		//this.buffs = Collections.unmodifiableMap(buff.keySet().stream() .collect(Collectors.toMap((k) -> k, (k) -> Collections.unmodifiableMap(buff.get(k)))));
@@ -59,7 +59,7 @@ public class GMConfig
 	public boolean canSafelyTerminate(Role r)
 	{
 		//EndpointState s = this.states.get(r);
-		EndpointFSM s = this.states.get(r);
+		EFSM s = this.states.get(r);
 		//return
 		/*boolean cannotSafelyTerminate =  // FIXME: check and cleanup
 				(s.isTerminal() && !this.buffs.isEmpty(r))
@@ -95,12 +95,12 @@ public class GMConfig
 		List<GMConfig> res = new LinkedList<>();
 		
 		//List<EndpointState> succs = this.states.get(r).takeAll(a);
-		List<EndpointFSM> succs = this.states.get(r).takeAll(a);
+		List<EFSM> succs = this.states.get(r).takeAll(a);
 		//for (EndpointState succ : succs)
-		for (EndpointFSM succ : succs)
+		for (EFSM succ : succs)
 		{
 			//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
-			Map<Role, EndpointFSM> tmp1 = new HashMap<>(this.states);
+			Map<Role, EFSM> tmp1 = new HashMap<>(this.states);
 			//Map<Role, Map<Role, Send>> tmp2 = new HashMap<>(this.buffs);
 		
 			tmp1.put(r, succ);
@@ -138,15 +138,15 @@ public class GMConfig
 		/*List<EndpointState> succs1 = this.states.get(r1).takeAll(a1);
 		List<EndpointState> succs2 = this.states.get(r2).takeAll(a2);
 		for (EndpointState succ1 : succs1)*/
-		List<EndpointFSM> succs1 = this.states.get(r1).takeAll(a1);
-		List<EndpointFSM> succs2 = this.states.get(r2).takeAll(a2);
-		for (EndpointFSM succ1 : succs1)
+		List<EFSM> succs1 = this.states.get(r1).takeAll(a1);
+		List<EFSM> succs2 = this.states.get(r2).takeAll(a2);
+		for (EFSM succ1 : succs1)
 		{
 			//for (EndpointState succ2 : succs2)
-			for (EndpointFSM succ2 : succs2)
+			for (EFSM succ2 : succs2)
 			{
 				//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
-				Map<Role, EndpointFSM> tmp1 = new HashMap<>(this.states);
+				Map<Role, EFSM> tmp1 = new HashMap<>(this.states);
 				tmp1.put(r1, succ1);
 				tmp1.put(r2, succ2);
 				GMBuffers tmp2;
@@ -177,7 +177,7 @@ public class GMConfig
 		for (Role r : this.states.keySet())
 		{
 			//EndpointState s = this.states.get(r);
-			EndpointFSM s = this.states.get(r);
+			EFSM s = this.states.get(r);
 			Kind k = s.getStateKind();
 			if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
 			{
@@ -283,7 +283,7 @@ public class GMConfig
 			candidate.add(r);
 			
 			//EndpointState s = this.states.get(r);
-			EndpointFSM s = this.states.get(r);
+			EFSM s = this.states.get(r);
 			if (s.getStateKind() == Kind.OUTPUT && !s.isConnectOrWrapClientOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
 				// FIXME: move into isWaitingFor
@@ -324,7 +324,7 @@ public class GMConfig
 	private Set<Role> isWaitingFor(Role r)
 	{
 		//EndpointState s = this.states.get(r);
-		EndpointFSM s = this.states.get(r);
+		EFSM s = this.states.get(r);
 		Kind k = s.getStateKind();
 		if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
 		{
@@ -414,7 +414,7 @@ public class GMConfig
 		for (Role r : this.states.keySet())
 		{
 			//EndpointState s = this.states.get(r);
-			EndpointFSM s = this.states.get(r);
+			EFSM s = this.states.get(r);
 			if (s.isTerminal())  // Local termination of r, i.e. not necessarily "full deadlock"
 			{
 				Set<ESend> orphs = this.buffs.get(r).values().stream().filter((v) -> v != null).collect(Collectors.toSet());
@@ -459,9 +459,9 @@ public class GMConfig
 	
 	// Not just "unfinished", but also "non-initiated" (accept guarded) -- though could be non-initiated after some previous completions
 	// Maybe not needed -- previously not used (even without accept-correlation check)
-	public Map<Role, EndpointState> getUnfinishedRoles()
+	public Map<Role, EState> getUnfinishedRoles()
 	{
-		Map<Role, EndpointState> res = new HashMap<>();
+		Map<Role, EState> res = new HashMap<>();
 		if (getTakeable().isEmpty() && !isSafeTermination())
 		{
 			for (Role r : this.states.keySet())
@@ -481,7 +481,7 @@ public class GMConfig
 		for (Role r : this.states.keySet())
 		{
 			//EndpointState s = this.states.get(r);
-			EndpointFSM fsm = this.states.get(r);
+			EFSM fsm = this.states.get(r);
 			switch (fsm.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
 			{
 				case OUTPUT:
@@ -507,7 +507,7 @@ public class GMConfig
 							// FIXME: factor out
 							EConnect c = (EConnect) a;
 							//EndpointState speer = this.states.get(c.peer);
-							EndpointFSM speer = this.states.get(c.peer);
+							EFSM speer = this.states.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
 								List<EAction> peeras = speer.getAllTakeable();
@@ -544,7 +544,7 @@ public class GMConfig
 						{
 							// FIXME: factor out
 							EWrapClient wc = (EWrapClient) a;
-							EndpointFSM speer = this.states.get(wc.peer);
+							EFSM speer = this.states.get(wc.peer);
 							List<EAction> peeras = speer.getAllTakeable();
 							for (EAction peera : peeras)
 							{
@@ -664,7 +664,7 @@ public class GMConfig
 							// FIXME: factor out
 							EAccept c = (EAccept) a;
 							//EndpointState speer = this.states.get(c.peer);
-							EndpointFSM speer = this.states.get(c.peer);
+							EFSM speer = this.states.get(c.peer);
 							//if (speer.getStateKind() == Kind.OUTPUT)
 							{
 								List<EAction> peeras = speer.getAllTakeable();
@@ -698,7 +698,7 @@ public class GMConfig
 						if (a.isWrapServer())
 						{
 							EWrapServer ws = (EWrapServer) a;
-							EndpointFSM speer = this.states.get(ws.peer);
+							EFSM speer = this.states.get(ws.peer);
 							{
 								List<EAction> peeras = speer.getAllTakeable();
 								for (EAction peera : peeras)

@@ -13,14 +13,14 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
 public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public CaseInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EndpointState curr)
+	public CaseInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EState curr)
 	{
 		super(apigen, actions, curr);
 	}
@@ -72,7 +72,7 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 		{
 			MethodBuilder mb = this.ib.newAbstractMethod();
 			CaseSocketGenerator.setCaseReceiveDiscardHeaderWithoutReturnType(this.apigen, a, mb); 
-			EndpointState succ = this.curr.take(a);
+			EState succ = this.curr.take(a);
 			if (succ.isTerminal())
 			{
 				ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);
@@ -88,7 +88,7 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 	//protected static String getCasesInterfaceName(String braif)
 	// Pre: s is a branch state
 	// Cf. IOStateInterfaceGenerator.getIOStateInterfaceName
-	protected static String getCasesInterfaceName(Role self, EndpointState s)
+	protected static String getCasesInterfaceName(Role self, EState s)
 	{
 		//return "Case_" + braif.substring("Branch_".length(), braif.length());
 		return "Case_" + self + "_" + s.getTakeable().stream().sorted(IOACTION_COMPARATOR)

@@ -11,7 +11,7 @@ import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
@@ -19,7 +19,7 @@ import org.scribble.sesstype.name.PayloadType;
 
 public class OutputSocketGenerator extends ScribSocketGenerator
 {
-	public OutputSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
+	public OutputSocketGenerator(StateChannelApiGenerator apigen, EState curr)
 	{
 		super(apigen, curr);
 	}
@@ -49,7 +49,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		boolean hasWrap = false;
 		for (EAction a : curr.getTakeable())  // (Scribble ensures all "a" are input or all are output)
 		{
-			EndpointState succ = curr.take(a);
+			EState succ = curr.take(a);
 			
 			MethodBuilder mb = this.cb.newMethod();
 			if (a.isSend())

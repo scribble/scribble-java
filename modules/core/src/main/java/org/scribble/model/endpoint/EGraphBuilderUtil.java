@@ -17,7 +17,7 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of EndpointState
-public class EndpointGraphBuilderUtil extends GraphBuilderUtil<EAction, EndpointState, Local>
+public class EGraphBuilderUtil extends GraphBuilderUtil<EAction, EState, Local>
 {
 	/*private EndpointState root;
 	
@@ -31,39 +31,39 @@ public class EndpointGraphBuilderUtil extends GraphBuilderUtil<EAction, Endpoint
 	private EndpointState entry;
 	private EndpointState exit;  // Good for merges (otherwise have to generate dummy merge nodes)*/
 	
-	public EndpointGraphBuilderUtil()
+	public EGraphBuilderUtil()
 	{
 
 	}
 
-	public void removeEdgeFromPredecessor(EndpointState s, EAction a) throws ScribbleException
+	public void removeEdgeFromPredecessor(EState s, EAction a) throws ScribbleException
 	{
 		super.removeEdgeFromPredecessor(s, a);
 	}
 	
 	// Choice-guarded continues (can be done in one pass)
-	public void addRecursionEdge(EndpointState s, EAction a, EndpointState succ)
+	public void addRecursionEdge(EState s, EAction a, EState succ)
 	{
 		super.addRecursionEdge(s, a, succ);
 	}
 	
 	// Choice-unguarded continues -- fixed in finalise pass
-	public void addContinueEdge(EndpointState s, RecVar rv)
+	public void addContinueEdge(EState s, RecVar rv)
 	{
 		/*this.contStates.add(s);
 		this.contRecVars.add(rv);*/
-		EndpointState entry = getRecursionEntry(rv);
+		EState entry = getRecursionEntry(rv);
 		addEdgeAux(s, new IntermediateContinueEdge(rv), entry);
 	}
 	
-	public EndpointGraph finalise()
+	public EGraph finalise()
 	{
-		EndpointState res = new EndpointState(this.entry.getLabels());
-		EndpointState resTerm = new EndpointState(this.exit.getLabels());
-		Map<EndpointState, EndpointState> map = new HashMap<>();
+		EState res = new EState(this.entry.getLabels());
+		EState resTerm = new EState(this.exit.getLabels());
+		Map<EState, EState> map = new HashMap<>();
 		map.put(this.entry, res);
 		map.put(this.exit, resTerm);
-		Set<EndpointState> seen = new HashSet<>();
+		Set<EState> seen = new HashSet<>();
 		fixContinueEdges(seen, map, this.entry, res);
 		if (!seen.contains(this.exit))
 		{
@@ -74,11 +74,11 @@ public class EndpointGraphBuilderUtil extends GraphBuilderUtil<EAction, Endpoint
 		EndpointState dfa = determinise(all, res, resTerm);
 		System.out.println("111: " + dfa.toDot());*/
 		
-		return new EndpointGraph(res, resTerm);
+		return new EGraph(res, resTerm);
 	}
 	
 	// FIXME: incomplete: won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
-	private void fixContinueEdges(Set<EndpointState> seen, Map<EndpointState, EndpointState> map, EndpointState curr, EndpointState res)
+	private void fixContinueEdges(Set<EState> seen, Map<EState, EState> map, EState curr, EState res)
 	{
 		if (seen.contains(curr))
 		{
@@ -86,12 +86,12 @@ public class EndpointGraphBuilderUtil extends GraphBuilderUtil<EAction, Endpoint
 		}
 		seen.add(curr);
 		Iterator<EAction> as = curr.getAllTakeable().iterator();
-		Iterator<EndpointState> ss = curr.getSuccessors().iterator();
+		Iterator<EState> ss = curr.getSuccessors().iterator();
 		while (as.hasNext())
 		{
 			EAction a = as.next();
-			EndpointState succ = ss.next();
-			EndpointState next;
+			EState succ = ss.next();
+			EState next;
 			next = getNext(map, succ);
 			
 			if (!(a instanceof IntermediateContinueEdge))
@@ -107,7 +107,7 @@ public class EndpointGraphBuilderUtil extends GraphBuilderUtil<EAction, Endpoint
 				RecVar rv = new RecVar(ice.mid.toString());
 				for (EAction e : this.enactingMap.get(succ).get(rv))
 				{
-					for (EndpointState n : succ.takeAll(e))
+					for (EState n : succ.takeAll(e))
 					{
 						next = getNext(map, n);
 						addEdgeAux(res, e, next);
@@ -119,16 +119,16 @@ public class EndpointGraphBuilderUtil extends GraphBuilderUtil<EAction, Endpoint
 		}
 	}
 
-	private EndpointState getNext(Map<EndpointState, EndpointState> map, EndpointState succ)
+	private EState getNext(Map<EState, EState> map, EState succ)
 	{
-		EndpointState next;
+		EState next;
 		if (map.containsKey(succ))
 		{
 			 next = map.get(succ);
 		}
 		else
 		{
-			next = new EndpointState(succ.getLabels());
+			next = new EState(succ.getLabels());
 			map.put(succ, next);
 		}
 		return next;
@@ -142,9 +142,9 @@ public class EndpointGraphBuilderUtil extends GraphBuilderUtil<EAction, Endpoint
 		this.exit = newState(Collections.emptySet());
 	}*/
 	
-	public EndpointState newState(Set<RecVar> labs)
+	public EState newState(Set<RecVar> labs)
 	{
-		return new EndpointState(labs);
+		return new EState(labs);
 	}
 	
 	/*private Map<Integer, EndpointState> getAllStates(EndpointState init)

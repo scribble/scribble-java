@@ -18,9 +18,9 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointFSM;
-import org.scribble.model.endpoint.EndpointGraph;
-import org.scribble.model.endpoint.EndpointState.Kind;
+import org.scribble.model.endpoint.EFSM;
+import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.endpoint.EState.Kind;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.global.GMBuffers;
@@ -104,7 +104,7 @@ public class GMChecker extends ModuleContextVisitor
 	private GProtocolDecl buildAndCheck(GProtocolDecl gpd, GProtocolName fullname, boolean fair) throws ScribbleException
 	{
 		//Map<Role, EndpointState> egraphs = getEndpointGraphs(fullname, gpd);
-		Map<Role, EndpointFSM> egraphs = getEndpointFSMs(fullname, gpd, fair);
+		Map<Role, EFSM> egraphs = getEndpointFSMs(fullname, gpd, fair);
 			
 		//Set<WFState> seen = buildGlobalModel(job, fullname, init);  // Returns set of all states
 		//Set<WFState> seen = new HashSet<>();
@@ -237,7 +237,7 @@ public class GMChecker extends ModuleContextVisitor
 	//private Set<WFState> buildGlobalModel(Job job, GProtocolName fullname, WFState init) throws ScribbleException
 	//private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointState> egraphs, Set<WFState> seen) throws ScribbleException
 	//private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointFSM> egraphs, Set<WFState> seen) throws ScribbleException
-	private GMState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointFSM> egraphs, Map<Integer, GMState> seen) throws ScribbleException
+	private GMState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs, Map<Integer, GMState> seen) throws ScribbleException
 	{
 		Job job = getJob();
 		//JobContext jc = job.getContext();
@@ -293,7 +293,7 @@ public class GMChecker extends ModuleContextVisitor
 				
 				// Hacky?  // FIXME: factor out and make more robust (e.g. for new state kinds) -- e.g. "hasPayload" in IOAction
 				//EndpointState currstate = curr.config.states.get(r);
-				EndpointFSM currfsm = curr.config.states.get(r);
+				EFSM currfsm = curr.config.states.get(r);
 				Kind k = currfsm.getStateKind();
 				if (k == Kind.OUTPUT)
 				{
@@ -367,12 +367,12 @@ public class GMChecker extends ModuleContextVisitor
 	}
 
 	//private Map<Role, EndpointState> getEndpointGraphs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
-	private Map<Role, EndpointFSM> getEndpointFSMs(GProtocolName fullname, GProtocolDecl gpd, boolean fair) throws ScribbleException
+	private Map<Role, EFSM> getEndpointFSMs(GProtocolName fullname, GProtocolDecl gpd, boolean fair) throws ScribbleException
 	{
 		Job job = getJob();
 
 		//Map<Role, EndpointState> egraphs = new HashMap<>();
-		Map<Role, EndpointFSM> egraphs = new HashMap<>();
+		Map<Role, EFSM> egraphs = new HashMap<>();
 		
 		for (Role self : gpd.header.roledecls.getRoles())
 		{
@@ -408,7 +408,7 @@ public class GMChecker extends ModuleContextVisitor
 				job.debugPrintln("(" + fullname + ") Non-fair EFSM for " + self + ":\n" + graph.init.toDot());
 			}*/
 			
-			EndpointGraph graph = fair ? job.getContext().getEndpointGraph(fullname, self) : job.getContext().getUnfairEndpointGraph(fullname, self);
+			EGraph graph = fair ? job.getContext().getEndpointGraph(fullname, self) : job.getContext().getUnfairEndpointGraph(fullname, self);
 			job.debugPrintln("(" + fullname + ") EFSM (fair=" + fair + ") for " + self + ":\n" + graph.init.toDot());
 			
 			//egraphs.put(self, fsm.init);
@@ -485,7 +485,7 @@ public class GMChecker extends ModuleContextVisitor
 			//WFState next = i.next();
 			GMState next = all.get(i.next());
 			//Map<Role, EndpointState> tmp = next.config.states;
-			Map<Role, EndpointFSM> tmp = next.config.states;
+			Map<Role, EFSM> tmp = next.config.states;
 			for (Role r : tmp.keySet())
 			{
 				if (ss.get(r) != null)
@@ -514,7 +514,7 @@ public class GMChecker extends ModuleContextVisitor
 			if (foo != null)
 			{
 				//EndpointState tmp = foo.config.states.get(r);
-				EndpointFSM tmp = foo.config.states.get(r);
+				EFSM tmp = foo.config.states.get(r);
 				if (tmp != null)
 				{
 					//if (!tmp.isTerminal())

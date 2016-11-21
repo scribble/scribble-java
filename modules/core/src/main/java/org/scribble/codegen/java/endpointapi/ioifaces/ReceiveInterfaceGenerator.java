@@ -10,13 +10,13 @@ import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 
 public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public ReceiveInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EndpointState curr)
+	public ReceiveInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EState curr)
 	{
 		super(apigen, actions, curr);
 	}
@@ -47,7 +47,7 @@ public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 		MethodBuilder mb = this.ib.newAbstractMethod();
 		ReceiveSocketGenerator.setAsyncDiscardHeaderWithoutReturnType(this.apigen, first, mb, InputFutureGenerator.getInputFutureName(this.apigen.getSocketClassName(this.curr)));
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
-		EndpointState succ = this.curr.take(first);
+		EState succ = this.curr.take(first);
 		if (succ.isTerminal())
 		{
 			ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);

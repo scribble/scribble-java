@@ -13,13 +13,13 @@ import org.scribble.codegen.java.util.EnumBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.Role;
 
 public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public BranchInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EndpointState curr)
+	public BranchInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EState curr)
 	{
 		super(apigen, actions, curr);
 	}
@@ -85,7 +85,7 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 		}
 	}
 	
-	public static String getBranchInterfaceEnumName(Role self, EndpointState curr)
+	public static String getBranchInterfaceEnumName(Role self, EState curr)
 	{
 		return getIOStateInterfaceName(self, curr) + "_Enum";
 	}

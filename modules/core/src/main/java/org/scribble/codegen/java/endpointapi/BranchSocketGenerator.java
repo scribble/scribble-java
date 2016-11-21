@@ -14,7 +14,7 @@ import org.scribble.codegen.java.util.EnumBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
@@ -23,7 +23,7 @@ import org.scribble.sesstype.name.Role;
 
 public class BranchSocketGenerator extends ScribSocketGenerator
 {
-	public BranchSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
+	public BranchSocketGenerator(StateChannelApiGenerator apigen, EState curr)
 	{
 		super(apigen, curr);
 	}
@@ -140,7 +140,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 			{
 				handleif += ", ";
 			}
-			EndpointState succ = this.curr.take(a);
+			EState succ = this.curr.take(a);
 			if (succ.isTerminal())
 			{
 				handleif += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
@@ -173,7 +173,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		first = true;
 		for (EAction a : this.curr.getTakeable())
 		{
-			EndpointState succ = this.curr.take(a);
+			EState succ = this.curr.take(a);
 			if (first)
 			{
 				first = false;
@@ -243,7 +243,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		first = true;
 		for (EAction a : this.curr.getTakeable())
 		{
-			EndpointState succ = this.curr.take(a);
+			EState succ = this.curr.take(a);
 			if (first)
 			{
 				first = false;
@@ -294,7 +294,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb4.addBodyLine("}");
 	}
 
-	protected static String getBranchEnumClassName(StateChannelApiGenerator apigen, EndpointState curr)
+	protected static String getBranchEnumClassName(StateChannelApiGenerator apigen, EState curr)
 	{
 		//return BranchInterfaceGenerator.getBranchInterfaceEnumName(apigen.getSelf(), curr);
 		//return (IOInterfacesGenerator.skipIOInterfacesGeneration(apigen.getInitialState()))

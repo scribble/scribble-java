@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
@@ -124,7 +124,7 @@ public class GMState
 		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
 		//Set<Set<Role>> waitfor = Collections.emptySet();
 		Map<Role, Set<ESend>> orphs = this.config.getOrphanMessages();
-		Map<Role, EndpointState> unfinished = this.config.getUnfinishedRoles();
+		Map<Role, EState> unfinished = this.config.getUnfinishedRoles();
 		return new GMStateErrors(stuck, waitfor, orphs, unfinished);
 	}
 	

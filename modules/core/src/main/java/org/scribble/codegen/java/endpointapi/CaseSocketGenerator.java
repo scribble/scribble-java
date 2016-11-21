@@ -11,7 +11,7 @@ import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
@@ -19,7 +19,7 @@ import org.scribble.sesstype.name.Role;
 
 public class CaseSocketGenerator extends ScribSocketGenerator
 {
-	public CaseSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
+	public CaseSocketGenerator(StateChannelApiGenerator apigen, EState curr)
 	{
 		super(apigen, curr);
 	}
@@ -80,7 +80,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 
 		for (EAction a : this.curr.getTakeable())
 		{
-			EndpointState succ = this.curr.take(a);
+			EState succ = this.curr.take(a);
 			addReceiveMethod(this.cb, a, succ);
 			addCaseReceiveMethod(this.cb, a, succ);
 			if (!a.payload.isEmpty() || a.mid.isMessageSigName())
@@ -103,7 +103,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 	}
 
 	// Same as in ReceiveSocketGenerator
-	private MethodBuilder makeReceiveHeader(ClassBuilder cb, EAction a, EndpointState succ) throws ScribbleException
+	private MethodBuilder makeReceiveHeader(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
 	{
 		MethodBuilder mb = cb.newMethod();
 		ReceiveSocketGenerator.setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -111,7 +111,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		return mb;
 	}
 
-	private void addReceiveMethod(ClassBuilder cb, EAction a, EndpointState succ) throws ScribbleException
+	private void addReceiveMethod(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
 	{
 		Module main = this.apigen.getMainModule();
 
@@ -132,7 +132,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		addReturnNextSocket(mb, succ);
 	}
 
-	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, EAction a, EndpointState succ) throws ScribbleException
+	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
 	{
 		MethodBuilder mb = cb.newMethod();
 		setCaseReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -140,7 +140,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		return mb;
 	}
 
-	private void addCaseReceiveMethod(ClassBuilder cb, EAction a, EndpointState succ) throws ScribbleException
+	private void addCaseReceiveMethod(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
 	{
 		MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
 		String ln = JavaBuilder.RETURN + " " + "receive(" + getSessionApiRoleConstant(a.obj) + ", ";
@@ -165,7 +165,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		mb.addBodyLine(ln + ");");
 	}
 
-	private void addCaseReceiveDiscardMethod(ClassBuilder cb, EAction a, EndpointState succ)
+	private void addCaseReceiveDiscardMethod(ClassBuilder cb, EAction a, EState succ)
 	{
 		Module main = this.apigen.getMainModule();
 

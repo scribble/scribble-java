@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.model.endpoint.AutParser;
-import org.scribble.model.endpoint.EndpointGraph;
+import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.global.GMState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -33,12 +33,12 @@ public class JobContext
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
 
-	private final Map<LProtocolName, EndpointGraph> graphs = new HashMap<>();
+	private final Map<LProtocolName, EGraph> graphs = new HashMap<>();
 	//private final Map<GProtocolName, GModel> gmodels = new HashMap<>();
 	private final Map<GProtocolName, GMState> gmodels = new HashMap<>();
 	
-	private final Map<LProtocolName, EndpointGraph> unfair = new HashMap<>();
-	private final Map<LProtocolName, EndpointGraph> minimised = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
+	private final Map<LProtocolName, EGraph> unfair = new HashMap<>();
+	private final Map<LProtocolName, EGraph> minimised = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
 			// FIXME: minimised "fair" graph only, need to consider minimisation orthogonally to fairness -- NO: unfair-transform without minimisation is only for WF, minimised original only for API gen
 	
 	protected JobContext(Job job, Map<ModuleName, Module> parsed, ModuleName main)
@@ -178,19 +178,19 @@ public class JobContext
 		return this.gmodels.get(fullname);
 	}
 	
-	protected void addEndpointGraph(LProtocolName fullname, EndpointGraph graph)
+	protected void addEndpointGraph(LProtocolName fullname, EGraph graph)
 	{
 		this.graphs.put(fullname, graph);
 	}
 	
-	public EndpointGraph getEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
+	public EGraph getEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		////return this.graphs.get(Projector.projectFullProtocolName(fullname, role));
 		//return getEndpointGraph(Projector.projectFullProtocolName(fullname, role));
 
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 		// Moved form LProtocolDecl
-		EndpointGraph graph = this.graphs.get(fulllpn);
+		EGraph graph = this.graphs.get(fulllpn);
 		if (graph == null)
 		{
 			Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
@@ -214,12 +214,12 @@ public class JobContext
 		return graph;
 	}*/
 	
-	protected void addMinimisedEndpointGraph(LProtocolName fullname, EndpointGraph graph)
+	protected void addMinimisedEndpointGraph(LProtocolName fullname, EGraph graph)
 	{
 		this.minimised.put(fullname, graph);
 	}
 	
-	public EndpointGraph getMinimisedEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
+	public EGraph getMinimisedEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		//return getMinimisedEndpointGraphAux(Projector.projectFullProtocolName(fullname, role));
 		return getMinimisedEndpointGraphAux(fullname, role);
@@ -227,11 +227,11 @@ public class JobContext
 
   // Full projected name
 	//protected EndpointGraph getMinimisedEndpointGraphAux(LProtocolName fullname)
-	protected EndpointGraph getMinimisedEndpointGraphAux(GProtocolName fullname, Role role) throws ScribbleException
+	protected EGraph getMinimisedEndpointGraphAux(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 
-		EndpointGraph minimised = this.minimised.get(fulllpn);
+		EGraph minimised = this.minimised.get(fulllpn);
 		if (minimised == null)
 		{
 			String aut = runAut(getEndpointGraph(fullname, role).init.toAut(), fulllpn + ".aut");
@@ -241,12 +241,12 @@ public class JobContext
 		return minimised;
 	}
 	
-	protected void addUnfairEndpointGraph(LProtocolName fullname, EndpointGraph graph)
+	protected void addUnfairEndpointGraph(LProtocolName fullname, EGraph graph)
 	{
 		this.unfair.put(fullname, graph);
 	}
 	
-	public EndpointGraph getUnfairEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
+	public EGraph getUnfairEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		//return getUnfairEndpointGraphAux(Projector.projectFullProtocolName(fullname, role));
 		return getUnfairEndpointGraphAux(fullname, role);
@@ -254,11 +254,11 @@ public class JobContext
 
   // Full projected name
 	//protected EndpointGraph getUnfairEndpointGraphAux(LProtocolName fullname)
-	protected EndpointGraph getUnfairEndpointGraphAux(GProtocolName fullname, Role role) throws ScribbleException
+	protected EGraph getUnfairEndpointGraphAux(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 
-		EndpointGraph unfair = this.unfair.get(fulllpn);
+		EGraph unfair = this.unfair.get(fulllpn);
 		if (unfair == null)
 		{
 			unfair = getEndpointGraph(fullname, role).init.unfairTransform().toGraph();

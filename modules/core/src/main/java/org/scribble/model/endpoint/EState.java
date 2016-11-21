@@ -17,7 +17,7 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.RecVar;
 
 // http://sandbox.kidstrythisathome.com/erdos/
-public class EndpointState extends MState<EAction, EndpointState, Local>
+public class EState extends MState<EAction, EState, Local>
 {
 	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL, ACCEPT, WRAP_SERVER, //CONNECT
 		}  // CONNECTION should just be sync?
@@ -30,7 +30,7 @@ public class EndpointState extends MState<EAction, EndpointState, Local>
 	private final Set<RecVar> labs;  // Was RecVar and SubprotocolSigs, now using inlined protocol for FSM building so just RecVar
 	private final LinkedHashMap<IOAction, EndpointState> edges;  // Want predictable ordering of entries for e.g. API generation (state enumeration)*/
 	
-	protected EndpointState(Set<RecVar> labs)
+	protected EState(Set<RecVar> labs)
 	{
 		/*this.id = EndpointState.count++;
 		this.labs = new HashSet<>(labs);
@@ -38,9 +38,9 @@ public class EndpointState extends MState<EAction, EndpointState, Local>
 		super(labs);
 	}
 
-	public EndpointGraph toGraph()
+	public EGraph toGraph()
 	{
-		return new EndpointGraph(this, getTerminal(this));  // Throws exception if >1 terminal; null if no terminal
+		return new EGraph(this, getTerminal(this));  // Throws exception if >1 terminal; null if no terminal
 	}
 
 	/*.. move back to endpointstate
@@ -52,18 +52,18 @@ public class EndpointState extends MState<EAction, EndpointState, Local>
 	.. easier to implement as a direct check on the standard global model, rather than model hacking -- i.e. liveness is not just about terminal sets, but about "branching condition", c.f. julien?
 	.. the issue is connect/accept -- makes direct check a bit more complicated, maybe value in doing it by model hacking to rely on standard liveness checking?
 	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles*/
-	public EndpointState unfairTransform()
+	public EState unfairTransform()
 	{
-		EndpointState init = this.clone();
+		EState init = this.clone();
 		
-		EndpointState term = MState.getTerminal(init);
-		Set<EndpointState> seen = new HashSet<>();
-		Set<EndpointState> todo = new LinkedHashSet<>();
+		EState term = MState.getTerminal(init);
+		Set<EState> seen = new HashSet<>();
+		Set<EState> todo = new LinkedHashSet<>();
 		todo.add(init);
 		while (!todo.isEmpty())
 		{
-			Iterator<EndpointState> i = todo.iterator();
-			EndpointState curr = i.next();
+			Iterator<EState> i = todo.iterator();
+			EState curr = i.next();
 			i.remove();
 
 			if (seen.contains(curr))
@@ -77,23 +77,23 @@ public class EndpointState extends MState<EAction, EndpointState, Local>
 				//if (curr.getAllTakeable().size() > 1)
 				{
 					Iterator<EAction> as = curr.getAllTakeable().iterator();
-					Iterator<EndpointState> ss = curr.getSuccessors().iterator();
+					Iterator<EState> ss = curr.getSuccessors().iterator();
 					//Map<IOAction, EndpointState> clones = new HashMap<>();
 					List<EAction> cloneas = new LinkedList<>();
-					List<EndpointState> cloness = new LinkedList<>();
+					List<EState> cloness = new LinkedList<>();
 					//LinkedHashMap<EndpointState, EndpointState> cloness = new LinkedHashMap<>();  // clone -> original
-					Map<EndpointState, List<EAction>> toRemove = new HashMap<>();  // List needed for multiple edges to remove to the same state: e.g. mu X . (A->B:1 + A->B:2).X
+					Map<EState, List<EAction>> toRemove = new HashMap<>();  // List needed for multiple edges to remove to the same state: e.g. mu X . (A->B:1 + A->B:2).X
 					while (as.hasNext())
 					{
 						EAction a = as.next();
-						EndpointState s = ss.next();
+						EState s = ss.next();
 						if (!s.canReach(curr))
 						{
 							todo.add(s);
 						}
 						else
 						{
-							EndpointState clone = curr.unfairClone(term, a, s);  // s is a succ of curr
+							EState clone = curr.unfairClone(term, a, s);  // s is a succ of curr
 							//try { s.removeEdge(a, tmps); } catch (ScribbleException e) { throw new RuntimeException(e); }
 							//clones.put(a, clone);
 							cloneas.add(a);
@@ -127,7 +127,7 @@ public class EndpointState extends MState<EAction, EndpointState, Local>
 								try { curr.removeEdge(a, s); } catch (ScribbleException e) { throw new RuntimeException(e); }
 							}
 						}*/
-						for (EndpointState s : toRemove.keySet())
+						for (EState s : toRemove.keySet())
 						{
 							try
 							{
@@ -141,12 +141,12 @@ public class EndpointState extends MState<EAction, EndpointState, Local>
 						}
 						//for (Entry<IOAction, EndpointState> e : clones.entrySet())
 						Iterator<EAction> icloneas = cloneas.iterator();
-						Iterator<EndpointState> icloness = cloness.iterator();
+						Iterator<EState> icloness = cloness.iterator();
 						//Iterator<EndpointState> icloness = cloness.keySet().iterator();
 						while (icloneas.hasNext())
 						{
 							EAction a = icloneas.next();
-							EndpointState s = icloness.next();
+							EState s = icloness.next();
 							/*curr.addEdge(e.getKey(), e.getValue());
 							todo.add(e.getValue());
 							seen.add(e.getValue());*/
@@ -172,14 +172,14 @@ public class EndpointState extends MState<EAction, EndpointState, Local>
 	// i.e., this -a-> succ (maybe non-det)
 	// Returns the clone of the subgraph rooted at succ, with all non- "this-a->succ" actions pruned from the clone of "this" state
 	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
-	protected EndpointState unfairClone(EndpointState term, EAction a, EndpointState succ) // Need succ param for non-det
+	protected EState unfairClone(EState term, EAction a, EState succ) // Need succ param for non-det
 	{
 		//EndpointState succ = take(a);
-		Set<EndpointState> all = new HashSet<>();
+		Set<EState> all = new HashSet<>();
 		all.add(succ);
 		all.addAll(MState.getAllReachable(succ));
-		Map<Integer, EndpointState> map = new HashMap<>();  // original s.id -> clones
-		for (EndpointState s : all)
+		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
+		for (EState s : all)
 		{
 			if (term != null && s.id == term.id)
 			{
@@ -191,15 +191,15 @@ public class EndpointState extends MState<EAction, EndpointState, Local>
 				map.put(s.id, newState(Collections.emptySet()));
 			}
 		}
-		for (EndpointState s : all)
+		for (EState s : all)
 		{
 			Iterator<EAction> as = s.getAllTakeable().iterator();
-			Iterator<EndpointState> ss = s.getSuccessors().iterator();
-			EndpointState clone = map.get(s.id);
+			Iterator<EState> ss = s.getSuccessors().iterator();
+			EState clone = map.get(s.id);
 			while (as.hasNext())
 			{
 				EAction tmpa = as.next();
-				EndpointState tmps = ss.next();
+				EState tmps = ss.next();
 				if (s.id != this.id
 						|| (tmpa.equals(a) && tmps.equals(succ)))  // Non-det also pruned from clone of this -- but OK? non-det still preserved on original state, so any safety violations due to non-det will still come out?
 					                                             // ^ Currently, this is like non-fairness is extended to even defeat non-determinism
@@ -212,9 +212,9 @@ public class EndpointState extends MState<EAction, EndpointState, Local>
 	}
 	
 	@Override
-	protected EndpointState newState(Set<RecVar> labs)
+	protected EState newState(Set<RecVar> labs)
 	{
-		return new EndpointState(labs);
+		return new EState(labs);
 	}
 	
 	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction

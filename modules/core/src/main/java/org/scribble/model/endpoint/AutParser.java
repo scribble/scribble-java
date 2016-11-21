@@ -35,7 +35,7 @@ public class AutParser
 
 	}
 	
-	public EndpointGraph parse(String aut)
+	public EGraph parse(String aut)
 	{
 		//Map<Integer, Map<String, Integer>> edges = new HashMap<>();
 		Map<Integer, List<String>> as = new HashMap<>();
@@ -102,9 +102,9 @@ public class AutParser
 		{
 			term = terms.iterator().next();
 		}
-		EndpointGraphBuilderUtil builder = new EndpointGraphBuilderUtil();
+		EGraphBuilderUtil builder = new EGraphBuilderUtil();
 		builder.reset();
-		Map<Integer, EndpointState> map = new HashMap<>();
+		Map<Integer, EState> map = new HashMap<>();
 		map.put(init, builder.getEntry());
 		if (term != -1)
 		{
@@ -130,7 +130,7 @@ public class AutParser
 		//for (int i : edges.keySet())
 		for (int i : as.keySet())
 		{
-			EndpointState s = map.get(i);
+			EState s = map.get(i);
 			//Map<String, Integer> tmp = edges.get(i);
 			List<String> tmp1 = as.get(i);
 			List<Integer> tmp2 = succs.get(i);
@@ -148,7 +148,7 @@ public class AutParser
 			}
 		}
 		//return builder.finalise();
-		return new EndpointGraph(builder.getEntry(), builder.getExit());
+		return new EGraph(builder.getEntry(), builder.getExit());
 	}
 	
 	// Cf. getCommSymbol of IOActions

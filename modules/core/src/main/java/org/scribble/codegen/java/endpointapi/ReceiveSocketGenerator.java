@@ -7,7 +7,7 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
@@ -15,7 +15,7 @@ import org.scribble.sesstype.name.PayloadType;
 
 public class ReceiveSocketGenerator extends ScribSocketGenerator
 {
-	public ReceiveSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
+	public ReceiveSocketGenerator(StateChannelApiGenerator apigen, EState curr)
 	{
 		super(apigen, curr);
 	}
@@ -42,7 +42,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 	{
 		EAction a = curr.getTakeable().iterator().next();
 		//String nextClass = this.apigen.getSocketClassName(curr.accept(a));
-		EndpointState succ = curr.take(a);
+		EState succ = curr.take(a);
 		ClassBuilder futureClass = new InputFutureGenerator(this.apigen, this.cb, a).generateType();  // Wraps all payload elements as fields (set by future completion)
 		// FIXME: problem if package and protocol have the same name -- still?
 		this.apigen.addTypeDecl(futureClass);
@@ -55,7 +55,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 
   // [nextClass] receive([opClass] op, Buf<? super T> arg, ...)
 	//private void makeReceiveMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
-	private void makeReceiveMethod(EAction a, EndpointState succ) throws ScribbleException
+	private void makeReceiveMethod(EAction a, EState succ) throws ScribbleException
 	{
 		Module main = this.apigen.getMainModule();  // FIXME: main not necessarily the right module?
 
@@ -80,7 +80,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 	}
 
 	// Payload parameters added later
-	private MethodBuilder makeReceiveHeader(EAction a, EndpointState succ) throws ScribbleException
+	private MethodBuilder makeReceiveHeader(EAction a, EState succ) throws ScribbleException
 	{
 		MethodBuilder mb = this.cb.newMethod();
 		setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -89,7 +89,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 	}
 
   // [nextClass] async([opClass] op, Buf<? super futureClass> arg)
-	private void makeAsyncMethod(EAction a, EndpointState succ, String futureClass)
+	private void makeAsyncMethod(EAction a, EState succ, String futureClass)
 	{
 		final String ROLE_PARAM = "role";
 		String opClass = SessionApiGenerator.getOpClassName(a.mid);
@@ -110,14 +110,14 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 	}
 
   // [nextClass] async([opClass] op) -- wrapper for makeAsyncMethod
-	private void makeAsyncDiscardMethod(EAction a, EndpointState succ, String futureClass)
+	private void makeAsyncDiscardMethod(EAction a, EState succ, String futureClass)
 	{
 		MethodBuilder mb = makeAsyncDiscardHeader(a, succ, futureClass);
 		mb.addBodyLine(JavaBuilder.RETURN + " async(" + SessionApiGenerator.getSessionClassName(apigen.getGProtocolName()) + "." + a.obj + ", " + StateChannelApiGenerator.RECEIVE_OP_PARAM + ", " + getGarbageBuf(futureClass) + ");");
 		mb.addAnnotations("@SuppressWarnings(\"unchecked\")");  // To cast the generic garbage buf
 	}
 
-	private MethodBuilder makeAsyncDiscardHeader(EAction a, EndpointState succ, String futureClass)
+	private MethodBuilder makeAsyncDiscardHeader(EAction a, EState succ, String futureClass)
 	{
 		MethodBuilder mb = this.cb.newMethod();
 		setAsyncDiscardHeaderWithoutReturnType(this.apigen, a, mb, futureClass);

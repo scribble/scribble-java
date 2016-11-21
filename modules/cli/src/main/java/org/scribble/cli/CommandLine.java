@@ -20,7 +20,7 @@ import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
-import org.scribble.model.endpoint.EndpointGraph;
+import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.global.GMState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -225,7 +225,7 @@ public class CommandLine //implements Runnable
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			EndpointGraph fsm = getEndointGraph(forUser, job, fullname, role);
+			EGraph fsm = getEndointGraph(forUser, job, fullname, role);
 			//System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
 			System.out.println("\n" + fsm.toDot());  // Endpoint graphs are "inlined" (a single graph is built)
 		}
@@ -240,7 +240,7 @@ public class CommandLine //implements Runnable
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			EndpointGraph fsm = getEndointGraph(forUser, job, fullname, role);
+			EGraph fsm = getEndointGraph(forUser, job, fullname, role);
 			System.out.println("\n" + fsm.toAut());
 		}
 	}
@@ -255,7 +255,7 @@ public class CommandLine //implements Runnable
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
 			String png = args[i+2];
-			EndpointGraph fsm = getEndointGraph(forUser, job, fullname, role);
+			EGraph fsm = getEndointGraph(forUser, job, fullname, role);
 			//jcontext.getEndpointGraph(fullname, role);
 			runDot(fsm.toDot(), png);
 		}
@@ -408,7 +408,7 @@ public class CommandLine //implements Runnable
 	}
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
-	private EndpointGraph getEndointGraph(boolean forUser, Job job, GProtocolName fullname, Role role) throws ScribbleException, CommandLineException
+	private EGraph getEndointGraph(boolean forUser, Job job, GProtocolName fullname, Role role) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
@@ -417,7 +417,7 @@ public class CommandLine //implements Runnable
 			throw new CommandLineException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.DOT)));
 		}
 		//job.buildGraph(fullname, role);  // Already built (if valid) as part of global model checking
-		EndpointGraph graph;
+		EGraph graph;
 		if (forUser)  // The (possibly minimised) user-output EFSM for API gen
 		{
 			graph = this.args.containsKey(ArgFlag.MIN_EFSM)

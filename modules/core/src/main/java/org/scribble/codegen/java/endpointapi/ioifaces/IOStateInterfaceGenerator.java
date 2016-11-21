@@ -15,7 +15,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -38,7 +38,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	protected final InterfaceBuilder ib = new InterfaceBuilder();
 
 	// Preds can be null
-	public IOStateInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EndpointState curr)
+	public IOStateInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EState curr)
 	{
 		super(apigen, curr);
 		this.actions = Collections.unmodifiableMap(actions);
@@ -112,7 +112,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	}*/
 
 	// Pre: s non-terminal
-	public static String getIOStateInterfaceName(Role self, EndpointState s)
+	public static String getIOStateInterfaceName(Role self, EState s)
 	{
 		String name = null;
 		switch (s.getStateKind())

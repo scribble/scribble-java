@@ -8,7 +8,7 @@ import org.scribble.del.local.LChoiceDel;
 import org.scribble.del.local.LInteractionSeqDel;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointGraphBuilderUtil;
+import org.scribble.model.endpoint.EGraphBuilderUtil;
 import org.scribble.visit.NoEnvInlinedProtocolVisitor;
 
 // Changed from offsetsubprot visitor to inlined visitor to reduce state label accumulation to rec only -- then, wfc-checking for "unguarded" recursive-do-as-continue in choice blocks handled by unfolding inlineds
@@ -16,7 +16,7 @@ import org.scribble.visit.NoEnvInlinedProtocolVisitor;
 public class EndpointGraphBuilder extends NoEnvInlinedProtocolVisitor
 //public class EndpointGraphBuilder extends NoEnvUnfoldingVisitor  // Doesn't work
 {
-	public final EndpointGraphBuilderUtil builder = new EndpointGraphBuilderUtil();
+	public final EGraphBuilderUtil builder = new EGraphBuilderUtil();
 	
 	public EndpointGraphBuilder(Job job)
 	{

@@ -10,7 +10,7 @@ import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -31,13 +31,13 @@ public class StateChannelApiGenerator extends ApiGenerator
 
 	private final Role self;
 	private final LProtocolName lpn;
-	private final EndpointState init;
+	private final EState init;
 	//private final String root;
 
 	protected final boolean skipIOInterfacesGeneration;
 
 	private int counter = 1;
-	private Map<EndpointState, String> classNames = new HashMap<>();  // Doesn't include terminal states
+	private Map<EState, String> classNames = new HashMap<>();  // Doesn't include terminal states
 
 	private Map<String, TypeBuilder> types = new HashMap<>();  // class/iface name key
 
@@ -58,7 +58,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		constructClasses(this.init);
 
 		//EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
-		EndpointState term = EndpointState.getTerminal(this.init);
+		EState term = EState.getTerminal(this.init);
 		if (term != null)
 		{
 			ClassBuilder cb = new EndSocketGenerator(this, term).generateType();
@@ -67,9 +67,9 @@ public class StateChannelApiGenerator extends ApiGenerator
 	}
 
 	// Cf. IOInterfacesGenerator constructor
-	private static boolean skipIOInterfacesGeneration(EndpointState init)
+	private static boolean skipIOInterfacesGeneration(EState init)
 	{
-		Set<EAction> as = EndpointState.getAllReachableActions(init);
+		Set<EAction> as = EState.getAllReachableActions(init);
 		if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 		{
 			return true;
@@ -92,7 +92,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		return map;
 	}
 	
-	private void generateClassNames(EndpointState ps)
+	private void generateClassNames(EState ps)
 	{
 		if (this.classNames.containsKey(ps))
 		{
@@ -104,7 +104,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 			return;
 		}
 		this.classNames.put(ps, newSocketClassName());
-		for (EndpointState succ : ps.getSuccessors())
+		for (EState succ : ps.getSuccessors())
 		{
 			generateClassNames(succ);
 		}
@@ -115,7 +115,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		return this.lpn.getSimpleName().toString() +  "_" + this.counter++;
 	}
 
-	private void constructClasses(EndpointState curr) throws ScribbleException
+	private void constructClasses(EState curr) throws ScribbleException
 	{
 		if (curr.isTerminal())
 		{
@@ -127,7 +127,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 			return;
 		}
 		this.types.put(className, constructClass(curr));
-		for (EndpointState succ : curr.getSuccessors())
+		for (EState succ : curr.getSuccessors())
 		{
 			constructClasses(succ);
 		}
@@ -138,7 +138,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 	}
 	
 	// Pre: curr is not terminal state
-	private ClassBuilder constructClass(EndpointState curr) throws ScribbleException  // FIXME: APIGenerationException?
+	private ClassBuilder constructClass(EState curr) throws ScribbleException  // FIXME: APIGenerationException?
 	{
 		switch (curr.getStateKind())
 		{
@@ -181,7 +181,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		return this.self;
 	}
 	
-	protected EndpointState getInitialState()
+	protected EState getInitialState()
 	{
 		return this.init;
 	}
@@ -196,7 +196,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		this.types.put(tb.getName(), tb);
 	}
 
-	public String getSocketClassName(EndpointState s)
+	public String getSocketClassName(EState s)
 	{
 		return this.classNames.get(s);
 	}

@@ -1,20 +1,20 @@
 package org.scribble.model.endpoint;
 
 
-public class EndpointGraph
+public class EGraph
 {
-	public final EndpointState init;
-	public final EndpointState term;
+	public final EState init;
+	public final EState term;
 	
-	public EndpointGraph(EndpointState init, EndpointState term)
+	public EGraph(EState init, EState term)
 	{
 		this.init = init;
 		this.term = term;
 	}
 	
-	public EndpointFSM toFsm()
+	public EFSM toFsm()
 	{
-		return new EndpointFSM(this);
+		return new EFSM(this);
 	}
 	
 	public String toAut()

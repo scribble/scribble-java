@@ -8,7 +8,7 @@ import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.sesstype.name.GProtocolName;
@@ -19,7 +19,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 	private final EAction a;
 	private final InterfaceBuilder ib = new InterfaceBuilder();
 
-	public ActionInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, EAction a)
+	public ActionInterfaceGenerator(StateChannelApiGenerator apigen, EState curr, EAction a)
 	{
 		super(apigen, curr);
 		this.a = a;

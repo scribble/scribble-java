@@ -4,12 +4,12 @@ import java.util.Set;
 
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
 public class AcceptSocketGenerator extends ScribSocketGenerator
 {
-	public AcceptSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
+	public AcceptSocketGenerator(StateChannelApiGenerator apigen, EState curr)
 	{
 		super(apigen, curr);
 	}
@@ -36,18 +36,18 @@ public class AcceptSocketGenerator extends ScribSocketGenerator
 			throw new RuntimeException("AcceptSocket generation not yet supported for accept-branches: " + as);
 		}
 		EAction a = as.iterator().next();
-		EndpointState succ = curr.take(a);
+		EState succ = curr.take(a);
 		makeAcceptMethod(a, succ);
 	}
 
-	private void makeAcceptMethod(EAction a, EndpointState succ)
+	private void makeAcceptMethod(EAction a, EState succ)
 	{
 		MethodBuilder mb = makeAcceptHeader(a, succ);
 		mb.addBodyLine(JavaBuilder.SUPER + ".accept(ss, " + getSessionApiRoleConstant(a.obj) + ");");
 		addReturnNextSocket(mb, succ);
 	}
 
-	private MethodBuilder makeAcceptHeader(EAction a, EndpointState succ)
+	private MethodBuilder makeAcceptHeader(EAction a, EState succ)
 	{
 		MethodBuilder mb = this.cb.newMethod();
 		setAcceptHeaderWithoutReturnType(this.apigen, a, mb);

@@ -12,7 +12,7 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -24,7 +24,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	
 	private final Map<EAction, InterfaceBuilder> caseActions;
 
-	public HandleInterfaceGenerator(IOInterfacesGenerator iogen, Map<EAction, InterfaceBuilder> actions, EndpointState curr, Map<EAction, InterfaceBuilder> caseActions)
+	public HandleInterfaceGenerator(IOInterfacesGenerator iogen, Map<EAction, InterfaceBuilder> actions, EState curr, Map<EAction, InterfaceBuilder> caseActions)
 	{
 		super(iogen.apigen, actions, curr);
 		//this.iogen = iogen;
@@ -127,7 +127,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	//protected static int setHandleMethodSuccessorParam(IOInterfacesGenerator iogen, Role self, EndpointState succ, MethodBuilder mb, int i)
-	protected static void setHandleMethodSuccessorParam(IOInterfacesGenerator iogen, Role self, EndpointState succ, MethodBuilder mb, List<EAction> as, Map<EAction, Integer> count)
+	protected static void setHandleMethodSuccessorParam(IOInterfacesGenerator iogen, Role self, EState succ, MethodBuilder mb, List<EAction> as, Map<EAction, Integer> count)
 	{
 		if (succ.isTerminal())
 		{
@@ -190,7 +190,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	// Pre: s is a branch state
-	public static String getHandleInterfaceName(Role self, EndpointState s)
+	public static String getHandleInterfaceName(Role self, EState s)
 	{
 		// FIXME: factor out (CaseInterfaceGenerator, IOStateInterfaceGenerator.getIOStateInterfaceName)
 		String name = "Handle_" + self + "_" + s.getTakeable().stream().sorted(IOACTION_COMPARATOR)

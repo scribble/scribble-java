@@ -8,7 +8,7 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
@@ -16,10 +16,10 @@ import org.scribble.sesstype.name.MessageSigName;
 // Factor out
 public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 {
-	private final EndpointState curr;
+	private final EState curr;
 
 	// Pre: cb is the BranchSocketBuilder
-	public HandlerInterfaceGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, EndpointState curr)
+	public HandlerInterfaceGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, EState curr)
 	{
 		super(apigen, parent);
 		this.curr = curr;
@@ -40,7 +40,7 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 
 		for (EAction a : this.curr.getTakeable())  // Doesn't need to be sorted
 		{
-			EndpointState succ = this.curr.take(a);
+			EState succ = this.curr.take(a);
 			String nextClass = this.apigen.getSocketClassName(succ);
 
 			AbstractMethodBuilder mb3 = ib.newAbstractMethod();

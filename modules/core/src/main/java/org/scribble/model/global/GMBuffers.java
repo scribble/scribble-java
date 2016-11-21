@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAccept;
 import org.scribble.model.endpoint.actions.EConnect;
 import org.scribble.model.endpoint.actions.EDisconnect;
@@ -216,7 +216,7 @@ public class GMBuffers
 	// FIXME: rename model "acceptable" actions to "consumable" (here is really "acceptable")
 	//public Set<IOAction> acceptable(Role r)  // Means connection accept actions
 	// Pre: curr is Accept state, r is accept peer
-	public Set<EAction> acceptable(Role r, EndpointState curr)  // Means connection accept actions
+	public Set<EAction> acceptable(Role r, EState curr)  // Means connection accept actions
 	{
 		Set<EAction> res = new HashSet<>();
 		Map<Role, Boolean> tmp = this.connected.get(r);

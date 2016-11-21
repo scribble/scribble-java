@@ -9,7 +9,7 @@ import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EndpointState;
+import org.scribble.model.endpoint.EState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -51,12 +51,12 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	public static final String CASE_MESSAGE_PARAM = CASE_MESSAGE_FIELD;
 	public static final String CASE_ARG_PREFIX = "arg";
 	
-	protected final EndpointState curr;
+	protected final EState curr;
 	protected final String className;
 
 	protected final ClassBuilder cb = new ClassBuilder();
 	
-	public ScribSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
+	public ScribSocketGenerator(StateChannelApiGenerator apigen, EState curr)
 	{
 		super(apigen);
 		this.curr = curr;
@@ -150,13 +150,13 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	protected abstract void addMethods() throws ScribbleException;
 	
 	@Deprecated
-	protected void setNextSocketReturnType(MethodBuilder mb, EndpointState succ)
+	protected void setNextSocketReturnType(MethodBuilder mb, EState succ)
 	{
 		setNextSocketReturnType(this.apigen, mb, succ);
 	}
 	
 	//protected void addReturnNextSocket(MethodBuilder mb, String nextClass)
-	protected void addReturnNextSocket(MethodBuilder mb, EndpointState s)
+	protected void addReturnNextSocket(MethodBuilder mb, EState s)
 	{
 		String nextClass;
 		//if (isTerminalClassName(nextClass))
@@ -226,7 +226,7 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 		return SessionApiGenerator.getStateChannelPackageName(this.apigen.getGProtocolName(), this.apigen.getSelf());
 	}
 
-	public static void setNextSocketReturnType(StateChannelApiGenerator apigen, MethodBuilder mb, EndpointState succ)
+	public static void setNextSocketReturnType(StateChannelApiGenerator apigen, MethodBuilder mb, EState succ)
 	{
 		String ret;
 		if (succ.isTerminal())
