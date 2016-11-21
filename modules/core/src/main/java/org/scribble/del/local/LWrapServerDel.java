@@ -9,7 +9,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.context.EndpointGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
-import org.scribble.visit.env.UnguardedChoiceDoEnv;
+import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
 public class LWrapServerDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
 {

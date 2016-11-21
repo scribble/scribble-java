@@ -9,8 +9,8 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.ProtocolDeclContextBuilder;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 {

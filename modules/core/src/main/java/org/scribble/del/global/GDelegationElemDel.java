@@ -19,7 +19,7 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ProtocolDeclContextBuilder;
+import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.wf.DelegationProtocolRefChecker;
 import org.scribble.visit.wf.NameDisambiguator;
 

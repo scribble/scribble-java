@@ -19,8 +19,8 @@ import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
+import org.scribble.visit.context.env.ProjectionEnv;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ProjectionEnv;
 
 public class GProtocolDefDel extends ProtocolDefDel
 {

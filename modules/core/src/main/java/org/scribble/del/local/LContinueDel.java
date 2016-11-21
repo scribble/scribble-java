@@ -18,8 +18,8 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.EndpointGraphBuilder;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ReachabilityEnv;
 import org.scribble.visit.wf.ReachabilityChecker;
+import org.scribble.visit.wf.env.ReachabilityEnv;
 
 public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeDel
 {

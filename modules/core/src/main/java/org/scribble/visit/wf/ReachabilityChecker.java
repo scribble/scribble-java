@@ -8,7 +8,7 @@ import org.scribble.del.local.LInteractionSeqDel;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.UnfoldingVisitor;
-import org.scribble.visit.env.ReachabilityEnv;
+import org.scribble.visit.wf.env.ReachabilityEnv;
 
 public class ReachabilityChecker extends UnfoldingVisitor<ReachabilityEnv>
 {

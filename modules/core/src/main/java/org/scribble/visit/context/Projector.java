@@ -21,7 +21,7 @@ import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EnvVisitor;
-import org.scribble.visit.env.ProjectionEnv;
+import org.scribble.visit.context.env.ProjectionEnv;
 
 // Uses visitor infrastructure to traverse AST and generate local nodes from global with original nodes unchanged (so does not use normal visitChildren pattern -- env used to pass the working projections)
 public class Projector extends EnvVisitor<ProjectionEnv>

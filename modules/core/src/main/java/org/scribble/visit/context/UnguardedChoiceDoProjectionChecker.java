@@ -13,7 +13,7 @@ import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.visit.SubprotocolVisitor;
-import org.scribble.visit.env.UnguardedChoiceDoEnv;
+import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
 // FIXME: refactor as a choice subject candidate collector (i.e. NameCollector -- thought that is an OffsetSubprotocolCollector, does that make a difference?)
 public class UnguardedChoiceDoProjectionChecker extends SubprotocolVisitor<UnguardedChoiceDoEnv>

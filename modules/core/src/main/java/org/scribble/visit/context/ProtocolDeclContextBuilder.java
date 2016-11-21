@@ -1,4 +1,4 @@
-package org.scribble.visit;
+package org.scribble.visit.context;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.global.GDependencyMap;
@@ -8,6 +8,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.NoEnvSubprotocolVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names -- no: old?
 public class ProtocolDeclContextBuilder extends NoEnvSubprotocolVisitor  // For transitive dependency collection (cf. NameCollector)

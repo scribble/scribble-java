@@ -10,7 +10,7 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.SubprotocolVisitor;
-import org.scribble.visit.env.ExplicitCorrelationEnv;
+import org.scribble.visit.wf.env.ExplicitCorrelationEnv;
 
 //public class ExplicitCorrelationChecker extends InlinedProtocolVisitor<ExplicitCorrelationEnv>
 public class ExplicitCorrelationChecker extends SubprotocolVisitor<ExplicitCorrelationEnv>  // Need to follow /unfolded/ subprotos (inlined is already unfolded by context building when this pass is run)

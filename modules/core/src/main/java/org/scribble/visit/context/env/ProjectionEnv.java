@@ -1,7 +1,8 @@
-package org.scribble.visit.env;
+package org.scribble.visit.context.env;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LNode;
+import org.scribble.visit.env.Env;
 
 // Could make projection type a class parameter
 public class ProjectionEnv extends Env<ProjectionEnv>

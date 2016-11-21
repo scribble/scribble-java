@@ -2,6 +2,8 @@ package org.scribble.visit.env;
 
 import java.util.List;
 
+// Consider subclasses like Exception Subclasses, wrt. their purpose in a package -- although using explicit env subpackages (no special API doc treatment, cf. Exceptions)
+
 // Immutable
 // Generic parameter inhibits further subclassing of concrete Env classes
 public abstract class Env<E extends Env<?>>

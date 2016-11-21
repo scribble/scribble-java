@@ -1,7 +1,9 @@
-package org.scribble.visit.env;
+package org.scribble.visit.wf.env;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.scribble.visit.env.Env;
 
 public class ExplicitCorrelationEnv extends Env<ExplicitCorrelationEnv>
 {

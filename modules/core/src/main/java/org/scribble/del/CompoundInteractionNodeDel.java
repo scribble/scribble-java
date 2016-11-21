@@ -6,11 +6,11 @@ import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
-import org.scribble.visit.env.ExplicitCorrelationEnv;
-import org.scribble.visit.env.UnguardedChoiceDoEnv;
+import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;
 import org.scribble.visit.wf.WFChoiceChecker;
+import org.scribble.visit.wf.env.ExplicitCorrelationEnv;
 import org.scribble.visit.wf.env.WFChoiceEnv;
 
 public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel implements InteractionNodeDel

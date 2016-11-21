@@ -20,10 +20,10 @@ import org.scribble.visit.context.EndpointGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceDoPruner;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
+import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ReachabilityEnv;
-import org.scribble.visit.env.UnguardedChoiceDoEnv;
 import org.scribble.visit.wf.ReachabilityChecker;
+import org.scribble.visit.wf.env.ReachabilityEnv;
 
 public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 {

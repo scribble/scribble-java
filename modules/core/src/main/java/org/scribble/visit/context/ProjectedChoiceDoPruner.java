@@ -15,7 +15,7 @@ import org.scribble.del.ModuleDel;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.env.UnguardedChoiceDoEnv;
+import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
 // Basically infers all local choice subject candidates: if *none* are found for a given "choice-unguarded" do-call then the call is pruned (along with parent block and choice as necessary)
 // i.e. prune if no choice subject candidates, because that means (passive) role is never enabled and thus not involved

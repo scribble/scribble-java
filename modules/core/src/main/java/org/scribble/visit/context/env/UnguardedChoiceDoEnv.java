@@ -1,4 +1,4 @@
-package org.scribble.visit.env;
+package org.scribble.visit.context.env;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.env.Env;
 
 // Cf. UnfoldingEnv
 public class UnguardedChoiceDoEnv extends Env<UnguardedChoiceDoEnv>
