@@ -18,6 +18,8 @@ module Test;
 // - API gen for wrap (SMTP)
 // - API gen for shared channel passing
 
+// factor out GMGraph (cf., EGraph) from GMChecker
+// factor out GMConfig interface
 // Job modes (full/default, fase17, oldscrib, MPST, etc.)
 // -dot/aut CL args (default dot)
 // refactor demo package
