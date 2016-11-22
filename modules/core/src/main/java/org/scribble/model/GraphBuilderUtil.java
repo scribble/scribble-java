@@ -15,6 +15,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 
+// FIXME: factor out a plainer base class, and refactor rest as SyntacticGraphBuilder
 // Helper class for EndpointGraphBuilder -- can access the protected setters of S
 public abstract class GraphBuilderUtil<L, A extends MAction<K>, S extends PrettyMState<L, A, S, K>, K extends ProtocolKind>
 {

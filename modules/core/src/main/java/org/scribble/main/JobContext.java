@@ -50,6 +50,11 @@ public class JobContext
 		this.parsed = new HashMap<ModuleName, Module>(parsed);
 		this.main = main;
 	}
+
+	public Module getMainModule()
+	{
+		return getModule(this.main);
+	}
 	
 	// Used by Job for pass running, includes projections (e.g. for reachability checking)
 	// Safer to get module names and require user to re-fetch the module by the getter each time (after replacing), to make sure the latest is used
@@ -173,16 +178,21 @@ public class JobContext
 	{
 		this.gmodels.put(fullname, model);
 	}
-
-	public void addUnfairGlobalModel(GProtocolName fullname, GMState model)
-	{
-		this.unfairGModels.put(fullname, model);
-	}
 	
 	//public GModel getGlobalModel(GProtocolName fullname)
 	public GMState getGlobalModel(GProtocolName fullname)
 	{
 		return this.gmodels.get(fullname);
+	}
+
+	public void addUnfairGlobalModel(GProtocolName fullname, GMState model)
+	{
+		this.unfairGModels.put(fullname, model);
+	}
+
+	public GMState getUnfairGlobalModel(GProtocolName fullname)
+	{
+		return this.unfairGModels.get(fullname);
 	}
 	
 	protected void addEndpointGraph(LProtocolName fullname, EGraph graph)
@@ -192,9 +202,6 @@ public class JobContext
 	
 	public EGraph getEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
-		////return this.graphs.get(Projector.projectFullProtocolName(fullname, role));
-		//return getEndpointGraph(Projector.projectFullProtocolName(fullname, role));
-
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 		// Moved form LProtocolDecl
 		EGraph graph = this.graphs.get(fulllpn);
@@ -221,47 +228,12 @@ public class JobContext
 		return graph;
 	}*/
 	
-	protected void addMinimisedEndpointGraph(LProtocolName fullname, EGraph graph)
-	{
-		this.minimised.put(fullname, graph);
-	}
-	
-	public EGraph getMinimisedEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
-	{
-		//return getMinimisedEndpointGraphAux(Projector.projectFullProtocolName(fullname, role));
-		return getMinimisedEndpointGraphAux(fullname, role);
-	}
-
-  // Full projected name
-	//protected EndpointGraph getMinimisedEndpointGraphAux(LProtocolName fullname)
-	protected EGraph getMinimisedEndpointGraphAux(GProtocolName fullname, Role role) throws ScribbleException
-	{
-		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
-
-		EGraph minimised = this.minimised.get(fulllpn);
-		if (minimised == null)
-		{
-			String aut = runAut(getEndpointGraph(fullname, role).init.toAut(), fulllpn + ".aut");
-			minimised = new AutParser().parse(aut);
-			addMinimisedEndpointGraph(fulllpn, minimised);
-		}
-		return minimised;
-	}
-	
 	protected void addUnfairEndpointGraph(LProtocolName fullname, EGraph graph)
 	{
 		this.unfair.put(fullname, graph);
 	}
 	
 	public EGraph getUnfairEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
-	{
-		//return getUnfairEndpointGraphAux(Projector.projectFullProtocolName(fullname, role));
-		return getUnfairEndpointGraphAux(fullname, role);
-	}
-
-  // Full projected name
-	//protected EndpointGraph getUnfairEndpointGraphAux(LProtocolName fullname)
-	protected EGraph getUnfairEndpointGraphAux(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 
@@ -273,10 +245,24 @@ public class JobContext
 		}
 		return unfair;
 	}
-
-	public Module getMainModule()
+	
+	protected void addMinimisedEndpointGraph(LProtocolName fullname, EGraph graph)
 	{
-		return getModule(this.main);
+		this.minimised.put(fullname, graph);
+	}
+	
+	public EGraph getMinimisedEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
+	{
+		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
+
+		EGraph minimised = this.minimised.get(fulllpn);
+		if (minimised == null)
+		{
+			String aut = runAut(getEndpointGraph(fullname, role).init.toAut(), fulllpn + ".aut");
+			minimised = new AutParser().parse(aut);
+			addMinimisedEndpointGraph(fulllpn, minimised);
+		}
+		return minimised;
 	}
 
 	// Duplicated from CommandLine.runDot

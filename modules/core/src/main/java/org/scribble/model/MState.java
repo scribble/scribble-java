@@ -122,15 +122,6 @@ public abstract class MState<
 		}
 		return getSuccessors(a).get(0);
 	}
-
-	// For non-deterministic actions
-	public final List<S> getSuccessors(A a)
-	{
-		return IntStream.range(0, this.actions.size())
-			.filter((i) -> this.actions.get(i).equals(a))
-			.mapToObj((i) -> this.succs.get(i))
-			.collect(Collectors.toList());
-	}
 	
 	public final List<S> getSuccessors()
 	{
@@ -140,6 +131,15 @@ public abstract class MState<
 			throw new RuntimeScribbleException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minlts if available)");  // This getter checks for determinism -- affects e.g. API generation  
 		}
 		return getAllSuccessors();
+	}
+
+	// For non-deterministic actions
+	public final List<S> getSuccessors(A a)
+	{
+		return IntStream.range(0, this.actions.size())
+			.filter((i) -> this.actions.get(i).equals(a))
+			.mapToObj((i) -> this.succs.get(i))
+			.collect(Collectors.toList());
 	}
 
 	public final List<S> getAllSuccessors()

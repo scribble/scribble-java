@@ -16,7 +16,7 @@ import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
-// Helper class for EndpointGraphBuilder -- can access the protected setters of EndpointState
+// Helper class for EGraphBuilder -- can access the protected setters of EndpointState
 public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
 	/*private EndpointState root;
@@ -77,7 +77,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		return new EGraph(res, resTerm);
 	}
 	
-	// FIXME: incomplete: won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
+	// FIXME: incomplete -- won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
 	private void fixContinueEdges(Set<EState> seen, Map<EState, EState> map, EState curr, EState res)
 	{
 		if (seen.contains(curr))
