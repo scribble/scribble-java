@@ -1,7 +1,7 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -35,7 +35,8 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addBranchMethods()
 	{
 		Role self = this.apigen.getSelf();
-		Set<EAction> as = this.curr.getActions();
+		//Set<EAction> as = this.curr.getActions();
+		List<EAction> as = this.curr.getActions();
 
 		// FIXME: factor out with BranchSocketGenerator
 		AbstractMethodBuilder bra = this.ib.newAbstractMethod("branch");

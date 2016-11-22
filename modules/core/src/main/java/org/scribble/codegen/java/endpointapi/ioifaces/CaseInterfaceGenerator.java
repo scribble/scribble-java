@@ -1,7 +1,7 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.codegen.java.endpointapi.CaseSocketGenerator;
@@ -64,7 +64,8 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addCaseReceiveDiscardMethods()
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
-		Set<EAction> as = this.curr.getActions();
+		//Set<EAction> as = this.curr.getActions();
+		List<EAction> as = this.curr.getActions();
 
 		int i = 1;
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");

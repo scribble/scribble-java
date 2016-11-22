@@ -5,43 +5,48 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble.model.MState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.global.actions.GMAction;
+import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.Role;
 
 
 // FIXME: make a WFModel front end class (cf. EndpointGraph)
 // FIXME: refactor to use ModelState?
 // FIXME: refactor to model.global package
-public class GMState
+public class GMState extends MState<GMAction, GMState, Global>
 {
-	private static int count = 0;  // FIXME: factor out with ModelAction
+	/*private static int count = 0;  // FIXME: factor out with ModelAction
 	
-	public final int id;
+	public final int id;*/
 
 	public final GMConfig config;
 	//protected final LinkedHashMap<GModelAction, WFState> edges;
 	//protected final List<GModelAction> actions;
-	protected final List<GMAction> actions;
-	protected final List<GMState> succs;
+
+	/*protected final List<GMAction> actions;
+	protected final List<GMState> succs;*/
 	
 	public GMState(GMConfig config)
 	{
-		this.id = GMState.count++;
+		super(Collections.emptySet());  // FIXME: recvar set
+
+		//this.id = GMState.count++;
 		this.config = config;
-		//this.edges = new LinkedHashMap<>();
+		/*//this.edges = new LinkedHashMap<>();
 		this.actions = new LinkedList<>();
-		this.succs = new LinkedList<>();
+		this.succs = new LinkedList<>();*/
 	}
 	
+	/*@Override
 	//public void addEdge(GModelAction a, WFState s)
 	public void addEdge(GMAction a, GMState s)
 	{
@@ -60,18 +65,20 @@ public class GMState
 		this.actions.add(a);
 		this.succs.add(s);
 	}
+	//*/
 	
 	
 	// ... seems actions are the "static structure" of the graph
 	// takeable are the "semantic" options of the system state ("session")
 	// getActions should be the same as getTakeable if model fully built?
 	
-	
-	
+	/*
+	@Override
 	public List<GMAction> getActions()
 	{
 		return Collections.unmodifiableList(this.actions);
 	}
+	//*/
 
 	//public Set<GModelAction> getAcceptable()
 	public Map<Role, List<EAction>> getTakeable()  // NB: config semantics, not graph edges (cf, ModelState) -- getActions for that
@@ -111,11 +118,14 @@ public class GMState
 		return null;
 	}*/
 
+	/*
+	@Override
 	public List<GMState> getSuccessors()  // NB graph edges, not config semantics (cf, getAcceptable)
 	{
 		//return Collections.unmodifiableCollection(this.edges.values());
 		return Collections.unmodifiableList(this.succs);
 	}
+	//*/
 	
 	/*public boolean isError()
 	{
@@ -135,20 +145,26 @@ public class GMState
 		return new GMStateErrors(stuck, waitfor, orphs, unfinished);
 	}
 	
+	/*
+	@Override
 	public boolean isTerminal()
 	{
 		//return this.edges.isEmpty();
 		return this.actions.isEmpty();
 	}
+	//*/
 
+	// **doesn't use super.hashCode (cf., equals) -- FIXME?
 	@Override
 	public final int hashCode()
 	{
-		int hash = 73;
+		int hash = 79;
+		//int hash = super.hashCode();
 		hash = 31 * hash + this.config.hashCode();
 		return hash;
 	}
 
+	// **doesn't use this.id, cf. super.equals -- FIXME?
 	@Override
 	public boolean equals(Object o)
 	{
@@ -173,7 +189,7 @@ public class GMState
 		//return Integer.toString(this.id);  // FIXME
 	}
 	
-	public final String toDot()
+	/*public final String toDot()
 	{
 		String s = "digraph G {\n" // rankdir=LR;\n
 				+ "compound = true;\n";
@@ -190,7 +206,7 @@ public class GMState
 		for (int i = 0; i < this.actions.size(); i++)
 		{
 			/*GModelAction msg = e.getKey();
-			WFState p = e.getValue();*/
+			WFState p = e.getValue();* /
 			GMAction msg = this.actions.get(i);
 			GMState p = this.succs.get(i);
 			s += "\n" + toEdgeDot(msg, p);
@@ -240,6 +256,7 @@ public class GMState
 	{
 		return "label=\"" + msg + "\"";
 	}
+	*/
 
 	/*public Set<WFState> findTerminalStates()
 	{
@@ -274,7 +291,7 @@ public class GMState
 			Iterator<GMState> i = todo.values().iterator();
 			GMState next = i.next();
 			todo.remove(next.id);
-			for (GMState s : next.getSuccessors())
+			for (GMState s : next.getAllSuccessors())
 			{
 				if (!all.containsKey(s.id))
 				{	
@@ -304,8 +321,8 @@ public class GMState
 				continue;
 			}
 			seen.add(s.id);
-			Iterator<GMAction> as = s.getActions().iterator();
-			Iterator<GMState> ss = s.getSuccessors().iterator();
+			Iterator<GMAction> as = s.getAllActions().iterator();
+			Iterator<GMState> ss = s.getAllSuccessors().iterator();
 			for (; as.hasNext(); edges++)
 			{
 				GMAction a = as.next();

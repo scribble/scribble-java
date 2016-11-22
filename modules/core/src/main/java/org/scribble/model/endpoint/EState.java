@@ -48,6 +48,31 @@ public class EState extends MState<EAction, EState, Local>
 		return new EGraph(this, getTerminal(this));  // Throws exception if >1 terminal; null if no terminal
 	}
 
+	protected EState clone()
+	{
+		Set<EState> all = new HashSet<>();
+		all.add(this);
+		all.addAll(MState.getAllReachableStates(this));
+		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
+		for (EState s : all)
+		{
+			map.put(s.id, newState(s.labs));
+		}
+		for (EState s : all)
+		{
+			Iterator<EAction> as = s.getAllActions().iterator();
+			Iterator<EState> ss = s.getAllSuccessors().iterator();
+			EState clone = map.get(s.id);
+			while (as.hasNext())
+			{
+				EAction a = as.next();
+				EState succ = ss.next();
+				clone.addEdge(a, map.get(succ.id));
+			}
+		}
+		return map.get(this.id);
+	}
+
 	/*.. move back to endpointstate
 	.. use getallreachable to get subgraph, make a graph clone method
 	.. for each poly output, clone a (non-det) edge to clone of the reachable subgraph with the clone of the current node pruned to this single choice
@@ -182,7 +207,7 @@ public class EState extends MState<EAction, EState, Local>
 		//EndpointState succ = take(a);
 		Set<EState> all = new HashSet<>();
 		all.add(succ);
-		all.addAll(MState.getAllReachable(succ));
+		all.addAll(MState.getAllReachableStates(succ));
 		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
 		for (EState s : all)
 		{
@@ -216,7 +241,7 @@ public class EState extends MState<EAction, EState, Local>
 		return map.get(succ.id);
 	}
 	
-	@Override
+	//@Override
 	protected EState newState(Set<RecVar> labs)
 	{
 		return new EState(labs);

@@ -18,6 +18,9 @@ module Test;
 // - API gen for wrap (SMTP)
 // - API gen for shared channel passing
 
+// -dot/aut CL args (default dot)
+// refactor demo package
+
 
 global protocol Proto1(role A, role B, role C)
 {

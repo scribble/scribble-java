@@ -188,7 +188,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		visited.add(s);
 
-		Set<EAction> as = s.getActions();
+		//Set<EAction> as = s.getActions();
+		List<EAction> as = s.getActions();
 		for (EAction a : as.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (!a.isSend() && !a.isReceive())  // TODO (connect/disconnect)

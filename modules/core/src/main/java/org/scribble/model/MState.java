@@ -32,6 +32,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 	protected final List<A> actions;
 	protected final List<S> succs;
 	
+	// FIXME: refactor RecVar into EState
 	public MState(Set<RecVar> labs)  // Immutable singleton node
 	//public GModelState(Set<String> labs)  // Immutable singleton node
 	//public GModelState()  // Immutable singleton node
@@ -43,7 +44,32 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		this.succs = new LinkedList<>();
 	}
 	
-	protected abstract S newState(Set<RecVar> labs);
+	//protected abstract S newState(Set<RecVar> labs);
+
+	/*protected S clone()
+	{
+		Set<MState<A, S, K>> all = new HashSet<>();
+		all.add(this);
+		all.addAll(MState.getAllReachableStates(this));
+		Map<Integer, S> map = new HashMap<>();  // original s.id -> clones
+		for (MState<A, S, K> s : all)
+		{
+			map.put(s.id, newState(s.labs));
+		}
+		for (MState<A, S, K> s : all)
+		{
+			Iterator<A> as = s.getAllActions().iterator();
+			Iterator<S> ss = s.getAllSuccessors().iterator();
+			S clone = map.get(s.id);
+			while (as.hasNext())
+			{
+				A a = as.next();
+				S succ = ss.next();
+				clone.addEdge(a, map.get(succ.id));
+			}
+		}
+		return map.get(this.id);
+	}*/
 	
 	protected void addLabel(RecVar lab)
 	{
@@ -55,7 +81,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		this.actions.remove(this.actions.size() - 1);
 		this.succs.remove(this.succs.size() - 1);
 	}*/
-	protected void removeEdge(A a, S s) throws ScribbleException
+	protected final void removeEdge(A a, S s) throws ScribbleException
 	{
 		Iterator<A> ia = this.actions.iterator();
 		Iterator<S> is = this.succs.iterator();
@@ -75,7 +101,8 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 	}
 	
 	// Mutable (can also overwrite edges)
-	protected void addEdge(A a, S s)
+	//protected final void addEdge(A a, S s)
+	public final void addEdge(A a, S s)  // FIXME: currently public for GMChecker building -- make a global version of EGraphBuilderUtil
 	{
 		//this.edges.put(a, s);
 		Iterator<A> as = this.actions.iterator();  // Needed?..
@@ -93,36 +120,38 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		this.succs.add(s);
 	}
 	
-	public Set<RecVar> getLabels()
+	public Set<RecVar> getRecLabels()
 	{
 		return Collections.unmodifiableSet(this.labs);
 	}
 	
 	// Renamed from "getAcceptable" to distinguish from accept actions
 	// The "deterministic" variant, c.f., getAllTakeable
-	public Set<A> getActions()
+	//public Set<A> getActions()
+	public final List<A> getActions()
 	{
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeScribbleException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minfsm if available)");  // This getter checks for determinism -- affects e.g. API generation  
+			throw new RuntimeScribbleException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minlts if available)");  // This getter checks for determinism -- affects e.g. API generation  
 		}
-		return as;
+		//return as;
+		return getAllActions();
 	}
 
-	public List<A> getAllActions()
+	public final List<A> getAllActions()
 	{
 		//return Collections.unmodifiableSet(this.edges.keySet());
 		return Collections.unmodifiableList(this.actions);
 	}
 	
-	public boolean hasAction(A a)
+	public final boolean hasAction(A a)
 	{
 		//return this.edges.containsKey(a);
 		return this.actions.contains(a);
 	}
 
-	public S getSuccessor(A a)
+	public final S getSuccessor(A a)
 	{
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
@@ -133,7 +162,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 	}
 
 	// For non-deterministic actions
-	public List<S> getSuccessors(A a)
+	public final List<S> getSuccessors(A a)
 	{
 		//return this.edges.get(a);
 		return IntStream.range(0, this.actions.size())
@@ -142,20 +171,30 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 			.collect(Collectors.toList());
 	}
 	
-	public List<S> getAllSuccessors()
+	public final List<S> getSuccessors()
+	{
+		Set<A> as = new HashSet<>(this.actions);
+		if (as.size() != this.actions.size())
+		{
+			throw new RuntimeScribbleException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minlts if available)");  // This getter checks for determinism -- affects e.g. API generation  
+		}
+		return getAllSuccessors();
+	}
+
+	public final List<S> getAllSuccessors()
 	{
 		//return Collections.unmodifiableCollection(this.edges.values());
 		return Collections.unmodifiableList(this.succs);
 	}
 
-	public boolean isTerminal()
+	public final boolean isTerminal()
 	{
 		//return this.edges.isEmpty();
 		return this.actions.isEmpty();
 	}
 
 	@Override
-	public final int hashCode()
+	public int hashCode()
 	{
 		int hash = 73;
 		hash = 31 * hash + this.id;
@@ -263,7 +302,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		{
 			return start;
 		}
-		Set<S> terms = MState.getAllReachable(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
+		Set<S> terms = MState.getAllReachableStates(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
 		if (terms.size() > 1)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + terms);
@@ -296,7 +335,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 			Set<S> getAllReachable(S start)*/
 	@SuppressWarnings("unchecked")
 	public static <A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
-			Set<S> getAllReachable(MState<A, S, K> start)
+			Set<S> getAllReachableStates(MState<A, S, K> start)
 	{
 		Map<Integer, S> all = new HashMap<>();
 		Map<Integer, S> todo = new LinkedHashMap<>();
@@ -337,7 +376,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 	{
 		Set<S> all = new HashSet<>();
 		all.add((S) start);  // Suppressed: assumes ModelState subclass correctly instantiates S parameter
-		all.addAll(MState.getAllReachable(start));
+		all.addAll(MState.getAllReachableStates(start));
 		Set<A> as = new HashSet<>();
 		for (S s : all)
 		{
@@ -350,7 +389,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 	{
 		Set<MState<A, S, K>> all = new HashSet<>();
 		all.add(this);
-		all.addAll(getAllReachable(this));
+		all.addAll(getAllReachableStates(this));
 		String aut = "";
 		int edges = 0;
 		Set<Integer> seen = new HashSet<>();
@@ -374,34 +413,9 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		return "des (" + this.id + "," + edges + "," + all.size() + ")" + aut + "\n";
 	}
 	
-	public S clone()
-	{
-		Set<MState<A, S, K>> all = new HashSet<>();
-		all.add(this);
-		all.addAll(MState.getAllReachable(this));
-		Map<Integer, S> map = new HashMap<>();  // original s.id -> clones
-		for (MState<A, S, K> s : all)
-		{
-			map.put(s.id, newState(s.labs));
-		}
-		for (MState<A, S, K> s : all)
-		{
-			Iterator<A> as = s.getAllActions().iterator();
-			Iterator<S> ss = s.getAllSuccessors().iterator();
-			S clone = map.get(s.id);
-			while (as.hasNext())
-			{
-				A a = as.next();
-				S succ = ss.next();
-				clone.addEdge(a, map.get(succ.id));
-			}
-		}
-		return map.get(this.id);
-	}
-	
 	public boolean canReach(MState<A, S, K> s)
 	{
-		return MState.getAllReachable(this).contains(s);
+		return MState.getAllReachableStates(this).contains(s);
 	}
 	
 	/*protected Map<ModelAction, ModelState> getEdges()

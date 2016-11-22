@@ -2,7 +2,6 @@ package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.codegen.java.endpointapi.HandlerInterfaceGenerator;
@@ -106,7 +105,8 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 		//Role self = this.apigen.getSelf();
-		Set<EAction> as = this.curr.getActions();
+		//Set<EAction> as = this.curr.getActions();
+		List<EAction> as = this.curr.getActions();
 
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
 		int i = 1; 

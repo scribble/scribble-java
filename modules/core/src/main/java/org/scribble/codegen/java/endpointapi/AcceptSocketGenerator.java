@@ -1,6 +1,6 @@
 package org.scribble.codegen.java.endpointapi;
 
-import java.util.Set;
+import java.util.List;
 
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
@@ -30,7 +30,8 @@ public class AcceptSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected void addMethods()
 	{
-		Set<EAction> as = curr.getActions();
+		//Set<EAction> as = curr.getActions();
+		List<EAction> as = curr.getActions();
 		if (as.size() > 1)
 		{
 			throw new RuntimeException("AcceptSocket generation not yet supported for accept-branches: " + as);

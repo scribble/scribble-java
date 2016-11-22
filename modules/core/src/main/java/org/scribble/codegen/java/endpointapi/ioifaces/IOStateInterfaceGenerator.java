@@ -2,8 +2,8 @@ package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -75,7 +75,8 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	protected void addCastField()
 	{
 		String ifname = getIOStateInterfaceName(this.apigen.getSelf(), this.curr);
-		Set<EAction> as = this.curr.getActions();
+		//Set<EAction> as = this.curr.getActions();
+		List<EAction> as = this.curr.getActions();
 
 		FieldBuilder cast = this.ib.newField("cast");
 		cast.addModifiers(TypeBuilder.PUBLIC, TypeBuilder.STATIC, TypeBuilder.FINAL);

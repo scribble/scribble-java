@@ -58,8 +58,8 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<EAction, EState, Local>
 	
 	public EGraph finalise()
 	{
-		EState res = new EState(this.entry.getLabels());
-		EState resTerm = new EState(this.exit.getLabels());
+		EState res = new EState(this.entry.getRecLabels());
+		EState resTerm = new EState(this.exit.getRecLabels());
 		Map<EState, EState> map = new HashMap<>();
 		map.put(this.entry, res);
 		map.put(this.exit, resTerm);
@@ -128,7 +128,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<EAction, EState, Local>
 		}
 		else
 		{
-			next = new EState(succ.getLabels());
+			next = new EState(succ.getRecLabels());
 			map.put(succ, next);
 		}
 		return next;

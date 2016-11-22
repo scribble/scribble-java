@@ -467,7 +467,7 @@ public class GMChecker extends ModuleContextVisitor
 				todo.add(succ);
 			}
 			//curr.addEdge(a.toGlobal(r), succ);
-			curr.addEdge(a, succ);
+			curr.addEdge(a, succ);  // FIXME: make a Builder util, cf. EGraphBuilderUtil
 			//if (!seen.contains(succ) && !todo.contains(succ))
 			/*if (!seen.containsKey(succ.id) && !todo.contains(succ))
 			{
@@ -504,7 +504,7 @@ public class GMChecker extends ModuleContextVisitor
 					}
 					else*/
 					{
-						for (GMAction a : next.getActions())
+						for (GMAction a : next.getAllActions())
 						{
 							if (a.containsRole(r))
 							{
@@ -683,8 +683,8 @@ public class GMChecker extends ModuleContextVisitor
 		}
 
 		GMState curr = all.get(currid);
-		Iterator<GMAction> as = curr.getActions().iterator();
-		Iterator<GMState> ss = curr.getSuccessors().iterator();
+		Iterator<GMAction> as = curr.getAllActions().iterator();
+		Iterator<GMState> ss = curr.getAllSuccessors().iterator();
 		while (as.hasNext())
 		{
 			GMAction a = as.next();
@@ -849,7 +849,7 @@ public class GMChecker extends ModuleContextVisitor
 		for (Integer s1id : all1.keySet())
 		{
 			//for (WFState s2 : s1.getSuccessors())
-			for (GMState s2 : all.get(s1id).getSuccessors())
+			for (GMState s2 : all.get(s1id).getAllSuccessors())
 			{
 				//reach[all1.get(s1)][all1.get(s2)] = true;
 				reach[all1.get(s1id)][all1.get(s2.id)] = true;
