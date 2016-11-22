@@ -17,7 +17,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 
-//public class ModelState<K extends ProtocolKind>
 public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
 {
 	private static int count = 0;  // FIXME: factor out with ModelAction
@@ -44,43 +43,11 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		this.succs = new LinkedList<>();
 	}
 	
-	//protected abstract S newState(Set<RecVar> labs);
-
-	/*protected S clone()
-	{
-		Set<MState<A, S, K>> all = new HashSet<>();
-		all.add(this);
-		all.addAll(MState.getAllReachableStates(this));
-		Map<Integer, S> map = new HashMap<>();  // original s.id -> clones
-		for (MState<A, S, K> s : all)
-		{
-			map.put(s.id, newState(s.labs));
-		}
-		for (MState<A, S, K> s : all)
-		{
-			Iterator<A> as = s.getAllActions().iterator();
-			Iterator<S> ss = s.getAllSuccessors().iterator();
-			S clone = map.get(s.id);
-			while (as.hasNext())
-			{
-				A a = as.next();
-				S succ = ss.next();
-				clone.addEdge(a, map.get(succ.id));
-			}
-		}
-		return map.get(this.id);
-	}*/
-	
 	protected void addLabel(RecVar lab)
 	{
 		this.labs.add(lab);
 	}
 	
-	/*protected void removeLastEdge()
-	{
-		this.actions.remove(this.actions.size() - 1);
-		this.succs.remove(this.succs.size() - 1);
-	}*/
 	protected final void removeEdge(A a, S s) throws ScribbleException
 	{
 		Iterator<A> ia = this.actions.iterator();
@@ -309,26 +276,6 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		}
 		return (terms.isEmpty()) ? null : terms.iterator().next();  // FIXME: return empty Set instead of null?
 	}
-			/*S findTerminalState(Set<S> visited, S curr)
-	{
-		if (!visited.contains(curr))
-		{
-			if (curr.isTerminal())
-			{
-				return curr;
-			}
-			visited.add(curr);
-			for (S succ : curr.getSuccessors())
-			{
-				S res = findTerminalState(visited, succ);
-				if (res != null)
-				{
-					return res;
-				}
-			}
-		}
-		return null;
-	}*/
 
 	// Note: doesn't implicitly include start (only if start is explicitly reachable from start, of course)
 	/*public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
@@ -385,7 +332,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		return as;
 	}
 	
-	public String toAut()
+	public final String toAut()
 	{
 		Set<MState<A, S, K>> all = new HashSet<>();
 		all.add(this);
@@ -417,206 +364,4 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 	{
 		return MState.getAllReachableStates(this).contains(s);
 	}
-	
-	/*protected Map<ModelAction, ModelState> getEdges()
-	{
-		return this.edges;
-	}* /
-
-	protected void addLabel(RecVar lab)
-	{
-		this.labs.add(lab);
-	}
-	
-	public void addEdge(GModelAction a, GModelState s)
-	{
-		this.edges.put(a, s);
-	}
-	
-	public Set<RecVar> getLabels()
-	//public Set<String> getLabels()
-	{
-		return new HashSet<>(this.labs);
-	}
-	
-	public Set<GModelAction> getAcceptable()
-	{
-		return new HashSet<>(this.edges.keySet());
-	}
-	
-	public boolean isAcceptable(GModelAction a)
-	{
-		return this.edges.containsKey(a);
-	}
-
-	public GModelState accept(GModelAction a)
-	{
-		return this.edges.get(a);
-	}
-	
-	public Collection<GModelState> getSuccessors()
-	{
-		return this.edges.values();
-	}
-	
-	public boolean isTerminal()
-	{
-		return this.edges.isEmpty();
-	}
-	
-	public Set<GModelState> findTerminals()
-	{
-		Set<GModelState> terms = new HashSet<>();
-		findTerminals(new HashSet<>(), this, terms);
-		return terms;
-	}
-
-	private static void findTerminals(Set<GModelState> seen, GModelState curr, Set<GModelState> terms)
-	{
-		if (seen.contains(curr))
-		{
-			return;
-		}
-		seen.add(curr);
-		if (curr.isTerminal())
-		{
-			terms.add(curr);
-		}
-		else
-		{
-			for (Entry<GModelAction, GModelState> e : curr.edges.entrySet())
-			{
-				findTerminals(seen, e.getValue(), terms);
-			}
-		}
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hash = 73;
-		hash = 31 * hash + this.id;  // Would be enough by itself, but keep consistent with equals
-		/*hash = 31 * hash + this.labs.hashCode();
-		hash = 31 * hash + this.edges.hashCode();* /
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (!(o instanceof GModelState))
-		{
-			return false;
-		}
-		GModelState s = (GModelState) o;
-		return this.id == s.id;// && this.labs.equals(s.labs) && this.edges.equals(s.edges);
-	}
-	
-	@Override
-	public String toString()
-	{
-		String s = "\"" + this.id + "\":[";
-		if (!this.edges.isEmpty())
-		{
-			Iterator<Entry<GModelAction, GModelState>> es = this.edges.entrySet().iterator();
-			Entry<GModelAction, GModelState> first = es.next();
-			s += first.getKey() + "=\"" + first.getValue().id + "\"";
-			while (es.hasNext())
-			{
-				Entry<GModelAction, GModelState> e = es.next();
-				s += ", " + e.getKey() + "=\"" + e.getValue().id + "\"";
-			}
-		}
-		return s + "]";
-	}
-	
-	public final String toDot()
-	{
-		String s = "digraph G {\n" // rankdir=LR;\n
-				+ "compound = true;\n";
-		s += toDot(new HashSet<>());
-		return s + "\n}";
-	}
-
-	protected final String toDot(Set<GModelState> seen)
-	{
-		seen.add(this);
-		String s = toNodeDot();
-		for (Entry<GModelAction, GModelState> e : this.edges.entrySet())
-		{
-			GModelAction msg = e.getKey();
-			GModelState p = e.getValue();
-			s += "\n" + toEdgeDot(msg, p);
-			if (!seen.contains(p))
-			{
-				s += "\n" + p.toDot(seen);
-			}
-		}
-		return s;
-	}
-
-	protected final String toEdgeDot(String src, String dest, String lab)
-	{
-		return src + " -> " + dest + " [ " + lab + " ];";
-	}
-
-	// dot node declaration
-	// Override to change drawing declaration of "this" node
-	protected String toNodeDot()
-	{
-		return getDotNodeId() + " [ " + getNodeLabel() + " ];";
-	}
-	
-	protected String getNodeLabel()
-	{
-		/*String labs = this.labs.toString();
-		return "label=\"" + labs.substring(1, labs.length() - 1) + "\"";* /
-		return "";
-	}
-	
-	protected String getDotNodeId()
-	{
-		return "\"" + this.id + "\"";
-	}
-
-	// Override to change edge drawing from "this" as src
-	protected String toEdgeDot(GModelAction msg, GModelState next)
-	{
-		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));
-	}
-	
-	// "this" is the dest node of the edge
-	// Override to change edge drawing to "this" as dest
-	protected String getEdgeLabel(GModelAction msg)
-	{
-		return "label=\"" + msg + "\"";
-	}
-	
-	/*public ModelState copy()
-	{
-		ModelState copy = new ModelState(this.labs);
-		copy(new HashSet<>(), this, copy);
-		return copy;
-	}
-
-	public static void copy(Set<ModelState> seen, ModelState curr, ModelState copy)
-	{
-		if (seen.contains(curr))
-		{
-			return;
-		}
-		seen.add(curr);
-		for(Entry<Op, ModelState> e : curr.edges.entrySet())
-		{
-			Op op = e.getKey();
-			ModelState next = e.getValue();
-			ModelState tmp = new ModelState(next.labs);
-			copy.edges.put(op, tmp);
-			copy(seen, next, tmp);
-		}
-	}*/
 }
