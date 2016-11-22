@@ -3,7 +3,6 @@ package org.scribble.model.endpoint;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.model.endpoint.EState.Kind;
 import org.scribble.model.endpoint.actions.EAction;
 
 public class EFSM extends EGraph
@@ -47,7 +46,7 @@ public class EFSM extends EGraph
 		return this.curr.isTerminal();
 	}
 
-	public Kind getStateKind()
+	public EStateKind getStateKind()
 	{
 		return this.curr.getStateKind();
 	}

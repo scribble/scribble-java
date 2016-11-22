@@ -17,7 +17,7 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of EndpointState
-public class EGraphBuilderUtil extends GraphBuilderUtil<EAction, EState, Local>
+public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
 	/*private EndpointState root;
 	

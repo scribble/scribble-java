@@ -15,35 +15,34 @@ import java.util.stream.IntStream;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.RecVar;
 
-public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
+public abstract class MState<
+		L,                             // Node label type (cosmetic)
+		A extends MAction<K>,          // Edge type
+		S extends MState<L, A, S, K>,  // State type
+		K extends ProtocolKind         // Global/Local
+>
 {
 	private static int count = 0;  // FIXME: factor out with ModelAction
 	
 	public final int id;
 
-	protected final Set<RecVar> labs;  // Was RecVar and SubprotocolSigs, now using inlined protocol for FSM building so just RecVar
-	//private final Set<String> labs;  // Something better to cover both RecVar and SubprotocolSigs?
+	protected final Set<L> labs;  // Was RecVar and SubprotocolSigs, now using inlined protocol for FSM building so just RecVar
 
 	// **: clients should use the pair of getAllAcceptable/getSuccessors for correctness -- getAcceptable/accept don't support non-det
 	//protected final LinkedHashMap<A, S> edges;  // Want predictable ordering of entries for e.g. API generation (state enumeration)*/
 	protected final List<A> actions;
 	protected final List<S> succs;
 	
-	// FIXME: refactor RecVar into EState
-	public MState(Set<RecVar> labs)  // Immutable singleton node
-	//public GModelState(Set<String> labs)  // Immutable singleton node
-	//public GModelState()  // Immutable singleton node
+	public MState(Set<L> labs)  // Immutable singleton node
 	{
 		this.id = MState.count++;
 		this.labs = new HashSet<>(labs);
-		//this.edges = new LinkedHashMap<>();
 		this.actions = new LinkedList<>();
 		this.succs = new LinkedList<>();
 	}
 	
-	protected void addLabel(RecVar lab)
+	protected void addLabel(L lab)
 	{
 		this.labs.add(lab);
 	}
@@ -87,14 +86,12 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		this.succs.add(s);
 	}
 	
-	public Set<RecVar> getRecLabels()
+	public final Set<L> getRecLabels()
 	{
 		return Collections.unmodifiableSet(this.labs);
 	}
 	
-	// Renamed from "getAcceptable" to distinguish from accept actions
 	// The "deterministic" variant, c.f., getAllTakeable
-	//public Set<A> getActions()
 	public final List<A> getActions()
 	{
 		Set<A> as = new HashSet<>(this.actions);
@@ -108,13 +105,11 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 
 	public final List<A> getAllActions()
 	{
-		//return Collections.unmodifiableSet(this.edges.keySet());
 		return Collections.unmodifiableList(this.actions);
 	}
 	
 	public final boolean hasAction(A a)
 	{
-		//return this.edges.containsKey(a);
 		return this.actions.contains(a);
 	}
 
@@ -131,7 +126,6 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 	// For non-deterministic actions
 	public final List<S> getSuccessors(A a)
 	{
-		//return this.edges.get(a);
 		return IntStream.range(0, this.actions.size())
 			.filter((i) -> this.actions.get(i).equals(a))
 			.mapToObj((i) -> this.succs.get(i))
@@ -150,119 +144,15 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 
 	public final List<S> getAllSuccessors()
 	{
-		//return Collections.unmodifiableCollection(this.edges.values());
 		return Collections.unmodifiableList(this.succs);
 	}
 
 	public final boolean isTerminal()
 	{
-		//return this.edges.isEmpty();
 		return this.actions.isEmpty();
 	}
 
-	@Override
-	public int hashCode()
-	{
-		int hash = 73;
-		hash = 31 * hash + this.id;
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (!(o instanceof MState))
-		{
-			return false;
-		}
-		return this.id == ((MState<?, ?, ?>) o).id;  // Good to use id, due to edge mutability
-	}
-	
-	public String toLongString()
-	{
-		String s = "\"" + this.id + "\":[";
-		Iterator<S> ss = this.succs.iterator();
-		s += this.actions.stream().map((a) -> a + "=\"" + ss.next().id + "\"").collect(Collectors.joining(", "));
-		return s + "]";
-	}
-
-	@Override
-	public String toString()
-	{
-		return Integer.toString(this.id);  // FIXME -- ?
-	}
-	
-	public final String toDot()
-	{
-		String s = "digraph G {\n" // rankdir=LR;\n
-				+ "compound = true;\n";
-		s += toDot(new HashSet<>());
-		return s + "\n}";
-	}
-
-	//protected final String toDot(Set<S> seen)
-	protected final String toDot(Set<MState<A, S, K>> seen)
-	{
-		seen.add(this);
-		String dot = toNodeDot();
-		//for (Entry<A, S> e : this.edges.entrySet())
-		for (int i = 0; i < this.actions.size(); i ++)
-		{
-			/*A msg = e.getKey();
-			S p = e.getValue();*/
-			A a = this.actions.get(i);
-			S s = this.succs.get(i);
-			dot += "\n" + toEdgeDot(a, s);
-			if (!seen.contains(s))
-			{
-				dot += "\n" + s.toDot(seen);
-			}
-		}
-		return dot;
-	}
-
-	protected final String toEdgeDot(String src, String dest, String lab)
-	{
-		return src + " -> " + dest + " [ " + lab + " ];";
-	}
-
-	// dot node declaration
-	// Override to change drawing declaration of "this" node
-	protected String toNodeDot()
-	{
-		return getDotNodeId() + " [ " + getNodeLabel() + " ];";
-	}
-	
-	protected String getNodeLabel()
-	{
-		String labs = this.labs.toString();
-		//return "label=\"" + labs.substring(1, labs.length() - 1) + "\"";
-		return "label=\"" + this.id + ": " + labs.substring(1, labs.length() - 1) + "\"";  // FIXME
-	}
-	
-	protected String getDotNodeId()
-	{
-		return "\"" + this.id + "\"";
-	}
-
-	// Override to change edge drawing from "this" as src
-	protected String toEdgeDot(A msg, S next)
-	{
-		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));
-	}
-	
-	// "this" is the dest node of the edge
-	// Override to change edge drawing to "this" as dest
-	protected String getEdgeLabel(A msg)
-	{
-		return "label=\"" + msg + "\"";
-	}
-
-	public static <A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
+	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
 			S getTerminal(S start)
 	{
 		if (start.isTerminal())
@@ -276,13 +166,18 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		}
 		return (terms.isEmpty()) ? null : terms.iterator().next();  // FIXME: return empty Set instead of null?
 	}
+	
+	public boolean canReach(MState<L, A, S, K> s)
+	{
+		return MState.getAllReachableStates(this).contains(s);
+	}
 
 	// Note: doesn't implicitly include start (only if start is explicitly reachable from start, of course)
 	/*public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			Set<S> getAllReachable(S start)*/
 	@SuppressWarnings("unchecked")
-	public static <A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
-			Set<S> getAllReachableStates(MState<A, S, K> start)
+	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
+			Set<S> getAllReachableStates(MState<L, A, S, K> start)
 	{
 		Map<Integer, S> all = new HashMap<>();
 		Map<Integer, S> todo = new LinkedHashMap<>();
@@ -317,9 +212,9 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <A extends MAction<K>, S extends MState<A, S, K>, K extends ProtocolKind>
+	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
 			//Set<A> getAllReachableActions(S start)
-			Set<A> getAllReachableActions(MState<A, S, K> start)
+			Set<A> getAllReachableActions(MState<L, A, S, K> start)
 	{
 		Set<S> all = new HashSet<>();
 		all.add((S) start);  // Suppressed: assumes ModelState subclass correctly instantiates S parameter
@@ -331,37 +226,34 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		}
 		return as;
 	}
-	
-	public final String toAut()
+
+	@Override
+	public int hashCode()
 	{
-		Set<MState<A, S, K>> all = new HashSet<>();
-		all.add(this);
-		all.addAll(getAllReachableStates(this));
-		String aut = "";
-		int edges = 0;
-		Set<Integer> seen = new HashSet<>();
-		for (MState<A, S, K> s : all)
+		int hash = 73;
+		hash = 31 * hash + this.id;
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
 		{
-			if (seen.contains(s.id))
-			{
-				continue;
-			}
-			seen.add(s.id);
-			Iterator<A> as = s.getAllActions().iterator();
-			Iterator<S> ss = s.getAllSuccessors().iterator();
-			for (; as.hasNext(); edges++)
-			{
-				A a = as.next();
-				S succ = ss.next();
-				String msg = a.toStringWithMessageIdHack();  // HACK
-				aut += "\n(" + s.id + ",\"" + msg + "\"," + succ.id + ")";
-			}
+			return true;
 		}
-		return "des (" + this.id + "," + edges + "," + all.size() + ")" + aut + "\n";
+		if (!(o instanceof MState))
+		{
+			return false;
+		}
+		return ((MState<?, ?, ?, ?>) o).canEquals(this) && this.id == ((MState<?, ?, ?, ?>) o).id;  // Good to use id, due to edge mutability
 	}
 	
-	public boolean canReach(MState<A, S, K> s)
+	protected abstract boolean canEquals(MState<?, ?, ?, ?> s);
+
+	@Override
+	public String toString()
 	{
-		return MState.getAllReachableStates(this).contains(s);
+		return Integer.toString(this.id);  // FIXME -- ?
 	}
 }

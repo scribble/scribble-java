@@ -20,7 +20,7 @@ import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.endpoint.EGraph;
-import org.scribble.model.endpoint.EState.Kind;
+import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.global.GMBuffers;
@@ -302,8 +302,8 @@ public class GMChecker extends ModuleContextVisitor
 				// Hacky?  // FIXME: factor out and make more robust (e.g. for new state kinds) -- e.g. "hasPayload" in IOAction
 				//EndpointState currstate = curr.config.states.get(r);
 				EFSM currfsm = curr.config.states.get(r);
-				Kind k = currfsm.getStateKind();
-				if (k == Kind.OUTPUT)
+				EStateKind k = currfsm.getStateKind();
+				if (k == EStateKind.OUTPUT)
 				{
 					for (EAction a : acceptable_r)  // Connect implicitly has no payload (also accept, so skip)
 					{
@@ -314,7 +314,7 @@ public class GMChecker extends ModuleContextVisitor
 						}
 					}
 				}
-				else if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT || k == Kind.ACCEPT)
+				else if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT || k == EStateKind.ACCEPT)
 				{
 					for (EAction a : acceptable_r)
 					{

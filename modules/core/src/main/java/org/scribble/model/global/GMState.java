@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.model.MState;
+import org.scribble.model.PrettyMState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
@@ -16,19 +17,14 @@ import org.scribble.sesstype.name.Role;
 
 // FIXME: make a WFModel front-end class? (cf. EGraph)
 // Only uses MState.id cosmetically, cf. MState equals/hash -- overrides equals/hash based on this.config (maybe extending MState is a bit misleading)
-public class GMState extends MState<GMAction, GMState, Global>
+public class GMState extends PrettyMState<Void, GMAction, GMState, Global>
 {
 	public final GMConfig config;
 	
 	public GMState(GMConfig config)
 	{
-		super(Collections.emptySet());  // FIXME: recvar set
-
-		//this.id = GMState.count++;
+		super(Collections.emptySet());
 		this.config = config;
-		/*//this.edges = new LinkedHashMap<>();
-		this.actions = new LinkedList<>();
-		this.succs = new LinkedList<>();*/
 	}
 	
 	// Based on config semantics, not "static" graph edges (cf., super.getAllActions) -- used to build global model graph
@@ -70,7 +66,7 @@ public class GMState extends MState<GMAction, GMState, Global>
 
 	// FIXME? doesn't use this.id, cf. super.equals
 	// Not using id, cf. ModelState -- FIXME? use a factory pattern that associates unique states and ids? -- use id for hash, and make a separate "semantic equals"
-	// Care is needed if hashing, since mutable (currently better to manually use ids, c.f. ModelState)
+	// Care is needed if hashing, since mutable (OK to use immutable config -- cf., ModelState.id)
 	@Override
 	public boolean equals(Object o)
 	{
@@ -82,7 +78,13 @@ public class GMState extends MState<GMAction, GMState, Global>
 		{
 			return false;
 		}
-		return this.config.equals(((GMState) o).config);  
+		return ((GMState) o).canEquals(this) && this.config.equals(((GMState) o).config);
+	}
+
+	@Override
+	protected boolean canEquals(MState<?, ?, ?, ?> s)
+	{
+		return s instanceof GMState;
 	}
 	
 	@Override

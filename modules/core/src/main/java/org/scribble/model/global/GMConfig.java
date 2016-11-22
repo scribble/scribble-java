@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.EState.Kind;
+import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAccept;
 import org.scribble.model.endpoint.actions.EConnect;
 import org.scribble.model.endpoint.actions.EDisconnect;
@@ -82,7 +82,7 @@ public class GMConfig
 		//return !cannotSafelyTerminate;
 		boolean canSafelyTerminate =
 				(s.isTerminal() && this.buffs.isEmpty(r))
-			|| (s.getStateKind().equals(Kind.ACCEPT) && s.isInitial())  // FIXME: should be empty buffs
+			|| (s.getStateKind().equals(EStateKind.ACCEPT) && s.isInitial())  // FIXME: should be empty buffs
 				
 				// FIXME: incorrectly allows stuck accepts?  if inactive not initial, should be clone of initial?
 			//|| (s.getStateKind().equals(Kind.ACCEPT) && this.states.keySet().stream().noneMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr)))
@@ -178,8 +178,8 @@ public class GMConfig
 		{
 			//EndpointState s = this.states.get(r);
 			EFSM s = this.states.get(r);
-			Kind k = s.getStateKind();
-			if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
+			EStateKind k = s.getStateKind();
+			if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 			{
 				/*Set<IOAction> duals = this.buffs.get(r).entrySet().stream()
 						.filter((e) -> e.getValue() != null)
@@ -284,7 +284,7 @@ public class GMConfig
 			
 			//EndpointState s = this.states.get(r);
 			EFSM s = this.states.get(r);
-			if (s.getStateKind() == Kind.OUTPUT && !s.isConnectOrWrapClientOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
+			if (s.getStateKind() == EStateKind.OUTPUT && !s.isConnectOrWrapClientOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
 				// FIXME: move into isWaitingFor
 				return null;
@@ -325,8 +325,8 @@ public class GMConfig
 	{
 		//EndpointState s = this.states.get(r);
 		EFSM s = this.states.get(r);
-		Kind k = s.getStateKind();
-		if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
+		EStateKind k = s.getStateKind();
+		if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 		{
 			List<EAction> all = s.getAllTakeable();
 			EAction a = all.get(0);  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
@@ -348,7 +348,7 @@ public class GMConfig
 				}
 			}
 		}
-		else if (k == Kind.ACCEPT)
+		else if (k == EStateKind.ACCEPT)
 		{
 			// FIXME TODO: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
 			if (!s.isInitial())
@@ -376,7 +376,7 @@ public class GMConfig
 			}
 		}
 		//else if (k == Kind.CONNECTION)
-		else if (k == Kind.OUTPUT //|| k == Kind.ACCEPT  ..// FIXME: check connects if no available sends
+		else if (k == EStateKind.OUTPUT //|| k == Kind.ACCEPT  ..// FIXME: check connects if no available sends
 				)
 		{
 			//List<IOAction> all = s.getAllAcceptable();

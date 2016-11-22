@@ -28,7 +28,7 @@ import org.scribble.main.JobContext;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.EState.Kind;
+import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -202,7 +202,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				this.actions.put(a, new ActionInterfaceGenerator(this.apigen, s, a).generateType());
 				this.succs.put(a, new SuccessorInterfaceGenerator(this.apigen, s, a).generateType());
 
-				if (s.getStateKind() == Kind.POLY_INPUT)
+				if (s.getStateKind() == EStateKind.POLY_INPUT)
 				{
 					// Duplicated from ActionInterfaceGenerator
 					InterfaceBuilder ib = new InterfaceBuilder();
@@ -226,7 +226,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			EState succ = s.getSuccessor(a);
 			putPreAction(succ, a);
 
-			if (s.getStateKind() == Kind.POLY_INPUT)
+			if (s.getStateKind() == EStateKind.POLY_INPUT)
 			{
 				/*for (IOAction b : s.accept(a).getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 				{
@@ -343,7 +343,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			return;
 		}
 
-		if (s.getStateKind() == Kind.POLY_INPUT)
+		if (s.getStateKind() == EStateKind.POLY_INPUT)
 		{
 			//Set<InterfaceBuilder> succifs = this.preds.get(s);
 			String key = HandleInterfaceGenerator.getHandleInterfaceName(getSelf(), s);
@@ -368,7 +368,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			return;
 		}
 
-		if (s.getStateKind() == Kind.POLY_INPUT)
+		if (s.getStateKind() == EStateKind.POLY_INPUT)
 		{
 			//GProtocolName gpn = this.apigen.getGProtocolName();
 			Role self = this.apigen.getSelf();
@@ -461,7 +461,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			iostate.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, self) + ".*");
 		}
 
-		if (s.getStateKind() == Kind.POLY_INPUT)
+		if (s.getStateKind() == EStateKind.POLY_INPUT)
 		{
 			// Add CaseInterface to each CaseSocket
 			TypeBuilder cases = this.apigen.getType(CaseSocketGenerator.getCaseSocketName(this.apigen.getSocketClassName(s)));

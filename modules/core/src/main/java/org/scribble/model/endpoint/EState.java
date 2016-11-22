@@ -12,65 +12,22 @@ import java.util.Set;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.model.MState;
+import org.scribble.model.PrettyMState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.RecVar;
 
-public class EState extends MState<EAction, EState, Local>
+// Label types used to be both RecVar and SubprotocolSigs; now using inlined protocol for FSM building so just RecVar
+public class EState extends PrettyMState<RecVar, EAction, EState, Local>
 {
-	public static enum Kind
-	{
-		OUTPUT,      // SEND, CONNECT and WRAP_CLIENT
-		UNARY_INPUT,
-		POLY_INPUT,
-		TERMINAL,
-		ACCEPT,      // Unary/multi accept?
-		WRAP_SERVER,
-	}
-	
-	/*private static int count = 0;
-	
-	public final int id;
-
-	private final Set<RecVar> labs;  // Was RecVar and SubprotocolSigs, now using inlined protocol for FSM building so just RecVar
-	private final LinkedHashMap<IOAction, EndpointState> edges;  // Want predictable ordering of entries for e.g. API generation (state enumeration)*/
-	
 	protected EState(Set<RecVar> labs)
 	{
-		/*this.id = EndpointState.count++;
-		this.labs = new HashSet<>(labs);
-		this.edges = new LinkedHashMap<>();*/
 		super(labs);
 	}
 
 	public EGraph toGraph()
 	{
 		return new EGraph(this, getTerminal(this));  // Throws exception if >1 terminal; null if no terminal
-	}
-
-	protected EState clone()
-	{
-		Set<EState> all = new HashSet<>();
-		all.add(this);
-		all.addAll(MState.getAllReachableStates(this));
-		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
-		for (EState s : all)
-		{
-			map.put(s.id, newState(s.labs));
-		}
-		for (EState s : all)
-		{
-			Iterator<EAction> as = s.getAllActions().iterator();
-			Iterator<EState> ss = s.getAllSuccessors().iterator();
-			EState clone = map.get(s.id);
-			while (as.hasNext())
-			{
-				EAction a = as.next();
-				EState succ = ss.next();
-				clone.addEdge(a, map.get(succ.id));
-			}
-		}
-		return map.get(this.id);
 	}
 
 	/*.. move back to endpointstate
@@ -86,7 +43,7 @@ public class EState extends MState<EAction, EState, Local>
 	{
 		EState init = this.clone();
 		
-		EState term = MState.getTerminal(init);
+		EState term = PrettyMState.getTerminal(init);
 		Set<EState> seen = new HashSet<>();
 		Set<EState> todo = new LinkedHashSet<>();
 		todo.add(init);
@@ -102,7 +59,7 @@ public class EState extends MState<EAction, EState, Local>
 			}
 			seen.add(curr);
 			
-			if (curr.getStateKind() == Kind.OUTPUT && curr.getAllActions().size() > 1)  // >1 is what makes this algorithm terminating
+			if (curr.getStateKind() == EStateKind.OUTPUT && curr.getAllActions().size() > 1)  // >1 is what makes this algorithm terminating
 			{
 				//if (curr.getAllTakeable().size() > 1)
 				{
@@ -197,6 +154,31 @@ public class EState extends MState<EAction, EState, Local>
 
 		return init;
 	}
+
+	protected EState clone()
+	{
+		Set<EState> all = new HashSet<>();
+		all.add(this);
+		all.addAll(PrettyMState.getAllReachableStates(this));
+		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
+		for (EState s : all)
+		{
+			map.put(s.id, newState(s.labs));
+		}
+		for (EState s : all)
+		{
+			Iterator<EAction> as = s.getAllActions().iterator();
+			Iterator<EState> ss = s.getAllSuccessors().iterator();
+			EState clone = map.get(s.id);
+			while (as.hasNext())
+			{
+				EAction a = as.next();
+				EState succ = ss.next();
+				clone.addEdge(a, map.get(succ.id));
+			}
+		}
+		return map.get(this.id);
+	}
 	
 	// Pre: succ is the root of the subgraph, and succ is a successor of "this" (which is inside the subgraph)
 	// i.e., this -a-> succ (maybe non-det)
@@ -207,7 +189,7 @@ public class EState extends MState<EAction, EState, Local>
 		//EndpointState succ = take(a);
 		Set<EState> all = new HashSet<>();
 		all.add(succ);
-		all.addAll(MState.getAllReachableStates(succ));
+		all.addAll(PrettyMState.getAllReachableStates(succ));
 		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
 		for (EState s : all)
 		{
@@ -241,7 +223,6 @@ public class EState extends MState<EAction, EState, Local>
 		return map.get(succ.id);
 	}
 	
-	//@Override
 	protected EState newState(Set<RecVar> labs)
 	{
 		return new EState(labs);
@@ -250,25 +231,53 @@ public class EState extends MState<EAction, EState, Local>
 	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction
 	public boolean isConnectOrWrapClientOnly()
 	{
-		return getStateKind() == Kind.OUTPUT && getAllActions().stream().allMatch((a) -> a.isConnect() || a.isWrapClient());
+		return getStateKind() == EStateKind.OUTPUT && getAllActions().stream().allMatch((a) -> a.isConnect() || a.isWrapClient());
 	}
 	
-	public Kind getStateKind()
+	public EStateKind getStateKind()
 	{
 		List<EAction> as = this.getAllActions();
 		if (as.size() == 0)
 		{
-			return Kind.TERMINAL;
+			return EStateKind.TERMINAL;
 		}
 		else
 		{
 			EAction a = as.iterator().next();
-			return (a.isSend() || a.isConnect() || a.isDisconnect() || a.isWrapClient() ) ? Kind.OUTPUT
+			return (a.isSend() || a.isConnect() || a.isDisconnect() || a.isWrapClient() ) ? EStateKind.OUTPUT
 						//: (a.isConnect() || a.isAccept()) ? Kind.CONNECTION  // FIXME: states can have mixed connects and sends
 						//: (a.isConnect()) ? Kind.CONNECT
-						: (a.isAccept()) ? Kind.ACCEPT  // Accept is always unary, guaranteed by treating as a unit message id (wrt. branching)  // No: not any more
-						: (a.isWrapServer()) ? Kind.WRAP_SERVER   // WrapServer is always unary, guaranteed by treating as a unit message id (wrt. branching)
-						: (as.size() > 1) ? Kind.POLY_INPUT : Kind.UNARY_INPUT;
+						: (a.isAccept()) ? EStateKind.ACCEPT  // Accept is always unary, guaranteed by treating as a unit message id (wrt. branching)  // No: not any more
+						: (a.isWrapServer()) ? EStateKind.WRAP_SERVER   // WrapServer is always unary, guaranteed by treating as a unit message id (wrt. branching)
+						: (as.size() > 1) ? EStateKind.POLY_INPUT : EStateKind.UNARY_INPUT;
 		}
+	}
+
+	@Override
+	public final int hashCode()
+	{
+		int hash = 83;
+		hash = 31 * hash + super.hashCode();
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof EState))
+		{
+			return false;
+		}
+		return super.equals(o);  // Checks canEquals
+	}
+
+	@Override
+	protected boolean canEquals(MState<?, ?, ?, ?> s)
+	{
+		return s instanceof EState;
 	}
 }
