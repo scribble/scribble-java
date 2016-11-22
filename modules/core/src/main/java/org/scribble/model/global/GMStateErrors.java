@@ -12,10 +12,10 @@ import org.scribble.sesstype.name.Role;
 public class GMStateErrors
 {
 	// FIXME: could also check for roles stuck on unconnected sends here (probably better, than current syntax check)
-	public final Map<Role, EReceive> stuck;
-	public final Set<Set<Role>> waitFor;
-	public final Map<Role, Set<ESend>> orphans;
-	public Map<Role, EState> unfinished;
+	public final Map<Role, EReceive> stuck;      // Reception errors
+	public final Set<Set<Role>> waitFor;         // Deadlock cycles
+	public final Map<Role, Set<ESend>> orphans;  // Orphan messages
+	public Map<Role, EState> unfinished;         // Unfinished roles
 
 	public GMStateErrors(Map<Role, EReceive> receptionErrors, Set<Set<Role>> deadlocks, Map<Role, Set<ESend>> orphans, Map<Role, EState> unfinished)
 	{

@@ -170,7 +170,7 @@ public class GMConfig
 		return res;
 	}
 
-	// Deadlock from non handleable messages (reception errors)
+	// Deadlock from non handle-able messages (reception errors)
 	public Map<Role, EReceive> getStuckMessages()
 	{
 		Map<Role, EReceive> res = new HashMap<>();

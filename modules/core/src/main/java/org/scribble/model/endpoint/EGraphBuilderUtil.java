@@ -142,6 +142,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		this.exit = newState(Collections.emptySet());
 	}*/
 	
+	@Override
 	public EState newState(Set<RecVar> labs)
 	{
 		return new EState(labs);

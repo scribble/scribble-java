@@ -15,7 +15,7 @@ import org.scribble.model.global.actions.GMAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.Role;
 
-// FIXME: make a WFModel front-end class? (cf. EGraph)
+// FIXME? make a WFModel front-end class? (cf. EGraph)
 // Only uses MState.id cosmetically, cf. MState equals/hash -- overrides equals/hash based on this.config (maybe extending MState is a bit misleading)
 public class GMState extends PrettyMState<Void, GMAction, GMState, Global>
 {

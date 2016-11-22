@@ -41,7 +41,7 @@ public class JobContext
 	private final Map<GProtocolName, GMState> unfairGModels = new HashMap<>();
 	
 	private final Map<LProtocolName, EGraph> minimised = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
-			// FIXME: minimised "fair" graph only, need to consider minimisation orthogonally to fairness -- NO: unfair-transform without minimisation is only for WF, minimised original only for API gen
+			// FIXME: currently only minimising "fair" graph, need to consider minimisation orthogonally to fairness -- NO: minimising (of fair) is for API gen only, unfair-transform does not use minimisation (regardless of user flag) for WF
 	
 	protected JobContext(Job job, Map<ModuleName, Module> parsed, ModuleName main)
 	{

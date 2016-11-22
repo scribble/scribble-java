@@ -91,11 +91,11 @@ public class GMChecker extends ModuleContextVisitor
 		GProtocolDecl gpd = (GProtocolDecl) child;
 		GProtocolName fullname = gpd.getFullMemberName(parent);
 
-		job.debugPrintln("(" + fullname + ") Build and check fair output choices: ");
+		job.debugPrintln("(" + fullname + ") Build and check \"fair\" output choices: ");
 		buildAndCheck(gpd, fullname, true);
 		if (!getJob().fair)
 		{
-			job.debugPrintln("(" + fullname + ") Build and check unfair output choices: ");
+			job.debugPrintln("(" + fullname + ") Build and check \"unfair\" output choices: ");
 			buildAndCheck(gpd, fullname, false);
 		}
 		return gpd;
