@@ -75,7 +75,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	protected void addCastField()
 	{
 		String ifname = getIOStateInterfaceName(this.apigen.getSelf(), this.curr);
-		Set<EAction> as = this.curr.getTakeable();
+		Set<EAction> as = this.curr.getActions();
 
 		FieldBuilder cast = this.ib.newField("cast");
 		cast.addModifiers(TypeBuilder.PUBLIC, TypeBuilder.STATIC, TypeBuilder.FINAL);
@@ -86,7 +86,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	protected void addSuccessorParamsAndActionInterfaces()
 	{
 		int i = 1;
-		for (EAction a : this.curr.getTakeable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getActions().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (a.isSend() || a.isReceive())  // HACK FIXME
 			{
@@ -123,7 +123,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 			case TERMINAL:    throw new RuntimeScribbleException("Shouldn't get in here: " + s);
 			default:          throw new RuntimeException("(TODO) I/O interface generation: " + s.getStateKind());
 		}
-		name = name + "_" + self + "_" + s.getTakeable().stream().sorted(IOACTION_COMPARATOR)
+		name = name + "_" + self + "_" + s.getActions().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
 		checkIOStateInterfaceNameLength(name);
 		return name;

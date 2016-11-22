@@ -110,7 +110,15 @@ public class GMChecker extends ModuleContextVisitor
 		//Set<WFState> seen = new HashSet<>();
 		Map<Integer, GMState> seen = new HashMap<>();
 		GMState init = buildGlobalModel(fullname, gpd, egraphs, seen);  // Post: seen contains all states
-		this.getJobContext().addGlobalModel(fullname, init);
+		
+		if (fair)
+		{
+			this.getJobContext().addGlobalModel(fullname, init);
+		}
+		else
+		{
+			this.getJobContext().addUnfairGlobalModel(fullname, init);
+		}
 
 		/*Set<WFState> all = new HashSet<>();
 		getAllNodes(init, all);*/

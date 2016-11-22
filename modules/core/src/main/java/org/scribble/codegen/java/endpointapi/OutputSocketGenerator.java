@@ -47,9 +47,9 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		// Mixed sends and connects
 		boolean hasConnect = false;
 		boolean hasWrap = false;
-		for (EAction a : curr.getTakeable())  // (Scribble ensures all "a" are input or all are output)
+		for (EAction a : curr.getActions())  // (Scribble ensures all "a" are input or all are output)
 		{
-			EState succ = curr.take(a);
+			EState succ = curr.getSuccessor(a);
 			
 			MethodBuilder mb = this.cb.newMethod();
 			if (a.isSend())

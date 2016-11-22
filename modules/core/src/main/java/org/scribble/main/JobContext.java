@@ -38,6 +38,8 @@ public class JobContext
 	private final Map<GProtocolName, GMState> gmodels = new HashMap<>();
 	
 	private final Map<LProtocolName, EGraph> unfair = new HashMap<>();
+	private final Map<GProtocolName, GMState> unfairGModels = new HashMap<>();
+	
 	private final Map<LProtocolName, EGraph> minimised = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
 			// FIXME: minimised "fair" graph only, need to consider minimisation orthogonally to fairness -- NO: unfair-transform without minimisation is only for WF, minimised original only for API gen
 	
@@ -170,6 +172,11 @@ public class JobContext
 	public void addGlobalModel(GProtocolName fullname, GMState model)
 	{
 		this.gmodels.put(fullname, model);
+	}
+
+	public void addUnfairGlobalModel(GProtocolName fullname, GMState model)
+	{
+		this.unfairGModels.put(fullname, model);
 	}
 	
 	//public GModel getGlobalModel(GProtocolName fullname)

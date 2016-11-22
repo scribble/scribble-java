@@ -85,8 +85,8 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<EAction, EState, Local>
 			return;
 		}
 		seen.add(curr);
-		Iterator<EAction> as = curr.getAllTakeable().iterator();
-		Iterator<EState> ss = curr.getSuccessors().iterator();
+		Iterator<EAction> as = curr.getAllActions().iterator();
+		Iterator<EState> ss = curr.getAllSuccessors().iterator();
 		while (as.hasNext())
 		{
 			EAction a = as.next();
@@ -107,7 +107,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<EAction, EState, Local>
 				RecVar rv = new RecVar(ice.mid.toString());
 				for (EAction e : this.enactingMap.get(succ).get(rv))
 				{
-					for (EState n : succ.takeAll(e))
+					for (EState n : succ.getSuccessors(e))
 					{
 						next = getNext(map, n);
 						addEdgeAux(res, e, next);

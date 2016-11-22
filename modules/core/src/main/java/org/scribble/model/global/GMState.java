@@ -61,6 +61,13 @@ public class GMState
 		this.succs.add(s);
 	}
 	
+	
+	// ... seems actions are the "static structure" of the graph
+	// takeable are the "semantic" options of the system state ("session")
+	// getActions should be the same as getTakeable if model fully built?
+	
+	
+	
 	public List<GMAction> getActions()
 	{
 		return Collections.unmodifiableList(this.actions);

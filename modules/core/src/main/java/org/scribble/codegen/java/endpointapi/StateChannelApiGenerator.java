@@ -104,7 +104,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 			return;
 		}
 		this.classNames.put(ps, newSocketClassName());
-		for (EState succ : ps.getSuccessors())
+		for (EState succ : ps.getAllSuccessors())
 		{
 			generateClassNames(succ);
 		}
@@ -127,7 +127,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 			return;
 		}
 		this.types.put(className, constructClass(curr));
-		for (EState succ : curr.getSuccessors())
+		for (EState succ : curr.getAllSuccessors())
 		{
 			constructClasses(succ);
 		}

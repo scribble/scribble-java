@@ -188,7 +188,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		visited.add(s);
 
-		Set<EAction> as = s.getTakeable();
+		Set<EAction> as = s.getActions();
 		for (EAction a : as.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (!a.isSend() && !a.isReceive())  // TODO (connect/disconnect)
@@ -222,7 +222,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				}
 			}
 			
-			EState succ = s.take(a);
+			EState succ = s.getSuccessor(a);
 			putPreAction(succ, a);
 
 			if (s.getStateKind() == Kind.POLY_INPUT)
@@ -275,9 +275,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		visited.add(s);
-		for (EAction a : s.getTakeable())
+		for (EAction a : s.getActions())
 		{
-			generateIOStateInterfacesFirstPass(visited, s.take(a));
+			generateIOStateInterfacesFirstPass(visited, s.getSuccessor(a));
 		}
 	}
 
@@ -329,9 +329,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 
 		visited.add(s);
-		for (EAction a : s.getTakeable())
+		for (EAction a : s.getActions())
 		{
-			generateIOStateInterfacesSecondPass(visited, s.take(a));
+			generateIOStateInterfacesSecondPass(visited, s.getSuccessor(a));
 		}
 	}
 
@@ -354,9 +354,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		visited.add(s);
-		for (EAction a : s.getTakeable())
+		for (EAction a : s.getActions())
 		{
-			generateHandleInterfaces(visited, s.take(a));
+			generateHandleInterfaces(visited, s.getSuccessor(a));
 		}
 	}
 
@@ -428,9 +428,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 				
 		visited.add(s);
-		for (EAction a : s.getTakeable())
+		for (EAction a : s.getActions())
 		{
-			generateHandleInterfacesSecondPass(visited, s.take(a));
+			generateHandleInterfacesSecondPass(visited, s.getSuccessor(a));
 		}
 	}
 	
@@ -504,7 +504,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			System.out.println("BBB: " + handle);*/
 			//for (IOAction a : this.branchSuccs.get(handle))
 			// FIXME: move back into HandlerInterfaceGenerator
-			for (EAction a : s.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+			for (EAction a : s.getActions().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
 				if (first)
 				{
@@ -525,7 +525,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				{
 					tmp += SuccessorInterfaceGenerator.getSuccessorInterfaceName(a);
 				}*/
-				EState succ = s.take(a);
+				EState succ = s.getSuccessor(a);
 				if (succ.isTerminal())
 				{
 					tmp += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
@@ -614,9 +614,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		visited.add(s);
-		for (EAction a : s.getTakeable())
+		for (EAction a : s.getActions())
 		{
-			addIOStateInterfacesToStateChannels(visited, s.take(a));
+			addIOStateInterfacesToStateChannels(visited, s.getSuccessor(a));
 		}
 	}
 	
@@ -911,8 +911,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 	private String getConcreteSuccessorParameters(EState s)
 	{
 		return "<" +
-				s.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
-						.map((a) -> this.getSuccName.apply(s.take(a))).collect(Collectors.joining(", "))
+				s.getActions().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
+						.map((a) -> this.getSuccName.apply(s.getSuccessor(a))).collect(Collectors.joining(", "))
 				+ ">";
 	}
 	
@@ -964,7 +964,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			String key = HandleInterfaceGenerator.getHandleInterfaceName(self, s);  // HandleInterface name
 
 			List<EAction> curr1 = new LinkedList<>();
-			this.branchPostActions.get(s).forEach((a) -> curr1.addAll(s.take(a).getTakeable()));  // TODO: flatmap
+			this.branchPostActions.get(s).forEach((a) -> curr1.addAll(s.getSuccessor(a).getActions()));  // TODO: flatmap
 			//List<IOAction> curr2 = curr1.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList());
 			
 			List<EAction> tmp = this.branchSuccs.get(key);

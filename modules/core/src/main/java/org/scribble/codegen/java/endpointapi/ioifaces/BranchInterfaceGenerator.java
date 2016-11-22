@@ -35,7 +35,7 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addBranchMethods()
 	{
 		Role self = this.apigen.getSelf();
-		Set<EAction> as = this.curr.getTakeable();
+		Set<EAction> as = this.curr.getActions();
 
 		// FIXME: factor out with BranchSocketGenerator
 		AbstractMethodBuilder bra = this.ib.newAbstractMethod("branch");
@@ -70,7 +70,7 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 		EnumBuilder eb = this.ib.newMemberEnum(getBranchInterfaceEnumName(self, this.curr));
 		eb.addModifiers(JavaBuilder.PUBLIC);
 		eb.addInterfaces(ScribSocketGenerator.OPENUM_INTERFACE);
-		this.curr.getTakeable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+		this.curr.getActions().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
 	}
 
 	// Don't add Action Interfaces (added to CaseInterface)
@@ -78,7 +78,7 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addSuccessorParamsAndActionInterfaces()
 	{
 		int i = 1;
-		for (EAction a : this.curr.getTakeable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getActions().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
 			i++;

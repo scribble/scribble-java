@@ -55,17 +55,17 @@ public class EFSM extends EGraph
 	public List<EFSM> takeAll(EAction a)
 	{
 		//return this.curr.takeAll(a).stream().map((s) -> new EndpointFSM(this.init, this.term, s)).collect(Collectors.toList());
-		return this.curr.takeAll(a).stream().map((s) -> new EFSM(this.init, this.term, s)).collect(Collectors.toList());
+		return this.curr.getSuccessors(a).stream().map((s) -> new EFSM(this.init, this.term, s)).collect(Collectors.toList());
 	}
 
 	public List<EAction> getAllTakeable()
 	{
-		return this.curr.getAllTakeable();
+		return this.curr.getAllActions();
 	}
 	
 	public boolean isTakeable(EAction a)
 	{
-		return this.curr.isTakeable(a);
+		return this.curr.hasAction(a);
 	}
 	
 	public boolean isConnectOrWrapClientOnly()

@@ -30,13 +30,13 @@ public class AcceptSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected void addMethods()
 	{
-		Set<EAction> as = curr.getTakeable();
+		Set<EAction> as = curr.getActions();
 		if (as.size() > 1)
 		{
 			throw new RuntimeException("AcceptSocket generation not yet supported for accept-branches: " + as);
 		}
 		EAction a = as.iterator().next();
-		EState succ = curr.take(a);
+		EState succ = curr.getSuccessor(a);
 		makeAcceptMethod(a, succ);
 	}
 

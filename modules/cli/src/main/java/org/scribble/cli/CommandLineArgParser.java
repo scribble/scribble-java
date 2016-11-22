@@ -93,7 +93,7 @@ public class CommandLineArgParser
 	{
 		for (int i = 0; i < this.args.length; i++)
 		{
-			String arg = args[i];
+			String arg = this.args[i];
 			if (CommandLineArgParser.FLAGS.containsKey(arg))
 			{
 				i = this.parseFlag(i);
@@ -102,8 +102,12 @@ public class CommandLineArgParser
 			{
 				if (this.parsed.containsKey(CommandLine.ArgFlag.MAIN))
 				{
-					// Could be the second bad argument -- we didn't validating the value of the main arg
-					throw new CommandLineException("Duplicate main module arg: " + arg);
+					if (arg.startsWith("-"))
+					{
+						throw new CommandLineException("Unknown flag or bad main module arg: " + arg);
+					}
+					// May actually be the second bad argument -- we didn't validate the value of the main arg
+					throw new CommandLineException("Bad/duplicate main module arg: " + arg);
 				}
 				parseMain(i);
 			}

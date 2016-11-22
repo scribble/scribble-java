@@ -18,7 +18,7 @@ public class SelectInterfaceGenerator extends IOStateInterfaceGenerator
 	@Override
 	public InterfaceBuilder generateType() throws ScribbleException
 	{
-		if (this.curr.getAllTakeable().stream().anyMatch((a) -> !a.isSend())) // TODO (connect/disconnect)
+		if (this.curr.getAllActions().stream().anyMatch((a) -> !a.isSend())) // TODO (connect/disconnect)
 		{
 			//return null;
 			throw new RuntimeException("TODO: " + this.curr);

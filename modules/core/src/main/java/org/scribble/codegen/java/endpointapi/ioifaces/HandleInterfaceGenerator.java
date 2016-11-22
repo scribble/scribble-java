@@ -66,7 +66,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 		int i = 1;
 		//for (IOAction a : getHandleInterfaceIOActionParams(this.curr))  // Branch successor state successors, not the "direct" successors
 		// Duplicated from BranchInterfaceGenerator
-		for (EAction a : this.curr.getTakeable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getActions().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
 			this.ib.addInterfaces(this.caseActions.get(a).getName() + "<__Succ" + i + ">");
@@ -106,7 +106,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 		//Role self = this.apigen.getSelf();
-		Set<EAction> as = this.curr.getTakeable();
+		Set<EAction> as = this.curr.getActions();
 
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
 		int i = 1; 
@@ -160,7 +160,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 		
 			//Map<IOAction, Integer> ount = new HashMap<>();
 			boolean first = true;
-			for (EAction a : succ.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+			for (EAction a : succ.getActions().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
 				int offset;
 				if (!count.containsKey(a))
@@ -193,7 +193,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	public static String getHandleInterfaceName(Role self, EState s)
 	{
 		// FIXME: factor out (CaseInterfaceGenerator, IOStateInterfaceGenerator.getIOStateInterfaceName)
-		String name = "Handle_" + self + "_" + s.getTakeable().stream().sorted(IOACTION_COMPARATOR)
+		String name = "Handle_" + self + "_" + s.getActions().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
 		IOStateInterfaceGenerator.checkIOStateInterfaceNameLength(name);
 		return name;

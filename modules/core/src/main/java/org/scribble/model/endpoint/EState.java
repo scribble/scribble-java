@@ -16,12 +16,17 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.RecVar;
 
-// http://sandbox.kidstrythisathome.com/erdos/
 public class EState extends MState<EAction, EState, Local>
 {
-	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL, ACCEPT, WRAP_SERVER, //CONNECT
-		}  // CONNECTION should just be sync?
-			// FIXME: distinguish connection and message transfer
+	public static enum Kind
+	{
+		OUTPUT,      // SEND, CONNECT and WRAP_CLIENT
+		UNARY_INPUT,
+		POLY_INPUT,
+		TERMINAL,
+		ACCEPT,      // Unary/multi accept?
+		WRAP_SERVER,
+	}
 	
 	/*private static int count = 0;
 	
@@ -72,12 +77,12 @@ public class EState extends MState<EAction, EState, Local>
 			}
 			seen.add(curr);
 			
-			if (curr.getStateKind() == Kind.OUTPUT && curr.getAllTakeable().size() > 1)  // >1 is what makes this algorithm terminating
+			if (curr.getStateKind() == Kind.OUTPUT && curr.getAllActions().size() > 1)  // >1 is what makes this algorithm terminating
 			{
 				//if (curr.getAllTakeable().size() > 1)
 				{
-					Iterator<EAction> as = curr.getAllTakeable().iterator();
-					Iterator<EState> ss = curr.getSuccessors().iterator();
+					Iterator<EAction> as = curr.getAllActions().iterator();
+					Iterator<EState> ss = curr.getAllSuccessors().iterator();
 					//Map<IOAction, EndpointState> clones = new HashMap<>();
 					List<EAction> cloneas = new LinkedList<>();
 					List<EState> cloness = new LinkedList<>();
@@ -161,7 +166,7 @@ public class EState extends MState<EAction, EState, Local>
 			}
 			else
 			{
-				todo.addAll(curr.getSuccessors());
+				todo.addAll(curr.getAllSuccessors());
 			}
 		}
 
@@ -193,8 +198,8 @@ public class EState extends MState<EAction, EState, Local>
 		}
 		for (EState s : all)
 		{
-			Iterator<EAction> as = s.getAllTakeable().iterator();
-			Iterator<EState> ss = s.getSuccessors().iterator();
+			Iterator<EAction> as = s.getAllActions().iterator();
+			Iterator<EState> ss = s.getAllSuccessors().iterator();
 			EState clone = map.get(s.id);
 			while (as.hasNext())
 			{
@@ -220,12 +225,12 @@ public class EState extends MState<EAction, EState, Local>
 	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction
 	public boolean isConnectOrWrapClientOnly()
 	{
-		return getStateKind() == Kind.OUTPUT && getAllTakeable().stream().allMatch((a) -> a.isConnect() || a.isWrapClient());
+		return getStateKind() == Kind.OUTPUT && getAllActions().stream().allMatch((a) -> a.isConnect() || a.isWrapClient());
 	}
 	
 	public Kind getStateKind()
 	{
-		List<EAction> as = this.getAllTakeable();
+		List<EAction> as = this.getAllActions();
 		if (as.size() == 0)
 		{
 			return Kind.TERMINAL;

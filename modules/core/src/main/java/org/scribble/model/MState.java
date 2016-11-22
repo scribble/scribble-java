@@ -99,7 +99,8 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 	}
 	
 	// Renamed from "getAcceptable" to distinguish from accept actions
-	public Set<A> getTakeable()
+	// The "deterministic" variant, c.f., getAllTakeable
+	public Set<A> getActions()
 	{
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
@@ -109,29 +110,30 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		return as;
 	}
 
-	public List<A> getAllTakeable()
+	public List<A> getAllActions()
 	{
 		//return Collections.unmodifiableSet(this.edges.keySet());
 		return Collections.unmodifiableList(this.actions);
 	}
 	
-	public boolean isTakeable(A a)
+	public boolean hasAction(A a)
 	{
 		//return this.edges.containsKey(a);
 		return this.actions.contains(a);
 	}
 
-	public S take(A a)
+	public S getSuccessor(A a)
 	{
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
 			throw new RuntimeException("FIXME: " + this.actions);
 		}
-		return takeAll(a).get(0);
+		return getSuccessors(a).get(0);
 	}
 
-	public List<S> takeAll(A a)
+	// For non-deterministic actions
+	public List<S> getSuccessors(A a)
 	{
 		//return this.edges.get(a);
 		return IntStream.range(0, this.actions.size())
@@ -140,7 +142,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 			.collect(Collectors.toList());
 	}
 	
-	public List<S> getSuccessors()
+	public List<S> getAllSuccessors()
 	{
 		//return Collections.unmodifiableCollection(this.edges.values());
 		return Collections.unmodifiableList(this.succs);
@@ -309,7 +311,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 				continue;
 			}
 			all.put(next.id, next);*/
-			for (S s : next.getSuccessors())
+			for (S s : next.getAllSuccessors())
 			{
 				/*if (!all.containsKey(s.id) && !todo.containsKey(s.id))
 				{
@@ -339,7 +341,7 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		Set<A> as = new HashSet<>();
 		for (S s : all)
 		{
-			as.addAll(s.getAllTakeable());
+			as.addAll(s.getAllActions());
 		}
 		return as;
 	}
@@ -359,8 +361,8 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 				continue;
 			}
 			seen.add(s.id);
-			Iterator<A> as = s.getAllTakeable().iterator();
-			Iterator<S> ss = s.getSuccessors().iterator();
+			Iterator<A> as = s.getAllActions().iterator();
+			Iterator<S> ss = s.getAllSuccessors().iterator();
 			for (; as.hasNext(); edges++)
 			{
 				A a = as.next();
@@ -384,8 +386,8 @@ public abstract class MState<A extends MAction<K>, S extends MState<A, S, K>, K 
 		}
 		for (MState<A, S, K> s : all)
 		{
-			Iterator<A> as = s.getAllTakeable().iterator();
-			Iterator<S> ss = s.getSuccessors().iterator();
+			Iterator<A> as = s.getAllActions().iterator();
+			Iterator<S> ss = s.getAllSuccessors().iterator();
 			S clone = map.get(s.id);
 			while (as.hasNext())
 			{

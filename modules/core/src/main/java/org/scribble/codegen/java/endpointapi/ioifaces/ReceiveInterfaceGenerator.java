@@ -24,7 +24,7 @@ public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 	@Override
 	public InterfaceBuilder generateType() throws ScribbleException
 	{
-		if (this.curr.getAllTakeable().stream().anyMatch((a) -> !a.isReceive())) // TODO (connect/disconnect)
+		if (this.curr.getAllActions().stream().anyMatch((a) -> !a.isReceive())) // TODO (connect/disconnect)
 		{
 			//return null;
 			throw new RuntimeException("TODO: " + this.curr);
@@ -42,12 +42,12 @@ public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addAsyncDiscardMethod()
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
-		EAction first = this.curr.getTakeable().iterator().next();
+		EAction first = this.curr.getActions().iterator().next();
 
 		MethodBuilder mb = this.ib.newAbstractMethod();
 		ReceiveSocketGenerator.setAsyncDiscardHeaderWithoutReturnType(this.apigen, first, mb, InputFutureGenerator.getInputFutureName(this.apigen.getSocketClassName(this.curr)));
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
-		EState succ = this.curr.take(first);
+		EState succ = this.curr.getSuccessor(first);
 		if (succ.isTerminal())
 		{
 			ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);

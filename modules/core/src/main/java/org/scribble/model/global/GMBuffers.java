@@ -238,7 +238,7 @@ public class GMBuffers
 				return res;
 			}
 		}
-		List<EAction> as = curr.getAllTakeable();
+		List<EAction> as = curr.getAllActions();
 		for (EAction a : as)
 		{
 			res.add((EAccept) a);

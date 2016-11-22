@@ -40,9 +40,9 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected void addMethods() throws ScribbleException
 	{
-		EAction a = curr.getTakeable().iterator().next();
+		EAction a = curr.getActions().iterator().next();
 		//String nextClass = this.apigen.getSocketClassName(curr.accept(a));
-		EState succ = curr.take(a);
+		EState succ = curr.getSuccessor(a);
 		ClassBuilder futureClass = new InputFutureGenerator(this.apigen, this.cb, a).generateType();  // Wraps all payload elements as fields (set by future completion)
 		// FIXME: problem if package and protocol have the same name -- still?
 		this.apigen.addTypeDecl(futureClass);
