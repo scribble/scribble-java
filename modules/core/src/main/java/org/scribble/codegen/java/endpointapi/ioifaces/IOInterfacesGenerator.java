@@ -71,7 +71,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{
 			// FIXME: factor out with skipIOInterfacesGeneration
-			Set<EAction> as = EState.getAllReachableActions(init);
+			Set<EAction> as = EState.getReachableActions(init);
 			if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 			{
 				throw new RuntimeScribbleException("[TODO] I/O Interface generation not supported for: " + as.stream().filter((a) -> !a.isSend() && !a.isReceive()).collect(Collectors.toList()));

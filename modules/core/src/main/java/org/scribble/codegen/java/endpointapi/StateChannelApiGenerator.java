@@ -69,7 +69,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 	// Cf. IOInterfacesGenerator constructor
 	private static boolean skipIOInterfacesGeneration(EState init)
 	{
-		Set<EAction> as = EState.getAllReachableActions(init);
+		Set<EAction> as = EState.getReachableActions(init);
 		if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 		{
 			return true;

@@ -42,28 +42,14 @@ public abstract class MState<
 		this.succs = new LinkedList<>();
 	}
 	
-	protected void addLabel(L lab)
+	protected final void addLabel(L lab)
 	{
 		this.labs.add(lab);
 	}
 	
-	protected final void removeEdge(A a, S s) throws ScribbleException
+	public final Set<L> getLabels()
 	{
-		Iterator<A> ia = this.actions.iterator();
-		Iterator<S> is = this.succs.iterator();
-		while (ia.hasNext())
-		{
-			A tmpa = ia.next();
-			S tmps = is.next();
-			if (tmpa.equals(a) && tmps.equals(s))
-			{
-				ia.remove();
-				is.remove();
-				return;
-			}
-		}
-		//throw new RuntimeException("No such transition to remove: " + a + "->" + s);
-		throw new ScribbleException("No such transition to remove: " + a + "->" + s);  // Hack? EFSM building on bad-reachability protocols now done before actual reachability check
+		return Collections.unmodifiableSet(this.labs);
 	}
 	
 	// Mutable (can also overwrite edges)
@@ -86,12 +72,26 @@ public abstract class MState<
 		this.succs.add(s);
 	}
 	
-	public final Set<L> getRecLabels()
+	protected final void removeEdge(A a, S s) throws ScribbleException
 	{
-		return Collections.unmodifiableSet(this.labs);
+		Iterator<A> ia = this.actions.iterator();
+		Iterator<S> is = this.succs.iterator();
+		while (ia.hasNext())
+		{
+			A tmpa = ia.next();
+			S tmps = is.next();
+			if (tmpa.equals(a) && tmps.equals(s))
+			{
+				ia.remove();
+				is.remove();
+				return;
+			}
+		}
+		//throw new RuntimeException("No such transition to remove: " + a + "->" + s);
+		throw new ScribbleException("No such transition to remove: " + a + "->" + s);  // Hack? EFSM building on bad-reachability protocols now done before actual reachability check
 	}
 	
-	// The "deterministic" variant, c.f., getAllTakeable
+	// The "deterministic" variant, cf., getAllActions
 	public final List<A> getActions()
 	{
 		Set<A> as = new HashSet<>(this.actions);
@@ -159,7 +159,7 @@ public abstract class MState<
 		{
 			return start;
 		}
-		Set<S> terms = MState.getAllReachableStates(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
+		Set<S> terms = MState.getReachableStates(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
 		if (terms.size() > 1)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + terms);
@@ -169,7 +169,7 @@ public abstract class MState<
 	
 	public boolean canReach(MState<L, A, S, K> s)
 	{
-		return MState.getAllReachableStates(this).contains(s);
+		return MState.getReachableStates(this).contains(s);
 	}
 
 	// Note: doesn't implicitly include start (only if start is explicitly reachable from start, of course)
@@ -177,7 +177,7 @@ public abstract class MState<
 			Set<S> getAllReachable(S start)*/
 	@SuppressWarnings("unchecked")
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
-			Set<S> getAllReachableStates(MState<L, A, S, K> start)
+			Set<S> getReachableStates(MState<L, A, S, K> start)
 	{
 		Map<Integer, S> all = new HashMap<>();
 		Map<Integer, S> todo = new LinkedHashMap<>();
@@ -214,11 +214,11 @@ public abstract class MState<
 	@SuppressWarnings("unchecked")
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
 			//Set<A> getAllReachableActions(S start)
-			Set<A> getAllReachableActions(MState<L, A, S, K> start)
+			Set<A> getReachableActions(MState<L, A, S, K> start)
 	{
 		Set<S> all = new HashSet<>();
 		all.add((S) start);  // Suppressed: assumes ModelState subclass correctly instantiates S parameter
-		all.addAll(MState.getAllReachableStates(start));
+		all.addAll(MState.getReachableStates(start));
 		Set<A> as = new HashSet<>();
 		for (S s : all)
 		{

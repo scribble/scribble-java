@@ -92,7 +92,7 @@ public abstract class PrettyMState<L, A extends MAction<K>, S extends PrettyMSta
 	{
 		Set<PrettyMState<L, A, S, K>> all = new HashSet<>();
 		all.add(this);
-		all.addAll(getAllReachableStates(this));
+		all.addAll(getReachableStates(this));
 		String aut = "";
 		int edges = 0;
 		Set<Integer> seen = new HashSet<>();

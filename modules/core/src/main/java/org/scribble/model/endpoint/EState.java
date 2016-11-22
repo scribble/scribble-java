@@ -159,7 +159,7 @@ public class EState extends PrettyMState<RecVar, EAction, EState, Local>
 	{
 		Set<EState> all = new HashSet<>();
 		all.add(this);
-		all.addAll(PrettyMState.getAllReachableStates(this));
+		all.addAll(PrettyMState.getReachableStates(this));
 		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
 		for (EState s : all)
 		{
@@ -189,7 +189,7 @@ public class EState extends PrettyMState<RecVar, EAction, EState, Local>
 		//EndpointState succ = take(a);
 		Set<EState> all = new HashSet<>();
 		all.add(succ);
-		all.addAll(PrettyMState.getAllReachableStates(succ));
+		all.addAll(PrettyMState.getReachableStates(succ));
 		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
 		for (EState s : all)
 		{
