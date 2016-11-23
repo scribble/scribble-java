@@ -20,12 +20,12 @@ import org.scribble.model.endpoint.actions.EWrapClient;
 import org.scribble.model.endpoint.actions.EWrapServer;
 import org.scribble.sesstype.name.Role;
 
-public class GMBuffers
+public class SBuffers
 {
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();
 	private final Map<Role, Map<Role, ESend>> buffs = new HashMap<>();  // dest -> src -> msg
 
-	public GMBuffers(Set<Role> roles, boolean implicit)
+	public SBuffers(Set<Role> roles, boolean implicit)
 	{
 		this(roles);
 		if (implicit)
@@ -45,7 +45,7 @@ public class GMBuffers
 		}
 	}
 
-	public GMBuffers(Set<Role> roles)
+	public SBuffers(Set<Role> roles)
 	{
 		// FIXME: do the same for connected
 		roles.forEach((k) -> 
@@ -62,7 +62,7 @@ public class GMBuffers
 		});
 	}
 
-	public GMBuffers(GMBuffers buffs)
+	public SBuffers(SBuffers buffs)
 	{
 		Set<Role> roles = buffs.buffs.keySet();
 		roles.forEach((k) ->
@@ -83,7 +83,7 @@ public class GMBuffers
 	public Map<Role, Map<Role, ESend>> getBuffers()
 	{
 		//return this.buffs;
-		return new GMBuffers(this).buffs;
+		return new SBuffers(this).buffs;
 	}
 
 	public Map<Role, ESend> get(Role r)
@@ -141,9 +141,9 @@ public class GMBuffers
 	}
 	
 	//public WFBuffers connect(Role src, Connect c, Role dest)
-	public GMBuffers connect(Role src, Role dest)
+	public SBuffers connect(Role src, Role dest)
 	{
-		GMBuffers copy = new GMBuffers(this);
+		SBuffers copy = new SBuffers(this);
 		Map<Role, Boolean> tmp1 = copy.connected.get(src);
 		if (tmp1 == null)
 		{
@@ -162,9 +162,9 @@ public class GMBuffers
 		return copy;
 	}
 
-	public GMBuffers disconnect(Role self, EDisconnect d)
+	public SBuffers disconnect(Role self, EDisconnect d)
 	{
-		GMBuffers copy = new GMBuffers(this);
+		SBuffers copy = new SBuffers(this);
 		copy.connected.get(self).put(d.peer, false);
 		return copy;
 	}
@@ -174,9 +174,9 @@ public class GMBuffers
 		return isConnected(self, a.peer) && (this.buffs.get(a.peer).get(self) == null);
 	}
 
-	public GMBuffers send(Role self, ESend a)
+	public SBuffers send(Role self, ESend a)
 	{
-		GMBuffers copy = new GMBuffers(this);
+		SBuffers copy = new SBuffers(this);
 		copy.buffs.get(a.peer).put(self, a);
 		return copy;
 	}
@@ -275,9 +275,9 @@ public class GMBuffers
 		return tmp;
 	}*/
 
-	public GMBuffers receive(Role self, EReceive a)
+	public SBuffers receive(Role self, EReceive a)
 	{
-		GMBuffers copy = new GMBuffers(this);
+		SBuffers copy = new SBuffers(this);
 		copy.buffs.get(self).put(a.peer, null);
 		return copy;
 	}
@@ -298,11 +298,11 @@ public class GMBuffers
 		{
 			return true;
 		}
-		if (!(o instanceof GMBuffers))
+		if (!(o instanceof SBuffers))
 		{
 			return false;
 		}
-		GMBuffers b = (GMBuffers) o;
+		SBuffers b = (SBuffers) o;
 		return this.buffs.equals(b.buffs) && this.connected.equals(b.connected);
 	}
 	

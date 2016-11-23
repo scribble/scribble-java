@@ -12,18 +12,18 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.scribble.model.MPrettyPrint;
-import org.scribble.model.global.actions.GMAction;
+import org.scribble.model.global.actions.SAction;
 
-public class GMGraph implements MPrettyPrint
+public class SGraph implements MPrettyPrint
 {
-	public final GMState init;
-	public Map<Integer, GMState> states; // State ID -> GMState
+	public final SState init;
+	public Map<Integer, SState> states; // State ID -> GMState
 
 	private Map<Integer, Set<Integer>> reach; // State ID -> reachable states (not
 																						// reflexive)
 	private Set<Set<Integer>> termSets;
 
-	public GMGraph(Map<Integer, GMState> states, GMState init)
+	public SGraph(Map<Integer, SState> states, SState init)
 	{
 		this.init = init;
 		this.states = Collections.unmodifiableMap(states);
@@ -41,7 +41,7 @@ public class GMGraph implements MPrettyPrint
 		Set<Set<Integer>> checked = new HashSet<>();
 		for (Integer i : reach.keySet())
 		{
-			GMState s = this.states.get(i);
+			SState s = this.states.get(i);
 			Set<Integer> rs = this.reach.get(s.id);
 			if (!checked.contains(rs) && rs.contains(s.id))
 			{
@@ -56,7 +56,7 @@ public class GMGraph implements MPrettyPrint
 		return this.termSets;
 	}
 
-	private boolean isTerminalSetMember(GMState s)
+	private boolean isTerminalSetMember(SState s)
 	{
 		Set<Integer> rs = this.reach.get(s.id);
 		Set<Integer> tmp = new HashSet<>(rs);
@@ -73,7 +73,7 @@ public class GMGraph implements MPrettyPrint
 
 	// Pre: reach.get(start).contains(end) // FIXME: will return null if initial
 	// state is error
-	public List<GMAction> getTrace(GMState start, GMState end)
+	public List<SAction> getTrace(SState start, SState end)
 	{
 		SortedMap<Integer, Set<Integer>> candidates = new TreeMap<>();
 		Set<Integer> dis0 = new HashSet<Integer>();
@@ -87,8 +87,8 @@ public class GMGraph implements MPrettyPrint
 	}
 
 	// Djikstra's
-	private List<GMAction> getTraceAux(List<GMAction> trace, Set<Integer> seen,
-			SortedMap<Integer, Set<Integer>> candidates, GMState end)
+	private List<SAction> getTraceAux(List<SAction> trace, Set<Integer> seen,
+			SortedMap<Integer, Set<Integer>> candidates, SState end)
 	{
 		Integer dis = candidates.keySet().iterator().next();
 		Set<Integer> cs = candidates.get(dis);
@@ -100,13 +100,13 @@ public class GMGraph implements MPrettyPrint
 			candidates.remove(dis);
 		}
 
-		GMState curr = this.states.get(currid);
-		Iterator<GMAction> as = curr.getAllActions().iterator();
-		Iterator<GMState> ss = curr.getAllSuccessors().iterator();
+		SState curr = this.states.get(currid);
+		Iterator<SAction> as = curr.getAllActions().iterator();
+		Iterator<SState> ss = curr.getAllSuccessors().iterator();
 		while (as.hasNext())
 		{
-			GMAction a = as.next();
-			GMState s = ss.next();
+			SAction a = as.next();
+			SState s = ss.next();
 			if (s.id == end.id)
 			{
 				trace.add(a);
@@ -124,9 +124,9 @@ public class GMGraph implements MPrettyPrint
 					candidates.put(dis + 1, tmp1);
 				}
 				tmp1.add(s.id);
-				List<GMAction> tmp2 = new LinkedList<>(trace);
+				List<SAction> tmp2 = new LinkedList<>(trace);
 				tmp2.add(a);
-				List<GMAction> res = getTraceAux(tmp2, seen, candidates, end);
+				List<SAction> res = getTraceAux(tmp2, seen, candidates, end);
 				if (res != null)
 				{
 					return res;
@@ -149,7 +149,7 @@ public class GMGraph implements MPrettyPrint
 		Map<Integer, Integer> indexToId = new HashMap<>(); // array index -> state
 																												// ID
 		int i = 0;
-		for (GMState s : this.states.values())
+		for (SState s : this.states.values())
 		{
 			idToIndex.put(s.id, i);
 			indexToId.put(i, s.id);
@@ -168,7 +168,7 @@ public class GMGraph implements MPrettyPrint
 
 		for (Integer s1id : idToIndex.keySet())
 		{
-			for (GMState s2 : this.states.get(s1id).getAllSuccessors())
+			for (SState s2 : this.states.get(s1id).getAllSuccessors())
 			{
 				reach[idToIndex.get(s1id)][idToIndex.get(s2.id)] = true;
 			}

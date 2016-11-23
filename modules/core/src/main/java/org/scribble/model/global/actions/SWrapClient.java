@@ -4,9 +4,9 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public class GMDisconnect extends GMAction
+public class SWrapClient extends SAction
 {
-	public GMDisconnect(Role subj, Role obj)
+	public SWrapClient(Role subj, Role obj)
 	{
 		super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
 	}
@@ -20,7 +20,7 @@ public class GMDisconnect extends GMAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 1013;
+		int hash = 1069;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -32,23 +32,22 @@ public class GMDisconnect extends GMAction
 		{
 			return true;
 		}
-		if (!(o instanceof GMDisconnect))
+		if (!(o instanceof SWrapClient))
 		{
 			return false;
 		}
-		return ((GMDisconnect) o).canEqual(this) && super.equals(o);
+		return ((SWrapClient) o).canEqual(this) && super.equals(o);
 	}
 
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GMDisconnect;
+		return o instanceof SWrapClient;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		//return "\u00A1\u00A1abc";
-		return "-/-";
+		return "(->>)";
 	}
 }

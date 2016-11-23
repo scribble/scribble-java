@@ -1,20 +1,18 @@
 package org.scribble.model.global.actions;
 
 import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.MessageId;
+import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public class GMAccept extends GMAction
+public class SDisconnect extends SAction
 {
-	public GMAccept(Role subj, Role obj, MessageId<?> mid, Payload payload)
-	//public GAccept(Role subj, Role obj)
+	public SDisconnect(Role subj, Role obj)
 	{
-		super(subj, obj, mid, payload);
-		//super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
-	public boolean isAccept()
+	public boolean isConnect()
 	{
 		return true;
 	}
@@ -22,7 +20,7 @@ public class GMAccept extends GMAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 967;
+		int hash = 1013;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -34,22 +32,23 @@ public class GMAccept extends GMAction
 		{
 			return true;
 		}
-		if (!(o instanceof GMAccept))
+		if (!(o instanceof SDisconnect))
 		{
 			return false;
 		}
-		return ((GMAccept) o).canEqual(this) && super.equals(o);
+		return ((SDisconnect) o).canEqual(this) && super.equals(o);
 	}
 
+	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GMAccept;
+		return o instanceof SDisconnect;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		//return "??";
-		return "<<-";
+		//return "\u00A1\u00A1abc";
+		return "-/-";
 	}
 }

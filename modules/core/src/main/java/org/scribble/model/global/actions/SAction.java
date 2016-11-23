@@ -10,11 +10,11 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public abstract class GMAction extends MAction<Global>
+public abstract class SAction extends MAction<Global>
 {
 	public final Role subj;
 
-	public GMAction(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SAction(Role subj, Role obj, MessageId<?> mid, Payload payload)
 	{
 		super(obj, mid, payload);
 		this.subj = subj; 
@@ -104,17 +104,17 @@ public abstract class GMAction extends MAction<Global>
 		{
 			return true;
 		}
-		if (!(o instanceof GMAction))
+		if (!(o instanceof SAction))
 		{
 			return false;
 		}
-		GMAction a = (GMAction) o;
+		SAction a = (SAction) o;
 		return super.equals(o) && this.subj.equals(a.subj);
 	}
 
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GMAction;
+		return o instanceof SAction;
 	}
 }

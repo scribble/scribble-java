@@ -1,6 +1,6 @@
 package org.scribble.model.endpoint.actions;
 
-import org.scribble.model.global.actions.GMWrapClient;
+import org.scribble.model.global.actions.SWrapClient;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
@@ -20,9 +20,9 @@ public class EWrapClient extends EAction
 	}
 
 	@Override
-	public GMWrapClient toGlobal(Role self)
+	public SWrapClient toGlobal(Role self)
 	{
-		return new GMWrapClient(self, this.peer);
+		return new SWrapClient(self, this.peer);
 	}
 	
 	@Override

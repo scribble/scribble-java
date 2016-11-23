@@ -1,6 +1,6 @@
 package org.scribble.model.endpoint.actions;
 
-import org.scribble.model.global.actions.GMDisconnect;
+import org.scribble.model.global.actions.SDisconnect;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
@@ -19,9 +19,9 @@ public class EDisconnect extends EAction
 	}
 
 	@Override
-	public GMDisconnect toGlobal(Role self)
+	public SDisconnect toGlobal(Role self)
 	{
-		return new GMDisconnect(self, this.peer);
+		return new SDisconnect(self, this.peer);
 	}
 	
 	@Override

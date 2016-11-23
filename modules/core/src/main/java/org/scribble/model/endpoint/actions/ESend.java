@@ -1,6 +1,6 @@
 package org.scribble.model.endpoint.actions;
 
-import org.scribble.model.global.actions.GMSend;
+import org.scribble.model.global.actions.SSend;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -43,11 +43,11 @@ public class ESend extends EAction
 
 	@Override
 	//public GModelAction toGlobal(Role self)
-	public GMSend toGlobal(Role self)
+	public SSend toGlobal(Role self)
 	{
 		//return new GModelAction(self, this.peer, this.mid, this.payload);
 		////return GModelAction.get(self, this.peer, this.mid, this.payload);
-		return new GMSend(self, this.peer, this.mid, this.payload);
+		return new SSend(self, this.peer, this.mid, this.payload);
 	}
 	
 	@Override

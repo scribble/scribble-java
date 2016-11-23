@@ -24,15 +24,15 @@ import org.scribble.model.endpoint.actions.EWrapClient;
 import org.scribble.model.endpoint.actions.EWrapServer;
 import org.scribble.sesstype.name.Role;
 
-public class GMConfig
+public class SConfig
 {
 	//public final Map<Role, EndpointState> states;
 	public final Map<Role, EFSM> states;
-	public final GMBuffers buffs;
+	public final SBuffers buffs;
 	
 	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> buff)
 	//public WFConfig(Map<Role, EndpointState> state, WFBuffers buffs)
-	public GMConfig(Map<Role, EFSM> state, GMBuffers buffs)
+	public SConfig(Map<Role, EFSM> state, SBuffers buffs)
 	{
 		this.states = Collections.unmodifiableMap(state);
 		//this.buffs = Collections.unmodifiableMap(buff.keySet().stream() .collect(Collectors.toMap((k) -> k, (k) -> Collections.unmodifiableMap(buff.get(k)))));
@@ -81,7 +81,7 @@ public class GMConfig
 					;*/
 		//return !cannotSafelyTerminate;
 		boolean canSafelyTerminate =
-				(s.isTerminal() && this.buffs.isEmpty(r))
+				(s.isTerminated() && this.buffs.isEmpty(r))
 			|| (s.getStateKind().equals(EStateKind.ACCEPT) && s.isInitial())  // FIXME: should be empty buffs
 				
 				// FIXME: incorrectly allows stuck accepts?  if inactive not initial, should be clone of initial?
@@ -90,9 +90,9 @@ public class GMConfig
 		return canSafelyTerminate;
 	}
 	
-	public List<GMConfig> take(Role r, EAction a)
+	public List<SConfig> take(Role r, EAction a)
 	{
-		List<GMConfig> res = new LinkedList<>();
+		List<SConfig> res = new LinkedList<>();
 		
 		//List<EndpointState> succs = this.states.get(r).takeAll(a);
 		List<EFSM> succs = this.states.get(r).takeAll(a);
@@ -116,7 +116,7 @@ public class GMConfig
 			{
 				tmp3.put(r, null);
 			}*/
-			GMBuffers tmp2 = 
+			SBuffers tmp2 = 
 					a.isSend()       ? this.buffs.send(r, (ESend) a)
 				: a.isReceive()    ? this.buffs.receive(r, (EReceive) a)
 				: a.isDisconnect() ? this.buffs.disconnect(r, (EDisconnect) a)
@@ -125,15 +125,15 @@ public class GMConfig
 			{
 				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
-			res.add(new GMConfig(tmp1, tmp2));
+			res.add(new SConfig(tmp1, tmp2));
 		}
 
 		return res;
 	}
 
-	public List<GMConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
+	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
 	{
-		List<GMConfig> res = new LinkedList<>();
+		List<SConfig> res = new LinkedList<>();
 		
 		/*List<EndpointState> succs1 = this.states.get(r1).takeAll(a1);
 		List<EndpointState> succs2 = this.states.get(r2).takeAll(a2);
@@ -149,7 +149,7 @@ public class GMConfig
 				Map<Role, EFSM> tmp1 = new HashMap<>(this.states);
 				tmp1.put(r1, succ1);
 				tmp1.put(r2, succ2);
-				GMBuffers tmp2;
+				SBuffers tmp2;
 				if (((a1.isConnect() && a2.isAccept()) || (a1.isAccept() && a2.isConnect())))
 						//&& this.buffs.canConnect(r1, r2))
 				{
@@ -163,7 +163,7 @@ public class GMConfig
 				{
 					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
 				}
-				res.add(new GMConfig(tmp1, tmp2));
+				res.add(new SConfig(tmp1, tmp2));
 			}
 		}
 
@@ -246,7 +246,7 @@ public class GMConfig
 		{
 			Role r = todo.remove(0);
 			//Set<Role> cycle = isCycle(new HashSet<>(), new HashSet<>(Arrays.asList(r)));
-			if (!this.states.get(r).isTerminal())
+			if (!this.states.get(r).isTerminated())
 			{
 				Set<Role> cycle = isWaitForChain(r);
 				//if (!cycle.isEmpty())
@@ -289,7 +289,7 @@ public class GMConfig
 				// FIXME: move into isWaitingFor
 				return null;
 			}
-			if (s.isTerminal())
+			if (s.isTerminated())
 			{
 				if (todo.isEmpty())
 				{
@@ -415,7 +415,7 @@ public class GMConfig
 		{
 			//EndpointState s = this.states.get(r);
 			EFSM s = this.states.get(r);
-			if (s.isTerminal())  // Local termination of r, i.e. not necessarily "full deadlock"
+			if (s.isTerminated())  // Local termination of r, i.e. not necessarily "full deadlock"
 			{
 				Set<ESend> orphs = this.buffs.get(r).values().stream().filter((v) -> v != null).collect(Collectors.toSet());
 				if (!orphs.isEmpty())
@@ -748,11 +748,11 @@ public class GMConfig
 		{
 			return true;
 		}
-		if (!(o instanceof GMConfig))
+		if (!(o instanceof SConfig))
 		{
 			return false;
 		}
-		GMConfig c = (GMConfig) o;
+		SConfig c = (SConfig) o;
 		return this.states.equals(c.states) && this.buffs.equals(c.buffs);
 	}
 	

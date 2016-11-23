@@ -9,7 +9,7 @@ import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.sesstype.name.Role;
 
-public class GMStateErrors
+public class SStateErrors
 {
 	// FIXME: could also check for roles stuck on unconnected sends here (probably better, than current syntax check)
 	public final Map<Role, EReceive> stuck;      // Reception errors
@@ -17,7 +17,7 @@ public class GMStateErrors
 	public final Map<Role, Set<ESend>> orphans;  // Orphan messages
 	public Map<Role, EState> unfinished;         // Unfinished roles
 
-	public GMStateErrors(Map<Role, EReceive> receptionErrors, Set<Set<Role>> deadlocks, Map<Role, Set<ESend>> orphans, Map<Role, EState> unfinished)
+	public SStateErrors(Map<Role, EReceive> receptionErrors, Set<Set<Role>> deadlocks, Map<Role, Set<ESend>> orphans, Map<Role, EState> unfinished)
 	{
 		this.stuck = Collections.unmodifiableMap(receptionErrors);
 		this.waitFor = Collections.unmodifiableSet(deadlocks);

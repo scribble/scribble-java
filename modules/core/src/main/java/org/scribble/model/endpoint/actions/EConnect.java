@@ -1,6 +1,6 @@
 package org.scribble.model.endpoint.actions;
 
-import org.scribble.model.global.actions.GMConnect;
+import org.scribble.model.global.actions.SConnect;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -22,10 +22,10 @@ public class EConnect extends EAction
 	}
 
 	@Override
-	public GMConnect toGlobal(Role self)
+	public SConnect toGlobal(Role self)
 	{
 		//return new GConnect(self, this.peer);
-		return new GMConnect(self, this.peer, this.mid, this.payload);
+		return new SConnect(self, this.peer, this.mid, this.payload);
 	}
 	
 	@Override

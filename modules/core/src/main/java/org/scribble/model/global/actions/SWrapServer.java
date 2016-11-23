@@ -4,15 +4,15 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public class GMWrapClient extends GMAction
+public class SWrapServer extends SAction
 {
-	public GMWrapClient(Role subj, Role obj)
+	public SWrapServer(Role subj, Role obj)
 	{
 		super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
-	public boolean isConnect()
+	public boolean isAccept()
 	{
 		return true;
 	}
@@ -20,7 +20,7 @@ public class GMWrapClient extends GMAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 1069;
+		int hash = 1087;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -32,22 +32,21 @@ public class GMWrapClient extends GMAction
 		{
 			return true;
 		}
-		if (!(o instanceof GMWrapClient))
+		if (!(o instanceof SWrapServer))
 		{
 			return false;
 		}
-		return ((GMWrapClient) o).canEqual(this) && super.equals(o);
+		return ((SWrapServer) o).canEqual(this) && super.equals(o);
 	}
 
-	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GMWrapClient;
+		return o instanceof SWrapServer;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "(->>)";
+		return "(<<-)";
 	}
 }

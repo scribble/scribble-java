@@ -9,7 +9,7 @@ import java.util.Set;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.GraphBuilderUtil;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.model.global.actions.GMAction;
+import org.scribble.model.global.actions.SAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Op;
@@ -418,7 +418,7 @@ class IntermediateContinueEdge extends EAction
 	}
 
 	@Override
-	public GMAction toGlobal(Role self)
+	public SAction toGlobal(Role self)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}

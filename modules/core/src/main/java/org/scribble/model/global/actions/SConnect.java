@@ -4,15 +4,17 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public class GMReceive extends GMAction
+public class SConnect extends SAction
 {
-	public GMReceive(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SConnect(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	//public GConnect(Role subj, Role obj)
 	{
 		super(subj, obj, mid, payload);
+		//super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
-	public boolean isReceive()
+	public boolean isConnect()
 	{
 		return true;
 	}
@@ -20,7 +22,7 @@ public class GMReceive extends GMAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 977;
+		int hash = 971;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -32,21 +34,23 @@ public class GMReceive extends GMAction
 		{
 			return true;
 		}
-		if (!(o instanceof GMReceive))
+		if (!(o instanceof SConnect))
 		{
 			return false;
 		}
-		return ((GMReceive) o).canEqual(this) && super.equals(o);
+		return ((SConnect) o).canEqual(this) && super.equals(o);
 	}
 
+	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GMReceive;
+		return o instanceof SConnect;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "?";
+		//return "!!";
+		return "->>";
 	}
 }

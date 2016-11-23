@@ -1,6 +1,6 @@
 package org.scribble.model.endpoint.actions;
 
-import org.scribble.model.global.actions.GMReceive;
+import org.scribble.model.global.actions.SReceive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -43,11 +43,11 @@ public class EReceive extends EAction
 
 	@Override
 	//public GModelAction toGlobal(Role self)
-	public GMReceive toGlobal(Role self)
+	public SReceive toGlobal(Role self)
 	{
 		//return new GModelAction(this.peer, self, this.mid, this.payload);
 		////return GModelAction.get(this.peer, self, this.mid, this.payload);
-		return new GMReceive(self, this.peer, this.mid, this.payload);
+		return new SReceive(self, this.peer, this.mid, this.payload);
 
 	}
 	

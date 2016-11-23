@@ -9,14 +9,11 @@ public class EFSM extends EGraph
 {
 	public final EState curr;
 	
-	//public EndpointFSM(EndpointState init, EndpointState term)
 	protected EFSM(EGraph graph)
 	{
 		this(graph.init, graph.term, graph.init);
 	}
 
-	//public EndpointFSM(EndpointState init, EndpointState term, EndpointState curr)
-	//public EndpointFSM(EndpointGraph graph, EndpointState curr)
 	protected EFSM(EState init, EState term, EState curr)
 	{
 		super(init, term);
@@ -27,21 +24,14 @@ public class EFSM extends EGraph
 	{
 		return this.curr;
 	}*/
-	
-	@Override
-	public String toString()
-	{
-		return Integer.toString(this.curr.id);
-	}
 
-	// FIXME: check if unfolded initial accept is possible, and if it breaks anything
+	// CHECKME: check if unfolded initial accept is possible, and if it breaks anything
 	public boolean isInitial()
 	{
 		return this.curr.equals(this.init);
 	}
 	
-	// FIXME: rename isTerminated
-	public boolean isTerminal()
+	public boolean isTerminated()
 	{
 		return this.curr.isTerminal();
 	}
@@ -94,5 +84,11 @@ public class EFSM extends EGraph
 		}
 		EFSM them = (EFSM) o;
 		return this.init.equals(them.init) && this.curr.equals(them.curr);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return Integer.toString(this.curr.id);
 	}
 }

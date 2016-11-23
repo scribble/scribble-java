@@ -1,7 +1,7 @@
 package org.scribble.model.endpoint.actions;
 
 import org.scribble.model.MAction;
-import org.scribble.model.global.actions.GMAction;
+import org.scribble.model.global.actions.SAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.MessageId;
@@ -24,7 +24,7 @@ public abstract class EAction extends MAction<Local>
 	public abstract EAction toDual(Role self);
 
 	//public abstract GModelAction toGlobal(Role self);
-	public abstract GMAction toGlobal(Role self);
+	public abstract SAction toGlobal(Role self);
 
 	public boolean isSend()
 	{

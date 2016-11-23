@@ -31,12 +31,12 @@ import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.ESend;
-import org.scribble.model.global.GMBuffers;
-import org.scribble.model.global.GMConfig;
-import org.scribble.model.global.GMGraph;
-import org.scribble.model.global.GMState;
-import org.scribble.model.global.GMStateErrors;
-import org.scribble.model.global.actions.GMAction;
+import org.scribble.model.global.SBuffers;
+import org.scribble.model.global.SConfig;
+import org.scribble.model.global.SGraph;
+import org.scribble.model.global.SState;
+import org.scribble.model.global.SStateErrors;
+import org.scribble.model.global.actions.SAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
@@ -167,7 +167,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	{
 		JobContext jc = job.getContext();
 
-		GMGraph graph;
+		SGraph graph;
 		if (fair)
 		{
 			graph = jc.getGlobalModel(fullname);
@@ -194,15 +194,15 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return gpd;
 	}
 
-	private void checkGlobalModel(Job job, GProtocolName fullname, GMGraph graph) throws ScribbleException
+	private void checkGlobalModel(Job job, GProtocolName fullname, SGraph graph) throws ScribbleException
 	{
-		GMState init = graph.init;
-		Map<Integer, GMState> all = graph.states;
+		SState init = graph.init;
+		Map<Integer, SState> all = graph.states;
 
 		String errorMsg = "";
 
 		int count = 0;
-		for (GMState s : all.values())
+		for (SState s : all.values())
 		{
 			if (job.debug)
 			{
@@ -212,11 +212,11 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 					job.debugPrintln("(" + fullname + ") Checking global states: " + count);
 				}
 			}
-			GMStateErrors errors = s.getErrors();
+			SStateErrors errors = s.getErrors();
 			if (!errors.isEmpty())
 			{
 				// FIXME: getTrace can get stuck when local choice subjects are disabled
-				List<GMAction> trace = graph.getTrace(init, s);  // FIXME: getTrace broken on non-det self loops?
+				List<SAction> trace = graph.getTrace(init, s);  // FIXME: getTrace broken on non-det self loops?
 				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
 				errorMsg += "\nSafety violation(s) at " + s.id + ":\n    Trace=" + trace;
 			}
@@ -278,7 +278,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		}
 	}
 	
-	private String termSetToString(Job job, Set<Integer> termset, Map<Integer, GMState> all)
+	private String termSetToString(Job job, Set<Integer> termset, Map<Integer, SState> all)
 	{
 		return job.debug
 				? termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","))
@@ -304,15 +304,15 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	// FIXME: this is now just "role liveness"
 	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but probably not good)
 	//private static void checkTerminalSet(WFState init, Set<WFState> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
-	private static void checkTerminalSet(Map<Integer, GMState> all, GMState init, Set<Integer> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
+	private static void checkTerminalSet(Map<Integer, SState> all, SState init, Set<Integer> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
 	{
 		Iterator<Integer> i = termset.iterator();
-		GMState s = all.get(i.next());
-		Map<Role, GMState> ss = new HashMap<>();
+		SState s = all.get(i.next());
+		Map<Role, SState> ss = new HashMap<>();
 		s.config.states.keySet().forEach((r) -> ss.put(r, s));
 		while (i.hasNext())
 		{
-			GMState next = all.get(i.next());
+			SState next = all.get(i.next());
 			Map<Role, EFSM> tmp = next.config.states;
 			for (Role r : tmp.keySet())
 			{
@@ -324,7 +324,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 					}
 					else*/
 					{
-						for (GMAction a : next.getAllActions())
+						for (SAction a : next.getAllActions())
 						{
 							if (a.containsRole(r))
 							{
@@ -338,7 +338,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		}
 		for (Role r : ss.keySet())
 		{
-			GMState foo = ss.get(r);
+			SState foo = ss.get(r);
 			if (foo != null)
 			{
 				EFSM tmp = foo.config.states.get(r);
@@ -363,7 +363,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 
 	// "message liveness"
-	private static Map<Role, Set<ESend>> checkMessageLiveness(Map<Integer, GMState> all, GMState init, Set<Integer> termset) throws ScribbleException
+	private static Map<Role, Set<ESend>> checkMessageLiveness(Map<Integer, SState> all, SState init, Set<Integer> termset) throws ScribbleException
 	{
 		Set<Role> roles = all.get(termset.iterator().next()).config.states.keySet();
 
@@ -371,8 +371,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		Map<Role, Map<Role, ESend>> b0 = all.get(i.next()).config.buffs.getBuffers();
 		while (i.hasNext())
 		{
-			GMState s = all.get(i.next());
-			GMBuffers b = s.config.buffs;
+			SState s = all.get(i.next());
+			SBuffers b = s.config.buffs;
 			for (Role r1 : roles)
 			{
 				for (Role r2 : roles)
@@ -415,22 +415,22 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	
 	
 	// FIXME: factor out
-	private GMGraph buildGlobalModel(Job job, GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs) throws ScribbleException
+	private SGraph buildGlobalModel(Job job, GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs) throws ScribbleException
 	{
-		GMBuffers b0 = new GMBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
-		GMConfig c0 = new GMConfig(egraphs, b0);
-		GMState init = new GMState(c0);
+		SBuffers b0 = new SBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
+		SConfig c0 = new SConfig(egraphs, b0);
+		SState init = new SState(c0);
 
-		Map<Integer, GMState> seen = new HashMap<>();
-		LinkedHashSet<GMState> todo = new LinkedHashSet<>();
+		Map<Integer, SState> seen = new HashMap<>();
+		LinkedHashSet<SState> todo = new LinkedHashSet<>();
 		todo.add(init);
 
 		// FIXME: factor out model building and integrate with getAllNodes (seen == all)
 		int count = 0;
 		while (!todo.isEmpty())
 		{
-			Iterator<GMState> i = todo.iterator();
-			GMState curr = i.next();
+			Iterator<SState> i = todo.iterator();
+			SState curr = i.next();
 			i.remove();
 			seen.put(curr.id, curr);
 
@@ -497,7 +497,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 						{
 							as.remove(d);  // Removes one occurrence
 							//getNextStates(seen, todo, curr.sync(r, a, a.peer, d));
-							GMAction g = (a.isConnect()) ? a.toGlobal(r) : d.toGlobal(a.peer);
+							SAction g = (a.isConnect()) ? a.toGlobal(r) : d.toGlobal(a.peer);
 							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, d));
 						}
 					}
@@ -508,7 +508,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 						if (as != null && as.contains(w))
 						{
 							as.remove(w);  // Removes one occurrence
-							GMAction g = (a.isConnect()) ? a.toGlobal(r) : w.toGlobal(a.peer);
+							SAction g = (a.isConnect()) ? a.toGlobal(r) : w.toGlobal(a.peer);
 							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, w));
 						}
 					}
@@ -522,15 +522,15 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 
 		job.debugPrintln("(" + fullname + ") Building global model..\n" + init.toDot() + "\n(" + fullname + ") Built global model (" + count + " states)");
 
-		return new GMGraph(seen, init);
+		return new SGraph(seen, init);
 	}
 
-	private void getNextStates(LinkedHashSet<GMState> todo, Map<Integer, GMState> seen, GMState curr, GMAction a, List<GMConfig> nexts)
+	private void getNextStates(LinkedHashSet<SState> todo, Map<Integer, SState> seen, SState curr, SAction a, List<SConfig> nexts)
 	{
-		for (GMConfig next : nexts)
+		for (SConfig next : nexts)
 		{
-			GMState news = new GMState(next);
-			GMState succ = null; 
+			SState news = new SState(next);
+			SState succ = null; 
 			//if (seen.contains(succ))  // FIXME: make a WFModel builder
 			/*if (seen.containsValue(succ))
 			{
@@ -542,7 +542,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 					}
 				}
 			}*/
-			for (GMState tmp : seen.values())  // Key point: checking "semantically" if model state already created
+			for (SState tmp : seen.values())  // Key point: checking "semantically" if model state already created
 			{
 				if (tmp.equals(news))
 				{
@@ -551,7 +551,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 			}
 			if (succ == null)
 			{
-				for (GMState tmp : todo)  // If state created but not "seen" yet, then it will be "todo"
+				for (SState tmp : todo)  // If state created but not "seen" yet, then it will be "todo"
 				{
 					if (tmp.equals(news))
 					{

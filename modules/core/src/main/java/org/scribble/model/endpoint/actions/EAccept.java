@@ -1,6 +1,6 @@
 package org.scribble.model.endpoint.actions;
 
-import org.scribble.model.global.actions.GMAccept;
+import org.scribble.model.global.actions.SAccept;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -22,9 +22,9 @@ public class EAccept extends EAction
 	}
 
 	@Override
-	public GMAccept toGlobal(Role self)
+	public SAccept toGlobal(Role self)
 	{
-		return new GMAccept(self, this.peer, this.mid, this.payload);
+		return new SAccept(self, this.peer, this.mid, this.payload);
 		//return new GAccept(self, this.peer);
 	}
 	

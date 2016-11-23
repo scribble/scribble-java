@@ -4,15 +4,15 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public class GMSend extends GMAction
+public class SReceive extends SAction
 {
-	public GMSend(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SReceive(Role subj, Role obj, MessageId<?> mid, Payload payload)
 	{
 		super(subj, obj, mid, payload);
 	}
 	
 	@Override
-	public boolean isSend()
+	public boolean isReceive()
 	{
 		return true;
 	}
@@ -32,22 +32,21 @@ public class GMSend extends GMAction
 		{
 			return true;
 		}
-		if (!(o instanceof GMSend))
+		if (!(o instanceof SReceive))
 		{
 			return false;
 		}
-		return ((GMSend) o).canEqual(this) && super.equals(o);
+		return ((SReceive) o).canEqual(this) && super.equals(o);
 	}
 
-	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GMSend;
+		return o instanceof SReceive;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "!";
+		return "?";
 	}
 }

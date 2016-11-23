@@ -11,17 +11,17 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
-import org.scribble.model.global.actions.GMAction;
+import org.scribble.model.global.actions.SAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.Role;
 
 // FIXME? make a WFModel front-end class? (cf. EGraph)
 // Only uses MState.id cosmetically, cf. MState equals/hash -- overrides equals/hash based on this.config (maybe extending MState is a bit misleading)
-public class GMState extends MPrettyState<Void, GMAction, GMState, Global>
+public class SState extends MPrettyState<Void, SAction, SState, Global>
 {
-	public final GMConfig config;
+	public final SConfig config;
 	
-	public GMState(GMConfig config)
+	public SState(SConfig config)
 	{
 		super(Collections.emptySet());
 		this.config = config;
@@ -33,25 +33,25 @@ public class GMState extends MPrettyState<Void, GMAction, GMState, Global>
 		return this.config.getTakeable();
 	}
 	
-	public List<GMConfig> take(Role r, EAction a)
+	public List<SConfig> take(Role r, EAction a)
 	{
 		return this.config.take(r, a);
 	}
 
 	// "Synchronous version" of take
-	public List<GMConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
+	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
 	{
 		return this.config.sync(r1, a1, r2, a2);
 	}
 	
-	public GMStateErrors getErrors()
+	public SStateErrors getErrors()
 	{
 		Map<Role, EReceive> stuck = this.config.getStuckMessages();
 		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
 		//Set<Set<Role>> waitfor = Collections.emptySet();
 		Map<Role, Set<ESend>> orphs = this.config.getOrphanMessages();
 		Map<Role, EState> unfinished = this.config.getUnfinishedRoles();
-		return new GMStateErrors(stuck, waitfor, orphs, unfinished);
+		return new SStateErrors(stuck, waitfor, orphs, unfinished);
 	}
 	
 	// FIXME? doesn't use super.hashCode (cf., equals)
@@ -74,17 +74,17 @@ public class GMState extends MPrettyState<Void, GMAction, GMState, Global>
 		{
 			return true;
 		}
-		if (!(o instanceof GMState))
+		if (!(o instanceof SState))
 		{
 			return false;
 		}
-		return ((GMState) o).canEquals(this) && this.config.equals(((GMState) o).config);
+		return ((SState) o).canEquals(this) && this.config.equals(((SState) o).config);
 	}
 
 	@Override
 	protected boolean canEquals(MState<?, ?, ?, ?> s)
 	{
-		return s instanceof GMState;
+		return s instanceof SState;
 	}
 	
 	@Override
