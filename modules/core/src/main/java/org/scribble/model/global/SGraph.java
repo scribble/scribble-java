@@ -18,12 +18,13 @@ import org.scribble.sesstype.name.GProtocolName;
 public class SGraph implements MPrettyPrint
 {
 	public final GProtocolName proto;
+	// private final Map<Role, EFSM>
+	// private final boolean fair
 	
 	public final SState init;
 	public Map<Integer, SState> states; // State ID -> GMState
 
-	private Map<Integer, Set<Integer>> reach; // State ID -> reachable states (not
-																						// reflexive)
+	private Map<Integer, Set<Integer>> reach; // State ID -> reachable states (not reflexive)
 	private Set<Set<Integer>> termSets;
 
 	public SGraph(GProtocolName proto, Map<Integer, SState> states, SState init)

@@ -185,6 +185,12 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return gpd;
 	}
 
+	
+	
+	
+	
+	
+	
 	private Map<Role, EFSM> getEndpointFSMs(Job job, GProtocolName fullname, GProtocolDecl gpd, boolean fair) throws ScribbleException
 	{
 		JobContext jc = job.getContext();
@@ -200,10 +206,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return egraphs;
 	}
 
-	
-
-	
-	// FIXME: factor out via a Util -- but not Visitor, it's not an AST algorithm
+	// FIXME: refactor with getEndpointFSMs into SGraph constructor
+	// FIXME: maybe factor out via a Util -- but not Visitor, it's not an AST algorithm
 	private SGraph buildSGraph(Job job, GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs) throws ScribbleException
 	{
 		SBuffers b0 = new SBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
@@ -320,7 +324,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		{
 			SState news = new SState(next);
 			SState succ = null; 
-			//if (seen.contains(succ))  // FIXME: make a WFModel builder
+			//if (seen.contains(succ))  // FIXME: make a SGraph builder
 			/*if (seen.containsValue(succ))
 			{
 				for (WFState tmp : seen)

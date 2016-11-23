@@ -24,7 +24,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	{
 		super(labs);
 	}
-
+	
 	public EGraph toGraph()
 	{
 		return new EGraph(this, getTerminal(this));  // Throws exception if >1 terminal; null if no terminal
@@ -155,6 +155,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		return init;
 	}
 
+	// Fully clones the reachable graph (i.e. the "general" graph -- cf., EGraph, the specific Scribble concept of an endpoint protocol graph)
 	protected EState clone()
 	{
 		Set<EState> all = new HashSet<>();
@@ -163,7 +164,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
 		for (EState s : all)
 		{
-			map.put(s.id, newState(s.labs));
+			map.put(s.id, new EState(s.labs));
 		}
 		for (EState s : all)
 		{
@@ -200,7 +201,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			else
 			{
 				//map.put(s.id, newState(s.labs));
-				map.put(s.id, newState(Collections.emptySet()));
+				map.put(s.id, new EState(Collections.emptySet()));
 			}
 		}
 		for (EState s : all)
@@ -221,11 +222,6 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			}
 		}
 		return map.get(succ.id);
-	}
-	
-	protected EState newState(Set<RecVar> labs)
-	{
-		return new EState(labs);
 	}
 	
 	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction
