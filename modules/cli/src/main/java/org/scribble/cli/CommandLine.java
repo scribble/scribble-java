@@ -33,61 +33,38 @@ public class CommandLine //implements Runnable
 {
 	protected enum ArgFlag
 	{
+		// Unique flags
+		JUNIT,  // For internal use (JUnit test harness)
 		MAIN,
 		PATH,
-		PROJECT,
-		JUNIT,
 		VERBOSE,
-		/*DOT,              // The FSM for API gen (and general tool output to user)
-		DOT_PNG,
-		CHECKED_DOT,      // The FSM used (internally) for global model checking (fair/unfair)
-		CHECKED_DOT_PNG,
-		AUT,
-		CHECKED_AUT,*/
-		SESS_API,
-		SCHAN_API,
-		EP_API,
-		API_OUTPUT,
 		SCHAN_API_SUBTYPES,
-		/*GLOBAL_MODEL_DOT,
-		GLOBAL_MODEL_DOT_PNG,
-		GLOBAL_MODEL_AUT,*/
 		OLD_WF,
 		NO_LIVENESS,
 		MIN_EFSM,  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 		FAIR,
 		NO_LOCAL_CHOICE_SUBJECT_CHECK,
 		NO_ACCEPT_CORRELATION_CHECK,
-		//PROJECTED_MODEL
-		EFSM,
-		GMODEL,
 		DOT,
 		AUT,
-		VEFSM,
-		UEFSM,
-		UGMODEL,
+
+		// Non-unique flags
+		PROJECT,
+		SESS_API,
+		SCHAN_API,
+		EP_API,
+		API_OUTPUT,
+		EFSM,
 		EFSMPNG,
-		GMODELPNG,
+		VEFSM,
 		VEFSMPNG,
+		UEFSM,
 		UEFSMPNG,
+		GMODEL,
+		GMODELPNG,
+		UGMODEL,
 		UGMODELPNG,
 	}
-	
-	/*
-	-fsm, -model  text (default dot)
-	-dot, -aut    for text output
-	-vfsm
-	-ufsm -umodel
-	
-	-fsmpng, -modelpng  png via dot
-	-vfsmpng
-	-ufsmpng, -umodelpng
-	
-	-fair         skip unfair progress check
-	
-	...FIXME: minimised fsm output?
-	
-	*/
 	
 	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 	
@@ -135,55 +112,11 @@ public class CommandLine //implements Runnable
 			}
 			try 
 			{
-				// Following must be ordered appropriately
+				// Following must be ordered appropriately --?
 				if (this.args.containsKey(ArgFlag.PROJECT))
 				{
 					outputProjections(job);
 				}
-				/*if (this.args.containsKey(ArgFlag.DOT))
-				{
-					outputGraph(job, true);
-				}
-				if (this.args.containsKey(ArgFlag.DOT_PNG))
-				{
-					drawGraph(job, true);
-				}
-				if (this.args.containsKey(ArgFlag.CHECKED_DOT))
-				{
-					outputGraph(job, false);
-				}
-				if (this.args.containsKey(ArgFlag.CHECKED_DOT_PNG))
-				{
-					drawGraph(job, false);
-				}
-				if (this.args.containsKey(ArgFlag.AUT))
-				{
-					outputAut(job, true);
-				}
-				if (this.args.containsKey(ArgFlag.CHECKED_AUT))
-				{
-					outputAut(job, false);
-				}
-				if (this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT) || this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT_PNG) || this.args.containsKey(ArgFlag.GLOBAL_MODEL_AUT))
-				{
-					if (job.useOldWf)
-					{
-						throw new CommandLineException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_DOT_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
-					}
-					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT))
-					{
-						outputGlobalModel(job);
-					}
-					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT_PNG))
-					{
-						drawGlobalModel(job);
-					}
-					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL_AUT))
-					{
-						outputGlobalModelAut(job);
-					}
-				}*/
-
 				if (this.args.containsKey(ArgFlag.EFSM))
 				{
 					outputGraph(job, true, true);
@@ -231,11 +164,6 @@ public class CommandLine //implements Runnable
 						drawGlobalModel(job, false);
 					}
 				}
-
-				/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
-				{
-					outputProjectedModel(job);
-				}*/
 			}
 			catch (ScribbleException x)
 			{
@@ -293,7 +221,9 @@ public class CommandLine //implements Runnable
 		}
 	}
 
-	// dot
+	// dot/aut text output
+	// forUser: true means for API gen and general user info (may be minimised), false means for validation (non-minimised, fair or unfair)
+	// (forUser && !fair) should not hold, i.e. unfair doesn't make sense if forUser
 	private void outputGraph(Job job, boolean forUser, boolean fair) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
@@ -302,26 +232,12 @@ public class CommandLine //implements Runnable
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			EGraph fsm = getEndointGraph(forUser, job, fullname, role, fair);
+			EGraph fsm = getEndointGraph(job, fullname, role, forUser, fair);
 			//System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
 			String out = this.args.containsKey(ArgFlag.AUT) ? fsm.toAut() : fsm.toDot();
 			System.out.println("\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
 		}
 	}
-
-	/*// Duplicated from outputGraph
-	private void outputAut(Job job, boolean forUser) throws ScribbleException, CommandLineException
-	{
-		JobContext jcontext = job.getContext();
-		String[] args = forUser ? this.args.get(ArgFlag.AUT) : this.args.get(ArgFlag.CHECKED_AUT);
-		for (int i = 0; i < args.length; i += 2)
-		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			EGraph fsm = getEndointGraph(forUser, job, fullname, role);
-			System.out.println("\n" + fsm.toAut());
-		}
-	}*/
 
 	// FIXME: draw graphs once and cache, redrawing gives different state numbers
 	private void drawGraph(Job job, boolean forUser, boolean fair) throws ScribbleException, CommandLineException
@@ -333,7 +249,7 @@ public class CommandLine //implements Runnable
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
 			String png = args[i+2];
-			EGraph fsm = getEndointGraph(forUser, job, fullname, role, fair);
+			EGraph fsm = getEndointGraph(job, fullname, role, forUser, fair);
 			//jcontext.getEndpointGraph(fullname, role);
 			runDot(fsm.toDot(), png);
 		}
@@ -364,43 +280,6 @@ public class CommandLine //implements Runnable
 			runDot(model.toDot(), png);
 		}
 	}
-
-	/*// Duplicated from outputGlobalModel
-	// FIXME: state ids may not match other tool output (e.g. errors)
-	private void outputGlobalModelAut(Job job) throws ScribbleException, CommandLineException
-	{
-		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL_AUT);
-		for (int i = 0; i < args.length; i += 1)
-		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			SGraph model = getGlobalModel(job, fullname);
-			System.out.println("\n" + model.toAut());  // FIXME: make a global equiv to EndpointGraph
-		}
-	}*/
-	
-	private static SGraph getGlobalModel(Job job, GProtocolName fullname, boolean fair) throws ScribbleException
-	{
-		JobContext jcontext = job.getContext();
-		SGraph model = fair ? jcontext.getSGraph(fullname) : jcontext.getUnfairSGraph(fullname);
-		if (model == null)
-		{
-			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
-		}
-		return model;
-	}
-	
-	/*private void outputProjectedModel(Job job) throws ScribbleException
-	{
-		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(ArgFlag.PROJECTED_MODEL);
-		for (int i = 0; i < args.length; i += 2)
-		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			System.out.println("\n" + jcontext.getGlobalModel(fullname).project(role));
-		}
-	}*/
 
 	private void outputSessionApi(Job job) throws ScribbleException, CommandLineException
 	{
@@ -487,7 +366,7 @@ public class CommandLine //implements Runnable
 	}
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
-	private EGraph getEndointGraph(boolean forUser, Job job, GProtocolName fullname, Role role, boolean fair) throws ScribbleException, CommandLineException
+	private EGraph getEndointGraph(Job job, GProtocolName fullname, Role role, boolean forUser, boolean fair) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
@@ -514,12 +393,21 @@ public class CommandLine //implements Runnable
 		}
 		return graph;
 	}
+
+	private static SGraph getGlobalModel(Job job, GProtocolName fullname, boolean fair) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		SGraph model = fair ? jcontext.getSGraph(fullname) : jcontext.getUnfairSGraph(fullname);
+		if (model == null)
+		{
+			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+		}
+		return model;
+	}
 	
 	private Job newJob(MainContext mc)
 	{
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
-		//return new Job(mc.jUnit, mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
-		//return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm, mc.fair);
 		return mc.newJob();
 	}
 
