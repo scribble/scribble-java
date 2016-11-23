@@ -133,26 +133,19 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		}
 
 		GProtocolName fullname = gpd.getFullMemberName((Module) parent);
-		checker.job.debugPrintln("(" + fullname + ") Validating with \"fair\" output choices.. ");
-		validate(checker.job, gpd, fullname, true);
+		validate(checker.job, fullname, true);
 		if (!checker.job.fair)
 		{
 			checker.job.debugPrintln("(" + fullname + ") Validating with \"unfair\" output choices.. ");
-			validate(checker.job, gpd, fullname, false);
+			validate(checker.job, fullname, false);
 		}
 	}
 
-	private GProtocolDecl validate(Job job, GProtocolDecl gpd, GProtocolName fullname, boolean fair) throws ScribbleException
+	private static void validate(Job job, GProtocolName fullname, boolean fair) throws ScribbleException
 	{
 		JobContext jc = job.getContext();
-
 		SGraph graph = (fair) ? jc.getSGraph(fullname) : jc.getUnfairSGraph(fullname);
-
-		//job.debugPrintln("(" + fullname + ") Validating global model:\n" + graph.init.toDot() + "\n");
-
 		graph.toModel().validate(job);
-		
-		return gpd;
 	}
 }
 

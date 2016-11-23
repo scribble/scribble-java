@@ -27,14 +27,14 @@ import org.scribble.sesstype.name.Role;
 public class SConfig
 {
 	//public final Map<Role, EndpointState> states;
-	public final Map<Role, EFSM> states;
+	public final Map<Role, EFSM> efsms;
 	public final SBuffers buffs;
 	
 	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> buff)
 	//public WFConfig(Map<Role, EndpointState> state, WFBuffers buffs)
 	public SConfig(Map<Role, EFSM> state, SBuffers buffs)
 	{
-		this.states = Collections.unmodifiableMap(state);
+		this.efsms = Collections.unmodifiableMap(state);
 		//this.buffs = Collections.unmodifiableMap(buff.keySet().stream() .collect(Collectors.toMap((k) -> k, (k) -> Collections.unmodifiableMap(buff.get(k)))));
 		//this.buffs = Collections.unmodifiableMap(buff);
 		this.buffs = buffs;
@@ -45,7 +45,7 @@ public class SConfig
 	public boolean isSafeTermination()
 	{
 		//return this.states.values().stream().allMatch((s) -> s.isTerminal()) && this.buffs.isEmpty();
-		for (Role r : this.states.keySet())
+		for (Role r : this.efsms.keySet())
 		{
 			if (!canSafelyTerminate(r))
 			{
@@ -59,7 +59,7 @@ public class SConfig
 	public boolean canSafelyTerminate(Role r)
 	{
 		//EndpointState s = this.states.get(r);
-		EFSM s = this.states.get(r);
+		EFSM s = this.efsms.get(r);
 		//return
 		/*boolean cannotSafelyTerminate =  // FIXME: check and cleanup
 				(s.isTerminal() && !this.buffs.isEmpty(r))
@@ -95,12 +95,12 @@ public class SConfig
 		List<SConfig> res = new LinkedList<>();
 		
 		//List<EndpointState> succs = this.states.get(r).takeAll(a);
-		List<EFSM> succs = this.states.get(r).fireAll(a);
+		List<EFSM> succs = this.efsms.get(r).fireAll(a);
 		//for (EndpointState succ : succs)
 		for (EFSM succ : succs)
 		{
 			//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
-			Map<Role, EFSM> tmp1 = new HashMap<>(this.states);
+			Map<Role, EFSM> tmp1 = new HashMap<>(this.efsms);
 			//Map<Role, Map<Role, Send>> tmp2 = new HashMap<>(this.buffs);
 		
 			tmp1.put(r, succ);
@@ -138,15 +138,15 @@ public class SConfig
 		/*List<EndpointState> succs1 = this.states.get(r1).takeAll(a1);
 		List<EndpointState> succs2 = this.states.get(r2).takeAll(a2);
 		for (EndpointState succ1 : succs1)*/
-		List<EFSM> succs1 = this.states.get(r1).fireAll(a1);
-		List<EFSM> succs2 = this.states.get(r2).fireAll(a2);
+		List<EFSM> succs1 = this.efsms.get(r1).fireAll(a1);
+		List<EFSM> succs2 = this.efsms.get(r2).fireAll(a2);
 		for (EFSM succ1 : succs1)
 		{
 			//for (EndpointState succ2 : succs2)
 			for (EFSM succ2 : succs2)
 			{
 				//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
-				Map<Role, EFSM> tmp1 = new HashMap<>(this.states);
+				Map<Role, EFSM> tmp1 = new HashMap<>(this.efsms);
 				tmp1.put(r1, succ1);
 				tmp1.put(r2, succ2);
 				SBuffers tmp2;
@@ -174,10 +174,10 @@ public class SConfig
 	public Map<Role, EReceive> getStuckMessages()
 	{
 		Map<Role, EReceive> res = new HashMap<>();
-		for (Role r : this.states.keySet())
+		for (Role r : this.efsms.keySet())
 		{
 			//EndpointState s = this.states.get(r);
-			EFSM s = this.states.get(r);
+			EFSM s = this.efsms.get(r);
 			EStateKind k = s.getStateKind();
 			if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 			{
@@ -213,7 +213,7 @@ public class SConfig
 	public Set<Set<Role>> getWaitForErrors()
 	{
 		Set<Set<Role>> res = new HashSet<>();
-		List<Role> todo = new LinkedList<>(this.states.keySet());
+		List<Role> todo = new LinkedList<>(this.efsms.keySet());
 		/*while (!todo.isEmpty())
 		{
 			Role r = todo.get(0);
@@ -246,7 +246,7 @@ public class SConfig
 		{
 			Role r = todo.remove(0);
 			//Set<Role> cycle = isCycle(new HashSet<>(), new HashSet<>(Arrays.asList(r)));
-			if (!this.states.get(r).isTerminated())
+			if (!this.efsms.get(r).isTerminated())
 			{
 				Set<Role> cycle = isWaitForChain(r);
 				//if (!cycle.isEmpty())
@@ -283,7 +283,7 @@ public class SConfig
 			candidate.add(r);
 			
 			//EndpointState s = this.states.get(r);
-			EFSM s = this.states.get(r);
+			EFSM s = this.efsms.get(r);
 			if (s.getStateKind() == EStateKind.OUTPUT && !s.isConnectOrWrapClientOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
 				// FIXME: move into isWaitingFor
@@ -324,7 +324,7 @@ public class SConfig
 	private Set<Role> isWaitingFor(Role r)
 	{
 		//EndpointState s = this.states.get(r);
-		EFSM s = this.states.get(r);
+		EFSM s = this.efsms.get(r);
 		EStateKind k = s.getStateKind();
 		if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 		{
@@ -363,7 +363,7 @@ public class SConfig
 				Set<Role> res = new HashSet<Role>();
 				for (EAction a : all)  // Accept  // FIXME: WrapServer
 				{
-					if (this.states.get(a.peer).getAllFireable().contains(a.toDual(r)))
+					if (this.efsms.get(a.peer).getAllFireable().contains(a.toDual(r)))
 					{
 						return null;
 					}
@@ -391,7 +391,7 @@ public class SConfig
 				Set<Role> res = new HashSet<Role>();
 				for (EAction a : all)  // Connect or WrapClient
 				{
-					if (this.states.get(a.peer).getAllFireable().contains(a.toDual(r)))
+					if (this.efsms.get(a.peer).getAllFireable().contains(a.toDual(r)))
 					{
 						return null;
 					}
@@ -411,10 +411,10 @@ public class SConfig
 	public Map<Role, Set<ESend>> getOrphanMessages()
 	{
 		Map<Role, Set<ESend>> res = new HashMap<>();
-		for (Role r : this.states.keySet())
+		for (Role r : this.efsms.keySet())
 		{
 			//EndpointState s = this.states.get(r);
-			EFSM s = this.states.get(r);
+			EFSM s = this.efsms.get(r);
 			if (s.isTerminated())  // Local termination of r, i.e. not necessarily "full deadlock"
 			{
 				Set<ESend> orphs = this.buffs.get(r).values().stream().filter((v) -> v != null).collect(Collectors.toSet());
@@ -431,7 +431,7 @@ public class SConfig
 			}
 			else
 			{
-				this.states.keySet().forEach((rr) ->
+				this.efsms.keySet().forEach((rr) ->
 				{
 					if (!rr.equals(r))
 					{
@@ -464,11 +464,11 @@ public class SConfig
 		Map<Role, EState> res = new HashMap<>();
 		if (getFireable().isEmpty() && !isSafeTermination())
 		{
-			for (Role r : this.states.keySet())
+			for (Role r : this.efsms.keySet())
 			{
 				if (!canSafelyTerminate(r))
 				{
-					res.put(r, this.states.get(r).curr);
+					res.put(r, this.efsms.get(r).curr);
 				}
 			}
 		}
@@ -478,10 +478,10 @@ public class SConfig
 	public Map<Role, List<EAction>> getFireable()
 	{
 		Map<Role, List<EAction>> res = new HashMap<>();
-		for (Role r : this.states.keySet())
+		for (Role r : this.efsms.keySet())
 		{
 			//EndpointState s = this.states.get(r);
-			EFSM fsm = this.states.get(r);
+			EFSM fsm = this.efsms.get(r);
 			switch (fsm.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
 			{
 				case OUTPUT:
@@ -507,7 +507,7 @@ public class SConfig
 							// FIXME: factor out
 							EConnect c = (EConnect) a;
 							//EndpointState speer = this.states.get(c.peer);
-							EFSM speer = this.states.get(c.peer);
+							EFSM speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
 								List<EAction> peeras = speer.getAllFireable();
@@ -544,7 +544,7 @@ public class SConfig
 						{
 							// FIXME: factor out
 							EWrapClient wc = (EWrapClient) a;
-							EFSM speer = this.states.get(wc.peer);
+							EFSM speer = this.efsms.get(wc.peer);
 							List<EAction> peeras = speer.getAllFireable();
 							for (EAction peera : peeras)
 							{
@@ -664,7 +664,7 @@ public class SConfig
 							// FIXME: factor out
 							EAccept c = (EAccept) a;
 							//EndpointState speer = this.states.get(c.peer);
-							EFSM speer = this.states.get(c.peer);
+							EFSM speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.OUTPUT)
 							{
 								List<EAction> peeras = speer.getAllFireable();
@@ -698,7 +698,7 @@ public class SConfig
 						if (a.isWrapServer())
 						{
 							EWrapServer ws = (EWrapServer) a;
-							EFSM speer = this.states.get(ws.peer);
+							EFSM speer = this.efsms.get(ws.peer);
 							{
 								List<EAction> peeras = speer.getAllFireable();
 								for (EAction peera : peeras)
@@ -736,7 +736,7 @@ public class SConfig
 	public final int hashCode()
 	{
 		int hash = 71;
-		hash = 31 * hash + this.states.hashCode();
+		hash = 31 * hash + this.efsms.hashCode();
 		hash = 31 * hash + this.buffs.hashCode();
 		return hash;
 	}
@@ -753,12 +753,12 @@ public class SConfig
 			return false;
 		}
 		SConfig c = (SConfig) o;
-		return this.states.equals(c.states) && this.buffs.equals(c.buffs);
+		return this.efsms.equals(c.efsms) && this.buffs.equals(c.buffs);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "(" + this.states + ", " + this.buffs + ")";
+		return "(" + this.efsms + ", " + this.buffs + ")";
 	}
 }

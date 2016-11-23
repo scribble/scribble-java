@@ -116,11 +116,11 @@ public class SModel
 		Iterator<Integer> i = termset.iterator();
 		SState s = states.get(i.next());
 		Map<Role, SState> ss = new HashMap<>();
-		s.config.states.keySet().forEach((r) -> ss.put(r, s));
+		s.config.efsms.keySet().forEach((r) -> ss.put(r, s));
 		while (i.hasNext())
 		{
 			SState next = states.get(i.next());
-			Map<Role, EFSM> tmp = next.config.states;
+			Map<Role, EFSM> tmp = next.config.efsms;
 			for (Role r : tmp.keySet())
 			{
 				if (ss.get(r) != null)
@@ -148,7 +148,7 @@ public class SModel
 			SState foo = ss.get(r);
 			if (foo != null)
 			{
-				EFSM tmp = foo.config.states.get(r);
+				EFSM tmp = foo.config.efsms.get(r);
 				if (tmp != null)
 				{
 					if (!foo.config.canSafelyTerminate(r))
@@ -173,7 +173,7 @@ public class SModel
 	// (eventual reception)
 	private static Map<Role, Set<ESend>> checkEventualReception(Map<Integer, SState> states, SState init, Set<Integer> termset) throws ScribbleException
 	{
-		Set<Role> roles = states.get(termset.iterator().next()).config.states.keySet();
+		Set<Role> roles = states.get(termset.iterator().next()).config.efsms.keySet();
 
 		Iterator<Integer> i = termset.iterator();
 		Map<Role, Map<Role, ESend>> b0 = states.get(i.next()).config.buffs.getBuffers();

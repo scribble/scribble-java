@@ -302,7 +302,7 @@ public class SGraph implements MPrettyPrint
 				
 				// Hacky?  // FIXME: factor out and make more robust (e.g. for new state kinds) -- e.g. "hasPayload" in IOAction
 				//EndpointState currstate = curr.config.states.get(r);
-				EFSM currfsm = curr.config.states.get(r);
+				EFSM currfsm = curr.config.efsms.get(r);
 				EStateKind k = currfsm.getStateKind();
 				if (k == EStateKind.OUTPUT)
 				{

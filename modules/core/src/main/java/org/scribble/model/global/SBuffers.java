@@ -213,7 +213,6 @@ public class SBuffers
 		return res;
 	}
 	
-	// FIXME: rename model "acceptable" actions to "consumable" (here is really "acceptable")
 	//public Set<IOAction> acceptable(Role r)  // Means connection accept actions
 	// Pre: curr is Accept state, r is accept peer
 	public Set<EAction> acceptable(Role r, EState curr)  // Means connection accept actions
