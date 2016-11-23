@@ -7,11 +7,12 @@ import java.util.stream.Collectors;
 
 import org.scribble.sesstype.kind.ProtocolKind;
 
-public abstract class PrettyMState
-		<L, A extends MAction<K>, S extends PrettyMState<L, A, S, K>, K extends ProtocolKind>
+public abstract class MPrettyState
+		<L, A extends MAction<K>, S extends MPrettyState<L, A, S, K>, K extends ProtocolKind>
 		extends MState<L, A, S, K>
+		implements MPrettyPrint
 {
-	public PrettyMState(Set<L> labs)  // Immutable singleton node
+	public MPrettyState(Set<L> labs)  // Immutable singleton node
 	{
 		super(labs);
 	}
@@ -24,6 +25,7 @@ public abstract class PrettyMState
 		return s + "]";
 	}
 	
+	@Override
 	public final String toDot()
 	{
 		String s = "digraph G {\n" // rankdir=LR;\n
@@ -33,7 +35,7 @@ public abstract class PrettyMState
 	}
 
 	//protected final String toDot(Set<S> seen)
-	protected final String toDot(Set<PrettyMState<L, A, S, K>> seen)
+	protected final String toDot(Set<MPrettyState<L, A, S, K>> seen)
 	{
 		seen.add(this);
 		String dot = toNodeDot();
@@ -90,15 +92,16 @@ public abstract class PrettyMState
 		return "label=\"" + msg + "\"";
 	}
 	
+	@Override
 	public final String toAut()
 	{
-		Set<PrettyMState<L, A, S, K>> all = new HashSet<>();
+		Set<MPrettyState<L, A, S, K>> all = new HashSet<>();
 		all.add(this);
 		all.addAll(getReachableStates(this));
 		String aut = "";
 		int edges = 0;
 		Set<Integer> seen = new HashSet<>();
-		for (PrettyMState<L, A, S, K> s : all)
+		for (MPrettyState<L, A, S, K> s : all)
 		{
 			if (seen.contains(s.id))
 			{
@@ -133,7 +136,7 @@ public abstract class PrettyMState
 		{
 			return true;
 		}
-		if (!(o instanceof PrettyMState))
+		if (!(o instanceof MPrettyState))
 		{
 			return false;
 		}

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.model.MState;
-import org.scribble.model.PrettyMState;
+import org.scribble.model.MPrettyState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
@@ -17,7 +17,7 @@ import org.scribble.sesstype.name.Role;
 
 // FIXME? make a WFModel front-end class? (cf. EGraph)
 // Only uses MState.id cosmetically, cf. MState equals/hash -- overrides equals/hash based on this.config (maybe extending MState is a bit misleading)
-public class GMState extends PrettyMState<Void, GMAction, GMState, Global>
+public class GMState extends MPrettyState<Void, GMAction, GMState, Global>
 {
 	public final GMConfig config;
 	

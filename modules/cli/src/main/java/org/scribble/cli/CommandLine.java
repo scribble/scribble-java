@@ -22,7 +22,6 @@ import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.global.GMGraph;
-import org.scribble.model.global.GMState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;

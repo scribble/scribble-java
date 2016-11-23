@@ -12,13 +12,13 @@ import java.util.Set;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.model.MState;
-import org.scribble.model.PrettyMState;
+import org.scribble.model.MPrettyState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.RecVar;
 
 // Label types used to be both RecVar and SubprotocolSigs; now using inlined protocol for FSM building so just RecVar
-public class EState extends PrettyMState<RecVar, EAction, EState, Local>
+public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 {
 	protected EState(Set<RecVar> labs)
 	{
@@ -43,7 +43,7 @@ public class EState extends PrettyMState<RecVar, EAction, EState, Local>
 	{
 		EState init = this.clone();
 		
-		EState term = PrettyMState.getTerminal(init);
+		EState term = MPrettyState.getTerminal(init);
 		Set<EState> seen = new HashSet<>();
 		Set<EState> todo = new LinkedHashSet<>();
 		todo.add(init);
@@ -159,7 +159,7 @@ public class EState extends PrettyMState<RecVar, EAction, EState, Local>
 	{
 		Set<EState> all = new HashSet<>();
 		all.add(this);
-		all.addAll(PrettyMState.getReachableStates(this));
+		all.addAll(MPrettyState.getReachableStates(this));
 		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
 		for (EState s : all)
 		{
@@ -189,7 +189,7 @@ public class EState extends PrettyMState<RecVar, EAction, EState, Local>
 		//EndpointState succ = take(a);
 		Set<EState> all = new HashSet<>();
 		all.add(succ);
-		all.addAll(PrettyMState.getReachableStates(succ));
+		all.addAll(MPrettyState.getReachableStates(succ));
 		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
 		for (EState s : all)
 		{

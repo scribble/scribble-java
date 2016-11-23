@@ -1,6 +1,8 @@
 package org.scribble.model.endpoint;
 
-public class EGraph
+import org.scribble.model.MPrettyPrint;
+
+public class EGraph implements MPrettyPrint
 {
 	public final EState init;
 	public final EState term;
@@ -16,11 +18,13 @@ public class EGraph
 		return new EFSM(this);
 	}
 
+	@Override
 	public String toAut()
 	{
 		return this.init.toAut();
 	}
 
+	@Override
 	public String toDot()
 	{
 		return this.init.toDot();
