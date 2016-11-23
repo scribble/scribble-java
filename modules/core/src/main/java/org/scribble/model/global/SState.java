@@ -21,7 +21,8 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 {
 	public final SConfig config;
 	
-	public SState(SConfig config)
+	// Unlike EState, SGraph is not just a "simple wrapper" for an existing graph of nodes -- it is a "semantic structure" that needs to be fully built properly (so no arbitrary "toGraph" method; cf., EState)
+	protected SState(SConfig config)
 	{
 		super(Collections.emptySet());
 		this.config = config;
@@ -30,12 +31,12 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 	// Based on config semantics, not "static" graph edges (cf., super.getAllActions) -- used to build global model graph
 	public Map<Role, List<EAction>> getFireable()
 	{
-		return this.config.getTakeable();
+		return this.config.getFireable();
 	}
 	
 	public List<SConfig> fire(Role r, EAction a)
 	{
-		return this.config.take(r, a);
+		return this.config.fire(r, a);
 	}
 
 	// "Synchronous version" of fire

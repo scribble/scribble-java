@@ -303,7 +303,7 @@ public class CommandLine //implements Runnable
 	private static SGraph getGlobalModel(Job job, GProtocolName fullname) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		SGraph model = jcontext.getGlobalModel(fullname);
+		SGraph model = jcontext.getSGraph(fullname);
 		if (model == null)
 		{
 			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
@@ -421,12 +421,12 @@ public class CommandLine //implements Runnable
 		if (forUser)  // The (possibly minimised) user-output EFSM for API gen
 		{
 			graph = this.args.containsKey(ArgFlag.MIN_EFSM)
-					? jcontext.getMinimisedEndpointGraph(fullname, role) : jcontext.getEndpointGraph(fullname, role);
+					? jcontext.getMinimisedEGraph(fullname, role) : jcontext.getEGraph(fullname, role);
 		}
 		else  // The (possibly unfair-transformed) internal EFSM for model checking
 		{
 			graph = (!this.args.containsKey(ArgFlag.FAIR) && !this.args.containsKey(ArgFlag.NO_LIVENESS))  // Cf. GlobalModelChecker.getEndpointFSMs
-					? jcontext.getUnfairEndpointGraph(fullname, role) : jcontext.getEndpointGraph(fullname, role);
+					? jcontext.getUnfairEGraph(fullname, role) : jcontext.getEGraph(fullname, role);
 		}
 		if (graph == null)
 		{

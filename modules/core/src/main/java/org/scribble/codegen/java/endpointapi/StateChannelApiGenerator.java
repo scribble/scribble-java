@@ -49,7 +49,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
 		JobContext jc = job.getContext();
-		this.init = job.minEfsm ? jc.getMinimisedEndpointGraph(fullname, self).init : jc.getEndpointGraph(fullname, self).init;
+		this.init = job.minEfsm ? jc.getMinimisedEGraph(fullname, self).init : jc.getEGraph(fullname, self).init;
 		
 		this.skipIOInterfacesGeneration = skipIOInterfacesGeneration(this.init);
 			

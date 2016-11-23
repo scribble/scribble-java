@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.model.endpoint.AutParser;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.global.SGraph;
@@ -173,12 +174,12 @@ public class JobContext
 		return proj;
 	}
 	
-	protected void addEndpointGraph(LProtocolName fullname, EGraph graph)
+	protected void addEGraph(LProtocolName fullname, EGraph graph)
 	{
 		this.graphs.put(fullname, graph);
 	}
 	
-	public EGraph getEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
+	public EGraph getEGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 		// Moved form LProtocolDecl
@@ -189,7 +190,7 @@ public class JobContext
 			EndpointGraphBuilder builder = new EndpointGraphBuilder(this.job);
 			proj.accept(builder);
 			graph = builder.util.finalise();  // Projected module contains a single protocol
-			addEndpointGraph(fulllpn, graph);
+			addEGraph(fulllpn, graph);
 		}
 		return graph;
 	}
@@ -206,61 +207,87 @@ public class JobContext
 		return graph;
 	}*/
 	
-	protected void addUnfairEndpointGraph(LProtocolName fullname, EGraph graph)
+	protected void addUnfairEGraph(LProtocolName fullname, EGraph graph)
 	{
 		this.unfair.put(fullname, graph);
 	}
 	
-	public EGraph getUnfairEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
+	public EGraph getUnfairEGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 
 		EGraph unfair = this.unfair.get(fulllpn);
 		if (unfair == null)
 		{
-			unfair = getEndpointGraph(fullname, role).init.unfairTransform().toGraph();
-			addUnfairEndpointGraph(fulllpn, unfair);
+			unfair = getEGraph(fullname, role).init.unfairTransform().toGraph();
+			addUnfairEGraph(fulllpn, unfair);
 		}
 		return unfair;
 	}
 
-	//public void addGlobalModel(GProtocolName fullname, GMState model)
-	public void addGlobalModel(GProtocolName fullname, SGraph model)
+	protected void addSGraph(GProtocolName fullname, SGraph graph)
 	{
-		this.gmodels.put(fullname, model);
+		this.gmodels.put(fullname, graph);
 	}
 	
-	//public GMState getGlobalModel(GProtocolName fullname)
-	public SGraph getGlobalModel(GProtocolName fullname)
+	public SGraph getSGraph(GProtocolName fullname) throws ScribbleException
 	{
-		return this.gmodels.get(fullname);
+		SGraph graph = this.gmodels.get(fullname);
+		if (graph == null)
+		{
+			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, gpd, true);
+			boolean explicit = gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT);
+			graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
+			addSGraph(fullname, graph);
+		}
+		return graph;
 	}
 
-	public void addUnfairGlobalModel(GProtocolName fullname, SGraph model)
+	private Map<Role, EGraph> getEGraphsForSGraphBuilding(GProtocolName fullname, GProtocolDecl gpd, boolean fair) throws ScribbleException
 	{
-		this.unfairGModels.put(fullname, model);
+		Map<Role, EGraph> egraphs = new HashMap<>();
+		for (Role self : gpd.header.roledecls.getRoles())
+		{
+			egraphs.put(self, fair ? getEGraph(fullname, self) : getUnfairEGraph(fullname, self));
+		}
+		return egraphs;
 	}
 
-	public SGraph getUnfairGlobalModel(GProtocolName fullname)
+	protected void addUnfairSGraph(GProtocolName fullname, SGraph graph)
 	{
-		return this.unfairGModels.get(fullname);
+		this.unfairGModels.put(fullname, graph);
+	}
+
+	public SGraph getUnfairSGraph(GProtocolName fullname) throws ScribbleException
+	{
+		SGraph graph = this.unfairGModels.get(fullname);
+		if (graph == null)
+		{
+			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, gpd, false);
+			boolean explicit = gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT);
+			graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
+			addUnfairSGraph(fullname, graph);
+		}
+		return graph;
 	}
 	
-	protected void addMinimisedEndpointGraph(LProtocolName fullname, EGraph graph)
+	protected void addMinimisedEGraph(LProtocolName fullname, EGraph graph)
 	{
 		this.minimised.put(fullname, graph);
 	}
 	
-	public EGraph getMinimisedEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
+	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 
 		EGraph minimised = this.minimised.get(fulllpn);
 		if (minimised == null)
 		{
-			String aut = runAut(getEndpointGraph(fullname, role).init.toAut(), fulllpn + ".aut");
+			String aut = runAut(getEGraph(fullname, role).init.toAut(), fulllpn + ".aut");
 			minimised = new AutParser().parse(aut);
-			addMinimisedEndpointGraph(fulllpn, minimised);
+			addMinimisedEGraph(fulllpn, minimised);
 		}
 		return minimised;
 	}

@@ -90,7 +90,7 @@ public class SConfig
 		return canSafelyTerminate;
 	}
 	
-	public List<SConfig> take(Role r, EAction a)
+	public List<SConfig> fire(Role r, EAction a)
 	{
 		List<SConfig> res = new LinkedList<>();
 		
@@ -462,7 +462,7 @@ public class SConfig
 	public Map<Role, EState> getUnfinishedRoles()
 	{
 		Map<Role, EState> res = new HashMap<>();
-		if (getTakeable().isEmpty() && !isSafeTermination())
+		if (getFireable().isEmpty() && !isSafeTermination())
 		{
 			for (Role r : this.states.keySet())
 			{
@@ -475,7 +475,7 @@ public class SConfig
 		return res;
 	}
 
-	public Map<Role, List<EAction>> getTakeable()
+	public Map<Role, List<EAction>> getFireable()
 	{
 		Map<Role, List<EAction>> res = new HashMap<>();
 		for (Role r : this.states.keySet())

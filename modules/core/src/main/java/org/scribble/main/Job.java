@@ -40,7 +40,7 @@ public class Job
 	//public final boolean jUnit;
 	public final boolean debug;
 	public final boolean useOldWf;
-	public final boolean noLiveness;  // FIXME: deprecate
+	public final boolean noProgress;  // FIXME: deprecate
 	public final boolean minEfsm;  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 	public final boolean fair;
 	public final boolean noLocalChoiceSubjectCheck;
@@ -55,7 +55,7 @@ public class Job
 		//this.jUnit = jUnit;
 		this.debug = debug;
 		this.useOldWf = useOldWF;
-		this.noLiveness = noLiveness;
+		this.noProgress = noLiveness;
 		this.minEfsm = minEfsm;
 		this.fair = fair;
 		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
@@ -265,6 +265,6 @@ public class Job
 	
 	private void debugPrintPass(String s)
 	{
-		debugPrintln("\n[DEBUG] " + s);
+		debugPrintln("\n[Step] " + s);
 	}
 }

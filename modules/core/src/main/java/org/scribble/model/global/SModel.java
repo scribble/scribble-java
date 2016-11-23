@@ -19,7 +19,7 @@ public class SModel
 {
 	public final SGraph graph;
 
-	public SModel(SGraph graph)
+	protected SModel(SGraph graph)
 	{
 		this.graph = graph;
 	}
@@ -27,19 +27,20 @@ public class SModel
 	public void validate(Job job) throws ScribbleException
 	{
 		SState init = this.graph.init;
-		Map<Integer, SState> all = this.graph.states;
+		Map<Integer, SState> states = this.graph.states;
 
 		String errorMsg = "";
 
 		int count = 0;
-		for (SState s : all.values())
+		for (SState s : states.values())
 		{
 			if (job.debug)
 			{
 				count++;
 				if (count % 50 == 0)
 				{
-					job.debugPrintln("(" + this.graph.proto + ") Checking global states: " + count);
+					//job.debugPrintln("(" + this.graph.proto + ") Checking safety: " + count + " states");
+					job.debugPrintln("(" + this.graph.proto + ") Checking states: " + count);
 				}
 			}
 			SStateErrors errors = s.getErrors();
@@ -67,36 +68,28 @@ public class SModel
 				errorMsg += "\n    Unfinished roles: " + errors.unfinished;
 			}
 		}
-		job.debugPrintln("(" + this.graph.proto + ") Checked all states: " + count);
+		job.debugPrintln("(" + this.graph.proto + ") Checked all states: " + count);  // May include unsafe states
 		//*/
 		
-		if (!job.noLiveness)
+		if (!job.noProgress)
 		{
+			//job.debugPrintln("(" + this.graph.proto + ") Checking progress: ");  // Incompatible with current errorMsg approach*/
+
 			Set<Set<Integer>> termsets = this.graph.getTerminalSets();
-			//findTerminalSets(all, reach, termsets);
-
-			//System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
-
-			//for (Set<WFState> termset : termsets)
 			for (Set<Integer> termset : termsets)
 			{
-				Set<Role> safety = new HashSet<>();
-				Set<Role> roleLiveness = new HashSet<>();
-				//checkTerminalSet(init, termset, safety, roleLiveness);
-				checkTerminalSet(all, init, termset, safety, roleLiveness);
-				if (!safety.isEmpty())
+				/*job.debugPrintln("(" + this.graph.proto + ") Checking terminal set: "
+							+ termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(",")));  // Incompatible with current errorMsg approach*/
+
+				Set<Role> starved = checkRoleProgress(states, init, termset);
+				if (!starved.isEmpty())
 				{
-					// Redundant
-					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n    " + termSetToString(job, termset, all);
+					errorMsg += "\nRole progress violation for " + starved + " in terminal set:\n    " + termSetToString(job, termset, states);
 				}
-				if (!roleLiveness.isEmpty())
+				Map<Role, Set<ESend>> ignored = checkEventualReception(states, init, termset);
+				if (!ignored.isEmpty())
 				{
-					errorMsg += "\nRole progress violation for " + roleLiveness + " in terminal set:\n    " + termSetToString(job, termset, all);
-				}
-				Map<Role, Set<ESend>> msgLiveness = checkMessageLiveness(all, init, termset);
-				if (!msgLiveness.isEmpty())
-				{
-					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n    " + termSetToString(job, termset, all);
+					errorMsg += "\nEventual reception violation for " + ignored + " in terminal set:\n    " + termSetToString(job, termset, states);
 				}
 			}
 		}
@@ -106,6 +99,7 @@ public class SModel
 			//throw new ScribbleException("\n" + init.toDot() + errorMsg);
 			throw new ScribbleException(errorMsg);
 		}
+		//job.debugPrintln("(" + this.graph.proto + ") Progress satisfied.");  // Also safety... current errorMsg approach
 	}
 	
 	private String termSetToString(Job job, Set<Integer> termset, Map<Integer, SState> all)
@@ -115,18 +109,17 @@ public class SModel
 				: termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(","));
 	}
 
-	// FIXME: this is now just "role liveness"
-	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but probably not good)
-	//private static void checkTerminalSet(WFState init, Set<WFState> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
-	private static void checkTerminalSet(Map<Integer, SState> all, SState init, Set<Integer> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
+	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but not a good approach)
+	private static Set<Role> checkRoleProgress(Map<Integer, SState> states, SState init, Set<Integer> termset) throws ScribbleException
 	{
+		Set<Role> starved = new HashSet<>();
 		Iterator<Integer> i = termset.iterator();
-		SState s = all.get(i.next());
+		SState s = states.get(i.next());
 		Map<Role, SState> ss = new HashMap<>();
 		s.config.states.keySet().forEach((r) -> ss.put(r, s));
 		while (i.hasNext())
 		{
-			SState next = all.get(i.next());
+			SState next = states.get(i.next());
 			Map<Role, EFSM> tmp = next.config.states;
 			for (Role r : tmp.keySet())
 			{
@@ -162,7 +155,7 @@ public class SModel
 					{
 						if (s.config.buffs.get(r).values().stream().allMatch((v) -> v == null))
 						{
-							liveness.add(r);
+							starved.add(r);
 						}
 						/*
 						// Should be redundant given explicit reception error etc checking
@@ -174,18 +167,19 @@ public class SModel
 				}
 			}
 		}
+		return starved;
 	}
 
-	// "message liveness"
-	private static Map<Role, Set<ESend>> checkMessageLiveness(Map<Integer, SState> all, SState init, Set<Integer> termset) throws ScribbleException
+	// (eventual reception)
+	private static Map<Role, Set<ESend>> checkEventualReception(Map<Integer, SState> states, SState init, Set<Integer> termset) throws ScribbleException
 	{
-		Set<Role> roles = all.get(termset.iterator().next()).config.states.keySet();
+		Set<Role> roles = states.get(termset.iterator().next()).config.states.keySet();
 
 		Iterator<Integer> i = termset.iterator();
-		Map<Role, Map<Role, ESend>> b0 = all.get(i.next()).config.buffs.getBuffers();
+		Map<Role, Map<Role, ESend>> b0 = states.get(i.next()).config.buffs.getBuffers();
 		while (i.hasNext())
 		{
-			SState s = all.get(i.next());
+			SState s = states.get(i.next());
 			SBuffers b = s.config.buffs;
 			for (Role r1 : roles)
 			{
@@ -204,7 +198,7 @@ public class SModel
 			}
 		}
 	
-		Map<Role, Set<ESend>> res = new HashMap<>();
+		Map<Role, Set<ESend>> ignored = new HashMap<>();
 		for (Role r1 : roles)
 		{
 			for (Role r2 : roles)
@@ -212,18 +206,17 @@ public class SModel
 				ESend m = b0.get(r1).get(r2);
 				if (m != null)
 				{
-					Set<ESend> tmp = res.get(r2);
+					Set<ESend> tmp = ignored.get(r2);
 					if (tmp == null)
 					{
 						tmp = new HashSet<>();
-						res.put(r2, tmp);
+						ignored.put(r2, tmp);
 					}
 					tmp.add(m);
 				}
 			}
 		}
-
-		return res;
+		return ignored;
 	}
 	
 }

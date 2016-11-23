@@ -25,6 +25,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		super(labs);
 	}
 	
+	// Helper factory method for deriving an EGraph from an arbitary EState (but not the primary way to construct EGraphs; cf., EGraphBuilderUtil)
 	public EGraph toGraph()
 	{
 		return new EGraph(this, getTerminal(this));  // Throws exception if >1 terminal; null if no terminal
