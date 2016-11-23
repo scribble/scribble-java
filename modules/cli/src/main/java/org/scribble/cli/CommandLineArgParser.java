@@ -10,24 +10,24 @@ import org.scribble.cli.CommandLine.ArgFlag;
 // String[] -> Map<CommandLine.Arg, String[]> -- Map array values are the arguments associated to each CommandLine.Arg
 public class CommandLineArgParser
 {
-	public static final String JUNIT_FLAG = "-junit";
+	//public static final String JUNIT_FLAG = "-junit";
 	public static final String VERBOSE_FLAG = "-V";
 	public static final String PATH_FLAG = "-ip";
 	public static final String PROJECT_FLAG = "-project";
-	public static final String DOT_FLAG = "-dot";
+	/*public static final String DOT_FLAG = "-dot";
 	public static final String DOT_PNG_FLAG = "-dotpng";
 	public static final String CHECKED_DOT_FLAG = "-vdot";
 	public static final String CHECKED_DOT_PNG_FLAG = "-vdotpng";
 	public static final String AUT_FLAG = "-aut";
-	public static final String CHECKED_AUT_FLAG = "-vaut";
+	public static final String CHECKED_AUT_FLAG = "-vaut";*/
 	public static final String SESSION_FLAG = "-session";
 	public static final String STATECHAN_FLAG = "-schan";
 	public static final String API_FLAG = "-api";
 	public static final String API_OUTPUT_FLAG = "-d";
 	public static final String STATECHANSUBTYPES_FLAG = "-subtypes";
-	public static final String GLOBAL_MODEL_DOT_FLAG = "-modeldot";
+	/*public static final String GLOBAL_MODEL_DOT_FLAG = "-modeldot";
 	public static final String GLOBAL_MODEL_DOT_PNG_FLAG = "-modeldotpng";
-	public static final String GLOBAL_MODEL_AUT_FLAG = "-modelaut";
+	public static final String GLOBAL_MODEL_AUT_FLAG = "-modelaut";*/
 	//public static final String PROJECTED_MODEL_FLAG = "-pmodel";
 	public static final String OLD_WF_FLAG = "-oldwf";
 	public static final String NO_LIVENESS_FLAG = "-nolive";
@@ -36,9 +36,22 @@ public class CommandLineArgParser
 	public static final String NO_LOCAL_CHOICE_SUBJECT_CHECK = "-nolocalchoicecheck";
 	public static final String NO_ACCEPT_CORRELATION_CHECK = "-nocorrelation";
 	
+	public static final String EFSM_FLAG = "-fsm";
+	public static final String GMODEL_FLAG = "-model";
+	public static final String DOT_FLAG = "-dot";
+	public static final String AUT_FLAG = "-aut";
+	public static final String VEFSM_FLAG = "-vfsm";
+	public static final String UEFSM_FLAG = "-ufsm";
+	public static final String UGMODEL_FLAG = "-umodel";
+	public static final String EFSMPNG_FLAG = "-fsmpng";
+	public static final String GMODELPNG_FLAG = "-modelpng";
+	public static final String VEFSMPNG_FLAG = "-vfsmpng";
+	public static final String UEFSMPNG_FLAG = "-ufsmpng";
+	public static final String UGMODELPNG_FLAG = "-umodelpng";
+	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
-		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.JUNIT_FLAG, CommandLine.ArgFlag.JUNIT);
+		//CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.JUNIT_FLAG, CommandLine.ArgFlag.JUNIT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.VERBOSE_FLAG, CommandLine.ArgFlag.VERBOSE);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.ArgFlag.PATH);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.API_OUTPUT_FLAG, CommandLine.ArgFlag.API_OUTPUT);
@@ -48,25 +61,38 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.FAIR_FLAG, CommandLine.ArgFlag.FAIR);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK, CommandLine.ArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.NO_ACCEPT_CORRELATION_CHECK, CommandLine.ArgFlag.NO_ACCEPT_CORRELATION_CHECK);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.DOT_FLAG, CommandLine.ArgFlag.DOT);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.AUT_FLAG, CommandLine.ArgFlag.AUT);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
 	{
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.ArgFlag.PROJECT);
-		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.DOT_FLAG, CommandLine.ArgFlag.DOT);
+		/*CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.DOT_FLAG, CommandLine.ArgFlag.DOT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.DOT_PNG_FLAG, CommandLine.ArgFlag.DOT_PNG);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.CHECKED_DOT_FLAG, CommandLine.ArgFlag.CHECKED_DOT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.CHECKED_DOT_PNG_FLAG, CommandLine.ArgFlag.CHECKED_DOT_PNG);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.AUT_FLAG, CommandLine.ArgFlag.AUT);
-		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.CHECKED_AUT_FLAG, CommandLine.ArgFlag.CHECKED_AUT);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.CHECKED_AUT_FLAG, CommandLine.ArgFlag.CHECKED_AUT);*/
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.ArgFlag.SESS_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.STATECHAN_FLAG, CommandLine.ArgFlag.SCHAN_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
-		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_DOT_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL_DOT);
+		/*CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_DOT_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL_DOT);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_DOT_PNG_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL_DOT_PNG);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_AUT_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL_AUT);
-		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.NO_LIVENESS_FLAG, CommandLine.ArgFlag.NO_LIVENESS);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.NO_LIVENESS_FLAG, CommandLine.ArgFlag.NO_LIVENESS);*/
 		//CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.PROJECTED_MODEL_FLAG, CommandLine.ArgFlag.PROJECTED_MODEL);
+
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.EFSM_FLAG, CommandLine.ArgFlag.EFSM);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GMODEL_FLAG, CommandLine.ArgFlag.GMODEL);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.VEFSM_FLAG, CommandLine.ArgFlag.VEFSM);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.UEFSM_FLAG, CommandLine.ArgFlag.UEFSM);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.UGMODEL_FLAG, CommandLine.ArgFlag.UGMODEL);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.EFSMPNG_FLAG, CommandLine.ArgFlag.EFSMPNG);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GMODELPNG_FLAG, CommandLine.ArgFlag.GMODELPNG);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.VEFSMPNG_FLAG, CommandLine.ArgFlag.VEFSMPNG);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.UEFSMPNG_FLAG, CommandLine.ArgFlag.UEFSMPNG);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.UGMODELPNG_FLAG, CommandLine.ArgFlag.UGMODELPNG);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> FLAGS = new HashMap<>();
@@ -114,6 +140,16 @@ public class CommandLineArgParser
 		}
 	}
 
+	private void checkAndPutUniqueFlag(String flag, String[] args) throws CommandLineException
+	{
+		ArgFlag argFlag = CommandLineArgParser.UNIQUE_FLAGS.get(flag);
+		if (this.parsed.containsKey(argFlag))
+		{
+			throw new CommandLineException("Duplicate flag: " + flag);
+		}
+		this.parsed.put(argFlag, args);
+	}
+	
 	// Pre: i is the index of the current flag to parse
 	// Post: i is the index of the last argument parsed -- parseArgs does the index increment to the next current flag
 	// Currently allows repeat flag decls: next overrides previous
@@ -122,25 +158,89 @@ public class CommandLineArgParser
 		String flag = this.args[i];
 		switch (flag)
 		{
-			case CommandLineArgParser.JUNIT_FLAG:
+			/*case CommandLineArgParser.JUNIT_FLAG:
 			{
 				this.parsed.put(CommandLine.ArgFlag.JUNIT, new String[0]);
 				return i;
-			}
+			}*/
 			case CommandLineArgParser.VERBOSE_FLAG:
 			{
-				this.parsed.put(CommandLine.ArgFlag.VERBOSE, new String[0]);
+				//this.parsed.put(CommandLine.ArgFlag.VERBOSE, new String[0]);
+				checkAndPutUniqueFlag(CommandLineArgParser.VERBOSE_FLAG, new String[0]);
 				return i;
 			}
 			case CommandLineArgParser.PATH_FLAG:
 			{
 				return parsePath(i);
 			}
+			case CommandLineArgParser.STATECHANSUBTYPES_FLAG:
+			{
+				//this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.STATECHANSUBTYPES_FLAG), new String[0]);
+				checkAndPutUniqueFlag(CommandLineArgParser.STATECHANSUBTYPES_FLAG, new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.OLD_WF_FLAG:
+			{
+				//this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.OLD_WF_FLAG), new String[0]);
+				checkAndPutUniqueFlag(CommandLineArgParser.OLD_WF_FLAG, new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.NO_LIVENESS_FLAG:
+			{
+				//this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.NO_LIVENESS_FLAG), new String[0]);
+				checkAndPutUniqueFlag(CommandLineArgParser.NO_LIVENESS_FLAG, new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.MIN_EFSM_FLAG:
+			{
+				//this.parsed.put(CommandLine.ArgFlag.MIN_EFSM, new String[0]);
+				checkAndPutUniqueFlag(CommandLineArgParser.MIN_EFSM_FLAG, new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.FAIR_FLAG:
+			{
+				//this.parsed.put(CommandLine.ArgFlag.FAIR, new String[0]);
+				checkAndPutUniqueFlag(CommandLineArgParser.FAIR_FLAG, new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK:
+			{
+				//this.parsed.put(CommandLine.ArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK, new String[0]);
+				checkAndPutUniqueFlag(CommandLineArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK, new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.NO_ACCEPT_CORRELATION_CHECK:
+			{
+				//this.parsed.put(CommandLine.ArgFlag.NO_ACCEPT_CORRELATION_CHECK, new String[0]);
+				checkAndPutUniqueFlag(CommandLineArgParser.NO_ACCEPT_CORRELATION_CHECK, new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.DOT_FLAG:
+			{
+				if (this.parsed.containsKey(CommandLineArgParser.UNIQUE_FLAGS.get(AUT_FLAG)))
+				{
+					throw new CommandLineException("Incompatible flags: " + DOT_FLAG + " and " + AUT_FLAG);
+				}
+				//this.parsed.put(CommandLine.ArgFlag.DOT, new String[0]);
+				checkAndPutUniqueFlag(CommandLineArgParser.DOT_FLAG, new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.AUT_FLAG:
+			{
+				if (this.parsed.containsKey(CommandLineArgParser.UNIQUE_FLAGS.get(DOT_FLAG)))
+				{
+					throw new CommandLineException("Incompatible flags: " + DOT_FLAG + " and " + AUT_FLAG);
+				}
+				//this.parsed.put(CommandLine.ArgFlag.AUT, new String[0]);
+				checkAndPutUniqueFlag(CommandLineArgParser.AUT_FLAG, new String[0]);
+				return i;
+			}
+
 			case CommandLineArgParser.PROJECT_FLAG:
 			{
 				return parseProject(i);
 			}
-			case CommandLineArgParser.DOT_FLAG:
+			/*case CommandLineArgParser.DOT_FLAG:
 			{
 				return parseFsm(i);
 			}
@@ -163,7 +263,7 @@ public class CommandLineArgParser
 			case CommandLineArgParser.CHECKED_AUT_FLAG:
 			{
 				return parseWFAut(i);
-			}
+			}*/
 			case CommandLineArgParser.SESSION_FLAG:
 			{
 				return parseSession(i);
@@ -180,12 +280,7 @@ public class CommandLineArgParser
 			{
 				return parseOutput(i);
 			}
-			case CommandLineArgParser.STATECHANSUBTYPES_FLAG:
-			{
-				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.STATECHANSUBTYPES_FLAG), new String[0]);
-				return i;
-			}
-			case CommandLineArgParser.GLOBAL_MODEL_DOT_FLAG:
+			/*case CommandLineArgParser.GLOBAL_MODEL_DOT_FLAG:
 			{
 				return parseGlobalModelDot(i);
 			}
@@ -196,41 +291,53 @@ public class CommandLineArgParser
 			case CommandLineArgParser.GLOBAL_MODEL_AUT_FLAG:
 			{
 				return parseGlobalModelAut(i);
-			}
+			}*/
 			/*case CommandLineArgParser.PROJECTED_MODEL_FLAG:
 			{
 				return parseProjectedModel(i);
 			}*/
-			case CommandLineArgParser.OLD_WF_FLAG:
+
+			case CommandLineArgParser.EFSM_FLAG:
 			{
-				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.OLD_WF_FLAG), new String[0]);
-				return i;
+				return parseEfsm(i);
 			}
-			case CommandLineArgParser.NO_LIVENESS_FLAG:
+			case CommandLineArgParser.GMODEL_FLAG:
 			{
-				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.NO_LIVENESS_FLAG), new String[0]);
-				return i;
+				return parseGModel(i);
 			}
-			case CommandLineArgParser.MIN_EFSM_FLAG:
+			case CommandLineArgParser.VEFSM_FLAG:
 			{
-				this.parsed.put(CommandLine.ArgFlag.MIN_EFSM, new String[0]);
-				return i;
+				return parseValidatedEfsm(i);
 			}
-			case CommandLineArgParser.FAIR_FLAG:
+			case CommandLineArgParser.UEFSM_FLAG:
 			{
-				this.parsed.put(CommandLine.ArgFlag.FAIR, new String[0]);
-				return i;
+				return parseUnfairEfsm(i);
 			}
-			case CommandLineArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK:
+			case CommandLineArgParser.UGMODEL_FLAG:
 			{
-				this.parsed.put(CommandLine.ArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK, new String[0]);
-				return i;
+				return parseUnfairGModel(i);
 			}
-			case CommandLineArgParser.NO_ACCEPT_CORRELATION_CHECK:
+			case CommandLineArgParser.EFSMPNG_FLAG:
 			{
-				this.parsed.put(CommandLine.ArgFlag.NO_ACCEPT_CORRELATION_CHECK, new String[0]);
-				return i;
+				return parseEfsmPng(i);
 			}
+			case CommandLineArgParser.GMODELPNG_FLAG:
+			{
+				return parseGModelPng(i);
+			}
+			case CommandLineArgParser.VEFSMPNG_FLAG:
+			{
+				return parseValidatedEfsmPng(i);
+			}
+			case CommandLineArgParser.UEFSMPNG_FLAG:
+			{
+				return parseUnfairEfsmPng(i);
+			}
+			case CommandLineArgParser.UGMODELPNG_FLAG:
+			{
+				return parseUnfairGModelPng(i);
+			}
+
 			default:
 			{
 				throw new RuntimeException("[TODO] Unknown flag: " + flag);
@@ -259,7 +366,8 @@ public class CommandLineArgParser
 		{
 			throw new CommandLineException("Module path '"+ path +"' is not valid\r\n");
 		}
-		this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PATH_FLAG), new String[] { path });
+		//this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PATH_FLAG), new String[] { path });
+		checkAndPutUniqueFlag(CommandLineArgParser.PATH_FLAG, new String[] { path });
 		return i;
 	}
 	
@@ -279,7 +387,7 @@ public class CommandLineArgParser
 		return i;
 	}
 	
-	private int parseFsm(int i) throws CommandLineException  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
+	/*private int parseFsm(int i) throws CommandLineException  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
 	{
 		if ((i + 2) >= this.args.length)
 		{
@@ -352,7 +460,7 @@ public class CommandLineArgParser
 		String role = this.args[++i];
 		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.CHECKED_AUT_FLAG), proto, role);
 		return i;
-	}
+	}*/
 
 	private int parseSession(int i) throws CommandLineException  // Almost same as parseProject
 	{
@@ -389,7 +497,7 @@ public class CommandLineArgParser
 		return i;
 	}
 	
-	private int parseGlobalModelDot(int i) throws CommandLineException  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
+	/*private int parseGlobalModelDot(int i) throws CommandLineException  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
 	{
 		if ((i + 1) >= this.args.length)
 		{
@@ -421,7 +529,132 @@ public class CommandLineArgParser
 		String png = this.args[++i];
 		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.GLOBAL_MODEL_DOT_PNG_FLAG), proto, png);
 		return i;
+	}*/
+	
+	
+	private int parseEfsm(int i) throws CommandLineException
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.EFSM_FLAG), proto, role);
+		return i;
 	}
+
+	private int parseValidatedEfsm(int i) throws CommandLineException
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.VEFSM_FLAG), proto, role);
+		return i;
+	}
+
+	private int parseGModel(int i) throws CommandLineException
+	{
+		if ((i + 1) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.GMODEL_FLAG), proto);
+		return i;
+	}
+
+	private int parseUnfairEfsm(int i) throws CommandLineException
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.UEFSM_FLAG), proto, role);
+		return i;
+	}
+
+	private int parseUnfairGModel(int i) throws CommandLineException
+	{
+		if ((i + 1) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.UGMODEL_FLAG), proto);
+		return i;
+	}
+
+	private int parseEfsmPng(int i) throws CommandLineException
+	{
+		if ((i + 3) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/role/file arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		String png = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.EFSMPNG_FLAG), proto, role, png);
+		return i;
+	}
+
+	private int parseGModelPng(int i) throws CommandLineException
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/file arguments");
+		}
+		String proto = this.args[++i];
+		String png = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.GMODELPNG_FLAG), proto, png);
+		return i;
+	}
+
+	private int parseValidatedEfsmPng(int i) throws CommandLineException
+	{
+		if ((i + 3) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/role/file arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		String png = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.VEFSMPNG_FLAG), proto, role, png);
+		return i;
+	}
+
+	private int parseUnfairEfsmPng(int i) throws CommandLineException
+	{
+		if ((i + 3) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/role/file arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		String png = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.UEFSMPNG_FLAG), proto, role, png);
+		return i;
+	}
+
+	private int parseUnfairGModelPng(int i) throws CommandLineException
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/file arguments");
+		}
+		String proto = this.args[++i];
+		String png = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.UGMODELPNG_FLAG), proto, png);
+		return i;
+	}
+	
+	
+	
 
 	/*private int parseProjectedModel(int i)
 	{

@@ -137,7 +137,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		if (!checker.job.fair)
 		{
 			checker.job.debugPrintln("(" + fullname + ") Validating with \"unfair\" output choices.. ");
-			validate(checker.job, fullname, false);
+			validate(checker.job, fullname, false);  // FIXME: only need to check progress, not full validation
 		}
 	}
 
