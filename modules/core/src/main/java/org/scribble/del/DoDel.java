@@ -59,7 +59,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 	@Override
 	public Do<?> leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
-		JobContext jcontext = builder.getJobContext();
+		JobContext jcontext = builder.job.getContext();
 		ModuleContext mcontext = builder.getModuleContext();
 		Do<?> doo = (Do<?>) visited;
 		ProtocolName<?> pn = doo.proto.toName();  // leaveDisambiguation has fully qualified the target name

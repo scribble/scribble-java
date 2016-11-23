@@ -60,7 +60,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		// Enabled senders checked in GMessageTransferDel
 		List<WFChoiceEnv> all =
 				cho.getBlocks().stream().map((b) -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
-		if (checker.getJob().useOldWf)  // ****
+		if (checker.job.useOldWf)  // ****
 		{
 			if (all.size() > 1)
 			{

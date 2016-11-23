@@ -74,15 +74,15 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	public ScribNode
 			leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited) throws ScribbleException
 	{
+		JobContext jc = fixer.job.getContext();
 		LDo ld = (LDo) visited;
-		LProtocolDecl lpd = ld.getTargetProtocolDecl(fixer.getJobContext(), fixer.getModuleContext());
+		LProtocolDecl lpd = ld.getTargetProtocolDecl(jc, fixer.getModuleContext());
 		
 		// do role args are currently as inherited from the global type -- so need to derive role map against the global protocol header
 		// Doing it off the global roledecls allows this to be done in one pass, but would probably be easier to split into two (e.g. 1st cache the proposed changes, 2nd write all changes -- the problem with a single pass is e.g. looking up the localdecl info while localdecls are being rewritten during the pass)
 		// Could possibly factor out rolemap making with SubprotocolVisitor a bit, but there it maps to RoleNode and works off a root map
-		JobContext jcontext = fixer.getJobContext();
 		GProtocolName source = ((LProjectionDeclDel) lpd.del()).getSourceProtocol();
-		GProtocolDecl gpd = (GProtocolDecl) jcontext.getModule(source.getPrefix()).getProtocolDecl(source.getSimpleName());
+		GProtocolDecl gpd = (GProtocolDecl) jc.getModule(source.getPrefix()).getProtocolDecl(source.getSimpleName());
 		Iterator<RoleArg> roleargs = ld.roles.getDoArgs().iterator();
 		Map<Role, Role> rolemap = gpd.header.roledecls.getRoles().stream().collect(
 				Collectors.toMap((r) -> r, (r) -> roleargs.next().val.toName()));

@@ -69,7 +69,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		{
 			// For correct name mangling, need to use the parameter corresponding to the self argument
 			// N.B. -- this depends on Projector not following the Subprotocol pattern, otherwise self is wrong
-			Role param = gd.getTargetRoleParameter(proj.getJobContext(), proj.getModuleContext(), self);
+			Role param = gd.getTargetRoleParameter(proj.job.getContext(), proj.getModuleContext(), self);
 			proj.pushSelf(param);
 		}
 		else

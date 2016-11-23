@@ -33,7 +33,7 @@ public class ExplicitCorrelationChecker extends SubprotocolVisitor<ExplicitCorre
 				GProtocolName gpn = gpd.getFullMemberName(mod);
 				for (Role r : gpd.header.roledecls.getRoles())
 				{
-					Module proj = this.getJobContext().getProjection(gpn, r);
+					Module proj = this.job.getContext().getProjection(gpn, r);
 					proj.accept(this);
 				}
 			}

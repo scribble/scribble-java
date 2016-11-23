@@ -47,7 +47,7 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 			}
 		}
 
-		if (getJob().useOldWf)
+		if (this.job.useOldWf)
 		{
 			if (child instanceof Choice<?>)  // Only needed for old WF (for distinct enabling message checking)  // FIXME: maybe move connectedness checking to a separate pass, i.e. vanilla UnfoldingVisitor (if retained as syntactic check)
 			{

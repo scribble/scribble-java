@@ -56,7 +56,7 @@ public class LAcceptDel extends LConnectionActionDel implements LSimpleInteracti
 		if (!env.canAccept())
 		{
 			//throw new ScribbleException("Invalid accept action: " + la);
-			checker.getJob().warningPrintln("Session correlation warning for: " + la);
+			checker.job.warningPrintln("Session correlation warning for: " + la);
 		}
 		checker.pushEnv(env.disableAccept());
 		return la;

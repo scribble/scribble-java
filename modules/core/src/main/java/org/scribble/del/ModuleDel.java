@@ -44,7 +44,7 @@ public class ModuleDel extends ScribDelBase
 	@Override
 	public void enterModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder) throws ScribbleException
 	{
-		builder.setModuleContext(new ModuleContext(builder.getJobContext(), (Module) child));
+		builder.setModuleContext(new ModuleContext(builder.job.getContext(), (Module) child));
 	}
 
 	// Maybe better to create on enter, so can be used during the context build pass (Context would need to be "cached" in the visitor to be accessed)
@@ -98,7 +98,7 @@ public class ModuleDel extends ScribDelBase
 	@Override
 	public Module leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited)
 	{
-		proj.getJobContext().addProjections(proj.getProjections());
+		proj.job.getContext().addProjections(proj.getProjections());
 		return (Module) visited;
 	}
 

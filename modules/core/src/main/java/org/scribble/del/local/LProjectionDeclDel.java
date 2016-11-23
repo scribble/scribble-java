@@ -45,7 +45,7 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 		LProtocolHeader header = lpd.getHeader().reconstruct(lpd.getHeader().getNameNode(), rdl, lpd.header.paramdecls);
 		LProtocolDecl fixed = lpd.reconstruct(header, lpd.def);
 		
-		fixer.getJob().debugPrintln("\n[DEBUG] Projected " + getSourceProtocol() + " for " + getSelfRole() + ":\n" + fixed);
+		fixer.job.debugPrintln("\n[DEBUG] Projected " + getSourceProtocol() + " for " + getSelfRole() + ":\n" + fixed);
 		
 		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, fixed);
 	}

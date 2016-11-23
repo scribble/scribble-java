@@ -93,7 +93,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	{
 		if (!isCycle())
 		{
-			JobContext jc = getJobContext();
+			JobContext jc = this.job.getContext();
 			ModuleContext mc = getModuleContext();
 			ProtocolDecl<? extends ProtocolKind> pd = doo.getTargetProtocolDecl(jc, mc);
 			// Target is cloned: fresh dels and envs, which will be discarded
@@ -117,7 +117,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		}
 		try
 		{
-			return n.accept(new Substitutor(getJob(), this.rolemaps.peek(), this.argmaps.peek()));
+			return n.accept(new Substitutor(this.job, this.rolemaps.peek(), this.argmaps.peek()));
 		}
 		catch (ScribbleException e)
 		{
@@ -209,7 +209,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	
 	private void pushNameMaps(ProtocolName<?> fullname, Do<?> doo)
 	{
-		ProtocolDecl<?> pd = getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+		ProtocolDecl<?> pd = this.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 		this.rolemaps.push(makeRoleSubsMap(this.rolemaps.get(0), doo.roles, pd.header.roledecls));
 		this.argmaps.push(makeNonRoleSubsMap(this.argmaps.get(0), doo.args, pd.header.paramdecls));
 	}

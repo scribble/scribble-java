@@ -78,8 +78,8 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 			if (visited instanceof ProtocolDecl<?>)
 			{
 				ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
-				getJob().debugPrintln("\n[DEBUG] Unfolded inlined protocol "
-							+ pd.getFullMemberName(getJobContext().getModule(getModuleContext().root)) + ":\n"
+				this.job.debugPrintln("\n[DEBUG] Unfolded inlined protocol "
+							+ pd.getFullMemberName(this.job.getContext().getModule(getModuleContext().root)) + ":\n"
 							+ ((ProtocolDefDel) pd.def.del()).getInlinedProtocolDef());
 			}
 			return visited;

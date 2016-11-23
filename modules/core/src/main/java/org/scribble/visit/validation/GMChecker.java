@@ -86,15 +86,14 @@ public class GMChecker extends ModuleContextVisitor
 	// Refactor to GProtocolDeclDel
 	private GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
 	{
-		Job job = getJob();
 		GProtocolDecl gpd = (GProtocolDecl) child;
 		GProtocolName fullname = gpd.getFullMemberName(parent);
 
-		job.debugPrintln("(" + fullname + ") Build and check \"fair\" output choices: ");
+		this.job.debugPrintln("(" + fullname + ") Build and check \"fair\" output choices: ");
 		buildAndCheck(gpd, fullname, true);
-		if (!getJob().fair)
+		if (!this.job.fair)
 		{
-			job.debugPrintln("(" + fullname + ") Build and check \"unfair\" output choices: ");
+			this.job.debugPrintln("(" + fullname + ") Build and check \"unfair\" output choices: ");
 			buildAndCheck(gpd, fullname, false);
 		}
 		return gpd;
@@ -102,7 +101,7 @@ public class GMChecker extends ModuleContextVisitor
 		
 	private GProtocolDecl buildAndCheck(GProtocolDecl gpd, GProtocolName fullname, boolean fair) throws ScribbleException
 	{
-		JobContext jc = this.getJobContext();
+		JobContext jc = this.job.getContext();
 
 		//Map<Role, EndpointState> egraphs = getEndpointGraphs(fullname, gpd);
 		Map<Role, EFSM> egraphs = getEndpointFSMs(fullname, gpd, fair);
@@ -139,18 +138,17 @@ public class GMChecker extends ModuleContextVisitor
 		GMState init = graph.init;
 		Map<Integer, GMState> all = graph.states;
 
-		Job job = getJob();
 		String errorMsg = "";
 
 		int count = 0;
 		for (GMState s : all.values())
 		{
-			if (job.debug)
+			if (this.job.debug)
 			{
 				count++;
 				if (count % 50 == 0)
 				{
-					job.debugPrintln("(" + fullname + ") Checking global states: " + count);
+					this.job.debugPrintln("(" + fullname + ") Checking global states: " + count);
 				}
 			}
 			GMStateErrors errors = s.getErrors();
@@ -179,10 +177,10 @@ public class GMChecker extends ModuleContextVisitor
 				errorMsg += "\n    Unfinished roles: " + errors.unfinished;
 			}
 		}
-		job.debugPrintln("(" + fullname + ") Checked all states: " + count);
+		this.job.debugPrintln("(" + fullname + ") Checked all states: " + count);
 		//*/
 		
-		if (!job.noLiveness)
+		if (!this.job.noLiveness)
 		{
 			Set<Set<Integer>> termsets = graph.getTerminalSets();
 			//findTerminalSets(all, reach, termsets);
@@ -222,7 +220,7 @@ public class GMChecker extends ModuleContextVisitor
 	
 	private String termSetToString(Set<Integer> termset, Map<Integer, GMState> all)
 	{
-		return getJob().debug
+		return this.job.debug
 				? termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","))
 				: termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(","));
 	}
@@ -231,8 +229,6 @@ public class GMChecker extends ModuleContextVisitor
 	//private Map<Role, EndpointState> getEndpointGraphs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
 	private Map<Role, EFSM> getEndpointFSMs(GProtocolName fullname, GProtocolDecl gpd, boolean fair) throws ScribbleException
 	{
-		Job job = getJob();
-
 		//Map<Role, EndpointState> egraphs = new HashMap<>();
 		Map<Role, EFSM> egraphs = new HashMap<>();
 		
@@ -270,8 +266,8 @@ public class GMChecker extends ModuleContextVisitor
 				job.debugPrintln("(" + fullname + ") Non-fair EFSM for " + self + ":\n" + graph.init.toDot());
 			}*/
 			
-			EGraph graph = fair ? job.getContext().getEndpointGraph(fullname, self) : job.getContext().getUnfairEndpointGraph(fullname, self);
-			job.debugPrintln("(" + fullname + ") EFSM (fair=" + fair + ") for " + self + ":\n" + graph.init.toDot());
+			EGraph graph = fair ? this.job.getContext().getEndpointGraph(fullname, self) : this.job.getContext().getUnfairEndpointGraph(fullname, self);
+			this.job.debugPrintln("(" + fullname + ") EFSM (fair=" + fair + ") for " + self + ":\n" + graph.init.toDot());
 			
 			//egraphs.put(self, fsm.init);
 			egraphs.put(self, graph.toFsm());
@@ -396,8 +392,6 @@ public class GMChecker extends ModuleContextVisitor
 	// FIXME: factor out
 	private GMGraph buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs) throws ScribbleException
 	{
-		Job job = getJob();
-
 		GMBuffers b0 = new GMBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
 		GMConfig c0 = new GMConfig(egraphs, b0);
 		GMState init = new GMState(c0);
@@ -415,12 +409,12 @@ public class GMChecker extends ModuleContextVisitor
 			i.remove();
 			seen.put(curr.id, curr);
 
-			if (job.debug)
+			if (this.job.debug)
 			{
 				count++;
 				if (count % 50 == 0)
 				{
-					job.debugPrintln("(" + fullname + ") Building global states: " + count);
+					this.job.debugPrintln("(" + fullname + ") Building global states: " + count);
 				}
 			}
 			

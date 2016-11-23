@@ -81,7 +81,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	public GProtocolDecl
 			leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
-		JobContext jc = proj.getJobContext();
+		JobContext jc = proj.job.getContext();
 		Module root = jc.getModule(proj.getModuleContext().root);
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		Role self = proj.peekSelf();
@@ -109,7 +109,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		RoleDeclList roledecls = gpd.header.roledecls.project(self);
 		NonRoleParamDeclList paramdecls = gpd.header.paramdecls.project(self);
 		LProtocolHeader lph = AstFactoryImpl.FACTORY.LProtocolHeader(pn, roledecls, paramdecls);
-		GProtocolName gpn = gpd.getFullMemberName(proj.getJobContext().getModule(proj.getModuleContext().root));
+		GProtocolName gpn = gpd.getFullMemberName(proj.job.getContext().getModule(proj.getModuleContext().root));
 		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProjectionDecl(gpd.modifiers, gpn, proj.peekSelf(), lph, def);
 		return projected;
 	}
