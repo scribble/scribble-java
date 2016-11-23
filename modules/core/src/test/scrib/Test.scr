@@ -18,16 +18,16 @@ module Test;
 // - API gen for wrap (SMTP)
 // - API gen for shared channel passing
 
+// -dot/aut CL args (default dot) -- fix state ids in debug printing
 // factor out GMGraph (cf., EGraph) from GMChecker
-// factor out GMConfig interface
-// Job modes (full/default, fase17, oldscrib, MPST, etc.)
-// -dot/aut CL args (default dot)
 // refactor demo package
+// Job modes (full/default, fase17, oldscrib, MPST, etc.)
+// factor out GMConfig interface
 
-// gmchecker, graphbuiler, job
+// gmchecker, graphbuilder (refactor SyntacticGraphBuilder), job
 
 
-// Add unit test for validation to bypass aux
+// Add a unit test for validation to bypass aux
 
 global protocol Proto1(role A, role B, role C)
 {

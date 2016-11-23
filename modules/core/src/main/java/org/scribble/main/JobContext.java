@@ -34,14 +34,13 @@ public class JobContext
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
 
-	private final Map<LProtocolName, EGraph> graphs = new HashMap<>();
-	//private final Map<GProtocolName, GModel> gmodels = new HashMap<>();
-	private final Map<GProtocolName, SGraph> gmodels = new HashMap<>();
+	private final Map<LProtocolName, EGraph> fairEGraphs = new HashMap<>();
+	private final Map<GProtocolName, SGraph> fairSGraphs = new HashMap<>();
 	
-	private final Map<LProtocolName, EGraph> unfair = new HashMap<>();
-	private final Map<GProtocolName, SGraph> unfairGModels = new HashMap<>();
+	private final Map<LProtocolName, EGraph> unfairEGraphs = new HashMap<>();
+	private final Map<GProtocolName, SGraph> unfairSGraphs = new HashMap<>();
 	
-	private final Map<LProtocolName, EGraph> minimised = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
+	private final Map<LProtocolName, EGraph> minimisedEGraphs = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
 			// FIXME: currently only minimising "fair" graph, need to consider minimisation orthogonally to fairness -- NO: minimising (of fair) is for API gen only, unfair-transform does not use minimisation (regardless of user flag) for WF
 	
 	protected JobContext(Job job, Map<ModuleName, Module> parsed, ModuleName main)
@@ -176,14 +175,14 @@ public class JobContext
 	
 	protected void addEGraph(LProtocolName fullname, EGraph graph)
 	{
-		this.graphs.put(fullname, graph);
+		this.fairEGraphs.put(fullname, graph);
 	}
 	
 	public EGraph getEGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 		// Moved form LProtocolDecl
-		EGraph graph = this.graphs.get(fulllpn);
+		EGraph graph = this.fairEGraphs.get(fulllpn);
 		if (graph == null)
 		{
 			Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
@@ -194,29 +193,17 @@ public class JobContext
 		}
 		return graph;
 	}
-
-  /*// Full projected name
-	protected EndpointGraph getEndpointGraph(LProtocolName fullname) throws ScribbleException
-	{
-		EndpointGraph graph = this.graphs.get(fullname);
-		if (graph == null)
-		{
-			//throw new RuntimeException("FIXME: " + fullname);
-			throw new ScribbleException(": " + fullname);  // FIXME checked exception for CommandLine
-		}
-		return graph;
-	}*/
 	
 	protected void addUnfairEGraph(LProtocolName fullname, EGraph graph)
 	{
-		this.unfair.put(fullname, graph);
+		this.unfairEGraphs.put(fullname, graph);
 	}
 	
 	public EGraph getUnfairEGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 
-		EGraph unfair = this.unfair.get(fulllpn);
+		EGraph unfair = this.unfairEGraphs.get(fulllpn);
 		if (unfair == null)
 		{
 			unfair = getEGraph(fullname, role).init.unfairTransform().toGraph();
@@ -227,12 +214,12 @@ public class JobContext
 
 	protected void addSGraph(GProtocolName fullname, SGraph graph)
 	{
-		this.gmodels.put(fullname, graph);
+		this.fairSGraphs.put(fullname, graph);
 	}
 	
 	public SGraph getSGraph(GProtocolName fullname) throws ScribbleException
 	{
-		SGraph graph = this.gmodels.get(fullname);
+		SGraph graph = this.fairSGraphs.get(fullname);
 		if (graph == null)
 		{
 			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
@@ -256,12 +243,12 @@ public class JobContext
 
 	protected void addUnfairSGraph(GProtocolName fullname, SGraph graph)
 	{
-		this.unfairGModels.put(fullname, graph);
+		this.unfairSGraphs.put(fullname, graph);
 	}
 
 	public SGraph getUnfairSGraph(GProtocolName fullname) throws ScribbleException
 	{
-		SGraph graph = this.unfairGModels.get(fullname);
+		SGraph graph = this.unfairSGraphs.get(fullname);
 		if (graph == null)
 		{
 			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
@@ -275,14 +262,14 @@ public class JobContext
 	
 	protected void addMinimisedEGraph(LProtocolName fullname, EGraph graph)
 	{
-		this.minimised.put(fullname, graph);
+		this.minimisedEGraphs.put(fullname, graph);
 	}
 	
 	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 
-		EGraph minimised = this.minimised.get(fulllpn);
+		EGraph minimised = this.minimisedEGraphs.get(fulllpn);
 		if (minimised == null)
 		{
 			String aut = runAut(getEGraph(fullname, role).init.toAut(), fulllpn + ".aut");
