@@ -109,12 +109,6 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		LProtocolDecl lpd = project(proj, gpd);
 		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
 		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, lpd, deps);
-		
-		/*if (lpd.getHeader().name.toString().endsWith("_C"))
-		{
-			System.out.println("ZZZ:\n" + projected);
-		}*/
-		
 		proj.addProjection(gpd.getFullMemberName(root), self, projected);
 		return gpd;
 	}
@@ -209,7 +203,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	
 
 	
-	// FIXME: factor out
+	// FIXME: factor out via a Util -- but not Visitor, it's not an AST algorithm
 	private SGraph buildGlobalModel(Job job, GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs) throws ScribbleException
 	{
 		SBuffers b0 = new SBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
@@ -238,13 +232,13 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				}
 			}
 			
-			Map<Role, List<EAction>> takeable = curr.getFireable();
+			Map<Role, List<EAction>> fireable = curr.getFireable();
 
 			//job.debugPrintln("Acceptable at (" + curr.id + "): " + acceptable);
 
-			for (Role r : takeable.keySet())
+			for (Role r : fireable.keySet())
 			{
-				List<EAction> acceptable_r = takeable.get(r);
+				List<EAction> fireable_r = fireable.get(r);
 				
 				// Hacky?  // FIXME: factor out and make more robust (e.g. for new state kinds) -- e.g. "hasPayload" in IOAction
 				//EndpointState currstate = curr.config.states.get(r);
@@ -252,18 +246,18 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				EStateKind k = currfsm.getStateKind();
 				if (k == EStateKind.OUTPUT)
 				{
-					for (EAction a : acceptable_r)  // Connect implicitly has no payload (also accept, so skip)
+					for (EAction a : fireable_r)  // Connect implicitly has no payload (also accept, so skip)
 					{
-						if (acceptable_r.stream().anyMatch((x) ->
+						if (fireable_r.stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
 						{
-							throw new ScribbleException("Bad non-deterministic action payloads: " + acceptable_r);
+							throw new ScribbleException("Bad non-deterministic action payloads: " + fireable_r);
 						}
 					}
 				}
 				else if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT || k == EStateKind.ACCEPT)
 				{
-					for (EAction a : acceptable_r)
+					for (EAction a : fireable_r)
 					{
 						if (currfsm.getAllFireable().stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
@@ -274,11 +268,11 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				}
 			}  // Need to do all action payload checking before next building step, because doing sync actions will also remove peer's actions from takeable set
 
-			for (Role r : takeable.keySet())
+			for (Role r : fireable.keySet())
 			{
-				List<EAction> acceptable_r = takeable.get(r);
+				List<EAction> fireable_r = fireable.get(r);
 				
-				for (EAction a : acceptable_r)
+				for (EAction a : fireable_r)
 				{
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
@@ -286,7 +280,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 					}
 					else if (a.isAccept() || a.isConnect())
 					{	
-						List<EAction> as = takeable.get(a.peer);
+						List<EAction> as = fireable.get(a.peer);
 						EAction d = a.toDual(r);
 						if (as != null && as.contains(d))
 						{
@@ -298,7 +292,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 					}
 					else if (a.isWrapClient() || a.isWrapServer())
 					{
-						List<EAction> as = takeable.get(a.peer);
+						List<EAction> as = fireable.get(a.peer);
 						EAction w = a.toDual(r);
 						if (as != null && as.contains(w))
 						{

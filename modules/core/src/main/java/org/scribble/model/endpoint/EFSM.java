@@ -13,12 +13,12 @@ public class EFSM
 	
 	protected EFSM(EGraph graph)
 	{
-		this(graph.init, graph.term, graph.init);
+		this(graph, graph.init);
 	}
 
-	protected EFSM(EState init, EState term, EState curr)
+	protected EFSM(EGraph graph, EState curr)
 	{
-		this.graph = new EGraph(init, term);
+		this.graph = graph;//new EGraph(init, term);
 		this.curr = curr;
 	}
 	
@@ -45,7 +45,7 @@ public class EFSM
 
 	public List<EFSM> fireAll(EAction a)
 	{
-		return this.curr.getSuccessors(a).stream().map((s) -> new EFSM(this.graph.init, this.graph.term, s)).collect(Collectors.toList());
+		return this.curr.getSuccessors(a).stream().map((s) -> new EFSM(this.graph, s)).collect(Collectors.toList());
 	}
 
 	public List<EAction> getAllFireable()
