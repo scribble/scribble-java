@@ -165,7 +165,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 			if (graph == null)  // FIXME: factor into JobContext
 			{
 				Map<Role, EFSM> egraphs = getEndpointFSMs(job, fullname, gpd, fair);
-				graph = buildGlobalModel(job, fullname, gpd, egraphs);
+				graph = buildSGraph(job, fullname, gpd, egraphs);
 				jc.addGlobalModel(fullname, graph);
 			}
 		}
@@ -175,7 +175,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 			if (graph == null)
 			{
 				Map<Role, EFSM> egraphs = getEndpointFSMs(job, fullname, gpd, fair);
-				graph = buildGlobalModel(job, fullname, gpd, egraphs);
+				graph = buildSGraph(job, fullname, gpd, egraphs);
 				jc.addUnfairGlobalModel(fullname, graph);
 			}
 		}
@@ -204,7 +204,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 
 	
 	// FIXME: factor out via a Util -- but not Visitor, it's not an AST algorithm
-	private SGraph buildGlobalModel(Job job, GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs) throws ScribbleException
+	private SGraph buildSGraph(Job job, GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs) throws ScribbleException
 	{
 		SBuffers b0 = new SBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
 		SConfig c0 = new SConfig(egraphs, b0);
