@@ -19,8 +19,8 @@ import org.scribble.util.ScribUtil;
 import org.scribble.visit.context.EndpointGraphBuilder;
 import org.scribble.visit.context.Projector;
 
-// Global "static" context information for a Job -- single instance per Job and should never be shared
-// Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter
+// Global "static" context information for a Job -- single instance per Job, should not be shared between Jobs
+// Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
 public class JobContext
 {
 	private final Job job;
