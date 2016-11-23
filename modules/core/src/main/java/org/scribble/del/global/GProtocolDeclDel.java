@@ -238,7 +238,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				}
 			}
 			
-			Map<Role, List<EAction>> takeable = curr.getTakeable();
+			Map<Role, List<EAction>> takeable = curr.getFireable();
 
 			//job.debugPrintln("Acceptable at (" + curr.id + "): " + acceptable);
 
@@ -265,10 +265,10 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				{
 					for (EAction a : acceptable_r)
 					{
-						if (currfsm.getAllTakeable().stream().anyMatch((x) ->
+						if (currfsm.getAllFireable().stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
 						{
-							throw new ScribbleException("Bad non-deterministic action payloads: " + currfsm.getAllTakeable());
+							throw new ScribbleException("Bad non-deterministic action payloads: " + currfsm.getAllFireable());
 						}
 					}
 				}
@@ -282,7 +282,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				{
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
-						getNextStates(todo, seen, curr, a.toGlobal(r), curr.take(r, a));
+						getNextStates(todo, seen, curr, a.toGlobal(r), curr.fire(r, a));
 					}
 					else if (a.isAccept() || a.isConnect())
 					{	

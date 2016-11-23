@@ -231,10 +231,11 @@ public abstract class MState<
 	public int hashCode()
 	{
 		int hash = 73;
-		hash = 31 * hash + this.id;
+		hash = 31 * hash + this.id;  // N.B. using state ID only
 		return hash;
 	}
 
+	// N.B. Based only on state ID
 	@Override
 	public boolean equals(Object o)
 	{

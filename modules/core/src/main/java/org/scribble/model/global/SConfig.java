@@ -95,7 +95,7 @@ public class SConfig
 		List<SConfig> res = new LinkedList<>();
 		
 		//List<EndpointState> succs = this.states.get(r).takeAll(a);
-		List<EFSM> succs = this.states.get(r).takeAll(a);
+		List<EFSM> succs = this.states.get(r).fireAll(a);
 		//for (EndpointState succ : succs)
 		for (EFSM succ : succs)
 		{
@@ -138,8 +138,8 @@ public class SConfig
 		/*List<EndpointState> succs1 = this.states.get(r1).takeAll(a1);
 		List<EndpointState> succs2 = this.states.get(r2).takeAll(a2);
 		for (EndpointState succ1 : succs1)*/
-		List<EFSM> succs1 = this.states.get(r1).takeAll(a1);
-		List<EFSM> succs2 = this.states.get(r2).takeAll(a2);
+		List<EFSM> succs1 = this.states.get(r1).fireAll(a1);
+		List<EFSM> succs2 = this.states.get(r2).fireAll(a2);
 		for (EFSM succ1 : succs1)
 		{
 			//for (EndpointState succ2 : succs2)
@@ -189,12 +189,12 @@ public class SConfig
 				{
 					break;
 				}*/
-				Role peer = s.getAllTakeable().iterator().next().peer;
+				Role peer = s.getAllFireable().iterator().next().peer;
 				ESend send = this.buffs.get(r).get(peer);
 				if (send != null)
 				{
 					EReceive recv = send.toDual(peer);
-					if (!s.isTakeable(recv))
+					if (!s.hasFireable(recv))
 					//res.put(r, new IOError(peer));
 					res.put(r, recv);
 				}
@@ -328,7 +328,7 @@ public class SConfig
 		EStateKind k = s.getStateKind();
 		if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 		{
-			List<EAction> all = s.getAllTakeable();
+			List<EAction> all = s.getAllFireable();
 			EAction a = all.get(0);  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
 			/*if (a.isAccept())  // Sound?
 			{
@@ -353,7 +353,7 @@ public class SConfig
 			// FIXME TODO: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
 			if (!s.isInitial())
 			{
-				List<EAction> all = s.getAllTakeable();  // Should be singleton -- no: not any more
+				List<EAction> all = s.getAllFireable();  // Should be singleton -- no: not any more
 				/*Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
 				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Connect(r))))  // cf. getTakeable
 									//if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
@@ -363,7 +363,7 @@ public class SConfig
 				Set<Role> res = new HashSet<Role>();
 				for (EAction a : all)  // Accept  // FIXME: WrapServer
 				{
-					if (this.states.get(a.peer).getAllTakeable().contains(a.toDual(r)))
+					if (this.states.get(a.peer).getAllFireable().contains(a.toDual(r)))
 					{
 						return null;
 					}
@@ -382,7 +382,7 @@ public class SConfig
 			//List<IOAction> all = s.getAllAcceptable();
 			if (s.isConnectOrWrapClientOnly())
 			{
-				List<EAction> all = s.getAllTakeable();
+				List<EAction> all = s.getAllFireable();
 				/*Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());  // Should be singleton by enabling conditions
 				if (peers.stream().noneMatch((p) -> this.states.get(p).getAllTakeable().contains(new Accept(r))))  // cf. getTakeable
 				{
@@ -391,7 +391,7 @@ public class SConfig
 				Set<Role> res = new HashSet<Role>();
 				for (EAction a : all)  // Connect or WrapClient
 				{
-					if (this.states.get(a.peer).getAllTakeable().contains(a.toDual(r)))
+					if (this.states.get(a.peer).getAllFireable().contains(a.toDual(r)))
 					{
 						return null;
 					}
@@ -486,7 +486,7 @@ public class SConfig
 			{
 				case OUTPUT:
 				{
-					List<EAction> as = fsm.getAllTakeable();
+					List<EAction> as = fsm.getAllFireable();
 					for (EAction a : as)
 					{
 						if (a.isSend())
@@ -510,7 +510,7 @@ public class SConfig
 							EFSM speer = this.states.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
-								List<EAction> peeras = speer.getAllTakeable();
+								List<EAction> peeras = speer.getAllFireable();
 								for (EAction peera : peeras)
 								{
 									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))  // Cf. isWaitingFor
@@ -545,7 +545,7 @@ public class SConfig
 							// FIXME: factor out
 							EWrapClient wc = (EWrapClient) a;
 							EFSM speer = this.states.get(wc.peer);
-							List<EAction> peeras = speer.getAllTakeable();
+							List<EAction> peeras = speer.getAllFireable();
 							for (EAction peera : peeras)
 							{
 								if (peera.equals(wc.toDual(r)) && this.buffs.canWrapClient(r, wc))  // Cf. isWaitingFor
@@ -574,7 +574,7 @@ public class SConfig
 					{
 						if (a.isReceive())
 						{
-							if (fsm.isTakeable(a))
+							if (fsm.hasFireable(a))
 							{
 								List<EAction> tmp = res.get(r);
 								if (tmp == null)
@@ -667,7 +667,7 @@ public class SConfig
 							EFSM speer = this.states.get(c.peer);
 							//if (speer.getStateKind() == Kind.OUTPUT)
 							{
-								List<EAction> peeras = speer.getAllTakeable();
+								List<EAction> peeras = speer.getAllFireable();
 								for (EAction peera : peeras)
 								{
 									if (peera.equals(c.toDual(r)) && this.buffs.canAccept(r, c))
@@ -700,7 +700,7 @@ public class SConfig
 							EWrapServer ws = (EWrapServer) a;
 							EFSM speer = this.states.get(ws.peer);
 							{
-								List<EAction> peeras = speer.getAllTakeable();
+								List<EAction> peeras = speer.getAllFireable();
 								for (EAction peera : peeras)
 								{
 									if (peera.equals(ws.toDual(r)) && this.buffs.canWrapServer(r, ws))

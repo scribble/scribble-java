@@ -28,17 +28,17 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 	}
 	
 	// Based on config semantics, not "static" graph edges (cf., super.getAllActions) -- used to build global model graph
-	public Map<Role, List<EAction>> getTakeable()
+	public Map<Role, List<EAction>> getFireable()
 	{
 		return this.config.getTakeable();
 	}
 	
-	public List<SConfig> take(Role r, EAction a)
+	public List<SConfig> fire(Role r, EAction a)
 	{
 		return this.config.take(r, a);
 	}
 
-	// "Synchronous version" of take
+	// "Synchronous version" of fire
 	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
 	{
 		return this.config.sync(r1, a1, r2, a2);

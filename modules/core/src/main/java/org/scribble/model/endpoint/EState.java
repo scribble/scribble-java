@@ -257,7 +257,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	public final int hashCode()
 	{
 		int hash = 83;
-		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + super.hashCode();  // N.B. uses state ID only
 		return hash;
 	}
 

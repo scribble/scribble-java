@@ -5,8 +5,10 @@ import java.util.stream.Collectors;
 
 import org.scribble.model.endpoint.actions.EAction;
 
-public class EFSM extends EGraph
+// Factor out with SModel?
+public class EFSM
 {
+	public final EGraph graph;
 	public final EState curr;
 	
 	protected EFSM(EGraph graph)
@@ -16,7 +18,7 @@ public class EFSM extends EGraph
 
 	protected EFSM(EState init, EState term, EState curr)
 	{
-		super(init, term);
+		this.graph = new EGraph(init, term);
 		this.curr = curr;
 	}
 	
@@ -28,7 +30,7 @@ public class EFSM extends EGraph
 	// CHECKME: check if unfolded initial accept is possible, and if it breaks anything
 	public boolean isInitial()
 	{
-		return this.curr.equals(this.init);
+		return this.curr.equals(this.graph.init);
 	}
 	
 	public boolean isTerminated()
@@ -41,18 +43,17 @@ public class EFSM extends EGraph
 		return this.curr.getStateKind();
 	}
 
-	public List<EFSM> takeAll(EAction a)
+	public List<EFSM> fireAll(EAction a)
 	{
-		//return this.curr.takeAll(a).stream().map((s) -> new EndpointFSM(this.init, this.term, s)).collect(Collectors.toList());
-		return this.curr.getSuccessors(a).stream().map((s) -> new EFSM(this.init, this.term, s)).collect(Collectors.toList());
+		return this.curr.getSuccessors(a).stream().map((s) -> new EFSM(this.graph.init, this.graph.term, s)).collect(Collectors.toList());
 	}
 
-	public List<EAction> getAllTakeable()
+	public List<EAction> getAllFireable()
 	{
 		return this.curr.getAllActions();
 	}
 	
-	public boolean isTakeable(EAction a)
+	public boolean hasFireable(EAction a)
 	{
 		return this.curr.hasAction(a);
 	}
@@ -66,7 +67,7 @@ public class EFSM extends EGraph
 	public final int hashCode()
 	{
 		int hash = 1049;
-		hash = 31 * hash + this.init.hashCode();
+		hash = 31 * hash + this.graph.init.hashCode();
 		hash = 31 * hash + this.curr.hashCode();
 		return hash;
 	}
@@ -83,7 +84,7 @@ public class EFSM extends EGraph
 			return false;
 		}
 		EFSM them = (EFSM) o;
-		return this.init.equals(them.init) && this.curr.equals(them.curr);
+		return this.graph.equals(them.graph) && this.curr.equals(them.curr);
 	}
 	
 	@Override
