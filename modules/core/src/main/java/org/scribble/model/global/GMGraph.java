@@ -25,8 +25,9 @@ public class GMGraph implements MPrettyPrint
 
 	public GMGraph(Map<Integer, GMState> states, GMState init)
 	{
-		this.states = Collections.unmodifiableMap(states);
 		this.init = init;
+		this.states = Collections.unmodifiableMap(states);
+		this.reach = getReachabilityMap();
 	}
 
 	public Set<Set<Integer>> getTerminalSets()
@@ -36,10 +37,6 @@ public class GMGraph implements MPrettyPrint
 			return this.termSets;
 		}
 
-		if (this.reach == null)
-		{
-			getReachabilityMap();
-		}
 		Set<Set<Integer>> termSets = new HashSet<>();
 		Set<Set<Integer>> checked = new HashSet<>();
 		for (Integer i : reach.keySet())

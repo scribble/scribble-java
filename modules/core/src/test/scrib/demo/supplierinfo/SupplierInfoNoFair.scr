@@ -31,7 +31,7 @@ explicit global protocol PartnershipSupplier
 	or
 	{
 		loginsuccess() from loginsvc to requestor;
-		disconnect requestor and loginsvc;
+		//disconnect requestor and loginsvc;
 		connect requestor to authorisersvc;
 		do Main(requestor, authorisersvc, filtersvc, suppliersvc, contractsvc);
 	}
@@ -82,12 +82,12 @@ aux global protocol SuppInfo
 		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 		getsuppliers() from authorisersvc to suppliersvc;
 		suppliers() from suppliersvc to authorisersvc;
-		disconnect authorisersvc and suppliersvc;
+		//disconnect authorisersvc and suppliersvc;
 		do FilterInfo
 				<filterSuppliers(usercontext, filters, supplierdetails)>
 				//<filterContracts(usercontext, filters, supplierdetails)>
 				(authorisersvc, filtersvc);
-		//disconnect authorisersvc and suppliersvc;
+		disconnect authorisersvc and suppliersvc;
 		suppliers() from authorisersvc to requestor;
 	}
 }
@@ -112,11 +112,11 @@ aux global protocol ContractInfo
 		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 		getcontracts() from authorisersvc to contractsvc;
 		contracts() from contractsvc to authorisersvc;
-		disconnect authorisersvc and contractsvc;
+		//disconnect authorisersvc and contractsvc;
 		do FilterInfo
 				<filterContracts(usercontext, filters, contractdetails)>
 				(authorisersvc, filtersvc);
-		//disconnect authorisersvc and contractsvc;
+		disconnect authorisersvc and contractsvc;
 		contracts() from authorisersvc to requestor;
 	}
 }

@@ -14,6 +14,7 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.Job;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.endpoint.EGraph;
@@ -101,22 +102,32 @@ public class GMChecker extends ModuleContextVisitor
 		
 	private GProtocolDecl buildAndCheck(GProtocolDecl gpd, GProtocolName fullname, boolean fair) throws ScribbleException
 	{
+		JobContext jc = this.getJobContext();
+
 		//Map<Role, EndpointState> egraphs = getEndpointGraphs(fullname, gpd);
 		Map<Role, EFSM> egraphs = getEndpointFSMs(fullname, gpd, fair);
 			
-		GMGraph graph = buildGlobalModel(fullname, gpd, egraphs);
-		
+		//GMGraph graph = buildGlobalModel(fullname, gpd, egraphs);
+		GMGraph graph;
 		if (fair)
 		{
-			this.getJobContext().addGlobalModel(fullname, graph);
+			graph = jc.getGlobalModel(fullname);
+			if (graph == null)  // FIXME: factor into JobContext
+			{
+				graph = buildGlobalModel(fullname, gpd, egraphs);
+				jc.addGlobalModel(fullname, graph);
+			}
 		}
 		else
 		{
-			this.getJobContext().addUnfairGlobalModel(fullname, graph);
+			graph = jc.getUnfairGlobalModel(fullname);
+			if (graph == null)
+			{
+				graph = buildGlobalModel(fullname, gpd, egraphs);
+				jc.addUnfairGlobalModel(fullname, graph);
+			}
 		}
 
-		/*Set<WFState> all = new HashSet<>();
-		getAllNodes(init, all);*/
 		checkGlobalModel(fullname, graph);
 		
 		return gpd;
@@ -130,9 +141,6 @@ public class GMChecker extends ModuleContextVisitor
 
 		Job job = getJob();
 		String errorMsg = "";
-
-		//Map<Integer, Set<Integer>> reach = getReachability(job, all);
-		Map<Integer, Set<Integer>> reach = graph.getReachabilityMap();
 
 		int count = 0;
 		for (GMState s : all.values())
@@ -219,6 +227,173 @@ public class GMChecker extends ModuleContextVisitor
 				: termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(","));
 	}
 
+
+	//private Map<Role, EndpointState> getEndpointGraphs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
+	private Map<Role, EFSM> getEndpointFSMs(GProtocolName fullname, GProtocolDecl gpd, boolean fair) throws ScribbleException
+	{
+		Job job = getJob();
+
+		//Map<Role, EndpointState> egraphs = new HashMap<>();
+		Map<Role, EFSM> egraphs = new HashMap<>();
+		
+		for (Role self : gpd.header.roledecls.getRoles())
+		{
+			/*/*GProtocolBlock gpb = gpd.getDef().getBlock();
+			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);* /
+			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0).def.del()) .getInlinedProtocolDef().getBlock();
+			
+			EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
+			graph.builder.reset();
+			proj.accept(graph);  // Don't do on root decl, side effects job context
+			//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+			EndpointGraph fsm = graph.builder.finalise();
+			//*/
+
+			/*EndpointGraph graph = job.getContext().getEndpointGraph(fullname, self);
+			if (graph == null)
+			{
+				//LProtocolDecl lpd = this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0);
+				Module proj = this.getJobContext().getProjection(fullname, self);  // Projected module contains a single protocol
+				EndpointGraphBuilder builder = new EndpointGraphBuilder(getJob());
+				proj.accept(builder);  // Side effects job context (caches graph)
+				graph = job.getContext().getEndpointGraph(fullname, self);
+			}*/
+
+			/*EndpointGraph graph = job.getContext().getEndpointGraph(fullname, self);
+
+			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + graph);
+
+			if (!job.fair && !job.noLiveness)
+			{
+				graph = job.getContext().getUnfairEndpointGraph(fullname, self);
+
+				job.debugPrintln("(" + fullname + ") Non-fair EFSM for " + self + ":\n" + graph.init.toDot());
+			}*/
+			
+			EGraph graph = fair ? job.getContext().getEndpointGraph(fullname, self) : job.getContext().getUnfairEndpointGraph(fullname, self);
+			job.debugPrintln("(" + fullname + ") EFSM (fair=" + fair + ") for " + self + ":\n" + graph.init.toDot());
+			
+			//egraphs.put(self, fsm.init);
+			egraphs.put(self, graph.toFsm());
+		}
+		return egraphs;
+	}
+
+
+	// FIXME: this is now just "role liveness"
+	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but probably not good)
+	//private static void checkTerminalSet(WFState init, Set<WFState> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
+	private static void checkTerminalSet(Map<Integer, GMState> all, GMState init, Set<Integer> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
+	{
+		Iterator<Integer> i = termset.iterator();
+		GMState s = all.get(i.next());
+		Map<Role, GMState> ss = new HashMap<>();
+		s.config.states.keySet().forEach((r) -> ss.put(r, s));
+		while (i.hasNext())
+		{
+			GMState next = all.get(i.next());
+			Map<Role, EFSM> tmp = next.config.states;
+			for (Role r : tmp.keySet())
+			{
+				if (ss.get(r) != null)
+				{
+					/*if (!ss.get(r).equals(tmp.get(r)))
+					{	
+						ss.put(r, null);
+					}
+					else*/
+					{
+						for (GMAction a : next.getAllActions())
+						{
+							if (a.containsRole(r))
+							{
+								ss.put(r, null);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		for (Role r : ss.keySet())
+		{
+			GMState foo = ss.get(r);
+			if (foo != null)
+			{
+				EFSM tmp = foo.config.states.get(r);
+				if (tmp != null)
+				{
+					if (!foo.config.canSafelyTerminate(r))
+					{
+						if (s.config.buffs.get(r).values().stream().allMatch((v) -> v == null))
+						{
+							liveness.add(r);
+						}
+						/*
+						// Should be redundant given explicit reception error etc checking
+						else
+						{
+							safety.add(r);
+						}*/
+					}
+				}
+			}
+		}
+	}
+
+	// "message liveness"
+	private static Map<Role, Set<ESend>> checkMessageLiveness(Map<Integer, GMState> all, GMState init, Set<Integer> termset) throws ScribbleException
+	{
+		Set<Role> roles = all.get(termset.iterator().next()).config.states.keySet();
+
+		Iterator<Integer> i = termset.iterator();
+		Map<Role, Map<Role, ESend>> b0 = all.get(i.next()).config.buffs.getBuffers();
+		while (i.hasNext())
+		{
+			GMState s = all.get(i.next());
+			GMBuffers b = s.config.buffs;
+			for (Role r1 : roles)
+			{
+				for (Role r2 : roles)
+				{
+					ESend s0 = b0.get(r1).get(r2);
+					if (s0 != null)
+					{
+						ESend tmp = b.get(r1).get(r2);
+						if (tmp == null)
+						{
+							b0.get(r1).put(r2, null);
+						}
+					}
+				}
+			}
+		}
+	
+		Map<Role, Set<ESend>> res = new HashMap<>();
+		for (Role r1 : roles)
+		{
+			for (Role r2 : roles)
+			{
+				ESend m = b0.get(r1).get(r2);
+				if (m != null)
+				{
+					Set<ESend> tmp = res.get(r2);
+					if (tmp == null)
+					{
+						tmp = new HashSet<>();
+						res.put(r2, tmp);
+					}
+					tmp.add(m);
+				}
+			}
+		}
+
+		return res;
+	}
+	
+	
+	
+	// FIXME: factor out
 	private GMGraph buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs) throws ScribbleException
 	{
 		Job job = getJob();
@@ -333,59 +508,6 @@ public class GMChecker extends ModuleContextVisitor
 		return new GMGraph(seen, init);
 	}
 
-	//private Map<Role, EndpointState> getEndpointGraphs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
-	private Map<Role, EFSM> getEndpointFSMs(GProtocolName fullname, GProtocolDecl gpd, boolean fair) throws ScribbleException
-	{
-		Job job = getJob();
-
-		//Map<Role, EndpointState> egraphs = new HashMap<>();
-		Map<Role, EFSM> egraphs = new HashMap<>();
-		
-		for (Role self : gpd.header.roledecls.getRoles())
-		{
-			/*/*GProtocolBlock gpb = gpd.getDef().getBlock();
-			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);* /
-			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0).def.del()) .getInlinedProtocolDef().getBlock();
-			
-			EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
-			graph.builder.reset();
-			proj.accept(graph);  // Don't do on root decl, side effects job context
-			//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
-			EndpointGraph fsm = graph.builder.finalise();
-			//*/
-
-			/*EndpointGraph graph = job.getContext().getEndpointGraph(fullname, self);
-			if (graph == null)
-			{
-				//LProtocolDecl lpd = this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0);
-				Module proj = this.getJobContext().getProjection(fullname, self);  // Projected module contains a single protocol
-				EndpointGraphBuilder builder = new EndpointGraphBuilder(getJob());
-				proj.accept(builder);  // Side effects job context (caches graph)
-				graph = job.getContext().getEndpointGraph(fullname, self);
-			}*/
-
-			/*EndpointGraph graph = job.getContext().getEndpointGraph(fullname, self);
-
-			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + graph);
-
-			if (!job.fair && !job.noLiveness)
-			{
-				graph = job.getContext().getUnfairEndpointGraph(fullname, self);
-
-				job.debugPrintln("(" + fullname + ") Non-fair EFSM for " + self + ":\n" + graph.init.toDot());
-			}*/
-			
-			EGraph graph = fair ? job.getContext().getEndpointGraph(fullname, self) : job.getContext().getUnfairEndpointGraph(fullname, self);
-			job.debugPrintln("(" + fullname + ") EFSM (fair=" + fair + ") for " + self + ":\n" + graph.init.toDot());
-			
-			//egraphs.put(self, fsm.init);
-			egraphs.put(self, graph.toFsm());
-		}
-		return egraphs;
-	}
-
-	//private void foo(Set<WFState> seen, LinkedHashSet<WFState> todo, WFState curr, Role r, IOAction a)
-	//private void getNextStates(LinkedHashSet<WFState> todo, Set<WFState> seen, WFState curr, GIOAction a, List<WFConfig> nexts)
 	private void getNextStates(LinkedHashSet<GMState> todo, Map<Integer, GMState> seen, GMState curr, GMAction a, List<GMConfig> nexts)
 	{
 		for (GMConfig next : nexts)
@@ -433,130 +555,5 @@ public class GMChecker extends ModuleContextVisitor
 				todo.add(succ);
 			}*/
 		}
-	}
-
-	// FIXME: this is now just "role liveness"
-	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but probably not good)
-	//private static void checkTerminalSet(WFState init, Set<WFState> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
-	private static void checkTerminalSet(Map<Integer, GMState> all, GMState init, Set<Integer> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
-	{
-		/*Iterator<WFState> i = termset.iterator();
-		WFState s = i.next();*/
-		Iterator<Integer> i = termset.iterator();
-		GMState s = all.get(i.next());
-		//Map<Role, EndpointState> ss = new HashMap<>(s.config.states);
-		Map<Role, GMState> ss = new HashMap<>();
-		s.config.states.keySet().forEach((r) -> ss.put(r, s));
-		while (i.hasNext())
-		{
-			//WFState next = i.next();
-			GMState next = all.get(i.next());
-			//Map<Role, EndpointState> tmp = next.config.states;
-			Map<Role, EFSM> tmp = next.config.states;
-			for (Role r : tmp.keySet())
-			{
-				if (ss.get(r) != null)
-				{
-					/*if (!ss.get(r).equals(tmp.get(r)))
-					{	
-						ss.put(r, null);
-					}
-					else*/
-					{
-						for (GMAction a : next.getAllActions())
-						{
-							if (a.containsRole(r))
-							{
-								ss.put(r, null);
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		for (Role r : ss.keySet())
-		{
-			GMState foo = ss.get(r);
-			if (foo != null)
-			{
-				//EndpointState tmp = foo.config.states.get(r);
-				EFSM tmp = foo.config.states.get(r);
-				if (tmp != null)
-				{
-					//if (!tmp.isTerminal())
-					if (!foo.config.canSafelyTerminate(r))
-					{
-						//throw new ScribbleException(init.toDot() + "\nLiveness violation for " + r + " in terminal set: " + termset);
-						if (s.config.buffs.get(r).values().stream().allMatch((v) -> v == null))
-						{
-							liveness.add(r);
-						}
-						/*
-						// Should be redundant given explicit reception error etc checking
-						else
-						{
-							safety.add(r);
-						}*/
-					}
-				}
-			}
-		}
-	}
-
-	// "message liveness"
-	//private static Set<Send> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
-	//private static Map<Role, Set<Send>> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
-	private static Map<Role, Set<ESend>> checkMessageLiveness(Map<Integer, GMState> all, GMState init, Set<Integer> termset) throws ScribbleException
-	{
-		//Set<Send> res = new HashSet<>();
-		//Set<Role> roles = termset.iterator().next().config.states.keySet();
-		Set<Role> roles = all.get(termset.iterator().next()).config.states.keySet();
-
-		/*Iterator<WFState> i = termset.iterator();
-		Map<Role, Map<Role, Send>> b0 = i.next().config.buffs.getBuffers();*/
-		Iterator<Integer> i = termset.iterator();
-		Map<Role, Map<Role, ESend>> b0 = all.get(i.next()).config.buffs.getBuffers();
-		while (i.hasNext())
-		{
-			//WFState s = i.next();
-			GMState s = all.get(i.next());
-			GMBuffers b = s.config.buffs;
-			for (Role r1 : roles)
-			{
-				for (Role r2 : roles)
-				{
-					ESend s0 = b0.get(r1).get(r2);
-					if (s0 != null)
-					{
-						ESend tmp = b.get(r1).get(r2);
-						if (tmp == null)
-						{
-							b0.get(r1).put(r2, null);
-						}
-					}
-				}
-			}
-		}
-	
-		Map<Role, Set<ESend>> res = new HashMap<>();
-		for (Role r1 : roles)
-		{
-			for (Role r2 : roles)
-			{
-				ESend m = b0.get(r1).get(r2);
-				if (m != null)
-				{
-					Set<ESend> tmp = res.get(r2);
-					if (tmp == null)
-					{
-						tmp = new HashSet<>();
-						res.put(r2, tmp);
-					}
-					tmp.add(m);
-				}
-			}
-		}
-		return res;
 	}
 }

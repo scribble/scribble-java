@@ -173,28 +173,6 @@ public class JobContext
 		return proj;
 	}
 	
-	//public void addGlobalModel(GProtocolName fullname, GMState model)
-	public void addGlobalModel(GProtocolName fullname, GMGraph model)
-	{
-		this.gmodels.put(fullname, model);
-	}
-	
-	//public GMState getGlobalModel(GProtocolName fullname)
-	public GMGraph getGlobalModel(GProtocolName fullname)
-	{
-		return this.gmodels.get(fullname);
-	}
-
-	public void addUnfairGlobalModel(GProtocolName fullname, GMGraph model)
-	{
-		this.unfairGModels.put(fullname, model);
-	}
-
-	public GMGraph getUnfairGlobalModel(GProtocolName fullname)
-	{
-		return this.unfairGModels.get(fullname);
-	}
-	
 	protected void addEndpointGraph(LProtocolName fullname, EGraph graph)
 	{
 		this.graphs.put(fullname, graph);
@@ -244,6 +222,28 @@ public class JobContext
 			addUnfairEndpointGraph(fulllpn, unfair);
 		}
 		return unfair;
+	}
+
+	//public void addGlobalModel(GProtocolName fullname, GMState model)
+	public void addGlobalModel(GProtocolName fullname, GMGraph model)
+	{
+		this.gmodels.put(fullname, model);
+	}
+	
+	//public GMState getGlobalModel(GProtocolName fullname)
+	public GMGraph getGlobalModel(GProtocolName fullname)
+	{
+		return this.gmodels.get(fullname);
+	}
+
+	public void addUnfairGlobalModel(GProtocolName fullname, GMGraph model)
+	{
+		this.unfairGModels.put(fullname, model);
+	}
+
+	public GMGraph getUnfairGlobalModel(GProtocolName fullname)
+	{
+		return this.unfairGModels.get(fullname);
 	}
 	
 	protected void addMinimisedEndpointGraph(LProtocolName fullname, EGraph graph)
