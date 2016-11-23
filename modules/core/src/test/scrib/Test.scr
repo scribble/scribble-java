@@ -24,6 +24,7 @@ module Test;
 // -dot/aut CL args (default dot)
 // refactor demo package
 
+// gmchecker, graphbuiler, job
 
 global protocol Proto1(role A, role B, role C)
 {

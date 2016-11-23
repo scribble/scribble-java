@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 import org.scribble.sesstype.kind.ProtocolKind;
 
-public abstract class PrettyMState<L, A extends MAction<K>, S extends PrettyMState<L, A, S, K>, K extends ProtocolKind> extends MState<L, A, S, K>
+public abstract class PrettyMState
+		<L, A extends MAction<K>, S extends PrettyMState<L, A, S, K>, K extends ProtocolKind>
+		extends MState<L, A, S, K>
 {
 	public PrettyMState(Set<L> labs)  // Immutable singleton node
 	{

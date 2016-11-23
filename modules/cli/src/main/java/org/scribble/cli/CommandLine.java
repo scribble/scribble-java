@@ -21,6 +21,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.global.GMGraph;
 import org.scribble.model.global.GMState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -268,7 +269,7 @@ public class CommandLine //implements Runnable
 		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			GMState model = getGlobalModel(job, fullname);
+			GMGraph model = getGlobalModel(job, fullname);
 			System.out.println("\n" + model.toDot());  // FIXME: make a global equiv to EndpointGraph
 		}
 	}
@@ -281,7 +282,7 @@ public class CommandLine //implements Runnable
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			String png = args[i+1];
-			GMState model = getGlobalModel(job, fullname);
+			GMGraph model = getGlobalModel(job, fullname);
 			runDot(model.toDot(), png);
 		}
 	}
@@ -295,15 +296,15 @@ public class CommandLine //implements Runnable
 		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			GMState model = getGlobalModel(job, fullname);
+			GMGraph model = getGlobalModel(job, fullname);
 			System.out.println("\n" + model.toAut());  // FIXME: make a global equiv to EndpointGraph
 		}
 	}
 	
-	private static GMState getGlobalModel(Job job, GProtocolName fullname) throws ScribbleException
+	private static GMGraph getGlobalModel(Job job, GProtocolName fullname) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GMState model = jcontext.getGlobalModel(fullname);
+		GMGraph model = jcontext.getGlobalModel(fullname);
 		if (model == null)
 		{
 			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure

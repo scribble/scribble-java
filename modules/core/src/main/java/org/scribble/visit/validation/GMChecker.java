@@ -4,12 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
@@ -25,6 +22,7 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.global.GMBuffers;
 import org.scribble.model.global.GMConfig;
+import org.scribble.model.global.GMGraph;
 import org.scribble.model.global.GMState;
 import org.scribble.model.global.GMStateErrors;
 import org.scribble.model.global.actions.GMAction;
@@ -106,53 +104,36 @@ public class GMChecker extends ModuleContextVisitor
 		//Map<Role, EndpointState> egraphs = getEndpointGraphs(fullname, gpd);
 		Map<Role, EFSM> egraphs = getEndpointFSMs(fullname, gpd, fair);
 			
-		//Set<WFState> seen = buildGlobalModel(job, fullname, init);  // Returns set of all states
-		//Set<WFState> seen = new HashSet<>();
-		Map<Integer, GMState> seen = new HashMap<>();
-		GMState init = buildGlobalModel(fullname, gpd, egraphs, seen);  // Post: seen contains all states
+		GMGraph graph = buildGlobalModel(fullname, gpd, egraphs);
 		
 		if (fair)
 		{
-			this.getJobContext().addGlobalModel(fullname, init);
+			this.getJobContext().addGlobalModel(fullname, graph);
 		}
 		else
 		{
-			this.getJobContext().addUnfairGlobalModel(fullname, init);
+			this.getJobContext().addUnfairGlobalModel(fullname, graph);
 		}
 
 		/*Set<WFState> all = new HashSet<>();
 		getAllNodes(init, all);*/
-		checkGlobalModel(fullname, init, seen);
+		checkGlobalModel(fullname, graph);
 		
 		return gpd;
 	}
 
-	//private void checkGlobalModel(GProtocolName fullname, WFState init, Set<WFState> all) throws ScribbleException
-	private void checkGlobalModel(GProtocolName fullname, GMState init, Map<Integer, GMState> all) throws ScribbleException
+	//private void checkGlobalModel(GProtocolName fullname, GMState init, Map<Integer, GMState> all) throws ScribbleException
+	private void checkGlobalModel(GProtocolName fullname, GMGraph graph) throws ScribbleException
 	{
+		GMState init = graph.init;
+		Map<Integer, GMState> all = graph.states;
+
 		Job job = getJob();
 		String errorMsg = "";
 
-		//Map<WFState, Set<WFState>> reach = getReachability(job, all);
-		Map<Integer, Set<Integer>> reach = getReachability(job, all);
+		//Map<Integer, Set<Integer>> reach = getReachability(job, all);
+		Map<Integer, Set<Integer>> reach = graph.getReachabilityMap();
 
-		/*Set<WFState> terms = init.findTerminalStates();
-		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());*/
-		/*
-		Set<WFState> errors = all.stream().filter((s) -> s.isError()).collect(Collectors.toSet());
-		if (!errors.isEmpty())
-		{
-			for (WFState error : errors)
-			{
-				//List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
-				//List <GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
-				List<GIOAction> trace = getTrace(init, error, reach);
-				errorMsg += "\nSafety violation at " + error.toString() + ":\n  trace=" + trace;
-			}
-		//throw new ScribbleException(init.toDot() + "\nSafety violations:" + e);
-		//e = "\nSafety violations:" + e;
-		}
-		/*/
 		int count = 0;
 		for (GMState s : all.values())
 		{
@@ -168,8 +149,8 @@ public class GMChecker extends ModuleContextVisitor
 			if (!errors.isEmpty())
 			{
 				// FIXME: getTrace can get stuck when local choice subjects are disabled
-				//List<GIOAction> trace = getTrace(init, s, reach);  // FIXME: getTrace broken on non-det self loops?
-				List<GMAction> trace = getTrace(all, init, s, reach);  // FIXME: getTrace broken on non-det self loops?
+				//List<GMAction> trace = getTrace(all, init, s, reach);  // FIXME: getTrace broken on non-det self loops?
+				List<GMAction> trace = graph.getTrace(init, s);  // FIXME: getTrace broken on non-det self loops?
 				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
 				errorMsg += "\nSafety violation(s) at " + s.id + ":\n    Trace=" + trace;
 			}
@@ -195,12 +176,8 @@ public class GMChecker extends ModuleContextVisitor
 		
 		if (!job.noLiveness)
 		{
-			/*Map<WFState, Set<WFState>> reach = new HashMap<>();
-			//getReachability(getJob(), all, reach);
-			reach = getReachability(job, all);*/
-			//Set<Set<WFState>> termsets = new HashSet<>();
-			Set<Set<Integer>> termsets = new HashSet<>();
-			findTerminalSets(all, reach, termsets);
+			Set<Set<Integer>> termsets = graph.getTerminalSets();
+			//findTerminalSets(all, reach, termsets);
 
 			//System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
 
@@ -242,33 +219,15 @@ public class GMChecker extends ModuleContextVisitor
 				: termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(","));
 	}
 
-	//private Set<WFState> buildGlobalModel(Job job, GProtocolName fullname, WFState init) throws ScribbleException
-	//private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointState> egraphs, Set<WFState> seen) throws ScribbleException
-	//private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointFSM> egraphs, Set<WFState> seen) throws ScribbleException
-	private GMState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs, Map<Integer, GMState> seen) throws ScribbleException
+	private GMGraph buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EFSM> egraphs) throws ScribbleException
 	{
 		Job job = getJob();
-		//JobContext jc = job.getContext();
-		
-		/*//if (false)
-		if (!job.fair && !job.noLiveness)
-		{
-			for (Entry<Role, EndpointFSM> e : egraphs.entrySet())
-			{
-				Role r = e.getKey();
-				EndpointFSM nonfair = e.getValue().init.unfairTransform().toGraph().toFsm();
-				egraphs.put(r, nonfair);
-
-				job.debugPrintln("(" + fullname + ") Non-fair EFSM for " + r + ":\n" + nonfair.init.toDot());
-			}
-		}*/
 
 		GMBuffers b0 = new GMBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
-		//WFConfig c0 = new WFConfig(egraphs, b0);
 		GMConfig c0 = new GMConfig(egraphs, b0);
 		GMState init = new GMState(c0);
 
-		//Set<WFState> seen = new HashSet<>();
+		Map<Integer, GMState> seen = new HashMap<>();
 		LinkedHashSet<GMState> todo = new LinkedHashSet<>();
 		todo.add(init);
 
@@ -279,7 +238,6 @@ public class GMChecker extends ModuleContextVisitor
 			Iterator<GMState> i = todo.iterator();
 			GMState curr = i.next();
 			i.remove();
-			//seen.add(curr);
 			seen.put(curr.id, curr);
 
 			if (job.debug)
@@ -371,7 +329,8 @@ public class GMChecker extends ModuleContextVisitor
 		job.debugPrintln("(" + fullname + ") Building global model..\n" + init.toDot() + "\n(" + fullname + ") Built global model (" + count + " states)");
 
 		//return seen;
-		return init;
+		//return init;
+		return new GMGraph(seen, init);
 	}
 
 	//private Map<Role, EndpointState> getEndpointGraphs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
@@ -600,649 +559,4 @@ public class GMChecker extends ModuleContextVisitor
 		}
 		return res;
 	}
-	
-	//private static void findTerminalSets(Map<WFState, Set<WFState>> reach, Set<Set<WFState>> termsets)
-	private static void findTerminalSets(Map<Integer, GMState> all, Map<Integer, Set<Integer>> reach, Set<Set<Integer>> termsets)
-	{
-		//Set<Set<WFState>> checked = new HashSet<>();
-		Set<Set<Integer>> checked = new HashSet<>();
-		//for (WFState s : reach.keySet())
-		for (Integer i : reach.keySet())
-		{
-			GMState s = all.get(i);
-			/*Set<WFState> rs = reach.get(s);
-			if (!checked.contains(rs) && rs.contains(s))*/
-			Set<Integer> rs = reach.get(s.id);
-			if (!checked.contains(rs) && rs.contains(s.id))
-			{
-				checked.add(rs);
-				if (isTerminalSetMember(all, reach, s))
-				{
-					termsets.add(rs);
-				}
-			}
-		}
-	}
-
-	//private static boolean isTerminalSetMember(Map<WFState, Set<WFState>> reach, WFState s)
-	private static boolean isTerminalSetMember(Map<Integer, GMState> all, Map<Integer, Set<Integer>> reach, GMState s)
-	{
-		/*Set<WFState> rs = reach.get(s);
-		Set<WFState> tmp = new HashSet<>(rs);
-		tmp.remove(s);
-		for (WFState r : tmp)*/
-		Set<Integer> rs = reach.get(s.id);
-		Set<Integer> tmp = new HashSet<>(rs);
-		tmp.remove(s.id);
-		for (Integer r : tmp)
-		{
-			if (!reach.containsKey(r) || !reach.get(r).equals(rs))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-	// Pre: reach.get(start).contains(end)  // FIXME: will return null if initial state is error
-	//private static List<GIOAction> getTrace(WFState start, WFState end, Map<WFState, Set<WFState>> reach)
-	private static List<GMAction> getTrace(Map<Integer, GMState> all, GMState start, GMState end, Map<Integer, Set<Integer>> reach)
-	{
-		/*List<WFState> seen = new LinkedList<WFState>();
-		seen.add(start);*/
-		/*Set<List<Integer>> seen = new HashSet<>();
-		List<Integer> tmp = new LinkedList<>();
-		tmp.add(start.id);
-		seen.add(tmp);*/
-		//return getTraceAux(new LinkedList<>(), seen, start, end, reach);
-		//return getTraceAux(new LinkedList<>(), seen, tmp, start, end, reach);
-		//return getTraceAux(all, start, end, reach);
-
-		SortedMap<Integer, Set<Integer>> candidates = new TreeMap<>();
-		Set<Integer> dis0 = new HashSet<Integer>();
-		dis0.add(start.id);
-		candidates.put(0, dis0);
-
-		Set<Integer> seen = new HashSet<>();
-		seen.add(start.id);
-		
-		return getTraceAux(new LinkedList<>(), all, seen, candidates, end, reach);
-	}
-
-	// Djikstra's
-	private static List<GMAction> getTraceAux(List<GMAction> trace, Map<Integer, GMState> all, Set<Integer> seen, SortedMap<Integer, Set<Integer>> candidates, GMState end, Map<Integer, Set<Integer>> reach)
-	{
-		Integer dis = candidates.keySet().iterator().next();
-		Set<Integer> cs = candidates.get(dis);
-		Iterator<Integer> it = cs.iterator();
-		Integer currid = it.next();
-		it.remove();
-		if (cs.isEmpty())
-		{
-			candidates.remove(dis);
-		}
-
-		GMState curr = all.get(currid);
-		Iterator<GMAction> as = curr.getAllActions().iterator();
-		Iterator<GMState> ss = curr.getAllSuccessors().iterator();
-		while (as.hasNext())
-		{
-			GMAction a = as.next();
-			GMState s = ss.next();
-			if (s.id == end.id)
-			{
-				trace.add(a);
-				return trace;
-			}
-
-			if (!seen.contains(s.id) && reach.containsKey(s.id) && reach.get(s.id).contains(end.id))
-			{
-				seen.add(s.id);
-				Set<Integer> tmp1 = candidates.get(dis+1);
-				if (tmp1 == null)
-				{
-					tmp1 = new HashSet<>();
-					candidates.put(dis+1, tmp1);
-				}
-				tmp1.add(s.id);
-				List<GMAction> tmp2 = new LinkedList<>(trace);
-				tmp2.add(a);
-				List<GMAction> res = getTraceAux(tmp2, all, seen, candidates, end, reach);
-				if (res != null)
-				{
-					return res;
-				}
-			}
-		}
-		return null;
-	}
-
-	/*
-	private static List<GIOAction> getTraceAux(Map<Integer, WFState> all, WFState start, WFState end, Map<Integer, Set<Integer>> reach)
-	{
-		//LinkedHashMap<Integer, Integer> candidates = new LinkedHashMap<>();
-		Set<Integer> seen = new HashSet<>();
-		SortedMap<Integer, Set<Integer>> candidates = new TreeMap<>();
-		
-		Set<Integer> foo0 = new HashSet<Integer>();
-		foo0.add(start.id);
-		candidates.put(0, foo0);
-		seen.add(start.id);
-		
-		List<GIOAction> trace = new LinkedList<>();
-		
-		while (!candidates.isEmpty())
-		{
-			Integer w = candidates.keySet().iterator().next();
-			Set<Integer> tmp = candidates.get(w);
-			Iterator<Integer> it = tmp.iterator();
-			Integer currid = it.next();
-			it.remove();
-			if (tmp.isEmpty())
-			{
-				candidates.remove(w);
-			}
-			WFState curr = all.get(currid);
-			Iterator<GIOAction> as = curr.getActions().iterator();
-			Iterator<WFState> ss = curr.getSuccessors().iterator();
-			while (as.hasNext())
-			{
-				GIOAction a = as.next();
-				WFState s = ss.next();
-				if (s.id == end.id)
-				{
-					trace.add(a);
-					return trace;
-				}
-
-				if (!seen.contains(s.id) && reach.containsKey(s.id) && reach.get(s.id).contains(end.id))
-				{
-					seen.add(s.id);
-					Set<Integer> tmp2 = candidates.get(w+1);
-					if (tmp2 == null)
-					{
-						tmp2 = new HashSet<>();
-						candidates.put(w+1, tmp2);
-					}
-					tmp2.add(s.id);
-				}
-			}
-		}
-		throw new RuntimeException("Shouldn't get in here: " + start + ", " + end);
-	}
-	//*/
-
-	/*//private static List<GIOAction> getTraceAux(List<GIOAction> trace, List<WFState> seen, WFState end, Map<WFState, Set<WFState>> reach)
-	//private static List<GIOAction> getTraceAux(List<GIOAction> trace, List<Integer> seen, WFState curr, WFState end, Map<WFState, Set<WFState>> reach)
-	//private static List<GIOAction> getTraceAux(List<GIOAction> trace, List<Integer> seen, WFState curr, WFState end, Map<Integer, Set<Integer>> reach)
-	private static List<GIOAction> getTraceAux(List<GIOAction> trace, Set<List<Integer>> seen, List<Integer> foo, WFState curr, WFState end, Map<Integer, Set<Integer>> reach)
-	{
-		//WFState curr = seen.get(seen.size() - 1);
-		Iterator<GIOAction> as = curr.getActions().iterator();
-		Iterator<WFState> ss = curr.getSuccessors().iterator();
-		while (as.hasNext())
-		{
-			GIOAction a = as.next();
-			WFState s = ss.next();
-			//if (s.equals(end))
-			if (s.id == end.id)
-			{
-				trace.add(a);
-				return trace;
-			}
-			if (!foo.contains(s.id))
-			{
-				List<Integer> tmp1 = new LinkedList<>(foo);
-				tmp1.add(s.id);
-				//if (!seen.contains(s) && reach.containsKey(s) && reach.get(s).contains(end))
-				//if (!seen.contains(s.id) && reach.containsKey(s.id) && reach.get(s.id).contains(end.id))
-				if (!seen.contains(tmp1) && reach.containsKey(s.id) && reach.get(s.id).contains(end.id))
-				{
-					seen.add(tmp1);
-					/*List<WFState> tmp1 = new LinkedList<>(seen);
-					tmp1.add(s);*/
-					/*List<Integer> tmp1 = new LinkedList<>(seen);
-					tmp1.add(s.id);* /
-					List<GIOAction> tmp2 = new LinkedList<>(trace);
-					tmp2.add(a);
-					// Recursive calling allows implicit backtracking, in case went into a loop (and can't get back out due to "seen")
-					//List<GIOAction> res = getTraceAux(tmp2, tmp1, end, reach);
-					//List<GIOAction> res = getTraceAux(tmp2, tmp1, s, end, reach);
-					List<GIOAction> res = getTraceAux(tmp2, seen, tmp1, s, end, reach);
-					if (res != null)
-					{
-						return res;
-					}
-				}
-			}
-		}
-		return null;
-	}*/
-	
-	//private static Map<WFState, Set<WFState>> getReachability(Job job, Set<WFState> all)
-	//private static Map<Integer, Set<Integer>> getReachability(Job job, Set<WFState> all)
-	private static Map<Integer, Set<Integer>> getReachability(Job job, Map<Integer, GMState> all)
-	{
-		/*Map<WFState, Integer> all1 = new HashMap<>();  // FIXME: use Integers
-		Map<Integer, WFState> all2 = new HashMap<>();*/
-		Map<Integer, Integer> all1 = new HashMap<>();  // Map state ids to array indices and vice versa
-		Map<Integer, Integer> all2 = new HashMap<>();
-		int i = 0;
-		for (GMState s : all.values())
-		{
-			/*all1.put(s, i);
-			all2.put(i, s);*/
-			all1.put(s.id, i);
-			all2.put(i, s.id);
-			i++;
-		}
-		return getReachabilityAux(job, all, all1, all2);
-	}
-
-	//private static Map<WFState, Set<WFState>> getReachabilityAux(Job job, Map<WFState, Integer> all1, Map<Integer, WFState> all2)
-	//private static Map<Integer, Set<Integer>> getReachabilityAux(Job job, Map<WFState, Integer> all1, Map<Integer, WFState> all2)
-	private static Map<Integer, Set<Integer>> getReachabilityAux(Job job, Map<Integer, GMState> all, Map<Integer, Integer> all1, Map<Integer, Integer> all2)
-	{
-		int size = all1.keySet().size();
-		boolean[][] reach = new boolean[size][size];
-		//for (WFState s1 : all1.keySet())
-		for (Integer s1id : all1.keySet())
-		{
-			//for (WFState s2 : s1.getSuccessors())
-			for (GMState s2 : all.get(s1id).getAllSuccessors())
-			{
-				//reach[all1.get(s1)][all1.get(s2)] = true;
-				reach[all1.get(s1id)][all1.get(s2.id)] = true;
-			}
-		}
-		for (boolean again = true; again; )
-		{
-			again = false;
-			for (int i = 0; i < size; i++)
-			{
-				for (int j = 0; j < size; j++)
-				{
-					if (reach[i][j])
-					{
-						for (int k = 0; k < size; k++)
-						{
-							if (reach[j][k] && !reach[i][k])
-							{
-								reach[i][k] = true;
-								again = true;
-							}
-						}
-					}
-				}
-			}
-		}
-		//Map<WFState, Set<WFState>> res = new HashMap<>();
-		Map<Integer, Set<Integer>> res = new HashMap<>();
-		for (int i = 0; i < size; i++)
-		{
-			Set<Integer> tmp = res.get(all2.get(i));
-			for (int j = 0; j < size; j++)
-			{
-				if (reach[i][j])
-				{
-					//Set<WFState> tmp = res.get(all2.get(i));
-					//Set<Integer> tmp = res.get(all2.get(i).id);
-					if (tmp == null)
-					{
-						tmp = new HashSet<>();
-						res.put(all2.get(i), tmp);
-						//res.put(all2.get(i).id, tmp);
-					}
-					tmp.add(all2.get(j));
-					//tmp.add(all2.get(j).id);
-				}
-			}
-		}
-		return res;
-	}
-
-	/*private static void getReachability(Job job, Set<WFState> all, Map<WFState, Set<WFState>> reach)
-	{
-		//long t1 = System.currentTimeMillis();
-		int count = 0, step = 1;
-		for (WFState s1 : all)
-		{
-			if (job.debug && count >= (0.1*step) * all.size())
-			{
-				job.debugPrintln("Computing reachability: " + (10*step) + "%");
-				for (; count >= (0.1*(step)) * all.size(); step++);
-			}
-			for (WFState s2 : all)
-			{
-				//if (dfs(new LinkedList<>(), Arrays.asList(s1), s2) != null)
-				//if (dfs(new LinkedList<>(), Arrays.asList(s1), s2, reach) != null)
-				if (bfs(s1, s2, reach))
-				{
-					Set<WFState> tmp = reach.get(s1);
-					if (tmp == null)
-					{
-						tmp = new HashSet<>();
-						reach.put(s1, tmp);
-					}
-					tmp.add(s2);
-				}
-			}
-			count++;
-		}
-		//System.out.println("Reachability computed in : " + (System.currentTimeMillis() - t1) + "ms");
-	}
-	
-	private static boolean bfs(WFState start, WFState end, Map<WFState, Set<WFState>> reach)
-	{
-		List<WFState> seen = new LinkedList<>();
-		LinkedHashSet<WFState> todo = new LinkedHashSet<>();
-		todo.addAll(start.getSuccessors());  // Not just "start", check for explicit reflexive edge
-		while (!todo.isEmpty())
-		{
-			Iterator<WFState> i = todo.iterator();
-			WFState next = i.next();
-			i.remove();
-			if (next.equals(end))
-			{
-				return true;
-			}
-			if (!seen.contains(next))
-			{
-				Set<WFState> tmp = reach.get(next);
-				if (tmp != null && tmp.contains(end))
-				{
-					return true;
-				}
-				seen.add(next);
-				todo.addAll(next.getSuccessors());
-			}
-		}
-		return false;
-	}*/
-
-	/*// trace = actions on path, seen = nodes on path, term = dest
-	//private static List<GModelAction> dfs(List<GModelAction> trace, List<WFState> seen, WFState term)
-	private static List<GIOAction> dfs(List<GIOAction> trace, List<WFState> seen, WFState term)
-	{
-		return dfs(trace, seen, term, Collections.emptyMap());
-	}
-	
-	private static List<GIOAction> dfs(List<GIOAction> trace, List<WFState> seen, WFState end, Map<WFState, Set<WFState>> reach)
-	{
-		WFState curr = seen.get(seen.size() - 1);
-		//Iterator<GModelAction> as = curr.getActions().iterator();
-		Iterator<GIOAction> as = curr.getActions().iterator();
-		Iterator<WFState> ss = curr.getSuccessors().iterator();
-		while (as.hasNext())
-		{
-			//GModelAction a = as.next();
-			GIOAction a = as.next();
-			WFState s = ss.next();
-			if (s.equals(end))
-			{
-				trace.add(a);
-				return trace;
-			}
-			if (!seen.contains(s))
-			{
-				Set<WFState> foo = reach.get(s);
-				if (foo != null && foo.contains(end))
-				{
-					return Collections.emptyList();  // no trace returned on this shortcut
-				}
-
-				List<GIOAction> tmp1 = new LinkedList<>(trace);
-				tmp1.add(a);
-				List<WFState> tmp2 = new LinkedList<>(seen);
-				tmp2.add(s);
-				List<GIOAction> res = dfs(tmp1, tmp2, end);
-				if (res != null)
-				{
-					return res;
-				}
-			}
-		}
-		return null;
-	}
-	//*/
-	
-	/*private static void getAllNodes(WFState curr, Set<WFState> all)
-	{
-		if (all.contains(curr))
-		{
-			return;
-		}
-		all.add(curr);
-		for (WFState s : curr.getSuccessors())
-		{
-			getAllNodes(s, all);
-		}
-	}*/
-	
-	/*private static void findTerminalSets(Set<WFState> all, Map<WFState, Set<WFState>> reach, Set<Set<WFState>> termsets)
-	{
-		Map<Set<WFState>, Set<Set<WFState>>> sss = new HashMap<>();
-		getSubsets(all, sss);
-		for (Set<Set<WFState>> ss : sss.values())
-		{
-			for (Set<WFState> s : ss)
-			{
-				if (isTerminalSet(all, reach, s))
-				{
-					termsets.add(s);
-				}
-			}
-		}
-	}
-
-	private static void getSubsets(Set<WFState> rem, Map<Set<WFState>, Set<Set<WFState>>> ss)
-	{
-		System.out.println("ccc: " + rem);
-		Set<Set<WFState>> tmp = ss.get(rem);
-		if (tmp == null)
-		{
-			tmp = new HashSet<>();
-			ss.put(rem, tmp);
-		}
-		tmp.add(rem);
-		if (rem.size() == 1)
-		{
-			return;
-		}
-		for (WFState s : rem)
-		{
-			Set<WFState> tmp2 = new HashSet<>(rem);
-			tmp2.remove(s);
-			if (!ss.containsKey(tmp2))
-			{
-				getSubsets(tmp2, ss);
-			}
-			/*Set<Set<WFState>> cached = ss.get(tmp2);
-			for (Set<WFState> c : cached)
-			{
-				Set<WFState> tmp3 = new HashSet<>(c);
-				tmp3.add(s);
-				tmp.add(tmp3);
-			}* /
-		}
-	}
-
-	private static boolean isTerminalSet(Set<WFState> all, Map<WFState, Set<WFState>> reach, Set<WFState> curr)
-	{
-		for (WFState s1 : curr)
-		{
-			for (WFState s2 : curr)
-			{
-				Set<WFState> tmp = reach.get(s1);
-				if (tmp == null || !tmp.contains(s2))
-				{
-					return false;
-				}
-			}
-		}
-		for (WFState r : all)
-		{
-			Set<WFState> tmp = reach.get(curr);
-			if (!curr.contains(r) && tmp != null && tmp.contains(r))
-			{
-				return false;
-			}
-		}
-		return true;
-	}*/
-	
-	/*private static void checkWF(Set<GModelState> seen, GModelState curr, GModel model, Map<GModelState, Set<GModelState>> reach)
-	{
-		if (seen.contains(curr))
-		{
-			return;
-		}
-		Collection<GModelState> succs = curr.getSuccessors();
-
-		if (curr.isChoice())  // ** Identifying choice states and their exits is determined by syntax, not model structure 
-		{
-			List<GModelPath> paths = new LinkedList<>();
-			getPaths(paths, new GModelPath(), curr, curr.getChoiceExit(), reach);
-
-			System.out.println("ccc: " + curr + ", " + curr.getChoiceExit() + "\n" + paths);
-			
-			//...for each role, project each path (can be empty projection)
-			//...check consistent enablers -- maybe not needed if enough recursion paths checked?
-			//...except subject, check non-uniform continuation implies distinct (input) enabling -- this should also support non-subject output
-			
-			Set<Role> roles = paths.stream().flatMap((p) -> p.getRoles().stream()).collect(Collectors.toSet());
-
-			System.out.println("ddd: " + roles);
-			
-			for (Role r : roles)
-			{
-				List<IOTrace> projs = paths.stream().map((p) -> p.project(r)).collect(Collectors.toList());
-
-				System.out.println("eee: " + r);
-				System.out.println(projs);
-			}
-		}
-
-		seen.add(curr);
-		for (GModelState succ : succs)
-		{
-			checkWF(seen, succ, model, reach);
-		}
-	}
-
-	// Pre: curr is state at end of path
-	private static void getPaths(List<GModelPath> paths, GModelPath path, GModelState curr, GModelState dest, Map<GModelState, Set<GModelState>> reach)
-	{
-		for (GModelAction a : curr.getAcceptable())
-		{
-			GModelState succ = curr.accept(a);
-			if (succ.equals(dest))
-			{
-				paths.add(path.append(a));
-			}
-			else
-			{
-				if (reach.get(succ).contains(dest))
-				{
-					if (!path.containsEdge(a))
-					{
-						GModelPath tmp = path.append(a);
-						getPaths(paths, tmp, succ, dest, reach);
-					}
-				}
-			}
-		}
-	}
-	
-	private static void getReachability(Set<GModelState> seen, GModelState curr, Map<GModelState, Set<GModelState>> reach, Map<GModelState, Set<GModelState>> invreach)
-	{
-		if (seen.contains(curr))
-		{
-			return;
-		}
-		Collection<GModelState> succs = curr.getSuccessors();
-		for (GModelState succ : succs)
-		{
-			Set<GModelState> tmp1 = reach.get(curr);
-			if (tmp1 == null)
-			{
-				tmp1 = new HashSet<>();
-				reach.put(curr, tmp1);
-			}
-			tmp1.add(succ);
-
-			Set<GModelState> tmp2 = invreach.get(succ);
-			if (tmp2 == null)
-			{
-				tmp2 = new HashSet<>();
-				invreach.put(succ, tmp2);
-			}
-			tmp2.add(curr);
-			
-			Set<GModelState> tmp3 = invreach.get(curr);
-			if (tmp3 != null)
-			{
-				for (GModelState s : tmp3)
-				{
-					tmp2.add(s);
-					
-					Set<GModelState> tmp4 = reach.get(s);
-					if (tmp4 == null)  // Not needed?
-					{
-						tmp4 = new HashSet<>();
-						reach.put(s, tmp4);
-					}
-					tmp4.add(succ);
-				}
-			}
-			HashSet<GModelState> bar = new HashSet<>(seen);
-			bar.add(curr);
-			getReachability(bar, succ, reach, invreach);
-		}
-	}
-	
-	/*private ScribNode visitOverrideForChoice(InteractionSeq<?> parent, Choice<?> child) throws ScribbleException
-	{
-		if (child instanceof Choice<?>)
-		{
-			Choice<?> cho = (Choice<?>) child;
-			if (!this.visited.contains(cho))
-			{
-				this.visited.add(cho);
-				//ScribNode n = cho.visitChildren(this);
-				ScribNode n = super.visit(parent, child);
-				this.visited.remove(cho);
-				return n;
-			}
-			else
-			{
-				return cho;
-			}
-		}
-		else
-		{
-			return super.visit(parent, child);
-		}
-	}
-	
-	@Override
-	protected void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
-	//protected void pathCollectionEnter(ScribNode parent, ScribNode child) throws ScribbleException
-	{
-		super.unfoldingEnter(parent, child);
-		//super.pathCollectionEnter(parent, child);
-		child.del().enterWFChoicePathCheck(parent, child, this);
-	}
-	
-	@Override
-	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
-	//protected ScribNode pathCollectionLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
-	{
-		visited = visited.del().leaveWFChoicePathCheck(parent, child, this, visited);
-		return super.unfoldingLeave(parent, child, visited);
-		//return super.pathCollectionLeave(parent, child, visited);
-		/* // NOTE: deviates from standard Visitor pattern: calls super first to collect paths -- maybe refactor more "standard way" by collecting paths in a prior pass and save them in context
-		visited = super.pathCollectionLeave(parent, child, visited);
-		return visited.del().leaveWFChoicePathCheck(parent, child, this, visited);* /
-	}*/
 }

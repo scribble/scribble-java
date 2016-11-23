@@ -1,22 +1,21 @@
 package org.scribble.model.endpoint;
 
-
 public class EGraph
 {
 	public final EState init;
 	public final EState term;
-	
+
 	public EGraph(EState init, EState term)
 	{
 		this.init = init;
 		this.term = term;
 	}
-	
+
 	public EFSM toFsm()
 	{
 		return new EFSM(this);
 	}
-	
+
 	public String toAut()
 	{
 		return this.init.toAut();
@@ -26,47 +25,11 @@ public class EGraph
 	{
 		return this.init.toDot();
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		//return this.init.toDot();
+		// return this.init.toDot();
 		return this.init.toString();
 	}
-	
-	/*public static EndpointGraph getOutputSubtypes(EndpointGraph g)
-	{
-		LGraphBuilder builder = new LGraphBuilder();
-		Map<Integer, EndpointState> map = new HashMap<>();  // g nodes -> new nodes
-		map.put(g.init.id, builder.getEntry());
-		if (g.term != null)
-		{
-			map.put(g.term.id, builder.getExit());
-		}
-		for (EndpointState s : EndpointState.getAllReachable(g.init))
-		{
-			if (!map.containsKey(s.id))  // init and term
-			{
-				EndpointState tmp = builder.newState(s.getLabels());
-				map.put(s.id, tmp);
-			}
-		}
-		Map<Integer, EndpointState> todo = new LinkedHashMap<>();
-		todo.put(g.init.id, g.init);
-		while (!todo.isEmpty())
-		{
-			EndpointState s = todo.values().iterator().next();
-			todo.remove(s);
-			
-			if (s.getStateKind() == Kind.OUTPUT && s.getAllTakeable().size() > 1)
-			{
-				
-			}
-			else
-			{
-				
-			}
-		}
-		return builder.finalise();
-	}*/
 }

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.model.endpoint.AutParser;
 import org.scribble.model.endpoint.EGraph;
-import org.scribble.model.global.GMState;
+import org.scribble.model.global.GMGraph;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
@@ -35,10 +35,10 @@ public class JobContext
 
 	private final Map<LProtocolName, EGraph> graphs = new HashMap<>();
 	//private final Map<GProtocolName, GModel> gmodels = new HashMap<>();
-	private final Map<GProtocolName, GMState> gmodels = new HashMap<>();
+	private final Map<GProtocolName, GMGraph> gmodels = new HashMap<>();
 	
 	private final Map<LProtocolName, EGraph> unfair = new HashMap<>();
-	private final Map<GProtocolName, GMState> unfairGModels = new HashMap<>();
+	private final Map<GProtocolName, GMGraph> unfairGModels = new HashMap<>();
 	
 	private final Map<LProtocolName, EGraph> minimised = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
 			// FIXME: currently only minimising "fair" graph, need to consider minimisation orthogonally to fairness -- NO: minimising (of fair) is for API gen only, unfair-transform does not use minimisation (regardless of user flag) for WF
@@ -173,24 +173,24 @@ public class JobContext
 		return proj;
 	}
 	
-	//public void addGlobalModel(GProtocolName fullname, GModel model)
-	public void addGlobalModel(GProtocolName fullname, GMState model)
+	//public void addGlobalModel(GProtocolName fullname, GMState model)
+	public void addGlobalModel(GProtocolName fullname, GMGraph model)
 	{
 		this.gmodels.put(fullname, model);
 	}
 	
-	//public GModel getGlobalModel(GProtocolName fullname)
-	public GMState getGlobalModel(GProtocolName fullname)
+	//public GMState getGlobalModel(GProtocolName fullname)
+	public GMGraph getGlobalModel(GProtocolName fullname)
 	{
 		return this.gmodels.get(fullname);
 	}
 
-	public void addUnfairGlobalModel(GProtocolName fullname, GMState model)
+	public void addUnfairGlobalModel(GProtocolName fullname, GMGraph model)
 	{
 		this.unfairGModels.put(fullname, model);
 	}
 
-	public GMState getUnfairGlobalModel(GProtocolName fullname)
+	public GMGraph getUnfairGlobalModel(GProtocolName fullname)
 	{
 		return this.unfairGModels.get(fullname);
 	}
