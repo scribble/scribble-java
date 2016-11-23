@@ -26,7 +26,7 @@ public class LAcceptDel extends LConnectionActionDel implements LSimpleInteracti
 		Payload payload = la.msg.isMessageSigNode()  // Hacky?
 					? ((MessageSigNode) la.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
-		builder.builder.addEdge(builder.builder.getEntry(), new EAccept(peer, mid, payload), builder.builder.getExit());
+		builder.util.addEdge(builder.util.getEntry(), new EAccept(peer, mid, payload), builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), new Accept(peer), builder.builder.getExit());
 		////builder.builder.addEdge(builder.builder.getEntry(), Receive.get(peer, mid, payload), builder.builder.getExit());
 		return (LAccept) super.leaveEndpointGraphBuilding(parent, child, builder, la);

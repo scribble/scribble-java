@@ -49,7 +49,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	@Override
 	public void enterEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
 	{
-		graph.builder.reset();
+		graph.util.reset();
 	}
 
 	@Override

@@ -26,6 +26,9 @@ module Test;
 
 // gmchecker, graphbuiler, job
 
+
+// Add unit test for validation to bypass aux
+
 global protocol Proto1(role A, role B, role C)
 {
 	1() from A to B;

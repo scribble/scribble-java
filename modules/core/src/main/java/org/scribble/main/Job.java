@@ -26,7 +26,7 @@ import org.scribble.visit.context.ProjectedRoleDeclFixer;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.util.RoleCollector;
-import org.scribble.visit.validation.GMChecker;
+import org.scribble.visit.validation.GProtocolValidator;
 import org.scribble.visit.wf.DelegationProtocolRefChecker;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;
 import org.scribble.visit.wf.NameDisambiguator;
@@ -86,7 +86,7 @@ public class Job
 		runVisitorPassOnAllModules(ReachabilityChecker.class);  // Moved before GlobalModelChecker.class, OK?
 		if (!this.useOldWf)
 		{
-			runVisitorPassOnAllModules(GMChecker.class);
+			runVisitorPassOnAllModules(GProtocolValidator.class);
 		}
 		//runVisitorPassOnAllModules(ReachabilityChecker.class);
 	}

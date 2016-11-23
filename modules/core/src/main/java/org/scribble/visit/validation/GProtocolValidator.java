@@ -5,9 +5,9 @@ import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.context.ModuleContextVisitor;
 
-public class GMChecker extends ModuleContextVisitor
+public class GProtocolValidator extends ModuleContextVisitor
 {
-	public GMChecker(Job job)
+	public GProtocolValidator(Job job)
 	{
 		super(job);
 	}
@@ -16,13 +16,13 @@ public class GMChecker extends ModuleContextVisitor
 	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.enter(parent, child);
-		child.del().enterCompatCheck(parent, child, this);
+		child.del().enterValidation(parent, child, this);
 	}
 	
 	@Override
 	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveCompatCheck(parent, child, this, visited);
+		visited = visited.del().leaveValidation(parent, child, this, visited);
 		return super.leave(parent, child, visited);
 	}
 }

@@ -73,8 +73,8 @@ public class LInteractionSeqDel extends InteractionSeqDel
 
 	public LInteractionSeq visitForFsmConversion(EndpointGraphBuilder conv, LInteractionSeq child) throws ScribbleException
 	{
-		EState entry = conv.builder.getEntry();
-		EState exit = conv.builder.getExit();
+		EState entry = conv.util.getEntry();
+		EState exit = conv.util.getExit();
 		//try
 		{
 			/*for (int i = child.getInteractions().size() - 1; i >= 0; i--)  // Backwards for "tau-less" continue
@@ -96,15 +96,15 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			{
 				if (i == child.getInteractions().size() - 1)
 				{
-					conv.builder.setExit(exit);
+					conv.util.setExit(exit);
 					child.getInteractions().get(i).accept(conv);
 				}
 				else
 				{
-					EState tmp = conv.builder.newState(Collections.emptySet());
-					conv.builder.setExit(tmp);
+					EState tmp = conv.util.newState(Collections.emptySet());
+					conv.util.setExit(tmp);
 					child.getInteractions().get(i).accept(conv);
-					conv.builder.setEntry(conv.builder.getExit());  // exit may not be tmp, entry/exit can be modified, e.g. continue
+					conv.util.setEntry(conv.util.getExit());  // exit may not be tmp, entry/exit can be modified, e.g. continue
 				}
 			}
 		}
@@ -113,7 +113,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			throw new RuntimeException("Shouldn't get in here: " + e);
 		}*/
 		//conv.builder.setExit(exit);
-		conv.builder.setEntry(entry);
+		conv.util.setEntry(entry);
 		return child;	
 	}
 }

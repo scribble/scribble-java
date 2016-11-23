@@ -13,9 +13,12 @@ import java.util.TreeMap;
 
 import org.scribble.model.MPrettyPrint;
 import org.scribble.model.global.actions.SAction;
+import org.scribble.sesstype.name.GProtocolName;
 
 public class SGraph implements MPrettyPrint
 {
+	public final GProtocolName proto;
+	
 	public final SState init;
 	public Map<Integer, SState> states; // State ID -> GMState
 
@@ -23,8 +26,9 @@ public class SGraph implements MPrettyPrint
 																						// reflexive)
 	private Set<Set<Integer>> termSets;
 
-	public SGraph(Map<Integer, SState> states, SState init)
+	public SGraph(GProtocolName proto, Map<Integer, SState> states, SState init)
 	{
+		this.proto = proto;
 		this.init = init;
 		this.states = Collections.unmodifiableMap(states);
 		this.reach = getReachabilityMap();

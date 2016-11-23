@@ -15,7 +15,7 @@ import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.Env;
 import org.scribble.visit.util.MessageIdCollector;
 import org.scribble.visit.util.RoleCollector;
-import org.scribble.visit.validation.GMChecker;
+import org.scribble.visit.validation.GProtocolValidator;
 import org.scribble.visit.wf.DelegationProtocolRefChecker;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;
 import org.scribble.visit.wf.NameDisambiguator;
@@ -212,12 +212,12 @@ public interface ScribDel
 		return visited;
 	}*/
 	
-	default void enterCompatCheck(ScribNode parent, ScribNode child, GMChecker coll) throws ScribbleException
+	default void enterValidation(ScribNode parent, ScribNode child, GProtocolValidator coll) throws ScribbleException
 	{
 		
 	}
 
-	default ScribNode leaveCompatCheck(ScribNode parent, ScribNode child, GMChecker coll, ScribNode visited) throws ScribbleException
+	default ScribNode leaveValidation(ScribNode parent, ScribNode child, GProtocolValidator coll, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

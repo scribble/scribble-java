@@ -24,7 +24,7 @@ public class LReceiveDel extends LMessageTransferDel
 		Payload payload = (lr.msg.isMessageSigNode())  // Hacky?
 				? ((MessageSigNode) lr.msg).payloads.toPayload()
 				: Payload.EMPTY_PAYLOAD;
-		builder.builder.addEdge(builder.builder.getEntry(), new EReceive(peer, mid, payload), builder.builder.getExit());
+		builder.util.addEdge(builder.util.getEntry(), new EReceive(peer, mid, payload), builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Receive.get(peer, mid, payload), builder.builder.getExit());
 		return (LReceive) super.leaveEndpointGraphBuilding(parent, child, builder, lr);
 	}

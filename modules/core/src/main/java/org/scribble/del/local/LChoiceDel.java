@@ -123,16 +123,16 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	{
 		try
 		{
-			graph.builder.enterChoice();  // FIXME: refactor enter/leave properly
+			graph.util.enterChoice();  // FIXME: refactor enter/leave properly
 
 			for (LProtocolBlock block : child.getBlocks())
 			{
-				graph.builder.pushChoiceBlock();
+				graph.util.pushChoiceBlock();
 				block.accept(graph);
-				graph.builder.popChoiceBlock();
+				graph.util.popChoiceBlock();
 			}
 			
-			graph.builder.leaveChoice();
+			graph.util.leaveChoice();
 		}
 		catch (ScribbleException e)
 		{

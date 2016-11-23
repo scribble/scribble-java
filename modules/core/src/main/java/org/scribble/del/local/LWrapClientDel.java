@@ -18,7 +18,7 @@ public class LWrapClientDel extends ConnectionActionDel implements LSimpleIntera
 		LWrapClient lc = (LWrapClient) visited;
 		RoleNode dest = lc.dest;
 		Role peer = dest.toName();
-		graph.builder.addEdge(graph.builder.getEntry(), new EWrapClient(peer), graph.builder.getExit());
+		graph.util.addEdge(graph.util.getEntry(), new EWrapClient(peer), graph.util.getExit());
 		return (LWrapClient) super.leaveEndpointGraphBuilding(parent, child, graph, lc);
 	}
 

@@ -18,7 +18,7 @@ public class LWrapServerDel extends ConnectionActionDel implements LSimpleIntera
 	{
 		LWrapServer la = (LWrapServer) visited;
 		Role peer = la.src.toName();
-		builder.builder.addEdge(builder.builder.getEntry(), new EWrapServer(peer), builder.builder.getExit());
+		builder.util.addEdge(builder.util.getEntry(), new EWrapServer(peer), builder.util.getExit());
 		return (LWrapServer) super.leaveEndpointGraphBuilding(parent, child, builder, la);
 	}
 

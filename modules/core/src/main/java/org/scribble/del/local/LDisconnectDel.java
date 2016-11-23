@@ -16,7 +16,7 @@ public class LDisconnectDel extends ConnectionActionDel implements LSimpleIntera
 	{
 		LDisconnect ld = (LDisconnect) visited;
 		Role peer = ld.peer.toName();
-		builder.builder.addEdge(builder.builder.getEntry(), new EDisconnect(peer), builder.builder.getExit());
+		builder.util.addEdge(builder.util.getEntry(), new EDisconnect(peer), builder.util.getExit());
 		return (LDisconnect) super.leaveEndpointGraphBuilding(parent, child, builder, ld);
 	}
 

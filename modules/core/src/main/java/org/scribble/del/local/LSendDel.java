@@ -32,7 +32,7 @@ public class LSendDel extends LMessageTransferDel
 		Payload payload = ls.msg.isMessageSigNode()  // Hacky?
 					? ((MessageSigNode) ls.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
-		graph.builder.addEdge(graph.builder.getEntry(), new ESend(peer, mid, payload), graph.builder.getExit());
+		graph.util.addEdge(graph.util.getEntry(), new ESend(peer, mid, payload), graph.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());
 		return (LSend) super.leaveEndpointGraphBuilding(parent, child, graph, ls);
 	}

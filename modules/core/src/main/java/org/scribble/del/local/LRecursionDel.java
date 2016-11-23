@@ -68,8 +68,8 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		}
 		else*/
 		{
-			graph.builder.addEntryLabel(rv);
-			graph.builder.pushRecursionEntry(rv, graph.builder.getEntry());
+			graph.util.addEntryLabel(rv);
+			graph.util.pushRecursionEntry(rv, graph.util.getEntry());
 		}
 	}
 
@@ -78,7 +78,7 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	{
 		LRecursion lr = (LRecursion) visited;
 		RecVar rv = lr.recvar.toName();
-		graph.builder.popRecursionEntry(rv);
+		graph.util.popRecursionEntry(rv);
 		return (LRecursion) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
 	}
 

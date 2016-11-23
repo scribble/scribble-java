@@ -52,7 +52,7 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		RecVar rv = lr.recvar.toName();
 		//graph.builder.setEntry(graph.builder.getRecursionEntry(rv));
 		//if (graph.builder.getPredecessor() == null)  // unguarded choice case
-		if (graph.builder.isUnguardedInChoice())
+		if (graph.util.isUnguardedInChoice())
 		{
 			/*//IOAction a = graph.builder.getEnacting(rv);
 			for (IOAction a : graph.builder.getEnacting(rv))
@@ -65,16 +65,16 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 			}
 			//graph.builder.addEdge(graph.builder.getEntry(), a, ss.get(0));  // FIXME: OK to just pick 1? -- maybe: but the original non-det choice before enacting the recursion is still there anyway
 			*/
-			graph.builder.addContinueEdge(graph.builder.getEntry(), rv);
+			graph.util.addContinueEdge(graph.util.getEntry(), rv);
 		}
 		else
 		{
 			// ** "Overwrites" previous edge built by send/receive(s) leading to this continue
 			/*graph.builder.removeLastEdge(graph.builder.getPredecessors());  // Hacky? -- cannot implicitly overwrite (addEdge) given non-det machines
 			graph.builder.addEdge(graph.builder.getPredecessors(), graph.builder.getPreviousActions(), graph.builder.getRecursionEntry(rv));*/
-			Iterator<EState> preds = graph.builder.getPredecessors().iterator();
-			Iterator<EAction> prevs = graph.builder.getPreviousActions().iterator();
-			EState entry = graph.builder.getEntry();
+			Iterator<EState> preds = graph.util.getPredecessors().iterator();
+			Iterator<EAction> prevs = graph.util.getPreviousActions().iterator();
+			EState entry = graph.util.getEntry();
 
 			Set<List<Object>> removed = new HashSet<>();  
 					// HACK: for identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  // FIXME: do here, or refactor into GraphBuilder?
@@ -88,10 +88,10 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 				{
 					removed.add(tmp);
 					//graph.builder.removeEdge(pred, prev, entry);
-					graph.builder.removeEdgeFromPredecessor(pred, prev);  // Assumes pred is a predecessor, and removes pred from current predecessors..
+					graph.util.removeEdgeFromPredecessor(pred, prev);  // Assumes pred is a predecessor, and removes pred from current predecessors..
 				}
 				//graph.builder.addEdge(pred, prev, graph.builder.getRecursionEntry(rv));
-				graph.builder.addRecursionEdge(pred, prev, graph.builder.getRecursionEntry(rv));  // May be repeated for non-det, but OK  // Combine with removeEdgeFromPredecessor?
+				graph.util.addRecursionEdge(pred, prev, graph.util.getRecursionEntry(rv));  // May be repeated for non-det, but OK  // Combine with removeEdgeFromPredecessor?
 			}
 		}
 		return (LContinue) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
