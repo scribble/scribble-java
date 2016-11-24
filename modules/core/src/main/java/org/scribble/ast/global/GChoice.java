@@ -58,7 +58,7 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 			projection = merged;
 		}
 		
-		//..TODO: use merge (and disable balanced roles choice check for non-exit choice cases)
+		//..TODO: use projection-merge (and disable balanced roles choice check for non-exit choice cases)
 
 		return projection;
 	}

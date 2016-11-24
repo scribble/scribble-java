@@ -73,11 +73,4 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GDisconnect) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
 	}
-	
-	/*@Override
-	public GDisconnect leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
-	{
-		//return (GDisconnect) super.leaveModelBuilding(parent, child, builder, ls);
-		throw new RuntimeException("Shouldn't get in here: " + visited);
-	}*/
 }

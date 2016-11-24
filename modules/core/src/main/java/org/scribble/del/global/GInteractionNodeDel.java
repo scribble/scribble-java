@@ -21,16 +21,4 @@ public interface GInteractionNodeDel extends InteractionNodeDel
 	{
 		return ScribDelBase.popAndSetVisitorEnv(this, proj, visited);
 	}
-
-	/*@Override
-	default void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
-	{
-		ScribDelBase.pushVisitorEnv(this, builder);
-	}
-
-	@Override
-	default ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
-	{
-		return ScribDelBase.popAndSetVisitorEnv(this, builder, visited);
-	}*/
 }

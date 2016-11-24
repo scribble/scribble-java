@@ -66,11 +66,4 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GWrap) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gw);
 	}
-	
-	/*@Override
-	public GWrap leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
-	{
-		//return (GConnect) super.leaveModelBuilding(parent, child, builder, ls);
-		throw new RuntimeException("Shouldn't get in here: " + visited);
-	}*/
 }

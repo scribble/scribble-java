@@ -128,10 +128,4 @@ public class GDelegationElemDel extends ScribDelBase
 			todo.addAll(tmp);
 		}
 	}
-
-	/*@Override
-	public ScribNode leaveDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker, ScribNode visited) throws ScribbleException
-	{
-
-	}*/
 }

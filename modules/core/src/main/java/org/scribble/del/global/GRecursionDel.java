@@ -50,42 +50,4 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
 	}
-	
-	/*@Override
-	public void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
-	{
-		WFChoicePathEnv env = coll.peekEnv().enterContext();
-		env = env.clear();  // Because merge will append the child paths to the parent paths -- without clearing, the child paths already have the parent suffixes
-		coll.pushEnv(env);
-	}
-
-	@Override
-	public GRecursion leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
-	//public GRecursion leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
-	{
-		GRecursion rec = (GRecursion) visited;
-		WFChoicePathEnv merged = coll.popEnv().mergeContext((WFChoicePathEnv) rec.block.del().env());  // Corresponding push is in CompoundInteractionDel
-		coll.pushEnv(merged);
-		return (GRecursion) super.leaveWFChoicePathCheck(parent, child, coll, rec);
-		//return (GRecursion) super.leavePathCollection(parent, child, coll, rec);
-	}*/
-	
-	/*@Override
-	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph) throws ScribbleException
-	{
-		super.enterModelBuilding(parent, child, graph);
-		GRecursion gr = (GRecursion) child;
-		RecVar rv = gr.recvar.toName();
-		graph.builder.addEntryLabel(rv);
-		graph.builder.pushRecursionEntry(rv, graph.builder.getEntry());
-	}
-
-	@Override
-	public GRecursion leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph, ScribNode visited) throws ScribbleException
-	{
-		GRecursion gr = (GRecursion) visited;
-		RecVar rv = gr.recvar.toName();
-		graph.builder.popRecursionEntry(rv);
-		return (GRecursion) super.leaveModelBuilding(parent, child, graph, gr);
-	}*/
 }

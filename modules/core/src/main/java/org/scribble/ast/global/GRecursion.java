@@ -38,9 +38,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 		LRecursion projection = null;
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(recvar.toName());
-		//System.out.println("\n111: " + block);
 		LProtocolBlock pruned = prune(block, rvs);
-		//System.out.println("\n222: " + pruned);
 		if (!pruned.isEmpty())
 		{
 			projection = AstFactoryImpl.FACTORY.LRecursion(recvar, pruned);
@@ -48,9 +46,10 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 		return projection;
 	}
 
+	// Pruning must be considered here (at Recursion) due to unguarded recvars
 	// Set should be unnecessary (singleton OK) -- *nested* irrelevant continues should already have been pruned
-	// FIXME: refactor and separate into dels?
-	private static LProtocolBlock prune(LProtocolBlock block, Set<RecVar> rvs)
+	// FIXME? refactor and separate into dels? -- maybe not: since pruning is a bit specific -- currently relying on TODO exception for unhandled cases
+	private static LProtocolBlock prune(LProtocolBlock block, Set<RecVar> rvs)  // FIXME: Set unnecessary
 	{
 		if (block.isEmpty())
 		{
