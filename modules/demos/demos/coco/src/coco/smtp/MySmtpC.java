@@ -32,16 +32,16 @@ import coco.smtp.message.client.StartTls;
 import coco.smtp.message.server._250;
 import coco.smtp.message.server._250d;
 
-public class SmtpC
+public class MySmtpC
 {
-	public SmtpC() throws Exception
+	public MySmtpC() throws Exception
 	{
 		run();
 	}
 
 	public static void main(String[] args) throws Exception
 	{
-		new SmtpC();
+		new MySmtpC();
 	}
 
 	public void run() throws Exception

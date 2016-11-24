@@ -1,7 +1,7 @@
-package demo.fase.smtp.message.client;
+package fase16.smtp.message.client;
 
-import demo.fase.smtp.Smtp.Smtp.Smtp;
-import demo.fase.smtp.message.SmtpMessage;
+import fase16.smtp.Smtp.Smtp.Smtp;
+import fase16.smtp.message.SmtpMessage;
 
 public class Quit extends SmtpMessage
 {

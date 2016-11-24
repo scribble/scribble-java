@@ -1,12 +1,12 @@
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' demo.fase.smtp.Client2
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/demos/target/classes fase16.smtp.SmtpC
 
 
-package demo.fase.smtp;
+package fase16.smtp;
 
-import static demo.fase.smtp.Smtp.Smtp.Smtp.S;
-import static demo.fase.smtp.Smtp.Smtp.Smtp._220;
-import static demo.fase.smtp.Smtp.Smtp.Smtp._250;
-import static demo.fase.smtp.Smtp.Smtp.Smtp._250d;
+import static fase16.smtp.Smtp.Smtp.Smtp.S;
+import static fase16.smtp.Smtp.Smtp.Smtp._220;
+import static fase16.smtp.Smtp.Smtp.Smtp._250;
+import static fase16.smtp.Smtp.Smtp.Smtp._250d;
 
 import java.io.IOException;
 
@@ -17,34 +17,34 @@ import org.scribble.net.session.SSLSocketChannelWrapper;
 import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import demo.fase.smtp.Smtp.Smtp.Smtp;
-import demo.fase.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import demo.fase.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
-import demo.fase.smtp.Smtp.Smtp.channels.C.Smtp_C_3;
-import demo.fase.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Handler;
-import demo.fase.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
-import demo.fase.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
-import demo.fase.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
-import demo.fase.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
-import demo.fase.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
-import demo.fase.smtp.Smtp.Smtp.roles.C;
-import demo.fase.smtp.message.SmtpMessageFormatter;
-import demo.fase.smtp.message.client.Ehlo;
-import demo.fase.smtp.message.client.Quit;
-import demo.fase.smtp.message.client.StartTls;
-import demo.fase.smtp.message.server._250;
-import demo.fase.smtp.message.server._250d;
+import fase16.smtp.Smtp.Smtp.Smtp;
+import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
+import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
+import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_3;
+import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Handler;
+import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
+import fase16.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
+import fase16.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
+import fase16.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
+import fase16.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
+import fase16.smtp.Smtp.Smtp.roles.C;
+import fase16.smtp.message.SmtpMessageFormatter;
+import fase16.smtp.message.client.Ehlo;
+import fase16.smtp.message.client.Quit;
+import fase16.smtp.message.client.StartTls;
+import fase16.smtp.message.server._250;
+import fase16.smtp.message.server._250d;
 
-public class FaseClient
+public class SmtpC
 {
-	public FaseClient() throws Exception
+	public SmtpC() throws Exception
 	{
 		run();
 	}
 
 	public static void main(String[] args) throws Exception
 	{
-		new FaseClient();
+		new SmtpC();
 	}
 
 	public void run() throws Exception
@@ -142,13 +142,13 @@ public class FaseClient
 	class MySmtpC3Handler implements Smtp_C_3_Handler
 	{
 		@Override
-		public void receive(Smtp_C_3 s3, demo.fase.smtp.Smtp.Smtp.ops._250d op, Buf<_250d> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+		public void receive(Smtp_C_3 s3, fase16.smtp.Smtp.Smtp.ops._250d op, Buf<_250d> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 		{
 			s3.branch(S, this);
 		}
 
 		@Override
-		public void receive(Smtp_C_4 s4, demo.fase.smtp.Smtp.Smtp.ops._250 op, Buf<_250> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+		public void receive(Smtp_C_4 s4, fase16.smtp.Smtp.Smtp.ops._250 op, Buf<_250> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 		{
 			try
 			{

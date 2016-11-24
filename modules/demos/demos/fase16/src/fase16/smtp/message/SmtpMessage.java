@@ -1,10 +1,10 @@
-package demo.fase.smtp.message;
+package fase16.smtp.message;
 
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Op;
 import org.scribble.util.Caller;
 
-import demo.fase.smtp.Smtp.Smtp.Smtp;
+import fase16.smtp.Smtp.Smtp.Smtp;
 
 public abstract class SmtpMessage extends ScribMessage
 {

@@ -8,7 +8,7 @@ import fib.Fib.Adder.Adder;
 import fib.Fib.Adder.channels.C.Adder_C_1;
 import fib.Fib.Adder.roles.C;
 
-public class MyC
+public class MyAdderC
 {
 	public static void main(String[] args) throws Exception
 	{

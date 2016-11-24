@@ -1,10 +1,10 @@
-package demo.fase.adder;
+package fase16.adder;
 
-import static demo.fase.adder.Adder.Adder.Adder.Add;
-import static demo.fase.adder.Adder.Adder.Adder.Bye;
-import static demo.fase.adder.Adder.Adder.Adder.C;
-import static demo.fase.adder.Adder.Adder.Adder.Res;
-import static demo.fase.adder.Adder.Adder.Adder.S;
+import static fase16.adder.Adder.Adder.Adder.Add;
+import static fase16.adder.Adder.Adder.Adder.Bye;
+import static fase16.adder.Adder.Adder.Adder.C;
+import static fase16.adder.Adder.Adder.Adder.Res;
+import static fase16.adder.Adder.Adder.Adder.S;
 
 import java.io.IOException;
 
@@ -15,13 +15,14 @@ import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.MPSTEndpoint;
 
-import demo.fase.adder.Adder.Adder.Adder;
-import demo.fase.adder.Adder.Adder.channels.S.Adder_S_1;
-import demo.fase.adder.Adder.Adder.channels.S.Adder_S_1_Cases;
-import demo.fase.adder.Adder.Adder.channels.S.Adder_S_3;
-import demo.fase.adder.Adder.Adder.roles.S;
+import fase16.adder.Adder.Adder.Adder;
+import fase16.adder.Adder.Adder.channels.S.Adder_S_1;
+import fase16.adder.Adder.Adder.channels.S.Adder_S_1_Cases;
+import fase16.adder.Adder.Adder.channels.S.Adder_S_3;
+import fase16.adder.Adder.Adder.roles.S;
 
-public class MyS
+
+public class AdderS
 {
 	public static void main(String[] args) throws Exception
 	{

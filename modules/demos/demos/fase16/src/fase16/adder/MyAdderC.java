@@ -1,19 +1,19 @@
-package demo.fase.adder;
+package fase16.adder;
 
-import static demo.fase.adder.Adder.Adder.Adder.*;
+import static fase16.adder.Adder.Adder.Adder.*;
 
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import demo.fase.adder.Adder.Adder.Adder;
-import demo.fase.adder.Adder.Adder.channels.C.Adder_C_1;
-import demo.fase.adder.Adder.Adder.channels.C.Adder_C_2;
-import demo.fase.adder.Adder.Adder.channels.C.Adder_C_3;
-import demo.fase.adder.Adder.Adder.roles.C;
+import fase16.adder.Adder.Adder.Adder;
+import fase16.adder.Adder.Adder.channels.C.Adder_C_1;
+import fase16.adder.Adder.Adder.channels.C.Adder_C_2;
+import fase16.adder.Adder.Adder.channels.C.Adder_C_3;
+import fase16.adder.Adder.Adder.roles.C;
 
-public class MyCDemo
+public class MyAdderC
 {
 	public static void main(String[] args) throws Exception
 	{

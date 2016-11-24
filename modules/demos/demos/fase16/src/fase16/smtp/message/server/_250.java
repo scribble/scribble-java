@@ -1,7 +1,7 @@
-package demo.fase.smtp.message.server;
+package fase16.smtp.message.server;
 
-import demo.fase.smtp.Smtp.Smtp.Smtp;
-import demo.fase.smtp.message.SmtpMessage;
+import fase16.smtp.Smtp.Smtp.Smtp;
+import fase16.smtp.message.SmtpMessage;
 
 public class _250 extends SmtpMessage
 {
