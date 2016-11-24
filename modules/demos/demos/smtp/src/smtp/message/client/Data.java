@@ -1,7 +1,7 @@
-package demo.smtp.message.client;
+package smtp.message.client;
 
-import demo.smtp.Smtp.Smtp.Smtp;
-import demo.smtp.message.SmtpMessage;
+import smtp.Smtp.Smtp.Smtp;
+import smtp.message.SmtpMessage;
 
 public class Data extends SmtpMessage
 {

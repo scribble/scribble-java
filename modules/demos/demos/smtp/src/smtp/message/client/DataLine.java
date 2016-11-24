@@ -1,8 +1,8 @@
-package demo.smtp.message.client;
+package smtp.message.client;
 
-import demo.smtp.Smtp.Smtp.Smtp;
-import demo.smtp.message.SmtpMessage;
-import demo.smtp.message.SmtpMessageFormatter;
+import smtp.Smtp.Smtp.Smtp;
+import smtp.message.SmtpMessage;
+import smtp.message.SmtpMessageFormatter;
 
 // FIXME: rename
 public class DataLine extends SmtpMessage

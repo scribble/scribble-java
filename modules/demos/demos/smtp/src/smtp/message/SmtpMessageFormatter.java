@@ -1,4 +1,4 @@
-package demo.smtp.message;
+package smtp.message;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,13 +9,13 @@ import java.nio.charset.Charset;
 import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;
 
-import demo.smtp.message.server._220;
-import demo.smtp.message.server._235;
-import demo.smtp.message.server._250;
-import demo.smtp.message.server._250d;
-import demo.smtp.message.server._354;
-import demo.smtp.message.server._501;
-import demo.smtp.message.server._535;
+import smtp.message.server._220;
+import smtp.message.server._235;
+import smtp.message.server._250;
+import smtp.message.server._250d;
+import smtp.message.server._354;
+import smtp.message.server._501;
+import smtp.message.server._535;
 
 // Currently supports only client-side reading, not server-side
 public class SmtpMessageFormatter implements ScribMessageFormatter

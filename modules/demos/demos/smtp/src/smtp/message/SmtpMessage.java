@@ -1,10 +1,10 @@
-package demo.smtp.message;
+package smtp.message;
 
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Op;
 import org.scribble.util.Caller;
 
-import demo.smtp.Smtp.Smtp.Smtp;
+import smtp.Smtp.Smtp.Smtp;
 
 public abstract class SmtpMessage extends ScribMessage
 {

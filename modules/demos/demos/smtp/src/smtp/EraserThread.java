@@ -1,4 +1,4 @@
-package demo.smtp;
+package smtp;
 
 public class EraserThread extends Thread
 {

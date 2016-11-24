@@ -1,7 +1,7 @@
-package demo.smtp.message.server;
+package smtp.message.server;
 
-import demo.smtp.Smtp.Smtp.Smtp;
-import demo.smtp.message.SmtpMessage;
+import smtp.Smtp.Smtp.Smtp;
+import smtp.message.SmtpMessage;
 
 public class _354 extends SmtpMessage
 {

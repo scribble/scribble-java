@@ -1,7 +1,7 @@
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' demo.smtp.SmtpClient
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/demos/target/classes smtp.SmtpC
 
 
-package demo.smtp;
+package smtp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,45 +13,45 @@ import org.scribble.net.session.SSLSocketChannelWrapper;
 import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import demo.smtp.Smtp.Smtp.Smtp;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_10;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_11_Cases;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_12;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_2;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_3;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Cases;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_6;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_7;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_7_Cases;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_8;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_9_Cases;
-import demo.smtp.Smtp.Smtp.roles.C;
-import demo.smtp.message.SmtpMessageFormatter;
-import demo.smtp.message.client.Auth;
-import demo.smtp.message.client.Data;
-import demo.smtp.message.client.DataLine;
-import demo.smtp.message.client.Ehlo;
-import demo.smtp.message.client.EndOfData;
-import demo.smtp.message.client.Mail;
-import demo.smtp.message.client.Quit;
-import demo.smtp.message.client.Rcpt;
-import demo.smtp.message.client.StartTls;
-import demo.smtp.message.client.Subject;
+import smtp.Smtp.Smtp.Smtp;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_1;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_10;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_11_Cases;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_12;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_2;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_3;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_3_Cases;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_4;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_6;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_7;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_7_Cases;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_8;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_9_Cases;
+import smtp.Smtp.Smtp.roles.C;
+import smtp.message.SmtpMessageFormatter;
+import smtp.message.client.Auth;
+import smtp.message.client.Data;
+import smtp.message.client.DataLine;
+import smtp.message.client.Ehlo;
+import smtp.message.client.EndOfData;
+import smtp.message.client.Mail;
+import smtp.message.client.Quit;
+import smtp.message.client.Rcpt;
+import smtp.message.client.StartTls;
+import smtp.message.client.Subject;
 
-import static demo.smtp.Smtp.Smtp.Smtp.*;
+import static smtp.Smtp.Smtp.Smtp.*;
 
-public class SmtpClient
+public class SmtpC
 {
-	public SmtpClient() throws Exception
+	public SmtpC() throws Exception
 	{
 		run();
 	}
 
 	public static void main(String[] args) throws Exception
 	{
-		new SmtpClient();
+		new SmtpC();
 	}
 
 	public void run() throws Exception

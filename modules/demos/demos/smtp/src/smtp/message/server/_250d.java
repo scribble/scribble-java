@@ -1,8 +1,8 @@
-package demo.smtp.message.server;
+package smtp.message.server;
 
-import demo.smtp.Smtp.Smtp.Smtp;
-import demo.smtp.message.SmtpMessage;
-import demo.smtp.message.SmtpMessageFormatter;
+import smtp.Smtp.Smtp.Smtp;
+import smtp.message.SmtpMessage;
+import smtp.message.SmtpMessageFormatter;
 
 public class _250d extends SmtpMessage
 {

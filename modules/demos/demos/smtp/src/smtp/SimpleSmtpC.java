@@ -1,17 +1,17 @@
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' demo.smtp.SimpleClient
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/demos/target/classes smtp.SimpleSmtpC
 
 
-package demo.smtp;
+package smtp;
 
-import static demo.smtp.Smtp.Smtp.Smtp.C;
-import static demo.smtp.Smtp.Smtp.Smtp.S;
-import static demo.smtp.Smtp.Smtp.Smtp._220;
-import static demo.smtp.Smtp.Smtp.Smtp._235;
-import static demo.smtp.Smtp.Smtp.Smtp._250;
-import static demo.smtp.Smtp.Smtp.Smtp._250d;
-import static demo.smtp.Smtp.Smtp.Smtp._354;
-import static demo.smtp.Smtp.Smtp.Smtp._501;
-import static demo.smtp.Smtp.Smtp.Smtp._535;
+import static smtp.Smtp.Smtp.Smtp.C;
+import static smtp.Smtp.Smtp.Smtp.S;
+import static smtp.Smtp.Smtp.Smtp._220;
+import static smtp.Smtp.Smtp.Smtp._235;
+import static smtp.Smtp.Smtp.Smtp._250;
+import static smtp.Smtp.Smtp.Smtp._250d;
+import static smtp.Smtp.Smtp.Smtp._354;
+import static smtp.Smtp.Smtp.Smtp._501;
+import static smtp.Smtp.Smtp.Smtp._535;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,35 +24,35 @@ import org.scribble.net.session.SSLSocketChannelWrapper;
 import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import demo.smtp.Smtp.Smtp.Smtp;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_10;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_11_Cases;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_6;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_8;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_9_Cases;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
-import demo.smtp.Smtp.Smtp.roles.C;
-import demo.smtp.message.SmtpMessageFormatter;
-import demo.smtp.message.client.Auth;
-import demo.smtp.message.client.Data;
-import demo.smtp.message.client.DataLine;
-import demo.smtp.message.client.Ehlo;
-import demo.smtp.message.client.EndOfData;
-import demo.smtp.message.client.Mail;
-import demo.smtp.message.client.Quit;
-import demo.smtp.message.client.Rcpt;
-import demo.smtp.message.client.StartTls;
-import demo.smtp.message.client.Subject;
+import smtp.Smtp.Smtp.Smtp;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_1;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_10;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_11_Cases;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_4;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_6;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_8;
+import smtp.Smtp.Smtp.channels.C.Smtp_C_9_Cases;
+import smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
+import smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
+import smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
+import smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
+import smtp.Smtp.Smtp.roles.C;
+import smtp.message.SmtpMessageFormatter;
+import smtp.message.client.Auth;
+import smtp.message.client.Data;
+import smtp.message.client.DataLine;
+import smtp.message.client.Ehlo;
+import smtp.message.client.EndOfData;
+import smtp.message.client.Mail;
+import smtp.message.client.Quit;
+import smtp.message.client.Rcpt;
+import smtp.message.client.StartTls;
+import smtp.message.client.Subject;
 
 // NB: needs the -subtypes option in the Endpoint API generation
-public class SimpleClient
+public class SimpleSmtpC
 {
-	public SimpleClient() throws Exception
+	public SimpleSmtpC() throws Exception
 	{
 		run();
 	}
@@ -188,7 +188,7 @@ public class SimpleClient
 
 	public static void main(String[] args) throws Exception
 	{
-		new SimpleClient();
+		new SimpleSmtpC();
 	}
 	
 	
