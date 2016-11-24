@@ -1,5 +1,5 @@
 //$ bin/scribblec.sh -ip modules/demos/demos/coco/src -d modules/demos/demos/coco/src modules/demos/demos/coco/src/coco/smtp/Smtp.scr -api Smtp C
-//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes modules/demos/demos/coco/src/coco/smtp/*.java -d modules/demos/demos/coco/javadoc/smtp
+//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/demos/coco/src modules/demos/demos/coco/src/coco/smtp/*.java -subpackages coco.smtp.Smtp.Smtp -d modules/demos/demos/coco/javadoc/smtp
 
 //http://sandbox.kidstrythisathome.com/erdos/
 

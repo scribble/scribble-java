@@ -1,6 +1,6 @@
-package demo.betty16.lec1.httplong.message.server;
+package http.longvers.message.server;
 
-import demo.betty16.lec1.httplong.message.HttpLongMessage;
+import http.longvers.message.HttpLongMessage;
 
 @Deprecated
 public class CRLF extends HttpLongMessage
