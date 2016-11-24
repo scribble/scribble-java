@@ -1,5 +1,5 @@
 //$ bin/scribblec.sh modules/demos/travel/src/Travel.scr -ip modules/demos/travel/src -d modules/demos/travel/src -api Booking C
-//$ javadoc -cp modules/demos/target/classes modules/demos/travel/src/*.java -d modules/demos/travel/javadoc
+//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes modules/demos/travel/src/travel/*.java -d modules/demos/travel/javadoc
 
 module travel.Travel;
 

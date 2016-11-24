@@ -1,6 +1,6 @@
 //$ bin/scribblec.sh modules/core/src/test/scrib/demo/fib/Fib.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -api Fibonacci A -api Fibonacci B
 
-package demo.fib;
+package fib;
 
 import java.io.IOException;
 
@@ -12,16 +12,16 @@ import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import demo.fib.Fib.Fibonacci.Fibonacci;
-import demo.fib.Fib.Fibonacci.channels.A.Fibonacci_A_1;
-import demo.fib.Fib.Fibonacci.channels.B.EndSocket;
-import demo.fib.Fib.Fibonacci.channels.B.Fibonacci_B_1;
-import demo.fib.Fib.Fibonacci.channels.B.Fibonacci_B_1_Handler;
-import demo.fib.Fib.Fibonacci.channels.B.Fibonacci_B_2;
-import demo.fib.Fib.Fibonacci.ops.end;
-import demo.fib.Fib.Fibonacci.ops.fibonacci;
-import demo.fib.Fib.Fibonacci.roles.A;
-import demo.fib.Fib.Fibonacci.roles.B;
+import fib.Fib.Fibonacci.Fibonacci;
+import fib.Fib.Fibonacci.channels.A.Fibonacci_A_1;
+import fib.Fib.Fibonacci.channels.B.EndSocket;
+import fib.Fib.Fibonacci.channels.B.Fibonacci_B_1;
+import fib.Fib.Fibonacci.channels.B.Fibonacci_B_1_Handler;
+import fib.Fib.Fibonacci.channels.B.Fibonacci_B_2;
+import fib.Fib.Fibonacci.ops.end;
+import fib.Fib.Fibonacci.ops.fibonacci;
+import fib.Fib.Fibonacci.roles.A;
+import fib.Fib.Fibonacci.roles.B;
 
 public class Fibo
 {
@@ -97,7 +97,7 @@ class MyA extends Thread
 		}
 	}
 
-	private demo.fib.Fib.Fibonacci.channels.A.EndSocket run(Fibonacci_A_1 s, int todo) throws Exception
+	private fib.Fib.Fibonacci.channels.A.EndSocket run(Fibonacci_A_1 s, int todo) throws Exception
 	{
 		return (todo > 0)
 				? run(

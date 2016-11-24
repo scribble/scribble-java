@@ -1,7 +1,4 @@
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr -session Foo -d modules/validation/src/main/java
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr -api Foo A -d modules/validation/src/main/java
-
-package demo.fib;
+package fib;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -13,11 +10,11 @@ import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import demo.fib.Fib.Adder.Adder;
-import demo.fib.Fib.Adder.channels.C.Adder_C_1;
-import demo.fib.Fib.Adder.channels.C.Adder_C_2;
-import demo.fib.Fib.Adder.channels.C.Adder_C_3;
-import demo.fib.Fib.Adder.roles.C;
+import fib.Fib.Adder.Adder;
+import fib.Fib.Adder.channels.C.Adder_C_1;
+import fib.Fib.Adder.channels.C.Adder_C_2;
+import fib.Fib.Adder.channels.C.Adder_C_3;
+import fib.Fib.Adder.roles.C;
 
 public class FibClient
 {

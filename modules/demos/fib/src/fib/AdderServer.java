@@ -1,4 +1,4 @@
-package demo.fib;
+package fib;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -10,11 +10,11 @@ import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.MPSTEndpoint;
 
-import demo.fib.Fib.Adder.Adder;
-import demo.fib.Fib.Adder.channels.S.Adder_S_1;
-import demo.fib.Fib.Adder.channels.S.Adder_S_1_Cases;
-import demo.fib.Fib.Adder.channels.S.Adder_S_3;
-import demo.fib.Fib.Adder.roles.S;
+import fib.Fib.Adder.Adder;
+import fib.Fib.Adder.channels.S.Adder_S_1;
+import fib.Fib.Adder.channels.S.Adder_S_1_Cases;
+import fib.Fib.Adder.channels.S.Adder_S_3;
+import fib.Fib.Adder.roles.S;
 
 public class AdderServer
 {
