@@ -13,7 +13,7 @@ public abstract class EAction extends MAction<Local>
 	/*public final MessageId<?> mid;
 	public final Payload payload;  // Empty for MessageSigNames*/
 	
-	public EAction(Role peer, MessageId<?> mid, Payload payload)
+	protected EAction(Role peer, MessageId<?> mid, Payload payload)
 	{
 		/*this.mid = mid;
 		this.payload = payload;*/

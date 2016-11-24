@@ -60,7 +60,7 @@
 		<module>modules/parser</module>
 		<module>modules/cli</module>
 		<module>dist</module>
-    <module>demos</module>
+    <module>modules/demos</module>
   </modules>
   
 	<dependencyManagement>

@@ -276,14 +276,21 @@ public class SConfig
 		candidate.add(r);*/
 		Set<Role> candidate = new LinkedHashSet<>();
 		Set<Role> todo = new LinkedHashSet<>(Arrays.asList(orig));
+
+			System.out.println("BBB: " + todo);
+
 		while (!todo.isEmpty())
 		{
+			System.out.println("BBB1: " + todo);
 			Role r = todo.iterator().next();
 			todo.remove(r);
 			candidate.add(r);
 			
 			//EndpointState s = this.states.get(r);
 			EFSM s = this.efsms.get(r);
+
+			System.out.println("AAA: " + r + ", " + r.getClass());
+
 			if (s.getStateKind() == EStateKind.OUTPUT && !s.isConnectOrWrapClientOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
 				// FIXME: move into isWaitingFor
@@ -298,6 +305,7 @@ public class SConfig
 				continue;
 			}
 			Set<Role> blocked = isWaitingFor(r);
+			System.out.println("BBB2: " + blocked);
 			//if (blocked.isEmpty())
 			if (blocked == null)
 			{
@@ -342,8 +350,10 @@ public class SConfig
 			if (a.isReceive())
 			{
 				Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
+				System.out.println("CCC0: " + all);
 				if (peers.stream().noneMatch((p) -> this.buffs.get(r).get(p) != null))
 				{
+					System.out.println("CCC1: " + peers);
 					return peers;
 				}
 			}

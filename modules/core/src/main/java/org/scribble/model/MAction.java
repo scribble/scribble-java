@@ -15,7 +15,7 @@ public abstract class MAction<K extends ProtocolKind>
 	public final MessageId<?> mid;
 	public final Payload payload;  // EMPTY_PAYLOAD for MessageSigNames
 	
-	public MAction(Role obj, MessageId<?> mid, Payload payload)
+	protected MAction(Role obj, MessageId<?> mid, Payload payload)
 	{
 		//this.id = ModelAction.count++;
 

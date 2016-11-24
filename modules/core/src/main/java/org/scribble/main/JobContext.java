@@ -188,7 +188,7 @@ public class JobContext
 			Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
 			EGraphBuilder builder = new EGraphBuilder(this.job);
 			proj.accept(builder);
-			graph = builder.util.finalise();  // Projected module contains a single protocol
+			graph = builder.util.finalise();
 			addEGraph(fulllpn, graph);
 		}
 		return graph;
