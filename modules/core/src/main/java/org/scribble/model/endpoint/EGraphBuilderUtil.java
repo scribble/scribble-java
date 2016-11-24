@@ -51,16 +51,16 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 	}
 	
 	@Override
-	public EState newState(Set<RecVar> labs)
-	{
-		return new EState(labs);
-	}
-	
-	@Override
 	public void reset()
 	{
 		clear();
 		super.reset();
+	}
+	
+	@Override
+	public EState newState(Set<RecVar> labs)
+	{
+		return new EState(labs);
 	}
 
 	// Records 's' as predecessor state, and 'a' as previous action and the "enacting action" for "fresh" recursion scopes
@@ -90,6 +90,10 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		}
 	}
 	
+
+	/*
+	 * Dealing with Choice contexts
+	 */
 	public void enterChoice()
 	{
 		this.pred.push(new LinkedList<>());
@@ -178,6 +182,10 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		}
 	}
 	
+
+	/*
+	 * Dealing with Recursion contexts
+	 */
 	public void pushRecursionEntry(RecVar recvar, EState entry)
 	{
 		/*if (!isUnguardedInChoice())  // Don't record rec entry if it is an unguarded choice-rec
@@ -230,6 +238,10 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		tmp.put(recvar, pop);
 	}	
 	
+
+	/*
+	 * Edge construction for Continues
+	 */
 	public boolean isUnguardedInChoice()
 	//public boolean isUnguardedInChoice(RecVar rv)
 	{
@@ -307,6 +319,10 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		return this.recvars.get(recvar).peek();
 	}	
 	
+
+	/*
+	 * Finalise graph by treating IntermediateContinueEdges
+	 */
 	public EGraph finalise()
 	{
 		EState res = new EState(this.entry.getLabels());
