@@ -146,24 +146,6 @@ public class Job
 		return dependencies.keySet().stream().collect(
 				Collectors.toMap((lpn) -> lpn, (lpn) -> this.jcontext.getModule(lpn.getPrefix())));
 	}
-	
-  /*// Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
-	public void buildGraph(GProtocolName fullname, Role role) throws ScribbleException  // Need to visit from Module for visitor context
-	{
-		debugPrintPass("Running " + EndpointGraphBuilder.class + " for " + fullname + "@" + role);
-		// Visit Module for context (not just the protodecl) -- builds FSMs for all locals in the module
-		
-		//System.out.println("AAA: " + this.jcontext.getProjection(fullname, role));
-
-		Module proj = this.jcontext.getProjection(fullname, role);
-		if (proj == null)
-		{
-			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
-		}
-		proj.accept(new EndpointGraphBuilder(this)); 
-			// Builds FSMs for all local protocols in this module as root (though each projected module contains a single local protocol)
-			// Subprotocols "inlined" by FsmBuilder (scoped subprotocols not supported)
-	}*/
 
 	public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
 	{
@@ -173,7 +155,7 @@ public class Job
 		return map;
 	}
 	
-	// FIXME: refactor an EndpointApiGenerator
+	// FIXME: refactor an EndpointApiGenerator -- ?
 	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribbleException
 	{
 		/*if (this.jcontext.getEndpointGraph(fullname, self) == null)
