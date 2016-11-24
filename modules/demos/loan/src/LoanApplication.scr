@@ -14,14 +14,14 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 type <java> "java.lang.String" from "rt.jar" as String;
 type <java> "java.lang.Boolean" from "rt.jar" as Bool;
  
-global protocol BuyerBrokerSupplier(role Applicant, role ApplicationPortal, role LoanProcessingDept, role FinanceDept)
+global protocol BuyerBrokerSupplier(role Applicant, role ApplicationPortal, role ProcessingDept, role FinanceDept)
 {
 	/*applyForLoan(CustomerName, DateOfBirth, AnnualSalary, CreditRating) from Applicant to ApplicationPortal;
-	checkEligibility(CustomerName, DateOfBirth, AnnualSalary, CreditRating) from ApplicationPortal to LoanProcessingDept;
-	respond(Approval) from LoanProcessingDept to ApplicationPortal;*/
+	checkEligibility(CustomerName, DateOfBirth, AnnualSalary, CreditRating) from ApplicationPortal to ProcessingDept;
+	respond(Approval) from ProcessingDept to ApplicationPortal;*/
 	applyForLoan(String, String, Int, Int) from Applicant to ApplicationPortal;
-	checkEligibility(String, String, Int, Int) from ApplicationPortal to LoanProcessingDept;
-	respond(Bool) from LoanProcessingDept to ApplicationPortal;
+	checkEligibility(String, String, Int, Int) from ApplicationPortal to ProcessingDept;
+	respond(Bool) from ProcessingDept to ApplicationPortal;
 
 	choice at ApplicationPortal
 	{ 
@@ -44,15 +44,15 @@ global protocol BuyerBrokerSupplier(role Applicant, role ApplicationPortal, role
 
 explicit global protocol BBSOriginal
 (
-		role Applicant, role ApplicationPortal, role LoanProcessingDept, role FinanceDept
+		role Applicant, role ApplicationPortal, role ProcessingDept, role FinanceDept
 )
 {
 	connect Applicant to ApplicationPortal;
-	connect ApplicationPortal to LoanProcessingDept;
+	connect ApplicationPortal to ProcessingDept;
 
 	applyForLoan(String, String, Int, Int) from Applicant to ApplicationPortal;
-	checkEligibility(String, String, Int, Int) from ApplicationPortal to LoanProcessingDept;
-	respond(Bool) from LoanProcessingDept to ApplicationPortal;
+	checkEligibility(String, String, Int, Int) from ApplicationPortal to ProcessingDept;
+	respond(Bool) from ProcessingDept to ApplicationPortal;
 
 	choice at ApplicationPortal
 	{ 

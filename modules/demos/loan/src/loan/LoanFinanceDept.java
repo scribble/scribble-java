@@ -17,7 +17,7 @@ import loan.LoanApplication.BuyerBrokerSupplier.channels.FinanceDept.BuyerBroker
 import loan.LoanApplication.BuyerBrokerSupplier.channels.FinanceDept.BuyerBrokerSupplier_FinanceDept_1_Cases;
 import loan.LoanApplication.BuyerBrokerSupplier.roles.FinanceDept;
 
-public class MyFinanceDept
+public class LoanFinanceDept
 {
 	public static void main(String[] args) throws Exception
 	{

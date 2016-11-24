@@ -3,7 +3,7 @@ package loan;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.Applicant;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.ApplicationPortal;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.FinanceDept;
-import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.LoanProcessingDept;
+import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.ProcessingDept;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.applyForLoan;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.checkEligibility;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.getLoanAmount;
@@ -11,6 +11,10 @@ import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.rejec
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.requestConfirmation;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.respond;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.sendLoanAmount;
+import loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier;
+import loan.LoanApplication.BuyerBrokerSupplier.channels.ApplicationPortal.BuyerBrokerSupplier_ApplicationPortal_1;
+import loan.LoanApplication.BuyerBrokerSupplier.channels.ApplicationPortal.BuyerBrokerSupplier_ApplicationPortal_4;
+import loan.LoanApplication.BuyerBrokerSupplier.roles.ApplicationPortal;
 
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
@@ -19,12 +23,7 @@ import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier;
-import loan.LoanApplication.BuyerBrokerSupplier.channels.ApplicationPortal.BuyerBrokerSupplier_ApplicationPortal_1;
-import loan.LoanApplication.BuyerBrokerSupplier.channels.ApplicationPortal.BuyerBrokerSupplier_ApplicationPortal_4;
-import loan.LoanApplication.BuyerBrokerSupplier.roles.ApplicationPortal;
-
-public class MyApplicationPortal
+public class LoanApplicationPortal
 {
 	public static void main(String[] args) throws Exception
 	{
@@ -35,7 +34,7 @@ public class MyApplicationPortal
 					= new MPSTEndpoint<>(sess, ApplicationPortal, new ObjectStreamFormatter()))
 		{
 			se.accept(ss, Applicant);
-			se.connect(LoanProcessingDept, SocketChannelEndpoint::new, "localhost", 7777);
+			se.connect(ProcessingDept, SocketChannelEndpoint::new, "localhost", 7777);
 			se.connect(FinanceDept, SocketChannelEndpoint::new, "localhost", 9999);
 			
 			Buf<String> customerName = new Buf<>();
@@ -46,8 +45,9 @@ public class MyApplicationPortal
 			BuyerBrokerSupplier_ApplicationPortal_4 s4
 				= new BuyerBrokerSupplier_ApplicationPortal_1(se)
 					.receive(Applicant, applyForLoan, customerName, dateOfBirth, annualSalary, creditRating)
-					.send(LoanProcessingDept, checkEligibility, customerName.val, dateOfBirth.val, annualSalary.val, creditRating.val)
-					.receive(LoanProcessingDept, respond, response);
+					.send(ProcessingDept, checkEligibility, customerName.val, dateOfBirth.val, annualSalary.val, creditRating.val)
+					.receive(ProcessingDept
+							, respond, response);
 			if (response.val)
 			{
 				Buf<Integer> loan = new Buf<>();

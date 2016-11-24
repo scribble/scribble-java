@@ -16,7 +16,7 @@ import loan.LoanApplication.BuyerBrokerSupplier.channels.Applicant.BuyerBrokerSu
 import loan.LoanApplication.BuyerBrokerSupplier.channels.Applicant.BuyerBrokerSupplier_Applicant_2_Cases;
 import loan.LoanApplication.BuyerBrokerSupplier.roles.Applicant;
 
-public class MyApplicant
+public class LoanApplicant
 {
 	public static void main(String[] args) throws Exception
 	{
