@@ -1,7 +1,7 @@
-//$ bin/scribblec.sh modules/core/src/test/scrib/demo/cognizant/loan/LoanApplication.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib -api BuyerBrokerSupplier Applicant -V
-//$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/core/src/test/scrib -subpackages demo.cognizant.loan.LoanApplication -d test/doc/cognizant/loan
+//$ bin/scribblec.sh modules/demos/loan/src/LoanApplication.scr -ip modules/demos/loan/src -d modules/demos/loan/src -api BuyerBrokerSupplier Applicant
+//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes modules/demos/loan/src/loan/*.java -d modules/demos/loan/javadoc
 
-module demo.cognizant.loan.LoanApplication;
+module loan.LoanApplication;
 
 /*type <xsd> "CustomerName" from "CustomerName.xsd" as CustomerName;
 type <xsd> "DateOfBirth" from "DateOfBirth.xsd" as DateOfBirth;
