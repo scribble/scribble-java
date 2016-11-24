@@ -1,7 +1,7 @@
-//$ bin/scribblec.sh -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ modules/core/src/test/scrib/demo/game/Game2.scr
+//$ bin/scribblec.sh -ip modules/demos/game/src -d modules/demos/game/src modules/demos/game/src/Game2.scr
 
 
-module Game2;
+module game.Game2;
 
 
 global protocol Proto(role C, role S)
