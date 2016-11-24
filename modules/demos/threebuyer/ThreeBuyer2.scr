@@ -1,4 +1,4 @@
-module demo.threebuyer.ThreeBuyer2;
+module threebuyer.ThreeBuyer2;
 
 
 type <java> "java.lang.Integer" from "rt.jar" as Int;

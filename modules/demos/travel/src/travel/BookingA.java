@@ -1,4 +1,4 @@
-package demo.travel;
+package travel;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -10,12 +10,12 @@ import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import demo.travel.Travel.Booking.Booking;
-import demo.travel.Travel.Booking.channels.A.Booking_A_1;
-import demo.travel.Travel.Booking.channels.A.Booking_A_1_Cases;
-import demo.travel.Travel.Booking.roles.A;
+import travel.Travel.Booking.Booking;
+import travel.Travel.Booking.channels.A.Booking_A_1;
+import travel.Travel.Booking.channels.A.Booking_A_1_Cases;
+import travel.Travel.Booking.roles.A;
 
-public class Agent
+public class BookingA
 {
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException, ExecutionException, InterruptedException
 	{
