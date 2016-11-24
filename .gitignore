@@ -10,8 +10,6 @@ tools/eclipse/plugins/org.scribble.*/bin/
 *~
 *.swp
 bin/scribblec.sh
-modules/core/src/test/scrib/test/foo/Foo
-modules/core/src/test/scrib/test/test1/Test1
-modules/core/src/test/scrib/scratch/Scratch1
+modules/core/src/test/scrib
 modules/demos/demos
 
