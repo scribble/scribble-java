@@ -28,20 +28,19 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribUtil;
 
-// Maybe no point to be a Runnable
-public class CommandLine //implements Runnable
+public class CommandLine
 {
 	protected enum ArgFlag
 	{
 		// Unique flags
 		JUNIT,  // For internal use (JUnit test harness)
-		MAIN,
-		PATH,
+		MAIN_MOD,
+		IMPORT_PATH,
 		VERBOSE,
 		SCHAN_API_SUBTYPES,
 		OLD_WF,
 		NO_LIVENESS,
-		MIN_EFSM,  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
+		LTSCONVERT_MIN,  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 		FAIR,
 		NO_LOCAL_CHOICE_SUBJECT_CHECK,
 		NO_ACCEPT_CORRELATION_CHECK,
@@ -50,20 +49,20 @@ public class CommandLine //implements Runnable
 
 		// Non-unique flags
 		PROJECT,
-		SESS_API,
-		SCHAN_API,
-		EP_API,
 		API_OUTPUT,
 		EFSM,
-		EFSMPNG,
-		VEFSM,
-		VEFSMPNG,
-		UEFSM,
-		UEFSMPNG,
-		GMODEL,
-		GMODELPNG,
-		UGMODEL,
-		UGMODELPNG,
+		VALIDATION_EFSM,
+		UNFAIR_EFSM,
+		UNFAIR_EFSM_PNG,
+		EFSM_PNG,
+		VALIDATION_EFSM_PNG,
+		SGRAPH,
+		UNFAIR_SGRAPH,
+		SGRAPH_PNG,
+		UNFAIR_SGRAPH_PNG,
+		API_GEN,
+		SESS_API_GEN,
+		SCHAN_API_GEN,
 	}
 	
 	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
@@ -71,7 +70,7 @@ public class CommandLine //implements Runnable
 	public CommandLine(String... args) throws CommandLineException
 	{
 		this.args = new CommandLineArgParser(args).getArgs();
-		if (!this.args.containsKey(ArgFlag.MAIN))
+		if (!this.args.containsKey(ArgFlag.MAIN_MOD))
 		{
 			throw new CommandLineException("No main module has been specified\r\n");
 		}
@@ -121,45 +120,46 @@ public class CommandLine //implements Runnable
 				{
 					outputGraph(job, true, true);
 				}
-				if (this.args.containsKey(ArgFlag.VEFSM))
+				if (this.args.containsKey(ArgFlag.VALIDATION_EFSM))
 				{
 					outputGraph(job, false, true);
 				}
-				if (this.args.containsKey(ArgFlag.UEFSM))
+				if (this.args.containsKey(ArgFlag.UNFAIR_EFSM))
 				{
 					outputGraph(job, false, false);
 				}
-				if (this.args.containsKey(ArgFlag.EFSMPNG))
+				if (this.args.containsKey(ArgFlag.EFSM_PNG))
 				{
 					drawGraph(job, true, true);
 				}
-				if (this.args.containsKey(ArgFlag.VEFSMPNG))
+				if (this.args.containsKey(ArgFlag.VALIDATION_EFSM_PNG))
 				{
 					drawGraph(job, false, true);
 				}
-				if (this.args.containsKey(ArgFlag.UEFSMPNG))
+				if (this.args.containsKey(ArgFlag.UNFAIR_EFSM_PNG))
 				{
 					drawGraph(job, false, false);
 				}
-				if (this.args.containsKey(ArgFlag.GMODEL) || this.args.containsKey(ArgFlag.GMODELPNG) || this.args.containsKey(ArgFlag.UGMODEL) || this.args.containsKey(ArgFlag.UGMODELPNG))
+				if (this.args.containsKey(ArgFlag.SGRAPH) || this.args.containsKey(ArgFlag.SGRAPH_PNG)
+						|| this.args.containsKey(ArgFlag.UNFAIR_SGRAPH) || this.args.containsKey(ArgFlag.UNFAIR_SGRAPH_PNG))
 				{
 					if (job.useOldWf)
 					{
 						throw new CommandLineException("Global model flag(s) incompatible with: "  + CommandLineArgParser.OLD_WF_FLAG);
 					}
-					if (this.args.containsKey(ArgFlag.GMODEL))
+					if (this.args.containsKey(ArgFlag.SGRAPH))
 					{
 						outputGlobalModel(job, true);
 					}
-					if (this.args.containsKey(ArgFlag.UGMODEL))
+					if (this.args.containsKey(ArgFlag.UNFAIR_SGRAPH))
 					{
 						outputGlobalModel(job, false);
 					}
-					if (this.args.containsKey(ArgFlag.GMODELPNG))
+					if (this.args.containsKey(ArgFlag.SGRAPH_PNG))
 					{
 						drawGlobalModel(job, true);
 					}
-					if (this.args.containsKey(ArgFlag.UGMODELPNG))
+					if (this.args.containsKey(ArgFlag.UNFAIR_SGRAPH_PNG))
 					{
 						drawGlobalModel(job, false);
 					}
@@ -177,15 +177,15 @@ public class CommandLine //implements Runnable
 				throw fail;
 			}
 
-			if (this.args.containsKey(ArgFlag.SESS_API))
+			if (this.args.containsKey(ArgFlag.SESS_API_GEN))
 			{
 				outputSessionApi(job);
 			}
-			if (this.args.containsKey(ArgFlag.SCHAN_API))
+			if (this.args.containsKey(ArgFlag.SCHAN_API_GEN))
 			{
 				outputStateChannelApi(job);
 			}
-			if (this.args.containsKey(ArgFlag.EP_API))
+			if (this.args.containsKey(ArgFlag.API_GEN))
 			{
 				outputEndpointApi(job);
 			}
@@ -227,7 +227,7 @@ public class CommandLine //implements Runnable
 	private void outputGraph(Job job, boolean forUser, boolean fair) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = forUser ? this.args.get(ArgFlag.EFSM) : this.args.get(ArgFlag.VEFSM);
+		String[] args = forUser ? this.args.get(ArgFlag.EFSM) : this.args.get(ArgFlag.VALIDATION_EFSM);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -239,18 +239,16 @@ public class CommandLine //implements Runnable
 		}
 	}
 
-	// FIXME: draw graphs once and cache, redrawing gives different state numbers
 	private void drawGraph(Job job, boolean forUser, boolean fair) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = forUser ? this.args.get(ArgFlag.EFSMPNG) : (fair ? this.args.get(ArgFlag.VEFSMPNG) : this.args.get(ArgFlag.UEFSMPNG));
+		String[] args = forUser ? this.args.get(ArgFlag.EFSM_PNG) : (fair ? this.args.get(ArgFlag.VALIDATION_EFSM_PNG) : this.args.get(ArgFlag.UNFAIR_EFSM_PNG));
 		for (int i = 0; i < args.length; i += 3)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
 			String png = args[i+2];
 			EGraph fsm = getEndointGraph(job, fullname, role, forUser, fair);
-			//jcontext.getEndpointGraph(fullname, role);
 			runDot(fsm.toDot(), png);
 		}
 	}
@@ -258,7 +256,7 @@ public class CommandLine //implements Runnable
 	private void outputGlobalModel(Job job, boolean fair) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(ArgFlag.GMODEL);
+		String[] args = fair ? this.args.get(ArgFlag.SGRAPH) : this.args.get(ArgFlag.UNFAIR_SGRAPH);
 		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -271,7 +269,7 @@ public class CommandLine //implements Runnable
 	private void drawGlobalModel(Job job, boolean fair) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = fair ? this.args.get(ArgFlag.GMODELPNG) : this.args.get(ArgFlag.UGMODELPNG);
+		String[] args = fair ? this.args.get(ArgFlag.SGRAPH_PNG) : this.args.get(ArgFlag.UNFAIR_SGRAPH_PNG);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -284,7 +282,7 @@ public class CommandLine //implements Runnable
 	private void outputSessionApi(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(ArgFlag.SESS_API);
+		String[] args = this.args.get(ArgFlag.SESS_API_GEN);
 		for (String fullname : args)
 		{
 			GProtocolName gpn = checkGlobalProtocolArg(jcontext, fullname);
@@ -296,7 +294,7 @@ public class CommandLine //implements Runnable
 	private void outputStateChannelApi(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(ArgFlag.SCHAN_API);
+		String[] args = this.args.get(ArgFlag.SCHAN_API_GEN);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -309,7 +307,7 @@ public class CommandLine //implements Runnable
 	private void outputEndpointApi(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(ArgFlag.EP_API);
+		String[] args = this.args.get(ArgFlag.API_GEN);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -378,7 +376,7 @@ public class CommandLine //implements Runnable
 		EGraph graph;
 		if (forUser)  // The (possibly minimised) user-output EFSM for API gen
 		{
-			graph = this.args.containsKey(ArgFlag.MIN_EFSM)
+			graph = this.args.containsKey(ArgFlag.LTSCONVERT_MIN)
 					? jcontext.getMinimisedEGraph(fullname, role) : jcontext.getEGraph(fullname, role);
 		}
 		else  // The (possibly unfair-transformed) internal EFSM for model checking
@@ -417,14 +415,14 @@ public class CommandLine //implements Runnable
 		boolean debug = this.args.containsKey(ArgFlag.VERBOSE);
 		boolean useOldWF = this.args.containsKey(ArgFlag.OLD_WF);
 		boolean noLiveness = this.args.containsKey(ArgFlag.NO_LIVENESS);
-		boolean minEfsm = this.args.containsKey(ArgFlag.MIN_EFSM);
+		boolean minEfsm = this.args.containsKey(ArgFlag.LTSCONVERT_MIN);
 		boolean fair = this.args.containsKey(ArgFlag.FAIR);
 		boolean noLocalChoiceSubjectCheck = this.args.containsKey(ArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK);
 		boolean noAcceptCorrelationCheck = this.args.containsKey(ArgFlag.NO_ACCEPT_CORRELATION_CHECK);
 
-		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN)[0]);
-		List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
-				? CommandLine.parseImportPaths(this.args.get(ArgFlag.PATH)[0])
+		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN_MOD)[0]);
+		List<Path> impaths = this.args.containsKey(ArgFlag.IMPORT_PATH)
+				? CommandLine.parseImportPaths(this.args.get(ArgFlag.IMPORT_PATH)[0])
 				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);

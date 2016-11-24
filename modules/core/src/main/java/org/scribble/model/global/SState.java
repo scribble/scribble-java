@@ -55,6 +55,13 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 		return new SStateErrors(stuck, waitfor, orphs, unfinished);
 	}
 	
+	@Override
+	protected String getNodeLabel()
+	{
+		String labs = this.config.toString();
+		return "label=\"" + this.id + ":" + labs.substring(1, labs.length() - 1) + "\"";
+	}
+	
 	// FIXME? doesn't use super.hashCode (cf., equals)
 	@Override
 	public final int hashCode()

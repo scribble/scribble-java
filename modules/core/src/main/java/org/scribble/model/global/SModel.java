@@ -219,4 +219,9 @@ public class SModel
 		return ignored;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return this.graph.toString();
+	}
 }

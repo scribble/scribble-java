@@ -77,7 +77,7 @@ public class AllTest
 			
 			// FIXME: read runtime arguments from a config file, e.g. -oldwf, -fair, etc
 			// Also need a way to specify expected tool output (e.g. projections/EFSMs for good, errors for bad)
-			new CommandLine(this.example, CommandLineArgParser.JUNIT_FLAG, CommandLineArgParser.PATH_FLAG, dir).run();
+			new CommandLine(this.example, CommandLineArgParser.JUNIT_FLAG, CommandLineArgParser.IMPORT_PATH_FLAG, dir).run();
 					// Added JUNIT flag -- but for some reason only bad DoArgList01.scr was breaking without it...
 			Assert.assertFalse("Expecting exception", this.isBadTest);
 		}
