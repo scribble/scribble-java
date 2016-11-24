@@ -6,7 +6,7 @@ import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.actions.EWrapServer;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
@@ -14,12 +14,12 @@ import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 public class LWrapServerDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LWrapServer leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public LWrapServer leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LWrapServer la = (LWrapServer) visited;
 		Role peer = la.src.toName();
 		builder.util.addEdge(builder.util.getEntry(), new EWrapServer(peer), builder.util.getExit());
-		return (LWrapServer) super.leaveEndpointGraphBuilding(parent, child, builder, la);
+		return (LWrapServer) super.leaveEGraphBuilding(parent, child, builder, la);
 	}
 
 	@Override

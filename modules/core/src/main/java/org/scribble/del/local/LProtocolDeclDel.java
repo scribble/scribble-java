@@ -9,7 +9,7 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
@@ -47,13 +47,13 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	public void enterEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
+	public void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
 	{
 		graph.util.reset();
 	}
 
 	@Override
-	public ScribNode leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited)
 	{
 		/*LProtocolDecl lpd = (LProtocolDecl) visited;  // Refactored into JobContext
 		

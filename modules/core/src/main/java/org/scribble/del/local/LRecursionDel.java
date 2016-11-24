@@ -10,7 +10,7 @@ import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
@@ -52,9 +52,9 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	}
 	
 	@Override
-	public void enterEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
+	public void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
 	{
-		super.enterEndpointGraphBuilding(parent, child, graph);
+		super.enterEGraphBuilding(parent, child, graph);
 		LRecursion lr = (LRecursion) child;
 		RecVar rv = lr.recvar.toName();
 		// Update existing state, not replace it -- cf. LDoDel
@@ -74,12 +74,12 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	}
 
 	@Override
-	public LRecursion leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited) throws ScribbleException
+	public LRecursion leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		LRecursion lr = (LRecursion) visited;
 		RecVar rv = lr.recvar.toName();
 		graph.util.popRecursionEntry(rv);
-		return (LRecursion) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
+		return (LRecursion) super.leaveEGraphBuilding(parent, child, graph, lr);
 	}
 
 	@Override

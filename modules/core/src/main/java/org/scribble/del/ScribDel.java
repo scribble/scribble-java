@@ -4,7 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ModuleContextBuilder;
 import org.scribble.visit.context.ProjectedChoiceDoPruner;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
@@ -150,12 +150,12 @@ public interface ScribDel
 		return visited;
 	}
 
-	default void enterEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
+	default void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
 	{
 		
 	}
 
-	default ScribNode leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited) throws ScribbleException
+	default ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
@@ -169,48 +169,6 @@ public interface ScribDel
 	{
 		return visited;
 	}
-
-	/*default void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
-	{
-		
-	}
-
-	default ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}*/
-	
-	/*//default void enterPathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor<? extends PathEnv> coll) throws ScribbleException
-	default void enterPathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll) throws ScribbleException
-	{
-		
-	}
-
-	//default ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor<? extends PathEnv> coll, ScribNode visited) throws ScribbleException
-	default ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}*/
-	
-	/*default void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
-	{
-		
-	}
-
-	default ScribNode leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}*/
-
-	/*default void enterEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll)
-	{
-		
-	}
-
-	default ScribNode leaveEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll, ScribNode visited)
-	{
-		return visited;
-	}*/
 	
 	default void enterValidation(ScribNode parent, ScribNode child, GProtocolValidator coll) throws ScribbleException
 	{

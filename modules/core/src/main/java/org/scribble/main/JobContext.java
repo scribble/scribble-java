@@ -17,7 +17,7 @@ import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.Projector;
 
 // Global "static" context information for a Job -- single instance per Job, should not be shared between Jobs
@@ -186,7 +186,7 @@ public class JobContext
 		if (graph == null)
 		{
 			Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
-			EndpointGraphBuilder builder = new EndpointGraphBuilder(this.job);
+			EGraphBuilder builder = new EGraphBuilder(this.job);
 			proj.accept(builder);
 			graph = builder.util.finalise();  // Projected module contains a single protocol
 			addEGraph(fulllpn, graph);

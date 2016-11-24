@@ -16,7 +16,7 @@ import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceDoPruner;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
@@ -119,25 +119,35 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		return (LChoice) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 
-	public LChoice visitForFsmConversion(EndpointGraphBuilder graph, LChoice child)
+	@Override
+	public void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
+	{
+		super.enterEGraphBuilding(parent, child, graph);
+		graph.util.enterChoice();
+	}
+
+	public LChoice visitForFsmConversion(EGraphBuilder graph, LChoice child)
 	{
 		try
 		{
-			graph.util.enterChoice();  // FIXME: refactor enter/leave properly
-
 			for (LProtocolBlock block : child.getBlocks())
 			{
 				graph.util.pushChoiceBlock();
 				block.accept(graph);
 				graph.util.popChoiceBlock();
 			}
-			
-			graph.util.leaveChoice();
 		}
 		catch (ScribbleException e)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + e);
 		}
 		return child;
+	}
+
+	@Override
+	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
+	{
+		graph.util.leaveChoice();
+		return super.leaveEGraphBuilding(parent, child, graph, visited);
 	}
 }

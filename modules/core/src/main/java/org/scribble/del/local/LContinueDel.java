@@ -16,7 +16,7 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.wf.ReachabilityChecker;
 import org.scribble.visit.wf.env.ReachabilityEnv;
@@ -46,7 +46,7 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 	}
 
 	@Override
-	public LContinue leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited) throws ScribbleException
+	public LContinue leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		LContinue lr = (LContinue) visited;
 		RecVar rv = lr.recvar.toName();
@@ -94,6 +94,6 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 				graph.util.addRecursionEdge(pred, prev, graph.util.getRecursionEntry(rv));  // May be repeated for non-det, but OK  // Combine with removeEdgeFromPredecessor?
 			}
 		}
-		return (LContinue) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
+		return (LContinue) super.leaveEGraphBuilding(parent, child, graph, lr);
 	}
 }

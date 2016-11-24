@@ -16,7 +16,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceDoPruner;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.wf.ReachabilityChecker;
@@ -71,7 +71,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		return child;
 	}
 
-	public LInteractionSeq visitForFsmConversion(EndpointGraphBuilder conv, LInteractionSeq child) throws ScribbleException
+	public LInteractionSeq visitForFsmConversion(EGraphBuilder conv, LInteractionSeq child) throws ScribbleException
 	{
 		EState entry = conv.util.getEntry();
 		EState exit = conv.util.getExit();

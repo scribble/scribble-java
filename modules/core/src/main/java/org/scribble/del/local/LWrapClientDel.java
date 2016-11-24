@@ -7,19 +7,19 @@ import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.actions.EWrapClient;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LWrapClientDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LWrapClient leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited) throws ScribbleException
+	public LWrapClient leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		LWrapClient lc = (LWrapClient) visited;
 		RoleNode dest = lc.dest;
 		Role peer = dest.toName();
 		graph.util.addEdge(graph.util.getEntry(), new EWrapClient(peer), graph.util.getExit());
-		return (LWrapClient) super.leaveEndpointGraphBuilding(parent, child, graph, lc);
+		return (LWrapClient) super.leaveEGraphBuilding(parent, child, graph, lc);
 	}
 
 	@Override

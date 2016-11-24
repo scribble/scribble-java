@@ -8,7 +8,7 @@ import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
@@ -16,7 +16,7 @@ import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 public class LReceiveDel extends LMessageTransferDel
 {
 	@Override
-	public LReceive leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public LReceive leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LReceive lr = (LReceive) visited;
 		Role peer = lr.src.toName();
@@ -26,7 +26,7 @@ public class LReceiveDel extends LMessageTransferDel
 				: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(), new EReceive(peer, mid, payload), builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Receive.get(peer, mid, payload), builder.builder.getExit());
-		return (LReceive) super.leaveEndpointGraphBuilding(parent, child, builder, lr);
+		return (LReceive) super.leaveEGraphBuilding(parent, child, builder, lr);
 	}
 
 	@Override

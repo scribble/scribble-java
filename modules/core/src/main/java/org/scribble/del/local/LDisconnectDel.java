@@ -6,18 +6,18 @@ import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.actions.EDisconnect;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.context.EndpointGraphBuilder;
+import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LDisconnectDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LDisconnect leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public LDisconnect leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LDisconnect ld = (LDisconnect) visited;
 		Role peer = ld.peer.toName();
 		builder.util.addEdge(builder.util.getEntry(), new EDisconnect(peer), builder.util.getExit());
-		return (LDisconnect) super.leaveEndpointGraphBuilding(parent, child, builder, ld);
+		return (LDisconnect) super.leaveEGraphBuilding(parent, child, builder, ld);
 	}
 
 	@Override

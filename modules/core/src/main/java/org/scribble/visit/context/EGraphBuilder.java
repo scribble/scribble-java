@@ -13,12 +13,12 @@ import org.scribble.visit.NoEnvInlinedProtocolVisitor;
 
 // Changed from offsetsubprot visitor to inlined visitor to reduce state label accumulation to rec only -- then, wfc-checking for "unguarded" recursive-do-as-continue in choice blocks handled by unfolding inlineds
 // Inlined visitor, not unfolding -- but the inlined is already statically unfolded; this just means we don't do a "dynamic" unfolding as part of the AST visit
-public class EndpointGraphBuilder extends NoEnvInlinedProtocolVisitor
+public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 //public class EndpointGraphBuilder extends NoEnvUnfoldingVisitor  // Doesn't work
 {
 	public final EGraphBuilderUtil util = new EGraphBuilderUtil();
 	
-	public EndpointGraphBuilder(Job job)
+	public EGraphBuilder(Job job)
 	{
 		super(job);
 	}
@@ -57,14 +57,14 @@ public class EndpointGraphBuilder extends NoEnvInlinedProtocolVisitor
 	{
 		super.inlinedEnter(parent, child);
 		//super.unfoldingEnter(parent, child);
-		child.del().enterEndpointGraphBuilding(parent, child, this);
+		child.del().enterEGraphBuilding(parent, child, this);
 	}
 	
 	@Override
 	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	//protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveEndpointGraphBuilding(parent, child, this, visited);
+		visited = visited.del().leaveEGraphBuilding(parent, child, this, visited);
 		return super.inlinedLeave(parent, child, visited);
 		//return super.unfoldingLeave(parent, child, visited);
 	}
