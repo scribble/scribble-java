@@ -25,7 +25,7 @@ public class BadTest extends AllTest
 
 	private void foo()
 	{
-		FileUtils.listFiles(new File("fsfsfs"),  new SuffixFileFilter("fsfsdfs"), null);
+		//FileUtils.listFiles(new File("fsfsfs"),  new SuffixFileFilter("fsfsdfs"), null);
 	}
 
 	@Parameters(name = "{0}")
