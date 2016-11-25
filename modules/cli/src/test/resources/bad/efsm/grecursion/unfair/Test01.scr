@@ -2,6 +2,7 @@ module bad.efsm.grecursion.unfair.Test01;
 
 
 // OK if -fair
+// Tests GraphBuilderUtil addEdge vs addEdgeAux
 global protocol Proto1(role A, role B, role C)
 {
 	rec Y

@@ -67,7 +67,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 	@Override
 	public void addEdge(EState s, EAction a, EState succ)
 	{
-		super.addEdge(s, a, succ);
+		addEdgeAux(s, a, succ);
 
 		//if (!this.pred.isEmpty())
 		{
@@ -257,14 +257,14 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		/*this.contStates.add(s);
 		this.contRecVars.add(rv);*/
 		EState entry = getRecursionEntry(rv);
-		addEdge(s, new IntermediateContinueEdge(rv), entry);
+		addEdgeAux(s, new IntermediateContinueEdge(rv), entry);
 	}
 
 	// Doesn't set predecessor, cf. addEdge (and cf. addEdgeAux)
 	// Choice-guarded continues (can be done in one pass)
 	public void addRecursionEdge(EState s, EAction a, EState succ)  // Cf. LGraphBuilder.addContinueEdge, for choice-unguarded cases -- addRecursionEdge, for guarded cases, should also be in LGraphBuilder, but here for convenience (private state)
 	{
-		s.addEdge(a, succ);
+		addEdgeAux(s, a, succ);
 		
 		// Still needed here?
 		for (Deque<Set<EAction>> ens : this.enacting.values())
@@ -284,7 +284,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 	public void removeEdgeFromPredecessor(EState s, EAction a) throws ScribbleException  // Removing prev edge, to be replaced by addRecursionEdge
 	{
 		//s.removeEdge(a, this.getEntry());
-		removeEdge(s, a, this.getEntry());
+		removeEdgeAux(s, a, this.getEntry());
 		//this.pred.peek().remove(s);  // Need to update both preds and prevs accordingly (consider non-det)
 		Iterator<EState> preds = this.pred.peek().iterator();
 		Iterator<EAction> prevs = this.prev.peek().iterator();
@@ -363,7 +363,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 			
 			if (!(a instanceof IntermediateContinueEdge))
 			{
-				addEdge(res, a, next);
+				addEdgeAux(res, a, next);
 			
 				fixContinueEdges(seen, map, succ, next);
 			}
@@ -377,7 +377,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 					for (EState n : succ.getSuccessors(e))
 					{
 						next = getNext(map, n);
-						addEdge(res, e, next);
+						addEdgeAux(res, e, next);
 
 						fixContinueEdges(seen, map, succ, next);
 					}

@@ -33,12 +33,18 @@ public abstract class GraphBuilderUtil
 		this.entry.addLabel(lab);
 	}
 
-	protected void addEdge(S s, A a, S succ)
+	public void addEdge(S s, A a, S succ)
+	{
+		addEdgeAux(s, a, succ);
+	}
+
+	// Simply a visibility workaround helper -- cf., addEdge: public method that may be overridden
+	protected final void addEdgeAux(S s, A a, S succ)
 	{
 		s.addEdge(a, succ);
 	}
 	
-	protected void removeEdge(S s, A a, S succ) throws ScribbleException  // Exception necessary?
+	protected final void removeEdgeAux(S s, A a, S succ) throws ScribbleException  // Exception necessary?
 	{
 		s.removeEdge(a, succ);
 	}
