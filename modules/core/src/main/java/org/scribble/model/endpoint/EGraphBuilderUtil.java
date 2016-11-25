@@ -257,7 +257,8 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		/*this.contStates.add(s);
 		this.contRecVars.add(rv);*/
 		EState entry = getRecursionEntry(rv);
-		addEdgeAux(s, new IntermediateContinueEdge(rv), entry);
+		//addEdgeAux(s, new IntermediateContinueEdge(rv), entry);
+		addEdge(s, new IntermediateContinueEdge(rv), entry); // **FIXME: broken on purpose for testing
 	}
 
 	// Doesn't set predecessor, cf. addEdge (and cf. addEdgeAux)
