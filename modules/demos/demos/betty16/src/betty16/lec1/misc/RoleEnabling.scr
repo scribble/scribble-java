@@ -1,0 +1,17 @@
+module betty16.lec1.misc.RoleEnabling;
+
+
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		1() from B to C;
+	} or {
+		//2() from A to B;
+		2() from B to A;
+		choice at B {
+			3() from B to C;
+		} or {
+			4() from B to C;
+		}
+	}
+}
