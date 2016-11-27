@@ -1,0 +1,87 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/fib/src -d modules/demos/scrib/fib/src modules/demos/scrib/fib/src/fib/Fib.scr -api Adder C
+//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/fib/src modules/demos/scrib/fib/src/fib/*.java -subpackages fib.Fib.Adder -d modules/demos/scrib/fib/javadoc/adder
+
+module fib.Fib;
+
+
+type <java> "java.lang.Integer" from "rt.jar" as Integer;
+type <java> "java.lang.Long" from "rt.jar" as Long;
+
+
+global protocol Adder(role C, role S)
+{
+	rec X
+	{
+		choice at C
+		{
+			ADD(Integer, Integer) from C to S;
+			RES(Integer) from S to C;
+			continue X;
+		}
+		or
+		{
+			BYE() from C to S;
+			BYE() from S to C;
+		}
+	}
+}
+
+// Demo (modify Adder like this)
+global protocol Adder2(role C, role S)
+{
+	rec X
+	{
+		choice at C
+		{
+			ADD(Integer, Integer) from C to S;
+			RES(Integer) from S to C;
+			continue X;
+		}
+		or
+		{
+			BYE() from C to S;
+			//BYE() from S to C;
+		}
+	}
+}
+
+// Demo (modify Adder like this): subtyping -- generate subtype hierarchy for select/handle i/f's (C doesn't need to be changed)
+global protocol Adder3(role C, role S)
+{
+	rec X
+	{
+		choice at C
+		{
+			ADD(Integer, Integer) from C to S;
+			RES(Integer) from S to C;
+			continue X;
+		}
+		or
+		{
+			BYE() from C to S;
+			BYE() from S to C;
+		}
+		or
+		{
+			FOO() from C to S;
+			FOO() from S to C;
+		}
+	}
+}
+
+global protocol Fibonacci(role A, role B)
+{
+	rec Fib
+	{
+		choice at A
+		{
+			fibonacci(Long) from A to B;
+			fibonacci(Long) from B to A;
+			continue Fib;
+		}
+		or
+		{
+			end() from A to B;
+		}
+	}
+}

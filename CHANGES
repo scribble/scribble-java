@@ -1,80 +1,17 @@
-README for
-
-    scribble-dist-0.3.2-SNAPSHOT.zip
-
-This distribution can also be manually built from the "master" branch of
-
-    https://github.com/scribble/scribble-java
-
-by
-
-    mvn install
-
-(Output to dist/target)
-
-
-Scribble distribution zip contents:
+2016/11/27
 ---
 
-- lib            jars needed to run the Scribble Java command line tool
-- scribblec.sh   script for running the command line tool
+- Modified scribblec script interface: check
 
+    ./scribblec --help
+    
+  for new usages.
 
-Command line usage:
----
+- Most Scribble demos in 
 
-> List command line options.
-
-    ./scribblec.sh --help
-
-
-> Check well-formedness of global protocols in, e.g., Test.scr.
-
-    ./scribblec.sh Test.scr
-
-Notes:
-- This basic version of Scribble uses a conservative (restricted) form of
-  well-formedness.
-- Snapshot builds have debug options enabled: error feedback by the tool
-  will return full stack traces.
-
-
-> Project local protocol for role "C" of protocol "Proto" in Test.scr
-
-    ./scribblec.sh Test.scr -project Proto C
-
-
-> Get dot representation of Endpoint FSM for role "C" of protocol "Proto"
-  in Test.scr
-
-    ./scribblec.sh Test.scr -fsm Proto C
-
-
-> Generate Java Endpoint API for role "C" of protocol "Proto"
-  in Test.scr
-
-    ./scribblec.sh Test.scr -api Proto C -d .
-
-
-Examples:
----
-
-> To make an HelloWorld test:
-
-  echo 'module Test; global protocol Proto(role C, role S) {
-      Hello() from C to S; }' > Test.scr
-
-
-Further examples can be found in:
-
-  https://github.com/scribble/scribble-java/tree/master/modules/core/src/test/scrib/demo
-
-The distribution zip does not include these examples.  They can be obtained
-as part of the source repository or separately via the above link.
-
-> E.g. To generate the Java Endpoint API for role "C" of the "Adder"
-  protocol from http://www.doc.ic.ac.uk/~rhu/scribble/fase16.pdf
-
-    ./scribblec.sh modules/core/src/test/scrib/demo/fase/adder/Adder.scr
-        -api Adder C -d .
-
+    modules/core/src/test/scrib/demo
+  
+  relocated to 
+ 
+    modules/demos/scrib/
+   

@@ -1,0 +1,43 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/game/src -d modules/demos/scrib/game/src modules/demos/scrib/game/src/game/Game2.scr
+
+module game.Game2;
+
+
+global protocol Proto(role C, role S)
+{
+	choice at S
+	{
+		playAsA(Game@A) from S to C;
+	}
+	or
+	{
+		playAsB(Game@B) from S to C;
+	}
+	or
+	{
+		playAsC(Game@C) from S to C;
+	}
+}
+
+
+global protocol Game(role A, role B, role C)
+{
+	// Arbitrary for now
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+			1() from C to A;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+			2() from C to A;
+		}
+	}
+}
+

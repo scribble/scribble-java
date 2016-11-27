@@ -1,0 +1,70 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/loan/src -d modules/demos/scrib/loan/src modules/demos/scrib/loan/src/loan/LoanApplication.scr -api BuyerBrokerSupplier Applicant
+//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/loan/src modules/demos/scrib/loan/src/loan/*.java -subpackages loan.LoanApplication.BuyerBrokerSupplier -d modules/demos/scrib/loan/javadoc
+
+module loan.LoanApplication;
+
+/*type <xsd> "CustomerName" from "CustomerName.xsd" as CustomerName;
+type <xsd> "DateOfBirth" from "DateOfBirth.xsd" as DateOfBirth;
+type <xsd> "AnnualSalary" from "AnnualSalary.xsd" as AnnualSalary;
+type <xsd> "CreditRating" from "CreditRating.xsd" as CreditRating;
+type <xsd> "LoanAmount" from "LoanAmount.xsd" as LoanAmount;
+type <xsd> "Approval" from "Approval.xsd" as Approval;*/
+
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+type <java> "java.lang.String" from "rt.jar" as String;
+type <java> "java.lang.Boolean" from "rt.jar" as Bool;
+ 
+global protocol BuyerBrokerSupplier(role Applicant, role ApplicationPortal, role ProcessingDept, role FinanceDept)
+{
+	/*applyForLoan(CustomerName, DateOfBirth, AnnualSalary, CreditRating) from Applicant to ApplicationPortal;
+	checkEligibility(CustomerName, DateOfBirth, AnnualSalary, CreditRating) from ApplicationPortal to ProcessingDept;
+	respond(Approval) from ProcessingDept to ApplicationPortal;*/
+	applyForLoan(String, String, Int, Int) from Applicant to ApplicationPortal;
+	checkEligibility(String, String, Int, Int) from ApplicationPortal to ProcessingDept;
+	respond(Bool) from ProcessingDept to ApplicationPortal;
+
+	choice at ApplicationPortal
+	{ 
+		// "Approval" scenario
+    /*getLoanAmount(AnnualSalary) from ApplicationPortal to FinanceDept;
+    sendLoanAmount(LoanAmount) from FinanceDept to ApplicationPortal;
+    requestConfirmation(LoanAmount) from ApplicationPortal to Applicant;*/
+		getLoanAmount(Int) from ApplicationPortal to FinanceDept;
+		sendLoanAmount(Int) from FinanceDept to ApplicationPortal;
+		requestConfirmation(Int) from ApplicationPortal to Applicant;        
+	}
+	or
+	{
+		// "Reject" scenario
+		reject() from ApplicationPortal to FinanceDept;
+		reject() from ApplicationPortal to Applicant;
+	}
+}
+
+
+explicit global protocol BBSOriginal
+(
+		role Applicant, role ApplicationPortal, role ProcessingDept, role FinanceDept
+)
+{
+	connect Applicant to ApplicationPortal;
+	connect ApplicationPortal to ProcessingDept;
+
+	applyForLoan(String, String, Int, Int) from Applicant to ApplicationPortal;
+	checkEligibility(String, String, Int, Int) from ApplicationPortal to ProcessingDept;
+	respond(Bool) from ProcessingDept to ApplicationPortal;
+
+	choice at ApplicationPortal
+	{ 
+		// "Approval" scenario
+		connect ApplicationPortal to FinanceDept;
+		getLoanAmount(Int) from ApplicationPortal to FinanceDept;
+		sendLoanAmount(Int) from FinanceDept to ApplicationPortal;
+		requestConfirmation(Int) from ApplicationPortal to Applicant;        
+	}
+	or
+	{
+		// "Reject" scenario
+		reject() from ApplicationPortal to Applicant;
+	}
+}
