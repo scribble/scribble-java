@@ -2,21 +2,29 @@ README for
 
     scribble-dist-0.3.2-SNAPSHOT.zip
 
-This distribution can also be manually built from the "master" branch of
+This distribution is built from the branch
 
-    https://github.com/scribble/scribble-java
+    https://github.com/rhu1/scribble-java/tree/rhu1/master-merge-rhu1res/
 
 by
 
     mvn install
 
-(Output to dist/target)
+(Output written to dist/target)
+
+
+Issue reporting
+---
+
+Bugs and issues can be reported via the github Issues facility.
+
+Or email  rhu1234 [at] doc.ic.ac.uk  excluding the 1234.
 
 
 Scribble distribution zip contents:
 ---
 
-- lib            jars needed to run the Scribble Java command line tool
+- lib            jars needed to run the scribble-java tool
 - scribblec.sh   script for running the command line tool
 
 
@@ -33,10 +41,10 @@ Command line usage:
     ./scribblec.sh Test.scr
 
 Notes:
-- This basic version of Scribble uses a conservative (restricted) form of
-  well-formedness.
-- Snapshot builds have debug options enabled: error feedback by the tool
-  will return full stack traces.
+- Use the -oldwf command line argument to use the simpler syntactic protocol
+  well-formedness from the previous version of Scribble.
+- Use the -V command line argument to obtain full traces for errors according
+  to the new protocol validation.
 
 
 > Project local protocol for role "C" of protocol "Proto" in Test.scr
@@ -44,7 +52,7 @@ Notes:
     ./scribblec.sh Test.scr -project Proto C
 
 
-> Get dot representation of Endpoint FSM for role "C" of protocol "Proto"
+> Print dot representation of Endpoint FSM for role "C" of protocol "Proto"
   in Test.scr
 
     ./scribblec.sh Test.scr -fsm Proto C
@@ -53,7 +61,7 @@ Notes:
 > Generate Java Endpoint API for role "C" of protocol "Proto"
   in Test.scr
 
-    ./scribblec.sh Test.scr -api Proto C -d .
+    ./scribblec.sh -d . Test.scr -api Proto C
 
 
 Examples:
@@ -67,14 +75,13 @@ Examples:
 
 Further examples can be found in:
 
-  https://github.com/scribble/scribble-java/tree/master/modules/core/src/test/scrib/demo
+  https://github.com/rhu1/scribble-java/tree/rhu1/master-merge-rhu1res/modules/demos/scrib
 
 The distribution zip does not include these examples.  They can be obtained
-as part of the source repository or separately via the above link.
+as part of the source repository, or separately via the above link.
 
 > E.g. To generate the Java Endpoint API for role "C" of the "Adder"
   protocol from http://www.doc.ic.ac.uk/~rhu/scribble/fase16.pdf
 
-    ./scribblec.sh modules/core/src/test/scrib/demo/fase/adder/Adder.scr
-        -api Adder C -d .
-
+    ./scribblec.sh -d modules/demos/scrib/fase16/src
+        modules/demos/scrib/fase16/src/fase16/adder/Adder.scr -api Adder C

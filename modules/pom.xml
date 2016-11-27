@@ -21,7 +21,6 @@
 		<module>trace</module>
 		<module>trace-parser</module>
 		<module>cli</module>
-    <module>scribble-demo</module>
     <module>demos</module>
   </modules>
 

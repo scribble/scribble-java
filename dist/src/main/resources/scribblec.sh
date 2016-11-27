@@ -19,11 +19,14 @@ usage() {
  <SCRFILE>     Source Scribble module (.scr file) 
   
 Options:
-  -h, --help                                     Show this info and exit
-  -V                                             Scribble debug info
-  --verbose                                      Echo the java command
+  -h, --help                 Show this info and exit$
+  -V                         Scribble debug info$
+  --verbose                  Echo the java command$
 
-  -ip <path>                                     Scribble import path
+  -ip <path>                 Scribble module import path$
+
+  -oldwf                     Use the simpler syntactic protocol well-formedness
+
 
   -project <simple global protocol name> <role>  Project protocol
 
@@ -37,11 +40,13 @@ Options:
           Minimise EFSMs for dot output and API generation (but not validation)
           (Requires ltsconvert)
 
+
   -model <simple global protocol name>          Generate global model
   -modelpng <simple global protocol name> <role> <output file>
           Draw global model as png (requires dot)
   -fair                                         Assume fair output choices
   -umodel, -umodelpng (with appropriate args)   "Unfair" variant
+
 
   -api <simple global protocol name> <role>     Generate Java Endpoint API
   -d <path>                                     API output directory

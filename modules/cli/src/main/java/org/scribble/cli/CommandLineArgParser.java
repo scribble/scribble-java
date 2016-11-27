@@ -247,7 +247,7 @@ public class CommandLineArgParser
 		String path = this.args[++i];
 		if (!validatePaths(path))
 		{
-			throw new CommandLineException("Module path '"+ path +"' is not valid\r\n");
+			throw new CommandLineException("Scribble module import path '"+ path +"' is not valid\r\n");
 		}
 		//this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PATH_FLAG), new String[] { path });
 		checkAndAddNoArgUniqueFlag(CommandLineArgParser.IMPORT_PATH_FLAG, new String[] { path });

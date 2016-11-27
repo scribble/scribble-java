@@ -24,11 +24,11 @@ module Test;
 
 // Add a unit test for validation to bypass aux
 
-global protocol Proto1(role A, role B, role C)
+explicit global protocol Proto1(role A, role B, role C)
 {
-	1() from A to B;
-	1() from B to C;
-	1() from C to A;  // Testing accept-correlation check
+	1() connect A to B;
+	1() connect B to C;
+	1() connect C to A;  // Testing accept-correlation check
 }
 
 /*
