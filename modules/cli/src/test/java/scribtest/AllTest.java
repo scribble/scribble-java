@@ -21,14 +21,15 @@ import org.scribble.util.ScribParserException;
 /**
  * Runs all tests under good and bad root directories in Scribble.
  */
-@RunWith(value = Parameterized.class)
+//@RunWith(value = Parameterized.class)
+@RunWith(Parameterized.class)
 public class AllTest
 {
 	protected static final boolean GOOD_TEST = false;
 	protected static final boolean BAD_TEST = !GOOD_TEST;
 
-	private final String example;
-	private final boolean isBadTest;
+	protected final String example;
+	protected final boolean isBadTest;
 
 	// relative to cli/src/test/resources (or target/test-classes/)
 	protected static final String ALL_ROOT = ".";
@@ -45,17 +46,16 @@ public class AllTest
 	public static Collection<Object[]> data()
 	{
 		// Test all tests under good and bad root directories
-		/*String dir_good = ClassLoader.getSystemResource(GoodTest.GOOD_ROOT).getFile();
+		String dir_good = ClassLoader.getSystemResource(GoodTest.GOOD_ROOT).getFile();
 		String dir_bad = ClassLoader.getSystemResource(BadTest.BAD_ROOT).getFile();
 		List<Object[]> result = new LinkedList<>();
 		result.addAll(Harness.makeTests(GOOD_TEST, dir_good));
 		result.addAll(Harness.makeTests(BAD_TEST, dir_bad));
-		return result;*/
-		return Harness.checkTestDirProperty(AllTest.BAD_TEST, BAD_ROOT);
+		return result;
 	}
 
 	@Test
-	public final void tests() throws IOException, InterruptedException, ExecutionException
+	public void tests() throws IOException, InterruptedException, ExecutionException
 	{
 		try
 		{

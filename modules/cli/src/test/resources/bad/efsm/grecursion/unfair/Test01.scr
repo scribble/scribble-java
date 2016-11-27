@@ -2,7 +2,7 @@ module bad.efsm.grecursion.unfair.Test01;
 
 
 // OK if -fair
-// Tests GraphBuilderUtil addEdge vs addEdgeAux
+// Also tests GraphBuilderUtil addContinueEdge (addEdge vs. addEdgeAux) AllTest/BadTest problem
 global protocol Proto1(role A, role B, role C)
 {
 	rec Y

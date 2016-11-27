@@ -25,9 +25,12 @@ import org.scribble.sesstype.name.Role;
 public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
 	private final Map<RecVar, Deque<EState>> recvars = new HashMap<>();
-	private final Map<RecVar, Deque<Set<EAction>>> enacting = new HashMap<>();  // First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
+	//private final Map<RecVar, Deque<Set<EAction>>> enacting = new HashMap<>();  // First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
+	private final Map<RecVar, Deque<List<EAction>>> enacting = new HashMap<>();
+		// CHECKME: Set sufficient? or List? (consider non-determinism -- does it matter?)
 
-	protected final Map<EState, Map<RecVar, Set<EAction>>> enactingMap = new HashMap<>();  // Record enacting per-recvar, since a state could have multi-recvars
+	//private final Map<EState, Map<RecVar, Set<EAction>>> enactingMap = new HashMap<>();  // Record enacting per-recvar, since a state could have multi-recvars
+	private final Map<EState, Map<RecVar, List<EAction>>> enactingMap = new HashMap<>();
 
 	private final Deque<List<EState>> pred = new LinkedList<>();
 	private final Deque<List<EAction>> prev = new LinkedList<>();
@@ -77,11 +80,13 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		this.pred.push(new LinkedList<>(Arrays.asList(s)));
 		this.prev.push(new LinkedList<>(Arrays.asList(a)));
 		
-		for (Deque<Set<EAction>> ens : this.enacting.values())
+		//for (Deque<Set<EAction>> ens : this.enacting.values())
+		for (Deque<List<EAction>> ens : this.enacting.values())
 		{
 			if (!ens.isEmpty())  // Unnecessary?
 			{
-				Set<EAction> tmp = ens.peek();
+				//Set<EAction> tmp = ens.peek();
+				List<EAction> tmp = ens.peek();
 				if (tmp.isEmpty())
 				{
 					tmp.add(a);
@@ -101,9 +106,11 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		
 		for (RecVar rv : this.enacting.keySet())
 		{
-			Deque<Set<EAction>> tmp = this.enacting.get(rv);
-			//tmp.push(new HashSet<>(tmp.peek()));
-			tmp.push(new HashSet<>());  // Initially empty to record nested enablings in choice blocks
+			////Deque<Set<EAction>> tmp = this.enacting.get(rv);
+			Deque<List<EAction>> tmp = this.enacting.get(rv);
+			////tmp.push(new HashSet<>(tmp.peek()));
+			//tmp.push(new HashSet<>());  // Initially empty to record nested enablings in choice blocks
+			tmp.push(new LinkedList<>());  // Initially empty to record nested enablings in choice blocks
 		}
 	}
 
@@ -121,8 +128,10 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		
 		for (RecVar rv : this.enacting.keySet())
 		{
-			Set<EAction> pop = this.enacting.get(rv).pop();
-			Set<EAction> peek = this.enacting.get(rv).peek();
+			/*Set<EAction> pop = this.enacting.get(rv).pop();
+			Set<EAction> peek = this.enacting.get(rv).peek();*/
+			List<EAction> pop = this.enacting.get(rv).pop();
+			List<EAction> peek = this.enacting.get(rv).peek();
 			if (peek.isEmpty())  // Cf. addEdge
 			{
 				peek.addAll(pop);
@@ -137,8 +146,10 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		
 		for (RecVar rv : this.enacting.keySet())
 		{
-			Deque<Set<EAction>> tmp = this.enacting.get(rv);
-			tmp.push(new HashSet<>());  // Must be empty for addEdge to record (nested) enabling
+			//Deque<Set<EAction>> tmp = this.enacting.get(rv);
+			Deque<List<EAction>> tmp = this.enacting.get(rv);
+			//tmp.push(new HashSet<>());  // Must be empty for addEdge to record (nested) enabling
+			tmp.push(new LinkedList<>());
 		}
 	}
 
@@ -173,8 +184,10 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 
 		for (RecVar rv : this.enacting.keySet())
 		{
-			Set<EAction> pop = this.enacting.get(rv).pop();
-			Set<EAction> peek = this.enacting.get(rv).peek();
+			/*Set<EAction> pop = this.enacting.get(rv).pop();
+			Set<EAction> peek = this.enacting.get(rv).peek();*/
+			List<EAction> pop = this.enacting.get(rv).pop();
+			List<EAction> peek = this.enacting.get(rv).peek();
 			//if (peek.isEmpty())
 			{
 				peek.addAll(pop);
@@ -209,27 +222,31 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		}*/
 		tmp.push(entry);
 		
-		Deque<Set<EAction>> tmp2 = this.enacting.get(recvar);
+		//Deque<Set<EAction>> tmp2 = this.enacting.get(recvar);
+		Deque<List<EAction>> tmp2 = this.enacting.get(recvar);
 		if (tmp2 == null)
 		{
 			tmp2 = new LinkedList<>();  // New Stack for this recvar
 			this.enacting.put(recvar, tmp2);
 		}
-		tmp2.push(new HashSet<>());  // Push new Set element onto stack
+		//tmp2.push(new HashSet<>());  // Push new Set element onto stack
+		tmp2.push(new LinkedList<>());  // Push new Set element onto stack
 	}	
 	
 	public void popRecursionEntry(RecVar recvar)
 	{
 		this.recvars.get(recvar).pop();  // Pop the entry of this rec
 
-		Set<EAction> pop = this.enacting.get(recvar).pop();
+		//Set<EAction> pop = this.enacting.get(recvar).pop();
+		List<EAction> pop = this.enacting.get(recvar).pop();
 		if (this.enacting.get(recvar).isEmpty())  // All Sets popped from the stack of this recvar
 		{
 			this.enacting.remove(recvar);
 		}
 
 		EState curr = getEntry();
-		Map<RecVar, Set<EAction>> tmp = this.enactingMap.get(curr);
+		//Map<RecVar, Set<EAction>> tmp = this.enactingMap.get(curr);
+		Map<RecVar, List<EAction>> tmp = this.enactingMap.get(curr);
 		if (tmp == null)
 		{
 			tmp = new HashMap<>();
@@ -257,8 +274,8 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		/*this.contStates.add(s);
 		this.contRecVars.add(rv);*/
 		EState entry = getRecursionEntry(rv);
-		//addEdgeAux(s, new IntermediateContinueEdge(rv), entry);
-		addEdge(s, new IntermediateContinueEdge(rv), entry); // **FIXME: broken on purpose for testing
+		addEdgeAux(s, new IntermediateContinueEdge(rv), entry);
+		//addEdge(s, new IntermediateContinueEdge(rv), entry); // **FIXME: broken on purpose for testing
 	}
 
 	// Doesn't set predecessor, cf. addEdge (and cf. addEdgeAux)
@@ -268,11 +285,13 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		addEdgeAux(s, a, succ);
 		
 		// Still needed here?
-		for (Deque<Set<EAction>> ens : this.enacting.values())
+		//for (Deque<Set<EAction>> ens : this.enacting.values())
+		for (Deque<List<EAction>> ens : this.enacting.values())
 		{
 			if (!ens.isEmpty())
 			{
-				Set<EAction> tmp = ens.peek();
+				//Set<EAction> tmp = ens.peek();
+				List<EAction> tmp = ens.peek();
 				if (tmp.isEmpty())
 				{
 					tmp.add(a);

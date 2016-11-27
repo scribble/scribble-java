@@ -284,6 +284,12 @@ public class SConfig
 			
 			//EndpointState s = this.states.get(r);
 			EFSM s = this.efsms.get(r);
+			
+			if (s == null)
+			{
+				System.out.println("AAA: " + this.efsms + ", " + r);
+			}
+			
 			if (s.getStateKind() == EStateKind.OUTPUT && !s.isConnectOrWrapClientOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
 				// FIXME: move into isWaitingFor
@@ -346,6 +352,24 @@ public class SConfig
 				{
 					return peers;
 				}
+				/*Set<Role> peers = new HashSet<>();  // Debugging AllTest/BadTest bad.efsm.grecursion.unfair.Test01; problem
+				for (EAction ea : all)
+				{
+					peers.add(ea.peer);
+				}
+				boolean tmp = true;
+				for (Role p : peers)
+				{
+					if (this.buffs.get(r).get(p) != null)
+					{
+						tmp = false;
+						break;
+					}
+				}
+				if (tmp)
+				{
+					return peers;
+				}*/
 			}
 		}
 		else if (k == EStateKind.ACCEPT)

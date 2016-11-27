@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Harness
 {
@@ -15,12 +14,12 @@ public class Harness
 	protected static final String DIR_IGNORE_FILE = "IGNORE";
 	protected static final String TEST_DIR_FLAG = "test.dir";
 	
-	/**
+	/*/**
 	 * Returns the java builder with the default settings to use JArmus.
 	 * 
 	 * @param className
 	 * @return
-	 */
+	 * /
 	// Currently unused
 	@Deprecated
 	public static JavaProcessBuilder java(String className)
@@ -36,10 +35,11 @@ public class Harness
 		java.appendClasspath("../projection/target/classes/");
 		java.appendClasspath("../trace/target/classes/");*/
 		/*java.appendClasspath("C:/Users/Raymond/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.9.9/jackson-mapper-asl-1.9.9.jar/");
-		java.appendClasspath("C:/Users/Raymond/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.9.9/jackson-core-asl-1.9.9.jar/");*/
+		java.appendClasspath("C:/Users/Raymond/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.9.9/jackson-core-asl-1.9.9.jar/");* /
 		// java.appendClasspath("org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr/");
 		return java;
 	}
+	//*/
 
 	/**
 	 * Returns all Scribble files in a given directory.
@@ -54,9 +54,15 @@ public class Harness
 		TreeSet<String> result = new TreeSet<>();
 		FileUtils.listFiles(new File(directory), SCRIBBLE_EXT, new IgnoredDirectoryWhenFilter(ignore)).stream().forEach((file) -> result.add(file.getPath()));
 		*/
-		return getAllScrFilesUnderDirectory(dir).stream()
+		/*return getAllScrFilesUnderDirectory(dir).stream()  // Debugging AllTest/BadTest bad.efsm.grecursion.unfair.Test01; problem
 				.map((f) -> f.getAbsolutePath().toString())
-				.collect(Collectors.toList());	
+				.collect(Collectors.toList());*/
+		List<String> res = new LinkedList<>();
+		for (File f : getAllScrFilesUnderDirectory(dir))
+		{
+			res.add(f.getAbsolutePath().toString());
+		}
+		return res;
 	}
 	
 	private static List<File> getAllScrFilesUnderDirectory(String path)
@@ -66,11 +72,11 @@ public class Harness
 		{
 			if (f.isFile())
 			{
-				if (f.getName().equals(DIR_IGNORE_FILE))
+				if (f.getName().equals(Harness.DIR_IGNORE_FILE))
 				{
 					return Collections.emptyList();
 				}
-				else if (f.getName().endsWith(SCRIBBLE_EXT))
+				else if (f.getName().endsWith(Harness.SCRIBBLE_EXT))
 				{
 					res.add(f);
 				}
@@ -86,14 +92,21 @@ public class Harness
 	public static Collection<String> findTests(String path)
 	{
 		return getScribbleFilePaths(path);
+		//return Collections.emptyList();
 	}
 
 	// dir should be full path
 	public static Collection<Object[]> makeTests(boolean isBadTest, String dir)
 	{
-		return findTests(dir).stream()
+		/*return findTests(dir).stream()  // Debugging AllTest/BadTest bad.efsm.grecursion.unfair.Test01; problem
 				.map((e) -> new Object[] { e, isBadTest })
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
+		List<Object[]> res = new LinkedList<>();
+		for (String t : findTests(dir))
+		{
+			res.add(new Object[] { t, isBadTest });
+		}
+		return res;
 	}
 
 	// root is relative path from cli/src/test/resources
@@ -101,7 +114,7 @@ public class Harness
 	// root is used as a default if the test.dir property is not present
 	public static Collection<Object[]> checkTestDirProperty(boolean isBadTest, String root)
 	{
-		String dir = System.getProperty(TEST_DIR_FLAG);
+		String dir = System.getProperty(Harness.TEST_DIR_FLAG);
 		if (dir == null)
 		{
 			dir = ClassLoader.getSystemResource(root).getFile();
