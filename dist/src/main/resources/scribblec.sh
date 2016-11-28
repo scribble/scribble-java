@@ -34,7 +34,8 @@ Options:
   -aut                                           Output as aut (instead of dot)
   -fsmpng <simple global protocol name> <role> <output file>
           Draw default Endpoint FSM as png (via dot)
-  -vfsm, -vfsmpng, -ufsm, -ufsmpng (with appropriate args)
+  -vfsm, -ufsm <simple global proto name> <role>   
+  -vfsmpng, -ufsmpng <simple global proto name> <role> <output file>
           Output the EFSM used in validation (or the "unfair" variant)
   -minlts
           Minimise EFSMs for dot output and API generation (but not validation)
@@ -52,7 +53,7 @@ Options:
   -d <path>                                     API output directory
   -sessapi <simple global protocol name>        Generate Session API only
   -chanapi <simple global protocol name> <role> Generate State Channel API only
-  -subtypes                                     Enable subtype API generation
+  -subtypes                                     Enable subtypes for -chanapi
 EOF
 }
 
