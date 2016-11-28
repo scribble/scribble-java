@@ -12,4 +12,5 @@ tools/eclipse/plugins/org.scribble.*/bin/
 bin/scribblec.sh
 modules/core/src/test/scrib
 modules/demos/scrib
+*.bak
 
