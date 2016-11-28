@@ -1,0 +1,26 @@
+module good.efsm.gcontinue.choiceungaurded.Test08;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at A
+			{
+				continue X;
+			}
+			or
+			{
+				3() from A to B;
+			}
+		}
+		or
+		{
+			2() from A to B;  // Testing EFSM building: multiple "enacting"
+		}
+	}
+}
+

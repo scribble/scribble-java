@@ -1,10 +1,8 @@
 package org.scribble.del.global;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
@@ -20,26 +18,31 @@ import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
+import org.scribble.main.Job;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.ModelAction;
-import org.scribble.model.global.ModelState;
+import org.scribble.model.global.SGraph;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.GlobalModelBuilder;
-import org.scribble.visit.JobContext;
-import org.scribble.visit.Projector;
-import org.scribble.visit.ProtocolDeclContextBuilder;
-import org.scribble.visit.RoleCollector;
-import org.scribble.visit.env.ModelEnv;
-import org.scribble.visit.env.ProjectionEnv;
+import org.scribble.visit.context.Projector;
+import org.scribble.visit.context.ProtocolDeclContextBuilder;
+import org.scribble.visit.context.env.ProjectionEnv;
+import org.scribble.visit.util.RoleCollector;
+import org.scribble.visit.validation.GProtocolValidator;
 
 public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 {
 	public GProtocolDeclDel()
 	{
 
+	}
+	
+	@Override
+	public GProtocolDeclContext getProtocolDeclContext()
+	{
+		return (GProtocolDeclContext) super.getProtocolDeclContext();
 	}
 
 	@Override
@@ -87,7 +90,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	public GProtocolDecl
 			leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
-		JobContext jc = proj.getJobContext();
+		JobContext jc = proj.job.getContext();
 		Module root = jc.getModule(proj.getModuleContext().root);
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		Role self = proj.peekSelf();
@@ -97,7 +100,14 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		proj.addProjection(gpd.getFullMemberName(root), self, projected);
 		return gpd;
 	}
+
+	private Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
+	{
+		DependencyMap<GProtocolName> deps = getProtocolDeclContext().getDependencyMap();
+		return deps.getDependencies().get(self);
+	}
 	
+	// FIXME: project modifiers?
 	private LProtocolDecl project(Projector proj, GProtocolDecl gpd) throws ScribbleException
 	{
 		Role self = proj.peekSelf();
@@ -108,65 +118,34 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		RoleDeclList roledecls = gpd.header.roledecls.project(self);
 		NonRoleParamDeclList paramdecls = gpd.header.paramdecls.project(self);
 		LProtocolHeader lph = AstFactoryImpl.FACTORY.LProtocolHeader(pn, roledecls, paramdecls);
-		GProtocolName gpn = gpd.getFullMemberName(proj.getJobContext().getModule(proj.getModuleContext().root));
-		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProjectionDecl(gpn, proj.peekSelf(), lph, def);
+		GProtocolName gpn = gpd.getFullMemberName(proj.job.getContext().getModule(proj.getModuleContext().root));
+		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProjectionDecl(gpd.modifiers, gpn, proj.peekSelf(), lph, def);
 		return projected;
 	}
-
-	@Override
-	public GProtocolDecl leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
-	{
-		GProtocolDecl gpd = (GProtocolDecl) visited;
-		System.out.println("1a: " + ((ModelEnv) gpd.def.block.del().env()).getActions());
-		System.out.println("1b: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());
-		return gpd;
-	}
 	
-	private static ModelState parseModel(Set<ModelAction> as)
+	@Override
+	public void enterValidation(ScribNode parent, ScribNode child, GProtocolValidator checker) throws ScribbleException
 	{
-		ModelState root = new ModelState();
-		Set<ModelAction> eligible = as.stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
-		Set<ModelAction> rest = new HashSet<>(as);
-		rest.removeAll(eligible);
-		parseModel(rest, root, eligible);
-		return root;
-	}
-
-	private static void parseModel(Set<ModelAction> rest, ModelState curr, Set<ModelAction> eligible)
-	{
-		for (ModelAction e : eligible)
+		GProtocolDecl gpd = (GProtocolDecl) child;
+		if (gpd.isAuxModifier())
 		{
-			ModelState next = new ModelState();
-			curr.addEdge(e, next);
-			Set<ModelAction> etmp = new HashSet<>(eligible);
-			etmp.remove(e);
-			Set<ModelAction> rtmp = new HashSet<>(rest);
-			for (ModelAction r : rest)
-			{
-				//if (eligible.containsAll(r.getDependencies()))
-				Set<ModelAction> tmp =  new HashSet<>(etmp);
-				tmp.addAll(rtmp);
-				tmp.retainAll(r.getDependencies());
-				if (tmp.isEmpty())
-				{
-					etmp.add(r);
-					rtmp.remove(r);
-				}
-			}
-			parseModel(rtmp, next, etmp);
+			return;
+		}
+
+		GProtocolName fullname = gpd.getFullMemberName((Module) parent);
+		validate(checker.job, fullname, true);
+		if (!checker.job.fair)
+		{
+			checker.job.debugPrintln("(" + fullname + ") Validating with \"unfair\" output choices.. ");
+			validate(checker.job, fullname, false);  // FIXME: only need to check progress, not full validation
 		}
 	}
 
-	public Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
+	private static void validate(Job job, GProtocolName fullname, boolean fair) throws ScribbleException
 	{
-		DependencyMap<GProtocolName> deps = getProtocolDeclContext().getDependencyMap();
-		return deps.getDependencies().get(self);
-	}
-	
-	@Override
-	public GProtocolDeclContext getProtocolDeclContext()
-	{
-		return (GProtocolDeclContext) super.getProtocolDeclContext();
+		JobContext jc = job.getContext();
+		SGraph graph = (fair) ? jc.getSGraph(fullname) : jc.getUnfairSGraph(fullname);
+		graph.toModel().validate(job);
 	}
 }
 

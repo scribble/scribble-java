@@ -1,0 +1,16 @@
+module good.misc.globals.gdo.Do07;
+
+
+type <blah> "MyExternalType" from "MyExternalType.blah" as MyType;
+
+
+global protocol Do7(role A, role B)
+{
+	do Do7a<l1(MyType)>(A, B);
+}
+
+global protocol Do7a<sig X>(role C, role D)
+{
+	X from C to D;
+}
+

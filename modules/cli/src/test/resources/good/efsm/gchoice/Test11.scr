@@ -1,0 +1,16 @@
+module good.efsm.gchoice.Test11;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		choice at B
+		{
+			2() from B to C;  // Graph building (popping choice block into a null parent choice block context)
+		}
+	}
+}
+
+

@@ -1,0 +1,20 @@
+module bad.reach.globals.grecursion.Recursion18;
+
+
+global protocol Foo(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+		}
+		or
+		{
+			2() from A to B;
+			continue X;
+		}
+		continue X;  // Bad reach  // Reachability error comes out as a graph building error if not checked first
+	}
+}
+

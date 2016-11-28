@@ -1,0 +1,31 @@
+module bad.wfchoice.gchoice.Choice10b;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		//1() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			rec Y
+			{
+				2() from A to B;
+				choice at A
+				{
+					continue X;
+				}
+				or
+				{
+					2() from A to B;
+				}
+			}
+		}
+	}
+}
+
+

@@ -1,0 +1,22 @@
+module bad.safety.stuckmsg.twoparty.Test03;
+
+
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		do Bar(A, B);
+	}
+	or
+	{
+		1() from A to B;
+		2() from A to B;
+	}
+}
+
+global protocol Bar(role A, role B)
+{
+	do Foo(A, B);
+}
+

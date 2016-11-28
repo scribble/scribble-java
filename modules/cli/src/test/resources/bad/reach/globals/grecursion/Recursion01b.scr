@@ -3,7 +3,7 @@ module bad.reach.globals.grecursion.Recursion01b;
 
 global protocol Recursion1b(role A, role B)
 {
-	//rec A { }  // Currently OK. Disallow?
+	//rec A { }  // Currently OK (role/recvar name clash). Disallow?
 
 	rec X
 	{

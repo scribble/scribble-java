@@ -5,11 +5,13 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.WFChoicePathChecker;
-import org.scribble.visit.env.WFChoicePathEnv;
+import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
+import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 import org.scribble.visit.env.UnfoldingEnv;
-import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.wf.ExplicitCorrelationChecker;
+import org.scribble.visit.wf.WFChoiceChecker;
+import org.scribble.visit.wf.env.ExplicitCorrelationEnv;
+import org.scribble.visit.wf.env.WFChoiceEnv;
 
 public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel implements InteractionNodeDel
 {
@@ -30,10 +32,24 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		return ScribDelBase.popAndSetVisitorEnv(this, inl, visited);
 	}
 
+	// Should only do for projections, but OK here (visitor only run on projections)
+	@Override
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
+	{
+		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
+		UnguardedChoiceDoEnv visited_env = checker.popEnv();  // popAndSet current
+		setEnv(visited_env);
+		UnguardedChoiceDoEnv parent_env = checker.popEnv();  // pop-merge-push parent
+		parent_env = parent_env.mergeContext(visited_env);
+		checker.pushEnv(parent_env);
+		return (CompoundInteractionNode<?>) visited;
+	}
+
 	@Override
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
 		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
+		// Need to further override for "multi-compound" nodes, e.g., ChoiceDel
 		UnfoldingEnv visited_env = unf.popEnv();  // popAndSet current
 		setEnv(visited_env);
 		UnfoldingEnv parent_env = unf.popEnv();  // pop-merge-push parent
@@ -53,6 +69,19 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		return (CompoundInteractionNode<?>) visited;
 	}
 
+	@Override
+	public ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	{
+		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
+		// Need to further override for "multi-compound" nodes, e.g., ChoiceDel
+		ExplicitCorrelationEnv visited_env = checker.popEnv();  // popAndSet current
+		setEnv(visited_env);
+		ExplicitCorrelationEnv parent_env = checker.popEnv();  // pop-merge-push parent
+		parent_env = parent_env.mergeContext(visited_env);
+		checker.pushEnv(parent_env);
+		return (CompoundInteractionNode<?>) visited;
+	}
+
 	/*@Override
 	public void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
 	{
@@ -61,7 +90,7 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		coll.pushEnv(env);
 	}*/
 
-	@Override
+	/*@Override
 	public CompoundInteractionNode<?> leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
 	//public CompoundInteractionNode<?> leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
 	{
@@ -73,8 +102,8 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		
 		/*System.out.println("3: " + parent_env.getPaths().size());
 		System.out.println("4: " + parent_env.getPaths() + "");
-		System.out.println("4: " + visited + "\n");*/
+		System.out.println("4: " + visited + "\n");* /
 		
 		return (CompoundInteractionNode<?>) visited;
-	}
+	}*/
 }

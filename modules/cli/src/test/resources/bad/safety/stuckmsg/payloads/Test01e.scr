@@ -1,0 +1,22 @@
+module bad.safety.stuckmsg.payloads.Test01e;
+
+
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+
+// Three-party
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2(Int1) from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		2(Int2) from B to C;  // Payload actions deterministic at B (following initial non-det by A), but non-det at C
+	}
+}
+

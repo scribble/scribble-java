@@ -1,0 +1,26 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import13.scr
+
+module good.misc.imports.Import13;
+
+import good.misc.imports.pack1.Pack13;
+
+
+global protocol Import13(role A, role B)
+{
+	choice at A
+	{
+		do good.misc.imports.pack1.Pack13.Pack13(A, B);
+	}
+	or
+	{
+		do Import13Aux<l2()>(A, B);
+		//do Import13Aux<l1()>(A, B);
+	}
+}
+
+global protocol Import13Aux<sig X>(role A, role B)
+{
+	X from A to B;
+}
+

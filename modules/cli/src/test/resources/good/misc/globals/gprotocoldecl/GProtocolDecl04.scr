@@ -1,0 +1,13 @@
+module good.misc.globals.protocoldecl.GProtocolDecl04;
+
+
+global protocol GProtocolDecl4a(role D, role E)
+{
+	do GProtocolDecl4b(D, E);
+}
+
+global protocol GProtocolDecl4b(role D, role E)
+{
+	2() from D to E;
+	do GProtocolDecl4a(D, E);
+}

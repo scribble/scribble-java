@@ -1,0 +1,22 @@
+module good.misc.globals.gdo.Do09;
+
+
+global protocol Do9(role A, role B)
+{
+	choice at A
+	{
+		do Do9Aux<l1()>(A, B);
+	}
+	or
+	{
+		do Do9Aux<l2()>(A, B);
+		//do Do9Aux<l1()>(B, A);  // Uncomment bad if the first line in this block is commented
+		//do Do9Aux<l1()>(A, B);  // Uncomment bad if the first line in this block is commented
+	}
+}
+
+global protocol Do9Aux<sig X>(role C, role D)
+{
+	X from C to D;
+}
+

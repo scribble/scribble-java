@@ -1,0 +1,26 @@
+module good.efsm.grecursion.Test11a;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at B
+			{
+				2() from B to A;
+				4() from B to C;  // Testing EFSM building
+				continue X;
+			}
+			or
+			{
+				3() from B to A;
+				4() from B to C;
+				continue X;
+			}
+		}
+	}
+}
+

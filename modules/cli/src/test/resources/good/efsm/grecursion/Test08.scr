@@ -1,0 +1,23 @@
+module good.efsm.grecursion.Test08;
+
+
+global protocol Foo(role A, role B)
+{
+	rec X
+	{
+		rec Y
+		{
+			choice at A
+			{
+				1() from A to B;
+			}
+			or
+			{
+				2() from A to B;
+				continue Y;  // Testing graph building (updating predecessor state, when edges removed to be replaced by actual recursion edge) -- continue sequenced after a nested choice-continue: removing prev edge needs to remove pred state, and adding recursion edge should not add pred state
+			}
+		}
+		continue X;
+	}
+}
+

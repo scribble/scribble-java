@@ -9,16 +9,8 @@ tools/eclipse/plugins/org.scribble.*/bin/
 .DS_Store
 *~
 *.swp
-modules/core/src/test/scrib/demo/http/Http
-modules/core/src/test/scrib/demo/smtp/SMTP
-modules/core/src/test/scrib/demo/fib/Fib
-modules/core/src/test/scrib/demo/travel/Travel
-modules/core/src/test/scrib/demo/abcd/fibo/Fibo
-modules/core/src/test/scrib/demo/abcd/smtp/Smtp
-modules/core/src/test/scrib/test/foo/Foo
-modules/core/src/test/scrib/test/test1/Test1
-modules/core/src/test/scrib/scratch/Scratch1
-modules/core/src/test/scrib/demo/fase/adder/Adder
-modules/core/src/test/scrib/demo/fase/smtp/Smtp
 bin/scribblec.sh
+modules/core/src/test/scrib
+modules/demos/scrib
+*.bak
 

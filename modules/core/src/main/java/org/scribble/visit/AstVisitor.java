@@ -1,12 +1,13 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 
 // Pattern: node accepts visitor and calls visitor back (standard visitor pattern -- adding a new operation doesn't affect the Ast classes), but then visitor delegates back to node delegate (so routines for handling each node type not centralised in visitor, but decentralised to delegates)
 public abstract class AstVisitor
 {
-	private final Job job;
+	public final Job job;  // Immutable except for JobContext internals
 
 	//private ModuleContext mcontext;  // Factor up to ModelVisitor? (will be null before context building) -- maybe make a ModuleVisitor
 	
@@ -30,15 +31,5 @@ public abstract class AstVisitor
 	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		return visited;
-	}
-	
-	public Job getJob()
-	{
-		return this.job;
-	}
-
-	public JobContext getJobContext()
-	{
-		return this.job.getContext();
 	}
 }

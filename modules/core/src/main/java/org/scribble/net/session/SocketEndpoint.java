@@ -10,7 +10,7 @@ import org.scribble.sesstype.name.Role;
 @Deprecated
 public class SocketEndpoint
 {
-	private final SessionEndpoint<?, ?> ep;
+	private final MPSTEndpoint<?, ?> ep;
 	//private final Role peer;
 	private final SocketWrapper sw;
 	
@@ -21,7 +21,7 @@ public class SocketEndpoint
 
 	private final ReceiverThread receiver;
 
-	public SocketEndpoint(SessionEndpoint<?, ?> ep, Role peer, SocketWrapper sw) //throws IOException
+	public SocketEndpoint(MPSTEndpoint<?, ?> ep, Role peer, SocketWrapper sw) //throws IOException
 	{
 		this.ep = ep;
 		//this.peer = peer;
@@ -71,13 +71,13 @@ public class SocketEndpoint
 // Could move to EndpointInputQueues
 class ReceiverThread extends Thread
 {
-	private final SessionEndpoint<?, ?> ep;
+	private final MPSTEndpoint<?, ?> ep;
 	private final Role peer;
 	private final DataInputStream dis;
 
 	private Throwable fail;
 
-	public ReceiverThread(SessionEndpoint<?, ?> ep, Role peer, DataInputStream dis)
+	public ReceiverThread(MPSTEndpoint<?, ?> ep, Role peer, DataInputStream dis)
 	{
 		this.ep = ep;
 		this.peer = peer;

@@ -1,0 +1,18 @@
+module good.misc.globals.gdo.Do21;
+
+
+type <java> "java.lang.String" from "rt.jar" as String;
+
+
+global protocol Do6(role A, role B)
+{
+	do Do6a<String>(A, B);
+	//do Do6a<l1()>(A, B);  // Uncomment is bad
+}
+
+global protocol Do6a<type X>(role C, role D)
+//global protocol Do6a(role C, role D)
+{
+	(X) from C to D;
+}
+

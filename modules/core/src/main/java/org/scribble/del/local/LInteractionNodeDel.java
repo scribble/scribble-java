@@ -5,7 +5,7 @@ import org.scribble.ast.local.LInteractionNode;
 import org.scribble.del.InteractionNodeDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.wf.ReachabilityChecker;
 
 public interface LInteractionNodeDel extends InteractionNodeDel
 {

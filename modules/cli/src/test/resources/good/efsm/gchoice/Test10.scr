@@ -1,0 +1,39 @@
+module good.efsm.gchoice.Test10;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+		}
+		or
+		{
+			2() from A to B;
+			choice at B
+			{
+				2() from B to A;
+				continue X;
+			}
+			or
+			{
+				4a() from B to A;
+			}
+			or
+			{
+				4b() from B to A;
+			}
+		}
+	}
+	choice at A
+	{
+		3a() from A to B;
+	}
+	or {
+		3b() from A to B;
+	}
+}
+
+

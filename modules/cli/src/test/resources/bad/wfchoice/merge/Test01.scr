@@ -1,0 +1,21 @@
+module bad.wfchoice.merge.Test01;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	// Would be OK with "syntactic merge", but currently bad wrt. basic non-det interpretation
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		4() from A to C;
+	}
+	or
+	{
+		3() from A to B;
+		2() from B to C;
+		5() from A to C;
+	}
+}
+
+

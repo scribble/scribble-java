@@ -1,0 +1,24 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/fase16/src -d modules/demos/scrib/fase16/src modules/demos/scrib/fase16/src/fase16/adder/Adder.scr -api Adder C
+//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes modules/demos/scrib/fase16/src/fase16/adder/*.java -subpackages fase16.adder.Adder.Adder -d modules/demos/scrib/fase16/javadoc/adder
+
+
+module fase16.adder.Adder;
+
+
+type <java> "java.lang.Integer" from "rt.jar" as Integer;
+
+
+global protocol Adder(role C, role S)
+{
+	choice at C
+	{
+		Add(Integer, Integer) from C to S;
+		Res(Integer) from S to C;
+		do Adder(C, S);
+	}
+	or
+	{
+		Bye() from C to S;
+		Bye() from S to C;
+	}
+}

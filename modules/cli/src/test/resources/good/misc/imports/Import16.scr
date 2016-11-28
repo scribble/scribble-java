@@ -1,0 +1,14 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import16.scr
+
+module good.misc.imports.Import16;
+
+import good.misc.imports.pack1.Pack16 as Pack16;
+import good.misc.imports.pack1.Pack16 as Foo;
+
+
+global protocol Import16(role A, role B)
+{
+	do Pack16.Pack16(A, B);
+	do Foo.Pack16(A, B);
+}

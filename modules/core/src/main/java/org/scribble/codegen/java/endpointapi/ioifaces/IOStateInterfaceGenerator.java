@@ -2,8 +2,8 @@ package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -14,8 +14,9 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.main.RuntimeScribbleException;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
+import org.scribble.main.ScribbleException;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
@@ -23,34 +24,34 @@ import org.scribble.sesstype.name.Role;
 // Partial I/O State I/f generator -- Successor Interfaces and cast methods added later
 public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 {
-	public static final Comparator<IOAction> IOACTION_COMPARATOR = new Comparator<IOAction>()
+	public static final Comparator<EAction> IOACTION_COMPARATOR = new Comparator<EAction>()
 			{
 				@Override
-				public int compare(IOAction a1, IOAction a2)
+				public int compare(EAction a1, EAction a2)
 				{
 					return ActionInterfaceGenerator.getActionInterfaceName(a1).compareTo(ActionInterfaceGenerator.getActionInterfaceName(a2));
 				}
 			};
 
-	protected final Map<IOAction, InterfaceBuilder> actions;
+	protected final Map<EAction, InterfaceBuilder> actions;
 	
 	protected final InterfaceBuilder ib = new InterfaceBuilder();
 
 	// Preds can be null
-	public IOStateInterfaceGenerator(StateChannelApiGenerator apigen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr)
+	public IOStateInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EState curr)
 	{
 		super(apigen, curr);
 		this.actions = Collections.unmodifiableMap(actions);
 	}
 	
 	@Override
-	public InterfaceBuilder generateType()
+	public InterfaceBuilder generateType() throws ScribbleException
 	{
 		constructInterface();
 		return this.ib;
 	}
 
-	protected void constructInterface()
+	protected void constructInterface() throws ScribbleException
 	{
 		addHeader();
 		addSuccessorParamsAndActionInterfaces();
@@ -74,7 +75,8 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	protected void addCastField()
 	{
 		String ifname = getIOStateInterfaceName(this.apigen.getSelf(), this.curr);
-		Set<IOAction> as = this.curr.getAcceptable();
+		//Set<EAction> as = this.curr.getActions();
+		List<EAction> as = this.curr.getActions();
 
 		FieldBuilder cast = this.ib.newField("cast");
 		cast.addModifiers(TypeBuilder.PUBLIC, TypeBuilder.STATIC, TypeBuilder.FINAL);
@@ -85,12 +87,15 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	protected void addSuccessorParamsAndActionInterfaces()
 	{
 		int i = 1;
-		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getActions().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
-			String actif = this.actions.get(a).getName();
-			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
-			this.ib.addInterfaces(actif + "<__Succ" + i + ">");
-			i++;
+			if (a.isSend() || a.isReceive())  // HACK FIXME
+			{
+				String actif = this.actions.get(a).getName();
+				this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
+				this.ib.addInterfaces(actif + "<__Succ" + i + ">");
+				i++;
+			}
 		}
 	}
 
@@ -108,7 +113,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	}*/
 
 	// Pre: s non-terminal
-	public static String getIOStateInterfaceName(Role self, EndpointState s)
+	public static String getIOStateInterfaceName(Role self, EState s)
 	{
 		String name = null;
 		switch (s.getStateKind())
@@ -117,8 +122,20 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 			case UNARY_INPUT: name = "Receive"; break;
 			case POLY_INPUT:  name = "Branch";  break;
 			case TERMINAL:    throw new RuntimeScribbleException("Shouldn't get in here: " + s);
+			default:          throw new RuntimeException("(TODO) I/O interface generation: " + s.getStateKind());
 		}
-		return name + "_" + self + "_" + s.getAcceptable().stream().sorted(IOACTION_COMPARATOR)
+		name = name + "_" + self + "_" + s.getActions().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
+		checkIOStateInterfaceNameLength(name);
+		return name;
+	}
+	
+	// 255 is Linux, Windows, etc max file name length (Java is 65535)
+	public static void checkIOStateInterfaceNameLength(String name) throws RuntimeScribbleException
+	{
+		if (name.length() > 250)  // .java
+		{
+			throw new RuntimeScribbleException("I/O Interface name too long (max 255): " + name);
+		}
 	}
 }

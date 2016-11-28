@@ -11,6 +11,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
+import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.Kind;
@@ -23,12 +24,11 @@ import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.visit.JobContext;
 
 // Context information specific to each module as a root (wrt. to visitor passes)
 public class ModuleContext
 {
-	public final ModuleName root;
+	public final ModuleName root;  // full name
 
   // All transitive name dependencies of this module: all names fully qualified
 	// The ScribNames maps are basically just used as sets (identity map)
@@ -204,6 +204,11 @@ public class ModuleContext
 		return getFullName(this.visible.data, visname);
 	}
 	
+	public boolean isVisibleDataType(DataType visname)
+	{
+		return this.visible.isVisibleDataType(visname);
+	}
+	
 	public MessageSigName getVisibleMessageSigNameFullName(MessageSigName visname)
 	{
 		return getFullName(this.visible.sigs, visname);
@@ -212,6 +217,11 @@ public class ModuleContext
 	public <K extends ProtocolKind> ProtocolName<K> getVisibleProtocolDeclFullName(ProtocolName<K> visname)
 	{
 		return getProtocolDeclFullName(this.visible, visname);
+	}
+	
+	public <K extends ProtocolKind> boolean isVisibleProtocolDeclName(ProtocolName<K> visname)
+	{
+		return this.visible.isVisibleProtocolDeclName(visname);
 	}
 
 	public static <K extends ProtocolKind> ProtocolName<K> getProtocolDeclFullName(ScribNames names, ProtocolName<K> proto)
@@ -228,6 +238,7 @@ public class ModuleContext
 	{
 		if (!map.containsKey(visname))
 		{
+			// FIXME: runtime exception bad -- make a guard method
 			throw new RuntimeException("Unknown name: " + visname);
 		}
 		return map.get(visname);
@@ -254,5 +265,15 @@ class ScribNames
 	{
 		return "(modules=" + this.modules + ", types=" + this.data + ", sigs=" + this.sigs
 				+ ", globals=" + this.globals + ", locals=" + this.locals + ")";
+	}
+	
+	public <K extends ProtocolKind> boolean isVisibleProtocolDeclName(ProtocolName<K> visname)
+	{
+		return this.globals.containsKey(visname) || this.locals.containsKey(visname);
+	}
+	
+	public boolean isVisibleDataType(DataType visname)
+	{
+		return this.data.containsKey(visname);
 	}
 }	

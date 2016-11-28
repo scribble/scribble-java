@@ -1,0 +1,12 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py test/base/impourt/pack1/Pack9.scr
+
+module good.misc.imports.pack1.Pack09;
+
+
+global protocol Pack9(role C, role D)
+{
+	l1() from C to D;
+	//l2() from C to D;  // Uncomment is OK; with above commented not OK
+}
+

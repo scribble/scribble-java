@@ -19,21 +19,26 @@ import java.util.List;
 
 
 
+
+
+
 //import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.scribble.main.Job;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
-import org.scribble.visit.Job;
+import org.scribble.util.ScribParserException;
 
 /**
  * Runs good and bad tests in Scribble.
  * 
  */
+@Deprecated  // Not currently used (via AllTest instead)
 @RunWith(value = Parameterized.class)
 public class TestWellFormedness {
 	private String filename;
@@ -46,13 +51,12 @@ public class TestWellFormedness {
 
 	@Parameters(name = "{0} bad={1}")
 	public static Collection<Object[]> data() {
-		Harness harness = new Harness();
 		List<Object[]> result = new ArrayList<>();
 
 		URL url=ClassLoader.getSystemResource("good");
 		String dir = url.getFile();
 		
-		for (String file : harness.findTests(dir))
+		for (String file : Harness.findTests(dir))
 		{
 			result.add(new Object[] { file, false });
 		}
@@ -60,7 +64,7 @@ public class TestWellFormedness {
 		url=ClassLoader.getSystemResource("bad");
 		dir = url.getFile();
 		
-		for (String file : harness.findTests(dir))
+		for (String file : Harness.findTests(dir))
 		{
 			result.add(new Object[] { file, true });
 		}
@@ -70,9 +74,9 @@ public class TestWellFormedness {
 
 	@Test
 	public void tests() throws Exception {
-		try {
+		/*try {
 			MainContext mc = newMainContext();
-			Job job = new Job(mc.debug, mc.getParsedModules(), mc.main);
+			Job job = new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
 
 			job.checkWellFormedness();
 			if (hasErrors) fail("Should throw an error.");
@@ -80,13 +84,32 @@ public class TestWellFormedness {
 			if (!hasErrors) {
 				throw e;
 			}
+		}*/
+		MainContext mc = newMainContext();
+		//Job job = new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm, mc.fair);
+		Job job = mc.newJob();
+		ScribbleException x = job.testWellFormednessCheck();
+		if (!hasErrors && x != null)
+		{
+			throw x;
+		}
+		else if (hasErrors && x == null)
+		{
+			fail("Should throw an error.");
 		}
 	}
 
 	// Duplicated from CommandLine
-	private MainContext newMainContext()
+	private MainContext newMainContext() throws ScribbleException
 	{
 		boolean debug = false;
+		boolean useOldWF = false;
+		boolean noLiveness = false;
+		boolean minEfsm = false;
+		boolean fair = true;  // FIXME?
+		boolean noLocalChoiceSubjectCheck = false;
+		boolean noAcceptCorrelationCheck = false;
+
 		Path mainpath = Paths.get(filename);
 		List<Path> impaths = new ArrayList<Path>();
 		
@@ -95,6 +118,13 @@ public class TestWellFormedness {
 		impaths.add(Paths.get(dir));
 		
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
-		return new MainContext(debug, locator, mainpath);
+		try
+		{
+			return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck);
+		}
+		catch (ScribParserException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

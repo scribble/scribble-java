@@ -1,6 +1,8 @@
 package org.scribble.del;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +23,9 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ModuleContextBuilder;
-import org.scribble.visit.NameDisambiguator;
-import org.scribble.visit.Projector;
+import org.scribble.visit.context.ModuleContextBuilder;
+import org.scribble.visit.context.Projector;
+import org.scribble.visit.wf.NameDisambiguator;
 
 public class ModuleDel extends ScribDelBase
 {
@@ -42,7 +44,7 @@ public class ModuleDel extends ScribDelBase
 	@Override
 	public void enterModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder) throws ScribbleException
 	{
-		builder.setModuleContext(new ModuleContext(builder.getJobContext(), (Module) child));
+		builder.setModuleContext(new ModuleContext(builder.job.getContext(), (Module) child));
 	}
 
 	// Maybe better to create on enter, so can be used during the context build pass (Context would need to be "cached" in the visitor to be accessed)
@@ -61,24 +63,42 @@ public class ModuleDel extends ScribDelBase
 		List<NonProtocolDecl<?>> npds = mod.getNonProtocolDecls();
 		List<String> npdnames = npds.stream().map((npd) -> npd.getDeclName().toString()).collect(Collectors.toList()); 
 				// Have to use Strings, as can be different kinds (datatype, sig)
-		if (npds.size() != npdnames.stream().distinct().count())
+		Set<String> dups = getDuplicates(npdnames);
+		//if (npds.size() != npdnames.stream().distinct().count())
+		if (!dups.isEmpty())
 		{
-			throw new ScribbleException("Duplicate non-protocol decls: " + npdnames);
+			throw new ScribbleException("Duplicate non-protocol decls: " + dups);
 		}
 		List<ProtocolDecl<?>> pds = mod.getProtocolDecls();
 		List<String> pdnames = pds.stream().map((pd) -> pd.header.getDeclName().toString()).collect(Collectors.toList());
 				// Have to use Strings, as can be different kinds (global, local)
+		dups = getDuplicates(pdnames);
 		if (pds.size() != pdnames.stream().distinct().count())
+		if (!dups.isEmpty())
 		{
-			throw new ScribbleException("Duplicate protocol decls: " + pdnames);  // Global and locals also required to be distinct
+			throw new ScribbleException("Duplicate protocol decls: " + dups);  // Global and locals also required to be distinct
 		}
 		return mod;
+	}
+	
+	private static Set<String> getDuplicates(Collection<String> ss)
+	{
+		Set<String> uniques = new HashSet<>();
+		Set<String> dups = new HashSet<>();
+		for (String npd : ss)
+		{
+			if (!uniques.add(npd))
+			{
+				dups.add(npd);
+			}
+		}
+		return dups;
 	}
 
 	@Override
 	public Module leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited)
 	{
-		proj.getJobContext().addProjections(proj.getProjections());
+		proj.job.getContext().addProjections(proj.getProjections());
 		return (Module) visited;
 	}
 

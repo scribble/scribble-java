@@ -11,10 +11,11 @@ import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.parser.ScribParser;
 import org.scribble.parser.util.ScribParserUtil;
 import org.scribble.sesstype.kind.NonRoleParamKind;
+import org.scribble.util.ScribParserException;
 
 public class AntlrNonRoleParamDeclList
 {
-	public static NonRoleParamDeclList parseNonRoleParamDeclList(ScribParser parser, CommonTree ct)
+	public static NonRoleParamDeclList parseNonRoleParamDeclList(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
 		List<NonRoleParamDecl<NonRoleParamKind>> pds = new LinkedList<>();
 		for (CommonTree pd : getParamDeclChildren(ct))

@@ -1,0 +1,20 @@
+module good.efsm.gchoice.Test09;
+
+
+global protocol Foo(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+		}
+		or
+		{
+			1() from A to B;
+		}
+		continue X;  // Testing recursion edge replacement cornercase (length 1 non-det choice paths are merged as a single case)
+	}
+}
+
+

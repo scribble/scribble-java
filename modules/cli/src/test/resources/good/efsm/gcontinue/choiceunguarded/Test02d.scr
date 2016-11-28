@@ -1,0 +1,27 @@
+module good.efsm.gcontinue.choiceunguarded.Test02d;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec Y
+	{
+		0() from A to B;
+		rec X
+		{
+			1() from A to B;
+			choice at A  // Testing multi-rec enacting states in intermediate continue-edge fixing
+			{
+				continue X;
+			}
+			or
+			{
+				continue Y;
+			}
+			or
+			{
+				continue X;
+			}
+		}
+	}
+}
+

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
 
+@Deprecated
 public class JavaProcessBuilder {
 	private String jvm;
 	private Collection<String> classpath = new ArrayList<>();

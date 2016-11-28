@@ -1,5 +1,0 @@
-module bad.disamb.modules.Modules03;
-
-
-type <java> "java.lang.String" from "rt.jar" as String;
-sig <java> "java.lang.String" from "rt.jar" as String;

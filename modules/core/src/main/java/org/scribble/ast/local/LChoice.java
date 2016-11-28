@@ -16,7 +16,7 @@ import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 {
@@ -57,6 +57,7 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
+		// Relies on: will never be inferring from a "continue X;" -- if choice is first statement in seq, continue must be guarded; if continue is not guarded, choice cannot be first statement in seq
 		return getBlocks().get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);
 	}
 
@@ -86,6 +87,8 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 		}*/
 		List<LProtocolBlock> blocks = new LinkedList<>();
 		// For now assume all labels distinct by WFChoiceCheck -- for more general merge need to use getEnabling and check if overlapping labels have the same cases (need an equals for ScribNodes)
+		// FIXME: bad merges involving recvars, e.g. for B, rec X . choice at A { A->B:1 . choice at A { A->C:2.X } or { A->C:3 } } or { A->B,C:4 }
+		// ^ maybe by preventing merge of unguarded recvar with non-recvar cases (or empty cases)
 		getBlocks().forEach((b) -> blocks.add(b.clone()));
 		them.getBlocks().forEach((b) -> blocks.add(b.clone()));
 		return AstFactoryImpl.FACTORY.LChoice(this.subj, blocks);  // Not reconstruct: leave context building to post-projection passes 

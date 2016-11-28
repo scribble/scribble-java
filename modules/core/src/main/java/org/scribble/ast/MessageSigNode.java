@@ -16,6 +16,12 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 		this.op = op;
 		this.payloads = payload;
 	}
+	
+	@Override
+	public MessageNode project()  // Currently outside of visitor/env pattern
+	{
+		return AstFactoryImpl.FACTORY.MessageSigNode(this.op, this.payloads.project());  // Original del not retained by projection
+	}
 
 	@Override
 	protected MessageSigNode copy()

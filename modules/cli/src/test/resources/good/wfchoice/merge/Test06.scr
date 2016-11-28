@@ -1,0 +1,25 @@
+module good.wfchoice.merge.Test06;
+
+
+type <java> "java.lang.String" from "rt.jar" as String;
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+type <java> "java.lang.Boolean" from "rt.jar" as Bool;
+type <java> "java.lang.Float" from "rt.jar" as Float;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		Msg1a(String) from A to B;
+		Msg2(Int) from B to C;
+		Msg3(Bool) from C to A;
+	}
+	or
+	{
+		Msg1b(Float) from A to B;
+		Msg2(Int) from B to C;
+		Msg3(Bool) from C to A;
+	}
+}
+

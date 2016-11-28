@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class Local extends AbstractKind implements ProtocolKind
+public class Local extends AbstractKind implements ProtocolKind, PayloadTypeKind
 {
 	public static final Local KIND = new Local();
 	

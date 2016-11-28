@@ -1,11 +1,15 @@
 package org.scribble.codegen.java.endpointapi;
 
+import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.model.local.EndpointState;
+import org.scribble.main.ScribbleException;
+import org.scribble.model.endpoint.EState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -13,15 +17,24 @@ import org.scribble.sesstype.name.Role;
 // Parameterize on output class type
 public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 {
+	public static final String JAVA_SCHEMA = "java";  // FIXME: factor out
+	
 	public static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
+	public static final String MPSTENDPOINT_CLASS = "org.scribble.net.session.MPSTEndpoint";
+	public static final String EXPLICITENDPOINT_CLASS = "org.scribble.net.session.ExplicitEndpoint";
 	public static final String BUF_CLASS = "org.scribble.net.Buf";
 	public static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
 
-	public static final String SENDSOCKET_CLASS = "org.scribble.net.scribsock.SendSocket";
+	//public static final String CONNECTSOCKET_CLASS = "org.scribble.net.scribsock.ConnectSocket";
+	public static final String ACCEPTSOCKET_CLASS = "org.scribble.net.scribsock.AcceptSocket";
+	//public static final String DISCONNECTSOCKET_CLASS = "org.scribble.net.scribsock.DisconnectSocket";
+	public static final String OUTPUTSOCKET_CLASS = "org.scribble.net.scribsock.OutputSocket";
 	public static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
 	public static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";
 	public static final String CASESOCKET_CLASS = "org.scribble.net.scribsock.CaseSocket";
 	public static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
+
+	public static final String SCRIBSERVERSOCKET_CLASS = "org.scribble.net.scribsock.ScribServerSocket";
 
 	public static final String GENERATED_ENDSOCKET_NAME = "EndSocket";
 	
@@ -38,12 +51,12 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	public static final String CASE_MESSAGE_PARAM = CASE_MESSAGE_FIELD;
 	public static final String CASE_ARG_PREFIX = "arg";
 	
-	protected final EndpointState curr;
+	protected final EState curr;
 	protected final String className;
 
 	protected final ClassBuilder cb = new ClassBuilder();
 	
-	public ScribSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
+	public ScribSocketGenerator(StateChannelApiGenerator apigen, EState curr)
 	{
 		super(apigen);
 		this.curr = curr;
@@ -56,13 +69,13 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	}
 
 	@Override
-	public ClassBuilder generateType()
+	public ClassBuilder generateType() throws ScribbleException
 	{
 		constructClass();  // So className can be "overridden" in subclass constructor (CaseSocket)
 		return this.cb;
 	}
 
-	protected void constructClass()
+	protected void constructClass() throws ScribbleException
 	{
 		constructClassExceptMethods();
 		addMethods();
@@ -123,23 +136,27 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
-		ConstructorBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
+
+		GProtocolDecl gpd = (GProtocolDecl) this.apigen.getJob().getContext().getModule(this.apigen.gpn.getPrefix()).getProtocolDecl(this.apigen.gpn.getSimpleName());
+		String epClass = gpd.isExplicitModifier() ? EXPLICITENDPOINT_CLASS : MPSTENDPOINT_CLASS;
+		ConstructorBuilder ctor2 = cb.newConstructor(epClass + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
+
 		ctor2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		ctor2.addModifiers(JavaBuilder.PUBLIC);
 		ctor2.addBodyLine(JavaBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 		ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 	}
 	
-	protected abstract void addMethods();
+	protected abstract void addMethods() throws ScribbleException;
 	
 	@Deprecated
-	protected void setNextSocketReturnType(MethodBuilder mb, EndpointState succ)
+	protected void setNextSocketReturnType(MethodBuilder mb, EState succ)
 	{
 		setNextSocketReturnType(this.apigen, mb, succ);
 	}
 	
 	//protected void addReturnNextSocket(MethodBuilder mb, String nextClass)
-	protected void addReturnNextSocket(MethodBuilder mb, EndpointState s)
+	protected void addReturnNextSocket(MethodBuilder mb, EState s)
 	{
 		String nextClass;
 		//if (isTerminalClassName(nextClass))
@@ -209,7 +226,7 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 		return SessionApiGenerator.getStateChannelPackageName(this.apigen.getGProtocolName(), this.apigen.getSelf());
 	}
 
-	public static void setNextSocketReturnType(StateChannelApiGenerator apigen, MethodBuilder mb, EndpointState succ)
+	public static void setNextSocketReturnType(StateChannelApiGenerator apigen, MethodBuilder mb, EState succ)
 	{
 		String ret;
 		if (succ.isTerminal())
@@ -224,6 +241,24 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 			ret = apigen.getSocketClassName(succ);
 		}
 		mb.setReturn(ret);
+	}
+	
+	protected static void checkJavaDataTypeDecl(DataTypeDecl dtd) throws ScribbleException
+	{
+		checkJavaSchema(dtd.schema);
+	}
+
+	protected static void checkMessageSigNameDecl(MessageSigNameDecl msd) throws ScribbleException
+	{
+		checkJavaSchema(msd.schema);
+	}
+	
+	protected static void checkJavaSchema(String schema) throws ScribbleException
+	{
+		if (!schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
+		{
+			throw new ScribbleException("Unexpected data type schema: " + schema);
+		}
 	}
 	
 	/*private static boolean isTerminalClassName(String n)

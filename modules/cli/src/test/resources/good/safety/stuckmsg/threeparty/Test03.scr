@@ -1,0 +1,25 @@
+module good.safety.stuckmsg.threeparty.Test03;
+
+
+// Similar to good.wfchoice.merge.Test04
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		1() from B to C;
+		choice at B
+		{
+			2() from B to A;
+			continue X;
+		}
+		or
+		{
+			3() from B to A;
+			1() from B to C;
+			//3() from B to C;
+			continue X;
+		}
+	}
+}
+

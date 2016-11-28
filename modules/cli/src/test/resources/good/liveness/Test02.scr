@@ -1,0 +1,14 @@
+module good.liveness.Test02;
+
+
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X  // Testing terminal set building
+	{
+		1() from A to B;
+		2() from B to A;
+		continue X;
+	}
+	3() from C to D;
+}
+

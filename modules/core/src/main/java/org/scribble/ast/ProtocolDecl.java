@@ -1,17 +1,27 @@
 package org.scribble.ast;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
+// FIXME: visitChildren for modifiers
 public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase implements ModuleMember, ProtocolKindNode<K>
 {
+	public static enum Modifiers { EXPLICIT, AUX }  // FIXME: factor out?  Header?
+
+	// FIXME: lookup routines, e.g. isExplicit
+	public final List<Modifiers> modifiers;
+
 	// Maybe just use standard pattern, make private with casting getters -- works better (e.g. to use overridden getName)
 	public final ProtocolHeader<K> header;
 	public final ProtocolDef<K> def;
 
-	protected ProtocolDecl(ProtocolHeader<K> header, ProtocolDef<K> def)
+	protected ProtocolDecl(List<Modifiers> modifiers, ProtocolHeader<K> header, ProtocolDef<K> def)
 	{
+		this.modifiers = Collections.unmodifiableList(modifiers);
 		this.header = header;
 		this.def = def;
 	}
@@ -35,5 +45,15 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	public String toString()
 	{
 		return this.header + " " + this.def;
+	}
+	
+	public boolean isExplicitModifier()
+	{
+		return this.modifiers.contains(Modifiers.EXPLICIT);
+	}
+
+	public boolean isAuxModifier()
+	{
+		return this.modifiers.contains(Modifiers.AUX);
 	}
 }

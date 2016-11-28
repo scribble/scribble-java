@@ -1,6 +1,7 @@
 package org.scribble.ast.name.simple;
 
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
 
@@ -9,6 +10,15 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 	public RecVarNode(String identifier)
 	{
 		super(identifier);
+	}
+	
+	// Factor up to SimpleNameNode?
+	public RecVarNode reconstruct(String id)
+	{
+		ScribDel del = del();
+		RecVarNode rv = new RecVarNode(id);
+		rv = (RecVarNode) rv.del(del);
+		return rv;
 	}
 
 	@Override

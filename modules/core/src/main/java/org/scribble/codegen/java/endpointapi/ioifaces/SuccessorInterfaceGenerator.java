@@ -3,15 +3,15 @@ package org.scribble.codegen.java.endpointapi.ioifaces;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 
 public class SuccessorInterfaceGenerator extends IOInterfaceGenerator
 {
-	private final IOAction a;
+	private final EAction a;
 	private final InterfaceBuilder ib = new InterfaceBuilder();
 
-	public SuccessorInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, IOAction a)
+	public SuccessorInterfaceGenerator(StateChannelApiGenerator apigen, EState curr, EAction a)
 	{
 		super(apigen, curr);
 		this.a = a;
@@ -27,7 +27,7 @@ public class SuccessorInterfaceGenerator extends IOInterfaceGenerator
 		return ib;
 	}
 	
-	public static String getSuccessorInterfaceName(IOAction a)
+	public static String getSuccessorInterfaceName(EAction a)
 	{
 		return "Succ_" + ActionInterfaceGenerator.getActionInterfaceName(a);
 	}

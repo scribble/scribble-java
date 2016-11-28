@@ -1,0 +1,12 @@
+module bad.reach.globals.gdo.pack1.Test03b;
+
+
+import bad.reach.globals.gdo.Test03;
+
+
+global protocol Bar(role C, role D)
+{
+	3() from C to D;
+	do bad.reach.globals.gdo.Test03.Foo(C, D);
+}
+

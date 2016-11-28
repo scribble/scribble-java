@@ -1,0 +1,18 @@
+module good.syntax.inlinedunfolding.grecursion.Test01;
+
+
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		rec X  // Unguarded rec gets unfolded
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		2() from A to B;
+	}
+}

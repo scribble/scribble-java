@@ -1,0 +1,18 @@
+module good.syntax.inlinedunfolding.gdo.Test01b;
+
+
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		do Bar(A, B);
+	}
+}
+
+// For root Foo, Bar inlined as unguarded rec, then gets unfolded
+aux global protocol Bar(role A, role B)
+{
+	4() from A to B;
+	do Bar(A, B);
+}
+

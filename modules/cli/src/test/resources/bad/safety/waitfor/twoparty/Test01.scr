@@ -1,0 +1,26 @@
+module bad.safety.waitfor.twoparty.Test01;
+
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to A;
+		2() from A to B;  // Async. permut. needs to be an asymmetric local feature; done "globally" allows potential deadlock
+		2() from A to B;
+		3() from B to A;
+		3() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		1() from B to A;
+		3() from B to A;  // Potential deadlock
+		3() from B to A;
+		2() from A to B;
+		2() from A to B;
+	}
+}
+
+

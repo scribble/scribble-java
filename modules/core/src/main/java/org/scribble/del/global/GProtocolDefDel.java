@@ -17,10 +17,10 @@ import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.context.Projector;
+import org.scribble.visit.context.env.ProjectionEnv;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ProjectionEnv;
 
 public class GProtocolDefDel extends ProtocolDefDel
 {
@@ -43,7 +43,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 		SubprotocolSig subsig = inl.peekStack();
 		GProtocolDef gpd = (GProtocolDef) visited;
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gpd.block.del().env()).getTranslation();	
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, inl.getRecVar(subsig).toString());
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 		GRecursion rec = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
 		GInteractionSeq gis = AstFactoryImpl.FACTORY.GInteractionSeq(Arrays.asList(rec));
 		GProtocolDef inlined = AstFactoryImpl.FACTORY.GProtocolDef(AstFactoryImpl.FACTORY.GProtocolBlock(gis));

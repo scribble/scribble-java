@@ -1,0 +1,26 @@
+module good.misc.globals.gdo.Do27;
+
+
+global protocol Do27(role A, role B)
+{
+	choice at A
+	{
+		m1() from A to B;
+	}
+	or
+	{
+		m2() from A to B;
+		//do Do27(A, B); // Uncomment bad
+		do Do27a(A, B);
+	}
+	m3() from A to B;
+}
+
+global protocol Do27a(role C, role D)
+{
+	rec X
+	{
+		m4() from C to D;
+		//continue X;  // Uncomment bad
+	}
+}

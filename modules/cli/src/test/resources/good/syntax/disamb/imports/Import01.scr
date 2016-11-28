@@ -1,0 +1,13 @@
+module good.syntax.disamb.imports.Import01;
+
+
+import good.syntax.disamb.imports.Import01a;
+import good.syntax.disamb.imports.pack1.Import01b as Test4;  // <- "Test3" as Test4
+
+
+global protocol Import1(role A, role B)
+{
+	1() from A to B;
+	do good.syntax.disamb.imports.Import01a.Import1a(A, B);
+	do Test4.Import1b(A, B);
+}

@@ -1,5 +1,7 @@
 package org.scribble.ast.local;
 
+import java.util.List;
+
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
@@ -14,15 +16,15 @@ import org.scribble.sesstype.name.Role;
 
 public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 {
-	public LProtocolDecl(LProtocolHeader header, LProtocolDef def)
+	public LProtocolDecl(List<Modifiers> modifiers, LProtocolHeader header, LProtocolDef def)
 	{
-		super(header, def);
+		super(modifiers, header, def);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LProtocolDecl(getHeader(), getDef());
+		return new LProtocolDecl(this.modifiers, getHeader(), getDef());
 	}
 	
 	@Override
@@ -30,14 +32,14 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 	{
 		LProtocolHeader header = getHeader().clone();
 		LProtocolDef def = getDef().clone();
-		return AstFactoryImpl.FACTORY.LProtocolDecl(header, def);
+		return AstFactoryImpl.FACTORY.LProtocolDecl(this.modifiers, header, def);
 	}
 	
 	@Override
 	public LProtocolDecl reconstruct(ProtocolHeader<Local> header, ProtocolDef<Local> def)
 	{
 		ScribDel del = del();
-		LProtocolDecl lpd = new LProtocolDecl((LProtocolHeader) header, (LProtocolDef) def);
+		LProtocolDecl lpd = new LProtocolDecl(this.modifiers, (LProtocolHeader) header, (LProtocolDef) def);
 		lpd = (LProtocolDecl) lpd.del(del);
 		return lpd;
 	}

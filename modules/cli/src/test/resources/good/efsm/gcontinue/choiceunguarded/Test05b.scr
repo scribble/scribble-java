@@ -1,0 +1,26 @@
+module good.efsm.gcontinue.choiceunguarded.Test05b;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		rec Y
+		{
+			1() from A to B;
+			2() from B to C;
+			choice at C
+			{
+				3() from C to A;
+				continue X;
+			}
+			or
+			{
+				4() from C to A;
+				continue Y;
+			}
+		}
+	}
+}
+
+

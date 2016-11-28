@@ -1,0 +1,30 @@
+module bad.safety.waitfor.threeparty.Test02;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at A
+			{
+				1() from A to C;
+				continue X;  // ** CHECKME: badly formed (for B) -- empty block bvelow is pruned leaving only the continue case, which leads to deadlock in global model, is this OK as WF algorithm? (any way to be unsound?)  or should explicitly detect inconsistent choice block projections?
+			}
+			or
+			{
+				3() from A to C;
+			}
+		}
+		or
+		{
+			2() from A to C;
+			2() from A to B;
+		}
+	}
+}
+//*/
+
+

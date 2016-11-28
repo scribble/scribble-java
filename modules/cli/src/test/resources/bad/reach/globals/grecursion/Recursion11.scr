@@ -1,0 +1,17 @@
+module bad.reach.globals.grecursion.Recursion11;
+
+
+global protocol Recursion11(role A, role B)
+{
+	rec X
+	{
+		l1() from A to B;
+		continue X;
+	}
+	rec Y
+	{
+		l2() from B to A;
+		continue X;  // Not really a reachability case, caught by name disamb 
+	}
+}
+

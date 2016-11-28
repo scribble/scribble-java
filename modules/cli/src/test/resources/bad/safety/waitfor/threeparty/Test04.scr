@@ -1,0 +1,20 @@
+module bad.safety.waitfor.threeparty.Test04;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+		1() from C to B;
+	}
+	or
+	{
+		1() from A to B;  // Uncomment is bad
+		2() from A to B;
+		2() from A to C;
+		2() from C to B;  // Also potential stuck
+	}
+}
+

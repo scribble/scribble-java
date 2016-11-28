@@ -1,0 +1,15 @@
+module bad.syntax.rolecollection.gprotocoldecl.Test01;
+
+
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	do Bar(A, B);
+	2() from A to B;
+}
+
+aux global protocol Bar(role A, role B)  // Testing bad unused role decls (wrt. subprotocol collected role occurrences) -- actually, allow due to aux?
+{
+
+}
+

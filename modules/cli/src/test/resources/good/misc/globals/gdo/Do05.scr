@@ -1,0 +1,20 @@
+module good.misc.globals.gdo.Do05;
+
+
+global protocol Do5(role A, role B)
+{
+	choice at A
+	{
+		l1() from A to B;
+	}
+	or
+	{
+		do Do5a(A, B);  // Comment is bad
+		l3() from B to A;
+	}
+}
+
+global protocol Do5a(role C, role D)
+{
+	l2() from C to D;
+}

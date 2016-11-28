@@ -1,0 +1,22 @@
+module bad.syntax.consistentchoicesubj.Test06b;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A  // Morally bad, even without local choice subject checking (and a multi-queue input branch primitive, etc.)
+		{
+			1() from A to B;
+			2() from B to C;
+			3() from C to B;
+		}
+		or
+		{
+			4() from A to C;
+			5() from C to B;
+		}
+		continue X;
+	}
+}
+

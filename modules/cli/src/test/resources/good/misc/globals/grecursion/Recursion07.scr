@@ -1,0 +1,21 @@
+module good.misc.globals.grecursion.Recursion07;
+
+
+global protocol Recursion7(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			l1() from A to B;
+		}
+		or
+		{
+			l2() from A to B;
+		}
+		continue X;
+		//l3() from A to B;  // Uncomment bad
+	}
+	//l3() from A to B;  // Uncomment bad
+}
+

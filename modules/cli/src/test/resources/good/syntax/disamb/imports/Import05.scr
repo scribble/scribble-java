@@ -1,0 +1,16 @@
+module good.syntax.disamb.imports.Import05;
+
+
+import good.syntax.disamb.imports.pack1.Test2;
+import good.syntax.disamb.imports.pack1.Test3 as Test3;         // The name Test3 is test3.Test3 in Test2
+import good.syntax.disamb.imports.pack1.test3.Test3 as Test4;   // The name Test4 is actually Test4 in Test2
+
+
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	do good.syntax.disamb.imports.pack1.Test2.Proto2(A, B);
+	do Test3.Foo3(A, B);
+	do Test4.Bar3(A, B);
+}
+

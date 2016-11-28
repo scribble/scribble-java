@@ -1,0 +1,23 @@
+module bad.reach.globals.gdo.Test06e;
+
+
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		do Foo(A, B);  // No continuation after this choice permitted, will become non tail recursive once inlined
+	}
+	or
+	{
+		2() from A to B;
+	}
+	3() from A to B;
+}
+
+global protocol Bar(role C, role D)
+{
+	5() from C to D;
+	do Bar(C, D);
+}
+

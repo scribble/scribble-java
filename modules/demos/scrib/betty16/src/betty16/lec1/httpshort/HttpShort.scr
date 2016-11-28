@@ -1,0 +1,35 @@
+/**
+ * Assuming scribblec.sh in scribble-java root directory:
+ * 
+ * ./scribblec.sh -d modules/demos/scrib/betty16/src modules/demos/scrib/betty16/src/betty16/lec1/httpshort/HttpShort.scr -api Http C
+ */
+
+
+module betty16.lec1.httpshort.HttpShort;
+
+
+sig <java> "betty16.lec1.httpshort.message.client.Request"
+		from "betty16/httpshort/message/Request.java"
+		as Request;
+
+sig <java> "betty16.lec1.httpshort.message.server.Response"
+		from "betty16/shortvers/message/Response.java"
+		as Response;
+
+
+global protocol Http(role C, role S) {
+	Request from C to S;
+	Response from S to C;
+}
+
+
+
+
+
+
+
+
+
+
+
+

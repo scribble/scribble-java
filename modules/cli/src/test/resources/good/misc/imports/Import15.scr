@@ -1,0 +1,7 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import15.scr
+
+module good.misc.imports.Import15;
+
+//import Import15;  // FIXME: check if simplename should be allowed here (currently implementation doesn't allow)
+

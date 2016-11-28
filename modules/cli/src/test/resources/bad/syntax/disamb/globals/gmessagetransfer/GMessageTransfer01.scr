@@ -1,0 +1,7 @@
+module bad.syntax.disamb.globals.gmessagetransfer.GMessageTransfer01;
+
+
+global protocol Foo(role A)
+{
+	1() from A to A;  // TODO: should be good
+}

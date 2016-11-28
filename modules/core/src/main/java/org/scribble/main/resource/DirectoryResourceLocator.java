@@ -23,10 +23,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.scribble.main.ScribbleException;
+
 /**
  * This class provides a directory based resource locator.
  *
  */
+// FIXME: rename exceptions
 public class DirectoryResourceLocator extends ResourceLocator
 {
 	private static final Logger LOG = Logger.getLogger(DirectoryResourceLocator.class.getName());
@@ -47,7 +50,7 @@ public class DirectoryResourceLocator extends ResourceLocator
 	
 	// FIXME: need to sort out what "getResource" should mean at level of ResourceLocator abstraction, e.g. if arg is specifically a Path or more abstract, whether it is the complete location or partial, etc
 	@Override
-	public InputStreamResource getResource(Path path)
+	public InputStreamResource getResource(Path path) throws ScribbleException
 	{
 		for (Path impath : this.impaths)
 		{
@@ -57,20 +60,20 @@ public class DirectoryResourceLocator extends ResourceLocator
 				return openFileInputStreamResource(prefixedpath);
 			}
 		}
-		throw new RuntimeException("Couldn't open resource: " + path);
+		throw new ScribbleException("Couldn't open resource: " + path);
 	}
 
 	// "full" path from working directory, as opposed to "relative" paths from import prefixes
-	public static InputStreamResource getResourceByFullPath(Path path)  // FIXME: should be abstracted out as front-end functionality, e.g. DirectoryResourceLocator, to find/load main module; then MainContext uses abstract ResourceLocator to load rest
+	public static InputStreamResource getResourceByFullPath(Path path) throws ScribbleException  // FIXME: should be abstracted out as front-end functionality, e.g. DirectoryResourceLocator, to find/load main module; then MainContext uses abstract ResourceLocator to load rest
 	{
 		if (!Files.exists(path))
 		{
-			throw new RuntimeException("File couldn't be opened: " + path);
+			throw new ScribbleException("File couldn't be opened: " + path);
 		}
 		return openFileInputStreamResource(path);
 	}
 	
-	private static InputStreamResource openFileInputStreamResource(Path path)
+	private static InputStreamResource openFileInputStreamResource(Path path) throws ScribbleException
 	{
 		try
 		{
@@ -78,7 +81,7 @@ public class DirectoryResourceLocator extends ResourceLocator
 		}
 		catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			throw new ScribbleException(e);
 		}
 	}
 }

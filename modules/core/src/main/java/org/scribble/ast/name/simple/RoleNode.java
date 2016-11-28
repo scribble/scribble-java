@@ -26,7 +26,7 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 		return (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getIdentifier());
 	}
 
-	private RoleNode reconstruct(String identifier)
+	protected RoleNode reconstruct(String identifier)
 	{
 		ScribDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
 		RoleNode rn = new RoleNode(identifier);

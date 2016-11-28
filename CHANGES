@@ -1,0 +1,26 @@
+2016/11/27
+---
+
+- Modified scribblec script interface: check
+
+    ./scribblec --help
+    
+  for new usages.  
+  
+- The core tooling has been refactored to use a new validation method.  To
+  obtain more details on errors, use the -V command line flag.
+
+  N.B. the -oldwf command line flag uses the simpler syntactic protocol
+  well-formedness from the previous version of tool only.  Warning: no 
+  guarantees are offered when validating newer Scribble features using -oldwf.
+  
+- Most Scribble demos that were previously in 
+
+    modules/core/src/test/scrib/demo
+  
+  have been relocated to 
+ 
+    modules/demos/scrib/
+    
+  Some demo files have also been renamed or repackaged.
+   

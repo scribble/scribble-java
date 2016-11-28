@@ -22,7 +22,9 @@ import org.scribble.parser.ast.AntlrRoleArgList;
 import org.scribble.parser.ast.AntlrRoleDecl;
 import org.scribble.parser.ast.AntlrRoleDeclList;
 import org.scribble.parser.ast.global.AntlrGChoice;
+import org.scribble.parser.ast.global.AntlrGConnect;
 import org.scribble.parser.ast.global.AntlrGContinue;
+import org.scribble.parser.ast.global.AntlrGDisconnect;
 import org.scribble.parser.ast.global.AntlrGDo;
 import org.scribble.parser.ast.global.AntlrGInteractionSequence;
 import org.scribble.parser.ast.global.AntlrGInterrupt;
@@ -34,7 +36,9 @@ import org.scribble.parser.ast.global.AntlrGProtocolDecl;
 import org.scribble.parser.ast.global.AntlrGProtocolDefinition;
 import org.scribble.parser.ast.global.AntlrGProtocolHeader;
 import org.scribble.parser.ast.global.AntlrGRecursion;
+import org.scribble.parser.ast.global.AntlrGWrap;
 import org.scribble.parser.util.ScribParserUtil;
+import org.scribble.util.ScribParserException;
 
 // ANTLR CommonTree -> ScribNode
 // Parses ANTLR nodes into ScribNodes using the parser.ast.Antlr[...] helper classes
@@ -45,7 +49,7 @@ public class ScribParser
 
 	}
 
-	public ScribNode parse(CommonTree ct)
+	public ScribNode parse(CommonTree ct) throws ScribParserException
 	{
 		if (ct.getChildCount() > 0)  // getChildren returns null instead of empty list 
 		{
@@ -53,9 +57,12 @@ public class ScribParser
 					.filter((c) -> (c instanceof CommonErrorNode))
 					.map((c) -> (CommonErrorNode) c)
 					.collect(Collectors.toList());
-			if (errors.size() > 0)
+			if (errors.size() > 0)  // Antlr prints errors to System.err by default, but then attempts to carry on
+						// Should never get here now, Antlr displayRecognitionError overridden to force exit: Antlr error recovery means not all errors produce CommonErrorNode
 			{
-				throw new RuntimeException("Parsing error: " + errors);
+				//throw new ScribParserException("Parsing errors: " + errors);  // FIXME: improve feedback message
+				System.err.println("Aborting due to parsing errors.");
+				System.exit(1);
 			}
 		}
 		
@@ -78,6 +85,8 @@ public class ScribParser
 				return AntlrRoleDeclList.parseRoleDeclList(this, ct);
 			case ROLEDECL:
 				return AntlrRoleDecl.parseRoleDecl(this, ct);
+			/*case CONNECTDECL:
+				return AntlrConnectDecl.parseConnectDecl(this, ct);*/
 			case PARAMETERDECLLIST:
 			//case EMPTY_PARAMETERDECLLST:
 				return AntlrNonRoleParamDeclList.parseNonRoleParamDeclList(this, ct);
@@ -95,6 +104,10 @@ public class ScribParser
 				return AntlrMessageSig.parseMessageSig(this, ct);
 			case PAYLOAD:
 				return AntlrPayloadElemList.parsePayloadElemList(this, ct);
+			case GLOBALCONNECT:
+				return AntlrGConnect.parseGConnect(this, ct);
+			case GLOBALDISCONNECT:
+				return AntlrGDisconnect.parseGDisconnect(this, ct);
 			case GLOBALMESSAGETRANSFER:
 				return AntlrGMessageTransfer.parseGMessageTransfer(this, ct);
 			case GLOBALCHOICE:
@@ -111,6 +124,8 @@ public class ScribParser
 				return AntlrGInterrupt.parseGInterrupt(this, ct);
 			case GLOBALDO:
 				return AntlrGDo.parseGDo(this, ct);
+			case GLOBALWRAP:
+				return AntlrGWrap.parseGWrap(this, ct);
 			case ROLEINSTANTIATIONLIST:
 				return AntlrRoleArgList.parseRoleArgList(this, ct);
 			case ROLEINSTANTIATION:

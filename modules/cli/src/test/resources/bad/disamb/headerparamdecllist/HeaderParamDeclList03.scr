@@ -1,7 +1,0 @@
-module bad.disamb.headerparamdecllist.HeaderParamDeclList03;
-
-
-global protocol Foo(role A, role A)
-{
-	1() from A to A;
-}

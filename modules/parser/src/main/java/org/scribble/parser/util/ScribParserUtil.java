@@ -25,7 +25,8 @@ public class ScribParserUtil
 
 			case AntlrConstants.MESSAGESIGNATURE_NODE_TYPE: return AntlrNodeType.MESSAGESIGNATURE;
 			case AntlrConstants.PAYLOAD_NODE_TYPE: return AntlrNodeType.PAYLOAD;
-			case AntlrConstants.PAYLOADELEMENT_NODE_TYPE: return AntlrNodeType.PAYLOADELEMENT;
+			//case AntlrConstants.PAYLOADELEMENT_NODE_TYPE: return AntlrNodeType.PAYLOADELEMENT;
+			case AntlrConstants.DELEGATION_NODE_TYPE: return AntlrNodeType.DELEGATION;
 
 			case AntlrConstants.MODULE_NODE_TYPE: return AntlrNodeType.MODULE;
 			case AntlrConstants.MODULEDECL_NODE_TYPE: return AntlrNodeType.MODULEDECL;
@@ -48,6 +49,9 @@ public class ScribParserUtil
 			case AntlrConstants.GLOBALPROTOCOLBLOCK_NODE_TYPE: return AntlrNodeType.GLOBALPROTOCOLBLOCK;
 			case AntlrConstants.GLOBALINTERACTIONSEQUENCE_NODE_TYPE: return AntlrNodeType.GLOBALINTERACTIONSEQUENCE;
 			case AntlrConstants.GLOBALMESSAGETRANSFER_NODE_TYPE: return AntlrNodeType.GLOBALMESSAGETRANSFER;
+			case AntlrConstants.GLOBALCONNECT_NODE_TYPE: return AntlrNodeType.GLOBALCONNECT;
+			case AntlrConstants.GLOBALWRAP_NODE_TYPE: return AntlrNodeType.GLOBALWRAP;
+			case AntlrConstants.GLOBALDISCONNECT_NODE_TYPE: return AntlrNodeType.GLOBALDISCONNECT;
 			case AntlrConstants.GLOBALCHOICE_NODE_TYPE: return AntlrNodeType.GLOBALCHOICE;
 			case AntlrConstants.GLOBALRECURSION_NODE_TYPE: return AntlrNodeType.GLOBALRECURSION;
 			case AntlrConstants.GLOBALCONTINUE_NODE_TYPE: return AntlrNodeType.GLOBALCONTINUE;

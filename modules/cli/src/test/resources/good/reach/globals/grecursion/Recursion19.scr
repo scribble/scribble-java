@@ -1,0 +1,12 @@
+module good.reach.globals.grecursion.Recursion19;
+
+
+global protocol Foo(role A, role B, role C, role D)
+{
+	rec X
+	{
+		1() from A to B;
+		continue X;
+	}
+	2() from C to D;
+}

@@ -1,0 +1,21 @@
+module bad.liveness.roleprog.Test01;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		rec X  // Fairness irrelevant
+		{
+			1() from A to B;
+			//1() from A to C;
+			continue X;
+		}
+	}
+	or
+	{
+		2() from A to B;
+		2() from A to C;  // "role liveness"
+	 }
+}
+

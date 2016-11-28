@@ -1,0 +1,32 @@
+module bad.wfchoice.gchoice.Choice05a;
+
+
+global protocol Choice5a(role A, role B)
+{
+	choice at B
+	{
+		//l1() from B to A;  // Comment is bad
+		choice at A
+		{
+			l1() from A to B;
+		}
+		or
+		{
+			l2() from A to B;
+		}
+	}
+	or
+	{
+		choice at B
+		{
+			l2() from B to A;
+		}
+		or
+		{
+			l3() from B to A;
+			//l2() from B to A;  // Uncomment OK unless l3() is commented
+			//l1() from B to A;  // Uncomment OK unless l3() is commented
+		}
+	}
+}
+

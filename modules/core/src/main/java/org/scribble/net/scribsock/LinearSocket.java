@@ -14,6 +14,7 @@ public abstract class LinearSocket<S extends Session, R extends Role> extends Sc
 {
 	private boolean used = false;
 	
+	//protected LinearSocket(MPSTEndpoint<S, R> ep)
 	protected LinearSocket(SessionEndpoint<S, R> ep)
 	{
 		super(ep);
@@ -35,7 +36,7 @@ public abstract class LinearSocket<S extends Session, R extends Role> extends Sc
 	}
 	
 	//protected  // FIXME: generate API operation
-	public void wrapClient(Callable<? extends BinaryChannelWrapper> cons, Role peer) throws IOException, ScribbleRuntimeException 
+	public void wrapClient(Role peer, Callable<? extends BinaryChannelWrapper> cons) throws IOException, ScribbleRuntimeException 
 	{
 		//use();  // FIXME: should be use for proper API operation
 		if (this.used)
@@ -60,7 +61,7 @@ public abstract class LinearSocket<S extends Session, R extends Role> extends Sc
 	// FIXME: State supertype of T
 	public static <T> T wrapClient(T s, Role peer, Callable<? extends BinaryChannelWrapper> cons) throws IOException, ScribbleRuntimeException 
 	{
-		((LinearSocket<?, ?>) s).wrapClient(cons, peer);
+		((LinearSocket<?, ?>) s).wrapClient(peer, cons);
 		return s;
 	}
 

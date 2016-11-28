@@ -1,0 +1,34 @@
+module good.syntax.projection.grecursion.fair.Test03;
+
+
+// Needs -fair
+global protocol Proto1(role A, role B, role C)
+{
+	rec Y
+	{
+		rec Z
+		{
+			0() from A to C;
+			rec X
+			{
+				choice at A
+				{
+					1() from A to B;
+					continue X;  // Testing "pruning" of irrelevant (wrt. role) continue cases in nested recs (e.g. C)
+				}
+				or
+				{
+					2() from A to B;
+					continue Y;
+				}
+				or
+				{
+					3a() from A to B;
+					3b() from A to C;
+				}
+			}
+		}
+	}
+	4() from B to C;
+}
+

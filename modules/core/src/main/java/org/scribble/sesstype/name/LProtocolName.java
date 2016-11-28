@@ -3,7 +3,7 @@ package org.scribble.sesstype.name;
 import org.scribble.sesstype.kind.Local;
 
 
-public class LProtocolName extends ProtocolName<Local>
+public class LProtocolName extends ProtocolName<Local> implements PayloadType<Local> //-- not needed, deleg elems currently have to be (Global@Role)
 {
 	private static final long serialVersionUID = 1L;
 
@@ -12,10 +12,16 @@ public class LProtocolName extends ProtocolName<Local>
 		super(Local.KIND, modname, membname);
 	}
 	
-	public LProtocolName(String membname)
+	public LProtocolName(String simpname)
 	{
-		super(Local.KIND, membname);
+		super(Local.KIND, simpname);
 	}
+	
+	/*@Override
+	public boolean isLDelegationType()
+	{
+		return true;
+	}*/
 
 	@Override
 	public LProtocolName getSimpleName()

@@ -154,11 +154,25 @@ public class Module extends ScribNodeBase
 		return this.protos.stream().filter(filter).map(cast).collect(Collectors.toList());
 	}
 	
+	public <K extends ProtocolKind> boolean hasProtocolDecl(ProtocolName<K> simpname)
+	{
+		return hasProtocolDecl(this.protos, simpname);
+	}
+	
 	// pn is simple name
   // separate into global/local?
 	public <K extends ProtocolKind> ProtocolDecl<K> getProtocolDecl(ProtocolName<K> simpname)
 	{
 		return getProtocolDecl(this.protos, simpname);
+	}
+
+	private static <K extends ProtocolKind>
+			boolean hasProtocolDecl(List<ProtocolDecl<?>> pds, ProtocolName<K> simpname)
+	{
+		return pds.stream()
+				.filter((pd) -> pd.header.getDeclName().equals(simpname)
+						&& (simpname.getKind().equals(Global.KIND)) ? pd.isGlobal() : pd.isLocal())
+				.count() > 0;
 	}
 
 	// pn is simple name
@@ -169,10 +183,14 @@ public class Module extends ScribNodeBase
 				.filter((pd) -> pd.header.getDeclName().equals(simpname)
 						&& (simpname.getKind().equals(Global.KIND)) ? pd.isGlobal() : pd.isLocal())
 				.collect(Collectors.toList());
-		if (filtered.size() != 1)
+		if (filtered.size() == 0)
 		{
 			throw new RuntimeException("Protocol not found: " + simpname);
 		}
+		/*if (filtered.size() > 1)
+		{
+			throw new RuntimeException("Found duplicate protocol decls: " + simpname);  // Just return first -- allows Do/DoArgListDel name disambiguation to go through, and later caught on leaving Module
+		}*/
 		@SuppressWarnings("unchecked")
 		ProtocolDecl<K> res = (ProtocolDecl<K>) filtered.get(0);
 		return res;

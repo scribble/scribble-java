@@ -1,31 +1,32 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import org.scribble.codegen.java.endpointapi.ReceiveSocketGenerator;
-import org.scribble.codegen.java.endpointapi.SendSocketGenerator;
+import org.scribble.codegen.java.endpointapi.OutputSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Receive;
+import org.scribble.main.ScribbleException;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.PayloadType;
 
 public class ActionInterfaceGenerator extends IOInterfaceGenerator
 {
-	private final IOAction a;
+	private final EAction a;
 	private final InterfaceBuilder ib = new InterfaceBuilder();
 
-	public ActionInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, IOAction a)
+	public ActionInterfaceGenerator(StateChannelApiGenerator apigen, EState curr, EAction a)
 	{
 		super(apigen, curr);
 		this.a = a;
 	}
 
 	@Override
-	public InterfaceBuilder generateType()
+	public InterfaceBuilder generateType() throws ScribbleException
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 
@@ -39,7 +40,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		this.ib.addParameters("__Succ extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.a));
 		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with ReceiveSocketBuilder
 		//AbstractMethodBuilder mb2 = null;
-		if (this.a instanceof Receive)
+		if (this.a instanceof EReceive)
 		{
 			/*if (this.curr.getAcceptable().size() > 1)
 			{
@@ -62,7 +63,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		}
 		else //if (this.a instanceof Send)
 		{
-			SendSocketGenerator.setSendHeaderWithoutReturnType(this.apigen, this.a, mb);
+			OutputSocketGenerator.setSendHeaderWithoutReturnType(this.apigen, this.a, mb);
 		}
 		/*EndpointState succ = this.curr.accept(this.a);
 		if (succ.isTerminal())
@@ -86,14 +87,14 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 	}
 	
 	// FIXME: curr unnecessary
-	public static String getActionInterfaceName(IOAction a)
+	public static String getActionInterfaceName(EAction a)
 	{
 		/*String name = (a instanceof Receive)
 				? "In"
 				: "Out";*/
 		String name;
 		//if (curr.getAcceptable().iterator().next() instanceof Receive)
-		if (a instanceof Receive)
+		if (a instanceof EReceive)
 		{
 			/*if (curr.getAcceptable().size() > 1)
 			{
@@ -112,10 +113,10 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		return name;
 	}
 
-	public static String getActionString(IOAction a)  // FIXME: peer not needed for inputs
+	public static String getActionString(EAction a)  // FIXME: peer not needed for inputs
 	{
 		//String name = a.peer + "$" + a.mid;
-		String name = a.peer + "_" + a.mid;
+		String name = a.obj + "_" + a.mid;
 		for (PayloadType<?> pay : a.payload.elems)
 		{
 			//name += "$" + pay;

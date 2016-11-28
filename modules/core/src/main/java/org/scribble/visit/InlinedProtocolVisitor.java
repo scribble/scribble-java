@@ -3,6 +3,7 @@ package org.scribble.visit;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ScribNode;
 import org.scribble.del.ProtocolDefDel;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.env.Env;
 
@@ -40,7 +41,7 @@ public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisito
 		ProtocolDef<?> inlined = ((ProtocolDefDel) pd.del()).getInlinedProtocolDef();
 		if (inlined == null)
 		{
-			throw new RuntimeException("InlineProtocolVisitor error: " + pd);
+			throw new ScribbleException("InlineProtocolVisitor error: " + pd);  // E.g. -fsm when inconsistent choice subjects
 		}
 		
 		/*if (this instanceof EndpointGraphBuilder)
@@ -57,22 +58,22 @@ public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisito
 	protected final void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.envEnter(parent, child);
-		inlinedProtocolEnter(parent, child);
+		inlinedEnter(parent, child);
 	}
 
 	@Override
 	protected final ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		ScribNode n = inlinedProtocolLeave(parent, child, visited);
+		ScribNode n = inlinedLeave(parent, child, visited);
 		return super.envLeave(parent, child, n);
 	}
 
-	protected void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 
 	}
 
-	protected ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

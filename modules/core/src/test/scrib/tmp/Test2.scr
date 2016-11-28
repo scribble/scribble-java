@@ -1,0 +1,78 @@
+//Raymond@HZHL3 ~/code/scribble-java/scribble-java
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/validation/src/test/scrib/src/ -validate Test
+
+module Test2;
+
+
+import Test;
+
+
+/*global protocol Proto(role C, role D)
+{
+	2() from C to D;
+}*/
+
+
+/*type <java> "java.lang.String" from "rt.jar" as String2;
+
+//*
+global protocol Proto2(role C, role D)
+{
+	Test2() from C to D;
+}
+//*/
+
+
+//*
+import test3.Test3 as Test3;  // The name Test3 is Test3 in Test1
+import Test4;                 // The name Test4 is test3.Test3 in Test1
+import Test4 as T4;
+
+global protocol Proto2(role C, role D)
+{
+	2(Test3.TTT) from C to D;
+	do Test3.Bar3(C, D);
+	do Test4.Proto4(C, D);
+	do T4.Proto4(C, D);
+}
+//*/
+
+
+/*/
+global protocol Foo(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+	//do Bar(A, B);
+		choice at A
+		{
+			3() from A to C;
+		}
+	}
+	or
+	{
+		2() from A to B;
+		choice at A
+		{
+			4() from A to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Bar(role C, role D)
+{
+	3() from C to D;
+	do Test.Foo(C, D);
+}
+
+//global protocol Foo2(role A, role B)
+global protocol Foo(role A, role B)
+{
+	4() from A to B;
+}
+//*/
+

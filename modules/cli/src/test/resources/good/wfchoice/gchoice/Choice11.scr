@@ -1,0 +1,25 @@
+module good.wfchoice.gchoice.Choice11;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		//1() from B to C;  // bad enabling
+		//2() from A to B;  // bad safety
+		//1() from A to C;  // bad liveness
+		choice at A
+		{
+			1() from A to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from A to C;
+		}
+	}
+}
+
+

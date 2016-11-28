@@ -1,0 +1,9 @@
+module bad.syntax.disamb.protocoldecl.Test02;
+
+
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	do Proto2(A, B);  // Testing disamb
+}
+
