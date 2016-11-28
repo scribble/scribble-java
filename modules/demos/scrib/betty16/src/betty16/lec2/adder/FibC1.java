@@ -31,7 +31,7 @@ public class FibC1 {
 		}
 	}
 	
-	// Post: i1.val contains the i-th Fibonacci number
+	// Post: i1.val is the i-th Fibonacci number
 	private EndSocket fibo(Adder_C_1 c1, Buf<Integer> i1, Buf<Integer> i2, int i) throws Exception {
 		return (i > 0)
 				? fibo(c1.send(S, Add, i1.val, i1.val=i2.val).receive(S, Res, i2), i1, i2, i-1)
