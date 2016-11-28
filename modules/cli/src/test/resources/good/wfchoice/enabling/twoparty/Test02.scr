@@ -1,0 +1,38 @@
+module good.wfchoice.enabling.twoparty.Test02;
+
+
+//*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		choice at B
+		{
+			2() from B to A;
+		}
+		or
+		{
+			3() from B to A;
+		}
+	}
+}
+/*/
+//Standard problem of basic path/trace based WF choice checking: non-equiv (e.g. bisim) nested choice structures get conflated (as set of all traces), when looking downstream (not just enabling message)
+//checking enabling only via global model is easy, difficulty is merge
+//*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to A;
+	}
+}
+//*/
+

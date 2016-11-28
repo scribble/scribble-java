@@ -7,25 +7,26 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
+import org.scribble.main.ScribbleException;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 
 // Factor out
 public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 {
-	private final EndpointState curr;
+	private final EState curr;
 
 	// Pre: cb is the BranchSocketBuilder
-	public HandlerInterfaceGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, EndpointState curr)
+	public HandlerInterfaceGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, EState curr)
 	{
 		super(apigen, parent);
 		this.curr = curr;
 	}
 
 	@Override
-	public InterfaceBuilder generateType()
+	public InterfaceBuilder generateType() throws ScribbleException
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 
@@ -37,13 +38,16 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 		ib.setName(getHandlerInterfaceName(this.parent.getName()));
 		ib.addModifiers(InterfaceBuilder.PUBLIC);
 
-		for (IOAction a : this.curr.getAcceptable())  // Doesn't need to be sorted
+		for (EAction a : this.curr.getActions())  // Doesn't need to be sorted
 		{
-			EndpointState succ = this.curr.accept(a);
+			EState succ = this.curr.getSuccessor(a);
 			String nextClass = this.apigen.getSocketClassName(succ);
 
 			AbstractMethodBuilder mb3 = ib.newAbstractMethod();
-			mb3.addAnnotations("@Override");
+			if (!this.apigen.skipIOInterfacesGeneration)
+			{
+				mb3.addAnnotations("@Override");
+			}
 			setHandleMethodHeaderWithoutParamTypes(this.apigen, mb3);
 			if (succ.isTerminal())
 			{
@@ -55,7 +59,7 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 			}
 			addHandleMethodOpAndPayloadParams(this.apigen, a, mb3);
 			
-			if (this.curr.accept(a).isTerminal())
+			if (this.curr.getSuccessor(a).isTerminal())
 			{
 				// FIXME: potentially repeated (but OK)
 				ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
@@ -75,7 +79,7 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
 	}
 	
-	public static void addHandleMethodOpAndPayloadParams(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
+	public static void addHandleMethodOpAndPayloadParams(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribbleException
 	{
 		Module main = apigen.getMainModule();
 		String opClass = SessionApiGenerator.getOpClassName(a.mid);

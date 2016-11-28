@@ -1,0 +1,19 @@
+module bad.syntax.disamb.recvarnode.Recursion05c;
+
+
+global protocol Recursion5c(role A, role B)
+{
+	rec X
+	{
+		l1() from A to B;
+		//continue X;  // Uncomment makes the below rec bad
+		//continue Y;  // Uncomment bad
+	}
+	rec Y
+	{
+		l2() from B to A;
+		//continue Y;  // A bad "continue X" here tested in Recursion11
+		continue X;  // A bad "continue X" here tested in Recursion11
+	}
+}
+

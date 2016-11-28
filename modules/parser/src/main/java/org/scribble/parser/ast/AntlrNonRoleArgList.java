@@ -1,8 +1,8 @@
 package org.scribble.parser.ast;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
@@ -16,18 +16,24 @@ import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
 import org.scribble.parser.util.ScribParserUtil;
+import org.scribble.util.ScribParserException;
 
 public class AntlrNonRoleArgList
 {
 	// Similar to AntlrPayloadElemList
-	public static NonRoleArgList parseNonRoleArgList(ScribParser parser, CommonTree ct)
+	public static NonRoleArgList parseNonRoleArgList(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
-		List<NonRoleArg> as = getArgumentChildren(ct).stream().map((a) -> parseNonRoleArg(parser, a)).collect(Collectors.toList());
+		//List<NonRoleArg> as = getArgumentChildren(ct).stream().map((a) -> parseNonRoleArg(parser, a)).collect(Collectors.toList());
+		List<NonRoleArg> as = new LinkedList<>();
+		for (CommonTree a : getArgumentChildren(ct))
+		{
+			as.add(parseNonRoleArg(parser, a));
+		}
 		return AstFactoryImpl.FACTORY.NonRoleArgList(as);
 	}
 
 	// Not in own class because not called by ScribbleParser -- called directly from above
-	private static NonRoleArg parseNonRoleArg(ScribParser parser, CommonTree ct)
+	private static NonRoleArg parseNonRoleArg(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
 		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)

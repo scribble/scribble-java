@@ -1,0 +1,21 @@
+module bad.reach.globals.gchoice.Test01;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to A;
+			continue X;
+		}
+		or
+		{
+			// Bad: (empty) case pruned, so reachability fails (no "optional")
+		}
+	}
+	2() from A to B;
+	3() from B to C;
+}

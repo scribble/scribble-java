@@ -1,0 +1,100 @@
+module src.SupplierInfoBasic;
+
+type <xsd> "UserName" from "AUTH.xsd" as username;
+type <xsd> "Password" from "AUTH.xsd" as password;
+type <xsd> "UUID" from "AUTH.xsd" as uuid;
+type <xsd> "/retailhub/supplierdetails" from "Retailer.xsd" as supplierdetails;
+type <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
+
+type <xsd> "..." from "...xsd" as usercontext;
+type <xsd> "..." from "...xsd" as filters;
+
+
+global protocol PartnershipSupplier(
+		role loginsvc,
+		role requestor,
+		role authorisersvc,
+		role filtersvc,
+		role suppliersvc,
+		role contractsvc)
+{
+	login(username, password) from requestor to loginsvc;
+	choice at loginsvc
+	{
+		//loginsuccess() from loginsvc to requestor  // Error if below is commented
+		loginfailure() from loginsvc to requestor;
+
+		//getsuppliers(uuid) from requestor to authorisersvc;  // Error
+
+		0() from requestor to authorisersvc;
+		0() from authorisersvc to filtersvc;
+		0() from authorisersvc to suppliersvc;
+		0() from authorisersvc to contractsvc;
+	}
+	or
+	{
+		loginsuccess() from loginsvc to requestor;
+		rec mainBlock
+		{
+			choice at requestor
+			{
+				// GET SUPPLIER INFO
+				getsuppliers(uuid) from requestor to authorisersvc;
+
+				1() from authorisersvc to contractsvc;  // Cheaper here than below
+
+				choice at authorisersvc
+				{
+					// DENIED
+					deny() from authorisersvc to requestor;
+
+					1() from authorisersvc to suppliersvc;
+					1() from authorisersvc to filtersvc;
+				}
+				or
+				{
+					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+					getsuppliers() from authorisersvc to suppliersvc;
+					suppliers() from suppliersvc to authorisersvc;
+
+					filterSuppliers(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
+					filtered() from filtersvc to authorisersvc;
+					suppliers() from authorisersvc to requestor;
+				}
+
+				//1() from authorisersvc to contractsvc;
+				continue mainBlock;
+			}
+			or
+			{
+				// GET CONTRACT INFO
+				getcontracts() from requestor to authorisersvc;
+
+				2() from authorisersvc to suppliersvc;
+
+				choice at authorisersvc
+				{
+					// DENIED
+					deny() from authorisersvc to requestor;
+
+					2() from authorisersvc to contractsvc;
+					2() from authorisersvc to filtersvc;
+				}
+				or
+				{
+					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+					getcontracts() from authorisersvc to contractsvc;
+					contracts() from contractsvc to authorisersvc;
+
+					filterContracts(usercontext, filters, contractdetails) from authorisersvc to filtersvc;
+					filtered() from filtersvc to authorisersvc;
+					contracts() from authorisersvc to requestor;
+				}
+
+				//2() from authorisersvc to suppliersvc;
+				continue mainBlock;
+			}
+		}
+	}
+}
+

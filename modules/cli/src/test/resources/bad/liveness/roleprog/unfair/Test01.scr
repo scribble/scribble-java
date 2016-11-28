@@ -1,0 +1,22 @@
+module bad.liveness.roleprog.unfair.Test01;
+
+
+// OK if -fair
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+			//4() from B to C;
+			continue X;
+		}
+	}
+}
+

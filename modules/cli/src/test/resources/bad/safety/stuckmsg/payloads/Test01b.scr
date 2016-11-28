@@ -1,0 +1,24 @@
+module bad.safety.stuckmsg.payloads.Test01b;
+
+
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1(Int1) from A to B;
+		2() from B to A;  // Mergeable continuations, but still bad..
+	}
+	or
+	{
+		1(Int2) from A to B;  // B doesn't know to treat as Int1 or Int2
+		                      // here, payloads aren't considered as distinguishing for labels
+		                      // error is the special case of actions that are non-deterministic labels up to payloads
+		                      // (Syntactic MPST merge not defined for repeat labels)
+		2() from B to A;
+	}
+}
+

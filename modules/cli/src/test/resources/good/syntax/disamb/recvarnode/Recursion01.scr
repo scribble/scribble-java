@@ -1,0 +1,11 @@
+module good.syntax.disamb.recvarnode.Recursion01;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec A  // RecVars and roles different kinds of names
+	{
+		1() from A to B;
+	}
+}
+

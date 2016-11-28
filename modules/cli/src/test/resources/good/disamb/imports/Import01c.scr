@@ -1,7 +1,0 @@
-module good.disamb.imports.Import01c;
-
-
-global protocol Import1c(role C, role D)
-{
-	4() from C to D;
-}

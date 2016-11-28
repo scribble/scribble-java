@@ -1,0 +1,22 @@
+module bad.safety.stuckmsg.fourparty.Test02b;
+
+
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to A;  // A not safe (but not a terminal global state)
+	}
+	rec X
+	{
+		4() from C to D;
+		continue X;
+	}
+}
+

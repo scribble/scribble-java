@@ -1,9 +1,8 @@
 package org.scribble.sesstype.name;
 
-import org.scribble.model.global.PathElement;
 import org.scribble.sesstype.kind.RecVarKind;
 
-public class RecVar extends AbstractName<RecVarKind> implements PathElement
+public class RecVar extends AbstractName<RecVarKind> //implements PathElement
 {
 	private static final long serialVersionUID = 1L;
 

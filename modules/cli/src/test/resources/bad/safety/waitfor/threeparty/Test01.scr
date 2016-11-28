@@ -1,0 +1,19 @@
+module bad.safety.waitfor.threeparty.Test01;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;  // C starved without -fair, but irrelevant to deadlock error
+			continue X;
+		}
+		or
+		{
+			2() from A to C;  // No reception error, but B can be deadlocked
+		}
+	}
+}
+

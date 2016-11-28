@@ -1,22 +1,21 @@
 package org.scribble.codegen.java.endpointapi;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Receive;
-import org.scribble.model.local.Send;
+import org.scribble.main.Job;
+import org.scribble.main.JobContext;
+import org.scribble.main.ScribbleException;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.Job;
-import org.scribble.visit.Projector;
+import org.scribble.visit.context.Projector;
 
 // TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
 // TODO: "functional state interfaces", e.g. for smtp ehlo and quit actions
@@ -32,30 +31,50 @@ public class StateChannelApiGenerator extends ApiGenerator
 
 	private final Role self;
 	private final LProtocolName lpn;
-	private final EndpointState init;
+	private final EState init;
 	//private final String root;
 
+	protected final boolean skipIOInterfacesGeneration;
+
 	private int counter = 1;
-	private Map<EndpointState, String> classNames = new HashMap<>();  // Doesn't include terminal states
+	private Map<EState, String> classNames = new HashMap<>();  // Doesn't include terminal states
 
 	private Map<String, TypeBuilder> types = new HashMap<>();  // class/iface name key
 
-	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self)
+	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self) throws ScribbleException  // FIXME: APIGenerationException?
 	{
 		super(job, fullname);
+
 		this.self = self;
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
-		this.init = job.getContext().getEndpointGraph(fullname, self).init;
+		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
+		JobContext jc = job.getContext();
+		this.init = job.minEfsm ? jc.getMinimisedEGraph(fullname, self).init : jc.getEGraph(fullname, self).init;
+		
+		this.skipIOInterfacesGeneration = skipIOInterfacesGeneration(this.init);
+			
 		generateClassNames(this.init);
 		//this.root = this.classNames.get(this.init);
 		constructClasses(this.init);
 
-		EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
+		//EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
+		EState term = EState.getTerminal(this.init);
 		if (term != null)
 		{
 			ClassBuilder cb = new EndSocketGenerator(this, term).generateType();
 			this.types.put(cb.getName(), cb);
 		}
+	}
+
+	// Cf. IOInterfacesGenerator constructor
+	private static boolean skipIOInterfacesGeneration(EState init)
+	{
+		Set<EAction> as = EState.getReachableActions(init);
+		if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	// Return: key (package and Java class file path) -> val (Java class source) 
@@ -73,7 +92,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		return map;
 	}
 	
-	private void generateClassNames(EndpointState ps)
+	private void generateClassNames(EState ps)
 	{
 		if (this.classNames.containsKey(ps))
 		{
@@ -85,7 +104,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 			return;
 		}
 		this.classNames.put(ps, newSocketClassName());
-		for (EndpointState succ : ps.getSuccessors())
+		for (EState succ : ps.getAllSuccessors())
 		{
 			generateClassNames(succ);
 		}
@@ -96,7 +115,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		return this.lpn.getSimpleName().toString() +  "_" + this.counter++;
 	}
 
-	private void constructClasses(EndpointState curr)
+	private void constructClasses(EState curr) throws ScribbleException
 	{
 		if (curr.isTerminal())
 		{
@@ -108,7 +127,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 			return;
 		}
 		this.types.put(className, constructClass(curr));
-		for (EndpointState succ : curr.getSuccessors())
+		for (EState succ : curr.getAllSuccessors())
 		{
 			constructClasses(succ);
 		}
@@ -119,23 +138,36 @@ public class StateChannelApiGenerator extends ApiGenerator
 	}
 	
 	// Pre: curr is not terminal state
-	private ClassBuilder constructClass(EndpointState curr)
+	private ClassBuilder constructClass(EState curr) throws ScribbleException  // FIXME: APIGenerationException?
 	{
-		Set<IOAction> as = curr.getAcceptable();
-		IOAction a = as.iterator().next();
-		if (a instanceof Send)
+		switch (curr.getStateKind())
 		{
-			return new SendSocketGenerator(this, curr).generateType();
-		}
-		else if (a instanceof Receive)
-		{
-			return (as.size() > 1)
-					? new BranchSocketGenerator(this, curr).generateType()
-					: new ReceiveSocketGenerator(this, curr).generateType();
-		}
-		else
-		{
-			throw new RuntimeException("TODO: " + curr);
+			case OUTPUT:
+			{
+				/*Set<IOAction> as = curr.getTakeable();
+				if (as.stream().allMatch((a) -> a.isSend()))*/
+				{
+					return new OutputSocketGenerator(this, curr).generateType();
+				}
+				//throw new RuntimeException("TODO: " + curr.toLongString());
+			}
+			case ACCEPT:
+			{
+				return new AcceptSocketGenerator(this, curr).generateType();
+			}
+			case UNARY_INPUT:
+			{
+				return new ReceiveSocketGenerator(this, curr).generateType();
+			}
+			case POLY_INPUT:
+			{
+				// Receive only
+				return new BranchSocketGenerator(this, curr).generateType();
+			}
+			default:
+			{
+				throw new RuntimeException("[TODO] State Channel API generation not supported for: " + curr.getStateKind() + ", " + curr.toLongString());
+			}
 		}
 	}
 	
@@ -149,7 +181,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		return this.self;
 	}
 	
-	protected EndpointState getInitialState()
+	protected EState getInitialState()
 	{
 		return this.init;
 	}
@@ -164,7 +196,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		this.types.put(tb.getName(), tb);
 	}
 
-	public String getSocketClassName(EndpointState s)
+	public String getSocketClassName(EState s)
 	{
 		return this.classNames.get(s);
 	}

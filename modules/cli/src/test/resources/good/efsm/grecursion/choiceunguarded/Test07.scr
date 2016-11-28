@@ -1,0 +1,24 @@
+module good.efsm.grecursion.choiceunguarded.Test07;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		0() from A to B;
+		choice at A
+		{
+			rec X  // Checking FSM generation -- unfolding of unguarded shadowed choice-rec
+			{
+				1() from A to B;
+				continue X;
+			}
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+}
+
+

@@ -1,0 +1,16 @@
+module bad.safety.stuckmsg.twoparty.Test01a;
+
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		2() from A to B;
+	}
+}
+

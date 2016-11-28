@@ -14,10 +14,14 @@ public class Constants
 	public static final String GLOBAL_KW = "global";
 	public static final String LOCAL_KW = "local";
 	public static final String ROLE_KW = "role";
+	public static final String ACCEPT_KW = "accept";
 	public static final String SELF_KW = "self";
 	public static final String SIG_KW = "sig";
 	public static final String INSTANTIATES_KW = "instantiates";
 
+	public static final String CONNECT_KW = "connect";
+	public static final String DISCONNECT_KW = "disconnect";
+	public static final String WRAP_KW = "wrap";
 	public static final String FROM_KW = "from";
 	public static final String TO_KW = "to";
 	public static final String CHOICE_KW = "choice";

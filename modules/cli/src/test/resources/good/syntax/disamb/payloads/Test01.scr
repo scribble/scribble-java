@@ -1,0 +1,27 @@
+module good.syntax.disamb.payloads.Test01;
+
+
+type <java> "java.lang.String" from "rt.jar" as String;
+type <java> "java.lang.String" from "rt.jar" as String2;
+
+
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		1(String) from A to B;
+		2(good.syntax.disamb.payloads.Test01.String) from A to B;
+	}
+	or
+	{
+		3(good.syntax.disamb.payloads.Test01.String2) from A to B;
+	}
+	do Bar<String>(A, B);
+	do Bar<good.syntax.disamb.payloads.Test01.String2>(A, B);
+}
+
+
+aux global protocol Bar<type T>(role A, role B)
+{
+	(T) from A to B;
+}

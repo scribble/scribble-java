@@ -1,0 +1,12 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py test/base/impourt/pack1/Pack8.scr
+
+module good.misc.imports.pack1.Pack08;
+
+
+global protocol Pack8(role C, role D)
+{
+	l1() from C to D;
+	//l1() from A to D;
+}
+

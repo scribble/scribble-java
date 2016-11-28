@@ -1,4 +1,4 @@
-module good.parsing.globals.gdo.Do20;
+module good.misc.globals.gdo.Do20;
 
 
 global protocol Do20(role A, role B)

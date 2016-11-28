@@ -1,0 +1,23 @@
+module bad.syntax.consistentchoicesubj.Test04b;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			3() from B to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			4() from A to C;
+			continue X;
+		}
+	}
+}
+
+

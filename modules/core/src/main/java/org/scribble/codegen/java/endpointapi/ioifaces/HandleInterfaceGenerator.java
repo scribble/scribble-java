@@ -2,7 +2,6 @@ package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.codegen.java.endpointapi.HandlerInterfaceGenerator;
@@ -11,28 +10,29 @@ import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
+import org.scribble.main.ScribbleException;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
 // Cf. HandlerInterfaceGenerator
 public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	private final IOInterfacesGenerator iogen;
+	//private final IOInterfacesGenerator iogen;
 	
-	private final Map<IOAction, InterfaceBuilder> caseActions;
+	private final Map<EAction, InterfaceBuilder> caseActions;
 
-	public HandleInterfaceGenerator(IOInterfacesGenerator iogen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr, Map<IOAction, InterfaceBuilder> caseActions)
+	public HandleInterfaceGenerator(IOInterfacesGenerator iogen, Map<EAction, InterfaceBuilder> actions, EState curr, Map<EAction, InterfaceBuilder> caseActions)
 	{
 		super(iogen.apigen, actions, curr);
-		this.iogen = iogen;
+		//this.iogen = iogen;
 
 		this.caseActions = caseActions;
 	}
 
 	@Override
-	protected void constructInterface()
+	protected void constructInterface() throws ScribbleException
 	{
 		super.constructInterface();
 		addHandleMethods();
@@ -65,7 +65,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 		int i = 1;
 		//for (IOAction a : getHandleInterfaceIOActionParams(this.curr))  // Branch successor state successors, not the "direct" successors
 		// Duplicated from BranchInterfaceGenerator
-		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getActions().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
 			this.ib.addInterfaces(this.caseActions.get(a).getName() + "<__Succ" + i + ">");
@@ -101,15 +101,16 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 		return as;
 	}*/
 
-	protected void addHandleMethods()
+	protected void addHandleMethods() throws ScribbleException
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 		//Role self = this.apigen.getSelf();
-		Set<IOAction> as = this.curr.getAcceptable();
+		//Set<EAction> as = this.curr.getActions();
+		List<EAction> as = this.curr.getActions();
 
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
 		int i = 1; 
-		for (IOAction a : as.stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : as.stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			/*EndpointState succ = this.curr.accept(a);
 			MethodBuilder mb = this.ib.newAbstractMethod();
@@ -126,7 +127,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	//protected static int setHandleMethodSuccessorParam(IOInterfacesGenerator iogen, Role self, EndpointState succ, MethodBuilder mb, int i)
-	protected static void setHandleMethodSuccessorParam(IOInterfacesGenerator iogen, Role self, EndpointState succ, MethodBuilder mb, List<IOAction> as, Map<IOAction, Integer> count)
+	protected static void setHandleMethodSuccessorParam(IOInterfacesGenerator iogen, Role self, EState succ, MethodBuilder mb, List<EAction> as, Map<EAction, Integer> count)
 	{
 		if (succ.isTerminal())
 		{
@@ -159,7 +160,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 		
 			//Map<IOAction, Integer> ount = new HashMap<>();
 			boolean first = true;
-			for (IOAction a : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+			for (EAction a : succ.getActions().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
 				int offset;
 				if (!count.containsKey(a))
@@ -189,10 +190,12 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	// Pre: s is a branch state
-	public static String getHandleInterfaceName(Role self, EndpointState s)
+	public static String getHandleInterfaceName(Role self, EState s)
 	{
 		// FIXME: factor out (CaseInterfaceGenerator, IOStateInterfaceGenerator.getIOStateInterfaceName)
-		return "Handle_" + self + "_" + s.getAcceptable().stream().sorted(IOACTION_COMPARATOR)
+		String name = "Handle_" + self + "_" + s.getActions().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
+		IOStateInterfaceGenerator.checkIOStateInterfaceNameLength(name);
+		return name;
 	}
 }

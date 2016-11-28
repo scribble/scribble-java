@@ -1,0 +1,20 @@
+module bad.liveness.messagelive.Test02;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	choice at B
+	{
+		rec X
+		{
+			2() from B to C;
+			continue X;
+		}
+	}
+	or
+	{
+		3() from B to C;
+	}
+	4() from A to C;
+}

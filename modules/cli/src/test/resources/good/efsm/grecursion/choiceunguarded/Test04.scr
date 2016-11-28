@@ -1,0 +1,25 @@
+module good.efsm.grecursion.choiceunguarded.Test04;
+
+
+// Same as good.syntax.inlinedunfolding.grecursion.Test04;
+global protocol Proto4(role A, role B)
+{
+	choice at A
+	{
+		rec X
+		{
+			choice at A
+			{
+				1() from A to B;
+				continue X;
+			}
+			or
+			{
+				2() from A to B;
+				continue X;
+			}
+		}
+	}
+}
+
+

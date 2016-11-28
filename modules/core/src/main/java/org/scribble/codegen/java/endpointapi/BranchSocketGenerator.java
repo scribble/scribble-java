@@ -1,7 +1,6 @@
 package org.scribble.codegen.java.endpointapi;
 
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
@@ -11,10 +10,12 @@ import org.scribble.codegen.java.endpointapi.ioifaces.HandleInterfaceGenerator;
 import org.scribble.codegen.java.endpointapi.ioifaces.IOStateInterfaceGenerator;
 import org.scribble.codegen.java.endpointapi.ioifaces.SuccessorInterfaceGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
+import org.scribble.codegen.java.util.EnumBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
+import org.scribble.main.ScribbleException;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
@@ -22,7 +23,7 @@ import org.scribble.sesstype.name.Role;
 
 public class BranchSocketGenerator extends ScribSocketGenerator
 {
-	public BranchSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
+	public BranchSocketGenerator(StateChannelApiGenerator apigen, EState curr)
 	{
 		super(apigen, curr);
 	}
@@ -42,7 +43,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 
 	//private void addBranchMethod(ClassBuilder cb, EndpointState curr)
 	@Override
-	protected void addMethods()
+	protected void addMethods() throws ScribbleException
 	{
 		final String ROLE_PARAM = "role";
 		final String MESSAGE_VAR = "m";
@@ -52,25 +53,55 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		Module main = this.apigen.getMainModule();
 
 		//String next = constructCaseClass(curr, main);
-		ClassBuilder caseclass = new CaseSocketGenerator(apigen, curr).generateType();
+		ClassBuilder caseclass = new CaseSocketGenerator(this.apigen, this.curr).generateType();
 		String next = caseclass.getName();
 		String enumClass = getBranchEnumClassName(this.apigen, this.curr);
 
 		//cb.addImports("java.util.concurrent.ExecutionException");
 		
+		//boolean first;
+		Role peer = this.curr.getActions().iterator().next().obj;
+
+		// Branch method
+		addBranchMethod(ROLE_PARAM, MESSAGE_VAR, OPENUM_VAR, OP, peer, next, enumClass);
+		
+		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(apigen.getInitialState()))
+		if (this.apigen.skipIOInterfacesGeneration)
+		{	
+			EnumBuilder eb = cb.newMemberEnum(enumClass);
+			eb.addModifiers(JavaBuilder.PUBLIC);
+			eb.addInterfaces(OPENUM_INTERFACE);
+			this.curr.getActions().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+		}
+		else
+		{
+			// Callback methods
+			String handleif = addBranchCallbackMethod(ROLE_PARAM, peer);
+			addHandleInterfaceCallbackMethod(ROLE_PARAM, MESSAGE_VAR, OP, main, peer, handleif);
+			addHandleMethod(ROLE_PARAM, MESSAGE_VAR, OP, main, peer);
+		}
+
+		this.apigen.addTypeDecl(new HandlerInterfaceGenerator(this.apigen, this.cb, this.curr).generateType());
+	}
+
+	private void addBranchMethod(final String ROLE_PARAM, final String MESSAGE_VAR, final String OPENUM_VAR, final String OP,
+			Role peer, String next, String enumClass)
+	{
 		MethodBuilder mb = cb.newMethod("branch");
 		mb.setReturn(next);
-		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getAcceptable().iterator().next().peer) + " " + ROLE_PARAM);
+		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getActions().iterator().next().obj) + " " + ROLE_PARAM);
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
-		mb.addAnnotations("@Override");
+		if (!this.apigen.skipIOInterfacesGeneration)
+		{
+			mb.addAnnotations("@Override");
+		}
 		
-		Role peer = curr.getAcceptable().iterator().next().peer;
 		mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		mb.addBodyLine(enumClass + " " + OPENUM_VAR + ";");
 		boolean first = true;
-		for (IOAction a : curr.getAcceptable())
+		for (EAction a : this.curr.getActions())
 		{
 			mb.addBodyLine(((first) ? "" : "else ") + "if (" + OP + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
 			mb.addBodyLine(1, OPENUM_VAR + " = "
@@ -83,15 +114,11 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb.addBodyLine("}");
 		mb.addBodyLine(JavaBuilder.RETURN + " "
 				+ JavaBuilder.NEW + " " + next + "(" + SCRIBSOCKET_SE_FIELD + ", true, " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");  // FIXME: dummy boolean not needed
-		
-		/* // Now using Branch IO State I/f enum
-		EnumBuilder eb = cb.newMemberEnum(enumClass);
-		eb.addModifiers(JavaBuilder.PUBLIC);
-		eb.addInterfaces(OPENUM_INTERFACE);
-		this.curr.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));*/
-		
+	}
 
-		// Handler branch method
+	private String addBranchCallbackMethod(final String ROLE_PARAM, Role peer)
+	{
+		boolean first;
 		String handlerif = HandlerInterfaceGenerator.getHandlerInterfaceName(this.cb.getName());
 		String handleif = HandleInterfaceGenerator.getHandleInterfaceName(this.apigen.getSelf(), this.curr);
 		MethodBuilder mb2 = this.cb.newMethod("branch");
@@ -103,7 +130,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		first = true;
 		handleif += "<";
-		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getActions().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (first)
 			{
@@ -113,7 +140,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 			{
 				handleif += ", ";
 			}
-			EndpointState succ = this.curr.accept(a);
+			EState succ = this.curr.getSuccessor(a);
 			if (succ.isTerminal())
 			{
 				handleif += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
@@ -125,7 +152,14 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		}
 		handleif += ">";
 		mb2.addBodyLine("branch(role, (" + handleif + ") handler);");
+		return handleif;
+	}
 
+	private void addHandleInterfaceCallbackMethod(final String ROLE_PARAM,
+			final String MESSAGE_VAR, final String OP, Module main, Role peer,
+			String handleif)
+	{
+		boolean first;
 		MethodBuilder mb3 = this.cb.newMethod("branch");
 		mb3.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
@@ -137,9 +171,9 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb3.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
-		for (IOAction a : this.curr.getAcceptable())
+		for (EAction a : this.curr.getActions())
 		{
-			EndpointState succ = this.curr.accept(a);
+			EState succ = this.curr.getSuccessor(a);
 			if (first)
 			{
 				first = false;
@@ -188,12 +222,16 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb3.addBodyLine("else {");
 		mb3.addBodyLine(1, "throw " + JavaBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
 		mb3.addBodyLine("}");
-		
-		// FIXME: factor out with above
+	}
+
+	// FIXME: factor out with others
+	private void addHandleMethod(final String ROLE_PARAM, final String MESSAGE_VAR, final String OP, Module main, Role peer)
+	{
+		boolean first;
 		MethodBuilder mb4 = this.cb.newMethod("handle");
 		mb4.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		String tmp = HandleInterfaceGenerator.getHandleInterfaceName(this.apigen.getSelf(), this.curr) + "<";
-		tmp += this.curr.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
+		tmp += this.curr.getActions().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
 				.map((a) -> SuccessorInterfaceGenerator.getSuccessorInterfaceName(a)).collect(Collectors.joining(", ")) + ">";
 		mb4.addParameters(tmp + " handler");
 		mb4.setReturn(JavaBuilder.VOID);
@@ -203,9 +241,9 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb4.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
-		for (IOAction a : this.curr.getAcceptable())
+		for (EAction a : this.curr.getActions())
 		{
-			EndpointState succ = this.curr.accept(a);
+			EState succ = this.curr.getSuccessor(a);
 			if (first)
 			{
 				first = false;
@@ -254,13 +292,14 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb4.addBodyLine("else {");
 		mb4.addBodyLine(1, "throw " + JavaBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
 		mb4.addBodyLine("}");
-
-		this.apigen.addTypeDecl(new HandlerInterfaceGenerator(this.apigen, this.cb, this.curr).generateType());
 	}
 
-	protected static String getBranchEnumClassName(StateChannelApiGenerator apigen, EndpointState curr)
+	protected static String getBranchEnumClassName(StateChannelApiGenerator apigen, EState curr)
 	{
-		//return apigen.getSocketClassName(curr) + "_Enum";
-		return BranchInterfaceGenerator.getBranchInterfaceEnumName(apigen.getSelf(), curr);
+		//return BranchInterfaceGenerator.getBranchInterfaceEnumName(apigen.getSelf(), curr);
+		//return (IOInterfacesGenerator.skipIOInterfacesGeneration(apigen.getInitialState()))
+		return apigen.skipIOInterfacesGeneration
+				? apigen.getSocketClassName(curr) + "_Enum"
+				: BranchInterfaceGenerator.getBranchInterfaceEnumName(apigen.getSelf(), curr);
 	}
 }

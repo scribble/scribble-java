@@ -1,0 +1,20 @@
+module good.syntax.projection.grecursion.Test03;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		m1() from A to B;
+		choice at A
+		{
+			continue X;  // Not pruned because not first statement in rec body
+			// Will be pruned if m1() is commented
+		}
+		or
+		{
+			m2() from A to B;
+		}
+	}
+}
+

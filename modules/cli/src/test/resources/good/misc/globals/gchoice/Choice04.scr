@@ -1,0 +1,17 @@
+module good.misc.globals.gchoice.Choice04;
+
+global protocol Choice4(role A, role B)
+{
+	choice at B
+	{
+		l1() from B to A;
+		l2() from A to B;
+	}
+	or
+	{
+		l2() from B to A;
+		l1() from A to B;
+		l2() from A to B;  // same label OK because B is the subject (TODO: should be generalised for all roles already enabled)
+	}
+}
+

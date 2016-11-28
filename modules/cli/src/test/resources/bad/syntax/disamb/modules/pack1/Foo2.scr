@@ -1,0 +1,7 @@
+module bad.syntax.disamb.modules.pack1.Foo2;
+
+
+global protocol Proto(role A, role B)
+{
+	2() from A to B;
+}

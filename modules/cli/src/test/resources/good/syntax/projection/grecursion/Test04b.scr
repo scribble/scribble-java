@@ -1,0 +1,26 @@
+module good.syntax.projection.grecursion.Test04b;
+
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		rec Y
+		{
+			rec X
+			{
+				choice at A
+				{
+					continue X;
+				}
+				or
+				{
+					continue Y;
+				}
+			}
+		}
+	}
+}
+
+

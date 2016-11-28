@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
@@ -18,9 +17,10 @@ import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LSend extends MessageTransfer<Local> implements LSimpleInteractionNode
+public class LSend extends LMessageTransfer
+		implements LSimpleInteractionNode  // Explicitly needed here for getKind
 {
 	public LSend(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{

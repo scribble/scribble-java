@@ -1,0 +1,19 @@
+module bad.safety.orphan.twoparty.Test02;
+
+
+global protocol Proto1(role A, role B)
+{
+	// Wait-for + orphan error counterparts (arise together)
+	choice at A
+	{
+		1() from A to B;
+		1() from B to A;
+		2() from A to B;  // Orphan (and deadlock)
+	}
+	or
+	{
+		1() from A to B;
+		1() from B to A;
+	}
+}
+

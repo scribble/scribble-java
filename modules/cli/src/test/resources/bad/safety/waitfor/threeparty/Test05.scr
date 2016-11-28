@@ -1,0 +1,16 @@
+module bad.safety.waitfor.threeparty.Test05;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+		4() from A to C;
+	}
+}
+

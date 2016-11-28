@@ -1,0 +1,15 @@
+module good.misc.globals.gdo.Do10;
+
+
+global protocol Do10<sig X>(role A, role B)
+{
+	do Do10a<X>(A, B);
+	//do Do10a<Y>(A, B);  // Uncomment is bad
+}
+
+global protocol Do10a<sig X>(role C, role D)
+{
+	X from C to D;
+	//Y from C to D;  // Uncomment is bad
+}
+

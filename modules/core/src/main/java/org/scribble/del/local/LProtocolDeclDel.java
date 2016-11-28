@@ -1,19 +1,16 @@
 package org.scribble.del.local;
 
-import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.local.LProtocolDeclContext;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.EndpointGraph;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.JobContext;
-import org.scribble.visit.ProtocolDeclContextBuilder;
+import org.scribble.visit.context.EGraphBuilder;
+import org.scribble.visit.context.ProtocolDeclContextBuilder;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 {
@@ -50,18 +47,26 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	public void enterGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
+	public void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
 	{
-		graph.builder.reset();
+		graph.util.reset();
 	}
 
 	@Override
-	public ScribNode leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited)
 	{
-		LProtocolDecl lpd = (LProtocolDecl) visited;
-		EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
-		JobContext jc = graph.getJobContext();
-		jc.addEndpointGraph(lpd.getFullMemberName((Module) parent), fsm);
+		/*LProtocolDecl lpd = (LProtocolDecl) visited;  // Refactored into JobContext
+		
+		JobContext jc = graph.getJobContext();  
+		// FIXME: should just bypass builder visit if already built
+		LProtocolName lpn = lpd.getFullMemberName((Module) parent);
+		if (jc.getEndpointGraph(lpn) == null)  // FIXME: what is the routine to obtain gpn from lpn?
+		{
+			//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+			EndpointGraph graph = graph.builder.finalise();
+
+			jc.addEndpointGraph(lpn, graph);
+		}*/
 		return visited;
 	}
 	

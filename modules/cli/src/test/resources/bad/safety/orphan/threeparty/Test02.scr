@@ -1,0 +1,22 @@
+module bad.safety.orphan.threeparty.Test02;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			3() from A to C;
+			continue X;  // Also wait-for
+		}
+		or
+		{
+			1() from A to B;
+			4() from A to C;
+		}
+	}
+}
+
+

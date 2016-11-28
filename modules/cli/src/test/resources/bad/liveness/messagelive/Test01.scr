@@ -1,0 +1,25 @@
+module bad.liveness.messagelive.Test01;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;  // Bad: testing deadlock detection (input blocked -> terminated)
+		2() from A to B;  // Message liveness -- also counterpart wait-for
+		2() from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		rec X
+		{
+			// NB: not a role progress problem: A is already done by here
+			4() from B to C;
+			5() from C to B;
+			continue X;
+		}
+	}
+}
+
+

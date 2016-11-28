@@ -1,13 +1,11 @@
 package org.scribble.net.session;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.nio.channels.SelectionKey;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleRuntimeException;
@@ -18,7 +16,7 @@ import org.scribble.sesstype.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 //.. initiator and joiner endpoints
-public class SessionEndpoint<S extends Session, R extends Role> implements AutoCloseable
+public abstract class SessionEndpoint<S extends Session, R extends Role> implements AutoCloseable
 {
 	public final Buf<?> gc = new Buf<>();
 
@@ -26,7 +24,7 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 	public final Role self;
 	public final ScribMessageFormatter smf;
 
-	private boolean init = false;
+	protected boolean init = false;
 	//private boolean bound = false;
 	private boolean complete = false;
 	private boolean closed = false;
@@ -36,11 +34,7 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 	protected final Map<Role, BinaryChannelEndpoint> chans = new HashMap<>();
 	
 	private final ScribInputSelector sel;
-	
-	public ScribInputSelector getSelector()
-	{
-		return this.sel;
-	}
+	private final Map<Role, SelectionKey> keys = new HashMap<>();
 	
 	public SessionEndpoint(S sess, R self, ScribMessageFormatter smf) throws IOException, ScribbleRuntimeException
 	{
@@ -85,6 +79,7 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 		this.sel.pause();
 		SelectionKey key = this.sel.register(c.getSelectableChannel());
 		key.attach(peer);
+		this.keys.put(peer, key);
 		this.chans.put(peer, c);
 		this.sel.unpause();
 	}
@@ -112,8 +107,28 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 		// Underlying selectable channel is the same, so no need to cancel key and re-reg -- OK to assume in general?
 		w.wrapChannel(c);
 		w.clientHandshake();
-		this.chans.put(peer, w);
+		this.chans.put(peer, w);  // SelectoinKey unchanged?
 		this.sel.unpause();
+	}
+	
+	public synchronized void deregister(Role peer) throws IOException
+	{
+		this.sel.pause();
+		try
+		{
+			//this.keys.remove(peer).cancel();
+			this.sel.deregister(this.keys.remove(peer));
+			this.chans.remove(peer).close();
+		}
+		finally
+		{
+			this.sel.unpause();
+		}
+	}
+	
+	public ScribInputSelector getSelector()
+	{
+		return this.sel;
 	}
 
 	public BinaryChannelEndpoint getChannelEndpoint(Role role)
@@ -172,7 +187,7 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 	}
 	
 
-	public void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	/*public void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
 		// Can connect unlimited, as long as not already used via init
 		if (this.init)
@@ -212,6 +227,15 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 		register(role, ss.accept(this));  // FIXME: serv map in SessionEndpoint not currently used
 	}
 	
+	public void disconnect(Role role) throws IOException, ScribbleRuntimeException
+	{
+		if (!this.chans.containsKey(role))
+		{
+			throw new ScribbleRuntimeException("Not connected to: " + role);
+		}
+		deregister(role);
+	}*/
+	
 	/*public void init()
 	{
 		this.initialised = true;
@@ -239,6 +263,9 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 	}
 	 
 
+	
+	
+	
 	/*public final Session sess;
 	//public final Principal self;
 	public final Role self;

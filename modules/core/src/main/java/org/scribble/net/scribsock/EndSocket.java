@@ -8,6 +8,7 @@ import org.scribble.sesstype.name.Role;
 public abstract class EndSocket<S extends Session, R extends Role> extends ScribSocket<S, R>
 {
 	//public EndSocket(SessionEndpoint<S, R> se, boolean dummy)
+	//protected EndSocket(MPSTEndpoint<S, R> se)
 	protected EndSocket(SessionEndpoint<S, R> se)
 	{
 		super(se);

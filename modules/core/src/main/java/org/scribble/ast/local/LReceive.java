@@ -7,7 +7,6 @@ import java.util.Set;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
@@ -17,9 +16,9 @@ import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LReceive extends MessageTransfer<Local> implements LSimpleInteractionNode
+public class LReceive extends LMessageTransfer implements LSimpleInteractionNode
 {
 	public LReceive(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{

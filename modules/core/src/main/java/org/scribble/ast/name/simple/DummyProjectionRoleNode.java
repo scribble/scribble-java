@@ -1,5 +1,7 @@
 package org.scribble.ast.name.simple;
 
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Substitutor;
 
@@ -20,9 +22,25 @@ public class DummyProjectionRoleNode extends RoleNode
 	}
 	
 	@Override
+	public DummyProjectionRoleNode clone()
+	{
+		return AstFactoryImpl.FACTORY.DummyProjectionRoleNode();
+	}
+	
+	@Override
 	public DummyProjectionRoleNode substituteNames(Substitutor subs)
 	{
-		throw new RuntimeException("Shouldn't get in here: " + this);
+		//throw new RuntimeException("Shouldn't get in here: " + this);
+		return reconstruct(null);  // HACK: for ProjectedSubprotocolPruner, but maybe useful for others
+	}
+
+	@Override
+	protected DummyProjectionRoleNode reconstruct(String identifier)
+	{
+		ScribDel del = del();
+		DummyProjectionRoleNode rn = new DummyProjectionRoleNode();
+		rn = (DummyProjectionRoleNode) rn.del(del);
+		return rn;
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package org.scribble.sesstype.kind;
 
-public class AmbigKind extends AbstractKind implements NonRoleArgKind
+
+public class AmbigKind extends AbstractKind implements NonRoleArgKind//, PayloadTypeKind
 {
 	public static final AmbigKind KIND = new AmbigKind();
 	

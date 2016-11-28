@@ -1,0 +1,17 @@
+module good.wfchoice.gdo.Test01;
+
+
+global protocol Foo(role A, role B)
+{
+	do Bar(A, B);
+}
+
+
+aux global protocol Bar(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;  // Enabling message recursive subproto
+		do Bar(B, A);
+	}
+}

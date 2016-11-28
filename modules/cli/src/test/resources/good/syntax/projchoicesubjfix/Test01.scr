@@ -1,0 +1,30 @@
+module good.syntax.projchoicesubjfix.Test01;
+
+
+// Test transitive dependency collection and doarg name subs for projected choice subj inference
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		//1() from A to B;
+		do Bar1(A, B);
+	}
+	or
+	{
+		do Bar2(A, B);
+	}
+}
+
+global protocol Bar1(role C, role D)  // Test output all projections for transitive dependency collection
+{
+	2() from C to D;
+	do Foo(C, D);
+}
+
+global protocol Bar2(role E, role F)
+{
+	3() from E to F;
+	//do Foo(E, F);
+}
+

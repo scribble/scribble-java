@@ -1,0 +1,24 @@
+module good.liveness.roleprog.Test03;
+
+
+// Same as good.safety.stuckmsg.threeparty.Test03
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		1() from B to C;
+		choice at B
+		{
+			2() from B to A;
+			continue X;  // No C in this choice case, but fine
+		}
+		or
+		{
+			3() from B to A;
+			1() from B to C;
+			continue X;
+		}
+	}
+}
+

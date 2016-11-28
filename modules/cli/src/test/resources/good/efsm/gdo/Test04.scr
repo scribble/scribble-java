@@ -1,0 +1,24 @@
+module good.efsm.gdo.Test04;
+
+
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		2() from A to B;
+		do Bar(A, B);
+	}
+	or
+	{
+		4() from A to B;
+	}
+}
+
+
+aux global protocol Bar(role A, role B)
+{
+	3() from B to A;
+	do Foo(B, A);  // Roles reversed
+}
+

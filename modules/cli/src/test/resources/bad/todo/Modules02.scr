@@ -1,4 +1,4 @@
-module bad.disamb.modules.Modules02;
+module bad.syntax.disamb.modules.Modules02;
 
 
 global protocol Foo(role A, role B)

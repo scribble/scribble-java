@@ -1,0 +1,27 @@
+module bad.wfchoice.enabling.fourparty.Test01;
+
+
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		rec X
+		{
+			2() from B to C;
+			choice at C
+			{
+				2() from C to A;
+				continue X;  // Enabling error, with the continue inside this choice scope (continue factored out after choice is not enabling error)
+			}
+			or
+			{
+				() from C to A;
+				() from C to D;
+				continue X;
+			}
+		}
+	}
+}
+
+

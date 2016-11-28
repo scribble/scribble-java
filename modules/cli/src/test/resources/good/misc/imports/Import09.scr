@@ -1,0 +1,21 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import9.scr
+
+module good.misc.imports.Import09;
+
+import good.misc.imports.pack1.Pack09;
+
+
+global protocol Import9(role A, role B)
+{
+	choice at A
+	{
+		do good.misc.imports.pack1.Pack09.Pack9(A, B);
+	}
+	or
+	{
+		l2() from A to B;
+		//l1() from A to B;
+	}
+}
+

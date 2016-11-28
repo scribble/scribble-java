@@ -1,0 +1,23 @@
+module bad.syntax.consistentchoicesubj.Test07a;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+			4() from C to B;  // Bad.. (apart from inconsistent choice subjects)
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			3() from B to C;
+			5() from C to B;
+			//continue X;  // ..but OK if this continue commented -- is that correct?
+		}
+	}
+}

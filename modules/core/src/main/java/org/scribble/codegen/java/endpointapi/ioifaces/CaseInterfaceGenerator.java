@@ -1,7 +1,7 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.codegen.java.endpointapi.CaseSocketGenerator;
@@ -12,20 +12,21 @@ import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
+import org.scribble.main.ScribbleException;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
 public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public CaseInterfaceGenerator(StateChannelApiGenerator apigen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr)
+	public CaseInterfaceGenerator(StateChannelApiGenerator apigen, Map<EAction, InterfaceBuilder> actions, EState curr)
 	{
 		super(apigen, actions, curr);
 	}
 
 	@Override
-	protected void constructInterface()
+	protected void constructInterface() throws ScribbleException
 	{
 		super.constructInterface();
 		addBranchEnumField();
@@ -63,15 +64,16 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addCaseReceiveDiscardMethods()
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
-		Set<IOAction> as = this.curr.getAcceptable();
+		//Set<EAction> as = this.curr.getActions();
+		List<EAction> as = this.curr.getActions();
 
 		int i = 1;
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
-		for (IOAction a : as.stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : as.stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			MethodBuilder mb = this.ib.newAbstractMethod();
 			CaseSocketGenerator.setCaseReceiveDiscardHeaderWithoutReturnType(this.apigen, a, mb); 
-			EndpointState succ = this.curr.accept(a);
+			EState succ = this.curr.getSuccessor(a);
 			if (succ.isTerminal())
 			{
 				ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);
@@ -87,10 +89,10 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 	//protected static String getCasesInterfaceName(String braif)
 	// Pre: s is a branch state
 	// Cf. IOStateInterfaceGenerator.getIOStateInterfaceName
-	protected static String getCasesInterfaceName(Role self, EndpointState s)
+	protected static String getCasesInterfaceName(Role self, EState s)
 	{
 		//return "Case_" + braif.substring("Branch_".length(), braif.length());
-		return "Case_" + self + "_" + s.getAcceptable().stream().sorted(IOACTION_COMPARATOR)
+		return "Case_" + self + "_" + s.getActions().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
 	}
 }

@@ -16,6 +16,7 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ProtocolDefDel;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -28,6 +29,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 {
 	public static final String DUMMY_REC_LABEL = "__";
 	
+	// NOTE: assumes unique recvars up to this point, i.e. no recvar shadowing (treated internally by protocoldef-inlining) -- unfolding of unguardeds will, however, result in "unfolding shadowing"
 	private Map<RecVar, Recursion<?>> recs = new HashMap<>();  // Could parameterise recvars to be global/local
 	private Set<RecVar> recsToUnfold = new HashSet<>();
 	
@@ -76,8 +78,8 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 			if (visited instanceof ProtocolDecl<?>)
 			{
 				ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
-				getJob().debugPrintln("\n[DEBUG] Unfolded inlined protocol "
-							+ pd.getFullMemberName(getJobContext().getModule(getModuleContext().root)) + ":\n"
+				this.job.debugPrintln("\n[DEBUG] Unfolded inlined protocol "
+							+ pd.getFullMemberName(this.job.getContext().getModule(getModuleContext().root)) + ":\n"
 							+ ((ProtocolDefDel) pd.def.del()).getInlinedProtocolDef());
 			}
 			return visited;
@@ -102,17 +104,17 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 	}
 	
 	@Override
-	protected void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.inlinedProtocolEnter(parent, child);
+		super.inlinedEnter(parent, child);
 		child.del().enterInlinedProtocolUnfolding(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveInlinedProtocolUnfolding(parent, child, this, visited);
-		return super.inlinedProtocolLeave(parent, child, visited);
+		return super.inlinedLeave(parent, child, visited);
 	}
 	
 	public Recursion<?> getRecVar(RecVar recvar)
@@ -120,19 +122,21 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 		return this.recs.get(recvar);
 	}
 
+	// Maybe possible to revise this algorithm to handle shadowed recs, but currently requires unique recvar names
 	public void setRecVar(RecVar recvar, Recursion<?> rec) throws ScribbleException
 	{
-		ProtocolBlock<?> b = (ProtocolBlock<?>) rec.getBlock().accept(this);
-		RecVarNode clone = rec.recvar.clone();
+		ProtocolBlock<?> block = (ProtocolBlock<?>) rec.getBlock().accept(this);
+		RecVarNode rv = rec.recvar.clone();
+		Recursion<?> unfolded;
 		if (rec.getKind() == Global.KIND)
 		{
-			rec = ((GRecursion) rec).reconstruct(clone, (GProtocolBlock) b);
+			unfolded = ((GRecursion) rec).reconstruct(rv, (GProtocolBlock) block);
 		}
 		else
 		{
-			rec = ((LRecursion) rec).reconstruct(clone, (LProtocolBlock) b);
+			unfolded = ((LRecursion) rec).reconstruct(rv, (LProtocolBlock) block);
 		}
-		this.recs.put(recvar, rec);
+		this.recs.put(recvar, unfolded);
 	}
 
 	public void removeRecVar(RecVar recvar)

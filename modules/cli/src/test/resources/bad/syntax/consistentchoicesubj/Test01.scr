@@ -1,0 +1,18 @@
+module bad.syntax.consistentchoicesubj.Test01;
+
+
+// Maybe refactor as projection
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C;
+	}
+}
+

@@ -1,0 +1,31 @@
+module good.syntax.projection.Test01;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		choice at A  // Testing projection (e.g. B)
+		{
+			2() from A to C;
+		}
+		or
+		{
+			rec X
+			{
+				3() from A to C;
+			}
+		}
+	}
+	or
+	{
+		rec Y
+		{
+			2() from A to B;
+		}
+		4() from A to C;
+	}
+}
+
+

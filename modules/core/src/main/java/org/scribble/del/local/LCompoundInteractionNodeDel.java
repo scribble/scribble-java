@@ -3,8 +3,8 @@ package org.scribble.del.local;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LCompoundInteractionNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.ReachabilityChecker;
-import org.scribble.visit.env.ReachabilityEnv;
+import org.scribble.visit.wf.ReachabilityChecker;
+import org.scribble.visit.wf.env.ReachabilityEnv;
 
 public interface LCompoundInteractionNodeDel extends LInteractionNodeDel
 {

@@ -1,0 +1,86 @@
+module src.SupplierInfoExper;
+
+type <xsd> "UserName" from "AUTH.xsd" as username;
+type <xsd> "Password" from "AUTH.xsd" as password;
+type <xsd> "UUID" from "AUTH.xsd" as uuid;
+type <xsd> "/retailhub/supplierdetails" from "Retailer.xsd" as supplierdetails;
+type <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
+
+type <xsd> "..." from "...xsd" as usercontext;
+type <xsd> "..." from "...xsd" as filters;
+
+type <java> "java.lang.Integer" from "rt.jar" as int;
+
+
+global protocol PartnershipSupplier(
+		role loginsvc,
+		role requestor)
+{
+	login(username, password) from requestor to loginsvc;
+	choice at loginsvc
+	{
+		loginfailure() from loginsvc to requestor;
+	}
+	or
+	{
+		loginsuccess() from loginsvc to requestor;
+		do Main(loginsvc, requestor);
+	}
+}
+
+global protocol Main(
+		role loginsvc,
+		role requestor)
+{
+	loginsvc connects(      // connect/disconnect now done as explicit statements
+			role authorisersvc,
+			role filtersvc,
+			role suppliersvc,
+			role contractsvc)
+	{
+		rec mainBlock
+		{
+			choice at requestor
+			{
+				// GET SUPPLIER INFO
+				getsuppliers(uuid) from requestor to authorisersvc;
+				choice at authorisersvc
+				{
+					// DENIED
+					deny() from authorisersvc to requestor, suppliersvc;
+				}
+				or
+				{
+					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+					getsuppliers() from authorisersvc to suppliersvc;
+					suppliers() from suppliersvc to authorisersvc;
+					filter1(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
+					filtered1() from filtersvc to authorisersvc;
+					suppliers() from authorisersvc to requestor;
+				}
+			}
+			or
+			{
+				// GET CONTRACT INFO
+				getcontracts() from requestor to authorisersvc;
+				//choice at authoriser
+				choice at authorisersvc
+				{
+					// DENIED
+					deny() from authorisersvc to requestor, contractsvc;
+				}
+				or
+				{
+					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+					getcontracts() from authorisersvc to contractsvc;
+					suppliers() from contractsvc to authorisersvc;
+					filter2(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
+					filtered2() from filtersvc to authorisersvc;
+					contracts() from authorisersvc to requestor;
+				}
+			}
+			continue mainBlock;
+		}
+	}
+}
+

@@ -2,22 +2,25 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.MessageIdCollector;
-import org.scribble.visit.ModuleContextBuilder;
-import org.scribble.visit.NameDisambiguator;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.ProjectedRoleDeclFixer;
-import org.scribble.visit.Projector;
-import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.ReachabilityChecker;
-import org.scribble.visit.RoleCollector;
-import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.WFChoicePathChecker;
+import org.scribble.visit.context.EGraphBuilder;
+import org.scribble.visit.context.ModuleContextBuilder;
+import org.scribble.visit.context.ProjectedChoiceDoPruner;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.ProjectedRoleDeclFixer;
+import org.scribble.visit.context.Projector;
+import org.scribble.visit.context.ProtocolDeclContextBuilder;
+import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.Env;
+import org.scribble.visit.util.MessageIdCollector;
+import org.scribble.visit.util.RoleCollector;
+import org.scribble.visit.validation.GProtocolValidator;
+import org.scribble.visit.wf.DelegationProtocolRefChecker;
+import org.scribble.visit.wf.ExplicitCorrelationChecker;
+import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.wf.ReachabilityChecker;
+import org.scribble.visit.wf.WFChoiceChecker;
 
 // Immutable except for pass-specific Envs (by visitors) only -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
 // Parameterise by AstNode type?  Would inhibit del sharing between types (but that's not currently needed)
@@ -42,6 +45,16 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker) throws ScribbleException
+	{
+
+	}
+
+	default ScribNode leaveDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
@@ -137,12 +150,12 @@ public interface ScribDel
 		return visited;
 	}
 
-	default void enterGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
+	default void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
 	{
 		
 	}
 
-	default ScribNode leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	default ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
@@ -156,46 +169,44 @@ public interface ScribDel
 	{
 		return visited;
 	}
-
-	default void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
+	
+	default void enterValidation(ScribNode parent, ScribNode child, GProtocolValidator coll) throws ScribbleException
 	{
 		
 	}
 
-	default ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
+	default ScribNode leaveValidation(ScribNode parent, ScribNode child, GProtocolValidator coll, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 	
-	/*//default void enterPathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor<? extends PathEnv> coll) throws ScribbleException
-	default void enterPathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll) throws ScribbleException
+	default void enterProjectedChoiceDoPruning(ScribNode parent, ScribNode child, ProjectedChoiceDoPruner pruner) throws ScribbleException
 	{
 		
 	}
 
-	//default ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor<? extends PathEnv> coll, ScribNode visited) throws ScribbleException
-	default ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
+	default ScribNode leaveProjectedChoiceDoPruning(ScribNode parent, ScribNode child, ProjectedChoiceDoPruner proj, ScribNode visited) throws ScribbleException
 	{
 		return visited;
-	}*/
+	}
 	
-	default void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
+	default void enterUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker) throws ScribbleException
 	{
 		
 	}
 
-	default ScribNode leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
+	default ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
-	/*default void enterEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll)
+	default void enterExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker) throws ScribbleException
 	{
 		
 	}
 
-	default ScribNode leaveEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll, ScribNode visited)
+	default ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
-	}*/
+	}
 }

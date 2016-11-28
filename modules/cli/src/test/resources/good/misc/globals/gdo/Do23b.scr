@@ -1,0 +1,23 @@
+module good.misc.globals.gdo.Do23b;
+
+
+type <java> "java.lang.String" from "rt.jar" as String;
+
+
+// Overlaps with Do25
+global protocol Do23b(role A, role B)
+{
+	do Do23aux<String>(A, B);
+}
+
+global protocol Do23aux<type X>(role C, role D)
+{
+	do Do23a2<l1(X)>(C, D);
+}
+
+global protocol Do23a2<sig X>(role E, role F)
+//global protocol Do23a2<type X>(role E, role F)
+{
+	X from E to F;  // Uncomment OK
+}
+

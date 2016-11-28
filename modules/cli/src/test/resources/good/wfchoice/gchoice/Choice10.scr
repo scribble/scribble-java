@@ -1,0 +1,35 @@
+module good.wfchoice.gchoice.Choice10;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			rec Y
+			{
+				2() from A to B;
+				choice at A
+				{
+					continue X;
+				}
+				or
+				{
+					2() from A to B;  // OK to be 2, because the above continue-X does 1() first
+				}
+				or
+				{
+					3() from A to B;
+					continue Y;
+				}
+			}
+		}
+	}
+}
+

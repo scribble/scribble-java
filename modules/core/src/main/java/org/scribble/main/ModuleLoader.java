@@ -20,6 +20,7 @@ import org.scribble.ast.Module;
 import org.scribble.main.resource.Resource;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.util.Pair;
+import org.scribble.util.ScribParserException;
 
 
 /**
@@ -37,6 +38,8 @@ public interface ModuleLoader
 	 * 
 	 * @param module The module name
 	 * @return The module, or null if not found
+	 * @throws ScribParserException 
 	 */
-	public Pair<Resource, Module> loadModule(ModuleName modname);
+	public Pair<Resource, Module> loadModule(ModuleName modname) throws ScribParserException, ScribbleException;
 }
+

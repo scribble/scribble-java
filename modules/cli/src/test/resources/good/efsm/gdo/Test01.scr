@@ -1,0 +1,34 @@
+//$ bin/scribblec.sh -ip modules/core/src/test/scrib/ modules/cli/src/test/resources/good/efsm/gdo/Test01.scr -fsm Bar1 C
+
+module good.efsm.gdo.Test01;
+
+
+// Test inlined protocol unfolding -- unguarded rec and continue under choice
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		do Bar1(A, B);
+	}
+	or
+	{
+		do Bar2(A, B);
+	}
+	or
+	{
+		4() from A to B;
+	}
+}
+
+global protocol Bar1(role C, role D)  // <- As root, check choice inside Foo is unfolded correctly wrt. unguarded continue for Bar1 case
+{
+	2() from C to D;
+	do Foo(C, D);
+}
+
+global protocol Bar2(role C, role D)
+{
+	5() from C to D;
+	do Bar2(C, D);
+}

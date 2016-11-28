@@ -1,0 +1,26 @@
+module good.efsm.gdo.Test06;
+
+
+global protocol Foo(role A, role B)
+{
+	2() from A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		do Foo2(A, B);  // Direct result is non-minimal EFSM
+	}
+}
+
+global protocol Foo2(role A, role B)
+{
+	do Foo3(A, B);
+}
+
+global protocol Foo3(role A, role B)
+{
+	do Foo(A, B);
+}
+

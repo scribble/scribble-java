@@ -1,0 +1,12 @@
+module bad.reach.globals.grecursion.Recursion19a;
+
+
+global protocol Foo(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		continue X;
+	}
+	2() from A to C;
+}

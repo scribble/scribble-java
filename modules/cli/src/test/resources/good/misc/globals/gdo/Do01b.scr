@@ -1,0 +1,17 @@
+module good.misc.globals.gdo.Do01b;
+
+
+global protocol Do1b(role A, role B)
+{
+	do Do1aux(A, B);
+	do good.misc.globals.gdo.Do01b.Do1aux(A, B);  // Uncomment is OK
+	//do X: Do1aux(A, B);  // Uncomment is OK  // TODO
+	//do Do1aux(A, B);  // Uncomment is bad
+	//do Do1aux(A, A);  // Uncomment is bad
+}
+
+global protocol Do1aux(role C, role D)
+{
+	l1() from C to D;
+}
+

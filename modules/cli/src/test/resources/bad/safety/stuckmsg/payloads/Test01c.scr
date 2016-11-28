@@ -1,0 +1,25 @@
+module bad.safety.stuckmsg.payloads.Test01c;
+
+
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+
+// Cf. bad.safety.stuckmsg.payloads.Test01b
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2(Int1) from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		2(Int2) from B to A;  // (Syntactic MPST merge not defined for repeat labels)
+													// here, payloads are considered as distinguishing (as default) -- whole I/O action used as label
+													// Cf.\ Test01b, non-deterministic actions of the same state
+		                      // here, actions on different states -- error manifests as regular stuck
+	}
+}
+

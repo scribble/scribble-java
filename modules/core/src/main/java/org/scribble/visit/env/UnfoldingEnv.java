@@ -5,7 +5,7 @@ import java.util.List;
 
 public class UnfoldingEnv extends Env<UnfoldingEnv>
 {
-	private boolean shouldUnfold;
+	private boolean shouldUnfold;  // i.e. unguarded choice context
 	
 	public UnfoldingEnv()
 	{
@@ -56,7 +56,7 @@ public class UnfoldingEnv extends Env<UnfoldingEnv>
 		return copy;
 	}
 	
-	public UnfoldingEnv noUnfold()
+	public UnfoldingEnv disableUnfold()
 	{	
 		UnfoldingEnv copy = copy();
 		copy.shouldUnfold = false;

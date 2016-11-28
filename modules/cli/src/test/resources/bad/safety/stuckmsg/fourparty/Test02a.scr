@@ -1,0 +1,23 @@
+module bad.safety.stuckmsg.fourparty.Test02a;
+
+
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X
+	{
+		1() from A to B;
+		continue X;  // Checking safety in non-terminating global model
+	}
+	choice at C
+	{
+		2() from C to D;
+		3() from D to C;  // Stuck messages also manifest as message liveness errors (subsumed? so unnecessary to check safety except for actual terminations? -- but morally, they are local safety errors for the roles, as opposed to global liveness errors for the system)
+	}
+	or
+	{
+		2() from C to D;
+		4() from D to C;
+	}
+}
+
+

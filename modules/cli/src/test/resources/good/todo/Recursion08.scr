@@ -1,4 +1,4 @@
-module good.parsing.globals.grecursion.Recursion08;
+module good.misc.globals.grecursion.Recursion08;
 
 
 global protocol Recursion8(role A, role B)

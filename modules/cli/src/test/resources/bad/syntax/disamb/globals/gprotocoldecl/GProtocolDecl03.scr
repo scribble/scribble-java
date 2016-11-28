@@ -1,0 +1,12 @@
+module bad.syntax.disamb.globals.protocoldecl.GProtocolDecl03;
+
+
+global protocol GProtocolDecl3a(role D, role E)
+{
+	do GProtocolDecl3b(D, E);
+}
+
+global protocol GProtocolDecl3b(role D, role E)
+{
+	do GProtocolDecl3a(D, E);
+}

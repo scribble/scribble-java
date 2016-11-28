@@ -1,16 +1,9 @@
 package org.scribble.del.global;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.InteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
@@ -20,18 +13,14 @@ import org.scribble.ast.local.LNode;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.ModelAction;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.Role;
-import org.scribble.visit.GlobalModelBuilder;
-import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.context.Projector;
+import org.scribble.visit.context.env.ProjectionEnv;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ModelEnv;
-import org.scribble.visit.env.ProjectionEnv;
 
 public class GInteractionSeqDel extends InteractionSeqDel
 {
+	// enter in super
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
@@ -65,9 +54,11 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<LInteractionNode> lis = new LinkedList<>();
-		for (InteractionNode<Global> gi : gis.getInteractions())
+		for (GInteractionNode gi : gis.getInteractions())
 		{
 			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
+			//LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
+			// FIXME: move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
 				lis.addAll(((LInteractionSeq) ln).getInteractions());
@@ -84,63 +75,8 @@ public class GInteractionSeqDel extends InteractionSeqDel
 				lis.clear();
 			}
 		}*/
-		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSeq(lis);
+		LInteractionSeq projection = gis.project(proj.peekSelf(), lis);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
-	}
-	
-	@Override
-	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
-	{
-		ScribDelBase.pushVisitorEnv(this, builder);
-	}
-
-	@Override
-	public GInteractionSeq leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
-	{
-		GInteractionSeq gis = (GInteractionSeq) visited;
-		Set<ModelAction> all = new HashSet<>();
-		Map<Role, ModelAction> leaves = null;
-		for (InteractionNode<Global> gi : gis.getInteractions())
-		{
-			ModelEnv env = ((ModelEnv) gi.del().env());
-			Set<ModelAction> as = env.getActions();
-			all.addAll(as);
-			if (leaves == null)
-			{
-				leaves = new HashMap<>(env.getLeaves());
-			}
-			else
-			{
-				Set<ModelAction> init = as.stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
-				addDeps(leaves, init);
-				setLeaves(leaves, env.getLeaves().values());
-			}
-		}
-
-		ModelEnv env = builder.popEnv();
-		env = env.setActions(all, leaves);
-		builder.pushEnv(env);
-		GInteractionSeq tmp = (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, builder, visited);
-		return tmp;
-	}
-	
-	private static void addDeps(Map<Role, ModelAction> leaves, Set<ModelAction> next)
-	{
-		for (ModelAction a : next)
-		{
-			if (leaves.containsKey(a.src))
-			{
-				a.addDependency(leaves.get(a.src));
-			}
-		}
-	}
-	
-	private static void setLeaves(Map<Role, ModelAction> leaves, Collection<ModelAction> as)
-	{
-		for (ModelAction a : as)
-		{
-			leaves.put(a.src, a);
-		}
 	}
 }

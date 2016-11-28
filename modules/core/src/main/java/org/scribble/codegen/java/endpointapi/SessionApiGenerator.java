@@ -14,12 +14,12 @@ import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.del.ModuleDel;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.Job;
-import org.scribble.visit.MessageIdCollector;
+import org.scribble.visit.util.MessageIdCollector;
 
 public class SessionApiGenerator extends ApiGenerator
 {
@@ -84,7 +84,11 @@ public class SessionApiGenerator extends ApiGenerator
 		this.cb.addImports(/*"java.io.IOException", */"java.util.Arrays", "java.util.Collections", "java.util.LinkedList", "java.util.List");
 		//this.cb.addImports("org.scribble.main.ScribbleRuntimeException", "org.scribble.net.session.SessionEndpoint", "org.scribble.net.ScribMessageFormatter");
 		this.cb.addImports("org.scribble.sesstype.name.Role");
-		this.cb.addImports(getRolesPackageName(this.gpn) + ".*", getOpsPackageName(this.gpn) + ".*");
+		this.cb.addImports(getRolesPackageName(this.gpn) + ".*");
+		if (!this.mids.isEmpty())
+		{
+			this.cb.addImports(getOpsPackageName(this.gpn) + ".*");
+		}
 		this.cb.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.FINAL);
 		this.cb.setSuperClass(SessionApiGenerator.SESSION_CLASS);
 		

@@ -1,0 +1,14 @@
+module demo.fase17.overview.P1;
+
+
+global protocol P1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to C;
+	}
+}

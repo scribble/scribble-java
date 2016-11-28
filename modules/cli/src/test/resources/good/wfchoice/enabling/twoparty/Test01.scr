@@ -1,0 +1,30 @@
+module good.wfchoice.enabling.twoparty.Test01;
+
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to A;
+		choice at A  // Nested choice: check for distinct enabling messages in path collection is not broken for the two paths in this choice induced by nested choice
+		{
+			3a() from A to B;
+		}
+		or
+		{
+			3b() from A to B;
+		}
+	}
+	4() from B to A;
+	choice at A
+	{
+		5a() from A to B;
+	}
+	or
+	{
+		5b() from A to B;
+	}
+	// Check path collection  // Deprecated
+}
+

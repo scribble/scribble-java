@@ -11,9 +11,12 @@ import org.scribble.ast.Continue;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.Env;
+
+// FIXME: unfolding/unrolling algorithm would be easier if we would use an "affine rec var" normal form: a single rec can have multiple labels, each label used at most once in a continue
 
 // "Lazily unfolds" each recursion once (by reentering the original rec ast) on reaching a continue
 // FIXME: would be better to only unfold "as needed" (unguarded choice-recs)
@@ -62,9 +65,9 @@ public abstract class UnfoldingVisitor<E extends Env<?>> extends InlinedProtocol
 	}
 	
 	@Override
-	protected final void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.inlinedProtocolEnter(parent, child);
+		super.inlinedEnter(parent, child);
 		if (child instanceof Recursion)
 		{
 			Recursion<?> rec = (Recursion<?>) child;
@@ -80,7 +83,7 @@ public abstract class UnfoldingVisitor<E extends Env<?>> extends InlinedProtocol
 	}
 	
 	@Override
-	protected final ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected final ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		ScribNode n = unfoldingLeave(parent, child, visited);
 		if (child instanceof Recursion)
@@ -94,7 +97,7 @@ public abstract class UnfoldingVisitor<E extends Env<?>> extends InlinedProtocol
 				this.recs.remove(rv);
 			}*/
 		}
-		return super.inlinedProtocolLeave(parent, child, n);
+		return super.inlinedLeave(parent, child, n);
 	}
 
 	protected void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException

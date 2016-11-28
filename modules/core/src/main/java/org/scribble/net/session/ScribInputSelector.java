@@ -11,12 +11,14 @@ import org.scribble.sesstype.name.Role;
 
 public class ScribInputSelector extends Thread
 {
+	//private MPSTEndpoint<?, ?> se;  // FIXME
 	private SessionEndpoint<?, ?> se;  // FIXME
 	private final Selector sel;
 
 	private volatile boolean paused = false;
 	private volatile boolean closed = false;
 
+	//public ScribInputSelector(MPSTEndpoint<?, ?> se) throws IOException
 	public ScribInputSelector(SessionEndpoint<?, ?> se) throws IOException
 	{
 		this.se = se;
@@ -65,7 +67,8 @@ public class ScribInputSelector extends Thread
 		}
 		catch (Exception e)
 		{
-			//e.printStackTrace();  // FIXME? java.nio.channels.CancelledKeyException 
+			// FIXME: throw to user -- e.g. MessageFormatter.fromBytes exception
+			e.printStackTrace();  // FIXME? java.nio.channels.CancelledKeyException 
 		}
 		finally
 		{
@@ -90,6 +93,11 @@ public class ScribInputSelector extends Thread
 	protected SelectionKey register(AbstractSelectableChannel c) throws ClosedChannelException
 	{
 		return c.register(this.sel, SelectionKey.OP_READ);
+	}
+	
+	protected void deregister(SelectionKey key)  // FIXME: refactor to internalise key inside here?
+	{
+		key.cancel();
 	}
 	
 	// process all keys and keep doing until all pending futures have completed -- i.e. all reads done up to this send state (currently wrap assumed to in send state only)

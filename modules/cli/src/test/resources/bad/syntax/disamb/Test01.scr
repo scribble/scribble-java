@@ -1,0 +1,14 @@
+module bad.syntax.disamb.Test01;
+
+
+sig <java> "foo" from "bar" as M1;
+
+
+global protocol Foo<sig M>(role A, role B)
+{
+	() from A to B;
+	M from A to B;
+	M1 from A to B;
+	M2 from A to B;
+}
+

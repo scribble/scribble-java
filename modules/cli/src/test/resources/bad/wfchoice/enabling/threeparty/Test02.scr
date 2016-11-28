@@ -1,0 +1,23 @@
+module bad.wfchoice.enabling.threeparty.Test02;
+
+
+// Cf. good.wfchoice.gchoice.Choice11;
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from B to C;  // bad enabling
+		choice at A
+		{
+			1() from A to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from A to C;
+		}
+	}
+}
+
+

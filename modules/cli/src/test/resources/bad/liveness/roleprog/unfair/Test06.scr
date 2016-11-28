@@ -1,0 +1,29 @@
+module bad.liveness.roleprog.unfair.Test06;
+
+
+// Duplicate of bad.efsm.unfair.Test06
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A  // OK if -fair
+	{
+		1() from A to B;
+		do Proto1Aux1(A, B, C);
+	}
+	or
+	{
+		do Proto1Aux2(A, B, C);
+	}
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	do Proto1(A, B, C);
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	2() from A to B;
+	3() from B to C;
+	do Proto1(A, B, C);
+}
+

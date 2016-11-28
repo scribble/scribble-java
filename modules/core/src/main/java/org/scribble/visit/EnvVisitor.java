@@ -4,12 +4,15 @@ import java.util.LinkedList;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.visit.context.ModuleContextVisitor;
 import org.scribble.visit.env.Env;
 
 // By default, EnvVisitor only manipulates internal Env stack -- so AST/dels not affected
 // Attaching Envs to Dels has to be done manually by each pass
+// FIXME: make a ProtocolDeclContextVisitor (caches ProtocolDeclContext, e.g. roles, modifiers) between this and ModuleContextVisitor
 public abstract class EnvVisitor<T extends Env<?>> extends ModuleContextVisitor
 {
 	private LinkedList<T> envs = new LinkedList<T>();  // Deque

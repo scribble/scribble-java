@@ -5,23 +5,54 @@ LIB=lib
 
 # antlr 3.2 location (if no lib jar)
 ANTLR=
-	# e.g. '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar'
+  # e.g. '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar'
 
 PRG=`basename "$0"`
-DIR=`dirname "$0"`
+DIR=`dirname "$0"`   # Non Cygwin..
+#DIR=`dirname "$0"`/.. # Cygwin
 #BASEDIR=$(dirname $0)
 
 usage() {
-  echo scribblec:
+  echo Usage:  'scribblec.sh [option]... <SCRFILE> [option]...'
   cat <<EOF
-  -h  --help                                     Display this information
-  --verbose                                      Echo the java command
-  -ip [path]                                     Scribble import path
-  -project [simple global protocol name] [role]  Project protocol
-  -fsm [simple global protocol name] [role]      Generate FSM
-  -dot [simple global protocol name] [role] [output file]
-          Generate FSM as png
-          (Do not use in conjunction with other flags that output to stdout)
+  
+ <SCRFILE>     Source Scribble module (.scr file) 
+  
+Options:
+  -h, --help                 Show this info and exit$
+  -V                         Scribble debug info$
+  --verbose                  Echo the java command$
+
+  -ip <path>                 Scribble module import path$
+
+  -oldwf                     Use the simpler syntactic protocol well-formedness
+
+
+  -project <simple global protocol name> <role>  Project protocol
+
+  -fsm <simple global protocol name> <role>      Generate default Endpoint FSM
+  -aut                                           Output as aut (instead of dot)
+  -fsmpng <simple global protocol name> <role> <output file>
+          Draw default Endpoint FSM as png (via dot)
+  -vfsm, -vfsmpng, -ufsm, -ufsmpng (with appropriate args)
+          Output the EFSM used in validation (or the "unfair" variant)
+  -minlts
+          Minimise EFSMs for dot output and API generation (but not validation)
+          (Requires ltsconvert)
+
+
+  -model <simple global protocol name>          Generate global model
+  -modelpng <simple global protocol name> <role> <output file>
+          Draw global model as png (requires dot)
+  -fair                                         Assume fair output choices
+  -umodel, -umodelpng (with appropriate args)   "Unfair" variant
+
+
+  -api <simple global protocol name> <role>     Generate Java Endpoint API
+  -d <path>                                     API output directory
+  -sessapi <simple global protocol name>        Generate Session API only
+  -chanapi <simple global protocol name> <role> Generate State Channel API only
+  -subtypes                                     Enable subtype API generation
 EOF
 }
 
@@ -58,28 +89,29 @@ CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
 usage=0
 verbose=0
 dot=0
+nondot=0
 
 while true; do
     case "$1" in
         "")
             break
             ;;
-        -dot)
-        # Should not be used in conjunction with other flags..
-        # ..that output to stdout
-            ARGS="$ARGS '-fsm'"
-            shift
-            ARGS="$ARGS '$1'"
-            shift
-            ARGS="$ARGS '$1'"
-            shift
-            dot=$1
-            if [ "$dot" == '' ]; then
-              echo '-dot missing output file name argument'
-              exit 1
-            fi
-            shift
-            ;;
+        #-dot)
+        #    # Should not be used in conjunction with other flags..
+        #    # ..that output to stdout
+        #    ARGS="$ARGS '-fsm'"
+        #    shift
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    dot=$1
+        #    if [ "$dot" == '' ]; then
+        #      echo '-dot missing output file name argument'
+        #      exit 1
+        #    fi
+        #    shift
+        #    ;;
         -h)
             usage=1
             break
@@ -92,6 +124,23 @@ while true; do
             verbose=1
             shift
             ;;
+        #-ip)
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    ;;
+        #-d)
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    ;;
+        #-subtypes)
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    ;;
+        #-*)
+        #    nondot=1
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    ;;
         *)
             ARGS="$ARGS '$1'"
             shift
@@ -99,13 +148,17 @@ while true; do
     esac
 done
 
-if [ "$dot" != 0 ]; then
-  ARGS="$ARGS |"
-  ARGS="$ARGS dot"
-  ARGS="$ARGS '-Tpng'"
-  ARGS="$ARGS '-o'"
-  ARGS="$ARGS '$dot'"
-fi
+#if [ "$dot" != 0 ]; then
+#  if [ $nondot == 1 ]; then
+#    echo '-dot cannot be used in conjunction with other flags that output to stdout: ' $ARGS
+#    exit 1
+#  fi
+#  ARGS="$ARGS |"
+#  ARGS="$ARGS dot"
+#  ARGS="$ARGS '-Tpng'"
+#  ARGS="$ARGS '-o'"
+#  ARGS="$ARGS '$dot'"
+#fi
 
 if [ "$usage" = 1 ]; then
   usage

@@ -1,0 +1,202 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/smtp/src -d modules/demos/scrib/smtp/src modules/demos/scrib/smtp/src/smtp/Smtp.scr -api Smtp C -subtypes
+//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/smtp/src/ modules/demos/scrib/smtp/src/smtp/*.java -subpackages smtp.Smtp.Smtp -d modules/demos/scrib/smtp/javadoc
+
+
+module smtp.Smtp;
+
+sig <java> "smtp.message.server._220"
+		from "smtp/message/server/_220.java" as 220;
+sig <java> "smtp.message.server._250"
+		from "smtp/message/server/_250.java" as 250;
+sig <java> "smtp.message.server._250d"
+		from "smtp/message/server/_250d.java" as 250d;
+sig <java> "smtp.message.server._235"
+		from "smtp/message/server/_235.java" as 235;
+sig <java> "smtp.message.server._535"
+		from "smtp/message/server/_535.java" as 535;
+sig <java> "smtp.message.server._501"
+		from "smtp/message/server/_501.java" as 501;
+sig <java> "smtp.message.server._354"
+		from "smtp/message/server/_354.java" as 354;
+
+sig <java> "smtp.message.client.Ehlo"
+		from "smtp/message/client/Ehlo.java" as Ehlo;
+sig <java> "smtp.message.client.StartTls"
+		from "smtp/message/client/StartTls.java" as StartTls;
+sig <java> "smtp.message.client.Auth"
+		from "smtp/message/client/Auth.java" as Auth;
+sig <java> "smtp.message.client.Mail"
+		from "smtp/message/client/Mail.java" as Mail;
+sig <java> "smtp.message.client.Rcpt"
+		from "smtp/message/client/Rcpt.java" as Rcpt;
+sig <java> "smtp.message.client.Subject"
+		from "smtp/message/client/Subject.java" as Subject;
+sig <java> "smtp.message.client.DataLine"
+		from "smtp/message/client/DataLine.java" as DataLine;
+sig <java> "smtp.message.client.Data"
+		from "smtp/message/client/Data.java" as Data;
+sig <java> "smtp.message.client.EndOfData"
+		from "smtp/message/client/EndOfData.java" as EndOfData;
+sig <java> "smtp.message.client.Quit"
+		from "smtp/message/client/Quit.java" as Quit;
+
+global protocol Smtp(role S, role C)
+{
+	220 from S to C;
+	do Ehlo(S, C);
+}
+
+aux global protocol Ehlo(role S, role C)
+{
+	choice at C
+	{
+		Ehlo from C to S;
+		rec X
+		{
+			choice at S
+			{
+				//250 from S to C;
+				250d from S to C;
+				continue X;
+			}
+			or
+			{
+				250 from S to C;
+				do StartTls(S, C);
+			}
+		}
+	}
+	or
+	{
+		Quit from C to S;
+	}
+}
+
+aux global protocol StartTls(role S, role C)
+{
+	choice at C
+	{
+		StartTls from C to S;
+		220 from S to C;
+		// Do TLS handshake here: level below the application level protocol (like regular TCP handshake)
+		do SecureEhlo(S, C);
+	}
+	or
+	{
+		Quit from C to S;
+	}
+}
+
+aux global protocol SecureEhlo(role S, role C)
+{
+	choice at C
+	{
+		Ehlo from C to S;
+		rec X
+		{
+			choice at S
+			{
+				250d from S to C;
+				continue X;
+			}
+			or
+			{
+				250 from S to C;
+				do Auth(S, C);
+			}
+		}
+	}
+	or
+	{
+		Quit from C to S;
+	}
+}
+
+aux global protocol Auth(role S, role C)
+{
+	rec Y
+	{
+		choice at C
+		{
+			Auth from C to S;
+			choice at S
+			{
+				235 from S to C;
+				do Mail(S, C);
+			}
+			or
+			{
+				535 from S to C;
+				continue Y;
+			}
+			//.. 501 Invalid base64 Data 
+		}
+		or
+		{
+			Quit from C to S;
+		}
+	}
+}
+
+aux global protocol Mail(role S, role C)
+{
+	rec Z1
+	{
+		choice at C
+		{
+			Mail from C to S; //Mail from:<a@b.com>
+			choice at S
+			{
+				501 from S to C;
+				continue Z1;
+			}
+			or
+			{
+				250 from S to C;
+				
+				rec Z2
+				{
+					choice at C
+					{
+						Rcpt from C to S; //Rcpt to:<c@d.com>
+						choice at S
+						{
+							250 from S to C;
+							continue Z2;
+						}
+					}
+					or
+					{
+						Data from C to S;
+						354 from S to C;
+						//too from C to S; //to:<you>
+						//froom from C to S; //from:<me>
+						rec Z3
+						{
+							choice at C
+							{
+								DataLine from C to S;
+								continue Z3;
+							}
+							or
+							{
+								Subject from C to S; //Subject:<my Subject>
+								continue Z3;
+							}
+							or
+							{
+								EndOfData from C to S; // CRLF.CRLF
+								250 from S to C;
+								continue Z1;
+							}
+						}	
+					}
+				}
+			}
+		}
+		or
+		{
+			Quit from C to S;
+		}
+	}
+}

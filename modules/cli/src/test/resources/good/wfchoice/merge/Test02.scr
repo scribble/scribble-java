@@ -1,0 +1,20 @@
+module good.wfchoice.merge.Test02;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;  // Needs "merge", cannot be factored out
+		4() from A to B;
+	}
+	or
+	{
+		3() from A to B;
+		2() from B to C;
+		5() from A to B;
+	}
+}
+
+

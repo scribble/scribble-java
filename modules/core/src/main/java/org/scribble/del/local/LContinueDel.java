@@ -1,17 +1,38 @@
 package org.scribble.del.local;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
+import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.IOAction;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.RecVar;
-import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.ReachabilityChecker;
-import org.scribble.visit.env.ReachabilityEnv;
+import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.context.EGraphBuilder;
+import org.scribble.visit.env.InlineProtocolEnv;
+import org.scribble.visit.wf.ReachabilityChecker;
+import org.scribble.visit.wf.env.ReachabilityEnv;
 
 public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeDel
 {
+	@Override
+	public LContinue leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	{
+		LContinue lc = (LContinue) visited;
+		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) lc.recvar.del().env()).getTranslation();	
+		LContinue inlined = AstFactoryImpl.FACTORY.LContinue(recvar);
+		inl.pushEnv(inl.popEnv().setTranslation(inlined));
+		return (LContinue) super.leaveProtocolInlining(parent, child, inl, lc);
+	}
+
 	@Override
 	public LContinue leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
@@ -25,21 +46,37 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 	}
 
 	@Override
-	public LContinue leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	public LContinue leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		LContinue lr = (LContinue) visited;
 		RecVar rv = lr.recvar.toName();
-		//graph.builder.setEntry(graph.builder.getRecursionEntry(rv));
-		//if (graph.builder.getPredecessor() == null)  // unguarded choice case
-		if (graph.builder.isUnguardedInChoice())
+		if (graph.util.isUnguardedInChoice())
 		{
-			IOAction a = graph.builder.getEnacting(rv);
-			graph.builder.addEdge(graph.builder.getEntry(), a, graph.builder.getRecursionEntry(rv).accept(a));
+			graph.util.addContinueEdge(graph.util.getEntry(), rv);
 		}
 		else
 		{
-			graph.builder.addEdge(graph.builder.getPredecessor(), graph.builder.getPreviousAction(), graph.builder.getRecursionEntry(rv));
+			// ** "Overwrites" previous edge built by send/receive(s) leading to this continue
+			Iterator<EState> preds = graph.util.getPredecessors().iterator();
+			Iterator<EAction> prevs = graph.util.getPreviousActions().iterator();
+			EState entry = graph.util.getEntry();
+
+			Set<List<Object>> removed = new HashSet<>();  
+					// HACK: for identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  // FIXME: do here, or refactor into GraphBuilder?
+					// Because duplicate edges preemptively pruned by ModelState.addEdge, but corresponding predecessors not pruned  // FIXME: make uniform
+			while (preds.hasNext())
+			{
+				EState pred = preds.next();
+				EAction prev = prevs.next();
+				List<Object> tmp = Arrays.asList(pred, prev, entry);
+				if (!removed.contains(tmp))
+				{
+					removed.add(tmp);
+					graph.util.removeEdgeFromPredecessor(pred, prev);  // Assumes pred is a predecessor, and removes pred from current predecessors..
+				}
+				graph.util.addRecursionEdge(pred, prev, graph.util.getRecursionEntry(rv));  // May be repeated for non-det, but OK  // Combine with removeEdgeFromPredecessor?
+			}
 		}
-		return (LContinue) super.leaveGraphBuilding(parent, child, graph, lr);
+		return (LContinue) super.leaveEGraphBuilding(parent, child, graph, lr);
 	}
 }

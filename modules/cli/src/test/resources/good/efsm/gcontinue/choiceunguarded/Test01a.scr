@@ -1,0 +1,21 @@
+module good.efsm.gcontinue.choiceunguarded.Test01a;
+
+
+// Cf. -minfsm
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			continue X;  // Not "isomorphic" to a single continue X, because non-det not bisim equiv (cf. language equiv) -- so no "syntatic collapse" to single case
+		}
+		or
+		{
+			continue X;
+		}
+	}
+}
+
+

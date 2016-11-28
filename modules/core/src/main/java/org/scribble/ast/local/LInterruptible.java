@@ -13,7 +13,7 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ScopeKind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 //public class LocalInterruptible extends Interruptible<LocalProtocolBlock, LocalInterrupt> implements LocalInteractionNode
 public class LInterruptible extends Interruptible<Local> implements LCompoundInteractionNode

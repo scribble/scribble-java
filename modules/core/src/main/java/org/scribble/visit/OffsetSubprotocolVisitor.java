@@ -6,6 +6,7 @@ import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.NonRoleArgKind;
@@ -22,7 +23,7 @@ public abstract class OffsetSubprotocolVisitor<T extends Env<?>> extends Subprot
 		super(job);
 	}
 	
-	// Doesn't push a subprotocol signature; only records the roles/args -- why? because sigs are based on vals (from the first do), not the root proto params? -- but it would be fine to use the params?
+	// Doesn't push a subprotocol signature (i.e. on root entry); only records the roles/args -- why? because sigs are based on vals (from the first do), not the root proto params? -- but it would be fine to use the params?
 	@Override
 	protected void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolKind> pd)
 	{

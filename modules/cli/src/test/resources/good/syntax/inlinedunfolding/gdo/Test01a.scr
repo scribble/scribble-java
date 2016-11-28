@@ -1,0 +1,18 @@
+module good.syntax.inlinedunfolding.gdo.Test01a;
+
+
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		do Bar(A, B);
+	}
+}
+
+// The Bar inlined rec for root Foo gets "dropped" by unguarded unfolding because no continue for this rec
+aux global protocol Bar(role A, role B)
+{
+	1() from A to B;
+	do Foo(A, B);
+}
+

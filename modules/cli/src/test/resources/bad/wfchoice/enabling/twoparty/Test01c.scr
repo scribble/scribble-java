@@ -1,0 +1,21 @@
+module bad.wfchoice.enabling.twoparty.Test01c;
+
+
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			continue X;
+		}
+		3() from C to D;  // Enabled violation once unfolded
+	}
+}
+

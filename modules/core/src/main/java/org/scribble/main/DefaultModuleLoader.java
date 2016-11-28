@@ -20,6 +20,7 @@ import org.scribble.ast.Module;
 import org.scribble.main.resource.Resource;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.util.Pair;
+import org.scribble.util.ScribParserException;
 
 
 /**
@@ -45,8 +46,9 @@ public abstract class DefaultModuleLoader implements ModuleLoader
 
 	/**
 	 * {@inheritDoc}
+	 * @throws ScribParserException 
 	 */
-	public Pair<Resource, Module> loadModule(ModuleName modname)
+	public Pair<Resource, Module> loadModule(ModuleName modname) throws ScribParserException, ScribbleException
 	{
 		return (_modules.get(modname));
 	}

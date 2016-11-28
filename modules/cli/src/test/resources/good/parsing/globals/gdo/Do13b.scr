@@ -1,9 +1,0 @@
-module good.parsing.globals.gdo.Do13b;
-
-
-global protocol Do13b(role A, role B)
-{
-	l1() from A to B;  // Uncomment is OK
-	do Do13b(A, B);
-	//l1() from A to B;  // Uncomment is bad
-}

@@ -10,7 +10,8 @@ public class AntlrConstants
 
 	public static final String MESSAGESIGNATURE_NODE_TYPE = "MESSAGESIGNATURE";
 	public static final String PAYLOAD_NODE_TYPE = "PAYLOAD";
-	public static final String PAYLOADELEMENT_NODE_TYPE = "PAYLOADELEMENT";
+	//public static final String PAYLOADELEMENT_NODE_TYPE = "PAYLOADELEMENT";
+	public static final String DELEGATION_NODE_TYPE = "DELEGATION";
 
 	//public static final String EMPTY_PARAMETERDECLLST_NODE_TYPE = "EMPTY_PARAMETERDECLLIST";
 	public static final String AMBIGUOUSNAME_NODE_TYPE = "AMBIGUOUSNAME";
@@ -37,6 +38,9 @@ public class AntlrConstants
 	public static final String GLOBALPROTOCOLBLOCK_NODE_TYPE = "GLOBALPROTOCOLBLOCK";
 	public static final String GLOBALINTERACTIONSEQUENCE_NODE_TYPE = "GLOBALINTERACTIONSEQUENCE";
 	public static final String GLOBALMESSAGETRANSFER_NODE_TYPE = "GLOBALMESSAGETRANSFER";
+	public static final String GLOBALCONNECT_NODE_TYPE = "GLOBALCONNECT";
+	public static final String GLOBALDISCONNECT_NODE_TYPE = "GLOBALDISCONNECT";
+	public static final String GLOBALWRAP_NODE_TYPE = "GLOBALWRAP";
 	public static final String GLOBALCHOICE_NODE_TYPE = "GLOBALCHOICE";
 	public static final String GLOBALRECURSION_NODE_TYPE = "GLOBALRECURSION";
 	public static final String GLOBALCONTINUE_NODE_TYPE = "GLOBALCONTINUE";
@@ -64,6 +68,7 @@ public class AntlrConstants
 	public static final String LOCALCATCHES_NODE_TYPE = "LOCALCATCHES";
 	public static final String LOCALDO_NODE_TYPE = "LOCALDO";
 
+	// Cf. Scribble.g
 	public enum AntlrNodeType 
 	{
 		//EMPTY_PARAMETERDECLLST,
@@ -78,6 +83,7 @@ public class AntlrConstants
 		MESSAGESIGNATUREDECL,
 		ROLEDECLLIST,
 		ROLEDECL,
+		//CONNECTDECL,
 		PARAMETERDECLLIST,
 		PARAMETERDECL,
 		ROLEINSTANTIATIONLIST,
@@ -87,6 +93,7 @@ public class AntlrConstants
 		MESSAGESIGNATURE,
 		PAYLOAD,
 		PAYLOADELEMENT,
+		DELEGATION,
 
 		GLOBALPROTOCOLDECL,
 		GLOBALPROTOCOLHEADER,
@@ -94,6 +101,9 @@ public class AntlrConstants
 		GLOBALPROTOCOLBLOCK,
 		GLOBALINTERACTIONSEQUENCE,
 		GLOBALMESSAGETRANSFER,
+		GLOBALCONNECT,
+		GLOBALDISCONNECT,
+		GLOBALWRAP,
 		GLOBALCHOICE,
 		GLOBALRECURSION,
 		GLOBALCONTINUE,
@@ -134,6 +144,8 @@ public class AntlrConstants
 	public static final String SIG_KW = "sig";
 	public static final String INSTANTIATES_KW = "instantiates";
 
+	public static final String CONNECT_KW = "connect";
+	public static final String DISCONNECT_KW = "disconnect";
 	public static final String FROM_KW = "from";
 	public static final String TO_KW = "to";
 	public static final String CHOICE_KW = "choice";

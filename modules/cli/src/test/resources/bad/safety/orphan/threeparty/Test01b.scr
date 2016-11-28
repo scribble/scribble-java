@@ -1,0 +1,19 @@
+module bad.safety.orphan.threeparty.Test01b;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		4() from A to B;  // Also wait-for
+		2() from B to C;  // (Mergeable B-C, no stuck)
+	}
+}
+
+
