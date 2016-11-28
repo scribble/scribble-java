@@ -41,7 +41,7 @@ public class MathC
 				.send(S, Val, b.val).send(S, Mult, 10) .receive(S, Product, b)
 				.send(S, Bye);*/
 
-//			factorial(new MathService_C_1(se), b).send(S, Bye);
+//			facto(new MathService_C_1(se), b).send(S, Bye);
 //			System.out.println("Res: " + b.val);
 			
 			fibo(new MathService_C_1(se), i1, i2, new Buf<>(10));
@@ -61,12 +61,12 @@ public class MathC
 	}
 	
 	// Pre: b.val >= 1
-	private static MathService_C_1 factorial(MathService_C_1 s1, Buf<Integer> b) throws Exception
+	private static MathService_C_1 facto(MathService_C_1 s1, Buf<Integer> b) throws Exception
 	{
 		if (b.val > 1)
 		{
 			Buf<Integer> tmp = new Buf<>();
-			s1 = factorial(s1.send(S, Val, b.val).send(S, Add, -1).receive(S, Sum, tmp), tmp)
+			s1 = facto(s1.send(S, Val, b.val).send(S, Add, -1).receive(S, Sum, tmp), tmp)
 						.send(S, Val, b.val).send(S, Mult, tmp.val).receive(S, Product, b);
 		}
 		return s1;
