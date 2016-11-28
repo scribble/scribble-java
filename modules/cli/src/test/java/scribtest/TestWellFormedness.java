@@ -51,13 +51,12 @@ public class TestWellFormedness {
 
 	@Parameters(name = "{0} bad={1}")
 	public static Collection<Object[]> data() {
-		Harness harness = new Harness();
 		List<Object[]> result = new ArrayList<>();
 
 		URL url=ClassLoader.getSystemResource("good");
 		String dir = url.getFile();
 		
-		for (String file : harness.findTests(dir))
+		for (String file : Harness.findTests(dir))
 		{
 			result.add(new Object[] { file, false });
 		}
@@ -65,7 +64,7 @@ public class TestWellFormedness {
 		url=ClassLoader.getSystemResource("bad");
 		dir = url.getFile();
 		
-		for (String file : harness.findTests(dir))
+		for (String file : Harness.findTests(dir))
 		{
 			result.add(new Object[] { file, true });
 		}
