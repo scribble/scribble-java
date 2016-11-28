@@ -1,10 +1,10 @@
 README for
 
-    scribble-dist-0.3.2-SNAPSHOT.zip
+    scribble-dist-0.4-SNAPSHOT.zip
 
-This distribution is built from the branch
+This distribution is built from the master branch
 
-    https://github.com/rhu1/scribble-java/tree/rhu1/master-merge-rhu1res/
+    https://github.com/scribble/scribble-java/tree/master
 
 by
 
@@ -75,7 +75,7 @@ Examples:
 
 Further examples can be found in:
 
-  https://github.com/rhu1/scribble-java/tree/rhu1/master-merge-rhu1res/modules/demos/scrib
+  https://github.com/scribble/scribble-java/tree/master/modules/demos/scrib
 
 The distribution zip does not include these examples.  They can be obtained
 as part of the source repository, or separately via the above link.
