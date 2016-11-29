@@ -41,10 +41,10 @@ Command line usage:
     ./scribblec.sh Test.scr
 
 Notes:
-- Use the -oldwf command line argument to use the simpler syntactic protocol
+- Use the -oldwf command line flag to use the simpler syntactic protocol
   well-formedness from the previous version of Scribble.
-- Use the -V command line argument to obtain full traces for errors according
-  to the new protocol validation.
+- Use the -V command line flag to obtain full traces for errors according
+  to the new protocol validation (and other details).
 
 
 > Project local protocol for role "C" of protocol "Proto" in Test.scr

@@ -22,13 +22,14 @@ import demo.bettybook.math.Math.MathService.channels.S.MathService_S_2;
 import demo.bettybook.math.Math.MathService.channels.S.MathService_S_2_Cases;
 import demo.bettybook.math.Math.MathService.roles.S;
 
-public class MathS
+public class MathS1
 {
-	public MathS()
+	public MathS1() throws Exception
 	{
+		run();
 	}
 
-	public static void main(String[] args) throws Exception
+	private void run() throws Exception
 	{
 		Buf<Integer> b1 = new Buf<>();
 		Buf<Integer> b2 = new Buf<>();
@@ -64,5 +65,10 @@ public class MathS
 				}
 			}
 		}
+	}
+
+	public static void main(String[] args) throws Exception
+	{
+		new MathS1();
 	}
 }
