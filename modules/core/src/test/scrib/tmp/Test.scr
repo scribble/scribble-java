@@ -19,17 +19,43 @@ module Test;
 // - API gen for connection-with-message
 // - API gen for wrap (SMTP)
 // - API gen for shared channel passing
+// - callback API needs generic session-state arg
 
 // Job modes (full/default, fase17, oldscrib, MPST, etc.) -- factor out GMConfig interface
 
+// FIXME: demo.bettybook.math.MathC cancelledkey exception
+
 // Add a unit test for validation to bypass aux
 
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from B to A;
+		choice at B  // Testing projection, A not syntactically in this choice but cannot discard the X -- handled by UnfoldingVisitor(?)
+		{
+			2() from B to C;
+			continue X;
+		}
+//		or  // Testing 
+//		{
+//			3() from B to C;
+//		}
+	}
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	1() connect A to B;
 	1() connect B to C;
 	1() connect C to A;  // Testing accept-correlation check
 }
+//*/
+
 
 /*
 global protocol Proto1(role A, role B)

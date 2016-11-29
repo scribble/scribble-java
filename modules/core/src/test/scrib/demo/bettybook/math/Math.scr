@@ -1,5 +1,5 @@
 //$ bin/scribblec.sh modules/core/src/test/scrib/demo/bettybook/math/Math.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib -api MathService C
-//$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/core/src/test/scrib -subpackages demo.fase17.travel.TravelAgent.TravelAgent -d test/doc/fase17/travel
+//$ javadoc -cp modules/core/target/classes';'modules/core/src/test/scrib -subpackages demo.bettybook.math.Math.MathService -d test/doc/fase17/travel
 
 
 module demo.bettybook.math.Math;
@@ -12,7 +12,7 @@ global protocol MathService(role C, role S)
 {
 	choice at C
 	{
-		(Int) from C to S;
+		Val(Int) from C to S;
 		choice at C
 		{
 			Add(Int) from C to S;
@@ -20,14 +20,13 @@ global protocol MathService(role C, role S)
 		}
 		or
 		{
-			Neg() from C to S;
-			Neg(Int) from S to C;
+			Mult(Int) from C to S;
+			Product(Int) from S to C;
 		}
 		do MathService(C, S);
 	}
 	or
 	{
 		Bye() from C to S;
-		Bye() from S to C;
 	}
 }

@@ -59,7 +59,7 @@ public class CommandLineArgParser
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
 	{
-		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.ArgFlag.PROJECT);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.ArgFlag.PROJECT);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.EFSM_FLAG, CommandLine.ArgFlag.EFSM);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.VALIDATION_EFSM_FLAG, CommandLine.ArgFlag.VALIDATION_EFSM);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.UNFAIR_EFSM_FLAG, CommandLine.ArgFlag.UNFAIR_EFSM);
