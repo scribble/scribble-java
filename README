@@ -93,5 +93,6 @@ Alternative command line usage:
 To run the Scribble tool directly via java (from Nick Ng)
 
   $ mvn dependency:build-classpath -Dmdep.outputFile=classpath
-  $ java -cp $(cat dist/classpath) org.scribble.cli.CommandLine [args] MyModule.scr
+  $ java -cp $(cat dist/classpath)
+        org.scribble.cli.CommandLine [args] MyModule.scr
 
