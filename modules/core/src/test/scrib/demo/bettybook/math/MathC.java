@@ -29,27 +29,32 @@ public class MathC
 	
 	private int facto(int n) throws Exception
 	{
-		Buf<Integer> b = new Buf<>(n), i = new Buf<>(b.val);
+		Buf<Integer> i = new Buf<>(n), res = new Buf<>(i.val);
 		MathService sess = new MathService();
 		try (MPSTEndpoint<MathService, C> se = new MPSTEndpoint<>(sess, C, new ObjectStreamFormatter()))
 		{
 			se.connect(S, SocketChannelEndpoint::new, "localhost", 8888);
 
-//			MathService_C_1 s1 = new MathService_C_1(se);
-//			while (i.val > 1)
-//			{
-//				s1 = sub1(s1, i).send(S, Val, b.val).send(S, Mult, i.val).receive(S, Prod, b);
-//			}
-//			s1.send(S, Bye);
+			MathService_C_1 s1 = new MathService_C_1(se);
 
-			facto(new MathService_C_1(se), b).send(S, Bye);
+			//facto(s1, i, res);
+			facto(s1, res).send(S, Bye);
 
-			System.out.println("Facto " + n + ": " + b.val);
+			System.out.println("Facto " + n + ": " + res.val);
 			
-			return b.val;
+			return res.val;
 		}
 	}
 	
+	private static void facto(MathService_C_1 s1, Buf<Integer> i, Buf<Integer> res) throws Exception
+	{
+		while (i.val > 1)
+		{
+			s1 = sub1(s1, i).send(S, Val, res.val).send(S, Mult, i.val).receive(S, Prod, res);
+		}
+		s1.send(S, Bye);
+	}
+
 	// Pre: b.val >= 1
 	private static MathService_C_1 facto(MathService_C_1 s1, Buf<Integer> b) throws Exception
 	{
