@@ -9,6 +9,6 @@ public class Via extends HeaderField
 
 	public Via(String text)
 	{
-		super(Http.VIA, text);
+		super(Http.Via, text);
 	}
 }

@@ -8,16 +8,16 @@
 module demo.bettybook.http.shortv.HttpShort;
 
 
-sig <java> "demo.bettybook.http.shortv.message.client.Request"
-		from "betty16/httpshort/message/Request.java"
-		as Request;
+sig <java> "demo.bettybook.http.shortv.message.client.Req"
+		from "betty16/httpshort/message/Req.java"
+		as Req;
 
-sig <java> "demo.bettybook.http.shortv.message.server.Response"
-		from "betty16/shortvers/message/Response.java"
-		as Response;
+sig <java> "demo.bettybook.http.shortv.message.server.Resp"
+		from "betty16/shortvers/message/Resp.java"
+		as Resp;
 
 
 global protocol Http(role C, role S) {
-	Request from C to S;
-	Response from S to C;
+	Req from C to S;
+	Resp from S to C;
 }

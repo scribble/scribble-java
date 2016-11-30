@@ -9,6 +9,6 @@ public class Connection extends HeaderField
 
 	public Connection(String text)
 	{
-		super(Http.CONNECTION, text);
+		super(Http.Connection, text);
 	}
 }

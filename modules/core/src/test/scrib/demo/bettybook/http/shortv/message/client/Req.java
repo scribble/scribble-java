@@ -3,7 +3,7 @@ package demo.bettybook.http.shortv.message.client;
 import demo.bettybook.http.shortv.HttpShort.Http.Http;
 import demo.bettybook.http.shortv.message.HttpShortMessage;
 
-public class Request extends HttpShortMessage {
+public class Req extends HttpShortMessage {
 
 	private static final long serialVersionUID = 1L;
 
@@ -16,25 +16,25 @@ public class Request extends HttpShortMessage {
 	public static final String CONNECTION = "Connection";
 	public static final String UPGRADE_INSECURE_REQUESTS = "Upgrade-Insecure-Requests";
 
-	public Request(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection, String upgradeIR) {
-		super(Http.Request, getHeadersAndBody(get, http, host, userA, accept, acceptL, acceptE, dnt, connection, upgradeIR));
+	public Req(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection, String upgradeIR) {
+		super(Http.Req, getHeadersAndBody(get, http, host, userA, accept, acceptL, acceptE, dnt, connection, upgradeIR));
 	}
 	
-	public Request(String get, String http, String host) {
+	public Req(String get, String http, String host) {
 		this(get, http, host, null, null, null, null, null, null, null);
 	}
 
 	protected static String getHeadersAndBody(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection, String upgradeIR) {
 		return " "
 				+ get + " " + HttpShortMessage.HTTP + "/" + http + HttpShortMessage.CRLF
-				+ Request.HOST + ": " + host + HttpShortMessage.CRLF
-				+ ((userA == null) ? "" : Request.USER_AGENT + ": " + userA + HttpShortMessage.CRLF)
-				+ ((accept == null) ? "" : Request.ACCEPT + ": " + accept + HttpShortMessage.CRLF)
-				+ ((acceptL == null) ? "" : Request.ACCEPT_LANGUAGE + ": " + acceptL + HttpShortMessage.CRLF)
-				+ ((acceptE == null) ? "" : Request.ACCEPT_ENCODING + ": " + acceptE + HttpShortMessage.CRLF)
-				+ ((dnt == null) ? "" : Request.DO_NOT_TRACK + ": " + dnt + HttpShortMessage.CRLF)
-				+ ((connection == null) ? "" : Request.CONNECTION + ": " + connection + HttpShortMessage.CRLF)
-				+ ((upgradeIR == null) ? "" : Request.UPGRADE_INSECURE_REQUESTS + ": " + upgradeIR + HttpShortMessage.CRLF)
+				+ Req.HOST + ": " + host + HttpShortMessage.CRLF
+				+ ((userA == null) ? "" : Req.USER_AGENT + ": " + userA + HttpShortMessage.CRLF)
+				+ ((accept == null) ? "" : Req.ACCEPT + ": " + accept + HttpShortMessage.CRLF)
+				+ ((acceptL == null) ? "" : Req.ACCEPT_LANGUAGE + ": " + acceptL + HttpShortMessage.CRLF)
+				+ ((acceptE == null) ? "" : Req.ACCEPT_ENCODING + ": " + acceptE + HttpShortMessage.CRLF)
+				+ ((dnt == null) ? "" : Req.DO_NOT_TRACK + ": " + dnt + HttpShortMessage.CRLF)
+				+ ((connection == null) ? "" : Req.CONNECTION + ": " + connection + HttpShortMessage.CRLF)
+				+ ((upgradeIR == null) ? "" : Req.UPGRADE_INSECURE_REQUESTS + ": " + upgradeIR + HttpShortMessage.CRLF)
 				+ "" + HttpShortMessage.CRLF;  // Empty body
 	}
 }

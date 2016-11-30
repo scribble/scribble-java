@@ -9,6 +9,6 @@ public class UpgradeInsecureRequests extends HeaderField
 
 	public UpgradeInsecureRequests(int val)
 	{
-		super(Http.UPGRADEIR, Integer.toString(val));
+		super(Http.UpgradeIR, Integer.toString(val));
 	}
 }

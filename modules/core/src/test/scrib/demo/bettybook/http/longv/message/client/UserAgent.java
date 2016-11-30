@@ -9,6 +9,6 @@ public class UserAgent extends HeaderField
 
 	public UserAgent(String text)
 	{
-		super(Http.USERA, text);
+		super(Http.UserA, text);
 	}
 }

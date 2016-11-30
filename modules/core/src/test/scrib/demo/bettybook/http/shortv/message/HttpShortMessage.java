@@ -39,11 +39,11 @@ public abstract class HttpShortMessage extends ScribMessage
 	
 	protected static String getOpString(Op op)
 	{
-		if (op.equals(Http.Request))
+		if (op.equals(Http.Req))
 		{
 			return HttpShortMessage.GET;
 		}
-		else if (op.equals(Http.Response))
+		else if (op.equals(Http.Resp))
 		{
 			return HttpShortMessage.HTTP;
 		}

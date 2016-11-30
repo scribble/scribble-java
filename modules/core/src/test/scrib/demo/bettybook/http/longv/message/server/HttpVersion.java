@@ -10,7 +10,7 @@ public class HttpVersion extends HttpLongMessage
 
 	public HttpVersion(String version)
 	{
-		super(Http.HTTPV, "/" + version);
+		super(Http.HttpV, "/" + version);
 	}
 
 	@Override

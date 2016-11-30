@@ -9,6 +9,6 @@ public class AcceptLanguage extends HeaderField
 
 	public AcceptLanguage(String text)
 	{
-		super(Http.ACCEPTL, text);
+		super(Http.AcceptL, text);
 	}
 }

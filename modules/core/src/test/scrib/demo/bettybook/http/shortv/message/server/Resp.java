@@ -3,7 +3,7 @@ package demo.bettybook.http.shortv.message.server;
 import demo.bettybook.http.shortv.HttpShort.Http.Http;
 import demo.bettybook.http.shortv.message.HttpShortMessage;
 
-public class Response extends HttpShortMessage
+public class Resp extends HttpShortMessage
 {
 	private static final long serialVersionUID = 1L;
 
@@ -32,10 +32,10 @@ public class Response extends HttpShortMessage
 	Vary: Accept-Encoding
 	Content-Type: text/html
 	Via: 1.1 www.doc.ic.ac.uk*/
-	public Response(String httpv, String ack, String date, String server, String strictTS, String lastMod,
+	public Resp(String httpv, String ack, String date, String server, String strictTS, String lastMod,
 			String eTag, String acceptR, String contentL, String vary, String contentT, String via, String body)
 	{
-		super(Http.Response, getHeadersAndBody(
+		super(Http.Resp, getHeadersAndBody(
 				httpv, ack, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body));
 	}
 
@@ -44,31 +44,31 @@ public class Response extends HttpShortMessage
 		super(Http.RESPONSE, getHeadersAndBody(httpv, ack, contentL, body));
 	}*/
 
-	public Response(String httpv, String body)
+	public Resp(String httpv, String body)
 	{
-		this(httpv, Response._200 + " OK", null, null, null, null, null, null, Integer.toString(body.length()), null, null, null, body);
+		this(httpv, Resp._200 + " OK", null, null, null, null, null, null, Integer.toString(body.length()), null, null, null, body);
 	}
 
 	// ack includes "op", e.g. 200, 404, ...
 	protected static String getHeadersAndBody(String httpv, String ack, String date, String server, String strictTS, String lastMod,
 			String eTag, String acceptR, String contentL, String vary, String contentT, String via, String body)
 	{
-		if (!ack.startsWith(Response._200) && !ack.startsWith(Response._404))
+		if (!ack.startsWith(Resp._200) && !ack.startsWith(Resp._404))
 		{
 			throw new RuntimeException("[TODO]: " + ack);
 		}
 		return "/" + httpv + " "
 				+ ack + HttpShortMessage.CRLF  // Hardcoded
-				+ ((date == null) ? "" : Response.DATE + ": " + date + HttpShortMessage.CRLF)
-				+ ((server == null) ? "" : Response.SERVER + ": " + server + HttpShortMessage.CRLF)
-				+ ((strictTS == null) ? "" : Response.STRICT_TRANSPORT_SECURITY + ": " + strictTS + HttpShortMessage.CRLF)
-				+ ((lastMod == null) ? "" : Response.LAST_MODIFIED + ": " + lastMod + HttpShortMessage.CRLF)
-				+ ((eTag == null) ? "" : Response.ETAG + ": " + eTag + HttpShortMessage.CRLF)
-				+ ((acceptR == null) ? "" : Response.ACCEPT_RANGES + ": " + acceptR + HttpShortMessage.CRLF)
-				+ Response.CONTENT_LENGTH + ": " + contentL + HttpShortMessage.CRLF
-				+ ((vary == null) ? "" : Response.VARY + ": " + vary + HttpShortMessage.CRLF)
-				+ ((contentT == null) ? "" : Response.CONTENT_TYPE + ": " + contentT + HttpShortMessage.CRLF)
-				+ ((via == null) ? "" : Response.VIA + ": " + via + HttpShortMessage.CRLF)
+				+ ((date == null) ? "" : Resp.DATE + ": " + date + HttpShortMessage.CRLF)
+				+ ((server == null) ? "" : Resp.SERVER + ": " + server + HttpShortMessage.CRLF)
+				+ ((strictTS == null) ? "" : Resp.STRICT_TRANSPORT_SECURITY + ": " + strictTS + HttpShortMessage.CRLF)
+				+ ((lastMod == null) ? "" : Resp.LAST_MODIFIED + ": " + lastMod + HttpShortMessage.CRLF)
+				+ ((eTag == null) ? "" : Resp.ETAG + ": " + eTag + HttpShortMessage.CRLF)
+				+ ((acceptR == null) ? "" : Resp.ACCEPT_RANGES + ": " + acceptR + HttpShortMessage.CRLF)
+				+ Resp.CONTENT_LENGTH + ": " + contentL + HttpShortMessage.CRLF
+				+ ((vary == null) ? "" : Resp.VARY + ": " + vary + HttpShortMessage.CRLF)
+				+ ((contentT == null) ? "" : Resp.CONTENT_TYPE + ": " + contentT + HttpShortMessage.CRLF)
+				+ ((via == null) ? "" : Resp.VIA + ": " + via + HttpShortMessage.CRLF)
 				+ HttpShortMessage.CRLF  // Empty line for end of headers
 				+ body + HttpShortMessage.CRLF;
 	}

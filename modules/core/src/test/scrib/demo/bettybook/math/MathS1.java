@@ -4,7 +4,7 @@ import static demo.bettybook.math.Math.MathService.MathService.Add;
 import static demo.bettybook.math.Math.MathService.MathService.Bye;
 import static demo.bettybook.math.Math.MathService.MathService.C;
 import static demo.bettybook.math.Math.MathService.MathService.Mult;
-import static demo.bettybook.math.Math.MathService.MathService.Product;
+import static demo.bettybook.math.Math.MathService.MathService.Prod;
 import static demo.bettybook.math.Math.MathService.MathService.S;
 import static demo.bettybook.math.Math.MathService.MathService.Sum;
 import static demo.bettybook.math.Math.MathService.MathService.Val;
@@ -56,7 +56,7 @@ public class MathS1
 								switch (c2.op)
 								{
 									case Add:  s1 = c2.receive(Add, b2).send(C, Sum, b1.val + b2.val); break;
-									case Mult: s1 = c2.receive(Mult, b2).send(C, Product, b1.val * b2.val); break;
+									case Mult: s1 = c2.receive(Mult, b2).send(C, Prod, b1.val * b2.val); break;
 								}
 								break;
 							}

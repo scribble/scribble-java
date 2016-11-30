@@ -1,7 +1,7 @@
 package demo.bettybook.http.shortv;
 
 import static demo.bettybook.http.shortv.HttpShort.Http.Http.C;
-import static demo.bettybook.http.shortv.HttpShort.Http.Http.Request;
+import static demo.bettybook.http.shortv.HttpShort.Http.Http.Req;
 import static demo.bettybook.http.shortv.HttpShort.Http.Http.S;
 
 import java.io.IOException;
@@ -17,8 +17,8 @@ import demo.bettybook.http.shortv.HttpShort.Http.channels.S.Http_S_1;
 import demo.bettybook.http.shortv.HttpShort.Http.channels.S.Http_S_2;
 import demo.bettybook.http.shortv.HttpShort.Http.roles.S;
 import demo.bettybook.http.shortv.message.HttpShortMessageFormatter;
-import demo.bettybook.http.shortv.message.client.Request;
-import demo.bettybook.http.shortv.message.server.Response;
+import demo.bettybook.http.shortv.message.client.Req;
+import demo.bettybook.http.shortv.message.server.Resp;
 
 public class HttpShortS {
 
@@ -40,10 +40,10 @@ public class HttpShortS {
 	}
 	
 	private static void run(Http_S_1 s1) throws ClassNotFoundException, ScribbleRuntimeException, IOException {
-		Buf<Request> buf = new Buf<>();
+		Buf<Req> buf = new Buf<>();
 
-		Http_S_2 s2 = s1.receive(C, Request, buf);
+		Http_S_2 s2 = s1.receive(C, Req, buf);
 		System.out.println("Request:\n" + buf.val);
-		s2.send(C, new Response("1.1", "<html><body>Hello, World!</body></html>"));
+		s2.send(C, new Resp("1.1", "<html><body>Hello, World!</body></html>"));
 	}
 }

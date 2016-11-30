@@ -9,6 +9,6 @@ public class ETag extends HeaderField
 
 	public ETag(String tag)
 	{
-		super(Http.ETAG, tag);
+		super(Http.ETag, tag);
 	}
 }

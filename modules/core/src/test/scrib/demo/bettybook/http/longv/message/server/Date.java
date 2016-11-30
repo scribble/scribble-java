@@ -9,6 +9,6 @@ public class Date extends HeaderField
 
 	public Date(String date)
 	{
-		super(Http.DATE, date);
+		super(Http.Date, date);
 	}
 }

@@ -10,8 +10,8 @@ import java.util.Arrays;
 import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;
 
-import demo.bettybook.http.shortv.message.client.Request;
-import demo.bettybook.http.shortv.message.server.Response;
+import demo.bettybook.http.shortv.message.client.Req;
+import demo.bettybook.http.shortv.message.server.Resp;
 
 public class HttpShortMessageFormatter implements ScribMessageFormatter
 {
@@ -48,7 +48,7 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 			return null;
 		}
 
-		if (curr.contains(Response.CONTENT_LENGTH))
+		if (curr.contains(Resp.CONTENT_LENGTH))
 		{
 			int eoh = curr.indexOf(endOfHeaders);
 			if (eoh == -1)
@@ -56,8 +56,8 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 				bb.compact();
 				return null;
 			}
-			String contentLenSplit = curr.substring(curr.indexOf(Response.CONTENT_LENGTH));
-			int len = Integer.parseInt(contentLenSplit.substring(Response.CONTENT_LENGTH.length()+2, contentLenSplit.indexOf('\r')).trim());
+			String contentLenSplit = curr.substring(curr.indexOf(Resp.CONTENT_LENGTH));
+			int len = Integer.parseInt(contentLenSplit.substring(Resp.CONTENT_LENGTH.length()+2, contentLenSplit.indexOf('\r')).trim());
 			if (curr.length() < eoh+4)
 			{
 				bb.compact();
@@ -128,14 +128,14 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 				int j = msg.indexOf("\r");
 				switch (header)  // FIXME: duplicates not checked
 				{
-					case Request.HOST: host = msg.substring(i+1, j).trim(); break;
-					case Request.USER_AGENT: userA = msg.substring(i+1, j).trim(); break;
-					case Request.ACCEPT: accept = msg.substring(i+1, j).trim(); break;
-					case Request.ACCEPT_LANGUAGE: acceptL = msg.substring(i+1, j).trim(); break;
-					case Request.ACCEPT_ENCODING: acceptE = msg.substring(i+1, j).trim(); break;
-					case Request.DO_NOT_TRACK: dnt = msg.substring(i+1, j).trim(); break;     
-					case Request.CONNECTION: connection = msg.substring(i+1, j).trim(); break;
-					case Request.UPGRADE_INSECURE_REQUESTS: upgradeIR = msg.substring(i+1, j).trim(); break;
+					case Req.HOST: host = msg.substring(i+1, j).trim(); break;
+					case Req.USER_AGENT: userA = msg.substring(i+1, j).trim(); break;
+					case Req.ACCEPT: accept = msg.substring(i+1, j).trim(); break;
+					case Req.ACCEPT_LANGUAGE: acceptL = msg.substring(i+1, j).trim(); break;
+					case Req.ACCEPT_ENCODING: acceptE = msg.substring(i+1, j).trim(); break;
+					case Req.DO_NOT_TRACK: dnt = msg.substring(i+1, j).trim(); break;     
+					case Req.CONNECTION: connection = msg.substring(i+1, j).trim(); break;
+					case Req.UPGRADE_INSECURE_REQUESTS: upgradeIR = msg.substring(i+1, j).trim(); break;
 					default: throw new RuntimeException("Cannot parse header field: " + msg.substring(0, j));
 				}
 				msg = msg.substring(j+2);
@@ -145,7 +145,7 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 		{
 			throw new RuntimeException("Shouldn't get in here: " + msg);
 		}
-		return new Request(get, http, host, userA, accept, acceptL, acceptE, dnt, connection, upgradeIR);
+		return new Req(get, http, host, userA, accept, acceptL, acceptE, dnt, connection, upgradeIR);
 	}
 	
 	private static HttpShortMessage parseResponse(String msg)
@@ -204,16 +204,16 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 				int j = msg.indexOf("\r");
 				switch (header)
 				{
-					case Response.DATE: date = msg.substring(i+1, j).trim(); break;
-					case Response.SERVER: server = msg.substring(i+1, j).trim(); break;
-					case Response.STRICT_TRANSPORT_SECURITY: strictTS = msg.substring(i+1, j).trim(); break;
-					case Response.LAST_MODIFIED: lastMod = msg.substring(i+1, j).trim(); break;
-					case Response.ETAG: eTag = msg.substring(i+1, j).trim(); break;
-					case Response.ACCEPT_RANGES: acceptR = msg.substring(i+1, j).trim(); break;
-					case Response.CONTENT_LENGTH: contentL = msg.substring(i+1, j).trim(); break;
-					case Response.VARY: vary = msg.substring(i+1, j).trim(); break;
-					case Response.CONTENT_TYPE: contentT = msg.substring(i+1, j).trim(); break;
-					case Response.VIA: via = msg.substring(i+1, j).trim(); break;
+					case Resp.DATE: date = msg.substring(i+1, j).trim(); break;
+					case Resp.SERVER: server = msg.substring(i+1, j).trim(); break;
+					case Resp.STRICT_TRANSPORT_SECURITY: strictTS = msg.substring(i+1, j).trim(); break;
+					case Resp.LAST_MODIFIED: lastMod = msg.substring(i+1, j).trim(); break;
+					case Resp.ETAG: eTag = msg.substring(i+1, j).trim(); break;
+					case Resp.ACCEPT_RANGES: acceptR = msg.substring(i+1, j).trim(); break;
+					case Resp.CONTENT_LENGTH: contentL = msg.substring(i+1, j).trim(); break;
+					case Resp.VARY: vary = msg.substring(i+1, j).trim(); break;
+					case Resp.CONTENT_TYPE: contentT = msg.substring(i+1, j).trim(); break;
+					case Resp.VIA: via = msg.substring(i+1, j).trim(); break;
 					default:
 						//throw new RuntimeException("Cannot parse header field: " + msg.substring(0, msg.indexOf('\r')));
 						System.err.println("[Warning] Attempting to skip over response field: " + header + "\n" + msg.substring(i+1, j).trim());
@@ -222,7 +222,7 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 			}
 		}
 		body = msg;
-		return new Response(httpv, ack, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body);
+		return new Resp(httpv, ack, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body);
 	}
 
 	

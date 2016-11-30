@@ -9,6 +9,6 @@ public class AcceptEncoding extends HeaderField
 
 	public AcceptEncoding(String text)
 	{
-		super(Http.ACCEPTE, text);
+		super(Http.AcceptE, text);
 	}
 }

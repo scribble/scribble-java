@@ -1,19 +1,19 @@
 package demo.bettybook.http.longv;
 
-import static demo.bettybook.http.longv.HttpLong.Http.Http.ACCEPTR;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.BODY;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.AcceptR;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.Body;
 import static demo.bettybook.http.longv.HttpLong.Http.Http.C;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.CONTENTL;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.CONTENTT;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.DATE;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.ETAG;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.HTTPV;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.LASTM;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.ContentL;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.ContentT;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.Date;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.ETag;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.HttpV;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.LastM;
 import static demo.bettybook.http.longv.HttpLong.Http.Http.S;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.SERVER;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.STRICTTS;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.VARY;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.VIA;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.Server;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.StrictTS;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.Vary;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.Via;
 import static demo.bettybook.http.longv.HttpLong.Http.Http._200;
 import static demo.bettybook.http.longv.HttpLong.Http.Http._404;
 
@@ -47,18 +47,18 @@ public class HttpLongC {
 		}
 	}
 
-	public void run(Http_C_1 c, String host) throws Exception {
-			doResponse(doRequest(c, host));
+	public void run(Http_C_1 s1, String host) throws Exception {
+			doResponse(doRequest(s1, host));
 	}
 	
-	private Http_C_3 doRequest(Http_C_1 c1, String host) throws Exception {
-		return c1.send(S, new RequestLine("/~rhu/", "1.1"))
+	private Http_C_3 doRequest(Http_C_1 s1, String host) throws Exception {
+		return s1.send(S, new RequestLine("/~rhu/", "1.1"))
 		         .send(S, new Host(host))
 		         .send(S, new Body(""));
 	}
 
-	private void doResponse(Http_C_3 c3) throws Exception {
-		Http_C_4_Cases cases = c3.async(S, HTTPV).branch(S);
+	private void doResponse(Http_C_3 s3) throws Exception {
+		Http_C_4_Cases cases = s3.async(S, HttpV).branch(S);
 		switch (cases.op) {
 			case _200: doResponseAux(cases.receive(_200)); break;
 			case _404: doResponseAux(cases.receive(_404)); break;
@@ -69,19 +69,19 @@ public class HttpLongC {
 	private EndSocket doResponseAux(Http_C_5 c5) throws Exception {
 		Http_C_5_Cases cases = c5.branch(S);
 		switch (cases.op) {
-			case ACCEPTR:  return doResponseAux(cases.receive(ACCEPTR)); 
-			case CONTENTL: return doResponseAux(cases.receive(CONTENTL));
-			case CONTENTT: return doResponseAux(cases.receive(CONTENTT));
-			case DATE:     return doResponseAux(cases.receive(DATE));    
-			case ETAG:     return doResponseAux(cases.receive(ETAG));    
-			case LASTM:    return doResponseAux(cases.receive(LASTM));   
-			case SERVER:   return doResponseAux(cases.receive(SERVER));  
-			case STRICTTS: return doResponseAux(cases.receive(STRICTTS));
-			case VARY:     return doResponseAux(cases.receive(VARY));    
-			case VIA:      return doResponseAux(cases.receive(VIA));     
-			case BODY: {
+			case AcceptR:  return doResponseAux(cases.receive(AcceptR)); 
+			case ContentL: return doResponseAux(cases.receive(ContentL));
+			case ContentT: return doResponseAux(cases.receive(ContentT));
+			case Date:     return doResponseAux(cases.receive(Date));    
+			case ETag:     return doResponseAux(cases.receive(ETag));    
+			case LastM:    return doResponseAux(cases.receive(LastM));   
+			case Server:   return doResponseAux(cases.receive(Server));  
+			case StrictTS: return doResponseAux(cases.receive(StrictTS));
+			case Vary:     return doResponseAux(cases.receive(Vary));    
+			case Via:      return doResponseAux(cases.receive(Via));     
+			case Body: {
 				Buf<Body> buf_body = new Buf<>();
-				EndSocket end = cases.receive(BODY, buf_body);
+				EndSocket end = cases.receive(Body, buf_body);
 				System.out.println(buf_body.val.getBody());
 				return end;
 			}

@@ -67,27 +67,27 @@ public abstract class HttpLongMessage extends ScribMessage
 	// " " after ops done by HeaderField
 	protected static String getOpString(Op op)
 	{
-		if (op.equals(Http.CONTENTL))
+		if (op.equals(Http.ContentL))
 		{
 			return HttpLongMessage.CONTENT_LENGTH;
 		}
-		else if (op.equals(Http.ETAG))
+		else if (op.equals(Http.ETag))
 		{
 			return HttpLongMessage.ETAG;
 		}
-		else if (op.equals(Http.BODY))
+		else if (op.equals(Http.Body))
 		{
 			return HttpLongMessage.CRLF;  // This CRLF "op" actually enacts the empty line for end-of-headers
 		}
-		else if (op.equals(Http.VIA))
+		else if (op.equals(Http.Via))
 		{
 			return HttpLongMessage.VIA;
 		}
-		else if (op.equals(Http.SERVER))
+		else if (op.equals(Http.Server))
 		{
 			return HttpLongMessage.SERVER;
 		}
-		else if (op.equals(Http.VARY))
+		else if (op.equals(Http.Vary))
 		{
 			return HttpLongMessage.VARY;
 		}
@@ -95,23 +95,23 @@ public abstract class HttpLongMessage extends ScribMessage
 		{
 			return "";
 		}
-		else if (op.equals(Http.REQUESTL))  // FIXME: not just GET (POST..)
+		else if (op.equals(Http.RequestL))  // FIXME: not just GET (POST..)
 		{
 			return HttpLongMessage.GET;
 		}
-		else if (op.equals(Http.LASTM))
+		else if (op.equals(Http.LastM))
 		{
 			return HttpLongMessage.LAST_MODIFIED;
 		}
-		else if (op.equals(Http.ACCEPTR))
+		else if (op.equals(Http.AcceptR))
 		{
 			return HttpLongMessage.ACCEPT_RANGES;
 		}
-		else if (op.equals(Http.HOST))
+		else if (op.equals(Http.Host))
 		{
 			return HttpLongMessage.HOST;
 		}
-		else if (op.equals(Http.HTTPV))
+		else if (op.equals(Http.HttpV))
 		{
 			return HttpLongMessage.HTTP;
 		}
@@ -123,11 +123,11 @@ public abstract class HttpLongMessage extends ScribMessage
 		{
 			return HttpLongMessage._404;
 		}
-		else if (op.equals(Http.CONTENTT))
+		else if (op.equals(Http.ContentT))
 		{
 			return HttpLongMessage.CONTENT_TYPE;
 		}
-		else if (op.equals(Http.DATE))
+		else if (op.equals(Http.Date))
 		{
 			return HttpLongMessage.DATE;
 		}

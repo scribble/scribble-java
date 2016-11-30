@@ -11,6 +11,6 @@ public class RequestLine extends StartLine
 
 	public RequestLine(String reqtarget, String vers)
 	{
-		super(Http.REQUESTL, " " + reqtarget + " HTTP" + "/" + vers);
+		super(Http.RequestL, " " + reqtarget + " HTTP" + "/" + vers);
 	}
 }

@@ -8,7 +8,7 @@ public class Body extends HttpLongMessage
 	
 	public Body(String body)
 	{
-		super(Http.BODY, body);
+		super(Http.Body, body);
 	}
 
 	@Override

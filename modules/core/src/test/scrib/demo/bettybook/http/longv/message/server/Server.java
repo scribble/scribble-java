@@ -9,6 +9,6 @@ public class Server extends HeaderField
 
 	public Server(String server)
 	{
-		super(Http.SERVER, server);
+		super(Http.Server, server);
 	}
 }

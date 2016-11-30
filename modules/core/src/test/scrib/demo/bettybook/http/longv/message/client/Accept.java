@@ -9,6 +9,6 @@ public class Accept extends HeaderField
 
 	public Accept(String text)
 	{
-		super(Http.ACCEPT, text);
+		super(Http.Accept, text);
 	}
 }

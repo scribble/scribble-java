@@ -9,6 +9,6 @@ public class LastModified extends HeaderField
 
 	public LastModified(String date)
 	{
-		super(Http.LASTM, date);
+		super(Http.LastM, date);
 	}
 }

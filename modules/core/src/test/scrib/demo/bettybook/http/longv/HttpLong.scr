@@ -10,31 +10,31 @@ module demo.bettybook.http.longv.HttpLong;
 
 sig <java> "demo.bettybook.http.longv.message.client.RequestLine"
 		from "demo/bettybook/http/longv/message/RequestLine.java"
-		as REQUESTL;  // GET /~rhu/ HTTP/1.1 
+		as RequestL;  // GET /~rhu/ HTTP/1.1 
 
 sig <java> "demo.bettybook.http.longv.message.client.Host"
 		from "demo/bettybook/http/longv/message/Host.java"
-		as HOST;  // host: www.doc.ic.ac.uk
+		as Host;  // host: www.doc.ic.ac.uk
 
 sig <java> "demo.bettybook.http.longv.message.Body"
 		from "demo/bettybook/http/longv/message/Body.java"
-		as BODY;  // <html> ... </html>
+		as Body;  // <html> ... </html>
 
 sig <java> "demo.bettybook.http.longv.message.client.UserAgent"
 		from "demo/bettybook/http/longv/message/UserAgent.java"
-		as USERA;  // User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0
+		as UserA;  // User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0
 
 sig <java> "demo.bettybook.http.longv.message.client.Accept"
 		from "demo/bettybook/http/longv/message/Accept.java"
-		as ACCEPT;  // Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+		as Accept;  // Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
 
 sig <java> "demo.bettybook.http.longv.message.client.AcceptLanguage"
 		from "demo/bettybook/http/longv/message/AcceptLanguage.java"
-		as ACCEPTL;  // Accept-Language: en-GB,en;q=0.5
+		as AcceptL;  // Accept-Language: en-GB,en;q=0.5
 
 sig <java> "demo.bettybook.http.longv.message.client.AcceptEncoding"
 		from "demo/bettybook/http/longv/message/AcceptEncoding.java"
-		as ACCEPTE;  // Accept-Encoding: gzip, deflate
+		as AcceptE;  // Accept-Encoding: gzip, deflate
 
 sig <java> "demo.bettybook.http.longv.message.client.DoNotTrack"
 		from "demo/bettybook/http/longv/message/DoNotTrack.java"
@@ -42,18 +42,18 @@ sig <java> "demo.bettybook.http.longv.message.client.DoNotTrack"
 
 sig <java> "demo.bettybook.http.longv.message.client.Connection"
 		from "demo/bettybook/http/longv/message/Connection.java"
-		as CONNECTION;  // Connection: keep-alive
+		as Connection;  // Connection: keep-alive
 
 sig <java> "demo.bettybook.http.longv.message.client.UpgradeInsecureRequests"
 		from "demo/bettybook/http/longv/message/UpgradeInsecureRequests.java"
-		as UPGRADEIR;  // Upgrade-Insecure-Requests: 1 
+		as UpgradeIR;  // Upgrade-Insecure-Requests: 1 
 		
 		
 sig <java> "demo.bettybook.http.longv.message.server.HttpVersion"
 		from "demo/bettybook/http/longv/message/HttpVersion.java"
-		as HTTPV;  // HTTP/1.1 
+		as HttpV;  // HTTP/1.1 
 
-sig <java> "demo.bettybook.http.longv.message.server._200"  // "Status" line (with HTTPV)
+sig <java> "demo.bettybook.http.longv.message.server._200"  // "Status" line (with HttpV)
 		from "demo/bettybook/http/longv/message/_200.java"
 		as 200;  // 200 OK
 
@@ -63,43 +63,43 @@ sig <java> "demo.bettybook.http.longv.message.server._404"
 
 sig <java> "demo.bettybook.http.longv.message.server.Date"
 		from "demo/bettybook/http/longv/message/Date.java"
-		as DATE;  // Date: Sun, 24 May 2015 21:04:36 GMT
+		as Date;  // Date: Sun, 24 May 2015 21:04:36 GMT
 
 sig <java> "demo.bettybook.http.longv.message.server.Server"
 		from "demo/bettybook/http/longv/message/Server.java"
-		as SERVER;  // Server: Apache
+		as Server;  // Server: Apache
 
 sig <java> "demo.bettybook.http.longv.message.server.StrictTransportSecurity"
 		from "demo/bettybook/http/longv/message/StrictTransportSecurity.java"
-		as STRICTTS;  // Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+		as StrictTS;  // Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
 
 sig <java> "demo.bettybook.http.longv.message.server.LastModified"
 		from "demo/bettybook/http/longv/message/LastModified.java"
-		as LASTM;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
+		as LastM;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
 
 sig <java> "demo.bettybook.http.longv.message.server.ETag"
 		from "demo/bettybook/http/longv/message/ETag.java"
-		as ETAG;  // ETag: "ac6fa008-559-4a8b95908aec0"
+		as ETag;  // ETag: "ac6fa008-559-4a8b95908aec0"
 
 sig <java> "demo.bettybook.http.longv.message.server.AcceptRanges"
 		from "demo/bettybook/http/longv/message/AcceptRanges.java"
-		as ACCEPTR;  // Accept-Ranges: bytes
+		as AcceptR;  // Accept-Ranges: bytes
 
 sig <java> "demo.bettybook.http.longv.message.server.ContentLength"
 		from "demo/bettybook/http/longv/message/ContentLength.java"
-		as CONTENTL;  // Content-Length: 1369
+		as ContentL;  // Content-Length: 1369
 
 sig <java> "demo.bettybook.http.longv.message.server.Vary"
 		from "demo/bettybook/http/longv/message/Vary.java"
-		as VARY;  // Vary: Accept-Encoding
+		as Vary;  // Vary: Accept-Encoding
 
 sig <java> "demo.bettybook.http.longv.message.server.ContentType"
 		from "demo/bettybook/http/longv/message/ContentType.java"
-		as CONTENTT;  // Content-Type: text/html
+		as ContentT;  // Content-Type: text/html
 
 sig <java> "demo.bettybook.http.longv.message.server.Via"
 		from "demo/bettybook/http/longv/message/Via.java"
-		as VIA;  // Via: 1.1 www.doc.ic.ac.uk	
+		as Via;  // Via: 1.1 www.doc.ic.ac.uk	
 
 
 global protocol Http(role C, role S) {
@@ -109,41 +109,41 @@ global protocol Http(role C, role S) {
 
 aux global protocol Request(role C, role S) {
 	choice at C {
-		REQUESTL from C to S;  // GET /~rhu/ HTTP/1.1 
+		RequestL from C to S;  // GET /~rhu/ HTTP/1.1 
 		rec X {
 			choice at C {
-				HOST from C to S;  // Host: www.doc.ic.ac.uk
+				Host from C to S;  // Host: www.doc.ic.ac.uk
 				continue X;
 			} or {
-				USERA from C to S;  // User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0
+				UserA from C to S;  // User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0
 				continue X;
 			} or {
-				ACCEPT from C to S;  // Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+				Accept from C to S;  // Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
 				continue X;
 			} or {
-				ACCEPTL from C to S;  // Accept-Language: en-GB,en;q=0.5
+				AcceptL from C to S;  // Accept-Language: en-GB,en;q=0.5
 				continue X;
 			} or {
-				ACCEPTE from C to S;  // Accept-Encoding: gzip, deflate
+				AcceptE from C to S;  // Accept-Encoding: gzip, deflate
 				continue X;
 			} or {
 				DNT from C to S;  // DNT: 1
 				continue X;
 			} or {
-				CONNECTION from C to S;  // Connection: keep-alive
+				Connection from C to S;  // Connection: keep-alive
 				continue X;
 			} or {
-				UPGRADEIR from C to S;  // Upgrade-Insecure-Requests: 1 
+				UpgradeIR from C to S;  // Upgrade-Insecure-Requests: 1 
 				continue X;
 			} or {
-				BODY from C to S;
+				Body from C to S;
 			}
 		}
 	}
 }
 
 aux global protocol Response(role C, role S) {
-	HTTPV from S to C;  // HTTP/1.1
+	HttpV from S to C;  // HTTP/1.1
 	choice at S {
 		200 from S to C;  // 200 OK
 	} or {
@@ -152,37 +152,37 @@ aux global protocol Response(role C, role S) {
 
 	rec Y {
 		choice at S {
-			DATE from S to C;  // Date: Sun, 24 May 2015 21:04:36 GMT
+			Date from S to C;  // Date: Sun, 24 May 2015 21:04:36 GMT
 			continue Y;
 		} or {
-			SERVER from S to C;  // Server: Apache
+			Server from S to C;  // Server: Apache
 			continue Y;
 		} or {
-			STRICTTS from S to C;  // Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+			StrictTS from S to C;  // Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
 			continue Y;
 		} or {
-			LASTM from S to C;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
+			LastM from S to C;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
 			continue Y;
 		} or {
-			ETAG from S to C;  // ETag: "ac6fa008-559-4a8b95908aec0"
+			ETag from S to C;  // ETag: "ac6fa008-559-4a8b95908aec0"
 			continue Y;
 		} or {
-			ACCEPTR from S to C;  // Accept-Ranges: bytes
+			AcceptR from S to C;  // Accept-Ranges: bytes
 			continue Y;
 		} or {
-			CONTENTL from S to C;  // Content-Length: 1369
+			ContentL from S to C;  // Content-Length: 1369
 			continue Y;
 		} or {
-			VARY from S to C;  // Vary: Accept-Encoding
+			Vary from S to C;  // Vary: Accept-Encoding
 			continue Y;
 		} or {
-			CONTENTT from S to C;  // Content-Type: text/html
+			ContentT from S to C;  // Content-Type: text/html
 			continue Y;
 		} or {
-			VIA from S to C;  // Via: 1.1 www.doc.ic.ac.uk	
+			Via from S to C;  // Via: 1.1 www.doc.ic.ac.uk	
 			continue Y;
 		} or {
-			BODY from S to C;  // Message length indicated by Content-Length
+			Body from S to C;  // Message length indicated by Content-Length
 		}
 	}
 }

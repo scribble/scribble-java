@@ -9,6 +9,6 @@ public class ContentLength extends HeaderField
 
 	public ContentLength(Integer len)
 	{
-		super(Http.CONTENTL, len.toString());
+		super(Http.ContentL, len.toString());
 	}
 }

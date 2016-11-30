@@ -9,6 +9,6 @@ public class Vary extends HeaderField
 
 	public Vary(String text)
 	{
-		super(Http.VARY, text);
+		super(Http.Vary, text);
 	}
 }

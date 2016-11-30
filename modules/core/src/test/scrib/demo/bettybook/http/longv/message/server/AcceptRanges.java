@@ -9,6 +9,6 @@ public class AcceptRanges extends HeaderField
 
 	public AcceptRanges(String text)
 	{
-		super(Http.ACCEPTR, text);
+		super(Http.AcceptR, text);
 	}
 }

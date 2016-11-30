@@ -1,17 +1,17 @@
 package demo.bettybook.http.longv;
 
-import static demo.bettybook.http.longv.HttpLong.Http.Http.ACCEPT;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.ACCEPTE;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.ACCEPTL;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.BODY;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.Accept;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.AcceptE;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.AcceptL;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.Body;
 import static demo.bettybook.http.longv.HttpLong.Http.Http.C;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.CONNECTION;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.Connection;
 import static demo.bettybook.http.longv.HttpLong.Http.Http.DNT;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.HOST;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.REQUESTL;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.Host;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.RequestL;
 import static demo.bettybook.http.longv.HttpLong.Http.Http.S;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.USERA;
-import static demo.bettybook.http.longv.HttpLong.Http.Http.UPGRADEIR;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.UserA;
+import static demo.bettybook.http.longv.HttpLong.Http.Http.UpgradeIR;
 
 import java.io.IOException;
 
@@ -55,30 +55,30 @@ public class HttpLongS
 	private static void run(Http_S_1 s1) throws ClassNotFoundException, ScribbleRuntimeException, IOException {
 		Buf<Object> buf = new Buf<>();
 		
-		Http_S_2 s2 = s1.receive(C, REQUESTL, buf);
+		Http_S_2 s2 = s1.receive(C, RequestL, buf);
 		System.out.println("Requested: " + buf.val);
 		
 		Y: while (true) {
 			Http_S_2_Cases cases = s2.branch(C);
 			switch (cases.op) {
-				case ACCEPT:  s2 = cases.receive(ACCEPT, buf); break;
-				case ACCEPTE: s2 = cases.receive(ACCEPTE, buf); break;
-				case ACCEPTL: s2 = cases.receive(ACCEPTL, buf); break;
-				case BODY:
+				case Accept:  s2 = cases.receive(Accept, buf); break;
+				case AcceptE: s2 = cases.receive(AcceptE, buf); break;
+				case AcceptL: s2 = cases.receive(AcceptL, buf); break;
+				case Body:
 				{
 					String body = "<html><body>Hello, World!</body></html>";
-					cases.receive(BODY, buf)
+					cases.receive(Body, buf)
 						.send(C, new HttpVersion("1.1"))
 						.send(C, new _200("OK"))
 						.send(C, new ContentLength(body.length()))
 						.send(C, new Body(body));
 					break Y;
 				}
-				case CONNECTION: s2 = cases.receive(CONNECTION, buf); break;
+				case Connection: s2 = cases.receive(Connection, buf); break;
 				case DNT:        s2 = cases.receive(DNT, buf); break;
-				case UPGRADEIR:  s2 = cases.receive(UPGRADEIR, buf); break;
-				case HOST:       s2 = cases.receive(HOST, buf); break;
-				case USERA:      s2 = cases.receive(USERA, buf); break;
+				case UpgradeIR:  s2 = cases.receive(UpgradeIR, buf); break;
+				case Host:       s2 = cases.receive(Host, buf); break;
+				case UserA:      s2 = cases.receive(UserA, buf); break;
 			}
 		}
 	}

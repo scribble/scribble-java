@@ -9,6 +9,6 @@ public class ContentType extends HeaderField
 
 	public ContentType(String type)
 	{
-		super(Http.CONTENTT, type);
+		super(Http.ContentT, type);
 	}
 }
