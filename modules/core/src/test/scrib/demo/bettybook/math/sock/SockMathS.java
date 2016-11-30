@@ -16,9 +16,10 @@ public class SockMathS
 				try (Socket s = ss.accept())
 				{
 					try (ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-							ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream()))
+							 ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream()))
 					{
-						Loop: while (true) {
+						Loop: while (true)
+						{
 							Object msg = ois.readObject();
 							if (msg instanceof Val)
 							{

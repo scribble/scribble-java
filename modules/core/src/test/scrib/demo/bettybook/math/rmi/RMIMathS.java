@@ -35,6 +35,7 @@ public class RMIMathS implements RMIMath
 		{
 			System.setSecurityManager(new SecurityManager());
 		}
+
 		String name = "MathService";
 		RMIMath engine = new RMIMathS();
 		RMIMath stub = (RMIMath) UnicastRemoteObject.exportObject(engine, 0);

@@ -21,7 +21,7 @@ public class RMIMathC
 		while (i > 1)
 		{
 			mathS.val(i);
-			i = mathS.add(i - 1);
+			i = mathS.add(-1);
 			mathS.val(res);
 			res = mathS.mult(i);
 		}
