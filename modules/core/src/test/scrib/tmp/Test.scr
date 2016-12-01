@@ -21,6 +21,8 @@ module Test;
 // - API gen for shared channel passing
 // - callback API needs generic session-state arg
 
+// - Redo HTTP/SMTP message deserialization (and maybe ScribMsgFormatter i/f) -- deserialization routines should be per-message
+
 // Job modes (full/default, fase17, oldscrib, MPST, etc.) -- factor out GMConfig interface
 
 // FIXME: demo.bettybook.math.MathC cancelledkey exception

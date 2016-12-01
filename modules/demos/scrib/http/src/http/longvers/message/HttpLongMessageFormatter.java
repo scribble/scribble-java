@@ -32,6 +32,7 @@ import http.longvers.message.server.Via;
 import http.longvers.message.server._200;
 import http.longvers.message.server._404;
 
+// FIXME: investigate if factoring out the C/S deserialization simplifies things
 public class HttpLongMessageFormatter implements ScribMessageFormatter
 {
 	public static final Charset cs = Charset.forName("UTF8");

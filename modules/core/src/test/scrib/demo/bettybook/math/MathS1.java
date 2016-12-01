@@ -31,8 +31,6 @@ public class MathS1
 
 	private void run() throws Exception
 	{
-		Buf<Integer> b1 = new Buf<>();
-		Buf<Integer> b2 = new Buf<>();
 		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
 			while (true)
@@ -41,6 +39,8 @@ public class MathS1
 				try (MPSTEndpoint<MathService, S> se = new MPSTEndpoint<>(sess, S, new ObjectStreamFormatter()))
 				{
 					se.accept(ss, C);
+					Buf<Integer> b1 = new Buf<>();
+					Buf<Integer> b2 = new Buf<>();
 
 					MathService_S_1 s1 = new MathService_S_1(se);
 					Loop: while (true)
@@ -51,8 +51,7 @@ public class MathS1
 							case Bye: c1.receive(Bye); break Loop;
 							case Val:
 							{
-								MathService_S_2 s2 = c1.receive(Val, b1);
-								MathService_S_2_Cases c2 = s2.branch(C);
+								MathService_S_2_Cases c2 = c1.receive(Val, b1).branch(C);
 								switch (c2.op)
 								{
 									case Add:  s1 = c2.receive(Add, b2).send(C, Sum, b1.val + b2.val); break;

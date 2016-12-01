@@ -5,8 +5,8 @@ import java.rmi.RemoteException;
 
 public interface RMIMath extends Remote
 {
-   void val(Integer x) throws RemoteException;
-   void bye() throws RemoteException;
-   Integer add(Integer y) throws RemoteException;
-   Integer mult(Integer y) throws RemoteException;
+   void Val(Integer x) throws RemoteException;
+   void Bye() throws RemoteException;
+   Integer Add(Integer y) throws RemoteException;
+   Integer Mult(Integer y) throws RemoteException;
 }
