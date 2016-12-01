@@ -1,0 +1,33 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/bettybook/src -d modules/demos/scrib/bettybook/src modules/demos/scrib/bettybook/src/bettybook/math/scrib/Math.scr -api MathService C
+//$ javadoc -cp modules/core/target/classes';'modules/demos/scrib/bettybook/src -subpackages bettybook.math.scrib.Math.MathService -d modules/demos/scrib/bettybook/math
+
+
+module bettybook.math.scrib.Math;
+
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+
+// N.B. calling this Math will clash with java.lang.Math
+global protocol MathService(role C, role S)
+{
+	choice at C
+	{
+		Val(Int) from C to S;
+		choice at C
+		{
+			Add(Int) from C to S;
+			Sum(Int) from S to C;
+		}
+		or
+		{
+			Mult(Int) from C to S;
+			Prod(Int) from S to C;
+		}
+		do MathService(C, S);
+	}
+	or
+	{
+		//Val(Int) from C to S;
+		Bye() from C to S;
+	}
+}
