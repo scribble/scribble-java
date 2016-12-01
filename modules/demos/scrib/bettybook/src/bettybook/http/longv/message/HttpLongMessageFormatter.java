@@ -1,4 +1,4 @@
-package http.longvers.message;
+package bettybook.http.longv.message;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,30 +9,29 @@ import java.nio.charset.Charset;
 import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;
 
-import http.longvers.message.client.Accept;
-import http.longvers.message.client.AcceptEncoding;
-import http.longvers.message.client.AcceptLanguage;
-import http.longvers.message.client.Connection;
-import http.longvers.message.client.DoNotTrack;
-import http.longvers.message.client.Host;
-import http.longvers.message.client.RequestLine;
-import http.longvers.message.client.UpgradeInsecureRequests;
-import http.longvers.message.client.UserAgent;
-import http.longvers.message.server.AcceptRanges;
-import http.longvers.message.server.ContentLength;
-import http.longvers.message.server.ContentType;
-import http.longvers.message.server.Date;
-import http.longvers.message.server.ETag;
-import http.longvers.message.server.HttpVersion;
-import http.longvers.message.server.LastModified;
-import http.longvers.message.server.Server;
-import http.longvers.message.server.StrictTransportSecurity;
-import http.longvers.message.server.Vary;
-import http.longvers.message.server.Via;
-import http.longvers.message.server._200;
-import http.longvers.message.server._404;
+import bettybook.http.longv.message.client.Accept;
+import bettybook.http.longv.message.client.AcceptEncoding;
+import bettybook.http.longv.message.client.AcceptLanguage;
+import bettybook.http.longv.message.client.Connection;
+import bettybook.http.longv.message.client.DoNotTrack;
+import bettybook.http.longv.message.client.Host;
+import bettybook.http.longv.message.client.RequestLine;
+import bettybook.http.longv.message.client.UpgradeInsecureRequests;
+import bettybook.http.longv.message.client.UserAgent;
+import bettybook.http.longv.message.server.AcceptRanges;
+import bettybook.http.longv.message.server.ContentLength;
+import bettybook.http.longv.message.server.ContentType;
+import bettybook.http.longv.message.server.Date;
+import bettybook.http.longv.message.server.ETag;
+import bettybook.http.longv.message.server.HttpVersion;
+import bettybook.http.longv.message.server.LastModified;
+import bettybook.http.longv.message.server.Server;
+import bettybook.http.longv.message.server.StrictTransportSecurity;
+import bettybook.http.longv.message.server.Vary;
+import bettybook.http.longv.message.server.Via;
+import bettybook.http.longv.message.server._200;
+import bettybook.http.longv.message.server._404;
 
-// FIXME: investigate if factoring out the C/S deserialization simplifies things
 public class HttpLongMessageFormatter implements ScribMessageFormatter
 {
 	public static final Charset cs = Charset.forName("UTF8");
