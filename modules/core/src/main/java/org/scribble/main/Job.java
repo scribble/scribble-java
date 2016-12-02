@@ -45,12 +45,15 @@ public class Job
 	public final boolean fair;
 	public final boolean noLocalChoiceSubjectCheck;
 	public final boolean noAcceptCorrelationCheck;
+	public final boolean noValidation;
 	
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck)
+	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main,
+			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
+			boolean noAcceptCorrelationCheck, boolean noValidation)
 	{
 		//this.jUnit = jUnit;
 		this.debug = debug;
@@ -60,6 +63,7 @@ public class Job
 		this.fair = fair;
 		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
 		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
+		this.noValidation = noValidation;
 
 		this.jcontext = new JobContext(this, parsed, main);  // Single instance per Job and should never be shared
 	}
@@ -80,15 +84,16 @@ public class Job
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
-		runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
-		////runVisitorPassOnAllModules(WFChoicePathChecker.class);
-		runProjectionPasses();
-		runVisitorPassOnAllModules(ReachabilityChecker.class);  // Moved before GlobalModelChecker.class, OK?
-		if (!this.useOldWf)
+		if (!this.noValidation)
 		{
-			runVisitorPassOnAllModules(GProtocolValidator.class);
+			runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
+			runProjectionPasses();
+			runVisitorPassOnAllModules(ReachabilityChecker.class);  // Moved before GlobalModelChecker.class, OK?
+			if (!this.useOldWf)
+			{
+				runVisitorPassOnAllModules(GProtocolValidator.class);
+			}
 		}
-		//runVisitorPassOnAllModules(ReachabilityChecker.class);
 	}
 	
 	private void runContextBuildingPasses() throws ScribbleException
