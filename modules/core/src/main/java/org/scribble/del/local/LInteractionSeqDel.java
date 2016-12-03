@@ -64,7 +64,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			ReachabilityEnv re = checker.peekEnv();
 			if (!re.isSequenceable())
 			{
-				throw new ScribbleException("Bad sequence to: " + li);
+				throw new ScribbleException(li.getSource(), "Invalid/unreachable sequence to: " + li);
 			}
 			visited.add((LInteractionNode) li.accept(checker));
 		}

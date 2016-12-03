@@ -21,12 +21,12 @@ public class ScribbleException extends Exception
 	{
 		// char position indexes are obscure because only certain (child) nodes/tokens are actually recorded, e.g., name nodes (the keyword nodes, e.g., global, have been discarded)
 		// ...although even taking the above into account, indexes still seem off?
-		super(foo(blame) + "(line " + blame.getLine() + ":" + (blame.getCharPositionInLine()) + "): " + arg0);  // HACK: index+1
+		super(getRootModuleName(blame) + "(line " + blame.getLine() + ":" + (blame.getCharPositionInLine()) + "): " + arg0);  // HACK: index+1
 			// Cf., getTokenStartIndex/getTokenStopIndex ?  blame.token.getCharPositionInLine()?
 	}
 	
 	// Cf., AntlrModule/AntlrModuleDecl -- but can't access parser classes from core (Maven dependencies)
-	private static String foo(CommonTree blame)
+	private static String getRootModuleName(CommonTree blame)  // Means root of this CommonTree (not the Scribble job root, i.e. main)
 	{
 		CommonTree root = blame;
 		while (root.parent != null)
