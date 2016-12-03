@@ -33,27 +33,26 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 		LNode projection = null;
 		if (srcrole.equals(self) || destroles.contains(self))
 		{
-			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND, this.src.toName().toString());
-			//MessageNode msg = (MessageNode) this.msg;  // FIXME: need namespace prefix update?
+			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.src.getSource(), RoleKind.KIND, this.src.toName().toString());  // clone?
 			MessageNode msg = (MessageNode) this.msg.project();  // FIXME: need namespace prefix update?
 			List<RoleNode> dests =
-					destroles.stream().map((d) ->
-							(RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND, d.toString())).collect(Collectors.toList());
+					this.getDestinations().stream().map((rn) ->
+							(RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(rn.getSource(), RoleKind.KIND, rn.toName().toString())).collect(Collectors.toList());
 			if (srcrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LSend(null, src, msg, dests);
+				projection = AstFactoryImpl.FACTORY.LSend(this.source, src, msg, dests);
 			}
 			if (destroles.contains(self))
 			{
 				if (projection == null)
 				{
-					projection = AstFactoryImpl.FACTORY.LReceive(null, src, msg, dests);
+					projection = AstFactoryImpl.FACTORY.LReceive(this.source, src, msg, dests);
 				}
 				else
 				{
-					LReceive lr = AstFactoryImpl.FACTORY.LReceive(null, src, msg, dests);
+					LReceive lr = AstFactoryImpl.FACTORY.LReceive(this.source, src, msg, dests);
 					List<LInteractionNode> lis = Arrays.asList(new LInteractionNode[]{(LInteractionNode) projection, lr});
-					projection = AstFactoryImpl.FACTORY.LInteractionSeq(null, lis);
+					projection = AstFactoryImpl.FACTORY.LInteractionSeq(this.source, lis);
 				}
 			}
 		}

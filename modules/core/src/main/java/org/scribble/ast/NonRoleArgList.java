@@ -45,7 +45,7 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	{
 		List<NonRoleArg> instans =
 				getDoArgs().stream().map((ai) -> ai.project(self)).collect(Collectors.toList());	
-		return AstFactoryImpl.FACTORY.NonRoleArgList(null, instans);
+		return AstFactoryImpl.FACTORY.NonRoleArgList(this.source, instans);
 	}
 	
 	public boolean isEmpty()

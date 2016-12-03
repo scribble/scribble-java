@@ -19,7 +19,7 @@ public class GProtocolBlock extends ProtocolBlock<Global> implements GNode
 
 	public LProtocolBlock project(Role self, LInteractionSeq seq)
 	{
-		LProtocolBlock projection = AstFactoryImpl.FACTORY.LProtocolBlock(null, seq);
+		LProtocolBlock projection = AstFactoryImpl.FACTORY.LProtocolBlock(this.source, seq);
 		return projection;
 	}
 

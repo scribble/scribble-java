@@ -41,12 +41,12 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	public RoleDecl project(Role self)
 	{
 		Name<RoleKind> role = this.name.toName();
-		RoleNode rn = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND, role.toString());
+		RoleNode rn = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.name.source, RoleKind.KIND, role.toString());
 		if (role.equals(self))
 		{
-			return AstFactoryImpl.FACTORY.SelfRoleDecl(null, rn);
+			return AstFactoryImpl.FACTORY.SelfRoleDecl(this.name.source, rn);
 		}
-		return AstFactoryImpl.FACTORY.RoleDecl(null, rn);
+		return AstFactoryImpl.FACTORY.RoleDecl(this.source, rn);
 	}
 	
 	@Override

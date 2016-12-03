@@ -38,15 +38,15 @@ public class GWrap extends ConnectionAction<Global> implements GSimpleInteractio
 		LNode projection = null;
 		if (srcrole.equals(self) || destrole.equals(self))
 		{
-			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND, this.src.toName().toString());
-			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND, this.dest.toName().toString());
+			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.src.getSource(), RoleKind.KIND, this.src.toName().toString());  // clone?
+			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.dest.getSource(), RoleKind.KIND, this.dest.toName().toString());
 			if (srcrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LWrapClient(null, src, dest);  // src and dest (not self and peer)
+				projection = AstFactoryImpl.FACTORY.LWrapClient(this.source, src, dest);  // src and dest (not self and peer)
 			}
 			if (destrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LWrapServer(null, src, dest);
+				projection = AstFactoryImpl.FACTORY.LWrapServer(this.source, src, dest);
 			}
 		}
 		return projection;

@@ -28,7 +28,7 @@ public class PayloadElemList extends ScribNodeBase
 	
 	protected PayloadElemList project()
 	{
-		return AstFactoryImpl.FACTORY.PayloadElemList(null, this.elems.stream().map((pe) -> pe.project()).collect(Collectors.toList()));
+		return AstFactoryImpl.FACTORY.PayloadElemList(this.source, this.elems.stream().map((pe) -> pe.project()).collect(Collectors.toList()));
 	}
 	
 	@Override

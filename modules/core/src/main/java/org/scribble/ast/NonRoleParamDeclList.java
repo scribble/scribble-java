@@ -56,7 +56,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 	@Override
 	public NonRoleParamDeclList project(Role self)
 	{
-		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(null, getDecls());
+		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(this.source, getDecls());
 	}
 
 	@Override

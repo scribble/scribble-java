@@ -4,8 +4,11 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDef;
+import org.scribble.ast.local.LProtocolBlock;
+import org.scribble.ast.local.LProtocolDef;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
+import org.scribble.sesstype.name.Role;
 
 public class GProtocolDef extends ProtocolDef<Global> implements GNode
 {
@@ -18,6 +21,12 @@ public class GProtocolDef extends ProtocolDef<Global> implements GNode
 	protected GProtocolDef copy()
 	{
 		return new GProtocolDef(this.source, getBlock());
+	}
+
+	public LProtocolDef project(Role self, LProtocolBlock block)
+	{
+		LProtocolDef projection = AstFactoryImpl.FACTORY.LProtocolDef(this.source, block);
+		return projection;
 	}
 	
 	@Override

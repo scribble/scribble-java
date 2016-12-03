@@ -45,8 +45,8 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 	@Override
 	public NonRoleParamDecl<K> project(Role self)
 	{
-		NonRoleParamNode<K> pn = AstFactoryImpl.FACTORY.NonRoleParamNode(null, this.kind, this.name.toString());
-		return AstFactoryImpl.FACTORY.NonRoleParamDecl(null, this.kind, pn);
+		NonRoleParamNode<K> pn = AstFactoryImpl.FACTORY.NonRoleParamNode(this.name.source, this.kind, this.name.toString());
+		return AstFactoryImpl.FACTORY.NonRoleParamDecl(this.source, this.kind, pn);
 	}
 	
 	@Override

@@ -89,7 +89,8 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 		List<LProtocolBlock> blocks = new LinkedList<>();
 		getBlocks().forEach((b) -> blocks.add(b.clone()));
 		them.getBlocks().forEach((b) -> blocks.add(b.clone()));
-		return AstFactoryImpl.FACTORY.LChoice(null, this.subj, blocks);  // Not reconstruct: leave context building to post-projection passes 
+		return AstFactoryImpl.FACTORY.LChoice(this.source, this.subj, blocks);  // Not reconstruct: leave context building to post-projection passes 
+			// Hacky: this.source
 	}
 
 	@Override

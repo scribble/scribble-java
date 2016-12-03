@@ -19,8 +19,8 @@ public class GContinue extends Continue<Global> implements GSimpleInteractionNod
 
 	public LContinue project(Role self)
 	{
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RecVarKind.KIND, this.recvar.toName().toString());
-		LContinue projection = AstFactoryImpl.FACTORY.LContinue(null, recvar);
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.recvar.getSource(), RecVarKind.KIND, this.recvar.toName().toString());  // clone?
+		LContinue projection = AstFactoryImpl.FACTORY.LContinue(this.source, recvar);
 		return projection;
 	}
 

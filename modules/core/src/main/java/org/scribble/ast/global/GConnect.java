@@ -28,17 +28,17 @@ public class GConnect extends ConnectionAction<Global> implements GSimpleInterac
 		LNode projection = null;
 		if (srcrole.equals(self) || destrole.equals(self))
 		{
-			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND, this.src.toName().toString());
+			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.src.getSource(), RoleKind.KIND, this.src.toName().toString());  // clone?
 			MessageNode msg = (MessageNode) this.msg;  // FIXME: need namespace prefix update?
-			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND, this.dest.toName().toString());
+			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.dest.getSource(), RoleKind.KIND, this.dest.toName().toString());
 			if (srcrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LConnect(null, src, msg, dest);
+				projection = AstFactoryImpl.FACTORY.LConnect(this.source, src, msg, dest);
 				//projection = AstFactoryImpl.FACTORY.LConnect(src, dest);  // src and dest (not self and peer)
 			}
 			if (destrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LAccept(null, src, msg, dest);
+				projection = AstFactoryImpl.FACTORY.LAccept(this.source, src, msg, dest);
 				//projection = AstFactoryImpl.FACTORY.LAccept(src, dest);
 			}
 		}

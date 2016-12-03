@@ -42,6 +42,6 @@ public class NonRoleArg extends DoArg<NonRoleArgNode>
 	@Override
 	public NonRoleArg project(Role self)
 	{
-		return AstFactoryImpl.FACTORY.NonRoleArg(null, getVal());  // arg needs projection?
+		return AstFactoryImpl.FACTORY.NonRoleArg(this.source, getVal());  // arg needs projection?
 	}
 }

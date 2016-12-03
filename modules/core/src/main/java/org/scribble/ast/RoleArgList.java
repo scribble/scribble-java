@@ -43,7 +43,7 @@ public class RoleArgList extends DoArgList<RoleArg>
 	{
 		List<RoleArg> instans =
 				getDoArgs().stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
-		return AstFactoryImpl.FACTORY.RoleArgList(null, instans);
+		return AstFactoryImpl.FACTORY.RoleArgList(this.source, instans);
 	}
 
 	// The role arguments

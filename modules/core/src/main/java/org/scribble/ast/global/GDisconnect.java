@@ -39,15 +39,15 @@ public class GDisconnect extends ConnectionAction<Global> implements GSimpleInte
 		LNode projection = null;
 		if (srcrole.equals(self) || destrole.equals(self))
 		{
-			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND, this.src.toName().toString());
-			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND, this.dest.toName().toString());
+			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.src.getSource(), RoleKind.KIND, this.src.toName().toString());  // clone?
+			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.dest.getSource(), RoleKind.KIND, this.dest.toName().toString());
 			if (srcrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LDisconnect(null, src, dest);
+				projection = AstFactoryImpl.FACTORY.LDisconnect(this.source, src, dest);
 			}
 			if (destrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LDisconnect(null, dest, src);
+				projection = AstFactoryImpl.FACTORY.LDisconnect(this.source, dest, src);
 			}
 		}
 		return projection;

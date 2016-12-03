@@ -53,7 +53,7 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 	@Override
 	public RoleDeclList project(Role self)
 	{
-		return AstFactoryImpl.FACTORY.RoleDeclList(null, getDecls());
+		return AstFactoryImpl.FACTORY.RoleDeclList(this.source, getDecls());
 	}
 
 	@Override

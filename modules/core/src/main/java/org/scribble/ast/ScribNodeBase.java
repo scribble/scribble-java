@@ -36,7 +36,10 @@ import org.scribble.visit.Substitutor;
  */
 public abstract class ScribNodeBase implements ScribNode
 {
-	protected final CommonTree source;  // null if not parsed -- consequently, core depends on Antlr
+	protected final CommonTree source;  // Consequently, core depends on Antlr
+			// Used to be for parsed entities; null if not parsed
+			// Now: for the original parsed entity for error blaming; should not be null unless a purely generated entity
+
 	protected ScribDel del;
 	
 	protected ScribNodeBase(CommonTree source)

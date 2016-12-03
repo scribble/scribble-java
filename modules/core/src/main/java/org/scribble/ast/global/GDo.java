@@ -28,7 +28,7 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	{
 		RoleArgList roleinstans = this.roles.project(self);
 		NonRoleArgList arginstans = this.args.project(self);
-		LDo projection = AstFactoryImpl.FACTORY.LDo(null, roleinstans, arginstans, fullname);
+		LDo projection = AstFactoryImpl.FACTORY.LDo(this.source, roleinstans, arginstans, fullname);
 		return projection;
 	}
 

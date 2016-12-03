@@ -43,5 +43,7 @@ public interface ScribNode
 	ScribNode substituteNames(Substitutor subs);
 	// Cf. LInteractionNode.inferLocalChoiceSubject
 
-	CommonTree getSource();  // For parsed entities; null if not parsed
+	CommonTree getSource();  
+			// Used to be for parsed entities; null if not parsed
+			// Now: for the original parsed entity for error blaming; should not be null unless a purely generated entity
 }

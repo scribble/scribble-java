@@ -43,7 +43,8 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 		{
 			// FIXME? initially keep global subject, and later overwrite as necessary in projections? (algorithm currently checks for DUMMY)
 			RoleNode subj = self.equals(this.subj.toName()) ? this.subj.clone() : AstFactoryImpl.FACTORY.DummyProjectionRoleNode();
-			List<LChoice> cs = blocks.stream().map((b) -> AstFactoryImpl.FACTORY.LChoice(null, subj, Arrays.asList(b))).collect(Collectors.toList());
+			List<LChoice> cs = blocks.stream().map((b) -> AstFactoryImpl.FACTORY.LChoice(this.source, subj, Arrays.asList(b))).collect(Collectors.toList());
+				// Hacky: keeping this.source for each LChoice (will end up as the source for the final merged LChoice)
 			LChoice merged = cs.get(0);
 			try
 			{

@@ -45,7 +45,7 @@ public class RoleArg extends DoArg<RoleNode>
 	@Override
 	public RoleArg project(Role self)
 	{
-		RoleNode rn = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND, this.val.toName().toString());
-		return AstFactoryImpl.FACTORY.RoleArg(null, rn);
+		RoleNode rn = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.val.source, RoleKind.KIND, this.val.toName().toString());
+		return AstFactoryImpl.FACTORY.RoleArg(this.source, rn);
 	}
 }

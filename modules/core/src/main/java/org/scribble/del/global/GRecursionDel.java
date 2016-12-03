@@ -25,7 +25,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		//RecVarNode recvar = gr.recvar.clone();
 		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) gr.recvar.del().env()).getTranslation();	
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
-		GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
+		GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(gr.getSource(), recvar, block);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GRecursion) super.leaveProtocolInlining(parent, child, inl, gr);
 	}

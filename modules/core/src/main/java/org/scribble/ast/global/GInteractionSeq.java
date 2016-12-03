@@ -24,7 +24,7 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	// Move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
 	public LInteractionSeq project(Role self, List<LInteractionNode> lis)
 	{
-		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSeq(null, lis);
+		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSeq(this.source, lis);
 		return projection;
 	}
 

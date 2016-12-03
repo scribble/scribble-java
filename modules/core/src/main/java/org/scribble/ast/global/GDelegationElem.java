@@ -35,7 +35,7 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	@Override
 	public LDelegationElem project()
 	{
-		return AstFactoryImpl.FACTORY.LDelegationElem(null, Projector.makeProjectedFullNameNode(this.proto.toName(), this.role.toName()));
+		return AstFactoryImpl.FACTORY.LDelegationElem(this.source, Projector.makeProjectedFullNameNode(this.proto.toName(), this.role.toName()));
 	}
 
 	@Override
