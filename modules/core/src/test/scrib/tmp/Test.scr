@@ -9,7 +9,7 @@
 //http://sandbox.kidstrythisathome.com/erdos/
 
 
-module Test;
+module Test343;
 
 type <java> "" from "" as T;
 sig <java> "" from "" as S;
@@ -20,8 +20,8 @@ global protocol Proto1(role A, role B, role C)
 	{
 		choice at A
 		{
-			//T from A to B;
-			1(S) from A to D;
+			1() from A to B;
+			1() from A to B;
 		}
 		or
 		{
