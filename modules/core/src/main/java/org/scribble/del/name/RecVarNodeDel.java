@@ -25,7 +25,7 @@ public class RecVarNodeDel extends ScribDelBase
 		RecVar rv = rn.toName();
 		if (!disamb.isBoundRecVar(rv))
 		{
-			throw new ScribbleException("Rec variable not bound: " + rn);
+			throw new ScribbleException(rn.getSource(), "Rec variable not bound: " + rn);
 		}
 		return (RecVarNode) super.leaveDisambiguation(parent, child, disamb, rn);
 		//return super.leaveDisambiguation(parent, child, disamb, rn.reconstruct(disamb.getCanonicalRecVarName(rv)));

@@ -32,7 +32,7 @@ public class DataTypeNodeDel extends ScribDelBase
 		DataType dt = dtn.toName();
 		if (!mc.isVisibleDataType(dt))
 		{
-			throw new ScribbleException("Protocol decl not visible: " + dt);
+			throw new ScribbleException(dtn.getSource(), "Data type not visible: " + dt);
 		}
 		DataType fullname = mc.getVisibleDataTypeFullName(dt);
 		return (DataTypeNode)
