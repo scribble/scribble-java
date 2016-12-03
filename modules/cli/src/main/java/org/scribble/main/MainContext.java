@@ -20,6 +20,8 @@ import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
 
 
+// N.B. the same package is declared in core
+
 // Scribble tool context for main module
 // FIXME: should be in core org.scribble.main, but currently here due to Maven dependency restrictions
 // MainContext takes ResourceLocator abstractly (e.g. DirectoryResourceLocator), but because abstract Resource itself works off paths, it takes mainpath (rather than something more abstract, e.g. URI, to identify the "main" resource)
