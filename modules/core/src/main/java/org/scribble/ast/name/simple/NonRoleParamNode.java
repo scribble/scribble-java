@@ -1,5 +1,6 @@
 package org.scribble.ast.name.simple;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.NonRoleArgNode;
@@ -23,9 +24,9 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 {
 	public final K kind;
 	
-	public NonRoleParamNode(K kind, String identifier)
+	public NonRoleParamNode(CommonTree source, K kind, String identifier)
 	{
-		super(identifier);
+		super(source, identifier);
 		this.kind = kind;
 	}
 	
@@ -38,13 +39,13 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 	@Override
 	protected NonRoleParamNode<K> copy()
 	{
-		return new NonRoleParamNode<>(this.kind, getIdentifier());
+		return new NonRoleParamNode<>(this.source, this.kind, getIdentifier());
 	}
 	
 	@Override
 	public NonRoleParamNode<K> clone()
 	{
-		return AstFactoryImpl.FACTORY.NonRoleParamNode(this.kind, getIdentifier());
+		return AstFactoryImpl.FACTORY.NonRoleParamNode(this.source, this.kind, getIdentifier());
 	}
 	
 	@Override

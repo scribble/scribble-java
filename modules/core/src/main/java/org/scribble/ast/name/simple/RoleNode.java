@@ -1,5 +1,6 @@
 package org.scribble.ast.name.simple;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.DoArgNode;
 import org.scribble.del.ScribDel;
@@ -9,27 +10,27 @@ import org.scribble.visit.Substitutor;
 
 public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //RoleDecl, RoleInstantiation
 {
-	public RoleNode(String identifier)
+	public RoleNode(CommonTree source, String identifier)
 	{
-		super(identifier);
+		super(source, identifier);
 	}
 
 	@Override
 	protected RoleNode copy()
 	{
-		return new RoleNode(getIdentifier());
+		return new RoleNode(this.source, getIdentifier());
 	}
 	
 	@Override
 	public RoleNode clone()
 	{
-		return (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getIdentifier());
+		return (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.source, RoleKind.KIND, getIdentifier());
 	}
 
 	protected RoleNode reconstruct(String identifier)
 	{
 		ScribDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
-		RoleNode rn = new RoleNode(identifier);
+		RoleNode rn = new RoleNode(this.source, identifier);
 		rn = (RoleNode) rn.del(del);
 		return rn;
 	}

@@ -1,5 +1,6 @@
 package org.scribble.ast.local;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.UnaryPayloadElem;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
@@ -13,9 +14,9 @@ import org.scribble.visit.AstVisitor;
 public class LDelegationElem extends UnaryPayloadElem<Local>
 {
   // Currently no potential for ambiguity because only generated, not parsed
-	public LDelegationElem(LProtocolNameNode proto)
+	public LDelegationElem(CommonTree source, LProtocolNameNode proto)
 	{
-		super(proto);
+		super(source, proto);
 	}
 
 	@Override
@@ -27,20 +28,20 @@ public class LDelegationElem extends UnaryPayloadElem<Local>
 	@Override
 	protected LDelegationElem copy()
 	{
-		return new LDelegationElem((LProtocolNameNode) this.name);
+		return new LDelegationElem(this.source, (LProtocolNameNode) this.name);
 	}
 	
 	@Override
 	public LDelegationElem clone()
 	{
 		LProtocolNameNode name = (LProtocolNameNode) this.name.clone();
-		return AstFactoryImpl.FACTORY.LDelegationElem(name);
+		return AstFactoryImpl.FACTORY.LDelegationElem(this.source, name);
 	}
 
 	public LDelegationElem reconstruct(LProtocolNameNode proto)
 	{
 		ScribDel del = del();
-		LDelegationElem elem = new LDelegationElem(proto);
+		LDelegationElem elem = new LDelegationElem(this.source, proto);
 		elem = (LDelegationElem) elem.del(del);
 		return elem;
 	}

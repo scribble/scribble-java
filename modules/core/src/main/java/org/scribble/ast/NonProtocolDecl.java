@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.MemberNameNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.NonProtocolKind;
@@ -11,14 +12,14 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind> extends NameDec
 {
 	public final String schema;
 	public final String extName;
-	public final String source;
+	public final String extSource;
 
-	public NonProtocolDecl(String schema, String extName, String source, MemberNameNode<K> name)
+	public NonProtocolDecl(CommonTree source, String schema, String extName, String extSource, MemberNameNode<K> name)
 	{
-		super(name);
+		super(source, name);
 		this.schema = schema;
 		this.extName = extName;
-		this.source = source;
+		this.extSource = extSource;
 	}
 	
 	public abstract NonProtocolDecl<K> reconstruct(String schema, String extName, String source, MemberNameNode<K> name);
@@ -27,7 +28,7 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind> extends NameDec
 	public NonProtocolDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		MemberNameNode<K> name = (MemberNameNode<K>) visitChildWithClassEqualityCheck(this, this.name, nv);
-		return reconstruct(this.schema, this.extName, this.source, name);
+		return reconstruct(this.schema, this.extName, this.extSource, name);
 	}
 	
 	// Maybe should be moved to ModuleMember

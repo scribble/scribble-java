@@ -3,6 +3,7 @@ package org.scribble.ast.global;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Constants;
 import org.scribble.ast.Interrupt;
 import org.scribble.ast.MessageNode;
@@ -14,11 +15,11 @@ public class GInterrupt extends Interrupt implements GSimpleInteractionNode
 	/*public static final Function<Interrupt, GlobalInterrupt> toGlobalInterrupt =
 			(Interrupt interr) -> (GlobalInterrupt) interr;*/
 	
-	public GInterrupt(RoleNode src, List<MessageNode> msgs)
+	public GInterrupt(CommonTree source, RoleNode src, List<MessageNode> msgs)
 	{
 		//this(ct, src, msgs, null, null);
 		//this(t, src, msgs, null, null);
-		super(src, msgs);
+		super(source, src, msgs);
 	}
 
 	/*// Destination Roles is "type info", not a syntax element -- could wrap in a generic "type info" object

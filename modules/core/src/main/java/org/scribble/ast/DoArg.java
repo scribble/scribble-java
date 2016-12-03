@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.AstVisitor;
@@ -10,8 +11,9 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 {
 	public final T val;
 
-	protected DoArg(T arg)
+	protected DoArg(CommonTree source, T arg)
 	{
+		super(source);
 		this.val = arg;
 	}
 

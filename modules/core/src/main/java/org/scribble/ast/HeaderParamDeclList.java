@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ParamKind;
 import org.scribble.sesstype.name.Role;
@@ -16,8 +17,9 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 {
 	private final List<? extends HeaderParamDecl<K>> decls;
 	
-	protected HeaderParamDeclList(List<? extends HeaderParamDecl<K>> decls)
+	protected HeaderParamDeclList(CommonTree source, List<? extends HeaderParamDecl<K>> decls)
 	{
+		super(source);
 		this.decls = new LinkedList<>(decls);
 	}
 	

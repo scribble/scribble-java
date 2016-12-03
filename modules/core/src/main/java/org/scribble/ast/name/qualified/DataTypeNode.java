@@ -1,5 +1,6 @@
 package org.scribble.ast.name.qualified;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.sesstype.Arg;
@@ -9,21 +10,21 @@ import org.scribble.sesstype.name.DataType;
 //public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
 public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode<DataTypeKind>
 {
-	public DataTypeNode(String... elems)
+	public DataTypeNode(CommonTree source, String... elems)
 	{
-		super(elems);
+		super(source, elems);
 	}
 
 	@Override
 	protected DataTypeNode copy()
 	{
-		return new DataTypeNode(this.elems);
+		return new DataTypeNode(this.source, this.elems);
 	}
 	
 	@Override
 	public DataTypeNode clone()
 	{
-		return (DataTypeNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, this.elems);
+		return (DataTypeNode) AstFactoryImpl.FACTORY.QualifiedNameNode(this.source, DataTypeKind.KIND, this.elems);
 	}
 
 	@Override

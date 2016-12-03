@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
@@ -12,8 +13,9 @@ public class ImportModule extends ImportDecl<ModuleKind>
 	public final ModuleNameNode modname;
 	public final ModuleNameNode alias;  // Factor up to ImportDecl
 
-	public ImportModule(ModuleNameNode modname, ModuleNameNode alias)
+	public ImportModule(CommonTree source, ModuleNameNode modname, ModuleNameNode alias)
 	{
+		super(source);
 		this.modname = modname;
 		this.alias = alias;
 	}
@@ -21,7 +23,7 @@ public class ImportModule extends ImportDecl<ModuleKind>
 	@Override
 	protected ImportModule copy()
 	{
-		return new ImportModule(this.modname, this.alias);
+		return new ImportModule(this.source, this.modname, this.alias);
 	}
 	
 	@Override
@@ -29,13 +31,13 @@ public class ImportModule extends ImportDecl<ModuleKind>
 	{
 		ModuleNameNode name = (ModuleNameNode) this.modname.clone();
 		ModuleNameNode alias = (ModuleNameNode) this.alias.clone();
-		return AstFactoryImpl.FACTORY.ImportModule(name, alias);
+		return AstFactoryImpl.FACTORY.ImportModule(this.source, name, alias);
 	}
 	
 	public ImportModule reconstruct(ModuleNameNode modname, ModuleNameNode alias)  // Factor up
 	{
 		ScribDel del = del();
-		ImportModule im = new ImportModule(modname, alias);
+		ImportModule im = new ImportModule(this.source, modname, alias);
 		im = (ImportModule) im.del(del);
 		return im;
 	}

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
@@ -35,7 +36,19 @@ import org.scribble.visit.Substitutor;
  */
 public abstract class ScribNodeBase implements ScribNode
 {
+	protected final CommonTree source;  // null if not parsed -- consequently, core depends on Antlr
 	protected ScribDel del;
+	
+	protected ScribNodeBase(CommonTree source)
+	{
+		this.source = source;
+	}
+	
+	@Override
+	public final CommonTree getSource()
+	{
+		return this.source;
+	}
 
 	// Internal shallow copy for (immutable) ModelNodes -- does not keep the del (copy is used internally for del setter, and keeping the del needs knowledge of super fields) 
 	// Generally copy is only for shallow copy of object and "immediate" fields (not super fields), cf. ProtocolDecl, ProtocolDeclContext, etc

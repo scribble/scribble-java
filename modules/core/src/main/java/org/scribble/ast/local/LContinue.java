@@ -3,6 +3,7 @@ package org.scribble.ast.local;
 import java.util.Collections;
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Continue;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -15,29 +16,29 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 {
-	public LContinue(RecVarNode recvar)
+	public LContinue(CommonTree source, RecVarNode recvar)
 	{
-		super(recvar);
+		super(source, recvar);
 	}
 
 	@Override
 	protected LContinue copy()
 	{
-		return new LContinue(this.recvar);
+		return new LContinue(this.source, this.recvar);
 	}
 	
 	@Override
 	public LContinue clone()
 	{
 		RecVarNode rv = this.recvar.clone();
-		return AstFactoryImpl.FACTORY.LContinue(rv);
+		return AstFactoryImpl.FACTORY.LContinue(this.source, rv);
 	}
 
 	@Override
 	public LContinue reconstruct(RecVarNode recvar)
 	{
 		ScribDel del = del();
-		LContinue lc = new LContinue(recvar);
+		LContinue lc = new LContinue(this.source, recvar);
 		lc = (LContinue) lc.del(del);
 		return lc;
 	}

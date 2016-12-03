@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
@@ -16,29 +17,29 @@ import org.scribble.util.ScribUtil;
 
 public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 {
-	public LInteractionSeq(List<LInteractionNode> lis)
+	public LInteractionSeq(CommonTree source, List<LInteractionNode> lis)
 	{
-		super(lis);
+		super(source, lis);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LInteractionSeq(getInteractions());
+		return new LInteractionSeq(this.source, getInteractions());
 	}
 	
 	@Override
 	public LInteractionSeq clone()
 	{
 		List<LInteractionNode> lis = ScribUtil.cloneList(getInteractions());
-		return AstFactoryImpl.FACTORY.LInteractionSeq(lis);
+		return AstFactoryImpl.FACTORY.LInteractionSeq(this.source, lis);
 	}
 
 	@Override
 	public LInteractionSeq reconstruct(List<? extends InteractionNode<Local>> actions)
 	{
 		ScribDel del = del();
-		LInteractionSeq lis = new LInteractionSeq(castNodes(actions));
+		LInteractionSeq lis = new LInteractionSeq(this.source, castNodes(actions));
 		lis = (LInteractionSeq) lis.del(del);
 		return lis;
 	}

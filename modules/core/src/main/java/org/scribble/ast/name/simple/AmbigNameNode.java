@@ -1,5 +1,6 @@
 package org.scribble.ast.name.simple;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.PayloadElemNameNode;
@@ -17,9 +18,9 @@ import org.scribble.sesstype.name.PayloadType;
 //public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode<PayloadTypeKind>
 public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode<DataTypeKind>  // Currently hardcoded to DataTypeKind for payload elems
 {
-	public AmbigNameNode(String identifier)
+	public AmbigNameNode(CommonTree source, String identifier)
 	{
-		super(identifier);
+		super(source, identifier);
 	}
 	
 	@Override
@@ -31,13 +32,13 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageN
 	@Override
 	protected AmbigNameNode copy()
 	{
-		return new AmbigNameNode(getIdentifier());
+		return new AmbigNameNode(this.source, getIdentifier());
 	}
 	
 	@Override
 	public AmbigNameNode clone()
 	{
-		return (AmbigNameNode) AstFactoryImpl.FACTORY.AmbiguousNameNode(getIdentifier());
+		return (AmbigNameNode) AstFactoryImpl.FACTORY.AmbiguousNameNode(this.source, getIdentifier());
 	}
 	
 	@Override

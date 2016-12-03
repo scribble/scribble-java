@@ -1,5 +1,6 @@
 package org.scribble.ast.global;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Constants;
 import org.scribble.ast.NonRoleParamDeclList;
@@ -14,15 +15,15 @@ import org.scribble.sesstype.name.GProtocolName;
 
 public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 {
-	public GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	public GProtocolHeader(CommonTree source, GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
-		super(name, roledecls, paramdecls);
+		super(source, name, roledecls, paramdecls);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new GProtocolHeader(getNameNode(), this.roledecls, this.paramdecls);
+		return new GProtocolHeader(this.source, getNameNode(), this.roledecls, this.paramdecls);
 	}
 	
 	@Override
@@ -31,14 +32,14 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 		GProtocolNameNode name = getNameNode().clone();
 		RoleDeclList roledecls = this.roledecls.clone();
 		NonRoleParamDeclList paramdecls = this.paramdecls.clone();
-		return AstFactoryImpl.FACTORY.GProtocolHeader(name, roledecls, paramdecls);
+		return AstFactoryImpl.FACTORY.GProtocolHeader(this.source, name, roledecls, paramdecls);
 	}
 
 	@Override
 	public GProtocolHeader reconstruct(ProtocolNameNode<Global> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
 	{
 		ScribDel del = del();
-		GProtocolHeader gph = new GProtocolHeader((GProtocolNameNode) name, rdl, pdl);
+		GProtocolHeader gph = new GProtocolHeader(this.source, (GProtocolNameNode) name, rdl, pdl);
 		gph = (GProtocolHeader) gph.del(del);
 		return gph;
 	}

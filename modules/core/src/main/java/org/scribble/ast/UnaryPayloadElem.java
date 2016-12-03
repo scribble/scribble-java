@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
@@ -21,10 +22,11 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase i
 	//public DataTypeElem(PayloadElemNameNode<DataTypeKind> name)
 	//public UnaryPayloadlem(DataTypeNode data)
 	//public UnaryPayloadElem(PayloadElemNameNode name)
-	public UnaryPayloadElem(PayloadElemNameNode<K> name)
+	public UnaryPayloadElem(CommonTree source, PayloadElemNameNode<K> name)
 	{
 		//super(name);
 		//this.data = data;
+		super(source);
 		this.name = name;
 	}
 	
@@ -38,7 +40,7 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase i
 	protected UnaryPayloadElem<K> copy()
 	{
 		//return new UnaryPayloadElem(this.data);
-		return new UnaryPayloadElem<>(this.name);
+		return new UnaryPayloadElem<>(this.source, this.name);
 	}
 	
 	@Override
@@ -47,7 +49,7 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase i
 		//PayloadElemNameNode<DataTypeKind> name = (PayloadElemNameNode<DataTypeKind>) this.data.clone();  // FIXME: make a DataTypeNameNode
 		//PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) this.name.clone();
 		PayloadElemNameNode<K> name = ScribUtil.checkNodeClassEquality(this.name, this.name.clone());
-		return AstFactoryImpl.FACTORY.UnaryPayloadElem(name);
+		return AstFactoryImpl.FACTORY.UnaryPayloadElem(this.source, name);
 	}
 
 	//public DataTypeElem reconstruct(PayloadElemNameNode<DataTypeKind> name)
@@ -55,7 +57,7 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase i
 	public UnaryPayloadElem<K> reconstruct(PayloadElemNameNode<K> name)
 	{
 		ScribDel del = del();
-		UnaryPayloadElem<K> elem = new UnaryPayloadElem<>(name);
+		UnaryPayloadElem<K> elem = new UnaryPayloadElem<>(this.source, name);
 		elem = ScribNodeBase.del(elem, del);
 		return elem;
 	}
