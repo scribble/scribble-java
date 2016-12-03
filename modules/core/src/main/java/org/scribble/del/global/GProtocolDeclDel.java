@@ -75,7 +75,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		if (occs.size() != decls.size()) 
 		{
 			decls.removeAll(occs);
-			throw new ScribbleException("Unused role decl(s) in " + gpd.header.name + ": " + decls);
+			throw new ScribbleException(gpd.header.roledecls.getSource(), "Unused role decl(s) in " + gpd.header.name + ": " + decls);
 		}
 
 		return super.leaveRoleCollection(parent, child, coll, gpd);

@@ -54,7 +54,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		Role subj = cho.subj.toName();
 		if (!checker.peekParentEnv().isEnabled(subj))
 		{
-			throw new ScribbleException("Subject not enabled: " + subj);
+			throw new ScribbleException(cho.subj.getSource(), "Subject not enabled: " + subj);
 		}
 		
 		// Enabled senders checked in GMessageTransferDel
