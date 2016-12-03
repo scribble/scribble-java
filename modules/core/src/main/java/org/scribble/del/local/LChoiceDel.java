@@ -88,11 +88,11 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 			throw new ScribbleException("Cannot project for inconsistent local choice subjects: " + subjs);  // self not recorded -- can derive from LProtocolDecl RoleDeclList
 			//throw new RuntimeException("Shouldn't get in here: " + subjs);
 		}
-		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND,
+		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND,  // FIXME? null source OK?
 				//blocks.get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer).toString());
 				subjs.iterator().next().toString());
 		fixer.setChoiceSubject(subj.toName());
-		LChoice projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
+		LChoice projection = AstFactoryImpl.FACTORY.LChoice(lc.getSource(), subj, blocks);
 		return projection;
 	}
 
@@ -103,7 +103,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		List<LProtocolBlock> blocks = 
 				lc.getBlocks().stream().map((b) -> (LProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
 		RoleNode subj = lc.subj.clone();
-		LChoice inlined = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
+		LChoice inlined = AstFactoryImpl.FACTORY.LChoice(lc.getSource(), subj, blocks);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LChoice) super.leaveProtocolInlining(parent, child, inl, lc);
 	}

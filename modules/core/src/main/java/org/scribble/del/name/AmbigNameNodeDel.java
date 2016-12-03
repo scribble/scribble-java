@@ -24,7 +24,8 @@ public class AmbigNameNodeDel extends ScribDelBase
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		ModuleContext mcontext = disamb.getModuleContext();
-		AmbigName name = ((AmbigNameNode) visited).toName();
+		AmbigNameNode ann = (AmbigNameNode) visited;
+		AmbigName name = ann.toName();
 		// By well-formedness (checked later), payload type and parameter names are distinct
 		// FIXME: are conflicts checked elsewhere?
 		if (mcontext.isDataTypeVisible(name.toDataType()))
@@ -33,7 +34,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 			{
 				throw new ScribbleException("Invalid occurrence of data type: " + parent);
 			}
-			return AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, name.getElements());
+			return AstFactoryImpl.FACTORY.QualifiedNameNode(ann.getSource(), DataTypeKind.KIND, name.getElements());
 		}
 		else if (mcontext.isMessageSigNameVisible(name.toMessageSigName()))
 		{
@@ -41,11 +42,11 @@ public class AmbigNameNodeDel extends ScribDelBase
 			{
 				throw new ScribbleException("Invalid occurrence of message signature name: " + parent);
 			}
-			return AstFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, name.getElements());
+			return AstFactoryImpl.FACTORY.QualifiedNameNode(ann.getSource(), SigKind.KIND, name.getElements());
 		}
 		else if (disamb.isBoundParameter(name))
 		{
-			return AstFactoryImpl.FACTORY.NonRoleParamNode(disamb.getParameterKind(name), name.toString());
+			return AstFactoryImpl.FACTORY.NonRoleParamNode(ann.getSource(), disamb.getParameterKind(name), name.toString());
 		}
 		throw new ScribbleException("Cannot disambiguate name: " + name);
 	}

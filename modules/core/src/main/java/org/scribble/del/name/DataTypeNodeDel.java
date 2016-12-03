@@ -36,6 +36,6 @@ public class DataTypeNodeDel extends ScribDelBase
 		}
 		DataType fullname = mc.getVisibleDataTypeFullName(dt);
 		return (DataTypeNode)
-				AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, fullname.getElements());  // Didn't keep original del
+				AstFactoryImpl.FACTORY.QualifiedNameNode(dtn.getSource(), DataTypeKind.KIND, fullname.getElements());  // Didn't keep original del
 	}
 }

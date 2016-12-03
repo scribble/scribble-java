@@ -17,6 +17,7 @@ import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.main.ScribbleException;
@@ -103,10 +104,10 @@ public class ModuleDel extends ScribDelBase
 	}
 
 	// lpd is the projected local protocol
-	public Module createModuleForProjection(Projector proj, Module root, LProtocolDecl lpd, Map<GProtocolName, Set<Role>> deps)
+	public Module createModuleForProjection(Projector proj, Module root, GProtocolDecl gpd, LProtocolDecl lpd, Map<GProtocolName, Set<Role>> deps)
 	{
 		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(root.moddecl.getFullModuleName(), lpd.getHeader().getDeclName());
-		ModuleDecl moddecl = AstFactoryImpl.FACTORY.ModuleDecl(modname);
+		ModuleDecl moddecl = AstFactoryImpl.FACTORY.ModuleDecl(null, modname);  // FIXME? source? root.moddecl.getSource()?  Or ignore as purely generated
 		List<ImportDecl<?>> imports = new LinkedList<>();
 		for (GProtocolName gpn : deps.keySet())
 		{
@@ -116,14 +117,14 @@ public class ModuleDel extends ScribDelBase
 				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(gpn.getPrefix(), targetsimpname);
 				if (!targetmodname.toName().equals(modname.toName()))  // Self dependency -- each projected local is in its own module now, so can compare module names
 				{
-					imports.add(AstFactoryImpl.FACTORY.ImportModule(targetmodname, null));
+					imports.add(AstFactoryImpl.FACTORY.ImportModule(null, targetmodname, null));  // FIXME? source?
 				}
 			}
 		}
 		
 		List<NonProtocolDecl<?>> data = new LinkedList<>(root.getNonProtocolDecls());  // FIXME: copy?  // FIXME: only project the dependencies
 		List<ProtocolDecl<?>> protos = Arrays.asList(lpd);
-		return AstFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
+		return AstFactoryImpl.FACTORY.Module(gpd.header.getSource(), moddecl, imports, data, protos);
 	}
 	
 	@Override 

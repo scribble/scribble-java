@@ -50,7 +50,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 				lins.add((LInteractionNode) inlined);
 			}
 		}
-		LInteractionSeq inlined = AstFactoryImpl.FACTORY.LInteractionSeq(lins);
+		LInteractionSeq inlined = AstFactoryImpl.FACTORY.LInteractionSeq(lis.getSource(), lins);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, inl, lis);
 	}

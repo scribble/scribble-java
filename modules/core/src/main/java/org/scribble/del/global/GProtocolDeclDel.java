@@ -93,7 +93,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		LProtocolDecl lpd = gpd.project(root, self, def);  // FIXME: is root (always) the correct module? (wrt. LProjectionDeclDel?)
 		
 		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
-		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, lpd, deps);
+		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, gpd, lpd, deps);
 		proj.addProjection(gpd.getFullMemberName(root), self, projected);
 		return gpd;
 	}

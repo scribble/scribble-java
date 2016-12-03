@@ -76,7 +76,8 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 		{
 			throw new ScribbleException("Cannot merge recursions for " + this.recvar + " and " + them.recvar + ": " + this + ", " + ln);
 		}
-		return AstFactoryImpl.FACTORY.LRecursion(null, this.recvar.clone(), getBlock().merge(them.getBlock()));  // Not reconstruct: leave context building to post-projection passes
+		return AstFactoryImpl.FACTORY.LRecursion(this.source, this.recvar.clone(), getBlock().merge(them.getBlock()));  // Not reconstruct: leave context building to post-projection passes
+				// HACK: this source
 	}
 
 	@Override
