@@ -169,6 +169,7 @@ public class JobContext
 		if (proj == null)
 		{
 			throw new ScribbleException("Projection not found: " + fullname + ", " + role);  // E.g. disamb/enabling error before projection passes (e.g. CommandLine -fsm arg)
+				// FIXME: should not occur any more
 		}
 		return proj;
 	}

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.AstVisitor;
@@ -16,8 +17,9 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 {
 	private final List<T> args;
 
-	public DoArgList(List<T> is)
+	public DoArgList(CommonTree source, List<T> is)
 	{
+		super(source);
 		this.args = new LinkedList<>(is);
 	}
 	

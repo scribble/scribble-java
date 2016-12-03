@@ -21,7 +21,8 @@ public class AntlrGParallel
 		{
 			blocks.add((GProtocolBlock) parser.parse(b));
 		}
-		return new GParallel(blocks);
+		//return new GParallel(blocks);
+		return null;
 	}
 
 	public static final List<CommonTree> getBlockChildren(CommonTree ct)

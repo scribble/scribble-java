@@ -1,5 +1,6 @@
 package org.scribble.ast.global;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
@@ -11,35 +12,35 @@ import org.scribble.sesstype.name.Role;
 
 public class GProtocolBlock extends ProtocolBlock<Global> implements GNode
 {
-	public GProtocolBlock(GInteractionSeq seq)
+	public GProtocolBlock(CommonTree source, GInteractionSeq seq)
 	{
-		super(seq);
+		super(source, seq);
 	}
 
 	public LProtocolBlock project(Role self, LInteractionSeq seq)
 	{
-		LProtocolBlock projection = AstFactoryImpl.FACTORY.LProtocolBlock(seq);
+		LProtocolBlock projection = AstFactoryImpl.FACTORY.LProtocolBlock(this.source, seq);
 		return projection;
 	}
 
 	@Override
 	protected GProtocolBlock copy()
 	{
-		return new GProtocolBlock(getInteractionSeq());
+		return new GProtocolBlock(this.source, getInteractionSeq());
 	}
 	
 	@Override
 	public GProtocolBlock clone()
 	{
 		GInteractionSeq gis = getInteractionSeq().clone();
-		return AstFactoryImpl.FACTORY.GProtocolBlock(gis);
+		return AstFactoryImpl.FACTORY.GProtocolBlock(this.source, gis);
 	}
 
 	@Override
 	public GProtocolBlock reconstruct(InteractionSeq<Global> seq)
 	{
 		ScribDel del = del();
-		GProtocolBlock gpb = new GProtocolBlock((GInteractionSeq) seq);
+		GProtocolBlock gpb = new GProtocolBlock(this.source, (GInteractionSeq) seq);
 		gpb = (GProtocolBlock) gpb.del(del);
 		return gpb;
 	}

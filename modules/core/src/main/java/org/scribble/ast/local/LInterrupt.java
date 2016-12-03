@@ -2,6 +2,7 @@ package org.scribble.ast.local;
 
 import java.util.List;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Interrupt;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
@@ -11,9 +12,9 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public abstract class LInterrupt extends Interrupt implements LSimpleInteractionNode
 {
-	protected LInterrupt(RoleNode src, List<MessageNode> msgs)
+	protected LInterrupt(CommonTree source, RoleNode src, List<MessageNode> msgs)
 	{
-		super(src, msgs);
+		super(source, src, msgs);
 	}
 	
 	@Override

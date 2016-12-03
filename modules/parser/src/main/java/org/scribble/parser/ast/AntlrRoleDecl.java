@@ -15,7 +15,7 @@ public class AntlrRoleDecl
 	public static RoleDecl parseRoleDecl(ScribParser parser, CommonTree ct)
 	{
 		RoleNode name = AntlrSimpleName.toRoleNode(getNameChild(ct));
-		return AstFactoryImpl.FACTORY.RoleDecl(name);
+		return AstFactoryImpl.FACTORY.RoleDecl(ct, name);
 	}
 
 	public static CommonTree getNameChild(CommonTree ct)

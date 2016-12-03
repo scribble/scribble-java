@@ -2,6 +2,7 @@ package org.scribble.ast;
 
 import java.util.List;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
@@ -115,18 +116,18 @@ public class AstFactoryImpl implements AstFactory
 	public static final AstFactory FACTORY = new AstFactoryImpl();
 	
 	@Override
-	public MessageSigNode MessageSigNode(OpNode op, PayloadElemList payload)
+	public MessageSigNode MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload)
 	{
-		MessageSigNode msn = new MessageSigNode(op, payload);
+		MessageSigNode msn = new MessageSigNode(source, op, payload);
 		msn = del(msn, createDefaultDelegate());
 		return msn;
 	}
 
 	@Override
 	//public PayloadElemList PayloadElemList(List<PayloadElem> payloadelems)
-	public PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems)
+	public PayloadElemList PayloadElemList(CommonTree source, List<PayloadElem<?>> payloadelems)
 	{
-		PayloadElemList p = new PayloadElemList(payloadelems);
+		PayloadElemList p = new PayloadElemList(source, payloadelems);
 		p = del(p, createDefaultDelegate());
 		return p;
 	}
@@ -142,98 +143,98 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	//public UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name)
 	//public UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name)
-	public <K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(PayloadElemNameNode<K> name)
+	public <K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(CommonTree source, PayloadElemNameNode<K> name)
 	{
-		UnaryPayloadElem<K> de= new UnaryPayloadElem<>(name);
+		UnaryPayloadElem<K> de= new UnaryPayloadElem<>(source, name);
 		de = del(de, createDefaultDelegate());
 		return de;
 	}
 
 	@Override
-	public GDelegationElem GDelegationElem(GProtocolNameNode proto, RoleNode role)
+	public GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
 	{
-		GDelegationElem de = new GDelegationElem(proto, role);
+		GDelegationElem de = new GDelegationElem(source, proto, role);
 		//de = del(de, createDefaultDelegate());
 		de = del(de, new GDelegationElemDel());  // FIXME: GDelegationElemDel
 		return de;
 	}
 
 	@Override
-	public LDelegationElem LDelegationElem(LProtocolNameNode proto)
+	public LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode proto)
 	{
-		LDelegationElem de = new LDelegationElem(proto);
+		LDelegationElem de = new LDelegationElem(source, proto);
 		de = del(de, createDefaultDelegate());
 		return de;
 	}
 	
 	@Override
-	public Module Module(ModuleDecl moddecl, List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos)
+	public Module Module(CommonTree source, ModuleDecl moddecl, List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos)
 	{
-		Module module = new Module(moddecl, imports, data, protos);
+		Module module = new Module(source, moddecl, imports, data, protos);
 		module = del(module, new ModuleDel());
 		return module;
 	}
 
 	@Override
-	public ModuleDecl ModuleDecl(ModuleNameNode fullmodname)
+	public ModuleDecl ModuleDecl(CommonTree source, ModuleNameNode fullmodname)
 	{
-		ModuleDecl md = new ModuleDecl(fullmodname);
+		ModuleDecl md = new ModuleDecl(source, fullmodname);
 		md = del(md, createDefaultDelegate());
 		return md;
 	}
 
 	@Override
-	public ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias)
+	public ImportModule ImportModule(CommonTree source, ModuleNameNode modname, ModuleNameNode alias)
 	{
-		ImportModule im = new ImportModule(modname, alias);
+		ImportModule im = new ImportModule(source, modname, alias);
 		im = del(im, new ImportModuleDel());
 		return im;
 	}
 	
 	@Override
-	public MessageSigNameDecl MessageSigNameDecl(String schema, String extName, String source, MessageSigNameNode alias)
+	public MessageSigNameDecl MessageSigNameDecl(CommonTree source, String schema, String extName, String extSource, MessageSigNameNode alias)
 	{
-		MessageSigNameDecl msd = new MessageSigNameDecl(schema, extName, source, alias);
+		MessageSigNameDecl msd = new MessageSigNameDecl(source, schema, extName, extSource, alias);
 		msd = del(msd, createDefaultDelegate());
 		return msd;
 	}
 
 	@Override
-	public DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNode alias)
+	public DataTypeDecl DataTypeDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode alias)
 	{
-		DataTypeDecl dtd = new DataTypeDecl(schema, extName, source, alias);
+		DataTypeDecl dtd = new DataTypeDecl(source, schema, extName, extSource, alias);
 		dtd = del(dtd, createDefaultDelegate());
 		return dtd;
 	}
 
 	@Override
-	public GProtocolDecl GProtocolDecl(List<GProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)
+	public GProtocolDecl GProtocolDecl(CommonTree source, List<GProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)
 	{
-		GProtocolDecl gpd = new GProtocolDecl(modifiers, header, def);
+		GProtocolDecl gpd = new GProtocolDecl(source, modifiers, header, def);
 		gpd = del(gpd, new GProtocolDeclDel());
 		return gpd;
 	}
 
 	@Override
-	public GProtocolHeader GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	public GProtocolHeader GProtocolHeader(CommonTree source, GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
-		GProtocolHeader gph = new GProtocolHeader(name, roledecls, paramdecls);
+		GProtocolHeader gph = new GProtocolHeader(source, name, roledecls, paramdecls);
 		gph = del(gph, createDefaultDelegate());
 		return gph;
 	}
 
 	@Override
-	public RoleDeclList RoleDeclList(List<RoleDecl> rds)
+	public RoleDeclList RoleDeclList(CommonTree source, List<RoleDecl> rds)
 	{
-		RoleDeclList rdl = new RoleDeclList(rds);
+		RoleDeclList rdl = new RoleDeclList(source, rds);
 		rdl = del(rdl, new RoleDeclListDel());
 		return rdl;
 	}
 
 	@Override
-	public RoleDecl RoleDecl(RoleNode namenode)
+	public RoleDecl RoleDecl(CommonTree source, RoleNode namenode)
 	{
-		RoleDecl rd = new RoleDecl(namenode);
+		RoleDecl rd = new RoleDecl(source, namenode);
 		rd = del(rd, new RoleDeclDel());
 		return rd;
 	}
@@ -247,155 +248,155 @@ public class AstFactoryImpl implements AstFactory
 	}*/
 
 	@Override
-	public NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> pds)
+	public NonRoleParamDeclList NonRoleParamDeclList(CommonTree source, List<NonRoleParamDecl<NonRoleParamKind>> pds)
 	{
-		NonRoleParamDeclList pdl = new NonRoleParamDeclList(pds);
+		NonRoleParamDeclList pdl = new NonRoleParamDeclList(source, pds);
 		pdl = del(pdl, new NonRoleParamDeclListDel());
 		return pdl;
 	}
 
 	@Override
-	public <K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(K kind, NonRoleParamNode<K> namenode)
+	public <K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> namenode)
 	{
-		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(kind, namenode);
+		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(source, kind, namenode);
 		pd = del(pd, new NonRoleParamDeclDel());
 		return pd;
 	}
 
 	@Override
-	public GProtocolDef GProtocolDef(GProtocolBlock block)
+	public GProtocolDef GProtocolDef(CommonTree source, GProtocolBlock block)
 	{
-		GProtocolDef gpd = new GProtocolDef(block);
+		GProtocolDef gpd = new GProtocolDef(source, block);
 		gpd = del(gpd, new GProtocolDefDel());
 		return gpd;
 	}
 
 	@Override
-	public GProtocolBlock GProtocolBlock(GInteractionSeq seq)
+	public GProtocolBlock GProtocolBlock(CommonTree source, GInteractionSeq seq)
 	{
-		GProtocolBlock gpb = new GProtocolBlock(seq);
+		GProtocolBlock gpb = new GProtocolBlock(source, seq);
 		gpb = del(gpb, new GProtocolBlockDel());
 		return gpb;
 	}
 
 	@Override
-	public GInteractionSeq GInteractionSeq(List<GInteractionNode> actions)
+	public GInteractionSeq GInteractionSeq(CommonTree source, List<GInteractionNode> actions)
 	{
-		GInteractionSeq gis = new GInteractionSeq(actions);
+		GInteractionSeq gis = new GInteractionSeq(source, actions);
 		gis = del(gis, new GInteractionSeqDel());
 		return gis;
 	}
 
 	@Override
-	public GMessageTransfer GMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public GMessageTransfer GMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		GMessageTransfer gmt = new GMessageTransfer(src, msg, dests);
+		GMessageTransfer gmt = new GMessageTransfer(source, src, msg, dests);
 		gmt = del(gmt, new GMessageTransferDel());
 		return gmt;
 	}
 
 	@Override
-	public GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dest)
+	public GConnect GConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//public GConnect GConnect(RoleNode src, RoleNode dest)
 	{
-		GConnect gc = new GConnect(src, msg, dest);
+		GConnect gc = new GConnect(source, src, msg, dest);
 		//GConnect gc = new GConnect(src, dest);
 		gc = del(gc, new GConnectDel());
 		return gc;
 	}
 
 	@Override
-	public GDisconnect GDisconnect(RoleNode src, RoleNode dest)
+	public GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest)
 	{
-		GDisconnect gc = new GDisconnect(src, dest);
+		GDisconnect gc = new GDisconnect(source, src, dest);
 		gc = del(gc, new GDisconnectDel());
 		return gc;
 	}
 
 	@Override
-	public GWrap GWrap(RoleNode src, RoleNode dest)
+	public GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest)
 	{
-		GWrap gw = new GWrap(src, dest);
+		GWrap gw = new GWrap(source, src, dest);
 		gw = del(gw, new GWrapDel());
 		return gw;
 	}
 
 	@Override
-	public GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks)
+	public GChoice GChoice(CommonTree source, RoleNode subj, List<GProtocolBlock> blocks)
 	{
-		GChoice gc = new GChoice(subj, blocks);
+		GChoice gc = new GChoice(source, subj, blocks);
 		gc = del(gc, new GChoiceDel());
 		return gc;
 	}
 
 	@Override
-	public GRecursion GRecursion(RecVarNode recvar, GProtocolBlock block)
+	public GRecursion GRecursion(CommonTree source, RecVarNode recvar, GProtocolBlock block)
 	{
-		GRecursion gr = new GRecursion(recvar, block);
+		GRecursion gr = new GRecursion(source, recvar, block);
 		gr = del(gr, new GRecursionDel());
 		return gr;
 	}
 
 	@Override
-	public GContinue GContinue(RecVarNode recvar)
+	public GContinue GContinue(CommonTree source, RecVarNode recvar)
 	{
-		GContinue gc = new GContinue(recvar);
+		GContinue gc = new GContinue(source, recvar);
 		gc = del(gc, new GContinueDel());
 		return gc;
 	}
 
 	@Override
-	public GDo GDo(RoleArgList roleinstans, NonRoleArgList arginstans, GProtocolNameNode proto)
+	public GDo GDo(CommonTree source, RoleArgList roleinstans, NonRoleArgList arginstans, GProtocolNameNode proto)
 	{
-		GDo gd = new GDo(roleinstans, arginstans, proto);
+		GDo gd = new GDo(source, roleinstans, arginstans, proto);
 		gd = del(gd, new GDoDel());
 		return gd;
 	}
 
 	@Override
-	public RoleArgList RoleArgList(List<RoleArg> ris)
+	public RoleArgList RoleArgList(CommonTree source, List<RoleArg> ris)
 	{
-		RoleArgList rdl = new RoleArgList(ris);
+		RoleArgList rdl = new RoleArgList(source, ris);
 		rdl = del(rdl, new RoleArgListDel());
 		return rdl;
 	}
 
 	@Override
-	public RoleArg RoleArg(RoleNode role)
+	public RoleArg RoleArg(CommonTree source, RoleNode role)
 	{
-		RoleArg ri = new RoleArg(role);
+		RoleArg ri = new RoleArg(source, role);
 		ri = del(ri, createDefaultDelegate());
 		return ri;
 	}
 
 	@Override
-	public NonRoleArgList NonRoleArgList(List<NonRoleArg> ais)
+	public NonRoleArgList NonRoleArgList(CommonTree source, List<NonRoleArg> ais)
 	{
-		NonRoleArgList rdl = new NonRoleArgList(ais);
+		NonRoleArgList rdl = new NonRoleArgList(source, ais);
 		rdl = del(rdl, new NonRoleArgListDel());
 		return rdl;
 	}
 
 	@Override
-	public NonRoleArg NonRoleArg(NonRoleArgNode arg)
+	public NonRoleArg NonRoleArg(CommonTree source, NonRoleArgNode arg)
 	{
-		NonRoleArg ri = new NonRoleArg(arg);
+		NonRoleArg ri = new NonRoleArg(source, arg);
 		ri = del(ri, createDefaultDelegate());
 		return ri;
 	}
 	
 	@Override
-	public <K extends Kind> NameNode<K> SimpleNameNode(K kind, String identifier)
+	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier)
 	{
 		NameNode<? extends Kind> snn = null;
 		if (kind.equals(RecVarKind.KIND))
 		{
-			snn = new RecVarNode(identifier);
+			snn = new RecVarNode(source, identifier);
 			snn = del(snn, new RecVarNodeDel());
 		}
 		else if (kind.equals(RoleKind.KIND))
 		{
-			snn = new RoleNode(identifier);
+			snn = new RoleNode(source, identifier);
 			snn = del(snn, new RoleNodeDel());
 		}
 		if (snn != null)
@@ -405,7 +406,7 @@ public class AstFactoryImpl implements AstFactory
 
 		if (kind.equals(OpKind.KIND))
 		{
-			snn = new OpNode(identifier);
+			snn = new OpNode(source, identifier);
 		}
 		else
 		{
@@ -415,17 +416,17 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind, String... elems)
+	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source, K kind, String... elems)
 	{
 		QualifiedNameNode<? extends Kind> qnn = null;
 		if (kind.equals(SigKind.KIND))
 		{
-			qnn = new MessageSigNameNode(elems);
+			qnn = new MessageSigNameNode(source, elems);
 			qnn = del(qnn, new MessageSigNameNodeDel());
 		}
 		else if (kind.equals(DataTypeKind.KIND))
 		{
-			qnn = new DataTypeNode(elems);
+			qnn = new DataTypeNode(source, elems);
 			qnn = del(qnn, new DataTypeNodeDel());
 		}
 		if (qnn != null)
@@ -435,15 +436,15 @@ public class AstFactoryImpl implements AstFactory
 
 		if (kind.equals(ModuleKind.KIND))
 		{
-			qnn = new ModuleNameNode(elems);
+			qnn = new ModuleNameNode(source, elems);
 		}
 		else if (kind.equals(Global.KIND))
 		{
-			qnn = new GProtocolNameNode(elems);
+			qnn = new GProtocolNameNode(source, elems);
 		}
 		else if (kind.equals(Local.KIND))
 		{
-			qnn = new LProtocolNameNode(elems);
+			qnn = new LProtocolNameNode(source,elems);
 		}
 		else
 		{
@@ -464,17 +465,17 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public AmbigNameNode AmbiguousNameNode(String identifier)
+	public AmbigNameNode AmbiguousNameNode(CommonTree source, String identifier)
 	{
-		AmbigNameNode ann = new AmbigNameNode(identifier); 
+		AmbigNameNode ann = new AmbigNameNode(source, identifier); 
 		ann = (AmbigNameNode) ann.del(new AmbigNameNodeDel());
 		return ann;
 	}
 
 	@Override
-	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(K kind, String identifier)
+	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier)
 	{
-		NonRoleParamNode<K> pn = new NonRoleParamNode<K>(kind, identifier);
+		NonRoleParamNode<K> pn = new NonRoleParamNode<K>(source, kind, identifier);
 		pn = del(pn, new ParamNodeDel());
 		return pn;
 	}
@@ -488,141 +489,141 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LProtocolDecl LProtocolDecl(List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def)
+	public LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def)
 	{
-		LProtocolDecl lpd = new LProtocolDecl(modifiers, header, def);
+		LProtocolDecl lpd = new LProtocolDecl(source, modifiers, header, def);
 		lpd = del(lpd, new LProtocolDeclDel());
 		return lpd;
 	}
 
 	@Override
-	public LProtocolHeader LProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	public LProtocolHeader LProtocolHeader(CommonTree source, LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
-		LProtocolHeader lph = new LProtocolHeader(name, roledecls, paramdecls);
+		LProtocolHeader lph = new LProtocolHeader(source, name, roledecls, paramdecls);
 		lph = del(lph, createDefaultDelegate());
 		return lph;
 	}
 
 	@Override
-	public SelfRoleDecl SelfRoleDecl(RoleNode namenode)
+	public SelfRoleDecl SelfRoleDecl(CommonTree source, RoleNode namenode)
 	{
-		SelfRoleDecl rd = new SelfRoleDecl(namenode);
+		SelfRoleDecl rd = new SelfRoleDecl(source, namenode);
 		rd = del(rd, new RoleDeclDel());
 		return rd;
 	}
 
 	@Override
-	public LProtocolDef LProtocolDef(LProtocolBlock block)
+	public LProtocolDef LProtocolDef(CommonTree source, LProtocolBlock block)
 	{
-		LProtocolDef lpd = new LProtocolDef(block);
+		LProtocolDef lpd = new LProtocolDef(source, block);
 		lpd = del(lpd, new LProtocolDefDel());
 		return lpd;
 	}
 
 	@Override
-	public LProtocolBlock LProtocolBlock(LInteractionSeq seq)
+	public LProtocolBlock LProtocolBlock(CommonTree source, LInteractionSeq seq)
 	{
-		LProtocolBlock lpb = new LProtocolBlock(seq);
+		LProtocolBlock lpb = new LProtocolBlock(source, seq);
 		lpb = del(lpb, new LProtocolBlockDel());
 		return lpb;
 	}
 
 	@Override
-	public LInteractionSeq LInteractionSeq(List<LInteractionNode> actions)
+	public LInteractionSeq LInteractionSeq(CommonTree source, List<LInteractionNode> actions)
 	{
-		LInteractionSeq lis = new LInteractionSeq(actions);
+		LInteractionSeq lis = new LInteractionSeq(source, actions);
 		lis = del(lis, new LInteractionSeqDel());
 		return lis;
 	}
 
 	@Override
-	public LSend LSend(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public LSend LSend(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		LSend ls = new LSend(src, msg, dests);
+		LSend ls = new LSend(source, src, msg, dests);
 		ls = del(ls, new LSendDel());
 		return ls;
 	}
 
 	@Override
-	public LReceive LReceive(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		LReceive ls = new LReceive(src, msg, dests);
+		LReceive ls = new LReceive(source, src, msg, dests);
 		ls = del(ls, new LReceiveDel());
 		return ls;
 	}
 	
 	@Override
-	public LConnect LConnect(RoleNode src, MessageNode msg, RoleNode dest)
+	public LConnect LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//public LConnect LConnect(RoleNode src, RoleNode dest)
 	{
-		LConnect lc = new LConnect(src, msg, dest);
+		LConnect lc = new LConnect(source, src, msg, dest);
 		//LConnect lc = new LConnect(src, dest);
 		lc = del(lc, new LConnectDel());
 		return lc;
 	}
 
 	@Override
-	public LAccept LAccept(RoleNode src, MessageNode msg, RoleNode dest)
+	public LAccept LAccept(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//public LAccept LAccept(RoleNode src, RoleNode dest)
 	{
-		LAccept la = new LAccept(src, msg, dest);
+		LAccept la = new LAccept(source, src, msg, dest);
 		//LAccept la = new LAccept(src, dest);
 		la = del(la, new LAcceptDel());
 		return la;
 	}
 
 	@Override
-	public LDisconnect LDisconnect(RoleNode self, RoleNode peer)
+	public LDisconnect LDisconnect(CommonTree source, RoleNode self, RoleNode peer)
 	{
-		LDisconnect lc = new LDisconnect(self, peer);
+		LDisconnect lc = new LDisconnect(source, self, peer);
 		lc = del(lc, new LDisconnectDel());
 		return lc;
 	}
 
 	@Override
-	public LWrapClient LWrapClient(RoleNode self, RoleNode peer)
+	public LWrapClient LWrapClient(CommonTree source, RoleNode self, RoleNode peer)
 	{
-		LWrapClient lwc = new LWrapClient(self, peer);
+		LWrapClient lwc = new LWrapClient(source, self, peer);
 		lwc = del(lwc, new LWrapClientDel());
 		return lwc;
 	}
 
 	@Override
-	public LWrapServer LWrapServer(RoleNode self, RoleNode peer)
+	public LWrapServer LWrapServer(CommonTree source, RoleNode self, RoleNode peer)
 	{
-		LWrapServer lws = new LWrapServer(self, peer);
+		LWrapServer lws = new LWrapServer(source, self, peer);
 		lws = del(lws, new LWrapServerDel());
 		return lws;
 	}
 
 	@Override
-	public LChoice LChoice(RoleNode subj, List<LProtocolBlock> blocks)
+	public LChoice LChoice(CommonTree source, RoleNode subj, List<LProtocolBlock> blocks)
 	{
-		LChoice lc = new LChoice(subj, blocks);
+		LChoice lc = new LChoice(source, subj, blocks);
 		lc = del(lc, new LChoiceDel());
 		return lc;
 	}
 
 	@Override
-	public LRecursion LRecursion(RecVarNode recvar, LProtocolBlock block)
+	public LRecursion LRecursion(CommonTree source, RecVarNode recvar, LProtocolBlock block)
 	{
-		LRecursion lr = new LRecursion(recvar, block);
+		LRecursion lr = new LRecursion(source, recvar, block);
 		lr = del(lr, new LRecursionDel());
 		return lr;
 	}
 
 	@Override
-	public LContinue LContinue(RecVarNode recvar)
+	public LContinue LContinue(CommonTree source, RecVarNode recvar)
 	{
-		LContinue lc = new LContinue(recvar);
+		LContinue lc = new LContinue(source, recvar);
 		lc = del(lc, new LContinueDel());
 		return lc;
 	}
 
 	@Override
-	public LDo LDo(RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto)
+	public LDo LDo(CommonTree source, RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto)
 	{
-		LDo ld = new LDo(roleinstans, arginstans, proto);
+		LDo ld = new LDo(source, roleinstans, arginstans, proto);
 		ld = del(ld, new LDoDel());
 		return ld;
 	}
@@ -646,9 +647,9 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LProtocolDecl LProjectionDecl(List<ProtocolDecl.Modifiers> modifiers, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def)  // del extends that of LProtocolDecl 
+	public LProtocolDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def)  // del extends that of LProtocolDecl 
 	{
-		LProtocolDecl lpd = new LProtocolDecl(modifiers, header, def);
+		LProtocolDecl lpd = new LProtocolDecl(source, modifiers, header, def);
 		lpd = ScribNodeBase.del(lpd, new LProjectionDeclDel(fullname, self));
 		return lpd;
 	}

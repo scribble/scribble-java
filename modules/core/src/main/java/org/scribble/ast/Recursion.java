@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -10,8 +11,9 @@ public abstract class Recursion<K extends ProtocolKind> extends CompoundInteract
 	public final RecVarNode recvar;
 	public final ProtocolBlock<K> block;
 
-	protected Recursion(RecVarNode recvar, ProtocolBlock<K> block)
+	protected Recursion(CommonTree source, RecVarNode recvar, ProtocolBlock<K> block)
 	{
+		super(source);
 		this.recvar = recvar;
 		this.block = block;
 	}

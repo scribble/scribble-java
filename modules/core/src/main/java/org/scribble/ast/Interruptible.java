@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.sesstype.kind.ProtocolKind;
 
@@ -12,8 +13,9 @@ public abstract class Interruptible<K extends ProtocolKind> extends CompoundInte
 	public final ProtocolBlock<K> block;
 	private final List<? extends Interrupt> interrs;
 
-	protected Interruptible(ScopeNode scope, ProtocolBlock<K> block, List<? extends Interrupt> interrs)
+	protected Interruptible(CommonTree source, ScopeNode scope, ProtocolBlock<K> block, List<? extends Interrupt> interrs)
 	{
+		super(source);
 		this.scope = scope;
 		this.block = block;
 		this.interrs = interrs;

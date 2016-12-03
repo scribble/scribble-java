@@ -19,7 +19,7 @@ public class RoleNodeDel extends ScribDelBase
 		RoleNode rn = (RoleNode) visited;
 		if (!disamb.isBoundRole(rn.toName()))
 		{
-			throw new ScribbleException("Role not bound: " + rn);
+			throw new ScribbleException(rn.getSource(), "Role not bound: " + rn);
 		}
 		return rn;
 	}

@@ -35,7 +35,7 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 		Role src = gd.src.toName();
 		if (!checker.peekEnv().isEnabled(src))
 		{
-			throw new ScribbleException("Role not enabled: " + src);
+			throw new ScribbleException(gd.src.getSource(), "Role not enabled: " + src);
 		}
 		//Message msg = gd.msg.toMessage();  //  Unit message 
 		WFChoiceEnv env = checker.popEnv();
@@ -43,16 +43,16 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 		Role dest = gd.dest.toName();
 		if (!env.isEnabled(dest))
 		{
-			throw new ScribbleException("Role not enabled: " + dest);
+			throw new ScribbleException(gd.dest.getSource(), "Role not enabled: " + dest);
 		}
 		{
 			if (src.equals(dest))
 			{
-				throw new ScribbleException("(TODO) Self connections not supported: " + gd);
+				throw new ScribbleException(gd.getSource(), "[TODO] Self connections not supported: " + gd);  // Would currently be subsumed by the below
 			}
 			if (!env.isConnected(src, dest))
 			{
-				throw new ScribbleException("Roles not connected: " + src + ", " + dest);
+				throw new ScribbleException(gd.getSource(), "Roles not (necessarily) connected: " + src + ", " + dest);
 			}
 
 			env = env.disconnect(src, dest);//.removeMessage(src, dest, ...);  // Is remove really needed?

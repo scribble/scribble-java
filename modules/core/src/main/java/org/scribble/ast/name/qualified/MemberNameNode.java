@@ -2,15 +2,16 @@ package org.scribble.ast.name.qualified;
 
 import java.util.Arrays;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.PackageName;
 
 public abstract class MemberNameNode<K extends Kind> extends QualifiedNameNode<K>
 {
-	public MemberNameNode(String... ns)
+	public MemberNameNode(CommonTree source, String... ns)
 	{
-		super(ns);
+		super(source, ns);
 	}
 	
 	protected ModuleName getModuleNamePrefix()

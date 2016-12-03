@@ -276,7 +276,7 @@ public class CommandLine
 		}
 		if (graph == null)
 		{
-			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+			throw new RuntimeScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
 		}
 		return graph;
 	}
@@ -313,7 +313,7 @@ public class CommandLine
 		SGraph model = fair ? jcontext.getSGraph(fullname) : jcontext.getUnfairSGraph(fullname);
 		if (model == null)
 		{
-			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+			throw new RuntimeScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
 		}
 		return model;
 	}

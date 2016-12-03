@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.MemberNameNode;
 import org.scribble.del.ScribDel;
@@ -9,29 +10,29 @@ import org.scribble.sesstype.name.ModuleName;
 
 public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 {
-	public DataTypeDecl(String schema, String extName, String source, DataTypeNode name)
+	public DataTypeDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name)
 	{
-		super(schema, extName, source, name);
+		super(source, schema, extName, extSource, name);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new DataTypeDecl(this.schema, this.extName, this.source, getNameNode());
+		return new DataTypeDecl(this.source, this.schema, this.extName, this.extSource, getNameNode());
 	}
 	
 	@Override
 	public DataTypeDecl clone()
 	{
 		DataTypeNode name = (DataTypeNode) this.name.clone();
-		return AstFactoryImpl.FACTORY.DataTypeDecl(this.schema, this.extName, this.source, name);
+		return AstFactoryImpl.FACTORY.DataTypeDecl(this.source, this.schema, this.extName, this.extSource, name);
 	}
 
 	@Override
-	public DataTypeDecl reconstruct(String schema, String extName, String source, MemberNameNode<DataTypeKind> name)
+	public DataTypeDecl reconstruct(String schema, String extName, String extSource, MemberNameNode<DataTypeKind> name)
 	{
 		ScribDel del = del();
-		DataTypeDecl dtd = new DataTypeDecl(schema, extName, source, (DataTypeNode) name);
+		DataTypeDecl dtd = new DataTypeDecl(this.source, schema, extName, extSource, (DataTypeNode) name);
 		dtd = (DataTypeDecl) dtd.del(del);
 		return dtd;
 	}
@@ -65,7 +66,7 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	public String toString()
 	{
 		return Constants.TYPE_KW + " <" + this.schema + "> " + this.extName
-				+ " " + Constants.FROM_KW + " " + this.source + " "
+				+ " " + Constants.FROM_KW + " " + this.extSource + " "
 				+ Constants.AS_KW + " " + this.name + ";";
 	}
 }

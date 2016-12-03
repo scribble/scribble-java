@@ -2,6 +2,7 @@ package org.scribble.ast.local;
 
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
@@ -11,29 +12,29 @@ import org.scribble.sesstype.kind.Local;
 
 public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 {
-	public LProtocolBlock(LInteractionSeq seq)
+	public LProtocolBlock(CommonTree source, LInteractionSeq seq)
 	{
-		super(seq);
+		super(source, seq);
 	}
 
 	@Override
 	protected LProtocolBlock copy()
 	{
-		return new LProtocolBlock(getInteractionSeq());
+		return new LProtocolBlock(this.source, getInteractionSeq());
 	}
 	
 	@Override
 	public LProtocolBlock clone()
 	{
 		LInteractionSeq lis = getInteractionSeq().clone();
-		return AstFactoryImpl.FACTORY.LProtocolBlock(lis);
+		return AstFactoryImpl.FACTORY.LProtocolBlock(this.source, lis);
 	}
 
 	@Override
 	public LProtocolBlock reconstruct(InteractionSeq<Local> seq)
 	{
 		ScribDel del = del();
-		LProtocolBlock lpb = new LProtocolBlock((LInteractionSeq) seq);
+		LProtocolBlock lpb = new LProtocolBlock(this.source, (LInteractionSeq) seq);
 		lpb = (LProtocolBlock) lpb.del(del);
 		return lpb;
 	}

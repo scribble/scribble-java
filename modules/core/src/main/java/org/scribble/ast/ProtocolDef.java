@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
@@ -8,8 +9,9 @@ public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase 
 {
 	public final ProtocolBlock<K> block;
 
-	protected ProtocolDef(ProtocolBlock<K> block)
+	protected ProtocolDef(CommonTree source, ProtocolBlock<K> block)
 	{
+		super(source);
 		this.block = block;
 	}
 	

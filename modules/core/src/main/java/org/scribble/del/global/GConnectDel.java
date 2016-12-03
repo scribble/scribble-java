@@ -36,7 +36,7 @@ public class GConnectDel extends ConnectionActionDel implements GSimpleInteracti
 		Role src = gc.src.toName();
 		if (!checker.peekEnv().isEnabled(src))
 		{
-			throw new ScribbleException("Role not enabled: " + src);
+			throw new ScribbleException(gc.src.getSource(), "Role not enabled: " + src);
 		}
 		Message msg = gc.msg.toMessage();
 		WFChoiceEnv env = checker.popEnv();
@@ -45,11 +45,11 @@ public class GConnectDel extends ConnectionActionDel implements GSimpleInteracti
 		{
 			if (src.equals(dest))
 			{
-				throw new ScribbleException("(TODO) Self connections not supported: " + gc);
+				throw new ScribbleException(gc.getSource(), "[TODO] Self connections not supported: " + gc);
 			}
 			if (env.isConnected(src, dest))
 			{
-				throw new ScribbleException("Roles already connected: " + src + ", " + dest);
+				throw new ScribbleException(gc.getSource(), "Roles (possibly) already connected: " + src + ", " + dest);
 			}
 
 			env = env.connect(src, dest).addMessage(src, dest, msg);

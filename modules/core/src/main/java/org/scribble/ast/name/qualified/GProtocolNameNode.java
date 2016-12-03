@@ -1,26 +1,27 @@
 package org.scribble.ast.name.qualified;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 
 public class GProtocolNameNode extends ProtocolNameNode<Global>
 {
-	public GProtocolNameNode(String... ns)
+	public GProtocolNameNode(CommonTree source, String... ns)
 	{
-		super(ns);
+		super(source, ns);
 	}
 
 	@Override
 	protected GProtocolNameNode copy()
 	{
-		return new GProtocolNameNode(this.elems);
+		return new GProtocolNameNode(this.source, this.elems);
 	}
 	
 	@Override
 	public GProtocolNameNode clone()
 	{
-		return (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, this.elems);
+		return (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(this.source, Global.KIND, this.elems);
 	}
 	
 	@Override

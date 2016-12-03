@@ -21,7 +21,7 @@ public class AntlrRoleDeclList
 		{
 			rds.add((RoleDecl) parser.parse(pd));
 		}
-		return AstFactoryImpl.FACTORY.RoleDeclList(rds);
+		return AstFactoryImpl.FACTORY.RoleDeclList(ct, rds);
 	}
 
 	public static List<CommonTree> getRoleDeclChildren(CommonTree ct)

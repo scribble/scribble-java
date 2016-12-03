@@ -3,6 +3,7 @@ package org.scribble.ast.local;
 import java.util.Collections;
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
@@ -18,17 +19,17 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LConnect extends LConnectionAction implements LSimpleInteractionNode
 {
-	public LConnect(RoleNode src, MessageNode msg, RoleNode dest)
+	public LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//public LConnect(RoleNode src, RoleNode dest)
 	{
-		super(src, msg, dest);
+		super(source, src, msg, dest);
 		//super(src, dest);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LConnect(this.src, this.msg, this.dest);
+		return new LConnect(this.source, this.src, this.msg, this.dest);
 		//return new LConnect(this.src, this.dest);
 	}
 	
@@ -38,7 +39,7 @@ public class LConnect extends LConnectionAction implements LSimpleInteractionNod
 		RoleNode src = this.src.clone();
 		MessageNode msg = this.msg.clone();
 		RoleNode dest = this.dest.clone();
-		return AstFactoryImpl.FACTORY.LConnect(src, msg, dest);
+		return AstFactoryImpl.FACTORY.LConnect(this.source, src, msg, dest);
 		//return AstFactoryImpl.FACTORY.LConnect(src, dest);
 	}
 
@@ -47,7 +48,7 @@ public class LConnect extends LConnectionAction implements LSimpleInteractionNod
 	//public LConnect reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
-		LConnect ls = new LConnect(src, msg, dest);
+		LConnect ls = new LConnect(this.source, src, msg, dest);
 		//LConnect ls = new LConnect(src, dest);
 		ls = (LConnect) ls.del(del);
 		return ls;

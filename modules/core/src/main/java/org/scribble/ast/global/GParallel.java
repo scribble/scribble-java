@@ -3,6 +3,7 @@ package org.scribble.ast.global;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
@@ -11,15 +12,15 @@ import org.scribble.sesstype.kind.Global;
 
 public class GParallel extends Parallel<Global> implements GCompoundInteractionNode
 {
-	public GParallel(List<GProtocolBlock> blocks)
+	public GParallel(CommonTree source, List<GProtocolBlock> blocks)
 	{
-		super(blocks);
+		super(source, blocks);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new GParallel(getBlocks());
+		return new GParallel(this.source, getBlocks());
 	}
 	
 	@Override
@@ -33,7 +34,7 @@ public class GParallel extends Parallel<Global> implements GCompoundInteractionN
 	public GParallel reconstruct(List<? extends ProtocolBlock<Global>> blocks)
 	{
 		ScribDel del = del();
-		GParallel gp = new GParallel(castBlocks(blocks));
+		GParallel gp = new GParallel(this.source, castBlocks(blocks));
 		gp = (GParallel) gp.del(del);
 		return gp;
 	}

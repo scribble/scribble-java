@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -9,8 +10,9 @@ public abstract class Continue<K extends ProtocolKind> extends SimpleInteraction
 {
 	public final RecVarNode recvar;
 
-	protected Continue(RecVarNode recvar)
+	protected Continue(CommonTree source, RecVarNode recvar)
 	{
+		super(source);
 		this.recvar = recvar;
 	}
 

@@ -8,11 +8,16 @@ public class AntlrAmbigName
 {
 	public static AmbigNameNode toAmbigNameNode(CommonTree ct)
 	{
-		return AstFactoryImpl.FACTORY.AmbiguousNameNode(getName(ct));
+		return AstFactoryImpl.FACTORY.AmbiguousNameNode(getNameChild(ct), getName(ct));
+	}
+
+	private static CommonTree getNameChild(CommonTree ct)
+	{
+		return (CommonTree) ct.getChild(0);
 	}
 	
 	private static String getName(CommonTree ct)
 	{
-		return AntlrSimpleName.getName((CommonTree) ct.getChild(0));
+		return AntlrSimpleName.getName(getNameChild(ct));
 	}
 }

@@ -1,5 +1,6 @@
 package org.scribble.ast.global;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNodeBase;
@@ -23,9 +24,10 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	public final GProtocolNameNode proto;  // Becomes full name after disambiguation
 	public final RoleNode role;
 	
-	public GDelegationElem(GProtocolNameNode proto, RoleNode role)
+	public GDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
 	{
 		//super(proto);
+		super(source);
 		this.proto = proto;
 		this.role = role;
 	}
@@ -33,7 +35,7 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	@Override
 	public LDelegationElem project()
 	{
-		return AstFactoryImpl.FACTORY.LDelegationElem(Projector.makeProjectedFullNameNode(this.proto.toName(), this.role.toName()));
+		return AstFactoryImpl.FACTORY.LDelegationElem(this.source, Projector.makeProjectedFullNameNode(this.source, this.proto.toName(), this.role.toName()));
 	}
 
 	@Override
@@ -45,7 +47,7 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	@Override
 	protected GDelegationElem copy()
 	{
-		return new GDelegationElem(this.proto, this.role);
+		return new GDelegationElem(this.source, this.proto, this.role);
 	}
 	
 	@Override
@@ -53,13 +55,13 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	{
 		GProtocolNameNode name = (GProtocolNameNode) this.proto.clone();
 		RoleNode role = (RoleNode) this.role.clone();
-		return AstFactoryImpl.FACTORY.GDelegationElem(name, role);
+		return AstFactoryImpl.FACTORY.GDelegationElem(this.source, name, role);
 	}
 
 	public GDelegationElem reconstruct(GProtocolNameNode proto, RoleNode role)
 	{
 		ScribDel del = del();
-		GDelegationElem elem = new GDelegationElem(proto, role);
+		GDelegationElem elem = new GDelegationElem(this.source, proto, role);
 		elem = (GDelegationElem) elem.del(del);
 		return elem;
 	}

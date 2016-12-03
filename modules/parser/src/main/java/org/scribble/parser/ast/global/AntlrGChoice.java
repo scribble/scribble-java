@@ -28,7 +28,7 @@ public class AntlrGChoice
 		{
 			blocks.add((GProtocolBlock) parser.parse(b));
 		}
-		return AstFactoryImpl.FACTORY.GChoice(subj, blocks);
+		return AstFactoryImpl.FACTORY.GChoice(ct, subj, blocks);
 	}
 
 	public static CommonTree getSubjectChild(CommonTree ct)

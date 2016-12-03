@@ -18,7 +18,7 @@ public class AntlrMessageSig
 	{
 		OpNode op = AntlrSimpleName.toOpNode(getOpChild(ct));
 		PayloadElemList payload = (PayloadElemList) parser.parse(getPayloadElemListChild(ct));
-		return AstFactoryImpl.FACTORY.MessageSigNode(op, payload);
+		return AstFactoryImpl.FACTORY.MessageSigNode(ct, op, payload);
 	}
 
 	public static CommonTree getOpChild(CommonTree ct)

@@ -15,6 +15,7 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.AstVisitor;
@@ -41,4 +42,8 @@ public interface ScribNode
 	// Rely on visitChildren reconstruction pattern to do recursive reconstruction
 	ScribNode substituteNames(Substitutor subs);
 	// Cf. LInteractionNode.inferLocalChoiceSubject
+
+	CommonTree getSource();  
+			// Used to be for parsed entities; null if not parsed
+			// Now: for the original parsed entity for error blaming; should not be null unless a purely generated entity
 }

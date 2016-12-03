@@ -3,6 +3,7 @@ package org.scribble.ast.local;
 import java.util.List;
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
@@ -10,9 +11,9 @@ import org.scribble.sesstype.Message;
 
 public class LCatches extends LInterrupt
 {
-	protected LCatches(RoleNode src, List<MessageNode> msgs)
+	protected LCatches(CommonTree source, RoleNode src, List<MessageNode> msgs)
 	{
-		super(src, msgs);
+		super(source, src, msgs);
 	}
 
 	@Override

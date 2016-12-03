@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.main.ScribbleException;
@@ -13,9 +14,9 @@ public abstract class ProtocolHeader<K extends ProtocolKind> extends NameDeclNod
 	public final RoleDeclList roledecls;
 	public final NonRoleParamDeclList paramdecls;
 
-	protected ProtocolHeader(NameNode<K> name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	protected ProtocolHeader(CommonTree source, NameNode<K> name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
-		super(name);
+		super(source, name);
 		this.roledecls = roledecls;
 		this.paramdecls = paramdecls;
 	}

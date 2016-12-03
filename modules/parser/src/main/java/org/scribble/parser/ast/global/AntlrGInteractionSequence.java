@@ -23,7 +23,7 @@ public class AntlrGInteractionSequence
 		{
 			gis.add((GInteractionNode) parser.parse(gi));
 		}
-		return AstFactoryImpl.FACTORY.GInteractionSeq(gis);
+		return AstFactoryImpl.FACTORY.GInteractionSeq(ct, gis);
 	}
 
 	public static List<CommonTree> getInteractionChildren(CommonTree ct)

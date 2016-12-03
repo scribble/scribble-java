@@ -101,7 +101,7 @@ public class MainContext
 		String tmp = path.substring((path.lastIndexOf(File.separator) == -1) ? 0 : path.lastIndexOf(File.separator) + 1, path.lastIndexOf('.'));
 		if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))  // ModuleName.toString hack?
 		{
-			throw new ScribbleException("Simple module name at path " + path + " mismatch: " + main.getFullModuleName());
+			throw new ScribbleException(main.moddecl.name.getSource(), "Simple module name at path " + path + " mismatch: " + main.getFullModuleName());
 		}
 	}
 

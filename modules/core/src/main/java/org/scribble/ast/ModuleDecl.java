@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ModuleKind;
@@ -8,29 +9,29 @@ import org.scribble.visit.AstVisitor;
 
 public class ModuleDecl extends NameDeclNode<ModuleKind>
 {
-	public ModuleDecl(ModuleNameNode fullmodname)
+	public ModuleDecl(CommonTree source, ModuleNameNode fullmodname)
 	{
-		super(fullmodname);
+		super(source, fullmodname);
 	}
 
 	@Override
 	protected ModuleDecl copy()
 	{
-		return new ModuleDecl((ModuleNameNode) this.name);
+		return new ModuleDecl(this.source, (ModuleNameNode) this.name);
 	}
 	
 	@Override
 	public ModuleDecl clone()
 	{
 		ModuleNameNode modname = (ModuleNameNode) this.name.clone();
-		return AstFactoryImpl.FACTORY.ModuleDecl(modname);
+		return AstFactoryImpl.FACTORY.ModuleDecl(this.source, modname);
 	}
 
 	@Override
 	public ModuleDecl visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		ModuleNameNode fullmodname = (ModuleNameNode) visitChild(this.name, nv);
-		return AstFactoryImpl.FACTORY.ModuleDecl(fullmodname);
+		return AstFactoryImpl.FACTORY.ModuleDecl(this.source, fullmodname);  // cf., reconstruct
 	}
 
 	@Override

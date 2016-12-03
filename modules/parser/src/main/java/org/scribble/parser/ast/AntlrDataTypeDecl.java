@@ -23,7 +23,7 @@ public class AntlrDataTypeDecl
 		CommonTree tmp3 = getExtNameChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
 		DataTypeNode alias = AntlrSimpleName.toDataTypeNameNode(getAliasChild(ct));
-		return AstFactoryImpl.FACTORY.DataTypeDecl(schema, extName, source, alias);
+		return AstFactoryImpl.FACTORY.DataTypeDecl(ct, schema, extName, source, alias);
 	}
 
 	public static CommonTree getSchemaChild(CommonTree ct)

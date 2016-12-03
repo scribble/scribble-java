@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
@@ -11,8 +12,9 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	public final OpNode op;
 	public final PayloadElemList payloads;
 
-	public MessageSigNode(OpNode op, PayloadElemList payload)
+	public MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload)
 	{
+		super(source);
 		this.op = op;
 		this.payloads = payload;
 	}
@@ -20,13 +22,13 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	@Override
 	public MessageNode project()  // Currently outside of visitor/env pattern
 	{
-		return AstFactoryImpl.FACTORY.MessageSigNode(this.op, this.payloads.project());  // Original del not retained by projection
+		return AstFactoryImpl.FACTORY.MessageSigNode(this.source, this.op, this.payloads.project());  // Original del not retained by projection
 	}
 
 	@Override
 	protected MessageSigNode copy()
 	{
-		return new MessageSigNode(this.op, this.payloads);
+		return new MessageSigNode(this.source, this.op, this.payloads);
 	}	
 
 	@Override
@@ -34,13 +36,13 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	{
 		OpNode op = this.op.clone();
 		PayloadElemList payload = this.payloads.clone();
-		return AstFactoryImpl.FACTORY.MessageSigNode(op, payload);
+		return AstFactoryImpl.FACTORY.MessageSigNode(this.source, op, payload);
 	}
 	
 	public MessageSigNode reconstruct(OpNode op, PayloadElemList payload)
 	{
 		ScribDel del = del();	
-		MessageSigNode msn = new MessageSigNode(op, payload);
+		MessageSigNode msn = new MessageSigNode(this.source, op, payload);
 		msn = (MessageSigNode) msn.del(del);
 		return msn;
 	}

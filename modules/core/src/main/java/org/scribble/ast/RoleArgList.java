@@ -3,35 +3,36 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
 
 public class RoleArgList extends DoArgList<RoleArg>
 {
-	public RoleArgList(List<RoleArg> roles)
+	public RoleArgList(CommonTree source, List<RoleArg> roles)
 	{
-		super(roles);
+		super(source, roles);
 	}
 
 	@Override
 	protected RoleArgList copy()
 	{
-		return new RoleArgList(getDoArgs());
+		return new RoleArgList(this.source, getDoArgs());
 	}
 	
 	@Override
 	public RoleArgList clone()
 	{
 		List<RoleArg> roles = ScribUtil.cloneList(getDoArgs());
-		return AstFactoryImpl.FACTORY.RoleArgList(roles);
+		return AstFactoryImpl.FACTORY.RoleArgList(this.source, roles);
 	}
 
 	@Override
 	public RoleArgList reconstruct(List<RoleArg> roles)
 	{
 		ScribDel del = del();
-		RoleArgList rl = new RoleArgList(roles);
+		RoleArgList rl = new RoleArgList(this.source, roles);
 		rl = (RoleArgList) rl.del(del);
 		return rl;
 	}
@@ -42,7 +43,7 @@ public class RoleArgList extends DoArgList<RoleArg>
 	{
 		List<RoleArg> instans =
 				getDoArgs().stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
-		return AstFactoryImpl.FACTORY.RoleArgList(instans);
+		return AstFactoryImpl.FACTORY.RoleArgList(this.source, instans);
 	}
 
 	// The role arguments

@@ -1,5 +1,6 @@
 package org.scribble.ast.local;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
@@ -9,22 +10,22 @@ import org.scribble.sesstype.name.Role;
 
 public class SelfRoleDecl extends RoleDecl
 {
-	public SelfRoleDecl(RoleNode rn)
+	public SelfRoleDecl(CommonTree source, RoleNode rn)
 	{
-		super(rn);
+		super(source, rn);
 	}
 
 	@Override
 	protected SelfRoleDecl copy()
 	{
-		return new SelfRoleDecl((RoleNode) this.name);
+		return new SelfRoleDecl(this.source, (RoleNode) this.name);
 	}
 
 	@Override
 	public RoleDecl reconstruct(SimpleNameNode<RoleKind> name)
 	{
 		ScribDel del = del();
-		SelfRoleDecl rd = new SelfRoleDecl((RoleNode) name);
+		SelfRoleDecl rd = new SelfRoleDecl(this.source, (RoleNode) name);
 		rd = (SelfRoleDecl) rd.del(del);
 		return rd;
 	}

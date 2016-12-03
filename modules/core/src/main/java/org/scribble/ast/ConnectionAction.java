@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -12,9 +13,10 @@ public abstract class ConnectionAction<K extends ProtocolKind> extends SimpleInt
 	public final MessageNode msg;
 	public final RoleNode dest;
 
-	protected ConnectionAction(RoleNode src, MessageNode msg, RoleNode dest)
+	protected ConnectionAction(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//protected ConnectionAction(RoleNode src, RoleNode dest)
 	{
+		super(source);
 		this.src = src;
 		this.msg = msg;
 		this.dest = dest;

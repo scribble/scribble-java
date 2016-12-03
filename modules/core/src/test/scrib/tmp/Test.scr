@@ -9,8 +9,34 @@
 //http://sandbox.kidstrythisathome.com/erdos/
 
 
-module Test;
+module Test343;
 
+type <java> "" from "" as T;
+sig <java> "" from "" as S;
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to B;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
+	}
+}
+
+global protocol Proto2(role A, role B)
+{
+	2() from A to B;
+}
+
+// replace a lot of FACTORY name calls by clone
 
 // CHECKME: playing multiple roles in the same session instance (but what is the concrete notion of "process id"? -- if actually try to use, e.g., ThreadID, then have to track ownership of endpoints)
 
@@ -30,6 +56,7 @@ module Test;
 // Add a unit test for validation to bypass aux
 
 
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X

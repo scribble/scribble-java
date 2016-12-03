@@ -23,12 +23,12 @@ public class AntlrNonRoleParamDecl
 		if (kind.equals(SigKind.KIND))
 		{
 			NonRoleParamNode<SigKind> name = AntlrSimpleName.toParamNode(SigKind.KIND, getNameChild(ct));
-			return AstFactoryImpl.FACTORY.NonRoleParamDecl(SigKind.KIND, name);
+			return AstFactoryImpl.FACTORY.NonRoleParamDecl(ct, SigKind.KIND, name);
 		}
 		else if (kind.equals(DataTypeKind.KIND))
 		{
 			NonRoleParamNode<DataTypeKind> name = AntlrSimpleName.toParamNode(DataTypeKind.KIND, getNameChild(ct));
-			return AstFactoryImpl.FACTORY.NonRoleParamDecl(DataTypeKind.KIND, name);
+			return AstFactoryImpl.FACTORY.NonRoleParamDecl(ct, DataTypeKind.KIND, name);
 		}
 		else
 		{

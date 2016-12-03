@@ -28,7 +28,8 @@ public class AntlrGInterrupt
 		{
 			msgs.add(AntlrGMessageTransfer.parseMessage(parser, msg));
 		}
-		return new GInterrupt(src, msgs);  // Destination roles set by later pass
+		//return new GInterrupt(src, msgs);  // Destination roles set by later pass
+		return null;
 	}
 
 	public static CommonTree getSourceChild(CommonTree ct)

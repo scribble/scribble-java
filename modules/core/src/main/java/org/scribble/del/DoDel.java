@@ -30,7 +30,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		ProtocolName<?> simpname = doo.proto.toName();
 		if (!mc.isVisibleProtocolDeclName(simpname))  // FIXME: do on entry here, before visiting DoArgListDel
 		{
-			throw new ScribbleException("Protocol decl not visible: " + simpname);
+			throw new ScribbleException(doo.proto.getSource(), "Protocol decl not visible: " + simpname);
 		}
 	}
 
@@ -51,7 +51,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		ModuleContext mc = disamb.getModuleContext();
 		ProtocolName<K> fullname = mc.getVisibleProtocolDeclFullName(doo.proto.toName());
 		ProtocolNameNode<K> pnn = (ProtocolNameNode<K>)
-				AstFactoryImpl.FACTORY.QualifiedNameNode(fullname.getKind(), fullname.getElements()); 
+				AstFactoryImpl.FACTORY.QualifiedNameNode(doo.proto.getSource(), fullname.getKind(), fullname.getElements()); 
 						// Didn't keep original namenode del
 		return doo.reconstruct(doo.roles, doo.args, pnn);
 	}

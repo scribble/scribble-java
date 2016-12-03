@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.Collections;
 import java.util.List;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
@@ -19,8 +20,9 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	public final ProtocolHeader<K> header;
 	public final ProtocolDef<K> def;
 
-	protected ProtocolDecl(List<Modifiers> modifiers, ProtocolHeader<K> header, ProtocolDef<K> def)
+	protected ProtocolDecl(CommonTree source, List<Modifiers> modifiers, ProtocolHeader<K> header, ProtocolDef<K> def)
 	{
+		super(source);
 		this.modifiers = Collections.unmodifiableList(modifiers);
 		this.header = header;
 		this.def = def;
