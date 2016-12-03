@@ -30,7 +30,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		ProtocolName<?> simpname = doo.proto.toName();
 		if (!mc.isVisibleProtocolDeclName(simpname))  // FIXME: do on entry here, before visiting DoArgListDel
 		{
-			throw new ScribbleException("Protocol decl not visible: " + simpname);
+			throw new ScribbleException(doo.proto.getSource(), "Protocol decl not visible: " + simpname);
 		}
 	}
 

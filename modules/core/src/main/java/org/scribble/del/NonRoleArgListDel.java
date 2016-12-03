@@ -40,21 +40,21 @@ public class NonRoleArgListDel extends DoArgListDel
 			{
 				if (!((NonRoleParamNode<?>) arg.val).kind.equals(kind))
 				{
-					throw new ScribbleException("Bad arg " + arg + " for param kind: " + kind);
+					throw new ScribbleException(arg.getSource(), "Bad arg " + arg + " for param kind: " + kind);
 				}
 			}
 			else if (kind.equals(SigKind.KIND))
 			{
 				if (!arg.val.isMessageSigNode() && !arg.val.isMessageSigNameNode())
 				{
-					throw new ScribbleException("Bad arg " + arg + " for param kind: " + kind);
+					throw new ScribbleException(arg.getSource(), "Bad arg " + arg + " for param kind: " + kind);
 				}
 			}
 			else if (kind.equals(DataTypeKind.KIND))
 			{
 				if (!arg.val.isDataTypeNameNode())
 				{
-					throw new ScribbleException("Bad arg " + arg + " for param kind: " + kind);
+					throw new ScribbleException(arg.getSource(), "Bad arg " + arg + " for param kind: " + kind);
 				}
 			}
 			else

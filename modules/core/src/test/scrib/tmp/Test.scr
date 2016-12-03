@@ -11,16 +11,20 @@
 
 module Test;
 
-//import Test;
-//import Test;
-
-type <fsfsfa> "..." from "..." as FSFS;
+sig <java> "" from "" as M;
 
 global protocol Proto1(role A, role B)
 {
-	(FSFS) from A to B;
+	() from A to B;
+	do Proto2<M>(A, A);
 }
 
+global protocol Proto2<sig T>(role A, role B)
+{
+	() from A to B;
+}
+
+// replace a lot of FACTORY name calls by clone
 
 // CHECKME: playing multiple roles in the same session instance (but what is the concrete notion of "process id"? -- if actually try to use, e.g., ThreadID, then have to track ownership of endpoints)
 

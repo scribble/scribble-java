@@ -64,20 +64,24 @@ public class ModuleDel extends ScribDelBase
 		List<NonProtocolDecl<?>> npds = mod.getNonProtocolDecls();
 		List<String> npdnames = npds.stream().map((npd) -> npd.getDeclName().toString()).collect(Collectors.toList()); 
 				// Have to use Strings, as can be different kinds (datatype, sig)
-		Set<String> dups = getDuplicates(npdnames);
+		final Set<String> dups1 = getDuplicates(npdnames);
 		//if (npds.size() != npdnames.stream().distinct().count())
-		if (!dups.isEmpty())
+		if (!dups1.isEmpty())
 		{
-			throw new ScribbleException("Duplicate non-protocol decls: " + dups);
+			NonProtocolDecl<?> first =
+					npds.stream().filter((npd) -> dups1.contains(npd.getDeclName().toString())).collect(Collectors.toList()).get(0);
+			throw new ScribbleException(first.getSource(), "Duplicate non-protocol decls: " + first.getDeclName());
 		}
 		List<ProtocolDecl<?>> pds = mod.getProtocolDecls();
 		List<String> pdnames = pds.stream().map((pd) -> pd.header.getDeclName().toString()).collect(Collectors.toList());
 				// Have to use Strings, as can be different kinds (global, local)
-		dups = getDuplicates(pdnames);
+		final Set<String> dups2 = getDuplicates(pdnames);
 		if (pds.size() != pdnames.stream().distinct().count())
-		if (!dups.isEmpty())
+		if (!dups2.isEmpty())
 		{
-			throw new ScribbleException("Duplicate protocol decls: " + dups);  // Global and locals also required to be distinct
+			ProtocolDecl<?> first =
+					pds.stream().filter((pd) -> dups2.contains(pd.header.getDeclName().toString())).collect(Collectors.toList()).get(0);
+			throw new ScribbleException(first.getSource(), "Duplicate protocol decls: " + first.header.getDeclName());  // Global and locals also required to be distinct
 		}
 		return mod;
 	}
@@ -85,7 +89,8 @@ public class ModuleDel extends ScribDelBase
 	private static Set<String> getDuplicates(Collection<String> ss)
 	{
 		Set<String> uniques = new HashSet<>();
-		Set<String> dups = new HashSet<>();
+		Set
+		<String> dups = new HashSet<>();
 		for (String npd : ss)
 		{
 			if (!uniques.add(npd))
