@@ -11,6 +11,16 @@
 
 module Test;
 
+//import Test;
+//import Test;
+
+type <fsfsfa> "..." from "..." as FSFS;
+
+global protocol Proto1(role A, role B)
+{
+	(FSFS) from A to B;
+}
+
 
 // CHECKME: playing multiple roles in the same session instance (but what is the concrete notion of "process id"? -- if actually try to use, e.g., ThreadID, then have to track ownership of endpoints)
 
@@ -30,6 +40,7 @@ module Test;
 // Add a unit test for validation to bypass aux
 
 
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
