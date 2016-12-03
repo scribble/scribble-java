@@ -21,7 +21,7 @@ public class AntlrImportModule
 		ModuleNameNode alias = (hasAlias(ct))
 				? AntlrSimpleName.toModuleNameNode(getAliasChild(ct))
 				: null;
-		return AstFactoryImpl.FACTORY.ImportModule(fmn, alias);
+		return AstFactoryImpl.FACTORY.ImportModule(ct, fmn, alias);
 	}
 
 	public static CommonTree getModuleNameChild(CommonTree ct)

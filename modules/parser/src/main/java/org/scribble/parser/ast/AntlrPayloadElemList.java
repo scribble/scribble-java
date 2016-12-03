@@ -27,7 +27,7 @@ public class AntlrPayloadElemList
 		// As in AntlrNonRoleArgList, i.e. payloadelem (NonRoleArg) not directly parsed -- cf. rolearg and nonroleparamdecl, which are directly parsed (not consistent), due to amibgious names
 		//List<PayloadElem> pes = getPayloadElements(ct).stream().map((pe) -> parsePayloadElem(pe)).collect(Collectors.toList());
 		List<PayloadElem<?>> pes = getPayloadElements(ct).stream().map((pe) -> parsePayloadElem(pe)).collect(Collectors.toList());
-		return AstFactoryImpl.FACTORY.PayloadElemList(pes);
+		return AstFactoryImpl.FACTORY.PayloadElemList(ct, pes);
 	}
 
 	//private static PayloadElem parsePayloadElem(CommonTree ct)
@@ -51,7 +51,7 @@ public class AntlrPayloadElemList
 			RoleNode rn = AntlrSimpleName.toRoleNode((CommonTree) ct.getChild(0));
 			//GProtocolNameNode gpnn = AntlrQualifiedName.toGProtocolNameNode((CommonTree) ct.getChild(1));  // FIXME:
 			GProtocolNameNode gpnn = AntlrQualifiedName.toGProtocolNameNode((CommonTree) ct.getChild(1));
-			return AstFactoryImpl.FACTORY.GDelegationElem(gpnn, rn);
+			return AstFactoryImpl.FACTORY.GDelegationElem(ct, gpnn, rn);
 			//throw new RuntimeException("Shouldn't get in here: " + ct);
 		}
 		else if (type == AntlrNodeType.QUALIFIEDNAME)
@@ -60,13 +60,13 @@ public class AntlrPayloadElemList
 			{
 				DataTypeNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
 				//return AstFactoryImpl.FACTORY.PayloadElem(dt);
-				return AstFactoryImpl.FACTORY.UnaryPayloadElem(dt);
+				return AstFactoryImpl.FACTORY.UnaryPayloadElem(ct, dt);  // return and dt share same ct in this case
 			}
 			else
 			{
 				// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
 				AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct);
-				return AstFactoryImpl.FACTORY.UnaryPayloadElem(an);
+				return AstFactoryImpl.FACTORY.UnaryPayloadElem(ct, an);
 			}
 		}
 		else

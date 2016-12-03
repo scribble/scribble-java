@@ -60,7 +60,8 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 					UnguardedChoiceDoEnv env = (UnguardedChoiceDoEnv) lpd.def.block.del().env();  // Although AST is cloned, del is the same (HACKY?)
 					if (env.subjs.isEmpty())  // Prune check
 					{
-						return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(ins.subList(1, ins.size())));  // Supports singleton case
+						return AstFactoryImpl.FACTORY.LProtocolBlock(lb.getSource(),
+								AstFactoryImpl.FACTORY.LInteractionSeq(lis.getSource(), ins.subList(1, ins.size())));  // Supports singleton case
 					}
 				}
 			}

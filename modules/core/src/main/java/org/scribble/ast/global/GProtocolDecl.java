@@ -33,7 +33,8 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	public LProtocolDecl project(Module mod, Role self, LProtocolDef def) throws ScribbleException  // mod is just the parent?
 	{
 		//Role self = proj.peekSelf();
-		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(getHeader().getDeclName(), self);
+		GProtocolHeader gph = getHeader();
+		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(gph.getSource(), gph.getDeclName(), self);
 		
 		// Move to delegates? -- maybe fully integrate into projection pass
 		RoleDeclList roledecls = this.header.roledecls.project(self);

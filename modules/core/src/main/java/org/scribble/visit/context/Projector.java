@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
@@ -138,23 +139,23 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		return new ModuleName(fullname.getPrefix(), simpname);  // Supports unary fullname
 	}
 	
-	public static LProtocolNameNode makeProjectedSimpleNameNode(GProtocolName simpname, Role role)
+	public static LProtocolNameNode makeProjectedSimpleNameNode(CommonTree source, GProtocolName simpname, Role role)
 	{
 		return (LProtocolNameNode)
-				AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, projectSimpleProtocolName(simpname, role).toString());
+				AstFactoryImpl.FACTORY.QualifiedNameNode(source, Local.KIND, projectSimpleProtocolName(simpname, role).toString());
 	}
 
-	public static LProtocolNameNode makeProjectedFullNameNode(GProtocolName fullname, Role role)
+	public static LProtocolNameNode makeProjectedFullNameNode(CommonTree source, GProtocolName fullname, Role role)
 	{
 		return (LProtocolNameNode)
-				AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, projectFullProtocolName(fullname, role).getElements());
+				AstFactoryImpl.FACTORY.QualifiedNameNode(source, Local.KIND, projectFullProtocolName(fullname, role).getElements());
 	}
 
 	// fullname is the un-projected name; localname is the already projected simple name
-	public static ModuleNameNode makeProjectedModuleNameNode(ModuleName fullname, LProtocolName localname)
+	public static ModuleNameNode makeProjectedModuleNameNode(CommonTree source, ModuleName fullname, LProtocolName localname)
 	{
 		return (ModuleNameNode)
-				AstFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, projectModuleName(fullname, localname).getElements());
+				AstFactoryImpl.FACTORY.QualifiedNameNode(source, ModuleKind.KIND, projectModuleName(fullname, localname).getElements());
 	}
 	
 	// Returns true if should ignore for projection

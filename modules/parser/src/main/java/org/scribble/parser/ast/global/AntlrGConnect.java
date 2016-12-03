@@ -26,7 +26,7 @@ public class AntlrGConnect
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		MessageNode msg = parseMessage(parser, getMessageChild(ct));
 		RoleNode dest = AntlrSimpleName.toRoleNode(getDestinationChild(ct));
-		return AstFactoryImpl.FACTORY.GConnect(src, msg, dest);
+		return AstFactoryImpl.FACTORY.GConnect(ct, src, msg, dest);
 		//return AstFactoryImpl.FACTORY.GConnect(src, dest);
 	}
 

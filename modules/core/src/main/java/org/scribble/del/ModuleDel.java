@@ -106,18 +106,20 @@ public class ModuleDel extends ScribDelBase
 	// lpd is the projected local protocol
 	public Module createModuleForProjection(Projector proj, Module root, GProtocolDecl gpd, LProtocolDecl lpd, Map<GProtocolName, Set<Role>> deps)
 	{
-		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(root.moddecl.getFullModuleName(), lpd.getHeader().getDeclName());
-		ModuleDecl moddecl = AstFactoryImpl.FACTORY.ModuleDecl(null, modname);  // FIXME? source? root.moddecl.getSource()?  Or ignore as purely generated
+		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(root.moddecl.name.getSource(),  // Or ignore blame source for purely generated?
+				root.moddecl.getFullModuleName(), lpd.getHeader().getDeclName());
+		ModuleDecl moddecl = AstFactoryImpl.FACTORY.ModuleDecl(root.moddecl.getSource(), modname);
 		List<ImportDecl<?>> imports = new LinkedList<>();
 		for (GProtocolName gpn : deps.keySet())
 		{
 			for (Role role : deps.get(gpn))
 			{
 				LProtocolName targetsimpname = Projector.projectSimpleProtocolName(gpn.getSimpleName(), role);
-				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(gpn.getPrefix(), targetsimpname);
+				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(null,  // FIXME? projected import sources?
+						gpn.getPrefix(), targetsimpname);
 				if (!targetmodname.toName().equals(modname.toName()))  // Self dependency -- each projected local is in its own module now, so can compare module names
 				{
-					imports.add(AstFactoryImpl.FACTORY.ImportModule(null, targetmodname, null));  // FIXME? source?
+					imports.add(AstFactoryImpl.FACTORY.ImportModule(null, targetmodname, null));  // FIXME? projected import sources?
 				}
 			}
 		}

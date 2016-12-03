@@ -40,7 +40,7 @@ public class AntlrGProtocolDecl
 				}
 			}
 		}
-		return AstFactoryImpl.FACTORY.GProtocolDecl(modifiers, header, def);
+		return AstFactoryImpl.FACTORY.GProtocolDecl(ct, modifiers, header, def);
 	}
 
 	public static CommonTree getHeaderChild(CommonTree ct)

@@ -14,7 +14,7 @@ public class AntlrRoleArg
 	public static RoleArg parseRoleArg(ScribParser parser, CommonTree ct)
 	{
 		RoleNode role = AntlrSimpleName.toRoleNode(getArgChild(ct));
-		return AstFactoryImpl.FACTORY.RoleArg(role);
+		return AstFactoryImpl.FACTORY.RoleArg(ct, role);
 	}
 
 	public static CommonTree getArgChild(CommonTree ct)

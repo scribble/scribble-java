@@ -14,7 +14,7 @@ public class AntlrGProtocolBlock
 	public static GProtocolBlock parseGProtocolBlock(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
 		GInteractionSeq gis = (GInteractionSeq) parser.parse(getInteractionSequenceChild(ct));
-		return AstFactoryImpl.FACTORY.GProtocolBlock(gis);
+		return AstFactoryImpl.FACTORY.GProtocolBlock(ct, gis);
 	}
 
 	public static final CommonTree getInteractionSequenceChild(CommonTree ct)

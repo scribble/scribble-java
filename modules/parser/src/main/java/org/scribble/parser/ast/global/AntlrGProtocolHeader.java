@@ -21,7 +21,7 @@ public class AntlrGProtocolHeader
 		GProtocolNameNode name = AntlrSimpleName.toGProtocolNameNode(getNameChild(ct));
 		RoleDeclList rdl = (RoleDeclList) parser.parse(getRoleDeclListChild(ct));
 		NonRoleParamDeclList pdl = (NonRoleParamDeclList) parser.parse(getParamDeclListChild(ct));
-		return AstFactoryImpl.FACTORY.GProtocolHeader(name, rdl, pdl);
+		return AstFactoryImpl.FACTORY.GProtocolHeader(ct, name, rdl, pdl);
 	}
 
 	public static CommonTree getNameChild(CommonTree ct)
