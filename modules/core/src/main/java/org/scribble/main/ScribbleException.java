@@ -21,7 +21,7 @@ public class ScribbleException extends Exception
 	{
 		// char position indexes are obscure because only certain (child) nodes/tokens are actually recorded, e.g., name nodes (the keyword nodes, e.g., global, have been discarded)
 		// ...although even taking the above into account, indexes still seem off?
-		super(getRootModuleName(blame) + "(line " + blame.getLine() + ":" + (blame.getCharPositionInLine()) + "): " + arg0);  // HACK: index+1
+		super(getRootModuleName(blame) + "(line " + blame.getLine() + ":" + (blame.getCharPositionInLine()) + "): " + arg0);
 			// Cf., getTokenStartIndex/getTokenStopIndex ?  blame.token.getCharPositionInLine()?
 	}
 	

@@ -9,10 +9,8 @@
 //http://sandbox.kidstrythisathome.com/erdos/
 
 
-module Test343;
+module Test;
 
-type <java> "" from "" as T;
-sig <java> "" from "" as S;
 
 global protocol Proto1(role A, role B, role C)
 {
@@ -21,26 +19,26 @@ global protocol Proto1(role A, role B, role C)
 		choice at A
 		{
 			1() from A to B;
-			1() from A to B;
+			1() from B to C;
 		}
 		or
 		{
 			2() from A to B;
-			2() from B to C;
 		}
-	}
-}
-
-global protocol Proto2(role A, role B)
-{
-	2() from A to B;
+		3() from A to C;   
+				// TESTING: from some global perspectives, this could be seen as a mixed-role choice for C between B and A
+				// Any way to create an unsound mixed-role choice using sequencing?  And taking the mixed-role choice view
+				// What fixes this may be that Scribble actually projects this as sequencing, not choice? -- N.B. comes out as unfinished error, not deadlock (A is in output state)
+				// As opposed to "inlining the continuation" (or projecting a tau?)
+				// At least, not having sequencing probably safe backup?
+		continue X;
+  }
 }
 
 // replace a lot of FACTORY name calls by clone
+// -minlts states IDs don't match validation output
 
 // CHECKME: playing multiple roles in the same session instance (but what is the concrete notion of "process id"? -- if actually try to use, e.g., ThreadID, then have to track ownership of endpoints)
-
-// refactor demo package
 
 // - API gen for connection-with-message
 // - API gen for wrap (SMTP)

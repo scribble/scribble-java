@@ -27,6 +27,6 @@ public class SStateErrors
 	
 	public boolean isEmpty()
 	{
-		return this.stuck.isEmpty() && this.waitFor.isEmpty() && this.orphans.isEmpty();
+		return this.stuck.isEmpty() && this.waitFor.isEmpty() && this.orphans.isEmpty() && this.unfinished.isEmpty();
 	}
 }
