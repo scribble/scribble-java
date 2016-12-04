@@ -11,30 +11,6 @@
 
 module Test;
 
-
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from B to C;
-		}
-		or
-		{
-			2() from A to B;
-		}
-		3() from A to C;   
-				// TESTING: from some global perspectives, this could be seen as a mixed-role choice for C between B and A
-				// Any way to create an unsound mixed-role choice using sequencing?  And taking the mixed-role choice view
-				// What fixes this may be that Scribble actually projects this as sequencing, not choice? -- N.B. comes out as unfinished error, not deadlock (A is in output state)
-				// As opposed to "inlining the continuation" (or projecting a tau?)
-				// At least, not having sequencing probably safe backup?
-		continue X;
-  }
-}
-
 // replace a lot of FACTORY name calls by clone
 // -minlts states IDs don't match validation output
 
@@ -52,6 +28,108 @@ global protocol Proto1(role A, role B, role C)
 // FIXME: demo.bettybook.math.MathC cancelledkey exception
 
 // Add a unit test for validation to bypass aux
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	
+}
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+		}
+		or
+		{
+			2() from A to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;  // Bad: C may be stuck waiting for 1/2
+		}
+	}
+	3() from A to C;
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+		}
+		or
+		{
+			4() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;  // Bad: C stuck waiting for 1
+		}
+	}
+	3() from A to C;
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+			continue X;
+		}
+	}
+	3() from A to C;  // Testing -fair and sequencing
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+		}
+		3() from A to C;   
+				// TESTING: from some global perspectives, this could be seen as a mixed-role choice for C between B and A
+				// Any way to create an unsound mixed-role choice using sequencing?  And taking the mixed-role choice view
+				// What fixes this may be that Scribble actually projects this as sequencing, not choice? 
+				// -- N.B. comes out as unfinished error, not deadlock (A is in output state)
+				// -- In this way, bounded channels actually helpful for detecting stuck messages? -- or would just come out as role-progress violation, in the worse case?
+				// -- As opposed to "inlining the continuation" (or projecting a tau?)
+				// At least, not having sequencing probably safe backup?
+		continue X;
+  }
+}
+//*/
 
 
 /*
