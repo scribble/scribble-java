@@ -16,7 +16,6 @@
  */
 package org.scribble.main.resource;
 
-import java.nio.file.Path;
 
 /**
  * This class represents the resource.
@@ -24,16 +23,16 @@ import java.nio.file.Path;
  */
 public abstract class AbstractResource implements Resource
 {
-	private final Path path;
+	private final String loc;
 	
 	/**
 	 * The constructor.
 	 * 
 	 * @param path The path to the resource -- the "full" path including import path prefix
 	 */
-	public AbstractResource(Path path)
+	public AbstractResource(String loc)
 	{
-		this.path = path;
+		this.loc = loc;
 	}
 	
 	
@@ -41,8 +40,8 @@ public abstract class AbstractResource implements Resource
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Path getPath()
+	public String getLocation()
 	{
-		return this.path;
+		return this.loc;
 	}
 }

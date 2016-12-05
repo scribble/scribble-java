@@ -17,7 +17,6 @@
 package org.scribble.main.resource;
 
 import java.io.InputStream;
-import java.nio.file.Path;
 
 /**
  * This class represents the resource.
@@ -25,16 +24,27 @@ import java.nio.file.Path;
  */
 public interface Resource
 {
+	public static final String INLINE_LOCATION = "-";
+
 	/**
 	 * This method returns the resource path.
 	 * 
 	 * @return The resource path -- the "full" path including import path prefix
 	 */
-	Path getPath();
+	String getLocation();
+	
+	default boolean isInlineResource()
+	{
+		return false;
+	}
+
+	default boolean isFileResource()
+	{
+		return false;
+	}
 
 	/**
-	 * This method returns an input stream containing the
-	 * resource content.
+	 * This method returns an input stream containing the resource content. -- FIXME: a "fresh" stream?
 	 * 
 	 * @return The input stream
 	 */

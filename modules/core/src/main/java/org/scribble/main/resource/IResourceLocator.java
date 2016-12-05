@@ -35,5 +35,5 @@ public interface IResourceLocator
 	 * @return The resource, or null if not found
 	 */
 
-	Resource getResource(Path path) throws ScribbleException;  // Path should be made more abstract, e.g. some kind of URI
+	Resource getResource(Path path) throws ScribbleException;  // Path should be made more abstract, e.g. some kind of URI (cf., Resource.getLocation)
 }

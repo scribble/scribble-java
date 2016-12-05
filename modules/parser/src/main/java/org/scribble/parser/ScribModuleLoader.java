@@ -60,7 +60,7 @@ public class ScribModuleLoader extends DefaultModuleLoader //implements ModuleLo
 	{
 		if (!mn.equals(mod.getFullModuleName()))
 		{
-			throw new RuntimeException("Invalid module name " + mod.getFullModuleName() + " at path: " + res.getPath());
+			throw new RuntimeException("Invalid module name " + mod.getFullModuleName() + " at location: " + res.getLocation());
 		}
 	}
 }
