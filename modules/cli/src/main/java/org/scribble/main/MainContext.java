@@ -39,12 +39,12 @@ public class MainContext
 	public final boolean noAcceptCorrelationCheck;
 	public final boolean noValidation;
 
-	private final ResourceLocator locator;  // Path -> Resource
-	private final ScribModuleLoader loader;  // sesstype.ModuleName -> Pair<Resource, Module>
-
 	// Only "manually" used here for loading main module (which should be factored out to front end) -- otherwise, only used within loader
 	private final AntlrParser antlrParser = new AntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
 	private final ScribParser scribParser = new ScribParser();
+
+	private final ResourceLocator locator;  // Path -> Resource
+	private final ScribModuleLoader loader;  // sesstype.ModuleName -> Pair<Resource, Module>
 
 	private ModuleName main;
 
@@ -80,9 +80,7 @@ public class MainContext
 		Resource res = new InlineResource(inline);
 		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res));
 
-		Pair<Resource, Module> p = new Pair<>(res, mod);
-		this.main = p.right.getFullModuleName();  // FIXME: main modname comes from the inlined moddecl -- check for issues if this clashes with an existing file system resource
-		loadAllModules(p);
+		init(res, mod);
 	}
 
 	// Load main module from file system
@@ -97,25 +95,15 @@ public class MainContext
 		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);  // FIXME: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
 		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res));  // FIXME: rename exceptions
 		checkMainModuleName(mainpath, mod);
-
-		Pair<Resource, Module> p = new Pair<>(res, mod);
-		this.main = p.right.getFullModuleName();
-		loadAllModules(p);
+		
+		init(res, mod);
 	}
-	
-	// Hacky? But not Scribble tool's job to check nested directory location of module fully corresponds to the fullname of module? Cf. Java classes
-	private void checkMainModuleName(Path mainpath, Module main) throws ScribbleException
+
+	private void init(Resource res, Module mainmod) throws ScribParserException, ScribbleException
 	{
-		String path = mainpath.toString();  // FIXME: hack
-		// FileSystems.getDefault().getSeparator() ?
-		String tmp = path.substring((path.lastIndexOf(File.separator) == -1) ? 0 : path.lastIndexOf(File.separator) + 1, path.lastIndexOf('.'));
-		if (!this.noValidation)
-		{
-			if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))  // ModuleName.toString hack?
-			{
-				throw new ScribbleException(main.moddecl.name.getSource(), "Simple module name at path " + path + " mismatch: " + main.getFullModuleName());
-			}
-		}
+		Pair<Resource, Module> p = new Pair<>(res, mainmod);
+		this.main = p.right.getFullModuleName();  // FIXME: main modname comes from the inlined moddecl -- check for issues if this clashes with an existing file system resource
+		loadAllModules(p);
 	}
 
 	private void loadAllModules(Pair<Resource, Module> module) throws ScribParserException, ScribbleException
@@ -143,5 +131,20 @@ public class MainContext
 	{
 		return new Job(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
 				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck, this.noValidation);
+	}
+	
+	// Hacky? But not Scribble tool's job to check nested directory location of module fully corresponds to the fullname of module? Cf. Java classes
+	private void checkMainModuleName(Path mainpath, Module main) throws ScribbleException
+	{
+		String path = mainpath.toString();  // FIXME: hack
+		// FileSystems.getDefault().getSeparator() ?
+		String tmp = path.substring((path.lastIndexOf(File.separator) == -1) ? 0 : path.lastIndexOf(File.separator) + 1, path.lastIndexOf('.'));
+		if (!this.noValidation)
+		{
+			if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))  // ModuleName.toString hack?
+			{
+				throw new ScribbleException(main.moddecl.name.getSource(), "Simple module name at path " + path + " mismatch: " + main.getFullModuleName());
+			}
+		}
 	}
 }
