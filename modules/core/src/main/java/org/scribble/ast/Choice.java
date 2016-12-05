@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -16,9 +17,9 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 	private final List<? extends ProtocolBlock<K>> blocks;  
 			// Factor up? And specialise to singleton for Recursion/Interruptible? Maybe too artificial -- could separate unaryblocked and multiblocked compound ops?
 
-	protected Choice(RoleNode subj, List<? extends ProtocolBlock<K>> blocks)
+	protected Choice(CommonTree source, RoleNode subj, List<? extends ProtocolBlock<K>> blocks)
 	{
-		super();
+		super(source);
 		this.subj = subj;
 		this.blocks = new LinkedList<>(blocks);
 	}

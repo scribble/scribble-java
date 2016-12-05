@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
@@ -16,15 +17,15 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LParallel extends Parallel<Local> implements LCompoundInteractionNode
 {
-	public LParallel(List<LProtocolBlock> blocks)
+	public LParallel(CommonTree source, List<LProtocolBlock> blocks)
 	{
-		super(blocks);
+		super(source, blocks);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LParallel(getBlocks());
+		return new LParallel(this.source, getBlocks());
 	}
 	
 	@Override
@@ -38,7 +39,7 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	public LParallel reconstruct(List<? extends ProtocolBlock<Local>> blocks)
 	{
 		ScribDel del = del();
-		LParallel lp = new LParallel(castBlocks(blocks));
+		LParallel lp = new LParallel(this.source, castBlocks(blocks));
 		lp = (LParallel) lp.del(del);
 		return lp;
 	}

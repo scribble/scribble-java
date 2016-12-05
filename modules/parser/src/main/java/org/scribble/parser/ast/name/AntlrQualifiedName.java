@@ -28,26 +28,26 @@ public class AntlrQualifiedName
 	
 	public static ModuleNameNode toModuleNameNode(CommonTree ct)
 	{
-		return (ModuleNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, getElements(ct));
+		return (ModuleNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ct, ModuleKind.KIND, getElements(ct));
 	}
 
 	public static DataTypeNode toDataTypeNameNode(CommonTree ct)
 	{
-		return (DataTypeNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, getElements(ct));
+		return (DataTypeNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ct, DataTypeKind.KIND, getElements(ct));
 	}
 
 	public static MessageSigNameNode toMessageSigNameNode(CommonTree ct)
 	{
-		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getElements(ct));
+		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ct, SigKind.KIND, getElements(ct));
 	}
 
 	public static GProtocolNameNode toGProtocolNameNode(CommonTree ct)
 	{
-		return (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getElements(ct));
+		return (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ct, Global.KIND, getElements(ct));
 	}
 
 	public static LProtocolNameNode toLProtocolNameNode(CommonTree ct)
 	{
-		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getElements(ct));
+		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ct, Local.KIND, getElements(ct));
 	}
 }

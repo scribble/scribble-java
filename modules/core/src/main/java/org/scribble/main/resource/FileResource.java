@@ -22,8 +22,9 @@ import java.nio.file.Path;
  * This class represents the resource.
  *
  */
-public class InputStreamResource extends AbstractResource
+public class FileResource extends AbstractResource
 {
+	private final Path path;
 	private java.io.InputStream _inputStream = null;
 
 	/**
@@ -32,10 +33,22 @@ public class InputStreamResource extends AbstractResource
 	 * @param path The optional resource path
 	 * @param is The input stream
 	 */
-	public InputStreamResource(Path path, java.io.InputStream is)
+	public FileResource(Path path, java.io.InputStream is)
 	{
-		super(path);
+		super(path.toString());
+		this.path = path;
 		this._inputStream = is;
+	}
+	
+	public Path getPath()
+	{
+		return path;
+	}
+	
+	@Override
+	public boolean isFileResource()
+	{
+		return true;
 	}
 
 	/**

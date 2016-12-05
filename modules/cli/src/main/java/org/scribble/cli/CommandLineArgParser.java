@@ -25,6 +25,7 @@ public class CommandLineArgParser
 	public static final String DOT_FLAG = "-dot";
 	public static final String AUT_FLAG = "-aut";
 	public static final String NO_VALIDATION_FLAG = "-novalid";
+	public static final String INLINE_MAIN_MOD_FLAG = "-inline";
 	
 	// Non-unique flags
 	public static final String PROJECT_FLAG = "-project";
@@ -57,6 +58,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.DOT_FLAG, CommandLine.ArgFlag.DOT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.AUT_FLAG, CommandLine.ArgFlag.AUT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.NO_VALIDATION_FLAG, CommandLine.ArgFlag.NO_VALIDATION);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.INLINE_MAIN_MOD_FLAG, CommandLine.ArgFlag.INLINE_MAIN_MOD);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -108,18 +110,23 @@ public class CommandLineArgParser
 			}
 			else
 			{
-				if (this.parsed.containsKey(CommandLine.ArgFlag.MAIN_MOD))
+				if (isMainModuleParsed())
 				{
 					if (arg.startsWith("-"))
 					{
 						throw new CommandLineException("Unknown flag or bad main module arg: " + arg);
 					}
 					// May actually be the second bad argument -- we didn't validate the value of the main arg
-					throw new CommandLineException("Bad/duplicate main module arg: " + arg);
+					throw new CommandLineException("Bad/multiple main module arg: " + arg);
 				}
 				parseMain(i);
 			}
 		}
+	}
+	
+	private boolean isMainModuleParsed()
+	{
+		return this.parsed.containsKey(CommandLine.ArgFlag.MAIN_MOD) || this.parsed.containsKey(CommandLine.ArgFlag.INLINE_MAIN_MOD);
 	}
 	
 	// Pre: i is the index of the current flag to parse
@@ -133,7 +140,15 @@ public class CommandLineArgParser
 			// Unique flags
 			case CommandLineArgParser.IMPORT_PATH_FLAG:
 			{
-				return parsePath(i);
+				return parseImportPath(i);
+			}
+			case CommandLineArgParser.INLINE_MAIN_MOD_FLAG:
+			{
+				if (isMainModuleParsed())
+				{
+					throw new CommandLineException("Multiple main modules given.");
+				}
+				return parseInlineMainModule(i);
 			}
 			case CommandLineArgParser.JUNIT_FLAG:
 			case CommandLineArgParser.VERBOSE_FLAG:
@@ -241,7 +256,7 @@ public class CommandLineArgParser
 		this.parsed.put(CommandLine.ArgFlag.MAIN_MOD, new String[] { main } );
 	}
 
-	private int parsePath(int i) throws CommandLineException
+	private int parseImportPath(int i) throws CommandLineException
 	{
 		if ((i + 1) >= this.args.length)
 		{
@@ -254,6 +269,17 @@ public class CommandLineArgParser
 		}
 		//this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PATH_FLAG), new String[] { path });
 		checkAndAddNoArgUniqueFlag(CommandLineArgParser.IMPORT_PATH_FLAG, new String[] { path });
+		return i;
+	}
+
+	private int parseInlineMainModule(int i) throws CommandLineException
+	{
+		if ((i + 1) >= this.args.length)
+		{
+			throw new CommandLineException("Missing module definition");
+		}
+		String inline = this.args[++i];
+		checkAndAddNoArgUniqueFlag(CommandLineArgParser.INLINE_MAIN_MOD_FLAG, new String[] { inline });
 		return i;
 	}
 	

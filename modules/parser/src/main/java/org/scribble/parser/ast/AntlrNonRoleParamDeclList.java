@@ -25,7 +25,7 @@ public class AntlrNonRoleParamDeclList
 			NonRoleParamDecl<NonRoleParamKind> tmp = (NonRoleParamDecl<NonRoleParamKind>) parsed;
 			pds.add(tmp);
 		}
-		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(pds);
+		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(ct, pds);
 	}
 	
 	public static final List<CommonTree> getParamDeclChildren(CommonTree ct)

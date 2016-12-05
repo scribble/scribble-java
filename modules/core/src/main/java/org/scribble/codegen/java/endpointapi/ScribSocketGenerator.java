@@ -2,6 +2,7 @@ package org.scribble.codegen.java.endpointapi;
 
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
@@ -245,19 +246,19 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	
 	protected static void checkJavaDataTypeDecl(DataTypeDecl dtd) throws ScribbleException
 	{
-		checkJavaSchema(dtd.schema);
+		checkJavaSchema(dtd);
 	}
 
 	protected static void checkMessageSigNameDecl(MessageSigNameDecl msd) throws ScribbleException
 	{
-		checkJavaSchema(msd.schema);
+		checkJavaSchema(msd);
 	}
 	
-	protected static void checkJavaSchema(String schema) throws ScribbleException
+	protected static void checkJavaSchema(NonProtocolDecl<?> npd) throws ScribbleException
 	{
-		if (!schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
+		if (!npd.schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
 		{
-			throw new ScribbleException("Unexpected data type schema: " + schema);
+			throw new ScribbleException(npd.getSource(), "Unsupported data type schema: " + npd.schema);
 		}
 	}
 	

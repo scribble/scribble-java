@@ -42,6 +42,7 @@ public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisito
 		if (inlined == null)
 		{
 			throw new ScribbleException("InlineProtocolVisitor error: " + pd);  // E.g. -fsm when inconsistent choice subjects
+				// FIXME: shouldn't occur any more?
 		}
 		
 		/*if (this instanceof EndpointGraphBuilder)

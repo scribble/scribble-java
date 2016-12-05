@@ -16,32 +16,40 @@
  */
 package org.scribble.main.resource;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 
-/**
- * This class represents the resource.
- *
- */
-public abstract class AbstractResource implements Resource
+
+// Module supplied to tool directly as a String arg.
+public class InlineResource extends AbstractResource
 {
-	private final String loc;
-	
+	//private final String res;
+	private java.io.InputStream _inputStream = null;
+
 	/**
 	 * The constructor.
 	 * 
-	 * @param path The path to the resource -- the "full" path including import path prefix
+	 * @param path The optional resource path
+	 * @param is The input stream
 	 */
-	public AbstractResource(String loc)
+	public InlineResource(String res)
 	{
-		this.loc = loc;
+		super(Resource.INLINE_LOCATION);
+		//this.res = res;
+		this._inputStream = new ByteArrayInputStream(res.getBytes(StandardCharsets.UTF_8));
 	}
 	
-	
+	@Override
+	public boolean isInlineResource()
+	{
+		return true;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public String getLocation()
+	public java.io.InputStream getInputStream()
 	{
-		return this.loc;
+		return (this._inputStream);
 	}
 }

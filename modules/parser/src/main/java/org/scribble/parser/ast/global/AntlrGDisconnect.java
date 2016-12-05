@@ -17,7 +17,7 @@ public class AntlrGDisconnect
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		RoleNode dest = AntlrSimpleName.toRoleNode(getDestinationChild(ct));
-		return AstFactoryImpl.FACTORY.GDisconnect(src, dest);
+		return AstFactoryImpl.FACTORY.GDisconnect(ct, src, dest);
 	}
 
 	public static CommonTree getSourceChild(CommonTree ct)

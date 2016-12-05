@@ -29,45 +29,45 @@ public class AntlrSimpleName
 
 	public static ModuleNameNode toModuleNameNode(CommonTree ct)
 	{
-		return (ModuleNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, getName(ct));  // Cannot use SimpleNameNode because qualified uses the node's elements, not the node's text itself
+		return (ModuleNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ct, ModuleKind.KIND, getName(ct));  // Cannot use SimpleNameNode because qualified uses the node's elements, not the node's text itself
 	}
 
 	public static GProtocolNameNode toGProtocolNameNode(CommonTree ct)
 	{
-		return (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getName(ct));  // Cannot use SimpleNameNode because qualified uses the node's elements, not the node's text itself
+		return (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ct, Global.KIND, getName(ct));  // Cannot use SimpleNameNode because qualified uses the node's elements, not the node's text itself
 	}
 
 	public static LProtocolNameNode toLProtocolNameNode(CommonTree ct)
 	{
-		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getName(ct));
+		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ct, Local.KIND, getName(ct));
 	}
 
 	public static DataTypeNode toDataTypeNameNode(CommonTree ct)
 	{
-		return (DataTypeNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, getName(ct));
+		return (DataTypeNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ct, DataTypeKind.KIND, getName(ct));
 	}
 
 	public static MessageSigNameNode toMessageSigNameNode(CommonTree ct)
 	{
-		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getName(ct));
+		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ct, SigKind.KIND, getName(ct));
 	}
 
 	public static RoleNode toRoleNode(CommonTree ct)
 	{
-		return (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getName(ct));
+		return (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(ct, RoleKind.KIND, getName(ct));
 	}
 
 	public static <K extends NonRoleParamKind> NonRoleParamNode<K> toParamNode(K kind, CommonTree ct)
 	{
-		return AstFactoryImpl.FACTORY.NonRoleParamNode(kind, getName(ct));
+		return AstFactoryImpl.FACTORY.NonRoleParamNode(ct, kind, getName(ct));
 	}
 	
 	public static OpNode toOpNode(CommonTree ct)
 	{
 		String op = getName(ct);
 		return op.equals(ANTLR_EMPTY_OPERATOR)
-				? (OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, OpNode.EMPTY_OPERATOR_IDENTIFIER)
-				: (OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, getName(ct));
+				? (OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(ct, OpKind.KIND, OpNode.EMPTY_OPERATOR_IDENTIFIER)
+				: (OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(ct, OpKind.KIND, getName(ct));
 	}
 	
 	public static ScopeNode toScopeNode(CommonTree ct)
@@ -82,7 +82,7 @@ public class AntlrSimpleName
 	
 	public static RecVarNode toRecVarNode(CommonTree ct)
 	{
-		return (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, getName(ct));
+		return (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(ct, RecVarKind.KIND, getName(ct));
 	}
 
 	public static String getName(CommonTree ct)

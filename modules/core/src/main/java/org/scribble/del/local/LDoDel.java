@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
@@ -45,9 +46,11 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	// Only called if cycle
 	public LDo visitForSubprotocolInlining(ProtocolDefInliner builder, LDo child)
 	{
+		CommonTree blame = child.getSource();  // Cf., GDoDel
 		SubprotocolSig subsig = builder.peekStack();
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
-		LContinue inlined = AstFactoryImpl.FACTORY.LContinue(recvar);
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(blame,
+				RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
+		LContinue inlined = AstFactoryImpl.FACTORY.LContinue(blame, recvar);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return child;
 	}
@@ -56,13 +59,15 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	public LDo
 			leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
+		CommonTree blame = visited.getSource();  // Cf., LDoDel
 		SubprotocolSig subsig = inl.peekStack();
 		if (!inl.isCycle())
 		{
-			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
+			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(blame, 
+					RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) inl.peekEnv()).getTranslation());
-			LProtocolBlock gb = AstFactoryImpl.FACTORY.LProtocolBlock(gis);
-			LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(recvar, gb);
+			LProtocolBlock gb = AstFactoryImpl.FACTORY.LProtocolBlock(blame, gis);
+			LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(blame, recvar, gb);
 			inl.pushEnv(inl.popEnv().setTranslation(inlined));
 			inl.removeSubprotocolRecVar(subsig);
 		}	

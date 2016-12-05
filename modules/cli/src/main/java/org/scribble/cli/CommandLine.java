@@ -47,6 +47,7 @@ public class CommandLine
 		DOT,
 		AUT,
 		NO_VALIDATION,
+		INLINE_MAIN_MOD,
 
 		// Non-unique flags
 		PROJECT,
@@ -71,7 +72,7 @@ public class CommandLine
 	public CommandLine(String... args) throws CommandLineException
 	{
 		this.args = new CommandLineArgParser(args).getArgs();
-		if (!this.args.containsKey(ArgFlag.MAIN_MOD))
+		if (!this.args.containsKey(ArgFlag.MAIN_MOD) && !this.args.containsKey(ArgFlag.INLINE_MAIN_MOD))
 		{
 			throw new CommandLineException("No main module has been specified\r\n");
 		}
@@ -276,7 +277,7 @@ public class CommandLine
 		}
 		if (graph == null)
 		{
-			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+			throw new RuntimeScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
 		}
 		return graph;
 	}
@@ -313,7 +314,7 @@ public class CommandLine
 		SGraph model = fair ? jcontext.getSGraph(fullname) : jcontext.getUnfairSGraph(fullname);
 		if (model == null)
 		{
-			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+			throw new RuntimeScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
 		}
 		return model;
 	}
@@ -420,14 +421,22 @@ public class CommandLine
 		boolean noAcceptCorrelationCheck = this.args.containsKey(ArgFlag.NO_ACCEPT_CORRELATION_CHECK);
 		boolean noValidation = this.args.containsKey(ArgFlag.NO_VALIDATION);
 
-		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN_MOD)[0]);
 		List<Path> impaths = this.args.containsKey(ArgFlag.IMPORT_PATH)
 				? CommandLine.parseImportPaths(this.args.get(ArgFlag.IMPORT_PATH)[0])
 				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
-		//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);
-		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
-				noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+		if (this.args.containsKey(ArgFlag.INLINE_MAIN_MOD))
+		{
+			return new MainContext(debug, locator, this.args.get(ArgFlag.INLINE_MAIN_MOD)[0], useOldWF, noLiveness, minEfsm, fair,
+					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+		}
+		else
+		{
+			Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN_MOD)[0]);
+			//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);
+			return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
+					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+		}
 	}
 	
 	private static Path parseMainPath(String path)

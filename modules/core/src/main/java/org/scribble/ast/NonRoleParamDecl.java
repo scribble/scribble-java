@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.del.ScribDel;
@@ -12,9 +13,9 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 {
 	public final K kind;
 
-	public NonRoleParamDecl(K kind, NonRoleParamNode<K> name)
+	public NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> name)
 	{
-		super(name);
+		super(source, name);
 		this.kind = kind;
 	}
 	
@@ -22,14 +23,14 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 	public NonRoleParamDecl<K> clone()
 	{
 		NonRoleParamNode<K> param = (NonRoleParamNode<K>) this.name.clone();
-		return AstFactoryImpl.FACTORY.NonRoleParamDecl(this.kind, param);
+		return AstFactoryImpl.FACTORY.NonRoleParamDecl(this.source, this.kind, param);
 	}
 	
 	@Override
 	public NonRoleParamDecl<K> reconstruct(SimpleNameNode<K> name)
 	{
 		ScribDel del = del();
-		NonRoleParamDecl<K> pd = new NonRoleParamDecl<>(this.kind, (NonRoleParamNode<K>) name);
+		NonRoleParamDecl<K> pd = new NonRoleParamDecl<>(this.source, this.kind, (NonRoleParamNode<K>) name);
 		@SuppressWarnings("unchecked")
 		NonRoleParamDecl<K> tmp = (NonRoleParamDecl<K>) pd.del(del);
 		return tmp;
@@ -38,14 +39,14 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 	@Override
 	protected NonRoleParamDecl<K> copy()
 	{
-		return new NonRoleParamDecl<>(this.kind, (NonRoleParamNode<K>) this.name);
+		return new NonRoleParamDecl<>(this.source, this.kind, (NonRoleParamNode<K>) this.name);
 	}
 
 	@Override
 	public NonRoleParamDecl<K> project(Role self)
 	{
-		NonRoleParamNode<K> pn = AstFactoryImpl.FACTORY.NonRoleParamNode(this.kind, this.name.toString());
-		return AstFactoryImpl.FACTORY.NonRoleParamDecl(this.kind, pn);
+		NonRoleParamNode<K> pn = AstFactoryImpl.FACTORY.NonRoleParamNode(this.name.source, this.kind, this.name.toString());
+		return AstFactoryImpl.FACTORY.NonRoleParamDecl(this.source, this.kind, pn);
 	}
 	
 	@Override

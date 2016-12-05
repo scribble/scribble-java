@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
@@ -13,8 +14,9 @@ public abstract class Parallel<K extends ProtocolKind> extends CompoundInteracti
 {
 	private final List<? extends ProtocolBlock<K>> blocks;
 
-	protected Parallel(List<? extends ProtocolBlock<K>> blocks)
+	protected Parallel(CommonTree source, List<? extends ProtocolBlock<K>> blocks)
 	{
+		super(source);
 		this.blocks = new LinkedList<>(blocks);
 	}
 

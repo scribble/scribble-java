@@ -36,7 +36,7 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		//RecVarNode recvar = lr.recvar.clone();
 		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) lr.recvar.del().env()).getTranslation();	
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) lr.block.del().env()).getTranslation();	
-		LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
+		LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(lr.getSource(), recvar, block);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LRecursion) super.leaveProtocolInlining(parent, child, inl, lr);
 	}

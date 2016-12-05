@@ -14,7 +14,7 @@ public class AntlrGProtocolDefinition
 	public static GProtocolDef parseGProtocolDefinition(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
 		GProtocolBlock gpb = (GProtocolBlock) parser.parse(getBlockChild(ct));
-		return AstFactoryImpl.FACTORY.GProtocolDef(gpb);
+		return AstFactoryImpl.FACTORY.GProtocolDef(ct, gpb);
 	}
 
 	public static CommonTree getBlockChild(CommonTree ct)

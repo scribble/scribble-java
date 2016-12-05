@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ProtocolBlock;
@@ -20,9 +21,9 @@ import org.scribble.util.ScribUtil;
 
 public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 {
-	public GChoice(RoleNode subj, List<GProtocolBlock> blocks)
+	public GChoice(CommonTree source, RoleNode subj, List<GProtocolBlock> blocks)
 	{
-		super(subj, blocks);
+		super(source, subj, blocks);
 	}
 	
 	public LChoice project(Role self, List<LProtocolBlock> blocks)
@@ -40,15 +41,16 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 		blocks = blocks.stream().filter((b) -> !b.isEmpty()).collect(Collectors.toList());
 		if (!blocks.isEmpty())
 		{
-			// FIXME: initially keep global subject, and later overwrite as necessary in projections
+			// FIXME? initially keep global subject, and later overwrite as necessary in projections? (algorithm currently checks for DUMMY)
 			RoleNode subj = self.equals(this.subj.toName()) ? this.subj.clone() : AstFactoryImpl.FACTORY.DummyProjectionRoleNode();
-			List<LChoice> cs = blocks.stream().map((b) -> AstFactoryImpl.FACTORY.LChoice(subj, Arrays.asList(b))).collect(Collectors.toList());
+			List<LChoice> cs = blocks.stream().map((b) -> AstFactoryImpl.FACTORY.LChoice(this.source, subj, Arrays.asList(b))).collect(Collectors.toList());
+				// Hacky: keeping this.source for each LChoice (will end up as the source for the final merged LChoice)
 			LChoice merged = cs.get(0);
 			try
 			{
 				for (int i = 1; i < cs.size(); i++)
 				{
-					merged = merged.merge(cs.get(i));
+					merged = merged.merge(cs.get(i)); // Merge currently does "nothing"; validation takes direct non-deterministic interpretation -- purpose of syntactic merge is to convert non-det to "equivalent" safe det in certain sitations
 				}
 			}
 			catch (ScribbleException e)  // HACK
@@ -57,8 +59,6 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 			}
 			projection = merged;
 		}
-		
-		//..TODO: use projection-merge (and disable balanced roles choice check for non-exit choice cases)
 
 		return projection;
 	}
@@ -66,7 +66,7 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new GChoice(this.subj, getBlocks());
+		return new GChoice(this.source, this.subj, getBlocks());
 	}
 	
 	@Override
@@ -74,14 +74,14 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 	{
 		RoleNode subj = this.subj.clone();
 		List<GProtocolBlock> blocks = ScribUtil.cloneList(getBlocks());
-		return AstFactoryImpl.FACTORY.GChoice(subj, blocks);
+		return AstFactoryImpl.FACTORY.GChoice(this.source, subj, blocks);
 	}
 
 	@Override
 	public GChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<Global>> blocks)
 	{
 		ScribDel del = del();
-		GChoice gc = new GChoice(subj, castBlocks(blocks));
+		GChoice gc = new GChoice(this.source, subj, castBlocks(blocks));
 		gc = (GChoice) gc.del(del);
 		return gc;
 	}

@@ -2,6 +2,7 @@ package org.scribble.ast.local;
 
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
@@ -15,22 +16,22 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LRecursion extends Recursion<Local> implements LCompoundInteractionNode
 {
-	public LRecursion(RecVarNode recvar, LProtocolBlock block)
+	public LRecursion(CommonTree source, RecVarNode recvar, LProtocolBlock block)
 	{
-		super(recvar, block);
+		super(source, recvar, block);
 	}
 
 	@Override
 	protected LRecursion copy()
 	{
-		return new LRecursion(this.recvar, getBlock());
+		return new LRecursion(this.source, this.recvar, getBlock());
 	}
 
 	@Override
 	public LRecursion reconstruct(RecVarNode recvar, ProtocolBlock<Local> block)
 	{
 		ScribDel del = del();
-		LRecursion lr = new LRecursion(recvar, (LProtocolBlock) block);
+		LRecursion lr = new LRecursion(this.source, recvar, (LProtocolBlock) block);
 		lr = (LRecursion) lr.del(del);
 		return lr;
 	}
@@ -40,7 +41,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	{
 		RecVarNode recvar = this.recvar.clone();
 		LProtocolBlock block = getBlock().clone();
-		return AstFactoryImpl.FACTORY.LRecursion(recvar, block);
+		return AstFactoryImpl.FACTORY.LRecursion(this.source, recvar, block);
 	}
 	
 	@Override
@@ -75,7 +76,8 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 		{
 			throw new ScribbleException("Cannot merge recursions for " + this.recvar + " and " + them.recvar + ": " + this + ", " + ln);
 		}
-		return AstFactoryImpl.FACTORY.LRecursion(this.recvar.clone(), getBlock().merge(them.getBlock()));  // Not reconstruct: leave context building to post-projection passes
+		return AstFactoryImpl.FACTORY.LRecursion(this.source, this.recvar.clone(), getBlock().merge(them.getBlock()));  // Not reconstruct: leave context building to post-projection passes
+				// HACK: this source
 	}
 
 	@Override

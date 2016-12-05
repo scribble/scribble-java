@@ -29,7 +29,7 @@ public class AntlrGMessageTransfer
 		MessageNode msg = parseMessage(parser, getMessageChild(ct));
 		List<RoleNode> dests = 
 			getDestChildren(ct).stream().map((d) -> AntlrSimpleName.toRoleNode(d)).collect(Collectors.toList());
-		return AstFactoryImpl.FACTORY.GMessageTransfer(src, msg, dests);
+		return AstFactoryImpl.FACTORY.GMessageTransfer(ct, src, msg, dests);
 	}
 
 	protected static MessageNode parseMessage(ScribParser parser, CommonTree ct) throws ScribParserException

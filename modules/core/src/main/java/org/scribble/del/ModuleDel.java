@@ -17,6 +17,7 @@ import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.main.ScribbleException;
@@ -63,20 +64,24 @@ public class ModuleDel extends ScribDelBase
 		List<NonProtocolDecl<?>> npds = mod.getNonProtocolDecls();
 		List<String> npdnames = npds.stream().map((npd) -> npd.getDeclName().toString()).collect(Collectors.toList()); 
 				// Have to use Strings, as can be different kinds (datatype, sig)
-		Set<String> dups = getDuplicates(npdnames);
+		final Set<String> dups1 = getDuplicates(npdnames);
 		//if (npds.size() != npdnames.stream().distinct().count())
-		if (!dups.isEmpty())
+		if (!dups1.isEmpty())
 		{
-			throw new ScribbleException("Duplicate non-protocol decls: " + dups);
+			NonProtocolDecl<?> first =
+					npds.stream().filter((npd) -> dups1.contains(npd.getDeclName().toString())).collect(Collectors.toList()).get(0);
+			throw new ScribbleException(first.getSource(), "Duplicate non-protocol decls: " + first.getDeclName());
 		}
 		List<ProtocolDecl<?>> pds = mod.getProtocolDecls();
 		List<String> pdnames = pds.stream().map((pd) -> pd.header.getDeclName().toString()).collect(Collectors.toList());
 				// Have to use Strings, as can be different kinds (global, local)
-		dups = getDuplicates(pdnames);
+		final Set<String> dups2 = getDuplicates(pdnames);
 		if (pds.size() != pdnames.stream().distinct().count())
-		if (!dups.isEmpty())
+		if (!dups2.isEmpty())
 		{
-			throw new ScribbleException("Duplicate protocol decls: " + dups);  // Global and locals also required to be distinct
+			ProtocolDecl<?> first =
+					pds.stream().filter((pd) -> dups2.contains(pd.header.getDeclName().toString())).collect(Collectors.toList()).get(0);
+			throw new ScribbleException(first.getSource(), "Duplicate protocol decls: " + first.header.getDeclName());  // Global and locals also required to be distinct
 		}
 		return mod;
 	}
@@ -84,7 +89,8 @@ public class ModuleDel extends ScribDelBase
 	private static Set<String> getDuplicates(Collection<String> ss)
 	{
 		Set<String> uniques = new HashSet<>();
-		Set<String> dups = new HashSet<>();
+		Set
+		<String> dups = new HashSet<>();
 		for (String npd : ss)
 		{
 			if (!uniques.add(npd))
@@ -103,27 +109,29 @@ public class ModuleDel extends ScribDelBase
 	}
 
 	// lpd is the projected local protocol
-	public Module createModuleForProjection(Projector proj, Module root, LProtocolDecl lpd, Map<GProtocolName, Set<Role>> deps)
+	public Module createModuleForProjection(Projector proj, Module root, GProtocolDecl gpd, LProtocolDecl lpd, Map<GProtocolName, Set<Role>> deps)
 	{
-		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(root.moddecl.getFullModuleName(), lpd.getHeader().getDeclName());
-		ModuleDecl moddecl = AstFactoryImpl.FACTORY.ModuleDecl(modname);
+		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(root.moddecl.name.getSource(),  // Or ignore blame source for purely generated?
+				root.moddecl.getFullModuleName(), lpd.getHeader().getDeclName());
+		ModuleDecl moddecl = AstFactoryImpl.FACTORY.ModuleDecl(root.moddecl.getSource(), modname);
 		List<ImportDecl<?>> imports = new LinkedList<>();
 		for (GProtocolName gpn : deps.keySet())
 		{
 			for (Role role : deps.get(gpn))
 			{
 				LProtocolName targetsimpname = Projector.projectSimpleProtocolName(gpn.getSimpleName(), role);
-				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(gpn.getPrefix(), targetsimpname);
+				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(null,  // FIXME? projected import sources?
+						gpn.getPrefix(), targetsimpname);
 				if (!targetmodname.toName().equals(modname.toName()))  // Self dependency -- each projected local is in its own module now, so can compare module names
 				{
-					imports.add(AstFactoryImpl.FACTORY.ImportModule(targetmodname, null));
+					imports.add(AstFactoryImpl.FACTORY.ImportModule(null, targetmodname, null));  // FIXME? projected import sources?
 				}
 			}
 		}
 		
 		List<NonProtocolDecl<?>> data = new LinkedList<>(root.getNonProtocolDecls());  // FIXME: copy?  // FIXME: only project the dependencies
 		List<ProtocolDecl<?>> protos = Arrays.asList(lpd);
-		return AstFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
+		return AstFactoryImpl.FACTORY.Module(gpd.header.getSource(), moddecl, imports, data, protos);
 	}
 	
 	@Override 

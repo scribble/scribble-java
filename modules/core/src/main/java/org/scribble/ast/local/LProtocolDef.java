@@ -1,5 +1,6 @@
 package org.scribble.ast.local;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDef;
@@ -8,29 +9,29 @@ import org.scribble.sesstype.kind.Local;
 
 public class LProtocolDef extends ProtocolDef<Local> implements LNode
 {
-	public LProtocolDef(LProtocolBlock block)
+	public LProtocolDef(CommonTree source, LProtocolBlock block)
 	{
-		super(block);
+		super(source, block);
 	}
 
 	@Override
 	protected LProtocolDef copy()
 	{
-		return new LProtocolDef(getBlock());
+		return new LProtocolDef(this.source, getBlock());
 	}
 	
 	@Override
 	public LProtocolDef clone()
 	{
 		LProtocolBlock block = getBlock().clone();
-		return AstFactoryImpl.FACTORY.LProtocolDef(block);
+		return AstFactoryImpl.FACTORY.LProtocolDef(this.source, block);
 	}
 
 	@Override
 	public LProtocolDef reconstruct(ProtocolBlock<Local> block)
 	{
 		ScribDel del = del();
-		LProtocolDef lpd = new LProtocolDef((LProtocolBlock) block);
+		LProtocolDef lpd = new LProtocolDef(this.source, (LProtocolBlock) block);
 		lpd = (LProtocolDef) lpd.del(del);
 		return lpd;
 	}

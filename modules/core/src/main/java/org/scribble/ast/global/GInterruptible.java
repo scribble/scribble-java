@@ -2,6 +2,7 @@ package org.scribble.ast.global;
 
 import java.util.List;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Interruptible;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
@@ -22,17 +23,17 @@ public class GInterruptible extends Interruptible<Global> implements GCompoundIn
 					-> interrs.stream().map(GlobalInterruptible.toGlobalInterrupt).collect(Collectors.toList());*/
 
 	//public GlobalInterruptible(GlobalProtocolBlock block, List<GlobalInterrupt> interrs)
-	public GInterruptible(ProtocolBlock<Global> block, List<GInterrupt> interrs)
+	public GInterruptible(CommonTree source, ProtocolBlock<Global> block, List<GInterrupt> interrs)
 	{
 		//this(null, block, interrs, null, null);
-		this(null, block, interrs);
+		this(source, null, block, interrs);
 	}
 
 	//public GlobalInterruptible(ScopeNode scope, GlobalProtocolBlock block, List<GlobalInterrupt> interrs)
-	public GInterruptible(ScopeNode scope, ProtocolBlock<Global> block, List<GInterrupt> interrs)
+	public GInterruptible(CommonTree source, ScopeNode scope, ProtocolBlock<Global> block, List<GInterrupt> interrs)
 	{
 		//this(ct, scope, block, interrs, null, null);
-		super(scope, block, interrs);
+		super(source, scope, block, interrs);
 	}
 
 	@Override

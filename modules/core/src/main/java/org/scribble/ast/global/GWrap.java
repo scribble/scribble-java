@@ -2,6 +2,7 @@ package org.scribble.ast.global;
 
 import java.util.Collections;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.Constants;
@@ -19,14 +20,15 @@ import org.scribble.sesstype.name.Role;
 
 public class GWrap extends ConnectionAction<Global> implements GSimpleInteractionNode
 {
-	public static final MessageSigNode UNIT_MESSAGE_SIG_NODE =  // Hacky?  // FIXME factor out with GDisconnect
-			AstFactoryImpl.FACTORY.MessageSigNode(
-				(OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, Op.EMPTY_OPERATOR.toString()),
-				AstFactoryImpl.FACTORY.PayloadElemList(Collections.emptyList()));
+  // FIXME: inconsistent wrt. this.source -- it is essentially parsed (in the sense of *omitted* syntax), but not recorded
+	public static final MessageSigNode UNIT_MESSAGE_SIG_NODE =  // Hacky?  // FIXME: factor out with GDisconnect
+			AstFactoryImpl.FACTORY.MessageSigNode(null,
+				(OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, OpKind.KIND, Op.EMPTY_OPERATOR.toString()),
+				AstFactoryImpl.FACTORY.PayloadElemList(null, Collections.emptyList()));
 	
-	public GWrap(RoleNode src, RoleNode dest)
+	public GWrap(CommonTree source, RoleNode src, RoleNode dest)
 	{
-		super(src, UNIT_MESSAGE_SIG_NODE, dest);
+		super(source, src, UNIT_MESSAGE_SIG_NODE, dest);
 	}
 
 	public LNode project(Role self)
@@ -36,15 +38,15 @@ public class GWrap extends ConnectionAction<Global> implements GSimpleInteractio
 		LNode projection = null;
 		if (srcrole.equals(self) || destrole.equals(self))
 		{
-			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.src.toName().toString());
-			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.dest.toName().toString());
+			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.src.getSource(), RoleKind.KIND, this.src.toName().toString());  // clone?
+			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.dest.getSource(), RoleKind.KIND, this.dest.toName().toString());
 			if (srcrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LWrapClient(src, dest);  // src and dest (not self and peer)
+				projection = AstFactoryImpl.FACTORY.LWrapClient(this.source, src, dest);  // src and dest (not self and peer)
 			}
 			if (destrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LWrapServer(src, dest);
+				projection = AstFactoryImpl.FACTORY.LWrapServer(this.source, src, dest);
 			}
 		}
 		return projection;
@@ -53,8 +55,7 @@ public class GWrap extends ConnectionAction<Global> implements GSimpleInteractio
 	@Override
 	protected GWrap copy()
 	{
-		//return new GConnect(this.src, this.msg, this.dest);
-		return new GWrap(this.src, this.dest);
+		return new GWrap(this.source, this.src, this.dest);
 	}
 	
 	@Override
@@ -62,7 +63,7 @@ public class GWrap extends ConnectionAction<Global> implements GSimpleInteractio
 	{
 		RoleNode src = this.src.clone();
 		RoleNode dest = this.dest.clone();
-		return AstFactoryImpl.FACTORY.GWrap(src, dest);
+		return AstFactoryImpl.FACTORY.GWrap(this.source, src, dest);
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class GWrap extends ConnectionAction<Global> implements GSimpleInteractio
 	//public GWrap reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
-		GWrap gc = new GWrap(src, dest);  //this.msg);
+		GWrap gc = new GWrap(this.source, src, dest);  //this.msg);
 		gc = (GWrap) gc.del(del);
 		return gc;
 	}

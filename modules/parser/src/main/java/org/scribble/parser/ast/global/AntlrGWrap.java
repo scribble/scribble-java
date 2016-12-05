@@ -17,7 +17,7 @@ public class AntlrGWrap
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		RoleNode dest = AntlrSimpleName.toRoleNode(getDestinationChild(ct));
-		return AstFactoryImpl.FACTORY.GWrap(src, dest);
+		return AstFactoryImpl.FACTORY.GWrap(ct, src, dest);
 	}
 
 	public static CommonTree getSourceChild(CommonTree ct)

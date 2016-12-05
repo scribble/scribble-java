@@ -25,7 +25,7 @@ public class RecVarNodeDel extends ScribDelBase
 		RecVar rv = rn.toName();
 		if (!disamb.isBoundRecVar(rv))
 		{
-			throw new ScribbleException("Rec variable not bound: " + rn);
+			throw new ScribbleException(rn.getSource(), "Rec variable not bound: " + rn);
 		}
 		return (RecVarNode) super.leaveDisambiguation(parent, child, disamb, rn);
 		//return super.leaveDisambiguation(parent, child, disamb, rn.reconstruct(disamb.getCanonicalRecVarName(rv)));
@@ -45,7 +45,7 @@ public class RecVarNodeDel extends ScribDelBase
 		RecVar rv = rn.toName();
 		//return super.leaveProtocolInlining(parent, child, inliner, rn.reconstruct(inliner.getCanonicalRecVarName(rv)));  // No, affects the source AST
 		//RecVarNode inlined = rn.reconstruct(inliner.getCanonicalRecVarName(rv));
-		RecVarNode inlined = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, inliner.getCanonicalRecVarName(rv));
+		RecVarNode inlined = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(rn.getSource(), RecVarKind.KIND, inliner.getCanonicalRecVarName(rv));
 		inliner.pushEnv(inliner.popEnv().setTranslation(inlined));
 		return ScribDelBase.popAndSetVisitorEnv(this, inliner, rn);  // Not done by any super
 	}

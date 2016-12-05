@@ -50,7 +50,7 @@ public class DirectoryResourceLocator extends ResourceLocator
 	
 	// FIXME: need to sort out what "getResource" should mean at level of ResourceLocator abstraction, e.g. if arg is specifically a Path or more abstract, whether it is the complete location or partial, etc
 	@Override
-	public InputStreamResource getResource(Path path) throws ScribbleException
+	public FileResource getResource(Path path) throws ScribbleException
 	{
 		for (Path impath : this.impaths)
 		{
@@ -64,7 +64,7 @@ public class DirectoryResourceLocator extends ResourceLocator
 	}
 
 	// "full" path from working directory, as opposed to "relative" paths from import prefixes
-	public static InputStreamResource getResourceByFullPath(Path path) throws ScribbleException  // FIXME: should be abstracted out as front-end functionality, e.g. DirectoryResourceLocator, to find/load main module; then MainContext uses abstract ResourceLocator to load rest
+	public static FileResource getResourceByFullPath(Path path) throws ScribbleException  // FIXME: should be abstracted out as front-end functionality, e.g. DirectoryResourceLocator, to find/load main module; then MainContext uses abstract ResourceLocator to load rest
 	{
 		if (!Files.exists(path))
 		{
@@ -73,11 +73,11 @@ public class DirectoryResourceLocator extends ResourceLocator
 		return openFileInputStreamResource(path);
 	}
 	
-	private static InputStreamResource openFileInputStreamResource(Path path) throws ScribbleException
+	private static FileResource openFileInputStreamResource(Path path) throws ScribbleException
 	{
 		try
 		{
-			return new InputStreamResource(path, Files.newInputStream(path));
+			return new FileResource(path, Files.newInputStream(path));
 		}
 		catch (IOException e)
 		{

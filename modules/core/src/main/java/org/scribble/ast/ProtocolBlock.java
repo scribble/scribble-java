@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
@@ -8,8 +9,9 @@ public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInte
 {
 	public final InteractionSeq<K> seq;
 
-	public ProtocolBlock(InteractionSeq<K> seq)
+	public ProtocolBlock(CommonTree source, InteractionSeq<K> seq)
 	{
+		super(source);
 		this.seq = seq;
 	}
 	

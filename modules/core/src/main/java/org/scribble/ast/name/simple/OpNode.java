@@ -1,5 +1,6 @@
 package org.scribble.ast.name.simple;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.OpKind;
 import org.scribble.sesstype.name.Op;
@@ -9,21 +10,21 @@ public class OpNode extends SimpleNameNode<OpKind>
 {
 	public static final String EMPTY_OPERATOR_IDENTIFIER = "";
 	
-	public OpNode(String identifier)
+	public OpNode(CommonTree source, String identifier)
 	{
-		super(identifier);
+		super(source, identifier);
 	}
 
 	@Override
 	protected OpNode copy()
 	{
-		return new OpNode(getIdentifier());
+		return new OpNode(this.source, getIdentifier());
 	}
 	
 	@Override
 	public OpNode clone()
 	{
-		return (OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, getIdentifier());
+		return (OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.source, OpKind.KIND, getIdentifier());
 	}
 	
 	@Override

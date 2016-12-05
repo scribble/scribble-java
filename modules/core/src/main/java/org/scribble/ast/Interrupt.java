@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 
 // Maybe factor out a base class with MessageTransfer (the list of dest roles has a different meaning though)
@@ -12,8 +13,9 @@ public class Interrupt extends ScribNodeBase//AbstractSimpleInteractionNode
 	public final RoleNode src;
 	private final List<MessageNode> msgs;
 
-	protected Interrupt(RoleNode src, List<MessageNode> msgs)
+	protected Interrupt(CommonTree source, RoleNode src, List<MessageNode> msgs)
 	{
+		super(source);
 		this.src = src;
 		this.msgs = new LinkedList<>(msgs);
 	}

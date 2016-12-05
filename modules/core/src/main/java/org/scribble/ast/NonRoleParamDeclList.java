@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.name.Name;
@@ -13,29 +14,29 @@ import org.scribble.util.ScribUtil;
 // But OK because the NonRoleParamDecl nodes are immutable (the generic kind value is never rewritten after instantiation, only read)
 public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 {
-	public NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> decls)
+	public NonRoleParamDeclList(CommonTree source, List<NonRoleParamDecl<NonRoleParamKind>> decls)
 	{
-		super(decls);
+		super(source, decls);
 	}
 
 	@Override
 	protected NonRoleParamDeclList copy()
 	{
-		return new NonRoleParamDeclList(getDecls());
+		return new NonRoleParamDeclList(this.source, getDecls());
 	}
 	
 	@Override
 	public NonRoleParamDeclList clone()
 	{
 		List<NonRoleParamDecl<NonRoleParamKind>> decls = ScribUtil.cloneList(getDecls());
-		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(decls);
+		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(this.source, decls);
 	}
 
 	@Override
 	public NonRoleParamDeclList reconstruct(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
 	{
 		ScribDel del = del();
-		NonRoleParamDeclList rdl = AstFactoryImpl.FACTORY.NonRoleParamDeclList(castParamDecls(decls));
+		NonRoleParamDeclList rdl = AstFactoryImpl.FACTORY.NonRoleParamDeclList(this.source, castParamDecls(decls));
 		rdl = (NonRoleParamDeclList) rdl.del(del);
 		return rdl;
 	}
@@ -55,7 +56,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 	@Override
 	public NonRoleParamDeclList project(Role self)
 	{
-		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(getDecls());
+		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(this.source, getDecls());
 	}
 
 	@Override

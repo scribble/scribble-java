@@ -29,7 +29,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		List<Role> dests = gmt.getDestinationRoles();
 		if (dests.contains(src))
 		{
-			throw new ScribbleException("TODO: " + gmt);
+			throw new ScribbleException(gmt.getSource(), "[TODO] Self connections not supported: " + gmt);  // Would currently be subsumed by unconnected check
 		}
 		return gmt;
 	}
@@ -42,7 +42,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		Role src = gmt.src.toName();
 		if (!checker.peekEnv().isEnabled(src))
 		{
-			throw new ScribbleException("Role not enabled: " + src);
+			throw new ScribbleException(gmt.src.getSource(), "Role not enabled: " + src);
 		}
 		Message msg = gmt.msg.toMessage();
 		WFChoiceEnv env = checker.popEnv();
@@ -51,7 +51,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 			// FIXME: better to check as global model error (role stuck on uncomnected send)
 			if (!env.isConnected(src, dest))
 			{
-				throw new ScribbleException("Roles not (necessarily) connected: " + src + ", " + dest);
+				throw new ScribbleException(gmt.getSource(), "Roles not (necessarily) connected: " + src + ", " + dest);
 			}
 
 			env = env.addMessage(src, dest, msg);

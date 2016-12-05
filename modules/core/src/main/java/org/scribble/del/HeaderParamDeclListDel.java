@@ -23,7 +23,7 @@ public abstract class HeaderParamDeclListDel extends ScribDelBase
 		List<? extends HeaderParamDecl<?>> decls = pdl.getDecls();  // grammar enforces RoleDeclList size > 0
 		if (decls.size() != decls.stream().map((d) -> d.getDeclName()).distinct().count())
 		{
-			throw new ScribbleException("Duplicate header decls: " + pdl);
+			throw new ScribbleException(pdl.getSource(), "Duplicate header decls: " + pdl);
 		}
 		return pdl;
 	}

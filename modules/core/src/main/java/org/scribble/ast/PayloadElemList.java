@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Payload;
@@ -19,20 +20,21 @@ public class PayloadElemList extends ScribNodeBase
 	private final List<PayloadElem<?>> elems;
 
 	//public PayloadElemList(List<PayloadElem> elems)
-	public PayloadElemList(List<PayloadElem<?>> elems)
+	public PayloadElemList(CommonTree source, List<PayloadElem<?>> elems)
 	{
+		super(source);
 		this.elems = new LinkedList<>(elems);
 	}
 	
 	protected PayloadElemList project()
 	{
-		return AstFactoryImpl.FACTORY.PayloadElemList(this.elems.stream().map((pe) -> pe.project()).collect(Collectors.toList()));
+		return AstFactoryImpl.FACTORY.PayloadElemList(this.source, this.elems.stream().map((pe) -> pe.project()).collect(Collectors.toList()));
 	}
 	
 	@Override
 	protected PayloadElemList copy()
 	{
-		return new PayloadElemList(this.elems);
+		return new PayloadElemList(this.source, this.elems);
 	}
 	
 	@Override
@@ -40,14 +42,14 @@ public class PayloadElemList extends ScribNodeBase
 	{
 		//List<PayloadElem> elems = ScribUtil.cloneList(this.elems);
 		List<PayloadElem<?>> elems = ScribUtil.cloneList(this.elems);
-		return AstFactoryImpl.FACTORY.PayloadElemList(elems);
+		return AstFactoryImpl.FACTORY.PayloadElemList(this.source, elems);
 	}
 
 	//protected PayloadElemList reconstruct(List<PayloadElem> elems)
 	protected PayloadElemList reconstruct(List<PayloadElem<?>> elems)
 	{
 		ScribDel del = del();
-		PayloadElemList pel = new PayloadElemList(elems);
+		PayloadElemList pel = new PayloadElemList(this.source, elems);
 		pel = (PayloadElemList) pel.del(del);
 		return pel;
 	}

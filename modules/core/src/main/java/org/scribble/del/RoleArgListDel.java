@@ -28,7 +28,7 @@ public class RoleArgListDel extends DoArgListDel
 		//if (roles.size() != new HashSet<>(roles).size())
 		if (roles.size() != roles.stream().distinct().count())
 		{
-			throw new ScribbleException("Duplicate role args: " + roles);
+			throw new ScribbleException(ral.getSource(), "Duplicate role args: " + roles);
 		}
 		return ral;
 	}

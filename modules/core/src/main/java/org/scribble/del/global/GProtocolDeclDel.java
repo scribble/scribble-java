@@ -4,18 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
-import org.scribble.ast.NonRoleParamDeclList;
-import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.DependencyMap;
 import org.scribble.ast.context.global.GProtocolDeclContext;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
-import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.Job;
@@ -80,7 +75,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		if (occs.size() != decls.size()) 
 		{
 			decls.removeAll(occs);
-			throw new ScribbleException("Unused role decl(s) in " + gpd.header.name + ": " + decls);
+			throw new ScribbleException(gpd.header.roledecls.getSource(), "Unused role decl(s) in " + gpd.header.name + ": " + decls);
 		}
 
 		return super.leaveRoleCollection(parent, child, coll, gpd);
@@ -90,13 +85,15 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	public GProtocolDecl
 			leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
-		JobContext jc = proj.job.getContext();
-		Module root = jc.getModule(proj.getModuleContext().root);
+		Module root = proj.job.getContext().getModule(proj.getModuleContext().root);
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		Role self = proj.peekSelf();
-		LProtocolDecl lpd = project(proj, gpd);
+		
+		LProtocolDef def = (LProtocolDef) ((ProjectionEnv) gpd.def.del().env()).getProjection();
+		LProtocolDecl lpd = gpd.project(root, self, def);  // FIXME: is root (always) the correct module? (wrt. LProjectionDeclDel?)
+		
 		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
-		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, lpd, deps);
+		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, gpd, lpd, deps);
 		proj.addProjection(gpd.getFullMemberName(root), self, projected);
 		return gpd;
 	}
@@ -105,22 +102,6 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	{
 		DependencyMap<GProtocolName> deps = getProtocolDeclContext().getDependencyMap();
 		return deps.getDependencies().get(self);
-	}
-	
-	// FIXME: project modifiers?
-	private LProtocolDecl project(Projector proj, GProtocolDecl gpd) throws ScribbleException
-	{
-		Role self = proj.peekSelf();
-		LProtocolDef def = (LProtocolDef) ((ProjectionEnv) gpd.def.del().env()).getProjection();
-		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(gpd.getHeader().getDeclName(), self);
-		
-		// Move to delegates? -- maybe fully integrate into projection pass
-		RoleDeclList roledecls = gpd.header.roledecls.project(self);
-		NonRoleParamDeclList paramdecls = gpd.header.paramdecls.project(self);
-		LProtocolHeader lph = AstFactoryImpl.FACTORY.LProtocolHeader(pn, roledecls, paramdecls);
-		GProtocolName gpn = gpd.getFullMemberName(proj.job.getContext().getModule(proj.getModuleContext().root));
-		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProjectionDecl(gpd.modifiers, gpn, proj.peekSelf(), lph, def);
-		return projected;
 	}
 	
 	@Override

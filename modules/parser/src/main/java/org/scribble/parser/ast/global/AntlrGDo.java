@@ -21,7 +21,7 @@ public class AntlrGDo
 		RoleArgList ril = (RoleArgList) parser.parse(getRoleArgListChild(ct));
 		NonRoleArgList al = (NonRoleArgList) parser.parse(getNonRoleArgListChild(ct));
 		GProtocolNameNode pnn = AntlrQualifiedName.toGProtocolNameNode(getProtocolNameChild(ct));
-		return AstFactoryImpl.FACTORY.GDo(ril, al, pnn);
+		return AstFactoryImpl.FACTORY.GDo(ct, ril, al, pnn);
 	}
 	
 	public static CommonTree getProtocolNameChild(CommonTree ct)

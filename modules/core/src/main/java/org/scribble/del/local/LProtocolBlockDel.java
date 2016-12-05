@@ -16,11 +16,11 @@ public class LProtocolBlockDel extends ProtocolBlockDel
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
-		LProtocolBlock gpd = (LProtocolBlock) visited;
-		LInteractionSeq seq = (LInteractionSeq) ((InlineProtocolEnv) gpd.seq.del().env()).getTranslation();	
-		LProtocolBlock inlined = AstFactoryImpl.FACTORY.LProtocolBlock(seq);
+		LProtocolBlock lpb = (LProtocolBlock) visited;
+		LInteractionSeq seq = (LInteractionSeq) ((InlineProtocolEnv) lpb.seq.del().env()).getTranslation();	
+		LProtocolBlock inlined = AstFactoryImpl.FACTORY.LProtocolBlock(lpb.getSource(), seq);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
-		return (LProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, inl, gpd);
+		return (LProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, inl, lpb);
 	}
 
 	@Override

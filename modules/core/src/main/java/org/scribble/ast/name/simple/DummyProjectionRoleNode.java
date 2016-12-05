@@ -12,7 +12,7 @@ public class DummyProjectionRoleNode extends RoleNode
 
 	public DummyProjectionRoleNode()
 	{
-		super(DUMMY_PROJECTION_ROLE);
+		super(null, DUMMY_PROJECTION_ROLE);
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class AntlrNonRoleArgList
 		{
 			as.add(parseNonRoleArg(parser, a));
 		}
-		return AstFactoryImpl.FACTORY.NonRoleArgList(as);
+		return AstFactoryImpl.FACTORY.NonRoleArgList(ct, as);
 	}
 
 	// Not in own class because not called by ScribbleParser -- called directly from above
@@ -39,7 +39,7 @@ public class AntlrNonRoleArgList
 		if (type == AntlrNodeType.MESSAGESIGNATURE)
 		{
 			NonRoleArgNode arg = (NonRoleArgNode) parser.parse(ct);
-			return AstFactoryImpl.FACTORY.NonRoleArg(arg);
+			return AstFactoryImpl.FACTORY.NonRoleArg(ct, arg);
 		}
 		else
 		{
@@ -57,13 +57,13 @@ public class AntlrNonRoleArgList
 				if (ct.getChildCount() > 1)
 				{
 					DataTypeNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
-					return AstFactoryImpl.FACTORY.NonRoleArg(dt);
+					return AstFactoryImpl.FACTORY.NonRoleArg(ct, dt);
 				}
 				else
 				{
 					// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
 					AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct);
-					return AstFactoryImpl.FACTORY.NonRoleArg(an);
+					return AstFactoryImpl.FACTORY.NonRoleArg(ct, an);
 				}
 			}
 			else

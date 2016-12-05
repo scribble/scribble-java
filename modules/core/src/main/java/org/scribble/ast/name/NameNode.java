@@ -2,6 +2,7 @@ package org.scribble.ast.name;
 
 import java.util.Arrays;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Named;
@@ -11,8 +12,9 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 {
 	protected final String[] elems;
 
-	public NameNode(String... elems)
+	public NameNode(CommonTree source, String... elems)
 	{
+		super(source);
 		this.elems = elems;
 	}
 	

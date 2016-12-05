@@ -31,10 +31,12 @@ public class AntlrGInterruptible
 		}
 		if (isScopeImplicit(ct))
 		{
-			return new GInterruptible(block, interrs);
+			//return new GInterruptible(block, interrs);
+			return null;
 		}
 		ScopeNode scope = AntlrSimpleName.toScopeNode(getScopeChild(ct));
-		return new GInterruptible(scope, block, interrs);
+		//return new GInterruptible(scope, block, interrs);
+		return null;
 	}
 	
 	public static boolean isScopeImplicit(CommonTree ct)

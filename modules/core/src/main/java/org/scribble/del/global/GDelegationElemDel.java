@@ -39,7 +39,7 @@ public class GDelegationElemDel extends ScribDelBase
 		GProtocolName gpn = de.proto.toName();
 		if (!mc.isVisibleProtocolDeclName(gpn))
 		{
-			throw new ScribbleException("Protocol decl not visible: " + gpn);
+			throw new ScribbleException(de.proto.getSource(), "Protocol decl not visible: " + gpn);
 		}
 	}
 
@@ -56,10 +56,10 @@ public class GDelegationElemDel extends ScribDelBase
 		ProtocolDecl<Global> gpd = disamb.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 		if (!gpd.header.roledecls.getRoles().contains(rn))
 		{
-			throw new ScribbleException("Invalid delegation role: " + de);
+			throw new ScribbleException(de.role.getSource(), "Invalid delegation role: " + de);
 		}
 
-		GProtocolNameNode pnn = (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(fullname.getKind(), fullname.getElements());  // Not keeping original namenode del
+		GProtocolNameNode pnn = (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(de.proto.getSource(), fullname.getKind(), fullname.getElements());  // Not keeping original namenode del
 		return de.reconstruct(pnn, de.role);
 	}
 
@@ -95,7 +95,7 @@ public class GDelegationElemDel extends ScribDelBase
 		GProtocolName rootfullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(checker.getProtocolDeclOnEntry().header.getDeclName());
 		if (targetfullname.equals(rootfullname))  // Explicit check here because ProtocolDeclContextBuilder dependencies explicitly include self protocoldecl dependencies (cf. GProtocolDeclDel.addSelfDependency)
 		{
-			throw new ScribbleException("Recursive protocol dependencies not supported for delegation types: " + de);
+			throw new ScribbleException(de.getSource(), "Recursive protocol dependencies not supported for delegation types: " + de);
 		}
 		
 		Set<GProtocolName> todo = new LinkedHashSet<GProtocolName>();
@@ -117,7 +117,7 @@ public class GDelegationElemDel extends ScribDelBase
 			ProtocolName<Global> nextfullname = mc.getVisibleProtocolDeclFullName(next);
 			if (rootfullname.equals(nextfullname))
 			{
-				throw new ScribbleException("Recursive protocol dependencies not supported for delegation types: " + de);
+				throw new ScribbleException(de.getSource(), "Recursive protocol dependencies not supported for delegation types: " + de);
 			}
 			ProtocolDecl<Global> nextgpd = checker.job.getContext().getModule(targetfullname.getPrefix()).getProtocolDecl(nextfullname.getSimpleName());
 			Set<GProtocolName> tmp = 

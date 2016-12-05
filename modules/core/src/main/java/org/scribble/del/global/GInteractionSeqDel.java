@@ -38,7 +38,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 				gins.add((GInteractionNode) inlined);
 			}
 		}
-		GInteractionSeq inlined = AstFactoryImpl.FACTORY.GInteractionSeq(gins);
+		GInteractionSeq inlined = AstFactoryImpl.FACTORY.GInteractionSeq(gis.getSource(), gins);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, inl, gis);
 	}

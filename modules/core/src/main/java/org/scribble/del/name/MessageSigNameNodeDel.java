@@ -29,6 +29,6 @@ public class MessageSigNameNodeDel extends ScribDelBase
 		ModuleContext mc = disamb.getModuleContext();
 		MessageSigNameNode msnn = (MessageSigNameNode) visited;
 		MessageSigName fullname = mc.getVisibleMessageSigNameFullName(msnn.toName());
-		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, fullname.getElements());  // Didn't keep original del
+		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(msnn.getSource(), SigKind.KIND, fullname.getElements());  // Didn't keep original del
 	}
 }

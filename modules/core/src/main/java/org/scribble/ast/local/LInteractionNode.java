@@ -14,7 +14,7 @@ public interface LInteractionNode extends InteractionNode<Local>, LNode
 {
 	Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer);
 
-	LInteractionNode merge(LInteractionNode ln) throws ScribbleException;
+	LInteractionNode merge(LInteractionNode ln) throws ScribbleException;  // Merge currently does "nothing"; validation takes direct non-deterministic interpretation -- purpose of syntactic merge would be to convert non-det to "equivalent" safe det in certain sitations
 	boolean canMerge(LInteractionNode ln);
 	Set<Message> getEnabling();
 }

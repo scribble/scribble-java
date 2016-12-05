@@ -42,7 +42,7 @@ public class AntlrModule
 			ProtocolDecl<?> tmp = (ProtocolDecl<?>) parser.parse(pd);
 			pds.add(tmp);
 		}
-		return AstFactoryImpl.FACTORY.Module(md, ids, ptds, pds);
+		return AstFactoryImpl.FACTORY.Module(ct, md, ids, ptds, pds);
 	}
 
 	public static CommonTree getModuleDeclChild(CommonTree ct)

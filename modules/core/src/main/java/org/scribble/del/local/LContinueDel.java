@@ -28,7 +28,7 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 	{
 		LContinue lc = (LContinue) visited;
 		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) lc.recvar.del().env()).getTranslation();	
-		LContinue inlined = AstFactoryImpl.FACTORY.LContinue(recvar);
+		LContinue inlined = AstFactoryImpl.FACTORY.LContinue(lc.getSource(), recvar);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LContinue) super.leaveProtocolInlining(parent, child, inl, lc);
 	}

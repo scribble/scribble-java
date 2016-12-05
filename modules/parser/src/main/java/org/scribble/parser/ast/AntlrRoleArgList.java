@@ -21,7 +21,7 @@ public class AntlrRoleArgList
 		{
 			ris.add((RoleArg) parser.parse(ri));
 		}
-		return AstFactoryImpl.FACTORY.RoleArgList(ris);
+		return AstFactoryImpl.FACTORY.RoleArgList(ct, ris);
 	}
 
 	public static final List<CommonTree> getRoleInstantiationChildren(CommonTree ct)

@@ -24,7 +24,7 @@ public class AntlrMessageSigDecl
 		CommonTree tmp3 = getSourceChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
 		MessageSigNameNode alias = AntlrSimpleName.toMessageSigNameNode(getAliasChild(ct));
-		return AstFactoryImpl.FACTORY.MessageSigNameDecl(schema, extName, source, alias);
+		return AstFactoryImpl.FACTORY.MessageSigNameDecl(ct, schema, extName, source, alias);
 	}
 
 	public static CommonTree getSchemaChild(CommonTree ct)

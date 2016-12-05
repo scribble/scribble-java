@@ -29,7 +29,7 @@ public abstract class DoArgListDel extends ScribDelBase
 		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
 		if (args.size() != getParamDeclList(pd).getDecls().size())
 		{
-			throw new ScribbleException("Do arity mismatch for " + pd.header + ": " + args);
+			throw new ScribbleException(visited.getSource(), "Do arity mismatch for " + pd.header + ": " + args);
 		}
 
 		return dal;

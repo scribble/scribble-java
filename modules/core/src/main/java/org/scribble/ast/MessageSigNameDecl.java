@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.MemberNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.del.ScribDel;
@@ -9,29 +10,29 @@ import org.scribble.sesstype.name.ModuleName;
 
 public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 {
-	public MessageSigNameDecl(String schema, String extName, String source, MessageSigNameNode name)
+	public MessageSigNameDecl(CommonTree source, String schema, String extName, String extSource, MessageSigNameNode name)
 	{
-		super(schema, extName, source, name);
+		super(source, schema, extName, extSource, name);
 	}
 
 	@Override
 	protected MessageSigNameDecl copy()
 	{
-		return new MessageSigNameDecl(this.schema, this.extName, this.source, getNameNode());
+		return new MessageSigNameDecl(this.source, this.schema, this.extName, this.extSource, getNameNode());
 	}
 	
 	@Override
 	public MessageSigNameDecl clone()
 	{
 		MessageSigNameNode name = (MessageSigNameNode) this.name.clone();
-		return AstFactoryImpl.FACTORY.MessageSigNameDecl(this.schema, this.extName, this.source, name);
+		return AstFactoryImpl.FACTORY.MessageSigNameDecl(this.source, this.schema, this.extName, this.extSource, name);
 	}
 
 	@Override
-	public MessageSigNameDecl reconstruct(String schema, String extName, String source, MemberNameNode<SigKind> name)
+	public MessageSigNameDecl reconstruct(String schema, String extName, String extSource, MemberNameNode<SigKind> name)
 	{
 		ScribDel del = del();
-		MessageSigNameDecl msnd = new MessageSigNameDecl(schema, extName, source, (MessageSigNameNode) name);
+		MessageSigNameDecl msnd = new MessageSigNameDecl(this.source, schema, extName, extSource, (MessageSigNameNode) name);
 		msnd = (MessageSigNameDecl) msnd.del(del);
 		return msnd;
 	}
@@ -65,7 +66,7 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	public String toString()
 	{
 		return Constants.SIG_KW + " <" + this.schema + "> \"" + this.extName
-				+ "\" " + Constants.FROM_KW + " \"" + this.source + "\" "
+				+ "\" " + Constants.FROM_KW + " \"" + this.extSource + "\" "
 				+ Constants.AS_KW + " " + this.name + ";";
 	}
 }

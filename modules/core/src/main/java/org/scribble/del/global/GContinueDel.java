@@ -20,7 +20,7 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 	{
 		GContinue gc = (GContinue) visited;
 		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) gc.recvar.del().env()).getTranslation();	
-		GContinue inlined = AstFactoryImpl.FACTORY.GContinue(recvar);
+		GContinue inlined = AstFactoryImpl.FACTORY.GContinue(gc.getSource(), recvar);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GContinue) super.leaveProtocolInlining(parent, child, inl, gc);
 	}
