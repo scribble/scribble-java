@@ -1,0 +1,25 @@
+//$ bin/scribblec.sh -d modules/core/src/test/scrib/ modules/core/src/test/scrib/exercise/calculator/EProtocol.scr -api Calc C
+
+module exercise.calculator.EProtocol;
+
+type <java> "java.lang.Integer" from "rt.jar" as int;
+type <java> "java.lang.String" from "rt.jar" as string;
+
+
+global protocol Calc(role S , role C ) {
+	rec Loop {
+		choice at C {
+			sum (int, int) from C to S ;
+			result (int) from S to C ;
+			continue Loop ;
+		} or {
+			multiply (int, int) from C to S ;
+			result (int) from S to C ;
+			continue Loop ;
+		} or {
+			quit () from C to S ;
+			terminate () from S to C ;
+		}
+	}
+}
+

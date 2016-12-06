@@ -56,7 +56,7 @@ public class HttpLongC
 		Http http = new Http();
 		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C, new HttpLongMessageFormatter()))
 		{
-			String host = "www.doc.icac.uk"; int port = 80;
+			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;
 		
 			client.connect(S, SocketChannelEndpoint::new, host, port);
