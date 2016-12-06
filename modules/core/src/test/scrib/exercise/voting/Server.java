@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import exercise.voting.EProtocol.EVoting.EVoting;
@@ -20,7 +20,7 @@ public class Server
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException, ExecutionException, InterruptedException, ClassNotFoundException
 	{
 		EVoting vp = new EVoting();
-		try (SessionEndpoint<EVoting, S> se = new SessionEndpoint<>(vp, EVoting.S, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<EVoting, S> se = new MPSTEndpoint<>(vp, EVoting.S, new ObjectStreamFormatter()))
 		{
 			se.connect(EVoting.S, SocketChannelEndpoint::new, "localhost", 8888);
 			EVoting_S_1 s1 = new EVoting_S_1(se);

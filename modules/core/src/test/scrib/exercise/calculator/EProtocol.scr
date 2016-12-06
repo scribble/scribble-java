@@ -1,3 +1,5 @@
+//$ bin/scribblec.sh -d modules/core/src/test/scrib/ modules/core/src/test/scrib/exercise/calculator/EProtocol.scr -api Calc C
+
 module exercise.calculator.EProtocol;
 
 type <java> "java.lang.Integer" from "rt.jar" as int;
@@ -17,7 +19,7 @@ global protocol Calc(role S , role C ) {
 		} or {
 			quit () from C to S ;
 			terminate () from S to C ;
-			}
+		}
 	}
 }
 
