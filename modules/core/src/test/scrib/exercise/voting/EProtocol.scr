@@ -1,0 +1,21 @@
+module exercise.voting.EProtocol;
+
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+type <java> "java.lang.String" from "rt.jar" as String;
+
+
+global protocol EVoting(role V, role S){
+    Authenticate(String ) from V to S;
+	choice at S {
+    	Ok(String) from S to V;
+
+    	choice at V {
+        	Yes(String) from V to S;
+    	} or {
+        	No(String) from V to S;
+    	}
+    		Result(Int) from S to V;
+		} or {
+    	Reject(String ) from S to V;}
+}
+
