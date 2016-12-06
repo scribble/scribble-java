@@ -135,6 +135,36 @@ global protocol Proto1(role A, role B, role C)
 }
 //*/
 
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		rec Y
+		{
+			2() from A to C;
+			continue X;  // Testing projection-pruning (for B) -- not pruned
+		}
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	rec X
+	{
+		rec Y
+		{
+			2() from A to C;
+			continue X;  // Testing projection-pruning (for B) -- pruned
+		}
+	}
+}
+//*/
+
 
 /*
 global protocol Proto1(role A, role B, role C)
