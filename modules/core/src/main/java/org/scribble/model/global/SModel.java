@@ -49,7 +49,7 @@ public class SModel
 				// FIXME: getTrace can get stuck when local choice subjects are disabled
 				List<SAction> trace = this.graph.getTrace(init, s);  // FIXME: getTrace broken on non-det self loops?
 				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
-				errorMsg += "\nSafety violation(s) at " + s.id + ":\n    Trace=" + trace;
+				errorMsg += "\nSafety violation(s) at session state " + s.id + ":\n    Trace=" + trace;
 			}
 			if (!errors.stuck.isEmpty())
 			{
@@ -84,12 +84,12 @@ public class SModel
 				Set<Role> starved = checkRoleProgress(states, init, termset);
 				if (!starved.isEmpty())
 				{
-					errorMsg += "\nRole progress violation for " + starved + " in terminal set:\n    " + termSetToString(job, termset, states);
+					errorMsg += "\nRole progress violation for " + starved + " in session state terminal set:\n    " + termSetToString(job, termset, states);
 				}
 				Map<Role, Set<ESend>> ignored = checkEventualReception(states, init, termset);
 				if (!ignored.isEmpty())
 				{
-					errorMsg += "\nEventual reception violation for " + ignored + " in terminal set:\n    " + termSetToString(job, termset, states);
+					errorMsg += "\nEventual reception violation for " + ignored + " in session state terminal set:\n    " + termSetToString(job, termset, states);
 				}
 			}
 		}

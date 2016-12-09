@@ -39,6 +39,143 @@ global protocol Proto1(role A, role B, role C)
 /*
 global protocol Proto1(role A, role B, role C)
 {
+	1() from A to B;
+	rec X  // Testing: projecting-pruning (for B) -- cf., syntactic merge (cannot merge X and end)
+	{
+		choice at A
+		{
+			2() from A to C;
+			continue X;
+		}
+		or
+		{
+			3() from A to C;
+		}
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X  // Testing: projecting-pruning (for B) -- X not pruned (becomes single "unguarded" X case) with safety errors
+	{
+		1() from A to B;
+		choice at A
+		{
+			2() from A to C;
+			continue X;
+		}
+		or
+		{
+			3() from A to C;
+			//continue X;  // OK if uncommented
+		}
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	rec X  // Testing: projecting-pruning (for B)
+	{
+		choice at A
+		{
+			2() from A to C;
+			continue X;
+		}
+		or
+		{
+			3() from A to C;
+			continue X;
+		}
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec Y
+	{
+		1() from A to B;
+		rec X
+		{
+			choice at A
+			{
+				2() from A to C;
+				continue Y;
+			}
+			or
+			{
+				3() from A to C;
+				continue X;  // Testing: projecting-pruning (for B) -- role progress violation for B
+			}
+		}
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	rec Y  // Testing: projecting-pruning (for B)
+	{
+		rec X
+		{
+			choice at A
+			{
+				2() from A to C;
+				continue Y;
+			}
+			or
+			{
+				3() from A to C;
+				continue X;
+			}
+		}
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		rec Y
+		{
+			2() from A to C;
+			continue X;  // Testing projection-pruning (for B) -- not pruned
+		}
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	rec X
+	{
+		rec Y
+		{
+			2() from A to C;
+			continue X;  // Testing projection-pruning (for B) -- pruned
+		}
+	}
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
 	rec X
 	{
 		choice at A

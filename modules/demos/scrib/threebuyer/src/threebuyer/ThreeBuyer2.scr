@@ -7,7 +7,6 @@ type <java> "test.twobuyer.Date" from "test/twobuyer/Date.java" as Date;
 
 
 // 1 = B, 2 = A, 3 = S
-//global protocol ThreeBuyer(role A, role B, role S)
 explicit global protocol Proto(role A, role B, role S, role C)
 {
 	connect A to B;
@@ -28,16 +27,16 @@ aux global protocol ThreeBuyerChoice(role A, role B, role S, role C)
 	}
 	or
 	{
-		dummy() from B to A;  // See below FIXME
+		dummy() from B to A;
 		dummy() from B to S;
-		(Int) connect B to C;  // Should be the Int on line 19
-		//(TwoBuyerChoice@B) from B to C;  // FIXME: need a notion of delegating "this", to satisfy safety wrt. A and S
-		connect C to B;
+		connect B to C;
+		(Int) from B to C;
+		connect C to A;
 		connect C to S;
 		do TwoBuyerChoice(A, C, S);
 		choice at C
 		{
-			ok() from C to B;  // Not enforced: consistency of "ok" choice here and in the delegated session
+			ok() from C to B;
 		}
 		or
 		{
