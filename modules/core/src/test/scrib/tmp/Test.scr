@@ -32,7 +32,8 @@ module Test;
 
 global protocol Proto1(role A, role B, role C)
 {
-	
+	1() from A to B;
+	1() from A to C;
 }
 
 
