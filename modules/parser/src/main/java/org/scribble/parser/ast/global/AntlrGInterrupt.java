@@ -1,14 +1,10 @@
 package org.scribble.parser.ast.global;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.MessageNode;
 import org.scribble.ast.global.GInterrupt;
-import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.parser.ScribParser;
-import org.scribble.parser.ast.name.AntlrSimpleName;
 import org.scribble.parser.util.ScribParserUtil;
 import org.scribble.util.ScribParserException;
 
@@ -20,15 +16,16 @@ public class AntlrGInterrupt
 
 	public static GInterrupt parseGInterrupt(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
-		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
+		/*RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		/*List<MessageNode> msgs =
-				getMessageChildren(ct).stream().map((msg) -> AntlrGMessageTransfer.parseMessage(parser, msg)).collect(Collectors.toList());*/
+				getMessageChildren(ct).stream().map((msg) -> AntlrGMessageTransfer.parseMessage(parser, msg)).collect(Collectors.toList());
+		* /
 		List<MessageNode> msgs = new LinkedList<>();
 		for (CommonTree msg : getMessageChildren(ct))
 		{
 			msgs.add(AntlrGMessageTransfer.parseMessage(parser, msg));
 		}
-		//return new GInterrupt(src, msgs);  // Destination roles set by later pass
+		//return new GInterrupt(src, msgs);  // Destination roles set by later pass*/
 		return null;
 	}
 

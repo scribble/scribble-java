@@ -71,24 +71,24 @@ public class SocketEndpoint
 // Could move to EndpointInputQueues
 class ReceiverThread extends Thread
 {
-	private final MPSTEndpoint<?, ?> ep;
+	/*private final MPSTEndpoint<?, ?> ep;
 	private final Role peer;
 	private final DataInputStream dis;
 
-	private Throwable fail;
+	private Throwable fail;*/
 
 	public ReceiverThread(MPSTEndpoint<?, ?> ep, Role peer, DataInputStream dis)
 	{
-		this.ep = ep;
+		/*this.ep = ep;
 		this.peer = peer;
-		this.dis = dis;
+		this.dis = dis;*/
 
 		//ep.getInputQueues().register(peer);
 	}
 
 	public void run()
 	{
-		EndpointInputQueues queues = null;//this.ep.getInputQueues();
+		/*EndpointInputQueues queues = null;//this.ep.getInputQueues();
 		try
 		{
 			while (true)
@@ -121,6 +121,6 @@ class ReceiverThread extends Thread
 					queues.interrupt(this.peer, this.fail);
 				}
 			}
-		}
+		}*/
 	}
 }

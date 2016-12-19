@@ -1,5 +1,5 @@
 //$ bin/scribblec.sh -ip modules/demos/scrib/bettybook/src -d modules/demos/scrib/bettybook/src modules/demos/scrib/bettybook/src/bettybook/math/scrib/Math.scr -api MathService C
-//$ javadoc -cp modules/core/target/classes';'modules/demos/scrib/bettybook/src -subpackages bettybook.math.scrib.Math.MathService -d modules/demos/scrib/bettybook/math
+//$ javadoc -cp modules/core/target/classes';'modules/demos/scrib/bettybook/src -subpackages bettybook.math.scrib.Math.MathService -d modules/demos/scrib/bettybook/math/javadoc
 
 
 module bettybook.math.scrib.Math;

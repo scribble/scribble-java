@@ -110,7 +110,9 @@ public abstract class AbstractName<K extends Kind> implements Name<K>
 
 	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
-		this.kind = (K) in.readObject();
+		@SuppressWarnings("unchecked")
+		K k = (K) in.readObject();
+		this.kind = k;
 		//this.kind = readKind();  // TODO: protected abstract -- will this work?
 		this.elems = (String[]) in.readObject();
 	}

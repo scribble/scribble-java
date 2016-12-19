@@ -97,7 +97,8 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 		MethodBuilder mb = this.cb.newMethod("async"); 
 		// Blurb stuff similar to makeReceiveHeader
 		mb.addModifiers(JavaBuilder.PUBLIC);//, ClassBuilder.SYNCHRONIZED);
-		setNextSocketReturnType(mb, succ);
+		//setNextSocketReturnType(mb, succ);
+		setNextSocketReturnType(this.apigen, mb, succ);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.obj) + " " + ROLE_PARAM);
 		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);
