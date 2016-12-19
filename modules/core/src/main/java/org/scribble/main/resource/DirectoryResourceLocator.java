@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.scribble.main.ScribbleException;
 
@@ -32,7 +31,7 @@ import org.scribble.main.ScribbleException;
 // FIXME: rename exceptions
 public class DirectoryResourceLocator extends ResourceLocator
 {
-	private static final Logger LOG = Logger.getLogger(DirectoryResourceLocator.class.getName());
+	//private static final Logger LOG = Logger.getLogger(DirectoryResourceLocator.class.getName());  // TODO:
 	
 	private List<Path> impaths;
 

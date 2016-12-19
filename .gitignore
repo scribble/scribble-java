@@ -14,7 +14,6 @@ bin/scribblec.sh
 
 javadoc
 
-#modules/core/src/test/scrib
 #modules/demos/scrib
 
 modules/demos/scrib/betty16/src/betty16/lec1/httplong/HttpLong/
@@ -34,6 +33,8 @@ modules/demos/scrib/http/src/http/shortvers/HttpShort/
 modules/demos/scrib/loan/src/loan/LoanApplication/
 modules/demos/scrib/smtp/src/smtp/Smtp/
 modules/demos/scrib/travel/src/travel/Travel/
+
+#modules/core/src/test/scrib
 
 modules/core/src/test/scrib/exercise/calculator/EProtocol/
 modules/core/src/test/scrib/exercise/voting/EProtocol/

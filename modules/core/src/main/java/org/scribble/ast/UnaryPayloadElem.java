@@ -67,7 +67,10 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase i
 	{
 		//PayloadElemNameNode<DataTypeKind> name = (PayloadElemNameNode<DataTypeKind>) visitChild(this.data, nv);
 		//DataTypeNode name = (PayloadElemNameNode<DataTypeKind>) visitChild(this.data, nv);
-		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChild(this.name, nv);  // FIXME: probably need to record an explicit kind token, for "cast checking"
+		@SuppressWarnings("unchecked")
+		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChild(this.name, nv);  
+				// FIXME: probably need to record an explicit kind token, for "cast checking"
+				// Cannot use ScribNodeBase.visitChildWithCastCheck because this is not a ProtocolKindNode
 		//PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChildWithClassEqualityCheck(this, this.name, nv);  // No: can be initially Ambig
 		return reconstruct(name);
 	}

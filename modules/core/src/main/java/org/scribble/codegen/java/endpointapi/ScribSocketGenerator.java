@@ -150,11 +150,11 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	
 	protected abstract void addMethods() throws ScribbleException;
 	
-	@Deprecated
+	/*@Deprecated
 	protected void setNextSocketReturnType(MethodBuilder mb, EState succ)
 	{
 		setNextSocketReturnType(this.apigen, mb, succ);
-	}
+	}*/
 	
 	//protected void addReturnNextSocket(MethodBuilder mb, String nextClass)
 	protected void addReturnNextSocket(MethodBuilder mb, EState s)

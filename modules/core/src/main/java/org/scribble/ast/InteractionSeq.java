@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
@@ -25,6 +26,9 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 	
 	public abstract InteractionSeq<K> reconstruct(List<? extends InteractionNode<K>> ins);
 	
+	@SuppressWarnings("unchecked")
+	private final Function<ScribNode, ProtocolKindNode<K>> KIND_CAST = (n) -> (ProtocolKindNode<K>) n;
+	
 	@Override
 	public ScribNode visitChildren(AstVisitor nv) throws ScribbleException
 	{
@@ -33,15 +37,16 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 		List<InteractionNode<K>> actions = new LinkedList<>();
 		for (InteractionNode<K> in : this.inters)
 		{
-			ScribNode visited = visitChild(in, nv);
+			//ScribNode visited = visitChild(in, nv);
+			ProtocolKindNode<K> visited = visitProtocolKindChildWithCastCheck(this, in, nv, ProtocolKindNode.class, in.getKind(), KIND_CAST);
 			if (visited instanceof InteractionSeq<?>)
 			{
-				InteractionSeq<K> tmp = (InteractionSeq<K>) visited;  // FIXME:
+				InteractionSeq<K> tmp = (InteractionSeq<K>) visited;
 				actions.addAll(tmp.inters);
 			}
 			else
 			{
-				InteractionNode<K> tmp = (InteractionNode<K>) visited;  // FIXME:
+				InteractionNode<K> tmp = (InteractionNode<K>) visited;
 				actions.add(tmp);
 			}
 		}
