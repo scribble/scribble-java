@@ -11,6 +11,7 @@ import org.scribble.visit.wf.NameDisambiguator;
 import org.scribble.visit.wf.WFChoiceChecker;
 import org.scribble.visit.wf.env.WFChoiceEnv;
 
+// FIXME: make WrapDel (cf., G/LMessageTransferDel)
 public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionNodeDel
 {
 	public GWrapDel()

@@ -1,6 +1,7 @@
 package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
+import org.scribble.f17.visit.F17Parser;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
@@ -206,6 +207,16 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterF17Parsing(ScribNode parent, ScribNode child, F17Parser parser) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveF17Parsing(ScribNode parent, ScribNode child, F17Parser parser, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

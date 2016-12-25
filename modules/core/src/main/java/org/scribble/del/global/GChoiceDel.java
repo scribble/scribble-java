@@ -13,6 +13,8 @@ import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ChoiceDel;
+import org.scribble.f17.visit.F17Parser;
+import org.scribble.f17.visit.F17ParserEnv;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
@@ -141,5 +143,17 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		LChoice projection = gc.project(proj.peekSelf(), blocks);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
+	}
+	
+	@Override
+	public void enterF17Parsing(ScribNode parent, ScribNode child, F17Parser parser) throws ScribbleException
+	{
+		F17ParserEnv env = parser.peekEnv();  // Peek, not pop -- need to push additional, which super.leave will pop (and set)
+		if (env.isUnguarded())
+		{
+			throw new ScribbleException("[FASE17] unguarded in choice case: " + child);
+		}
+		env = env.enterContext().setUnguarded();  // FIXME: redundant enterContext with manual setUnguarded (following enterInlinedWFChoiceCheck)
+		parser.pushEnv(env);
 	}
 }

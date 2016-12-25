@@ -26,6 +26,7 @@ public class CommandLineArgParser
 	public static final String AUT_FLAG = "-aut";
 	public static final String NO_VALIDATION_FLAG = "-novalid";
 	public static final String INLINE_MAIN_MOD_FLAG = "-inline";
+	public static final String F17_FLAG = "-f17";
 	
 	// Non-unique flags
 	public static final String PROJECT_FLAG = "-project";
@@ -59,6 +60,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.AUT_FLAG, CommandLine.ArgFlag.AUT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.NO_VALIDATION_FLAG, CommandLine.ArgFlag.NO_VALIDATION);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.INLINE_MAIN_MOD_FLAG, CommandLine.ArgFlag.INLINE_MAIN_MOD);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.F17_FLAG, CommandLine.ArgFlag.F17);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -160,6 +162,7 @@ public class CommandLineArgParser
 			case CommandLineArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK:
 			case CommandLineArgParser.NO_ACCEPT_CORRELATION_CHECK:
 			case CommandLineArgParser.NO_VALIDATION_FLAG:
+			case CommandLineArgParser.F17_FLAG:
 			{
 				checkAndAddNoArgUniqueFlag(flag, new String[0]);
 				return i;

@@ -48,6 +48,7 @@ public class CommandLine
 		AUT,
 		NO_VALIDATION,
 		INLINE_MAIN_MOD,
+		F17,
 
 		// Non-unique flags
 		PROJECT,
@@ -420,6 +421,7 @@ public class CommandLine
 		boolean noLocalChoiceSubjectCheck = this.args.containsKey(ArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK);
 		boolean noAcceptCorrelationCheck = this.args.containsKey(ArgFlag.NO_ACCEPT_CORRELATION_CHECK);
 		boolean noValidation = this.args.containsKey(ArgFlag.NO_VALIDATION);
+		boolean f17 = this.args.containsKey(ArgFlag.F17);
 
 		List<Path> impaths = this.args.containsKey(ArgFlag.IMPORT_PATH)
 				? CommandLine.parseImportPaths(this.args.get(ArgFlag.IMPORT_PATH)[0])
@@ -428,14 +430,14 @@ public class CommandLine
 		if (this.args.containsKey(ArgFlag.INLINE_MAIN_MOD))
 		{
 			return new MainContext(debug, locator, this.args.get(ArgFlag.INLINE_MAIN_MOD)[0], useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17);
 		}
 		else
 		{
 			Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN_MOD)[0]);
 			//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);
 			return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17);
 		}
 	}
 	

@@ -38,6 +38,7 @@ public class MainContext
 	public final boolean noLocalChoiceSubjectCheck;
 	public final boolean noAcceptCorrelationCheck;
 	public final boolean noValidation;
+	public final boolean f17;
 
 	// Only "manually" used here for loading main module (which should be factored out to front end) -- otherwise, only used within loader
 	private final AntlrParser antlrParser = new AntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
@@ -54,7 +55,7 @@ public class MainContext
 	
 	// FIXME: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
 	protected MainContext(boolean debug, ResourceLocator locator, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation)
+			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean f17)
 					throws ScribParserException, ScribbleException
 	{
 		//this.jUnit = jUnit;
@@ -66,16 +67,17 @@ public class MainContext
 		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
 		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
 		this.noValidation = noValidation;
+		this.f17 = f17;
 
 		this.locator = locator; 
 		this.loader = new ScribModuleLoader(this.locator, this.antlrParser, this.scribParser);
 	}
 
 	public MainContext(boolean debug, ResourceLocator locator, String inline, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation)
+			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean f17)
 					throws ScribParserException, ScribbleException
 	{
-		this(debug, locator, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+		this(debug, locator, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17);
 
 		Resource res = new InlineResource(inline);
 		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res));
@@ -85,10 +87,10 @@ public class MainContext
 
 	// Load main module from file system
 	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation)
+			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean f17)
 					throws ScribParserException, ScribbleException
 	{
-		this(debug, locator, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+		this(debug, locator, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17);
 
 		// FIXME: checking main module resource exists at specific location should be factored out to front-end (e.g. CommandLine) -- main module resource is specified at local front end level of abstraction, while MainContext uses abstract resource loading
 		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
@@ -130,7 +132,7 @@ public class MainContext
 	public Job newJob()
 	{
 		return new Job(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
-				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck, this.noValidation);
+				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck, this.noValidation, this.f17);
 	}
 	
 	// Hacky? But not Scribble tool's job to check nested directory location of module fully corresponds to the fullname of module? Cf. Java classes

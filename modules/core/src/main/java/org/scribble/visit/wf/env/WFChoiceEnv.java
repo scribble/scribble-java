@@ -64,7 +64,7 @@ public class WFChoiceEnv extends Env<WFChoiceEnv>
 	public WFChoiceEnv enterContext()
 	{
 		//return new InlinedWFChoiceEnv(this.initial, this.initialInterrupts);
-		return new WFChoiceEnv(this.initial, this.connected);
+		return new WFChoiceEnv(this.initial, this.connected);  // i.e., copy
 	}
 	
 	@Override
