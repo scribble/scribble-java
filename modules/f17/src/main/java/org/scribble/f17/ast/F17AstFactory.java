@@ -9,6 +9,14 @@ import org.scribble.f17.ast.global.F17GRecVar;
 import org.scribble.f17.ast.global.F17GType;
 import org.scribble.f17.ast.global.action.F17GAction;
 import org.scribble.f17.ast.global.action.F17GMessageTransfer;
+import org.scribble.f17.ast.local.F17LChoice;
+import org.scribble.f17.ast.local.F17LEnd;
+import org.scribble.f17.ast.local.F17LRec;
+import org.scribble.f17.ast.local.F17LRecVar;
+import org.scribble.f17.ast.local.F17LType;
+import org.scribble.f17.ast.local.action.F17LAction;
+import org.scribble.f17.ast.local.action.F17LReceive;
+import org.scribble.f17.ast.local.action.F17LSend;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.RecVar;
@@ -41,37 +49,34 @@ public class F17AstFactory
 	{
 		return new F17GEnd();
 	}
-	
-	/*//public LocalSelect LocalSelect(Role self, Role dest, Map<MessageLab, LocalCase> cases)
-	public LocalSelect LocalSelect(Role dest, Map<Label, LocalCase> cases)
+
+	public F17LChoice LChoice(Map<F17LAction, F17LType> cases)
 	{
-		//return new LocalSelect(self, dest, cases);
-		return new LocalSelect(dest, cases);
+		return new F17LChoice(cases);
 	}
 	
-	//public LocalBranch LocalBranch(Role self, Role src, Map<MessageLab, LocalCase> cases)
-	public LocalBranch LocalBranch(Role src, Map<Label, LocalCase> cases)
+	public F17LSend LSend(Role self, Role dest, Op op, Payload pay)
 	{
-		//return new LocalBranch(self, src, cases);
-		return new LocalBranch(src, cases);
+		return new F17LSend(self, dest, op, pay);
 	}
 	
-	public LocalCase LocalCase(PayloadType pay, LocalType body)
+	public F17LReceive LReceive(Role self, Role dest, Op op, Payload pay)
 	{
-		return new LocalCase(pay, body);
+		return new F17LReceive(self, dest, op, pay);
 	}
 	
-	//public LocalRec LocalRec(Role self, RecVar recvar, LocalType body)
-	public LocalRec LocalRec(RecVar recvar, LocalType body)
+	public F17LRec LRec(RecVar recvar, F17LType body)
 	{
-		//return new LocalRec(self, recvar, body);
-		return new LocalRec(recvar, body);
+		return new F17LRec(recvar, body);
+	}
+	
+	public F17LRecVar LRecVar(RecVar var)
+	{
+		return new F17LRecVar(var);
 	}
 
-	//public LocalEnd LocalEnd(Role self)
-	public LocalEnd LocalEnd()
+	public F17LEnd LEnd()
 	{
-		//return new LocalEnd(self);
-		return new LocalEnd();
-	}*/
+		return new F17LEnd();
+	}
 }

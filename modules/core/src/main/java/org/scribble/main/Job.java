@@ -12,7 +12,6 @@ import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
 import org.scribble.del.local.LProtocolDeclDel;
-import org.scribble.f17.visit.F17Parser;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
@@ -88,7 +87,7 @@ public class Job
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
-		if (this.f17)
+		if (this.f17)  // FIXME: deprecate original f17 stuff and integrate F17Main into here (and deprecate F17Main)
 		{
 			//runVisitorPassOnParsedModules(F17Parser.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
 		}

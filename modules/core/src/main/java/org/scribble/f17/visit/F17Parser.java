@@ -7,6 +7,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.InlinedProtocolVisitor;
 
+// FIXME: rename like F17SyntaxChecker (and deprecate)
 public class F17Parser extends InlinedProtocolVisitor<F17ParserEnv> //NoEnvInlinedProtocolVisitor
 {
 	public F17Parser(Job job)

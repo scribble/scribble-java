@@ -21,24 +21,23 @@ import org.scribble.f17.ast.global.action.F17GAction;
 import org.scribble.f17.ast.global.action.F17GMessageTransfer;
 import org.scribble.f17.main.F17Exception;
 import org.scribble.main.JobContext;
-import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
 
-public class GlobalTypeTranslator
+public class GProtocolDeclTranslator
 {
 	private final F17AstFactory factory = new F17AstFactory();
 
-	public GlobalTypeTranslator()
+	public GProtocolDeclTranslator()
 	{
 
 	}
 
 	// merge is for projection of "delegation payload types"
-	public F17GType translate(JobContext jc, ModuleContext mc, GProtocolDecl gpd) throws ScribbleException
+	public F17GType translate(JobContext jc, ModuleContext mc, GProtocolDecl gpd) throws F17Exception
 	{
 		GProtocolDef inlined = ((GProtocolDefDel) gpd.def.del()).getInlinedProtocolDef();
 		return parseSeq(jc, mc, inlined.getBlock().getInteractionSeq().getInteractions(), false, false);
@@ -50,7 +49,7 @@ public class GlobalTypeTranslator
 	}*/
 	
 	private F17GType parseSeq(JobContext jc, ModuleContext mc, List<GInteractionNode> is,
-			boolean checkChoiceGuard, boolean checkRecGuard) throws ScribbleException
+			boolean checkChoiceGuard, boolean checkRecGuard) throws F17Exception
 	{
 		//List<GInteractionNode> is = block.getInteractionSeq().getInteractions();
 		if (is.isEmpty())

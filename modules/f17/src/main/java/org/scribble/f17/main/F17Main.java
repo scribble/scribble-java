@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-import org.scribble.f17.ast.ScribProtocolTranslator;
+import org.scribble.f17.ast.ScribF17Translator;
 import org.scribble.f17.ast.global.F17GType;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
@@ -39,7 +39,7 @@ public class F17Main
 				mainpath = Paths.get(args[0]);
 				simpname = (args.length < 2) ? "Proto" : args[1];
 			}
-			ScribProtocolTranslator spt = new ScribProtocolTranslator();
+			ScribF17Translator spt = new ScribF17Translator();
 			g = spt.parseAndCheck(F17Main.newMainContext(inline, mainpath), new GProtocolName(simpname));  // merge is for projection of "delegation payload types"
 		}
 		catch (ScribParserException | ScribbleException e)
@@ -89,7 +89,8 @@ public class F17Main
 		boolean noLocalChoiceSubjectCheck = false;
 		boolean noAcceptCorrelationCheck = true;
 		boolean noValidation = true;  // FIXME: deprecate -- redundant due to hardcoded Job.checkLinearMPScalaWellFormedness
-		boolean noModuleNameCheck = true;  // For webapp to bypass MainContext.checkMainModuleName
+
+		boolean f17 = true;
 
 		/*List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
 				? CommandLine.parseImportPaths(this.args.get(ArgFlag.PATH)[0])
@@ -98,8 +99,8 @@ public class F17Main
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		return (inline == null)
 				? new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
-							noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, noModuleNameCheck)
+							noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17)
 				: new MainContext(debug, locator, inline, useOldWF, noLiveness, minEfsm, fair,
-							noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, noModuleNameCheck);
+							noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17);
 	}
 }
