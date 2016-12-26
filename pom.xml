@@ -61,6 +61,7 @@
 		<module>modules/cli</module>
 		<module>dist</module>
     <module>modules/demos</module>
+    <module>modules/scribble-f17</module>
   </modules>
   
 	<dependencyManagement>
