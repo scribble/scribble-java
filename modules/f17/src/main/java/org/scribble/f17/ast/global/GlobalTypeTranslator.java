@@ -1,13 +1,17 @@
 package org.scribble.f17.ast.global;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GMessageTransfer;
+import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GRecursion;
@@ -27,7 +31,6 @@ import org.scribble.sesstype.name.Role;
 public class GlobalTypeTranslator
 {
 	private final F17AstFactory factory = new F17AstFactory();
-	//private final LocalTypeParser ltp = new LocalTypeParser();
 
 	public GlobalTypeTranslator()
 	{
@@ -38,13 +41,90 @@ public class GlobalTypeTranslator
 	public F17GType translate(JobContext jc, ModuleContext mc, GProtocolDecl gpd) throws ScribbleException
 	{
 		GProtocolDef inlined = ((GProtocolDefDel) gpd.def.del()).getInlinedProtocolDef();
-		return parseSeq(jc, mc, inlined.getBlock().getInteractionSeq().getInteractions());
+		return parseSeq(jc, mc, inlined.getBlock().getInteractionSeq().getInteractions(), false, false);
 	}
 	
 	/*private F17GType translate(JobContext jc, ModuleContext mc, GProtocolDef gpd) throws ScribbleException
 	{
 		return parseSeq(jc, mc, merge, gpd.getBlock().getInteractionSeq().getInteractions());
 	}*/
+	
+	private F17GType parseSeq(JobContext jc, ModuleContext mc, List<GInteractionNode> is,
+			boolean checkChoiceGuard, boolean checkRecGuard) throws ScribbleException
+	{
+		//List<GInteractionNode> is = block.getInteractionSeq().getInteractions();
+		if (is.isEmpty())
+		{
+			return this.factory.GEnd();
+		}
+
+		GInteractionNode first = is.get(0);
+		if (first instanceof GMessageTransfer)
+		{
+			F17GMessageTransfer gmt = parseGMessageTransfer((GMessageTransfer) first);
+			F17GType cont = parseSeq(jc, mc, is.subList(1, is.size()), false, false);
+			Map<F17GAction, F17GType> cases = new HashMap<>();
+			cases.put(gmt, cont);
+			return this.factory.GChoice(cases);
+		}
+		else
+		{
+			if (checkChoiceGuard)
+			{
+				throw new F17Exception(first.getSource(), "[f17] Unguarded in choice case: " + first);
+			}
+			if (is.size() > 1)
+			{
+				throw new F17Exception(is.get(1).getSource(), "[f17] Bad sequential composition after: " + first);
+			}
+
+			if (first instanceof GChoice)
+			{
+				if (checkRecGuard)
+				{
+					throw new F17Exception(first.getSource(), "[f17] Unguarded in choice case: " + first);
+				}
+
+				GChoice gc = (GChoice) first; 
+				List<F17GType> parsed = new LinkedList<>();
+				for (GProtocolBlock b : gc.getBlocks())
+				{
+					parsed.add(parseSeq(jc, mc, b.getInteractionSeq().getInteractions(), true, checkRecGuard));  // "Directly" nested choice will still return a GlobalSend (which is really a choice; uniform global choice constructor is convenient)
+				}
+				Map<F17GAction, F17GType> cases = new HashMap<>();
+				for (F17GType p : parsed)
+				{
+					if (!(p instanceof F17GChoice))
+					{
+						throw new RuntimeException("[f17] Shouldn't get in here: " + p);
+					}
+					F17GChoice tmp = (F17GChoice) p;
+					tmp.cases.entrySet().forEach((e) -> cases.put(e.getKey(), e.getValue()));
+				}
+				return this.factory.GChoice(cases);
+			}
+			else if (first instanceof GRecursion)
+			{
+				GRecursion gr = (GRecursion) first;
+				RecVar recvar = gr.recvar.toName();
+				F17GType body = parseSeq(jc, mc, gr.getBlock().getInteractionSeq().getInteractions(), checkChoiceGuard, true);
+				return new F17GRec(recvar, body);
+			}
+			else if (first instanceof GContinue)
+			{
+				if (checkRecGuard)
+				{
+					throw new F17Exception(first.getSource(), "[f17] Unguarded in recursion: " + first);  // FIXME: conservative, e.g., rec X . A -> B . rec Y . X
+				}
+
+				return this.factory.GRecVar(((GContinue) first).recvar.toName());
+			}
+			else
+			{
+				throw new RuntimeException("[f17] Shouldn't get in here: " + first);
+			}
+		}
+	}
 
 	private F17GMessageTransfer parseGMessageTransfer(GMessageTransfer gmt) throws F17Exception 
 	{
@@ -79,91 +159,5 @@ public class GlobalTypeTranslator
 			}
 		}
 		return this.factory.GMessageTransfer(src, dest, op, pay);
-	}
-	
-	private F17GType parseSeq(JobContext jc, ModuleContext mc, List<GInteractionNode> is) throws ScribbleException
-	{
-		//List<GInteractionNode> is = block.getInteractionSeq().getInteractions();
-		if (is.isEmpty())
-		{
-			return this.factory.GEnd();
-		}
-
-		GInteractionNode first = is.get(0);
-		if (first instanceof GMessageTransfer)
-		{
-			F17GMessageTransfer gmt = parseGMessageTransfer((GMessageTransfer) first);
-			F17GType cont = parseSeq(jc, mc, is.subList(1, is.size()));
-			Map<F17GAction, F17GType> cases = new HashMap<>();
-
-			System.out.println("bbb: " + gmt);
-
-			cases.put(gmt, cont);
-			return this.factory.GChoice(cases);
-		}
-		/*else if (first instanceof GChoice)
-		{
-			if (is.size() > 1)
-			{
-				throw new F17Exception(is.get(1).getSource(), " [f17] Sequential composition after choice not supported: " + is.get(1));
-			}
-			GChoice gc = (GChoice) first; 
-			/*List<GlobalType> parsed = gc.getBlocks().stream()
-					.map((b) -> parseSeq(b.getInteractionSeq().getInteractions()))
-					.collect(Collectors.toList());* /
-			List<F17GType> parsed = new LinkedList<>();
-			for (GProtocolBlock b : gc.getBlocks())
-			{
-				parsed.add(parseSeq(jobc, mainc, merge, b.getInteractionSeq().getInteractions()));  // "Directly" nested choice will still return a GlobalSend (which is really a choice; uniform global choice constructor is convenient)
-			}
-			Role src = null;
-			Role dest = null;
-			Map<Label, GlobalSendCase> cases = new HashMap<>();
-			for (F17GType p : parsed)
-			{
-				if (!(p instanceof F17GSend))
-				{
-					throw new RuntimeException("[f17] Shouldn't get in here: " + p);
-				}
-				F17GSend tmp = (F17GSend) p;
-				if (src == null)
-				{
-					src = tmp.src;
-					dest = tmp.dest;
-				}
-				else
-				{
-					if (!dest.equals(tmp.dest))
-					{
-						throw new F17Exception(gc.getSource(), " [f17] Choice message from " + src + " to inconsistent recipients: " + tmp.dest + " and " + dest);
-					}
-				}
-				tmp.cases.entrySet().forEach((e) -> cases.put(e.getKey(), e.getValue()));
-			}
-			return this.factory.GlobalSend(src, dest, cases);
-		}*/
-		else if (first instanceof GRecursion)
-		{
-			if (is.size() > 1)
-			{
-				throw new F17Exception(is.get(1).getSource(), " [f17] Sequential composition after recursion not supported: " + is.get(1));
-			}
-			GRecursion gr = (GRecursion) first;
-			RecVar recvar = gr.recvar.toName();
-			F17GType body = parseSeq(jc, mc, gr.getBlock().getInteractionSeq().getInteractions());
-			return new F17GRec(recvar, body);
-		}
-		/*else if (first instanceof GContinue)
-		{
-			if (is.size() > 1)
-			{
-				throw new RuntimeException("[f17] Shouldn't get in here: " + is);
-			}
-			return this.factory.RecVar(((GContinue) first).recvar.toString());
-		}*/
-		else
-		{
-			throw new RuntimeException("[f17] Shouldn't get in here: " + first);
-		}
 	}
 }

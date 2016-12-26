@@ -39,7 +39,12 @@ public class F17GChoice extends F17Choice<F17GAction, F17GType> implements F17GT
 				this.cases.entrySet().stream()
 					.map((e) -> e.getKey().toString() + e.getValue().toString())
 					.collect(Collectors.joining(", ")) + "}";*/
-		return "(" + this.cases.entrySet().stream().map((e) -> e.getKey() + "." + e.getValue()).collect(Collectors.joining(" + ")) + ")";
+		String s = this.cases.entrySet().stream().map((e) -> e.getKey() + "." + e.getValue()).collect(Collectors.joining(" + "));
+		if (this.cases.size() > 1)
+		{
+			s = "(" + s + ")";
+		}
+		return s;
 	}
 	
 	@Override

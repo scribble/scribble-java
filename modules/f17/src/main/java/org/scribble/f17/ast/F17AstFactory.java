@@ -5,6 +5,7 @@ import java.util.Map;
 import org.scribble.f17.ast.global.F17GChoice;
 import org.scribble.f17.ast.global.F17GEnd;
 import org.scribble.f17.ast.global.F17GRec;
+import org.scribble.f17.ast.global.F17GRecVar;
 import org.scribble.f17.ast.global.F17GType;
 import org.scribble.f17.ast.global.action.F17GAction;
 import org.scribble.f17.ast.global.action.F17GMessageTransfer;
@@ -29,6 +30,11 @@ public class F17AstFactory
 	public F17GRec GRec(RecVar recvar, F17GType body)
 	{
 		return new F17GRec(recvar, body);
+	}
+	
+	public F17GRecVar GRecVar(RecVar var)
+	{
+		return new F17GRecVar(var);
 	}
 
 	public F17GEnd GEnd()

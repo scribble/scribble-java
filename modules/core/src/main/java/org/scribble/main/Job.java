@@ -90,7 +90,7 @@ public class Job
 		runContextBuildingPasses();
 		if (this.f17)
 		{
-			runVisitorPassOnParsedModules(F17Parser.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
+			//runVisitorPassOnParsedModules(F17Parser.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
 		}
 		if (!this.noValidation)
 		{
