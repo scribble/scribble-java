@@ -41,7 +41,12 @@ public abstract class F17Choice<A extends F17Action, C extends F17Type> implemen
 				this.cases.entrySet().stream()
 					.map((e) -> e.getKey().toString() + e.getValue().toString())
 					.collect(Collectors.joining(", ")) + "}";*/
-		return "(" + this.cases.entrySet().stream().map((e) -> e.getKey() + "." + e.getValue()).collect(Collectors.joining(" + ")) + ")";
+		String s = this.cases.entrySet().stream().map((e) -> e.getKey() + "." + e.getValue()).collect(Collectors.joining(" + "));
+		if (this.cases.size() > 1)
+		{
+			s = "(" + s + ")";
+		}
+		return s;
 	}
 	
 	@Override

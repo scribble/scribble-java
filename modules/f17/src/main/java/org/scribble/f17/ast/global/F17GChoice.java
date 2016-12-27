@@ -1,7 +1,6 @@
 package org.scribble.f17.ast.global;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.scribble.f17.ast.F17Choice;
 import org.scribble.f17.ast.global.action.F17GAction;
@@ -31,21 +30,6 @@ public class F17GChoice extends F17Choice<F17GAction, F17GType> implements F17GT
 		
 		return roles;
 	}*/
-	
-	@Override
-	public String toString()
-	{
-		/*return this.src + "->" + this.dest + ":{" +
-				this.cases.entrySet().stream()
-					.map((e) -> e.getKey().toString() + e.getValue().toString())
-					.collect(Collectors.joining(", ")) + "}";*/
-		String s = this.cases.entrySet().stream().map((e) -> e.getKey() + "." + e.getValue()).collect(Collectors.joining(" + "));
-		if (this.cases.size() > 1)
-		{
-			s = "(" + s + ")";
-		}
-		return s;
-	}
 	
 	@Override
 	public int hashCode()

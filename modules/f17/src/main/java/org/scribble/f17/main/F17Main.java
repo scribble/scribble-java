@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-import org.scribble.f17.ast.ScribF17Translator;
+import org.scribble.f17.ast.F17ScribTranslator;
 import org.scribble.f17.ast.global.F17GType;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
@@ -39,7 +39,7 @@ public class F17Main
 				mainpath = Paths.get(args[0]);
 				simpname = (args.length < 2) ? "Proto" : args[1];
 			}
-			ScribF17Translator spt = new ScribF17Translator();
+			F17ScribTranslator spt = new F17ScribTranslator();
 			g = spt.parseAndCheck(F17Main.newMainContext(inline, mainpath), new GProtocolName(simpname));  // merge is for projection of "delegation payload types"
 		}
 		catch (ScribParserException | ScribbleException e)

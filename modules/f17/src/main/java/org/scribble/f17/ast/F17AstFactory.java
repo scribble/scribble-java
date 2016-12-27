@@ -8,13 +8,16 @@ import org.scribble.f17.ast.global.F17GRec;
 import org.scribble.f17.ast.global.F17GRecVar;
 import org.scribble.f17.ast.global.F17GType;
 import org.scribble.f17.ast.global.action.F17GAction;
+import org.scribble.f17.ast.global.action.F17GConnect;
 import org.scribble.f17.ast.global.action.F17GMessageTransfer;
 import org.scribble.f17.ast.local.F17LChoice;
 import org.scribble.f17.ast.local.F17LEnd;
 import org.scribble.f17.ast.local.F17LRec;
 import org.scribble.f17.ast.local.F17LRecVar;
 import org.scribble.f17.ast.local.F17LType;
+import org.scribble.f17.ast.local.action.F17LAccept;
 import org.scribble.f17.ast.local.action.F17LAction;
+import org.scribble.f17.ast.local.action.F17LConnect;
 import org.scribble.f17.ast.local.action.F17LReceive;
 import org.scribble.f17.ast.local.action.F17LSend;
 import org.scribble.sesstype.Payload;
@@ -33,6 +36,11 @@ public class F17AstFactory
 	public F17GMessageTransfer GMessageTransfer(Role src, Role dest, Op op, Payload pay)
 	{
 		return new F17GMessageTransfer(src, dest, op, pay);
+	}
+	
+	public F17GConnect GConnect(Role src, Role dest, Op op, Payload pay)
+	{
+		return new F17GConnect(src, dest, op, pay);
 	}
 	
 	public F17GRec GRec(RecVar recvar, F17GType body)
@@ -64,6 +72,16 @@ public class F17AstFactory
 	public F17LReceive LReceive(Role self, Role peer, Op op, Payload pay)
 	{
 		return new F17LReceive(self, peer, op, pay);
+	}
+	
+	public F17LConnect LConnect(Role self, Role peer, Op op, Payload pay)
+	{
+		return new F17LConnect(self, peer, op, pay);
+	}
+	
+	public F17LAccept LAccept(Role self, Role peer, Op op, Payload pay)
+	{
+		return new F17LAccept(self, peer, op, pay);
 	}
 	
 	public F17LRec LRec(RecVar recvar, F17LType body)

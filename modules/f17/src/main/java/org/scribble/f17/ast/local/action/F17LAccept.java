@@ -4,13 +4,12 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-
-public class F17LSend extends F17LOutput
+public class F17LAccept extends F17LInput
 {
 	public final Op op;
 	public final Payload pay;
 	
-	public F17LSend(Role self, Role peer, Op op, Payload pay)
+	public F17LAccept(Role self, Role peer, Op op, Payload pay)
 	{
 		super(self, peer);
 		this.op = op;
@@ -20,14 +19,13 @@ public class F17LSend extends F17LOutput
 	@Override
 	public String toString()
 	{
-		return super.toString() + "!" + this.op + this.pay;
+		return super.toString() + "??" + this.op + this.pay;
 	} 
 
 	@Override
 	public int hashCode()
 	{
-		int hash = 31;
-		hash = 31 * hash + peer.hashCode();
+		int hash = 19;
 		hash = 31 * hash + this.op.hashCode();
 		hash = 31 * hash + this.pay.hashCode();
 		return hash;
@@ -40,11 +38,11 @@ public class F17LSend extends F17LOutput
 		{
 			return true;
 		}
-		if (!(obj instanceof F17LSend))
+		if (!(obj instanceof F17LAccept))
 		{
 			return false;
 		}
-		F17LSend them = (F17LSend) obj;
+		F17LAccept them = (F17LAccept) obj;
 		return super.equals(obj)  // super does canEquals
 				&& this.op.equals(them.op) && this.pay.equals(them.pay);
 	}
@@ -52,6 +50,6 @@ public class F17LSend extends F17LOutput
 	@Override
 	protected boolean canEquals(Object o)
 	{
-		return o instanceof F17LSend;
+		return o instanceof F17LAccept;
 	}
 }

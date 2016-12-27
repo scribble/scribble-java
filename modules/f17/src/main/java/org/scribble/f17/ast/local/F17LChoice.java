@@ -14,16 +14,6 @@ public class F17LChoice extends F17Choice<F17LAction, F17LType> implements F17LT
 	}
 	
 	@Override
-	public String toString()
-	{
-		/*return this.src + "->" + this.dest + ":{" +
-				this.cases.entrySet().stream()
-					.map((e) -> e.getKey().toString() + e.getValue().toString())
-					.collect(Collectors.joining(", ")) + "}";*/
-		return "(" + this.cases.entrySet().stream().map((e) -> e.getKey() + "." + e.getValue()).collect(Collectors.joining(" + ")) + ")";
-	}
-	
-	@Override
 	public int hashCode()
 	{
 		int hash = 29;

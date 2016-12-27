@@ -24,27 +24,79 @@ module Test;
  // TODO: f17 well-formedness (including deterministic, etc.)
 
 /*
-global protocol Proto1(role A, role B, role C)
+explicit global protocol Proto1(role C, role A, role S)
 {
+	connect C to A;  // Testing: TravelAgency
 	rec X
 	{
-		0() from B to C;
-		choice at A
+		choice at C
 		{
-			1() from A to B;
-			1() from B to C;
+			query() from C to A;		
+			quote() from A to C;
 			continue X;
 		}
 		or
 		{
-			2() from A to B;
-			2() from B to C;
+			pay() connect C to S;
+			confirm() from S to C;
+			accpt() from C to A;		
 		}	
+		or
+		{
+			reject() from C to A;		
+		}
 	}
 }
 //*/
 
-/*/
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect	A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+		connect B to C;  // Testing: basic explicit connections
+		2() from B to C;
+	}		
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C;  // Testing: inconsistent choice subject
+	}		
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A  // Testing: mixed-choice -- subsumed by role enabling?
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from B to A;
+	}
+}
+//*/
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
@@ -65,7 +117,7 @@ global protocol Proto1(role A, role B, role C)
 }
 //*/
 
-//* 
+/* 
 global protocol Proto1(role A, role B, role C)
 {
 	rec X

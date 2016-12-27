@@ -8,6 +8,7 @@ import java.util.Map;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GMessageTransfer;
@@ -15,9 +16,11 @@ import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.global.GSimpleInteractionNode;
 import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.f17.ast.F17AstFactory;
 import org.scribble.f17.ast.global.action.F17GAction;
+import org.scribble.f17.ast.global.action.F17GConnect;
 import org.scribble.f17.ast.global.action.F17GMessageTransfer;
 import org.scribble.f17.main.F17Exception;
 import org.scribble.main.JobContext;
@@ -27,11 +30,11 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
 
-public class GProtocolDeclTranslator
+public class F17GProtocolDeclTranslator
 {
 	private final F17AstFactory factory = new F17AstFactory();
 
-	public GProtocolDeclTranslator()
+	public F17GProtocolDeclTranslator()
 	{
 
 	}
@@ -58,13 +61,28 @@ public class GProtocolDeclTranslator
 		}
 
 		GInteractionNode first = is.get(0);
-		if (first instanceof GMessageTransfer)
+		if (first instanceof GSimpleInteractionNode && !(first instanceof GContinue))
 		{
-			F17GMessageTransfer gmt = parseGMessageTransfer((GMessageTransfer) first);
-			F17GType cont = parseSeq(jc, mc, is.subList(1, is.size()), false, false);
-			Map<F17GAction, F17GType> cases = new HashMap<>();
-			cases.put(gmt, cont);
-			return this.factory.GChoice(cases);
+			if (first instanceof GMessageTransfer)
+			{
+				F17GMessageTransfer gmt = parseGMessageTransfer((GMessageTransfer) first);
+				F17GType cont = parseSeq(jc, mc, is.subList(1, is.size()), false, false);
+				Map<F17GAction, F17GType> cases = new HashMap<>();
+				cases.put(gmt, cont);
+				return this.factory.GChoice(cases);
+			}
+			else if (first instanceof GConnect)
+			{
+				F17GConnect gc = parseGConnect((GConnect) first);
+				F17GType cont = parseSeq(jc, mc, is.subList(1, is.size()), false, false);
+				Map<F17GAction, F17GType> cases = new HashMap<>();
+				cases.put(gc, cont);
+				return this.factory.GChoice(cases);
+			}
+			else
+			{
+				throw new RuntimeException("[f17] Shouldn't get in here: " + first);
+			}
 		}
 		else
 		{
@@ -158,5 +176,37 @@ public class GProtocolDeclTranslator
 			}
 		}
 		return this.factory.GMessageTransfer(src, dest, op, pay);
+	}
+
+	// GMessageTransfer/GConnect have no useful base class -- but mostly duplicated from parseGMessageTransfer
+	private F17GConnect parseGConnect(GConnect gc) throws F17Exception 
+	{
+		Role src = gc.src.toName();
+		Role dest = gc.dest.toName();
+		if (!gc.msg.isMessageSigNode())
+		{
+			throw new F17Exception(gc.msg.getSource(), " [f17] Message kind not supported: " + gc.msg);
+		}
+		MessageSigNode msn = ((MessageSigNode) gc.msg);
+		Op op = msn.op.toName();
+		Payload pay = null;
+		if (msn.payloads.getElements().isEmpty())
+		{
+			pay = Payload.EMPTY_PAYLOAD;
+		}
+		else
+		{
+			String tmp = msn.payloads.getElements().get(0).toString().trim();
+			int i = tmp.indexOf('@');
+			if (i != -1)
+			{
+				throw new F17Exception("[f17] Delegation not supported: " + tmp);
+			}
+			else
+			{
+				pay = msn.payloads.toPayload();
+			}
+		}
+		return this.factory.GConnect(src, dest, op, pay);
 	}
 }

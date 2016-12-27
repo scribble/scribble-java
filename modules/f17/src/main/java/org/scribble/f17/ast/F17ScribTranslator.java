@@ -1,12 +1,12 @@
 package org.scribble.f17.ast;
 
-import java.util.HashSet;
+import java.util.Collections;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.del.ModuleDel;
+import org.scribble.f17.ast.global.F17GProtocolDeclTranslator;
 import org.scribble.f17.ast.global.F17GType;
-import org.scribble.f17.ast.global.GProtocolDeclTranslator;
 import org.scribble.f17.ast.local.F17LType;
 import org.scribble.f17.ast.local.F17Projector;
 import org.scribble.main.Job;
@@ -18,9 +18,9 @@ import org.scribble.util.ScribParserException;
 
 
 // FIXME: integrate GProtocolDeclTranslator into here
-public class ScribF17Translator
+public class F17ScribTranslator
 {
-	public ScribF17Translator()
+	public F17ScribTranslator()
 	{
 
 	}
@@ -44,12 +44,12 @@ public class ScribF17Translator
 			throw new ScribbleException("Global protocol not found: " + simplename);
 		}
 		GProtocolDecl gpd = (GProtocolDecl) main.getProtocolDecl(simplename);  // FIXME: cast
-		F17GType gt = new GProtocolDeclTranslator().translate(job.getContext(), ((ModuleDel) main.del()).getModuleContext(), gpd);
-		System.out.println("Translated:\n  " + gt);
+		F17GType gt = new F17GProtocolDeclTranslator().translate(job.getContext(), ((ModuleDel) main.del()).getModuleContext(), gpd);
+		System.out.println("Translated:\n  " + gt);  // FIXME: integrate into Job (under -f17)
 		F17Projector p = new F17Projector();
 		for (Role r : gpd.header.roledecls.getRoles())
 		{
-			F17LType lt = p.project(gt, r, new HashSet<>());
+			F17LType lt = p.project(gt, r, Collections.emptySet());
 			System.out.println("Projected onto " + r + ":\n  " + lt);
 		}
 		return gt;

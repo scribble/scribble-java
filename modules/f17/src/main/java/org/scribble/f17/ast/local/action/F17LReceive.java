@@ -19,7 +19,7 @@ public class F17LReceive extends F17LInput
 	@Override
 	public String toString()
 	{
-		return super.toString() + "?" + this.op + "(" + this.pay + ")";
+		return super.toString() + "?" + this.op + this.pay;
 	} 
 
 	@Override
