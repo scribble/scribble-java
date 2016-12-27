@@ -47,7 +47,7 @@ public class F17Main
 			System.err.println(e.getMessage());
 			System.exit(1);
 		}
-		System.out.println("Translated:\n" + "    " + g);
+		//System.out.println("Translated:\n" + "    " + g);
 		
 		/*for (Role r : gpd.header.roledecls.getRoles())
 		{

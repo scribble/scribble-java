@@ -45,11 +45,12 @@ public class ScribF17Translator
 		}
 		GProtocolDecl gpd = (GProtocolDecl) main.getProtocolDecl(simplename);  // FIXME: cast
 		F17GType gt = new GProtocolDeclTranslator().translate(job.getContext(), ((ModuleDel) main.del()).getModuleContext(), gpd);
+		System.out.println("Translated:\n  " + gt);
 		F17Projector p = new F17Projector();
 		for (Role r : gpd.header.roledecls.getRoles())
 		{
 			F17LType lt = p.project(gt, r, new HashSet<>());
-			System.out.println(r + ": " + lt);
+			System.out.println("Projected onto " + r + ":\n  " + lt);
 		}
 		return gt;
 	}
