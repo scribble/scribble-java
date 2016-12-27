@@ -5,7 +5,7 @@ import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
 
-public class F17LSend extends F17LAction
+public class F17LSend extends F17LOutput
 {
 	public final Op op;
 	public final Payload pay;
@@ -15,12 +15,6 @@ public class F17LSend extends F17LAction
 		super(self, peer);
 		this.op = op;
 		this.pay = pay;
-	}
-	
-	@Override
-	public boolean isOutput()
-	{
-		return true;
 	}
 	
 	@Override

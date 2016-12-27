@@ -4,9 +4,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-
-// FIXME: make F17LInput/Output
-public class F17LReceive extends F17LAction
+public class F17LReceive extends F17LInput
 {
 	public final Op op;
 	public final Payload pay;
@@ -16,12 +14,6 @@ public class F17LReceive extends F17LAction
 		super(self, peer);
 		this.op = op;
 		this.pay = pay;
-	}
-	
-	@Override
-	public boolean isInput()
-	{
-		return true;
 	}
 	
 	@Override
