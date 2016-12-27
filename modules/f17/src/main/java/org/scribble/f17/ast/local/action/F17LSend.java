@@ -8,7 +8,7 @@ import org.scribble.sesstype.name.Role;
 public class F17LSend extends F17LAction
 {
 	public final Role self;
-	public final Role dest;
+	public final Role peer;
 	public final Op op;
 	public final Payload pay;
 	
@@ -16,22 +16,28 @@ public class F17LSend extends F17LAction
 	{
 		super(self);  // this.subj == this.self
 		this.self = self;
-		this.dest = dest;
+		this.peer = dest;
 		this.op = op;
 		this.pay = pay;
 	}
 	
 	@Override
+	public boolean isOutput()
+	{
+		return true;
+	}
+	
+	@Override
 	public String toString()
 	{
-		return super.toString() + ":" + this.dest + "!" + this.op + "(" + this.pay + ")";
+		return this.self + ":" + this.peer + "!" + this.op + "(" + this.pay + ")";
 	} 
 
 	@Override
 	public int hashCode()
 	{
 		int hash = 31;
-		hash = 31 * hash + dest.hashCode();
+		hash = 31 * hash + peer.hashCode();
 		hash = 31 * hash + this.op.hashCode();
 		hash = 31 * hash + this.pay.hashCode();
 		return hash;
@@ -50,7 +56,7 @@ public class F17LSend extends F17LAction
 		}
 		F17LSend them = (F17LSend) obj;
 		return super.equals(obj)  // super does canEquals
-				&& this.dest.equals(them.dest) && this.op.equals(them.op) && this.pay.equals(them.pay);
+				&& this.peer.equals(them.peer) && this.op.equals(them.op) && this.pay.equals(them.pay);
 	}
 	
 	@Override

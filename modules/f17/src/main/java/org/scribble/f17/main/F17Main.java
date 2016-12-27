@@ -49,6 +49,12 @@ public class F17Main
 		}
 		System.out.println("Translated:\n" + "    " + g);
 		
+		/*for (Role r : gpd.header.roledecls.getRoles())
+		{
+			gt
+		}*/
+		
+		
 		/*GlobalType gs = ast.global.ops.Sanitizer.apply(g);
 		System.out.println("\nSanitized:\n" + "    " + gs);
 		

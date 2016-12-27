@@ -1,5 +1,9 @@
 package org.scribble.f17.ast.global.action;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
@@ -17,6 +21,12 @@ public class F17GMessageTransfer extends F17GAction
 		this.op = op;
 		this.dest = dest;
 		this.pay = pay;
+	}
+	
+	@Override
+	public Set<Role> getRoles()
+	{
+		return Collections.unmodifiableSet(new HashSet<Role>() {{ add(src); add(dest); }});
 	}
 	
 	@Override

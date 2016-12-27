@@ -47,7 +47,8 @@ public class F17AstFactory
 
 	public F17GEnd GEnd()
 	{
-		return new F17GEnd();
+		//return new F17GEnd();
+		return F17GEnd.END;
 	}
 
 	public F17LChoice LChoice(Map<F17LAction, F17LType> cases)
@@ -55,14 +56,14 @@ public class F17AstFactory
 		return new F17LChoice(cases);
 	}
 	
-	public F17LSend LSend(Role self, Role dest, Op op, Payload pay)
+	public F17LSend LSend(Role self, Role peer, Op op, Payload pay)
 	{
-		return new F17LSend(self, dest, op, pay);
+		return new F17LSend(self, peer, op, pay);
 	}
 	
-	public F17LReceive LReceive(Role self, Role dest, Op op, Payload pay)
+	public F17LReceive LReceive(Role self, Role peer, Op op, Payload pay)
 	{
-		return new F17LReceive(self, dest, op, pay);
+		return new F17LReceive(self, peer, op, pay);
 	}
 	
 	public F17LRec LRec(RecVar recvar, F17LType body)
@@ -77,6 +78,7 @@ public class F17AstFactory
 
 	public F17LEnd LEnd()
 	{
-		return new F17LEnd();
+		//return new F17LEnd();
+		return F17LEnd.END;
 	}
 }

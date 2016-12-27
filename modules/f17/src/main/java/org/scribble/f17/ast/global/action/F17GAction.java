@@ -1,5 +1,7 @@
 package org.scribble.f17.ast.global.action;
 
+import java.util.Set;
+
 import org.scribble.f17.ast.F17Action;
 import org.scribble.sesstype.name.Role;
 
@@ -14,6 +16,8 @@ public abstract class F17GAction extends F17Action
 		this.src = src;
 	}
 	
+	public abstract Set<Role> getRoles();  // For projection
+	
 	@Override
 	public String toString()
 	{
@@ -25,6 +29,7 @@ public abstract class F17GAction extends F17Action
 	{
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + super.hashCode();
 		result = prime * result + this.src.hashCode();
 		return result;
 	}
@@ -36,8 +41,7 @@ public abstract class F17GAction extends F17Action
 		{
 			return false;
 		}
-		F17GAction them = (F17GAction) obj;
-		return them.canEquals(this) && this.src.equals(them.src);
+		return super.equals(obj);
 	}
 
 	protected abstract boolean canEquals(Object o);

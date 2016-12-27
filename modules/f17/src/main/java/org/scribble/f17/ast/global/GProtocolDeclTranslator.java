@@ -79,10 +79,10 @@ public class GProtocolDeclTranslator
 
 			if (first instanceof GChoice)
 			{
-				if (checkRecGuard)
+				/*if (checkRecGuard)
 				{
-					throw new F17Exception(first.getSource(), "[f17] Unguarded in choice case: " + first);
-				}
+					throw new F17Exception(first.getSource(), "[f17] Unguarded in choice case (2): " + first);
+				}*/
 
 				GChoice gc = (GChoice) first; 
 				List<F17GType> parsed = new LinkedList<>();

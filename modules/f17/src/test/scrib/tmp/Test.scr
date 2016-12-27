@@ -1,0 +1,114 @@
+//$ java -cp 'modules\cli\target\classes\;modules\core\target\classes;modules\parser\target\classes;C:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;modules\f17\target\classes' org.scribble.f17.main.F17Main modules/f17/src/test/scrib/tmp/Test.scr Proto1
+
+module Test;
+
+// replace a lot of FACTORY name calls by clone
+// -minlts states IDs don't match validation output
+
+// CHECKME: playing multiple roles in the same session instance (but what is the concrete notion of "process id"? -- if actually try to use, e.g., ThreadID, then have to track ownership of endpoints)
+
+// - API gen for connection-with-message
+// - API gen for wrap (SMTP)
+// - API gen for shared channel passing
+// - callback API needs generic session-state arg
+
+// - Redo HTTP/SMTP message deserialization (and maybe ScribMsgFormatter i/f) -- deserialization routines should be per-message
+
+// Job modes (full/default, fase17, oldscrib, MPST, etc.) -- factor out GMConfig interface
+
+// FIXME: demo.bettybook.math.MathC cancelledkey exception
+
+// Add a unit test for validation to bypass aux
+
+
+ // TODO: f17 well-formedness (including deterministic, etc.)
+
+//*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		0() from B to C;
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}	
+	}
+}
+//*/
+
+/*/
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		0() from B to C;  // TODO: limitation of projection: non-prefix guarded case for A (projected straight to non-unary choice)
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}	
+	}
+}
+//*/
+
+/* 
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;	 // Testing: unbalanced choice role sets without explicit connections
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}	
+	}
+}
+//*/
+
+/* 
+global protocol Proto1(role A, role B)  // Testing: basic syntax structure (e.g., no seq)
+{
+	1() from A to B;
+	1() from A to B;
+	choice at A
+	{
+		1() from A to B;
+		choice at A
+		{
+			1() from A to B;
+		}
+	}
+	or
+	{
+		2() from A to B;
+		rec X
+		{
+			rec Y
+			{
+				2() from A to B;
+				continue X;
+			}
+		}
+	}
+}
+//*/
+

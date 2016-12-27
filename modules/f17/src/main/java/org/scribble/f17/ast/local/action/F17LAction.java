@@ -6,27 +6,25 @@ import org.scribble.sesstype.name.Role;
 
 public abstract class F17LAction extends F17Action
 {
-	public final Role src;
-	
-	public F17LAction(Role src)
+	public F17LAction(Role self)  // FIXME: here self==subj, but formally dest==subj
 	{
-		super(src);
-		this.src = src;
+		super(self);
 	}
 	
-	@Override
-	public String toString()
+	public boolean isOutput()
 	{
-		return this.src.toString();
+		return false;
+	}
+	
+	public boolean isInput()
+	{
+		return false;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + this.src.hashCode();
-		return result;
+		return super.hashCode();
 	}
 
 	@Override
@@ -36,8 +34,7 @@ public abstract class F17LAction extends F17Action
 		{
 			return false;
 		}
-		F17LAction them = (F17LAction) obj;
-		return them.canEquals(this) && this.src.equals(them.src);
+		return super.equals(obj);
 	}
 
 	protected abstract boolean canEquals(Object o);
