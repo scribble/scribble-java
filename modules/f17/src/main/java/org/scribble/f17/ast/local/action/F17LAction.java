@@ -6,9 +6,14 @@ import org.scribble.sesstype.name.Role;
 
 public abstract class F17LAction extends F17Action
 {
-	public F17LAction(Role self)  // FIXME: here self==subj, but formally dest==subj
+	public final Role self;
+	public final Role peer;
+
+	public F17LAction(Role self, Role peer)  // local subj == peer
 	{
-		super(self);
+		super(peer);
+		this.self = self;
+		this.peer = peer;
 	}
 	
 	public boolean isOutput()
@@ -19,12 +24,21 @@ public abstract class F17LAction extends F17Action
 	public boolean isInput()
 	{
 		return false;
+	}	
+
+	@Override
+	public String toString()
+	{
+		return this.self + ":" + this.peer;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		int hash = 41;
+		hash = 31 * hash + super.hashCode();  // does peer
+		hash = 31 * hash + this.self.hashCode();
+		return hash;
 	}
 
 	@Override
@@ -34,7 +48,9 @@ public abstract class F17LAction extends F17Action
 		{
 			return false;
 		}
-		return super.equals(obj);
+		F17LReceive them = (F17LReceive) obj;
+		return super.equals(obj)  // super does canEquals
+				&& this.self.equals(them.self);  // N.B. considering self for local type equality
 	}
 
 	protected abstract boolean canEquals(Object o);

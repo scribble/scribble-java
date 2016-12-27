@@ -8,16 +8,12 @@ import org.scribble.sesstype.name.Role;
 // FIXME: make F17LInput/Output
 public class F17LReceive extends F17LAction
 {
-	public final Role self;
-	public final Role peer;  // FIXME: refactor into super
 	public final Op op;
 	public final Payload pay;
 	
-	public F17LReceive(Role self, Role dest, Op op, Payload pay)
+	public F17LReceive(Role self, Role peer, Op op, Payload pay)
 	{
-		super(self);  // this.subj == this.self
-		this.self = self;
-		this.peer = dest;
+		super(self, peer);
 		this.op = op;
 		this.pay = pay;
 	}
@@ -31,14 +27,13 @@ public class F17LReceive extends F17LAction
 	@Override
 	public String toString()
 	{
-		return this.self + ":" + this.peer + "?" + this.op + "(" + this.pay + ")";
+		return super.toString() + "?" + this.op + "(" + this.pay + ")";
 	} 
 
 	@Override
 	public int hashCode()
 	{
 		int hash = 37;
-		hash = 31 * hash + peer.hashCode();
 		hash = 31 * hash + this.op.hashCode();
 		hash = 31 * hash + this.pay.hashCode();
 		return hash;
@@ -57,7 +52,7 @@ public class F17LReceive extends F17LAction
 		}
 		F17LReceive them = (F17LReceive) obj;
 		return super.equals(obj)  // super does canEquals
-				&& this.peer.equals(them.peer) && this.op.equals(them.op) && this.pay.equals(them.pay);
+				&& this.op.equals(them.op) && this.pay.equals(them.pay);
 	}
 	
 	@Override

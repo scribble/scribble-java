@@ -7,16 +7,12 @@ import org.scribble.sesstype.name.Role;
 
 public class F17LSend extends F17LAction
 {
-	public final Role self;
-	public final Role peer;
 	public final Op op;
 	public final Payload pay;
 	
-	public F17LSend(Role self, Role dest, Op op, Payload pay)
+	public F17LSend(Role self, Role peer, Op op, Payload pay)
 	{
-		super(self);  // this.subj == this.self
-		this.self = self;
-		this.peer = dest;
+		super(self, peer);
 		this.op = op;
 		this.pay = pay;
 	}
@@ -30,7 +26,7 @@ public class F17LSend extends F17LAction
 	@Override
 	public String toString()
 	{
-		return this.self + ":" + this.peer + "!" + this.op + "(" + this.pay + ")";
+		return super.toString() + "!" + this.op + "(" + this.pay + ")";
 	} 
 
 	@Override
@@ -56,7 +52,7 @@ public class F17LSend extends F17LAction
 		}
 		F17LSend them = (F17LSend) obj;
 		return super.equals(obj)  // super does canEquals
-				&& this.peer.equals(them.peer) && this.op.equals(them.op) && this.pay.equals(them.pay);
+				&& this.op.equals(them.op) && this.pay.equals(them.pay);
 	}
 	
 	@Override

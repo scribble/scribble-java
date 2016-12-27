@@ -64,7 +64,7 @@ public class F17Projector
 					}
 					else
 					{
-						if (!(lt instanceof F17LChoice) || ((F17LChoice) lt).cases.size() > 1)
+						if (!(lt instanceof F17LChoice) || ((F17LChoice) lt).cases.size() > 1)  // FIXME: generalise >1 cases
 						{
 							throw new F17Exception("[f17] Not projectable (non prefix-guarded case) for " + r + ": " + lt);
 						}
@@ -112,7 +112,7 @@ public class F17Projector
 					Role dest = ((F17LReceive) firsta).peer;  // FIXME: cast
 					if (pCases.keySet().stream().anyMatch((k) -> !((F17LReceive) k).peer.equals(dest)))
 					{
-						throw new F17Exception("[f17] Inconsistent input choice subjects: " + pCases.keySet());  // FIXME: "subject" vs. F17Action.subjs
+						throw new F17Exception("[f17] Inconsistent input choice subjects: " + gc);  // subject means global action subjs (although also means peer in local)
 					}
 				}
 				return this.factory.LChoice(pCases);

@@ -25,10 +25,9 @@ public abstract class F17Action
 	@Override
 	public int hashCode()
 	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + this.subjs.hashCode();
-		return result;
+		int hash = 43;
+		hash = 31 * hash + this.subjs.hashCode();
+		return hash;
 	}
 
 	@Override
