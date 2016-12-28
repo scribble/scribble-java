@@ -20,7 +20,6 @@ import org.scribble.main.resource.ResourceLocator;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribParserException;
-// import ast.binary.Type;
 
 // f17-specific CL frontend
 //
@@ -70,8 +69,8 @@ public class F17Main
 		boolean minEfsm = false;
 		boolean fair = false;
 		boolean noLocalChoiceSubjectCheck = false;
-		boolean noAcceptCorrelationCheck = true;
-		boolean noValidation = true;  // FIXME: deprecate -- redundant due to hardcoded Job.checkLinearMPScalaWellFormedness
+		boolean noAcceptCorrelationCheck = false;
+		boolean noValidation = false;
 
 		boolean f17 = true;
 
@@ -88,21 +87,22 @@ public class F17Main
 	}
 
 	// Used from above and from cli.CommandLine
-	public static F17GType parseAndCheckWF(Job job, GProtocolName simplename) throws ScribbleException, ScribParserException
+	public static F17GType parseAndCheckWF(Job job, GProtocolName simpname) throws ScribbleException, ScribParserException
 	{
 		job.runContextBuildingPasses();
 		
 		Module main = job.getContext().getMainModule();
-		if (!main.hasProtocolDecl(simplename))
+		if (!main.hasProtocolDecl(simpname))
 		{
-			throw new ScribbleException("Global protocol not found: " + simplename);
+			throw new ScribbleException("Global protocol not found: " + simpname);
 		}
-		GProtocolDecl gpd = (GProtocolDecl) main.getProtocolDecl(simplename);
+		GProtocolDecl gpd = (GProtocolDecl) main.getProtocolDecl(simpname);
 
 		F17GType gt = new F17GProtocolDeclTranslator().translate(job.getContext(), ((ModuleDel) main.del()).getModuleContext(), gpd);
 
 		//job.debugPrintln
-		System.out.println("[f17] Translated:\n  " + gt);
+		System.out.println
+			("[f17] Translated:\n  " + gt);
 
 		F17Projector p = new F17Projector();
 		for (Role r : gpd.header.roledecls.getRoles())
@@ -110,7 +110,8 @@ public class F17Main
 			F17LType lt = p.project(gt, r, Collections.emptySet());
 
 			//job.debugPrintln
-			System.out.println("[f17] Projected onto " + r + ":\n  " + lt);
+			System.out.println
+				("[f17] Projected onto " + r + ":\n  " + lt);
 		}
 		
 		job.runUnfoldingPass();
