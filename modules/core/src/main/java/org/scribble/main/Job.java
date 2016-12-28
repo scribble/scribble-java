@@ -73,6 +73,23 @@ public class Job
 		runContextBuildingPasses();
 		runWellFormednessPasses();
 	}
+	
+	public void runContextBuildingPasses() throws ScribbleException
+	{
+		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
+		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
+		runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
+		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
+		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
+		runVisitorPassOnAllModules(ProtocolDefInliner.class);
+		runUnfoldingPass();
+	}
+		
+	// "Second part" of context building (separated for extensions to work on non-unfolded protos)
+	public void runUnfoldingPass() throws ScribbleException
+	{
+		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
+	}
 
 	public void runWellFormednessPasses() throws ScribbleException
 	{
@@ -86,22 +103,6 @@ public class Job
 				runVisitorPassOnAllModules(GProtocolValidator.class);
 			}
 		}
-	}
-	
-	public void runContextBuildingPasses() throws ScribbleException
-	{
-		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
-		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
-		runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
-		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
-		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
-		runInliningPasses();
-	}
-		
-	public void runInliningPasses() throws ScribbleException
-	{
-		runVisitorPassOnAllModules(ProtocolDefInliner.class);
-		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module

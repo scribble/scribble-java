@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.f17.F17Main;
+import org.scribble.ext.f17.F17Main;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.MainContext;
@@ -110,11 +110,14 @@ public class CommandLine
 				if (this.args.containsKey(ArgFlag.F17))
 				{
 					GProtocolName simpname = new GProtocolName(this.args.get(ArgFlag.F17)[0]);
-					F17Main.parseAndCheckWF(job, simpname);
-				}
+					F17Main.parseAndCheckWF(job, simpname);  // Includes base passes
+				} 
 
 				// Base Scribble
-				job.checkWellFormedness();
+				else
+				{
+					job.checkWellFormedness();
+				}
 			}
 			catch (ScribbleException x)
 			{
