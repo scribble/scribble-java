@@ -1,6 +1,5 @@
 package org.scribble.f17.ast.global.action;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,18 +14,23 @@ public class F17GConnect extends F17GAction
 	public final Op op;
 	public final Payload pay;
 	
+	private final Set<Role> roles = new HashSet<>();
+	
 	public F17GConnect(Role src, Role dest, Op op, Payload pay)
 	{
 		super(src);
 		this.op = op;
 		this.dest = dest;
 		this.pay = pay;
+		this.roles.add(src);
+		this.roles.add(dest);
 	}
 	
 	@Override
 	public Set<Role> getRoles()
 	{
-		return Collections.unmodifiableSet(new HashSet<Role>() {{ add(src); add(dest); }});
+		//return Collections.unmodifiableSet(new HashSet<Role>() {{ add(src); add(dest); }});
+		return this.roles;
 	}
 	
 	@Override

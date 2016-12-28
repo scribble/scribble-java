@@ -7,7 +7,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.InlinedProtocolVisitor;
 
-// FIXME: rename like F17SyntaxChecker (and deprecate)
+// FIXME: rename like F17SyntaxChecker 
+@Deprecated
 public class F17Parser extends InlinedProtocolVisitor<F17ParserEnv> //NoEnvInlinedProtocolVisitor
 {
 	public F17Parser(Job job)
@@ -55,13 +56,13 @@ public class F17Parser extends InlinedProtocolVisitor<F17ParserEnv> //NoEnvInlin
 	public void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.inlinedEnter(parent, child);
-		child.del().enterF17Parsing(parent, child, this);
+		//child.del().enterF17Parsing(parent, child, this);
 	}
 	
 	@Override
 	public ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveF17Parsing(parent, child, this, visited);
+		//visited = visited.del().leaveF17Parsing(parent, child, this, visited);
 		return super.inlinedLeave(parent, child, visited);
 	}
 }

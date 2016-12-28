@@ -1,4 +1,4 @@
-package org.scribble.f17.main;
+package org.scribble.f17;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;

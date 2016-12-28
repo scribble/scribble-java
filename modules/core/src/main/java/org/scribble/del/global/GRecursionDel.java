@@ -8,7 +8,6 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
-import org.scribble.f17.visit.F17Parser;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
@@ -52,7 +51,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
 	}
 	
-	@Override
+	/*@Override
 	public void enterF17Parsing(ScribNode parent, ScribNode child, F17Parser parser) throws ScribbleException
 	{
 		if (parser.peekEnv().isUnguarded())
@@ -60,5 +59,5 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 			throw new ScribbleException("[FASE17] unguarded in choice case: " + child);
 		}
 		super.enterF17Parsing(parent, child, parser);  // Need super.enter to push env, that leave.enter will pop
-	}
+	}*/
 }

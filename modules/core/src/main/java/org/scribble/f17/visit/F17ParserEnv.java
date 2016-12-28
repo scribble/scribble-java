@@ -2,6 +2,7 @@ package org.scribble.f17.visit;
 
 import org.scribble.visit.env.Env;
 
+@Deprecated
 public class F17ParserEnv extends Env<F17ParserEnv>
 {
 	private boolean unguarded;

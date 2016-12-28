@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.scribble.f17.F17Exception;
 import org.scribble.f17.ast.F17AstFactory;
 import org.scribble.f17.ast.global.F17GChoice;
 import org.scribble.f17.ast.global.F17GEnd;
@@ -18,7 +19,6 @@ import org.scribble.f17.ast.global.action.F17GConnect;
 import org.scribble.f17.ast.global.action.F17GMessageTransfer;
 import org.scribble.f17.ast.local.action.F17LAction;
 import org.scribble.f17.ast.local.action.F17LInput;
-import org.scribble.f17.main.F17Exception;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 

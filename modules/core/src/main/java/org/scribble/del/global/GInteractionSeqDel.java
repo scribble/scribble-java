@@ -1,22 +1,17 @@
 package org.scribble.del.global;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GConnect;
-import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
-import org.scribble.f17.visit.F17Parser;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
@@ -85,7 +80,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
 	}
 	
-	@Override
+	/*@Override
 	public GInteractionSeq leaveF17Parsing(ScribNode parent, ScribNode child, F17Parser parser, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
@@ -102,12 +97,12 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			if (env.isUnguarded())
 			{
 				throw new ScribbleException("[FASE17] unguarded choice case: " + gin);
-			}*/
+			}* /
 			if (!(gin instanceof GMessageTransfer || gin instanceof GConnect || gin instanceof GDisconnect))
 			{
 				throw new ScribbleException("[FASE17] Bad sequence composition following:\n" + gin);
 			}
 		}
 		return gis;
-	}
+	}*/
 }

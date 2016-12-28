@@ -6,8 +6,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.MessageTransferDel;
-import org.scribble.f17.visit.F17Parser;
-import org.scribble.f17.visit.F17ParserEnv;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.name.Role;
@@ -75,7 +73,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gmt);
 	}
 
-	@Override
+	/*@Override
 	public ScribNode leaveF17Parsing(ScribNode parent, ScribNode child, F17Parser parser, ScribNode visited) throws ScribbleException
 	{
 		F17ParserEnv env = parser.peekEnv();
@@ -85,5 +83,5 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 			parser.pushEnv(new F17ParserEnv());  // Maybe make "setGuarded" method
 		}
 		return super.leaveF17Parsing(parent, child, parser, visited);
-	}
+	}*/
 }

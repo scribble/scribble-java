@@ -1,7 +1,6 @@
 package org.scribble.f17.ast.local;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.scribble.f17.ast.F17Choice;
 import org.scribble.f17.ast.local.action.F17LAction;
