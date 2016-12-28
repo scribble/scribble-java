@@ -8,11 +8,11 @@ import java.util.Set;
 import org.scribble.sesstype.name.Role;
 
 
-public abstract class F17Action
+public abstract class F17AstAction
 {
 	public final Set<Role> subjs;
 	
-	public F17Action(Role... rs)
+	public F17AstAction(Role... rs)
 	{
 		this.subjs = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(rs)));
 	}
@@ -33,11 +33,11 @@ public abstract class F17Action
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (!(obj instanceof F17Action))
+		if (!(obj instanceof F17AstAction))
 		{
 			return false;
 		}
-		F17Action them = (F17Action) obj;
+		F17AstAction them = (F17AstAction) obj;
 		return them.canEquals(this) && this.subjs.equals(them.subjs);
 	}
 

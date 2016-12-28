@@ -32,7 +32,7 @@ import org.scribble.sesstype.name.Role;
 
 public class F17GProtocolDeclTranslator
 {
-	private final F17AstFactory factory = new F17AstFactory();
+	private final F17AstFactory factory = F17AstFactory.FACTORY;
 
 	public F17GProtocolDeclTranslator()
 	{
@@ -153,7 +153,7 @@ public class F17GProtocolDeclTranslator
 		Role dest = gmt.getDestinations().get(0).toName();
 		if (!gmt.msg.isMessageSigNode())
 		{
-			throw new F17Exception(gmt.msg.getSource(), " [f17] Message kind not supported: " + gmt.msg);
+			throw new F17Exception(gmt.msg.getSource(), " [f17] Not supported: " + gmt.msg);  // TODO: MessageSigName
 		}
 		MessageSigNode msn = ((MessageSigNode) gmt.msg);
 		Op op = msn.op.toName();

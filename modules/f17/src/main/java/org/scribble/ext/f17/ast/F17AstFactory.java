@@ -28,6 +28,13 @@ import org.scribble.sesstype.name.Role;
 
 public class F17AstFactory
 {
+	public static final F17AstFactory FACTORY = new F17AstFactory();
+	
+	private F17AstFactory()
+	{
+		
+	}
+	
 	public F17GChoice GChoice(Map<F17GAction, F17GType> cases)
 	{
 		return new F17GChoice(cases);

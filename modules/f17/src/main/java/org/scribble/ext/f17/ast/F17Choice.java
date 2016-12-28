@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.scribble.ext.f17.ast.F17Action;
+import org.scribble.ext.f17.ast.F17AstAction;
 
-public abstract class F17Choice<A extends F17Action, C extends F17Type> implements F17Type
+public abstract class F17Choice<A extends F17AstAction, C extends F17Type> implements F17Type
 {
 	public final Map<A, C> cases;
 	

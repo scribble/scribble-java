@@ -1,10 +1,10 @@
 package org.scribble.ext.f17.ast.local.action;
 
-import org.scribble.ext.f17.ast.F17Action;
+import org.scribble.ext.f17.ast.F17AstAction;
 import org.scribble.sesstype.name.Role;
 
 
-public abstract class F17LAction extends F17Action
+public abstract class F17LAction extends F17AstAction
 {
 	public final Role self;
 	public final Role peer;

@@ -11,4 +11,10 @@ public class F17LEnd extends F17End implements F17LType
 	{
 		
 	}
+	
+	@Override
+	public F17LEnd copy()
+	{
+		return this;
+	}
 }

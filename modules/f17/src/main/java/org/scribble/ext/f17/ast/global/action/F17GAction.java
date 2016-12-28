@@ -2,11 +2,11 @@ package org.scribble.ext.f17.ast.global.action;
 
 import java.util.Set;
 
-import org.scribble.ext.f17.ast.F17Action;
+import org.scribble.ext.f17.ast.F17AstAction;
 import org.scribble.sesstype.name.Role;
 
 
-public abstract class F17GAction extends F17Action
+public abstract class F17GAction extends F17AstAction
 {
 	public final Role src;
 	

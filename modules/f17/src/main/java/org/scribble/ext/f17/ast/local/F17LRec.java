@@ -10,20 +10,8 @@ public class F17LRec extends F17Rec<F17LType> implements F17LType
 		super(recvar, body);
 	}
 	
-	/*@Override
-	public Set<RecVar> freeVariables()
-	{
-		Set<RecVar> res = body.freeVariables();
-		res.remove(recvar);
-		return res;
-	}
-	
-	@Override
-	public Set<Role> roles()
-	{
-		return body.roles();
-	}*/
-	
+	..unfold
+
 	@Override
 	public String toString()
 	{
