@@ -103,13 +103,15 @@ global protocol Proto1(role A, role B)
 /*
 global protocol Proto1(role A, role B, role C)
 {
+  // Previous (post-inlining): limitation of projection: non-prefix guarded case for A (projected straight to non-unary choice)
+  // Now testing: projection-delta, unguarded X for C
 	rec X
 	{
-		0() from B to C;  // TODO: limitation of projection: non-prefix guarded case for A (projected straight to non-unary choice)
+		0() from B to C;
 		choice at A
 		{
 			1() from A to B;
-			1() from B to C;
+			//1() from B to C;  // OK if uncommented
 			continue X;
 		}
 		or

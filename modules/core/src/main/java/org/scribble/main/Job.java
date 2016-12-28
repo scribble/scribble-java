@@ -74,6 +74,11 @@ public class Job
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
+		runWellFormednessPasses();
+	}
+
+	public void runWellFormednessPasses() throws ScribbleException
+	{
 		if (!this.noValidation)
 		{
 			runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
@@ -86,13 +91,18 @@ public class Job
 		}
 	}
 	
-	private void runContextBuildingPasses() throws ScribbleException
+	public void runContextBuildingPasses() throws ScribbleException
 	{
 		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
 		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
 		runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
 		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
+		runInliningPasses();
+	}
+		
+	public void runInliningPasses() throws ScribbleException
+	{
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
 	}

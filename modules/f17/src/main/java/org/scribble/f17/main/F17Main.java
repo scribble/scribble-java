@@ -7,6 +7,7 @@ import org.scribble.util.ScribParserException;
 // Args: either
 //   -inline "..inline module def.." [proto-name]
 //   main-mod-path [proto-name]
+@Deprecated
 public class F17Main
 {
 	public static void main(String[] args) throws ScribbleException, ScribParserException
