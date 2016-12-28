@@ -25,7 +25,7 @@ import org.scribble.sesstype.name.Role;
 
 public class F17Projector
 {
-	private final F17AstFactory factory = new F17AstFactory();
+	private final F17AstFactory factory = F17AstFactory.FACTORY;
 
 	public F17Projector()
 	{

@@ -3,7 +3,9 @@ package org.scribble.ext.f17.main;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
@@ -12,6 +14,8 @@ import org.scribble.ext.f17.ast.global.F17GProtocolDeclTranslator;
 import org.scribble.ext.f17.ast.global.F17GType;
 import org.scribble.ext.f17.ast.local.F17LType;
 import org.scribble.ext.f17.ast.local.F17Projector;
+import org.scribble.ext.f17.model.F17ModelBuilder;
+import org.scribble.ext.f17.model.F17State;
 import org.scribble.main.Job;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
@@ -104,15 +108,21 @@ public class F17Main
 		System.out.println
 			("[f17] Translated:\n  " + gt);
 
+		Map<Role, F17LType> P0 = new HashMap<>();
 		F17Projector p = new F17Projector();
 		for (Role r : gpd.header.roledecls.getRoles())
 		{
 			F17LType lt = p.project(gt, r, Collections.emptySet());
+			P0.put(r, lt);
 
 			//job.debugPrintln
 			System.out.println
 				("[f17] Projected onto " + r + ":\n  " + lt);
 		}
+		
+		F17State init = new F17ModelBuilder().build(P0);
+		
+		System.out.println("[f17] Built model: " + init.toDot());
 		
 		job.runUnfoldingPass();
 		job.runWellFormednessPasses();

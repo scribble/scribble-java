@@ -1,7 +1,9 @@
 package org.scribble.ext.f17.ast.local;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.scribble.ext.f17.ast.F17AstFactory;
 import org.scribble.ext.f17.ast.F17Choice;
 import org.scribble.ext.f17.ast.local.action.F17LAction;
 
@@ -10,6 +12,14 @@ public class F17LChoice extends F17Choice<F17LAction, F17LType> implements F17LT
 	public F17LChoice(Map<F17LAction, F17LType> cases)
 	{
 		super(cases);
+	}
+	
+	@Override
+	public F17LChoice copy()
+	{
+		Map<F17LAction, F17LType> copy = this.cases.entrySet().stream().collect(
+				Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue().copy()));
+		return F17AstFactory.FACTORY.LChoice(copy);
 	}
 	
 	@Override

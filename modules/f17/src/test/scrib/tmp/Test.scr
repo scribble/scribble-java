@@ -26,7 +26,20 @@ module Test;
 // - f17 API generation (connection-with-message, shared channel passing)
 // - test WF/projection cases
 
-//*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{	
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+	}	
+}
+
+
+/*
 explicit global protocol Proto1(role C, role A, role S)
 {
 	connect C to A;  // Testing: TravelAgency

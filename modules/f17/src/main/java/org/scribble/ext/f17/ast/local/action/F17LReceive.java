@@ -1,5 +1,6 @@
 package org.scribble.ext.f17.ast.local.action;
 
+import org.scribble.ext.f17.ast.F17AstFactory;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
@@ -14,6 +15,12 @@ public class F17LReceive extends F17LInput
 		super(self, peer);
 		this.op = op;
 		this.pay = pay;
+	}
+	
+	// FIXME: factor out abstract super
+	public F17LSend toDual()
+	{
+		return F17AstFactory.FACTORY.LSend(this.peer, this.self, this.op, this.pay);
 	}
 	
 	@Override
