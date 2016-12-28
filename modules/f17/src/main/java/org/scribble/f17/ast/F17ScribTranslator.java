@@ -10,7 +10,6 @@ import org.scribble.f17.ast.global.F17GType;
 import org.scribble.f17.ast.local.F17LType;
 import org.scribble.f17.ast.local.F17Projector;
 import org.scribble.main.Job;
-import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -27,15 +26,15 @@ public class F17ScribTranslator
 
 	// merge is for projection of "delegation payload types"
 	//public GlobalType parseAndCheck(Path mainmod, String simplename) throws ScribbleException, ScribParserException
-	public F17GType parseAndCheck(MainContext maincon, GProtocolName simplename) throws ScribbleException, ScribParserException
+	public F17GType parseAndCheck(Job job, GProtocolName simplename) throws ScribbleException, ScribParserException
 	{
 		/*Module main = parseMainScribModule(mainmod);
 		Job job = new Job(false, parsed, main.getFullModuleName(), false, false, false, false);*/
 
-		//MainContext maincon = newMainContext(mainmod);
-		//Job job = new Job(maincon.debug, maincon.getParsedModules(), maincon.main, maincon.useOldWF, maincon.noLiveness, maincon.minEfsm, maincon.fair);
-		Job job = maincon.newJob();
-		//job.checkLinearMPScalaWellFormedness();
+		////MainContext maincon = newMainContext(mainmod);
+		////Job job = new Job(maincon.debug, maincon.getParsedModules(), maincon.main, maincon.useOldWF, maincon.noLiveness, maincon.minEfsm, maincon.fair);
+		//Job job = maincon.newJob();
+		////job.checkLinearMPScalaWellFormedness();
 		job.checkWellFormedness();  // f17 already set in maincon
 		Module main = job.getContext().getMainModule();
 

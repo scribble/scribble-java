@@ -21,9 +21,13 @@ module Test;
 // Add a unit test for validation to bypass aux
 
 
- // TODO: f17 well-formedness (including deterministic, etc.)
+// - integrate Job/F17Main properly (don't do WF/projection on inlined)
+// - f17 model checking
+// - f17 well-formedness (including deterministic, etc.)
+// - f17 API generation (connection-with-message, shared channel passing)
+// - test WF/projection cases
 
-/*
+//*
 explicit global protocol Proto1(role C, role A, role S)
 {
 	connect C to A;  // Testing: TravelAgency

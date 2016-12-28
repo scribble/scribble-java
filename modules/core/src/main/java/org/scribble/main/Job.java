@@ -71,26 +71,9 @@ public class Job
 		this.jcontext = new JobContext(this, parsed, main);  // Single instance per Job and should never be shared
 	}
 
-	public ScribbleException testWellFormednessCheck()
-	{
-		try
-		{
-			checkWellFormedness();
-		}
-		catch (ScribbleException x)
-		{
-			return x;
-		}
-		return null;
-	}
-
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
-		if (this.f17)  // FIXME: deprecate original f17 stuff and integrate F17Main into here (and deprecate F17Main)
-		{
-			//runVisitorPassOnParsedModules(F17Parser.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
-		}
 		if (!this.noValidation)
 		{
 			runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
@@ -112,7 +95,6 @@ public class Job
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
-		//runVisitorPassOnAllModules(GlobalModelBuilder.class);
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module

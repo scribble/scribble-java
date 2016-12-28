@@ -1,17 +1,6 @@
 package org.scribble.f17.main;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-
-import org.scribble.f17.ast.F17ScribTranslator;
-import org.scribble.f17.ast.global.F17GType;
-import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.main.resource.DirectoryResourceLocator;
-import org.scribble.main.resource.ResourceLocator;
-import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.util.ScribParserException;
 // import ast.binary.Type;
 
@@ -22,7 +11,7 @@ public class F17Main
 {
 	public static void main(String[] args) throws ScribbleException, ScribParserException
 	{
-		F17GType g = null;
+		/*F17GType g = null;
 
 		String inline = null;
 		Path mainpath = null;
@@ -48,41 +37,10 @@ public class F17Main
 			System.exit(1);
 		}
 		//System.out.println("Translated:\n" + "    " + g);
-		
-		/*for (Role r : gpd.header.roledecls.getRoles())
-		{
-			gt
-		}*/
-		
-		
-		/*GlobalType gs = ast.global.ops.Sanitizer.apply(g);
-		System.out.println("\nSanitized:\n" + "    " + gs);
-		
-		Map<Role, LocalType> projs = ast.global.ops.Projector.apply(gs, merge);
-		for (Entry<Role, LocalType> rl: projs.entrySet())
-		{
-			LocalType l = rl.getValue();
-			Role r = rl.getKey();
-			System.out.println("\nLocal projection for " + r + ":\n    " + l);
-//			Map<Role, Type> p = ast.local.ops.Projector.apply(l, ast.binary.ops.Merge::full);
-//			for (Role r: l.roles())
-//			{
-//				Type b = p.get(r);
-//				System.out.println("Binary type towards " + r + ":\n    " + b);
-//				ast.linear.Type bl = ast.binary.ops.LinearEncoder.apply(b);
-//				System.out.println("    Linear encoding:\n        " + bl);
-//				String scalaProt = ast.linear.ops.ScalaProtocolExtractor.apply(bl);
-//				System.out.println("    Scala protocol classes:\n" + scalaProt);
-//			}
-			String scalaMPProt = ast.local.ops.ScalaEncoder.apply(l, "test.proto." + r);
-			System.out.println("    Scala protocol classes for local type:\n" +
-					"-----------------------------------------------------\n" +
-					scalaMPProt +
-					"-----------------------------------------------------\n");
-		}
-		*/
+	*/
 	}
 
+	/*
 	// Duplicated from CommandLine for convenience
 	// Pre: one of inline/mainpath is null
 	protected static MainContext newMainContext(String inline, Path mainpath) throws ScribParserException, ScribbleException
@@ -100,7 +58,7 @@ public class F17Main
 
 		/*List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
 				? CommandLine.parseImportPaths(this.args.get(ArgFlag.PATH)[0])
-				: Collections.emptyList();*/
+				: Collections.emptyList();* /
 		List<Path> impaths = Collections.emptyList();  // FIXME: get from Main args
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		return (inline == null)
@@ -108,5 +66,5 @@ public class F17Main
 							noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17)
 				: new MainContext(debug, locator, inline, useOldWF, noLiveness, minEfsm, fair,
 							noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17);
-	}
+	}*/
 }

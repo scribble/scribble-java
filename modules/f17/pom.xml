@@ -26,9 +26,5 @@
     	<groupId>org.scribble</groupId>
     	<artifactId>scribble-core</artifactId>
     </dependency>
-    <dependency>
-    	<groupId>org.scribble</groupId>
-    	<artifactId>scribble-cli</artifactId>
-    </dependency>
   </dependencies>
 </project>
