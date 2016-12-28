@@ -47,15 +47,13 @@ public class Job
 	public final boolean noAcceptCorrelationCheck;
 	public final boolean noValidation;
 	
-	public final boolean f17;
-	
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main,
 			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
-			boolean noAcceptCorrelationCheck, boolean noValidation, boolean f17)
+			boolean noAcceptCorrelationCheck, boolean noValidation)
 	{
 		//this.jUnit = jUnit;
 		this.debug = debug;
@@ -66,7 +64,6 @@ public class Job
 		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
 		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
 		this.noValidation = noValidation;
-		this.f17 = f17;
 
 		this.jcontext = new JobContext(this, parsed, main);  // Single instance per Job and should never be shared
 	}

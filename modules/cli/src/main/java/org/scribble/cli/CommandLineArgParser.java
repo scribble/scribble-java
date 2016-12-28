@@ -152,6 +152,10 @@ public class CommandLineArgParser
 				}
 				return parseInlineMainModule(i);
 			}
+			case CommandLineArgParser.F17_FLAG:
+			{
+				return parseF17(i);
+			}
 			case CommandLineArgParser.JUNIT_FLAG:
 			case CommandLineArgParser.VERBOSE_FLAG:
 			case CommandLineArgParser.STATECHAN_SUBTYPES_FLAG:
@@ -162,7 +166,6 @@ public class CommandLineArgParser
 			case CommandLineArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK:
 			case CommandLineArgParser.NO_ACCEPT_CORRELATION_CHECK:
 			case CommandLineArgParser.NO_VALIDATION_FLAG:
-			case CommandLineArgParser.F17_FLAG:
 			{
 				checkAndAddNoArgUniqueFlag(flag, new String[0]);
 				return i;
@@ -283,6 +286,17 @@ public class CommandLineArgParser
 		}
 		String inline = this.args[++i];
 		checkAndAddNoArgUniqueFlag(CommandLineArgParser.INLINE_MAIN_MOD_FLAG, new String[] { inline });
+		return i;
+	}
+
+	private int parseF17(int i) throws CommandLineException
+	{
+		if ((i + 1) >= this.args.length)
+		{
+			throw new CommandLineException("Missing simple global protocol name argument");
+		}
+		String proto = this.args[++i];
+		checkAndAddNoArgUniqueFlag(CommandLineArgParser.F17_FLAG, new String[] { proto });
 		return i;
 	}
 	

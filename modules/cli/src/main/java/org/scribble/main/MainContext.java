@@ -38,6 +38,8 @@ public class MainContext
 	public final boolean noLocalChoiceSubjectCheck;
 	public final boolean noAcceptCorrelationCheck;
 	public final boolean noValidation;
+
+  // cli only (not in Job)
 	public final boolean f17;
 
 	// Only "manually" used here for loading main module (which should be factored out to front end) -- otherwise, only used within loader
@@ -67,6 +69,7 @@ public class MainContext
 		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
 		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
 		this.noValidation = noValidation;
+
 		this.f17 = f17;
 
 		this.locator = locator; 
@@ -132,7 +135,7 @@ public class MainContext
 	public Job newJob()
 	{
 		return new Job(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
-				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck, this.noValidation, this.f17);
+				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck, this.noValidation);
 	}
 	
 	// Hacky? But not Scribble tool's job to check nested directory location of module fully corresponds to the fullname of module? Cf. Java classes
