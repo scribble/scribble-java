@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.ext.f17.F17Main;
+import org.scribble.ext.f17.main.F17Main;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.MainContext;
