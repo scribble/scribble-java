@@ -38,8 +38,6 @@ public class F17ModelBuilder
 			i.remove();
 			seen.add(curr);
 
-			System.out.println("aaa1: " + curr.getNodeLabel());
-
 			Map<Role, List<F17Action>> fireable = curr.getFireable();
 			Set<Entry<Role, List<F17Action>>> es = new HashSet<>(fireable.entrySet());
 			while (!es.isEmpty())
@@ -48,8 +46,6 @@ public class F17ModelBuilder
 				Entry<Role, List<F17Action>> e = j.next();
 				j.remove();
 				//boolean removed = es.remove(e);
-				
-				System.out.println("aaa2: " + e + ", " + es);
 
 				Role r = e.getKey();
 				List<F17Action> as = e.getValue();

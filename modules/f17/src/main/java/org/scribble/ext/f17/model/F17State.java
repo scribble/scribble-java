@@ -31,19 +31,36 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 	private static final F17LBot BOT = new F17LBot();  // Disconnected
 	
 	private Map<Role, F17LType> P = new HashMap<>();  // Note: F17LType already has self
-	private Map<Role, F17LSend> Q = new HashMap<>();  // null value means connected and empty
+	private Map<Role, Map<Role, F17LSend>> Q = new HashMap<>();  // null value means connected and empty
 
 	public F17State(Map<Role, F17LType> P, boolean explicit)
 	{
-		this(P, explicit ? makeDisconnectedQ(P.keySet()) : Collections.emptyMap());
+		this(P, makeQ(P.keySet(), explicit ? BOT : null));
 	}
 	
-	private static Map<Role, F17LSend> makeDisconnectedQ(Set<Role> rs)
+	private static Map<Role, Map<Role, F17LSend>> makeQ(Set<Role> rs, F17LSend init)
 	{
-		return rs.stream().collect(Collectors.toMap((r) -> r, (r) -> F17State.BOT));
+		/*return rs.stream().collect(Collectors.toMap((r) -> r, (r) ->
+			rs.stream().filter((x) -> !x.equals(r))
+				.collect(Collectors.toMap((x) -> x, (x) -> init))  // Doesn't work? (NPE)
+		));*/
+		Map<Role, Map<Role, F17LSend>> res = new HashMap<>();
+		for (Role r : rs)
+		{
+			HashMap<Role, F17LSend> tmp = new HashMap<>();
+			for (Role rr : rs)
+			{
+				if (!rr.equals(r))
+				{
+					tmp.put(rr, init);
+				}
+			}
+			res.put(r, tmp);
+		}
+		return res;
 	}
 
-	protected F17State(Map<Role, F17LType> P, Map<Role, F17LSend> Q)
+	protected F17State(Map<Role, F17LType> P, Map<Role, Map<Role, F17LSend>> Q)
 	{
 		super(Collections.emptySet());
 
@@ -72,7 +89,7 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 					if (a instanceof F17LSend)
 					{
 						F17LSend ls = (F17LSend) a;
-						if (!(this.Q.get(ls.self) instanceof F17LBot) && this.Q.get(ls.peer) == null)
+						if (!(this.Q.get(ls.self) instanceof F17LBot) && this.Q.get(ls.peer).get(ls.self) == null)
 						{
 							f.get(r).add(new F17Action(ls));
 						}
@@ -80,7 +97,7 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 					else if (a instanceof F17LReceive)
 					{
 						F17LReceive lr = (F17LReceive) a;
-						F17LSend m = this.Q.get(lr.self);
+						F17LSend m = this.Q.get(lr.self).get(lr.peer);
 						if (m != null && m.toDual().equals(lr))  //&& !(m instanceof F17LBot)
 						{
 							f.get(r).add(new F17Action(lr));
@@ -89,7 +106,7 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 					else if (a instanceof F17LConnect)
 					{
 						F17LConnect lo = (F17LConnect) a;
-						if (this.Q.get(lo.self) instanceof F17LBot && this.Q.get(lo.peer) instanceof F17LBot)
+						if (this.Q.get(lo.self).get(lo.peer) instanceof F17LBot && this.Q.get(lo.peer).get(lo.self) instanceof F17LBot)
 						{
 							F17LType plt = this.P.get(lo.peer);
 							if (plt instanceof F17LChoice)
@@ -104,7 +121,7 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 					else if (a instanceof F17LAccept)
 					{
 						F17LAccept la = (F17LAccept) a;
-						if (this.Q.get(la.self) instanceof F17LBot && this.Q.get(la.peer) instanceof F17LBot)
+						if (this.Q.get(la.self).get(la.peer) instanceof F17LBot && this.Q.get(la.peer).get(la.self) instanceof F17LBot)
 						{
 							F17LType plt = this.P.get(la.peer);
 							if (plt instanceof F17LChoice)
@@ -138,11 +155,21 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		return f;
 	}
 	
+	private static Map<Role, Map<Role, F17LSend>> copyQ(Map<Role, Map<Role, F17LSend>> Q)
+	{
+		Map<Role, Map<Role, F17LSend>> copy = new HashMap<>();
+		for (Role r : Q.keySet())
+		{
+			copy.put(r, new HashMap<>(Q.get(r)));
+		}
+		return copy;
+	}
+	
 	// a.action already contains self
 	public F17State fire(Role r, F17Action a)  // Deterministic
 	{
 		Map<Role, F17LType> P = new HashMap<>(this.P);
-		Map<Role, F17LSend> Q = new HashMap<>(this.Q);
+		Map<Role, Map<Role, F17LSend>> Q = copyQ(this.Q);
 		F17LAction la = a.action;
 		F17LType succ = ((F17LChoice) P.get(r)).cases.get(la);
 		if (succ instanceof F17LRec)
@@ -153,13 +180,13 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		{
 			F17LSend ls = (F17LSend) la;
 			P.put(r, succ);
-			Q.put(ls.peer, ls);
+			Q.get(ls.peer).put(ls.self, ls);
 		}
 		else if (la instanceof F17LReceive)
 		{
 			F17LReceive lr = (F17LReceive) la;
 			P.put(r, succ);
-			Q.put(lr.self, null);
+			Q.get(lr.self).put(lr.peer, null);
 		}
 		else
 		{
@@ -172,18 +199,26 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 	public F17State sync(Role r1, F17Action a1, Role r2, F17Action a2)
 	{
 		Map<Role, F17LType> P = new HashMap<>(this.P);
-		Map<Role, F17LSend> Q = new HashMap<>(this.Q);
+		Map<Role, Map<Role, F17LSend>> Q = copyQ(this.Q);
 		F17LAction la1 = a1.action;
 		F17LAction la2 = a2.action;
 		F17LType succ1 = ((F17LChoice) P.get(r1)).cases.get(la1);
 		F17LType succ2 = ((F17LChoice) P.get(r2)).cases.get(la2);
+		if (succ1 instanceof F17LRec)
+		{
+			succ1 = ((F17LRec) succ1).unfold();  // "Eager" unfolding
+		}
+		if (succ2 instanceof F17LRec)
+		{
+			succ2 = ((F17LRec) succ2).unfold();
+		}
 		if ((la1 instanceof F17LConnect && la2 instanceof F17LAccept)
 				|| (la1 instanceof F17LAccept && la2 instanceof F17LConnect))
 		{
 			P.put(r1, succ1);
 			P.put(r2, succ2);
-			Q.put(r1, null);
-			Q.put(r2, null);
+			Q.get(r1).put(r2, null);
+			Q.get(r2).put(r1, null);
 		}
 		else
 		{
