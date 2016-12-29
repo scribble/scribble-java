@@ -36,7 +36,7 @@ public class F17LSend extends F17LOutput
 	public int hashCode()
 	{
 		int hash = 31;
-		hash = 31 * hash + peer.hashCode();
+		hash = 31 * hash + super.hashCode();
 		hash = 31 * hash + this.op.hashCode();
 		hash = 31 * hash + this.pay.hashCode();
 		return hash;

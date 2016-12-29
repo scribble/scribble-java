@@ -3,12 +3,14 @@ package org.scribble.ext.f17.model.action;
 import org.scribble.ext.f17.ast.local.action.F17LAccept;
 import org.scribble.ext.f17.ast.local.action.F17LAction;
 import org.scribble.ext.f17.ast.local.action.F17LConnect;
+import org.scribble.ext.f17.ast.local.action.F17LDisconnect;
 import org.scribble.ext.f17.ast.local.action.F17LReceive;
 import org.scribble.ext.f17.ast.local.action.F17LSend;
 import org.scribble.model.MAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.MessageId;
+import org.scribble.sesstype.name.Op;
 
 // Hacky: adaptor for F17LAction -- F17L includes self, but Global vs. "local" kinds
 public class F17Action extends MAction<Global>
@@ -39,6 +41,10 @@ public class F17Action extends MAction<Global>
 		else if (this.action instanceof F17LAccept)
 		{
 			return "??";  
+		}
+		else if (this.action instanceof F17LDisconnect)
+		{
+			return "#";  
 		}
 		else
 		{
@@ -95,6 +101,10 @@ public class F17Action extends MAction<Global>
 		{
 			return them.action instanceof F17LAccept;  
 		}
+		else if (this.action instanceof F17LDisconnect)
+		{
+			return them.action instanceof F17LDisconnect;  
+		}
 		else
 		{
 			throw new RuntimeException("[f17] Shouldn't get in here: " + this.action);
@@ -119,6 +129,10 @@ public class F17Action extends MAction<Global>
 		{
 			return ((F17LAccept) a).op;  
 		}
+		else if (a instanceof F17LDisconnect)
+		{
+			return Op.EMPTY_OPERATOR;  // cf. GDisconnect.UNIT_MESSAGE_SIG_NODE 
+		}
 		else
 		{
 			throw new RuntimeException("[f17] Shouldn't get in here: " + a);
@@ -142,6 +156,10 @@ public class F17Action extends MAction<Global>
 		else if (a instanceof F17LAccept)
 		{
 			return ((F17LAccept) a).pay;  
+		}
+		else if (a instanceof F17LDisconnect)
+		{
+			return Payload.EMPTY_PAYLOAD;  // cf. GDisconnect.UNIT_MESSAGE_SIG_NODE   
 		}
 		else
 		{

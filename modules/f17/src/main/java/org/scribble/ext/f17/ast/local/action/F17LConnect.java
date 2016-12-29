@@ -34,7 +34,7 @@ public class F17LConnect extends F17LOutput
 	public int hashCode()
 	{
 		int hash = 23;
-		hash = 31 * hash + peer.hashCode();
+		hash = 31 * hash + super.hashCode();
 		hash = 31 * hash + this.op.hashCode();
 		hash = 31 * hash + this.pay.hashCode();
 		return hash;
@@ -52,7 +52,7 @@ public class F17LConnect extends F17LOutput
 			return false;
 		}
 		F17LConnect them = (F17LConnect) obj;
-		return super.equals(obj)  // super does canEquals
+		return super.equals(obj)  // super does canEquals (and checks self/peer)
 				&& this.op.equals(them.op) && this.pay.equals(them.pay);
 	}
 	

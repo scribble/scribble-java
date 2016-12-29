@@ -10,10 +10,10 @@ public abstract class F17GAction extends F17AstAction
 {
 	public final Role src;
 	
-	public F17GAction(Role src)
+	public F17GAction(Role... rs)
 	{
-		super(src);  // this.subj == this.src
-		this.src = src;
+		super(rs);
+		this.src = rs[0];  // this.src == "first" subj
 	}
 	
 	public abstract Set<Role> getRoles();  // For projection

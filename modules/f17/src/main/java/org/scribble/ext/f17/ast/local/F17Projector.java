@@ -15,6 +15,7 @@ import org.scribble.ext.f17.ast.global.F17GRecVar;
 import org.scribble.ext.f17.ast.global.F17GType;
 import org.scribble.ext.f17.ast.global.action.F17GAction;
 import org.scribble.ext.f17.ast.global.action.F17GConnect;
+import org.scribble.ext.f17.ast.global.action.F17GDisconnect;
 import org.scribble.ext.f17.ast.global.action.F17GMessageTransfer;
 import org.scribble.ext.f17.ast.local.action.F17LAction;
 import org.scribble.ext.f17.ast.local.action.F17LInput;
@@ -187,6 +188,18 @@ public class F17Projector
 			else
 			{
 				return this.factory.LAccept(r, c.src, c.op, c.pay);
+			}
+		}
+		else if (ga instanceof F17GDisconnect)
+		{
+			F17GDisconnect d = (F17GDisconnect) ga;
+			if (d.src.equals(r))
+			{
+				return this.factory.LDisconnect(r, d.dest);
+			}
+			else
+			{
+				return this.factory.LDisconnect(r, d.src);
 			}
 		}
 		else

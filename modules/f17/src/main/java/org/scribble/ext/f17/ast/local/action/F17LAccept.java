@@ -33,6 +33,7 @@ public class F17LAccept extends F17LInput
 	public int hashCode()
 	{
 		int hash = 19;
+		hash = 31 * hash + super.hashCode();
 		hash = 31 * hash + this.op.hashCode();
 		hash = 31 * hash + this.pay.hashCode();
 		return hash;

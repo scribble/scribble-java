@@ -10,6 +10,7 @@ import java.util.Set;
 import org.scribble.ext.f17.ast.local.F17LType;
 import org.scribble.ext.f17.ast.local.action.F17LAccept;
 import org.scribble.ext.f17.ast.local.action.F17LConnect;
+import org.scribble.ext.f17.ast.local.action.F17LDisconnect;
 import org.scribble.ext.f17.ast.local.action.F17LReceive;
 import org.scribble.ext.f17.ast.local.action.F17LSend;
 import org.scribble.ext.f17.model.action.F17Action;
@@ -53,7 +54,7 @@ public class F17ModelBuilder
 				{
 					// cf. SState.getNextStates
 					final F17State tmp;
-					if (a.action instanceof F17LSend || a.action instanceof F17LReceive)
+					if (a.action instanceof F17LSend || a.action instanceof F17LReceive || a.action instanceof F17LDisconnect)
 					{
 						tmp = curr.fire(r, a);
 					}

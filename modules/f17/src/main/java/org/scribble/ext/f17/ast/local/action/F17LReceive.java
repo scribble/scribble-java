@@ -33,6 +33,7 @@ public class F17LReceive extends F17LInput
 	public int hashCode()
 	{
 		int hash = 37;
+		hash = 31 * hash + super.hashCode();
 		hash = 31 * hash + this.op.hashCode();
 		hash = 31 * hash + this.pay.hashCode();
 		return hash;
@@ -50,7 +51,7 @@ public class F17LReceive extends F17LInput
 			return false;
 		}
 		F17LReceive them = (F17LReceive) obj;
-		return super.equals(obj)  // super does canEquals
+		return super.equals(obj)  // super does canEquals (and checks self/peer)
 				&& this.op.equals(them.op) && this.pay.equals(them.pay);
 	}
 	

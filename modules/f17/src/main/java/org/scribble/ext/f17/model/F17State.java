@@ -16,6 +16,7 @@ import org.scribble.ext.f17.ast.local.F17LType;
 import org.scribble.ext.f17.ast.local.action.F17LAccept;
 import org.scribble.ext.f17.ast.local.action.F17LAction;
 import org.scribble.ext.f17.ast.local.action.F17LConnect;
+import org.scribble.ext.f17.ast.local.action.F17LDisconnect;
 import org.scribble.ext.f17.ast.local.action.F17LReceive;
 import org.scribble.ext.f17.ast.local.action.F17LSend;
 import org.scribble.ext.f17.model.action.F17Action;
@@ -89,7 +90,7 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 					if (a instanceof F17LSend)
 					{
 						F17LSend ls = (F17LSend) a;
-						if (!(this.Q.get(ls.self) instanceof F17LBot) && this.Q.get(ls.peer).get(ls.self) == null)
+						if (!(this.Q.get(ls.self).get(ls.peer) instanceof F17LBot) && this.Q.get(ls.peer).get(ls.self) == null)
 						{
 							f.get(r).add(new F17Action(ls));
 						}
@@ -131,6 +132,14 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 									f.get(r).add(new F17Action(la));
 								}
 							}
+						}
+					}
+					else if (a instanceof F17LDisconnect)
+					{
+						F17LDisconnect ld = (F17LDisconnect) a;
+						if (!(this.Q.get(ld.self).get(ld.peer) instanceof F17LBot) && this.Q.get(ld.self).get(ld.peer) == null)
+						{
+							f.get(r).add(new F17Action(ld));
 						}
 					}
 					else
@@ -176,6 +185,7 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		{
 			succ = ((F17LRec) succ).unfold();  // "Eager" unfolding
 		}
+
 		if (la instanceof F17LSend)
 		{
 			F17LSend ls = (F17LSend) la;
@@ -187,6 +197,12 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 			F17LReceive lr = (F17LReceive) la;
 			P.put(r, succ);
 			Q.get(lr.self).put(lr.peer, null);
+		}
+		else if (la instanceof F17LDisconnect)
+		{
+			F17LDisconnect ld = (F17LDisconnect) la;
+			P.put(r, succ);
+			Q.get(ld.self).put(ld.peer, BOT);
 		}
 		else
 		{
@@ -212,6 +228,7 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		{
 			succ2 = ((F17LRec) succ2).unfold();
 		}
+
 		if ((la1 instanceof F17LConnect && la2 instanceof F17LAccept)
 				|| (la1 instanceof F17LAccept && la2 instanceof F17LConnect))
 		{

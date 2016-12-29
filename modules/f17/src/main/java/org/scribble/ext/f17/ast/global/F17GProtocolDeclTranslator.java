@@ -10,6 +10,7 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.global.GProtocolBlock;
@@ -21,6 +22,7 @@ import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.ext.f17.ast.F17AstFactory;
 import org.scribble.ext.f17.ast.global.action.F17GAction;
 import org.scribble.ext.f17.ast.global.action.F17GConnect;
+import org.scribble.ext.f17.ast.global.action.F17GDisconnect;
 import org.scribble.ext.f17.ast.global.action.F17GMessageTransfer;
 import org.scribble.ext.f17.main.F17Exception;
 import org.scribble.main.JobContext;
@@ -77,6 +79,14 @@ public class F17GProtocolDeclTranslator
 				F17GType cont = parseSeq(jc, mc, is.subList(1, is.size()), false, false);
 				Map<F17GAction, F17GType> cases = new HashMap<>();
 				cases.put(gc, cont);
+				return this.factory.GChoice(cases);
+			}
+			else if (first instanceof GDisconnect)
+			{
+				F17GDisconnect gdc = parseGDisconnect((GDisconnect) first);
+				F17GType cont = parseSeq(jc, mc, is.subList(1, is.size()), false, false);
+				Map<F17GAction, F17GType> cases = new HashMap<>();
+				cases.put(gdc, cont);
 				return this.factory.GChoice(cases);
 			}
 			else
@@ -178,7 +188,7 @@ public class F17GProtocolDeclTranslator
 		return this.factory.GMessageTransfer(src, dest, op, pay);
 	}
 
-	// GMessageTransfer/GConnect have no useful base class -- but mostly duplicated from parseGMessageTransfer
+	// Mostly duplicated from parseGMessageTransfer, but GMessageTransfer/GConnect have no useful base class 
 	private F17GConnect parseGConnect(GConnect gc) throws F17Exception 
 	{
 		Role src = gc.src.toName();
@@ -208,5 +218,12 @@ public class F17GProtocolDeclTranslator
 			}
 		}
 		return this.factory.GConnect(src, dest, op, pay);
+	}
+
+	private F17GDisconnect parseGDisconnect(GDisconnect gdc) throws F17Exception 
+	{
+		Role src = gdc.src.toName();
+		Role dest = gdc.dest.toName();
+		return this.factory.GDisconnect(src, dest);
 	}
 }
