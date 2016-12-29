@@ -1,16 +1,16 @@
-package org.scribble.ext.f17.model;
+package org.scribble.ext.f17.lts;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class F17SafetyErrors
+public class F17LTSSafetyErrors
 {
 	public final Set<F17Session> connection;
 	public final Set<F17Session> disconnect;
 	public final Set<F17Session> unconnected;
 	public final Set<F17Session> unfinishedRole;
 	
-	public F17SafetyErrors(Set<F17Session> connection, Set<F17Session> disconnected, Set<F17Session> unconnected, Set<F17Session> unfinishedRole)
+	public F17LTSSafetyErrors(Set<F17Session> connection, Set<F17Session> disconnected, Set<F17Session> unconnected, Set<F17Session> unfinishedRole)
 	{
 		this.connection = connection;
 		this.disconnect = disconnected;

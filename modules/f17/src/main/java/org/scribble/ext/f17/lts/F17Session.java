@@ -1,4 +1,4 @@
-package org.scribble.ext.f17.model;
+package org.scribble.ext.f17.lts;
 
 import java.util.Collections;
 import java.util.HashMap;

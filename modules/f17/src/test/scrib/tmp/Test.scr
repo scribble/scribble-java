@@ -22,10 +22,10 @@ module Test;
 
 
 // - f17 model checking
+// -- EFSMs for unfair transform?
 // - f17 well-formedness (including deterministic, etc.)
 // - f17 API generation (connection-with-message, shared channel passing)
 // - test WF/projection cases
-// - EFSMs for unfair transform?
 
 
 //*/

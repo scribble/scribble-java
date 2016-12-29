@@ -1,4 +1,4 @@
-package org.scribble.ext.f17.model;
+package org.scribble.ext.f17.lts;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,13 +24,13 @@ public class F17LTS
 		this.all = new HashSet<>(all);
 	}
 	
-	public F17SafetyErrors getSafetyErrors()
+	public F17LTSSafetyErrors getSafetyErrors()
 	{
 		Set<F17Session> conns = this.all.stream().filter((s) -> s.isConnectionError()).collect(Collectors.toSet());
 		Set<F17Session> disconns = this.all.stream().filter((s) -> s.isDisconnectedError()).collect(Collectors.toSet());
 		Set<F17Session> unconns = this.all.stream().filter((s) -> s.isUnconnectedError()).collect(Collectors.toSet());
 		Set<F17Session> unfins = this.all.stream().filter((s) -> s.isUnfinishedRoleError(this.P0)).collect(Collectors.toSet());
-		return new F17SafetyErrors(conns, disconns, unconns, unfins);
+		return new F17LTSSafetyErrors(conns, disconns, unconns, unfins);
 	}
 	
 	@Override
