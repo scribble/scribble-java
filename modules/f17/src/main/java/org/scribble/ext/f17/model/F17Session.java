@@ -27,41 +27,19 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
+public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global>
 {
 	private static final F17LBot BOT = new F17LBot();  // Disconnected
 	
-	private Map<Role, F17LType> P = new HashMap<>();  // Note: F17LType already has self
+	private Map<Role, F17LType> P = new HashMap<>();  // Note: F17LType already has self // By "eager" unfolding, L can only be choice or end
 	private Map<Role, Map<Role, F17LSend>> Q = new HashMap<>();  // null value means connected and empty
 
-	public F17State(Map<Role, F17LType> P, boolean explicit)
+	public F17Session(Map<Role, F17LType> P, boolean explicit)
 	{
 		this(P, makeQ(P.keySet(), explicit ? BOT : null));
 	}
-	
-	private static Map<Role, Map<Role, F17LSend>> makeQ(Set<Role> rs, F17LSend init)
-	{
-		/*return rs.stream().collect(Collectors.toMap((r) -> r, (r) ->
-			rs.stream().filter((x) -> !x.equals(r))
-				.collect(Collectors.toMap((x) -> x, (x) -> init))  // Doesn't work? (NPE)
-		));*/
-		Map<Role, Map<Role, F17LSend>> res = new HashMap<>();
-		for (Role r : rs)
-		{
-			HashMap<Role, F17LSend> tmp = new HashMap<>();
-			for (Role rr : rs)
-			{
-				if (!rr.equals(r))
-				{
-					tmp.put(rr, init);
-				}
-			}
-			res.put(r, tmp);
-		}
-		return res;
-	}
 
-	protected F17State(Map<Role, F17LType> P, Map<Role, Map<Role, F17LSend>> Q)
+	protected F17Session(Map<Role, F17LType> P, Map<Role, Map<Role, F17LSend>> Q)
 	{
 		super(Collections.emptySet());
 
@@ -72,15 +50,58 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 
 		this.Q = Collections.unmodifiableMap(Q);
 	}
+
+	public boolean isConnectionError()
+	{
+		return this.P.values().stream().anyMatch((L) -> 
+			(L instanceof F17LChoice) && ((F17LChoice) L).cases.keySet().stream().anyMatch((a) ->
+						(a instanceof F17LConnect && !(this.Q.get(a.self).get(((F17LConnect) a).peer) instanceof F17LBot))
+				||	(a instanceof F17LAccept && !(this.Q.get(a.self).get(((F17LAccept) a).peer) instanceof F17LBot))
+		));
+	}
+
+	public boolean isDisconnectedError()
+	{
+		return this.P.values().stream().anyMatch((L) -> 
+			(L instanceof F17LChoice) && ((F17LChoice) L).cases.keySet().stream().anyMatch((a) ->
+				(a instanceof F17LDisconnect && this.Q.get(a.self).get(((F17LDisconnect) a).peer) != null)
+		));
+	}
+
+	public boolean isUnconnectedError()
+	{
+		return this.P.values().stream().anyMatch((L) -> 
+			(L instanceof F17LChoice) && ((F17LChoice) L).cases.keySet().stream().anyMatch((a) ->
+						(a instanceof F17LSend && (this.Q.get(a.self).get(((F17LSend) a).peer) instanceof F17LBot))
+				||	(a instanceof F17LReceive && (this.Q.get(a.self).get(((F17LReceive) a).peer) instanceof F17LBot))
+		));
+	}
+
+	public boolean isUnfinishedRoleError(Map<Role, F17LType> P0)
+	{
+		return this.isTerminal() &&
+				this.P.entrySet().stream().anyMatch((e) -> isActive(e.getValue(), P0.get(e.getKey())));
+	}
+	
+	// lt already eagerly unfolded
+	private static boolean isActive(F17LType lt, F17LType init)
+	{
+		if (init instanceof F17LRec)
+		{
+			init = ((F17LRec) init).unfold();
+		}
+		return !(lt instanceof F17LEnd) &&
+				!(lt.equals(init) && ((F17LChoice) lt).cases.keySet().stream().anyMatch((k) -> k instanceof F17LAccept));  // anyMatch should be enough by WF
+	}
 	
 	public Map<Role, List<F17Action>> getFireable()
 	{
 		Map<Role, List<F17Action>> f = new HashMap<>();
-		for (Entry<Role, F17LType> P : this.P.entrySet())
+		for (Entry<Role, F17LType> L : this.P.entrySet())
 		{
-			Role r = P.getKey();
+			Role r = L.getKey();
 			f.put(r, new LinkedList<>());
-			F17LType lt = P.getValue();
+			F17LType lt = L.getValue();
 			if (lt instanceof F17LChoice)
 			{
 				F17LChoice lc = (F17LChoice) lt;
@@ -164,18 +185,8 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		return f;
 	}
 	
-	private static Map<Role, Map<Role, F17LSend>> copyQ(Map<Role, Map<Role, F17LSend>> Q)
-	{
-		Map<Role, Map<Role, F17LSend>> copy = new HashMap<>();
-		for (Role r : Q.keySet())
-		{
-			copy.put(r, new HashMap<>(Q.get(r)));
-		}
-		return copy;
-	}
-	
 	// a.action already contains self
-	public F17State fire(Role r, F17Action a)  // Deterministic
+	public F17Session fire(Role r, F17Action a)  // Deterministic
 	{
 		Map<Role, F17LType> P = new HashMap<>(this.P);
 		Map<Role, Map<Role, F17LSend>> Q = copyQ(this.Q);
@@ -208,11 +219,11 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		{
 			throw new RuntimeException("[f17] Shouldn't get in here: " + a);
 		}
-		return new F17State(P, Q);
+		return new F17Session(P, Q);
 	}
 
 	// "Synchronous version" of fire
-	public F17State sync(Role r1, F17Action a1, Role r2, F17Action a2)
+	public F17Session sync(Role r1, F17Action a1, Role r2, F17Action a2)
 	{
 		Map<Role, F17LType> P = new HashMap<>(this.P);
 		Map<Role, Map<Role, F17LSend>> Q = copyQ(this.Q);
@@ -241,18 +252,8 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		{
 			throw new RuntimeException("[f17] Shouldn't get in here: " + a1 + ", " + a2);
 		}
-		return new F17State(P, Q);
+		return new F17Session(P, Q);
 	}
-	
-	/*public SStateErrors getErrors()
-	{
-		Map<Role, EReceive> stuck = this.config.getStuckMessages();
-		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
-		//Set<Set<Role>> waitfor = Collections.emptySet();
-		Map<Role, Set<ESend>> orphs = this.config.getOrphanMessages();
-		Map<Role, EState> unfinished = this.config.getUnfinishedRoles();
-		return new SStateErrors(stuck, waitfor, orphs, unfinished);
-	}*/
 	
 	@Override
 	protected String getNodeLabel()
@@ -279,18 +280,50 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		{
 			return true;
 		}
-		if (!(o instanceof F17State))
+		if (!(o instanceof F17Session))
 		{
 			return false;
 		}
-		F17State them = (F17State) o;
+		F17Session them = (F17Session) o;
 		return them.canEquals(this) && this.P.equals(them.P) && this.Q.equals(them.Q);
 	}
 
 	@Override
 	protected boolean canEquals(MState<?, ?, ?, ?> s)
 	{
-		return s instanceof F17State;
+		return s instanceof F17Session;
+	}
+	
+	private static Map<Role, Map<Role, F17LSend>> makeQ(Set<Role> rs, F17LSend init)
+	{
+		/*return rs.stream().collect(Collectors.toMap((r) -> r, (r) ->
+			rs.stream().filter((x) -> !x.equals(r))
+				.collect(Collectors.toMap((x) -> x, (x) -> init))  // Doesn't work? (NPE)
+		));*/
+		Map<Role, Map<Role, F17LSend>> res = new HashMap<>();
+		for (Role r : rs)
+		{
+			HashMap<Role, F17LSend> tmp = new HashMap<>();
+			for (Role rr : rs)
+			{
+				if (!rr.equals(r))
+				{
+					tmp.put(rr, init);
+				}
+			}
+			res.put(r, tmp);
+		}
+		return res;
+	}
+	
+	private static Map<Role, Map<Role, F17LSend>> copyQ(Map<Role, Map<Role, F17LSend>> Q)
+	{
+		Map<Role, Map<Role, F17LSend>> copy = new HashMap<>();
+		for (Role r : Q.keySet())
+		{
+			copy.put(r, new HashMap<>(Q.get(r)));
+		}
+		return copy;
 	}
 }
 

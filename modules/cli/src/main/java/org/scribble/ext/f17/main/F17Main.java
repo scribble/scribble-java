@@ -14,8 +14,9 @@ import org.scribble.ext.f17.ast.global.F17GProtocolDeclTranslator;
 import org.scribble.ext.f17.ast.global.F17GType;
 import org.scribble.ext.f17.ast.local.F17LType;
 import org.scribble.ext.f17.ast.local.F17Projector;
-import org.scribble.ext.f17.model.F17ModelBuilder;
-import org.scribble.ext.f17.model.F17State;
+import org.scribble.ext.f17.model.F17LTS;
+import org.scribble.ext.f17.model.F17LTSBuilder;
+import org.scribble.ext.f17.model.F17SafetyErrors;
 import org.scribble.main.Job;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
@@ -120,9 +121,19 @@ public class F17Main
 				("[f17] Projected onto " + r + ":\n  " + lt);
 		}
 		
-		F17State init = new F17ModelBuilder().build(P0, gpd.isExplicitModifier());
+		F17LTS m = new F17LTSBuilder().build(P0, gpd.isExplicitModifier());
 		
-		System.out.println("[f17] Built model:\n" + init.toDot());
+		System.out.println("[f17] Built model:\n" + m.toDot());
+		
+		F17SafetyErrors errs = m.getSafetyErrors();
+		if (errs.isSafe())
+		{
+			System.out.println("[f17] Protocol safe.");
+		}
+		else
+		{
+			throw new F17Exception("[f17] Protocol unsafe.\n" + errs);
+		}
 		
 		job.runUnfoldingPass();
 		job.runWellFormednessPasses();

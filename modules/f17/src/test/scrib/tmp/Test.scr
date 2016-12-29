@@ -25,8 +25,22 @@ module Test;
 // - f17 well-formedness (including deterministic, etc.)
 // - f17 API generation (connection-with-message, shared channel passing)
 // - test WF/projection cases
+// - EFSMs for unfair transform?
 
-//*
+
+//*/
+explicit global protocol Proto1(role A, role B)
+{
+	disconnect A and B;
+	rec X
+	{
+		1() from A to B;
+		continue X;
+	}
+}
+//*/
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;

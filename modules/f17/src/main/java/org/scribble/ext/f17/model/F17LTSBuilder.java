@@ -17,25 +17,25 @@ import org.scribble.ext.f17.model.action.F17Action;
 import org.scribble.sesstype.name.Role;
 
 
-public class F17ModelBuilder
+public class F17LTSBuilder
 {
-	public F17ModelBuilder()
+	public F17LTSBuilder()
 	{
 
 	}
 	
-	public F17State build(Map<Role, F17LType> P0, boolean explicit)
+	public F17LTS build(Map<Role, F17LType> P0, boolean explicit)
 	{
-		F17State init = new F17State(P0, explicit); 
+		F17Session init = new F17Session(P0, explicit); 
 		
-		Set<F17State> todo = new HashSet<>();
-		Set<F17State> seen = new HashSet<>();
+		Set<F17Session> todo = new HashSet<>();
+		Set<F17Session> seen = new HashSet<>();
 		todo.add(init);
 		
 		while (!todo.isEmpty())
 		{
-			Iterator<F17State> i = todo.iterator();
-			F17State curr = i.next();
+			Iterator<F17Session> i = todo.iterator();
+			F17Session curr = i.next();
 			i.remove();
 			seen.add(curr);
 
@@ -53,7 +53,7 @@ public class F17ModelBuilder
 				for (F17Action a : as)
 				{
 					// cf. SState.getNextStates
-					final F17State tmp;
+					final F17Session tmp;
 					if (a.action instanceof F17LSend || a.action instanceof F17LReceive || a.action instanceof F17LDisconnect)
 					{
 						tmp = curr.fire(r, a);
@@ -82,7 +82,7 @@ public class F17ModelBuilder
 						throw new RuntimeException("[f17] Shouldn't get in here: " + a);
 					}
 
-					F17State next = tmp;
+					F17Session next = tmp;
 					if (seen.contains(tmp))
 					{
 						next = seen.stream().filter((s) -> s.equals(tmp)).iterator().next();
@@ -100,6 +100,6 @@ public class F17ModelBuilder
 			}
 		}
 		
-		return init;
+		return new F17LTS(P0, init, seen);
 	}
 }
