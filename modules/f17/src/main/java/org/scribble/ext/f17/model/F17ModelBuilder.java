@@ -24,6 +24,7 @@ public class F17ModelBuilder
 		F17State init = new F17State(P0);
 		
 		Set<F17State> todo = new HashSet<>();
+		Set<F17State> seen = new HashSet<>();
 		todo.add(init);
 		
 		while (!todo.isEmpty())
@@ -31,6 +32,7 @@ public class F17ModelBuilder
 			Iterator<F17State> i = todo.iterator();
 			F17State curr = i.next();
 			i.remove();
+			seen.add(curr);
 
 			Map<Role, List<F17Action>> fireable = curr.getFireable();
 			for (Entry<Role, List<F17Action>> e : fireable.entrySet())
@@ -39,10 +41,15 @@ public class F17ModelBuilder
 				List<F17Action> as = e.getValue();
 				for (F17Action a : as)
 				{
-					F17State next = curr.fire(r, a);
-					if (!todo.contains(next) && !next.equals(curr))
+					F17State tmp = curr.fire(r, a);
+					F17State next = tmp;
+					if (seen.contains(tmp))
 					{
-						curr.addEdge(a, next);
+						next = seen.stream().filter((s) -> s.equals(tmp)).iterator().next();
+					}
+					curr.addEdge(a, next);
+					if (!todo.contains(next) && !seen.contains(next))  // cf. SState.getNextStates
+					{
 						todo.add(next);
 					}
 				}

@@ -23,7 +23,7 @@ import org.scribble.sesstype.name.Role;
 
 public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 {
-	private Map<Role, F17LType> P = new HashMap<>();  // F17LType already has self
+	private Map<Role, F17LType> P = new HashMap<>();  // Note: F17LType already has self
 	private Map<Role, F17LSend> Q = new HashMap<>();
 
 	public F17State(Map<Role, F17LType> P)
@@ -68,7 +68,7 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 					else if (a instanceof F17LReceive)
 					{
 						F17LReceive lr = (F17LReceive) a;
-						F17LSend m = this.Q.get(lr.peer);
+						F17LSend m = this.Q.get(lr.self);
 						if (m != null && m.toDual().equals(lr))
 						{
 							f.get(r).add(new F17Action(lr));
@@ -119,13 +119,13 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		{
 			F17LSend ls = (F17LSend) la;
 			P.put(r, succ);
-			Q.put(ls.peer, null);
+			Q.put(ls.peer, ls);
 		}
 		else if (la instanceof F17LReceive)
 		{
 			F17LReceive lr = (F17LReceive) la;
 			P.put(r, succ);
-			Q.put(lr.peer, lr.toDual());
+			Q.put(lr.self, null);
 		}
 		else
 		{
@@ -148,14 +148,15 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		Map<Role, Set<ESend>> orphs = this.config.getOrphanMessages();
 		Map<Role, EState> unfinished = this.config.getUnfinishedRoles();
 		return new SStateErrors(stuck, waitfor, orphs, unfinished);
-	}
+	}*/
 	
 	@Override
 	protected String getNodeLabel()
 	{
-		String labs = this.config.toString();
-		return "label=\"" + this.id + ":" + labs.substring(1, labs.length() - 1) + "\"";
-	}*/
+		String lab = "(" + this.P + ", " + this.Q + ")";
+		//return "label=\"" + this.id + ":" + lab.substring(1, lab.length() - 1) + "\"";
+		return "label=\"" + this.id + ":" + lab + "\"";
+	}
 	
 	@Override
 	public final int hashCode()

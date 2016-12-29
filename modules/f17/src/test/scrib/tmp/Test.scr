@@ -31,10 +31,11 @@ global protocol Proto1(role A, role B)
 	choice at A
 	{	
 		1() from A to B;
+		1() from A to B;
 	}
 	or
 	{
-		2() from A to B;
+		2() from A to B;  // FIXME: debug model building -- factor out a separate model class (with error checking routines)
 	}	
 }
 
