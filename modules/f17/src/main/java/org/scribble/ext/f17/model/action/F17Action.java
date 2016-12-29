@@ -46,24 +46,54 @@ public class F17Action extends MAction<Global>
 		}
 	}
 
+	/*
+	@Override
+	public int hashCode()
+	{
+		int hash = 2683;
+		hash = 31 * hash + this.action.hashCode();
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object o) 
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof F17Action))
+		{
+			return false;
+		}
+		F17Action them = (F17Action) o;
+		return them.canEqual(this) && this.action.equals(them.action);
+	}
+	*/
+
 	@Override
 	public boolean canEqual(Object o)
 	{
+		if (!(o instanceof F17Action))
+		{
+			return false;
+		}
+		F17Action them = (F17Action) o;
 		if (this.action instanceof F17LSend)
 		{
-			return o instanceof F17LSend;
+			return them.action instanceof F17LSend;
 		}
 		else if (this.action instanceof F17LReceive)
 		{
-			return o instanceof F17LSend;  
+			return them.action instanceof F17LSend;  
 		}
 		else if (this.action instanceof F17LConnect)
 		{
-			return o instanceof F17LConnect;  
+			return them.action instanceof F17LConnect;  
 		}
 		else if (this.action instanceof F17LAccept)
 		{
-			return o instanceof F17LAccept;  
+			return them.action instanceof F17LAccept;  
 		}
 		else
 		{

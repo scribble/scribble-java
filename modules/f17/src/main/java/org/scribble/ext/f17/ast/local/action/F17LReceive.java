@@ -17,7 +17,7 @@ public class F17LReceive extends F17LInput
 		this.pay = pay;
 	}
 	
-	// FIXME: factor out abstract super
+	@Override
 	public F17LSend toDual()
 	{
 		return F17AstFactory.FACTORY.LSend(this.peer, this.self, this.op, this.pay);

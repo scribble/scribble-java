@@ -18,7 +18,10 @@ public class F17LSend extends F17LOutput
 		this.pay = pay;
 	}
 	
-	public F17LReceive toDual()
+	@Override
+	public 
+	//F17LReceive
+	F17LAction toDual()
 	{
 		return F17AstFactory.FACTORY.LReceive(this.peer, this.self, this.op, this.pay);
 	}

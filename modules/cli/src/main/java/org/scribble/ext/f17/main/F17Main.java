@@ -120,9 +120,9 @@ public class F17Main
 				("[f17] Projected onto " + r + ":\n  " + lt);
 		}
 		
-		F17State init = new F17ModelBuilder().build(P0);
+		F17State init = new F17ModelBuilder().build(P0, gpd.isExplicitModifier());
 		
-		System.out.println("[f17] Built model: " + init.toDot());
+		System.out.println("[f17] Built model:\n" + init.toDot());
 		
 		job.runUnfoldingPass();
 		job.runWellFormednessPasses();

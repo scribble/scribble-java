@@ -1,5 +1,6 @@
 package org.scribble.ext.f17.ast.local.action;
 
+import org.scribble.ext.f17.ast.F17AstFactory;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
@@ -14,6 +15,12 @@ public class F17LAccept extends F17LInput
 		super(self, peer);
 		this.op = op;
 		this.pay = pay;
+	}
+	
+	@Override
+	public F17LConnect toDual()
+	{
+		return F17AstFactory.FACTORY.LConnect(this.peer, this.self, this.op, this.pay);
 	}
 	
 	@Override
@@ -43,7 +50,7 @@ public class F17LAccept extends F17LInput
 			return false;
 		}
 		F17LAccept them = (F17LAccept) obj;
-		return super.equals(obj)  // super does canEquals
+		return super.equals(obj)  // super does canEquals (and checks self/peer)
 				&& this.op.equals(them.op) && this.pay.equals(them.pay);
 	}
 	

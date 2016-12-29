@@ -6,29 +6,41 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ext.f17.ast.local.F17LChoice;
 import org.scribble.ext.f17.ast.local.F17LEnd;
 import org.scribble.ext.f17.ast.local.F17LRec;
 import org.scribble.ext.f17.ast.local.F17LType;
+import org.scribble.ext.f17.ast.local.action.F17LAccept;
 import org.scribble.ext.f17.ast.local.action.F17LAction;
+import org.scribble.ext.f17.ast.local.action.F17LConnect;
 import org.scribble.ext.f17.ast.local.action.F17LReceive;
 import org.scribble.ext.f17.ast.local.action.F17LSend;
 import org.scribble.ext.f17.model.action.F17Action;
 import org.scribble.model.MPrettyState;
 import org.scribble.model.MState;
+import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Global;
+import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
 public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 {
+	private static final F17LBot BOT = new F17LBot();  // Disconnected
+	
 	private Map<Role, F17LType> P = new HashMap<>();  // Note: F17LType already has self
-	private Map<Role, F17LSend> Q = new HashMap<>();
+	private Map<Role, F17LSend> Q = new HashMap<>();  // null value means connected and empty
 
-	public F17State(Map<Role, F17LType> P)
+	public F17State(Map<Role, F17LType> P, boolean explicit)
 	{
-		this(P, Collections.emptyMap());
+		this(P, explicit ? makeDisconnectedQ(P.keySet()) : Collections.emptyMap());
+	}
+	
+	private static Map<Role, F17LSend> makeDisconnectedQ(Set<Role> rs)
+	{
+		return rs.stream().collect(Collectors.toMap((r) -> r, (r) -> F17State.BOT));
 	}
 
 	protected F17State(Map<Role, F17LType> P, Map<Role, F17LSend> Q)
@@ -60,7 +72,7 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 					if (a instanceof F17LSend)
 					{
 						F17LSend ls = (F17LSend) a;
-						if (this.Q.get(ls.peer) == null)
+						if (!(this.Q.get(ls.self) instanceof F17LBot) && this.Q.get(ls.peer) == null)
 						{
 							f.get(r).add(new F17Action(ls));
 						}
@@ -69,19 +81,41 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 					{
 						F17LReceive lr = (F17LReceive) a;
 						F17LSend m = this.Q.get(lr.self);
-						if (m != null && m.toDual().equals(lr))
+						if (m != null && m.toDual().equals(lr))  //&& !(m instanceof F17LBot)
 						{
 							f.get(r).add(new F17Action(lr));
 						}
 					}
-					/*else if (a instanceof F17LConnect)
+					else if (a instanceof F17LConnect)
 					{
-						
+						F17LConnect lo = (F17LConnect) a;
+						if (this.Q.get(lo.self) instanceof F17LBot && this.Q.get(lo.peer) instanceof F17LBot)
+						{
+							F17LType plt = this.P.get(lo.peer);
+							if (plt instanceof F17LChoice)
+							{
+								if (((F17LChoice) plt).cases.containsKey(lo.toDual()))
+								{
+									f.get(r).add(new F17Action(lo));
+								}
+							}
+						}
 					}
 					else if (a instanceof F17LAccept)
 					{
-						
-					}*/
+						F17LAccept la = (F17LAccept) a;
+						if (this.Q.get(la.self) instanceof F17LBot && this.Q.get(la.peer) instanceof F17LBot)
+						{
+							F17LType plt = this.P.get(la.peer);
+							if (plt instanceof F17LChoice)
+							{
+								if (((F17LChoice) plt).cases.containsKey(la.toDual()))
+								{
+									f.get(r).add(new F17Action(la));
+								}
+							}
+						}
+					}
 					else
 					{
 						throw new RuntimeException("[f17] Shouldn't get in here: " + a);
@@ -134,13 +168,31 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 		return new F17State(P, Q);
 	}
 
-	/*// "Synchronous version" of fire
-	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
+	// "Synchronous version" of fire
+	public F17State sync(Role r1, F17Action a1, Role r2, F17Action a2)
 	{
-		return this.config.sync(r1, a1, r2, a2);
+		Map<Role, F17LType> P = new HashMap<>(this.P);
+		Map<Role, F17LSend> Q = new HashMap<>(this.Q);
+		F17LAction la1 = a1.action;
+		F17LAction la2 = a2.action;
+		F17LType succ1 = ((F17LChoice) P.get(r1)).cases.get(la1);
+		F17LType succ2 = ((F17LChoice) P.get(r2)).cases.get(la2);
+		if ((la1 instanceof F17LConnect && la2 instanceof F17LAccept)
+				|| (la1 instanceof F17LAccept && la2 instanceof F17LConnect))
+		{
+			P.put(r1, succ1);
+			P.put(r2, succ2);
+			Q.put(r1, null);
+			Q.put(r2, null);
+		}
+		else
+		{
+			throw new RuntimeException("[f17] Shouldn't get in here: " + a1 + ", " + a2);
+		}
+		return new F17State(P, Q);
 	}
 	
-	public SStateErrors getErrors()
+	/*public SStateErrors getErrors()
 	{
 		Map<Role, EReceive> stuck = this.config.getStuckMessages();
 		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
@@ -187,5 +239,55 @@ public class F17State extends MPrettyState<Void, F17Action, F17State, Global>
 	protected boolean canEquals(MState<?, ?, ?, ?> s)
 	{
 		return s instanceof F17State;
+	}
+}
+
+
+class F17LBot extends F17LSend
+{
+	public F17LBot()
+	{
+		super(Role.EMPTY_ROLE, Role.EMPTY_ROLE, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+	}
+
+	@Override
+	public F17LAction toDual()
+	{
+		//throw new RuntimeException("Shouldn't get in here: " + this);
+		return this;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "#";
+	} 
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 2273;
+		hash = 31 * hash + super.hashCode();
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (!(obj instanceof F17LBot))
+		{
+			return false;
+		}
+		return super.equals(obj);
+	}
+	
+	@Override
+	protected boolean canEquals(Object o)
+	{
+		return o instanceof F17LBot;
 	}
 }

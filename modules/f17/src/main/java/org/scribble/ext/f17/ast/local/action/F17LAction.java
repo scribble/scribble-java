@@ -16,6 +16,8 @@ public abstract class F17LAction extends F17AstAction
 		this.peer = peer;
 	}
 	
+	public abstract F17LAction toDual();
+	
 	public boolean isOutput()
 	{
 		return false;
@@ -48,8 +50,8 @@ public abstract class F17LAction extends F17AstAction
 		{
 			return false;
 		}
-		F17LReceive them = (F17LReceive) obj;
-		return super.equals(obj)  // super does canEquals
+		F17LAction them = (F17LAction) obj;
+		return super.equals(obj)  // super does canEquals; also checks peer
 				&& this.self.equals(them.self);  // N.B. considering self for local type equality
 	}
 
