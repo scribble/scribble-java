@@ -148,7 +148,28 @@ public class F17Main
 			System.out.println("[f17] Built endpoint graph for " + r + ":\n" + g.toDot());
 		}
 		
-		F17SModel m = new F17SModelBuilder().build(E0, gpd.isExplicitModifier());
+		validate(gpd.isExplicitModifier(), E0);
+
+		Map<Role, EState> U0 = new HashMap<>();
+		for (Role r : E0.keySet())
+		{
+			EState u = E0.get(r).unfairTransform();
+			U0.put(r, u);
+
+			System.out.println("[f17] Unfair transform for " + r + ":\n" + u.toDot());
+		}
+		
+		validate(gpd.isExplicitModifier(), U0);
+		
+		job.runUnfoldingPass();
+		job.runWellFormednessPasses();
+		
+		return gt;
+	}
+
+	private static void validate(boolean isExplicit, Map<Role, EState> E0) throws F17Exception
+	{
+		F17SModel m = new F17SModelBuilder().build(E0, isExplicit);
 
 		System.out.println("[f17] Built model:\n" + m.toDot());
 		
@@ -161,19 +182,5 @@ public class F17Main
 		{
 			throw new F17Exception("[f17] Protocol unsafe.\n" + errs);
 		}
-
-		Map<Role, EState> U0 = new HashMap<>();
-		for (Role r : E0.keySet())
-		{
-			EState u = E0.get(r).unfairTransform();
-			U0.put(r, u);
-
-			System.out.println("[f17] Unfair transform for " + r + ":\n" + u.toDot());
-		}
-		
-		job.runUnfoldingPass();
-		job.runWellFormednessPasses();
-		
-		return gt;
 	}
 }

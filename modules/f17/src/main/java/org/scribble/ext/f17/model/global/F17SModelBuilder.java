@@ -1,5 +1,6 @@
 package org.scribble.ext.f17.model.global;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -20,12 +21,12 @@ public class F17SModelBuilder
 
 	}
 	
-	public F17SModel build(Map<Role, EState> E0, boolean explicit)
+	public F17SModel build(Map<Role, EState> E0, boolean isExplicit)
 	{
-		F17SState init = new F17SState(E0, explicit); 
+		F17SState init = new F17SState(E0, isExplicit); 
 		
 		Set<F17SState> todo = new HashSet<>();
-		Set<F17SState> seen = new HashSet<>();
+		Map<Integer, F17SState> seen = new HashMap<>();
 		todo.add(init);
 		
 		while (!todo.isEmpty())
@@ -33,7 +34,7 @@ public class F17SModelBuilder
 			Iterator<F17SState> i = todo.iterator();
 			F17SState curr = i.next();
 			i.remove();
-			seen.add(curr);
+			seen.put(curr.id, curr);
 
 			Map<Role, List<EAction>> fireable = curr.getFireable();
 			Set<Entry<Role, List<EAction>>> es = new HashSet<>(fireable.entrySet());
@@ -45,8 +46,7 @@ public class F17SModelBuilder
 				//boolean removed = es.remove(e);
 
 				Role self = e.getKey();
-				List<EAction
-				> as = e.getValue();
+				List<EAction> as = e.getValue();
 				for (EAction a : as)
 				{
 					// cf. SState.getNextStates
@@ -79,17 +79,17 @@ public class F17SModelBuilder
 						throw new RuntimeException("[f17] Shouldn't get in here: " + a);
 					}
 
-					F17SState next = tmp;
-					if (seen.contains(tmp))
+					F17SState next = tmp;  // Base case
+					if (seen.values().contains(tmp))
 					{
-						next = seen.stream().filter((s) -> s.equals(tmp)).iterator().next();
+						next = seen.values().stream().filter((s) -> s.equals(tmp)).iterator().next();
 					}
 					else if (todo.contains(tmp))
 					{
 						next = todo.stream().filter((s) -> s.equals(tmp)).iterator().next();
 					}
 					curr.addEdge(a.toGlobal(self), next);
-					if (!seen.contains(tmp) && !todo.contains(next))
+					if (!seen.values().contains(next) && !todo.contains(next))
 					{
 						todo.add(next);
 					}
