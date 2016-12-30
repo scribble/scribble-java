@@ -19,17 +19,16 @@ import org.scribble.ext.f17.ast.local.action.F17LConnect;
 import org.scribble.ext.f17.ast.local.action.F17LDisconnect;
 import org.scribble.ext.f17.ast.local.action.F17LReceive;
 import org.scribble.ext.f17.ast.local.action.F17LSend;
-import org.scribble.ext.f17.model.action.F17Action;
+import org.scribble.ext.f17.lts.action.F17LBot;
+import org.scribble.ext.f17.lts.action.F17LTSAction;
 import org.scribble.model.MPrettyState;
 import org.scribble.model.MState;
-import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global>
+public class F17Session extends MPrettyState<Void, F17LTSAction, F17Session, Global>
 {
-	private static final F17LBot BOT = new F17LBot();  // Disconnected
+	private static final F17LBot BOT = F17LBot.BOT;  // Disconnected
 	
 	private Map<Role, F17LType> P = new HashMap<>();  // Note: F17LType already has self // By "eager" unfolding, L can only be choice or end
 	private Map<Role, Map<Role, F17LSend>> Q = new HashMap<>();  // null value means connected and empty
@@ -94,9 +93,9 @@ public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global
 				!(lt.equals(init) && ((F17LChoice) lt).cases.keySet().stream().anyMatch((k) -> k instanceof F17LAccept));  // anyMatch should be enough by WF
 	}
 	
-	public Map<Role, List<F17Action>> getFireable()
+	public Map<Role, List<F17LTSAction>> getFireable()
 	{
-		Map<Role, List<F17Action>> f = new HashMap<>();
+		Map<Role, List<F17LTSAction>> f = new HashMap<>();
 		for (Entry<Role, F17LType> L : this.P.entrySet())
 		{
 			Role r = L.getKey();
@@ -113,7 +112,7 @@ public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global
 						F17LSend ls = (F17LSend) a;
 						if (!(this.Q.get(ls.self).get(ls.peer) instanceof F17LBot) && this.Q.get(ls.peer).get(ls.self) == null)
 						{
-							f.get(r).add(new F17Action(ls));
+							f.get(r).add(new F17LTSAction(ls));
 						}
 					}
 					else if (a instanceof F17LReceive)
@@ -122,7 +121,7 @@ public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global
 						F17LSend m = this.Q.get(lr.self).get(lr.peer);
 						if (m != null && m.toDual().equals(lr))  //&& !(m instanceof F17LBot)
 						{
-							f.get(r).add(new F17Action(lr));
+							f.get(r).add(new F17LTSAction(lr));
 						}
 					}
 					else if (a instanceof F17LConnect)
@@ -135,7 +134,7 @@ public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global
 							{
 								if (((F17LChoice) plt).cases.containsKey(lo.toDual()))
 								{
-									f.get(r).add(new F17Action(lo));
+									f.get(r).add(new F17LTSAction(lo));
 								}
 							}
 						}
@@ -150,7 +149,7 @@ public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global
 							{
 								if (((F17LChoice) plt).cases.containsKey(la.toDual()))
 								{
-									f.get(r).add(new F17Action(la));
+									f.get(r).add(new F17LTSAction(la));
 								}
 							}
 						}
@@ -160,7 +159,7 @@ public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global
 						F17LDisconnect ld = (F17LDisconnect) a;
 						if (!(this.Q.get(ld.self).get(ld.peer) instanceof F17LBot) && this.Q.get(ld.self).get(ld.peer) == null)
 						{
-							f.get(r).add(new F17Action(ld));
+							f.get(r).add(new F17LTSAction(ld));
 						}
 					}
 					else
@@ -186,7 +185,7 @@ public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global
 	}
 	
 	// a.action already contains self
-	public F17Session fire(Role r, F17Action a)  // Deterministic
+	public F17Session fire(Role r, F17LTSAction a)  // Deterministic
 	{
 		Map<Role, F17LType> P = new HashMap<>(this.P);
 		Map<Role, Map<Role, F17LSend>> Q = copyQ(this.Q);
@@ -223,7 +222,7 @@ public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global
 	}
 
 	// "Synchronous version" of fire
-	public F17Session sync(Role r1, F17Action a1, Role r2, F17Action a2)
+	public F17Session sync(Role r1, F17LTSAction a1, Role r2, F17LTSAction a2)
 	{
 		Map<Role, F17LType> P = new HashMap<>(this.P);
 		Map<Role, Map<Role, F17LSend>> Q = copyQ(this.Q);
@@ -324,55 +323,5 @@ public class F17Session extends MPrettyState<Void, F17Action, F17Session, Global
 			copy.put(r, new HashMap<>(Q.get(r)));
 		}
 		return copy;
-	}
-}
-
-
-class F17LBot extends F17LSend
-{
-	public F17LBot()
-	{
-		super(Role.EMPTY_ROLE, Role.EMPTY_ROLE, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
-	}
-
-	@Override
-	public F17LAction toDual()
-	{
-		//throw new RuntimeException("Shouldn't get in here: " + this);
-		return this;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "#";
-	} 
-
-	@Override
-	public int hashCode()
-	{
-		int hash = 2273;
-		hash = 31 * hash + super.hashCode();
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (!(obj instanceof F17LBot))
-		{
-			return false;
-		}
-		return super.equals(obj);
-	}
-	
-	@Override
-	protected boolean canEquals(Object o)
-	{
-		return o instanceof F17LBot;
 	}
 }

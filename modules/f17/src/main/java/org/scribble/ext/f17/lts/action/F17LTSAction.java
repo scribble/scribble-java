@@ -1,4 +1,4 @@
-package org.scribble.ext.f17.model.action;
+package org.scribble.ext.f17.lts.action;
 
 import org.scribble.ext.f17.ast.local.action.F17LAccept;
 import org.scribble.ext.f17.ast.local.action.F17LAction;
@@ -13,11 +13,11 @@ import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Op;
 
 // Hacky: adaptor for F17LAction -- F17L includes self, but Global vs. "local" kinds
-public class F17Action extends MAction<Global>
+public class F17LTSAction extends MAction<Global>
 {
 	public final F17LAction action;
 	
-	public F17Action(F17LAction action)
+	public F17LTSAction(F17LAction action)
 	{
 		super(action.peer, getMessageId(action), getPayload(action));
 		this.action = action;
@@ -80,11 +80,11 @@ public class F17Action extends MAction<Global>
 	@Override
 	public boolean canEqual(Object o)
 	{
-		if (!(o instanceof F17Action))
+		if (!(o instanceof F17LTSAction))
 		{
 			return false;
 		}
-		F17Action them = (F17Action) o;
+		F17LTSAction them = (F17LTSAction) o;
 		if (this.action instanceof F17LSend)
 		{
 			return them.action instanceof F17LSend;

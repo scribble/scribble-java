@@ -13,7 +13,7 @@ import org.scribble.ext.f17.ast.local.action.F17LConnect;
 import org.scribble.ext.f17.ast.local.action.F17LDisconnect;
 import org.scribble.ext.f17.ast.local.action.F17LReceive;
 import org.scribble.ext.f17.ast.local.action.F17LSend;
-import org.scribble.ext.f17.model.action.F17Action;
+import org.scribble.ext.f17.lts.action.F17LTSAction;
 import org.scribble.sesstype.name.Role;
 
 
@@ -39,18 +39,18 @@ public class F17LTSBuilder
 			i.remove();
 			seen.add(curr);
 
-			Map<Role, List<F17Action>> fireable = curr.getFireable();
-			Set<Entry<Role, List<F17Action>>> es = new HashSet<>(fireable.entrySet());
+			Map<Role, List<F17LTSAction>> fireable = curr.getFireable();
+			Set<Entry<Role, List<F17LTSAction>>> es = new HashSet<>(fireable.entrySet());
 			while (!es.isEmpty())
 			{
-				Iterator<Entry<Role, List<F17Action>>> j = es.iterator();
-				Entry<Role, List<F17Action>> e = j.next();
+				Iterator<Entry<Role, List<F17LTSAction>>> j = es.iterator();
+				Entry<Role, List<F17LTSAction>> e = j.next();
 				j.remove();
 				//boolean removed = es.remove(e);
 
 				Role r = e.getKey();
-				List<F17Action> as = e.getValue();
-				for (F17Action a : as)
+				List<F17LTSAction> as = e.getValue();
+				for (F17LTSAction a : as)
 				{
 					// cf. SState.getNextStates
 					final F17Session tmp;
@@ -60,9 +60,9 @@ public class F17LTSBuilder
 					}
 					else if (a.action instanceof F17LConnect || a.action instanceof F17LAccept)
 					{
-						F17Action dual = new F17Action(a.action.toDual());
+						F17LTSAction dual = new F17LTSAction(a.action.toDual());
 						tmp = curr.sync(r, a, a.action.peer, dual);
-						for (Entry<Role, List<F17Action>> foo : es)
+						for (Entry<Role, List<F17LTSAction>> foo : es)
 						{
 							if (foo.getKey().equals(a.action.peer))
 							{

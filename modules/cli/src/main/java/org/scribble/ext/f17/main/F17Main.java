@@ -14,14 +14,17 @@ import org.scribble.ext.f17.ast.global.F17GProtocolDeclTranslator;
 import org.scribble.ext.f17.ast.global.F17GType;
 import org.scribble.ext.f17.ast.local.F17LType;
 import org.scribble.ext.f17.ast.local.F17Projector;
-import org.scribble.ext.f17.lts.F17LTS;
-import org.scribble.ext.f17.lts.F17LTSBuilder;
-import org.scribble.ext.f17.lts.F17LTSSafetyErrors;
+import org.scribble.ext.f17.model.endpoint.F17EGraphBuilder;
+import org.scribble.ext.f17.model.global.F17SModel;
+import org.scribble.ext.f17.model.global.F17SModelBuilder;
+import org.scribble.ext.f17.model.global.F17SafetyErrors;
 import org.scribble.main.Job;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
+import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.endpoint.EState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribParserException;
@@ -121,10 +124,10 @@ public class F17Main
 				("[f17] Projected onto " + r + ":\n  " + lt);
 		}
 		
-		F17LTS m = new F17LTSBuilder().build(P0, gpd.isExplicitModifier());
-		
+		/*F17LTS m = new F17LTSBuilder().build(P0, gpd.isExplicitModifier());
+		 
 		System.out.println("[f17] Built model:\n" + m.toDot());
-		
+
 		F17LTSSafetyErrors errs = m.getSafetyErrors();
 		if (errs.isSafe())
 		{
@@ -133,6 +136,39 @@ public class F17Main
 		else
 		{
 			throw new F17Exception("[f17] Protocol unsafe.\n" + errs);
+		}*/
+
+		F17EGraphBuilder builder = new F17EGraphBuilder();
+		Map<Role, EState> E0 = new HashMap<>();
+		for (Role r : P0.keySet())
+		{
+			EGraph g = builder.build(P0.get(r));
+			E0.put(r, g.init);
+
+			System.out.println("[f17] Built endpoint graph for " + r + ":\n" + g.toDot());
+		}
+		
+		F17SModel m = new F17SModelBuilder().build(E0, gpd.isExplicitModifier());
+
+		System.out.println("[f17] Built model:\n" + m.toDot());
+		
+		F17SafetyErrors errs = m.getSafetyErrors();
+		if (errs.isSafe())
+		{
+			System.out.println("[f17] Protocol safe.");
+		}
+		else
+		{
+			throw new F17Exception("[f17] Protocol unsafe.\n" + errs);
+		}
+
+		Map<Role, EState> U0 = new HashMap<>();
+		for (Role r : E0.keySet())
+		{
+			EState u = E0.get(r).unfairTransform();
+			U0.put(r, u);
+
+			System.out.println("[f17] Unfair transform for " + r + ":\n" + u.toDot());
 		}
 		
 		job.runUnfoldingPass();
