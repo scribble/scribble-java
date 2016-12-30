@@ -1,0 +1,50 @@
+module demo.fase17.Sec1;
+
+explicit global protocol OptionalDynamicThirdParty(role A, role B, role C)
+{
+	hello() connect A to B;
+	goodday() from B to A;
+	choice at A
+	{
+		opt1() from A to B;
+		greetings() connect B to C;
+	}
+	or
+	{
+		opt2() from A to B;
+	}
+} 
+
+
+global protocol P1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		do P1(A, B, C);
+	}
+	or
+	{
+		2() from A to C;
+		do P1(A, B, C);
+	}
+	//do P1(A, B, C);
+}
+
+
+explicit global protocol P2(role A, role B, role C)
+{
+	choice at A
+	{
+		1() connect A to B;
+		disconnect A and B;
+		do P2(A, B, C);
+	}
+	or
+	{
+		2() connect A to C;
+		disconnect A and C;
+		do P2(A, B, C);
+	}
+	//do P2(A, B, C);
+}

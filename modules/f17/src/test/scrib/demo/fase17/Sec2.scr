@@ -1,0 +1,79 @@
+module demo.fase17.Sec2;
+
+type <java> "java.lang.String" from "rt.jar" as Str;
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+
+global protocol Fragment(role C, role A, role S)
+{
+	choice at C
+	{
+		pay(Str) from C to S;
+		confirm(Int) from S to C;
+		accpt(Int) from C to A;
+	}
+	or
+	{
+		reject() from C to A;
+	}
+} 
+
+
+explicit global protocol TravelAgency(role C, role A, role S)
+{
+	connect C to A;
+	do Nego(C, A, S);
+}
+
+aux global protocol Nego(role C, role A, role S)
+{
+	choice at C
+	{
+		query(Str) from C to A;
+		quote(Int) from A to C;
+		do Nego(C, A, S);
+	}
+	or  // Flattened nested choices to fit core syntax
+	{
+		pay(Str) connect C to S;
+		confirm(Int) from S to C;
+		accpt(Int) from C to A;
+	}
+	or
+	{
+		reject() from C to A;
+	}
+}
+
+
+explicit global protocol Discon(role A, role B, role C)
+{
+	connect A to B;
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			2() connect B to C;
+			disconnect B and C;
+			continue X;
+		}
+		or
+		{
+			3() from A to B;
+		}
+	}
+}
+
+
+global protocol Hanging(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to C;
+	}
+}

@@ -1,0 +1,68 @@
+module demo.fase17.Sec4;
+
+type <java> "java.lang.String" from "rt.jar" as Str;
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+
+explicit global protocol TravelAgency(role C, role A, role S)
+{
+	connect C to A;
+	do Nego(C, A, S);
+}
+
+aux global protocol Nego(role C, role A, role S)
+{
+	choice at C
+	{
+		query(Str) from C to A;
+		quote(Int) from A to C;
+		do Nego(C, A, S);
+	}
+	or  // Flattened nested choices to fit core syntax
+	{
+		foo() from C to A;
+		connect A to S;
+		port(Int) from S to A;
+		port(Int) from A to C;
+		pay(Str) connect C to S;
+		confirm(Int) from S to C;
+		accpt(Int) from C to A;  // **
+	}
+	or
+	{
+		reject() from C to A;
+	}
+}
+
+
+/*
+explicit global protocol TravelAgency2(role C, role A, role S)
+{
+	connect C to A;
+	do Nego(C, A, S);
+}
+
+aux global protocol Nego(role C, role A, role S)
+{
+	choice at C
+	{
+		query(Str) from C to A;
+		quote(Int) from A to C;
+		do Nego(C, A, S);
+	}
+	or
+	{
+		foo() from C to A;
+		connect A to S;
+		port(p:Int) from S to A; @open=p
+		port(p) from A to C;
+		pay(Str) connect C to S; @port=p
+		confirm(Int) from S to C;
+		accpt(Int) from C to A;
+	}
+	or
+	{
+		reject() from C to A;
+	}
+}
+//*/

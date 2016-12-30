@@ -166,7 +166,7 @@ public class F17Main
 		}
 		
 		job.runUnfoldingPass();
-		job.runWellFormednessPasses();
+		//job.runWellFormednessPasses();
 		
 		return gt;
 	}

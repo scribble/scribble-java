@@ -1,0 +1,53 @@
+module demo.fase17.Sec3;
+
+global protocol NonDet(role A, role B, role C)
+{
+	choice at A
+	{
+		l() from A to B;
+		l1() from A to C;
+	}
+	or
+	{
+		l1() from A to C;
+		l2() from A to B;
+	}
+}
+
+
+global protocol PreConnected(role A, role B, role C)
+{
+	choice at A
+	{
+		l() from A to B;
+		rec X
+		{
+			l() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		l1() from A to B;
+		l1() from A to C;
+	}
+}
+
+
+explicit global protocol Explicit(role A, role B, role C)
+{
+	choice at A
+	{
+		l() connect A to B;
+		rec X
+		{
+			l() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		l1() connect A to B;
+		l1() connect A to C;
+	}
+}
