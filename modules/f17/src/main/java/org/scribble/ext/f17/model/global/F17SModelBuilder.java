@@ -89,6 +89,7 @@ public class F17SModelBuilder
 						next = todo.stream().filter((s) -> s.equals(tmp)).iterator().next();
 					}
 					curr.addEdge(a.toGlobal(self), next);
+					curr.addSubject(self);
 					if (!seen.values().contains(next) && !todo.contains(next))
 					{
 						todo.add(next);

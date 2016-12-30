@@ -2,6 +2,7 @@ package org.scribble.ext.f17.model.global;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +33,32 @@ public class F17SState extends MPrettyState<Void, SAction, F17SState, Global>
 	
 	private Map<Role, EState> P = new HashMap<>();  // Actually, F17EState
 	private Map<Role, Map<Role, ESend>> Q = new HashMap<>();  // null value means connected and empty
+	
+	private final Set<Role> subjs = new HashSet<>();  // Hacky: most because EState has no self
 
 	public F17SState(Map<Role, EState> P, boolean explicit)
 	{
 		this(P, makeQ(P.keySet(), explicit ? BOT : null));
+	}
+	
+	public void addSubject(Role subj)
+	{
+		this.subjs.add(subj);
+	}
+	
+	public Set<Role> getSubjects()
+	{
+		return Collections.unmodifiableSet(this.subjs);
+	}
+
+	public Map<Role, EState> getP()
+	{
+		return this.P;
+	}
+	
+	public Map<Role, Map<Role, ESend>> getQ()
+	{
+		return this.Q;
 	}
 
 	protected F17SState(Map<Role, EState> P, Map<Role, Map<Role, ESend>> Q)
@@ -75,8 +98,8 @@ public class F17SState extends MPrettyState<Void, SAction, F17SState, Global>
 				this.P.entrySet().stream().anyMatch((e) -> isActive(e.getValue(), E0.get(e.getKey()).id));
 	}
 	
-	// lt already eagerly unfolded
-	private static boolean isActive(EState s, int init)
+	// isActive(SState, Role) becomes isActive(EState)
+	public static boolean isActive(EState s, int init)
 	{
 		return !isInactive(s, init);
 	}

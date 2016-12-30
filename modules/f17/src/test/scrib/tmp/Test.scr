@@ -28,22 +28,22 @@ module Test;
 // - test WF/projection cases
 
 
-//*/
+/*/
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
 	{
-	choice at A
-	{
-		1() from A to B;
-		1() from A to C;
-		continue X;
-	}
-	or
-	{
-		2() from A to B;
-		2() from A to C;
-	}	
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;  // Comment to test: unfair progress
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from A to C;
+		}	
 	}
 }
 //*/
@@ -197,7 +197,7 @@ global protocol Proto1(role A, role B, role C)
 	{
 		choice at A
 		{
-			1() from A to B;	 // Testing: unbalanced choice role sets without explicit connections
+			1() from A to B;	 // Testing: unbalanced choice role sets (without explicit connections) -- OK if -fair
 			continue X;
 		}
 		or

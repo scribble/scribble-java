@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.sesstype.name.Role;
 
 // 1-bounded LTS
@@ -17,7 +18,6 @@ public class F17SModel
 	public final Map<Role, EState> E0;
 	public final F17SState init;
 	
-	//private final Set<F17SState> all;
 	public Map<Integer, F17SState> allStates; // State ID -> GMState
 
 	private Map<Integer, Set<Integer>> reach; // State ID -> reachable states (not reflexive)
@@ -40,6 +40,67 @@ public class F17SModel
 		Set<F17SState> unconns = this.allStates.values().stream().filter((s) -> s.isUnconnectedError()).collect(Collectors.toSet());
 		Set<F17SState> unfins = this.allStates.values().stream().filter((s) -> s.isUnfinishedRoleError(this.E0)).collect(Collectors.toSet());
 		return new F17SafetyErrors(conns, disconns, unconns, unfins);
+	}
+	
+	public boolean isActive(F17SState s, Role r)
+	{
+		return F17SState.isActive(s.getP().get(r), this.E0.get(r).id);
+	}
+	
+	public F17ProgressErrors getProgressErrors()
+	{
+		Map<Role, Set<Set<F17SState>>> roleProgress = new HashMap<>();
+				/*this.E0.keySet().stream().collect(Collectors.toMap((r) -> r, (r) ->
+					this.termSets.stream().map((ts) -> ts.stream().map((i) -> this.allStates.get(i)).collect(Collectors.toSet()))
+						.filter((ts) -> ts.stream().allMatch((s) -> !s.getSubjects().contains(r)))
+							.collect(Collectors.toSet())));*/
+		for (Role r : this.E0.keySet())
+		{
+			for (Set<Integer> ts : this.termSets)	
+			{
+				if (ts.stream().allMatch((i) -> isActive(this.allStates.get(i), r)
+						&& !this.allStates.get(i).getSubjects().contains(r)))
+				{
+					Set<Set<F17SState>> set = roleProgress.get(r);
+					if (set == null)
+					{
+						set = new HashSet<>();
+						roleProgress.put(r, set);
+					}
+					set.add(ts.stream().map((i) -> this.allStates.get(i)).collect(Collectors.toSet()));
+				}	
+			}
+		}
+
+		Map<ESend, Set<Set<F17SState>>> eventualReception = new HashMap<>();
+		for (Role r1 : this.E0.keySet())
+		{
+			for (Role r2 : this.E0.keySet())
+			{
+				if (!r1.equals(r2))
+				{
+					for (Set<Integer> ts : this.termSets)	
+					{
+						F17SState s1 = this.allStates.get(ts.iterator().next());
+						ESend es = s1.getQ().get(r1).get(r2);
+
+						if (es != null && !(es instanceof F17EBot)
+								&& ts.stream().allMatch((i) -> es.equals(this.allStates.get(i).getQ().get(r1).get(r2))))
+						{
+							Set<Set<F17SState>> set = eventualReception.get(es);
+							if (set == null)
+							{
+								set = new HashSet<Set<F17SState>>();
+								eventualReception.put(es,  set);
+							}
+							set.add(ts.stream().map((i) -> this.allStates.get(i)).collect(Collectors.toSet()));
+						}
+					}
+				}
+			}
+		}
+		
+		return new F17ProgressErrors(roleProgress, eventualReception);
 	}
 	
 	@Override

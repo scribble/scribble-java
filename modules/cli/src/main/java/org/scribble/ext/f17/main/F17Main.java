@@ -15,6 +15,7 @@ import org.scribble.ext.f17.ast.global.F17GType;
 import org.scribble.ext.f17.ast.local.F17LType;
 import org.scribble.ext.f17.ast.local.F17Projector;
 import org.scribble.ext.f17.model.endpoint.F17EGraphBuilder;
+import org.scribble.ext.f17.model.global.F17ProgressErrors;
 import org.scribble.ext.f17.model.global.F17SModel;
 import org.scribble.ext.f17.model.global.F17SModelBuilder;
 import org.scribble.ext.f17.model.global.F17SafetyErrors;
@@ -150,16 +151,19 @@ public class F17Main
 		
 		validate(gpd.isExplicitModifier(), E0);
 
-		Map<Role, EState> U0 = new HashMap<>();
-		for (Role r : E0.keySet())
+		if (!job.fair)
 		{
-			EState u = E0.get(r).unfairTransform();
-			U0.put(r, u);
+			Map<Role, EState> U0 = new HashMap<>();
+			for (Role r : E0.keySet())
+			{
+				EState u = E0.get(r).unfairTransform();
+				U0.put(r, u);
 
-			System.out.println("[f17] Unfair transform for " + r + ":\n" + u.toDot());
+				System.out.println("[f17] Unfair transform for " + r + ":\n" + u.toDot());
+			}
+			
+			validate(gpd.isExplicitModifier(), U0, true);
 		}
-		
-		validate(gpd.isExplicitModifier(), U0);
 		
 		job.runUnfoldingPass();
 		job.runWellFormednessPasses();
@@ -167,20 +171,33 @@ public class F17Main
 		return gt;
 	}
 
-	private static void validate(boolean isExplicit, Map<Role, EState> E0) throws F17Exception
+	private static void validate(boolean isExplicit, Map<Role, EState> E0, boolean... unfair) throws F17Exception
 	{
 		F17SModel m = new F17SModelBuilder().build(E0, isExplicit);
 
 		System.out.println("[f17] Built model:\n" + m.toDot());
 		
-		F17SafetyErrors errs = m.getSafetyErrors();
-		if (errs.isSafe())
+		if (unfair.length == 0)
 		{
-			System.out.println("[f17] Protocol safe.");
+			F17SafetyErrors serrs = m.getSafetyErrors();
+			if (serrs.isSafe())
+			{
+				System.out.println("[f17] Protocol safe.");
+			}
+			else
+			{
+				throw new F17Exception("[f17] Protocol unsafe.\n" + serrs);
+			}
+		}
+		
+		F17ProgressErrors perrs = m.getProgressErrors();
+		if (perrs.satisfiesProgress())
+		{
+			System.out.println("[f17] " + ((unfair.length == 0) ? "Fair protocol" : "protocol") + " satisfies progress.");
 		}
 		else
 		{
-			throw new F17Exception("[f17] Protocol unsafe.\n" + errs);
+			throw new F17Exception("[f17] " + ((unfair.length == 0) ? "Fair protocol" : "protocol") + " violates progress.\n" + perrs);
 		}
 	}
 }
