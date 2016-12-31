@@ -1,0 +1,132 @@
+module demo.fase17.AppD;
+
+type <xsd> "UserName" from "AUTH.xsd" as UserName;
+type <xsd> "Password" from "AUTH.xsd" as password;
+type <xsd> "UUID" from "AUTH.xsd" as UUID;
+type <xsd> "SupplierDetails" from "Retailer.xsd" as SupplierDetails;
+type <xsd> "ContractDetails" from "Retailer.xsd" as ContractDetails;
+type <xsd> "UserContext" from "Filter.xsd" as UserContext;
+type <xsd> "Filters" from "Filter.xsd" as Filters;
+
+
+explicit global protocol InfoAuth(
+		role LoginSvc, role Client, role AuthSvc, role Filtersvc, role SupplierSvc, role ContractSvc)
+{
+	connect Client to LoginSvc;
+	login(UserName, password) from Client to LoginSvc;
+	choice at LoginSvc
+	{
+		loginfailure() from LoginSvc to Client;
+	}
+	or
+	{
+		loginsuccess() from LoginSvc to Client;
+		disconnect Client and LoginSvc;
+		connect Client to AuthSvc;
+		do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
+	}
+}
+
+aux global protocol Main(
+		role Client, role AuthSvc, role Filtersvc, role SupplierSvc, role ContractSvc)
+{
+	choice at Client
+	{
+		getsuppliers(UUID) from Client to AuthSvc;
+		//do SuppInfo(Client, AuthSvc, Filtersvc, SupplierSvc);
+
+		choice at AuthSvc
+		{
+			deny() from AuthSvc to Client;
+		}
+		or
+		{
+			connect AuthSvc to SupplierSvc;
+			getsuppliers() from AuthSvc to SupplierSvc;
+			suppliers() from SupplierSvc to AuthSvc;
+			disconnect AuthSvc and SupplierSvc;
+			do FilterInfo
+					<Filtersuppliers(UserContext, Filters, SupplierDetails)>
+					(AuthSvc, Filtersvc);
+			suppliers() from AuthSvc to Client;
+
+			do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
+		}
+
+		//do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
+	}
+	or
+	{
+		getcontracts() from Client to AuthSvc;
+		//do ContractInfo(Client, AuthSvc, Filtersvc, ContractSvc);
+
+		choice at AuthSvc
+		{
+			deny() from AuthSvc to Client;
+		}
+		or
+		{
+			connect AuthSvc to ContractSvc;
+			getcontracts() from AuthSvc to ContractSvc;
+			contracts() from ContractSvc to AuthSvc;
+			disconnect AuthSvc and ContractSvc;
+			do FilterInfo
+					<filterContracts(UserContext, Filters, ContractDetails)>
+					(AuthSvc, Filtersvc);
+			contracts() from AuthSvc to Client;
+			do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
+		}
+
+		//do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
+	}
+	//do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
+}
+
+/*aux global protocol SuppInfo
+		(role Client, role AuthSvc, role Filtersvc, role SupplierSvc)
+{
+	choice at AuthSvc
+	{
+		deny() from AuthSvc to Client;
+	}
+	or
+	{
+		connect AuthSvc to SupplierSvc;
+		getsuppliers() from AuthSvc to SupplierSvc;
+		suppliers() from SupplierSvc to AuthSvc;
+		disconnect AuthSvc and SupplierSvc;
+		do FilterInfo
+				<Filtersuppliers(UserContext, Filters, SupplierDetails)>
+				(AuthSvc, Filtersvc);
+		suppliers() from AuthSvc to Client;
+	}
+}
+
+aux global protocol ContractInfo
+		(role Client, role AuthSvc, role Filtersvc, role ContractSvc)
+{
+	choice at AuthSvc
+	{
+		deny() from AuthSvc to Client;
+	}
+	or
+	{
+		connect AuthSvc to ContractSvc;
+		getcontracts() from AuthSvc to ContractSvc;
+		contracts() from ContractSvc to AuthSvc;
+		disconnect AuthSvc and ContractSvc;
+		do FilterInfo
+				<filterContracts(UserContext, Filters, ContractDetails)>
+				(AuthSvc, Filtersvc);
+		contracts() from AuthSvc to Client;
+	}
+}*/
+
+aux global protocol FilterInfo
+		<sig Query>
+		(role AuthSvc, role Filtersvc)
+{
+	Query connect AuthSvc to Filtersvc;
+	filtered() from Filtersvc to AuthSvc;
+	disconnect AuthSvc and Filtersvc;
+}

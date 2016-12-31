@@ -25,7 +25,9 @@ import org.scribble.ext.f17.ast.global.action.F17GConnect;
 import org.scribble.ext.f17.ast.global.action.F17GDisconnect;
 import org.scribble.ext.f17.ast.global.action.F17GMessageTransfer;
 import org.scribble.ext.f17.main.F17Exception;
+import org.scribble.main.Job;
 import org.scribble.main.JobContext;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.RecVar;
@@ -42,10 +44,10 @@ public class F17GProtocolDeclTranslator
 	}
 
 	// merge is for projection of "delegation payload types"
-	public F17GType translate(JobContext jc, ModuleContext mc, GProtocolDecl gpd) throws F17Exception
+	public F17GType translate(Job job, ModuleContext mc, GProtocolDecl gpd) throws ScribbleException
 	{
 		GProtocolDef inlined = ((GProtocolDefDel) gpd.def.del()).getInlinedProtocolDef();
-		return parseSeq(jc, mc, inlined.getBlock().getInteractionSeq().getInteractions(), false, false);
+		return parseSeq(job.getContext(), mc, inlined.getBlock().getInteractionSeq().getInteractions(), false, false);
 	}
 	
 	/*private F17GType translate(JobContext jc, ModuleContext mc, GProtocolDef gpd) throws ScribbleException
@@ -70,7 +72,7 @@ public class F17GProtocolDeclTranslator
 				F17GMessageTransfer gmt = parseGMessageTransfer((GMessageTransfer) first);
 				F17GType cont = parseSeq(jc, mc, is.subList(1, is.size()), false, false);
 				Map<F17GAction, F17GType> cases = new HashMap<>();
-				cases.put(gmt, cont);
+					cases.put(gmt, cont);
 				return this.factory.GChoice(cases);
 			}
 			else if (first instanceof GConnect)

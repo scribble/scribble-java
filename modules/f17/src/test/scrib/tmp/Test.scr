@@ -8,7 +8,22 @@ module Test;
 // - test WF/projection cases
 
 
-//*
+/*
+global protocol Proto1(role A, role B)
+{
+	rec Y
+	{
+		rec X  // Testing: RecRemover (also implicit Proto1 rec)
+		{
+			1() from A to B;
+			continue Y;
+		}		
+	}
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C, role D)
 {
 	connect A to B;

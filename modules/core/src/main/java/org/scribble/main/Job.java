@@ -186,19 +186,19 @@ public class Job
 		return api;
 	}
 	
-	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException
+	public void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on all modules:");
 		runVisitorPass(this.jcontext.getFullModuleNames(), c);
 	}
 
-	private void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c) throws ScribbleException
+	public void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on parsed modules:");
 		runVisitorPass(this.jcontext.getParsedFullModuleNames(), c);
 	}
 
-	private void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c) throws ScribbleException
+	public void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on projected modules:");
 		runVisitorPass(this.jcontext.getProjectedFullModuleNames(), c);
@@ -212,8 +212,7 @@ public class Job
 			for (ModuleName modname : modnames)
 			{
 				AstVisitor nv = cons.newInstance(this);
-				Module visited = (Module) this.jcontext.getModule(modname).accept(nv);
-				this.jcontext.replaceModule(visited);
+				runVisitorOnModule(modname, nv);
 			}
 		}
 		catch (NoSuchMethodException | SecurityException | InstantiationException
@@ -222,6 +221,12 @@ public class Job
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void runVisitorOnModule(ModuleName modname, AstVisitor nv) throws ScribbleException
+	{
+		Module visited = (Module) this.jcontext.getModule(modname).accept(nv);
+		this.jcontext.replaceModule(visited);
 	}
 	
 	public JobContext getContext()

@@ -29,6 +29,7 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribParserException;
+import org.scribble.visit.context.RecRemover;
 
 // f17-specific CL frontend
 //
@@ -99,6 +100,7 @@ public class F17Main
 	public static F17GType parseAndCheckWF(Job job, GProtocolName simpname) throws ScribbleException, ScribParserException
 	{
 		job.runContextBuildingPasses();
+		job.runVisitorPassOnParsedModules(RecRemover.class);  // Integrate into main passes?  Do before unfolding?
 		
 		Module main = job.getContext().getMainModule();
 		if (!main.hasProtocolDecl(simpname))
@@ -107,7 +109,7 @@ public class F17Main
 		}
 		GProtocolDecl gpd = (GProtocolDecl) main.getProtocolDecl(simpname);
 
-		F17GType gt = new F17GProtocolDeclTranslator().translate(job.getContext(), ((ModuleDel) main.del()).getModuleContext(), gpd);
+		F17GType gt = new F17GProtocolDeclTranslator().translate(job, ((ModuleDel) main.del()).getModuleContext(), gpd);
 
 		//job.debugPrintln
 		System.out.println
@@ -124,20 +126,6 @@ public class F17Main
 			System.out.println
 				("[f17] Projected onto " + r + ":\n  " + lt);
 		}
-		
-		/*F17LTS m = new F17LTSBuilder().build(P0, gpd.isExplicitModifier());
-		 
-		System.out.println("[f17] Built model:\n" + m.toDot());
-
-		F17LTSSafetyErrors errs = m.getSafetyErrors();
-		if (errs.isSafe())
-		{
-			System.out.println("[f17] Protocol safe.");
-		}
-		else
-		{
-			throw new F17Exception("[f17] Protocol unsafe.\n" + errs);
-		}*/
 
 		F17EGraphBuilder builder = new F17EGraphBuilder();
 		Map<Role, EState> E0 = new HashMap<>();
