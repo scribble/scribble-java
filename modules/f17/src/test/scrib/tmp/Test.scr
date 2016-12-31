@@ -3,12 +3,18 @@
 module Test;
 
 
-// - f17 well-formedness (including deterministic, etc.)
-// - f17 API generation (connection-with-message, shared channel passing)
+// - f17 API generation (shared channel passing, connection-with-message)
 // - test WF/projection cases
 
 
-//*
+/*
+global protocol Proto1(role A, role B, role C)
+{
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B)
 {
 	choice at A
@@ -17,7 +23,7 @@ global protocol Proto1(role A, role B)
 	}
 	or
 	{
-		disconnect A and B;
+		disconnect A and B;  // Testing: role enabling (choice subjs)
 	}	
 }
 //*/
@@ -331,7 +337,7 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
-/* 
+//* 
 global protocol Proto1(role A, role B, role C)
 {
 	rec X

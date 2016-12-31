@@ -178,18 +178,18 @@ public class F17Main
 			}
 			else
 			{
-				throw new F17Exception("[f17] Protocol unsafe.\n" + serrs);
+				throw new F17Exception("[f17] Protocol not safe.\n" + serrs);
 			}
 		}
 		
 		F17ProgressErrors perrs = m.getProgressErrors();
 		if (perrs.satisfiesProgress())
 		{
-			System.out.println("[f17] " + ((unfair.length == 0) ? "Fair protocol" : "protocol") + " satisfies progress.");
+			System.out.println("[f17] " + ((unfair.length == 0) ? "Fair protocol" : "Protocol") + " satisfies progress.");
 		}
 		else
 		{
-			throw new F17Exception("[f17] " + ((unfair.length == 0) ? "Fair protocol" : "protocol") + " violates progress.\n" + perrs);
+			throw new F17Exception("[f17] " + ((unfair.length == 0) ? "Fair protocol" : "Protocol") + " violates progress.\n" + perrs);
 		}
 	}
 }

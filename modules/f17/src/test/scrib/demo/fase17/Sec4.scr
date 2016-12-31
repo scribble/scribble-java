@@ -20,13 +20,14 @@ aux global protocol Nego(role C, role A, role S)
 	}
 	or  // Flattened nested choices to fit core syntax
 	{
-		foo() from C to A;
+		accpt() from C to A;
+		//foo() from C to A;
 		connect A to S;
 		port(Int) from S to A;
 		port(Int) from A to C;
 		pay(Str) connect C to S;
 		confirm(Int) from S to C;
-		accpt(Int) from C to A;  // **
+		//accpt(Int) from C to A;  // **
 	}
 	or
 	{
