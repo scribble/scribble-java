@@ -9,7 +9,7 @@ import org.scribble.sesstype.name.Role;
 
 public abstract class F17GAction extends F17AstAction
 {
-	public final Role src;
+	public final Role src;  // Not really suitable for F17GDisconnect
 	
 	public F17GAction(Role src, List<Role> subjs, List<Role> objs)
 	{
