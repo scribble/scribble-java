@@ -21,7 +21,6 @@
 		<module>trace-parser</module>
 		<module>cli</module>
     <module>demos</module>
-    <module>f17</module>
   </modules>
 
 </project>
