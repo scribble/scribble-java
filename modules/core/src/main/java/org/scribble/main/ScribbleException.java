@@ -20,7 +20,7 @@ public class ScribbleException extends Exception
 	public ScribbleException(CommonTree blame, String arg0)
 	{
 		// char position indexes are obscure because only certain (child) nodes/tokens are actually recorded, e.g., name nodes (the keyword nodes, e.g., global, have been discarded)
-		// ...although even taking the above into account, indexes still seem off?
+		// ...although even taking the above into account, indexes still seem off? -- may be due to tabs (counted as single chars)
 		super(getRootModuleName(blame) + "(line " + blame.getLine() + ":" + (blame.getCharPositionInLine()) + "): " + arg0);
 			// Cf., getTokenStartIndex/getTokenStopIndex ?  blame.token.getCharPositionInLine()?
 	}
@@ -35,7 +35,7 @@ public class ScribbleException extends Exception
 		}
 		CommonTree moddecl = (CommonTree) root.getChild(0).getChild(0);
 		int count = moddecl.getChildCount();
-		return IntStream.range(0, count).mapToObj((i) -> moddecl.getChild(i).getText()).collect(Collectors.joining(", "));
+		return IntStream.range(0, count).mapToObj((i) -> moddecl.getChild(i).getText()).collect(Collectors.joining("."));
 	}
 
 	public ScribbleException(String arg0)

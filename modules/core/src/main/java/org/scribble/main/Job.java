@@ -68,22 +68,32 @@ public class Job
 		this.jcontext = new JobContext(this, parsed, main);  // Single instance per Job and should never be shared
 	}
 
-	public ScribbleException testWellFormednessCheck()
-	{
-		try
-		{
-			checkWellFormedness();
-		}
-		catch (ScribbleException x)
-		{
-			return x;
-		}
-		return null;
-	}
-
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
+		runUnfoldingPass();
+		runWellFormednessPasses();
+	}
+	
+	public void runContextBuildingPasses() throws ScribbleException
+	{
+		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
+		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
+		runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
+		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
+		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
+		runVisitorPassOnAllModules(ProtocolDefInliner.class);
+		//runUnfoldingPass();
+	}
+		
+	// "Second part" of context building (separated for extensions to work on non-unfolded protos)
+	public void runUnfoldingPass() throws ScribbleException
+	{
+		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
+	}
+
+	public void runWellFormednessPasses() throws ScribbleException
+	{
 		if (!this.noValidation)
 		{
 			runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
@@ -94,18 +104,6 @@ public class Job
 				runVisitorPassOnAllModules(GProtocolValidator.class);
 			}
 		}
-	}
-	
-	private void runContextBuildingPasses() throws ScribbleException
-	{
-		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
-		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
-		runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
-		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
-		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
-		runVisitorPassOnAllModules(ProtocolDefInliner.class);
-		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
-		//runVisitorPassOnAllModules(GlobalModelBuilder.class);
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
@@ -189,19 +187,19 @@ public class Job
 		return api;
 	}
 	
-	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException
+	public void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on all modules:");
 		runVisitorPass(this.jcontext.getFullModuleNames(), c);
 	}
 
-	private void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c) throws ScribbleException
+	public void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on parsed modules:");
 		runVisitorPass(this.jcontext.getParsedFullModuleNames(), c);
 	}
 
-	private void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c) throws ScribbleException
+	public void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on projected modules:");
 		runVisitorPass(this.jcontext.getProjectedFullModuleNames(), c);
@@ -215,8 +213,7 @@ public class Job
 			for (ModuleName modname : modnames)
 			{
 				AstVisitor nv = cons.newInstance(this);
-				Module visited = (Module) this.jcontext.getModule(modname).accept(nv);
-				this.jcontext.replaceModule(visited);
+				runVisitorOnModule(modname, nv);
 			}
 		}
 		catch (NoSuchMethodException | SecurityException | InstantiationException
@@ -225,6 +222,12 @@ public class Job
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void runVisitorOnModule(ModuleName modname, AstVisitor nv) throws ScribbleException
+	{
+		Module visited = (Module) this.jcontext.getModule(modname).accept(nv);
+		this.jcontext.replaceModule(visited);
 	}
 	
 	public JobContext getContext()

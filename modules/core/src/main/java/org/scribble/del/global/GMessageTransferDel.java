@@ -72,4 +72,16 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gmt);
 	}
+
+	/*@Override
+	public ScribNode leaveF17Parsing(ScribNode parent, ScribNode child, F17Parser parser, ScribNode visited) throws ScribbleException
+	{
+		F17ParserEnv env = parser.peekEnv();
+		if (env.isUnguarded())
+		{
+			parser.popEnv();
+			parser.pushEnv(new F17ParserEnv());  // Maybe make "setGuarded" method
+		}
+		return super.leaveF17Parsing(parent, child, parser, visited);
+	}*/
 }

@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>modules</artifactId>
 	<packaging>pom</packaging>
-	<version>0.4-SNAPSHOT</version>
 	<name>Scribble::Modules</name>
 
 	<parent>
@@ -22,6 +21,7 @@
 		<module>trace-parser</module>
 		<module>cli</module>
     <module>demos</module>
+    <module>f17</module>
   </modules>
 
 </project>

@@ -11,9 +11,11 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.context.ProjectedRoleDeclFixer;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
+import org.scribble.visit.context.RecRemover;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.Env;
 import org.scribble.visit.util.MessageIdCollector;
+import org.scribble.visit.util.RecVarCollector;
 import org.scribble.visit.util.RoleCollector;
 import org.scribble.visit.validation.GProtocolValidator;
 import org.scribble.visit.wf.DelegationProtocolRefChecker;
@@ -206,6 +208,26 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterRecVarCollection(ScribNode parent, ScribNode child, RecVarCollector coll)
+	{
+		
+	}
+
+	default ScribNode leaveRecVarCollection(ScribNode parent, ScribNode child, RecVarCollector coll, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterRecRemoval(ScribNode parent, ScribNode child, RecRemover rem)
+	{
+		
+	}
+
+	default ScribNode leaveRecRemoval(ScribNode parent, ScribNode child, RecRemover rem, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

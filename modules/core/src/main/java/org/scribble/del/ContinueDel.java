@@ -6,6 +6,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.InlinedProtocolUnfolder;
+import org.scribble.visit.util.RecVarCollector;
 
 public abstract class ContinueDel extends SimpleInteractionNodeDel
 {
@@ -42,5 +43,13 @@ public abstract class ContinueDel extends SimpleInteractionNodeDel
 			return unf.getRecVar(rv).clone();
 		}
 		return cont;
+	}
+
+	@Override
+	public ScribNode leaveRecVarCollection(ScribNode parent, ScribNode child, RecVarCollector coll, ScribNode visited)
+			throws ScribbleException
+	{
+		coll.removeName(((Continue<?>) visited).recvar.toName());
+		return visited;
 	}
 }

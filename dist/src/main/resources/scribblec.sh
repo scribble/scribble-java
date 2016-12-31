@@ -77,6 +77,7 @@ ARGS=
 CLASSPATH=$DIR'/modules/cli/target/classes/'
 CLASSPATH=$CLASSPATH':'$DIR'/modules/core/target/classes'
 CLASSPATH=$CLASSPATH':'$DIR'/modules/parser/target/classes'
+CLASSPATH=$CLASSPATH':'$DIR'/modules/f17/target/classes'
 CLASSPATH=$CLASSPATH':'$ANTLR
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/antlr.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/antlr-runtime.jar'
@@ -84,6 +85,7 @@ CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/commons-io.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-cli.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-core.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-parser.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-f17.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/stringtemplate.jar'
 CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
 

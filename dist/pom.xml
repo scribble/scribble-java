@@ -44,6 +44,10 @@
 			<groupId>org.scribble</groupId>
 			<artifactId>scribble-cli</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-f17</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -30,11 +30,34 @@ module Test;
 // Add a unit test for validation to bypass aux
 
 
-global protocol Proto1(role A, role B, role C)
+//*
+global protocol Proto1(role A, role B)
 {
 	1() from A to B;
-	1() from A to C;
+	1() from A to B;
+	choice at A
+	{
+		1() from A to B;
+		choice at A
+		{
+			1() from A to B;
+		}
+	}
+	or
+	{
+		2() from A to B;
+		rec X
+		{
+			rec Y
+			{
+				2() from A to B;
+				continue X;
+			}
+		}
+	}
 }
+//*/
+
 
 
 /*

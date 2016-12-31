@@ -4,12 +4,14 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LRecursion;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
@@ -18,6 +20,7 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceDoPruner;
+import org.scribble.visit.context.RecRemover;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.wf.ReachabilityChecker;
 import org.scribble.visit.wf.env.ReachabilityEnv;
@@ -115,5 +118,19 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		//conv.builder.setExit(exit);
 		conv.util.setEntry(entry);
 		return child;	
+	}
+	
+	// Duplicated from GInteractionSeq
+	@Override
+	public LInteractionSeq leaveRecRemoval(ScribNode parent, ScribNode child, RecRemover rem, ScribNode visited)
+			throws ScribbleException
+	{
+		LInteractionSeq lis = (LInteractionSeq) visited;
+		List<LInteractionNode> lins = lis.getInteractions().stream().flatMap((li) -> 
+					(li instanceof LRecursion && rem.toRemove(((LRecursion) li).recvar.toName()))
+						? ((LRecursion) li).getBlock().getInteractionSeq().getInteractions().stream()
+						: Stream.of(li)
+				).collect(Collectors.toList());
+		return AstFactoryImpl.FACTORY.LInteractionSeq(lis.getSource(), lins);
 	}
 }

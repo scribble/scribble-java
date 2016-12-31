@@ -25,7 +25,7 @@ public class GDisconnect extends ConnectionAction<Global> implements GSimpleInte
 	public static final MessageSigNode UNIT_MESSAGE_SIG_NODE =  // Hacky?
 			AstFactoryImpl.FACTORY.MessageSigNode(null, 
 				(OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, OpKind.KIND, Op.EMPTY_OPERATOR.toString()),
-				AstFactoryImpl.FACTORY.PayloadElemList(null, Collections.emptyList()));
+				AstFactoryImpl.FACTORY.PayloadElemList(null, Collections.emptyList()));  // Payload.EMPTY_PAYLOAD?
 
 	public GDisconnect(CommonTree source, RoleNode src, RoleNode dest)
 	{

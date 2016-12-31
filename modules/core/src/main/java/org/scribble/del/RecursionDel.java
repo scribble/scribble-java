@@ -7,6 +7,7 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.UnfoldingEnv;
+import org.scribble.visit.util.RecVarCollector;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public abstract class RecursionDel extends CompoundInteractionNodeDel
@@ -83,4 +84,10 @@ public abstract class RecursionDel extends CompoundInteractionNodeDel
 	{
 		ScribDelBase.pushVisitorEnv(this, checker);
 	}*/
+
+	@Override
+	public void enterRecVarCollection(ScribNode parent, ScribNode child, RecVarCollector coll)
+	{
+		coll.addName(((Recursion<?>) child).recvar.toName());
+	}
 }
