@@ -16,11 +16,11 @@ explicit global protocol InfoAuth(
 	login(UserName, password) from Client to LoginSvc;
 	choice at LoginSvc
 	{
-		loginfailure() from LoginSvc to Client;
+		loginFail() from LoginSvc to Client;
 	}
 	or
 	{
-		loginsuccess() from LoginSvc to Client;
+		loginOK() from LoginSvc to Client;
 		disconnect Client and LoginSvc;
 		connect Client to AuthSvc;
 		do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
@@ -32,7 +32,7 @@ aux global protocol Main(
 {
 	choice at Client
 	{
-		getsuppliers(UUID) from Client to AuthSvc;
+		getSuppliers(UUID) from Client to AuthSvc;
 		//do SuppInfo(Client, AuthSvc, Filtersvc, SupplierSvc);
 
 		choice at AuthSvc
@@ -43,7 +43,7 @@ aux global protocol Main(
 		or
 		{
 			connect AuthSvc to SupplierSvc;
-			getsuppliers() from AuthSvc to SupplierSvc;
+			getSuppliers() from AuthSvc to SupplierSvc;
 			suppliers() from SupplierSvc to AuthSvc;
 			disconnect AuthSvc and SupplierSvc;
 			/*do FilterInfo
@@ -62,7 +62,7 @@ aux global protocol Main(
 	}
 	or
 	{
-		getcontracts() from Client to AuthSvc;
+		getContracts() from Client to AuthSvc;
 		//do ContractInfo(Client, AuthSvc, Filtersvc, ContractSvc);
 
 		choice at AuthSvc
@@ -73,7 +73,7 @@ aux global protocol Main(
 		or
 		{
 			connect AuthSvc to ContractSvc;
-			getcontracts() from AuthSvc to ContractSvc;
+			getContracts() from AuthSvc to ContractSvc;
 			contracts() from ContractSvc to AuthSvc;
 			disconnect AuthSvc and ContractSvc;
 			/*do FilterInfo
@@ -103,7 +103,7 @@ aux global protocol Main(
 	or
 	{
 		connect AuthSvc to SupplierSvc;
-		getsuppliers() from AuthSvc to SupplierSvc;
+		getSuppliers() from AuthSvc to SupplierSvc;
 		suppliers() from SupplierSvc to AuthSvc;
 		disconnect AuthSvc and SupplierSvc;
 		do FilterInfo
@@ -123,7 +123,7 @@ aux global protocol ContractInfo
 	or
 	{
 		connect AuthSvc to ContractSvc;
-		getcontracts() from AuthSvc to ContractSvc;
+		getContracts() from AuthSvc to ContractSvc;
 		contracts() from ContractSvc to AuthSvc;
 		disconnect AuthSvc and ContractSvc;
 		do FilterInfo

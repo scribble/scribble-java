@@ -1,0 +1,44 @@
+module demo.fase17.AppA2;
+
+
+global protocol InconChoiceSubj(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to C; // C?A:1
+		1() from A to C;
+		1() from A to B;
+		2() from B to C;
+		a() from C to A;
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C; // C?B:2
+		b() from C to A;
+		1() from A to C;
+		1() from A to C;
+	}
+}
+
+
+global protocol AsyncRecMPChoice(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+			//...
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from A to C;
+			//...
+			continue X;
+		}
+	}
+}

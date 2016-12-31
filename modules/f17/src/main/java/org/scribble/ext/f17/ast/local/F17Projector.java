@@ -199,6 +199,7 @@ public class F17Projector
 		}
 	}
 
+	/*
 	private F17LType orig(F17GChoice gc, Role r, Set<RecVar> delta,
 			Map<F17LAction, F17LType> pCases, Map<F17GAction, RecVar> rvCases, Set<F17GAction> eCases) throws F17Exception
 	{
@@ -242,6 +243,7 @@ public class F17Projector
 			return this.factory.LChoice(pCases);
 		}
 	}
+	//*/
 
 	public F17LAction project(F17GAction ga, Role r) throws F17Exception
 	{
