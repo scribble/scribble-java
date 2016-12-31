@@ -8,6 +8,37 @@ module Test;
 // - test WF/projection cases
 
 
+//*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		disconnect A and B;
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from C to A;
+		choice at A  // Testing: f17 WF/projection ignores at-role -- may be fine
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
 /*
 global protocol Proto1(role A, role B, role C)
 {

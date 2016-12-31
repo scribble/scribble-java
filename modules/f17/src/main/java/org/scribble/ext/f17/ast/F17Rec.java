@@ -13,20 +13,6 @@ public abstract class F17Rec<B extends F17Type> implements F17Type
 		this.body = body;
 	}
 	
-	/*@Override
-	public Set<RecVar> freeVariables()
-	{
-		Set<RecVar> res = body.freeVariables();
-		res.remove(recvar);
-		return res;
-	}
-	
-	@Override
-	public Set<Role> roles()
-	{
-		return body.roles();
-	}*/
-	
 	@Override
 	public String toString()
 	{

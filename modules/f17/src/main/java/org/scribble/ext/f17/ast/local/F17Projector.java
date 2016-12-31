@@ -192,7 +192,9 @@ public class F17Projector
 				Role peer = ((F17LInput) firsta).peer;
 				if (pCases.keySet().stream().anyMatch((k) -> !((F17LInput) k).peer.equals(peer)))
 				{
-					throw new F17Exception("[f17] Inconsistent input choice subjects: " + gc);  // subject means global action subjs (although also means peer in local)
+					throw new F17Exception("[f17] Inconsistent input choice subjects: " + gc);  
+							// subject means global action subjs (although also means peer in local)
+							// N.B. consistent global choice subject (global internal choice subject, checked by role enabling) does not subsume this
 				}
 			}
 			return this.factory.LChoice(pCases);
@@ -237,7 +239,9 @@ public class F17Projector
 				Role peer = ((F17LInput) firsta).peer;
 				if (pCases.keySet().stream().anyMatch((k) -> !((F17LInput) k).peer.equals(peer)))
 				{
-					throw new F17Exception("[f17] Inconsistent input choice subjects: " + gc);  // subject means global action subjs (although also means peer in local)
+					throw new F17Exception("[f17] Inconsistent input choice subjects: " + gc);  
+							// subject means global action subjs (although also means peer in local)
+							// N.B. consistent global choice subject (global internal choice subject, checked by role enabling) does not subsume this
 				}
 			}
 			return this.factory.LChoice(pCases);

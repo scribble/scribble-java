@@ -1,5 +1,7 @@
 package org.scribble.ext.f17.ast.global.action;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +16,7 @@ public class F17GDisconnect extends F17GAction
 	
 	public F17GDisconnect(Role src, Role dest)
 	{
-		super(src, dest);  // Both are subjs; src is left ("first")
+		super(src, Arrays.asList(new Role[] { src, dest }), Collections.emptyList());  // Both are subjs; src is left ("first")
 		this.dest = dest;
 		this.roles.add(src);
 		this.roles.add(dest);

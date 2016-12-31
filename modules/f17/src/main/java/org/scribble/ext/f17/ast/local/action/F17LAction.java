@@ -1,5 +1,8 @@
 package org.scribble.ext.f17.ast.local.action;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.scribble.ext.f17.ast.F17AstAction;
 import org.scribble.sesstype.name.Role;
 
@@ -11,7 +14,7 @@ public abstract class F17LAction extends F17AstAction
 
 	public F17LAction(Role self, Role peer)  // local subj == peer
 	{
-		super(peer);
+		super(Arrays.asList(new Role[] { peer }), Collections.emptyList());
 		this.self = self;
 		this.peer = peer;
 	}

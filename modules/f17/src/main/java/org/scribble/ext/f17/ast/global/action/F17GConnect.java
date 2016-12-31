@@ -1,5 +1,6 @@
 package org.scribble.ext.f17.ast.global.action;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public class F17GConnect extends F17GAction
 	
 	public F17GConnect(Role src, Role dest, Op op, Payload pay)
 	{
-		super(src);
+		super(src, Arrays.asList(new Role[] { src }), Arrays.asList(new Role[] { dest }));
 		this.op = op;
 		this.dest = dest;
 		this.pay = pay;

@@ -66,7 +66,6 @@ public class F17LRec extends F17Rec<F17LType> implements F17LType
 			throw new RuntimeException("Shouldn't get in here: " + lt);
 		}
 	}
-	
 
 	@Override
 	public String toString()

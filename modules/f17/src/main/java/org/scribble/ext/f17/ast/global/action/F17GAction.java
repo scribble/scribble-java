@@ -1,5 +1,6 @@
 package org.scribble.ext.f17.ast.global.action;
 
+import java.util.List;
 import java.util.Set;
 
 import org.scribble.ext.f17.ast.F17AstAction;
@@ -10,10 +11,10 @@ public abstract class F17GAction extends F17AstAction
 {
 	public final Role src;
 	
-	public F17GAction(Role... rs)
+	public F17GAction(Role src, List<Role> subjs, List<Role> objs)
 	{
-		super(rs);
-		this.src = rs[0];  // this.src == "first" subj
+		super(subjs, objs);
+		this.src = src;  // this.src is "first" subj
 	}
 	
 	public abstract Set<Role> getRoles();  // For projection

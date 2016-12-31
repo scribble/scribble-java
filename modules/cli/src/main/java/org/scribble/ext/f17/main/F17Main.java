@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +111,8 @@ public class F17Main
 		GProtocolDecl gpd = (GProtocolDecl) main.getProtocolDecl(simpname);
 
 		F17GType gt = new F17GProtocolDeclTranslator().translate(job, ((ModuleDel) main.del()).getModuleContext(), gpd);
+		
+		gt.checkRoleEnabling(new HashSet<>(gpd.header.roledecls.getRoles()));
 
 		//job.debugPrintln
 		System.out.println
