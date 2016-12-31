@@ -9,6 +9,77 @@ module Test;
 
 
 /*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+			rec Y  // Testing: projection onto B (protocol is unsafe, just checking projection-delta is OK)
+			{
+				2() from A to C;
+				continue Y;
+			}
+		}
+		or
+		{
+			3() from A to B;
+		}	
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from B to A;
+	rec X
+	{
+		choice at B
+		{
+			2() from B to C;
+			continue X;  
+					// Testing projection: original projection doesn't allowed mixed delta-X with end (cf., standard mergeablity)
+					// OK using extended projection
+		}
+		or
+		{
+			3() from B to C;
+		}	
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from B to A;
+	rec Y
+	{
+		rec X
+		{
+			choice at B
+			{
+				2() from B to C;
+				continue X;
+			}
+			or
+			{
+				3() from B to C;
+				//continue X;
+				continue Y;  // Testing: all-cases-X choice projection -- original projection doesn't allow mixed X and Y (although morally the same here)
+			}	
+		}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B)
 {
 	rec Y
@@ -36,6 +107,7 @@ explicit global protocol Proto1(role A, role B, role C, role D)
 }
 //*/
 
+
 /*
 global protocol Proto1(role A, role B, role C)
 {
@@ -56,7 +128,8 @@ global protocol Proto1(role A, role B, role C)
 }
 //*/
 
-/*/
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
@@ -64,7 +137,7 @@ global protocol Proto1(role A, role B, role C)
 		choice at A
 		{
 			1() from A to B;
-			1() from A to C;  // Comment to test: unfair progress
+			1() from A to C;  // Comment to test: (un)fair progress
 			continue X;
 		}
 		or
@@ -75,6 +148,7 @@ global protocol Proto1(role A, role B, role C)
 	}
 }
 //*/
+
 
 /*
 explicit global protocol Proto1(role A, role B, role C)
@@ -97,6 +171,7 @@ explicit global protocol Proto1(role A, role B, role C)
 }
 //*/
 
+
 /*
 explicit global protocol Proto1(role A, role B, role C)
 {
@@ -106,6 +181,7 @@ explicit global protocol Proto1(role A, role B, role C)
 	2() from B to C;
 }
 //*/
+
 
 /*
 global protocol Proto1(role A, role B)
@@ -121,6 +197,7 @@ global protocol Proto1(role A, role B)
 	}	
 }
 //*/
+
 
 /*
 explicit global protocol Proto1(role C, role A, role S)
@@ -148,6 +225,7 @@ explicit global protocol Proto1(role C, role A, role S)
 }
 //*/
 
+
 /*
 explicit global protocol Proto1(role A, role B, role C)
 {
@@ -165,6 +243,7 @@ explicit global protocol Proto1(role A, role B, role C)
 }
 //*/
 
+
 /*
 global protocol Proto1(role A, role B, role C)
 {
@@ -181,10 +260,11 @@ global protocol Proto1(role A, role B, role C)
 }
 //*/
 
+
 /*
 global protocol Proto1(role A, role B)
 {
-	choice at A  // Testing: mixed-choice -- subsumed by role enabling?
+	choice at A  // Testing: mixed-role choice -- subsumed by role enabling?
 	{
 		1() from A to B;
 	}
@@ -194,6 +274,7 @@ global protocol Proto1(role A, role B)
 	}
 }
 //*/
+
 
 /*
 global protocol Proto1(role A, role B, role C)
@@ -218,6 +299,7 @@ global protocol Proto1(role A, role B, role C)
 }
 //*/
 
+
 /* 
 global protocol Proto1(role A, role B, role C)
 {
@@ -236,6 +318,7 @@ global protocol Proto1(role A, role B, role C)
 	}
 }
 //*/
+
 
 /* 
 global protocol Proto1(role A, role B)  // Testing: basic syntax structure (e.g., no seq)

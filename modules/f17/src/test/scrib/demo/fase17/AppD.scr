@@ -38,6 +38,7 @@ aux global protocol Main(
 		choice at AuthSvc
 		{
 			deny() from AuthSvc to Client;
+			do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
 		}
 		or
 		{
@@ -45,11 +46,15 @@ aux global protocol Main(
 			getsuppliers() from AuthSvc to SupplierSvc;
 			suppliers() from SupplierSvc to AuthSvc;
 			disconnect AuthSvc and SupplierSvc;
-			do FilterInfo
-					<Filtersuppliers(UserContext, Filters, SupplierDetails)>
-					(AuthSvc, Filtersvc);
-			suppliers() from AuthSvc to Client;
+			/*do FilterInfo
+					<filterSuppliers(UserContext, Filters, SupplierDetails)>
+					(AuthSvc, Filtersvc);*/
 
+			filterSuppliers(UserContext, Filters, SupplierDetails) connect AuthSvc to Filtersvc;
+			filtered() from Filtersvc to AuthSvc;
+			disconnect AuthSvc and Filtersvc;
+
+			suppliers() from AuthSvc to Client;
 			do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
 		}
 
@@ -63,6 +68,7 @@ aux global protocol Main(
 		choice at AuthSvc
 		{
 			deny() from AuthSvc to Client;
+			do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
 		}
 		or
 		{
@@ -70,9 +76,14 @@ aux global protocol Main(
 			getcontracts() from AuthSvc to ContractSvc;
 			contracts() from ContractSvc to AuthSvc;
 			disconnect AuthSvc and ContractSvc;
-			do FilterInfo
+			/*do FilterInfo
 					<filterContracts(UserContext, Filters, ContractDetails)>
-					(AuthSvc, Filtersvc);
+					(AuthSvc, Filtersvc);*/
+
+			filterContracts(UserContext, Filters, ContractDetails) connect AuthSvc to Filtersvc;
+			filtered() from Filtersvc to AuthSvc;
+			disconnect AuthSvc and Filtersvc;
+
 			contracts() from AuthSvc to Client;
 			do Main(Client, AuthSvc, Filtersvc, SupplierSvc, ContractSvc);
 		}
@@ -96,7 +107,7 @@ aux global protocol Main(
 		suppliers() from SupplierSvc to AuthSvc;
 		disconnect AuthSvc and SupplierSvc;
 		do FilterInfo
-				<Filtersuppliers(UserContext, Filters, SupplierDetails)>
+				<filterSuppliers(UserContext, Filters, SupplierDetails)>
 				(AuthSvc, Filtersvc);
 		suppliers() from AuthSvc to Client;
 	}
@@ -122,11 +133,11 @@ aux global protocol ContractInfo
 	}
 }*/
 
-aux global protocol FilterInfo
+/*aux global protocol FilterInfo
 		<sig Query>
 		(role AuthSvc, role Filtersvc)
 {
 	Query connect AuthSvc to Filtersvc;
 	filtered() from Filtersvc to AuthSvc;
 	disconnect AuthSvc and Filtersvc;
-}
+}*/
