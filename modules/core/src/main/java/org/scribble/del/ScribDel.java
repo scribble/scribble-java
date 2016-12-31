@@ -212,16 +212,6 @@ public interface ScribDel
 		return visited;
 	}
 
-	/*default void enterF17Parsing(ScribNode parent, ScribNode child, F17Parser parser) throws ScribbleException
-	{
-		
-	}
-
-	default ScribNode leaveF17Parsing(ScribNode parent, ScribNode child, F17Parser parser, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}*/
-
 	default void enterRecVarCollection(ScribNode parent, ScribNode child, RecVarCollector coll)
 	{
 		

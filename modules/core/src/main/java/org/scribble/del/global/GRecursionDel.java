@@ -50,14 +50,4 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
 	}
-	
-	/*@Override
-	public void enterF17Parsing(ScribNode parent, ScribNode child, F17Parser parser) throws ScribbleException
-	{
-		if (parser.peekEnv().isUnguarded())
-		{
-			throw new ScribbleException("[FASE17] unguarded in choice case: " + child);
-		}
-		super.enterF17Parsing(parent, child, parser);  // Need super.enter to push env, that leave.enter will pop
-	}*/
 }

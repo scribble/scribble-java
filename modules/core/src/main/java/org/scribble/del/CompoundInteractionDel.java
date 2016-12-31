@@ -68,17 +68,4 @@ public abstract class CompoundInteractionDel extends ScribDelBase
 		// Overridden in CompoundInteractionNodeDel to do merging of child context into parent context
 		return ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
 	}
-
-	/*// FIXME: should be for globals only
-	@Override
-	public void enterF17Parsing(ScribNode parent, ScribNode child, F17Parser parser) throws ScribbleException
-	{
-		ScribDelBase.pushVisitorEnv(this, parser);
-	}
-	
-	@Override
-	public ScribNode leaveF17Parsing(ScribNode parent, ScribNode child, F17Parser parser, ScribNode visited) throws ScribbleException
-	{
-		return ScribDelBase.popAndSetVisitorEnv(this, parser, visited);
-	}*/
 }
