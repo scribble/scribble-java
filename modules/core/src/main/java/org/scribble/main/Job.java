@@ -71,6 +71,7 @@ public class Job
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
+		runUnfoldingPass();
 		runWellFormednessPasses();
 	}
 	
@@ -82,7 +83,7 @@ public class Job
 		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
-		runUnfoldingPass();
+		//runUnfoldingPass();
 	}
 		
 	// "Second part" of context building (separated for extensions to work on non-unfolded protos)

@@ -1,3 +1,6 @@
+//$ bin/scribblec.sh modules/f17/src/test/scrib/demo/fase17/Sec2.scr -f17 TravelAgency
+
+
 module demo.fase17.Sec2;
 
 type <java> "java.lang.String" from "rt.jar" as Str;

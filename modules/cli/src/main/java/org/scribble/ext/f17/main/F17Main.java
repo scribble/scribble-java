@@ -100,7 +100,7 @@ public class F17Main
 	public static F17GType parseAndCheckWF(Job job, GProtocolName simpname) throws ScribbleException, ScribParserException
 	{
 		job.runContextBuildingPasses();
-		job.runVisitorPassOnParsedModules(RecRemover.class);  // Integrate into main passes?  Do before unfolding?
+		job.runVisitorPassOnParsedModules(RecRemover.class);  // FIXME: Integrate into main passes?  Do before unfolding?
 		
 		Module main = job.getContext().getMainModule();
 		if (!main.hasProtocolDecl(simpname))
@@ -153,8 +153,9 @@ public class F17Main
 			validate(gpd.isExplicitModifier(), U0, true);
 		}
 		
+		/*// Needed for API gen (base projections and EFSMs) -- no: JobContext getters build on demand
 		job.runUnfoldingPass();
-		//job.runWellFormednessPasses();
+		job.runWellFormednessPasses();*/
 		
 		return gt;
 	}

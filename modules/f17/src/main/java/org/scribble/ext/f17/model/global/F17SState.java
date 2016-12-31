@@ -27,6 +27,7 @@ import org.scribble.sesstype.name.Role;
 
 // Not extending SState -- not reusing SConfig, SBuffers, etc
 // FSM version of F17Session
+// Wait-for errors?
 public class F17SState extends MPrettyState<Void, SAction, F17SState, Global>
 {
 	private static final F17EBot BOT = new F17EBot();
@@ -72,7 +73,7 @@ public class F17SState extends MPrettyState<Void, SAction, F17SState, Global>
 	{
 		return this.P.entrySet().stream().anyMatch((e) -> 
 			e.getValue().getActions().stream().anyMatch((a) ->
-				(a.isConnect() || a.isAccept()) && !(this.Q.get(e.getKey()).get(a.peer) instanceof F17EBot)
+				(a.isConnect() || a.isAccept()) && isConnected(e.getKey(), a.peer)
 		));
 	}
 
@@ -88,8 +89,34 @@ public class F17SState extends MPrettyState<Void, SAction, F17SState, Global>
 	{
 		return this.P.entrySet().stream().anyMatch((e) -> 
 			e.getValue().getActions().stream().anyMatch((a) ->
-				(a.isSend() || a.isReceive()) && (this.Q.get(e.getKey()).get(a.peer) instanceof F17EBot)
+				(a.isSend() || a.isReceive()) && !isConnected(e.getKey(), a.peer)
 		));
+	}
+
+	public boolean isSynchronisationError()
+	{
+		return this.P.entrySet().stream().anyMatch((e) -> 
+			e.getValue().getActions().stream().anyMatch((a) ->
+				{
+					EState peer;
+					return a.isConnect() && (peer = this.P.get(a.peer)).getStateKind() == EStateKind.ACCEPT
+							&& !(peer.getActions().contains(a.toDual(e.getKey())));
+				}
+		));
+	}
+
+	public boolean isReceptionError()
+	{
+		return this.Q.entrySet().stream().anyMatch((e1)
+				-> e1.getValue().entrySet().stream().anyMatch((e2) ->
+					{
+						EState s;
+						return hasMessage(e1.getKey(), e2.getKey())
+								&& ((s = this.P.get(e1.getKey())).getStateKind() == EStateKind.UNARY_INPUT
+										|| s.getStateKind() == EStateKind.POLY_INPUT)
+								&& !s.getActions().contains(e2.getValue().toDual(e2.getKey()));
+					}
+				));
 	}
 
 	public boolean isUnfinishedRoleError(Map<Role, EState> E0)
@@ -97,16 +124,11 @@ public class F17SState extends MPrettyState<Void, SAction, F17SState, Global>
 		return this.isTerminal() &&
 				this.P.entrySet().stream().anyMatch((e) -> isActive(e.getValue(), E0.get(e.getKey()).id));
 	}
-	
-	// isActive(SState, Role) becomes isActive(EState)
-	public static boolean isActive(EState s, int init)
+
+	public boolean isOrphanError(Map<Role, EState> E0)
 	{
-		return !isInactive(s, init);
-	}
-	
-	private static boolean isInactive(EState s, int init)
-	{
-		return s.isTerminal() || (s.id == init && s.getStateKind() == EStateKind.ACCEPT);
+		return this.P.entrySet().stream().anyMatch((e) -> isInactive(e.getValue(), E0.get(e.getKey()).id)
+				&& this.P.keySet().stream().anyMatch((r) -> hasMessage(e.getKey(), r)));
 	}
 	
 	public Map<Role, List<EAction>> getFireable()
@@ -303,6 +325,29 @@ public class F17SState extends MPrettyState<Void, SAction, F17SState, Global>
 			copy.put(r, new HashMap<>(Q.get(r)));
 		}
 		return copy;
+	}
+	
+	// Direction sensitive (not symmetric)
+	private boolean isConnected(Role r1, Role r2)
+	{
+		return !(this.Q.get(r1).get(r2) instanceof F17EBot);
+	}
+	
+	private boolean hasMessage(Role self, Role peer)
+	{
+		ESend m = this.Q.get(self).get(peer);
+		return m != null && !(m instanceof F17EBot);
+	}
+	
+	// isActive(SState, Role) becomes isActive(EState)
+	public static boolean isActive(EState s, int init)
+	{
+		return !isInactive(s, init);
+	}
+	
+	private static boolean isInactive(EState s, int init)
+	{
+		return s.isTerminal() || (s.id == init && s.getStateKind() == EStateKind.ACCEPT);
 	}
 }
 

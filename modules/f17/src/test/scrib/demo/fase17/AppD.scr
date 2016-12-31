@@ -1,3 +1,6 @@
+//$ bin/scribblec.sh modules/f17/src/test/scrib/demo/fase17/AppD.scr -f17 InfoAuth
+
+
 module demo.fase17.AppD;
 
 type <xsd> "UserName" from "AUTH.xsd" as UserName;

@@ -1,3 +1,6 @@
+//$ bin/scribblec.sh modules/f17/src/test/scrib/demo/fase17/Sec1.scr -f17 P1 -fair
+
+
 module demo.fase17.Sec1;
 
 explicit global protocol OptionalDynamicThirdParty(role A, role B, role C)

@@ -1,53 +1,58 @@
 package org.scribble.ext.f17.model.global;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 // Duplicated from F17LTSSafetyErrors
+// Wait-for errors?
 public class F17SafetyErrors
 {
 	public final Set<F17SState> connection;
 	public final Set<F17SState> disconnect;
 	public final Set<F17SState> unconnected;
+	public final Set<F17SState> synchronisation;
+	public final Set<F17SState> reception;
 	public final Set<F17SState> unfinishedRole;
+	public final Set<F17SState> orphan;
+	private enum ERR { Connection, Disconnect, Unconnected, Synchronisation, Reception, UnfinishedRole, Orphan }
 	
-	public F17SafetyErrors(Set<F17SState> connection, Set<F17SState> disconnected, Set<F17SState> unconnected, Set<F17SState> unfinishedRole)
+	private final Map<ERR, Set<F17SState>> errors = new LinkedHashMap<>();
+	
+	public F17SafetyErrors(Set<F17SState> connection, Set<F17SState> disconnect, Set<F17SState> unconnected,
+			Set<F17SState> synchronisation, Set<F17SState> reception, Set<F17SState> unfinishedRole, Set<F17SState> orphan)
 	{
 		this.connection = connection;
-		this.disconnect = disconnected;
+		this.disconnect = disconnect;
 		this.unconnected = unconnected;
+		this.synchronisation = synchronisation;
+		this.reception = reception;
 		this.unfinishedRole = unfinishedRole;
+		this.orphan = orphan;
+		
+		this.errors.put(ERR.Connection, connection);
+		this.errors.put(ERR.Disconnect, disconnect);
+		this.errors.put(ERR.Unconnected, unconnected);
+		this.errors.put(ERR.Synchronisation, synchronisation);
+		this.errors.put(ERR.Reception, reception);
+		this.errors.put(ERR.UnfinishedRole, unfinishedRole);
+		this.errors.put(ERR.Orphan, orphan);
 	}
 	
 	public boolean isSafe()
 	{
-		return this.connection.isEmpty() && this.disconnect.isEmpty() && this.unconnected.isEmpty() && this.unfinishedRole.isEmpty();
+		return this.errors.values().stream().allMatch((es) -> es.isEmpty());
 	}
 	
 	@Override
 	public String toString()
 	{
-		String m = "";
-		if (!this.connection.isEmpty())
-		{
-			m += "\n[f17] Connection errors:\n  "
-				+ this.connection.stream().map((s) -> getNodeLabel(s)).collect(Collectors.joining("\n  "));
-		}
-		if (!this.disconnect.isEmpty())
-		{
-			m += "\n[f17] Disconnect errors:\n  "
-				+ this.disconnect.stream().map((s) -> getNodeLabel(s)).collect(Collectors.joining("\n  "));
-		}
-		if (!this.unconnected.isEmpty())
-		{
-			m += "\n[f17] Unconnected errors:\n  "
-				+ this.unconnected.stream().map((s) -> getNodeLabel(s)).collect(Collectors.joining("\n  "));
-		}
-		if (!this.unfinishedRole.isEmpty())
-		{
-			m += "\n[f17] Unfinished role errors:\n  "
-				+ this.unfinishedRole.stream().map((s) -> getNodeLabel(s)).collect(Collectors.joining("\n  "));
-		}
+		String m = this.errors.entrySet().stream().map((e) -> 
+				e.getValue().isEmpty() ? ""
+					:	"\n[f17] " + e.getKey() + " errors:\n  "
+						+ e.getValue().stream().map((s) -> getNodeLabel(s)).collect(Collectors.joining("\n  "))
+				).collect(Collectors.joining(""));
 		if (m.length() != 0)
 		{
 			m = m.substring(1, m.length());
