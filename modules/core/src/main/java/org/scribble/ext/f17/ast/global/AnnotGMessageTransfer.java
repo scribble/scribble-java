@@ -1,32 +1,47 @@
-package org.scribble.ast.global;
+package org.scribble.ext.f17.ast.global;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.MessageTransfer;
-import org.scribble.ast.local.LInteractionNode;
-import org.scribble.ast.local.LNode;
-import org.scribble.ast.local.LReceive;
+import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.RoleKind;
-import org.scribble.sesstype.name.Role;
+import org.scribble.ext.f17.ast.AnnotNode;
+import org.scribble.ext.f17.ast.ScribAnnot;
 import org.scribble.util.ScribUtil;
 
-public class GMessageTransfer extends MessageTransfer<Global> implements GSimpleInteractionNode
+public class AnnotGMessageTransfer extends GMessageTransfer implements AnnotNode
 {
-	public GMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public final ScribAnnot annot;  // null if none  // FIXME: refactor properly
+	
+	public AnnotGMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		super(source, src, msg, dests);
+		//super(source, src, msg, dests);
+		this(source, src, msg, dests, null);
 	}
 
-	public LNode project(Role self)
+	// FIXME: make an empty annot? (avoid null)
+	public AnnotGMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests, ScribAnnot annot)
+	{
+		super(source, src, msg, dests);
+		this.annot = annot;
+	}
+
+	@Override
+	public boolean isAnnotated()
+	{
+		return this.annot != null;
+	}
+
+	@Override
+	public ScribAnnot getAnnotation()
+	{
+		return this.annot;
+	}
+
+	/*public LNode project(Role self)
 	{
 		Role srcrole = this.src.toName();
 		List<Role> destroles = this.getDestinationRoles();
@@ -57,43 +72,42 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 			}
 		}
 		return projection;
-	}
+	}*/
 
 	@Override
-	protected GMessageTransfer copy()
+	protected AnnotGMessageTransfer copy()
 	{
-		return new GMessageTransfer(this.source, this.src, this.msg, getDestinations());
+		return new AnnotGMessageTransfer(this.source, this.src, this.msg, getDestinations(), this.annot);
 	}
 	
 	@Override
-	public GMessageTransfer clone()
+	public AnnotGMessageTransfer clone()
 	{
 		RoleNode src = this.src.clone();
 		MessageNode msg = this.msg.clone();
 		List<RoleNode> dests = ScribUtil.cloneList(getDestinations());
-		return AstFactoryImpl.FACTORY.GMessageTransfer(this.source, src, msg, dests);
+		return AstFactoryImpl.FACTORY.GMessageTransfer(this.source, src, msg, dests, this.annot);  // Not cloning String annot
 	}
 
 	@Override
-	public GMessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public AnnotGMessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		ScribDel del = del();
-		GMessageTransfer gmt = new GMessageTransfer(this.source, src, msg, dests);
-		gmt = (GMessageTransfer) gmt.del(del);
+		AnnotGMessageTransfer gmt = new AnnotGMessageTransfer(this.source, src, msg, dests, this.annot);
+		gmt = (AnnotGMessageTransfer) gmt.del(del);
 		return gmt;
 	}
 
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
 	@Override
 	public Global getKind()
 	{
 		return GSimpleInteractionNode.super.getKind();
-	}
+	}*/
 
 	@Override
 	public String toString()
 	{
-		return this.msg + " " + Constants.FROM_KW + " " + this.src + " " + Constants.TO_KW + " "
-					+ getDestinations().stream().map((dest) -> dest.toString()).collect(Collectors.joining(", ")) + ";";
+		return super.toString() + (isAnnotated() ? this.annot : "");
 	}
 }

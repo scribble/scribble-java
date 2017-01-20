@@ -49,7 +49,9 @@ public class SModel
 				// FIXME: getTrace can get stuck when local choice subjects are disabled
 				List<SAction> trace = this.graph.getTrace(init, s);  // FIXME: getTrace broken on non-det self loops?
 				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
-				errorMsg += "\nSafety violation(s) at session state " + s.id + ":\n    Trace=" + trace;
+				errorMsg += "\nSafety violation(s) at session state " 
+						+ ((job.debug) ? "\n    " + s.toString() : s.id)
+						+ ":\n    Trace=" + trace;
 			}
 			if (!errors.stuck.isEmpty())
 			{

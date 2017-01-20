@@ -1,6 +1,7 @@
 package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
+import org.scribble.ext.f17.visit.context.AnnotSetter;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
@@ -228,6 +229,16 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveRecRemoval(ScribNode parent, ScribNode child, RecRemover rem, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterAnnotSetting(ScribNode parent, ScribNode child, AnnotSetter rem)
+	{
+		
+	}
+
+	default ScribNode leaveAnnotSetting(ScribNode parent, ScribNode child, AnnotSetter rem, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

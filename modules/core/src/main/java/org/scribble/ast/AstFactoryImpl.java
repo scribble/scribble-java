@@ -96,6 +96,8 @@ import org.scribble.del.name.MessageSigNameNodeDel;
 import org.scribble.del.name.ParamNodeDel;
 import org.scribble.del.name.RecVarNodeDel;
 import org.scribble.del.name.RoleNodeDel;
+import org.scribble.ext.f17.ast.AnnotAstFactory;
+import org.scribble.ext.f17.ast.AnnotAstFactoryImpl;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.Kind;
@@ -113,7 +115,9 @@ import org.scribble.sesstype.name.Role;
 
 public class AstFactoryImpl implements AstFactory
 {
-	public static final AstFactory FACTORY = new AstFactoryImpl();
+	//public static final AstFactory FACTORY = new AstFactoryImpl();
+
+	public static final AnnotAstFactory FACTORY = new AnnotAstFactoryImpl();  // FIXME: supply factory as param -- refactor Antlr classes to use param
 	
 	@Override
 	public MessageSigNode MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload)
@@ -389,6 +393,8 @@ public class AstFactoryImpl implements AstFactory
 	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier)
 	{
 		NameNode<? extends Kind> snn = null;
+		
+		// Custom dels
 		if (kind.equals(RecVarKind.KIND))
 		{
 			snn = new RecVarNode(source, identifier);
@@ -404,6 +410,7 @@ public class AstFactoryImpl implements AstFactory
 			return castNameNode(kind, snn);
 		}
 
+		// Default del
 		if (kind.equals(OpKind.KIND))
 		{
 			snn = new OpNode(source, identifier);
@@ -453,7 +460,7 @@ public class AstFactoryImpl implements AstFactory
 		return castNameNode(kind, del(qnn, createDefaultDelegate()));
 	}
 	
-	private static <T extends NameNode<K>, K extends Kind> T castNameNode(K kind, NameNode<? extends Kind> n)
+	protected static <T extends NameNode<K>, K extends Kind> T castNameNode(K kind, NameNode<? extends Kind> n)
 	{
 		if (!n.toName().getKind().equals(kind))
 		{
@@ -628,14 +635,14 @@ public class AstFactoryImpl implements AstFactory
 		return ld;
 	}
 
-	private ScribDel createDefaultDelegate()
+	protected ScribDel createDefaultDelegate()
 	{
 		return new DefaultDel();
 	}
 	
 	// FIXME: factor out
 	//@SuppressWarnings("unchecked")
-	private static <T extends ScribNodeBase> T del(T n, ScribDel del)
+	protected static <T extends ScribNodeBase> T del(T n, ScribDel del)
 	{
 		/*ScribNodeBase ret = n.del(del);  // FIXME: del makes another shallow copy of n
 		if (ret.getClass() != n.getClass())

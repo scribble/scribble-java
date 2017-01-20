@@ -2,10 +2,16 @@ package org.scribble.del.global;
 
 import java.util.List;
 
+import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.MessageTransferDel;
+import org.scribble.ext.f17.ast.AnnotUnaryPayloadElem;
+import org.scribble.ext.f17.ast.ScribAnnot;
+import org.scribble.ext.f17.ast.global.AnnotGMessageTransfer;
+import org.scribble.ext.f17.del.AnnotUnaryPayloadElemDel;
+import org.scribble.ext.f17.visit.context.AnnotSetter;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.name.Role;
@@ -84,4 +90,21 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		}
 		return super.leaveF17Parsing(parent, child, parser, visited);
 	}*/
+
+	@Override
+	public ScribNode leaveAnnotSetting(ScribNode parent, ScribNode child, AnnotSetter rem, ScribNode visited) throws ScribbleException
+	{
+		AnnotGMessageTransfer gmt = (AnnotGMessageTransfer) visited;
+		ScribAnnot annot = gmt.annot;
+		if (annot != null)
+		{
+			MessageSigNode msn = (MessageSigNode) gmt.msg;  // FIXME: refactor properly
+			msn.payloads.getElements().stream()
+					.filter((p) -> p instanceof AnnotUnaryPayloadElem<?>)
+					.forEach((p) -> 
+							//((AnnotUnaryPayloadElemDel) p.del()).annot = annot );
+							((AnnotUnaryPayloadElemDel) p.del()).setAnnot(annot) );
+		}
+		return gmt;
+	}
 }

@@ -12,6 +12,7 @@ public class AntlrConstants
 	public static final String PAYLOAD_NODE_TYPE = "PAYLOAD";
 	//public static final String PAYLOADELEMENT_NODE_TYPE = "PAYLOADELEMENT";
 	public static final String DELEGATION_NODE_TYPE = "DELEGATION";
+	public static final String ANNOTPAYLOADELEMENT_NODE_TYPE = "ANNOTPAYLOADELEMENT";  // FIXME: refactor properly
 
 	//public static final String EMPTY_PARAMETERDECLLST_NODE_TYPE = "EMPTY_PARAMETERDECLLIST";
 	public static final String AMBIGUOUSNAME_NODE_TYPE = "AMBIGUOUSNAME";
@@ -93,7 +94,9 @@ public class AntlrConstants
 		MESSAGESIGNATURE,
 		PAYLOAD,
 		PAYLOADELEMENT,
+
 		DELEGATION,
+		ANNOT_PAYLOADELEMENT,
 
 		GLOBALPROTOCOLDECL,
 		GLOBALPROTOCOLHEADER,

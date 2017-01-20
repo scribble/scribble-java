@@ -75,6 +75,7 @@ public class Job
 		runWellFormednessPasses();
 	}
 	
+	// No unfolding pass
 	public void runContextBuildingPasses() throws ScribbleException
 	{
 		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
@@ -113,7 +114,19 @@ public class Job
 	{
 		runVisitorPassOnAllModules(Projector.class);
 		runProjectionContextBuildingPasses();
-		if (!noAcceptCorrelationCheck)
+		runProjectionUnfoldingPass();
+		if (!this.noAcceptCorrelationCheck)
+		{
+			runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
+		}
+	}
+	
+	// No projection unfolding pass -- not needed(?) for f17 syntax
+	public void runF17ProjectionPasses() throws ScribbleException
+	{
+		runVisitorPassOnAllModules(Projector.class);
+		runProjectionContextBuildingPasses();
+		if (!this.noAcceptCorrelationCheck)
 		{
 			runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
 		}
@@ -134,6 +147,11 @@ public class Job
 		}
 		runVisitorPassOnProjectedModules(ProjectedRoleDeclFixer.class);  // Possibly could do after inlining, and do role collection on the inlined version
 		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
+		//runProjectionUnfoldingPass();
+	}
+
+	private void runProjectionUnfoldingPass() throws ScribbleException
+	{
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
 	}
 

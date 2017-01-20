@@ -45,6 +45,12 @@ public class AmbigNameNodeDel extends ScribDelBase
 			}
 			return AstFactoryImpl.FACTORY.QualifiedNameNode(ann.getSource(), SigKind.KIND, name.getElements());
 		}
+
+		else if (disamb.isBoundPayloadVar(name.toDataType()))
+		{
+			return AstFactoryImpl.FACTORY.SimpleNameNode(ann.getSource(), DataTypeKind.KIND, name.toString());
+		}
+			
 		else if (disamb.isBoundParameter(name))
 		{
 			return AstFactoryImpl.FACTORY.NonRoleParamNode(ann.getSource(), disamb.getParameterKind(name), name.toString());

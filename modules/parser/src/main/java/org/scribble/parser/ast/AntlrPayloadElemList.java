@@ -8,10 +8,12 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.PayloadElemList;
+import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.ext.f17.ast.name.simple.PayloadVarNode;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
 import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
@@ -54,24 +56,39 @@ public class AntlrPayloadElemList
 			return AstFactoryImpl.FACTORY.GDelegationElem(ct, gpnn, rn);
 			//throw new RuntimeException("Shouldn't get in here: " + ct);
 		}
+
+		else if (type == AntlrNodeType.ANNOT_PAYLOADELEMENT)  // FIXME: refactor properly
+		{
+			PayloadVarNode pvn = AntlrSimpleName.toPayloadVarNode((CommonTree) ct.getChild(0));
+			PayloadElemNameNode<?> penn = parsePayloadElemenNameNode((CommonTree) ct.getChild(1));
+			return AstFactoryImpl.FACTORY.AnnotUnaryPayloadElem(ct, pvn, penn);
+		}
+
 		else if (type == AntlrNodeType.QUALIFIEDNAME)
 		{
-			if (ct.getChildCount() > 1)
-			{
-				DataTypeNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
-				//return AstFactoryImpl.FACTORY.PayloadElem(dt);
-				return AstFactoryImpl.FACTORY.UnaryPayloadElem(ct, dt);  // return and dt share same ct in this case
-			}
-			else
-			{
-				// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
-				AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct);
-				return AstFactoryImpl.FACTORY.UnaryPayloadElem(ct, an);
-			}
+			return AstFactoryImpl.FACTORY.UnaryPayloadElem(ct, parsePayloadElemenNameNode(ct));
 		}
 		else
 		{
 			throw new RuntimeException("Shouldn't get in here: " + ct);
+		}
+	}
+
+	private static PayloadElemNameNode<?> parsePayloadElemenNameNode(CommonTree ct)
+	{
+		if (ct.getChildCount() > 1)
+		{
+			DataTypeNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
+			////return AstFactoryImpl.FACTORY.PayloadElem(dt);
+			//return AstFactoryImpl.FACTORY.UnaryPayloadElem(ct, dt);  // return and dt share same ct in this case
+			return dt;
+		}
+		else
+		{
+			// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
+			AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct);
+			//return AstFactoryImpl.FACTORY.UnaryPayloadElem(ct, an);
+			return an;
 		}
 	}
 
