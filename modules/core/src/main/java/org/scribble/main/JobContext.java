@@ -192,7 +192,6 @@ public class JobContext
 			graph = builder.util.finalise();
 			addEGraph(fulllpn, graph);
 		}
-		
 		return graph;
 	}
 	

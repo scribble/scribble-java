@@ -12,7 +12,6 @@ import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.ScopeNode;
-import org.scribble.ext.f17.ast.name.simple.PayloadVarNode;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.Local;
@@ -89,14 +88,5 @@ public class AntlrSimpleName
 	public static String getName(CommonTree ct)
 	{
 		return ct.getText();
-	}
-	
-	
-	
-	// FIXME: refactor properly
-	public static PayloadVarNode toPayloadVarNode(CommonTree ct)
-	{
-		//return (PayloadVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(ct, PayloadVarKind.KIND, getName(ct));
-		return (PayloadVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(ct, DataTypeKind.KIND, getName(ct));
 	}
 }

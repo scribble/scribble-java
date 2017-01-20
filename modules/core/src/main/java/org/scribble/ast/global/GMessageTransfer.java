@@ -59,6 +59,7 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 		return projection;
 	}
 
+
 	@Override
 	protected GMessageTransfer copy()
 	{

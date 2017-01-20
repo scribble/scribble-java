@@ -37,10 +37,8 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 		List<InteractionNode<K>> actions = new LinkedList<>();
 		for (InteractionNode<K> in : this.inters)
 		{
-			//ProtocolKindNode<K> visited = visitProtocolKindChildWithCastCheck(this, in, nv, ProtocolKindNode.class, in.getKind(), KIND_CAST);  
-					// No: ProjectedChoiceDoPruning (and others?) needs to return null; CastCheck doesn't allow that
-					// FIXME: make a unit test for this
-			ScribNode visited = visitChild(in, nv);
+			//ScribNode visited = visitChild(in, nv);
+			ProtocolKindNode<K> visited = visitProtocolKindChildWithCastCheck(this, in, nv, ProtocolKindNode.class, in.getKind(), KIND_CAST);
 			if (visited instanceof InteractionSeq<?>)
 			{
 				InteractionSeq<K> tmp = (InteractionSeq<K>) visited;

@@ -65,8 +65,6 @@ tokens
 	NO_SCOPE = '__no_scope';
 	//EMPTY_PACKAGENAME = '__empty_packagebame';
 	EMPTY_OPERATOR = '__empty_operator';
-	
-	EMPTY_ANNOT = 'EMPTY_ANNOT';
 
 	//EMPTY_PARAMETERDECLLIST = '__empty_parameterdecllist';
 	//EMPTY_ARGUMENTINSTANTIATIONLIST = '__empty_argumentinstantiationlist';
@@ -75,7 +73,8 @@ tokens
 
 	KIND_MESSAGESIGNATURE = 'KIND_MESSAGESIGNATURE';
 	KIND_PAYLOADTYPE = 'KIND_PAYLOADTYPE';
-
+	
+	
 	/*
 	 * Parser output "node types" (corresponding to the various syntactic
 	 * categories) i.e. the labels used to distinguish resulting AST nodes.
@@ -113,7 +112,6 @@ tokens
 	PAYLOAD = 'payload';
 	//PAYLOADELEMENT = 'payloadelement';
 	DELEGATION = 'delegation';
-	ANNOTPAYLOADELEMENT = 'annot-payload-elem';  // FIXME: refactor properly
 	ROLEINSTANTIATIONLIST = 'role-instantiation-list';
 	ROLEINSTANTIATION = 'role-instantiation';  // FIXME: not consistent with arginstas/payloadeles
 
@@ -294,7 +292,7 @@ IDENTIFIER:
 fragment SYMBOL:
 	'{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '\#'
 |
-	'&' | '?' | '!'	| '=' | UNDERSCORE
+	'&' | '?' | '!'	| UNDERSCORE
 ;
 
 // Comes after SYMBOL due to an ANTLR syntax highlighting issue involving
@@ -337,7 +335,6 @@ parametername:    simplename;
 recursionvarname: simplename;
 rolename:         simplename;
 scopename:        simplename;
-payloadvarname:        simplename;
 
 ambiguousname:
 	simplename
@@ -482,10 +479,6 @@ payloadelement:
 |*/
 	qualifiedname  // This case subsumes simple names  // FIXME: ambiguousqualifiedname (or ambiguousname should just be qualified)
 |
-	payloadvarname ':' qualifiedname
-->
-	^(ANNOTPAYLOADELEMENT payloadvarname qualifiedname)
-|
 	protocolname '@' rolename
 ->
 	^(DELEGATION rolename protocolname)
@@ -598,8 +591,7 @@ globalinteractionsequence:
 ;
 
 globalinteraction:
-	//globalmessagetransfer
-	annotglobalmessagetransfer
+	globalmessagetransfer
 |
 	globalchoice
 |
@@ -613,8 +605,7 @@ globalinteraction:
 |
 	globaldo
 |
-	//globalconnect
-	annotglobalconnect
+	globalconnect
 |
 	globaldisconnect
 |
@@ -625,21 +616,10 @@ globalinteraction:
 /**
  * Section 3.7.4 Global Message Transfer
  */
-annotglobalmessagetransfer:
-	globalmessagetransfer
-|
-	//globalmessagetransfer '@' EXTIDENTIFIER
-	message FROM_KW rolename TO_KW rolename (',' rolename )* ';' '@' EXTIDENTIFIER
-->
-	//globalmessagetransfer //annot
-	^(GLOBALMESSAGETRANSFER message rolename EXTIDENTIFIER rolename+)
-;
-
 globalmessagetransfer:
 	message FROM_KW rolename TO_KW rolename (',' rolename )* ';'
 	->
-	//^(GLOBALMESSAGETRANSFER message rolename rolename+)
-	^(GLOBALMESSAGETRANSFER message rolename EMPTY_ANNOT rolename+)
+	^(GLOBALMESSAGETRANSFER message rolename rolename+)
 ;
 
 message:
@@ -652,29 +632,15 @@ message:
 	parametername*/
 ;	
 
-annotglobalconnect:
-	globalconnect
-|
-	CONNECT_KW rolename TO_KW rolename ';' '@' EXTIDENTIFIER
-->
-	^(GLOBALCONNECT rolename rolename ^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD)) EXTIDENTIFIER)
-|
-	message FROM_KW rolename TO_KW rolename ';' '@' EXTIDENTIFIER
-->
-	^(GLOBALCONNECT rolename rolename message EXTIDENTIFIER)
-;
-
 globalconnect:
 	//message CONNECT_KW rolename TO_KW rolename
 	CONNECT_KW rolename TO_KW rolename ';'
 	->
-	//^(GLOBALCONNECT rolename rolename ^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD)))  // Empty message sig duplicated from messagesignature
-	^(GLOBALCONNECT rolename rolename ^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD)) EMPTY_ANNOT)
+	^(GLOBALCONNECT rolename rolename ^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD)))  // Empty message sig duplicated from messagesignature
 |
 	message CONNECT_KW rolename TO_KW rolename ';'
 	->
-	//^(GLOBALCONNECT rolename rolename message)
-	^(GLOBALCONNECT rolename rolename message EMPTY_ANNOT)
+	^(GLOBALCONNECT rolename rolename message)
 ;
 /*	'(' connectdecl (',' connectdecl)* ')'
 	->

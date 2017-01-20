@@ -10,7 +10,6 @@ import org.scribble.ast.global.GDelegationElem;
 import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.name.Name;
@@ -30,8 +29,6 @@ public class NameDisambiguator extends ModuleContextVisitor
 	//private Set<RecVar> recvars = new HashSet<>();
 	//private Map<RecVar, Deque<RecVar>> recvars = new HashMap<>();
 	private Map<RecVar, Integer> recvars = new HashMap<>();  // Nesting count integer now unused (recvar renaming refactored to inlining -- don't want to mangle source AST)
-	
-	private Set<String> payvars = new HashSet<>();
 	
 	//private ProtocolDecl<?> root;  // FIXME: factor out  // Now unused (recvar renaming refactored to inlining -- don't want to mangle source AST)
 	
@@ -181,16 +178,4 @@ public class NameDisambiguator extends ModuleContextVisitor
 		//return rv.toString();
 		return ("__" + fullmodname + "_" + simpprotoname + "_" + rv).replace('.', '_');
 	}*/
-	
-	
-
-	public void addPayloadVar(Name<DataTypeKind> pv)
-	{
-		this.payvars.add(pv.toString());
-	}
-	
-	public boolean isBoundPayloadVar(Name<DataTypeKind> name)
-	{
-		return this.payvars.contains(name.toString());
-	}
 }

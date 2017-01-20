@@ -6,8 +6,6 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.ext.f17.ast.AnnotString;
-import org.scribble.ext.f17.ast.ScribAnnot;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
 import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
@@ -23,27 +21,13 @@ public class AntlrGConnect
 	public static final int SOURCE_CHILD_INDEX = 0;
 	public static final int DESTINATION_CHILD_INDEX = 1;
 
-	public static final int ANNOT_INDEX = 3;
-
 	public static GConnect parseGConnect(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		MessageNode msg = parseMessage(parser, getMessageChild(ct));
 		RoleNode dest = AntlrSimpleName.toRoleNode(getDestinationChild(ct));
-		//return AstFactoryImpl.FACTORY.GConnect(ct, src, msg, dest);
-		////return AstFactoryImpl.FACTORY.GConnect(src, dest);
-
-		// Cf. AntlrGMessageTransfer
-		ScribAnnot annot = isEmptyAnnot(ct) ? null : parseAnnot(getAnnotChild(ct));
-		/*if (annot != null)
-		{
-			MessageSigNode msn = (MessageSigNode) msg;  // FIXME: refactor properly
-			msn.payloads.getElements().stream()
-					.filter((p) -> p instanceof AnnotUnaryPayloadElem<?>)
-					//.forEach((p) -> ((AnnotUnaryPayloadElemDel) p.del()).annot = annot);
-					.forEach((p) -> ((AnnotUnaryPayloadElemDel) p.del()).setAnnot(annot));  // Doesn't work: inlining pass discards dels
-		}*/
-		return AstFactoryImpl.FACTORY.GConnect(ct, src, msg, dest, annot);
+		return AstFactoryImpl.FACTORY.GConnect(ct, src, msg, dest);
+		//return AstFactoryImpl.FACTORY.GConnect(src, dest);
 	}
 
 	protected static MessageNode parseMessage(ScribParser parser, CommonTree ct) throws ScribParserException
@@ -74,26 +58,5 @@ public class AntlrGConnect
 	public static CommonTree getDestinationChild(CommonTree ct)
 	{
 		return (CommonTree) ct.getChild(DESTINATION_CHILD_INDEX);
-	}
-	
-
-	// Duplicated from AntlrGMessageTransfer
-	public static CommonTree getAnnotChild(CommonTree ct)
-	{
-		return (CommonTree) ct.getChild(ANNOT_INDEX);
-	}
-	
-	protected static ScribAnnot parseAnnot(CommonTree ct)
-	{
-		String val = ct.getText();
-		val = val.substring(val.indexOf('\"')+1, val.lastIndexOf('\"'));
-		val = val.trim();
-		return new AnnotString(val);
-	}
-	
-	protected static boolean isEmptyAnnot(CommonTree ct)
-	{
-		//return ct.getText().equals("EMPTYANNOT");  // FIXME: refactor properly
-		return getAnnotChild(ct).getText().equals("EMPTY_ANNOT");
 	}
 }
