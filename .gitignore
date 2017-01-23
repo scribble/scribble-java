@@ -11,5 +11,5 @@ tools/eclipse/plugins/org.scribble.*/bin/
 *.swp
 bin/scribblec.sh
 modules/core/src/test/scrib
-modules/demos/demos
+modules/demos/scrib
 
