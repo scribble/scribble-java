@@ -51,10 +51,10 @@ public class TravelA
 		Buf<Object> b = new Buf<>();
 		switch (A2.op)
 		{
-			case query: A2 = A2.receive(query, b).send(C, quote, 1234).branch(C); System.out.println("(A) query: " + b.val); return run(A2);
-			case accpt:   EndSocket end = A2.receive(accpt, b); System.out.println("(A) yes: " + b.val); return end;
-			case reject:    return A2.receive(reject);
-			default:    throw new RuntimeException("Shouldn't get in here: " + A2.op);
+			case query:  A2 = A2.receive(query, b).send(C, quote, 1234).branch(C); System.out.println("(A) query: " + b.val); return run(A2);
+			case accpt:  EndSocket end = A2.receive(accpt, b); System.out.println("(A) yes: " + b.val); return end;
+			case reject: return A2.receive(reject);
+			default:     throw new RuntimeException("Shouldn't get in here: " + A2.op);
 		}
 	}
 
