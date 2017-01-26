@@ -44,6 +44,14 @@ import static smtp.Smtp.Smtp.Smtp.*;
 
 public class SmtpC
 {
+	private static final String HOST = "smtp.cc.ic.ac.uk";
+	private static final int PORT = 25;
+
+	private static final String MAIL_TO = "rhu@doc.ic.ac.uk";
+	private static final String RCPT_FROM = "rhu@doc.ic.ac.uk";
+	private static final String SUBJECT = "subject";
+	private static final String BODY = "body";
+	
 	public SmtpC() throws Exception
 	{
 		run();
@@ -56,14 +64,11 @@ public class SmtpC
 
 	public void run() throws Exception
 	{
-		String host = "smtp.cc.ic.ac.uk";
-		int port = 25;
-
 		Smtp smtp = new Smtp();
 		try (MPSTEndpoint<Smtp, C> se =
 				new MPSTEndpoint<>(smtp, C, new SmtpMessageFormatter()))
 		{
-			se.connect(S, SocketChannelEndpoint::new, host, port);
+			se.connect(S, SocketChannelEndpoint::new, HOST, PORT);
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 			Smtp_C_2 s2 = s1.receive(S, _220, new Buf<>());
@@ -76,7 +81,7 @@ public class SmtpC
 					)));
 
 			Smtp_C_11_Cases s11cases =
-					s10.send(S, new Mail("rhu@doc.ic.ac.uk"))
+					s10.send(S, new Mail(MAIL_TO))
 					   .branch(S);
 			switch (s11cases.op)
 			{
@@ -180,15 +185,16 @@ public class SmtpC
 
 	private void sendMail(Smtp_C_12 s12) throws Exception
 	{
-		s12.send(S, new Rcpt("rhu@doc.ic.ac.uk"))
+		s12.send(S, new Rcpt(RCPT_FROM))
 			 .async(S, _250)
 			 .send(S, new Data()) 
 			 .async(S, _354)
-			 .send(S, new Subject("hello Manchester"))
-			 .send(S, new DataLine("message body"))
+			 .send(S, new Subject(SUBJECT))
+			 .send(S, new DataLine(BODY))
 			 .send(S, new EndOfData())
 			 .receive(S, _250, new Buf<>()) 
-			 .send(S, new Quit());
+			 .send(S, new Quit())
+			 .receive(S, _221, new Buf<>());
 	}
 	
 

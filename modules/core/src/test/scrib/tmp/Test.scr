@@ -30,7 +30,31 @@ module Test;
 // Add a unit test for validation to bypass aux
 
 
-//*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	rec X
+	{
+		connect B to C;
+		choice at B
+		{
+			1() from B to C;
+			disconnect B and C;
+			continue X;
+		}
+		or
+		{
+			2() from B to C;
+			3() from C to B;
+		}
+	}
+	//3() from C to B;  // Testing unconnected errors -- error by syntactic check; but should *not* by -f17 if seq comp supported
+	4() from B to A;
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B)
 {
 	1() from A to B;

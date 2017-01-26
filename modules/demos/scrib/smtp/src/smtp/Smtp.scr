@@ -6,6 +6,8 @@ module smtp.Smtp;
 
 sig <java> "smtp.message.server._220"
 		from "smtp/message/server/_220.java" as 220;
+sig <java> "smtp.message.server._221"
+		from "smtp/message/server/_221.java" as 221;
 sig <java> "smtp.message.server._250"
 		from "smtp/message/server/_250.java" as 250;
 sig <java> "smtp.message.server._250d"
@@ -197,6 +199,7 @@ aux global protocol Mail(role S, role C)
 		or
 		{
 			Quit from C to S;
+			221 from S to C;
 		}
 	}
 }

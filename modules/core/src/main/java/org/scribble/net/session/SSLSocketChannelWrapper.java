@@ -105,7 +105,7 @@ public class SSLSocketChannelWrapper extends BinaryChannelWrapper
 		return res;
 	}
 
-  // Decode from this.wrapped (this.getUnwrapped()) into this.bb
+	// Decode from this.wrapped (this.getUnwrapped()) into this.bb
 	@Override
 	public void unwrap() throws IOException  // Decode from this.wrapped (this.getUnwrapped()) into this.bb
 	{
@@ -126,9 +126,15 @@ public class SSLSocketChannelWrapper extends BinaryChannelWrapper
 				//peerNetData.flip();
 				//return;
 			}
+
+			else if (res.getStatus() == SSLEngineResult.Status.CLOSED)
+			{
+				// FIXME: check if closed is OK or not (if not, throw exception)
+			}
+
 			else
 			{
-				// Handle other status: BUFFER_OVERFLOW, CLOSED
+				// Handle other status: BUFFER_OVERFLOW
 				throw new RuntimeException("TODO: " + res.getStatus());
 			}
 		}
