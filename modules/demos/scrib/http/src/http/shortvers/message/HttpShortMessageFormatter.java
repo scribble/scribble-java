@@ -1,16 +1,17 @@
 package http.shortvers.message;
 
+import http.shortvers.message.client.Request;
+import http.shortvers.message.server.Response;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;
-
-import http.shortvers.message.client.Request;
-import http.shortvers.message.server.Response;
 
 public class HttpShortMessageFormatter implements ScribMessageFormatter
 {
@@ -39,50 +40,47 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 			return null;
 		}
 
-		//int pos = bb.position();
-		//String front = new String(new byte[] { bb.get(pos), bb.get(pos + 1) }, HttpMessageFormatter.cs);
-		String curr = new String(bb.array(), HttpShortMessageFormatter.cs);
-
+		String curr = new String(Arrays.copyOf(bb.array(), bb.remaining()), HttpShortMessageFormatter.cs);
 		String endOfHeaders = HttpShortMessage.CRLF + HttpShortMessage.CRLF;
-		if (curr.contains(endOfHeaders))
+		if (!curr.contains(endOfHeaders))
 		{
-			if (curr.contains(Response.CONTENT_LENGTH))
-			{
-				int eoh = curr.indexOf(endOfHeaders);
-				if (eoh == -1)
-				{
-					return null;
-				}
-				String contentLenSplit = curr.substring(curr.indexOf(Response.CONTENT_LENGTH));
-				int len = Integer.parseInt(contentLenSplit.substring(Response.CONTENT_LENGTH.length()+2, contentLenSplit.indexOf('\r')).trim());
-				String body = curr.substring(eoh+4);  // FIXME: could be index out of bounds
-				if (body.length() < len + 2)
-				{
-					//bb.compact();
-					return null;
-				}
-				byte[] bs = new byte[bb.remaining()];  // FIXME: hardcoded Response parsing based on presence of Content-Length
-				bb.get(bs);
-				bb.compact();
-				return parseResponse(new String(bs, HttpShortMessageFormatter.cs));
-			}
-			else
-			{
-				//if (!curr.endsWith(endOfHeaders))
-				/*if (!curr.endsWith("\r\n"))  // FIXME: terminal null char?
-				{
-					// FIXME: unsound
-					System.out.println("111:\n" + curr.replace("\r", "\\r").replace("\n", "\\n\r\n").replace(" ", "_"));
-					//System.out.println("111: " + (int)curr.charAt(curr.length()-1));
-					throw new IOException("No Content-Length specified (Transfer-Encoding not supported).");
-				}*/
-				byte[] bs = new byte[bb.remaining()];
-				bb.get(bs);
-				bb.compact();
-				return parseRequest(new String(bs, HttpShortMessageFormatter.cs));  // FIXME: assuming empty-body Request if no Content-Length
-			}
+			bb.compact();
+			return null;
 		}
-		return null;
+
+		if (curr.contains(Response.CONTENT_LENGTH))
+		{
+			int eoh = curr.indexOf(endOfHeaders);
+			if (eoh == -1)
+			{
+				bb.compact();
+				return null;
+			}
+			String contentLenSplit = curr.substring(curr.indexOf(Response.CONTENT_LENGTH));
+			int len = Integer.parseInt(contentLenSplit.substring(Response.CONTENT_LENGTH.length()+2, contentLenSplit.indexOf('\r')).trim());
+			if (curr.length() < eoh+4)
+			{
+				bb.compact();
+				return null;
+			}
+			String body = curr.substring(eoh+4);
+			if (body.getBytes(HttpShortMessageFormatter.cs).length < len)
+			{
+				bb.compact();
+				return null;
+			}
+			byte[] bs = new byte[bb.remaining()];  // FIXME: hardcoded Response parsing based on presence of Content-Length
+			bb.get(bs);
+			bb.compact();
+			return parseResponse(new String(bs, HttpShortMessageFormatter.cs));
+		}
+		else
+		{
+			byte[] bs = new byte[bb.remaining()];
+			bb.get(bs);
+			bb.compact();
+			return parseRequest(new String(bs, HttpShortMessageFormatter.cs));  // FIXME: assuming empty-body Request if no Content-Length
+		}
 	}
 
 	// Assumes no body
@@ -130,14 +128,14 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 				int j = msg.indexOf("\r");
 				switch (header)  // FIXME: duplicates not checked
 				{
-					case Request.HOST: host = msg.substring(0, j); break;
-					case Request.USER_AGENT: userA = msg.substring(0, j); break;
-					case Request.ACCEPT: accept = msg.substring(0, j); break;
-					case Request.ACCEPT_LANGUAGE: acceptL = msg.substring(0, j); break;
-					case Request.ACCEPT_ENCODING: acceptE = msg.substring(0, j); break;
-					case Request.DO_NOT_TRACK: dnt = msg.substring(0, j); break;     
-					case Request.CONNECTION: connection = msg.substring(0, j); break;
-					case Request.UPGRADE_INSECURE_REQUESTS: upgradeIR = msg.substring(0, j); break;
+					case Request.HOST: host = msg.substring(i+1, j).trim(); break;
+					case Request.USER_AGENT: userA = msg.substring(i+1, j).trim(); break;
+					case Request.ACCEPT: accept = msg.substring(i+1, j).trim(); break;
+					case Request.ACCEPT_LANGUAGE: acceptL = msg.substring(i+1, j).trim(); break;
+					case Request.ACCEPT_ENCODING: acceptE = msg.substring(i+1, j).trim(); break;
+					case Request.DO_NOT_TRACK: dnt = msg.substring(i+1, j).trim(); break;     
+					case Request.CONNECTION: connection = msg.substring(i+1, j).trim(); break;
+					case Request.UPGRADE_INSECURE_REQUESTS: upgradeIR = msg.substring(i+1, j).trim(); break;
 					default: throw new RuntimeException("Cannot parse header field: " + msg.substring(0, j));
 				}
 				msg = msg.substring(j+2);
@@ -206,17 +204,19 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 				int j = msg.indexOf("\r");
 				switch (header)
 				{
-					case Response.DATE: date = msg.substring(0, j); break;
-					case Response.SERVER: server = msg.substring(0, j); break;
-					case Response.STRICT_TRANSPORT_SECURITY: strictTS = msg.substring(0, j); break;
-					case Response.LAST_MODIFIED: lastMod = msg.substring(0, j); break;
-					case Response.ETAG: eTag = msg.substring(0, j); break;
-					case Response.ACCEPT_RANGES: acceptR = msg.substring(0, j); break;
-					case Response.CONTENT_LENGTH: contentL = msg.substring(0, j); break;
-					case Response.VARY: vary = msg.substring(0, j); break;
-					case Response.CONTENT_TYPE: contentT = msg.substring(0, j); break;
-					case Response.VIA: via = msg.substring(0, j); break;
-					default: throw new RuntimeException("Cannot parse header field: " + msg.substring(0, msg.indexOf('\r')));
+					case Response.DATE: date = msg.substring(i+1, j).trim(); break;
+					case Response.SERVER: server = msg.substring(i+1, j).trim(); break;
+					case Response.STRICT_TRANSPORT_SECURITY: strictTS = msg.substring(i+1, j).trim(); break;
+					case Response.LAST_MODIFIED: lastMod = msg.substring(i+1, j).trim(); break;
+					case Response.ETAG: eTag = msg.substring(i+1, j).trim(); break;
+					case Response.ACCEPT_RANGES: acceptR = msg.substring(i+1, j).trim(); break;
+					case Response.CONTENT_LENGTH: contentL = msg.substring(i+1, j).trim(); break;
+					case Response.VARY: vary = msg.substring(i+1, j).trim(); break;
+					case Response.CONTENT_TYPE: contentT = msg.substring(i+1, j).trim(); break;
+					case Response.VIA: via = msg.substring(i+1, j).trim(); break;
+					default:
+						//throw new RuntimeException("Cannot parse header field: " + msg.substring(0, msg.indexOf('\r')));
+						System.err.println("[Warning] Attempting to skip over response field: " + header + "\n" + msg.substring(i+1, j).trim());
 				}
 				msg = msg.substring(j+2);
 			}

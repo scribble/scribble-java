@@ -23,7 +23,7 @@ import betty16.lec2.adder.Adder.Adder.ops.Add;
 import betty16.lec2.adder.Adder.Adder.ops.Bye;
 import betty16.lec2.adder.Adder.Adder.roles.S;
 
-public class MyAdderS2 implements Adder_S_1_Handler {
+public class AdderS2 implements Adder_S_1_Handler {
 
 	public static void main(String[] args) throws Exception {
 		try (ScribServerSocket ss = new SocketChannelServer(8888)) {
@@ -32,7 +32,7 @@ public class MyAdderS2 implements Adder_S_1_Handler {
 				try (MPSTEndpoint<Adder, S> server = new MPSTEndpoint<>(adder, S, new ObjectStreamFormatter())) {
 					server.accept(ss, C);
 
-					new Adder_S_1(server).branch(C, new MyAdderS2());
+					new Adder_S_1(server).branch(C, new AdderS2());
 				} catch (ScribbleRuntimeException | IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
