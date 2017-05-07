@@ -24,20 +24,26 @@ public class AdderC {
 					new MPSTEndpoint<>(adder, C, new ObjectStreamFormatter())) {	
 			client.connect(S, SocketChannelEndpoint::new, "localhost", 8888);
 			int n = 10;
-			System.out.println(n + "th fib number: "
-					+ run(new Adder_C_1(client), n));
+			System.out.println(n + "th Fibonacci number: "
+					+ fibo(new Adder_C_1(client), n));
 		}
 	}
 	
-	private static int run(Adder_C_1 c1, int n) throws Exception {
+	private static int fibo(Adder_C_1 c1, int n) throws Exception {
 		Buf<Integer> x = new Buf<>(0);
 		Buf<Integer> y = new Buf<>(1);
-		for (int i = 1; i < n; i++) {
+		Buf<Integer> i = new Buf<>(1);
+		while (i.val < n) {
 			Adder_C_2 c2 = c1.send(S, Add, x.val, y.val);
 			x.val = y.val;
 			c1 = c2.receive(S, Res, y);
+			c1 = add1(c1, i);
 		}
 		c1.send(S, Bye);
 		return x.val;
+	}
+	
+	private static Adder_C_1 add1(Adder_C_1 c1, Buf<Integer> i) throws Exception {
+		return c1.send(S, Add, i.val, 1).receive(S, Res, i);
 	}
 }
