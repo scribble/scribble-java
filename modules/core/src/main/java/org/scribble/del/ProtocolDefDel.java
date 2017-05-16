@@ -5,6 +5,8 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.context.RecRemover;
+import org.scribble.visit.util.RecVarCollector;
 
 public abstract class ProtocolDefDel extends ScribDelBase
 {
@@ -28,5 +30,20 @@ public abstract class ProtocolDefDel extends ScribDelBase
 		ProtocolDefDel copy = copy();
 		copy.inlined = inlined;
 		return copy;
+	}
+
+	public void enterRecRemoval(ScribNode parent, ScribNode child, RecRemover rem)
+	{
+		super.enterRecRemoval(parent, child, rem);
+		RecVarCollector rvc = new RecVarCollector(rem.job);
+		try
+		{
+			this.inlined.accept(rvc);  // RecVarCollector not an InlinedProtocolVistor -- do simple visiting directly on inlined
+		}
+		catch (ScribbleException e)
+		{
+			throw new RuntimeException(e);
+		}
+		rem.setToRemove(rvc.getNames());
 	}
 }

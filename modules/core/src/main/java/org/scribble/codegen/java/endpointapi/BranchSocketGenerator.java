@@ -72,6 +72,8 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 			eb.addModifiers(JavaBuilder.PUBLIC);
 			eb.addInterfaces(OPENUM_INTERFACE);
 			this.curr.getActions().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+
+			addDirectBranchCallbackMethod(ROLE_PARAM, MESSAGE_VAR, OP, main, peer);  // Hack: callback apigen while i/o i/f's not supported for connect/accept/etc
 		}
 		else
 		{
@@ -159,7 +161,6 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 			final String MESSAGE_VAR, final String OP, Module main, Role peer,
 			String handleif)
 	{
-		boolean first;
 		MethodBuilder mb3 = this.cb.newMethod("branch");
 		mb3.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
@@ -168,6 +169,10 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb3.addModifiers(JavaBuilder.PUBLIC);
 		mb3.addAnnotations("@Override");
 		mb3.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+		
+		addCallbackCases(mb3, ROLE_PARAM, MESSAGE_VAR, OP, main, peer);
+		
+		/*boolean first;
 		mb3.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
@@ -221,10 +226,10 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		}
 		mb3.addBodyLine("else {");
 		mb3.addBodyLine(1, "throw " + JavaBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
-		mb3.addBodyLine("}");
+		mb3.addBodyLine("}");*/
 	}
 
-	// FIXME: factor out with others
+	// FIXME: factor out with others (addCallbackCases)
 	private void addHandleMethod(final String ROLE_PARAM, final String MESSAGE_VAR, final String OP, Module main, Role peer)
 	{
 		boolean first;
@@ -301,5 +306,81 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		return apigen.skipIOInterfacesGeneration
 				? apigen.getSocketClassName(curr) + "_Enum"
 				: BranchInterfaceGenerator.getBranchInterfaceEnumName(apigen.getSelf(), curr);
+	}
+
+	// branch callback, that doesn't just call handle (cf. addBranchCallbackMethod) -- hack, callback apigen while i/o i/f's not supported for connect/accept/etc
+	private void addDirectBranchCallbackMethod(final String ROLE_PARAM, 
+			final String MESSAGE_VAR, final String OP, Module main, Role peer)
+	{
+		String handlerif = HandlerInterfaceGenerator.getHandlerInterfaceName(this.cb.getName());
+		MethodBuilder mb2 = this.cb.newMethod("branch");
+		mb2.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
+		mb2.addParameters(handlerif + " handler");
+		mb2.setReturn(JavaBuilder.VOID);
+		mb2.addModifiers(JavaBuilder.PUBLIC);
+		mb2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+		//mb2.addBodyLine("branch(role, (" + handleif + ") handler);");
+		
+		addCallbackCases(mb2, ROLE_PARAM, MESSAGE_VAR, OP, main, peer);
+	}
+
+	private void addCallbackCases(MethodBuilder mb2, final String ROLE_PARAM, 
+			final String MESSAGE_VAR, final String OP, Module main, Role peer)
+	{
+		boolean first;
+		mb2.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
+				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
+		first = true;
+		for (EAction a : this.curr.getActions())
+		{
+			EState succ = this.curr.getSuccessor(a);
+			if (first)
+			{
+				first = false;
+			}
+			else
+			{
+				mb2.addBodyLine("else");
+			}
+			mb2.addBodyLine("if (" + MESSAGE_VAR + "." + StateChannelApiGenerator.SCRIBMESSAGE_OP_FIELD + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
+			if (succ.isTerminal())
+			{
+				mb2.addBodyLine(1, SCRIBSOCKET_SE_FIELD + ".setCompleted();");
+			}
+			String ln = "handler.receive(";
+			//if (!succ.isTerminal())
+			{
+				//FIXME: factor out with addReturn?
+				 ln += JavaBuilder.NEW + " " + (succ.isTerminal() ? ScribSocketGenerator.GENERATED_ENDSOCKET_NAME : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
+			}
+			ln += getSessionApiOpConstant(a.mid);
+					
+			// Based on receive parameters
+			if (a.mid.isOp())
+			{
+				if (!a.payload.isEmpty())
+				{
+					String buffSuper = JavaBuilder.NEW + " " + BUF_CLASS + "<>(";
+					int i = 0;
+					for (PayloadType<?> pt : a.payload.elems)
+					{
+						DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
+						ln += ", " + buffSuper + "(" + dtd.extName + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
+					}
+				}
+			}
+			else
+			{
+				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0])";
+			}
+				
+			ln += ");";
+			mb2.addBodyLine(1, ln);
+			mb2.addBodyLine("}");
+		}
+		mb2.addBodyLine("else {");
+		mb2.addBodyLine(1, "throw " + JavaBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
+		mb2.addBodyLine("}");
 	}
 }

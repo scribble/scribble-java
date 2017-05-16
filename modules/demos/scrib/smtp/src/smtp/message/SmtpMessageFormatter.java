@@ -10,6 +10,7 @@ import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;
 
 import smtp.message.server._220;
+import smtp.message.server._221;
 import smtp.message.server._235;
 import smtp.message.server._250;
 import smtp.message.server._250d;
@@ -87,6 +88,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 				case 535: return new _535(body);
 				case 501: return new _501(body);
 				case 354: return new _354(body);
+				case 221: return new _221(body);
 				default:  throw new RuntimeException("Unknown status code " + code + ": " + body);
 			}
 		}

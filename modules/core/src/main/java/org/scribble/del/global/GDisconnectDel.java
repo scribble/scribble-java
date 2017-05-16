@@ -11,6 +11,7 @@ import org.scribble.visit.wf.NameDisambiguator;
 import org.scribble.visit.wf.WFChoiceChecker;
 import org.scribble.visit.wf.env.WFChoiceEnv;
 
+// FIXME: make DisconnectDel (cf., G/LMessageTransferDel)
 public class GDisconnectDel extends ConnectionActionDel implements GSimpleInteractionNodeDel
 {
 	public GDisconnectDel()

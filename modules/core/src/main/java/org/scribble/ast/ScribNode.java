@@ -44,6 +44,6 @@ public interface ScribNode
 	// Cf. LInteractionNode.inferLocalChoiceSubject
 
 	CommonTree getSource();  
-			// Used to be for parsed entities; null if not parsed
-			// Now: for the original parsed entity for error blaming; should not be null unless a purely generated entity
+			// Previously: for parsed entities, null if not parsed
+			// Now: for the original parsed entity for error blaming; should not be null unless a "purely generated" entity
 }

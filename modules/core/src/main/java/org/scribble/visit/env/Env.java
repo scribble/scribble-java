@@ -15,8 +15,9 @@ public abstract class Env<E extends Env<?>>
 	
 	protected abstract E copy();  // Shallow copy
 
-	// Default push for entering a compound interaction context (e.g. used in CompoundInteractionDelegate)
-	public abstract E enterContext();
+	// Default push for entering a compound interaction context (e.g. used in CompoundInteractionDel via pushVisitorEnv)
+	public abstract E enterContext();  // copy by default
+			// FIXME: it's always just copy, so not useful -- e.g., WFChoiceEnv just does enterContext (copy) and then manually enableChoiceSubject
 
 	// Mostly for merging a compound interaction node context into the parent block context
 	// Usually used in the base compound interaction node del when leaving and restoring the parent env in the visitor env stack (e.g. CompoundInteractionNodeDel for WF-choice)

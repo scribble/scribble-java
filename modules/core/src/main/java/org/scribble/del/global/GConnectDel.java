@@ -70,4 +70,17 @@ public class GConnectDel extends ConnectionActionDel implements GSimpleInteracti
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GConnect) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
 	}
+
+	/*// Duplicated from GMessageTransferDel
+	@Override
+	public ScribNode leaveF17Parsing(ScribNode parent, ScribNode child, F17Parser parser, ScribNode visited) throws ScribbleException
+	{
+		F17ParserEnv env = parser.peekEnv();
+		if (env.isUnguarded())
+		{
+			parser.popEnv();
+			parser.pushEnv(new F17ParserEnv());  // Maybe make "setGuarded" method
+		}
+		return super.leaveF17Parsing(parent, child, parser, visited);
+	}*/
 }

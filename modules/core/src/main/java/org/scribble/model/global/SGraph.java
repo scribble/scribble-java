@@ -346,7 +346,7 @@ public class SGraph implements MPrettyPrint
 						{
 							as.remove(d);  // Removes one occurrence
 							//getNextStates(seen, todo, curr.sync(r, a, a.peer, d));
-							SAction g = (a.isConnect()) ? a.toGlobal(r) : d.toGlobal(a.peer);
+							SAction g = (a.isConnect()) ? a.toGlobal(r) : d.toGlobal(a.peer);  // Edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label)
 							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, d));
 						}
 					}

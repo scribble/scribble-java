@@ -31,6 +31,14 @@ public abstract class NameCollector<N extends Name<?>> extends NoEnvOffsetSubpro
 		this.names.add(name);
 	}
 	
+	public void removeName(N name)
+	{
+		if (this.names.contains(name))
+		{
+			this.names.remove(name);
+		}
+	}
+	
 	public Set<N> getNames()
 	{
 		return this.names;

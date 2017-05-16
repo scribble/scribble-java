@@ -26,6 +26,7 @@ public class CommandLineArgParser
 	public static final String AUT_FLAG = "-aut";
 	public static final String NO_VALIDATION_FLAG = "-novalid";
 	public static final String INLINE_MAIN_MOD_FLAG = "-inline";
+	public static final String F17_FLAG = "-f17";
 	
 	// Non-unique flags
 	public static final String PROJECT_FLAG = "-project";
@@ -59,6 +60,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.AUT_FLAG, CommandLine.ArgFlag.AUT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.NO_VALIDATION_FLAG, CommandLine.ArgFlag.NO_VALIDATION);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.INLINE_MAIN_MOD_FLAG, CommandLine.ArgFlag.INLINE_MAIN_MOD);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.F17_FLAG, CommandLine.ArgFlag.F17);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -149,6 +151,10 @@ public class CommandLineArgParser
 					throw new CommandLineException("Multiple main modules given.");
 				}
 				return parseInlineMainModule(i);
+			}
+			case CommandLineArgParser.F17_FLAG:
+			{
+				return parseF17(i);
 			}
 			case CommandLineArgParser.JUNIT_FLAG:
 			case CommandLineArgParser.VERBOSE_FLAG:
@@ -280,6 +286,17 @@ public class CommandLineArgParser
 		}
 		String inline = this.args[++i];
 		checkAndAddNoArgUniqueFlag(CommandLineArgParser.INLINE_MAIN_MOD_FLAG, new String[] { inline });
+		return i;
+	}
+
+	private int parseF17(int i) throws CommandLineException
+	{
+		if ((i + 1) >= this.args.length)
+		{
+			throw new CommandLineException("Missing simple global protocol name argument");
+		}
+		String proto = this.args[++i];
+		checkAndAddNoArgUniqueFlag(CommandLineArgParser.F17_FLAG, new String[] { proto });
 		return i;
 	}
 	
