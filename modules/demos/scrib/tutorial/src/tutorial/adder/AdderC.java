@@ -39,7 +39,7 @@ public class AdderC {
 			c1 = c2.receive(S, Res, y);
 			c1 = add1(c1, i);
 		}
-		c1.send(S, Bye);
+		c1.send(S, Bye);  // EndSocket
 		return x.val;
 	}
 	
