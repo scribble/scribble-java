@@ -66,6 +66,8 @@ public class CommandLine
 		API_GEN,
 		SESS_API_GEN,
 		SCHAN_API_GEN,
+		
+		GO_API_GEN
 	}
 	
 	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
@@ -202,6 +204,11 @@ public class CommandLine
 			{
 				outputEndpointApi(job);
 			}
+			
+			if (this.args.containsKey(ArgFlag.GO_API_GEN))
+			{
+				outputGoApi(job);
+			}
 		}
 		catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
 		{
@@ -330,6 +337,22 @@ public class CommandLine
 		}
 		return model;
 	}
+
+
+	private void outputGoApi(Job job) throws ScribbleException, CommandLineException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.GO_API_GEN);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Map<String, String> goClasses = job.generateGoApi(fullname, role);
+			//Map<String, String> goClasses = job.generateStateChannelApi(fullname, role, this.args.containsKey(ArgFlag.SCHAN_API_SUBTYPES));
+			outputClasses(goClasses);
+		}
+	}
+
 
 	private void outputEndpointApi(Job job) throws ScribbleException, CommandLineException
 	{

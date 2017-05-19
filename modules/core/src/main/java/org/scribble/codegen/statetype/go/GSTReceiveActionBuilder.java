@@ -1,0 +1,37 @@
+package org.scribble.codegen.statetype.go;
+
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.scribble.codegen.statetype.STAPIBuilder;
+import org.scribble.codegen.statetype.STReceiveActionBuilder;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
+
+public class GSTReceiveActionBuilder extends STReceiveActionBuilder
+{
+
+	@Override
+	public String getSTActionName(STAPIBuilder api, EAction a)
+	{
+		return "Recv_" + api.role + "_" + a.mid;
+	}
+
+	@Override
+	public String buildArgs(EAction a)
+	{
+		return IntStream.range(0, a.payload.elems.size()) 
+					.mapToObj(i -> "arg" + i + " *" + a.payload.elems.get(i)).collect(Collectors.joining(", "));
+	}
+
+	@Override
+	public String buildBody(STAPIBuilder api, EAction a, EState succ)
+	{
+		return 
+				  IntStream.range(0, a.payload.elems.size())
+				           .mapToObj(i -> "val" + i + " := <-role" + api.role + "," + a.peer
+				          		 + "\n" + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
+				          		 ).collect(Collectors.joining("\n"))
+				+ "return " + buildReturn(api, succ);
+	}
+}

@@ -43,6 +43,8 @@ public class CommandLineArgParser
 	public static final String API_GEN_FLAG = "-api";
 	public static final String SESSION_API_GEN_FLAG = "-sessapi";
 	public static final String STATECHAN_API_GEN_FLAG = "-chanapi";
+
+	public static final String GO_API_GEN_FLAG = "-goapi";
 	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -79,6 +81,8 @@ public class CommandLineArgParser
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.API_GEN_FLAG, CommandLine.ArgFlag.API_GEN);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.SESSION_API_GEN_FLAG, CommandLine.ArgFlag.SESS_API_GEN);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.STATECHAN_API_GEN_FLAG, CommandLine.ArgFlag.SCHAN_API_GEN);
+
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GO_API_GEN_FLAG, CommandLine.ArgFlag.GO_API_GEN);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> FLAGS = new HashMap<>();
@@ -203,6 +207,9 @@ public class CommandLineArgParser
 			case CommandLineArgParser.UNFAIR_EFSM_FLAG:
 			case CommandLineArgParser.API_GEN_FLAG:
 			case CommandLineArgParser.STATECHAN_API_GEN_FLAG:
+
+			case CommandLineArgParser.GO_API_GEN_FLAG:
+
 			{
 				return parseProtoAndRoleArgs(flag, i);
 			}

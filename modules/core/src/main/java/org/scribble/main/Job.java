@@ -11,6 +11,7 @@ import org.scribble.ast.Module;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
+import org.scribble.codegen.statetype.go.GSTAPIBuilder;
 import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -157,6 +158,16 @@ public class Job
 		Map<String, String> map = sg.generateApi();  // filepath -> class source
 		return map;
 	}
+
+	
+	public Map<String, String> generateGoApi(GProtocolName fullname, Role self) throws ScribbleException
+	{
+		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
+		GSTAPIBuilder apigen = new GSTAPIBuilder(fullname, self, this.jcontext.getEGraph(fullname, self));
+		Map<String, String> api = apigen.build();  // filepath -> source 
+		return api;
+	}
+
 	
 	// FIXME: refactor an EndpointApiGenerator -- ?
 	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribbleException
