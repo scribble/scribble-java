@@ -163,8 +163,9 @@ public class Job
 	public Map<String, String> generateGoApi(GProtocolName fullname, Role self) throws ScribbleException
 	{
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
-		GSTAPIBuilder apigen = new GSTAPIBuilder(fullname, self, this.jcontext.getEGraph(fullname, self));
+		GSTAPIBuilder apigen = new GSTAPIBuilder(this, fullname, self, this.jcontext.getEGraph(fullname, self));
 		Map<String, String> api = apigen.build();  // filepath -> source 
+		api.putAll(apigen.buildSessionAPI());
 		return api;
 	}
 

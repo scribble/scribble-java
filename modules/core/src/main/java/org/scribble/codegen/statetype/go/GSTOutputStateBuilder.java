@@ -23,6 +23,6 @@ public class GSTOutputStateBuilder extends STOutputStateBuilder
 	@Override
 	public String getPreamble(STAPIBuilder api, EState s)
 	{
-		return getPremable1(getPackage(api), api.getSTStateName(s));
+		return getPremable1(api.getPackage(), api.getSTStateName(s));
 	}
 }

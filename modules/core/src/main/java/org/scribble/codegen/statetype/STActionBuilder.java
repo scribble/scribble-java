@@ -23,7 +23,7 @@ public abstract class STActionBuilder
 		return
 				  "func (" + api.getSTStateName(curr) + ") " + getSTActionName(api, a) + "(" 
 				+ IntStream.range(0, a.payload.elems.size()).mapToObj(i -> "arg" + i + a.payload.elems.get(i)).collect(Collectors.joining(", ")) 
-				+ ") " + buildReturn(api, succ) + "{"
+				+ ") " + buildReturn(api, succ) + " {"
 			  + "\n" + buildBody(api, a, succ)
 			  + "\n}";
 	}

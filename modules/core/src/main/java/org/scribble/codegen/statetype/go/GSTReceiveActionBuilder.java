@@ -28,8 +28,9 @@ public class GSTReceiveActionBuilder extends STReceiveActionBuilder
 	public String buildBody(STAPIBuilder api, EAction a, EState succ)
 	{
 		return 
-				  IntStream.range(0, a.payload.elems.size())
-				           .mapToObj(i -> "val" + i + " := <-role" + api.role + "," + a.peer
+				  "val op := <-role" + api.role + "." + a.peer + "\n"
+				+ IntStream.range(0, a.payload.elems.size())
+				           .mapToObj(i -> "val" + i + " := <-role" + api.role + "." + a.peer
 				          		 + "\n" + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
 				          		 ).collect(Collectors.joining("\n"))
 				+ "return " + buildReturn(api, succ);
