@@ -64,10 +64,7 @@ public abstract class STAPIBuilder
 	
 	public abstract String getFilePath(EState s);
 
-	public String getPackage()
-	{
-		return this.gpn.toString();
-	}
+	public abstract String getPackage();
 	
 	public String getSTStateName(EState s)
 	{
@@ -80,5 +77,6 @@ public abstract class STAPIBuilder
 		return name;
 	}
 	
+	// Should only be called from getSTStateName
 	protected abstract String makeSTStateName(EState s);
 }

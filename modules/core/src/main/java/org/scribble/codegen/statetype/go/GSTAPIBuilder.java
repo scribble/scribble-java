@@ -23,6 +23,12 @@ public class GSTAPIBuilder extends STAPIBuilder
 				new GSTReceiveStateBuilder(new GSTReceiveActionBuilder()),
 				new GSTEndStateBuilder());
 	}
+
+	@Override
+	public String getPackage()
+	{
+		return this.gpn.getSimpleName().toString();
+	}
 	
 	@Override
 	protected String makeSTStateName(EState s)
@@ -33,7 +39,7 @@ public class GSTAPIBuilder extends STAPIBuilder
 	@Override
 	public String getFilePath(EState s)
 	{
-		return this.gpn.toString().replaceAll("\\.", "/") + "/" + makeSTStateName(s) + ".go";
+		return this.gpn.toString().replaceAll("\\.", "/") + "/" + getSTStateName(s) + ".go";
 	}
 	
 	@Override
@@ -51,7 +57,7 @@ public class GSTAPIBuilder extends STAPIBuilder
 						+ "}\n"
 						+ "\n"
 						+ "func (ep endpoint" + r + ") Close() error {\n"
-						+ roles.stream().filter(rr -> rr.toString().compareTo(r.toString()) > 0).map(rr -> "close(ep" + "." + rr).collect(Collectors.joining("\n"))
+						+ roles.stream().filter(rr -> rr.toString().compareTo(r.toString()) > 0).map(rr -> "close(ep" + "." + rr + ")").collect(Collectors.joining("\n")) + "\n"
 						+ "return nil\n"
 						+ "}\n"
 						+ "\n"
@@ -62,7 +68,7 @@ public class GSTAPIBuilder extends STAPIBuilder
 		// roles
 		for (Role r : roles)
 		{
-			String init = getSTStateName(this.graph.init);
+			String init = this.gpn.getSimpleName() + "_" + r + "_" + 1;  // FIXME: factor out naming scheme
 			String role =
 					  "package " + getPackage() + "\n"
 					+ "\n"
@@ -72,9 +78,10 @@ public class GSTAPIBuilder extends STAPIBuilder
 					+ roles.stream().filter(rr -> !rr.equals(r)).map(rr -> rr + " chan T").collect(Collectors.joining(", "))
 					+ ") (" + init + ", io.Closer) {\n"
 					+ "role" + r + " = endpoint" + r + "{\n"
-					+ roles.stream().filter(rr -> !rr.equals(r)).map(rr -> rr + ": " + rr).collect(Collectors.joining(",\n")) + "\n"
+					+ roles.stream().filter(rr -> !rr.equals(r)).map(rr -> rr + ": " + rr).collect(Collectors.joining(",\n")) + ",\n"
 					+ "}\n"
-					+ "return " + init + "{}, role" + r;
+					+ "return " + init + "{}, role" + r + "\n"
+					+ "}";
 			res.put(this.gpn.toString().replaceAll("\\.", "/") + "/role_" + r + ".go", role);
 		}
 

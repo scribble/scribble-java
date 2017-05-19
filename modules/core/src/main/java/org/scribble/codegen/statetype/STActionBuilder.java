@@ -1,8 +1,5 @@
 package org.scribble.codegen.statetype;
 
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
@@ -22,7 +19,7 @@ public abstract class STActionBuilder
 		EState succ = curr.getSuccessor(a);
 		return
 				  "func (" + api.getSTStateName(curr) + ") " + getSTActionName(api, a) + "(" 
-				+ IntStream.range(0, a.payload.elems.size()).mapToObj(i -> "arg" + i + a.payload.elems.get(i)).collect(Collectors.joining(", ")) 
+				+ buildArgs(a)
 				+ ") " + buildReturn(api, succ) + " {"
 			  + "\n" + buildBody(api, a, succ)
 			  + "\n}";

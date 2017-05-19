@@ -9,7 +9,8 @@
 //http://sandbox.kidstrythisathome.com/erdos/
 
 
-module Test;
+module Test;  // N.B. not using tmp.Test for this module
+
 
 // replace a lot of FACTORY name calls by clone
 // -minlts states IDs don't match validation output

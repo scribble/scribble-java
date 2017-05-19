@@ -14,7 +14,7 @@ public class GSTReceiveActionBuilder extends STReceiveActionBuilder
 	@Override
 	public String getSTActionName(STAPIBuilder api, EAction a)
 	{
-		return "Recv_" + api.role + "_" + a.mid;
+		return "Recv_" + a.peer + "_" + a.mid;
 	}
 
 	@Override
@@ -28,11 +28,12 @@ public class GSTReceiveActionBuilder extends STReceiveActionBuilder
 	public String buildBody(STAPIBuilder api, EAction a, EState succ)
 	{
 		return 
-				  "val op := <-role" + api.role + "." + a.peer + "\n"
+				  //"op := 
+				  "<-role" + api.role + "." + a.peer + "\n"
 				+ IntStream.range(0, a.payload.elems.size())
 				           .mapToObj(i -> "val" + i + " := <-role" + api.role + "." + a.peer
 				          		 + "\n" + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
-				          		 ).collect(Collectors.joining("\n"))
-				+ "return " + buildReturn(api, succ);
+				          		 ).collect(Collectors.joining("\n")) + "\n"
+				+ "return " + buildReturn(api, succ) + "{}";
 	}
 }
