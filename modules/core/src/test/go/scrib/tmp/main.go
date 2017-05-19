@@ -1,3 +1,4 @@
+//$Raymond@HZHL3 ~/code/scribble-neon/github-rhu1-go/scribble-java/modules/core/src/test/go/scrib/tmp
 //$ go build
 //$ ./tmp.exe
 
@@ -9,7 +10,7 @@ import (
 	"log"
 	"sync"
 
-	"./Test/Proto1"	
+	"scrib/tmp/Test/Proto1"	
 )
 
 
@@ -37,6 +38,8 @@ func RunA(AB chan Proto1.T) {
 	A, endA := Proto1.NewA(AB)
 	defer endA.Close()
 	var y int
+
+	A.Sen
 
 	A.Send_B_1(1234).Recv_B_2(&y)
 

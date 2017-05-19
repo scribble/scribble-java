@@ -1,0 +1,20 @@
+//Raymond@HZHL3 ~/code/scribble-java/scribble-java
+//$ bin/scribblec.sh -ip modules/core/src/test/go/ -d modules/core/src/test/go modules/core/src/test/go/scrib/tmp/Test.scr -goapi Proto1 A
+
+//$ bin/scribblec.sh -ip modules/core/src/test/go/ -d ../scribble-go-output/src modules/core/src/test/go/scrib/tmp/Test.scr -goapi Proto1 A
+
+
+//http://sandbox.kidstrythisathome.com/erdos/
+
+
+module scrib.tmp.Test;
+
+
+type <go> "int" from "..." as int;
+
+
+global protocol Proto1(role A, role B)
+{
+	1(int) from A to B;
+	2(int) from B to A;
+}
