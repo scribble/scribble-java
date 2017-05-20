@@ -159,4 +159,10 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 				+ "\n" + ab.buildBody(this, curr, a, succ)
 				+ "\n}";
 	}
+	
+	@Override
+	public String getChannelName(EAction a)
+	{
+		return "role" + this.role + "." + a.peer;
+	}
 }

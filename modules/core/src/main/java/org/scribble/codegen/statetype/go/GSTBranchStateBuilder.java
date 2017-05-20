@@ -7,6 +7,7 @@ import org.scribble.codegen.statetype.STStateChanAPIBuilder;
 import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.sesstype.name.MessageId;
 
 public class GSTBranchStateBuilder extends STBranchStateBuilder
 {
@@ -18,15 +19,25 @@ public class GSTBranchStateBuilder extends STBranchStateBuilder
 	@Override
 	public String getPreamble(STStateChanAPIBuilder api, EState s)
 	{
-		String ename = api.getStateChanName(s) + "_Enum";  // FIXME: factor out with branch action builder
+		String ename = getBranchEnumType(api, s);
 		List<EAction> as = s.getActions();
 		return GSTStateChanAPIBuilder.getStateChanPremable(api, s) + "\n"
 				+ "\n"
 				+ "type " + ename + " int\n"
 				+ "\n"
 				+ "const (\n"
-				+ as.get(0).mid.toString() + " " + ename + " = iota \n"  // FIXME: factor out with send action builder (and use lower+_)
-				+ as.subList(1, as.size()).stream().map(a -> a.mid.toString()).collect(Collectors.joining("\n")) + "\n"
+				+ getBranchEnumValue(as.get(0).mid) + " " + ename + " = iota \n"
+				+ as.subList(1, as.size()).stream().map(a -> getBranchEnumValue(a.mid)).collect(Collectors.joining("\n")) + "\n"
 				+ ")";
+	}
+	
+	protected static String getBranchEnumType(STStateChanAPIBuilder api, EState s)
+	{
+		return api.getStateChanName(s) + "_Enum";
+	}
+	
+	protected static String getBranchEnumValue(MessageId<?> mid)
+	{
+		return "_" + mid;
 	}
 }

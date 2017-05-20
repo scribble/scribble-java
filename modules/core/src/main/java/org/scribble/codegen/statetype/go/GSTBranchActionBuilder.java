@@ -32,12 +32,12 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
 	{
 		return 
-				  "tmp := <-role" + api.role + "." + a.peer + "\n"
-				+ "op := tmp.(" + api.getStateChanName(curr) + "_Enum)\n"  // FIXME: factor out with branch state builder
+				  "tmp := <-" + api.getChannelName(a) + "\n"
+				+ "op := tmp.(" + GSTBranchStateBuilder.getBranchEnumType(api, curr) + ")\n"
 				+ "switch op {\n"
 				+ curr.getActions().stream().map(x -> 
-						  "case " + x.mid + ":\n"
-						+ "return " + GSTCaseBuilder.getOpTypeName(x.mid) +"{}\n"  // FIXME: factor out
+						  "case " + GSTBranchStateBuilder.getBranchEnumValue(x.mid) + ":\n"
+						+ "return " + GSTCaseBuilder.getOpTypeName(api, curr, x.mid) +"{}\n"  // FIXME: factor out
 					).collect(Collectors.joining(""))
 				+ "}\n"
 				+ "return nil";  // FIXME: panic instead

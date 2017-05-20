@@ -27,10 +27,11 @@ public class GSTSendActionBuilder extends STSendActionBuilder
 	@Override
 	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
 	{
+		String chan = api.getChannelName(a);
 		return 
-				  "role" + api.role + "." + a.peer + "<- " + a.mid + "\n"  // FIXME: factor out with branch state builder (and use lower+_)
+				  chan + "<- " + GSTBranchStateBuilder.getBranchEnumValue(a.mid) + "\n"
 				+ IntStream.range(0, a.payload.elems.size())
-				           .mapToObj(i -> "role" + api.role + "." + a.peer + "<- arg" + i).collect(Collectors.joining("\n")) + "\n"
+				           .mapToObj(i -> chan + "<- arg" + i).collect(Collectors.joining("\n")) + "\n"
 				+ "return " + buildReturn(null, api, succ) + "{}";
 	}
 }

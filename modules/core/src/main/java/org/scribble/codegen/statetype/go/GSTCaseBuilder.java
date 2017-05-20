@@ -1,9 +1,12 @@
 package org.scribble.codegen.statetype.go;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.scribble.codegen.statetype.STStateChanAPIBuilder;
 import org.scribble.codegen.statetype.STCaseBuilder;
+import org.scribble.codegen.statetype.STStateChanAPIBuilder;
+import org.scribble.main.RuntimeScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.sesstype.name.MessageId;
 
@@ -24,14 +27,34 @@ public class GSTCaseBuilder extends STCaseBuilder
 			  + casefunc + "()\n"
 			  + "}"
 			  + s.getActions().stream().map(a ->
-			  		  "\n\ntype " + getOpTypeName(a.mid) + " struct{}\n"
+			  		  "\n\ntype " + getOpTypeName(api, s, a.mid) + " struct{}\n"
 			  		+ "\n"
-			  	  + "func (" + getOpTypeName(a.mid) + ") " + casefunc + "() {}"
+			  	  + "func (" + getOpTypeName(api, s, a.mid) + ") " + casefunc + "() {}"
 			  	).collect(Collectors.joining(""));
 	}
 	
-	protected static String getOpTypeName(MessageId<?> mid)
+	private static Map<String, Integer> seen = new HashMap<>(); // FIXME HACK
+	
+	protected static String getOpTypeName(STStateChanAPIBuilder api, EState s, MessageId<?> mid)
 	{
-		return mid.toString().toUpperCase() + "_";  // FIXME: maybe need more mangling?
+		String op = mid.toString();
+		char c = op.charAt(0);
+		if (c < 'A' || c > 'Z')
+		{
+			throw new RuntimeScribbleException("[go-api-gen] Message op should start with a captial letter, not: " + c);  // FIXME:
+		}
+		if (GSTCaseBuilder.seen.containsKey(op))
+		{
+			if (GSTCaseBuilder.seen.get(op) != s.id)
+			{
+				String n = api.getStateChanName(s);  // HACK
+				op = op + "_" + n.substring(n.lastIndexOf('_') + 1);
+			}
+		}
+		else
+		{
+			GSTCaseBuilder.seen.put(op, s.id);
+		}
+		return op;
 	}
 }

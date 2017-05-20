@@ -98,4 +98,6 @@ public abstract class STStateChanAPIBuilder
 	protected abstract String makeSTStateName(EState s);
 
 	public abstract String buildAction(STActionBuilder ab, EState curr, EAction a);
+
+	public abstract String getChannelName(EAction a);
 }

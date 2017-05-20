@@ -29,15 +29,15 @@ public class GSTCaseActionBuilder extends STCaseActionBuilder
 	{
 		return 
 				  IntStream.range(0, a.payload.elems.size())
-				           .mapToObj(i -> "val" + i + " := <-role" + api.role + "." + a.peer
-				          		 + "\n" + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
+				           .mapToObj(i -> "val" + i + " := <-" + api.getChannelName(a) + "\n"
+				          		 + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
 				          		 ).collect(Collectors.joining("\n")) + "\n"
-				+ "return " + buildReturn(null, api, succ) + "{}";
+				+ "return " + buildReturn(curr, api, succ) + "{}";
 	}
 	
 	@Override
 	public String getStateChanType(STStateChanAPIBuilder api, EState curr, EAction a)
 	{
-		return GSTCaseBuilder.getOpTypeName(a.mid);
+		return GSTCaseBuilder.getOpTypeName(api, curr, a.mid);
 	}
 }
