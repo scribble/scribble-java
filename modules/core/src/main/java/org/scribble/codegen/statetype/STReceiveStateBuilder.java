@@ -5,7 +5,7 @@ import java.util.List;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
-public abstract class STReceiveStateBuilder extends STStateBuilder
+public abstract class STReceiveStateBuilder extends STStateChanBuilder
 {
 	protected final STReceiveActionBuilder rb;
 	
@@ -15,7 +15,7 @@ public abstract class STReceiveStateBuilder extends STStateBuilder
 	}
 	
 	@Override
-	public String build(STAPIBuilder api, EState s)
+	public String build(STStateChanAPIBuilder api, EState s)
 	{
 		String out = getPreamble(api, s);
 		

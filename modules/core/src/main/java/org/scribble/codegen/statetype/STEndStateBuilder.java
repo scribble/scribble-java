@@ -2,7 +2,7 @@ package org.scribble.codegen.statetype;
 
 import org.scribble.model.endpoint.EState;
 
-public abstract class STEndStateBuilder extends STStateBuilder
+public abstract class STEndStateBuilder extends STStateChanBuilder
 {
 	public STEndStateBuilder()
 	{
@@ -10,7 +10,7 @@ public abstract class STEndStateBuilder extends STStateBuilder
 	}
 	
 	@Override
-	public String build(STAPIBuilder api, EState s)
+	public String build(STStateChanAPIBuilder api, EState s)
 	{
 		return getPreamble(api, s);
 	}

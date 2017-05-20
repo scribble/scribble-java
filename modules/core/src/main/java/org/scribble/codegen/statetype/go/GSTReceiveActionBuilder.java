@@ -3,7 +3,7 @@ package org.scribble.codegen.statetype.go;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.codegen.statetype.STAPIBuilder;
+import org.scribble.codegen.statetype.STStateChanAPIBuilder;
 import org.scribble.codegen.statetype.STReceiveActionBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
@@ -12,7 +12,7 @@ public class GSTReceiveActionBuilder extends STReceiveActionBuilder
 {
 
 	@Override
-	public String getSTActionName(STAPIBuilder api, EAction a)
+	public String getSTActionName(STStateChanAPIBuilder api, EAction a)
 	{
 		return "Recv_" + a.peer + "_" + a.mid;
 	}
@@ -25,7 +25,7 @@ public class GSTReceiveActionBuilder extends STReceiveActionBuilder
 	}
 
 	@Override
-	public String buildBody(STAPIBuilder api, EState curr, EAction a, EState succ)
+	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
 	{
 		return 
 				  //"op := 

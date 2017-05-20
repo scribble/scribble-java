@@ -8,24 +8,26 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.codegen.statetype.STAPIBuilder;
+import org.scribble.codegen.statetype.STStateChanAPIBuilder;
+import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.del.ModuleDel;
 import org.scribble.main.Job;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.util.MessageIdCollector;
 
-public class GSTAPIBuilder extends STAPIBuilder
+public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 {
 	private int counter = 1;
 	
-	public GSTAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph)
+	public GSTStateChanAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph)
 	{
 		super(job, gpn, role, graph,
 				new GSTOutputStateBuilder(new GSTSendActionBuilder()),
@@ -54,7 +56,7 @@ public class GSTAPIBuilder extends STAPIBuilder
 	}
 	
 	@Override
-	public Map<String, String> buildSessionAPI()
+	public Map<String, String> buildSessionAPI()  // FIXME: factor out
 	{
 		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
@@ -131,5 +133,30 @@ public class GSTAPIBuilder extends STAPIBuilder
 		res.put(this.gpn.toString().replaceAll("\\.", "/") + "/types.go", types);
 		
 		return res;
+	}
+
+	protected static String getPackageDecl(STStateChanAPIBuilder api)
+	{
+		return "package " + api.getPackage();
+	}
+
+	protected static String getStateChanPremable(STStateChanAPIBuilder api, EState s)
+	{
+		return
+				  GSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
+				+ "\n"
+				+ "type " + api.getStateChanName(s) + " struct{}";
+	}
+
+	@Override
+	public String buildAction(STActionBuilder ab, EState curr, EAction a)  // Here because action builder hierarchy not suitable (extended by action kind, not by target language)
+	{
+		EState succ = curr.getSuccessor(a);
+		return
+				  "func (" + ab.getStateChanType(this, curr, a) + ") " + ab.getSTActionName(this, a) + "(" 
+				+ ab.buildArgs(a)
+				+ ") " + ab.buildReturn(curr, this, succ) + " {"
+				+ "\n" + ab.buildBody(this, curr, a, succ)
+				+ "\n}";
 	}
 }

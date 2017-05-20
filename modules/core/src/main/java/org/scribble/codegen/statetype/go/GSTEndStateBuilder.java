@@ -1,6 +1,6 @@
 package org.scribble.codegen.statetype.go;
 
-import org.scribble.codegen.statetype.STAPIBuilder;
+import org.scribble.codegen.statetype.STStateChanAPIBuilder;
 import org.scribble.codegen.statetype.STEndStateBuilder;
 import org.scribble.model.endpoint.EState;
 
@@ -12,14 +12,14 @@ public class GSTEndStateBuilder extends STEndStateBuilder
 	}
 	
 	@Override
-	public String build(STAPIBuilder api, EState s)
+	public String build(STStateChanAPIBuilder api, EState s)
 	{
 		return getPreamble(api, s);
 	}
 
 	@Override
-	public String getPreamble(STAPIBuilder api, EState s)
+	public String getPreamble(STStateChanAPIBuilder api, EState s)
 	{
-		return GSTOutputStateBuilder.getPremable1(api, s);
+		return GSTStateChanAPIBuilder.getStateChanPremable(api, s);
 	}
 }

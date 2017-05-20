@@ -6,7 +6,7 @@ import org.scribble.model.endpoint.actions.EConnect;
 import org.scribble.model.endpoint.actions.EDisconnect;
 import org.scribble.model.endpoint.actions.ESend;
 
-public abstract class STOutputStateBuilder extends STStateBuilder
+public abstract class STOutputStateBuilder extends STStateChanBuilder
 {
 	protected final STSendActionBuilder sb;
 	
@@ -16,7 +16,7 @@ public abstract class STOutputStateBuilder extends STStateBuilder
 	}
 	
 	@Override
-	public String build(STAPIBuilder api, EState s)
+	public String build(STStateChanAPIBuilder api, EState s)
 	{
 		String out = getPreamble(api, s);
 				  /*"package " + getPackage(gpn)

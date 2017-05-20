@@ -4,7 +4,7 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
 
-public abstract class STCaseBuilder extends STStateBuilder  // Is a distinct type but not a state -- OK for now
+public abstract class STCaseBuilder extends STStateChanBuilder  // Is a distinct type but not a state -- OK for now
 {
 	protected final STCaseActionBuilder cb;
 	
@@ -14,7 +14,7 @@ public abstract class STCaseBuilder extends STStateBuilder  // Is a distinct typ
 	}
 	
 	@Override
-	public String build(STAPIBuilder api, EState s)
+	public String build(STStateChanAPIBuilder api, EState s)
 	{
 		String out = getPreamble(api, s);
 		

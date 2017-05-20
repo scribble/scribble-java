@@ -5,28 +5,22 @@ import org.scribble.model.endpoint.actions.EAction;
 
 public abstract class STActionBuilder
 {
-	public abstract String getSTActionName(STAPIBuilder api, EAction a);
+	public abstract String getSTActionName(STStateChanAPIBuilder api, EAction a);
 	public abstract String buildArgs(EAction a);
-	public abstract String buildBody(STAPIBuilder api, EState curr, EAction a, EState succ);
+	public abstract String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ);
 
-	public String buildReturn(EState curr, STAPIBuilder api, EState succ)
+	public String buildReturn(EState curr, STStateChanAPIBuilder api, EState succ)
 	{
-		return api.getSTStateName(succ);
+		return api.getStateChanName(succ);
 	}
 	
-	public String build(STAPIBuilder api, EState curr, EAction a)
+	public String build(STStateChanAPIBuilder api, EState curr, EAction a)
 	{
-		EState succ = curr.getSuccessor(a);
-		return
-				  "func (" + getType(api, curr, a) + ") " + getSTActionName(api, a) + "(" 
-				+ buildArgs(a)
-				+ ") " + buildReturn(curr, api, succ) + " {"
-				+ "\n" + buildBody(api, curr, a, succ)
-				+ "\n}";
+		return api.buildAction(this, curr, a);  // Because action builder hierarchy not suitable (extended by action kinds, not by target language) 
 	}
 	
-	protected String getType(STAPIBuilder api, EState curr, EAction a)
+	public String getStateChanType(STStateChanAPIBuilder api, EState curr, EAction a)
 	{
-		return api.getSTStateName(curr);
+		return api.getStateChanName(curr);
 	}
 }

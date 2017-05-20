@@ -2,7 +2,7 @@ package org.scribble.codegen.statetype.go;
 
 import java.util.stream.Collectors;
 
-import org.scribble.codegen.statetype.STAPIBuilder;
+import org.scribble.codegen.statetype.STStateChanAPIBuilder;
 import org.scribble.codegen.statetype.STCaseBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.sesstype.name.MessageId;
@@ -15,12 +15,12 @@ public class GSTCaseBuilder extends STCaseBuilder
 	}
 
 	@Override
-	public String getPreamble(STAPIBuilder api, EState s)
+	public String getPreamble(STStateChanAPIBuilder api, EState s)
 	{
-		String casefunc = api.getSTStateName(s) + "_Case";  // FIXME: factor out with branch action builder
-		return GSTOutputStateBuilder.getPackageDecl(api) + "\n"
+		String casefunc = api.getStateChanName(s) + "_Case";  // FIXME: factor out with branch action builder
+		return GSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
 				+ "\n"
-				+ "type " + api.getSTStateName(s) + "_Cases interface {\n"
+				+ "type " + api.getStateChanName(s) + "_Cases interface {\n"
 			  + casefunc + "()\n"
 			  + "}\n"
 			  + s.getActions().stream().map(a ->

@@ -9,10 +9,11 @@ import org.scribble.main.Job;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
-public abstract class STAPIBuilder
+public abstract class STStateChanAPIBuilder
 {
 	protected final Job job;
 	
@@ -29,7 +30,7 @@ public abstract class STAPIBuilder
 
 	private Map<Integer, String> names = new HashMap<>();
 	
-	protected STAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph,
+	protected STStateChanAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph,
 			STOutputStateBuilder ob, STReceiveStateBuilder rb, STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
 	{
 		this.job = job;
@@ -57,15 +58,15 @@ public abstract class STAPIBuilder
 			switch (s.getStateKind())
 			{
 				case ACCEPT:      throw new RuntimeException("TODO");
-				case OUTPUT:      api.put(getFilePath(getSTStateName(s)), this.ob.build(this, s)); break;
+				case OUTPUT:      api.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;  // FIXME: use buildAction directly
 				case POLY_INPUT: 
 				{
-					api.put(getFilePath(getSTStateName(s)), this.bb.build(this, s));
-					api.put(getFilePath(getSTStateName(s) + "_Cases"), this.cb.build(this, s));  // FIXME: factor out
+					api.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
+					api.put(getFilePath(getStateChanName(s) + "_Cases"), this.cb.build(this, s));  // FIXME: factor out
 					break;
 				}
-				case TERMINAL:    api.put(getFilePath(getSTStateName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
-				case UNARY_INPUT: api.put(getFilePath(getSTStateName(s)), this.rb.build(this, s)); break;
+				case TERMINAL:    api.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
+				case UNARY_INPUT: api.put(getFilePath(getStateChanName(s)), this.rb.build(this, s)); break;
 				case WRAP_SERVER: throw new RuntimeException("TODO");
 				default:          throw new RuntimeException("Shouldn't get in here: " + s);
 			}
@@ -77,7 +78,7 @@ public abstract class STAPIBuilder
 
 	public abstract String getPackage();
 	
-	public String getSTStateName(EState s)
+	public String getStateChanName(EState s)
 	{
 		String name = this.names.get(s.id);
 		if (name == null)
@@ -90,4 +91,6 @@ public abstract class STAPIBuilder
 	
 	// Should only be called from getSTStateName
 	protected abstract String makeSTStateName(EState s);
+
+	public abstract String buildAction(STActionBuilder ab, EState curr, EAction a);
 }
