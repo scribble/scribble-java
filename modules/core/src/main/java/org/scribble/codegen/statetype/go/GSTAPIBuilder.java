@@ -48,9 +48,9 @@ public class GSTAPIBuilder extends STAPIBuilder
 	}
 
 	@Override
-	public String getFilePath(String name)
+	public String getFilePath(String filename)
 	{
-		return this.gpn.toString().replaceAll("\\.", "/") + "/" + name + ".go";
+		return this.gpn.toString().replaceAll("\\.", "/") + "/" + filename + ".go";
 	}
 	
 	@Override

@@ -64,7 +64,7 @@ public abstract class STAPIBuilder
 					api.put(getFilePath(getSTStateName(s) + "_Cases"), this.cb.build(this, s));  // FIXME: factor out
 					break;
 				}
-				case TERMINAL:    api.put(getFilePath(getSTStateName(s)), this.eb.build(this, s)); break;
+				case TERMINAL:    api.put(getFilePath(getSTStateName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
 				case UNARY_INPUT: api.put(getFilePath(getSTStateName(s)), this.rb.build(this, s)); break;
 				case WRAP_SERVER: throw new RuntimeException("TODO");
 				default:          throw new RuntimeException("Shouldn't get in here: " + s);
