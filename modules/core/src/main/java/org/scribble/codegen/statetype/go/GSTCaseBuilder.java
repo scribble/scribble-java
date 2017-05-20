@@ -22,12 +22,12 @@ public class GSTCaseBuilder extends STCaseBuilder
 				+ "\n"
 				+ "type " + api.getStateChanName(s) + "_Cases interface {\n"
 			  + casefunc + "()\n"
-			  + "}\n"
+			  + "}"
 			  + s.getActions().stream().map(a ->
-			  		  "\ntype " + getOpTypeName(a.mid) + " struct{}\n"
+			  		  "\n\ntype " + getOpTypeName(a.mid) + " struct{}\n"
 			  		+ "\n"
-			  	  + "func (" + getOpTypeName(a.mid) + ") " + casefunc + "() {}\n"
-			  	).collect(Collectors.joining("")) + "\n";
+			  	  + "func (" + getOpTypeName(a.mid) + ") " + casefunc + "() {}"
+			  	).collect(Collectors.joining(""));
 	}
 	
 	protected static String getOpTypeName(MessageId<?> mid)
