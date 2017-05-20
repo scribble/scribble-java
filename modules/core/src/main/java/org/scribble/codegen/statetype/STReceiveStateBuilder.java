@@ -1,8 +1,9 @@
 package org.scribble.codegen.statetype;
 
+import java.util.List;
+
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.model.endpoint.actions.EReceive;
 
 public abstract class STReceiveStateBuilder extends STStateBuilder
 {
@@ -18,18 +19,13 @@ public abstract class STReceiveStateBuilder extends STStateBuilder
 	{
 		String out = getPreamble(api, s);
 		
-		for (EAction a : s.getActions())
+		List<EAction> as = s.getActions();
+		if (as.size() > 1)
 		{
-			out += "\n\n";
-			if (a instanceof EReceive)  // FIXME: factor out action kind
-			{
-				out += this.rb.build(api, s, a);
-			}
-			else
-			{
-				throw new RuntimeException("Shouldn't get in here: " + a);
-			}
+			throw new RuntimeException("Shouldn't get in here: " + as);
 		}
+		out += "\n\n";
+		out += this.rb.build(api, s, as.get(0));
 
 		return out;
 	}

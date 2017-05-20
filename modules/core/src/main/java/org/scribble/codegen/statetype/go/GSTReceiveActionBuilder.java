@@ -25,7 +25,7 @@ public class GSTReceiveActionBuilder extends STReceiveActionBuilder
 	}
 
 	@Override
-	public String buildBody(STAPIBuilder api, EAction a, EState succ)
+	public String buildBody(STAPIBuilder api, EState curr, EAction a, EState succ)
 	{
 		return 
 				  //"op := 
@@ -34,6 +34,6 @@ public class GSTReceiveActionBuilder extends STReceiveActionBuilder
 				           .mapToObj(i -> "val" + i + " := <-role" + api.role + "." + a.peer
 				          		 + "\n" + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
 				          		 ).collect(Collectors.joining("\n")) + "\n"
-				+ "return " + buildReturn(api, succ) + "{}";
+				+ "return " + buildReturn(null, api, succ) + "{}";
 	}
 }

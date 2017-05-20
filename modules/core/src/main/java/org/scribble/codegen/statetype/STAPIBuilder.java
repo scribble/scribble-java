@@ -23,18 +23,24 @@ public abstract class STAPIBuilder
 
 	private final STOutputStateBuilder ob;
 	private final STReceiveStateBuilder rb;
+	private final STBranchStateBuilder bb;
+	private final STCaseBuilder cb;
 	private final STEndStateBuilder eb;
 
 	private Map<Integer, String> names = new HashMap<>();
 	
-	protected STAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph, STOutputStateBuilder ob, STReceiveStateBuilder rb, STEndStateBuilder eb)
+	protected STAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph,
+			STOutputStateBuilder ob, STReceiveStateBuilder rb, STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
 	{
 		this.job = job;
 		this.gpn = gpn;
 		this.role = role;
 		this.graph = graph;
+
 		this.ob = ob;
 		this.rb = rb;
+		this.bb = bb;
+		this.cb = cb;
 		this.eb = eb;
 	}
 	
@@ -51,10 +57,15 @@ public abstract class STAPIBuilder
 			switch (s.getStateKind())
 			{
 				case ACCEPT:      throw new RuntimeException("TODO");
-				case OUTPUT:      api.put(getFilePath(s), this.ob.build(this, s)); break;
-				case POLY_INPUT:  throw new RuntimeException("TODO");
-				case TERMINAL:    api.put(getFilePath(s), this.eb.build(this, s)); break;
-				case UNARY_INPUT: api.put(getFilePath(s), this.rb.build(this, s)); break;
+				case OUTPUT:      api.put(getFilePath(getSTStateName(s)), this.ob.build(this, s)); break;
+				case POLY_INPUT: 
+				{
+					api.put(getFilePath(getSTStateName(s)), this.bb.build(this, s));
+					api.put(getFilePath(getSTStateName(s) + "_Cases"), this.cb.build(this, s));  // FIXME: factor out
+					break;
+				}
+				case TERMINAL:    api.put(getFilePath(getSTStateName(s)), this.eb.build(this, s)); break;
+				case UNARY_INPUT: api.put(getFilePath(getSTStateName(s)), this.rb.build(this, s)); break;
 				case WRAP_SERVER: throw new RuntimeException("TODO");
 				default:          throw new RuntimeException("Shouldn't get in here: " + s);
 			}
@@ -62,7 +73,7 @@ public abstract class STAPIBuilder
 		return api;
 	}
 	
-	public abstract String getFilePath(EState s);
+	public abstract String getFilePath(String name);
 
 	public abstract String getPackage();
 	

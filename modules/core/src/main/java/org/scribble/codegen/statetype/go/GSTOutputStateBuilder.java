@@ -12,17 +12,22 @@ public class GSTOutputStateBuilder extends STOutputStateBuilder
 		super(sb);
 	}
 	
-	protected static String getPremable1(String pack, String statename)
+	protected static String getPackageDecl(STAPIBuilder api)
+	{
+		return "package " + api.getPackage();
+	}
+	
+	protected static String getPremable1(STAPIBuilder api, EState s)
 	{
 		return
-				  "package " + pack
+				  getPackageDecl(api) + "\n"
 				+ "\n"
-				+ "type " + statename + " struct{}";
+				+ "type " + api.getSTStateName(s) + " struct{}";
 	}
 
 	@Override
 	public String getPreamble(STAPIBuilder api, EState s)
 	{
-		return getPremable1(api.getPackage(), api.getSTStateName(s));
+		return getPremable1(api, s);
 	}
 }
