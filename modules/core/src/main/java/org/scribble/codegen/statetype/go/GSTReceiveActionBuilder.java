@@ -27,13 +27,16 @@ public class GSTReceiveActionBuilder extends STReceiveActionBuilder
 	@Override
 	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
 	{
+		String chan = api.getChannelName(api, a);
 		return 
 				  //"op := 
-				  "<-role" + api.role + "." + a.peer + "\n"
+				  //"<-" + chan + "\n"
+				  chan + ".Read()\n"
 				+ IntStream.range(0, a.payload.elems.size())
-				           .mapToObj(i -> "val" + i + " := <-role" + api.role + "." + a.peer
-				          		 + "\n" + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
+				           //.mapToObj(i -> "val" + i + " := <-" + chan + "\n"
+				           .mapToObj(i -> "val" + i + " := " + chan + ".Read()\n"
+				          		 + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
 				          		 ).collect(Collectors.joining("\n")) + "\n"
-				+ "return " + buildReturn(null, api, succ) + "{}";
+				+ buildReturn(curr, api, succ);
 	}
 }

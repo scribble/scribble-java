@@ -27,11 +27,13 @@ public class GSTSendActionBuilder extends STSendActionBuilder
 	@Override
 	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
 	{
-		String chan = api.getChannelName(a);
+		String chan = api.getChannelName(api, a);
 		return 
-				  chan + "<- " + GSTBranchStateBuilder.getBranchEnumValue(a.mid) + "\n"
+				  //chan + "<- " + GSTBranchStateBuilder.getBranchEnumValue(a.mid) + "\n"
+				  chan + ".Write(" + GSTBranchStateBuilder.getBranchEnumValue(a.mid) + ")\n"
 				+ IntStream.range(0, a.payload.elems.size())
-				           .mapToObj(i -> chan + "<- arg" + i).collect(Collectors.joining("\n")) + "\n"
-				+ "return " + buildReturn(null, api, succ) + "{}";
+				           //.mapToObj(i -> chan + "<- arg" + i).collect(Collectors.joining("\n")) + "\n"
+				           .mapToObj(i -> chan + ".Write(arg" + i + ")").collect(Collectors.joining("\n")) + "\n"
+				+ buildReturn(curr, api, succ);
 	}
 }

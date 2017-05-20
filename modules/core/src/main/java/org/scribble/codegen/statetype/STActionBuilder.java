@@ -9,9 +9,14 @@ public abstract class STActionBuilder
 	public abstract String buildArgs(EAction a);
 	public abstract String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ);
 
-	public String buildReturn(EState curr, STStateChanAPIBuilder api, EState succ)
+	public String getReturnType(EState curr, STStateChanAPIBuilder api, EState succ)
 	{
 		return api.getStateChanName(succ);
+	}
+
+	public String buildReturn(EState curr, STStateChanAPIBuilder api, EState succ)
+	{
+		return "return " + getReturnType(curr, api, succ) + "{ ep: s.ep }";
 	}
 	
 	public String build(STStateChanAPIBuilder api, EState curr, EAction a)

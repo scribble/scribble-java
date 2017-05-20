@@ -23,7 +23,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	}
 
 	@Override
-	public String buildReturn(EState curr, STStateChanAPIBuilder api, EState succ)
+	public String getReturnType(EState curr, STStateChanAPIBuilder api, EState succ)
 	{
 		return api.getStateChanName(curr) + "_Cases";  // FIXME: factor out with case builder
 	}

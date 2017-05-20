@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.codegen.statetype.STStateChanAPIBuilder;
 import org.scribble.codegen.statetype.STActionBuilder;
+import org.scribble.codegen.statetype.STStateChanAPIBuilder;
 import org.scribble.del.ModuleDel;
 import org.scribble.main.Job;
 import org.scribble.main.RuntimeScribbleException;
@@ -75,8 +76,9 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 		Set<MessageId<?>> mids = coll.getNames();
 	
 		Map<String, String> res = new HashMap<>();
+		String dir = this.gpn.toString().replaceAll("\\.", "/") + "/";
 
-		// endpoints
+		/*// endpoints
 		String endpoints =
 				  "package " + getPackage() + "\n"
 				+ roles.stream().map(r -> 
@@ -91,10 +93,29 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 						+ "\n"
 						+ "var role" + r + " endpoint" + r
 				).collect(Collectors.joining("\n\n"));
-		res.put(this.gpn.toString().replaceAll("\\.", "/") + "/endpoints.go", endpoints);
+		res.put(dir + "endpoints.go", endpoints);*/
 
 		// roles
-		for (Role r : roles)
+		String sessclass =
+					"package " + getPackage() + "\n"  // FIXME: factor out
+				+ "\n"
+				+ roles.stream().map(r -> 
+				  	  "type " + r + " struct { }\n"
+				  	+ "\n"
+				  	+ "func (" + r +") IsRole() bool {\n"
+				  	+ "return true\n"
+				  	+ "}"
+				  ).collect(Collectors.joining("\n\n")) + "\n"
+				+ "\n"
+				+ "type " + simpname + " struct {\n"
+				+ roles.stream().map(r -> r + " " + r).collect(Collectors.joining("\n")) + "\n"
+				+ "}\n"
+				+ "\n" 
+				+ "func New" + simpname + "() *" + simpname + "{\n"
+				+ "return &" + simpname + "{ " + roles.stream().map(r -> r + ": " + r + "{}").collect(Collectors.joining(", ")) + " }\n"
+				+ "}";
+		res.put(dir + simpname + ".go", sessclass);
+		/*for (Role r : roles)
 		{
 			String init = this.gpn.getSimpleName() + "_" + r + "_" + 1;  // FIXME: factor out naming scheme
 			String role =
@@ -110,7 +131,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 					+ "}\n"
 					+ "return " + init + "{}, role" + r + "\n"
 					+ "}";
-			res.put(this.gpn.toString().replaceAll("\\.", "/") + "/role_" + r + ".go", role);
+			res.put(dir + "role_" + r + ".go", role);
 		}
 
 		// labels
@@ -122,7 +143,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 					  "\ntype op" + mid + " string\n"
 					+ "\n"
 					+ "const " + mid + " op" + mid + " = \"" + mid + "\"\n";
-		}*/
+		}* /
 		res.put(this.gpn.toString().replaceAll("\\.", "/") + "/labels.go", labels);
 
 		// types
@@ -130,7 +151,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 				  "package " + getPackage() + "\n"
 				+ "\n"
 				+ "type T interface {}";
-		res.put(this.gpn.toString().replaceAll("\\.", "/") + "/types.go", types);
+		res.put(dir + "types.go", types);*/
 		
 		return res;
 	}
@@ -142,10 +163,26 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 
 	protected static String getStateChanPremable(STStateChanAPIBuilder api, EState s)
 	{
-		return
+		String tname = api.getStateChanName(s);
+		String res =
 				  GSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
 				+ "\n"
-				+ "type " + api.getStateChanName(s) + " struct{}";
+				+ "import \"org/scribble/runtime/net\"\n"
+				+ "\n"
+				+ "type " + tname + " struct{\n"
+				+ "ep *net.MPSTEndpoint\n"  // FIXME: factor out
+				+ "}";
+		
+		if (s.id == api.graph.init.id)
+		{
+			res +=
+					  "\n\n"
+					+ "func New" + tname + "(ep *net.MPSTEndpoint) *" + tname + " {\n"  // FIXME: factor out
+					+ "return &" + tname + " { ep: ep }\n"
+					+ "}";
+		}
+
+		return res;
 	}
 
 	@Override
@@ -153,16 +190,18 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	{
 		EState succ = curr.getSuccessor(a);
 		return
-				  "func (" + ab.getStateChanType(this, curr, a) + ") " + ab.getSTActionName(this, a) + "(" 
+				  "func (s " + ab.getStateChanType(this, curr, a) + ") " + ab.getSTActionName(this, a) + "(" 
 				+ ab.buildArgs(a)
-				+ ") " + ab.buildReturn(curr, this, succ) + " {"
+				+ ") " + ab.getReturnType(curr, this, succ) + " {"
 				+ "\n" + ab.buildBody(this, curr, a, succ)
 				+ "\n}";
 	}
 	
 	@Override
-	public String getChannelName(EAction a)
+	public String getChannelName(STStateChanAPIBuilder api, EAction a)
 	{
-		return "role" + this.role + "." + a.peer;
+		return
+				//"role" + this.role + "." + a.peer;
+				"s.ep.Chans[s.ep.Proto.(" + api.gpn.getSimpleName() + ")." + a.peer + "]";
 	}
 }
