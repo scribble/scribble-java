@@ -21,8 +21,8 @@ public abstract class STActionBuilder
 				  "func (" + getType(api, curr, a) + ") " + getSTActionName(api, a) + "(" 
 				+ buildArgs(a)
 				+ ") " + buildReturn(curr, api, succ) + " {"
-			  + "\n" + buildBody(api, curr, a, succ)
-			  + "\n}";
+				+ "\n" + buildBody(api, curr, a, succ)
+				+ "\n}";
 	}
 	
 	protected String getType(STAPIBuilder api, EState curr, EAction a)
