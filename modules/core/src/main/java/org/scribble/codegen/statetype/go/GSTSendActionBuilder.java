@@ -28,7 +28,7 @@ public class GSTSendActionBuilder extends STSendActionBuilder
 	public String buildBody(STAPIBuilder api, EState curr, EAction a, EState succ)
 	{
 		return 
-				  "role" + api.role + "." + a.peer + "<- \"" + a.mid + "\"\n"  // FIXME: op type
+				  "role" + api.role + "." + a.peer + "<- " + a.mid + "\n"  // FIXME: op type
 				+ IntStream.range(0, a.payload.elems.size())
 				           .mapToObj(i -> "role" + api.role + "." + a.peer + "<- arg" + i).collect(Collectors.joining("\n")) + "\n"
 				+ "return " + buildReturn(null, api, succ) + "{}";

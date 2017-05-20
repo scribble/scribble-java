@@ -25,7 +25,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	@Override
 	public String buildReturn(EState curr, STAPIBuilder api, EState succ)
 	{
-		return api.getSTStateName(curr) + "_Cases";  // FIXME: factor out
+		return api.getSTStateName(curr) + "_Cases";  // FIXME: factor out with case builder
 	}
 
 	@Override
@@ -33,11 +33,11 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	{
 		return 
 				  "tmp := <-role" + api.role + "." + a.peer + "\n"
-				+ "op := tmp.(" + api.getSTStateName(curr) + "_Enum)\n"  // FIXME: factor out
+				+ "op := tmp.(" + api.getSTStateName(curr) + "_Enum)\n"  // FIXME: factor out with branch state builder
 				+ "switch op {\n"
 				+ curr.getActions().stream().map(x -> 
 						  "case " + x.mid + ":\n"
-						+ "return " + x.mid +"_{}\n"
+						+ "return " + GSTCaseBuilder.getOpTypeName(x.mid) +"{}\n"  // FIXME: factor out
 					).collect(Collectors.joining(""))
 				+ "}\n"
 				+ "return nil";  // FIXME: panic instead

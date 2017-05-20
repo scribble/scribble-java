@@ -28,8 +28,7 @@ public class GSTCaseActionBuilder extends STCaseActionBuilder
 	public String buildBody(STAPIBuilder api, EState curr, EAction a, EState succ)
 	{
 		return 
-				  "<-role" + api.role + "." + a.peer + "\n"
-				+ IntStream.range(0, a.payload.elems.size())
+				  IntStream.range(0, a.payload.elems.size())
 				           .mapToObj(i -> "val" + i + " := <-role" + api.role + "." + a.peer
 				          		 + "\n" + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
 				          		 ).collect(Collectors.joining("\n")) + "\n"
@@ -39,6 +38,6 @@ public class GSTCaseActionBuilder extends STCaseActionBuilder
 	@Override
 	protected String getType(STAPIBuilder api, EState curr, EAction a)
 	{
-		return a.mid + "_";  // FIXME: factor out
+		return GSTCaseBuilder.getOpTypeName(a.mid);
 	}
 }

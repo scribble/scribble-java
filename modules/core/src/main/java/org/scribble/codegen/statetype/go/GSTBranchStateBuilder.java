@@ -18,13 +18,14 @@ public class GSTBranchStateBuilder extends STBranchStateBuilder
 	@Override
 	public String getPreamble(STAPIBuilder api, EState s)
 	{
+		String ename = api.getSTStateName(s) + "_Enum";  // FIXME: factor out with branch action builder
 		List<EAction> as = s.getActions();
 		return GSTOutputStateBuilder.getPremable1(api, s)
 				+ "\n"
-				+ " type " + api.getSTStateName(s) + "_Enum int\n"
+				+ " type " + ename + " int\n"
 				+ "\n"
 				+ "const (\n"
-				+ as.get(0).mid.toString() + " " + api.getSTStateName(s) + "_Enum = iota \n"
+				+ as.get(0).mid.toString() + " " + ename + " = iota \n"
 				+ as.subList(1, as.size()).stream().map(a -> a.mid.toString()).collect(Collectors.joining("\n")) + "\n"
 				+ ")";
 	}
