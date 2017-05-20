@@ -15,6 +15,7 @@ public class GSTReceiveStateBuilder extends STReceiveStateBuilder
 	@Override
 	public String getPreamble(STStateChanAPIBuilder api, EState s)
 	{
-		return GSTStateChanAPIBuilder.getStateChanPremable(api, s);
+		//return GSTStateChanAPIBuilder.getStateChanPremable(api, s);
+		return api.bb.getPreamble(api, s);
 	}
 }

@@ -28,7 +28,7 @@ public class GSTSendActionBuilder extends STSendActionBuilder
 	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
 	{
 		return 
-				  "role" + api.role + "." + a.peer + "<- " + a.mid + "\n"  // FIXME: op type
+				  "role" + api.role + "." + a.peer + "<- " + a.mid + "\n"  // FIXME: factor out with branch state builder (and use lower+_)
 				+ IntStream.range(0, a.payload.elems.size())
 				           .mapToObj(i -> "role" + api.role + "." + a.peer + "<- arg" + i).collect(Collectors.joining("\n")) + "\n"
 				+ "return " + buildReturn(null, api, succ) + "{}";

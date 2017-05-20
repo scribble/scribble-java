@@ -25,7 +25,7 @@ public class GSTBranchStateBuilder extends STBranchStateBuilder
 				+ "type " + ename + " int\n"
 				+ "\n"
 				+ "const (\n"
-				+ as.get(0).mid.toString() + " " + ename + " = iota \n"
+				+ as.get(0).mid.toString() + " " + ename + " = iota \n"  // FIXME: factor out with send action builder (and use lower+_)
 				+ as.subList(1, as.size()).stream().map(a -> a.mid.toString()).collect(Collectors.joining("\n")) + "\n"
 				+ ")";
 	}

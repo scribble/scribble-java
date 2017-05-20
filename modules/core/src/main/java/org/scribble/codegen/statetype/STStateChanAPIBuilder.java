@@ -22,11 +22,11 @@ public abstract class STStateChanAPIBuilder
 
 	public final EGraph graph;
 
-	private final STOutputStateBuilder ob;
-	private final STReceiveStateBuilder rb;
-	private final STBranchStateBuilder bb;
-	private final STCaseBuilder cb;
-	private final STEndStateBuilder eb;
+	public final STOutputStateBuilder ob;
+	public final STReceiveStateBuilder rb;
+	public final STBranchStateBuilder bb;
+	public final STCaseBuilder cb;
+	public final STEndStateBuilder eb;
 
 	private Map<Integer, String> names = new HashMap<>();
 	
@@ -66,7 +66,12 @@ public abstract class STStateChanAPIBuilder
 					break;
 				}
 				case TERMINAL:    api.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
-				case UNARY_INPUT: api.put(getFilePath(getStateChanName(s)), this.rb.build(this, s)); break;
+				case UNARY_INPUT:
+				{
+					api.put(getFilePath(getStateChanName(s)), this.rb.build(this, s));
+					//api.put(getFilePath(getStateChanName(s) + "_Cases"), this.cb.build(this, s));  // FIXME: factor out
+					break;
+				}
 				case WRAP_SERVER: throw new RuntimeException("TODO");
 				default:          throw new RuntimeException("Shouldn't get in here: " + s);
 			}
