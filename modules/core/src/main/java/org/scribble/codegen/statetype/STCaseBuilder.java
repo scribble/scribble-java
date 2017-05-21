@@ -33,4 +33,6 @@ public abstract class STCaseBuilder extends STStateChanBuilder  // Is a distinct
 
 		return out;
 	}
+
+	public abstract String getCaseStateChanName(STStateChanAPIBuilder api, EState s);
 }

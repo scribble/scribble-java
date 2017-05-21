@@ -62,7 +62,7 @@ public abstract class STStateChanAPIBuilder
 				case POLY_INPUT: 
 				{
 					api.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
-					api.put(getFilePath(getStateChanName(s) + "_Cases"), this.cb.build(this, s));  // FIXME: factor out
+					api.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));  // FIXME: factor out
 					break;
 				}
 				case TERMINAL:    api.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket

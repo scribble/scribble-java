@@ -5,7 +5,7 @@ import org.scribble.model.endpoint.actions.EAction;
 
 public abstract class STActionBuilder
 {
-	public abstract String getSTActionName(STStateChanAPIBuilder api, EAction a);
+	public abstract String getActionName(STStateChanAPIBuilder api, EAction a);
 	public abstract String buildArgs(EAction a);
 	public abstract String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ);
 

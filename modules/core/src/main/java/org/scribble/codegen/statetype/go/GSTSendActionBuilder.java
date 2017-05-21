@@ -12,7 +12,7 @@ public class GSTSendActionBuilder extends STSendActionBuilder
 {
 
 	@Override
-	public String getSTActionName(STStateChanAPIBuilder api, EAction a)
+	public String getActionName(STStateChanAPIBuilder api, EAction a)
 	{
 		return "Send_" + a.peer + "_" + a.mid;
 	}

@@ -45,12 +45,21 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	@Override
 	protected String makeSTStateName(EState s)
 	{
-		return s.isTerminal() ? "EndSocket" : this.gpn.getSimpleName() + "_" + role + "_" + this.counter++;
+		if (s.isTerminal())
+		{
+			 return "EndSocket";
+		}
+		String name = this.gpn.getSimpleName() + "_" + role + "_" + this.counter++;
+		return (s.id == this.graph.init.id) ? name : "_" + name;
 	}
 
 	@Override
 	public String getFilePath(String filename)
 	{
+		if (filename.startsWith("_"))  // Cannot use "_" prefix, ignored by Go
+		{
+			filename = "$" + filename.substring(1);
+		}
 		return this.gpn.toString().replaceAll("\\.", "/") + "/" + filename + ".go";
 	}
 	
@@ -210,7 +219,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	{
 		EState succ = curr.getSuccessor(a);
 		return
-				  "func (s *" + ab.getStateChanType(this, curr, a) + ") " + ab.getSTActionName(this, a) + "(" 
+				  "func (s *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
 				+ ab.buildArgs(a)
 				+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
 				+ "s.state.Use()\n"

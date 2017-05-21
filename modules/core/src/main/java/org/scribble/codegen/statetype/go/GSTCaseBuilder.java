@@ -17,15 +17,26 @@ public class GSTCaseBuilder extends STCaseBuilder
 		super(cb);
 	}
 
+	protected static String getCaseActionName(STStateChanAPIBuilder api, EState s)
+	{
+		return api.getStateChanName(s) + "_Case";
+	}
+
+	@Override
+	public String getCaseStateChanName(STStateChanAPIBuilder api, EState s)
+	{
+		return "_" + api.getStateChanName(s) + "_Cases";  // Cannot be the initial state channel
+	}
+	
 	@Override
 	public String getPreamble(STStateChanAPIBuilder api, EState s)
 	{
-		String casefunc = api.getStateChanName(s) + "_Case";  // FIXME: factor out with branch action builder
+		String casefunc = getCaseActionName(api, s);
 		return GSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
 				+ "\n"
 				+ "import \"org/scribble/runtime/net\"\n"  // Some parts duplicated from GSTStateChanAPIBuilder
 				+ "\n"
-				+ "type " + api.getStateChanName(s) + "_Cases interface {\n"
+				+ "type " + getCaseStateChanName(api, s) + " interface {\n"
 			  + casefunc + "()\n"
 			  + "}"
 			  + s.getActions().stream().map(a ->

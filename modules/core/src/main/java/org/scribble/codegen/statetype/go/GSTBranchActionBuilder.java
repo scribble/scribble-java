@@ -14,7 +14,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	{
 		EState succ = curr.getSuccessor(a); 
 		return
-				  "func (s *" + getStateChanType(api, curr, a) + ") " + getSTActionName(api, a) + "(" 
+				  "func (s *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "(" 
 				+ buildArgs(a)
 				//+ ") *" + getReturnType(api, curr, succ) + " {\n"  // HACK: no *return (unlike all other state chans)
 				+ ") " + getReturnType(api, curr, succ) + " {\n"
@@ -24,7 +24,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	}
 
 	@Override
-	public String getSTActionName(STStateChanAPIBuilder api, EAction a)
+	public String getActionName(STStateChanAPIBuilder api, EAction a)
 	{
 		return "Branch_" + a.peer;
 	}
@@ -38,7 +38,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	@Override
 	public String getReturnType(STStateChanAPIBuilder api, EState curr, EState succ)
 	{
-		return api.getStateChanName(curr) + "_Cases";  // FIXME: factor out with case builder
+		return api.cb.getCaseStateChanName(api, curr);
 	}
 
 	@Override
