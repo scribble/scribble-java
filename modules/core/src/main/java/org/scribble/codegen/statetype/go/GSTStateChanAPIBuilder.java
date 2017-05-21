@@ -107,7 +107,8 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	{
 		return
 				//"role" + this.role + "." + a.peer;
-				"s.ep.Chans[s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + "]";
+				//"s.ep.Chans[s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + "]";
+				"s.ep.GetChan(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + ")";
 	}
 
 	@Override
@@ -117,7 +118,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 
 		if (succ.isTerminal())
 		{
-			res += "s.ep.Done = true\n";
+			res += "s.ep.SetDone()\n";
 		}
 		res += "return &" + ab.getReturnType(this, curr, succ) + "{ ep: s.ep";
 		if (!succ.isTerminal())

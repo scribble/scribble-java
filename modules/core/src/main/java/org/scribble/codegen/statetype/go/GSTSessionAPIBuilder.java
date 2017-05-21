@@ -103,7 +103,7 @@ public class GSTSessionAPIBuilder
 				+ "return &" + simpname + "{ " + roles.stream().map(r -> "new" + r + "()").collect(Collectors.joining(", ")) + " }\n"
 				+ "}";
 		
-		// Specific endpoints
+		// Protocol and role specific endpoints
 		sessclass +=
 				roles.stream().map(r ->
 						  "\n\n"
