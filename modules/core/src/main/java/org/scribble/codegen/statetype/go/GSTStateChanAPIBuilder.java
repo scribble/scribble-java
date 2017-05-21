@@ -1,28 +1,26 @@
 package org.scribble.codegen.statetype.go;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanAPIBuilder;
-import org.scribble.del.ModuleDel;
 import org.scribble.main.Job;
-import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleException;
+import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.util.MessageIdCollector;
 
 public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 {
@@ -62,7 +60,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
 		ProtocolDecl<Global> gpd = mod.getProtocolDecl(simpname);
-		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
+		/*MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
 		try
 		{
 			gpd.accept(coll);
@@ -70,10 +68,17 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 		catch (ScribbleException e)
 		{
 			throw new RuntimeScribbleException(e);
-		}
+		}*/
 
 		List<Role> roles = gpd.header.roledecls.getRoles();
-		Set<MessageId<?>> mids = coll.getNames();
+		//Set<MessageId<?>> mids = coll.getNames();
+		Set<EState> instates = new HashSet<>();
+		Predicate<EState> f = (s) -> s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT;
+		if (f.test(this.graph.init))
+		{
+			instates.add(this.graph.init);
+		}
+		instates.addAll(MState.getReachableStates(this.graph.init).stream().filter(f).collect(Collectors.toSet()));
 	
 		Map<String, String> res = new HashMap<>();
 		String dir = this.gpn.toString().replaceAll("\\.", "/") + "/";
@@ -114,6 +119,20 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 				+ "func New" + simpname + "() *" + simpname + "{\n"
 				+ "return &" + simpname + "{ " + roles.stream().map(r -> r + ": " + r + "{}").collect(Collectors.joining(", ")) + " }\n"
 				+ "}";
+				
+		for (EState s : instates)
+		{
+			String ename = GSTBranchStateBuilder.getBranchEnumType(this, s);
+			List<EAction> as = s.getActions();
+			sessclass +=
+				  "\n\ntype " + ename + " int\n"
+				+ "\n"
+				+ "const (\n"
+				+ GSTBranchStateBuilder.getBranchEnumValue(as.get(0).mid) + " " + ename + " = iota \n"
+				+ as.subList(1, as.size()).stream().map(a -> GSTBranchStateBuilder.getBranchEnumValue(a.mid)).collect(Collectors.joining("\n")) + "\n"
+				+ ")";
+		}
+				
 		res.put(dir + simpname + ".go", sessclass);
 		/*for (Role r : roles)
 		{
