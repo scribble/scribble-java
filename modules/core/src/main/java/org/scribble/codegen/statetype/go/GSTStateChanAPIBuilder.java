@@ -39,7 +39,8 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 			 return "_EndState";
 		}
 		String name = this.gpn.getSimpleName() + "_" + role + "_" + this.counter++;
-		return (s.id == this.graph.init.id) ? name : "_" + name;
+		//return (s.id == this.graph.init.id) ? name : "_" + name;  // For "private" non-initial state channels
+		return name;
 	}
 
 	@Override

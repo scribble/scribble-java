@@ -26,7 +26,9 @@ public class GSTCaseBuilder extends STCaseBuilder
 	public String getCaseStateChanName(STStateChanAPIBuilder api, EState s)
 	{
 		String name = api.getStateChanName(s) + "_Cases";
-		return ((s.id == api.graph.init.id) ? "_" : "") + name;  // Case state channel itself cannot be the initial state chan
+		// Should be "private" or not, corresponding to GSTStateChanAPIBuilder.makeSTStateName
+		//return ((s.id == api.graph.init.id) ? "_" : "") + name;  // Case state channel itself cannot be the initial state chan
+		return name;
 	}
 	
 	@Override
