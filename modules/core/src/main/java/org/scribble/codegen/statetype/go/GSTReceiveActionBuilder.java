@@ -31,12 +31,12 @@ public class GSTReceiveActionBuilder extends STReceiveActionBuilder
 		return 
 				  //"op := 
 				  //"<-" + chan + "\n"
-				  chan + ".Read()\n"
+				  chan + ".Read()"
 				+ IntStream.range(0, a.payload.elems.size())
 				           //.mapToObj(i -> "val" + i + " := <-" + chan + "\n"
-				           .mapToObj(i -> "val" + i + " := " + chan + ".Read()\n"
+				           .mapToObj(i -> "\n\nval" + i + " := " + chan + ".Read()\n"
 				          		 + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
-				          		 ).collect(Collectors.joining("\n")) + "\n"
-				+ buildReturn(curr, api, succ);
+				          		 ).collect(Collectors.joining(""))
+				+ "\n" + buildReturn(api, curr, succ);
 	}
 }

@@ -34,6 +34,6 @@ public class GSTSendActionBuilder extends STSendActionBuilder
 				+ IntStream.range(0, a.payload.elems.size())
 				           //.mapToObj(i -> chan + "<- arg" + i).collect(Collectors.joining("\n")) + "\n"
 				           .mapToObj(i -> chan + ".Write(arg" + i + ")").collect(Collectors.joining("\n")) + "\n"
-				+ buildReturn(curr, api, succ);
+				+ buildReturn(api, curr, succ);
 	}
 }

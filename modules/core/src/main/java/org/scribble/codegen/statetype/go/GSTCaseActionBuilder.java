@@ -32,7 +32,7 @@ public class GSTCaseActionBuilder extends STCaseActionBuilder
 				           .mapToObj(i -> "val" + i + " := " + api.getChannelName(api, a) + ".Read()\n"
 				          		 + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
 				          		 ).collect(Collectors.joining("\n")) + "\n"
-				+ buildReturn(curr, api, succ);
+				+ buildReturn(api, curr, succ);
 	}
 	
 	@Override

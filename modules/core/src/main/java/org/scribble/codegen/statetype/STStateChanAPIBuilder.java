@@ -100,4 +100,6 @@ public abstract class STStateChanAPIBuilder
 	public abstract String buildAction(STActionBuilder ab, EState curr, EAction a);
 
 	public abstract String getChannelName(STStateChanAPIBuilder api, EAction a);
+
+	public abstract String buildActionReturn(STActionBuilder ab, EState curr, EState succ);  // FIXME: refactor action builders as interfaces and use generic parameter for kind
 }

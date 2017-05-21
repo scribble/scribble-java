@@ -20,6 +20,16 @@ public class GSTEndStateBuilder extends STEndStateBuilder
 	@Override
 	public String getPreamble(STStateChanAPIBuilder api, EState s)
 	{
-		return GSTStateChanAPIBuilder.getStateChanPremable(api, s);
+		//return GSTStateChanAPIBuilder.getStateChanPremable(api, s);
+		String tname = api.getStateChanName(s);
+		String res =
+				  GSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
+				+ "\n"
+				+ "import \"org/scribble/runtime/net\"\n"
+				+ "\n"
+				+ "type " + tname + " struct{\n"
+				+ "ep *net.MPSTEndpoint\n"  // FIXME: factor out
+				+ "}";
+		return res;  // No LinearResource
 	}
 }

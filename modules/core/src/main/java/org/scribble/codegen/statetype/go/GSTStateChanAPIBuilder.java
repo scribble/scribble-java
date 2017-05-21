@@ -234,4 +234,23 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 				//"role" + this.role + "." + a.peer;
 				"s.ep.Chans[s.ep.Proto.(" + api.gpn.getSimpleName() + ")." + a.peer + "]";
 	}
+
+	@Override
+	public String buildActionReturn(STActionBuilder ab, EState curr, EState succ)  // FIXME: refactor action builders as interfaces and use generic parameter for kind
+	{
+		String res = "";
+
+		if (succ.isTerminal())
+		{
+			res += "s.ep.Done = true\n";
+		}
+		res += "return &" + ab.getReturnType(this, curr, succ) + "{ ep: s.ep";
+		if (!succ.isTerminal())
+		{
+			res += ", state: &net.LinearResource {}";  // FIXME: EndSocket LinearResource special case
+		}
+		res += " }";
+
+		return res;
+	}
 }
