@@ -47,7 +47,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	{
 		if (s.isTerminal())
 		{
-			 return "EndSocket";
+			 return "_EndState";
 		}
 		String name = this.gpn.getSimpleName() + "_" + role + "_" + this.counter++;
 		return (s.id == this.graph.init.id) ? name : "_" + name;
