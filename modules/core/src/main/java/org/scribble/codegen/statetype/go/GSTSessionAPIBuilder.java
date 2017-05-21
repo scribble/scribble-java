@@ -107,12 +107,12 @@ public class GSTSessionAPIBuilder
 		sessclass +=
 				roles.stream().map(r ->
 						  "\n\n"
-						+ "type _Endpoint_" + simpname + "_" + r + " struct {\n"  // FIXME: factor out
+						+ "type _Endpoint" + simpname + "_" + r + " struct {\n"  // FIXME: factor out
 						+ r + " *net.MPSTEndpoint\n"  // FIXME: factor out
 						+ "}\n"
 						+ "\n"
-						+ "func NewEndpoint" + simpname + "_" + r + "(P *" + simpname + ") *_Endpoint_" + simpname + "_" + r + "{\n"  // FIXME: factor out
-						+ "return &_Endpoint_" + simpname + "_" + r + " { " + r + ": net.NewMPSTEndpoint(P, P." + r + ") }\n"  // FIXME: factor out
+						+ "func NewEndpoint" + simpname + "_" + r + "(P *" + simpname + ") *_Endpoint" + simpname + "_" + r + "{\n"  // FIXME: factor out
+						+ "return &_Endpoint" + simpname + "_" + r + " { " + r + ": net.NewMPSTEndpoint(P, P." + r + ") }\n"  // FIXME: factor out
 						+ "}"
 				).collect(Collectors.joining(""));
 		

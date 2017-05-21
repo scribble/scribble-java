@@ -53,6 +53,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 						  "case \"" + x.mid + "\":\n"
 						+ "return &" + GSTCaseBuilder.getOpTypeName(api, curr, x.mid) +"{ ep: s.ep, state: &net.LinearResource {} }\n"  // FIXME: factor out
 					).collect(Collectors.joining(""))
+				+ "default: panic(\"Shouldn't get in here: \" + op)\n"
 				+ "}\n"
 				+ "return nil";  // FIXME: panic instead
 	}

@@ -81,7 +81,8 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 		{
 			res +=
 					  "\n\n"
-					+ "func New" + tname + "(ep *_Endpoint_" + api.gpn.getSimpleName() + "_" + api.role + ") *" + tname + " {\n"  // FIXME: factor out
+					+ "func New" + tname + "(ep *_Endpoint" + api.gpn.getSimpleName() + "_" + api.role + ") *" + tname + " {\n"  // FIXME: factor out
+					+ "ep." + api.role + ".SetInit()\n"
 					+ "return &" + tname + " { ep: ep." + api.role + ", state: &net.LinearResource { } }\n"
 					+ "}";
 		}
