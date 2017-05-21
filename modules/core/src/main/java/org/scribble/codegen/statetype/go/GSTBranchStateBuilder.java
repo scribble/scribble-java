@@ -3,7 +3,6 @@ package org.scribble.codegen.statetype.go;
 import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanAPIBuilder;
 import org.scribble.model.endpoint.EState;
-import org.scribble.sesstype.name.MessageId;
 
 public class GSTBranchStateBuilder extends STBranchStateBuilder
 {
@@ -27,7 +26,7 @@ public class GSTBranchStateBuilder extends STBranchStateBuilder
 				+ ")"*/;
 	}
 	
-	protected static String getBranchEnumType(STStateChanAPIBuilder api, EState s)
+	/*protected static String getBranchEnumType(STStateChanAPIBuilder api, EState s)
 	{
 		return api.getStateChanName(s) + "_Enum";
 	}
@@ -35,5 +34,5 @@ public class GSTBranchStateBuilder extends STBranchStateBuilder
 	protected static String getBranchEnumValue(MessageId<?> mid)
 	{
 		return "_" + mid;
-	}
+	}*/
 }
