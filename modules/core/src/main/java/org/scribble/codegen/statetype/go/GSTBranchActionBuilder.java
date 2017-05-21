@@ -16,8 +16,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 		return
 				  "func (s *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "(" 
 				+ buildArgs(a)
-				//+ ") *" + getReturnType(api, curr, succ) + " {\n"  // HACK: no *return (unlike all other state chans)
-				+ ") " + getReturnType(api, curr, succ) + " {\n"
+				+ ") " + getReturnType(api, curr, succ) + " {\n"  // HACK: Return type is interface, so no need for *return (unlike other state chans)
 				+ "s.state.Use()\n"
 				+ buildBody(api, curr, a, succ) + "\n"
 				+ "}";
@@ -46,10 +45,12 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	{
 		return 
 				  "tmp := " + api.getChannelName(api, a) + ".Read()\n"
-				+ "op := tmp.(" + GSTBranchStateBuilder.getBranchEnumType(api, curr) + ")\n"
+				//+ "op := tmp.(" + GSTBranchStateBuilder.getBranchEnumType(api, curr) + ")\n"
+				+ "op := tmp.(string)\n"
 				+ "switch op {\n"
 				+ curr.getActions().stream().map(x -> 
-						  "case " + GSTBranchStateBuilder.getBranchEnumValue(x.mid) + ":\n"
+						  //"case " + GSTBranchStateBuilder.getBranchEnumValue(x.mid) + ":\n"
+						  "case \"" + x.mid + "\":\n"
 						+ "return &" + GSTCaseBuilder.getOpTypeName(api, curr, x.mid) +"{ ep: s.ep, state: &net.LinearResource {} }\n"  // FIXME: factor out
 					).collect(Collectors.joining(""))
 				+ "}\n"

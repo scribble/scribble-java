@@ -122,7 +122,7 @@ public class GSTSessionAPIBuilder
 		}*/
 
 		// labels
-		String labels = 
+		/*String labels = 
 					"package " + api.getPackage();  // FIXME: factor out
 		for (EState s : instates)
 		{
@@ -135,7 +135,7 @@ public class GSTSessionAPIBuilder
 				+ GSTBranchStateBuilder.getBranchEnumValue(as.get(0).mid) + " " + ename + " = iota \n"
 				+ as.subList(1, as.size()).stream().map(a -> GSTBranchStateBuilder.getBranchEnumValue(a.mid)).collect(Collectors.joining("\n")) + "\n"
 				+ ")";
-		}
+		}*/
 		/*String labels = 
 				  "package " + getPackage() + "\n";
 		/*for (MessageId<?> mid : mids)
@@ -145,7 +145,7 @@ public class GSTSessionAPIBuilder
 					+ "\n"
 					+ "const " + mid + " op" + mid + " = \"" + mid + "\"\n";
 		}*/
-		res.put(dir + "labels_" + api.role + ".go", labels);
+		//res.put(dir + "labels_" + api.role + ".go", labels);
 
 		/*// types
 		String types =
