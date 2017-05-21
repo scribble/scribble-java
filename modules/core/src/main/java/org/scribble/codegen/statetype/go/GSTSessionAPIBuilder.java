@@ -13,7 +13,6 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
-import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -77,6 +76,8 @@ public class GSTSessionAPIBuilder
 		String sessclass =
 					"package " + api.getPackage() + "\n"  // FIXME: factor out
 				+ "\n"
+				+ "import \"org/scribble/runtime/net\"\n"
+				+ "\n"
 				+ roles.stream().map(r -> 
 				  	  "type _" + r + " struct { }\n"
 				  	+ "\n"
@@ -101,6 +102,20 @@ public class GSTSessionAPIBuilder
 				+ "func New" + simpname + "() *" + simpname + "{\n"
 				+ "return &" + simpname + "{ " + roles.stream().map(r -> "new" + r + "()").collect(Collectors.joining(", ")) + " }\n"
 				+ "}";
+		
+		// Specific endpoints
+		sessclass +=
+				roles.stream().map(r ->
+						  "\n\n"
+						+ "type _Endpoint_" + simpname + "_" + r + " struct {\n"  // FIXME: factor out
+						+ r + " *net.MPSTEndpoint\n"  // FIXME: factor out
+						+ "}\n"
+						+ "\n"
+						+ "func NewEndpoint" + simpname + "_" + r + "(P *" + simpname + ") *_Endpoint_" + simpname + "_" + r + "{\n"  // FIXME: factor out
+						+ "return &_Endpoint_" + simpname + "_" + r + " { " + r + ": net.NewMPSTEndpoint(P, P." + r + ") }\n"  // FIXME: factor out
+						+ "}"
+				).collect(Collectors.joining(""));
+		
 		res.put(dir + simpname + ".go", sessclass);
 		/*for (Role r : roles)
 		{
