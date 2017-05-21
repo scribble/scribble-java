@@ -114,19 +114,28 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 					"package " + getPackage() + "\n"  // FIXME: factor out
 				+ "\n"
 				+ roles.stream().map(r -> 
-				  	  "type " + r + " struct { }\n"
+				  	  "type _" + r + " struct { }\n"
 				  	+ "\n"
-				  	+ "func (" + r +") GetRoleName() string {\n"
+				  	+ "func (*_" + r +") GetRoleName() string {\n"
 				  	+ "return \"" + r + "\"\n"
+				  	+ "}\n"
+				  	+ "\n"
+				  	+ "var __" + r + " *_" + r + "\n"
+				  	+ "\n"
+				  	+ "func new" + r + "() *_" + r + " {"  // FIXME: not concurrent
+				  	+ "if __" + r + " == nil {\n"
+				  	+ "__"+ r + " = &_" + r + "{}\n"
+				  	+ "}\n"
+				  	+ "return __" + r + "\n"
 				  	+ "}"
 				  ).collect(Collectors.joining("\n\n")) + "\n"
 				+ "\n"
 				+ "type " + simpname + " struct {\n"
-				+ roles.stream().map(r -> r + " " + r).collect(Collectors.joining("\n")) + "\n"  // FIXME: role constants should be pointers?
+				+ roles.stream().map(r -> r + " *_" + r).collect(Collectors.joining("\n")) + "\n"  // FIXME: role constants should be pointers?
 				+ "}\n"
 				+ "\n" 
 				+ "func New" + simpname + "() *" + simpname + "{\n"
-				+ "return &" + simpname + "{ " + roles.stream().map(r -> r + ": " + r + "{}").collect(Collectors.joining(", ")) + " }\n"
+				+ "return &" + simpname + "{ " + roles.stream().map(r -> "new" + r + "()").collect(Collectors.joining(", ")) + " }\n"
 				+ "}";
 		res.put(dir + simpname + ".go", sessclass);
 		/*for (Role r : roles)
@@ -232,7 +241,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	{
 		return
 				//"role" + this.role + "." + a.peer;
-				"s.ep.Chans[s.ep.Proto.(" + api.gpn.getSimpleName() + ")." + a.peer + "]";
+				"s.ep.Chans[s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + "]";
 	}
 
 	@Override
