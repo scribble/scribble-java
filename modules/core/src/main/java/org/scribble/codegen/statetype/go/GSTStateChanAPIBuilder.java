@@ -210,7 +210,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	{
 		EState succ = curr.getSuccessor(a);
 		return
-				  "func (s " + ab.getStateChanType(this, curr, a) + ") " + ab.getSTActionName(this, a) + "(" 
+				  "func (s *" + ab.getStateChanType(this, curr, a) + ") " + ab.getSTActionName(this, a) + "(" 
 				+ ab.buildArgs(a)
 				+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
 				+ "s.state.Use()\n"

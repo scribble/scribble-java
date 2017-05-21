@@ -10,11 +10,11 @@ import org.scribble.model.endpoint.actions.EAction;
 public class GSTBranchActionBuilder extends STBranchActionBuilder
 {
 	@Override
-	public String build(STStateChanAPIBuilder api, EState curr, EAction a)  // FIXME: "overriding" GSTStateChanAPIBuilder.buildAction to hack around *interface return
+	public String build(STStateChanAPIBuilder api, EState curr, EAction a)  // FIXME: "overriding" GSTStateChanAPIBuilder.buildAction to hack around *interface return  // FIXME: factor out
 	{
-		EState succ = curr.getSuccessor(a);
+		EState succ = curr.getSuccessor(a); 
 		return
-				  "func (s " + getStateChanType(api, curr, a) + ") " + getSTActionName(api, a) + "(" 
+				  "func (s *" + getStateChanType(api, curr, a) + ") " + getSTActionName(api, a) + "(" 
 				+ buildArgs(a)
 				//+ ") *" + getReturnType(api, curr, succ) + " {\n"  // HACK: no *return (unlike all other state chans)
 				+ ") " + getReturnType(api, curr, succ) + " {\n"
@@ -50,7 +50,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 				+ "switch op {\n"
 				+ curr.getActions().stream().map(x -> 
 						  "case " + GSTBranchStateBuilder.getBranchEnumValue(x.mid) + ":\n"
-						+ "return " + GSTCaseBuilder.getOpTypeName(api, curr, x.mid) +"{ ep: s.ep, state: &net.LinearResource {} }\n"  // FIXME: factor out
+						+ "return &" + GSTCaseBuilder.getOpTypeName(api, curr, x.mid) +"{ ep: s.ep, state: &net.LinearResource {} }\n"  // FIXME: factor out
 					).collect(Collectors.joining(""))
 				+ "}\n"
 				+ "return nil";  // FIXME: panic instead
