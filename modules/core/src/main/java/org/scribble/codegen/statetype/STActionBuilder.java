@@ -16,7 +16,16 @@ public abstract class STActionBuilder
 
 	public String buildReturn(EState curr, STStateChanAPIBuilder api, EState succ)
 	{
-		return "return " + getReturnType(curr, api, succ) + "{ ep: s.ep }";
+		String res = "";
+
+		if (succ.isTerminal())
+		{
+			res += "s.ep.Done = true\n";
+		}
+
+		res += "return " + getReturnType(curr, api, succ) + "{ ep: s.ep, state: &net.LinearResource {} }";  // FIXME: EndSocket LinearResource special case
+
+		return res;
 	}
 	
 	public String build(STStateChanAPIBuilder api, EState curr, EAction a)

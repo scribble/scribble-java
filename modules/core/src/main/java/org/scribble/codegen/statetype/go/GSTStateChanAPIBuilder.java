@@ -102,13 +102,13 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 				+ roles.stream().map(r -> 
 				  	  "type " + r + " struct { }\n"
 				  	+ "\n"
-				  	+ "func (" + r +") IsRole() bool {\n"
-				  	+ "return true\n"
+				  	+ "func (" + r +") GetRoleName() string {\n"
+				  	+ "return \"" + r + "\"\n"
 				  	+ "}"
 				  ).collect(Collectors.joining("\n\n")) + "\n"
 				+ "\n"
 				+ "type " + simpname + " struct {\n"
-				+ roles.stream().map(r -> r + " " + r).collect(Collectors.joining("\n")) + "\n"
+				+ roles.stream().map(r -> r + " " + r).collect(Collectors.joining("\n")) + "\n"  // FIXME: role constants should be pointers?
 				+ "}\n"
 				+ "\n" 
 				+ "func New" + simpname + "() *" + simpname + "{\n"
@@ -171,6 +171,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 				+ "\n"
 				+ "type " + tname + " struct{\n"
 				+ "ep *net.MPSTEndpoint\n"  // FIXME: factor out
+				+ "state *net.LinearResource\n"  // FIXME: EndSocket special case?  // FIXME: only seems to work as a pointer (something to do with method calls via value recievers?  is it copying the value before calling the function?)
 				+ "}";
 		
 		if (s.id == api.graph.init.id)
@@ -178,7 +179,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 			res +=
 					  "\n\n"
 					+ "func New" + tname + "(ep *net.MPSTEndpoint) *" + tname + " {\n"  // FIXME: factor out
-					+ "return &" + tname + " { ep: ep }\n"
+					+ "return &" + tname + " { ep: ep, state: &net.LinearResource { } }\n"
 					+ "}";
 		}
 
@@ -192,9 +193,10 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 		return
 				  "func (s " + ab.getStateChanType(this, curr, a) + ") " + ab.getSTActionName(this, a) + "(" 
 				+ ab.buildArgs(a)
-				+ ") " + ab.getReturnType(curr, this, succ) + " {"
-				+ "\n" + ab.buildBody(this, curr, a, succ)
-				+ "\n}";
+				+ ") " + ab.getReturnType(curr, this, succ) + " {\n"
+				+ "s.state.Use()\n"
+				+ ab.buildBody(this, curr, a, succ) + "\n"
+				+ "}";
 	}
 	
 	@Override

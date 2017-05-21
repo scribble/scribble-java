@@ -32,7 +32,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
 	{
 		return 
-				  "tmp := <-" + api.getChannelName(a) + "\n"
+				  "tmp := <-" + api.getChannelName(api, a) + "\n"
 				+ "op := tmp.(" + GSTBranchStateBuilder.getBranchEnumType(api, curr) + ")\n"
 				+ "switch op {\n"
 				+ curr.getActions().stream().map(x -> 
