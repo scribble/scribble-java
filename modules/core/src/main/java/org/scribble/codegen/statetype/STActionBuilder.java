@@ -9,7 +9,7 @@ public abstract class STActionBuilder
 	public abstract String buildArgs(EAction a);
 	public abstract String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ);
 
-	public String getReturnType(EState curr, STStateChanAPIBuilder api, EState succ)
+	public String getReturnType(STStateChanAPIBuilder api, EState curr, EState succ)
 	{
 		return api.getStateChanName(succ);
 	}
@@ -23,7 +23,7 @@ public abstract class STActionBuilder
 			res += "s.ep.Done = true\n";
 		}
 
-		res += "return " + getReturnType(curr, api, succ) + "{ ep: s.ep, state: &net.LinearResource {} }";  // FIXME: EndSocket LinearResource special case
+		res += "return &" + getReturnType(api, curr, succ) + "{ ep: s.ep, state: &net.LinearResource {} }";  // FIXME: EndSocket LinearResource special case
 
 		return res;
 	}

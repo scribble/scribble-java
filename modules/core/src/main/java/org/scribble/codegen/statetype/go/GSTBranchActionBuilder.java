@@ -9,6 +9,19 @@ import org.scribble.model.endpoint.actions.EAction;
 
 public class GSTBranchActionBuilder extends STBranchActionBuilder
 {
+	@Override
+	public String build(STStateChanAPIBuilder api, EState curr, EAction a)  // FIXME: "overriding" GSTStateChanAPIBuilder.buildAction to hack around *interface return
+	{
+		EState succ = curr.getSuccessor(a);
+		return
+				  "func (s " + getStateChanType(api, curr, a) + ") " + getSTActionName(api, a) + "(" 
+				+ buildArgs(a)
+				//+ ") *" + getReturnType(api, curr, succ) + " {\n"  // HACK: no *return (unlike all other state chans)
+				+ ") " + getReturnType(api, curr, succ) + " {\n"
+				+ "s.state.Use()\n"
+				+ buildBody(api, curr, a, succ) + "\n"
+				+ "}";
+	}
 
 	@Override
 	public String getSTActionName(STStateChanAPIBuilder api, EAction a)
@@ -23,7 +36,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	}
 
 	@Override
-	public String getReturnType(EState curr, STStateChanAPIBuilder api, EState succ)
+	public String getReturnType(STStateChanAPIBuilder api, EState curr, EState succ)
 	{
 		return api.getStateChanName(curr) + "_Cases";  // FIXME: factor out with case builder
 	}
@@ -42,4 +55,5 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 				+ "}\n"
 				+ "return nil";  // FIXME: panic instead
 	}
+
 }

@@ -119,20 +119,6 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 				+ "func New" + simpname + "() *" + simpname + "{\n"
 				+ "return &" + simpname + "{ " + roles.stream().map(r -> r + ": " + r + "{}").collect(Collectors.joining(", ")) + " }\n"
 				+ "}";
-				
-		for (EState s : instates)
-		{
-			String ename = GSTBranchStateBuilder.getBranchEnumType(this, s);
-			List<EAction> as = s.getActions();
-			sessclass +=
-				  "\n\ntype " + ename + " int\n"
-				+ "\n"
-				+ "const (\n"
-				+ GSTBranchStateBuilder.getBranchEnumValue(as.get(0).mid) + " " + ename + " = iota \n"
-				+ as.subList(1, as.size()).stream().map(a -> GSTBranchStateBuilder.getBranchEnumValue(a.mid)).collect(Collectors.joining("\n")) + "\n"
-				+ ")";
-		}
-				
 		res.put(dir + simpname + ".go", sessclass);
 		/*for (Role r : roles)
 		{
@@ -151,10 +137,24 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 					+ "return " + init + "{}, role" + r + "\n"
 					+ "}";
 			res.put(dir + "role_" + r + ".go", role);
-		}
+		}*/
 
 		// labels
 		String labels = 
+					"package " + getPackage();  // FIXME: factor out
+		for (EState s : instates)
+		{
+			String ename = GSTBranchStateBuilder.getBranchEnumType(this, s);
+			List<EAction> as = s.getActions();
+			labels +=
+				  "\n\ntype " + ename + " int\n"
+				+ "\n"
+				+ "const (\n"
+				+ GSTBranchStateBuilder.getBranchEnumValue(as.get(0).mid) + " " + ename + " = iota \n"
+				+ as.subList(1, as.size()).stream().map(a -> GSTBranchStateBuilder.getBranchEnumValue(a.mid)).collect(Collectors.joining("\n")) + "\n"
+				+ ")";
+		}
+		/*String labels = 
 				  "package " + getPackage() + "\n";
 		/*for (MessageId<?> mid : mids)
 		{
@@ -162,10 +162,10 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 					  "\ntype op" + mid + " string\n"
 					+ "\n"
 					+ "const " + mid + " op" + mid + " = \"" + mid + "\"\n";
-		}* /
-		res.put(this.gpn.toString().replaceAll("\\.", "/") + "/labels.go", labels);
+		}*/
+		res.put(dir + "labels_" + this.role + ".go", labels);
 
-		// types
+		/*// types
 		String types =
 				  "package " + getPackage() + "\n"
 				+ "\n"
@@ -212,7 +212,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 		return
 				  "func (s " + ab.getStateChanType(this, curr, a) + ") " + ab.getSTActionName(this, a) + "(" 
 				+ ab.buildArgs(a)
-				+ ") " + ab.getReturnType(curr, this, succ) + " {\n"
+				+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
 				+ "s.state.Use()\n"
 				+ ab.buildBody(this, curr, a, succ) + "\n"
 				+ "}";

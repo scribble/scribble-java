@@ -58,7 +58,7 @@ public abstract class STStateChanAPIBuilder
 			switch (s.getStateKind())
 			{
 				case ACCEPT:      throw new RuntimeException("TODO");
-				case OUTPUT:      api.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;  // FIXME: use buildAction directly
+				case OUTPUT:      api.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
 				case POLY_INPUT: 
 				{
 					api.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
