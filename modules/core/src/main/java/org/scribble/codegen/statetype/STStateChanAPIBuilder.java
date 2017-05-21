@@ -15,11 +15,10 @@ import org.scribble.sesstype.name.Role;
 
 public abstract class STStateChanAPIBuilder
 {
-	protected final Job job;
+	public final Job job;
 	
 	public final GProtocolName gpn;
 	public final Role role;
-
 	public final EGraph graph;
 
 	public final STOutputStateBuilder ob;
@@ -34,6 +33,7 @@ public abstract class STStateChanAPIBuilder
 			STOutputStateBuilder ob, STReceiveStateBuilder rb, STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
 	{
 		this.job = job;
+
 		this.gpn = gpn;
 		this.role = role;
 		this.graph = graph;

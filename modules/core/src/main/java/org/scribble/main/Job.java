@@ -165,7 +165,7 @@ public class Job
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
 		GSTStateChanAPIBuilder apigen = new GSTStateChanAPIBuilder(this, fullname, self, this.jcontext.getEGraph(fullname, self));
 		Map<String, String> api = apigen.build();  // filepath -> source 
-		api.putAll(apigen.buildSessionAPI());
+		api.putAll(apigen.buildSessionAPI());  // FIXME: factor better with STStateChanAPIBuilder
 		return api;
 	}
 
