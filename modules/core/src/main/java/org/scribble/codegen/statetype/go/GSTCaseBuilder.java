@@ -23,11 +23,16 @@ public class GSTCaseBuilder extends STCaseBuilder
 		String casefunc = api.getStateChanName(s) + "_Case";  // FIXME: factor out with branch action builder
 		return GSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
 				+ "\n"
+				+ "import \"org/scribble/runtime/net\"\n"  // Some parts duplicated from GSTStateChanAPIBuilder
+				+ "\n"
 				+ "type " + api.getStateChanName(s) + "_Cases interface {\n"
 			  + casefunc + "()\n"
 			  + "}"
 			  + s.getActions().stream().map(a ->
-			  		  "\n\ntype " + getOpTypeName(api, s, a.mid) + " struct{}\n"
+			  		  "\n\ntype " + getOpTypeName(api, s, a.mid) + " struct{\n"
+						+ "ep *net.MPSTEndpoint\n"  // FIXME: factor out
+						+ "state *net.LinearResource\n"  // FIXME: EndSocket special case?  // FIXME: only seems to work as a pointer (something to do with method calls via value recievers?  is it copying the value before calling the function?)
+			  		+ "}\n"
 			  		+ "\n"
 			  	  + "func (" + getOpTypeName(api, s, a.mid) + ") " + casefunc + "() {}"
 			  	).collect(Collectors.joining(""));
