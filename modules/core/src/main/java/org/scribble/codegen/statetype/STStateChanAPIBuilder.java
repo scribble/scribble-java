@@ -1,7 +1,7 @@
 package org.scribble.codegen.statetype;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,7 +50,7 @@ public abstract class STStateChanAPIBuilder
 	public Map<String, String> build()  // filepath -> source
 	{
 		Map<String, String> api = new HashMap<>();
-		Set<EState> states = new HashSet<>();
+		Set<EState> states = new LinkedHashSet<>();
 		states.add(this.graph.init);
 		states.addAll(MState.getReachableStates(this.graph.init));
 		for (EState s : states)

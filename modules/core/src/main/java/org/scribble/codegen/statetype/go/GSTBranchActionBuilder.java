@@ -57,5 +57,4 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 				+ "}\n"
 				+ "return nil";  // FIXME: panic instead
 	}
-
 }

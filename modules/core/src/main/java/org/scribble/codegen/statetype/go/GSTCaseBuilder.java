@@ -60,14 +60,14 @@ public class GSTCaseBuilder extends STCaseBuilder
 		char c = op.charAt(0);
 		if (c < 'A' || c > 'Z')
 		{
-			throw new RuntimeScribbleException("[go-api-gen] Message op should start with a captial letter, not: " + c);  // FIXME:
+			throw new RuntimeScribbleException("[go-api-gen] Branch message op should start with a capital letter: " + op);  // FIXME:
 		}
 		if (GSTCaseBuilder.seen.containsKey(op))
 		{
 			if (GSTCaseBuilder.seen.get(op) != s.id)
 			{
 				String n = api.getStateChanName(s);  // HACK
-				op = op + "_" + n.substring(n.lastIndexOf('_') + 1);
+				op = op + "_" + api.role + "_" + n.substring(n.lastIndexOf('_') + 1);
 			}
 		}
 		else
