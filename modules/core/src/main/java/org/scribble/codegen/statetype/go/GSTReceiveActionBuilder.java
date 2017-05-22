@@ -27,14 +27,19 @@ public class GSTReceiveActionBuilder extends STReceiveActionBuilder
 	@Override
 	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
 	{
-		String chan = api.getChannelName(api, a);
+		//String chan = api.getChannelName(api, a);
 		return 
 				  //"op := 
-				  chan + ".Read()"
+				  //chan + ".Read()"
+				  "s.ep.Read(s.ep.Proto.(*" + api.gpn.getSimpleName() +")." + a.peer + ")"
 				+ IntStream.range(0, a.payload.elems.size())
-				           .mapToObj(i -> "\n\nval" + i + " := " + chan + ".Read()\n"
+				           //.mapToObj(i -> "\n\nval" + i + " := " + chan + ".Read()\n"
+				           .mapToObj(i -> "\n\nval" + i + " := s.ep.Read(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")."+ a.peer + ")\n"
 				          		 + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
-				          		 ).collect(Collectors.joining(""))
-				+ "\n" + buildReturn(api, curr, succ);
+				          		 ).collect(Collectors.joining("")) + "\n"
+				+ "if s.ep.Err != nil {\n"
+			  + "return nil\n"
+				+ "}\n"
+				+ buildReturn(api, curr, succ);
 	}
 }

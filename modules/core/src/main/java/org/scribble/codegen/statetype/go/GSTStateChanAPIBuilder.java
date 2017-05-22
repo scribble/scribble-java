@@ -107,9 +107,9 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	public String getChannelName(STStateChanAPIBuilder api, EAction a)
 	{
 		return
-				//"role" + this.role + "." + a.peer;
-				//"s.ep.Chans[s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + "]";
-				"s.ep.GetChan(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + ")";
+				////"s.ep.Chans[s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + "]";
+				//"s.ep.GetChan(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + ")";
+				null;
 	}
 
 	@Override

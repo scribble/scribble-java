@@ -29,9 +29,14 @@ public class GSTCaseActionBuilder extends STCaseActionBuilder
 	{
 		return 
 				  IntStream.range(0, a.payload.elems.size())
-				           .mapToObj(i -> "val" + i + " := " + api.getChannelName(api, a) + ".Read()\n"
-				          		 + "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
-				          		 ).collect(Collectors.joining("\n")) + "\n"
+							.mapToObj(i -> 
+										//"val" + i + " := " + api.getChannelName(api, a) + ".Read()\n"
+									  "val" + i + " := s.ep.Read(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + ")\n"
+									+ "if s.ep.Err != nil {\n"
+									+ "return nil\n"
+								  + "}\n"
+									+ "*arg" + i + " = val" + i + ".(" + a.payload.elems.get(i) + ")"
+							).collect(Collectors.joining("\n")) + "\n"
 				+ buildReturn(api, curr, succ);
 	}
 	

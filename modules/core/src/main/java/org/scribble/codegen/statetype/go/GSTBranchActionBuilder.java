@@ -44,8 +44,12 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
 	{
 		return 
-				  "tmp := " + api.getChannelName(api, a) + ".Read()\n"
+				  //"tmp := " + api.getChannelName(api, a) + ".Read()\n"
+				  "tmp := s.ep.Read(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + ")\n"
 				//+ "op := tmp.(" + GSTBranchStateBuilder.getBranchEnumType(api, curr) + ")\n"
+				+ "if s.ep.Err != nil {\n"
+				+ "return nil\n"
+				+ "}\n"
 				+ "op := tmp.(string)\n"
 				+ "switch op {\n"
 				+ curr.getActions().stream().map(x -> 

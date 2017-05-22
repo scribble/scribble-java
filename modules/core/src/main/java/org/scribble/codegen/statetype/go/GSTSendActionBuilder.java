@@ -27,12 +27,17 @@ public class GSTSendActionBuilder extends STSendActionBuilder
 	@Override
 	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
 	{
-		String chan = api.getChannelName(api, a);
+		//String chan = api.getChannelName(api, a);
 		return 
-				  //chan + ".Write(" + GSTBranchStateBuilder.getBranchEnumValue(a.mid) + ")\n"
-				  chan + ".Write(\"" + a.mid + "\")\n"
+				  ////chan + ".Write(" + GSTBranchStateBuilder.getBranchEnumValue(a.mid) + ")\n"
+				  //chan + ".Write(\"" + a.mid + "\")\n"
+				  "s.ep.Write(s.ep.Proto.(*" + api.gpn.getSimpleName() +")." + a.peer + ", \"" + a.mid + "\")\n"
 				+ IntStream.range(0, a.payload.elems.size())
-				           .mapToObj(i -> chan + ".Write(arg" + i + ")").collect(Collectors.joining("\n")) + "\n"
+				      //.mapToObj(i -> chan + ".Write(arg" + i + ")").collect(Collectors.joining("\n")) + "\n"
+				      .mapToObj(i -> "s.ep.Write(s.ep.Proto.(*" + api.gpn.getSimpleName() +")." + a.peer + ", arg" + i + ")").collect(Collectors.joining("\n")) + "\n"
+				+ "if s.ep.Err != nil {\n"
+				+ "return nil"
+				+ "}\n"
 				+ buildReturn(api, curr, succ);
 	}
 }
