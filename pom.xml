@@ -38,9 +38,14 @@
 		</developer>
 	</developers>
   
+	<inceptionYear>2008</inceptionYear>
+
+	<organization>
+		<name>Scribble</name>
+		<url>http://www.scribble.org</url>
+	</organization>
+
 	<properties>
-		<project.organization.name>Scribble.org</project.organization.name>
-		<project.inceptionYear>2008</project.inceptionYear>
 		<antlr.version>3.4</antlr.version>
 		<log4j.version>1.2.14</log4j.version>
 		<jackson.version>1.9.9</jackson.version>
@@ -60,8 +65,8 @@
 		<module>modules/parser</module>
 		<module>modules/cli</module>
 		<module>dist</module>
-    <module>modules/demos</module>
-  </modules>
+		<module>modules/demos</module>
+	</modules>
   
 	<dependencyManagement>
 		<dependencies> 
@@ -149,6 +154,11 @@
 				    <artifactId>maven-jdocbook-plugin</artifactId>
 				    <version>2.3.8</version>
  				</plugin>
+				<plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>3.0</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -208,6 +218,32 @@
 						<goals>
 							<goal>checkstyle</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<header>header.txt</header>
+					<failIfMissing>true</failIfMissing>
+					<failIfUnknown>true</failIfUnknown>
+					<excludes>
+						<exclude>**/*.txt</exclude>
+						<exclude>**/*.xml</exclude>
+						<exclude>**/*.scr</exclude>
+						<exclude>**/*.policy</exclude>
+						<exclude>**/Scribble.g</exclude>
+						<exclude>**/Scribble-0.3.original</exclude>
+						<exclude>**/IGNORE</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<phase>compile</phase>
 					</execution>
 				</executions>
 			</plugin>
