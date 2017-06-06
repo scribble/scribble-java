@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.scribble</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.4-SNAPSHOT</version>
+	<version>0.4.0</version>
 	<packaging>pom</packaging>
 	<name>Scribble</name>
 	<url>http://www.scribble.org</url>
@@ -15,7 +15,7 @@
 		<url>https://github.com/scribble/scribble-java</url>
 		<connection>scm:git:https://github.com/scribble/scribble-java.git</connection>
 		<developerConnection>scm:git:https://github.com/scribble/scribble-java.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>0.4.0</tag>
 	</scm>
 
 	<licenses>
@@ -217,7 +217,7 @@
 					<consoleOutput>false</consoleOutput>
 					<suppressionsLocation>checkstyle/suppressions.xml</suppressionsLocation>
 					<failsOnError>false</failsOnError>
-					<useFile/>
+					<useFile />
 				</configuration>
 				<dependencies>
 					<dependency>
