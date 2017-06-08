@@ -1,0 +1,30 @@
+/**
+ * Assuming scribblec.sh in the scribble-java root directory:
+ * 
+ * Check Adder protocol: 
+ * $ ./scribblec.sh modules/demos/scrib/tutorial/src/tutorial/adder/Adder.scr 
+ * 
+ * Generate Endpoint API for C: 
+ * $ ./scribblec.sh modules/demos/scrib/tutorial/src/tutorial/adder/Adder.scr -api Adder C -d modules/demos/scrib/tutorial/src/
+ * 
+ * [Java] Generate javadoc from Endpoint API(s):
+ * $ javadoc -cp modules/core/target/classes:modules/demos/scrib/tutorial/src -subpackages tutorial.adder.Adder.Adder -d modules/demos/scrib/tutorial/javadoc/adder
+ * 
+ */
+
+
+module tutorial.adder.Adder;
+
+
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+
+global protocol Adder(role C, role S) {
+	choice at C {
+		Add(Int, Int) from C to S;
+		Res(Int) from S to C;
+		do Adder(C, S);
+	} or {
+		Bye() from C to S;
+	}
+}
