@@ -66,6 +66,9 @@
 		<version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>
 		<version.io.takari-maven>0.3.4</version.io.takari-maven>
 		<version.io.zikin.centralsync-maven-plugin>0.1.0</version.io.zikin.centralsync-maven-plugin>
+
+		<version.coveralls-maven-plugin>4.3.0</version.coveralls-maven-plugin>
+		<version.jacoco-maven-plugin>0.7.9</version.jacoco-maven-plugin>
 	</properties>
 
 	<modules>
@@ -255,6 +258,7 @@
 						<exclude>**/Scribble.g</exclude>
 						<exclude>**/Scribble-0.3.original</exclude>
 						<exclude>**/IGNORE</exclude>
+						<exclude>.coveralls.yml</exclude>
 					</excludes>
 				</configuration>
 				<executions>
@@ -285,6 +289,31 @@
 					<repo>maven</repo>
 					<packageName>scribble-java</packageName>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eluder.coveralls</groupId>
+				<artifactId>coveralls-maven-plugin</artifactId>
+				<version>${version.coveralls-maven-plugin}</version>
+				<configuration>
+					<sourceEncoding>UTF-8</sourceEncoding>
+					<sourceDirectories>
+						<sourceDirectory>${project.basedir}/modules/parser/target/generated-sources/antlr3</sourceDirectory>
+					</sourceDirectories>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${version.jacoco-maven-plugin}</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
