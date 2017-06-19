@@ -259,6 +259,7 @@
 						<exclude>**/Scribble-0.3.original</exclude>
 						<exclude>**/IGNORE</exclude>
 						<exclude>bin/*.sh</exclude>
+						<exclude>**/*.swp</exclude>
 					</excludes>
 				</configuration>
 				<executions>
