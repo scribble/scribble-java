@@ -8,7 +8,6 @@ tools/eclipse/plugins/org.scribble.*/bin/
 .DS_Store
 *~
 *.swp
-bin/scribblec.sh
 *.bak
 
 javadoc
@@ -53,4 +52,8 @@ modules/core/src/test/scrib/test/test6/
 modules/core/src/test/scrib/test/test7/
 modules/core/src/test/scrib/test/test8/
 modules/core/src/test/scrib/test/test9/
+
+
+bin/scribblec.sh
+permissions-fix.sh
 
