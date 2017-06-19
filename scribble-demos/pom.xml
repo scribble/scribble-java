@@ -9,7 +9,7 @@
     <groupId>org.scribble</groupId>
     <artifactId>parent</artifactId>
     <version>0.4.4-SNAPSHOT</version>
-    <relativePath>../../pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <dependencies>
