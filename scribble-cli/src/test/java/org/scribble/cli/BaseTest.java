@@ -11,32 +11,22 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package scribtest;
+package org.scribble.cli;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.scribble.cli.CommandLine;
-import org.scribble.cli.CommandLineArgParser;
-import org.scribble.cli.CommandLineException;
 import org.scribble.main.ScribbleException;
 import org.scribble.util.ScribParserException;
 
-/**
- * Runs all tests under good and bad root directories in Scribble.
+/*
+ * Packaging following pattern of putting tests into same package but different directory as classes being tested:
+ * (in this case, testing org.scribble.cli.CommandLine -- but this essentially tests most of core/parser)
  */
-//@RunWith(value = Parameterized.class)
-@RunWith(Parameterized.class)
-public class AllTest
+public abstract class BaseTest
 {
 	protected static final boolean GOOD_TEST = false;
 	protected static final boolean BAD_TEST = !GOOD_TEST;
@@ -49,22 +39,10 @@ public class AllTest
 	protected static final String GOOD_ROOT = "good";
 	protected static final String BAD_ROOT = "bad";
 
-	public AllTest(String example, boolean isBadTest)
+	public BaseTest(String example, boolean isBadTest)
 	{
 		this.example = example;
 		this.isBadTest = isBadTest;
-	}
-
-	@Parameters(name = "{0}")
-	public static Collection<Object[]> data()
-	{
-		// Test all tests under good and bad root directories
-		String dir_good = ClassLoader.getSystemResource(GoodTest.GOOD_ROOT).getFile();
-		String dir_bad = ClassLoader.getSystemResource(BadTest.BAD_ROOT).getFile();
-		List<Object[]> result = new LinkedList<>();
-		result.addAll(Harness.makeTests(GOOD_TEST, dir_good));
-		result.addAll(Harness.makeTests(BAD_TEST, dir_bad));
-		return result;
 	}
 
 	@Test
@@ -75,7 +53,7 @@ public class AllTest
 			// TODO: For now just locate classpath for resources -- later maybe directly execute job
 			/*URL url = ClassLoader.getSystemResource(AllTest.GOOD_ROOT);  // Assume good/bad have same parent
 			String dir = url.getFile().substring(0, url.getFile().length() - ("/" + AllTest.GOOD_ROOT).length());*/
-			String dir = ClassLoader.getSystemResource(AllTest.ALL_ROOT).getFile();
+			String dir = ClassLoader.getSystemResource(BaseTest.ALL_ROOT).getFile();
 
 			if (File.separator.equals("\\")) // HACK: Windows
 			{

@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package scribtest;
+package org.scribble.cli;
 
 import java.util.Collection;
 
@@ -23,7 +23,7 @@ import org.junit.runners.Parameterized.Parameters;
 // Needs -Dtest.dir=[test root dir] system property -- Eclipse VM arg: -Dtest.dir=${selected_resource_loc} 
 //@RunWith(value = Parameterized.class)
 @RunWith(Parameterized.class)
-public class BadTest extends AllTest
+public class BadTest extends BaseTest
 {
 	public BadTest(String example, boolean isBadTest)
 	{
@@ -34,15 +34,5 @@ public class BadTest extends AllTest
 	public static Collection<Object[]> data()
 	{
 		return Harness.checkTestDirProperty(AllTest.BAD_TEST, BAD_ROOT);
-		/*String dir_good = ClassLoader.getSystemResource(GoodTest.GOOD_ROOT).getFile();
-		String dir_bad = ClassLoader.getSystemResource(BadTest.BAD_ROOT).getFile();
-		List<Object[]> result = new LinkedList<>();
-		//result.add(new Object[] { "C:\\cygwin\\home\\Raymond\\code\\scribble\\github-rhu1\\scribble-java\\modules\\cli\\target\\test-classes\\good\\efsm\\grecursion\\Test03.scr", false });
-		result.add(new Object[] { "C:\\cygwin\\home\\Raymond\\code\\scribble\\github-rhu1\\scribble-java\\modules\\cli\\target\\test-classes\\bad\\efsm\\grecursion\\unfair\\Test01.scr", true });
-		result.add(new Object[] { "C:\\cygwin\\home\\Raymond\\code\\scribble\\github-rhu1\\scribble-java\\modules\\cli\\target\\test-classes\\bad\\efsm\\grecursion\\unfair\\Test06.scr", true });
-		//result.addAll(Harness.makeTests(GOOD_TEST, dir_good));
-		//result.addAll(Harness.makeTests(BAD_TEST, dir_bad));
-		return result;
-		//*/
 	}
 }
