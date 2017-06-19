@@ -29,6 +29,9 @@ branches:
   except:
     - /^[0-9]/
 
+after_success:
+  - mvn jacoco:report coveralls:report
+
 env:
   global:
   # Ex. travis encrypt -r org/repo GH_TOKEN=XXX-https://github.com/settings/tokens-XXX
