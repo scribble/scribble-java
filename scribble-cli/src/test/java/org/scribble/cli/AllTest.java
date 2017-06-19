@@ -23,6 +23,8 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Runs all tests under good and bad root directories in Scribble.
+ * 
+ * N.B. Currently in exclude list of root pom surefire config.
  */
 //@RunWith(value = Parameterized.class)
 @RunWith(Parameterized.class)
