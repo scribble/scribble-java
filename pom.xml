@@ -69,11 +69,11 @@
 	</properties>
 
 	<modules>
-		<module>modules/core</module>
-		<module>modules/parser</module>
-		<module>modules/cli</module>
-		<module>dist</module>
-		<module>modules/demos</module>
+		<module>scribble-core</module>
+		<module>scribble-parser</module>
+		<module>scribble-cli</module>
+		<module>scribble-dist</module>
+		<module>scribble-demos</module>
 	</modules>
   
 	<dependencyManagement>
@@ -255,6 +255,7 @@
 						<exclude>**/Scribble.g</exclude>
 						<exclude>**/Scribble-0.3.original</exclude>
 						<exclude>**/IGNORE</exclude>
+						<exclude>bin/*.sh</exclude>
 					</excludes>
 				</configuration>
 				<executions>

@@ -1,3 +1,6 @@
+//$ bin/scribblec.sh modules/core/src/test/scrib/demo/supplierinfo/SupplierInfoNoFair.scr -umodelpng PartnershipSupplier test.png
+
+
 module src.SupplierInfoNoFair;
 
 
