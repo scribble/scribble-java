@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package scribtest;
+package org.scribble.cli;
 
 import java.util.Collection;
 
@@ -22,7 +22,7 @@ import org.junit.runners.Parameterized.Parameters;
 // For running all tests under the specified directory as good tests
 // Needs -Dtest.dir=[test root dir] system property -- Eclipse VM arg: -Dtest.dir=${selected_resource_loc} 
 @RunWith(value = Parameterized.class)
-public class GoodTest extends AllTest
+public class GoodTest extends BaseTest
 {
 	public GoodTest(String example, boolean isBadTest)
 	{
