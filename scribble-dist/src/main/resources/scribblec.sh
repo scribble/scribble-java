@@ -15,11 +15,11 @@
 
 
 ##
-#  Usage notes
+#  Config notes:
 #
 #  - ANTLR:
-#    Assuming $DIR is the scribble-java root directory, set $ANTLR (below) to
-#    the location of the ANTLR runtime jar or put the jar in:  $DIR/$LIB
+#    Set $ANTLR (below) to the location of the ANTLR 3 runtime jar,
+#    or add the jar to  $DIR/$LIB  assuming $DIR is the scribble-java root directory. 
 #    (This script looks for ANTLR in those locations.)
 #
 
@@ -27,10 +27,10 @@
 # ANTLR 3 runtime location (if no lib jar)
 ANTLR=
   # e.g. '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
-  # (i.e., the maven install location)
+  # (i.e., the Maven install location)
 
-DIR=`dirname "$0"`   # Default
-#DIR=`dirname "$0"`/.. # (Cygwin: e.g., script is in $DIR/bin)
+DIR=`dirname "$0"`   # Default (script is in scribble-java rootdir)
+#DIR=`dirname "$0"`/.. # (E.g., script is in rootdir/bin)
 
 #PRG=`basename "$0"`
 
