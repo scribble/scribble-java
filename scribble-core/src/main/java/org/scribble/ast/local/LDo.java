@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
@@ -49,12 +49,12 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	}
 	
 	@Override
-	public LDo clone()
+	public LDo clone(AstFactory af)
 	{
-		RoleArgList roles = this.roles.clone();
-		NonRoleArgList args = this.args.clone();
-		LProtocolNameNode proto = this.getProtocolNameNode().clone();
-		return AstFactoryImpl.FACTORY.LDo(this.source, roles, args, proto);
+		RoleArgList roles = this.roles.clone(af);
+		NonRoleArgList args = this.args.clone(af);
+		LProtocolNameNode proto = this.getProtocolNameNode().clone(af);
+		return af.LDo(this.source, roles, args, proto);
 	}
 	
 	@Override
@@ -112,7 +112,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LDo: " + this);
 	}

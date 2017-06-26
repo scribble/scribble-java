@@ -14,6 +14,7 @@
 package org.scribble.ast.local;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
@@ -44,7 +45,7 @@ public class SelfRoleDecl extends RoleDecl
 	}
 	
 	@Override
-	public SelfRoleDecl project(Role self)
+	public SelfRoleDecl project(AstFactory af, Role self)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}

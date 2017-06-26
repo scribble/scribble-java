@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Continue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
@@ -41,10 +41,10 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	}
 	
 	@Override
-	public LContinue clone()
+	public LContinue clone(AstFactory af)
 	{
-		RecVarNode rv = this.recvar.clone();
-		return AstFactoryImpl.FACTORY.LContinue(this.source, rv);
+		RecVarNode rv = this.recvar.clone(af);
+		return af.LContinue(this.source, rv);
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		if (!(ln instanceof LContinue) || !this.canMerge(ln))
 		{
@@ -83,7 +83,7 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 		{
 			throw new ScribbleException("Cannot merge choices for " + this.recvar + " and " + them.recvar + ": " + this + ", " + ln);
 		}
-		return clone();
+		return clone(af);
 	}
 
 	@Override

@@ -16,7 +16,7 @@ package org.scribble.ast.local;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -50,11 +50,11 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	}
 	
 	@Override
-	public LRecursion clone()
+	public LRecursion clone(AstFactory af)
 	{
-		RecVarNode recvar = this.recvar.clone();
-		LProtocolBlock block = getBlock().clone();
-		return AstFactoryImpl.FACTORY.LRecursion(this.source, recvar, block);
+		RecVarNode recvar = this.recvar.clone(af);
+		LProtocolBlock block = getBlock().clone(af);
+		return af.LRecursion(this.source, recvar, block);
 	}
 	
 	@Override
@@ -78,7 +78,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		if (!(ln instanceof LRecursion) || !this.canMerge(ln))
 		{
@@ -89,7 +89,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 		{
 			throw new ScribbleException("Cannot merge recursions for " + this.recvar + " and " + them.recvar + ": " + this + ", " + ln);
 		}
-		return AstFactoryImpl.FACTORY.LRecursion(this.source, this.recvar.clone(), getBlock().merge(them.getBlock()));  // Not reconstruct: leave context building to post-projection passes
+		return af.LRecursion(this.source, this.recvar.clone(af), getBlock().merge(them.getBlock()));  // Not reconstruct: leave context building to post-projection passes
 				// HACK: this source
 	}
 

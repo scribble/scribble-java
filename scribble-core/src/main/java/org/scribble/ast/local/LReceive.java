@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.ScribNodeBase;
@@ -46,12 +46,12 @@ public class LReceive extends LMessageTransfer implements LSimpleInteractionNode
 	}
 	
 	@Override
-	public LReceive clone()
+	public LReceive clone(AstFactory af)
 	{
-		RoleNode src = this.src.clone();
-		MessageNode msg = this.msg.clone();
-		List<RoleNode> dests = ScribUtil.cloneList(getDestinations());
-		return AstFactoryImpl.FACTORY.LReceive(this.source, src, msg, dests);
+		RoleNode src = this.src.clone(af);
+		MessageNode msg = this.msg.clone(af);
+		List<RoleNode> dests = ScribUtil.cloneList(af, getDestinations());
+		return af.LReceive(this.source, src, msg, dests);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class LReceive extends LMessageTransfer implements LSimpleInteractionNode
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LReceive: " + this);
 	}

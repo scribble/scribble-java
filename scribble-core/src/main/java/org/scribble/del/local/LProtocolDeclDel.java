@@ -62,7 +62,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	@Override
 	public void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
 	{
-		graph.util.reset();
+		graph.util.reset();  // Same util is used for multiple protos, need to reset
 	}
 
 	@Override

@@ -66,8 +66,8 @@ public abstract class MState<
 	}
 	
 	// Mutable (can also overwrite edges)
-	//protected final void addEdge(A a, S s)
-	public final void addEdge(A a, S s)  // FIXME: currently public for SGraph building -- make a global version of EGraphBuilderUtil
+	protected void addEdge(A a, S s)
+	//public final void addEdge(A a, S s)  // FIXME: currently public for SGraph building -- make a global version of EGraphBuilderUtil
 	{
 		//this.edges.put(a, s);
 		Iterator<A> as = this.actions.iterator();  // Needed?..

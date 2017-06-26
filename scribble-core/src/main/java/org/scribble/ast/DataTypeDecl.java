@@ -35,10 +35,10 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	}
 	
 	@Override
-	public DataTypeDecl clone()
+	public DataTypeDecl clone(AstFactory af)
 	{
-		DataTypeNode name = (DataTypeNode) this.name.clone();
-		return AstFactoryImpl.FACTORY.DataTypeDecl(this.source, this.schema, this.extName, this.extSource, name);
+		DataTypeNode name = (DataTypeNode) this.name.clone(af);
+		return af.DataTypeDecl(this.source, this.schema, this.extName, this.extSource, name);
 	}
 
 	@Override

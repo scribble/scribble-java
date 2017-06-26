@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
   	<artifactId>scribble-cli</artifactId>
 	<packaging>jar</packaging>
-  	<name>Scribble::Modules::CLI</name>
+  	<name>scribble-cli</name>
 
 	<parent>
 		<groupId>org.scribble</groupId>
@@ -19,6 +19,10 @@
 		<dependency>
 			<groupId>org.scribble</groupId>
 			<artifactId>scribble-parser</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-codegen</artifactId>
 		</dependency>
 		
 		<dependency>

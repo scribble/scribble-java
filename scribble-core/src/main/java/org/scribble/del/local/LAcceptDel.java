@@ -17,7 +17,6 @@ import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LAccept;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.actions.EAccept;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -39,7 +38,7 @@ public class LAcceptDel extends LConnectionActionDel implements LSimpleInteracti
 		Payload payload = la.msg.isMessageSigNode()  // Hacky?
 					? ((MessageSigNode) la.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
-		builder.util.addEdge(builder.util.getEntry(), new EAccept(peer, mid, payload), builder.util.getExit());
+		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newEAccept(peer, mid, payload), builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), new Accept(peer), builder.builder.getExit());
 		////builder.builder.addEdge(builder.builder.getEntry(), Receive.get(peer, mid, payload), builder.builder.getExit());
 		return (LAccept) super.leaveEGraphBuilding(parent, child, builder, la);

@@ -43,4 +43,10 @@ public class SStateErrors
 	{
 		return this.stuck.isEmpty() && this.waitFor.isEmpty() && this.orphans.isEmpty() && this.unfinished.isEmpty();
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "stuck=" + this.stuck + ", watiFor=" + this.waitFor + ", orphans=" + this.orphans + ", unfinished=" + this.unfinished;
+	}
 }

@@ -38,10 +38,10 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	}
 	
 	@Override
-	public NonRoleArgList clone()
+	public NonRoleArgList clone(AstFactory af)
 	{
-		List<NonRoleArg> args = ScribUtil.cloneList(getDoArgs());
-		return AstFactoryImpl.FACTORY.NonRoleArgList(this.source, args);
+		List<NonRoleArg> args = ScribUtil.cloneList(af, getDoArgs());
+		return af.NonRoleArgList(this.source, args);
 	}
 
 	@Override
@@ -54,11 +54,11 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	}
 
 	@Override
-	public NonRoleArgList project(Role self)
+	public NonRoleArgList project(AstFactory af, Role self)
 	{
 		List<NonRoleArg> instans =
-				getDoArgs().stream().map((ai) -> ai.project(self)).collect(Collectors.toList());	
-		return AstFactoryImpl.FACTORY.NonRoleArgList(this.source, instans);
+				getDoArgs().stream().map(ai -> ai.project(af, self)).collect(Collectors.toList());	
+		return af.NonRoleArgList(this.source, instans);
 	}
 	
 	public boolean isEmpty()

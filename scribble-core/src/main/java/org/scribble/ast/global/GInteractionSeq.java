@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.local.LInteractionNode;
@@ -35,9 +35,9 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	}
 
 	// Move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
-	public LInteractionSeq project(Role self, List<LInteractionNode> lis)
+	public LInteractionSeq project(AstFactory af, Role self, List<LInteractionNode> lis)
 	{
-		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSeq(this.source, lis);
+		LInteractionSeq projection = af.LInteractionSeq(this.source, lis);
 		return projection;
 	}
 
@@ -48,10 +48,10 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	}
 	
 	@Override
-	public GInteractionSeq clone()
+	public GInteractionSeq clone(AstFactory af)
 	{
-		List<GInteractionNode> gis = ScribUtil.cloneList(getInteractions());
-		return AstFactoryImpl.FACTORY.GInteractionSeq(this.source, gis);
+		List<GInteractionNode> gis = ScribUtil.cloneList(af, getInteractions());
+		return af.GInteractionSeq(this.source, gis);
 	}
 
 	@Override

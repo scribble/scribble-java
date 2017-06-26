@@ -13,6 +13,8 @@
  */
 package org.scribble.model.endpoint.actions;
 
+import org.scribble.model.endpoint.EModelFactory;
+import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SAccept;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
@@ -20,10 +22,10 @@ import org.scribble.sesstype.name.Role;
 
 public class EAccept extends EAction
 {
-	public EAccept(Role peer, MessageId<?> mid, Payload payload)
+	public EAccept(EModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
 	//public Accept(Role peer)
 	{
-		super(peer, mid, payload);
+		super(ef, peer, mid, payload);
 		//super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
 	}
 	
@@ -31,13 +33,13 @@ public class EAccept extends EAction
 	public EConnect toDual(Role self)
 	{
 		//return new Connect(self);
-		return new EConnect(self, this.mid, this.payload);
+		return this.ef.newEConnect(self, this.mid, this.payload);
 	}
 
 	@Override
-	public SAccept toGlobal(Role self)
+	public SAccept toGlobal(SModelFactory sf, Role self)
 	{
-		return new SAccept(self, this.peer, this.mid, this.payload);
+		return sf.newSAccept(self, this.peer, this.mid, this.payload);
 		//return new GAccept(self, this.peer);
 	}
 	

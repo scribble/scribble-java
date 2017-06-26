@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.ScribNodeBase;
@@ -47,12 +47,12 @@ public class LConnect extends LConnectionAction implements LSimpleInteractionNod
 	}
 	
 	@Override
-	public LConnect clone()
+	public LConnect clone(AstFactory af)
 	{
-		RoleNode src = this.src.clone();
-		MessageNode msg = this.msg.clone();
-		RoleNode dest = this.dest.clone();
-		return AstFactoryImpl.FACTORY.LConnect(this.source, src, msg, dest);
+		RoleNode src = this.src.clone(af);
+		MessageNode msg = this.msg.clone(af);
+		RoleNode dest = this.dest.clone(af);
+		return af.LConnect(this.source, src, msg, dest);
 		//return AstFactoryImpl.FACTORY.LConnect(src, dest);
 	}
 
@@ -89,7 +89,7 @@ public class LConnect extends LConnectionAction implements LSimpleInteractionNod
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LConnect: " + this);
 	}

@@ -14,7 +14,6 @@
 package org.scribble.del.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GContinue;
@@ -51,9 +50,8 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 	{
 		CommonTree blame = child.getSource();
 		SubprotocolSig subsig = builder.peekStack();
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(blame,
-				RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
-		GContinue inlined = AstFactoryImpl.FACTORY.GContinue(blame, recvar);
+		RecVarNode recvar = (RecVarNode) builder.job.af.SimpleNameNode(blame, RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
+		GContinue inlined = builder.job.af.GContinue(blame, recvar);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return child;
 	}
@@ -65,11 +63,11 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		SubprotocolSig subsig = inl.peekStack();
 		if (!inl.isCycle())
 		{
-			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(blame,
+			RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame,
 					RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 			GInteractionSeq gis = (GInteractionSeq) (((InlineProtocolEnv) inl.peekEnv()).getTranslation());
-			GProtocolBlock gb = AstFactoryImpl.FACTORY.GProtocolBlock(blame, gis);
-			GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(blame, recvar, gb);
+			GProtocolBlock gb = inl.job.af.GProtocolBlock(blame, gis);
+			GRecursion inlined = inl.job.af.GRecursion(blame, recvar, gb);
 			inl.pushEnv(inl.popEnv().setTranslation(inlined));
 			inl.removeSubprotocolRecVar(subsig);
 		}	
@@ -106,8 +104,8 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		if (gd.roles.getRoles().contains(self))
 		{
 			ModuleContext mc = proj.getModuleContext();
-			LProtocolNameNode target = Projector.makeProjectedFullNameNode(gd.proto.getSource(), gd.getTargetProtocolDeclFullName(mc), popped);
-			projection = gd.project(self, target);
+			LProtocolNameNode target = Projector.makeProjectedFullNameNode(proj.job.af, gd.proto.getSource(), gd.getTargetProtocolDeclFullName(mc), popped);
+			projection = gd.project(proj.job.af, self, target);
 			
 			// FIXME: do guarded recursive subprotocol checking (i.e. role is used during chain) in reachability checking? -- required role-usage makes local choice subject inference easier, but is restrictive (e.g. proto(A, B, C) { choice at A {A->B.do Proto(A,B,C)} or {A->B.B->C} }))
 		}

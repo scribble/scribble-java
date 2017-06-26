@@ -14,7 +14,7 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.name.PayloadElemNameNode;
@@ -44,7 +44,7 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 	}
 	
 	@Override
-	public MessageNode project()  // MessageSigName params
+	public MessageNode project(AstFactory af)  // MessageSigName params
 	{
 		return this;
 	}
@@ -56,9 +56,9 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 	}
 	
 	@Override
-	public NonRoleParamNode<K> clone()
+	public NonRoleParamNode<K> clone(AstFactory af)
 	{
-		return AstFactoryImpl.FACTORY.NonRoleParamNode(this.source, this.kind, getIdentifier());
+		return af.NonRoleParamNode(this.source, this.kind, getIdentifier());
 	}
 	
 	@Override

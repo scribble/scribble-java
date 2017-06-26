@@ -64,22 +64,7 @@ public class SModel
 				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
 				errorMsg += "\nSafety violation(s) at session state " + s.id + ":\n    Trace=" + trace;
 			}
-			if (!errors.stuck.isEmpty())
-			{
-				errorMsg += "\n    Stuck messages: " + errors.stuck;  // Deadlock from reception error
-			}
-			if (!errors.waitFor.isEmpty())
-			{
-				errorMsg += "\n    Wait-for errors: " + errors.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
-			}
-			if (!errors.orphans.isEmpty())
-			{
-				errorMsg += "\n    Orphan messages: " + errors.orphans;  // FIXME: add sender of orphan to error message 
-			}
-			if (!errors.unfinished.isEmpty())
-			{
-				errorMsg += "\n    Unfinished roles: " + errors.unfinished;
-			}
+			errorMsg = appendSafetyErrorMessages(errorMsg, errors);
 		}
 		job.debugPrintln("(" + this.graph.proto + ") Checked all states: " + count);  // May include unsafe states
 		//*/
@@ -95,18 +80,11 @@ public class SModel
 							+ termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(",")));  // Incompatible with current errorMsg approach*/
 
 				Set<Role> starved = checkRoleProgress(states, init, termset);
-				if (!starved.isEmpty())
-				{
-					errorMsg += "\nRole progress violation for " + starved + " in session state terminal set:\n    " + termSetToString(job, termset, states);
-				}
 				Map<Role, Set<ESend>> ignored = checkEventualReception(states, init, termset);
-				if (!ignored.isEmpty())
-				{
-					errorMsg += "\nEventual reception violation for " + ignored + " in session state terminal set:\n    " + termSetToString(job, termset, states);
-				}
+				errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored, job, states, termset);
 			}
 		}
-		
+
 		if (!errorMsg.equals(""))
 		{
 			//throw new ScribbleException("\n" + init.toDot() + errorMsg);
@@ -114,8 +92,43 @@ public class SModel
 		}
 		//job.debugPrintln("(" + this.graph.proto + ") Progress satisfied.");  // Also safety... current errorMsg approach
 	}
+
+	protected String appendSafetyErrorMessages(String errorMsg, SStateErrors errors)
+	{
+		if (!errors.stuck.isEmpty())
+		{
+			errorMsg += "\n    Stuck messages: " + errors.stuck;  // Deadlock from reception error
+		}
+		if (!errors.waitFor.isEmpty())
+		{
+			errorMsg += "\n    Wait-for errors: " + errors.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
+		}
+		if (!errors.orphans.isEmpty())
+		{
+			errorMsg += "\n    Orphan messages: " + errors.orphans;  // FIXME: add sender of orphan to error message 
+		}
+		if (!errors.unfinished.isEmpty())
+		{
+			errorMsg += "\n    Unfinished roles: " + errors.unfinished;
+		}
+		return errorMsg;
+	}
+
+	protected String appendProgressErrorMessages(String errorMsg, Set<Role> starved, Map<Role, Set<ESend>> ignored,
+			Job job, Map<Integer, SState> states, Set<Integer> termset)
+	{
+		if (!starved.isEmpty())
+		{
+			errorMsg += "\nRole progress violation for " + starved + " in session state terminal set:\n    " + termSetToString(job, termset, states);
+		}
+		if (!ignored.isEmpty())
+		{
+			errorMsg += "\nEventual reception violation for " + ignored + " in session state terminal set:\n    " + termSetToString(job, termset, states);
+		}
+		return errorMsg;
+	}
 	
-	private String termSetToString(Job job, Set<Integer> termset, Map<Integer, SState> all)
+	protected String termSetToString(Job job, Set<Integer> termset, Map<Integer, SState> all)
 	{
 		return job.debug
 				? termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","))
@@ -123,7 +136,7 @@ public class SModel
 	}
 
 	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but not a good approach)
-	private static Set<Role> checkRoleProgress(Map<Integer, SState> states, SState init, Set<Integer> termset) throws ScribbleException
+	protected static Set<Role> checkRoleProgress(Map<Integer, SState> states, SState init, Set<Integer> termset) throws ScribbleException
 	{
 		Set<Role> starved = new HashSet<>();
 		Iterator<Integer> i = termset.iterator();
@@ -184,7 +197,7 @@ public class SModel
 	}
 
 	// (eventual reception)
-	private static Map<Role, Set<ESend>> checkEventualReception(Map<Integer, SState> states, SState init, Set<Integer> termset) throws ScribbleException
+	protected static Map<Role, Set<ESend>> checkEventualReception(Map<Integer, SState> states, SState init, Set<Integer> termset) throws ScribbleException
 	{
 		Set<Role> roles = states.get(termset.iterator().next()).config.efsms.keySet();
 

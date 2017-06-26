@@ -14,7 +14,7 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.sesstype.kind.ScopeKind;
 import org.scribble.sesstype.name.Scope;
 
@@ -33,9 +33,9 @@ public class ScopeNode extends SimpleNameNode<ScopeKind>
 	}
 	
 	@Override
-	public ScopeNode clone()
+	public ScopeNode clone(AstFactory af)
 	{
-		return (ScopeNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.source, ScopeKind.KIND, getIdentifier());
+		return (ScopeNode) af.SimpleNameNode(this.source, ScopeKind.KIND, getIdentifier());
 	}
 
 	@Override

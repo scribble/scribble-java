@@ -16,6 +16,7 @@ package org.scribble.ast.name;
 import java.util.Arrays;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Named;
@@ -32,7 +33,7 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 	}
 	
 	@Override
-	public abstract NameNode<K> clone();
+	public abstract NameNode<K> clone(AstFactory af);
 	
 	public String[] getElements()
 	{

@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
@@ -121,12 +122,33 @@ import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
 
 public class AstFactoryImpl implements AstFactory
 {
-	public static final AstFactory FACTORY = new AstFactoryImpl();
+	//public static final AstFactory FACTORY = new AstFactoryImpl();
+
+	private static MessageSigNode UNIT_MESSAGE_SIG_NODE;  // A "constant"
+	
+	public AstFactoryImpl()
+	{
+		
+	}
+	
+  // FIXME: inconsistent wrt. this.source -- it is essentially parsed (in the sense of *omitted* syntax), but not recorded
+	// FIXME: this pattern is not ideal ("exposed" public constructor arg in GWrap/GDisconnect)
+	//     An alternative would be to make subclasses, e.g., UnitMessageSigNode, UnitOp, EmptyPayloadElemList -- but a lot of extra classes
+	protected MessageSigNode UnitMessageSigNode()
+	{
+		if (UNIT_MESSAGE_SIG_NODE == null)
+		{
+			UNIT_MESSAGE_SIG_NODE = MessageSigNode(null, (OpNode) SimpleNameNode(null, OpKind.KIND, Op.EMPTY_OPERATOR.toString()),
+					PayloadElemList(null, Collections.emptyList()));  // Payload.EMPTY_PAYLOAD?
+		}
+		return UNIT_MESSAGE_SIG_NODE;
+	}
 	
 	@Override
 	public MessageSigNode MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload)
@@ -321,7 +343,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest)
 	{
-		GDisconnect gc = new GDisconnect(source, src, dest);
+		GDisconnect gc = new GDisconnect(source, UnitMessageSigNode(), src, dest);
 		gc = del(gc, new GDisconnectDel());
 		return gc;
 	}
@@ -329,7 +351,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest)
 	{
-		GWrap gw = new GWrap(source, src, dest);
+		GWrap gw = new GWrap(source, UnitMessageSigNode(), src, dest);
 		gw = del(gw, new GWrapDel());
 		return gw;
 	}
@@ -402,6 +424,8 @@ public class AstFactoryImpl implements AstFactory
 	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier)
 	{
 		NameNode<? extends Kind> snn = null;
+		
+		// Without delegates
 		if (kind.equals(RecVarKind.KIND))
 		{
 			snn = new RecVarNode(source, identifier);
@@ -417,6 +441,7 @@ public class AstFactoryImpl implements AstFactory
 			return castNameNode(kind, snn);
 		}
 
+		// With delegates
 		if (kind.equals(OpKind.KIND))
 		{
 			snn = new OpNode(source, identifier);
@@ -466,7 +491,7 @@ public class AstFactoryImpl implements AstFactory
 		return castNameNode(kind, del(qnn, createDefaultDelegate()));
 	}
 	
-	private static <T extends NameNode<K>, K extends Kind> T castNameNode(K kind, NameNode<? extends Kind> n)
+	protected static <T extends NameNode<K>, K extends Kind> T castNameNode(K kind, NameNode<? extends Kind> n)
 	{
 		if (!n.toName().getKind().equals(kind))
 		{
@@ -588,7 +613,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public LDisconnect LDisconnect(CommonTree source, RoleNode self, RoleNode peer)
 	{
-		LDisconnect lc = new LDisconnect(source, self, peer);
+		LDisconnect lc = new LDisconnect(source, UnitMessageSigNode(), self, peer);
 		lc = del(lc, new LDisconnectDel());
 		return lc;
 	}
@@ -596,7 +621,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public LWrapClient LWrapClient(CommonTree source, RoleNode self, RoleNode peer)
 	{
-		LWrapClient lwc = new LWrapClient(source, self, peer);
+		LWrapClient lwc = new LWrapClient(source, UnitMessageSigNode(), self, peer);
 		lwc = del(lwc, new LWrapClientDel());
 		return lwc;
 	}
@@ -604,7 +629,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public LWrapServer LWrapServer(CommonTree source, RoleNode self, RoleNode peer)
 	{
-		LWrapServer lws = new LWrapServer(source, self, peer);
+		LWrapServer lws = new LWrapServer(source, UnitMessageSigNode(), self, peer);
 		lws = del(lws, new LWrapServerDel());
 		return lws;
 	}
@@ -641,14 +666,14 @@ public class AstFactoryImpl implements AstFactory
 		return ld;
 	}
 
-	private ScribDel createDefaultDelegate()
+	protected ScribDel createDefaultDelegate()
 	{
 		return new DefaultDel();
 	}
 	
 	// FIXME: factor out
 	//@SuppressWarnings("unchecked")
-	private static <T extends ScribNodeBase> T del(T n, ScribDel del)
+	protected static <T extends ScribNodeBase> T del(T n, ScribDel del)
 	{
 		/*ScribNodeBase ret = n.del(del);  // FIXME: del makes another shallow copy of n
 		if (ret.getClass() != n.getClass())

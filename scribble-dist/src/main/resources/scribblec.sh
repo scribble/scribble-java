@@ -26,7 +26,8 @@
 
 # ANTLR 3 runtime location (if no lib jar)
 ANTLR=
-  # e.g. '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
+  # e.g., '~/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
+  # or    '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
   # (i.e., the Maven install location)
 
 DIR=`dirname "$0"`   # Default (script is in scribble-java rootdir)
@@ -103,6 +104,7 @@ ARGS=
 CLASSPATH=$DIR'/scribble-cli/target/classes/'
 CLASSPATH=$CLASSPATH':'$DIR'/scribble-core/target/classes'
 CLASSPATH=$CLASSPATH':'$DIR'/scribble-parser/target/classes'
+CLASSPATH=$CLASSPATH':'$DIR'/scribble-codegen/target/classes'
 CLASSPATH=$CLASSPATH':'$ANTLR
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/antlr.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/antlr-runtime.jar'
@@ -110,6 +112,7 @@ CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/commons-io.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-cli.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-core.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-parser.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-codegen.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/stringtemplate.jar'
 CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
 

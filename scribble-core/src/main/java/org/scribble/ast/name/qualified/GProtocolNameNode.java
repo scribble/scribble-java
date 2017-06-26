@@ -14,7 +14,7 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 
@@ -32,9 +32,9 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 	}
 	
 	@Override
-	public GProtocolNameNode clone()
+	public GProtocolNameNode clone(AstFactory af)
 	{
-		return (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(this.source, Global.KIND, this.elems);
+		return (GProtocolNameNode) af.QualifiedNameNode(this.source, Global.KIND, this.elems);
 	}
 	
 	@Override

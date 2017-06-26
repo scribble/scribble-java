@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Interruptible;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
@@ -45,7 +46,7 @@ public class LInterruptible extends Interruptible<Local> implements LCompoundInt
 	}
 
 	@Override
-	public LInterruptible clone()
+	public LInterruptible clone(AstFactory af)
 	{
 		throw new RuntimeException("TODO: " + this);
 	}
@@ -76,7 +77,7 @@ public class LInterruptible extends Interruptible<Local> implements LCompoundInt
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		throw new RuntimeException("TODO: " + this);
 	}

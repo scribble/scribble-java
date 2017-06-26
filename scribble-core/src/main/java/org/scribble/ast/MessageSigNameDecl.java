@@ -35,10 +35,10 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	}
 	
 	@Override
-	public MessageSigNameDecl clone()
+	public MessageSigNameDecl clone(AstFactory af)
 	{
-		MessageSigNameNode name = (MessageSigNameNode) this.name.clone();
-		return AstFactoryImpl.FACTORY.MessageSigNameDecl(this.source, this.schema, this.extName, this.extSource, name);
+		MessageSigNameNode name = (MessageSigNameNode) this.name.clone(af);
+		return af.MessageSigNameDecl(this.source, this.schema, this.extName, this.extSource, name);
 	}
 
 	@Override

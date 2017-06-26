@@ -17,11 +17,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
+import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNodeBase;
-import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
@@ -36,9 +36,10 @@ public class LDisconnect extends LConnectionAction implements LSimpleInteraction
 	public final RoleNode self;  // super.src
 	public final RoleNode peer;  // super.dest
 	
-	public LDisconnect(CommonTree source, RoleNode self, RoleNode peer)
+	public LDisconnect(CommonTree source, MessageSigNode unit, RoleNode self, RoleNode peer)
 	{
-		super(source, self, GDisconnect.UNIT_MESSAGE_SIG_NODE, peer);
+		//super(source, self, GDisconnect.UNIT_MESSAGE_SIG_NODE, peer);
+		super(source, self, unit, peer);
 		this.self = self;
 		this.peer = peer;
 	}
@@ -46,15 +47,15 @@ public class LDisconnect extends LConnectionAction implements LSimpleInteraction
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LDisconnect(this.source, this.self, this.peer);
+		return new LDisconnect(this.source, (MessageSigNode) this.msg, this.self, this.peer);
 	}
 	
 	@Override
-	public LDisconnect clone()
+	public LDisconnect clone(AstFactory af)
 	{
-		RoleNode self = this.self.clone();
-		RoleNode peer = this.peer.clone();
-		return AstFactoryImpl.FACTORY.LDisconnect(this.source, self, peer);
+		RoleNode self = this.self.clone(af);
+		RoleNode peer = this.peer.clone(af);
+		return af.LDisconnect(this.source, self, peer);
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class LDisconnect extends LConnectionAction implements LSimpleInteraction
 	//public LDisconnect reconstruct(RoleNode self, RoleNode peer)
 	{
 		ScribDel del = del();
-		LDisconnect lr = new LDisconnect(this.source, this.self, this.peer);
+		LDisconnect lr = new LDisconnect(this.source, (MessageSigNode) this.msg, this.self, this.peer);
 		lr = (LDisconnect) lr.del(del);
 		return lr;
 	}
@@ -88,7 +89,7 @@ public class LDisconnect extends LConnectionAction implements LSimpleInteraction
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LDisconnect: " + this);
 	}

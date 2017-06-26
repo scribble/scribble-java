@@ -35,10 +35,10 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	}
 	
 	@Override
-	public RoleDecl clone()
+	public RoleDecl clone(AstFactory af)
 	{
-		RoleNode role = (RoleNode) this.name.clone();
-		return AstFactoryImpl.FACTORY.RoleDecl(this.source, role);
+		RoleNode role = (RoleNode) this.name.clone(af);
+		return af.RoleDecl(this.source, role);
 	}
 
 	@Override
@@ -51,15 +51,15 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	}
 
 	@Override
-	public RoleDecl project(Role self)
+	public RoleDecl project(AstFactory af, Role self)
 	{
 		Name<RoleKind> role = this.name.toName();
-		RoleNode rn = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.name.source, RoleKind.KIND, role.toString());
+		RoleNode rn = (RoleNode) af.SimpleNameNode(this.name.source, RoleKind.KIND, role.toString());
 		if (role.equals(self))
 		{
-			return AstFactoryImpl.FACTORY.SelfRoleDecl(this.name.source, rn);
+			return af.SelfRoleDecl(this.name.source, rn);
 		}
-		return AstFactoryImpl.FACTORY.RoleDecl(this.source, rn);
+		return af.RoleDecl(this.source, rn);
 	}
 	
 	@Override

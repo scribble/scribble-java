@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
@@ -103,11 +102,11 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 			throw new ScribbleException(lc.getSource(), "Cannot project onto " + self + " due to inconsistent local choice subjects: " + subjs);  // self not recorded -- can derive from LProtocolDecl RoleDeclList
 			//throw new RuntimeException("Shouldn't get in here: " + subjs);
 		}
-		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, RoleKind.KIND,  // FIXME? null source OK?
+		RoleNode subj = (RoleNode) fixer.job.af.SimpleNameNode(null, RoleKind.KIND,  // FIXME? null source OK?
 				//blocks.get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer).toString());
 				subjs.iterator().next().toString());
 		fixer.setChoiceSubject(subj.toName());
-		LChoice projection = AstFactoryImpl.FACTORY.LChoice(lc.getSource(), subj, blocks);
+		LChoice projection = fixer.job.af.LChoice(lc.getSource(), subj, blocks);
 		return projection;
 	}
 
@@ -117,8 +116,8 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		LChoice lc = (LChoice) visited;
 		List<LProtocolBlock> blocks = 
 				lc.getBlocks().stream().map((b) -> (LProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
-		RoleNode subj = lc.subj.clone();
-		LChoice inlined = AstFactoryImpl.FACTORY.LChoice(lc.getSource(), subj, blocks);
+		RoleNode subj = lc.subj.clone(inl.job.af);
+		LChoice inlined = inl.job.af.LChoice(lc.getSource(), subj, blocks);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LChoice) super.leaveProtocolInlining(parent, child, inl, lc);
 	}

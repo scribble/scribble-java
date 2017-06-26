@@ -14,7 +14,7 @@
 package org.scribble.ast.local;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
 import org.scribble.ast.NameDeclNode;
 import org.scribble.ast.NonRoleParamDeclList;
@@ -44,12 +44,12 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 	}
 	
 	@Override
-	public LProtocolHeader clone()
+	public LProtocolHeader clone(AstFactory af)
 	{
-		LProtocolNameNode name = getNameNode().clone();
-		RoleDeclList roledecls = this.roledecls.clone();
-		NonRoleParamDeclList paramdecls = this.paramdecls.clone();
-		return AstFactoryImpl.FACTORY.LProtocolHeader(this.source, name, roledecls, paramdecls);
+		LProtocolNameNode name = getNameNode().clone(af);
+		RoleDeclList roledecls = this.roledecls.clone(af);
+		NonRoleParamDeclList paramdecls = this.paramdecls.clone(af);
+		return af.LProtocolHeader(this.source, name, roledecls, paramdecls);
 	}
 
 	@Override

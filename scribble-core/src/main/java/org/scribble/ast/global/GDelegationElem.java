@@ -14,7 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.local.LDelegationElem;
@@ -28,7 +28,7 @@ import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.context.Projector;
 
-// A "binary name pair" payload elem (current AST hierarchy induces this pattern), cf. UnaryPayloadElem (also differs in no parsing ambig against parameters)
+// A "name pair" payload elem (current AST hierarchy induces this pattern), cf. UnaryPayloadElem (also differs in no parsing ambig against parameters)
 // The this.name will be global kind, but overall this node is local kind
 //public class DelegationElem extends PayloadElem<Local>
 public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
@@ -46,9 +46,9 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	}
 	
 	@Override
-	public LDelegationElem project()
+	public LDelegationElem project(AstFactory af)
 	{
-		return AstFactoryImpl.FACTORY.LDelegationElem(this.source, Projector.makeProjectedFullNameNode(this.source, this.proto.toName(), this.role.toName()));
+		return af.LDelegationElem(this.source, Projector.makeProjectedFullNameNode(af, this.source, this.proto.toName(), this.role.toName()));
 	}
 
 	@Override
@@ -64,11 +64,11 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	}
 	
 	@Override
-	public GDelegationElem clone()
+	public GDelegationElem clone(AstFactory af)
 	{
-		GProtocolNameNode name = (GProtocolNameNode) this.proto.clone();
-		RoleNode role = (RoleNode) this.role.clone();
-		return AstFactoryImpl.FACTORY.GDelegationElem(this.source, name, role);
+		GProtocolNameNode name = (GProtocolNameNode) this.proto.clone(af);
+		RoleNode role = (RoleNode) this.role.clone(af);
+		return af.GDelegationElem(this.source, name, role);
 	}
 
 	public GDelegationElem reconstruct(GProtocolNameNode proto, RoleNode role)

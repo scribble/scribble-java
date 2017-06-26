@@ -33,10 +33,10 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 	}
 	
 	@Override
-	public NonRoleParamDecl<K> clone()
+	public NonRoleParamDecl<K> clone(AstFactory af)
 	{
-		NonRoleParamNode<K> param = (NonRoleParamNode<K>) this.name.clone();
-		return AstFactoryImpl.FACTORY.NonRoleParamDecl(this.source, this.kind, param);
+		NonRoleParamNode<K> param = (NonRoleParamNode<K>) this.name.clone(af);
+		return af.NonRoleParamDecl(this.source, this.kind, param);
 	}
 	
 	@Override
@@ -56,10 +56,10 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 	}
 
 	@Override
-	public NonRoleParamDecl<K> project(Role self)
+	public NonRoleParamDecl<K> project(AstFactory af, Role self)
 	{
-		NonRoleParamNode<K> pn = AstFactoryImpl.FACTORY.NonRoleParamNode(this.name.source, this.kind, this.name.toString());
-		return AstFactoryImpl.FACTORY.NonRoleParamDecl(this.source, this.kind, pn);
+		NonRoleParamNode<K> pn = af.NonRoleParamNode(this.name.source, this.kind, this.name.toString());
+		return af.NonRoleParamDecl(this.source, this.kind, pn);
 	}
 	
 	@Override

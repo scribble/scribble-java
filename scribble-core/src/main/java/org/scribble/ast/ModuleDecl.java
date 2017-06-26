@@ -34,17 +34,17 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	}
 	
 	@Override
-	public ModuleDecl clone()
+	public ModuleDecl clone(AstFactory af)
 	{
-		ModuleNameNode modname = (ModuleNameNode) this.name.clone();
-		return AstFactoryImpl.FACTORY.ModuleDecl(this.source, modname);
+		ModuleNameNode modname = (ModuleNameNode) this.name.clone(af);
+		return af.ModuleDecl(this.source, modname);
 	}
 
 	@Override
 	public ModuleDecl visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		ModuleNameNode fullmodname = (ModuleNameNode) visitChild(this.name, nv);
-		return AstFactoryImpl.FACTORY.ModuleDecl(this.source, fullmodname);  // cf., reconstruct
+		return nv.job.af.ModuleDecl(this.source, fullmodname);  // cf., reconstruct
 	}
 
 	@Override

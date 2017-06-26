@@ -13,6 +13,8 @@
  */
 package org.scribble.model.endpoint.actions;
 
+import org.scribble.model.endpoint.EModelFactory;
+import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SDisconnect;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
@@ -20,21 +22,21 @@ import org.scribble.sesstype.name.Role;
 
 public class EDisconnect extends EAction
 {
-	public EDisconnect(Role peer)
+	public EDisconnect(EModelFactory ef, Role peer)
 	{
-		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GDisconnect.UNIT_MESSAGE_SIG_NODE
+		super(ef, peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GDisconnect.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
 	public EDisconnect toDual(Role self)
 	{
-		return new EDisconnect(self);  // return this?
+		return this.ef.newEDisconnect(self);  // return this?
 	}
 
 	@Override
-	public SDisconnect toGlobal(Role self)
+	public SDisconnect toGlobal(SModelFactory sf, Role self)
 	{
-		return new SDisconnect(self, this.peer);
+		return sf.newSDisconnect(self, this.peer);
 	}
 	
 	@Override

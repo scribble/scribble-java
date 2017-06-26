@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ScribNodeBase;
@@ -42,10 +42,10 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	}
 	
 	@Override
-	public LInteractionSeq clone()
+	public LInteractionSeq clone(AstFactory af)
 	{
-		List<LInteractionNode> lis = ScribUtil.cloneList(getInteractions());
-		return AstFactoryImpl.FACTORY.LInteractionSeq(this.source, lis);
+		List<LInteractionNode> lis = ScribUtil.cloneList(af, getInteractions());
+		return af.LInteractionSeq(this.source, lis);
 	}
 
 	@Override

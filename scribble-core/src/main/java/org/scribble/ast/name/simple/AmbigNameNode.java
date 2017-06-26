@@ -14,7 +14,7 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.sesstype.Arg;
@@ -37,7 +37,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageN
 	}
 	
 	@Override
-	public MessageNode project()
+	public MessageNode project(AstFactory af)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}
@@ -49,9 +49,9 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageN
 	}
 	
 	@Override
-	public AmbigNameNode clone()
+	public AmbigNameNode clone(AstFactory af)
 	{
-		return (AmbigNameNode) AstFactoryImpl.FACTORY.AmbiguousNameNode(this.source, getIdentifier());
+		return (AmbigNameNode) af.AmbiguousNameNode(this.source, getIdentifier());
 	}
 	
 	@Override
