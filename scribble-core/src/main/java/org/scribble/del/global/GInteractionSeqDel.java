@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
@@ -55,7 +54,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 				gins.add((GInteractionNode) inlined);
 			}
 		}
-		GInteractionSeq inlined = AstFactoryImpl.FACTORY.GInteractionSeq(gis.getSource(), gins);
+		GInteractionSeq inlined = inl.job.af.GInteractionSeq(gis.getSource(), gins);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, inl, gis);
 	}
@@ -92,7 +91,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 				lis.clear();
 			}
 		}*/
-		LInteractionSeq projection = gis.project(proj.peekSelf(), lis);
+		LInteractionSeq projection = gis.project(proj.job.af, proj.peekSelf(), lis);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
 	}
@@ -133,6 +132,6 @@ public class GInteractionSeqDel extends InteractionSeqDel
 						? ((GRecursion) gi).getBlock().getInteractionSeq().getInteractions().stream()
 						: Stream.of(gi)
 				).collect(Collectors.toList());
-		return AstFactoryImpl.FACTORY.GInteractionSeq(gis.getSource(), gins);
+		return rem.job.af.GInteractionSeq(gis.getSource(), gins);
 	}
 }

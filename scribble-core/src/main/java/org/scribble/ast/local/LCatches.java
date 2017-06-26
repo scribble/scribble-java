@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
@@ -30,7 +31,7 @@ public class LCatches extends LInterrupt
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		throw new RuntimeException("TODO: " + this);
 	}

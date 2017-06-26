@@ -29,14 +29,14 @@ public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInte
 {
 	public final RoleNode src;
 	public final MessageNode msg;  // FIXME: ambig may get resolved to an unexpected kind, e.g. DataTypeNode (cf. DoArg, PayloadElem wrappers)
-	private final List<RoleNode> dests;
+	protected final List<RoleNode> dests;
 
 	protected MessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		super(source);
 		this.src = src;
 		this.msg = msg;
-		this.dests = new LinkedList<>(dests);
+		this.dests = new LinkedList<>(dests);  // FIXME: Collections.unmodifiable?
 	}
 
 	public abstract MessageTransfer<K> reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests);

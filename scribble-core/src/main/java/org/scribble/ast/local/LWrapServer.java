@@ -17,11 +17,11 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
+import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNodeBase;
-import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
@@ -33,23 +33,23 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LWrapServer extends LConnectionAction implements LSimpleInteractionNode
 {
-	public LWrapServer(CommonTree source, RoleNode src, RoleNode dest)
+	public LWrapServer(CommonTree source, MessageSigNode unit, RoleNode src, RoleNode dest)
 	{
-		super(source, src, GWrap.UNIT_MESSAGE_SIG_NODE, dest);
+		super(source, src, unit, dest);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LWrapServer(this.source, this.src, this.dest);
+		return new LWrapServer(this.source, (MessageSigNode) this.msg, this.src, this.dest);
 	}
 	
 	@Override
-	public LWrapServer clone()
+	public LWrapServer clone(AstFactory af)
 	{
-		RoleNode src = this.src.clone();
-		RoleNode dest = this.dest.clone();
-		return AstFactoryImpl.FACTORY.LWrapServer(this.source, src, dest);
+		RoleNode src = this.src.clone(af);
+		RoleNode dest = this.dest.clone(af);
+		return af.LWrapServer(this.source, src, dest);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class LWrapServer extends LConnectionAction implements LSimpleInteraction
 	//public LWrapServer reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
-		LWrapServer lr = new LWrapServer(this.source, src, dest);
+		LWrapServer lr = new LWrapServer(this.source, (MessageSigNode) this.msg, src, dest);
 		lr = (LWrapServer) lr.del(del);
 		return lr;
 	}
@@ -83,7 +83,7 @@ public class LWrapServer extends LConnectionAction implements LSimpleInteraction
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LWrapServer: " + this);
 	}

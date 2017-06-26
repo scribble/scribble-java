@@ -44,7 +44,7 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase i
 	}
 	
 	@Override
-	public UnaryPayloadElem<K> project()
+	public UnaryPayloadElem<K> project(AstFactory af)
 	{
 		return this;
 	}
@@ -57,12 +57,12 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase i
 	}
 	
 	@Override
-	public UnaryPayloadElem<K> clone()
+	public UnaryPayloadElem<K> clone(AstFactory af)
 	{
 		//PayloadElemNameNode<DataTypeKind> name = (PayloadElemNameNode<DataTypeKind>) this.data.clone();  // FIXME: make a DataTypeNameNode
 		//PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) this.name.clone();
-		PayloadElemNameNode<K> name = ScribUtil.checkNodeClassEquality(this.name, this.name.clone());
-		return AstFactoryImpl.FACTORY.UnaryPayloadElem(this.source, name);
+		PayloadElemNameNode<K> name = ScribUtil.checkNodeClassEquality(this.name, this.name.clone(af));
+		return af.UnaryPayloadElem(this.source, name);
 	}
 
 	//public DataTypeElem reconstruct(PayloadElemNameNode<DataTypeKind> name)

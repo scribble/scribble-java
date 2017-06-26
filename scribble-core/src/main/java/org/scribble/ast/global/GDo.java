@@ -14,7 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
@@ -37,11 +37,11 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 		super(source, roles, args, proto);
 	}
 
-	public LDo project(Role self, LProtocolNameNode fullname)
+	public LDo project(AstFactory af, Role self, LProtocolNameNode fullname)
 	{
-		RoleArgList roleinstans = this.roles.project(self);
-		NonRoleArgList arginstans = this.args.project(self);
-		LDo projection = AstFactoryImpl.FACTORY.LDo(this.source, roleinstans, arginstans, fullname);
+		RoleArgList roleinstans = this.roles.project(af, self);
+		NonRoleArgList arginstans = this.args.project(af, self);
+		LDo projection = af.LDo(this.source, roleinstans, arginstans, fullname);
 		return projection;
 	}
 
@@ -52,12 +52,12 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	}
 	
 	@Override
-	public GDo clone()
+	public GDo clone(AstFactory af)
 	{
-		RoleArgList roles = this.roles.clone();
-		NonRoleArgList args = this.args.clone();
-		GProtocolNameNode proto = this.getProtocolNameNode().clone();
-		return AstFactoryImpl.FACTORY.GDo(this.source, roles, args, proto);
+		RoleArgList roles = this.roles.clone(af);
+		NonRoleArgList args = this.args.clone(af);
+		GProtocolNameNode proto = this.getProtocolNameNode().clone(af);
+		return af.GDo(this.source, roles, args, proto);
 	}
 
 	@Override

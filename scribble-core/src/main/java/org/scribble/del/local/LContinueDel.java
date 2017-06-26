@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -41,7 +40,7 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 	{
 		LContinue lc = (LContinue) visited;
 		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) lc.recvar.del().env()).getTranslation();	
-		LContinue inlined = AstFactoryImpl.FACTORY.LContinue(lc.getSource(), recvar);
+		LContinue inlined = inl.job.af.LContinue(lc.getSource(), recvar);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LContinue) super.leaveProtocolInlining(parent, child, inl, lc);
 	}

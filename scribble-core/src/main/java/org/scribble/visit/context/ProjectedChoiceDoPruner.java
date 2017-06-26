@@ -15,7 +15,6 @@ package org.scribble.visit.context;
 
 import java.util.List;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LDo;
@@ -73,8 +72,8 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 					UnguardedChoiceDoEnv env = (UnguardedChoiceDoEnv) lpd.def.block.del().env();  // Although AST is cloned, del is the same (HACKY?)
 					if (env.subjs.isEmpty())  // Prune check
 					{
-						return AstFactoryImpl.FACTORY.LProtocolBlock(lb.getSource(),
-								AstFactoryImpl.FACTORY.LInteractionSeq(lis.getSource(), ins.subList(1, ins.size())));  // Supports singleton case
+						return this.job.af.LProtocolBlock(lb.getSource(),
+								this.job.af.LInteractionSeq(lis.getSource(), ins.subList(1, ins.size())));  // Supports singleton case
 					}
 				}
 			}

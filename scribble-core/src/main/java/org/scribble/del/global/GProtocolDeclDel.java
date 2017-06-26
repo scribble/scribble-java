@@ -103,7 +103,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		Role self = proj.peekSelf();
 		
 		LProtocolDef def = (LProtocolDef) ((ProjectionEnv) gpd.def.del().env()).getProjection();
-		LProtocolDecl lpd = gpd.project(root, self, def);  // FIXME: is root (always) the correct module? (wrt. LProjectionDeclDel?)
+		LProtocolDecl lpd = gpd.project(proj.job.af, root, self, def);  // FIXME: is root (always) the correct module? (wrt. LProjectionDeclDel?)
 		
 		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
 		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, gpd, lpd, deps);
@@ -139,7 +139,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	{
 		JobContext jc = job.getContext();
 		SGraph graph = (fair) ? jc.getSGraph(fullname) : jc.getUnfairSGraph(fullname);
-		graph.toModel().validate(job);
+		//graph.toModel().validate(job);
+		job.sf.newSModel(graph).validate(job);
 	}
 }
 

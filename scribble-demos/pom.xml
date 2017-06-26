@@ -22,6 +22,10 @@
   		<artifactId>scribble-parser</artifactId>
   	</dependency>
   	<dependency>
+  		<groupId>org.scribble</groupId>
+  		<artifactId>scribble-runtime</artifactId>
+  	</dependency>
+  	<dependency>
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
   	</dependency>

@@ -14,7 +14,7 @@
 package org.scribble.ast.local;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.del.ScribDel;
@@ -34,10 +34,10 @@ public class LProtocolDef extends ProtocolDef<Local> implements LNode
 	}
 	
 	@Override
-	public LProtocolDef clone()
+	public LProtocolDef clone(AstFactory af)
 	{
-		LProtocolBlock block = getBlock().clone();
-		return AstFactoryImpl.FACTORY.LProtocolDef(this.source, block);
+		LProtocolBlock block = getBlock().clone(af);
+		return af.LProtocolDef(this.source, block);
 	}
 
 	@Override

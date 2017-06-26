@@ -16,7 +16,6 @@ package org.scribble.del.local;
 import java.util.Arrays;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LInteractionSeq;
@@ -56,11 +55,11 @@ public class LProtocolDefDel extends ProtocolDefDel
 		SubprotocolSig subsig = inl.peekStack();
 		LProtocolDef def = (LProtocolDef) visited;
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) def.block.del().env()).getTranslation();	
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(blame,  // The parent do would probably be the better blame source
+		RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame,  // The parent do would probably be the better blame source
 				RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
-		LRecursion rec = AstFactoryImpl.FACTORY.LRecursion(blame, recvar, block);
-		LInteractionSeq lis = AstFactoryImpl.FACTORY.LInteractionSeq(blame, Arrays.asList(rec));
-		LProtocolDef inlined = AstFactoryImpl.FACTORY.LProtocolDef(def.getSource(), AstFactoryImpl.FACTORY.LProtocolBlock(blame, lis));
+		LRecursion rec = inl.job.af.LRecursion(blame, recvar, block);
+		LInteractionSeq lis = inl.job.af.LInteractionSeq(blame, Arrays.asList(rec));
+		LProtocolDef inlined = inl.job.af.LProtocolDef(def.getSource(), inl.job.af.LProtocolBlock(blame, lis));
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		LProtocolDefDel copy = setInlinedProtocolDef(inlined);
 		return (LProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, inl, (LProtocolDef) def.del(copy));

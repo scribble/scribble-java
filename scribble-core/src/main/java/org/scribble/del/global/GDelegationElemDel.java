@@ -19,7 +19,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
@@ -72,7 +71,7 @@ public class GDelegationElemDel extends ScribDelBase
 			throw new ScribbleException(de.role.getSource(), "Invalid delegation role: " + de);
 		}
 
-		GProtocolNameNode pnn = (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(de.proto.getSource(), fullname.getKind(), fullname.getElements());  // Not keeping original namenode del
+		GProtocolNameNode pnn = (GProtocolNameNode) disamb.job.af.QualifiedNameNode(de.proto.getSource(), fullname.getKind(), fullname.getElements());  // Not keeping original namenode del
 		return de.reconstruct(pnn, de.role);
 	}
 

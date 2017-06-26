@@ -39,14 +39,18 @@ import org.scribble.sesstype.name.Role;
 
 public class SConfig
 {
+	protected final SModelFactory sf;
+	
 	//public final Map<Role, EndpointState> states;
 	public final Map<Role, EFSM> efsms;
 	public final SBuffers buffs;
 	
 	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> buff)
 	//public WFConfig(Map<Role, EndpointState> state, WFBuffers buffs)
-	public SConfig(Map<Role, EFSM> state, SBuffers buffs)
+	protected SConfig(SModelFactory sf, Map<Role, EFSM> state, SBuffers buffs)
 	{
+		this.sf = sf;
+		
 		this.efsms = Collections.unmodifiableMap(state);
 		//this.buffs = Collections.unmodifiableMap(buff.keySet().stream() .collect(Collectors.toMap((k) -> k, (k) -> Collections.unmodifiableMap(buff.get(k)))));
 		//this.buffs = Collections.unmodifiableMap(buff);
@@ -138,7 +142,7 @@ public class SConfig
 			{
 				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
-			res.add(new SConfig(tmp1, tmp2));
+			res.add(this.sf.newSConfig(tmp1, tmp2));
 		}
 
 		return res;
@@ -176,7 +180,7 @@ public class SConfig
 				{
 					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
 				}
-				res.add(new SConfig(tmp1, tmp2));
+				res.add(this.sf.newSConfig(tmp1, tmp2));
 			}
 		}
 
@@ -770,7 +774,7 @@ public class SConfig
 	}
 
 	@Override
-	public final int hashCode()
+	public int hashCode()
 	{
 		int hash = 71;
 		hash = 31 * hash + this.efsms.hashCode();

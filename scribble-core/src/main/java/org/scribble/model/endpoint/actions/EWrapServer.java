@@ -13,6 +13,8 @@
  */
 package org.scribble.model.endpoint.actions;
 
+import org.scribble.model.endpoint.EModelFactory;
+import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SWrapServer;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
@@ -21,21 +23,21 @@ import org.scribble.sesstype.name.Role;
 // Duplicated from Disconnect
 public class EWrapServer extends EAction
 {
-	public EWrapServer(Role peer)
+	public EWrapServer(EModelFactory ef, Role peer)
 	{
-		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
+		super(ef, peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
 	public EWrapClient toDual(Role self)
 	{
-		return new EWrapClient(self);
+		return this.ef.newEWrapClient(self);
 	}
 
 	@Override
-	public SWrapServer toGlobal(Role self)
+	public SWrapServer toGlobal(SModelFactory sf, Role self)
 	{
-		return new SWrapServer(self, this.peer);
+		return sf.newSWrapServer(self, this.peer);
 	}
 	
 	@Override

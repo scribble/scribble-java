@@ -29,11 +29,12 @@ import org.scribble.visit.NoEnvInlinedProtocolVisitor;
 public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 //public class EndpointGraphBuilder extends NoEnvUnfoldingVisitor  // Doesn't work
 {
-	public final EGraphBuilderUtil util = new EGraphBuilderUtil();
+	public final EGraphBuilderUtil util;// = new EGraphBuilderUtil();
 	
 	public EGraphBuilder(Job job)
 	{
 		super(job);
+		this.util = job.newEGraphBuilderUtil();
 	}
 
 	// Override visitInlinedProtocol -- not visit, or else enter/exit is lost

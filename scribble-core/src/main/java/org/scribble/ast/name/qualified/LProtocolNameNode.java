@@ -14,7 +14,7 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.Local;
@@ -34,9 +34,9 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 	}
 	
 	@Override
-	public LProtocolNameNode clone()
+	public LProtocolNameNode clone(AstFactory af)
 	{
-		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(this.source, Local.KIND, this.elems);
+		return (LProtocolNameNode) af.QualifiedNameNode(this.source, Local.KIND, this.elems);
 	}
 	
 	@Override

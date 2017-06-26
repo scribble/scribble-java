@@ -23,7 +23,7 @@ import org.scribble.sesstype.name.PayloadType;
 //public interface PayloadElem extends ScribNode
 public interface PayloadElem<K extends PayloadTypeKind> extends ScribNode
 {
-	PayloadElem<K> project();  // Currently outside of visitor/env pattern (cf. MessageNode)
+	PayloadElem<K> project(AstFactory af);  // Currently outside of visitor/env pattern (cf. MessageNode)
 	
 	default boolean isGlobalDelegationElem()
 	{

@@ -13,7 +13,6 @@
  */
 package org.scribble.del;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Do;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
@@ -64,7 +63,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		ModuleContext mc = disamb.getModuleContext();
 		ProtocolName<K> fullname = mc.getVisibleProtocolDeclFullName(doo.proto.toName());
 		ProtocolNameNode<K> pnn = (ProtocolNameNode<K>)
-				AstFactoryImpl.FACTORY.QualifiedNameNode(doo.proto.getSource(), fullname.getKind(), fullname.getElements()); 
+				disamb.job.af.QualifiedNameNode(doo.proto.getSource(), fullname.getKind(), fullname.getElements()); 
 						// Didn't keep original namenode del
 		return doo.reconstruct(doo.roles, doo.args, pnn);
 	}

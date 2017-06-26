@@ -13,6 +13,7 @@
  */
 package org.scribble.model.endpoint;
 
+// FIXME: consider that enums cannot be "extended"
 public enum EStateKind
 {
 	OUTPUT,      // SEND, CONNECT and WRAP_CLIENT

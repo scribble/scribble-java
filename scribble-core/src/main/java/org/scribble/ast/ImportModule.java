@@ -40,11 +40,11 @@ public class ImportModule extends ImportDecl<ModuleKind>
 	}
 	
 	@Override
-	public ImportModule clone()
+	public ImportModule clone(AstFactory af)
 	{
-		ModuleNameNode name = (ModuleNameNode) this.modname.clone();
-		ModuleNameNode alias = (ModuleNameNode) this.alias.clone();
-		return AstFactoryImpl.FACTORY.ImportModule(this.source, name, alias);
+		ModuleNameNode name = (ModuleNameNode) this.modname.clone(af);
+		ModuleNameNode alias = (ModuleNameNode) this.alias.clone(af);
+		return af.ImportModule(this.source, name, alias);
 	}
 	
 	public ImportModule reconstruct(ModuleNameNode modname, ModuleNameNode alias)  // Factor up

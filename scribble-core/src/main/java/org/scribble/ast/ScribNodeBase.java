@@ -56,7 +56,7 @@ public abstract class ScribNodeBase implements ScribNode
 	protected abstract ScribNodeBase copy();
 	
 	@Override
-	public abstract ScribNodeBase clone();
+	public abstract ScribNodeBase clone(AstFactory af);
 	
 	@Override
 	public final ScribDel del()
@@ -136,7 +136,7 @@ public abstract class ScribNodeBase implements ScribNode
 		// Maybe this exception hack is not worth it?  Better to throw directly as ScribbleException
 		try
 		{
-			return children.stream().map((n) -> c.apply(n)).collect(Collectors.toList());
+			return children.stream().map(n -> c.apply(n)).collect(Collectors.toList());
 		}
 		catch (RuntimeScribbleException rse)
 		{

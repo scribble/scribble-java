@@ -16,7 +16,6 @@ package org.scribble.del.global;
 import java.util.Arrays;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionSeq;
@@ -59,11 +58,10 @@ public class GProtocolDefDel extends ProtocolDefDel
 		SubprotocolSig subsig = inl.peekStack();
 		GProtocolDef def = (GProtocolDef) visited;
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) def.block.del().env()).getTranslation();	
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(blame,
-				RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
-		GRecursion rec = AstFactoryImpl.FACTORY.GRecursion(blame, recvar, block);
-		GInteractionSeq gis = AstFactoryImpl.FACTORY.GInteractionSeq(blame, Arrays.asList(rec));
-		GProtocolDef inlined = AstFactoryImpl.FACTORY.GProtocolDef(def.getSource(), AstFactoryImpl.FACTORY.GProtocolBlock(blame, gis));
+		RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame, RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
+		GRecursion rec = inl.job.af.GRecursion(blame, recvar, block);
+		GInteractionSeq gis = inl.job.af.GInteractionSeq(blame, Arrays.asList(rec));
+		GProtocolDef inlined = inl.job.af.GProtocolDef(def.getSource(), inl.job.af.GProtocolBlock(blame, gis));
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		GProtocolDefDel copy = setInlinedProtocolDef(inlined);
 		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, inl, (GProtocolDef) def.del(copy));
@@ -81,7 +79,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 	{
 		GProtocolDef gpd = (GProtocolDef) visited;
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gpd.block.del().env()).getProjection();	
-		LProtocolDef projection = gpd.project(proj.peekSelf(), block);
+		LProtocolDef projection = gpd.project(proj.job.af, proj.peekSelf(), block);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, proj, gpd);
 	}

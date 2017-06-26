@@ -31,10 +31,10 @@ public class NonRoleArg extends DoArg<NonRoleArgNode>
 	}
 	
 	@Override
-	public NonRoleArg clone()
+	public NonRoleArg clone(AstFactory af)
 	{
-		NonRoleArgNode arg = (NonRoleArgNode) getVal().clone();
-		return AstFactoryImpl.FACTORY.NonRoleArg(this.source, arg);
+		NonRoleArgNode arg = (NonRoleArgNode) getVal().clone(af);
+		return af.NonRoleArg(this.source, arg);
 	}
 
 	@Override
@@ -53,8 +53,8 @@ public class NonRoleArg extends DoArg<NonRoleArgNode>
 	}
 	
 	@Override
-	public NonRoleArg project(Role self)
+	public NonRoleArg project(AstFactory af, Role self)
 	{
-		return AstFactoryImpl.FACTORY.NonRoleArg(this.source, getVal());  // arg needs projection?
+		return af.NonRoleArg(this.source, getVal());  // arg needs projection?
 	}
 }

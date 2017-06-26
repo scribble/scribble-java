@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
@@ -42,7 +43,7 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	}
 	
 	@Override
-	public LParallel clone()
+	public LParallel clone(AstFactory af)
 	{
 		//List<:ProtocolBlock> blocks = ScribUtil.cloneList(getBlocks());
 		throw new RuntimeException("TODO: " + this);
@@ -82,7 +83,7 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		throw new RuntimeException("TODO: " + this);
 	}

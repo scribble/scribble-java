@@ -14,7 +14,7 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.MessageSigName;
@@ -27,7 +27,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 	}
 	
 	@Override
-	public MessageNode project()
+	public MessageNode project(AstFactory af)
 	{
 		return this;
 	}
@@ -39,9 +39,9 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 	}
 	
 	@Override
-	public MessageSigNameNode clone()
+	public MessageSigNameNode clone(AstFactory af)
 	{
-		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(this.source, SigKind.KIND, this.elems);
+		return (MessageSigNameNode) af.QualifiedNameNode(this.source, SigKind.KIND, this.elems);
 	}
 	
 	@Override

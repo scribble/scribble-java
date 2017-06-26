@@ -13,6 +13,8 @@
  */
 package org.scribble.model.endpoint.actions;
 
+import org.scribble.model.endpoint.EModelFactory;
+import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SReceive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
@@ -41,26 +43,26 @@ public class EReceive extends EAction
 		super(peer, mid, payload);
 	}*/
 
-	public EReceive(Role peer, MessageId<?> mid, Payload payload)
+	public EReceive(EModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
 	{
-		super(peer, mid, payload);
+		super(ef, peer, mid, payload);
 		//Receive.RECEIVES.add(this);
 	}
 	
 	@Override
 	public ESend toDual(Role self)
 	{
-		return new ESend(self, this.mid, this.payload);
+		return this.ef.newESend(self, this.mid, this.payload);
 		//return Send.get(self, this.mid, this.payload);
 	}
 
 	@Override
 	//public GModelAction toGlobal(Role self)
-	public SReceive toGlobal(Role self)
+	public SReceive toGlobal(SModelFactory sf, Role self)
 	{
 		//return new GModelAction(this.peer, self, this.mid, this.payload);
 		////return GModelAction.get(this.peer, self, this.mid, this.payload);
-		return new SReceive(self, this.peer, this.mid, this.payload);
+		return sf.newSReceive(self, this.peer, this.mid, this.payload);
 
 	}
 	

@@ -13,7 +13,6 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LProtocolBlock;
@@ -49,7 +48,7 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		//RecVarNode recvar = lr.recvar.clone();
 		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) lr.recvar.del().env()).getTranslation();	
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) lr.block.del().env()).getTranslation();	
-		LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(lr.getSource(), recvar, block);
+		LRecursion inlined = inl.job.af.LRecursion(lr.getSource(), recvar, block);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LRecursion) super.leaveProtocolInlining(parent, child, inl, lr);
 	}

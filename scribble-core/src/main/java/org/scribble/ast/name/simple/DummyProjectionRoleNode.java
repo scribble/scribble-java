@@ -13,7 +13,7 @@
  */
 package org.scribble.ast.name.simple;
 
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Substitutor;
@@ -35,9 +35,9 @@ public class DummyProjectionRoleNode extends RoleNode
 	}
 	
 	@Override
-	public DummyProjectionRoleNode clone()
+	public DummyProjectionRoleNode clone(AstFactory af)
 	{
-		return AstFactoryImpl.FACTORY.DummyProjectionRoleNode();
+		return af.DummyProjectionRoleNode();
 	}
 	
 	@Override
