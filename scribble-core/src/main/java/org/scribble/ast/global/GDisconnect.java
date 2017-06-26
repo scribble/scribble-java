@@ -13,54 +13,44 @@
  */
 package org.scribble.ast.global;
 
-import java.util.Collections;
-
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.local.LNode;
-import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.OpKind;
 import org.scribble.sesstype.kind.RoleKind;
-import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
 public class GDisconnect extends ConnectionAction<Global> implements GSimpleInteractionNode
 {
-	// Duplicated in GWrap
-  // FIXME: inconsistent wrt. this.source -- it is essentially parsed (in the sense of *omitted* syntax), but not recorded
-	public static final MessageSigNode UNIT_MESSAGE_SIG_NODE =  // Hacky?
-			AstFactoryImpl.FACTORY.MessageSigNode(null, 
-				(OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(null, OpKind.KIND, Op.EMPTY_OPERATOR.toString()),
-				AstFactoryImpl.FACTORY.PayloadElemList(null, Collections.emptyList()));  // Payload.EMPTY_PAYLOAD?
 
-	public GDisconnect(CommonTree source, RoleNode src, RoleNode dest)
+	//public GDisconnect(CommonTree source, RoleNode src, RoleNode dest)
+	public GDisconnect(CommonTree source, MessageSigNode unit, RoleNode src, RoleNode dest)
 	{
-		super(source, src, UNIT_MESSAGE_SIG_NODE, dest);
+		super(source, src, unit, dest);
 	}
 
-	public LNode project(Role self)
+	public LNode project(AstFactory af, Role self)
 	{
 		Role srcrole = this.src.toName();
 		Role destrole = this.dest.toName();
 		LNode projection = null;
 		if (srcrole.equals(self) || destrole.equals(self))
 		{
-			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.src.getSource(), RoleKind.KIND, this.src.toName().toString());  // clone?
-			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.dest.getSource(), RoleKind.KIND, this.dest.toName().toString());
+			RoleNode src = (RoleNode) af.SimpleNameNode(this.src.getSource(), RoleKind.KIND, this.src.toName().toString());  // clone?
+			RoleNode dest = (RoleNode) af.SimpleNameNode(this.dest.getSource(), RoleKind.KIND, this.dest.toName().toString());
 			if (srcrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LDisconnect(this.source, src, dest);
+				projection = af.LDisconnect(this.source, src, dest);
 			}
 			if (destrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LDisconnect(this.source, dest, src);
+				projection = af.LDisconnect(this.source, dest, src);
 			}
 		}
 		return projection;
@@ -70,15 +60,15 @@ public class GDisconnect extends ConnectionAction<Global> implements GSimpleInte
 	@Override
 	protected GDisconnect copy()
 	{
-		return new GDisconnect(this.source, this.src, this.dest);
+		return new GDisconnect(this.source, (MessageSigNode) this.msg, this.src, this.dest);
 	}
 	
 	@Override
-	public GDisconnect clone()
+	public GDisconnect clone(AstFactory af)
 	{
-		RoleNode src = this.src.clone();
-		RoleNode dest = this.dest.clone();
-		return AstFactoryImpl.FACTORY.GDisconnect(this.source, src, dest);
+		RoleNode src = this.src.clone(af);
+		RoleNode dest = this.dest.clone(af);
+		return af.GDisconnect(this.source, src, dest);
 	}
 
 	@Override
@@ -86,7 +76,7 @@ public class GDisconnect extends ConnectionAction<Global> implements GSimpleInte
 	//public GDisconnect reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
-		GDisconnect gd = new GDisconnect(this.source, src, dest);
+		GDisconnect gd = new GDisconnect(this.source, (MessageSigNode) this.msg, src, dest);
 		gd = (GDisconnect) gd.del(del);
 		return gd;
 	}

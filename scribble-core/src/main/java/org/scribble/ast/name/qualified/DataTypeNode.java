@@ -14,7 +14,7 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.DataTypeKind;
@@ -35,9 +35,9 @@ public class DataTypeNode extends MemberNameNode<DataTypeKind> implements Payloa
 	}
 	
 	@Override
-	public DataTypeNode clone()
+	public DataTypeNode clone(AstFactory af)
 	{
-		return (DataTypeNode) AstFactoryImpl.FACTORY.QualifiedNameNode(this.source, DataTypeKind.KIND, this.elems);
+		return (DataTypeNode) af.QualifiedNameNode(this.source, DataTypeKind.KIND, this.elems);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class DataTypeNode extends MemberNameNode<DataTypeKind> implements Payloa
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(Object o)  // FIXME: is equals/hashCode needed for these Nodes?
 	{
 		if (this == o)
 		{

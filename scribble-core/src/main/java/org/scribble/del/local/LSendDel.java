@@ -21,7 +21,6 @@ import org.scribble.ast.local.LMessageTransfer;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -31,8 +30,9 @@ import org.scribble.visit.wf.ExplicitCorrelationChecker;
 
 public class LSendDel extends LMessageTransferDel
 {
+	
 	@Override
-	public LSend leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
+	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LSend ls = (LSend) visited;
 		List<RoleNode> dests = ls.getDestinations();
@@ -45,9 +45,9 @@ public class LSendDel extends LMessageTransferDel
 		Payload payload = ls.msg.isMessageSigNode()  // Hacky?
 					? ((MessageSigNode) ls.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
-		graph.util.addEdge(graph.util.getEntry(), new ESend(peer, mid, payload), graph.util.getExit());
+		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newESend(peer, mid, payload), builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());
-		return (LSend) super.leaveEGraphBuilding(parent, child, graph, ls);
+		return (LSend) super.leaveEGraphBuilding(parent, child, builder, ls);
 	}
 
 	// Could make a LMessageTransferDel to factor this out with LReceiveDel

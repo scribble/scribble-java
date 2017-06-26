@@ -83,7 +83,7 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 	{
 		GDisconnect gd = (GDisconnect) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gd.project(self);
+		LNode projection = gd.project(proj.job.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GDisconnect) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
 	}

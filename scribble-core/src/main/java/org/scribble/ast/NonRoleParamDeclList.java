@@ -39,17 +39,17 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 	}
 	
 	@Override
-	public NonRoleParamDeclList clone()
+	public NonRoleParamDeclList clone(AstFactory af)
 	{
-		List<NonRoleParamDecl<NonRoleParamKind>> decls = ScribUtil.cloneList(getDecls());
-		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(this.source, decls);
+		List<NonRoleParamDecl<NonRoleParamKind>> decls = ScribUtil.cloneList(af, getDecls());
+		return af.NonRoleParamDeclList(this.source, decls);
 	}
 
 	@Override
 	public NonRoleParamDeclList reconstruct(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
 	{
 		ScribDel del = del();
-		NonRoleParamDeclList rdl = AstFactoryImpl.FACTORY.NonRoleParamDeclList(this.source, castParamDecls(decls));
+		NonRoleParamDeclList rdl = new NonRoleParamDeclList(this.source, castParamDecls(decls));
 		rdl = (NonRoleParamDeclList) rdl.del(del);
 		return rdl;
 	}
@@ -67,9 +67,9 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 		
 	// FIXME: move to delegate?
 	@Override
-	public NonRoleParamDeclList project(Role self)
+	public NonRoleParamDeclList project(AstFactory af, Role self)
 	{
-		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(this.source, getDecls());
+		return af.NonRoleParamDeclList(this.source, getDecls());
 	}
 
 	@Override

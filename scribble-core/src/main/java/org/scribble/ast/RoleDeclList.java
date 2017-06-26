@@ -36,17 +36,17 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 	}
 	
 	@Override
-	public RoleDeclList clone()
+	public RoleDeclList clone(AstFactory af)
 	{
-		List<RoleDecl> decls = ScribUtil.cloneList(getDecls());
-		return AstFactoryImpl.FACTORY.RoleDeclList(this.source, decls);
+		List<RoleDecl> decls = ScribUtil.cloneList(af, getDecls());
+		return af.RoleDeclList(this.source, decls);
 	}
 
 	@Override
 	public HeaderParamDeclList<RoleKind> reconstruct(List<? extends HeaderParamDecl<RoleKind>> decls)
 	{
 		ScribDel del = del();
-		RoleDeclList rdl = AstFactoryImpl.FACTORY.RoleDeclList(this.source, castRoleDecls(decls));
+		RoleDeclList rdl = new RoleDeclList(this.source, castRoleDecls(decls));
 		rdl = (RoleDeclList) rdl.del(del);
 		return rdl;
 	}
@@ -64,9 +64,9 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 
 	// Move to del?
 	@Override
-	public RoleDeclList project(Role self)
+	public RoleDeclList project(AstFactory af, Role self)
 	{
-		return AstFactoryImpl.FACTORY.RoleDeclList(this.source, getDecls());
+		return af.RoleDeclList(this.source, getDecls());
 	}
 
 	@Override

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
@@ -152,23 +152,20 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		return new ModuleName(fullname.getPrefix(), simpname);  // Supports unary fullname
 	}
 	
-	public static LProtocolNameNode makeProjectedSimpleNameNode(CommonTree source, GProtocolName simpname, Role role)
+	public static LProtocolNameNode makeProjectedSimpleNameNode(AstFactory af, CommonTree source, GProtocolName simpname, Role role)
 	{
-		return (LProtocolNameNode)
-				AstFactoryImpl.FACTORY.QualifiedNameNode(source, Local.KIND, projectSimpleProtocolName(simpname, role).toString());
+		return (LProtocolNameNode) af.QualifiedNameNode(source, Local.KIND, projectSimpleProtocolName(simpname, role).toString());
 	}
 
-	public static LProtocolNameNode makeProjectedFullNameNode(CommonTree source, GProtocolName fullname, Role role)
+	public static LProtocolNameNode makeProjectedFullNameNode(AstFactory af, CommonTree source, GProtocolName fullname, Role role)
 	{
-		return (LProtocolNameNode)
-				AstFactoryImpl.FACTORY.QualifiedNameNode(source, Local.KIND, projectFullProtocolName(fullname, role).getElements());
+		return (LProtocolNameNode) af.QualifiedNameNode(source, Local.KIND, projectFullProtocolName(fullname, role).getElements());
 	}
 
 	// fullname is the un-projected name; localname is the already projected simple name
-	public static ModuleNameNode makeProjectedModuleNameNode(CommonTree source, ModuleName fullname, LProtocolName localname)
+	public static ModuleNameNode makeProjectedModuleNameNode(AstFactory af, CommonTree source, ModuleName fullname, LProtocolName localname)
 	{
-		return (ModuleNameNode)
-				AstFactoryImpl.FACTORY.QualifiedNameNode(source, ModuleKind.KIND, projectModuleName(fullname, localname).getElements());
+		return (ModuleNameNode) af.QualifiedNameNode(source, ModuleKind.KIND, projectModuleName(fullname, localname).getElements());
 	}
 	
 	// Returns true if should ignore for projection

@@ -14,7 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.local.LProtocolBlock;
@@ -36,17 +36,17 @@ public class GProtocolDef extends ProtocolDef<Global> implements GNode
 		return new GProtocolDef(this.source, getBlock());
 	}
 
-	public LProtocolDef project(Role self, LProtocolBlock block)
+	public LProtocolDef project(AstFactory af, Role self, LProtocolBlock block)
 	{
-		LProtocolDef projection = AstFactoryImpl.FACTORY.LProtocolDef(this.source, block);
+		LProtocolDef projection = af.LProtocolDef(this.source, block);
 		return projection;
 	}
 	
 	@Override
-	public GProtocolDef clone()
+	public GProtocolDef clone(AstFactory af)
 	{
-		GProtocolBlock block = getBlock().clone();
-		return AstFactoryImpl.FACTORY.GProtocolDef(this.source, block);
+		GProtocolBlock block = getBlock().clone(af);
+		return af.GProtocolDef(this.source, block);
 	}
 
 	@Override

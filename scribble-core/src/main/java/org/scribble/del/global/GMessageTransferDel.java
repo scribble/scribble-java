@@ -81,7 +81,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gmt.project(self);
+		LNode projection = gmt.project(proj.job.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gmt);
 	}

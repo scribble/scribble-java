@@ -16,6 +16,7 @@ package org.scribble.ast.global;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Interruptible;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
@@ -56,7 +57,7 @@ public class GInterruptible extends Interruptible<Global> implements GCompoundIn
 	}
 	
 	@Override
-	public GInterruptible clone()
+	public GInterruptible clone(AstFactory af)
 	{
 		throw new RuntimeException("TODO: " + this);
 	}

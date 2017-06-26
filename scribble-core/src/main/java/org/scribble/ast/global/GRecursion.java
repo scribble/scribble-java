@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.Do;
 import org.scribble.ast.MessageTransfer;
@@ -46,16 +46,16 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 		super(source, recvar, block);
 	}
 
-	public LRecursion project(Role self, LProtocolBlock block)
+	public LRecursion project(AstFactory af, Role self, LProtocolBlock block)
 	{
-		RecVarNode recvar = this.recvar.clone();
+		RecVarNode recvar = this.recvar.clone(af);
 		LRecursion projection = null;
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(recvar.toName());
-		LProtocolBlock pruned = prune(block, rvs);
+		LProtocolBlock pruned = prune(af, block, rvs);
 		if (!pruned.isEmpty())
 		{
-			projection = AstFactoryImpl.FACTORY.LRecursion(this.source, recvar, pruned);
+			projection = af.LRecursion(this.source, recvar, pruned);
 		}
 		return projection;
 	}
@@ -63,7 +63,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 	// Pruning must be considered here (at Recursion) due to unguarded recvars
 	// Set should be unnecessary (singleton OK) -- *nested* irrelevant continues should already have been pruned
 	// FIXME? refactor and separate into dels? -- maybe not: since pruning is a bit too much of a "centralised algorithm" -- currently relying on TODO exception for unhandled cases
-	private static LProtocolBlock prune(LProtocolBlock block, Set<RecVar> rvs)  // FIXME: Set unnecessary
+	private static LProtocolBlock prune(AstFactory af, LProtocolBlock block, Set<RecVar> rvs)  // FIXME: Set unnecessary
 	{
 		if (block.isEmpty())
 		{
@@ -83,8 +83,8 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 				if (rvs.contains(((LContinue) lin).recvar.toName()))
 				{
 					// FIXME: need equivalent for projection-irrelevant recursive-do in a protocoldecl
-					return AstFactoryImpl.FACTORY.LProtocolBlock(block.getSource(),
-							AstFactoryImpl.FACTORY.LInteractionSeq(block.seq.getSource(), Collections.emptyList()));
+					return af.LProtocolBlock(block.getSource(),
+							af.LInteractionSeq(block.seq.getSource(), Collections.emptyList()));
 				}
 				else
 				{
@@ -102,37 +102,37 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 					List<LProtocolBlock> pruned = new LinkedList<LProtocolBlock>();
 					for (LProtocolBlock b : ((LChoice) lin).getBlocks())
 					{
-						if (!prune(b, rvs).isEmpty())
+						if (!prune(af, b, rvs).isEmpty())
 						{
 							pruned.add(b);
 						}
 					}
 					if (pruned.isEmpty())
 					{
-						return AstFactoryImpl.FACTORY.LProtocolBlock(block.getSource(),
-								AstFactoryImpl.FACTORY.LInteractionSeq(block.seq.getSource(), Collections.emptyList()));
+						return af.LProtocolBlock(block.getSource(),
+								af.LInteractionSeq(block.seq.getSource(), Collections.emptyList()));
 					}	
 					else
 					{
-						return AstFactoryImpl.FACTORY.LProtocolBlock(block.getSource(),
-								AstFactoryImpl.FACTORY.LInteractionSeq(block.seq.getSource(), Arrays.asList(
-										AstFactoryImpl.FACTORY.LChoice(lin.getSource(), ((LChoice) lin).subj, pruned))));
+						return af.LProtocolBlock(block.getSource(),
+								af.LInteractionSeq(block.seq.getSource(), Arrays.asList(
+										af.LChoice(lin.getSource(), ((LChoice) lin).subj, pruned))));
 					}	
 				}
 				else if (lin instanceof LRecursion)
 				{
 					rvs = new HashSet<>(rvs);
 					//rvs.add(((LRecursion) lin).recvar.toName());  // Set unnecessary
-					LProtocolBlock pruned = prune(((LRecursion) lin).getBlock(), rvs);  // Need to check if the current rec has any cases to prune in the nested rec (already pruned, but for the nested recvars only)
+					LProtocolBlock pruned = prune(af, ((LRecursion) lin).getBlock(), rvs);  // Need to check if the current rec has any cases to prune in the nested rec (already pruned, but for the nested recvars only)
 					if (pruned.isEmpty())
 					{
 						return pruned;
 					}
 					else
 					{
-						return AstFactoryImpl.FACTORY.LProtocolBlock(block.getSource(),
-								AstFactoryImpl.FACTORY.LInteractionSeq(block.seq.getSource(), Arrays.asList(
-										AstFactoryImpl.FACTORY.LRecursion(lin.getSource(), ((LRecursion) lin).recvar, pruned))));
+						return af.LProtocolBlock(block.getSource(),
+								af.LInteractionSeq(block.seq.getSource(), Arrays.asList(
+										af.LRecursion(lin.getSource(), ((LRecursion) lin).recvar, pruned))));
 					}
 					/*if (((LRecursion) lin).block.isEmpty())
 					{
@@ -158,11 +158,11 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 	}
 	
 	@Override
-	public GRecursion clone()
+	public GRecursion clone(AstFactory af)
 	{
-		RecVarNode recvar = this.recvar.clone();
-		GProtocolBlock block = getBlock().clone();
-		return AstFactoryImpl.FACTORY.GRecursion(this.source, recvar, block);
+		RecVarNode recvar = this.recvar.clone(af);
+		GProtocolBlock block = getBlock().clone(af);
+		return af.GRecursion(this.source, recvar, block);
 	}
 
 	@Override

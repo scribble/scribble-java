@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
@@ -54,7 +53,7 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences();
 		List<RoleDecl> rds = lpd.header.roledecls.getDecls().stream().filter((rd) -> 
 				occs.contains(rd.getDeclName())).collect(Collectors.toList());
-		RoleDeclList rdl = AstFactoryImpl.FACTORY.RoleDeclList(lpd.header.roledecls.getSource(), rds);
+		RoleDeclList rdl = fixer.job.af.RoleDeclList(lpd.header.roledecls.getSource(), rds);
 		LProtocolHeader header = lpd.getHeader().reconstruct(lpd.getHeader().getNameNode(), rdl, lpd.header.paramdecls);
 		LProtocolDecl fixed = lpd.reconstruct(header, lpd.def);
 		

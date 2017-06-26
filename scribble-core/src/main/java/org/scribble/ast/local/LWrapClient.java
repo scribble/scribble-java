@@ -17,11 +17,11 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
+import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNodeBase;
-import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
@@ -33,23 +33,24 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LWrapClient extends LConnectionAction implements LSimpleInteractionNode
 {
-	public LWrapClient(CommonTree source, RoleNode src, RoleNode dest)
+	public LWrapClient(CommonTree source, MessageSigNode unit, RoleNode src, RoleNode dest)
 	{
-		super(source, src, GWrap.UNIT_MESSAGE_SIG_NODE, dest);
+		//super(source, src, GWrap.UNIT_MESSAGE_SIG_NODE, dest);
+		super(source, src, unit, dest);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LWrapClient(this.source, this.src, this.dest);
+		return new LWrapClient(this.source, (MessageSigNode) this.msg, this.src, this.dest);
 	}
 	
 	@Override
-	public LWrapClient clone()
+	public LWrapClient clone(AstFactory af)
 	{
-		RoleNode src = this.src.clone();
-		RoleNode dest = this.dest.clone();
-		return AstFactoryImpl.FACTORY.LWrapClient(this.source, src, dest);
+		RoleNode src = this.src.clone(af);
+		RoleNode dest = this.dest.clone(af);
+		return af.LWrapClient(this.source, src, dest);
 	}
 
 	@Override
@@ -57,7 +58,7 @@ public class LWrapClient extends LConnectionAction implements LSimpleInteraction
 	//public LWrapClient reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
-		LWrapClient ls = new LWrapClient(this.source, src, dest);
+		LWrapClient ls = new LWrapClient(this.source, (MessageSigNode) this.msg, src, dest);
 		ls = (LWrapClient) ls.del(del);
 		return ls;
 	}
@@ -84,7 +85,7 @@ public class LWrapClient extends LConnectionAction implements LSimpleInteraction
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LWrapClient: " + this);
 	}

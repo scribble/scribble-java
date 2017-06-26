@@ -2,7 +2,7 @@
   	<modelVersion>4.0.0</modelVersion>
   	<artifactId>scribble-core</artifactId>
 	<packaging>jar</packaging>
-  	<name>Scribble::Modules::Core</name>
+  	<name>scribble-core</name>
 
 	<parent>
 		<groupId>org.scribble</groupId>

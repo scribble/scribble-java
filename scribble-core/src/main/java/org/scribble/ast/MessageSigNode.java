@@ -33,9 +33,9 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	}
 	
 	@Override
-	public MessageNode project()  // Currently outside of visitor/env pattern
+	public MessageNode project(AstFactory af)  // Currently outside of visitor/env pattern
 	{
-		return AstFactoryImpl.FACTORY.MessageSigNode(this.source, this.op, this.payloads.project());  // Original del not retained by projection
+		return af.MessageSigNode(this.source, this.op, this.payloads.project(af));  // Original del not retained by projection
 	}
 
 	@Override
@@ -45,11 +45,11 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	}	
 
 	@Override
-	public MessageSigNode clone()
+	public MessageSigNode clone(AstFactory af)
 	{
-		OpNode op = this.op.clone();
-		PayloadElemList payload = this.payloads.clone();
-		return AstFactoryImpl.FACTORY.MessageSigNode(this.source, op, payload);
+		OpNode op = this.op.clone(af);
+		PayloadElemList payload = this.payloads.clone(af);
+		return af.MessageSigNode(this.source, op, payload);
 	}
 	
 	public MessageSigNode reconstruct(OpNode op, PayloadElemList payload)

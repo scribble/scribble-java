@@ -16,7 +16,7 @@ package org.scribble.ast.global;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolDecl;
@@ -43,18 +43,18 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	}
 	
 	// FIXME? project modifiers?
-	public LProtocolDecl project(Module mod, Role self, LProtocolDef def) throws ScribbleException  // mod is just the parent?
+	public LProtocolDecl project(AstFactory af, Module mod, Role self, LProtocolDef def) throws ScribbleException  // mod is just the parent?
 	{
 		//Role self = proj.peekSelf();
 		GProtocolHeader gph = getHeader();
-		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(gph.getSource(), gph.getDeclName(), self);
+		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(af, gph.getSource(), gph.getDeclName(), self);
 		
 		// Move to delegates? -- maybe fully integrate into projection pass
-		RoleDeclList roledecls = this.header.roledecls.project(self);
-		NonRoleParamDeclList paramdecls = this.header.paramdecls.project(self);
-		LProtocolHeader lph = AstFactoryImpl.FACTORY.LProtocolHeader(this.header.getSource(), pn, roledecls, paramdecls);
+		RoleDeclList roledecls = this.header.roledecls.project(af, self);
+		NonRoleParamDeclList paramdecls = this.header.paramdecls.project(af, self);
+		LProtocolHeader lph = af.LProtocolHeader(this.header.getSource(), pn, roledecls, paramdecls);
 		GProtocolName gpn = this.getFullMemberName(mod);
-		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProjectionDecl(this.source, this.modifiers, gpn, self, lph, def);
+		LProtocolDecl projected = af.LProjectionDecl(this.source, this.modifiers, gpn, self, lph, def);
 		return projected;
 	}
 
@@ -65,11 +65,11 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	}
 	
 	@Override
-	public GProtocolDecl clone()
+	public GProtocolDecl clone(AstFactory af)
 	{
-		GProtocolHeader header = getHeader().clone();
-		GProtocolDef def = getDef().clone();
-		return AstFactoryImpl.FACTORY.GProtocolDecl(this.source, this.modifiers, header, def);
+		GProtocolHeader header = getHeader().clone(af);
+		GProtocolDef def = getDef().clone(af);
+		return af.GProtocolDecl(this.source, this.modifiers, header, def);
 	}
 
 	@Override

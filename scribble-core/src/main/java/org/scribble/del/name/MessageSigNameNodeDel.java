@@ -13,7 +13,6 @@
  */
 package org.scribble.del.name;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
@@ -42,6 +41,6 @@ public class MessageSigNameNodeDel extends ScribDelBase
 		ModuleContext mc = disamb.getModuleContext();
 		MessageSigNameNode msnn = (MessageSigNameNode) visited;
 		MessageSigName fullname = mc.getVisibleMessageSigNameFullName(msnn.toName());
-		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(msnn.getSource(), SigKind.KIND, fullname.getElements());  // Didn't keep original del
+		return (MessageSigNameNode) disamb.job.af.QualifiedNameNode(msnn.getSource(), SigKind.KIND, fullname.getElements());  // Didn't keep original del
 	}
 }

@@ -14,6 +14,8 @@
 package org.scribble.model.endpoint.actions;
 
 import org.scribble.model.MAction;
+import org.scribble.model.endpoint.EModelFactory;
+import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Local;
@@ -25,19 +27,23 @@ public abstract class EAction extends MAction<Local>
 	public final Role peer;
 	/*public final MessageId<?> mid;
 	public final Payload payload;  // Empty for MessageSigNames*/
-	
-	protected EAction(Role peer, MessageId<?> mid, Payload payload)
+
+	protected EModelFactory ef;
+
+	protected EAction(EModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
 	{
 		/*this.mid = mid;
 		this.payload = payload;*/
 		super(peer, mid, payload);
 		this.peer = peer;
+
+		this.ef = ef;
 	}
 	
 	public abstract EAction toDual(Role self);
 
 	//public abstract GModelAction toGlobal(Role self);
-	public abstract SAction toGlobal(Role self);
+	public abstract SAction toGlobal(SModelFactory sf, Role self);
 
 	public boolean isSend()
 	{

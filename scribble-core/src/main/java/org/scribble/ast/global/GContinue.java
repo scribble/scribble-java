@@ -14,7 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Continue;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -30,10 +30,10 @@ public class GContinue extends Continue<Global> implements GSimpleInteractionNod
 		super(source, recvar);
 	}
 
-	public LContinue project(Role self)
+	public LContinue project(AstFactory af, Role self)
 	{
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.recvar.getSource(), RecVarKind.KIND, this.recvar.toName().toString());  // clone?
-		LContinue projection = AstFactoryImpl.FACTORY.LContinue(this.source, recvar);
+		RecVarNode recvar = (RecVarNode) af.SimpleNameNode(this.recvar.getSource(), RecVarKind.KIND, this.recvar.toName().toString());  // clone?
+		LContinue projection = af.LContinue(this.source, recvar);
 		return projection;
 	}
 
@@ -44,10 +44,10 @@ public class GContinue extends Continue<Global> implements GSimpleInteractionNod
 	}
 	
 	@Override
-	public GContinue clone()
+	public GContinue clone(AstFactory af)
 	{
-		RecVarNode rv = this.recvar.clone();
-		return AstFactoryImpl.FACTORY.GContinue(this.source, rv);
+		RecVarNode rv = this.recvar.clone(af);
+		return af.GContinue(this.source, rv);
 	}
 
 	@Override

@@ -14,7 +14,7 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
@@ -42,9 +42,9 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 	}
 	
 	@Override
-	public RecVarNode clone()
+	public RecVarNode clone(AstFactory af)
 	{
-		return (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.source, RecVarKind.KIND, getIdentifier());
+		return (RecVarNode) af.SimpleNameNode(this.source, RecVarKind.KIND, getIdentifier());
 	}
 
 	@Override

@@ -39,9 +39,9 @@ public class PayloadElemList extends ScribNodeBase
 		this.elems = new LinkedList<>(elems);
 	}
 	
-	protected PayloadElemList project()
+	protected PayloadElemList project(AstFactory af)
 	{
-		return AstFactoryImpl.FACTORY.PayloadElemList(this.source, this.elems.stream().map((pe) -> pe.project()).collect(Collectors.toList()));
+		return af.PayloadElemList(this.source, this.elems.stream().map(pe -> pe.project(af)).collect(Collectors.toList()));
 	}
 	
 	@Override
@@ -51,11 +51,11 @@ public class PayloadElemList extends ScribNodeBase
 	}
 	
 	@Override
-	public PayloadElemList clone()
+	public PayloadElemList clone(AstFactory af)
 	{
 		//List<PayloadElem> elems = ScribUtil.cloneList(this.elems);
-		List<PayloadElem<?>> elems = ScribUtil.cloneList(this.elems);
-		return AstFactoryImpl.FACTORY.PayloadElemList(this.source, elems);
+		List<PayloadElem<?>> elems = ScribUtil.cloneList(af, this.elems);
+		return af.PayloadElemList(this.source, elems);
 	}
 
 	//protected PayloadElemList reconstruct(List<PayloadElem> elems)

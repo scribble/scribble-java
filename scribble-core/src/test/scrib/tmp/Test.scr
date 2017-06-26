@@ -34,6 +34,7 @@ module Test;
 
 
 
+//*
 explicit global protocol Proto1(role A, role B)
 {
 	choice at A
@@ -46,6 +47,7 @@ explicit global protocol Proto1(role A, role B)
 	}
 	2() connect A to B;
 }
+//*/
 
 
 /*

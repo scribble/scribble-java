@@ -14,7 +14,7 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.PackageName;
@@ -33,9 +33,9 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 	}
 	
 	@Override
-	public ModuleNameNode clone()
+	public ModuleNameNode clone(AstFactory af)
 	{
-		return (ModuleNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(this.source, ModuleKind.KIND, this.elems);
+		return (ModuleNameNode) af.QualifiedNameNode(this.source, ModuleKind.KIND, this.elems);
 	}
 	
 	@Override

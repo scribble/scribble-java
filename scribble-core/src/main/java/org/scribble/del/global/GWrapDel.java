@@ -80,7 +80,7 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 	{
 		GWrap gw = (GWrap) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gw.project(self);
+		LNode projection = gw.project(proj.job.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GWrap) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gw);
 	}

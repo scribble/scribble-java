@@ -14,7 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolHeader;
@@ -40,12 +40,12 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 	}
 	
 	@Override
-	public GProtocolHeader clone()
+	public GProtocolHeader clone(AstFactory af)
 	{
-		GProtocolNameNode name = getNameNode().clone();
-		RoleDeclList roledecls = this.roledecls.clone();
-		NonRoleParamDeclList paramdecls = this.paramdecls.clone();
-		return AstFactoryImpl.FACTORY.GProtocolHeader(this.source, name, roledecls, paramdecls);
+		GProtocolNameNode name = getNameNode().clone(af);
+		RoleDeclList roledecls = this.roledecls.clone(af);
+		NonRoleParamDeclList paramdecls = this.paramdecls.clone(af);
+		return af.GProtocolHeader(this.source, name, roledecls, paramdecls);
 	}
 
 	@Override

@@ -50,7 +50,7 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 		return this.val;
 	}
 
-	public abstract DoArg<T> project(Role self);
+	public abstract DoArg<T> project(AstFactory af, Role self);
 	
 	@Override
 	public String toString()

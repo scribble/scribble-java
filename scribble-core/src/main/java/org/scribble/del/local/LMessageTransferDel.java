@@ -22,7 +22,7 @@ import org.scribble.visit.wf.ExplicitCorrelationChecker;
 public abstract class LMessageTransferDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LMessageTransfer leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
 	{
 		LMessageTransfer lmt = (LMessageTransfer) visited;
 		checker.pushEnv(checker.popEnv().disableAccept());

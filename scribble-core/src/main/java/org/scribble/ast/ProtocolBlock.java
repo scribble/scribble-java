@@ -29,7 +29,7 @@ public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInte
 	}
 	
 	@Override
-	public abstract ProtocolBlock<K> clone();
+	public abstract ProtocolBlock<K> clone(AstFactory af);
 
 	public abstract ProtocolBlock<K> reconstruct(InteractionSeq<K> seq);
 

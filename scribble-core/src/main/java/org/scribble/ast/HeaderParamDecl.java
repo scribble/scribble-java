@@ -38,7 +38,7 @@ public abstract class HeaderParamDecl<K extends ParamKind> extends NameDeclNode<
 		return reconstruct(name);
 	}
 	
-	public abstract HeaderParamDecl<K> project(Role self);  // Move to delegate?
+	public abstract HeaderParamDecl<K> project(AstFactory af, Role self);  // Move to delegate?
 
 	public abstract String getKeyword();
 	
