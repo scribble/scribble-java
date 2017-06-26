@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.main.ScribbleException;
-import org.scribble.model.MState;
 import org.scribble.model.MPrettyState;
+import org.scribble.model.MState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.RecVar;
@@ -55,7 +55,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles*/
 	public EState unfairTransform()
 	{
-		EState init = this.clone();
+		EState init = clone();
 		
 		EState term = MPrettyState.getTerminal(init);
 		Set<EState> seen = new HashSet<>();

@@ -12,46 +12,47 @@ tools/eclipse/plugins/org.scribble.*/bin/
 
 javadoc
 
-#modules/demos/scrib
+#scribble-demos/scrib
 
-modules/demos/scrib/betty16/src/betty16/lec1/httplong/HttpLong/
-modules/demos/scrib/betty16/src/betty16/lec1/httpshort/HttpShort/
-modules/demos/scrib/betty16/src/betty16/lec2/adder/Adder/
-modules/demos/scrib/betty16/src/betty16/lec2/smtp/Smtp/
-modules/demos/scrib/bettybook/src/bettybook/http/longv/HttpLong/
-modules/demos/scrib/bettybook/src/bettybook/http/shortv/HttpShort/
-modules/demos/scrib/bettybook/src/bettybook/math/scrib/Math/
-modules/demos/scrib/coco/src/coco/fibo/Fibo/
-modules/demos/scrib/coco/src/coco/smtp/Smtp/
-modules/demos/scrib/fase16/src/fase16/adder/Adder/
-modules/demos/scrib/fase16/src/fase16/smtp/Smtp/
-modules/demos/scrib/fib/src/fib/Fib/
-modules/demos/scrib/http/src/http/longvers/HttpLong/
-modules/demos/scrib/http/src/http/shortvers/HttpShort/
-modules/demos/scrib/loan/src/loan/LoanApplication/
-modules/demos/scrib/smtp/src/smtp/Smtp/
-modules/demos/scrib/travel/src/travel/Travel/
+scribble-demos/scrib/betty16/src/betty16/lec1/httplong/HttpLong/
+scribble-demos/scrib/betty16/src/betty16/lec1/httpshort/HttpShort/
+scribble-demos/scrib/betty16/src/betty16/lec2/adder/Adder/
+scribble-demos/scrib/betty16/src/betty16/lec2/smtp/Smtp/
+scribble-demos/scrib/bettybook/src/bettybook/http/longv/HttpLong/
+scribble-demos/scrib/bettybook/src/bettybook/http/shortv/HttpShort/
+scribble-demos/scrib/bettybook/src/bettybook/math/scrib/Math/
+scribble-demos/scrib/coco/src/coco/fibo/Fibo/
+scribble-demos/scrib/coco/src/coco/smtp/Smtp/
+scribble-demos/scrib/fase16/src/fase16/adder/Adder/
+scribble-demos/scrib/fase16/src/fase16/smtp/Smtp/
+scribble-demos/scrib/fib/src/fib/Fib/
+scribble-demos/scrib/http/src/http/longvers/HttpLong/
+scribble-demos/scrib/http/src/http/shortvers/HttpShort/
+scribble-demos/scrib/loan/src/loan/LoanApplication/
+scribble-demos/scrib/smtp/src/smtp/Smtp/
+scribble-demos/scrib/travel/src/travel/Travel/
+scribble-demos/scrib/tutorial/src/tutorial/adder/Adder/
 
-#modules/core/src/test/scrib
+#scribble-core/src/test/scrib
 
-modules/core/src/test/scrib/exercise/calculator/EProtocol/
-modules/core/src/test/scrib/exercise/voting/EProtocol/
+scribble-core/src/test/scrib/exercise/calculator/EProtocol/
+scribble-core/src/test/scrib/exercise/voting/EProtocol/
 
-modules/core/src/test/scrib/demo/fase17/travel/TravelAgent/
-modules/core/src/test/scrib/demo/fase17/travel2/TravelAgent2/
+scribble-core/src/test/scrib/demo/fase17/travel/TravelAgent/
+scribble-core/src/test/scrib/demo/fase17/travel2/TravelAgent2/
 
-modules/core/src/test/scrib/scratch/scratch1/
-modules/core/src/test/scrib/scratch/scratch2/
-modules/core/src/test/scrib/test/foo/Foo/
-modules/core/src/test/scrib/test/test1/
-modules/core/src/test/scrib/test/test2/
-modules/core/src/test/scrib/test/test3/
-modules/core/src/test/scrib/test/test4/
-modules/core/src/test/scrib/test/test5/
-modules/core/src/test/scrib/test/test6/
-modules/core/src/test/scrib/test/test7/
-modules/core/src/test/scrib/test/test8/
-modules/core/src/test/scrib/test/test9/
+scribble-core/src/test/scrib/scratch/scratch1/
+scribble-core/src/test/scrib/scratch/scratch2/
+scribble-core/src/test/scrib/test/foo/Foo/
+scribble-core/src/test/scrib/test/test1/
+scribble-core/src/test/scrib/test/test2/
+scribble-core/src/test/scrib/test/test3/
+scribble-core/src/test/scrib/test/test4/
+scribble-core/src/test/scrib/test/test5/
+scribble-core/src/test/scrib/test/test6/
+scribble-core/src/test/scrib/test/test7/
+scribble-core/src/test/scrib/test/test8/
+scribble-core/src/test/scrib/test/test9/
 
 
 bin/scribblec.sh

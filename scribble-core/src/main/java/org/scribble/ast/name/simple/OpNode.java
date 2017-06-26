@@ -14,7 +14,7 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.sesstype.kind.OpKind;
 import org.scribble.sesstype.name.Op;
 
@@ -35,9 +35,9 @@ public class OpNode extends SimpleNameNode<OpKind>
 	}
 	
 	@Override
-	public OpNode clone()
+	public OpNode clone(AstFactory af)
 	{
-		return (OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.source, OpKind.KIND, getIdentifier());
+		return (OpNode) af.SimpleNameNode(this.source, OpKind.KIND, getIdentifier());
 	}
 	
 	@Override

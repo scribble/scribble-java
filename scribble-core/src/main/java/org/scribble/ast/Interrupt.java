@@ -41,7 +41,7 @@ public class Interrupt extends ScribNodeBase//AbstractSimpleInteractionNode
 	}
 
 	@Override
-	public Interrupt clone()
+	public Interrupt clone(AstFactory af)
 	{
 		// TODO Auto-generated method stub
 		throw new RuntimeException("TODO: " + this);

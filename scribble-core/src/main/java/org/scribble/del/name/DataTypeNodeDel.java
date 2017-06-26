@@ -13,7 +13,6 @@
  */
 package org.scribble.del.name;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
@@ -49,6 +48,6 @@ public class DataTypeNodeDel extends ScribDelBase
 		}
 		DataType fullname = mc.getVisibleDataTypeFullName(dt);
 		return (DataTypeNode)
-				AstFactoryImpl.FACTORY.QualifiedNameNode(dtn.getSource(), DataTypeKind.KIND, fullname.getElements());  // Didn't keep original del
+				disamb.job.af.QualifiedNameNode(dtn.getSource(), DataTypeKind.KIND, fullname.getElements());  // Didn't keep original del
 	}
 }

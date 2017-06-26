@@ -50,7 +50,7 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 		return Collections.unmodifiableList(this.decls);
 	}
 	
-	public abstract HeaderParamDeclList<K> project(Role self);  // FIXME: move to delegate
+	public abstract HeaderParamDeclList<K> project(AstFactory af, Role self);  // FIXME: move to delegate
 	
 	public int length()
 	{

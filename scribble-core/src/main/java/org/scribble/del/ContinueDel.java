@@ -49,11 +49,11 @@ public abstract class ContinueDel extends SimpleInteractionNodeDel
 			{
 				return cont;
 			}
-			return unf.getRecVar(rv).clone();
+			return unf.getRecVar(rv).clone(unf.job.af);
 		}
 		else if (unf.shouldUnfoldForUnguardedRec(rv))
 		{
-			return unf.getRecVar(rv).clone();
+			return unf.getRecVar(rv).clone(unf.job.af);
 		}
 		return cont;
 	}

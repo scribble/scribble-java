@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
@@ -39,7 +39,7 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 		super(source, subj, blocks);
 	}
 	
-	public LChoice project(Role self, List<LProtocolBlock> blocks)
+	public LChoice project(AstFactory af, Role self, List<LProtocolBlock> blocks)
 	{
 		LChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
 		/*if (blocks.size() == 1)
@@ -55,15 +55,15 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 		if (!blocks.isEmpty())
 		{
 			// FIXME? initially keep global subject, and later overwrite as necessary in projections? (algorithm currently checks for DUMMY)
-			RoleNode subj = self.equals(this.subj.toName()) ? this.subj.clone() : AstFactoryImpl.FACTORY.DummyProjectionRoleNode();
-			List<LChoice> cs = blocks.stream().map((b) -> AstFactoryImpl.FACTORY.LChoice(this.source, subj, Arrays.asList(b))).collect(Collectors.toList());
+			RoleNode subj = self.equals(this.subj.toName()) ? this.subj.clone(af) : af.DummyProjectionRoleNode();
+			List<LChoice> cs = blocks.stream().map((b) -> af.LChoice(this.source, subj, Arrays.asList(b))).collect(Collectors.toList());
 				// Hacky: keeping this.source for each LChoice (will end up as the source for the final merged LChoice)
 			LChoice merged = cs.get(0);
 			try
 			{
 				for (int i = 1; i < cs.size(); i++)
 				{
-					merged = merged.merge(cs.get(i)); // Merge currently does "nothing"; validation takes direct non-deterministic interpretation -- purpose of syntactic merge is to convert non-det to "equivalent" safe det in certain sitations
+					merged = merged.merge(af, cs.get(i)); // Merge currently does "nothing"; validation takes direct non-deterministic interpretation -- purpose of syntactic merge is to convert non-det to "equivalent" safe det in certain sitations
 				}
 			}
 			catch (ScribbleException e)  // HACK
@@ -83,11 +83,11 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 	}
 	
 	@Override
-	public GChoice clone()
+	public GChoice clone(AstFactory af)
 	{
-		RoleNode subj = this.subj.clone();
-		List<GProtocolBlock> blocks = ScribUtil.cloneList(getBlocks());
-		return AstFactoryImpl.FACTORY.GChoice(this.source, subj, blocks);
+		RoleNode subj = this.subj.clone(af);
+		List<GProtocolBlock> blocks = ScribUtil.cloneList(af, getBlocks());
+		return af.GChoice(this.source, subj, blocks);
 	}
 
 	@Override

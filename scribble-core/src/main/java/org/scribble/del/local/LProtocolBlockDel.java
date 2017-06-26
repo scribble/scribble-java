@@ -13,7 +13,6 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
@@ -31,7 +30,7 @@ public class LProtocolBlockDel extends ProtocolBlockDel
 	{
 		LProtocolBlock lpb = (LProtocolBlock) visited;
 		LInteractionSeq seq = (LInteractionSeq) ((InlineProtocolEnv) lpb.seq.del().env()).getTranslation();	
-		LProtocolBlock inlined = AstFactoryImpl.FACTORY.LProtocolBlock(lpb.getSource(), seq);
+		LProtocolBlock inlined = inl.job.af.LProtocolBlock(lpb.getSource(), seq);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, inl, lpb);
 	}

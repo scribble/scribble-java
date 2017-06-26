@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GProtocolBlock;
@@ -45,8 +44,8 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		GChoice gc = (GChoice) visited;
 		List<GProtocolBlock> blocks = 
 				gc.getBlocks().stream().map((b) -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
-		RoleNode subj = gc.subj.clone();
-		GChoice inlined = AstFactoryImpl.FACTORY.GChoice(gc.getSource(), subj, blocks);
+		RoleNode subj = gc.subj.clone(inl.job.af);
+		GChoice inlined = inl.job.af.GChoice(gc.getSource(), subj, blocks);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GChoice) super.leaveProtocolInlining(parent, child, inl, gc);
 	}
@@ -151,7 +150,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		List<LProtocolBlock> blocks =
 				gc.getBlocks().stream().map((b) -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());
 				//gc.getBlocks().stream().map((b) -> ((GProtocolBlockDel) b.del()).project(b, self)).collect(Collectors.toList());
-		LChoice projection = gc.project(proj.peekSelf(), blocks);
+		LChoice projection = gc.project(proj.job.af, proj.peekSelf(), blocks);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
 	}

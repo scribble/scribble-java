@@ -33,10 +33,10 @@ public class RoleArg extends DoArg<RoleNode>
 	}	
 	
 	@Override
-	public RoleArg clone()
+	public RoleArg clone(AstFactory af)
 	{
-		RoleNode role = getVal().clone();
-		return AstFactoryImpl.FACTORY.RoleArg(this.source, role);
+		RoleNode role = getVal().clone(af);
+		return af.RoleArg(this.source, role);
 	}
 
 	@Override
@@ -56,9 +56,9 @@ public class RoleArg extends DoArg<RoleNode>
 	
 	// FIXME: move to delegate?
 	@Override
-	public RoleArg project(Role self)
+	public RoleArg project(AstFactory af, Role self)
 	{
-		RoleNode rn = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(this.val.source, RoleKind.KIND, this.val.toName().toString());
-		return AstFactoryImpl.FACTORY.RoleArg(this.source, rn);
+		RoleNode rn = (RoleNode) af.SimpleNameNode(this.val.source, RoleKind.KIND, this.val.toName().toString());
+		return af.RoleArg(this.source, rn);
 	}
 }

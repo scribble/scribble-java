@@ -19,10 +19,10 @@ import static tutorial.adder.Adder.Adder.Adder.C;
 import static tutorial.adder.Adder.Adder.Adder.Res;
 import static tutorial.adder.Adder.Adder.Adder.S;
 
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import tutorial.adder.Adder.Adder.Adder;
 import tutorial.adder.Adder.Adder.channels.C.Adder_C_1;

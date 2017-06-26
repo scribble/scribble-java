@@ -34,7 +34,7 @@ public abstract class Recursion<K extends ProtocolKind> extends CompoundInteract
 	public abstract Recursion<K> reconstruct(RecVarNode recvar, ProtocolBlock<K> block);
 	
 	@Override
-	public abstract Recursion<K> clone();
+	public abstract Recursion<K> clone(AstFactory af);
 
 	@Override
 	public Recursion<K> visitChildren(AstVisitor nv) throws ScribbleException

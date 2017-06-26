@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
@@ -46,11 +46,11 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	}
 	
 	@Override
-	public LChoice clone()
+	public LChoice clone(AstFactory af)
 	{
-		RoleNode subj = this.subj.clone();
-		List<LProtocolBlock> blocks = ScribUtil.cloneList(getBlocks());
-		return AstFactoryImpl.FACTORY.LChoice(this.source, subj, blocks);
+		RoleNode subj = this.subj.clone(af);
+		List<LProtocolBlock> blocks = ScribUtil.cloneList(af, getBlocks());
+		return af.LChoice(this.source, subj, blocks);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	}
 	
 	@Override
-	public LChoice merge(LInteractionNode ln) throws ScribbleException
+	public LChoice merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		if (!(ln instanceof LChoice) || !this.canMerge(ln))
 		{
@@ -100,9 +100,9 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 			throw new ScribbleException("Cannot merge choices for " + this.subj + " and " + them.subj + ": " + this + ", " + ln);
 		}*/
 		List<LProtocolBlock> blocks = new LinkedList<>();
-		getBlocks().forEach((b) -> blocks.add(b.clone()));
-		them.getBlocks().forEach((b) -> blocks.add(b.clone()));
-		return AstFactoryImpl.FACTORY.LChoice(this.source, this.subj, blocks);  // Not reconstruct: leave context building to post-projection passes 
+		getBlocks().forEach(b -> blocks.add(b.clone(af)));
+		them.getBlocks().forEach(b -> blocks.add(b.clone(af)));
+		return af.LChoice(this.source, this.subj, blocks);  // Not reconstruct: leave context building to post-projection passes 
 			// Hacky: this.source
 	}
 

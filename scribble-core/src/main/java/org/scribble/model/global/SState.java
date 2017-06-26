@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.model.MState;
 import org.scribble.model.MPrettyState;
+import org.scribble.model.MState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
@@ -34,11 +34,17 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 {
 	public final SConfig config;
 	
-	// Unlike EState, SGraph is not just a "simple wrapper" for an existing graph of nodes -- it is a "semantic structure" that needs to be fully built properly (so no arbitrary "toGraph" method; cf., EState)
-	protected SState(SConfig config)
+	//protected SState(SConfig config)
+	protected SState(SConfig config)  // FIXME: now publically mutable
 	{
 		super(Collections.emptySet());
 		this.config = config;
+	}
+	
+	@Override
+	protected void addEdge(SAction a, SState s)  // For access from SGraphBuilderUtil
+	{
+		super.addEdge(a, s);
 	}
 	
 	// Based on config semantics, not "static" graph edges (cf., super.getAllActions) -- used to build global model graph
@@ -77,7 +83,7 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 	
 	// FIXME? doesn't use super.hashCode (cf., equals)
 	@Override
-	public final int hashCode()
+	public int hashCode()
 	{
 		int hash = 79;
 		//int hash = super.hashCode();

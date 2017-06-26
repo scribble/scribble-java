@@ -110,7 +110,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 			ModuleContext mc = getModuleContext();
 			ProtocolDecl<? extends ProtocolKind> pd = doo.getTargetProtocolDecl(jc, mc);
 			// Target is cloned: fresh dels and envs, which will be discarded
-			ScribNode seq = applySubstitutions(pd.def.block.seq.clone());  // Visit the seq? -- or visit the interactions in the seq directly?
+			ScribNode seq = applySubstitutions(pd.def.block.seq.clone(this.job.af));  // Visit the seq? -- or visit the interactions in the seq directly?
 					// Visit seq/interactions under current environment
 			seq.accept(this);  // Result from visiting subprotocol body is discarded
 		}

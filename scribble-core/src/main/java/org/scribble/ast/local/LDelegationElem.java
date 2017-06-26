@@ -14,7 +14,7 @@
 package org.scribble.ast.local;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.UnaryPayloadElem;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ScribDel;
@@ -45,10 +45,10 @@ public class LDelegationElem extends UnaryPayloadElem<Local>
 	}
 	
 	@Override
-	public LDelegationElem clone()
+	public LDelegationElem clone(AstFactory af)
 	{
-		LProtocolNameNode name = (LProtocolNameNode) this.name.clone();
-		return AstFactoryImpl.FACTORY.LDelegationElem(this.source, name);
+		LProtocolNameNode name = (LProtocolNameNode) this.name.clone(af);
+		return af.LDelegationElem(this.source, name);
 	}
 
 	public LDelegationElem reconstruct(LProtocolNameNode proto)

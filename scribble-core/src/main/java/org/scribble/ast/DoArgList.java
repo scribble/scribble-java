@@ -38,7 +38,7 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 	
 	public abstract DoArgList<T> reconstruct(List<T> instans);
 	
-	public abstract DoArgList<T> project(Role self);
+	public abstract DoArgList<T> project(AstFactory af, Role self);
 	
 	@Override
 	public DoArgList<T> visitChildren(AstVisitor nv) throws ScribbleException

@@ -35,10 +35,10 @@ public class RoleArgList extends DoArgList<RoleArg>
 	}
 	
 	@Override
-	public RoleArgList clone()
+	public RoleArgList clone(AstFactory af)
 	{
-		List<RoleArg> roles = ScribUtil.cloneList(getDoArgs());
-		return AstFactoryImpl.FACTORY.RoleArgList(this.source, roles);
+		List<RoleArg> roles = ScribUtil.cloneList(af, getDoArgs());
+		return af.RoleArgList(this.source, roles);
 	}
 
 	@Override
@@ -52,11 +52,11 @@ public class RoleArgList extends DoArgList<RoleArg>
 
 	// Move to delegate?
 	@Override
-	public RoleArgList project(Role self)
+	public RoleArgList project(AstFactory af, Role self)
 	{
 		List<RoleArg> instans =
-				getDoArgs().stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
-		return AstFactoryImpl.FACTORY.RoleArgList(this.source, instans);
+				getDoArgs().stream().map(ri -> ri.project(af, self)).collect(Collectors.toList());	
+		return af.RoleArgList(this.source, instans);
 	}
 
 	// The role arguments

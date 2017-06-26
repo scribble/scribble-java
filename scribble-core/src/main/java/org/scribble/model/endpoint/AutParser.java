@@ -26,14 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.model.endpoint.actions.EAccept;
-import org.scribble.model.endpoint.actions.EConnect;
-import org.scribble.model.endpoint.actions.EDisconnect;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.model.endpoint.actions.EReceive;
-import org.scribble.model.endpoint.actions.ESend;
-import org.scribble.model.endpoint.actions.EWrapClient;
-import org.scribble.model.endpoint.actions.EWrapServer;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageId;
@@ -48,7 +41,7 @@ public class AutParser
 
 	}
 	
-	public EGraph parse(String aut)
+	public EGraph parse(EModelFactory ef, String aut)
 	{
 		//Map<Integer, Map<String, Integer>> edges = new HashMap<>();
 		Map<Integer, List<String>> as = new HashMap<>();
@@ -115,21 +108,20 @@ public class AutParser
 		{
 			term = terms.iterator().next();
 		}
-		EGraphBuilderUtil builder = new EGraphBuilderUtil();
-		builder.reset();
+		EGraphBuilderUtil util = new EGraphBuilderUtil(ef);
 		Map<Integer, EState> map = new HashMap<>();
-		map.put(init, builder.getEntry());
+		map.put(init, util.getEntry());
 		if (term != -1)
 		{
-			map.put(term, builder.getExit());
+			map.put(term, util.getExit());
 		}
-		map.put(init, builder.getEntry());
+		map.put(init, util.getEntry());
 		//for (int i : edges.keySet())
 		for (int i : as.keySet())
 		{
 			if (i != init && i != term)
 			{
-				map.put(i, builder.newState(Collections.emptySet()));
+				map.put(i, util.ef.newEState(Collections.emptySet()));
 			}
 		}
 		//for (int i : succs)
@@ -137,7 +129,7 @@ public class AutParser
 		{
 			if (!map.containsKey(i) && i != init && i != term)
 			{
-				map.put(i, builder.newState(Collections.emptySet()));
+				map.put(i, util.ef.newEState(Collections.emptySet()));
 			}
 		}
 		//for (int i : edges.keySet())
@@ -156,17 +148,17 @@ public class AutParser
 				{
 					int succ = is.next();
 					//builder.addEdge(s, parseIOAction(a), map.get(tmp.get(a)));
-					builder.addEdge(s, parseIOAction(a), map.get(succ));
+					util.addEdge(s, parseIOAction(ef, a), map.get(succ));
 				}
 			}
 		}
 		//return builder.finalise();
-		return new EGraph(builder.getEntry(), builder.getExit());
+		return new EGraph(util.getEntry(), util.getExit());
 	}
 	
 	// Cf. getCommSymbol of IOActions
 	// FIXME: simply do a match for getCommSymbol?
-	private static EAction parseIOAction(String a)
+	private static EAction parseIOAction(EModelFactory ef, String a)
 	{
 		String peer;
 		String action;
@@ -245,36 +237,36 @@ public class AutParser
 			case "!":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new ESend(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames? -- currently OK, treated as empty payload (cf. ModelAction)
+				return ef.newESend(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames? -- currently OK, treated as empty payload (cf. ModelAction)
 			}
 			case "?":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new EReceive(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
+				return ef.newEReceive(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
 			}
 			case "!!":
 			{
 				//return new Connect(new Role(peer));
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new EConnect(new Role(peer), getMessageIdHack(msg), payload);
+				return ef.newEConnect(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "??":
 			{
 				//return new Accept(new Role(peer));
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new EAccept(new Role(peer), getMessageIdHack(msg), payload);
+				return ef.newEAccept(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "(!!)":
 			{				
-				return new EWrapClient(new Role(peer));
+				return ef.newEWrapClient(new Role(peer));
 			}
 			case "(??)":
 			{				
-				return new EWrapServer(new Role(peer));
+				return ef.newEWrapServer(new Role(peer));
 			}
 			case "-/-":
 			{				
-				return new EDisconnect(new Role(peer));
+				return ef.newEDisconnect(new Role(peer));
 			}
 			default:
 			{

@@ -22,11 +22,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAccept;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EConnect;
 import org.scribble.model.endpoint.actions.EDisconnect;
-import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.endpoint.actions.EWrapClient;
@@ -35,12 +36,15 @@ import org.scribble.sesstype.name.Role;
 
 public class SBuffers
 {
+	private final EModelFactory ef;  // FIXME: only used by wrapable -- refactor?
+	
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();
 	private final Map<Role, Map<Role, ESend>> buffs = new HashMap<>();  // dest -> src -> msg
 
-	public SBuffers(Set<Role> roles, boolean implicit)
+	public SBuffers(EModelFactory ef, Set<Role> roles, boolean implicit)
 	{
-		this(roles);
+		this(ef, roles);
+		
 		if (implicit)
 		{
 			roles.forEach((k) -> 
@@ -58,8 +62,10 @@ public class SBuffers
 		}
 	}
 
-	public SBuffers(Set<Role> roles)
+	public SBuffers(EModelFactory ef, Set<Role> roles)
 	{
+		this.ef = ef;
+
 		// FIXME: do the same for connected
 		roles.forEach((k) -> 
 		{
@@ -77,6 +83,8 @@ public class SBuffers
 
 	public SBuffers(SBuffers buffs)
 	{
+		this.ef = buffs.ef;
+
 		Set<Role> roles = buffs.buffs.keySet();
 		roles.forEach((k) ->
 		{
@@ -209,8 +217,8 @@ public class SBuffers
 			return Collections.emptySet();  // Not needed, guarded by state kind
 		}*/
 		Set<EAction> res = this.buffs.get(r).entrySet().stream()
-				.filter((e) -> e.getValue() != null)
-				.map((e) -> e.getValue().toDual(e.getKey()))
+				.filter(e -> e.getValue() != null)
+				.map(e -> e.getValue().toDual(e.getKey()))
 				.collect(Collectors.toSet());
 		/*Map<Role, Boolean> tmp = this.connected.get(r);
 		if (tmp == null)
@@ -265,8 +273,8 @@ public class SBuffers
 		if (tmp != null)
 		{
 			this.connected.keySet().stream()
-				.filter((k) -> tmp.containsKey(k) && tmp.get(k))
-				.forEach((k) -> res.add(new EWrapServer(k)));
+				.filter(k -> tmp.containsKey(k) && tmp.get(k))
+				.forEach(k -> res.add(this.ef.newEWrapServer(k)));
 		}
 		return res;
 	}

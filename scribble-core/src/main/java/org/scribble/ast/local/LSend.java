@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.ScribNodeBase;
@@ -48,12 +48,12 @@ public class LSend extends LMessageTransfer
 	}
 	
 	@Override
-	public LSend clone()
+	public LSend clone(AstFactory af)
 	{
-		RoleNode src = this.src.clone();
-		MessageNode msg = this.msg.clone();
-		List<RoleNode> dests = ScribUtil.cloneList(getDestinations());
-		return AstFactoryImpl.FACTORY.LSend(this.source, src, msg, dests);
+		RoleNode src = this.src.clone(af);
+		MessageNode msg = this.msg.clone(af);
+		List<RoleNode> dests = ScribUtil.cloneList(af, getDestinations());
+		return af.LSend(this.source, src, msg, dests);
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class LSend extends LMessageTransfer
 	}
 
 	@Override
-	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LSend: " + this);
 	}

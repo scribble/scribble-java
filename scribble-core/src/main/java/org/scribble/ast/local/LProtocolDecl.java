@@ -16,7 +16,7 @@ package org.scribble.ast.local;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ProtocolDef;
@@ -42,11 +42,11 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 	}
 	
 	@Override
-	public LProtocolDecl clone()
+	public LProtocolDecl clone(AstFactory af)
 	{
-		LProtocolHeader header = getHeader().clone();
-		LProtocolDef def = getDef().clone();
-		return AstFactoryImpl.FACTORY.LProtocolDecl(this.source, this.modifiers, header, def);
+		LProtocolHeader header = getHeader().clone(af);
+		LProtocolDef def = getDef().clone(af);
+		return af.LProtocolDecl(this.source, this.modifiers, header, def);
 	}
 	
 	@Override

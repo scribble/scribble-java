@@ -78,7 +78,7 @@ public abstract class RecursionDel extends CompoundInteractionNodeDel
 		super.enterInlinedProtocolUnfolding(parent, child, unf);
 		Recursion<?> lr = (Recursion<?>) child;
 		RecVar recvar = lr.recvar.toName();
-		unf.setRecVar(recvar, lr);  // Cloned on use (on continue)
+		unf.setRecVar(unf.job.af, recvar, lr);  // Cloned on use (on continue)
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public abstract class ConnectionActionDel extends SimpleInteractionNodeDel
 	public ConnectionAction<?> leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		ConnectionAction<?> c = (ConnectionAction<?>) visited;
-		ConnectionAction<?> inlined = (ConnectionAction<?>) c.clone();
+		ConnectionAction<?> inlined = (ConnectionAction<?>) c.clone(inl.job.af);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (ConnectionAction<?>) super.leaveProtocolInlining(parent, child, inl, c);
 	}

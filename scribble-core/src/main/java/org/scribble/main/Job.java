@@ -15,16 +15,19 @@ package org.scribble.main;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
-import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
-import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
-import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
 import org.scribble.del.local.LProtocolDeclDel;
+import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.endpoint.EGraphBuilderUtil;
+import org.scribble.model.endpoint.EModelFactory;
+import org.scribble.model.global.SGraph;
+import org.scribble.model.global.SGraphBuilderUtil;
+import org.scribble.model.global.SModelFactory;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
@@ -46,7 +49,7 @@ import org.scribble.visit.wf.NameDisambiguator;
 import org.scribble.visit.wf.ReachabilityChecker;
 import org.scribble.visit.wf.WFChoiceChecker;
 
-// A "compiler job" front-end that supports operations comprising one or more visitor passes over the AST
+// A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job
 {
 	// FIXME: verbose/debug printing parameter: should be in MainContext, but currently cannot access that class directly from here
@@ -61,12 +64,19 @@ public class Job
 	public final boolean noValidation;
 	
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
+
+	public final AstFactory af;
+	public final EModelFactory ef;
+	public final SModelFactory sf;
+
+	private final SGraphBuilderUtil sgbu;
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main,
 			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
-			boolean noAcceptCorrelationCheck, boolean noValidation)
+			boolean noAcceptCorrelationCheck, boolean noValidation,
+			AstFactory af, EModelFactory ef, SModelFactory sf)
 	{
 		//this.jUnit = jUnit;
 		this.debug = debug;
@@ -77,8 +87,32 @@ public class Job
 		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
 		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
 		this.noValidation = noValidation;
+		
+		this.af = af;
+		this.ef = ef;
+		this.sf = sf;
+
+		this.sgbu = sf.newSGraphBuilderUtil();
 
 		this.jcontext = new JobContext(this, parsed, main);  // Single instance per Job and should never be shared
+	}
+	
+	// Scribble extensions should override these "new" methods
+	public EGraphBuilderUtil newEGraphBuilderUtil()
+	{
+		return new EGraphBuilderUtil(this.ef);
+	}
+	
+	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util
+	protected SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribbleException
+	{
+		for (Role r : egraphs.keySet())
+		{
+			// FIXME: refactor
+			debugPrintln("(" + fullname + ") Building global model using EFSM for " + r + ":\n" + egraphs.get(r).init.toDot());
+		}
+		//return SGraph.buildSGraph(this, fullname, createInitialSConfig(this, egraphs, explicit));
+		return this.sgbu.buildSGraph(this, fullname, egraphs, explicit);  // FIXME: factor out util
 	}
 
 	public void checkWellFormedness() throws ScribbleException
@@ -122,7 +156,7 @@ public class Job
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
 	// SubprotocolVisitor it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
 	// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
-	private void runProjectionPasses() throws ScribbleException
+	protected void runProjectionPasses() throws ScribbleException
 	{
 		runVisitorPassOnAllModules(Projector.class);
 		runProjectionContextBuildingPasses();
@@ -134,7 +168,7 @@ public class Job
 
   // To be done as a barrier pass after projection done on all Modules -- N.B. Module context building, no other validation (so "fixing" can be done in following passes) 
 	// Also does projection "fixing" (choice subjects, subprotocol roledecls)
-	private void runProjectionContextBuildingPasses() throws ScribbleException
+	protected void runProjectionContextBuildingPasses() throws ScribbleException
 	{
 		runVisitorPassOnProjectedModules(ModuleContextBuilder.class);
 		runVisitorPassOnProjectedModules(ProtocolDeclContextBuilder.class);
@@ -163,7 +197,7 @@ public class Job
 				Collectors.toMap((lpn) -> lpn, (lpn) -> this.jcontext.getModule(lpn.getPrefix())));
 	}
 
-	public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
+	/*public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
 	{
 		debugPrintPass("Running " + SessionApiGenerator.class + " for " + fullname);
 		SessionApiGenerator sg = new SessionApiGenerator(this, fullname);
@@ -177,7 +211,7 @@ public class Job
 		/*if (this.jcontext.getEndpointGraph(fullname, self) == null)
 		{
 			buildGraph(fullname, self);
-		}*/
+		}* /
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
 		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this, fullname, self);
 		IOInterfacesGenerator iogen = null;
@@ -198,7 +232,7 @@ public class Job
 			api.putAll(iogen.generateApi());
 		}
 		return api;
-	}
+	}*/
 	
 	public void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
@@ -268,6 +302,6 @@ public class Job
 	
 	private void debugPrintPass(String s)
 	{
-		debugPrintln("\n[Step] " + s);
+		debugPrintln("\n[Job] " + s);
 	}
 }

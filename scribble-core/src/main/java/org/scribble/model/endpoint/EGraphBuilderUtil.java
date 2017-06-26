@@ -14,6 +14,7 @@
 package org.scribble.model.endpoint;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import java.util.Set;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.GraphBuilderUtil;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Local;
@@ -37,6 +39,8 @@ import org.scribble.sesstype.name.Role;
 // Tailored to support graph building from syntactic local protocol choice and recursion
 public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
+	public final EModelFactory ef;
+
 	private final Map<RecVar, Deque<EState>> recvars = new HashMap<>();
 	//private final Map<RecVar, Deque<Set<EAction>>> enacting = new HashMap<>();  // First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
 	private final Map<RecVar, Deque<List<EAction>>> enacting = new HashMap<>();
@@ -48,9 +52,11 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 	private final Deque<List<EState>> pred = new LinkedList<>();
 	private final Deque<List<EAction>> prev = new LinkedList<>();
 
-	public EGraphBuilderUtil()
+	public EGraphBuilderUtil(EModelFactory ef)
 	{
-		clear();
+		this.ef = ef;
+		//clear();
+		reset();
 	}
 
 	protected void clear()
@@ -59,25 +65,27 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		this.enacting.clear();
 
 		this.pred.clear();
-		this.prev.clear();
 		this.pred.push(new LinkedList<>());
+
+		this.prev.clear();
 		this.prev.push(new LinkedList<>());
 		
 		this.enactingMap.clear();
 	}
 	
-	@Override
+	//@Override
 	public void reset()
 	{
 		clear();
-		super.reset();
+		//super.reset();
+		init(this.ef.newEState(Collections.emptySet()), this.ef.newEState(Collections.emptySet()));
 	}
 	
-	@Override
+	/*@Override
 	public EState newState(Set<RecVar> labs)
 	{
 		return new EState(labs);
-	}
+	}*/
 
 	// Records 's' as predecessor state, and 'a' as previous action and the "enacting action" for "fresh" recursion scopes
 	@Override
@@ -287,7 +295,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		/*this.contStates.add(s);
 		this.contRecVars.add(rv);*/
 		EState entry = getRecursionEntry(rv);
-		addEdgeAux(s, new IntermediateContinueEdge(rv), entry);
+		addEdgeAux(s, new IntermediateContinueEdge(this.ef, rv), entry);
 		//addEdge(s, new IntermediateContinueEdge(rv), entry); // **FIXME: broken on purpose for testing
 	}
 
@@ -438,9 +446,9 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 
 class IntermediateContinueEdge extends EAction
 {
-	public IntermediateContinueEdge(RecVar rv)
+	public IntermediateContinueEdge(EModelFactory ef, RecVar rv)
 	{
-		super(Role.EMPTY_ROLE, new Op(rv.toString()), Payload.EMPTY_PAYLOAD);  // HACK
+		super(ef, Role.EMPTY_ROLE, new Op(rv.toString()), Payload.EMPTY_PAYLOAD);  // HACK
 	}
 	
 	@Override
@@ -450,7 +458,7 @@ class IntermediateContinueEdge extends EAction
 	}
 
 	@Override
-	public SAction toGlobal(Role self)
+	public SAction toGlobal(SModelFactory sf, Role self)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}

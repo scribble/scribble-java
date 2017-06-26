@@ -13,7 +13,6 @@
  */
 package org.scribble.del.name;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNode;
@@ -48,7 +47,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 			{
 				throw new ScribbleException(ann.getSource(), "Invalid occurrence of data type: " + parent);
 			}
-			return AstFactoryImpl.FACTORY.QualifiedNameNode(ann.getSource(), DataTypeKind.KIND, name.getElements());
+			return disamb.job.af.QualifiedNameNode(ann.getSource(), DataTypeKind.KIND, name.getElements());
 		}
 		else if (mcontext.isMessageSigNameVisible(name.toMessageSigName()))
 		{
@@ -56,11 +55,11 @@ public class AmbigNameNodeDel extends ScribDelBase
 			{
 				throw new ScribbleException(ann.getSource(), "Invalid occurrence of message signature name: " + parent);
 			}
-			return AstFactoryImpl.FACTORY.QualifiedNameNode(ann.getSource(), SigKind.KIND, name.getElements());
+			return disamb.job.af.QualifiedNameNode(ann.getSource(), SigKind.KIND, name.getElements());
 		}
 		else if (disamb.isBoundParameter(name))
 		{
-			return AstFactoryImpl.FACTORY.NonRoleParamNode(ann.getSource(), disamb.getParameterKind(name), name.toString());
+			return disamb.job.af.NonRoleParamNode(ann.getSource(), disamb.getParameterKind(name), name.toString());
 		}
 		throw new ScribbleException(ann.getSource(), "Cannot disambiguate name: " + name);
 	}
