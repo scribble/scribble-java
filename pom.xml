@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.scribble</groupId>
 	<artifactId>parent</artifactId>
@@ -39,7 +40,7 @@
 			<timezone>+0</timezone>
 		</developer>
 	</developers>
-  
+
 	<inceptionYear>2008</inceptionYear>
 
 	<organization>
@@ -52,7 +53,7 @@
 		<log4j.version>1.2.14</log4j.version>
 		<jackson.version>1.9.9</jackson.version>
 		<junit.version>4.11</junit.version>
-		
+
 		<version.commons-io>2.4</version.commons-io>
 
 		<!-- maven-compiler-plugin -->
@@ -72,13 +73,14 @@
 		<module>scribble-core</module>
 		<module>scribble-parser</module>
 		<module>scribble-cli</module>
+		<module>scribble-codegen</module>
+		<module>scribble-runtime</module>
+		<module>scribble-test</module>
 		<module>scribble-dist</module>
-    <module>scribble-runtime</module>
-    <module>scribble-codegen</module>
-  </modules>
-  
+	</modules>
+
 	<dependencyManagement>
-		<dependencies> 
+		<dependencies>
 			<dependency>
 				<groupId>org.scribble</groupId>
 				<artifactId>scribble-core</artifactId>
@@ -106,6 +108,17 @@
 			</dependency>
 
 			<dependency>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr-runtime</artifactId>
+				<version>${antlr.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>${version.commons-io}</version>
@@ -121,28 +134,20 @@
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.antlr</groupId>
-				<artifactId>antlr-runtime</artifactId>
-				<version>${antlr.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>${log4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
-		<!-- This section defines the default plugin settings inherited by child projects. -->
+		<!-- This section defines the default plugin settings inherited by child 
+			projects. -->
 		<pluginManagement>
 			<plugins>
-				<!-- Fixes how test resources of a project can be used in projects dependent on it  -->
+				<!-- Fixes how test resources of a project can be used in projects dependent 
+					on it -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -152,22 +157,22 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>2.9</version>
- 				</plugin>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
 					<version>1.7</version>
- 				</plugin>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.4</version>
- 				</plugin>
-			    <plugin>
-				    <groupId>org.jboss.maven.plugins</groupId>
-				    <artifactId>maven-jdocbook-plugin</artifactId>
-				    <version>2.3.8</version>
- 				</plugin>
+				</plugin>
+				<plugin>
+					<groupId>org.jboss.maven.plugins</groupId>
+					<artifactId>maven-jdocbook-plugin</artifactId>
+					<version>2.3.8</version>
+				</plugin>
 				<plugin>
 					<groupId>com.mycila</groupId>
 					<artifactId>license-maven-plugin</artifactId>
@@ -226,7 +231,7 @@
 					<consoleOutput>false</consoleOutput>
 					<suppressionsLocation>checkstyle/suppressions.xml</suppressionsLocation>
 					<failsOnError>false</failsOnError>
-					<useFile/>
+					<useFile />
 				</configuration>
 				<dependencies>
 					<dependency>
