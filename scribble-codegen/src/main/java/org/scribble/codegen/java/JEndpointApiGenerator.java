@@ -25,11 +25,11 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
-public class JEndpointApiGen
+public class JEndpointApiGenerator
 {
 	public final Job job;
 	
-	public JEndpointApiGen(Job job)
+	public JEndpointApiGenerator(Job job)
 	{
 		this.job = job;
 	}

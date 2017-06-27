@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.codegen.java.JEndpointApiGen;
+import org.scribble.codegen.java.JEndpointApiGenerator;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.MainContext;
@@ -46,12 +46,12 @@ public class CommandLine
 {
 	protected //final
 	Map<CLArgFlag, String[]> args;  // Maps each flag to list of associated argument values
-	
+
 	protected CommandLine()
 	{
-		
+
 	}
-	
+
 	public CommandLine(String... args) throws CommandLineException
 	{
 		this.args = new CLArgParser(args).getArgs();
@@ -60,11 +60,11 @@ public class CommandLine
 			throw new CommandLineException("No main module has been specified\r\n");
 		}
 	}
-	
+
 	// A Scribble extension should override newMainContext as appropriate.
 	protected MainContext newMainContext() throws ScribParserException, ScribbleException
 	{
-		//boolean jUnit = this.args.containsKey(ArgFlag.JUNIT); 
+		//boolean jUnit = this.args.containsKey(ArgFlag.JUNIT);
 		boolean debug = this.args.containsKey(CLArgFlag.VERBOSE);  // TODO: factor out (cf. MainContext fields)
 		boolean useOldWF = this.args.containsKey(CLArgFlag.OLD_WF);
 		boolean noLiveness = this.args.containsKey(CLArgFlag.NO_LIVENESS);
@@ -158,11 +158,11 @@ public class CommandLine
 		{
 			fail = x;
 		}
-		
+
 		// Attempt certain "output tasks" even if above failed, in case can still do useful output (hacky)
-		try 
+		try
 		{
-			tryOutputTask(job);
+			tryOutputTasks(job);
 		}
 		catch (ScribbleException x)
 		{
@@ -180,8 +180,8 @@ public class CommandLine
 		// "Non-attemptable" output tasks
 		doNonAttemptableOutputTasks(job);
 	}
-	
-	protected void tryOutputTask(Job job) throws CommandLineException, ScribbleException
+
+	protected void tryOutputTasks(Job job) throws CommandLineException, ScribbleException
 	{
 		// Following must be ordered appropriately -- ?
 		if (this.args.containsKey(CLArgFlag.PROJECT))
@@ -237,7 +237,7 @@ public class CommandLine
 			}
 		}
 	}
-	
+
 	protected void doNonAttemptableOutputTasks(Job job) throws ScribbleException, CommandLineException
 	{
 		if (this.args.containsKey(CLArgFlag.SESS_API_GEN))
@@ -253,7 +253,7 @@ public class CommandLine
 			outputEndpointApi(job);
 		}
 	}
-	
+
 	// FIXME: option to write to file, like classes
 	private void outputProjections(Job job) throws CommandLineException, ScribbleException
 	{
@@ -369,7 +369,7 @@ public class CommandLine
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.API_GEN);
-		JEndpointApiGen jgen = new JEndpointApiGen(job);  // FIXME: refactor (generalise -- use new API)
+		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -385,7 +385,7 @@ public class CommandLine
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.SESS_API_GEN);
-		JEndpointApiGen jgen = new JEndpointApiGen(job);  // FIXME: refactor (generalise -- use new API)
+		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		for (String fullname : args)
 		{
 			GProtocolName gpn = checkGlobalProtocolArg(jcontext, fullname);
@@ -393,12 +393,12 @@ public class CommandLine
 			outputClasses(classes);
 		}
 	}
-	
+
 	private void outputStateChannelApi(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.SCHAN_API_GEN);
-		JEndpointApiGen jgen = new JEndpointApiGen(job);  // FIXME: refactor (generalise -- use new API)
+		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -422,7 +422,7 @@ public class CommandLine
 								{
 									System.out.println("[DEBUG] Writing to: " + tmp);
 								}
-								ScribUtil.writeToFile(tmp, classes.get(path)); return null; 
+								ScribUtil.writeToFile(tmp, classes.get(path)); return null;
 							}); };
 		}
 		else
@@ -431,7 +431,7 @@ public class CommandLine
 		}
 		classes.keySet().stream().forEach(f);
 	}
-	
+
 	private static void runDot(String dot, String png) throws ScribbleException, CommandLineException
 	{
 		String tmpName = png + ".tmp";
@@ -451,17 +451,17 @@ public class CommandLine
 			tmp.delete();
 		}
 	}
-	
+
 	protected static Path parseMainPath(String path)
 	{
 		return Paths.get(path);
 	}
-	
+
 	protected static List<Path> parseImportPaths(String paths)
 	{
 		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
 	}
-	
+
 	protected static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname) throws CommandLineException
 	{
 		GProtocolName simpgpn = new GProtocolName(simpname);
