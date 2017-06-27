@@ -1,0 +1,88 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/rpc/src -d modules/demos/scrib/src/rpc modules/demos/scrib/rpc/src/rpc/RPC.scr
+
+module rpc.RPC;
+
+
+global protocol Proto(role C, role S1, role S2, role S3)
+{
+	1() from C to S1;
+		2() from S1 to S2;
+		2a() from S2 to S1;
+		3() from S1 to S3;
+		3a() from S3 to S1;
+	1a() from S1 to C;
+}
+
+
+global protocol RPC<sig M1, sig M2>(role C, role S)
+{
+	M1 from C to S;
+	M2 from S to C;
+}
+
+global protocol RPCComp(role C, role S1, role S2, role S3)
+{
+	1() from C to S1;
+		do RPC<2(), 2a()>(S1, S2);
+		do RPC<3(), 3a()>(S1, S3);
+	1a() from S1 to C;
+}
+
+
+global protocol Relay<sig M1, sig M2>(role R1, role R2, role R3)
+{
+	M1 from R1 to R2;
+	M2 from R2 to R3;
+}
+
+global protocol RPCComp2(role C, role S1, role S2, role S3)
+{
+	do Relay<1(), 2()>(C, S1, S2);
+	do Relay<2a(), 3()>(S2, S1, S3);
+	do Relay<3a(), 1a()>(S3, S1, C);
+}
+
+global protocol MyRelay<sig M>(role A, role B, role C)
+{
+	do Relay<M, M>(A, B, C);
+}
+
+
+/*global protocol RPC2<sig M1, sig M2>(role C, role S)
+{
+	do Relay<M1, M2>(C, S, C);  // FIXME:
+}
+
+global protocol RPCComp3(role C, role S1, role S2, role S3)
+{
+	1() from C to S1;
+		do RPC2<2(), 2a()>(S1, S2);
+		do RPC2<3(), 3a()>(S1, S3);
+	1a() from S1 to C;
+}*/
+
+
+
+
+
+
+
+/*global protocol MessageTransfer<sig X>(role A, role B)
+{
+	X from A to B;
+}
+
+global protocol Test(role A, role B, role C)
+{
+	choice at A
+	{
+		do MessageTransfer<1()>(A, B);
+		do MessageTransfer<1()>(B, C);
+		do Test(A, B, C);
+	}
+	or
+	{
+		do MessageTransfer<2()>(A, B);
+		do MessageTransfer<2()>(B, C);
+	}
+}*/

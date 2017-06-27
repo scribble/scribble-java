@@ -1,0 +1,276 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/http/src -d modules/demos/scrib/http/src modules/demos/scrib/http/src/http/longvers/HttpLong.scr -api Http C
+//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/http/src/ modules/demos/scrib/http/src/http/longvers/*.java -subpackages http.longvers.HttpLong.Http -d modules/demos/scrib/http/javadoc/longvers
+
+
+module http.longvers.HttpLong;
+
+/*Connected to www.doc.ic.ac.uk.
+Escape character is '^]'.
+GET /~rhu/ HTTP/1.1
+host: www.doc.ic.ac.uk
+
+HTTP/1.1 200 OK  // 200 is a separate message
+Date: Mon, 13 Jun 2016 19:42:34 GMT
+Server: Apache
+Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+Strict-Transport-Security: max-age=31536000; preload; includeSubDomains  // BUG? (Apache configuration)
+Last-Modified: Thu, 14 Apr 2016 12:46:24 GMT
+ETag: "74a-53071482f6e0f"
+Accept-Ranges: bytes
+Content-Length: 1866  // Not using Transfer-Encoding: Chunked
+Vary: Accept-Encoding
+Content-Type: text/html
+Via: 1.1 www.doc.ic.ac.uk*/
+
+
+sig <java> "http.longvers.message.client.RequestLine"
+		from "http/longvers/message/RequestLine.java"
+		as REQUESTL;  // GET /~rhu/ HTTP/1.1 
+
+sig <java> "http.longvers.message.client.Host"
+		from "http/longvers/message/Host.java"
+		as HOST;  // host: www.doc.ic.ac.uk
+
+//sig <java> "http.longvers.message.CRLF" from "http.longvers.message.CRLF.java" as CRLF;
+
+sig <java> "http.longvers.message.Body"
+		from "http/longvers/message/Body.java"
+		as BODY;
+
+sig <java> "http.longvers.message.client.UserAgent"
+		from "http/longvers/message/UserAgent.java"
+		as USERA;  // User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0
+
+sig <java> "http.longvers.message.client.Accept"
+		from "http/longvers/message/Accept.java"
+		as ACCEPT;  // Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+
+sig <java> "http.longvers.message.client.AcceptLanguage"
+		from "http/longvers/message/AcceptLanguage.java"
+		as ACCEPTL;  // Accept-Language: en-GB,en;q=0.5
+
+sig <java> "http.longvers.message.client.AcceptEncoding"
+		from "http/longvers/message/AcceptEncoding.java"
+		as ACCEPTE;  // Accept-Encoding: gzip, deflate
+
+sig <java> "http.longvers.message.client.DoNotTrack"
+		from "http/longvers/message/DoNotTrack.java"
+		as DNT;  // DNT: 1
+
+sig <java> "http.longvers.message.client.Connection"
+		from "http/longvers/message/Connection.java"
+		as CONNECTION;  // Connection: keep-alive
+
+sig <java> "http.longvers.message.client.UpgradeInsecureRequests"
+		from "http/longvers/message/UpgradeInsecureRequests.java"
+		as UPGRADEIR;  // Upgrade-Insecure-Requests: 1 
+		
+		
+sig <java> "http.longvers.message.server.HttpVersion"
+		from "http/longvers/message/HttpVersion.java"
+		as HTTPV;  // HTTP/1.1 
+
+sig <java> "http.longvers.message.server._200"  // "Status" line (with HTTPV)
+		from "http/longvers/message/_200.java"
+		as 200;  // 200 OK
+
+sig <java> "http.longvers.message.server._404"
+		from "http/longvers/message/_404.java"
+		as 404;
+
+sig <java> "http.longvers.message.server.Date"
+		from "http/longvers/message/Date.java"
+		as DATE;  // Date: Sun, 24 May 2015 21:04:36 GMT
+
+sig <java> "http.longvers.message.server.Server"
+		from "http/longvers/message/Server.java"
+		as SERVER;  // Server: Apache
+
+sig <java> "http.longvers.message.server.StrictTransportSecurity"
+		from "http/longvers/message/StrictTransportSecurity.java"
+		as STRICTTS;  // Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+		//as STRICT_TRANSPORT_SECURITY;
+
+sig <java> "http.longvers.message.server.LastModified"
+		from "http/longvers/message/LastModified.java"
+		as LASTM;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
+
+sig <java> "http.longvers.message.server.ETag"
+		from "http/longvers/message/ETag.java"
+		as ETAG;  // ETag: "ac6fa008-559-4a8b95908aec0"
+
+sig <java> "http.longvers.message.server.AcceptRanges"
+		from "http/longvers/message/AcceptRanges.java"
+		as ACCEPTR;  // Accept-Ranges: bytes
+
+sig <java> "http.longvers.message.server.ContentLength"
+		from "http/longvers/message/ContentLength.java"
+		as CONTENTL;  // Content-Length: 1369
+
+sig <java> "http.longvers.message.server.Vary"
+		from "http/longvers/message/Vary.java"
+		as VARY;  // Vary: Accept-Encoding
+
+sig <java> "http.longvers.message.server.ContentType"
+		from "http/longvers/message/ContentType.java"
+		as CONTENTT;  // Content-Type: text/html
+
+sig <java> "http.longvers.message.server.Via"
+		from "http/longvers/message/Via.java"
+		as VIA;  // Via: 1.1 www.doc.ic.ac.uk	
+
+
+global protocol Http(role C, role S)
+{
+	do Request(C, S);
+	do Response(C, S);
+}
+
+aux global protocol Request(role C, role S)
+{
+	choice at C
+	{
+		REQUESTL from C to S;  // GET /~rhu/ HTTP/1.1 
+		rec X
+		{
+			choice at C
+			{
+				HOST from C to S;  // Host: www.doc.ic.ac.uk
+				continue X;
+			}
+			or
+			{
+				USERA from C to S;  // User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0
+				continue X;
+			}
+			or
+			{
+				ACCEPT from C to S;  // Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+				continue X;
+			}
+			or
+			{
+				ACCEPTL from C to S;  // Accept-Language: en-GB,en;q=0.5
+				continue X;
+			}
+			or
+			{
+				ACCEPTE from C to S;  // Accept-Encoding: gzip, deflate
+				continue X;
+			}
+			or
+			{
+				DNT from C to S;  // DNT: 1
+				continue X;
+			}
+			or
+			{
+				CONNECTION from C to S;  // Connection: keep-alive
+				continue X;
+			}
+			or
+			{
+				UPGRADEIR from C to S;  // Upgrade-Insecure-Requests: 1 
+				continue X;
+			}
+			or
+			{
+				//CRLF from C to S;  
+				BODY from C to S;  // FIXME: should be empty for client (maybe just ignored by server) without Content-Length (or Transfer-Encoding) headers
+			}
+		}
+	}
+	/*or
+	{
+		...
+	}*/
+}
+
+/*interruptible 
+{
+	par
+	{
+		HOST from C to S;
+	}
+	and
+	{
+		USERA from C to S;
+	}
+	...
+}
+with  // finally?
+{
+	BODY by C;
+}*/
+	
+aux global protocol Response(role C, role S)
+{
+	HTTPV from S to C;  // HTTP/1.1
+	choice at S
+	{
+		200 from S to C;  // 200 OK
+	}
+	or
+	{
+		404 from S to C;
+	}
+
+	rec Y
+	{
+		choice at S
+		{
+			DATE from S to C;  // Date: Sun, 24 May 2015 21:04:36 GMT
+			continue Y;
+		}
+		or
+		{
+			SERVER from S to C;  // Server: Apache
+			continue Y;
+		}
+		or
+		{
+			STRICTTS from S to C;  // Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+			//STRICT_TRANSPORT_SECURITY from S to C;
+			continue Y;
+		}
+		or
+		{
+			LASTM from S to C;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
+			continue Y;
+		}
+		or
+		{
+			ETAG from S to C;  // ETag: "ac6fa008-559-4a8b95908aec0"
+			continue Y;
+		}
+		or
+		{
+			ACCEPTR from S to C;  // Accept-Ranges: bytes
+			continue Y;
+		}
+		or
+		{
+			CONTENTL from S to C;  // Content-Length: 1369
+			continue Y;
+		}
+		or
+		{
+			VARY from S to C;  // Vary: Accept-Encoding
+			continue Y;
+		}
+		or
+		{
+			CONTENTT from S to C;  // Content-Type: text/html
+			continue Y;
+		}
+		or
+		{
+			VIA from S to C;  // Via: 1.1 www.doc.ic.ac.uk	
+			continue Y;
+		}
+		or
+		{
+			BODY from S to C;  // Message length indicated by Content-Length
+		}
+	}
+}

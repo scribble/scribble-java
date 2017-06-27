@@ -1,0 +1,65 @@
+//http://sandbox.kidstrythisathome.com/erdos/
+
+//$ bin/scribblec.sh modules/core/src/test/scrib/scratch/scratch1/Scratch1.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -api Proto1 C -subtypes
+//$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/core/src/test/scrib modules/core/src/test/scrib/scratch/scratch1/Proto1*.java -d test/doc/scratch/scratch1
+
+module scratch.scratch1.Scratch1;
+
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol Proto1(role C, role S)
+{
+	rec X
+	{
+		1() from C to S;
+		choice at C
+		{
+			2(Int) from C to S;
+			3(Int) from S to C;
+			continue X;
+		}
+		or
+		{
+			4a() from C to S;
+			4b() from C to S;
+		}
+		or
+		{
+			4a() from C to S;  // Currently needs -minfsm
+			4b() from C to S;
+		}
+	}
+}
+
+global protocol Proto2(role C, role S)
+{
+	1() from C to S;
+	//2() from C to S;
+	choice at C 
+	{
+		3() from C to S;
+		do Proto2(C, S);
+	}
+	or
+	{
+		2() from C to S;
+	}
+}
+
+global protocol Proto3(role C, role S)
+{
+	rec X
+	{
+		1() from C to S;
+		choice at C
+		{
+			2(Int) from C to S;
+			3(Int) from S to C;
+			continue X;
+		}
+		or
+		{
+			4() from C to S;
+		}
+	}
+}

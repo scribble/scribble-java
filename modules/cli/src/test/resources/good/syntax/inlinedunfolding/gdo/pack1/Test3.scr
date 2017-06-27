@@ -1,8 +1,0 @@
-module good.syntax.inlinedunfolding.gdo.pack1.Test3;
-
-
-global protocol Foo3(role C, role D)
-{
-	foo3() from C to D;
-}
-

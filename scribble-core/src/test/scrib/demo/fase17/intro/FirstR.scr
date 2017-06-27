@@ -1,0 +1,20 @@
+module demo.fase17.intro.FirstR;
+
+
+explicit global protocol P2(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() connect A to B;
+			disconnect A and B;
+		}
+		or
+		{
+			2() connect A to C;
+			disconnect A and C;
+		}
+		continue X;
+	}
+}

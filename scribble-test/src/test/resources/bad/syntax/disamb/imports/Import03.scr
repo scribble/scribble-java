@@ -1,0 +1,4 @@
+module bad.syntax.disamb.imports.Import03;
+
+
+import bad.syntax.disamb.imports.Import03 as Import03;  // The simple name Import03 is implicitly visible from moduledecl

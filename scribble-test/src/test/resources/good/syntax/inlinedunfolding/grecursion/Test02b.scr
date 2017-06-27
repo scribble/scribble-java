@@ -1,0 +1,23 @@
+module good.syntax.inlinedunfolding.grecursion.Test02b;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			3() from A to B;
+			continue X;
+		}
+		or
+		{
+			rec Y  // Testing nested InlinedProtocolUnfolding case
+			{
+				2() from A to B;
+				continue Y;
+			}
+		}
+	}
+}
+

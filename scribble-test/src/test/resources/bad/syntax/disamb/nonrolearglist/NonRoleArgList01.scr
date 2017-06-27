@@ -1,0 +1,15 @@
+module bad.syntax.disamb.rolearglist.NonRoleArgList01;
+
+
+type <test> "..." from "..." as TTT;
+
+
+global protocol Foo(role A, role B)
+{
+	do Bar<TTT>(A, B);
+}
+
+global protocol Bar<sig M1>(role C, role D)
+{
+	M1 from C to D;
+}

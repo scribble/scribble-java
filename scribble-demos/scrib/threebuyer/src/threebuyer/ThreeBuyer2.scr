@@ -1,0 +1,61 @@
+module threebuyer.ThreeBuyer2;
+
+
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+type <java> "java.lang.String" from "rt.jar" as String;
+type <java> "test.twobuyer.Date" from "test/twobuyer/Date.java" as Date;
+
+
+// 1 = B, 2 = A, 3 = S
+explicit global protocol Proto(role A, role B, role S, role C)
+{
+	connect A to B;
+	connect A to S;
+	connect B to S;
+	(String) from A to S;
+	(Int) from S to A;
+	(Int) from S to B;
+	(Int) from A to B;
+	do ThreeBuyerChoice(A, B, S, C);
+}
+
+aux global protocol ThreeBuyerChoice(role A, role B, role S, role C)
+{
+	choice at B
+	{
+		do TwoBuyerChoice(A, B, S);
+	}
+	or
+	{
+		dummy() from B to A;
+		dummy() from B to S;
+		connect B to C;
+		(Int) from B to C;
+		connect C to A;
+		connect C to S;
+		do TwoBuyerChoice(A, C, S);
+		choice at C
+		{
+			ok() from C to B;
+		}
+		or
+		{
+			quit() from C to B;
+		}
+	}
+}
+
+aux global protocol TwoBuyerChoice(role A, role B, role S)
+{
+	choice at B
+	{
+		ok(String) from B to A;
+		ok(String) from B to S;
+		(Date) from S to B;
+	}
+	or
+	{
+		quit() from B to A;
+		quit() from B to S;
+	}
+}

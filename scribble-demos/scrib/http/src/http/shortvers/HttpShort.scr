@@ -1,0 +1,39 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/http/src -d modules/demos/scrib/http/src modules/demos/scrib/http/src/http/shortvers/HttpShort.scr -api Http C
+//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/http/src/ modules/demos/scrib/http/src/http/shortvers/*.java -subpackages http.longvers.HttpShort.Http -d modules/demos/scrib/http/javadoc/shortvers
+
+module http.shortvers.HttpShort;
+
+/*Connected to www.doc.ic.ac.uk.
+Escape character is '^]'.
+GET /~rhu/ HTTP/1.1
+host: www.doc.ic.ac.uk
+
+HTTP/1.1 200 OK  // 200 is a separate message
+Date: Mon, 13 Jun 2016 19:42:34 GMT
+Server: Apache
+Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+Strict-Transport-Security: max-age=31536000; preload; includeSubDomains  // BUG? (Apache configuration)
+Last-Modified: Thu, 14 Apr 2016 12:46:24 GMT
+ETag: "74a-53071482f6e0f"
+Accept-Ranges: bytes
+Content-Length: 1866  // Not using Transfer-Encoding: Chunked
+Vary: Accept-Encoding
+Content-Type: text/html
+Via: 1.1 www.doc.ic.ac.uk*/
+
+
+sig <java> "http.shortvers.message.client.Request"
+		from "http/shortvers/message/Request.java"
+		as REQUEST;
+
+sig <java> "http.shortvers.message.server.Response"
+		from "http/shortvers/message/Response.java"
+		as RESPONSE;
+
+
+// Could use RequestResponse subproto
+global protocol Http(role C, role S)
+{
+	REQUEST from C to S;
+	RESPONSE from S to C;
+}

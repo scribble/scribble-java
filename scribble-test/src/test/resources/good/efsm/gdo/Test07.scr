@@ -1,0 +1,36 @@
+module good.efsm.gdo.Test07;
+
+
+// Similar to good.efsm.gdo.Test01
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		do Bar1(A, B);
+	}
+	or
+	{
+		do Bar2(A, B);  // Graph building done on unfolded-inlined (the static unfolding -- here: Bar2 rec is unguarded)  // Cf. not the "dynamic" unfolding visiting
+	}
+	or
+	{
+		5() from A to B;
+	}
+}
+
+// The Bar1 inlined rec for root Foo gets "dropped" by unguarded unfolding because no continue for this rec
+aux global protocol Bar1(role A, role B)
+{
+	2() from A to B;
+	3() from B to A;
+	do Foo(A, B);
+}
+
+// For root Foo, Bar2 inlined as unguarded rec, then gets unfolded
+aux global protocol Bar2(role A, role B)
+{
+	4() from A to B;
+	do Bar2(A, B);
+}
+

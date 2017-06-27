@@ -1,0 +1,188 @@
+/**
+ * Assuming scribblec.sh in scribble-java root directory:
+ * 
+ * ./scribblec.sh -d modules/demos/scrib/betty16/src modules/demos/scrib/betty16/src/betty16/lec1/httplong/HttpLong.scr -api Http C
+ */
+
+
+module betty16.lec1.httplong.HttpLong;
+
+
+sig <java> "betty16.lec1.httplong.message.client.RequestLine"
+		from "betty16/lec1/httplong/message/RequestLine.java"
+		as REQUESTL;  // GET /~rhu/ HTTP/1.1 
+
+sig <java> "betty16.lec1.httplong.message.client.Host"
+		from "betty16/lec1/httplong/message/Host.java"
+		as HOST;  // host: www.doc.ic.ac.uk
+
+sig <java> "betty16.lec1.httplong.message.Body"
+		from "betty16/lec1/httplong/message/Body.java"
+		as BODY;  // <html> ... </html>
+
+sig <java> "betty16.lec1.httplong.message.client.UserAgent"
+		from "betty16/lec1/httplong/message/UserAgent.java"
+		as USERA;  // User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0
+
+sig <java> "betty16.lec1.httplong.message.client.Accept"
+		from "betty16/lec1/httplong/message/Accept.java"
+		as ACCEPT;  // Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+
+sig <java> "betty16.lec1.httplong.message.client.AcceptLanguage"
+		from "betty16/lec1/httplong/message/AcceptLanguage.java"
+		as ACCEPTL;  // Accept-Language: en-GB,en;q=0.5
+
+sig <java> "betty16.lec1.httplong.message.client.AcceptEncoding"
+		from "betty16/lec1/httplong/message/AcceptEncoding.java"
+		as ACCEPTE;  // Accept-Encoding: gzip, deflate
+
+sig <java> "betty16.lec1.httplong.message.client.DoNotTrack"
+		from "betty16/lec1/httplong/message/DoNotTrack.java"
+		as DNT;  // DNT: 1
+
+sig <java> "betty16.lec1.httplong.message.client.Connection"
+		from "betty16/lec1/httplong/message/Connection.java"
+		as CONNECTION;  // Connection: keep-alive
+
+sig <java> "betty16.lec1.httplong.message.client.UpgradeInsecureRequests"
+		from "betty16/lec1/httplong/message/UpgradeInsecureRequests.java"
+		as UPGRADEIR;  // Upgrade-Insecure-Requests: 1 
+		
+		
+sig <java> "betty16.lec1.httplong.message.server.HttpVersion"
+		from "betty16/lec1/httplong/message/HttpVersion.java"
+		as HTTPV;  // HTTP/1.1 
+
+sig <java> "betty16.lec1.httplong.message.server._200"  // "Status" line (with HTTPV)
+		from "betty16/lec1/httplong/message/_200.java"
+		as 200;  // 200 OK
+
+sig <java> "betty16.lec1.httplong.message.server._404"
+		from "betty16/lec1/httplong/message/_404.java"
+		as 404;
+
+sig <java> "betty16.lec1.httplong.message.server.Date"
+		from "betty16/lec1/httplong/message/Date.java"
+		as DATE;  // Date: Sun, 24 May 2015 21:04:36 GMT
+
+sig <java> "betty16.lec1.httplong.message.server.Server"
+		from "betty16/lec1/httplong/message/Server.java"
+		as SERVER;  // Server: Apache
+
+sig <java> "betty16.lec1.httplong.message.server.StrictTransportSecurity"
+		from "betty16/lec1/httplong/message/StrictTransportSecurity.java"
+		as STRICTTS;  // Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+
+sig <java> "betty16.lec1.httplong.message.server.LastModified"
+		from "betty16/lec1/httplong/message/LastModified.java"
+		as LASTM;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
+
+sig <java> "betty16.lec1.httplong.message.server.ETag"
+		from "betty16/lec1/httplong/message/ETag.java"
+		as ETAG;  // ETag: "ac6fa008-559-4a8b95908aec0"
+
+sig <java> "betty16.lec1.httplong.message.server.AcceptRanges"
+		from "betty16/lec1/httplong/message/AcceptRanges.java"
+		as ACCEPTR;  // Accept-Ranges: bytes
+
+sig <java> "betty16.lec1.httplong.message.server.ContentLength"
+		from "betty16/lec1/httplong/message/ContentLength.java"
+		as CONTENTL;  // Content-Length: 1369
+
+sig <java> "betty16.lec1.httplong.message.server.Vary"
+		from "betty16/lec1/httplong/message/Vary.java"
+		as VARY;  // Vary: Accept-Encoding
+
+sig <java> "betty16.lec1.httplong.message.server.ContentType"
+		from "betty16/lec1/httplong/message/ContentType.java"
+		as CONTENTT;  // Content-Type: text/html
+
+sig <java> "betty16.lec1.httplong.message.server.Via"
+		from "betty16/lec1/httplong/message/Via.java"
+		as VIA;  // Via: 1.1 www.doc.ic.ac.uk	
+
+
+global protocol Http(role C, role S) {
+	do Request(C, S);
+	do Response(C, S);
+}
+
+aux global protocol Request(role C, role S) {
+	choice at C {
+		REQUESTL from C to S;  // GET /~rhu/ HTTP/1.1 
+		rec X {
+			choice at C {
+				HOST from C to S;  // Host: www.doc.ic.ac.uk
+				continue X;
+			} or {
+				USERA from C to S;  // User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0
+				continue X;
+			} or {
+				ACCEPT from C to S;  // Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+				continue X;
+			} or {
+				ACCEPTL from C to S;  // Accept-Language: en-GB,en;q=0.5
+				continue X;
+			} or {
+				ACCEPTE from C to S;  // Accept-Encoding: gzip, deflate
+				continue X;
+			} or {
+				DNT from C to S;  // DNT: 1
+				continue X;
+			} or {
+				CONNECTION from C to S;  // Connection: keep-alive
+				continue X;
+			} or {
+				UPGRADEIR from C to S;  // Upgrade-Insecure-Requests: 1 
+				continue X;
+			} or {
+				BODY from C to S;
+			}
+		}
+	}
+}
+
+aux global protocol Response(role C, role S) {
+	HTTPV from S to C;  // HTTP/1.1
+	choice at S {
+		200 from S to C;  // 200 OK
+	} or {
+		404 from S to C;
+	}
+
+	rec Y {
+		choice at S {
+			DATE from S to C;  // Date: Sun, 24 May 2015 21:04:36 GMT
+			continue Y;
+		} or {
+			SERVER from S to C;  // Server: Apache
+			continue Y;
+		} or {
+			STRICTTS from S to C;  // Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+			continue Y;
+		} or {
+			LASTM from S to C;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
+			continue Y;
+		} or {
+			ETAG from S to C;  // ETag: "ac6fa008-559-4a8b95908aec0"
+			continue Y;
+		} or {
+			ACCEPTR from S to C;  // Accept-Ranges: bytes
+			continue Y;
+		} or {
+			CONTENTL from S to C;  // Content-Length: 1369
+			continue Y;
+		} or {
+			VARY from S to C;  // Vary: Accept-Encoding
+			continue Y;
+		} or {
+			CONTENTT from S to C;  // Content-Type: text/html
+			continue Y;
+		} or {
+			VIA from S to C;  // Via: 1.1 www.doc.ic.ac.uk	
+			continue Y;
+		} or {
+			BODY from S to C;  // Message length indicated by Content-Length
+		}
+	}
+}

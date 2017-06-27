@@ -1,4 +1,0 @@
-module bad.syntax.disamb.imports.Import02;
-
-
-import bad.syntax.disamb.imports.Import02;

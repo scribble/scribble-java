@@ -1,0 +1,27 @@
+//Raymond@HZHL3 ~/code/scribble-java/scribble-java
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib modules/core/src/test/scrib/test/foo/Foo.scr -session Foo -d modules/core/src/test/scrib
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib modules/core/src/test/scrib/test/foo/Foo.scr -api Foo A -d modules/core/src/test/scrib
+
+//$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/core/src/test/scrib modules/core/src/test/scrib/test/foo/Foo*.java -d test/javadoc/test
+
+//$ bin/scribblec.sh modules/core/src/test/scrib/test/foo/Foo.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -session Foo -api Foo A -V
+
+module test.foo.Foo;
+
+
+//type <java> "java.lang.Integer" from "rt.jar" as Integer;
+
+
+global protocol Foo(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from A to C;
+	}
+	or
+	{
+		1() from A to C;
+		2() from A to B;
+	}
+}

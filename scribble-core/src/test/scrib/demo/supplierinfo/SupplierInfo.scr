@@ -1,0 +1,76 @@
+module src.SupplierInfo;
+
+type <xsd> "UserName" from "AUTH.xsd" as username;
+type <xsd> "Password" from "AUTH.xsd" as password;
+type <xsd> "UUID" from "AUTH.xsd" as uuid;
+type <xsd> "/retailhub/supplierdetails" from "Retailer.xsd" as supplierdetails;
+type <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
+
+type <xsd> "UserContext" from "AUTH.xsd" as usercontext;
+type <xsd> "FilterSet" from "AUTH.xsd" as filters;
+
+
+explicit global protocol Partners(
+		role LOGINsvc,
+		role REQuestor,
+		role AUTHsvc,
+		//role usersvc,
+		role FILTERsvc,
+		role SUPPLIERsvc,
+		role CONTRACTsvc)
+{
+	connect REQuestor to LOGINsvc;
+
+	login(username, password) from REQuestor to LOGINsvc;
+	choice at LOGINsvc
+	{
+		loginsuccess() from LOGINsvc to REQuestor;
+		//loginfailure() from LOGINsvc to REQuestor;
+	} or {
+		loginsuccess() from LOGINsvc to REQuestor;
+
+		connect REQuestor to AUTHsvc;
+		connect AUTHsvc to SUPPLIERsvc;
+		connect AUTHsvc to CONTRACTsvc;
+		connect AUTHsvc to FILTERsvc;
+
+		rec MAIN
+		{
+			choice at REQuestor
+			{
+				// GET SUPPLIER INFO
+				getsuppliers(uuid) from REQuestor to AUTHsvc;
+				choice at AUTHsvc
+				{
+					// DENIED
+					deny() from AUTHsvc to REQuestor;
+				} or {
+					// PREPARE FILTERED SUPPLIER INFO FOR REQuestor
+					getsuppliers() from AUTHsvc to SUPPLIERsvc;
+					suppliers() from SUPPLIERsvc to AUTHsvc;
+					filterSuppliers(usercontext, filters, supplierdetails) from AUTHsvc to FILTERsvc;
+					filtered() from FILTERsvc to AUTHsvc;
+					suppliers() from AUTHsvc to REQuestor;
+				}
+				continue MAIN;
+			} or {
+				// GET CONTRACT INFO
+				getcontracts() from REQuestor to AUTHsvc;
+				choice at AUTHsvc
+				{
+					// DENIED
+					deny() from AUTHsvc to REQuestor;
+				} or {
+					// PREPARE FILTERED SUPPLIER INFO FOR REQuestor
+					getcontracts() from AUTHsvc to CONTRACTsvc;
+					contracts() from CONTRACTsvc to AUTHsvc;
+					filterContracts(usercontext, filters, contractdetails) from AUTHsvc to FILTERsvc;
+					filtered() from FILTERsvc to AUTHsvc;
+					contracts() from AUTHsvc to REQuestor;
+				}
+				continue MAIN;
+			}
+		}
+	}
+}
+

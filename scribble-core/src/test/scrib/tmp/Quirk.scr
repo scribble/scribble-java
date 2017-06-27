@@ -1,0 +1,143 @@
+module Quirk;
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X
+	{
+		1() from C to D;  // Enabling violation once unfolded
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;  // Not standard mergeable -- and cannot factor out syntactically
+		4() from C to D;
+		5() from B to A;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;
+		6() from C to D;
+		7() from B to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at B
+			{
+				1() from B to C;
+				//continue X;  // Non-enabled A under this choice at B
+			}
+			or
+			{
+				3() from B to C;
+				//continue X;
+			}
+			continue X;  // Scribble needs "sequencing"
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		2() from B to C;
+		3() from B to C;
+		choice at A  // Not mergeable by, e.g., ICALP13
+		{
+			4() from A to B;
+			continue X;
+		}
+		or
+		{
+			5() from A to B;
+			2() from B to C;  // An "extra iteration" between B-C (but not A-B), but fine  // Generates non-det B?2's for C to different states, but OK		
+			3() from B to C;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		//1() from A to B;  // Uncomment still bad
+		1(Int1) from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		1(Int2) from A to B;  // here, payloads aren't considered as distinguishing for labels
+		                      // error is the special case of actions that are non-deterministic labels up to payloads
+		                      // (Syntactic MPST merge not defined for repeat labels, Cf. -oldwf)
+		3() from B to A;
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+
+// Cf. bad.safety.stuckmsg.payloads.Test01b
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2(Int1) from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		2(Int2) from B to A;  // (Syntactic MPST merge not defined for repeat labels)
+													// here, payloads are considered as distinguishing (as default) -- whole I/O action used as label
+													// Cf.\ Test01b, non-deterministic actions of the same state
+		                      // here, actions on different states -- error manifests as regular stuck
+	}
+}
+//*/
+

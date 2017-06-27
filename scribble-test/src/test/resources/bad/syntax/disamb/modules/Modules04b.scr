@@ -1,0 +1,4 @@
+module bad.syntax.disamb.modules.Modules04b;
+
+import bad.syntax.disamb.modules.Modules04b as Modules04b;  // Simple name coincides with full name 
+

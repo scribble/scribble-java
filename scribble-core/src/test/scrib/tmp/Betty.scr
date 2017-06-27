@@ -1,0 +1,362 @@
+module Betty;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+type <java> "test.nego.SAP" from "test/nego/SAP.java" as SAP;
+
+global protocol Negotiate(role C, role P) {
+	propose(SAP) from C to P;
+	rec X {
+		choice at P {
+			accpt() from P to C;
+			confirm() from C to P;
+		} or {
+			reject() from P to C;
+		} or {
+			propose(SAP) from P to C;
+			choice at C {
+				accpt() from C to P;
+				confirm() from P to C;
+			} or {
+				reject() from C to P;
+			} or {
+				propose(SAP) from C to P;
+				continue X;
+			}
+		}
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+type <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol Proto1(role A, role B) {
+	123(Int, String) from A to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+	} or {
+		3() from A to B;
+		4() from A to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+	} or {
+		4() from A to C;
+		3() from A to B;
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		buyer1(Int) from A to B;  // Total
+		(Int) from B to A;        // B will pay this much
+		buyer2(Int) from A to C;  // C will pay remainder
+	} or {
+		buyer1(Int) from A to C;  // Total
+		(Int) from C to A;        // C will pay this much
+		buyer2(Int) from A to B;  // B will pay remainder
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		1() from B to C;
+	} or {
+		//2() from A to B;
+		2() from B to A;
+		choice at B {
+			3() from B to C;
+		} or {
+			4() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		3() from B to C;
+		4() from C to A;
+	} or {
+		2() from A to B;
+		3() from B to C;
+		5() from C to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		3() from B to C;
+		4() from C to A;
+	} or {
+		2() from A to B;
+		3() from B to C;
+		4() from C to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		3() from B to C;
+		do Merge(A, C);
+	} or {
+		2() from A to B;
+		3() from B to C;
+		do Merge(A, C);
+	}
+}
+
+aux global protocol Merge(role A, role C) {
+	4() from A to C;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		3() from B to C;
+		do Merge(A, C);
+	} or {
+		2() from A to B;
+		3() from B to C;
+		do Merge(A, C);
+	}
+}
+
+aux global protocol Merge(role A, role C) {
+	4() from C to A;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		3() from B to C;
+		do Merge(A, C);
+	} or {
+		2() from A to B;
+		3() from B to C;
+		do Merge(A, C);
+	}
+}
+
+aux global protocol Merge(role A, role C) {
+	choice at A {
+		4() from A to C;
+	} or {
+		5() from A to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+		3() from B to C;
+		4() from C to A;
+	} or {
+		1b() from A to B;
+		3() from B to C;  // -nolocalchoicecheck to show orphans
+		4() from C to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+	} or {
+		3() from A to B;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B) {
+	rec X {
+		choice at A {
+			1() from A to B;
+			continue X;
+			2() from A to B;
+		} or {
+			3() from A to B;
+		}
+		4() from A to B;
+	}
+	5() from A to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B) {
+	rec X {
+		1() from A to B;
+		continue X;
+	}
+	2() from A to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D) {
+	rec X {
+		1() from A to B;
+		continue X;
+	}
+	2() from C to D;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B) {
+	rec X {
+		choice at A {
+			1() from A to B;
+			continue X;
+		} or {
+			1() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		rec X {
+			1() from A to B;
+			1() from B to C;
+			continue X;
+		}
+	} or {
+		2() from A to B;
+		2() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		rec X {
+			1() from A to B;
+			continue X;
+		}
+	} or {
+		2() from A to B;
+		2() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		rec X {
+			1() from A to B;
+			continue X;
+		}
+	} or {
+		2() from A to B;
+	}
+	2() from C to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	rec X {
+		choice at A {
+			1() from A to B;
+			continue X;
+		} or {
+			2() from A to B;
+			2() from B to C;
+		}
+	}
+}
+//*/
+

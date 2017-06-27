@@ -1,0 +1,21 @@
+module good.efsm.gdo.Test12;
+
+
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	do Proto1Aux1(A, B);
+}
+
+
+aux global protocol Proto1Aux1(role A, role B)
+{
+	choice at A
+	{
+		do Proto1(A, B);
+	}
+	or
+	{
+		2() from A to B;
+	}
+}

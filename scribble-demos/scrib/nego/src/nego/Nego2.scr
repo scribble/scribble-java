@@ -1,0 +1,30 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/nego/src -d modules/demos/scrib/nego/src modules/demos/scrib/nego/src/nego/Nego2.scr
+
+module demo.nego.Nego2;
+
+type <java> "test.nego.SAP" from "test/nego/SAP.java" as SAP;
+
+// C = Consumer, P = Producer
+global protocol Negotiate(role C, role P)
+{
+	propose(SAP) from C to P;
+	do NegotiateAux(P, C);
+}
+
+aux global protocol NegotiateAux(role A, role B)
+{
+	choice at A
+	{
+		accpt() from A to B;
+		confirm() from B to A;
+	}
+	or
+	{
+		reject() from A to B;
+	}
+	or
+	{
+		propose(SAP) from A to B;
+		do NegotiateAux(B, A);
+	}
+}

@@ -1,0 +1,21 @@
+module good.efsm.gdo.Test08b;
+
+
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		do Bar(A, B);
+	}
+	or
+	{
+		2() from A to B;
+	}
+}
+
+
+aux global protocol Bar(role A, role B)
+{
+	do Foo(A, B);
+}

@@ -1,0 +1,16 @@
+module good.syntax.inlinedunfolding.gdo.Test03;
+
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		do Proto1Aux1(A, B);  // Inlined as rec, then rec "dropped" by unfolding (no continue)
+	}
+}
+
+aux global protocol Proto1Aux1(role A, role B)
+{
+	1() from A to B;
+}
+

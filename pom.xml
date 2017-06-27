@@ -3,17 +3,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.scribble</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.4-SNAPSHOT</version>
+	<version>0.4.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Scribble</name>
+	<name>scribble-java</name>
 	<url>http://www.scribble.org</url>
 	<description>
 		Scribble
 	</description>
 
 	<scm>
-		<connection>https://github.com/scribble/scribble-java</connection>
 		<url>https://github.com/scribble/scribble-java</url>
+		<connection>scm:git:https://github.com/scribble/scribble-java.git</connection>
+		<developerConnection>scm:git:https://github.com/scribble/scribble-java.git</developerConnection>
+		<tag>HEAD</tag>
 	</scm>
 
 	<licenses>
@@ -37,15 +39,20 @@
 			<timezone>+0</timezone>
 		</developer>
 	</developers>
-  
+
+	<inceptionYear>2008</inceptionYear>
+
+	<organization>
+		<name>Scribble</name>
+		<url>http://www.scribble.org</url>
+	</organization>
+
 	<properties>
-		<project.organization.name>Scribble.org</project.organization.name>
-		<project.inceptionYear>2008</project.inceptionYear>
 		<antlr.version>3.4</antlr.version>
 		<log4j.version>1.2.14</log4j.version>
 		<jackson.version>1.9.9</jackson.version>
 		<junit.version>4.11</junit.version>
-		
+
 		<version.commons-io>2.4</version.commons-io>
 
 		<!-- maven-compiler-plugin -->
@@ -53,18 +60,27 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
 
+		<version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
+		<version.maven-release-plugin>2.5.3</version.maven-release-plugin>
+		<version.maven-source-plugin>3.0.1</version.maven-source-plugin>
+		<version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>
+		<version.io.takari-maven>0.3.4</version.io.takari-maven>
+		<version.io.zikin.centralsync-maven-plugin>0.1.0</version.io.zikin.centralsync-maven-plugin>
 	</properties>
 
 	<modules>
-		<module>modules/core</module>
-		<module>modules/parser</module>
-		<module>modules/cli</module>
-		<module>dist</module>
-    <module>modules/demos</module>
+		<module>scribble-core</module>
+		<module>scribble-parser</module>
+		<module>scribble-cli</module>
+		<module>scribble-codegen</module>
+		<module>scribble-runtime</module>
+		<module>scribble-test</module>
+		<module>scribble-dist</module>
+    <module>scribble-go</module>
   </modules>
-  
+
 	<dependencyManagement>
-		<dependencies> 
+		<dependencies>
 			<dependency>
 				<groupId>org.scribble</groupId>
 				<artifactId>scribble-core</artifactId>
@@ -82,8 +98,30 @@
 			</dependency>
 			<dependency>
 				<groupId>org.scribble</groupId>
-				<artifactId>scribble-demos</artifactId>
+				<artifactId>scribble-runtime</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scribble</groupId>
+				<artifactId>scribble-codegen</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<!-- For extension module tests -->
+				<groupId>org.scribble</groupId>
+				<artifactId>scribble-test</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr-runtime</artifactId>
+				<version>${antlr.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
 			</dependency>
 
 			<dependency>
@@ -102,28 +140,20 @@
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.antlr</groupId>
-				<artifactId>antlr-runtime</artifactId>
-				<version>${antlr.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>${log4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
-		<!-- This section defines the default plugin settings inherited by child projects. -->
+		<!-- This section defines the default plugin settings inherited by child 
+			projects. -->
 		<pluginManagement>
 			<plugins>
-				<!-- Fixes how test resources of a project can be used in projects dependent on it  -->
+				<!-- Fixes how test resources of a project can be used in projects dependent 
+					on it -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -133,22 +163,34 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>2.9</version>
- 				</plugin>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
 					<version>1.7</version>
- 				</plugin>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.4</version>
- 				</plugin>
-			    <plugin>
-				    <groupId>org.jboss.maven.plugins</groupId>
-				    <artifactId>maven-jdocbook-plugin</artifactId>
-				    <version>2.3.8</version>
- 				</plugin>
+				</plugin>
+				<plugin>
+					<groupId>org.jboss.maven.plugins</groupId>
+					<artifactId>maven-jdocbook-plugin</artifactId>
+					<version>2.3.8</version>
+				</plugin>
+				<plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>3.0</version>
+				</plugin>
+
+				<!-- mvn -N io.takari:maven:wrapper -Dmaven=3.5.0 -->
+				<plugin>
+					<groupId>io.takari</groupId>
+					<artifactId>maven</artifactId>
+					<version>${version.io.takari-maven}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -180,6 +222,9 @@
 						<include>**/*TestCase.java</include>
 						<include>**/*Test.java</include>
 					</includes>
+					<excludes>
+						<exclude>**/ScribAllTest.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 
@@ -211,6 +256,59 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<header>header.txt</header>
+					<failIfMissing>true</failIfMissing>
+					<failIfUnknown>true</failIfUnknown>
+					<excludes>
+						<exclude>**/*.txt</exclude>
+						<exclude>**/*.xml</exclude>
+						<exclude>**/*.scr</exclude>
+						<exclude>**/*.policy</exclude>
+						<exclude>mvnw</exclude>
+						<exclude>mvnw.cmd</exclude>
+						<exclude>travis/publish.sh</exclude>
+						<exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
+						<exclude>**/*.g</exclude>
+						<exclude>**/Scribble-0.3.original</exclude>
+						<exclude>**/IGNORE</exclude>
+						<exclude>bin/*.sh</exclude>
+						<exclude>**/*.swp</exclude>
+						<exclude>scribble-demos/**/*</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<phase>compile</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>${version.maven-release-plugin}</version>
+				<configuration>
+					<useReleaseProfile>false</useReleaseProfile>
+					<releaseProfiles>release</releaseProfiles>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<tagNameFormat>@{project.version}</tagNameFormat>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.zipkin.centralsync-maven-plugin</groupId>
+				<artifactId>centralsync-maven-plugin</artifactId>
+				<version>${version.io.zikin.centralsync-maven-plugin}</version>
+				<configuration>
+					<subject>scribble</subject>
+					<repo>maven</repo>
+					<packageName>scribble-java</packageName>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -223,34 +321,55 @@
 		</plugins>
 	</reporting>
 
-	<repositories>
-		<repository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Maven Repository Group</name>
-			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
-
 	<distributionManagement>
 		<repository>
-			<id>jboss-releases-repository</id>
-			<name>JBoss Releases Repository</name>
-			<url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+			<id>bintray</id>
+			<url>https://api.bintray.com/maven/scribble/maven/scribble-java/;publish=1</url>
 		</repository>
 		<snapshotRepository>
-			<id>jboss-snapshots-repository</id>
-			<name>JBoss Snapshots Repository</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-			<uniqueVersion>false</uniqueVersion>
+			<id>jfrog-snapshots</id>
+			<url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- Creates source jar -->
+					<plugin>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${version.maven-source-plugin}</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Creates javadoc jar -->
+					<plugin>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${version.maven-javadoc-plugin}</version>
+						<configuration>
+							<failOnError>false</failOnError>
+						</configuration>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

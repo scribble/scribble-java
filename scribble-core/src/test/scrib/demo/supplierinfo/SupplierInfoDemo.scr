@@ -1,0 +1,68 @@
+module src.SupplierInfoDemo;
+
+type <xsd> "UserName" from "AUTH.xsd" as username;
+type <xsd> "Password" from "AUTH.xsd" as password;
+type <xsd> "UUID" from "AUTH.xsd" as uuid;
+type <xsd> "/retailhub/supplierdetails" from "Retailer.xsd" as supplierdetails;
+type <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
+
+//type <xsd> "UserContext" from "AUTH.xsd" as usercontext;
+//type <xsd> "FilterSet" from "AUTH.xsd" as filters;
+
+
+global protocol Partners(
+		role LOGINsvc,
+		role REQUESTOR,
+		role AUTHsvc,
+		role usersvc,
+		role FILTERsvc,
+		role SUPPLIERsvc,
+		role CONTRACTsvc)
+{
+	login(username, password) from REQUESTOR to LOGINsvc;
+	choice at LOGINsvc
+	{
+		loginfailure() from LOGINsvc to REQUESTOR;
+	} or {
+		loginsuccess() from LOGINsvc to REQUESTOR;
+
+		rec MAIN
+		{
+			choice at REQUESTOR
+			{
+				// GET SUPPLIER INFO
+				getsuppliers(uuid) from REQUESTOR to AUTHsvc;
+				choice at AUTHsvc
+				{
+					// DENIED
+					deny() from AUTHsvc to REQUESTOR;
+				} or {
+					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+					getsuppliers() from AUTHsvc to SUPPLIERsvc;
+					suppliers() from SUPPLIERsvc to AUTHsvc;
+					filterSuppliers(usercontext, filters, supplierdetails) from AUTHsvc to FILTERsvc;
+					filtered() from FILTERsvc to AUTHsvc;
+					suppliers() from AUTHsvc to REQUESTOR;
+				}
+				continue MAIN;
+			} or {
+				// GET CONTRACT INFO
+				getcontracts() from REQUESTOR to AUTHsvc;
+				choice at authoriser
+				{
+					// DENIED
+					deny() from AUTHsvc to REQUESTOR;
+				} or {
+					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+					getcontracts() from AUTHsvc to CONTRACTsvc;
+					contracts() from CONTRACTsvc to AUTHsvc;
+					filterContracts(usercontext, filters, contractdetails) from AUTHsvc to FILTERsvc;
+					filtered() from FILTERsvc to AUTHsvc;
+					contracts() from AUTHsvc to REQUESTOR;
+				}
+				continue MAIN;
+			}
+		}
+	}
+}
+

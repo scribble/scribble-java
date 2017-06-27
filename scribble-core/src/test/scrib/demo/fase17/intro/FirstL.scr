@@ -1,0 +1,18 @@
+module demo.fase17.intro.FirstL;
+
+
+global protocol P1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+		}
+		or
+		{
+			2() from A to C;
+		}
+		continue X;
+	}
+}

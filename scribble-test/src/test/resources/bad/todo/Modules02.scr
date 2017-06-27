@@ -1,0 +1,12 @@
+module bad.syntax.disamb.modules.Modules02;
+
+
+global protocol Foo(role A, role B)
+{
+	
+}
+
+local protocol Foo(role A, role B)  // TODO: local not parsed
+{
+	
+}

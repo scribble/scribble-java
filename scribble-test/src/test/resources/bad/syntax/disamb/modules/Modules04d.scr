@@ -1,0 +1,7 @@
+module bad.syntax.disamb.modules.Modules04d;
+
+
+import bad.syntax.disamb.modules.pack1.Foo1 as Foo;
+import bad.syntax.disamb.modules.pack1.Foo2 as Foo;
+
+

@@ -1,0 +1,43 @@
+module good.syntax.inlinedunfolding.gdo.Test02;
+
+
+import good.syntax.inlinedunfolding.gdo.pack1.Test2 as Test2;
+
+
+global protocol Foo(role A, role B)
+{
+	do Test2.Proto2(A, B);
+	1() from A to B;
+	choice at A
+	{
+		//1() from A to B;
+		do Bar1(A, B);
+		//1() from A to B;
+		//do Foo(A, B);
+	}
+	or
+	{
+		//5() from A to B;
+		do Bar2(A, B);
+	}
+	or
+	{
+		//2() from A to B;
+		4() from A to B;
+	}
+}
+
+global protocol Bar1(role C, role D)
+{
+	2() from C to D;
+	3() from C to D;
+	do Foo(C, D);
+	//do Foo(D, C);
+}
+
+global protocol Bar2(role C, role D)
+{
+	5() from C to D;
+	do Bar2(C, D);
+}
+

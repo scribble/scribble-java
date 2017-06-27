@@ -1,0 +1,78 @@
+//$ bin/scribblec.sh -ip modules/demos/scrib/travel/src -d modules/demos/scrib/travel/src modules/demos/scrib/travel/src/travel/Travel.scr -api Booking C
+//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/travel/src modules/demos/scrib/travel/src/travel/*.java -subpackages travel.Travel.Booking -d modules/demos/scrib/travel/javadoc
+
+module travel.Travel;
+
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+type <java> "java.lang.String" from "rt.jar" as String;
+
+
+//*
+global protocol Booking(role C, role A, role S)
+{
+	choice at C
+	{
+		Query(String) from C to A;
+		Quote(Int) from A to C;
+		Dummy() from A to S;   // Dummy
+		do Booking(C, A, S);
+	}
+	or
+	{
+		choice at C
+		{
+			Yes() from C to A;
+			Yes() from A to S;
+			Payment(String) from C to S;
+			Ack() from S to C;
+		}
+		or
+		{
+			No() from C to A;
+			No() from A to S;
+		}
+		Bye() from C to A;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol BookingExp(role C, role A, role S)
+{
+	connect C to A;
+	do BookingExpAux(C, A, S);
+}
+
+aux global protocol BookingExpAux(role C, role A, role S)
+{
+	choice at C
+	{
+		Query(String) from C to A;
+		Quote(Int) from A to C;
+		//continue X;
+		do BookingExpAux(C, A, S);
+	}
+	or
+	{
+		choice at C
+		{
+			Yes() from C to A;
+			connect A to S;
+			Yes() from A to S;
+			//disconnect A and S;  // Disconnects not needed in non-recursive flows
+
+			connect S to C;  // Needs session id to correlate connections -- ideally fresh "shared channels"
+			Payment(String) from C to S;
+			Ack() from S to C;
+
+			//disconnect S and C;
+		}
+		or
+		{
+			No() from C to A;
+		}
+		Bye() from C to A;
+	}
+}
+//*/
