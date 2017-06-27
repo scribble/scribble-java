@@ -57,8 +57,8 @@ Notes:
 
 > To write a HelloWorld protocol in Test.scr (e.g., for the commands listed above):
 
-    echo 'module Test; global protocol Proto(role C, role S) {
-        Hello() from C to S; }' > Test.scr
+    echo 'module Test; global protocol Proto(role C, role S) { Hello() from C to S; }'
+        > Test.scr
 
 
 Further examples can be found in:
@@ -85,8 +85,9 @@ to see the underlying java command with main class, classpath and other args.
 
 Or try (from Nick Ng):
 
-  $ mvn dependency:build-classpath -Dmdep.outputFile=classpath
-  $ java -cp $(cat dist/classpath)
+    mvn dependency:build-classpath -Dmdep.outputFile=classpath
+
+    java -cp $(cat dist/classpath)
         org.scribble.cli.CommandLine [args] MyModule.scr
 
 
