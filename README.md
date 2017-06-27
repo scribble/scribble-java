@@ -57,8 +57,7 @@ Notes:
 
 > To write a HelloWorld protocol in Test.scr (e.g., for the commands listed above):
 
-    echo 'module Test; global protocol Proto(role C, role S) { Hello() from C to S; }'
-        > Test.scr
+    echo 'module Test; global protocol Proto(role C, role S) { Hello() from C to S; }' > Test.scr
 
 
 Further examples can be found in:
@@ -72,7 +71,7 @@ as part of the source repository, or separately via the above link.
   Scribble-Java tutorial (http://www.scribble.org/docs/scribble-java.html#QUICK)
 
     ./scribblec.sh scribble-demos/scrib/tutorial/src/tutorial/adder/Adder.scr 
-        -d modules/demos/scrib/tutorial/src/ -api Adder C 
+        -d scribble-demos/scrib/tutorial/src/ -api Adder C 
 
 
 ## Alternative command line usage:
