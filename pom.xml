@@ -106,6 +106,12 @@
 				<artifactId>scribble-codegen</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<!-- For extension module tests -->
+				<groupId>org.scribble</groupId>
+				<artifactId>scribble-test</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.antlr</groupId>
