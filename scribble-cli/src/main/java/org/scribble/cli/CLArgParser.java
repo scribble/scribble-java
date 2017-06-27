@@ -98,18 +98,23 @@ public class CLArgParser
 		CLArgParser.FLAGS.putAll(CLArgParser.NON_UNIQUE_FLAGS);
 	}
 
-	private final String[] args;
-	private final Map<CLArgFlag, String[]> parsed = new HashMap<>();
+	protected final String[] args;
+	protected final Map<CLArgFlag, String[]> parsed = new HashMap<>();
 	
-	public CLArgParser(String[] args) throws CommandLineException
+	public CLArgParser(String[] args)
 	{
 		this.args = args;
-		parseArgs();
 	}		
 	
-	public Map<CLArgFlag, String[]> getArgs()
+	public Map<CLArgFlag, String[]> getArgs() throws CommandLineException
 	{
+		parseArgs();
 		return this.parsed;
+	}
+	
+	protected boolean isFlag(String arg)
+	{
+		return CLArgParser.FLAGS.containsKey(arg);
 	}
 	
 	private void parseArgs() throws CommandLineException
@@ -117,7 +122,7 @@ public class CLArgParser
 		for (int i = 0; i < this.args.length; i++)
 		{
 			String arg = this.args[i];
-			if (CLArgParser.FLAGS.containsKey(arg))
+			if (isFlag(arg))
 			{
 				i = this.parseFlag(i);
 			}
@@ -145,7 +150,7 @@ public class CLArgParser
 	// Pre: i is the index of the current flag to parse
 	// Post: i is the index of the last argument parsed -- parseArgs does the index increment to the next current flag
 	// Currently allows repeat flag decls: next overrides previous
-	private int parseFlag(int i) throws CommandLineException
+	protected int parseFlag(int i) throws CommandLineException
 	{
 		String flag = this.args[i];
 		switch (flag)
@@ -300,7 +305,7 @@ public class CLArgParser
 		return i;
 	}
 
-	private int parseF17(int i) throws CommandLineException
+	private int parseF17(int i) throws CommandLineException  // FIXME
 	{
 		if ((i + 1) >= this.args.length)
 		{
@@ -340,7 +345,7 @@ public class CLArgParser
 		return i;
 	}
 
-	private int parseProtoRoleAndFileArgs(String f, int i) throws CommandLineException
+	protected int parseProtoRoleAndFileArgs(String f, int i) throws CommandLineException
 	{
 		CLArgFlag flag = CLArgParser.NON_UNIQUE_FLAGS.get(f);
 		if ((i + 3) >= this.args.length)

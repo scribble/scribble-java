@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.codegen.java.JEndpointApiGen;
+import org.scribble.codegen.java.JEndpointApiGenerator;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.MainContext;
@@ -44,7 +44,13 @@ import org.scribble.util.ScribUtil;
 
 public class CommandLine
 {
-	protected final Map<CLArgFlag, String[]> args;  // Maps each flag to list of associated argument values
+	protected //final
+	Map<CLArgFlag, String[]> args;  // Maps each flag to list of associated argument values
+	
+	protected CommandLine()
+	{
+		
+	}
 	
 	public CommandLine(String... args) throws CommandLineException
 	{
@@ -152,61 +158,11 @@ public class CommandLine
 		{
 			fail = x;
 		}
+		
+		// Attempt certain "output tasks" even if above failed, in case can still do useful output (hacky)
 		try 
 		{
-			// Following must be ordered appropriately -- ?
-			if (this.args.containsKey(CLArgFlag.PROJECT))
-			{
-				outputProjections(job);
-			}
-			if (this.args.containsKey(CLArgFlag.EFSM))
-			{
-				outputEGraph(job, true, true);
-			}
-			if (this.args.containsKey(CLArgFlag.VALIDATION_EFSM))
-			{
-				outputEGraph(job, false, true);
-			}
-			if (this.args.containsKey(CLArgFlag.UNFAIR_EFSM))
-			{
-				outputEGraph(job, false, false);
-			}
-			if (this.args.containsKey(CLArgFlag.EFSM_PNG))
-			{
-				drawEGraph(job, true, true);
-			}
-			if (this.args.containsKey(CLArgFlag.VALIDATION_EFSM_PNG))
-			{
-				drawEGraph(job, false, true);
-			}
-			if (this.args.containsKey(CLArgFlag.UNFAIR_EFSM_PNG))
-			{
-				drawEGraph(job, false, false);
-			}
-			if (this.args.containsKey(CLArgFlag.SGRAPH) || this.args.containsKey(CLArgFlag.SGRAPH_PNG)
-					|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH) || this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
-			{
-				if (job.useOldWf)
-				{
-					throw new CommandLineException("Global model flag(s) incompatible with: "  + CLArgParser.OLD_WF_FLAG);
-				}
-				if (this.args.containsKey(CLArgFlag.SGRAPH))
-				{
-					outputSGraph(job, true);
-				}
-				if (this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH))
-				{
-					outputSGraph(job, false);
-				}
-				if (this.args.containsKey(CLArgFlag.SGRAPH_PNG))
-				{
-					drawSGraph(job, true);
-				}
-				if (this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
-				{
-					drawSGraph(job, false);
-				}
-			}
+			tryOutputTasks(job);
 		}
 		catch (ScribbleException x)
 		{
@@ -215,11 +171,75 @@ public class CommandLine
 				fail = x;
 			}
 		}
-		if (fail != null)
+
+		if (fail != null)  // Well-formedness check and/or an "attemptable output task" failed
 		{
 			throw fail;
 		}
 
+		// "Non-attemptable" output tasks
+		doNonAttemptableOutputTasks(job);
+	}
+	
+	protected void tryOutputTasks(Job job) throws CommandLineException, ScribbleException
+	{
+		// Following must be ordered appropriately -- ?
+		if (this.args.containsKey(CLArgFlag.PROJECT))
+		{
+			outputProjections(job);
+		}
+		if (this.args.containsKey(CLArgFlag.EFSM))
+		{
+			outputEGraph(job, true, true);
+		}
+		if (this.args.containsKey(CLArgFlag.VALIDATION_EFSM))
+		{
+			outputEGraph(job, false, true);
+		}
+		if (this.args.containsKey(CLArgFlag.UNFAIR_EFSM))
+		{
+			outputEGraph(job, false, false);
+		}
+		if (this.args.containsKey(CLArgFlag.EFSM_PNG))
+		{
+			drawEGraph(job, true, true);
+		}
+		if (this.args.containsKey(CLArgFlag.VALIDATION_EFSM_PNG))
+		{
+			drawEGraph(job, false, true);
+		}
+		if (this.args.containsKey(CLArgFlag.UNFAIR_EFSM_PNG))
+		{
+			drawEGraph(job, false, false);
+		}
+		if (this.args.containsKey(CLArgFlag.SGRAPH) || this.args.containsKey(CLArgFlag.SGRAPH_PNG)
+				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH) || this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
+		{
+			if (job.useOldWf)
+			{
+				throw new CommandLineException("Global model flag(s) incompatible with: "  + CLArgParser.OLD_WF_FLAG);
+			}
+			if (this.args.containsKey(CLArgFlag.SGRAPH))
+			{
+				outputSGraph(job, true);
+			}
+			if (this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH))
+			{
+				outputSGraph(job, false);
+			}
+			if (this.args.containsKey(CLArgFlag.SGRAPH_PNG))
+			{
+				drawSGraph(job, true);
+			}
+			if (this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
+			{
+				drawSGraph(job, false);
+			}
+		}
+	}
+	
+	protected void doNonAttemptableOutputTasks(Job job) throws ScribbleException, CommandLineException
+	{
 		if (this.args.containsKey(CLArgFlag.SESS_API_GEN))
 		{
 			outputSessionApi(job);
@@ -349,7 +369,7 @@ public class CommandLine
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.API_GEN);
-		JEndpointApiGen jgen = new JEndpointApiGen(job);  // FIXME: refactor (generalise -- use new API)
+		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -365,7 +385,7 @@ public class CommandLine
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.SESS_API_GEN);
-		JEndpointApiGen jgen = new JEndpointApiGen(job);  // FIXME: refactor (generalise -- use new API)
+		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		for (String fullname : args)
 		{
 			GProtocolName gpn = checkGlobalProtocolArg(jcontext, fullname);
@@ -378,7 +398,7 @@ public class CommandLine
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.SCHAN_API_GEN);
-		JEndpointApiGen jgen = new JEndpointApiGen(job);  // FIXME: refactor (generalise -- use new API)
+		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
@@ -389,7 +409,7 @@ public class CommandLine
 	}
 
 	// filepath -> class source
-	private void outputClasses(Map<String, String> classes) throws ScribbleException
+	protected void outputClasses(Map<String, String> classes) throws ScribbleException
 	{
 		Consumer<String> f;
 		if (this.args.containsKey(CLArgFlag.API_OUTPUT))
@@ -442,7 +462,7 @@ public class CommandLine
 		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
 	}
 	
-	private static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname) throws CommandLineException
+	protected static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname) throws CommandLineException
 	{
 		GProtocolName simpgpn = new GProtocolName(simpname);
 		Module main = jcontext.getMainModule();
@@ -462,7 +482,7 @@ public class CommandLine
 		return new GProtocolName(jcontext.main, simpgpn);
 	}
 
-	private static Role checkRoleArg(JobContext jcontext, GProtocolName fullname, String rolename) throws CommandLineException
+	protected static Role checkRoleArg(JobContext jcontext, GProtocolName fullname, String rolename) throws CommandLineException
 	{
 		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
 		Role role = new Role(rolename);
