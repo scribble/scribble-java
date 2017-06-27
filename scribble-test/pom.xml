@@ -7,17 +7,33 @@
 		<groupId>org.scribble</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.4.4-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<artifactId>scribble-runtime</artifactId>
-	<name>scribble-runtime</name>
+
+	<artifactId>scribble-test</artifactId>
+	<name>scribble-test</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.scribble</groupId>
 			<artifactId>scribble-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-parser</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-cli</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

@@ -12,7 +12,7 @@ the project:
 
     mvn [clean] install
 
-The distribution will be available from the folder _dist/target_. The contents of the zip is:
+The distribution will be available from the folder _scribble-dist/target_. The contents of the zip is:
 
 - lib            jars needed to run the scribble-java tool
 - scribblec.sh   script for running the command line tool
@@ -41,8 +41,8 @@ Notes:
     ./scribblec.sh Test.scr -project Proto C
 
 
-> Print dot representation of Endpoint FSM for role "C" of protocol "Proto"
-  in Test.scr
+> Print (a dot representation of) the Endpoint FSM for role "C" of protocol 
+  "Proto" in Test.scr
 
     ./scribblec.sh Test.scr -fsm Proto C
 
@@ -55,39 +55,38 @@ Notes:
 
 ## Examples:
 
-> To make an HelloWorld test:
+> To write a HelloWorld protocol in Test.scr (e.g., for the commands listed above):
 
-  echo 'module Test; global protocol Proto(role C, role S) {
-      Hello() from C to S; }' > Test.scr
+    echo 'module Test; global protocol Proto(role C, role S) { Hello() from C to S; }' > Test.scr
 
 
 Further examples can be found in:
 
-  https://github.com/scribble/scribble-java/tree/master/modules/demos/scrib
+  https://github.com/scribble/scribble-java/tree/master/scribble-demos/scrib
 
 The distribution zip does not include these examples.  They can be obtained
 as part of the source repository, or separately via the above link.
 
-> E.g. To generate the Java Endpoint API for role "C" of the "Adder"
-  protocol from http://www.doc.ic.ac.uk/~rhu/scribble/fase16.pdf
+> E.g. To generate the Java Endpoint API for role "C" in the "Adder" protocol from the
+  Scribble-Java tutorial (http://www.scribble.org/docs/scribble-java.html#QUICK)
 
-    ./scribblec.sh -d modules/demos/scrib/fase16/src
-        modules/demos/scrib/fase16/src/fase16/adder/Adder.scr -api Adder C
+    ./scribblec.sh scribble-demos/scrib/tutorial/src/tutorial/adder/Adder.scr 
+        -d scribble-demos/scrib/tutorial/src/ -api Adder C 
 
 
 ## Alternative command line usage:
 
-To run the Scribble tool directly via java:
+To run the Scribble tool directly via java, try
 
-  try  scribblec.sh  with the  --verbose  flag
+    ./scribblec.sh --verbose [args]
 
 to see the underlying java command with main class, classpath and other args.
 
 Or try (from Nick Ng):
 
-  $ mvn dependency:build-classpath -Dmdep.outputFile=classpath
-  $ java -cp $(cat dist/classpath)
-        org.scribble.cli.CommandLine [args] MyModule.scr
+    mvn dependency:build-classpath -Dmdep.outputFile=classpath
+
+    java -cp $(cat dist/classpath) org.scribble.cli.CommandLine [args] MyModule.scr
 
 
 ## Issue reporting
