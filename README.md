@@ -77,9 +77,9 @@ as part of the source repository, or separately via the above link.
 
 ## Alternative command line usage:
 
-To run the Scribble tool directly via java:
+To run the Scribble tool directly via java, try
 
-  try  scribblec.sh  with the  --verbose  flag
+    ./scribblec.sh --verbose [args]
 
 to see the underlying java command with main class, classpath and other args.
 
@@ -87,8 +87,7 @@ Or try (from Nick Ng):
 
     mvn dependency:build-classpath -Dmdep.outputFile=classpath
 
-    java -cp $(cat dist/classpath)
-        org.scribble.cli.CommandLine [args] MyModule.scr
+    java -cp $(cat dist/classpath) org.scribble.cli.CommandLine [args] MyModule.scr
 
 
 ## Issue reporting
