@@ -35,6 +35,11 @@
 			<groupId>org.scribble</groupId>
 			<artifactId>scribble-cli</artifactId>
 		</dependency>
+		<dependency>
+			<!--Needed to include in jar-->
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-runtime</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
