@@ -75,13 +75,6 @@ public class LConnect extends LConnectionAction implements LSimpleInteractionNod
 		//throw new RuntimeException("TODO: " + this);
 	}
 
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LSimpleInteractionNode.super.getKind();
-	}
-
 	@Override
 	public String toString()
 	{
@@ -105,4 +98,11 @@ public class LConnect extends LConnectionAction implements LSimpleInteractionNod
 	{
 		return Collections.emptySet();
 	}
+
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LSimpleInteractionNode.super.getKind();
+	}*/
 }

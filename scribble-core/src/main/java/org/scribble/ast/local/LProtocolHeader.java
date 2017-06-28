@@ -86,16 +86,16 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 		return (LProtocolName) super.getDeclName();
 	}
 	
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LNode.super.getKind();
-	}
-	
 	@Override
 	public String toString()
 	{
 		return Constants.LOCAL_KW + " " + super.toString();
 	}
+	
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LNode.super.getKind();
+	}*/
 }

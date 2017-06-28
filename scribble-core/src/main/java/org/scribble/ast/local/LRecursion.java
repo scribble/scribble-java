@@ -70,13 +70,6 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 		return getBlock().getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);
 	}
 
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LCompoundInteractionNode.super.getKind();
-	}
-
 	@Override
 	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
@@ -104,4 +97,11 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	{
 		return getBlock().getEnabling();
 	}
+
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LCompoundInteractionNode.super.getKind();
+	}*/
 }

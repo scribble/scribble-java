@@ -55,10 +55,10 @@ public class LProtocolDef extends ProtocolDef<Local> implements LNode
 		return (LProtocolBlock) this.block;
 	}
 	
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
 	@Override
 	public Local getKind()
 	{
 		return LNode.super.getKind();
-	}
+	}*/
 }

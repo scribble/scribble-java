@@ -75,10 +75,10 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 		return Constants.GLOBAL_KW + " " + super.toString();
 	}
 	
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
 	@Override
 	public Global getKind()
 	{
 		return GNode.super.getKind();
-	}
+	}*/
 }
