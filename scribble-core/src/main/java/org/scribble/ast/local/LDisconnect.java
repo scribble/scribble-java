@@ -75,13 +75,6 @@ public class LDisconnect extends LConnectionAction implements LSimpleInteraction
 		return this.self.toName();
 	}
 
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LSimpleInteractionNode.super.getKind();
-	}
-
 	@Override
 	public String toString()
 	{
@@ -107,4 +100,11 @@ public class LDisconnect extends LConnectionAction implements LSimpleInteraction
 		//enab.add(this.msg.toMessage());  // Return empty to skip over this in LInteractionSeq
 		return enab;
 	}
+
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LSimpleInteractionNode.super.getKind();
+	}*/
 }

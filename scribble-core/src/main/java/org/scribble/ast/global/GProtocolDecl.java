@@ -101,7 +101,7 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 		return new GProtocolName(fullmodname, this.header.getDeclName());
 	}
 
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
 	@Override
 	public boolean isGlobal()
 	{
@@ -113,5 +113,5 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	public Global getKind()
 	{
 		return GNode.super.getKind();
-	}
+	}*/
 }

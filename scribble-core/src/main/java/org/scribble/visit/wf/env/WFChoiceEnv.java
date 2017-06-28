@@ -86,17 +86,19 @@ public class WFChoiceEnv extends Env<WFChoiceEnv>
 		return mergeContexts(Arrays.asList(child));
 	}
 
+	// FIXME: refactor to use Stream.reduce?
 	@Override
 	public WFChoiceEnv mergeContexts(List<WFChoiceEnv> children)
 	{
 		WFChoiceEnv copy = copy();
 		for (WFChoiceEnv child : children)
 		{
-			merge(this, copy.initial, child.initial);
+			mergeMessageIdMap(this, copy.initial, child.initial);
 			////merge(this, copy.initialInterrupts, child.initialInterrupts);
 			//merge(this, copy.connected, child.connected);
 		}
-		// FIXME: refactor
+
+		// FIXME: refactor, cf. mergeMessageIdMap
 		ConnectedMap cm = children.get(0).getConnected();
 		for (WFChoiceEnv e : children.subList(1, children.size()))
 		{
@@ -106,17 +108,17 @@ public class WFChoiceEnv extends Env<WFChoiceEnv>
 		return copy;
 	}
 
-	// Pre: foo is parent.copy().initial
-	// updates foo according to state of parent and child
-	private static void merge(WFChoiceEnv parent, MessageIdMap foo, MessageIdMap child)
+	// Pre: foo is orig.copy().initial -- orig is "parent"
+	// Updates running according to state of orig and child
+	private static void mergeMessageIdMap(WFChoiceEnv orig, MessageIdMap running, MessageIdMap child)
 	{
 		for (Role dest : child.getDestinations())
 		{
 			for (Role src : child.getSources(dest))
 			{
-				if (!parent.isEnabled(dest))
+				if (!orig.isEnabled(dest))
 				{
-					foo.putMessages(dest, src, child.getMessages(dest, src));
+					running.putMessages(dest, src, child.getMessages(dest, src));
 				}
 			}
 		}
