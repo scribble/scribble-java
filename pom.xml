@@ -77,6 +77,7 @@
 		<module>scribble-runtime</module>
 		<module>scribble-test</module>
 		<module>scribble-dist</module>
+		<module>scribble-demos</module>
 	</modules>
 
 	<dependencyManagement>
