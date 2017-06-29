@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.scribble</groupId>
 	<artifactId>parent</artifactId>
@@ -76,8 +77,8 @@
 		<module>scribble-runtime</module>
 		<module>scribble-test</module>
 		<module>scribble-dist</module>
-    <module>scribble-go</module>
-  </modules>
+		<module>scribble-demos</module>
+	</modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -237,7 +238,7 @@
 					<consoleOutput>false</consoleOutput>
 					<suppressionsLocation>checkstyle/suppressions.xml</suppressionsLocation>
 					<failsOnError>false</failsOnError>
-					<useFile/>
+					<useFile />
 				</configuration>
 				<dependencies>
 					<dependency>

@@ -238,6 +238,7 @@ public class CommandLine
 		}
 	}
 
+	// FIXME: rename
 	protected void doNonAttemptableOutputTasks(Job job) throws ScribbleException, CommandLineException
 	{
 		if (this.args.containsKey(CLArgFlag.SESS_API_GEN))

@@ -14,35 +14,21 @@
 package org.scribble.ext.go.codegen.statetype.go;
 
 import org.scribble.codegen.statetype.STStateChanAPIBuilder;
-import org.scribble.codegen.statetype.STEndStateBuilder;
+import org.scribble.codegen.statetype.STReceiveActionBuilder;
+import org.scribble.codegen.statetype.STReceiveStateBuilder;
 import org.scribble.model.endpoint.EState;
 
-public class GSTEndStateBuilder extends STEndStateBuilder
+public class GoSTReceiveStateBuilder extends STReceiveStateBuilder
 {
-	public GSTEndStateBuilder()
+	public GoSTReceiveStateBuilder(STReceiveActionBuilder rb)
 	{
-
-	}
-	
-	@Override
-	public String build(STStateChanAPIBuilder api, EState s)
-	{
-		return getPreamble(api, s);
+		super(rb);
 	}
 
 	@Override
 	public String getPreamble(STStateChanAPIBuilder api, EState s)
 	{
 		//return GSTStateChanAPIBuilder.getStateChanPremable(api, s);
-		String tname = api.getStateChanName(s);
-		String res =
-				  GSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
-				+ "\n"
-				+ "import \"org/scribble/runtime/net\"\n"
-				+ "\n"
-				+ "type " + tname + " struct{\n"
-				+ "ep *net.MPSTEndpoint\n"  // FIXME: factor out
-				+ "}";
-		return res;  // No LinearResource
+		return api.bb.getPreamble(api, s);
 	}
 }

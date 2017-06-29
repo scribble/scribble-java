@@ -21,7 +21,7 @@ import org.scribble.codegen.statetype.STReceiveActionBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
-public class GSTReceiveActionBuilder extends STReceiveActionBuilder
+public class GoSTReceiveActionBuilder extends STReceiveActionBuilder
 {
 
 	@Override

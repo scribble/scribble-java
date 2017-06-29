@@ -30,11 +30,11 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
-public class GSTSessionAPIBuilder
+public class GoSTSessionAPIBuilder
 {
-	private GSTStateChanAPIBuilder api;
+	private GoSTStateChanAPIBuilder api;
 	
-	public GSTSessionAPIBuilder(GSTStateChanAPIBuilder api)
+	public GoSTSessionAPIBuilder(GoSTStateChanAPIBuilder api)
 	{
 		this.api = api;
 	}

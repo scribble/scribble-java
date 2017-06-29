@@ -31,13 +31,14 @@ public class GoCommandLine extends CommandLine
 	
 	public GoCommandLine(String... args) throws CommandLineException
 	{
-		/*super(args);
+		/*super(args);  // No: go-args will make core arg parser throw exception -- refactor?
 		this.goArgs = new GoCLArgParser(args).getGoArgs();*/
 
 		// FIXME: refactor
 		GoCLArgParser p = new GoCLArgParser(args);
 		this.args = p.getArgs();
 		this.goArgs = p.getGoArgs();
+		// Duplicated from super
 		if (!this.args.containsKey(CLArgFlag.MAIN_MOD) && !this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
 		{
 			throw new CommandLineException("No main module has been specified\r\n");

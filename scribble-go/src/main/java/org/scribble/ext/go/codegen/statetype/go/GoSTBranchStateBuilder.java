@@ -17,9 +17,9 @@ import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanAPIBuilder;
 import org.scribble.model.endpoint.EState;
 
-public class GSTBranchStateBuilder extends STBranchStateBuilder
+public class GoSTBranchStateBuilder extends STBranchStateBuilder
 {
-	public GSTBranchStateBuilder(GSTBranchActionBuilder bb)
+	public GoSTBranchStateBuilder(GoSTBranchActionBuilder bb)
 	{
 		super(bb);
 	}
@@ -29,7 +29,7 @@ public class GSTBranchStateBuilder extends STBranchStateBuilder
 	{
 		/*String ename = getBranchEnumType(api, s);
 		List<EAction> as = s.getActions();*/
-		return GSTStateChanAPIBuilder.getStateChanPremable(api, s) /*+ "\n"
+		return GoSTStateChanAPIBuilder.getStateChanPremable(api, s) /*+ "\n"
 				+ "\n"
 				+ "type " + ename + " int\n"
 				+ "\n"

@@ -24,18 +24,18 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
-public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
+public class GoSTStateChanAPIBuilder extends STStateChanAPIBuilder
 {
 	private int counter = 1;
 	
-	public GSTStateChanAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph)
+	public GoSTStateChanAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph)
 	{
 		super(job, gpn, role, graph,
-				new GSTOutputStateBuilder(new GSTSendActionBuilder()),
-				new GSTReceiveStateBuilder(new GSTReceiveActionBuilder()),
-				new GSTBranchStateBuilder(new GSTBranchActionBuilder()),
-				new GSTCaseBuilder(new GSTCaseActionBuilder()),
-				new GSTEndStateBuilder());
+				new GoSTOutputStateBuilder(new GoSTSendActionBuilder()),
+				new GoSTReceiveStateBuilder(new GoSTReceiveActionBuilder()),
+				new GoSTBranchStateBuilder(new GoSTBranchActionBuilder()),
+				new GoSTCaseBuilder(new GoSTCaseActionBuilder()),
+				new GoSTEndStateBuilder());
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	@Override
 	public Map<String, String> buildSessionAPI()  // FIXME: factor out
 	{
-		return new GSTSessionAPIBuilder(this).buildSessionAPI();
+		return new GoSTSessionAPIBuilder(this).buildSessionAPI();
 	}
 
 	protected static String getPackageDecl(STStateChanAPIBuilder api)
@@ -81,7 +81,7 @@ public class GSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	{
 		String tname = api.getStateChanName(s);
 		String res =
-				  GSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
+				  GoSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
 				+ "\n"
 				+ "import \"org/scribble/runtime/net\"\n"
 				+ "\n"

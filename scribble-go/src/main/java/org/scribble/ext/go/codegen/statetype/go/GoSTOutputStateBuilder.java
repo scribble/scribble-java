@@ -18,9 +18,9 @@ import org.scribble.codegen.statetype.STOutputStateBuilder;
 import org.scribble.codegen.statetype.STSendActionBuilder;
 import org.scribble.model.endpoint.EState;
 
-public class GSTOutputStateBuilder extends STOutputStateBuilder
+public class GoSTOutputStateBuilder extends STOutputStateBuilder
 {
-	public GSTOutputStateBuilder(STSendActionBuilder sb)
+	public GoSTOutputStateBuilder(STSendActionBuilder sb)
 	{
 		super(sb);
 	}
@@ -28,6 +28,6 @@ public class GSTOutputStateBuilder extends STOutputStateBuilder
 	@Override
 	public String getPreamble(STStateChanAPIBuilder api, EState s)
 	{
-		return GSTStateChanAPIBuilder.getStateChanPremable(api, s);
+		return GoSTStateChanAPIBuilder.getStateChanPremable(api, s);
 	}
 }

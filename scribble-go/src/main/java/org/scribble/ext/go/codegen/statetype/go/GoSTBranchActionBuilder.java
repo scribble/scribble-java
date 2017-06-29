@@ -20,7 +20,7 @@ import org.scribble.codegen.statetype.STBranchActionBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
-public class GSTBranchActionBuilder extends STBranchActionBuilder
+public class GoSTBranchActionBuilder extends STBranchActionBuilder
 {
 	@Override
 	public String build(STStateChanAPIBuilder api, EState curr, EAction a)  // FIXME: "overriding" GSTStateChanAPIBuilder.buildAction to hack around *interface return  // FIXME: factor out
@@ -68,7 +68,7 @@ public class GSTBranchActionBuilder extends STBranchActionBuilder
 				+ curr.getActions().stream().map(x -> 
 						  //"case " + GSTBranchStateBuilder.getBranchEnumValue(x.mid) + ":\n"
 						  "case \"" + x.mid + "\":\n"
-						+ "return &" + GSTCaseBuilder.getOpTypeName(api, curr, x.mid) +"{ ep: s.ep, state: &net.LinearResource {} }\n"  // FIXME: factor out
+						+ "return &" + GoSTCaseBuilder.getOpTypeName(api, curr, x.mid) +"{ ep: s.ep, state: &net.LinearResource {} }\n"  // FIXME: factor out
 					).collect(Collectors.joining(""))
 				+ "default: panic(\"Shouldn't get in here: \" + op)\n"
 				+ "}\n"

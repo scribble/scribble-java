@@ -23,9 +23,9 @@ import org.scribble.main.RuntimeScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.sesstype.name.MessageId;
 
-public class GSTCaseBuilder extends STCaseBuilder
+public class GoSTCaseBuilder extends STCaseBuilder
 {
-	public GSTCaseBuilder(GSTCaseActionBuilder cb)
+	public GoSTCaseBuilder(GoSTCaseActionBuilder cb)
 	{
 		super(cb);
 	}
@@ -48,7 +48,7 @@ public class GSTCaseBuilder extends STCaseBuilder
 	public String getPreamble(STStateChanAPIBuilder api, EState s)
 	{
 		String casename = getCaseActionName(api, s);
-		return GSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
+		return GoSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
 				+ "\n"
 				+ "import \"org/scribble/runtime/net\"\n"  // Some parts duplicated from GSTStateChanAPIBuilder
 				+ "\n"
@@ -75,9 +75,9 @@ public class GSTCaseBuilder extends STCaseBuilder
 		{
 			throw new RuntimeScribbleException("[go-api-gen] Branch message op should start with a capital letter: " + op);  // FIXME:
 		}
-		if (GSTCaseBuilder.seen.containsKey(op))
+		if (GoSTCaseBuilder.seen.containsKey(op))
 		{
-			if (GSTCaseBuilder.seen.get(op) != s.id)
+			if (GoSTCaseBuilder.seen.get(op) != s.id)
 			{
 				String n = api.getStateChanName(s);  // HACK
 				op = op + "_" + api.role + "_" + n.substring(n.lastIndexOf('_') + 1);
@@ -85,7 +85,7 @@ public class GSTCaseBuilder extends STCaseBuilder
 		}
 		else
 		{
-			GSTCaseBuilder.seen.put(op, s.id);
+			GoSTCaseBuilder.seen.put(op, s.id);
 		}
 		return op;
 	}

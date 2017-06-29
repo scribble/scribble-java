@@ -72,7 +72,7 @@ public class GoCLArgParser extends CLArgParser
 		}
 	}
 
-	// FIXME: factor4 out
+	// FIXME: factor out with core arg parser -- issue is GoCLArgFlag is currently an unlreated type to CLArgFlag
 	private int goParseProtoAndRoleArgs(String f, int i) throws CommandLineException
 	{
 		GoCLArgFlag flag = GoCLArgParser.GO_NON_UNIQUE_FLAGS.get(f);
@@ -86,9 +86,10 @@ public class GoCLArgParser extends CLArgParser
 		return i;
 	}
 	
+	// FIXME: factor out with core arg parser -- issue is GoCLArgFlag is currently an unlreated type to CLArgFlag
 	private void goConcatArgs(GoCLArgFlag flag, String... toAdd)
 	{
-		String[] args = this.parsed.get(flag);
+		String[] args = this.goParsed.get(flag);
 		if (args == null)
 		{
 			args = Arrays.copyOf(toAdd, toAdd.length);
