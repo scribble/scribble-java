@@ -99,7 +99,8 @@ public class CLArgParser
 	}
 
 	protected final String[] args;
-	protected final Map<CLArgFlag, String[]> parsed = new HashMap<>();
+
+	private final Map<CLArgFlag, String[]> parsed = new HashMap<>();
 	
 	public CLArgParser(String[] args)
 	{
