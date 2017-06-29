@@ -73,13 +73,6 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	{
 		return nodes.stream().map((n) -> (LInteractionNode) n).collect(Collectors.toList());
 	}
-	
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LNode.super.getKind();
-	}
 
 	public Set<Message> getEnabling()
 	{
@@ -96,4 +89,11 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 		}
 		return Collections.emptySet();
 	}
+	
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LNode.super.getKind();
+	}*/
 }

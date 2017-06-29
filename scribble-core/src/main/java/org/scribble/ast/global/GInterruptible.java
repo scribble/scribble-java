@@ -74,12 +74,16 @@ public class GInterruptible extends Interruptible<Global> implements GCompoundIn
 		throw new RuntimeException("TODO: " + this);
 	}
 
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
 	@Override
 	public Global getKind()
 	{
 		return GCompoundInteractionNode.super.getKind();
-	}
+	}*/
+	
+	
+	
+	
 
 	/*protected GlobalInterruptible(CommonTree ct, ScopeNode scope, GlobalProtocolBlock block, List<GlobalInterrupt> interrs, CompoundInteractionNodeContext icontext)
 	{

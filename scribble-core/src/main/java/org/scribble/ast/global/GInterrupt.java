@@ -21,7 +21,6 @@ import org.scribble.ast.Constants;
 import org.scribble.ast.Interrupt;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.sesstype.kind.Global;
 
 public class GInterrupt extends Interrupt implements GSimpleInteractionNode
 {
@@ -185,13 +184,6 @@ public class GInterrupt extends Interrupt implements GSimpleInteractionNode
 		//return new GlobalInterrupt(interr.ct, interr.src, interr.msgs, interr.getContext(), interr.getEnv());
 		return reconstruct(interr.ct, interr.src, interr.msgs, interr.getContext(), interr.getEnv());
 	}*/
-
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GSimpleInteractionNode.super.getKind();
-	}
 		
 	@Override
 	public String toString()
@@ -199,4 +191,11 @@ public class GInterrupt extends Interrupt implements GSimpleInteractionNode
 		return this.getMessages().stream().map((msg) -> msg.toString()).collect(Collectors.joining(", "))
 				+ " " + Constants.BY_KW + " " + this.src + ";";
 	}
+
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Global getKind()
+	{
+		return GSimpleInteractionNode.super.getKind();
+	}*/
 }

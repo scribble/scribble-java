@@ -69,13 +69,6 @@ public class LInterruptible extends Interruptible<Local> implements LCompoundInt
 		throw new RuntimeException("TODO: " + this);
 	}
 
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LCompoundInteractionNode.super.getKind();
-	}
-
 	@Override
 	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
@@ -94,6 +87,18 @@ public class LInterruptible extends Interruptible<Local> implements LCompoundInt
 		throw new RuntimeException("TODO: " + this);
 	}
 
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LCompoundInteractionNode.super.getKind();
+	}*/
+	
+	
+	
+	
+	
+	
 	/*public LocalInterruptible(CommonTree ct, ScopeNode scope, LocalProtocolBlock block, LocalThrows thro, List<LocalCatches> cats)
 	{
 		this(ct, scope, block, compileInterrupts(thro, cats), null, null);

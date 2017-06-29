@@ -25,7 +25,7 @@ import org.scribble.visit.Substitutor;
  */
 public interface ScribNode
 {
-  // Returns a deep clone but with fresh dels (i.e. dels not copied)
+  // Returns a deep clone but with fresh dels (i.e. dels not copied) -- use the af to build with fresh dels
 	// i.e. recursively using AstFactory to rebuild the whole subtree
 	// Cf. node specific reconstructs, retain (i.e. share) the existing del -- so dels must be immutable (except for Envs)
 	ScribNode clone(AstFactory af);
