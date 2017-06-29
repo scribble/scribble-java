@@ -38,7 +38,6 @@ public class NameDisambiguator extends ModuleContextVisitor
 	//private int counter = 1;
 
 	private Set<Role> roles = new HashSet<>();
-	private Set<String> annotPayloads = new HashSet<>();
 	private Map<String, NonRoleParamKind> params = new HashMap<>();
 	//private Set<RecVar> recvars = new HashSet<>();
 	//private Map<RecVar, Deque<RecVar>> recvars = new HashMap<>();
@@ -103,7 +102,6 @@ public class NameDisambiguator extends ModuleContextVisitor
 		this.roles.clear();
 		this.params.clear();
 		this.recvars.clear();  // Should be unnecessary
-		this.annotPayloads.clear(); 
 		
 		//this.pds.clear();  // No: called by ProtocolDecl leaveDisambiguation (i.e. before the above leave override) -- should be unnecessary anyway
 	}
@@ -159,16 +157,6 @@ public class NameDisambiguator extends ModuleContextVisitor
 	{
 		//return this.recvars.contains(rv);
 		return this.recvars.containsKey(rv);
-	}
-	
-	public boolean isVarnameInScope(String name)
-	{
-		return this.annotPayloads.contains(name); 
-	}
-	
-	public void addAnnotPaylaod(String name)
-	{
-		this.annotPayloads.add(name); 
 	}
 	
 	//public void removeRecVar(RecVar rv)

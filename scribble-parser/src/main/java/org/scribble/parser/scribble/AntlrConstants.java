@@ -16,14 +16,12 @@ package org.scribble.parser.scribble;
 // FIXME: refer to values from core ast.Constants
 public class AntlrConstants
 {
-	public static final String SCRIBBLE_FILE_EXTENSION = "scr";
-
+	// Cf. Scribble.g, parser output "node types"
 	public static final String KIND_MESSAGESIGNATURE = "KIND_MESSAGESIGNATURE";
 	public static final String KIND_PAYLOADTYPE = "KIND_PAYLOADTYPE";
 
 	public static final String MESSAGESIGNATURE_NODE_TYPE = "MESSAGESIGNATURE";
 	public static final String PAYLOAD_NODE_TYPE = "PAYLOAD";
-	public static final String ANNOTPAYLOAD_NODE_TYPE = "ANNOTPAYLOAD";
 	//public static final String PAYLOADELEMENT_NODE_TYPE = "PAYLOADELEMENT";
 	public static final String DELEGATION_NODE_TYPE = "DELEGATION";
 
@@ -52,7 +50,6 @@ public class AntlrConstants
 	public static final String GLOBALPROTOCOLBLOCK_NODE_TYPE = "GLOBALPROTOCOLBLOCK";
 	public static final String GLOBALINTERACTIONSEQUENCE_NODE_TYPE = "GLOBALINTERACTIONSEQUENCE";
 	public static final String GLOBALMESSAGETRANSFER_NODE_TYPE = "GLOBALMESSAGETRANSFER";
-	public static final String ANNOTGLOBALMESSAGETRANSFER_NODE_TYPE = "ANNOTGLOBALMESSAGETRANSFER";
 	public static final String GLOBALCONNECT_NODE_TYPE = "GLOBALCONNECT";
 	public static final String GLOBALDISCONNECT_NODE_TYPE = "GLOBALDISCONNECT";
 	public static final String GLOBALWRAP_NODE_TYPE = "GLOBALWRAP";
@@ -64,7 +61,7 @@ public class AntlrConstants
 	public static final String GLOBALINTERRUPT_NODE_TYPE = "GLOBALINTERRUPT";
 	public static final String GLOBALDO_NODE_TYPE = "GLOBALDO";
 
-	// # FIXME: local nodes are not ANTLR nodes
+	// # FIXME: local nodes are not ANTLR nodes (currently)
 	public static final String LOCALPROTOCOLDECL_NODE_TYPE = "LOCALPROTOCOLDECL";
 	public static final String LOCALROLEDECLLIST_NODE_TYPE = "LOCALROLEDECLLIST";
 	public static final String LOCALROLEDECL_NODE_TYPE = "LOCALROLEDECL";
@@ -83,7 +80,8 @@ public class AntlrConstants
 	public static final String LOCALCATCHES_NODE_TYPE = "LOCALCATCHES";
 	public static final String LOCALDO_NODE_TYPE = "LOCALDO";
 
-	// Cf. Scribble.g
+
+	// Scribble.g, parser output "node types" as a Java enum
 	public enum AntlrNodeType 
 	{
 		//EMPTY_PARAMETERDECLLST,
@@ -107,7 +105,6 @@ public class AntlrConstants
 		ARGUMENTINSTANTIATION,
 		MESSAGESIGNATURE,
 		PAYLOAD,
-		ANNOTPAYLOAD, 
 		PAYLOADELEMENT,
 		DELEGATION,
 
@@ -117,7 +114,6 @@ public class AntlrConstants
 		GLOBALPROTOCOLBLOCK,
 		GLOBALINTERACTIONSEQUENCE,
 		GLOBALMESSAGETRANSFER,
-		ANNOTGLOBALMESSAGETRANSFER,
 		GLOBALCONNECT,
 		GLOBALDISCONNECT,
 		GLOBALWRAP,
@@ -148,7 +144,8 @@ public class AntlrConstants
 		LOCALDO
 	}
 
-	// Duplicated from Scribble2.g -- what's the best way to share it?
+
+	// Duplicated from Scribble.g (parser input constants) -- what's the best way to share it?
 	// Mostly used in projection (outputting local types)
 	public static final String MODULE_KW = "module";
 	public static final String IMPORT_KW = "import";

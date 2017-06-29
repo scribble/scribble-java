@@ -80,16 +80,16 @@ public class GWrap extends ConnectionAction<Global> implements GSimpleInteractio
 		return gc;
 	}
 
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GSimpleInteractionNode.super.getKind();
-	}
-
 	@Override
 	public String toString()
 	{
 		return Constants.WRAP_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
 	}
+
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Global getKind()
+	{
+		return GSimpleInteractionNode.super.getKind();
+	}*/
 }

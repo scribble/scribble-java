@@ -64,13 +64,6 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 		//return null;
 	}
 
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LSimpleInteractionNode.super.getKind();
-	}
-
 	@Override
 	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
 	{
@@ -97,4 +90,11 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	{
 		return Collections.emptySet();
 	}
+
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LSimpleInteractionNode.super.getKind();
+	}*/
 }

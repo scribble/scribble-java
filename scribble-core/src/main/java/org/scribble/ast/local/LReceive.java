@@ -27,7 +27,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Message;
-import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
@@ -70,13 +69,6 @@ public class LReceive extends LMessageTransfer implements LSimpleInteractionNode
 		return this.src.toName();
 	}
 
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LSimpleInteractionNode.super.getKind();
-	}
-
 	@Override
 	public String toString()
 	{
@@ -102,4 +94,11 @@ public class LReceive extends LMessageTransfer implements LSimpleInteractionNode
 		enab.add(this.msg.toMessage());
 		return enab;
 	}
+
+	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LSimpleInteractionNode.super.getKind();
+	}*/
 }

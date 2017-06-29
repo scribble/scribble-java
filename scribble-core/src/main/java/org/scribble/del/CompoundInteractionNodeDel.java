@@ -45,6 +45,9 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		return ScribDelBase.popAndSetVisitorEnv(this, inl, visited);
 	}
 
+	// In the following only leaves are overridden to do additional merging -- enters remain as for super by default
+	// Specialised enters will be overridden per node (e.g., GChoiceDel.enterInlinedWFChoiceCheck) -- corresponding leaves will use their super (i.e., the below) to do merging
+	
 	// Should only do for projections, but OK here (visitor only run on projections)
 	@Override
 	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
@@ -62,7 +65,7 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
 		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
-		// Need to further override for "multi-compound" nodes, e.g., ChoiceDel
+		// Need to further override for "compound" nodes with block children, e.g., Choice/RecursionDel, to merge children together and then into current (then call here via super to set and merge current into parent)
 		UnfoldingEnv visited_env = unf.popEnv();  // popAndSet current
 		setEnv(visited_env);
 		UnfoldingEnv parent_env = unf.popEnv();  // pop-merge-push parent

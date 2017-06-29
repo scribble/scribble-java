@@ -46,9 +46,9 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 	public GRecursion leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GRecursion rec = (GRecursion) visited;
-		WFChoiceEnv merged = checker.popEnv().mergeContext((WFChoiceEnv) rec.block.del().env());
+		WFChoiceEnv merged = checker.popEnv().mergeContext((WFChoiceEnv) rec.block.del().env());  // Merge block child env into current rec env
 		checker.pushEnv(merged);
-		return (GRecursion) super.leaveInlinedWFChoiceCheck(parent, child, checker, rec);
+		return (GRecursion) super.leaveInlinedWFChoiceCheck(parent, child, checker, rec);  // Will merge current rec env into parent (and set env on del)
 	}
 
 	@Override
