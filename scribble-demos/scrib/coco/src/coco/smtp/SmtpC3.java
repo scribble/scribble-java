@@ -22,11 +22,11 @@ import static coco.smtp.Smtp.Smtp.Smtp._220;
 import static coco.smtp.Smtp.Smtp.Smtp._250;
 import static coco.smtp.Smtp.Smtp.Smtp._250d;
 
-import org.scribble.net.Buf;
-import org.scribble.net.scribsock.LinearSocket;
-import org.scribble.net.session.SSLSocketChannelWrapper;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.scribsock.LinearSocket;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import coco.smtp.Smtp.Smtp.Smtp;
 import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_1;

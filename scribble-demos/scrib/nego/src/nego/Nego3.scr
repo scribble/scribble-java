@@ -1,4 +1,4 @@
-//$ bin/scribblec.sh -ip modules/demos/scrib/nego/src -d modules/demos/scrib/nego/src modules/demos/scrib/nego/src/nego/Nego3.scr
+//$ ./scribblec.sh -ip scribble-demos/scrib/nego/src -d scribble-demos/scrib/nego/src scribble-demos/scrib/nego/src/nego/Nego3.scr
 
 module demo.nego.Nego3;
 

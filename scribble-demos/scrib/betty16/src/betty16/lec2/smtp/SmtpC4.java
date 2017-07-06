@@ -19,9 +19,11 @@ import static betty16.lec2.smtp.Smtp.Smtp.Smtp._220;
 import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.scribsock.LinearSocket;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import betty16.lec2.smtp.Smtp.Smtp.Smtp;
 import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
@@ -55,6 +57,9 @@ public class SmtpC4 {
 	}
 
 	private void run(Smtp_C_1 c1) throws Exception {
+		
+		System.out.println("Init: ");
+		
 		c1.async(S, _220).send(S, new Ehlo("test")).branch(S, new MySmtp_C_3Handler());
 	}
 }
@@ -64,13 +69,20 @@ class MySmtp_C_3Handler implements Smtp_C_3_Handler {
 	@Override
 	public void receive(Smtp_C_3 s3, betty16.lec2.smtp.Smtp.Smtp.ops._250d op, Buf<_250d> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
+		System.out.println("250-: " + arg.val.getBody());
+
 		s3.branch(S, this);
 	}
 
 	@Override
 	public void receive(Smtp_C_4 s4, betty16.lec2.smtp.Smtp.Smtp.ops._250 op, Buf<_250> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
-		s4.send(S, new StartTls()).async(S, _220).send(S, new Ehlo("test")).branch(S, new MySmtp_C_8Handler());
+		System.out.println("250: " + arg.val.getBody());
+
+		LinearSocket.wrapClient(
+					s4.send(S, new StartTls()).async(S, _220)
+				, S, SSLSocketChannelWrapper::new)
+			.send(S, new Ehlo("test")).branch(S, new MySmtp_C_8Handler());
 	}
 }
 
@@ -79,12 +91,16 @@ class MySmtp_C_8Handler implements Smtp_C_7_Handler {
 	@Override
 	public void receive(Smtp_C_7 s7, betty16.lec2.smtp.Smtp.Smtp.ops._250d op, Buf<_250d> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
+		System.out.println("(TLS) 250-: " + arg.val.getBody());
+
 		s7.branch(S, this);
 	}
 
 	@Override
 	public void receive(Smtp_C_8 s8, betty16.lec2.smtp.Smtp.Smtp.ops._250 op, Buf<_250> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
+		System.out.println("(TLS) 250: " + arg.val.getBody());
+
 		s8.send(S, new Quit());
 	}
 }

@@ -18,10 +18,10 @@ import static coco.fibo.Fibo.Fibonacci.Fibonacci.B;
 import static coco.fibo.Fibo.Fibonacci.Fibonacci.fibonacci;
 import static coco.fibo.Fibo.Fibonacci.Fibonacci.stop;
 
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import coco.fibo.Fibo.Fibonacci.Fibonacci;
 import coco.fibo.Fibo.Fibonacci.channels.A.EndSocket;

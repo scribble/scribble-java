@@ -13,9 +13,6 @@
  */
 package http.shortvers.message;
 
-import http.shortvers.message.client.Request;
-import http.shortvers.message.server.Response;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,8 +20,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import org.scribble.net.ScribMessage;
-import org.scribble.net.ScribMessageFormatter;
+import org.scribble.runtime.net.ScribMessage;
+import org.scribble.runtime.net.ScribMessageFormatter;
+
+import http.shortvers.message.client.Request;
+import http.shortvers.message.server.Response;
 
 public class HttpShortMessageFormatter implements ScribMessageFormatter
 {

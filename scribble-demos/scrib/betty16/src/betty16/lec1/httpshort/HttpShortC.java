@@ -17,9 +17,9 @@ import static betty16.lec1.httpshort.HttpShort.Http.Http.C;
 import static betty16.lec1.httpshort.HttpShort.Http.Http.Response;
 import static betty16.lec1.httpshort.HttpShort.Http.Http.S;
 
-import org.scribble.net.Buf;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import betty16.lec1.httpshort.HttpShort.Http.Http;
 import betty16.lec1.httpshort.HttpShort.Http.channels.C.Http_C_1;

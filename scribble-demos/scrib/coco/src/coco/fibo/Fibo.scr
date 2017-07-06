@@ -1,5 +1,5 @@
-//$ bin/scribblec.sh -ip modules/demos/scrib/coco/src -d modules/demos/scrib/coco/src modules/demos/scrib/coco/src/coco/fibo/Fibo.scr -api Fibonacci A
-//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/coco/src modules/demos/scrib/coco/src/coco/fibo/*.java -subpackages coco.fibo.Fibo.Fibonacci -d modules/demos/scrib/coco/javadoc/fibo
+//$ ./scribblec.sh -ip scribble-demos/scrib/coco/src -d scribble-demos/scrib/coco/src scribble-demos/scrib/coco/src/coco/fibo/Fibo.scr -api Fibonacci A
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/coco/src scribble-demos/scrib/coco/src/coco/fibo/*.java -subpackages coco.fibo.Fibo.Fibonacci -d scribble-demos/scrib/coco/javadoc/fibo
 
 module coco.fibo.Fibo;
 

@@ -13,10 +13,10 @@
  */
 package http.longvers;
 
-import org.scribble.net.Buf;
-import org.scribble.net.scribsock.ScribServerSocket;
-import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.scribsock.ScribServerSocket;
+import org.scribble.runtime.net.scribsock.SocketChannelServer;
+import org.scribble.runtime.net.session.MPSTEndpoint;
 
 import http.longvers.HttpLong.Http.Http;
 import http.longvers.HttpLong.Http.channels.S.Http_S_1;

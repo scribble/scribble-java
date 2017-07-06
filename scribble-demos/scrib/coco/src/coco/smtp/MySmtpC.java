@@ -18,19 +18,15 @@ package coco.smtp;
 import static coco.smtp.Smtp.Smtp.Smtp.C;
 import static coco.smtp.Smtp.Smtp.Smtp.S;
 import static coco.smtp.Smtp.Smtp.Smtp._220;
-import static coco.smtp.Smtp.Smtp.Smtp._250;
-import static coco.smtp.Smtp.Smtp.Smtp._250d;
 
-import org.scribble.net.Buf;
-import org.scribble.net.scribsock.LinearSocket;
-import org.scribble.net.session.SSLSocketChannelWrapper;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.scribsock.LinearSocket;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import coco.smtp.Smtp.Smtp.Smtp;
 import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
-import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
 import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Out_S_Ehlo;
 import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_220;
 import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
@@ -39,11 +35,8 @@ import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_StartTls;
 import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
 import coco.smtp.Smtp.Smtp.roles.C;
 import coco.smtp.message.SmtpMessageFormatter;
-import coco.smtp.message.client.Ehlo;
 import coco.smtp.message.client.Quit;
 import coco.smtp.message.client.StartTls;
-import coco.smtp.message.server._250;
-import coco.smtp.message.server._250d;
 
 public class MySmtpC
 {

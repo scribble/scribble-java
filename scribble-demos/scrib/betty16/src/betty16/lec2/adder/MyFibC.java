@@ -13,16 +13,13 @@
  */
 package betty16.lec2.adder;
 
-import static betty16.lec2.adder.Adder.Adder.Adder.Add;
-import static betty16.lec2.adder.Adder.Adder.Adder.Bye;
 import static betty16.lec2.adder.Adder.Adder.Adder.C;
-import static betty16.lec2.adder.Adder.Adder.Adder.Res;
 import static betty16.lec2.adder.Adder.Adder.Adder.S;
 
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import betty16.lec2.adder.Adder.Adder.Adder;
 import betty16.lec2.adder.Adder.Adder.channels.C.Adder_C_1;

@@ -11,20 +11,33 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/demos/target/classes smtp.SmtpC
+
+
+//$ java -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/target/classes smtp.SmtpC smtp.cc.ic.ac.uk foo@foo.com bar@bar.com subj body
 
 
 package smtp;
+
+import static smtp.Smtp.Smtp.Smtp.C;
+import static smtp.Smtp.Smtp.Smtp.S;
+import static smtp.Smtp.Smtp.Smtp._220;
+import static smtp.Smtp.Smtp.Smtp._221;
+import static smtp.Smtp.Smtp.Smtp._235;
+import static smtp.Smtp.Smtp.Smtp._250;
+import static smtp.Smtp.Smtp.Smtp._250d;
+import static smtp.Smtp.Smtp.Smtp._354;
+import static smtp.Smtp.Smtp.Smtp._501;
+import static smtp.Smtp.Smtp.Smtp._535;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Base64;
 
-import org.scribble.net.Buf;
-import org.scribble.net.session.SSLSocketChannelWrapper;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import smtp.Smtp.Smtp.Smtp;
 import smtp.Smtp.Smtp.channels.C.Smtp_C_1;
@@ -53,26 +66,30 @@ import smtp.message.client.Rcpt;
 import smtp.message.client.StartTls;
 import smtp.message.client.Subject;
 
-import static smtp.Smtp.Smtp.Smtp.*;
-
 public class SmtpC
 {
-	private static final String HOST = "smtp.cc.ic.ac.uk";
 	private static final int PORT = 25;
 
-	private static final String MAIL_TO = "rhu@doc.ic.ac.uk";
-	private static final String RCPT_FROM = "rhu@doc.ic.ac.uk";
-	private static final String SUBJECT = "subject";
-	private static final String BODY = "body";
+	private final String server;    // e.g., smtp.cc.ic.ac.uk;
+	private final String mailTo;    // foo@foo.com
+	private final String rcptFrom;  // bar@bar.com
+	private final String subj;
+	private final String body;
 	
-	public SmtpC() throws Exception
+	public SmtpC(String server, String mailTo, String rcptFrom, String subj, String body) throws Exception
 	{
+		this.server = server;
+		this.mailTo = mailTo;
+		this.rcptFrom = rcptFrom;
+		this.subj = subj;
+		this.body = body;
+
 		run();
 	}
 
 	public static void main(String[] args) throws Exception
 	{
-		new SmtpC();
+		new SmtpC(args[0], args[1], args[2], args[3], args[4]);
 	}
 
 	public void run() throws Exception
@@ -81,7 +98,7 @@ public class SmtpC
 		try (MPSTEndpoint<Smtp, C> se =
 				new MPSTEndpoint<>(smtp, C, new SmtpMessageFormatter()))
 		{
-			se.connect(S, SocketChannelEndpoint::new, HOST, PORT);
+			se.connect(S, SocketChannelEndpoint::new, this.server, SmtpC.PORT);
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 			Smtp_C_2 s2 = s1.receive(S, _220, new Buf<>());
@@ -94,7 +111,7 @@ public class SmtpC
 					)));
 
 			Smtp_C_11_Cases s11cases =
-					s10.send(S, new Mail(MAIL_TO))
+					s10.send(S, new Mail(this.mailTo))
 					   .branch(S);
 			switch (s11cases.op)
 			{
@@ -198,12 +215,12 @@ public class SmtpC
 
 	private void sendMail(Smtp_C_12 s12) throws Exception
 	{
-		s12.send(S, new Rcpt(RCPT_FROM))
+		s12.send(S, new Rcpt(this.rcptFrom))
 			 .async(S, _250)
 			 .send(S, new Data()) 
 			 .async(S, _354)
-			 .send(S, new Subject(SUBJECT))
-			 .send(S, new DataLine(BODY))
+			 .send(S, new Subject(this.subj))
+			 .send(S, new DataLine(this.body))
 			 .send(S, new EndOfData())
 			 .receive(S, _250, new Buf<>()) 
 			 .send(S, new Quit())

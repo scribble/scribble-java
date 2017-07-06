@@ -1,5 +1,5 @@
-//$ bin/scribblec.sh -ip modules/demos/scrib/travel/src -d modules/demos/scrib/travel/src modules/demos/scrib/travel/src/travel/Travel.scr -api Booking C
-//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/travel/src modules/demos/scrib/travel/src/travel/*.java -subpackages travel.Travel.Booking -d modules/demos/scrib/travel/javadoc
+//$ ./scribblec.sh -ip scribble-demos/scrib/travel/src -d scribble-demos/scrib/travel/src scribble-demos/scrib/travel/src/travel/Travel.scr -api Booking C
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/travel/src scribble-demos/scrib/travel/src/travel/*.java -subpackages travel.Travel.Booking -d scribble-demos/scrib/travel/javadoc
 
 module travel.Travel;
 

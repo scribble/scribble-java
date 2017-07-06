@@ -13,13 +13,17 @@
  */
 package http.shortvers;
 
+import static http.shortvers.HttpShort.Http.Http.C;
+import static http.shortvers.HttpShort.Http.Http.REQUEST;
+import static http.shortvers.HttpShort.Http.Http.S;
+
 import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
-import org.scribble.net.scribsock.ScribServerSocket;
-import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.scribsock.ScribServerSocket;
+import org.scribble.runtime.net.scribsock.SocketChannelServer;
+import org.scribble.runtime.net.session.MPSTEndpoint;
 
 import http.shortvers.HttpShort.Http.Http;
 import http.shortvers.HttpShort.Http.channels.S.Http_S_1;
@@ -29,8 +33,7 @@ import http.shortvers.message.HttpShortMessageFormatter;
 import http.shortvers.message.client.Request;
 import http.shortvers.message.server.Response;
 
-import static http.shortvers.HttpShort.Http.Http.*;
-
+// FIXME: (Firefox) Cannot parse header field: Cookie: __utma=111872281.1372348290.1498163262.1498163262.1498163262.1; __utmz=111872281.1498163262.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none) 
 public class HttpShortS
 {
 	public HttpShortS()

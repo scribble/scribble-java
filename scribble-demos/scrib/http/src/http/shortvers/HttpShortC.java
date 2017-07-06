@@ -13,9 +13,13 @@
  */
 package http.shortvers;
 
-import org.scribble.net.Buf;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import static http.shortvers.HttpShort.Http.Http.C;
+import static http.shortvers.HttpShort.Http.Http.RESPONSE;
+import static http.shortvers.HttpShort.Http.Http.S;
+
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import http.shortvers.HttpShort.Http.Http;
 import http.shortvers.HttpShort.Http.channels.C.Http_C_1;
@@ -23,8 +27,6 @@ import http.shortvers.HttpShort.Http.roles.C;
 import http.shortvers.message.HttpShortMessageFormatter;
 import http.shortvers.message.client.Request;
 import http.shortvers.message.server.Response;
-
-import static http.shortvers.HttpShort.Http.Http.*;
 
 public class HttpShortC
 {

@@ -23,16 +23,16 @@ import static bettybook.http.longv.HttpLong.Http.Http.DNT;
 import static bettybook.http.longv.HttpLong.Http.Http.Host;
 import static bettybook.http.longv.HttpLong.Http.Http.RequestL;
 import static bettybook.http.longv.HttpLong.Http.Http.S;
-import static bettybook.http.longv.HttpLong.Http.Http.UserA;
 import static bettybook.http.longv.HttpLong.Http.Http.UpgradeIR;
+import static bettybook.http.longv.HttpLong.Http.Http.UserA;
 
 import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
-import org.scribble.net.scribsock.ScribServerSocket;
-import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.scribsock.ScribServerSocket;
+import org.scribble.runtime.net.scribsock.SocketChannelServer;
+import org.scribble.runtime.net.session.MPSTEndpoint;
 
 import bettybook.http.longv.HttpLong.Http.Http;
 import bettybook.http.longv.HttpLong.Http.channels.S.Http_S_1;

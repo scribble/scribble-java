@@ -19,10 +19,10 @@ import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.apply
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.reject;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.requestConfirmation;
 
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier;
 import loan.LoanApplication.BuyerBrokerSupplier.channels.Applicant.BuyerBrokerSupplier_Applicant_1;

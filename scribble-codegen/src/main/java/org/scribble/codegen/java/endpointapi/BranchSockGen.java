@@ -300,7 +300,9 @@ public class BranchSockGen extends ScribSockGen
 			else
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0])";
+				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM 
+						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
+						+ ")";
 			}
 				
 			ln += ");";
@@ -385,7 +387,9 @@ public class BranchSockGen extends ScribSockGen
 			else
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0])";
+				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM
+						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
+						+ ")";
 			}
 				
 			ln += ");";

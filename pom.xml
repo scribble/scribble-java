@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+
+<!--  mvn [clean] install [-Dmaven.test.skip=true] [-Dlicense.skip]  -->
+
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -11,6 +16,7 @@
 	<description>
 		Scribble
 	</description>
+
 
 	<scm>
 		<url>https://github.com/scribble/scribble-java</url>
@@ -265,20 +271,20 @@
 					<failIfMissing>true</failIfMissing>
 					<failIfUnknown>true</failIfUnknown>
 					<excludes>
-						<exclude>**/*.txt</exclude>
 						<exclude>**/*.xml</exclude>
+						<exclude>**/*.g</exclude>
 						<exclude>**/*.scr</exclude>
 						<exclude>**/*.policy</exclude>
+						<exclude>**/*.txt</exclude>
 						<exclude>mvnw</exclude>
 						<exclude>mvnw.cmd</exclude>
 						<exclude>travis/publish.sh</exclude>
 						<exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
-						<exclude>**/*.g</exclude>
 						<exclude>**/Scribble-0.3.original</exclude>
 						<exclude>**/IGNORE</exclude>
 						<exclude>bin/*.sh</exclude>
+						<exclude>scribblec.sh</exclude>
 						<exclude>**/*.swp</exclude>
-						<exclude>scribble-demos/**/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
