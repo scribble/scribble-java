@@ -24,3 +24,23 @@ global protocol Adder(role C, role S)
 		BYE() from S to C;
 	}	
 }
+
+
+
+
+global protocol Fibonacci(role A, role B)
+{
+	rec Fib
+	{
+		choice at A
+		{
+			fibonacci(Int) from A to B;
+			fibonacci(Int) from B to A;
+			continue Fib;
+		}
+		or
+		{
+			end() from A to B;
+		}
+	}
+}

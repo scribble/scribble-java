@@ -18,12 +18,12 @@ package fib;
 import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.scribsock.ScribServerSocket;
-import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.scribsock.ScribServerSocket;
+import org.scribble.runtime.net.scribsock.SocketChannelServer;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import fib.Fib.Fibonacci.Fibonacci;
 import fib.Fib.Fibonacci.channels.A.Fibonacci_A_1;
@@ -49,7 +49,7 @@ public class Fibo
 class MyB extends Thread implements Fibonacci_B_1_Handler
 {
 	private final Fibonacci fib;
-	private long x = 1;
+	private int x = 1;
 	
 	public MyB(Fibonacci fib)
 	{
@@ -73,7 +73,7 @@ class MyB extends Thread implements Fibonacci_B_1_Handler
 	}
 	
 	@Override
-	public void receive(Fibonacci_B_2 s, fibonacci op, Buf<Long> arg1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	public void receive(Fibonacci_B_2 s, fibonacci op, Buf<Integer> arg1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		s.send(Fibonacci.A, Fibonacci.fibonacci, (this.x += arg1.val)).branch(Fibonacci.A, this);
 	}
@@ -88,7 +88,7 @@ class MyB extends Thread implements Fibonacci_B_1_Handler
 class MyA extends Thread
 {
 	private final Fibonacci fib;
-	private Buf<Long> b = new Buf<>(0L);
+	private Buf<Integer> b = new Buf<>(0);
 	
 	public MyA(Fibonacci fib)
 	{
@@ -121,7 +121,7 @@ class MyA extends Thread
 				: s.send(Fibonacci.B, Fibonacci.end);
 	}
 	
-	private Fibonacci_A_1 next(long prev, Fibonacci_A_1 s, int todo)
+	private Fibonacci_A_1 next(int prev, Fibonacci_A_1 s, int todo)
 	{
 		//System.out.println("A: " + prev);
 		if (todo > 1)
