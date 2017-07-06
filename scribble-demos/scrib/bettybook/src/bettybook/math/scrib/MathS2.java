@@ -21,11 +21,11 @@ import static bettybook.math.scrib.Math.MathService.MathService.Sum;
 import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.scribsock.ScribServerSocket;
-import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.scribsock.ScribServerSocket;
+import org.scribble.runtime.net.scribsock.SocketChannelServer;
+import org.scribble.runtime.net.session.MPSTEndpoint;
 
 import bettybook.math.scrib.Math.MathService.MathService;
 import bettybook.math.scrib.Math.MathService.channels.S.EndSocket;

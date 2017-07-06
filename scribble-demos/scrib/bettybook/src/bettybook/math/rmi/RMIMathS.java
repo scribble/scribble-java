@@ -47,11 +47,6 @@ public class RMIMathS implements RMIMath
 
 	public static void main(String[] args) throws Exception
 	{
-		//System.setProperty("java.security.policy","file:/C:/cygwin/home/Raymond/code/scribble/github-rhu1/scribble-java/modules/demos/scrib/bettybook/src/bettybook/math/rmi/server.policy");
-		//if (System.getSecurityManager() == null) { System.setSecurityManager(new SecurityManager()); }
-
-		/*-Djava.rmi.server.codebase=file:/C:\cygwin\home\Raymond\code\scribble\github-rhu1\scribble-java\modules\demos\bettybook\target\classes/
-		Registry registry = LocateRegistry.getRegistry(8888);*/
 		Registry registry = LocateRegistry.createRegistry(8888);
 
 		RMIMath stub = (RMIMath) UnicastRemoteObject.exportObject(new RMIMathS(), 0);
@@ -60,3 +55,13 @@ public class RMIMathS implements RMIMath
 		System.out.println("RMI Math Server running.");
 	}
 }
+
+
+
+
+
+		//System.setProperty("java.security.policy","file:/C:/cygwin64/home/rhu/code/eclipse/scribble/github.com/rhu1/scribble-java/scribble-demos/scrib/bettybook/src/bettybook/math/rmi/server.policy");
+		//if (System.getSecurityManager() == null) { System.setSecurityManager(new SecurityManager()); }
+
+		/*-Djava.rmi.server.codebase=file:/C:\cygwin64\home\rhu\code\eclipse\scribble\github.com\rhu1\scribble-java\scribble-demos\bettybook\target\classes/
+		Registry registry = LocateRegistry.getRegistry(8888);*/

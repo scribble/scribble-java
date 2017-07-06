@@ -1,3 +1,3 @@
-grant codeBase "file:/C:/cygwin/home/Raymond/code/scribble/github-rhu1/scribble-java/modules/core/target/classes/" {
+grant codeBase "file:/C:/cygwin64/home/rhu/code/eclipse/scribble/github.com/rhu1/scribble-java/scribble-core/target/classes/" {
     permission java.security.AllPermission;
 };

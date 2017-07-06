@@ -19,9 +19,9 @@ import static betty16.lec2.smtp.Smtp.Smtp.Smtp._220;
 import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import betty16.lec2.smtp.Smtp.Smtp.Smtp;
 import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_1;

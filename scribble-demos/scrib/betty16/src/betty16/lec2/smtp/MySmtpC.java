@@ -13,12 +13,14 @@
  */
 package betty16.lec2.smtp;
 
-import static betty16.lec2.smtp.Smtp.Smtp.Smtp.*;
+import static betty16.lec2.smtp.Smtp.Smtp.Smtp.C;
+import static betty16.lec2.smtp.Smtp.Smtp.Smtp.S;
+import static betty16.lec2.smtp.Smtp.Smtp.Smtp._220;
 
-import org.scribble.net.scribsock.LinearSocket;
-import org.scribble.net.session.SSLSocketChannelWrapper;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.scribsock.LinearSocket;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import betty16.lec2.smtp.Smtp.Smtp.Smtp;
 import betty16.lec2.smtp.Smtp.Smtp.channels.C.EndSocket;
@@ -29,7 +31,6 @@ import betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
 import betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
 import betty16.lec2.smtp.Smtp.Smtp.roles.C;
 import betty16.lec2.smtp.message.SmtpMessageFormatter;
-import betty16.lec2.smtp.message.client.Quit;
 import betty16.lec2.smtp.message.client.StartTls;
 
 public class MySmtpC {

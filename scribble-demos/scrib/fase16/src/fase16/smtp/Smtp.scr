@@ -1,6 +1,6 @@
 //http://sandbox.kidstrythisathome.com/erdos/
 
-//$ ./scribblec.sh -ip scribble-demos/scrib/fase16/src -d scribble-demos/scrib/fase16/src scribble-demos/scrib/fase16/src/fase16/smtp/Smtp.scr -api Smtp C -subtypes
+//$ ./scribblec.sh -ip scribble-demos/scrib/fase16/src -d scribble-demos/scrib/fase16/src scribble-demos/scrib/fase16/src/fase16/smtp/Smtp.scr -subtypes -api Smtp C
 //$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/fase16/src scribble-demos/scrib/fase16/src/fase16/smtp/*.java -subpackages fase16.smtp.Smtp.Smtp -d scribble-demos/scrib/fase16/javadoc/smtp
 
 

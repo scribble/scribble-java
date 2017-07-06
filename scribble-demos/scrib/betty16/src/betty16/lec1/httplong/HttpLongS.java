@@ -23,16 +23,16 @@ import static betty16.lec1.httplong.HttpLong.Http.Http.DNT;
 import static betty16.lec1.httplong.HttpLong.Http.Http.HOST;
 import static betty16.lec1.httplong.HttpLong.Http.Http.REQUESTL;
 import static betty16.lec1.httplong.HttpLong.Http.Http.S;
-import static betty16.lec1.httplong.HttpLong.Http.Http.USERA;
 import static betty16.lec1.httplong.HttpLong.Http.Http.UPGRADEIR;
+import static betty16.lec1.httplong.HttpLong.Http.Http.USERA;
 
 import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
-import org.scribble.net.scribsock.ScribServerSocket;
-import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.scribsock.ScribServerSocket;
+import org.scribble.runtime.net.scribsock.SocketChannelServer;
+import org.scribble.runtime.net.session.MPSTEndpoint;
 
 import betty16.lec1.httplong.HttpLong.Http.Http;
 import betty16.lec1.httplong.HttpLong.Http.channels.S.Http_S_1;

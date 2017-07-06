@@ -2,19 +2,19 @@
  * Assuming scribblec.sh in scribble-java root directory:
  * 
  * (1) Check Adder protocol: 
- * $ ./scribblec.sh modules/demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr 
+ * $ ./scribblec.sh scribble-demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr 
  * 
  * (2) Build Endpoint FSM for C: 
- * $ ./scribblec.sh modules/demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr -fsm Adder C
+ * $ ./scribblec.sh scribble-demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr -fsm Adder C
  * 
  * (3) Generate "Session API" for Adder: 
- * $ ./scribblec.sh -d modules/demos/scrib/betty16/src/ modules/demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr -session Adder
+ * $ ./scribblec.sh -d scribble-demos/scrib/betty16/src/ scribble-demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr -session Adder
  * 
  * (3) Generate Endpoint API ("Session API" and "State Channel API") for C: 
- * $ ./scribblec.sh -d modules/demos/scrib/betty16/src/ modules/demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr -api Adder C
+ * $ ./scribblec.sh -d scribble-demos/scrib/betty16/src/ scribble-demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr -api Adder C
  * 
  * (4) [Java] Generate javadoc from Endpoint API(s): modules/demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr
- * $ javadoc -cp modules/core/target/classes:modules/demos/scrib/betty16/src -subpackages betty16.lec2.adder.Adder.Adder -d modules/demos/scrib/betty16/javadoc/adder
+ * $ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/betty16/src -subpackages betty16.lec2.adder.Adder.Adder -d scribble-demos/scrib/betty16/javadoc/adder
  * 
  */
 
