@@ -21,16 +21,16 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import fib.Fib.Adder.Adder;
 import fib.Fib.Adder.channels.C.Adder_C_1;
 import fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_BYE;
-import fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_RES_Integer;
-import fib.Fib.Adder.channels.C.ioifaces.Select_C_S_ADD_Integer_Integer__S_BYE;
+import fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_RES_Int;
+import fib.Fib.Adder.channels.C.ioifaces.Select_C_S_ADD_Int_Int__S_BYE;
 import fib.Fib.Adder.channels.C.ioifaces.Succ_Out_S_BYE;
 import fib.Fib.Adder.roles.C;
 
@@ -72,15 +72,15 @@ public class AdderClient
 		}
 	}
 	
-	private static Succ_Out_S_BYE foo(Select_C_S_ADD_Integer_Integer__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	private static Succ_Out_S_BYE foo(Select_C_S_ADD_Int_Int__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
 	//private static EndSocket foo(Select_C_S_ADD_Integer_Integer__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
 	{
 		return (i.val < 100)
 				? foo(
 						s.send(Adder.S, Adder.ADD, i.val, i.val)
-						 .to(Receive_C_S_RES_Integer.cast)
+						 .to(Receive_C_S_RES_Int.cast)
 						 .receive(Adder.S, Adder.RES, i)
-						 .to(Select_C_S_ADD_Integer_Integer__S_BYE.cast)
+						 .to(Select_C_S_ADD_Int_Int__S_BYE.cast)
 					, i)
 				: s.send(Adder.S, Adder.BYE);
 	}

@@ -13,7 +13,7 @@
  */
 package coco.smtp.message;
 
-import org.scribble.net.ScribMessage;
+import org.scribble.runtime.net.ScribMessage;
 import org.scribble.sesstype.name.Op;
 import org.scribble.util.Caller;
 

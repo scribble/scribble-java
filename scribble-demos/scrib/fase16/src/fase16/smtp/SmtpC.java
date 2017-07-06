@@ -11,7 +11,9 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/demos/target/classes fase16.smtp.SmtpC
+
+
+//$ java -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/target/classes fase16.smtp.SmtpC
 
 
 package fase16.smtp;
@@ -24,11 +26,11 @@ import static fase16.smtp.Smtp.Smtp.Smtp._250d;
 import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
-import org.scribble.net.scribsock.LinearSocket;
-import org.scribble.net.session.SSLSocketChannelWrapper;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.scribsock.LinearSocket;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import fase16.smtp.Smtp.Smtp.Smtp;
 import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
@@ -94,7 +96,7 @@ public class SmtpC
 			.send(S, new Quit());
 			//*/
 
-			System.out.println("f1: " + f1.val.sync().msg);
+			System.out.println("Server greeting: " + f1.val.sync().msg);
 		}
 	}
 

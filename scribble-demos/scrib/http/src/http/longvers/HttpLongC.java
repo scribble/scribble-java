@@ -13,9 +13,9 @@
  */
 package http.longvers;
 
-import static http.longvers.HttpLong.Http.Http.C;
 import static http.longvers.HttpLong.Http.Http.ACCEPTR;
 import static http.longvers.HttpLong.Http.Http.BODY;
+import static http.longvers.HttpLong.Http.Http.C;
 import static http.longvers.HttpLong.Http.Http.CONTENTL;
 import static http.longvers.HttpLong.Http.Http.CONTENTT;
 import static http.longvers.HttpLong.Http.Http.DATE;
@@ -30,9 +30,9 @@ import static http.longvers.HttpLong.Http.Http.VIA;
 import static http.longvers.HttpLong.Http.Http._200;
 import static http.longvers.HttpLong.Http.Http._404;
 
-import org.scribble.net.Buf;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 import org.scribble.util.Caller;
 
 import http.longvers.HttpLong.Http.Http;

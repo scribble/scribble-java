@@ -1,4 +1,4 @@
-//$ bin/scribblec.sh -ip modules/demos/scrib/game/src -d modules/demos/scrib/game/src modules/demos/scrib/game/src/game/Game1.scr
+//$ ./scribblec.sh -ip scribble-demos/scrib/game/src -d scribble-demos/scrib/game/src scribble-demos/scrib/game/src/game/Game1.scr
 
 
 module game.Game1;

@@ -1,5 +1,5 @@
-//$ bin/scribblec.sh -ip modules/demos/scrib/coco/src -d modules/demos/scrib/coco/src modules/demos/scrib/coco/src/coco/smtp/Smtp.scr -api Smtp C
-//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/coco/src modules/demos/scrib/coco/src/coco/smtp/*.java -subpackages coco.smtp.Smtp.Smtp -d modules/demos/scrib/coco/javadoc/smtp
+//$ ./scribblec.sh -ip scribble-demos/scrib/coco/src -d scribble-demos/scrib/coco/src scribble-demos/scrib/coco/src/coco/smtp/Smtp.scr -api Smtp C
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/coco/src scribble-demos/scrib/coco/src/coco/smtp/*.java -subpackages coco.smtp.Smtp.Smtp -d scribble-demos/scrib/coco/javadoc/smtp
 
 //http://sandbox.kidstrythisathome.com/erdos/
 
