@@ -265,20 +265,20 @@
 					<failIfMissing>true</failIfMissing>
 					<failIfUnknown>true</failIfUnknown>
 					<excludes>
-						<exclude>**/*.txt</exclude>
 						<exclude>**/*.xml</exclude>
+						<exclude>**/*.g</exclude>
 						<exclude>**/*.scr</exclude>
 						<exclude>**/*.policy</exclude>
+						<exclude>**/*.txt</exclude>
 						<exclude>mvnw</exclude>
 						<exclude>mvnw.cmd</exclude>
 						<exclude>travis/publish.sh</exclude>
 						<exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
-						<exclude>**/*.g</exclude>
 						<exclude>**/Scribble-0.3.original</exclude>
 						<exclude>**/IGNORE</exclude>
 						<exclude>bin/*.sh</exclude>
+						<exclude>scribblec.sh</exclude>
 						<exclude>**/*.swp</exclude>
-						<exclude>scribble-demos/**/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>

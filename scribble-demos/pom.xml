@@ -28,4 +28,24 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/*.scr</exclude>
+						<exclude>**/*.java</exclude>
+						<exclude>**/*.policy</exclude>
+						<exclude>**/*.xml</exclude>
+						<exclude>**/*.html</exclude>
+						<exclude>**/stylesheet.css</exclude>
+						<exclude>**/script.js</exclude>
+						<exclude>**/package-list</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			</plugins>
+	</build>
 </project>
