@@ -46,10 +46,8 @@ public class CommandLine
 {
 	protected final Map<CLArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 
-	//protected CommandLine(Map<CLArgFlag, String[]> args)
 	protected CommandLine(CLArgParser p) throws CommandLineException
 	{
-		//this.args = args;
 		p.parse();
 		this.args = p.getArgs();
 	}
