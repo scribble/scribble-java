@@ -105,11 +105,17 @@ public class CLArgParser
 	public CLArgParser(String[] args)
 	{
 		this.args = args;
+		//parseArgs();  // No: constructors should not invoke overridable methods (subclass constructor not yet called)
 	}		
 	
-	public Map<CLArgFlag, String[]> getArgs() throws CommandLineException
+	// For overriding pattern -- should be used explicitly on subclasses (cannot call overridden from constructor)
+	public final void parse() throws CommandLineException
 	{
 		parseArgs();
+	}
+	
+	public final Map<CLArgFlag, String[]> getArgs() throws CommandLineException
+	{
 		return this.parsed;
 	}
 	

@@ -44,17 +44,18 @@ import org.scribble.util.ScribUtil;
 
 public class CommandLine
 {
-	protected //final
-	Map<CLArgFlag, String[]> args;  // Maps each flag to list of associated argument values
+	protected final Map<CLArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 
-	protected CommandLine()
+	protected CommandLine(CLArgParser p) throws CommandLineException
 	{
-
+		p.parse();
+		this.args = p.getArgs();
 	}
 
 	public CommandLine(String... args) throws CommandLineException
 	{
-		this.args = new CLArgParser(args).getArgs();
+		//this.args = new CLArgParser(args).getArgs();
+		this(new CLArgParser(args));
 		if (!this.args.containsKey(CLArgFlag.MAIN_MOD) && !this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
 		{
 			throw new CommandLineException("No main module has been specified\r\n");
