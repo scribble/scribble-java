@@ -42,8 +42,9 @@ public class GoCLArgParser extends CLArgParser
 		super(args);  // Assigns this.args and calls parseArgs
 	}		
 	
-	public Map<GoCLArgFlag, String[]> getGoArgs()
+	public Map<GoCLArgFlag, String[]> getGoArgs() throws CommandLineException
 	{
+		//super.parseArgs();  // Needed
 		return this.goParsed;
 	}
 	

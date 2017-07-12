@@ -31,18 +31,20 @@ public class GoCommandLine extends CommandLine
 	
 	public GoCommandLine(String... args) throws CommandLineException
 	{
-		/*super(args);  // No: go-args will make core arg parser throw exception -- refactor?
-		this.goArgs = new GoCLArgParser(args).getGoArgs();*/
+		//super(args);  // No: new go-specific args will make core arg parser throw exception (constructors cannot call overridable methods) -- refactor?
 
-		// FIXME: refactor
-		GoCLArgParser p = new GoCLArgParser(args);
-		this.args = p.getArgs();
-		this.goArgs = p.getGoArgs();
-		// Duplicated from super
+		this(new GoCLArgParser(args));
+	}
+
+	private GoCommandLine(GoCLArgParser p) throws CommandLineException
+	{
+		super(p);  // calls p.parse()
+		// FIXME? Duplicated from core
 		if (!this.args.containsKey(CLArgFlag.MAIN_MOD) && !this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
 		{
 			throw new CommandLineException("No main module has been specified\r\n");
 		}
+		this.goArgs = p.getGoArgs();
 	}
 
 	@Override
