@@ -43,7 +43,7 @@ public class AntlrGConnect
 		//return AstFactoryImpl.FACTORY.GConnect(src, dest);
 	}
 
-	protected static MessageNode parseMessage(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static MessageNode parseMessage(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)

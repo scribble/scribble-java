@@ -1,6 +1,7 @@
 module bad.wfchoice.enabling.fourparty.Test01;
 
 
+// Under -f17, the original choice subject problem is gone, but we get a role-progress error instead (without fairness)
 global protocol Proto1(role A, role B, role C, role D)
 {
 	choice at A

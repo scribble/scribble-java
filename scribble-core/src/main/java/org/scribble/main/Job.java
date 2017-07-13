@@ -104,7 +104,7 @@ public class Job
 	}
 	
 	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util
-	protected SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribbleException
+	public SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribbleException
 	{
 		for (Role r : egraphs.keySet())
 		{

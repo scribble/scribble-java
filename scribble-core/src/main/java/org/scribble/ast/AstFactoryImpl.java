@@ -425,7 +425,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		NameNode<? extends Kind> snn = null;
 		
-		// Without delegates
+		// "Custom" del's
 		if (kind.equals(RecVarKind.KIND))
 		{
 			snn = new RecVarNode(source, identifier);
@@ -441,7 +441,7 @@ public class AstFactoryImpl implements AstFactory
 			return castNameNode(kind, snn);
 		}
 
-		// With delegates
+		// Default del's
 		if (kind.equals(OpKind.KIND))
 		{
 			snn = new OpNode(source, identifier);
