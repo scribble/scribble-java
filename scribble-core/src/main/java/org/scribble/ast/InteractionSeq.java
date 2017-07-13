@@ -16,7 +16,6 @@ package org.scribble.ast;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
@@ -39,8 +38,8 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 	
 	public abstract InteractionSeq<K> reconstruct(List<? extends InteractionNode<K>> ins);
 	
-	@SuppressWarnings("unchecked")
-	private final Function<ScribNode, ProtocolKindNode<K>> KIND_CAST = (n) -> (ProtocolKindNode<K>) n;
+	/*@SuppressWarnings("unchecked")
+	private final Function<ScribNode, ProtocolKindNode<K>> KIND_CAST = (n) -> (ProtocolKindNode<K>) n;*/
 	
 	@Override
 	public ScribNode visitChildren(AstVisitor nv) throws ScribbleException
@@ -50,15 +49,19 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 		List<InteractionNode<K>> actions = new LinkedList<>();
 		for (InteractionNode<K> in : this.inters)
 		{
-			//ScribNode visited = visitChild(in, nv);
-			ProtocolKindNode<K> visited = visitProtocolKindChildWithCastCheck(this, in, nv, ProtocolKindNode.class, in.getKind(), KIND_CAST);
+			//ProtocolKindNode<K> visited = visitProtocolKindChildWithCastCheck(this, in, nv, ProtocolKindNode.class, in.getKind(), KIND_CAST);  
+					// No: ProjectedChoiceDoPruning (and others?) needs to return null; CastCheck doesn't allow that  // CHECKME
+					// FIXME: make a unit test for this
+			ScribNode visited = visitChild(in, nv);
 			if (visited instanceof InteractionSeq<?>)
 			{
+				@SuppressWarnings("unchecked")
 				InteractionSeq<K> tmp = (InteractionSeq<K>) visited;
 				actions.addAll(tmp.inters);
 			}
 			else
 			{
+				@SuppressWarnings("unchecked")
 				InteractionNode<K> tmp = (InteractionNode<K>) visited;
 				actions.add(tmp);
 			}

@@ -37,7 +37,6 @@ public class CLArgParser
 	public static final String AUT_FLAG = "-aut";
 	public static final String NO_VALIDATION_FLAG = "-novalid";
 	public static final String INLINE_MAIN_MOD_FLAG = "-inline";
-	public static final String F17_FLAG = "-f17";
 	
 	// Non-unique flags
 	public static final String PROJECT_FLAG = "-project";
@@ -71,7 +70,6 @@ public class CLArgParser
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.AUT_FLAG, CLArgFlag.AUT);
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.NO_VALIDATION_FLAG, CLArgFlag.NO_VALIDATION);
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.INLINE_MAIN_MOD_FLAG, CLArgFlag.INLINE_MAIN_MOD);
-		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.F17_FLAG, CLArgFlag.F17);
 	}
 
 	private static final Map<String, CLArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -174,10 +172,6 @@ public class CLArgParser
 					throw new CommandLineException("Multiple main modules given.");
 				}
 				return parseInlineMainModule(i);
-			}
-			case CLArgParser.F17_FLAG:
-			{
-				return parseF17(i);
 			}
 			case CLArgParser.JUNIT_FLAG:
 			case CLArgParser.VERBOSE_FLAG:
@@ -312,17 +306,6 @@ public class CLArgParser
 		return i;
 	}
 
-	private int parseF17(int i) throws CommandLineException  // FIXME
-	{
-		if ((i + 1) >= this.args.length)
-		{
-			throw new CommandLineException("Missing simple global protocol name argument");
-		}
-		String proto = this.args[++i];
-		checkAndAddNoArgUniqueFlag(CLArgParser.F17_FLAG, new String[] { proto });
-		return i;
-	}
-	
 	private int parseProject(int i) throws CommandLineException  // Similar to parseProtoAndRoleArgs
 	{
 		if ((i + 2) >= this.args.length)

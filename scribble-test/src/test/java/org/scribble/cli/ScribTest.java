@@ -33,8 +33,8 @@ public abstract class ScribTest
 	protected final String example;
 	protected final boolean isBadTest;
 
-	// relative to cli/src/test/resources (or target/test-classes/)
-	protected static final String TEST_ROOT_DIR = ".";
+	// relative to scribble-test/src/test/resources (or target/test-classes/)
+	protected static final String TEST_ROOT_DIR = ".";  // FIXME: make relative to scribble-java root (for subclasses in extension modules)
 
 	public ScribTest(String example, boolean isBadTest)
 	{

@@ -74,7 +74,6 @@ public class CommandLine
 		boolean noLocalChoiceSubjectCheck = this.args.containsKey(CLArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK);
 		boolean noAcceptCorrelationCheck = this.args.containsKey(CLArgFlag.NO_ACCEPT_CORRELATION_CHECK);
 		boolean noValidation = this.args.containsKey(CLArgFlag.NO_VALIDATION);
-		boolean f17 = this.args.containsKey(CLArgFlag.F17);
 
 		List<Path> impaths = this.args.containsKey(CLArgFlag.IMPORT_PATH)
 				? CommandLine.parseImportPaths(this.args.get(CLArgFlag.IMPORT_PATH)[0])
@@ -83,14 +82,14 @@ public class CommandLine
 		if (this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
 		{
 			return new MainContext(debug, locator, this.args.get(CLArgFlag.INLINE_MAIN_MOD)[0], useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17);
+					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
 		}
 		else
 		{
 			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
 			//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);
 			return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17);
+					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
 		}
 	}
 
@@ -105,7 +104,7 @@ public class CommandLine
 		{
 			try
 			{
-				tryRun();
+				runBody();
 			}
 			catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
 			{
@@ -135,35 +134,24 @@ public class CommandLine
 		}
 	}
 
-	protected void tryRun() throws ScribParserException, ScribbleException, CommandLineException
+	protected void runBody() throws ScribParserException, ScribbleException, CommandLineException
 	{
 		MainContext mc = newMainContext();
 		Job job = mc.newJob();
 		ScribbleException fail = null;
 		try
 		{
-			/*// Scribble extensions (custom Job passes)
-			if (this.args.containsKey(ArgFlag.F17))
-			{
-				GProtocolName simpname = new GProtocolName(this.args.get(ArgFlag.F17)[0]);
-				F17Main.parseAndCheckWF(job, simpname);  // Includes base passes
-			}
-
-			// Base Scribble
-			else*/
-			{
-				job.checkWellFormedness();
-			}
+			doValidationTasks(job);
 		}
 		catch (ScribbleException x)
 		{
 			fail = x;
 		}
 
-		// Attempt certain "output tasks" even if above failed, in case can still do useful output (hacky)
+		// Attempt certain "output tasks" even if above failed, in case can still do some useful output (hacky)
 		try
 		{
-			tryOutputTasks(job);
+			doAttemptableOutputTasks(job);
 		}
 		catch (ScribbleException x)
 		{
@@ -178,11 +166,27 @@ public class CommandLine
 			throw fail;
 		}
 
-		// "Non-attemptable" output tasks
+		// "Non-attemptable" output tasks: should not attempt these if any previous failure
 		doNonAttemptableOutputTasks(job);
 	}
 
-	protected void tryOutputTasks(Job job) throws CommandLineException, ScribbleException
+	protected void doValidationTasks(Job job) throws ScribbleException, ScribParserException  // Latter in case needed by subclasses
+	{
+		/*// Scribble extensions (custom Job passes)
+		if (this.args.containsKey(F17CLArgFlag.F17))
+		{
+			GProtocolName simpname = new GProtocolName(this.args.get(ArgFlag.F17)[0]);
+			F17Main.parseAndCheckWF(job, simpname);  // Includes base passes
+		}
+
+		// Base Scribble
+		else*/
+		{
+			job.checkWellFormedness();
+		}
+	}
+
+	protected void doAttemptableOutputTasks(Job job) throws CommandLineException, ScribbleException
 	{
 		// Following must be ordered appropriately -- ?
 		if (this.args.containsKey(CLArgFlag.PROJECT))

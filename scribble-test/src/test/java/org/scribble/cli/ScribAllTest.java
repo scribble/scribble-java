@@ -42,8 +42,8 @@ public class ScribAllTest extends ScribTest
 		String dir_good = ClassLoader.getSystemResource(ScribGoodTest.GOOD_DIR).getFile();
 		String dir_bad = ClassLoader.getSystemResource(ScribBadTest.BAD_DIR).getFile();
 		List<Object[]> result = new LinkedList<>();
-		result.addAll(Harness.makeTests(GOOD_TEST, dir_good));
-		result.addAll(Harness.makeTests(BAD_TEST, dir_bad));
+		result.addAll(Harness.makeTests(ScribTest.GOOD_TEST, dir_good));
+		result.addAll(Harness.makeTests(ScribTest.BAD_TEST, dir_bad));
 		return result;
 	}
 }
