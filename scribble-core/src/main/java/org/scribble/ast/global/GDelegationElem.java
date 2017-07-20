@@ -24,7 +24,7 @@ import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.GDelegationType;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.context.Projector;
 
@@ -94,7 +94,7 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	}
 
 	@Override
-	public PayloadType<Local> toPayloadType()
+	public PayloadElemType<Local> toPayloadType()
 	{
 		return new GDelegationType(this.proto.toName(), this.role.toName());
 	}

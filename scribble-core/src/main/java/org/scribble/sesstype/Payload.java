@@ -18,15 +18,15 @@ import java.util.List;
 
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.PayloadTypeKind;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 
 public class Payload
 {
 	public static final Payload EMPTY_PAYLOAD = new Payload(Collections.emptyList());
 	
-	public final List<PayloadType<? extends PayloadTypeKind>> elems;
+	public final List<PayloadElemType<? extends PayloadTypeKind>> elems;
 	
-	public Payload(List<PayloadType<? extends PayloadTypeKind>> payload)
+	public Payload(List<PayloadElemType<? extends PayloadTypeKind>> payload)
 	{
 		this.elems = payload;
 	}
@@ -66,7 +66,7 @@ public class Payload
 			return "()";
 		}
 		String payload = "(" + this.elems.get(0);
-		for (PayloadType<? extends Kind> pt : this.elems.subList(1, this.elems.size()))
+		for (PayloadElemType<? extends Kind> pt : this.elems.subList(1, this.elems.size()))
 		{
 			payload+= ", " + pt;
 		}

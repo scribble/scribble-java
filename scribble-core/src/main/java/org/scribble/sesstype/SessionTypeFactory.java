@@ -19,6 +19,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.PackageName;
 
+@Deprecated
 public class SessionTypeFactory
 {
 	public SessionTypeFactory()

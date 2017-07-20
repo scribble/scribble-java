@@ -1,6 +1,10 @@
 /*
  * > scribble-java
  * $ java -cp scribble-parser/lib/antlr-3.5.2-complete.jar org.antlr.Tool -o scribble-parser/target/generated-sources/antlr3 scribble-parser/src/main/antlr3/org/scribble/parser/antlr/Scribble.g
+ * 
+ * Windows
+ * $ java -cp scribble-parser/lib/antlr-3.5.2-complete.jar org.antlr.Tool -o scribble-parser/target/generated-sources/antlr3/org/scribble/parser/antlr scribble-parser/src/main/antlr3/org/scribble/parser/antlr/Scribble.g
+ * $ mv scribble-parser/target/generated-sources/antlr3/org/scribble/parser/antlr/Scribble.tokens scribble-parser/target/generated-sources/antlr3/
  */
 
 
@@ -208,6 +212,7 @@ tokens
 		//System.exit(1);
 	}*/
 
+	// Abort tool run on parsing errors (and display user-friendly message) -- obsoletes CommonErrorNode check?
 	@Override    
 	public void displayRecognitionError(String[] tokenNames, RecognitionException e)
 	{
@@ -250,6 +255,8 @@ tokens
 /*
  * Section 2.1 White space (Section 2.1)
  */
+
+// Not referred to explicitly, deals with whitespace implicitly (don't delete this)
 WHITESPACE:
 	('\t' | ' ' | '\r' | '\n'| '\u000C')+
 	{

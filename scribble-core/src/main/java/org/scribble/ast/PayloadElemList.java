@@ -22,7 +22,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
@@ -84,7 +84,7 @@ public class PayloadElemList extends ScribNodeBase
 	public Payload toPayload()
 	{
 		//List<PayloadType<?>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadType()).collect(Collectors.toList());
-		List<PayloadType<?>> pts = this.elems.stream().map((pe) -> pe.toPayloadType()).collect(Collectors.toList());
+		List<PayloadElemType<?>> pts = this.elems.stream().map((pe) -> pe.toPayloadType()).collect(Collectors.toList());
 		return new Payload(pts);
 	}
 

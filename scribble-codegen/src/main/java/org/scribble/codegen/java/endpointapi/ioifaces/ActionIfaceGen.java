@@ -25,7 +25,7 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 
 public class ActionIfaceGen extends IOIfaceGen
 {
@@ -130,7 +130,7 @@ public class ActionIfaceGen extends IOIfaceGen
 	{
 		//String name = a.peer + "$" + a.mid;
 		String name = a.obj + "_" + a.mid;
-		for (PayloadType<?> pay : a.payload.elems)
+		for (PayloadElemType<?> pay : a.payload.elems)
 		{
 			//name += "$" + pay;
 			name += "_" + pay;

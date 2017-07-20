@@ -19,7 +19,7 @@ import java.io.Serializable;
 import org.scribble.sesstype.kind.Local;
 
 // FIXME: factor out of name package?  (and then PayloadType also needs to be moved out of name?)
-public class GDelegationType implements PayloadType<Local>, Serializable
+public class GDelegationType implements PayloadElemType<Local>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
