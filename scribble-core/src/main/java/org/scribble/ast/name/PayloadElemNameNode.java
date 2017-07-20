@@ -15,7 +15,7 @@ package org.scribble.ast.name;
 
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.sesstype.kind.PayloadTypeKind;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 
 
 // A datatype kind node: DataTypeNode or NonRoleParameterNode -- not necessarily simple nor qualified
@@ -26,5 +26,5 @@ public interface PayloadElemNameNode<K extends PayloadTypeKind> extends NonRoleA
 	//PayloadType<? extends PayloadTypeKind> toPayloadType();
 	//PayloadType<DataTypeKind> toPayloadType();  // Currently can assume the only possible kind is DataTypeKind (delegation is by (non-ambig) delegationelem)
 	//PayloadType<? extends PayloadTypeKind> toPayloadType();  // FIXME: generic parameter for kind (data/local)
-	PayloadType<K> toPayloadType();
+	PayloadElemType<K> toPayloadType();
 }

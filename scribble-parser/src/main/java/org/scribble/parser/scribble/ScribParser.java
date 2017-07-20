@@ -118,7 +118,7 @@ public class ScribParser
 						// Should never get here now, Antlr displayRecognitionError overridden to force exit: Antlr error recovery means not all errors produce CommonErrorNode
 			{
 				//throw new ScribParserException("Parsing errors: " + errors);  // FIXME: improve feedback message
-				System.err.println("Aborting due to parsing errors: " + errors);
+				System.err.println("[ScribParser] Aborting due to parsing errors: " + errors);
 				System.exit(1);
 			}
 		}

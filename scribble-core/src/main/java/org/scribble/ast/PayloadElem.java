@@ -14,7 +14,7 @@
 package org.scribble.ast;
 
 import org.scribble.sesstype.kind.PayloadTypeKind;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 
 // Not in grammar file -- but cf. DoArg (and PayloadElemList cf. DoArgList) -- i.e. need a wrapper for mixed and initially ambiguous name kinds
 //public abstract class PayloadElem<K extends PayloadTypeKind> extends ScribNodeBase
@@ -71,7 +71,7 @@ public interface PayloadElem<K extends PayloadTypeKind> extends ScribNode
 	}*/
 	
 	//public abstract PayloadType<?> toPayloadType();
-	public PayloadType<? extends PayloadTypeKind> toPayloadType();  // Mainly a wrapper method for the wrapped NameNode
+	public PayloadElemType<? extends PayloadTypeKind> toPayloadType();  // Mainly a wrapper method for the wrapped NameNode
 	
 	/*public abstract Name<K> toName();  // Not deriving from Named/NameNode, delegation doesn't fit -- would need to make a special (Global@Role) name of Local kind
 	

@@ -30,7 +30,7 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 
 public class InputFutureGen extends AuxStateChanTypeGen
 {
@@ -73,7 +73,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 			if (!a.payload.isEmpty())
 			{
 				int i = 1;
-				for (PayloadType<?> pt : a.payload.elems)
+				for (PayloadElemType<?> pt : a.payload.elems)
 				{
 					if (!pt.isDataType())
 					{
