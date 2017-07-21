@@ -28,7 +28,7 @@ import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 public class LReceiveDel extends LMessageTransferDel
 {
 	@Override
-	public LReceive leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LReceive lr = (LReceive) visited;
 		Role peer = lr.src.toName();

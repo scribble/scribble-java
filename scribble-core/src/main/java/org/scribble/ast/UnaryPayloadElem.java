@@ -18,9 +18,12 @@ import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.PayloadTypeKind;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
+
+
+// FIXME: make abstract, and make a DataTypeElem subclass with DataTypeKind parameter instance (alongside LDelegationElem)
 
 // Cf. DoArg, wrapper for a (unary) name node of potentially unknown kind (needs disamb)
 // PayloadTypeKind is DataType or Local, but Local has its own special subclass (and protocol params not allowed), so this should implicitly be for DataType only
@@ -98,7 +101,7 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase i
 	@Override
 	//public PayloadType<DataTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
 	//public PayloadType<? extends PayloadTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
-	public PayloadType<K> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
+	public PayloadElemType<K> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
 	{
 		//return this.data.toPayloadType();
 		return this.name.toPayloadType();

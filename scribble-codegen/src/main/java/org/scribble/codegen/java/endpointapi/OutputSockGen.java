@@ -28,7 +28,7 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 
 public class OutputSockGen extends ScribSockGen
 {
@@ -215,7 +215,7 @@ public class OutputSockGen extends ScribSockGen
 		if (!a.payload.isEmpty())
 		{
 			Iterator<String> as = args.iterator();
-			for (PayloadType<?> pt : a.payload.elems)
+			for (PayloadElemType<?> pt : a.payload.elems)
 			{
 				if (!pt.isDataType())
 				{

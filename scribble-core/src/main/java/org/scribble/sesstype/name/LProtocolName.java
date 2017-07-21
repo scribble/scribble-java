@@ -16,7 +16,7 @@ package org.scribble.sesstype.name;
 import org.scribble.sesstype.kind.Local;
 
 
-public class LProtocolName extends ProtocolName<Local> implements PayloadType<Local> //-- not needed, deleg elems currently have to be (Global@Role)
+public class LProtocolName extends ProtocolName<Local> implements PayloadElemType<Local> //-- not needed, deleg elems currently have to be (Global@Role)
 {
 	private static final long serialVersionUID = 1L;
 

@@ -31,7 +31,7 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 import org.scribble.sesstype.name.Role;
 
 public class BranchSockGen extends ScribSockGen
@@ -290,7 +290,7 @@ public class BranchSockGen extends ScribSockGen
 				{
 					String buffSuper = JavaBuilder.NEW + " " + BUF_CLASS + "<>(";
 					int i = 0;
-					for (PayloadType<?> pt : a.payload.elems)
+					for (PayloadElemType<?> pt : a.payload.elems)
 					{
 						DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.extName + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
@@ -377,7 +377,7 @@ public class BranchSockGen extends ScribSockGen
 				{
 					String buffSuper = JavaBuilder.NEW + " " + BUF_CLASS + "<>(";
 					int i = 0;
-					for (PayloadType<?> pt : a.payload.elems)
+					for (PayloadElemType<?> pt : a.payload.elems)
 					{
 						DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.extName + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";

@@ -15,14 +15,10 @@ package org.scribble.parser.scribble;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
-import org.antlr.runtime.Parser;
-import org.antlr.runtime.ParserRuleReturnScope;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.resource.Resource;
@@ -40,32 +36,39 @@ public class AntlrParser
 	}
 	
 	// Scribble extensions should override these "new" methods
-	protected Lexer newScribbleLexer(ANTLRStringStream ass)
+	protected Lexer getScribbleLexer(ANTLRStringStream ass)
 	{
 		return new ScribbleLexer(ass);
 	}
 	
-	protected Parser newScribbleParser(CommonTokenStream cts)  // FIXME: need an interface for Scribble top-level module method (ANTLR "grammar actions"?)
+	/*protected Parser newScribbleParser(CommonTokenStream cts)
 	{
 		return new ScribbleParser(cts);
+	}*/
+	protected CommonTree runScribbleParser(CommonTokenStream cts) throws RecognitionException
+	{
+		return (CommonTree) new ScribbleParser(cts).module().getTree();
 	}
 
 	public CommonTree parseAntlrTree(Resource res)
 	{
-		//try
+		try
 		{
 			String input = readInput(res);
-			Lexer lex = newScribbleLexer(new ANTLRStringStream(input));
-			Parser parser = newScribbleParser(new CommonTokenStream(lex));
-			//return (CommonTree) parser.module().getTree();
+			Lexer lex = getScribbleLexer(new ANTLRStringStream(input));
+			//Parser parser = newScribbleParser(new CommonTokenStream(lex));
+			////return (CommonTree) parser.module().getTree();
 			
-			Class<? extends Parser> c = parser.getClass();
-			try
+			/*Class<? extends Parser> c = parser.getClass();
+			try*/
 			{
+				/*// FIXME: need an interface for Scribble top-level module method (ANTLR "grammar actions"?)
 				Method m = c.getMethod("module");
-				return (CommonTree) ((ParserRuleReturnScope) m.invoke(parser)).getTree();
+				return (CommonTree) ((ParserRuleReturnScope) m.invoke(parser)).getTree();*/
+			
+				return runScribbleParser(new CommonTokenStream(lex));
 			}
-			catch (NoSuchMethodException nsme)
+			/*catch (NoSuchMethodException nsme)
 			{
 				throw new RuntimeException("Supplied Parser has no \"module\" method.", nsme);
 			}
@@ -84,12 +87,12 @@ public class AntlrParser
 					throw new RuntimeException(e);
 				}
 				throw new RuntimeException("Shouldn't get in here: ", e);
-			}
+			}*/
 		}
-		/*catch (RecognitionException e)
+		catch (RecognitionException e)
 		{
 			throw new RuntimeException(e);
-		}*/
+		}
 	}
 	
 	/*public CommonTree parseAntlrTree(Resource res)

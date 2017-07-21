@@ -20,7 +20,7 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 import org.scribble.visit.AstVisitor;
 
 // N.B. extends UnaryPayloadElem, not DelegationElem
@@ -74,7 +74,7 @@ public class LDelegationElem extends UnaryPayloadElem<Local>
 
 	@Override
 	//public PayloadType<? extends PayloadTypeKind> toPayloadType()
-	public PayloadType<Local> toPayloadType()
+	public PayloadElemType<Local> toPayloadType()
 	{
 		return this.name.toPayloadType();
 	}

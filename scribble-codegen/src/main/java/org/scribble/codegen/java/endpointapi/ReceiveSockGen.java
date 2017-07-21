@@ -24,7 +24,7 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.sesstype.name.PayloadType;
+import org.scribble.sesstype.name.PayloadElemType;
 
 public class ReceiveSockGen extends ScribSockGen
 {
@@ -179,7 +179,7 @@ public class ReceiveSockGen extends ScribSockGen
 		{
 			String buffSuper = BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "");
 			int i = 1;
-			for (PayloadType<?> pt : a.payload.elems)
+			for (PayloadElemType<?> pt : a.payload.elems)
 			{
 				if (!pt.isDataType())
 				{
@@ -197,7 +197,7 @@ public class ReceiveSockGen extends ScribSockGen
 		if (!a.payload.isEmpty())
 		{
 			int i = 1;
-			for (PayloadType<?> pt : a.payload.elems)  // Could factor out this loop (arg names) with addReceiveOpParams (as for send)
+			for (PayloadElemType<?> pt : a.payload.elems)  // Could factor out this loop (arg names) with addReceiveOpParams (as for send)
 			{
 				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
 				mb.addBodyLine(RECEIVE_ARG_PREFIX + i + "." + BUFF_VAL_FIELD + " = (" + dtd.extName + ") "

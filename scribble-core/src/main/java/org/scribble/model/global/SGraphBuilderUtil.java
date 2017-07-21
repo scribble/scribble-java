@@ -97,7 +97,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 			
 			Map<Role, List<EAction>> fireable = curr.getFireable();
 
-			//job.debugPrintln("Acceptable at (" + curr.id + "): " + acceptable);
+			//job.debugPrintln("Acceptable at (" + curr.id + "): " + fireable);
 
 			for (Role r : fireable.keySet())
 			{
