@@ -26,9 +26,9 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.JobContext;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Global;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 public class GDo extends Do<Global> implements GSimpleInteractionNode
 {

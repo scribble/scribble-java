@@ -18,16 +18,16 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.sesstype.Arg;
-import org.scribble.sesstype.Message;
-import org.scribble.sesstype.kind.DataTypeKind;
-import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.kind.SigKind;
-import org.scribble.sesstype.name.DataType;
-import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.sesstype.name.Name;
-import org.scribble.sesstype.name.PayloadElemType;
+import org.scribble.type.Arg;
+import org.scribble.type.Message;
+import org.scribble.type.kind.DataTypeKind;
+import org.scribble.type.kind.Kind;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.kind.SigKind;
+import org.scribble.type.name.DataType;
+import org.scribble.type.name.MessageSigName;
+import org.scribble.type.name.Name;
+import org.scribble.type.name.PayloadElemType;
 import org.scribble.visit.Substitutor;
 
 // An unambiguous kinded parameter (ambiguous parameters handled by disambiguation) that isn't a role -- e.g. DataType/MessageSigName param

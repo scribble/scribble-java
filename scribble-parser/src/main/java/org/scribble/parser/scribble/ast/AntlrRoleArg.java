@@ -17,14 +17,14 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.RoleArg;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 
 public class AntlrRoleArg
 {
 	public static final int ARG_CHILD_INDEX = 0;
 
-	public static RoleArg parseRoleArg(ScribParser parser, CommonTree ct, AstFactory af)
+	public static RoleArg parseRoleArg(AntlrToScribParser parser, CommonTree ct, AstFactory af)
 	{
 		RoleNode role = AntlrSimpleName.toRoleNode(getArgChild(ct), af);
 		return af.RoleArg(ct, role);

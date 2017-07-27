@@ -26,7 +26,7 @@ import java.util.TreeMap;
 
 import org.scribble.model.MPrettyPrint;
 import org.scribble.model.global.actions.SAction;
-import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.type.name.GProtocolName;
 
 public class SGraph implements MPrettyPrint
 {

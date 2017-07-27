@@ -21,7 +21,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.session.BinaryChannelEndpoint;
 import org.scribble.runtime.net.session.MPSTEndpoint;
 import org.scribble.runtime.net.session.Session;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 // Establishing transport connections handled in here and wrapped up in SocketWrapper
 @Deprecated

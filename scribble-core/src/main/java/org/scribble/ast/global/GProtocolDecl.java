@@ -29,10 +29,10 @@ import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.ModuleName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Global;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.context.Projector;
 
 public class GProtocolDecl extends ProtocolDecl<Global> implements GNode

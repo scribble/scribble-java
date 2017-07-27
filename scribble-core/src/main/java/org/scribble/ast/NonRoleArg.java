@@ -15,7 +15,7 @@ package org.scribble.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 public class NonRoleArg extends DoArg<NonRoleArgNode>
 {

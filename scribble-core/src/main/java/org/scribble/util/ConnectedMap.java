@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 // FIXME: factor out with MessageIdMap
 // FIXME: cf, WFBuffers.connected

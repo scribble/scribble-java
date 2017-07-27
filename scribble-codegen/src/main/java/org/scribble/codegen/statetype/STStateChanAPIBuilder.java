@@ -23,8 +23,8 @@ import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 public abstract class STStateChanAPIBuilder
 {

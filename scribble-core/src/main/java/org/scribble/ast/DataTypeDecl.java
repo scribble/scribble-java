@@ -17,9 +17,9 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.MemberNameNode;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.DataTypeKind;
-import org.scribble.sesstype.name.DataType;
-import org.scribble.sesstype.name.ModuleName;
+import org.scribble.type.kind.DataTypeKind;
+import org.scribble.type.name.DataType;
+import org.scribble.type.name.ModuleName;
 
 public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 {

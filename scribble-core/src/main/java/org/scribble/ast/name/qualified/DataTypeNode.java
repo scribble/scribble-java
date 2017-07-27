@@ -16,9 +16,9 @@ package org.scribble.ast.name.qualified;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.sesstype.Arg;
-import org.scribble.sesstype.kind.DataTypeKind;
-import org.scribble.sesstype.name.DataType;
+import org.scribble.type.Arg;
+import org.scribble.type.kind.DataTypeKind;
+import org.scribble.type.name.DataType;
 
 //public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
 public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode<DataTypeKind>

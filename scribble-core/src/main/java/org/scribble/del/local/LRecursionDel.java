@@ -20,7 +20,7 @@ import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.name.RecVar;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;

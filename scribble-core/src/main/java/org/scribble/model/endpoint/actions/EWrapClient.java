@@ -16,9 +16,9 @@ package org.scribble.model.endpoint.actions;
 import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SWrapClient;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.Op;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Payload;
+import org.scribble.type.name.Op;
+import org.scribble.type.name.Role;
 
 // Duplicated from Disconnect
 public class EWrapClient extends EAction

@@ -21,8 +21,8 @@ import java.util.Random;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 public abstract class Session
 {

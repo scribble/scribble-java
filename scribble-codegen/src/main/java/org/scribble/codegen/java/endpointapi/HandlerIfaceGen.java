@@ -23,8 +23,8 @@ import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.MessageSigName;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.MessageSigName;
 
 // Factor out
 public class HandlerIfaceGen extends AuxStateChanTypeGen

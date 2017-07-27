@@ -29,10 +29,10 @@ import org.scribble.del.ScribDel;
 import org.scribble.main.JobContext;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.Message;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Message;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LDo extends Do<Local> implements LSimpleInteractionNode

@@ -25,8 +25,8 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.global.actions.SAction;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Global;
+import org.scribble.type.name.Role;
 
 // FIXME? make a WFModel front-end class? (cf. EGraph)
 // Only uses MState.id cosmetically, cf. MState equals/hash -- overrides equals/hash based on this.config (maybe extending MState is a bit misleading)

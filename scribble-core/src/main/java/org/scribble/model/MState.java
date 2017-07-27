@@ -27,7 +27,7 @@ import java.util.stream.IntStream;
 
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 
 public abstract class MState<
 		L,                             // Node label type (cosmetic)

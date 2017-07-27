@@ -29,11 +29,11 @@ import org.scribble.model.GraphBuilderUtil;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SAction;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.Op;
-import org.scribble.sesstype.name.RecVar;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Payload;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.Op;
+import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Role;
 
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
 // Tailored to support graph building from syntactic local protocol choice and recursion

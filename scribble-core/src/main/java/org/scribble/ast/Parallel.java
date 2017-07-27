@@ -16,11 +16,10 @@ package org.scribble.ast;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
 public abstract class Parallel<K extends ProtocolKind> extends CompoundInteractionNode<K>
@@ -112,11 +111,11 @@ public abstract class Parallel<K extends ProtocolKind> extends CompoundInteracti
 		return new Parallel(this.ct, blocks);
 	}*/
 
-	@Override
+	/*@Override
 	public String toString()
 	{
 		String sep = " " + Constants.AND_KW + " ";
 		return Constants.PAR_KW + " "
 					+ this.blocks.stream().map((block) -> block.toString()).collect(Collectors.joining(sep));
-	}
+	}*/
 }

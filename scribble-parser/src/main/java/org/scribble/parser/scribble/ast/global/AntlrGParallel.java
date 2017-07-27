@@ -20,13 +20,13 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.global.GParallel;
 import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.parser.scribble.ScribParser;
-import org.scribble.parser.scribble.ScribParserUtil;
+import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.AntlrToScribParserUtil;
 import org.scribble.util.ScribParserException;
 
 public class AntlrGParallel
 {
-	public static GParallel parseGParallel(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static GParallel parseGParallel(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		/*List<GProtocolBlock> blocks = 
 				getBlockChildren(ct).stream().map((b) -> (GProtocolBlock) parser.parse(b)).collect(Collectors.toList());*/
@@ -41,6 +41,6 @@ public class AntlrGParallel
 
 	public static final List<CommonTree> getBlockChildren(CommonTree ct)
 	{
-		return ScribParserUtil.toCommonTreeList(ct.getChildren());
+		return AntlrToScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

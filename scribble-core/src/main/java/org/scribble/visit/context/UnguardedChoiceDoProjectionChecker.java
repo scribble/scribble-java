@@ -22,9 +22,9 @@ import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.SubprotocolSig;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.ProtocolName;
+import org.scribble.type.SubprotocolSig;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.ProtocolName;
 import org.scribble.visit.SubprotocolVisitor;
 import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 

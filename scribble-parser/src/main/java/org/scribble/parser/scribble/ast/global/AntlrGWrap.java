@@ -17,7 +17,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 
 // Factor with AntlrGMessageTransfer?
@@ -26,7 +26,7 @@ public class AntlrGWrap
 	public static final int SOURCE_CHILD_INDEX = 0;
 	public static final int DESTINATION_CHILD_INDEX = 1;
 
-	public static GWrap parseGWrap(ScribParser parser, CommonTree ct, AstFactory af)
+	public static GWrap parseGWrap(AntlrToScribParser parser, CommonTree ct, AstFactory af)
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct), af);
 		RoleNode dest = AntlrSimpleName.toRoleNode(getDestinationChild(ct), af);

@@ -19,7 +19,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.sesstype.kind.Local;
+import org.scribble.type.kind.Local;
 
 public abstract class LMessageTransfer extends MessageTransfer<Local> implements LSimpleInteractionNode
 {

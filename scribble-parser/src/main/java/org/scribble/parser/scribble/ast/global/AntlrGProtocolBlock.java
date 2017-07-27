@@ -17,14 +17,14 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.util.ScribParserException;
 
 public class AntlrGProtocolBlock
 {
 	public static final int INTERACTIONSEQUENCE_CHILD_INDEX = 0;
 
-	public static GProtocolBlock parseGProtocolBlock(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static GProtocolBlock parseGProtocolBlock(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		GInteractionSeq gis = (GInteractionSeq) parser.parse(getInteractionSequenceChild(ct), af);
 		return af.GProtocolBlock(ct, gis);

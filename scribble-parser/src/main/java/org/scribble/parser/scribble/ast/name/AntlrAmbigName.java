@@ -17,6 +17,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.name.simple.AmbigNameNode;
 
+// FIXME: refactor into AntlrSimple/QualifiedName? -- need to separate ambig simple and qualified?
 public class AntlrAmbigName
 {
 	public static AmbigNameNode toAmbigNameNode(CommonTree ct, AstFactory af)

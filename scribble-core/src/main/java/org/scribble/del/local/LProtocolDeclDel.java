@@ -18,10 +18,10 @@ import org.scribble.ast.context.local.LProtocolDeclContext;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 

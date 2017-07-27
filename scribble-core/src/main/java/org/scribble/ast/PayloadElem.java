@@ -13,8 +13,8 @@
  */
 package org.scribble.ast;
 
-import org.scribble.sesstype.kind.PayloadTypeKind;
-import org.scribble.sesstype.name.PayloadElemType;
+import org.scribble.type.kind.PayloadTypeKind;
+import org.scribble.type.name.PayloadElemType;
 
 // Not in grammar file -- but cf. DoArg (and PayloadElemList cf. DoArgList) -- i.e. need a wrapper for mixed and initially ambiguous name kinds
 //public abstract class PayloadElem<K extends PayloadTypeKind> extends ScribNodeBase

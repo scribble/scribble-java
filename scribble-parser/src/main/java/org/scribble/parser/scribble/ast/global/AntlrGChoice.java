@@ -21,8 +21,8 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.parser.scribble.ScribParser;
-import org.scribble.parser.scribble.ScribParserUtil;
+import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.AntlrToScribParserUtil;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 import org.scribble.util.ScribParserException;
 
@@ -31,7 +31,7 @@ public class AntlrGChoice
 	public static final int SUBJECT_CHILD_INDEX = 0;
 	public static final int BLOCK_CHILDREN_START_INDEX = 1;
 	
-	public static GChoice parseGChoice(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static GChoice parseGChoice(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		RoleNode subj = AntlrSimpleName.toRoleNode(getSubjectChild(ct), af);
 		/*List<GProtocolBlock> blocks =
@@ -52,6 +52,6 @@ public class AntlrGChoice
 	public static List<CommonTree> getBlockChildren(CommonTree ct)
 	{
 		List<?> children = ct.getChildren();
-		return ScribParserUtil.toCommonTreeList(children.subList(BLOCK_CHILDREN_START_INDEX, children.size()));
+		return AntlrToScribParserUtil.toCommonTreeList(children.subList(BLOCK_CHILDREN_START_INDEX, children.size()));
 	}
 }

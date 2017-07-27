@@ -24,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.runtime.net.ScribInterrupt;
 import org.scribble.runtime.net.ScribMessage;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 @Deprecated
 public class EndpointInputQueues

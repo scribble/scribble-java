@@ -16,8 +16,8 @@ package org.scribble.ast.name.qualified;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
-import org.scribble.sesstype.kind.SigKind;
-import org.scribble.sesstype.name.MessageSigName;
+import org.scribble.type.kind.SigKind;
+import org.scribble.type.name.MessageSigName;
 
 public class MessageSigNameNode extends MemberNameNode<SigKind> implements MessageNode
 {

@@ -20,7 +20,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.session.BinaryChannelWrapper;
 import org.scribble.runtime.net.session.Session;
 import org.scribble.runtime.net.session.SessionEndpoint;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 // Not AutoClosable -- leave that to InitSocket
 public abstract class LinearSocket<S extends Session, R extends Role> extends ScribSocket<S, R>

@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.name.RecVar;
 import org.scribble.visit.env.Env;
 
 public class ReachabilityEnv extends Env<ReachabilityEnv>

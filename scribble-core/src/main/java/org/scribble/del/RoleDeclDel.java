@@ -16,7 +16,7 @@ package org.scribble.del;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 import org.scribble.visit.wf.NameDisambiguator;
 import org.scribble.visit.wf.WFChoiceChecker;
 

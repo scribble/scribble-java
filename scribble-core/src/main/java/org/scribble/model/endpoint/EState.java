@@ -27,8 +27,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.MPrettyState;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.RecVar;
 
 // Label types used to be both RecVar and SubprotocolSigs; now using inlined protocol for FSM building so just RecVar
 public class EState extends MPrettyState<RecVar, EAction, EState, Local>
@@ -241,7 +241,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction
 	public boolean isConnectOrWrapClientOnly()
 	{
-		return getStateKind() == EStateKind.OUTPUT && getAllActions().stream().allMatch((a) -> a.isConnect() || a.isWrapClient());
+		return getStateKind() == EStateKind.OUTPUT && getAllActions().stream().allMatch((a) -> a.isRequest() || a.isWrapClient());
 	}
 	
 	public EStateKind getStateKind()
@@ -260,23 +260,23 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 						: (a.isAccept()) ? EStateKind.ACCEPT  // Accept is always unary, guaranteed by treating as a unit message id (wrt. branching)  // No: not any more, connect-with-message
 						: (a.isWrapServer()) ? EStateKind.WRAP_SERVER   // WrapServer is always unary, guaranteed by treating as a unit message id (wrt. branching)
 						: (as.size() > 1) ? EStateKind.POLY_INPUT : EStateKind.UNARY_INPUT;*/
-			if (as.stream().allMatch((a) -> a.isSend() || a.isConnect() || a.isWrapClient()))  // wrapClient should be unary?
+			if (as.stream().allMatch(a -> a.isSend() || a.isRequest() || a.isWrapClient()))  // wrapClient should be unary?
 			{
 				return EStateKind.OUTPUT;
 			}
-			else if (as.stream().allMatch((a) -> a.isReceive()))
+			else if (as.stream().allMatch(EAction::isReceive))
 			{
 				return (as.size() == 1) ? EStateKind.UNARY_INPUT : EStateKind.POLY_INPUT;
 			}
-			else if (as.stream().allMatch((a) -> a.isAccept()))
+			else if (as.stream().allMatch(EAction::isAccept))
 			{
 				return EStateKind.ACCEPT;  // Distinguish unary for API gen?  cf. receive
 			}
-			else if (as.size() == 1 && as.iterator().next().isDisconnect())
+			else if (as.size() == 1 && as.get(0).isDisconnect())
 			{
 				return EStateKind.OUTPUT;
 			}
-			else if (as.size() == 1 && as.iterator().next().isWrapServer())
+			else if (as.size() == 1 && as.get(0).isWrapServer())
 			{
 				return EStateKind.WRAP_SERVER;
 			}

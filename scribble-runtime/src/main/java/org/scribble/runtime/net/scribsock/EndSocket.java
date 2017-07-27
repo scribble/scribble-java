@@ -16,7 +16,7 @@ package org.scribble.runtime.net.scribsock;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.session.Session;
 import org.scribble.runtime.net.session.SessionEndpoint;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 public abstract class EndSocket<S extends Session, R extends Role> extends ScribSocket<S, R>
 {

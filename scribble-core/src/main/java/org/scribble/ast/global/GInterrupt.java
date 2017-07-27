@@ -14,10 +14,8 @@
 package org.scribble.ast.global;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.Constants;
 import org.scribble.ast.Interrupt;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
@@ -185,12 +183,12 @@ public class GInterrupt extends Interrupt implements GSimpleInteractionNode
 		return reconstruct(interr.ct, interr.src, interr.msgs, interr.getContext(), interr.getEnv());
 	}*/
 		
-	@Override
+	/*@Override
 	public String toString()
 	{
 		return this.getMessages().stream().map((msg) -> msg.toString()).collect(Collectors.joining(", "))
 				+ " " + Constants.BY_KW + " " + this.src + ";";
-	}
+	}*/
 
 	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
 	@Override

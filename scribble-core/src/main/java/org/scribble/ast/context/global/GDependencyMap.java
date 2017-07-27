@@ -14,7 +14,7 @@
 package org.scribble.ast.context.global;
 
 import org.scribble.ast.context.DependencyMap;
-import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.type.name.GProtocolName;
 
 public class GDependencyMap extends DependencyMap<GProtocolName>
 {

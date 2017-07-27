@@ -17,7 +17,7 @@ import org.scribble.ast.Continue;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.name.RecVar;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.util.RecVarCollector;
 

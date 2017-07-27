@@ -16,7 +16,7 @@ package org.scribble.del;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.RecRemover;
 import org.scribble.visit.util.RecVarCollector;

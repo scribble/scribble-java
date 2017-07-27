@@ -30,8 +30,8 @@ import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 // Cf. ScribSocketGenerator
 // Partial I/O State I/f generator -- Successor Interfaces and cast methods added later

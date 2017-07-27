@@ -24,9 +24,9 @@ import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.Message;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Message;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LParallel extends Parallel<Local> implements LCompoundInteractionNode

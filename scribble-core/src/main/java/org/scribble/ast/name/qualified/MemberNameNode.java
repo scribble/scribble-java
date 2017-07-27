@@ -16,9 +16,9 @@ package org.scribble.ast.name.qualified;
 import java.util.Arrays;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.name.ModuleName;
-import org.scribble.sesstype.name.PackageName;
+import org.scribble.type.kind.Kind;
+import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.PackageName;
 
 public abstract class MemberNameNode<K extends Kind> extends QualifiedNameNode<K>
 {

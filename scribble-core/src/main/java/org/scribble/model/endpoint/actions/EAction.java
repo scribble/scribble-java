@@ -17,10 +17,10 @@ import org.scribble.model.MAction;
 import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SAction;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.MessageId;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Payload;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.MessageId;
+import org.scribble.type.name.Role;
 
 public abstract class EAction extends MAction<Local>
 {
@@ -55,7 +55,7 @@ public abstract class EAction extends MAction<Local>
 		return false;
 	}
 
-	public boolean isConnect()
+	public boolean isRequest()
 	{
 		return false;
 	}

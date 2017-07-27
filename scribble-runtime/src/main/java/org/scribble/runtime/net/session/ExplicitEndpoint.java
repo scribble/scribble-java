@@ -17,7 +17,7 @@ import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.ScribMessageFormatter;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 public class ExplicitEndpoint<S extends Session, R extends Role> extends SessionEndpoint<S, R>
 {

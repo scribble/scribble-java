@@ -20,13 +20,13 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
-import org.scribble.parser.scribble.ScribParser;
-import org.scribble.parser.scribble.ScribParserUtil;
+import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.AntlrToScribParserUtil;
 import org.scribble.util.ScribParserException;
 
 public class AntlrRoleDeclList
 {
-	public static RoleDeclList parseRoleDeclList(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static RoleDeclList parseRoleDeclList(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		//List<RoleDecl> rds = getRoleDeclChildren(ct).stream().map((pd) -> (RoleDecl) parser.parse(pd)).collect(Collectors.toList());
 		List<RoleDecl> rds = new LinkedList<>();
@@ -39,6 +39,6 @@ public class AntlrRoleDeclList
 
 	public static List<CommonTree> getRoleDeclChildren(CommonTree ct)
 	{
-		return ScribParserUtil.toCommonTreeList(ct.getChildren());
+		return AntlrToScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

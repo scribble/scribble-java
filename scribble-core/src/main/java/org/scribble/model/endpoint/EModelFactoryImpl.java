@@ -16,16 +16,16 @@ package org.scribble.model.endpoint;
 import java.util.Set;
 
 import org.scribble.model.endpoint.actions.EAccept;
-import org.scribble.model.endpoint.actions.EConnect;
+import org.scribble.model.endpoint.actions.ERequest;
 import org.scribble.model.endpoint.actions.EDisconnect;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.endpoint.actions.EWrapClient;
 import org.scribble.model.endpoint.actions.EWrapServer;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.MessageId;
-import org.scribble.sesstype.name.RecVar;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Payload;
+import org.scribble.type.name.MessageId;
+import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Role;
 
 // Separate E/SModelFactories fits protected E/SState constructor pattern
 public class EModelFactoryImpl implements EModelFactory
@@ -44,9 +44,9 @@ public class EModelFactoryImpl implements EModelFactory
 	}
 
 	@Override
-	public EConnect newEConnect(Role peer, MessageId<?> mid, Payload payload)
+	public ERequest newERequest(Role peer, MessageId<?> mid, Payload payload)
 	{
-		return new EConnect(this, peer, mid, payload);
+		return new ERequest(this, peer, mid, payload);
 	}
 
 	@Override

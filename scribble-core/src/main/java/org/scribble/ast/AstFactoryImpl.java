@@ -110,20 +110,20 @@ import org.scribble.del.name.MessageSigNameNodeDel;
 import org.scribble.del.name.ParamNodeDel;
 import org.scribble.del.name.RecVarNodeDel;
 import org.scribble.del.name.RoleNodeDel;
-import org.scribble.sesstype.kind.DataTypeKind;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.kind.ModuleKind;
-import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.kind.OpKind;
-import org.scribble.sesstype.kind.PayloadTypeKind;
-import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.sesstype.kind.RoleKind;
-import org.scribble.sesstype.kind.SigKind;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Op;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.DataTypeKind;
+import org.scribble.type.kind.Global;
+import org.scribble.type.kind.Kind;
+import org.scribble.type.kind.Local;
+import org.scribble.type.kind.ModuleKind;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.kind.OpKind;
+import org.scribble.type.kind.PayloadTypeKind;
+import org.scribble.type.kind.RecVarKind;
+import org.scribble.type.kind.RoleKind;
+import org.scribble.type.kind.SigKind;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Op;
+import org.scribble.type.name.Role;
 
 
 public class AstFactoryImpl implements AstFactory

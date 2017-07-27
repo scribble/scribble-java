@@ -32,9 +32,9 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ProtocolDefDel;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.kind.Global;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.RecVar;
 import org.scribble.visit.env.UnfoldingEnv;
 
 // Statically unfolds unguarded recursions and continues "directly under" choices

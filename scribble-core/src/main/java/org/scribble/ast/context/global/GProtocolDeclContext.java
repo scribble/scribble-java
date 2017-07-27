@@ -17,8 +17,8 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.scribble.ast.context.ProtocolDeclContext;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Global;
+import org.scribble.type.name.Role;
 
 public class GProtocolDeclContext extends ProtocolDeclContext<Global>
 {

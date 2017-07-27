@@ -18,9 +18,9 @@ import java.util.Set;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.InteractionNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.Message;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Message;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 // Alternatively to interface, use GlobalNode subclass with delegation to "super" base (e.g. Choice) classes

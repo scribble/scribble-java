@@ -19,8 +19,8 @@ import org.scribble.ast.UnaryPayloadElem;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.PayloadElemType;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.PayloadElemType;
 import org.scribble.visit.AstVisitor;
 
 // N.B. extends UnaryPayloadElem, not DelegationElem

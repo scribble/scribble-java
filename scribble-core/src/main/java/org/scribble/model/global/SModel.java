@@ -26,7 +26,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.global.actions.SAction;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 public class SModel
 {
