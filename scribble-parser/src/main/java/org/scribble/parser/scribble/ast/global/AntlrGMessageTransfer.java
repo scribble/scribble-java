@@ -22,9 +22,9 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.parser.scribble.ScribParser;
-import org.scribble.parser.scribble.ScribParserUtil;
-import org.scribble.parser.scribble.AntlrConstants.AntlrNodeType;
+import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.AntlrToScribParserUtil;
+import org.scribble.parser.scribble.ScribbleAntlrConstants.AntlrNodeType;
 import org.scribble.parser.scribble.ast.name.AntlrAmbigName;
 import org.scribble.parser.scribble.ast.name.AntlrQualifiedName;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
@@ -36,7 +36,7 @@ public class AntlrGMessageTransfer
 	public static final int SOURCE_CHILD_INDEX = 1;
 	public static final int DESTINATION_CHILDREN_START_INDEX = 2;
 
-	public static GMessageTransfer parseGMessageTransfer(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static GMessageTransfer parseGMessageTransfer(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct), af);
 		MessageNode msg = parseMessage(parser, getMessageChild(ct), af);
@@ -45,9 +45,9 @@ public class AntlrGMessageTransfer
 		return af.GMessageTransfer(ct, src, msg, dests);
 	}
 
-	public static MessageNode parseMessage(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static MessageNode parseMessage(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
-		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
+		AntlrNodeType type = AntlrToScribParserUtil.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)
 		{
 			return (MessageSigNode) parser.parse(ct, af);
@@ -72,6 +72,6 @@ public class AntlrGMessageTransfer
 
 	public static List<CommonTree> getDestChildren(CommonTree ct)
 	{
-		return ScribParserUtil.toCommonTreeList(ct.getChildren().subList(DESTINATION_CHILDREN_START_INDEX, ct.getChildCount()));
+		return AntlrToScribParserUtil.toCommonTreeList(ct.getChildren().subList(DESTINATION_CHILDREN_START_INDEX, ct.getChildCount()));
 	}
 }

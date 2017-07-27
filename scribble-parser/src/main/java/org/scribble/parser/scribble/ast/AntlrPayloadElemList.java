@@ -25,9 +25,9 @@ import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.parser.scribble.ScribParser;
-import org.scribble.parser.scribble.ScribParserUtil;
-import org.scribble.parser.scribble.AntlrConstants.AntlrNodeType;
+import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.AntlrToScribParserUtil;
+import org.scribble.parser.scribble.ScribbleAntlrConstants.AntlrNodeType;
 import org.scribble.parser.scribble.ast.name.AntlrAmbigName;
 import org.scribble.parser.scribble.ast.name.AntlrQualifiedName;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
@@ -35,7 +35,7 @@ import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 public class AntlrPayloadElemList
 {
 	// Cf. AntlrNonRoleArgList
-	public static PayloadElemList parsePayloadElemList(ScribParser parser, CommonTree ct, AstFactory af)
+	public static PayloadElemList parsePayloadElemList(AntlrToScribParser parser, CommonTree ct, AstFactory af)
 	{
 		// As in AntlrNonRoleArgList, i.e. payloadelem (NonRoleArg) not directly parsed -- cf. rolearg and nonroleparamdecl, which are directly parsed (not consistent), due to amibgious names
 		//List<PayloadElem> pes = getPayloadElements(ct).stream().map((pe) -> parsePayloadElem(pe)).collect(Collectors.toList());
@@ -46,7 +46,7 @@ public class AntlrPayloadElemList
 	//private static PayloadElem parsePayloadElem(CommonTree ct)
 	public static PayloadElem<?> parsePayloadElem(CommonTree ct, AstFactory af)
 	{
-		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
+		AntlrNodeType type = AntlrToScribParserUtil.getAntlrNodeType(ct);
 		/*// Parser isn't working to distinguish simple from qualified names (cf. Scribble.g payloadelement)
 		if (type == AntlrNodeType.QUALIFIEDNAME)
 		{
@@ -92,6 +92,6 @@ public class AntlrPayloadElemList
 	{
 		return (ct.getChildCount() == 0)
 				? Collections.emptyList()
-				: ScribParserUtil.toCommonTreeList(ct.getChildren());
+				: AntlrToScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

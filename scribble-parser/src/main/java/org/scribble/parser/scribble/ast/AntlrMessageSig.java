@@ -18,7 +18,7 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.PayloadElemList;
 import org.scribble.ast.name.simple.OpNode;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 import org.scribble.util.ScribParserException;
 
@@ -27,7 +27,7 @@ public class AntlrMessageSig
 	public static final int OPERATOR_CHILD_INDEX = 0;
 	public static final int PAYLOAD_CHILD_INDEX = 1;
 	
-	public static MessageSigNode parseMessageSig(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static MessageSigNode parseMessageSig(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		OpNode op = AntlrSimpleName.toOpNode(getOpChild(ct), af);
 		PayloadElemList payload = (PayloadElemList) parser.parse(getPayloadElemListChild(ct), af);

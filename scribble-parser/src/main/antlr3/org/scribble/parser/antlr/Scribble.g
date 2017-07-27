@@ -38,7 +38,7 @@ tokens
 	ACCEPT_KW = 'accept';
 	SELF_KW = 'self';
 	SIG_KW = 'sig';
-	INSTANTIATES_KW = 'instantiates';
+	//INSTANTIATES_KW = 'instantiates';
 	AS_KW = 'as';
 
 	CONNECT_KW = 'connect';
@@ -51,16 +51,16 @@ tokens
 	OR_KW = 'or';
 	REC_KW = 'rec';
 	CONTINUE_KW = 'continue';
-	PAR_KW = 'par';
-	AND_KW = 'and';
-	INTERRUPTIBLE_KW = 'interruptible';
+	//PAR_KW = 'par';
+	AND_KW = 'and';  // Needed for disconnect
+	/*INTERRUPTIBLE_KW = 'interruptible';
 	WITH_KW = 'with';
 	BY_KW = 'by';  /* from for interrupts is more expected, but from is
 	                 not good for multiple roles (generally, the comma
 	                 in interrupt message list and role list looks like
-	                 "and" rather than "or") */
+	                 "and" rather than "or") * /
 	THROWS_KW = 'throws';
-	CATCHES_KW = 'catches';
+	CATCHES_KW = 'catches';*/
 	DO_KW = 'do';
 	//SPAWN_KW = 'spawn';
 	
@@ -72,69 +72,80 @@ tokens
 	 * (i.e. variable) names themselves are used (for AST node root text
 	 * field)
 	 */
-	EMPTY_ALIAS = '__empty_alias';
-	EMPTY_SCOPENAME = '__empty_scopename';
-	NO_SCOPE = '__no_scope';
-	//EMPTY_PACKAGENAME = '__empty_packagebame';
-	EMPTY_OPERATOR = '__empty_operator';
+	
 
-	//EMPTY_PARAMETERDECLLIST = '__empty_parameterdecllist';
-	//EMPTY_ARGUMENTINSTANTIATIONLIST = '__empty_argumentinstantiationlist';
-	EMPTY_LOCALTHROW = '__empty_localthrow';
-	//EMPTY_LOCAL_CATCHES = '__empty_local_catch';
-
+	// Purely util constants -- not parsed as node types
 	KIND_MESSAGESIGNATURE = 'KIND_MESSAGESIGNATURE';
 	KIND_PAYLOADTYPE = 'KIND_PAYLOADTYPE';
 	
+	
+	// "Node type" constants -- but not parsed "directly" by AntlrToScribParser
+
+	EMPTY_ALIAS = 'EMTPY_ALIAS';
+	/*EMPTY_SCOPENAME = '__empty_scopename';
+	NO_SCOPE = '__no_scope';*/
+	//EMPTY_PACKAGENAME = '__empty_packagebame';
+	EMPTY_OPERATOR = 'EMPTY_OPERATOR';
+
+	//EMPTY_PARAMETERDECLLIST = '__empty_parameterdecllist';
+	//EMPTY_ARGUMENTINSTANTIATIONLIST = '__empty_argumentinstantiationlist';
+	/*EMPTY_LOCALTHROW = '__empty_localthrow';
+	EMPTY_LOCAL_CATCHES = '__empty_local_catch';*/
+	
 	//NAME = 'name';
-	AMBIGUOUSNAME = 'ambiguous-name';
-	QUALIFIEDNAME = 'qualified-name';
+	AMBIGUOUSNAME = 'AMBIGUOUSNAME';
+	QUALIFIEDNAME = 'QUALIFIEDNAME';
 	//PACKAGENAME = 'package-name';
 	//FULLMODULENAME = 'full-module-name';
 	//SIMPLEMEMBERNAME = 'simple-member-name';
 	//QUALIFIEDMEMBERNAME = 'qualified-member-name';
+
+	MESSAGESIGNATURE = 'MESSAGESIGNATURE';
+	DELEGATION = 'DELEGATION';
 	
-	//MODULE = 'module';
-	MODULE = 'modul';
+
+	// Parsed "directly" by AntlrToScribParser
+
+	PAYLOAD = 'PAYLOAD';
+	//PAYLOADELEMENT = 'payloadelement';
+
+	//MODULE = 'module';  // Probably a keyword clash
+	MODULE = 'MODULE';
 	//PACKAGEDECL = 'package-decl';
-	MODULEDECL = 'module-decl';
+	MODULEDECL = 'MODULEDECL';
 	//IMPORTDECL = 'import-decl';
 	//FROMIMPORTDECL = 'from-import-decl';
-	IMPORTMODULE = 'import-module';
-	IMPORTMEMBER = 'import-member';
-	PAYLOADTYPEDECL = 'payload-type-decl';
-	MESSAGESIGNATUREDECL = 'message-signature-decl';
-	PARAMETERDECLLIST = 'parameter-decl-list';
-	PARAMETERDECL = 'parameter-decl';
-	MESSAGESIGNATURE = 'message-signature';
-	ROLEDECLLIST = 'role-decl-list';
-	ROLEDECL = 'role-decl';
-	//CONNECTDECL = 'connect-decl';
-	ARGUMENTINSTANTIATIONLIST = 'argument-instantiation-list';
+	IMPORTMODULE = 'IMPORTMODULE';
+	IMPORTMEMBER = 'IMPORTMEMBER';
+	PAYLOADTYPEDECL = 'PAYLOADTYPEDECL';
+	MESSAGESIGNATUREDECL = 'MESSAGESIGNATUREDECL';
+	ROLEDECLLIST = 'ROLEDECLLIST';
+	ROLEDECL = 'ROLEDECL';
+	PARAMETERDECLLIST = 'PARAMETERDECLLIST';
+	PARAMETERDECL = 'PARAMETERDECL';
+	ROLEINSTANTIATIONLIST = 'ROLEINSTANTIATIONLIST';
+	ROLEINSTANTIATION = 'ROLEINSTANTIATION';  // FIXME: not consistent with arginstas/payloadeles
+	ARGUMENTINSTANTIATIONLIST = 'ARGUMENTINSTANTIATIONLIST';
 	//ARGUMENTINSTANTIATION = 'argument-instantiation';
-	PAYLOAD = 'payload';
-	//PAYLOADELEMENT = 'payloadelement';
-	DELEGATION = 'delegation';
-	ROLEINSTANTIATIONLIST = 'role-instantiation-list';
-	ROLEINSTANTIATION = 'role-instantiation';  // FIXME: not consistent with arginstas/payloadeles
+	//CONNECTDECL = 'connect-decl';
 
-	GLOBALPROTOCOLDECL = 'global-protocol-decl';
-	GLOBALPROTOCOLDECLMODS = 'global-protocol-decl-mods';
-	GLOBALPROTOCOLHEADER = 'global-protocol-header';
-	GLOBALPROTOCOLDEF = 'global-protocol-def';
-	GLOBALPROTOCOLBLOCK = 'global-protocol-block';
-	GLOBALINTERACTIONSEQUENCE = 'global-interaction-sequence';
-	GLOBALMESSAGETRANSFER = 'global-message-transfer';
-	GLOBALCONNECT = 'global-connect';
-	GLOBALDISCONNECT = 'global-disconnect';
-	GLOBALWRAP = 'global-wrap';
-	GLOBALCHOICE = 'global-choice';
-	GLOBALRECURSION = 'global-recursion';
-	GLOBALCONTINUE = 'global-continue';
-	GLOBALPARALLEL = 'global-parallel';
-	GLOBALINTERRUPTIBLE = 'global-interruptible';
-	GLOBALINTERRUPT = 'global-interrupt';
-	GLOBALDO = 'global-do';
+	GLOBALPROTOCOLDECL = 'GLOBALPROTOCOLDECL';
+	GLOBALPROTOCOLDECLMODS = 'GLOBALPROTOCOLDECLMODS';
+	GLOBALPROTOCOLHEADER = 'GLOBALPROTOCOLHEADER';
+	GLOBALPROTOCOLDEF = 'GLOBALPROTOCOLDEF';
+	GLOBALPROTOCOLBLOCK = 'GLOBALPROTOCOLBLOCK';
+	GLOBALINTERACTIONSEQUENCE = 'GLOBALINTERACTIONSEQUENCE';
+	GLOBALMESSAGETRANSFER = 'GLOBALMESSAGETRANSFER';
+	GLOBALCONNECT = 'GLOBALCONNECT';
+	GLOBALDISCONNECT = 'GLOBALDISCONNECT';
+	GLOBALWRAP = 'GLOBALWRAP';
+	GLOBALCHOICE = 'GLOBALCHOICE';
+	GLOBALRECURSION = 'GLOBALRECURSION';
+	GLOBALCONTINUE = 'GLOBALCONTINUE';
+	/*GLOBALPARALLEL = 'GLOBALPARALLEL';
+	GLOBALINTERRUPTIBLE = 'GLOBALINTERRUPTIBLE';
+	GLOBALINTERRUPT = 'GLOBALINTERRUPT';*/
+	GLOBALDO = 'GLOBALDO';
 
 	/*LOCALPROTOCOLDECL = 'local-protocol-decl';
 	LOCALROLEDECLLIST = 'local-role-decl-list';
@@ -159,6 +170,7 @@ tokens
 }
 
 
+// Has to come after tokens?
 @parser::header
 {
 	package org.scribble.parser.antlr;
@@ -605,10 +617,6 @@ globalinteraction:
 |
 	globalcontinue
 |
-	globalparallel
-|
-	globalinterruptible
-|
 	globaldo
 |
 	globalconnect
@@ -617,6 +625,10 @@ globalinteraction:
 |
 	globalwrap
 ;
+/*|
+	globalparallel
+|
+	globalinterruptible*/
 
 
 /**
@@ -701,19 +713,19 @@ globalcontinue:
 ;
 
 
-/**
+/*
  * Section 3.7.7 Global Parallel
- */
+ * /
 globalparallel:
 	PAR_KW globalprotocolblock (AND_KW globalprotocolblock)*
 	->
 	^(GLOBALPARALLEL globalprotocolblock+)
-;
+;*/
 
 
-/**
+/*
  * Section 3.7.8 Global Interruptible
- */
+ * /
 globalinterruptible:
 	INTERRUPTIBLE_KW globalprotocolblock WITH_KW '{' globalinterrupt* '}'
 	->
@@ -728,7 +740,7 @@ globalinterrupt:
 	message (',' message)* BY_KW rolename ';'
 	->
 	^(GLOBALINTERRUPT rolename message+)
-;
+;*/
 
 
 /**

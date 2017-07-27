@@ -34,9 +34,9 @@ import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.endpoint.EModelFactoryImpl;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.SModelFactoryImpl;
-import org.scribble.parser.scribble.AntlrParser;
+import org.scribble.parser.scribble.ScribbleAntlrWrapper;
 import org.scribble.parser.scribble.ScribModuleLoader;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.type.name.ModuleName;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
@@ -48,8 +48,8 @@ public class MainContext
 {
 
 	// Only "manually" used here for loading main module (which should be factored out to front end) -- otherwise, only used within loader
-	protected final AntlrParser antlrParser = newAntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
-	protected final ScribParser scribParser = newScribParser();
+	protected final ScribbleAntlrWrapper antlrParser = newAntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
+	protected final AntlrToScribParser scribParser = newScribParser();
 
 	protected final AstFactory af = newAstFactory();
 	protected final EModelFactory ef = newEModelFactory();
@@ -139,14 +139,14 @@ public class MainContext
 				this.af, this.ef, this.sf);
 	}
 	
-	protected AntlrParser newAntlrParser()
+	protected ScribbleAntlrWrapper newAntlrParser()
 	{
-		return new AntlrParser();
+		return new ScribbleAntlrWrapper();
 	}
 	
-	protected ScribParser newScribParser()
+	protected AntlrToScribParser newScribParser()
 	{
-		return new ScribParser();
+		return new AntlrToScribParser();
 	}
 	
 	protected AstFactory newAstFactory()

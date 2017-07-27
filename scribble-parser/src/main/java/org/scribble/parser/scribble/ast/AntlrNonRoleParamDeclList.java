@@ -21,14 +21,14 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
-import org.scribble.parser.scribble.ScribParser;
-import org.scribble.parser.scribble.ScribParserUtil;
+import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.AntlrToScribParserUtil;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.util.ScribParserException;
 
 public class AntlrNonRoleParamDeclList
 {
-	public static NonRoleParamDeclList parseNonRoleParamDeclList(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static NonRoleParamDeclList parseNonRoleParamDeclList(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		List<NonRoleParamDecl<NonRoleParamKind>> pds = new LinkedList<>();
 		for (CommonTree pd : getParamDeclChildren(ct))
@@ -45,6 +45,6 @@ public class AntlrNonRoleParamDeclList
 	{
 		return (ct.getChildCount() == 0)
 				? Collections.emptyList()
-				: ScribParserUtil.toCommonTreeList(ct.getChildren());
+				: AntlrToScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

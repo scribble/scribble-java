@@ -17,14 +17,14 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 
 public class AntlrGContinue
 {
 	public static final int LABEL_CHILD_INDEX = 0;
 
-	public static GContinue parseGContinue(ScribParser parser, CommonTree ct, AstFactory af)
+	public static GContinue parseGContinue(AntlrToScribParser parser, CommonTree ct, AstFactory af)
 	{
 		RecVarNode recvar = AntlrSimpleName.toRecVarNode(getRecVarChild(ct), af);
 		return af.GContinue(ct, recvar);

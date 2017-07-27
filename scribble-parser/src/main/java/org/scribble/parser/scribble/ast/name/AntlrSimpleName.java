@@ -25,6 +25,7 @@ import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.ScopeNode;
+import org.scribble.parser.scribble.ScribbleAntlrConstants;
 import org.scribble.type.kind.DataTypeKind;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.Local;
@@ -37,9 +38,6 @@ import org.scribble.type.kind.SigKind;
 
 public class AntlrSimpleName
 {
-	private static final String ANTLR_EMPTY_OPERATOR = "EMPTY_OPERATOR";
-	//private static final String ANTLR_NO_SCOPE = "NO_SCOPE";
-
 	public static ModuleNameNode toModuleNameNode(CommonTree ct, AstFactory af)
 	{
 		return (ModuleNameNode) af.QualifiedNameNode(ct, ModuleKind.KIND, getName(ct));  // Cannot use SimpleNameNode because qualified uses the node's elements, not the node's text itself
@@ -78,7 +76,7 @@ public class AntlrSimpleName
 	public static OpNode toOpNode(CommonTree ct, AstFactory af)
 	{
 		String op = getName(ct);
-		return op.equals(ANTLR_EMPTY_OPERATOR)
+		return op.equals(ScribbleAntlrConstants.ANTLR_EMPTY_OPERATOR)
 				? (OpNode) af.SimpleNameNode(ct, OpKind.KIND, OpNode.EMPTY_OPERATOR_IDENTIFIER)
 				: (OpNode) af.SimpleNameNode(ct, OpKind.KIND, getName(ct));
 	}

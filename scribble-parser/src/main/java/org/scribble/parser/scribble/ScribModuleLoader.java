@@ -29,10 +29,10 @@ import org.scribble.util.ScribParserException;
 public class ScribModuleLoader extends DefaultModuleLoader //implements ModuleLoader
 {
 	private ResourceLocator locator;
-	private AntlrParser antlr;
-	private ScribParser parser;
+	private ScribbleAntlrWrapper antlr;
+	private AntlrToScribParser parser;
 	
-	public ScribModuleLoader(ResourceLocator locator, AntlrParser antlr, ScribParser parser)
+	public ScribModuleLoader(ResourceLocator locator, ScribbleAntlrWrapper antlr, AntlrToScribParser parser)
 	{
 		this.locator = locator;
 		this.antlr = antlr;

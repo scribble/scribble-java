@@ -17,7 +17,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 
 public class AntlrRoleDecl
@@ -25,7 +25,7 @@ public class AntlrRoleDecl
 	public static final int NAME_CHILD_INDEX = 0;
 
 	//public static RoleNode parseRoleDecl(AntlrModuleParser parser, CommonTree ct)
-	public static RoleDecl parseRoleDecl(ScribParser parser, CommonTree ct, AstFactory af)
+	public static RoleDecl parseRoleDecl(AntlrToScribParser parser, CommonTree ct, AstFactory af)
 	{
 		RoleNode name = AntlrSimpleName.toRoleNode(getNameChild(ct), af);
 		return af.RoleDecl(ct, name);

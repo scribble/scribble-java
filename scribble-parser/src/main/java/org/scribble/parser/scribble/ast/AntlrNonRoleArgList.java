@@ -24,9 +24,9 @@ import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
-import org.scribble.parser.scribble.ScribParser;
-import org.scribble.parser.scribble.ScribParserUtil;
-import org.scribble.parser.scribble.AntlrConstants.AntlrNodeType;
+import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.AntlrToScribParserUtil;
+import org.scribble.parser.scribble.ScribbleAntlrConstants.AntlrNodeType;
 import org.scribble.parser.scribble.ast.name.AntlrAmbigName;
 import org.scribble.parser.scribble.ast.name.AntlrQualifiedName;
 import org.scribble.util.ScribParserException;
@@ -34,7 +34,7 @@ import org.scribble.util.ScribParserException;
 public class AntlrNonRoleArgList
 {
 	// Similar to AntlrPayloadElemList
-	public static NonRoleArgList parseNonRoleArgList(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static NonRoleArgList parseNonRoleArgList(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		//List<NonRoleArg> as = getArgumentChildren(ct).stream().map((a) -> parseNonRoleArg(parser, a)).collect(Collectors.toList());
 		List<NonRoleArg> as = new LinkedList<>();
@@ -46,9 +46,9 @@ public class AntlrNonRoleArgList
 	}
 
 	// Not in own class because not called by ScribbleParser -- called directly from above
-	private static NonRoleArg parseNonRoleArg(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	private static NonRoleArg parseNonRoleArg(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
-		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
+		AntlrNodeType type = AntlrToScribParserUtil.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)
 		{
 			NonRoleArgNode arg = (NonRoleArgNode) parser.parse(ct, af);
@@ -90,6 +90,6 @@ public class AntlrNonRoleArgList
 	{
 		return (ct.getChildCount() == 0)
 				? Collections.emptyList()
-				: ScribParserUtil.toCommonTreeList(ct.getChildren());
+				: AntlrToScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

@@ -77,14 +77,15 @@ public interface AstFactory
 	
 	MessageSigNode MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload);
 
+	GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
+	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);
+
 	//PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems);
 	PayloadElemList PayloadElemList(CommonTree source, List<PayloadElem<?>> payloadelems);
 	//PayloadElem PayloadElem(PayloadElemNameNode name);
 	//UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name);
 	//UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name);
 	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(CommonTree source, PayloadElemNameNode<K> name);
-	GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
-	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);
 
 	ModuleDecl ModuleDecl(CommonTree source, ModuleNameNode fullmodname);
 	ImportModule ImportModule(CommonTree source, ModuleNameNode modname, ModuleNameNode alias);

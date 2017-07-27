@@ -19,7 +19,7 @@ import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrQualifiedName;
 import org.scribble.util.ScribParserException;
 
@@ -29,7 +29,7 @@ public class AntlrGDo
 	public static final int ARGUMENTLIST_CHILD_INDEX = 1;
 	public static final int ROLEINSTANTIATIONLIST_CHILD_INDEX = 2;
 
-	public static GDo parseGDo(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static GDo parseGDo(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		RoleArgList ril = (RoleArgList) parser.parse(getRoleArgListChild(ct), af);
 		NonRoleArgList al = (NonRoleArgList) parser.parse(getNonRoleArgListChild(ct), af);

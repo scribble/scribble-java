@@ -17,8 +17,8 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.name.simple.NonRoleParamNode;
-import org.scribble.parser.scribble.AntlrConstants;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.ScribbleAntlrConstants;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 import org.scribble.type.kind.DataTypeKind;
 import org.scribble.type.kind.Kind;
@@ -30,7 +30,7 @@ public class AntlrNonRoleParamDecl
 	public static final int KIND_CHILD_INDEX = 0;
 	public static final int NAME_CHILD_INDEX = 1;
 
-	public static NonRoleParamDecl<? extends NonRoleParamKind> parseNonRoleParamDecl(ScribParser parser, CommonTree ct, AstFactory af)
+	public static NonRoleParamDecl<? extends NonRoleParamKind> parseNonRoleParamDecl(AntlrToScribParser parser, CommonTree ct, AstFactory af)
 	{
 		Kind kind = parseKind(getKindChild(ct));
 		if (kind.equals(SigKind.KIND))
@@ -54,11 +54,11 @@ public class AntlrNonRoleParamDecl
 		String kind = ct.getText();
 		switch (kind)
 		{
-			case AntlrConstants.KIND_MESSAGESIGNATURE:
+			case ScribbleAntlrConstants.KIND_MESSAGESIGNATURE:
 			{
 				return SigKind.KIND;
 			}
-			case AntlrConstants.KIND_PAYLOADTYPE:
+			case ScribbleAntlrConstants.KIND_PAYLOADTYPE:
 			{
 				return DataTypeKind.KIND;
 			}

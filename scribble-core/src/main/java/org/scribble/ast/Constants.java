@@ -31,6 +31,7 @@ public class Constants
 	public static final String SELF_KW = "self";
 	public static final String SIG_KW = "sig";
 	public static final String INSTANTIATES_KW = "instantiates";
+	public static final String AS_KW = "as";
 
 	public static final String CONNECT_KW = "connect";
 	public static final String DISCONNECT_KW = "disconnect";
@@ -42,14 +43,13 @@ public class Constants
 	public static final String OR_KW = "or";
 	public static final String REC_KW = "rec";
 	public static final String CONTINUE_KW = "continue";
-	public static final String PAR_KW = "par";
+	//public static final String PAR_KW = "par";
 	public static final String AND_KW = "and";
-	public static final String INTERRUPTIBLE_KW = "interruptible";
+	/*public static final String INTERRUPTIBLE_KW = "interruptible";
 	public static final String WITH_KW = "with";
 	public static final String BY_KW = "by";
-	public static final String DO_KW = "do";
-	public static final String AS_KW = "as";
-	public static final String SPAWN_KW = "spawn";
 	public static final String THROWS_KW = "throws";
-	public static final String CATCHES_KW = "catches";
+	public static final String CATCHES_KW = "catches";*/
+	public static final String DO_KW = "do";
+	//public static final String SPAWN_KW = "spawn";
 }
