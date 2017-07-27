@@ -14,8 +14,8 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.ProtocolName;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.ProtocolName;
 
 public abstract class ProtocolNameNode<K extends ProtocolKind> extends MemberNameNode<K>
 {

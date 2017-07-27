@@ -16,13 +16,13 @@ package org.scribble.model.endpoint.actions;
 import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SConnect;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.MessageId;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Payload;
+import org.scribble.type.name.MessageId;
+import org.scribble.type.name.Role;
 
-public class EConnect extends EAction
+public class ERequest extends EAction
 {
-	public EConnect(EModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
+	public ERequest(EModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
 	//public Connect(Role peer)
 	{
 		super(ef, peer, mid, payload);
@@ -52,7 +52,7 @@ public class EConnect extends EAction
 	}
 	
 	@Override
-	public boolean isConnect()
+	public boolean isRequest()
 	{
 		return true;
 	}
@@ -64,17 +64,17 @@ public class EConnect extends EAction
 		{
 			return true;
 		}
-		if (!(o instanceof EConnect))
+		if (!(o instanceof ERequest))
 		{
 			return false;
 		}
-		return ((EConnect) o).canEqual(this) && super.equals(o);
+		return ((ERequest) o).canEqual(this) && super.equals(o);
 	}
 
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof EConnect;
+		return o instanceof ERequest;
 	}
 
 	@Override

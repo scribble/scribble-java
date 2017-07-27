@@ -14,8 +14,8 @@
 package org.scribble.ast.name;
 
 import org.scribble.ast.NonRoleArgNode;
-import org.scribble.sesstype.kind.PayloadTypeKind;
-import org.scribble.sesstype.name.PayloadElemType;
+import org.scribble.type.kind.PayloadTypeKind;
+import org.scribble.type.name.PayloadElemType;
 
 
 // A datatype kind node: DataTypeNode or NonRoleParameterNode -- not necessarily simple nor qualified

@@ -15,7 +15,7 @@ package org.scribble.runtime.net.scribsock;
 
 import org.scribble.runtime.net.session.MPSTEndpoint;
 import org.scribble.runtime.net.session.Session;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 @Deprecated
 public abstract class AffineSocket<S extends Session, R extends Role> extends LinearSocket<S, R>

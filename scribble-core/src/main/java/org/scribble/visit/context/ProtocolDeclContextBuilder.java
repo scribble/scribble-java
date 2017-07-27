@@ -18,9 +18,9 @@ import org.scribble.ast.context.global.GDependencyMap;
 import org.scribble.ast.context.local.LDependencyMap;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.NoEnvSubprotocolVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names -- no: old?

@@ -26,9 +26,9 @@ import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.sesstype.name.DataType;
-import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.sesstype.name.PayloadElemType;
+import org.scribble.type.name.DataType;
+import org.scribble.type.name.MessageSigName;
+import org.scribble.type.name.PayloadElemType;
 
 public class OutputSockGen extends ScribSockGen
 {
@@ -69,7 +69,7 @@ public class OutputSockGen extends ScribSockGen
 			{
 				setSendHeaderWithoutReturnType(apigen, a, mb);
 			}
-			else if (a.isConnect())
+			else if (a.isRequest())
 			{
 				hasConnect = true;
 				setConnectHeaderWithoutReturnType(apigen, a, mb);
@@ -114,7 +114,7 @@ public class OutputSockGen extends ScribSockGen
 					mb.addBodyLine(JavaBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", " + MESSAGE_PARAM + ");");
 				}
 			}
-			else if (a.isConnect())
+			else if (a.isRequest())
 			{
 				//throw new RuntimeException("Shouldn't get in here: " + a);
 				mb.addBodyLine(JavaBuilder.SUPER + ".connect(" + ROLE_PARAM + ", cons, host, port);\n");

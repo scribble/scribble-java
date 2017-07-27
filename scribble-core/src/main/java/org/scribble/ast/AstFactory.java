@@ -64,11 +64,11 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.kind.PayloadTypeKind;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Kind;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.kind.PayloadTypeKind;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 
 public interface AstFactory

@@ -16,7 +16,7 @@ package org.scribble.codegen.java.endpointapi;
 import java.util.Map;
 
 import org.scribble.main.Job;
-import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.type.name.GProtocolName;
 
 // Basic pattern: use TypeGenerators to create all necessary TypeBuilders and cache them, and generateApi should call build on all as a final step
 public abstract class ApiGen

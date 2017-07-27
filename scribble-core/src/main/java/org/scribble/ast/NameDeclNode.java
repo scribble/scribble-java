@@ -15,8 +15,8 @@ package org.scribble.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
-import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.name.Name;
+import org.scribble.type.kind.Kind;
+import org.scribble.type.name.Name;
 
 public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase
 { 

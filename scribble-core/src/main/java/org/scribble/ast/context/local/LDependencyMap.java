@@ -14,7 +14,7 @@
 package org.scribble.ast.context.local;
 
 import org.scribble.ast.context.DependencyMap;
-import org.scribble.sesstype.name.LProtocolName;
+import org.scribble.type.name.LProtocolName;
 
 public class LDependencyMap extends DependencyMap<LProtocolName>
 {

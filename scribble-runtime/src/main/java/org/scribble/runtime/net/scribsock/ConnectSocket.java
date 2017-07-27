@@ -21,7 +21,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.session.BinaryChannelEndpoint;
 import org.scribble.runtime.net.session.MPSTEndpoint;
 import org.scribble.runtime.net.session.Session;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 @Deprecated
 public abstract class ConnectSocket<S extends Session, R extends Role> extends LinearSocket<S, R>

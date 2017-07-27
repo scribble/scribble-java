@@ -23,10 +23,10 @@ import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.ModuleName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.Role;
 
 public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 {

@@ -15,8 +15,8 @@ package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.type.kind.Global;
+import org.scribble.type.name.GProtocolName;
 
 public class GProtocolNameNode extends ProtocolNameNode<Global>
 {

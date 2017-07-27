@@ -18,7 +18,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.name.RecVar;
 
 // Collects continues (not recs)
 public class RecVarCollector extends NameCollector<RecVar>

@@ -15,7 +15,7 @@ package org.scribble.runtime.net.session;
 
 import java.io.Serializable;
 
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 @Deprecated
 public class Principal implements Serializable

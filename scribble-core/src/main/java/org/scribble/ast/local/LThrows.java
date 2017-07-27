@@ -21,7 +21,7 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.Message;
+import org.scribble.type.Message;
 
 public class LThrows extends LInterrupt
 {

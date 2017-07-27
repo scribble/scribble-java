@@ -23,7 +23,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.ProtocolName;
+import org.scribble.type.name.ProtocolName;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public abstract class DoArgListDel extends ScribDelBase

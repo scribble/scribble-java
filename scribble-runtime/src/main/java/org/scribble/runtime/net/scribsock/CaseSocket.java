@@ -15,7 +15,7 @@ package org.scribble.runtime.net.scribsock;
 
 import org.scribble.runtime.net.session.Session;
 import org.scribble.runtime.net.session.SessionEndpoint;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 // For "receiving" the payloads after a branch is done
 public abstract class CaseSocket<S extends Session, R extends Role> extends LinearSocket<S, R>  // No I/O induced by this socket itself (i.e. not a ReceiveSocket)

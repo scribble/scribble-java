@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 import org.scribble.util.ScribUtil;
 
 public class RoleArgList extends DoArgList<RoleArg>

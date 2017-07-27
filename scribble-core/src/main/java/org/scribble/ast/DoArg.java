@@ -15,7 +15,7 @@ package org.scribble.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
 // Cf. NameDeclNode/HeaderParameterDecl, i.e. wrappers for param names/arg values

@@ -18,7 +18,7 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.Local;
+import org.scribble.type.kind.Local;
 
 public class LProtocolDef extends ProtocolDef<Local> implements LNode
 {

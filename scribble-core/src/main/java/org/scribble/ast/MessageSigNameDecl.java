@@ -17,9 +17,9 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.MemberNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.SigKind;
-import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.sesstype.name.ModuleName;
+import org.scribble.type.kind.SigKind;
+import org.scribble.type.name.MessageSigName;
+import org.scribble.type.name.ModuleName;
 
 public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 {

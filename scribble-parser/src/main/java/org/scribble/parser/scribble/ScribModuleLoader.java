@@ -19,7 +19,7 @@ import org.scribble.main.DefaultModuleLoader;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.ResourceLocator;
-import org.scribble.sesstype.name.ModuleName;
+import org.scribble.type.name.ModuleName;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
 

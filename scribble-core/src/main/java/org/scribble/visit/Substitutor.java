@@ -20,9 +20,9 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.Arg;
-import org.scribble.sesstype.kind.NonRoleArgKind;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Arg;
+import org.scribble.type.kind.NonRoleArgKind;
+import org.scribble.type.name.Role;
 
 public class Substitutor extends AstVisitor
 {

@@ -24,8 +24,8 @@ import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.Message;
-import org.scribble.sesstype.kind.Local;
+import org.scribble.type.Message;
+import org.scribble.type.kind.Local;
 import org.scribble.util.ScribUtil;
 
 public class LInteractionSeq extends InteractionSeq<Local> implements LNode

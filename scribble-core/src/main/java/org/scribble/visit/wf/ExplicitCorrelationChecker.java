@@ -19,9 +19,9 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.SubprotocolVisitor;
 import org.scribble.visit.wf.env.ExplicitCorrelationEnv;
 

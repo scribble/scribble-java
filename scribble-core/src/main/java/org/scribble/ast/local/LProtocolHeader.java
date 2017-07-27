@@ -25,10 +25,10 @@ import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.kind.RoleKind;
-import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Local;
+import org.scribble.type.kind.RoleKind;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.Role;
 
 public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 {

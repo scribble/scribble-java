@@ -13,7 +13,7 @@
  */
 package org.scribble.ast;
 
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 
 public interface ProtocolKindNode<K extends ProtocolKind> extends ScribNode
 {

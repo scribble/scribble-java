@@ -13,7 +13,7 @@
  */
 package org.scribble.runtime.net;
 
-import org.scribble.sesstype.name.Op;
+import org.scribble.type.name.Op;
 
 public class ScribInterrupt extends ScribMessage
 {

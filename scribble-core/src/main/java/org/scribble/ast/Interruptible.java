@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.ScopeNode;
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 
 public abstract class Interruptible<K extends ProtocolKind> extends CompoundInteractionNode<K> implements ScopedNode
 {

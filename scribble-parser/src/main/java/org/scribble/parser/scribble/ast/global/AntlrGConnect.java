@@ -16,14 +16,9 @@ package org.scribble.parser.scribble.ast.global;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.parser.scribble.ScribParser;
-import org.scribble.parser.scribble.ScribParserUtil;
-import org.scribble.parser.scribble.AntlrConstants.AntlrNodeType;
-import org.scribble.parser.scribble.ast.name.AntlrAmbigName;
-import org.scribble.parser.scribble.ast.name.AntlrQualifiedName;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 import org.scribble.util.ScribParserException;
 
@@ -37,25 +32,10 @@ public class AntlrGConnect
 	public static GConnect parseGConnect(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct), af);
-		MessageNode msg = parseMessage(parser, getMessageChild(ct), af);
+		MessageNode msg = AntlrGMessageTransfer.parseMessage(parser, getMessageChild(ct), af);
 		RoleNode dest = AntlrSimpleName.toRoleNode(getDestinationChild(ct), af);
 		return af.GConnect(ct, src, msg, dest);
 		//return AstFactoryImpl.FACTORY.GConnect(src, dest);
-	}
-
-	public static MessageNode parseMessage(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
-	{
-		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
-		if (type == AntlrNodeType.MESSAGESIGNATURE)
-		{
-			return (MessageSigNode) parser.parse(ct, af);
-		}
-		else //if (type.equals(AntlrConstants.AMBIGUOUSNAME_NODE_TYPE))
-		{
-			return (ct.getChildCount() == 1)
-				? AntlrAmbigName.toAmbigNameNode(ct, af)  // parametername or simple messagesignaturename
-				: AntlrQualifiedName.toMessageSigNameNode(ct, af);
-		}
 	}
 
 	public static CommonTree getMessageChild(CommonTree ct)

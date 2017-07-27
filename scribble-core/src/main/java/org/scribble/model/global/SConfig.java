@@ -28,14 +28,14 @@ import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAccept;
-import org.scribble.model.endpoint.actions.EConnect;
+import org.scribble.model.endpoint.actions.ERequest;
 import org.scribble.model.endpoint.actions.EDisconnect;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.endpoint.actions.EWrapClient;
 import org.scribble.model.endpoint.actions.EWrapServer;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 public class SConfig
 {
@@ -167,7 +167,7 @@ public class SConfig
 				tmp1.put(r1, succ1);
 				tmp1.put(r2, succ2);
 				SBuffers tmp2;
-				if (((a1.isConnect() && a2.isAccept()) || (a1.isAccept() && a2.isConnect())))
+				if (((a1.isRequest() && a2.isAccept()) || (a1.isAccept() && a2.isRequest())))
 						//&& this.buffs.canConnect(r1, r2))
 				{
 					tmp2 = this.buffs.connect(r1, r2);
@@ -543,10 +543,10 @@ public class SConfig
 								tmp.add(a);
 							}
 						}
-						else if (a.isConnect())
+						else if (a.isRequest())
 						{
 							// FIXME: factor out
-							EConnect c = (EConnect) a;
+							ERequest c = (ERequest) a;
 							//EndpointState speer = this.states.get(c.peer);
 							EFSM speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)

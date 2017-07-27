@@ -24,8 +24,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.PayloadElemType;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.PayloadElemType;
 
 public class ActionIfaceGen extends IOIfaceGen
 {

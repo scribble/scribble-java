@@ -23,7 +23,7 @@ import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.parser.scribble.ScribParser;
 import org.scribble.parser.scribble.ScribParserUtil;
-import org.scribble.sesstype.kind.NonRoleParamKind;
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.util.ScribParserException;
 
 public class AntlrNonRoleParamDeclList

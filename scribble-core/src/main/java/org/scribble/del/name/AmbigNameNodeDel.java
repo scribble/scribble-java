@@ -20,9 +20,9 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.DataTypeKind;
-import org.scribble.sesstype.kind.SigKind;
-import org.scribble.sesstype.name.AmbigName;
+import org.scribble.type.kind.DataTypeKind;
+import org.scribble.type.kind.SigKind;
+import org.scribble.type.name.AmbigName;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class AmbigNameNodeDel extends ScribDelBase

@@ -13,8 +13,8 @@
  */
 package org.scribble.ast;
 
-import org.scribble.sesstype.Arg;
-import org.scribble.sesstype.kind.NonRoleArgKind;
+import org.scribble.type.Arg;
+import org.scribble.type.kind.NonRoleArgKind;
 
 // sig or payloadtype kinds that can be used as do arg vals, cf. RoleNode
 // "Value nodes" (sigs or names) that can be used as non-role subprotocol arguments (doesn't include role instantation arguments)

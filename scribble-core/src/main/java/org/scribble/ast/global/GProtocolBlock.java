@@ -20,8 +20,8 @@ import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Global;
+import org.scribble.type.name.Role;
 
 public class GProtocolBlock extends ProtocolBlock<Global> implements GNode
 {

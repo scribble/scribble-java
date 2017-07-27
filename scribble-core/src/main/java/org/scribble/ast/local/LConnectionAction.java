@@ -17,7 +17,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.sesstype.kind.Local;
+import org.scribble.type.kind.Local;
 
 public abstract class LConnectionAction extends ConnectionAction<Local> implements LSimpleInteractionNode
 {

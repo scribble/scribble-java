@@ -20,7 +20,7 @@ import java.util.Set;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 public class SStateErrors
 {

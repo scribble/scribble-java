@@ -14,7 +14,7 @@
 package org.scribble.model;
 
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of S
 public abstract class GraphBuilderUtil

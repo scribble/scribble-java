@@ -20,10 +20,10 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.parser.scribble.AntlrConstants;
 import org.scribble.parser.scribble.ScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
-import org.scribble.sesstype.kind.DataTypeKind;
-import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.kind.SigKind;
+import org.scribble.type.kind.DataTypeKind;
+import org.scribble.type.kind.Kind;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.kind.SigKind;
 
 public class AntlrNonRoleParamDecl
 {

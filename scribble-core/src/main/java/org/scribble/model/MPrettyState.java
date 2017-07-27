@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 
 public abstract class MPrettyState
 		<L, A extends MAction<K>, S extends MPrettyState<L, A, S, K>, K extends ProtocolKind>

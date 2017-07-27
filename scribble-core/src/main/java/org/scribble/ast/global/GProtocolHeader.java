@@ -23,8 +23,8 @@ import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.type.kind.Global;
+import org.scribble.type.name.GProtocolName;
 
 public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 {

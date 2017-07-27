@@ -13,8 +13,8 @@
  */
 package org.scribble.ast;
 
-import org.scribble.sesstype.kind.ScopeKind;
-import org.scribble.sesstype.name.Name;
+import org.scribble.type.kind.ScopeKind;
+import org.scribble.type.name.Name;
 
 // Move to types? uniform with Named
 public interface ScopedNode

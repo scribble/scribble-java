@@ -15,8 +15,8 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
-import org.scribble.sesstype.kind.ScopeKind;
-import org.scribble.sesstype.name.Scope;
+import org.scribble.type.kind.ScopeKind;
+import org.scribble.type.name.Scope;
 
 // Currently unused (TODO: interruptible)
 public class ScopeNode extends SimpleNameNode<ScopeKind>

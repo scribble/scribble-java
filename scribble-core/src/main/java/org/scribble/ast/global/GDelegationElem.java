@@ -22,9 +22,9 @@ import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.GDelegationType;
-import org.scribble.sesstype.name.PayloadElemType;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.GDelegationType;
+import org.scribble.type.name.PayloadElemType;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.context.Projector;
 

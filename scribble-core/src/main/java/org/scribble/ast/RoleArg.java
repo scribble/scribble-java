@@ -16,8 +16,8 @@ package org.scribble.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.RoleKind;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.RoleKind;
+import org.scribble.type.name.Role;
 
 public class RoleArg extends DoArg<RoleNode>
 {

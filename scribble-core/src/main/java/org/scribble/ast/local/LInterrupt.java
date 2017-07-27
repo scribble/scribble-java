@@ -19,7 +19,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Interrupt;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public abstract class LInterrupt extends Interrupt implements LSimpleInteractionNode

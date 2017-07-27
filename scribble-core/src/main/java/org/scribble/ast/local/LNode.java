@@ -14,7 +14,7 @@
 package org.scribble.ast.local;
 
 import org.scribble.ast.ProtocolKindNode;
-import org.scribble.sesstype.kind.Local;
+import org.scribble.type.kind.Local;
 
 public interface LNode extends ProtocolKindNode<Local>
 {

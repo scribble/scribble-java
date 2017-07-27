@@ -22,9 +22,9 @@ import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.sesstype.name.DataType;
-import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.sesstype.name.PayloadElemType;
+import org.scribble.type.name.DataType;
+import org.scribble.type.name.MessageSigName;
+import org.scribble.type.name.PayloadElemType;
 
 public class ReceiveSockGen extends ScribSockGen
 {

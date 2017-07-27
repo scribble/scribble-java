@@ -17,8 +17,8 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.kind.RecVarKind;
+import org.scribble.type.name.RecVar;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.wf.NameDisambiguator;
 

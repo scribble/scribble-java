@@ -22,7 +22,7 @@ import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.Global;
+import org.scribble.type.kind.Global;
 
 public class GParallel extends Parallel<Global> implements GCompoundInteractionNode
 {

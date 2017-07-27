@@ -16,9 +16,9 @@ package org.scribble.ast.name.qualified;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.sesstype.Arg;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.LProtocolName;
+import org.scribble.type.Arg;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.LProtocolName;
 
 public class LProtocolNameNode extends ProtocolNameNode<Local> implements PayloadElemNameNode<Local>
 {

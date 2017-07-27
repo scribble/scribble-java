@@ -25,7 +25,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.Buf;
 import org.scribble.runtime.net.ScribMessageFormatter;
 import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 //.. initiator and joiner endpoints

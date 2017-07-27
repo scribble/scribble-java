@@ -37,7 +37,7 @@ import org.scribble.model.global.SModelFactoryImpl;
 import org.scribble.parser.scribble.AntlrParser;
 import org.scribble.parser.scribble.ScribModuleLoader;
 import org.scribble.parser.scribble.ScribParser;
-import org.scribble.sesstype.name.ModuleName;
+import org.scribble.type.name.ModuleName;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
 
