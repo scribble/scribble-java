@@ -41,6 +41,7 @@ import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
@@ -243,9 +244,9 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GProtocolDecl GProtocolDecl(CommonTree source, List<GProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)
+	public GProtocolDecl GProtocolDecl(CommonTree source, List<GProtocolDecl.Modifiers> mods, GProtocolHeader header, GProtocolDef def)
 	{
-		GProtocolDecl gpd = new GProtocolDecl(source, modifiers, header, def);
+		GProtocolDecl gpd = new GProtocolDecl(source, mods, header, def);
 		gpd = del(gpd, new GProtocolDeclDel());
 		return gpd;
 	}
@@ -526,11 +527,19 @@ public class AstFactoryImpl implements AstFactory
 		return dprn;
 	}
 
-	@Override
-	public LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def)
+	@Override  // Called from LProtocolDecl::clone, but currently never used  -- local proto decls only projected, not parsed
+	public LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> mods, LProtocolHeader header, LProtocolDef def)
 	{
-		LProtocolDecl lpd = new LProtocolDecl(source, modifiers, header, def);
+		LProtocolDecl lpd = new LProtocolDecl(source, mods, header, def);
 		lpd = del(lpd, new LProtocolDeclDel());
+		return lpd;
+	}
+
+	@Override
+	public LProjectionDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> mods, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def)  // del extends that of LProtocolDecl 
+	{
+		LProjectionDecl lpd = new LProjectionDecl(source, mods, header, def);
+		lpd = ScribNodeBase.del(lpd, new LProjectionDeclDel(fullname, self));
 		return lpd;
 	}
 
@@ -682,13 +691,5 @@ public class AstFactoryImpl implements AstFactory
 		}
 		return (T) ret;*/
 		return ScribNodeBase.del(n, del);
-	}
-
-	@Override
-	public LProtocolDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def)  // del extends that of LProtocolDecl 
-	{
-		LProtocolDecl lpd = new LProtocolDecl(source, modifiers, header, def);
-		lpd = ScribNodeBase.del(lpd, new LProjectionDeclDel(fullname, self));
-		return lpd;
 	}
 }

@@ -86,11 +86,4 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	{
 		return (GProtocolDecl) super.getTargetProtocolDecl(jcontext, mcontext);
 	}
-
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GSimpleInteractionNode.super.getKind();
-	}*/
 }

@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.global.actions.SAccept;
-import org.scribble.model.global.actions.SConnect;
+import org.scribble.model.global.actions.SRequest;
 import org.scribble.model.global.actions.SDisconnect;
 import org.scribble.model.global.actions.SReceive;
 import org.scribble.model.global.actions.SSend;
@@ -50,9 +50,9 @@ public class SModelFactoryImpl implements SModelFactory
 	}
 
 	@Override
-	public SConnect newSConnect(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SRequest newSConnect(Role subj, Role obj, MessageId<?> mid, Payload payload)
 	{
-		return new SConnect(subj, obj, mid, payload);
+		return new SRequest(subj, obj, mid, payload);
 	}
 	
 	@Override

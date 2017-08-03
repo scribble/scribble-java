@@ -44,7 +44,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 	public static final String DUMMY_REC_LABEL = "__";
 	
 	// NOTE: assumes unique recvars up to this point, i.e. no recvar shadowing (treated internally by protocoldef-inlining) -- unfolding of unguardeds will, however, result in "unfolding shadowing"
-	private Map<RecVar, Recursion<?>> recs = new HashMap<>();  // Could parameterise recvars to be global/local
+	protected Map<RecVar, Recursion<?>> recs = new HashMap<>();  // Could parameterise recvars to be global/local
 	private Set<RecVar> recsToUnfold = new HashSet<>();
 	
 	public InlinedProtocolUnfolder(Job job)
@@ -149,6 +149,9 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 		else
 		{
 			unfolded = ((LRecursion) rec).reconstruct(rv, (LProtocolBlock) block);
+			/*LRecursion clone = (LRecursion) rec.clone(af);  // Try to be more compatible with extensions that have different reconstructs  // FIXME: reconstruct should be "protected"?
+			clone.block = (LProtocolBlock) block;             // No: cannot set new block
+			unfolded = (LRecursion) clone.del(rec.del());*/
 		}
 		this.recs.put(recvar, unfolded);
 	}

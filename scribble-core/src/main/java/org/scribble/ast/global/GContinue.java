@@ -58,11 +58,4 @@ public class GContinue extends Continue<Global> implements GSimpleInteractionNod
 		gc = (GContinue) gc.del(del);
 		return gc;
 	}
-
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GSimpleInteractionNode.super.getKind();
-	}
 }

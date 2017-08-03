@@ -60,7 +60,7 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		ReachabilityEnv env = checker.popEnv().mergeContext((ReachabilityEnv) lr.block.del().env());
 		env = env.removeContinueLabel(lr.recvar.toName());
 		checker.pushEnv(env);
-		return (LRecursion) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env*/
+		return (LRecursion) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 	
 	@Override

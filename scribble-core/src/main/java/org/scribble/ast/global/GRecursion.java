@@ -63,7 +63,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 	// Pruning must be considered here (at Recursion) due to unguarded recvars
 	// Set should be unnecessary (singleton OK) -- *nested* irrelevant continues should already have been pruned
 	// FIXME? refactor and separate into dels? -- maybe not: since pruning is a bit too much of a "centralised algorithm" -- currently relying on TODO exception for unhandled cases
-	private static LProtocolBlock prune(AstFactory af, LProtocolBlock block, Set<RecVar> rvs)  // FIXME: Set unnecessary
+	protected static LProtocolBlock prune(AstFactory af, LProtocolBlock block, Set<RecVar> rvs)  // FIXME: Set unnecessary
 	{
 		if (block.isEmpty())
 		{
@@ -179,11 +179,4 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 	{
 		return (GProtocolBlock) this.block;
 	}
-
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GCompoundInteractionNode.super.getKind();
-	}*/
 }

@@ -31,8 +31,8 @@ public abstract class NameCollector<N extends Name<?>> extends NoEnvOffsetSubpro
 		super(job);
 	}
 
-	// Can takes ModuleContext here, so no need to visit from Module as root -- maybe factor this facility out
-	// though has to enter at least at protocoldecl for subprotocol visitor root sig pushing
+	// Can take ModuleContext here, so no need to visit from Module as root -- maybe factor this facility out
+	// Although has to enter at least at protocoldecl for subprotocol visitor root sig pushing
 	public NameCollector(Job job, ModuleContext mcontext)
 	{
 		super(job);

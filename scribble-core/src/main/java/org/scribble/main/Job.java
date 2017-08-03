@@ -98,6 +98,7 @@ public class Job
 	}
 	
 	// Scribble extensions should override these "new" methods
+	// FIXME: move to MainContext::newJob?
 	public EGraphBuilderUtil newEGraphBuilderUtil()
 	{
 		return new EGraphBuilderUtil(this.ef);
@@ -133,7 +134,7 @@ public class Job
 		//runUnfoldingPass();
 	}
 		
-	// "Second part" of context building (separated for extensions to work on non-unfolded protos)
+	// "Second part" of context building (separated for extensions to work on non-unfolded protos -- e.g., Assrt/F17CommandLine)
 	public void runUnfoldingPass() throws ScribbleException
 	{
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
@@ -160,6 +161,7 @@ public class Job
 	{
 		runVisitorPassOnAllModules(Projector.class);
 		runProjectionContextBuildingPasses();
+		runProjectionUnfoldingPass();
 		if (!noAcceptCorrelationCheck)
 		{
 			runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
@@ -181,6 +183,11 @@ public class Job
 		}
 		runVisitorPassOnProjectedModules(ProjectedRoleDeclFixer.class);  // Possibly could do after inlining, and do role collection on the inlined version
 		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
+	}
+
+	// Cf. runUnfoldingPass
+	protected void runProjectionUnfoldingPass() throws ScribbleException
+	{
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
 	}
 

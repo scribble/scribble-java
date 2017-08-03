@@ -55,7 +55,7 @@ public class LProtocolDefDel extends ProtocolDefDel
 		SubprotocolSig subsig = inl.peekStack();
 		LProtocolDef def = (LProtocolDef) visited;
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) def.block.del().env()).getTranslation();	
-		RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame,  // The parent do would probably be the better blame source
+		RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame,  // The parent do would probably be the better source for blame
 				RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 		LRecursion rec = inl.job.af.LRecursion(blame, recvar, block);
 		LInteractionSeq lis = inl.job.af.LInteractionSeq(blame, Arrays.asList(rec));

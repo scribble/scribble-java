@@ -20,7 +20,8 @@ public class EGraph implements MPrettyPrint
 	public final EState init;
 	public final EState term;
 
-	protected EGraph(EState init, EState term)
+	//protected EGraph(EState init, EState term)
+	public EGraph(EState init, EState term)
 	{
 		this.init = init;
 		this.term = term;
