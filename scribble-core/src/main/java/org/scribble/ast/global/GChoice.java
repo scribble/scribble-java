@@ -39,6 +39,8 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 		super(source, subj, blocks);
 	}
 	
+	// Similar pattern to reconstruct
+	// Idea is, if extending the AST class (more fields), then reconstruct/project should also be extended (and called from extended del)
 	public LChoice project(AstFactory af, Role self, List<LProtocolBlock> blocks)
 	{
 		LChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
@@ -56,7 +58,7 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 		{
 			// FIXME? initially keep global subject, and later overwrite as necessary in projections? (algorithm currently checks for DUMMY)
 			RoleNode subj = self.equals(this.subj.toName()) ? this.subj.clone(af) : af.DummyProjectionRoleNode();
-			List<LChoice> cs = blocks.stream().map((b) -> af.LChoice(this.source, subj, Arrays.asList(b))).collect(Collectors.toList());
+			List<LChoice> cs = blocks.stream().map(b -> af.LChoice(this.source, subj, Arrays.asList(b))).collect(Collectors.toList());
 				// Hacky: keeping this.source for each LChoice (will end up as the source for the final merged LChoice)
 			LChoice merged = cs.get(0);
 			try

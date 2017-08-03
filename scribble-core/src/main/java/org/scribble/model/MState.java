@@ -126,7 +126,7 @@ public abstract class MState<
 		return this.actions.contains(a);
 	}
 
-	public final S getSuccessor(A a)
+	public S getSuccessor(A a)
 	{
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())

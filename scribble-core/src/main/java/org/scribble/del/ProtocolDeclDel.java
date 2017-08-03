@@ -57,7 +57,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 		ProtocolDecl<?> pd = (ProtocolDecl<?>) child;
 		MemberName<?> pn = pd.getFullMemberName(main);
 		// Is it really needed to add self protocoldecl dependencies?
-		pd.header.roledecls.getRoles().stream().forEach((r) -> addSelfDependency(builder, (ProtocolName<?>) pn, r));
+		pd.header.roledecls.getRoles().stream().forEach(r -> addSelfDependency(builder, (ProtocolName<?>) pn, r));
 	}
 	
 	protected abstract void addSelfDependency(ProtocolDeclContextBuilder builder, ProtocolName<?> proto, Role role);

@@ -28,6 +28,7 @@ import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
 
+// Maybe make abstract with concrete parsed (LParsedDecl) and projected (LProjectionDecl) subclasses
 public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 {
 	public LProtocolDecl(CommonTree source, List<Modifiers> modifiers, LProtocolHeader header, LProtocolDef def)
@@ -81,18 +82,4 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 	{
 		return getHeader().getSelfRole();
 	}
-	
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public boolean isLocal()
-	{
-		return LNode.super.isLocal();
-	}
-	
-	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LNode.super.getKind();
-	}*/
 }

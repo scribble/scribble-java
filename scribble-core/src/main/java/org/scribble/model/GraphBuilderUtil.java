@@ -31,16 +31,17 @@ public abstract class GraphBuilderUtil
 
 	}
 	
-	protected void init(S entry, S exit)  // Should be used by subclass constructor and reset
+	//public abstract S newState(Set<RecVar> labs);
+	
+	// N.B. must be called before every "new visit", including first
+	// Separated from constructor in order to use newState
+	public abstract void init(S init);
+	
+	protected void reset(S entry, S exit)  // Should be used by init
 	{
 		this.entry = entry;//newState(Collections.emptySet());
 		this.exit = exit;//newState(Collections.emptySet());
 	}
-	
-	// Separated from constructor in order to use newState
-	public abstract void reset();
-	
-	//public abstract S newState(Set<RecVar> labs);
 	
 	public void addEntryLabel(L lab)
 	{

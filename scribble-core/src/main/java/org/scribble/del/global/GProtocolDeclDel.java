@@ -17,13 +17,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
+import org.scribble.ast.NonRoleParamDeclList;
+import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.DependencyMap;
 import org.scribble.ast.context.global.GProtocolDeclContext;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
+import org.scribble.ast.local.LProtocolHeader;
+import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.Job;
@@ -98,12 +104,20 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	public GProtocolDecl
 			leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
+		AstFactory af = proj.job.af;
+
 		Module root = proj.job.getContext().getModule(proj.getModuleContext().root);
 		GProtocolDecl gpd = (GProtocolDecl) visited;
+		GProtocolHeader gph = gpd.getHeader();
 		Role self = proj.peekSelf();
-		
+
+		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(af, gph.getSource(), gph.getDeclName(), self);
+		RoleDeclList roledecls = gph.roledecls.project(af, self);
+		NonRoleParamDeclList paramdecls = gph.paramdecls.project(af, self);
+		//LProtocolHeader hdr = af.LProtocolHeader(gpd.header.getSource(), pn, roledecls, paramdecls);  // FIXME: make a header del and move there?
+		LProtocolHeader hdr = gph.project(af, self, pn, roledecls, paramdecls);
 		LProtocolDef def = (LProtocolDef) ((ProjectionEnv) gpd.def.del().env()).getProjection();
-		LProtocolDecl lpd = gpd.project(proj.job.af, root, self, def);  // FIXME: is root (always) the correct module? (wrt. LProjectionDeclDel?)
+		LProtocolDecl lpd = gpd.project(af, root, self, hdr, def);  // FIXME: is root (always) the correct module? (wrt. LProjectionDeclDel?)
 		
 		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
 		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, gpd, lpd, deps);
@@ -111,7 +125,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return gpd;
 	}
 
-	private Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
+	protected Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
 	{
 		DependencyMap<GProtocolName> deps = getProtocolDeclContext().getDependencyMap();
 		return deps.getDependencies().get(self);

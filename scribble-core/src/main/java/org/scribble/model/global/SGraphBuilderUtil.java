@@ -41,12 +41,16 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 	protected SGraphBuilderUtil(SModelFactory sf)
 	{
 		this.sf = sf;
-		reset();
+		//reset();
+		init(sf.newSState(null));
 	}
 	
-	public void reset()
+	// N.B. must be called before every "new visit", including first
+	@Override
+	public void init(SState init)
 	{
-		init(this.sf.newSState(null), this.sf.newSState(null));  // configs
+		//init(this.sf.newSState(null), this.sf.newSState(null));  // configs
+		reset(init, this.sf.newSState(null));
 	}
 
 	// Do as an initial state rather than config?

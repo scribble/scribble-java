@@ -49,6 +49,6 @@ public abstract class Recursion<K extends ProtocolKind> extends CompoundInteract
 	@Override
 	public String toString()
 	{
-		return Constants.REC_KW + " " + this.recvar + " " + block;
+		return Constants.REC_KW + " " + this.recvar + " " + this.block;
 	}
 }

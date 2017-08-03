@@ -18,22 +18,18 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
-import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ProtocolHeader;
-import org.scribble.ast.RoleDeclList;
-import org.scribble.ast.local.LProtocolDecl;
+import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
-import org.scribble.visit.context.Projector;
 
 public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 {
@@ -42,20 +38,20 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 		super(source, modifiers, header, def);
 	}
 	
-	// FIXME? project modifiers?
-	public LProtocolDecl project(AstFactory af, Module mod, Role self, LProtocolDef def) throws ScribbleException  // mod is just the parent?
+	// FIXME: project modifiers?
+	public LProjectionDecl project(AstFactory af, Module mod, Role self, LProtocolHeader hdr, LProtocolDef def) throws ScribbleException  // mod is just the parent?
 	{
-		//Role self = proj.peekSelf();
+		/*//Role self = proj.peekSelf();
 		GProtocolHeader gph = getHeader();
 		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(af, gph.getSource(), gph.getDeclName(), self);
 		
 		// Move to delegates? -- maybe fully integrate into projection pass
 		RoleDeclList roledecls = this.header.roledecls.project(af, self);
 		NonRoleParamDeclList paramdecls = this.header.paramdecls.project(af, self);
-		LProtocolHeader lph = af.LProtocolHeader(this.header.getSource(), pn, roledecls, paramdecls);
+		LProtocolHeader lph = af.LProtocolHeader(this.header.getSource(), pn, roledecls, paramdecls);*/
 		GProtocolName gpn = this.getFullMemberName(mod);
-		LProtocolDecl projected = af.LProjectionDecl(this.source, this.modifiers, gpn, self, lph, def);
-		return projected;
+		LProjectionDecl proj = af.LProjectionDecl(this.source, this.modifiers, gpn, self, hdr, def);
+		return proj;
 	}
 
 	@Override

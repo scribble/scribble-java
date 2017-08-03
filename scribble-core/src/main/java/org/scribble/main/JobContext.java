@@ -220,7 +220,7 @@ public class JobContext
 		EGraph unfair = this.unfairEGraphs.get(fulllpn);
 		if (unfair == null)
 		{
-			unfair = getEGraph(fullname, role).init.unfairTransform().toGraph();
+			unfair = getEGraph(fullname, role).init.unfairTransform(this.job.ef).toGraph();
 			addUnfairEGraph(fulllpn, unfair);
 		}
 		return unfair;
@@ -289,7 +289,7 @@ public class JobContext
 		if (minimised == null)
 		{
 			String aut = runAut(getEGraph(fullname, role).init.toAut(), fulllpn + ".aut");
-			minimised = new AutParser().parse(this.job.ef, aut);
+			minimised = new AutParser(this.job).parse(aut);
 			addMinimisedEGraph(fulllpn, minimised);
 		}
 		return minimised;

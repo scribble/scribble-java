@@ -20,11 +20,14 @@ import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNodeBase;
+import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 {
@@ -68,17 +71,16 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 	{
 		return (GProtocolName) super.getDeclName();
 	}
+
+	// FIXME: make a delegate and move there?
+	public LProtocolHeader project(AstFactory af, Role self, LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	{
+		return af.LProtocolHeader(this.source, name, roledecls, paramdecls);
+	}
 	
 	@Override
 	public String toString()
 	{
 		return Constants.GLOBAL_KW + " " + super.toString();
 	}
-	
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GNode.super.getKind();
-	}*/
 }

@@ -55,8 +55,16 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 	public EGraphBuilderUtil(EModelFactory ef)
 	{
 		this.ef = ef;
-		//clear();
-		reset();
+		////clear();
+		//reset();
+	}
+	
+	// N.B. must be called before every "new visit", including first
+	@Override
+	public void init(EState init)
+	{
+		clear();
+		reset(this.ef.newEState(Collections.emptySet()), this.ef.newEState(Collections.emptySet()));
 	}
 
 	protected void clear()
@@ -71,14 +79,6 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		this.prev.push(new LinkedList<>());
 		
 		this.enactingMap.clear();
-	}
-	
-	//@Override
-	public void reset()
-	{
-		clear();
-		//super.reset();
-		init(this.ef.newEState(Collections.emptySet()), this.ef.newEState(Collections.emptySet()));
 	}
 	
 	/*@Override
@@ -366,8 +366,11 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 	 */
 	public EGraph finalise()
 	{
-		EState res = new EState(this.entry.getLabels());
-		EState resTerm = new EState(this.exit.getLabels());
+		/*EState res = new EState(this.entry.getLabels());
+		EState resTerm = new EState(this.exit.getLabels());*/
+		EState res = this.entry.cloneNode(this.ef, this.entry.getLabels()); //this.ef.newEState(this.entry.getLabels());
+		EState resTerm = this.exit.cloneNode(this.ef, this.exit.getLabels()); //this.ef.newEState(this.exit.getLabels());
+
 		Map<EState, EState> map = new HashMap<>();
 		map.put(this.entry, res);
 		map.put(this.exit, resTerm);
@@ -386,7 +389,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 	}
 	
 	// FIXME: incomplete -- won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
-	private void fixContinueEdges(Set<EState> seen, Map<EState, EState> map, EState curr, EState res)
+	protected void fixContinueEdges(Set<EState> seen, Map<EState, EState> map, EState curr, EState res)
 	{
 		if (seen.contains(curr))
 		{
@@ -436,7 +439,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		}
 		else
 		{
-			next = new EState(succ.getLabels());
+			next = this.ef.newEState(succ.getLabels());
 			map.put(succ, next);
 		}
 		return next;

@@ -30,8 +30,8 @@ import org.scribble.visit.context.ProjectedRoleDeclFixer;
 public class LProjectionDeclDel extends LProtocolDeclDel
 {
 	// Maybe better to store in context, but more convenient to pass to here via factory (than infer in context building) -- could alternatively store in projected module
-	private final GProtocolName fullname;
-	private final Role self;
+	protected final GProtocolName fullname;
+	protected final Role self;  // Can be obtained from LProtocolHeader?
 
 	public LProjectionDeclDel(GProtocolName fullname, Role self)
 	{
@@ -54,8 +54,9 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 		List<RoleDecl> rds = lpd.header.roledecls.getDecls().stream().filter((rd) -> 
 				occs.contains(rd.getDeclName())).collect(Collectors.toList());
 		RoleDeclList rdl = fixer.job.af.RoleDeclList(lpd.header.roledecls.getSource(), rds);
-		LProtocolHeader header = lpd.getHeader().reconstruct(lpd.getHeader().getNameNode(), rdl, lpd.header.paramdecls);
-		LProtocolDecl fixed = lpd.reconstruct(header, lpd.def);
+		LProtocolHeader tmp = lpd.getHeader();
+		LProtocolHeader hdr = tmp.reconstruct(tmp.getNameNode(), rdl, tmp.paramdecls);
+		LProtocolDecl fixed = lpd.reconstruct(hdr, lpd.def);
 		
 		fixer.job.debugPrintln("\n[DEBUG] Projected " + getSourceProtocol() + " for " + getSelfRole() + ":\n" + fixed);
 		

@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.global.actions.SAccept;
-import org.scribble.model.global.actions.SConnect;
+import org.scribble.model.global.actions.SRequest;
 import org.scribble.model.global.actions.SDisconnect;
 import org.scribble.model.global.actions.SReceive;
 import org.scribble.model.global.actions.SSend;
@@ -34,7 +34,7 @@ public interface SModelFactory
 	
 	SSend newSSend(Role subj, Role obj, MessageId<?> mid, Payload payload);
 	SReceive newSReceive(Role subj, Role obj, MessageId<?> mid, Payload payload);
-	SConnect newSConnect(Role subj, Role obj, MessageId<?> mid, Payload payload);
+	SRequest newSConnect(Role subj, Role obj, MessageId<?> mid, Payload payload);
 	SAccept newSAccept(Role subj, Role obj, MessageId<?> mid, Payload payload);
 	SDisconnect newSDisconnect(Role subj, Role obj);
 	SWrapClient newSWrapClient(Role subj, Role obj);
