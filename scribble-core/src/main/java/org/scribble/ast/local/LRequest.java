@@ -29,9 +29,9 @@ import org.scribble.type.Message;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LConnect extends LConnectionAction implements LSimpleInteractionNode
+public class LRequest extends LConnectionAction implements LSimpleInteractionNode
 {
-	public LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
+	public LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//public LConnect(RoleNode src, RoleNode dest)
 	{
 		super(source, src, msg, dest);
@@ -41,12 +41,12 @@ public class LConnect extends LConnectionAction implements LSimpleInteractionNod
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LConnect(this.source, this.src, this.msg, this.dest);
+		return new LRequest(this.source, this.src, this.msg, this.dest);
 		//return new LConnect(this.src, this.dest);
 	}
 	
 	@Override
-	public LConnect clone(AstFactory af)
+	public LRequest clone(AstFactory af)
 	{
 		RoleNode src = this.src.clone(af);
 		MessageNode msg = this.msg.clone(af);
@@ -56,13 +56,13 @@ public class LConnect extends LConnectionAction implements LSimpleInteractionNod
 	}
 
 	@Override
-	public LConnect reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
+	public LRequest reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
 	//public LConnect reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
-		LConnect ls = new LConnect(this.source, src, msg, dest);
+		LRequest ls = new LRequest(this.source, src, msg, dest);
 		//LConnect ls = new LConnect(src, dest);
-		ls = (LConnect) ls.del(del);
+		ls = (LRequest) ls.del(del);
 		return ls;
 	}
 

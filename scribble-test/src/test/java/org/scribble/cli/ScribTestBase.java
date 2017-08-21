@@ -19,14 +19,17 @@ import java.util.concurrent.ExecutionException;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.scribble.main.AntlrSourceException;
 import org.scribble.main.ScribbleException;
 
 /*
  * Packaging following pattern of putting tests into same package but different directory as classes being tested:
  * (in this case, testing org.scribble.cli.CommandLine -- but this essentially tests most of core/parser)
  */
-public abstract class ScribTest
+public abstract class ScribTestBase
 {
+	protected static int NUM_SKIPPED = 0;  // HACK
+
 	protected static final boolean GOOD_TEST = false;
 	protected static final boolean BAD_TEST = !GOOD_TEST;
 
@@ -36,7 +39,7 @@ public abstract class ScribTest
 	// relative to scribble-test/src/test/resources (or target/test-classes/)
 	protected static final String TEST_ROOT_DIR = ".";  // FIXME: make relative to scribble-java root (for subclasses in extension modules)
 
-	public ScribTest(String example, boolean isBadTest)
+	public ScribTestBase(String example, boolean isBadTest)
 	{
 		this.example = example;
 		this.isBadTest = isBadTest;
@@ -44,10 +47,31 @@ public abstract class ScribTest
 	
 	protected String getTestRootDir()
 	{
-		return ScribTest.TEST_ROOT_DIR;
+		return ScribTestBase.TEST_ROOT_DIR;
 	}
 	
-	protected void runTest(String dir) throws CommandLineException, ScribbleException
+	protected String[] getSkipList()
+	{
+		return new String[0];
+	}
+
+	protected boolean checkSkip()
+	{
+		String[] SKIP = getSkipList();
+		String tmp = this.example.replace("\\", "/");
+		for (String skip : SKIP)
+		{
+			if (tmp.endsWith(skip))
+			{
+				ScribTestBase.NUM_SKIPPED++;
+				System.out.println("[scrib-test] Test on skip-list: " + this.example + " (" + ScribTestBase.NUM_SKIPPED + " skipped.)");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected void runTest(String dir) throws CommandLineException, AntlrSourceException
 	{
 		new CommandLine(this.example, CLArgParser.JUNIT_FLAG, CLArgParser.IMPORT_PATH_FLAG, dir).run();
 					// Added JUNIT flag -- but for some reason only bad DoArgList01.scr was breaking without it...
@@ -56,18 +80,22 @@ public abstract class ScribTest
 	@Test
 	public void tests() throws IOException, InterruptedException, ExecutionException
 	{
+		if (checkSkip())
+		{
+			return;
+		}
+
+		// TODO: For now just locate classpath for resources -- later maybe directly execute job
+		/*URL url = ClassLoader.getSystemResource(AllTest.GOOD_ROOT);  // Assume good/bad have same parent
+		String dir = url.getFile().substring(0, url.getFile().length() - ("/" + AllTest.GOOD_ROOT).length());*/
+		String dir = ClassLoader.getSystemResource(getTestRootDir()).getFile();
+		if (File.separator.equals("\\")) // HACK: Windows
+		{
+			dir = dir.substring(1).replace("/", "\\");
+		}
+
 		try
 		{
-			// TODO: For now just locate classpath for resources -- later maybe directly execute job
-			/*URL url = ClassLoader.getSystemResource(AllTest.GOOD_ROOT);  // Assume good/bad have same parent
-			String dir = url.getFile().substring(0, url.getFile().length() - ("/" + AllTest.GOOD_ROOT).length());*/
-			String dir = ClassLoader.getSystemResource(getTestRootDir()).getFile();
-
-			if (File.separator.equals("\\")) // HACK: Windows
-			{
-				dir = dir.substring(1).replace("/", "\\");
-			}
-			
 			// FIXME: read runtime arguments from a config file, e.g. -oldwf, -fair, etc
 			// Also need a way to specify expected tool output (e.g. projections/EFSMs for good, errors for bad)
 			//new CommandLine(this.example, CLArgParser.JUNIT_FLAG, CLArgParser.IMPORT_PATH_FLAG, dir).run();
@@ -80,6 +108,10 @@ public abstract class ScribTest
 			Assert.assertTrue("Unexpected exception '" + e.getMessage() + "'", this.isBadTest);
 		}
 		catch (CommandLineException e)
+		{
+			throw new RuntimeException(e);
+		}
+		catch (Exception e)  // Includes AntlrSourceExceptions that are not ScribbleExceptions -- hacky?
 		{
 			throw new RuntimeException(e);
 		}

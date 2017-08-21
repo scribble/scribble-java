@@ -439,7 +439,8 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		}
 		else
 		{
-			next = this.ef.newEState(succ.getLabels());
+			//next = this.ef.newEState(succ.getLabels());
+			next = succ.cloneNode(this.ef, succ.getLabels());
 			map.put(succ, next);
 		}
 		return next;

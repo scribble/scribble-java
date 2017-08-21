@@ -374,7 +374,7 @@ simplemembername:           simplename;  // Only for member declarations
 
 qualifiedname:
 	IDENTIFIER ('.' IDENTIFIER)*
-	->
+->
 	^(QUALIFIEDNAME IDENTIFIER+)
 ;
 
@@ -391,7 +391,7 @@ messagesignaturename: membername;
  * Section 3.2.2 Top-level Module Structure
  */
 module:
-	moduledecl importdecl* datatypedecl* protocoldecl*
+	moduledecl importdecl* datatypedecl* protocoldecl* EOF
 ->
 	^(MODULE moduledecl importdecl* datatypedecl* protocoldecl*)
 ;
@@ -418,7 +418,7 @@ importdecl:
 
 importmodule:
 	IMPORT_KW modulename ';'
-	->
+->
 	^(IMPORTMODULE modulename EMPTY_ALIAS)
 |
 	IMPORT_KW modulename AS_KW simplemodulename ';'
@@ -428,11 +428,11 @@ importmodule:
 
 importmember:
 	FROM_KW modulename IMPORT_KW simplemembername ';'
-	->
+->
 	^(IMPORTMEMBER modulename simplemembername EMPTY_ALIAS)
 |
 	FROM_KW modulename IMPORT_KW simplemembername AS_KW simplemembername ';'
-	->
+->
 	^(IMPORTMEMBER modulename simplemembername simplemembername)
 ;
 
@@ -449,13 +449,13 @@ datatypedecl:
 
 payloadtypedecl:
 	TYPE_KW '<' IDENTIFIER '>' EXTIDENTIFIER FROM_KW EXTIDENTIFIER AS_KW simplepayloadtypename ';'
-	->
+->
 	^(PAYLOADTYPEDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplepayloadtypename)
 ;
 
 messagesignaturedecl:
 	SIG_KW '<' IDENTIFIER '>' EXTIDENTIFIER FROM_KW EXTIDENTIFIER AS_KW simplemessagesignaturename ';'
-	->
+->
 	^(MESSAGESIGNATUREDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplemessagesignaturename)
 ;
 
@@ -469,20 +469,20 @@ messagesignaturedecl:
 
 messagesignature:
 	'(' payload ')'
-	->
+->
 	^(MESSAGESIGNATURE EMPTY_OPERATOR payload)
 |
 	//messageoperator '(' payload ')'  // Doesn't work (conflict with IDENTIFIER?)
 	IDENTIFIER '(' payload ')'
-	->
+->
 	^(MESSAGESIGNATURE IDENTIFIER payload)
 |
 	'(' ')'
-	->
+->
 	^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD))
 |
 	IDENTIFIER '(' ')'
-	->
+->
 	^(MESSAGESIGNATURE IDENTIFIER ^(PAYLOAD))
 ;
 
@@ -519,63 +519,63 @@ protocoldecl:
  */
 globalprotocoldecl:
 	globalprotocolheader globalprotocoldefinition
-	->
+->
 	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition)
 |
 	globalprotocoldeclmodifiers globalprotocolheader globalprotocoldefinition  // HACK: backwards compat for "implicit" connections 
-	->
+->
 	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition globalprotocoldeclmodifiers)
 ;
 	
 globalprotocoldeclmodifiers:
 	AUX_KW EXPLICIT_KW 
-	->
+->
 	^(GLOBALPROTOCOLDECLMODS AUX_KW EXPLICIT_KW)
 |
 	EXPLICIT_KW
-	->
+->
 	^(GLOBALPROTOCOLDECLMODS EXPLICIT_KW)
 |
 	AUX_KW
-	->
+->
 	^(GLOBALPROTOCOLDECLMODS AUX_KW)
 ;
 
 globalprotocolheader:
 	GLOBAL_KW PROTOCOL_KW simpleprotocolname roledecllist
-	->
+->
 	^(GLOBALPROTOCOLHEADER simpleprotocolname ^(PARAMETERDECLLIST) roledecllist)
 |
 	GLOBAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist roledecllist
-	->
+->
 	^(GLOBALPROTOCOLHEADER simpleprotocolname parameterdecllist roledecllist)
 ;
 
 roledecllist:
 	'(' roledecl (',' roledecl)* ')'
-	->
+->
 	^(ROLEDECLLIST roledecl+)
 ;
 
 roledecl:
 	ROLE_KW rolename
-	->
+->
 	^(ROLEDECL rolename)
 ;
 
 parameterdecllist:
 	'<' parameterdecl (',' parameterdecl)* '>'
-	->
+->
 	^(PARAMETERDECLLIST parameterdecl+)
 ;
 
 parameterdecl:
 	 TYPE_KW parametername
-	->
+->
 	^(PARAMETERDECL KIND_PAYLOADTYPE parametername)
 |
 	 SIG_KW parametername
-	->
+->
 	^(PARAMETERDECL KIND_MESSAGESIGNATURE parametername)
 ;
 
@@ -585,7 +585,7 @@ parameterdecl:
  */
 globalprotocoldefinition:
 	globalprotocolblock
-	->
+->
 	^(GLOBALPROTOCOLDEF globalprotocolblock)
 ;
 
@@ -595,17 +595,17 @@ globalprotocoldefinition:
  */
 globalprotocolblock:
 	'{' globalinteractionsequence '}'
-	->
+->
 	^(GLOBALPROTOCOLBLOCK globalinteractionsequence)
 /*|
 	'(' connectdecl ')' '{' globalinteractionsequence '}'
-	->
+->
 	^(GLOBALPROTOCOLBLOCK globalinteractionsequence connectdecl)*/
 ;
 
 globalinteractionsequence:
 	globalinteraction*
-	->
+->
 	^(GLOBALINTERACTIONSEQUENCE globalinteraction*)
 ;
 
@@ -637,7 +637,7 @@ globalinteraction:
  */
 globalmessagetransfer:
 	message FROM_KW rolename TO_KW rolename (',' rolename )* ';'
-	->
+->
 	^(GLOBALMESSAGETRANSFER message rolename rolename+)
 ;
 
@@ -654,15 +654,15 @@ message:
 globalconnect:
 	//message CONNECT_KW rolename TO_KW rolename
 	CONNECT_KW rolename TO_KW rolename ';'
-	->
+->
 	^(GLOBALCONNECT rolename rolename ^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD)))  // Empty message sig duplicated from messagesignature
 |
 	message CONNECT_KW rolename TO_KW rolename ';'
-	->
+->
 	^(GLOBALCONNECT rolename rolename message)
 ;
 /*	'(' connectdecl (',' connectdecl)* ')'
-	->
+->
 	^(CONNECTDECLLIST connectdecl+)
 ;* /
 	'(' connectdecl ')' 
@@ -670,20 +670,20 @@ globalconnect:
 
 /*connectdecl:
 	CONNECT_KW rolename '->>' rolename
-	->
+->
 	^(CONNECTDECL rolename rolename)
 ;*/
 
 globaldisconnect:
 	DISCONNECT_KW rolename AND_KW rolename ';'
-	->
+->
 	^(GLOBALDISCONNECT rolename rolename )
 ;
 
 globalwrap:
 	//message CONNECT_KW rolename TO_KW rolename
 	WRAP_KW rolename TO_KW rolename ';'
-	->
+->
 	^(GLOBALWRAP rolename rolename)
 ;
 
@@ -693,7 +693,7 @@ globalwrap:
  */
 globalchoice:
 	CHOICE_KW AT_KW rolename globalprotocolblock (OR_KW globalprotocolblock)*
-	->
+->
 	^(GLOBALCHOICE rolename globalprotocolblock+)
 ;
 
@@ -703,13 +703,13 @@ globalchoice:
  */
 globalrecursion:
 	REC_KW recursionvarname globalprotocolblock
-	->
+->
 	^(GLOBALRECURSION recursionvarname globalprotocolblock)
 ;
 
 globalcontinue:
 	CONTINUE_KW recursionvarname ';'
-	->
+->
 	^(GLOBALCONTINUE recursionvarname)
 ;
 
@@ -719,7 +719,7 @@ globalcontinue:
  * /
 globalparallel:
 	PAR_KW globalprotocolblock (AND_KW globalprotocolblock)*
-	->
+->
 	^(GLOBALPARALLEL globalprotocolblock+)
 ;*/
 
@@ -729,17 +729,17 @@ globalparallel:
  * /
 globalinterruptible:
 	INTERRUPTIBLE_KW globalprotocolblock WITH_KW '{' globalinterrupt* '}'
-	->
+->
 	^(GLOBALINTERRUPTIBLE EMPTY_SCOPENAME globalprotocolblock globalinterrupt*)
 |
 	INTERRUPTIBLE_KW scopename globalprotocolblock WITH_KW '{' (globalinterrupt)* '}'
-	->
+->
 	^(GLOBALINTERRUPTIBLE scopename globalprotocolblock globalinterrupt*)
 ;
 
 globalinterrupt:
 	message (',' message)* BY_KW rolename ';'
-	->
+->
 	^(GLOBALINTERRUPT rolename message+)
 ;*/
 
@@ -749,29 +749,29 @@ globalinterrupt:
  */
 globaldo:
 	DO_KW protocolname roleinstantiationlist ';'
-	->
+->
 	^(GLOBALDO protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
 	DO_KW protocolname argumentinstantiationlist roleinstantiationlist ';'
-	->
+->
 	^(GLOBALDO protocolname argumentinstantiationlist roleinstantiationlist)
 ;
 
 roleinstantiationlist:
 	'(' roleinstantiation (',' roleinstantiation)* ')'
-	->
+->
 	^(ROLEINSTANTIATIONLIST roleinstantiation+)
 ;
 
 roleinstantiation:
 	rolename
-	->
+->
 	^(ROLEINSTANTIATION rolename)  // FIXME: not consistent with arginstas/payloadeles
 ;
 
 argumentinstantiationlist:
 	'<' argumentinstantiation (',' argumentinstantiation)* '>'
-	->
+->
 	^(ARGUMENTINSTANTIATIONLIST argumentinstantiation+)
 ;
 
@@ -792,24 +792,24 @@ argumentinstantiation:
  * /
 localprotocoldecl:
 	localprotocolheader localprotocoldefinition
-	->
+->
 	^(LOCALPROTOCOLDECL localprotocolheader localprotocoldefinition)
 ;
 
 localprotocolheader:
 	LOCAL_KW PROTOCOL_KW simpleprotocolname localroledecllist
-	->
+->
 	//simpleprotocolname EMPTY_PARAMETERDECLLIST localroledecllist
 	simpleprotocolname ^(PARAMETERDECLLIST) localroledecllist
 |
 	LOCAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist localroledecllist
-	->
+->
 	simpleprotocolname parameterdecllist localroledecllist
 ;
 
 localroledecllist:
 	'(' localroledecl (',' localroledecl)* ')'
-	->
+->
 	^(LOCALROLEDECLLIST localroledecl+)
 ;
 
@@ -817,7 +817,7 @@ localroledecl:
 	roledecl
 |
 	SELF_KW rolename
-	->
+->
 	^(SELFDECL rolename)
 ;
 
@@ -827,7 +827,7 @@ localroledecl:
  * /
 localprotocoldefinition:
 	localprotocolblock
-	->
+->
 	^(LOCALPROTOCOLDEF localprotocolblock)
 ;
 
@@ -837,13 +837,13 @@ localprotocoldefinition:
  * /
 localprotocolblock:
 	'{' localinteractionsequence '}'
-	->
+->
 	^(LOCALPROTOCOLBLOCK localinteractionsequence)
 ;
 
 localinteractionsequence:
 	(localinteraction)*
-	->
+->
 	^(LOCALINTERACTIONSEQUENCE localinteraction*)
 ;
 
@@ -871,13 +871,13 @@ localinteraction:
  * /
 localsend:
 	message TO_KW rolename (',' rolename)* ';'
-	->
+->
 	^(LOCALSEND message rolename+)
 ;
 
 localreceive:
 	message FROM_KW IDENTIFIER ';'
-	->
+->
 	^(LOCALRECEIVE message IDENTIFIER)
 ;
 
@@ -887,7 +887,7 @@ localreceive:
  * /
 localchoice:
 	CHOICE_KW AT_KW rolename localprotocolblock (OR_KW localprotocolblock)*
-	->
+->
 	^(LOCALCHOICE rolename localprotocolblock+)
 ;
 
@@ -897,13 +897,13 @@ localchoice:
  * /
 localrecursion:
 	REC_KW recursionvarname localprotocolblock
-	->
+->
 	^(LOCALRECURSION recursionvarname localprotocolblock)
 ;
 
 localcontinue:
 	CONTINUE_KW recursionvarname ';'
-	->
+->
 	^(LOCALCONTINUE recursionvarname)
 ;
 
@@ -913,7 +913,7 @@ localcontinue:
  * /
 localparallel:
 	PAR_KW localprotocolblock (AND_KW localprotocolblock)*
-	->
+->
 	^(LOCALPARALLEL localprotocolblock+)
 ;
 
@@ -923,11 +923,11 @@ localparallel:
  * /
 localinterruptible:
 	INTERRUPTIBLE_KW scopename localprotocolblock WITH_KW '{' localcatches* '}'
-	->
+->
 	^(LOCALINTERRUPTIBLE scopename localprotocolblock EMPTY_LOCALTHROW localcatches*)
 |
 	INTERRUPTIBLE_KW scopename localprotocolblock WITH_KW '{' localthrows localcatches* '}'
-	->
+->
 	^(LOCALINTERRUPTIBLE scopename localprotocolblock localthrows localcatches*)
 ;
 
@@ -939,13 +939,13 @@ localinterruptible:
 
 localthrows:
 	THROWS_KW message (',' message)* TO_KW rolename (',' rolename)* ';'
-	->
+->
 	^(LOCALTHROWS rolename+ TO_KW message+)
 ;
 
 localcatches:
 	CATCHES_KW message (',' message)* FROM_KW rolename ';'
-	->
+->
 	^(LOCALCATCHES rolename message+)
 ;
 
@@ -955,21 +955,21 @@ localcatches:
  * /
 localdo:
 	DO_KW protocolname roleinstantiationlist ';'
-	->
+->
 	//^(LOCALDO NO_SCOPE protocolname EMPTY_ARGUMENTINSTANTIATIONLIST roleinstantiationlist)
 	^(LOCALDO NO_SCOPE protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
 	DO_KW protocolname argumentinstantiationlist roleinstantiationlist ';'
-	->
+->
 	^(LOCALDO NO_SCOPE protocolname argumentinstantiationlist roleinstantiationlist)
 |
 	DO_KW scopename ':' protocolname roleinstantiationlist ';'
-	->
+->
 	//^(LOCALDO scopename protocolname EMPTY_ARGUMENTINSTANTIATIONLIST roleinstantiationlist)
 	^(LOCALDO scopename protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
 	DO_KW scopename ':' protocolname argumentinstantiationlist roleinstantiationlist ';'
-	->
+->
 	^(LOCALDO scopename protocolname argumentinstantiationlist roleinstantiationlist)
 ;
 */

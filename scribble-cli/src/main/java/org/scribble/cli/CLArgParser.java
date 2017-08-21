@@ -161,6 +161,8 @@ public class CLArgParser
 		switch (flag)
 		{
 			// Unique flags
+
+			// "Special" args -- not handled via this.parsed
 			case CLArgParser.IMPORT_PATH_FLAG:
 			{
 				return parseImportPath(i);
@@ -173,6 +175,7 @@ public class CLArgParser
 				}
 				return parseInlineMainModule(i);
 			}
+			// No-value args -- just boolean flags
 			case CLArgParser.JUNIT_FLAG:
 			case CLArgParser.VERBOSE_FLAG:
 			case CLArgParser.STATECHAN_SUBTYPES_FLAG:
@@ -184,9 +187,10 @@ public class CLArgParser
 			case CLArgParser.NO_ACCEPT_CORRELATION_CHECK:
 			case CLArgParser.NO_VALIDATION_FLAG:
 			{
-				checkAndAddNoArgUniqueFlag(flag, new String[0]);
+				checkAndAddNoArgUniqueFlag(flag);
 				return i;
 			}
+			// Args with one or more values to go in this.parsed
 			case CLArgParser.API_OUTPUT_DIR_FLAG:
 			{
 				return parseOutput(i);
@@ -197,7 +201,7 @@ public class CLArgParser
 				{
 					throw new CommandLineException("Incompatible flags: " + DOT_FLAG + " and " + AUT_FLAG);
 				}
-				checkAndAddNoArgUniqueFlag(flag, new String[0]);
+				checkAndAddNoArgUniqueFlag(flag);
 				return i;
 			}
 			case CLArgParser.AUT_FLAG:
@@ -206,11 +210,13 @@ public class CLArgParser
 				{
 					throw new CommandLineException("Incompatible flags: " + DOT_FLAG + " and " + AUT_FLAG);
 				}
-				checkAndAddNoArgUniqueFlag(flag, new String[0]);
+				checkAndAddNoArgUniqueFlag(flag);
 				return i;
 			}
 
+
 			// Non-unique flags
+
 			case CLArgParser.PROJECT_FLAG:
 			{
 				return parseProject(i);
@@ -241,6 +247,7 @@ public class CLArgParser
 				return parseProtoAndFileArgs(flag, i);
 			}
 
+
 			default:
 			{
 				throw new RuntimeException("[TODO] Unknown flag: " + flag);
@@ -248,7 +255,12 @@ public class CLArgParser
 		}
 	}
 
-	private void checkAndAddNoArgUniqueFlag(String flag, String[] args) throws CommandLineException
+	private void checkAndAddNoArgUniqueFlag(String flag) throws CommandLineException
+	{
+		checkAndAddUniqueFlag(flag, new String[0]);
+	}
+
+	private void checkAndAddUniqueFlag(String flag, String[] args) throws CommandLineException
 	{
 		CLArgFlag argFlag = CLArgParser.UNIQUE_FLAGS.get(flag);
 		if (this.parsed.containsKey(argFlag))
@@ -291,7 +303,7 @@ public class CLArgParser
 			throw new CommandLineException("Scribble module import path '"+ path +"' is not valid\r\n");
 		}
 		//this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PATH_FLAG), new String[] { path });
-		checkAndAddNoArgUniqueFlag(CLArgParser.IMPORT_PATH_FLAG, new String[] { path });
+		checkAndAddUniqueFlag(CLArgParser.IMPORT_PATH_FLAG, new String[] { path });
 		return i;
 	}
 
@@ -302,7 +314,7 @@ public class CLArgParser
 			throw new CommandLineException("Missing module definition");
 		}
 		String inline = this.args[++i];
-		checkAndAddNoArgUniqueFlag(CLArgParser.INLINE_MAIN_MOD_FLAG, new String[] { inline });
+		checkAndAddUniqueFlag(CLArgParser.INLINE_MAIN_MOD_FLAG, new String[] { inline });
 		return i;
 	}
 

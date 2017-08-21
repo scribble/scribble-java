@@ -27,6 +27,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.java.JEndpointApiGenerator;
+import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.MainContext;
@@ -93,12 +94,12 @@ public class CommandLine
 		}
 	}
 
-	public static void main(String[] args) throws CommandLineException, ScribbleException
+	public static void main(String[] args) throws CommandLineException, AntlrSourceException
 	{
 		new CommandLine(args).run();
 	}
 
-	public void run() throws CommandLineException, ScribbleException  // ScribbleException is for JUnit testing
+	public void run() throws CommandLineException, AntlrSourceException  // ScribbleException is for JUnit testing
 	{
 		try
 		{
@@ -134,7 +135,7 @@ public class CommandLine
 		}
 	}
 
-	protected void runBody() throws ScribParserException, ScribbleException, CommandLineException
+	protected void runBody() throws ScribParserException, AntlrSourceException, CommandLineException
 	{
 		MainContext mc = newMainContext();
 		Job job = mc.newJob();
@@ -170,7 +171,9 @@ public class CommandLine
 		doNonAttemptableOutputTasks(job);
 	}
 
-	protected void doValidationTasks(Job job) throws ScribbleException, ScribParserException  // Latter in case needed by subclasses
+	// AntlrSourceException super of ScribbleException -- needed for, e.g., AssrtCoreSyntaxException
+	protected void doValidationTasks(Job job) throws AntlrSourceException, ScribParserException,  // Latter in case needed by subclasses
+			CommandLineException
 	{
 		/*// Scribble extensions (custom Job passes)
 		if (this.args.containsKey(F17CLArgFlag.F17))
@@ -191,19 +194,19 @@ public class CommandLine
 		// Following must be ordered appropriately -- ?
 		if (this.args.containsKey(CLArgFlag.PROJECT))
 		{
-			outputProjections(job);
+			printProjections(job);
 		}
 		if (this.args.containsKey(CLArgFlag.EFSM))
 		{
-			outputEGraph(job, true, true);
+			printEGraph(job, true, true);
 		}
 		if (this.args.containsKey(CLArgFlag.VALIDATION_EFSM))
 		{
-			outputEGraph(job, false, true);
+			printEGraph(job, false, true);
 		}
 		if (this.args.containsKey(CLArgFlag.UNFAIR_EFSM))
 		{
-			outputEGraph(job, false, false);
+			printEGraph(job, false, false);
 		}
 		if (this.args.containsKey(CLArgFlag.EFSM_PNG))
 		{
@@ -226,11 +229,11 @@ public class CommandLine
 			}
 			if (this.args.containsKey(CLArgFlag.SGRAPH))
 			{
-				outputSGraph(job, true);
+				printSGraph(job, true);
 			}
 			if (this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH))
 			{
-				outputSGraph(job, false);
+				printSGraph(job, false);
 			}
 			if (this.args.containsKey(CLArgFlag.SGRAPH_PNG))
 			{
@@ -261,7 +264,7 @@ public class CommandLine
 	}
 
 	// FIXME: option to write to file, like classes
-	private void outputProjections(Job job) throws CommandLineException, ScribbleException
+	private void printProjections(Job job) throws CommandLineException, ScribbleException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.PROJECT);
@@ -277,7 +280,7 @@ public class CommandLine
 	// dot/aut text output
 	// forUser: true means for API gen and general user info (may be minimised), false means for validation (non-minimised, fair or unfair)
 	// (forUser && !fair) should not hold, i.e. unfair doesn't make sense if forUser
-	private void outputEGraph(Job job, boolean forUser, boolean fair) throws ScribbleException, CommandLineException
+	private void printEGraph(Job job, boolean forUser, boolean fair) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = forUser ? this.args.get(CLArgFlag.EFSM) : (fair ? this.args.get(CLArgFlag.VALIDATION_EFSM) : this.args.get(CLArgFlag.UNFAIR_EFSM));
@@ -334,7 +337,7 @@ public class CommandLine
 		return graph;
 	}
 
-	private void outputSGraph(Job job, boolean fair) throws ScribbleException, CommandLineException
+	private void printSGraph(Job job, boolean fair) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = fair ? this.args.get(CLArgFlag.SGRAPH) : this.args.get(CLArgFlag.UNFAIR_SGRAPH);
@@ -438,7 +441,7 @@ public class CommandLine
 		classes.keySet().stream().forEach(f);
 	}
 
-	private static void runDot(String dot, String png) throws ScribbleException, CommandLineException
+	protected static void runDot(String dot, String png) throws ScribbleException, CommandLineException
 	{
 		String tmpName = png + ".tmp";
 		File tmp = new File(tmpName);

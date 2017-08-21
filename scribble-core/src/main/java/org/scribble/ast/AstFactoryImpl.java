@@ -34,7 +34,7 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
-import org.scribble.ast.local.LConnect;
+import org.scribble.ast.local.LRequest;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.local.LDisconnect;
@@ -91,7 +91,7 @@ import org.scribble.del.global.GRecursionDel;
 import org.scribble.del.global.GWrapDel;
 import org.scribble.del.local.LAcceptDel;
 import org.scribble.del.local.LChoiceDel;
-import org.scribble.del.local.LConnectDel;
+import org.scribble.del.local.LRequestDel;
 import org.scribble.del.local.LContinueDel;
 import org.scribble.del.local.LDisconnectDel;
 import org.scribble.del.local.LDoDel;
@@ -600,12 +600,12 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	public LConnect LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
+	public LRequest LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//public LConnect LConnect(RoleNode src, RoleNode dest)
 	{
-		LConnect lc = new LConnect(source, src, msg, dest);
+		LRequest lc = new LRequest(source, src, msg, dest);
 		//LConnect lc = new LConnect(src, dest);
-		lc = del(lc, new LConnectDel());
+		lc = del(lc, new LRequestDel());
 		return lc;
 	}
 

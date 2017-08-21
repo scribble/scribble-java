@@ -40,6 +40,11 @@ public abstract class EAction extends MAction<Local>
 		this.ef = ef;
 	}
 	
+	public EModelFactory getEModelFactory()
+	{
+		return this.ef;
+	}
+	
 	public abstract EAction toDual(Role self);
 
 	//public abstract GModelAction toGlobal(Role self);

@@ -30,6 +30,7 @@ import org.scribble.del.ProtocolDefDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.SubprotocolSig;
+import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
@@ -91,7 +92,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 	}
 
 	@Override
-	public GProtocolDefDel setInlinedProtocolDef(ProtocolDef<?> inlined)
+	public GProtocolDefDel setInlinedProtocolDef(ProtocolDef<? extends ProtocolKind> inlined)
 	{
 		return (GProtocolDefDel) super.setInlinedProtocolDef(inlined);
 	}

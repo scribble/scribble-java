@@ -95,7 +95,7 @@ public abstract class MPrettyState
 	// Override to change edge drawing from "this" as src
 	protected String toEdgeDot(A msg, S next)
 	{
-		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));
+		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));  // CHECKME: next.getEdgeLabel or this.?
 	}
 	
 	// "this" is the dest node of the edge

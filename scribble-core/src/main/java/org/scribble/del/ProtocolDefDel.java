@@ -33,12 +33,13 @@ public abstract class ProtocolDefDel extends ScribDelBase
 		ScribDelBase.pushVisitorEnv(this, inl);
 	}
 	
-	public ProtocolDef<?> getInlinedProtocolDef()
+	public ProtocolDef<? extends ProtocolKind> getInlinedProtocolDef()
 	{
 		return this.inlined;
 	}
 
-	public ProtocolDefDel setInlinedProtocolDef(ProtocolDef<?> inlined)
+	//public ProtocolDefDel setInlinedProtocolDef(ProtocolDef<?> inlined)  // Compiles in Eclipse, but not javac?  wrt. subclass overriding
+	public ProtocolDefDel setInlinedProtocolDef(ProtocolDef<? extends ProtocolKind> inlined)
 	{
 		ProtocolDefDel copy = copy();
 		copy.inlined = inlined;

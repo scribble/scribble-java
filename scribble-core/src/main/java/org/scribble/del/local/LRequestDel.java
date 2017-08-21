@@ -15,7 +15,7 @@ package org.scribble.del.local;
 
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LConnect;
+import org.scribble.ast.local.LRequest;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.Payload;
@@ -24,12 +24,12 @@ import org.scribble.type.name.Role;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LConnectDel extends LConnectionActionDel implements LSimpleInteractionNodeDel
+public class LRequestDel extends LConnectionActionDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LConnect leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public LRequest leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
-		LConnect lc = (LConnect) visited;
+		LRequest lc = (LRequest) visited;
 		RoleNode dest = lc.dest;
 		Role peer = dest.toName();
 		MessageId<?> mid = lc.msg.toMessage().getId();
@@ -39,12 +39,12 @@ public class LConnectDel extends LConnectionActionDel implements LSimpleInteract
 		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newERequest(peer, mid, payload), builder.util.getExit());
 		//graph.builder.addEdge(graph.builder.getEntry(), new Connect(peer), graph.builder.getExit());
 		////builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());
-		return (LConnect) super.leaveEGraphBuilding(parent, child, builder, lc);
+		return (LRequest) super.leaveEGraphBuilding(parent, child, builder, lc);
 	}
 
 	@Override
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(((LConnect) child).src.toName());
+		fixer.setChoiceSubject(((LRequest) child).src.toName());
 	}
 }
