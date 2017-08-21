@@ -152,7 +152,7 @@ public class CommandLine
 		// Attempt certain "output tasks" even if above failed, in case can still do some useful output (hacky)
 		try
 		{
-			doAttemptableOutputTasks(job);
+			doNonAttemptableOutputTasks(job);
 		}
 		catch (ScribbleException x)
 		{
@@ -189,7 +189,7 @@ public class CommandLine
 		}
 	}
 
-	protected void doAttemptableOutputTasks(Job job) throws CommandLineException, ScribbleException
+	protected void tryOutputTasks(Job job) throws CommandLineException, ScribbleException
 	{
 		// Following must be ordered appropriately -- ?
 		if (this.args.containsKey(CLArgFlag.PROJECT))
