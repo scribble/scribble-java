@@ -23,11 +23,11 @@ import org.scribble.ast.global.GDelegationElem;
 import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.NonRoleArgKind;
-import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.name.Name;
-import org.scribble.sesstype.name.RecVar;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.NonRoleArgKind;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.name.Name;
+import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Role;
 import org.scribble.visit.context.ModuleContextVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names

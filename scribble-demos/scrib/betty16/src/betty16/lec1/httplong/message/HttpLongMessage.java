@@ -13,7 +13,7 @@
  */
 package betty16.lec1.httplong.message;
 
-import org.scribble.net.ScribMessage;
+import org.scribble.runtime.net.ScribMessage;
 import org.scribble.sesstype.name.Op;
 
 import betty16.lec1.httplong.HttpLong.Http.Http;

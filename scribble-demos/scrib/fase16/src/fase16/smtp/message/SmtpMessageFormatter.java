@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-import org.scribble.net.ScribMessage;
-import org.scribble.net.ScribMessageFormatter;
+import org.scribble.runtime.net.ScribMessage;
+import org.scribble.runtime.net.ScribMessageFormatter;
 
 import fase16.smtp.message.server._220;
 import fase16.smtp.message.server._250;

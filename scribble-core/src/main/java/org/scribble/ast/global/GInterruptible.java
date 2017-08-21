@@ -21,9 +21,9 @@ import org.scribble.ast.Interruptible;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.ScopeNode;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.ScopeKind;
-import org.scribble.sesstype.name.Name;
+import org.scribble.type.kind.Global;
+import org.scribble.type.kind.ScopeKind;
+import org.scribble.type.name.Name;
 
 //public class GlobalInterruptible extends Interruptible<GlobalProtocolBlock, GlobalInterrupt> implements GlobalInteractionNode
 public class GInterruptible extends Interruptible<Global> implements GCompoundInteractionNode

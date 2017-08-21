@@ -17,8 +17,8 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.scribble.ast.context.ProtocolDeclContext;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.Role;
 
 public class LProtocolDeclContext extends ProtocolDeclContext<Local>
 {

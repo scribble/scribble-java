@@ -21,13 +21,13 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.parser.scribble.ScribParser;
-import org.scribble.parser.scribble.ScribParserUtil;
+import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.AntlrToScribParserUtil;
 import org.scribble.util.ScribParserException;
 
 public class AntlrGInteractionSequence
 {
-	public static GInteractionSeq parseGInteractionSequence(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static GInteractionSeq parseGInteractionSequence(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		/*List<GInteractionNode> gis =
 				getInteractionChildren(ct).stream().map((gi) -> (GInteractionNode) parser.parse(gi)).collect(Collectors.toList());*/
@@ -43,6 +43,6 @@ public class AntlrGInteractionSequence
 	{
 		return (ct.getChildCount() == 0)
 				? Collections.emptyList()
-				: ScribParserUtil.toCommonTreeList(ct.getChildren());
+				: AntlrToScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

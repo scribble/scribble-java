@@ -20,11 +20,11 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ProtocolDeclContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.SubprotocolSig;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.MemberName;
-import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.SubprotocolSig;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.MemberName;
+import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.util.RoleCollector;
@@ -57,7 +57,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 		ProtocolDecl<?> pd = (ProtocolDecl<?>) child;
 		MemberName<?> pn = pd.getFullMemberName(main);
 		// Is it really needed to add self protocoldecl dependencies?
-		pd.header.roledecls.getRoles().stream().forEach((r) -> addSelfDependency(builder, (ProtocolName<?>) pn, r));
+		pd.header.roledecls.getRoles().stream().forEach(r -> addSelfDependency(builder, (ProtocolName<?>) pn, r));
 	}
 	
 	protected abstract void addSelfDependency(ProtocolDeclContextBuilder builder, ProtocolName<?> proto, Role role);

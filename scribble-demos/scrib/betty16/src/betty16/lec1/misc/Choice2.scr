@@ -1,4 +1,4 @@
-module betty16.lec1.misc.Choice3;
+module betty16.lec1.misc.Choice2;
 
 
 global protocol Proto1(role A, role B, role C) {

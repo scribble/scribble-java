@@ -16,7 +16,7 @@ package org.scribble.del;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.RecRemover;
 import org.scribble.visit.util.RecVarCollector;
@@ -33,12 +33,13 @@ public abstract class ProtocolDefDel extends ScribDelBase
 		ScribDelBase.pushVisitorEnv(this, inl);
 	}
 	
-	public ProtocolDef<?> getInlinedProtocolDef()
+	public ProtocolDef<? extends ProtocolKind> getInlinedProtocolDef()
 	{
 		return this.inlined;
 	}
 
-	public ProtocolDefDel setInlinedProtocolDef(ProtocolDef<?> inlined)
+	//public ProtocolDefDel setInlinedProtocolDef(ProtocolDef<?> inlined)  // Compiles in Eclipse, but not javac?  wrt. subclass overriding
+	public ProtocolDefDel setInlinedProtocolDef(ProtocolDef<? extends ProtocolKind> inlined)
 	{
 		ProtocolDefDel copy = copy();
 		copy.inlined = inlined;

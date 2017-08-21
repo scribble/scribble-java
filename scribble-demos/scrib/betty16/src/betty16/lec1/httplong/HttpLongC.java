@@ -30,9 +30,9 @@ import static betty16.lec1.httplong.HttpLong.Http.Http.VIA;
 import static betty16.lec1.httplong.HttpLong.Http.Http._200;
 import static betty16.lec1.httplong.HttpLong.Http.Http._404;
 
-import org.scribble.net.Buf;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import betty16.lec1.httplong.HttpLong.Http.Http;
 import betty16.lec1.httplong.HttpLong.Http.channels.C.EndSocket;

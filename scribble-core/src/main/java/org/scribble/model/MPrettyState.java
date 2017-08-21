@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 
 public abstract class MPrettyState
 		<L, A extends MAction<K>, S extends MPrettyState<L, A, S, K>, K extends ProtocolKind>
@@ -95,7 +95,7 @@ public abstract class MPrettyState
 	// Override to change edge drawing from "this" as src
 	protected String toEdgeDot(A msg, S next)
 	{
-		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));
+		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));  // CHECKME: next.getEdgeLabel or this.?
 	}
 	
 	// "this" is the dest node of the edge

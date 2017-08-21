@@ -20,8 +20,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import org.scribble.net.ScribMessage;
-import org.scribble.net.ScribMessageFormatter;
+import org.scribble.runtime.net.ScribMessage;
+import org.scribble.runtime.net.ScribMessageFormatter;
 
 import betty16.lec1.httpshort.message.client.Request;
 import betty16.lec1.httpshort.message.server.Response;

@@ -15,7 +15,7 @@ package org.scribble.runtime.net.scribsock;
 
 import org.scribble.runtime.net.session.Session;
 import org.scribble.runtime.net.session.SessionEndpoint;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 public abstract class BranchSocket<S extends Session, R extends Role> extends ReceiveSocket<S, R>
 {

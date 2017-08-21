@@ -30,9 +30,9 @@ import static bettybook.http.longv.HttpLong.Http.Http.Via;
 import static bettybook.http.longv.HttpLong.Http.Http._200;
 import static bettybook.http.longv.HttpLong.Http.Http._404;
 
-import org.scribble.net.Buf;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import bettybook.http.longv.HttpLong.Http.Http;
 import bettybook.http.longv.HttpLong.Http.channels.C.EndSocket;

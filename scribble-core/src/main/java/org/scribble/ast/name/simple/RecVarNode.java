@@ -16,8 +16,8 @@ package org.scribble.ast.name.simple;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.kind.RecVarKind;
+import org.scribble.type.name.RecVar;
 
 public class RecVarNode extends SimpleNameNode<RecVarKind>
 {

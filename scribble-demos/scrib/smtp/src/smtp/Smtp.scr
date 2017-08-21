@@ -1,5 +1,5 @@
-//$ bin/scribblec.sh -ip modules/demos/scrib/smtp/src -d modules/demos/scrib/smtp/src modules/demos/scrib/smtp/src/smtp/Smtp.scr -api Smtp C -subtypes
-//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/smtp/src/ modules/demos/scrib/smtp/src/smtp/*.java -subpackages smtp.Smtp.Smtp -d modules/demos/scrib/smtp/javadoc
+//$ ./scribblec.sh -ip scribble-demos/scrib/smtp/src -d scribble-demos/scrib/smtp/src scribble-demos/scrib/smtp/src/smtp/Smtp.scr -subtypes -api Smtp C
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/smtp/src/ scribble-demos/scrib/smtp/src/smtp/*.java -subpackages smtp.Smtp.Smtp -d scribble-demos/scrib/smtp/javadoc
 
 
 module smtp.Smtp;

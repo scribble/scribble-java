@@ -22,10 +22,10 @@ import static bettybook.math.scrib.Math.MathService.MathService.S;
 import static bettybook.math.scrib.Math.MathService.MathService.Sum;
 import static bettybook.math.scrib.Math.MathService.MathService.Val;
 
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import bettybook.math.scrib.Math.MathService.MathService;
 import bettybook.math.scrib.Math.MathService.channels.C.EndSocket;

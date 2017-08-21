@@ -34,12 +34,12 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.SubprotocolSig;
-import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.SubprotocolSig;
+import org.scribble.type.kind.RecVarKind;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProjectedRoleDeclFixer;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
@@ -68,22 +68,20 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public LDo
-			leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public LDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner dinlr, ScribNode visited) throws ScribbleException
 	{
-		CommonTree blame = visited.getSource();  // Cf., LDoDel
-		SubprotocolSig subsig = inl.peekStack();
-		if (!inl.isCycle())
+		if (!dinlr.isCycle())
 		{
-			RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame, 
-					RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
-			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) inl.peekEnv()).getTranslation());
-			LProtocolBlock gb = inl.job.af.LProtocolBlock(blame, gis);
-			LRecursion inlined = inl.job.af.LRecursion(blame, recvar, gb);
-			inl.pushEnv(inl.popEnv().setTranslation(inlined));
-			inl.removeSubprotocolRecVar(subsig);
+			CommonTree blame = visited.getSource();  // Cf., GDoDel
+			SubprotocolSig subsig = dinlr.peekStack();
+			RecVarNode recvar = (RecVarNode) dinlr.job.af.SimpleNameNode(blame, RecVarKind.KIND, dinlr.getSubprotocolRecVar(subsig).toString());
+			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) dinlr.peekEnv()).getTranslation());
+			LProtocolBlock gb = dinlr.job.af.LProtocolBlock(blame, gis);
+			LRecursion inlined = dinlr.job.af.LRecursion(blame, recvar, gb);
+			dinlr.pushEnv(dinlr.popEnv().setTranslation(inlined));
+			dinlr.removeSubprotocolRecVar(subsig);
 		}	
-		return (LDo) super.leaveProtocolInlining(parent, child, inl, visited);
+		return (LDo) super.leaveProtocolInlining(parent, child, dinlr, visited);
 	}
 
 	// Pre: this pass is only run on projections (LProjectionDeclDel has source global protocol info)
@@ -102,11 +100,11 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		GProtocolDecl gpd = (GProtocolDecl) jc.getModule(source.getPrefix()).getProtocolDecl(source.getSimpleName());
 		Iterator<RoleArg> roleargs = ld.roles.getDoArgs().iterator();
 		Map<Role, Role> rolemap = gpd.header.roledecls.getRoles().stream().collect(
-				Collectors.toMap((r) -> r, (r) -> roleargs.next().val.toName()));
-		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences().stream().map(
-				(r) -> rolemap.get(r)).collect(Collectors.toSet());
+				Collectors.toMap(r -> r, r -> roleargs.next().val.toName()));
+		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences().stream().map(r ->
+				rolemap.get(r)).collect(Collectors.toSet());
 
-		List<RoleArg> ras = ld.roles.getDoArgs().stream().filter((ra) -> occs.contains(ra.val.toName())).collect(Collectors.toList());
+		List<RoleArg> ras = ld.roles.getDoArgs().stream().filter(ra -> occs.contains(ra.val.toName())).collect(Collectors.toList());
 		RoleArgList roles = ld.roles.reconstruct(ras);
 		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, ld.reconstruct(roles, ld.args, ld.getProtocolNameNode()));
 	}

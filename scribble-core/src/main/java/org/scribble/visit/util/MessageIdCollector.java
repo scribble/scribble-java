@@ -17,7 +17,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.MessageId;
+import org.scribble.type.name.MessageId;
 
 public class MessageIdCollector extends NameCollector<MessageId<?>>
 {

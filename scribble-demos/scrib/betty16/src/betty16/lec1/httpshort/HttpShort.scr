@@ -1,7 +1,7 @@
 /**
  * Assuming scribblec.sh in scribble-java root directory:
  * 
- * ./scribblec.sh -d modules/demos/scrib/betty16/src modules/demos/scrib/betty16/src/betty16/lec1/httpshort/HttpShort.scr -api Http C
+ * ./scribblec.sh -d scribble-demos/scrib/betty16/src scribble-demos/scrib/betty16/src/betty16/lec1/httpshort/HttpShort.scr -api Http C
  */
 
 

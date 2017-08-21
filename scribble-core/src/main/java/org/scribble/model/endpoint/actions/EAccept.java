@@ -16,9 +16,9 @@ package org.scribble.model.endpoint.actions;
 import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SAccept;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.MessageId;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Payload;
+import org.scribble.type.name.MessageId;
+import org.scribble.type.name.Role;
 
 public class EAccept extends EAction
 {
@@ -30,10 +30,10 @@ public class EAccept extends EAction
 	}
 	
 	@Override
-	public EConnect toDual(Role self)
+	public ERequest toDual(Role self)
 	{
 		//return new Connect(self);
-		return this.ef.newEConnect(self, this.mid, this.payload);
+		return this.ef.newERequest(self, this.mid, this.payload);
 	}
 
 	@Override

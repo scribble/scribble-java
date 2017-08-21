@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
 public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInteractionNode<K>

@@ -20,7 +20,7 @@ import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class RoleArgListDel extends DoArgListDel

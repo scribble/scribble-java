@@ -29,9 +29,9 @@ import org.scribble.del.local.LDoDel;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.SubprotocolSig;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.SubprotocolSig;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.RecVar;
 import org.scribble.visit.env.InlineProtocolEnv;
 
 public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>

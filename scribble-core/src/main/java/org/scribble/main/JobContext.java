@@ -25,10 +25,10 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.model.endpoint.AutParser;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.global.SGraph;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.ModuleName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.Role;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.Projector;
@@ -220,7 +220,7 @@ public class JobContext
 		EGraph unfair = this.unfairEGraphs.get(fulllpn);
 		if (unfair == null)
 		{
-			unfair = getEGraph(fullname, role).init.unfairTransform().toGraph();
+			unfair = getEGraph(fullname, role).init.unfairTransform(this.job.ef).toGraph();
 			addUnfairEGraph(fulllpn, unfair);
 		}
 		return unfair;
@@ -289,7 +289,7 @@ public class JobContext
 		if (minimised == null)
 		{
 			String aut = runAut(getEGraph(fullname, role).init.toAut(), fulllpn + ".aut");
-			minimised = new AutParser().parse(this.job.ef, aut);
+			minimised = new AutParser(this.job).parse(aut);
 			addMinimisedEGraph(fulllpn, minimised);
 		}
 		return minimised;

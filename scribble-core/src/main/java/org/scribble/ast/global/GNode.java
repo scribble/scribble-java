@@ -14,7 +14,7 @@
 package org.scribble.ast.global;
 
 import org.scribble.ast.ProtocolKindNode;
-import org.scribble.sesstype.kind.Global;
+import org.scribble.type.kind.Global;
 
 public interface GNode extends ProtocolKindNode<Global>
 {

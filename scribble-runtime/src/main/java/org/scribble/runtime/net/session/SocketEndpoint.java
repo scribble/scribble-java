@@ -17,7 +17,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 import org.scribble.runtime.net.ScribMessage;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 // Read/write Objects on the binary connection to an endpoint in the session
 @Deprecated

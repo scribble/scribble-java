@@ -16,8 +16,8 @@ package org.scribble.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.MemberNameNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.NonProtocolKind;
-import org.scribble.sesstype.name.MemberName;
+import org.scribble.type.kind.NonProtocolKind;
+import org.scribble.type.name.MemberName;
 import org.scribble.visit.AstVisitor;
 
 // Rename to something better

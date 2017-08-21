@@ -26,7 +26,7 @@ import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.name.RecVar;
 import org.scribble.visit.env.Env;
 
 // FIXME: unfolding/unrolling algorithm would be easier if we would use an "affine rec var" normal form: a single rec can have multiple labels, each label used at most once in a continue

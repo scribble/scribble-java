@@ -15,8 +15,8 @@ package org.scribble.ast.context.local;
 
 import java.util.Set;
 
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 
 @Deprecated

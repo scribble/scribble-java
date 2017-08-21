@@ -19,8 +19,8 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.SigKind;
-import org.scribble.sesstype.name.MessageSigName;
+import org.scribble.type.kind.SigKind;
+import org.scribble.type.name.MessageSigName;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class MessageSigNameNodeDel extends ScribDelBase

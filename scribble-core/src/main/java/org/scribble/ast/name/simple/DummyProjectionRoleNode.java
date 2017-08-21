@@ -15,7 +15,7 @@ package org.scribble.ast.name.simple;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 import org.scribble.visit.Substitutor;
 
 // For local choice subjects

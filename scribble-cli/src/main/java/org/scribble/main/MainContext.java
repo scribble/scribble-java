@@ -34,10 +34,10 @@ import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.endpoint.EModelFactoryImpl;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.SModelFactoryImpl;
-import org.scribble.parser.scribble.AntlrParser;
+import org.scribble.parser.scribble.ScribbleAntlrWrapper;
 import org.scribble.parser.scribble.ScribModuleLoader;
-import org.scribble.parser.scribble.ScribParser;
-import org.scribble.sesstype.name.ModuleName;
+import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.type.name.ModuleName;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
 
@@ -48,14 +48,88 @@ public class MainContext
 {
 
 	// Only "manually" used here for loading main module (which should be factored out to front end) -- otherwise, only used within loader
-	protected final AntlrParser antlrParser = newAntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
-	protected final ScribParser scribParser = newScribParser();
+	protected final ScribbleAntlrWrapper antlrParser = newAntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
+	protected final AntlrToScribParser scribParser = newScribParser();
 
 	protected final AstFactory af = newAstFactory();
 	protected final EModelFactory ef = newEModelFactory();
 	protected final SModelFactory sf = newSModelFactory();
 	
 	//protected final JScribbleApiGen jgen;  // No: API gen depends on the Job
+
+	//public final boolean jUnit;
+	public final boolean debug;  // TODO: factor out with Job -- (cf. CommandLine.newMainContext)
+	public final boolean useOldWF;
+	public final boolean noLiveness;
+	public final boolean minEfsm;
+	public final boolean fair;
+	public final boolean noLocalChoiceSubjectCheck;
+	public final boolean noAcceptCorrelationCheck;
+	public final boolean noValidation;
+
+	private final ResourceLocator locator;  // Path -> Resource
+	private final ScribModuleLoader loader;  // sesstype.ModuleName -> Pair<Resource, Module>
+
+	protected ModuleName main;
+
+	// ModuleName keys are full module names -- parsed are the modules read from file, distinguished from the generated projection modules
+	// Resource recorded for source path
+	private final Map<ModuleName, Pair<Resource, Module>> parsed = new HashMap<>();
+	
+	// FIXME: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
+	private MainContext(boolean debug, ResourceLocator locator, boolean useOldWF, boolean noLiveness, boolean minEfsm,
+			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation)
+					throws ScribParserException, ScribbleException
+	{
+		//this.jUnit = jUnit;
+		this.debug = debug;
+		this.useOldWF = useOldWF;
+		this.noLiveness = noLiveness;
+		this.minEfsm = minEfsm;
+		this.fair = fair;
+		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
+		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
+		this.noValidation = noValidation;
+
+		this.locator = locator; 
+		this.loader = new ScribModuleLoader(this.locator, this.antlrParser, this.scribParser);
+	}
+
+	// Load main module from file system
+	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm,
+			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation)
+					throws ScribParserException, ScribbleException
+	{
+		this(debug, locator, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+
+		// FIXME: checking main module resource exists at specific location should be factored out to front-end (e.g. CommandLine) -- main module resource is specified at local front end level of abstraction, while MainContext uses abstract resource loading
+		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
+		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);  // FIXME: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
+		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res), this.af);  // FIXME: rename exceptions
+		checkMainModuleName(mainpath, mod);
+		
+		init(res, mod);
+	}
+
+	// For inline module arg
+	public MainContext(boolean debug, ResourceLocator locator, String inline, boolean useOldWF, boolean noLiveness, boolean minEfsm,
+			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation)
+					throws ScribParserException, ScribbleException
+	{
+		this(debug, locator, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+
+		Resource res = new InlineResource(inline);
+		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res), this.af);
+
+		init(res, mod);
+	}
+
+	private void init(Resource res, Module mainmod) throws ScribParserException, ScribbleException
+	{
+		Pair<Resource, Module> p = new Pair<>(res, mainmod);
+		this.main = p.right.getFullModuleName();  // FIXME: main modname comes from the inlined moddecl -- check for issues if this clashes with an existing file system resource
+		loadAllModules(p);
+	}
 	
 	// A Scribble extension should override these "new" methods as appropriate.
 	public Job newJob()
@@ -65,14 +139,14 @@ public class MainContext
 				this.af, this.ef, this.sf);
 	}
 	
-	protected AntlrParser newAntlrParser()
+	protected ScribbleAntlrWrapper newAntlrParser()
 	{
-		return new AntlrParser();
+		return new ScribbleAntlrWrapper();
 	}
 	
-	protected ScribParser newScribParser()
+	protected AntlrToScribParser newScribParser()
 	{
-		return new ScribParser();
+		return new AntlrToScribParser();
 	}
 	
 	protected AstFactory newAstFactory()
@@ -88,85 +162,6 @@ public class MainContext
 	protected SModelFactory newSModelFactory()
 	{
 		return new SModelFactoryImpl();
-	}
-
-	//public final boolean jUnit;
-	public final boolean debug;  // TODO: factor out (cf. CommandLine.newMainContext)
-	public final boolean useOldWF;
-	public final boolean noLiveness;
-	public final boolean minEfsm;
-	public final boolean fair;
-	public final boolean noLocalChoiceSubjectCheck;
-	public final boolean noAcceptCorrelationCheck;
-	public final boolean noValidation;
-
-  // cli only (not in Job)
-	public final boolean f17;
-
-	private final ResourceLocator locator;  // Path -> Resource
-	private final ScribModuleLoader loader;  // sesstype.ModuleName -> Pair<Resource, Module>
-
-	protected ModuleName main;
-
-	// ModuleName keys are full module names -- parsed are the modules read from file, distinguished from the generated projection modules
-	// Resource recorded for source path
-	private final Map<ModuleName, Pair<Resource, Module>> parsed = new HashMap<>();
-	
-	// FIXME: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
-	private MainContext(boolean debug, ResourceLocator locator, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean f17)
-					throws ScribParserException, ScribbleException
-	{
-		//this.jUnit = jUnit;
-		this.debug = debug;
-		this.useOldWF = useOldWF;
-		this.noLiveness = noLiveness;
-		this.minEfsm = minEfsm;
-		this.fair = fair;
-		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
-		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
-		this.noValidation = noValidation;
-
-		this.f17 = f17;
-
-		this.locator = locator; 
-		this.loader = new ScribModuleLoader(this.locator, this.antlrParser, this.scribParser);
-	}
-
-	// Load main module from file system
-	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean f17)
-					throws ScribParserException, ScribbleException
-	{
-		this(debug, locator, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17);
-
-		// FIXME: checking main module resource exists at specific location should be factored out to front-end (e.g. CommandLine) -- main module resource is specified at local front end level of abstraction, while MainContext uses abstract resource loading
-		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
-		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);  // FIXME: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
-		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res), this.af);  // FIXME: rename exceptions
-		checkMainModuleName(mainpath, mod);
-		
-		init(res, mod);
-	}
-
-	// For inline module arg
-	public MainContext(boolean debug, ResourceLocator locator, String inline, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean f17)
-					throws ScribParserException, ScribbleException
-	{
-		this(debug, locator, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, f17);
-
-		Resource res = new InlineResource(inline);
-		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res), this.af);
-
-		init(res, mod);
-	}
-
-	private void init(Resource res, Module mainmod) throws ScribParserException, ScribbleException
-	{
-		Pair<Resource, Module> p = new Pair<>(res, mainmod);
-		this.main = p.right.getFullModuleName();  // FIXME: main modname comes from the inlined moddecl -- check for issues if this clashes with an existing file system resource
-		loadAllModules(p);
 	}
 
 	private void loadAllModules(Pair<Resource, Module> module) throws ScribParserException, ScribbleException

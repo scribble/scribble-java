@@ -27,7 +27,7 @@ import java.util.stream.IntStream;
 
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 
 public abstract class MState<
 		L,                             // Node label type (cosmetic)
@@ -126,7 +126,7 @@ public abstract class MState<
 		return this.actions.contains(a);
 	}
 
-	public final S getSuccessor(A a)
+	public S getSuccessor(A a)
 	{
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())

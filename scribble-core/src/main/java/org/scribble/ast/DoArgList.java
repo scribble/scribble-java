@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
 // Cf. HeaderParameterDeclList -- but not kinded, because cannot determine Arg kind directly from node syntax itself (kinding for ModelNodes is to supplement syntactic information, not "typing" work)

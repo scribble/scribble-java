@@ -1,19 +1,46 @@
-//$ bin/scribblec.sh -ip modules/demos/scrib/fib/src -d modules/demos/scrib/fib/src modules/demos/scrib/fib/src/fib/Fib.scr -api Adder C
-//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/fib/src modules/demos/scrib/fib/src/fib/*.java -subpackages fib.Fib.Adder -d modules/demos/scrib/fib/javadoc/adder
+//$ ./scribblec.sh -ip scribble-demos/scrib/fib/src -d scribble-demos/scrib/fib/src scribble-demos/scrib/fib/src/fib/Fib.scr -api Adder C
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/fib/src scribble-demos/scrib/fib/src/fib/*.java -subpackages fib.Fib.Adder -d scribble-demos/scrib/fib/javadoc/adder
 
 module fib.Fib;
 
 
-type <java> "java.lang.Integer" from "rt.jar" as Integer;
-type <java> "java.lang.Long" from "rt.jar" as Long;
+type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 global protocol Adder(role C, role S)
 {
-	[x+1<10 && x<9  && x<10]
-	ADD(x:Integer) from C to S;
-	
-	ADD(Integer) from C to S;
-	
-	ADD() from C to S;
+	/*[x+1<10 && x<9  && x<10]
+	ADD(x:Int) from C to S;*/
+
+	choice at C
+	{
+		ADD(Int, Int) from C to S;
+		RES(Int) from S to C;
+		do Adder(C, S);
+	}
+	or
+	{
+		BYE() from C to S;
+		BYE() from S to C;
+	}	
+}
+
+
+
+
+global protocol Fibonacci(role A, role B)
+{
+	rec Fib
+	{
+		choice at A
+		{
+			fibonacci(Int) from A to B;
+			fibonacci(Int) from B to A;
+			continue Fib;
+		}
+		or
+		{
+			end() from A to B;
+		}
+	}
 }

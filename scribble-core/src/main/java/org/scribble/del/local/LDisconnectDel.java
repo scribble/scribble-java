@@ -17,7 +17,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 

@@ -1,5 +1,5 @@
-//$ bin/scribblec.sh -ip modules/demos/scrib/http/src -d modules/demos/scrib/http/src modules/demos/scrib/http/src/http/longvers/HttpLong.scr -api Http C
-//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/http/src/ modules/demos/scrib/http/src/http/longvers/*.java -subpackages http.longvers.HttpLong.Http -d modules/demos/scrib/http/javadoc/longvers
+//$ ./scribblec.sh -ip scribble-demos/scrib/http/src -d scribble-demos/scrib/http/src scribble-demos/scrib/http/src/http/longvers/HttpLong.scr -api Http C
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/http/src/ scribble-demos/scrib/http/src/http/longvers/*.java -subpackages http.longvers.HttpLong.Http -d scribble-demos/scrib/http/javadoc/longvers
 
 
 module http.longvers.HttpLong;

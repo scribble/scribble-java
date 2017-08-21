@@ -19,10 +19,10 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.SubprotocolSig;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.SubprotocolSig;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.wf.NameDisambiguator;
@@ -75,7 +75,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		ModuleContext mcontext = builder.getModuleContext();
 		Do<?> doo = (Do<?>) visited;
 		ProtocolName<?> pn = doo.proto.toName();  // leaveDisambiguation has fully qualified the target name
-		doo.roles.getRoles().forEach((r) -> addProtocolDependency(builder, r, pn, doo.getTargetRoleParameter(jcontext, mcontext, r)));
+		doo.roles.getRoles().forEach(r -> addProtocolDependency(builder, r, pn, doo.getTargetRoleParameter(jcontext, mcontext, r)));
 		return doo;
 	}
 

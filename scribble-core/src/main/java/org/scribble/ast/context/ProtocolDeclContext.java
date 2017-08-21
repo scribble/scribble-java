@@ -18,9 +18,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.Role;
 
 public abstract class ProtocolDeclContext<K extends ProtocolKind>
 {

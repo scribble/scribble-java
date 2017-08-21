@@ -20,8 +20,8 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.Message;
-import org.scribble.sesstype.kind.Local;
+import org.scribble.type.Message;
+import org.scribble.type.kind.Local;
 
 public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 {

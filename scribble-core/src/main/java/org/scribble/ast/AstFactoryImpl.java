@@ -34,13 +34,14 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
-import org.scribble.ast.local.LConnect;
+import org.scribble.ast.local.LRequest;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
@@ -90,7 +91,7 @@ import org.scribble.del.global.GRecursionDel;
 import org.scribble.del.global.GWrapDel;
 import org.scribble.del.local.LAcceptDel;
 import org.scribble.del.local.LChoiceDel;
-import org.scribble.del.local.LConnectDel;
+import org.scribble.del.local.LRequestDel;
 import org.scribble.del.local.LContinueDel;
 import org.scribble.del.local.LDisconnectDel;
 import org.scribble.del.local.LDoDel;
@@ -110,20 +111,20 @@ import org.scribble.del.name.MessageSigNameNodeDel;
 import org.scribble.del.name.ParamNodeDel;
 import org.scribble.del.name.RecVarNodeDel;
 import org.scribble.del.name.RoleNodeDel;
-import org.scribble.sesstype.kind.DataTypeKind;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.kind.ModuleKind;
-import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.kind.OpKind;
-import org.scribble.sesstype.kind.PayloadTypeKind;
-import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.sesstype.kind.RoleKind;
-import org.scribble.sesstype.kind.SigKind;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Op;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.DataTypeKind;
+import org.scribble.type.kind.Global;
+import org.scribble.type.kind.Kind;
+import org.scribble.type.kind.Local;
+import org.scribble.type.kind.ModuleKind;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.kind.OpKind;
+import org.scribble.type.kind.PayloadTypeKind;
+import org.scribble.type.kind.RecVarKind;
+import org.scribble.type.kind.RoleKind;
+import org.scribble.type.kind.SigKind;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Op;
+import org.scribble.type.name.Role;
 
 
 public class AstFactoryImpl implements AstFactory
@@ -243,9 +244,9 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GProtocolDecl GProtocolDecl(CommonTree source, List<GProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)
+	public GProtocolDecl GProtocolDecl(CommonTree source, List<GProtocolDecl.Modifiers> mods, GProtocolHeader header, GProtocolDef def)
 	{
-		GProtocolDecl gpd = new GProtocolDecl(source, modifiers, header, def);
+		GProtocolDecl gpd = new GProtocolDecl(source, mods, header, def);
 		gpd = del(gpd, new GProtocolDeclDel());
 		return gpd;
 	}
@@ -425,7 +426,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		NameNode<? extends Kind> snn = null;
 		
-		// Without delegates
+		// "Custom" del's
 		if (kind.equals(RecVarKind.KIND))
 		{
 			snn = new RecVarNode(source, identifier);
@@ -441,7 +442,7 @@ public class AstFactoryImpl implements AstFactory
 			return castNameNode(kind, snn);
 		}
 
-		// With delegates
+		// Default del's
 		if (kind.equals(OpKind.KIND))
 		{
 			snn = new OpNode(source, identifier);
@@ -526,11 +527,19 @@ public class AstFactoryImpl implements AstFactory
 		return dprn;
 	}
 
-	@Override
-	public LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def)
+	@Override  // Called from LProtocolDecl::clone, but currently never used  -- local proto decls only projected, not parsed
+	public LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> mods, LProtocolHeader header, LProtocolDef def)
 	{
-		LProtocolDecl lpd = new LProtocolDecl(source, modifiers, header, def);
+		LProtocolDecl lpd = new LProtocolDecl(source, mods, header, def);
 		lpd = del(lpd, new LProtocolDeclDel());
+		return lpd;
+	}
+
+	@Override
+	public LProjectionDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> mods, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def)  // del extends that of LProtocolDecl 
+	{
+		LProjectionDecl lpd = new LProjectionDecl(source, mods, header, def);
+		lpd = ScribNodeBase.del(lpd, new LProjectionDeclDel(fullname, self));
 		return lpd;
 	}
 
@@ -591,12 +600,12 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	public LConnect LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
+	public LRequest LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//public LConnect LConnect(RoleNode src, RoleNode dest)
 	{
-		LConnect lc = new LConnect(source, src, msg, dest);
+		LRequest lc = new LRequest(source, src, msg, dest);
 		//LConnect lc = new LConnect(src, dest);
-		lc = del(lc, new LConnectDel());
+		lc = del(lc, new LRequestDel());
 		return lc;
 	}
 
@@ -682,13 +691,5 @@ public class AstFactoryImpl implements AstFactory
 		}
 		return (T) ret;*/
 		return ScribNodeBase.del(n, del);
-	}
-
-	@Override
-	public LProtocolDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def)  // del extends that of LProtocolDecl 
-	{
-		LProtocolDecl lpd = new LProtocolDecl(source, modifiers, header, def);
-		lpd = ScribNodeBase.del(lpd, new LProjectionDeclDel(fullname, self));
-		return lpd;
 	}
 }

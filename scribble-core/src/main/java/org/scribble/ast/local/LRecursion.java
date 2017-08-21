@@ -22,9 +22,9 @@ import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.Message;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Message;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LRecursion extends Recursion<Local> implements LCompoundInteractionNode
@@ -97,11 +97,4 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	{
 		return getBlock().getEnabling();
 	}
-
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LCompoundInteractionNode.super.getKind();
-	}*/
 }

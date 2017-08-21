@@ -22,7 +22,7 @@ import org.junit.runners.Parameterized.Parameters;
 // For running all tests under the specified directory as good tests
 // Needs -Dtest.dir=[test root dir] system property -- Eclipse VM arg: -Dtest.dir=${selected_resource_loc} 
 @RunWith(value = Parameterized.class)
-public class ScribGoodTest extends ScribTest
+public class ScribGoodTest extends ScribTestBase
 {
 	protected static final String GOOD_DIR = "good";
 
@@ -36,6 +36,6 @@ public class ScribGoodTest extends ScribTest
 	{
 		//String dir = ClassLoader.getSystemResource(AllTest.GOOD_ROOT).getFile();  // No: checkTestDirProperty does this
 		String dir = ScribGoodTest.GOOD_DIR;
-		return Harness.checkTestDirProperty(ScribTest.GOOD_TEST, dir);
+		return Harness.checkTestDirProperty(ScribTestBase.GOOD_TEST, dir);
 	}
 }

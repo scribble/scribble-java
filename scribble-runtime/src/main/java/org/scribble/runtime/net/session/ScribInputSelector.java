@@ -20,7 +20,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.Set;
 
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 public class ScribInputSelector extends Thread
 {

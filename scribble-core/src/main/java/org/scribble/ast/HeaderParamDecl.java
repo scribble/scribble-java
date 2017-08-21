@@ -16,8 +16,8 @@ package org.scribble.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ParamKind;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.ParamKind;
+import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)

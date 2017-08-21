@@ -15,10 +15,10 @@ package fase16.adder;
 
 import static fase16.adder.Adder.Adder.Adder.*;
 
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import fase16.adder.Adder.Adder.Adder;
 import fase16.adder.Adder.Adder.channels.C.Adder_C_1;

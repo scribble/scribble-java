@@ -8,7 +8,7 @@
  * $ ./scribblec.sh scribble-demos/scrib/tutorial/src/tutorial/adder/Adder.scr -d scribble-demos/scrib/tutorial/src/ -api Adder C
  * 
  * [Java] Generate javadoc from Endpoint API(s):
- * $ javadoc -cp scribble-core/target/classes:scribble-demos/scrib/tutorial/src -subpackages tutorial.adder.Adder.Adder -d scribble-demos/scrib/tutorial/javadoc/adder
+ * $ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/tutorial/src -subpackages tutorial.adder.Adder.Adder -d scribble-demos/scrib/tutorial/javadoc/adder
  * 
  */
 

@@ -17,7 +17,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 
 // FIXME: factor out with AntlrDataTypeDecl
@@ -28,7 +28,7 @@ public class AntlrMessageSigDecl
 	public static final int SOURCE_CHILD_INDEX = 2;
 	public static final int ALIAS_CHILD_INDEX = 3;
 
-	public static MessageSigNameDecl parseMessageSigDecl(ScribParser parser, CommonTree ct, AstFactory af)
+	public static MessageSigNameDecl parseMessageSigDecl(AntlrToScribParser parser, CommonTree ct, AstFactory af)
 	{
 		CommonTree tmp1 = getSchemaChild(ct);
 		String schema = AntlrSimpleName.getName(tmp1);

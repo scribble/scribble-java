@@ -17,16 +17,16 @@ import java.util.Map;
 
 import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.global.actions.SAccept;
-import org.scribble.model.global.actions.SConnect;
+import org.scribble.model.global.actions.SRequest;
 import org.scribble.model.global.actions.SDisconnect;
 import org.scribble.model.global.actions.SReceive;
 import org.scribble.model.global.actions.SSend;
 import org.scribble.model.global.actions.SWrapClient;
 import org.scribble.model.global.actions.SWrapServer;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.MessageId;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Payload;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.MessageId;
+import org.scribble.type.name.Role;
 
 // Separate E/SModelFactories fits protected E/SState constructor pattern
 public class SModelFactoryImpl implements SModelFactory
@@ -50,9 +50,9 @@ public class SModelFactoryImpl implements SModelFactory
 	}
 
 	@Override
-	public SConnect newSConnect(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SRequest newSConnect(Role subj, Role obj, MessageId<?> mid, Payload payload)
 	{
-		return new SConnect(subj, obj, mid, payload);
+		return new SRequest(subj, obj, mid, payload);
 	}
 	
 	@Override

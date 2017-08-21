@@ -31,7 +31,6 @@ public enum CLArgFlag
 	AUT,
 	NO_VALIDATION,
 	INLINE_MAIN_MOD,
-	F17,
 
 	// Non-unique flags
 	PROJECT,

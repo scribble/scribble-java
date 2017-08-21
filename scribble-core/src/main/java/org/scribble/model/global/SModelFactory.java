@@ -17,16 +17,16 @@ import java.util.Map;
 
 import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.global.actions.SAccept;
-import org.scribble.model.global.actions.SConnect;
+import org.scribble.model.global.actions.SRequest;
 import org.scribble.model.global.actions.SDisconnect;
 import org.scribble.model.global.actions.SReceive;
 import org.scribble.model.global.actions.SSend;
 import org.scribble.model.global.actions.SWrapClient;
 import org.scribble.model.global.actions.SWrapServer;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.MessageId;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Payload;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.MessageId;
+import org.scribble.type.name.Role;
 
 public interface SModelFactory
 {
@@ -34,7 +34,7 @@ public interface SModelFactory
 	
 	SSend newSSend(Role subj, Role obj, MessageId<?> mid, Payload payload);
 	SReceive newSReceive(Role subj, Role obj, MessageId<?> mid, Payload payload);
-	SConnect newSConnect(Role subj, Role obj, MessageId<?> mid, Payload payload);
+	SRequest newSConnect(Role subj, Role obj, MessageId<?> mid, Payload payload);
 	SAccept newSAccept(Role subj, Role obj, MessageId<?> mid, Payload payload);
 	SDisconnect newSDisconnect(Role subj, Role obj);
 	SWrapClient newSWrapClient(Role subj, Role obj);

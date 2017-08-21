@@ -17,7 +17,7 @@ import org.scribble.sesstype.kind.DataTypeKind;
 
 
 // Potentially qualified/canonical payload type name; not the AST primitive identifier
-public class DataType extends MemberName<DataTypeKind> implements PayloadType<DataTypeKind>
+public class DataType extends MemberName<DataTypeKind> implements PayloadElemType<DataTypeKind>
 {
 	private static final long serialVersionUID = 1L;
 

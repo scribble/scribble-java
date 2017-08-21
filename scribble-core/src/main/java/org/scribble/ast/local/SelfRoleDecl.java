@@ -19,8 +19,8 @@ import org.scribble.ast.RoleDecl;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.RoleKind;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.RoleKind;
+import org.scribble.type.name.Role;
 
 public class SelfRoleDecl extends RoleDecl
 {

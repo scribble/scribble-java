@@ -26,11 +26,11 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.SubprotocolSig;
-import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.SubprotocolSig;
+import org.scribble.type.kind.RecVarKind;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
@@ -59,12 +59,11 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 	@Override
 	public GDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
-		CommonTree blame = visited.getSource();
-		SubprotocolSig subsig = inl.peekStack();
 		if (!inl.isCycle())
 		{
-			RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame,
-					RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
+			CommonTree blame = visited.getSource();
+			SubprotocolSig subsig = inl.peekStack();
+			RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame, RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 			GInteractionSeq gis = (GInteractionSeq) (((InlineProtocolEnv) inl.peekEnv()).getTranslation());
 			GProtocolBlock gb = inl.job.af.GProtocolBlock(blame, gis);
 			GRecursion inlined = inl.job.af.GRecursion(blame, recvar, gb);

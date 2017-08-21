@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ParamKind;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.ParamKind;
+import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
 

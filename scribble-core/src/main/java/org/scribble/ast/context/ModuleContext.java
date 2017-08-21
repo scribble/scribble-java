@@ -26,17 +26,17 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.kind.SigKind;
-import org.scribble.sesstype.name.DataType;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.sesstype.name.ModuleName;
-import org.scribble.sesstype.name.Name;
-import org.scribble.sesstype.name.ProtocolName;
+import org.scribble.type.kind.Global;
+import org.scribble.type.kind.Kind;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.kind.SigKind;
+import org.scribble.type.name.DataType;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.MessageSigName;
+import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.Name;
+import org.scribble.type.name.ProtocolName;
 
 // Context information specific to each module as a root (wrt. to visitor passes)
 public class ModuleContext

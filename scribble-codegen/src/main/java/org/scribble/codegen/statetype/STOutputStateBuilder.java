@@ -15,7 +15,7 @@ package org.scribble.codegen.statetype;
 
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.model.endpoint.actions.EConnect;
+import org.scribble.model.endpoint.actions.ERequest;
 import org.scribble.model.endpoint.actions.EDisconnect;
 import org.scribble.model.endpoint.actions.ESend;
 
@@ -43,7 +43,7 @@ public abstract class STOutputStateBuilder extends STStateChanBuilder
 			{
 				out += this.sb.build(api, s, a);
 			}
-			else if (a instanceof EConnect)
+			else if (a instanceof ERequest)
 			{
 				throw new RuntimeException("TODO: " + a);
 			}

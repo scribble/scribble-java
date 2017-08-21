@@ -33,13 +33,14 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
-import org.scribble.ast.local.LConnect;
+import org.scribble.ast.local.LRequest;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
@@ -64,11 +65,11 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.kind.PayloadTypeKind;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Kind;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.kind.PayloadTypeKind;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 
 public interface AstFactory
@@ -77,14 +78,15 @@ public interface AstFactory
 	
 	MessageSigNode MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload);
 
+	GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
+	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);
+
 	//PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems);
 	PayloadElemList PayloadElemList(CommonTree source, List<PayloadElem<?>> payloadelems);
 	//PayloadElem PayloadElem(PayloadElemNameNode name);
 	//UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name);
 	//UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name);
 	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(CommonTree source, PayloadElemNameNode<K> name);
-	GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
-	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);
 
 	ModuleDecl ModuleDecl(CommonTree source, ModuleNameNode fullmodname);
 	ImportModule ImportModule(CommonTree source, ModuleNameNode modname, ModuleNameNode alias);
@@ -127,7 +129,9 @@ public interface AstFactory
 	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier);
 	DummyProjectionRoleNode DummyProjectionRoleNode();
 
-	LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def);
+	LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def);  // Not currently used -- local protos not parsed, only projected
+	LProjectionDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def);  // del extends that of LProtocolDecl 
+
 	LProtocolHeader LProtocolHeader(CommonTree source, LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
 	SelfRoleDecl SelfRoleDecl(CommonTree source, RoleNode namenode);
 	LProtocolDef LProtocolDef(CommonTree source, LProtocolBlock block);
@@ -136,7 +140,7 @@ public interface AstFactory
 
 	LSend LSend(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LConnect LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
+	LRequest LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
 	LAccept LAccept(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
 	/*LConnect LConnect(CommonTree source, RoleNode src, RoleNode dest);
 	LAccept LAccept(CommonTree source, RoleNode src, RoleNode dest);*/
@@ -147,6 +151,4 @@ public interface AstFactory
 	LRecursion LRecursion(CommonTree source, RecVarNode recvar, LProtocolBlock block);
 	LContinue LContinue(CommonTree source, RecVarNode recvar);
 	LDo LDo(CommonTree source, RoleArgList roles, NonRoleArgList args, LProtocolNameNode proto);
-
-	LProtocolDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def);  // del extends that of LProtocolDecl 
 }

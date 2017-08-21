@@ -27,9 +27,9 @@ import org.scribble.ast.local.LNode;
 import org.scribble.ast.local.LReceive;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.RoleKind;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Global;
+import org.scribble.type.kind.RoleKind;
+import org.scribble.type.name.Role;
 import org.scribble.util.ScribUtil;
 
 public class GMessageTransfer extends MessageTransfer<Global> implements GSimpleInteractionNode
@@ -101,7 +101,7 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 	public String toString()
 	{
 		return this.msg + " " + Constants.FROM_KW + " " + this.src + " " + Constants.TO_KW + " "
-					+ getDestinations().stream().map((dest) -> dest.toString()).collect(Collectors.joining(", ")) + ";";
+					+ getDestinations().stream().map(dest -> dest.toString()).collect(Collectors.joining(", ")) + ";";
 	}
 
 	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350

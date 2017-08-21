@@ -1,7 +1,7 @@
 /**
  * Assuming scribblec.sh in scribble-java root directory:
  * 
- * E.g. ./scribblec.sh modules/demos/scrib/betty16/src/betty16/lec1/nego/Negotiate.scr -fsm Nego1 C 
+ * E.g., ./scribblec.sh scribble-demos/scrib/betty16/src/betty16/lec1/nego/Negotiate.scr -fsm Nego1 C 
  */
 
 

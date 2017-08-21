@@ -28,10 +28,10 @@ import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.global.SGraph;
 import org.scribble.model.global.SGraphBuilderUtil;
 import org.scribble.model.global.SModelFactory;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.ModuleName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
@@ -98,13 +98,14 @@ public class Job
 	}
 	
 	// Scribble extensions should override these "new" methods
+	// FIXME: move to MainContext::newJob?
 	public EGraphBuilderUtil newEGraphBuilderUtil()
 	{
 		return new EGraphBuilderUtil(this.ef);
 	}
 	
 	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util
-	protected SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribbleException
+	public SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribbleException
 	{
 		for (Role r : egraphs.keySet())
 		{
@@ -133,7 +134,7 @@ public class Job
 		//runUnfoldingPass();
 	}
 		
-	// "Second part" of context building (separated for extensions to work on non-unfolded protos)
+	// "Second part" of context building (separated for extensions to work on non-unfolded protos -- e.g., Assrt/F17CommandLine)
 	public void runUnfoldingPass() throws ScribbleException
 	{
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
@@ -160,6 +161,7 @@ public class Job
 	{
 		runVisitorPassOnAllModules(Projector.class);
 		runProjectionContextBuildingPasses();
+		runProjectionUnfoldingPass();
 		if (!noAcceptCorrelationCheck)
 		{
 			runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
@@ -181,6 +183,11 @@ public class Job
 		}
 		runVisitorPassOnProjectedModules(ProjectedRoleDeclFixer.class);  // Possibly could do after inlining, and do role collection on the inlined version
 		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
+	}
+
+	// Cf. runUnfoldingPass
+	protected void runProjectionUnfoldingPass() throws ScribbleException
+	{
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
 	}
 

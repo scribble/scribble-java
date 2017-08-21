@@ -18,7 +18,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.Role;
 
 // Second pass for ProtocolDeclContext building
 // Maybe generalise to integrate enabled message collection?

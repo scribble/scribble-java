@@ -19,7 +19,7 @@ import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.parser.scribble.ScribParser;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 import org.scribble.util.ScribParserException;
 
@@ -29,7 +29,7 @@ public class AntlrGProtocolHeader
 	public static final int PARAMETERDECLLIST_CHILD_INDEX = 1;
 	public static final int ROLEDECLLIST_CHILD_INDEX = 2;
 
-	public static GProtocolHeader parseGProtocolHeader(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static GProtocolHeader parseGProtocolHeader(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		GProtocolNameNode name = AntlrSimpleName.toGProtocolNameNode(getNameChild(ct), af);
 		RoleDeclList rdl = (RoleDeclList) parser.parse(getRoleDeclListChild(ct), af);

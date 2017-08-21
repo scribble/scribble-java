@@ -15,9 +15,9 @@ package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
-import org.scribble.sesstype.kind.ModuleKind;
-import org.scribble.sesstype.name.ModuleName;
-import org.scribble.sesstype.name.PackageName;
+import org.scribble.type.kind.ModuleKind;
+import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.PackageName;
 
 public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 {

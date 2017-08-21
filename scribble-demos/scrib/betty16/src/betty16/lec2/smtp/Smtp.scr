@@ -1,14 +1,14 @@
 /**
  * Note: this simplified example does not include the actual mail exchanges.
- *       See, e.g., modules/demos/scrib/smtp/src/Smtp.scr for a more complete version.
+ *       See, e.g., scribble-demos/scrib/smtp/src/Smtp.scr for a more complete version.
  * 
  * Assuming scribblec.sh in scribble-java root directory:
  * 
  * (1) Generate Endpoint API for C
- * $ ./scribblec.sh -d modules/demos/scrib/betty16/src modules/demos/scrib/betty16/src/betty16/lec2/smtp/Smtp.scr -api Smtp C
+ * $ ./scribblec.sh -d scribble-demos/scrib/betty16/src scribble-demos/scrib/betty16/src/betty16/lec2/smtp/Smtp.scr -api Smtp C
  * 
  * (2) Generate Endpoint API for C with session subtyping interfaces
- * $ ./scribblec.sh -d modules/demos/scrib/betty16/src modules/demos/scrib/betty16/src/betty16/lec2/smtp/Smtp.scr -api Smtp C -subtypes
+ * $ ./scribblec.sh -d scribble-demos/scrib/betty16/src scribble-demos/scrib/betty16/src/betty16/lec2/smtp/Smtp.scr -subtypes -api Smtp C
  * 
  */
 

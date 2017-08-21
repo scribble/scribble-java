@@ -13,22 +13,35 @@
  */
 package org.scribble.parser.scribble;
 
-// FIXME: refer to values from core ast.Constants
-public class AntlrConstants
+// Constants declared in Scribble.g ANTLR grammer
+public class ScribbleAntlrConstants
 {
-	// Cf. Scribble.g, parser output "node types"
+	/**
+	 *  Cf. Scribble.g, parser output "node types"
+	 */
+	
+	// Parsed "indirectly" -- i.e., not as explicit cases in AntlrToScribParser::parse
+
+	public static final String EMPTY_ALIAS = "EMPTY_ALIAS";
+	public static final String ANTLR_EMPTY_OPERATOR = "EMPTY_OPERATOR";
+	//public static final String ANTLR_NO_SCOPE = "NO_SCOPE";
+
 	public static final String KIND_MESSAGESIGNATURE = "KIND_MESSAGESIGNATURE";
 	public static final String KIND_PAYLOADTYPE = "KIND_PAYLOADTYPE";
 
-	public static final String MESSAGESIGNATURE_NODE_TYPE = "MESSAGESIGNATURE";
-	public static final String PAYLOAD_NODE_TYPE = "PAYLOAD";
-	//public static final String PAYLOADELEMENT_NODE_TYPE = "PAYLOADELEMENT";
-	public static final String DELEGATION_NODE_TYPE = "DELEGATION";
-
-	//public static final String EMPTY_PARAMETERDECLLST_NODE_TYPE = "EMPTY_PARAMETERDECLLIST";
+	////public static final String EMPTY_PARAMETERDECLLST_NODE_TYPE = "EMPTY_PARAMETERDECLLIST";
 	public static final String AMBIGUOUSNAME_NODE_TYPE = "AMBIGUOUSNAME";
 	public static final String QUALIFIEDNAME_NODE_TYPE = "QUALIFIEDNAME";
+
+	public static final String MESSAGESIGNATURE_NODE_TYPE = "MESSAGESIGNATURE";
+	public static final String DELEGATION_NODE_TYPE = "DELEGATION";
 	
+
+	// Parsed "directly" by AntlrToScribParser::parse
+
+	public static final String PAYLOAD_NODE_TYPE = "PAYLOAD";
+	//public static final String PAYLOADELEMENT_NODE_TYPE = "PAYLOADELEMENT";
+
 	public static final String MODULE_NODE_TYPE = "MODULE";
 	public static final String MODULEDECL_NODE_TYPE = "MODULEDECL";
 	public static final String IMPORTMODULE_NODE_TYPE = "IMPORTMODULE";
@@ -56,14 +69,16 @@ public class AntlrConstants
 	public static final String GLOBALCHOICE_NODE_TYPE = "GLOBALCHOICE";
 	public static final String GLOBALRECURSION_NODE_TYPE = "GLOBALRECURSION";
 	public static final String GLOBALCONTINUE_NODE_TYPE = "GLOBALCONTINUE";
-	public static final String GLOBALPARALLEL_NODE_TYPE = "GLOBALPARALLEL";
+	/*public static final String GLOBALPARALLEL_NODE_TYPE = "GLOBALPARALLEL";
 	public static final String GLOBALINTERRUPTIBLE_NODE_TYPE = "GLOBALINTERRUPTIBLE";
-	public static final String GLOBALINTERRUPT_NODE_TYPE = "GLOBALINTERRUPT";
+	public static final String GLOBALINTERRUPT_NODE_TYPE = "GLOBALINTERRUPT";*/
 	public static final String GLOBALDO_NODE_TYPE = "GLOBALDO";
 
-	// # FIXME: local nodes are not ANTLR nodes (currently)
+	
+	//FIXME: local nodes are currently not ANTLR nodes -- locals only projected, not parsed
+	
 	public static final String LOCALPROTOCOLDECL_NODE_TYPE = "LOCALPROTOCOLDECL";
-	public static final String LOCALROLEDECLLIST_NODE_TYPE = "LOCALROLEDECLLIST";
+	/*public static final String LOCALROLEDECLLIST_NODE_TYPE = "LOCALROLEDECLLIST";
 	public static final String LOCALROLEDECL_NODE_TYPE = "LOCALROLEDECL";
 	public static final String SELFDECL_NODE_TYPE = "SELFDECL";
 	public static final String LOCALPROTOCOLDEF_NODE_TYPE = "LOCALPROTOCOLDEF";
@@ -78,7 +93,7 @@ public class AntlrConstants
 	public static final String LOCALINTERRUPTIBLE_NODE_TYPE = "LOCALINTERRUPTIBLE";
 	public static final String LOCALTHROWS_NODE_TYPE = "LOCALTHROWS";
 	public static final String LOCALCATCHES_NODE_TYPE = "LOCALCATCHES";
-	public static final String LOCALDO_NODE_TYPE = "LOCALDO";
+	public static final String LOCALDO_NODE_TYPE = "LOCALDO";*/
 
 
 	// Scribble.g, parser output "node types" as a Java enum
@@ -87,6 +102,12 @@ public class AntlrConstants
 		//EMPTY_PARAMETERDECLLST,
 		AMBIGUOUSNAME,
 		QUALIFIEDNAME,
+
+		MESSAGESIGNATURE,
+		DELEGATION,
+
+		PAYLOAD,
+		//PAYLOADELEMENT,
 
 		MODULE,
 		MODULEDECL,
@@ -103,10 +124,6 @@ public class AntlrConstants
 		ROLEINSTANTIATION,
 		ARGUMENTINSTANTIATIONLIST,
 		ARGUMENTINSTANTIATION,
-		MESSAGESIGNATURE,
-		PAYLOAD,
-		PAYLOADELEMENT,
-		DELEGATION,
 
 		GLOBALPROTOCOLDECL,
 		GLOBALPROTOCOLHEADER,
@@ -120,13 +137,13 @@ public class AntlrConstants
 		GLOBALCHOICE,
 		GLOBALRECURSION,
 		GLOBALCONTINUE,
-		GLOBALPARALLEL,
+		/*GLOBALPARALLEL,
 		GLOBALINTERRUPTIBLE,
-		GLOBALINTERRUPT,
+		GLOBALINTERRUPT,*/
 		GLOBALDO,
 
 		LOCALPROTOCOLDECL,
-		LOCALROLEDECLLIST,
+		/*LOCALROLEDECLLIST,
 		LOCALROLEDECL,
 		SELFDECL,
 		LOCALPROTOCOLDEF,
@@ -141,12 +158,13 @@ public class AntlrConstants
 		LOCALINTERRUPTIBLE,
 		LOCALTHROWS,
 		LOCALCATCHES,
-		LOCALDO
+		LOCALDO*/
 	}
 
 
 	// Duplicated from Scribble.g (parser input constants) -- what's the best way to share it?
 	// Mostly used in projection (outputting local types)
+	// FIXME: refer to core ast Constants?  Cannot refer the other way around due to Maven dependencies
 	public static final String MODULE_KW = "module";
 	public static final String IMPORT_KW = "import";
 	public static final String TYPE_KW = "type";
@@ -156,7 +174,8 @@ public class AntlrConstants
 	public static final String ROLE_KW = "role";
 	public static final String SELF_KW = "self";
 	public static final String SIG_KW = "sig";
-	public static final String INSTANTIATES_KW = "instantiates";
+	//public static final String INSTANTIATES_KW = "instantiates";
+	public static final String AS_KW = "as";
 
 	public static final String CONNECT_KW = "connect";
 	public static final String DISCONNECT_KW = "disconnect";
@@ -167,14 +186,13 @@ public class AntlrConstants
 	public static final String OR_KW = "or";
 	public static final String REC_KW = "rec";
 	public static final String CONTINUE_KW = "continue";
-	public static final String PAR_KW = "par";
+	//public static final String PAR_KW = "par";
 	public static final String AND_KW = "and";
-	public static final String INTERRUPTIBLE_KW = "interruptible";
+	/*public static final String INTERRUPTIBLE_KW = "interruptible";
 	public static final String WITH_KW = "with";
-	public static final String BY_KW = "by";
+	public static final String BY_KW = "by";*/
+	/*public static final String THROWS_KW = "throws";
+	public static final String CATCHES_KW = "catches";*/
 	public static final String DO_KW = "do";
-	public static final String AS_KW = "as";
-	public static final String SPAWN_KW = "spawn";
-	public static final String THROWS_KW = "throws";
-	public static final String CATCHES_KW = "catches";
+	//public static final String SPAWN_KW = "spawn";
 }

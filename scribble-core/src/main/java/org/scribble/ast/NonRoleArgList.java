@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.Arg;
-import org.scribble.sesstype.kind.NonRoleArgKind;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.Arg;
+import org.scribble.type.kind.NonRoleArgKind;
+import org.scribble.type.name.Role;
 import org.scribble.util.ScribUtil;
 
 // Cf. NonRoleParamDeclList

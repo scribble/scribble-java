@@ -13,25 +13,25 @@
  */
 package org.scribble.ast;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.ScopeNode;
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 
 public abstract class Interruptible<K extends ProtocolKind> extends CompoundInteractionNode<K> implements ScopedNode
 {
 	public final ScopeNode scope;
 	public final ProtocolBlock<K> block;
-	private final List<? extends Interrupt> interrs;
+	public final List<? extends Interrupt> interrs;
 
 	protected Interruptible(CommonTree source, ScopeNode scope, ProtocolBlock<K> block, List<? extends Interrupt> interrs)
 	{
 		super(source);
 		this.scope = scope;
 		this.block = block;
-		this.interrs = interrs;
+		this.interrs = Collections.unmodifiableList(interrs);
 	}
 	
 	/*protected abstract Interruptible<T1, T2> reconstruct(CommonTree ct, ScopeNode scope, T1 block, List<T2> interrs, CompoundInteractionNodeContext icontext, Env env);
@@ -113,7 +113,7 @@ public abstract class Interruptible<K extends ProtocolKind> extends CompoundInte
 		return this.scope == null;
 	}
 	
-	@Override
+	/*@Override
 	public String toString()
 	{
 		String s = Constants.INTERRUPTIBLE_KW + " ";
@@ -124,5 +124,5 @@ public abstract class Interruptible<K extends ProtocolKind> extends CompoundInte
 		s += this.block + " " + Constants.WITH_KW + " {\n";
 		s += this.interrs.stream().map((i) -> i.toString()).collect(Collectors.joining("\n")) + "\n";
 		return s + "}";
-	}
+	}*/
 }

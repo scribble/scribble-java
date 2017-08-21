@@ -16,7 +16,7 @@ package org.scribble.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
 public abstract class Recursion<K extends ProtocolKind> extends CompoundInteractionNode<K>
@@ -49,6 +49,6 @@ public abstract class Recursion<K extends ProtocolKind> extends CompoundInteract
 	@Override
 	public String toString()
 	{
-		return Constants.REC_KW + " " + this.recvar + " " + block;
+		return Constants.REC_KW + " " + this.recvar + " " + this.block;
 	}
 }

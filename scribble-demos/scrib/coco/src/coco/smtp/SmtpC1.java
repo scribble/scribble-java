@@ -19,12 +19,14 @@ package coco.smtp;
 import static coco.smtp.Smtp.Smtp.Smtp.C;
 import static coco.smtp.Smtp.Smtp.Smtp.S;
 import static coco.smtp.Smtp.Smtp.Smtp._220;
+import static coco.smtp.Smtp.Smtp.Smtp._250;
+import static coco.smtp.Smtp.Smtp.Smtp._250d;
 
-import org.scribble.net.Buf;
-import org.scribble.net.scribsock.LinearSocket;
-import org.scribble.net.session.SSLSocketChannelWrapper;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.scribsock.LinearSocket;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import coco.smtp.Smtp.Smtp.Smtp;
 import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
@@ -43,8 +45,6 @@ import coco.smtp.message.client.Quit;
 import coco.smtp.message.client.StartTls;
 import coco.smtp.message.server._250;
 import coco.smtp.message.server._250d;
-
-import static coco.smtp.Smtp.Smtp.Smtp.*;
 
 public class SmtpC1
 {

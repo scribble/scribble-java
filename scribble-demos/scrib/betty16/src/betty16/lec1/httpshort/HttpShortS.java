@@ -20,10 +20,10 @@ import static betty16.lec1.httpshort.HttpShort.Http.Http.S;
 import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
-import org.scribble.net.scribsock.ScribServerSocket;
-import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.Buf;
+import org.scribble.runtime.net.scribsock.ScribServerSocket;
+import org.scribble.runtime.net.scribsock.SocketChannelServer;
+import org.scribble.runtime.net.session.MPSTEndpoint;
 
 import betty16.lec1.httpshort.HttpShort.Http.Http;
 import betty16.lec1.httpshort.HttpShort.Http.channels.S.Http_S_1;

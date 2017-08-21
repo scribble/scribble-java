@@ -23,7 +23,7 @@ import org.junit.runners.Parameterized.Parameters;
 // Needs -Dtest.dir=[test root dir] system property -- Eclipse VM arg: -Dtest.dir=${selected_resource_loc} 
 //@RunWith(value = Parameterized.class)
 @RunWith(Parameterized.class)
-public class ScribBadTest extends ScribTest
+public class ScribBadTest extends ScribTestBase
 {
 	protected static final String BAD_DIR = "bad";
 
@@ -35,6 +35,6 @@ public class ScribBadTest extends ScribTest
 	@Parameters(name = "{0}")
 	public static Collection<Object[]> data()
 	{
-		return Harness.checkTestDirProperty(ScribTest.BAD_TEST, ScribBadTest.BAD_DIR);
+		return Harness.checkTestDirProperty(ScribTestBase.BAD_TEST, ScribBadTest.BAD_DIR);
 	}
 }

@@ -27,8 +27,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.MPrettyState;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.RecVar;
 
 // Label types used to be both RecVar and SubprotocolSigs; now using inlined protocol for FSM building so just RecVar
 public class EState extends MPrettyState<RecVar, EAction, EState, Local>
@@ -36,6 +36,14 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	protected EState(Set<RecVar> labs)
 	{
 		super(labs);
+	}
+	
+	// To be overridden by subclasses, to obtain the subclass nodes
+  // FIXME: remove labs arg, and modify the underlying Set if needed?
+	protected EState cloneNode(EModelFactory ef, Set<RecVar> labs)
+	{
+		//return ef.newEState(this.labs);
+		return ef.newEState(labs);
 	}
 	
 	// Helper factory method for deriving an EGraph from an arbitary EState (but not the primary way to construct EGraphs; cf., EGraphBuilderUtil)
@@ -53,9 +61,9 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	.. easier to implement as a direct check on the standard global model, rather than model hacking -- i.e. liveness is not just about terminal sets, but about "branching condition", c.f. julien?
 	.. the issue is connect/accept -- makes direct check a bit more complicated, maybe value in doing it by model hacking to rely on standard liveness checking?
 	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles*/
-	public EState unfairTransform()
+	public EState unfairTransform(EModelFactory ef)
 	{
-		EState init = clone();
+		EState init = clone(ef);
 		
 		EState term = MPrettyState.getTerminal(init);
 		Set<EState> seen = new HashSet<>();
@@ -94,7 +102,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 						}
 						else
 						{
-							EState clone = curr.unfairClone(term, a, s);  // s is a succ of curr
+							EState clone = curr.unfairClone(ef, term, a, s);  // s is a succ of curr
 							//try { s.removeEdge(a, tmps); } catch (ScribbleException e) { throw new RuntimeException(e); }
 							//clones.put(a, clone);
 							cloneas.add(a);
@@ -170,7 +178,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	}
 
 	// Fully clones the reachable graph (i.e. the "general" graph -- cf., EGraph, the specific Scribble concept of an endpoint protocol graph)
-	protected EState clone()
+	protected EState clone(EModelFactory ef)
 	{
 		Set<EState> all = new HashSet<>();
 		all.add(this);
@@ -178,7 +186,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
 		for (EState s : all)
 		{
-			map.put(s.id, new EState(s.labs));
+			map.put(s.id, s.cloneNode(ef, s.labs));
 		}
 		for (EState s : all)
 		{
@@ -199,7 +207,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	// i.e., this -a-> succ (maybe non-det)
 	// Returns the clone of the subgraph rooted at succ, with all non- "this-a->succ" actions pruned from the clone of "this" state
 	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
-	protected EState unfairClone(EState term, EAction a, EState succ) // Need succ param for non-det
+	protected EState unfairClone(EModelFactory ef, EState term, EAction a, EState succ) // Need succ param for non-det
 	{
 		//EndpointState succ = take(a);
 		Set<EState> all = new HashSet<>();
@@ -215,7 +223,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			else
 			{
 				//map.put(s.id, newState(s.labs));
-				map.put(s.id, new EState(Collections.emptySet()));
+				map.put(s.id, s.cloneNode(ef, Collections.emptySet()));  // FIXME: remove labs arg from cloneNode and just clear the lab set here?
 			}
 		}
 		for (EState s : all)
@@ -241,7 +249,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction
 	public boolean isConnectOrWrapClientOnly()
 	{
-		return getStateKind() == EStateKind.OUTPUT && getAllActions().stream().allMatch((a) -> a.isConnect() || a.isWrapClient());
+		return getStateKind() == EStateKind.OUTPUT && getAllActions().stream().allMatch((a) -> a.isRequest() || a.isWrapClient());
 	}
 	
 	public EStateKind getStateKind()
@@ -260,23 +268,23 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 						: (a.isAccept()) ? EStateKind.ACCEPT  // Accept is always unary, guaranteed by treating as a unit message id (wrt. branching)  // No: not any more, connect-with-message
 						: (a.isWrapServer()) ? EStateKind.WRAP_SERVER   // WrapServer is always unary, guaranteed by treating as a unit message id (wrt. branching)
 						: (as.size() > 1) ? EStateKind.POLY_INPUT : EStateKind.UNARY_INPUT;*/
-			if (as.stream().allMatch((a) -> a.isSend() || a.isConnect() || a.isWrapClient()))  // wrapClient should be unary?
+			if (as.stream().allMatch(a -> a.isSend() || a.isRequest() || a.isWrapClient()))  // wrapClient should be unary?
 			{
 				return EStateKind.OUTPUT;
 			}
-			else if (as.stream().allMatch((a) -> a.isReceive()))
+			else if (as.stream().allMatch(EAction::isReceive))
 			{
 				return (as.size() == 1) ? EStateKind.UNARY_INPUT : EStateKind.POLY_INPUT;
 			}
-			else if (as.stream().allMatch((a) -> a.isAccept()))
+			else if (as.stream().allMatch(EAction::isAccept))
 			{
 				return EStateKind.ACCEPT;  // Distinguish unary for API gen?  cf. receive
 			}
-			else if (as.size() == 1 && as.iterator().next().isDisconnect())
+			else if (as.size() == 1 && as.get(0).isDisconnect())
 			{
 				return EStateKind.OUTPUT;
 			}
-			else if (as.size() == 1 && as.iterator().next().isWrapServer())
+			else if (as.size() == 1 && as.get(0).isWrapServer())
 			{
 				return EStateKind.WRAP_SERVER;
 			}

@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.name.Name;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.name.Name;
+import org.scribble.type.name.Role;
 import org.scribble.util.ScribUtil;
 
 // Typing a bit awkward that this list has to use NonRoleParamKind as the "concrete" kind, while the NonRoleParamDecl elements use the actual concrete kind

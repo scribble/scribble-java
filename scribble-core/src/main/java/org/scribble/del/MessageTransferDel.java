@@ -21,7 +21,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.MessageId;
+import org.scribble.type.name.MessageId;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;

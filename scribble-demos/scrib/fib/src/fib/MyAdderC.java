@@ -13,9 +13,9 @@
  */
 package fib;
 
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import fib.Fib.Adder.Adder;
 import fib.Fib.Adder.channels.C.Adder_C_1;

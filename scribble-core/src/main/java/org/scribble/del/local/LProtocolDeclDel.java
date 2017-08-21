@@ -13,15 +13,17 @@
  */
 package org.scribble.del.local;
 
+import java.util.Collections;
+
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.local.LProtocolDeclContext;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Local;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.Role;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 
@@ -60,9 +62,9 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	public void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
+	public void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder)
 	{
-		graph.util.reset();  // Same util is used for multiple protos, need to reset
+		builder.util.init(builder.job.ef.newEState(Collections.emptySet()));  // Same util is used for multiple protos, need to (re-)init each time
 	}
 
 	@Override

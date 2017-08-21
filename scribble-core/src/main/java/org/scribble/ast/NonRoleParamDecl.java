@@ -17,10 +17,10 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.DataTypeKind;
-import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.kind.SigKind;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.DataTypeKind;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.kind.SigKind;
+import org.scribble.type.name.Role;
 
 public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDecl<K>
 {

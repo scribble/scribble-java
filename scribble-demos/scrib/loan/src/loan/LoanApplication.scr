@@ -1,5 +1,5 @@
-//$ bin/scribblec.sh -ip modules/demos/scrib/loan/src -d modules/demos/scrib/loan/src modules/demos/scrib/loan/src/loan/LoanApplication.scr -api BuyerBrokerSupplier Applicant
-//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/loan/src modules/demos/scrib/loan/src/loan/*.java -subpackages loan.LoanApplication.BuyerBrokerSupplier -d modules/demos/scrib/loan/javadoc
+//$ bin/scribblec.sh -ip scribble-demos/scrib/loan/src -d scribble-demos/scrib/loan/src scribble-demos/scrib/loan/src/loan/LoanApplication.scr -api BuyerBrokerSupplier Applicant
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/loan/src scribble-demos/scrib/loan/src/loan/*.java -subpackages loan.LoanApplication.BuyerBrokerSupplier -d scribble-demos/scrib/loan/javadoc
 
 module loan.LoanApplication;
 

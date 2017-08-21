@@ -1,5 +1,5 @@
-//$ bin/scribblec.sh -ip modules/demos/scrib/fase16/src -d modules/demos/scrib/fase16/src modules/demos/scrib/fase16/src/fase16/adder/Adder.scr -api Adder C
-//$ javadoc -cp modules/core/target/classes';'modules/demos/target/classes';'modules/demos/scrib/fase16/src/ modules/demos/scrib/fase16/src/fase16/adder/Adder/Adder/*.java -subpackages fase16.adder.Adder.Adder -d modules/demos/scrib/fase16/javadoc/adder
+//$ ./scribblec.sh -ip scribble-demos/scrib/fase16/src -d scribble-demos/scrib/fase16/src scribble-demos/scrib/fase16/src/fase16/adder/Adder.scr -api Adder C
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/fase16/src/ scribble-demos/scrib/fase16/src/fase16/adder/Adder/Adder/*.java -subpackages fase16.adder.Adder.Adder -d scribble-demos/scrib/fase16/javadoc/adder
 
 
 module fase16.adder.Adder;

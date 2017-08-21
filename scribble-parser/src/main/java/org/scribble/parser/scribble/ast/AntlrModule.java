@@ -25,16 +25,16 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.parser.scribble.ScribParser;
-import org.scribble.parser.scribble.ScribParserUtil;
-import org.scribble.parser.scribble.AntlrConstants.AntlrNodeType;
+import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.AntlrToScribParserUtil;
+import org.scribble.parser.scribble.ScribbleAntlrConstants.AntlrNodeType;
 import org.scribble.util.ScribParserException;
 
 public class AntlrModule
 {
 	public static final int MODULEDECL_CHILD_INDEX = 0;
 
-	public static Module parseModule(ScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static Module parseModule(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
 	{
 		ModuleDecl md = (ModuleDecl) parser.parse(getModuleDeclChild(ct), af);
 		List<ImportDecl<?>> ids = new LinkedList<>();
@@ -81,8 +81,8 @@ public class AntlrModule
 	private static List<CommonTree> filterChildren(CommonTree ct, AntlrNodeType... types)
 	{
 		List<AntlrNodeType> tmp = Arrays.asList(types);
-		List<CommonTree> children = ScribParserUtil.toCommonTreeList(ct.getChildren());
+		List<CommonTree> children = AntlrToScribParserUtil.toCommonTreeList(ct.getChildren());
 		return children.subList(1, children.size()).stream()
-				.filter((c) -> tmp.contains(ScribParserUtil.getAntlrNodeType(c))).collect(Collectors.toList());
+				.filter((c) -> tmp.contains(AntlrToScribParserUtil.getAntlrNodeType(c))).collect(Collectors.toList());
 	}
 }

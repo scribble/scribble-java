@@ -15,8 +15,8 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
-import org.scribble.sesstype.kind.OpKind;
-import org.scribble.sesstype.name.Op;
+import org.scribble.type.kind.OpKind;
+import org.scribble.type.name.Op;
 
 
 public class OpNode extends SimpleNameNode<OpKind>

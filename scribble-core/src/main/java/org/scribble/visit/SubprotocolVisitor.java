@@ -36,15 +36,15 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.Arg;
-import org.scribble.sesstype.SubprotocolSig;
-import org.scribble.sesstype.kind.NonRoleArgKind;
-import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.Name;
-import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.sesstype.name.Role;
-import org.scribble.sesstype.name.Scope;
+import org.scribble.type.Arg;
+import org.scribble.type.SubprotocolSig;
+import org.scribble.type.kind.NonRoleArgKind;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.Name;
+import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.Role;
+import org.scribble.type.name.Scope;
 import org.scribble.visit.env.Env;
 
 public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>

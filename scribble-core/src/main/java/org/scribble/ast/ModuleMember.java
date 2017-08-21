@@ -13,8 +13,8 @@
  */
 package org.scribble.ast;
 
-import org.scribble.sesstype.kind.ModuleMemberKind;
-import org.scribble.sesstype.name.MemberName;
+import org.scribble.type.kind.ModuleMemberKind;
+import org.scribble.type.name.MemberName;
 
 // Not an abstract class, NonProtocolDecl extends NameDeclNode (whereas ProtocolDecl uses ProtocolHeader for that)
 public interface ModuleMember

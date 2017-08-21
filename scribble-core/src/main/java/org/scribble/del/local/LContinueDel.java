@@ -26,7 +26,7 @@ import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.sesstype.name.RecVar;
+import org.scribble.type.name.RecVar;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.env.InlineProtocolEnv;
