@@ -58,7 +58,7 @@ public class MainContext
 	//protected final JScribbleApiGen jgen;  // No: API gen depends on the Job
 
 	//public final boolean jUnit;
-	public final boolean debug;  // TODO: factor out (cf. CommandLine.newMainContext)
+	public final boolean debug;  // TODO: factor out with Job -- (cf. CommandLine.newMainContext)
 	public final boolean useOldWF;
 	public final boolean noLiveness;
 	public final boolean minEfsm;

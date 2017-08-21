@@ -33,7 +33,7 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
-import org.scribble.ast.local.LConnect;
+import org.scribble.ast.local.LRequest;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.local.LDisconnect;
@@ -140,7 +140,7 @@ public interface AstFactory
 
 	LSend LSend(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LConnect LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
+	LRequest LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
 	LAccept LAccept(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
 	/*LConnect LConnect(CommonTree source, RoleNode src, RoleNode dest);
 	LAccept LAccept(CommonTree source, RoleNode src, RoleNode dest);*/

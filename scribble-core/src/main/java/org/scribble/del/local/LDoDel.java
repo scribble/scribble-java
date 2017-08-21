@@ -70,10 +70,10 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	@Override
 	public LDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner dinlr, ScribNode visited) throws ScribbleException
 	{
-		CommonTree blame = visited.getSource();  // Cf., LDoDel
-		SubprotocolSig subsig = dinlr.peekStack();
 		if (!dinlr.isCycle())
 		{
+			CommonTree blame = visited.getSource();  // Cf., GDoDel
+			SubprotocolSig subsig = dinlr.peekStack();
 			RecVarNode recvar = (RecVarNode) dinlr.job.af.SimpleNameNode(blame, RecVarKind.KIND, dinlr.getSubprotocolRecVar(subsig).toString());
 			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) dinlr.peekEnv()).getTranslation());
 			LProtocolBlock gb = dinlr.job.af.LProtocolBlock(blame, gis);
