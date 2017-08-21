@@ -26,9 +26,9 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
-import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.kind.Global;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 public class GoSTSessionAPIBuilder
 {

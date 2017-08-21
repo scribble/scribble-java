@@ -21,7 +21,7 @@ import org.scribble.codegen.statetype.STCaseBuilder;
 import org.scribble.codegen.statetype.STStateChanAPIBuilder;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.model.endpoint.EState;
-import org.scribble.sesstype.name.MessageId;
+import org.scribble.type.name.MessageId;
 
 public class GoSTCaseBuilder extends STCaseBuilder
 {

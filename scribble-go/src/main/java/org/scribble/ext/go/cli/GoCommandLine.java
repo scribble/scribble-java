@@ -19,11 +19,12 @@ import org.scribble.cli.CLArgFlag;
 import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineException;
 import org.scribble.ext.go.codegen.statetype.go.GoEndpointApiGenerator;
+import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.Role;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 public class GoCommandLine extends CommandLine
 {
@@ -68,7 +69,7 @@ public class GoCommandLine extends CommandLine
 		}
 	}
 
-	public static void main(String[] args) throws CommandLineException, ScribbleException
+	public static void main(String[] args) throws CommandLineException, AntlrSourceException
 	{
 		new GoCommandLine(args).run();
 	}
