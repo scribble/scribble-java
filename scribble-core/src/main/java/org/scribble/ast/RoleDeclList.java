@@ -66,7 +66,8 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 	@Override
 	public RoleDeclList project(AstFactory af, Role self)
 	{
-		return af.RoleDeclList(this.source, getDecls());
+		//return af.RoleDeclList(this.source, getDecls());
+		return af.RoleDeclList(this.source, getDecls().stream().map(rd -> rd.project(af, self)).collect(Collectors.toList()));
 	}
 
 	@Override

@@ -77,7 +77,7 @@ public class ParamGCrossMessageTransfer extends GMessageTransfer //implements Pa
 	@Override
 	public ParamGCrossMessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		throw new RuntimeException("[assrt] Shouldn't get in here: " + this);
+		throw new RuntimeException("[param] Shouldn't get in here: " + this);
 	}
 
 	public ParamGCrossMessageTransfer reconstruct(RoleNode src, MessageNode msg, RoleNode dest, 

@@ -165,6 +165,9 @@ tokens
 	LOCALCATCHES = 'local-catches';
 	LOCALSEND = 'local-send';
 	LOCALRECEIVE = 'local-receive';*/
+
+
+	PARAM_ROLEDECL = 'PARAM_ROLEDECL';
 }
 
 
@@ -295,6 +298,13 @@ LINE_COMMENT:
 /**
  * Section 2.3 Identifiers
  */
+
+/*  // Seems "conflict" with IDENTIFIER
+number:  
+	(DIGIT)+
+;*/
+
+
 IDENTIFIER:
 	(LETTER | DIGIT | UNDERSCORE)*  
 			/* Underscore currently can cause ambiguities in the API generation naming scheme
@@ -558,7 +568,13 @@ roledecl:
 	ROLE_KW rolename
 ->
 	^(ROLEDECL rolename)
+	
+|
+	ROLE_KW rolename '[' simplename '..' simplename ']'
+->
+	^(PARAM_ROLEDECL rolename simplename simplename)
 ;
+// Should be "number"
 
 parameterdecllist:
 	'<' parameterdecl (',' parameterdecl)* '>'

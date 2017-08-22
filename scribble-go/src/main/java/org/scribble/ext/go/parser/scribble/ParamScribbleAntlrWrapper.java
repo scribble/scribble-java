@@ -19,7 +19,6 @@ public class ParamScribbleAntlrWrapper extends ScribbleAntlrWrapper
 	}
 	
 	@Override
-	//protected Parser newScribbleParser(CommonTokenStream cts)
 	protected CommonTree runScribbleParser(CommonTokenStream cts) throws RecognitionException
 	{
 		return (CommonTree) new ParamScribbleParser(cts).module().getTree();

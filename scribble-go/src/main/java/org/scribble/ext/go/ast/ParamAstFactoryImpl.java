@@ -4,6 +4,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.RoleDeclDel;
 import org.scribble.del.global.GMessageTransferDel;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 
@@ -173,6 +174,15 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 	*/
 
 	// Explicitly creating new Assrt nodes
+
+	@Override
+	public ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, int start, int end)
+	{
+		ParamRoleDecl rd = new ParamRoleDecl(source, namenode, start, end);
+		rd = del(rd, new RoleDeclDel());
+		return rd;
+	}
+
 	@Override
 	public ParamGCrossMessageTransfer ParamGCrossMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest,
 			int srcRangeStart, int srcRangeEnd, int destRangeStart, int destRangeEnd)

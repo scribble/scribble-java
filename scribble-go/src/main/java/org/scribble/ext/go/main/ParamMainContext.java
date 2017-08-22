@@ -4,10 +4,12 @@ import java.nio.file.Path;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ext.go.ast.ParamAstFactoryImpl;
+import org.scribble.ext.go.parser.scribble.ParamAntlrToScribParser;
 import org.scribble.ext.go.parser.scribble.ParamScribbleAntlrWrapper;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.ResourceLocator;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ScribbleAntlrWrapper;
 import org.scribble.util.ScribParserException;
 
@@ -35,11 +37,11 @@ public class ParamMainContext extends MainContext
 		return new ParamScribbleAntlrWrapper();
 	}
 	
-	/*@Override
+	@Override
 	protected AntlrToScribParser newScribParser()
 	{
 		return new ParamAntlrToScribParser();
-	}*/
+	}
 	
 	protected AstFactory newAstFactory()
 	{

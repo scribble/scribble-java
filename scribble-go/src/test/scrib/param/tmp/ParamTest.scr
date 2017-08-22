@@ -16,4 +16,3 @@ global protocol Proto1(role A[1..1], role B[1..1])
 {
 	1() from A to B;
 }
-
