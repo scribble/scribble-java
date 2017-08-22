@@ -21,9 +21,7 @@ import org.scribble.visit.AstVisitor;
 // Subsumes scatter/gather, src/dest range length one
 public class ParamGCrossMessageTransfer extends GMessageTransfer //implements ParamActionAssertNode
 {
-	//public final ParamAssertion ass;  // null if not specified -- should be the "true" formula in principle, but not syntactically
-			// Duplicated in, e.g., ALSend -- could factour out to in Del, but need to consider immutable pattern
-	
+	// ParamRoleNode? -- cf. ParamRoleDecl
 	// All >= 0; end >= start
 	public final int srcRangeStart;
 	public final int srcRangeEnd;     // Inclusive
@@ -43,18 +41,8 @@ public class ParamGCrossMessageTransfer extends GMessageTransfer //implements Pa
 	@Override
 	public LNode project(AstFactory af, Role self)
 	{
-		/*LNode proj = super.project(af, self);
-		if (proj instanceof LInteractionSeq)  // From super, if self communication
-		{
-			throw new RuntimeException("[assrt] Self-communication not supported: " + proj);
-		}
-		else if (proj instanceof LSend)
-		{
-			LSend ls = (LSend) proj;
-			proj = ((ParamAstFactory) af).ParamLSend(ls.getSource(), ls.src, ls.msg, ls.getDestinations(), this.ass);
-		}
-		return proj;*/
-		return super.project(af, self);  // FIXME
+		//return super.project(af, self);  // FIXME
+		throw new RuntimeException("[param] TODO: " + this);  // Not just project, but most passes after parsing
 	}
 
 	@Override

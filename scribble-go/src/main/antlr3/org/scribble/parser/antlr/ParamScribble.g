@@ -168,6 +168,7 @@ tokens
 
 
 	PARAM_ROLEDECL = 'PARAM_ROLEDECL';
+	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
 }
 
 
@@ -574,7 +575,7 @@ roledecl:
 ->
 	^(PARAM_ROLEDECL rolename simplename simplename)
 ;
-// Should be "number"
+// Should be "number" -- but seems "conflict" with IDENTIFIER
 
 parameterdecllist:
 	'<' parameterdecl (',' parameterdecl)* '>'
@@ -652,6 +653,11 @@ globalmessagetransfer:
 	message FROM_KW rolename TO_KW rolename (',' rolename )* ';'
 ->
 	^(GLOBALMESSAGETRANSFER message rolename rolename+)
+
+|
+	message FROM_KW rolename '[' simplename '..' simplename ']' TO_KW rolename '[' simplename '..' simplename ']' ';'
+->
+	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename simplename simplename simplename simplename)
 ;
 
 message:

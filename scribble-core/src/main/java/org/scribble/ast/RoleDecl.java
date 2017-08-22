@@ -42,6 +42,7 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	}
 
 	@Override
+	//public RoleDecl reconstruct(RoleNode name)  // No: because super
 	public RoleDecl reconstruct(SimpleNameNode<RoleKind> name)
 	{
 		ScribDel del = del();
