@@ -41,8 +41,8 @@ public class ParamGCrossMessageTransfer extends GMessageTransfer //implements Pa
 	@Override
 	public LNode project(AstFactory af, Role self)
 	{
-		//return super.project(af, self);  // FIXME
-		throw new RuntimeException("[param] TODO: " + this);  // Not just project, but most passes after parsing
+		return super.project(af, self);  // FIXME
+		//throw new RuntimeException("[param] TODO: " + this);  // Not just project, but most passes after parsing
 	}
 
 	@Override

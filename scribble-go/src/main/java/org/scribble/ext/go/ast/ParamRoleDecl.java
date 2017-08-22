@@ -39,9 +39,9 @@ public class ParamRoleDecl extends RoleDecl
 	@Override
 	public ParamRoleDecl project(AstFactory af, Role self)
 	{
-		/*RoleDecl proj = super.project(af, self);
-		return reconstruct((SimpleNameNode<RoleKind>) proj.name, this.start, this.end);*/
-		throw new RuntimeException("[param] TODO: " + this);  // Not just project, but most passes after parsing
+		RoleDecl proj = super.project(af, self);
+		return reconstruct((SimpleNameNode<RoleKind>) proj.name, this.start, this.end);
+		//throw new RuntimeException("[param] TODO: " + this);  // Not just project, but most passes after parsing
 	}
 
 	@Override
