@@ -84,6 +84,8 @@
 		<module>scribble-test</module>
 		<module>scribble-dist</module>
 		<module>scribble-demos</module>
+
+		<module>scribble-go</module>
 	</modules>
 
 	<dependencyManagement>
@@ -285,8 +287,11 @@
 						<exclude>bin/*.sh</exclude>
 						<exclude>scribblec.sh</exclude>
 						<exclude>**/*.swp</exclude>
+
 						<!-- FIXME: "extension" module excludes -->
 						<exclude>scribble-f17/**/*</exclude>
+						<exclude>scribble-go/**/*</exclude>
+
 					</excludes>
 				</configuration>
 				<executions>
