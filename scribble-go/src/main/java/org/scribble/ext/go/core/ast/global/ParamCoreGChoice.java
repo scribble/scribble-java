@@ -1,5 +1,6 @@
 package org.scribble.ext.go.core.ast.global;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,75 +47,14 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 			return af.ParamCoreLChoice(role, kind, projs);
 		}
 		
-		throw new RuntimeException("[param-core] TODO: " + this);
-
-		/*// "Merge"
-		if (projs.values().stream().anyMatch(v -> (v instanceof ParamCoreLRecVar)))
+		// "Merge"
+		Collection<ParamCoreLType> values = projs.values();
+		if (values.size() > 1)
 		{
-			if (projs.values().stream().anyMatch(v -> !(v instanceof ParamCoreLRecVar)))
-			{
-				throw new ParamCoreSyntaxException("[assrt-core] Cannot project \n" + this + "\n onto " + r + ": cannot merge unguarded rec vars.");
-			}
-
-			Set<RecVar> rvs = projs.values().stream().map(v -> ((ParamCoreLRecVar) v).recvar).collect(Collectors.toSet());
-			Set<List<ParamArithFormula>> fs = projs.values().stream().map(v -> ((ParamCoreLRecVar) v).annotexprs).collect(Collectors.toSet());  // FIXME? syntactic equality of exprs
-			if (rvs.size() > 1 || fs.size() > 1)
-			{
-				throw new ParamCoreSyntaxException("[assrt-core] Cannot project \n" + this + "\n onto " + r + ": mixed unguarded rec vars: " + rvs);
-			}
-
-			return af.ParamCoreLRecVar(rvs.iterator().next(), fs.iterator().next());
+			throw new ParamCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + r + ": cannot merge for: " + projs.keySet());
 		}
 		
-		List<ParamCoreLType> filtered = projs.values().stream()
-			.filter(v -> !v.equals(ParamCoreLEnd.END))
-			////.collect(Collectors.toMap(e -> Map.Entry<ParamCoreAction, ParamCoreLType>::getKey, e -> Map.Entry<ParamCoreAction, ParamCoreLType>::getValue));
-			//.map(v -> (ParamCoreLChoice) v)
-			.collect(Collectors.toList());
-	
-		if (filtered.size() == 0)
-		{
-			return ParamCoreLEnd.END;
-		}
-		else if (filtered.size() == 1)
-		{
-			return //(ParamCoreLChoice)
-					filtered.iterator().next();  // RecVar disallowed above
-		}
-		
-		List<ParamCoreLChoice> choices = filtered.stream().map(v -> (ParamCoreLChoice) v).collect(Collectors.toList());
-	
-		Set<Role> roles = choices.stream().map(v -> v.role).collect(Collectors.toSet());  // Subj not one of curent src/dest, must be projected inside each case to a guarded continuation
-		if (roles.size() > 1)
-		{
-			throw new ParamCoreSyntaxException("[assrt-core] Cannot project \n" + this + "\n onto " + r + ": mixed peer roles: " + roles);
-		}
-		Set<ParamCoreActionKind<?>> kinds = choices.stream().map(v -> v.kind).collect(Collectors.toSet());  // Subj not one of curent src/dest, must be projected inside each case to a guarded continuation
-		if (kinds.size() > 1)
-		{
-			throw new ParamCoreSyntaxException("[assrt-core] Cannot project \n" + this + "\n onto " + r + ": mixed action kinds: " + kinds);
-		}
-		
-		Map<ParamCoreAction, ParamCoreLType> merged = new HashMap<>();
-		choices.forEach(v ->
-		{
-			if (!v.kind.equals(ParamCoreLActionKind.RECEIVE))
-			{
-				throw new RuntimeException("[assrt-core] Shouldn't get here: " + v);  // By role-enabling?
-			}
-			v.cases.entrySet().forEach(e ->
-			{
-				ParamCoreAction k = e.getKey();
-				ParamCoreLType b = e.getValue();
-				if (merged.containsKey(k)) //&& !b.equals(merged.get(k))) // TODO
-				{
-					throw new RuntimeException("[assrt-core] Cannot project \n" + this + "\n onto " + r + ": cannot merge: " + b + " and " + merged.get(k));
-				}
-				merged.put(k, b);
-			});
-		});
-		
-		return af.ParamCoreLChoice(roles.iterator().next(), ParamCoreLActionKind.RECEIVE, merged);*/
+		return values.iterator().next();
 	}
 	
 	@Override

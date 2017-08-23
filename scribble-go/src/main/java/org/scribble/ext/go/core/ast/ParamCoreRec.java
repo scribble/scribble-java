@@ -16,7 +16,7 @@ public abstract class ParamCoreRec<B extends ParamCoreType> implements ParamCore
 	@Override
 	public String toString()
 	{
-		return "mu " + this.recvar + this.body;
+		return "mu " + this.recvar + "." + this.body;
 	}
 
 	@Override
