@@ -5,10 +5,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.scribble.ast.Module;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.cli.CLArgFlag;
 import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineException;
 import org.scribble.ext.go.codegen.statetype.go.GoEndpointApiGenerator;
+import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
+import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
+import org.scribble.ext.go.core.ast.global.ParamCoreGProtocolDeclTranslator;
+import org.scribble.ext.go.core.ast.global.ParamCoreGType;
+import org.scribble.ext.go.main.ParamException;
+import org.scribble.ext.go.main.ParamJob;
 import org.scribble.ext.go.main.ParamMainContext;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
@@ -75,6 +83,24 @@ public class ParamCommandLine extends CommandLine
 		}
 	}
 
+	public static void main(String[] args) throws CommandLineException, AntlrSourceException
+	{
+		new ParamCommandLine(args).run();
+	}
+
+	@Override
+	protected void doValidationTasks(Job job) throws ParamCoreSyntaxException, AntlrSourceException, ScribParserException, CommandLineException
+	{
+		if (this.paramArgs.containsKey(ParamCLArgFlag.PARAM))
+		{
+			doParamCoreValidationTasks((ParamJob) job);
+		}
+		else
+		{
+			super.doValidationTasks(job);
+		}
+	}
+
 	@Override
 	protected void doNonAttemptableOutputTasks(Job job) throws ScribbleException, CommandLineException
 	{		
@@ -96,8 +122,204 @@ public class ParamCommandLine extends CommandLine
 		}
 	}
 
-	public static void main(String[] args) throws CommandLineException, AntlrSourceException
+	private void doParamCoreValidationTasks(ParamJob j) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
 	{
-		new ParamCommandLine(args).run();
+		/*if (this.args.containsKey(CLArgFlag.PROJECT))  // HACK
+			// modules/f17/src/test/scrib/demo/fase17/AppD.scr in [default] mode bug --- projection/EFSM not properly formed if this if is commented ????
+		{
+
+		}*/
+
+		paramCorePreContextBuilding(j);
+
+		GProtocolName simpname = new GProtocolName(this.paramArgs.get(ParamCLArgFlag.PARAM)[0]);
+		if (simpname.toString().equals("[ParamCoreAllTest]"))  // HACK: ParamCoreAllTest
+		{
+			paramCoreParseAndCheckWF(j);  // Includes base passes
+		}
+		else
+		{
+			paramCoreParseAndCheckWF(j, simpname);  // Includes base passes
+		}
+		
+		// FIXME? param-core FSM building only used for param-core validation -- output tasks, e.g., -api, will still use default Scribble FSMs
+		// -- but the FSMs should be the same? -- no: action assertions treated differently in core than base
 	}
+
+	
+	// Refactor into Param(Core)Job?
+	// Following methods are for assrt-*core*
+	
+	private void paramCorePreContextBuilding(ParamJob job) throws ScribbleException
+	{
+		job.runContextBuildingPasses();
+
+		//job.runVisitorPassOnParsedModules(RecRemover.class);  // FIXME: Integrate into main passes?  Do before unfolding? 
+				// FIXME: no -- revise to support annots
+	}
+
+	// Pre: assrtPreContextBuilding(job)
+	private void paramCoreParseAndCheckWF(ParamJob job) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
+	{
+		Module main = job.getContext().getMainModule();
+		for (GProtocolDecl gpd : main.getGlobalProtocolDecls())
+		{
+			if (!gpd.isAuxModifier())
+			{
+				paramCoreParseAndCheckWF(job, gpd.getHeader().getDeclName());  // decl name is simple name
+			}
+		}
+	}
+
+	// Pre: paramCorePreContextBuilding(job)
+	private void paramCoreParseAndCheckWF(ParamJob job, GProtocolName simpname) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
+	{
+		Module main = job.getContext().getMainModule();
+		if (!main.hasProtocolDecl(simpname))
+		{
+			throw new ParamException("[param-core] Global protocol not found: " + simpname);
+		}
+		this.gpd = (GProtocolDecl) main.getProtocolDecl(simpname);
+
+		ParamCoreAstFactory af = new ParamCoreAstFactory();
+		ParamCoreGType gt = new ParamCoreGProtocolDeclTranslator(job, af).translate(this.gpd);
+		
+		job.debugPrintln("\n[param-core] Translated:\n  " + gt);
+		
+		/*Map<Role, ParamCoreLType> P0 = new HashMap<>();
+		for (Role r : gpd.header.roledecls.getRoles())
+		{
+			ParamCoreLType lt = gt.project(af, r, ParamTrueFormula.TRUE);
+			P0.put(r, lt);
+
+			job.debugPrintln("\n[param-core] Projected onto " + r + ":\n  " + lt);
+		}
+
+		ParamCoreEGraphBuilder builder = new ParamCoreEGraphBuilder(job);
+		this.E0 = new HashMap<>();
+		for (Role r : P0.keySet())
+		{
+			EGraph g = builder.build(P0.get(r));
+			this.E0.put(r, (ParamEState) g.init);
+
+			
+			job.debugPrintln("\n[param-core] Built endpoint graph for " + r + ":\n" + g.toDot());
+		}
+				
+		assrtCoreValidate(job, simpname, gpd.isExplicitModifier());//, this.E0);  // TODO
+
+		/*if (!job.fair)
+		{
+			Map<Role, EState> U0 = new HashMap<>();
+			for (Role r : E0.keySet())
+			{
+				EState u = E0.get(r).unfairTransform();
+				U0.put(r, u);
+
+				job.debugPrintln
+				//System.out.println
+						("\n[param-core] Unfair transform for " + r + ":\n" + u.toDot());
+			}
+			
+			//validate(job, gpd.isExplicitModifier(), U0, true);  //TODO
+		}*/
+		
+		//((ParamJob) job).runF17ProjectionPasses();  // projections not built on demand; cf. models
+
+		//return gt;
+	}
+		
+	// HACK: store in (Core) Job/JobContext?
+	protected GProtocolDecl gpd;
+	/*protected Map<Role, ParamEState> E0;  // There is no core version
+	protected ParamCoreSModel model;*/
+
+	/*// FIXME: factor out -- cf. super.doAttemptableOutputTasks
+	@Override
+	protected void tryOutputTasks(Job job) throws CommandLineException, ScribbleException
+	{
+		if (this.assrtCoreArgs.containsKey(ParamCoreCLArgFlag.ASSRT_CORE_EFSM))
+		{
+			String[] args = this.assrtCoreArgs.get(ParamCoreCLArgFlag.ASSRT_CORE_EFSM);
+			for (int i = 0; i < args.length; i += 1)
+			{
+i				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
+				String out = E0.get(role).toDot();
+				System.out.println("\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
+			}
+		}
+		if (this.assrtCoreArgs.containsKey(ParamCoreCLArgFlag.ASSRT_CORE_EFSM_PNG))
+		{
+			String[] args = this.assrtCoreArgs.get(ParamCoreCLArgFlag.ASSRT_CORE_EFSM_PNG);
+			for (int i = 0; i < args.length; i += 2)
+			{
+				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
+				String png = args[i+1];
+				String out = E0.get(role).toDot();
+				runDot(out, png);
+			}
+		}
+		if (this.assrtCoreArgs.containsKey(ParamCoreCLArgFlag.ASSRT_CORE_MODEL))
+		{
+			System.out.println("\n" + model.toDot());
+		}
+		if (this.assrtCoreArgs.containsKey(ParamCoreCLArgFlag.ASSRT_CORE_MODEL_PNG))
+		{
+			String[] arg = this.assrtCoreArgs.get(ParamCoreCLArgFlag.ASSRT_CORE_MODEL_PNG);
+			String png = arg[0];
+			runDot(model.toDot(), png);
+		}
+	}
+
+	private void assrtCoreValidate(Job job, GProtocolName simpname, boolean isExplicit, 
+			//Map<Role, ParamEState> E0,
+			boolean... unfair) throws ScribbleException, CommandLineException
+	{
+		this.model = new ParamCoreSModelBuilder(job.sf).build(this.E0, isExplicit);
+
+		job.debugPrintln("\n[param-core] Built model:\n" + this.model.toDot());
+		
+		if (unfair.length == 0 || !unfair[0])
+		{
+			ParamCoreSafetyErrors serrs = this.model.getSafetyErrors(job, simpname);  // job just for debug printing
+			if (serrs.isSafe())
+			{
+				job.debugPrintln("\n[param-core] Protocol safe.");
+			}
+			else
+			{
+				throw new ParamException("[param-core] Protocol not safe:\n" + serrs);
+			}
+		}
+		
+		/*F17ProgressErrors perrs = m.getProgressErrors();
+		if (perrs.satisfiesProgress())
+		{
+			job.debugPrintln
+			//System.out.println
+					("\n[f17] " + ((unfair.length == 0) ? "Fair protocol" : "Protocol") + " satisfies progress.");
+		}
+		else
+		{
+
+			// FIXME: refactor eventual reception as 1-bounded stable check
+			Set<F17SState> staberrs = m.getStableErrors();
+			if (perrs.eventualReception.isEmpty())
+			{
+				if (!staberrs.isEmpty())
+				{
+					throw new RuntimeException("[f17] 1-stable check failure: " + staberrs);
+				}
+			}
+			else
+			{
+				if (staberrs.isEmpty())
+				{
+					throw new RuntimeException("[f17] 1-stable check failure: " + perrs);
+				}
+			}
+			
+			throw new F17Exception("\n[f17] " + ((unfair.length == 0) ? "Fair protocol" : "Protocol") + " violates progress.\n" + perrs);
+		}* /
+	}*/
 }
