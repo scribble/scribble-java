@@ -1,9 +1,15 @@
 package org.scribble.ext.go.cli;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
@@ -13,11 +19,13 @@ import org.scribble.cli.CommandLineException;
 import org.scribble.ext.go.codegen.statetype.go.GoEndpointApiGenerator;
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
+import org.scribble.ext.go.core.ast.ParamRole;
 import org.scribble.ext.go.core.ast.global.ParamCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.ParamCoreGType;
 import org.scribble.ext.go.main.ParamException;
 import org.scribble.ext.go.main.ParamJob;
 import org.scribble.ext.go.main.ParamMainContext;
+import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
@@ -186,6 +194,10 @@ public class ParamCommandLine extends CommandLine
 		
 		job.debugPrintln("\n[param-core] Translated:\n  " + gt);
 		
+		Map<String, Set<Set<List<Integer>>>> protoRoles = getProtoRoles(job, gt);
+		
+		System.out.println("\n\n[param-core] Protoroles: " + protoRoles);
+
 		/*Map<Role, ParamCoreLType> P0 = new HashMap<>();
 		for (Role r : gpd.header.roledecls.getRoles())
 		{
@@ -227,6 +239,91 @@ public class ParamCommandLine extends CommandLine
 		//((ParamJob) job).runF17ProjectionPasses();  // projections not built on demand; cf. models
 
 		//return gt;
+	}
+
+	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
+	private Map<String, Set<Set<List<Integer>>>> getProtoRoles(ParamJob job, ParamCoreGType gt)
+	{
+		Set<ParamRole> prs = gt.getParamRoles();
+		
+		Map<String, Set<ParamRole>> map
+				= prs.stream()
+				.map(x -> x.name)
+				.distinct()
+				.collect(Collectors.toMap(x -> x, x -> prs.stream().filter(y -> y.name.equals(x)).collect(Collectors.toSet())));
+		
+		Map<String, Set<Set<List<Integer>>>> powersets = map.keySet().stream().collect(Collectors.toMap(k -> k, k -> new HashSet<>()));
+		for (String n : map.keySet())
+		{
+			Set<Set<List<Integer>>> tmp = powersets.get(n);
+			Set<ParamRole> todo = new HashSet<>(map.get(n));
+			while (!todo.isEmpty())
+			{
+				Iterator<ParamRole> i = todo.iterator();
+				ParamRole next = i.next();
+				i.remove();
+				Set<List<Integer>> range = new HashSet<>();
+				range.add(Stream.of(next.start, next.end).collect(Collectors.toList()));
+				if (!tmp.contains(next))
+				{
+					tmp.addAll(tmp.stream().map(t -> 
+					{
+						Set<List<Integer>> ggg = new HashSet<>();
+						ggg.addAll(t);
+						ggg.add(range.iterator().next());
+						return ggg;
+					}).collect(Collectors.toSet()));
+					tmp.add(range);
+				}
+			}
+		}
+		
+		Map<String, Set<Set<List<Integer>>>> protoRoles = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
+		for (String r : powersets.keySet())
+		{
+			Set<Set<List<Integer>>> powset = powersets.get(r);
+			
+			System.out.println("\n" + r + ": " + powset);
+			
+			for (Set<List<Integer>> cand : powset)
+			{
+				Set<List<Integer>> coset = powset.stream().filter(f -> f.stream().noneMatch(g -> cand.contains(g))).flatMap(Collection::stream).collect(Collectors.toSet());
+				
+				String z3 = "";
+
+				if (cand.size() > 0)
+				{
+					z3 += cand.stream().map(c -> "(and (>= id " + c.get(0) + ") (<= id " + c.get(1) + "))")
+							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
+				}
+
+				if (coset.size() > 0)
+				{
+					if (cand.size() > 0)
+					{
+						z3 = "(and " + z3 + " ";
+					}
+					z3 += coset.stream().map(c -> "(or (< id " + c.get(0) + ") (> id " + c.get(1) + "))")
+							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
+					if (cand.size() > 0)
+					{
+						z3 += ")";
+					}
+				}
+				
+				z3 = "(declare-const id Int)\n(assert " + z3 + ")";
+				
+				System.out.println("cand: " + cand);
+				System.out.println("coset: " + coset);
+				System.out.println("z3: " + z3);
+				
+				if (Z3Wrapper.checkSat(job, gpd, z3))
+				{
+					protoRoles.get(r).add(cand);
+				}
+			}
+		}
+		return protoRoles;
 	}
 		
 	// HACK: store in (Core) Job/JobContext?

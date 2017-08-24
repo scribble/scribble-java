@@ -4,10 +4,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreChoice;
+import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.ParamRole;
 import org.scribble.ext.go.core.ast.local.ParamCoreLActionKind;
@@ -25,6 +28,14 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		super(dest, cases);
 		this.src = src;
 		this.dest = dest;
+	}
+	
+	@Override
+	public Set<ParamRole> getParamRoles()
+	{
+		Set<ParamRole> res = Stream.of(this.src, this.dest).collect(Collectors.toSet());
+		this.cases.values().forEach(c -> res.addAll(c.getParamRoles()));
+		return res;
 	}
 
 	@Override

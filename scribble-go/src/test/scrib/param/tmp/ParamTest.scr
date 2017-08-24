@@ -12,7 +12,16 @@ module assrt.tmp.ParamTest;
 //type <dotnet> "System.String" from "..." as str;
 
 
-global protocol Proto1(role A[1..1], role B[1..1])
+global protocol Proto1(role A, role B)
 {
-	1() from A[1..1] to B[1..1];
+	choice at A
+	{
+		1() from A[1..1] to B[1..2];
+		2() from B[1..1] to A[1..1];
+	}
+	or
+	{
+		3() from A[1..1] to B[1..2];
+		4() from B[2..2] to A[1..1];
+	}
 }

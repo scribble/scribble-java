@@ -1,7 +1,5 @@
 package org.scribble.ext.go.core.ast;
 
-import org.scribble.ext.go.core.ast.global.ParamCoreGChoice;
-
 public class ParamRole
 {
 	public final String name;
@@ -33,7 +31,7 @@ public class ParamRole
 		{
 			return true;
 		}
-		if (!(obj instanceof ParamCoreGChoice))
+		if (!(obj instanceof ParamRole))
 		{
 			return false;
 		}

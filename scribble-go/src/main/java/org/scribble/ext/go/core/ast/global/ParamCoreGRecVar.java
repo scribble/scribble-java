@@ -1,7 +1,11 @@
 package org.scribble.ext.go.core.ast.global;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreRecVar;
+import org.scribble.ext.go.core.ast.ParamRole;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRecVar;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -12,6 +16,12 @@ public class ParamCoreGRecVar extends ParamCoreRecVar implements ParamCoreGType
 	public ParamCoreGRecVar(RecVar var)
 	{
 		super(var);
+	}
+	
+	@Override
+	public Set<ParamRole> getParamRoles()
+	{
+		return Collections.emptySet();
 	}
 
 	@Override

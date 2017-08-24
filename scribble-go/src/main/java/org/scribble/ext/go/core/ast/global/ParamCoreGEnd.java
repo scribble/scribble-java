@@ -1,7 +1,11 @@
 package org.scribble.ext.go.core.ast.global;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreEnd;
+import org.scribble.ext.go.core.ast.ParamRole;
 import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
 import org.scribble.type.name.Role;
 
@@ -13,6 +17,12 @@ public class ParamCoreGEnd extends ParamCoreEnd implements ParamCoreGType
 	private ParamCoreGEnd()
 	{
 		
+	}
+	
+	@Override
+	public Set<ParamRole> getParamRoles()
+	{
+		return Collections.emptySet();
 	}
 
 	@Override

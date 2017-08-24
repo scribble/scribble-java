@@ -144,7 +144,7 @@ public class ParamCoreGProtocolDeclTranslator
 			}
 			else if (!src.equals(tmp.src) || !dest.equals(tmp.dest))
 			{
-				throw new ParamCoreSyntaxException(gc.getSource(), "[param-core] Non-directed choice not supported: " + gc);
+				throw new ParamCoreSyntaxException(gc.getSource(), "[param-core] Non-directed choice not supported: " + gc + ", " + src + ", " + tmp.src + ", " + dest + ", " + tmp.dest);
 			}
 			
 			// "Flatten" nested choices (already checked they are guarded) -- Scribble choice subjects ignored
@@ -208,8 +208,9 @@ public class ParamCoreGProtocolDeclTranslator
 		}
 		else
 		{
-			src = af.ParamRole(srcName, 1, 1);  // FIXME
-			dest = af.ParamRole(destName, 1, 1);
+			/*src = af.ParamRole(srcName, 1, 1);  // FIXME
+			dest = af.ParamRole(destName, 1, 1);*/
+			throw new ParamCoreSyntaxException(gmt.getSource(), "[param-core] Non-parameterised roles not supported: " + gmt);
 		}
 		return parseGSimpleInteractionNode(is, rvs, src, a, dest);
 	}
