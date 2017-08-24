@@ -14,6 +14,7 @@ import org.scribble.ext.go.core.ast.local.ParamCoreLRec;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.type.Payload;
 import org.scribble.type.name.Op;
 import org.scribble.type.name.RecVar;

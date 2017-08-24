@@ -38,6 +38,6 @@ public class ParamRange
 	@Override
 	public String toString()
 	{
-		return "[" + this.start + ".." + this.end + "]";
+		return "[" + this.start + ((this.start == this.end) ? "" : ".." + this.end) + "]";
 	}
 }

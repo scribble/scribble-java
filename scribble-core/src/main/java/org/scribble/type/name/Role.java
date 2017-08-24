@@ -47,6 +47,7 @@ public class Role extends AbstractName<RoleKind>
 		return n.canEqual(this) && super.equals(o);
 	}
 	
+	@Override
 	public boolean canEqual(Object o)
 	{
 		return o instanceof Role;

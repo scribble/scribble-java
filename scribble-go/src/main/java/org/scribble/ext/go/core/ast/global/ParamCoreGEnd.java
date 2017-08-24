@@ -5,8 +5,9 @@ import java.util.Set;
 
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreEnd;
-import org.scribble.ext.go.core.ast.ParamRole;
 import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
+import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.type.name.Role;
 
 
@@ -26,7 +27,7 @@ public class ParamCoreGEnd extends ParamCoreEnd implements ParamCoreGType
 	}
 
 	@Override
-	public ParamCoreLEnd project(ParamCoreAstFactory af, Role r)
+	public ParamCoreLEnd project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges)
 	{
 		return af.ParamCoreLEnd();
 	}

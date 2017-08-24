@@ -3,6 +3,7 @@ package org.scribble.ext.go.cli;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,10 +19,11 @@ import org.scribble.cli.CommandLineException;
 import org.scribble.ext.go.codegen.statetype.go.GoEndpointApiGenerator;
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
-import org.scribble.ext.go.core.ast.ParamRole;
 import org.scribble.ext.go.core.ast.global.ParamCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.ParamCoreGType;
+import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.ParamException;
 import org.scribble.ext.go.main.ParamJob;
 import org.scribble.ext.go.main.ParamMainContext;
@@ -194,20 +196,23 @@ public class ParamCommandLine extends CommandLine
 		
 		job.debugPrintln("\n[param-core] Translated:\n  " + gt);
 		
-		Map<String, Set<Set<ParamRange>>> protoRoles = getProtoRoles(job, gt);
+		Map<Role, Set<Set<ParamRange>>> protoRoles = getProtoRoles(job, gt);
 		
 		System.out.println("\n\n[param-core] Protoroles: " + protoRoles);
 
-		/*Map<Role, ParamCoreLType> P0 = new HashMap<>();
+		Map<Role, ParamCoreLType> P0 = new HashMap<>();
 		for (Role r : gpd.header.roledecls.getRoles())
 		{
-			ParamCoreLType lt = gt.project(af, r, ParamTrueFormula.TRUE);
-			P0.put(r, lt);
+			for (Set<ParamRange> ranges : protoRoles.get(r))
+			{
+				ParamCoreLType lt = gt.project(af, r, ranges);
+				P0.put(r, lt);
 
-			job.debugPrintln("\n[param-core] Projected onto " + r + ":\n  " + lt);
+				job.debugPrintln("\n[param-core] Projected onto " + r + " for " + ranges + ":\n  " + lt);
+			}
 		}
 
-		ParamCoreEGraphBuilder builder = new ParamCoreEGraphBuilder(job);
+		/*ParamCoreEGraphBuilder builder = new ParamCoreEGraphBuilder(job);
 		this.E0 = new HashMap<>();
 		for (Role r : P0.keySet())
 		{
@@ -241,18 +246,18 @@ public class ParamCommandLine extends CommandLine
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
-	private Map<String, Set<Set<ParamRange>>> getProtoRoles(ParamJob job, ParamCoreGType gt)
+	private Map<Role, Set<Set<ParamRange>>> getProtoRoles(ParamJob job, ParamCoreGType gt)
 	{
 		Set<ParamRole> prs = gt.getParamRoles();
 		
-		Map<String, Set<ParamRole>> map
+		Map<Role, Set<ParamRole>> map
 				= prs.stream()
-				.map(x -> x.name)
+				.map(x -> x.getName())
 				.distinct()
-				.collect(Collectors.toMap(x -> x, x -> prs.stream().filter(y -> y.name.equals(x)).collect(Collectors.toSet())));
+				.collect(Collectors.toMap(x -> x, x -> prs.stream().filter(y -> y.getName().equals(x)).collect(Collectors.toSet())));
 		
-		Map<String, Set<Set<ParamRange>>> powersets = map.keySet().stream().collect(Collectors.toMap(k -> k, k -> new HashSet<>()));
-		for (String n : map.keySet())
+		Map<Role, Set<Set<ParamRange>>> powersets = map.keySet().stream().collect(Collectors.toMap(k -> k, k -> new HashSet<>()));
+		for (Role n : map.keySet())
 		{
 			Set<Set<ParamRange>> tmp = powersets.get(n);
 			Set<ParamRole> todo = new HashSet<>(map.get(n));
@@ -277,8 +282,8 @@ public class ParamCommandLine extends CommandLine
 			}
 		}
 		
-		Map<String, Set<Set<ParamRange>>> protoRoles = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
-		for (String r : powersets.keySet())
+		Map<Role, Set<Set<ParamRange>>> protoRoles = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
+		for (Role r : powersets.keySet())
 		{
 			Set<Set<ParamRange>> powset = powersets.get(r);
 			

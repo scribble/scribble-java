@@ -5,10 +5,11 @@ import java.util.Set;
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreRec;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
-import org.scribble.ext.go.core.ast.ParamRole;
 import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
+import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
@@ -26,10 +27,18 @@ public class ParamCoreGRec extends ParamCoreRec<ParamCoreGType> implements Param
 	}
 
 	@Override
-	public ParamCoreLType project(ParamCoreAstFactory af, Role r) throws ParamCoreSyntaxException
+	public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	{
-		ParamCoreLType proj = this.body.project(af, r);
-		return (proj instanceof ParamCoreLRecVar) ? ParamCoreLEnd.END : af.ParamCoreLRec(this.recvar, proj);
+		ParamCoreLType proj = this.body.project(af, r, ranges);
+		if (proj instanceof ParamCoreLRecVar)
+		{
+			ParamCoreLRecVar rv = (ParamCoreLRecVar) proj;
+			return rv.recvar.equals(this.recvar) ? ParamCoreLEnd.END : rv;
+		}
+		else
+		{	
+			return af.ParamCoreLRec(this.recvar, proj);
+		}
 	}
 
 	@Override

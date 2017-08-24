@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.type.kind.ProtocolKind;
 
 public abstract class ParamCoreChoice<C extends ParamCoreType, K extends ProtocolKind> implements ParamCoreType

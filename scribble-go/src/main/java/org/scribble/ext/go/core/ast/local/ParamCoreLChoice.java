@@ -3,8 +3,8 @@ package org.scribble.ext.go.core.ast.local;
 import java.util.Map;
 
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
+import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.core.ast.ParamCoreChoice;
-import org.scribble.ext.go.core.ast.ParamRole;
 import org.scribble.type.kind.Local;
 
 public class ParamCoreLChoice extends ParamCoreChoice<ParamCoreLType, Local> implements ParamCoreLType

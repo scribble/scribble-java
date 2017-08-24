@@ -12,9 +12,10 @@ import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreChoice;
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
-import org.scribble.ext.go.core.ast.ParamRole;
 import org.scribble.ext.go.core.ast.local.ParamCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
+import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
@@ -39,30 +40,42 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	}
 
 	@Override
-	public ParamCoreLType project(ParamCoreAstFactory af, Role r) throws ParamCoreSyntaxException
+	public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	{
 		Map<ParamCoreMessage, ParamCoreLType> projs = new HashMap<>();
 		for (Entry<ParamCoreMessage, ParamCoreGType> e : this.cases.entrySet())
 		{
 			ParamCoreMessage a = e.getKey();
-			projs.put(a, e.getValue().project(af, r));
+			projs.put(a, e.getValue().project(af, r, ranges));
 					// N.B. local actions directly preserved from globals -- so core-receive also has assertion (cf. ParamGActionTransfer.project, currently no ParamLReceive)
 					// FIXME: receive assertion projection -- should not be the same as send?
 		}
 		
 		// "Simple" cases
-		if (this.src.equals(r) || this.dest.equals(r))
+		if (this.src.getName().equals(r))
 		{
-			ParamRole role = this.src.equals(r) ? this.dest : this.src;
-			ParamCoreLActionKind kind = this.src.equals(r) ? ParamCoreLActionKind.SEND : ParamCoreLActionKind.RECEIVE;
-			return af.ParamCoreLChoice(role, kind, projs);
+			return (ranges.contains(this.src.range))
+					? af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.SEND, projs)
+					: merge(af, r, ranges, projs);
+		}
+		else if (this.dest.getName().equals(r))
+		{
+			return (ranges.contains(this.dest.range))
+					? af.ParamCoreLChoice(this.src, ParamCoreLActionKind.RECEIVE, projs)
+					: merge(af, r, ranges, projs);
 		}
 		
+		// src name != dest name
+		return merge(af, r, ranges, projs);
+	}
+		
+	private ParamCoreLType merge(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges, Map<ParamCoreMessage, ParamCoreLType> projs) throws ParamCoreSyntaxException
+	{
 		// "Merge"
 		Collection<ParamCoreLType> values = projs.values();
 		if (values.size() > 1)
 		{
-			throw new ParamCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + r + ": cannot merge for: " + projs.keySet());
+			throw new ParamCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + r + " for " + ranges + ": cannot merge for: " + projs.keySet());
 		}
 		
 		return values.iterator().next();
