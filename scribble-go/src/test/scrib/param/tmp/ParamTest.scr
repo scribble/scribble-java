@@ -8,8 +8,8 @@
 module assrt.tmp.ParamTest;
 
 
-//type <dotnet> "System.UInt32" from "..." as int;
-//type <dotnet> "System.String" from "..." as str;
+//type <go> "int" from "..." as int;
+//type <go> "string" from "..." as string;
 
 
 /*

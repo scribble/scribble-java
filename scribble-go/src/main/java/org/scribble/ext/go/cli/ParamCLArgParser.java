@@ -10,10 +10,12 @@ import org.scribble.cli.CommandLineException;
 public class ParamCLArgParser extends CLArgParser
 {
 	// Unique flags
-	public static final String PARAM_FLAG      = "-param";
+	public static final String PARAM_FLAG = "-param";
 
 	// Non-unique flags
-	public static final String GO_API_GEN_FLAG = "-goapi";
+	public static final String GO_API_GEN_FLAG           = "-goapi";
+	public static final String PARAM_CORE_EFSM_FLAG      = "-param-fsm";
+	public static final String PARAM_CORE_EFSM_PNG_FLAG  = "-param-fsmpng";
 	
 	private static final Map<String, ParamCLArgFlag> PARAM_UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -22,6 +24,8 @@ public class ParamCLArgParser extends CLArgParser
 
 	private static final Map<String, ParamCLArgFlag> PARAM_NON_UNIQUE_FLAGS = new HashMap<>();
 	{
+		ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(ParamCLArgParser.PARAM_CORE_EFSM_FLAG, ParamCLArgFlag.PARAM_CORE_EFSM);
+		ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(ParamCLArgParser.PARAM_CORE_EFSM_PNG_FLAG, ParamCLArgFlag.PARAM_CORE_EFSM_PNG);
 		ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(ParamCLArgParser.GO_API_GEN_FLAG, ParamCLArgFlag.GO_API_GEN);
 	}
 
@@ -68,6 +72,8 @@ public class ParamCLArgParser extends CLArgParser
 
 			// Non-unique flags
 			
+			case ParamCLArgParser.PARAM_CORE_EFSM_FLAG:     return paramParseRoleArg(flag, i);
+			case ParamCLArgParser.PARAM_CORE_EFSM_PNG_FLAG: return paramParseRoleAndFileArgs(flag, i);
 			case ParamCLArgParser.GO_API_GEN_FLAG:
 			{
 				return goParseProtoAndRoleArgs(flag, i);
@@ -102,6 +108,31 @@ public class ParamCLArgParser extends CLArgParser
 			throw new CommandLineException("Duplicate flag: " + flag);
 		}
 		this.paramParsed.put(argFlag, args);
+	}
+
+	private int paramParseRoleArg(String f, int i) throws CommandLineException
+	{
+		ParamCLArgFlag flag = ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.get(f);
+		if ((i + 1) >= this.args.length)
+		{
+			throw new CommandLineException("Missing role argument");
+		}
+		String role = this.args[++i];
+		goConcatArgs(flag, role);
+		return i;
+	}
+
+	protected int paramParseRoleAndFileArgs(String f, int i) throws CommandLineException
+	{
+		ParamCLArgFlag flag = ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.get(f);
+		if ((i + 2) >= this.args.length)
+		{
+			throw new CommandLineException("Missing role/file arguments");
+		}
+		String role = this.args[++i];
+		String png = this.args[++i];
+		goConcatArgs(flag, role, png);
+		return i;
 	}
 
 	// FIXME: factor out with core arg parser -- issue is GoCLArgFlag is currently an unlreated type to CLArgFlag

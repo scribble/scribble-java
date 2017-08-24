@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -368,44 +369,50 @@ public class ParamCommandLine extends CommandLine
 		return protoRoles;
 	}
 
-	/*// FIXME: factor out -- cf. super.doAttemptableOutputTasks
+	// FIXME: factor out -- cf. super.doAttemptableOutputTasks
 	@Override
 	protected void tryOutputTasks(Job job) throws CommandLineException, ScribbleException
 	{
-		if (this.assrtCoreArgs.containsKey(ParamCoreCLArgFlag.ASSRT_CORE_EFSM))
+		if (this.paramArgs.containsKey(ParamCLArgFlag.PARAM_CORE_EFSM))
 		{
-			String[] args = this.assrtCoreArgs.get(ParamCoreCLArgFlag.ASSRT_CORE_EFSM);
+			String[] args = this.paramArgs.get(ParamCLArgFlag.PARAM_CORE_EFSM);
 			for (int i = 0; i < args.length; i += 1)
 			{
-i				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
-				String out = E0.get(role).toDot();
-				System.out.println("\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
+				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
+				this.E0.get(role).entrySet().forEach(e ->
+				{
+					String out = e.getValue().toDot();
+					System.out.println("\n" + role + " " + e.getKey() + ":\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
+				});
 			}
 		}
-		if (this.assrtCoreArgs.containsKey(ParamCoreCLArgFlag.ASSRT_CORE_EFSM_PNG))
+		if (this.paramArgs.containsKey(ParamCLArgFlag.PARAM_CORE_EFSM_PNG))
 		{
-			String[] args = this.assrtCoreArgs.get(ParamCoreCLArgFlag.ASSRT_CORE_EFSM_PNG);
+			String[] args = this.paramArgs.get(ParamCLArgFlag.PARAM_CORE_EFSM_PNG);
 			for (int i = 0; i < args.length; i += 2)
 			{
 				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
 				String png = args[i+1];
-				String out = E0.get(role).toDot();
-				runDot(out, png);
+				for (Entry<Set<ParamRange>, EState> e : this.E0.get(role).entrySet())
+				{
+					String out = e.getValue().toDot();
+					runDot(out, png);
+				}
 			}
 		}
-		if (this.assrtCoreArgs.containsKey(ParamCoreCLArgFlag.ASSRT_CORE_MODEL))
+		/*if (this.paramArgs.containsKey(ParamCLArgFlag.PARAM_CORE_MODEL))
 		{
 			System.out.println("\n" + model.toDot());
 		}
-		if (this.assrtCoreArgs.containsKey(ParamCoreCLArgFlag.ASSRT_CORE_MODEL_PNG))
+		if (this.paramArgs.containsKey(ParamCLArgFlag.PARAM_CORE_MODEL_PNG))
 		{
-			String[] arg = this.assrtCoreArgs.get(ParamCoreCLArgFlag.ASSRT_CORE_MODEL_PNG);
+			String[] arg = this.paramArgs.get(ParamCLArgFlag.PARAM_CORE_MODEL_PNG);
 			String png = arg[0];
 			runDot(model.toDot(), png);
-		}
+		}*/
 	}
 
-	private void assrtCoreValidate(Job job, GProtocolName simpname, boolean isExplicit, 
+	/*private void assrtCoreValidate(Job job, GProtocolName simpname, boolean isExplicit, 
 			//Map<Role, ParamEState> E0,
 			boolean... unfair) throws ScribbleException, CommandLineException
 	{

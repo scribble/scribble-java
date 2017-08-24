@@ -6,5 +6,9 @@ public enum ParamCLArgFlag
 	PARAM,
 
 	// Non-unique flags
+	
+	// Non-unique flags
+	PARAM_CORE_EFSM,
+	PARAM_CORE_EFSM_PNG,
 	GO_API_GEN
 }
