@@ -70,7 +70,7 @@ public abstract class STStateChanAPIBuilder
 		{
 			switch (s.getStateKind())
 			{
-				case ACCEPT:      throw new RuntimeException("TODO");
+				case ACCEPT:      throw new RuntimeException("[TODO]: " + s.getStateKind());
 				case OUTPUT:      api.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
 				case POLY_INPUT: 
 				{
@@ -85,7 +85,7 @@ public abstract class STStateChanAPIBuilder
 					//api.put(getFilePath(getStateChanName(s) + "_Cases"), this.cb.build(this, s));  // FIXME: factor out
 					break;
 				}
-				case WRAP_SERVER: throw new RuntimeException("TODO");
+				case WRAP_SERVER: throw new RuntimeException("[TODO]: " + s.getStateKind());
 				default:          throw new RuntimeException("Shouldn't get in here: " + s);
 			}
 		}

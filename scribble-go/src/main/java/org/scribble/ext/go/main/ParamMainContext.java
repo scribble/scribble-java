@@ -2,14 +2,15 @@ package org.scribble.ext.go.main;
 
 import java.nio.file.Path;
 
-import org.scribble.ast.AstFactory;
+import org.scribble.ext.go.ast.ParamAstFactory;
 import org.scribble.ext.go.ast.ParamAstFactoryImpl;
+import org.scribble.ext.go.core.model.endpoint.ParamCoreEModelFactory;
+import org.scribble.ext.go.core.model.endpoint.ParamCoreEModelFactoryImpl;
 import org.scribble.ext.go.parser.scribble.ParamAntlrToScribParser;
 import org.scribble.ext.go.parser.scribble.ParamScribbleAntlrWrapper;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.ResourceLocator;
-import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ScribbleAntlrWrapper;
 import org.scribble.util.ScribParserException;
 
@@ -38,24 +39,23 @@ public class ParamMainContext extends MainContext
 	}
 	
 	@Override
-	protected AntlrToScribParser newScribParser()
+	protected ParamAntlrToScribParser newScribParser()
 	{
 		return new ParamAntlrToScribParser();
 	}
 	
-	protected AstFactory newAstFactory()
+	protected ParamAstFactory newAstFactory()
 	{
 		return new ParamAstFactoryImpl();
 	}
 	
-	/*@Override
-	protected EModelFactory newEModelFactory()
+	@Override
+	protected ParamCoreEModelFactory newEModelFactory()
 	{
-		//return new ParamEModelFactoryImpl();
 		return new ParamCoreEModelFactoryImpl();  // HACK FIXME
 	}
 	
-	@Override
+	/*@Override
 	protected SModelFactory newSModelFactory()
 	{
 		//return new ParamSModelFactoryImpl();

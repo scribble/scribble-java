@@ -22,6 +22,7 @@ import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.ParamCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.ParamCoreGType;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
+import org.scribble.ext.go.core.model.endpoint.ParamCoreEGraphBuilder;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.ParamException;
@@ -35,6 +36,8 @@ import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
+import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.endpoint.EState;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribParserException;
@@ -42,6 +45,11 @@ import org.scribble.util.ScribParserException;
 public class ParamCommandLine extends CommandLine
 {
 	protected final Map<ParamCLArgFlag, String[]> paramArgs;  // Maps each flag to list of associated argument values
+
+	// HACK: store in (Core) Job/JobContext?
+	protected GProtocolDecl gpd;
+	protected Map<Role, Map<Set<ParamRange>, EState>> E0;  // FIXME: make a "proper role" for param APIs
+	//protected ParamCoreSModel model;
 	
 	public ParamCommandLine(String... args) throws CommandLineException
 	{
@@ -201,29 +209,44 @@ public class ParamCommandLine extends CommandLine
 		
 		System.out.println("\n\n[param-core] Protoroles: " + protoRoles);
 
-		Map<Role, ParamCoreLType> P0 = new HashMap<>();
-		for (Role r : gpd.header.roledecls.getRoles())
+		Map<Role, Map<Set<ParamRange>, ParamCoreLType>> P0 = new HashMap<>();
+		for (Role r : gpd.header.roledecls.getRoles())  // getRoles gives decl names  // CHECKME: can ignore params?
 		{
 			for (Set<ParamRange> ranges : protoRoles.get(r))
 			{
 				ParamCoreLType lt = gt.project(af, r, ranges);
-				P0.put(r, lt);
+				Map<Set<ParamRange>, ParamCoreLType> tmp = P0.get(r);
+				if (tmp == null)
+				{
+					tmp = new HashMap<>();
+					P0.put(r, tmp);
+				}
+				tmp.put(ranges, lt);
 
 				job.debugPrintln("\n[param-core] Projected onto " + r + " for " + ranges + ":\n  " + lt);
 			}
 		}
 
-		/*ParamCoreEGraphBuilder builder = new ParamCoreEGraphBuilder(job);
+		ParamCoreEGraphBuilder builder = new ParamCoreEGraphBuilder(job);
 		this.E0 = new HashMap<>();
 		for (Role r : P0.keySet())
 		{
-			EGraph g = builder.build(P0.get(r));
-			this.E0.put(r, (ParamEState) g.init);
+			for (Set<ParamRange> ranges : P0.get(r).keySet())
+			{
+				EGraph g = builder.build(P0.get(r).get(ranges));
+				Map<Set<ParamRange>, EState> tmp = this.E0.get(r);
+				if (tmp == null)
+				{
+					tmp = new HashMap<>();
+					this.E0.put(r, tmp);
+				}
+				tmp.put(ranges, g.init);
 
-			job.debugPrintln("\n[param-core] Built endpoint graph for " + r + ":\n" + g.toDot());
+				job.debugPrintln("\n[param-core] Built endpoint graph for " + r + " for " + ranges + ":\n" + g.toDot());
+			}
 		}
 				
-		assrtCoreValidate(job, simpname, gpd.isExplicitModifier());//, this.E0);  // TODO
+		/*assrtCoreValidate(job, simpname, gpd.isExplicitModifier());//, this.E0);  // TODO
 
 		/*if (!job.fair)
 		{
@@ -344,11 +367,6 @@ public class ParamCommandLine extends CommandLine
 		}
 		return protoRoles;
 	}
-		
-	// HACK: store in (Core) Job/JobContext?
-	protected GProtocolDecl gpd;
-	/*protected Map<Role, ParamEState> E0;  // There is no core version
-	protected ParamCoreSModel model;*/
 
 	/*// FIXME: factor out -- cf. super.doAttemptableOutputTasks
 	@Override
