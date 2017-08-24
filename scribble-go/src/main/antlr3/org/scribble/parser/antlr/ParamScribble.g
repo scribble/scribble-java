@@ -571,11 +571,10 @@ roledecl:
 	^(ROLEDECL rolename)
 	
 |
-	ROLE_KW rolename '[' simplename '..' simplename ']'
+	ROLE_KW rolename '(' simplename (',' simplename)* ')'
 ->
-	^(PARAM_ROLEDECL rolename simplename simplename)
+	^(PARAM_ROLEDECL rolename simplename+)
 ;
-// Should be "number" -- but seems "conflict" with IDENTIFIER
 
 parameterdecllist:
 	'<' parameterdecl (',' parameterdecl)* '>'

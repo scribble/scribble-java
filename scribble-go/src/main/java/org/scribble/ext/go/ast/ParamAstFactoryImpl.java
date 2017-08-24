@@ -1,12 +1,18 @@
 package org.scribble.ext.go.ast;
 
+import java.util.List;
+
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
+import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.RoleDeclDel;
 import org.scribble.del.global.GMessageTransferDel;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
+import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
+import org.scribble.ext.go.type.kind.ParamRoleParamKind;
+import org.scribble.type.kind.Kind;
 
 
 // FIXME: separate modified-del-only from new categories
@@ -176,9 +182,9 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 	// Explicitly creating new Assrt nodes
 
 	@Override
-	public ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, int start, int end)
+	public ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamRoleParamNode> params)
 	{
-		ParamRoleDecl rd = new ParamRoleDecl(source, namenode, start, end);
+		ParamRoleDecl rd = new ParamRoleDecl(source, namenode, params);
 		rd = del(rd, new RoleDeclDel());
 		return rd;
 	}
@@ -191,5 +197,22 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
 		mt = del(mt, new GMessageTransferDel());  // FIXME
 		return mt;
+	}
+	
+	@Override
+	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier)
+	{
+		NameNode<? extends Kind> snn = null;
+		
+		// Default del's
+		if (kind.equals(ParamRoleParamKind.KIND))
+		{
+			snn = new ParamRoleParamNode(source, identifier);
+			return castNameNode(kind, del(snn, createDefaultDelegate()));
+		}
+		else
+		{
+			return super.SimpleNameNode(source, kind, identifier);
+		}
 	}
 }
