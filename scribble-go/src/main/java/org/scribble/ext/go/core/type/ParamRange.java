@@ -1,5 +1,9 @@
 package org.scribble.ext.go.core.type;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.scribble.ext.go.type.name.ParamRoleParam;
 
 public class ParamRange
@@ -11,6 +15,11 @@ public class ParamRange
 	{
 		this.start = start;
 		this.end = end;
+	}
+	
+	public Set<ParamRoleParam> getActualParams()  // Hack
+	{
+		return Stream.of(this.start, this.end).filter(p -> !p.isConstant()).collect(Collectors.toSet());
 	}
 	
 	@Override

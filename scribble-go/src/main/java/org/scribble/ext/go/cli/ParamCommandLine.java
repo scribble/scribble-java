@@ -27,6 +27,7 @@ import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.ParamException;
 import org.scribble.ext.go.main.ParamJob;
 import org.scribble.ext.go.main.ParamMainContext;
+import org.scribble.ext.go.type.name.ParamRoleParam;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
@@ -297,7 +298,9 @@ public class ParamCommandLine extends CommandLine
 
 				if (cand.size() > 0)
 				{
-					z3 += cand.stream().map(c -> "(and (>= id " + c.start + ") (<= id " + c.end + "))")
+					z3 += cand.stream().map(c -> "(and (>= id " + c.start + ") (<= id " + c.end + ")"
+								+ ((!c.start.isConstant() || !c.end.isConstant()) ? "(<= " + c.start + " " + c.end + ") " : "")
+								+ ")")
 							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 				}
 
@@ -307,15 +310,27 @@ public class ParamCommandLine extends CommandLine
 					{
 						z3 = "(and " + z3 + " ";
 					}
-					z3 += coset.stream().map(c -> "(or (< id " + c.start + ") (> id " + c.end + "))")
+					z3 += coset.stream().map(c -> "(or (< id " + c.start + ") (> id " + c.end + ")"
+								+ ((!c.start.isConstant() || !c.end.isConstant()) ? "(<= " + c.start + " " + c.end + ") " : "")
+								+ ")")
 							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 					if (cand.size() > 0)
 					{
 						z3 += ")";
 					}
 				}
+					
+				Set<ParamRoleParam> actuals = cand.stream().flatMap(c -> c.getActualParams().stream()).collect(Collectors.toSet());
+				actuals.addAll(coset.stream().flatMap(c -> c.getActualParams().stream()).collect(Collectors.toSet()));
+				//if (!actuals.isEmpty())
+				{
+					z3 = "(exists ((id Int) "
+							+ actuals.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" "))
+							+ ") " + z3 + ")";
+				}
 				
-				z3 = "(declare-const id Int)\n(assert " + z3 + ")";
+				z3 = //"(declare-const id Int)\n
+						"(assert " + z3 + ")";
 				
 				System.out.println("cand: " + cand);
 				System.out.println("coset: " + coset);
