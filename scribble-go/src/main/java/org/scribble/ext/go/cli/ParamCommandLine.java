@@ -299,7 +299,7 @@ public class ParamCommandLine extends CommandLine
 				if (cand.size() > 0)
 				{
 					z3 += cand.stream().map(c -> "(and (>= id " + c.start + ") (<= id " + c.end + ")"
-								+ ((!c.start.isConstant() || !c.end.isConstant()) ? "(<= " + c.start + " " + c.end + ") " : "")
+								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start + " " + c.end + ")" : "")
 								+ ")")
 							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 				}
@@ -310,8 +310,8 @@ public class ParamCommandLine extends CommandLine
 					{
 						z3 = "(and " + z3 + " ";
 					}
-					z3 += coset.stream().map(c -> "(or (< id " + c.start + ") (> id " + c.end + ")"
-								+ ((!c.start.isConstant() || !c.end.isConstant()) ? "(<= " + c.start + " " + c.end + ") " : "")
+					z3 += coset.stream().map(c -> "(and (not (and (>= id " + c.start + ") (<= id " + c.end + ")))"
+								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start + " " + c.end + ")" : "")
 								+ ")")
 							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 					if (cand.size() > 0)
