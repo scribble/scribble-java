@@ -49,8 +49,7 @@ public class PackageName extends QualifiedName<PackageKind>
 		{
 			return false;
 		}
-		PackageName n = (PackageName) o;
-		return n.canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 	
 	public boolean canEqual(Object o)

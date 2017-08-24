@@ -204,8 +204,8 @@ public class ParamCoreGProtocolDeclTranslator
 		if (gmt instanceof ParamGCrossMessageTransfer)
 		{
 			ParamGCrossMessageTransfer cross = (ParamGCrossMessageTransfer) gmt;
-			src = af.ParamRole(srcName, new ParamRange(cross.srcRangeStart, cross.srcRangeEnd));
-			dest = af.ParamRole(destName, new ParamRange(cross.destRangeStart, cross.destRangeEnd));
+			src = af.ParamRole(srcName, new ParamRange(cross.srcRangeStart.toName(), cross.srcRangeEnd.toName()));
+			dest = af.ParamRole(destName, new ParamRange(cross.destRangeStart.toName(), cross.destRangeEnd.toName()));
 		}
 		else
 		{

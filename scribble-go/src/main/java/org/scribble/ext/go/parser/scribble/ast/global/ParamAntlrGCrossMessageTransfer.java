@@ -5,6 +5,8 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.ParamAstFactory;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
+import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
+import org.scribble.ext.go.parser.scribble.ast.name.ParamAntlrSimpleName;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.global.AntlrGMessageTransfer;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
@@ -28,10 +30,10 @@ public class ParamAntlrGCrossMessageTransfer
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(root), af);
 		MessageNode msg = AntlrGMessageTransfer.parseMessage(parser, getMessageChild(root), af);
 		RoleNode dest =  AntlrSimpleName.toRoleNode(getDestChild(root), af);
-		int sourceStart = getSourceStartIndex(root);
-		int sourceEnd = getSourceEndIndex(root);
-		int destStart = getDestStartIndex(root);
-		int destEnd = getDestEndIndex(root);
+		ParamRoleParamNode sourceStart = ParamAntlrSimpleName.toParamRoleParamNode(getSourceRangeStartChild(root), af);
+		ParamRoleParamNode sourceEnd = ParamAntlrSimpleName.toParamRoleParamNode(getSourceRangeEndChild(root), af);
+		ParamRoleParamNode destStart = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeStartChild(root), af);
+		ParamRoleParamNode destEnd = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeEndChild(root), af);
 		return af.ParamGCrossMessageTransfer(root, src, msg, dest, sourceStart, sourceEnd, destStart, destEnd);
 	}
 
@@ -49,24 +51,24 @@ public class ParamAntlrGCrossMessageTransfer
 	{
 		return (CommonTree) root.getChild(DESTINATION_CHILD_INDEX);
 	}
-
-	public static int getSourceStartIndex(CommonTree root)
+	
+	public static CommonTree getSourceRangeStartChild(CommonTree root)
 	{
-		return Integer.parseInt(root.getChild(SOURCE_START_CHILD_INDEX).getText());
+		return (CommonTree) root.getChild(SOURCE_START_CHILD_INDEX);
 	}
 
-	public static int getSourceEndIndex(CommonTree root)
+	public static CommonTree getSourceRangeEndChild(CommonTree root)
 	{
-		return Integer.parseInt(root.getChild(SOURCE_END_CHILD_INDEX).getText());
+		return (CommonTree) root.getChild(SOURCE_END_CHILD_INDEX);
 	}
 
-	public static int getDestStartIndex(CommonTree root)
+	public static CommonTree getDestRangeStartChild(CommonTree root)
 	{
-		return Integer.parseInt(root.getChild(DEST_START_CHILD_INDEX).getText());
+		return (CommonTree) root.getChild(DEST_START_CHILD_INDEX);
 	}
 
-	public static int getDestEndIndex(CommonTree root)
+	public static CommonTree getDestRangeEndChild(CommonTree root)
 	{
-		return Integer.parseInt(root.getChild(DEST_END_CHILD_INDEX).getText());
+		return (CommonTree) root.getChild(DEST_END_CHILD_INDEX);
 	}
 }

@@ -61,8 +61,7 @@ public class Scope extends AbstractName<ScopeKind>
 		{
 			return false;
 		}
-		Scope n = (Scope) o;
-		return n.canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 	
 	public boolean canEqual(Object o)

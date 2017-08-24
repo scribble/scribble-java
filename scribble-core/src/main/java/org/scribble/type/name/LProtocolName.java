@@ -53,8 +53,7 @@ public class LProtocolName extends ProtocolName<Local> implements PayloadElemTyp
 		{
 			return false;
 		}
-		LProtocolName n = (LProtocolName) o;
-		return n.canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 	
 	public boolean canEqual(Object o)

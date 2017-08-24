@@ -47,8 +47,7 @@ public class GProtocolName extends ProtocolName<Global>
 		{
 			return false;
 		}
-		GProtocolName n = (GProtocolName) o;
-		return n.canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 	
 	public boolean canEqual(Object o)

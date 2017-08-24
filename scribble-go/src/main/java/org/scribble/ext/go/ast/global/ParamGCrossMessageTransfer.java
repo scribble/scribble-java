@@ -13,6 +13,7 @@ import org.scribble.ast.local.LNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.ext.go.ast.ParamAstFactory;
+import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
@@ -23,13 +24,13 @@ public class ParamGCrossMessageTransfer extends GMessageTransfer //implements Pa
 {
 	// ParamRoleNode? -- cf. ParamRoleDecl
 	// All >= 0; end >= start
-	public final int srcRangeStart;
-	public final int srcRangeEnd;     // Inclusive
-	public final int destRangeStart;
-	public final int destRangeEnd;    // Inclusive
+	public final ParamRoleParamNode srcRangeStart;
+	public final ParamRoleParamNode srcRangeEnd;     // Inclusive
+	public final ParamRoleParamNode destRangeStart;
+	public final ParamRoleParamNode destRangeEnd;    // Inclusive
 
 	public ParamGCrossMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
-			int srcRangeStart, int srcRangeEnd, int destRangeStart, int destRangeEnd)
+			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
 	{
 		super(source, src, msg, Arrays.asList(dest));
 		this.srcRangeStart = srcRangeStart;
@@ -69,7 +70,7 @@ public class ParamGCrossMessageTransfer extends GMessageTransfer //implements Pa
 	}
 
 	public ParamGCrossMessageTransfer reconstruct(RoleNode src, MessageNode msg, RoleNode dest, 
-			int srcRangeStart, int srcRangeEnd, int destRangeStart, int destRangeEnd)
+			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
 	{
 		ScribDel del = del();
 		ParamGCrossMessageTransfer gmt = new ParamGCrossMessageTransfer(this.source, src, msg, dest, 

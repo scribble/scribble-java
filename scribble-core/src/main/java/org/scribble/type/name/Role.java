@@ -43,8 +43,7 @@ public class Role extends AbstractName<RoleKind>
 		{
 			return false;
 		}
-		Role n = (Role) o;
-		return n.canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 	
 	@Override

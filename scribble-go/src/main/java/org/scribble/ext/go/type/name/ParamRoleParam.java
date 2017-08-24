@@ -3,6 +3,7 @@ package org.scribble.ext.go.type.name;
 import org.scribble.ext.go.type.kind.ParamRoleParamKind;
 import org.scribble.type.name.AbstractName;
 
+// Currently used for both "actual params" and int literals -- cf ParamRoleParamRoleNode
 public class ParamRoleParam extends AbstractName<ParamRoleParamKind>
 {
 	private static final long serialVersionUID = 1L;
@@ -28,8 +29,7 @@ public class ParamRoleParam extends AbstractName<ParamRoleParamKind>
 		{
 			return false;
 		}
-		ParamRoleParam n = (ParamRoleParam) o;
-		return n.canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 	
 	public boolean canEqual(Object o)

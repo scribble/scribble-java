@@ -15,5 +15,5 @@ public interface ParamAstFactory extends AstFactory
 	ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamRoleParamNode> params);
 
 	ParamGCrossMessageTransfer ParamGCrossMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
-			int srcRangeStart, int srcRangeEnd, int destRangeStart, int destRangeEnd);
+			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd);
 }

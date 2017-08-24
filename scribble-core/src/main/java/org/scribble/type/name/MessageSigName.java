@@ -67,8 +67,7 @@ public class MessageSigName extends MemberName<SigKind> implements Message, Mess
 		{
 			return false;
 		}
-		MessageSigName n = (MessageSigName) o;
-		return n.canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 	
 	public boolean canEqual(Object o)

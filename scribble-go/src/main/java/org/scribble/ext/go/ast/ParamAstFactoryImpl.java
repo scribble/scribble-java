@@ -191,7 +191,7 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 
 	@Override
 	public ParamGCrossMessageTransfer ParamGCrossMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest,
-			int srcRangeStart, int srcRangeEnd, int destRangeStart, int destRangeEnd)
+			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
 	{
 		ParamGCrossMessageTransfer mt = new ParamGCrossMessageTransfer(source, src, msg, dest,
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);

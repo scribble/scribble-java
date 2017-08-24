@@ -48,8 +48,7 @@ public class Op extends AbstractName<OpKind> implements MessageId<OpKind>
 		{
 			return false;
 		}
-		Op n = (Op) o;
-		return n.canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 	
 	public boolean canEqual(Object o)
