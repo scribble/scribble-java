@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
@@ -22,6 +21,7 @@ import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.ParamRole;
 import org.scribble.ext.go.core.ast.global.ParamCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.ParamCoreGType;
+import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.main.ParamException;
 import org.scribble.ext.go.main.ParamJob;
 import org.scribble.ext.go.main.ParamMainContext;
@@ -194,7 +194,7 @@ public class ParamCommandLine extends CommandLine
 		
 		job.debugPrintln("\n[param-core] Translated:\n  " + gt);
 		
-		Map<String, Set<Set<List<Integer>>>> protoRoles = getProtoRoles(job, gt);
+		Map<String, Set<Set<ParamRange>>> protoRoles = getProtoRoles(job, gt);
 		
 		System.out.println("\n\n[param-core] Protoroles: " + protoRoles);
 
@@ -214,7 +214,6 @@ public class ParamCommandLine extends CommandLine
 			EGraph g = builder.build(P0.get(r));
 			this.E0.put(r, (ParamEState) g.init);
 
-			
 			job.debugPrintln("\n[param-core] Built endpoint graph for " + r + ":\n" + g.toDot());
 		}
 				
@@ -242,7 +241,7 @@ public class ParamCommandLine extends CommandLine
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
-	private Map<String, Set<Set<List<Integer>>>> getProtoRoles(ParamJob job, ParamCoreGType gt)
+	private Map<String, Set<Set<ParamRange>>> getProtoRoles(ParamJob job, ParamCoreGType gt)
 	{
 		Set<ParamRole> prs = gt.getParamRoles();
 		
@@ -252,23 +251,23 @@ public class ParamCommandLine extends CommandLine
 				.distinct()
 				.collect(Collectors.toMap(x -> x, x -> prs.stream().filter(y -> y.name.equals(x)).collect(Collectors.toSet())));
 		
-		Map<String, Set<Set<List<Integer>>>> powersets = map.keySet().stream().collect(Collectors.toMap(k -> k, k -> new HashSet<>()));
+		Map<String, Set<Set<ParamRange>>> powersets = map.keySet().stream().collect(Collectors.toMap(k -> k, k -> new HashSet<>()));
 		for (String n : map.keySet())
 		{
-			Set<Set<List<Integer>>> tmp = powersets.get(n);
+			Set<Set<ParamRange>> tmp = powersets.get(n);
 			Set<ParamRole> todo = new HashSet<>(map.get(n));
 			while (!todo.isEmpty())
 			{
 				Iterator<ParamRole> i = todo.iterator();
 				ParamRole next = i.next();
 				i.remove();
-				Set<List<Integer>> range = new HashSet<>();
-				range.add(Stream.of(next.start, next.end).collect(Collectors.toList()));
+				Set<ParamRange> range = new HashSet<>();
+				range.add(next.range);
 				if (!tmp.contains(next))
 				{
 					tmp.addAll(tmp.stream().map(t -> 
 					{
-						Set<List<Integer>> ggg = new HashSet<>();
+						Set<ParamRange> ggg = new HashSet<>();
 						ggg.addAll(t);
 						ggg.add(range.iterator().next());
 						return ggg;
@@ -278,22 +277,22 @@ public class ParamCommandLine extends CommandLine
 			}
 		}
 		
-		Map<String, Set<Set<List<Integer>>>> protoRoles = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
+		Map<String, Set<Set<ParamRange>>> protoRoles = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
 		for (String r : powersets.keySet())
 		{
-			Set<Set<List<Integer>>> powset = powersets.get(r);
+			Set<Set<ParamRange>> powset = powersets.get(r);
 			
 			System.out.println("\n" + r + ": " + powset);
 			
-			for (Set<List<Integer>> cand : powset)
+			for (Set<ParamRange> cand : powset)
 			{
-				Set<List<Integer>> coset = powset.stream().filter(f -> f.stream().noneMatch(g -> cand.contains(g))).flatMap(Collection::stream).collect(Collectors.toSet());
+				Set<ParamRange> coset = powset.stream().filter(f -> f.stream().noneMatch(g -> cand.contains(g))).flatMap(Collection::stream).collect(Collectors.toSet());
 				
 				String z3 = "";
 
 				if (cand.size() > 0)
 				{
-					z3 += cand.stream().map(c -> "(and (>= id " + c.get(0) + ") (<= id " + c.get(1) + "))")
+					z3 += cand.stream().map(c -> "(and (>= id " + c.start + ") (<= id " + c.end + "))")
 							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 				}
 
@@ -303,7 +302,7 @@ public class ParamCommandLine extends CommandLine
 					{
 						z3 = "(and " + z3 + " ";
 					}
-					z3 += coset.stream().map(c -> "(or (< id " + c.get(0) + ") (> id " + c.get(1) + "))")
+					z3 += coset.stream().map(c -> "(or (< id " + c.start + ") (> id " + c.end + "))")
 							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 					if (cand.size() > 0)
 					{

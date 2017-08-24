@@ -13,6 +13,7 @@ import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRec;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
+import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.type.Payload;
 import org.scribble.type.name.Op;
 import org.scribble.type.name.RecVar;
@@ -25,9 +26,9 @@ public class ParamCoreAstFactory
 		
 	}
 	
-	public ParamRole ParamRole(String name, int start, int end)
+	public ParamRole ParamRole(String name, ParamRange range)  // ParamRange not "ast", so not made by af
 	{
-		return new ParamRole(name, start, end);
+		return new ParamRole(name, range);
 	}
 
 	// Pre: not null

@@ -28,6 +28,7 @@ import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.ParamRole;
+import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.main.Job;
 import org.scribble.type.Payload;
 import org.scribble.type.kind.RecVarKind;
@@ -203,8 +204,8 @@ public class ParamCoreGProtocolDeclTranslator
 		if (gmt instanceof ParamGCrossMessageTransfer)
 		{
 			ParamGCrossMessageTransfer cross = (ParamGCrossMessageTransfer) gmt;
-			src = af.ParamRole(srcName, cross.srcRangeStart, cross.srcRangeEnd);
-			dest = af.ParamRole(destName, cross.destRangeStart, cross.destRangeEnd);
+			src = af.ParamRole(srcName, new ParamRange(cross.srcRangeStart, cross.srcRangeEnd));
+			dest = af.ParamRole(destName, new ParamRange(cross.destRangeStart, cross.destRangeEnd));
 		}
 		else
 		{

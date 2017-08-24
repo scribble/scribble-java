@@ -1,16 +1,16 @@
 package org.scribble.ext.go.core.ast;
 
+import org.scribble.ext.go.core.type.ParamRange;
+
 public class ParamRole
 {
 	public final String name;
-	public final int start;
-	public final int end;
+	public final ParamRange range;
 	
-	public ParamRole(String name, int start, int end)
+	public ParamRole(String name, ParamRange range)
 	{
 		this.name = name;
-		this.start = start;
-		this.end = end;
+		this.range = range;
 	}
 	
 	@Override
@@ -19,8 +19,7 @@ public class ParamRole
 		int hash = 7121;
 		hash = 31 * hash + super.hashCode();
 		hash = 31 * hash + this.name.hashCode();
-		hash = 31 * hash + this.start;
-		hash = 31 * hash + this.end;
+		hash = 31 * hash + this.range.hashCode();
 		return hash;
 	}
 
@@ -37,12 +36,12 @@ public class ParamRole
 		}
 		ParamRole them = (ParamRole) obj;
 		return this.name.equals(them.name)
-				&& this.start == them.start && this.end == them.end;
+				&& this.range.equals(them.range);
 	}
 
 	@Override
 	public String toString()
 	{
-		return this.name + "[" + this.start + ".." + this.end + "]";
+		return this.name + this.range;
 	}
 }
