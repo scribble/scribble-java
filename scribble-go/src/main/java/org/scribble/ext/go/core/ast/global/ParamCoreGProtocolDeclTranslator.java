@@ -24,6 +24,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.ext.go.ast.ParamAstFactory;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
+import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
@@ -215,9 +216,16 @@ public class ParamCoreGProtocolDeclTranslator
 			src = af.ParamRole(srcName, new ParamRange(cross.srcRangeStart.toName(), cross.srcRangeEnd.toName()));
 			dest = af.ParamRole(destName, new ParamRange(cross.destRangeStart.toName(), cross.destRangeEnd.toName()));
 		}
+		else if (gmt instanceof ParamGDotMessageTransfer)
+		{
+			ParamGDotMessageTransfer dot = (ParamGDotMessageTransfer) gmt;
+			kind = ParamCoreGActionKind.DOT_TRANSFER;
+			src = af.ParamRole(srcName, new ParamRange(dot.srcRangeStart.toName(), dot.srcRangeEnd.toName()));
+			dest = af.ParamRole(destName, new ParamRange(dot.destRangeStart.toName(), dot.destRangeEnd.toName()));
+		}
 		else
 		{
-			/*src = af.ParamRole(srcName, 1, 1);  // FIXME
+			/*src = af.ParamRole(srcName, 1, 1); 
 			dest = af.ParamRole(destName, 1, 1);*/
 			throw new ParamCoreSyntaxException(gmt.getSource(), "[param-core] Not supported: " + gmt.getClass());
 		}

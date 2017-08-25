@@ -48,6 +48,11 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	@Override
 	public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	{
+		if (this.kind != ParamCoreGActionKind.CROSS_TRANSFER)
+		{
+			throw new RuntimeException("[param-core] TODO: " + this);
+		}
+		
 		Map<ParamCoreMessage, ParamCoreLType> projs = new HashMap<>();
 		for (Entry<ParamCoreMessage, ParamCoreGType> e : this.cases.entrySet())
 		{
@@ -119,6 +124,6 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	@Override
 	public String toString()
 	{
-		return this.src.toString() + "->" + this.dest + casesToString();  // toString needed?
+		return this.src.toString() + this.kind + this.dest + casesToString();  // toString needed?
 	}
 }
