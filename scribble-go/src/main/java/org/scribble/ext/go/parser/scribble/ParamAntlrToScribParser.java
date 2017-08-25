@@ -6,6 +6,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ext.go.ast.ParamAstFactory;
 import org.scribble.ext.go.parser.scribble.ast.ParamAntlrRoleDecl;
 import org.scribble.ext.go.parser.scribble.ast.global.ParamAntlrGCrossMessageTransfer;
+import org.scribble.ext.go.parser.scribble.ast.global.ParamAntlrGDotMessageTransfer;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.util.ScribParserException;
 
@@ -14,6 +15,7 @@ public class ParamAntlrToScribParser extends AntlrToScribParser
 	// FIXME: refactor constants following ScribbleAntlrConstants/AntlrToScribParserUtil? -- cannot extend existing node type enum though
 	public static final String PARAM_ROLEDECL_NODE_TYPE = "PARAM_ROLEDECL";    
 	public static final String PARAM_GLOBALCROSSMESSAGETRANSFER_NODE_TYPE = "PARAM_GLOBALCROSSMESSAGETRANSFER";
+	public static final String PARAM_GLOBALDOTMESSAGETRANSFER_NODE_TYPE = "PARAM_GLOBALDOTMESSAGETRANSFER";
 
 	public ParamAntlrToScribParser()
 	{
@@ -32,6 +34,8 @@ public class ParamAntlrToScribParser extends AntlrToScribParser
 			case PARAM_ROLEDECL_NODE_TYPE: return ParamAntlrRoleDecl.parseParamRoleDecl(this, ct, aaf);
 			case PARAM_GLOBALCROSSMESSAGETRANSFER_NODE_TYPE:
 				return ParamAntlrGCrossMessageTransfer.parseParamGCrossMessageTransfer(this, ct, aaf);
+			case PARAM_GLOBALDOTMESSAGETRANSFER_NODE_TYPE:
+				return ParamAntlrGDotMessageTransfer.parseParamGDotMessageTransfer(this, ct, aaf);
 
 			default: return super.parse(ct, af);
 		}

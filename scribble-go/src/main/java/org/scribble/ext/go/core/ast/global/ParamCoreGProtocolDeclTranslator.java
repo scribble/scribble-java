@@ -211,7 +211,7 @@ public class ParamCoreGProtocolDeclTranslator
 		{
 			/*src = af.ParamRole(srcName, 1, 1);  // FIXME
 			dest = af.ParamRole(destName, 1, 1);*/
-			throw new ParamCoreSyntaxException(gmt.getSource(), "[param-core] Non-parameterised roles not supported: " + gmt);
+			throw new ParamCoreSyntaxException(gmt.getSource(), "[param-core] Not supported: " + gmt.getClass());
 		}
 		return parseGSimpleInteractionNode(is, rvs, src, a, dest);
 	}

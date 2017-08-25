@@ -11,10 +11,9 @@ import org.scribble.ext.go.ast.ParamAstFactory;
 import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
 import org.scribble.type.name.Role;
 
-// Subsumes scatter/gather, src/dest range length one
-public class ParamGCrossMessageTransfer extends ParamGMessageTransfer
+public class ParamGDotMessageTransfer extends ParamGMessageTransfer
 {
-	public ParamGCrossMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
+	public ParamGDotMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
 			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
 	{
 		super(source, src, msg, dest, srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
@@ -28,30 +27,30 @@ public class ParamGCrossMessageTransfer extends ParamGMessageTransfer
 	}
 
 	@Override
-	protected ParamGCrossMessageTransfer copy()
+	protected ParamGDotMessageTransfer copy()
 	{
-		return new ParamGCrossMessageTransfer(this.source, this.src, this.msg, getDestinations().get(0),
+		return new ParamGDotMessageTransfer(this.source, this.src, this.msg, getDestinations().get(0),
 				this.srcRangeStart, this.srcRangeEnd, this.destRangeStart, this.destRangeEnd);
 	}
 	
 	@Override
-	public ParamGCrossMessageTransfer clone(AstFactory af)
+	public ParamGDotMessageTransfer clone(AstFactory af)
 	{
 		RoleNode src = this.src.clone(af);
 		MessageNode msg = this.msg.clone(af);
 		RoleNode dest = getDestinations().get(0).clone(af);
-		return ((ParamAstFactory) af).ParamGCrossMessageTransfer(this.source, src, msg, dest,
+		return ((ParamAstFactory) af).ParamGDotMessageTransfer(this.source, src, msg, dest,
 				this.srcRangeStart, this.srcRangeEnd, this.destRangeStart, this.destRangeEnd);
 	}
 
 	@Override
-	public ParamGCrossMessageTransfer reconstruct(RoleNode src, MessageNode msg, RoleNode dest, 
+	public ParamGDotMessageTransfer reconstruct(RoleNode src, MessageNode msg, RoleNode dest, 
 			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
 	{
 		ScribDel del = del();
-		ParamGCrossMessageTransfer gmt = new ParamGCrossMessageTransfer(this.source, src, msg, dest, 
+		ParamGDotMessageTransfer gmt = new ParamGDotMessageTransfer(this.source, src, msg, dest, 
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
-		gmt = (ParamGCrossMessageTransfer) gmt.del(del);
+		gmt = (ParamGDotMessageTransfer) gmt.del(del);
 		return gmt;
 	}
 
