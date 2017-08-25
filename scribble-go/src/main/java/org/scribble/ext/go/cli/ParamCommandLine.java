@@ -208,7 +208,7 @@ public class ParamCommandLine extends CommandLine
 		
 		Map<Role, Set<Set<ParamRange>>> protoRoles = getProtoRoles(job, gt);
 		
-		System.out.println("\n\n[param-core] Protoroles: " + protoRoles);
+		job.debugPrintln("\n[param-core] Computed roles: " + protoRoles);
 
 		Map<Role, Map<Set<ParamRange>, ParamCoreLType>> P0 = new HashMap<>();
 		for (Role r : gpd.header.roledecls.getRoles())  // getRoles gives decl names  // CHECKME: can ignore params?
@@ -312,7 +312,7 @@ public class ParamCommandLine extends CommandLine
 		{
 			Set<Set<ParamRange>> powset = powersets.get(r);
 			
-			System.out.println("\n" + r + ": " + powset);
+			job.debugPrintln("\n[param-core] Ranges powerset for " + r + ": " + powset);
 			
 			for (Set<ParamRange> cand : powset)
 			{
@@ -356,9 +356,9 @@ public class ParamCommandLine extends CommandLine
 				z3 = //"(declare-const id Int)\n
 						"(assert " + z3 + ")";
 				
-				System.out.println("cand: " + cand);
-				System.out.println("coset: " + coset);
-				System.out.println("z3: " + z3);
+				job.debugPrintln("\n[param-core] Candidate role: " + cand);
+				job.debugPrintln("[param-core] Ranges co-set: " + coset);
+				job.debugPrintln("[param-core] Running Z3 on:\n" + z3);
 				
 				if (Z3Wrapper.checkSat(job, gpd, z3))
 				{
