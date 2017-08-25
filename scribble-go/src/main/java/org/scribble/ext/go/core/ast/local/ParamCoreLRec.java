@@ -1,9 +1,10 @@
 package org.scribble.ext.go.core.ast.local;
 
 import org.scribble.ext.go.core.ast.ParamCoreRec;
+import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 
-public class ParamCoreLRec extends ParamCoreRec<ParamCoreLType> implements ParamCoreLType
+public class ParamCoreLRec extends ParamCoreRec<ParamCoreLType, Local> implements ParamCoreLType
 {
 	public ParamCoreLRec(RecVar recvar, ParamCoreLType body)
 	{

@@ -10,10 +10,11 @@ import org.scribble.ext.go.core.ast.local.ParamCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
-public class ParamCoreGRec extends ParamCoreRec<ParamCoreGType> implements ParamCoreGType
+public class ParamCoreGRec extends ParamCoreRec<ParamCoreGType, Global> implements ParamCoreGType
 {
 	public ParamCoreGRec(RecVar recvar, ParamCoreGType body)
 	{

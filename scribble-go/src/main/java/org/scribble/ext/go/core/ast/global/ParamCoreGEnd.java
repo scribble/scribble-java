@@ -8,10 +8,11 @@ import org.scribble.ext.go.core.ast.ParamCoreEnd;
 import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
 
-public class ParamCoreGEnd extends ParamCoreEnd implements ParamCoreGType
+public class ParamCoreGEnd extends ParamCoreEnd<Global> implements ParamCoreGType
 {
 	public static final ParamCoreGEnd END = new ParamCoreGEnd();
 	

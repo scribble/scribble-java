@@ -1,9 +1,10 @@
 package org.scribble.ext.go.core.ast.local;
 
 import org.scribble.ext.go.core.ast.ParamCoreEnd;
+import org.scribble.type.kind.Local;
 
 
-public class ParamCoreLEnd extends ParamCoreEnd implements ParamCoreLType
+public class ParamCoreLEnd extends ParamCoreEnd<Local> implements ParamCoreLType
 {
 	public static final ParamCoreLEnd END = new ParamCoreLEnd();
 	

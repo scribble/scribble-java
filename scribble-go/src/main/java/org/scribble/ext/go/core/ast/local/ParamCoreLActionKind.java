@@ -1,18 +1,21 @@
 package org.scribble.ext.go.core.ast.local;
 
-public enum ParamCoreLActionKind
+import org.scribble.ext.go.core.ast.ParamCoreActionKind;
+import org.scribble.type.kind.Local;
+
+public enum ParamCoreLActionKind implements ParamCoreActionKind<Local>
 {
-	SEND,
-	RECEIVE;
+	SEND_ALL,
+	RECEIVE_ALL;
 	
 	@Override
 	public String toString()
 	{
 		switch (this)
 		{
-			case SEND:    return "!";
-			case RECEIVE: return "?";
-			default:      throw new RuntimeException("Won't get here: " + this);
+			case SEND_ALL:    return "!";
+			case RECEIVE_ALL: return "?";
+			default:          throw new RuntimeException("[param-core] Won't get here: " + this);
 		}
 	}
 }

@@ -8,11 +8,12 @@ import org.scribble.ext.go.core.ast.ParamCoreRecVar;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRecVar;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 	
-public class ParamCoreGRecVar extends ParamCoreRecVar implements ParamCoreGType
+public class ParamCoreGRecVar extends ParamCoreRecVar<Global> implements ParamCoreGType
 {
 	public ParamCoreGRecVar(RecVar var)
 	{

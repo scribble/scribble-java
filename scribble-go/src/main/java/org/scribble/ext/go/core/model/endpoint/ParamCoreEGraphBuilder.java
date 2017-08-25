@@ -69,7 +69,7 @@ public class ParamCoreEGraphBuilder
 		}
 		else if (cont instanceof ParamCoreRecVar)
 		{
-			EState s = recs.get(((ParamCoreRecVar) cont).recvar);
+			EState s = recs.get(((ParamCoreRecVar<?>) cont).recvar);
 			this.util.addEdge(s1, toEAction(r, k, a), s);
 		}
 		else
@@ -83,12 +83,12 @@ public class ParamCoreEGraphBuilder
 	private EAction toEAction(ParamRole r, ParamCoreLActionKind k, ParamCoreMessage a)
 	{
 		ParamCoreEModelFactory ef = (ParamCoreEModelFactory) this.util.ef;  // FIXME: factor out
-		if (k.equals(ParamCoreLActionKind.SEND))
+		if (k.equals(ParamCoreLActionKind.SEND_ALL))
 		{
 			return ef.newParamCoreESend(r, a.op, a.pay);
 
 		}
-		else if (k.equals(ParamCoreLActionKind.RECEIVE))
+		else if (k.equals(ParamCoreLActionKind.RECEIVE_ALL))
 		{
 			return ef.newParamCoreEReceive(r, a.op, a.pay);
 		}

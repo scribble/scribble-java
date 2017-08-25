@@ -122,6 +122,7 @@ public class ParamCoreGProtocolDeclTranslator
 			children.add(parseSeq(b.getInteractionSeq().getInteractions(), rvs, true, checkRecGuard));  // Check cases are guarded
 		}
 
+		ParamCoreGActionKind kind = null;
 		ParamRole src = null;
 		ParamRole dest = null;
 		Map<ParamCoreMessage, ParamCoreGType> cases = new HashMap<>();
@@ -140,8 +141,13 @@ public class ParamCoreGProtocolDeclTranslator
 			
 			if (src == null)
 			{
+				kind = tmp.getKind();
 				src = tmp.src;
 				dest = tmp.dest;
+			}
+			else if (!kind.equals(tmp.kind))
+			{
+				throw new RuntimeException("[param-core] Shouldn't get in here: " + gc + ", " + kind + ", " + tmp.kind);
 			}
 			else if (!src.equals(tmp.src) || !dest.equals(tmp.dest))
 			{
@@ -160,7 +166,7 @@ public class ParamCoreGProtocolDeclTranslator
 			}
 		}
 		
-		return this.af.ParamCoreGChoice(src, dest, cases);
+		return this.af.ParamCoreGChoice(src, kind, dest, cases);
 	}
 
 	private ParamCoreGType parseGRecursion(Map<RecVar, RecVar> rvs,
@@ -199,11 +205,13 @@ public class ParamCoreGProtocolDeclTranslator
 		ParamCoreMessage a = this.af.ParamCoreAction(parseOp(gmt), parsePayload(gmt));
 		String srcName = parseSourceRole(gmt);
 		String destName = parseDestinationRole(gmt);
+		ParamCoreGActionKind kind;
 		ParamRole src;
 		ParamRole dest;
 		if (gmt instanceof ParamGCrossMessageTransfer)
 		{
 			ParamGCrossMessageTransfer cross = (ParamGCrossMessageTransfer) gmt;
+			kind = ParamCoreGActionKind.CROSS_TRANSFER;
 			src = af.ParamRole(srcName, new ParamRange(cross.srcRangeStart.toName(), cross.srcRangeEnd.toName()));
 			dest = af.ParamRole(destName, new ParamRange(cross.destRangeStart.toName(), cross.destRangeEnd.toName()));
 		}
@@ -213,14 +221,14 @@ public class ParamCoreGProtocolDeclTranslator
 			dest = af.ParamRole(destName, 1, 1);*/
 			throw new ParamCoreSyntaxException(gmt.getSource(), "[param-core] Not supported: " + gmt.getClass());
 		}
-		return parseGSimpleInteractionNode(is, rvs, src, a, dest);
+		return parseGSimpleInteractionNode(is, rvs, src, kind, a, dest);
 	}
 
 	// Duplicated from parseGMessageTransfer (MessageTransfer and ConnectionAction have no common
 
 	private ParamCoreGChoice parseGSimpleInteractionNode(
 			List<GInteractionNode> is, Map<RecVar, RecVar> rvs, 
-			ParamRole src, ParamCoreMessage a, ParamRole dest) throws ParamCoreSyntaxException 
+			ParamRole src, ParamCoreGActionKind kind, ParamCoreMessage a, ParamRole dest) throws ParamCoreSyntaxException 
 	{
 		if (src.equals(dest))
 		{
@@ -228,7 +236,7 @@ public class ParamCoreGProtocolDeclTranslator
 		}
 		
 		ParamCoreGType cont = parseSeq(is.subList(1, is.size()), rvs, false, false);  // Subseqeuent choice/rec is guarded by (at least) this action
-		return this.af.ParamCoreGChoice(src, dest, Stream.of(a).collect(Collectors.toMap(x -> x, x -> cont)));
+		return this.af.ParamCoreGChoice(src, kind, dest, Stream.of(a).collect(Collectors.toMap(x -> x, x -> cont)));
 	}
 
 	private Op parseOp(GMessageTransfer gmt) throws ParamCoreSyntaxException
