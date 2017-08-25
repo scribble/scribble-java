@@ -4,7 +4,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.ParamAstFactory;
-import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
+import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
 import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
 import org.scribble.ext.go.parser.scribble.ast.name.ParamAntlrSimpleName;
 import org.scribble.parser.scribble.AntlrToScribParser;
@@ -12,7 +12,8 @@ import org.scribble.parser.scribble.ast.global.AntlrGMessageTransfer;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 import org.scribble.util.ScribParserException;
 
-public class ParamAntlrGCrossMessageTransfer
+// Duplicated from ParamAntlrGCrossMessageTransfer
+public class ParamAntlrGDotMessageTransfer
 {
 	// Same as original
 	public static final int MESSAGE_CHILD_INDEX = 0;
@@ -25,8 +26,8 @@ public class ParamAntlrGCrossMessageTransfer
 	public static final int DEST_START_CHILD_INDEX = 5;
 	public static final int DEST_END_CHILD_INDEX = 6;
 
-	public static ParamGCrossMessageTransfer
-			parseParamGCrossMessageTransfer(AntlrToScribParser parser, CommonTree root, ParamAstFactory af) throws ScribParserException
+	public static ParamGDotMessageTransfer
+			parseParamGDotMessageTransfer(AntlrToScribParser parser, CommonTree root, ParamAstFactory af) throws ScribParserException
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(root), af);
 		MessageNode msg = AntlrGMessageTransfer.parseMessage(parser, getMessageChild(root), af);
@@ -35,7 +36,7 @@ public class ParamAntlrGCrossMessageTransfer
 		ParamRoleParamNode sourceEnd = ParamAntlrSimpleName.toParamRoleParamNode(getSourceRangeEndChild(root), af);
 		ParamRoleParamNode destStart = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeStartChild(root), af);
 		ParamRoleParamNode destEnd = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeEndChild(root), af);
-		return af.ParamGCrossMessageTransfer(root, src, msg, dest, sourceStart, sourceEnd, destStart, destEnd);
+		return af.ParamGDotMessageTransfer(root, src, msg, dest, sourceStart, sourceEnd, destStart, destEnd);
 	}
 
 	public static CommonTree getMessageChild(CommonTree root)

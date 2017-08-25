@@ -12,6 +12,36 @@ module assrt.tmp.ParamTest;
 //type <go> "string" from "..." as string;
 
 
+
+global protocol Proto1(role A(n), role B(n))
+{
+	1() dot A[1..n] to B[1..n];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 global protocol Proto1(role A, role B(n))
 {
@@ -66,7 +96,7 @@ global protocol Proto1(role A, role B(n,m))
 //*/
 
 
-//*
+/*
 global protocol Proto1(role A, role B)
 {
 	choice at A

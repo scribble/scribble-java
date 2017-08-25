@@ -8,10 +8,11 @@ import org.scribble.ext.go.core.ast.ParamCoreType;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
 
-public interface ParamCoreGType extends ParamCoreType
+public interface ParamCoreGType extends ParamCoreType<Global>
 {
 	
 	// FIXME: clarify, Role subj is used as "role name"

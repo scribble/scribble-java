@@ -62,6 +62,8 @@ tokens
 	DO_KW = 'do';
 	//SPAWN_KW = 'spawn';
 	
+	DOT_KW = 'dot';
+	
 
 	/*
 	 * Parser output "node types" (corresponding to the various syntactic
@@ -169,6 +171,7 @@ tokens
 
 	PARAM_ROLEDECL = 'PARAM_ROLEDECL';
 	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
+	PARAM_GLOBALDOTMESSAGETRANSFER = 'PARAM_GLOBALDOTMESSAGETRANSFER';
 }
 
 
@@ -657,6 +660,10 @@ globalmessagetransfer:
 	message FROM_KW rolename '[' simplename '..' simplename ']' TO_KW rolename '[' simplename '..' simplename ']' ';'
 ->
 	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename simplename simplename simplename simplename)
+|
+	message DOT_KW rolename '[' simplename '..' simplename ']' TO_KW rolename '[' simplename '..' simplename ']' ';'
+->
+	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename simplename simplename simplename simplename)
 ;
 
 message:

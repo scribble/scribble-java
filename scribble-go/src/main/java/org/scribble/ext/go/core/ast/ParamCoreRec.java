@@ -1,8 +1,9 @@
 package org.scribble.ext.go.core.ast;
 
+import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.RecVar;
 
-public abstract class ParamCoreRec<B extends ParamCoreType> implements ParamCoreType
+public abstract class ParamCoreRec<B extends ParamCoreType<K>, K extends ProtocolKind> implements ParamCoreType<K>
 {
 	public final RecVar recvar;  // FIXME: RecVarNode?  (Cf. AssrtCoreAction.op/pay)
 	public final B body;
@@ -30,7 +31,7 @@ public abstract class ParamCoreRec<B extends ParamCoreType> implements ParamCore
 		{
 			return false;
 		}
-		ParamCoreRec<?> them = (ParamCoreRec<?>) obj;
+		ParamCoreRec<?, ?> them = (ParamCoreRec<?, ?>) obj;
 		return them.canEquals(this) && this.recvar.equals(them.recvar) 
 				&& this.body.equals(them.body);  // FIXME: check B kind is equal?
 	}

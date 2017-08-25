@@ -2,6 +2,7 @@ package org.scribble.ext.go.core.ast;
 
 import java.util.Map;
 
+import org.scribble.ext.go.core.ast.global.ParamCoreGActionKind;
 import org.scribble.ext.go.core.ast.global.ParamCoreGChoice;
 import org.scribble.ext.go.core.ast.global.ParamCoreGEnd;
 import org.scribble.ext.go.core.ast.global.ParamCoreGRec;
@@ -38,9 +39,9 @@ public class ParamCoreAstFactory
 		return new ParamCoreMessage(op, pay);
 	}
 	
-	public ParamCoreGChoice ParamCoreGChoice(ParamRole src, ParamRole dest, Map<ParamCoreMessage, ParamCoreGType> cases)
+	public ParamCoreGChoice ParamCoreGChoice(ParamRole src, ParamCoreGActionKind kind, ParamRole dest, Map<ParamCoreMessage, ParamCoreGType> cases)
 	{
-		return new ParamCoreGChoice(src, dest, cases);
+		return new ParamCoreGChoice(src, kind, dest, cases);
 	}
 	
 	public ParamCoreGRec ParamCoreGRec(RecVar recvar, ParamCoreGType body)

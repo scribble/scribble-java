@@ -2,9 +2,9 @@ package org.scribble.ext.go.core.ast.local;
 
 import java.util.Map;
 
+import org.scribble.ext.go.core.ast.ParamCoreChoice;
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.type.ParamRole;
-import org.scribble.ext.go.core.ast.ParamCoreChoice;
 import org.scribble.type.kind.Local;
 
 public class ParamCoreLChoice extends ParamCoreChoice<ParamCoreLType, Local> implements ParamCoreLType
@@ -13,8 +13,14 @@ public class ParamCoreLChoice extends ParamCoreChoice<ParamCoreLType, Local> imp
 	
 	public ParamCoreLChoice(ParamRole role, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
 	{
-		super(role, cases);
+		super(role, kind, cases);
 		this.kind = kind;
+	}
+
+	@Override
+	public ParamCoreLActionKind getKind()
+	{
+		return (ParamCoreLActionKind) this.kind;
 	}
 	
 	@Override

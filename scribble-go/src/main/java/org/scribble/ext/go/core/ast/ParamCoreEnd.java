@@ -1,7 +1,8 @@
 package org.scribble.ext.go.core.ast;
 
+import org.scribble.type.kind.ProtocolKind;
 
-public abstract class ParamCoreEnd implements ParamCoreType
+public abstract class ParamCoreEnd<K extends ProtocolKind> implements ParamCoreType<K>
 {
 	@Override 
 	public String toString()
@@ -16,7 +17,7 @@ public abstract class ParamCoreEnd implements ParamCoreType
 		{
 			return false;
 		}
-		return ((ParamCoreEnd) obj).canEquals(this);
+		return ((ParamCoreEnd<?>) obj).canEquals(this);
 	}
 
 	public abstract boolean canEquals(Object o);

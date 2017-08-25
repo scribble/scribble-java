@@ -24,11 +24,17 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	public final ParamRole src;   // Singleton -- no disconnect for now
 	public final ParamRole dest;  // this.dest == super.role -- arbitrary?
 
-	public ParamCoreGChoice(ParamRole src, ParamRole dest, Map<ParamCoreMessage, ParamCoreGType> cases)
+	public ParamCoreGChoice(ParamRole src, ParamCoreGActionKind kind, ParamRole dest, Map<ParamCoreMessage, ParamCoreGType> cases)
 	{
-		super(dest, cases);
+		super(dest, kind, cases);
 		this.src = src;
 		this.dest = dest;
+	}
+
+	@Override
+	public ParamCoreGActionKind getKind()
+	{
+		return (ParamCoreGActionKind) this.kind;
 	}
 	
 	@Override
@@ -42,6 +48,11 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	@Override
 	public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	{
+		if (this.kind != ParamCoreGActionKind.CROSS_TRANSFER)
+		{
+			throw new RuntimeException("[param-core] TODO: " + this);
+		}
+		
 		Map<ParamCoreMessage, ParamCoreLType> projs = new HashMap<>();
 		for (Entry<ParamCoreMessage, ParamCoreGType> e : this.cases.entrySet())
 		{
@@ -55,13 +66,13 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		if (this.src.getName().equals(r))
 		{
 			return (ranges.contains(this.src.range))
-					? af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.SEND, projs)
+					? af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.SEND_ALL, projs)
 					: merge(af, r, ranges, projs);
 		}
 		else if (this.dest.getName().equals(r))
 		{
 			return (ranges.contains(this.dest.range))
-					? af.ParamCoreLChoice(this.src, ParamCoreLActionKind.RECEIVE, projs)
+					? af.ParamCoreLChoice(this.src, ParamCoreLActionKind.RECEIVE_ALL, projs)
 					: merge(af, r, ranges, projs);
 		}
 		
@@ -113,6 +124,6 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	@Override
 	public String toString()
 	{
-		return this.src.toString() + "->" + this.dest + casesToString();  // toString needed?
+		return this.src.toString() + this.kind + this.dest + casesToString();  // toString needed?
 	}
 }

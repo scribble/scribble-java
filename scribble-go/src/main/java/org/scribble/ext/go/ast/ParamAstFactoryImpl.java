@@ -10,12 +10,12 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.RoleDeclDel;
 import org.scribble.del.global.GMessageTransferDel;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
+import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
 import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
 import org.scribble.ext.go.type.kind.ParamRoleParamKind;
 import org.scribble.type.kind.Kind;
 
 
-// FIXME: separate modified-del-only from new categories
 public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFactory
 {
 	
@@ -194,6 +194,16 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
 	{
 		ParamGCrossMessageTransfer mt = new ParamGCrossMessageTransfer(source, src, msg, dest,
+				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
+		mt = del(mt, new GMessageTransferDel());  // FIXME
+		return mt;
+	}
+
+	@Override
+	public ParamGDotMessageTransfer ParamGDotMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest,
+			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+	{
+		ParamGDotMessageTransfer mt = new ParamGDotMessageTransfer(source, src, msg, dest,
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
 		mt = del(mt, new GMessageTransferDel());  // FIXME
 		return mt;

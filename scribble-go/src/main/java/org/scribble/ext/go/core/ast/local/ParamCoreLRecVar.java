@@ -1,10 +1,11 @@
 package org.scribble.ext.go.core.ast.local;
 
 import org.scribble.ext.go.core.ast.ParamCoreRecVar;
+import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 
 	
-public class ParamCoreLRecVar extends ParamCoreRecVar implements ParamCoreLType
+public class ParamCoreLRecVar extends ParamCoreRecVar<Local> implements ParamCoreLType
 {
 	public ParamCoreLRecVar(RecVar var)
 	{
