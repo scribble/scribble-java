@@ -58,3 +58,6 @@ scribble-core/src/test/scrib/test/test9/
 bin/scribblec.sh
 permissions-fix.sh
 
+# IntelliJ metadata
+*.iml
+.idea/
