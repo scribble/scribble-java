@@ -1,0 +1,6 @@
+module param.cgo18.AllToOne;
+
+global protocol P(role A(N), role B)
+{
+  Msg() from A[1..N] to B[1..1];
+}
