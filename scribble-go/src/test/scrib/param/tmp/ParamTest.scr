@@ -18,6 +18,7 @@ module assrt.tmp.ParamTest;
 - keep constraint for each "actual role" -- needed for API "selection" check
 - index exprs
 - WF G -- proto sig param decls
+- examples
 
 
 - how does prev pabble treat "actual roles"? e.g., pipeline
@@ -25,10 +26,13 @@ module assrt.tmp.ParamTest;
 */
 
 
-global protocol Proto1(role A(n), role B(n))
+//*/
+global protocol Proto1(role A(m,n), role B(m,n))
 {
-	1() from A[1..1] to B[2..n+1];
+	1() from A[1..1] to B[1..n];
+	2() from B[1..n-1] to A[1..1];
 }
+//*/
 
 /*
 global protocol Proto1(role A(n), role B(n))

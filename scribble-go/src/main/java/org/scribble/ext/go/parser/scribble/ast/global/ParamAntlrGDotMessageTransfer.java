@@ -36,7 +36,7 @@ public class ParamAntlrGDotMessageTransfer
 		ParamRoleParamNode sourceEnd = ParamAntlrSimpleName.toParamRoleParamNode(getSourceRangeEndChild(root), af);
 		ParamRoleParamNode destStart = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeStartChild(root), af);
 		ParamRoleParamNode destEnd = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeEndChild(root), af);*/
-		ParamIndexExpr sourceStart = ParamAntlrIndexExpr.parseParamIndexExpr(getSourceRangeEndChild(root), af);
+		ParamIndexExpr sourceStart = ParamAntlrIndexExpr.parseParamIndexExpr(getSourceRangeStartChild(root), af);
 		ParamIndexExpr sourceEnd = ParamAntlrIndexExpr.parseParamIndexExpr(getSourceRangeEndChild(root), af);
 		ParamIndexExpr destStart = ParamAntlrIndexExpr.parseParamIndexExpr(getDestRangeStartChild(root), af);
 		ParamIndexExpr destEnd = ParamAntlrIndexExpr.parseParamIndexExpr(getDestRangeEndChild(root), af);
