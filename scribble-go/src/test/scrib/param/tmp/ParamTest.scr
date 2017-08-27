@@ -13,9 +13,23 @@ module assrt.tmp.ParamTest;
 
 
 
+/*
+- keep P + coP for "actual roles" -- needed for API gen -- ParamRole => ParamRoleName?  cf. ParamRole ("actual")
+- keep constraint for each "actual role" -- needed for API "selection" check
+- index exprs
+- WF G -- proto sig param decls
+
+
+- how does prev pabble treat "actual roles"? e.g., pipeline
+- how does prev pabble do projection wrt. arbitrary role ranges?
+*/
+
+
+
 global protocol Proto1(role A(n), role B(n))
 {
-	1() dot A[1..n] to B[1..n];
+	1() from A[2..n] to B[2..n];
+	//1() dot A[1..n] to B[1..n];
 }
 
 
