@@ -28,6 +28,12 @@ public class ParamRange
 		//return Stream.of(this.start, this.end).filter(p -> !p.isConstant()).collect(Collectors.toSet());
 		return Stream.of(this.start, this.end).flatMap(p -> p.getVars().stream()).collect(Collectors.toSet());
 	}
+
+	@Override
+	public String toString()
+	{
+		return "[" + this.start + ((this.start == this.end) ? "" : ".." + this.end) + "]";
+	}
 	
 	@Override
 	public int hashCode()
@@ -51,11 +57,5 @@ public class ParamRange
 		}
 		ParamRange them = (ParamRange) obj;
 		return this.start.equals(them.start) && this.end.equals(them.end);
-	}
-
-	@Override
-	public String toString()
-	{
-		return "[" + this.start + ((this.start == this.end) ? "" : ".." + this.end) + "]";
 	}
 }

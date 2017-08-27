@@ -5,11 +5,11 @@ import java.util.Set;
 
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreEnd;
-import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
-import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
+import org.scribble.ext.go.core.ast.local.ParamCoreLType;
+import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.type.kind.Global;
-import org.scribble.type.name.Role;
 
 
 public class ParamCoreGEnd extends ParamCoreEnd<Global> implements ParamCoreGType
@@ -28,7 +28,8 @@ public class ParamCoreGEnd extends ParamCoreEnd<Global> implements ParamCoreGTyp
 	}
 
 	@Override
-	public ParamCoreLEnd project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges)
+	//public ParamCoreLEnd project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges)
+	public ParamCoreLType project(ParamCoreAstFactory af, ParamActualRole subj) throws ParamCoreSyntaxException
 	{
 		return af.ParamCoreLEnd();
 	}

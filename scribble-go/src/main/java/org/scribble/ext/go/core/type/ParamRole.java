@@ -17,16 +17,23 @@ public class ParamRole extends Role
 	//public final ParamRange range;
 	public final Set<ParamRange> ranges;  // size >= 1 -- size == 1 for parsed syntax
 	
-	public ParamRole(String name, Set<ParamRange> range)
+	public ParamRole(String name, Set<ParamRange> ranges)
 	{
 		super(name);
-		this.ranges = Collections.unmodifiableSet(range);
+		this.ranges = Collections.unmodifiableSet(ranges);
 	}
 	
 	// FIXME
 	public Role getName()
 	{
 		return new Role(this.getLastElement());
+	}
+
+	@Override
+	public String toString()
+	{
+		String rs = "{" + this.ranges.stream().map(r -> r.toString()).collect(Collectors.joining(", ")) + "}";
+		return super.toString() + rs;
 	}
 	
 	@Override
@@ -58,16 +65,5 @@ public class ParamRole extends Role
 	public boolean canEqual(Object o)
 	{
 		return o instanceof ParamRole;
-	}
-
-	@Override
-	public String toString()
-	{
-		String s = this.ranges.stream().map(r -> r.toString()).collect(Collectors.joining(", "));
-		if (this.ranges.size() > 1)
-		{
-				s = "{" + s + "}";
-		}
-		return super.toString() + s;
 	}
 }

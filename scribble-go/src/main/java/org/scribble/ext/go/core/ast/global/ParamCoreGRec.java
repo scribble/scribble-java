@@ -8,11 +8,10 @@ import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
-import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
-import org.scribble.type.name.Role;
 
 public class ParamCoreGRec extends ParamCoreRec<ParamCoreGType, Global> implements ParamCoreGType
 {
@@ -28,9 +27,11 @@ public class ParamCoreGRec extends ParamCoreRec<ParamCoreGType, Global> implemen
 	}
 
 	@Override
-	public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
+	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
+	public ParamCoreLType project(ParamCoreAstFactory af, ParamActualRole subj) throws ParamCoreSyntaxException
 	{
-		ParamCoreLType proj = this.body.project(af, r, ranges);
+		//ParamCoreLType proj = this.body.project(af, r, ranges);
+		ParamCoreLType proj = this.body.project(af, subj);
 		if (proj instanceof ParamCoreLRecVar)
 		{
 			ParamCoreLRecVar rv = (ParamCoreLRecVar) proj;
