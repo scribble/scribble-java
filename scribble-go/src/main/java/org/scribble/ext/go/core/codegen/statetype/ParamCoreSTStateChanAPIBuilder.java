@@ -4,12 +4,12 @@ import java.util.Map;
 
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanAPIBuilder;
+import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.main.Job;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
 public class ParamCoreSTStateChanAPIBuilder extends STStateChanAPIBuilder
@@ -17,7 +17,7 @@ public class ParamCoreSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	//private int counter = 1;
 	
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
-	public ParamCoreSTStateChanAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph)
+	public ParamCoreSTStateChanAPIBuilder(Job job, GProtocolName gpn, ParamActualRole role, EGraph graph)
 	{
 		super(job, gpn, role, graph,
 				null, //new GoSTOutputStateBuilder(new GoSTSendActionBuilder()),
@@ -27,6 +27,11 @@ public class ParamCoreSTStateChanAPIBuilder extends STStateChanAPIBuilder
 				null); //new GoSTEndStateBuilder());
 
 		throw new RuntimeException("[param-core] TODO:");
+	}
+	
+	protected ParamActualRole getSelf()
+	{
+		return (ParamActualRole) this.getSelf();
 	}
 
 	@Override

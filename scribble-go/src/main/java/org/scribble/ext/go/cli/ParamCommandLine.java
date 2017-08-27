@@ -153,7 +153,7 @@ public class ParamCommandLine extends CommandLine
 				for (ParamActualRole ranges : this.P0.get(role).keySet())
 				{
 					EGraph efsm = this.E0.get(role).get(ranges);
-					Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job).generateGoApi(fullname, role, efsm);
+					Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job).generateGoApi(fullname, ranges, efsm);
 					outputClasses(goClasses);
 				}
 			}

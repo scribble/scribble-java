@@ -1,0 +1,25 @@
+//Raymond@HZHL3 ~/code/eclipse/scribble/github.com/rhu1-go/scribble-java
+//$ bin/scribblec-go.sh -ip scribble-go/src/test/scrib/ -d scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/cgo18/Ring.scr -param Proto1 -param-fsm B
+
+module assrt.cg018.Ring;
+
+
+type <go> "int" from "..." as int;
+
+
+//*
+global protocol Proto1(role A(k), role B(k))
+{
+	choice at A  //[1..1]  // FIXME
+	{
+		m1(int) dot A[1..1] to B[1..k-1];
+		m1(int) dot B[1..k] to A[1..1];
+		do Proto1(A, B);  // FIXME
+	}
+	or
+	{
+		m2(int) dot A[1..1] to B[1..k-1];
+		m2(int) dot B[1..k] to A[1..1];
+	}
+}
+//*/

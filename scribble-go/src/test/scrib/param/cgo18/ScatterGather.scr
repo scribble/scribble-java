@@ -8,7 +8,7 @@ type <go> "int" from "..." as int;
 
 
 //*
-global protocol Proto1(role A, role B(k))
+global protocol Proto1(role A(k), role B(k))
 {
 	scatter(int) from A[1..1] to B[1..k];
 	gather(int) from B[1..k] to A[1..1];
