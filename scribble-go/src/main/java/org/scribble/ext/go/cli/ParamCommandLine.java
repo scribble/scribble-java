@@ -23,6 +23,7 @@ import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.ParamCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.ParamCoreGType;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
+import org.scribble.ext.go.core.codegen.statetype.ParamCoreSTEndpointApiGenerator;
 import org.scribble.ext.go.core.model.endpoint.ParamCoreEGraphBuilder;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
@@ -38,7 +39,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.model.endpoint.EGraph;
-import org.scribble.model.endpoint.EState;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribParserException;
@@ -49,7 +49,8 @@ public class ParamCommandLine extends CommandLine
 
 	// HACK: store in (Core) Job/JobContext?
 	protected GProtocolDecl gpd;
-	protected Map<Role, Map<Set<ParamRange>, EState>> E0;  // FIXME: make a "proper role" for param APIs
+	protected Map<Role, Map<Set<ParamRange>, ParamCoreLType>> P0;
+	protected Map<Role, Map<Set<ParamRange>, EGraph>> E0;  // FIXME: make a "proper role" for param APIs
 	//protected ParamCoreSModel model;
 	
 	public ParamCommandLine(String... args) throws CommandLineException
@@ -136,6 +137,23 @@ public class ParamCommandLine extends CommandLine
 				outputClasses(goClasses);
 			}
 		}
+		else if (this.paramArgs.containsKey(ParamCLArgFlag.PARAM_CORE_API_GEN))
+		{
+			JobContext jcontext = job.getContext();
+			String[] args = this.paramArgs.get(ParamCLArgFlag.PARAM_CORE_API_GEN);
+			for (int i = 0; i < args.length; i += 1)
+			{
+				String simpname = this.paramArgs.get(ParamCLArgFlag.PARAM)[0];
+				GProtocolName fullname = checkGlobalProtocolArg(jcontext, simpname);
+				Role role = checkRoleArg(jcontext, fullname, args[i]);
+				for (Set<ParamRange> ranges : this.P0.get(role).keySet())
+				{
+					EGraph efsm = this.E0.get(role).get(ranges);
+					Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job).generateGoApi(fullname, role, efsm);
+					outputClasses(goClasses);
+				}
+			}
+		}
 		else
 		{
 			super.doNonAttemptableOutputTasks(job);
@@ -210,7 +228,7 @@ public class ParamCommandLine extends CommandLine
 		
 		job.debugPrintln("\n[param-core] Computed roles: " + protoRoles);
 
-		Map<Role, Map<Set<ParamRange>, ParamCoreLType>> P0 = new HashMap<>();
+		this.P0 = new HashMap<>();
 		for (Role r : gpd.header.roledecls.getRoles())  // getRoles gives decl names  // CHECKME: can ignore params?
 		{
 			for (Set<ParamRange> ranges : protoRoles.get(r))
@@ -235,13 +253,13 @@ public class ParamCommandLine extends CommandLine
 			for (Set<ParamRange> ranges : P0.get(r).keySet())
 			{
 				EGraph g = builder.build(P0.get(r).get(ranges));
-				Map<Set<ParamRange>, EState> tmp = this.E0.get(r);
+				Map<Set<ParamRange>, EGraph> tmp = this.E0.get(r);
 				if (tmp == null)
 				{
 					tmp = new HashMap<>();
 					this.E0.put(r, tmp);
 				}
-				tmp.put(ranges, g.init);
+				tmp.put(ranges, g);
 
 				job.debugPrintln("\n[param-core] Built endpoint graph for " + r + " for " + ranges + ":\n" + g.toDot());
 			}
@@ -393,9 +411,9 @@ public class ParamCommandLine extends CommandLine
 			{
 				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
 				String png = args[i+1];
-				for (Entry<Set<ParamRange>, EState> e : this.E0.get(role).entrySet())
+				for (Entry<Set<ParamRange>, EGraph> e : this.E0.get(role).entrySet())
 				{
-					String out = e.getValue().toDot();
+					String out = e.getValue().init.toDot();
 					runDot(out, png);
 				}
 			}

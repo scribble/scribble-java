@@ -13,9 +13,11 @@ public class ParamCLArgParser extends CLArgParser
 	public static final String PARAM_FLAG = "-param";
 
 	// Non-unique flags
-	public static final String GO_API_GEN_FLAG           = "-goapi";
-	public static final String PARAM_CORE_EFSM_FLAG      = "-param-fsm";
-	public static final String PARAM_CORE_EFSM_PNG_FLAG  = "-param-fsmpng";
+	public static final String GO_API_GEN_FLAG          = "-goapi";
+
+	public static final String PARAM_CORE_EFSM_FLAG     = "-param-fsm";
+	public static final String PARAM_CORE_EFSM_PNG_FLAG = "-param-fsmpng";
+	public static final String PARAM_CORE_API_GEN_FLAG  = "-param-api";
 	
 	private static final Map<String, ParamCLArgFlag> PARAM_UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -27,6 +29,7 @@ public class ParamCLArgParser extends CLArgParser
 		ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(ParamCLArgParser.PARAM_CORE_EFSM_FLAG, ParamCLArgFlag.PARAM_CORE_EFSM);
 		ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(ParamCLArgParser.PARAM_CORE_EFSM_PNG_FLAG, ParamCLArgFlag.PARAM_CORE_EFSM_PNG);
 		ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(ParamCLArgParser.GO_API_GEN_FLAG, ParamCLArgFlag.GO_API_GEN);
+		ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(ParamCLArgParser.PARAM_CORE_API_GEN_FLAG, ParamCLArgFlag.PARAM_CORE_API_GEN);
 	}
 
 	private static final Map<String, ParamCLArgFlag> PARAM_FLAGS = new HashMap<>();
@@ -72,12 +75,14 @@ public class ParamCLArgParser extends CLArgParser
 
 			// Non-unique flags
 			
-			case ParamCLArgParser.PARAM_CORE_EFSM_FLAG:     return paramParseRoleArg(flag, i);
-			case ParamCLArgParser.PARAM_CORE_EFSM_PNG_FLAG: return paramParseRoleAndFileArgs(flag, i);
 			case ParamCLArgParser.GO_API_GEN_FLAG:
 			{
 				return goParseProtoAndRoleArgs(flag, i);
 			}
+
+			case ParamCLArgParser.PARAM_CORE_EFSM_FLAG:     return paramParseRoleArg(flag, i);
+			case ParamCLArgParser.PARAM_CORE_EFSM_PNG_FLAG: return paramParseRoleAndFileArgs(flag, i);
+			case ParamCLArgParser.PARAM_CORE_API_GEN_FLAG:  return paramParseRoleArg(flag, i);
 			
 
 			// Base CL
