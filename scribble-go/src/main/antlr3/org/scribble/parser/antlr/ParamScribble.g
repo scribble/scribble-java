@@ -661,6 +661,10 @@ globalmessagetransfer:
 	message FROM_KW rolename '[' paramindexexpr '..' paramindexexpr ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
 ->
 	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)
+|
+	message DOT_KW rolename '[' paramindexexpr '..' paramindexexpr ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
+->
+	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)
 ;
 
 /*|

@@ -23,7 +23,7 @@ public class ParamRange
 	}
 	
 	//public Set<ParamRoleParam> getActualParams()  // Hack
-	public Set<ParamIndexVar> getActualParams()  // Hack
+	public Set<ParamIndexVar> getVars()
 	{
 		//return Stream.of(this.start, this.end).filter(p -> !p.isConstant()).collect(Collectors.toSet());
 		return Stream.of(this.start, this.end).flatMap(p -> p.getVars().stream()).collect(Collectors.toSet());

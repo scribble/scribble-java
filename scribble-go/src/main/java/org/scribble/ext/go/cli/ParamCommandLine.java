@@ -289,6 +289,9 @@ public class ParamCommandLine extends CommandLine
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
+	
+	//..HERE FIXME ActualParam -- ParamRange is now already a Set
+	
 	private Map<Role, Set<Set<ParamRange>>> getProtoRoles(ParamJob job, ParamCoreGType gt)
 	{
 		Set<ParamRole> prs = gt.getParamRoles();
@@ -365,8 +368,8 @@ public class ParamCommandLine extends CommandLine
 					
 				//Set<ParamRoleParam> actuals
 				Set<ParamIndexVar> actuals
-						= cand.stream().flatMap(c -> c.getActualParams().stream()).collect(Collectors.toSet());
-				actuals.addAll(coset.stream().flatMap(c -> c.getActualParams().stream()).collect(Collectors.toSet()));
+						= cand.stream().flatMap(c -> c.getVars().stream()).collect(Collectors.toSet());
+				actuals.addAll(coset.stream().flatMap(c -> c.getVars().stream()).collect(Collectors.toSet()));
 				//if (!actuals.isEmpty())
 				{
 					z3 = "(exists ((id Int) "
