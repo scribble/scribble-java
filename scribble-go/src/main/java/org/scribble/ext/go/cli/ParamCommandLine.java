@@ -30,7 +30,7 @@ import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.ParamException;
 import org.scribble.ext.go.main.ParamJob;
 import org.scribble.ext.go.main.ParamMainContext;
-import org.scribble.ext.go.type.name.ParamRoleParam;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
@@ -310,7 +310,8 @@ public class ParamCommandLine extends CommandLine
 				ParamRole next = i.next();
 				i.remove();
 				Set<ParamRange> range = new HashSet<>();
-				range.add(next.range);
+				//range.add(next.range);
+				range.add(next.ranges.iterator().next());
 				if (!tmp.contains(next))
 				{
 					tmp.addAll(tmp.stream().map(t -> 
@@ -340,8 +341,8 @@ public class ParamCommandLine extends CommandLine
 
 				if (cand.size() > 0)
 				{
-					z3 += cand.stream().map(c -> "(and (>= id " + c.start + ") (<= id " + c.end + ")"
-								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start + " " + c.end + ")" : "")
+					z3 += cand.stream().map(c -> "(and (>= id " + c.start.toSmt2Formula() + ") (<= id " + c.end.toSmt2Formula() + ")"
+								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
 								+ ")")
 							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 				}
@@ -352,8 +353,8 @@ public class ParamCommandLine extends CommandLine
 					{
 						z3 = "(and " + z3 + " ";
 					}
-					z3 += coset.stream().map(c -> "(and (not (and (>= id " + c.start + ") (<= id " + c.end + ")))"
-								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start + " " + c.end + ")" : "")
+					z3 += coset.stream().map(c -> "(and (not (and (>= id " + c.start.toSmt2Formula() + ") (<= id " + c.end.toSmt2Formula() + ")))"
+								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
 								+ ")")
 							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 					if (cand.size() > 0)
@@ -362,7 +363,9 @@ public class ParamCommandLine extends CommandLine
 					}
 				}
 					
-				Set<ParamRoleParam> actuals = cand.stream().flatMap(c -> c.getActualParams().stream()).collect(Collectors.toSet());
+				//Set<ParamRoleParam> actuals
+				Set<ParamIndexVar> actuals
+						= cand.stream().flatMap(c -> c.getActualParams().stream()).collect(Collectors.toSet());
 				actuals.addAll(coset.stream().flatMap(c -> c.getActualParams().stream()).collect(Collectors.toSet()));
 				//if (!actuals.isEmpty())
 				{

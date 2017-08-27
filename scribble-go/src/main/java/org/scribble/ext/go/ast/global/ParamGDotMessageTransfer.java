@@ -8,13 +8,14 @@ import org.scribble.ast.local.LNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.ext.go.ast.ParamAstFactory;
-import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.type.name.Role;
 
 public class ParamGDotMessageTransfer extends ParamGMessageTransfer
 {
 	public ParamGDotMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
-			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			ParamIndexExpr srcRangeStart, ParamIndexExpr srcRangeEnd, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd)
 	{
 		super(source, src, msg, dest, srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
 	}
@@ -45,7 +46,8 @@ public class ParamGDotMessageTransfer extends ParamGMessageTransfer
 
 	@Override
 	public ParamGDotMessageTransfer reconstruct(RoleNode src, MessageNode msg, RoleNode dest, 
-			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			ParamIndexExpr srcRangeStart, ParamIndexExpr srcRangeEnd, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd)
 	{
 		ScribDel del = del();
 		ParamGDotMessageTransfer gmt = new ParamGDotMessageTransfer(this.source, src, msg, dest, 

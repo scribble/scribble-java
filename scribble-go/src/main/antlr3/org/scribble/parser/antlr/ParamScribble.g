@@ -169,6 +169,7 @@ tokens
 	LOCALRECEIVE = 'local-receive';*/
 
 
+	PARAM_BININDEXEXPR = 'PARAM_BININDEXEXPR';
 	PARAM_ROLEDECL = 'PARAM_ROLEDECL';
 	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
 	PARAM_GLOBALDOTMESSAGETRANSFER = 'PARAM_GLOBALDOTMESSAGETRANSFER';
@@ -657,6 +658,12 @@ globalmessagetransfer:
 	^(GLOBALMESSAGETRANSFER message rolename rolename+)
 
 |
+	message FROM_KW rolename '[' paramindexexpr '..' paramindexexpr ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
+->
+	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)
+;
+
+/*|
 	message FROM_KW rolename '[' simplename '..' simplename ']' TO_KW rolename '[' simplename '..' simplename ']' ';'
 ->
 	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename simplename simplename simplename simplename)
@@ -664,6 +671,21 @@ globalmessagetransfer:
 	message DOT_KW rolename '[' simplename '..' simplename ']' TO_KW rolename '[' simplename '..' simplename ']' ';'
 ->
 	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename simplename simplename simplename simplename)
+;*/
+	
+paramindexexpr:
+	unaryparamindexexpr (op=('+' | '-') unaryparamindexexpr)?
+->
+	^(PARAM_BININDEXEXPR unaryparamindexexpr $op? unaryparamindexexpr?)
+;
+// FIXME: rename BIN constant
+
+unaryparamindexexpr:
+	simplename
+|
+	'(' paramindexexpr ')'
+-> 
+	paramindexexpr
 ;
 
 message:

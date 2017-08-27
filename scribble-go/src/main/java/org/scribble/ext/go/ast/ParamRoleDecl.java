@@ -9,18 +9,19 @@ import org.scribble.ast.RoleDecl;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.del.ScribDel;
-import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
-import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
 public class ParamRoleDecl extends RoleDecl
 {
-	public final List<ParamRoleParamNode> params;
+	//public final List<ParamRoleParamNode> params;
+	public final List<ParamIndexVar> params;
 	
-	public ParamRoleDecl(CommonTree source, RoleNode name, List<ParamRoleParamNode> params)
+	//public ParamRoleDecl(CommonTree source, RoleNode name, List<ParamRoleParamNode> params)
+	public ParamRoleDecl(CommonTree source, RoleNode name, List<ParamIndexVar> params)
 	{
 		super(source, name);
 		this.params = Collections.unmodifiableList(params);
@@ -36,7 +37,8 @@ public class ParamRoleDecl extends RoleDecl
 	public ParamRoleDecl clone(AstFactory af)
 	{
 		RoleNode role = (RoleNode) this.name.clone(af);
-		List<ParamRoleParamNode> params = ScribUtil.cloneList(af, this.params);
+		//List<ParamRoleParamNode> params = ScribUtil.cloneList(af, this.params);
+		List<ParamIndexVar> params = this.params;
 		return ((ParamAstFactory) af).ParamRoleDecl(this.source, role, params);
 	}
 
@@ -54,7 +56,8 @@ public class ParamRoleDecl extends RoleDecl
 		throw new RuntimeException("[param] Shouldn't get in here: " + this);
 	}
 
-	public ParamRoleDecl reconstruct(SimpleNameNode<RoleKind> name, List<ParamRoleParamNode> params)
+	//public ParamRoleDecl reconstruct(SimpleNameNode<RoleKind> name, List<ParamRoleParamNode> params)
+	public ParamRoleDecl reconstruct(SimpleNameNode<RoleKind> name, List<ParamIndexVar> params)
 	{
 		ScribDel del = del();
 		ParamRoleDecl rd = new ParamRoleDecl(this.source, (RoleNode) name, params);
@@ -66,7 +69,8 @@ public class ParamRoleDecl extends RoleDecl
 	public ParamRoleDecl visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		RoleNode name = visitChildWithClassEqualityCheck(this, (RoleNode) this.name, nv);
-		List<ParamRoleParamNode> params = visitChildListWithClassEqualityCheck(this, this.params, nv);
+		//List<ParamRoleParamNode> params = visitChildListWithClassEqualityCheck(this, this.params, nv);
+		List<ParamIndexVar> params = this.params;
 		return reconstruct(name, params);
 	}
 }

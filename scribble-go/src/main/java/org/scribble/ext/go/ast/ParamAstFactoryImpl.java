@@ -5,15 +5,13 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.RoleDeclDel;
 import org.scribble.del.global.GMessageTransferDel;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
-import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
-import org.scribble.ext.go.type.kind.ParamRoleParamKind;
-import org.scribble.type.kind.Kind;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 
 
 public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFactory
@@ -182,7 +180,8 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 	// Explicitly creating new Assrt nodes
 
 	@Override
-	public ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamRoleParamNode> params)
+	//public ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamRoleParamNode> params)
+	public ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamIndexVar> params)
 	{
 		ParamRoleDecl rd = new ParamRoleDecl(source, namenode, params);
 		rd = del(rd, new RoleDeclDel());
@@ -191,7 +190,8 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 
 	@Override
 	public ParamGCrossMessageTransfer ParamGCrossMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest,
-			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			ParamIndexExpr srcRangeStart, ParamIndexExpr srcRangeEnd, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd)
 	{
 		ParamGCrossMessageTransfer mt = new ParamGCrossMessageTransfer(source, src, msg, dest,
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
@@ -201,7 +201,8 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 
 	@Override
 	public ParamGDotMessageTransfer ParamGDotMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest,
-			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			ParamIndexExpr srcRangeStart, ParamIndexExpr srcRangeEnd, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd)
 	{
 		ParamGDotMessageTransfer mt = new ParamGDotMessageTransfer(source, src, msg, dest,
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
@@ -209,7 +210,7 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 		return mt;
 	}
 	
-	@Override
+	/*@Override
 	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier)
 	{
 		NameNode<? extends Kind> snn = null;
@@ -224,5 +225,5 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 		{
 			return super.SimpleNameNode(source, kind, identifier);
 		}
-	}
+	}*/
 }

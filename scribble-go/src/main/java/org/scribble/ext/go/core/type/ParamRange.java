@@ -4,22 +4,29 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.ext.go.type.name.ParamRoleParam;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 
 public class ParamRange
 {
-	public final ParamRoleParam start;
-	public final ParamRoleParam end;  // Inclusive
+	/*public final ParamRoleParam start;
+	public final ParamRoleParam end;  // Inclusive*/
 	
-	public ParamRange(ParamRoleParam start, ParamRoleParam end)
+	public final ParamIndexExpr start;
+	public final ParamIndexExpr end;
+	
+	//public ParamRange(ParamRoleParam start, ParamRoleParam end)
+	public ParamRange(ParamIndexExpr start, ParamIndexExpr end)
 	{
 		this.start = start;
 		this.end = end;
 	}
 	
-	public Set<ParamRoleParam> getActualParams()  // Hack
+	//public Set<ParamRoleParam> getActualParams()  // Hack
+	public Set<ParamIndexVar> getActualParams()  // Hack
 	{
-		return Stream.of(this.start, this.end).filter(p -> !p.isConstant()).collect(Collectors.toSet());
+		//return Stream.of(this.start, this.end).filter(p -> !p.isConstant()).collect(Collectors.toSet());
+		return Stream.of(this.start, this.end).flatMap(p -> p.getVars().stream()).collect(Collectors.toSet());
 	}
 	
 	@Override

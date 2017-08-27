@@ -6,6 +6,7 @@ import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
 import org.scribble.ext.go.type.kind.ParamRoleParamKind;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 
+@Deprecated
 public class ParamAntlrSimpleName
 {
 	public static ParamRoleParamNode toParamRoleParamNode(CommonTree ct, AstFactory af)

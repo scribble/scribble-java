@@ -1,6 +1,8 @@
 package org.scribble.ext.go.core.ast;
 
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ext.go.core.ast.global.ParamCoreGActionKind;
 import org.scribble.ext.go.core.ast.global.ParamCoreGChoice;
@@ -30,7 +32,7 @@ public class ParamCoreAstFactory
 	
 	public ParamRole ParamRole(String name, ParamRange range)  // ParamRange not "ast", so not made by af
 	{
-		return new ParamRole(name, range);
+		return new ParamRole(name, Stream.of(range).collect(Collectors.toSet()));
 	}
 
 	// Pre: not null

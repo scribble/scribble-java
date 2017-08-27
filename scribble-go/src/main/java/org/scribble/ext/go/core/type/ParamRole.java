@@ -1,8 +1,12 @@
 package org.scribble.ext.go.core.type;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.scribble.type.name.Role;
 
-// FIXME: make distinct kind?  i.e., don't extend Role? -- yes: ParamRole is not a Role (Role is actually a ParamRole)
+// FIXME: make distinct kind?  i.e., don't extend Role? -- yes: ParamRole is not a Role (Role should actually be a ParamRole in that sense)
 public class ParamRole extends Role
 {
 	/**
@@ -10,12 +14,13 @@ public class ParamRole extends Role
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public final ParamRange range;
+	//public final ParamRange range;
+	public final Set<ParamRange> ranges;  // size >= 1 -- size == 1 for parsed syntax
 	
-	public ParamRole(String name, ParamRange range)
+	public ParamRole(String name, Set<ParamRange> range)
 	{
 		super(name);
-		this.range = range;
+		this.ranges = Collections.unmodifiableSet(range);
 	}
 	
 	// FIXME
@@ -29,7 +34,7 @@ public class ParamRole extends Role
 	{
 		int hash = 7121;
 		hash = 31 * hash + super.hashCode();
-		hash = 31 * hash + this.range.hashCode();
+		hash = 31 * hash + this.ranges.hashCode();
 		return hash;
 	}
 
@@ -46,7 +51,7 @@ public class ParamRole extends Role
 		}
 		ParamRole them = (ParamRole) obj;
 		return super.equals(them)  // Does canEqual
-				&& this.range.equals(them.range);
+				&& this.ranges.equals(them.ranges);
 	}
 	
 	@Override
@@ -58,6 +63,11 @@ public class ParamRole extends Role
 	@Override
 	public String toString()
 	{
-		return super.toString() + this.range;
+		String s = this.ranges.stream().map(r -> r.toString()).collect(Collectors.joining(", "));
+		if (this.ranges.size() > 1)
+		{
+				s = "{" + s + "}";
+		}
+		return super.toString() + s;
 	}
 }

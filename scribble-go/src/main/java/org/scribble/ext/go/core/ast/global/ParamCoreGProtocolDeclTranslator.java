@@ -213,15 +213,19 @@ public class ParamCoreGProtocolDeclTranslator
 		{
 			ParamGCrossMessageTransfer cross = (ParamGCrossMessageTransfer) gmt;
 			kind = ParamCoreGActionKind.CROSS_TRANSFER;
-			src = af.ParamRole(srcName, new ParamRange(cross.srcRangeStart.toName(), cross.srcRangeEnd.toName()));
-			dest = af.ParamRole(destName, new ParamRange(cross.destRangeStart.toName(), cross.destRangeEnd.toName()));
+			/*src = af.ParamRole(srcName, new ParamRange(cross.srcRangeStart.toName(), cross.srcRangeEnd.toName()));
+			dest = af.ParamRole(destName, new ParamRange(cross.destRangeStart.toName(), cross.destRangeEnd.toName()));*/
+			src = af.ParamRole(srcName, new ParamRange(cross.srcRangeStart, cross.srcRangeEnd));
+			dest = af.ParamRole(destName, new ParamRange(cross.destRangeStart, cross.destRangeEnd));
 		}
 		else if (gmt instanceof ParamGDotMessageTransfer)
 		{
 			ParamGDotMessageTransfer dot = (ParamGDotMessageTransfer) gmt;
 			kind = ParamCoreGActionKind.DOT_TRANSFER;
-			src = af.ParamRole(srcName, new ParamRange(dot.srcRangeStart.toName(), dot.srcRangeEnd.toName()));
-			dest = af.ParamRole(destName, new ParamRange(dot.destRangeStart.toName(), dot.destRangeEnd.toName()));
+			/*src = af.ParamRole(srcName, new ParamRange(dot.srcRangeStart.toName(), dot.srcRangeEnd.toName()));
+			dest = af.ParamRole(destName, new ParamRange(dot.destRangeStart.toName(), dot.destRangeEnd.toName()));*/
+			src = af.ParamRole(srcName, new ParamRange(dot.srcRangeStart, dot.srcRangeEnd));
+			dest = af.ParamRole(destName, new ParamRange(dot.destRangeStart, dot.destRangeEnd));
 		}
 		else
 		{

@@ -5,8 +5,8 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.ParamAstFactory;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
-import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
-import org.scribble.ext.go.parser.scribble.ast.name.ParamAntlrSimpleName;
+import org.scribble.ext.go.parser.scribble.ast.index.ParamAntlrIndexExpr;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.global.AntlrGMessageTransfer;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
@@ -32,10 +32,14 @@ public class ParamAntlrGDotMessageTransfer
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(root), af);
 		MessageNode msg = AntlrGMessageTransfer.parseMessage(parser, getMessageChild(root), af);
 		RoleNode dest =  AntlrSimpleName.toRoleNode(getDestChild(root), af);
-		ParamRoleParamNode sourceStart = ParamAntlrSimpleName.toParamRoleParamNode(getSourceRangeStartChild(root), af);
+		/*ParamRoleParamNode sourceStart = ParamAntlrSimpleName.toParamRoleParamNode(getSourceRangeStartChild(root), af);
 		ParamRoleParamNode sourceEnd = ParamAntlrSimpleName.toParamRoleParamNode(getSourceRangeEndChild(root), af);
 		ParamRoleParamNode destStart = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeStartChild(root), af);
-		ParamRoleParamNode destEnd = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeEndChild(root), af);
+		ParamRoleParamNode destEnd = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeEndChild(root), af);*/
+		ParamIndexExpr sourceStart = ParamAntlrIndexExpr.parseParamIndexExpr(getSourceRangeEndChild(root), af);
+		ParamIndexExpr sourceEnd = ParamAntlrIndexExpr.parseParamIndexExpr(getSourceRangeEndChild(root), af);
+		ParamIndexExpr destStart = ParamAntlrIndexExpr.parseParamIndexExpr(getDestRangeStartChild(root), af);
+		ParamIndexExpr destEnd = ParamAntlrIndexExpr.parseParamIndexExpr(getDestRangeEndChild(root), af);
 		return af.ParamGDotMessageTransfer(root, src, msg, dest, sourceStart, sourceEnd, destStart, destEnd);
 	}
 

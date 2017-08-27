@@ -25,12 +25,18 @@ module assrt.tmp.ParamTest;
 */
 
 
+global protocol Proto1(role A(n), role B(n))
+{
+	1() from A[1..1] to B[2..n+1];
+}
 
+/*
 global protocol Proto1(role A(n), role B(n))
 {
 	1() from A[2..n] to B[2..n];
 	//1() dot A[1..n] to B[1..n];
 }
+//*/
 
 
 

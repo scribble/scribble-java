@@ -9,7 +9,7 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.visit.AstVisitor;
@@ -18,13 +18,18 @@ public abstract class ParamGMessageTransfer extends GMessageTransfer  //implemen
 {
 	// ParamRoleNode? -- cf. ParamRoleDecl
 	// All >= 0; end >= start
-	public final ParamRoleParamNode srcRangeStart;
+	/*public final ParamRoleParamNode srcRangeStart;
 	public final ParamRoleParamNode srcRangeEnd;     // Inclusive
 	public final ParamRoleParamNode destRangeStart;
-	public final ParamRoleParamNode destRangeEnd;    // Inclusive
+	public final ParamRoleParamNode destRangeEnd;    // Inclusive*/
+	public final ParamIndexExpr srcRangeStart;
+	public final ParamIndexExpr srcRangeEnd;     // Inclusive
+	public final ParamIndexExpr destRangeStart;
+	public final ParamIndexExpr destRangeEnd;    // Inclusive
 
 	public ParamGMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
-			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			ParamIndexExpr srcRangeStart, ParamIndexExpr srcRangeEnd, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd)
 	{
 		super(source, src, msg, Arrays.asList(dest));
 		this.srcRangeStart = srcRangeStart;
@@ -40,7 +45,8 @@ public abstract class ParamGMessageTransfer extends GMessageTransfer  //implemen
 	}
 
 	public abstract ParamGMessageTransfer reconstruct(RoleNode src, MessageNode msg, RoleNode dest, 
-			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd);
+			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd);
+			ParamIndexExpr srcRangeStart, ParamIndexExpr srcRangeEnd, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd);
 
 	@Override
 	public MessageTransfer<Global> visitChildren(AstVisitor nv) throws ScribbleException

@@ -65,13 +65,13 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		// "Simple" cases
 		if (this.src.getName().equals(r))
 		{
-			return (ranges.contains(this.src.range))
+			return (ranges.contains(this.src.ranges.iterator().next()))
 					? af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.SEND_ALL, projs)
 					: merge(af, r, ranges, projs);
 		}
 		else if (this.dest.getName().equals(r))
 		{
-			return (ranges.contains(this.dest.range))
+			return (ranges.contains(this.dest.ranges.iterator().next()))
 					? af.ParamCoreLChoice(this.src, ParamCoreLActionKind.RECEIVE_ALL, projs)
 					: merge(af, r, ranges, projs);
 		}
