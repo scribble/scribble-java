@@ -396,8 +396,8 @@ public class ParamCommandLine extends CommandLine
 				z3 = //"(declare-const id Int)\n
 						"(assert " + z3 + ")";
 				
-				job.debugPrintln("\n[param-core] Candidate role: " + cand);
-				job.debugPrintln("[param-core] Ranges co-set: " + coset);
+				job.debugPrintln("\n[param-core] Candidate: " + cand);
+				job.debugPrintln("[param-core] Co-set: " + coset);
 				job.debugPrintln("[param-core] Running Z3 on:\n" + z3);
 				
 				if (Z3Wrapper.checkSat(job, this.gpd, z3))

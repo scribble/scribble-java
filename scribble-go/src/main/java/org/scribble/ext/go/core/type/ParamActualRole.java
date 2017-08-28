@@ -22,8 +22,10 @@ public class ParamActualRole extends ParamRole
 	@Override
 	public String toString()
 	{
+		// Duplicated from super to make braces mandatory
+		String rs1 = "{" + this.ranges.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
 		String rs2 = "{" + this.coranges.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
-		return super.toString() + rs2;
+		return super.getLastElement() + rs1 + rs2;
 	}
 	
 	@Override
