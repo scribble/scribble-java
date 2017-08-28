@@ -8,13 +8,13 @@ type <go> "int" from "..." as int;
 
 
 //*
-global protocol Proto1(role B(k))  // FIXME: role param WF
+global protocol Proto1(role B(k))  // FIXME: role param WF -- params only for root protos?
 {
 	choice at B[1]  // FIXME: role index WF?
 	{
 		m1(int) dot B[1..k-1] to B[2..k];  // FIXME: range-sensitive role enabling
 		m1(int) dot B[k..k] to B[1..1];
-		do Proto1(B);  // FIXME: role params?
+		do Proto1(B);  // FIXME: role params? or disallow role permuting?
 	}
 	or
 	{
