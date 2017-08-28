@@ -38,6 +38,7 @@ import org.scribble.visit.wf.env.WFChoiceEnv;
 
 public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 {
+	
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{

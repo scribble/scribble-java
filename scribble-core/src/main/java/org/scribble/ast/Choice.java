@@ -57,7 +57,7 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 	{
 		String sep = " " + Constants.OR_KW + " ";
 		return Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj + " "
-				+ this.blocks.stream().map((b) -> b.toString()).collect(Collectors.joining(sep));
+				+ this.blocks.stream().map(b -> b.toString()).collect(Collectors.joining(sep));
 	}
 	
 	/*@Override

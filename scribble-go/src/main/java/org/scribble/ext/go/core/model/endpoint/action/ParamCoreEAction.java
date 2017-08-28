@@ -5,5 +5,5 @@ import org.scribble.ext.go.core.type.ParamRole;
 public interface ParamCoreEAction 
 {
 	
-	ParamRole getPeer();
+	ParamRole getPeer();  // N.B. *not* ParamActualRole
 }

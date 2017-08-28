@@ -25,12 +25,13 @@ import org.scribble.ext.go.core.ast.global.ParamCoreGType;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.codegen.statetype.ParamCoreSTEndpointApiGenerator;
 import org.scribble.ext.go.core.model.endpoint.ParamCoreEGraphBuilder;
+import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.ParamException;
 import org.scribble.ext.go.main.ParamJob;
 import org.scribble.ext.go.main.ParamMainContext;
-import org.scribble.ext.go.type.name.ParamRoleParam;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
@@ -49,8 +50,10 @@ public class ParamCommandLine extends CommandLine
 
 	// HACK: store in (Core) Job/JobContext?
 	protected GProtocolDecl gpd;
-	protected Map<Role, Map<Set<ParamRange>, ParamCoreLType>> P0;
-	protected Map<Role, Map<Set<ParamRange>, EGraph>> E0;  // FIXME: make a "proper role" for param APIs
+	//protected Map<Role, Map<Set<ParamRange>, ParamCoreLType>> P0;
+	protected Map<Role, Map<ParamActualRole, ParamCoreLType>> P0;
+	//protected Map<Role, Map<Set<ParamRange>, EGraph>> E0;  // FIXME: make a "proper role" for param APIs
+	protected Map<Role, Map<ParamActualRole, EGraph>> E0;  // FIXME: make a "proper role" for param APIs
 	//protected ParamCoreSModel model;
 	
 	public ParamCommandLine(String... args) throws CommandLineException
@@ -146,10 +149,11 @@ public class ParamCommandLine extends CommandLine
 				String simpname = this.paramArgs.get(ParamCLArgFlag.PARAM)[0];
 				GProtocolName fullname = checkGlobalProtocolArg(jcontext, simpname);
 				Role role = checkRoleArg(jcontext, fullname, args[i]);
-				for (Set<ParamRange> ranges : this.P0.get(role).keySet())
+				//for (Set<ParamRange> ranges : this.P0.get(role).keySet())
+				for (ParamActualRole ranges : this.P0.get(role).keySet())
 				{
 					EGraph efsm = this.E0.get(role).get(ranges);
-					Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job).generateGoApi(fullname, role, efsm);
+					Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job).generateGoApi(fullname, ranges, efsm);
 					outputClasses(goClasses);
 				}
 			}
@@ -224,17 +228,22 @@ public class ParamCommandLine extends CommandLine
 		
 		job.debugPrintln("\n[param-core] Translated:\n  " + gt);
 		
-		Map<Role, Set<Set<ParamRange>>> protoRoles = getProtoRoles(job, gt);
+		//Map<Role, Set<Set<ParamRange>>> 
+		Map<Role, Set<ParamActualRole>> 
+				protoRoles = getProtoRoles(job, gt);
 		
 		job.debugPrintln("\n[param-core] Computed roles: " + protoRoles);
 
 		this.P0 = new HashMap<>();
 		for (Role r : gpd.header.roledecls.getRoles())  // getRoles gives decl names  // CHECKME: can ignore params?
 		{
-			for (Set<ParamRange> ranges : protoRoles.get(r))
+			//for (Set<ParamRange> ranges : protoRoles.get(r))
+			for (ParamActualRole ranges : protoRoles.get(r))
 			{
-				ParamCoreLType lt = gt.project(af, r, ranges);
-				Map<Set<ParamRange>, ParamCoreLType> tmp = P0.get(r);
+				//ParamCoreLType lt = gt.project(af, r, ranges);
+				ParamCoreLType lt = gt.project(af, ranges);
+				//Map<Set<ParamRange>, ParamCoreLType> tmp = P0.get(r);
+				Map<ParamActualRole, ParamCoreLType> tmp = P0.get(r);
 				if (tmp == null)
 				{
 					tmp = new HashMap<>();
@@ -250,10 +259,12 @@ public class ParamCommandLine extends CommandLine
 		this.E0 = new HashMap<>();
 		for (Role r : P0.keySet())
 		{
-			for (Set<ParamRange> ranges : P0.get(r).keySet())
+			//for (Set<ParamRange> ranges : this.P0.get(r).keySet())
+			for (ParamActualRole ranges : this.P0.get(r).keySet())
 			{
-				EGraph g = builder.build(P0.get(r).get(ranges));
-				Map<Set<ParamRange>, EGraph> tmp = this.E0.get(r);
+				EGraph g = builder.build(this.P0.get(r).get(ranges));
+				//Map<Set<ParamRange>, EGraph> tmp = this.E0.get(r);
+				Map<ParamActualRole, EGraph> tmp = this.E0.get(r);
 				if (tmp == null)
 				{
 					tmp = new HashMap<>();
@@ -261,7 +272,9 @@ public class ParamCommandLine extends CommandLine
 				}
 				tmp.put(ranges, g);
 
-				job.debugPrintln("\n[param-core] Built endpoint graph for " + r + " for " + ranges + ":\n" + g.toDot());
+				job.debugPrintln("\n[param-core] Built endpoint graph for " 
+						//+ r + " for "
+						+ ranges + ":\n" + g.toDot());
 			}
 		}
 				
@@ -289,7 +302,12 @@ public class ParamCommandLine extends CommandLine
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
-	private Map<Role, Set<Set<ParamRange>>> getProtoRoles(ParamJob job, ParamCoreGType gt)
+	
+	//..HERE FIXME ActualParam -- ParamRange is now already a Set
+	
+	private //Map<Role, Set<Set<ParamRange>>> 
+			Map<Role, Set<ParamActualRole>>
+			getProtoRoles(ParamJob job, ParamCoreGType gt)
 	{
 		Set<ParamRole> prs = gt.getParamRoles();
 		
@@ -310,7 +328,8 @@ public class ParamCommandLine extends CommandLine
 				ParamRole next = i.next();
 				i.remove();
 				Set<ParamRange> range = new HashSet<>();
-				range.add(next.range);
+				//range.add(next.range);
+				range.add(next.ranges.iterator().next());
 				if (!tmp.contains(next))
 				{
 					tmp.addAll(tmp.stream().map(t -> 
@@ -325,7 +344,8 @@ public class ParamCommandLine extends CommandLine
 			}
 		}
 		
-		Map<Role, Set<Set<ParamRange>>> protoRoles = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
+		//Map<Role, Set<Set<ParamRange>>> protoRoles = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
+		Map<Role, Set<ParamActualRole>> protoRoles = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
 		for (Role r : powersets.keySet())
 		{
 			Set<Set<ParamRange>> powset = powersets.get(r);
@@ -340,8 +360,8 @@ public class ParamCommandLine extends CommandLine
 
 				if (cand.size() > 0)
 				{
-					z3 += cand.stream().map(c -> "(and (>= id " + c.start + ") (<= id " + c.end + ")"
-								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start + " " + c.end + ")" : "")
+					z3 += cand.stream().map(c -> "(and (>= id " + c.start.toSmt2Formula() + ") (<= id " + c.end.toSmt2Formula() + ")"
+								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
 								+ ")")
 							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 				}
@@ -352,8 +372,8 @@ public class ParamCommandLine extends CommandLine
 					{
 						z3 = "(and " + z3 + " ";
 					}
-					z3 += coset.stream().map(c -> "(and (not (and (>= id " + c.start + ") (<= id " + c.end + ")))"
-								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start + " " + c.end + ")" : "")
+					z3 += coset.stream().map(c -> "(and (not (and (>= id " + c.start.toSmt2Formula() + ") (<= id " + c.end.toSmt2Formula() + ")))"
+								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
 								+ ")")
 							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 					if (cand.size() > 0)
@@ -362,8 +382,10 @@ public class ParamCommandLine extends CommandLine
 					}
 				}
 					
-				Set<ParamRoleParam> actuals = cand.stream().flatMap(c -> c.getActualParams().stream()).collect(Collectors.toSet());
-				actuals.addAll(coset.stream().flatMap(c -> c.getActualParams().stream()).collect(Collectors.toSet()));
+				//Set<ParamRoleParam> actuals
+				Set<ParamIndexVar> actuals
+						= cand.stream().flatMap(c -> c.getVars().stream()).collect(Collectors.toSet());
+				actuals.addAll(coset.stream().flatMap(c -> c.getVars().stream()).collect(Collectors.toSet()));
 				//if (!actuals.isEmpty())
 				{
 					z3 = "(exists ((id Int) "
@@ -378,9 +400,10 @@ public class ParamCommandLine extends CommandLine
 				job.debugPrintln("[param-core] Ranges co-set: " + coset);
 				job.debugPrintln("[param-core] Running Z3 on:\n" + z3);
 				
-				if (Z3Wrapper.checkSat(job, gpd, z3))
+				if (Z3Wrapper.checkSat(job, this.gpd, z3))
 				{
-					protoRoles.get(r).add(cand);
+					//protoRoles.get(r).add(cand);
+					protoRoles.get(r).add(new ParamActualRole(r.toString(), cand, coset));
 				}
 			}
 		}
@@ -411,7 +434,8 @@ public class ParamCommandLine extends CommandLine
 			{
 				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
 				String png = args[i+1];
-				for (Entry<Set<ParamRange>, EGraph> e : this.E0.get(role).entrySet())
+				//for (Entry<Set<ParamRange>, EGraph> e : this.E0.get(role).entrySet())
+				for (Entry<ParamActualRole, EGraph> e : this.E0.get(role).entrySet())
 				{
 					String out = e.getValue().init.toDot();
 					runDot(out, png);

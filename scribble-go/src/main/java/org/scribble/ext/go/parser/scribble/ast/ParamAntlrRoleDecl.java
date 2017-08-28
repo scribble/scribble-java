@@ -7,8 +7,8 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.ParamAstFactory;
-import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
-import org.scribble.ext.go.parser.scribble.ast.name.ParamAntlrSimpleName;
+import org.scribble.ext.go.type.index.ParamIndexFactory;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 
@@ -22,8 +22,10 @@ public class ParamAntlrRoleDecl
 	public static RoleDecl parseParamRoleDecl(AntlrToScribParser parser, CommonTree root, ParamAstFactory af)
 	{
 		RoleNode name = AntlrSimpleName.toRoleNode(getNameChild(root), af);
-		List<ParamRoleParamNode> params = getParamChildren(root)
-				.stream().map(p -> ParamAntlrSimpleName.toParamRoleParamNode(p, af)).collect(Collectors.toList());
+		/*List<ParamRoleParamNode> params = getParamChildren(root)
+				.stream().map(p -> ParamAntlrSimpleName.toParamRoleParamNode(p, af)).collect(Collectors.toList());*/
+		List<ParamIndexVar> params = getParamChildren(root)
+				.stream().map(p -> ParamIndexFactory.ParamIntVar(p.getText())).collect(Collectors.toList());
 		return af.ParamRoleDecl(root, name, params);
 	}
 

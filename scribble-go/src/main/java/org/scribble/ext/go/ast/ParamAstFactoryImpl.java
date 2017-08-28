@@ -5,19 +5,21 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.name.NameNode;
+import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.RoleDeclDel;
 import org.scribble.del.global.GMessageTransferDel;
+import org.scribble.ext.go.ast.global.ParamGChoice;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
-import org.scribble.ext.go.ast.name.simple.ParamRoleParamNode;
-import org.scribble.ext.go.type.kind.ParamRoleParamKind;
-import org.scribble.type.kind.Kind;
+import org.scribble.ext.go.del.global.ParamGChoiceDel;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 
 
 public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFactory
 {
+	
 	
 	// Instantiating existing node classes with new dels
 
@@ -122,7 +124,7 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 	}* /
 	
 	
-	// Returning new node classes in place of existing
+	// Returning new node classes in place of existing -- FIXME: do for GMessageTransfer and GChoice
 
 	// Still used by parsing for empty annotation/assertion nodes -- but we return an Assrt node
 	// Easier to make all global as Assrt nodes, to avoid cast checks in, e.g., AssrtGProtocolDeclDel::leaveProjection (for GProtocolHeader), and so all projections will be Assrt kinds only
@@ -182,7 +184,8 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 	// Explicitly creating new Assrt nodes
 
 	@Override
-	public ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamRoleParamNode> params)
+	//public ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamRoleParamNode> params)
+	public ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamIndexVar> params)
 	{
 		ParamRoleDecl rd = new ParamRoleDecl(source, namenode, params);
 		rd = del(rd, new RoleDeclDel());
@@ -191,7 +194,8 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 
 	@Override
 	public ParamGCrossMessageTransfer ParamGCrossMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest,
-			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			ParamIndexExpr srcRangeStart, ParamIndexExpr srcRangeEnd, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd)
 	{
 		ParamGCrossMessageTransfer mt = new ParamGCrossMessageTransfer(source, src, msg, dest,
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
@@ -201,7 +205,8 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 
 	@Override
 	public ParamGDotMessageTransfer ParamGDotMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest,
-			ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
+			ParamIndexExpr srcRangeStart, ParamIndexExpr srcRangeEnd, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd)
 	{
 		ParamGDotMessageTransfer mt = new ParamGDotMessageTransfer(source, src, msg, dest,
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
@@ -210,6 +215,14 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 	}
 	
 	@Override
+	public ParamGChoice ParamGChoice(CommonTree source, RoleNode subj, ParamIndexExpr expr, List<GProtocolBlock> blocks)
+	{
+		ParamGChoice gc = new ParamGChoice(source, subj, expr, blocks);
+		gc = del(gc, new ParamGChoiceDel());
+		return gc;
+	}
+	
+	/*@Override
 	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier)
 	{
 		NameNode<? extends Kind> snn = null;
@@ -224,5 +237,5 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 		{
 			return super.SimpleNameNode(source, kind, identifier);
 		}
-	}
+	}*/
 }

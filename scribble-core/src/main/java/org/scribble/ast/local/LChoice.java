@@ -77,7 +77,7 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	
 	private static List<LProtocolBlock> castBlocks(List<? extends ProtocolBlock<Local>> blocks)
 	{
-		return blocks.stream().map((b) -> (LProtocolBlock) b).collect(Collectors.toList());
+		return blocks.stream().map(b -> (LProtocolBlock) b).collect(Collectors.toList());
 	}
 	
 	@Override

@@ -5,12 +5,12 @@ import java.util.Set;
 
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreRecVar;
-import org.scribble.ext.go.core.ast.local.ParamCoreLRecVar;
-import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
+import org.scribble.ext.go.core.ast.local.ParamCoreLType;
+import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
-import org.scribble.type.name.Role;
 
 	
 public class ParamCoreGRecVar extends ParamCoreRecVar<Global> implements ParamCoreGType
@@ -27,7 +27,8 @@ public class ParamCoreGRecVar extends ParamCoreRecVar<Global> implements ParamCo
 	}
 
 	@Override
-	public ParamCoreLRecVar project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges)
+	//public ParamCoreLRecVar project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges)
+	public ParamCoreLType project(ParamCoreAstFactory af, ParamActualRole subj) throws ParamCoreSyntaxException
 	{
 		return af.ParamCoreLRecVar(this.recvar);
 	}

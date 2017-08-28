@@ -8,6 +8,7 @@ import org.scribble.ext.go.type.name.ParamRoleParam;
 
 
 // Currently used for both "actual params" and int literals
+@Deprecated
 public class ParamRoleParamNode extends SimpleNameNode<ParamRoleParamKind>
 {
 	public ParamRoleParamNode(CommonTree source, String identifier)

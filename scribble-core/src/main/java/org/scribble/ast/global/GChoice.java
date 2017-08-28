@@ -107,15 +107,8 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 		return castBlocks(super.getBlocks());
 	}
 	
-	private static List<GProtocolBlock> castBlocks(List<? extends ProtocolBlock<Global>> blocks)
+	protected static List<GProtocolBlock> castBlocks(List<? extends ProtocolBlock<Global>> blocks)
 	{
-		return blocks.stream().map((b) -> (GProtocolBlock) b).collect(Collectors.toList());
+		return blocks.stream().map(b -> (GProtocolBlock) b).collect(Collectors.toList());
 	}
-
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GCompoundInteractionNode.super.getKind();
-	}*/
 }
