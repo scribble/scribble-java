@@ -4,6 +4,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ScribNode;
 import org.scribble.ext.go.ast.ParamAstFactory;
+import org.scribble.ext.go.parser.scribble.ast.ParamAntlrGChoice;
 import org.scribble.ext.go.parser.scribble.ast.ParamAntlrRoleDecl;
 import org.scribble.ext.go.parser.scribble.ast.global.ParamAntlrGCrossMessageTransfer;
 import org.scribble.ext.go.parser.scribble.ast.global.ParamAntlrGDotMessageTransfer;
@@ -16,6 +17,7 @@ public class ParamAntlrToScribParser extends AntlrToScribParser
 	public static final String PARAM_ROLEDECL_NODE_TYPE = "PARAM_ROLEDECL";    
 	public static final String PARAM_GLOBALCROSSMESSAGETRANSFER_NODE_TYPE = "PARAM_GLOBALCROSSMESSAGETRANSFER";
 	public static final String PARAM_GLOBALDOTMESSAGETRANSFER_NODE_TYPE = "PARAM_GLOBALDOTMESSAGETRANSFER";
+	public static final String PARAM_GLOBALCHOICE_NODE_TYPE = "PARAM_GLOBALCHOICE";
 
 	public ParamAntlrToScribParser()
 	{
@@ -36,6 +38,8 @@ public class ParamAntlrToScribParser extends AntlrToScribParser
 				return ParamAntlrGCrossMessageTransfer.parseParamGCrossMessageTransfer(this, ct, aaf);
 			case PARAM_GLOBALDOTMESSAGETRANSFER_NODE_TYPE:
 				return ParamAntlrGDotMessageTransfer.parseParamGDotMessageTransfer(this, ct, aaf);
+			case PARAM_GLOBALCHOICE_NODE_TYPE:
+				return ParamAntlrGChoice.parseParamGChoice(this, ct, aaf);
 
 			default: return super.parse(ct, af);
 		}

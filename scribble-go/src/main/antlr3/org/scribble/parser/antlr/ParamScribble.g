@@ -169,10 +169,11 @@ tokens
 	LOCALRECEIVE = 'local-receive';*/
 
 
-	PARAM_BININDEXEXPR = 'PARAM_BININDEXEXPR';
+	PARAM_BININDEXEXPR = 'PARAM_BININDEXEXPR';  // FIXME: rename bin part
 	PARAM_ROLEDECL = 'PARAM_ROLEDECL';
 	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
 	PARAM_GLOBALDOTMESSAGETRANSFER = 'PARAM_GLOBALDOTMESSAGETRANSFER';
+	PARAM_GLOBALCHOICE = 'PARAM_GLOBALCHOICE';
 }
 
 
@@ -746,6 +747,10 @@ globalchoice:
 	CHOICE_KW AT_KW rolename globalprotocolblock (OR_KW globalprotocolblock)*
 ->
 	^(GLOBALCHOICE rolename globalprotocolblock+)
+|
+	CHOICE_KW AT_KW rolename '[' paramindexexpr ']' globalprotocolblock (OR_KW globalprotocolblock)*
+->
+	^(PARAM_GLOBALCHOICE rolename paramindexexpr globalprotocolblock+)
 ;
 
 

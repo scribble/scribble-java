@@ -8,7 +8,7 @@
 module assrt.tmp.ParamTest;
 
 
-//type <go> "int" from "..." as int;
+type <go> "int" from "..." as int;
 //type <go> "string" from "..." as string;
 
 
@@ -26,7 +26,19 @@ module assrt.tmp.ParamTest;
 */
 
 
-//*/
+global protocol Proto1(role A, role B(n))
+{
+	choice at A[1]
+	{
+		1(int) from A[1..1] to B[1..n];
+	}	
+	or
+	{
+		2(int) from A[1..1] to B[1..n];
+	}	
+}
+
+/*/
 global protocol Proto1(role A(m,n), role B(m,n))
 {
 	1() from A[1..1] to B[1..n];

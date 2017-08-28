@@ -5,17 +5,21 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
+import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.RoleDeclDel;
 import org.scribble.del.global.GMessageTransferDel;
+import org.scribble.ext.go.ast.global.ParamGChoice;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
+import org.scribble.ext.go.del.global.ParamGChoiceDel;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 
 
 public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFactory
 {
+	
 	
 	// Instantiating existing node classes with new dels
 
@@ -120,7 +124,7 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 	}* /
 	
 	
-	// Returning new node classes in place of existing
+	// Returning new node classes in place of existing -- FIXME: do for GMessageTransfer and GChoice
 
 	// Still used by parsing for empty annotation/assertion nodes -- but we return an Assrt node
 	// Easier to make all global as Assrt nodes, to avoid cast checks in, e.g., AssrtGProtocolDeclDel::leaveProjection (for GProtocolHeader), and so all projections will be Assrt kinds only
@@ -208,6 +212,14 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
 		mt = del(mt, new GMessageTransferDel());  // FIXME
 		return mt;
+	}
+	
+	@Override
+	public ParamGChoice ParamGChoice(CommonTree source, RoleNode subj, ParamIndexExpr expr, List<GProtocolBlock> blocks)
+	{
+		ParamGChoice gc = new ParamGChoice(source, subj, expr, blocks);
+		gc = del(gc, new ParamGChoiceDel());
+		return gc;
 	}
 	
 	/*@Override

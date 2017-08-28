@@ -8,13 +8,13 @@ type <go> "int" from "..." as int;
 
 
 //*
-global protocol Proto1(role A(k), role B(k))
+global protocol Proto1(role A(k), role B(k))  // FIXME: role param WF
 {
-	choice at A  //[1..1]  // FIXME
+	choice at A[1]  // FIXME: role index WF?
 	{
 		m1(int) dot A[1..1] to B[1..k-1];
 		m1(int) dot B[1..k] to A[1..1];
-		do Proto1(A, B);  // FIXME
+		do Proto1(A, B);  // FIXME: role params?
 	}
 	or
 	{

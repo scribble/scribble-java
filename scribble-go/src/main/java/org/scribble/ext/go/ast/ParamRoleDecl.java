@@ -21,7 +21,7 @@ public class ParamRoleDecl extends RoleDecl
 	public final List<ParamIndexVar> params;
 	
 	//public ParamRoleDecl(CommonTree source, RoleNode name, List<ParamRoleParamNode> params)
-	public ParamRoleDecl(CommonTree source, RoleNode name, List<ParamIndexVar> params)
+	public ParamRoleDecl(CommonTree source, RoleNode name, List<ParamIndexVar> params)  // Separating params from base RoleNode better for subprotos?
 	{
 		super(source, name);
 		this.params = Collections.unmodifiableList(params);
