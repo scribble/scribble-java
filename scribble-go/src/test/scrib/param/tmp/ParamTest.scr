@@ -23,6 +23,15 @@ type <go> "int" from "..." as int;
 
 - how does prev pabble treat "actual roles"? e.g., pipeline
 - how does prev pabble do projection wrt. arbitrary role ranges?
+
+
+vs. pabble
+- projection (distribution)
+- type generation vs. code generation (related to above, heavyweight code generation needed because not fully projected)
+
+message passing
+- abstract transport -- shared mem, TCP -- integrated
+- domain flexibility -- parallel algs, Web services -- shared parameterised abstraction, concrete transport independence
 */
 
 
