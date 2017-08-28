@@ -1,6 +1,8 @@
 module param.cgo18.AllToAll;
 
+type <go> int from "runtime" as int;
+
 global protocol P(role A(N), role B(M))
 {
-  Msg() from A[1..N] to B[1..M];
+  Msg(int) from A[1..N] to B[1..M];
 }
