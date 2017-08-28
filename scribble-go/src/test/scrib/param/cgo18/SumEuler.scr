@@ -1,0 +1,17 @@
+//Raymond@HZHL3 ~/code/eclipse/scribble/github.com/rhu1-go/scribble-java
+//$ bin/scribblec-go.sh -ip scribble-go/src/test/scrib/ -d scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/cgo18/SumEuler.scr -param Proto1
+
+module param.cgo18.SumEuler;
+
+
+type <go> "int" from "..." as int;
+type <go> "int[]" from "..." as intarray;
+
+
+//* // cf. ScatterGather.scr
+global protocol Proto1(role M(n), role W(n))
+{
+	1(intarray) from M[1..1] to W[1..n];
+	2(int)      from W[1..n] to M[1..1];
+}
+//*/

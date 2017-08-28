@@ -32,7 +32,11 @@ public class ParamRole extends Role
 	@Override
 	public String toString()
 	{
-		String rs = "{" + this.ranges.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
+		String rs = this.ranges.stream().map(Object::toString).collect(Collectors.joining(", "));
+		if (this.ranges.size() > 1)
+		{
+			rs = "{" + rs + "}";
+		}
 		return super.toString() + rs;
 	}
 	
