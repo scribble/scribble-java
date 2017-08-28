@@ -1,0 +1,27 @@
+//Raymond@HZHL3 ~/code/eclipse/scribble/github.com/rhu1-go/scribble-java
+//$ bin/scribblec-go.sh -ip scribble-go/src/test/scrib/ -d scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/cgo18/SumEuler.scr -param Proto1
+
+module param.cgo18.MergeSort;
+
+
+type <go> "int" from "..." as int;
+type <go> "int[]" from "..." as intarray;
+
+
+//*
+global protocol Proto1(role M(i, j), role W(i, j))
+{
+	/* // ??
+	M --> W[0][1..n] : <[] int>
+	forall (i < log n),
+		 forall (j < i),
+				 W[i][j*2] --> W[i+1][j] . W[i][j*2+1] --> W[i+1][j]
+	W[log n][0] --> M
+	*/
+	
+	// TODO	
+	1(intarray) from M[1..1] to W[0..i*j];
+	2()         dot  W[...]  to W[...];
+	3()         from W[...]  to M[1..1];
+}
+//*/
