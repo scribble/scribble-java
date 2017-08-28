@@ -13,9 +13,9 @@ global protocol Proto1(role M(n), role W(n))
 {
   Data(int, int) from M[1..1] to W[1..n];
   Data(vec)      from M[1..1] to W[1..n];
-  Data(vec)      from W[1..n] to M[1..1]; // here master-workers compute x
+  Data(vec)      from W[1..n] to M[1..1];  // here master-workers compute x
   Data(vec)      from M[1..1] to W[1..n];
-  Data(vec)      from W[1..n] to M[1..1]; // here master-workers compute v
+  Data(vec)      from W[1..n] to M[1..1];  // here master-workers compute v
   do Proto1(M, W);
 }
 //*/
