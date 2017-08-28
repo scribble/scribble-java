@@ -1,6 +1,6 @@
 module param.cgo18.OneToOne;
 
-type <go> int from "runtime" as int;
+type <go> "int" from "runtime" as int;
 
 global protocol P(role A, role B)
 {
