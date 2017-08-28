@@ -1,7 +1,7 @@
 //Raymond@HZHL3 ~/code/eclipse/scribble/github.com/rhu1-go/scribble-java
 //$ bin/scribblec-go.sh -ip scribble-go/src/test/scrib/ -d scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/cgo18/ScatterGather.scr -param Proto1 -param-fsm B
 
-module assrt.cg018.ScatterGather;
+module param.cgo18.ScatterGather;
 
 
 type <go> "int" from "..." as int;

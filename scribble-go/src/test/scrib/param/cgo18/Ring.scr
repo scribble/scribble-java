@@ -1,20 +1,20 @@
 //Raymond@HZHL3 ~/code/eclipse/scribble/github.com/rhu1-go/scribble-java
 //$ bin/scribblec-go.sh -ip scribble-go/src/test/scrib/ -d scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/cgo18/Ring.scr -param Proto1
 
-module assrt.cg018.Ring;
+module param.cgo18.Ring;
 
 
 type <go> "int" from "..." as int;
 
 
 //*
-global protocol Proto1(role B(k))  // FIXME: role param WF
+global protocol Proto1(role B(k))  // FIXME: role param WF -- params only for root protos?
 {
 	choice at B[1]  // FIXME: role index WF?
 	{
 		m1(int) dot B[1..k-1] to B[2..k];  // FIXME: range-sensitive role enabling
 		m1(int) dot B[k..k] to B[1..1];
-		do Proto1(B);  // FIXME: role params?
+		do Proto1(B);  // FIXME: role params? or disallow role permuting?
 	}
 	or
 	{

@@ -22,7 +22,7 @@ public class ParamActualRole extends ParamRole
 	@Override
 	public String toString()
 	{
-		String rs2 = "{" + this.coranges.stream().map(r -> r.toString()).collect(Collectors.joining(", ")) + "}";
+		String rs2 = "{" + this.coranges.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
 		return super.toString() + rs2;
 	}
 	
