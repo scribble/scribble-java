@@ -13,6 +13,7 @@ import org.scribble.ext.go.ast.global.ParamGChoice;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
 import org.scribble.ext.go.del.global.ParamGChoiceDel;
+import org.scribble.ext.go.del.global.ParamGMessageTransferDel;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 
@@ -210,7 +211,7 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 	{
 		ParamGDotMessageTransfer mt = new ParamGDotMessageTransfer(source, src, msg, dest,
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
-		mt = del(mt, new GMessageTransferDel());  // FIXME
+		mt = del(mt, new ParamGMessageTransferDel());  // FIXME: parameterised self connection check
 		return mt;
 	}
 	

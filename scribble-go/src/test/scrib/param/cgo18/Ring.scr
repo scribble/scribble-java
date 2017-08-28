@@ -8,18 +8,18 @@ type <go> "int" from "..." as int;
 
 
 //*
-global protocol Proto1(role A(k), role B(k))  // FIXME: role param WF
+global protocol Proto1(role B(k))  // FIXME: role param WF
 {
-	choice at A[1]  // FIXME: role index WF?
+	choice at B[1]  // FIXME: role index WF?
 	{
-		m1(int) dot A[1..1] to B[1..k-1];
-		m1(int) dot B[1..k] to A[1..1];
-		do Proto1(A, B);  // FIXME: role params?
+		m1(int) dot B[1..k-1] to B[1..k];  // FIXME: range-sensitive role enabling
+		m1(int) dot B[k..k] to B[1..1];
+		do Proto1(B);  // FIXME: role params?
 	}
 	or
 	{
-		m2(int) dot A[1..1] to B[1..k-1];
-		m2(int) dot B[1..k] to A[1..1];
+		m2(int) dot B[1..k-1] to B[1..k];
+		m2(int) dot B[k..k] to B[1..1];
 	}
 }
 //*/
