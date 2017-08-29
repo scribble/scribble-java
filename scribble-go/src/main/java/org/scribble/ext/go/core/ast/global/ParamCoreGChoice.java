@@ -65,22 +65,13 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		
 		// "Simple" cases
 		//if (this.src.getName().equals(r))
-		if (this.src.getName().equals(subj.getName()))
+		if (this.src.getName().equals(subj.getName()) && subj.ranges.contains(this.src.ranges.iterator().next()))  // FIXME: factor out?
 		{
-			//return (ranges.contains(this.src.ranges.iterator().next()))
-			return (subj.ranges.contains(this.src.ranges.iterator().next()))
-					? af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.SEND_ALL, projs)
-					//: merge(af, r, ranges, projs);
-					: merge(af, subj, projs);
+			return af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.SEND_ALL, projs);
 		}
-		//else if (this.dest.getName().equals(r))
-		else if (this.dest.getName().equals(subj.getName()))
+		else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.ranges.iterator().next()))
 		{
-			//return (ranges.contains(this.dest.ranges.iterator().next()))
-			return (subj.ranges.contains(this.dest.ranges.iterator().next()))
-					? af.ParamCoreLChoice(this.src, ParamCoreLActionKind.RECEIVE_ALL, projs)
-					//: merge(af, r, ranges, projs);
-					: merge(af, subj, projs);
+			return af.ParamCoreLChoice(this.src, ParamCoreLActionKind.RECEIVE_ALL, projs);
 		}
 		
 		// src name != dest name

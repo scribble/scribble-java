@@ -42,7 +42,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		List<Role> dests = gmt.getDestinationRoles();
 		if (dests.contains(src))
 		{
-			throw new ScribbleException(gmt.getSource(), "[TODO] Self connections not supported: " + gmt);  // Would currently be subsumed by unconnected check
+			throw new ScribbleException(gmt.getSource(), "[TODO] Self communications not supported: " + gmt);  // Would currently be subsumed by unconnected check
 		}
 		return gmt;
 	}
