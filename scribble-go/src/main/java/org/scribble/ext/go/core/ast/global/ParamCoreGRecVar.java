@@ -3,12 +3,14 @@ package org.scribble.ext.go.core.ast.global;
 import java.util.Collections;
 import java.util.Set;
 
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreRecVar;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.main.ParamJob;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 
@@ -18,6 +20,12 @@ public class ParamCoreGRecVar extends ParamCoreRecVar<Global> implements ParamCo
 	public ParamCoreGRecVar(RecVar var)
 	{
 		super(var);
+	}
+	
+	@Override
+	public boolean isWellFormed(ParamJob job, GProtocolDecl gpd)
+	{
+		return true;
 	}
 	
 	@Override

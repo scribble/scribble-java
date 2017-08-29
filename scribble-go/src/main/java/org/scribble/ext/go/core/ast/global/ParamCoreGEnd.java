@@ -3,12 +3,14 @@ package org.scribble.ext.go.core.ast.global;
 import java.util.Collections;
 import java.util.Set;
 
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreEnd;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.main.ParamJob;
 import org.scribble.type.kind.Global;
 
 
@@ -19,6 +21,12 @@ public class ParamCoreGEnd extends ParamCoreEnd<Global> implements ParamCoreGTyp
 	private ParamCoreGEnd()
 	{
 		
+	}
+	
+	@Override
+	public boolean isWellFormed(ParamJob job, GProtocolDecl gpd)
+	{
+		return true;
 	}
 	
 	@Override

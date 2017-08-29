@@ -23,6 +23,15 @@ public class ParamRole extends Role
 		this.ranges = Collections.unmodifiableSet(ranges);
 	}
 	
+	public ParamRange getParsedRange()
+	{
+		if (this.ranges.size() > 1)
+		{
+			throw new RuntimeException("[param-core] Shouldn't get in here: " + this.ranges);
+		}
+		return this.ranges.iterator().next();
+	}
+	
 	// FIXME
 	public Role getName()
 	{

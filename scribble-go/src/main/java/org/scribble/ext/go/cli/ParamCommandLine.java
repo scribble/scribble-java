@@ -228,6 +228,11 @@ public class ParamCommandLine extends CommandLine
 		
 		job.debugPrintln("\n[param-core] Translated:\n  " + gt);
 		
+		if (!gt.isWellFormed(job, gpd))
+		{
+			throw new ParamException("[param-core] Global type not well-formed:\n  " + gt);
+		}
+
 		//Map<Role, Set<Set<ParamRange>>> 
 		Map<Role, Set<ParamActualRole>> 
 				protoRoles = getProtoRoles(job, gt);
