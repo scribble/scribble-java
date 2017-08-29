@@ -35,10 +35,12 @@ message passing
 */
 
 
+/*
 global protocol Proto1(role A(n, m))
 {
 	1() from A[1..n-1] to A[2..2];  // Currently bad range interval under n>=1
 }
+//*/
 
 
 /*
@@ -52,13 +54,16 @@ global protocol Proto1(role A(n, m))
 	//1() from A[1..n+m] to B[1..1];  // OK
 
 	//1() from A[1..n+m] to A[1..1];  // Bad, overlapping
+	
+	1() from A[1..1] to A[n..n+1];  // Bad
+	//1() from A[1..1] to A[n+1..n+2];  // OK
 }
 //*/
 
 
-/*
-global protocol Proto1(role A(n, m))
-//global protocol Proto1(role A(n, m), role B(n, m))
+//*
+//global protocol Proto1(role A(n, m))
+global protocol Proto1(role A(n, m), role B(n, m))
 {
 	//1() dot A[1..n] to A[1..n];  // Bad -- ruled out by self-comm
 
@@ -66,10 +71,11 @@ global protocol Proto1(role A(n, m))
 
 	//1() dot A[1..n] to A[1+1..n+2];  // Bad
 	
-	1() dot A[1..1+n] to A[m..m+n];  // Bad
+	//1() dot A[1..1+n] to A[m..m+n];  // Bad
 	//1() dot A[1..1+n] to A[2..2+n];  // OK
 	
 	//1() dot A[1..1+n] to B[m..m+n];  // OK
+	1() dot A[1..1+n] to B[1..1+m];  // OK
 }
 //*/
 
