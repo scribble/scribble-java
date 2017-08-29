@@ -26,6 +26,7 @@ public class ParamAntlrIndexExpr
 				{
 					case "+": op = ParamBinIndexExpr.Op.Add;  break;
 					case "-": op = ParamBinIndexExpr.Op.Subt; break;
+					case "*": op = ParamBinIndexExpr.Op.Mult; break;
 					default:  throw new RuntimeException("[param] Shouldn't get in here: " + ct);
 				}
 				return ParamIndexFactory.ParamBinIndexExpr(op, left, right);
