@@ -91,6 +91,7 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 				String smt2 = "(assert (exists ((foobartmp Int)";  // FIXME: factor out
 				smt2 += vars.stream().map(v -> " (" + v.name + " Int)").collect(Collectors.joining(""));
 				smt2 += ") (and";
+				smt2 += vars.isEmpty() ? "" : vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""));  // FIXME: lower bound constant -- replace by global invariant
 				smt2 += Stream.of(srcRange, destRange)
 						.map(r -> " (>= foobartmp " + r.start.toSmt2Formula() + ") (<= foobartmp " + r.end.toSmt2Formula() + ")")
 						.collect(Collectors.joining());

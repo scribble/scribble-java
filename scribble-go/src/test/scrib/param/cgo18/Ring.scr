@@ -12,13 +12,17 @@ global protocol Proto1(role B(k))  // FIXME: role param WF -- params only for ro
 {
 	choice at B[1]  // FIXME: role index WF?
 	{
-		m1(int) dot B[1..k-1] to B[2..k];  // FIXME: k>2 global invariant  // FIXME: range-sensitive role enabling -- a Scribble-specific issue, choice subjs
+		//m1(int) dot B[1..k-1] to B[2..k];  // FIXME: k>2 global invariant  // FIXME: range-sensitive role enabling -- a Scribble-specific issue, choice subjs
+		m1(int) dot B[1..k] to B[2..k+1];
+
 		m1(int) dot B[k..k] to B[1..1];
 		do Proto1(B);  // FIXME: role params? or disallow role permuting?
 	}
 	or
 	{
-		m2(int) dot B[1..k-1] to B[2..k];
+		//m2(int) dot B[1..k-1] to B[2..k];
+		m2(int) dot B[1..k] to B[2..k+1];
+
 		m2(int) dot B[k..k] to B[1..1];
 	}
 }
