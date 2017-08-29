@@ -8,7 +8,6 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.RoleDeclDel;
-import org.scribble.del.global.GMessageTransferDel;
 import org.scribble.ext.go.ast.global.ParamGChoice;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
@@ -200,7 +199,7 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 	{
 		ParamGCrossMessageTransfer mt = new ParamGCrossMessageTransfer(source, src, msg, dest,
 				srcRangeStart, srcRangeEnd, destRangeStart, destRangeEnd);
-		mt = del(mt, new GMessageTransferDel());  // FIXME
+		mt = del(mt, new ParamGMessageTransferDel());  // FIXME: parameterised self connection check
 		return mt;
 	}
 

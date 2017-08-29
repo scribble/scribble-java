@@ -56,7 +56,7 @@ public class ParamCoreEGraphBuilder
 		}
 		else
 		{
-			throw new RuntimeException("[assrt-core] Shouldn't get in here: " + lt);
+			throw new RuntimeException("[param-core] Shouldn't get in here: " + lt);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class ParamCoreEGraphBuilder
 		}
 		else
 		{
-			throw new RuntimeException("[assrt-core] Shouldn't get in here: " + k);
+			throw new RuntimeException("[param-core] Shouldn't get in here: " + k);
 		}
 	}
 }
