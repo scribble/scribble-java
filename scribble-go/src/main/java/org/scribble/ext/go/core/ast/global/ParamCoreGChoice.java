@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreChoice;
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
@@ -15,7 +18,11 @@ import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.local.ParamCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamActualRole;
+import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.main.ParamJob;
+import org.scribble.ext.go.type.index.ParamIndexVar;
+import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.type.kind.Global;
 
 public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> implements ParamCoreGType
@@ -28,6 +35,98 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		super(dest, kind, cases);
 		this.src = src;
 		this.dest = dest;
+	}
+	
+	@Override
+	public boolean isWellFormed(ParamJob job, GProtocolDecl gpd)
+	{
+		// src range size=1 enforced by syntax
+		// Directed choice check by ParamCoreGProtocolDeclTranslator ensures dests are same
+		
+		ParamRange srcRange = src.getParsedRange();
+		ParamRange destRange = dest.getParsedRange();
+		Set<ParamIndexVar> vars = Stream.of(srcRange, destRange).flatMap(r -> r.getVars().stream()).collect(Collectors.toSet());
+		
+		/*// CHECKME: is range size>0 already ensured by syntax?
+		Function<ParamRange, String> foo1 = r -> 
+				  "(assert (exists ((foobartmp Int)"
+				+ vars.stream().map(v -> " (" + v.name + " Int)").collect(Collectors.joining(""))
+				+ ") (and"
+				+ " (>= foobartmp " + r.start.toSmt2Formula() + ") (<= foobartmp " + r.end.toSmt2Formula() + ")"  // FIXME: factor out with above
+				+ ")))";
+		Predicate<ParamRange> foo2 = r ->
+		{
+			String foo = foo1.apply(srcRange);
+
+			job.debugPrintln("\n[param-core] [WF] Checking non-empty ranges:\n  " + foo);
+
+			return Z3Wrapper.checkSat(job, gpd, foo);
+		};*/
+		Function<ParamRange, String> foo1 = r ->  // FIXME: factor out with above
+				  "(assert "
+				+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and (and")
+				+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
+				+ (vars.isEmpty() ? "" : ")")
+				+ " (> " + r.start.toSmt2Formula() + " " + r.end.toSmt2Formula() + ")"
+				+ (vars.isEmpty() ? "" : "))")
+				+ ")";
+		Predicate<ParamRange> foo2 = r ->
+		{
+			String foo = foo1.apply(r);
+
+			job.debugPrintln("\n[param-core] [WF] Checking WF range interval for " + r + ":\n  " + foo); 
+
+			return Z3Wrapper.checkSat(job, gpd, foo);
+		};
+		if (foo2.test(srcRange) || foo2.test(destRange))
+		{
+			return false;
+		}
+
+
+		if (this.src.getName().equals(this.dest.getName()))
+		{
+			if (this.kind == ParamCoreGActionKind.CROSS_TRANSFER)
+			{
+				String smt2 = "(assert (exists ((foobartmp Int)";  // FIXME: factor out
+				smt2 += vars.stream().map(v -> " (" + v.name + " Int)").collect(Collectors.joining(""));
+				smt2 += ") (and";
+				smt2 += Stream.of(srcRange, destRange)
+						.map(r -> " (>= foobartmp " + r.start.toSmt2Formula() + ") (<= foobartmp " + r.end.toSmt2Formula() + ")")
+						.collect(Collectors.joining());
+				smt2 += ")))";
+				
+				job.debugPrintln("\n[param-core] [WF] Checking non-overlapping ranges for " + this.src.getName() + ":\n  " + smt2);
+				
+				if (Z3Wrapper.checkSat(job, gpd, smt2))
+				{
+					return false;
+				}
+				// CHECKME: projection cases for rolename self-comm but non-overlapping intervals
+			}
+		}
+
+		if (this.kind == ParamCoreGActionKind.DOT_TRANSFER)
+		{
+			String smt2 = "(assert"
+					+ (vars.isEmpty() ? "" : " (forall (" + vars.stream().map(v -> "(" + v + " Int)").collect(Collectors.joining(" "))) + ") "
+					+ "(and (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") (- "
+							+ destRange.end.toSmt2Formula() + " " + destRange.start.toSmt2Formula() + "))"
+					+ (!this.src.getName().equals(this.dest.getName()) ? "" :
+						" (not (= " + srcRange.start.toSmt2Formula() + " " + destRange.start.toSmt2Formula() + "))")
+				  + ")"
+					+ (vars.isEmpty() ? "" : ")")
+					+ ")";
+			
+			job.debugPrintln("\n[param-core] [WF] Checking dot-range alignment between " + srcRange + " and " + destRange + ":\n  " + smt2);
+			
+			if (!Z3Wrapper.checkSat(job, gpd, smt2))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Override

@@ -152,7 +152,8 @@ public class ParamCoreGProtocolDeclTranslator
 			}
 			else if (!src.equals(tmp.src) || !dest.equals(tmp.dest))
 			{
-				throw new ParamCoreSyntaxException(gc.getSource(), "[param-core] Non-directed choice not supported: " + gc + ", " + src + ", " + tmp.src + ", " + dest + ", " + tmp.dest);
+				throw new ParamCoreSyntaxException(gc.getSource(),
+						"[param-core] Non-directed choice not supported: " + gc + ", " + src + ", " + tmp.src + ", " + dest + ", " + tmp.dest);
 			}
 			
 			// "Flatten" nested choices (already checked they are guarded) -- Scribble choice subjects ignored
@@ -161,7 +162,8 @@ public class ParamCoreGProtocolDeclTranslator
 				ParamCoreMessage k = e.getKey();
 				if (cases.keySet().stream().anyMatch(x -> x.op.equals(k.op)))
 				{
-					throw new ParamCoreSyntaxException(gc.getSource(), "[param-core] Non-deterministic actions not supported: " + k.op);
+					throw new ParamCoreSyntaxException(gc.getSource(),
+							"[param-core] Non-deterministic actions not supported: " + k.op);
 				}
 				cases.put(k, e.getValue());
 			}
