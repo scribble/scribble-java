@@ -679,7 +679,7 @@ globalmessagetransfer:
 ;*/
 	
 paramindexexpr:
-	unaryparamindexexpr (op=('+' | '-') unaryparamindexexpr)?
+	unaryparamindexexpr (op=('+' | '-' | '*') unaryparamindexexpr)?
 ->
 	^(PARAM_BININDEXEXPR unaryparamindexexpr $op? unaryparamindexexpr?)
 ;

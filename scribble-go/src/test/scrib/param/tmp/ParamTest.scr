@@ -35,10 +35,10 @@ message passing
 */
 
 
-/*
-global protocol Proto1(role A(n, m))
+//*
+global protocol Proto1(role A(n, m), role B(n, m))
 {
-	1() from A[1..n-1] to A[2..2];  // Currently bad range interval under n>=1
+	1() from A[1..1] to B[1..m*n];
 }
 //*/
 
@@ -61,7 +61,7 @@ global protocol Proto1(role A(n, m))
 //*/
 
 
-//*
+/*
 //global protocol Proto1(role A(n, m))
 global protocol Proto1(role A(n, m), role B(n, m))
 {
@@ -74,8 +74,8 @@ global protocol Proto1(role A(n, m), role B(n, m))
 	//1() dot A[1..1+n] to A[m..m+n];  // Bad
 	//1() dot A[1..1+n] to A[2..2+n];  // OK
 	
+	//1() dot A[1..1+n] to B[1..1+m];  // Bad
 	//1() dot A[1..1+n] to B[m..m+n];  // OK
-	1() dot A[1..1+n] to B[1..1+m];  // OK
 }
 //*/
 

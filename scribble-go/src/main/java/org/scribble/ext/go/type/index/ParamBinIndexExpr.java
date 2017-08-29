@@ -10,15 +10,17 @@ public class ParamBinIndexExpr extends ParamIndexExpr
 	public enum Op
 	{
 		Add,
-		Subt;
+		Subt,
+		Mult;
 		
 		@Override
 		public String toString()
 		{
 			switch (this)
 			{
-				case Add: return "+";
+				case Add:  return "+";
 				case Subt: return "-";
+				case Mult: return "*";
 				default: throw new RuntimeException("[param] Won't get in here: " + this);
 			}
 		}
@@ -45,6 +47,7 @@ public class ParamBinIndexExpr extends ParamIndexExpr
 		{
 			case Add:  op = "+"; break;
 			case Subt: op = "-"; break;
+			case Mult: op = "*"; break;
 			default:   throw new RuntimeException("[param] Shouldn't get in here: " + this.op);
 		}
 		return "(" + op + " " + left + " " + right + ")";
