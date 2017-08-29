@@ -40,8 +40,8 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	@Override
 	public boolean isWellFormed(ParamJob job, GProtocolDecl gpd)
 	{
-		// src range size=1 enforced by syntax
-		// Directed choice check by ParamCoreGProtocolDeclTranslator ensures dests are same
+		// src (i.e., choice subj) range size=1 for non-unary choices enforced by ParamScribble.g syntax
+		// Directed choice check by ParamCoreGProtocolDeclTranslator ensures all dests (including ranges) are (syntactically) the same
 		
 		ParamRange srcRange = src.getParsedRange();
 		ParamRange destRange = dest.getParsedRange();
