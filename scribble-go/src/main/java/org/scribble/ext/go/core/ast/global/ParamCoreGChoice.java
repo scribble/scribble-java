@@ -27,7 +27,7 @@ import org.scribble.type.kind.Global;
 
 public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> implements ParamCoreGType
 {
-	public final ParamRole src;   // Singleton -- no disconnect for now
+	public final ParamRole src;
 	public final ParamRole dest;  // this.dest == super.role -- arbitrary?
 
 	public ParamCoreGChoice(ParamRole src, ParamCoreGActionKind kind, ParamRole dest, Map<ParamCoreMessage, ParamCoreGType> cases)
@@ -84,6 +84,21 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		}
 
 
+		String bar = "(assert "
+				+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and ")
+				+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
+				+ "(not (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") 0))"
+				+ (vars.isEmpty() ? "" : "))")
+				+ ")";
+
+		job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subk for " + this.src + ":\n  " + bar); 
+
+		if (Z3Wrapper.checkSat(job, gpd, bar))
+		{
+			return false;
+		}
+		
+		
 		if (this.src.getName().equals(this.dest.getName()))
 		{
 			if (this.kind == ParamCoreGActionKind.CROSS_TRANSFER)
@@ -165,11 +180,11 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		
 		// "Simple" cases
 		//if (this.src.getName().equals(r))
-		if (this.src.getName().equals(subj.getName()) && subj.ranges.contains(this.src.ranges.iterator().next()))  // FIXME: factor out?
+		if (this.src.getName().equals(subj.getName()) && subj.ranges.contains(this.src.getParsedRange()))  // FIXME: factor out?
 		{
 			return af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.SEND_ALL, projs);
 		}
-		else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.ranges.iterator().next()))
+		else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.getParsedRange()))
 		{
 			return af.ParamCoreLChoice(this.src, ParamCoreLActionKind.RECEIVE_ALL, projs);
 		}
