@@ -35,6 +35,84 @@ message passing
 */
 
 
+
+global protocol Proto1(role A(n), role B(n))
+{
+	1() from A[1..1] to B[1..n];
+}
+
+
+
+
+
+
+
+
+
+/*// A=Auctioneer, B=Bidder
+global protocol Auction(role A(n), role B(n))
+{
+	bid(int) from B[1..n] to A;   // A[1..1]
+
+	do X(A, B);
+}
+
+// mu X
+aux global protocol X(role A, role B(n))
+{
+	choice at A
+	{	
+		highestbid(int) from A to B[1..n];	
+
+		specialchoice at B[i:1..n] 
+		{
+			bid(int) specialarrow B[i] to A;
+		}
+		or
+		{
+			skip(int) specialarrow B[i] to A;
+		}
+
+
+		for (i: 1..n)
+		{
+			choice at B[i]
+			{
+				bid(int) from B[i] to A;
+			}
+			or
+			{
+				skip(int) from B[i] to A;
+			}
+		}
+		//bidOrSkip(int) from B[1..n] to A;
+
+		do X(A, B);
+	}
+	or
+	{
+		winner() from A to B[1..n];
+	}
+}
+//*/
+
+
+	/*choice at B[1..n]
+	{
+		bid() fromto A;
+	}
+	or
+	{
+		skip() from B[1..n] to A;
+	}*/
+
+
+
+
+
+
+
+/*
 global protocol Proto1(role A(n), role B(n))
 {
 	/*bid() from B[1..n] to A[1..1];
@@ -64,7 +142,7 @@ global protocol Proto1(role A(n), role B(n))
 	for (i 1 .. N)
 	{
 		do MyBiddingSubproto(A, B[i]);
-	}*/
+	}* /
 	
 	choice at B[1..n]
 	{
