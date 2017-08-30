@@ -179,7 +179,7 @@ public class ParamCoreGMultiChoices extends ParamCoreChoice<ParamCoreGType, Glob
 		}
 		else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.getParsedRange()))
 		{
-			return af.ParamCoreLMultiChoices(this.src, ParamCoreLActionKind.RECEIVE_ALL, this.var, projs.keySet(), values.iterator().next());
+			return af.ParamCoreLMultiChoices(this.src, ParamCoreLActionKind.MULTICHOICES_RECEIVE_ALL, this.var, projs.keySet(), values.iterator().next());
 		}
 		
 		// src name != dest name

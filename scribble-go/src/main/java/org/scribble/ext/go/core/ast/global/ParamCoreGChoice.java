@@ -84,18 +84,21 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		}
 
 
-		String bar = "(assert "
-				+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and ")
-				+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
-				+ "(not (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") 0))"
-				+ (vars.isEmpty() ? "" : "))")
-				+ ")";
-
-		job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subject for " + this.src + ":\n  " + bar); 
-
-		if (Z3Wrapper.checkSat(job, gpd, bar))
+		if (this.cases.size() > 1)
 		{
-			return false;
+			String bar = "(assert "
+					+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and ")
+					+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
+					+ "(not (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") 0))"
+					+ (vars.isEmpty() ? "" : "))")
+					+ ")";
+
+			job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subject for " + this.src + ":\n  " + bar); 
+
+			if (Z3Wrapper.checkSat(job, gpd, bar))
+			{
+				return false;
+			}
 		}
 		
 		

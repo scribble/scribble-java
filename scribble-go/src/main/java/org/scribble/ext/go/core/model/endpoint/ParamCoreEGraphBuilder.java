@@ -100,6 +100,10 @@ public class ParamCoreEGraphBuilder
 		{
 			return ef.newParamCoreEReceive(r, a.op, a.pay);
 		}
+		else if (k.equals(ParamCoreLActionKind.MULTICHOICES_RECEIVE_ALL))
+		{
+			throw new RuntimeException("[param-core] TODO: " + k);
+		}
 		else
 		{
 			throw new RuntimeException("[param-core] Shouldn't get in here: " + k);
