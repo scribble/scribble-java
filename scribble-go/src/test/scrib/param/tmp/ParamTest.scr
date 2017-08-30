@@ -35,7 +35,54 @@ message passing
 */
 
 
-//*
+global protocol Proto1(role A(n), role B(n))
+{
+	/*bid() from B[1..n] to A[1..1];
+
+	...
+
+	bidorskip(x:int) from B[1..n] to A[1..1];
+	
+	choice at A[1]
+	{
+		highestbid() from A[1..1] to B[1..n];
+		do Proto1(A, B);
+	}
+	or
+	{
+
+		win() from A[1..1] to B[1..n];
+	}*/
+
+	
+	/*do MyBiddingSubproto(A, B);
+	do MyBiddingSubproto(A, C);
+	do MyBiddingSubproto(A, D);
+	...
+
+		
+	for (i 1 .. N)
+	{
+		do MyBiddingSubproto(A, B[i]);
+	}*/
+	
+	choice at B[1..n]
+	{
+		bid() from B[1..n] to A[1..1];
+	}
+	or
+	{
+		skip() from B[1..n] to A[1..1];
+	}
+
+	bidorskip(x:int) from B[1..n] to A[1..1];
+
+	G
+}
+
+
+
+/*
 global protocol Proto1(role A(n, m), role B(n, m))
 {
 	1() from A[1..1] to B[1..m*n];
@@ -99,7 +146,7 @@ global protocol Proto1(role A, role B)
 	choice at A[1]
 	{
 		1() from A[1..1] to B[1..1];
-		1() from A[1..1] to B[2..2];  // Bad if directed choice
+		1() from A[1..1] to B[2..2];  // Bad, non-directed choice
 	}
 	or
 	{
@@ -114,7 +161,7 @@ global protocol Proto1(role A, role B)
 {
 	choice at A[1]
 	{
-		1() from A[2..2] to B[1..1];  // FIXME: role-enabling
+		1() from A[2..2] to B[1..1];  // FIXME: role-enabling -- Scribble detail, also proto sig param decls
 	}
 }
 //*/
