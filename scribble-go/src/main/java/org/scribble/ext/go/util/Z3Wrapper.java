@@ -25,7 +25,7 @@ public class Z3Wrapper
 		try
 		{
 			ScribUtil.writeToFile(tmpName, smt2);
-			String[] res = ScribUtil.runProcess("Z3", tmpName);
+			String[] res = ScribUtil.runProcess("z3", tmpName);
 			String trim = res[0].trim();
 			if (trim.equals("sat"))  // FIXME: factor out
 			{
