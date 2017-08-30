@@ -9,6 +9,7 @@ import org.scribble.ext.go.core.ast.ParamCoreRecVar;
 import org.scribble.ext.go.core.ast.local.ParamCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.ParamCoreLChoice;
 import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
+import org.scribble.ext.go.core.ast.local.ParamCoreLMultiChoices;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRec;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamRole;
@@ -44,7 +45,14 @@ public class ParamCoreEGraphBuilder
 		{
 			ParamCoreLChoice lc = (ParamCoreLChoice) lt;
 			lc.cases.entrySet().stream().forEach(e ->
-				buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.kind, e.getKey(), e.getValue())
+				buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue())
+			);
+		}
+		else if (lt instanceof ParamCoreLMultiChoices)
+		{
+			ParamCoreLMultiChoices lc = (ParamCoreLMultiChoices) lt;
+			lc.cases.entrySet().stream().forEach(e ->  // FIXME: all conts are syntactically the same, so implicitly do the merge here?
+				buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue())
 			);
 		}
 		else if (lt instanceof ParamCoreLRec)
@@ -91,6 +99,10 @@ public class ParamCoreEGraphBuilder
 		else if (k.equals(ParamCoreLActionKind.RECEIVE_ALL))
 		{
 			return ef.newParamCoreEReceive(r, a.op, a.pay);
+		}
+		else if (k.equals(ParamCoreLActionKind.MULTICHOICES_RECEIVE_ALL))
+		{
+			throw new RuntimeException("[param-core] TODO: " + k);
 		}
 		else
 		{

@@ -16,20 +16,26 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.ext.go.ast.ParamAstFactory;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
-public class ParamGChoice extends GChoice
+public class ParamGMultiChoices extends GChoice
 {
-	public final ParamIndexExpr expr;
+	public final ParamIndexVar var;
+	public final ParamIndexExpr start;
+	public final ParamIndexExpr end;
 
-	public ParamGChoice(CommonTree source, RoleNode subj, ParamIndexExpr expr, List<GProtocolBlock> blocks)
+	public ParamGMultiChoices(CommonTree source, RoleNode subj, ParamIndexVar var,
+			ParamIndexExpr start, ParamIndexExpr end, List<GProtocolBlock> blocks)
 	{
 		super(source, subj, blocks);
-		this.expr = expr;
+		this.var = var;
+		this.start = start;
+		this.end = end;
 	}
 	
 	// Similar pattern to reconstruct
@@ -42,45 +48,46 @@ public class ParamGChoice extends GChoice
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new ParamGChoice(this.source, this.subj, this.expr, getBlocks());
+		return new ParamGMultiChoices(this.source, this.subj, this.var, this.start, this.end, getBlocks());
 	}
 	
 	@Override
-	public ParamGChoice clone(AstFactory af)
+	public ParamGMultiChoices clone(AstFactory af)
 	{
 		RoleNode subj = this.subj.clone(af);
 		List<GProtocolBlock> blocks = ScribUtil.cloneList(af, getBlocks());
-		return ((ParamAstFactory) af).ParamGChoice(this.source, subj, this.expr, blocks);
+		return ((ParamAstFactory) af).ParamGMultiChoices(this.source, subj, this.var, this.start, this.end, blocks);
 	}
 
 	@Override
-	public ParamGChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<Global>> blocks)
+	public ParamGMultiChoices reconstruct(RoleNode subj, List<? extends ProtocolBlock<Global>> blocks)
 	{
 		throw new RuntimeException("[param] Shouldn't get in here: " + this);
 	}
 
-	public ParamGChoice reconstruct(RoleNode subj, ParamIndexExpr expr, List<? extends ProtocolBlock<Global>> blocks)
+	public ParamGMultiChoices reconstruct(RoleNode subj, ParamIndexVar var,
+			ParamIndexExpr start, ParamIndexExpr end, List<? extends ProtocolBlock<Global>> blocks)
 	{
 		ScribDel del = del();
-		ParamGChoice gc = new ParamGChoice(this.source, subj, expr, castBlocks(blocks));
-		gc = (ParamGChoice) gc.del(del);
+		ParamGMultiChoices gc = new ParamGMultiChoices(this.source, subj, var, start, end, castBlocks(blocks));
+		gc = (ParamGMultiChoices) gc.del(del);
 		return gc;
 	}
 	
 	@Override
-	public ParamGChoice visitChildren(AstVisitor nv) throws ScribbleException
+	public ParamGMultiChoices visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		RoleNode subj = (RoleNode) visitChild(this.subj, nv);
 		List<GProtocolBlock> blocks = visitChildListWithClassEqualityCheck(this, getBlocks(), nv);
-		return reconstruct(subj, this.expr, blocks);
+		return reconstruct(subj, this.var, this.start, this.end, blocks);
 	}
 	
 	@Override
 	public String toString()
 	{
 		String sep = " " + Constants.OR_KW + " ";
-		return Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj
-				+ "[" + this.expr + "]"
+		return Constants.CHOICES_KW + " " + Constants.AT_KW + " " + this.subj
+				+ "[" + this.var + ":" + this.start + ".." + this.end + "]"
 				+ " " + getBlocks().stream().map(b -> b.toString()).collect(Collectors.joining(sep));
 	}
 }

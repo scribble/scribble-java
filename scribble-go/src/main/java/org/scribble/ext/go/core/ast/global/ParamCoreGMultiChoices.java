@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,19 +20,21 @@ import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.ParamJob;
 import org.scribble.ext.go.type.index.ParamIndexVar;
-import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.type.kind.Global;
 
-public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> implements ParamCoreGType
+public class ParamCoreGMultiChoices extends ParamCoreChoice<ParamCoreGType, Global> implements ParamCoreGType
 {
-	public final ParamRole src;  // "Singleton" -- checked by isWellFormed
+	public final ParamRole src;   // Cf. ParamCoreGChoice singleton src
 	public final ParamRole dest;  // this.dest == super.role -- arbitrary?
+	
+	public final ParamIndexVar var;
 
-	public ParamCoreGChoice(ParamRole src, ParamCoreGActionKind kind, ParamRole dest, Map<ParamCoreMessage, ParamCoreGType> cases)
+	public ParamCoreGMultiChoices(ParamRole src, ParamIndexVar var, ParamRole dest, Set<ParamCoreMessage> cases, ParamCoreGType cont)
 	{
-		super(dest, kind, cases);
+		super(dest, ParamCoreGActionKind.CROSS_TRANSFER, cases.stream().collect(Collectors.toMap(c -> c, c -> cont)));  // FIXME
 		this.src = src;
 		this.dest = dest;
+		this.var = var;
 	}
 	
 	@Override
@@ -43,25 +43,10 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		// src (i.e., choice subj) range size=1 for non-unary choices enforced by ParamScribble.g syntax
 		// Directed choice check by ParamCoreGProtocolDeclTranslator ensures all dests (including ranges) are (syntactically) the same
 		
-		ParamRange srcRange = this.src.getParsedRange();
-		ParamRange destRange = this.dest.getParsedRange();
+		/*ParamRange srcRange = src.getParsedRange();
+		ParamRange destRange = dest.getParsedRange();
 		Set<ParamIndexVar> vars = Stream.of(srcRange, destRange).flatMap(r -> r.getVars().stream()).collect(Collectors.toSet());
 		
-		/*// CHECKME: is range size>0 already ensured by syntax?
-		Function<ParamRange, String> foo1 = r -> 
-				  "(assert (exists ((foobartmp Int)"
-				+ vars.stream().map(v -> " (" + v.name + " Int)").collect(Collectors.joining(""))
-				+ ") (and"
-				+ " (>= foobartmp " + r.start.toSmt2Formula() + ") (<= foobartmp " + r.end.toSmt2Formula() + ")"  // FIXME: factor out with above
-				+ ")))";
-		Predicate<ParamRange> foo2 = r ->
-		{
-			String foo = foo1.apply(srcRange);
-
-			job.debugPrintln("\n[param-core] [WF] Checking non-empty ranges:\n  " + foo);
-
-			return Z3Wrapper.checkSat(job, gpd, foo);
-		};*/
 		Function<ParamRange, String> foo1 = r ->  // FIXME: factor out with above
 				  "(assert "
 				+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and (and")
@@ -84,21 +69,18 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		}
 
 
-		if (this.cases.size() > 1)
+		String bar = "(assert "
+				+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and ")
+				+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
+				+ "(not (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") 0))"
+				+ (vars.isEmpty() ? "" : "))")
+				+ ")";
+
+		job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subk for " + this.src + ":\n  " + bar); 
+
+		if (Z3Wrapper.checkSat(job, gpd, bar))
 		{
-			String bar = "(assert "
-					+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and ")
-					+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
-					+ "(not (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") 0))"
-					+ (vars.isEmpty() ? "" : "))")
-					+ ")";
-
-			job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subject for " + this.src + ":\n  " + bar); 
-
-			if (Z3Wrapper.checkSat(job, gpd, bar))
-			{
-				return false;
-			}
+			return false;
 		}
 		
 		
@@ -143,7 +125,7 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 			{
 				return false;
 			}
-		}
+		}*/
 
 		return true;
 	}
@@ -158,7 +140,7 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	public Set<ParamRole> getParamRoles()
 	{
 		Set<ParamRole> res = Stream.of(this.src, this.dest).collect(Collectors.toSet());
-		this.cases.values().forEach(c -> res.addAll(c.getParamRoles()));
+		res.addAll(this.cases.values().iterator().next().getParamRoles());
 		return res;
 	}
 
@@ -180,16 +162,24 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 					// N.B. local actions directly preserved from globals -- so core-receive also has assertion (cf. ParamGActionTransfer.project, currently no ParamLReceive)
 					// FIXME: receive assertion projection -- should not be the same as send?
 		}
+
+		// FIXME: same condition as merge (factor out)  // FIXME: no, already syntactic singleton continuation already checked by ParamCoreGProtocolDeclTranslator?
+		Set<ParamCoreLType> values = new HashSet<>(projs.values());
+		if (values.size() > 1)
+		{
+			throw new ParamCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + subj 
+					//+ " for " + ranges
+					+ ": cannot merge for: " + projs.keySet());
+		}
 		
-		// "Simple" cases
-		//if (this.src.getName().equals(r))
+		// "Simple" cases -- same projection as ParamCoreGChoice, i.e., same local types? -- index var redundant, apart from "syntactic consistency" for subsequent message actions? (i.e., only for Scribble syntax?)
 		if (this.src.getName().equals(subj.getName()) && subj.ranges.contains(this.src.getParsedRange()))  // FIXME: factor out?
 		{
-			return af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.SEND_ALL, projs);
+			return af.ParamCoreLMultiChoices(this.dest, ParamCoreLActionKind.SEND_ALL, this.var, projs.keySet(), values.iterator().next());
 		}
 		else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.getParsedRange()))
 		{
-			return af.ParamCoreLChoice(this.src, ParamCoreLActionKind.RECEIVE_ALL, projs);
+			return af.ParamCoreLMultiChoices(this.src, ParamCoreLActionKind.MULTICHOICES_RECEIVE_ALL, this.var, projs.keySet(), values.iterator().next());
 		}
 		
 		// src name != dest name
@@ -211,6 +201,14 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		
 		return values.iterator().next();
 	}
+
+	@Override
+	public String toString()
+	{
+		ParamRange r = this.src.getParsedRange();
+		return this.src.getName() + "[" + this.var + ":" + r.start + ".." + r.end + "]"
+				+ this.kind + "*" + this.dest + casesToString();  // toString needed?
+	}
 	
 	@Override
 	public int hashCode()
@@ -218,6 +216,7 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		int hash = 2339;
 		hash = 31 * hash + super.hashCode();
 		hash = 31 * hash + this.src.hashCode();
+		hash = 31 * hash + this.var.hashCode();
 		return hash;
 	}
 
@@ -228,22 +227,18 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		{
 			return true;
 		}
-		if (!(obj instanceof ParamCoreGChoice))
+		if (!(obj instanceof ParamCoreGMultiChoices))
 		{
 			return false;
 		}
-		return super.equals(obj) && this.src.equals(((ParamCoreGChoice) obj).src);  // Does canEquals
+		ParamCoreGMultiChoices them = (ParamCoreGMultiChoices) obj;
+		return super.equals(obj)  // Does canEquals
+				&& this.src.equals(them.src) && this.var.equals(them.var);
 	}
 	
 	@Override
 	public boolean canEquals(Object o)
 	{
-		return o instanceof ParamCoreGChoice;
-	}
-
-	@Override
-	public String toString()
-	{
-		return this.src.toString() + this.kind + this.dest + casesToString();  // toString needed?
+		return o instanceof ParamCoreGMultiChoices;
 	}
 }

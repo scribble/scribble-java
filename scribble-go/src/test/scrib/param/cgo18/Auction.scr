@@ -36,20 +36,22 @@ aux global protocol X(role A, role B(n))
 		/*foreach (i: 1..n)
 		{
 			choice at B[i]*/
-			choice at B[i:1..n]
+			choices at B[i:1..n]
 			{
 				bid(int) from B[i] to A[1..1];
+				do X(A, B);
 			}
 			or
 			{
 				skip(int) from B[i] to A[1..1];
+				do X(A, B);
 			}
 		//}
 
 		// "Traditional MPST" solution
 		//bidOrSkip(int) from B[1..n] to A[1..1];
 
-		do X(A, B);
+		//do X(A, B);
 	}
 	or
 	{

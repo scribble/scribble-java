@@ -1,6 +1,7 @@
 package org.scribble.ext.go.core.ast.global;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.ext.go.ast.ParamAstFactory;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
+import org.scribble.ext.go.ast.global.ParamGMultiChoices;
+import org.scribble.ext.go.ast.global.ParamGMultiChoicesTransfer;
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
@@ -81,7 +84,7 @@ public class ParamCoreGProtocolDeclTranslator
 			}
 			else
 			{
-				throw new RuntimeException("[param] Shouldn't get in here: " + first);
+				throw new RuntimeException("[param-core] Shouldn't get in here: " + first);
 			}
 		}
 		else
@@ -97,7 +100,14 @@ public class ParamCoreGProtocolDeclTranslator
 
 			if (first instanceof GChoice)
 			{
-				return parseGChoice(rvs, checkRecGuard, (GChoice) first);
+				if (first instanceof ParamGMultiChoices)
+				{
+					return parseParamGMultiChoices(rvs, checkRecGuard, (ParamGMultiChoices) first);
+				}
+				else  // GChoice or ParamGChoice
+				{
+					return parseGChoice(rvs, checkRecGuard, (GChoice) first);
+				}
 			}
 			else if (first instanceof GRecursion)
 			{
@@ -170,6 +180,89 @@ public class ParamCoreGProtocolDeclTranslator
 		}
 		
 		return this.af.ParamCoreGChoice(src, kind, dest, cases);
+	}
+
+	private ParamCoreGMultiChoices parseGMultiChoicesTransfer(List<GInteractionNode> is, Map<RecVar, RecVar> rvs) throws ParamCoreSyntaxException 
+	{
+		GInteractionNode in = is.get(0);
+		if (!(in instanceof ParamGMultiChoicesTransfer))
+		{
+			throw new ParamCoreSyntaxException(in.getSource(), "[param-core] Expected GMultiChoicesTransfer: " + in.getClass());
+		}
+
+		ParamGMultiChoicesTransfer gmt = (ParamGMultiChoicesTransfer) in;
+		ParamCoreMessage a = this.af.ParamCoreAction(parseOp(gmt), parsePayload(gmt));
+
+		String srcName = parseSourceRole(gmt);
+		String destName = parseDestinationRole(gmt);
+		ParamRole src = af.ParamRole(srcName, new ParamRange(gmt.var, gmt.var));  // HACK var -- multichoices needs src range (e.g., projection), but multichoicestransfer doesn't
+		ParamRole dest = af.ParamRole(destName, new ParamRange(gmt.destRangeStart, gmt.destRangeEnd));
+		
+		ParamCoreGType cont = parseSeq(is.subList(1, is.size()), rvs, false, false);  // Subseqeuent choice/rec is guarded by (at least) this action
+		return this.af.ParamCoreGMultiChoices(src, gmt.var, dest, Stream.of(a).collect(Collectors.toSet()), cont);
+	}
+
+	// FIXME: factor out with parseGChoice
+	private ParamCoreGType parseParamGMultiChoices(Map<RecVar, RecVar> rvs,
+			boolean checkRecGuard, ParamGMultiChoices gc) throws ParamCoreSyntaxException
+	{
+		List<ParamCoreGMultiChoices> children = new LinkedList<>();
+		for (GProtocolBlock b : gc.getBlocks())
+		{
+			children.add(parseGMultiChoicesTransfer(b.getInteractionSeq().getInteractions(), rvs));  // Check cases are guarded
+		}
+
+		ParamCoreGActionKind kind = null;
+		ParamRole src = null;
+		ParamRole dest = null;
+		Map<ParamCoreMessage, ParamCoreGType> cases = new HashMap<>();
+		for (ParamCoreGMultiChoices c : children)
+		{
+			ParamCoreGMultiChoices tmp = (ParamCoreGMultiChoices) c;
+			if (tmp.cases.size() > 1)
+			{
+				throw new RuntimeException("[param-core] Shouldn't get in here: " + c);
+			}
+			
+			if (src == null)
+			{
+				kind = tmp.getKind();
+				src = tmp.src;
+				dest = tmp.dest;
+			}
+			else if (!kind.equals(tmp.kind))
+			{
+				throw new RuntimeException("[param-core] Shouldn't get in here: " + gc + ", " + kind + ", " + tmp.kind);
+			}
+			else if (!src.equals(tmp.src) || !dest.equals(tmp.dest))
+			{
+				throw new ParamCoreSyntaxException(gc.getSource(),
+						"[param-core] Non-directed choice not supported: " + gc + ", " + src + ", " + tmp.src + ", " + dest + ", " + tmp.dest);
+			}
+			
+			// "Flatten" nested choices (already checked they are guarded) -- Scribble choice subjects ignored
+			for (Entry<ParamCoreMessage, ParamCoreGType> e : tmp.cases.entrySet())
+			{
+				ParamCoreMessage k = e.getKey();
+				if (cases.keySet().stream().anyMatch(x -> x.op.equals(k.op)))
+				{
+					throw new ParamCoreSyntaxException(gc.getSource(),
+							"[param-core] Non-deterministic actions not supported: " + k.op);
+				}
+				cases.put(k, e.getValue());
+			}
+		}
+		
+		if (new HashSet<>(cases.values()).size() > 1)
+		{
+			throw new ParamCoreSyntaxException(gc.getSource(),
+					"[param-core] Continuations not syntactically equal: " + cases.values());
+		}
+		
+		return this.af.ParamCoreGMultiChoices(
+				//src,
+				new ParamRole(gc.subj.toString(), Stream.of(new ParamRange(gc.start, gc.end)).collect(Collectors.toSet())),
+				gc.var, dest, cases.keySet(), cases.values().iterator().next());
 	}
 
 	private ParamCoreGType parseGRecursion(Map<RecVar, RecVar> rvs,

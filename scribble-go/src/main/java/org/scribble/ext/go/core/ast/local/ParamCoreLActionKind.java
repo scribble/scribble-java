@@ -6,7 +6,8 @@ import org.scribble.type.kind.Local;
 public enum ParamCoreLActionKind implements ParamCoreActionKind<Local>
 {
 	SEND_ALL,
-	RECEIVE_ALL;
+	RECEIVE_ALL,
+	MULTICHOICES_RECEIVE_ALL;
 	
 	@Override
 	public String toString()
@@ -15,6 +16,7 @@ public enum ParamCoreLActionKind implements ParamCoreActionKind<Local>
 		{
 			case SEND_ALL:    return "!";
 			case RECEIVE_ALL: return "?";
+			case MULTICHOICES_RECEIVE_ALL: return "?*";
 			default:          throw new RuntimeException("[param-core] Won't get here: " + this);
 		}
 	}

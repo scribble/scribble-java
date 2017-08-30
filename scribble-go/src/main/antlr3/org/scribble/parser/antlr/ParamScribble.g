@@ -63,6 +63,7 @@ tokens
 	//SPAWN_KW = 'spawn';
 	
 	DOT_KW = 'dot';
+	CHOICES_KW = 'choices';
 	
 
 	/*
@@ -174,6 +175,8 @@ tokens
 	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
 	PARAM_GLOBALDOTMESSAGETRANSFER = 'PARAM_GLOBALDOTMESSAGETRANSFER';
 	PARAM_GLOBALCHOICE = 'PARAM_GLOBALCHOICE';
+	PARAM_GLOBALMULTICHOICES = 'PARAM_GLOBALMULTICHOICES';
+	PARAM_GLOBALMULTICHOICESTRANSFER = 'PARAM_GLOBALMULTICHOICESTRANSFER';
 }
 
 
@@ -643,6 +646,11 @@ globalinteraction:
 	globaldisconnect
 |
 	globalwrap
+
+|
+	globalmultichoices
+|
+	globalmultichoicetransfer
 ;
 /*|
 	globalparallel
@@ -752,6 +760,20 @@ globalchoice:
 ->
 	^(PARAM_GLOBALCHOICE rolename paramindexexpr globalprotocolblock+)
 ;
+	
+
+globalmultichoices:
+	CHOICES_KW AT_KW rolename '[' simplename ':' paramindexexpr '..' paramindexexpr ']' globalprotocolblock (OR_KW globalprotocolblock)*
+->
+	^(PARAM_GLOBALMULTICHOICES rolename simplename paramindexexpr paramindexexpr globalprotocolblock+)
+;	
+
+globalmultichoicetransfer:
+	message FROM_KW rolename '[' simplename ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
+->
+	^(PARAM_GLOBALMULTICHOICESTRANSFER message rolename rolename simplename paramindexexpr paramindexexpr)
+;
+
 
 
 /**
