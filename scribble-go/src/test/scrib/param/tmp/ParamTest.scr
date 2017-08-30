@@ -35,16 +35,41 @@ message passing
 */
 
 
-
+//*
 global protocol Proto1(role A(n), role B(n))
 {
-	1() from A[1..1] to B[1..n];
+	choice at A[i:1..n]
+	{
+		1() from A[1..1] to B[1..2];
+	}
+	or
+	{
+		2() from A[1..1] to B[1..2];
+	}	
 }
+//*/
 
 
 
 
 
+/*
+global protocol Proto1(role A(n), role B(n))
+{
+	//choice at A[i:1..n]
+	choice at A[1]
+	{
+		1() from A[1..1] to B[1..2];  // OK
+
+		1() from A[1..2] to B[1..2];  // Bad
+		1() from A[1..n] to B[1..2];  // Bad
+	}
+	or
+	{
+		2() from A[1..1] to B[1..2];
+	}	
+}
+//*/
 
 
 
