@@ -12,6 +12,7 @@ import org.scribble.ext.go.ast.global.ParamGChoice;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGMultiChoices;
+import org.scribble.ext.go.ast.global.ParamGMultiChoicesTransfer;
 import org.scribble.ext.go.del.global.ParamGChoiceDel;
 import org.scribble.ext.go.del.global.ParamGMessageTransferDel;
 import org.scribble.ext.go.del.global.ParamGMultiChoicesDel;
@@ -231,6 +232,16 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 		ParamGMultiChoices gc = new ParamGMultiChoices(source, subj, var, start, end, blocks);
 		gc = del(gc, new ParamGMultiChoicesDel());
 		return gc;
+	}
+	
+	@Override
+	public ParamGMultiChoicesTransfer ParamGMultiChoicesTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
+			ParamIndexVar var, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd)
+	{
+		ParamGMultiChoicesTransfer mt = new ParamGMultiChoicesTransfer(source, src, msg, dest,
+				var, destRangeStart, destRangeEnd);
+		mt = del(mt, new ParamGMessageTransferDel());  // FIXME: not a ParamGMessageTransfer
+		return mt;
 	}
 	
 	/*@Override

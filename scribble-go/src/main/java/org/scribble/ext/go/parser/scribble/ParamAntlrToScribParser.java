@@ -9,6 +9,7 @@ import org.scribble.ext.go.parser.scribble.ast.ParamAntlrGMultiChoices;
 import org.scribble.ext.go.parser.scribble.ast.ParamAntlrRoleDecl;
 import org.scribble.ext.go.parser.scribble.ast.global.ParamAntlrGCrossMessageTransfer;
 import org.scribble.ext.go.parser.scribble.ast.global.ParamAntlrGDotMessageTransfer;
+import org.scribble.ext.go.parser.scribble.ast.global.ParamAntlrGMultiChoicesTransfer;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.util.ScribParserException;
 
@@ -20,6 +21,7 @@ public class ParamAntlrToScribParser extends AntlrToScribParser
 	public static final String PARAM_GLOBALDOTMESSAGETRANSFER_NODE_TYPE = "PARAM_GLOBALDOTMESSAGETRANSFER";
 	public static final String PARAM_GLOBALCHOICE_NODE_TYPE = "PARAM_GLOBALCHOICE";
 	public static final String PARAM_GLOBALMULTICHOICES_NODE_TYPE = "PARAM_GLOBALMULTICHOICES";
+	public static final String PARAM_GLOBALMULTICHOICESTRANSFER_NODE_TYPE = "PARAM_GLOBALMULTICHOICESTRANSFER";
 
 	public ParamAntlrToScribParser()
 	{
@@ -44,6 +46,8 @@ public class ParamAntlrToScribParser extends AntlrToScribParser
 				return ParamAntlrGChoice.parseParamGChoice(this, ct, aaf);
 			case PARAM_GLOBALMULTICHOICES_NODE_TYPE:
 				return ParamAntlrGMultiChoices.parseParamGMultiChoices(this, ct, aaf);
+			case PARAM_GLOBALMULTICHOICESTRANSFER_NODE_TYPE:
+				return ParamAntlrGMultiChoicesTransfer.parseParamGMultiChoicesTransfer(this, ct, aaf);
 
 			default: return super.parse(ct, af);
 		}

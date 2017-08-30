@@ -43,19 +43,20 @@ global protocol Proto1(role A(n), role B(n))
 {
 	choices at A[i:1..n]
 	{
-		1() from A[1..1] to B[1..2];
+		1() from A[i] to B[1..2];
 
 		//3() from A[1..n] to B[1..2];
 	}
 	or
 	{
-		2() from A[1..1] to B[1..2];
+		2() from A[i] to B[1..2];
+		//2() from A[1..1] to B[1..2];
 
 		//3() from A[1..n] to B[1..2];  // OK
 		//3() from A[1..1] to B[1..2];  // Bad
 	}	
 
-	//3() from A[1..n] to B[1..2];  // FIXME: do like this for multi-choices?
+	//3() from A[1..n] to B[1..2];  // FIXME: support this for param-core multi-choices?
 }
 //*/
 

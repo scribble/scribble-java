@@ -176,6 +176,7 @@ tokens
 	PARAM_GLOBALDOTMESSAGETRANSFER = 'PARAM_GLOBALDOTMESSAGETRANSFER';
 	PARAM_GLOBALCHOICE = 'PARAM_GLOBALCHOICE';
 	PARAM_GLOBALMULTICHOICES = 'PARAM_GLOBALMULTICHOICES';
+	PARAM_GLOBALMULTICHOICESTRANSFER = 'PARAM_GLOBALMULTICHOICESTRANSFER';
 }
 
 
@@ -648,6 +649,8 @@ globalinteraction:
 
 |
 	globalmultichoices
+|
+	globalmultichoicetransfer
 ;
 /*|
 	globalparallel
@@ -764,6 +767,13 @@ globalmultichoices:
 ->
 	^(PARAM_GLOBALMULTICHOICES rolename simplename paramindexexpr paramindexexpr globalprotocolblock+)
 ;	
+
+globalmultichoicetransfer:
+	message FROM_KW rolename '[' simplename ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
+->
+	^(PARAM_GLOBALMULTICHOICESTRANSFER message rolename rolename simplename paramindexexpr paramindexexpr)
+;
+
 
 
 /**

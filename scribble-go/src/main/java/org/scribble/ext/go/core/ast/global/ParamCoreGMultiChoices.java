@@ -16,6 +16,7 @@ import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.local.ParamCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamActualRole;
+import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.ParamJob;
 import org.scribble.ext.go.type.index.ParamIndexVar;
@@ -200,6 +201,14 @@ public class ParamCoreGMultiChoices extends ParamCoreChoice<ParamCoreGType, Glob
 		
 		return values.iterator().next();
 	}
+
+	@Override
+	public String toString()
+	{
+		ParamRange r = this.src.getParsedRange();
+		return this.src.getName() + "[" + this.var + ":" + r.start + ".." + r.end + "]"
+				+ this.kind + "*" + this.dest + casesToString();  // toString needed?
+	}
 	
 	@Override
 	public int hashCode()
@@ -231,11 +240,5 @@ public class ParamCoreGMultiChoices extends ParamCoreChoice<ParamCoreGType, Glob
 	public boolean canEquals(Object o)
 	{
 		return o instanceof ParamCoreGMultiChoices;
-	}
-
-	@Override
-	public String toString()
-	{
-		return this.src.toString() + this.kind + "*" + this.dest + casesToString();  // toString needed?
 	}
 }

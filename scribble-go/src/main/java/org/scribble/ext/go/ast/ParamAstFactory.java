@@ -10,6 +10,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.global.ParamGChoice;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
+import org.scribble.ext.go.ast.global.ParamGMultiChoicesTransfer;
 import org.scribble.ext.go.ast.global.ParamGMultiChoices;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.ext.go.type.index.ParamIndexVar;
@@ -29,4 +30,6 @@ public interface ParamAstFactory extends AstFactory
 	ParamGChoice ParamGChoice(CommonTree source, RoleNode subj, ParamIndexExpr expr, List<GProtocolBlock> blocks);
 	ParamGMultiChoices ParamGMultiChoices(CommonTree source, RoleNode subj, ParamIndexVar var,
 			ParamIndexExpr start, ParamIndexExpr end, List<GProtocolBlock> blocks);
+	ParamGMultiChoicesTransfer ParamGMultiChoicesTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
+			ParamIndexVar var, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd);
 }
