@@ -32,20 +32,30 @@ vs. pabble
 message passing
 - abstract transport -- shared mem, TCP -- integrated
 - domain flexibility -- parallel algs, Web services -- shared parameterised abstraction, concrete transport independence
+
+
+// encode "multi-choices" by local role(thread) forking/joining? for dynamic join/leave use param-value dependency? (run-time checked?)
 */
 
 
 //*
 global protocol Proto1(role A(n), role B(n))
 {
-	choice at A[i:1..n]
+	choices at A[i:1..n]
 	{
 		1() from A[1..1] to B[1..2];
+
+		//3() from A[1..n] to B[1..2];
 	}
 	or
 	{
 		2() from A[1..1] to B[1..2];
+
+		//3() from A[1..n] to B[1..2];  // OK
+		//3() from A[1..1] to B[1..2];  // Bad
 	}	
+
+	//3() from A[1..n] to B[1..2];  // FIXME: do like this for multi-choices?
 }
 //*/
 
@@ -61,8 +71,8 @@ global protocol Proto1(role A(n), role B(n))
 	{
 		1() from A[1..1] to B[1..2];  // OK
 
-		1() from A[1..2] to B[1..2];  // Bad
-		1() from A[1..n] to B[1..2];  // Bad
+		//1() from A[1..2] to B[1..2];  // Bad
+		//1() from A[1..n] to B[1..2];  // Bad
 	}
 	or
 	{

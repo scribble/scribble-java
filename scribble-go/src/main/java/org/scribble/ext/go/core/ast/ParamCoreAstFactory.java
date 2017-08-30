@@ -1,23 +1,27 @@
 package org.scribble.ext.go.core.ast;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.ext.go.core.ast.global.ParamCoreGActionKind;
 import org.scribble.ext.go.core.ast.global.ParamCoreGChoice;
 import org.scribble.ext.go.core.ast.global.ParamCoreGEnd;
+import org.scribble.ext.go.core.ast.global.ParamCoreGMultiChoices;
 import org.scribble.ext.go.core.ast.global.ParamCoreGRec;
 import org.scribble.ext.go.core.ast.global.ParamCoreGRecVar;
 import org.scribble.ext.go.core.ast.global.ParamCoreGType;
 import org.scribble.ext.go.core.ast.local.ParamCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.ParamCoreLChoice;
 import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
+import org.scribble.ext.go.core.ast.local.ParamCoreLMultiChoices;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRec;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.type.Payload;
 import org.scribble.type.name.Op;
 import org.scribble.type.name.RecVar;
@@ -46,6 +50,12 @@ public class ParamCoreAstFactory
 		return new ParamCoreGChoice(src, kind, dest, cases);
 	}
 	
+	public ParamCoreGMultiChoices ParamCoreGMultiChoices(ParamRole src, ParamIndexVar var,
+			ParamRole dest, Set<ParamCoreMessage> cases, ParamCoreGType cont)
+	{
+		return new ParamCoreGMultiChoices(src, var, dest, cases, cont);
+	}
+	
 	public ParamCoreGRec ParamCoreGRec(RecVar recvar, ParamCoreGType body)
 	{
 		return new ParamCoreGRec(recvar, body);
@@ -64,6 +74,12 @@ public class ParamCoreAstFactory
 	public ParamCoreLChoice ParamCoreLChoice(ParamRole role, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
 	{
 		return new ParamCoreLChoice(role, kind, cases);
+	}
+	
+	public ParamCoreLMultiChoices ParamCoreLMultiChoices(ParamRole role, ParamCoreLActionKind kind,
+			ParamIndexVar var, Set<ParamCoreMessage> cases, ParamCoreLType cont)
+	{
+		return new ParamCoreLMultiChoices(role, kind, var, cases, cont);
 	}
 	
 	/*public ParamCoreLSend LSend(Role self, Role peer, Op op, Payload pay)

@@ -9,18 +9,21 @@ import org.scribble.type.kind.Local;
 
 public class ParamCoreLChoice extends ParamCoreChoice<ParamCoreLType, Local> implements ParamCoreLType
 {
-	public final ParamCoreLActionKind kind;
-	
 	public ParamCoreLChoice(ParamRole role, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
 	{
 		super(role, kind, cases);
-		this.kind = kind;
 	}
 
 	@Override
 	public ParamCoreLActionKind getKind()
 	{
 		return (ParamCoreLActionKind) this.kind;
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.role.toString() + this.kind + casesToString();
 	}
 	
 	@Override
@@ -43,18 +46,12 @@ public class ParamCoreLChoice extends ParamCoreChoice<ParamCoreLType, Local> imp
 		{
 			return false;
 		}
-		return super.equals(obj) && this.kind.equals(((ParamCoreLChoice) obj).kind);  // Does canEquals
+		return super.equals(obj);  // Does canEquals
 	}
 	
 	@Override
 	public boolean canEquals(Object o)
 	{
 		return o instanceof ParamCoreLChoice;
-	}
-
-	@Override
-	public String toString()
-	{
-		return this.role.toString() + this.kind + casesToString();
 	}
 }

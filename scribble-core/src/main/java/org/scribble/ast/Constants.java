@@ -52,4 +52,6 @@ public class Constants
 	public static final String CATCHES_KW = "catches";*/
 	public static final String DO_KW = "do";
 	//public static final String SPAWN_KW = "spawn";
+
+	public static final String CHOICES_KW = "choices";
 }

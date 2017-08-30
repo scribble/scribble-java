@@ -11,8 +11,10 @@ import org.scribble.del.RoleDeclDel;
 import org.scribble.ext.go.ast.global.ParamGChoice;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
+import org.scribble.ext.go.ast.global.ParamGMultiChoices;
 import org.scribble.ext.go.del.global.ParamGChoiceDel;
 import org.scribble.ext.go.del.global.ParamGMessageTransferDel;
+import org.scribble.ext.go.del.global.ParamGMultiChoicesDel;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 
@@ -219,6 +221,15 @@ public class ParamAstFactoryImpl extends AstFactoryImpl implements ParamAstFacto
 	{
 		ParamGChoice gc = new ParamGChoice(source, subj, expr, blocks);
 		gc = del(gc, new ParamGChoiceDel());
+		return gc;
+	}
+
+	@Override
+	public ParamGMultiChoices ParamGMultiChoices(CommonTree source, RoleNode subj, ParamIndexVar var,
+			ParamIndexExpr start, ParamIndexExpr end, List<GProtocolBlock> blocks)
+	{
+		ParamGMultiChoices gc = new ParamGMultiChoices(source, subj, var, start, end, blocks);
+		gc = del(gc, new ParamGMultiChoicesDel());
 		return gc;
 	}
 	
