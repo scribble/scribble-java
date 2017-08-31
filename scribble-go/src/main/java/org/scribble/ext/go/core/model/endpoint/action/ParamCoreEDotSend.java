@@ -2,17 +2,17 @@ package org.scribble.ext.go.core.model.endpoint.action;
 
 import org.scribble.ext.go.core.model.endpoint.ParamCoreEModelFactory;
 import org.scribble.ext.go.core.type.ParamRole;
-import org.scribble.model.endpoint.actions.EReceive;
+import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.global.SModelFactory;
-import org.scribble.model.global.actions.SReceive;
+import org.scribble.model.global.actions.SSend;
 import org.scribble.type.Payload;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
 
-public class ParamCoreEReceive extends EReceive implements ParamCoreEAction
+public class ParamCoreEDotSend extends ESend implements ParamCoreEAction
 {
-	
-	public ParamCoreEReceive(ParamCoreEModelFactory ef, ParamRole peer, MessageId<?> mid, Payload payload)
+
+	public ParamCoreEDotSend(ParamCoreEModelFactory ef, ParamRole peer, MessageId<?> mid, Payload payload)
 	{
 		super(ef, peer, mid, payload);
 	}
@@ -22,23 +22,29 @@ public class ParamCoreEReceive extends EReceive implements ParamCoreEAction
 	{
 		return (ParamRole) this.peer;
 	}
-	
+
 	@Override
-	public ParamCoreESend toDual(Role self)
+	public ParamCoreEDotReceive toDual(Role self)
 	{
 		throw new RuntimeException("[param-core] Shouldn't get in here: " + this);
 	}
 
 	@Override
-	public SReceive toGlobal(SModelFactory sf, Role self)
+	public SSend toGlobal(SModelFactory sf, Role self)
 	{
 		throw new RuntimeException("[param-core] Shouldn't get in here: " + this);
+	}
+
+	@Override
+	protected String getCommSymbol()
+	{
+		return "?=";
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 6763;
+		int hash = 7211;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -50,7 +56,7 @@ public class ParamCoreEReceive extends EReceive implements ParamCoreEAction
 		{
 			return true;
 		}
-		if (!(o instanceof ParamCoreEReceive))
+		if (!(o instanceof ParamCoreEDotSend))
 		{
 			return false;
 		}
@@ -60,6 +66,6 @@ public class ParamCoreEReceive extends EReceive implements ParamCoreEAction
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof ParamCoreEReceive;
+		return o instanceof ParamCoreEDotSend;
 	}
 }

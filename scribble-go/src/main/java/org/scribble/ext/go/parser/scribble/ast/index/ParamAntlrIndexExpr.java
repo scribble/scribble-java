@@ -20,6 +20,9 @@ public class ParamAntlrIndexExpr
 				{
 					return left;
 				}
+				
+				System.out.println("bbb: " + ct.getChildren());
+				
 				ParamIndexExpr right = parseParamIndexExpr((CommonTree) ct.getChild(2), af);
 				ParamBinIndexExpr.Op op;
 				switch (ct.getChild(1).getText())

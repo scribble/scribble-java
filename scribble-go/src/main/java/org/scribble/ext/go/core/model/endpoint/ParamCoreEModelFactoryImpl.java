@@ -1,7 +1,10 @@
 package org.scribble.ext.go.core.model.endpoint;
 
-import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEReceive;
-import org.scribble.ext.go.core.model.endpoint.action.ParamCoreESend;
+import org.scribble.ext.go.core.model.endpoint.action.ParamCoreECrossReceive;
+import org.scribble.ext.go.core.model.endpoint.action.ParamCoreECrossSend;
+import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotReceive;
+import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotSend;
+import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEMultiChoicesReceive;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.model.endpoint.EModelFactoryImpl;
 import org.scribble.model.endpoint.actions.EReceive;
@@ -26,14 +29,32 @@ public class ParamCoreEModelFactoryImpl extends EModelFactoryImpl implements Par
 	}
 
 	@Override
-	public ParamCoreESend newParamCoreESend(ParamRole peer, MessageId<?> mid, Payload payload)
+	public ParamCoreECrossSend newParamCoreECrossSend(ParamRole peer, MessageId<?> mid, Payload payload)
 	{
-		return new ParamCoreESend(this, peer, mid, payload);
+		return new ParamCoreECrossSend(this, peer, mid, payload);
 	}
 
 	@Override
-	public ParamCoreEReceive newParamCoreEReceive(ParamRole peer, MessageId<?> mid, Payload payload)
+	public ParamCoreECrossReceive newParamCoreECrossReceive(ParamRole peer, MessageId<?> mid, Payload payload)
 	{
-		return new ParamCoreEReceive(this, peer, mid, payload);
+		return new ParamCoreECrossReceive(this, peer, mid, payload);
+	}
+
+	@Override
+	public ParamCoreEDotSend newParamCoreEDotSend(ParamRole peer, MessageId<?> mid, Payload payload)
+	{
+		return new ParamCoreEDotSend(this, peer, mid, payload);
+	}
+
+	@Override
+	public ParamCoreEDotReceive newParamCoreEDotReceive(ParamRole peer, MessageId<?> mid, Payload payload)
+	{
+		return new ParamCoreEDotReceive(this, peer, mid, payload);
+	}
+
+	@Override
+	public ParamCoreEMultiChoicesReceive newParamCoreEMultiChoicesReceive(ParamRole peer, MessageId<?> mid, Payload payload)
+	{
+		return new ParamCoreEMultiChoicesReceive(this, peer, mid, payload);
 	}
 }

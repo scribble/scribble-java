@@ -93,16 +93,25 @@ public class ParamCoreEGraphBuilder
 		ParamCoreEModelFactory ef = (ParamCoreEModelFactory) this.util.ef;  // FIXME: factor out
 		if (k.equals(ParamCoreLActionKind.CROSS_SEND))
 		{
-			return ef.newParamCoreESend(r, a.op, a.pay);
+			return ef.newParamCoreECrossSend(r, a.op, a.pay);
 
 		}
 		else if (k.equals(ParamCoreLActionKind.CROSS_RECEIVE))
 		{
-			return ef.newParamCoreEReceive(r, a.op, a.pay);
+			return ef.newParamCoreECrossReceive(r, a.op, a.pay);
+		}
+		else if (k.equals(ParamCoreLActionKind.DOT_SEND))
+		{
+			return ef.newParamCoreEDotSend(r, a.op, a.pay);
+
+		}
+		else if (k.equals(ParamCoreLActionKind.DOT_RECEIVE))
+		{
+			return ef.newParamCoreEDotReceive(r, a.op, a.pay);
 		}
 		else if (k.equals(ParamCoreLActionKind.MULTICHOICES_RECEIVE))
 		{
-			throw new RuntimeException("[param-core] TODO: " + k);
+			return ef.newParamCoreEMultiChoicesReceive(r, a.op, a.pay);
 		}
 		else
 		{
