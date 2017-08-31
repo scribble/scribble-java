@@ -16,7 +16,7 @@ global protocol Proto1(role A(n), role B(n))
 }
 
 // mu X
-aux global protocol X(role A, role B(n))
+aux global protocol X(role A, role B)
 {
 	choice at A[1]
 	{	
