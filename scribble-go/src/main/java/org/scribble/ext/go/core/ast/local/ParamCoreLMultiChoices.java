@@ -9,15 +9,15 @@ import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.type.kind.Local;
 
-// FIXME: factor out better with ParamCoreChoice
+// FIXME: factor out better with ParamCoreChoice -- or deprecate and just use kind?
 public class ParamCoreLMultiChoices extends ParamCoreChoice<ParamCoreLType, Local> implements ParamCoreLType
 {
 	public final ParamIndexVar var;  // Redundant?
 	
 	// Pre: cases.size() > 1
-	public ParamCoreLMultiChoices(ParamRole role, ParamCoreLActionKind kind, ParamIndexVar var, Set<ParamCoreMessage> cases, ParamCoreLType cont)
+	public ParamCoreLMultiChoices(ParamRole role, ParamIndexVar var, Set<ParamCoreMessage> cases, ParamCoreLType cont)
 	{
-		super(role, kind, cases.stream().collect(Collectors.toMap(c -> c, c -> cont)));
+		super(role, ParamCoreLActionKind.MULTICHOICES_RECEIVE, cases.stream().collect(Collectors.toMap(c -> c, c -> cont)));
 		this.var = var;
 	}
 

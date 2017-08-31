@@ -91,16 +91,16 @@ public class ParamCoreEGraphBuilder
 	private EAction toEAction(ParamRole r, ParamCoreLActionKind k, ParamCoreMessage a)
 	{
 		ParamCoreEModelFactory ef = (ParamCoreEModelFactory) this.util.ef;  // FIXME: factor out
-		if (k.equals(ParamCoreLActionKind.SEND_ALL))
+		if (k.equals(ParamCoreLActionKind.CROSS_SEND))
 		{
 			return ef.newParamCoreESend(r, a.op, a.pay);
 
 		}
-		else if (k.equals(ParamCoreLActionKind.RECEIVE_ALL))
+		else if (k.equals(ParamCoreLActionKind.CROSS_RECEIVE))
 		{
 			return ef.newParamCoreEReceive(r, a.op, a.pay);
 		}
-		else if (k.equals(ParamCoreLActionKind.MULTICHOICES_RECEIVE_ALL))
+		else if (k.equals(ParamCoreLActionKind.MULTICHOICES_RECEIVE))
 		{
 			throw new RuntimeException("[param-core] TODO: " + k);
 		}

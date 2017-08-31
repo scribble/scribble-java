@@ -166,11 +166,6 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	public ParamCoreLType project(ParamCoreAstFactory af, ParamActualRole subj) throws ParamCoreSyntaxException
 	{
-		if (this.kind != ParamCoreGActionKind.CROSS_TRANSFER)
-		{
-			throw new RuntimeException("[param-core] TODO: " + this);
-		}
-		
 		Map<ParamCoreMessage, ParamCoreLType> projs = new HashMap<>();
 		for (Entry<ParamCoreMessage, ParamCoreGType> e : this.cases.entrySet())
 		{
@@ -182,14 +177,32 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		}
 		
 		// "Simple" cases
-		//if (this.src.getName().equals(r))
-		if (this.src.getName().equals(subj.getName()) && subj.ranges.contains(this.src.getParsedRange()))  // FIXME: factor out?
-		{
-			return af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.SEND_ALL, projs);
+		if (this.kind == ParamCoreGActionKind.CROSS_TRANSFER)
+		{	
+			//if (this.src.getName().equals(r))
+			if (this.src.getName().equals(subj.getName()) && subj.ranges.contains(this.src.getParsedRange()))  // FIXME: factor out?
+			{
+				return af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.CROSS_SEND, projs);
+			}
+			else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.getParsedRange()))
+			{
+				return af.ParamCoreLChoice(this.src, ParamCoreLActionKind.CROSS_RECEIVE, projs);
+			}
 		}
-		else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.getParsedRange()))
+		else if (this.kind == ParamCoreGActionKind.DOT_TRANSFER)
 		{
-			return af.ParamCoreLChoice(this.src, ParamCoreLActionKind.RECEIVE_ALL, projs);
+			if (this.src.getName().equals(subj.getName()) && subj.ranges.contains(this.src.getParsedRange()))  // FIXME: factor out?
+			{
+				return af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.DOT_SEND, projs);
+			}
+			else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.getParsedRange()))
+			{
+				return af.ParamCoreLChoice(this.src, ParamCoreLActionKind.DOT_RECEIVE, projs);
+			}
+		}
+		else
+		{
+			throw new RuntimeException("[param-core] TODO: " + this);
 		}
 		
 		// src name != dest name

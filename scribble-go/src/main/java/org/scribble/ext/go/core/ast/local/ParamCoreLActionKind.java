@@ -5,19 +5,23 @@ import org.scribble.type.kind.Local;
 
 public enum ParamCoreLActionKind implements ParamCoreActionKind<Local>
 {
-	SEND_ALL,
-	RECEIVE_ALL,
-	MULTICHOICES_RECEIVE_ALL;
+	CROSS_SEND,
+	CROSS_RECEIVE,         // Multi-receive, but unary choice  // Cf. API gen, unary vs. non-unary choice
+	MULTICHOICES_RECEIVE,  // Multi-choice receive
+	DOT_SEND,
+	DOT_RECEIVE;
 	
 	@Override
 	public String toString()
 	{
 		switch (this)
 		{
-			case SEND_ALL:    return "!";
-			case RECEIVE_ALL: return "?";
-			case MULTICHOICES_RECEIVE_ALL: return "?*";
-			default:          throw new RuntimeException("[param-core] Won't get here: " + this);
+			case CROSS_SEND:           return "!";
+			case CROSS_RECEIVE:        return "?";
+			case MULTICHOICES_RECEIVE: return "?*";
+			case DOT_SEND:             return "!=";
+			case DOT_RECEIVE:          return "?=";
+			default: throw new RuntimeException("[param-core] Won't get here: " + this);
 		}
 	}
 }

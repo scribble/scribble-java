@@ -76,10 +76,9 @@ public class ParamCoreAstFactory
 		return new ParamCoreLChoice(role, kind, cases);
 	}
 	
-	public ParamCoreLMultiChoices ParamCoreLMultiChoices(ParamRole role, ParamCoreLActionKind kind,
-			ParamIndexVar var, Set<ParamCoreMessage> cases, ParamCoreLType cont)
+	public ParamCoreLMultiChoices ParamCoreLMultiChoices(ParamRole role, ParamIndexVar var, Set<ParamCoreMessage> cases, ParamCoreLType cont)
 	{
-		return new ParamCoreLMultiChoices(role, kind, var, cases, cont);
+		return new ParamCoreLMultiChoices(role, var, cases, cont);
 	}
 	
 	/*public ParamCoreLSend LSend(Role self, Role peer, Op op, Payload pay)

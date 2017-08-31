@@ -41,6 +41,32 @@ message passing
 //*
 global protocol Proto1(role A(n), role B(n))
 {
+	1() dot A[1..n] to B[1..n];
+}
+//*/
+
+
+/*
+global protocol Proto1(role A(n), role B(n))
+{
+	/*choices at A[i:1..n]
+	{
+		1() from A[i] to B[1..1];
+	}* /
+
+	/*choice at A[1]
+	{
+		1() from A[1..1] to B[1..1];
+	}* /
+	
+	1() from A[1..n] to B[1..1];  // Above and this are equivalent for n=1
+}
+//*/
+
+
+/*
+global protocol Proto1(role A(n), role B(n))
+{
 	choices at A[i:1..n]
 	{
 		1() from A[i] to B[1..2];
