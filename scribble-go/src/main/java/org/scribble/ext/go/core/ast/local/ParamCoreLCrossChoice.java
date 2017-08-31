@@ -1,13 +1,13 @@
 package org.scribble.ext.go.core.ast.local;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.type.ParamRole;
 
 public class ParamCoreLCrossChoice extends ParamCoreLChoice
 {
-	public ParamCoreLCrossChoice(ParamRole role, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
+	public ParamCoreLCrossChoice(ParamRole role, ParamCoreLActionKind kind, LinkedHashMap<ParamCoreMessage, ParamCoreLType> cases)
 	{
 		super(role, kind, cases);
 		if (kind != ParamCoreLActionKind.CROSS_SEND && kind != ParamCoreLActionKind.CROSS_RECEIVE)

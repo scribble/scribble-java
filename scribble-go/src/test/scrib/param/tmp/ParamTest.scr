@@ -41,6 +41,18 @@ message passing
 //*
 global protocol Proto1(role A(n), role B(n))
 {
+	choices at A[i:1..n]
+	{
+		1() from A[i] to B[1..i];  // FIXME: bad "i"
+		//1() from A[j] to B[1..1];  // FIXME: bad "i"
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A(n), role B(n))
+{
 	1() dot A[1..n] to B[1+1..n+1];
 }
 //*/

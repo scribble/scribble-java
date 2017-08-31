@@ -1,6 +1,6 @@
 package org.scribble.ext.go.core.ast.local;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.type.ParamRange;
@@ -11,7 +11,7 @@ public class ParamCoreLDotChoice extends ParamCoreLChoice
 {
 	public final ParamIndexExpr offset;
 
-	public ParamCoreLDotChoice(ParamRole role, ParamIndexExpr offset, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
+	public ParamCoreLDotChoice(ParamRole role, ParamIndexExpr offset, ParamCoreLActionKind kind, LinkedHashMap<ParamCoreMessage, ParamCoreLType> cases)
 	{
 		super(role, kind, cases);
 		if (kind != ParamCoreLActionKind.DOT_SEND && kind != ParamCoreLActionKind.DOT_RECEIVE)

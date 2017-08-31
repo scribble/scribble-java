@@ -90,7 +90,7 @@ public class ESend extends EAction
 		{
 			return false;
 		}
-		return ((ESend) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package org.scribble.ext.go.core.ast.global;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	public final ParamRole src;  // "Singleton" -- checked by isWellFormed
 	public final ParamRole dest;  // this.dest == super.role -- arbitrary?
 
-	public ParamCoreGChoice(ParamRole src, ParamCoreGActionKind kind, ParamRole dest, Map<ParamCoreMessage, ParamCoreGType> cases)
+	public ParamCoreGChoice(ParamRole src, ParamCoreGActionKind kind, ParamRole dest, LinkedHashMap<ParamCoreMessage, ParamCoreGType> cases)
 	{
 		super(dest, kind, cases);
 		this.src = src;
@@ -174,7 +174,7 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	public ParamCoreLType project(ParamCoreAstFactory af, ParamActualRole subj) throws ParamCoreSyntaxException
 	{
-		Map<ParamCoreMessage, ParamCoreLType> projs = new HashMap<>();
+		LinkedHashMap<ParamCoreMessage, ParamCoreLType> projs = new LinkedHashMap<>();
 		for (Entry<ParamCoreMessage, ParamCoreGType> e : this.cases.entrySet())
 		{
 			ParamCoreMessage a = e.getKey();
@@ -211,10 +211,19 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 					ParamIndexExpr offset = ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Add,
 								ParamIndexFactory.ParamIntVar("_id"),
 								ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Subt, destRange.start, srcRange.start));
-					Map<ParamCoreMessage, ParamCoreLType> tmp = projs.entrySet().stream().collect(Collectors.toMap(Entry::getKey,
+					/*Map<ParamCoreMessage, ParamCoreLType> tmp = projs.entrySet().stream().collect(Collectors.toMap(Entry::getKey,
 							p -> new ParamCoreLDotChoice(this.dest, offset, ParamCoreLActionKind.DOT_SEND,
 									Stream.of(p.getKey()).collect(Collectors.toMap(k -> k, k -> p.getValue())))
-							));
+							));*/
+					Function<Entry<ParamCoreMessage, ParamCoreLType>, LinkedHashMap<ParamCoreMessage, ParamCoreLType>> foo = e ->
+					{
+						LinkedHashMap<ParamCoreMessage, ParamCoreLType> res = new LinkedHashMap<>();
+						res.put(e.getKey(), e.getValue());
+						return res;
+					};
+					LinkedHashMap<ParamCoreMessage, ParamCoreLType> tmp = new LinkedHashMap<>();
+					projs.entrySet().forEach(e -> tmp.put(e.getKey(), 
+							new ParamCoreLDotChoice(this.dest, offset, ParamCoreLActionKind.DOT_SEND, foo.apply(e))));
 					ParamIndexExpr offset2 = ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Add,
 							ParamIndexFactory.ParamIntVar("_id"),
 						 ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Subt, srcRange.start, destRange.start));

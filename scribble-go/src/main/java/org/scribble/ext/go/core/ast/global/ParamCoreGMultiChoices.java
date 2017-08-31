@@ -1,7 +1,8 @@
 package org.scribble.ext.go.core.ast.global;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -29,12 +30,20 @@ public class ParamCoreGMultiChoices extends ParamCoreChoice<ParamCoreGType, Glob
 
 	public final ParamRole dest;  // this.dest == super.role -- arbitrary?
 
-	public ParamCoreGMultiChoices(ParamRole src, ParamIndexVar var, ParamRole dest, Set<ParamCoreMessage> cases, ParamCoreGType cont)
+	public ParamCoreGMultiChoices(ParamRole src, ParamIndexVar var, ParamRole dest, List<ParamCoreMessage> cases, ParamCoreGType cont)
 	{
-		super(dest, ParamCoreGActionKind.CROSS_TRANSFER, cases.stream().collect(Collectors.toMap(c -> c, c -> cont)));  // FIXME
+		//super(dest, ParamCoreGActionKind.CROSS_TRANSFER, cases.stream().collect(Collectors.toMap(c -> c, c -> cont)));  // FIXME
+		super(dest, ParamCoreGActionKind.CROSS_TRANSFER, foo(cases, cont));  // FIXME
 		this.src = src;
 		this.dest = dest;
 		this.var = var;
+	}
+	
+	private static LinkedHashMap<ParamCoreMessage, ParamCoreGType> foo(List<ParamCoreMessage> cases, ParamCoreGType cont)
+	{
+		LinkedHashMap<ParamCoreMessage, ParamCoreGType> tmp = new LinkedHashMap<>();
+		cases.stream().forEach(c -> tmp.put(c, cont));
+		return tmp;
 	}
 	
 	@Override
@@ -153,7 +162,7 @@ public class ParamCoreGMultiChoices extends ParamCoreChoice<ParamCoreGType, Glob
 			throw new RuntimeException("[param-core] TODO: " + this);
 		}
 		
-		Map<ParamCoreMessage, ParamCoreLType> projs = new HashMap<>();
+		LinkedHashMap<ParamCoreMessage, ParamCoreLType> projs = new LinkedHashMap<>();
 		for (Entry<ParamCoreMessage, ParamCoreGType> e : this.cases.entrySet())
 		{
 			ParamCoreMessage a = e.getKey();
@@ -179,7 +188,8 @@ public class ParamCoreGMultiChoices extends ParamCoreChoice<ParamCoreGType, Glob
 		}
 		else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.getParsedRange()))
 		{
-			return af.ParamCoreLMultiChoices(this.src, this.var, projs.keySet(), values.iterator().next());
+			return af.ParamCoreLMultiChoices(this.src, this.var, projs.keySet().stream().collect(Collectors.toList()),
+					values.iterator().next());
 		}
 		
 		// src name != dest name
