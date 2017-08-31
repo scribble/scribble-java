@@ -24,10 +24,10 @@ import org.scribble.type.kind.Global;
 
 public class ParamCoreGMultiChoices extends ParamCoreChoice<ParamCoreGType, Global> implements ParamCoreGType
 {
-	public final ParamRole src;   // Cf. ParamCoreGChoice singleton src
-	public final ParamRole dest;  // this.dest == super.role -- arbitrary?
-	
+	public final ParamRole src;      // Gives the Scribble choices-subj range // Cf. ParamCoreGChoice singleton src
 	public final ParamIndexVar var;
+
+	public final ParamRole dest;  // this.dest == super.role -- arbitrary?
 
 	public ParamCoreGMultiChoices(ParamRole src, ParamIndexVar var, ParamRole dest, Set<ParamCoreMessage> cases, ParamCoreGType cont)
 	{
@@ -175,11 +175,11 @@ public class ParamCoreGMultiChoices extends ParamCoreChoice<ParamCoreGType, Glob
 		// "Simple" cases -- same projection as ParamCoreGChoice, i.e., same local types? -- index var redundant, apart from "syntactic consistency" for subsequent message actions? (i.e., only for Scribble syntax?)
 		if (this.src.getName().equals(subj.getName()) && subj.ranges.contains(this.src.getParsedRange()))  // FIXME: factor out?
 		{
-			return af.ParamCoreLMultiChoices(this.dest, ParamCoreLActionKind.SEND_ALL, this.var, projs.keySet(), values.iterator().next());
+			return af.ParamCoreLCrossChoice(this.dest, ParamCoreLActionKind.CROSS_SEND, projs);
 		}
 		else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.getParsedRange()))
 		{
-			return af.ParamCoreLMultiChoices(this.src, ParamCoreLActionKind.MULTICHOICES_RECEIVE_ALL, this.var, projs.keySet(), values.iterator().next());
+			return af.ParamCoreLMultiChoices(this.src, this.var, projs.keySet(), values.iterator().next());
 		}
 		
 		// src name != dest name

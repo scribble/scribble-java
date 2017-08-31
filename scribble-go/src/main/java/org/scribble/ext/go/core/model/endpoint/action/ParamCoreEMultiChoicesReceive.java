@@ -9,10 +9,10 @@ import org.scribble.type.Payload;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
 
-public class ParamCoreEReceive extends EReceive implements ParamCoreEAction
+public class ParamCoreEMultiChoicesReceive extends EReceive implements ParamCoreEAction
 {
 	
-	public ParamCoreEReceive(ParamCoreEModelFactory ef, ParamRole peer, MessageId<?> mid, Payload payload)
+	public ParamCoreEMultiChoicesReceive(ParamCoreEModelFactory ef, ParamRole peer, MessageId<?> mid, Payload payload)
 	{
 		super(ef, peer, mid, payload);
 	}
@@ -24,7 +24,7 @@ public class ParamCoreEReceive extends EReceive implements ParamCoreEAction
 	}
 	
 	@Override
-	public ParamCoreESend toDual(Role self)
+	public ParamCoreECrossSend toDual(Role self)
 	{
 		throw new RuntimeException("[param-core] Shouldn't get in here: " + this);
 	}
@@ -34,11 +34,17 @@ public class ParamCoreEReceive extends EReceive implements ParamCoreEAction
 	{
 		throw new RuntimeException("[param-core] Shouldn't get in here: " + this);
 	}
+
+	@Override
+	protected String getCommSymbol()
+	{
+		return "?*";
+	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 6763;
+		int hash = 7219;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -50,7 +56,7 @@ public class ParamCoreEReceive extends EReceive implements ParamCoreEAction
 		{
 			return true;
 		}
-		if (!(o instanceof ParamCoreEReceive))
+		if (!(o instanceof ParamCoreEMultiChoicesReceive))
 		{
 			return false;
 		}
@@ -60,6 +66,6 @@ public class ParamCoreEReceive extends EReceive implements ParamCoreEAction
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof ParamCoreEReceive;
+		return o instanceof ParamCoreEMultiChoicesReceive;
 	}
 }

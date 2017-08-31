@@ -16,14 +16,19 @@ import org.scribble.ext.go.core.ast.ParamCoreChoice;
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.local.ParamCoreLActionKind;
+import org.scribble.ext.go.core.ast.local.ParamCoreLDotChoice;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.ParamJob;
+import org.scribble.ext.go.type.index.ParamBinIndexExpr;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
+import org.scribble.ext.go.type.index.ParamIndexFactory;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.type.kind.Global;
+import org.scribble.type.name.Role;
 
 public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> implements ParamCoreGType
 {
@@ -84,20 +89,23 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		}
 
 
-		if (this.cases.size() > 1)
+		if (this.kind == ParamCoreGActionKind.CROSS_TRANSFER)
 		{
-			String bar = "(assert "
-					+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and ")
-					+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
-					+ "(not (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") 0))"
-					+ (vars.isEmpty() ? "" : "))")
-					+ ")";
-
-			job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subject for " + this.src + ":\n  " + bar); 
-
-			if (Z3Wrapper.checkSat(job, gpd, bar))
+			if (this.cases.size() > 1)
 			{
-				return false;
+				String bar = "(assert "
+						+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and ")
+						+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
+						+ "(not (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") 0))"
+						+ (vars.isEmpty() ? "" : "))")
+						+ ")";
+
+				job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subject for " + this.src + ":\n  " + bar); 
+
+				if (Z3Wrapper.checkSat(job, gpd, bar))
+				{
+					return false;
+				}
 			}
 		}
 		
@@ -166,11 +174,6 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	public ParamCoreLType project(ParamCoreAstFactory af, ParamActualRole subj) throws ParamCoreSyntaxException
 	{
-		if (this.kind != ParamCoreGActionKind.CROSS_TRANSFER)
-		{
-			throw new RuntimeException("[param-core] TODO: " + this);
-		}
-		
 		Map<ParamCoreMessage, ParamCoreLType> projs = new HashMap<>();
 		for (Entry<ParamCoreMessage, ParamCoreGType> e : this.cases.entrySet())
 		{
@@ -182,14 +185,60 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 		}
 		
 		// "Simple" cases
-		//if (this.src.getName().equals(r))
-		if (this.src.getName().equals(subj.getName()) && subj.ranges.contains(this.src.getParsedRange()))  // FIXME: factor out?
-		{
-			return af.ParamCoreLChoice(this.dest, ParamCoreLActionKind.SEND_ALL, projs);
+		Role srcName = this.src.getName();
+		Role destName = this.dest.getName();
+		Role subjName = subj.getName();
+		ParamRange srcRange = this.src.getParsedRange();
+		ParamRange destRange = this.dest.getParsedRange();
+		if (this.kind == ParamCoreGActionKind.CROSS_TRANSFER)
+		{	
+			//if (this.src.getName().equals(r))
+			if (srcName.equals(subjName) && subj.ranges.contains(srcRange))  // FIXME: factor out?
+			{
+				return af.ParamCoreLCrossChoice(this.dest, ParamCoreLActionKind.CROSS_SEND, projs);
+			}
+			else if (destName.equals(subjName) && subj.ranges.contains(destRange))
+			{
+				return af.ParamCoreLCrossChoice(this.src, ParamCoreLActionKind.CROSS_RECEIVE, projs);
+			}
 		}
-		else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.getParsedRange()))
+		else if (this.kind == ParamCoreGActionKind.DOT_TRANSFER)
 		{
-			return af.ParamCoreLChoice(this.src, ParamCoreLActionKind.RECEIVE_ALL, projs);
+			if (srcName.equals(subjName) && subj.ranges.contains(srcRange))  // FIXME: factor out?
+			{
+				if (destName.equals(subjName) && subj.ranges.contains(destRange))  // Possible for dot-transfer (src.start != dest.start) -- cf. cross-transfer
+				{
+					ParamIndexExpr offset = ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Add,
+								ParamIndexFactory.ParamIntVar("_id"),
+								ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Subt, destRange.start, srcRange.start));
+					Map<ParamCoreMessage, ParamCoreLType> tmp = projs.entrySet().stream().collect(Collectors.toMap(Entry::getKey,
+							p -> new ParamCoreLDotChoice(this.dest, offset, ParamCoreLActionKind.DOT_SEND,
+									Stream.of(p.getKey()).collect(Collectors.toMap(k -> k, k -> p.getValue())))
+							));
+					ParamIndexExpr offset2 = ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Add,
+							ParamIndexFactory.ParamIntVar("_id"),
+						 ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Subt, srcRange.start, destRange.start));
+					return af.ParamCoreLDotChoice(this.src, offset2, ParamCoreLActionKind.DOT_RECEIVE, tmp);
+				}
+				else
+				{
+					ParamIndexExpr offset = ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Add,
+							ParamIndexFactory.ParamIntVar("_id"),
+							ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Subt, destRange.start, srcRange.start));
+					return af.ParamCoreLDotChoice(this.dest, offset, ParamCoreLActionKind.DOT_SEND, projs);
+				}
+			}
+			else if (destName.equals(subjName) && subj.ranges.contains(destRange))
+			{
+				ParamIndexExpr offset = ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Add,
+						ParamIndexFactory.ParamIntVar("_id"),
+						ParamIndexFactory.ParamBinIndexExpr(ParamBinIndexExpr.Op.Subt, srcRange.start, destRange.start));
+				return af.ParamCoreLDotChoice(this.src, offset, ParamCoreLActionKind.DOT_RECEIVE, projs);
+			}
+		}
+		else
+		{
+			throw new RuntimeException("[param-core] TODO: " + this);
 		}
 		
 		// src name != dest name

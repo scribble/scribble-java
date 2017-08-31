@@ -1,15 +1,16 @@
 package org.scribble.ext.go.core.ast.local;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.scribble.ext.go.core.ast.ParamCoreChoice;
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.type.kind.Local;
 
-public class ParamCoreLChoice extends ParamCoreChoice<ParamCoreLType, Local> implements ParamCoreLType
+public abstract class ParamCoreLChoice extends ParamCoreChoice<ParamCoreLType, Local> implements ParamCoreLType
 {
-	public ParamCoreLChoice(ParamRole role, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
+	protected ParamCoreLChoice(ParamRole role, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
 	{
 		super(role, kind, cases);
 	}
@@ -27,11 +28,21 @@ public class ParamCoreLChoice extends ParamCoreChoice<ParamCoreLType, Local> imp
 	}
 	
 	@Override
+	protected String casesToString()
+	{
+		String s = this.cases.entrySet().stream()
+				.map(e -> e.getKey() + "." + e.getValue()).collect(Collectors.joining(", "));
+		s = (this.cases.size() > 1)
+				? "{ " + s + " }"
+				: s;  // No ":", cf. global
+		return s;
+	}
+	
+	@Override
 	public int hashCode()
 	{
 		int hash = 2399;
 		hash = 31 * hash + super.hashCode();
-		hash = 31 * hash + this.kind.hashCode();
 		return hash;
 	}
 

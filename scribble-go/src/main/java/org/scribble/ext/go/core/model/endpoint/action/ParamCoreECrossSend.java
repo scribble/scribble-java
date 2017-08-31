@@ -9,10 +9,10 @@ import org.scribble.type.Payload;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
 
-public class ParamCoreESend extends ESend implements ParamCoreEAction
+public class ParamCoreECrossSend extends ESend implements ParamCoreEAction
 {
 
-	public ParamCoreESend(ParamCoreEModelFactory ef, ParamRole peer, MessageId<?> mid, Payload payload)
+	public ParamCoreECrossSend(ParamCoreEModelFactory ef, ParamRole peer, MessageId<?> mid, Payload payload)
 	{
 		super(ef, peer, mid, payload);
 	}
@@ -24,7 +24,7 @@ public class ParamCoreESend extends ESend implements ParamCoreEAction
 	}
 
 	@Override
-	public ParamCoreEReceive toDual(Role self)
+	public ParamCoreECrossReceive toDual(Role self)
 	{
 		throw new RuntimeException("[param-core] Shouldn't get in here: " + this);
 	}
@@ -50,7 +50,7 @@ public class ParamCoreESend extends ESend implements ParamCoreEAction
 		{
 			return true;
 		}
-		if (!(o instanceof ParamCoreESend))
+		if (!(o instanceof ParamCoreECrossSend))
 		{
 			return false;
 		}
@@ -60,6 +60,6 @@ public class ParamCoreESend extends ESend implements ParamCoreEAction
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof ParamCoreESend;
+		return o instanceof ParamCoreECrossSend;
 	}
 }

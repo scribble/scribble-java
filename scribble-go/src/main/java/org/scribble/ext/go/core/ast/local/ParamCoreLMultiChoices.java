@@ -3,34 +3,20 @@ package org.scribble.ext.go.core.ast.local;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ext.go.core.ast.ParamCoreChoice;
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.type.index.ParamIndexVar;
-import org.scribble.type.kind.Local;
 
-// FIXME: factor out better with ParamCoreChoice
-public class ParamCoreLMultiChoices extends ParamCoreChoice<ParamCoreLType, Local> implements ParamCoreLType
+// FIXME: factor out better with ParamCore(L)Choice -- or deprecate and just use kind?
+public class ParamCoreLMultiChoices extends ParamCoreLChoice
 {
 	public final ParamIndexVar var;  // Redundant?
 	
 	// Pre: cases.size() > 1
-	public ParamCoreLMultiChoices(ParamRole role, ParamCoreLActionKind kind, ParamIndexVar var, Set<ParamCoreMessage> cases, ParamCoreLType cont)
+	public ParamCoreLMultiChoices(ParamRole role, ParamIndexVar var, Set<ParamCoreMessage> cases, ParamCoreLType cont)
 	{
-		super(role, kind, cases.stream().collect(Collectors.toMap(c -> c, c -> cont)));
+		super(role, ParamCoreLActionKind.MULTICHOICES_RECEIVE, cases.stream().collect(Collectors.toMap(c -> c, c -> cont)));
 		this.var = var;
-	}
-
-	@Override
-	public ParamCoreLActionKind getKind()
-	{
-		return (ParamCoreLActionKind) this.kind;
-	}
-
-	@Override
-	public String toString()
-	{
-		return this.role.toString() + this.kind + casesToString();
 	}
 	
 	@Override
@@ -49,7 +35,7 @@ public class ParamCoreLMultiChoices extends ParamCoreChoice<ParamCoreLType, Loca
 		{
 			return true;
 		}
-		if (!(obj instanceof ParamCoreChoice))
+		if (!(obj instanceof ParamCoreLMultiChoices))
 		{
 			return false;
 		}
@@ -61,6 +47,6 @@ public class ParamCoreLMultiChoices extends ParamCoreChoice<ParamCoreLType, Loca
 	@Override
 	public boolean canEquals(Object o)
 	{
-		return o instanceof ParamCoreChoice;
+		return o instanceof ParamCoreLMultiChoices;
 	}
 }
