@@ -1,7 +1,6 @@
 package org.scribble.ext.go.core.ast;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 import org.scribble.ext.go.core.type.ParamRole;
@@ -11,14 +10,14 @@ public abstract class ParamCoreChoice<C extends ParamCoreType<K>, K extends Prot
 {
 	public final ParamRole role;
 	public final ParamCoreActionKind<K> kind;
-	public final Map<ParamCoreMessage, C> cases;
+	public final LinkedHashMap<ParamCoreMessage, C> cases;
 	
 	// Pre: cases.size() > 1
-	public ParamCoreChoice(ParamRole role, ParamCoreActionKind<K> kind, Map<ParamCoreMessage, C> cases)
+	public ParamCoreChoice(ParamRole role, ParamCoreActionKind<K> kind, LinkedHashMap<ParamCoreMessage, C> cases)
 	{
 		this.role = role;
 		this.kind = kind;
-		this.cases = Collections.unmodifiableMap(cases);
+		this.cases = new LinkedHashMap<>(cases);
 	}
 	
 	public abstract ParamCoreActionKind<K> getKind();

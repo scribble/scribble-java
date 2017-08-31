@@ -2,6 +2,7 @@ package org.scribble.ext.go.core.ast.global;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +137,7 @@ public class ParamCoreGProtocolDeclTranslator
 		ParamCoreGActionKind kind = null;
 		ParamRole src = null;
 		ParamRole dest = null;
-		Map<ParamCoreMessage, ParamCoreGType> cases = new HashMap<>();
+		LinkedHashMap<ParamCoreMessage, ParamCoreGType> cases = new LinkedHashMap<>();
 		for (ParamCoreGType c : children)
 		{
 			// Because all cases should be action guards (unary choices)
@@ -199,7 +200,7 @@ public class ParamCoreGProtocolDeclTranslator
 		ParamRole dest = af.ParamRole(destName, new ParamRange(gmt.destRangeStart, gmt.destRangeEnd));
 		
 		ParamCoreGType cont = parseSeq(is.subList(1, is.size()), rvs, false, false);  // Subseqeuent choice/rec is guarded by (at least) this action
-		return this.af.ParamCoreGMultiChoices(src, gmt.var, dest, Stream.of(a).collect(Collectors.toSet()), cont);
+		return this.af.ParamCoreGMultiChoices(src, gmt.var, dest, Stream.of(a).collect(Collectors.toList()), cont);
 	}
 
 	// FIXME: factor out with parseGChoice
@@ -215,7 +216,7 @@ public class ParamCoreGProtocolDeclTranslator
 		ParamCoreGActionKind kind = null;
 		ParamRole src = null;
 		ParamRole dest = null;
-		Map<ParamCoreMessage, ParamCoreGType> cases = new HashMap<>();
+		LinkedHashMap<ParamCoreMessage, ParamCoreGType> cases = new LinkedHashMap<>();
 		for (ParamCoreGMultiChoices c : children)
 		{
 			ParamCoreGMultiChoices tmp = (ParamCoreGMultiChoices) c;
@@ -262,7 +263,7 @@ public class ParamCoreGProtocolDeclTranslator
 		return this.af.ParamCoreGMultiChoices(
 				//src,
 				new ParamRole(gc.subj.toString(), Stream.of(new ParamRange(gc.start, gc.end)).collect(Collectors.toSet())),
-				gc.var, dest, cases.keySet(), cases.values().iterator().next());
+				gc.var, dest, cases.keySet().stream().collect(Collectors.toList()), cases.values().iterator().next());
 	}
 
 	private ParamCoreGType parseGRecursion(Map<RecVar, RecVar> rvs,
@@ -343,7 +344,10 @@ public class ParamCoreGProtocolDeclTranslator
 		}
 		
 		ParamCoreGType cont = parseSeq(is.subList(1, is.size()), rvs, false, false);  // Subseqeuent choice/rec is guarded by (at least) this action
-		return this.af.ParamCoreGChoice(src, kind, dest, Stream.of(a).collect(Collectors.toMap(x -> x, x -> cont)));
+		LinkedHashMap<ParamCoreMessage, ParamCoreGType> tmp = new LinkedHashMap<>();
+		tmp.put(a, cont);
+		return this.af.ParamCoreGChoice(src, kind, dest, tmp);
+				//Stream.of(a).collect(Collectors.toMap(x -> x, x -> cont)));
 	}
 
 	private Op parseOp(GMessageTransfer gmt) throws ParamCoreSyntaxException

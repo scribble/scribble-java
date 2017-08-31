@@ -1,6 +1,6 @@
 package org.scribble.ext.go.core.ast.local;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 import org.scribble.ext.go.core.ast.ParamCoreChoice;
@@ -10,7 +10,7 @@ import org.scribble.type.kind.Local;
 
 public abstract class ParamCoreLChoice extends ParamCoreChoice<ParamCoreLType, Local> implements ParamCoreLType
 {
-	protected ParamCoreLChoice(ParamRole role, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
+	protected ParamCoreLChoice(ParamRole role, ParamCoreLActionKind kind, LinkedHashMap<ParamCoreMessage, ParamCoreLType> cases)
 	{
 		super(role, kind, cases);
 	}

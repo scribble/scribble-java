@@ -91,9 +91,10 @@ public class EReceive extends EAction
 		{
 			return false;
 		}
-		return ((EReceive) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 
+	@Override
 	public boolean canEqual(Object o)
 	{
 		return o instanceof EReceive;

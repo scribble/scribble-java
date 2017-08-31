@@ -2,7 +2,9 @@ package org.scribble.ext.go.core.model.endpoint;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.ast.ParamCoreRecVar;
@@ -20,6 +22,8 @@ import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.Payload;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 
 public class ParamCoreEGraphBuilder
@@ -45,20 +49,26 @@ public class ParamCoreEGraphBuilder
 	{
 		if (lt instanceof ParamCoreLChoice)
 		{
-			ParamCoreLChoice lc = (ParamCoreLChoice) lt;
-			ParamIndexExpr offset = (lc instanceof ParamCoreLDotChoice)
-					? ((ParamCoreLDotChoice) lc).offset
-					: null;
-			lc.cases.entrySet().stream().forEach(e ->
-				buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue(), offset)
-			);
-		}
-		else if (lt instanceof ParamCoreLMultiChoices)
-		{
-			ParamCoreLMultiChoices lc = (ParamCoreLMultiChoices) lt;
-			lc.cases.entrySet().stream().forEach(e ->  // FIXME: all conts are syntactically the same, so implicitly do the merge here?
-				buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue(), null)
-			);
+			if (lt instanceof ParamCoreLMultiChoices)
+			{
+				ParamCoreLMultiChoices lc = (ParamCoreLMultiChoices) lt;
+				/*lc.cases.entrySet().stream().forEach(e ->  // FIXME: all conts are syntactically the same, so implicitly do the merge here?
+					buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue(), null)
+				);*/
+				List<MessageId<?>> mids = lc.cases.keySet().stream().map(x -> x.op).collect(Collectors.toList());
+				List<Payload> pays = lc.cases.keySet().stream().map(x -> x.pay).collect(Collectors.toList());
+				buildMultiChoicesEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), mids, pays, lc.getContinuation());
+			}
+			else
+			{
+				ParamCoreLChoice lc = (ParamCoreLChoice) lt;
+				ParamIndexExpr offset = (lc instanceof ParamCoreLDotChoice)
+						? ((ParamCoreLDotChoice) lc).offset
+						: null;
+				lc.cases.entrySet().stream().forEach(e ->
+					buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue(), offset)
+				);
+			}
 		}
 		else if (lt instanceof ParamCoreLRec)
 		{
@@ -76,19 +86,42 @@ public class ParamCoreEGraphBuilder
 	private void buildEdgeAndContinuation(EState s1, EState s2, Map<RecVar, EState> recs, 
 			ParamRole r, ParamCoreLActionKind k, ParamCoreMessage a, ParamCoreLType cont, ParamIndexExpr offset)
 	{
+		EAction ea = toEAction(r, k, a, offset);
 		if (cont instanceof ParamCoreLEnd)
 		{
-			this.util.addEdge(s1, toEAction(r, k, a, offset), s2);
+			this.util.addEdge(s1, ea, s2);
 		}
 		else if (cont instanceof ParamCoreRecVar)
 		{
 			EState s = recs.get(((ParamCoreRecVar<?>) cont).recvar);
-			this.util.addEdge(s1, toEAction(r, k, a, offset), s);
+			this.util.addEdge(s1, ea, s);
 		}
 		else
 		{
 			EState s = this.util.ef.newEState(Collections.emptySet());  
-			this.util.addEdge(s1, toEAction(r, k, a, offset), s);
+			this.util.addEdge(s1, ea, s);
+			build(cont, s, s2, recs);
+		}
+	}
+
+	// FIXME: factor out with above
+	private void buildMultiChoicesEdgeAndContinuation(EState s1, EState s2, Map<RecVar, EState> recs, 
+			ParamRole r, ParamCoreLActionKind k, List<MessageId<?>> mids, List<Payload> pays, ParamCoreLType cont)
+	{
+		EAction ea = ((ParamCoreEModelFactory) this.util.ef).newParamCoreEMultiChoicesReceive(r, mids, pays);
+		if (cont instanceof ParamCoreLEnd)
+		{
+			this.util.addEdge(s1, ea, s2);
+		}
+		else if (cont instanceof ParamCoreRecVar)
+		{
+			EState s = recs.get(((ParamCoreRecVar<?>) cont).recvar);
+			this.util.addEdge(s1, ea, s);
+		}
+		else
+		{
+			EState s = this.util.ef.newEState(Collections.emptySet());  
+			this.util.addEdge(s1, ea, s);
 			build(cont, s, s2, recs);
 		}
 	}
@@ -113,10 +146,10 @@ public class ParamCoreEGraphBuilder
 		{
 			return ef.newParamCoreEDotReceive(r, offset, a.op, a.pay);
 		}
-		else if (k.equals(ParamCoreLActionKind.MULTICHOICES_RECEIVE))
+		/*else if (k.equals(ParamCoreLActionKind.MULTICHOICES_RECEIVE))
 		{
 			return ef.newParamCoreEMultiChoicesReceive(r, a.op, a.pay);
-		}
+		}*/
 		else
 		{
 			throw new RuntimeException("[param-core] Shouldn't get in here: " + k);

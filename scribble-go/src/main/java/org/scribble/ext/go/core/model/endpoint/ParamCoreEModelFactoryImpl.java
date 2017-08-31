@@ -1,5 +1,7 @@
 package org.scribble.ext.go.core.model.endpoint;
 
+import java.util.List;
+
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreECrossSend;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotReceive;
@@ -54,8 +56,9 @@ public class ParamCoreEModelFactoryImpl extends EModelFactoryImpl implements Par
 	}
 
 	@Override
-	public ParamCoreEMultiChoicesReceive newParamCoreEMultiChoicesReceive(ParamRole peer, MessageId<?> mid, Payload payload)
+	public ParamCoreEMultiChoicesReceive newParamCoreEMultiChoicesReceive(ParamRole peer,//MessageId<?> mid, Payload payload)
+			List<MessageId<?>> mids, List<Payload> pays)
 	{
-		return new ParamCoreEMultiChoicesReceive(this, peer, mid, payload);
+		return new ParamCoreEMultiChoicesReceive(this, peer, mids, pays);
 	}
 }

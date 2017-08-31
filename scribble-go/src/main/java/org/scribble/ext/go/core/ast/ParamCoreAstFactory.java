@@ -1,7 +1,7 @@
 package org.scribble.ext.go.core.ast;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,13 +47,13 @@ public class ParamCoreAstFactory
 		return new ParamCoreMessage(op, pay);
 	}
 	
-	public ParamCoreGChoice ParamCoreGChoice(ParamRole src, ParamCoreGActionKind kind, ParamRole dest, Map<ParamCoreMessage, ParamCoreGType> cases)
+	public ParamCoreGChoice ParamCoreGChoice(ParamRole src, ParamCoreGActionKind kind, ParamRole dest, LinkedHashMap<ParamCoreMessage, ParamCoreGType> cases)
 	{
 		return new ParamCoreGChoice(src, kind, dest, cases);
 	}
 	
 	public ParamCoreGMultiChoices ParamCoreGMultiChoices(ParamRole src, ParamIndexVar var,
-			ParamRole dest, Set<ParamCoreMessage> cases, ParamCoreGType cont)
+			ParamRole dest, List<ParamCoreMessage> cases, ParamCoreGType cont)
 	{
 		return new ParamCoreGMultiChoices(src, var, dest, cases, cont);
 	}
@@ -73,17 +73,20 @@ public class ParamCoreAstFactory
 		return ParamCoreGEnd.END;
 	}
 
-	public ParamCoreLCrossChoice ParamCoreLCrossChoice(ParamRole role, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
+	public ParamCoreLCrossChoice ParamCoreLCrossChoice(ParamRole role, ParamCoreLActionKind kind,
+			LinkedHashMap<ParamCoreMessage, ParamCoreLType> cases)
 	{
 		return new ParamCoreLCrossChoice(role, kind, cases);
 	}
 
-	public ParamCoreLDotChoice ParamCoreLDotChoice(ParamRole role, ParamIndexExpr offset, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
+	public ParamCoreLDotChoice ParamCoreLDotChoice(ParamRole role, ParamIndexExpr offset, ParamCoreLActionKind kind,
+			LinkedHashMap<ParamCoreMessage, ParamCoreLType> cases)
 	{
 		return new ParamCoreLDotChoice(role, offset, kind, cases);
 	}
 	
-	public ParamCoreLMultiChoices ParamCoreLMultiChoices(ParamRole role, ParamIndexVar var, Set<ParamCoreMessage> cases, ParamCoreLType cont)
+	public ParamCoreLMultiChoices ParamCoreLMultiChoices(ParamRole role, ParamIndexVar var,
+			List<ParamCoreMessage> cases, ParamCoreLType cont)
 	{
 		return new ParamCoreLMultiChoices(role, var, cases, cont);
 	}

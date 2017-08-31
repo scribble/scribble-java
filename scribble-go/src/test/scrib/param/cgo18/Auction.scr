@@ -20,6 +20,39 @@ aux global protocol X(role A, role B(n))
 {
 	choice at A[1]
 	{	
+		highestBidSoFar(int) from A[1..1] to B[1..n];	
+
+		choices at B[i:1..n]
+		{
+			bid(int) from B[i] to A[1..1];
+			do X(A, B);
+		}
+		or
+		{
+			skip(int) from B[i] to A[1..1];
+			do X(A, B);
+		}
+	}
+	or
+	{
+		winner() from A[1..1] to B[1..n];
+	}
+}
+//*/
+
+
+
+
+
+
+
+
+/*
+// mu X
+aux global protocol X(role A, role B(n))
+{
+	choice at A[1]
+	{	
 		highestbid(int) from A[1..1] to B[1..n];	
 
 		/* // If "directly" corresponding to formalism
@@ -35,7 +68,7 @@ aux global protocol X(role A, role B(n))
 		// Version to implement
 		/*foreach (i: 1..n)
 		{
-			choice at B[i]*/
+			choice at B[i]* /
 			choices at B[i:1..n]
 			{
 				bid(int) from B[i] to A[1..1];
