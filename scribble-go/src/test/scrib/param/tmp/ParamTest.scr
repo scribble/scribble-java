@@ -37,8 +37,24 @@ message passing
 // encode "multi-choices" by local role(thread) forking/joining? for dynamic join/leave use param-value dependency? (run-time checked?)
 */
 
-
 //*
+global protocol Proto1(role A(n), role B(n))
+{
+	choices at A[i:1..n]
+	{
+		1() from A[i] to B[1..1];
+		3() from B[1..1] to A[1..n];
+	}
+	or
+	{
+		2() from A[i] to B[1..1];
+		3() from B[1..1] to A[1..n];
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A(n), role B(n))
 {
 	choices at A[i:1..n]
@@ -84,6 +100,7 @@ global protocol Proto1(role A(n))
 	/*choices at A[i:1..n]
 	{
 		1() from A[i] to B[1..1];
+		//1() from B[1..1] to A[i];  // Not allowed
 	}* /
 }
 //*/

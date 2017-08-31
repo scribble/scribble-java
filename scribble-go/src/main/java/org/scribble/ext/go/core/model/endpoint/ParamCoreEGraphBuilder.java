@@ -52,12 +52,11 @@ public class ParamCoreEGraphBuilder
 			if (lt instanceof ParamCoreLMultiChoices)
 			{
 				ParamCoreLMultiChoices lc = (ParamCoreLMultiChoices) lt;
-				/*lc.cases.entrySet().stream().forEach(e ->  // FIXME: all conts are syntactically the same, so implicitly do the merge here?
-					buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue(), null)
-				);*/
 				List<MessageId<?>> mids = lc.cases.keySet().stream().map(x -> x.op).collect(Collectors.toList());
 				List<Payload> pays = lc.cases.keySet().stream().map(x -> x.pay).collect(Collectors.toList());
 				buildMultiChoicesEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), mids, pays, lc.getContinuation());
+						// N.B. this directly constructs a single continuation for the multichoices-receiver
+						// cf. multichoices sender side, standard cross-send with separate (but identical) continuations -- could also build single contination for sender by introducing explicit multichoices-send constructor
 			}
 			else
 			{
