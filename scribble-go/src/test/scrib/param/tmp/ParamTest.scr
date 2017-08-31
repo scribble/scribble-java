@@ -39,10 +39,17 @@ message passing
 
 
 //*
+global protocol Proto1(role A(n), role B(n))
+{
+	1() dot A[1..n] to B[1+1..n+1];
+}
+//*/
+
+
+/*
 global protocol Proto1(role A(n))
 {
 	1() dot A[1..n] to A[2..n+1];
-
 	2() dot A[3..n+3] to A[4..n+4];
 }
 //*/
