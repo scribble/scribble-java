@@ -6,6 +6,7 @@ import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotReceive;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotSend;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEMultiChoicesReceive;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.model.endpoint.EModelFactoryImpl;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
@@ -41,15 +42,15 @@ public class ParamCoreEModelFactoryImpl extends EModelFactoryImpl implements Par
 	}
 
 	@Override
-	public ParamCoreEDotSend newParamCoreEDotSend(ParamRole peer, MessageId<?> mid, Payload payload)
+	public ParamCoreEDotSend newParamCoreEDotSend(ParamRole peer, ParamIndexExpr offset, MessageId<?> mid, Payload payload)
 	{
-		return new ParamCoreEDotSend(this, peer, mid, payload);
+		return new ParamCoreEDotSend(this, peer, offset, mid, payload);
 	}
 
 	@Override
-	public ParamCoreEDotReceive newParamCoreEDotReceive(ParamRole peer, MessageId<?> mid, Payload payload)
+	public ParamCoreEDotReceive newParamCoreEDotReceive(ParamRole peer, ParamIndexExpr offset, MessageId<?> mid, Payload payload)
 	{
-		return new ParamCoreEDotReceive(this, peer, mid, payload);
+		return new ParamCoreEDotReceive(this, peer, offset, mid, payload);
 	}
 
 	@Override

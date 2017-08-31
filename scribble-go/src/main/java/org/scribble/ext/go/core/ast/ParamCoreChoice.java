@@ -61,7 +61,7 @@ public abstract class ParamCoreChoice<C extends ParamCoreType<K>, K extends Prot
 				.map(e -> e.getKey() + "." + e.getValue()).collect(Collectors.joining(", "));
 		s = (this.cases.size() > 1)
 				? "{ " + s + " }"
-				: s;
+				: ":" + s;
 		return s;
 	}
 }

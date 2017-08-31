@@ -13,7 +13,8 @@ import org.scribble.ext.go.core.ast.global.ParamCoreGRec;
 import org.scribble.ext.go.core.ast.global.ParamCoreGRecVar;
 import org.scribble.ext.go.core.ast.global.ParamCoreGType;
 import org.scribble.ext.go.core.ast.local.ParamCoreLActionKind;
-import org.scribble.ext.go.core.ast.local.ParamCoreLChoice;
+import org.scribble.ext.go.core.ast.local.ParamCoreLCrossChoice;
+import org.scribble.ext.go.core.ast.local.ParamCoreLDotChoice;
 import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
 import org.scribble.ext.go.core.ast.local.ParamCoreLMultiChoices;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRec;
@@ -21,6 +22,7 @@ import org.scribble.ext.go.core.ast.local.ParamCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.type.Payload;
 import org.scribble.type.name.Op;
@@ -71,9 +73,14 @@ public class ParamCoreAstFactory
 		return ParamCoreGEnd.END;
 	}
 
-	public ParamCoreLChoice ParamCoreLChoice(ParamRole role, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
+	public ParamCoreLCrossChoice ParamCoreLCrossChoice(ParamRole role, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
 	{
-		return new ParamCoreLChoice(role, kind, cases);
+		return new ParamCoreLCrossChoice(role, kind, cases);
+	}
+
+	public ParamCoreLDotChoice ParamCoreLDotChoice(ParamRole role, ParamIndexExpr offset, ParamCoreLActionKind kind, Map<ParamCoreMessage, ParamCoreLType> cases)
+	{
+		return new ParamCoreLDotChoice(role, offset, kind, cases);
 	}
 	
 	public ParamCoreLMultiChoices ParamCoreLMultiChoices(ParamRole role, ParamIndexVar var, Set<ParamCoreMessage> cases, ParamCoreLType cont)

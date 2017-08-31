@@ -39,9 +39,6 @@ public class ParamAntlrGDotMessageTransfer
 		ParamIndexExpr sourceStart = ParamAntlrIndexExpr.parseParamIndexExpr(getSourceRangeStartChild(root), af);
 		ParamIndexExpr sourceEnd = ParamAntlrIndexExpr.parseParamIndexExpr(getSourceRangeEndChild(root), af);
 		ParamIndexExpr destStart = ParamAntlrIndexExpr.parseParamIndexExpr(getDestRangeStartChild(root), af);
-		
-		System.out.println("aaa: " + getDestRangeEndChild(root));
-		
 		ParamIndexExpr destEnd = ParamAntlrIndexExpr.parseParamIndexExpr(getDestRangeEndChild(root), af);
 		return af.ParamGDotMessageTransfer(root, src, msg, dest, sourceStart, sourceEnd, destStart, destEnd);
 	}

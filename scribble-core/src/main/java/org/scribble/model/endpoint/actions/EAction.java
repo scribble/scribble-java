@@ -24,7 +24,7 @@ import org.scribble.type.name.Role;
 
 public abstract class EAction extends MAction<Local>
 {
-	public final Role peer;
+	public final Role peer;  // this.peer == this.obj
 	/*public final MessageId<?> mid;
 	public final Payload payload;  // Empty for MessageSigNames*/
 

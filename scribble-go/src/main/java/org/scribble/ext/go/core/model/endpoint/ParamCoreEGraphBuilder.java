@@ -8,12 +8,14 @@ import org.scribble.ext.go.core.ast.ParamCoreMessage;
 import org.scribble.ext.go.core.ast.ParamCoreRecVar;
 import org.scribble.ext.go.core.ast.local.ParamCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.ParamCoreLChoice;
+import org.scribble.ext.go.core.ast.local.ParamCoreLDotChoice;
 import org.scribble.ext.go.core.ast.local.ParamCoreLEnd;
 import org.scribble.ext.go.core.ast.local.ParamCoreLMultiChoices;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRec;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.ParamJob;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
 import org.scribble.model.endpoint.EState;
@@ -44,15 +46,18 @@ public class ParamCoreEGraphBuilder
 		if (lt instanceof ParamCoreLChoice)
 		{
 			ParamCoreLChoice lc = (ParamCoreLChoice) lt;
+			ParamIndexExpr offset = (lc instanceof ParamCoreLDotChoice)
+					? ((ParamCoreLDotChoice) lc).offset
+					: null;
 			lc.cases.entrySet().stream().forEach(e ->
-				buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue())
+				buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue(), offset)
 			);
 		}
 		else if (lt instanceof ParamCoreLMultiChoices)
 		{
 			ParamCoreLMultiChoices lc = (ParamCoreLMultiChoices) lt;
 			lc.cases.entrySet().stream().forEach(e ->  // FIXME: all conts are syntactically the same, so implicitly do the merge here?
-				buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue())
+				buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue(), null)
 			);
 		}
 		else if (lt instanceof ParamCoreLRec)
@@ -69,26 +74,26 @@ public class ParamCoreEGraphBuilder
 	}
 
 	private void buildEdgeAndContinuation(EState s1, EState s2, Map<RecVar, EState> recs, 
-			ParamRole r, ParamCoreLActionKind k, ParamCoreMessage a, ParamCoreLType cont)
+			ParamRole r, ParamCoreLActionKind k, ParamCoreMessage a, ParamCoreLType cont, ParamIndexExpr offset)
 	{
 		if (cont instanceof ParamCoreLEnd)
 		{
-			this.util.addEdge(s1, toEAction(r, k, a), s2);
+			this.util.addEdge(s1, toEAction(r, k, a, offset), s2);
 		}
 		else if (cont instanceof ParamCoreRecVar)
 		{
 			EState s = recs.get(((ParamCoreRecVar<?>) cont).recvar);
-			this.util.addEdge(s1, toEAction(r, k, a), s);
+			this.util.addEdge(s1, toEAction(r, k, a, offset), s);
 		}
 		else
 		{
 			EState s = this.util.ef.newEState(Collections.emptySet());  
-			this.util.addEdge(s1, toEAction(r, k, a), s);
+			this.util.addEdge(s1, toEAction(r, k, a, offset), s);
 			build(cont, s, s2, recs);
 		}
 	}
 	
-	private EAction toEAction(ParamRole r, ParamCoreLActionKind k, ParamCoreMessage a)
+	private EAction toEAction(ParamRole r, ParamCoreLActionKind k, ParamCoreMessage a, ParamIndexExpr offset)
 	{
 		ParamCoreEModelFactory ef = (ParamCoreEModelFactory) this.util.ef;  // FIXME: factor out
 		if (k.equals(ParamCoreLActionKind.CROSS_SEND))
@@ -102,12 +107,11 @@ public class ParamCoreEGraphBuilder
 		}
 		else if (k.equals(ParamCoreLActionKind.DOT_SEND))
 		{
-			return ef.newParamCoreEDotSend(r, a.op, a.pay);
-
+			return ef.newParamCoreEDotSend(r, offset, a.op, a.pay);
 		}
 		else if (k.equals(ParamCoreLActionKind.DOT_RECEIVE))
 		{
-			return ef.newParamCoreEDotReceive(r, a.op, a.pay);
+			return ef.newParamCoreEDotReceive(r, offset, a.op, a.pay);
 		}
 		else if (k.equals(ParamCoreLActionKind.MULTICHOICES_RECEIVE))
 		{

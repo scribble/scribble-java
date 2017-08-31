@@ -1,7 +1,9 @@
 package org.scribble.ext.go.core.model.endpoint.action;
 
 import org.scribble.ext.go.core.model.endpoint.ParamCoreEModelFactory;
+import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SSend;
@@ -11,10 +13,13 @@ import org.scribble.type.name.Role;
 
 public class ParamCoreEDotSend extends ESend implements ParamCoreEAction
 {
+	public final ParamIndexExpr offset;
 
-	public ParamCoreEDotSend(ParamCoreEModelFactory ef, ParamRole peer, MessageId<?> mid, Payload payload)
+	// ParamRole range is original peer absolute range -- local id plus offset will be inside this range
+	public ParamCoreEDotSend(ParamCoreEModelFactory ef, ParamRole peer, ParamIndexExpr offset, MessageId<?> mid, Payload payload)
 	{
 		super(ef, peer, mid, payload);
+		this.offset = offset;
 	}
 
 	@Override
@@ -34,11 +39,30 @@ public class ParamCoreEDotSend extends ESend implements ParamCoreEAction
 	{
 		throw new RuntimeException("[param-core] Shouldn't get in here: " + this);
 	}
+	
+	@Override
+	public String toString()
+	{
+		ParamRole peer = getPeer();
+		ParamRange g = peer.ranges.iterator().next();
+		return peer.getName() + "[" + this.offset + ":" + g.start + ".." + g.end + "]"
+				+ getCommSymbol() + this.mid + this.payload;
+	}
 
+	@Override
+	public String toStringWithMessageIdHack()
+	{
+		String m = this.mid.isMessageSigName() ? "^" + this.mid : this.mid.toString();  // HACK
+		ParamRole peer = getPeer();
+		ParamRange g = peer.ranges.iterator().next();
+		return peer.getName() + "[" + this.offset + ":" + g.start + ".." + g.end + "]"
+				+ getCommSymbol() + m + this.payload;
+	}
+	
 	@Override
 	protected String getCommSymbol()
 	{
-		return "?=";
+		return "!=";
 	}
 	
 	@Override
@@ -46,6 +70,7 @@ public class ParamCoreEDotSend extends ESend implements ParamCoreEAction
 	{
 		int hash = 7211;
 		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + this.offset.hashCode();
 		return hash;
 	}
 
@@ -60,7 +85,8 @@ public class ParamCoreEDotSend extends ESend implements ParamCoreEAction
 		{
 			return false;
 		}
-		return super.equals(o);  // Does canEquals
+		return super.equals(o)  // Does canEquals
+				&& this.offset.equals(((ParamCoreEDotSend) o).offset);
 	}
 
 	@Override

@@ -9,44 +9,66 @@ type <go> "int" from "..." as int;
 
 global protocol Proto1(role B(k))
 {
-	m1(int) dot B[1..k] to B[2..k+1];
-	m1(int) dot B[k+1..k+1] to B[1..1];
-	m1(int) dot B[1..k] to B[2..k+1];
-	m1(int) dot B[k+1..k+1] to B[1..1];
-	//...
-	m1(int) dot B[1..k] to B[2..k+1];
-	m1(int) dot B[k+1..k+1] to B[1..1];
-}
-
-
-global protocol Proto2(role B(k))
-{
 	choice at B[1]
 	{
-		m1(int) from B[1..1] to B[2..k+1];
-		m1(int) dot B[1..k] to B[2..k+1];
+		m1(int) dot B[1..k]     to B[2..k+1];
 		m1(int) dot B[k+1..k+1] to B[1..1];
+		//m1(int) from B[k+1..k+1] to B[1..1];  // Equivalent to above line
 
-		do Proto2(B);
+		do Proto1(B);
 	}
 	or
 	{
-		m2(int) from B[1..1] to B[2..k+1];
-		m2(int) dot B[1..k] to B[2..k+1];
+		m2(int) dot B[1..k]     to B[2..k+1];
 		m2(int) dot B[k+1..k+1] to B[1..1];
+		//m2(int) from B[k+1..k+1] to B[1..1];  // Equivalent to above line
 	}
 }
 
 
+
 /*
+global protocol Proto2(role B(k))
+{
+	m1(int) dot B[1..k]     to B[2..k+1];
+	m1(int) dot B[k+1..k+1] to B[1..1];
+	m1(int) dot B[1..k]     to B[2..k+1];
+	m1(int) dot B[k+1..k+1] to B[1..1];
+	//...
+	m1(int) dot B[1..k]     to B[2..k+1];
+	m1(int) dot B[k+1..k+1] to B[1..1];
+}
+
+
 global protocol Proto3(role B(k))
+{
+	choice at B[1]
+	{
+		m1(int) from B[1..1]    to B[2..k+1];
+		m1(int) dot B[1..k]     to B[2..k+1];
+		m1(int) dot B[k+1..k+1] to B[1..1];
+
+		do Proto3(B);
+	}
+	or
+	{
+		m2(int) from B[1..1]    to B[2..k+1];
+		m2(int) dot B[1..k]     to B[2..k+1];
+		m2(int) dot B[k+1..k+1] to B[1..1];
+	}
+}
+//*/
+
+
+/*
+global protocol Proto4(role B(k))
 {
 	choices at B[i:1..k+1]
 	{
 		m1(int) from B[i] to B[i+1];  // Projection at dest?
 		m1(int) dot B[k+1..k+1] to B[1..1];
 
-		do Proto3(B);
+		do Proto4(B);
 	}
 	or
 	{
