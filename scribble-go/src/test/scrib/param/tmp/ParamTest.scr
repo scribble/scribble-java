@@ -43,7 +43,7 @@ message passing
 global protocol Proto1(role A(n), role B(n))
 {
 	1() from A[1..1] to B[1..n];
-	2() from A[1..1] to B[1..n];
+	2() from B[1..n] to B[1..1];
 }
 //*/
 

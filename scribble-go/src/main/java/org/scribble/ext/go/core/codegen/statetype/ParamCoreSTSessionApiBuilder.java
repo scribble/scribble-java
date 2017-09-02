@@ -47,7 +47,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
 				+ this.apigen.generateScribbleRuntimeImports() + "\n";
 
-		sessPack += "\n\n"
+		sessPack += "\n"
 				+ "type " + simpname + " struct {\n"
 				+ roles.stream().map(r -> r + " " + ParamCoreSTApiGenConstants.GO_ROLE_TYPE + "\n").collect(Collectors.joining(""))
 						// Just need role name constants for now -- params not fixed until endpoint creation
@@ -94,7 +94,8 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 		sessPack += "\n" +
 				roles.stream().map(r ->
 					  "\n"
-					+ "func New" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r) + "(p " + simpname + ") (*"
+					+ "func New" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r)
+							+ "(p " + simpname + ", params map[string]int) (*"
 							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + ", " + ParamCoreSTApiGenConstants.GO_FINALISER_TYPE + ") {\n"
 					+ "ep := " + ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")\n"
 					+ "return ep, ep." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINALISE + "\n"

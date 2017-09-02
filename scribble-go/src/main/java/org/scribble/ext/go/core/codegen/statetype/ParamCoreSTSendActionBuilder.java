@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 
 import org.scribble.codegen.statetype.STSendActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEAction;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
@@ -14,7 +15,9 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
-		return ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_PREFIX + "_" + a.peer + "_" + a.mid;
+		return ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_PREFIX + "_"
+				+ ParamCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((ParamCoreEAction) a).getPeer())
+				+ "_" + a.mid;
 	}
 
 	@Override
@@ -30,8 +33,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 	{
 		String sEpWrite = 
 				//s.ep.Write
-				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-						+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITE;
+				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITE;
 		/*String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."

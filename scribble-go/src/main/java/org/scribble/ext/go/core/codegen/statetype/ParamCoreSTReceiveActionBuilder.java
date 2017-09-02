@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 
 import org.scribble.codegen.statetype.STReceiveActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEAction;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
@@ -14,7 +15,9 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
-		return ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_" + a.peer + "_" + a.mid;
+		return ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_"
+				+ ParamCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((ParamCoreEAction) a).getPeer())
+				+ "_" + a.mid;
 	}
 
 	@Override
@@ -30,8 +33,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	{
 		String sEpRecv = 
 				//s.ep.Write
-				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-						+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READ;
+				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READ;
 		/*String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."

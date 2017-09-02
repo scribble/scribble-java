@@ -14,6 +14,7 @@ import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotReceive;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotSend;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEMultiChoicesReceive;
 import org.scribble.ext.go.core.type.ParamActualRole;
+import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
@@ -48,6 +49,13 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		return (ParamActualRole) this.getSelf();
 	}
+	
+	// Not actual roles; param roles in EFSM actions -- cf. ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName
+	public static String getGeneratedParamRoleName(ParamRole r) 
+	{
+		return r.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");
+	}
+	
 
 	/*@Override
 	public String getPackage()
