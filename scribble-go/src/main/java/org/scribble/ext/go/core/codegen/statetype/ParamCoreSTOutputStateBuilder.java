@@ -15,6 +15,6 @@ public class ParamCoreSTOutputStateBuilder extends STOutputStateBuilder
 	@Override
 	public String getPreamble(STStateChanApiBuilder api, EState s)
 	{
-		return ParamCoreSTStateChanApiBuilder.getStateChanPremable(api, s);
+		return ((ParamCoreSTStateChanApiBuilder) api).getStateChanPremable(s);
 	}
 }

@@ -1,59 +1,67 @@
 package org.scribble.ext.go.core.codegen.statetype;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.model.MState;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
-public class ParamCoreSTSessionApiBuilder
+// Cf. STStateChanApiBuilder
+public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuilder
 {
-	private ParamCoreSTStateChanApiBuilder api;
+	//private ParamCoreSTStateChanApiBuilder api;
+	private ParamCoreSTEndpointApiGenerator apigen;
 	
-	public ParamCoreSTSessionApiBuilder(ParamCoreSTStateChanApiBuilder api)
+	//public ParamCoreSTSessionApiBuilder(ParamCoreSTStateChanApiBuilder api)
+	public ParamCoreSTSessionApiBuilder(ParamCoreSTEndpointApiGenerator apigen)
 	{
-		this.api = api;
+		this.apigen = apigen;
 	}
 
 	//@Override
-	public Map<String, String> buildSessionAPI()  // FIXME: factor out
+	public Map<String, String> build()  // FIXME: factor out
 	{
-		Module mod = api.job.getContext().getModule(api.gpn.getPrefix());
-		GProtocolName simpname = api.gpn.getSimpleName();
+		Module mod = this.apigen.job.getContext().getModule(this.apigen.proto.getPrefix());
+		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		ProtocolDecl<Global> gpd = mod.getProtocolDecl(simpname);
-
 		List<Role> roles = gpd.header.roledecls.getRoles();
-		Set<EState> instates = new HashSet<>();
-		Predicate<EState> f = (s) -> s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT;
-		if (f.test(api.graph.init))
+
+		/*Set<EState> instates = new HashSet<>();
+		Predicate<EState> f = s -> s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT;
+		if (f.test(this.apigen.graph.init))
 		{
-			instates.add(api.graph.init);
+			instates.add(this.apigen.graph.init);
 		}
-		instates.addAll(MState.getReachableStates(api.graph.init).stream().filter(f).collect(Collectors.toSet()));
-	
-		Map<String, String> res = new HashMap<>();
-		String dir = api.gpn.toString().replaceAll("\\.", "/") + "/";
+		instates.addAll(MState.getReachableStates(this.apigen.graph.init).stream().filter(f).collect(Collectors.toSet()));*/
 
 		// roles
-		String sessclass =
-					"package " + api.getPackage() + "\n"  // FIXME: factor out
+		String sessPack =
+					//"package " + this.apigen.getRootPackage() + "\n"  // FIXME: factor out
+					this.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
-				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
-				+ "\n"
-				+ roles.stream().map(r -> 
-				  	  "type _" + r + " struct { }\n"
+				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
+				+ this.apigen.generateScribbleRuntimeImports() + "\n";
+
+		sessPack += "\n\n"
+				+ "type " + simpname + " struct {\n"
+				+ roles.stream().map(r -> r + " " + ParamCoreSTApiGenConstants.GO_ROLE_TYPE + "\n").collect(Collectors.joining(""))
+						// Just need role name constants for now -- params not fixed until endpoint creation
+				+ "}\n"
+				+ "\n" 
+				+ "func New" + simpname + "() " + simpname + " {\n"
+				+ "return " + simpname + "{ " + roles.stream().map(r -> ParamCoreSTApiGenConstants.GO_ROLE_CONSTRUCTOR
+						+ "(\"" + r + "\")").collect(Collectors.joining(", ")) + " }\n"
+						 // Singleton types?
+				+ "}\n";
+
+		/*sessPack +=
+				roles.stream().map(r -> 
+						  "type _" + r + " struct { }\n"
 				  	+ "\n"
 				  	+ "func (*_" + r +") GetRoleName() string {\n"
 				  	+ "return \"" + r + "\"\n"
@@ -68,21 +76,13 @@ public class ParamCoreSTSessionApiBuilder
 				  	+ "return __" + r + "\n"
 				  	+ "}"
 				  ).collect(Collectors.joining("\n\n")) + "\n"
-				+ "\n"
-				+ "type " + simpname + " struct {\n"
-				+ roles.stream().map(r -> r + " *_" + r).collect(Collectors.joining("\n")) + "\n"  // FIXME: role constants should be pointers?
-				+ "}\n"
-				+ "\n" 
-				+ "func New" + simpname + "() *" + simpname + "{\n"
-				+ "return &" + simpname + "{ " + roles.stream().map(r -> "new" + r + "()").collect(Collectors.joining(", ")) + " }\n"
-				+ "}";
+				+ "\n";*/
 		
 		// Protocol and role specific endpoints
-		Function<Role, String> epTypeName = r -> "_Endpoint" + simpname + "_" + r;
-		sessclass +=
+		/*Function<Role, String> epTypeName = r -> "_Endpoint" + simpname + "_" + r;
+		sessPack +=
 				roles.stream().map(r ->
-						  "\n\n"
-						+ "type " + epTypeName.apply(r) + " struct {\n"  // FIXME: factor out
+						  "\n\ntype " + epTypeName.apply(r) + " struct {\n"  // FIXME: factor out
 						+ r + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
 						+ "}\n"
 						+ "\n"
@@ -90,10 +90,20 @@ public class ParamCoreSTSessionApiBuilder
 						+ "return &" + epTypeName.apply(r) + " { " + r + ": "
 								+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "(P, P." + r + ") }\n"
 						+ "}"
+				).collect(Collectors.joining(""));*/
+		sessPack += "\n" +
+				roles.stream().map(r ->
+					  "\n"
+					+ "func New" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r) + "(p " + simpname + ") (*"
+							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + ", " + ParamCoreSTApiGenConstants.GO_FINALISER_TYPE + ") {\n"
+					+ "ep := " + ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")\n"
+					+ "return ep, ep." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINALISE + "\n"
+					+ "}\n"
 				).collect(Collectors.joining(""));
 		
-		res.put(dir + simpname + ".go", sessclass);
-		
+		String dir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";
+		Map<String, String> res = new HashMap<>();
+		res.put(dir + simpname + ".go", sessPack);
 		return res;
 	}
 }

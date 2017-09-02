@@ -3,8 +3,8 @@ package org.scribble.ext.go.core.codegen.statetype;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.codegen.statetype.STSendActionBuilder;
+import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
@@ -40,17 +40,18 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				//"s.ep.Err"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
 					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ERR;
+
 		return 
 				  sEpWrite
-				+ "(" 
-				+ sEpProto
+				+ "(..TODO..)\n"
+				/*+ "(" + sEpProto
 				+ ".(*" + api.gpn.getSimpleName() +")." + a.peer + ", \"" + a.mid + "\")\n"
 				+ IntStream.range(0, a.payload.elems.size())
-				      .mapToObj(i -> sEpWrite + "(" + sEpProto + ".(*" + api.gpn.getSimpleName() +")." + a.peer + ", arg" + i + ")")
-				      .collect(Collectors.joining("\n")) + "\n"
-				+ "if " + sEpErr + " != nil {\n"
-				+ "return nil"
-				+ "}\n"
+				      .mapToObj(i -> sEpWrite + "(..TODO..)") //+ sEpProto + ".(*" + api.gpn.getSimpleName() +")." + a.peer + ", arg" + i + ")")
+				      .collect(Collectors.joining("\n")) + "\n"*/
+				/*+ "if " + sEpErr + " != nil {\n"
+				+ "return nil\n"
+				+ "}\n"*/
 				+ buildReturn(api, curr, succ);
 	}
 }

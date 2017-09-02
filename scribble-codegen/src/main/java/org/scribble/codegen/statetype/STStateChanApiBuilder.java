@@ -58,7 +58,7 @@ public abstract class STStateChanApiBuilder
 		this.eb = eb;
 	}
 	
-	public abstract Map<String, String> buildSessionAPI();  // filepath -> source  // FIXME: factor out
+	//public abstract Map<String, String> buildSessionAPI();  // filepath -> source  // FIXME: factor out
 	
 	public Map<String, String> build()  // filepath -> source
 	{
@@ -94,7 +94,7 @@ public abstract class STStateChanApiBuilder
 	
 	public abstract String getFilePath(String name);
 
-	public abstract String getPackage();
+	//public abstract String getPackage();
 	
 	public String getStateChanName(EState s)
 	{

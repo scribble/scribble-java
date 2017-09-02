@@ -35,7 +35,7 @@ public class GoSTCaseBuilder extends STCaseBuilder
 	public String getPreamble(STStateChanApiBuilder api, EState s)
 	{
 		String casename = getCaseActionName(api, s);
-		return GoSTStateChanApiBuilder.getPackageDecl(api) + "\n"
+		return GoSTStateChanApiBuilder.getPackageDecl((GoSTStateChanApiBuilder) api) + "\n"
 				+ "\n"
 				+ "import \"org/scribble/runtime/net\"\n"  // Some parts duplicated from GSTStateChanAPIBuilder
 				+ "\n"

@@ -15,6 +15,6 @@ public class GoSTOutputStateBuilder extends STOutputStateBuilder
 	@Override
 	public String getPreamble(STStateChanApiBuilder api, EState s)
 	{
-		return GoSTStateChanApiBuilder.getStateChanPremable(api, s);
+		return GoSTStateChanApiBuilder.getStateChanPremable((GoSTStateChanApiBuilder) api, s);
 	}
 }

@@ -20,12 +20,14 @@ public class ParamCoreSTEndStateBuilder extends STEndStateBuilder
 	@Override
 	public String getPreamble(STStateChanApiBuilder api, EState s)
 	{
+		ParamCoreSTStateChanApiBuilder schangen = (ParamCoreSTStateChanApiBuilder) api;
 		//return GSTStateChanAPIBuilder.getStateChanPremable(api, s);
 		String tname = api.getStateChanName(s);
 		String res =
-				  ParamCoreSTStateChanApiBuilder.getPackageDecl(api) + "\n"
+				  schangen.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
-				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
+				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
+				+ schangen.apigen.generateScribbleRuntimeImports() + "\n"
 				+ "\n"
 				+ "type " + tname + " struct{\n"
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"  // FIXME: factor out
