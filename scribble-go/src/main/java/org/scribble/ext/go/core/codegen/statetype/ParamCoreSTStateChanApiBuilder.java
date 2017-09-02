@@ -34,7 +34,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		super(apigen.job, apigen.proto, apigen.self, graph,
 				new ParamCoreSTOutputStateBuilder(new ParamCoreSTSendActionBuilder()),
-				null, //new GoSTReceiveStateBuilder(new GoSTReceiveActionBuilder()),
+				new ParamCoreSTReceiveStateBuilder(new ParamCoreSTReceiveActionBuilder()),
 				null, //new GoSTBranchStateBuilder(new GoSTBranchActionBuilder()),
 				null, //new GoSTCaseBuilder(new GoSTCaseActionBuilder()),
 				new ParamCoreSTEndStateBuilder());

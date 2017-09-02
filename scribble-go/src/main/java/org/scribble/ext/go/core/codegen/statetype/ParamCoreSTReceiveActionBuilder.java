@@ -3,35 +3,35 @@ package org.scribble.ext.go.core.codegen.statetype;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.codegen.statetype.STSendActionBuilder;
+import org.scribble.codegen.statetype.STReceiveActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
-public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
+public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 {
 
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
-		return ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_PREFIX + "_" + a.peer + "_" + a.mid;
+		return ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_" + a.peer + "_" + a.mid;
 	}
 
 	@Override
 	public String buildArgs(EAction a)
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG
-							+ i + " " + a.payload.elems.get(i)).collect(Collectors.joining(", "));
+					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
+							+ i + " *" + a.payload.elems.get(i)).collect(Collectors.joining(", "));
 	}
 
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
-		String sEpWrite = 
+		String sEpRecv = 
 				//s.ep.Write
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-						+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITE;
+						+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READ;
 		/*String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
@@ -42,7 +42,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ERR;*/
 
 		return 
-				  sEpWrite
+				  sEpRecv
 				+ "(..TODO..)\n"
 				/*+ "(" + sEpProto
 				+ ".(*" + api.gpn.getSimpleName() +")." + a.peer + ", \"" + a.mid + "\")\n"

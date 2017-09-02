@@ -13,6 +13,7 @@ public class ParamCoreSTApiGenConstants
 	public static final String GO_ENDPOINT_PROTO = "Proto";
 	public static final String GO_ENDPOINT_ERR = "Err";
 	public static final String GO_ENDPOINT_WRITE = "Write";
+	public static final String GO_ENDPOINT_READ = "Read";
 	public static final String GO_ENDPOINT_STARTPROTOCOL = "StartProtocol";
 	public static final String GO_ENDPOINT_FINISHPROTOCOL = "FinishProtocol";
 	public static final String GO_ENDPOINT_FINALISE = "Finalise";
@@ -34,5 +35,7 @@ public class ParamCoreSTApiGenConstants
 	
 	public static final String GO_CROSS_SEND_FUN_PREFIX = "Send";
 	public static final String GO_CROSS_SEND_FUN_ARG = "arg";
+	public static final String GO_CROSS_RECEIVE_FUN_PREFIX = "Recv";
+	public static final String GO_CROSS_RECEIVE_FUN_ARG = "arg";
 	
 }
