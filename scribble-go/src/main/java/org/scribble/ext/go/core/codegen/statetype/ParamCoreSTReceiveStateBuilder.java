@@ -1,13 +1,13 @@
 package org.scribble.ext.go.core.codegen.statetype;
 
-import org.scribble.codegen.statetype.STOutputStateBuilder;
-import org.scribble.codegen.statetype.STSendActionBuilder;
+import org.scribble.codegen.statetype.STReceiveActionBuilder;
+import org.scribble.codegen.statetype.STReceiveStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.model.endpoint.EState;
 
-public class ParamCoreSTOutputStateBuilder extends STOutputStateBuilder
+public class ParamCoreSTReceiveStateBuilder extends STReceiveStateBuilder
 {
-	public ParamCoreSTOutputStateBuilder(STSendActionBuilder sb)
+	public ParamCoreSTReceiveStateBuilder(STReceiveActionBuilder sb)
 	{
 		super(sb);
 	}

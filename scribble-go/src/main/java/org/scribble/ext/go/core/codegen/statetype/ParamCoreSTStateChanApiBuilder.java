@@ -14,42 +14,55 @@ import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotReceive;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotSend;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEMultiChoicesReceive;
 import org.scribble.ext.go.core.type.ParamActualRole;
-import org.scribble.main.Job;
+import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.GProtocolName;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
 public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 {
+	protected final ParamCoreSTEndpointApiGenerator apigen;
+	public final ParamActualRole actual;  // this.apigen.self.equals(this.actual.getName())
+	//public final EGraph graph;
+	
 	private int counter = 1;
 	
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
-	public ParamCoreSTStateChanApiBuilder(Job job, GProtocolName gpn, ParamActualRole role, EGraph graph)
+	// actual.getName().equals(this.role)
+	public ParamCoreSTStateChanApiBuilder(ParamCoreSTEndpointApiGenerator apigen, ParamActualRole actual, EGraph graph)
 	{
-		super(job, gpn, role, graph,
+		super(apigen.job, apigen.proto, apigen.self, graph,
 				new ParamCoreSTOutputStateBuilder(new ParamCoreSTSendActionBuilder()),
-				null, //new GoSTReceiveStateBuilder(new GoSTReceiveActionBuilder()),
+				new ParamCoreSTReceiveStateBuilder(new ParamCoreSTReceiveActionBuilder()),
 				null, //new GoSTBranchStateBuilder(new GoSTBranchActionBuilder()),
 				null, //new GoSTCaseBuilder(new GoSTCaseActionBuilder()),
 				new ParamCoreSTEndStateBuilder());
 
 		//throw new RuntimeException("[param-core] TODO:");
+		this.apigen = apigen;
+		this.actual = actual;
 	}
 	
 	protected ParamActualRole getSelf()
 	{
 		return (ParamActualRole) this.getSelf();
 	}
+	
+	// Not actual roles; param roles in EFSM actions -- cf. ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName
+	public static String getGeneratedParamRoleName(ParamRole r) 
+	{
+		return r.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");
+	}
+	
 
-	@Override
+	/*@Override
 	public String getPackage()
 	{
 		//throw new RuntimeException("[param-core] TODO:");
 		return this.gpn.getSimpleName().toString();
-	}
+	}*/
 	
 	@Override
 	protected String makeSTStateName(EState s)
@@ -59,9 +72,9 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			 return "_EndState";
 		}
-		String name = this.gpn.getSimpleName() + "_" + role + "_" + this.counter++;
-		//return (s.id == this.graph.init.id) ? name : "_" + name;  // For "private" non-initial state channels
-		return name;
+		return this.apigen.proto.getSimpleName() + "_"
+				+ ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual)
+				+ "_" + this.counter++;
 	}
 
 	@Override
@@ -74,41 +87,36 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		return this.gpn.toString().replaceAll("\\.", "/") + "/" + filename + ".go";
 	}
+
+	public String getActualRoleName()
+	{
+		return this.apigen.self.toString();
+	}
 	
-	@Override
-	public Map<String, String> buildSessionAPI()  // FIXME: factor out
-	{
-		//throw new RuntimeException("[param-core] TODO:");
-		return new ParamCoreSTSessionApiBuilder(this).buildSessionAPI();
-	}
-
-	protected static String getPackageDecl(STStateChanApiBuilder api)
+	protected String getStateChanPremable(EState s)
 	{
 		//throw new RuntimeException("[param-core] TODO: ");
-		return "package " + api.getPackage();
-	}
-
-	protected static String getStateChanPremable(STStateChanApiBuilder api, EState s)
-	{
-		//throw new RuntimeException("[param-core] TODO: ");
-		String tname = api.getStateChanName(s);
+		String tname = this.getStateChanName(s);
 		String res =
-				  ParamCoreSTStateChanApiBuilder.getPackageDecl(api) + "\n"
+				  this.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
-				+ "import \"org/scribble/runtime/net\"\n"
+				+ this.apigen.generateScribbleRuntimeImports() + "\n"
 				+ "\n"
 				+ "type " + tname + " struct{\n"
-				+ "ep *net.MPSTEndpoint\n"  // FIXME: factor out
-				+ "state *net.LinearResource\n"  // FIXME: EndSocket special case?  // FIXME: only seems to work as a pointer (something to do with method calls via value recievers?  is it copying the value before calling the function?)
-				+ "}";
+				+ "ep *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
+				+ "state *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+				+ "}\n";
 		
-		if (s.id == api.graph.init.id)
+		if (s.id == this.graph.init.id)
 		{
-			res +=
-					  "\n\n"
-					+ "func New" + tname + "(ep *_Endpoint" + api.gpn.getSimpleName() + "_" + api.role + ") *" + tname + " {\n"  // FIXME: factor out
-					+ "ep." + api.role + ".SetInit()\n"
-					+ "return &" + tname + " { ep: ep." + api.role + ", state: &net.LinearResource { } }\n"
+			res += "\n"
+					+ "func New" + tname + "(ep *"
+							//+ this.apigen.getGeneratedEndpointType()
+							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE
+							+ ") *" + tname + " {\n"  // FIXME: factor out
+					+ "ep." + this.role + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_STARTPROTOCOL + "()\n"
+					+ "return &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
+							+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")}\n"
 					+ "}";
 		}
 
@@ -121,10 +129,12 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		//throw new RuntimeException("[param-core] TODO: ");
 		EState succ = curr.getSuccessor(a);
 		return
-				  "func (s *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-				+ ab.buildArgs(a)
-				+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
-				+ "s.state.Use()\n"
+				  "func (" + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+							+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
+							+ ab.buildArgs(a)
+							+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
+				+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+						+ "." + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
 				+ ab.buildBody(this, curr, a, succ) + "\n"
 				+ "}";
 	}
@@ -142,18 +152,22 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public String buildActionReturn(STActionBuilder ab, EState curr, EState succ)  // FIXME: refactor action builders as interfaces and use generic parameter for kind
 	{
 		//throw new RuntimeException("[param-core] TODO: ");
+		String sEp = 
+				//"s.ep"
+				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 		String res = "";
 
 		if (succ.isTerminal())
 		{
-			res += "s.ep.SetDone()\n";
+			res += sEp + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINISHPROTOCOL + "()\n";
 		}
-		res += "return &" + ab.getReturnType(this, curr, succ) + "{ ep: s.ep";
+		res += "return &" + ab.getReturnType(this, curr, succ) + "{ " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
 		if (!succ.isTerminal())
 		{
-			res += ", state: &net.LinearResource {}";  // FIXME: EndSocket LinearResource special case
+			res += ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+							+ ": &new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case
 		}
-		res += " }";
+		res += " }\n";
 
 		return res;
 	}

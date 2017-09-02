@@ -25,7 +25,7 @@ public class GoSTStateChanApiBuilder extends STStateChanApiBuilder
 				new GoSTEndStateBuilder());
 	}
 
-	@Override
+	//@Override
 	public String getPackage()
 	{
 		return this.gpn.getSimpleName().toString();
@@ -38,7 +38,7 @@ public class GoSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			 return "_EndState";
 		}
-		String name = this.gpn.getSimpleName() + "_" + role + "_" + this.counter++;
+		String name = this.gpn.getSimpleName() + "_" + this.role + "_" + this.counter++;
 		//return (s.id == this.graph.init.id) ? name : "_" + name;  // For "private" non-initial state channels
 		return name;
 	}
@@ -53,18 +53,18 @@ public class GoSTStateChanApiBuilder extends STStateChanApiBuilder
 		return this.gpn.toString().replaceAll("\\.", "/") + "/" + filename + ".go";
 	}
 	
-	@Override
+	//@Override
 	public Map<String, String> buildSessionAPI()  // FIXME: factor out
 	{
 		return new GoSTSessionApiBuilder(this).buildSessionAPI();
 	}
 
-	protected static String getPackageDecl(STStateChanApiBuilder api)
+	protected static String getPackageDecl(GoSTStateChanApiBuilder api)
 	{
 		return "package " + api.getPackage();
 	}
 
-	protected static String getStateChanPremable(STStateChanApiBuilder api, EState s)
+	protected static String getStateChanPremable(GoSTStateChanApiBuilder api, EState s)
 	{
 		String tname = api.getStateChanName(s);
 		String res =

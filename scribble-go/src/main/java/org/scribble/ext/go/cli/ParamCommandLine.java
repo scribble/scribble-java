@@ -149,13 +149,15 @@ public class ParamCommandLine extends CommandLine
 				String simpname = this.paramArgs.get(ParamCLArgFlag.PARAM)[0];
 				GProtocolName fullname = checkGlobalProtocolArg(jcontext, simpname);
 				Role role = checkRoleArg(jcontext, fullname, args[i]);
-				//for (Set<ParamRange> ranges : this.P0.get(role).keySet())
-				for (ParamActualRole ranges : this.P0.get(role).keySet())
+				/*for (ParamActualRole ranges : this.P0.get(role).keySet())
 				{
 					EGraph efsm = this.E0.get(role).get(ranges);
-					Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job).generateGoApi(fullname, ranges, efsm);
+					Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job, fullname, ranges, efsm).build();
 					outputClasses(goClasses);
-				}
+				}*/
+				Map<ParamActualRole, EGraph> actuals = this.E0.get(role);
+				Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job, fullname, role, actuals).build();
+				outputClasses(goClasses);
 			}
 		}
 		else

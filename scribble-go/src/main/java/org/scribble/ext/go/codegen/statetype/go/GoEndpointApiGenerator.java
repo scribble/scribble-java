@@ -8,7 +8,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
-public class GoEndpointApiGenerator
+public class GoEndpointApiGenerator  // FIXME: make base STEndpointApiGenerator
 {
 	public final Job job;
 	

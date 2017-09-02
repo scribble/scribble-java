@@ -16,7 +16,7 @@ public class GoSTBranchStateBuilder extends STBranchStateBuilder
 	{
 		/*String ename = getBranchEnumType(api, s);
 		List<EAction> as = s.getActions();*/
-		return GoSTStateChanApiBuilder.getStateChanPremable(api, s) /*+ "\n"
+		return GoSTStateChanApiBuilder.getStateChanPremable((GoSTStateChanApiBuilder) api, s) /*+ "\n"
 				+ "\n"
 				+ "type " + ename + " int\n"
 				+ "\n"

@@ -23,7 +23,7 @@ public class GoSTEndStateBuilder extends STEndStateBuilder
 		//return GSTStateChanAPIBuilder.getStateChanPremable(api, s);
 		String tname = api.getStateChanName(s);
 		String res =
-				  GoSTStateChanApiBuilder.getPackageDecl(api) + "\n"
+				  GoSTStateChanApiBuilder.getPackageDecl((GoSTStateChanApiBuilder) api) + "\n"
 				+ "\n"
 				+ "import \"org/scribble/runtime/net\"\n"
 				+ "\n"
