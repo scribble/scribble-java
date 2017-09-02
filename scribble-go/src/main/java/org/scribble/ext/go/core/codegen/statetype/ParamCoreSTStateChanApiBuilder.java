@@ -167,7 +167,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			res += ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 							+ ": &new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case
 		}
-		res += " }\n";
+		res += " }";
 
 		return res;
 	}
