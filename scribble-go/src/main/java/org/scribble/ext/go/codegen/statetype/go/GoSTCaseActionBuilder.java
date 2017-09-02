@@ -3,7 +3,7 @@ package org.scribble.ext.go.codegen.statetype.go;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.codegen.statetype.STStateChanAPIBuilder;
+import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.codegen.statetype.STCaseActionBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
@@ -12,7 +12,7 @@ public class GoSTCaseActionBuilder extends STCaseActionBuilder
 {
 
 	@Override
-	public String getActionName(STStateChanAPIBuilder api, EAction a)
+	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
 		return "Recv_" + a.peer + "_" + a.mid;
 	}
@@ -25,7 +25,7 @@ public class GoSTCaseActionBuilder extends STCaseActionBuilder
 	}
 
 	@Override
-	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
+	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
 		return 
 				  IntStream.range(0, a.payload.elems.size())
@@ -41,7 +41,7 @@ public class GoSTCaseActionBuilder extends STCaseActionBuilder
 	}
 	
 	@Override
-	public String getStateChanType(STStateChanAPIBuilder api, EState curr, EAction a)
+	public String getStateChanType(STStateChanApiBuilder api, EState curr, EAction a)
 	{
 		return GoSTCaseBuilder.getOpTypeName(api, curr, a.mid);
 	}

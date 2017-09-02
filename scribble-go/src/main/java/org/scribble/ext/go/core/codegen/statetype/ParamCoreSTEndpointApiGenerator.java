@@ -9,7 +9,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.type.name.GProtocolName;
 
-// Duplicated from org.scribble.ext.go.codegen.statetype.go.GoStEndpointApiGenerator
+// Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTEndpointApiGenerator
 public class ParamCoreSTEndpointApiGenerator
 {
 	public final Job job;
@@ -23,8 +23,8 @@ public class ParamCoreSTEndpointApiGenerator
 	public Map<String, String> generateGoApi(GProtocolName fullname, ParamActualRole self, EGraph egraph) throws ScribbleException
 	{
 		this.job.debugPrintln("\n[param-core] Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
-		ParamCoreSTStateChanAPIBuilder apigen
-				= new ParamCoreSTStateChanAPIBuilder(this.job, fullname, self, egraph);
+		ParamCoreSTStateChanApiBuilder apigen
+				= new ParamCoreSTStateChanApiBuilder(this.job, fullname, self, egraph);
 		Map<String, String> api = apigen.build();  // filepath -> source 
 		api.putAll(apigen.buildSessionAPI()); 
 		return api;

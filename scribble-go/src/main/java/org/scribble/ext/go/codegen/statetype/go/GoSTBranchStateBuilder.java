@@ -1,7 +1,7 @@
 package org.scribble.ext.go.codegen.statetype.go;
 
 import org.scribble.codegen.statetype.STBranchStateBuilder;
-import org.scribble.codegen.statetype.STStateChanAPIBuilder;
+import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.model.endpoint.EState;
 
 public class GoSTBranchStateBuilder extends STBranchStateBuilder
@@ -12,11 +12,11 @@ public class GoSTBranchStateBuilder extends STBranchStateBuilder
 	}
 
 	@Override
-	public String getPreamble(STStateChanAPIBuilder api, EState s)
+	public String getPreamble(STStateChanApiBuilder api, EState s)
 	{
 		/*String ename = getBranchEnumType(api, s);
 		List<EAction> as = s.getActions();*/
-		return GoSTStateChanAPIBuilder.getStateChanPremable(api, s) /*+ "\n"
+		return GoSTStateChanApiBuilder.getStateChanPremable(api, s) /*+ "\n"
 				+ "\n"
 				+ "type " + ename + " int\n"
 				+ "\n"
