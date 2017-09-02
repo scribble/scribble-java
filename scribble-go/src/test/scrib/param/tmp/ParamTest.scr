@@ -37,10 +37,14 @@ message passing
 // encode "multi-choices" by local role(thread) forking/joining? for dynamic join/leave use param-value dependency? (run-time checked?)
 */
 
-global protocol P1(role A(n), role B(n))
+// Add a scribble version and time/date to API output header
+
+//*
+global protocol Proto1(role A(n), role B(n))
 {
-	1() from A[1..1] to B[1..n];
+	1() from A[1..1] to B[1..n+1];
 }
+//*/
 
 /*
 global protocol P1(role A(N), role B(N))

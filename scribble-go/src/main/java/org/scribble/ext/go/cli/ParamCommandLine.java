@@ -354,6 +354,8 @@ public class ParamCommandLine extends CommandLine
 		for (Role r : powersets.keySet())
 		{
 			Set<Set<ParamRange>> powset = powersets.get(r);
+			int i = 1;
+			int size = powset.size();
 			
 			job.debugPrintln("\n[param-core] Ranges powerset for " + r + ": " + powset);
 			
@@ -401,7 +403,7 @@ public class ParamCommandLine extends CommandLine
 				z3 = //"(declare-const id Int)\n
 						"(assert " + z3 + ")";
 				
-				job.debugPrintln("\n[param-core] Candidate: " + cand);
+				job.debugPrintln("\n[param-core] Candidate (" + i++ + "/" + size + "): " + cand);
 				job.debugPrintln("[param-core] Co-set: " + coset);
 				job.debugPrintln("[param-core] Running Z3 on:\n" + z3);
 				

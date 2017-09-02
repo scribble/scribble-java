@@ -27,7 +27,7 @@ public abstract class STCaseBuilder extends STStateChanBuilder  // Is a distinct
 	}
 	
 	@Override
-	public String build(STStateChanAPIBuilder api, EState s)
+	public String build(STStateChanApiBuilder api, EState s)
 	{
 		String out = getPreamble(api, s);
 		
@@ -47,5 +47,5 @@ public abstract class STCaseBuilder extends STStateChanBuilder  // Is a distinct
 		return out;
 	}
 
-	public abstract String getCaseStateChanName(STStateChanAPIBuilder api, EState s);
+	public abstract String getCaseStateChanName(STStateChanApiBuilder api, EState s);
 }

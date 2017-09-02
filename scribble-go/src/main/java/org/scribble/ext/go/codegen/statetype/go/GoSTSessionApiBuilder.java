@@ -17,11 +17,11 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
-public class GoSTSessionAPIBuilder
+public class GoSTSessionApiBuilder
 {
-	private GoSTStateChanAPIBuilder api;
+	private GoSTStateChanApiBuilder api;
 	
-	public GoSTSessionAPIBuilder(GoSTStateChanAPIBuilder api)
+	public GoSTSessionApiBuilder(GoSTStateChanApiBuilder api)
 	{
 		this.api = api;
 	}

@@ -3,7 +3,7 @@ package org.scribble.ext.go.codegen.statetype.go;
 import java.util.Map;
 
 import org.scribble.codegen.statetype.STActionBuilder;
-import org.scribble.codegen.statetype.STStateChanAPIBuilder;
+import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.main.Job;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
@@ -11,11 +11,11 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
-public class GoSTStateChanAPIBuilder extends STStateChanAPIBuilder
+public class GoSTStateChanApiBuilder extends STStateChanApiBuilder
 {
 	private int counter = 1;
 	
-	public GoSTStateChanAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph)
+	public GoSTStateChanApiBuilder(Job job, GProtocolName gpn, Role role, EGraph graph)
 	{
 		super(job, gpn, role, graph,
 				new GoSTOutputStateBuilder(new GoSTSendActionBuilder()),
@@ -56,19 +56,19 @@ public class GoSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	@Override
 	public Map<String, String> buildSessionAPI()  // FIXME: factor out
 	{
-		return new GoSTSessionAPIBuilder(this).buildSessionAPI();
+		return new GoSTSessionApiBuilder(this).buildSessionAPI();
 	}
 
-	protected static String getPackageDecl(STStateChanAPIBuilder api)
+	protected static String getPackageDecl(STStateChanApiBuilder api)
 	{
 		return "package " + api.getPackage();
 	}
 
-	protected static String getStateChanPremable(STStateChanAPIBuilder api, EState s)
+	protected static String getStateChanPremable(STStateChanApiBuilder api, EState s)
 	{
 		String tname = api.getStateChanName(s);
 		String res =
-				  GoSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
+				  GoSTStateChanApiBuilder.getPackageDecl(api) + "\n"
 				+ "\n"
 				+ "import \"org/scribble/runtime/net\"\n"
 				+ "\n"
@@ -104,7 +104,7 @@ public class GoSTStateChanAPIBuilder extends STStateChanAPIBuilder
 	}
 	
 	@Override
-	public String getChannelName(STStateChanAPIBuilder api, EAction a)
+	public String getChannelName(STStateChanApiBuilder api, EAction a)
 	{
 		return
 				////"s.ep.Chans[s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + "]";
