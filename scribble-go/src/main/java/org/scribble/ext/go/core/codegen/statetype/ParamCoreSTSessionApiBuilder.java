@@ -97,7 +97,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 					+ "func New" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r)
 							+ "(p " + simpname + ", params map[string]int) (*"
 							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + ", " + ParamCoreSTApiGenConstants.GO_FINALISER_TYPE + ") {\n"
-					+ "ep := " + ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")\n"
+					+ "ep := " + ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ", params)\n"
 					+ "return ep, ep." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINALISE + "\n"
 					+ "}\n"
 				).collect(Collectors.joining(""));
