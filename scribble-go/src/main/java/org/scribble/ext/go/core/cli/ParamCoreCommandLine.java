@@ -418,7 +418,7 @@ public class ParamCoreCommandLine extends CommandLine
 				this.E0.get(role).entrySet().forEach(e ->
 				{
 					String out = e.getValue().toDot();
-					System.out.println("\n" + role + " " + e.getKey() + ":\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
+					System.out.println("\nEndpoint FSM for " + e.getKey() + ":\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
 				});
 			}
 		}
