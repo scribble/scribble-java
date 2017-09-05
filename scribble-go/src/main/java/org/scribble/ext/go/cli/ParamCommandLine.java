@@ -44,6 +44,7 @@ import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribParserException;
 
+// N.B. this is the CL for both -goapi and param-core extensions
 public class ParamCommandLine extends CommandLine
 {
 	protected final Map<ParamCLArgFlag, String[]> paramArgs;  // Maps each flag to list of associated argument values
