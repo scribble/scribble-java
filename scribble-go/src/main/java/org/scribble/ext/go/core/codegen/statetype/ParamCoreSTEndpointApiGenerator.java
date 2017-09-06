@@ -21,24 +21,29 @@ public class ParamCoreSTEndpointApiGenerator
 	public final Job job;
 	public final GProtocolName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
-	public final Map<ParamActualRole, EGraph> actuals;
+	//public final Map<ParamActualRole, EGraph> actuals;
+	public final Map<Role, Map<ParamActualRole, EGraph>> actuals;
 	//public final EGraph graph;
 	
-	public ParamCoreSTEndpointApiGenerator(Job job, GProtocolName fullname, Role self, Map<ParamActualRole, EGraph> actuals)
+	//public final Map<Role, Map<ParamActualRole, EGraph>> all;
+	
+	public ParamCoreSTEndpointApiGenerator(Job job, GProtocolName fullname, Role self, //Map<ParamActualRole, EGraph> actuals)
+			Map<Role, Map<ParamActualRole, EGraph>> actuals)
 	{
 		this.job = job;
 		this.proto = fullname;
 		this.self = self;
 		this.actuals = Collections.unmodifiableMap(actuals);
 		//this.graph = graph;
+		//this.all = Collections.unmodifiableMap(all);
 	}
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
 	public Map<String, String> build() throws ScribbleException
 	{
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
-		res.putAll(buildSessionApi()); 
-		for (Entry<ParamActualRole, EGraph> actual : this.actuals.entrySet())
+		res.putAll(buildSessionApi());
+		for (Entry<ParamActualRole, EGraph> actual : this.actuals.get(this.self).entrySet())
 		{
 			res.putAll(buildStateChannelApi(actual.getKey(), actual.getValue()));
 		}

@@ -23,8 +23,8 @@ import org.scribble.ext.go.core.ast.global.ParamCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.ParamCoreGType;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.codegen.statetype.ParamCoreSTEndpointApiGenerator;
-import org.scribble.ext.go.core.main.ParamCoreMainContext;
 import org.scribble.ext.go.core.main.ParamCoreException;
+import org.scribble.ext.go.core.main.ParamCoreMainContext;
 import org.scribble.ext.go.core.model.endpoint.ParamCoreEGraphBuilder;
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRange;
@@ -141,8 +141,12 @@ public class ParamCoreCommandLine extends CommandLine
 					Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job, fullname, ranges, efsm).build();
 					outputClasses(goClasses);
 				}*/
-				Map<ParamActualRole, EGraph> actuals = this.E0.get(role);
-				Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job, fullname, role, actuals).build();
+
+				/*job.debugPrintln("\n[param-core] Running " + ParamCoreSTSessionApiBuilder.class + " for " + fullname);
+
+				Map<String, String> goClasses = new ParamCoreSTSessionApiBuilder((GoJob) job, fullname, this.E0).build();*/
+				//Map<ParamActualRole, EGraph> actuals = this.E0.get(role);
+				Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job, fullname, role, this.E0).build();
 				outputClasses(goClasses);
 			}
 		}
