@@ -27,7 +27,8 @@ public class ParamCoreSTEndStateBuilder extends STEndStateBuilder
 				  schangen.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
-				+ schangen.apigen.generateScribbleRuntimeImports() + "\n"
+				//+ schangen.apigen.generateScribbleRuntimeImports() + "\n"
+				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
 				+ "\n"
 				+ "type " + tname + " struct{\n"
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"  // FIXME: factor out

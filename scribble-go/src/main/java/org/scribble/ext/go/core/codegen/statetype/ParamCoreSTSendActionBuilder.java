@@ -31,9 +31,9 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
-		String sEpWrite = 
+		/*String sEpWrite = 
 				//s.ep.Write
-				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITE;
+				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITE;*/
 		/*String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
@@ -44,8 +44,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ERR;*/
 
 		return 
-				  sEpWrite
-				+ "(..TODO..)\n"
+				  //sEpWrite + "(..TODO..)\n"
 				/*+ "(" + sEpProto
 				+ ".(*" + api.gpn.getSimpleName() +")." + a.peer + ", \"" + a.mid + "\")\n"
 				+ IntStream.range(0, a.payload.elems.size())
@@ -54,6 +53,6 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				/*+ "if " + sEpErr + " != nil {\n"
 				+ "return nil\n"
 				+ "}\n"*/
-				+ buildReturn(api, curr, succ);
+				buildReturn(api, curr, succ);
 	}
 }

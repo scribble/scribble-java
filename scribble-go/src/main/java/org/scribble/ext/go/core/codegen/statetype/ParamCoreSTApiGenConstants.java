@@ -30,6 +30,8 @@ public class ParamCoreSTApiGenConstants
 
 	public static final String GO_SCHAN_ENDPOINT       = "endpoint";  // ep;
 	public static final String GO_SCHAN_LINEARRESOURCE = "resource";  // state
+
+	public static final String GO_SCHAN_END_TYPE = "EndState";
 	
 	public static final String GO_IO_FUN_RECEIVER = "s";
 	

@@ -69,7 +69,8 @@ public class ParamCoreSTEndpointApiGenerator
 
 	public static String getGeneratedEndpointType(GProtocolName simpname, Role r)
 	{
-		return "Endpoint_" + simpname + "_" + r;
+		//return "Endpoint_" + simpname + "_" + r;
+		return simpname + "_" + r;
 	}
 	
 	public static String getGeneratedActualRoleName(ParamActualRole actual)

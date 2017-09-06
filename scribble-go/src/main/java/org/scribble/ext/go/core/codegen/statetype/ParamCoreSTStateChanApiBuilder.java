@@ -70,7 +70,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		//throw new RuntimeException("[param-core] TODO:");
 		if (s.isTerminal())
 		{
-			 return "_EndState";
+			 //return "_EndState";
+			return ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE;
 		}
 		return this.apigen.proto.getSimpleName() + "_"
 				+ ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual)

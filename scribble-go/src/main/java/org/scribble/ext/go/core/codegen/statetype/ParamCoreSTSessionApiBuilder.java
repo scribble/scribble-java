@@ -53,8 +53,8 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						// Just need role name constants for now -- params not fixed until endpoint creation
 				+ "}\n"
 				+ "\n" 
-				+ "func New" + simpname + "() " + simpname + " {\n"
-				+ "return " + simpname + "{ " + roles.stream().map(r -> ParamCoreSTApiGenConstants.GO_ROLE_CONSTRUCTOR
+				+ "func New" + simpname + "() *" + simpname + " {\n"
+				+ "return &" + simpname + "{ " + roles.stream().map(r -> ParamCoreSTApiGenConstants.GO_ROLE_CONSTRUCTOR
 						+ "(\"" + r + "\")").collect(Collectors.joining(", ")) + " }\n"
 						 // Singleton types?
 				+ "}\n";
@@ -79,28 +79,39 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				+ "\n";*/
 		
 		// Protocol and role specific endpoints
-		/*Function<Role, String> epTypeName = r -> "_Endpoint" + simpname + "_" + r;
+		//Function<Role, String> epTypeName = r -> "_Endpoint" + simpname + "_" + r;
 		sessPack +=
 				roles.stream().map(r ->
-						  "\n\ntype " + epTypeName.apply(r) + " struct {\n"  // FIXME: factor out
-						+ r + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
-						+ "}\n"
-						+ "\n"
-						+ "func New" + epTypeName.apply(r) + "(P *" + simpname + ") *" + epTypeName.apply(r) + "{\n"
-						+ "return &" + epTypeName.apply(r) + " { " + r + ": "
-								+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "(P, P." + r + ") }\n"
-						+ "}"
-				).collect(Collectors.joining(""));*/
-		sessPack += "\n" +
-				roles.stream().map(r ->
-					  "\n"
-					+ "func New" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r)
-							+ "(p " + simpname + ", params map[string]int) (*"
-							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + ", " + ParamCoreSTApiGenConstants.GO_FINALISER_TYPE + ") {\n"
-					+ "ep := " + ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ", params)\n"
-					+ "return ep, ep." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINALISE + "\n"
-					+ "}\n"
-				).collect(Collectors.joining(""));
+				{
+					String epTypeName = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r);
+					return
+							  "\n\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
+							+ "proto *" + simpname + "\n"
+							+ this.apigen.actuals.keySet().stream().filter(a -> a.getName().equals(r)).map(a -> 
+							  {
+									String actualName = ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(a);
+									return "sub_" + actualName + " func(*" + actualName + "_1) *"
+											+ ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE + "\n";
+							  }).collect(Collectors.joining(""))
+							+ "params map[string]int\n"
+							+ "}\n"
+							+ "\n"
+							+ "func (p *" + simpname + ") New" + epTypeName
+									+ "(params map[string]int) (*" + epTypeName + ") {\n"
+							+ "return &" + epTypeName + "{ p, params }\n"
+							+ "}\n"
+							+ "\n"
+							+ this.apigen.actuals.keySet().stream().filter(a -> a.getName().equals(r)).map(a -> 
+							  {
+									String actualName = ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(a);
+							  	return 
+										"\nfunc (r *" + epTypeName + ") "
+												+ "Register_" + actualName
+												+ "(impl func(*" + actualName + "_1) *" + ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE + ") {\n"
+												+ "r.sub_" + actualName + " = impl\n"
+												+ "}\n";
+							  }).collect(Collectors.joining(""));
+				}).collect(Collectors.joining(""));
 		
 		String dir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";
 		Map<String, String> res = new HashMap<>();
