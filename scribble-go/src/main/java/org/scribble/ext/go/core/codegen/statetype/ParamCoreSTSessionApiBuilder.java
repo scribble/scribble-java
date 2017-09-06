@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ext.go.ast.ParamRoleDecl;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
@@ -85,6 +87,9 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				roles.stream().map(r ->
 				{
 					String epTypeName = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r);
+					List<ParamIndexVar> vars = 
+					gpd.getHeader().roledecls.getDecls().stream().filter(rd -> rd.getDeclName().equals(r))
+							.flatMap(rd -> ((ParamRoleDecl) rd).params.stream()).collect(Collectors.toList());
 					return
 							  "\n\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
 							+ "proto *" + simpname + "\n"
@@ -103,9 +108,15 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 							+ "}\n"
 							+ "\n"
 							+ "func (p *" + simpname + ") New" + epTypeName
-									+ "(params map[string]int) (*" + epTypeName + ") {\n"
-							+ "return &" + epTypeName + "{ proto: p, params: params, ept: "
-									+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p , p." + r + ")}\n"
+									//+ "(params map[string]int)
+									+ "(" + 
+											vars.stream().map(v -> v + " int").collect(Collectors.joining(", ")) + ")"
+									+ "(*" + epTypeName + ") {\n"
+							+ "return &" + epTypeName + "{ proto: p, params: "
+									//+ "params,"
+									+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining()) + "}, "
+									+ "ept: "
+									+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")}\n"
 							+ "}\n"
 							+ "\n"
 							+ this.apigen.actuals.get(r).keySet().stream()
