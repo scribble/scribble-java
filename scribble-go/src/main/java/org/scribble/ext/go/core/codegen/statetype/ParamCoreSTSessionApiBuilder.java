@@ -92,7 +92,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 							.flatMap(rd -> ((ParamRoleDecl) rd).params.stream()).collect(Collectors.toList());
 					return
 							  "\n\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
-							+ "proto *" + simpname + "\n"
+							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " *" + simpname + "\n"
 							+ this.apigen.actuals.get(r).keySet().stream()
 									//.filter(a -> a.getName().equals(r))
 									.map(a -> 
@@ -112,13 +112,12 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 									+ "(" + 
 											vars.stream().map(v -> v + " int").collect(Collectors.joining(", ")) + ")"
 									+ "(*" + epTypeName + ") {\n"
-							+ "return &" + epTypeName + "{ proto: p, params: "
+							+ "return &" + epTypeName + "{ " + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + ": p, params: "
 									//+ "params,"
 									+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining()) + "}, "
 									+ "ept: "
 									+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")}\n"
 							+ "}\n"
-							+ "\n"
 							+ this.apigen.actuals.get(r).keySet().stream()
 									//.filter(a -> a.getName().equals(r))
 									.map(a -> 
