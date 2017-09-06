@@ -96,8 +96,8 @@ public class ParamCoreSTEndpointApiGenerator
 	public List<String> getScribbleRuntimeImports()  // FIXME: factor up
 	{
 		return Stream.of(
-					ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE,
-					ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSIONPARAM_PACKAGE
+					ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE
+					//ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSIONPARAM_PACKAGE
 					//ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE
 				).collect(Collectors.toList());
 	}

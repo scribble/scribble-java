@@ -104,8 +104,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ this.apigen.generateScribbleRuntimeImports() + "\n"
 				+ "\n"
 				+ "type " + tname + " struct{\n"
-				+ "ep *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
-				+ "state *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
+				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 				+ "}\n";
 		
 		if (s.id == this.graph.init.id)
@@ -115,7 +115,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 							//+ this.apigen.getGeneratedEndpointType()
 							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE
 							+ ") *" + tname + " {\n"  // FIXME: factor out
-					+ "ep." + this.role + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_STARTPROTOCOL + "()\n"
+					//+ "ep." + this.role + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_STARTPROTOCOL + "()\n"
 					+ "return &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
 							+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")}\n"
 					+ "}";
@@ -166,7 +166,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		if (!succ.isTerminal())
 		{
 			res += ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-							+ ": &new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case
+							+ ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case
 		}
 		res += " }";
 
