@@ -26,12 +26,13 @@ public class ParamCoreSTEndStateBuilder extends STEndStateBuilder
 		String res =
 				  schangen.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
-				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
-				//+ schangen.apigen.generateScribbleRuntimeImports() + "\n"
-				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
+				////+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
+				////+ schangen.apigen.generateScribbleRuntimeImports() + "\n"
+				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
 				+ "\n"
 				+ "type " + tname + " struct{\n"
-				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"  // FIXME: factor out
+				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"  // FIXME: factor out
+				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(api.gpn.getSimpleName(), api.role) + "\n"  // FIXME: factor out
 				+ "}";
 		return res;  // No LinearResource
 	}

@@ -91,14 +91,17 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 							  {
 									String actualName = ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(a);
 									return "sub_" + actualName + " func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: init statechan, factor out with makeSTStateName
-											+ ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE + "\n";
+											//+ ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE + "\n";
+											+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + "\n";
 							  }).collect(Collectors.joining(""))
 							+ "params map[string]int\n"
+							+ "ept *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
 							+ "}\n"
 							+ "\n"
 							+ "func (p *" + simpname + ") New" + epTypeName
 									+ "(params map[string]int) (*" + epTypeName + ") {\n"
-							+ "return &" + epTypeName + "{ proto: p, params: params }\n"
+							+ "return &" + epTypeName + "{ proto: p, params: params, ept: "
+									+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p , p." + r + ")}\n"
 							+ "}\n"
 							+ "\n"
 							+ this.apigen.actuals.keySet().stream().filter(a -> a.getName().equals(r)).map(a -> 
@@ -108,7 +111,8 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 										"\nfunc (r *" + epTypeName + ") "
 												+ "Register_" + actualName
 												+ "(impl func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: factor out with above
-														+ ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE + ") {\n"
+														//+ ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE + ") {\n"
+														+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + ") {\n"
 												+ "r.sub_" + actualName + " = impl\n"
 												+ "}\n";
 							  }).collect(Collectors.joining(""));

@@ -19,6 +19,7 @@ import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.name.GProtocolName;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
 public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
@@ -70,12 +71,18 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		//throw new RuntimeException("[param-core] TODO:");
 		if (s.isTerminal())
 		{
-			 //return "_EndState";
-			return ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE;
+			////return "_EndState";
+			//return ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE;
+			return makeEndStateName(this.apigen.proto.getSimpleName(), this.actual);
 		}
 		return this.apigen.proto.getSimpleName() + "_"
 				+ ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual)
 				+ "_" + this.counter++;
+	}
+	
+	public static String makeEndStateName(GProtocolName simpname, ParamActualRole r)
+	{
+		return simpname + "_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(r) + "_" + ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE;
 	}
 
 	@Override
@@ -98,13 +105,15 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		//throw new RuntimeException("[param-core] TODO: ");
 		String tname = this.getStateChanName(s);
+		String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(this.apigen.proto.getSimpleName(), this.actual.getName()); 
 		String res =
 				  this.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
 				+ this.apigen.generateScribbleRuntimeImports() + "\n"
 				+ "\n"
 				+ "type " + tname + " struct{\n"
-				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
+				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
+				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epType + "\n" 
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 				+ "}\n";
 		
@@ -112,8 +121,9 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			res += "\n"
 					+ "func New" + tname + "(ep *"
-							//+ this.apigen.getGeneratedEndpointType()
-							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE
+							////+ this.apigen.getGeneratedEndpointType()
+							//+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE
+							+ epType
 							+ ") *" + tname + " {\n"  // FIXME: factor out
 					//+ "ep." + this.role + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_STARTPROTOCOL + "()\n"
 					+ "return &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
@@ -160,7 +170,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 		if (succ.isTerminal())
 		{
-			res += sEp + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINISHPROTOCOL + "()\n";
+			res += sEp + ".ept." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINISHPROTOCOL + "()\n";
 		}
 		res += "return &" + ab.getReturnType(this, curr, succ) + "{ " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
 		if (!succ.isTerminal())
