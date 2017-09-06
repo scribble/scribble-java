@@ -9,9 +9,9 @@ import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.type.name.ModuleName;
 
-public class ParamJob extends Job
+public class GoJob extends Job
 {
-	public ParamJob(boolean debug, Map<ModuleName, Module> parsed, ModuleName main,
+	public GoJob(boolean debug, Map<ModuleName, Module> parsed, ModuleName main,
 			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
 			boolean noAcceptCorrelationCheck, boolean noValidation, 
 			AstFactory af, EModelFactory ef, SModelFactory sf)

@@ -12,7 +12,7 @@ import org.scribble.cli.CommandLineException;
 import org.scribble.ext.go.codegen.statetype.go.GoEndpointApiGenerator;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamActualRole;
-import org.scribble.ext.go.main.ParamMainContext;
+import org.scribble.ext.go.main.GoMainContext;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
@@ -25,9 +25,9 @@ import org.scribble.type.name.Role;
 import org.scribble.util.ScribParserException;
 
 // N.B. this is the CL for both -goapi and param-core extensions
-public class ParamCommandLine extends CommandLine
+public class GoCommandLine extends CommandLine
 {
-	protected final Map<ParamCLArgFlag, String[]> paramArgs;  // Maps each flag to list of associated argument values
+	protected final Map<GoCLArgFlag, String[]> paramArgs;  // Maps each flag to list of associated argument values
 
 	// HACK: store in (Core) Job/JobContext?
 	protected GProtocolDecl gpd;
@@ -35,12 +35,12 @@ public class ParamCommandLine extends CommandLine
 	protected Map<Role, Map<ParamActualRole, EGraph>> E0;
 	//protected ParamCoreSModel model;
 	
-	public ParamCommandLine(String... args) throws CommandLineException
+	public GoCommandLine(String... args) throws CommandLineException
 	{
-		this(new ParamCLArgParser(args));
+		this(new GoCLArgParser(args));
 	}
 
-	private ParamCommandLine(ParamCLArgParser p) throws CommandLineException
+	private GoCommandLine(GoCLArgParser p) throws CommandLineException
 	{
 		super(p);  // calls p.parse()
 		if (this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
@@ -57,7 +57,7 @@ public class ParamCommandLine extends CommandLine
 	}
 	
 	@Override
-	protected ParamMainContext newMainContext() throws ScribParserException, ScribbleException
+	protected GoMainContext newMainContext() throws ScribParserException, ScribbleException
 	{
 		boolean debug = this.args.containsKey(CLArgFlag.VERBOSE);  // TODO: factor out with CommandLine (cf. MainContext fields)
 		boolean useOldWF = this.args.containsKey(CLArgFlag.OLD_WF);
@@ -81,23 +81,23 @@ public class ParamCommandLine extends CommandLine
 		else
 		{
 			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
-			return new ParamMainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
+			return new GoMainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
 					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
 		}
 	}
 
 	public static void main(String[] args) throws CommandLineException, AntlrSourceException
 	{
-		new ParamCommandLine(args).run();
+		new GoCommandLine(args).run();
 	}
 
 	@Override
 	protected void doNonAttemptableOutputTasks(Job job) throws ScribbleException, CommandLineException
 	{		
-		if (this.paramArgs.containsKey(ParamCLArgFlag.GO_API_GEN))
+		if (this.paramArgs.containsKey(GoCLArgFlag.GO_API_GEN))
 		{
 			JobContext jcontext = job.getContext();
-			String[] args = this.paramArgs.get(ParamCLArgFlag.GO_API_GEN);
+			String[] args = this.paramArgs.get(GoCLArgFlag.GO_API_GEN);
 			for (int i = 0; i < args.length; i += 2)
 			{
 				GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);

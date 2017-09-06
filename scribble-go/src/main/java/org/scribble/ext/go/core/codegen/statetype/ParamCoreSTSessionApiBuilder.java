@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ext.go.ast.ParamRoleDecl;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
@@ -14,13 +16,14 @@ import org.scribble.type.name.Role;
 // Cf. STStateChanApiBuilder
 public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuilder
 {
-	//private ParamCoreSTStateChanApiBuilder api;
 	private ParamCoreSTEndpointApiGenerator apigen;
+
+	//private final Map<Role, Map<ParamActualRole, EGraph>> actuals;
 	
-	//public ParamCoreSTSessionApiBuilder(ParamCoreSTStateChanApiBuilder api)
-	public ParamCoreSTSessionApiBuilder(ParamCoreSTEndpointApiGenerator apigen)
+	public ParamCoreSTSessionApiBuilder(ParamCoreSTEndpointApiGenerator apigen)//, Map<Role, Map<ParamActualRole, EGraph>> actuals)
 	{
 		this.apigen = apigen;
+		//this.actuals = Collections.unmodifiableMap(actuals);
 	}
 
 	//@Override
@@ -53,8 +56,8 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						// Just need role name constants for now -- params not fixed until endpoint creation
 				+ "}\n"
 				+ "\n" 
-				+ "func New" + simpname + "() " + simpname + " {\n"
-				+ "return " + simpname + "{ " + roles.stream().map(r -> ParamCoreSTApiGenConstants.GO_ROLE_CONSTRUCTOR
+				+ "func New" + simpname + "() *" + simpname + " {\n"
+				+ "return &" + simpname + "{ " + roles.stream().map(r -> ParamCoreSTApiGenConstants.GO_ROLE_CONSTRUCTOR
 						+ "(\"" + r + "\")").collect(Collectors.joining(", ")) + " }\n"
 						 // Singleton types?
 				+ "}\n";
@@ -79,28 +82,58 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				+ "\n";*/
 		
 		// Protocol and role specific endpoints
-		/*Function<Role, String> epTypeName = r -> "_Endpoint" + simpname + "_" + r;
+		//Function<Role, String> epTypeName = r -> "_Endpoint" + simpname + "_" + r;
 		sessPack +=
 				roles.stream().map(r ->
-						  "\n\ntype " + epTypeName.apply(r) + " struct {\n"  // FIXME: factor out
-						+ r + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
-						+ "}\n"
-						+ "\n"
-						+ "func New" + epTypeName.apply(r) + "(P *" + simpname + ") *" + epTypeName.apply(r) + "{\n"
-						+ "return &" + epTypeName.apply(r) + " { " + r + ": "
-								+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "(P, P." + r + ") }\n"
-						+ "}"
-				).collect(Collectors.joining(""));*/
-		sessPack += "\n" +
-				roles.stream().map(r ->
-					  "\n"
-					+ "func New" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r)
-							+ "(p " + simpname + ", params map[string]int) (*"
-							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + ", " + ParamCoreSTApiGenConstants.GO_FINALISER_TYPE + ") {\n"
-					+ "ep := " + ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ", params)\n"
-					+ "return ep, ep." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINALISE + "\n"
-					+ "}\n"
-				).collect(Collectors.joining(""));
+				{
+					String epTypeName = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r);
+					List<ParamIndexVar> vars = 
+					gpd.getHeader().roledecls.getDecls().stream().filter(rd -> rd.getDeclName().equals(r))
+							.flatMap(rd -> ((ParamRoleDecl) rd).params.stream()).collect(Collectors.toList());
+					return
+							  "\n\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
+							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " *" + simpname + "\n"
+							+ this.apigen.actuals.get(r).keySet().stream()
+									//.filter(a -> a.getName().equals(r))
+									.map(a -> 
+							//+ this.apigen.actuals.entrySet().stream().flatMap(e -> e.getValue().keySet().stream()).map(a -> 
+							  {
+									String actualName = ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(a);
+									return "Sub_" + actualName + " func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: init statechan, factor out with makeSTStateName
+											//+ ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE + "\n";
+											+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + "\n";
+							  }).collect(Collectors.joining(""))
+							+ "params map[string]int\n"
+							+ "ept *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
+							+ "}\n"
+							+ "\n"
+							+ "func (p *" + simpname + ") New" + epTypeName
+									//+ "(params map[string]int)
+									+ "(" + 
+											vars.stream().map(v -> v + " int").collect(Collectors.joining(", ")) + ")"
+									+ "(*" + epTypeName + ") {\n"
+							+ "return &" + epTypeName + "{ " + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + ": p, params: "
+									//+ "params,"
+									+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining()) + "}, "
+									+ "ept: "
+									+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")}\n"
+							+ "}\n"
+							+ this.apigen.actuals.get(r).keySet().stream()
+									//.filter(a -> a.getName().equals(r))
+									.map(a -> 
+							//+ this.apigen.actuals.entrySet().stream().flatMap(e -> e.getValue().keySet().stream()).map(a -> 
+							  {
+									String actualName = ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(a);
+							  	return 
+										"\nfunc (r *" + epTypeName + ") "
+												+ "Register_" + actualName
+												+ "(impl func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: factor out with above
+														//+ ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE + ") {\n"
+														+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + ") {\n"
+												+ "r.Sub_" + actualName + " = impl\n"
+												+ "}\n";
+							  }).collect(Collectors.joining(""));
+				}).collect(Collectors.joining(""));
 		
 		String dir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";
 		Map<String, String> res = new HashMap<>();

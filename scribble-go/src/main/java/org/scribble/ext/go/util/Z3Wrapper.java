@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.ext.go.main.ParamJob;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.main.ScribbleException;
 import org.scribble.util.ScribUtil;
 
@@ -13,7 +13,7 @@ public class Z3Wrapper
 {
 
 	// Based on CommandLine::runDot, JobContext::runAut, etc
-	public static boolean checkSat(ParamJob job, GProtocolDecl gpd, String smt2) //throws ScribbleException
+	public static boolean checkSat(GoJob job, GProtocolDecl gpd, String smt2) //throws ScribbleException
 	{
 		String tmpName = gpd.header.name + ".smt2.tmp";
 		File tmp = new File(tmpName);

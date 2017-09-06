@@ -19,7 +19,7 @@ import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
-import org.scribble.ext.go.main.ParamJob;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.type.kind.Global;
 
@@ -47,7 +47,7 @@ public class ParamCoreGMultiChoices extends ParamCoreChoice<ParamCoreGType, Glob
 	}
 	
 	@Override
-	public boolean isWellFormed(ParamJob job, GProtocolDecl gpd)
+	public boolean isWellFormed(GoJob job, GProtocolDecl gpd)
 	{
 		// src (i.e., choice subj) range size=1 for non-unary choices enforced by ParamScribble.g syntax
 		// Directed choice check by ParamCoreGProtocolDeclTranslator ensures all dests (including ranges) are (syntactically) the same

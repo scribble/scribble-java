@@ -6,7 +6,7 @@ import org.scribble.ext.go.ast.ParamAstFactory;
 import org.scribble.ext.go.ast.ParamAstFactoryImpl;
 import org.scribble.ext.go.core.model.endpoint.ParamCoreEModelFactory;
 import org.scribble.ext.go.core.model.endpoint.ParamCoreEModelFactoryImpl;
-import org.scribble.ext.go.main.ParamJob;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.parser.scribble.ParamAntlrToScribParser;
 import org.scribble.ext.go.parser.scribble.ParamScribbleAntlrWrapper;
 import org.scribble.main.MainContext;
@@ -26,9 +26,9 @@ public class ParamCoreMainContext extends MainContext
 	}
 
 	@Override
-	public ParamJob newJob()
+	public GoJob newJob()
 	{
-		return new ParamJob(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
+		return new GoJob(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
 				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck, this.noValidation,
 				this.af, this.ef, this.sf);
 	}
