@@ -9,7 +9,9 @@ module assrt.tmp.ParamTest;
 
 
 type <go> "int" from "..." as int;
-//type <go> "string" from "..." as string;
+type <go> "string" from "..." as string;
+type <go> "TwoBuyer.Address" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Address;
+type <go> "TwoBuyer.Date" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Date;
 
 
 
@@ -42,11 +44,51 @@ message passing
 
 // Add a scribble version and time/date to API output header
 
+
+// paramterisation subsumes multicast
+
+
+global protocol Proto1(role A(n), role B(n), role S(n))
+{
+	title(string) from A[1..1] to S[1..1];
+	quote(int) from S[1..1] to A[1..1];
+	quote(int) from S[1..1] to B[1..n];
+	share(int) from A[1..1] to B[1..n];
+	choice at B[1]
+	{
+		ok(Address) from B[1..1] to S[1..1];
+		(Date) from S[1..1] to B[1..1];
+		choice at B[1]
+		{
+			ok() from B[1..1] to B[2..n];
+		}
+		or
+		{
+			quit() from B[1..1] to B[2..n];
+		}
+	}
+	or
+	{
+		quit() from B[1..1] to S[1..1];
+		choice at B[1]
+		{
+			ok() from B[1..1] to B[2..n];
+		}
+		or
+		{
+			quit() from B[1..1] to B[2..n];
+		}
+	}
+}
+
+/*
 global protocol Proto1(role A(n, m), role B(n, m))
 {
-	1() from A[1..1] to B[n..n];
+	1() from A[1..1] to B[n..n];  // Testing actual role "naming"
 	2() from A[1..1] to B[m..m];
 }
+//*/
+
 
 /*
 global protocol Proto1(role A(n), role B(n))  // Testing API gen

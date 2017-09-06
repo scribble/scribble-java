@@ -7,31 +7,31 @@ import java.util.Map;
 import org.scribble.cli.CLArgParser;
 import org.scribble.cli.CommandLineException;
 
-public class ParamCLArgParser extends CLArgParser
+public class GoCLArgParser extends CLArgParser
 {
 	// Non-unique flags
 	public static final String GO_API_GEN_FLAG          = "-goapi";
 	
 	//private static final Map<String, ParamCLArgFlag> PARAM_UNIQUE_FLAGS = new HashMap<>();
 
-	private static final Map<String, ParamCLArgFlag> PARAM_NON_UNIQUE_FLAGS = new HashMap<>();
+	private static final Map<String, GoCLArgFlag> PARAM_NON_UNIQUE_FLAGS = new HashMap<>();
 	{
-		ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(ParamCLArgParser.GO_API_GEN_FLAG, ParamCLArgFlag.GO_API_GEN);
+		GoCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(GoCLArgParser.GO_API_GEN_FLAG, GoCLArgFlag.GO_API_GEN);
 	}
 
-	private static final Map<String, ParamCLArgFlag> PARAM_FLAGS = new HashMap<>();
+	private static final Map<String, GoCLArgFlag> PARAM_FLAGS = new HashMap<>();
 	{
-		ParamCLArgParser.PARAM_FLAGS.putAll(ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS);
+		GoCLArgParser.PARAM_FLAGS.putAll(GoCLArgParser.PARAM_NON_UNIQUE_FLAGS);
 	}
 
-	private final Map<ParamCLArgFlag, String[]> paramParsed = new HashMap<>();
+	private final Map<GoCLArgFlag, String[]> paramParsed = new HashMap<>();
 	
-	public ParamCLArgParser(String[] args) throws CommandLineException
+	public GoCLArgParser(String[] args) throws CommandLineException
 	{
 		super(args);  // Assigns this.args and calls parseArgs
 	}		
 	
-	public Map<ParamCLArgFlag, String[]> getParamArgs() throws CommandLineException
+	public Map<GoCLArgFlag, String[]> getParamArgs() throws CommandLineException
 	{
 		//super.parseArgs();  // Needed
 		return this.paramParsed;
@@ -40,7 +40,7 @@ public class ParamCLArgParser extends CLArgParser
 	@Override
 	protected boolean isFlag(String arg)
 	{
-		return ParamCLArgParser.PARAM_FLAGS.containsKey(arg) || super.isFlag(arg);
+		return GoCLArgParser.PARAM_FLAGS.containsKey(arg) || super.isFlag(arg);
 	}
 	
 	// Pre: i is the index of the current flag to parse
@@ -53,7 +53,7 @@ public class ParamCLArgParser extends CLArgParser
 		{
 			// Non-unique flags
 			
-			case ParamCLArgParser.GO_API_GEN_FLAG:
+			case GoCLArgParser.GO_API_GEN_FLAG:
 			{
 				return goParseProtoAndRoleArgs(flag, i);
 			}
@@ -71,7 +71,7 @@ public class ParamCLArgParser extends CLArgParser
 	// FIXME: factor out with core arg parser -- issue is GoCLArgFlag is currently an unlreated type to CLArgFlag
 	private int goParseProtoAndRoleArgs(String f, int i) throws CommandLineException
 	{
-		ParamCLArgFlag flag = ParamCLArgParser.PARAM_NON_UNIQUE_FLAGS.get(f);
+		GoCLArgFlag flag = GoCLArgParser.PARAM_NON_UNIQUE_FLAGS.get(f);
 		if ((i + 2) >= this.args.length)
 		{
 			throw new CommandLineException("Missing protocol/role arguments");
@@ -83,7 +83,7 @@ public class ParamCLArgParser extends CLArgParser
 	}
 	
 	// FIXME: factor out with core arg parser -- issue is GoCLArgFlag is currently an unlreated type to CLArgFlag
-	private void goConcatArgs(ParamCLArgFlag flag, String... toAdd)
+	private void goConcatArgs(GoCLArgFlag flag, String... toAdd)
 	{
 		String[] args = this.paramParsed.get(flag);
 		if (args == null)

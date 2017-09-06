@@ -24,12 +24,12 @@ import org.scribble.ext.go.core.ast.global.ParamCoreGType;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.codegen.statetype.ParamCoreSTEndpointApiGenerator;
 import org.scribble.ext.go.core.main.ParamCoreMainContext;
+import org.scribble.ext.go.core.main.ParamCoreException;
 import org.scribble.ext.go.core.model.endpoint.ParamCoreEGraphBuilder;
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
-import org.scribble.ext.go.main.ParamException;
-import org.scribble.ext.go.main.ParamJob;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.main.AntlrSourceException;
@@ -115,7 +115,7 @@ public class ParamCoreCommandLine extends CommandLine
 	{
 		if (this.paramArgs.containsKey(ParamCoreCLArgFlag.PARAM))
 		{
-			doParamCoreValidationTasks((ParamJob) job);
+			doParamCoreValidationTasks((GoJob) job);
 		}
 		else
 		{
@@ -152,7 +152,7 @@ public class ParamCoreCommandLine extends CommandLine
 		}
 	}
 
-	private void doParamCoreValidationTasks(ParamJob j) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
+	private void doParamCoreValidationTasks(GoJob j) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
 	{
 		/*if (this.args.containsKey(CLArgFlag.PROJECT))  // HACK
 			// modules/f17/src/test/scrib/demo/fase17/AppD.scr in [default] mode bug --- projection/EFSM not properly formed if this if is commented ????
@@ -180,7 +180,7 @@ public class ParamCoreCommandLine extends CommandLine
 	// Refactor into Param(Core)Job?
 	// Following methods are for assrt-*core*
 	
-	private void paramCorePreContextBuilding(ParamJob job) throws ScribbleException
+	private void paramCorePreContextBuilding(GoJob job) throws ScribbleException
 	{
 		job.runContextBuildingPasses();
 
@@ -189,7 +189,7 @@ public class ParamCoreCommandLine extends CommandLine
 	}
 
 	// Pre: assrtPreContextBuilding(job)
-	private void paramCoreParseAndCheckWF(ParamJob job) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
+	private void paramCoreParseAndCheckWF(GoJob job) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
 	{
 		Module main = job.getContext().getMainModule();
 		for (GProtocolDecl gpd : main.getGlobalProtocolDecls())
@@ -202,12 +202,12 @@ public class ParamCoreCommandLine extends CommandLine
 	}
 
 	// Pre: paramCorePreContextBuilding(job)
-	private void paramCoreParseAndCheckWF(ParamJob job, GProtocolName simpname) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
+	private void paramCoreParseAndCheckWF(GoJob job, GProtocolName simpname) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
 	{
 		Module main = job.getContext().getMainModule();
 		if (!main.hasProtocolDecl(simpname))
 		{
-			throw new ParamException("[param-core] Global protocol not found: " + simpname);
+			throw new ParamCoreException("[param-core] Global protocol not found: " + simpname);
 		}
 		this.gpd = (GProtocolDecl) main.getProtocolDecl(simpname);
 
@@ -218,7 +218,7 @@ public class ParamCoreCommandLine extends CommandLine
 		
 		if (!gt.isWellFormed(job, gpd))
 		{
-			throw new ParamException("[param-core] Global type not well-formed:\n  " + gt);
+			throw new ParamCoreException("[param-core] Global type not well-formed:\n  " + gt);
 		}
 
 		//Map<Role, Set<Set<ParamRange>>> 
@@ -300,7 +300,7 @@ public class ParamCoreCommandLine extends CommandLine
 	
 	private //Map<Role, Set<Set<ParamRange>>> 
 			Map<Role, Set<ParamActualRole>>
-			getProtoRoles(ParamJob job, ParamCoreGType gt)
+			getProtoRoles(GoJob job, ParamCoreGType gt)
 	{
 		Set<ParamRole> prs = gt.getParamRoles();
 		
