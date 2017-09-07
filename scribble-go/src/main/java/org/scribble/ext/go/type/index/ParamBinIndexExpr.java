@@ -38,6 +38,12 @@ public class ParamBinIndexExpr extends ParamIndexExpr
 	}
 	
 	@Override
+	public String toGoString()
+	{
+		throw new RuntimeException("[param-core] TODO: " + this);
+	}
+	
+	@Override
 	public String toSmt2Formula()
 	{
 		String left = this.left.toSmt2Formula();

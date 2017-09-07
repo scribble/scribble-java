@@ -67,7 +67,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			}
 		};
 		return 
-				  sEpRecv
+				/*  sEpRecv
 				+ "(" + sEpProto
 				+ ".(*" + api.gpn.getSimpleName() +")." + r.getName() + ", "
 						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
@@ -80,6 +80,6 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				/*+ "if " + sEpErr + " != nil {\n"
 				+ "return nil\n"
 				+ "}\n"*/
-				+ buildReturn(api, curr, succ);
+				buildReturn(api, curr, succ);
 	}
 }

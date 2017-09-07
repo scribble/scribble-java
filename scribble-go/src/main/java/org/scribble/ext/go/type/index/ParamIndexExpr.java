@@ -9,6 +9,8 @@ public abstract class ParamIndexExpr
 		return false;
 	}
 	
+	public abstract String toGoString();
+	
 	public abstract Set<ParamIndexVar> getVars();
 
 	public abstract String toSmt2Formula();  // Cf. toString -- but can be useful to separate, for debugging (and printing)
