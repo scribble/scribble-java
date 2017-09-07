@@ -60,7 +60,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 			else if (e instanceof ParamIndexVar)
 			{
 				return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".params[" + e + "]";
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".params[\"" + e + "\"]";
 			}
 			else
 			{
