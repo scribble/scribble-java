@@ -18,6 +18,12 @@ public class ParamIndexInt extends ParamIndexExpr
 	{
 		return true;
 	}
+	
+	@Override
+	public String toGoString()
+	{
+		return toString();
+	}
 		
 	@Override
 	public String toSmt2Formula()

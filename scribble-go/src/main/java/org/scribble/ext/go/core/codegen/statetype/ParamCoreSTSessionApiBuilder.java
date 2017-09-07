@@ -99,8 +99,10 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 							//+ this.apigen.actuals.entrySet().stream().flatMap(e -> e.getValue().keySet().stream()).map(a -> 
 							  {
 									String actualName = ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(a);
-									return "Sub_" + actualName + " func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: init statechan, factor out with makeSTStateName
+									/*return "Sub_" + actualName + " func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: init statechan, factor out with makeSTStateName
 											//+ ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE + "\n";
+											+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + "\n";*/
+									return actualName + "s map[int] func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: init statechan, factor out with makeSTStateName
 											+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + "\n";
 							  }).collect(Collectors.joining(""))
 							+ "params map[string]int\n"
@@ -125,12 +127,13 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 							  {
 									String actualName = ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(a);
 							  	return 
-										"\nfunc (r *" + epTypeName + ") "
+										"\nfunc (ep *" + epTypeName + ") "
 												+ "Register_" + actualName
-												+ "(impl func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: factor out with above
+												+ "(i int, impl func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: factor out with above
 														//+ ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE + ") {\n"
 														+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + ") {\n"
-												+ "r.Sub_" + actualName + " = impl\n"
+												//+ "ep.Sub_" + actualName + " = impl\n"
+												+ "ep." + actualName + "s[i] = impl\n"
 												+ "}\n";
 							  }).collect(Collectors.joining(""));
 				}).collect(Collectors.joining(""));

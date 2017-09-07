@@ -19,6 +19,12 @@ public class ParamIndexVar extends ParamIndexExpr
 	{
 		return new ParamRoleParam(this.name);
 	}
+	
+	@Override
+	public String toGoString()
+	{
+		return this.name;
+	}
 		
 	@Override
 	public String toSmt2Formula()
