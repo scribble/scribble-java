@@ -21,6 +21,7 @@ import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.Role;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
 public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
@@ -111,8 +112,10 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	protected String getStateChanPremable(EState s)
 	{
 		//throw new RuntimeException("[param-core] TODO: ");
+		Role r = this.actual.getName();
+		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		String tname = this.getStateChanName(s);
-		String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(this.apigen.proto.getSimpleName(), this.actual.getName()); 
+		String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
 		String res =
 				  this.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
@@ -127,11 +130,10 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		if (s.id == this.graph.init.id)
 		{
 			res += "\n"
-					+ "func New" + tname + "(ep *"
-							////+ this.apigen.getGeneratedEndpointType()
-							//+ ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE
-							+ epType
-							+ ") *" + tname + " {\n"  // FIXME: factor out
+					+ "func (ep *" + epType + ") New" 
+							//+ tname
+							+ ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual) + "_1"  // cf. makeSTStateName
+							+ "() *" + tname + " {\n"  // FIXME: factor out
 					//+ "ep." + this.role + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_STARTPROTOCOL + "()\n"
 					+ "return &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
 							+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")}\n"
