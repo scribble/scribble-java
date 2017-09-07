@@ -22,17 +22,17 @@ global protocol Reduce( role M(N)
 	W[log n][0] --> M
 	*/
 
-	distrib(intarray) from M[1    ..  1] to W[1..8*N];
+	distrib(intarray) from M[1..1] to W[1..8*N];
 
         // These ranges seem to fail
-	redl1(intarray) from W[1    ..  N] to R[1..1];
-	redl1(intarray) from W[  N+1..2*N] to R[2..2];
-	redl1(intarray) from W[2*N+1..3*N] to R[3..3];
-	redl1(intarray) from W[3*N+1..4*N] to R[4..4];
-	redl1(intarray) from W[4*N+1..5*N] to R[5..5];
-	redl1(intarray) from W[5*N+1..6*N] to R[6..6];
-	redl1(intarray) from W[6*N+1..7*N] to R[7..7];
-	redl1(intarray) from W[7*N+1..8*N] to R[8..8];
+	redl1(intarray) from W[1..N] to R[1..1];
+	redl1(intarray) from W[N+1..2*N] to R[2..2];
+	redl1(intarray) from W[(2*N)+1..3*N] to R[3..3];
+	redl1(intarray) from W[(3*N)+1..4*N] to R[4..4];
+	redl1(intarray) from W[(4*N)+1..5*N] to R[5..5];
+	redl1(intarray) from W[(5*N)+1..6*N] to R[6..6];
+	redl1(intarray) from W[(6*N)+1..7*N] to R[7..7];
+	redl1(intarray) from W[(7*N)+1..8*N] to R[8..8];
 
         /* Can we simplify this? */
         redl2(intarray)  dot  R[5..8]       to R[1..4];
