@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.scribble.codegen.statetype.STCaseBuilder;
-import org.scribble.codegen.statetype.STStateChanAPIBuilder;
+import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.type.name.MessageId;
@@ -17,13 +17,13 @@ public class GoSTCaseBuilder extends STCaseBuilder
 		super(cb);
 	}
 
-	protected static String getCaseActionName(STStateChanAPIBuilder api, EState s)
+	protected static String getCaseActionName(STStateChanApiBuilder api, EState s)
 	{
 		return api.getStateChanName(s) + "_Case";
 	}
 
 	@Override
-	public String getCaseStateChanName(STStateChanAPIBuilder api, EState s)
+	public String getCaseStateChanName(STStateChanApiBuilder api, EState s)
 	{
 		String name = api.getStateChanName(s) + "_Cases";
 		// Should be "private" or not, corresponding to GSTStateChanAPIBuilder.makeSTStateName
@@ -32,10 +32,10 @@ public class GoSTCaseBuilder extends STCaseBuilder
 	}
 	
 	@Override
-	public String getPreamble(STStateChanAPIBuilder api, EState s)
+	public String getPreamble(STStateChanApiBuilder api, EState s)
 	{
 		String casename = getCaseActionName(api, s);
-		return GoSTStateChanAPIBuilder.getPackageDecl(api) + "\n"
+		return GoSTStateChanApiBuilder.getPackageDecl((GoSTStateChanApiBuilder) api) + "\n"
 				+ "\n"
 				+ "import \"org/scribble/runtime/net\"\n"  // Some parts duplicated from GSTStateChanAPIBuilder
 				+ "\n"
@@ -54,7 +54,7 @@ public class GoSTCaseBuilder extends STCaseBuilder
 	
 	private static Map<String, Integer> seen = new HashMap<>(); // FIXME HACK
 	
-	protected static String getOpTypeName(STStateChanAPIBuilder api, EState s, MessageId<?> mid)
+	protected static String getOpTypeName(STStateChanApiBuilder api, EState s, MessageId<?> mid)
 	{
 		String op = mid.toString();
 		char c = op.charAt(0);

@@ -28,7 +28,7 @@ public abstract class STReceiveStateBuilder extends STStateChanBuilder
 	}
 	
 	@Override
-	public String build(STStateChanAPIBuilder api, EState s)
+	public String build(STStateChanApiBuilder api, EState s)
 	{
 		String out = getPreamble(api, s);
 		

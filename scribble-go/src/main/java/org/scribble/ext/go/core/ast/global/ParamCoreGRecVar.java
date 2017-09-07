@@ -10,7 +10,7 @@ import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRole;
-import org.scribble.ext.go.main.ParamJob;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 
@@ -23,7 +23,7 @@ public class ParamCoreGRecVar extends ParamCoreRecVar<Global> implements ParamCo
 	}
 	
 	@Override
-	public boolean isWellFormed(ParamJob job, GProtocolDecl gpd)
+	public boolean isWellFormed(GoJob job, GProtocolDecl gpd)
 	{
 		return true;
 	}

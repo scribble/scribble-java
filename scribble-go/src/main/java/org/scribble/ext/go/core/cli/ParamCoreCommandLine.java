@@ -1,4 +1,4 @@
-package org.scribble.ext.go.cli;
+package org.scribble.ext.go.core.cli;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -17,20 +17,19 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.cli.CLArgFlag;
 import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineException;
-import org.scribble.ext.go.codegen.statetype.go.GoEndpointApiGenerator;
 import org.scribble.ext.go.core.ast.ParamCoreAstFactory;
 import org.scribble.ext.go.core.ast.ParamCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.ParamCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.ParamCoreGType;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.codegen.statetype.ParamCoreSTEndpointApiGenerator;
+import org.scribble.ext.go.core.main.ParamCoreException;
+import org.scribble.ext.go.core.main.ParamCoreMainContext;
 import org.scribble.ext.go.core.model.endpoint.ParamCoreEGraphBuilder;
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
-import org.scribble.ext.go.main.ParamException;
-import org.scribble.ext.go.main.ParamJob;
-import org.scribble.ext.go.main.ParamMainContext;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.main.AntlrSourceException;
@@ -44,24 +43,23 @@ import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribParserException;
 
-public class ParamCommandLine extends CommandLine
+// N.B. this is the CL for both -goapi and param-core extensions
+public class ParamCoreCommandLine extends CommandLine
 {
-	protected final Map<ParamCLArgFlag, String[]> paramArgs;  // Maps each flag to list of associated argument values
+	protected final Map<ParamCoreCLArgFlag, String[]> paramArgs;  // Maps each flag to list of associated argument values
 
 	// HACK: store in (Core) Job/JobContext?
 	protected GProtocolDecl gpd;
-	//protected Map<Role, Map<Set<ParamRange>, ParamCoreLType>> P0;
 	protected Map<Role, Map<ParamActualRole, ParamCoreLType>> P0;
-	//protected Map<Role, Map<Set<ParamRange>, EGraph>> E0;  // FIXME: make a "proper role" for param APIs
-	protected Map<Role, Map<ParamActualRole, EGraph>> E0;  // FIXME: make a "proper role" for param APIs
+	protected Map<Role, Map<ParamActualRole, EGraph>> E0;
 	//protected ParamCoreSModel model;
 	
-	public ParamCommandLine(String... args) throws CommandLineException
+	public ParamCoreCommandLine(String... args) throws CommandLineException
 	{
-		this(new ParamCLArgParser(args));
+		this(new ParamCoreCLArgParser(args));
 	}
 
-	private ParamCommandLine(ParamCLArgParser p) throws CommandLineException
+	private ParamCoreCommandLine(ParamCoreCLArgParser p) throws CommandLineException
 	{
 		super(p);  // calls p.parse()
 		if (this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
@@ -78,7 +76,7 @@ public class ParamCommandLine extends CommandLine
 	}
 	
 	@Override
-	protected ParamMainContext newMainContext() throws ScribParserException, ScribbleException
+	protected ParamCoreMainContext newMainContext() throws ScribParserException, ScribbleException
 	{
 		boolean debug = this.args.containsKey(CLArgFlag.VERBOSE);  // TODO: factor out with CommandLine (cf. MainContext fields)
 		boolean useOldWF = this.args.containsKey(CLArgFlag.OLD_WF);
@@ -102,22 +100,22 @@ public class ParamCommandLine extends CommandLine
 		else
 		{
 			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
-			return new ParamMainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
+			return new ParamCoreMainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
 					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
 		}
 	}
 
 	public static void main(String[] args) throws CommandLineException, AntlrSourceException
 	{
-		new ParamCommandLine(args).run();
+		new ParamCoreCommandLine(args).run();
 	}
 
 	@Override
 	protected void doValidationTasks(Job job) throws ParamCoreSyntaxException, AntlrSourceException, ScribParserException, CommandLineException
 	{
-		if (this.paramArgs.containsKey(ParamCLArgFlag.PARAM))
+		if (this.paramArgs.containsKey(ParamCoreCLArgFlag.PARAM))
 		{
-			doParamCoreValidationTasks((ParamJob) job);
+			doParamCoreValidationTasks((GoJob) job);
 		}
 		else
 		{
@@ -128,34 +126,28 @@ public class ParamCommandLine extends CommandLine
 	@Override
 	protected void doNonAttemptableOutputTasks(Job job) throws ScribbleException, CommandLineException
 	{		
-		if (this.paramArgs.containsKey(ParamCLArgFlag.GO_API_GEN))
+		if (this.paramArgs.containsKey(ParamCoreCLArgFlag.PARAM_CORE_API_GEN))
 		{
 			JobContext jcontext = job.getContext();
-			String[] args = this.paramArgs.get(ParamCLArgFlag.GO_API_GEN);
-			for (int i = 0; i < args.length; i += 2)
-			{
-				GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-				Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-				Map<String, String> goClasses = new GoEndpointApiGenerator(job).generateGoApi(fullname, role);
-				outputClasses(goClasses);
-			}
-		}
-		else if (this.paramArgs.containsKey(ParamCLArgFlag.PARAM_CORE_API_GEN))
-		{
-			JobContext jcontext = job.getContext();
-			String[] args = this.paramArgs.get(ParamCLArgFlag.PARAM_CORE_API_GEN);
+			String[] args = this.paramArgs.get(ParamCoreCLArgFlag.PARAM_CORE_API_GEN);
 			for (int i = 0; i < args.length; i += 1)
 			{
-				String simpname = this.paramArgs.get(ParamCLArgFlag.PARAM)[0];
+				String simpname = this.paramArgs.get(ParamCoreCLArgFlag.PARAM)[0];
 				GProtocolName fullname = checkGlobalProtocolArg(jcontext, simpname);
 				Role role = checkRoleArg(jcontext, fullname, args[i]);
-				//for (Set<ParamRange> ranges : this.P0.get(role).keySet())
-				for (ParamActualRole ranges : this.P0.get(role).keySet())
+				/*for (ParamActualRole ranges : this.P0.get(role).keySet())
 				{
 					EGraph efsm = this.E0.get(role).get(ranges);
-					Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job).generateGoApi(fullname, ranges, efsm);
+					Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job, fullname, ranges, efsm).build();
 					outputClasses(goClasses);
-				}
+				}*/
+
+				/*job.debugPrintln("\n[param-core] Running " + ParamCoreSTSessionApiBuilder.class + " for " + fullname);
+
+				Map<String, String> goClasses = new ParamCoreSTSessionApiBuilder((GoJob) job, fullname, this.E0).build();*/
+				//Map<ParamActualRole, EGraph> actuals = this.E0.get(role);
+				Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job, fullname, role, this.E0).build();
+				outputClasses(goClasses);
 			}
 		}
 		else
@@ -164,7 +156,7 @@ public class ParamCommandLine extends CommandLine
 		}
 	}
 
-	private void doParamCoreValidationTasks(ParamJob j) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
+	private void doParamCoreValidationTasks(GoJob j) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
 	{
 		/*if (this.args.containsKey(CLArgFlag.PROJECT))  // HACK
 			// modules/f17/src/test/scrib/demo/fase17/AppD.scr in [default] mode bug --- projection/EFSM not properly formed if this if is commented ????
@@ -174,7 +166,7 @@ public class ParamCommandLine extends CommandLine
 
 		paramCorePreContextBuilding(j);
 
-		GProtocolName simpname = new GProtocolName(this.paramArgs.get(ParamCLArgFlag.PARAM)[0]);
+		GProtocolName simpname = new GProtocolName(this.paramArgs.get(ParamCoreCLArgFlag.PARAM)[0]);
 		if (simpname.toString().equals("[ParamCoreAllTest]"))  // HACK: ParamCoreAllTest
 		{
 			paramCoreParseAndCheckWF(j);  // Includes base passes
@@ -192,7 +184,7 @@ public class ParamCommandLine extends CommandLine
 	// Refactor into Param(Core)Job?
 	// Following methods are for assrt-*core*
 	
-	private void paramCorePreContextBuilding(ParamJob job) throws ScribbleException
+	private void paramCorePreContextBuilding(GoJob job) throws ScribbleException
 	{
 		job.runContextBuildingPasses();
 
@@ -201,7 +193,7 @@ public class ParamCommandLine extends CommandLine
 	}
 
 	// Pre: assrtPreContextBuilding(job)
-	private void paramCoreParseAndCheckWF(ParamJob job) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
+	private void paramCoreParseAndCheckWF(GoJob job) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
 	{
 		Module main = job.getContext().getMainModule();
 		for (GProtocolDecl gpd : main.getGlobalProtocolDecls())
@@ -214,12 +206,12 @@ public class ParamCommandLine extends CommandLine
 	}
 
 	// Pre: paramCorePreContextBuilding(job)
-	private void paramCoreParseAndCheckWF(ParamJob job, GProtocolName simpname) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
+	private void paramCoreParseAndCheckWF(GoJob job, GProtocolName simpname) throws ParamCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
 	{
 		Module main = job.getContext().getMainModule();
 		if (!main.hasProtocolDecl(simpname))
 		{
-			throw new ParamException("[param-core] Global protocol not found: " + simpname);
+			throw new ParamCoreException("[param-core] Global protocol not found: " + simpname);
 		}
 		this.gpd = (GProtocolDecl) main.getProtocolDecl(simpname);
 
@@ -230,7 +222,7 @@ public class ParamCommandLine extends CommandLine
 		
 		if (!gt.isWellFormed(job, gpd))
 		{
-			throw new ParamException("[param-core] Global type not well-formed:\n  " + gt);
+			throw new ParamCoreException("[param-core] Global type not well-formed:\n  " + gt);
 		}
 
 		//Map<Role, Set<Set<ParamRange>>> 
@@ -312,7 +304,7 @@ public class ParamCommandLine extends CommandLine
 	
 	private //Map<Role, Set<Set<ParamRange>>> 
 			Map<Role, Set<ParamActualRole>>
-			getProtoRoles(ParamJob job, ParamCoreGType gt)
+			getProtoRoles(GoJob job, ParamCoreGType gt)
 	{
 		Set<ParamRole> prs = gt.getParamRoles();
 		
@@ -354,6 +346,8 @@ public class ParamCommandLine extends CommandLine
 		for (Role r : powersets.keySet())
 		{
 			Set<Set<ParamRange>> powset = powersets.get(r);
+			int i = 1;
+			int size = powset.size();
 			
 			job.debugPrintln("\n[param-core] Ranges powerset for " + r + ": " + powset);
 			
@@ -401,7 +395,7 @@ public class ParamCommandLine extends CommandLine
 				z3 = //"(declare-const id Int)\n
 						"(assert " + z3 + ")";
 				
-				job.debugPrintln("\n[param-core] Candidate: " + cand);
+				job.debugPrintln("\n[param-core] Candidate (" + i++ + "/" + size + "): " + cand);
 				job.debugPrintln("[param-core] Co-set: " + coset);
 				job.debugPrintln("[param-core] Running Z3 on:\n" + z3);
 				
@@ -419,22 +413,22 @@ public class ParamCommandLine extends CommandLine
 	@Override
 	protected void tryOutputTasks(Job job) throws CommandLineException, ScribbleException
 	{
-		if (this.paramArgs.containsKey(ParamCLArgFlag.PARAM_CORE_EFSM))
+		if (this.paramArgs.containsKey(ParamCoreCLArgFlag.PARAM_CORE_EFSM))
 		{
-			String[] args = this.paramArgs.get(ParamCLArgFlag.PARAM_CORE_EFSM);
+			String[] args = this.paramArgs.get(ParamCoreCLArgFlag.PARAM_CORE_EFSM);
 			for (int i = 0; i < args.length; i += 1)
 			{
 				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
 				this.E0.get(role).entrySet().forEach(e ->
 				{
 					String out = e.getValue().toDot();
-					System.out.println("\n" + role + " " + e.getKey() + ":\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
+					System.out.println("\nEndpoint FSM for " + e.getKey() + ":\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
 				});
 			}
 		}
-		if (this.paramArgs.containsKey(ParamCLArgFlag.PARAM_CORE_EFSM_PNG))
+		if (this.paramArgs.containsKey(ParamCoreCLArgFlag.PARAM_CORE_EFSM_PNG))
 		{
-			String[] args = this.paramArgs.get(ParamCLArgFlag.PARAM_CORE_EFSM_PNG);
+			String[] args = this.paramArgs.get(ParamCoreCLArgFlag.PARAM_CORE_EFSM_PNG);
 			for (int i = 0; i < args.length; i += 2)
 			{
 				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);

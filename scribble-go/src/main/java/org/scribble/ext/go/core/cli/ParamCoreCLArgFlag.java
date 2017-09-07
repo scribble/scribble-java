@@ -1,15 +1,11 @@
-package org.scribble.ext.go.cli;
+package org.scribble.ext.go.core.cli;
 
-public enum ParamCLArgFlag
+public enum ParamCoreCLArgFlag
 {
 	// Unique flags
 	PARAM,
 
 	// Non-unique flags
-	
-	// Non-unique flags
-	GO_API_GEN,
-
 	PARAM_CORE_EFSM,
 	PARAM_CORE_EFSM_PNG,
 	PARAM_CORE_API_GEN,

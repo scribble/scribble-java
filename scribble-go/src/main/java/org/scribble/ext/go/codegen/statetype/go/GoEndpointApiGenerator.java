@@ -8,7 +8,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
-public class GoEndpointApiGenerator
+public class GoEndpointApiGenerator  // FIXME: make base STEndpointApiGenerator
 {
 	public final Job job;
 	
@@ -21,7 +21,7 @@ public class GoEndpointApiGenerator
 	public Map<String, String> generateGoApi(GProtocolName fullname, Role self) throws ScribbleException
 	{
 		this.job.debugPrintln("\n[Go API gen] Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
-		GoSTStateChanAPIBuilder apigen = new GoSTStateChanAPIBuilder(this.job, fullname, self, this.job.getContext().getEGraph(fullname, self));
+		GoSTStateChanApiBuilder apigen = new GoSTStateChanApiBuilder(this.job, fullname, self, this.job.getContext().getEGraph(fullname, self));
 		Map<String, String> api = apigen.build();  // filepath -> source 
 		api.putAll(apigen.buildSessionAPI());  // FIXME: factor better with STStateChanAPIBuilder
 		return api;

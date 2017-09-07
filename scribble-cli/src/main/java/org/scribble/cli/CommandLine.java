@@ -436,7 +436,7 @@ public class CommandLine
 		}
 		else
 		{
-			f = path -> { System.out.println(path + ":\n" + classes.get(path)); };
+			f = path -> { System.out.println("\n[" + path + "]:\n" + classes.get(path)); };
 		}
 		classes.keySet().stream().forEach(f);
 	}

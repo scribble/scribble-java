@@ -26,7 +26,7 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
-public abstract class STStateChanAPIBuilder
+public abstract class STStateChanApiBuilder
 {
 	public final Job job;
 	
@@ -42,7 +42,7 @@ public abstract class STStateChanAPIBuilder
 
 	private Map<Integer, String> names = new HashMap<>();
 	
-	protected STStateChanAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph,
+	protected STStateChanApiBuilder(Job job, GProtocolName gpn, Role role, EGraph graph,
 			STOutputStateBuilder ob, STReceiveStateBuilder rb, STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
 	{
 		this.job = job;
@@ -58,7 +58,7 @@ public abstract class STStateChanAPIBuilder
 		this.eb = eb;
 	}
 	
-	public abstract Map<String, String> buildSessionAPI();  // filepath -> source  // FIXME: factor out
+	//public abstract Map<String, String> buildSessionAPI();  // filepath -> source  // FIXME: factor out
 	
 	public Map<String, String> build()  // filepath -> source
 	{
@@ -94,7 +94,7 @@ public abstract class STStateChanAPIBuilder
 	
 	public abstract String getFilePath(String name);
 
-	public abstract String getPackage();
+	//public abstract String getPackage();
 	
 	public String getStateChanName(EState s)
 	{
@@ -112,7 +112,7 @@ public abstract class STStateChanAPIBuilder
 
 	public abstract String buildAction(STActionBuilder ab, EState curr, EAction a);
 
-	public abstract String getChannelName(STStateChanAPIBuilder api, EAction a);
+	public abstract String getChannelName(STStateChanApiBuilder api, EAction a);
 
 	public abstract String buildActionReturn(STActionBuilder ab, EState curr, EState succ);  // FIXME: refactor action builders as interfaces and use generic parameter for kind
 }

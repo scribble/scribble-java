@@ -16,7 +16,7 @@ import org.scribble.ext.go.core.ast.local.ParamCoreLMultiChoices;
 import org.scribble.ext.go.core.ast.local.ParamCoreLRec;
 import org.scribble.ext.go.core.ast.local.ParamCoreLType;
 import org.scribble.ext.go.core.type.ParamRole;
-import org.scribble.ext.go.main.ParamJob;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
@@ -29,10 +29,10 @@ import org.scribble.type.name.RecVar;
 public class ParamCoreEGraphBuilder
 {
 	
-	private final ParamJob job;
+	private final GoJob job;
 	private final EGraphBuilderUtil util;  // Not using any features for unguarded choice/recursion/continue (recursion manually tracked here)
 	
-	public ParamCoreEGraphBuilder(ParamJob job)
+	public ParamCoreEGraphBuilder(GoJob job)
 	{
 		this.job = job;
 		this.util = new EGraphBuilderUtil(job.ef);

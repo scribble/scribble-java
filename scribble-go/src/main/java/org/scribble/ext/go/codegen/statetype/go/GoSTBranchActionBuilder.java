@@ -2,7 +2,7 @@ package org.scribble.ext.go.codegen.statetype.go;
 
 import java.util.stream.Collectors;
 
-import org.scribble.codegen.statetype.STStateChanAPIBuilder;
+import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.codegen.statetype.STBranchActionBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
@@ -10,7 +10,7 @@ import org.scribble.model.endpoint.actions.EAction;
 public class GoSTBranchActionBuilder extends STBranchActionBuilder
 {
 	@Override
-	public String build(STStateChanAPIBuilder api, EState curr, EAction a)  // FIXME: "overriding" GSTStateChanAPIBuilder.buildAction to hack around *interface return  // FIXME: factor out
+	public String build(STStateChanApiBuilder api, EState curr, EAction a)  // FIXME: "overriding" GSTStateChanAPIBuilder.buildAction to hack around *interface return  // FIXME: factor out
 	{
 		EState succ = curr.getSuccessor(a); 
 		return
@@ -23,7 +23,7 @@ public class GoSTBranchActionBuilder extends STBranchActionBuilder
 	}
 
 	@Override
-	public String getActionName(STStateChanAPIBuilder api, EAction a)
+	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
 		return "Branch_" + a.peer;
 	}
@@ -35,13 +35,13 @@ public class GoSTBranchActionBuilder extends STBranchActionBuilder
 	}
 
 	@Override
-	public String getReturnType(STStateChanAPIBuilder api, EState curr, EState succ)
+	public String getReturnType(STStateChanApiBuilder api, EState curr, EState succ)
 	{
 		return api.cb.getCaseStateChanName(api, curr);
 	}
 
 	@Override
-	public String buildBody(STStateChanAPIBuilder api, EState curr, EAction a, EState succ)
+	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
 		return 
 				  //"tmp := " + api.getChannelName(api, a) + ".Read()\n"

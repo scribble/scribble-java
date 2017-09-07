@@ -23,7 +23,7 @@ public abstract class STEndStateBuilder extends STStateChanBuilder
 	}
 	
 	@Override
-	public String build(STStateChanAPIBuilder api, EState s)
+	public String build(STStateChanApiBuilder api, EState s)
 	{
 		return getPreamble(api, s);
 	}
