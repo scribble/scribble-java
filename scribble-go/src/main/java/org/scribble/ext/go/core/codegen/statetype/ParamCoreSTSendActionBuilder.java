@@ -67,8 +67,17 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				throw new RuntimeException("[param-core] TODO: " + e);
 			}
 		};
-		return 
-				  sEpWrite
+		return
+                "b := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)"
+				+ "for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
+                + "\tvar buf bytes.Buffer\n"
+                + "\tif err := gob.NewDecoder(&buf).Encode(splitFn(arg0, i); err != nil {\n\t\t" // only arg0
+                	+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Errors <- session.SerialiseFailed(err, \"" + getActionName(api, a) +"\", "
+					+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Self.Name())\n"
+                + "\t}\n"
+                + "\tb[i-"+foo.apply(g.start)+"] = buf.Bytes()\n"
+                + "}\n"
+				+ sEpWrite
 				+ "(" + sEpProto
 				+ ".(*" + api.gpn.getSimpleName() +")." + r.getName() + ", "
 						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
@@ -77,7 +86,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				      .mapToObj(i -> sEpWrite + "(" + sEpProto + ".(*" + api.gpn.getSimpleName() +")." + r.getName() + ", "
 									+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
 				      		+ "arg" + i + ")")
-				      .collect(Collectors.joining("\n")) + "\n"
+	 			      .collect(Collectors.joining("\n")) + "\n"
 				/*+ "if " + sEpErr + " != nil {\n"
 				+ "return nil\n"
 				+ "}\n"*/
