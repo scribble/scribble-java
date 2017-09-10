@@ -114,11 +114,21 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 									+ "(" + 
 											vars.stream().map(v -> v + " int").collect(Collectors.joining(", ")) + ")"
 									+ "(*" + epTypeName + ") {\n"
-							+ "return &" + epTypeName + "{ " + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + ": p, params: "
-									//+ "params,"
-									+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining()) + "}, "
-									+ "ept: "
-									+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")}\n"
+							+ "return &" + epTypeName + "{ " + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + ": p, "
+							
+									+ this.apigen.actuals.get(r).keySet().stream()
+											.map(a -> 
+													{
+														String actualName = ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(a);
+														return actualName + "s: make(map[int] func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: init statechan, factor out with makeSTStateName
+																+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + ")";
+													}).collect(Collectors.joining(", ")) + ", " 
+									
+									+ "params: "
+											//+ "params,"
+											+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining()) + "}, "
+											+ "ept: "
+											+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")}\n"
 							+ "}\n"
 							+ this.apigen.actuals.get(r).keySet().stream()
 									//.filter(a -> a.getName().equals(r))
