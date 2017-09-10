@@ -5,6 +5,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
@@ -39,7 +41,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		super(apigen.job, apigen.proto, apigen.self, graph,
 				new ParamCoreSTOutputStateBuilder(new ParamCoreSTSendActionBuilder()),
 				new ParamCoreSTReceiveStateBuilder(new ParamCoreSTReceiveActionBuilder()),
-				null, //new GoSTBranchStateBuilder(new GoSTBranchActionBuilder()),
+				new ParamCoreSTBranchStateBuilder(new ParamCoreSTBranchActionBuilder()),
 				null, //new GoSTCaseBuilder(new GoSTCaseActionBuilder()),
 				new ParamCoreSTEndStateBuilder());
 
@@ -120,6 +122,9 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				  this.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
 				+ this.apigen.generateScribbleRuntimeImports() + "\n"
+				+ (s.isTerminal() ? "" : 
+					Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE,
+							ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE).map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
 				+ "\n"
 				+ "type " + tname + " struct{\n"
 				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
@@ -146,17 +151,30 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	@Override
 	public String buildAction(STActionBuilder ab, EState curr, EAction a)  // Here because action builder hierarchy not suitable (extended by action kind, not by target language)
 	{
-		//throw new RuntimeException("[param-core] TODO: ");
 		EState succ = curr.getSuccessor(a);
-		return
-				  "func (" + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
-							+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-							+ ab.buildArgs(a)
-							+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
-				+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-						+ "." + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
-				+ ab.buildBody(this, curr, a, succ) + "\n"
-				+ "}";
+		if (getStateKind(curr) == ParamCoreEStateKind.CROSS_RECEIVE && curr.getActions().size() > 1)
+		{
+			return
+						"func (" + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
+								+ ab.buildArgs(a)
+								+ ") chan *" + ab.getReturnType(this, curr, succ) + " {\n"
+					+ ab.buildBody(this, curr, a, succ) + "\n"
+					+ "}";
+		}
+		else
+		{
+			//throw new RuntimeException("[param-core] TODO: ");
+			return
+						"func (" + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
+								+ ab.buildArgs(a)
+								+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
+					+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+							+ "." + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
+					+ ab.buildBody(this, curr, a, succ) + "\n"
+					+ "}";
+		}
 	}
 	
 	@Override
@@ -181,15 +199,27 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			res += sEp + ".ept." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINISHPROTOCOL + "()\n";
 		}
-		res += "return &" + ab.getReturnType(this, curr, succ) + "{ " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
-		if (!succ.isTerminal())
-		{
-			res += ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-							+ ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case
-		}
-		res += " }";
-
+		res += "return " + getSuccStateChan(ab, curr, succ, sEp);
 		return res;
+	}
+
+	public String getSuccStateChan(STActionBuilder ab, EState curr, EState succ, String sEp)
+	{
+		if (getStateKind(succ) == ParamCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
+		{
+			return "New" + getStateChanName(succ) + "()";
+		}
+		else
+		{
+			String res = "&" + ab.getReturnType(this, curr, succ) + "{ " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
+			if (!succ.isTerminal())
+			{
+				res += ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+								+ ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case
+			}
+			res += " }";
+			return res;
+		}
 	}
 	
 	@Override
@@ -209,7 +239,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					if (s.getActions().size() > 1)
 					{
 						api.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
-						api.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));  // FIXME: factor out
+						//api.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));  // FIXME: factor out
 					}
 					else
 					{

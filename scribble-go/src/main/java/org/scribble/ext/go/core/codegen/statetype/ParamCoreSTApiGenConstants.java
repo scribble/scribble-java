@@ -7,16 +7,19 @@ public class ParamCoreSTApiGenConstants
 	public static final String GO_SCRIBBLERUNTIME_SESSIONPARAM_PACKAGE = "github.com/scribble/go-runtime/session/param";
 	public static final String GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE = "github.com/scribble/go-runtime/transport";
 	public static final String GO_SCRIBBLERUNTIME_SHM_PACKAGE = "github.com/scribble/go-runtime/transport/shm";
+	public static final String GO_SCRIBBLERUNTIME_BYTES_PACKAGE = "bytes";
+	public static final String GO_SCRIBBLERUNTIME_GOB_PACKAGE = "encoding/gob";
 	
 	public static final String GO_ENDPOINT_TYPE = "session.Endpoint";  // net.MPSTEndpoint;
 	public static final String GO_ENDPOINT_CONSTRUCTOR = "session.NewEndpoint";
 	public static final String GO_ENDPOINT_PROTO = "Proto";
 	public static final String GO_ENDPOINT_ERR = "Err";
-	public static final String GO_ENDPOINT_WRITE = "Write";
-	public static final String GO_ENDPOINT_READ = "Read";
+	public static final String GO_ENDPOINT_WRITEALL = "WriteAll";
+	public static final String GO_ENDPOINT_READALL = "ReadAll";
 	public static final String GO_ENDPOINT_STARTPROTOCOL = "StartProtocol";
 	public static final String GO_ENDPOINT_FINISHPROTOCOL = "FinishProtocol";
 	public static final String GO_ENDPOINT_FINALISE = "Finalise";
+	public static final String GO_ENDPOINT_ENDPOINT = "ept";
 
 	public static final String GO_FINALISER_TYPE = "session.Finaliser";  // net.MPSTEndpoint;
 	
