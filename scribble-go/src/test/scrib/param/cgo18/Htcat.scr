@@ -1,0 +1,46 @@
+//Raymond@HZHL3 ~/code/eclipse/scribble/github.com/rhu1-go/scribble-java
+//$ bin/scribblec-go.sh -ip scribble-go/src/test/scrib/ -d
+//scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/cgo18/Htcat.scr -param Proto1
+
+module param.cgo18.Htcat;
+
+
+type <go> "cat" from "..." as cat;
+type <go> "int" from "..." as int;
+type <go> "frag" from "..." as frag;
+type <go> "err" from "..." as err;
+
+
+global protocol Htcat(role M(n), role W(n))
+{
+  get(cat) from M[1..1] to W[1..n];
+
+  do HtcatProto(M, W);
+}
+
+aux global protocol HtcatProto(role M, role W)
+{
+  choice at M[1]
+  {
+    cont() from M[1..1] to W[1..n];
+
+    choices at W[i:1..n]
+    {
+      register(frag) from W[i] to M[1..1];
+      do HtcatProto(M, W);
+    } or
+    {
+      cancel(err) from W[i] to M[1..1];
+      do HtcatProto(M, W);
+    } or
+    {
+      lastFragment(int) from W[i] to M[1..1];
+      do HtcatProto(M, W);
+    }
+
+  } or
+  {
+    stop() from M[1..1] to W[1..n];
+  }
+}
+
