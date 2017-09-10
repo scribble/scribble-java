@@ -22,7 +22,7 @@ global protocol Reduce( role M(N)
 	W[log n][0] --> M
 	*/
 
-	distrib(intarray) from M[1    ..  1] to W[1..8*N];
+	distrib(intarray) from M[1..1] to W[1..8*N];
 
         // These ranges seem to fail
 	redl1(intarray) from W[1      ..  N] to R[1..1];

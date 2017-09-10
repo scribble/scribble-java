@@ -77,6 +77,15 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 									+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
 				      		+ "arg" + i + ")")
 				      .collect(Collectors.joining("\n")) + "\n"
+                + "for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
+                + "\tvar decoded "+a.payload.elems.get(0)+"\n"
+                + "\tif err := gob.NewDecoder(bytes.NewReader(b[i-"+foo.apply(g.start)+"])).Decode(&decoded); err != nil {\n\t\t"
+                    + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Errors <- session.DeserialiseFailed(err, \"" + getActionName(api, a) +"\", "
+					+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Self.Name())\n"
+                + "\t}\n"
+                + "\tdata[i-"+foo.apply(g.start)+"] = decoded\n"
+                + "}\n"
+                + "*arg0 = reduceFn(data)"
 				/*+ "if " + sEpErr + " != nil {\n"
 				+ "return nil\n"
 				+ "}\n"*/
