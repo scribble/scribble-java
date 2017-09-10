@@ -5,6 +5,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
@@ -120,6 +122,9 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				  this.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
 				+ this.apigen.generateScribbleRuntimeImports() + "\n"
+				+ (s.isTerminal() ? "" : 
+					Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE,
+							ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE).map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
 				+ "\n"
 				+ "type " + tname + " struct{\n"
 				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 

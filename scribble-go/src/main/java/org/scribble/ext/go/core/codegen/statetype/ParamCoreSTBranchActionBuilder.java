@@ -56,7 +56,7 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
 		String sEpRecv = 
-				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READ;
+				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
 		String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."

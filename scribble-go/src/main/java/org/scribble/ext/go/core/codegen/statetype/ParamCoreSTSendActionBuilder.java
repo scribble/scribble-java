@@ -31,7 +31,9 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG
-							+ i + " " + a.payload.elems.get(i)).collect(Collectors.joining(", "));
+							+ i + " " + a.payload.elems.get(i)
+							+ ", splitFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " int, i" + i + " int) int"
+							).collect(Collectors.joining(", "));
 	}
 
 	@Override
@@ -39,7 +41,9 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 	{
 		String sEpWrite = 
 				//s.ep.Write
-				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITE;
+				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+				 		+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+						 + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL;
 		String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
@@ -68,26 +72,35 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 			}
 		};
 		return 
-                "b := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)"
+				  "b := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
 				+ "for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
-                + "\tvar buf bytes.Buffer\n"
-                + "\tif err := gob.NewDecoder(&buf).Encode(splitFn(arg0, i); err != nil {\n\t\t" // only arg0
-                	+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Errors <- session.SerialiseFailed(err, \"" + getActionName(api, a) +"\", "
-					+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Self.Name())\n"
-                + "\t}\n"
-                + "\tb[i-"+foo.apply(g.start)+"] = buf.Bytes()\n"
-                + "}\n"
+						+ "\tvar buf bytes.Buffer\n"
+						+ "\tif err := gob.NewEncoder(&buf).Encode(splitFn0(arg0, i)); err != nil {\n\t\t" // only arg0
+						+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+								+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+								+ ".Errors <- session.SerialiseFailed(err, \"" + getActionName(api, a) +"\", "
+								+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+								+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+								+ ".Self.Name())\n"
+						+ "\t}\n"
+						+ "\tb[i-"+foo.apply(g.start)+"] = buf.Bytes()\n"
+				+ "}\n"
 
 				+ sEpWrite
 				+ "(" + sEpProto
-				+ ".(*" + api.gpn.getSimpleName() +")." + r.getName() + ", "
+				//+ ".(*" + api.gpn.getSimpleName() +")"
+				+ "." + r.getName() + ", "
 						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
-						+ "\"" + a.mid + "\")\n"
-				+ IntStream.range(0, a.payload.elems.size())
-				      .mapToObj(i -> sEpWrite + "(" + sEpProto + ".(*" + api.gpn.getSimpleName() +")." + r.getName() + ", "
+								//+ "\"" + a.mid + "\""
+								+ "b"
+						+ ")\n"
+				/*+ IntStream.range(0, a.payload.elems.size())
+				      .mapToObj(i -> sEpWrite + "(" + sEpProto
+				      				//+ ".(*" + api.gpn.getSimpleName() +")."
+				      		+ r.getName() + ", "
 									+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
 				      		+ "arg" + i + ")")
-	 			      .collect(Collectors.joining("\n")) + "\n"
+	 			      .collect(Collectors.joining("\n")) + "\n"*/
 				/*+ "if " + sEpErr + " != nil {\n"
 				+ "return nil\n"
 				+ "}\n"*/

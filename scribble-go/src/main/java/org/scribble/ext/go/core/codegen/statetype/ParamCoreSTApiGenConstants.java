@@ -14,11 +14,12 @@ public class ParamCoreSTApiGenConstants
 	public static final String GO_ENDPOINT_CONSTRUCTOR = "session.NewEndpoint";
 	public static final String GO_ENDPOINT_PROTO = "Proto";
 	public static final String GO_ENDPOINT_ERR = "Err";
-	public static final String GO_ENDPOINT_WRITE = "WriteAll";
-	public static final String GO_ENDPOINT_READ = "ReadAll";
+	public static final String GO_ENDPOINT_WRITEALL = "WriteAll";
+	public static final String GO_ENDPOINT_READALL = "ReadAll";
 	public static final String GO_ENDPOINT_STARTPROTOCOL = "StartProtocol";
 	public static final String GO_ENDPOINT_FINISHPROTOCOL = "FinishProtocol";
 	public static final String GO_ENDPOINT_FINALISE = "Finalise";
+	public static final String GO_ENDPOINT_ENDPOINT = "ept";
 
 	public static final String GO_FINALISER_TYPE = "session.Finaliser";  // net.MPSTEndpoint;
 	
