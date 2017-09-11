@@ -61,7 +61,8 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 
 		res += "\n"
 				+ "func (ep *" + epType + ") New" 
-						+ tname
+						+ ((s.id != api.graph.init.id) ? tname
+								: ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(((ParamCoreSTStateChanApiBuilder) api).actual) + "_1")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
 						+ "() *" + tname + " {\n"  // FIXME: factor out
 				+ "s := &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
 						+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "

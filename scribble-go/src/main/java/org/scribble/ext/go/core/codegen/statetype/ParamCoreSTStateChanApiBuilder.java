@@ -207,7 +207,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		if (getStateKind(succ) == ParamCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
-			return "New" + getStateChanName(succ) + "()";
+			return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." +
+					"New" + getStateChanName(succ) + "()";
 		}
 		else
 		{
