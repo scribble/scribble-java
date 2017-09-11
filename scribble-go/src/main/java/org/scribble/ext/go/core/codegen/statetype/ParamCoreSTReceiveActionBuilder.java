@@ -95,7 +95,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				+ "return nil\n"
 				+ "}\n"*/
 				
-				  "b := " + sEpRecv + "(" + sEpProto + ".B, " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+				  "b := " + sEpRecv + "(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
 				+ "data := make([]int, " + foo.apply(g.end) + ")\n"
 				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"
 						+ "var decoded int\n"
