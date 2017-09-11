@@ -123,8 +123,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ "\n"
 				+ this.apigen.generateScribbleRuntimeImports() + "\n"
 				+ (s.isTerminal() ? "" : 
-					Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE,
-							ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE).map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
+					Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE)
+							.map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
 				+ "\n"
 				+ "type " + tname + " struct{\n"
 				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 

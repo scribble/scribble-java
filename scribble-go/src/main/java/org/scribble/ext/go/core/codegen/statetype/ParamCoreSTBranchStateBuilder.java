@@ -1,9 +1,16 @@
 package org.scribble.ext.go.core.codegen.statetype;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
+import org.scribble.ext.go.type.index.ParamIndexInt;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
@@ -20,6 +27,16 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 	@Override
 	public String getPreamble(STStateChanApiBuilder api, EState s)
 	{
+		String sEpRecv = 
+				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+				+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+				+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+				+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
+		String sEpProto =
+				//"s.ep.Proto"
+				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
+
 		//return ((ParamCoreSTStateChanApiBuilder) api).getStateChanPremable(s);
 		ParamCoreSTStateChanApiBuilder apigen = (ParamCoreSTStateChanApiBuilder) api;
 		Role r = apigen.actual.getName();
@@ -30,6 +47,8 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				  apigen.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
 				+ apigen.apigen.generateScribbleRuntimeImports() + "\n"
+						+ Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE)
+							.map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n"))
 				+ "\n"
 				+ "type " + tname + " struct{\n"
 				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
@@ -37,6 +56,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan *" + apigen.getStateChanName(s.getSuccessor(a)) + "\n")
 						.collect(Collectors.joining(""))
+				+ "data [][]byte\n"
 				+ "}\n";
 
 		res += "\n"
@@ -54,20 +74,50 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 
 		res += "\n"
 				+ "func (s *" + tname + ") foo() {\n"
-				+ "s." + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + "." + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
-				+ "var op string = \"\"\n"
-				+ "if "
+				+ "s." + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + "." + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+
+		ParamRole peer = (ParamRole) s.getActions().iterator().next().peer;
+		ParamRange g = peer.ranges.iterator().next();
+		Function<ParamIndexExpr, String> foo = e ->
+		{
+			if (e instanceof ParamIndexInt)
+			{
+				return e.toString();
+			}
+			else if (e instanceof ParamIndexVar)
+			{
+				return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".params[\"" + e + "\"]";
+			}
+			else
+			{
+				throw new RuntimeException("[param-core] TODO: " + e);
+			}
+		};
+		res +=
+				  "b := " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
+				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+				+ "var op string = \"\"\n";  // FIXME: read label
+
+		res +=
+				  "b = " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
+				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+				+ "s.data = b\n";
+						// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
+				
+		res+= "if "
 				+ s.getActions().stream().map(a ->
-				{
-					String sEp = 
-							ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
-					return
-							  "op == \"" + a.mid + "\" {\n"
-							+ "s." + "_" + a.mid + "_Chan <- " 
-									+ apigen.getSuccStateChan(this.bb, s, s.getSuccessor(a), sEp) + "\n"
-							+ "}";
-				}).collect(Collectors.joining(" else if ")) + "\n"
+					{
+						String sEp = 
+								ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+						return
+									"op == \"" + a.mid + "\" {\n"
+								+ "s." + "_" + a.mid + "_Chan <- " 
+										+ apigen.getSuccStateChan(this.bb, s, s.getSuccessor(a), sEp) + "\n"
+								+ "}";
+					}).collect(Collectors.joining(" else if ")) + "\n"
 				+ "}\n";
+
 		return res;
 	}
 	
