@@ -3,12 +3,18 @@ package org.scribble.ext.go.core.codegen.statetype;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ext.go.ast.ParamRoleDecl;
+import org.scribble.ext.go.core.type.ParamActualRole;
+import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
+import org.scribble.ext.go.type.index.ParamIndexInt;
 import org.scribble.ext.go.type.index.ParamIndexVar;
+import org.scribble.model.endpoint.EGraph;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
@@ -106,6 +112,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 											+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + "\n";
 							  }).collect(Collectors.joining(""))
 							+ "params map[string]int\n"
+							+ "peers map[session.Role] func(*" + epTypeName + ") (int, int)\n"
 							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
 							+ "}\n"
 							+ "\n"
@@ -114,7 +121,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 									+ "(" + 
 											vars.stream().map(v -> v + " int").collect(Collectors.joining(", ")) + ")"
 									+ "(*" + epTypeName + ") {\n"
-							+ "return &" + epTypeName + "{ " + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + ": p, "
+							+ "ep := &" + epTypeName + "{ " + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + ": p,\n"
 							
 									+ this.apigen.actuals.get(r).keySet().stream()
 											.map(a -> 
@@ -122,13 +129,50 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 														String actualName = ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(a);
 														return actualName + "s: make(map[int] func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: init statechan, factor out with makeSTStateName
 																+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + ")";
-													}).collect(Collectors.joining(", ")) + ", " 
+													}).collect(Collectors.joining(", ")) + ",\n" 
 									
 									+ "params: "
 											//+ "params,"
-											+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining()) + "}, "
-											+ ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ": "
+											+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining()) + "},\n"
+											
+									+ "peers: "
+										+ "make(map[session.Role] func(*" + epTypeName + ") (int, int)),\n"
+											
+									+ ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ": "
 											+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")}\n"
+							
+							+ this.apigen.actuals.entrySet().stream().filter(e -> !e.getKey().equals(r))			
+									.map(e -> 
+									{
+										Map<ParamActualRole, EGraph> tmp = e.getValue();
+										if (tmp.size() > 1)
+										{
+											throw new RuntimeException("[param-core] TODO: " + tmp);
+										}
+										ParamActualRole peer = tmp.keySet().iterator().next();
+										ParamRange g = peer.ranges.iterator().next();
+										Function<ParamIndexExpr, String> foo = ee ->
+										{
+											if (ee instanceof ParamIndexInt)
+											{
+												return ee.toString();
+											}
+											else if (ee instanceof ParamIndexVar)
+											{
+												return "ep.params[\"" + ee + "\"]";
+											}
+											else
+											{
+												throw new RuntimeException("[param-core] TODO: " + ee);
+											}
+										};
+										return
+												  "ep.peers[p." + peer.getName() + "] = func (ep *" + epTypeName + ") (int, int) {\n"
+												+ "return " + foo.apply(g.start) + ", " + foo.apply(g.end) + "\n"
+												+ "}\n";
+									}).collect(Collectors.joining(""))
+											
+							+ "return ep"
 							+ "}\n"
 							+ this.apigen.actuals.get(r).keySet().stream()
 									//.filter(a -> a.getName().equals(r))
