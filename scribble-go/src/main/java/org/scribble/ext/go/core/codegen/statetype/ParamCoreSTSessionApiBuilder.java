@@ -144,6 +144,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 														+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + ") {\n"
 												//+ "ep.Sub_" + actualName + " = impl\n"
 												+ "ep." + actualName + "s[i] = impl\n"
+												+ "ep.Proto."+actualName+".(session.ParamRole).Register(i)\n"
 												+ "}\n";
 							  }).collect(Collectors.joining(""));
 				}).collect(Collectors.joining(""));
