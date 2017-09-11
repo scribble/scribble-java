@@ -72,7 +72,15 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 			}
 		};
 		return 
-				  "b := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
+				  "lbl := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
+				+ "for range lbl {\n"
+				+ "lbl = append(lbl, []byte(\"" + a.mid + "\"))\n"
+				+	"}\n"
+				+ sEpWrite + "(" + sEpProto + "." + r.getName() + ", "
+						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
+						+ "lbl)\n"
+				
+				+ "b := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
 				+ "for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
 						+ "\tvar buf bytes.Buffer\n"
 						+ "\tif err := gob.NewEncoder(&buf).Encode(splitFn0(arg0, i)); err != nil {\n\t\t" // only arg0
