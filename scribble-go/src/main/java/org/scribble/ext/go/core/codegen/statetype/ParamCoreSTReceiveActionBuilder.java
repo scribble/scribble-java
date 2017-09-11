@@ -97,14 +97,14 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				
 				  "b := " + sEpRecv + "(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
 				+ "data := make([]int, " + foo.apply(g.end) + ")\n"
-				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"
+				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 						+ "var decoded int\n"
 						+ "if err := gob.NewDecoder(bytes.NewReader(b[i-1])).Decode(&decoded); err != nil {\n"
-						+	ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-								+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+						+	ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+								+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
 								+ ".Errors <- session.DeserialiseFailed(err, \"" + getActionName(api, a) + "\","
-								+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-								+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+								+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+									+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
 								+ ".Self.Name())\n"
 						+ "}\n"
 						+ "data[i-1] = decoded\n"

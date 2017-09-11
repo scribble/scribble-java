@@ -43,7 +43,9 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
-							+ i + " *" + a.payload.elems.get(i)).collect(Collectors.joining(", "));
+							+ i + " *" + a.payload.elems.get(i)
+							+ ", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " []int) int"
+							).collect(Collectors.joining(", "));
 	}
 
 	/*@Override
@@ -55,7 +57,7 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
-		String sEpRecv = 
+		/*String sEpRecv = 
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
 		String sEpProto =
 				//"s.ep.Proto"
@@ -99,6 +101,22 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				+ "return nil\n"
 				+ "}\n"*/
 				//buildReturn(api, curr, succ);
-				"return s._" + a.mid + "_Chan";
+				
+				  "data := make([]int, " + foo.apply(g.end) + ")\n"
+				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
+						+ "var decoded int\n"
+						+ "if err := gob.NewDecoder(bytes.NewReader(s.data[i-1])).Decode(&decoded); err != nil {\n"
+						+	ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+								+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+								+ ".Errors <- session.DeserialiseFailed(err, \"" + getActionName(api, a) + "\","
+								+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+									+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+								+ ".Self.Name())\n"
+						+ "}\n"
+						+ "data[i-1] = decoded\n"
+				+ "}\n"
+				+ "*arg0 = reduceFn0(data)\n"  // FIXME: arg0
+				
+				+ "return s._" + a.mid + "_Chan";
 	}
 }

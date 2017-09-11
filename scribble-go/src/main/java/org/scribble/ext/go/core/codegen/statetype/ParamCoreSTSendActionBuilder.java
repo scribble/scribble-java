@@ -86,6 +86,9 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 						+ "\tb[i-"+foo.apply(g.start)+"] = buf.Bytes()\n"
 				+ "}\n"
 
+				
+				// FIXME: write label
+				
 				+ sEpWrite
 				+ "(" + sEpProto
 				//+ ".(*" + api.gpn.getSimpleName() +")"
