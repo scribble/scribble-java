@@ -172,7 +172,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 												+ "}\n";
 									}).collect(Collectors.joining(""))
 											
-							+ "return ep"
+							+ "return ep\n"
 							+ "}\n"
 							+ this.apigen.actuals.get(r).keySet().stream()
 									//.filter(a -> a.getName().equals(r))
