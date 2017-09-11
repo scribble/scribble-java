@@ -106,7 +106,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 											+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + "\n";
 							  }).collect(Collectors.joining(""))
 							+ "params map[string]int\n"
-							+ "ept *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
+							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
 							+ "}\n"
 							+ "\n"
 							+ "func (p *" + simpname + ") New" + epTypeName
@@ -127,7 +127,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 									+ "params: "
 											//+ "params,"
 											+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining()) + "}, "
-											+ "ept: "
+											+ ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ": "
 											+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")}\n"
 							+ "}\n"
 							+ this.apigen.actuals.get(r).keySet().stream()
@@ -144,7 +144,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 														+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + ") {\n"
 												//+ "ep.Sub_" + actualName + " = impl\n"
 												+ "ep." + actualName + "s[i] = impl\n"
-												+ "ep.Proto."+actualName+".(session.ParamRole).Register(i)\n"
+												+ "ep.Proto."+ r +".(session.ParamRole).Register(i)\n"
 												+ "}\n";
 							  }).collect(Collectors.joining(""));
 				}).collect(Collectors.joining(""));

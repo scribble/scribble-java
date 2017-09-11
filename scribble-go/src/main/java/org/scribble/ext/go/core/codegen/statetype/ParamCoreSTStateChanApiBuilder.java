@@ -197,7 +197,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 		if (succ.isTerminal())
 		{
-			res += sEp + ".ept." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINISHPROTOCOL + "()\n";
+			res += sEp + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINISHPROTOCOL + "()\n";
 		}
 		res += "return " + getSuccStateChan(ab, curr, succ, sEp);
 		return res;
