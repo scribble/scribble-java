@@ -94,8 +94,10 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				/*+ "if " + sEpErr + " != nil {\n"
 				+ "return nil\n"
 				+ "}\n"*/
+
+					sEpRecv + "(" + sEpProto +  "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"	 // Discard op
 				
-				  "b := " + sEpRecv + "(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+				+ "b := " + sEpRecv + "(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
 				+ "data := make([]int, " + foo.apply(g.end) + ")\n"
 				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 						+ "var decoded int\n"

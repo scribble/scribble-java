@@ -97,7 +97,11 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		res +=
 				  "b := " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
 				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "var op string = \"\"\n";  // FIXME: read label
+				+ "var decoded string\n"
+				+ "if err := gob.NewDecoder(bytes.NewReader(b[0])).Decode(&decoded); err != nil {\n"  // All ops should be the same
+				+ "s.ept.Ept.Errors <- session.DeserialiseFailed(err, \"state " + s.id + "\", s.ept.Ept.Self.Name())\n"
+				+ "}\n"
+				+ "var op string = decoded\n";  // FIXME: cast for safety?
 
 		res +=
 				  "b = " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
