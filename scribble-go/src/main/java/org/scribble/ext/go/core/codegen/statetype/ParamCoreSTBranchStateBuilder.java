@@ -97,16 +97,12 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 			}
 		};
 		res +=
-				  "b := " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
+				  "label := " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
 				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "var decoded string\n"
-				+ "if err := gob.NewDecoder(bytes.NewReader(b[0])).Decode(&decoded); err != nil {\n"  // All ops should be the same
-				+ "s.ept.Ept.Errors <- session.DeserialiseFailed(err, \"state " + s.id + "\", s.ept.Ept.Self.Name())\n"
-				+ "}\n"
-				+ "var op string = decoded\n";  // FIXME: cast for safety?
+				+ "var op string = string(label[0])\n";  // FIXME: cast for safety?
 
 		res +=
-				  "b = " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
+				  "b := " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
 				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
 				+ "s.data <- b\n";
 						// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
