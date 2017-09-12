@@ -158,7 +158,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						"func (" + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
 								+ ab.buildArgs(a)
-								+ ") chan *" + ab.getReturnType(this, curr, succ) + " {\n"
+								+ ") <-chan *" + ab.getReturnType(this, curr, succ) + " {\n"
 					+ ab.buildBody(this, curr, a, succ) + "\n"
 					+ "}";
 		}
