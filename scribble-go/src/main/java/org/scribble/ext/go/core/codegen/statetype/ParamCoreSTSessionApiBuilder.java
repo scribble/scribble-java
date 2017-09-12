@@ -134,7 +134,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 									
 									+ "params: "
 											//+ "params,"
-											+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining()) + "},\n"
+											+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining(", ")) + "},\n"
 											
 									+ "peers: "
 										+ "make(map[session.Role]struct{Start int; End int}),\n"
