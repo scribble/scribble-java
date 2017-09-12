@@ -105,7 +105,8 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				  "data := make([]int, " + foo.apply(g.end) + ")\n"
 				//+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 						+ "var decoded int\n"
-						+ "bs := <-s.data\n"
+						+ "bs, open := <-s.data\n"
+						+ "if !open { return nil } // do not select this branch. \n"
 						+ "if err := gob.NewDecoder(bytes.NewReader(bs[0])).Decode(&decoded); err != nil {\n"
 						+	ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
