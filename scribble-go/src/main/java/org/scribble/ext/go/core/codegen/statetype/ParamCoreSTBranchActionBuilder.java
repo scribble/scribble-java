@@ -101,12 +101,14 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				+ "return nil\n"
 				+ "}\n"*/
 				//buildReturn(api, curr, succ);
-				
-				  "data := make([]int, " + foo.apply(g.end) + ")\n"
+				   "ch, selected := <-s._" + a.mid + "_Chan\n"
+				 + "if !selected {\n"
+                 + "\treturn nil // select ignores nilchan\n"
+                 + "}\n"
+				 + "data := make([]int, " + foo.apply(g.end) + ")\n"
 				//+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 						+ "var decoded int\n"
-						+ "bs, open := <-s.data\n"
-						+ "if !open { return nil } // do not select this branch. \n"
+						+ "bs := <-s.data\n"
 						+ "if err := gob.NewDecoder(bytes.NewReader(bs[0])).Decode(&decoded); err != nil {\n"
 						+	ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
@@ -120,6 +122,6 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				//+ "*arg0 = reduceFn0(data)\n"  // FIXME: arg0
 				 + "*arg0 = data[0]\n"
 				
-				+ "return s._" + a.mid + "_Chan";
+				+ "return ch";
 	}
 }

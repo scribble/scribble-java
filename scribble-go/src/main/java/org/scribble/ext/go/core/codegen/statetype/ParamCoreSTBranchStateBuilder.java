@@ -54,7 +54,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epType + "\n" 
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
-				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan *" + apigen.getStateChanName(s.getSuccessor(a)) + "\n")
+				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan chan *" + apigen.getStateChanName(s.getSuccessor(a)) + "\n")
 						.collect(Collectors.joining(""))
 				+ "data chan [][]byte\n"
 				+ "}\n";
@@ -66,9 +66,9 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 						+ "() *" + tname + " {\n"  // FIXME: factor out
 				+ "s := &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
 						+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
-						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan *" + apigen.getStateChanName(s.getSuccessor(a))+ ")")
+						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan chan *" + apigen.getStateChanName(s.getSuccessor(a))+ ", 1)")
 								.collect(Collectors.joining(", ")) + ", "
-						+ "data: make(chan [][]byte)"
+						+ "data: make(chan [][]byte, 1)"
 						+ "}\n"
 				+ "go s.foo()\n"
 				+ "return s\n"
@@ -99,13 +99,12 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		res +=
 				  "label := " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
 				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "var op string = string(label[0])\n";  // FIXME: cast for safety?
+				+ "op := string(label[0])\n";  // FIXME: cast for safety?
 
 		res +=
 				  "b := " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
 				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "s.data <- b\n"
-				+ "close(s.data) // no more data, don't block.\n";
+				+ "s.data <- b\n";
 						// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
 				
 		res+= "if "
@@ -114,9 +113,14 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 						String sEp = 
 								ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 						return
-									"op == \"" + a.mid + "\" {\n"
-								+ "s." + "_" + a.mid + "_Chan <- " 
-										+ apigen.getSuccStateChan(this.bb, s, s.getSuccessor(a), sEp) + "\n"
+								"op == \"" + a.mid + "\" {\n"
+								+ "\tch := make(chan *" + apigen.getStateChanName(s.getSuccessor(a)) + ", 1)\n"
+								+ "\tch <- " + apigen.getSuccStateChan(this.bb, s, s.getSuccessor(a), sEp) + "\n"
+								+ "\ts._" + a.mid + "_Chan <- ch\n"
+								+ "\t" + s.getActions().stream()
+										.filter(otheract -> otheract.mid != a.mid)
+										.map(otheract -> { return "close(s._" + otheract.mid + "_Chan)"; })
+										.collect(Collectors.joining("\n\t")) + "\n"
 								+ "}";
 					}).collect(Collectors.joining(" else if ")) + "\n"
 				+ "}\n";
