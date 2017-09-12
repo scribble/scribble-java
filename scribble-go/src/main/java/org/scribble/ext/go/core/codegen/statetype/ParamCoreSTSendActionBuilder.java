@@ -73,7 +73,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 		};
 		return
 				  "labels := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
-				+ "for i := " + foo.apply(g.start) + "; i <=" + foo.apply(g.end) + "; i++ {\n"
+				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"
 						+ "\tlabels[i-" + foo.apply(g.start) + "] = []byte(\"" + a.mid + "\")\n"
 				+ "}\n"
 				+ sEpWrite + "(" + sEpProto + "." + r.getName() + ", "
