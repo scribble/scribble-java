@@ -56,7 +56,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan *" + apigen.getStateChanName(s.getSuccessor(a)) + "\n")
 						.collect(Collectors.joining(""))
-				+ "data [][]byte\n"
+				+ "data chan [][]byte\n"
 				+ "}\n";
 
 		res += "\n"
@@ -67,7 +67,8 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				+ "s := &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
 						+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
 						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan *" + apigen.getStateChanName(s.getSuccessor(a))+ ")")
-								.collect(Collectors.joining(", "))
+								.collect(Collectors.joining(", ")) + ", "
+						+ "data: make(chan [][]byte)"
 						+ "}\n"
 				+ "go s.foo()\n"
 				+ "return s\n"
@@ -107,7 +108,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		res +=
 				  "b = " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
 				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "s.data = b\n";
+				+ "s.data <- b\n";
 						// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
 				
 		res+= "if "

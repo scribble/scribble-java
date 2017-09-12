@@ -44,7 +44,7 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
 							+ i + " *" + a.payload.elems.get(i)
-							+ ", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " []int) int"
+							//+ ", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " []int) int"  // No: singleton choice subj (not multichoices)
 							).collect(Collectors.joining(", "));
 	}
 
@@ -103,9 +103,10 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				//buildReturn(api, curr, succ);
 				
 				  "data := make([]int, " + foo.apply(g.end) + ")\n"
-				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
+				//+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 						+ "var decoded int\n"
-						+ "if err := gob.NewDecoder(bytes.NewReader(s.data[i-1])).Decode(&decoded); err != nil {\n"
+						+ "bs := <-s.data\n"
+						+ "if err := gob.NewDecoder(bytes.NewReader(bs[0])).Decode(&decoded); err != nil {\n"
 						+	ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
 								+ ".Errors <- session.DeserialiseFailed(err, \"" + getActionName(api, a) + "\","
@@ -113,9 +114,10 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 									+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
 								+ ".Self.Name())\n"
 						+ "}\n"
-						+ "data[i-1] = decoded\n"
-				+ "}\n"
-				+ "*arg0 = reduceFn0(data)\n"  // FIXME: arg0
+						+ "data[0] = decoded\n"
+				//+ "}\n"
+				//+ "*arg0 = reduceFn0(data)\n"  // FIXME: arg0
+				 + "*arg0 = data[0]\n"
 				
 				+ "return s._" + a.mid + "_Chan";
 	}
