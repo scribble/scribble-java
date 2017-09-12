@@ -108,7 +108,8 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		res +=
 				  "b = " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
 				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "s.data <- b\n";
+				+ "s.data <- b\n"
+				+ "close(s.data) // no more data, don't block.\n";
 						// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
 				
 		res+= "if "
