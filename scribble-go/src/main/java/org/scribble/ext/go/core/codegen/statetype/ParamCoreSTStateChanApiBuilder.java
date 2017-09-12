@@ -208,7 +208,11 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		if (getStateKind(succ) == ParamCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
 			return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." +
-					"New" + getStateChanName(succ) + "()";
+					"New"
+						//+ getStateChanName(succ)
+						+ ((succ.id != this.graph.init.id) ? getStateChanName(succ)
+								: ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual) + "_1")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
+					+ "()";
 		}
 		else
 		{
