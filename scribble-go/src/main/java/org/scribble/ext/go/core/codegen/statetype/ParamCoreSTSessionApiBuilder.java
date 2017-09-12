@@ -112,7 +112,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 											+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + "\n";
 							  }).collect(Collectors.joining(""))
 							+ "params map[string]int\n"
-							+ "peers map[session.Role] func(*" + epTypeName + ") (int, int)\n"
+                            + "peers map[session.Role]struct{Start int; End int}\n"
 							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
 							+ "}\n"
 							+ "\n"
@@ -121,6 +121,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 									+ "(" + 
 											vars.stream().map(v -> v + " int").collect(Collectors.joining(", ")) + ")"
 									+ "(*" + epTypeName + ") {\n"
+
 							+ "ep := &" + epTypeName + "{ " + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + ": p,\n"
 							
 									+ this.apigen.actuals.get(r).keySet().stream()
@@ -136,7 +137,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 											+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining()) + "},\n"
 											
 									+ "peers: "
-										+ "make(map[session.Role] func(*" + epTypeName + ") (int, int)),\n"
+										+ "make(map[session.Role]struct{Start int; End int}),\n"
 											
 									+ ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ": "
 											+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")}\n"
@@ -167,8 +168,9 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 											}
 										};
 										return
-												  "ep.peers[p." + peer.getName() + "] = func (ep *" + epTypeName + ") (int, int) {\n"
-												+ "return " + foo.apply(g.start) + ", " + foo.apply(g.end) + "\n"
+												  "ep.peers[p." + peer.getName() + "] = struct{Start int; End int}{" + foo.apply(g.start) + ", " + foo.apply(g.end) + "}\n"
+												+ "for i := ep.peers[p." + peer.getName() + "].Start; i <= ep.peers[p." + peer.getName() + "].End; i++ {\n"
+												+ "\tp." + peer.getName() + ".(session.ParamRole).Register(i)\n"
 												+ "}\n";
 									}).collect(Collectors.joining(""))
 											
