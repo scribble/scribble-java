@@ -111,9 +111,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 									return actualName + "s map[int] func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: init statechan, factor out with makeSTStateName
 											+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + "\n";
 							  }).collect(Collectors.joining(""))
-							+ "params map[string]int\n"
-                            + "peers map[session.Role]struct{Start int; End int}\n"
-							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
+							+ " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
 							+ "}\n"
 							+ "\n"
 							+ "func (p *" + simpname + ") New" + epTypeName
@@ -131,14 +129,6 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 														return actualName + "s: make(map[int] func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: init statechan, factor out with makeSTStateName
 																+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + ")";
 													}).collect(Collectors.joining(", ")) + ",\n" 
-									
-									+ "params: "
-											//+ "params,"
-											+ "map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining(", ")) + "},\n"
-											
-									+ "peers: "
-										+ "make(map[session.Role]struct{Start int; End int}),\n"
-											
 									+ ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ": "
 											+ ParamCoreSTApiGenConstants.GO_ENDPOINT_CONSTRUCTOR + "(p, p." + r + ")}\n"
 							
@@ -160,7 +150,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 											}
 											else if (ee instanceof ParamIndexVar)
 											{
-												return "ep.params[\"" + ee + "\"]";
+												return "ep.Params[\"" + ee + "\"]";
 											}
 											else
 											{
@@ -168,8 +158,9 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 											}
 										};
 										return
-												  "ep.peers[p." + peer.getName() + "] = struct{Start int; End int}{" + foo.apply(g.start) + ", " + foo.apply(g.end) + "}\n"
-												+ "for i := ep.peers[p." + peer.getName() + "].Start; i <= ep.peers[p." + peer.getName() + "].End; i++ {\n"
+												  "ep.Params = map[string]int {" + vars.stream().map(v -> "\"" + v + "\": " + v).collect(Collectors.joining(", ")) + "}\n"
+												+ "ep.Peers[p." + peer.getName() + "] = struct{Start int; End int}{" + foo.apply(g.start) + ", " + foo.apply(g.end) + "}\n"
+												+ "for i := ep." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".Peers[p." + peer.getName() + "].Start; i <= ep.Peers[p." + peer.getName() + "].End; i++ {\n"
 												+ "\tp." + peer.getName() + ".(session.ParamRole).Register(i)\n"
 												+ "}\n";
 									}).collect(Collectors.joining(""))
