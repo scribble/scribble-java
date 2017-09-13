@@ -87,6 +87,8 @@ public class ParamCoreCommandLine extends CommandLine
 		boolean noAcceptCorrelationCheck = this.args.containsKey(CLArgFlag.NO_ACCEPT_CORRELATION_CHECK);
 		boolean noValidation = this.args.containsKey(CLArgFlag.NO_VALIDATION);
 
+		boolean noCopy = this.paramArgs.containsKey(ParamCoreCLArgFlag.PARAM_CORE_NO_COPY);
+
 		List<Path> impaths = this.args.containsKey(CLArgFlag.IMPORT_PATH)
 				? CommandLine.parseImportPaths(this.args.get(CLArgFlag.IMPORT_PATH)[0])
 				: Collections.emptyList();
@@ -101,7 +103,7 @@ public class ParamCoreCommandLine extends CommandLine
 		{
 			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
 			return new ParamCoreMainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, noCopy);
 		}
 	}
 
@@ -113,7 +115,7 @@ public class ParamCoreCommandLine extends CommandLine
 	@Override
 	protected void doValidationTasks(Job job) throws ParamCoreSyntaxException, AntlrSourceException, ScribParserException, CommandLineException
 	{
-		if (this.paramArgs.containsKey(ParamCoreCLArgFlag.PARAM))
+		if (this.paramArgs.containsKey(ParamCoreCLArgFlag.PARAM_CORE_PARAM))
 		{
 			doParamCoreValidationTasks((GoJob) job);
 		}
@@ -132,7 +134,7 @@ public class ParamCoreCommandLine extends CommandLine
 			String[] args = this.paramArgs.get(ParamCoreCLArgFlag.PARAM_CORE_API_GEN);
 			for (int i = 0; i < args.length; i += 1)
 			{
-				String simpname = this.paramArgs.get(ParamCoreCLArgFlag.PARAM)[0];
+				String simpname = this.paramArgs.get(ParamCoreCLArgFlag.PARAM_CORE_PARAM)[0];
 				GProtocolName fullname = checkGlobalProtocolArg(jcontext, simpname);
 				Role role = checkRoleArg(jcontext, fullname, args[i]);
 				/*for (ParamActualRole ranges : this.P0.get(role).keySet())
@@ -166,7 +168,7 @@ public class ParamCoreCommandLine extends CommandLine
 
 		paramCorePreContextBuilding(j);
 
-		GProtocolName simpname = new GProtocolName(this.paramArgs.get(ParamCoreCLArgFlag.PARAM)[0]);
+		GProtocolName simpname = new GProtocolName(this.paramArgs.get(ParamCoreCLArgFlag.PARAM_CORE_PARAM)[0]);
 		if (simpname.toString().equals("[ParamCoreAllTest]"))  // HACK: ParamCoreAllTest
 		{
 			paramCoreParseAndCheckWF(j);  // Includes base passes

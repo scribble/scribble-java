@@ -11,12 +11,15 @@ import org.scribble.type.name.ModuleName;
 
 public class GoJob extends Job
 {
+	public final boolean noCopy;
+	
 	public GoJob(boolean debug, Map<ModuleName, Module> parsed, ModuleName main,
 			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
 			boolean noAcceptCorrelationCheck, boolean noValidation, 
-			AstFactory af, EModelFactory ef, SModelFactory sf)
+			AstFactory af, EModelFactory ef, SModelFactory sf, boolean noCopy)
 	{
 		super(debug, parsed, main, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, af, ef, sf);
+		this.noCopy = noCopy;
 	}
 	
 	/*// FIXME: move to MainContext::newJob?

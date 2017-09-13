@@ -10,18 +10,18 @@ import org.scribble.cli.CommandLineException;
 public class ParamCoreCLArgParser extends CLArgParser
 {
 	// Unique flags
-	public static final String PARAM_FLAG = "-param";
+	public static final String PARAM_CORE_PARAM_FLAG = "-param";
+	public static final String PARAM_CORE_NOCOPY_FLAG = "-nocopy";
 
 	// Non-unique flags
-	public static final String GO_API_GEN_FLAG          = "-goapi";
-
 	public static final String PARAM_CORE_EFSM_FLAG     = "-param-fsm";
 	public static final String PARAM_CORE_EFSM_PNG_FLAG = "-param-fsmpng";
 	public static final String PARAM_CORE_API_GEN_FLAG  = "-param-api";
 	
 	private static final Map<String, ParamCoreCLArgFlag> PARAM_UNIQUE_FLAGS = new HashMap<>();
 	{
-		ParamCoreCLArgParser.PARAM_UNIQUE_FLAGS.put(ParamCoreCLArgParser.PARAM_FLAG, ParamCoreCLArgFlag.PARAM);
+		ParamCoreCLArgParser.PARAM_UNIQUE_FLAGS.put(ParamCoreCLArgParser.PARAM_CORE_PARAM_FLAG, ParamCoreCLArgFlag.PARAM_CORE_PARAM);
+		ParamCoreCLArgParser.PARAM_UNIQUE_FLAGS.put(ParamCoreCLArgParser.PARAM_CORE_NOCOPY_FLAG, ParamCoreCLArgFlag.PARAM_CORE_NO_COPY);
 	}
 
 	private static final Map<String, ParamCoreCLArgFlag> PARAM_NON_UNIQUE_FLAGS = new HashMap<>();
@@ -66,19 +66,14 @@ public class ParamCoreCLArgParser extends CLArgParser
 		{
 			// Unique flags
 
-			case ParamCoreCLArgParser.PARAM_FLAG:
+			case ParamCoreCLArgParser.PARAM_CORE_PARAM_FLAG:
 			{
 				return paramParseParam(i);
 			}
+			case ParamCoreCLArgParser.PARAM_CORE_NOCOPY_FLAG: return paramParseNoCopy(i);
 			
 
 			// Non-unique flags
-			
-			case ParamCoreCLArgParser.GO_API_GEN_FLAG:
-			{
-				return goParseProtoAndRoleArgs(flag, i);
-			}
-
 			case ParamCoreCLArgParser.PARAM_CORE_EFSM_FLAG:     return paramParseRoleArg(flag, i);
 			case ParamCoreCLArgParser.PARAM_CORE_EFSM_PNG_FLAG: return paramParseRoleAndFileArgs(flag, i);
 			case ParamCoreCLArgParser.PARAM_CORE_API_GEN_FLAG:  return paramParseRoleArg(flag, i);
@@ -100,7 +95,13 @@ public class ParamCoreCLArgParser extends CLArgParser
 			throw new CommandLineException("Missing simple global protocol name argument.");
 		}
 		String proto = this.args[++i];
-		paramCheckAndAddUniqueFlag(ParamCoreCLArgParser.PARAM_FLAG, new String[] { proto });
+		paramCheckAndAddUniqueFlag(ParamCoreCLArgParser.PARAM_CORE_PARAM_FLAG, new String[] { proto });
+		return i;
+	}
+
+	private int paramParseNoCopy(int i) throws CommandLineException
+	{
+		paramCheckAndAddUniqueFlag(ParamCoreCLArgParser.PARAM_CORE_NOCOPY_FLAG, new String[] { });
 		return i;
 	}
 
@@ -139,7 +140,7 @@ public class ParamCoreCLArgParser extends CLArgParser
 		return i;
 	}
 
-	// FIXME: factor out with core arg parser -- issue is GoCLArgFlag is currently an unlreated type to CLArgFlag
+	/*// FIXME: factor out with core arg parser -- issue is GoCLArgFlag is currently an unlreated type to CLArgFlag
 	private int goParseProtoAndRoleArgs(String f, int i) throws CommandLineException
 	{
 		ParamCoreCLArgFlag flag = ParamCoreCLArgParser.PARAM_NON_UNIQUE_FLAGS.get(f);
@@ -151,7 +152,7 @@ public class ParamCoreCLArgParser extends CLArgParser
 		String role = this.args[++i];
 		goConcatArgs(flag, proto, role);
 		return i;
-	}
+	}*/
 	
 	// FIXME: factor out with core arg parser -- issue is GoCLArgFlag is currently an unlreated type to CLArgFlag
 	private void goConcatArgs(ParamCoreCLArgFlag flag, String... toAdd)
