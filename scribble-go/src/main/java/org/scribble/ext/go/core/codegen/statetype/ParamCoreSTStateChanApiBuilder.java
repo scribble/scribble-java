@@ -18,6 +18,7 @@ import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEMultiChoicesRece
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
@@ -122,7 +123,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				  this.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
 				+ this.apigen.generateScribbleRuntimeImports() + "\n"
-				+ (s.isTerminal() ? "" : 
+				+ (s.isTerminal() || ((GoJob) apigen.job).noCopy ? "" : 
 					Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE)
 							.map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
 				+ "\n"

@@ -3,7 +3,9 @@ package org.scribble.ext.go.core.cli;
 public enum ParamCoreCLArgFlag
 {
 	// Unique flags
-	PARAM,
+	PARAM_CORE_PARAM,
+
+	PARAM_CORE_NO_COPY,
 
 	// Non-unique flags
 	PARAM_CORE_EFSM,

@@ -17,12 +17,15 @@ import org.scribble.util.ScribParserException;
 
 public class ParamCoreMainContext extends MainContext
 {
+	protected final boolean noCopy;
+	
 	// Load main module from file system
 	public ParamCoreMainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation)
+			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean noCopy)
 					throws ScribParserException, ScribbleException
 	{
 		super(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+		this.noCopy = noCopy;
 	}
 
 	@Override
@@ -30,7 +33,7 @@ public class ParamCoreMainContext extends MainContext
 	{
 		return new GoJob(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
 				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck, this.noValidation,
-				this.af, this.ef, this.sf);
+				this.af, this.ef, this.sf, this.noCopy);
 	}
 
 	@Override

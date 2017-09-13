@@ -9,6 +9,7 @@ import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEAction;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.ext.go.type.index.ParamIndexInt;
 import org.scribble.ext.go.type.index.ParamIndexVar;
@@ -72,15 +73,34 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 			}
 		};
 		return
+				
+					(((GoJob) api.job).noCopy
+				?
+				  "labels := make([]interface{}, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
+				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"
+						+ "tmp := \"" + a.mid + "\"\n"
+						+ "\tlabels[i-" + foo.apply(g.start) + "] = &tmp\n"
+				+ "}\n"
+				:
 				  "labels := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
 				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"
 						+ "\tlabels[i-" + foo.apply(g.start) + "] = []byte(\"" + a.mid + "\")\n"
-				+ "}\n"
-				+ sEpWrite + "(" + sEpProto + "." + r.getName() + ", "
+				+ "}\n")
+
+				+ sEpWrite + (((GoJob) api.job).noCopy ? "Raw" : "")
+						+ "(" + sEpProto + "." + r.getName() + ", "
 						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
 						+ "labels)\n"
 
-				+ "b := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
+				+ (((GoJob) api.job).noCopy
+				?
+				  "b := make([]interface{}, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
+				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end)+"; i++ {\n"
+						+ "tmp := splitFn0(arg0, i)\n"
+						+ "\tb[i-"+foo.apply(g.start)+"] = &tmp\n"
+				+ "}\n"
+				:
+				  "b := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
 				+ "for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
 						+ "\tvar buf bytes.Buffer\n"
 						+ "\tif err := gob.NewEncoder(&buf).Encode(splitFn0(arg0, i)); err != nil {\n\t\t" // only arg0
@@ -92,12 +112,9 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 								+ ".Self.Name())\n"
 						+ "\t}\n"
 						+ "\tb[i-"+foo.apply(g.start)+"] = buf.Bytes()\n"
-				+ "}\n"
-
+				+ "}\n")
 				
-				// FIXME: write label
-				
-				+ sEpWrite
+				+ sEpWrite + (((GoJob) api.job).noCopy ? "Raw" : "")
 				+ "(" + sEpProto
 				//+ ".(*" + api.gpn.getSimpleName() +")"
 				+ "." + r.getName() + ", "

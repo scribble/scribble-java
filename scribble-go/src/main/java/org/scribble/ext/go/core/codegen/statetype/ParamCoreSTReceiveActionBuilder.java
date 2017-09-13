@@ -9,6 +9,7 @@ import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEAction;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.ext.go.type.index.ParamIndexInt;
 import org.scribble.ext.go.type.index.ParamIndexVar;
@@ -95,9 +96,19 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				+ "return nil\n"
 				+ "}\n"*/
 
-					sEpRecv + "(" + sEpProto +  "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"	 // Discard op
+					sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "") 
+							+ "(" + sEpProto +  "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"	 // Discard op
 				
-				+ "b := " + sEpRecv + "(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+				+ (((GoJob) api.job).noCopy 
+				?
+				  "b := " + sEpRecv + "Raw(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+				+ "data := make([]" + a.payload.elems.get(0) + ", len(b))\n"
+				+ "for i := 0; i < len(b); i++ {\n"
+				+ "data[i] = *b[i].(*" + a.payload.elems.get(0) + ")\n"
+				+ "}\n"
+				+ "*arg0 = reduceFn0(data)\n"
+				:
+				  "b := " + sEpRecv + "(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
 				+ "data := make([]int, " + foo.apply(g.end) + ")\n"
 				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 						+ "var decoded int\n"
@@ -111,7 +122,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 						+ "}\n"
 						+ "data[i-1] = decoded\n"
 				+ "}\n"
-				+ "*arg0 = reduceFn0(data)\n"  // FIXME: arg0
+				+ "*arg0 = reduceFn0(data)\n")  // FIXME: arg0
 				
 				+ buildReturn(api, curr, succ);
 	}
