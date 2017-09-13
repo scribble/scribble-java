@@ -1,17 +1,12 @@
 package org.scribble.ext.go.core.codegen.statetype;
 
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.scribble.codegen.statetype.STBranchActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEAction;
-import org.scribble.ext.go.core.type.ParamRange;
-import org.scribble.ext.go.core.type.ParamRole;
-import org.scribble.ext.go.type.index.ParamIndexExpr;
-import org.scribble.ext.go.type.index.ParamIndexInt;
-import org.scribble.ext.go.type.index.ParamIndexVar;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
@@ -68,7 +63,7 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
 					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ERR;*/
 
-		ParamRole r = (ParamRole) a.peer;
+		/*ParamRole r = (ParamRole) a.peer;
 		ParamRange g = r.ranges.iterator().next();
 		Function<ParamIndexExpr, String> foo = e ->
 		{
@@ -85,7 +80,7 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 			{
 				throw new RuntimeException("[param-core] TODO: " + e);
 			}
-		};
+		};*/
 		return 
 				  /*sEpRecv
 				+ "(" + sEpProto
@@ -105,11 +100,16 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				 + "if !selected {\n"
                  + "\treturn nil // select ignores nilchan\n"
                  + "}\n"
-				 + "data := make([]int, " + foo.apply(g.end) + ")\n"
+				//+ "data := make([]int, " + foo.apply(g.end) + ")\n"
 				//+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 						+ "var decoded int\n"
 						+ "bs := <-s.data\n"
-						+ "if err := gob.NewDecoder(bytes.NewReader(bs[0])).Decode(&decoded); err != nil {\n"
+
+				+ ((((GoJob) api.job).noCopy)
+					?
+							"decoded = *bs[0].(*" + a.payload.elems.get(0) + ")\n"
+					:
+						  "if err := gob.NewDecoder(bytes.NewReader(bs[0])).Decode(&decoded); err != nil {\n"
 						+	ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
 								+ ".Errors <- session.DeserialiseFailed(err, \"" + getActionName(api, a) + "\","
@@ -117,10 +117,13 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 									+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
 								+ ".Self.Name())\n"
 						+ "}\n"
-						+ "data[0] = decoded\n"
+						//+ "data[0] = decoded\n"
 				//+ "}\n"
+				)
+
 				//+ "*arg0 = reduceFn0(data)\n"  // FIXME: arg0
-				 + "*arg0 = data[0]\n"
+				// + "*arg0 = data[0]\n"
+				+ "*arg0 = decoded\n"
 				
 				+ "return ch";
 	}

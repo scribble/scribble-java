@@ -8,6 +8,7 @@ import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.ext.go.type.index.ParamIndexInt;
 import org.scribble.ext.go.type.index.ParamIndexVar;
@@ -47,8 +48,11 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				  apigen.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
 				+ apigen.apigen.generateScribbleRuntimeImports() + "\n"
-						+ Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE)
-							.map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n"))
+				
+				+ (((GoJob) api.job).noCopy ? "" :
+						Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE)
+							.map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
+
 				+ "\n"
 				+ "type " + tname + " struct{\n"
 				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
@@ -56,7 +60,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan chan *" + apigen.getStateChanName(s.getSuccessor(a)) + "\n")
 						.collect(Collectors.joining(""))
-				+ "data chan [][]byte\n"
+				+ (((GoJob) apigen.job).noCopy ? "data chan []interface{}" : "data chan [][]byte\n" )
 				+ "}\n";
 
 		res += "\n"
@@ -68,7 +72,9 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 						+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
 						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan chan *" + apigen.getStateChanName(s.getSuccessor(a))+ ", 1)")
 								.collect(Collectors.joining(", ")) + ", "
-						+ "data: make(chan [][]byte, 1)"
+
+						+ "data: make(chan " + (((GoJob) api.job).noCopy ? "[]interface{}" : "[][]byte") + ", 1)"
+
 						+ "}\n"
 				+ "go s.foo()\n"
 				+ "return s\n"
@@ -96,13 +102,25 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				throw new RuntimeException("[param-core] TODO: " + e);
 			}
 		};
+		
+		if (((GoJob) apigen.job).noCopy)
+		{
+		res += 
+				  "label := " + sEpRecv + "Raw(" + sEpProto + "." + peer.getName() + ", "
+				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+				+ "op := *label[0].(*string)\n";  // FIXME: cast for safety?
+		}
+		else
+		{
 		res +=
 				  "label := " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
 				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
 				+ "op := string(label[0])\n";  // FIXME: cast for safety?
+		}
 
 		res +=
-				  "b := " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
+				  "b := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
+				  + "(" + sEpProto + "." + peer.getName() + ", "
 				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
 				+ "s.data <- b\n";
 						// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
