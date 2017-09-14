@@ -1,5 +1,6 @@
 package org.scribble.ext.go.core.codegen.statetype;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -118,12 +119,17 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				+ "op := string(label[0])\n";  // FIXME: cast for safety?
 		}
 
-		res +=
-				  "b := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
-				  + "(" + sEpProto + "." + peer.getName() + ", "
-				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "s.data <- b\n";
-						// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
+		List<EAction> as = s.getActions();
+		boolean allEmpty = as.stream().allMatch(a -> a.payload.elems.isEmpty());
+		if (!allEmpty)  // FIXME:
+		{
+			res +=
+						"b := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
+						+ "(" + sEpProto + "." + peer.getName() + ", "
+								+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+					+ "s.data <- b\n";
+							// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
+		}
 				
 		res+= "if "
 				+ s.getActions().stream().map(a ->

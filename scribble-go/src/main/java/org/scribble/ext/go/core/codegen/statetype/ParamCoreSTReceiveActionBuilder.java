@@ -72,7 +72,6 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				throw new RuntimeException("[param-core] TODO: " + e);
 			}
 		};
-		return 
 				  /*sEpRecv
 				+ "(" + sEpProto
 				+ ".(*" + api.gpn.getSimpleName() +")." + r.getName() + ", "
@@ -96,34 +95,44 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				+ "return nil\n"
 				+ "}\n"*/
 
+			String res =
 					sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "") 
-							+ "(" + sEpProto +  "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"	 // Discard op
-				
-				+ (((GoJob) api.job).noCopy 
+							+ "(" + sEpProto +  "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n";	 // Discard op
+
+			if (!a.payload.elems.isEmpty())
+			{
+				if (a.payload.elems.size() > 1)
+				{
+					throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
+				}
+				res +=
+				  (((GoJob) api.job).noCopy 
 				?
-				  "b := " + sEpRecv + "Raw(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "data := make([]" + a.payload.elems.get(0) + ", len(b))\n"
-				+ "for i := 0; i < len(b); i++ {\n"
-				+ "data[i] = *b[i].(*" + a.payload.elems.get(0) + ")\n"
-				+ "}\n"
-				+ "*arg0 = reduceFn0(data)\n"
+						"b := " + sEpRecv + "Raw(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+					+ "data := make([]" + a.payload.elems.get(0) + ", len(b))\n"
+					+ "for i := 0; i < len(b); i++ {\n"
+					+ "data[i] = *b[i].(*" + a.payload.elems.get(0) + ")\n"
+					+ "}\n"
+					+ "*arg0 = reduceFn0(data)\n"
 				:
-				  "b := " + sEpRecv + "(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "data := make([]int, " + foo.apply(g.end) + ")\n"
-				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
-						+ "var decoded int\n"
-						+ "if err := gob.NewDecoder(bytes.NewReader(b[i-1])).Decode(&decoded); err != nil {\n"
-						+	ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
-								+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
-								+ ".Errors <- session.DeserialiseFailed(err, \"" + getActionName(api, a) + "\","
-								+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+						"b := " + sEpRecv + "(" + sEpProto + "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+					+ "data := make([]int, " + foo.apply(g.end) + ")\n"
+					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
+							+ "var decoded int\n"
+							+ "if err := gob.NewDecoder(bytes.NewReader(b[i-1])).Decode(&decoded); err != nil {\n"
+							+	ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 									+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
-								+ ".Self.Name())\n"
-						+ "}\n"
-						+ "data[i-1] = decoded\n"
-				+ "}\n"
-				+ "*arg0 = reduceFn0(data)\n")  // FIXME: arg0
+									+ ".Errors <- session.DeserialiseFailed(err, \"" + getActionName(api, a) + "\","
+									+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+										+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+									+ ".Self.Name())\n"
+							+ "}\n"
+							+ "data[i-1] = decoded\n"
+					+ "}\n"
+					+ "*arg0 = reduceFn0(data)\n");  // FIXME: arg0
+			}
 				
+		return res
 				+ buildReturn(api, curr, succ);
 	}
 }

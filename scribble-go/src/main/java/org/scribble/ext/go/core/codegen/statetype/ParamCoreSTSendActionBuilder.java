@@ -72,8 +72,8 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				throw new RuntimeException("[param-core] TODO: " + e);
 			}
 		};
-		return
 				
+		String res =
 					(((GoJob) api.job).noCopy
 				?
 				  "labels := make([]interface{}, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
@@ -90,9 +90,16 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				+ sEpWrite + (((GoJob) api.job).noCopy ? "Raw" : "")
 						+ "(" + sEpProto + "." + r.getName() + ", "
 						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
-						+ "labels)\n"
+						+ "labels)\n";
 
-				+ (((GoJob) api.job).noCopy
+			if (!a.payload.elems.isEmpty())
+			{
+				if (a.payload.elems.size() > 1)
+				{
+					throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
+				}
+				res +=
+				  (((GoJob) api.job).noCopy
 				?
 				  "b := make([]interface{}, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
 				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end)+"; i++ {\n"
@@ -121,7 +128,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
 								//+ "\"" + a.mid + "\""
 								+ "b"
-						+ ")\n"
+						+ ")\n";
 				/*+ IntStream.range(0, a.payload.elems.size())
 				      .mapToObj(i -> sEpWrite + "(" + sEpProto
 				      				//+ ".(*" + api.gpn.getSimpleName() +")."
@@ -132,6 +139,10 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				/*+ "if " + sEpErr + " != nil {\n"
 				+ "return nil\n"
 				+ "}\n"*/
+			}
+				
+		return
+					res
 				+ buildReturn(api, curr, succ);
 	}
 }
