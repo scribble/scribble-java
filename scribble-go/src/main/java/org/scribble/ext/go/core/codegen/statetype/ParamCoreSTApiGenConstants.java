@@ -19,7 +19,7 @@ public class ParamCoreSTApiGenConstants
 	public static final String GO_ENDPOINT_STARTPROTOCOL = "StartProtocol";
 	public static final String GO_ENDPOINT_FINISHPROTOCOL = "FinishProtocol";
 	public static final String GO_ENDPOINT_FINALISE = "Finalise";
-	public static final String GO_ENDPOINT_ENDPOINT = "Ept";
+	public static final String GO_ENDPOINT_ENDPOINT = "Endpoint";
 
 	public static final String GO_FINALISER_TYPE = "session.Finaliser";  // net.MPSTEndpoint;
 	
