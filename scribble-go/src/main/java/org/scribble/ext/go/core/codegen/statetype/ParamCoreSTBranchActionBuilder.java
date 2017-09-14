@@ -81,7 +81,8 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				throw new RuntimeException("[param-core] TODO: " + e);
 			}
 		};*/
-		return 
+		
+		String res =
 				  /*sEpRecv
 				+ "(" + sEpProto
 				+ ".(*" + api.gpn.getSimpleName() +")." + r.getName() + ", "
@@ -99,13 +100,23 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				   "ch, selected := <-s._" + a.mid + "_Chan\n"
 				 + "if !selected {\n"
                  + "\treturn nil // select ignores nilchan\n"
-                 + "}\n"
+                 + "}\n";
+
+			if (!a.payload.elems.isEmpty())
+			{
+				if (a.payload.elems.size() > 1)
+				{
+					throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
+				}
+				
+				res +=
 				//+ "data := make([]int, " + foo.apply(g.end) + ")\n"
 				//+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
-						+ "var decoded int\n"
-						+ "bs := <-s.data\n"
-
-				+ ((((GoJob) api.job).noCopy)
+						  "var decoded int\n"
+						+ "bs := <-s.data\n";
+				
+				res +=
+				  ((((GoJob) api.job).noCopy)
 					?
 							"decoded = *bs[0].(*" + a.payload.elems.get(0) + ")\n"
 					:
@@ -123,8 +134,10 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 
 				//+ "*arg0 = reduceFn0(data)\n"  // FIXME: arg0
 				// + "*arg0 = data[0]\n"
-				+ "*arg0 = decoded\n"
+				+ "*arg0 = decoded\n";
+		}
 				
+		return res
 				+ "return ch";
 	}
 }
