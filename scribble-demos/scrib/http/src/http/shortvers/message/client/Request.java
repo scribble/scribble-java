@@ -31,21 +31,22 @@ public class Request extends HttpShortMessage
 	public static final String DO_NOT_TRACK = "DNT";     
 	public static final String CONNECTION = "Connection";
 	public static final String UPGRADE_INSECURE_REQUESTS = "Upgrade-Insecure-Requests";
+	public static final String COOKIE = "Cookie";
 
-	public Request(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection, String upgradeIR)
+	public Request(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection, String upgradeIR, String cookie)
 	{
-		super(Http.REQUEST, getHeadersAndBody(get, http, host, userA, accept, acceptL, acceptE, dnt, connection, upgradeIR));
+		super(Http.REQUEST, getHeadersAndBody(get, http, host, userA, accept, acceptL, acceptE, dnt, connection, upgradeIR, cookie));
 	}
 	
 	/*GET /~rhu/ HTTP/1.1
 	host: www.doc.ic.ac.uk*/
 	public Request(String get, String http, String host)
 	{
-		this(get, http, host, null, null, null, null, null, null, null);
+		this(get, http, host, null, null, null, null, null, null, null, null);
 	}
 
 	// Empty body 
-	protected static String getHeadersAndBody(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection, String upgradeIR) {
+	protected static String getHeadersAndBody(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection, String upgradeIR, String cookie) {
 		return " "
 				+ get + " " + HttpShortMessage.HTTP + "/" + http + HttpShortMessage.CRLF
 				+ Request.HOST + ": " + host + HttpShortMessage.CRLF
@@ -56,6 +57,7 @@ public class Request extends HttpShortMessage
 				+ ((dnt == null) ? "" : Request.DO_NOT_TRACK + ": " + dnt + HttpShortMessage.CRLF)
 				+ ((connection == null) ? "" : Request.CONNECTION + ": " + connection + HttpShortMessage.CRLF)
 				+ ((upgradeIR == null) ? "" : Request.UPGRADE_INSECURE_REQUESTS + ": " + upgradeIR + HttpShortMessage.CRLF)
+				+ ((cookie == null) ? "" : Request.COOKIE + ": " + cookie + HttpShortMessage.CRLF)
 				+ "" + HttpShortMessage.CRLF;  // Empty body
 	}
 }

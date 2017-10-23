@@ -36,11 +36,11 @@ import org.scribble.visit.util.MessageIdCollector;
 
 public class SessionApiGenerator extends ApiGen
 {
-	public static final String GPROTOCOLNAME_CLASS = "org.scribble.sesstype.name.GProtocolName";
-	public static final String OP_CLASS = "org.scribble.sesstype.name.Op";
-	public static final String ROLE_CLASS = "org.scribble.sesstype.name.Role";
+	public static final String GPROTOCOLNAME_CLASS = "org.scribble.type.name.GProtocolName";
+	public static final String OP_CLASS = "org.scribble.type.name.Op";
+	public static final String ROLE_CLASS = "org.scribble.type.name.Role";
 	public static final String SESSION_CLASS = "org.scribble.runtime.net.session.Session";
-	public static final String SESSIONTYPEFACTORY_CLASS = "org.scribble.sesstype.SessionTypeFactory";
+	public static final String SESSIONTYPEFACTORY_CLASS = "org.scribble.type.SessionTypeFactory";
 
 	private static final String IMPATH_FIELD = "IMPATH";
 	private static final String SOURCE_FIELD = "SOURCE";
@@ -96,7 +96,7 @@ public class SessionApiGenerator extends ApiGen
 		this.cb.setPackage(packname);
 		this.cb.addImports(/*"java.io.IOException", */"java.util.Arrays", "java.util.Collections", "java.util.LinkedList", "java.util.List");
 		//this.cb.addImports("org.scribble.main.ScribbleRuntimeException", "org.scribble.net.session.SessionEndpoint", "org.scribble.net.ScribMessageFormatter");
-		this.cb.addImports("org.scribble.sesstype.name.Role");
+		this.cb.addImports("org.scribble.type.name.Role");
 		this.cb.addImports(getRolesPackageName(this.gpn) + ".*");
 		if (!this.mids.isEmpty())
 		{

@@ -13,7 +13,7 @@
  */
 package http.longvers.message;
 
-import org.scribble.sesstype.name.Op;
+import org.scribble.type.name.Op;
 
 public abstract class StartLine extends HttpLongMessage
 {

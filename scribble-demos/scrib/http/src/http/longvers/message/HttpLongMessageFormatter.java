@@ -26,6 +26,7 @@ import http.longvers.message.client.Accept;
 import http.longvers.message.client.AcceptEncoding;
 import http.longvers.message.client.AcceptLanguage;
 import http.longvers.message.client.Connection;
+import http.longvers.message.client.Cookie;
 import http.longvers.message.client.DoNotTrack;
 import http.longvers.message.client.Host;
 import http.longvers.message.client.RequestLine;
@@ -170,29 +171,30 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 				String value = line.substring(colon + 1).trim();  // Whitespace already built into the message classes
 				switch (name)
 				{
-					case HttpLongMessage.HOST: return new Host("value");
-					case HttpLongMessage.USER_AGENT: return new UserAgent(value);
-					case HttpLongMessage.ACCEPT: return new Accept(value);
+					case HttpLongMessage.HOST:            return new Host("value");
+					case HttpLongMessage.USER_AGENT:      return new UserAgent(value);
+					case HttpLongMessage.ACCEPT:          return new Accept(value);
 					case HttpLongMessage.ACCEPT_LANGUAGE: return new AcceptLanguage(value);
 					case HttpLongMessage.ACCEPT_ENCODING: return new AcceptEncoding(value);
-					case HttpLongMessage.DO_NOT_TRACK: return new DoNotTrack(Integer.parseInt(value));     
-					case HttpLongMessage.CONNECTION: return new Connection(value);
+					case HttpLongMessage.DO_NOT_TRACK:    return new DoNotTrack(Integer.parseInt(value));     
+					case HttpLongMessage.CONNECTION:      return new Connection(value);
+					case HttpLongMessage.COOKIE:          return new Cookie(value);
 					case HttpLongMessage.UPGRADE_INSECURE_REQUESTS: return new UpgradeInsecureRequests(Integer.parseInt(value));
 					
-					case HttpLongMessage.DATE: return new Date(value);
-					case HttpLongMessage.SERVER: return new Server(value);
+					case HttpLongMessage.DATE:                      return new Date(value);
+					case HttpLongMessage.SERVER:                    return new Server(value);
 					case HttpLongMessage.STRICT_TRANSPORT_SECURITY: return new StrictTransportSecurity(value);
-					case HttpLongMessage.LAST_MODIFIED: return new LastModified(value);
-					case HttpLongMessage.ETAG: return new ETag(value);
-					case HttpLongMessage.ACCEPT_RANGES: return new AcceptRanges(value);
+					case HttpLongMessage.LAST_MODIFIED:             return new LastModified(value);
+					case HttpLongMessage.ETAG:                      return new ETag(value);
+					case HttpLongMessage.ACCEPT_RANGES:             return new AcceptRanges(value);
 					case HttpLongMessage.CONTENT_LENGTH:
 					{
 						len = Integer.parseInt(value.trim());
 						return new ContentLength(len);
 					}
-					case HttpLongMessage.VARY: return new Vary(value);
+					case HttpLongMessage.VARY:         return new Vary(value);
 					case HttpLongMessage.CONTENT_TYPE: return new ContentType(value);
-					case HttpLongMessage.VIA: return new Via(value);
+					case HttpLongMessage.VIA:          return new Via(value);
 					default: throw new RuntimeException("Cannot parse header field: " + line);
 				}
 			}

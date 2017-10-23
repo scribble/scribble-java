@@ -14,7 +14,7 @@
 package http.longvers.message;
 
 import org.scribble.runtime.net.ScribMessage;
-import org.scribble.sesstype.name.Op;
+import org.scribble.type.name.Op;
 
 import http.longvers.HttpLong.Http.Http;
 
@@ -34,7 +34,9 @@ public abstract class HttpLongMessage extends ScribMessage
 	public static final String ACCEPT_ENCODING = "Accept-Encoding";
 	public static final String DO_NOT_TRACK = "DNT";     
 	public static final String CONNECTION = "Connection";
+
 	public static final String UPGRADE_INSECURE_REQUESTS = "Upgrade-Insecure-Requests";
+	public static final String COOKIE = "Cookie";
 
 	public static final String DATE = "Date";
 	public static final String CONTENT_TYPE = "Content-Type";

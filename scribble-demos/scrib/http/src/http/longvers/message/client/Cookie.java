@@ -11,18 +11,17 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package http.longvers.message.server;
+package http.longvers.message.client;
 
-import org.scribble.type.name.Op;
+import http.longvers.HttpLong.Http.Http;
+import http.longvers.message.HeaderField;
 
-import http.longvers.message.HttpLongMessage;
-
-public abstract class StatusCode extends HttpLongMessage
+public class Cookie extends HeaderField
 {
 	private static final long serialVersionUID = 1L;
 
-	public StatusCode(Op code, String reason)
+	public Cookie(String val)
 	{
-		super(code, " " + reason);
+		super(Http.COOKIE, val);
 	}
 }
