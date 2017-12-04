@@ -136,13 +136,13 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				"for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ sEpWrite
-						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
 						+ "\"" + a.mid + "\"" + ")\n"
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ sEpWrite
-						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
 						+ "splitFn0(arg0, i)" + ")\n"

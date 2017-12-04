@@ -119,15 +119,15 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 							+ "var lab string\n"
 							+ sEpRecv
-									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
 									+ "&lab" + ")\n"
 							+ sEpRecv
-									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
-									+ "&data[i]" + ")\n"
+									+ "&data[i-1]" + ")\n"
 							+ "}\n"
 					+ "*arg0 = reduceFn0(data)\n");  // FIXME: arg0
 			}

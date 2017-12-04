@@ -197,7 +197,13 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 												
 								+ "return ep\n"*/
 								+ "conns := make(map[string][]transport.Channel)\n"
-								+ "conns[p." + actual.getName() + ".Name()] = make([]transport.Channel, " + g.end + "-" + g.start + ")\n"  // FIXME: start index 1
+								
+								
+								+ this.apigen.actuals.keySet().stream().filter(e -> !e.equals(actual.getName()))
+										.map(peer -> "conns[p." + peer + ".Name()] = make([]transport.Channel, " + g.end + "-" + g.start + "+1)\n")  // FIXME: start index 1
+										.collect(Collectors.joining(""))
+
+								
 								+ "params := make(map[string]int)\n"
 								+ decls.iterator().next().params.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
 								+ "return &" + epTypeName + "{p, &session.LinearResource{}, &session.Endpoint{self, -1, conns}, params}\n"  // FIXME: numRoles
