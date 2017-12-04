@@ -25,7 +25,7 @@ public class ParamCoreSTApiGenConstants
 	public static final String GO_FINALISER_TYPE = "session.Finaliser";  // net.MPSTEndpoint;
 	
 	public static final String GO_ROLE_TYPE = "session.Role";
-	public static final String GO_ROLE_CONSTRUCTOR = "session.NewPRole";
+	public static final String GO_ROLE_CONSTRUCTOR = "session.NewRole";
 
 	public static final String GO_PARAMROLE_TYPE = "session.ParamRole";
 
