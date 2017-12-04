@@ -15,7 +15,7 @@ public class ParamCoreSTApiGenConstants
 	public static final String GO_ENDPOINT_PROTO = "Proto";
 	public static final String GO_ENDPOINT_ERR = "Err";
 	public static final String GO_ENDPOINT_WRITEALL = "Send";
-	public static final String GO_ENDPOINT_READALL = "ReadAll";
+	public static final String GO_ENDPOINT_READALL = "Recv";
 	public static final String GO_ENDPOINT_STARTPROTOCOL = "StartProtocol";
 	public static final String GO_ENDPOINT_FINISHPROTOCOL = "FinishProtocol";
 	public static final String GO_ENDPOINT_FINALISE = "Finalise";
