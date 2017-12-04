@@ -52,7 +52,8 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				+ "\n"
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
 				+ this.apigen.generateScribbleRuntimeImports()
-				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
+				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n"
+				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "/tcp\"\n";
 					
 
 		sessPack += "\n"
@@ -128,6 +129,19 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								+ "Params map[string]int\n"
 								+ "}\n"
 								+ "\n"
+								
+								
+								+ "func (ini *" + epTypeName + ") Accept(rolename session.Role, id int, addr, port string) error {\n"
+								+ "ini.ept.Conn[rolename.Name()][id-1] = tcp.NewConnection(addr, port).Accept().(*tcp.Conn)\n"
+								+ "return nil\n"
+								+ "}\n"
+								+ "\n"
+								+ "func (ini *" + epTypeName + ") Connect(rolename session.Role, id int, addr, port string) error {\n"
+								+ "ini.ept.Conn[rolename.Name()][id-1] = tcp.NewConnection(addr, port).Connect()\n"
+								+ "return nil\n"
+								+ "}\n"
+								+ "\n"
+								
 								
 								
 								+ "func (p *" + simpname + ") New" + epTypeName
