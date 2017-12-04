@@ -123,7 +123,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 										return actualName + "s map[int] func(*" + simpname + "_" + actualName + "_1) *"  // FIXME: init statechan, factor out with makeSTStateName
 												+ ParamCoreSTStateChanApiBuilder.makeEndStateName(simpname, a) + "\n";
 									}).collect(Collectors.joining(""))*/
-								+ "session.LinearResource\n"
+								+ "*session.LinearResource\n"
 								+ "ept *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
 								+ "Params map[string]int\n"
 								+ "}\n"
@@ -182,11 +182,11 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 										}).collect(Collectors.joining(""))
 												
 								+ "return ep\n"*/
-								+ "conns := make(map[session.Role][]transport.Channel)\n"
-								+ "conns[p." + actual.getName() + "] = make([]transport.Channel, " + g.end + "-" + g.start + ")\n"  // FIXME: start index 1
+								+ "conns := make(map[string][]transport.Channel)\n"
+								+ "conns[p." + actual.getName() + ".Name()] = make([]transport.Channel, " + g.end + "-" + g.start + ")\n"  // FIXME: start index 1
 								+ "params := make(map[string]int)\n"
 								+ decls.iterator().next().params.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
-								+ "return &" + epTypeName + "{p, session.LinearResource{}, &session.Endpoint{self, -1, conns}, params}\n"  // FIXME: numRoles
+								+ "return &" + epTypeName + "{p, &session.LinearResource{}, &session.Endpoint{self, -1, conns}, params}\n"  // FIXME: numRoles
 								+ "}\n"
 								
 								/*+ this.apigen.actuals.get(r).keySet().stream()
@@ -206,7 +206,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						
 									+ "\nfunc (ini *" + epTypeName + ") Init() (*" + epTypeName + "_1) {\n"
 									+ "ini.Use()\n"
-									+ "return &" + epTypeName + "_1{session.LinearResource{}, ini.ept}\n"
+									+ "return &" + epTypeName + "_1{&session.LinearResource{}, ini}\n"
 									+ "}";
 					}).collect(Collectors.joining(""));
 				}).collect(Collectors.joining("\n"));
