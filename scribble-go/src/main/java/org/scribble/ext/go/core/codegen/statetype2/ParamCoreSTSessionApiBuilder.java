@@ -199,8 +199,10 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								+ "conns := make(map[string][]transport.Channel)\n"
 								
 								
-								+ this.apigen.actuals.keySet().stream().filter(e -> !e.equals(actual.getName()))
-										.map(peer -> "conns[p." + peer + ".Name()] = make([]transport.Channel, " + g.end + "-" + g.start + "+1)\n")  // FIXME: start index 1
+								+ this.apigen.actuals.entrySet().stream().filter(e -> !e.getKey().equals(actual.getName()))
+										.map(e -> "conns[p." + e.getKey() + ".Name()] = make([]transport.Channel, " 
+												+ e.getValue().keySet().iterator().next().ranges.iterator().next().end + "-"  // FIXME: e.getValues().size() > 1
+												+ e.getValue().keySet().iterator().next().ranges.iterator().next().start + "+1)\n")  // FIXME: start index 1
 										.collect(Collectors.joining(""))
 
 								
