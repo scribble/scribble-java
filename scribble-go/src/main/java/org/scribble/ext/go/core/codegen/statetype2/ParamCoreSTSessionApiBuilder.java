@@ -206,7 +206,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								
 								+ "params := make(map[string]int)\n"
 								+ decls.iterator().next().params.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
-								+ "return &" + epTypeName + "{p, &session.LinearResource{}, &session.Endpoint{self, -1, conns}, params}\n"  // FIXME: numRoles
+								+ "return &" + epTypeName + "{p, &session.LinearResource{}, session.NewEndpoint(self, -1, conns), params}\n"  // FIXME: numRoles
 								+ "}\n"
 								
 								/*+ this.apigen.actuals.get(r).keySet().stream()
