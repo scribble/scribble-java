@@ -112,29 +112,21 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				res +=
 				//+ "data := make([]int, " + foo.apply(g.end) + ")\n"
 				//+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
-						  "var decoded int\n"
-						+ "bs := <-s.data\n";
+						"";
 				
 				res +=
 				  ((((GoJob) api.job).noCopy)
 					?
 							"decoded = *bs[0].(*" + a.payload.elems.get(0) + ")\n"
 					:
-						  "if err := gob.NewDecoder(bytes.NewReader(bs[0])).Decode(&decoded); err != nil {\n"
-						+	ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
-								+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
-								+ ".Errors <- session.DeserialiseFailed(err, \"" + getActionName(api, a) + "\","
-								+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
-									+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
-								+ ".Self.Name())\n"
-						+ "}\n"
+						""
 						//+ "data[0] = decoded\n"
 				//+ "}\n"
 				)
 
 				//+ "*arg0 = reduceFn0(data)\n"  // FIXME: arg0
 				// + "*arg0 = data[0]\n"
-				+ "*arg0 = decoded\n";
+				+ "*arg0 = <- s.data\n";
 		}
 				
 		return res

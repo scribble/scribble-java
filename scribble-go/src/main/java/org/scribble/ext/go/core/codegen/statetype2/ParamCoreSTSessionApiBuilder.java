@@ -12,6 +12,7 @@ import org.scribble.ext.go.ast.ParamRoleDecl;
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.type.index.ParamIndexVar;
+import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
@@ -112,7 +113,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						{
 							throw new RuntimeException("TODO: " + actual);
 						}
-						ParamRange g = actual.ranges.iterator().next();
+						//ParamRange g = actual.ranges.iterator().next();
 						
 						return
 									"\n\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
@@ -228,7 +229,10 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						
 									+ "\nfunc (ini *" + epTypeName + ") Init() (*" + epTypeName + "_1) {\n"
 									+ "ini.Use()\n"
-									+ "return &" + epTypeName + "_1{&session.LinearResource{}, ini}\n"
+									+ 
+											((this.apigen.actuals.get(rfoo).get(actual).init.getStateKind() == EStateKind.POLY_INPUT)
+													? "return ini.New" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1()\n"
+													: "return &" + epTypeName + "_1{&session.LinearResource{}, ini}\n")
 									+ "}";
 					}).collect(Collectors.joining(""));
 				}).collect(Collectors.joining("\n"));

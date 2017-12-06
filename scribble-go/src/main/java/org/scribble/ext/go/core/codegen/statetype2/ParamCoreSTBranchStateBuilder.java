@@ -51,9 +51,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				+ "\n"
 				+ apigen.apigen.generateScribbleRuntimeImports() + "\n"
 				
-				+ (((GoJob) api.job).noCopy ? "" :
-						Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE)
-							.map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
+				//+ (((GoJob) api.job).noCopy ? "" : Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE) .map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
 
 				+ "\n"
 				+ "type " + tname + " struct{\n"
