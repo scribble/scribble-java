@@ -32,8 +32,8 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		String sEpRecv = 
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 				+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
-				+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
+				+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
+				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
 		String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
@@ -62,7 +62,10 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan chan *" + apigen.getStateChanName(s.getSuccessor(a)) + "\n")
 						.collect(Collectors.joining(""))
-				+ (((GoJob) apigen.job).noCopy ? "data chan []interface{}" : "data chan [][]byte\n" )
+				+ (((GoJob) apigen.job).noCopy ? "data chan []interface{}" : 
+							//"data chan [][]byte\n" 
+							"data chan int\n" 
+					)
 				+ "}\n";
 
 		res += "\n"
@@ -75,7 +78,10 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan chan *" + apigen.getStateChanName(s.getSuccessor(a))+ ", 1)")
 								.collect(Collectors.joining(", ")) + ", "
 
-						+ "data: make(chan " + (((GoJob) api.job).noCopy ? "[]interface{}" : "[][]byte") + ", 1)"
+						+ "data: make(chan " + (((GoJob) api.job).noCopy ? "[]interface{}" : 
+							//"[][]byte"
+									" int"
+							) + ", 1)"
 
 						+ "}\n"
 				+ "go s.foo()\n"
@@ -84,7 +90,8 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 
 		res += "\n"
 				+ "func (s *" + tname + ") foo() {\n"
-				+ "s." + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + "." + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+				+ "s." + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + "." + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
+			  + "var op string\n";
 
 		ParamRole peer = (ParamRole) s.getActions().iterator().next().peer;
 		ParamRange g = peer.ranges.iterator().next();
@@ -115,9 +122,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		else
 		{
 		res +=
-				  "label := " + sEpRecv + "(" + sEpProto + "." + peer.getName() + ", "
-				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "op := string(label[0])\n";  // FIXME: cast for safety?
+				  sEpRecv + ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "-1].Recv(&op)\n";  // g.end = g.start
 		}
 
 		List<EAction> as = s.getActions();
@@ -125,9 +130,9 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		if (!allEmpty)  // FIXME:
 		{
 			res +=
-						"b := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
-						+ "(" + sEpProto + "." + peer.getName() + ", "
-								+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
+						  "var b int\n"
+					  + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
+						+  ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "-1].Recv(&b)\n"
 					+ "s.data <- b\n";
 							// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
 		}
