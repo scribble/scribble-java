@@ -5,8 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
@@ -18,7 +16,6 @@ import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEMultiChoicesRece
 import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
-import org.scribble.ext.go.main.GoJob;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
@@ -33,6 +30,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public final ParamActualRole actual;  // this.apigen.self.equals(this.actual.getName())
 	//public final EGraph graph;
 	
+	public final ParamCoreSTReceiveActionBuilder vb;
+	
 	private int counter = 1;
 	
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
@@ -41,7 +40,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		super(apigen.job, apigen.proto, apigen.self, graph,
 				new ParamCoreSTOutputStateBuilder(new ParamCoreSTSendActionBuilder()),
-				new ParamCoreSTReceiveStateBuilder(new ParamCoreSTReceiveActionBuilder()),
+				new ParamCoreSTReceiveStateBuilder(new ParamCoreSTReduceActionBuilder(), new ParamCoreSTReceiveActionBuilder()),
 				new ParamCoreSTBranchStateBuilder(new ParamCoreSTBranchActionBuilder()),
 				null, //new GoSTCaseBuilder(new GoSTCaseActionBuilder()),
 				new ParamCoreSTEndStateBuilder());
@@ -49,6 +48,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		//throw new RuntimeException("[param-core] TODO:");
 		this.apigen = apigen;
 		this.actual = actual;
+		
+		this.vb = ((ParamCoreSTReceiveStateBuilder) this.rb).vb;
 	}
 	
 	protected ParamActualRole getSelf()
