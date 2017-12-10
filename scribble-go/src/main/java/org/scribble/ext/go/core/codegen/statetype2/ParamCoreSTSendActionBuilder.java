@@ -9,7 +9,6 @@ import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEAction;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
-import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.ext.go.type.index.ParamIndexInt;
 import org.scribble.ext.go.type.index.ParamIndexVar;
@@ -33,7 +32,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG
 							+ i + " " + a.payload.elems.get(i)
-							+ ", splitFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " int, i" + i + " int) int"
+							+ ", splitFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " " + a.payload.elems.get(i) + ", i" + i + " int) " + a.payload.elems.get(i)
 							).collect(Collectors.joining(", "));
 	}
 

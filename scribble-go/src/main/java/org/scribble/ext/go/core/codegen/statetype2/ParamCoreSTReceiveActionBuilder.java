@@ -33,7 +33,8 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
 							+ i + " *" + a.payload.elems.get(i)
-							+ ", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " []int) int"
+							+ ", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i
+									+ " []" + a.payload.elems.get(i) + ") " + a.payload.elems.get(i)
 							).collect(Collectors.joining(", "));
 	}
 
