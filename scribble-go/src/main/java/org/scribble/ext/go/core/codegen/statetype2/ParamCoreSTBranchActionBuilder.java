@@ -9,6 +9,7 @@ import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEAction;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.name.DataType;
 
 public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 {
@@ -126,7 +127,7 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 
 				//+ "*arg0 = reduceFn0(data)\n"  // FIXME: arg0
 				// + "*arg0 = data[0]\n"
-				+ "*arg0 = <- s.data\n";
+				+ "*arg0 = (<-s.data).(" + ((DataType) a.payload.elems.get(0)).getSimpleName() + ")\n";
 		}
 				
 		return res

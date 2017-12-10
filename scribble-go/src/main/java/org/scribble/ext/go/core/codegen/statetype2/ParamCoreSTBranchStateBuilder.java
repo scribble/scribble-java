@@ -63,7 +63,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 						.collect(Collectors.joining(""))
 				+ (((GoJob) apigen.job).noCopy ? "data chan []interface{}" : 
 							//"data chan [][]byte\n" 
-							"data chan int\n" 
+							"data chan interface{}\n" 
 					)
 				+ "}\n";
 
@@ -79,7 +79,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 
 						+ "data: make(chan " + (((GoJob) api.job).noCopy ? "[]interface{}" : 
 							//"[][]byte"
-									" int"
+									" interface{}"
 							) + ", 1)"
 
 						+ "}\n"
