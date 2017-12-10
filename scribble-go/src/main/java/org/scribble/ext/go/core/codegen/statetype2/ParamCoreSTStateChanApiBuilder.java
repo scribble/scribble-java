@@ -124,6 +124,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				  this.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
 				+ this.apigen.generateScribbleRuntimeImports() + "\n"
+				+ "import \"log\"\n"
 
 				/*+ (s.isTerminal() || ((GoJob) apigen.job).noCopy ? "" : 
 					Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE)

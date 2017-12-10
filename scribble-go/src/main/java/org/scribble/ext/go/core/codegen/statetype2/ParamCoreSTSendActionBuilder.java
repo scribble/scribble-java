@@ -135,17 +135,21 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 			//st1.Use()
 				"for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ sEpWrite
+				+ "if err := " + sEpWrite
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
-						+ "\"" + a.mid + "\"" + ")\n"
+						+ "\"" + a.mid + "\"" + "); err != nil {\n"
+						+ "log.Fatal(err)\n"
+						+ "}\n"
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ sEpWrite
+				+ "if err := " + sEpWrite
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
-						+ "splitFn0(arg0, i)" + ")\n"
+						+ "splitFn0(arg0, i)" + "); err != nil {\n"
+						+ "log.Fatal(err)\n"
+						+ "}\n"
 				+ "}\n";
 
 			/*for i, v := range pl {

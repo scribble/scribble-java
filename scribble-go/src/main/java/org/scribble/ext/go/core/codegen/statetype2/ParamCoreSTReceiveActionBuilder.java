@@ -118,16 +118,20 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					  "data := make([]int, " + foo.apply(g.end) + ")\n"
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 							+ "var lab string\n"
-							+ sEpRecv
+							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
-									+ "&lab" + ")\n"
-							+ sEpRecv
+									+ "&lab" + "); err != nil {\n"
+									+ "log.Fatal(err)\n"
+									+ "}\n"
+							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
-									+ "&data[i-1]" + ")\n"
+									+ "&data[i-1]" + "); err != nil {\n"
+									+ "log.Fatal(err)\n"
+									+ "}\n"
 							+ "}\n"
 					+ "*arg0 = reduceFn0(data)\n");  // FIXME: arg0
 			}

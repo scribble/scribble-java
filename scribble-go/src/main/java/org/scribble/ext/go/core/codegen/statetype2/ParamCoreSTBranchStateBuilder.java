@@ -50,6 +50,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				  apigen.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
 				+ apigen.apigen.generateScribbleRuntimeImports() + "\n"
+				+ "import \"log\"\n"
 				
 				//+ (((GoJob) api.job).noCopy ? "" : Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE) .map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
 
@@ -120,7 +121,10 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		else
 		{
 		res +=
-				  sEpRecv + ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "-1].Recv(&op)\n";  // g.end = g.start
+				  "if err := " + sEpRecv + ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" 
+				  		+ foo.apply(g.start) + "-1].Recv(&op); err != nil {\n"  // g.end = g.start
+				+ "log.Fatal(err)\n"
+				+ "}\n";
 		}
 
 		List<EAction> as = s.getActions();
@@ -129,8 +133,10 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		{
 			res +=
 						  "var b int\n"
-					  + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
-						+  ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "-1].Recv(&b)\n"
+					  + "if err := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
+						+  ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "-1].Recv(&b); err != nil {\n"
+						+ "log.Fatal(err)\n"
+						+ "}\n"
 					+ "s.data <- b\n";
 							// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
 		}
