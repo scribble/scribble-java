@@ -116,7 +116,12 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						//ParamRange g = actual.ranges.iterator().next();
 						
 						return
-									"\n\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
+
+								  "\nfunc (p *" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, actual) + ") Ept() *session.Endpoint {\n"
+								+ "return p.ept\n"
+								+ "}\n"
+
+								+ "\n\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
 								+ ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " *" + simpname + "\n"
 								/*+ this.apigen.actuals.get(r).keySet().stream()
 										.map(a -> 
@@ -147,8 +152,9 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								
 								+ "func (p *" + simpname + ") New" + epTypeName
 										+ "(" + 
-													"self int" +
-												vars.stream().map(v -> ", " + v + " int").collect(Collectors.joining("")) + ")"
+												vars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + 
+												"self int" +
+											")"
 										+ "(*" + epTypeName + ") {\n"
 
 								/*+ "ep := &" + epTypeName + "{ " + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + ": p,\n"
