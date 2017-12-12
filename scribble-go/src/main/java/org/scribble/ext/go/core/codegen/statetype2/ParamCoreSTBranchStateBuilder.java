@@ -133,6 +133,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		{
 			res +=
 						  "var b string\n"  // HACK?
+						  //"var b int\n"
 					  + "if err := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
 						+  ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "-1].Recv(&b); err != nil {\n"
 						+ "log.Fatal(err)\n"

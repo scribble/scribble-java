@@ -235,6 +235,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						
 									+ "\nfunc (ini *" + epTypeName + ") Init() (*" + epTypeName + "_1) {\n"
 									+ "ini.Use()\n"
+									+ "ini.ept.CheckConnection()\n"
 									+ 
 											((this.apigen.actuals.get(rfoo).get(actual).init.getStateKind() == EStateKind.POLY_INPUT)
 													? "return ini.New" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1()\n"
