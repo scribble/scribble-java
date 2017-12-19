@@ -24,6 +24,7 @@ import static betty16.lec1.httplong.HttpLong.Http.Http.HOST;
 import static betty16.lec1.httplong.HttpLong.Http.Http.REQUESTL;
 import static betty16.lec1.httplong.HttpLong.Http.Http.S;
 import static betty16.lec1.httplong.HttpLong.Http.Http.UPGRADEIR;
+import static betty16.lec1.httplong.HttpLong.Http.Http.COOKIE;
 import static betty16.lec1.httplong.HttpLong.Http.Http.USERA;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ import org.scribble.runtime.net.scribsock.SocketChannelServer;
 import org.scribble.runtime.net.session.MPSTEndpoint;
 
 import betty16.lec1.httplong.HttpLong.Http.Http;
+import betty16.lec1.httplong.HttpLong.Http.channels.S.EndSocket;
 import betty16.lec1.httplong.HttpLong.Http.channels.S.Http_S_1;
 import betty16.lec1.httplong.HttpLong.Http.channels.S.Http_S_2;
 import betty16.lec1.httplong.HttpLong.Http.channels.S.Http_S_2_Cases;
@@ -65,13 +67,13 @@ public class HttpLongS
 		}
 	}
 	
-	private static void run(Http_S_1 s1) throws ClassNotFoundException, ScribbleRuntimeException, IOException {
+	private static EndSocket run(Http_S_1 s1) throws ClassNotFoundException, ScribbleRuntimeException, IOException {
 		Buf<Object> buf = new Buf<>();
 		
 		Http_S_2 s2 = s1.receive(C, REQUESTL, buf);
 		System.out.println("Requested: " + buf.val);
 		
-		Y: while (true) {
+		while (true) {
 			Http_S_2_Cases cases = s2.branch(C);
 			switch (cases.op) {
 				case ACCEPT:  s2 = cases.receive(ACCEPT, buf); break;
@@ -80,16 +82,17 @@ public class HttpLongS
 				case BODY:
 				{
 					String body = "<html><body>Hello, World!</body></html>";
-					cases.receive(BODY, buf)
-						.send(C, new HttpVersion("1.1"))
-						.send(C, new _200("OK"))
-						.send(C, new ContentLength(body.length()))
-						.send(C, new Body(body));
-					break Y;
+					return
+						cases.receive(BODY, buf)
+							.send(C, new HttpVersion("1.1"))
+							.send(C, new _200("OK"))
+							.send(C, new ContentLength(body.length()))
+							.send(C, new Body(body));
 				}
 				case CONNECTION: s2 = cases.receive(CONNECTION, buf); break;
 				case DNT:        s2 = cases.receive(DNT, buf); break;
 				case UPGRADEIR:  s2 = cases.receive(UPGRADEIR, buf); break;
+				case COOKIE:     s2 = cases.receive(COOKIE, buf); break;
 				case HOST:       s2 = cases.receive(HOST, buf); break;
 				case USERA:      s2 = cases.receive(USERA, buf); break;
 			}

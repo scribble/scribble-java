@@ -178,8 +178,8 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 					case HttpLongMessage.ACCEPT_ENCODING: return new AcceptEncoding(value);
 					case HttpLongMessage.DO_NOT_TRACK:    return new DoNotTrack(Integer.parseInt(value));     
 					case HttpLongMessage.CONNECTION:      return new Connection(value);
-					case HttpLongMessage.COOKIE:          return new Cookie(value);
 					case HttpLongMessage.UPGRADE_INSECURE_REQUESTS: return new UpgradeInsecureRequests(Integer.parseInt(value));
+					case HttpLongMessage.COOKIE:          return new Cookie(value);
 					
 					case HttpLongMessage.DATE:                      return new Date(value);
 					case HttpLongMessage.SERVER:                    return new Server(value);

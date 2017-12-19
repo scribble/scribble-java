@@ -13,7 +13,7 @@
  */
 package betty16.lec1.httplong.message.server;
 
-import org.scribble.sesstype.name.Op;
+import org.scribble.type.name.Op;
 
 import betty16.lec1.httplong.message.HttpLongMessage;
 

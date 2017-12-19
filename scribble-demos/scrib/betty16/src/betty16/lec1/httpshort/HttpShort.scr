@@ -1,7 +1,10 @@
 /**
  * Assuming scribblec.sh in scribble-java root directory:
- * 
+ *
  * ./scribblec.sh -d scribble-demos/scrib/betty16/src scribble-demos/scrib/betty16/src/betty16/lec1/httpshort/HttpShort.scr -api Http C
+ *
+ * $ javadoc -cp scribble-core/target/classes';'scribble-runtime/target/classes';'scribble-demos/scrib/betty16/src -subpackages betty16.lec1.httpshort.HttpShort.Http -d scribble-demos/scrib/betty16/javadoc/httpshort
+ *
  */
 
 
