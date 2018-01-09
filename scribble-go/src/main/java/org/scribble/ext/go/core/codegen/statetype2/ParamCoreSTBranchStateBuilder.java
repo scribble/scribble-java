@@ -1,9 +1,7 @@
 package org.scribble.ext.go.core.codegen.statetype2;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
@@ -59,12 +57,12 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epType + "\n" 
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
-				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan chan *" + apigen.getStateChanName(s.getSuccessor(a)) + "\n")
+				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan string\n") // chan *" + apigen.getStateChanName(s.getSuccessor(a)) + "\n")
 						.collect(Collectors.joining(""))
-				+ (((GoJob) apigen.job).noCopy ? "data chan []interface{}" : 
+				/*+ (((GoJob) apigen.job).noCopy ? "data chan []interface{}" : 
 							//"data chan [][]byte\n" 
 							"data chan interface{}\n" 
-					)
+					)*/
 				+ "}\n";
 
 		res += "\n"
@@ -74,13 +72,15 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 						+ "() *" + tname + " {\n"  // FIXME: factor out
 				+ "s := &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
 						+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
-						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan chan *" + apigen.getStateChanName(s.getSuccessor(a))+ ", 1)")
+						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan "//chan *" + apigen.getStateChanName(s.getSuccessor(a))
+								+ "string" +
+								", 1)")
 								.collect(Collectors.joining(", ")) + ", "
 
-						+ "data: make(chan " + (((GoJob) api.job).noCopy ? "[]interface{}" : 
+						/*+ "data: make(chan " + (((GoJob) api.job).noCopy ? "[]interface{}" : 
 							//"[][]byte"
 									" interface{}"
-							) + ", 1)"
+							) + ", 1)"*/
 
 						+ "}\n"
 				+ "go s.foo()\n"
@@ -127,7 +127,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				+ "}\n";
 		}
 
-		List<EAction> as = s.getActions();
+		/*List<EAction> as = s.getActions();
 		boolean allEmpty = as.stream().allMatch(a -> a.payload.elems.isEmpty());
 		if (!allEmpty)  // FIXME:
 		{
@@ -140,18 +140,18 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 						+ "}\n"
 					+ "s.data <- b\n";
 							// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
-		}
+		}*/
 				
 		res+= "if "
 				+ s.getActions().stream().map(a ->
 					{
-						String sEp = 
-								ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+						//String sEp = ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 						return
 								"op == \"" + a.mid + "\" {\n"
-								+ "\tch := make(chan *" + apigen.getStateChanName(s.getSuccessor(a)) + ", 1)\n"
+								/*+ "\tch := make(chan *" + apigen.getStateChanName(s.getSuccessor(a)) + ", 1)\n"
 								+ "\tch <- " + apigen.getSuccStateChan(this.bb, s, s.getSuccessor(a), sEp) + "\n"
-								+ "\ts._" + a.mid + "_Chan <- ch\n"
+								+ "\ts._" + a.mid + "_Chan <- ch\n"*/
+								+ "\ts._" + a.mid + "_Chan <- \"" + a.mid +"\"\n"
 								+ "\t" + s.getActions().stream()
 										.filter(otheract -> otheract.mid != a.mid)
 										.map(otheract -> { return "close(s._" + otheract.mid + "_Chan)"; })

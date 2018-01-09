@@ -48,11 +48,66 @@ message passing
 // paramterisation subsumes multicast
 
 
+global protocol Proto1(role A(n, m), role B(n, m))
+{
+	1() from A[1..n] to B[1..m];  // (a) All-to-all, (unary) mult. choices
+}
 
+global protocol Proto2(role A(n), role B(n))
+{
+	1() dot A[1..n] to B[1..n];  // (b) ones-to-ones, (unary) multi. choices
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*global protocol Proto3(role A(n), role B(n))
+{
+	choices at A[i:1..n]
+	{
+		1() dot A[1..n] to B[1..n];  // TODO (b) ones-to-ones, multi. choices
+	}
+	or
+	{
+		2() dot A[1..n] to B[1..n];
+	}
+}*/
+
+
+/*
+global protocol Proto1(role A(n), role B(n))
+{
+	choice at A[1]
+	{
+		//0() from A[1..n] to B[1..n];  // FIXME when unary-choice -- or OK?
+		//0() dot A[1..n] to B[1..n];  // FIXME when unary-choice -- or OK?
+		0() from A[1..n] to B[1..n];
+	}
+	or
+	{
+		1() from A[1..n] to B[1..n];
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A(n,m), role B(n,m))
 {
 	0() dot A[1..n] to B[(m*2)+1..(m*2)+n];
 }
+*/
 
 
 /*

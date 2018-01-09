@@ -1,15 +1,20 @@
 package org.scribble.ext.go.core.codegen.statetype2;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.scribble.codegen.statetype.STBranchActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEAction;
+import org.scribble.ext.go.core.type.ParamRange;
+import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.ParamIndexExpr;
+import org.scribble.ext.go.type.index.ParamIndexInt;
+import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
 
 public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 {
@@ -98,10 +103,42 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				+ "return nil\n"
 				+ "}\n"*/
 				//buildReturn(api, curr, succ);
-				   "ch, selected := <-s._" + a.mid + "_Chan\n"
+				   //"ch, selected := <-s._" + a.mid + "_Chan\n"
+				   "_, selected := <-s._" + a.mid + "_Chan\n"
 				 + "if !selected {\n"
                  + "\treturn nil // select ignores nilchan\n"
                  + "}\n";
+
+		ParamRole peer = (ParamRole) curr.getActions().iterator().next().peer;
+		ParamRange g = peer.ranges.iterator().next();
+		Function<ParamIndexExpr, String> foo = e ->
+		{
+			if (e instanceof ParamIndexInt)
+			{
+				return e.toString();
+			}
+			else if (e instanceof ParamIndexVar)
+			{
+				return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
+			}
+			else
+			{
+				throw new RuntimeException("[param-core] TODO: " + e);
+			}
+		};
+		String sEpRecv = 
+				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+				+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+				+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
+				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
+		String sEpProto =
+				//"s.ep.Proto"
+				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
+		
+		ParamCoreSTStateChanApiBuilder apigen = (ParamCoreSTStateChanApiBuilder) api;
+		String sEp = ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 
 			if (!a.payload.elems.isEmpty())
 			{
@@ -123,11 +160,24 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 						""
 						//+ "data[0] = decoded\n"
 				//+ "}\n"
-				)
+				);
 
 				//+ "*arg0 = reduceFn0(data)\n"  // FIXME: arg0
 				// + "*arg0 = data[0]\n"
-				+ "*arg0 = (<-s.data).(" + ((DataType) a.payload.elems.get(0)).getSimpleName() + ")\n";
+
+				//+ "*arg0 = (<-s.data).(" + ((DataType) a.payload.elems.get(0)).getSimpleName() + ")\n";
+
+				res +=
+							  "if err := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
+							+  ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "-1].Recv(&arg0); err != nil {\n"
+							+ "log.Fatal(err)\n"
+							+ "}\n"
+							+ "\n"
+							+ "\tch := make(chan *" + apigen.getStateChanName(curr.getSuccessor(a)) + ", 1)\n"
+							+ "\tch <- " + apigen.getSuccStateChan(this, curr, curr.getSuccessor(a), sEp) + "\n";
+
+								// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
+
 		}
 				
 		return res
