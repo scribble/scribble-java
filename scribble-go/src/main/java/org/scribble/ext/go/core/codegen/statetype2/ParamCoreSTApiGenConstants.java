@@ -39,6 +39,7 @@ public class ParamCoreSTApiGenConstants
 	
 	public static final String GO_IO_FUN_RECEIVER = "s";
 	
+	public static final String GO_CROSS_SPLIT_FUN_PREFIX = "Split";
 	public static final String GO_CROSS_SEND_FUN_PREFIX = "Send";
 	public static final String GO_CROSS_SEND_FUN_ARG = "arg";
 	public static final String GO_CROSS_REDUCE_FUN_PREFIX = "Reduce";

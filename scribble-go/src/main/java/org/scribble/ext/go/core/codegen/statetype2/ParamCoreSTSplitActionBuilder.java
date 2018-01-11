@@ -15,13 +15,13 @@ import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 
-public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
+public class ParamCoreSTSplitActionBuilder extends STSendActionBuilder
 {
 
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
-		return ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_PREFIX + "_"
+		return ParamCoreSTApiGenConstants.GO_CROSS_SPLIT_FUN_PREFIX + "_"
 				+ ParamCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((ParamCoreEAction) a).getPeer())
 				+ "_" + a.mid;
 	}
@@ -31,7 +31,9 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG
-							+ i + " []" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+							+ i + " " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+							+ ", splitFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+									+ ", i" + i + " int) " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
 							).collect(Collectors.joining(", "));
 	}
 
@@ -145,8 +147,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
-						+ "arg0[i]" //+ "splitFn0(arg0, i)"
-								+ "); err != nil {\n"
+						+ "splitFn0(arg0, i)" + "); err != nil {\n"
 						+ "log.Fatal(err)\n"
 						+ "}\n"
 				+ "}\n";

@@ -40,7 +40,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public ParamCoreSTStateChanApiBuilder(ParamCoreSTEndpointApiGenerator apigen, ParamActualRole actual, EGraph graph)
 	{
 		super(apigen.job, apigen.proto, apigen.self, graph,
-				new ParamCoreSTOutputStateBuilder(new ParamCoreSTSendActionBuilder()),
+				new ParamCoreSTOutputStateBuilder(new ParamCoreSTSplitActionBuilder(), new ParamCoreSTSendActionBuilder()),
 				new ParamCoreSTReceiveStateBuilder(new ParamCoreSTReduceActionBuilder(), new ParamCoreSTReceiveActionBuilder()),
 				new ParamCoreSTBranchStateBuilder(new ParamCoreSTBranchActionBuilder()),
 				null, //new GoSTCaseBuilder(new GoSTCaseActionBuilder()),

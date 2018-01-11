@@ -12,6 +12,7 @@ public class ParamCoreSTReceiveStateBuilder extends STReceiveStateBuilder
 {
 	public final ParamCoreSTReceiveActionBuilder vb;
 	
+	// sb is ParamCoreSTReduceActionBuilder
 	public ParamCoreSTReceiveStateBuilder(STReceiveActionBuilder sb, ParamCoreSTReceiveActionBuilder vb)
 	{
 		super(sb);
