@@ -3,9 +3,9 @@ package org.scribble.ext.go.core.codegen.statetype2;
 public class ParamCoreSTApiGenConstants
 {
 	//public static final String GO_SCRIBBLERUNTIME_PACKAGE = "org/scribble/runtime/net";
-	public static final String GO_SCRIBBLERUNTIME_SESSION_PACKAGE = "github.com/nickng/scribble-go-runtime/runtime/session";
+	public static final String GO_SCRIBBLERUNTIME_SESSION_PACKAGE = "github.com/rhu1/scribble-go-runtime/runtime/session";
 	public static final String GO_SCRIBBLERUNTIME_SESSIONPARAM_PACKAGE = "github.com/scribble/go-runtime/session/param";
-	public static final String GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE = "github.com/nickng/scribble-go-runtime/runtime/transport";
+	public static final String GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE = "github.com/rhu1/scribble-go-runtime/runtime/transport";
 	public static final String GO_SCRIBBLERUNTIME_SHM_PACKAGE = "github.com/scribble/go-runtime/transport/shm";
 	public static final String GO_SCRIBBLERUNTIME_BYTES_PACKAGE = "bytes";
 	public static final String GO_SCRIBBLERUNTIME_GOB_PACKAGE = "encoding/gob";

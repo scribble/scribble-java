@@ -31,8 +31,9 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG
-							+ i + " " + a.payload.elems.get(i)
-							+ ", splitFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " " + a.payload.elems.get(i) + ", i" + i + " int) " + a.payload.elems.get(i)
+							+ i + " " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+							+ ", splitFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+									+ ", i" + i + " int) " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
 							).collect(Collectors.joining(", "));
 	}
 

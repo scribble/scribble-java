@@ -21,6 +21,7 @@ import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
@@ -275,6 +276,11 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return api;
 	}
 	
+	protected static String batesHack(PayloadElemType<?> t)
+	{
+		String tmp = t.toString();
+		return (tmp.equals("bates")) ? "[]byte" : tmp;
+	}
 	
 	// FIXME: make ParamCoreEState
 	enum ParamCoreEStateKind { CROSS_SEND, CROSS_RECEIVE, DOT_SEND, DOT_RECEIVE, MULTICHOICES_RECEIVE, TERMINAL }

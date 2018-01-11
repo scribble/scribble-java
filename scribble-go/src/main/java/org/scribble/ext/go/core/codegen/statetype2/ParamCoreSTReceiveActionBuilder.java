@@ -32,7 +32,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
-							+ i + " *[]" + a.payload.elems.get(i)
+							+ i + " *[]" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
 							).collect(Collectors.joining(", "));
 	}
 
@@ -114,7 +114,8 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					+ "}\n"
 					+ "*arg0 = reduceFn0(data)\n"
 				:
-					  "data := make([]" + a.payload.elems.get(0) + ", " + foo.apply(g.end) + ")\n"
+					  "data := make([]" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0))//a.payload.elems.get(0)
+					  		+ ", " + foo.apply(g.end) + ")\n"
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 							+ "var lab string\n"
 							+ "if err := " + sEpRecv

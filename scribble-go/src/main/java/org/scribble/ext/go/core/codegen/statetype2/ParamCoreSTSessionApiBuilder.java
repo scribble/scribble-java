@@ -53,8 +53,8 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				+ "\n"
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
 				+ this.apigen.generateScribbleRuntimeImports()
-				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n"
-				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "/tcp\"\n";
+				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
+				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "/tcp\"\n";
 					
 
 		sessPack += "\n"
@@ -137,13 +137,23 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								+ "\n"
 								
 								
-								+ "func (ini *" + epTypeName + ") Accept(rolename session.Role, id int, addr, port string) error {\n"
+								/*+ "func (ini *" + epTypeName + ") Accept(rolename session.Role, id int, addr, port string) error {\n"
 								+ "ini.ept.Conn[rolename.Name()][id-1] = tcp.NewConnection(addr, port).Accept().(*tcp.Conn)\n"
 								+ "return nil\n"
 								+ "}\n"
 								+ "\n"
 								+ "func (ini *" + epTypeName + ") Connect(rolename session.Role, id int, addr, port string) error {\n"
 								+ "ini.ept.Conn[rolename.Name()][id-1] = tcp.NewConnection(addr, port).Connect()\n"
+								+ "return nil\n"
+								+ "}\n"
+								+ "\n"*/
+								+ "func (ini *" + epTypeName + ") Accept(rolename session.Role, id int, acceptor transport.Transport) error {\n"
+								+ "ini.ept.Conn[rolename.Name()][id-1] = acceptor.Accept()\n"
+								+ "return nil\n"
+								+ "}\n"
+								+ "\n"
+								+ "func (ini *" + epTypeName + ") Request(rolename session.Role, id int, requestor transport.Transport) error {\n"
+								+ "ini.ept.Conn[rolename.Name()][id-1] = requestor.Connect()\n"
 								+ "return nil\n"
 								+ "}\n"
 								+ "\n"
