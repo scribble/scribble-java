@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.ext.go.core.type.ParamActualRole;
-import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
@@ -80,17 +79,25 @@ public class ParamCoreSTEndpointApiGenerator
 		return simpname + "_" + getGeneratedActualRoleName(r);
 	}
 	
-	// Doesn't use coranges -- same as getGeneratedParamRoleName?
+	// Doesn't use coranges -- same as getGeneratedParamRoleName?  // Old
 	public static String getGeneratedActualRoleName(ParamActualRole actual)
 	{
 		/*return actual.getName()
 				+ actual.ranges.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");*/
-		if (actual.ranges.size() > 1)
+		/*if (actual.ranges.size() > 1 || actual.coranges.size() > 0)
 		{
 			throw new RuntimeException("[param-core] TODO: " + actual);
 		}
 		ParamRange g = actual.ranges.iterator().next();
-		return actual.getName() + "_" + g.start + "To" + g.end;
+		return actual.getName() + "_" + g.start + "To" + g.end;*/
+		//return
+		String s = 
+		actual.getName() + "_"
+				+ actual.ranges.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"))
+				+ (actual.coranges.isEmpty() ? "" : "_not_")
+				+ actual.coranges.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"));
+		System.out.println("aaa: " + s);
+		return s;
 	}
 
 	//@Override
