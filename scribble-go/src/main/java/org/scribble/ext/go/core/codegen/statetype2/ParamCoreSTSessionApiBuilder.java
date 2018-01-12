@@ -109,10 +109,10 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						List<ParamIndexVar> vars = decls.stream().flatMap(d -> d.params.stream()).collect(Collectors.toList());
 										//.flatMap(rd -> ((ParamRoleDecl) rd).params.stream()).collect(Collectors.toList());
 						
-						if (actual.ranges.size() > 1)
+						/*if (actual.ranges.size() > 1)
 						{
 							throw new RuntimeException("TODO: " + actual);
-						}
+						}*/
 						//ParamRange g = actual.ranges.iterator().next();
 						
 						return
