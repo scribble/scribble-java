@@ -7,6 +7,9 @@ import org.scribble.codegen.statetype.STSendActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.model.endpoint.actions.EDisconnect;
+import org.scribble.model.endpoint.actions.ERequest;
+import org.scribble.model.endpoint.actions.ESend;
 
 public class ParamCoreSTOutputStateBuilder extends STOutputStateBuilder
 {
@@ -30,15 +33,28 @@ public class ParamCoreSTOutputStateBuilder extends STOutputStateBuilder
 	{
 		String out = getPreamble(api, s);
 		
-		List<EAction> as = s.getActions();
-		if (as.size() > 1)
+		for (EAction a : s.getActions())
 		{
-			throw new RuntimeException("Shouldn't get in here: " + as);
+			out += "\n\n";
+			if (a instanceof ESend)  // FIXME: factor out action kind
+			{
+				out += this.sb.build(api, s, a);
+				out += "\n\n";
+				out += this.nb.build(api, s, a);
+			}
+			else if (a instanceof ERequest)
+			{
+				throw new RuntimeException("TODO: " + a);
+			}
+			else if (a instanceof EDisconnect)
+			{
+				throw new RuntimeException("TODO: " + a);
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + a);
+			}
 		}
-		out += "\n\n";
-		out += this.sb.build(api, s, as.get(0));
-		out += "\n\n";
-		out += this.nb.build(api, s, as.get(0));
 
 		return out;
 	}

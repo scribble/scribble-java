@@ -213,13 +213,16 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 										}).collect(Collectors.joining(""))
 												
 								+ "return ep\n"*/
-								+ "conns := make(map[string][]transport.Channel)\n"
+								//+ "conns := make(map[string][]transport.Channel)\n"
+								+ "conns := make(map[string]map[int]transport.Channel)\n"
 								
 								
 								+ this.apigen.actuals.entrySet().stream().filter(e -> !e.getKey().equals(actual.getName()))
-										.map(e -> "conns[p." + e.getKey() + ".Name()] = make([]transport.Channel, " 
+										.map(e -> "conns[p." + e.getKey() + ".Name()] = "
+												/*+ "make([]transport.Channel, " 
 												+ e.getValue().keySet().iterator().next().ranges.iterator().next().end + "-"  // FIXME: e.getValues().size() > 1
-												+ e.getValue().keySet().iterator().next().ranges.iterator().next().start + "+1)\n")
+												+ e.getValue().keySet().iterator().next().ranges.iterator().next().start + "+1)\n")*/
+												+ "make(map[int]transport.Channel)\n")
 										.collect(Collectors.joining(""))
 
 								
