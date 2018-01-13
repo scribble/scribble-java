@@ -123,14 +123,14 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 							+ "var lab string\n"
 							+ "if err := " + sEpRecv
-									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
+									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
 									+ "&lab" + "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
 							+ "if err := " + sEpRecv
-									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
+									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
 									+ "&data[i-1]" + "); err != nil {\n"

@@ -148,12 +148,12 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								+ "}\n"
 								+ "\n"*/
 								+ "func (ini *" + epTypeName + ") Accept(rolename session.Role, id int, acceptor transport.Transport) error {\n"
-								+ "ini.ept.Conn[rolename.Name()][id-1] = acceptor.Accept()\n"
+								+ "ini.ept.Conn[rolename.Name()][id] = acceptor.Accept()\n"
 								+ "return nil\n"
 								+ "}\n"
 								+ "\n"
 								+ "func (ini *" + epTypeName + ") Request(rolename session.Role, id int, requestor transport.Transport) error {\n"
-								+ "ini.ept.Conn[rolename.Name()][id-1] = requestor.Connect()\n"
+								+ "ini.ept.Conn[rolename.Name()][id] = requestor.Connect()\n"
 								+ "return nil\n"
 								+ "}\n"
 								+ "\n"
@@ -228,7 +228,8 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								
 								+ "params := make(map[string]int)\n"
 								+ decls.iterator().next().params.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
-								+ "return &" + epTypeName + "{p, &session.LinearResource{}, session.NewEndpoint(self, -1, conns), params}\n"  // FIXME: numRoles
+								+ "return &" + epTypeName + "{p, &session.LinearResource{}, session.NewEndpoint(self, " //-1,
+										+ "conns), params}\n"  // FIXME: numRoles
 								+ "}\n"
 								
 								/*+ this.apigen.actuals.get(r).keySet().stream()

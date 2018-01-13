@@ -136,7 +136,7 @@ public class ParamCoreSTSplitActionBuilder extends STSendActionBuilder
 				"for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "if err := " + sEpWrite
-						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
+						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
 						+ "\"" + a.mid + "\"" + "); err != nil {\n"
@@ -144,7 +144,7 @@ public class ParamCoreSTSplitActionBuilder extends STSendActionBuilder
 						+ "}\n"
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "if err := " + sEpWrite
-						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i-1]"
+						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
 						+ "splitFn0(arg0, i)" + "); err != nil {\n"
