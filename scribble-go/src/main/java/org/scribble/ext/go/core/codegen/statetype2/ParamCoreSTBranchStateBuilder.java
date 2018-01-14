@@ -122,7 +122,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		{
 		res +=
 				  "if err := " + sEpRecv + ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" 
-				  		+ foo.apply(g.start) + "-1].Recv(&op); err != nil {\n"  // g.end = g.start
+				  		+ foo.apply(g.start) + "].Recv(&op); err != nil {\n"  // g.end = g.start
 				+ "log.Fatal(err)\n"
 				+ "}\n";
 		}

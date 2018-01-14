@@ -118,8 +118,9 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 					+ "}\n"
 					+ "*arg0 = reduceFn0(data)\n"
 				:
-					  "data := make([]" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0)) //a.payload.elems.get(0)
-								+ ", " + foo.apply(g.end) + ")\n"
+					  /*"data := make([]" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0)) //a.payload.elems.get(0)
+								+ ", " + foo.apply(g.end) + ")\n"*/
+							"data := make(map[int]" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0)) + ")\n"
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 							+ "var lab string\n"
 							+ "if err := " + sEpRecv
@@ -129,15 +130,20 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 									+ "&lab" + "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
+							+ "var tmp " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0)) + "\n"
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
-									+ "&data[i-1]" + "); err != nil {\n"
+									//+ "&data[i-1]"
+									+ "&tmp"
+											+ "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
+									+ "data[i] = tmp\n"
 							+ "}\n"
-					+ "*arg0 = reduceFn0(data)\n");  // FIXME: arg0
+					+ "*arg0 = reduceFn0("
+							+ ParamCoreSTReceiveActionBuilder.hackGetValues(ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0))) + "(data))\n");  // FIXME: arg0
 			}
 				
 		return res

@@ -114,7 +114,9 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					+ "}\n"
 					+ "*arg0 = reduceFn0(data)\n"
 				:
-					  "data := make([]" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0))//a.payload.elems.get(0)
+					  //"data := make([]"
+					  "data := make(map[int]"
+								 + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0))//a.payload.elems.get(0)
 					  		+ ", " + foo.apply(g.end) + ")\n"
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 							+ "var lab string\n"
@@ -125,18 +127,43 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 									+ "&lab" + "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
+							+ "var tmp " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0)) + "\n"
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
-									+ "&data[i-1]" + "); err != nil {\n"
+									//+ "&data[i-1]" 
+									+ "&tmp"
+											+ "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
+							+ "data[i-1] = tmp\n"
 							+ "}\n"
-					+ "*arg0 = data\n");  // FIXME: arg0
+					//+ "*arg0 = data\n");  // FIXME: arg0
+					+ "*arg0 = " + hackGetValues(ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0))) + "(data)\n");  // FIXME: arg0
 			}
 				
 		return res
 				+ buildReturn(api, curr, succ);
+	}
+	
+	protected static String hackGetValues(String t)
+	{
+		if (t.equals("int"))
+		{
+			return "util.GetValuesInt";
+		}
+		else if (t.equals("string"))
+		{
+			return "util.GetValuesString";
+		}
+		else if (t.equals("[]byte"))
+		{
+			return "util.GetValuesBates";
+		}
+		else
+		{
+			throw new RuntimeException("[TODO] " + t);
+		}
 	}
 }

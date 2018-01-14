@@ -19,6 +19,7 @@ import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.PayloadElemType;
@@ -132,6 +133,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE)
 							.map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
 				+ "\n"*/
+				+ ((s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
+						? "import \"github.com/rhu1/scribble-go-runtime/test/util\"\n" : "")
 
 				+ "type " + tname + " struct{\n"
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"

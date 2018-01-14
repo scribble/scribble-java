@@ -131,7 +131,8 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 
 		String res =
 			//st1.Use()
-				"for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
+				"j := 0\n"
+				+ "for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "if err := " + sEpWrite
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
@@ -145,10 +146,11 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
-						+ "arg0[i-1]" //+ "splitFn0(arg0, i)"
+						+ "arg0[j]" //+ "splitFn0(arg0, i)"
 								+ "); err != nil {\n"
 						+ "log.Fatal(err)\n"
 						+ "}\n"
+						+ "j = j+1\n"
 				+ "}\n";
 
 			/*for i, v := range pl {

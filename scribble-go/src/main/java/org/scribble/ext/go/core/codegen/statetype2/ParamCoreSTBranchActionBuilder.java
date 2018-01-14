@@ -169,7 +169,7 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 
 				res +=
 							  "if err := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
-							+  ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "-1].Recv(&arg0); err != nil {\n"
+							+  ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "].Recv(&arg0); err != nil {\n"
 							+ "log.Fatal(err)\n"
 							+ "}\n"
 							+ "\n"
