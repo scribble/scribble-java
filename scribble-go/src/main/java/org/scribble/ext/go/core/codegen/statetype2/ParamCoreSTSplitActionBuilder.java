@@ -27,13 +27,14 @@ public class ParamCoreSTSplitActionBuilder extends STSendActionBuilder
 	}
 
 	@Override
-	public String buildArgs(EAction a)
+	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG
-							+ i + " " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
-							+ ", splitFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
-									+ ", i" + i + " int) " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+							+ i + " " + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+							+ ", splitFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " "
+									+ ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+									+ ", i" + i + " int) " + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
 							).collect(Collectors.joining(", "));
 	}
 

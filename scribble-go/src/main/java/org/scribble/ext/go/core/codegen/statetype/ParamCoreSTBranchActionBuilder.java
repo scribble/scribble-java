@@ -34,7 +34,7 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 	}
 
 	@Override
-	public String buildArgs(EAction a)
+	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG

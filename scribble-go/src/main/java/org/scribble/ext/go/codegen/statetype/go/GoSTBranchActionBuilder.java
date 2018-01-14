@@ -15,7 +15,7 @@ public class GoSTBranchActionBuilder extends STBranchActionBuilder
 		EState succ = curr.getSuccessor(a); 
 		return
 				  "func (s *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "(" 
-				+ buildArgs(a)
+				+ buildArgs(null, a)
 				+ ") " + getReturnType(api, curr, succ) + " {\n"  // HACK: Return type is interface, so no need for *return (unlike other state chans)
 				+ "s.state.Use()\n"
 				+ buildBody(api, curr, a, succ) + "\n"
@@ -29,7 +29,7 @@ public class GoSTBranchActionBuilder extends STBranchActionBuilder
 	}
 
 	@Override
-	public String buildArgs(EAction a)
+	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
 		return "";
 	}

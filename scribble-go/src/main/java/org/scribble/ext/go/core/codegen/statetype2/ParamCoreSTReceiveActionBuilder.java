@@ -28,16 +28,16 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	}
 
 	@Override
-	public String buildArgs(EAction a)
+	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
-							+ i + " *[]" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+							+ i + " *[]" + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
 							).collect(Collectors.joining(", "));
 	}
 
 	@Override
-	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
+	public String buildBody(STStateChanApiBuilder apigen, EState curr, EAction a, EState succ)
 	{
 		String sEpRecv = 
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
@@ -106,7 +106,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
 				}
 				res +=
-				  (((GoJob) api.job).noCopy 
+				  (((GoJob) apigen.job).noCopy 
 				?
 					  "data := make([]" + a.payload.elems.get(0) + ", len(b))\n"
 					+ "for i := 0; i < len(b); i++ {\n"
@@ -116,7 +116,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				:
 					  //"data := make([]"
 					  "data := make(map[int]"
-								 + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0))//a.payload.elems.get(0)
+								 + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0))//a.payload.elems.get(0)
 					  		+ ", " + foo.apply(g.end) + ")\n"
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 							+ "var lab string\n"
@@ -127,7 +127,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 									+ "&lab" + "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
-							+ "var tmp " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0)) + "\n"
+							+ "var tmp " + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0)) + "\n"
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
@@ -140,11 +140,11 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 							+ "data[i-1] = tmp\n"
 							+ "}\n"
 					//+ "*arg0 = data\n");  // FIXME: arg0
-					+ "*arg0 = " + hackGetValues(ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0))) + "(data)\n");  // FIXME: arg0
+					+ "*arg0 = " + hackGetValues(((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0))) + "(data)\n");  // FIXME: arg0
 			}
 				
 		return res
-				+ buildReturn(api, curr, succ);
+				+ buildReturn(apigen, curr, succ);
 	}
 	
 	protected static String hackGetValues(String t)
@@ -163,7 +163,8 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		}
 		else
 		{
-			throw new RuntimeException("[TODO] " + t);
+			//throw new RuntimeException("[TODO] " + t);
+			return t;
 		}
 	}
 }

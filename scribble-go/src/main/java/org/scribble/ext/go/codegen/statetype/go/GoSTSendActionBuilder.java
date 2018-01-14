@@ -18,7 +18,7 @@ public class GoSTSendActionBuilder extends STSendActionBuilder
 	}
 
 	@Override
-	public String buildArgs(EAction a)
+	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> "arg" + i + " " + a.payload.elems.get(i)).collect(Collectors.joining(", "));

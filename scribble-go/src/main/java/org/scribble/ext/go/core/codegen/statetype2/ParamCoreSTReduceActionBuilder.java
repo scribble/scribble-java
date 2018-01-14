@@ -29,19 +29,20 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 	}
 
 	@Override
-	public String buildArgs(EAction a)
+	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
-							+ i + " *" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+							+ i + " *" + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
 							+ ", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i
 									//+ " []" + a.payload.elems.get(i) + ") " + a.payload.elems.get(i)
-									+ " []" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i)) + ") " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(i))
+									+ " []" + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) + ") "
+											+ ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i))
 							).collect(Collectors.joining(", "));
 	}
 
 	@Override
-	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
+	public String buildBody(STStateChanApiBuilder apigen, EState curr, EAction a, EState succ)
 	{
 		String sEpRecv = 
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
@@ -110,7 +111,7 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 					throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
 				}
 				res +=
-				  (((GoJob) api.job).noCopy 
+				  (((GoJob) apigen.job).noCopy 
 				?
 					  "data := make([]" + a.payload.elems.get(0) + ", len(b))\n"
 					+ "for i := 0; i < len(b); i++ {\n"
@@ -120,7 +121,7 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 				:
 					  /*"data := make([]" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0)) //a.payload.elems.get(0)
 								+ ", " + foo.apply(g.end) + ")\n"*/
-							"data := make(map[int]" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0)) + ")\n"
+							"data := make(map[int]" + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0)) + ")\n"
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 							+ "var lab string\n"
 							+ "if err := " + sEpRecv
@@ -130,7 +131,7 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 									+ "&lab" + "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
-							+ "var tmp " + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0)) + "\n"
+							+ "var tmp " + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0)) + "\n"
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
@@ -143,10 +144,10 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 									+ "data[i] = tmp\n"
 							+ "}\n"
 					+ "*arg0 = reduceFn0("
-							+ ParamCoreSTReceiveActionBuilder.hackGetValues(ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0))) + "(data))\n");  // FIXME: arg0
+							+ ParamCoreSTReceiveActionBuilder.hackGetValues(((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0))) + "(data))\n");  // FIXME: arg0
 			}
 				
 		return res
-				+ buildReturn(api, curr, succ);
+				+ buildReturn(apigen, curr, succ);
 	}
 }

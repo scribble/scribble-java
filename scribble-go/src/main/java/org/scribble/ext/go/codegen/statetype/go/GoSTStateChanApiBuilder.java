@@ -96,7 +96,7 @@ public class GoSTStateChanApiBuilder extends STStateChanApiBuilder
 		EState succ = curr.getSuccessor(a);
 		return
 				  "func (s *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-				+ ab.buildArgs(a)
+				+ ab.buildArgs(this, a)
 				+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
 				+ "s.state.Use()\n"
 				+ ab.buildBody(this, curr, a, succ) + "\n"

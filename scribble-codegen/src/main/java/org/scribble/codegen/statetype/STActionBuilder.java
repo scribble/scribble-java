@@ -19,7 +19,7 @@ import org.scribble.model.endpoint.actions.EAction;
 public abstract class STActionBuilder
 {
 	public abstract String getActionName(STStateChanApiBuilder api, EAction a);
-	public abstract String buildArgs(EAction a);
+	public abstract String buildArgs(STStateChanApiBuilder apigen, EAction a);
 	public abstract String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ);
 
 	public String getReturnType(STStateChanApiBuilder api, EState curr, EState succ)

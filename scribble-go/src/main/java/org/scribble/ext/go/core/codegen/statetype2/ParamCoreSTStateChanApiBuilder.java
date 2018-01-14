@@ -5,7 +5,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.scribble.ast.DataTypeDecl;
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreECrossReceive;
@@ -21,9 +23,9 @@ import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.PayloadElemType;
-import org.scribble.type.name.Role;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
 public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
@@ -36,6 +38,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	private int counter = 1;
 	
+	private final Set<DataTypeDecl> datats;
+
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
 	// actual.getName().equals(this.role)
 	public ParamCoreSTStateChanApiBuilder(ParamCoreSTEndpointApiGenerator apigen, ParamActualRole actual, EGraph graph)
@@ -52,6 +56,9 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		this.actual = actual;
 		
 		this.vb = ((ParamCoreSTReceiveStateBuilder) this.rb).vb;
+		
+		this.datats = this.apigen.job.getContext().getMainModule().getNonProtocolDecls().stream()
+				.filter(d -> (d instanceof DataTypeDecl)).map(d -> ((DataTypeDecl) d)).collect(Collectors.toSet());
 	}
 	
 	protected ParamActualRole getSelf()
@@ -115,14 +122,42 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return this.apigen.self.toString();
 	}
 	
+	protected String getExtName(DataType t)
+	{
+		return datats.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extName;  // FIXME: make a map
+	}
+
+	private String makeImportExtName(DataType t)
+	{
+		String extName = getExtName(t);
+		switch (extName)
+		{
+			case "int":	 // FIXME: factor out with batesHack
+			case "[]int":	
+			case "[][]int":	
+			case "string":	
+			case "[]string":	
+			case "[][]string":	
+			case "byte":
+			case "[]byte":
+			case "[][]byte":
+			{
+				return "";
+			}
+			default:
+				return "import " + extName + "\n";
+		}
+	}
+	
 	protected String getStateChanPremable(EState s)
 	{
-		//throw new RuntimeException("[param-core] TODO: ");
-		Role r = this.actual.getName();
+		//Role r = this.actual.getName();
+
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		String tname = this.getStateChanName(s);
 		//String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
 		String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, this.actual); 
+		
 		String res =
 				  this.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
@@ -133,8 +168,14 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE)
 							.map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
 				+ "\n"*/
-				+ ((s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
+				+ ((s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)  // FIXME: refactor into state builders
 						? "import \"github.com/rhu1/scribble-go-runtime/test/util\"\n" : "")
+				
+				+ ((s.getStateKind() == EStateKind.OUTPUT)
+						? s.getActions().stream().flatMap(a -> a.payload.elems.stream()).collect(Collectors.toSet()).stream()
+								.map(p -> makeImportExtName((DataType) p))
+										.collect(Collectors.joining(""))
+						: "")
 
 				+ "type " + tname + " struct{\n"
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
@@ -164,7 +205,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			return
 						"func (" + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-								+ ab.buildArgs(a)
+								+ ab.buildArgs(this, a)
 								+ ") <-chan *" + ab.getReturnType(this, curr, succ) + " {\n"
 					+ ab.buildBody(this, curr, a, succ) + "\n"
 					+ "}";
@@ -175,7 +216,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			return
 						"func (" + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-								+ ab.buildArgs(a)
+								+ ab.buildArgs(this, a)
 								+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
 					+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 							+ "." + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
@@ -279,10 +320,32 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return api;
 	}
 	
-	protected static String batesHack(PayloadElemType<?> t)
+	protected String batesHack(PayloadElemType<?> t)
 	{
-		String tmp = t.toString();
-		return (tmp.equals("bates")) ? "[]byte" : tmp;
+		/*String tmp = t.toString();
+		return (tmp.equals("bates")) ? "[]byte" : tmp;*/
+		DataType dt = (DataType) t;
+		String extName = getExtName(dt);
+		
+		switch (extName)
+		{
+			case "int":
+			case "[]int":  // FIXME: generalise arbitrary dimension array
+			case "[][]int":
+			case "string":
+			case "[]string":
+			case "[][]string":
+			case "byte":
+			case "[]byte":
+			case "[][]byte":
+			{
+				return extName;
+			}
+			default:
+			{
+				return extName;  // FIXME
+			}
+		}
 	}
 	
 	// FIXME: make ParamCoreEState
