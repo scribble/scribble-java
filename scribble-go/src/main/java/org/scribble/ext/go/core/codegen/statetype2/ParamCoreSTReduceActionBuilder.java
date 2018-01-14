@@ -110,6 +110,9 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 				{
 					throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
 				}
+
+				String extName = ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0));
+
 				res +=
 				  (((GoJob) apigen.job).noCopy 
 				?
@@ -121,7 +124,7 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 				:
 					  /*"data := make([]" + ParamCoreSTStateChanApiBuilder.batesHack(a.payload.elems.get(0)) //a.payload.elems.get(0)
 								+ ", " + foo.apply(g.end) + ")\n"*/
-							"data := make(map[int]" + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0)) + ")\n"
+							"data := make(map[int]" + extName + ")\n"
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 							+ "var lab string\n"
 							+ "if err := " + sEpRecv
@@ -131,7 +134,7 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 									+ "&lab" + "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
-							+ "var tmp " + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0)) + "\n"
+							+ "var tmp " + extName + "\n"
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
@@ -143,8 +146,23 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 									+ "}\n"
 									+ "data[i] = tmp\n"
 							+ "}\n"
-					+ "*arg0 = reduceFn0("
-							+ ParamCoreSTReceiveActionBuilder.hackGetValues(((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0))) + "(data))\n");  // FIXME: arg0
+					//+ "*arg0 = reduceFn0("
+					//		+ ParamCoreSTReceiveActionBuilder.hackGetValues(((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0))) + "(data))\n");  // FIXME: arg0
+
+						+ "f := func(m map[int] " + extName + ") []" + extName + " {\n"
+
+						+ "xs := make([]" + extName + ", len(m))\n"
+						+ "keys := make([]int, 0)\n"
+						+ "for k, _ := range m {\n"
+						+ "keys = append(keys, k)\n"
+						+ "}\n"
+						+ "sort.Ints(keys)\n"  // Needed?
+						+ "for i, k := range keys {\n"
+						+ "xs[i] = m[k]\n"
+						+ "}\n"
+						+ "return xs\n"
+						+ "}\n"
+						+ "*arg0 = reduceFn0(f(data))\n");
 			}
 				
 		return res

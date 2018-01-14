@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.codegen.statetype2;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.scribble.codegen.statetype.STReceiveActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
@@ -105,6 +106,9 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				{
 					throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
 				}
+
+				String extName = ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0));
+
 				res +=
 				  (((GoJob) apigen.job).noCopy 
 				?
@@ -116,7 +120,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				:
 					  //"data := make([]"
 					  "data := make(map[int]"
-								 + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0))//a.payload.elems.get(0)
+								 + extName//a.payload.elems.get(0)
 					  		+ ", " + foo.apply(g.end) + ")\n"
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 							+ "var lab string\n"
@@ -127,7 +131,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 									+ "&lab" + "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
-							+ "var tmp " + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0)) + "\n"
+							+ "var tmp " + extName + "\n"
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
@@ -140,7 +144,25 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 							+ "data[i-1] = tmp\n"
 							+ "}\n"
 					//+ "*arg0 = data\n");  // FIXME: arg0
-					+ "*arg0 = " + hackGetValues(((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0))) + "(data)\n");  // FIXME: arg0
+					
+					//+ "*arg0 = " + hackGetValues(extName) + "(data)\n";  // FIXME: arg0
+							
+					//+ ((!Stream.of("int", "string", "[]byte").collect(Collectors.toSet()).contains(extName)
+					//		? 
+						+ "f := func(m map[int] " + extName + ") []" + extName + " {\n"
+						+ "xs := make([]" + extName + ", len(m))\n"
+						+ "keys := make([]int, 0)\n"
+						+ "for k, _ := range m {\n"
+						+ "keys = append(keys, k)\n"
+						+ "}\n"
+						+ "sort.Ints(keys)\n"
+						+ "for i, k := range keys {\n"
+						+ "xs[i] = m[k]\n"
+						+ "}\n"
+						+ "return xs\n"
+						+ "}\n"
+						+ "*arg0 = f(data)\n");
+					//	: "")
 			}
 				
 		return res
@@ -163,8 +185,8 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		}
 		else
 		{
-			//throw new RuntimeException("[TODO] " + t);
-			return t;
+			throw new RuntimeException("[TODO] " + t);
+			//return t;
 		}
 	}
 }

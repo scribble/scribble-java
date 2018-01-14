@@ -169,7 +169,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 							.map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
 				+ "\n"*/
 				+ ((s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)  // FIXME: refactor into state builders
-						? "import \"github.com/rhu1/scribble-go-runtime/test/util\"\n" : "")
+						//? "import \"github.com/rhu1/scribble-go-runtime/test/util\"\n" : "")
+						? "import \"sort\"\n" : "")
 				
 				+ ((s.getStateKind() == EStateKind.OUTPUT)
 						? s.getActions().stream().flatMap(a -> a.payload.elems.stream()).collect(Collectors.toSet()).stream()
