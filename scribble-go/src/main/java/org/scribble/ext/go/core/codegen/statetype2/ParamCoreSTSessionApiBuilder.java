@@ -149,12 +149,12 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								+ "\n"*/
 								+ "func (ini *" + epTypeName + ") Accept(rolename session.Role, id int, acceptor transport.Transport) error {\n"
 								+ "ini.ept.Conn[rolename.Name()][id] = acceptor.Accept()\n"
-								+ "return nil\n"
+								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n"
 								+ "\n"
 								+ "func (ini *" + epTypeName + ") Request(rolename session.Role, id int, requestor transport.Transport) error {\n"
 								+ "ini.ept.Conn[rolename.Name()][id] = requestor.Connect()\n"
-								+ "return nil\n"
+								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n"
 								+ "\n"
 								
