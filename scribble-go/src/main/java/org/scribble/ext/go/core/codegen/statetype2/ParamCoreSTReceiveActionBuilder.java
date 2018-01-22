@@ -3,7 +3,6 @@ package org.scribble.ext.go.core.codegen.statetype2;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.scribble.codegen.statetype.STReceiveActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
@@ -123,14 +122,17 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 								 + extName//a.payload.elems.get(0)
 					  		+ ", " + foo.apply(g.end) + ")\n"
 					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
-							+ "var lab string\n"
+
+							+ (a.mid.toString().equals("") ? "" :  // HACK
+								"var lab string\n"
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
 									+ "&lab" + "); err != nil {\n"
 									+ "log.Fatal(err)\n"
-									+ "}\n"
+									+ "}\n")
+
 							+ "var tmp " + extName + "\n"
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"

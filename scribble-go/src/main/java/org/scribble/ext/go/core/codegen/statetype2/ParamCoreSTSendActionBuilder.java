@@ -1,5 +1,6 @@
 package org.scribble.ext.go.core.codegen.statetype2;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -38,6 +39,13 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
+		List<EAction> as = curr.getActions();
+		if (as.size() > 1 && as.stream().anyMatch(b -> b.mid.toString().equals("")))  // HACK
+		{
+			throw new //ParamCoreException
+					RuntimeException("[param-core] Empty labels not allowed in non-unary choices: " + curr.getActions());
+		}
+		
 		String sEpWrite = 
 				//s.ep.Write
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
@@ -133,14 +141,17 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 			//st1.Use()
 				"j := 0\n"
 				+ "for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
+
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "if err := " + sEpWrite
+				+ (a.mid.toString().equals("") ? "" :  // HACK
+					"if err := " + sEpWrite
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
 						+ "\"" + a.mid + "\"" + "); err != nil {\n"
 						+ "log.Fatal(err)\n"
-						+ "}\n"
+						+ "}\n")
+
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "if err := " + sEpWrite
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
