@@ -83,6 +83,6 @@ public class AntlrModule
 		List<AntlrNodeType> tmp = Arrays.asList(types);
 		List<CommonTree> children = AntlrToScribParserUtil.toCommonTreeList(ct.getChildren());
 		return children.subList(1, children.size()).stream()
-				.filter((c) -> tmp.contains(AntlrToScribParserUtil.getAntlrNodeType(c))).collect(Collectors.toList());
+				.filter(c -> tmp.contains(AntlrToScribParserUtil.getAntlrNodeType(c))).collect(Collectors.toList());
 	}
 }

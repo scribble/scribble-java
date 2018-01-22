@@ -153,6 +153,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 						+ "}\n")
 
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+				+ (() ?  ... FIXME: delegation: take pointer?  send underlying ept? -- don't do (multi)"send"?
 				+ "if err := " + sEpWrite
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
@@ -162,7 +163,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 						+ "log.Fatal(err)\n"
 						+ "}\n"
 						+ "j = j+1\n"
-				+ "}\n";
+				+ "}\n");
 
 			/*for i, v := range pl {
 				st1.ept.Conn[Worker][i].Send(a.mid)

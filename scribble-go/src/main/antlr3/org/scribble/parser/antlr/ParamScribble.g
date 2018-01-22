@@ -65,6 +65,9 @@ tokens
 	DOT_KW = 'dot';
 	CHOICES_KW = 'choices';
 	
+	
+	PARAM_DELEG_KW = 'deleg';
+	
 
 	/*
 	 * Parser output "node types" (corresponding to the various syntactic
@@ -170,13 +173,15 @@ tokens
 	LOCALRECEIVE = 'local-receive';*/
 
 
-	PARAM_BININDEXEXPR = 'PARAM_BININDEXEXPR';  // FIXME: rename bin part
-	PARAM_ROLEDECL = 'PARAM_ROLEDECL';
+	PARAM_BININDEXEXPR               = 'PARAM_BININDEXEXPR';  // FIXME: rename bin part
+	PARAM_ROLEDECL                   = 'PARAM_ROLEDECL';
 	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
-	PARAM_GLOBALDOTMESSAGETRANSFER = 'PARAM_GLOBALDOTMESSAGETRANSFER';
-	PARAM_GLOBALCHOICE = 'PARAM_GLOBALCHOICE';
-	PARAM_GLOBALMULTICHOICES = 'PARAM_GLOBALMULTICHOICES';
+	PARAM_GLOBALDOTMESSAGETRANSFER   = 'PARAM_GLOBALDOTMESSAGETRANSFER';
+	PARAM_GLOBALCHOICE               = 'PARAM_GLOBALCHOICE';
+	PARAM_GLOBALMULTICHOICES         = 'PARAM_GLOBALMULTICHOICES';
 	PARAM_GLOBALMULTICHOICESTRANSFER = 'PARAM_GLOBALMULTICHOICESTRANSFER';
+	//PARAM_DELEGATION                 = 'PARAM_DELEGATION';
+	PARAM_DELEGDECL                  = 'PARAM_DELEGDECL';
 }
 
 
@@ -327,7 +332,7 @@ IDENTIFIER:
 fragment SYMBOL:
 	'{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '\#'
 |
-	'&' | '?' | '!'	| UNDERSCORE
+	'&' | '?' | '!'	| UNDERSCORE | '-'
 ;
 
 // Comes after SYMBOL due to an ANTLR syntax highlighting issue involving
@@ -407,9 +412,11 @@ messagesignaturename: membername;
  * Section 3.2.2 Top-level Module Structure
  */
 module:
-	moduledecl importdecl* datatypedecl* protocoldecl* EOF
+	//moduledecl importdecl* datatypedecl* protocoldecl* EOF
+	moduledecl importdecl* datatypedecl* delegdecl* protocoldecl* EOF
 ->
-	^(MODULE moduledecl importdecl* datatypedecl* protocoldecl*)
+	//^(MODULE moduledecl importdecl* datatypedecl* protocoldecl*)
+	^(MODULE moduledecl importdecl* datatypedecl* delegdecl* protocoldecl*)
 ;
 
 
@@ -469,6 +476,15 @@ payloadtypedecl:
 	^(PAYLOADTYPEDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplepayloadtypename)
 ;
 
+
+// param-core
+delegdecl:
+	PARAM_DELEG_KW '<' IDENTIFIER '>' EXTIDENTIFIER FROM_KW EXTIDENTIFIER AS_KW simplepayloadtypename ';'
+->
+	^(PARAM_DELEGDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplepayloadtypename)
+;
+
+
 messagesignaturedecl:
 	SIG_KW '<' IDENTIFIER '>' EXTIDENTIFIER FROM_KW EXTIDENTIFIER AS_KW simplemessagesignaturename ';'
 ->
@@ -517,6 +533,11 @@ payloadelement:
 	protocolname '@' rolename
 ->
 	^(DELEGATION rolename protocolname)
+
+/*|
+	protocolname '@' rolename '[' paramindexexpr ']'
+->
+	^(PARAM_DELEGATION rolename protocolname) paramindexexpr)*/
 ;
 
 

@@ -124,7 +124,12 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	protected String getExtName(DataType t)
 	{
-		return datats.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extName;  // FIXME: make a map
+		return this.datats.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extName;  // FIXME: make a map
+	}
+
+	protected String getExtSource(DataType t)
+	{
+		return this.datats.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extSource;  // FIXME: make a map
 	}
 
 	private String makeImportExtName(DataType t)
@@ -145,7 +150,9 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				return "";
 			}
 			default:
-				return "import " + extName + "\n";
+			{
+				return "import \"" + getExtSource(t) + "\"\n";
+			}
 		}
 	}
 	
@@ -172,12 +179,13 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						//? "import \"github.com/rhu1/scribble-go-runtime/test/util\"\n" : "")
 						? "import \"sort\"\n" : "")
 				
-				+ ((s.getStateKind() == EStateKind.OUTPUT)
+				+ ((s.getStateKind() == EStateKind.OUTPUT || s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 						? s.getActions().stream().flatMap(a -> a.payload.elems.stream()).collect(Collectors.toSet()).stream()
 								.map(p -> makeImportExtName((DataType) p))
 										.collect(Collectors.joining(""))
 						: "")
 
+				+ "\n"
 				+ "type " + tname + " struct{\n"
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epType + "\n" 

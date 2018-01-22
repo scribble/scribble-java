@@ -327,7 +327,7 @@ public class ParamCoreGProtocolDeclTranslator
 		{
 			/*src = af.ParamRole(srcName, 1, 1); 
 			dest = af.ParamRole(destName, 1, 1);*/
-			throw new ParamCoreSyntaxException(gmt.getSource(), "[param-core] Not supported: " + gmt.getClass());
+			throw new ParamCoreSyntaxException(gmt.getSource(), "[param-core] Not supported: " + gmt.getClass() + "\n    " + gmt);
 		}
 		return parseGSimpleInteractionNode(is, rvs, src, kind, a, dest);
 	}

@@ -6,12 +6,14 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.global.GProtocolBlock;
+import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.global.ParamGChoice;
 import org.scribble.ext.go.ast.global.ParamGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.ParamGDotMessageTransfer;
-import org.scribble.ext.go.ast.global.ParamGMultiChoicesTransfer;
 import org.scribble.ext.go.ast.global.ParamGMultiChoices;
+import org.scribble.ext.go.ast.global.ParamGMultiChoicesTransfer;
+import org.scribble.ext.go.core.ast.ParamCoreDelegDecl;
 import org.scribble.ext.go.type.index.ParamIndexExpr;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 
@@ -32,4 +34,9 @@ public interface ParamAstFactory extends AstFactory
 			ParamIndexExpr start, ParamIndexExpr end, List<GProtocolBlock> blocks);
 	ParamGMultiChoicesTransfer ParamGMultiChoicesTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
 			ParamIndexVar var, ParamIndexExpr destRangeStart, ParamIndexExpr destRangeEnd);
+
+
+	// param-core
+
+	ParamCoreDelegDecl ParamCoreDelegDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name);
 }

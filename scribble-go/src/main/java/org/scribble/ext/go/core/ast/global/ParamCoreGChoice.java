@@ -28,6 +28,8 @@ import org.scribble.ext.go.type.index.ParamIndexFactory;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.type.kind.Global;
+import org.scribble.type.name.GDelegationType;
+import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
 public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> implements ParamCoreGType
@@ -182,6 +184,19 @@ public class ParamCoreGChoice extends ParamCoreChoice<ParamCoreGType, Global> im
 			projs.put(a, e.getValue().project(af, subj));
 					// N.B. local actions directly preserved from globals -- so core-receive also has assertion (cf. ParamGActionTransfer.project, currently no ParamLReceive)
 					// FIXME: receive assertion projection -- should not be the same as send?
+			
+			for (PayloadElemType<?> pet : a.pay.elems)
+			{
+				if (pet instanceof GDelegationType)
+				{
+					GDelegationType gdt = (GDelegationType) pet;  // Payload types come from ParamCoreGProtocolDeclTranslator#parsePayload (toMessage)
+					System.out.println("aaa: " + this + ", " + gdt.getGlobalProtocol() + ", " + gdt.getRole());
+					
+					// cf. GDelegationElem#project
+					
+					//new LProtocolName();  // FIXME: need actual role (not just role name)
+				}
+			}
 		}
 		
 		// "Simple" cases

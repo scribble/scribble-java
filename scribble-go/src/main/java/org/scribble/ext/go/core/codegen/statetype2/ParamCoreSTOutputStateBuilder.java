@@ -1,7 +1,5 @@
 package org.scribble.ext.go.core.codegen.statetype2;
 
-import java.util.List;
-
 import org.scribble.codegen.statetype.STOutputStateBuilder;
 import org.scribble.codegen.statetype.STSendActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
