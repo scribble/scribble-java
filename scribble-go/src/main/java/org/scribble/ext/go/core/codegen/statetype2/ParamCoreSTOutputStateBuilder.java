@@ -8,6 +8,7 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EDisconnect;
 import org.scribble.model.endpoint.actions.ERequest;
 import org.scribble.model.endpoint.actions.ESend;
+import org.scribble.type.name.DataType;
 
 public class ParamCoreSTOutputStateBuilder extends STOutputStateBuilder
 {
@@ -37,8 +38,14 @@ public class ParamCoreSTOutputStateBuilder extends STOutputStateBuilder
 			if (a instanceof ESend)  // FIXME: factor out action kind
 			{
 				out += this.sb.build(api, s, a);
-				out += "\n\n";
-				out += this.nb.build(api, s, a);
+
+				// FIXME: delegation 
+				if (!a.payload.elems.stream()
+						.anyMatch(pet -> ((ParamCoreSTStateChanApiBuilder) api).isDelegType((DataType) pet)))
+				{
+					out += "\n\n";
+					out += this.nb.build(api, s, a);
+				}
 			}
 			else if (a instanceof ERequest)
 			{

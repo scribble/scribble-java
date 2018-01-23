@@ -15,6 +15,7 @@ import org.scribble.ext.go.type.index.ParamIndexInt;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.name.DataType;
 
 public class ParamCoreSTSplitActionBuilder extends STSendActionBuilder
 {
@@ -30,18 +31,37 @@ public class ParamCoreSTSplitActionBuilder extends STSendActionBuilder
 	@Override
 	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
+		DataType[] pet = new DataType[1];
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG
-							+ i + " " + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+							+ i + " "
+							
+											// HACK
+									+ ((((ParamCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0] = ((DataType) a.payload.elems.get(i)))) ? "*" : "")
+									+ ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(pet[0]) //a.payload.elems.get(i)
+
 							+ ", splitFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " "
-									+ ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
-									+ ", i" + i + " int) " + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+
+											// HACK
+									+ ((((ParamCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0])) ? "*" : "")
+									+ ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(pet[0])
+
+									+ ", i" + i + " int) "
+									
+									+ ((((ParamCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0])) ? "*" : "")
+									+ ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(pet[0])
+
 							).collect(Collectors.joining(", "));
 	}
 
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
+		if(a.payload.elems.size() > 1)
+		{
+			throw new RuntimeException("[param-core] TODO: " + a);
+		}
+
 		List<EAction> as = curr.getActions();
 		if (as.size() > 1 && as.stream().anyMatch(b -> b.mid.toString().equals("")))  // HACK
 		{
@@ -153,12 +173,15 @@ public class ParamCoreSTSplitActionBuilder extends STSendActionBuilder
 						+ "\"" + a.mid + "\"" + "); err != nil {\n"
 						+ "log.Fatal(err)\n"
 						+ "}\n")
+						
+				+ ((((ParamCoreSTStateChanApiBuilder) api).isDelegType((DataType) a.payload.elems.get(0))) ? "arg0.Res.Use()\n" : "")
 
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "if err := " + sEpWrite
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
+						
 						+ "splitFn0(arg0, i)" + "); err != nil {\n"
 						+ "log.Fatal(err)\n"
 						+ "}\n"

@@ -15,6 +15,7 @@ import org.scribble.ext.go.type.index.ParamIndexInt;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.name.DataType;
 
 public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 {
@@ -37,8 +38,13 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 	}
 
 	@Override
-	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
+	public String buildBody(STStateChanApiBuilder apigen, EState curr, EAction a, EState succ)
 	{
+		if(a.payload.elems.size() > 1)
+		{
+			throw new RuntimeException("[param-core] TODO: " + a);
+		}
+
 		List<EAction> as = curr.getActions();
 		if (as.size() > 1 && as.stream().anyMatch(b -> b.mid.toString().equals("")))  // HACK
 		{
@@ -137,6 +143,11 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 						+ ")\n";
 			}*/
 
+		// FIXME: single arg  // Currently never true because of ParamCoreSTOutputStateBuilder
+		boolean isDeleg = a.payload.elems.stream().anyMatch(pet -> 
+				//pet.isGDelegationType()  // FIXME: currently deleg specified by ParmaCoreDelegDecl, not GDelegationElem
+				((ParamCoreSTStateChanApiBuilder) apigen).isDelegType((DataType) pet));
+		
 		String res =
 			//st1.Use()
 				"j := 0\n"
@@ -153,17 +164,20 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 						+ "}\n")
 
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ (() ?  ... FIXME: delegation: take pointer?  send underlying ept? -- don't do (multi)"send"?
-				+ "if err := " + sEpWrite
-						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
-						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
-						+ "(" //+ sEpProto + "." + r.getName() + ", "
-						+ "arg0[j]" //+ "splitFn0(arg0, i)"
-								+ "); err != nil {\n"
-						+ "log.Fatal(err)\n"
-						+ "}\n"
-						+ "j = j+1\n"
-				+ "}\n");
+				+ ((isDeleg)  //... FIXME: delegation: take pointer?  send underlying ept? -- don't do (multi)"send"?
+					?
+						"log.Fatal(\"TODO\")\n"
+					:
+						"if err := " + sEpWrite
+							+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+							+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
+							+ "(" //+ sEpProto + "." + r.getName() + ", "
+							+ "arg0[j]" //+ "splitFn0(arg0, i)"  // FIXME: hardcoded arg0
+									+ "); err != nil {\n"
+							+ "log.Fatal(err)\n"
+							+ "}\n"
+							+ "j = j+1\n"
+					+ "}\n");
 
 			/*for i, v := range pl {
 				st1.ept.Conn[Worker][i].Send(a.mid)
@@ -172,6 +186,6 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				
 		return
 					res
-				+ buildReturn(api, curr, succ);
+				+ buildReturn(apigen, curr, succ);
 	}
 }

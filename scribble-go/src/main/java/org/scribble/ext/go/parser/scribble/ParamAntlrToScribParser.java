@@ -7,13 +7,13 @@ import org.scribble.ext.go.ast.ParamAstFactory;
 import org.scribble.ext.go.parser.scribble.ast.ParamAntlrGChoice;
 import org.scribble.ext.go.parser.scribble.ast.ParamAntlrGMultiChoices;
 import org.scribble.ext.go.parser.scribble.ast.ParamAntlrRoleDecl;
+import org.scribble.ext.go.parser.scribble.ast.ParamCoreAntlrDelegDecl;
 import org.scribble.ext.go.parser.scribble.ast.ParamCoreAntlrModule;
 import org.scribble.ext.go.parser.scribble.ast.global.ParamAntlrGCrossMessageTransfer;
 import org.scribble.ext.go.parser.scribble.ast.global.ParamAntlrGDotMessageTransfer;
 import org.scribble.ext.go.parser.scribble.ast.global.ParamAntlrGMultiChoicesTransfer;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ScribbleAntlrConstants;
-import org.scribble.parser.scribble.ast.AntlrDataTypeDecl;
 import org.scribble.util.ScribParserException;
 
 public class ParamAntlrToScribParser extends AntlrToScribParser
@@ -55,8 +55,9 @@ public class ParamAntlrToScribParser extends AntlrToScribParser
 				return ParamAntlrGMultiChoices.parseParamGMultiChoices(this, ct, aaf);
 			case PARAM_GLOBALMULTICHOICESTRANSFER_NODE_TYPE:
 				return ParamAntlrGMultiChoicesTransfer.parseParamGMultiChoicesTransfer(this, ct, aaf);
+
 			case PARAM_DELEGDECL_NODE_TYPE:
-				return AntlrDataTypeDecl.parseDataTypeDecl(this, ct, aaf);
+				return ParamCoreAntlrDelegDecl.parseDelegDecl(this, ct, aaf);
 
 			default: return super.parse(ct, af);
 		}

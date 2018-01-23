@@ -32,8 +32,8 @@ public class ParamCoreSTApiGenConstants
 	public static final String GO_LINEARRESOURCE_TYPE = "session.LinearResource";  // net.LinearResource
 	public static final String GO_LINEARRESOURCE_USE = "Use";  // net.LinearResource
 
-	public static final String GO_SCHAN_ENDPOINT       = "ept";  // ep;
-	public static final String GO_SCHAN_LINEARRESOURCE = "res";  // state
+	public static final String GO_SCHAN_ENDPOINT       = "Ept";  // ep;
+	public static final String GO_SCHAN_LINEARRESOURCE = "Res";  // state
 
 	public static final String GO_SCHAN_END_TYPE = "End";
 	

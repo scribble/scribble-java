@@ -7,6 +7,7 @@ import org.scribble.codegen.statetype.STReceiveStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.name.DataType;
 
 public class ParamCoreSTReceiveStateBuilder extends STReceiveStateBuilder
 {
@@ -35,10 +36,18 @@ public class ParamCoreSTReceiveStateBuilder extends STReceiveStateBuilder
 		{
 			throw new RuntimeException("Shouldn't get in here: " + as);
 		}
+		EAction a = as.get(0);
+		
 		out += "\n\n";
-		out += this.rb.build(api, s, as.get(0));
-		out += "\n\n";
-		out += this.vb.build(api, s, as.get(0));
+		out += this.rb.build(api, s, a);
+
+		// FIXME: delegation 
+		if (!a.payload.elems.stream()
+				.anyMatch(pet -> ((ParamCoreSTStateChanApiBuilder) api).isDelegType((DataType) pet)))
+		{
+			out += "\n\n";
+			out += this.vb.build(api, s, a);
+		}
 
 		return out;
 	}

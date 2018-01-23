@@ -39,6 +39,11 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	@Override
 	public String buildBody(STStateChanApiBuilder apigen, EState curr, EAction a, EState succ)
 	{
+		if(a.payload.elems.size() > 1)
+		{
+			throw new RuntimeException("[param-core] TODO: " + a);
+		}
+
 		String sEpRecv = 
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 				+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT

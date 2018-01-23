@@ -15,6 +15,7 @@ import org.scribble.ext.go.type.index.ParamIndexInt;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.name.DataType;
 
 public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 {
@@ -87,6 +88,19 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 				throw new RuntimeException("[param-core] TODO: " + e);
 			}
 		};*/
+
+		if(a.payload.elems.size() > 1)
+		{
+			throw new RuntimeException("[param-core] TODO: " + a);
+		}
+
+		boolean isDeleg = a.payload.elems.stream().anyMatch(pet -> 
+				//pet.isGDelegationType()  // FIXME: currently deleg specified by ParmaCoreDelegDecl, not GDelegationElem
+				((ParamCoreSTStateChanApiBuilder) api).isDelegType((DataType) pet));
+		if (isDeleg)
+		{
+			throw new RuntimeException("[param-core] TODO: " + a);
+		}
 		
 		String res =
 				  /*sEpRecv

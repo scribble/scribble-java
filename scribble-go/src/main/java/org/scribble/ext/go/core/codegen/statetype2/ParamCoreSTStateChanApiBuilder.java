@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.ast.ParamCoreDelegDecl;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreECrossSend;
 import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotReceive;
@@ -121,6 +122,11 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		return this.apigen.self.toString();
 	}
+
+	public boolean isDelegType(DataType t)
+	{
+		return this.datats.stream().filter(i -> i.getDeclName().equals(t)).iterator().next() instanceof ParamCoreDelegDecl;  // FIXME: make a map
+	}
 	
 	protected String getExtName(DataType t)
 	{
@@ -184,6 +190,9 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 								.map(p -> makeImportExtName((DataType) p))
 										.collect(Collectors.joining(""))
 						: "")
+
+				+ ((s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
+						? "\nvar _ = sort.Sort\n" : "")
 
 				+ "\n"
 				+ "type " + tname + " struct{\n"

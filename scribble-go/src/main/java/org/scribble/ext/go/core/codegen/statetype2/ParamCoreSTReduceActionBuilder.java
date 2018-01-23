@@ -15,6 +15,7 @@ import org.scribble.ext.go.type.index.ParamIndexInt;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.name.DataType;
 
 public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 {
@@ -31,19 +32,35 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 	@Override
 	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
+		DataType[] pet = new DataType[1];
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
-							+ i + " *" + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
-							+ ", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i
+							+ i + " *" + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(pet[0] = (DataType) a.payload.elems.get(i)) //a.payload.elems.get(i)
+
+							// HACK
+							+ ((((ParamCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0])) ? "" :
+								", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i
 									//+ " []" + a.payload.elems.get(i) + ") " + a.payload.elems.get(i)
-									+ " []" + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) + ") "
-											+ ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i))
+									+ " []" 
+									
+											+ ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(pet[0])
+
+											+ ") "
+											
+											+ ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(pet[0])
+									)
+
 							).collect(Collectors.joining(", "));
 	}
 
 	@Override
 	public String buildBody(STStateChanApiBuilder apigen, EState curr, EAction a, EState succ)
 	{
+		if(a.payload.elems.size() > 1)
+		{
+			throw new RuntimeException("[param-core] TODO: " + a);
+		}
+
 		String sEpRecv = 
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 				+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
@@ -99,12 +116,61 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 				+ "return nil\n"
 				+ "}\n"*/
 
+			// FIXME: single arg  // Currently never true because of ParamCoreSTOutputStateBuilder
+			boolean isDeleg = a.payload.elems.stream().anyMatch(pet -> 
+					//pet.isGDelegationType()  // FIXME: currently deleg specified by ParmaCoreDelegDecl, not GDelegationElem
+					((ParamCoreSTStateChanApiBuilder) apigen).isDelegType((DataType) pet));
+
 			/*String res =
 					sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "") 
 							+ "(" + sEpProto +  "." + r.getName() + ", " + foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n";	 // Discard op*/
 			String res = "";
 
-			if (!a.payload.elems.isEmpty())
+			if (isDeleg)
+			{
+				/*var ept *session.Endpoint
+				err := conn.Recv(&ept)
+				if err != nil {
+					log.Fatalf("Wrong value received..")
+				}
+				sesss[i] = &Game_a_Init{ept: ept}  // Delegated session initialisation
+
+				st.ept.ConnMu.RUnlock()
+				return sesss, &ClientA_p_End{}*/
+
+				String extName = ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0));
+
+				res = 
+						"for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
+
+							+ (a.mid.toString().equals("") ? "" :  // HACK
+								"var lab string\n"
+							+ "if err := " + sEpRecv
+									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
+									+ "(" //+ sEpProto + "." + r.getName() + ", "
+									+ "&lab" + "); err != nil {\n"
+									+ "log.Fatal(err)\n"
+									+ "}\n")
+
+							+ "var tmp *" + 
+									extName + "\n"
+									//extName.substring(0, extName.indexOf('_', extName.indexOf('_', extName.indexOf('_')+1)+1)) + "\n"  // FIXME HACK
+		
+							+ "if err := " + sEpRecv
+									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
+									+ "(" //+ sEpProto + "." + r.getName() + ", "
+									//+ "&data[i-1]"
+									+ "&tmp"
+											+ "); err != nil {\n"
+									+ "log.Fatal(err)\n"
+									+ "}\n"
+									+ "arg0 = &" + extName + "{" + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": tmp." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " }\n"
+							+ "}\n";
+
+			}
+			else if (!a.payload.elems.isEmpty())
 			{
 				if (a.payload.elems.size() > 1)
 				{
