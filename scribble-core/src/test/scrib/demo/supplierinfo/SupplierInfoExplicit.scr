@@ -1,3 +1,6 @@
+//$ bin/scribblec.sh scribble-core/src/test/scrib/demo/supplierinfo/SupplierInfoExplicit.scr -fsm InfoAuth Client
+
+
 module src.SupplierInfoExplicit;
 
 
@@ -11,117 +14,117 @@ type <xsd> "..." from "...xsd" as usercontext;
 type <xsd> "..." from "...xsd" as filters;
 
 
-explicit global protocol PartnershipSupplier
+explicit global protocol InfoAuth
 (
-	role loginsvc,
-	role requestor,
-	role authorisersvc,
-	role filtersvc,
-	role suppliersvc,
-	role contractsvc
+	role Client,
+	role LoginSvc,
+	role AuthSvc,
+	role FilterSvc,
+	role SupplierSvc,
+	role ContractSvc
 )
 {
-	connect requestor to loginsvc;
-	login(username, password) from requestor to loginsvc;
-	choice at loginsvc
+	connect Client to LoginSvc;
+	login(username, password) from Client to LoginSvc;
+	choice at LoginSvc
 	{
-		//loginsuccess() from loginsvc to requestor;  // Not an error if the following line commented (and fairness assumed)
-		loginfailure() from loginsvc to requestor;
-		/*connect requestor to authorisersvc;
-		getsuppliers(uuid) from requestor to authorisersvc;  // Error: orphans*/
-		disconnect requestor and loginsvc;
+		//loginsuccess() from LoginSvc to Client;  // Not an error if the following line commented (and fairness assumed)
+		loginfailure() from LoginSvc to Client;
+		/*connect Client to AuthSvc;
+		getsuppliers(uuid) from Client to AuthSvc;  // Error: orphans*/
+		disconnect Client and LoginSvc;
 	}
 	or
 	{
-		loginsuccess() from loginsvc to requestor;
-		//disconnect requestor and loginsvc;
-		connect requestor to authorisersvc;
-		connect authorisersvc to filtersvc;
-		connect authorisersvc to suppliersvc;
-		connect authorisersvc to contractsvc;
-		do Main(requestor, authorisersvc, filtersvc, suppliersvc, contractsvc);
+		loginsuccess() from LoginSvc to Client;
+		//disconnect Client and LoginSvc;
+		connect Client to AuthSvc;
+		connect AuthSvc to FilterSvc;
+		connect AuthSvc to SupplierSvc;
+		connect AuthSvc to ContractSvc;
+		do Main(Client, AuthSvc, FilterSvc, SupplierSvc, ContractSvc);
 	}
 }
 
 
 aux global protocol Main
 (
-	role requestor,
-	role authorisersvc,
-	role filtersvc,
-	role suppliersvc,
-	role contractsvc
+	role Client,
+	role AuthSvc,
+	role FilterSvc,
+	role SupplierSvc,
+	role ContractSvc
 )
 {
-	choice at requestor
+	choice at Client
 	{
 		// GET SUPPLIER INFO
-		getsuppliers(uuid) from requestor to authorisersvc;
-		//1() from authorisersvc to contractsvc;
-		do SuppInfo(requestor, authorisersvc, filtersvc, suppliersvc);
+		getsuppliers(uuid) from Client to AuthSvc;
+		//1() from AuthSvc to ContractSvc;
+		do SuppInfo(Client, AuthSvc, FilterSvc, SupplierSvc);
 	}
 	or
 	{
 		// GET CONTRACT INFO
-		getcontracts() from requestor to authorisersvc;
-		//2() from authorisersvc to suppliersvc;
-		do ContractInfo(requestor, authorisersvc, filtersvc, contractsvc);
-		//do ContractInfo(requestor, authorisersvc, filtersvc, suppliersvc);  // Error
+		getcontracts() from Client to AuthSvc;
+		//2() from AuthSvc to SupplierSvc;
+		do ContractInfo(Client, AuthSvc, FilterSvc, ContractSvc);
+		//do ContractInfo(Client, AuthSvc, FilterSvc, SupplierSvc);  // Error
 	}
-	do Main(requestor, authorisersvc, filtersvc, suppliersvc, contractsvc);
+	do Main(Client, AuthSvc, FilterSvc, SupplierSvc, ContractSvc);
 }
 
 
 aux global protocol SuppInfo
 (
-	role requestor,
-	role authorisersvc,
-	role filtersvc,
-	role suppliersvc
+	role Client,
+	role AuthSvc,
+	role FilterSvc,
+	role SupplierSvc
 )
 {
-	choice at authorisersvc
+	choice at AuthSvc
 	{
 		// DENIED
-		deny() from authorisersvc to requestor;
+		deny() from AuthSvc to Client;
 	}
 	or
 	{
-		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
-		getsuppliers() from authorisersvc to suppliersvc;
-		suppliers() from suppliersvc to authorisersvc;
+		// PREPARE FILTERED SUPPLIER INFO FOR Client
+		getsuppliers() from AuthSvc to SupplierSvc;
+		suppliers() from SupplierSvc to AuthSvc;
 		do FilterInfo
 				<filterSupplier(usercontext, filters, supplierdetails)>
-				(authorisersvc, filtersvc);
-		suppliers() from authorisersvc to requestor;
+				(AuthSvc, FilterSvc);
+		suppliers() from AuthSvc to Client;
 	}
 }
 
 
 aux global protocol ContractInfo
 (
-	role requestor,
-	role authorisersvc,
-	role filtersvc,
-	role contractsvc
+	role Client,
+	role AuthSvc,
+	role FilterSvc,
+	role ContractSvc
 )
 {
-	choice at authorisersvc
+	choice at AuthSvc
 	{
 		// DENIED
-		deny() from authorisersvc to requestor;
+		deny() from AuthSvc to Client;
 	}
 	or
 	{
-		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
-		getcontracts() from authorisersvc to contractsvc;
-		contracts() from contractsvc to authorisersvc;
+		// PREPARE FILTERED SUPPLIER INFO FOR Client
+		getcontracts() from AuthSvc to ContractSvc;
+		contracts() from ContractSvc to AuthSvc;
 		do FilterInfo
 				<filterContract(usercontext, filters, contractdetails)>
 				//<filterSupplier(usercontext, filters, supplierdetails)>  // OK (merge)
 				//<filterSupplier(usercontext, filters, contractdetails)>  // Error
-				(authorisersvc, filtersvc);
-		contracts() from authorisersvc to requestor;
+				(AuthSvc, FilterSvc);
+		contracts() from AuthSvc to Client;
 	}
 }
 
@@ -132,12 +135,12 @@ aux global protocol FilterInfo
 	sig Query
 >
 (
-	role authorisersvc,
-	role filtersvc
+	role AuthSvc,
+	role FilterSvc
 )
 {
-	//filter(usercontext, filters, details) from authorisersvc to filtersvc;
-	Query from authorisersvc to filtersvc;
-	filtered() from filtersvc to authorisersvc;
+	//filter(usercontext, filters, details) from AuthSvc to FilterSvc;
+	Query from AuthSvc to FilterSvc;
+	filtered() from FilterSvc to AuthSvc;
 }
 
