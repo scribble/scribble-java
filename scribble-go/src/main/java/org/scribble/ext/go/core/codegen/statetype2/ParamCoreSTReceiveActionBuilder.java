@@ -139,6 +139,9 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 									+ "}\n")
 
 							+ "var tmp " + extName + "\n"
+
+							+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK
+
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
