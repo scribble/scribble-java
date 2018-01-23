@@ -205,7 +205,7 @@ public class ParamCoreSTReduceActionBuilder extends STReceiveActionBuilder
 
 							+ "var tmp " + extName + "\n"
 
-							+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK
+							+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK?  for passthru?
 
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
