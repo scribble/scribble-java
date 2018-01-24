@@ -33,7 +33,7 @@ public class AntlrDataTypeDecl
 		String schema = AntlrSimpleName.getName(tmp1);
 		CommonTree tmp2 = getExtNameChild(ct);
 		String extName = AntlrExtIdentifier.getName(tmp2);
-		CommonTree tmp3 = getExtNameChild(ct);
+		CommonTree tmp3 = getSourceChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
 		DataTypeNode alias = AntlrSimpleName.toDataTypeNameNode(getAliasChild(ct), af);  // FIXME: EMTPY_ALIAS?
 		return af.DataTypeDecl(ct, schema, extName, source, alias);
