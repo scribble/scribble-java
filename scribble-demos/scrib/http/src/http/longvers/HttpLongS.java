@@ -29,6 +29,7 @@ import http.longvers.message.client.Accept;
 import http.longvers.message.client.AcceptEncoding;
 import http.longvers.message.client.AcceptLanguage;
 import http.longvers.message.client.Connection;
+import http.longvers.message.client.Cookie;
 import http.longvers.message.client.DoNotTrack;
 import http.longvers.message.client.Host;
 import http.longvers.message.client.RequestLine;
@@ -56,6 +57,7 @@ public class HttpLongS
 		Buf<DoNotTrack> b_dnt = new Buf<>();
 		Buf<Connection> b_conn = new Buf<>();
 		Buf<UpgradeInsecureRequests> b_upgradeir = new Buf<>();
+		Buf<Cookie> b_cookie = new Buf<>();
 		Buf<Body> b_body = new Buf<>();
 		
 		try (ScribServerSocket ss = new SocketChannelServer(8080))
@@ -116,6 +118,11 @@ public class HttpLongS
 							case UPGRADEIR:
 							{
 								s2 = s2cases.receive(Http.UPGRADEIR, b_upgradeir);
+								break;
+							}
+							case COOKIE:
+							{
+								s2 = s2cases.receive(Http.COOKIE, b_cookie);
 								break;
 							}
 							case HOST:

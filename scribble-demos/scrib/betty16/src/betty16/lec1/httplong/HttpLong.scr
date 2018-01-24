@@ -47,6 +47,10 @@ sig <java> "betty16.lec1.httplong.message.client.Connection"
 sig <java> "betty16.lec1.httplong.message.client.UpgradeInsecureRequests"
 		from "betty16/lec1/httplong/message/UpgradeInsecureRequests.java"
 		as UPGRADEIR;  // Upgrade-Insecure-Requests: 1 
+
+sig <java> "betty16.lec1.httplong.message.client.Cookie"
+		from "betty16/lec1/httplong/message/Cookie.java"
+		as COOKIE;  // Cookie: __utma=111872281.1372348290.1498163262.1498163262.1498163262.1; __utmz=111872281.1498163262.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)
 		
 		
 sig <java> "betty16.lec1.httplong.message.server.HttpVersion"
@@ -134,6 +138,9 @@ aux global protocol Request(role C, role S) {
 				continue X;
 			} or {
 				UPGRADEIR from C to S;  // Upgrade-Insecure-Requests: 1 
+				continue X;
+			} or {
+				COOKIE from C to S;  // Cookie: __utma=111872281.1372348290.1498163262.1498163262.1498163262.1; __utmz=111872281.1498163262.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)
 				continue X;
 			} or {
 				BODY from C to S;

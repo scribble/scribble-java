@@ -13,15 +13,14 @@
  */
 package betty16.lec1.httpshort;
 
-import static betty16.lec1.httpshort.HttpShort.Http.Http.C;
-import static betty16.lec1.httpshort.HttpShort.Http.Http.Response;
-import static betty16.lec1.httpshort.HttpShort.Http.Http.S;
+import static betty16.lec1.httpshort.HttpShort.Http.Http.*;
 
 import org.scribble.runtime.net.Buf;
 import org.scribble.runtime.net.session.MPSTEndpoint;
 import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import betty16.lec1.httpshort.HttpShort.Http.Http;
+import betty16.lec1.httpshort.HttpShort.Http.channels.C.EndSocket;
 import betty16.lec1.httpshort.HttpShort.Http.channels.C.Http_C_1;
 import betty16.lec1.httpshort.HttpShort.Http.roles.C;
 import betty16.lec1.httpshort.message.HttpShortMessageFormatter;
@@ -38,33 +37,50 @@ public class HttpShortC {
 			//String host = "localhost"; int port = 8080;
 
 			client.connect(S, SocketChannelEndpoint::new, host, port);
-			new HttpShortC().run(client, host);
+			new HttpShortC().run(new Http_C_1(client));
 		}
 	}
 
-	private void run(MPSTEndpoint<Http, C> client, String host) throws Exception {
+	
+	
+
+
+	
+
+	
+
+	
+
+	
+	
+	private EndSocket run(Http_C_1 c) throws Exception {
 		Buf<Response> buf = new Buf<>();
-		Http_C_1 c = new Http_C_1(client);
 
-
-		c.send(S, new Request("/~rhu/", "1.1", host))
-		 .receive(S, Response, buf);
-		
+		EndSocket end = null;
+				/*c.send(S, new Response("", ""))
+				 .receive(S, Response, buf);*/
 
 		System.out.println("Response:\n" + buf.val);
+		
+		return end;
 	}
 
 
+	
+
+	
+
+	
+
+	
+
+	
 
 
-
-
-
-
-
-
-
-
+	
+	
+	
+	//c.send(S, new Request("/~rhu/", "1.1", "www.doc.ic.ac.uk")).receive(S, Response, buf);
 
 
 
@@ -74,11 +90,21 @@ public class HttpShortC {
 
 	
 	
-	/*private void run(Http_C_1 c1, String host) throws Exception {
+	/*
+	private EndSocket run2(Http_C_1 c1, String host) throws Exception {
 		Buf<Response> buf = new Buf<>();
-		c1.send(S, new Request("/~rhu/", "1.1", host))
-			//.send(S, new Response("1.1", "..body.."))
-			//.send(S, new Request("/~rhu/", "1.1", host))
-			.receive(S, RESPONSE, buf);
-	}*/
+
+		EndSocket end =
+				c.send(S, new Request("/~rhu/", "1.1", host))
+				//.send(S, new Request("/~rhu/", "1.1", host))
+				 .receive(S, Response, buf);
+
+		System.out.println("Response:\n" + buf.val);
+		
+		return end;
+	}
+	//*/
+	//.send(S, new Response("1.1", "..body.."))
+	//.send(S, new Request("/~rhu/", "1.1", host))
+	//.receive(S, RESPONSE, new Buf<>());
 }

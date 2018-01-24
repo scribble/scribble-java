@@ -11,16 +11,17 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package betty16.lec1.httplong.message;
+package http.longvers.message.client;
 
-import org.scribble.type.name.Op;
+import http.longvers.HttpLong.Http.Http;
+import http.longvers.message.HeaderField;
 
-public abstract class HeaderField extends HttpLongMessage
+public class Cookie extends HeaderField
 {
 	private static final long serialVersionUID = 1L;
 
-	public HeaderField(Op name, String value)
+	public Cookie(String val)
 	{
-		super(name, ": " + value + " ");
+		super(Http.COOKIE, val);
 	}
 }

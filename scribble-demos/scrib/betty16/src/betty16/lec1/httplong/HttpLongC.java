@@ -60,8 +60,23 @@ public class HttpLongC {
 		}
 	}
 
-	public void run(Http_C_1 c, String host) throws Exception {
-			doResponse(doRequest(c, host));
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public EndSocket run(Http_C_1 c, String host) throws Exception {
+			return doResponse(doRequest(c, host));
 	}
 	
 	private Http_C_3 doRequest(Http_C_1 c1, String host) throws Exception {
@@ -70,11 +85,11 @@ public class HttpLongC {
 		         .send(S, new Body(""));
 	}
 
-	private void doResponse(Http_C_3 c3) throws Exception {
+	private EndSocket doResponse(Http_C_3 c3) throws Exception {
 		Http_C_4_Cases cases = c3.async(S, HTTPV).branch(S);
 		switch (cases.op) {
-			case _200: doResponseAux(cases.receive(_200)); break;
-			case _404: doResponseAux(cases.receive(_404)); break;
+			case _200: return doResponseAux(cases.receive(_200));
+			case _404: return doResponseAux(cases.receive(_404));
 			default: throw new RuntimeException("[TODO]: " + cases.op);
 		}
 	}

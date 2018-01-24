@@ -16,9 +16,9 @@
 
 package test.foo;
 
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.ObjectStreamFormatter;
+import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import test.foo.Foo.Foo.Foo;
 import test.foo.Foo.Foo.channels.A.Foo_A_1;

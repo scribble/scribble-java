@@ -17,5 +17,9 @@
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr-runtime</artifactId>
 		</dependency>
+		<!--<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-runtime</artifactId>
+		</dependency>-->
 	</dependencies>
 </project>

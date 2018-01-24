@@ -152,7 +152,7 @@ public class CommandLine
 		// Attempt certain "output tasks" even if above failed, in case can still do some useful output (hacky)
 		try
 		{
-			doNonAttemptableOutputTasks(job);
+			tryOutputTasks(job);
 		}
 		catch (ScribbleException x)
 		{

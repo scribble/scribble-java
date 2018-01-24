@@ -64,6 +64,10 @@ sig <java> "http.longvers.message.client.Connection"
 sig <java> "http.longvers.message.client.UpgradeInsecureRequests"
 		from "http/longvers/message/UpgradeInsecureRequests.java"
 		as UPGRADEIR;  // Upgrade-Insecure-Requests: 1 
+
+sig <java> "http.longvers.message.client.Cookie"
+		from "http/longvers/message/Cookie.java"
+		as COOKIE;  // Cookie: __utma=111872281.1372348290.1498163262.1498163262.1498163262.1; __utmz=111872281.1498163262.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)
 		
 		
 sig <java> "http.longvers.message.server.HttpVersion"
@@ -171,6 +175,11 @@ aux global protocol Request(role C, role S)
 			or
 			{
 				UPGRADEIR from C to S;  // Upgrade-Insecure-Requests: 1 
+				continue X;
+			}
+			or
+			{
+				COOKIE from C to S;  // Cookie: __utma=111872281.1372348290.1498163262.1498163262.1498163262.1; __utmz=111872281.1498163262.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none) 
 				continue X;
 			}
 			or
