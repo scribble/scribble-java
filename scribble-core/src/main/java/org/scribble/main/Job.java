@@ -62,6 +62,7 @@ public class Job
 	public final boolean noLocalChoiceSubjectCheck;
 	public final boolean noAcceptCorrelationCheck;
 	public final boolean noValidation;
+	public final boolean spin;
 	
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
 
@@ -75,7 +76,7 @@ public class Job
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main,
 			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
-			boolean noAcceptCorrelationCheck, boolean noValidation,
+			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin,
 			AstFactory af, EModelFactory ef, SModelFactory sf)
 	{
 		//this.jUnit = jUnit;
@@ -87,6 +88,7 @@ public class Job
 		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
 		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
 		this.noValidation = noValidation;
+		this.spin = spin;
 		
 		this.af = af;
 		this.ef = ef;

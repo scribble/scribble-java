@@ -9,7 +9,7 @@
 //http://sandbox.kidstrythisathome.com/erdos/
 
 
-module Test;
+module tmp.Test;
 
 // replace a lot of FACTORY name calls by clone
 // -minlts states IDs don't match validation output
@@ -43,6 +43,53 @@ module Test;
 
 
 
+type <dotnet> "System.UInt32" from "..." as int;
+
+global protocol SH(role P, role R, role C)
+{
+	plane(int, int, int, int) from P to R;
+	do Loop(P, R, C);
+}
+
+aux global protocol Loop(role P, role R, role C)
+{
+	choice at P
+	{
+		Above(int) from P to R;   
+		Res(int) from R to P;
+		Above(int) from P to R;   
+		Res(int) from R to P;
+		choice at P
+		{
+			BothIn() from P to R;
+			BothIn(int) from P to C;
+		}
+		or
+		{
+			BothOut() from P to R;
+			BothOut() from P to C;
+		}
+		or
+		{
+			Intersect() from P to R;
+			Res(int) from R to P;
+			choice at P
+			{
+				One(int) from P to C;
+			}
+			or
+			{
+				Two(int, int) from P to C;
+			}
+		}
+		do Loop(P, R, C);
+	}
+	or
+	{
+		Close() from P to R;   
+		Close() from P to C;
+	}
+}
 
 
 
@@ -50,18 +97,21 @@ module Test;
 
 
 
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X {
 		choice at A {
-			1() from A to B;
+			a() from A to B;
+			b() from B to C;
 			continue X;
 		} or {
-			2() from A to B;
-			2() from B to C;
+			c() from A to B;
+			d() from B to C;
 		}
 	}
 }
+//*/
 
 
 

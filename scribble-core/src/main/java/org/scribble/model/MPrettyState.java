@@ -34,10 +34,11 @@ public abstract class MPrettyState
 	{
 		String s = "\"" + this.id + "\":[";
 		Iterator<S> ss = this.succs.iterator();
-		s += this.actions.stream().map((a) -> a + "=\"" + ss.next().id + "\"").collect(Collectors.joining(", "));
+		s += this.actions.stream().map(a -> a + "=\"" + ss.next().id + "\"").collect(Collectors.joining(", "));
 		return s + "]";
 	}
 	
+	// Move up to MState?
 	@Override
 	public final String toDot()
 	{
@@ -105,6 +106,7 @@ public abstract class MPrettyState
 		return "label=\"" + msg + "\"";
 	}
 	
+	// Move up to MState?
 	@Override
 	public final String toAut()
 	{

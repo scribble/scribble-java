@@ -37,6 +37,7 @@ public class CLArgParser
 	public static final String AUT_FLAG = "-aut";
 	public static final String NO_VALIDATION_FLAG = "-novalid";
 	public static final String INLINE_MAIN_MOD_FLAG = "-inline";
+	public static final String SPIN = "-spin";
 	
 	// Non-unique flags
 	public static final String PROJECT_FLAG = "-project";
@@ -70,6 +71,7 @@ public class CLArgParser
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.AUT_FLAG, CLArgFlag.AUT);
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.NO_VALIDATION_FLAG, CLArgFlag.NO_VALIDATION);
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.INLINE_MAIN_MOD_FLAG, CLArgFlag.INLINE_MAIN_MOD);
+		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.SPIN, CLArgFlag.SPIN);
 	}
 
 	private static final Map<String, CLArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -186,6 +188,7 @@ public class CLArgParser
 			case CLArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK:
 			case CLArgParser.NO_ACCEPT_CORRELATION_CHECK:
 			case CLArgParser.NO_VALIDATION_FLAG:
+			case CLArgParser.SPIN:
 			{
 				checkAndAddNoArgUniqueFlag(flag);
 				return i;

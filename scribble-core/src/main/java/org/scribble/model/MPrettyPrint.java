@@ -16,5 +16,5 @@ package org.scribble.model;
 public interface MPrettyPrint
 {
 	String toDot();
-	String toAut();
+	String toAut();  // FIXME: should not be a pretty print method?
 }

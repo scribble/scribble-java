@@ -13,9 +13,16 @@
  */
 package org.scribble.del.global;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
@@ -35,14 +42,20 @@ import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
+import org.scribble.model.MState;
+import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.global.SGraph;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
+import org.scribble.util.ScribUtil;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.context.env.ProjectionEnv;
+import org.scribble.visit.util.MessageIdCollector;
 import org.scribble.visit.util.RoleCollector;
 import org.scribble.visit.validation.GProtocolValidator;
 
@@ -141,20 +154,174 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		}
 
 		GProtocolName fullname = gpd.getFullMemberName((Module) parent);
-		validate(checker.job, fullname, true);
-		if (!checker.job.fair)
+		if (checker.job.spin)
 		{
-			checker.job.debugPrintln("(" + fullname + ") Validating with \"unfair\" output choices.. ");
-			validate(checker.job, fullname, false);  // FIXME: only need to check progress, not full validation
+			if (checker.job.fair)
+			{
+				throw new RuntimeException("TODO");
+			}
+			validateBySpin(checker.job, fullname);
+		}
+		else
+		{
+			validateByScribble(checker.job, fullname, true);
+			if (!checker.job.fair)
+			{
+				checker.job.debugPrintln("(" + fullname + ") Validating with \"unfair\" output choices.. ");
+				validateByScribble(checker.job, fullname, false);  // FIXME: only need to check progress, not full validation
+			}
 		}
 	}
 
-	private static void validate(Job job, GProtocolName fullname, boolean fair) throws ScribbleException
+	private static void validateByScribble(Job job, GProtocolName fullname, boolean fair) throws ScribbleException
 	{
 		JobContext jc = job.getContext();
 		SGraph graph = (fair) ? jc.getSGraph(fullname) : jc.getUnfairSGraph(fullname);
 		//graph.toModel().validate(job);
 		job.sf.newSModel(graph).validate(job);
+	}
+		
+	private static void validateBySpin(Job job, GProtocolName fullname) throws ScribbleException
+	{
+		JobContext jc = job.getContext();
+		Module mod = jc.getModule(fullname.getPrefix());
+		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(fullname.getSimpleName());
+		
+		List<Role> rs = gpd.header.roledecls.getRoles().stream()
+				.sorted(Comparator.comparing(Role::toString)).collect(Collectors.toList());
+
+		MessageIdCollector coll = new MessageIdCollector(job, ((ModuleDel) mod.del()).getModuleContext());
+		gpd.accept(coll);
+		Set<MessageId<?>> mids = coll.getNames();
+		
+		String pml = "";
+		pml += "mtype {" + mids.stream().map(mid -> mid.toString()).collect(Collectors.joining(", ")) + "};\n";
+
+		// FIXME: explicit
+
+		pml += "\n";
+		List<Role[]> pairs = new LinkedList<>();
+		for (Role r1 : rs)
+		{
+			for (Role r2 : rs)
+			{
+				if (!r1.equals(r2))
+				{
+					pairs.add(new Role[] {r1, r2});
+				}
+			}
+		}
+		//for (Role[] p : (Iterable<Role[]>) () -> pairs.stream().sorted().iterator())
+		for (Role[] p : pairs)
+		{
+			pml += "chan s_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n";
+		}
+		
+		for (Role r : rs)
+		{
+			pml += "\n\n" + jc.getEGraph(fullname, r).toPml(r);
+		}
+		
+		List<String> labs = new LinkedList<>();
+		for (Role r : rs)
+		{
+			Set<EState> tmp = new HashSet<>();
+			EGraph g = jc.getEGraph(fullname, r);
+			tmp.add(g.init);
+			tmp.addAll(MState.getReachableStates(g.init));
+			if (g.term != null)
+			{
+				tmp.remove(g.term);
+			}
+			tmp.forEach(  // Throws exception, cannot use flatMap
+					s -> labs.add("!<>[]" + r + "@" + (s.isTerminal() ? "end" : "label") + r + s.id)  // FIXME: factor out
+			);
+		}
+		/*pml += "\n\nltl {\n" + labs.stream().collect(Collectors.joining(" && ")) + "\n" + "}";
+		
+		System.out.println("aaa: " + pml + "\n");
+		if (!runSpin(pml))
+		{
+			throw new ScribbleException("Protocol not valid:\n" + gpd);
+		}*/
+		System.out.println("aaa: " + pml + "\n");
+		/*for (String lab : labs)
+		{
+			System.out.println("bbb: " + lab);
+			String run = pml + "\n\nltl {\n" + lab + "\n" + "}";
+			if (!runSpin(run))
+			{
+				throw new ScribbleException("Protocol not valid:\n" + gpd);
+			}
+		}*/
+		int batch = 10;
+		for (int i = 0; i < labs.size(); )
+		{
+			int j = (i+batch < labs.size()) ? i+batch : labs.size();
+			String foo = labs.subList(i, j).stream().collect(Collectors.joining(" && "));
+			System.out.println("bbb: " + foo);
+			String run = pml + "\n\nltl {\n" + foo + "\n" + "}";
+			if (!runSpin(run))
+			{
+				throw new ScribbleException("Protocol not valid:\n" + gpd);
+			}
+			i += batch;
+		}
+	}
+
+	// FIXME: move
+	private static boolean runSpin(String pml) //throws ScribbleException
+	{
+		File tmp;
+		try
+		{
+			tmp = File.createTempFile("gpd.header.name", ".pml.tmp");
+			try
+			{
+				String tmpName = tmp.getAbsolutePath();				
+				ScribUtil.writeToFile(tmpName, pml);
+				String[] res = ScribUtil.runProcess("spin", "-a", tmpName);
+				res[0] = res[0].replaceAll("(?m)^ltl.*$", "");
+				res[1] = res[1].replace("'gcc-4' is not recognized as an internal or external command,\noperable program or batch file.", "");
+				res[1] = res[1].replace("'gcc-3' is not recognized as an internal or external command,\noperable program or batch file.", "");
+				res[0] = res[0].trim();
+				res[1] = res[1].trim();
+				if (!res[0].trim().isEmpty() || !res[1].trim().isEmpty())
+				{
+					//throw new RuntimeException("[scrib] : " + Arrays.toString(res[0].getBytes()) + "\n" + Arrays.toString(res[1].getBytes()));
+					throw new RuntimeException("[scrib-Spin] [spin]: " + res[0] + "\n" + res[1]);
+				}
+				res = ScribUtil.runProcess("gcc", "-o", "pan", "pan.c");
+				res[0] = res[0].trim();
+				res[1] = res[1].trim();
+				if (!res[0].isEmpty() || !res[1].isEmpty())
+				{
+					throw new RuntimeException("[scrib-Spin] [gcc]: " + res[0] + "\n" + res[1]);
+				}
+				res = ScribUtil.runProcess("pan", "-a", "-f");
+				res[1] = res[1].replace("warning: no accept labels are defined, so option -a has no effect (ignored)", "");
+				res[0] = res[0].trim();
+				res[1] = res[1].trim();
+				if (res[0].contains("error,") || !res[1].isEmpty())
+				{
+					throw new RuntimeException("[scrib-Spin] [pan]: " + res[0] + "\n" + res[1]);
+				}
+				int err = res[0].indexOf("errors: ");
+				return (res[0].charAt(err + 8) == '0');
+			}
+			catch (ScribbleException e)
+			{
+				throw new RuntimeException(e);
+			}
+			finally
+			{
+				tmp.delete();
+			}
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }
 

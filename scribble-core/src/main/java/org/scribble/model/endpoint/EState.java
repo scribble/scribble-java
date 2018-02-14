@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.model.MPrettyState;
@@ -29,6 +30,7 @@ import org.scribble.model.MState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Role;
 
 // Label types used to be both RecVar and SubprotocolSigs; now using inlined protocol for FSM building so just RecVar
 public class EState extends MPrettyState<RecVar, EAction, EState, Local>
@@ -36,6 +38,86 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	protected EState(Set<RecVar> labs)
 	{
 		super(labs);
+	}
+	
+	public String toPml(Role r)
+	{
+		Map<Integer, String> seen = new HashMap<>();
+		return 
+				  "active proctype " + r + "() {\n"
+				+ toPml(seen, r) + "\n"
+				+ "}\n";
+	}
+	
+	protected String toPml(Map<Integer, String> seen, Role r)
+	{
+		if (seen.containsKey(this.id))
+		{
+			//return "goto " + getLabel(seen, this.id, r) + "\n";
+			return "";
+		}
+
+		String lab = getLabel(seen, this, r);
+		Map<Integer, String> tmp = new HashMap<>(seen);
+		tmp.put(this.id, lab);
+
+		String res = lab + ":\n";
+		EStateKind kind = getStateKind();
+		List<EAction> as = getActions();
+		if (kind == EStateKind.OUTPUT)
+		{
+			if (as.stream().anyMatch(a -> !a.isSend()))
+			{
+				throw new RuntimeException("TODO: " + as);
+			}
+			
+			res += //"lab" + this.id + ":\n"
+					  "if\n"
+					+ as.stream().map(a ->
+							  "::\n"
+							+ "skip ->\n"
+							+ "s_" + r + "_" + a.peer + "!" + a.mid + ";\n"
+							+ "goto " + getLabel(seen, getSuccessor(a), r) + "\n"
+						)
+						.collect(Collectors.joining(""))
+					+ "fi\n";
+		}
+		else if (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT)
+		{
+			res +=
+					  "if\n"
+					+ as.stream().map(a ->
+							  "::\n"
+							+ "s_" + a.peer + "_" + r + "?[" + a.mid + "] ->\n"
+							+ "s_" + a.peer + "_" + r + "?" + a.mid + ";\n"
+							+ "goto " + getLabel(seen, getSuccessor(a), r) + "\n"
+						)
+						.collect(Collectors.joining("")) 
+					+ "fi\n";
+		}
+		else if (kind == EStateKind.TERMINAL)
+		{
+			res += "skip\n";
+		}
+		else
+		{
+			throw new RuntimeException("TODO: " + kind);
+		}
+
+		res += as.stream().map(a -> "\n" + getSuccessor(a).toPml(tmp, r)).collect(Collectors.joining(""));
+
+		return res;
+	}
+	
+	private static String getLabel(Map<Integer, String> seen, EState s, Role r)
+	{
+		if (seen.containsKey(s.id))
+		{
+			return seen.get(s.id);
+		}
+		String lab = (s.isTerminal() ? "end" : "label") + r + s.id;
+		seen.put(s.id, lab);
+		return lab;
 	}
 	
 	// To be overridden by subclasses, to obtain the subclass nodes

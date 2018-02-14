@@ -14,6 +14,7 @@
 package org.scribble.model.endpoint;
 
 import org.scribble.model.MPrettyPrint;
+import org.scribble.type.name.Role;
 
 public class EGraph implements MPrettyPrint
 {
@@ -30,6 +31,11 @@ public class EGraph implements MPrettyPrint
 	public EFSM toFsm()
 	{
 		return new EFSM(this);
+	}
+	
+	public String toPml(Role r)
+	{
+		return this.init.toPml(r);
 	}
 
 	@Override
