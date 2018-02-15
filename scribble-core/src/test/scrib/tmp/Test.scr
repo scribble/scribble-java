@@ -43,6 +43,7 @@ module tmp.Test;
 
 
 
+/*
 type <dotnet> "System.UInt32" from "..." as int;
 
 global protocol SH(role P, role R, role C)
@@ -90,6 +91,7 @@ aux global protocol Loop(role P, role R, role C)
 		Close() from P to C;
 	}
 }
+//*/
 
 
 
@@ -97,7 +99,7 @@ aux global protocol Loop(role P, role R, role C)
 
 
 
-/*
+//*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X {

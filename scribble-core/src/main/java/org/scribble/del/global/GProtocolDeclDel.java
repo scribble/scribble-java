@@ -215,7 +215,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		{
 			pml += "chan s_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
 					 + "chan r_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
-					 + "bool empty_" + p[0] + "_" + p[1] + " = false;\n"
+					 + "bool empty_" + p[0] + "_" + p[1] + " = true;\n"
 					 + "active proctype chan_" + p[0] + "_" + p[1] + "() {\n"
 					 + "mtype m;\n"
 					 + "end_chan_" + p[0] + "_" + p[1] + ":\n"
@@ -231,8 +231,12 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		{
 			pml += "\n\n" + jc.getEGraph(fullname, r).toPml(r);
 		}
+		if (job.debug)
+		{
+			System.out.println("[-spin]: Promela processes\n" + pml + "\n");
+		}
 		
-		List<String> labs = new LinkedList<>();
+		List<String> clauses = new LinkedList<>();
 		for (Role r : rs)
 		{
 			Set<EState> tmp = new HashSet<>();
@@ -244,19 +248,45 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				tmp.remove(g.term);
 			}
 			tmp.forEach(  // Throws exception, cannot use flatMap
-					s -> labs.add("!<>[]" + r + "@" + (s.isTerminal() ? "end" : "label") + r + s.id)  // FIXME: factor out
+					s -> clauses.add("!<>[]" + r + "@label" + r + s.id)  // FIXME: factor out
 			);
 		}
-		if (job.debug)
+		//*/
+		/*String roleProgress = "";  // This way is not faster
+		for (Role r : rs)
 		{
-			System.out.println("[-spin]: Promela processes\n" + pml + "\n");
+			Set<EState> tmp = new HashSet<>();
+			EGraph g = jc.getEGraph(fullname, r);
+			tmp.add(g.init);
+			tmp.addAll(MState.getReachableStates(g.init));
+			if (g.term != null)
+			{
+				tmp.remove(g.term);
+			}
+			roleProgress += (((roleProgress.isEmpty()) ? "" : " || ")
+					+ tmp.stream().map(s -> r + "@label" + r + s.id).collect(Collectors.joining(" || ")));
 		}
+		roleProgress = "!<>[](" + roleProgress + ")";
+		clauses.add(roleProgress);*/
+		/*for (Role[] p : pairs)
+		{
+			clauses.add("[]<>(empty_" + p[0] + "_" + p[1] + ")");
+		}*/
+		String eventualStability = "";
+		for (Role[] p : pairs)
+		{
+			//eventualStability += (((eventualStability.isEmpty()) ? "" : " && ") + "empty_" + p[0] + "_" + p[1]);
+			eventualStability += (((eventualStability.isEmpty()) ? "" : " && ") + "<>empty_" + p[0] + "_" + p[1]);
+		}
+		//eventualStability = "[]<>(" + eventualStability + ")";
+		eventualStability = "[](" + eventualStability + ")";  // FIXME: current "eventual reception", not eventual stability
+		clauses.add(eventualStability);
 
 		int batchSize = 10;  // FIXME: factor out
-		for (int i = 0; i < labs.size(); )
+		for (int i = 0; i < clauses.size(); )
 		{
-			int j = (i+batchSize < labs.size()) ? i+batchSize : labs.size();
-			String batch = labs.subList(i, j).stream().collect(Collectors.joining(" && "));
+			int j = (i+batchSize < clauses.size()) ? i+batchSize : clauses.size();
+			String batch = clauses.subList(i, j).stream().collect(Collectors.joining(" && "));
 			String ltl = "ltl {\n" + batch + "\n" + "}";
 			if (job.debug)
 			{
