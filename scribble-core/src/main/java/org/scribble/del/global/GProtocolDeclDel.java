@@ -15,7 +15,6 @@ package org.scribble.del.global;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -214,7 +213,18 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		//for (Role[] p : (Iterable<Role[]>) () -> pairs.stream().sorted().iterator())
 		for (Role[] p : pairs)
 		{
-			pml += "chan s_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n";
+			pml += "chan s_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
+					 + "chan r_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
+					 + "bool empty_" + p[0] + "_" + p[1] + " = false;\n"
+					 + "active proctype chan_" + p[0] + "_" + p[1] + "() {\n"
+					 + "mtype m;\n"
+					 + "end_chan_" + p[0] + "_" + p[1] + ":\n"
+					 + "do\n"
+					 + "::\n"
+					 + "atomic { s_" + p[0] + "_" + p[1] + "?m; empty_" + p[0] + "_" + p[1] + " = false }\n"
+					 + "atomic { r_" + p[0] + "_" + p[1] + "!m; empty_" + p[0] + "_" + p[1] + " = true }\n"
+					 + "od\n"
+					 + "}\n";
 		}
 		
 		for (Role r : rs)
@@ -237,35 +247,26 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 					s -> labs.add("!<>[]" + r + "@" + (s.isTerminal() ? "end" : "label") + r + s.id)  // FIXME: factor out
 			);
 		}
-		/*pml += "\n\nltl {\n" + labs.stream().collect(Collectors.joining(" && ")) + "\n" + "}";
-		
-		System.out.println("aaa: " + pml + "\n");
-		if (!runSpin(pml))
+		if (job.debug)
 		{
-			throw new ScribbleException("Protocol not valid:\n" + gpd);
-		}*/
-		System.out.println("aaa: " + pml + "\n");
-		/*for (String lab : labs)
-		{
-			System.out.println("bbb: " + lab);
-			String run = pml + "\n\nltl {\n" + lab + "\n" + "}";
-			if (!runSpin(run))
-			{
-				throw new ScribbleException("Protocol not valid:\n" + gpd);
-			}
-		}*/
-		int batch = 10;
+			System.out.println("[-spin]: Promela processes\n" + pml + "\n");
+		}
+
+		int batchSize = 10;  // FIXME: factor out
 		for (int i = 0; i < labs.size(); )
 		{
-			int j = (i+batch < labs.size()) ? i+batch : labs.size();
-			String foo = labs.subList(i, j).stream().collect(Collectors.joining(" && "));
-			System.out.println("bbb: " + foo);
-			String run = pml + "\n\nltl {\n" + foo + "\n" + "}";
-			if (!runSpin(run))
+			int j = (i+batchSize < labs.size()) ? i+batchSize : labs.size();
+			String batch = labs.subList(i, j).stream().collect(Collectors.joining(" && "));
+			String ltl = "ltl {\n" + batch + "\n" + "}";
+			if (job.debug)
+			{
+				System.out.println("[-spin] Batched ltl:\n" + ltl + "\n");
+			}
+			if (!runSpin(pml + "\n\n" + ltl))
 			{
 				throw new ScribbleException("Protocol not valid:\n" + gpd);
 			}
-			i += batch;
+			i += batchSize;
 		}
 	}
 
@@ -289,14 +290,25 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				if (!res[0].trim().isEmpty() || !res[1].trim().isEmpty())
 				{
 					//throw new RuntimeException("[scrib] : " + Arrays.toString(res[0].getBytes()) + "\n" + Arrays.toString(res[1].getBytes()));
-					throw new RuntimeException("[scrib-Spin] [spin]: " + res[0] + "\n" + res[1]);
+					throw new RuntimeException("[-spin] [spin]: " + res[0] + "\n" + res[1]);
 				}
-				res = ScribUtil.runProcess("gcc", "-o", "pan", "pan.c");
+				int procs = 0;
+				for (int i = 0; i < pml.length(); procs++)
+				{
+					i = pml.indexOf("proctype", i);
+					if (i == -1)
+					{
+						break;
+					}
+					i++;
+				}
+				int dnfair = (procs <= 6) ? 2 : 3;  // FIXME
+				res = ScribUtil.runProcess("gcc", "-o", "pan", "pan.c", "-DNFAIR=" + dnfair);
 				res[0] = res[0].trim();
 				res[1] = res[1].trim();
 				if (!res[0].isEmpty() || !res[1].isEmpty())
 				{
-					throw new RuntimeException("[scrib-Spin] [gcc]: " + res[0] + "\n" + res[1]);
+					throw new RuntimeException("[-spin] [gcc]: " + res[0] + "\n" + res[1]);
 				}
 				res = ScribUtil.runProcess("pan", "-a", "-f");
 				res[1] = res[1].replace("warning: no accept labels are defined, so option -a has no effect (ignored)", "");
@@ -304,10 +316,15 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				res[1] = res[1].trim();
 				if (res[0].contains("error,") || !res[1].isEmpty())
 				{
-					throw new RuntimeException("[scrib-Spin] [pan]: " + res[0] + "\n" + res[1]);
+					throw new RuntimeException("[-spin] [pan]: " + res[0] + "\n" + res[1]);
 				}
 				int err = res[0].indexOf("errors: ");
-				return (res[0].charAt(err + 8) == '0');
+				boolean valid = (res[0].charAt(err + 8) == '0');
+				if (!valid)
+				{
+					System.err.println("[-spin] [pan] " + res[0] + "\n" + res[1]);
+				}
+				return valid;
 			}
 			catch (ScribbleException e)
 			{
