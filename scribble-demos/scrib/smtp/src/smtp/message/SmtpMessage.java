@@ -14,7 +14,7 @@
 package smtp.message;
 
 import org.scribble.runtime.net.ScribMessage;
-import org.scribble.sesstype.name.Op;
+import org.scribble.type.name.Op;
 import org.scribble.util.Caller;
 
 import smtp.Smtp.Smtp.Smtp;

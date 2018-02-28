@@ -157,7 +157,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		{
 			if (checker.job.fair)
 			{
-				throw new RuntimeException("TODO");
+				throw new RuntimeException("[TODO]: -spin currently does not support fair ouput choices.");
 			}
 			validateBySpin(checker.job, fullname);
 		}

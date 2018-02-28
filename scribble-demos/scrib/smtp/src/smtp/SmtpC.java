@@ -40,6 +40,7 @@ import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
 import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
 import smtp.Smtp.Smtp.Smtp;
+import smtp.Smtp.Smtp.channels.C.EndSocket;
 import smtp.Smtp.Smtp.channels.C.Smtp_C_1;
 import smtp.Smtp.Smtp.channels.C.Smtp_C_10;
 import smtp.Smtp.Smtp.channels.C.Smtp_C_11_Cases;
@@ -213,18 +214,19 @@ public class SmtpC
 		}
 	}
 
-	private void sendMail(Smtp_C_12 s12) throws Exception
+	private EndSocket sendMail(Smtp_C_12 s12) throws Exception
 	{
-		s12.send(S, new Rcpt(this.rcptFrom))
-			 .async(S, _250)
-			 .send(S, new Data()) 
-			 .async(S, _354)
-			 .send(S, new Subject(this.subj))
-			 .send(S, new DataLine(this.body))
-			 .send(S, new EndOfData())
-			 .receive(S, _250, new Buf<>()) 
-			 .send(S, new Quit())
-			 .receive(S, _221, new Buf<>());
+		return
+			s12.send(S, new Rcpt(this.rcptFrom))
+				 .async(S, _250)
+				 .send(S, new Data()) 
+				 .async(S, _354)
+				 .send(S, new Subject(this.subj))
+				 .send(S, new DataLine(this.body))
+				 .send(S, new EndOfData())
+				 .receive(S, _250, new Buf<>()) 
+				 .send(S, new Quit())
+				 .receive(S, _221, new Buf<>());
 	}
 	
 
