@@ -72,7 +72,7 @@ public class SessionApiGenerator extends ApiGen
 		Map<String, String> map = new HashMap<>();
 		map.put(path, sb.toString());
 		
-		this.classes.keySet().stream().forEach((n) -> map.put(n, this.classes.get(n).build()));
+		this.classes.keySet().stream().forEach(n -> map.put(n, this.classes.get(n).build()));
 		
 		return map;
 	}

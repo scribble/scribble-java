@@ -178,7 +178,7 @@ public class OutputSockGen extends ScribSockGen
 	{
 		final String ROLE_PARAM = "role";
 
-		mb.setName("connect");
+		mb.setName("request");
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.obj) + " " + ROLE_PARAM);  // More params added below

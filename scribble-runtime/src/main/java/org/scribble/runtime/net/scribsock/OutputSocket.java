@@ -52,7 +52,7 @@ public abstract class OutputSocket<S extends Session, R extends Role> extends Li
 	{
 		use();
 		//this.se.connect(role, cons, host, port);
-		MPSTEndpoint.connect(this.se, role, cons, host, port);
+		MPSTEndpoint.request(this.se, role, cons, host, port);
 	}
 
 	// FIXME: check if MPST/ExplicitEndpoint

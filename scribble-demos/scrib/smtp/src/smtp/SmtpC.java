@@ -99,7 +99,7 @@ public class SmtpC
 		try (MPSTEndpoint<Smtp, C> se =
 				new MPSTEndpoint<>(smtp, C, new SmtpMessageFormatter()))
 		{
-			se.connect(S, SocketChannelEndpoint::new, this.server, SmtpC.PORT);
+			se.request(S, SocketChannelEndpoint::new, this.server, SmtpC.PORT);
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 			Smtp_C_2 s2 = s1.receive(S, _220, new Buf<>());

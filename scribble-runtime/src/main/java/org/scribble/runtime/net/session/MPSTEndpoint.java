@@ -31,13 +31,13 @@ public class MPSTEndpoint<S extends Session, R extends Role> extends SessionEndp
 		super(sess, self, smf);
 	}
 
-	public void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	public void request(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
-		MPSTEndpoint.connect(this, role, cons, host, port);
+		MPSTEndpoint.request(this, role, cons, host, port);
 	}
 
 	// HACK FIXME: refactor (location, protected, etc)
-	public static void connect(SessionEndpoint<?, ?> se, Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	public static void request(SessionEndpoint<?, ?> se, Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
 		// Can connect unlimited, as long as not already used via init
 		//if (this.init)

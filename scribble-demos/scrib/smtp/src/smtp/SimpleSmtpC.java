@@ -84,7 +84,7 @@ public class SimpleSmtpC
 		Smtp smtp = new Smtp();
 		try (MPSTEndpoint<Smtp, C> se = new MPSTEndpoint<>(smtp, C, new SmtpMessageFormatter()))
 		{
-			se.connect(S, SocketChannelEndpoint::new, host, port);
+			se.request(S, SocketChannelEndpoint::new, host, port);
 
 			Smtp_C_11_Cases cases =
 					doAuth(

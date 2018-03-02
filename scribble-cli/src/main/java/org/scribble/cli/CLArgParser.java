@@ -54,6 +54,8 @@ public class CLArgParser
 	public static final String API_GEN_FLAG = "-api";
 	public static final String SESSION_API_GEN_FLAG = "-sessapi";
 	public static final String STATECHAN_API_GEN_FLAG = "-chanapi";
+
+	public static final String EVENTDRIVEN_API_GEN_FLAG = "-edapi";
 	
 	private static final Map<String, CLArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -90,6 +92,7 @@ public class CLArgParser
 		CLArgParser.NON_UNIQUE_FLAGS.put(CLArgParser.API_GEN_FLAG, CLArgFlag.API_GEN);
 		CLArgParser.NON_UNIQUE_FLAGS.put(CLArgParser.SESSION_API_GEN_FLAG, CLArgFlag.SESS_API_GEN);
 		CLArgParser.NON_UNIQUE_FLAGS.put(CLArgParser.STATECHAN_API_GEN_FLAG, CLArgFlag.SCHAN_API_GEN);
+		CLArgParser.NON_UNIQUE_FLAGS.put(CLArgParser.EVENTDRIVEN_API_GEN_FLAG, CLArgFlag.ED_API_GEN);
 	}
 
 	private static final Map<String, CLArgFlag> FLAGS = new HashMap<>();
@@ -229,6 +232,7 @@ public class CLArgParser
 			case CLArgParser.UNFAIR_EFSM_FLAG:
 			case CLArgParser.API_GEN_FLAG:
 			case CLArgParser.STATECHAN_API_GEN_FLAG:
+			case CLArgParser.EVENTDRIVEN_API_GEN_FLAG:
 			{
 				return parseProtoAndRoleArgs(flag, i);
 			}

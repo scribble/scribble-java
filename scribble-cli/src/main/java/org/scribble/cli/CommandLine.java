@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.codegen.eventdriven.EDEndpointApiGenerator;
 import org.scribble.codegen.java.JEndpointApiGenerator;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
@@ -262,6 +263,10 @@ public class CommandLine
 		{
 			outputEndpointApi(job);
 		}
+		if (this.args.containsKey(CLArgFlag.ED_API_GEN))
+		{
+			outputEventDrivenApi(job);
+		}
 	}
 
 	// FIXME: option to write to file, like classes
@@ -413,9 +418,33 @@ public class CommandLine
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			Map<String, String> classes = jgen.generateStateChannelApi(fullname, role, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
+			Role self = checkRoleArg(jcontext, fullname, args[i+1]);
+			Map<String, String> classes = jgen.generateStateChannelApi(fullname, self, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
 			outputClasses(classes);
+		}
+	}
+
+	private void outputEventDrivenApi(Job job) throws ScribbleException, CommandLineException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(CLArgFlag.ED_API_GEN);
+		/*JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Map<String, String> sessClasses = jgen.generateSessionApi(fullname);
+			outputClasses(sessClasses);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Map<String, String> scClasses = jgen.generateStateChannelApi(fullname, role, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
+			outputClasses(scClasses);
+		}*/
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role self = checkRoleArg(jcontext, fullname, args[i+1]);
+			EDEndpointApiGenerator edgen = new EDEndpointApiGenerator(job, fullname, self);
+			Map<String, String> out = edgen.build();
+			outputClasses(out);
 		}
 	}
 
