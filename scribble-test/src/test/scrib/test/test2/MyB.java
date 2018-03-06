@@ -30,6 +30,34 @@ public class MyB
 		foo();
 	}
 
+	public static void foo() throws IOException, ScribbleRuntimeException
+	{
+		try (ScribServerSocket ss = new SocketChannelServer(8888))
+		{
+			while (true)
+			{
+				Proto1 P1 = new Proto1();
+				try (Proto1_B b = new Proto1_B(P1, B, new ObjectStreamFormatter()))
+				{
+					b.accept(ss, A);
+					b.register(Proto1_B_10.id,
+							(op, sess) -> { System.out.println("Done 1"); return null; },
+							(op, sess) -> { System.out.println("Done 2"); return null; });
+					.// FIXME: payloads
+
+					Future<Void> f = b.run();
+					f.get();
+					
+					System.out.println("B done");
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 	public static void foo1() throws IOException, ScribbleRuntimeException
 	{
 		try (ScribServerSocket ss = new SocketChannelServer(8888))
@@ -44,33 +72,6 @@ public class MyB
 					new Proto1_B_1(b).branch(A, new MyHandler());
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	public static void foo() throws IOException, ScribbleRuntimeException
-	{
-		try (ScribServerSocket ss = new SocketChannelServer(8888))
-		{
-			while (true)
-			{
-				Proto1 P1 = new Proto1();
-				try (Proto1_B b = new Proto1_B(P1, B, new ObjectStreamFormatter()))
-				{
-					b.accept(ss, A);
-					b.register(Proto1_B_10.id,
-							(op, sess) -> { System.out.println("Done 1"); return null; },
-							(op, sess) -> { System.out.println("Done 2"); return null; });
-
-					Future<Void> f = b.run();
-					f.get();
-					
-					System.out.println("B done");
-				}
-				catch (Exception e)
 				{
 					e.printStackTrace();
 				}

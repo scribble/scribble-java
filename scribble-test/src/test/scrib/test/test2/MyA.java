@@ -33,8 +33,9 @@ public class MyA
 		try (Proto1_A a = new Proto1_A(P1, A, new ObjectStreamFormatter()))
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
-			a.register(Proto1_A_5.id, x -> new ScribEvent(B, _1));
-			//a.register(Proto1_A_5.id, x -> new ScribEvent(B, _2));
+			//a.register(Proto1_A_5.id, x -> new ScribEvent(B, _1));
+			a.register(Proto1_A_5.id, x -> new ScribEvent(B, _2));
+			.// FIXME: type by Op; sort out session object
 			
 			Future<Void> f = a.run();
 			f.get();

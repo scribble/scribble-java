@@ -118,6 +118,7 @@ public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPST
 				{
 					res.notify();
 				}
+				setCompleted();
 			}
 		}.start();
 		
