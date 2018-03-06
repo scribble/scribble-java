@@ -1,0 +1,18 @@
+//$ bin/scribblec.sh scribble-test/src/test/scrib/test/test2/Test2.scr -ip scribble-test/src/test/scrib/ -d scribble-test/src/test/scrib/ -api Proto1 A -V
+//$ javadoc -cp scribble-cli/target/classes/';'scribble-test/target/classes';'scribble-parser/target/classes';'scribble-parser/lib/antlr-3.5.2-complete.jar';'scrib-core/src/test/scrib scrib-core/src/test/scrib/test/test2/Proto1*.java -d test/doc/test2
+
+module test.test2.Test2;
+
+type <java> "java.lang.Integer" from "rt.jar" as Integer;
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+	}
+}

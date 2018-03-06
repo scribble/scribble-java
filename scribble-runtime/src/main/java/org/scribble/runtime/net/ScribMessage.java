@@ -60,7 +60,7 @@ public class ScribMessage implements Serializable
 	{
 		int hash = 73;
 		//hash = 31 * hash + super.hashCode();
-		hash = 31 * hash + op.hashCode();
+		hash = 31 * hash + this.op.hashCode();
 		hash = 31 * hash + this.payload.hashCode();
 		return hash;
 	}

@@ -22,13 +22,7 @@ public class SigKind extends AbstractKind implements NonRoleParamKind, MessageId
 	
 	protected SigKind()
 	{
-
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
+		super("Sig");
 	}
 
 	@Override

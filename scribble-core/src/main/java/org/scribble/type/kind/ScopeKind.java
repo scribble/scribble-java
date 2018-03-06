@@ -19,13 +19,7 @@ public class ScopeKind extends AbstractKind
 	
 	protected ScopeKind()
 	{
-
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
+		super("Scope");
 	}
 
 	@Override

@@ -14,6 +14,8 @@ import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.EStateKind;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
@@ -65,16 +67,18 @@ public class EDEndpointApiGenerator
 		
 		epClass += "package " + pack + ".handlers." + this.self + ";\n";
 		epClass += "\n";
-		epClass += "import java.util.function.Function;\n";
+		/*epClass += "import java.util.function.Function;\n";
 		epClass += "import java.util.HashMap;\n";
-		epClass += "import java.util.Map;\n";
+		epClass += "import java.util.Map;\n";*/
 		epClass += "\n";
 		epClass += "public class " + name + " extends org.scribble.runtime.net.session.EventDrivenEndpoint<" + sess + ", " + role + "> {\n";
-		epClass += "private final Map<Object, Function<Object, org.scribble.runtime.net.ScribMessage>> outputs = new HashMap<>();\n";
-		epClass += "\n";
+
+		/*epClass += "private final Map<Object, Function<Object, org.scribble.runtime.net.ScribMessage>> outputs = new HashMap<>();\n";
+		epClass += "\n";*/
+
 		epClass += "public " + name + "(" + sess  + " sess, " + role
 				+ " self, org.scribble.runtime.net.ScribMessageFormatter smf) throws java.io.IOException, org.scribble.main.ScribbleRuntimeException {\n";
-		epClass += "super(sess, self, smf);\n";
+		epClass += "super(sess, self, smf, " + pack + ".states." + this.self + "." + name + "_" + init.id + ".id" + ");\n";  // FIXME: factor out
 		epClass += "}\n";
 		epClass += "\n";
 		
@@ -91,19 +95,50 @@ public class EDEndpointApiGenerator
 		epClass += "}\n";*/
 		
 		epClass += "}\n";
-
-		for (EState s : states)
-		{
-			epClass += "\n";
-			epClass += "final class " + name + "_" + s.id + " {\n";
-			epClass += "public static final " + name + "_" + s.id + " id = new " + name + "_" + s.id + "();\n";
-			epClass += "private " + name + "_" + s.id + "() {} \n";
-			epClass += "}\n";
-		}
 		
 		Map<String, String> res = new HashMap<>();
 		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.proto).replace('.', '/') + "/handlers/" + this.self + "/" ;  // StateChannelApiGenerator#generateApi
 		res.put(prefix + name + ".java", epClass);
+		
+		prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.proto).replace('.', '/') + "/states/" + this.self + "/" ;  // StateChannelApiGenerator#generateApi
+		for (EState s : states)
+		{
+			EStateKind kind = s.getStateKind();
+			String stateId = (kind == EStateKind.TERMINAL) ? "End" : name + "_" + s.id;
+			String stateKind;
+			switch (kind)
+			{
+				case OUTPUT:     stateKind = "org.scribble.runtime.net.state.ScribOutputState"; break;
+				case UNARY_INPUT:
+				case POLY_INPUT: stateKind = "org.scribble.runtime.net.state.ScribInputState";  break;
+				case TERMINAL:   stateKind = "org.scribble.runtime.net.state.ScribEndState";    break;
+				case ACCEPT:
+				case WRAP_SERVER:
+					throw new RuntimeException("TODO");
+				default:
+					throw new RuntimeException("TODO");
+			}
+			String stateClass = "";
+			stateClass += "package " + pack + ".states." + this.self + ";\n";
+			stateClass += "\n";
+			stateClass += "public final class " + stateId + " extends " + stateKind + " {\n";
+			stateClass += "public static final " + stateId + " id = new " + stateId + "("
+					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + s.getActions().get(0).peer + "." + s.getActions().get(0).peer : "")
+					+ ");\n";
+			stateClass += "private " + stateId + "("
+					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? "org.scribble.type.name.Role peer" : "")
+					+ ") {\n";
+			stateClass += ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? "super(\"" + stateId + "\", peer);" : "super(\"" + stateId + "\");") + "\n";
+			for (EAction a : s.getAllActions())
+			{
+				stateClass += "this.succs.put(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)
+						+ ", " + ((s.getSuccessor(a).getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.getSuccessor(a).id) + ".id);\n";
+			}
+			stateClass += "}\n";
+			stateClass += "}\n";
+			res.put(prefix + stateId + ".java", stateClass);
+		}
+		
 		return res;
 	}
 
@@ -115,27 +150,55 @@ public class EDEndpointApiGenerator
 
 	private String generateRegister(GProtocolName gpn, Role self, EState s)
 	{
+		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".states." + this.self + "." ;
 		String res = "";
 		switch (s.getStateKind())
 		{
 			case OUTPUT:
 			{
-				// FIXME: "untyped"
-				res += "public void register(" + gpn.getSimpleName() + "_" + self + "_" + s.id +" sid, Function<Object, org.scribble.runtime.net.ScribMessage> h) {\n";
+				// FIXME: "untyped" (ScribEvent) -- need state-specific "enums"
+				res += "public void register(" + prefix + gpn.getSimpleName() + "_" + self + "_" + s.id +" sid, java.util.function.Function<Object, org.scribble.runtime.net.state.ScribEvent> h) {\n";
 				res += "this.outputs.put(sid, h);\n";
 				res += "}\n";
 				break;
 			}
 			case UNARY_INPUT:
 			case POLY_INPUT:
+			{
+				res += "public void register(" + prefix + gpn.getSimpleName() + "_" + self + "_" + s.id + " sid";
+				for (EAction a : s.getAllActions())
+				{
+					res += ", org.scribble.util.function.Function2<" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid)
+							+ ", Object"
+							+ ", Void> h_" + a.mid;
+				}
+				res += ") {\n";
+				res += "java.util.Map<org.scribble.type.name.Op, org.scribble.util.function.Function2<? extends org.scribble.type.name.Op, Object, Void>> tmp = this.inputs.get(sid);\n";
+				res += "if (tmp == null) {\n";
+				res += "tmp = new java.util.HashMap<>();\n";
+				res += "this.inputs.put(sid, tmp);\n";
+				res += "}\n";
+				for (EAction a : s.getAllActions())
+				{
+					res += "tmp.put(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid) + ", h_" + a.mid + ");\n";
+				}
+				res += "}\n";
+				res += "\n";
 				break;
+			}
 			case TERMINAL:
+			{
 				break;
+			}
 			case ACCEPT:
 			case WRAP_SERVER:
+			{
 				throw new RuntimeException("[scrib] TODO: " + s);
+			}
 			default:
+			{
 				throw new RuntimeException("[scrib] Shouldn't get in here: " + s);
+			}
 		}
 		return res;
 	}

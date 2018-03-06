@@ -19,13 +19,7 @@ public class DataTypeKind extends AbstractKind implements PayloadTypeKind, Impor
 	
 	protected DataTypeKind()
 	{
-
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
+		super("DataType");
 	}
 
 	@Override

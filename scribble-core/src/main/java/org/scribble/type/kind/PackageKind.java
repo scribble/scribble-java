@@ -19,13 +19,7 @@ public class PackageKind extends AbstractKind
 	
 	protected PackageKind()
 	{
-
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
+		super("Package");
 	}
 
 	@Override

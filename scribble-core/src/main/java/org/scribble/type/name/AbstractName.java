@@ -86,7 +86,7 @@ public abstract class AbstractName<K extends Kind> implements Name<K>
 			return false;
 		}
 		AbstractName<?> n = (AbstractName<?>) o;
-		return n.canEqual(this) && this.kind.equals(n.kind) && Arrays.equals(this.elems, (n.elems));
+		return n.canEqual(this) && this.kind.equals(n.kind) && Arrays.equals(this.elems, n.elems);
 	}
 	
 	public abstract boolean canEqual(Object o);

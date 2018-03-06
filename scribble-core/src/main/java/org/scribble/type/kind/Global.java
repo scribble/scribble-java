@@ -19,13 +19,7 @@ public class Global extends AbstractKind implements ProtocolKind
 	
 	protected Global()
 	{
-
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
+		super("Global");
 	}
 
 	@Override

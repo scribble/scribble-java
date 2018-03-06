@@ -19,13 +19,7 @@ public class ModuleKind extends AbstractKind implements ImportKind
 	
 	protected ModuleKind()
 	{
-
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
+		super("Module");
 	}
 
 	@Override

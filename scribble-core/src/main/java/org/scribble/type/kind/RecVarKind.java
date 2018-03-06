@@ -19,13 +19,7 @@ public class RecVarKind extends AbstractKind
 	
 	protected RecVarKind()
 	{
-
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
+		super("RecVar");
 	}
 
 	@Override

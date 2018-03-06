@@ -15,9 +15,17 @@ package org.scribble.type.kind;
 
 public abstract class AbstractKind implements Kind
 {
-	public AbstractKind()
-	{
+	protected String kind; // Not final for easier serialiazation (OpKind)
 
+  // For serialization
+	protected AbstractKind()
+	{
+		
+	}
+
+	public AbstractKind(String kind)
+	{
+		this.kind = kind;
 	}
 	
 	@Override
@@ -26,9 +34,17 @@ public abstract class AbstractKind implements Kind
 	public abstract boolean canEqual(Object o);  // Not really needed due to singleton pattern
 
 	@Override
+	public int hashCode()
+	{
+		int hash = 7901;
+		hash = 31 * hash + this.kind.hashCode();
+		return hash;
+	}
+
+	@Override
 	public String toString()
 	{
 		String s = this.getClass().toString();
-		return s.substring("class org.sribble.sesstype.kind.".length() + 1, s.length());
+		return s.substring("class org.sribble.type.kind.".length() + 1, s.length());  // FIXME: factor out by reflection (in initialiser)
 	}
 }

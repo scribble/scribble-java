@@ -19,13 +19,7 @@ public class Local extends AbstractKind implements ProtocolKind, PayloadTypeKind
 	
 	protected Local()
 	{
-
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
+		super("Local");
 	}
 
 	@Override

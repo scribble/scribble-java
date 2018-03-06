@@ -11,49 +11,56 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.type.kind;
+package org.scribble.runtime.net.state;
 
-import java.io.IOException;
-import java.io.Serializable;
+import org.scribble.runtime.net.ScribMessage;
+import org.scribble.type.name.Op;
+import org.scribble.type.name.Role;
 
-public class OpKind extends AbstractKind implements MessageIdKind, Serializable
+public class ScribEvent extends ScribMessage
 {
 	private static final long serialVersionUID = 1L;
 
-	public static final OpKind KIND = new OpKind();
-	
-	public OpKind()
-	{
-		super("Op");
-	}
-	
-	private void writeObject(java.io.ObjectOutputStream stream) throws IOException
-	{
-		stream.writeObject(this.kind);
-	}
+	public final Role peer;
 
-	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException
+	public ScribEvent(Role peer, Op op, Object... payload)  // FIXME: factor out with EAction?
 	{
-		this.kind = (String) stream.readObject();  // i.e. "Op"
+		super(op, payload);
+		this.peer = peer;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 7919;
+		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + this.peer.hashCode();
+		return hash;
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o == this)
+		if (this == o)
 		{
 			return true;
 		}
-		if (!(o instanceof OpKind))
+		if (!(o instanceof ScribEvent))
 		{
 			return false;
 		}
-		return ((OpKind) o).canEqual(this);
+		ScribEvent m = (ScribEvent) o;
+		return m.canEqual(this) && this.peer.equals(m.peer);
+	}
+	
+	public boolean canEqual(Object o)
+	{
+		return o instanceof ScribEvent;
 	}
 	
 	@Override
-	public boolean canEqual(Object o)
+	public String toString()
 	{
-		return o instanceof OpKind;
+		return this.peer + ":" + super.toString();
 	}
 }

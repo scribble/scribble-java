@@ -20,13 +20,7 @@ public class AmbigKind extends AbstractKind implements NonRoleArgKind//, Payload
 	
 	protected AmbigKind()
 	{
-
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
+		super("Ambig");
 	}
 
 	@Override

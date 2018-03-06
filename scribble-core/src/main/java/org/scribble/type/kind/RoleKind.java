@@ -19,13 +19,7 @@ public class RoleKind extends AbstractKind implements ParamKind
 	
 	protected RoleKind()
 	{
-
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
+		super("Role");
 	}
 
 	@Override
