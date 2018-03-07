@@ -25,20 +25,21 @@ import java.util.function.Function;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.ScribMessage;
 import org.scribble.runtime.net.ScribMessageFormatter;
+import org.scribble.runtime.net.state.ScribBranch;
 import org.scribble.runtime.net.state.ScribEndState;
-import org.scribble.runtime.net.state.ScribEvent;
+import org.scribble.runtime.net.state.ScribHandlerMessage;
 import org.scribble.runtime.net.state.ScribInputState;
 import org.scribble.runtime.net.state.ScribOutputState;
 import org.scribble.runtime.net.state.ScribState;
 import org.scribble.type.name.Op;
 import org.scribble.type.name.Role;
-import org.scribble.util.function.Function2;
 
 public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPSTEndpoint<S, R>
 {
 	protected final ScribState init;
-	protected final Map<ScribOutputState, Function<Object, ScribEvent>> outputs = new HashMap<>();
-	protected final Map<ScribInputState, Map<Op, Function2<? extends Op, Object, Void>>> inputs = new HashMap<>();
+	protected final Map<ScribOutputState, Function<Object, ? extends ScribHandlerMessage>> outputs = new HashMap<>();
+	//protected final Map<ScribInputState, Map<Op, Function2<? extends Op, Object, Void>>> inputs = new HashMap<>();
+	protected final Map<ScribInputState, ScribBranch> inputs = new HashMap<>();
 
 	public EventDrivenEndpoint(S sess, R self, ScribMessageFormatter smf, ScribState init) throws IOException, ScribbleRuntimeException
 	{
@@ -74,16 +75,16 @@ public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPST
 					{
 						if (curr instanceof ScribOutputState)
 						{
-							ScribEvent m = this.edep.outputs.get(curr).apply(null);  // FIXME: state object
-							getChannelEndpoint(m.peer).write(new ScribMessage(m.op, m.payload));  // FIXME: ScribEvent has extra Role
-							curr = ((ScribOutputState) curr).succs.get(m.op);
+							ScribHandlerMessage m = this.edep.outputs.get(curr).apply(null);  // FIXME: state object
+							getChannelEndpoint(m.getPeer()).write(new ScribMessage(m.getOp(), m.getPayload()));  // FIXME: ScribEvent has extra Role
+							curr = ((ScribOutputState) curr).succs.get(m.getOp());
 						}
 						else if (curr instanceof ScribInputState)
 						{
 							try  // cf. ReceiveSocket#readScribMessage
 							{
 								ScribMessage m = getChannelEndpoint(((ScribInputState) curr).peer).getFuture().get();
-								this.edep.inputs.get(curr).get(m.op).apply(null, null);  // FIXME: state object and received payloads -- null op OK?
+								this.edep.inputs.get(curr).dispatch(m);  // FIXME: state object and received payloads -- null op OK?
 								curr = ((ScribInputState) curr).succs.get(m.op);
 							}
 							catch (InterruptedException e)

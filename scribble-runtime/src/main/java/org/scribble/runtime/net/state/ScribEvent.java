@@ -14,18 +14,19 @@
 package org.scribble.runtime.net.state;
 
 import org.scribble.runtime.net.ScribMessage;
-import org.scribble.type.name.Op;
 import org.scribble.type.name.Role;
 
-public class ScribEvent extends ScribMessage
+@Deprecated
+public class ScribEvent<R extends Role, M extends ScribHandlerMessage> extends ScribMessage
 {
 	private static final long serialVersionUID = 1L;
 
-	public final Role peer;
+	public final R peer;
 
-	public ScribEvent(Role peer, Op op, Object... payload)  // FIXME: factor out with EAction?
+	//public ScribEvent(Role peer, Op op, Object... payload)  // FIXME: factor out with EAction?
+	public ScribEvent(R peer, M m)  // FIXME: factor out with EAction?
 	{
-		super(op, payload);
+		super(m.getOp(), m.getPayload());
 		this.peer = peer;
 	}
 	
@@ -49,10 +50,11 @@ public class ScribEvent extends ScribMessage
 		{
 			return false;
 		}
-		ScribEvent m = (ScribEvent) o;
-		return m.canEqual(this) && this.peer.equals(m.peer);
+		ScribEvent<?, ?> m = (ScribEvent<?, ?>) o;
+		return super.equals(o) && this.peer.equals(m.peer);  // Does canEqual
 	}
 	
+	@Override
 	public boolean canEqual(Object o)
 	{
 		return o instanceof ScribEvent;

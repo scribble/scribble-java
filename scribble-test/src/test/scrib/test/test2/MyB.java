@@ -2,7 +2,6 @@ package test.test2;
 
 import static test.test2.Test2.Proto1.Proto1.A;
 import static test.test2.Test2.Proto1.Proto1.B;
-import static test.test2.Test2.Proto1.Proto1._2;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
@@ -18,20 +17,36 @@ import test.test2.Test2.Proto1.channels.B.EndSocket;
 import test.test2.Test2.Proto1.channels.B.Proto1_B_1;
 import test.test2.Test2.Proto1.channels.B.Proto1_B_1_Handler;
 import test.test2.Test2.Proto1.handlers.B.Proto1_B;
+import test.test2.Test2.Proto1.handlers.B.Proto1_B_10_Branch;
+import test.test2.Test2.Proto1.handlers.states.B.Proto1_B_10;
 import test.test2.Test2.Proto1.ops._1;
 import test.test2.Test2.Proto1.ops._2;
 import test.test2.Test2.Proto1.roles.B;
-import test.test2.Test2.Proto1.states.B.Proto1_B_10;
 
 public class MyB
 {
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException
 	{
-		foo();
+		foo3();
 	}
 
-	public static void foo() throws IOException, ScribbleRuntimeException
+	public static void foo3() throws IOException, ScribbleRuntimeException
 	{
+		class MyHandler extends Proto1_B_10_Branch
+		{
+			@Override
+			public void receive(_1 op)
+			{
+				System.out.println("Done 1");
+			}
+
+			@Override
+			public void receive(_2 op)
+			{
+				System.out.println("Done 2");
+			}
+		}
+		
 		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
 			while (true)
@@ -40,10 +55,7 @@ public class MyB
 				try (Proto1_B b = new Proto1_B(P1, B, new ObjectStreamFormatter()))
 				{
 					b.accept(ss, A);
-					b.register(Proto1_B_10.id,
-							(op, sess) -> { System.out.println("Done 1"); return null; },
-							(op, sess) -> { System.out.println("Done 2"); return null; });
-					.// FIXME: payloads
+					b.register(Proto1_B_10.id, new MyHandler());
 
 					Future<Void> f = b.run();
 					f.get();
@@ -58,8 +70,51 @@ public class MyB
 		}
 	}
 
+	/*public static void foo2() throws IOException, ScribbleRuntimeException
+	{
+		try (ScribServerSocket ss = new SocketChannelServer(8888))
+		{
+			while (true)
+			{
+				Proto1 P1 = new Proto1();
+				try (Proto1_B b = new Proto1_B(P1, B, new ObjectStreamFormatter()))
+				{
+					b.accept(ss, A);
+					b.register(Proto1_B_10.id,
+							(op, sess) -> { System.out.println("Done 1"); return null; },
+							(op, sess) -> { System.out.println("Done 2"); return null; });
+					// FIXME: branch handler objects and payloads
+
+					Future<Void> f = b.run();
+					f.get();
+					
+					System.out.println("B done");
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}*/
+
 	public static void foo1() throws IOException, ScribbleRuntimeException
 	{
+		class MyHandler implements Proto1_B_1_Handler
+		{
+			@Override
+			public void receive(EndSocket schan, _1 op) throws org.scribble.main.ScribbleRuntimeException, java.io.IOException, ClassNotFoundException
+			{
+				System.out.println("Done 1");
+			}
+
+			@Override
+			public void receive(EndSocket schan, _2 op) throws org.scribble.main.ScribbleRuntimeException, java.io.IOException, ClassNotFoundException
+			{
+				System.out.println("Done 1");
+			}
+		}
+
 		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
 			while (true)
@@ -77,20 +132,5 @@ public class MyB
 				}
 			}
 		}
-	}
-}
-
-class MyHandler implements Proto1_B_1_Handler
-{
-	@Override
-	public void receive(EndSocket schan, _1 op) throws org.scribble.main.ScribbleRuntimeException, java.io.IOException, ClassNotFoundException
-	{
-		System.out.println("Done 1");
-	}
-
-	@Override
-	public void receive(EndSocket schan, _2 op) throws org.scribble.main.ScribbleRuntimeException, java.io.IOException, ClassNotFoundException
-	{
-		System.out.println("Done 1");
 	}
 }
