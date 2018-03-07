@@ -35,15 +35,15 @@ public class MyB
 		class MyHandler extends Proto1_B_10_Branch
 		{
 			@Override
-			public void receive(_1 op, Integer arg1)
+			public void receive(Object data, _1 op, Integer arg1)
 			{
-				System.out.println("Done 1: " + arg1);
+				System.out.println("(B) received 1: " + arg1);
 			}
 
 			@Override
-			public void receive(_2 op, String arg1)
+			public void receive(Object data, _2 op, String arg1)
 			{
-				System.out.println("Done 2: " + arg1);
+				System.out.println("(B) received 2: " + arg1);
 			}
 		}
 		
@@ -52,7 +52,7 @@ public class MyB
 			while (true)
 			{
 				Proto1 P1 = new Proto1();
-				try (Proto1_B b = new Proto1_B(P1, B, new ObjectStreamFormatter()))
+				try (Proto1_B b = new Proto1_B(P1, B, new ObjectStreamFormatter(), null))
 				{
 					b.accept(ss, A);
 					b.register(Proto1_B_10.id, new MyHandler());

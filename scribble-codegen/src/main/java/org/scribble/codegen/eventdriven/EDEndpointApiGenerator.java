@@ -81,8 +81,13 @@ public class EDEndpointApiGenerator
 		epClass += "\n";*/
 
 		epClass += "public " + name + "(" + sess  + " sess, " + role
-				+ " self, org.scribble.runtime.net.ScribMessageFormatter smf) throws java.io.IOException, org.scribble.main.ScribbleRuntimeException {\n";
-		epClass += "super(sess, self, smf, " + pack + ".handlers.states." + this.self + "." + name + "_" + init.id + ".id" + ");\n";  // FIXME: factor out
+				+ " self, org.scribble.runtime.net.ScribMessageFormatter smf, Object data) throws java.io.IOException, org.scribble.main.ScribbleRuntimeException {\n";
+		epClass += "super(sess, self, smf, " + pack + ".handlers.states." + this.self + "." + name + "_" + init.id + ".id" + ", data);\n";  // FIXME: factor out
+		for (EState s : states)
+		{
+			String tmp = (s.getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.id;
+			epClass += "this.states.put(\"" + tmp + "\", " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + "." + tmp + ".id);\n";
+		}
 		epClass += "}\n";
 		epClass += "\n";
 		
@@ -151,7 +156,12 @@ public class EDEndpointApiGenerator
 			for (EAction a : s.getAllActions())
 			{
 				stateClass += "this.succs.put(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)
-						+ ", " + ((s.getSuccessor(a).getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.getSuccessor(a).id) + ".id);\n";
+						+ ", "
+						/*+ ((s.getSuccessor(a).id == s.id)
+								? "this"
+								: ((s.getSuccessor(a).getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.getSuccessor(a).id) + ".id")*/
+						+ "\"" + ((s.getSuccessor(a).getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.getSuccessor(a).id) + "\""
+						+ ");\n";
 			}
 			stateClass += "}\n";
 			stateClass += "}\n";
@@ -222,7 +232,7 @@ public class EDEndpointApiGenerator
 				branchInterface += "public abstract class " + branchName + " implements org.scribble.runtime.net.state.ScribBranch {\n";
 				for (EAction a : s.getAllActions())
 				{
-					branchInterface += "\npublic abstract void receive(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + " op"; 
+					branchInterface += "\npublic abstract void receive(Object data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + " op"; 
 					int i = 1;
 					for (PayloadElemType<?> pet : a.payload.elems)
 					{
@@ -234,11 +244,11 @@ public class EDEndpointApiGenerator
 
 				branchInterface += "\n";
 				branchInterface += "@Override\n";
-				branchInterface += "public void dispatch(org.scribble.runtime.net.ScribMessage m) {\n";
+				branchInterface += "public void dispatch(Object data, org.scribble.runtime.net.ScribMessage m) {\n";
 				branchInterface += "switch (m.op.toString()) {\n";
 				for (EAction a : s.getAllActions())
 				{
-					branchInterface += "case \"" + SessionApiGenerator.getOpClassName(a.mid) + "\": receive(";
+					branchInterface += "case \"" + SessionApiGenerator.getOpClassName(a.mid) + "\": receive(data, ";
 					branchInterface += "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + ") m.op";
 					int i = 0;
 					for (PayloadElemType<?> pet : a.payload.elems)

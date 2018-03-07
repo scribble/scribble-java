@@ -29,7 +29,7 @@ public class MyA
 	public static void foo3() throws IOException, ScribbleRuntimeException
 	{
 		Proto1 P1 = new Proto1();
-		try (Proto1_A a = new Proto1_A(P1, A, new ObjectStreamFormatter()))
+		try (Proto1_A a = new Proto1_A(P1, A, new ObjectStreamFormatter(), null))
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			a.register(Proto1_A_5.id, x ->

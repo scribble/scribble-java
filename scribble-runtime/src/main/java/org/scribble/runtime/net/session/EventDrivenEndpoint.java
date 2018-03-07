@@ -38,11 +38,16 @@ public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPST
 	protected final ScribState init;
 	protected final Map<ScribOutputState, Function<Object, ? extends ScribHandlerMessage>> outputs = new HashMap<>();
 	protected final Map<ScribInputState, ScribBranch> inputs = new HashMap<>();
+	
+	protected Object data;
+	
+	protected final Map<String, ScribState> states = new HashMap<>();  // Bypass problem of mutual references and static field initialisation (class loading)
 
-	public EventDrivenEndpoint(S sess, R self, ScribMessageFormatter smf, ScribState init) throws IOException, ScribbleRuntimeException
+	public EventDrivenEndpoint(S sess, R self, ScribMessageFormatter smf, ScribState init, Object data) throws IOException, ScribbleRuntimeException
 	{
 		super(sess, self, smf);
 		this.init = init;
+		this.data = data;
 	}
 	
 	/*public void register()
@@ -52,8 +57,6 @@ public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPST
 	
 	public Future<Void> run() throws ScribbleRuntimeException
 	{
-		// FIXME: make linear
-		
 		Object[] res = new Object[1];
 
 		new Thread()
@@ -73,17 +76,17 @@ public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPST
 					{
 						if (curr instanceof ScribOutputState)
 						{
-							ScribHandlerMessage m = this.edep.outputs.get(curr).apply(null);  // FIXME: state object
+							ScribHandlerMessage m = this.edep.outputs.get(curr).apply(this.edep.data);  // FIXME: state object
 							getChannelEndpoint(m.getPeer()).write(new ScribMessage(m.getOp(), m.getPayload().toArray(new Object[0])));  // FIXME: ScribEvent has extra Role
-							curr = ((ScribOutputState) curr).succs.get(m.getOp());
+							curr = this.edep.states.get(((ScribOutputState) curr).succs.get(m.getOp()));
 						}
 						else if (curr instanceof ScribInputState)
 						{
 							try  // cf. ReceiveSocket#readScribMessage
 							{
 								ScribMessage m = getChannelEndpoint(((ScribInputState) curr).peer).getFuture().get();
-								this.edep.inputs.get(curr).dispatch(m);  // FIXME: state object and received payloads -- null op OK?
-								curr = ((ScribInputState) curr).succs.get(m.op);
+								this.edep.inputs.get(curr).dispatch(this.edep.data, m);  // FIXME: state object and received payloads -- null op OK?
+								curr = this.edep.states.get(((ScribInputState) curr).succs.get(m.op));
 							}
 							catch (InterruptedException e)
 							{
@@ -100,7 +103,7 @@ public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPST
 						}
 						else
 						{
-							throw new RuntimeException("Shouldn't get in here: ");
+							throw new RuntimeException("Shouldn't get in here: " + curr);
 						}
 					}
 				}

@@ -5,5 +5,5 @@ import org.scribble.runtime.net.ScribMessage;
 // FIXME: integrate with BranchSocket and Handlers
 public interface ScribBranch
 {
-	public void dispatch(ScribMessage m);
+	public void dispatch(Object data, ScribMessage m);
 }

@@ -9,7 +9,8 @@ abstract public class ScribState
 {
 	public final String name;
 
-	public final Map<Op, ScribState> succs = new HashMap<>(); // FIXME
+	//public final Map<Op, ScribState> succs = new HashMap<>(); // FIXME
+	public final Map<Op, String> succs = new HashMap<>();
 
 	public ScribState(String name)
 	{
