@@ -33,27 +33,22 @@ import org.scribble.runtime.net.state.ScribOutputState;
 import org.scribble.runtime.net.state.ScribState;
 import org.scribble.type.name.Role;
 
-public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPSTEndpoint<S, R>
+public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoint<S, R>
 {
 	protected final ScribState init;
-	protected final Map<ScribOutputState, Function<Object, ? extends ScribHandlerMessage>> outputs = new HashMap<>();
-	protected final Map<ScribInputState, ScribBranch> inputs = new HashMap<>();
+	protected final Map<ScribOutputState, Function<D, ? extends ScribHandlerMessage>> outputs = new HashMap<>();
+	protected final Map<ScribInputState, ScribBranch<D>> inputs = new HashMap<>();
 	
-	protected Object data;
+	protected final D data;
 	
 	protected final Map<String, ScribState> states = new HashMap<>();  // Bypass problem of mutual references and static field initialisation (class loading)
 
-	public EventDrivenEndpoint(S sess, R self, ScribMessageFormatter smf, ScribState init, Object data) throws IOException, ScribbleRuntimeException
+	public EventDrivenEndpoint(S sess, R self, ScribMessageFormatter smf, ScribState init, D data) throws IOException, ScribbleRuntimeException
 	{
 		super(sess, self, smf);
 		this.init = init;
 		this.data = data;
 	}
-	
-	/*public void register()
-	{
-		
-	}*/
 	
 	public Future<Void> run() throws ScribbleRuntimeException
 	{
@@ -61,7 +56,7 @@ public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPST
 
 		new Thread()
 		{
-			private final EventDrivenEndpoint<S, R> edep;
+			private final EventDrivenEndpoint<S, R, D> edep;
 
 			{
 				this.edep = EventDrivenEndpoint.this;

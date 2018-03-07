@@ -32,16 +32,16 @@ public class MyB
 
 	public static void foo3() throws IOException
 	{
-		class MyHandler extends Proto1_B_10_Branch
+		class MyHandler extends Proto1_B_10_Branch<Void>
 		{
 			@Override
-			public void receive(Object data, _1 op, Integer arg1)
+			public void receive(Void data, _1 op, Integer arg1)
 			{
 				System.out.println("(B) received 1: " + arg1);
 			}
 
 			@Override
-			public void receive(Object data, _2 op, String arg1)
+			public void receive(Void data, _2 op, String arg1)
 			{
 				System.out.println("(B) received 2: " + arg1);
 			}
@@ -52,7 +52,7 @@ public class MyB
 			while (true)
 			{
 				Proto1 P1 = new Proto1();
-				try (Proto1_B b = new Proto1_B(P1, B, new ObjectStreamFormatter(), null))
+				try (Proto1_B<Void> b = new Proto1_B<>(P1, B, new ObjectStreamFormatter(), null))
 				{
 					b.accept(ss, A);
 					b.register(Proto1_B_10.id, new MyHandler());

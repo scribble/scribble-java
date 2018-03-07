@@ -21,16 +21,16 @@ public class MyC
 {
 	public static void main(String[] args) throws IOException
 	{
-		class MyHandler extends Proto1_C_22_Branch
+		class MyHandler extends Proto1_C_22_Branch<Void>
 		{
 			@Override
-			public void receive(Object data, _2 op, Integer x)
+			public void receive(Void data, _2 op, Integer x)
 			{
 				System.out.println("(C) received 2: " + x);
 			}
 
 			@Override
-			public void receive(Object data, _4 op, String x)
+			public void receive(Void data, _4 op, String x)
 			{
 				System.out.println("(C) received 4: " + x);
 			}
@@ -41,7 +41,7 @@ public class MyC
 			while (true)
 			{
 				Proto1 P1 = new Proto1();
-				try (Proto1_C b = new Proto1_C(P1, C, new ObjectStreamFormatter(), null))
+				try (Proto1_C<Void> b = new Proto1_C<>(P1, C, new ObjectStreamFormatter(), null))
 				{
 					b.accept(ss, B);
 					b.register(Proto1_C_22.id, new MyHandler());

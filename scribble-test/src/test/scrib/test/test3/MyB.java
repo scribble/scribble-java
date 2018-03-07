@@ -27,18 +27,20 @@ public class MyB
 {
 	public static void main(String[] args) throws IOException
 	{
-		class MyHandler extends Proto1_B_14_Branch
+		class MyHandler extends Proto1_B_14_Branch<int[]>
 		{
 			@Override
-			public void receive(Object data, _1 op, Integer x)
+			public void receive(int[] data, _1 op, Integer x)
 			{
-				System.out.println("(B) received 1: " + x);
+				data[0]++;
+				System.out.println("(B) received 1: " + data[0] + ", " + x);
 			}
 
 			@Override
-			public void receive(Object data, _3 op, String x)
+			public void receive(int[] data, _3 op, String x)
 			{
-				System.out.println("(B) received 3: " + x);
+				data[0]++;
+				System.out.println("(B) received 3: " + data[0] + ", " + x);
 			}
 		}
 		
@@ -47,7 +49,7 @@ public class MyB
 			while (true)
 			{
 				Proto1 P1 = new Proto1();
-				try (Proto1_B b = new Proto1_B(P1, B, new ObjectStreamFormatter(), null))
+				try (Proto1_B<int[]> b = new Proto1_B<>(P1, B, new ObjectStreamFormatter(), new int[1]))
 				{
 					b.accept(ss, A);
 					b.request(C, SocketChannelEndpoint::new, "localhost", 9999);

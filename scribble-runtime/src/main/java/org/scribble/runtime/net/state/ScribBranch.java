@@ -3,7 +3,7 @@ package org.scribble.runtime.net.state;
 import org.scribble.runtime.net.ScribMessage;
 
 // FIXME: integrate with BranchSocket and Handlers
-public interface ScribBranch
+public interface ScribBranch<D>
 {
-	public void dispatch(Object data, ScribMessage m);
+	public void dispatch(D data, ScribMessage m);
 }

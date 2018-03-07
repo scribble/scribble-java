@@ -75,13 +75,13 @@ public class EDEndpointApiGenerator
 		epClass += "import java.util.HashMap;\n";
 		epClass += "import java.util.Map;\n";*/
 		epClass += "\n";
-		epClass += "public class " + name + " extends org.scribble.runtime.net.session.EventDrivenEndpoint<" + sess + ", " + role + "> {\n";
+		epClass += "public class " + name + "<D> extends org.scribble.runtime.net.session.EventDrivenEndpoint<" + sess + ", " + role + ", D> {\n";
 
 		/*epClass += "private final Map<Object, Function<Object, org.scribble.runtime.net.ScribMessage>> outputs = new HashMap<>();\n";
 		epClass += "\n";*/
 
 		epClass += "public " + name + "(" + sess  + " sess, " + role
-				+ " self, org.scribble.runtime.net.ScribMessageFormatter smf, Object data) throws java.io.IOException, org.scribble.main.ScribbleRuntimeException {\n";
+				+ " self, org.scribble.runtime.net.ScribMessageFormatter smf, D data) throws java.io.IOException, org.scribble.main.ScribbleRuntimeException {\n";
 		epClass += "super(sess, self, smf, " + pack + ".handlers.states." + this.self + "." + name + "_" + init.id + ".id" + ", data);\n";  // FIXME: factor out
 		for (EState s : states)
 		{
@@ -229,10 +229,10 @@ public class EDEndpointApiGenerator
 				String branchInterface = "";
 				branchInterface += "package " + pack + ".handlers." + this.self + ";\n";
 				branchInterface += "";
-				branchInterface += "public abstract class " + branchName + " implements org.scribble.runtime.net.state.ScribBranch {\n";
+				branchInterface += "public abstract class " + branchName + "<D> implements org.scribble.runtime.net.state.ScribBranch<D> {\n";
 				for (EAction a : s.getAllActions())
 				{
-					branchInterface += "\npublic abstract void receive(Object data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + " op"; 
+					branchInterface += "\npublic abstract void receive(D data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + " op"; 
 					int i = 1;
 					for (PayloadElemType<?> pet : a.payload.elems)
 					{
@@ -244,7 +244,7 @@ public class EDEndpointApiGenerator
 
 				branchInterface += "\n";
 				branchInterface += "@Override\n";
-				branchInterface += "public void dispatch(Object data, org.scribble.runtime.net.ScribMessage m) {\n";
+				branchInterface += "public void dispatch(D data, org.scribble.runtime.net.ScribMessage m) {\n";
 				branchInterface += "switch (m.op.toString()) {\n";
 				for (EAction a : s.getAllActions())
 				{
@@ -306,7 +306,7 @@ public class EDEndpointApiGenerator
 			{
 				// FIXME: "untyped" (ScribEvent) -- need state-specific "enums"
 				res += "public void register(" + prefix + name + "_" + s.id
-						+ " sid, java.util.function.Function<Object, "
+						+ " sid, java.util.function.Function<D, "
 						+ SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + ".messages." + name + "_" + s.id + "_Message> h) {\n";  // FIXME: factor out
 				res += "this.outputs.put(sid, h);\n";
 				res += "}\n";
@@ -331,7 +331,7 @@ public class EDEndpointApiGenerator
 					res += "tmp.put(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid) + ", h_" + a.mid + ");\n";
 				}
 				res += "}\n";*/
-				res += ", " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers." + this.self + "." + name + "_" + s.id + "_Branch b";
+				res += ", " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers." + this.self + "." + name + "_" + s.id + "_Branch<D> b";
 				res += ") {\n";
 				res += "this.inputs.put(sid, b);\n";
 				res += "}\n";
