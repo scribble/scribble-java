@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.scribble.ast.DataTypeDecl;
@@ -176,7 +177,12 @@ public class EDEndpointApiGenerator
 				String messageInterface = "";
 				messageInterface += "package " + pack + ".handlers.states." + this.self + ".messages;\n";
 				messageInterface += "\n";
-				messageInterface += "public interface " + messageIfName + " extends org.scribble.runtime.net.state.ScribHandlerMessage {\n";
+				messageInterface += "public abstract class " + messageIfName + " extends org.scribble.runtime.net.state.ScribHandlerMessage {\n";
+				messageInterface += "private static final long serialVersionUID = 1L;\n";
+				messageInterface += "\n";
+				messageInterface += "public " + messageIfName + "(org.scribble.type.name.Role peer, org.scribble.type.name.Op op, Object... payload) {\n";
+				messageInterface += "super(peer, op, payload);\n";
+				messageInterface += "}\n";
 				messageInterface += "}\n";
 				res.put(mprefix + messageIfName + ".java", messageInterface);
 
@@ -186,9 +192,11 @@ public class EDEndpointApiGenerator
 					String messageClass = "";
 					messageClass += "package " + pack + ".handlers.states." + this.self + ".messages;\n";
 					messageClass += "\n";
-					messageClass += "public class " + messageName + " implements " + messageIfName + " {\n";
-					messageClass += "public final java.util.List<Object> pay = new java.util.LinkedList<>();\n";
-					messageClass += "public " + messageName + "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " role";
+					messageClass += "public class " + messageName + " extends " + messageIfName + " {\n";
+					//messageClass += "public final java.util.List<Object> pay = new java.util.LinkedList<>();\n";
+					messageClass += "private static final long serialVersionUID = 1L;\n";
+					messageClass += "\n";
+					messageClass += "public " + messageName + "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer";
 					int i = 1;
 					for (PayloadElemType<?> pet : a.payload.elems)
 					{
@@ -196,12 +204,15 @@ public class EDEndpointApiGenerator
 						messageClass += ", " + dtd.extName + " arg" + i++;
 					}
 					messageClass += ") {\n";
-					for (int j = 1; j <= a.payload.elems.size(); j++)
+					/*for (int j = 1; j <= a.payload.elems.size(); j++)
 					{
 						messageClass += "this.pay.add(arg" + j + ");\n";
-					}
+					}*/
+					messageClass += "super(peer, "
+							+ SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)
+							+ IntStream.rangeClosed(1, a.payload.elems.size()).mapToObj(j -> ", arg" + j).collect(Collectors.joining("")) + ");\n";
 					messageClass += "}\n";
-					messageClass += "\n";
+					/*messageClass += "\n";
 					messageClass += "@Override\n";
 					messageClass += "public org.scribble.type.name.Role getPeer() {\n";
 					messageClass += "return " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + "." + a.peer + ";\n";
@@ -215,7 +226,7 @@ public class EDEndpointApiGenerator
 					messageClass += "@Override\n";
 					messageClass += "public java.util.List<Object> getPayload() {\n";
 					messageClass += "return this.pay;\n";
-					messageClass += "}\n";
+					messageClass += "}\n";*/
 					messageClass += "}\n";
 					res.put(mprefix + messageName + ".java", messageClass);
 				}
