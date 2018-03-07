@@ -10,6 +10,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.NonProtocolDecl;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
@@ -20,6 +22,7 @@ import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
@@ -188,20 +191,45 @@ public class EDEndpointApiGenerator
 
 				for (EAction a : s.getAllActions())
 				{
+					boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
+						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+					MessageSigNameDecl msnd = null;
+					if (isSig)
+					{
+						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtocolDecls().stream()
+								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+					}
+
 					String messageName = name + "_" + s.id + "_" + SessionApiGenerator.getOpClassName(a.mid);
 					String messageClass = "";
 					messageClass += "package " + pack + ".handlers.states." + this.self + ".messages;\n";
 					messageClass += "\n";
-					messageClass += "public class " + messageName + " extends " + messageIfName + " {\n";
+					messageClass += "public class " + messageName + " extends " + messageIfName;
+					if (isSig)
+					{
+						messageClass += " implements org.scribble.runtime.net.state.ScribHandlerSig";
+					}
+					messageClass += " {\n";
 					//messageClass += "public final java.util.List<Object> pay = new java.util.LinkedList<>();\n";
 					messageClass += "private static final long serialVersionUID = 1L;\n";
+					if (isSig)
+					{
+						messageClass += "private final " + msnd.extName + " m;\n";
+					}
 					messageClass += "\n";
 					messageClass += "public " + messageName + "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer";
-					int i = 1;
-					for (PayloadElemType<?> pet : a.payload.elems)
+					if (isSig)
 					{
-						DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
-						messageClass += ", " + dtd.extName + " arg" + i++;
+						messageClass += ", " + msnd.extName + " m"; 
+					}
+					else
+					{
+						int i = 1;
+						for (PayloadElemType<?> pet : a.payload.elems)
+						{
+							DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+							messageClass += ", " + dtd.extName + " arg" + i++;
+						}
 					}
 					messageClass += ") {\n";
 					/*for (int j = 1; j <= a.payload.elems.size(); j++)
@@ -211,6 +239,10 @@ public class EDEndpointApiGenerator
 					messageClass += "super(peer, "
 							+ SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)
 							+ IntStream.rangeClosed(1, a.payload.elems.size()).mapToObj(j -> ", arg" + j).collect(Collectors.joining("")) + ");\n";
+					if (isSig)
+					{
+						messageClass += "this.m = m;\n";
+					}
 					messageClass += "}\n";
 					/*messageClass += "\n";
 					messageClass += "@Override\n";
@@ -227,6 +259,14 @@ public class EDEndpointApiGenerator
 					messageClass += "public java.util.List<Object> getPayload() {\n";
 					messageClass += "return this.pay;\n";
 					messageClass += "}\n";*/
+					if (isSig)
+					{
+						messageClass += "\n";
+						messageClass += "@Override\n";
+						messageClass += "public org.scribble.runtime.net.ScribMessage getSig() {\n";
+						messageClass += "return this.m;\n";
+						messageClass += "}\n";
+					}
 					messageClass += "}\n";
 					res.put(mprefix + messageName + ".java", messageClass);
 				}

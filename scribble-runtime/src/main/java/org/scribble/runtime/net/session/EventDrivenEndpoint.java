@@ -28,6 +28,7 @@ import org.scribble.runtime.net.ScribMessageFormatter;
 import org.scribble.runtime.net.state.ScribBranch;
 import org.scribble.runtime.net.state.ScribEndState;
 import org.scribble.runtime.net.state.ScribHandlerMessage;
+import org.scribble.runtime.net.state.ScribHandlerSig;
 import org.scribble.runtime.net.state.ScribInputState;
 import org.scribble.runtime.net.state.ScribOutputState;
 import org.scribble.runtime.net.state.ScribState;
@@ -74,7 +75,14 @@ public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends M
 							ScribHandlerMessage m = this.edep.outputs.get(curr).apply(this.edep.data);  // FIXME: state object
 							/*getChannelEndpoint(m.getPeer()).write(new ScribMessage(m.getOp(), m.getPayload().toArray(new Object[0])));  // FIXME: ScribEvent has extra Role
 							curr = this.edep.states.get(((ScribOutputState) curr).succs.get(m.getOp()));*/
-							getChannelEndpoint(m.peer).write(new ScribMessage(m.op, m.payload));
+							if (m instanceof ScribHandlerSig)
+							{
+								getChannelEndpoint(m.peer).write(((ScribHandlerSig) m).getSig());
+							}
+							else
+							{
+								getChannelEndpoint(m.peer).write(new ScribMessage(m.op, m.payload));
+							}
 							curr = this.edep.states.get(((ScribOutputState) curr).succs.get(m.op));
 						}
 						else if (curr instanceof ScribInputState)
