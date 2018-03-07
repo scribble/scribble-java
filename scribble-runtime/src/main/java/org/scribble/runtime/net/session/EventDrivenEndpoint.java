@@ -31,14 +31,12 @@ import org.scribble.runtime.net.state.ScribHandlerMessage;
 import org.scribble.runtime.net.state.ScribInputState;
 import org.scribble.runtime.net.state.ScribOutputState;
 import org.scribble.runtime.net.state.ScribState;
-import org.scribble.type.name.Op;
 import org.scribble.type.name.Role;
 
 public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPSTEndpoint<S, R>
 {
 	protected final ScribState init;
 	protected final Map<ScribOutputState, Function<Object, ? extends ScribHandlerMessage>> outputs = new HashMap<>();
-	//protected final Map<ScribInputState, Map<Op, Function2<? extends Op, Object, Void>>> inputs = new HashMap<>();
 	protected final Map<ScribInputState, ScribBranch> inputs = new HashMap<>();
 
 	public EventDrivenEndpoint(S sess, R self, ScribMessageFormatter smf, ScribState init) throws IOException, ScribbleRuntimeException
@@ -52,7 +50,7 @@ public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPST
 		
 	}*/
 	
-	public Future<Void> run()
+	public Future<Void> run() throws ScribbleRuntimeException
 	{
 		// FIXME: make linear
 		

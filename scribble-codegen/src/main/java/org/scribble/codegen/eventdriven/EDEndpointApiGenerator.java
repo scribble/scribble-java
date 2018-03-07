@@ -8,11 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.ast.Module;
-import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
-import org.scribble.codegen.java.util.ClassBuilder;
-import org.scribble.del.ModuleDel;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
@@ -20,13 +16,10 @@ import org.scribble.model.MState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.kind.Kind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.MessageId;
 import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
-import org.scribble.visit.util.MessageIdCollector;
 
 // From ParamCoreEndpointApiGenerator
 public class EDEndpointApiGenerator
@@ -103,6 +96,20 @@ public class EDEndpointApiGenerator
 		epClass += "public void register(State s, Function<Object, org.scribble.runtime.net.ScribMessage> h) {\n";
 		epClass += "this.outputs.put(s, h)";
 		epClass += "}\n";*/
+		
+		epClass += "@Override\n";
+		epClass += "public java.util.concurrent.Future<Void> run() throws org.scribble.main.ScribbleRuntimeException {\n";
+		epClass += "java.util.Set<Object> states = java.util.stream.Stream.of(" + states.stream().filter(s -> s.getStateKind() != EStateKind.TERMINAL).map(s ->
+				SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + "." + this.proto.getSimpleName() + "_" + this.self + "_" + s.id + ".id").collect(Collectors.joining(", ")) + ").collect(java.util.stream.Collectors.toSet());\n";
+		epClass += "java.util.Set<Object> regd = new java.util.HashSet<>();\n";
+		epClass += "regd.addAll(this.inputs.keySet());\n";
+		epClass += "regd.addAll(this.outputs.keySet());\n";
+		epClass += "if (!states.equals(regd)) {\n";
+		epClass += "states.removeAll(regd);\n";
+		epClass += "throw new org.scribble.main.ScribbleRuntimeException(\"Missing state registrations: \" + states);\n";
+		epClass += "}\n";
+		epClass += "return super.run();\n";
+		epClass += "}\n";
 		
 		epClass += "}\n";
 		
