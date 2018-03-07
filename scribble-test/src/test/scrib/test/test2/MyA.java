@@ -39,7 +39,7 @@ public class MyA
 			Future<Void> f = a.run();
 			f.get();
 
-			System.out.println("A done");
+			System.out.println("(A) end");
 		}
 		catch (Exception e)
 		{

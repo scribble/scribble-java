@@ -59,7 +59,7 @@ public class MyB
 					Future<Void> f = b.run();
 					f.get();
 					
-					System.out.println("B done");
+					System.out.println("(B) end");
 				}
 				catch (Exception e)
 				{
