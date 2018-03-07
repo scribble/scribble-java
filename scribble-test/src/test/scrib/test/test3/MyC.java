@@ -6,7 +6,6 @@ import static test.test3.Test3.Proto1.Proto1.C;
 import java.io.IOException;
 import java.util.concurrent.Future;
 
-import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.ObjectStreamFormatter;
 import org.scribble.runtime.net.scribsock.ScribServerSocket;
 import org.scribble.runtime.net.scribsock.SocketChannelServer;
@@ -20,7 +19,7 @@ import test.test3.Test3.Proto1.ops._4;
 
 public class MyC
 {
-	public static void main(String[] args) throws IOException, ScribbleRuntimeException
+	public static void main(String[] args) throws IOException
 	{
 		class MyHandler extends Proto1_C_22_Branch
 		{

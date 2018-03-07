@@ -7,7 +7,6 @@ import static test.test2.Test2.Proto1.Proto1._1;
 import java.io.IOException;
 import java.util.concurrent.Future;
 
-import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.ObjectStreamFormatter;
 import org.scribble.runtime.net.session.MPSTEndpoint;
 import org.scribble.runtime.net.session.SocketChannelEndpoint;
@@ -21,12 +20,12 @@ import test.test2.Test2.Proto1.roles.A;;
 
 public class MyA
 {
-	public static void main(String[] args) throws IOException, ScribbleRuntimeException
+	public static void main(String[] args) throws IOException
 	{
 		foo3();
 	}
 
-	public static void foo3() throws IOException, ScribbleRuntimeException
+	public static void foo3() throws IOException
 	{
 		Proto1 P1 = new Proto1();
 		try (Proto1_A a = new Proto1_A(P1, A, new ObjectStreamFormatter(), null))

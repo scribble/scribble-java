@@ -25,12 +25,12 @@ import test.test2.Test2.Proto1.roles.B;
 
 public class MyB
 {
-	public static void main(String[] args) throws IOException, ScribbleRuntimeException
+	public static void main(String[] args) throws IOException
 	{
 		foo3();
 	}
 
-	public static void foo3() throws IOException, ScribbleRuntimeException
+	public static void foo3() throws IOException
 	{
 		class MyHandler extends Proto1_B_10_Branch
 		{

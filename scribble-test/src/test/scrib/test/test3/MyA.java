@@ -6,7 +6,6 @@ import static test.test3.Test3.Proto1.Proto1.B;
 import java.io.IOException;
 import java.util.concurrent.Future;
 
-import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.ObjectStreamFormatter;
 import org.scribble.runtime.net.session.SocketChannelEndpoint;
 
@@ -18,7 +17,7 @@ import test.test3.Test3.Proto1.handlers.states.A.messages.Proto1_A_6__3;;
 
 public class MyA
 {
-	public static void main(String[] args) throws IOException, ScribbleRuntimeException
+	public static void main(String[] args) throws IOException
 	{
 		Proto1 P1 = new Proto1();
 		try (Proto1_A a = new Proto1_A(P1, A, new ObjectStreamFormatter(), new int[1]))
