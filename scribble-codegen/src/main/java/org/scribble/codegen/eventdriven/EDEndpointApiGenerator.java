@@ -283,12 +283,30 @@ public class EDEndpointApiGenerator
 				branchInterface += "public abstract class " + branchName + "<D> implements org.scribble.runtime.net.state.ScribBranch<D> {\n";
 				for (EAction a : s.getAllActions())
 				{
-					branchInterface += "\npublic abstract void receive(D data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + " op"; 
-					int i = 1;
-					for (PayloadElemType<?> pet : a.payload.elems)
+					// FIXME: factor out
+					boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
+						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+					MessageSigNameDecl msnd = null;
+					if (isSig)
 					{
-						DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
-						branchInterface += ", " + dtd.extName + " arg" + i++;
+						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtocolDecls().stream()
+								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+					}
+
+					branchInterface += "\npublic abstract void receive(D data, ";
+					if (isSig)
+					{
+						branchInterface += msnd.extName + " m";
+					}
+					else
+					{
+						branchInterface += SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + " op"; 
+						int i = 1;
+						for (PayloadElemType<?> pet : a.payload.elems)
+						{
+							DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+							branchInterface += ", " + dtd.extName + " arg" + i++;
+						}
 					}
 					branchInterface += ");\n";
 				}
@@ -299,8 +317,25 @@ public class EDEndpointApiGenerator
 				branchInterface += "switch (m.op.toString()) {\n";
 				for (EAction a : s.getAllActions())
 				{
+					// FIXME: factor out
+					boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
+						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+					MessageSigNameDecl msnd = null;
+					if (isSig)
+					{
+						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtocolDecls().stream()
+								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+					}
+
 					branchInterface += "case \"" + SessionApiGenerator.getOpClassName(a.mid) + "\": receive(data, ";
-					branchInterface += "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + ") m.op";
+					if (isSig)
+					{
+						branchInterface += "(" + msnd.extName + ") m";
+					}
+					else
+					{
+						branchInterface += "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + ") m.op";
+					}
 					int i = 0;
 					for (PayloadElemType<?> pet : a.payload.elems)
 					{
