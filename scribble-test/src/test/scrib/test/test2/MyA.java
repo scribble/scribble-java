@@ -33,8 +33,8 @@ public class MyA
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			a.register(Proto1_A_5.id, x ->
-					//new Proto1_A_5__1(B));
-					new Proto1_A_5__2(B));
+					//new Proto1_A_5__1(B, 123));
+					new Proto1_A_5__2(B, "abc"));
 			
 			Future<Void> f = a.run();
 			f.get();

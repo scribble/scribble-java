@@ -35,15 +35,15 @@ public class MyB
 		class MyHandler extends Proto1_B_10_Branch
 		{
 			@Override
-			public void receive(_1 op)
+			public void receive(_1 op, Integer arg1)
 			{
-				System.out.println("Done 1");
+				System.out.println("Done 1: " + arg1);
 			}
 
 			@Override
-			public void receive(_2 op)
+			public void receive(_2 op, String arg1)
 			{
-				System.out.println("Done 2");
+				System.out.println("Done 2: " + arg1);
 			}
 		}
 		

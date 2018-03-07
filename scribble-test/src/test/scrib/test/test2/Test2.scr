@@ -3,16 +3,17 @@
 
 module test.test2.Test2;
 
-type <java> "java.lang.Integer" from "rt.jar" as Integer;
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+type <java> "java.lang.String"  from "rt.jar" as Str;
 
 global protocol Proto1(role A, role B)
 {
 	choice at A
 	{
-		1() from A to B;
+		1(Int) from A to B;
 	}
 	or
 	{
-		2() from A to B;
+		2(Str) from A to B;
 	}
 }

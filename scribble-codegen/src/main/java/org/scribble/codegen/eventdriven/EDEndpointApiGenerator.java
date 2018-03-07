@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.scribble.ast.DataTypeDecl;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
@@ -27,7 +28,7 @@ public class EDEndpointApiGenerator
 	public final Job job;
 	public final GProtocolName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
-	
+
 	public EDEndpointApiGenerator(Job job, GProtocolName fullname, Role self)
 	{
 		this.job = job;
@@ -181,8 +182,8 @@ public class EDEndpointApiGenerator
 					int i = 1;
 					for (PayloadElemType<?> pet : a.payload.elems)
 					{
-						DataType dt = (DataType) pet;
-						messageClass += ", " + dt + " arg" + i++;
+						DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+						messageClass += ", " + dtd.extName + " arg" + i++;
 					}
 					messageClass += ") {\n";
 					for (int j = 1; j <= a.payload.elems.size(); j++)
@@ -225,8 +226,8 @@ public class EDEndpointApiGenerator
 					int i = 1;
 					for (PayloadElemType<?> pet : a.payload.elems)
 					{
-						DataType dt = (DataType) pet;
-						branchInterface += ", " + dt + " arg" + i++;
+						DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+						branchInterface += ", " + dtd.extName + " arg" + i++;
 					}
 					branchInterface += ");\n";
 				}
@@ -242,8 +243,8 @@ public class EDEndpointApiGenerator
 					int i = 0;
 					for (PayloadElemType<?> pet : a.payload.elems)
 					{
-						DataType dt = (DataType) pet;
-						branchInterface += ", (" + dt + ") m.payload[" + i++ + "]";
+						DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+						branchInterface += ", (" + dtd.extName + ") m.payload[" + i++ + "]";
 					}
 					branchInterface += "); break;\n";
 				}

@@ -74,7 +74,7 @@ public class EventDrivenEndpoint<S extends Session, R extends Role> extends MPST
 						if (curr instanceof ScribOutputState)
 						{
 							ScribHandlerMessage m = this.edep.outputs.get(curr).apply(null);  // FIXME: state object
-							getChannelEndpoint(m.getPeer()).write(new ScribMessage(m.getOp(), m.getPayload()));  // FIXME: ScribEvent has extra Role
+							getChannelEndpoint(m.getPeer()).write(new ScribMessage(m.getOp(), m.getPayload().toArray(new Object[0])));  // FIXME: ScribEvent has extra Role
 							curr = ((ScribOutputState) curr).succs.get(m.getOp());
 						}
 						else if (curr instanceof ScribInputState)
