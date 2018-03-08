@@ -7,9 +7,9 @@ import static test.test2.Test2.Proto1.Proto1._1;
 import java.io.IOException;
 import java.util.concurrent.Future;
 
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
 
 import test.test2.Test2.Proto1.Proto1;
 import test.test2.Test2.Proto1.channels.A.Proto1_A_1;

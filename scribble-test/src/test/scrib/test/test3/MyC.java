@@ -6,9 +6,9 @@ import static test.test3.Test3.Proto1.Proto1.C;
 import java.io.IOException;
 import java.util.concurrent.Future;
 
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
 
 import test.test3.Test3.Proto1.Proto1;
 import test.test3.Test3.Proto1.handlers.C.Proto1_C;

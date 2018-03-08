@@ -6,8 +6,8 @@ import static test.test3.Test3.Proto1.Proto1.B;
 import java.io.IOException;
 import java.util.concurrent.Future;
 
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
 
 import test.test3.Test3.Proto1.Proto1;
 import test.test3.Test3.Proto1.handlers.A.Proto1_A;

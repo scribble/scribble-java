@@ -16,9 +16,9 @@ package org.scribble.codegen.java;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
-import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
-import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
+import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
+import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
+import org.scribble.codegen.java.statechanapi.ioifaces.IOInterfacesGenerator;
 import org.scribble.main.Job;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
