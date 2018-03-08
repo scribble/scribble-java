@@ -19,7 +19,6 @@ import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.PackageName;
 
-@Deprecated
 public class SessionTypeFactory
 {
 	public SessionTypeFactory()
@@ -33,6 +32,7 @@ public class SessionTypeFactory
 		return new ModuleName(elems);
 	}*/
 
+	// Currently used by generated Session API
 	// From fullname
 	public static GProtocolName parseGlobalProtocolName(String name)
 	{

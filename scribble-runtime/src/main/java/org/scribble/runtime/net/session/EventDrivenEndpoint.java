@@ -37,10 +37,8 @@ import org.scribble.type.name.Role;
 public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoint<S, R>
 {
 	protected final ScribState init;
-	//protected final Map<ScribOutputState, Function<D, ? extends ScribHandlerMessage>> outputs = new HashMap<>();
 	protected final Map<ScribOutputState, Function<D, ?>> outputs = new HashMap<>();
-	//protected final Map<ScribInputState, ScribBranch<D>> inputs = new HashMap<>();
-	protected final Map<ScribInputState, Object> inputs = new HashMap<>();
+	protected final Map<ScribInputState, ScribBranch<D>> inputs = new HashMap<>();
 	
 	protected final D data;
 	
@@ -57,6 +55,7 @@ public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends M
 	{
 		Object[] res = new Object[1];
 
+		// FIXME: integrate with selector
 		new Thread()
 		{
 			private final EventDrivenEndpoint<S, R, D> edep;
@@ -83,7 +82,7 @@ public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends M
 							}
 							else
 							{
-								getChannelEndpoint(m.peer).write(new ScribMessage(m.op, m.payload));
+								getChannelEndpoint(m.peer).write(new ScribMessage(m.op, m.payload));  // FIXME: ScribEvent has extra Role (RoleKind not serializable)
 							}
 							curr = this.edep.states.get(((ScribOutputState) curr).succs.get(m.op));
 						}
@@ -92,8 +91,7 @@ public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends M
 							try  // cf. ReceiveSocket#readScribMessage
 							{
 								ScribMessage m = getChannelEndpoint(((ScribInputState) curr).peer).getFuture().get();
-								// FIXME: generic cast
-								((ScribBranch<D>) this.edep.inputs.get(curr)).dispatch(this.edep.data, m);  // FIXME: state object and received payloads -- null op OK?
+								this.edep.inputs.get(curr).dispatch(this.edep.data, m);
 								curr = this.edep.states.get(((ScribInputState) curr).succs.get(m.op));
 							}
 							catch (InterruptedException e)

@@ -511,7 +511,8 @@ public class EDEndpointApiGenerator
 				res += "}\n";
 				res += "\n";
 				String T = s.getAllActions().stream().map(a -> SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers." + this.self + ".interfaces." + name + "__" + a.peer + "_"
-						+ SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining("")) + "<D>").collect(Collectors.joining(" & "));
+						+ SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining("")) + "<D>").collect(Collectors.joining(" & "))
+						+ " & org.scribble.runtime.net.handlers.ScribBranch<D>";
 				// FIXME: EventDrivenEndpoint will cast to Branch for dispatch -- not guaranteed by implementation of receive i/f's
 				res += "public " + "<T extends " + T + ">\n" 
 						+ name + "<D> icallback(" + prefix + name + "_" + s.id
