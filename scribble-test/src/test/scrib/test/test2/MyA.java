@@ -18,6 +18,7 @@ import test.test2.Test2.Proto1.handlers.states.A.Proto1_A_5;
 import test.test2.Test2.Proto1.handlers.states.A.messages.Proto1_A_5__2;
 import test.test2.Test2.Proto1.roles.A;;
 
+// TODO: test interop between ED API and SC API (also for sig messages)
 public class MyA
 {
 	public static void main(String[] args) throws IOException
