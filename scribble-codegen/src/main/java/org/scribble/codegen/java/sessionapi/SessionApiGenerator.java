@@ -271,7 +271,7 @@ public class SessionApiGenerator extends ApiGen
 
 	public static String getStateChannelPackageName(GProtocolName gpn, Role self)
 	{
-		return getEndpointApiRootPackageName(gpn) + ".channels." + self;
+		return getEndpointApiRootPackageName(gpn) + ".statechans." + self;
 	}
 	
 	// Returns the simple Role Class name

@@ -30,19 +30,19 @@ import static http.longvers.HttpLong.Http.Http.VIA;
 import static http.longvers.HttpLong.Http.Http._200;
 import static http.longvers.HttpLong.Http.Http._404;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 import org.scribble.util.Caller;
 
 import http.longvers.HttpLong.Http.Http;
-import http.longvers.HttpLong.Http.channels.C.Http_C_1;
-import http.longvers.HttpLong.Http.channels.C.Http_C_3;
-import http.longvers.HttpLong.Http.channels.C.Http_C_4_Cases;
-import http.longvers.HttpLong.Http.channels.C.Http_C_5;
-import http.longvers.HttpLong.Http.channels.C.Http_C_5_Cases;
-import http.longvers.HttpLong.Http.channels.C.ioifaces.Branch_C_S_200__S_404.Branch_C_S_200__S_404_Enum;
 import http.longvers.HttpLong.Http.roles.C;
+import http.longvers.HttpLong.Http.statechans.C.Http_C_1;
+import http.longvers.HttpLong.Http.statechans.C.Http_C_3;
+import http.longvers.HttpLong.Http.statechans.C.Http_C_4_Cases;
+import http.longvers.HttpLong.Http.statechans.C.Http_C_5;
+import http.longvers.HttpLong.Http.statechans.C.Http_C_5_Cases;
+import http.longvers.HttpLong.Http.statechans.C.ioifaces.Branch_C_S_200__S_404.Branch_C_S_200__S_404_Enum;
 import http.longvers.message.Body;
 import http.longvers.message.HttpLongMessageFormatter;
 import http.longvers.message.client.Host;
@@ -72,7 +72,7 @@ public class HttpLongC
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;
 		
-			client.connect(S, SocketChannelEndpoint::new, host, port);
+			client.request(S, SocketChannelEndpoint::new, host, port);
 
 			doResponse(
 					doRequest(new Http_C_1(client), host)
@@ -138,7 +138,7 @@ public class HttpLongC
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;
 		
-			se.connect(S, SocketChannelEndpoint::new, host, port);
+			se.request(S, SocketChannelEndpoint::new, host, port);
 
 			Http_C_1 s1 = new Http_C_1(se);
 

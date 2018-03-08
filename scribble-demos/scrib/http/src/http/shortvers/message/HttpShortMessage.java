@@ -13,7 +13,7 @@
  */
 package http.shortvers.message;
 
-import org.scribble.runtime.net.ScribMessage;
+import org.scribble.runtime.message.ScribMessage;
 import org.scribble.type.name.Op;
 
 import http.shortvers.HttpShort.Http.Http;

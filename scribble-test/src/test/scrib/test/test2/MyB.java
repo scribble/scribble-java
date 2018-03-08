@@ -11,11 +11,9 @@ import org.scribble.runtime.message.ObjectStreamFormatter;
 import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.net.SocketChannelServer;
 import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import test.test2.Test2.Proto1.Proto1;
-import test.test2.Test2.Proto1.channels.B.EndSocket;
-import test.test2.Test2.Proto1.channels.B.Proto1_B_1;
-import test.test2.Test2.Proto1.channels.B.Proto1_B_1_Handler;
 import test.test2.Test2.Proto1.handlers.B.Proto1_B;
 import test.test2.Test2.Proto1.handlers.B.Proto1_B_10_Branch;
 import test.test2.Test2.Proto1.handlers.states.B.Proto1_B_10;
@@ -23,6 +21,9 @@ import test.test2.Test2.Proto1.ops._1;
 import test.test2.Test2.Proto1.ops._2;
 import test.test2.Test2.Proto1.roles.A;
 import test.test2.Test2.Proto1.roles.B;
+import test.test2.Test2.Proto1.statechans.B.EndSocket;
+import test.test2.Test2.Proto1.statechans.B.Proto1_B_1;
+import test.test2.Test2.Proto1.statechans.B.Proto1_B_1_Handler;
 
 public class MyB
 {
@@ -105,13 +106,13 @@ public class MyB
 		class MyHandler implements Proto1_B_1_Handler
 		{
 			@Override
-			public void receive(EndSocket schan, _1 op) throws org.scribble.main.ScribbleRuntimeException, java.io.IOException, ClassNotFoundException
+			public void receive(EndSocket schan, _1 op, Buf<Integer> arg1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 			{
 				System.out.println("Done 1");
 			}
 
 			@Override
-			public void receive(EndSocket schan, _2 op) throws org.scribble.main.ScribbleRuntimeException, java.io.IOException, ClassNotFoundException
+			public void receive(EndSocket schan, _2 op, Buf<String> arg1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 			{
 				System.out.println("Done 1");
 			}

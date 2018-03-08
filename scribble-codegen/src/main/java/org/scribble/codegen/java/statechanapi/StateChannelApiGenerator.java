@@ -98,7 +98,7 @@ public class StateChannelApiGenerator extends ApiGen
 	{
 		Map<String, String> map = new HashMap<String, String>();
 		// FIXME: factor out with ScribSocketBuilder.getPackageName
-		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.gpn).replace('.', '/') + "/channels/" + this.self + "/" ;
+		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.gpn).replace('.', '/') + "/statechans/" + this.self + "/" ;
 		for (String s : this.types.keySet())
 		{
 			String path = prefix + s + ".java";
