@@ -45,7 +45,8 @@ public class MyC
 				try (Proto1_C<Void> b = new Proto1_C<>(P1, C, new ObjectStreamFormatter(), null))
 				{
 					b.accept(ss, A);
-					b.register(Proto1_C_22.id, new MyHandler());
+
+					b.icallback(Proto1_C_22.id, new MyHandler());
 
 					Future<Void> f = b.run();
 					f.get();

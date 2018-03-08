@@ -48,10 +48,10 @@ public class MyB
 					MyHandler h1 = new MyHandler();
 					Function<String[], Proto1_B_21_Message> h2 = x -> new Proto1_B_21__2(A, x[0] += "a");
 					
-					b.icallback(Proto1_B_19.id, h1);
-					b.icallback(Proto1_B_21.id, h2);
-					b.icallback(Proto1_B_22.id, h1);
-					b.icallback(Proto1_B_23.id, h2);
+					b.icallback(Proto1_B_19.id, h1)
+					 .icallback(Proto1_B_21.id, h2)
+					 .icallback(Proto1_B_22.id, h1)
+					 .icallback(Proto1_B_23.id, h2);
 
 					Future<Void> f = b.run();
 					f.get();

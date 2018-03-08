@@ -29,8 +29,8 @@ public class MyA
 
 			Function<String[], Proto1_A_6_Message> h = x -> new Proto1_A_6__2(B, (x[0] += "a"));
 
-			a.icallback(Proto1_A_6.id, h);
-			a.icallback(Proto1_A_8.id, h);
+			a.icallback(Proto1_A_6.id, h)
+			 .icallback(Proto1_A_8.id, h);
 			
 			Future<Void> f = a.run();
 			f.get();

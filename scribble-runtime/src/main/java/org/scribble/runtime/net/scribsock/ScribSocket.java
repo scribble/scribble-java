@@ -17,6 +17,7 @@ import org.scribble.runtime.net.session.Session;
 import org.scribble.runtime.net.session.SessionEndpoint;
 import org.scribble.type.name.Role;
 
+// FIXME: rename package (and class?) to statechans -- cf., handlers package
 public abstract class ScribSocket<S extends Session, R extends Role>
 {
 	protected SessionEndpoint<S, R> se;

@@ -25,13 +25,13 @@ import java.util.function.Function;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.ScribMessage;
 import org.scribble.runtime.net.ScribMessageFormatter;
-import org.scribble.runtime.net.state.ScribBranch;
-import org.scribble.runtime.net.state.ScribEndState;
-import org.scribble.runtime.net.state.ScribHandlerMessage;
-import org.scribble.runtime.net.state.ScribHandlerSig;
-import org.scribble.runtime.net.state.ScribInputState;
-import org.scribble.runtime.net.state.ScribOutputState;
-import org.scribble.runtime.net.state.ScribState;
+import org.scribble.runtime.net.handlers.ScribBranch;
+import org.scribble.runtime.net.handlers.ScribOutputEvent;
+import org.scribble.runtime.net.handlers.ScribSigMessage;
+import org.scribble.runtime.net.handlers.states.ScribEndState;
+import org.scribble.runtime.net.handlers.states.ScribInputState;
+import org.scribble.runtime.net.handlers.states.ScribOutputState;
+import org.scribble.runtime.net.handlers.states.ScribState;
 import org.scribble.type.name.Role;
 
 public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoint<S, R>
@@ -74,12 +74,12 @@ public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends M
 					{
 						if (curr instanceof ScribOutputState)
 						{
-							ScribHandlerMessage m = (ScribHandlerMessage) this.edep.outputs.get(curr).apply(this.edep.data);  // FIXME: state object
+							ScribOutputEvent m = (ScribOutputEvent) this.edep.outputs.get(curr).apply(this.edep.data);  // FIXME: state object
 							/*getChannelEndpoint(m.getPeer()).write(new ScribMessage(m.getOp(), m.getPayload().toArray(new Object[0])));  // FIXME: ScribEvent has extra Role
 							curr = this.edep.states.get(((ScribOutputState) curr).succs.get(m.getOp()));*/
-							if (m instanceof ScribHandlerSig)
+							if (m instanceof ScribSigMessage)
 							{
-								getChannelEndpoint(m.peer).write(((ScribHandlerSig) m).getSig());
+								getChannelEndpoint(m.peer).write(((ScribSigMessage) m).getSig());
 							}
 							else
 							{

@@ -48,8 +48,8 @@ public class MyB
 					b.accept(ss, A);
 
 					MyHandler h = new MyHandler();
-					b.icallback(Proto1_B_13.id, h);
-					b.icallback(Proto1_B_15.id, h);
+					b.icallback(Proto1_B_13.id, h)
+					 .icallback(Proto1_B_15.id, h);
 
 					Future<Void> f = b.run();
 					f.get();

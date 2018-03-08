@@ -30,9 +30,9 @@ public class MyA
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			a.request(C, SocketChannelEndpoint::new, "localhost", 9999);
 
-			a.register(Proto1_A_8.id,  x -> (x[0]++ < 3) ? new Proto1_A_8__1(B, 123) : new Proto1_A_8__3(B, "abc"));
-			a.register(Proto1_A_10.id, x -> new Proto1_A_10__2(C, 456));
-			a.register(Proto1_A_11.id, x -> new Proto1_A_11__4(C, "def"));
+			a.icallback(Proto1_A_8.id,  x -> (x[0]++ < 3) ? new Proto1_A_8__1(B, 123) : new Proto1_A_8__3(B, "abc"))
+			 .icallback(Proto1_A_10.id, x -> new Proto1_A_10__2(C, 456))
+			 .icallback(Proto1_A_11.id, x -> new Proto1_A_11__4(C, "def"));
 			
 			Future<Void> f = a.run();
 			f.get();

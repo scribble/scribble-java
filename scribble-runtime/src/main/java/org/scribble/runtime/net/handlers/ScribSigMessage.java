@@ -1,8 +1,8 @@
-package org.scribble.runtime.net.state;
+package org.scribble.runtime.net.handlers;
 
 import org.scribble.runtime.net.ScribMessage;
 
-public interface ScribHandlerSig
+public interface ScribSigMessage
 {
 	ScribMessage getSig();
 }

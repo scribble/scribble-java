@@ -43,10 +43,10 @@ public class MyA
 			Function<int[], Proto1_A_8_Message> h1 = x -> new Proto1_A_8__1(B, x[0]++);
 			MyHandler h2 = new MyHandler();
 			
-			a.icallback(Proto1_A_8.id, h1);
-			a.icallback(Proto1_A_10.id, h2);
-			a.icallback(Proto1_A_11.id, h1);
-			a.icallback(Proto1_A_12.id, h2);
+			a.icallback(Proto1_A_8.id, h1)
+			 .icallback(Proto1_A_10.id, h2)
+			 .icallback(Proto1_A_11.id, h1)
+			 .icallback(Proto1_A_12.id, h2);
 			
 			Future<Void> f = a.run();
 			f.get();

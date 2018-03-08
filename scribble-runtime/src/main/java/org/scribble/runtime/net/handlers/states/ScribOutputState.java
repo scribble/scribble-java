@@ -1,4 +1,4 @@
-package org.scribble.runtime.net.state;
+package org.scribble.runtime.net.handlers.states;
 
 abstract public class ScribOutputState extends ScribState
 {

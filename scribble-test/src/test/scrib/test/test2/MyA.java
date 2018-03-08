@@ -44,10 +44,10 @@ public class MyA
 		try (Proto1_A<Void> a = new Proto1_A<>(P1, A, new ObjectStreamFormatter(), null))
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
+
 			a.icallback(Proto1_A_5.id, x ->
 					//new Proto1_A_5__1(B, 123));
 					new Proto1_A_5__2(B, "abc"));
-			// FIXME: make "structural" nominal types for messages using roles+labs+pays, instead of sids
 			
 			Future<Void> f = a.run();
 			f.get();

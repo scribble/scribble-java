@@ -1,4 +1,4 @@
-package org.scribble.runtime.net.state;
+package org.scribble.runtime.net.handlers.states;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -134,10 +134,10 @@ public class EDEndpointApiGenerator
 			String stateKind;
 			switch (kind)
 			{
-				case OUTPUT:     stateKind = "org.scribble.runtime.net.state.ScribOutputState"; break;
+				case OUTPUT:     stateKind = "org.scribble.runtime.net.handlers.states.ScribOutputState"; break;
 				case UNARY_INPUT:
-				case POLY_INPUT: stateKind = "org.scribble.runtime.net.state.ScribInputState";  break;
-				case TERMINAL:   stateKind = "org.scribble.runtime.net.state.ScribEndState";    break;
+				case POLY_INPUT: stateKind = "org.scribble.runtime.net.handlers.states.ScribInputState";  break;
+				case TERMINAL:   stateKind = "org.scribble.runtime.net.handlers.states.ScribEndState";    break;
 				case ACCEPT:
 				case WRAP_SERVER:
 					throw new RuntimeException("TODO");
@@ -174,8 +174,8 @@ public class EDEndpointApiGenerator
 			{
 				String mprefix = SessionApiGenerator.getEndpointApiRootPackageName(this.proto).replace('.', '/') + "/handlers/states/" + this.self + "/messages/";
 
-				// FIXME: generate lattice -- cf. original handler i/f's (with "subtyping")
 				// FIXME: sort cases
+				// FIXME: generate lattice -- cf. original handler i/f's (with "subtyping")
 				String messageIfName = name + 
 						//a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining());
 						s.getActions().stream().map(a -> "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining())).collect(Collectors.joining());
@@ -190,7 +190,7 @@ public class EDEndpointApiGenerator
 				String messageAbstract = "";
 				messageAbstract += "package " + pack + ".handlers.states." + this.self + ".messages;\n";
 				messageAbstract += "\n";
-				messageAbstract += "public abstract class " + messageAbstractName + " extends org.scribble.runtime.net.state.ScribHandlerMessage implements " + pack + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName + " {\n";
+				messageAbstract += "public abstract class " + messageAbstractName + " extends org.scribble.runtime.net.handlers.ScribOutputEvent implements " + pack + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName + " {\n";
 				messageAbstract += "private static final long serialVersionUID = 1L;\n";
 				messageAbstract += "\n";
 				messageAbstract += "public " + messageAbstractName + "(org.scribble.type.name.Role peer, org.scribble.type.name.Op op, Object... payload) {\n";
@@ -233,7 +233,7 @@ public class EDEndpointApiGenerator
 					messageClass += "public class " + messageName + " extends " + messageAbstractName; //+ " implements " + pack + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName;
 					if (isSig)
 					{
-						messageClass += " implements org.scribble.runtime.net.state.ScribHandlerSig";
+						messageClass += " implements org.scribble.runtime.net.handlers.ScribSigMessage";
 					}
 					messageClass += " {\n";
 					//messageClass += "public final java.util.List<Object> pay = new java.util.LinkedList<>();\n";
@@ -306,7 +306,7 @@ public class EDEndpointApiGenerator
 				String branchAbstract = "";
 				branchAbstract += "package " + pack + ".handlers." + this.self + ";\n";
 				branchAbstract += "";
-				branchAbstract += "public abstract class " + branchName + "<D> implements org.scribble.runtime.net.state.ScribBranch<D>";
+				branchAbstract += "public abstract class " + branchName + "<D> implements org.scribble.runtime.net.handlers.ScribBranch<D>";
 				branchAbstract += s.getAllActions().stream().map(a ->
 						", " + pack + ".handlers." + this.self + ".interfaces." + name + "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining()) + "<D>").collect(Collectors.joining(""));
 				branchAbstract += " {\n";

@@ -1,4 +1,4 @@
-package org.scribble.runtime.net.state;
+package org.scribble.runtime.net.handlers.states;
 
 import org.scribble.type.name.Role;
 
