@@ -48,7 +48,7 @@ public class MyB
 				{
 					b.accept(ss, A);
 
-					b.callback(Proto1_B_12.id, new MyHandler());
+					b.icallback(Proto1_B_12.id, new MyHandler());
 
 					Future<Void> f = b.run();
 					f.get();

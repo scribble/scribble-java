@@ -24,7 +24,7 @@ public class MyA
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			
-			a.register(Proto1_A_6.id,
+			a.icallback(Proto1_A_6.id,
 					x -> (x[0]++ < 3) ? new Proto1_A_6__1(B, 123) : new Proto1_A_6__3(B, "abc")
 					);
 			

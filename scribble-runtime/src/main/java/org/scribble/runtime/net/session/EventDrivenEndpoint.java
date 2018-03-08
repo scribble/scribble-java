@@ -39,7 +39,8 @@ public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends M
 	protected final ScribState init;
 	//protected final Map<ScribOutputState, Function<D, ? extends ScribHandlerMessage>> outputs = new HashMap<>();
 	protected final Map<ScribOutputState, Function<D, ?>> outputs = new HashMap<>();
-	protected final Map<ScribInputState, ScribBranch<D>> inputs = new HashMap<>();
+	//protected final Map<ScribInputState, ScribBranch<D>> inputs = new HashMap<>();
+	protected final Map<ScribInputState, Object> inputs = new HashMap<>();
 	
 	protected final D data;
 	
@@ -91,7 +92,8 @@ public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends M
 							try  // cf. ReceiveSocket#readScribMessage
 							{
 								ScribMessage m = getChannelEndpoint(((ScribInputState) curr).peer).getFuture().get();
-								this.edep.inputs.get(curr).dispatch(this.edep.data, m);  // FIXME: state object and received payloads -- null op OK?
+								// FIXME: generic cast
+								((ScribBranch<D>) this.edep.inputs.get(curr)).dispatch(this.edep.data, m);  // FIXME: state object and received payloads -- null op OK?
 								curr = this.edep.states.get(((ScribInputState) curr).succs.get(m.op));
 							}
 							catch (InterruptedException e)

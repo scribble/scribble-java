@@ -57,7 +57,7 @@ public class MyB
 				try (Proto1_B<Void> b = new Proto1_B<>(P1, B, new ObjectStreamFormatter(), null))
 				{
 					b.accept(ss, A);
-					b.callback(Proto1_B_10.id, new MyHandler());
+					b.icallback(Proto1_B_10.id, new MyHandler());
 
 					Future<Void> f = b.run();
 					f.get();

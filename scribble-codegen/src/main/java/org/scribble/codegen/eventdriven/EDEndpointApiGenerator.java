@@ -302,11 +302,14 @@ public class EDEndpointApiGenerator
 			{
 				String bprefix = SessionApiGenerator.getEndpointApiRootPackageName(this.proto).replace('.', '/') + "/handlers/" + this.self + "/";
 				String branchName = name + "_" + s.id + "_Branch";
-				String branchInterface = "";
-				branchInterface += "package " + pack + ".handlers." + this.self + ";\n";
-				branchInterface += "";
-				branchInterface += "public abstract class " + branchName + "<D> implements org.scribble.runtime.net.state.ScribBranch<D> {\n";
-				for (EAction a : s.getAllActions())
+				String branchAbstract = "";
+				branchAbstract += "package " + pack + ".handlers." + this.self + ";\n";
+				branchAbstract += "";
+				branchAbstract += "public abstract class " + branchName + "<D> implements org.scribble.runtime.net.state.ScribBranch<D>";
+				branchAbstract += s.getAllActions().stream().map(a ->
+						", " + pack + ".handlers." + this.self + ".interfaces." + name + "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining()) + "<D>").collect(Collectors.joining(""));
+				branchAbstract += " {\n";
+				/*for (EAction a : s.getAllActions())
 				{
 					// FIXME: factor out
 					boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
@@ -334,14 +337,19 @@ public class EDEndpointApiGenerator
 						}
 					}
 					branchInterface += ");\n";
-				}
+				}*/
 
-				branchInterface += "\n";
-				branchInterface += "@Override\n";
-				branchInterface += "public void dispatch(D data, org.scribble.runtime.net.ScribMessage m) {\n";
-				branchInterface += "switch (m.op.toString()) {\n";
+				branchAbstract += "\n";
+				branchAbstract += "@Override\n";
+				branchAbstract += "public void dispatch(D data, org.scribble.runtime.net.ScribMessage m) {\n";
+				branchAbstract += "switch (m.op.toString()) {\n";
 				for (EAction a : s.getAllActions())
 				{
+					String receiveIfName = name + "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining());
+					String receiveInterface = "";
+					receiveInterface += "package " + pack + ".handlers." + this.self + ".interfaces;\n";
+					receiveInterface += "\n";
+					receiveInterface += "public interface " + receiveIfName + "<D> {\n";
 					// FIXME: factor out
 					boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
 						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
@@ -352,29 +360,58 @@ public class EDEndpointApiGenerator
 								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 					}
 
-					branchInterface += "case \"" + SessionApiGenerator.getOpClassName(a.mid) + "\": receive(data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + "." + a.peer + ", ";
+					receiveInterface += "\npublic void receive(D data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer, ";
 					if (isSig)
 					{
-						branchInterface += "(" + msnd.extName + ") m";
+						receiveInterface += msnd.extName + " m";
 					}
 					else
 					{
-						branchInterface += "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + ") m.op";
+						receiveInterface += SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + " op"; 
+						int i = 1;
+						for (PayloadElemType<?> pet : a.payload.elems)
+						{
+							DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+							receiveInterface += ", " + dtd.extName + " arg" + i++;
+						}
+					}
+					receiveInterface += ");\n";
+					receiveInterface += "}\n";
+					res.put(bprefix + "interfaces/" + receiveIfName + ".java", receiveInterface);
+					
+					// FIXME: factor out
+					/*boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
+						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+					MessageSigNameDecl msnd = null;
+					if (isSig)
+					{
+						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtocolDecls().stream()
+								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+					}*/
+
+					branchAbstract += "case \"" + SessionApiGenerator.getOpClassName(a.mid) + "\": receive(data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + "." + a.peer + ", ";
+					if (isSig)
+					{
+						branchAbstract += "(" + msnd.extName + ") m";
+					}
+					else
+					{
+						branchAbstract += "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + ") m.op";
 					}
 					int i = 0;
 					for (PayloadElemType<?> pet : a.payload.elems)
 					{
 						DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
-						branchInterface += ", (" + dtd.extName + ") m.payload[" + i++ + "]";
+						branchAbstract += ", (" + dtd.extName + ") m.payload[" + i++ + "]";
 					}
-					branchInterface += "); break;\n";
+					branchAbstract += "); break;\n";
 				}
-				branchInterface += "default: throw new RuntimeException(\"Shouldn't get in here: \" + m);\n";
-				branchInterface += "}\n";
-				branchInterface += "}\n";
-				branchInterface += "}\n";
+				branchAbstract += "default: throw new RuntimeException(\"Shouldn't get in here: \" + m);\n";
+				branchAbstract += "}\n";
+				branchAbstract += "}\n";
+				branchAbstract += "}\n";
 
-				res.put(bprefix + branchName + ".java", branchInterface);
+				res.put(bprefix + branchName + ".java", branchAbstract);
 			}
 		}
 		
@@ -467,9 +504,23 @@ public class EDEndpointApiGenerator
 				res += "}\n";*/
 				res += ", " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers." + this.self + "." + name + "_" + s.id + "_Branch<D> b";
 				res += ") {\n";
+				/*res += "this.inputs.put(sid, b);\n";
+				res += "return this;\n";*/
+				res += "return icallback(sid, b);\n";
+				res += "}\n";
+				res += "\n";
+				String T = s.getAllActions().stream().map(a -> SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers." + this.self + ".interfaces." + name + "__" + a.peer + "_"
+						+ SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining("")) + "<D>").collect(Collectors.joining(" & "));
+				// FIXME: EventDrivenEndpoint will cast to Branch for dispatch -- not guaranteed by implementation of receive i/f's
+				res += "public " + "<T extends " + T + ">\n" 
+						+ name + "<D> icallback(" + prefix + name + "_" + s.id
+						+ " sid, T" 
+						//+ SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers." + this.self + ".interfaces." + receiveIfName + "
+						+ " b) {\n";  // FIXME: factor out
 				res += "this.inputs.put(sid, b);\n";
 				res += "return this;\n";
 				res += "}\n";
+				res += "\n";
 				break;
 			}
 			case TERMINAL:

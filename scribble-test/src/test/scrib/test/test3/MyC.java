@@ -46,7 +46,7 @@ public class MyC
 				{
 					b.accept(ss, B);
 
-					b.register(Proto1_C_22.id, new MyHandler());
+					b.icallback(Proto1_C_22.id, new MyHandler());
 
 					Future<Void> f = b.run();
 					f.get();
