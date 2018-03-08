@@ -73,6 +73,7 @@ public class CBEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoi
 					{
 						if (curr instanceof ScribOutputState)
 						{
+							// FIXME: make ScribOutputEvent an interface and add to bounds of output icallback (to preclude dynamic cast check)
 							ScribOutputEvent m = (ScribOutputEvent) this.edep.outputs.get(curr).apply(this.edep.data);  // FIXME: state object
 							/*getChannelEndpoint(m.getPeer()).write(new ScribMessage(m.getOp(), m.getPayload().toArray(new Object[0])));  // FIXME: ScribEvent has extra Role
 							curr = this.edep.states.get(((ScribOutputState) curr).succs.get(m.getOp()));*/

@@ -4,7 +4,7 @@ import org.scribble.runtime.message.ScribMessage;
 import org.scribble.type.name.Op;
 import org.scribble.type.name.Role;
 
-// FIXME: integrate with ScribMessage (maybe rename latter to ScribRuntimeMessage -- or rename this to ScribDirectedMessage)
+// FIXME: make interface and add to bounds of output icallback -- cf. CBEndpointApiGenerator
 // FIXME: not serializable due to RoleKind (in Role)
 public abstract class ScribOutputEvent extends ScribMessage
 {

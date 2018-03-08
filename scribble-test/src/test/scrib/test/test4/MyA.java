@@ -27,7 +27,7 @@ public class MyA
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 
 			a.icallback(Proto1_A_6.id,
-					x -> (x[0]++ < 5) ? new Proto1_A_Foo(B, new Foo("abc")) : new Proto1_A_Bar(B, new Bar(123))
+					x -> (x[0]++ < 5) ? new Proto1_A_Foo(B, new Foo("abc" + x[0])) : new Proto1_A_Bar(B, new Bar(123))
 			);
 			// FIXME: remove sid from message class for sigs
 			
