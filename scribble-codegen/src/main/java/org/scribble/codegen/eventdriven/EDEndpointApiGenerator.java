@@ -175,6 +175,7 @@ public class EDEndpointApiGenerator
 				String mprefix = SessionApiGenerator.getEndpointApiRootPackageName(this.proto).replace('.', '/') + "/handlers/states/" + this.self + "/messages/";
 
 				// FIXME: generate lattice -- cf. original handler i/f's (with "subtyping")
+				// FIXME: sort cases
 				String messageIfName = name + 
 						//a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining());
 						s.getActions().stream().map(a -> "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining())).collect(Collectors.joining());
