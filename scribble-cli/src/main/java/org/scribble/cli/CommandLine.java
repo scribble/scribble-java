@@ -442,7 +442,7 @@ public class CommandLine
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role self = checkRoleArg(jcontext, fullname, args[i+1]);
-			EDEndpointApiGenerator edgen = new EDEndpointApiGenerator(job, fullname, self);
+			EDEndpointApiGenerator edgen = new EDEndpointApiGenerator(job, fullname, self, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
 			Map<String, String> out = edgen.build();
 			outputClasses(out);
 		}

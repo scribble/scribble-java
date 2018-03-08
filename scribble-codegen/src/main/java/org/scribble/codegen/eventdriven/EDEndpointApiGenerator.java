@@ -30,12 +30,20 @@ public class EDEndpointApiGenerator
 	public final Job job;
 	public final GProtocolName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
+	
+	private final boolean subtypes;
 
-	public EDEndpointApiGenerator(Job job, GProtocolName fullname, Role self)
+	public EDEndpointApiGenerator(Job job, GProtocolName fullname, Role self, boolean subtypes)
 	{
 		this.job = job;
 		this.proto = fullname;
 		this.self = self;
+		
+		this.subtypes = subtypes;
+		if (this.subtypes)
+		{
+			throw new RuntimeException("TODO: -subtypes");
+		}
 	}
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later

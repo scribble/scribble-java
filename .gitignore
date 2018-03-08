@@ -54,6 +54,14 @@ scribble-core/src/test/scrib/test/test7/
 scribble-core/src/test/scrib/test/test8/
 scribble-core/src/test/scrib/test/test9/
 
+scribble-test/src/test/scrib/test/test2/Test2/
+scribble-test/src/test/scrib/test/test3/Test3/
+scribble-test/src/test/scrib/test/test4/Test4/
+scribble-test/src/test/scrib/test/test5/Test5/
+scribble-test/src/test/scrib/test/test6/Test6/
+scribble-test/src/test/scrib/test/test7/Test7/
+
+
 
 bin/scribblec.sh
 permissions-fix.sh
