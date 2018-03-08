@@ -1,4 +1,4 @@
-package org.scribble.codegen.java.eventdrivenapi;
+package org.scribble.codegen.java.callbackapi;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ import org.scribble.type.name.Role;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
 // From ParamCoreEndpointApiGenerator
-public class EDEndpointApiGenerator
+public class CBEndpointApiGenerator
 {
 	public final Job job;
 	public final GProtocolName proto;
@@ -34,7 +34,7 @@ public class EDEndpointApiGenerator
 	
 	private final boolean subtypes;
 
-	public EDEndpointApiGenerator(Job job, GProtocolName fullname, Role self, boolean subtypes)
+	public CBEndpointApiGenerator(Job job, GProtocolName fullname, Role self, boolean subtypes)
 	{
 		this.job = job;
 		this.proto = fullname;
@@ -57,10 +57,10 @@ public class EDEndpointApiGenerator
 
 	public Map<String, String> buildSessionApi() throws ScribbleException // FIXME: factor out -- integrate with JEndpointApiGenerator
 	{
-		this.job.debugPrintln("\n[param-core] Running " + EDEndpointApiGenerator.class + " for " + this.proto + "@" + this.self);
+		this.job.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator.class + " for " + this.proto + "@" + this.self);
 
 		Map<String, String> res = new HashMap<>();
-		res.putAll(new EDSessionApiBuilder(this.job, this.proto).generateApi());
+		res.putAll(new CBSessionApiBuilder(this.job, this.proto).generateApi());
 		res.putAll(buildEndpointClass());
 		return res;
 	}

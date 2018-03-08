@@ -55,7 +55,7 @@ public class CLArgParser
 	public static final String SESSION_API_GEN_FLAG = "-sessapi";
 	public static final String STATECHAN_API_GEN_FLAG = "-chanapi";
 
-	public static final String EVENTDRIVEN_API_GEN_FLAG = "-edapi";
+	public static final String EVENTDRIVEN_API_GEN_FLAG = "-cbapi";
 	
 	private static final Map<String, CLArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{

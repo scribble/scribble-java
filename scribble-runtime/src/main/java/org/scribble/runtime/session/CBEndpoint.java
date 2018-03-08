@@ -34,7 +34,7 @@ import org.scribble.runtime.message.ScribMessage;
 import org.scribble.runtime.message.ScribMessageFormatter;
 import org.scribble.type.name.Role;
 
-public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoint<S, R>
+public class CBEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoint<S, R>
 {
 	protected final ScribState init;
 	protected final Map<ScribOutputState, Function<D, ?>> outputs = new HashMap<>();
@@ -44,7 +44,7 @@ public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends M
 	
 	protected final Map<String, ScribState> states = new HashMap<>();  // Bypass problem of mutual references and static field initialisation (class loading)
 
-	public EventDrivenEndpoint(S sess, R self, ScribMessageFormatter smf, ScribState init, D data) throws IOException, ScribbleRuntimeException
+	public CBEndpoint(S sess, R self, ScribMessageFormatter smf, ScribState init, D data) throws IOException, ScribbleRuntimeException
 	{
 		super(sess, self, smf);
 		this.init = init;
@@ -58,10 +58,10 @@ public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends M
 		// FIXME: integrate with selector
 		new Thread()
 		{
-			private final EventDrivenEndpoint<S, R, D> edep;
+			private final CBEndpoint<S, R, D> edep;
 
 			{
-				this.edep = EventDrivenEndpoint.this;
+				this.edep = CBEndpoint.this;
 			}
 
 			public void run()
