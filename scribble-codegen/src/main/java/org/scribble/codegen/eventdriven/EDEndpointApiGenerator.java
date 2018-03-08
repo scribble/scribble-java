@@ -173,22 +173,41 @@ public class EDEndpointApiGenerator
 			if (s.getStateKind() == EStateKind.OUTPUT)
 			{
 				String mprefix = SessionApiGenerator.getEndpointApiRootPackageName(this.proto).replace('.', '/') + "/handlers/states/" + this.self + "/messages/";
-				
-				String messageIfName = name + "_" + s.id + "_Message";
+
+				// FIXME: generate lattice -- cf. original handler i/f's (with "subtyping")
+				String messageIfName = name + 
+						//a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining());
+						s.getActions().stream().map(a -> "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining())).collect(Collectors.joining());
 				String messageInterface = "";
-				messageInterface += "package " + pack + ".handlers.states." + this.self + ".messages;\n";
+				messageInterface += "package " + pack + ".handlers.states." + this.self + ".messages.interfaces;\n";
 				messageInterface += "\n";
-				messageInterface += "public abstract class " + messageIfName + " extends org.scribble.runtime.net.state.ScribHandlerMessage {\n";
-				messageInterface += "private static final long serialVersionUID = 1L;\n";
-				messageInterface += "\n";
-				messageInterface += "public " + messageIfName + "(org.scribble.type.name.Role peer, org.scribble.type.name.Op op, Object... payload) {\n";
-				messageInterface += "super(peer, op, payload);\n";
+				messageInterface += "public interface " + messageIfName + " {\n";
 				messageInterface += "}\n";
-				messageInterface += "}\n";
-				res.put(mprefix + messageIfName + ".java", messageInterface);
+				res.put(mprefix + "interfaces/" + messageIfName + ".java", messageInterface);
+				
+				String messageAbstractName = name + "_" + s.id + "_Message";
+				String messageAbstract = "";
+				messageAbstract += "package " + pack + ".handlers.states." + this.self + ".messages;\n";
+				messageAbstract += "\n";
+				messageAbstract += "public abstract class " + messageAbstractName + " extends org.scribble.runtime.net.state.ScribHandlerMessage implements " + pack + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName + " {\n";
+				messageAbstract += "private static final long serialVersionUID = 1L;\n";
+				messageAbstract += "\n";
+				messageAbstract += "public " + messageAbstractName + "(org.scribble.type.name.Role peer, org.scribble.type.name.Op op, Object... payload) {\n";
+				messageAbstract += "super(peer, op, payload);\n";
+				messageAbstract += "}\n";
+				messageAbstract += "}\n";
+				res.put(mprefix + messageAbstractName + ".java", messageAbstract);
 
 				for (EAction a : s.getAllActions())
 				{
+					/*String messageIfName = name + "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining());
+					String messageInterface = "";
+					messageInterface += "package " + pack + ".handlers.states." + this.self + ".messages.interfaces;\n";
+					messageInterface += "\n";
+					messageInterface += "public interface " + messageIfName + " {\n";
+					messageInterface += "}\n";
+					res.put(mprefix + "interfaces/" + messageIfName + ".java", messageInterface);*/
+					
 					boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
 						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
 					MessageSigNameDecl msnd = null;
@@ -198,11 +217,19 @@ public class EDEndpointApiGenerator
 								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 					}
 
-					String messageName = name + "_" + s.id + "_" + SessionApiGenerator.getOpClassName(a.mid);
+					String messageName;
+					if (isSig)
+					{
+						messageName = name + "_" + SessionApiGenerator.getOpClassName(a.mid);
+					}
+					else
+					{
+						messageName = name + "_" + s.id + "_" + SessionApiGenerator.getOpClassName(a.mid);
+					}
 					String messageClass = "";
 					messageClass += "package " + pack + ".handlers.states." + this.self + ".messages;\n";
 					messageClass += "\n";
-					messageClass += "public class " + messageName + " extends " + messageIfName;
+					messageClass += "public class " + messageName + " extends " + messageAbstractName; //+ " implements " + pack + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName;
 					if (isSig)
 					{
 						messageClass += " implements org.scribble.runtime.net.state.ScribHandlerSig";
@@ -389,17 +416,40 @@ public class EDEndpointApiGenerator
 			case OUTPUT:
 			{
 				// FIXME: "untyped" (ScribEvent) -- need state-specific "enums"
-				res += "public void register(" + prefix + name + "_" + s.id
+				res += "public " + name + "<D> callback(" + prefix + name + "_" + s.id
 						+ " sid, java.util.function.Function<D, "
 						+ SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + ".messages." + name + "_" + s.id + "_Message> h) {\n";  // FIXME: factor out
-				res += "this.outputs.put(sid, h);\n";
+				/*res += "this.outputs.put(sid, h);\n";
+				res += "return this;\n";*/
+				res += "return icallback(sid, h);\n";
 				res += "}\n";
+				res += "\n";
+				/*for (EAction a : s.getAllActions())
+				{
+					String messageIfName = name + "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining());  // FIXME: factor out;
+					res += "public " + name + " callback(" + prefix + name + "_" + s.id
+							+ " sid, java.util.function.Function<D, "
+							+ SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName + "> h) {\n";
+					res += "this.outputs.put(sid, h);\n";
+					res += "return this;\n";
+					res += "}\n";
+					res += "\n";
+				}*/
+				String messageIfName = name + 
+						s.getActions().stream().map(a -> "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining())).collect(Collectors.joining());
+				res += "public " + name + "<D> icallback(" + prefix + name + "_" + s.id
+						+ " sid, java.util.function.Function<D, "
+						+ "? extends " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName + "> h) {\n";  // FIXME: factor out
+				res += "this.outputs.put(sid, h);\n";
+				res += "return this;\n";
+				res += "}\n";
+				res += "\n";
 				break;
 			}
 			case UNARY_INPUT:
 			case POLY_INPUT:
 			{
-				res += "public void register(" + prefix + name + "_" + s.id + " sid";
+				res += "public " + name + "<D> callback(" + prefix + name + "_" + s.id + " sid";
 				/*for (EAction a : s.getAllActions())
 				{
 					res += ", org.scribble.util.function.Function2<" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid)
@@ -418,6 +468,7 @@ public class EDEndpointApiGenerator
 				res += ", " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers." + this.self + "." + name + "_" + s.id + "_Branch<D> b";
 				res += ") {\n";
 				res += "this.inputs.put(sid, b);\n";
+				res += "return this;\n";
 				res += "}\n";
 				break;
 			}

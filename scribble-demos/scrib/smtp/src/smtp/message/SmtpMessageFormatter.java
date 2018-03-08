@@ -275,6 +275,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 		}
 	}*/
 
+	@Deprecated
 	@Override
 	public void writeMessage(DataOutputStream dos, ScribMessage m) throws IOException
 	{
@@ -282,6 +283,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 		dos.flush();
 	}
 
+	@Deprecated
 	@Override
 	public SmtpMessage readMessage(DataInputStream dis) throws IOException
 	{

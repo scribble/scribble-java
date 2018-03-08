@@ -79,40 +79,15 @@ public class Test4Formatter implements ScribMessageFormatter
 		return null;
 	}
 	
-	/*// Duplicated from HttpMessageFormatter  // FIXME: factor out
-	private int isStatusCode(String front)
-	{
-		String code = "";
-		for (int i = 0; i < 4; i++)
-		{
-			//char c = (char) bs[i];
-			char c = front.charAt(i);
-			if (i < 3)
-			{
-				if (c < '0' || c > '9')
-				{
-					return -1;
-				}
-				code += c;
-			}
-			else
-			{
-				if (c != ' ' && c != '-')  // HACK: hypen
-				{
-					return -1;
-				}
-			}
-		}
-		return Integer.parseInt(code);
-	}*/
-	
 
+	@Deprecated
 	@Override
 	public void writeMessage(DataOutputStream dos, ScribMessage m) throws IOException
 	{
 		throw new RuntimeException("Deprecated: " + m);
 	}
 
+	@Deprecated
 	@Override
 	public Test4Message readMessage(DataInputStream dis) throws IOException
 	{

@@ -23,7 +23,10 @@ public class MyA
 		try (Proto1_A<int[]> a = new Proto1_A<>(P1, A, new ObjectStreamFormatter(), new int[1]))
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
-			a.register(Proto1_A_6.id, x -> (x[0]++ < 3) ? new Proto1_A_6__1(B, 123) : new Proto1_A_6__3(B, "abc"));
+			
+			a.register(Proto1_A_6.id,
+					x -> (x[0]++ < 3) ? new Proto1_A_6__1(B, 123) : new Proto1_A_6__3(B, "abc")
+					);
 			
 			Future<Void> f = a.run();
 			f.get();

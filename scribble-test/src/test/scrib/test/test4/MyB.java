@@ -22,7 +22,6 @@ public class MyB
 {
 	public static void main(String[] args) throws IOException
 	{
-		// FIXME: make "structural" nominal types for branches using roles+labs+pays, instead of sids
 		class MyHandler extends Proto1_B_12_Branch<int[]>
 		{
 			@Override
@@ -48,7 +47,8 @@ public class MyB
 				try (Proto1_B<int[]> b = new Proto1_B<>(P1, B, new Test4Formatter(), new int[1]))
 				{
 					b.accept(ss, A);
-					b.register(Proto1_B_12.id, new MyHandler());
+
+					b.callback(Proto1_B_12.id, new MyHandler());
 
 					Future<Void> f = b.run();
 					f.get();

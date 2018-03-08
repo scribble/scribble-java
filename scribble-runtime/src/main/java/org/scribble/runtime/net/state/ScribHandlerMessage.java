@@ -4,7 +4,8 @@ import org.scribble.runtime.net.ScribMessage;
 import org.scribble.type.name.Op;
 import org.scribble.type.name.Role;
 
-// FIXME: integrate with ScribMessage (maybe rename latter to ScribRuntimeMessage)
+// FIXME: integrate with ScribMessage (maybe rename latter to ScribRuntimeMessage -- or rename this to ScribDirectedMessage)
+// FIXME: not serializable due to RoleKind (in Role)
 public abstract class ScribHandlerMessage extends ScribMessage
 {
 	private static final long serialVersionUID = 1L;

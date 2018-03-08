@@ -38,7 +38,7 @@ public class MyB
 			}
 
 			@Override
-			public void receive(int[] data, A peer,_3 op, String x)
+			public void receive(int[] data, A peer, _3 op, String x)
 			{
 				data[0]++;
 				System.out.println("(B) received 3: " + data[0] + ", " + x);
@@ -54,6 +54,7 @@ public class MyB
 				{
 					b.accept(ss, A);
 					b.request(C, SocketChannelEndpoint::new, "localhost", 9999);
+
 					b.register(Proto1_B_14.id, new MyHandler());
 					b.register(Proto1_B_16.id, x -> new Proto1_B_16__2(C, 456));
 					b.register(Proto1_B_17.id, x -> new Proto1_B_17__4(C, "def"));
