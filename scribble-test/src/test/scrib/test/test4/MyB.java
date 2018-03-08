@@ -13,6 +13,7 @@ import test.test4.Test4.Proto1.Proto1;
 import test.test4.Test4.Proto1.handlers.B.Proto1_B;
 import test.test4.Test4.Proto1.handlers.B.Proto1_B_12_Branch;
 import test.test4.Test4.Proto1.handlers.states.B.Proto1_B_12;
+import test.test4.Test4.Proto1.roles.A;
 import test.test4.sig.Bar;
 import test.test4.sig.Foo;
 import test.test4.sig.Test4Formatter;
@@ -21,17 +22,18 @@ public class MyB
 {
 	public static void main(String[] args) throws IOException
 	{
+		// FIXME: make "structural" nominal types for branches using roles+labs+pays, instead of sids
 		class MyHandler extends Proto1_B_12_Branch<int[]>
 		{
 			@Override
-			public void receive(int[] data, Foo m)
+			public void receive(int[] data, A peer, Foo m)
 			{
 				data[0]++;
 				System.out.println("(B) received Foo: " + m.getBody() + ", " + data[0]);
 			}
 
 			@Override
-			public void receive(int[] data, Bar m)
+			public void receive(int[] data, A peer, Bar m)
 			{
 				data[0]++;
 				System.out.println("(B) received Bar: " + m.getBody() + ", " + data[0]);

@@ -16,6 +16,7 @@ import test.test3.Test3.Proto1.handlers.C.Proto1_C_22_Branch;
 import test.test3.Test3.Proto1.handlers.states.C.Proto1_C_22;
 import test.test3.Test3.Proto1.ops._2;
 import test.test3.Test3.Proto1.ops._4;
+import test.test3.Test3.Proto1.roles.B;
 
 public class MyC
 {
@@ -24,13 +25,13 @@ public class MyC
 		class MyHandler extends Proto1_C_22_Branch<Void>
 		{
 			@Override
-			public void receive(Void data, _2 op, Integer x)
+			public void receive(Void data, B peer, _2 op, Integer x)
 			{
 				System.out.println("(C) received 2: " + x);
 			}
 
 			@Override
-			public void receive(Void data, _4 op, String x)
+			public void receive(Void data, B peer, _4 op, String x)
 			{
 				System.out.println("(C) received 4: " + x);
 			}

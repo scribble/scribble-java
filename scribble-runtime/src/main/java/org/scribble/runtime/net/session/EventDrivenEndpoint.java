@@ -37,7 +37,8 @@ import org.scribble.type.name.Role;
 public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoint<S, R>
 {
 	protected final ScribState init;
-	protected final Map<ScribOutputState, Function<D, ? extends ScribHandlerMessage>> outputs = new HashMap<>();
+	//protected final Map<ScribOutputState, Function<D, ? extends ScribHandlerMessage>> outputs = new HashMap<>();
+	protected final Map<ScribOutputState, Function<D, ?>> outputs = new HashMap<>();
 	protected final Map<ScribInputState, ScribBranch<D>> inputs = new HashMap<>();
 	
 	protected final D data;
@@ -72,7 +73,7 @@ public class EventDrivenEndpoint<S extends Session, R extends Role, D> extends M
 					{
 						if (curr instanceof ScribOutputState)
 						{
-							ScribHandlerMessage m = this.edep.outputs.get(curr).apply(this.edep.data);  // FIXME: state object
+							ScribHandlerMessage m = (ScribHandlerMessage) this.edep.outputs.get(curr).apply(this.edep.data);  // FIXME: state object
 							/*getChannelEndpoint(m.getPeer()).write(new ScribMessage(m.getOp(), m.getPayload().toArray(new Object[0])));  // FIXME: ScribEvent has extra Role
 							curr = this.edep.states.get(((ScribOutputState) curr).succs.get(m.getOp()));*/
 							if (m instanceof ScribHandlerSig)

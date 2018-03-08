@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
-import org.scribble.ast.NonProtocolDecl;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
@@ -22,7 +21,6 @@ import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
@@ -293,7 +291,7 @@ public class EDEndpointApiGenerator
 								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 					}
 
-					branchInterface += "\npublic abstract void receive(D data, ";
+					branchInterface += "\npublic abstract void receive(D data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer, ";
 					if (isSig)
 					{
 						branchInterface += msnd.extName + " m";
@@ -327,7 +325,7 @@ public class EDEndpointApiGenerator
 								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 					}
 
-					branchInterface += "case \"" + SessionApiGenerator.getOpClassName(a.mid) + "\": receive(data, ";
+					branchInterface += "case \"" + SessionApiGenerator.getOpClassName(a.mid) + "\": receive(data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + "." + a.peer + ", ";
 					if (isSig)
 					{
 						branchInterface += "(" + msnd.extName + ") m";

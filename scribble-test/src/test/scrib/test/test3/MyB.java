@@ -22,6 +22,7 @@ import test.test3.Test3.Proto1.handlers.states.B.messages.Proto1_B_16__2;
 import test.test3.Test3.Proto1.handlers.states.B.messages.Proto1_B_17__4;
 import test.test3.Test3.Proto1.ops._1;
 import test.test3.Test3.Proto1.ops._3;
+import test.test3.Test3.Proto1.roles.A;
 
 public class MyB
 {
@@ -30,14 +31,14 @@ public class MyB
 		class MyHandler extends Proto1_B_14_Branch<int[]>
 		{
 			@Override
-			public void receive(int[] data, _1 op, Integer x)
+			public void receive(int[] data, A peer, _1 op, Integer x)
 			{
 				data[0]++;
 				System.out.println("(B) received 1: " + data[0] + ", " + x);
 			}
 
 			@Override
-			public void receive(int[] data, _3 op, String x)
+			public void receive(int[] data, A peer,_3 op, String x)
 			{
 				data[0]++;
 				System.out.println("(B) received 3: " + data[0] + ", " + x);

@@ -26,6 +26,7 @@ public class MyA
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			a.register(Proto1_A_6.id, x -> (x[0]++ < 5) ? new Proto1_A_6_Foo(B, new Foo("abc")) : new Proto1_A_6_Bar(B, new Bar(123)));
+			// FIXME: remove sid from message class for sigs
 			
 			Future<Void> f = a.run();
 			f.get();

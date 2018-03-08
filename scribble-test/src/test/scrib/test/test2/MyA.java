@@ -5,6 +5,7 @@ import static test.test2.Test2.Proto1.Proto1.B;
 import static test.test2.Test2.Proto1.Proto1._1;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import org.scribble.runtime.net.ObjectStreamFormatter;
@@ -25,6 +26,18 @@ public class MyA
 		foo3();
 	}
 
+	interface I1 { }
+	interface I2 { }
+	<T extends I1 & I2> void foo (T x)
+	{
+		
+	}
+	
+	<T extends I1 & I2> void bar(List<T> l)
+	{
+		
+	}
+	
 	public static void foo3() throws IOException
 	{
 		Proto1 P1 = new Proto1();
@@ -34,6 +47,7 @@ public class MyA
 			a.register(Proto1_A_5.id, x ->
 					//new Proto1_A_5__1(B, 123));
 					new Proto1_A_5__2(B, "abc"));
+			// FIXME: make "structural" nominal types for messages using roles+labs+pays, instead of sids
 			
 			Future<Void> f = a.run();
 			f.get();
