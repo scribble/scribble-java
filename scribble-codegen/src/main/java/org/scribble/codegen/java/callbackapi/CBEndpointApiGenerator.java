@@ -86,7 +86,7 @@ public class CBEndpointApiGenerator
 		epClass += "import java.util.HashMap;\n";
 		epClass += "import java.util.Map;\n";*/
 		epClass += "\n";
-		epClass += "public class " + name + "<D> extends org.scribble.runtime.session.EventDrivenEndpoint<" + sess + ", " + role + ", D> {\n";
+		epClass += "public class " + name + "<D> extends org.scribble.runtime.session.CBEndpoint<" + sess + ", " + role + ", D> {\n";
 
 		/*epClass += "private final Map<Object, Function<Object, org.scribble.runtime.message.ScribMessage>> outputs = new HashMap<>();\n";
 		epClass += "\n";*/
@@ -199,12 +199,12 @@ public class CBEndpointApiGenerator
 				String messageAbstract = "";
 				messageAbstract += "package " + pack + ".handlers.states." + this.self + ".messages;\n";
 				messageAbstract += "\n";
-				messageAbstract += "public abstract class " + messageAbstractName + " extends org.scribble.runtime.handlers.ScribOutputEvent implements " + pack + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName + " {\n";
-				messageAbstract += "private static final long serialVersionUID = 1L;\n";
+				messageAbstract += "public interface " + messageAbstractName + " extends org.scribble.runtime.handlers.ScribOutputEvent, " + pack + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName + " {\n";
+				/*messageAbstract += "private static final long serialVersionUID = 1L;\n";
 				messageAbstract += "\n";
 				messageAbstract += "public " + messageAbstractName + "(org.scribble.type.name.Role peer, org.scribble.type.name.Op op, Object... payload) {\n";
 				messageAbstract += "super(peer, op, payload);\n";
-				messageAbstract += "}\n";
+				messageAbstract += "}\n";*/
 				messageAbstract += "}\n";
 				res.put(mprefix + messageAbstractName + ".java", messageAbstract);
 
@@ -239,10 +239,11 @@ public class CBEndpointApiGenerator
 					String messageClass = "";
 					messageClass += "package " + pack + ".handlers.states." + this.self + ".messages;\n";
 					messageClass += "\n";
-					messageClass += "public class " + messageName + " extends " + messageAbstractName; //+ " implements " + pack + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName;
+					// extends ScribMessage just for convenience of storing payload (peer/op pre-known) -- instances of this class never "directly" sent, cf., CBEndpoint
+					messageClass += "public class " + messageName + " extends org.scribble.runtime.message.ScribMessage implements " + messageAbstractName; //+ " implements " + pack + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName;
 					if (isSig)
 					{
-						messageClass += " implements org.scribble.runtime.handlers.ScribSigMessage";
+						messageClass += ", org.scribble.runtime.handlers.ScribSigMessage";
 					}
 					messageClass += " {\n";
 					//messageClass += "public final java.util.List<Object> pay = new java.util.LinkedList<>();\n";
@@ -271,7 +272,7 @@ public class CBEndpointApiGenerator
 					{
 						messageClass += "this.pay.add(arg" + j + ");\n";
 					}*/
-					messageClass += "super(peer, "
+					messageClass += "super("
 							+ SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)
 							+ IntStream.rangeClosed(1, a.payload.elems.size()).mapToObj(j -> ", arg" + j).collect(Collectors.joining("")) + ");\n";
 					if (isSig)
@@ -279,7 +280,7 @@ public class CBEndpointApiGenerator
 						messageClass += "this.m = m;\n";
 					}
 					messageClass += "}\n";
-					/*messageClass += "\n";
+					messageClass += "\n";
 					messageClass += "@Override\n";
 					messageClass += "public org.scribble.type.name.Role getPeer() {\n";
 					messageClass += "return " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + "." + a.peer + ";\n";
@@ -291,9 +292,9 @@ public class CBEndpointApiGenerator
 					messageClass += "}\n";
 					messageClass += "\n";
 					messageClass += "@Override\n";
-					messageClass += "public java.util.List<Object> getPayload() {\n";
-					messageClass += "return this.pay;\n";
-					messageClass += "}\n";*/
+					messageClass += "public Object[] getPayload() {\n";
+					messageClass += "return this.payload;\n";
+					messageClass += "}\n";
 					if (isSig)
 					{
 						messageClass += "\n";
@@ -484,9 +485,10 @@ public class CBEndpointApiGenerator
 				}*/
 				String messageIfName = name + 
 						s.getActions().stream().map(a -> "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining())).collect(Collectors.joining());
-				res += "public " + name + "<D> icallback(" + prefix + name + "_" + s.id
-						+ " sid, java.util.function.Function<D, "
-						+ "? extends " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName + "> h) {\n";  // FIXME: factor out
+				res += "public\n"
+						+ "<T extends " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName + " & org.scribble.runtime.handlers.ScribOutputEvent>\n"  // FIXME: factor out
+						+ name + "<D> icallback(" + prefix + name + "_" + s.id
+						+ " sid, java.util.function.Function<D, T> h) {\n";
 				res += "this.outputs.put(sid, h);\n";
 				res += "return this;\n";
 				res += "}\n";

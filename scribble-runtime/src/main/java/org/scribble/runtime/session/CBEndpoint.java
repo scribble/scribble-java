@@ -37,7 +37,7 @@ import org.scribble.type.name.Role;
 public class CBEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoint<S, R>
 {
 	protected final ScribState init;
-	protected final Map<ScribOutputState, Function<D, ?>> outputs = new HashMap<>();
+	protected final Map<ScribOutputState, Function<D, ? extends ScribOutputEvent>> outputs = new HashMap<>();
 	protected final Map<ScribInputState, ScribBranch<D>> inputs = new HashMap<>();
 	
 	protected final D data;
@@ -73,19 +73,19 @@ public class CBEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoi
 					{
 						if (curr instanceof ScribOutputState)
 						{
-							// FIXME: make ScribOutputEvent an interface and add to bounds of output icallback (to preclude dynamic cast check)
+							// FIXME: make ScribOutputEvent an interface and add to bounds of output icallback (to preclude dynamic cast check) -- also make generated ..._Message an interface 
 							ScribOutputEvent m = (ScribOutputEvent) this.edep.outputs.get(curr).apply(this.edep.data);  // FIXME: state object
 							/*getChannelEndpoint(m.getPeer()).write(new ScribMessage(m.getOp(), m.getPayload().toArray(new Object[0])));  // FIXME: ScribEvent has extra Role
 							curr = this.edep.states.get(((ScribOutputState) curr).succs.get(m.getOp()));*/
 							if (m instanceof ScribSigMessage)
 							{
-								getChannelEndpoint(m.peer).write(((ScribSigMessage) m).getSig());
+								getChannelEndpoint(m.getPeer()).write(((ScribSigMessage) m).getSig());
 							}
 							else
 							{
-								getChannelEndpoint(m.peer).write(new ScribMessage(m.op, m.payload));  // FIXME: ScribEvent has extra Role (RoleKind not serializable)
+								getChannelEndpoint(m.getPeer()).write(new ScribMessage(m.getOp(), m.getPayload()));  // API gen extends ScribMessage, but no guarantee about user-defined types -- can only rely on ScribOutputEvent i/f
 							}
-							curr = this.edep.states.get(((ScribOutputState) curr).succs.get(m.op));
+							curr = this.edep.states.get(((ScribOutputState) curr).succs.get(m.getOp()));
 						}
 						else if (curr instanceof ScribInputState)
 						{
