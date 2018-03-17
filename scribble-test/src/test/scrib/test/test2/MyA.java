@@ -33,9 +33,12 @@ public class MyA
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 
+			//TODO: test choice at A { 1() from A to B; 2() from A to C; } or { 1() from A to C; 3() from A to B; }
+
 			a.icallback(Proto1_A_5.id, x ->
 					//new Proto1_A_5__1(B, 123));
 					new Proto1_A_5__2(B, "abc"));
+					// new IntPay<>(B, _1, 123));  // IntPay<B, _1>  -- or StrPay<B, _2>
 			
 			Future<Void> f = a.run();  // Even if registration checks still dynamic, much better to check at "session init" than partway through session after potential side effects
 			f.get();

@@ -60,7 +60,7 @@ public class CBEndpointApiGenerator
 		this.job.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator.class + " for " + this.proto + "@" + this.self);
 
 		Map<String, String> res = new HashMap<>();
-		res.putAll(new CBSessionApiBuilder(this.job, this.proto).generateApi());
+		res.putAll(new SessionApiGenerator(this.job, this.proto).generateApi());
 		res.putAll(buildEndpointClass());
 		return res;
 	}

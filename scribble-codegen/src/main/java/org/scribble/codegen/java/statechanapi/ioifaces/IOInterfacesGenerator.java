@@ -50,6 +50,7 @@ import org.scribble.type.name.Role;
 // TODO: concrete state channel "to" casts for supertype i/f's (the info is there in the Java type hierachy though)
 // Maybe record subtype hierarchy explicitly
 // TODO: check if generated subtypes scalability issue is just Eclipse or also javac
+// FIXME: try I/O i/f's with "message decomposition" approach (split op and each payload as separate messages) -- should make nominal interfaces more manageable -- cf. Sig messages
 public class IOInterfacesGenerator extends ApiGen
 {
 	private final boolean SUBTYPES;
