@@ -111,6 +111,7 @@ public class CBEndpointApiGenerator2
 		endpointClass.addParameters("D");
 		endpointClass.setSuperClass("org.scribble.runtime.session.CBEndpoint<" + sessClassName + ", " + getRolesPackage() + "." + this.self + ", D>");
 		ConstructorBuilder cb = endpointClass.newConstructor(sessClassName + " sess", getRolesPackage() + "." + this.self + " self", "org.scribble.runtime.message.ScribMessageFormatter smf", "D data");
+		cb.addModifiers("public");
 		cb.addExceptions("java.io.IOException", "org.scribble.main.ScribbleRuntimeException");
 		cb.addBodyLine("super(sess, self, smf, " + initStateName + ".id, data);");
 		for (EState s : states)
@@ -149,6 +150,15 @@ public class CBEndpointApiGenerator2
 				}
 				case UNARY_INPUT:
 				case POLY_INPUT:
+				{
+					MethodBuilder callback = endpointClass.newMethod("callback");
+					callback.addModifiers("public");
+					callback.setReturn(endpointName + "<D>");
+					callback.addParameters(getStatesSelfPackage() + "." + endpointName + "_" + s.id + " sid", getHandlersSelfPackage() + "." + endpointName + "_" + s.id + "_Branch<D> b");  // FIXME: factor out
+					callback.addBodyLine("this.inputs.put(sid, b);");
+					callback.addBodyLine("return this;");;
+					break;
+				}
 				case WRAP_SERVER:
 				case ACCEPT:
 				{
@@ -225,7 +235,7 @@ public class CBEndpointApiGenerator2
 						getPeer.addModifiers("public");
 						getPeer.addAnnotations("@Override");
 						getPeer.setReturn("org.scribble.type.name.Role");
-						getPeer.addBodyLine("return " + getRolesPackage() + "." + this.self + "." + this.self + ";");
+						getPeer.addBodyLine("return " + getRolesPackage() + "." + a.peer + "." + a.peer + ";");
 						MethodBuilder getOp = messageClass.newMethod("getOp");
 						getOp.addModifiers("public");
 						getOp.addAnnotations("@Override");
@@ -258,12 +268,13 @@ public class CBEndpointApiGenerator2
 					args[1] = getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + " op";
 					a.payload.elems.forEach(e -> args[i[0]++] = main.getDataTypeDecl((DataType) e).extName + " arg" + (i[0]-3));
 					ConstructorBuilder ob = messageClass.newConstructor(args);
+					ob.addModifiers("public");
 					ob.addBodyLine("super(op" + IntStream.range(0, a.payload.elems.size()).mapToObj(j -> ", arg" + j).collect(Collectors.joining()) + ");");
 				}
 				messageClasses.values().forEach(c -> res.put(mprefix + c.getName() + ".java", c.build()));
 			}
 			
-			/*// branches
+			// branches
 			if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 			{
 				String bprefix = SessionApiGenerator.getEndpointApiRootPackageName(this.proto).replace('.', '/') + "/handlers/" + this.self + "/";
@@ -288,7 +299,7 @@ public class CBEndpointApiGenerator2
 
 				String branchAbstract = generateBranch(bprefix, jc, s, endpointName, rootPack, branchName);
 				res.put(bprefix + branchName + ".java", branchAbstract);
-			}*/
+			}
 		}
 		
 		return res;
