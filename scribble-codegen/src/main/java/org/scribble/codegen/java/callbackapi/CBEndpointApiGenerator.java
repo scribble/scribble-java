@@ -47,7 +47,6 @@ public class CBEndpointApiGenerator
 		}
 	}
 
-	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
 	public Map<String, String> build() throws ScribbleException
 	{
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
