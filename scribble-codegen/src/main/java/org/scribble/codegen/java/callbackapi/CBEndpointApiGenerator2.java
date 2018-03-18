@@ -256,7 +256,6 @@ public class CBEndpointApiGenerator2
 						messageClass = messageClasses.get(a.payload);
 					}
 
-					
 					/*String messageName = isSig
 							? endpointName + "_" + SessionApiGenerator.getOpClassName(a.mid)
 							: endpointName + "_" + s.id + "_" + SessionApiGenerator.getOpClassName(a.mid);
