@@ -33,8 +33,7 @@ import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
-@Deprecated
-public class CBEndpointApiGenerator2
+public class CBEndpointApiGenerator3
 {
 	public final Job job;
 	public final GProtocolName proto;
@@ -42,7 +41,7 @@ public class CBEndpointApiGenerator2
 	
 	//private final boolean subtypes;  // Generate full hierarchy (states -> states, not just indivdual state -> cases) -- cf. ioifaces
 
-	public CBEndpointApiGenerator2(Job job, GProtocolName fullname, Role self, boolean subtypes)
+	public CBEndpointApiGenerator3(Job job, GProtocolName fullname, Role self, boolean subtypes)
 	{
 		this.job = job;
 		this.proto = fullname;
@@ -65,27 +64,12 @@ public class CBEndpointApiGenerator2
 	// FIXME: factor out -- integrate with JEndpointApiGenerator
 	public Map<String, String> buildSessionApi() throws ScribbleException
 	{
-		this.job.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator2.class + " for " + this.proto + "@" + this.self);
+		this.job.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator3.class + " for " + this.proto + "@" + this.self);
 
 		Map<String, String> res = new HashMap<>();
 		res.putAll(new SessionApiGenerator(this.job, this.proto).generateApi());
 		res.putAll(buildEndpointClass());
 		return res;
-	}
-
-	String getHandlersPackage()
-	{
-		return SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers";
-	}
-	
-	String getHandlersSelfPackage()
-	{
-		return getHandlersPackage() + "." + this.self;
-	}
-
-	String getStatesSelfPackage()
-	{
-		return getHandlersPackage() + ".states." + this.self;
 	}
 	
 	public Map<String, String> buildEndpointClass() throws ScribbleException
@@ -541,46 +525,76 @@ String generateMessageAbstract(String messageIfName, String messageAbstractName,
 				return messageAbstract;
 	}
 
-	String generateStateClass(EState s, String rootPack, EStateKind kind, String stateId)
+	protected String generateStateClass(EState s, String rootPack, EStateKind kind, String stateName)
 	{
-			String stateKind;
-			switch (kind)
-			{
-				case OUTPUT:     stateKind = "org.scribble.runtime.handlers.states.ScribOutputState"; break;
-				case UNARY_INPUT:
-				case POLY_INPUT: stateKind = "org.scribble.runtime.handlers.states.ScribInputState";  break;
-				case TERMINAL:   stateKind = "org.scribble.runtime.handlers.states.ScribEndState";    break;
-				case ACCEPT:
-				case WRAP_SERVER:
-					throw new RuntimeException("TODO");
-				default:
-					throw new RuntimeException("TODO");
-			}
-			String stateClass = "";
-			stateClass += "package " + rootPack + ".handlers.states." + this.self + ";\n";
-			stateClass += "\n";
-			stateClass += "public final class " + stateId + " extends " + stateKind + " {\n";
-			stateClass += "public static final " + stateId + " id = new " + stateId + "("
-					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + s.getActions().get(0).peer + "." + s.getActions().get(0).peer : "")
+		String stateKind;
+		switch (kind)
+		{
+			case OUTPUT:     stateKind = "org.scribble.runtime.handlers.states.ScribOutputState"; break;
+			case UNARY_INPUT:
+			case POLY_INPUT: stateKind = "org.scribble.runtime.handlers.states.ScribInputState";  break;
+			case TERMINAL:   stateKind = "org.scribble.runtime.handlers.states.ScribEndState";    break;
+			case ACCEPT:
+			case WRAP_SERVER:
+				throw new RuntimeException("TODO");
+			default:
+				throw new RuntimeException("TODO");
+		}
+
+		ClassBuilder stateClass = new ClassBuilder(stateName);
+		stateClass.setPackage(getHandlersSelfPackage());
+		stateClass.setSuperClass(stateKind);
+		stateClass.addModifiers("public", "final");
+		FieldBuilder id = stateClass.newField("id");
+		id.addModifiers("public", "static", "final");
+		id.setType(stateName);
+		id.setExpression("new " + stateName + "("
+					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? getRolesPackage() + "." + this.self + "." + this.self : "")  // FIXME: factor out
+					+ ")");
+		String[] params = (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT)
+				? new String[] { "org.scribble.type.name.Role peer" } : new String[0];
+		ConstructorBuilder cons = stateClass.newConstructor(params);
+		cons.addModifiers("private");
+		cons.addBodyLine("super(\"" + stateName + "\""
+				+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? ", peer" : "")
+				+ ")");
+		s.getAllActions().stream().forEach(a -> 
+				{
+					EState succ = s.getSuccessor(a);
+					cons.addBodyLine("this.succs.put(" + getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)  // FIXME: factor out
+							+ ", \""
+							+ ((succ.getStateKind() == EStateKind.TERMINAL)
+									? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + succ.id)  // FIXME: factor out
+							+ "\");"
+					);
+				});
+		return stateClass.build();
+		
+		/*String stateClass = "";
+		stateClass += "package " + rootPack + ".handlers.states." + this.self + ";\n";
+		stateClass += "\n";
+		stateClass += "public final class " + stateName + " extends " + stateKind + " {\n";
+		stateClass += "public static final " + stateName + " id = new " + stateName + "("
+				+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + s.getActions().get(0).peer + "." + s.getActions().get(0).peer : "")
+				+ ");\n";
+		stateClass += "private " + stateName + "("
+				+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? "org.scribble.type.name.Role peer" : "")
+				+ ") {\n";
+		stateClass += ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? "super(\"" + stateName + "\", peer);" : "super(\"" + stateName + "\");") + "\n";
+		for (EAction a : s.getAllActions())
+		{
+			stateClass += "this.succs.put(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)
+					+ ", "
+					/*+ ((s.getSuccessor(a).id == s.id)
+							? "this"
+							: ((s.getSuccessor(a).getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.getSuccessor(a).id) + ".id")* /
+					+ "\"" + ((s.getSuccessor(a).getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.getSuccessor(a).id) + "\""
 					+ ");\n";
-			stateClass += "private " + stateId + "("
-					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? "org.scribble.type.name.Role peer" : "")
-					+ ") {\n";
-			stateClass += ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? "super(\"" + stateId + "\", peer);" : "super(\"" + stateId + "\");") + "\n";
-			for (EAction a : s.getAllActions())
-			{
-				stateClass += "this.succs.put(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)
-						+ ", "
-						/*+ ((s.getSuccessor(a).id == s.id)
-								? "this"
-								: ((s.getSuccessor(a).getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.getSuccessor(a).id) + ".id")*/
-						+ "\"" + ((s.getSuccessor(a).getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.getSuccessor(a).id) + "\""
-						+ ");\n";
-			}
-			stateClass += "}\n";
-			stateClass += "}\n";
-			
-			return stateClass;
+		}
+		stateClass += "}\n";
+		stateClass += "}\n";
+		
+		return stateClass;*/
 	}
 
 	private String generateRegister(GProtocolName gpn, Role self, EState s)
@@ -652,22 +666,6 @@ String generateMessageAbstract(String messageIfName, String messageAbstractName,
 		}
 		return res;
 	}
-	
-	String getMessageAbstractName(String endpointName, EState s)
-	{
-		//return endpointName + "_" + s.id + "_Message";
-		return "Pay_" + this.self + "_" + s.id;
-	}
-	
-	String getRolesPackage()
-	{
-		return SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles";
-	}
-	
-	String getOpsPackage()
-	{
-		return SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops";
-	}
 
 	public String generateScribbleRuntimeImports()
 	{
@@ -680,5 +678,37 @@ String generateMessageAbstract(String messageIfName, String messageAbstractName,
 					//EDApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE
 				""
 				).collect(Collectors.toList());
+	}
+
+
+	protected String getHandlersPackage()
+	{
+		return SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers";
+	}
+	
+	protected String getHandlersSelfPackage()
+	{
+		return getHandlersPackage() + "." + this.self;
+	}
+
+	protected String getStatesSelfPackage()
+	{
+		return getHandlersPackage() + ".states." + this.self;
+	}
+	
+	protected String getMessageAbstractName(String endpointName, EState s)
+	{
+		//return endpointName + "_" + s.id + "_Message";
+		return "Pay_" + this.self + "_" + s.id;
+	}
+	
+	protected String getRolesPackage()
+	{
+		return SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles";
+	}
+	
+	protected String getOpsPackage()
+	{
+		return SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops";
 	}
 }
