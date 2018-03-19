@@ -848,7 +848,7 @@ public class CBEndpointApiGenerator3
 
 	protected String getStatesSelfPackage()
 	{
-		return getHandlersPackage() + ".states." + this.self;
+		return getHandlersPackage() + "." + this.self + ".states";
 	}
 	
 	protected String getMessageAbstractName(String endpointName, EState s)
@@ -869,7 +869,7 @@ public class CBEndpointApiGenerator3
 	
 	protected String getMessagesPackage(String rootPack)
 	{
-		return rootPack + ".handlers.states." + this.self + ".messages";
+		return rootPack + ".handlers." + this.self + ".states.messages";
 	}
 	
 	protected MessageSigNameDecl getMessageSigNameDecl(MessageSigName mid)
