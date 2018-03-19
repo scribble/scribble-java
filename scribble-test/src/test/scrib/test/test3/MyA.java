@@ -10,10 +10,8 @@ import org.scribble.runtime.message.ObjectStreamFormatter;
 import org.scribble.runtime.net.SocketChannelEndpoint;
 
 import test.test3.Test3.Proto1.Proto1;
-import test.test3.Test3.Proto1.handlers.A.Proto1_A;
-import test.test3.Test3.Proto1.handlers.states.A.Proto1_A_6;
-import test.test3.Test3.Proto1.handlers.states.A.messages.Proto1_A_6__1;
-import test.test3.Test3.Proto1.handlers.states.A.messages.Proto1_A_6__3;;
+import test.test3.Test3.Proto1.callbacks.A.Proto1_A;
+import test.test3.Test3.Proto1.callbacks.A.states.Proto1_A_6;
 
 public class MyA
 {
@@ -25,7 +23,7 @@ public class MyA
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			
 			a.icallback(Proto1_A_6.id,
-					x -> (x[0]++ < 3) ? new Proto1_A_6__1(B, 123) : new Proto1_A_6__3(B, "abc")
+					x -> (x[0]++ < 3) ? new Proto1_A_6.B._1(123) : new Proto1_A_6.B._3("abc")
 					);
 			
 			Future<Void> f = a.run();

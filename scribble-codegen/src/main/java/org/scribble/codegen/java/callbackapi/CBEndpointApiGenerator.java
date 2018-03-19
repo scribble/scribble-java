@@ -115,8 +115,10 @@ public class CBEndpointApiGenerator
 		
 		epClass += "@Override\n";
 		epClass += "public java.util.concurrent.Future<Void> run() throws org.scribble.main.ScribbleRuntimeException {\n";
-		epClass += "java.util.Set<Object> states = java.util.stream.Stream.of(" + states.stream().filter(s -> s.getStateKind() != EStateKind.TERMINAL).map(s ->
-				SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + "." + this.proto.getSimpleName() + "_" + this.self + "_" + s.id + ".id").collect(Collectors.joining(", ")) + ").collect(java.util.stream.Collectors.toSet());\n";
+		epClass += "java.util.Set<Object> states = java.util.stream.Stream.of("
+				+ states.stream().filter(s -> s.getStateKind() != EStateKind.TERMINAL)
+						.map(s -> SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + "." + this.proto.getSimpleName() + "_" + this.self + "_" + s.id + ".id")
+						.collect(Collectors.joining(", ")) + ").collect(java.util.stream.Collectors.toSet());\n";
 		epClass += "java.util.Set<Object> regd = new java.util.HashSet<>();\n";
 		epClass += "regd.addAll(this.inputs.keySet());\n";
 		epClass += "regd.addAll(this.outputs.keySet());\n";

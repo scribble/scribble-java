@@ -13,13 +13,11 @@ import org.scribble.runtime.net.SocketChannelEndpoint;
 import org.scribble.runtime.net.SocketChannelServer;
 
 import test.test3.Test3.Proto1.Proto1;
-import test.test3.Test3.Proto1.handlers.B.Proto1_B;
-import test.test3.Test3.Proto1.handlers.B.Proto1_B_14_Branch;
-import test.test3.Test3.Proto1.handlers.states.B.Proto1_B_14;
-import test.test3.Test3.Proto1.handlers.states.B.Proto1_B_16;
-import test.test3.Test3.Proto1.handlers.states.B.Proto1_B_17;
-import test.test3.Test3.Proto1.handlers.states.B.messages.Proto1_B_16__2;
-import test.test3.Test3.Proto1.handlers.states.B.messages.Proto1_B_17__4;
+import test.test3.Test3.Proto1.callbacks.B.Proto1_B;
+import test.test3.Test3.Proto1.callbacks.B.Proto1_B_14_Branch;
+import test.test3.Test3.Proto1.callbacks.B.states.Proto1_B_14;
+import test.test3.Test3.Proto1.callbacks.B.states.Proto1_B_16;
+import test.test3.Test3.Proto1.callbacks.B.states.Proto1_B_17;
 import test.test3.Test3.Proto1.ops._1;
 import test.test3.Test3.Proto1.ops._3;
 import test.test3.Test3.Proto1.roles.A;
@@ -56,8 +54,8 @@ public class MyB
 					b.request(C, SocketChannelEndpoint::new, "localhost", 9999);
 
 					b.icallback(Proto1_B_14.id, new MyHandler())
-					 .icallback(Proto1_B_16.id, x -> new Proto1_B_16__2(C, 456))
-					 .icallback(Proto1_B_17.id, x -> new Proto1_B_17__4(C, "def"));
+					 .icallback(Proto1_B_16.id, x -> new Proto1_B_16.C._2(456))
+					 .icallback(Proto1_B_17.id, x -> new Proto1_B_17.C._4("def"));
 
 					Future<Void> f = b.run();
 					f.get();

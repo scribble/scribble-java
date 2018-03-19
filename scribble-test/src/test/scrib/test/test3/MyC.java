@@ -11,9 +11,9 @@ import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.net.SocketChannelServer;
 
 import test.test3.Test3.Proto1.Proto1;
-import test.test3.Test3.Proto1.handlers.C.Proto1_C;
-import test.test3.Test3.Proto1.handlers.C.Proto1_C_22_Branch;
-import test.test3.Test3.Proto1.handlers.states.C.Proto1_C_22;
+import test.test3.Test3.Proto1.callbacks.C.Proto1_C;
+import test.test3.Test3.Proto1.callbacks.C.Proto1_C_22_Branch;
+import test.test3.Test3.Proto1.callbacks.C.states.Proto1_C_22;
 import test.test3.Test3.Proto1.ops._2;
 import test.test3.Test3.Proto1.ops._4;
 import test.test3.Test3.Proto1.roles.B;

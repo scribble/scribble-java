@@ -229,7 +229,10 @@ public class CBEndpointApiGenerator3
 		mb.setReturn("java.util.concurrent.Future<Void>");
 		mb.addExceptions("org.scribble.main.ScribbleRuntimeException");
 		mb.addAnnotations("@Override");
-		mb.addBodyLine("java.util.Set<Object> states = java.util.stream.Stream.of(" + initStateName + ".id).collect(java.util.stream.Collectors.toSet());");
+		mb.addBodyLine("java.util.Set<Object> states = java.util.stream.Stream.of("
+				+ states.stream().filter(s -> s.getStateKind() != EStateKind.TERMINAL)
+						.map(s -> getStatesSelfPackage() + "." + endpointName + "_" + s.id + ".id")
+						.collect(Collectors.joining(", ")) + ").collect(java.util.stream.Collectors.toSet());\n");
 		mb.addBodyLine("java.util.Set<Object> regd = new java.util.HashSet<>();");
 		mb.addBodyLine("regd.addAll(this.inputs.keySet());");
 		mb.addBodyLine("regd.addAll(this.outputs.keySet());");
