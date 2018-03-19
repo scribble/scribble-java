@@ -26,6 +26,7 @@ public class MethodBuilder extends JavaBuilder
 	private final List<String> pars = new LinkedList<>();
 	private final List<String> exceptions = new LinkedList<>();
 	private final List<String> body = new LinkedList<>();
+	private final List<String> typepars = new LinkedList<>(); // generic parameters
 
 	protected MethodBuilder()
 	{
@@ -68,6 +69,16 @@ public class MethodBuilder extends JavaBuilder
 	{
 		return this.pars;
 	}
+	
+	public void addTypeParameters(String... par)
+	{
+		this.typepars.addAll(Arrays.asList(par));
+	}
+	
+	public List<String> getTypeParameters()
+	{
+		return this.typepars;
+	}
 
 	public void addExceptions(String... exceptions)
 	{
@@ -109,6 +120,10 @@ public class MethodBuilder extends JavaBuilder
 		{
 			meth += this.mods.stream().collect(Collectors.joining(" "));
 			meth += " ";
+		}
+		if (!this.typepars.isEmpty())
+		{
+			meth += "<" + this.typepars.stream().collect(Collectors.joining(", ")) + "> ";
 		}
 		if (this.ret != null)
 		{
