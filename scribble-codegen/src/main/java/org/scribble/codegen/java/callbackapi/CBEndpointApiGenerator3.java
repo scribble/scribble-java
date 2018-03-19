@@ -40,6 +40,8 @@ public class CBEndpointApiGenerator3
 	public final GProtocolName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
+	protected final Map<Integer, String> stateNames = new HashMap<>();
+	
 	//private final boolean subtypes;  // Generate full hierarchy (states -> states, not just indivdual state -> cases) -- cf. ioifaces
 
 	public CBEndpointApiGenerator3(Job job, GProtocolName fullname, Role self, boolean subtypes)
@@ -57,6 +59,7 @@ public class CBEndpointApiGenerator3
 
 	public Map<String, String> build() throws ScribbleException
 	{
+		this.stateNames.clear();
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
 		res.putAll(buildSessionApi());
 		return res;
@@ -83,9 +86,17 @@ public class CBEndpointApiGenerator3
 		states.add(init);
 		states.addAll(MState.getReachableStates(init));
 
+		String endpointName = this.proto.getSimpleName() + "_" + this.self;
+		int i = 1;
+		for (EState s : states)
+		{
+			EStateKind kind = s.getStateKind();
+			String stateName = (kind == EStateKind.TERMINAL) ? "End" : endpointName + "_" + i++;
+			this.stateNames.put(s.id, stateName);
+		}
+
 		// frontend handler class
 		String rootPack = SessionApiGenerator.getEndpointApiRootPackageName(this.proto);
-		String endpointName = this.proto.getSimpleName() + "_" + this.self;
 		String sessClassName = rootPack + "." + this.proto.getSimpleName();
 		String prefix = getHandlersSelfPackage().replace('.', '/') + "/";  // StateChannelApiGenerator#generateApi
 
@@ -153,9 +164,9 @@ public class CBEndpointApiGenerator3
 		for (EState s : states)
 		{
 			EStateKind kind = s.getStateKind();
-			String stateId = (kind == EStateKind.TERMINAL) ? "End" : endpointName + "_" + s.id;
-			String stateClass = generateStateClass(s, rootPack, kind, stateId, endpointName);
-			res.put(sprefix + stateId + ".java", stateClass);
+			String stateName = this.stateNames.get(s.id);
+			String stateClass = generateStateClass(s, rootPack, kind, stateName, endpointName);
+			res.put(sprefix + stateName + ".java", stateClass);
 		}
 			
 		/*// messages
@@ -178,7 +189,7 @@ public class CBEndpointApiGenerator3
 			if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 			{
 				String bprefix = getHandlersSelfPackage().replace('.', '/') + "/";
-				String branchName = endpointName + "_" + s.id + "_Branch";
+				String branchName = this.stateNames.get(s.id) + "_Branch";
 
 				for (EAction a : s.getAllActions())
 				{
@@ -208,7 +219,7 @@ public class CBEndpointApiGenerator3
 
 	protected String generateEndpointClass(String rootPack, String endpointName, String sessClassName, EState init, Set<EState> states)
 	{
-		String initStateName = getStatesSelfPackage() + "." + endpointName + "_" + init.id;  // FIXME: factor out
+		String initStateName = getStatesSelfPackage() + "." + this.stateNames.get(init.id);//endpointName + "_" + init.id;  // FIXME: factor out
 
 		ClassBuilder endpointClass = new ClassBuilder(endpointName);
 		endpointClass.setPackage(getHandlersSelfPackage());
@@ -221,7 +232,8 @@ public class CBEndpointApiGenerator3
 		cb.addBodyLine("super(sess, self, smf, " + initStateName + ".id, data);");
 		for (EState s : states)
 		{
-			String tmp = (s.getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.id;
+			//String tmp = (s.getStateKind() == EStateKind.TERMINAL) ? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + s.id;
+			String tmp = this.stateNames.get(s.id);
 			cb.addBodyLine("this.states.put(\"" + tmp + "\", " + getStatesSelfPackage() + "." + tmp + ".id);");
 		}
 		MethodBuilder mb = endpointClass.newMethod("run");
@@ -231,7 +243,7 @@ public class CBEndpointApiGenerator3
 		mb.addAnnotations("@Override");
 		mb.addBodyLine("java.util.Set<Object> states = java.util.stream.Stream.of("
 				+ states.stream().filter(s -> s.getStateKind() != EStateKind.TERMINAL)
-						.map(s -> getStatesSelfPackage() + "." + endpointName + "_" + s.id + ".id")
+						.map(s -> getStatesSelfPackage() + "." + this.stateNames.get(s.id) + ".id")
 						.collect(Collectors.joining(", ")) + ").collect(java.util.stream.Collectors.toSet());\n");
 		mb.addBodyLine("java.util.Set<Object> regd = new java.util.HashSet<>();");
 		mb.addBodyLine("regd.addAll(this.inputs.keySet());");
@@ -301,10 +313,10 @@ public class CBEndpointApiGenerator3
 					MethodBuilder callback = endpointClass.newMethod("callback");
 					callback.addModifiers("public");
 					callback.setReturn(endpointName + "<D>");
-					callback.addParameters(getStatesSelfPackage() + "." + endpointName + "_" + s.id + " sid",  // FIXME: factor out
+					callback.addParameters(getStatesSelfPackage() + "." + this.stateNames.get(s.id) + " sid",  // FIXME: factor out
 							"java.util.function.Function<D, "
 									//+ getMessagesPackage(rootPack) + "." + getMessageAbstractName(endpointName, s)
-									+ getStatesSelfPackage() + "." + endpointName + "_" + s.id + ".Message"  // FIXME: factor out -- messageIf
+									+ getStatesSelfPackage() + "." + this.stateNames.get(s.id) + ".Message"  // FIXME: factor out -- messageIf
 									+ "> cb"
 					);
 					/*callback.addBodyLine("this.outputs.put(sid, cb);");
@@ -319,7 +331,7 @@ public class CBEndpointApiGenerator3
 							+ endpointName + s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
 									.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 					icallback.addTypeParameters("T extends " + iface + " & org.scribble.runtime.handlers.ScribOutputEvent");
-					icallback.addParameters(getStatesSelfPackage() + "." + endpointName + "_" + s.id + " sid",  // FIXME: factor out
+					icallback.addParameters(getStatesSelfPackage() + "." + this.stateNames.get(s.id) + " sid",  // FIXME: factor out
 							"java.util.function.Function<D, "
 									+ "? extends T"
 									+ "> cb"
@@ -335,8 +347,8 @@ public class CBEndpointApiGenerator3
 					MethodBuilder callback = endpointClass.newMethod("callback");
 					callback.addModifiers("public");
 					callback.setReturn(endpointName + "<D>");
-					callback.addParameters(getStatesSelfPackage() + "." + endpointName + "_" + s.id + " sid",
-							getHandlersSelfPackage() + "." + endpointName + "_" + s.id + "_Branch<D> b"
+					callback.addParameters(getStatesSelfPackage() + "." + this.stateNames.get(s.id) + " sid",
+							getHandlersSelfPackage() + "." + this.stateNames.get(s.id) + "_Branch<D> b"
 					);  // FIXME: factor out
 					/*callback.addBodyLine("this.inputs.put(sid, b);");
 					callback.addBodyLine("return this;");*/
@@ -351,7 +363,7 @@ public class CBEndpointApiGenerator3
 							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining("")) + "<D>"
 					).collect(Collectors.joining(" &"));
 					icallback.addTypeParameters("T extends " + typepar + " & org.scribble.runtime.handlers.ScribBranch<D>");
-					icallback.addParameters(getStatesSelfPackage() + "." + endpointName + "_" + s.id + " sid", "T b");  // FIXME: factor out
+					icallback.addParameters(getStatesSelfPackage() + "." + this.stateNames.get(s.id) + " sid", "T b");  // FIXME: factor out
 					icallback.addBodyLine("this.inputs.put(sid, b);");
 					icallback.addBodyLine("return this;");
 					break;

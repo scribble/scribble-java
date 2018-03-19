@@ -15,14 +15,13 @@ import org.scribble.runtime.util.Buf;
 
 import test.test2.Test2.Proto1.Proto1;
 import test.test2.Test2.Proto1.callbacks.B.Proto1_B;
-import test.test2.Test2.Proto1.callbacks.B.Proto1_B_10_Branch;
-import test.test2.Test2.Proto1.callbacks.B.states.Proto1_B_10;
+import test.test2.Test2.Proto1.callbacks.B.Proto1_B_1_Branch;
+import test.test2.Test2.Proto1.callbacks.B.states.Proto1_B_1;
 import test.test2.Test2.Proto1.ops._1;
 import test.test2.Test2.Proto1.ops._2;
 import test.test2.Test2.Proto1.roles.A;
 import test.test2.Test2.Proto1.roles.B;
 import test.test2.Test2.Proto1.statechans.B.EndSocket;
-import test.test2.Test2.Proto1.statechans.B.Proto1_B_1;
 import test.test2.Test2.Proto1.statechans.B.Proto1_B_1_Handler;
 
 public class MyB
@@ -34,7 +33,7 @@ public class MyB
 
 	public static void foo3() throws IOException
 	{
-		class MyHandler extends Proto1_B_10_Branch<Void>
+		class MyHandler extends Proto1_B_1_Branch<Void>
 		{
 			@Override
 			public void receive(Void data, A peer, _1 op, Integer arg1)
@@ -58,7 +57,7 @@ public class MyB
 				{
 					b.accept(ss, A);
 
-					b.icallback(Proto1_B_10.id, new MyHandler());
+					b.icallback(Proto1_B_1.id, new MyHandler());
 
 					Future<Void> f = b.run();
 					f.get();
@@ -127,7 +126,7 @@ public class MyB
 				{
 					b.accept(ss, A);
 
-					new Proto1_B_1(b).branch(A, new MyHandler());
+					new test.test2.Test2.Proto1.statechans.B.Proto1_B_1(b).branch(A, new MyHandler());
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{

@@ -13,9 +13,8 @@ import org.scribble.runtime.session.MPSTEndpoint;
 
 import test.test2.Test2.Proto1.Proto1;
 import test.test2.Test2.Proto1.callbacks.A.Proto1_A;
-import test.test2.Test2.Proto1.callbacks.A.states.Proto1_A_5;
+import test.test2.Test2.Proto1.callbacks.A.states.Proto1_A_1;
 import test.test2.Test2.Proto1.roles.A;
-import test.test2.Test2.Proto1.statechans.A.Proto1_A_1;
 
 // TODO: test interop between ED API and SC API (also for sig messages)
 public class MyA
@@ -34,8 +33,8 @@ public class MyA
 
 			//TODO: test choice at A { 1() from A to B; 2() from A to C; } or { 1() from A to C; 3() from A to B; }
 
-			a.icallback(Proto1_A_5.id, x ->
-					new Proto1_A_5.B._1(123)
+			a.icallback(Proto1_A_1.id, x ->
+					new Proto1_A_1.B._1(123)
 					//new Proto1_A_5.B._2("abc")
 			);
 					// new IntPay<>(B, _1, 123));  // IntPay<B, _1>  -- or StrPay<B, _2>
@@ -79,7 +78,7 @@ public class MyA
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 
-			new Proto1_A_1(a).send(B, _1, 123);
+			new test.test2.Test2.Proto1.statechans.A.Proto1_A_1(a).send(B, _1, 123);
 			//new Proto1_A_1(a).send(B, _2, "abc");
 		}
 		catch (Exception e)
