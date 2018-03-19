@@ -32,6 +32,7 @@ import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
+// FIXME: consider collecting up all interfaces as statics inside a container class
 public class CBEndpointApiGenerator3
 {
 	public final Job job;
@@ -124,7 +125,7 @@ public class CBEndpointApiGenerator3
 		{
 			InterfaceBuilder outputChoice = new InterfaceBuilder(name);
 			outputChoice.addModifiers("public");
-			String pack = getHandlersSelfPackage() + ".callbacks.outputs.interfaces";  // FIXME: factor out
+			String pack = getHandlersSelfPackage() + ".outputs.interfaces";  // FIXME: factor out
 			outputChoice.setPackage(pack);
 			res.put(pack.replace('.', '/') + "/" + name + ".java", outputChoice.build());
 		}
@@ -139,7 +140,7 @@ public class CBEndpointApiGenerator3
 						outputCallback.addInterfaces(endpointName + iface.stream().sorted().map(f -> "__" + f).collect(Collectors.joining()))
 				);
 			}
-			String pack = getHandlersSelfPackage() + ".callbacks.outputs";  // FIXME: factor out
+			String pack = getHandlersSelfPackage() + ".outputs";  // FIXME: factor out
 			outputCallback.setPackage(pack);
 			res.put(pack.replace('.', '/') + "/" + name + ".java", outputCallback.build());
 		}
@@ -173,7 +174,7 @@ public class CBEndpointApiGenerator3
 		{
 			if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 			{
-				String bprefix = SessionApiGenerator.getEndpointApiRootPackageName(this.proto).replace('.', '/') + "/handlers/" + this.self + "/";
+				String bprefix = getHandlersSelfPackage().replace('.', '/') + "/";
 				String branchName = endpointName + "_" + s.id + "_Branch";
 
 				for (EAction a : s.getAllActions())
@@ -191,7 +192,7 @@ public class CBEndpointApiGenerator3
 					String receiveIfName = endpointName + "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
 							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining());  // FIXME: factor out
 					String receiveInterface = generateReceiveInterface(isSig, msnd, jc, a, rootPack, receiveIfName);
-					res.put(bprefix + "interfaces/" + receiveIfName + ".java", receiveInterface);
+					res.put((getHandlersSelfPackage() + ".inputs.").replace('.', '/') + receiveIfName + ".java", receiveInterface);
 				}
 
 				String branchAbstract = generateBranch(bprefix, jc, s, endpointName, rootPack, branchName);
@@ -308,7 +309,7 @@ public class CBEndpointApiGenerator3
 					icallback.addModifiers("public");
 					icallback.setReturn(endpointName + "<D>");
 					String iface = getHandlersSelfPackage()
-							+ ((s.getAllActions().size() > 1) ? ".callbacks.outputs.interfaces" : ".callbacks.outputs.")  // FIXME: factor out
+							+ ((s.getAllActions().size() > 1) ? ".outputs.interfaces" : ".outputs.")  // FIXME: factor out
 							+ endpointName + s.getAllActions().stream().sorted().map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 					icallback.addTypeParameters("T extends " + iface + " & org.scribble.runtime.handlers.ScribOutputEvent");
 					icallback.addParameters(getStatesSelfPackage() + "." + endpointName + "_" + s.id + " sid",  // FIXME: factor out
@@ -338,7 +339,7 @@ public class CBEndpointApiGenerator3
 					icallback.addModifiers("public");
 					icallback.setReturn(endpointName + "<D>");
 					String typepar = s.getAllActions().stream().map(a -> 
-							  getHandlersSelfPackage() + ".interfaces." + this.proto.getSimpleName() + "_" + this.self  // FIXME: factor out
+							  getHandlersSelfPackage() + ".inputs." + this.proto.getSimpleName() + "_" + this.self  // FIXME: factor out
 							+ "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
 							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining("")) + "<D>"
 					).collect(Collectors.joining(" &"));
@@ -480,7 +481,7 @@ public class CBEndpointApiGenerator3
 			messageIf.addModifiers("public", "static");
 			messageIf.addInterfaces("org.scribble.runtime.handlers.ScribOutputEvent");
 			String iface = getHandlersSelfPackage()  // FIXME: factor out with generateRegister
-					+ ((s.getAllActions().size() > 1) ? ".callbacks.outputs.interfaces" : ".callbacks.outputs.")
+					+ ((s.getAllActions().size() > 1) ? ".outputs.interfaces" : ".outputs.")
 					+ endpointName + s.getAllActions().stream().sorted().map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 			messageIf.addInterfaces(iface);
 		}
@@ -497,7 +498,7 @@ public class CBEndpointApiGenerator3
 				opClass.addModifiers("public", "static");
 				opClass.setSuperClass("org.scribble.runtime.message.ScribMessage");
 				opClass.addInterfaces(stateName + ".Message");  // FIXME: factor out
-				opClass.addInterfaces(getHandlersSelfPackage() + ".callbacks.outputs."  // FIXME: factor out
+				opClass.addInterfaces(getHandlersSelfPackage() + ".outputs."  // FIXME: factor out
 						+ endpointName + "__" + this.getCallbackSuffix.apply(a));
 				FieldBuilder svu = opClass.newField("serialVersionUID");
 				svu.addModifiers("private", "static", "final");
@@ -560,11 +561,11 @@ public class CBEndpointApiGenerator3
 	protected String generateBranch(String bprefix, JobContext jc, EState s, String endpointName, String rootPack, String branchName)
 	{
 		String branchAbstract = "";
-		branchAbstract += "package " + rootPack + ".handlers." + this.self + ";\n";
+		branchAbstract += "package " + getHandlersSelfPackage() + ";\n";
 		branchAbstract += "";
 		branchAbstract += "public abstract class " + branchName + "<D> implements org.scribble.runtime.handlers.ScribBranch<D>";
 		branchAbstract += s.getAllActions().stream().map(a ->
-				", " + rootPack + ".handlers." + this.self + ".interfaces." + endpointName + "__" + a.peer
+				", " + getHandlersSelfPackage() + ".inputs." + endpointName + "__" + a.peer
 				+ "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining()) + "<D>"  // FIXME: factor out
 		).collect(Collectors.joining(""));
 		branchAbstract += " {\n";
@@ -613,7 +614,7 @@ public class CBEndpointApiGenerator3
 	protected String generateReceiveInterface(boolean isSig, MessageSigNameDecl msnd, JobContext jc, EAction a, String rootPack, String receiveIfName)
 	{
 		String receiveInterface = "";
-		receiveInterface += "package " + rootPack + ".handlers." + this.self + ".interfaces;\n";
+		receiveInterface += "package " + getHandlersSelfPackage() + ".inputs;\n";
 		receiveInterface += "\n";
 		receiveInterface += "public interface " + receiveIfName + "<D> {\n";
 
@@ -837,7 +838,7 @@ public class CBEndpointApiGenerator3
 
 	protected String getHandlersPackage()
 	{
-		return SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers";
+		return SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".callbacks";
 	}
 	
 	protected String getHandlersSelfPackage()
