@@ -538,14 +538,15 @@ public class CBEndpointApiGenerator3
 		id.addModifiers("public", "static", "final");
 		id.setType(stateName);
 		id.setExpression("new " + stateName + "("
-					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? getRolesPackage() + "." + this.self + "." + this.self : "")  // FIXME: factor out
+					//+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? getRolesPackage() + "." + this.self + "." + this.self : "")  // FIXME: factor out
 					+ ")");
-		String[] params = (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT)
-				? new String[] { "org.scribble.type.name.Role peer" } : new String[0];
-		ConstructorBuilder cons = stateClass.newConstructor(params);
+		/*String[] params = (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT)
+				? new String[] { "org.scribble.type.name.Role peer" } : new String[0];*/
+		ConstructorBuilder cons = stateClass.newConstructor();
 		cons.addModifiers("private");
+		Role peer = (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? s.getActions().iterator().next().peer : null;
 		cons.addBodyLine("super(\"" + stateName + "\""
-				+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? ", peer" : "")
+				+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? ", " + getRolesPackage() + "." + peer + "." + peer : "")  // FIXME: factor out
 				+ ");");
 		for (EAction a : s.getAllActions())
 		{
