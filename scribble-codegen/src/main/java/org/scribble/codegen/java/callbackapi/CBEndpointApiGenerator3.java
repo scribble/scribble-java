@@ -127,7 +127,7 @@ public class CBEndpointApiGenerator3
 		{
 			InterfaceBuilder outputChoice = new InterfaceBuilder(name);
 			outputChoice.addModifiers("public");
-			String pack = getHandlersSelfPackage() + ".outputs.interfaces";  // FIXME: factor out
+			String pack = getHandlersSelfPackage() + ".outputs.choices";  // FIXME: factor out
 			outputChoice.setPackage(pack);
 			res.put(pack.replace('.', '/') + "/" + name + ".java", outputChoice.build());
 		}
@@ -139,7 +139,7 @@ public class CBEndpointApiGenerator3
 			if (reg.containsKey(name))
 			{
 				reg.get(name).forEach(iface ->
-						outputCallback.addInterfaces(getHandlersSelfPackage() + ".outputs.interfaces."
+						outputCallback.addInterfaces(getHandlersSelfPackage() + ".outputs.choices."
 								+ endpointName + iface.stream().sorted().map(f -> "__" + f).collect(Collectors.joining()))
 				);
 			}
@@ -312,7 +312,7 @@ public class CBEndpointApiGenerator3
 					icallback.addModifiers("public");
 					icallback.setReturn(endpointName + "<D>");
 					String iface = getHandlersSelfPackage()
-							+ ((s.getAllActions().size() > 1) ? ".outputs.interfaces." : ".outputs.")  // FIXME: factor out
+							+ ((s.getAllActions().size() > 1) ? ".outputs.choices." : ".outputs.")  // FIXME: factor out
 							+ endpointName + s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
 									.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 					icallback.addTypeParameters("T extends " + iface + " & org.scribble.runtime.handlers.ScribOutputEvent");
@@ -485,7 +485,7 @@ public class CBEndpointApiGenerator3
 			messageIf.addModifiers("public", "static");
 			messageIf.addInterfaces("org.scribble.runtime.handlers.ScribOutputEvent");
 			String iface = getHandlersSelfPackage()  // FIXME: factor out with generateRegister
-					+ ((s.getAllActions().size() > 1) ? ".outputs.interfaces." : ".outputs.")
+					+ ((s.getAllActions().size() > 1) ? ".outputs.choices." : ".outputs.")
 					+ endpointName + s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
 							.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 			messageIf.addInterfaces(iface);
