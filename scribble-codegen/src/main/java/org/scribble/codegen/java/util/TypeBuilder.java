@@ -167,6 +167,22 @@ public abstract class TypeBuilder extends JavaBuilder
 		return eb;
 	}
 	
+	// Name may not be suitable -- inner?
+	public ClassBuilder newMemberClass(String name)
+	{
+		ClassBuilder cb = new ClassBuilder(name);
+		this.memberTypes.add(cb);
+		return cb;
+	}
+
+	// Name may not be suitable -- inner?
+	public InterfaceBuilder newMemberInterface(String name)
+	{
+		InterfaceBuilder ib = new InterfaceBuilder(name);
+		this.memberTypes.add(ib);
+		return ib;
+	}
+	
 	public ClassBuilder newTopLevelClass()
 	{
 		ClassBuilder cb = new ClassBuilder();
@@ -222,7 +238,7 @@ public abstract class TypeBuilder extends JavaBuilder
 		if (!this.fields.isEmpty())
 		{
 			clazz += "\n";
-			clazz += this.fields.stream().map((fb) -> fb.build()).collect(Collectors.joining("\n"));
+			clazz += this.fields.stream().map(fb -> fb.build()).collect(Collectors.joining("\n"));
 		}
 		return clazz;
 	}
@@ -232,7 +248,7 @@ public abstract class TypeBuilder extends JavaBuilder
 		if (!this.methods.isEmpty())
 		{
 			clazz += "\n\n";
-			clazz += this.methods.stream().map((mb) -> mb.build()).collect(Collectors.joining("\n\n"));
+			clazz += this.methods.stream().map(mb -> mb.build()).collect(Collectors.joining("\n\n"));
 		}
 		return clazz;
 	}
@@ -242,7 +258,7 @@ public abstract class TypeBuilder extends JavaBuilder
 		if (!this.memberTypes.isEmpty())
 		{
 			clazz += "\n\n";
-			clazz += this.memberTypes.stream().map((cb) -> cb.build()).collect(Collectors.joining("\n\n"));
+			clazz += this.memberTypes.stream().map(tb -> tb.build()).collect(Collectors.joining("\n\n"));
 		}
 		return clazz;
 	}
@@ -252,7 +268,7 @@ public abstract class TypeBuilder extends JavaBuilder
 		if (!this.topLevelTypes.isEmpty())
 		{
 			clazz += "\n\n";
-			clazz += this.topLevelTypes.stream().map((cb) -> cb.build()).collect(Collectors.joining("\n\n"));
+			clazz += this.topLevelTypes.stream().map(tb -> tb.build()).collect(Collectors.joining("\n\n"));
 		}
 		return clazz;
 	}

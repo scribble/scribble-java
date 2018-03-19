@@ -27,7 +27,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.java.JEndpointApiGenerator;
-import org.scribble.codegen.java.callbackapi.CBEndpointApiGenerator;
+import org.scribble.codegen.java.callbackapi.CBEndpointApiGenerator3;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
@@ -442,7 +442,7 @@ public class CommandLine
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role self = checkRoleArg(jcontext, fullname, args[i+1]);
-			CBEndpointApiGenerator edgen = new CBEndpointApiGenerator(job, fullname, self, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
+			CBEndpointApiGenerator3 edgen = new CBEndpointApiGenerator3(job, fullname, self, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
 			Map<String, String> out = edgen.build();
 			outputClasses(out);
 		}
