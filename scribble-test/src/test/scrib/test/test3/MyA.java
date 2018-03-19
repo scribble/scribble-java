@@ -25,7 +25,7 @@ public class MyA
 			a.icallback(Proto1_A_1.id,
 					x -> (x[0]++ < 3) ? new Proto1_A_1.B._1(123) : new Proto1_A_1.B._3("abc")
 			);
-			
+
 			Future<Void> f = a.run();
 			f.get();
 

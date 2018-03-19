@@ -9,10 +9,8 @@ import java.util.concurrent.Future;
 import org.scribble.runtime.net.SocketChannelEndpoint;
 
 import test.test4.Test4.Proto1.Proto1;
-import test.test4.Test4.Proto1.handlers.A.Proto1_A;
-import test.test4.Test4.Proto1.handlers.states.A.Proto1_A_6;
-import test.test4.Test4.Proto1.handlers.states.A.messages.Proto1_A_Bar;
-import test.test4.Test4.Proto1.handlers.states.A.messages.Proto1_A_Foo;
+import test.test4.Test4.Proto1.callbacks.A.Proto1_A;
+import test.test4.Test4.Proto1.callbacks.A.states.Proto1_A_1;
 import test.test4.sig.Bar;
 import test.test4.sig.Foo;
 import test.test4.sig.Test4Formatter;;
@@ -26,10 +24,10 @@ public class MyA
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 
-			a.icallback(Proto1_A_6.id,
-					x -> (x[0]++ < 5) ? new Proto1_A_Foo(B, new Foo("abc" + x[0])) : new Proto1_A_Bar(B, new Bar(123))
+			a.icallback(Proto1_A_1.id,
+					x -> (x[0]++ < 5) ? new Proto1_A_1.B.Foo(new Foo("abc" + x[0])) : new Proto1_A_1.B.Bar(new Bar(123))
 			);
-			// FIXME: remove sid from message class for sigs
+			// FIXME: "inline" Sig class constructor args directly as Op class constructor args
 			
 			Future<Void> f = a.run();
 			f.get();

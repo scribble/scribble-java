@@ -56,6 +56,8 @@ public class MyB
 					b.icallback(Proto1_B_1.id, new MyHandler())
 					 .icallback(Proto1_B_2.id, x -> new Proto1_B_2.C._2(456))
 					 .icallback(Proto1_B_3.id, x -> new Proto1_B_3.C._4("def"));
+					
+					//b.icallback(Proto1_B_2.id, x -> new Proto1_B_3.C._4("def"));
 
 					Future<Void> f = b.run();
 					f.get();

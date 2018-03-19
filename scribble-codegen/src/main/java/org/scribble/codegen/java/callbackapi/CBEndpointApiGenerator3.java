@@ -478,16 +478,16 @@ public class CBEndpointApiGenerator3
 					+ ")");
 		/*String[] params = (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT)
 				? new String[] { "org.scribble.type.name.Role peer" } : new String[0];*/
-		ConstructorBuilder cons = stateClass.newConstructor();
-		cons.addModifiers("private");
+		ConstructorBuilder stateCons = stateClass.newConstructor();
+		stateCons.addModifiers("private");
 		Role peer = (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? s.getActions().iterator().next().peer : null;
-		cons.addBodyLine("super(\"" + stateName + "\""
+		stateCons.addBodyLine("super(\"" + stateName + "\""
 				+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? ", " + getRolesPackage() + "." + peer + "." + peer : "")  // FIXME: factor out
 				+ ");");
 		for (EAction a : s.getAllActions())
 		{
 			EState succ = s.getSuccessor(a);
-			cons.addBodyLine("this.succs.put(" + getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)  // FIXME: factor out
+			stateCons.addBodyLine("this.succs.put(" + getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)  // FIXME: factor out
 					+ ", \""
 					/*+ ((succ.getStateKind() == EStateKind.TERMINAL)
 							? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + succ.id)  // FIXME: factor out*/
@@ -526,13 +526,45 @@ public class CBEndpointApiGenerator3
 				svu.setType("long");
 				svu.setExpression("1L");
 				int[] i = { 0 };
-				ConstructorBuilder opCons = opClass.newConstructor(a.payload.elems.stream().map(e ->
+				
+				// FIXME: factor out
+			boolean isSig = main.getNonProtocolDecls().stream()
+				.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+			MessageSigNameDecl msnd = null;
+			if (isSig)
+			{
+				msnd = (MessageSigNameDecl) main.getNonProtocolDecls().stream()
+						.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+				FieldBuilder m = opClass.newField("m");
+				m.addModifiers("private", "final");
+				m.setType(msnd.extName);
+			}
+				
+				ConstructorBuilder opCons; 
+				if (isSig)
+				{
+					opCons = opClass.newConstructor(msnd.extName + " m");
+					opClass.addInterfaces("org.scribble.runtime.handlers.ScribSigMessage");
+				}
+				else 
+				{
+					opCons = opClass.newConstructor(a.payload.elems.stream().map(e ->
 								main.getDataTypeDecl((DataType) e).extName + " arg" + i[0]++
-						).collect(Collectors.joining(", ")));  // FIXME: sig
+						).collect(Collectors.joining(", ")));
+				}
 				opCons.addModifiers("public");
 				opCons.addBodyLine("super(" + getOpsPackage() + "." + opName + "." + opName  // CHECKME: different "op types" have same equals/hashCode -- OK?
 						+ IntStream.range(0, a.payload.elems.size()).mapToObj(j -> ", arg" + j).collect(Collectors.joining(""))
 						+ ");");
+				if (isSig)
+				{
+					opCons.addBodyLine("this.m = m;");
+					MethodBuilder getSig = opClass.newMethod("getSig");
+					getSig.addModifiers("public");
+					getSig.addAnnotations("@Override");
+					getSig.setReturn("org.scribble.runtime.message.ScribMessage");
+					getSig.addBodyLine("return this.m;");
+				}
 				MethodBuilder getPeer = opClass.newMethod("getPeer");
 				getPeer.addModifiers("public");
 				getPeer.addAnnotations("@Override");
