@@ -14,9 +14,9 @@ import org.scribble.runtime.session.MPSTEndpoint;
 import org.scribble.runtime.util.Buf;
 
 import test.test2.Test2.Proto1.Proto1;
-import test.test2.Test2.Proto1.handlers.B.Proto1_B;
-import test.test2.Test2.Proto1.handlers.B.Proto1_B_10_Branch;
-import test.test2.Test2.Proto1.handlers.states.B.Proto1_B_10;
+import test.test2.Test2.Proto1.callbacks.B.Proto1_B;
+import test.test2.Test2.Proto1.callbacks.B.Proto1_B_10_Branch;
+import test.test2.Test2.Proto1.callbacks.B.states.Proto1_B_10;
 import test.test2.Test2.Proto1.ops._1;
 import test.test2.Test2.Proto1.ops._2;
 import test.test2.Test2.Proto1.roles.A;

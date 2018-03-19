@@ -12,9 +12,8 @@ import org.scribble.runtime.net.SocketChannelEndpoint;
 import org.scribble.runtime.session.MPSTEndpoint;
 
 import test.test2.Test2.Proto1.Proto1;
-import test.test2.Test2.Proto1.handlers.A.Proto1_A;
-import test.test2.Test2.Proto1.handlers.states.A.Proto1_A_5;
-import test.test2.Test2.Proto1.handlers.states.A.messages.Proto1_A_5__2;
+import test.test2.Test2.Proto1.callbacks.A.Proto1_A;
+import test.test2.Test2.Proto1.callbacks.A.states.Proto1_A_5;
 import test.test2.Test2.Proto1.roles.A;
 import test.test2.Test2.Proto1.statechans.A.Proto1_A_1;
 
@@ -36,8 +35,9 @@ public class MyA
 			//TODO: test choice at A { 1() from A to B; 2() from A to C; } or { 1() from A to C; 3() from A to B; }
 
 			a.icallback(Proto1_A_5.id, x ->
-					//new Proto1_A_5__1(B, 123));
-					new Proto1_A_5__2(B, "abc"));
+					new Proto1_A_5.B._1(123)
+					//new Proto1_A_5.B._2("abc")
+			);
 					// new IntPay<>(B, _1, 123));  // IntPay<B, _1>  -- or StrPay<B, _2>
 			
 			Future<Void> f = a.run();  // Even if registration checks still dynamic, much better to check at "session init" than partway through session after potential side effects

@@ -1,5 +1,6 @@
 package org.scribble.codegen.java.callbackapi;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -117,7 +118,8 @@ public class CBEndpointApiGenerator3
 			if (as.size() > 1)
 			{
 				String outputChoiceName = endpointName
-						+ as.stream().sorted().map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());
+						+ as.stream().sorted(Comparator.comparing(a -> a.toString()))
+								.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());
 				outputChoices.add(outputChoiceName);
 			}
 		}
@@ -137,7 +139,8 @@ public class CBEndpointApiGenerator3
 			if (reg.containsKey(name))
 			{
 				reg.get(name).forEach(iface ->
-						outputCallback.addInterfaces(endpointName + iface.stream().sorted().map(f -> "__" + f).collect(Collectors.joining()))
+						outputCallback.addInterfaces(getHandlersSelfPackage() + ".outputs.interfaces."
+								+ endpointName + iface.stream().sorted().map(f -> "__" + f).collect(Collectors.joining()))
 				);
 			}
 			String pack = getHandlersSelfPackage() + ".outputs";  // FIXME: factor out
@@ -309,8 +312,9 @@ public class CBEndpointApiGenerator3
 					icallback.addModifiers("public");
 					icallback.setReturn(endpointName + "<D>");
 					String iface = getHandlersSelfPackage()
-							+ ((s.getAllActions().size() > 1) ? ".outputs.interfaces" : ".outputs.")  // FIXME: factor out
-							+ endpointName + s.getAllActions().stream().sorted().map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
+							+ ((s.getAllActions().size() > 1) ? ".outputs.interfaces." : ".outputs.")  // FIXME: factor out
+							+ endpointName + s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
+									.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 					icallback.addTypeParameters("T extends " + iface + " & org.scribble.runtime.handlers.ScribOutputEvent");
 					icallback.addParameters(getStatesSelfPackage() + "." + endpointName + "_" + s.id + " sid",  // FIXME: factor out
 							"java.util.function.Function<D, "
@@ -481,11 +485,12 @@ public class CBEndpointApiGenerator3
 			messageIf.addModifiers("public", "static");
 			messageIf.addInterfaces("org.scribble.runtime.handlers.ScribOutputEvent");
 			String iface = getHandlersSelfPackage()  // FIXME: factor out with generateRegister
-					+ ((s.getAllActions().size() > 1) ? ".outputs.interfaces" : ".outputs.")
-					+ endpointName + s.getAllActions().stream().sorted().map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
+					+ ((s.getAllActions().size() > 1) ? ".outputs.interfaces." : ".outputs.")
+					+ endpointName + s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
+							.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 			messageIf.addInterfaces(iface);
 		}
-		s.getAllActions().stream().map(a -> a.peer).forEach(r ->
+		s.getAllActions().stream().map(a -> a.peer).distinct().forEach(r ->
 		{
 			ClassBuilder roleClass = stateClass.newMemberClass(r.toString());
 			roleClass.addModifiers("public", "static");
