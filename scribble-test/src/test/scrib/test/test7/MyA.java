@@ -11,11 +11,9 @@ import org.scribble.runtime.message.ObjectStreamFormatter;
 import org.scribble.runtime.net.SocketChannelEndpoint;
 
 import test.test7.Test7.Proto1.Proto1;
-import test.test7.Test7.Proto1.handlers.A.Proto1_A;
-import test.test7.Test7.Proto1.handlers.states.A.Proto1_A_6;
-import test.test7.Test7.Proto1.handlers.states.A.Proto1_A_8;
-import test.test7.Test7.Proto1.handlers.states.A.messages.Proto1_A_6_Message;
-import test.test7.Test7.Proto1.handlers.states.A.messages.Proto1_A_6__2;;
+import test.test7.Test7.Proto1.callbacks.A.Proto1_A;
+import test.test7.Test7.Proto1.callbacks.A.states.Proto1_A_1;
+import test.test7.Test7.Proto1.callbacks.A.states.Proto1_A_2;
 
 public class MyA
 {
@@ -27,10 +25,10 @@ public class MyA
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 
-			Function<String[], Proto1_A_6_Message> h = x -> new Proto1_A_6__2(B, (x[0] += "a"));
+			Function<String[], Proto1_A_1.Message> h = x -> new Proto1_A_1.B._2((x[0] += "a"));
 
-			a.icallback(Proto1_A_6.id, h)
-			 .icallback(Proto1_A_8.id, h);
+			a.icallback(Proto1_A_1.id, h)
+			 .icallback(Proto1_A_2.id, h);
 			
 			Future<Void> f = a.run();
 			f.get();

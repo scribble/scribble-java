@@ -11,9 +11,9 @@ import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.net.SocketChannelServer;
 
 import test.test5.Test5.Proto1.Proto1;
-import test.test5.Test5.Proto1.handlers.B.Proto1_B;
-import test.test5.Test5.Proto1.handlers.B.Proto1_B_16_Branch;
-import test.test5.Test5.Proto1.handlers.states.B.Proto1_B_16;
+import test.test5.Test5.Proto1.callbacks.B.Proto1_B;
+import test.test5.Test5.Proto1.callbacks.B.Proto1_B_1_Branch;
+import test.test5.Test5.Proto1.callbacks.B.states.Proto1_B_1;
 import test.test5.Test5.Proto1.ops._1;
 import test.test5.Test5.Proto1.ops._3;
 import test.test5.Test5.Proto1.roles.A;
@@ -22,7 +22,7 @@ public class MyB
 {
 	public static void main(String[] args) throws IOException
 	{
-		class MyHandler extends Proto1_B_16_Branch<int[]>
+		class MyHandler extends Proto1_B_1_Branch<int[]>
 		{
 			@Override
 			public void receive(int[] data, A peer, _1 op, Integer x)
@@ -48,7 +48,7 @@ public class MyB
 				{
 					b.accept(ss, A);
 
-					b.icallback(Proto1_B_16.id, new MyHandler());
+					b.icallback(Proto1_B_1.id, new MyHandler());
 
 					Future<Void> f = b.run();
 					f.get();

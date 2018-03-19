@@ -12,20 +12,18 @@ import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.net.SocketChannelServer;
 
 import test.test6.Test6.Proto1.Proto1;
-import test.test6.Test6.Proto1.handlers.B.Proto1_B;
-import test.test6.Test6.Proto1.handlers.B.Proto1_B_19_Branch;
-import test.test6.Test6.Proto1.handlers.states.B.Proto1_B_19;
-import test.test6.Test6.Proto1.handlers.states.B.Proto1_B_21;
-import test.test6.Test6.Proto1.handlers.states.B.Proto1_B_22;
-import test.test6.Test6.Proto1.handlers.states.B.Proto1_B_23;
-import test.test6.Test6.Proto1.handlers.states.B.messages.Proto1_B_21_Message;
-import test.test6.Test6.Proto1.handlers.states.B.messages.Proto1_B_21__2;
+import test.test6.Test6.Proto1.callbacks.B.Proto1_B;
+import test.test6.Test6.Proto1.callbacks.B.Proto1_B_3_Branch;
+import test.test6.Test6.Proto1.callbacks.B.states.Proto1_B_1;
+import test.test6.Test6.Proto1.callbacks.B.states.Proto1_B_2;
+import test.test6.Test6.Proto1.callbacks.B.states.Proto1_B_3;
+import test.test6.Test6.Proto1.callbacks.B.states.Proto1_B_4;
 
 public class MyB
 {
 	public static void main(String[] args) throws IOException
 	{
-		class MyHandler extends Proto1_B_19_Branch<String[]>
+		class MyHandler extends Proto1_B_3_Branch<String[]>
 		{
 			@Override
 			public void receive(String[] data, test.test6.Test6.Proto1.roles.A peer, test.test6.Test6.Proto1.ops._1 op, Integer arg1)
@@ -46,12 +44,12 @@ public class MyB
 					b.accept(ss, A);
 
 					MyHandler h1 = new MyHandler();
-					Function<String[], Proto1_B_21_Message> h2 = x -> new Proto1_B_21__2(A, x[0] += "a");
+					Function<String[], Proto1_B_4.Message> h2 = x -> new Proto1_B_4.A._2(x[0] += "a");
 					
-					b.icallback(Proto1_B_19.id, h1)
-					 .icallback(Proto1_B_21.id, h2)
-					 .icallback(Proto1_B_22.id, h1)
-					 .icallback(Proto1_B_23.id, h2);
+					b.icallback(Proto1_B_1.id, h1)
+					 .icallback(Proto1_B_2.id, h2)
+					 .icallback(Proto1_B_3.id, h1)
+					 .icallback(Proto1_B_4.id, h2);
 
 					Future<Void> f = b.run();
 					f.get();

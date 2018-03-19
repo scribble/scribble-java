@@ -11,14 +11,10 @@ import org.scribble.runtime.message.ObjectStreamFormatter;
 import org.scribble.runtime.net.SocketChannelEndpoint;
 
 import test.test5.Test5.Proto1.Proto1;
-import test.test5.Test5.Proto1.handlers.A.Proto1_A;
-import test.test5.Test5.Proto1.handlers.states.A.Proto1_A_10;
-import test.test5.Test5.Proto1.handlers.states.A.Proto1_A_11;
-import test.test5.Test5.Proto1.handlers.states.A.Proto1_A_8;
-import test.test5.Test5.Proto1.handlers.states.A.messages.Proto1_A_10__2;
-import test.test5.Test5.Proto1.handlers.states.A.messages.Proto1_A_11__4;
-import test.test5.Test5.Proto1.handlers.states.A.messages.Proto1_A_8__1;
-import test.test5.Test5.Proto1.handlers.states.A.messages.Proto1_A_8__3;;
+import test.test5.Test5.Proto1.callbacks.A.Proto1_A;
+import test.test5.Test5.Proto1.callbacks.A.states.Proto1_A_1;
+import test.test5.Test5.Proto1.callbacks.A.states.Proto1_A_2;
+import test.test5.Test5.Proto1.callbacks.A.states.Proto1_A_3;
 
 public class MyA
 {
@@ -30,9 +26,9 @@ public class MyA
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			a.request(C, SocketChannelEndpoint::new, "localhost", 9999);
 
-			a.icallback(Proto1_A_8.id,  x -> (x[0]++ < 3) ? new Proto1_A_8__1(B, 123) : new Proto1_A_8__3(B, "abc"))
-			 .icallback(Proto1_A_10.id, x -> new Proto1_A_10__2(C, 456))
-			 .icallback(Proto1_A_11.id, x -> new Proto1_A_11__4(C, "def"));
+			a.icallback(Proto1_A_1.id,  x -> (x[0]++ < 3) ? new Proto1_A_1.B._1(123) : new Proto1_A_1.B._3("abc"))
+			 .icallback(Proto1_A_2.id, x -> new Proto1_A_2.C._2(456))
+			 .icallback(Proto1_A_3.id, x -> new Proto1_A_3.C._4("def"));
 			
 			Future<Void> f = a.run();
 			f.get();
