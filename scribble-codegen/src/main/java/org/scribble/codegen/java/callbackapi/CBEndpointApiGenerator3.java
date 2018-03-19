@@ -33,7 +33,7 @@ import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
-// FIXME: consider collecting up all interfaces as statics inside a container class
+// FIXME: consider collecting up all interfaces as statics inside a container class -- also states?
 public class CBEndpointApiGenerator3
 {
 	public final Job job;
@@ -134,7 +134,7 @@ public class CBEndpointApiGenerator3
 				outputChoices.add(outputChoiceName);
 			}
 		}
-		for (String name : outputChoices)  // TODO: full subtyping between outputChoice i/f's
+		for (String name : outputChoices)  // TODO: -subtypes -- full subtyping between outputChoice i/f's
 		{
 			InterfaceBuilder outputChoice = new InterfaceBuilder(name);
 			outputChoice.addModifiers("public");
@@ -146,7 +146,6 @@ public class CBEndpointApiGenerator3
 		{
 			InterfaceBuilder outputCallback = new InterfaceBuilder(name);
 			outputCallback.addModifiers("public");
-			//outputCallback.addInterface("public");
 			if (reg.containsKey(name))
 			{
 				reg.get(name).forEach(iface ->
@@ -361,7 +360,7 @@ public class CBEndpointApiGenerator3
 							  getHandlersSelfPackage() + ".inputs." + this.proto.getSimpleName() + "_" + this.self  // FIXME: factor out
 							+ "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
 							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining("")) + "<D>"
-					).collect(Collectors.joining(" &"));
+					).collect(Collectors.joining(" & "));
 					icallback.addTypeParameters("T extends " + typepar + " & org.scribble.runtime.handlers.ScribBranch<D>");
 					icallback.addParameters(getStatesSelfPackage() + "." + this.stateNames.get(s.id) + " sid", "T b");  // FIXME: factor out
 					icallback.addBodyLine("this.inputs.put(sid, b);");
