@@ -189,7 +189,7 @@ public class CBEndpointApiGenerator3
 					}
 					
 					String receiveIfName = endpointName + "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
-							+ a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining());  // FIXME: extName
+							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining());  // FIXME: factor out
 					String receiveInterface = generateReceiveInterface(isSig, msnd, jc, a, rootPack, receiveIfName);
 					res.put(bprefix + "interfaces/" + receiveIfName + ".java", receiveInterface);
 				}
@@ -330,9 +330,22 @@ public class CBEndpointApiGenerator3
 					callback.addParameters(getStatesSelfPackage() + "." + endpointName + "_" + s.id + " sid",
 							getHandlersSelfPackage() + "." + endpointName + "_" + s.id + "_Branch<D> b"
 					);  // FIXME: factor out
-					callback.addBodyLine("this.inputs.put(sid, b);");
-					callback.addBodyLine("return this;");
+					/*callback.addBodyLine("this.inputs.put(sid, b);");
+					callback.addBodyLine("return this;");*/
+					callback.addBodyLine("return icallback(sid, b);");
 
+					MethodBuilder icallback = endpointClass.newMethod("icallback");
+					icallback.addModifiers("public");
+					icallback.setReturn(endpointName + "<D>");
+					String typepar = s.getAllActions().stream().map(a -> 
+							  getHandlersSelfPackage() + ".interfaces." + this.proto.getSimpleName() + "_" + this.self  // FIXME: factor out
+							+ "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
+							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining("")) + "<D>"
+					).collect(Collectors.joining(" &"));
+					icallback.addTypeParameters("T extends " + typepar + " & org.scribble.runtime.handlers.ScribBranch<D>");
+					icallback.addParameters(getStatesSelfPackage() + "." + endpointName + "_" + s.id + " sid", "T b");  // FIXME: factor out
+					icallback.addBodyLine("this.inputs.put(sid, b);");
+					icallback.addBodyLine("return this;");
 					break;
 				}
 				case WRAP_SERVER:
@@ -551,7 +564,9 @@ public class CBEndpointApiGenerator3
 		branchAbstract += "";
 		branchAbstract += "public abstract class " + branchName + "<D> implements org.scribble.runtime.handlers.ScribBranch<D>";
 		branchAbstract += s.getAllActions().stream().map(a ->
-				", " + rootPack + ".handlers." + this.self + ".interfaces." + endpointName + "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining()) + "<D>").collect(Collectors.joining(""));
+				", " + rootPack + ".handlers." + this.self + ".interfaces." + endpointName + "__" + a.peer
+				+ "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining()) + "<D>"  // FIXME: factor out
+		).collect(Collectors.joining(""));
 		branchAbstract += " {\n";
 
 		branchAbstract += "\n";
