@@ -11,7 +11,7 @@ import org.scribble.runtime.net.SocketChannelEndpoint;
 
 import test.test3.Test3.Proto1.Proto1;
 import test.test3.Test3.Proto1.callbacks.A.Proto1_A;
-import test.test3.Test3.Proto1.callbacks.A.states.Proto1_A_6;
+import test.test3.Test3.Proto1.callbacks.A.states.Proto1_A_1;
 
 public class MyA
 {
@@ -22,9 +22,9 @@ public class MyA
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			
-			a.icallback(Proto1_A_6.id,
-					x -> (x[0]++ < 3) ? new Proto1_A_6.B._1(123) : new Proto1_A_6.B._3("abc")
-					);
+			a.icallback(Proto1_A_1.id,
+					x -> (x[0]++ < 3) ? new Proto1_A_1.B._1(123) : new Proto1_A_1.B._3("abc")
+			);
 			
 			Future<Void> f = a.run();
 			f.get();

@@ -489,8 +489,9 @@ public class CBEndpointApiGenerator3
 			EState succ = s.getSuccessor(a);
 			cons.addBodyLine("this.succs.put(" + getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)  // FIXME: factor out
 					+ ", \""
-					+ ((succ.getStateKind() == EStateKind.TERMINAL)
-							? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + succ.id)  // FIXME: factor out
+					/*+ ((succ.getStateKind() == EStateKind.TERMINAL)
+							? "End" : this.proto.getSimpleName() + "_" + this.self + "_" + succ.id)  // FIXME: factor out*/
+					+ this.stateNames.get(succ.id)
 					+ "\");"
 			);
 		}
