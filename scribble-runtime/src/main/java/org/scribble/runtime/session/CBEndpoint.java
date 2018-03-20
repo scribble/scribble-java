@@ -55,7 +55,7 @@ public class CBEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoi
 	{
 		Object[] res = new Object[1];
 
-		// FIXME: integrate with selector
+		// FIXME: integrate with selector (or make Executor)
 		new Thread()
 		{
 			private final CBEndpoint<S, R, D> edep;

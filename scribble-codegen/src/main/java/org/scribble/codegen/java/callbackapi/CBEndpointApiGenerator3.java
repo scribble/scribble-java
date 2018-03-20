@@ -34,6 +34,8 @@ import org.scribble.type.name.Role;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
 // FIXME: consider collecting up all interfaces as statics inside a container class -- also states?
+// FIXME: integrate CB (branch) interfaces with old callback API
+// FIXME: consider also "expanding" nested message constructors by op first? -- and consider "partial constructors" along expansions, can they be parameterised typed?
 public class CBEndpointApiGenerator3
 {
 	public final Job job;
@@ -527,17 +529,17 @@ public class CBEndpointApiGenerator3
 				int[] i = { 0 };
 				
 				// FIXME: factor out
-			boolean isSig = main.getNonProtocolDecls().stream()
-				.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
-			MessageSigNameDecl msnd = null;
-			if (isSig)
-			{
-				msnd = (MessageSigNameDecl) main.getNonProtocolDecls().stream()
-						.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
-				FieldBuilder m = opClass.newField("m");
-				m.addModifiers("private", "final");
-				m.setType(msnd.extName);
-			}
+				boolean isSig = main.getNonProtocolDecls().stream()
+					.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+				MessageSigNameDecl msnd = null;
+				if (isSig)
+				{
+					msnd = (MessageSigNameDecl) main.getNonProtocolDecls().stream()
+							.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+					FieldBuilder m = opClass.newField("m");
+					m.addModifiers("private", "final");
+					m.setType(msnd.extName);
+				}
 				
 				ConstructorBuilder opCons; 
 				if (isSig)
@@ -610,6 +612,7 @@ public class CBEndpointApiGenerator3
 		return stateClass;*/
 	}
 
+	// FIXME: refactor using TypeBuilder API
 	protected String generateBranch(String bprefix, JobContext jc, EState s, String endpointName, String rootPack, String branchName)
 	{
 		String branchAbstract = "";
@@ -669,7 +672,6 @@ public class CBEndpointApiGenerator3
 		receiveInterface += "package " + getHandlersSelfPackage() + ".inputs;\n";
 		receiveInterface += "\n";
 		receiveInterface += "public interface " + receiveIfName + "<D> {\n";
-
 
 		receiveInterface += "\npublic void receive(D data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer, ";
 		if (isSig)
