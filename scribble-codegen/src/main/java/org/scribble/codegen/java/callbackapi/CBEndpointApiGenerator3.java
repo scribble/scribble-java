@@ -109,39 +109,36 @@ public class CBEndpointApiGenerator3
 		Set<String> outputCallbacks = new HashSet<>();  // e.g., Proto1_A__B__1_Int
 		Set<String> outputChoices = new HashSet<>();    // e.g., Proto1_A__B__1_Int__C__2_Int__C__4_Str, i.e., { B__1_Int, C__2_Int, C__4_Str }
 		Map<String, Set<Set<String>>> reg = new HashMap<>();  // e.g., Proto1_A__B__1_Int -> { Proto1_A__B__1_Int__C__2_Int__C__4_Str, ... }
-		for (EState s : states)
+		for (EState s : (Iterable<EState>) states.stream().filter(x -> x.getStateKind() == EStateKind.OUTPUT)::iterator)
 		{
-			if (s.getStateKind() == EStateKind.OUTPUT)
+			List<EAction> as = s.getAllActions();
+			Set<String> set = as.stream().map(this.getCallbackSuffix).collect(Collectors.toSet());
+			for (EAction a : as)
 			{
-				List<EAction> as = s.getAllActions();
-				Set<String> set = as.stream().map(this.getCallbackSuffix).collect(Collectors.toSet());
-				for (EAction a : as)
+				String callbackName =
+						//endpointName
+						"OCallback_" + this.self  // FIXME: factor out  // Cf. ICAllback, has self (due to message expansion nesting)
+						+ "__" + this.getCallbackSuffix.apply(a);
+				outputCallbacks.add(callbackName);
+				if (set.size() > 1)
 				{
-					String callbackName =
-							//endpointName
-							"OCallback_" + this.self  // FIXME: factor out  // Cf. ICAllback, has self (due to message expansion nesting)
-							+ "__" + this.getCallbackSuffix.apply(a);
-					outputCallbacks.add(callbackName);
-					if (set.size() > 1)
+					Set<Set<String>> tmp = reg.get(callbackName);
+					if (tmp == null)
 					{
-						Set<Set<String>> tmp = reg.get(callbackName);
-						if (tmp == null)
-						{
-							tmp = new HashSet<>();
-							reg.put(callbackName, tmp);
-						}
-						tmp.add(set);
+						tmp = new HashSet<>();
+						reg.put(callbackName, tmp);
 					}
+					tmp.add(set);
 				}
-				if (as.size() > 1)
-				{
-					String outputChoiceName =
-								//endpointName
-								"Select_" + this.self  // FIXME: factor out  // Cf. original iointerfaces
-							+ as.stream().sorted(Comparator.comparing(a -> a.toString()))
-									.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());
-					outputChoices.add(outputChoiceName);
-				}
+			}
+			if (as.size() > 1)
+			{
+				String outputChoiceName =
+							//endpointName
+							"Select_" + this.self  // FIXME: factor out  // Cf. original iointerfaces
+						+ as.stream().sorted(Comparator.comparing(a -> a.toString()))
+								.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());
+				outputChoices.add(outputChoiceName);
 			}
 		}
 		for (String name : outputChoices)  // TODO: -subtypes -- full subtyping between outputChoice i/f's
@@ -514,7 +511,7 @@ public class CBEndpointApiGenerator3
 			);
 		}
 		
-		if (s.getStateKind() == EStateKind.OUTPUT)
+		if (s.getStateKind() == EStateKind.OUTPUT)  // FIXME: factor out
 		{
 			if (s.getActions().size() > 0)
 			{
@@ -608,6 +605,7 @@ public class CBEndpointApiGenerator3
 				});
 			});
 		}
+
 		return stateClass.build();
 		
 		/*String stateClass = "";
