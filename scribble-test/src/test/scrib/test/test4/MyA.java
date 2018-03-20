@@ -27,7 +27,7 @@ public class MyA
 			a.icallback(Proto1_A_1.id,
 					x -> (x[0]++ < 5) ? new Proto1_A_1.B.Foo(new Foo("abc" + x[0])) : new Proto1_A_1.B.Bar(new Bar(123))
 			);
-			// FIXME: "inline" Sig class constructor args directly as Op class constructor args
+			// FIXME: "inline" Sig class constructor args directly as Op class constructor args -- maybe by reflection
 			
 			Future<Void> f = a.run();
 			f.get();

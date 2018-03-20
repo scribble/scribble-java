@@ -213,7 +213,7 @@ public class CBEndpointApiGenerator3
 					
 					String receiveIfName =
 							  //endpointName + "__"
-							  "ICallback__"
+							  "ICallback__"  // CHECKME: confusing against "icallback"
 							+ a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
 							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining());  // FIXME: factor out
 					String receiveInterface = generateReceiveInterface(isSig, msnd, jc, a, rootPack, receiveIfName);
