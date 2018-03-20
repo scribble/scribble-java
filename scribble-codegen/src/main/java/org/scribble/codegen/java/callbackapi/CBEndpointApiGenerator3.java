@@ -111,34 +111,37 @@ public class CBEndpointApiGenerator3
 		Map<String, Set<Set<String>>> reg = new HashMap<>();  // e.g., Proto1_A__B__1_Int -> { Proto1_A__B__1_Int__C__2_Int__C__4_Str, ... }
 		for (EState s : states)
 		{
-			List<EAction> as = s.getAllActions();
-			Set<String> set = as.stream().map(this.getCallbackSuffix).collect(Collectors.toSet());
-			for (EAction a : as)
+			if (s.getStateKind() == EStateKind.OUTPUT)
 			{
-				String callbackName =
-						//endpointName
-						"OCallback_" + this.self  // FIXME: factor out  // Cf. ICAllback, has self (due to message expansion nesting)
-						+ "__" + this.getCallbackSuffix.apply(a);
-				outputCallbacks.add(callbackName);
-				if (set.size() > 1)
+				List<EAction> as = s.getAllActions();
+				Set<String> set = as.stream().map(this.getCallbackSuffix).collect(Collectors.toSet());
+				for (EAction a : as)
 				{
-					Set<Set<String>> tmp = reg.get(callbackName);
-					if (tmp == null)
+					String callbackName =
+							//endpointName
+							"OCallback_" + this.self  // FIXME: factor out  // Cf. ICAllback, has self (due to message expansion nesting)
+							+ "__" + this.getCallbackSuffix.apply(a);
+					outputCallbacks.add(callbackName);
+					if (set.size() > 1)
 					{
-						tmp = new HashSet<>();
-						reg.put(callbackName, tmp);
+						Set<Set<String>> tmp = reg.get(callbackName);
+						if (tmp == null)
+						{
+							tmp = new HashSet<>();
+							reg.put(callbackName, tmp);
+						}
+						tmp.add(set);
 					}
-					tmp.add(set);
 				}
-			}
-			if (as.size() > 1)
-			{
-				String outputChoiceName =
-						  //endpointName
-						  "Select_" + this.self  // FIXME: factor out  // Cf. original iointerfaces
-						+ as.stream().sorted(Comparator.comparing(a -> a.toString()))
-								.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());
-				outputChoices.add(outputChoiceName);
+				if (as.size() > 1)
+				{
+					String outputChoiceName =
+								//endpointName
+								"Select_" + this.self  // FIXME: factor out  // Cf. original iointerfaces
+							+ as.stream().sorted(Comparator.comparing(a -> a.toString()))
+									.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());
+					outputChoices.add(outputChoiceName);
+				}
 			}
 		}
 		for (String name : outputChoices)  // TODO: -subtypes -- full subtyping between outputChoice i/f's
@@ -510,97 +513,101 @@ public class CBEndpointApiGenerator3
 					+ "\");"
 			);
 		}
-		if (s.getActions().size() > 0)
+		
+		if (s.getStateKind() == EStateKind.OUTPUT)
 		{
-			InterfaceBuilder messageIf = stateClass.newMemberInterface("Message");  // FIXME: factor out
-			messageIf.addModifiers("public", "static");
-			messageIf.addInterfaces("org.scribble.runtime.handlers.ScribOutputEvent");
-			String iface = getHandlersSelfPackage()  // FIXME: factor out with generateRegister
-					+ ((s.getAllActions().size() > 1) ? ".outputs.choices.Select" : ".outputs.OCallback")  // FIXME: factor out
-					//+ endpointName
-					+ "_" + this.self
-					+ s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
-							.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
-			messageIf.addInterfaces(iface);
-		}
-		s.getAllActions().stream().map(a -> a.peer).distinct().forEach(r ->
-		{
-			ClassBuilder roleClass = stateClass.newMemberClass(r.toString());
-			roleClass.addModifiers("public", "static");
-			ConstructorBuilder roleCons = roleClass.newConstructor();
-			roleCons.addModifiers("private");
-			s.getAllActions().stream().filter(a -> a.peer.equals(r)).forEach(a ->
+			if (s.getActions().size() > 0)
 			{
-				String opName = SessionApiGenerator.getOpClassName(a.mid);
-				ClassBuilder opClass = roleClass.newMemberClass(opName);
-				opClass.addModifiers("public", "static");
-				opClass.setSuperClass("org.scribble.runtime.message.ScribMessage");
-				opClass.addInterfaces(stateName + ".Message");  // FIXME: factor out
-				opClass.addInterfaces(getHandlersSelfPackage() + ".outputs."  // FIXME: factor out
+				InterfaceBuilder messageIf = stateClass.newMemberInterface("Message");  // FIXME: factor out
+				messageIf.addModifiers("public", "static");
+				messageIf.addInterfaces("org.scribble.runtime.handlers.ScribOutputEvent");
+				String iface = getHandlersSelfPackage()  // FIXME: factor out with generateRegister
+						+ ((s.getAllActions().size() > 1) ? ".outputs.choices.Select" : ".outputs.OCallback")  // FIXME: factor out
 						//+ endpointName
-						+ "OCallback_" + this.self  // FIXME: factor out
-						+ "__" + this.getCallbackSuffix.apply(a));
-				FieldBuilder svu = opClass.newField("serialVersionUID");
-				svu.addModifiers("private", "static", "final");
-				svu.setType("long");
-				svu.setExpression("1L");
-				int[] i = { 0 };
-				
-				// FIXME: factor out
-				boolean isSig = main.getNonProtocolDecls().stream()
-					.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
-				MessageSigNameDecl msnd = null;
-				if (isSig)
+						+ "_" + this.self
+						+ s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
+								.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
+				messageIf.addInterfaces(iface);
+			}
+			s.getAllActions().stream().map(a -> a.peer).distinct().forEach(r ->
+			{
+				ClassBuilder roleClass = stateClass.newMemberClass(r.toString());
+				roleClass.addModifiers("public", "static");
+				ConstructorBuilder roleCons = roleClass.newConstructor();
+				roleCons.addModifiers("private");
+				s.getAllActions().stream().filter(a -> a.peer.equals(r)).forEach(a ->
 				{
-					msnd = (MessageSigNameDecl) main.getNonProtocolDecls().stream()
-							.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
-					FieldBuilder m = opClass.newField("m");
-					m.addModifiers("private", "final");
-					m.setType(msnd.extName);
-				}
-				
-				ConstructorBuilder opCons; 
-				if (isSig)
-				{
-					opCons = opClass.newConstructor(msnd.extName + " m");
-					opClass.addInterfaces("org.scribble.runtime.handlers.ScribSigMessage");
-				}
-				else 
-				{
-					opCons = opClass.newConstructor(a.payload.elems.stream().map(e ->
-								main.getDataTypeDecl((DataType) e).extName + " arg" + i[0]++
-						).collect(Collectors.joining(", ")));
-				}
-				opCons.addModifiers("public");
-				opCons.addBodyLine("super(" + getOpsPackage() + "." + opName + "." + opName  // CHECKME: different "op types" have same equals/hashCode -- OK?
-						+ IntStream.range(0, a.payload.elems.size()).mapToObj(j -> ", arg" + j).collect(Collectors.joining(""))
-						+ ");");
-				if (isSig)
-				{
-					opCons.addBodyLine("this.m = m;");
-					MethodBuilder getSig = opClass.newMethod("getSig");
-					getSig.addModifiers("public");
-					getSig.addAnnotations("@Override");
-					getSig.setReturn("org.scribble.runtime.message.ScribMessage");
-					getSig.addBodyLine("return this.m;");
-				}
-				MethodBuilder getPeer = opClass.newMethod("getPeer");
-				getPeer.addModifiers("public");
-				getPeer.addAnnotations("@Override");
-				getPeer.setReturn("org.scribble.type.name.Role");
-				getPeer.addBodyLine("return " + getRolesPackage() + "." + a.peer + "." + a.peer + ";");
-				MethodBuilder getOp = opClass.newMethod("getOp");
-				getOp.addModifiers("public");
-				getOp.addAnnotations("@Override");
-				getOp.setReturn("org.scribble.type.name.Op");
-				getOp.addBodyLine("return " + getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid) + ";");
-				MethodBuilder getPayload = opClass.newMethod("getPayload");
-				getPayload.addModifiers("public");
-				getPayload.addAnnotations("@Override");
-				getPayload.setReturn("Object[]");
-				getPayload.addBodyLine("return this.payload;");
+					String opName = SessionApiGenerator.getOpClassName(a.mid);
+					ClassBuilder opClass = roleClass.newMemberClass(opName);
+					opClass.addModifiers("public", "static");
+					opClass.setSuperClass("org.scribble.runtime.message.ScribMessage");
+					opClass.addInterfaces(stateName + ".Message");  // FIXME: factor out
+					opClass.addInterfaces(getHandlersSelfPackage() + ".outputs."  // FIXME: factor out
+							//+ endpointName
+							+ "OCallback_" + this.self  // FIXME: factor out
+							+ "__" + this.getCallbackSuffix.apply(a));
+					FieldBuilder svu = opClass.newField("serialVersionUID");
+					svu.addModifiers("private", "static", "final");
+					svu.setType("long");
+					svu.setExpression("1L");
+					int[] i = { 0 };
+					
+					// FIXME: factor out
+					boolean isSig = main.getNonProtocolDecls().stream()
+						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+					MessageSigNameDecl msnd = null;
+					if (isSig)
+					{
+						msnd = (MessageSigNameDecl) main.getNonProtocolDecls().stream()
+								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+						FieldBuilder m = opClass.newField("m");
+						m.addModifiers("private", "final");
+						m.setType(msnd.extName);
+					}
+					
+					ConstructorBuilder opCons; 
+					if (isSig)
+					{
+						opCons = opClass.newConstructor(msnd.extName + " m");
+						opClass.addInterfaces("org.scribble.runtime.handlers.ScribSigMessage");
+					}
+					else 
+					{
+						opCons = opClass.newConstructor(a.payload.elems.stream().map(e ->
+									main.getDataTypeDecl((DataType) e).extName + " arg" + i[0]++
+							).collect(Collectors.joining(", ")));
+					}
+					opCons.addModifiers("public");
+					opCons.addBodyLine("super(" + getOpsPackage() + "." + opName + "." + opName  // CHECKME: different "op types" have same equals/hashCode -- OK?
+							+ IntStream.range(0, a.payload.elems.size()).mapToObj(j -> ", arg" + j).collect(Collectors.joining(""))
+							+ ");");
+					if (isSig)
+					{
+						opCons.addBodyLine("this.m = m;");
+						MethodBuilder getSig = opClass.newMethod("getSig");
+						getSig.addModifiers("public");
+						getSig.addAnnotations("@Override");
+						getSig.setReturn("org.scribble.runtime.message.ScribMessage");
+						getSig.addBodyLine("return this.m;");
+					}
+					MethodBuilder getPeer = opClass.newMethod("getPeer");
+					getPeer.addModifiers("public");
+					getPeer.addAnnotations("@Override");
+					getPeer.setReturn("org.scribble.type.name.Role");
+					getPeer.addBodyLine("return " + getRolesPackage() + "." + a.peer + "." + a.peer + ";");
+					MethodBuilder getOp = opClass.newMethod("getOp");
+					getOp.addModifiers("public");
+					getOp.addAnnotations("@Override");
+					getOp.setReturn("org.scribble.type.name.Op");
+					getOp.addBodyLine("return " + getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid) + ";");
+					MethodBuilder getPayload = opClass.newMethod("getPayload");
+					getPayload.addModifiers("public");
+					getPayload.addAnnotations("@Override");
+					getPayload.setReturn("Object[]");
+					getPayload.addBodyLine("return this.payload;");
+				});
 			});
-		});
+		}
 		return stateClass.build();
 		
 		/*String stateClass = "";
