@@ -34,7 +34,7 @@ import org.scribble.type.name.Role;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
 // FIXME: consider collecting up all interfaces as statics inside a container class -- also states?
-// FIXME: integrate CB (branch) interfaces with old callback API
+// FIXME: integrate CB (branch) interfaces with old iointerfacs/callback API
 // FIXME: consider also "expanding" nested message constructors by op first? -- and consider "partial constructors" along expansions, can they be parameterised typed?
 public class CBEndpointApiGenerator3
 {
@@ -115,7 +115,10 @@ public class CBEndpointApiGenerator3
 			Set<String> set = as.stream().map(this.getCallbackSuffix).collect(Collectors.toSet());
 			for (EAction a : as)
 			{
-				String callbackName = endpointName + "__" + this.getCallbackSuffix.apply(a);
+				String callbackName =
+						//endpointName
+						"OCallback_" + this.self  // FIXME: factor out  // Cf. ICAllback, has self (due to message expansion nesting)
+						+ "__" + this.getCallbackSuffix.apply(a);
 				outputCallbacks.add(callbackName);
 				if (set.size() > 1)
 				{
@@ -130,7 +133,9 @@ public class CBEndpointApiGenerator3
 			}
 			if (as.size() > 1)
 			{
-				String outputChoiceName = endpointName
+				String outputChoiceName =
+						  //endpointName
+						  "Select_" + this.self  // FIXME: factor out  // Cf. original iointerfaces
 						+ as.stream().sorted(Comparator.comparing(a -> a.toString()))
 								.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());
 				outputChoices.add(outputChoiceName);
@@ -152,7 +157,9 @@ public class CBEndpointApiGenerator3
 			{
 				reg.get(name).forEach(iface ->
 						outputCallback.addInterfaces(getHandlersSelfPackage() + ".outputs.choices."
-								+ endpointName + iface.stream().sorted().map(f -> "__" + f).collect(Collectors.joining()))
+								//+ endpointName
+								+ "Select_" + this.self  // FIXME: factor out
+								+ iface.stream().sorted().map(f -> "__" + f).collect(Collectors.joining()))
 				);
 			}
 			String pack = getHandlersSelfPackage() + ".outputs";  // FIXME: factor out
@@ -204,7 +211,10 @@ public class CBEndpointApiGenerator3
 								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 					}
 					
-					String receiveIfName = endpointName + "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
+					String receiveIfName =
+							  //endpointName + "__"
+							  "ICallback__"
+							+ a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
 							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining());  // FIXME: factor out
 					String receiveInterface = generateReceiveInterface(isSig, msnd, jc, a, rootPack, receiveIfName);
 					res.put((getHandlersSelfPackage() + ".inputs.").replace('.', '/') + receiveIfName + ".java", receiveInterface);
@@ -328,8 +338,10 @@ public class CBEndpointApiGenerator3
 					icallback.addModifiers("public");
 					icallback.setReturn(endpointName + "<D>");
 					String iface = getHandlersSelfPackage()
-							+ ((s.getAllActions().size() > 1) ? ".outputs.choices." : ".outputs.")  // FIXME: factor out
-							+ endpointName + s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
+							+ ((s.getAllActions().size() > 1) ? ".outputs.choices.Select" : ".outputs.OCallback")  // FIXME: factor out
+							//+ endpointName
+							+ "_" + this.self
+							+ s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
 									.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 					icallback.addTypeParameters("T extends " + iface + " & org.scribble.runtime.handlers.ScribOutputEvent");
 					icallback.addParameters(getStatesSelfPackage() + "." + this.stateNames.get(s.id) + " sid",  // FIXME: factor out
@@ -359,7 +371,9 @@ public class CBEndpointApiGenerator3
 					icallback.addModifiers("public");
 					icallback.setReturn(endpointName + "<D>");
 					String typepar = s.getAllActions().stream().map(a -> 
-							  getHandlersSelfPackage() + ".inputs." + this.proto.getSimpleName() + "_" + this.self  // FIXME: factor out
+							  getHandlersSelfPackage() + ".inputs."
+							//+ this.proto.getSimpleName() + "_" + this.self  // i.e, endpointName
+							+ "ICallback"  // FIXME: factor out
 							+ "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
 							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining("")) + "<D>"
 					).collect(Collectors.joining(" & "));
@@ -502,8 +516,10 @@ public class CBEndpointApiGenerator3
 			messageIf.addModifiers("public", "static");
 			messageIf.addInterfaces("org.scribble.runtime.handlers.ScribOutputEvent");
 			String iface = getHandlersSelfPackage()  // FIXME: factor out with generateRegister
-					+ ((s.getAllActions().size() > 1) ? ".outputs.choices." : ".outputs.")
-					+ endpointName + s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
+					+ ((s.getAllActions().size() > 1) ? ".outputs.choices.Select" : ".outputs.OCallback")  // FIXME: factor out
+					//+ endpointName
+					+ "_" + this.self
+					+ s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
 							.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 			messageIf.addInterfaces(iface);
 		}
@@ -521,7 +537,9 @@ public class CBEndpointApiGenerator3
 				opClass.setSuperClass("org.scribble.runtime.message.ScribMessage");
 				opClass.addInterfaces(stateName + ".Message");  // FIXME: factor out
 				opClass.addInterfaces(getHandlersSelfPackage() + ".outputs."  // FIXME: factor out
-						+ endpointName + "__" + this.getCallbackSuffix.apply(a));
+						//+ endpointName
+						+ "OCallback_" + this.self  // FIXME: factor out
+						+ "__" + this.getCallbackSuffix.apply(a));
 				FieldBuilder svu = opClass.newField("serialVersionUID");
 				svu.addModifiers("private", "static", "final");
 				svu.setType("long");
@@ -620,8 +638,11 @@ public class CBEndpointApiGenerator3
 		branchAbstract += "";
 		branchAbstract += "public abstract class " + branchName + "<D> implements org.scribble.runtime.handlers.ScribBranch<D>";
 		branchAbstract += s.getAllActions().stream().map(a ->
-				", " + getHandlersSelfPackage() + ".inputs." + endpointName + "__" + a.peer
-				+ "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining()) + "<D>"  // FIXME: factor out
+				", " + getHandlersSelfPackage() + ".inputs."
+				//+ endpointName
+				+ "ICallback"  // FIXME: factor out
+				+ "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
+				+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining()) + "<D>"  // FIXME: factor out
 		).collect(Collectors.joining(""));
 		branchAbstract += " {\n";
 
@@ -671,9 +692,10 @@ public class CBEndpointApiGenerator3
 		String receiveInterface = "";
 		receiveInterface += "package " + getHandlersSelfPackage() + ".inputs;\n";
 		receiveInterface += "\n";
-		receiveInterface += "public interface " + receiveIfName + "<D> {\n";
+		receiveInterface += "public interface " + receiveIfName + "<D> {\n";  // Cf. original callback API, have extra <D> parameter (o/w same)
 
-		receiveInterface += "\npublic void receive(D data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer, ";
+		// Cf. output-callback i/f, only specifies peer and message (not self)
+		receiveInterface += "\nvoid receive(D data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer, ";
 		if (isSig)
 		{
 			receiveInterface += msnd.extName + " m";
