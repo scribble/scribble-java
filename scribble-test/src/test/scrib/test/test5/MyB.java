@@ -15,7 +15,7 @@ import test.test5.Test5.Proto1.callbacks.B.Proto1_B;
 import test.test5.Test5.Proto1.callbacks.B.Proto1_B_1_Branch;
 import test.test5.Test5.Proto1.callbacks.B.states.Proto1_B_1;
 import test.test5.Test5.Proto1.ops._1;
-import test.test5.Test5.Proto1.ops._3;
+import test.test5.Test5.Proto1.ops._4;
 import test.test5.Test5.Proto1.roles.A;
 
 public class MyB
@@ -32,10 +32,10 @@ public class MyB
 			}
 
 			@Override
-			public void receive(int[] data, A peer, _3 op, String x)
+			public void receive(int[] data, A peer, _4 op, String x)
 			{
 				data[0]++;
-				System.out.println("(B) received 3: " + data[0] + ", " + x);
+				System.out.println("(B) received 4: " + data[0] + ", " + x);
 			}
 		}
 		

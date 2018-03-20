@@ -15,7 +15,7 @@ import test.test5.Test5.Proto1.callbacks.C.Proto1_C;
 import test.test5.Test5.Proto1.callbacks.C.Proto1_C_1_Branch;
 import test.test5.Test5.Proto1.callbacks.C.states.Proto1_C_1;
 import test.test5.Test5.Proto1.ops._2;
-import test.test5.Test5.Proto1.ops._4;
+import test.test5.Test5.Proto1.ops._3;
 import test.test5.Test5.Proto1.roles.A;
 
 public class MyC
@@ -31,7 +31,7 @@ public class MyC
 			}
 
 			@Override
-			public void receive(Void data, A peer, _4 op, String x)
+			public void receive(Void data, A peer, _3 op, String x)
 			{
 				System.out.println("(C) received 4: " + x);
 			}

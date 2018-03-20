@@ -26,9 +26,9 @@ public class MyA
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			a.request(C, SocketChannelEndpoint::new, "localhost", 9999);
 
-			a.icallback(Proto1_A_1.id,  x -> (x[0]++ < 3) ? new Proto1_A_1.B._1(123) : new Proto1_A_1.B._3("abc"))
+			a.icallback(Proto1_A_1.id,  x -> (x[0]++ < 3) ? new Proto1_A_1.B._1(123) : new Proto1_A_1.C._3("abc"))
 			 .icallback(Proto1_A_2.id, x -> new Proto1_A_2.C._2(456))
-			 .icallback(Proto1_A_3.id, x -> new Proto1_A_3.C._4("def"));
+			 .icallback(Proto1_A_3.id, x -> new Proto1_A_3.B._4("def"));
 			
 			Future<Void> f = a.run();
 			f.get();

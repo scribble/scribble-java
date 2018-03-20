@@ -16,7 +16,7 @@ global protocol Proto1(role A, role B, role C)
 	}
 	or
 	{
-		3(Str) from A to B;
-		4(Str) from A to C;
+		3(Str) from A to C;
+		4(Str) from A to B;
 	}
 }
