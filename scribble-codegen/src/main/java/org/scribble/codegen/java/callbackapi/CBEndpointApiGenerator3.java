@@ -117,7 +117,7 @@ public class CBEndpointApiGenerator3
 			{
 				String callbackName =
 						//endpointName
-						"OCallback_" + this.self  // FIXME: factor out  // Cf. ICAllback, has self (due to message expansion nesting)
+						"OCallback_" + this.self  // FIXME: factor out  // Cf. ICallback, has self (due to message expansion nesting) -- but ScribMessage values of this type don't record self? -- Select i/f's have self in name though
 						+ "__" + this.getCallbackSuffix.apply(a);
 				outputCallbacks.add(callbackName);
 				if (set.size() > 1)
