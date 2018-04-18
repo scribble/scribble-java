@@ -5,7 +5,7 @@
 // http://sandbox.kidstrythisathome.com/erdos/
 
 
-module assrt.tmp.ParamTest;
+module param.tmp.ParamTest;
 
 
 type <go> "int" from "..." as int;
@@ -48,6 +48,19 @@ message passing
 // paramterisation subsumes multicast
 
 
+
+global protocol Proto1(role A(n))
+{
+	/*a() from A[n-1..n-1] to A[n..n];
+	b() from A[n-2..n-2] to A[n..n];
+	do Proto1(A(n-1));  // FIXME?*/
+
+	a() dot A[1..1] to A[n..n];
+}
+
+
+
+/*
 global protocol Proto1(role A(n, m), role B(n, m))
 {
 	1() from A[1..n] to B[1..m];  // (a) All-to-all, (unary) mult. choices
@@ -57,6 +70,7 @@ global protocol Proto2(role A(n), role B(n))
 {
 	1() dot A[1..n] to B[1..n];  // (b) ones-to-ones, (unary) multi. choices
 }
+//*/
 
 
 

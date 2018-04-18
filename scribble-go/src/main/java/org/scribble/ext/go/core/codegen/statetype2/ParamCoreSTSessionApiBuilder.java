@@ -10,7 +10,6 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ext.go.ast.ParamRoleDecl;
 import org.scribble.ext.go.core.type.ParamActualRole;
-import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.type.index.ParamIndexVar;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
@@ -56,7 +55,6 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "/tcp\"\n";
 					
-
 		sessPack += "\n"
 				+ "type " + simpname + " struct {\n"
 				+ roles.stream().map(r -> r + " " + ParamCoreSTApiGenConstants.GO_ROLE_TYPE + "\n").collect(Collectors.joining(""))

@@ -39,7 +39,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	private int counter = 1;
 	
-	private final Set<DataTypeDecl> datats;
+	private final Set<DataTypeDecl> datats; // FIXME: use "main.getDataTypeDecl((DataType) pt);" instead -- cf. OutputSocketGenerator#addSendOpParams
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
 	// actual.getName().equals(this.role)
