@@ -45,6 +45,26 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 		}
 		instates.addAll(MState.getReachableStates(this.apigen.graph.init).stream().filter(f).collect(Collectors.toSet()));*/
 
+		String epPack =
+					//this.apigen.generateRootPackageDecl() + "\n"
+					"\n"
+				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
+				+ this.apigen.generateScribbleRuntimeImports()
+				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
+				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "/tcp\"\n";
+
+				/*+ (roles.stream().map(rfoo ->
+						{
+							Set<ParamActualRole> actuals = this.apigen.actuals.get(rfoo).keySet();
+							return
+							actuals.stream().map(actual -> 
+							{
+								return "import _" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + " \"" + this.apigen.impath + "/" + this.apigen.getRootPackage()
+										+ "/" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "\"\n";
+							}).collect(Collectors.joining(""));
+						}).collect(Collectors.joining(""))
+				);*/
+		
 		// roles
 		String sessPack =
 					//"package " + this.apigen.getRootPackage() + "\n"  // FIXME: factor out
@@ -52,8 +72,20 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				+ "\n"
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
 				+ this.apigen.generateScribbleRuntimeImports()
-				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
+				+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n"
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "/tcp\"\n";
+
+				+ (roles.stream().map(rfoo ->
+						{
+							Set<ParamActualRole> actuals = this.apigen.actuals.get(rfoo).keySet();
+							return
+							actuals.stream().map(actual -> 
+							{
+								return "import _" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + " \"" + this.apigen.impath + "/" + this.apigen.getRootPackage()
+										+ "/" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "\"\n";
+							}).collect(Collectors.joining(""));
+						}).collect(Collectors.joining(""))
+				);
 					
 		sessPack += "\n"
 				+ "type " + simpname + " struct {\n"
@@ -65,6 +97,10 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				+ "return &" + simpname + "{ " + roles.stream().map(r -> ParamCoreSTApiGenConstants.GO_ROLE_CONSTRUCTOR
 						+ "(\"" + r + "\")").collect(Collectors.joining(", ")) + " }\n"
 						 // Singleton types?
+				+ "}\n"
+				+ "\n"
+				+ "func (*" + simpname +") IsProtocol() {\n"
+				+ "\n"
 				+ "}\n";
 
 
@@ -86,6 +122,9 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				  	+ "}"
 				  ).collect(Collectors.joining("\n\n")) + "\n"
 				+ "\n";*/
+
+		String dir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";
+		Map<String, String> res = new HashMap<>();
 		
 		// Protocol and role specific endpoints
 		//Function<Role, String> epTypeName = r -> "_Endpoint" + simpname + "_" + r;
@@ -96,7 +135,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 					return
 					actuals.stream().map(actual -> 
 					{
-						String epTypeName = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, actual);
+						String epTypeName = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, actual);
 						List<ParamRoleDecl> decls = 
 								gpd.getHeader().roledecls.getDecls().stream().filter(rd -> rd.getDeclName().equals(actual.getName()))
 										.map(rd -> (ParamRoleDecl) rd).collect(Collectors.toList());
@@ -113,14 +152,20 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						}*/
 						//ParamRange g = actual.ranges.iterator().next();
 						
-						return
+						//return
+						String epPack1 =
 
-								  "\nfunc (p *" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, actual) + ") Ept() *session.Endpoint {\n"
+								  "\nfunc (p *" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, actual) + ") Ept() *session.Endpoint {\n"
 								+ "return p.ept\n"
+								+ "}\n"
+								+ "\n"
+								+ "\nfunc (p *" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, actual) + ") Params() map[string]int {\n"
+								+ "return p.params\n"
 								+ "}\n"
 
 								+ "\n\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
-								+ ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " *" + simpname + "\n"
+								//+ ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " *" + simpname + "\n"
+								+ ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " *session.Protocol\n"
 								/*+ this.apigen.actuals.get(r).keySet().stream()
 										.map(a -> 
 									{
@@ -130,7 +175,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 									}).collect(Collectors.joining(""))*/
 								+ "*session.LinearResource\n"
 								+ "ept *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
-								+ "Params map[string]int\n"
+								+ "params map[string]int\n"
 								+ "}\n"
 								+ "\n"
 								
@@ -154,16 +199,15 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								+ "ini.ept.Conn[rolename.Name()][id] = requestor.Connect()\n"
 								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n"
-								+ "\n"
+								+ "\n";
 								
-								
-								
-								+ "func (p *" + simpname + ") New" + epTypeName
+							String sessPack1 =
+								"func (p *" + simpname + ") New" + epTypeName
 										+ "(" + 
 												vars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + 
 												"self int" +
 											")"
-										+ "(*" + epTypeName + ") {\n"
+										+ "(*_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "." + epTypeName + ") {\n"
 
 								/*+ "ep := &" + epTypeName + "{ " + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + ": p,\n"
 								
@@ -229,7 +273,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								+ decls.iterator().next().params.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
 								+ "return &" + epTypeName + "{p, &session.LinearResource{}, session.NewEndpoint(self, " //-1,
 										+ "conns), params}\n"  // FIXME: numRoles
-								+ "}\n"
+								+ "}\n";
 								
 								/*+ this.apigen.actuals.get(r).keySet().stream()
 										.map(a -> 
@@ -245,20 +289,38 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 													+ "}\n";
 									}).collect(Collectors.joining(""));*/
 						
-						
-									+ "\nfunc (ini *" + epTypeName + ") Init() (*" + epTypeName + "_1) {\n"
+							epPack1 += 
+									/*+ "\nfunc (ini *" + epTypeName + ") Init() (*" + epTypeName + "_1) {\n"
 									+ "ini.Use()\n"
 									+ "ini.ept.CheckConnection()\n"
 									+ 
 											((this.apigen.actuals.get(rfoo).get(actual).init.getStateKind() == EStateKind.POLY_INPUT)
 													? "return ini.New" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1()\n"
-													: "return &" + epTypeName + "_1{&session.LinearResource{}, ini}\n")
+													: "return &" + epTypeName + "_1{&session.LinearResource{}, ini}\n")*/
+									 "\nfunc (ini *" + epTypeName + ") Run(f func(*"//_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + ".Init)" 
+									 						+ "Init)"
+															//+ " _" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + ".End" + ") " 
+															+ "End" + ") " 
+													//+ "_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + ".End {\n"
+													+ "End {\n"
+									+ "ini.Use()\n"
+									+ "ini.ept.CheckConnection()\n"
+									+ 
+											((this.apigen.actuals.get(rfoo).get(actual).init.getStateKind() == EStateKind.POLY_INPUT)
+													? "return ini.New" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1()\n"
+													//: "return &_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + ".Init{&session.LinearResource{}, ini}\n")
+													: "return f(" //+ ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + ".New(ini))\n")
+															+ "New(ini))\n")
+
+
 									+ "}";
+						
+							res.put(dir + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "/" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + ".go",
+									"package " + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "\n" + epPack + "\n" + epPack1);
+							return sessPack1;
 					}).collect(Collectors.joining(""));
 				}).collect(Collectors.joining("\n"));
 		
-		String dir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";
-		Map<String, String> res = new HashMap<>();
 		res.put(dir + simpname + ".go", sessPack);
 		return res;
 	}

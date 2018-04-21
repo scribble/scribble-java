@@ -54,18 +54,15 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 		
 		String sEpWrite = 
 				//s.ep.Write
-				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				 		+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT 
+				 		//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+				 				+ ".Ept()"
 						//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL;
 						+ ".Conn";
-		String sEpProto =
+		/*String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
-		/*String sEpErr =
-				//"s.ep.Err"
-				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ERR;*/
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;*/
 
 		ParamRole r = (ParamRole) a.peer;
 		ParamRange g = r.ranges.iterator().next();
@@ -78,7 +75,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 			else if (e instanceof ParamIndexVar)
 			{
 				return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params()[\"" + e + "\"]";
 			}
 			else
 			{
@@ -156,7 +153,8 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ (a.mid.toString().equals("") ? "" :  // HACK
 					"if err := " + sEpWrite
-						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+						//+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+						+ "[\"" + r.getName() + "\"][i]"
 						+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
 						+ "\"" + a.mid + "\"" + "); err != nil {\n"
@@ -169,7 +167,8 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 						"log.Fatal(\"TODO\")\n"
 					:
 						"if err := " + sEpWrite
-							+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+							//+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+							+ "[\"" + r.getName() + "\"][i]"
 							+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 							+ "(" //+ sEpProto + "." + r.getName() + ", "
 							+ "arg0[j]" //+ "splitFn0(arg0, i)"  // FIXME: hardcoded arg0

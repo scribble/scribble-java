@@ -25,10 +25,12 @@ public class ParamCoreSTEndpointApiGenerator
 	public final Map<Role, Map<ParamActualRole, EGraph>> actuals;
 	//public final EGraph graph;
 	
+	public final String impath;
+	
 	//public final Map<Role, Map<ParamActualRole, EGraph>> all;
 	
 	public ParamCoreSTEndpointApiGenerator(Job job, GProtocolName fullname, Role self, //Map<ParamActualRole, EGraph> actuals)
-			Map<Role, Map<ParamActualRole, EGraph>> actuals)
+			Map<Role, Map<ParamActualRole, EGraph>> actuals, String impath)
 	{
 		this.job = job;
 		this.proto = fullname;
@@ -36,6 +38,7 @@ public class ParamCoreSTEndpointApiGenerator
 		this.actuals = Collections.unmodifiableMap(actuals);
 		//this.graph = graph;
 		//this.all = Collections.unmodifiableMap(all);
+		this.impath = impath;
 	}
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
@@ -72,30 +75,6 @@ public class ParamCoreSTEndpointApiGenerator
 		return getGeneratedEndpointType(this.proto.getSimpleName(), this.self);
 	}*/
 
-	//public static String getGeneratedEndpointType(GProtocolName simpname, Role r)
-	public static String getGeneratedEndpointType(GProtocolName simpname, ParamActualRole r)
-	{
-		//return "Endpoint_" + simpname + "_" + r;
-		return simpname + "_" + getGeneratedActualRoleName(r);
-	}
-	
-	// Doesn't use coranges -- same as getGeneratedParamRoleName?  // Old
-	public static String getGeneratedActualRoleName(ParamActualRole actual)
-	{
-		/*return actual.getName()
-				+ actual.ranges.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");*/
-		/*if (actual.ranges.size() > 1 || actual.coranges.size() > 0)
-		{
-			throw new RuntimeException("[param-core] TODO: " + actual);
-		}
-		ParamRange g = actual.ranges.iterator().next();
-		return actual.getName() + "_" + g.start + "To" + g.end;*/
-		return actual.getName() + "_"
-				+ actual.ranges.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"))
-				+ (actual.coranges.isEmpty() ? "" : "_not_")
-				+ actual.coranges.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"));
-	}
-
 	//@Override
 	public String getRootPackage()  // Derives only from proto name
 	{
@@ -125,5 +104,32 @@ public class ParamCoreSTEndpointApiGenerator
 	public String generateScribbleRuntimeImports()
 	{
 		return getScribbleRuntimeImports().stream().map(x -> "import \"" + x + "\"\n").collect(Collectors.joining());
+	}
+
+	
+	
+
+	//public static String getGeneratedEndpointType(GProtocolName simpname, Role r)
+	public static String getGeneratedEndpointTypeName(GProtocolName simpname, ParamActualRole r)
+	{
+		//return "Endpoint_" + simpname + "_" + r;
+		return simpname + "_" + getGeneratedActualRoleName(r);
+	}
+	
+	// Doesn't use coranges -- same as getGeneratedParamRoleName?  // Old
+	public static String getGeneratedActualRoleName(ParamActualRole actual)
+	{
+		/*return actual.getName()
+				+ actual.ranges.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");*/
+		/*if (actual.ranges.size() > 1 || actual.coranges.size() > 0)
+		{
+			throw new RuntimeException("[param-core] TODO: " + actual);
+		}
+		ParamRange g = actual.ranges.iterator().next();
+		return actual.getName() + "_" + g.start + "To" + g.end;*/
+		return actual.getName() + "_"
+				+ actual.ranges.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"))
+				+ (actual.coranges.isEmpty() ? "" : "_not_")
+				+ actual.coranges.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"));
 	}
 }

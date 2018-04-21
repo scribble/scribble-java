@@ -43,7 +43,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		GProtocolName simpname = apigen.apigen.proto.getSimpleName();
 		String tname = apigen.getStateChanName(s);
 		//String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
-		String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, apigen.actual); 
+		String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, apigen.actual); 
 		String res =
 				  apigen.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"

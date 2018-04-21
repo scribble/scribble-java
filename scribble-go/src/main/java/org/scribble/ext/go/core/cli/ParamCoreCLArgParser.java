@@ -76,7 +76,7 @@ public class ParamCoreCLArgParser extends CLArgParser
 			// Non-unique flags
 			case ParamCoreCLArgParser.PARAM_CORE_EFSM_FLAG:     return paramParseRoleArg(flag, i);
 			case ParamCoreCLArgParser.PARAM_CORE_EFSM_PNG_FLAG: return paramParseRoleAndFileArgs(flag, i);
-			case ParamCoreCLArgParser.PARAM_CORE_API_GEN_FLAG:  return paramParseRoleArg(flag, i);
+			case ParamCoreCLArgParser.PARAM_CORE_API_GEN_FLAG:  return paramParseRoleAndPathArgs(flag, i);
 			
 
 			// Base CL
@@ -137,6 +137,20 @@ public class ParamCoreCLArgParser extends CLArgParser
 		String role = this.args[++i];
 		String png = this.args[++i];
 		goConcatArgs(flag, role, png);
+		return i;
+	}
+
+	// path is absolute import path
+	protected int paramParseRoleAndPathArgs(String f, int i) throws CommandLineException
+	{
+		ParamCoreCLArgFlag flag = ParamCoreCLArgParser.PARAM_NON_UNIQUE_FLAGS.get(f);
+		if ((i + 2) >= this.args.length)
+		{
+			throw new CommandLineException("Missing role/path arguments");
+		}
+		String role = this.args[++i];
+		String path = this.args[++i];
+		goConcatArgs(flag, role, path);
 		return i;
 	}
 

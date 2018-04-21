@@ -37,7 +37,7 @@ public class ParamCoreSTOutputStateBuilder extends STOutputStateBuilder
 			out += "\n\n";
 			if (a instanceof ESend)  // FIXME: factor out action kind
 			{
-				out += this.sb.build(api, s, a);
+				//out += this.sb.build(api, s, a);
 
 				// FIXME: delegation 
 				if (!a.payload.elems.stream()

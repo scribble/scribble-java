@@ -134,11 +134,12 @@ public class ParamCoreCommandLine extends CommandLine
 		{
 			JobContext jcontext = job.getContext();
 			String[] args = this.paramArgs.get(ParamCoreCLArgFlag.PARAM_CORE_API_GEN);
-			for (int i = 0; i < args.length; i += 1)
+			for (int i = 0; i < args.length; i += 2)
 			{
 				String simpname = this.paramArgs.get(ParamCoreCLArgFlag.PARAM_CORE_PARAM)[0];
 				GProtocolName fullname = checkGlobalProtocolArg(jcontext, simpname);
 				Role role = checkRoleArg(jcontext, fullname, args[i]);
+				String impath = args[i+1];
 				/*for (ParamActualRole ranges : this.P0.get(role).keySet())
 				{
 					EGraph efsm = this.E0.get(role).get(ranges);
@@ -150,7 +151,7 @@ public class ParamCoreCommandLine extends CommandLine
 
 				Map<String, String> goClasses = new ParamCoreSTSessionApiBuilder((GoJob) job, fullname, this.E0).build();*/
 				//Map<ParamActualRole, EGraph> actuals = this.E0.get(role);
-				Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job, fullname, role, this.E0).build();
+				Map<String, String> goClasses = new ParamCoreSTEndpointApiGenerator(job, fullname, role, this.E0, impath).build();
 				outputClasses(goClasses);
 			}
 		}
