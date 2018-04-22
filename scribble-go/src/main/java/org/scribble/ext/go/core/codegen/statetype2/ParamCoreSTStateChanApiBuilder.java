@@ -71,11 +71,11 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public static String getGeneratedParamRoleName(RPIndexedRole r) 
 	{
 		//return r.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");
-		if (r.ranges.size() > 1)
+		if (r.intervals.size() > 1)
 		{
 			throw new RuntimeException("[param-core] TODO: " + r);
 		}
-		RPInterval g = r.ranges.iterator().next();
+		RPInterval g = r.intervals.iterator().next();
 		return r.getName() + "_" + g.start + "To" + g.end;
 	}
 	

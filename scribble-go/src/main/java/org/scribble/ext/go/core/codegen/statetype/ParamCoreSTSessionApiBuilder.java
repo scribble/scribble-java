@@ -141,7 +141,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 											throw new RuntimeException("[param-core] TODO: " + tmp);
 										}
 										RPRoleVariant peer = tmp.keySet().iterator().next();
-										RPInterval g = peer.ranges.iterator().next();
+										RPInterval g = peer.intervals.iterator().next();
 										Function<RPIndexExpr, String> foo = ee ->
 										{
 											if (ee instanceof RPIndexInt)

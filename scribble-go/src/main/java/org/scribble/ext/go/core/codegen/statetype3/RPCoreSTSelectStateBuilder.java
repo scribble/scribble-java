@@ -47,10 +47,10 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 		GProtocolName simpname = apigen.apigen.proto.getSimpleName();
 		String tname = apigen.getStateChanName(s);
 		//String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
-		String epType = RPCoreSTApiGenerator.getGeneratedEndpointTypeName(simpname, apigen.actual); 
+		String epType = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, apigen.actual); 
 		String res =
 				  //apigen.apigen.generateRootPackageDecl() + "\n"
-				  "package " + RPCoreSTApiGenerator.getGeneratedActualRoleName(actual) + "\n"
+				  "package " + RPCoreSTApiGenerator.getGeneratedRoleVariantName(actual) + "\n"
 				+ "\n"
 				//+ apigen.apigen.generateScribbleRuntimeImports() + "\n"
 				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
@@ -100,7 +100,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 			  + "var op string\n";
 
 		RPIndexedRole peer = (RPIndexedRole) s.getActions().iterator().next().peer;
-		RPInterval g = peer.ranges.iterator().next();
+		RPInterval g = peer.intervals.iterator().next();
 		Function<RPIndexExpr, String> foo = e ->
 		{
 			if (e instanceof RPIndexInt)

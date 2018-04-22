@@ -16,181 +16,171 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
+// RP Session API = Protocol API + Endpoint Kind APIs 
 // Cf. STStateChanApiBuilder
 public class RPCoreSTSessionApiBuilder
 {
 	private RPCoreSTApiGenerator apigen;
 
-	//private final Map<Role, Map<ParamActualRole, EGraph>> actuals;
-	
-	public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)//, Map<Role, Map<ParamActualRole, EGraph>> actuals)
+	public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 	{
 		this.apigen = apigen;
-		//this.actuals = Collections.unmodifiableMap(actuals);
 	}
 
 	//@Override
 	public Map<String, String> build()  // FIXME: factor out
 	{
 		Module mod = this.apigen.job.getContext().getModule(this.apigen.proto.getPrefix());
+		ProtocolDecl<Global> gpd = mod.getProtocolDecl(this.apigen.proto.getSimpleName());
+		String basedir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
+		Map<String, String> res = new HashMap<>();
+		buildProtocolApi(gpd, basedir, res);
+		buildEndpointKindApi(gpd, basedir, res);
+		return res;
+	}
+	
+	private void buildProtocolApi(ProtocolDecl<Global> gpd, String basedir, Map<String, String> res)
+	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
-		ProtocolDecl<Global> gpd = mod.getProtocolDecl(simpname);
-		List<Role> roles = gpd.header.roledecls.getRoles();
-
-		/*Set<EState> instates = new HashSet<>();
-		Predicate<EState> f = s -> s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT;
-		if (f.test(this.apigen.graph.init))
-		{
-			instates.add(this.apigen.graph.init);
-		}
-		instates.addAll(MState.getReachableStates(this.apigen.graph.init).stream().filter(f).collect(Collectors.toSet()));*/
-
-		String epPack =
-					//this.apigen.generateRootPackageDecl() + "\n"
-					"\n"
-				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PACKAGE + "\"\n"
-				//+ this.apigen.generateScribbleRuntimeImports()
-				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
-				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
-				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "/tcp\"\n";
+		List<Role> rolenames = gpd.header.roledecls.getRoles();
 
 		// roles
-		String sessPack =
-					this.apigen.generateRootPackageDecl() + "\n"
+		String protoFile =
+					"package " + this.apigen.getApiRootPackageName() + "\n"
 				+ "\n"
-				//+ this.apigen.generateScribbleRuntimeImports() + "\n"
-				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n"
-
-				+ (roles.stream().map(rfoo ->
+							
+				// Import Endpoint Kind APIs -- FIXME: CL args
+				+ (rolenames.stream().map(rname ->
 						{
-							Set<RPRoleVariant> actuals = this.apigen.actuals.get(rfoo).keySet();
+							Set<RPRoleVariant> variants = this.apigen.variants.get(rname).keySet();
 							return
-							actuals.stream().map(actual -> 
+							variants.stream().map(v -> 
 							{
-								return "import _" + RPCoreSTApiGenerator.getGeneratedActualRoleName(actual) + " \"" + this.apigen.packpath + "/" + this.apigen.getRootPackage()
-										+ "/" + RPCoreSTApiGenerator.getGeneratedActualRoleName(actual) + "\"\n";
+								String epkindPackName = RPCoreSTApiGenerator.getEndpointKindPackageName(v);
+								return "import _" + epkindPackName  // FIXME: alias now redundant
+										+ " \"" + this.apigen.packpath + "/" + this.apigen.getApiRootPackageName() + "/" + epkindPackName + "\"\n";
 							}).collect(Collectors.joining(""));
 						}).collect(Collectors.joining(""))
 				);
 					
-		sessPack += "\n"
+		protoFile += "\n"
+				// Protocol type
 				+ "type " + simpname + " struct {\n"
-				//+ roles.stream().map(r -> r + " " + ParamCoreSTApiGenConstants.GO_ROLE_TYPE + "\n").collect(Collectors.joining(""))
-						// Just need role name constants for now -- params not fixed until endpoint creation
 				+ "}\n"
+				
+				// session.Protocol interface
 				+ "\n" 
-				+ "func New() *" + simpname + " {\n"
-				//+ "return &" + simpname + "{ " + roles.stream().map(r -> ParamCoreSTApiGenConstants.GO_ROLE_CONSTRUCTOR + "(\"" + r + "\")").collect(Collectors.joining(", ")) + " }\n"
-						 // Singleton types?
-				+ "return &" + simpname + "{ }\n"
-				+ "}\n"
-				+ "\n"
 				+ "func (*" + simpname +") IsProtocol() {\n"
+				+ "}\n"
+				
+				// Protocol type constructor
 				+ "\n"
+				+ "func New() *" + simpname + " {\n"
+				+ "return &" + simpname + "{ }\n"
 				+ "}\n";
 
-
-		String dir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";
-		Map<String, String> res = new HashMap<>();
-		
-		// Protocol and role specific endpoints
-		//Function<Role, String> epTypeName = r -> "_Endpoint" + simpname + "_" + r;
-		sessPack +=
-				roles.stream().map(rfoo ->
+		protoFile += "\n" +
+				rolenames.stream().map(rname ->
 				{
-					Set<RPRoleVariant> actuals = this.apigen.actuals.get(rfoo).keySet();
+					Set<RPRoleVariant> variants = this.apigen.variants.get(rname).keySet();
 					return
-					actuals.stream().map(actual -> 
-					{
-						String epTypeName = RPCoreSTApiGenerator.getGeneratedEndpointTypeName(simpname, actual);
-						List<RPRoleDecl> decls = 
-								gpd.getHeader().roledecls.getDecls().stream().filter(rd -> rd.getDeclName().equals(actual.getName()))
-										.map(rd -> (RPRoleDecl) rd).collect(Collectors.toList());
-						if (decls.size() > 1)
+						variants.stream().map(variant -> 
 						{
-							throw new RuntimeException("Shouldn't get in here: " + actual);
-						}
-						List<RPIndexVar> vars = decls.stream().flatMap(d -> d.params.stream()).collect(Collectors.toList());
-						
-						
-						String epPack1 =
-
-								  "\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
-								+ RPCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " session.Protocol\n"
-								+ "Self int\n"
-								+ "*session.LinearResource\n"
-								+ "Ept *" + RPCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
-								+ "Params map[string]int\n"
-								+ "}\n"
-								+ "\n"
-
-								/*+ "\n\nfunc (p *" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, actual) + ") Ept() *session.Endpoint {\n"
-								+ "return p.ept\n"
-								+ "}\n"
-								+ "\n"
-								+ "\nfunc (p *" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, actual) + ") Params() map[string]int {\n"
-								+ "return p.params\n"
-								+ "}\n"*/
-
-
-								+ "func New(p session.Protocol, params map[string]int, self int) *" + epTypeName + "{\n"
-								+ "conns := make(map[string]map[int]transport.Channel)\n"
-								+ this.apigen.actuals.entrySet().stream()
-										.map(e -> "conns[\"" + e.getKey().getLastElement() + "\"] = "
-												+ "make(map[int]transport.Channel)\n")
-										.collect(Collectors.joining(""))
-								+ "return &" + epTypeName + "{p, self, &session.LinearResource{}, session.NewEndpoint(self, conns), params}\n"
-								+ "}\n"
-								+ "\n"
-								
-								
-								+ "func (ini *" + epTypeName + ") Accept(rolename string, id int, acceptor transport.Transport) error {\n"
-								+ "ini.Ept.Conn[rolename][id] = acceptor.Accept()\n"
-								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
-								+ "}\n"
-								+ "\n"
-								+ "func (ini *" + epTypeName + ") Dial(rolename string, id int, requestor transport.Transport) error {\n"
-								+ "ini.Ept.Conn[rolename][id] = requestor.Connect()\n"
-								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
-								+ "}\n"
-								+ "\n";
-								
-							String sessPack1 =
-								"func (p *" + simpname + ") New" + "_" + epTypeName
-										+ "(" + 
-												vars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + 
-												"self int" +
-											")"
-										+ "(*_" + RPCoreSTApiGenerator.getGeneratedActualRoleName(actual) + "." + epTypeName + ") {\n"
-
-								
-								+ "params := make(map[string]int)\n"
-								+ decls.iterator().next().params.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
-								//+ "return &" + epTypeName + "{p, &session.LinearResource{}, session.NewEndpoint(self, " + "conns), params}\n"  // FIXME: numRoles
-								+ "return _" + RPCoreSTApiGenerator.getGeneratedActualRoleName(actual) + ".New" + "(p, params, self)\n"  // FIXME: numRoles
-								+ "}\n";
-								
-							epPack1 += 
-									 "\nfunc (ini *" + epTypeName + ") Run(f func(*"//_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + ".Init)" 
-									 						+ "Init)"
-															+ "End" + ") " 
-													+ "End {\n"
-									+ "ini.Use()\n"
-									+ "ini.Ept.CheckConnection()\n"
-									+ 
-											((this.apigen.actuals.get(rfoo).get(actual).init.getStateKind() == EStateKind.POLY_INPUT)
-													//? "return ini.New" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1()\n"
-													? "return f(ini.NewInit())\n"
-													: "return f(&Init{ new(session.LinearResource), ini })\n")
-									+ "}";
-						
-							res.put(dir + RPCoreSTApiGenerator.getGeneratedActualRoleName(actual) + "/" + RPCoreSTApiGenerator.getGeneratedActualRoleName(actual) + ".go",
-									"package " + RPCoreSTApiGenerator.getGeneratedActualRoleName(actual) + "\n" + epPack + "\n" + epPack1);
-							return sessPack1;
-					}).collect(Collectors.joining(""));
+							String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
+							List<RPRoleDecl> decls = 
+									gpd.getHeader().roledecls.getDecls().stream().filter(rd -> rd.getDeclName().equals(variant.getName()))
+											.map(rd -> (RPRoleDecl) rd).collect(Collectors.toList());
+							if (decls.size() > 1)
+							{
+								throw new RuntimeException("Shouldn't get in here: " + variant);
+							}
+							List<RPIndexVar> ivars = decls.stream().flatMap(d -> d.params.stream()).collect(Collectors.toList());
+									// FIXME: get index vars from protocol body -- index var decls in sig now deprecated
+									
+							// Endpoint Kind constructor -- makes index var value maps
+							return "func (p *" + simpname + ") New" + "_" + epkindTypeName
+									+ "(" + ivars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
+									+ "(*_" + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant) + "." + epkindTypeName + ") {\n"
+									+ "params := make(map[string]int)\n"
+									+ decls.iterator().next().params.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
+									+ "return _" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + ".New" + "(p, params, self)\n"
+									+ "}\n";
+						}).collect(Collectors.joining(""));
 				}).collect(Collectors.joining("\n"));
+
+		res.put(basedir + simpname + ".go", protoFile);
+	}
+
+	private void buildEndpointKindApi(ProtocolDecl<Global> gpd, String basedir, Map<String, String> res)
+	{
+		GProtocolName simpname = this.apigen.proto.getSimpleName();
+		List<Role> roles = gpd.header.roledecls.getRoles();
+
+		String epkindFile = "\n"  // Package decl done later (per variant)
+				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
+				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
 		
-		res.put(dir + simpname + ".go", sessPack);
-		return res;
+		// Endpoint Kind API per role variant
+		for (Role rname : roles)
+		{
+			Set<RPRoleVariant> variants = this.apigen.variants.get(rname).keySet();
+			for (RPRoleVariant variant : variants) 
+			{
+				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
+				List<RPRoleDecl> decls = 
+						gpd.getHeader().roledecls.getDecls().stream().filter(rd -> rd.getDeclName().equals(variant.getName()))
+								.map(rd -> (RPRoleDecl) rd).collect(Collectors.toList());
+				if (decls.size() > 1)
+				{
+					throw new RuntimeException("Shouldn't get in here: " + variant);
+				}
+						// FIXME: get index vars from protocol body -- index var decls in sig now deprecated
+				
+				epkindFile += "\n"
+						
+						// Endpoint Kind type
+						+ "type " + epkindTypeName + " struct {\n"
+						+ RPCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " session.Protocol\n"
+						+ "Self int\n"
+						+ "*session.LinearResource\n"
+						+ "Ept *" + RPCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
+						+ "Params map[string]int\n"
+						+ "}\n"
+
+						// Endpoint Kind type constructor -- makes connection maps
+						+ "\n"
+						+ "func New(p session.Protocol, params map[string]int, self int) *" + epkindTypeName + "{\n"
+						+ "conns := make(map[string]map[int]transport.Channel)\n"
+						+ this.apigen.variants.entrySet().stream()
+								.map(e -> "conns[\"" + e.getKey().getLastElement() + "\"] = " + "make(map[int]transport.Channel)\n")
+								.collect(Collectors.joining(""))
+						+ "return &" + epkindTypeName + "{p, self, &session.LinearResource{}, session.NewEndpoint(self, conns), params}\n"
+						+ "}\n"
+
+						// Dial/Accept methdos -- FIXME: internalise peers
+						+ "\n"
+						+ "func (ini *" + epkindTypeName + ") Accept(rolename string, id int, acceptor transport.Transport) error {\n"
+						+ "ini.Ept.Conn[rolename][id] = acceptor.Accept()\n"
+						+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
+						+ "}\n"
+						+ "\n"
+						+ "func (ini *" + epkindTypeName + ") Dial(rolename string, id int, requestor transport.Transport) error {\n"
+						+ "ini.Ept.Conn[rolename][id] = requestor.Connect()\n"
+						+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
+						+ "}\n";
+						
+					epkindFile += "\n"
+							+ "func (ini *" + epkindTypeName + ") Run(f func(*Init) End) *End {\n"  // f specifies non-pointer End
+							+ "ini.Use()\n"  // FIXME: int-counter linearity
+							+ "ini.Ept.CheckConnection()\n"
+							+ ((this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)  // FIXME: type-switch?
+									? "return f(ini.NewInit())\n"
+									: "return f(&Init{ new(session.LinearResource), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+							+ "}";
+				
+					res.put(basedir + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "/" + RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant) + ".go",
+							"package " + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "\n" + epkindFile);
+			}
+		}
 	}
 }

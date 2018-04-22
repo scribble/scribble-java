@@ -44,7 +44,7 @@ public class RPCoreEDotSend extends ESend implements RPCoreEAction
 	public String toString()
 	{
 		RPIndexedRole peer = getPeer();
-		RPInterval g = peer.ranges.iterator().next();
+		RPInterval g = peer.intervals.iterator().next();
 		return peer.getName() + "[" + this.offset + ":" + g.start + ".." + g.end + "]"
 				+ getCommSymbol() + this.mid + this.payload;
 	}
@@ -54,7 +54,7 @@ public class RPCoreEDotSend extends ESend implements RPCoreEAction
 	{
 		String m = this.mid.isMessageSigName() ? "^" + this.mid : this.mid.toString();  // HACK
 		RPIndexedRole peer = getPeer();
-		RPInterval g = peer.ranges.iterator().next();
+		RPInterval g = peer.intervals.iterator().next();
 		return peer.getName() + "[" + this.offset + ":" + g.start + ".." + g.end + "]"
 				+ getCommSymbol() + m + this.payload;
 	}

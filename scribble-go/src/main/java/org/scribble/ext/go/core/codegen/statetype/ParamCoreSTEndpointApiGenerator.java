@@ -84,11 +84,11 @@ public class ParamCoreSTEndpointApiGenerator
 	{
 		/*return actual.getName()
 				+ actual.ranges.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");*/
-		if (actual.ranges.size() > 1)
+		if (actual.intervals.size() > 1)
 		{
 			throw new RuntimeException("[param-core] TODO: " + actual);
 		}
-		RPInterval g = actual.ranges.iterator().next();
+		RPInterval g = actual.intervals.iterator().next();
 		return actual.getName() + "_" + g.start + "To" + g.end;
 	}
 

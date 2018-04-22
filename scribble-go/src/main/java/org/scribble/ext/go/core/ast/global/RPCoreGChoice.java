@@ -208,20 +208,20 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		if (this.kind == RPCoreGActionKind.CROSS_TRANSFER)
 		{	
 			//if (this.src.getName().equals(r))
-			if (srcName.equals(subjName) && subj.ranges.contains(srcRange))  // FIXME: factor out?
+			if (srcName.equals(subjName) && subj.intervals.contains(srcRange))  // FIXME: factor out?
 			{
 				return af.ParamCoreLCrossChoice(this.dest, RPCoreLActionKind.CROSS_SEND, projs);
 			}
-			else if (destName.equals(subjName) && subj.ranges.contains(destRange))
+			else if (destName.equals(subjName) && subj.intervals.contains(destRange))
 			{
 				return af.ParamCoreLCrossChoice(this.src, RPCoreLActionKind.CROSS_RECEIVE, projs);
 			}
 		}
 		else if (this.kind == RPCoreGActionKind.DOT_TRANSFER)
 		{
-			if (srcName.equals(subjName) && subj.ranges.contains(srcRange))  // FIXME: factor out?
+			if (srcName.equals(subjName) && subj.intervals.contains(srcRange))  // FIXME: factor out?
 			{
-				if (destName.equals(subjName) && subj.ranges.contains(destRange))  // Possible for dot-transfer (src.start != dest.start) -- cf. cross-transfer
+				if (destName.equals(subjName) && subj.intervals.contains(destRange))  // Possible for dot-transfer (src.start != dest.start) -- cf. cross-transfer
 				{
 					RPIndexExpr offset = RPIndexFactory.ParamBinIndexExpr(RPBinIndexExpr.Op.Add,
 								RPIndexFactory.ParamIntVar("_id"),
@@ -252,7 +252,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 					return af.ParamCoreLDotChoice(this.dest, offset, RPCoreLActionKind.DOT_SEND, projs);
 				}
 			}
-			else if (destName.equals(subjName) && subj.ranges.contains(destRange))
+			else if (destName.equals(subjName) && subj.intervals.contains(destRange))
 			{
 				RPIndexExpr offset = RPIndexFactory.ParamBinIndexExpr(RPBinIndexExpr.Op.Add,
 						RPIndexFactory.ParamIntVar("_id"),

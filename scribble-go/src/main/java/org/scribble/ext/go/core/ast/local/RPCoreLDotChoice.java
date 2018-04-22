@@ -24,7 +24,7 @@ public class RPCoreLDotChoice extends RPCoreLChoice
 	@Override
 	public String toString()
 	{
-		RPInterval g = this.role.ranges.iterator().next();
+		RPInterval g = this.role.intervals.iterator().next();
 		return this.role.getName() + "[" + this.offset + ":" + g.start + ".." + g.end + "]"
 				+ this.kind + casesToString();
 	}

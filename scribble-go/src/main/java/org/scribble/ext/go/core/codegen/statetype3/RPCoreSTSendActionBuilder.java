@@ -66,7 +66,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;*/
 
 		RPIndexedRole r = (RPIndexedRole) a.peer;
-		RPInterval g = r.ranges.iterator().next();
+		RPInterval g = r.intervals.iterator().next();
 		Function<RPIndexExpr, String> foo = e ->
 		{
 			if (e instanceof RPIndexInt)

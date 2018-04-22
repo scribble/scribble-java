@@ -331,7 +331,7 @@ public class RPCoreCommandLine extends CommandLine
 				i.remove();
 				Set<RPInterval> range = new HashSet<>();
 				//range.add(next.range);
-				range.add(next.ranges.iterator().next());
+				range.add(next.intervals.iterator().next());
 				if (!tmp.contains(next))
 				{
 					tmp.addAll(tmp.stream().map(t -> 

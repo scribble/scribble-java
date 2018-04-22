@@ -91,9 +91,9 @@ public class ParamCoreSTEndpointApiGenerator
 		ParamRange g = actual.ranges.iterator().next();
 		return actual.getName() + "_" + g.start + "To" + g.end;*/
 		return actual.getName() + "_"
-				+ actual.ranges.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"))
-				+ (actual.coranges.isEmpty() ? "" : "_not_")
-				+ actual.coranges.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"));
+				+ actual.intervals.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"))
+				+ (actual.cointervals.isEmpty() ? "" : "_not_")
+				+ actual.cointervals.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"));
 	}
 
 	//@Override

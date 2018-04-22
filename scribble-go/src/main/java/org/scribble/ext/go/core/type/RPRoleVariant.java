@@ -11,20 +11,20 @@ public class RPRoleVariant extends RPIndexedRole
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public final Set<RPInterval> coranges;
+	public final Set<RPInterval> cointervals;
 	
 	public RPRoleVariant(String name, Set<RPInterval> ranges, Set<RPInterval> coranges)
 	{
 		super(name, ranges);
-		this.coranges = Collections.unmodifiableSet(coranges);
+		this.cointervals = Collections.unmodifiableSet(coranges);
 	}
 
 	@Override
 	public String toString()
 	{
 		// Duplicated from super to make braces mandatory
-		String rs1 = "{" + this.ranges.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
-		String rs2 = "{" + this.coranges.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
+		String rs1 = "{" + this.intervals.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
+		String rs2 = "{" + this.cointervals.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
 		return super.getLastElement() + rs1 + rs2;
 	}
 	
@@ -33,7 +33,7 @@ public class RPRoleVariant extends RPIndexedRole
 	{
 		int hash = 7193;
 		hash = 31 * hash + super.hashCode();
-		hash = 31 * hash + this.coranges.hashCode();
+		hash = 31 * hash + this.cointervals.hashCode();
 		return hash;
 	}
 
@@ -50,7 +50,7 @@ public class RPRoleVariant extends RPIndexedRole
 		}
 		RPRoleVariant them = (RPRoleVariant) obj;
 		return super.equals(them)  // Does canEqual
-				&& this.coranges.equals(them.coranges);
+				&& this.cointervals.equals(them.cointervals);
 	}
 	
 	@Override

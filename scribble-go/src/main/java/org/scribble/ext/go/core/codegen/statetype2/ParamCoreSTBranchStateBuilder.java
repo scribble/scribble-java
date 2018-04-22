@@ -92,7 +92,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 			  + "var op string\n";
 
 		RPIndexedRole peer = (RPIndexedRole) s.getActions().iterator().next().peer;
-		RPInterval g = peer.ranges.iterator().next();
+		RPInterval g = peer.intervals.iterator().next();
 		Function<RPIndexExpr, String> foo = e ->
 		{
 			if (e instanceof RPIndexInt)

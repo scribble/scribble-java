@@ -73,14 +73,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		else
 		{
-			throw new RuntimeException("[param-core] Shouldn't get in here: " + s);
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
 		}
 	}
 	
 	
 	
 
-	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
+	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later
 	// actual.getName().equals(this.role)
 	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant actual, EGraph graph)
 	{
@@ -91,7 +91,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				null, //new GoSTCaseBuilder(new GoSTCaseActionBuilder()),
 				new RPCoreSTEndStateBuilder());
 
-		//throw new RuntimeException("[param-core] TODO:");
+		//throw new RuntimeException("[rp-core] TODO:");
 		this.apigen = apigen;
 		this.actual = actual;
 		
@@ -128,18 +128,18 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				}
 				case DOT_SEND:
 				{
-					throw new RuntimeException("[param-core] TODO: " + s);
+					throw new RuntimeException("[rp-core] TODO: " + s);
 				}
 				case DOT_RECEIVE:
 				{
-					throw new RuntimeException("[param-core] TODO: " + s);
+					throw new RuntimeException("[rp-core] TODO: " + s);
 				}
 				case MULTICHOICES_RECEIVE:
 				{
-					throw new RuntimeException("[param-core] TODO: " + s);
+					throw new RuntimeException("[rp-core] TODO: " + s);
 				}
 				case TERMINAL:    api.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
-				default:          throw new RuntimeException("[param-core] Shouldn't get in here: " + s);
+				default:          throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
 			}
 		}
 		return api;
@@ -148,13 +148,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	@Override
 	public String getFilePath(String filename)
 	{
-		//throw new RuntimeException("[param-core] TODO:");
+		//throw new RuntimeException("[rp-core] TODO:");
 		if (filename.startsWith("_"))  // Cannot use "_" prefix, ignored by Go
 		{
 			filename = "$" + filename.substring(1);
 		}
 		return this.gpn.toString().replaceAll("\\.", "/") 
-				+ "/" + RPCoreSTApiGenerator.getGeneratedActualRoleName(this.actual)
+				+ "/" + RPCoreSTApiGenerator.getGeneratedRoleVariantName(this.actual)
 				+ "/" + filename + ".go";
 	}
 	
@@ -165,11 +165,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		String tname = this.getStateChanName(s);
 		////String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
-		String epType = RPCoreSTApiGenerator.getGeneratedEndpointTypeName(simpname, this.actual); 
+		String epType = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, this.actual); 
 		
 		String res =
 				  //this.apigen.generateRootPackageDecl() + "\n"
-				  "package " + RPCoreSTApiGenerator.getGeneratedActualRoleName(this.actual) + "\n"
+				  "package " + RPCoreSTApiGenerator.getGeneratedRoleVariantName(this.actual) + "\n"
 				+ "\n"
 				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
 				//+ this.apigen.generateScribbleRuntimeImports() + "\n"
@@ -228,7 +228,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		else
 		{
-			//throw new RuntimeException("[param-core] TODO: ");
+			//throw new RuntimeException("[rp-core] TODO: ");
 			return
 						"func (" + RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
@@ -244,7 +244,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	@Override
 	public String buildActionReturn(STActionBuilder ab, EState curr, EState succ)  // FIXME: refactor action builders as interfaces and use generic parameter for kind
 	{
-		//throw new RuntimeException("[param-core] TODO: ");
+		//throw new RuntimeException("[rp-core] TODO: ");
 		String sEp = 
 				//"s.ep"
 				RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
@@ -287,7 +287,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	@Override
 	public String getChannelName(STStateChanApiBuilder api, EAction a)  // Not used?
 	{
-		//throw new RuntimeException("[param-core] TODO: ");
+		//throw new RuntimeException("[rp-core] TODO: ");
 		return
 				//"s.ep.Chans[s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + "]";
 				"s.ep.GetChan(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + ")";
@@ -310,7 +310,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	/*@Override
 	public String getPackage()
 	{
-		//throw new RuntimeException("[param-core] TODO:");
+		//throw new RuntimeException("[rp-core] TODO:");
 		return this.gpn.getSimpleName().toString();
 	}*/
 	
@@ -335,11 +335,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public static String getGeneratedParamRoleName(RPIndexedRole r) 
 	{
 		//return r.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");
-		if (r.ranges.size() > 1)
+		if (r.intervals.size() > 1)
 		{
-			throw new RuntimeException("[param-core] TODO: " + r);
+			throw new RuntimeException("[rp-core] TODO: " + r);
 		}
-		RPInterval g = r.ranges.iterator().next();
+		RPInterval g = r.intervals.iterator().next();
 		return r.getName() + "_" + g.start + "To" + g.end;
 	}
 	

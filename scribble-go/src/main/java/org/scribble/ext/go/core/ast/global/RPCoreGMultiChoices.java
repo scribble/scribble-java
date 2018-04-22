@@ -182,11 +182,11 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 		}
 		
 		// "Simple" cases -- same projection as ParamCoreGChoice, i.e., same local types? -- index var redundant, apart from "syntactic consistency" for subsequent message actions? (i.e., only for Scribble syntax?)
-		if (this.src.getName().equals(subj.getName()) && subj.ranges.contains(this.src.getParsedRange()))  // FIXME: factor out?
+		if (this.src.getName().equals(subj.getName()) && subj.intervals.contains(this.src.getParsedRange()))  // FIXME: factor out?
 		{
 			return af.ParamCoreLCrossChoice(this.dest, RPCoreLActionKind.CROSS_SEND, projs);
 		}
-		else if (this.dest.getName().equals(subj.getName()) && subj.ranges.contains(this.dest.getParsedRange()))
+		else if (this.dest.getName().equals(subj.getName()) && subj.intervals.contains(this.dest.getParsedRange()))
 		{
 			return af.ParamCoreLMultiChoices(this.src, this.var, projs.keySet().stream().collect(Collectors.toList()),
 					values.iterator().next());

@@ -17,19 +17,23 @@ import org.scribble.type.name.Role;
 public class RPCoreSTApiGenerator
 {
 	public final Job job;
-	public final GProtocolName proto;
-	public final Map<Role, Map<RPRoleVariant, EGraph>> actuals;
+	public final GProtocolName proto;  // Full name
+	public final Map<Role, Map<RPRoleVariant, EGraph>> variants;
 	
 	public final String packpath;  // Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
 	public final Role self;  
 			// FIXME: just a role name -- cf. CL arg
 			// FIXME: any way to separate Session API (Protocol) from Endpoint/StateChan APIs?
 	
-	public RPCoreSTApiGenerator(Job job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, EGraph>> actuals, String packpath, Role self)
+	public RPCoreSTApiGenerator(Job job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, EGraph>> variants, String packpath, Role self)
 	{
 		this.job = job;
 		this.proto = fullname;
-		this.actuals = Collections.unmodifiableMap(actuals);
+		this.variants = Collections.unmodifiableMap(
+					variants.entrySet().stream().collect(Collectors.toMap(
+							e -> e.getKey(),
+							e -> Collections.unmodifiableMap(e.getValue())
+					)));
 		this.packpath = packpath;
 		this.self = self;
 	}
@@ -39,9 +43,9 @@ public class RPCoreSTApiGenerator
 	{
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
 		res.putAll(buildSessionApi());
-		for (Entry<RPRoleVariant, EGraph> actual : this.actuals.get(this.self).entrySet())
+		for (Entry<RPRoleVariant, EGraph> variant : this.variants.get(this.self).entrySet())
 		{
-			res.putAll(buildStateChannelApi(actual.getKey(), actual.getValue()));
+			res.putAll(buildStateChannelApi(variant.getKey(), variant.getValue()));
 		}
 		return res;
 	}
@@ -49,27 +53,59 @@ public class RPCoreSTApiGenerator
 	//@Override
 	public Map<String, String> buildSessionApi()  // FIXME: factor out
 	{
-		this.job.debugPrintln("\n[param-core] Running " + RPCoreSTSessionApiBuilder.class + " for " + this.proto + "@" + this.self);
+		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTSessionApiBuilder.class + " for " + this.proto + "@" + this.self);
 		return new RPCoreSTSessionApiBuilder(this).build();
 	}
 	
 	public Map<String, String> buildStateChannelApi(RPRoleVariant actual, EGraph graph)  // FIXME: factor out
 	{
-		this.job.debugPrintln("\n[param-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + this.self);
+		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + this.self);
 		return new RPCoreSTStateChanApiBuilder(this, actual, graph).build();
 	}
 	
 	//@Override
-	public String getRootPackage()  // Derives only from proto name
+	public String getApiRootPackageName()  // Derives only from proto name
 	{
 		return this.proto.getSimpleName().toString();
 	}
 
-	public String generateRootPackageDecl()
+	/*public String makeApiRootPackageDecl()
 	{
-		return "package " + getRootPackage();
+		return "package " + getApiRootPackageName();
+	}*/
+
+	public static String getEndpointKindPackageName(RPRoleVariant r)
+	{
+		return getGeneratedRoleVariantName(r);
+	}
+	
+	// Role variant = Endpoint kind -- e.g., S_1To1, W_1Ton
+	public static String getEndpointKindTypeName(GProtocolName simpname, RPRoleVariant r)
+	{
+		//return simpname + "_" + getGeneratedActualRoleName(r);
+		return getGeneratedRoleVariantName(r);
+	}
+	
+	public static String getGeneratedRoleVariantName(RPRoleVariant variant)
+	{
+		/*return actual.getName()
+				+ actual.ranges.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");*/
+		/*if (actual.ranges.size() > 1 || actual.coranges.size() > 0)
+		{
+			throw new RuntimeException("[param-core] TODO: " + actual);
+		}
+		ParamRange g = actual.ranges.iterator().next();
+		return actual.getName() + "_" + g.start + "To" + g.end;*/
+		return variant.getName() + "_"
+				+ variant.intervals.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"))
+				+ (variant.cointervals.isEmpty()
+						? ""
+						: "_not_" + variant.cointervals.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and")));
 	}
 
+	
+	
+	
 	/*//@Override
 	public List<String> getScribbleRuntimeImports()  // FIXME: factor up
 	{
@@ -87,29 +123,4 @@ public class RPCoreSTApiGenerator
 	{
 		return getScribbleRuntimeImports().stream().map(x -> "import \"" + x + "\"\n").collect(Collectors.joining());
 	}*/
-	
-
-	// Endpoint kind -- use actual-role name, e.g., S_1To1, W_1Ton
-	public static String getGeneratedEndpointTypeName(GProtocolName simpname, RPRoleVariant r)
-	{
-		//return simpname + "_" + getGeneratedActualRoleName(r);
-		return getGeneratedActualRoleName(r);
-	}
-	
-	// Endpoint, e.g., S_1To1, W_1Ton
-	public static String getGeneratedActualRoleName(RPRoleVariant actual)
-	{
-		/*return actual.getName()
-				+ actual.ranges.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");*/
-		/*if (actual.ranges.size() > 1 || actual.coranges.size() > 0)
-		{
-			throw new RuntimeException("[param-core] TODO: " + actual);
-		}
-		ParamRange g = actual.ranges.iterator().next();
-		return actual.getName() + "_" + g.start + "To" + g.end;*/
-		return actual.getName() + "_"
-				+ actual.ranges.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"))
-				+ (actual.coranges.isEmpty() ? "" : "_not_")
-				+ actual.coranges.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"));
-	}
 }

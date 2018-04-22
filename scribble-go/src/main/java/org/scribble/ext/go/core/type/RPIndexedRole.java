@@ -15,21 +15,21 @@ public class RPIndexedRole extends Role
 	private static final long serialVersionUID = 1L;
 
 	//public final ParamRange range;
-	public final Set<RPInterval> ranges;  // size >= 1 -- size == 1 for parsed syntax
+	public final Set<RPInterval> intervals;  // size >= 1 -- size == 1 for parsed syntax
 	
 	public RPIndexedRole(String name, Set<RPInterval> ranges)
 	{
 		super(name);
-		this.ranges = Collections.unmodifiableSet(ranges);
+		this.intervals = Collections.unmodifiableSet(ranges);
 	}
 	
 	public RPInterval getParsedRange()
 	{
-		if (this.ranges.size() > 1)
+		if (this.intervals.size() > 1)
 		{
-			throw new RuntimeException("[param-core] Shouldn't get in here: " + this.ranges);
+			throw new RuntimeException("[param-core] Shouldn't get in here: " + this.intervals);
 		}
-		return this.ranges.iterator().next();
+		return this.intervals.iterator().next();
 	}
 	
 	// FIXME
@@ -41,8 +41,8 @@ public class RPIndexedRole extends Role
 	@Override
 	public String toString()
 	{
-		String rs = this.ranges.stream().map(Object::toString).collect(Collectors.joining(", "));
-		if (this.ranges.size() > 1)
+		String rs = this.intervals.stream().map(Object::toString).collect(Collectors.joining(", "));
+		if (this.intervals.size() > 1)
 		{
 			rs = "{" + rs + "}";
 		}
@@ -54,7 +54,7 @@ public class RPIndexedRole extends Role
 	{
 		int hash = 7121;
 		hash = 31 * hash + super.hashCode();
-		hash = 31 * hash + this.ranges.hashCode();
+		hash = 31 * hash + this.intervals.hashCode();
 		return hash;
 	}
 
@@ -71,7 +71,7 @@ public class RPIndexedRole extends Role
 		}
 		RPIndexedRole them = (RPIndexedRole) obj;
 		return super.equals(them)  // Does canEqual
-				&& this.ranges.equals(them.ranges);
+				&& this.intervals.equals(them.intervals);
 	}
 	
 	@Override
