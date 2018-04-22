@@ -34,8 +34,6 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	protected final RPCoreSTApiGenerator apigen;
 	public final RPRoleVariant variant;  // variant.getName().equals(this.role)
 	
-	//public final RPCoreSTReceiveActionBuilder vb;
-	
 	private int counter = 1;
 	private final Set<DataTypeDecl> dtds; // FIXME: use "main.getDataTypeDecl((DataType) pt);" instead -- cf. OutputSocketGenerator#addSendOpParams
 	
@@ -46,16 +44,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		super(apigen.job, apigen.proto, apigen.self, graph,
 				new RPCoreSTOutputStateBuilder(new RPCoreSTSplitActionBuilder(), new RPCoreSTSendActionBuilder()),
 				new RPCoreSTReceiveStateBuilder(new RPCoreSTReduceActionBuilder(), new RPCoreSTReceiveActionBuilder()),
-				/*new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder()),
-				null, */
-				new RPCoreSTBranchStateBuilder(new RPCoreSTBranchActionBuilder()),
-				new RPCoreSTCaseBuilder(new RPCoreSTCaseActionBuilder()), 
+
+				//new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder()), null,  // Select-based branch
+				new RPCoreSTBranchStateBuilder(new RPCoreSTBranchActionBuilder()), new RPCoreSTCaseBuilder(new RPCoreSTCaseActionBuilder()),   // Type switch branch
+
 				new RPCoreSTEndStateBuilder());
 
 		this.apigen = apigen;
 		this.variant = variant;
-		
-		//this.vb = ((RPCoreSTReceiveStateBuilder) this.rb).vb;
 		
 		this.dtds = this.apigen.job.getContext().getMainModule().getNonProtocolDecls().stream()
 				.filter(d -> (d instanceof DataTypeDecl)).map(d -> ((DataTypeDecl) d)).collect(Collectors.toSet());

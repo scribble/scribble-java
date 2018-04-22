@@ -18,6 +18,16 @@ import org.scribble.model.endpoint.actions.EAction;
 
 public abstract class STActionBuilder
 {
+	public String build(STStateChanApiBuilder api, EState curr, EAction a)
+	{
+		return api.buildAction(this, curr, a);  // Because action builder hierarchy not suitable (extended by action kinds, not by target language) 
+	}
+
+	public String buildReturn(STStateChanApiBuilder api, EState curr, EState succ)
+	{
+		return api.buildActionReturn(this, curr, succ);
+	}
+
 	public abstract String getActionName(STStateChanApiBuilder api, EAction a);
 	public abstract String buildArgs(STStateChanApiBuilder api, EAction a);
 	public abstract String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ);
@@ -25,16 +35,6 @@ public abstract class STActionBuilder
 	public String getReturnType(STStateChanApiBuilder api, EState curr, EState succ)
 	{
 		return api.getStateChanName(succ);
-	}
-
-	public String buildReturn(STStateChanApiBuilder api, EState curr, EState succ)
-	{
-		return api.buildActionReturn(this, curr, succ);
-	}
-	
-	public String build(STStateChanApiBuilder api, EState curr, EAction a)
-	{
-		return api.buildAction(this, curr, a);  // Because action builder hierarchy not suitable (extended by action kinds, not by target language) 
 	}
 	
 	public String getStateChanType(STStateChanApiBuilder api, EState curr, EAction a)
