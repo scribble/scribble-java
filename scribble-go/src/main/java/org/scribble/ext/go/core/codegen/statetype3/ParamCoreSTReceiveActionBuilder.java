@@ -22,7 +22,8 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
-		return ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_"
+		return //ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_"
+				  "Gather_"  // FIXME: make unary Receive special case
 				+ ParamCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((ParamCoreEAction) a).getPeer())
 				+ "_" + a.mid;
 	}

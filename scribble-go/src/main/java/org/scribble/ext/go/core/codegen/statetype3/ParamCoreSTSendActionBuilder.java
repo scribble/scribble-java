@@ -23,7 +23,8 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
-		return ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_PREFIX + "_"
+		return //ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_PREFIX + "_"
+				  "Scatter_"  // FIXME: make unary Send special case
 				+ ParamCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((ParamCoreEAction) a).getPeer())
 				+ "_" + a.mid;
 	}
@@ -83,63 +84,6 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 			}
 		};
 				
-		/*String res =
-					(((GoJob) api.job).noCopy
-				?
-				  "labels := make([]interface{}, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
-				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"
-						+ "tmp := \"" + a.mid + "\"\n"
-						+ "\tlabels[i-" + foo.apply(g.start) + "] = &tmp\n"
-				+ "}\n"
-				:
-				  "labels := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
-				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"
-						+ "\tlabels[i-" + foo.apply(g.start) + "] = []byte(\"" + a.mid + "\")\n"
-				+ "}\n")
-
-				+ sEpWrite + (((GoJob) api.job).noCopy ? "Raw" : "")
-						+ "(" + sEpProto + "." + r.getName() + ", "
-						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
-						+ "labels)\n";
-
-			if (!a.payload.elems.isEmpty())
-			{
-				if (a.payload.elems.size() > 1)
-				{
-					throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
-				}
-				res +=
-				  (((GoJob) api.job).noCopy
-				?
-				  "b := make([]interface{}, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
-				+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end)+"; i++ {\n"
-						+ "tmp := splitFn0(arg0, i)\n"
-						+ "\tb[i-"+foo.apply(g.start)+"] = &tmp\n"
-				+ "}\n"
-				:
-				  "b := make([][]byte, " + foo.apply(g.end) + "-" + foo.apply(g.start) + "+1)\n"
-				+ "for i := " + foo.apply(g.start) + "; i <= "+foo.apply(g.end)+"; i++ {\n"
-						+ "\tvar buf bytes.Buffer\n"
-						+ "\tif err := gob.NewEncoder(&buf).Encode(splitFn0(arg0, i)); err != nil {\n\t\t" // only arg0
-						+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-								+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
-								+ ".Errors <- session.SerialiseFailed(err, \"" + getActionName(api, a) +"\", "
-								+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-								+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
-								+ ".Self.Name())\n"
-						+ "\t}\n"
-						+ "\tb[i-"+foo.apply(g.start)+"] = buf.Bytes()\n"
-				+ "}\n")
-				
-				+ sEpWrite + (((GoJob) api.job).noCopy ? "Raw" : "")
-				+ "(" + sEpProto
-				+ "." + r.getName() + ", "
-						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
-								//+ "\"" + a.mid + "\""
-								+ "b"
-						+ ")\n";
-			}*/
-
 		// FIXME: single arg  // Currently never true because of ParamCoreSTOutputStateBuilder
 		boolean isDeleg = a.payload.elems.stream().anyMatch(pet -> 
 				//pet.isGDelegationType()  // FIXME: currently deleg specified by ParmaCoreDelegDecl, not GDelegationElem
