@@ -1,6 +1,5 @@
 package org.scribble.ext.go.core.codegen.statetype2;
 
-import org.scribble.codegen.java.endpointapi.ApiGen;
 import org.scribble.codegen.statetype.STEndStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.model.endpoint.EState;

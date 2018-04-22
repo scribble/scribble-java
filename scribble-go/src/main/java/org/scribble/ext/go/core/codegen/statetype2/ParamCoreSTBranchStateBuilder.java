@@ -39,7 +39,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 
 		//return ((ParamCoreSTStateChanApiBuilder) api).getStateChanPremable(s);
 		ParamCoreSTStateChanApiBuilder apigen = (ParamCoreSTStateChanApiBuilder) api;
-		Role r = apigen.actual.getName();
+		//Role r = apigen.actual.getName();
 		GProtocolName simpname = apigen.apigen.proto.getSimpleName();
 		String tname = apigen.getStateChanName(s);
 		//String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
