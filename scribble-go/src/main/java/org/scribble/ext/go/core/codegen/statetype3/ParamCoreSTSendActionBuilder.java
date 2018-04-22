@@ -56,7 +56,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 				//s.ep.Write
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT 
 				 		//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
-				 				+ ".Ept()"
+				 				+ ".Ept"
 						//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL;
 						+ ".Conn";
 		/*String sEpProto =
@@ -75,7 +75,7 @@ public class ParamCoreSTSendActionBuilder extends STSendActionBuilder
 			else if (e instanceof ParamIndexVar)
 			{
 				return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params()[\"" + e + "\"]";
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
 			}
 			else
 			{

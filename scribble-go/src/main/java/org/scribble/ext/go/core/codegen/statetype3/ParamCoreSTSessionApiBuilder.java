@@ -57,7 +57,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 		String sessPack =
 					this.apigen.generateRootPackageDecl() + "\n"
 				+ "\n"
-				+ this.apigen.generateScribbleRuntimeImports() + "\n"
+				//+ this.apigen.generateScribbleRuntimeImports() + "\n"
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n"
 
 				+ (roles.stream().map(rfoo ->
@@ -74,14 +74,14 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 					
 		sessPack += "\n"
 				+ "type " + simpname + " struct {\n"
-				+ roles.stream().map(r -> r + " " + ParamCoreSTApiGenConstants.GO_ROLE_TYPE + "\n").collect(Collectors.joining(""))
+				//+ roles.stream().map(r -> r + " " + ParamCoreSTApiGenConstants.GO_ROLE_TYPE + "\n").collect(Collectors.joining(""))
 						// Just need role name constants for now -- params not fixed until endpoint creation
 				+ "}\n"
 				+ "\n" 
-				+ "func New" + simpname + "() *" + simpname + " {\n"
-				+ "return &" + simpname + "{ " + roles.stream().map(r -> ParamCoreSTApiGenConstants.GO_ROLE_CONSTRUCTOR
-						+ "(\"" + r + "\")").collect(Collectors.joining(", ")) + " }\n"
+				+ "func New_" + simpname + "() *" + simpname + " {\n"
+				//+ "return &" + simpname + "{ " + roles.stream().map(r -> ParamCoreSTApiGenConstants.GO_ROLE_CONSTRUCTOR + "(\"" + r + "\")").collect(Collectors.joining(", ")) + " }\n"
 						 // Singleton types?
+				+ "return &" + simpname + "{ }\n"
 				+ "}\n"
 				+ "\n"
 				+ "func (*" + simpname +") IsProtocol() {\n"
@@ -114,21 +114,22 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						
 						String epPack1 =
 
-								  "\nfunc (p *" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, actual) + ") Ept() *session.Endpoint {\n"
+								  "\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
+								+ ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " session.Protocol\n"
+								+ "*session.LinearResource\n"
+								+ "Ept *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
+								+ "Params map[string]int\n"
+								+ "}\n"
+								+ "\n"
+
+								/*+ "\n\nfunc (p *" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, actual) + ") Ept() *session.Endpoint {\n"
 								+ "return p.ept\n"
 								+ "}\n"
 								+ "\n"
 								+ "\nfunc (p *" + ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, actual) + ") Params() map[string]int {\n"
 								+ "return p.params\n"
-								+ "}\n"
+								+ "}\n"*/
 
-								+ "\n\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
-								+ ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " session.Protocol\n"
-								+ "*session.LinearResource\n"
-								+ "ept *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
-								+ "params map[string]int\n"
-								+ "}\n"
-								+ "\n"
 
 								+ "func New(p session.Protocol, params map[string]int, self int) *" + epTypeName + "{\n"
 								+ "conns := make(map[string]map[int]transport.Channel)\n"
@@ -141,13 +142,13 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								+ "\n"
 								
 								
-								+ "func (ini *" + epTypeName + ") Accept(rolename session.Role, id int, acceptor transport.Transport) error {\n"
-								+ "ini.ept.Conn[rolename.Name()][id] = acceptor.Accept()\n"
+								+ "func (ini *" + epTypeName + ") Accept(rolename string, id int, acceptor transport.Transport) error {\n"
+								+ "ini.Ept.Conn[rolename][id] = acceptor.Accept()\n"
 								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n"
 								+ "\n"
-								+ "func (ini *" + epTypeName + ") Request(rolename session.Role, id int, requestor transport.Transport) error {\n"
-								+ "ini.ept.Conn[rolename.Name()][id] = requestor.Connect()\n"
+								+ "func (ini *" + epTypeName + ") Dial(rolename string, id int, requestor transport.Transport) error {\n"
+								+ "ini.Ept.Conn[rolename][id] = requestor.Connect()\n"
 								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n"
 								+ "\n";
@@ -173,7 +174,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 															+ "End" + ") " 
 													+ "End {\n"
 									+ "ini.Use()\n"
-									+ "ini.ept.CheckConnection()\n"
+									+ "ini.Ept.CheckConnection()\n"
 									+ 
 											((this.apigen.actuals.get(rfoo).get(actual).init.getStateKind() == EStateKind.POLY_INPUT)
 													? "return ini.New" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1()\n"

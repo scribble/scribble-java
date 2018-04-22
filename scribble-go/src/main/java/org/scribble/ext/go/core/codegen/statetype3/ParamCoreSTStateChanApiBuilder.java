@@ -162,10 +162,10 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		//Role r = this.actual.getName();
 
-		//GProtocolName simpname = this.apigen.proto.getSimpleName();
+		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		String tname = this.getStateChanName(s);
 		////String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
-		//String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, this.actual); 
+		String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, this.actual); 
 		
 		String res =
 				  //this.apigen.generateRootPackageDecl() + "\n"
@@ -194,8 +194,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ "\n"
 				+ "type " + tname + " struct {\n"
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
-				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epType + "\n" 
-				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " session.ParamEndpoint" + "\n"   // FIXME: factor out
+				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epType + "\n" 
+				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " session.ParamEndpoint" + "\n"   // FIXME: factor out
 				+ "}\n";
 		
 		/*if (s.id == this.graph.init.id)

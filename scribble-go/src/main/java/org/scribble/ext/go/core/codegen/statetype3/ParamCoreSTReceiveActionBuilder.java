@@ -48,7 +48,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 				+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
-				+ ".Ept()"
+				+ ".Ept"
 				+ "." + "Conn";//ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
 
 		/*String sEpProto =
@@ -67,7 +67,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			else if (e instanceof ParamIndexVar)
 			{
 				return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params()[\"" + e + "\"]";
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
 			}
 			else
 			{
