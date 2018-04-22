@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ext.go.ast.ParamRoleDecl;
-import org.scribble.ext.go.core.type.ParamActualRole;
-import org.scribble.ext.go.core.type.ParamRange;
-import org.scribble.ext.go.type.index.ParamIndexExpr;
-import org.scribble.ext.go.type.index.ParamIndexInt;
-import org.scribble.ext.go.type.index.ParamIndexVar;
+import org.scribble.ext.go.ast.RPRoleDecl;
+import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexInt;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
@@ -93,9 +93,9 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 				roles.stream().map(r ->
 				{
 					String epTypeName = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r);
-					List<ParamIndexVar> vars = 
+					List<RPIndexVar> vars = 
 					gpd.getHeader().roledecls.getDecls().stream().filter(rd -> rd.getDeclName().equals(r))
-							.flatMap(rd -> ((ParamRoleDecl) rd).params.stream()).collect(Collectors.toList());
+							.flatMap(rd -> ((RPRoleDecl) rd).params.stream()).collect(Collectors.toList());
 					return
 							  "\n\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
 							+ ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " *" + simpname + "\n"
@@ -135,20 +135,20 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 							+ this.apigen.actuals.entrySet().stream().filter(e -> !e.getKey().equals(r))			
 									.map(e -> 
 									{
-										Map<ParamActualRole, EGraph> tmp = e.getValue();
+										Map<RPRoleVariant, EGraph> tmp = e.getValue();
 										if (tmp.size() > 1)
 										{
 											throw new RuntimeException("[param-core] TODO: " + tmp);
 										}
-										ParamActualRole peer = tmp.keySet().iterator().next();
-										ParamRange g = peer.ranges.iterator().next();
-										Function<ParamIndexExpr, String> foo = ee ->
+										RPRoleVariant peer = tmp.keySet().iterator().next();
+										RPInterval g = peer.ranges.iterator().next();
+										Function<RPIndexExpr, String> foo = ee ->
 										{
-											if (ee instanceof ParamIndexInt)
+											if (ee instanceof RPIndexInt)
 											{
 												return ee.toString();
 											}
-											else if (ee instanceof ParamIndexVar)
+											else if (ee instanceof RPIndexVar)
 											{
 												return "ep.Params[\"" + ee + "\"]";
 											}

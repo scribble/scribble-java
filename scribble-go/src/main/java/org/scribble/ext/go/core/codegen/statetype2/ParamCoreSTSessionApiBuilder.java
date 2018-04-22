@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ext.go.ast.ParamRoleDecl;
-import org.scribble.ext.go.core.type.ParamActualRole;
-import org.scribble.ext.go.type.index.ParamIndexVar;
+import org.scribble.ext.go.ast.RPRoleDecl;
+import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
@@ -92,19 +92,19 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 		sessPack +=
 				roles.stream().map(rfoo ->
 				{
-					Set<ParamActualRole> actuals = this.apigen.actuals.get(rfoo).keySet();
+					Set<RPRoleVariant> actuals = this.apigen.actuals.get(rfoo).keySet();
 					return
 					actuals.stream().map(actual -> 
 					{
 						String epTypeName = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, actual);
-						List<ParamRoleDecl> decls = 
+						List<RPRoleDecl> decls = 
 								gpd.getHeader().roledecls.getDecls().stream().filter(rd -> rd.getDeclName().equals(actual.getName()))
-										.map(rd -> (ParamRoleDecl) rd).collect(Collectors.toList());
+										.map(rd -> (RPRoleDecl) rd).collect(Collectors.toList());
 						if (decls.size() > 1)
 						{
 							throw new RuntimeException("Shouldn't get in here: " + actual);
 						}
-						List<ParamIndexVar> vars = decls.stream().flatMap(d -> d.params.stream()).collect(Collectors.toList());
+						List<RPIndexVar> vars = decls.stream().flatMap(d -> d.params.stream()).collect(Collectors.toList());
 										//.flatMap(rd -> ((ParamRoleDecl) rd).params.stream()).collect(Collectors.toList());
 						
 						/*if (actual.ranges.size() > 1)

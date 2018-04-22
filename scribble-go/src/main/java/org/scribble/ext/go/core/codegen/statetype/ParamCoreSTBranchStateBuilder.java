@@ -7,12 +7,12 @@ import java.util.stream.Stream;
 
 import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
-import org.scribble.ext.go.core.type.ParamRange;
-import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.main.GoJob;
-import org.scribble.ext.go.type.index.ParamIndexExpr;
-import org.scribble.ext.go.type.index.ParamIndexInt;
-import org.scribble.ext.go.type.index.ParamIndexVar;
+import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexInt;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
@@ -85,15 +85,15 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 				+ "func (s *" + tname + ") foo() {\n"
 				+ "s." + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + "." + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
 
-		ParamRole peer = (ParamRole) s.getActions().iterator().next().peer;
-		ParamRange g = peer.ranges.iterator().next();
-		Function<ParamIndexExpr, String> foo = e ->
+		RPIndexedRole peer = (RPIndexedRole) s.getActions().iterator().next().peer;
+		RPInterval g = peer.ranges.iterator().next();
+		Function<RPIndexExpr, String> foo = e ->
 		{
-			if (e instanceof ParamIndexInt)
+			if (e instanceof RPIndexInt)
 			{
 				return e.toString();
 			}
-			else if (e instanceof ParamIndexVar)
+			else if (e instanceof RPIndexVar)
 			{
 				return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
 					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";

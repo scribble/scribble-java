@@ -5,7 +5,7 @@ import java.util.stream.IntStream;
 
 import org.scribble.codegen.statetype.STBranchActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
-import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEAction;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
@@ -29,7 +29,7 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
 		return ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_"
-				+ ParamCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((ParamCoreEAction) a).getPeer())
+				+ ParamCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((RPCoreEAction) a).getPeer())
 				+ "_" + a.mid;
 	}
 

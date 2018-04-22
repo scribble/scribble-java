@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.ext.go.core.type.ParamActualRole;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
@@ -22,13 +22,13 @@ public class ParamCoreSTEndpointApiGenerator
 	public final GProtocolName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	//public final Map<ParamActualRole, EGraph> actuals;
-	public final Map<Role, Map<ParamActualRole, EGraph>> actuals;
+	public final Map<Role, Map<RPRoleVariant, EGraph>> actuals;
 	//public final EGraph graph;
 	
 	//public final Map<Role, Map<ParamActualRole, EGraph>> all;
 	
 	public ParamCoreSTEndpointApiGenerator(Job job, GProtocolName fullname, Role self, //Map<ParamActualRole, EGraph> actuals)
-			Map<Role, Map<ParamActualRole, EGraph>> actuals)
+			Map<Role, Map<RPRoleVariant, EGraph>> actuals)
 	{
 		this.job = job;
 		this.proto = fullname;
@@ -43,7 +43,7 @@ public class ParamCoreSTEndpointApiGenerator
 	{
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
 		res.putAll(buildSessionApi());
-		for (Entry<ParamActualRole, EGraph> actual : this.actuals.get(this.self).entrySet())
+		for (Entry<RPRoleVariant, EGraph> actual : this.actuals.get(this.self).entrySet())
 		{
 			res.putAll(buildStateChannelApi(actual.getKey(), actual.getValue()));
 		}
@@ -58,7 +58,7 @@ public class ParamCoreSTEndpointApiGenerator
 		return new ParamCoreSTSessionApiBuilder(this).build();
 	}
 	
-	public Map<String, String> buildStateChannelApi(ParamActualRole actual, EGraph graph)  // FIXME: factor out
+	public Map<String, String> buildStateChannelApi(RPRoleVariant actual, EGraph graph)  // FIXME: factor out
 	{
 		this.job.debugPrintln("\n[param-core] Running " + ParamCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + this.self);
 		return new ParamCoreSTStateChanApiBuilder(this, actual, graph).build();
@@ -73,14 +73,14 @@ public class ParamCoreSTEndpointApiGenerator
 	}*/
 
 	//public static String getGeneratedEndpointType(GProtocolName simpname, Role r)
-	public static String getGeneratedEndpointType(GProtocolName simpname, ParamActualRole r)
+	public static String getGeneratedEndpointType(GProtocolName simpname, RPRoleVariant r)
 	{
 		//return "Endpoint_" + simpname + "_" + r;
 		return simpname + "_" + getGeneratedActualRoleName(r);
 	}
 	
 	// Doesn't use coranges -- same as getGeneratedParamRoleName?  // Old
-	public static String getGeneratedActualRoleName(ParamActualRole actual)
+	public static String getGeneratedActualRoleName(RPRoleVariant actual)
 	{
 		/*return actual.getName()
 				+ actual.ranges.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");*/

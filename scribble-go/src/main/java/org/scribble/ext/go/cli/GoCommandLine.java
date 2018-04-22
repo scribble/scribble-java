@@ -10,8 +10,8 @@ import org.scribble.cli.CLArgFlag;
 import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineException;
 import org.scribble.ext.go.codegen.statetype.go.GoEndpointApiGenerator;
-import org.scribble.ext.go.core.ast.local.ParamCoreLType;
-import org.scribble.ext.go.core.type.ParamActualRole;
+import org.scribble.ext.go.core.ast.local.RPCoreLType;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoMainContext;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
@@ -31,8 +31,8 @@ public class GoCommandLine extends CommandLine
 
 	// HACK: store in (Core) Job/JobContext?
 	protected GProtocolDecl gpd;
-	protected Map<Role, Map<ParamActualRole, ParamCoreLType>> P0;
-	protected Map<Role, Map<ParamActualRole, EGraph>> E0;
+	protected Map<Role, Map<RPRoleVariant, RPCoreLType>> P0;
+	protected Map<Role, Map<RPRoleVariant, EGraph>> E0;
 	//protected ParamCoreSModel model;
 	
 	public GoCommandLine(String... args) throws CommandLineException
