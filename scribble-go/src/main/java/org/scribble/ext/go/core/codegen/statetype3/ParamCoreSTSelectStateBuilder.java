@@ -17,9 +17,10 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.type.name.GProtocolName;
 
-public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
+// N.B. Select means Go select statement for input-choice; not output-choice
+public class ParamCoreSTSelectStateBuilder extends STBranchStateBuilder
 {
-	public ParamCoreSTBranchStateBuilder(ParamCoreSTBranchActionBuilder bb)
+	public ParamCoreSTSelectStateBuilder(ParamCoreSTSelectActionBuilder bb)
 	{
 		super(bb);
 	}

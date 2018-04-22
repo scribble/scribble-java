@@ -17,7 +17,8 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
 
-public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
+// N.B. Select means Go select statement for input-choice; not output-choice
+public class ParamCoreSTSelectActionBuilder extends STBranchActionBuilder
 {
 	/*@Override
 	public String build(STStateChanApiBuilder api, EState curr, EAction a)  // FIXME: "overriding" GSTStateChanAPIBuilder.buildAction to hack around *interface return  // FIXME: factor out
