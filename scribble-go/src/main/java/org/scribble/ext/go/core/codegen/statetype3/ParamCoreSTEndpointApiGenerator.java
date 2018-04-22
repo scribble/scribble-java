@@ -109,11 +109,10 @@ public class ParamCoreSTEndpointApiGenerator
 	
 	
 
-	//public static String getGeneratedEndpointType(GProtocolName simpname, Role r)
 	public static String getGeneratedEndpointTypeName(GProtocolName simpname, ParamActualRole r)
 	{
-		//return "Endpoint_" + simpname + "_" + r;
-		return simpname + "_" + getGeneratedActualRoleName(r);
+		//return simpname + "_" + getGeneratedActualRoleName(r);
+		return getGeneratedActualRoleName(r);
 	}
 	
 	// Doesn't use coranges -- same as getGeneratedParamRoleName?  // Old
