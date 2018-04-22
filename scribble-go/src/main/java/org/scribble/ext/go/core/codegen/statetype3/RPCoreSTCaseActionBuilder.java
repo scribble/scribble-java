@@ -15,7 +15,8 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
-		return RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName((RPIndexedRole) a.peer) + "_Recv_" + a.mid;
+		return //RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName((RPIndexedRole) a.peer) + "_" +
+				"Recv_" + a.mid;
 	}
 
 	@Override
