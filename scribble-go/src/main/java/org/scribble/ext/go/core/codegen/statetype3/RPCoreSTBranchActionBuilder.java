@@ -49,19 +49,10 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
-		//RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
 		RPIndexedRole peer = (RPIndexedRole) a.peer;  // Singleton interval
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP
 				+ "[\"" + peer.getName() + "\"]";
-
-				  /*//"tmp := " + api.getChannelName(api, a) + ".Read()\n"
-				  "tmp := s.ep.Read(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + ")\n"
-				//+ "op := tmp.(" + GSTBranchStateBuilder.getBranchEnumType(api, curr) + ")\n"
-				+ "if s.ep.Err != nil {\n"
-				+ "return nil\n"
-				+ "}\n"
-				+ "op := tmp.(string)\n"*/
 				
 		String res = "";
 
@@ -74,16 +65,16 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 				+ "log.Fatal(err)\n"
 				+ "}\n";
 
+		// Switch and return Cases value
 		res += "\n"
 				+ "switch lab {\n"
 				+ curr.getActions().stream().map(x -> 
-						  "case \"" + x.mid + "\":\n"
-						+ "return &" + RPCoreSTCaseBuilder.getOpTypeName(api, curr, x.mid) +"{ Ept: s.Ept, Res: new(session.LinearResource) }\n"  // FIXME: factor out with RPCoreSTStateChanApiBuilder buildActionReturn/getSuccStateChan
-						//+ rpapi.buildActionReturn(((RPCoreSTReceiveStateBuilder) rpapi.rb).vb, curr, curr.getSuccessor(a)) + "\n"  // No: need to return Cases object, not state chan
+						  "case \"" + x.mid + "\":\n" + "return &" + RPCoreSTCaseBuilder.getOpTypeName(api, curr, x.mid)
+						+ "{ Ept: s.Ept, Res: new(session.LinearResource) }\n"  // FIXME: factor out with RPCoreSTStateChanApiBuilder buildActionReturn/getSuccStateChan
 					).collect(Collectors.joining(""))
 				+ "default: panic(\"Shouldn't get in here: \" + lab)\n"
 				+ "}\n"
-				+ "return nil";  // FIXME: panic instead
+				+ "return nil\n";  // FIXME: panic instead
 
 		return res;
 	}

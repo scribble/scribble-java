@@ -41,14 +41,14 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 				+ "\n"
 				+ "type " + getCaseStateChanName(api, s) + " interface {\n"
 			  + casename + "()\n"
-			  + "}"
+			  + "}\n"
 			  + s.getActions().stream().map(a ->
-			  		  "\n\ntype " + getOpTypeName(api, s, a.mid) + " struct {\n"
+			  		  "\ntype " + getOpTypeName(api, s, a.mid) + " struct {\n"
 						+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + RPCoreSTApiGenerator.getEndpointKindTypeName(null, rpapi.variant) + "\n" 
 						+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"
 			  		+ "}\n"
 			  		+ "\n"
-			  	  + "func (*" + getOpTypeName(api, s, a.mid) + ") " + casename + "() {}"
+			  	  + "func (*" + getOpTypeName(api, s, a.mid) + ") " + casename + "() {}\n"
 			  	).collect(Collectors.joining(""));
 	}
 	
