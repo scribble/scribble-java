@@ -72,7 +72,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 			if (!a.mid.toString().equals("")) // HACK FIXME?
 			{ 
-				res += "var lab string\n"
+				res += "var lab string\n"  // var decl needed for deserializatoin -- FIXME?
 						+ "if err := " + sEpRecv + "[i]"
 						+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
 								+ "(" + "&lab" + ")"
@@ -83,7 +83,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 			if (!a.payload.elems.isEmpty())
 			{
-				res += "var tmp " + extName + "\n"
+				res += "var tmp " + extName + "\n"  // var tmp needed for deserialization -- FIXME?
 					+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK? for passthru?
 					+ "if err := " + sEpRecv + "[i]"
 					+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
