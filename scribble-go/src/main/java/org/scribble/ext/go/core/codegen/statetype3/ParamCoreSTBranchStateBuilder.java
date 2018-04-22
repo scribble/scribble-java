@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.type.ParamActualRole;
 import org.scribble.ext.go.core.type.ParamRange;
 import org.scribble.ext.go.core.type.ParamRole;
 import org.scribble.ext.go.main.GoJob;
@@ -26,15 +27,18 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 	@Override
 	public String getPreamble(STStateChanApiBuilder api, EState s)
 	{
+		ParamActualRole actual = ((ParamCoreSTStateChanApiBuilder) api).actual;
+
 		String sEpRecv = 
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 				+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
+				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
+				+ ".Ept";
 				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
-		String sEpProto =
+		/*String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;*/
 
 		//return ((ParamCoreSTStateChanApiBuilder) api).getStateChanPremable(s);
 		ParamCoreSTStateChanApiBuilder apigen = (ParamCoreSTStateChanApiBuilder) api;
@@ -44,7 +48,8 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		//String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
 		String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, apigen.actual); 
 		String res =
-				  apigen.apigen.generateRootPackageDecl() + "\n"
+				  //apigen.apigen.generateRootPackageDecl() + "\n"
+				  "package " + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "\n"
 				+ "\n"
 				+ apigen.apigen.generateScribbleRuntimeImports() + "\n"
 				+ "import \"log\"\n"
@@ -67,7 +72,8 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		res += "\n"
 				+ "func (ep *" + epType + ") New" 
 						+ ((s.id != api.graph.init.id) ? tname
-								: ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(((ParamCoreSTStateChanApiBuilder) api).actual) + "_1")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
+								//: ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
+								: "Init")
 						+ "() *" + tname + " {\n"  // FIXME: factor out
 				+ "s := &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
 						+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
@@ -113,14 +119,14 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 		if (((GoJob) apigen.job).noCopy)
 		{
 		res += 
-				  "label := " + sEpRecv + "Raw(" + sEpProto + "." + peer.getName() + ", "
+				  "label := " + sEpRecv + "Raw(\"" + peer.getName() + "\", "
 				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
 				+ "op := *label[0].(*string)\n";  // FIXME: cast for safety?
 		}
 		else
 		{
 		res +=
-				  "if err := " + sEpRecv + ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" 
+				  "if err := " + sEpRecv + ".Conn[\"" + peer.getName() + "\"][" 
 				  		+ foo.apply(g.start) + "].Recv(&op); err != nil {\n"  // g.end = g.start
 				+ "log.Fatal(err)\n"
 				+ "}\n";

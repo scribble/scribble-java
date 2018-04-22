@@ -59,36 +59,6 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
-		/*String sEpRecv = 
-				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
-		String sEpProto =
-				//"s.ep.Proto"
-				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
-		/*String sEpErr =
-				//"s.ep.Err"
-				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ERR;*/
-
-		/*ParamRole r = (ParamRole) a.peer;
-		ParamRange g = r.ranges.iterator().next();
-		Function<ParamIndexExpr, String> foo = e ->
-		{
-			if (e instanceof ParamIndexInt)
-			{
-				return e.toString();
-			}
-			else if (e instanceof ParamIndexVar)
-			{
-				return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
-			}
-			else
-			{
-				throw new RuntimeException("[param-core] TODO: " + e);
-			}
-		};*/
-
 		if(a.payload.elems.size() > 1)
 		{
 			throw new RuntimeException("[param-core] TODO: " + a);
@@ -103,21 +73,6 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 		}
 		
 		String res =
-				  /*sEpRecv
-				+ "(" + sEpProto
-				+ ".(*" + api.gpn.getSimpleName() +")." + r.getName() + ", "
-						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
-						+ "\"" + a.mid + "\")\n"
-				+ IntStream.range(0, a.payload.elems.size())
-				      .mapToObj(i -> sEpRecv + "(" + sEpProto + ".(*" + api.gpn.getSimpleName() +")." + r.getName() + ", "
-									+ foo.apply(g.start) + ", " + foo.apply(g.end) + ", "
-				      		+ "arg" + i + ")")
-				      .collect(Collectors.joining("\n")) + "\n"
-				/*+ "if " + sEpErr + " != nil {\n"
-				+ "return nil\n"
-				+ "}\n"*/
-				//buildReturn(api, curr, succ);
-				   //"ch, selected := <-s._" + a.mid + "_Chan\n"
 				   "_, selected := <-s._" + a.mid + "_Chan\n"
 				 + "if !selected {\n"
                  + "\treturn nil // select ignores nilchan\n"
@@ -144,12 +99,13 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 		String sEpRecv = 
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 				+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
+				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
+				+ ".Ept";
 				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
-		String sEpProto =
+		/*String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;*/
 		
 		ParamCoreSTStateChanApiBuilder apigen = (ParamCoreSTStateChanApiBuilder) api;
 		String sEp = ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
@@ -183,7 +139,8 @@ public class ParamCoreSTBranchActionBuilder extends STBranchActionBuilder
 
 				res +=
 							  "if err := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
-							+  ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "].Recv(&arg0); err != nil {\n"
+							//+  ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "].Recv(&arg0); err != nil {\n"
+							+  ".Conn[\"" + peer.getName() + "\"][" + foo.apply(g.start) + "].Recv(&arg0); err != nil {\n"
 							+ "log.Fatal(err)\n"
 							+ "}\n"
 							+ "\n"

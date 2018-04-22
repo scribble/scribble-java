@@ -266,7 +266,8 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					"New"
 						//+ getStateChanName(succ)
 						+ ((succ.id != this.graph.init.id) ? getStateChanName(succ)
-								: ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual) + "_1")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
+								//: ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual) + "_1")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
+								: "Init")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
 					+ "()";
 		}
 		else

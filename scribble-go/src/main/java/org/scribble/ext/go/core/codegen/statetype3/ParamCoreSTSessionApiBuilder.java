@@ -178,8 +178,9 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 									+ "ini.Ept.CheckConnection()\n"
 									+ 
 											((this.apigen.actuals.get(rfoo).get(actual).init.getStateKind() == EStateKind.POLY_INPUT)
-													? "return ini.New" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1()\n"
-													: "return f(&Init{ new(session.LinearResource), ini })")
+													//? "return ini.New" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1()\n"
+													? "return f(ini.NewInit())\n"
+													: "return f(&Init{ new(session.LinearResource), ini })\n")
 									+ "}";
 						
 							res.put(dir + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "/" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + ".go",
