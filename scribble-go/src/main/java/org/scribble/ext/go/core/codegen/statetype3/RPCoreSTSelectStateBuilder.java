@@ -1,17 +1,13 @@
 package org.scribble.ext.go.core.codegen.statetype3;
 
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
-import org.scribble.ext.go.core.type.RPRoleVariant;
-import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
-import org.scribble.ext.go.type.index.RPIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexInt;
-import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EReceive;
@@ -23,151 +19,6 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 	public RPCoreSTSelectStateBuilder(RPCoreSTSelectActionBuilder bb)
 	{
 		super(bb);
-	}
-
-	@Override
-	public String getPreamble(STStateChanApiBuilder api, EState s)
-	{
-		RPRoleVariant actual = ((RPCoreSTStateChanApiBuilder) api).variant;
-
-		String sEpRecv = 
-				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
-				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
-				+ ".Ept";
-				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
-		/*String sEpProto =
-				//"s.ep.Proto"
-				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;*/
-
-		//return ((ParamCoreSTStateChanApiBuilder) api).getStateChanPremable(s);
-		RPCoreSTStateChanApiBuilder apigen = (RPCoreSTStateChanApiBuilder) api;
-		//Role r = apigen.actual.getName();
-		GProtocolName simpname = apigen.apigen.proto.getSimpleName();
-		String tname = apigen.getStateChanName(s);
-		//String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
-		String epType = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, apigen.variant); 
-		String res =
-				  //apigen.apigen.generateRootPackageDecl() + "\n"
-				  "package " + RPCoreSTApiGenerator.getGeneratedRoleVariantName(actual) + "\n"
-				+ "\n"
-				//+ apigen.apigen.generateScribbleRuntimeImports() + "\n"
-				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
-				+ "import \"log\"\n"
-				
-				//+ (((GoJob) api.job).noCopy ? "" : Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE) .map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
-
-				+ "\n"
-				+ "type " + tname + " struct{\n"
-				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n" 
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epType + "\n" 
-				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
-				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan string\n") // chan *" + apigen.getStateChanName(s.getSuccessor(a)) + "\n")
-						.collect(Collectors.joining(""))
-				/*+ (((GoJob) apigen.job).noCopy ? "data chan []interface{}" : 
-							//"data chan [][]byte\n" 
-							"data chan interface{}\n" 
-					)*/
-				+ "}\n";
-
-		res += "\n"
-				+ "func (ep *" + epType + ") NewBranchInit" 
-						/*+ ((s.id != api.graph.init.id) ? tname
-								//: ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
-								: "Init")*/
-						+ "() *" + tname + " {\n"  // FIXME: factor out
-				+ "s := &" + tname + " { " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
-						+ ", " + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
-						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan "//chan *" + apigen.getStateChanName(s.getSuccessor(a))
-								+ "string" +
-								", 1)")
-								.collect(Collectors.joining(", ")) + ", "
-
-						/*+ "data: make(chan " + (((GoJob) api.job).noCopy ? "[]interface{}" : 
-							//"[][]byte"
-									" interface{}"
-							) + ", 1)"*/
-
-						+ "}\n"
-				+ "go s.foo()\n"
-				+ "return s\n"
-				+ "}\n";
-
-		res += "\n"
-				+ "func (s *" + tname + ") foo() {\n"
-				+ "s." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
-			  + "var op string\n";
-
-		RPIndexedRole peer = (RPIndexedRole) s.getActions().iterator().next().peer;
-		RPInterval g = peer.intervals.iterator().next();
-		Function<RPIndexExpr, String> foo = e ->
-		{
-			if (e instanceof RPIndexInt)
-			{
-				return e.toString();
-			}
-			else if (e instanceof RPIndexVar)
-			{
-				return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
-					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
-			}
-			else
-			{
-				throw new RuntimeException("[param-core] TODO: " + e);
-			}
-		};
-		
-		if (((GoJob) apigen.job).noCopy)
-		{
-		res += 
-				  "label := " + sEpRecv + "Raw(\"" + peer.getName() + "\", "
-				  		+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-				+ "op := *label[0].(*string)\n";  // FIXME: cast for safety?
-		}
-		else
-		{
-		res +=
-				  "if err := " + sEpRecv + ".Conn[\"" + peer.getName() + "\"][" 
-				  		+ foo.apply(g.start) + "].Recv(&op); err != nil {\n"  // g.end = g.start
-				+ "log.Fatal(err)\n"
-				+ "}\n";
-		}
-
-		/*List<EAction> as = s.getActions();
-		boolean allEmpty = as.stream().allMatch(a -> a.payload.elems.isEmpty());
-		if (!allEmpty)  // FIXME:
-		{
-			res +=
-						  "var b string\n"  // HACK?
-						  //"var b int\n"
-					  + "if err := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
-						+  ".Conn[" + sEpProto + "." + peer.getName() + ".Name()][" + foo.apply(g.start) + "-1].Recv(&b); err != nil {\n"
-						+ "log.Fatal(err)\n"
-						+ "}\n"
-					+ "s.data <- b\n";
-							// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
-		}*/
-				
-		res+= "if "
-				+ s.getActions().stream().map(a ->
-					{
-						//String sEp = ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
-						return
-								"op == \"" + a.mid + "\" {\n"
-								/*+ "\tch := make(chan *" + apigen.getStateChanName(s.getSuccessor(a)) + ", 1)\n"
-								+ "\tch <- " + apigen.getSuccStateChan(this.bb, s, s.getSuccessor(a), sEp) + "\n"
-								+ "\ts._" + a.mid + "_Chan <- ch\n"*/
-								+ "\ts._" + a.mid + "_Chan <- \"" + a.mid +"\"\n"
-								+ "\t" + s.getActions().stream()
-										.filter(otheract -> otheract.mid != a.mid)
-										.map(otheract -> { return "close(s._" + otheract.mid + "_Chan)"; })
-										.collect(Collectors.joining("\n\t")) + "\n"
-								+ "}";
-					}).collect(Collectors.joining(" else if ")) + "\n"
-				+ "}\n";
-
-		return res;
 	}
 	
 	@Override
@@ -189,5 +40,87 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 		}
 
 		return out;
+	}
+
+	// Cf. RPCoreSTStateChanApiBuilder -- the hierarchy splits off branch state building separately
+	@Override
+	public String getPreamble(STStateChanApiBuilder api, EState s)
+	{
+		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
+
+		GProtocolName simpname = rpapi.apigen.proto.getSimpleName();
+		RPRoleVariant variant = ((RPCoreSTStateChanApiBuilder) api).variant;
+		String scTypeName = rpapi.getStateChanName(s);
+		String epTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, rpapi.variant); 
+
+		String sEpRecv = 
+				  RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
+				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
+
+		String res =
+				  "package " + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant) + "\n"
+				+ "\n"
+				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
+				+ "import \"log\"\n"
+
+				// State channel type
+				+ "\n"
+				+ "type " + scTypeName + " struct{\n"
+				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epTypeName + "\n" 
+				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan string\n").collect(Collectors.joining(""))
+				+ "}\n";
+
+		// Explicit constructor -- for creating internal channels
+		res += "\n"
+				+ "func (ep *" + epTypeName + ") NewBranchInit"   // FIXME: factor out
+						+ "() *" + scTypeName + " {\n"
+				+ "s := &" + scTypeName + " { " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep" + ", "
+						+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
+						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan string, 1)").collect(Collectors.joining(", ")) + ", "
+						+ "}\n"
+				+ "go s.branch()\n"
+				+ "return s\n"
+				+ "}\n";
+
+		RPIndexedRole peer = (RPIndexedRole) s.getActions().iterator().next().peer;
+		RPInterval d = peer.intervals.iterator().next();
+
+		// Branch background thread -- receive label, and signal corresponding channel
+		res += "\n"
+				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName + ") branch() {\n"
+				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
+			  + "var op string\n";
+		if (((GoJob) rpapi.job).noCopy)
+		{
+			/*res += 
+					  "label := " + sEpRecv + "Raw(\"" + peer.getName() + "\", "
+							+ RPCoreSTStateChanApiBuilder.generateIndexExpr(g.start) + ", " + RPCoreSTStateChanApiBuilder.generateIndexExpr(g.end) + ")\n"
+					+ "op := *label[0].(*string)\n";  // FIXME: cast for safety?*/
+			throw new RuntimeException("[rp-core] TODO: -nocopy: " + s);
+		}
+		else
+		{
+			res +=
+					 "if err := " + sEpRecv + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[\"" + peer.getName() + "\"][" 
+				  		+ RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&op); err != nil {\n"  // g.end = g.start -- CFSM only has ? for input
+					+ "log.Fatal(err)\n"
+					+ "}\n";
+		}
+		res+= "if " + s.getActions().stream().map(a ->
+					{
+						return "op == \"" + a.mid + "\" {\n"
+								+ "\ts._" + a.mid + "_Chan <- \"" + a.mid +"\"\n"
+								+ "\t" + s.getActions().stream()
+										.filter(otheract -> otheract.mid != a.mid)
+										.map(otheract -> { return "close(s._" + otheract.mid + "_Chan)"; })
+										.collect(Collectors.joining("\n\t")) + "\n"
+								+ "}";
+					}).collect(Collectors.joining(" else if ")) + "\n"
+				+ "}\n";
+
+		return res;
 	}
 }
