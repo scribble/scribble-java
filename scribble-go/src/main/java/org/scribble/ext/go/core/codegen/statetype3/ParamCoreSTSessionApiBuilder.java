@@ -153,7 +153,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 								+ "\n";
 								
 							String sessPack1 =
-								"func (p *" + simpname + ") New" + epTypeName
+								"func (p *" + simpname + ") New" + "_" + epTypeName
 										+ "(" + 
 												vars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + 
 												"self int" +
