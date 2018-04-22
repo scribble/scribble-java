@@ -78,7 +78,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 						// Just need role name constants for now -- params not fixed until endpoint creation
 				+ "}\n"
 				+ "\n" 
-				+ "func New_" + simpname + "() *" + simpname + " {\n"
+				+ "func New() *" + simpname + " {\n"
 				//+ "return &" + simpname + "{ " + roles.stream().map(r -> ParamCoreSTApiGenConstants.GO_ROLE_CONSTRUCTOR + "(\"" + r + "\")").collect(Collectors.joining(", ")) + " }\n"
 						 // Singleton types?
 				+ "return &" + simpname + "{ }\n"
@@ -116,6 +116,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 
 								  "\ntype " + epTypeName + " struct {\n"  // FIXME: factor out
 								+ ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " session.Protocol\n"
+								+ "Self int\n"
 								+ "*session.LinearResource\n"
 								+ "Ept *" + ParamCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
 								+ "Params map[string]int\n"
@@ -137,7 +138,7 @@ public class ParamCoreSTSessionApiBuilder  // FIXME: make base STSessionApiBuild
 										.map(e -> "conns[\"" + e.getKey().getLastElement() + "\"] = "
 												+ "make(map[int]transport.Channel)\n")
 										.collect(Collectors.joining(""))
-								+ "return &" + epTypeName + "{p, &session.LinearResource{}, session.NewEndpoint(self, conns), params}\n"
+								+ "return &" + epTypeName + "{p, self, &session.LinearResource{}, session.NewEndpoint(self, conns), params}\n"
 								+ "}\n"
 								+ "\n"
 								
