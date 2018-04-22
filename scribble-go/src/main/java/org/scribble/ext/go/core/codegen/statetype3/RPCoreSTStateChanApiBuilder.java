@@ -32,7 +32,7 @@ import org.scribble.type.name.PayloadElemType;
 public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 {
 	protected final RPCoreSTApiGenerator apigen;
-	public final RPRoleVariant variant;
+	public final RPRoleVariant variant;  // variant.getName().equals(this.role)
 	
 	//public final RPCoreSTReceiveActionBuilder vb;
 	
@@ -46,8 +46,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		super(apigen.job, apigen.proto, apigen.self, graph,
 				new RPCoreSTOutputStateBuilder(new RPCoreSTSplitActionBuilder(), new RPCoreSTSendActionBuilder()),
 				new RPCoreSTReceiveStateBuilder(new RPCoreSTReduceActionBuilder(), new RPCoreSTReceiveActionBuilder()),
-				new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder()),
-				null, //new GoSTCaseBuilder(new GoSTCaseActionBuilder()),
+				/*new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder()),
+				null, */
+				new RPCoreSTBranchStateBuilder(new RPCoreSTBranchActionBuilder()),
+				new RPCoreSTCaseBuilder(new RPCoreSTCaseActionBuilder()), 
 				new RPCoreSTEndStateBuilder());
 
 		this.apigen = apigen;
@@ -75,7 +77,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				{
 					if (s.getActions().size() > 1)
 					{
+						// Select-based branch
+						//res.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
+
+						// Type switch -based branch
 						res.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
+						res.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));
 					}
 					else
 					{
@@ -154,7 +161,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public String buildAction(STActionBuilder ab, EState curr, EAction a)
 	{
 		EState succ = curr.getSuccessor(a);
-		if (getStateKind(curr) == ParamCoreEStateKind.CROSS_RECEIVE && curr.getActions().size() > 1)
+		if (getStateKind(curr) == ParamCoreEStateKind.CROSS_RECEIVE && curr.getActions().size() > 1
+				&& this.bb instanceof RPCoreSTSelectStateBuilder)  // HACK
 		{
 			return
 					  "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
@@ -190,7 +198,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 	protected String getSuccStateChan(STActionBuilder ab, EState curr, EState succ, String sEp)
 	{
-		if (getStateKind(succ) == ParamCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
+		if (getStateKind(succ) == ParamCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1
+				&& this.bb instanceof RPCoreSTSelectStateBuilder)  // HACK
 		{
 			return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
 					+ "NewBranchInit()";  // For branch states (hacky?)  // FIXME: factor out with RPCoreSTSessionApiBuilder and RPCoreSTSelectStateBuilder#getPreamble

@@ -78,14 +78,18 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 						+ "() *" + scTypeName + " {\n"
 				+ "s := &" + scTypeName + " { " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep" + ", "
 						+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
-						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan string, 1)").collect(Collectors.joining(", ")) + ", "
+						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan string, 1)").collect(Collectors.joining(", ")) + " "
 						+ "}\n"
 				+ "go s.branch()\n"
 				+ "return s\n"
 				+ "}\n";
 
-		RPIndexedRole peer = (RPIndexedRole) s.getActions().iterator().next().peer;
+		RPIndexedRole peer = (RPIndexedRole) s.getActions().iterator().next().peer;  // All branch actions have same subject
 		RPInterval d = peer.intervals.iterator().next();
+		if (peer.intervals.size() > 1)
+		{
+			throw new RuntimeException("[rp-core] TODO: " + s);
+		}
 
 		// Branch background thread -- receive label, and signal corresponding channel
 		res += "\n"

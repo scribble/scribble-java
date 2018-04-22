@@ -49,7 +49,11 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 
 		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
 		RPIndexedRole r = (RPIndexedRole) a.peer;
-		RPInterval g = r.intervals.iterator().next();
+		RPInterval d = r.intervals.iterator().next();
+		if (r.intervals.size() > 1)
+		{
+			throw new RuntimeException("[rp-core] TODO: " + a);
+		}
 		
 		String sEpWrite = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP
@@ -60,8 +64,8 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 				//pet.isGDelegationType()  // FIXME: currently deleg specified by ParmaCoreDelegDecl, not GDelegationElem
 				rpapi.isDelegType((DataType) pet));
 		
-		String res = "for i, j := " + RPCoreSTStateChanApiBuilder.generateIndexExpr(g.start) + ", 0;"
-				+ " i <= " + RPCoreSTStateChanApiBuilder.generateIndexExpr(g.end)+"; i, j = i+1, j+1 {\n";
+		String res = "for i, j := " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + ", 0;"
+				+ " i <= " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.end)+"; i, j = i+1, j+1 {\n";
 
 		// Write label
 		if (!a.mid.toString().equals("")) {  // HACK FIXME?

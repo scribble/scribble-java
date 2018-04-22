@@ -90,8 +90,9 @@ public class GoSTStateChanApiBuilder extends STStateChanApiBuilder
 		return res;
 	}
 
+  // Here because action builder hierarchy not suitable (extended by action kind, not by target language)
 	@Override
-	public String buildAction(STActionBuilder ab, EState curr, EAction a)  // Here because action builder hierarchy not suitable (extended by action kind, not by target language)
+	public String buildAction(STActionBuilder ab, EState curr, EAction a)
 	{
 		EState succ = curr.getSuccessor(a);
 		return

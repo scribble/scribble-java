@@ -30,7 +30,7 @@ public abstract class STBranchStateBuilder extends STStateChanBuilder
 		String out = getPreamble(api, s);
 		
 		out += "\n\n";
-		out += this.bb.build(api, s, s.getActions().get(1));  // Getting 1 checks non-unary
+		out += this.bb.build(api, s, s.getActions().get(1));  // Getting #1 checks non-unary
 
 		return out;
 	}

@@ -41,12 +41,16 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		}
 
 		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
-		RPIndexedRole r = (RPIndexedRole) a.peer;
-		RPInterval d = r.intervals.iterator().next();
+		RPIndexedRole peer = (RPIndexedRole) a.peer;
+		RPInterval d = peer.intervals.iterator().next();
+		if (peer.intervals.size() > 1)
+		{
+			throw new RuntimeException("[rp-core] TODO: " + a);
+		}
 
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP
-				+ "[\"" +  r.getName() + "\"]";
+				+ "[\"" +  peer.getName() + "\"]";
 
 		String res = "";
 		if (a.payload.elems.size() > 1)

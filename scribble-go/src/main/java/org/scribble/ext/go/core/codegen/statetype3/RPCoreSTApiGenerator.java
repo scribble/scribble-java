@@ -74,16 +74,16 @@ public class RPCoreSTApiGenerator
 		return "package " + getApiRootPackageName();
 	}*/
 
-	public static String getEndpointKindPackageName(RPRoleVariant r)
+	public static String getEndpointKindPackageName(RPRoleVariant variant)
 	{
-		return getGeneratedRoleVariantName(r);
+		return getGeneratedRoleVariantName(variant);
 	}
 	
 	// Role variant = Endpoint kind -- e.g., S_1To1, W_1Ton
-	public static String getEndpointKindTypeName(GProtocolName simpname, RPRoleVariant r)
+	public static String getEndpointKindTypeName(GProtocolName simpname, RPRoleVariant variant)
 	{
 		//return simpname + "_" + getGeneratedActualRoleName(r);
-		return getGeneratedRoleVariantName(r);
+		return getGeneratedRoleVariantName(variant);
 	}
 	
 	public static String getGeneratedRoleVariantName(RPRoleVariant variant)
