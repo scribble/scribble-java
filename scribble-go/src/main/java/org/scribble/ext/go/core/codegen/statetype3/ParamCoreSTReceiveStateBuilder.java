@@ -38,8 +38,8 @@ public class ParamCoreSTReceiveStateBuilder extends STReceiveStateBuilder
 		}
 		EAction a = as.get(0);
 		
-		out += "\n\n";
-		out += this.rb.build(api, s, a);
+		/*out += "\n\n";
+		out += this.rb.build(api, s, a);*/
 
 		// FIXME: delegation 
 		if (!a.payload.elems.stream()

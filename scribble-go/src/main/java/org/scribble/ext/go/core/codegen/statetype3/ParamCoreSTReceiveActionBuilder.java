@@ -32,7 +32,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
-							+ i + " *[]" + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
+							+ i + " []" + ((ParamCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i)) //a.payload.elems.get(i)
 							).collect(Collectors.joining(", "));
 	}
 
@@ -47,16 +47,14 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		String sEpRecv = 
 				 ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 				+ "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+				+ ".Ept()"
 				+ "." + "Conn";//ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
-		String sEpProto =
+
+		/*String sEpProto =
 				//"s.ep.Proto"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
-		/*String sEpErr =
-				//"s.ep.Err"
-				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ERR;*/
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;*/
 
 		ParamRole r = (ParamRole) a.peer;
 		ParamRange g = r.ranges.iterator().next();
@@ -69,7 +67,7 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			else if (e instanceof ParamIndexVar)
 			{
 				return ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
-					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
+					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params()[\"" + e + "\"]";
 			}
 			else
 			{
@@ -122,16 +120,15 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					+ "}\n"
 					+ "*arg0 = reduceFn0(data)\n"
 				:
-					  //"data := make([]"
-					  "data := make(map[int]"
+					  /*"data := make(map[int]"
 								 + extName//a.payload.elems.get(0)
-					  		+ ", " + foo.apply(g.end) + ")\n"
-					+ "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
+					  		+ ", " + foo.apply(g.end) + ")\n"*/
+					 "for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
 
 							+ (a.mid.toString().equals("") ? "" :  // HACK
 								"var lab string\n"
 							+ "if err := " + sEpRecv
-									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+									+ "[\"" +  r.getName() + "\"][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
 									+ "&lab" + "); err != nil {\n"
@@ -142,23 +139,18 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 							+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK? for passthru?
 
 							+ "if err := " + sEpRecv
-									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
+									+ "[\"" + r.getName() + "\"][i]"
 									+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL
-									+ "(" //+ sEpProto + "." + r.getName() + ", "
-									//+ "&data[i-1]" 
+									+ "("
 									+ "&tmp"
 											+ "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
-							+ "data[i-1] = tmp\n"
+							+ "arg0[i-1] = tmp\n"
 							+ "}\n"
-					//+ "*arg0 = data\n");  // FIXME: arg0
-					
-					//+ "*arg0 = " + hackGetValues(extName) + "(data)\n";  // FIXME: arg0
 							
-					//+ ((!Stream.of("int", "string", "[]byte").collect(Collectors.toSet()).contains(extName)
-					//		? 
-						+ "f := func(m map[int] " + extName + ") []" + extName + " {\n"
+							
+						/*+ "f := func(m map[int] " + extName + ") []" + extName + " {\n"
 						+ "xs := make([]" + extName + ", len(m))\n"
 						+ "keys := make([]int, 0)\n"
 						+ "for k, _ := range m {\n"
@@ -170,7 +162,8 @@ public class ParamCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 						+ "}\n"
 						+ "return xs\n"
 						+ "}\n"
-						+ "*arg0 = f(data)\n");
+						+ "*arg0 = f(data)\n"*/
+						);
 					//	: "")
 			}
 				

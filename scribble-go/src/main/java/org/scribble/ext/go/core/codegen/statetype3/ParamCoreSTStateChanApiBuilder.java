@@ -162,7 +162,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		//Role r = this.actual.getName();
 
-		GProtocolName simpname = this.apigen.proto.getSimpleName();
+		//GProtocolName simpname = this.apigen.proto.getSimpleName();
 		String tname = this.getStateChanName(s);
 		////String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
 		//String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointTypeName(simpname, this.actual); 
@@ -198,17 +198,15 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " session.ParamEndpoint" + "\n"   // FIXME: factor out
 				+ "}\n";
 		
-		if (s.id == this.graph.init.id)
+		/*if (s.id == this.graph.init.id)
 		{
 			res += "\n"
-					/*+ "func (ep *" + epType + ") New" 
-							+ ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual) + "_1"  // cf. makeSTStateName*/
 					+ "func New" 
 							+ "(ep session.ParamEndpoint) *" + tname + " {\n"  // FIXME: factor out
 					+ "return &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
 							+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")}\n"
 					+ "}";
-		}
+		}*/
 
 		return res;
 	}
