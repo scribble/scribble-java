@@ -63,7 +63,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				+ "data[i] = *b[i].(*" + a.payload.elems.get(0) + ")\n"
 				+ "}\n"
 				+ "*arg0 = reduceFn0(data)\n";*/
-			throw new RuntimeException("[rp-core] TODO: -nocopy" + a);  // FIXME: currently missing from sender side?
+			throw new RuntimeException("[rp-core] TODO: -nocopy: " + a);  // FIXME: currently missing from sender side?
 		}
 		else
 		{
