@@ -24,7 +24,7 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
 		return RPCoreSTApiGenConstants.GO_CROSS_SPLIT_FUN_PREFIX + "_"
-				+ RPCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((RPCoreEAction) a).getPeer())
+				+ RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
 				+ "_" + a.mid;
 	}
 

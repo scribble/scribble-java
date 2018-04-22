@@ -24,7 +24,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	{
 		return //ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_"
 				  "Gather_"  // FIXME: make unary Receive special case
-				+ RPCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((RPCoreEAction) a).getPeer())
+				+ RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
 				+ "_" + a.mid;
 	}
 

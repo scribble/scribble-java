@@ -13,12 +13,9 @@ import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.ast.RPCoreDelegDecl;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
-import org.scribble.ext.go.core.model.endpoint.action.RPCoreEDotReceive;
-import org.scribble.ext.go.core.model.endpoint.action.RPCoreEDotSend;
-import org.scribble.ext.go.core.model.endpoint.action.RPCoreEMultiChoicesReceive;
-import org.scribble.ext.go.core.type.RPRoleVariant;
-import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
@@ -32,57 +29,16 @@ import org.scribble.type.name.PayloadElemType;
 public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 {
 	protected final RPCoreSTApiGenerator apigen;
-	public final RPRoleVariant actual;  // this.apigen.self.equals(this.actual.getName())
-	//public final EGraph graph;
+	public final RPRoleVariant variant;
 	
-	public final RPCoreSTReceiveActionBuilder vb;
+	//public final RPCoreSTReceiveActionBuilder vb;
 	
 	private int counter = 1;
+	private final Set<DataTypeDecl> dtds; // FIXME: use "main.getDataTypeDecl((DataType) pt);" instead -- cf. OutputSocketGenerator#addSendOpParams
 	
-	private final Set<DataTypeDecl> datats; // FIXME: use "main.getDataTypeDecl((DataType) pt);" instead -- cf. OutputSocketGenerator#addSendOpParams
-	
-	// FIXME: make ParamCoreEState
-	enum ParamCoreEStateKind { CROSS_SEND, CROSS_RECEIVE, DOT_SEND, DOT_RECEIVE, MULTICHOICES_RECEIVE, TERMINAL }
-	
-	protected static ParamCoreEStateKind getStateKind(EState s)
-	{
-		List<EAction> as = s.getActions();
-		if (as.isEmpty())
-		{
-			return ParamCoreEStateKind.TERMINAL;	
-		}
-		else if (as.stream().allMatch(a -> a instanceof RPCoreECrossSend))
-		{
-			return ParamCoreEStateKind.CROSS_SEND;
-		}
-		else if (as.stream().allMatch(a -> a instanceof RPCoreECrossReceive))
-		{
-			return ParamCoreEStateKind.CROSS_RECEIVE;
-		}
-		else if (as.stream().allMatch(a -> a instanceof RPCoreEDotSend))
-		{
-			return ParamCoreEStateKind.DOT_SEND;
-		}
-		else if (as.stream().allMatch(a -> a instanceof RPCoreEDotReceive))
-		{
-			return ParamCoreEStateKind.DOT_RECEIVE;
-		}
-		else if (as.stream().allMatch(a -> a instanceof RPCoreEMultiChoicesReceive))
-		{
-			return ParamCoreEStateKind.MULTICHOICES_RECEIVE;
-		}
-		else
-		{
-			throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
-		}
-	}
-	
-	
-	
-
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later
-	// actual.getName().equals(this.role)
-	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant actual, EGraph graph)
+	// Pre: variant.getName().equals(this.role)
+	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph)
 	{
 		super(apigen.job, apigen.proto, apigen.self, graph,
 				new RPCoreSTOutputStateBuilder(new RPCoreSTSplitActionBuilder(), new RPCoreSTSendActionBuilder()),
@@ -91,42 +47,40 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				null, //new GoSTCaseBuilder(new GoSTCaseActionBuilder()),
 				new RPCoreSTEndStateBuilder());
 
-		//throw new RuntimeException("[rp-core] TODO:");
 		this.apigen = apigen;
-		this.actual = actual;
+		this.variant = variant;
 		
-		this.vb = ((RPCoreSTReceiveStateBuilder) this.rb).vb;
+		//this.vb = ((RPCoreSTReceiveStateBuilder) this.rb).vb;
 		
-		this.datats = this.apigen.job.getContext().getMainModule().getNonProtocolDecls().stream()
+		this.dtds = this.apigen.job.getContext().getMainModule().getNonProtocolDecls().stream()
 				.filter(d -> (d instanceof DataTypeDecl)).map(d -> ((DataTypeDecl) d)).collect(Collectors.toSet());
 	}
 	
 	@Override
 	public Map<String, String> build()  // filepath -> source
 	{
-		Map<String, String> api = new HashMap<>();
+		Map<String, String> res = new HashMap<>();
 		Set<EState> states = new LinkedHashSet<>();
 		states.add(this.graph.init);
 		states.addAll(MState.getReachableStates(this.graph.init));
 		for (EState s : states)
 		{
-			switch (getStateKind(s))
+			switch (RPCoreSTStateChanApiBuilder.getStateKind(s))
 			{
-				case CROSS_SEND:      api.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
+				case CROSS_SEND: res.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
 				case CROSS_RECEIVE: 
 				{
 					if (s.getActions().size() > 1)
 					{
-						api.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
-						//api.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));  // FIXME: factor out
+						res.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
 					}
 					else
 					{
-						api.put(getFilePath(getStateChanName(s)), this.rb.build(this, s));
+						res.put(getFilePath(getStateChanName(s)), this.rb.build(this, s));
 					}
 					break;
 				}
-				case DOT_SEND:
+				/*case DOT_SEND:  // FIXME: CFSMs should have only !^1, ! and ?
 				{
 					throw new RuntimeException("[rp-core] TODO: " + s);
 				}
@@ -137,89 +91,70 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				case MULTICHOICES_RECEIVE:
 				{
 					throw new RuntimeException("[rp-core] TODO: " + s);
-				}
-				case TERMINAL:    api.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
-				default:          throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
+				}*/
+				case TERMINAL: res.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;
+				default: throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
 			}
 		}
-		return api;
+		return res;
 	}
 
 	@Override
 	public String getFilePath(String filename)
 	{
-		//throw new RuntimeException("[rp-core] TODO:");
 		if (filename.startsWith("_"))  // Cannot use "_" prefix, ignored by Go
 		{
 			filename = "$" + filename.substring(1);
 		}
 		return this.gpn.toString().replaceAll("\\.", "/") 
-				+ "/" + RPCoreSTApiGenerator.getGeneratedRoleVariantName(this.actual)
+				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant)  // State chans located with Endpoint Kind API
 				+ "/" + filename + ".go";
 	}
 	
 	protected String getStateChanPremable(EState s)
 	{
-		//Role r = this.actual.getName();
-
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
-		String tname = this.getStateChanName(s);
-		////String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
-		String epType = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, this.actual); 
+		String scTypeName = this.getStateChanName(s);
+		String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, this.variant); 
 		
 		String res =
-				  //this.apigen.generateRootPackageDecl() + "\n"
-				  "package " + RPCoreSTApiGenerator.getGeneratedRoleVariantName(this.actual) + "\n"
+				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
 				+ "\n"
 				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
-				//+ this.apigen.generateScribbleRuntimeImports() + "\n"
-				+ "import \"log\"\n"
 
-				/*+ (s.isTerminal() || ((GoJob) apigen.job).noCopy ? "" : 
-					Stream.of(ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_BYTES_PACKAGE, ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_GOB_PACKAGE)
-							.map(x -> "import \"" + x + "\"").collect(Collectors.joining("\n")))
-				+ "\n"*/
-				+ ((s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)  // FIXME: refactor into state builders
-						//? "import \"github.com/rhu1/scribble-go-runtime/test/util\"\n" : "")
-						? "import \"sort\"\n" : "")
+				// FIXME: error handling via Err field -- fallback should be panic
+				+ "import \"log\"\n"
 				
+				// FIXME: refactor into state-specific builders
 				+ ((s.getStateKind() == EStateKind.OUTPUT || s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 						? s.getActions().stream().flatMap(a -> a.payload.elems.stream()).collect(Collectors.toSet()).stream()
-								.map(p -> makeImportExtName((DataType) p))
-										.collect(Collectors.joining(""))
+								.map(p -> makeExtNameImport((DataType) p)).collect(Collectors.joining(""))
 						: "")
 
+				// FIXME: refactor into state-specific builders
 				+ ((s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
-						? "\nvar _ = sort.Sort\n" : "")
+						? "import \"sort\"\n\nvar _ = sort.Sort\n"
+						: "")
 
+				// State channel type
 				+ "\n"
-				+ "type " + tname + " struct {\n"
+				+ "type " + scTypeName + " struct {\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epType + "\n" 
-				//+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " session.ParamEndpoint" + "\n"   // FIXME: factor out
+				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
 				+ "}\n";
-		
-		/*if (s.id == this.graph.init.id)
-		{
-			res += "\n"
-					+ "func New" 
-							+ "(ep session.ParamEndpoint) *" + tname + " {\n"  // FIXME: factor out
-					+ "return &" + tname + " { " + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
-							+ ", " + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")}\n"
-					+ "}";
-		}*/
 
 		return res;
 	}
 
+  // Here because action builder hierarchy not suitable (extended by action kind, not by target language)
 	@Override
-	public String buildAction(STActionBuilder ab, EState curr, EAction a)  // Here because action builder hierarchy not suitable (extended by action kind, not by target language)
+	public String buildAction(STActionBuilder ab, EState curr, EAction a)
 	{
 		EState succ = curr.getSuccessor(a);
 		if (getStateKind(curr) == ParamCoreEStateKind.CROSS_RECEIVE && curr.getActions().size() > 1)
 		{
 			return
-						"func (" + RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+					  "func (" + RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
 								+ ab.buildArgs(this, a)
 								+ ") <-chan *" + ab.getReturnType(this, curr, succ) + " {\n"
@@ -228,9 +163,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		else
 		{
-			//throw new RuntimeException("[rp-core] TODO: ");
 			return
-						"func (" + RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+					  "func (" + RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
 								+ ab.buildArgs(this, a)
 								+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
@@ -241,35 +175,24 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 	}
 
+  // FIXME: refactor action builders as interfaces and use generic parameter for kind
 	@Override
-	public String buildActionReturn(STActionBuilder ab, EState curr, EState succ)  // FIXME: refactor action builders as interfaces and use generic parameter for kind
+	public String buildActionReturn(STActionBuilder ab, EState curr, EState succ)
 	{
-		//throw new RuntimeException("[rp-core] TODO: ");
-		String sEp = 
-				//"s.ep"
-				RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+		String sEp = RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 		String res = "";
-
-		/*if (succ.isTerminal())  // FIXME
-		{
-			res += sEp + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_FINISHPROTOCOL + "()\n";
-		}*/
-
 		res += "return " + getSuccStateChan(ab, curr, succ, sEp);
 		return res;
 	}
 
-	public String getSuccStateChan(STActionBuilder ab, EState curr, EState succ, String sEp)
+	protected String getSuccStateChan(STActionBuilder ab, EState curr, EState succ, String sEp)
 	{
 		if (getStateKind(succ) == ParamCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
-			return RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." +
-					"New"
-						//+ getStateChanName(succ)
-						+ ((succ.id != this.graph.init.id) ? getStateChanName(succ)
-								//: ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual) + "_1")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
-								: "Init")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
-					+ "()";
+			return RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
+					+ "NewInit()";  // For branch states (hacky?)
+					/*+ ((succ.id != this.graph.init.id) ? getStateChanName(succ) : "Init") // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
+					+ "()";*/
 		}
 		else
 		{
@@ -287,42 +210,20 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	@Override
 	public String getChannelName(STStateChanApiBuilder api, EAction a)  // Not used?
 	{
-		//throw new RuntimeException("[rp-core] TODO: ");
-		return
-				//"s.ep.Chans[s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + "]";
-				"s.ep.GetChan(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + ")";
+		throw new RuntimeException("[rp-core] Shouldn't get in here: " + a);
+		//return "s.ep.GetChan(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + ")";
 	}
-	
-	protected RPRoleVariant getSelf()
-	{
-		return (RPRoleVariant) this.getSelf();
-	}
-
-	/*public String getActualRoleName()
-	{
-		return this.apigen.self.toString();
-	}*/
-	
-
-
-	
-
-	/*@Override
-	public String getPackage()
-	{
-		//throw new RuntimeException("[rp-core] TODO:");
-		return this.gpn.getSimpleName().toString();
-	}*/
 	
 	@Override
 	protected String makeSTStateName(EState s)
 	{
 		return (s.isTerminal())
-				? makeEndStateName(this.apigen.proto.getSimpleName(), this.actual)
+				? makeEndStateName(this.apigen.proto.getSimpleName(), this.variant)
 				: (s.id == this.graph.init.id)
-						? "Init"  // FIXME: factor out
-						: //this.apigen.proto.getSimpleName() + "_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual) + "_" + this.counter++;
-							"State" + this.counter++;
+						? "Init"  // FIXME: factor out (makeInitStateName)
+						: //this.apigen.proto.getSimpleName() + "_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual) + "_"
+						  "State"
+								+ this.counter++;
 	}
 	
 	public static String makeEndStateName(GProtocolName simpname, RPRoleVariant r)
@@ -331,8 +232,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				RPCoreSTApiGenConstants.GO_SCHAN_END_TYPE;
 	}
 	
-	// Not actual roles; param roles in EFSM actions -- cf. ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName
-	public static String getGeneratedParamRoleName(RPIndexedRole r) 
+	// Not actual variants -- rather, indexed roles in EFSM actions -- cf. ParamCoreSTEndpointApiGenerator.getGeneratedRoleVariantName
+	public static String getGeneratedIndexedRoleName(RPIndexedRole r) 
 	{
 		//return r.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");
 		if (r.intervals.size() > 1)
@@ -346,22 +247,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	
 
-	public boolean isDelegType(DataType t)
+	protected boolean isDelegType(DataType t)
 	{
-		return this.datats.stream().filter(i -> i.getDeclName().equals(t)).iterator().next() instanceof RPCoreDelegDecl;  // FIXME: make a map
-	}
-	
-	protected String getExtName(DataType t)
-	{
-		return this.datats.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extName;  // FIXME: make a map
+		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next() instanceof RPCoreDelegDecl;  // FIXME: make a map
 	}
 
-	protected String getExtSource(DataType t)
-	{
-		return this.datats.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extSource;  // FIXME: make a map
-	}
-
-	private String makeImportExtName(DataType t)
+	protected String makeExtNameImport(DataType t)
 	{
 		String extName = getExtName(t);
 		switch (extName)
@@ -385,8 +276,16 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 	}
 	
+	private String getExtName(DataType t)
+	{
+		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extName;  // FIXME: make a map
+	}
 
-
+	private String getExtSource(DataType t)
+	{
+		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extSource;  // FIXME: make a map
+	}
+	
 	protected String batesHack(PayloadElemType<?> t)
 	{
 		/*String tmp = t.toString();
@@ -414,5 +313,73 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			}
 		}
 	}
+	
+	
+	
+	
+	
+	
+	// FIXME: make a ParamCoreEState
+	protected enum ParamCoreEStateKind { CROSS_SEND, CROSS_RECEIVE, DOT_SEND, DOT_RECEIVE, MULTICHOICES_RECEIVE, TERMINAL }
+	
+	protected static ParamCoreEStateKind getStateKind(EState s)
+	{
+		List<EAction> as = s.getActions();
+		if (as.isEmpty())
+		{
+			return ParamCoreEStateKind.TERMINAL;	
+		}
+		else if (as.stream().allMatch(a -> a instanceof RPCoreECrossSend))
+		{
+			return ParamCoreEStateKind.CROSS_SEND;
+		}
+		else if (as.stream().allMatch(a -> a instanceof RPCoreECrossReceive))
+		{
+			return ParamCoreEStateKind.CROSS_RECEIVE;
+		}
+		/*else if (as.stream().allMatch(a -> a instanceof RPCoreEDotSend))  // FIXME: CFSMs should have only !^1, ! and ?
+		{
+			return ParamCoreEStateKind.DOT_SEND;
+		}
+		else if (as.stream().allMatch(a -> a instanceof RPCoreEDotReceive))
+		{
+			return ParamCoreEStateKind.DOT_RECEIVE;
+		}
+		else if (as.stream().allMatch(a -> a instanceof RPCoreEMultiChoicesReceive))
+		{
+			return ParamCoreEStateKind.MULTICHOICES_RECEIVE;
+		}*/
+		else
+		{
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
+		}
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*@Override
+	public String getPackage()
+	{
+		//throw new RuntimeException("[rp-core] TODO:");
+		return this.gpn.getSimpleName().toString();
+	}*/
+	
+	/*public String getActualRoleName()
+	{
+		return this.apigen.self.toString();
+	}*/
+	
+	/*protected RPRoleVariant getSelf()
+	{
+		return (RPRoleVariant) this.getSelf();
+	}*/
 }
 

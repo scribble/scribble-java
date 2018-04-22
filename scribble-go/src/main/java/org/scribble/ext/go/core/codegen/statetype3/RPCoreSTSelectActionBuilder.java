@@ -37,7 +37,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
 		return RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_"
-				+ RPCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((RPCoreEAction) a).getPeer())
+				+ RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
 				+ "_" + a.mid;
 	}
 

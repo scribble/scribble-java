@@ -33,7 +33,7 @@ public class RPCoreSTSessionApiBuilder
 		Module mod = this.apigen.job.getContext().getModule(this.apigen.proto.getPrefix());
 		ProtocolDecl<Global> gpd = mod.getProtocolDecl(this.apigen.proto.getSimpleName());
 		String basedir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
-		Map<String, String> res = new HashMap<>();
+		Map<String, String> res = new HashMap<>();  // filepath -> source
 		buildProtocolApi(gpd, basedir, res);
 		buildEndpointKindApi(gpd, basedir, res);
 		return res;
@@ -116,7 +116,7 @@ public class RPCoreSTSessionApiBuilder
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		List<Role> roles = gpd.header.roledecls.getRoles();
 
-		String epkindFile = "\n"  // Package decl done later (per variant)
+		String epkindImports = "\n"  // Package decl done later (per variant)
 				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
 				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
 		
@@ -136,14 +136,14 @@ public class RPCoreSTSessionApiBuilder
 				}
 						// FIXME: get index vars from protocol body -- index var decls in sig now deprecated
 				
-				epkindFile += "\n"
+				String epkindFile = epkindImports + "\n"
 						
 						// Endpoint Kind type
 						+ "type " + epkindTypeName + " struct {\n"
 						+ RPCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " session.Protocol\n"
 						+ "Self int\n"
 						+ "*session.LinearResource\n"
-						+ "Ept *" + RPCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
+						+ RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + " *" + RPCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
 						+ "Params map[string]int\n"
 						+ "}\n"
 
@@ -159,23 +159,24 @@ public class RPCoreSTSessionApiBuilder
 
 						// Dial/Accept methdos -- FIXME: internalise peers
 						+ "\n"
-						+ "func (ini *" + epkindTypeName + ") Accept(rolename string, id int, acceptor transport.Transport) error {\n"
-						+ "ini.Ept.Conn[rolename][id] = acceptor.Accept()\n"
+						+ "func (ini *" + epkindTypeName + ") Accept(rolename string, id int, acc transport.Transport) error {\n"
+						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".Conn[rolename][id] = acc.Accept()\n"
 						+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 						+ "}\n"
 						+ "\n"
-						+ "func (ini *" + epkindTypeName + ") Dial(rolename string, id int, requestor transport.Transport) error {\n"
-						+ "ini.Ept.Conn[rolename][id] = requestor.Connect()\n"
+						+ "func (ini *" + epkindTypeName + ") Dial(rolename string, id int, req transport.Transport) error {\n"
+						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".Conn[rolename][id] = req.Connect()\n"
 						+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 						+ "}\n";
 						
 					epkindFile += "\n"
 							+ "func (ini *" + epkindTypeName + ") Run(f func(*Init) End) *End {\n"  // f specifies non-pointer End
 							+ "ini.Use()\n"  // FIXME: int-counter linearity
-							+ "ini.Ept.CheckConnection()\n"
+							+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".CheckConnection()\n"
 							+ ((this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)  // FIXME: type-switch?
-									? "return f(ini.NewInit())\n"
-									: "return f(&Init{ new(session.LinearResource), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+									? "end := f(ini.NewInit())\n"
+									: "end := f(&Init{ new(session.LinearResource), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+							+ "return &end\n"
 							+ "}";
 				
 					res.put(basedir + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "/" + RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant) + ".go",

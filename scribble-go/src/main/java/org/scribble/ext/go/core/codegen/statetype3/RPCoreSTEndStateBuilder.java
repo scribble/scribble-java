@@ -21,18 +21,15 @@ public class RPCoreSTEndStateBuilder extends STEndStateBuilder
 	public String getPreamble(STStateChanApiBuilder api, EState s)
 	{
 		RPCoreSTStateChanApiBuilder schangen = (RPCoreSTStateChanApiBuilder) api;
-		//return GSTStateChanAPIBuilder.getStateChanPremable(api, s);
-		String tname = api.getStateChanName(s);
+		String scTypeName = api.getStateChanName(s);
 		String res =
-				  //schangen.apigen.generateRootPackageDecl() + "\n"
-				  "package " + RPCoreSTApiGenerator.getGeneratedRoleVariantName(((RPCoreSTStateChanApiBuilder) api).actual) + "\n"
+				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(((RPCoreSTStateChanApiBuilder) api).variant) + "\n"
 				+ "\n"
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
 				+ "\n"
-				+ "type " + tname + " struct {\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-						+ " *" + RPCoreSTApiGenerator.getEndpointKindTypeName(api.gpn.getSimpleName(), schangen.actual) + "\n"  // FIXME: factor out
-						//+ " session.ParamEndpoint" + "\n"  // FIXME: factor out
+				+ "type " + scTypeName + " struct {\n"
+				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *"
+						+ RPCoreSTApiGenerator.getEndpointKindTypeName(api.gpn.getSimpleName(), schangen.variant) + "\n"  // FIXME: factor out
 				+ "}";
 		return res;  // No LinearResource
 	}

@@ -20,7 +20,7 @@ public class RPCoreSTApiGenConstants
 	public static final String GO_ENDPOINT_FINISHPROTOCOL = "FinishProtocol";
 	public static final String GO_ENDPOINT_FINALISE = "Finalise";
 	//public static final String GO_ENDPOINT_ENDPOINT = "Endpoint";
-	public static final String GO_ENDPOINT_ENDPOINT = "ept";
+	public static final String GO_ENDPOINT_ENDPOINT = "Ept";
 
 	public static final String GO_FINALISER_TYPE = "session.Finaliser";  // net.MPSTEndpoint;
 	
@@ -32,7 +32,7 @@ public class RPCoreSTApiGenConstants
 	public static final String GO_LINEARRESOURCE_TYPE = "session.LinearResource";  // net.LinearResource
 	public static final String GO_LINEARRESOURCE_USE = "Use";  // net.LinearResource
 
-	public static final String GO_SCHAN_ENDPOINT       = "Ept";  // ep;
+	public static final String GO_SCHAN_ENDPOINT       = "EpKind";  // ep;
 	public static final String GO_SCHAN_LINEARRESOURCE = "Res";  // state
 
 	public static final String GO_SCHAN_END_TYPE = "End";

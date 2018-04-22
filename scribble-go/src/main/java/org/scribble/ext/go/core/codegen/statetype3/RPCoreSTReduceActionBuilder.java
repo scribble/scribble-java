@@ -25,7 +25,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 	{
 		//return ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_"
 		return RPCoreSTApiGenConstants.GO_CROSS_REDUCE_FUN_PREFIX + "_"
-				+ RPCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((RPCoreEAction) a).getPeer())
+				+ RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
 				+ "_" + a.mid;
 	}
 

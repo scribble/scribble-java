@@ -25,7 +25,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 	{
 		return //ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_PREFIX + "_"
 				  "Scatter_"  // FIXME: make unary Send special case
-				+ RPCoreSTStateChanApiBuilder.getGeneratedParamRoleName(((RPCoreEAction) a).getPeer())
+				+ RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
 				+ "_" + a.mid;
 	}
 

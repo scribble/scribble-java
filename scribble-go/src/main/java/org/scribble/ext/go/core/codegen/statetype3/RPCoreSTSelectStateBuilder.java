@@ -28,7 +28,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 	@Override
 	public String getPreamble(STStateChanApiBuilder api, EState s)
 	{
-		RPRoleVariant actual = ((RPCoreSTStateChanApiBuilder) api).actual;
+		RPRoleVariant actual = ((RPCoreSTStateChanApiBuilder) api).variant;
 
 		String sEpRecv = 
 				 RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
@@ -47,7 +47,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 		GProtocolName simpname = apigen.apigen.proto.getSimpleName();
 		String tname = apigen.getStateChanName(s);
 		//String epType = ParamCoreSTEndpointApiGenerator.getGeneratedEndpointType(simpname, r); 
-		String epType = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, apigen.actual); 
+		String epType = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, apigen.variant); 
 		String res =
 				  //apigen.apigen.generateRootPackageDecl() + "\n"
 				  "package " + RPCoreSTApiGenerator.getGeneratedRoleVariantName(actual) + "\n"
