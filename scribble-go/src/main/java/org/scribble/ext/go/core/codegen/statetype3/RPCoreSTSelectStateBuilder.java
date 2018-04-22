@@ -31,7 +31,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 		RPRoleVariant actual = ((RPCoreSTStateChanApiBuilder) api).variant;
 
 		String sEpRecv = 
-				 RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
 				+ ".Ept";
@@ -72,10 +72,10 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 				+ "}\n";
 
 		res += "\n"
-				+ "func (ep *" + epType + ") New" 
-						+ ((s.id != api.graph.init.id) ? tname
+				+ "func (ep *" + epType + ") NewBranchInit" 
+						/*+ ((s.id != api.graph.init.id) ? tname
 								//: ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(actual) + "_1")  // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
-								: "Init")
+								: "Init")*/
 						+ "() *" + tname + " {\n"  // FIXME: factor out
 				+ "s := &" + tname + " { " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep"
 						+ ", " + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
@@ -109,7 +109,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 			}
 			else if (e instanceof RPIndexVar)
 			{
-				return RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+				return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
 					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
 			}
 			else

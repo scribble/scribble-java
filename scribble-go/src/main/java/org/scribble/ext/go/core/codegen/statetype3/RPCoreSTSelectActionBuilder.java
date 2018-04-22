@@ -45,7 +45,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
+					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG
 							+ i + " *" + a.payload.elems.get(i)
 							//+ ", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " []int) int"  // No: singleton choice subj (not multichoices)
 							).collect(Collectors.joining(", "));
@@ -89,7 +89,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 			}
 			else if (e instanceof RPIndexVar)
 			{
-				return RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+				return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
 					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
 			}
 			else
@@ -98,7 +98,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 			}
 		};
 		String sEpRecv = 
-				 RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
 				+ ".Ept";
@@ -109,7 +109,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 					+ ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_PROTO;*/
 		
 		RPCoreSTStateChanApiBuilder apigen = (RPCoreSTStateChanApiBuilder) api;
-		String sEp = RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 
 			if (!a.payload.elems.isEmpty())
 			{

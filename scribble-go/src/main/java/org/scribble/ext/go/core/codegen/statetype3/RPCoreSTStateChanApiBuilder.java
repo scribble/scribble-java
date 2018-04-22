@@ -16,6 +16,9 @@ import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexInt;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
@@ -154,7 +157,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		if (getStateKind(curr) == ParamCoreEStateKind.CROSS_RECEIVE && curr.getActions().size() > 1)
 		{
 			return
-					  "func (" + RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+					  "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
 								+ ab.buildArgs(this, a)
 								+ ") <-chan *" + ab.getReturnType(this, curr, succ) + " {\n"
@@ -164,11 +167,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		else
 		{
 			return
-					  "func (" + RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+					  "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
 								+ ab.buildArgs(this, a)
 								+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
-					+ RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+					+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 							+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
 					+ ab.buildBody(this, curr, a, succ) + "\n"
 					+ "}";
@@ -179,7 +182,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	@Override
 	public String buildActionReturn(STActionBuilder ab, EState curr, EState succ)
 	{
-		String sEp = RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 		String res = "";
 		res += "return " + getSuccStateChan(ab, curr, succ, sEp);
 		return res;
@@ -189,8 +192,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		if (getStateKind(succ) == ParamCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
-			return RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
-					+ "NewInit()";  // For branch states (hacky?)
+			return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
+					+ "NewBranchInit()";  // For branch states (hacky?)  // FIXME: factor out with RPCoreSTSessionApiBuilder and RPCoreSTSelectStateBuilder#getPreamble
 					/*+ ((succ.id != this.graph.init.id) ? getStateChanName(succ) : "Init") // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
 					+ "()";*/
 		}
@@ -244,6 +247,23 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return r.getName() + "_" + g.start + "To" + g.end;
 	}
 	
+	public static String generateIndexExpr(RPIndexExpr e)
+	{
+		if (e instanceof RPIndexInt)
+		{
+			return e.toString();
+		}
+		else if (e instanceof RPIndexVar)
+		{
+			return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+					+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_PARAMS + "[\"" + e + "\"]";
+		}
+		else
+		{
+			throw new RuntimeException("[param-core] TODO: " + e);
+		}
+	}
+
 	
 	
 
@@ -286,6 +306,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extSource;  // FIXME: make a map
 	}
 	
+	// FIXME: deprecate?  array/slice types now handled via ext names?
 	protected String batesHack(PayloadElemType<?> t)
 	{
 		/*String tmp = t.toString();

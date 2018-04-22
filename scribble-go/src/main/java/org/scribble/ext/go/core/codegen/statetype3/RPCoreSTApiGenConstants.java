@@ -21,6 +21,9 @@ public class RPCoreSTApiGenConstants
 	public static final String GO_ENDPOINT_FINALISE = "Finalise";
 	//public static final String GO_ENDPOINT_ENDPOINT = "Endpoint";
 	public static final String GO_ENDPOINT_ENDPOINT = "Ept";
+	public static final String GO_ENDPOINT_PARAMS = "Params";
+
+	public static final String GO_CONNECTION_MAP = "Conn";
 
 	public static final String GO_FINALISER_TYPE = "session.Finaliser";  // net.MPSTEndpoint;
 	
@@ -32,18 +35,20 @@ public class RPCoreSTApiGenConstants
 	public static final String GO_LINEARRESOURCE_TYPE = "session.LinearResource";  // net.LinearResource
 	public static final String GO_LINEARRESOURCE_USE = "Use";  // net.LinearResource
 
-	public static final String GO_SCHAN_ENDPOINT       = "EpKind";  // ep;
+	public static final String GO_SCHAN_ENDPOINT       = "Ept";  // ep;
 	public static final String GO_SCHAN_LINEARRESOURCE = "Res";  // state
 
 	public static final String GO_SCHAN_END_TYPE = "End";
 	
-	public static final String GO_IO_FUN_RECEIVER = "s";
+	public static final String GO_IO_METHOD_RECEIVER = "s";
 	
 	public static final String GO_CROSS_SPLIT_FUN_PREFIX = "Split";
 	public static final String GO_CROSS_SEND_FUN_PREFIX = "Send";
-	public static final String GO_CROSS_SEND_FUN_ARG = "arg";
+	public static final String GO_CROSS_SEND_METHOD_ARG = "arg";
 	public static final String GO_CROSS_REDUCE_FUN_PREFIX = "Reduce";
 	public static final String GO_CROSS_RECEIVE_FUN_PREFIX = "Recv";
-	public static final String GO_CROSS_RECEIVE_FUN_ARG = "arg";
+	public static final String GO_CROSS_RECEIVE_METHOD_ARG = "arg";
 	
+	public static final String RP_SCATTER_METHOD_PREFIX = "Scatter";
+	public static final String RP_GATHER_METHOD_PREFIX = "Gather";
 }

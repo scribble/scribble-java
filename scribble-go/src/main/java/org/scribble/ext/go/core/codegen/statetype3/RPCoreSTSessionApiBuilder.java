@@ -100,7 +100,7 @@ public class RPCoreSTSessionApiBuilder
 							// Endpoint Kind constructor -- makes index var value maps
 							return "func (p *" + simpname + ") New" + "_" + epkindTypeName
 									+ "(" + ivars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
-									+ "(*_" + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant) + "." + epkindTypeName + ") {\n"
+									+ " *_" + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant) + "." + epkindTypeName + " {\n"
 									+ "params := make(map[string]int)\n"
 									+ decls.iterator().next().params.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
 									+ "return _" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + ".New" + "(p, params, self)\n"
@@ -149,7 +149,7 @@ public class RPCoreSTSessionApiBuilder
 
 						// Endpoint Kind type constructor -- makes connection maps
 						+ "\n"
-						+ "func New(p session.Protocol, params map[string]int, self int) *" + epkindTypeName + "{\n"
+						+ "func New(p session.Protocol, params map[string]int, self int) *" + epkindTypeName + " {\n"
 						+ "conns := make(map[string]map[int]transport.Channel)\n"
 						+ this.apigen.variants.entrySet().stream()
 								.map(e -> "conns[\"" + e.getKey().getLastElement() + "\"] = " + "make(map[int]transport.Channel)\n")
@@ -160,12 +160,12 @@ public class RPCoreSTSessionApiBuilder
 						// Dial/Accept methdos -- FIXME: internalise peers
 						+ "\n"
 						+ "func (ini *" + epkindTypeName + ") Accept(rolename string, id int, acc transport.Transport) error {\n"
-						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".Conn[rolename][id] = acc.Accept()\n"
+						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[rolename][id] = acc.Accept()\n"
 						+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 						+ "}\n"
 						+ "\n"
 						+ "func (ini *" + epkindTypeName + ") Dial(rolename string, id int, req transport.Transport) error {\n"
-						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".Conn[rolename][id] = req.Connect()\n"
+						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[rolename][id] = req.Connect()\n"
 						+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 						+ "}\n";
 						
@@ -174,7 +174,7 @@ public class RPCoreSTSessionApiBuilder
 							+ "ini.Use()\n"  // FIXME: int-counter linearity
 							+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".CheckConnection()\n"
 							+ ((this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)  // FIXME: type-switch?
-									? "end := f(ini.NewInit())\n"
+									? "end := f(ini.NewBranchInit())\n"  // FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble
 									: "end := f(&Init{ new(session.LinearResource), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 							+ "return &end\n"
 							+ "}";

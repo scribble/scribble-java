@@ -34,12 +34,12 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 	{
 		DataType[] pet = new DataType[1];
 		return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_ARG
+					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG
 							+ i + " *" + ((RPCoreSTStateChanApiBuilder) apigen).batesHack(pet[0] = (DataType) a.payload.elems.get(i)) //a.payload.elems.get(i)
 
 							// HACK
 							+ ((((RPCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0])) ? "" :
-								", reduceFn" + i + " func(" + RPCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i
+								", reduceFn" + i + " func(" + RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + i
 									//+ " []" + a.payload.elems.get(i) + ") " + a.payload.elems.get(i)
 									+ " []" 
 									
@@ -62,13 +62,13 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 		}
 
 		String sEpRecv = 
-				 RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
+				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
 				+ "." + "Conn";//ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
 		String sEpProto =
 				//"s.ep.Proto"
-				RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+				RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
 					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
 		/*String sEpErr =
 				//"s.ep.Err"
@@ -85,7 +85,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 			}
 			else if (e instanceof RPIndexVar)
 			{
-				return RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+				return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
 					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
 			}
 			else

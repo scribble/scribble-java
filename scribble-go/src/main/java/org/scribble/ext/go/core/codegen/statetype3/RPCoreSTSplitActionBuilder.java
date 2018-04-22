@@ -33,14 +33,14 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 	{
 		DataType[] pet = new DataType[1];
 		return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG
+					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG
 							+ i + " "
 							
 											// HACK
 									+ ((((RPCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0] = ((DataType) a.payload.elems.get(i)))) ? "*" : "")
 									+ ((RPCoreSTStateChanApiBuilder) apigen).batesHack(pet[0]) //a.payload.elems.get(i)
 
-							+ ", splitFn" + i + " func(" + RPCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " "
+							+ ", splitFn" + i + " func(" + RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + i + " "
 
 											// HACK
 									+ ((((RPCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0])) ? "*" : "")
@@ -71,13 +71,13 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 
 		String sEpWrite = 
 				//s.ep.Write
-				 RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				 		+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
 						//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL;
 						+ ".Conn";
 		String sEpProto =
 				//"s.ep.Proto"
-				RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+				RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
 					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
 		/*String sEpErr =
 				//"s.ep.Err"
@@ -94,7 +94,7 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 			}
 			else if (e instanceof RPIndexVar)
 			{
-				return RPCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
+				return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
 					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
 			}
 			else
