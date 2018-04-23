@@ -169,14 +169,16 @@ public class RPCoreSTSessionApiBuilder
 						+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 						+ "}\n";
 						
+					// Top-level Run method
 					epkindFile += "\n"
 							+ "func (ini *" + epkindTypeName + ") Run(f func(*Init) End) *End {\n"  // f specifies non-pointer End
 							+ "ini.Use()\n"  // FIXME: int-counter linearity
 							+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".CheckConnection()\n"
 							
 							// FIXME: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
+							// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
 							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
-									? "end := f(ini.NewBranchInit())\n"  // FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble
+									? "end := f(ini.NewBranchInit())\n"
 									: "end := f(&Init{ new(session.LinearResource), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 
 							+ "return &end\n"
