@@ -174,7 +174,7 @@ tokens
 
 
 	PARAM_BININDEXEXPR               = 'PARAM_BININDEXEXPR';  // FIXME: rename bin part
-	PARAM_ROLEDECL                   = 'PARAM_ROLEDECL';
+	//PARAM_ROLEDECL                   = 'PARAM_ROLEDECL';
 	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
 	PARAM_GLOBALDOTMESSAGETRANSFER   = 'PARAM_GLOBALDOTMESSAGETRANSFER';
 	PARAM_GLOBALCHOICE               = 'PARAM_GLOBALCHOICE';
@@ -599,10 +599,10 @@ roledecl:
 ->
 	^(ROLEDECL rolename)
 	
-|
+/*|
 	ROLE_KW rolename '(' simplename (',' simplename)* ')'
 ->
-	^(PARAM_ROLEDECL rolename simplename+)
+	^(PARAM_ROLEDECL rolename simplename+)*/
 ;
 
 parameterdecllist:
@@ -688,24 +688,15 @@ globalmessagetransfer:
 	^(GLOBALMESSAGETRANSFER message rolename rolename+)
 
 |
-	message FROM_KW rolename '[' paramindexexpr '..' paramindexexpr ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
+	message FROM_KW rolename '[' paramindexexpr ',' paramindexexpr ']' TO_KW rolename '[' paramindexexpr ',' paramindexexpr ']' ';'
 ->
 	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)
-|
+/*|
 	message DOT_KW rolename '[' paramindexexpr '..' paramindexexpr ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
 ->
-	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)
+	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)*/
 ;
 
-/*|
-	message FROM_KW rolename '[' simplename '..' simplename ']' TO_KW rolename '[' simplename '..' simplename ']' ';'
-->
-	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename simplename simplename simplename simplename)
-|
-	message DOT_KW rolename '[' simplename '..' simplename ']' TO_KW rolename '[' simplename '..' simplename ']' ';'
-->
-	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename simplename simplename simplename simplename)
-;*/
 	
 paramindexexpr:
 	unaryparamindexexpr (op=('+' | '-' | '*') unaryparamindexexpr)?

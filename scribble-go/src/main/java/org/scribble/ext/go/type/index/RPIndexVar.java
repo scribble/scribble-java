@@ -6,7 +6,7 @@ import java.util.Set;
 import org.scribble.ext.go.type.name.RPRoleParam;
 
 // Variable occurrence
-public class RPIndexVar extends RPIndexExpr
+public class RPIndexVar extends RPIndexExpr  // FIXME: extend AbstractName?  cf. Role -- e.g., for compatibility with NameCollector
 {
 	public final String name; 
 

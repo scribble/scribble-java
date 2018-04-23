@@ -70,6 +70,7 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 		return mt;
 	}
 
+	// FIXME: deprecate -- pipe/pair instead
 	@Override
 	public RPGDotMessageTransfer ParamGDotMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest,
 			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd)
@@ -89,6 +90,7 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 		return gc;
 	}
 
+	// FIXME: deprecate -- explicit foreach instead
 	@Override
 	public RPGMultiChoices ParamGMultiChoices(CommonTree source, RoleNode subj, RPIndexVar var,
 			RPIndexExpr start, RPIndexExpr end, List<GProtocolBlock> blocks)
@@ -98,6 +100,7 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 		return gc;
 	}
 	
+	// FIXME: deprecate -- explicit foreach instead
 	@Override
 	public RPGMultiChoicesTransfer ParamGMultiChoicesTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
 			RPIndexVar var, RPIndexExpr destRangeStart, RPIndexExpr destRangeEnd)
@@ -138,4 +141,10 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 		return dtd;
 	}
 
+
+	@Override
+	protected RPDel createDefaultDelegate()
+	{
+		return new RPDefaultDel();
+	}
 }

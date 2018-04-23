@@ -34,6 +34,7 @@ public class RPAntlrRoleDecl
 		return (CommonTree) root.getChild(NAME_CHILD_INDEX);
 	}
 
+	// FIXME: deprecate
 	public static List<CommonTree> getParamChildren(CommonTree root)
 	{
 		List<?> children = root.getChildren();

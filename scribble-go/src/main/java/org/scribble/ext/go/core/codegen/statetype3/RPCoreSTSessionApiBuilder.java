@@ -10,7 +10,9 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ext.go.ast.RPRoleDecl;
 import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
@@ -79,34 +81,36 @@ public class RPCoreSTSessionApiBuilder
 				+ "return &" + simpname + "{ }\n"
 				+ "}\n";
 
-		protoFile += "\n" +
-				rolenames.stream().map(rname ->
+		for (Role rname : rolenames)
+		{
+			for (RPRoleVariant variant : this.apigen.variants.get(rname).keySet())
+			{
+				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
+				RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
+				try
 				{
-					Set<RPRoleVariant> variants = this.apigen.variants.get(rname).keySet();
-					return
-						variants.stream().map(variant -> 
-						{
-							String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
-							List<RPRoleDecl> decls = 
-									gpd.getHeader().roledecls.getDecls().stream().filter(rd -> rd.getDeclName().equals(variant.getName()))
-											.map(rd -> (RPRoleDecl) rd).collect(Collectors.toList());
-							if (decls.size() > 1)
-							{
-								throw new RuntimeException("Shouldn't get in here: " + variant);
-							}
-							List<RPIndexVar> ivars = decls.stream().flatMap(d -> d.params.stream()).collect(Collectors.toList());
-									// FIXME: get index vars from protocol body -- index var decls in sig now deprecated
-									
-							// Endpoint Kind constructor -- makes index var value maps
-							return "func (p *" + simpname + ") New" + "_" + epkindTypeName
-									+ "(" + ivars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
-									+ " *_" + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant) + "." + epkindTypeName + " {\n"
-									+ "params := make(map[string]int)\n"
-									+ decls.iterator().next().params.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
-									+ "return _" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + ".New" + "(p, params, self)\n"
-									+ "}\n";
-						}).collect(Collectors.joining(""));
-				}).collect(Collectors.joining("\n"));
+					gpd.accept(coll);
+				}
+				catch (ScribbleException e)
+				{
+					throw new RuntimeException("[rp-core] Shouldn't get in here: ", e);
+				}
+				List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());
+						
+				// Endpoint Kind constructor -- makes index var value maps
+				String tmp = "func (p *" + simpname + ") New" + "_" + epkindTypeName
+						+ "(" + ivars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
+						+ " *_" + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant) + "." + epkindTypeName + " {\n"
+						+ "params := make(map[string]int)\n"
+						//+ decls.iterator().next().params
+						+ ivars
+								.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
+						+ "return _" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + ".New" + "(p, params, self)\n"
+						+ "}\n";
+				
+				protoFile += "\n" + tmp;
+			}
+		}
 
 		res.put(basedir + simpname + ".go", protoFile);
 	}
