@@ -5,13 +5,10 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.RoleDecl;
-import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.RPAstFactory;
-import org.scribble.ext.go.type.index.RPIndexFactory;
-import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.parser.scribble.AntlrToScribParser;
-import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 
+@Deprecated
 public class RPAntlrRoleDecl
 {
 	// Same as original
@@ -21,12 +18,13 @@ public class RPAntlrRoleDecl
 
 	public static RoleDecl parseParamRoleDecl(AntlrToScribParser parser, CommonTree root, RPAstFactory af)
 	{
-		RoleNode name = AntlrSimpleName.toRoleNode(getNameChild(root), af);
+		/*RoleNode name = AntlrSimpleName.toRoleNode(getNameChild(root), af);
 		/*List<ParamRoleParamNode> params = getParamChildren(root)
-				.stream().map(p -> ParamAntlrSimpleName.toParamRoleParamNode(p, af)).collect(Collectors.toList());*/
+				.stream().map(p -> ParamAntlrSimpleName.toParamRoleParamNode(p, af)).collect(Collectors.toList());* /
 		List<RPIndexVar> params = getParamChildren(root)
 				.stream().map(p -> RPIndexFactory.ParamIntVar(p.getText())).collect(Collectors.toList());
-		return af.ParamRoleDecl(root, name, params);
+		return af.ParamRoleDecl(root, name, params);*/
+		return null;
 	}
 
 	public static CommonTree getNameChild(CommonTree root)

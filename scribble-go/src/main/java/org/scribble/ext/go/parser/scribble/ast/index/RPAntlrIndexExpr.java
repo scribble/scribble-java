@@ -33,18 +33,9 @@ public class RPAntlrIndexExpr
 			}
 			default:
 			{
-				if (isInteger(type))
-				{
-					return RPIndexFactory.ParamIntVal(Integer.parseInt(type));
-				}
-				else
-				{
-					if (!type.equals(type.toUpperCase()))
-					{
-						throw new RuntimeException("[param] Index variables must be uppercase for Go accessibility: " + type);  // FIXME: return proper parsing error
-					}
-					return RPIndexFactory.ParamIntVar(type);
-				}
+				return isInteger(type)
+						? RPIndexFactory.ParamIntVal(Integer.parseInt(type))
+						: RPIndexFactory.ParamIntVar(type);
 			}
 		}
 	}

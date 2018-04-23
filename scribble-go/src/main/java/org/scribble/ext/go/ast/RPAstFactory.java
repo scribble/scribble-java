@@ -20,8 +20,8 @@ import org.scribble.ext.go.type.index.RPIndexVar;
 
 public interface RPAstFactory extends AstFactory
 {
-	//ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamRoleParamNode> params);
-	RPRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<RPIndexVar> params);
+	////ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamRoleParamNode> params);
+	//RPRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<RPIndexVar> params);
 
 	RPGCrossMessageTransfer ParamGCrossMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest, 
 			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd);

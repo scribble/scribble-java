@@ -16,6 +16,11 @@ public class RPIndexFactory
 
 	public static RPIndexVar ParamIntVar(String text)
 	{
+		char c = text.charAt(0);
+		if (c < 'A' || c > 'Z')
+		{
+			throw new RuntimeException("[param] Index variables must be uppercase for Go accessibility: " + text);  // FIXME: return proper parsing error
+		}
 		return new RPIndexVar(text);
 	}
 }

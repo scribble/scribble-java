@@ -5,10 +5,10 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
+import org.scribble.ast.RoleDecl;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.RoleDeclDel;
 import org.scribble.ext.go.ast.global.RPGChoice;
 import org.scribble.ext.go.ast.global.RPGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
@@ -39,25 +39,25 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 	
 	// Returning new node classes in place of existing -- FIXME: do for GMessageTransfer and GChoice
 
-	@Override
+	/*@Override
 	public RPRoleDecl RoleDecl(CommonTree source, RoleNode namenode)
 	{
 		RPRoleDecl rd = new RPRoleDecl(source, namenode);
 		rd = del(rd, new RoleDeclDel());
 		return rd;
-	}
+	}*/
 
 
 	// Explicitly creating new Assrt nodes
 
-	@Override
+	/*@Override
 	//public ParamRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<ParamRoleParamNode> params)
 	public RPRoleDecl ParamRoleDecl(CommonTree source, RoleNode namenode, List<RPIndexVar> params)
 	{
 		RPRoleDecl rd = new RPRoleDecl(source, namenode, params);
 		rd = del(rd, new RoleDeclDel());
 		return rd;
-	}
+	}*/
 
 	@Override
 	public RPGCrossMessageTransfer ParamGCrossMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest,
@@ -146,5 +146,20 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 	protected RPDel createDefaultDelegate()
 	{
 		return new RPDefaultDel();
+	}
+	
+	
+	
+	// Extra parsing checks
+
+	@Override
+	public RoleDecl RoleDecl(CommonTree source, RoleNode namenode)
+	{
+		char c = namenode.toString().charAt(0);
+		if (c < 'A' || c > 'Z')
+		{
+			throw new RuntimeException("[param] Role names must start uppercase for Go accessibility: " + namenode);  // FIXME: return proper parsing error
+		}
+		return super.RoleDecl(source, namenode);
 	}
 }

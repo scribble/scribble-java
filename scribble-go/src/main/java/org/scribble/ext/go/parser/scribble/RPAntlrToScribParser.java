@@ -6,7 +6,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ext.go.ast.RPAstFactory;
 import org.scribble.ext.go.parser.scribble.ast.RPAntlrGChoice;
 import org.scribble.ext.go.parser.scribble.ast.RPAntlrGMultiChoices;
-import org.scribble.ext.go.parser.scribble.ast.RPAntlrRoleDecl;
 import org.scribble.ext.go.parser.scribble.ast.RPCoreAntlrDelegDecl;
 import org.scribble.ext.go.parser.scribble.ast.RPCoreAntlrModule;
 import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGCrossMessageTransfer;
@@ -44,7 +43,7 @@ public class RPAntlrToScribParser extends AntlrToScribParser
 			case ScribbleAntlrConstants.MODULE_NODE_TYPE: 
 				return RPCoreAntlrModule.parseModule(this, ct, af);
 
-			case PARAM_ROLEDECL_NODE_TYPE: return RPAntlrRoleDecl.parseParamRoleDecl(this, ct, aaf);
+			//case PARAM_ROLEDECL_NODE_TYPE: return RPAntlrRoleDecl.parseParamRoleDecl(this, ct, aaf);
 			case PARAM_GLOBALCROSSMESSAGETRANSFER_NODE_TYPE:
 				return RPAntlrGCrossMessageTransfer.parseParamGCrossMessageTransfer(this, ct, aaf);
 			case PARAM_GLOBALDOTMESSAGETRANSFER_NODE_TYPE:

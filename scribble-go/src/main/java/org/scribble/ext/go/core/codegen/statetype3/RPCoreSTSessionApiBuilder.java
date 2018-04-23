@@ -131,8 +131,7 @@ public class RPCoreSTSessionApiBuilder
 		// Endpoint Kind API per role variant
 		for (Role rname : roles)
 		{
-			Set<RPRoleVariant> variants = this.apigen.variants.get(rname).keySet();
-			for (RPRoleVariant variant : variants) 
+			for (RPRoleVariant variant : this.apigen.variants.get(rname).keySet()) 
 			{
 				/*RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
 				try
@@ -174,37 +173,61 @@ public class RPCoreSTSessionApiBuilder
 						+ "return &" + epkindTypeName + "{p, self, &session.LinearResource{}, session.NewEndpoint(self, conns)" //"params
 								+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining(""))
 								+ "}\n"
-						+ "}\n"
+						+ "}\n";
 
 						// Dial/Accept methdos -- FIXME: internalise peers
-						+ "\n"
+						/*+ "\n"
 						+ "func (ini *" + epkindTypeName + ") Accept(rolename string, id int, acc transport.Transport) error {\n"
-						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[rolename][id] = acc.Accept()\n"
+						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
+								+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[rolename][id] = acc.Accept()\n"
 						+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 						+ "}\n"
 						+ "\n"
 						+ "func (ini *" + epkindTypeName + ") Dial(rolename string, id int, req transport.Transport) error {\n"
-						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[rolename][id] = req.Connect()\n"
+						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
+								+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[rolename][id] = req.Connect()\n"
 						+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
-						+ "}\n";
+						+ "}\n";*/
+				for (RPRoleVariant v : (Iterable<RPRoleVariant>)
+						this.apigen.variants.values().stream()
+								.flatMap(m -> m.keySet().stream())::iterator)
+				{
+					if (!v.equals(variant))  // FIXME: endpoint families -- and id value checks
+					{
+						String r = v.getLastElement();
+						String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(v);
+						epkindFile += "\n"
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id int, acc transport.Transport) error {\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
+										+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[\"" + r + "\"][id] = acc.Accept()\n"  // CHECKME: connection map keys (cf. variant?)
+								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
+								+ "}\n"
+								+ "\n"
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id int, req transport.Transport) error {\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
+										+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[\"" + r + "\"][id] = req.Connect()\n"  // CHECKME: connection map keys (cf. variant?)
+								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
+								+ "}\n";
+					}
+				}
 						
-					// Top-level Run method
-					epkindFile += "\n"
-							+ "func (ini *" + epkindTypeName + ") Run(f func(*Init) End) *End {\n"  // f specifies non-pointer End
-							+ "ini.Use()\n"  // FIXME: int-counter linearity
-							+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".CheckConnection()\n"
-							
-							// FIXME: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
-							// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
-							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
-									? "end := f(ini.NewBranchInit())\n"
-									: "end := f(&Init{ new(session.LinearResource), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+				// Top-level Run method
+				epkindFile += "\n"
+						+ "func (ini *" + epkindTypeName + ") Run(f func(*Init) End) *End {\n"  // f specifies non-pointer End
+						+ "ini.Use()\n"  // FIXME: int-counter linearity
+						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".CheckConnection()\n"
+						
+						// FIXME: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
+						// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
+						+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
+								? "end := f(ini.NewBranchInit())\n"
+								: "end := f(&Init{ new(session.LinearResource), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 
-							+ "return &end\n"
-							+ "}";
-				
-					res.put(basedir + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "/" + RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant) + ".go",
-							"package " + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "\n" + epkindFile);
+						+ "return &end\n"
+						+ "}";
+			
+				res.put(basedir + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "/" + RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant) + ".go",
+						"package " + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "\n" + epkindFile);
 			}
 		}
 	}

@@ -15,6 +15,7 @@ import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
+// FIXME: deprecate -- not done yet due to statetype and statetype2 API gen packages
 public class RPRoleDecl extends RoleDecl
 {
 	//public final List<ParamRoleParamNode> params;
@@ -41,10 +42,11 @@ public class RPRoleDecl extends RoleDecl
 	@Override
 	public RPRoleDecl clone(AstFactory af)
 	{
-		RoleNode role = (RoleNode) this.name.clone(af);
+		/*RoleNode role = (RoleNode) this.name.clone(af);
 		//List<ParamRoleParamNode> params = ScribUtil.cloneList(af, this.params);
 		List<RPIndexVar> params = this.params;
-		return ((RPAstFactory) af).ParamRoleDecl(this.source, role, params);
+		return ((RPAstFactory) af).ParamRoleDecl(this.source, role, params);*/
+		return null;
 	}
 
 	@Override
