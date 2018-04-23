@@ -261,7 +261,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		else if (e instanceof RPIndexVar)
 		{
 			return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-					+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_PARAMS + "[\"" + e + "\"]";
+					//+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_PARAMS + "[\"" + e + "\"]";
+					+ "." + e;
 		}
 		else
 		{

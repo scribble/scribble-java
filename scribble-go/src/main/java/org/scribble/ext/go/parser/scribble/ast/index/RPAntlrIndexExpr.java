@@ -33,15 +33,30 @@ public class RPAntlrIndexExpr
 			}
 			default:
 			{
-				try
+				if (isInteger(type))
 				{
 					return RPIndexFactory.ParamIntVal(Integer.parseInt(type));
 				}
-				catch (NumberFormatException e)
+				else
 				{
+					if (!type.equals(type.toUpperCase()))
+					{
+						throw new RuntimeException("[param] Index variables must be uppercase for Go accessibility: " + type);  // FIXME: return proper parsing error
+					}
 					return RPIndexFactory.ParamIntVar(type);
 				}
 			}
 		}
+	}
+
+	private static boolean isInteger(String s)
+	{
+		// return Arrays.stream(s.getBytes()).stream().allMatch(c -> // Character.digit((char) c,radix) < 0); // no Byte stream
+		if (s.isEmpty()) return false;
+		for (int i = 0; i < s.length(); i++)
+		{
+			if (Character.digit(s.charAt(i), 10) < 0) return false;
+		}
+		return true;
 	}
 }

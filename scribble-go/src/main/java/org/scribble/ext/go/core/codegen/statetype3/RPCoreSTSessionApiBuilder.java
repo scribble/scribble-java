@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ext.go.ast.RPRoleDecl;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
 import org.scribble.ext.go.type.index.RPIndexVar;
@@ -85,17 +84,18 @@ public class RPCoreSTSessionApiBuilder
 		{
 			for (RPRoleVariant variant : this.apigen.variants.get(rname).keySet())
 			{
-				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 				RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
 				try
 				{
-					gpd.accept(coll);
+					gpd.accept(coll);  // FIXME: should be lpd
 				}
 				catch (ScribbleException e)
 				{
 					throw new RuntimeException("[rp-core] Shouldn't get in here: ", e);
 				}
+
 				List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());
+				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 						
 				// Endpoint Kind constructor -- makes index var value maps
 				String tmp = "func (p *" + simpname + ") New" + "_" + epkindTypeName
@@ -105,7 +105,9 @@ public class RPCoreSTSessionApiBuilder
 						//+ decls.iterator().next().params
 						+ ivars
 								.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
-						+ "return _" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + ".New" + "(p, params, self)\n"
+						+ "return _" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + ".New" + "(p" //", params"
+								+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining(""))
+								+ ", self)\n"
 						+ "}\n";
 				
 				protoFile += "\n" + tmp;
@@ -115,6 +117,7 @@ public class RPCoreSTSessionApiBuilder
 		res.put(basedir + simpname + ".go", protoFile);
 	}
 
+	// FIXME: should be lpd
 	private void buildEndpointKindApi(ProtocolDecl<Global> gpd, String basedir, Map<String, String> res)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
@@ -130,15 +133,18 @@ public class RPCoreSTSessionApiBuilder
 			Set<RPRoleVariant> variants = this.apigen.variants.get(rname).keySet();
 			for (RPRoleVariant variant : variants) 
 			{
-				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
-				List<RPRoleDecl> decls = 
-						gpd.getHeader().roledecls.getDecls().stream().filter(rd -> rd.getDeclName().equals(variant.getName()))
-								.map(rd -> (RPRoleDecl) rd).collect(Collectors.toList());
-				if (decls.size() > 1)
+				RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
+				try
 				{
-					throw new RuntimeException("Shouldn't get in here: " + variant);
+					gpd.accept(coll);  // FIXME: should be lpd
 				}
-						// FIXME: get index vars from protocol body -- index var decls in sig now deprecated
+				catch (ScribbleException e)
+				{
+					throw new RuntimeException("[rp-core] Shouldn't get in here: ", e);
+				}
+
+				List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());
+				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 				
 				String epkindFile = epkindImports + "\n"
 						
@@ -148,17 +154,22 @@ public class RPCoreSTSessionApiBuilder
 						+ "Self int\n"
 						+ "*session.LinearResource\n"
 						+ RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + " *" + RPCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
-						+ "Params map[string]int\n"
+						//+ "Params map[string]int\n"
+						+ ivars.stream().map(x -> x + " int\n").collect(Collectors.joining(""))
 						+ "}\n"
 
 						// Endpoint Kind type constructor -- makes connection maps
 						+ "\n"
-						+ "func New(p session.Protocol, params map[string]int, self int) *" + epkindTypeName + " {\n"
+						+ "func New(p session.Protocol, " //+"params map[string]int," 
+								+ ivars.stream().map(x -> x + " int, ").collect(Collectors.joining(""))
+								+ "self int) *" + epkindTypeName + " {\n"
 						+ "conns := make(map[string]map[int]transport.Channel)\n"
 						+ this.apigen.variants.entrySet().stream()
 								.map(e -> "conns[\"" + e.getKey().getLastElement() + "\"] = " + "make(map[int]transport.Channel)\n")
 								.collect(Collectors.joining(""))
-						+ "return &" + epkindTypeName + "{p, self, &session.LinearResource{}, session.NewEndpoint(self, conns), params}\n"
+						+ "return &" + epkindTypeName + "{p, self, &session.LinearResource{}, session.NewEndpoint(self, conns)" //"params
+								+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining(""))
+								+ "}\n"
 						+ "}\n"
 
 						// Dial/Accept methdos -- FIXME: internalise peers
