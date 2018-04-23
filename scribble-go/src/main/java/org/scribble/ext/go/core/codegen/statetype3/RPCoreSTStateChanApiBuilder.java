@@ -161,38 +161,24 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return res;
 	}
 
+	// "Base case" -- more specific versions should be overriden in action builders
   // Here because action builder hierarchy not suitable (extended by action kind, not by target language)
 	@Override
 	public String buildAction(STActionBuilder ab, EState curr, EAction a)
 	{
 		EState succ = curr.getSuccessor(a);
-		if (((GoJob) this.job).selectApi &&
-				getStateKind(curr) == ParamCoreEStateKind.CROSS_RECEIVE && curr.getActions().size() > 1)
-				//&& this.bb instanceof RPCoreSTSelectStateBuilder)
-		{
-			// HACK FIXME: move to action builder
-			return
-					  "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
-								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-								+ ab.buildArgs(this, a)
-								+ ") <-chan *" + ab.getReturnType(this, curr, succ) + " {\n"
-					+ ab.buildBody(this, curr, a, succ) + "\n"
-					+ "}";
-		}
-		else
-		{
-			return
-					  "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
-								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-								+ ab.buildArgs(this, a)
-								+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
-					+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-							+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
-					+ ab.buildBody(this, curr, a, succ) + "\n"
-					+ "}";
-		}
+		return
+					"func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
+							+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
+							+ ab.buildArgs(this, a)
+							+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
+				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
+				+ ab.buildBody(this, curr, a, succ) + "\n"
+				+ "}";
 	}
 
+	// "Base case" -- more specific versions should be overriden in action builders
   // FIXME: refactor action builders as interfaces and use generic parameter for kind
 	@Override
 	public String buildActionReturn(STActionBuilder ab, EState curr, EState succ)
@@ -205,15 +191,15 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 	protected String getSuccStateChan(STActionBuilder ab, EState curr, EState succ, String sEp)
 	{
+		// Needs to be here (not in action builder) -- build (hacked) return for all state kinds
 		if (((GoJob) this.job).selectApi &&
-				getStateKind(succ) == ParamCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
-				//&& this.bb instanceof RPCoreSTSelectStateBuilder)
+				getStateKind(succ) == RPCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
-			// HACK FIXME: move to action builder
 			return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
-					+ "NewBranchInit()";  // For branch states (hacky?)  // FIXME: factor out with RPCoreSTSessionApiBuilder and RPCoreSTSelectStateBuilder#getPreamble
-					/*+ ((succ.id != this.graph.init.id) ? getStateChanName(succ) : "Init") // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
-					+ "()";*/
+					+ "NewBranch"  // For branch states (hacky?)  // FIXME: factor out with RPCoreSTSessionApiBuilder and RPCoreSTSelectStateBuilder#getPreamble
+					//+ ((succ.id != this.graph.init.id) ? getStateChanName(succ) : "Init") // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
+					+ getStateChanName(succ)
+					+ "()";
 		}
 		else
 		{
@@ -359,22 +345,22 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	
 	// FIXME: make a ParamCoreEState
-	protected enum ParamCoreEStateKind { CROSS_SEND, CROSS_RECEIVE, DOT_SEND, DOT_RECEIVE, MULTICHOICES_RECEIVE, TERMINAL }
+	protected enum RPCoreEStateKind { CROSS_SEND, CROSS_RECEIVE, DOT_SEND, DOT_RECEIVE, MULTICHOICES_RECEIVE, TERMINAL }
 	
-	protected static ParamCoreEStateKind getStateKind(EState s)
+	protected static RPCoreEStateKind getStateKind(EState s)
 	{
 		List<EAction> as = s.getActions();
 		if (as.isEmpty())
 		{
-			return ParamCoreEStateKind.TERMINAL;	
+			return RPCoreEStateKind.TERMINAL;	
 		}
 		else if (as.stream().allMatch(a -> a instanceof RPCoreECrossSend))
 		{
-			return ParamCoreEStateKind.CROSS_SEND;
+			return RPCoreEStateKind.CROSS_SEND;
 		}
 		else if (as.stream().allMatch(a -> a instanceof RPCoreECrossReceive))
 		{
-			return ParamCoreEStateKind.CROSS_RECEIVE;
+			return RPCoreEStateKind.CROSS_RECEIVE;
 		}
 		/*else if (as.stream().allMatch(a -> a instanceof RPCoreEDotSend))  // FIXME: CFSMs should have only !^1, ! and ?
 		{

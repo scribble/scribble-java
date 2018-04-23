@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 
 import org.scribble.codegen.statetype.STBranchActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTStateChanApiBuilder.RPCoreEStateKind;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
@@ -13,9 +14,31 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
 
+// Case/Recv action on select case objects
 // N.B. Select means Go select statement for input-choice; not output-choice
 public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 {
+	@Override
+	public String build(STStateChanApiBuilder api, EState curr, EAction a)
+	{
+		EState succ = curr.getSuccessor(a);
+		if (//((GoJob) api.job).selectApi &&
+				RPCoreSTStateChanApiBuilder.getStateKind(curr) == RPCoreEStateKind.CROSS_RECEIVE && curr.getActions().size() > 1)
+		{
+			// HACK FIXME: move to action builder
+			return
+					  "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
+								+ " *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "(" 
+								+ buildArgs(api, a)
+								+ ") <-chan *" + getReturnType(api, curr, succ) + " {\n"
+					+ buildBody(api, curr, a, succ) + "\n"
+					+ "}";
+		}
+		else
+		{
+			return super.build(api, curr, a);
+		}
+	}
 
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
@@ -42,7 +65,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 
 		if(a.payload.elems.size() > 1)
 		{
-			throw new RuntimeException("[param-core] TODO: " + a);
+			throw new RuntimeException("[rp-core] TODO: " + a);
 		}
 
 		boolean isDeleg = a.payload.elems.stream().anyMatch(pet -> 
@@ -50,7 +73,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 				((RPCoreSTStateChanApiBuilder) api).isDelegType((DataType) pet));
 		if (isDeleg)
 		{
-			throw new RuntimeException("[param-core] TODO: " + a);
+			throw new RuntimeException("[rp-core] TODO: " + a);
 		}
 		
 		String res = "_, selected := <-s._" + a.mid + "_Chan\n"
@@ -69,7 +92,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 		{
 			if (a.payload.elems.size() > 1)
 			{
-				throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
+				throw new RuntimeException("[rp-core] TODO: payload size > 1: " + a);
 			}
 
 			if (((GoJob) api.job).noCopy)
@@ -84,7 +107,6 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 					+ "ch := make(chan *" + apigen.getStateChanName(curr.getSuccessor(a)) + ", 1)\n"
 					+ "ch <- " + apigen.getSuccStateChan(this, curr, curr.getSuccessor(a), sEp) + "\n";
 					// FIXME: arg0 // FIXME: args depends on label // FIXME: store args in s.args
-
 		}
 				
 		return res + "return ch";
