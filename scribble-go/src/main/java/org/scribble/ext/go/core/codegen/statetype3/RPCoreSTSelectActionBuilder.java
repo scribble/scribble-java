@@ -43,8 +43,8 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
-		return RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_"
-				+ RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
+		return RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
+				+ "_" + RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX
 				+ "_" + a.mid;
 	}
 
