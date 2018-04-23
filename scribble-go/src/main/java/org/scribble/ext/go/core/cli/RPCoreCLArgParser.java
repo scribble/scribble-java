@@ -22,6 +22,7 @@ public class RPCoreCLArgParser extends CLArgParser
 	private static final Map<String, RPCoreCLArgFlag> RPCORE_UNIQUE_FLAGS = new HashMap<>();
 	{
 		RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_PARAM_FLAG, RPCoreCLArgFlag.RPCORE_PARAM);
+		RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_SELECT_BRANCH_FLAG, RPCoreCLArgFlag.RPCORE_SELECT_BRANCH);
 		RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_NOCOPY_FLAG, RPCoreCLArgFlag.RPCORE_NO_COPY);
 	}
 
