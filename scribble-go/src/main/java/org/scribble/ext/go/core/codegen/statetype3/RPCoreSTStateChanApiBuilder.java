@@ -191,10 +191,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 	protected String getSuccStateChan(STActionBuilder ab, EState curr, EState succ, String sEp)
 	{
-		// Needs to be here (not in action builder) -- build (hacked) return for all state kinds
 		if (((GoJob) this.job).selectApi &&
 				getStateKind(succ) == RPCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
+			// Needs to be here (not in action builder) -- build (hacked) return for all state kinds
 			return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
 					+ "NewBranch"  // For branch states (hacky?)  // FIXME: factor out with RPCoreSTSessionApiBuilder and RPCoreSTSelectStateBuilder#getPreamble
 					//+ ((succ.id != this.graph.init.id) ? getStateChanName(succ) : "Init") // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case
