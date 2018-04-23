@@ -16,10 +16,12 @@ public class RPIndexFactory
 
 	public static RPIndexVar ParamIntVar(String text)
 	{
+		// Check here?  Or in API gen
 		char c = text.charAt(0);
 		if (c < 'A' || c > 'Z')
 		{
-			throw new RuntimeException("[param] Index variables must be uppercase for Go accessibility: " + text);  // FIXME: return proper parsing error
+			throw new RuntimeException("[param] Index variables must be uppercase for Go accessibility: " + text);  
+					// FIXME: return proper parsing error -- refactor as param API gen errors
 		}
 		return new RPIndexVar(text);
 	}

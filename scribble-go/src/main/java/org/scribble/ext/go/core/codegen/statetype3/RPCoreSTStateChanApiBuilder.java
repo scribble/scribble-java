@@ -35,7 +35,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	protected final RPCoreSTApiGenerator apigen;
 	public final RPRoleVariant variant;  // variant.getName().equals(this.role)
 	
-	private int counter = 1;
+	private int counter = 2;  // 1 named as Init
 	private final Set<DataTypeDecl> dtds; // FIXME: use "main.getDataTypeDecl((DataType) pt);" instead -- cf. OutputSocketGenerator#addSendOpParams
 	
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later

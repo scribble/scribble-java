@@ -18,8 +18,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
-		return RPCoreSTApiGenConstants.RP_GATHER_METHOD_PREFIX + "_"  // FIXME: make unary Receive special case
-				+ RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
+		return RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
+				+ "_" + RPCoreSTApiGenConstants.RP_GATHER_METHOD_PREFIX  // FIXME: make unary Receive special case
 				+ "_" + a.mid;
 	}
 

@@ -55,7 +55,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 				+ "; err != nil {\n"
 				+ "log.Fatal(err)\n"
 				+ "}\n"
-				+ "arg0 = &tmp\n";
+				+ "*arg0 = tmp\n";
 		}
 		return res + buildReturn(rpapi, curr, succ);
 	}

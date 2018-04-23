@@ -19,8 +19,8 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 	@Override
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
-		return RPCoreSTApiGenConstants.RP_SCATTER_METHOD_PREFIX + "_"  // FIXME: make unary Send special case
-				+ RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
+		return RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
+				+ "_" + RPCoreSTApiGenConstants.RP_SCATTER_METHOD_PREFIX  // FIXME: make unary Send special case
 				+ "_" + a.mid;
 	}
 

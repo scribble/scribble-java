@@ -7,7 +7,9 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.global.GProtocolBlock;
+import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.qualified.DataTypeNode;
+import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.global.RPGChoice;
 import org.scribble.ext.go.ast.global.RPGCrossMessageTransfer;
@@ -20,6 +22,9 @@ import org.scribble.ext.go.del.global.RPGMessageTransferDel;
 import org.scribble.ext.go.del.global.RPGMultiChoicesDel;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.type.kind.Kind;
+import org.scribble.type.kind.OpKind;
+import org.scribble.type.kind.SigKind;
 
 
 public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
@@ -155,11 +160,45 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 	@Override
 	public RoleDecl RoleDecl(CommonTree source, RoleNode namenode)
 	{
+		// Check here?  Or in API gen -- cf. RPIndexFactory#ParamIntVar
 		char c = namenode.toString().charAt(0);
 		if (c < 'A' || c > 'Z')
 		{
-			throw new RuntimeException("[param] Role names must start uppercase for Go accessibility: " + namenode);  // FIXME: return proper parsing error
+			throw new RuntimeException("[param] Role names must start uppercase for Go accessibility: " + namenode);  
+					// FIXME: return proper parsing error -- refactor as param API gen errors
 		}
 		return super.RoleDecl(source, namenode);
+	}
+
+	@Override
+	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier)
+	{
+		// Check here?  Or in API gen
+		if (kind.equals(OpKind.KIND))
+		{
+			char c = identifier.charAt(0);
+			if (c < 'A' || c > 'Z')
+			{
+				throw new RuntimeException("[param] Op names must start uppercase for Go accessibility: " + identifier);
+					// FIXME: return proper parsing error -- refactor as param API gen errors
+			}
+		}
+		return super.SimpleNameNode(source, kind, identifier);
+	}
+
+	@Override
+	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source, K kind, String... elems)
+	{
+		// Check here?  Or in API gen
+		if (kind.equals(SigKind.KIND))
+		{
+			char c = elems[elems.length-1].charAt(0);
+			if (c < 'A' || c > 'Z')
+			{
+				throw new RuntimeException("[param] Op names must start uppercase for Go accessibility: " + elems[elems.length-1]);
+					// FIXME: return proper parsing error -- refactor as param API gen errors
+			}
+		}
+		return super.QualifiedNameNode(source, kind, elems);
 	}
 }
