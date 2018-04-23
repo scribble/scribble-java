@@ -173,9 +173,12 @@ public class RPCoreSTSessionApiBuilder
 							+ "func (ini *" + epkindTypeName + ") Run(f func(*Init) End) *End {\n"  // f specifies non-pointer End
 							+ "ini.Use()\n"  // FIXME: int-counter linearity
 							+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".CheckConnection()\n"
-							+ ((this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)  // FIXME: type-switch?
+							
+							// FIXME: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
+							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
 									? "end := f(ini.NewBranchInit())\n"  // FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble
 									: "end := f(&Init{ new(session.LinearResource), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+
 							+ "return &end\n"
 							+ "}";
 				

@@ -126,6 +126,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ "/" + filename + ".go";
 	}
 	
+	// Factored out here from state-specific builders
 	protected String getStateChanPremable(EState s)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
@@ -140,13 +141,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				// FIXME: error handling via Err field -- fallback should be panic
 				+ "import \"log\"\n"
 				
-				// FIXME: refactor into state-specific builders
+				// FIXME: refactor back into state-specific builders
 				+ ((s.getStateKind() == EStateKind.OUTPUT || s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 						? s.getActions().stream().flatMap(a -> a.payload.elems.stream()).collect(Collectors.toSet()).stream()
 								.map(p -> makeExtNameImport((DataType) p)).collect(Collectors.joining(""))
 						: "")
 
-				// FIXME: refactor into state-specific builders
+				// FIXME: refactor back into state-specific builders
 				+ ((s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 						? "import \"sort\"\n\nvar _ = sort.Sort\n"
 						: "")
@@ -169,9 +170,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		EState succ = curr.getSuccessor(a);
 		return
 					"func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
-							+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-							+ ab.buildArgs(this, a)
-							+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
+						+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
+						+ ab.buildArgs(this, a)
+						+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
 				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
 				+ ab.buildBody(this, curr, a, succ) + "\n"
@@ -264,7 +265,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		else
 		{
-			throw new RuntimeException("[param-core] TODO: " + e);
+			throw new RuntimeException("[rp-core] TODO: " + e);
 		}
 	}
 
