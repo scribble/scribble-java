@@ -3,6 +3,9 @@ package org.scribble.ext.go.core.type;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.scribble.ext.go.type.index.RPIndexVar;
 
 public class RPRoleVariant extends RPIndexedRole
 {
@@ -17,6 +20,16 @@ public class RPRoleVariant extends RPIndexedRole
 	{
 		super(name, ranges);
 		this.cointervals = Collections.unmodifiableSet(coranges);
+	}
+
+	@Override
+	public Set<RPIndexVar> getIndexVars()
+	{
+		Set<RPIndexVar> ivars = super.getIndexVars();
+		ivars.addAll(this.cointervals.stream()
+				.flatMap(d -> Stream.of(d.start.getVars(), d.end.getVars()).flatMap(vs -> vs.stream()))
+				.collect(Collectors.toSet()));
+		return ivars;
 	}
 
 	@Override

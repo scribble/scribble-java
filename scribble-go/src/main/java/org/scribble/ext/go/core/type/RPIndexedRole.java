@@ -3,7 +3,9 @@ package org.scribble.ext.go.core.type;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.name.Role;
 
 // FIXME: make distinct kind?  i.e., don't extend Role? -- yes: ParamRole is not a Role (Role should actually be a ParamRole in that sense)
@@ -21,6 +23,13 @@ public class RPIndexedRole extends Role
 	{
 		super(name);
 		this.intervals = Collections.unmodifiableSet(ranges);
+	}
+
+	public Set<RPIndexVar> getIndexVars()
+	{
+		return this.intervals.stream()
+				.flatMap(d -> Stream.of(d.start.getVars(), d.end.getVars()).flatMap(vs -> vs.stream()))
+				.collect(Collectors.toSet());
 	}
 	
 	public RPInterval getParsedRange()

@@ -1,6 +1,9 @@
 package org.scribble.ext.go.core.ast.local;
 
+import java.util.Set;
+
 import org.scribble.ext.go.core.ast.RPCoreRec;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 
@@ -10,6 +13,12 @@ public class RPCoreLRec extends RPCoreRec<RPCoreLType, Local> implements RPCoreL
 	{
 		//super(recvar, annot, init, body);
 		super(recvar, body);
+	}
+	
+	@Override
+	public Set<RPIndexVar> getIndexVars()
+	{
+		return this.body.getIndexVars();
 	}
 
 	@Override

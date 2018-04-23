@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.ast.local;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.scribble.ext.go.core.ast.RPCoreMessage;
 import org.scribble.ext.go.core.type.RPIndexedRole;
@@ -18,6 +19,12 @@ public class RPCoreLMultiChoices extends RPCoreLChoice
 	{
 		super(role, RPCoreLActionKind.MULTICHOICES_RECEIVE, foo(cases, cont));
 		this.var = var;
+	}
+	
+	@Override
+	public Set<RPIndexVar> getIndexVars()
+	{
+		throw new RuntimeException("[param] Shouldn't get in here: " + this);
 	}
 	
 	private static LinkedHashMap<RPCoreMessage, RPCoreLType> foo(List<RPCoreMessage> cases, RPCoreLType cont)

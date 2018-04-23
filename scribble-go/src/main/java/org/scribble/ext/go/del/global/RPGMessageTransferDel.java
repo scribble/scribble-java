@@ -33,6 +33,7 @@ public class RPGMessageTransferDel extends GMessageTransferDel implements RPDel
 		return gmt;
 	}
 
+	// FIXME: not needed for global -- should be local
 	@Override
 	public ScribNode leaveIndexVarCollection(ScribNode parent, ScribNode child, RPCoreIndexVarCollector coll, ScribNode visited) throws ScribbleException
 	{

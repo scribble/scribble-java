@@ -1,9 +1,12 @@
 package org.scribble.ext.go.core.ast.local;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 import org.scribble.ext.go.core.ast.RPCoreMessage;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.type.index.RPIndexVar;
 
 public class RPCoreLCrossChoice extends RPCoreLChoice
 {
@@ -14,6 +17,15 @@ public class RPCoreLCrossChoice extends RPCoreLChoice
 		{
 			throw new RuntimeException("[param-core] Shouldn't get in here: " + kind);
 		}
+	}
+	
+	@Override
+	public Set<RPIndexVar> getIndexVars()
+	{
+		Set<RPIndexVar> ivars = new HashSet<>();
+		ivars.addAll(this.role.getIndexVars());
+		this.cases.values().stream().forEach(c -> ivars.addAll(c.getIndexVars()));
+		return ivars;
 	}
 	
 	@Override

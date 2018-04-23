@@ -9,9 +9,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ext.go.core.type.RPRoleVariant;
-import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
 import org.scribble.ext.go.type.index.RPIndexVar;
-import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
@@ -84,27 +82,30 @@ public class RPCoreSTSessionApiBuilder
 		{
 			for (RPRoleVariant variant : this.apigen.variants.get(rname).keySet())
 			{
-				RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
+				/*RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
 				try
 				{
-					gpd.accept(coll);  // FIXME: should be lpd
+					gpd.accept(coll);  // FIXME: should be lpd -- not currently used due to using RPCoreType
 				}
 				catch (ScribbleException e)
 				{
 					throw new RuntimeException("[rp-core] Shouldn't get in here: ", e);
 				}
-
-				List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());
+				List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());*/
+				
+				List<RPIndexVar> ivars = this.apigen.projections.get(rname).get(variant)
+						.getIndexVars().stream().sorted().collect(Collectors.toList());  // N.B., params only from action subjects (not self)
+				ivars.addAll(variant.getIndexVars());  // Do variant params subsume projection params?  (vice versa not true -- e.g., param needed to check self)
 				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 						
 				// Endpoint Kind constructor -- makes index var value maps
 				String tmp = "func (p *" + simpname + ") New" + "_" + epkindTypeName
 						+ "(" + ivars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
 						+ " *_" + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant) + "." + epkindTypeName + " {\n"
-						+ "params := make(map[string]int)\n"
+						/*+ "params := make(map[string]int)\n"
 						//+ decls.iterator().next().params
 						+ ivars
-								.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))
+								.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))*/
 						+ "return _" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + ".New" + "(p" //", params"
 								+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining(""))
 								+ ", self)\n"
@@ -133,17 +134,20 @@ public class RPCoreSTSessionApiBuilder
 			Set<RPRoleVariant> variants = this.apigen.variants.get(rname).keySet();
 			for (RPRoleVariant variant : variants) 
 			{
-				RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
+				/*RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
 				try
 				{
-					gpd.accept(coll);  // FIXME: should be lpd
+					gpd.accept(coll);  // FIXME: should be lpd -- not currently used due to using RPCoreType
 				}
 				catch (ScribbleException e)
 				{
 					throw new RuntimeException("[rp-core] Shouldn't get in here: ", e);
 				}
+				List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());*/
 
-				List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());
+				List<RPIndexVar> ivars = this.apigen.projections.get(rname).get(variant)
+						.getIndexVars().stream().sorted().collect(Collectors.toList());  // N.B., params only from action subjects (not self)
+				ivars.addAll(variant.getIndexVars());  // Do variant params subsume projection params?  (vice versa not true -- e.g., param needed to check self)
 				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 				
 				String epkindFile = epkindImports + "\n"

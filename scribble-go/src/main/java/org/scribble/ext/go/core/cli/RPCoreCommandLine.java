@@ -52,7 +52,7 @@ public class RPCoreCommandLine extends CommandLine
 
 	// HACK: store in (Core) Job/JobContext?
 	protected GProtocolDecl gpd;
-	protected Map<Role, Map<RPRoleVariant, RPCoreLType>> P0;
+	protected Map<Role, Map<RPRoleVariant, RPCoreLType>> L0;
 	protected Map<Role, Map<RPRoleVariant, EGraph>> E0;
 	//protected ParamCoreSModel model;
 	
@@ -153,7 +153,7 @@ public class RPCoreCommandLine extends CommandLine
 
 				Map<String, String> goClasses = new ParamCoreSTSessionApiBuilder((GoJob) job, fullname, this.E0).build();*/
 				//Map<ParamActualRole, EGraph> actuals = this.E0.get(role);
-				Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, this.E0, impath, role).build();
+				Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, this.L0, this.E0, impath, role).build();
 				outputClasses(goClasses);
 			}
 		}
@@ -238,7 +238,7 @@ public class RPCoreCommandLine extends CommandLine
 		
 		job.debugPrintln("\n[param-core] Computed roles: " + protoRoles);
 
-		this.P0 = new HashMap<>();
+		this.L0 = new HashMap<>();
 		for (Role r : gpd.header.roledecls.getRoles())  // getRoles gives decl names  // CHECKME: can ignore params?
 		{
 			//for (Set<ParamRange> ranges : protoRoles.get(r))
@@ -247,11 +247,11 @@ public class RPCoreCommandLine extends CommandLine
 				//ParamCoreLType lt = gt.project(af, r, ranges);
 				RPCoreLType lt = gt.project(af, ranges);
 				//Map<Set<ParamRange>, ParamCoreLType> tmp = P0.get(r);
-				Map<RPRoleVariant, RPCoreLType> tmp = P0.get(r);
+				Map<RPRoleVariant, RPCoreLType> tmp = L0.get(r);
 				if (tmp == null)
 				{
 					tmp = new HashMap<>();
-					P0.put(r, tmp);
+					L0.put(r, tmp);
 				}
 				tmp.put(ranges, lt);
 
@@ -261,12 +261,12 @@ public class RPCoreCommandLine extends CommandLine
 
 		RPCoreEGraphBuilder builder = new RPCoreEGraphBuilder(job);
 		this.E0 = new HashMap<>();
-		for (Role r : P0.keySet())
+		for (Role r : L0.keySet())
 		{
 			//for (Set<ParamRange> ranges : this.P0.get(r).keySet())
-			for (RPRoleVariant ranges : this.P0.get(r).keySet())
+			for (RPRoleVariant ranges : this.L0.get(r).keySet())
 			{
-				EGraph g = builder.build(this.P0.get(r).get(ranges));
+				EGraph g = builder.build(this.L0.get(r).get(ranges));
 				//Map<Set<ParamRange>, EGraph> tmp = this.E0.get(r);
 				Map<RPRoleVariant, EGraph> tmp = this.E0.get(r);
 				if (tmp == null)

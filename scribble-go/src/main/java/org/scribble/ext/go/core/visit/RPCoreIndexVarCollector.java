@@ -12,7 +12,8 @@ import org.scribble.main.Job;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.NoEnvInlinedProtocolVisitor;
 
-// FIXME: move out of Core to main RP
+// FIXME: move out of Core to main RP -- currently not actually used (due to RPCoreType), but eventually should be used on locals
+// Currently done for globals (e.g., RPGMessageTransferDel), but should be on locals
 // Duplicated from EGraphBuilder
 public class RPCoreIndexVarCollector extends NoEnvInlinedProtocolVisitor
 {
