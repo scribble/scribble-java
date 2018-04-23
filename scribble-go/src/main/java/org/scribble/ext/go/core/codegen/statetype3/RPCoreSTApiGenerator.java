@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.scribble.ext.go.core.type.RPRoleVariant;
-import org.scribble.main.Job;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.type.name.GProtocolName;
@@ -16,7 +16,7 @@ import org.scribble.type.name.Role;
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTEndpointApiGenerator
 public class RPCoreSTApiGenerator
 {
-	public final Job job;
+	public final GoJob job;
 	public final GProtocolName proto;  // Full name
 	public final Map<Role, Map<RPRoleVariant, EGraph>> variants;
 	
@@ -25,7 +25,7 @@ public class RPCoreSTApiGenerator
 			// FIXME: just a role name -- cf. CL arg
 			// FIXME: any way to separate Session API (Protocol) from Endpoint/StateChan APIs?
 	
-	public RPCoreSTApiGenerator(Job job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, EGraph>> variants, String packpath, Role self)
+	public RPCoreSTApiGenerator(GoJob job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, EGraph>> variants, String packpath, Role self)
 	{
 		this.job = job;
 		this.proto = fullname;

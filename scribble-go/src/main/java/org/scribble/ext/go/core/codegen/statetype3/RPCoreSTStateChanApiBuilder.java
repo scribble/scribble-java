@@ -16,6 +16,7 @@ import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexVar;
@@ -45,8 +46,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				new RPCoreSTOutputStateBuilder(new RPCoreSTSplitActionBuilder(), new RPCoreSTSendActionBuilder()),
 				new RPCoreSTReceiveStateBuilder(new RPCoreSTReduceActionBuilder(), new RPCoreSTReceiveActionBuilder()),
 
-				//new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder()), null,  // Select-based branch
-				new RPCoreSTBranchStateBuilder(new RPCoreSTBranchActionBuilder()), new RPCoreSTCaseBuilder(new RPCoreSTCaseActionBuilder()),   // Type switch branch
+				// Select-based branch, or type switch branch by default
+				(apigen.job.selectApi)
+						? new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder())
+						: new RPCoreSTBranchStateBuilder(new RPCoreSTBranchActionBuilder()),
+				(apigen.job.selectApi)
+						? null
+						: new RPCoreSTCaseBuilder(new RPCoreSTCaseActionBuilder()),
 
 				new RPCoreSTEndStateBuilder());
 
@@ -73,12 +79,15 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				{
 					if (s.getActions().size() > 1)
 					{
-						// Select-based branch
-						//res.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
-
-						// Type switch -based branch
-						res.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
-						res.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));
+						if (((GoJob) this.job).selectApi)  // Select-based branch
+						{
+							res.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
+						}
+						else // Type switch -based branch
+						{
+							res.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
+							res.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));
+						}
 					}
 					else
 					{
@@ -157,9 +166,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public String buildAction(STActionBuilder ab, EState curr, EAction a)
 	{
 		EState succ = curr.getSuccessor(a);
-		if (getStateKind(curr) == ParamCoreEStateKind.CROSS_RECEIVE && curr.getActions().size() > 1
-				&& this.bb instanceof RPCoreSTSelectStateBuilder)  // HACK
+		if (((GoJob) this.job).selectApi &&
+				getStateKind(curr) == ParamCoreEStateKind.CROSS_RECEIVE && curr.getActions().size() > 1)
+				//&& this.bb instanceof RPCoreSTSelectStateBuilder)
 		{
+			// HACK FIXME: move to action builder
 			return
 					  "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
@@ -194,9 +205,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 	protected String getSuccStateChan(STActionBuilder ab, EState curr, EState succ, String sEp)
 	{
-		if (getStateKind(succ) == ParamCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1
-				&& this.bb instanceof RPCoreSTSelectStateBuilder)  // HACK
+		if (((GoJob) this.job).selectApi &&
+				getStateKind(succ) == ParamCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
+				//&& this.bb instanceof RPCoreSTSelectStateBuilder)
 		{
+			// HACK FIXME: move to action builder
 			return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
 					+ "NewBranchInit()";  // For branch states (hacky?)  // FIXME: factor out with RPCoreSTSessionApiBuilder and RPCoreSTSelectStateBuilder#getPreamble
 					/*+ ((succ.id != this.graph.init.id) ? getStateChanName(succ) : "Init") // cf. ParamCoreSTStateChanApiBuilder::getStateChanPremable init state case

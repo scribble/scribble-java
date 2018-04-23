@@ -10,34 +10,35 @@ import org.scribble.cli.CommandLineException;
 public class RPCoreCLArgParser extends CLArgParser
 {
 	// Unique flags
-	public static final String PARAM_CORE_PARAM_FLAG = "-param";
-	public static final String PARAM_CORE_NOCOPY_FLAG = "-nocopy";
+	public static final String RPCORE_PARAM_FLAG         = "-param";
+	public static final String RPCORE_SELECT_BRANCH_FLAG = "-param-select";
+	public static final String RPCORE_NOCOPY_FLAG        = "-nocopy";
 
 	// Non-unique flags
-	public static final String PARAM_CORE_EFSM_FLAG     = "-param-fsm";
-	public static final String PARAM_CORE_EFSM_PNG_FLAG = "-param-fsmpng";
-	public static final String PARAM_CORE_API_GEN_FLAG  = "-param-api";
+	public static final String RPCORE_EFSM_FLAG     = "-param-fsm";
+	public static final String RPCORE_EFSM_PNG_FLAG = "-param-fsmpng";
+	public static final String RPCORE_API_GEN_FLAG  = "-param-api";
 	
-	private static final Map<String, RPCoreCLArgFlag> PARAM_UNIQUE_FLAGS = new HashMap<>();
+	private static final Map<String, RPCoreCLArgFlag> RPCORE_UNIQUE_FLAGS = new HashMap<>();
 	{
-		RPCoreCLArgParser.PARAM_UNIQUE_FLAGS.put(RPCoreCLArgParser.PARAM_CORE_PARAM_FLAG, RPCoreCLArgFlag.PARAM_CORE_PARAM);
-		RPCoreCLArgParser.PARAM_UNIQUE_FLAGS.put(RPCoreCLArgParser.PARAM_CORE_NOCOPY_FLAG, RPCoreCLArgFlag.PARAM_CORE_NO_COPY);
+		RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_PARAM_FLAG, RPCoreCLArgFlag.RPCORE_PARAM);
+		RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_NOCOPY_FLAG, RPCoreCLArgFlag.RPCORE_NO_COPY);
 	}
 
-	private static final Map<String, RPCoreCLArgFlag> PARAM_NON_UNIQUE_FLAGS = new HashMap<>();
+	private static final Map<String, RPCoreCLArgFlag> RPCORE_NON_UNIQUE_FLAGS = new HashMap<>();
 	{
-		RPCoreCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(RPCoreCLArgParser.PARAM_CORE_EFSM_FLAG, RPCoreCLArgFlag.PARAM_CORE_EFSM);
-		RPCoreCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(RPCoreCLArgParser.PARAM_CORE_EFSM_PNG_FLAG, RPCoreCLArgFlag.PARAM_CORE_EFSM_PNG);
-		RPCoreCLArgParser.PARAM_NON_UNIQUE_FLAGS.put(RPCoreCLArgParser.PARAM_CORE_API_GEN_FLAG, RPCoreCLArgFlag.PARAM_CORE_API_GEN);
+		RPCoreCLArgParser.RPCORE_NON_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_EFSM_FLAG, RPCoreCLArgFlag.RPCORE_EFSM);
+		RPCoreCLArgParser.RPCORE_NON_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_EFSM_PNG_FLAG, RPCoreCLArgFlag.RPCORE_EFSM_PNG);
+		RPCoreCLArgParser.RPCORE_NON_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_API_GEN_FLAG, RPCoreCLArgFlag.RPCORE_API_GEN);
 	}
 
-	private static final Map<String, RPCoreCLArgFlag> PARAM_FLAGS = new HashMap<>();
+	private static final Map<String, RPCoreCLArgFlag> RPCORE_FLAGS = new HashMap<>();
 	{
-		RPCoreCLArgParser.PARAM_FLAGS.putAll(RPCoreCLArgParser.PARAM_UNIQUE_FLAGS);
-		RPCoreCLArgParser.PARAM_FLAGS.putAll(RPCoreCLArgParser.PARAM_NON_UNIQUE_FLAGS);
+		RPCoreCLArgParser.RPCORE_FLAGS.putAll(RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS);
+		RPCoreCLArgParser.RPCORE_FLAGS.putAll(RPCoreCLArgParser.RPCORE_NON_UNIQUE_FLAGS);
 	}
 
-	private final Map<RPCoreCLArgFlag, String[]> paramParsed = new HashMap<>();
+	private final Map<RPCoreCLArgFlag, String[]> rpParsed = new HashMap<>();
 	
 	public RPCoreCLArgParser(String[] args) throws CommandLineException
 	{
@@ -47,13 +48,13 @@ public class RPCoreCLArgParser extends CLArgParser
 	public Map<RPCoreCLArgFlag, String[]> getParamArgs() throws CommandLineException
 	{
 		//super.parseArgs();  // Needed
-		return this.paramParsed;
+		return this.rpParsed;
 	}
 	
 	@Override
 	protected boolean isFlag(String arg)
 	{
-		return RPCoreCLArgParser.PARAM_FLAGS.containsKey(arg) || super.isFlag(arg);
+		return RPCoreCLArgParser.RPCORE_FLAGS.containsKey(arg) || super.isFlag(arg);
 	}
 	
 	// Pre: i is the index of the current flag to parse
@@ -65,22 +66,16 @@ public class RPCoreCLArgParser extends CLArgParser
 		switch (flag)
 		{
 			// Unique flags
-
-			case RPCoreCLArgParser.PARAM_CORE_PARAM_FLAG:
-			{
-				return paramParseParam(i);
-			}
-			case RPCoreCLArgParser.PARAM_CORE_NOCOPY_FLAG: return paramParseNoCopy(i);
+			case RPCoreCLArgParser.RPCORE_PARAM_FLAG:         return rpParseParam(i);
+			case RPCoreCLArgParser.RPCORE_SELECT_BRANCH_FLAG: return rpParseSelectBranch(i);
+			case RPCoreCLArgParser.RPCORE_NOCOPY_FLAG:        return rpParseNoCopy(i);
 			
-
 			// Non-unique flags
-			case RPCoreCLArgParser.PARAM_CORE_EFSM_FLAG:     return paramParseRoleArg(flag, i);
-			case RPCoreCLArgParser.PARAM_CORE_EFSM_PNG_FLAG: return paramParseRoleAndFileArgs(flag, i);
-			case RPCoreCLArgParser.PARAM_CORE_API_GEN_FLAG:  return paramParsePackagePathAndRoleArgs(flag, i);
+			case RPCoreCLArgParser.RPCORE_EFSM_FLAG:     return rpParseRoleArg(flag, i);
+			case RPCoreCLArgParser.RPCORE_EFSM_PNG_FLAG: return rpParseRoleAndFileArgs(flag, i);
+			case RPCoreCLArgParser.RPCORE_API_GEN_FLAG:  return rpParsePackagePathAndRoleArgs(flag, i);
 			
-
 			// Base CL
-
 			default:
 			{
 				return super.parseFlag(i);
@@ -88,36 +83,42 @@ public class RPCoreCLArgParser extends CLArgParser
 		}
 	}
 
-	private int paramParseParam(int i) throws CommandLineException
+	private int rpParseParam(int i) throws CommandLineException
 	{
 		if ((i + 1) >= this.args.length)
 		{
 			throw new CommandLineException("Missing simple global protocol name argument.");
 		}
 		String proto = this.args[++i];
-		paramCheckAndAddUniqueFlag(RPCoreCLArgParser.PARAM_CORE_PARAM_FLAG, new String[] { proto });
+		rpCheckAndAddUniqueFlag(RPCoreCLArgParser.RPCORE_PARAM_FLAG, new String[] { proto });
 		return i;
 	}
 
-	private int paramParseNoCopy(int i) throws CommandLineException
+	private int rpParseSelectBranch(int i) throws CommandLineException
 	{
-		paramCheckAndAddUniqueFlag(RPCoreCLArgParser.PARAM_CORE_NOCOPY_FLAG, new String[] { });
+		rpCheckAndAddUniqueFlag(RPCoreCLArgParser.RPCORE_SELECT_BRANCH_FLAG, new String[] { });
 		return i;
 	}
 
-	private void paramCheckAndAddUniqueFlag(String flag, String[] args) throws CommandLineException
+	private int rpParseNoCopy(int i) throws CommandLineException
 	{
-		RPCoreCLArgFlag argFlag = RPCoreCLArgParser.PARAM_UNIQUE_FLAGS.get(flag);
-		if (this.paramParsed.containsKey(argFlag))
+		rpCheckAndAddUniqueFlag(RPCoreCLArgParser.RPCORE_NOCOPY_FLAG, new String[] { });
+		return i;
+	}
+
+	private void rpCheckAndAddUniqueFlag(String flag, String[] args) throws CommandLineException
+	{
+		RPCoreCLArgFlag argFlag = RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS.get(flag);
+		if (this.rpParsed.containsKey(argFlag))
 		{
 			throw new CommandLineException("Duplicate flag: " + flag);
 		}
-		this.paramParsed.put(argFlag, args);
+		this.rpParsed.put(argFlag, args);
 	}
 
-	private int paramParseRoleArg(String f, int i) throws CommandLineException
+	private int rpParseRoleArg(String f, int i) throws CommandLineException
 	{
-		RPCoreCLArgFlag flag = RPCoreCLArgParser.PARAM_NON_UNIQUE_FLAGS.get(f);
+		RPCoreCLArgFlag flag = RPCoreCLArgParser.RPCORE_NON_UNIQUE_FLAGS.get(f);
 		if ((i + 1) >= this.args.length)
 		{
 			throw new CommandLineException("Missing role argument");
@@ -127,9 +128,9 @@ public class RPCoreCLArgParser extends CLArgParser
 		return i;
 	}
 
-	protected int paramParseRoleAndFileArgs(String f, int i) throws CommandLineException
+	protected int rpParseRoleAndFileArgs(String f, int i) throws CommandLineException
 	{
-		RPCoreCLArgFlag flag = RPCoreCLArgParser.PARAM_NON_UNIQUE_FLAGS.get(f);
+		RPCoreCLArgFlag flag = RPCoreCLArgParser.RPCORE_NON_UNIQUE_FLAGS.get(f);
 		if ((i + 2) >= this.args.length)
 		{
 			throw new CommandLineException("Missing role/file arguments");
@@ -141,9 +142,9 @@ public class RPCoreCLArgParser extends CLArgParser
 	}
 
 	// path is absolute package path prefix for API imports
-	protected int paramParsePackagePathAndRoleArgs(String f, int i) throws CommandLineException
+	protected int rpParsePackagePathAndRoleArgs(String f, int i) throws CommandLineException
 	{
-		RPCoreCLArgFlag flag = RPCoreCLArgParser.PARAM_NON_UNIQUE_FLAGS.get(f);
+		RPCoreCLArgFlag flag = RPCoreCLArgParser.RPCORE_NON_UNIQUE_FLAGS.get(f);
 		if ((i + 2) >= this.args.length)
 		{
 			throw new CommandLineException("Missing role/path arguments");
@@ -171,7 +172,7 @@ public class RPCoreCLArgParser extends CLArgParser
 	// FIXME: factor out with core arg parser -- issue is GoCLArgFlag is currently an unlreated type to CLArgFlag
 	private void goConcatArgs(RPCoreCLArgFlag flag, String... toAdd)
 	{
-		String[] args = this.paramParsed.get(flag);
+		String[] args = this.rpParsed.get(flag);
 		if (args == null)
 		{
 			args = Arrays.copyOf(toAdd, toAdd.length);
@@ -183,6 +184,6 @@ public class RPCoreCLArgParser extends CLArgParser
 			System.arraycopy(toAdd, 0, tmp, args.length, toAdd.length);
 			args = tmp;
 		}
-		this.paramParsed.put(flag, args);
+		this.rpParsed.put(flag, args);
 	}
 }

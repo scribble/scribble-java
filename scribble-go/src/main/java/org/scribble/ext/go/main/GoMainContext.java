@@ -22,6 +22,6 @@ public class GoMainContext extends MainContext
 	{
 		return new GoJob(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
 				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck, this.noValidation,
-				this.af, this.ef, this.sf, false);
+				this.af, this.ef, this.sf, false, false);
 	}
 }

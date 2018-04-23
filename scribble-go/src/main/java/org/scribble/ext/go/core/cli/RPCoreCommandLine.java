@@ -48,7 +48,7 @@ import org.scribble.util.ScribParserException;
 // N.B. this is the CL for both -goapi and param-core extensions
 public class RPCoreCommandLine extends CommandLine
 {
-	protected final Map<RPCoreCLArgFlag, String[]> paramArgs;  // Maps each flag to list of associated argument values
+	protected final Map<RPCoreCLArgFlag, String[]> rpArgs;  // Maps each flag to list of associated argument values
 
 	// HACK: store in (Core) Job/JobContext?
 	protected GProtocolDecl gpd;
@@ -74,7 +74,7 @@ public class RPCoreCommandLine extends CommandLine
 		{
 			throw new CommandLineException("No main module has been specified\r\n");
 		}
-		this.paramArgs = p.getParamArgs();
+		this.rpArgs = p.getParamArgs();
 	}
 	
 	@Override
@@ -89,7 +89,8 @@ public class RPCoreCommandLine extends CommandLine
 		boolean noAcceptCorrelationCheck = this.args.containsKey(CLArgFlag.NO_ACCEPT_CORRELATION_CHECK);
 		boolean noValidation = this.args.containsKey(CLArgFlag.NO_VALIDATION);
 
-		boolean noCopy = this.paramArgs.containsKey(RPCoreCLArgFlag.PARAM_CORE_NO_COPY);
+		boolean selectApi = this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_SELECT_BRANCH);
+		boolean noCopy = this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_NO_COPY);
 
 		List<Path> impaths = this.args.containsKey(CLArgFlag.IMPORT_PATH)
 				? CommandLine.parseImportPaths(this.args.get(CLArgFlag.IMPORT_PATH)[0])
@@ -105,7 +106,7 @@ public class RPCoreCommandLine extends CommandLine
 		{
 			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
 			return new RPCoreMainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, noCopy);
+					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, noCopy, selectApi);
 		}
 	}
 
@@ -117,7 +118,7 @@ public class RPCoreCommandLine extends CommandLine
 	@Override
 	protected void doValidationTasks(Job job) throws RPCoreSyntaxException, AntlrSourceException, ScribParserException, CommandLineException
 	{
-		if (this.paramArgs.containsKey(RPCoreCLArgFlag.PARAM_CORE_PARAM))
+		if (this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_PARAM))
 		{
 			doParamCoreValidationTasks((GoJob) job);
 		}
@@ -130,13 +131,14 @@ public class RPCoreCommandLine extends CommandLine
 	@Override
 	protected void doNonAttemptableOutputTasks(Job job) throws ScribbleException, CommandLineException
 	{		
-		if (this.paramArgs.containsKey(RPCoreCLArgFlag.PARAM_CORE_API_GEN))
+		GoJob gjob = (GoJob) job;
+		if (this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_API_GEN))
 		{
 			JobContext jcontext = job.getContext();
-			String[] args = this.paramArgs.get(RPCoreCLArgFlag.PARAM_CORE_API_GEN);
+			String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_API_GEN);
 			for (int i = 0; i < args.length; i += 2)
 			{
-				String simpname = this.paramArgs.get(RPCoreCLArgFlag.PARAM_CORE_PARAM)[0];
+				String simpname = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_PARAM)[0];
 				GProtocolName fullname = checkGlobalProtocolArg(jcontext, simpname);
 				Role role = checkRoleArg(jcontext, fullname, args[i]);
 				String impath = args[i+1];
@@ -151,7 +153,7 @@ public class RPCoreCommandLine extends CommandLine
 
 				Map<String, String> goClasses = new ParamCoreSTSessionApiBuilder((GoJob) job, fullname, this.E0).build();*/
 				//Map<ParamActualRole, EGraph> actuals = this.E0.get(role);
-				Map<String, String> goClasses = new RPCoreSTApiGenerator(job, fullname, this.E0, impath, role).build();
+				Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, this.E0, impath, role).build();
 				outputClasses(goClasses);
 			}
 		}
@@ -171,7 +173,7 @@ public class RPCoreCommandLine extends CommandLine
 
 		paramCorePreContextBuilding(j);
 
-		GProtocolName simpname = new GProtocolName(this.paramArgs.get(RPCoreCLArgFlag.PARAM_CORE_PARAM)[0]);
+		GProtocolName simpname = new GProtocolName(this.rpArgs.get(RPCoreCLArgFlag.RPCORE_PARAM)[0]);
 		if (simpname.toString().equals("[ParamCoreAllTest]"))  // HACK: ParamCoreAllTest
 		{
 			paramCoreParseAndCheckWF(j);  // Includes base passes
@@ -418,9 +420,9 @@ public class RPCoreCommandLine extends CommandLine
 	@Override
 	protected void tryOutputTasks(Job job) throws CommandLineException, ScribbleException
 	{
-		if (this.paramArgs.containsKey(RPCoreCLArgFlag.PARAM_CORE_EFSM))
+		if (this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_EFSM))
 		{
-			String[] args = this.paramArgs.get(RPCoreCLArgFlag.PARAM_CORE_EFSM);
+			String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_EFSM);
 			for (int i = 0; i < args.length; i += 1)
 			{
 				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
@@ -431,9 +433,9 @@ public class RPCoreCommandLine extends CommandLine
 				});
 			}
 		}
-		if (this.paramArgs.containsKey(RPCoreCLArgFlag.PARAM_CORE_EFSM_PNG))
+		if (this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_EFSM_PNG))
 		{
-			String[] args = this.paramArgs.get(RPCoreCLArgFlag.PARAM_CORE_EFSM_PNG);
+			String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_EFSM_PNG);
 			for (int i = 0; i < args.length; i += 2)
 			{
 				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
