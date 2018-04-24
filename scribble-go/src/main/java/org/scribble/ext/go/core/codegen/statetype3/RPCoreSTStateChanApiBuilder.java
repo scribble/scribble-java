@@ -266,7 +266,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 	}
 
-	protected String makeExtNameImport(DataType t)
+	public String makeExtNameImport(DataType t)
 	{
 		String extName = getExtName(t);
 		return extName.matches("(\\[\\])*(int|string|byte)")
@@ -287,7 +287,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extName;
 	}
 	
-	private String getExtSource(DataType t)
+	protected String getExtSource(DataType t)
 	{
 		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extSource;  // FIXME: make a map
 	}
