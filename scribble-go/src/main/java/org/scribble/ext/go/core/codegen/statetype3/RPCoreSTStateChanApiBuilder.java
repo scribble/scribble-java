@@ -245,7 +245,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			throw new RuntimeException("[rp-core] TODO: " + r);
 		}
 		RPInterval g = r.intervals.iterator().next();
-		return r.getName() + "_" + g.start + "To" + g.end;
+		return r.getName() + "_" + g.start + "to" + g.end;
 	}
 	
 	public static String generateIndexExpr(RPIndexExpr e)

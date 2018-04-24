@@ -107,10 +107,10 @@ public class RPCoreSTApiGenerator
 		ParamRange g = actual.ranges.iterator().next();
 		return actual.getName() + "_" + g.start + "To" + g.end;*/
 		return variant.getName() + "_"
-				+ variant.intervals.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and"))
+				+ variant.intervals.stream().map(g -> g.start + "to" + g.end).sorted().collect(Collectors.joining("and"))
 				+ (variant.cointervals.isEmpty()
 						? ""
-						: "_not_" + variant.cointervals.stream().map(g -> g.start + "To" + g.end).sorted().collect(Collectors.joining("and")));
+						: "_not_" + variant.cointervals.stream().map(g -> g.start + "to" + g.end).sorted().collect(Collectors.joining("and")));
 	}
 
 	
