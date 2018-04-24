@@ -220,7 +220,7 @@ public class RPCoreSTSessionApiBuilder
 						// FIXME: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
 						// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
 						+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
-								? "end := f(ini.NewBranchInit())\n"
+								? "end := f(newBranchInit(ini))\n"
 								: "end := f(&Init{ new(session.LinearResource), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 
 						+ "return &end\n"

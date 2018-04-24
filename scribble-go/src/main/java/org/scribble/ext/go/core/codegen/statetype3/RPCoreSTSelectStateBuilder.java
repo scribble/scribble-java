@@ -74,8 +74,8 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 
 		// Explicit constructor -- for creating internal channels
 		res += "\n"
-				+ "func (ep *" + epTypeName + ") NewBranchInit"   // FIXME: factor out
-						+ "() *" + scTypeName + " {\n"
+				+ "func newBranch"   // FIXME: factor out, RPCoreSTStateChanApiBuilder#getSuccStateChan and RPCoreSTSelectActionBuilder#buildEndpointKindApi
+						+ scTypeName + "(ep *" + epTypeName + ") *" + scTypeName + " {\n"
 				+ "s := &" + scTypeName + " { " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep" + ", "
 						+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
 						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan string, 1)").collect(Collectors.joining(", ")) + " "
