@@ -176,8 +176,9 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 		// Check here?  Or in API gen
 		if (kind.equals(OpKind.KIND))
 		{
-			char c = identifier.charAt(0);
-			if (c < 'A' || c > 'Z')
+			char c;
+			if (identifier.length() == 0
+					|| ((c = identifier.charAt(0))) < 'A' || c > 'Z')
 			{
 				throw new RuntimeException("[param] Op names must start uppercase for Go accessibility: " + identifier);
 					// FIXME: return proper parsing error -- refactor as param API gen errors
@@ -192,8 +193,9 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 		// Check here?  Or in API gen
 		if (kind.equals(SigKind.KIND))
 		{
-			char c = elems[elems.length-1].charAt(0);
-			if (c < 'A' || c > 'Z')
+			char c;
+			if (elems[elems.length-1].length() == 0
+					|| ((c = elems[elems.length-1].charAt(0))) < 'A' || c > 'Z')
 			{
 				throw new RuntimeException("[param] Op names must start uppercase for Go accessibility: " + elems[elems.length-1]);
 					// FIXME: return proper parsing error -- refactor as param API gen errors
