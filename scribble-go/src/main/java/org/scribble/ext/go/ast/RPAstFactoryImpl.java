@@ -5,11 +5,8 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.RoleDecl;
 import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.qualified.DataTypeNode;
-import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.global.RPGChoice;
 import org.scribble.ext.go.ast.global.RPGCrossMessageTransfer;
@@ -22,9 +19,6 @@ import org.scribble.ext.go.del.global.RPGMessageTransferDel;
 import org.scribble.ext.go.del.global.RPGMultiChoicesDel;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexVar;
-import org.scribble.type.kind.Kind;
-import org.scribble.type.kind.OpKind;
-import org.scribble.type.kind.SigKind;
 
 
 public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
@@ -157,7 +151,7 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 	
 	// Extra parsing checks
 
-	@Override
+	/*@Override
 	public RoleDecl RoleDecl(CommonTree source, RoleNode namenode)
 	{
 		// Check here?  Or in API gen -- cf. RPIndexFactory#ParamIntVar
@@ -202,5 +196,5 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 			}
 		}
 		return super.QualifiedNameNode(source, kind, elems);
-	}
+	}*/
 }

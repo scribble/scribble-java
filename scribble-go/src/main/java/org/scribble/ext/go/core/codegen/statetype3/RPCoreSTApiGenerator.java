@@ -6,13 +6,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.Module;
+import org.scribble.ast.ProtocolDecl;
+import org.scribble.del.ModuleDel;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
+import org.scribble.ext.go.core.cli.RPCoreCLArgParser;
 import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
+import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.visit.util.MessageIdCollector;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTEndpointApiGenerator
 public class RPCoreSTApiGenerator
@@ -51,6 +60,45 @@ public class RPCoreSTApiGenerator
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
 	public Map<String, String> build() throws ScribbleException
 	{
+		for (Role r : this.variants.keySet())
+		{
+			char c = r.toString().charAt(0);
+			if (c < 'A' || c > 'Z')
+			{
+				throw new ScribbleException("[rp-core] [" + RPCoreCLArgParser.RPCORE_API_GEN_FLAG + "]" 
+						+ " Role names must start uppercase for Go accessibility: " + r);  
+			}
+		}
+
+		// Duplicated from RPCoreSTSessionApiBuilder#build
+		Module mod = this.job.getContext().getModule(this.proto.getPrefix());
+		MessageIdCollector midcol = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
+		ProtocolDecl<Global> gpd = mod.getProtocolDecl(this.proto.getSimpleName());
+		// Duplicated from. SessionApiGeneration#constructOpClasses
+		gpd.accept(midcol);
+		for (MessageId<?> mid : midcol.getNames())
+		{
+			String mname = mid.toString();
+			char c;
+			if (mname.length() == 0 || ((c = mname.charAt(0))) < 'A' || c > 'Z')
+			{
+				throw new ScribbleException("[rpcore] [" + RPCoreCLArgParser.RPCORE_API_GEN_FLAG + "]" 
+						+ " Message identifiers must start uppercase for Go accessibility: " + mname);
+			}
+		}
+
+		RPCoreIndexVarCollector ivarcol = new RPCoreIndexVarCollector(this.job);
+		gpd.accept(ivarcol);
+		for (RPIndexVar ivar : ivarcol.getIndexVars())
+		{
+			char c = ivar.name.charAt(0);
+			if (c < 'A' || c > 'Z')
+			{
+				throw new ScribbleException("[rp-core] [" + RPCoreCLArgParser.RPCORE_API_GEN_FLAG + "]" 
+						+ " Index variables must be uppercase for Go accessibility: " + ivar);  
+			}
+		}
+		
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
 		res.putAll(buildSessionApi());
 		for (Entry<RPRoleVariant, EGraph> variant : this.variants.get(this.self).entrySet())
