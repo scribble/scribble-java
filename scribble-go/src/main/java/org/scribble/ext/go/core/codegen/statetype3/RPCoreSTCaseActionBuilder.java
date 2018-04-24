@@ -76,8 +76,9 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			// FIXME: no -- Branch() should already receive the sig message and case action should just return it
-			res += f.apply(rpapi.getExtName((MessageSigName) a.mid));
+			//res += f.apply(rpapi.getExtName((MessageSigName) a.mid));
+					// FIXME: no -- Branch() should already receive the sig message and case action should just return it
+			res += "*arg0 = *s.msg\n";
 		}
 		return res + buildReturn(rpapi, curr, succ);
 	}

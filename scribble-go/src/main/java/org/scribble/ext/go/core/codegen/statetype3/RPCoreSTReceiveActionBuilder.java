@@ -122,9 +122,11 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			{
 				res += f.apply(rpapi.getExtName((MessageSigName) a.mid));
 			}
+		
+			res += "}\n";
 		}
 				
-		return res + "}\n" + buildReturn(rpapi, curr, succ);
+		return res + buildReturn(rpapi, curr, succ);
 	}
 	
 	/*protected static String hackGetValues(String t)

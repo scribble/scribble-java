@@ -76,26 +76,38 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		String res = "for i, j := " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + ", 0;"
 				+ " i <= " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.end)+"; i, j = i+1, j+1 {\n";
 
-		// Write label
-		if (!a.mid.toString().equals("")) {  // HACK FIXME?
-			res += "if err := " + sEpWrite + "[i]"
-						+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL + "(\"" + a.mid + "\"" + ")" 
-				+ "; err != nil {\n"
-				+ "log.Fatal(err)\n"  // FIXME
-				+ "}\n";
+		if (a.mid.isOp())
+		{
+			// Write label
+			if (!a.mid.toString().equals("")) {  // HACK FIXME?
+				res += "if err := " + sEpWrite + "[i]"
+							+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL + "(\"" + a.mid + "\"" + ")" 
+							+ "; err != nil {\n"
+					+ "log.Fatal(err)\n"  // FIXME
+					+ "}\n";
+			}
 		}
 
-		// Write payload
+		// Write message sig or payload
 		if (isDeleg)  //... FIXME: delegation: take pointer?  send underlying ept? -- don't do (multi)"send"?
 		{
 			res += "log.Fatal(\"TODO\")\n";
 		}
 		else
 		{
+			if (a.mid.isOp() && a.payload.elems.size() < 1)
+			{
+				throw new RuntimeException("[rp-core] [param-api] TODO: " + a);
+			}
+			if (a.payload.elems.size() > 1)
+			{
+				throw new RuntimeException("[rp-core] [param-api] TODO: " + a);
+			}
+			
 			res += "if err := " + sEpWrite + "[i]"
-					+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
+							+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 							+ "(" + "arg0[j])"  // FIXME: hardcoded arg0
-					+ "; err != nil {\n"
+							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n";
 		}

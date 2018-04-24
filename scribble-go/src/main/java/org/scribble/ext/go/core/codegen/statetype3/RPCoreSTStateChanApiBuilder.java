@@ -147,8 +147,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				// FIXME: error handling via Err field -- fallback should be panic
 				+ "import \"log\"\n";
 				
-		// Not needed by Branch/Case objects  // FIXME: refactor back into state-specific builders?
-		if (s.getStateKind() == EStateKind.OUTPUT || s.getStateKind() == EStateKind.UNARY_INPUT)// || s.getStateKind() == EStateKind.POLY_INPUT)
+		// Not needed by select-branch or Case objects  // FIXME: refactor back into state-specific builders?
+		if (s.getStateKind() == EStateKind.OUTPUT || s.getStateKind() == EStateKind.UNARY_INPUT
+				|| (s.getStateKind() == EStateKind.POLY_INPUT && !this.apigen.job.selectApi))
 		{
 			res += makeMessageImports(s);
 		}
@@ -156,7 +157,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		// FIXME: still needed? -- refactor back into state-specific builders?
 		if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 		{
-			res += "import \"sort\"\n\nvar _ = sort.Sort\n";
+			res += "import \"sort\"\n";
+			res += "import \"reflect\"\n";
+			res += "\n";
+			res += "var _ = sort.Sort\n";
+			res += "var _ = reflect.TypeOf\n";
 		}
 
 				// State channel type
