@@ -27,10 +27,17 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	@Override
 	public String buildArgs(STStateChanApiBuilder api, EAction a)
 	{
-		return IntStream.range(0, a.payload.elems.size()) 
-				.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG + i + " []"
-						+ ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) a.payload.elems.get(i))) //a.payload.elems.get(i)
-				.collect(Collectors.joining(", "));
+		if (a.mid.isOp())
+		{
+			return IntStream.range(0, a.payload.elems.size()) 
+					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG + i + " []"
+							+ ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) a.payload.elems.get(i))) //a.payload.elems.get(i)
+					.collect(Collectors.joining(", "));
+		}
+		else //if (a.mid.isMessageSigName())
+		{
+			return "a *" + a.mid;
+		}
 	}
 
 	@Override

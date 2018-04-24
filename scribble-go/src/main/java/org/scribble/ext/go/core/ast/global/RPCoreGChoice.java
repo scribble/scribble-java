@@ -172,13 +172,15 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	}
 
 	@Override
-	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
-	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
+	public RPCoreLType project(RPCoreAstFactory af, //Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
+				RPRoleVariant subj) throws RPCoreSyntaxException
 	{
-		//LinkedHashMap<RPCoreMessage, RPCoreLType> projs = new LinkedHashMap<>();
-		LinkedHashMap<Message, RPCoreLType> projs = new LinkedHashMap<>();
-		//for (Entry<RPCoreMessage, RPCoreGType> e : this.cases.entrySet())
-		for (Entry<Message, RPCoreGType> e : this.cases.entrySet())
+		//LinkedHashMap<RPCoreMessage, RPCoreLType>
+		LinkedHashMap<Message, RPCoreLType>
+				projs = new LinkedHashMap<>();
+		//for (Entry<RPCoreMessage, RPCoreGType>
+		for (Entry<Message, RPCoreGType>
+				e : this.cases.entrySet())
 		{
 			//RPCoreMessage a = e.getKey();
 			Message a = e.getKey();
@@ -189,12 +191,13 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			
 			if (a instanceof MessageSig)
 			{
-				//for (PayloadElemType<?> pet : a.pay.elems)
-				for (PayloadElemType<?> pet : ((MessageSig) a).payload.elems)
+				for (PayloadElemType<?> pet : //a.pay.elems)
+						((MessageSig) a).payload.elems)
 				{
 					if (pet instanceof GDelegationType)
 					{
 						GDelegationType gdt = (GDelegationType) pet;  // Payload types come from ParamCoreGProtocolDeclTranslator#parsePayload (toMessage)
+
 						System.out.println("aaa: " + this + ", " + gdt.getGlobalProtocol() + ", " + gdt.getRole());
 						
 						// cf. GDelegationElem#project
@@ -203,10 +206,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 					}
 				}
 			}
-			else
-			{
-				throw new RuntimeException("[rp-core] TODO: " + a);
-			}
+			// MessageSigName is not delegation  // FIXME: cf. "Sync@A"
 		}
 		
 		// "Simple" cases

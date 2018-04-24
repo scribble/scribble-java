@@ -1,5 +1,6 @@
 package org.scribble.ext.go.core.codegen.statetype3;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -36,27 +37,34 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP
 				+ "[\"" +  peer.getName() + "\"]";
-
-		String extName = rpapi.getExtName((DataType) a.payload.elems.get(0));
+		
+		// Duplicated from RPCoreSTReceiveActionBuilder
+		Function<String, String> f = extName -> 
+		    "var tmp " + extName + "\n"  // var tmp needed for deserialization -- FIXME?
+			+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK? for passthru?
+			+ "if err := " + sEpRecv + "[1]"  // FIXME: use peer interval
+					+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
+			+ "; err != nil {\n"
+			+ "log.Fatal(err)\n"
+			+ "}\n"
+			+ "*arg0 = tmp\n";
 		
 		String res = "";
-
-		// Duplicated from RPCoreSTReceiveActionBuilder
-		if (!a.payload.elems.isEmpty())
+		if (a.mid.isOp())
 		{
-			if (a.payload.elems.size() > 1)
+			if (!a.payload.elems.isEmpty())
 			{
-				throw new RuntimeException("TODO: " + a);
-			}
+				if (a.payload.elems.size() > 1)
+				{
+					throw new RuntimeException("TODO: " + a);
+				}
 
-			res += "var tmp " + extName + "\n"  // var tmp needed for deserialization -- FIXME?
-				+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK? for passthru?
-				+ "if err := " + sEpRecv + "[1]"  // FIXME: use peer interval
-						+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
-				+ "; err != nil {\n"
-				+ "log.Fatal(err)\n"
-				+ "}\n"
-				+ "*arg0 = tmp\n";
+				res += f.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
+			}
+		}
+		else //if (a.mid.isMessageSigName())
+		{
+			res += f.apply(a.mid.toString());
 		}
 		return res + buildReturn(rpapi, curr, succ);
 	}

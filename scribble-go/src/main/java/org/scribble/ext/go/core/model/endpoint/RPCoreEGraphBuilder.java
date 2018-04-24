@@ -74,7 +74,7 @@ public class RPCoreEGraphBuilder
 		}
 		else
 		{
-			throw new RuntimeException("[param-core] Shouldn't get in here: " + lt);
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + lt);
 		}
 	}
 
@@ -144,7 +144,7 @@ public class RPCoreEGraphBuilder
 		{
 			return ef.newParamCoreECrossReceive(r, mid, pay);
 		}
-		else if (k.equals(RPCoreLActionKind.DOT_SEND))
+		/*else if (k.equals(RPCoreLActionKind.DOT_SEND))
 		{
 			return ef.newParamCoreEDotSend(r, offset, mid, pay);
 		}
@@ -152,13 +152,13 @@ public class RPCoreEGraphBuilder
 		{
 			return ef.newParamCoreEDotReceive(r, offset, mid, pay);
 		}
-		/*else if (k.equals(ParamCoreLActionKind.MULTICHOICES_RECEIVE))
+		else if (k.equals(ParamCoreLActionKind.MULTICHOICES_RECEIVE))
 		{
-			return ef.newParamCoreEMultiChoicesReceive(r, a.op, a.pay);
+			return ef.newParamCoreEMultiChoicesReceive(r, mid, pay);
 		}*/
 		else
 		{
-			throw new RuntimeException("[param-core] Shouldn't get in here: " + k);
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + k);
 		}
 	}
 }
