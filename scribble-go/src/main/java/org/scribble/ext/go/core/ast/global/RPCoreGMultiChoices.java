@@ -12,17 +12,18 @@ import java.util.stream.Stream;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreChoice;
-import org.scribble.ext.go.core.ast.RPCoreMessage;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
-import org.scribble.ext.go.core.type.RPRoleVariant;
-import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.type.Message;
 import org.scribble.type.kind.Global;
 
+@Deprecated
 public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> implements RPCoreGType
 {
 	public final RPIndexedRole src;      // Gives the Scribble choices-subj range // Cf. ParamCoreGChoice singleton src
@@ -30,7 +31,9 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 
 	public final RPIndexedRole dest;  // this.dest == super.role -- arbitrary?
 
-	public RPCoreGMultiChoices(RPIndexedRole src, RPIndexVar var, RPIndexedRole dest, List<RPCoreMessage> cases, RPCoreGType cont)
+	public RPCoreGMultiChoices(RPIndexedRole src, RPIndexVar var, RPIndexedRole dest, //List<RPCoreMessage> cases,
+			List<Message> cases,
+			RPCoreGType cont)
 	{
 		//super(dest, ParamCoreGActionKind.CROSS_TRANSFER, cases.stream().collect(Collectors.toMap(c -> c, c -> cont)));  // FIXME
 		super(dest, RPCoreGActionKind.CROSS_TRANSFER, foo(cases, cont));  // FIXME
@@ -39,9 +42,12 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 		this.var = var;
 	}
 	
-	private static LinkedHashMap<RPCoreMessage, RPCoreGType> foo(List<RPCoreMessage> cases, RPCoreGType cont)
+	private static //LinkedHashMap<RPCoreMessage, RPCoreGType> foo(List<RPCoreMessage> cases, RPCoreGType cont)
+			LinkedHashMap<Message, RPCoreGType> foo(List<Message> cases, RPCoreGType cont)
 	{
-		LinkedHashMap<RPCoreMessage, RPCoreGType> tmp = new LinkedHashMap<>();
+		//LinkedHashMap<RPCoreMessage, RPCoreGType>
+		LinkedHashMap<Message, RPCoreGType>
+				tmp = new LinkedHashMap<>();
 		cases.stream().forEach(c -> tmp.put(c, cont));
 		return tmp;
 	}
@@ -162,10 +168,16 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 			throw new RuntimeException("[param-core] TODO: " + this);
 		}
 		
-		LinkedHashMap<RPCoreMessage, RPCoreLType> projs = new LinkedHashMap<>();
-		for (Entry<RPCoreMessage, RPCoreGType> e : this.cases.entrySet())
+		//LinkedHashMap<RPCoreMessage, RPCoreLType> projs
+		LinkedHashMap<Message, RPCoreLType> projs
+				= new LinkedHashMap<>();
+		//for (Entry<RPCoreMessage, RPCoreGType>
+		for (Entry<Message, RPCoreGType>
+				e : this.cases.entrySet())
 		{
-			RPCoreMessage a = e.getKey();
+			//RPCoreMessage a
+			Message a
+					= e.getKey();
 			//projs.put(a, e.getValue().project(af, r, ranges));
 			projs.put(a, e.getValue().project(af, subj));
 					// N.B. local actions directly preserved from globals -- so core-receive also has assertion (cf. ParamGActionTransfer.project, currently no ParamLReceive)
@@ -188,8 +200,9 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 		}
 		else if (this.dest.getName().equals(subj.getName()) && subj.intervals.contains(this.dest.getParsedRange()))
 		{
-			return af.ParamCoreLMultiChoices(this.src, this.var, projs.keySet().stream().collect(Collectors.toList()),
-					values.iterator().next());
+			/*return af.ParamCoreLMultiChoices(this.src, this.var, projs.keySet().stream().collect(Collectors.toList()),
+					values.iterator().next());*/
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + this);
 		}
 		
 		// src name != dest name
@@ -198,7 +211,8 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 	}
 		
 	//private ParamCoreLType merge(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges, Map<ParamCoreMessage, ParamCoreLType> projs) throws ParamCoreSyntaxException
-	private RPCoreLType merge(RPCoreAstFactory af, RPRoleVariant r, Map<RPCoreMessage, RPCoreLType> projs) throws RPCoreSyntaxException
+	private RPCoreLType merge(RPCoreAstFactory af, RPRoleVariant r, //Map<RPCoreMessage, RPCoreLType> projs) throws RPCoreSyntaxException
+			Map<Message, RPCoreLType> projs) throws RPCoreSyntaxException
 	{
 		// "Merge"
 		Set<RPCoreLType> values = new HashSet<>(projs.values());

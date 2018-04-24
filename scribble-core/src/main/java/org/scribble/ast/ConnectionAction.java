@@ -58,6 +58,6 @@ public abstract class ConnectionAction<K extends ProtocolKind> extends SimpleInt
 			return false;
 		}
 		MessageSigNode msn = (MessageSigNode) this.msg;
-		return msn.op.isEmpty() && msn.payloads.isEmpty();
+		return msn.op.isEmpty() && msn.payload.isEmpty();
 	}
 }

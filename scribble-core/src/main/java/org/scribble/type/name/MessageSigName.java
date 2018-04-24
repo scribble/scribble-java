@@ -17,7 +17,7 @@ import org.scribble.type.Message;
 import org.scribble.type.kind.SigKind;
 
 
-// The name of a declared (imported) message signature member
+// The name of a declared (imported) message signature member -- basically a session types "message label"
 public class MessageSigName extends MemberName<SigKind> implements Message, MessageId<SigKind>
 {
 	private static final long serialVersionUID = 1L;

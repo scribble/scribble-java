@@ -4,16 +4,19 @@ import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.type.Message;
 import org.scribble.type.kind.ProtocolKind;
 
 public abstract class RPCoreChoice<C extends RPCoreType<K>, K extends ProtocolKind> implements RPCoreType<K>
 {
 	public final RPIndexedRole role;
 	public final RPCoreActionKind<K> kind;
-	public final LinkedHashMap<RPCoreMessage, C> cases;
+	//public final LinkedHashMap<RPCoreMessage, C> cases;
+	public final LinkedHashMap<Message, C> cases;
 	
 	// Pre: cases.size() > 1
-	public RPCoreChoice(RPIndexedRole role, RPCoreActionKind<K> kind, LinkedHashMap<RPCoreMessage, C> cases)
+	//public RPCoreChoice(RPIndexedRole role, RPCoreActionKind<K> kind, LinkedHashMap<RPCoreMessage, C> cases)
+	public RPCoreChoice(RPIndexedRole role, RPCoreActionKind<K> kind, LinkedHashMap<Message, C> cases)
 	{
 		this.role = role;
 		this.kind = kind;

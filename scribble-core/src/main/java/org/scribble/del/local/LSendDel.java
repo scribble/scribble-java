@@ -43,7 +43,7 @@ public class LSendDel extends LMessageTransferDel
 		Role peer = dests.get(0).toName();
 		MessageId<?> mid = ls.msg.toMessage().getId();
 		Payload payload = ls.msg.isMessageSigNode()  // Hacky?
-					? ((MessageSigNode) ls.msg).payloads.toPayload()
+					? ((MessageSigNode) ls.msg).payload.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newESend(peer, mid, payload), builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());

@@ -1,31 +1,24 @@
 package org.scribble.ext.go.core.ast;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.ext.go.core.ast.global.RPCoreGActionKind;
 import org.scribble.ext.go.core.ast.global.RPCoreGChoice;
 import org.scribble.ext.go.core.ast.global.RPCoreGEnd;
-import org.scribble.ext.go.core.ast.global.RPCoreGMultiChoices;
 import org.scribble.ext.go.core.ast.global.RPCoreGRec;
 import org.scribble.ext.go.core.ast.global.RPCoreGRecVar;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.RPCoreLCrossChoice;
-import org.scribble.ext.go.core.ast.local.RPCoreLDotChoice;
 import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
-import org.scribble.ext.go.core.ast.local.RPCoreLMultiChoices;
 import org.scribble.ext.go.core.ast.local.RPCoreLRec;
 import org.scribble.ext.go.core.ast.local.RPCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
-import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
-import org.scribble.ext.go.type.index.RPIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexVar;
-import org.scribble.type.Payload;
-import org.scribble.type.name.Op;
+import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.type.Message;
 import org.scribble.type.name.RecVar;
 
 
@@ -41,22 +34,23 @@ public class RPCoreAstFactory
 		return new RPIndexedRole(name, Stream.of(range).collect(Collectors.toSet()));
 	}
 
-	// Pre: not null
-	public RPCoreMessage ParamCoreAction(Op op, Payload pay)
+	// Pre: not null -- ?
+	/*public RPCoreMessage ParamCoreAction(Op op, Payload pay)
 	{
 		return new RPCoreMessage(op, pay);
-	}
+	}*/
 	
-	public RPCoreGChoice ParamCoreGChoice(RPIndexedRole src, RPCoreGActionKind kind, RPIndexedRole dest, LinkedHashMap<RPCoreMessage, RPCoreGType> cases)
+	public RPCoreGChoice ParamCoreGChoice(RPIndexedRole src, RPCoreGActionKind kind, RPIndexedRole dest, //LinkedHashMap<RPCoreMessage, RPCoreGType> cases)
+			LinkedHashMap<Message, RPCoreGType> cases)
 	{
 		return new RPCoreGChoice(src, kind, dest, cases);
 	}
 	
-	public RPCoreGMultiChoices ParamCoreGMultiChoices(RPIndexedRole src, RPIndexVar var,
+	/*public RPCoreGMultiChoices ParamCoreGMultiChoices(RPIndexedRole src, RPIndexVar var,
 			RPIndexedRole dest, List<RPCoreMessage> cases, RPCoreGType cont)
 	{
 		return new RPCoreGMultiChoices(src, var, dest, cases, cont);
-	}
+	}*/
 	
 	public RPCoreGRec ParamCoreGRec(RecVar recvar, RPCoreGType body)
 	{
@@ -74,12 +68,13 @@ public class RPCoreAstFactory
 	}
 
 	public RPCoreLCrossChoice ParamCoreLCrossChoice(RPIndexedRole role, RPCoreLActionKind kind,
-			LinkedHashMap<RPCoreMessage, RPCoreLType> cases)
+			//LinkedHashMap<RPCoreMessage, RPCoreLType> cases)
+			LinkedHashMap<Message, RPCoreLType> cases)
 	{
 		return new RPCoreLCrossChoice(role, kind, cases);
 	}
 
-	public RPCoreLDotChoice ParamCoreLDotChoice(RPIndexedRole role, RPIndexExpr offset, RPCoreLActionKind kind,
+	/*public RPCoreLDotChoice ParamCoreLDotChoice(RPIndexedRole role, RPIndexExpr offset, RPCoreLActionKind kind,
 			LinkedHashMap<RPCoreMessage, RPCoreLType> cases)
 	{
 		return new RPCoreLDotChoice(role, offset, kind, cases);
@@ -89,7 +84,7 @@ public class RPCoreAstFactory
 			List<RPCoreMessage> cases, RPCoreLType cont)
 	{
 		return new RPCoreLMultiChoices(role, var, cases, cont);
-	}
+	}*/
 	
 	/*public ParamCoreLSend LSend(Role self, Role peer, Op op, Payload pay)
 	{

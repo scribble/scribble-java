@@ -13,20 +13,17 @@ import java.util.stream.Stream;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreChoice;
-import org.scribble.ext.go.core.ast.RPCoreMessage;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
-import org.scribble.ext.go.core.ast.local.RPCoreLDotChoice;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
-import org.scribble.ext.go.core.type.RPRoleVariant;
-import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
-import org.scribble.ext.go.type.index.RPBinIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexFactory;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.Z3Wrapper;
+import org.scribble.type.Message;
+import org.scribble.type.MessageSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.PayloadElemType;
@@ -37,7 +34,9 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	public final RPIndexedRole src;  // "Singleton" -- checked by isWellFormed
 	public final RPIndexedRole dest;  // this.dest == super.role -- arbitrary?
 
-	public RPCoreGChoice(RPIndexedRole src, RPCoreGActionKind kind, RPIndexedRole dest, LinkedHashMap<RPCoreMessage, RPCoreGType> cases)
+	public RPCoreGChoice(RPIndexedRole src, RPCoreGActionKind kind, RPIndexedRole dest, 
+			//LinkedHashMap<RPCoreMessage, RPCoreGType> cases)
+			LinkedHashMap<Message, RPCoreGType> cases)
 	{
 		super(dest, kind, cases);
 		this.src = src;
@@ -176,26 +175,37 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
 	{
-		LinkedHashMap<RPCoreMessage, RPCoreLType> projs = new LinkedHashMap<>();
-		for (Entry<RPCoreMessage, RPCoreGType> e : this.cases.entrySet())
+		//LinkedHashMap<RPCoreMessage, RPCoreLType> projs = new LinkedHashMap<>();
+		LinkedHashMap<Message, RPCoreLType> projs = new LinkedHashMap<>();
+		//for (Entry<RPCoreMessage, RPCoreGType> e : this.cases.entrySet())
+		for (Entry<Message, RPCoreGType> e : this.cases.entrySet())
 		{
-			RPCoreMessage a = e.getKey();
+			//RPCoreMessage a = e.getKey();
+			Message a = e.getKey();
 			//projs.put(a, e.getValue().project(af, r, ranges));
 			projs.put(a, e.getValue().project(af, subj));
 					// N.B. local actions directly preserved from globals -- so core-receive also has assertion (cf. ParamGActionTransfer.project, currently no ParamLReceive)
 					// FIXME: receive assertion projection -- should not be the same as send?
 			
-			for (PayloadElemType<?> pet : a.pay.elems)
+			if (a instanceof MessageSig)
 			{
-				if (pet instanceof GDelegationType)
+				//for (PayloadElemType<?> pet : a.pay.elems)
+				for (PayloadElemType<?> pet : ((MessageSig) a).payload.elems)
 				{
-					GDelegationType gdt = (GDelegationType) pet;  // Payload types come from ParamCoreGProtocolDeclTranslator#parsePayload (toMessage)
-					System.out.println("aaa: " + this + ", " + gdt.getGlobalProtocol() + ", " + gdt.getRole());
-					
-					// cf. GDelegationElem#project
-					
-					//new LProtocolName();  // FIXME: need actual role (not just role name)
+					if (pet instanceof GDelegationType)
+					{
+						GDelegationType gdt = (GDelegationType) pet;  // Payload types come from ParamCoreGProtocolDeclTranslator#parsePayload (toMessage)
+						System.out.println("aaa: " + this + ", " + gdt.getGlobalProtocol() + ", " + gdt.getRole());
+						
+						// cf. GDelegationElem#project
+						
+						//new LProtocolName();  // FIXME: need actual role (not just role name)
+					}
 				}
+			}
+			else
+			{
+				throw new RuntimeException("[rp-core] TODO: " + a);
 			}
 		}
 		
@@ -217,7 +227,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				return af.ParamCoreLCrossChoice(this.src, RPCoreLActionKind.CROSS_RECEIVE, projs);
 			}
 		}
-		else if (this.kind == RPCoreGActionKind.DOT_TRANSFER)
+		/*else if (this.kind == RPCoreGActionKind.DOT_TRANSFER)
 		{
 			if (srcName.equals(subjName) && subj.intervals.contains(srcRange))  // FIXME: factor out?
 			{
@@ -229,7 +239,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 					/*Map<ParamCoreMessage, ParamCoreLType> tmp = projs.entrySet().stream().collect(Collectors.toMap(Entry::getKey,
 							p -> new ParamCoreLDotChoice(this.dest, offset, ParamCoreLActionKind.DOT_SEND,
 									Stream.of(p.getKey()).collect(Collectors.toMap(k -> k, k -> p.getValue())))
-							));*/
+							));* /
 					Function<Entry<RPCoreMessage, RPCoreLType>, LinkedHashMap<RPCoreMessage, RPCoreLType>> foo = e ->
 					{
 						LinkedHashMap<RPCoreMessage, RPCoreLType> res = new LinkedHashMap<>();
@@ -259,7 +269,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 						RPIndexFactory.ParamBinIndexExpr(RPBinIndexExpr.Op.Subt, srcRange.start, destRange.start));
 				return af.ParamCoreLDotChoice(this.src, offset, RPCoreLActionKind.DOT_RECEIVE, projs);
 			}
-		}
+		}*/
 		else
 		{
 			throw new RuntimeException("[param-core] TODO: " + this);
@@ -271,7 +281,9 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	}
 		
 	//private ParamCoreLType merge(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges, Map<ParamCoreMessage, ParamCoreLType> projs) throws ParamCoreSyntaxException
-	private RPCoreLType merge(RPCoreAstFactory af, RPRoleVariant r, Map<RPCoreMessage, RPCoreLType> projs) throws RPCoreSyntaxException
+	private RPCoreLType merge(RPCoreAstFactory af, RPRoleVariant r, 
+			//Map<RPCoreMessage, RPCoreLType> projs) throws RPCoreSyntaxException
+			Map<Message, RPCoreLType> projs) throws RPCoreSyntaxException
 	{
 		// "Merge"
 		Set<RPCoreLType> values = new HashSet<>(projs.values());

@@ -3,17 +3,19 @@ package org.scribble.ext.go.core.ast.local;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import org.scribble.ext.go.core.ast.RPCoreMessage;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.type.Message;
 
+@Deprecated
 public class RPCoreLDotChoice extends RPCoreLChoice
 {
 	public final RPIndexExpr offset;
 
-	public RPCoreLDotChoice(RPIndexedRole role, RPIndexExpr offset, RPCoreLActionKind kind, LinkedHashMap<RPCoreMessage, RPCoreLType> cases)
+	public RPCoreLDotChoice(RPIndexedRole role, RPIndexExpr offset, RPCoreLActionKind kind, //LinkedHashMap<RPCoreMessage, RPCoreLType> cases)
+			LinkedHashMap<Message, RPCoreLType> cases)
 	{
 		super(role, kind, cases);
 		if (kind != RPCoreLActionKind.DOT_SEND && kind != RPCoreLActionKind.DOT_RECEIVE)

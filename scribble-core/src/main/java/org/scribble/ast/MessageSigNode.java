@@ -23,32 +23,32 @@ import org.scribble.visit.AstVisitor;
 public class MessageSigNode extends ScribNodeBase implements MessageNode
 {
 	public final OpNode op;
-	public final PayloadElemList payloads;
+	public final PayloadElemList payload;
 
 	public MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload)
 	{
 		super(source);
 		this.op = op;
-		this.payloads = payload;
+		this.payload = payload;
 	}
 	
 	@Override
 	public MessageNode project(AstFactory af)  // Currently outside of visitor/env pattern
 	{
-		return af.MessageSigNode(this.source, this.op, this.payloads.project(af));  // Original del not retained by projection
+		return af.MessageSigNode(this.source, this.op, this.payload.project(af));  // Original del not retained by projection
 	}
 
 	@Override
 	protected MessageSigNode copy()
 	{
-		return new MessageSigNode(this.source, this.op, this.payloads);
+		return new MessageSigNode(this.source, this.op, this.payload);
 	}	
 
 	@Override
 	public MessageSigNode clone(AstFactory af)
 	{
 		OpNode op = this.op.clone(af);
-		PayloadElemList payload = this.payloads.clone(af);
+		PayloadElemList payload = this.payload.clone(af);
 		return af.MessageSigNode(this.source, op, payload);
 	}
 	
@@ -64,7 +64,7 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	public MessageSigNode visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		OpNode op = (OpNode) visitChild(this.op, nv);
-		PayloadElemList payload = (PayloadElemList) visitChild(this.payloads, nv);
+		PayloadElemList payload = (PayloadElemList) visitChild(this.payload, nv);
 		return reconstruct(op, payload);
 	}
 	
@@ -79,7 +79,7 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	@Override
 	public MessageSig toArg()
 	{
-		return new MessageSig(this.op.toName(), this.payloads.toPayload());
+		return new MessageSig(this.op.toName(), this.payload.toPayload());
 	}
 
 	@Override
@@ -91,6 +91,6 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	@Override
 	public String toString()
 	{
-		return this.op.toString() + this.payloads.toString();
+		return this.op.toString() + this.payload.toString();
 	}
 }

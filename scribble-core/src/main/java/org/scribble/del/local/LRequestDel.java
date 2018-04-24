@@ -34,7 +34,7 @@ public class LRequestDel extends LConnectionActionDel implements LSimpleInteract
 		Role peer = dest.toName();
 		MessageId<?> mid = lc.msg.toMessage().getId();
 		Payload payload = lc.msg.isMessageSigNode()  // Hacky?
-					? ((MessageSigNode) lc.msg).payloads.toPayload()
+					? ((MessageSigNode) lc.msg).payload.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newERequest(peer, mid, payload), builder.util.getExit());
 		//graph.builder.addEdge(graph.builder.getEntry(), new Connect(peer), graph.builder.getExit());

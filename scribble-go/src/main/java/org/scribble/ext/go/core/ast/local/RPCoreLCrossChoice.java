@@ -4,13 +4,14 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import org.scribble.ext.go.core.ast.RPCoreMessage;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.type.Message;
 
 public class RPCoreLCrossChoice extends RPCoreLChoice
 {
-	public RPCoreLCrossChoice(RPIndexedRole role, RPCoreLActionKind kind, LinkedHashMap<RPCoreMessage, RPCoreLType> cases)
+	//public RPCoreLCrossChoice(RPIndexedRole role, RPCoreLActionKind kind, LinkedHashMap<RPCoreMessage, RPCoreLType> cases)
+	public RPCoreLCrossChoice(RPIndexedRole role, RPCoreLActionKind kind, LinkedHashMap<Message, RPCoreLType> cases)
 	{
 		super(role, kind, cases);
 		if (kind != RPCoreLActionKind.CROSS_SEND && kind != RPCoreLActionKind.CROSS_RECEIVE)

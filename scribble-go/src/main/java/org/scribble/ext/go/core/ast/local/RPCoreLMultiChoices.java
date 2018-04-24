@@ -5,17 +5,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.scribble.ext.go.core.ast.RPCoreMessage;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.type.Message;
 
 // FIXME: factor out better with ParamCore(L)Choice -- or deprecate and just use kind?
+@Deprecated
 public class RPCoreLMultiChoices extends RPCoreLChoice
 {
 	public final RPIndexVar var;  // Redundant?
 	
 	// Pre: cases.size() > 1
-	public RPCoreLMultiChoices(RPIndexedRole role, RPIndexVar var, List<RPCoreMessage> cases, RPCoreLType cont)
+	public RPCoreLMultiChoices(RPIndexedRole role, RPIndexVar var, //List<RPCoreMessage> cases, 
+			List<Message> cases,
+			RPCoreLType cont)
 	{
 		super(role, RPCoreLActionKind.MULTICHOICES_RECEIVE, foo(cases, cont));
 		this.var = var;
@@ -27,9 +30,12 @@ public class RPCoreLMultiChoices extends RPCoreLChoice
 		throw new RuntimeException("[param] Shouldn't get in here: " + this);
 	}
 	
-	private static LinkedHashMap<RPCoreMessage, RPCoreLType> foo(List<RPCoreMessage> cases, RPCoreLType cont)
+	private static //LinkedHashMap<RPCoreMessage, RPCoreLType> foo(List<RPCoreMessage> cases, RPCoreLType cont)
+			LinkedHashMap<Message, RPCoreLType> foo(List<Message> cases, RPCoreLType cont)
 	{
-		LinkedHashMap<RPCoreMessage, RPCoreLType> tmp = new LinkedHashMap<>();
+		//LinkedHashMap<RPCoreMessage, RPCoreLType> 
+		LinkedHashMap<Message, RPCoreLType> 
+				tmp = new LinkedHashMap<>();
 		cases.stream().forEach(c -> tmp.put(c, cont));
 		return tmp;
 	}

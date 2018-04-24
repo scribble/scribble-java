@@ -1,17 +1,12 @@
 package org.scribble.ext.go.core.ast.global;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.scribble.ast.MessageNode;
-import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GInteractionNode;
@@ -27,18 +22,14 @@ import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.ext.go.ast.RPAstFactory;
 import org.scribble.ext.go.ast.global.RPGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
-import org.scribble.ext.go.ast.global.RPGMultiChoices;
-import org.scribble.ext.go.ast.global.RPGMultiChoicesTransfer;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
-import org.scribble.ext.go.core.ast.RPCoreMessage;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
-import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.main.Job;
-import org.scribble.type.Payload;
+import org.scribble.type.Message;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.DataType;
-import org.scribble.type.name.Op;
 import org.scribble.type.name.RecVar;
 
 public class RPCoreGProtocolDeclTranslator
@@ -85,27 +76,27 @@ public class RPCoreGProtocolDeclTranslator
 			}
 			else
 			{
-				throw new RuntimeException("[param-core] Shouldn't get in here: " + first);
+				throw new RuntimeException("[rp-core] Shouldn't get in here: " + first);
 			}
 		}
 		else
 		{
 			if (checkChoiceGuard)  // No "flattening" of nested choices not allowed?
 			{
-				throw new RPCoreSyntaxException(first.getSource(), "[param-core] Unguarded in choice case: " + first);
+				throw new RPCoreSyntaxException(first.getSource(), "[rp-core] Unguarded in choice case: " + first);
 			}
 			if (is.size() > 1)
 			{
-				throw new RPCoreSyntaxException(is.get(1).getSource(), "[param-core] Bad sequential composition after: " + first);
+				throw new RPCoreSyntaxException(is.get(1).getSource(), "[rp-core] Bad sequential composition after: " + first);
 			}
 
 			if (first instanceof GChoice)
 			{
-				if (first instanceof RPGMultiChoices)
+				/*if (first instanceof RPGMultiChoices)
 				{
 					return parseParamGMultiChoices(rvs, checkRecGuard, (RPGMultiChoices) first);
 				}
-				else  // GChoice or ParamGChoice
+				else*/ // GChoice or ParamGChoice
 				{
 					return parseGChoice(rvs, checkRecGuard, (GChoice) first);
 				}
@@ -120,7 +111,7 @@ public class RPCoreGProtocolDeclTranslator
 			}
 			else
 			{
-				throw new RuntimeException("[param-core] Shouldn't get in here: " + first);
+				throw new RuntimeException("[rp-core] Shouldn't get in here: " + first);
 			}
 		}
 	}
@@ -137,18 +128,20 @@ public class RPCoreGProtocolDeclTranslator
 		RPCoreGActionKind kind = null;
 		RPIndexedRole src = null;
 		RPIndexedRole dest = null;
-		LinkedHashMap<RPCoreMessage, RPCoreGType> cases = new LinkedHashMap<>();
+		//LinkedHashMap<RPCoreMessage, RPCoreGType>
+		LinkedHashMap<Message, RPCoreGType>
+				cases = new LinkedHashMap<>();
 		for (RPCoreGType c : children)
 		{
 			// Because all cases should be action guards (unary choices)
 			if (!(c instanceof RPCoreGChoice))
 			{
-				throw new RuntimeException("[param-core] Shouldn't get in here: " + c);
+				throw new RuntimeException("[rp-core] Shouldn't get in here: " + c);
 			}
 			RPCoreGChoice tmp = (RPCoreGChoice) c;
 			if (tmp.cases.size() > 1)
 			{
-				throw new RuntimeException("[param-core] Shouldn't get in here: " + c);
+				throw new RuntimeException("[rp-core] Shouldn't get in here: " + c);
 			}
 			
 			if (src == null)
@@ -159,22 +152,26 @@ public class RPCoreGProtocolDeclTranslator
 			}
 			else if (!kind.equals(tmp.kind))
 			{
-				throw new RuntimeException("[param-core] Shouldn't get in here: " + gc + ", " + kind + ", " + tmp.kind);
+				throw new RuntimeException("[rp-core] Shouldn't get in here: " + gc + ", " + kind + ", " + tmp.kind);
 			}
 			else if (!src.equals(tmp.src) || !dest.equals(tmp.dest))
 			{
 				throw new RPCoreSyntaxException(gc.getSource(),
-						"[param-core] Non-directed choice not supported: " + gc + ", " + src + ", " + tmp.src + ", " + dest + ", " + tmp.dest);
+						"[rp-core] Non-directed choice not supported: " + gc + ", " + src + ", " + tmp.src + ", " + dest + ", " + tmp.dest);
 			}
 			
 			// "Flatten" nested choices (already checked they are guarded) -- Scribble choice subjects ignored
-			for (Entry<RPCoreMessage, RPCoreGType> e : tmp.cases.entrySet())
+			for //(Entry<RPCoreMessage, RPCoreGType>
+					(Entry<Message, RPCoreGType>
+							e : tmp.cases.entrySet())
 			{
-				RPCoreMessage k = e.getKey();
-				if (cases.keySet().stream().anyMatch(x -> x.op.equals(k.op)))
+				//RPCoreMessage k = e.getKey();
+				Message k = e.getKey();
+				if (cases.keySet().stream().anyMatch(x -> //x.op.equals(k.op)))
+						x.equals(k)))
 				{
 					throw new RPCoreSyntaxException(gc.getSource(),
-							"[param-core] Non-deterministic actions not supported: " + k.op);
+							"[rp-core] Non-deterministic actions not supported: " + k);
 				}
 				cases.put(k, e.getValue());
 			}
@@ -183,12 +180,12 @@ public class RPCoreGProtocolDeclTranslator
 		return this.af.ParamCoreGChoice(src, kind, dest, cases);
 	}
 
-	private RPCoreGMultiChoices parseGMultiChoicesTransfer(List<GInteractionNode> is, Map<RecVar, RecVar> rvs) throws RPCoreSyntaxException 
+	/*private RPCoreGMultiChoices parseGMultiChoicesTransfer(List<GInteractionNode> is, Map<RecVar, RecVar> rvs) throws RPCoreSyntaxException 
 	{
 		GInteractionNode in = is.get(0);
 		if (!(in instanceof RPGMultiChoicesTransfer))
 		{
-			throw new RPCoreSyntaxException(in.getSource(), "[param-core] Expected GMultiChoicesTransfer: " + in.getClass());
+			throw new RPCoreSyntaxException(in.getSource(), "[rp-core] Expected GMultiChoicesTransfer: " + in.getClass());
 		}
 
 		RPGMultiChoicesTransfer gmt = (RPGMultiChoicesTransfer) in;
@@ -222,7 +219,7 @@ public class RPCoreGProtocolDeclTranslator
 			RPCoreGMultiChoices tmp = (RPCoreGMultiChoices) c;
 			if (tmp.cases.size() > 1)
 			{
-				throw new RuntimeException("[param-core] Shouldn't get in here: " + c);
+				throw new RuntimeException("[rp-core] Shouldn't get in here: " + c);
 			}
 			
 			if (src == null)
@@ -233,12 +230,12 @@ public class RPCoreGProtocolDeclTranslator
 			}
 			else if (!kind.equals(tmp.kind))
 			{
-				throw new RuntimeException("[param-core] Shouldn't get in here: " + gc + ", " + kind + ", " + tmp.kind);
+				throw new RuntimeException("[rp-core] Shouldn't get in here: " + gc + ", " + kind + ", " + tmp.kind);
 			}
 			else if (!src.equals(tmp.src) || !dest.equals(tmp.dest))
 			{
 				throw new RPCoreSyntaxException(gc.getSource(),
-						"[param-core] Non-directed choice not supported: " + gc + ", " + src + ", " + tmp.src + ", " + dest + ", " + tmp.dest);
+						"[rp-core] Non-directed choice not supported: " + gc + ", " + src + ", " + tmp.src + ", " + dest + ", " + tmp.dest);
 			}
 			
 			// "Flatten" nested choices (already checked they are guarded) -- Scribble choice subjects ignored
@@ -248,7 +245,7 @@ public class RPCoreGProtocolDeclTranslator
 				if (cases.keySet().stream().anyMatch(x -> x.op.equals(k.op)))
 				{
 					throw new RPCoreSyntaxException(gc.getSource(),
-							"[param-core] Non-deterministic actions not supported: " + k.op);
+							"[rp-core] Non-deterministic actions not supported: " + k.op);
 				}
 				cases.put(k, e.getValue());
 			}
@@ -257,14 +254,14 @@ public class RPCoreGProtocolDeclTranslator
 		if (new HashSet<>(cases.values()).size() > 1)
 		{
 			throw new RPCoreSyntaxException(gc.getSource(),
-					"[param-core] Continuations not syntactically equal: " + cases.values());
+					"[rp-core] Continuations not syntactically equal: " + cases.values());
 		}
 		
 		return this.af.ParamCoreGMultiChoices(
 				//src,
 				new RPIndexedRole(gc.subj.toString(), Stream.of(new RPInterval(gc.start, gc.end)).collect(Collectors.toSet())),
 				gc.var, dest, cases.keySet().stream().collect(Collectors.toList()), cases.values().iterator().next());
-	}
+	}*/
 
 	private RPCoreGType parseGRecursion(Map<RecVar, RecVar> rvs,
 			boolean checkChoiceGuard, GRecursion gr) throws RPCoreSyntaxException
@@ -286,7 +283,7 @@ public class RPCoreGProtocolDeclTranslator
 	{
 		if (checkRecGuard)
 		{
-			throw new RPCoreSyntaxException(gc.getSource(), "[param-core] Unguarded in recursion: " + gc);  // FIXME: too conservative, e.g., rec X . A -> B . rec Y . X
+			throw new RPCoreSyntaxException(gc.getSource(), "[rp-core] Unguarded in recursion: " + gc);  // FIXME: too conservative, e.g., rec X . A -> B . rec Y . X
 		}
 		RecVar recvar = gc.recvar.toName();
 		if (rvs.containsKey(recvar))
@@ -299,7 +296,8 @@ public class RPCoreGProtocolDeclTranslator
 	// Parses message interactions as unary choices
 	private RPCoreGChoice parseGMessageTransfer(List<GInteractionNode> is, Map<RecVar, RecVar> rvs, GMessageTransfer gmt) throws RPCoreSyntaxException 
 	{
-		RPCoreMessage a = this.af.ParamCoreAction(parseOp(gmt), parsePayload(gmt));
+		//RPCoreMessage a = this.af.ParamCoreAction(parseOp(gmt), parsePayload(gmt));
+		Message a = gmt.msg.toMessage();
 		String srcName = parseSourceRole(gmt);
 		String destName = parseDestinationRole(gmt);
 		RPCoreGActionKind kind;
@@ -327,7 +325,7 @@ public class RPCoreGProtocolDeclTranslator
 		{
 			/*src = af.ParamRole(srcName, 1, 1); 
 			dest = af.ParamRole(destName, 1, 1);*/
-			throw new RPCoreSyntaxException(gmt.getSource(), "[param-core] Not supported: " + gmt.getClass() + "\n    " + gmt);
+			throw new RPCoreSyntaxException(gmt.getSource(), "[rp-core] Not supported: " + gmt.getClass() + "\n    " + gmt);
 		}
 		return parseGSimpleInteractionNode(is, rvs, src, kind, a, dest);
 	}
@@ -336,21 +334,25 @@ public class RPCoreGProtocolDeclTranslator
 
 	private RPCoreGChoice parseGSimpleInteractionNode(
 			List<GInteractionNode> is, Map<RecVar, RecVar> rvs, 
-			RPIndexedRole src, RPCoreGActionKind kind, RPCoreMessage a, RPIndexedRole dest) throws RPCoreSyntaxException 
+			RPIndexedRole src, RPCoreGActionKind kind, //RPCoreMessage a,
+			Message a,
+			RPIndexedRole dest) throws RPCoreSyntaxException 
 	{
 		if (src.equals(dest))
 		{
-			throw new RuntimeException("[param-core] Shouldn't get in here (self-communication): " + src + ", " + dest);
+			throw new RuntimeException("[rp-core] Shouldn't get in here (self-communication): " + src + ", " + dest);
 		}
 		
 		RPCoreGType cont = parseSeq(is.subList(1, is.size()), rvs, false, false);  // Subseqeuent choice/rec is guarded by (at least) this action
-		LinkedHashMap<RPCoreMessage, RPCoreGType> tmp = new LinkedHashMap<>();
+		//LinkedHashMap<RPCoreMessage, RPCoreGType>
+		LinkedHashMap<Message, RPCoreGType>
+				tmp = new LinkedHashMap<>();
 		tmp.put(a, cont);
 		return this.af.ParamCoreGChoice(src, kind, dest, tmp);
 				//Stream.of(a).collect(Collectors.toMap(x -> x, x -> cont)));
 	}
 
-	private Op parseOp(GMessageTransfer gmt) throws RPCoreSyntaxException
+	/*private Op parseOp(GMessageTransfer gmt) throws RPCoreSyntaxException
 	{
 		return parseOp(gmt.msg);
 	}
@@ -359,7 +361,7 @@ public class RPCoreGProtocolDeclTranslator
 	{
 		if (!mn.isMessageSigNode())
 		{
-			throw new RPCoreSyntaxException(mn.getSource(), " [param-core] Message sig names not supported: " + mn);  // TODO: MessageSigName
+			throw new RPCoreSyntaxException(mn.getSource(), " [rp-core] Message sig names not supported: " + mn);  // TODO: MessageSigName
 		}
 		MessageSigNode msn = ((MessageSigNode) mn);
 		return msn.op.toName();
@@ -374,10 +376,10 @@ public class RPCoreGProtocolDeclTranslator
 	{
 		if (!mn.isMessageSigNode())
 		{
-			throw new RPCoreSyntaxException(mn.getSource(), " [param-core] Message sig names not supported: " + mn);  // TODO: MessageSigName
+			throw new RPCoreSyntaxException(mn.getSource(), " [rp-core] Message sig names not supported: " + mn);  // TODO: MessageSigName
 		}
 		return ((MessageSigNode) mn).toMessage().payload;
-	}
+	}*/
 
 	private String parseSourceRole(GMessageTransfer gmt)
 	{

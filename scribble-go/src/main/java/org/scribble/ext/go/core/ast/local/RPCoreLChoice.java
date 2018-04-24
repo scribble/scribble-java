@@ -4,13 +4,14 @@ import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 import org.scribble.ext.go.core.ast.RPCoreChoice;
-import org.scribble.ext.go.core.ast.RPCoreMessage;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
 
 public abstract class RPCoreLChoice extends RPCoreChoice<RPCoreLType, Local> implements RPCoreLType
 {
-	protected RPCoreLChoice(RPIndexedRole role, RPCoreLActionKind kind, LinkedHashMap<RPCoreMessage, RPCoreLType> cases)
+	//protected RPCoreLChoice(RPIndexedRole role, RPCoreLActionKind kind, LinkedHashMap<RPCoreMessage, RPCoreLType> cases)
+	protected RPCoreLChoice(RPIndexedRole role, RPCoreLActionKind kind, LinkedHashMap<Message, RPCoreLType> cases)
 	{
 		super(role, kind, cases);
 	}
