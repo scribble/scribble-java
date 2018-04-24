@@ -56,7 +56,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 				+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK: []  // N.B. *arg0 matches buildArgs
 				+ "if err := " + sEpRecv + "[1]"  // FIXME: use peer interval
 						+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
-				+ "; err != nil {\n"
+						+ "; err != nil {\n"
 				+ "log.Fatal(err)\n"
 				+ "}\n"
 				+ "*arg0 = tmp\n";  // N.B. *arg0 matches buildArgs

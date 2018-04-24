@@ -86,9 +86,9 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					+ " i <= " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.end) + "; i++ {\n";
 
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
-			Function<String, String> f = x -> 
-					  "var tmp " + x + "\n"  // var tmp needed for deserialization -- FIXME?
-					+ (x.startsWith("[]") ? "tmp = make(" + x + ", len(arg0))\n" : "")  // HACK? for passthru?
+			Function<String, String> f = extName -> 
+					  "var tmp " + extName + "\n"  // var tmp needed for deserialization -- FIXME?
+					+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
 					+ "if err := " + sEpRecv + "[i]"  // FIXME: use peer interval
 							+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
 					+ "; err != nil {\n"
@@ -109,9 +109,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					{ 
 						res += "var lab string\n"  // var decl needed for deserializatoin -- FIXME?
 								+ "if err := " + sEpRecv + "[i]"
-								+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
-										+ "(" + "&lab" + ")"
-								+ "; err != nil {\n"
+										+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(" + "&lab" + ")"
+										+ "; err != nil {\n"
 								+ "log.Fatal(err)\n"
 								+ "}\n";
 					}
