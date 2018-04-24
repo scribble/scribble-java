@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.Module;
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.ast.RPCoreDelegDecl;
@@ -27,6 +29,7 @@ import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.MessageSigName;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
 public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
@@ -36,6 +39,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	private int counter = 2;  // 1 named as Init
 	private final Set<DataTypeDecl> dtds; // FIXME: use "main.getDataTypeDecl((DataType) pt);" instead -- cf. OutputSocketGenerator#addSendOpParams
+	private final Set<MessageSigNameDecl> msnds;
 	
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later
 	// Pre: variant.getName().equals(this.role)
@@ -58,8 +62,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		this.apigen = apigen;
 		this.variant = variant;
 		
-		this.dtds = this.apigen.job.getContext().getMainModule().getNonProtocolDecls().stream()
+		Module mod = apigen.job.getContext().getModule(this.apigen.proto.getPrefix());
+		this.dtds = mod.getNonProtocolDecls().stream()
 				.filter(d -> (d instanceof DataTypeDecl)).map(d -> ((DataTypeDecl) d)).collect(Collectors.toSet());
+		this.msnds = mod.getNonProtocolDecls().stream()
+				.filter(d -> (d instanceof MessageSigNameDecl)).map(d -> ((MessageSigNameDecl) d)).collect(Collectors.toSet());
 	}
 	
 	@Override
@@ -138,26 +145,49 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
 
 				// FIXME: error handling via Err field -- fallback should be panic
-				+ "import \"log\"\n"
+				+ "import \"log\"\n";
 				
-				// FIXME: refactor back into state-specific builders
-				+ ((s.getStateKind() == EStateKind.OUTPUT || s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
-						? s.getActions().stream().flatMap(a -> a.payload.elems.stream()).collect(Collectors.toSet()).stream()
-								.map(p -> makeExtNameImport((DataType) p)).collect(Collectors.joining(""))
-						: "")
+		// Not needed by Branch/Case objects  // FIXME: refactor back into state-specific builders?
+		if (s.getStateKind() == EStateKind.OUTPUT || s.getStateKind() == EStateKind.UNARY_INPUT)// || s.getStateKind() == EStateKind.POLY_INPUT)
+		{
+			res += makeMessageImports(s);
+		}
 
-				// FIXME: refactor back into state-specific builders
-				+ ((s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
-						? "import \"sort\"\n\nvar _ = sort.Sort\n"
-						: "")
+		// FIXME: still needed? -- refactor back into state-specific builders?
+		if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
+		{
+			res += "import \"sort\"\n\nvar _ = sort.Sort\n";
+		}
 
 				// State channel type
-				+ "\n"
+		res += "\n"
 				+ "type " + scTypeName + " struct {\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
 				+ "}\n";
 
+		return res;
+	}
+
+	public String makeMessageImports(EState s)
+	{
+		String res = "";
+		for (String extSource : (Iterable<String>)
+				s.getAllActions().stream()
+				 .filter(a -> a.mid.isOp())
+				 .flatMap(a -> a.payload.elems.stream()
+						.filter(p -> !getExtName((DataType) p).matches("(\\[\\])*(int|string|byte)")))
+				 .map(p -> getExtSource((DataType) p))
+				 .distinct()::iterator)
+		{
+			res += "import \"" + extSource + "\"\n";
+		}
+		for (String extSource : (Iterable<String>)
+				s.getAllActions().stream().filter(a -> a.mid.isMessageSigName())
+				 .map(a -> getExtSource((MessageSigName) a.mid)).distinct()::iterator)
+		{
+			res += "import \"" + extSource + "\"\n";
+		}
 		return res;
 	}
 
@@ -266,33 +296,41 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 	}
 
-	public String makeExtNameImport(DataType t)
+	/*public String makeExtNameImport(DataType t)
 	{
 		String extName = getExtName(t);
 		return extName.matches("(\\[\\])*(int|string|byte)")
 				? ""
 				: "import \"" + getExtSource(t) + "\"\n";
-		}
+	}*/
 
 	
 	
 
 	protected boolean isDelegType(DataType t)
 	{
-		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next() instanceof RPCoreDelegDecl;  // FIXME: make a map
+		return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get() instanceof RPCoreDelegDecl;  // FIXME: make a map
 	}
 	
 	protected String getExtName(DataType t)
 	{
-		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extName;
+		return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get().extName;
 	}
 	
 	protected String getExtSource(DataType t)
 	{
-		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extSource;  // FIXME: make a map
+		return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get().extSource;  // FIXME: make a map
 	}
-	
-	
+
+	protected String getExtName(MessageSigName n)
+	{
+		return this.msnds.stream().filter(x -> x.getDeclName().equals(n)).findAny().get().extName;
+	}
+
+	protected String getExtSource(MessageSigName n)
+	{
+		return this.msnds.stream().filter(x -> x.getDeclName().equals(n)).findAny().get().extSource; 
+	}
 	
 	
 	

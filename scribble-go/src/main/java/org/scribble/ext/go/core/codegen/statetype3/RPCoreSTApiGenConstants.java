@@ -48,6 +48,7 @@ public class RPCoreSTApiGenConstants
 	public static final String GO_CROSS_REDUCE_FUN_PREFIX = "Reduce";
 	public static final String GO_CROSS_RECEIVE_FUN_PREFIX = "Recv";
 	public static final String GO_CROSS_RECEIVE_METHOD_ARG = "arg";
+	public static final String GO_CASE_METHOD_ARG = "arg";
 	
 	public static final String RP_SCATTER_METHOD_PREFIX = "Scatter";
 	public static final String RP_GATHER_METHOD_PREFIX = "Gather";

@@ -38,10 +38,15 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 				+ "\n"
 				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
 				+ "import \"log\"\n"
+				+ ((RPCoreSTStateChanApiBuilder) api).makeMessageImports(s)
 				+ "\n"
+				
+				// Case object interface
 				+ "type " + getCaseStateChanName(api, s) + " interface {\n"
 			  + casename + "()\n"
 			  + "}\n"
+			  
+			  // Case object types
 			  + s.getActions().stream().map(a ->
 			  		  "\ntype " + getOpTypeName(api, s, a.mid) + " struct {\n"
 						+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + RPCoreSTApiGenerator.getEndpointKindTypeName(null, rpapi.variant) + "\n" 

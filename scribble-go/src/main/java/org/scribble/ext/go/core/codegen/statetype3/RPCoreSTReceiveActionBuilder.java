@@ -1,5 +1,6 @@
 package org.scribble.ext.go.core.codegen.statetype3;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -12,6 +13,7 @@ import org.scribble.ext.go.main.GoJob;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
+import org.scribble.type.name.MessageSigName;
 
 public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 {
@@ -27,16 +29,18 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	@Override
 	public String buildArgs(STStateChanApiBuilder api, EAction a)
 	{
+		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
 		if (a.mid.isOp())
 		{
 			return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG + i + " []"
-							+ ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) a.payload.elems.get(i))) //a.payload.elems.get(i)
+							+ rpapi.getExtName((DataType) a.payload.elems.get(i)))
 					.collect(Collectors.joining(", "));
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			return "a *" + a.mid;
+			return RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG + "0 []"
+					+ rpapi.getExtName((MessageSigName) a.mid);
 		}
 	}
 
@@ -66,8 +70,6 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
 		}
 
-		String extName = rpapi.getExtName((DataType) a.payload.elems.get(0));
-
 		if (((GoJob) rpapi.job).noCopy)
 		{
 			/*res += "data := make([]" + a.payload.elems.get(0) + ", len(b))\n"
@@ -83,33 +85,47 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			res += "for i := " + start + ";"
 					+ " i <= " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.end) + "; i++ {\n";
 
-			if (!a.mid.toString().equals("")) // HACK FIXME?
-			{ 
-				res += "var lab string\n"  // var decl needed for deserializatoin -- FIXME?
-						+ "if err := " + sEpRecv + "[i]"
-						+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
-								+ "(" + "&lab" + ")"
-						+ "; err != nil {\n"
-						+ "log.Fatal(err)\n"
-						+ "}\n";
-			}
-
-			if (!a.payload.elems.isEmpty())
-			{
-				res += "var tmp " + extName + "\n"  // tmp var decl needed for deserialization -- FIXME?
-					+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
-					+ "if err := " + sEpRecv + "[i]"
-					+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
-							+ "(&tmp)"
+			// For payloads -- FIXME: currently hardcoded for exactly one payload
+			Function<String, String> f = x -> 
+					  "var tmp " + x + "\n"  // var tmp needed for deserialization -- FIXME?
+					+ (x.startsWith("[]") ? "tmp = make(" + x + ", len(arg0))\n" : "")  // HACK? for passthru?
+					+ "if err := " + sEpRecv + "[i]"  // FIXME: use peer interval
+							+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
 					+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n"
-					+ "arg0[i-" + start + "] = tmp\n"
-					+ "}\n";
+					+ "arg0[i-" + start + "] = tmp\n";
+
+			if (a.mid.isOp())
+			{
+				if (!a.payload.elems.isEmpty())
+				{
+					if (a.payload.elems.size() > 1)
+					{
+						throw new RuntimeException("[rp-core] [-param-api] TODO: " + a);
+					}
+
+					//if (!a.mid.toString().equals("")) // HACK FIXME?  // Now redundant, -param-api checks mid starts uppercase
+					{ 
+						res += "var lab string\n"  // var decl needed for deserializatoin -- FIXME?
+								+ "if err := " + sEpRecv + "[i]"
+								+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
+										+ "(" + "&lab" + ")"
+								+ "; err != nil {\n"
+								+ "log.Fatal(err)\n"
+								+ "}\n";
+					}
+
+					res += f.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
+				}
+			}
+			else //if (a.mid.isMessageSigName())
+			{
+				res += f.apply(rpapi.getExtName((MessageSigName) a.mid));
 			}
 		}
 				
-		return res + buildReturn(rpapi, curr, succ);
+		return res + "}\n" + buildReturn(rpapi, curr, succ);
 	}
 	
 	/*protected static String hackGetValues(String t)

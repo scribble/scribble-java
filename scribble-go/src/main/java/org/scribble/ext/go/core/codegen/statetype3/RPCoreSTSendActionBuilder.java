@@ -12,6 +12,7 @@ import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
+import org.scribble.type.name.MessageSigName;
 
 public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 {
@@ -25,19 +26,19 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 	}
 
 	@Override
-	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
+	public String buildArgs(STStateChanApiBuilder api, EAction a)
 	{
-		System.out.println("aaa: "+ a + ", " + a.mid + ", " + (a.mid.getClass()) + ", " + a.mid.isOp());
 		if (a.mid.isOp())
 		{
 			return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + i + " []"
-							+ ((RPCoreSTStateChanApiBuilder) apigen).getExtName((DataType) a.payload.elems.get(i))) //a.payload.elems.get(i)
+							+ ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) a.payload.elems.get(i))) //a.payload.elems.get(i)
 					.collect(Collectors.joining(", "));
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			return "a *" + a.mid;
+			return RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + "0 []"
+					+ ((RPCoreSTStateChanApiBuilder) api).getExtName((MessageSigName) a.mid);
 		}
 	}
 
