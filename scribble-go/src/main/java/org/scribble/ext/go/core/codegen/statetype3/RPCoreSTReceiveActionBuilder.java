@@ -72,7 +72,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		}
 		else
 		{
-			res += "for i := " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + ";"
+			String start = RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start);
+			res += "for i := " + start + ";"
 					+ " i <= " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.end) + "; i++ {\n";
 
 			if (!a.mid.toString().equals("")) // HACK FIXME?
@@ -96,7 +97,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n"
-					+ "arg0[i-1] = tmp\n"
+					+ "arg0[i-" + start + "] = tmp\n"
 					+ "}\n";
 			}
 		}
