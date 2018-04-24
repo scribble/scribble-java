@@ -8,6 +8,7 @@ import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.name.DataType;
 
 public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 {
@@ -36,7 +37,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP
 				+ "[\"" +  peer.getName() + "\"]";
 
-		String extName = rpapi.batesHack(a.payload.elems.get(0));
+		String extName = rpapi.getExtName((DataType) a.payload.elems.get(0));
 		
 		String res = "";
 

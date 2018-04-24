@@ -28,9 +28,9 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG
-							+ i + " []" + ((RPCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(i))) //a.payload.elems.get(i)
-					.collect(Collectors.joining(", "));
+				.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + i + " []"
+						+ ((RPCoreSTStateChanApiBuilder) apigen).getExtName((DataType) a.payload.elems.get(i))) //a.payload.elems.get(i)
+				.collect(Collectors.joining(", "));
 	}
 
 	@Override

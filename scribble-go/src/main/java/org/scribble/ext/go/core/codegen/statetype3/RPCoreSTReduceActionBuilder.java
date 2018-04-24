@@ -35,7 +35,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 		DataType[] pet = new DataType[1];
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG
-							+ i + " *" + ((RPCoreSTStateChanApiBuilder) apigen).batesHack(pet[0] = (DataType) a.payload.elems.get(i)) //a.payload.elems.get(i)
+							+ i + " *" + ((RPCoreSTStateChanApiBuilder) apigen).getExtName(pet[0] = (DataType) a.payload.elems.get(i)) //a.payload.elems.get(i)
 
 							// HACK
 							+ ((((RPCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0])) ? "" :
@@ -43,11 +43,11 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 									//+ " []" + a.payload.elems.get(i) + ") " + a.payload.elems.get(i)
 									+ " []" 
 									
-											+ ((RPCoreSTStateChanApiBuilder) apigen).batesHack(pet[0])
+											+ ((RPCoreSTStateChanApiBuilder) apigen).getExtName(pet[0])
 
 											+ ") "
 											
-											+ ((RPCoreSTStateChanApiBuilder) apigen).batesHack(pet[0])
+											+ ((RPCoreSTStateChanApiBuilder) apigen).getExtName(pet[0])
 									)
 
 							).collect(Collectors.joining(", "));
@@ -138,7 +138,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 				st.ept.ConnMu.RUnlock()
 				return sesss, &ClientA_p_End{}*/
 
-				String extName = ((RPCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0));
+				String extName = ((RPCoreSTStateChanApiBuilder) apigen).getExtName((DataType) a.payload.elems.get(0));
 
 				res = 
 						"for i := " + foo.apply(g.start) + "; i <= " + foo.apply(g.end) + "; i++ {\n"  // FIXME: num args
@@ -177,7 +177,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 					throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
 				}
 
-				String extName = ((RPCoreSTStateChanApiBuilder) apigen).batesHack(a.payload.elems.get(0));
+				String extName = ((RPCoreSTStateChanApiBuilder) apigen).getExtName((DataType) a.payload.elems.get(0));
 
 				res +=
 				  (((GoJob) apigen.job).noCopy 

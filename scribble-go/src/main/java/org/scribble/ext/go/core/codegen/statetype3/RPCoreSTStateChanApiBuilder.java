@@ -27,7 +27,6 @@ import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.PayloadElemType;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
 public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
@@ -267,6 +266,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 	}
 
+	protected String makeExtNameImport(DataType t)
+	{
+		String extName = getExtName(t);
+		return extName.matches("(\\[\\])*(int|string|byte)")
+				? ""
+				: "import \"" + getExtSource(t) + "\"\n";
+		}
+
 	
 	
 
@@ -274,68 +281,15 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next() instanceof RPCoreDelegDecl;  // FIXME: make a map
 	}
-
-	protected String makeExtNameImport(DataType t)
+	
+	protected String getExtName(DataType t)
 	{
-		String extName = getExtName(t);
-		switch (extName)
-		{
-			case "int":	 // FIXME: factor out with batesHack
-			case "[]int":	
-			case "[][]int":	
-			case "string":	
-			case "[]string":	
-			case "[][]string":	
-			case "byte":
-			case "[]byte":
-			case "[][]byte":
-			{
-				return "";
-			}
-			default:
-			{
-				return "import \"" + getExtSource(t) + "\"\n";
-			}
-		}
+		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extName;
 	}
 	
-	private String getExtName(DataType t)
-	{
-		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extName;  // FIXME: make a map
-	}
-
 	private String getExtSource(DataType t)
 	{
 		return this.dtds.stream().filter(i -> i.getDeclName().equals(t)).iterator().next().extSource;  // FIXME: make a map
-	}
-	
-	// FIXME: deprecate?  array/slice types now handled via ext names?
-	protected String batesHack(PayloadElemType<?> t)
-	{
-		/*String tmp = t.toString();
-		return (tmp.equals("bates")) ? "[]byte" : tmp;*/
-		DataType dt = (DataType) t;
-		String extName = getExtName(dt);
-		
-		switch (extName)
-		{
-			case "int":
-			case "[]int":  // FIXME: generalise arbitrary dimension array
-			case "[][]int":
-			case "string":
-			case "[]string":
-			case "[][]string":
-			case "byte":
-			case "[]byte":
-			case "[][]byte":
-			{
-				return extName;
-			}
-			default:
-			{
-				return extName;  // FIXME
-			}
-		}
 	}
 	
 	

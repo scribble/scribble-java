@@ -38,18 +38,18 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 							
 											// HACK
 									+ ((((RPCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0] = ((DataType) a.payload.elems.get(i)))) ? "*" : "")
-									+ ((RPCoreSTStateChanApiBuilder) apigen).batesHack(pet[0]) //a.payload.elems.get(i)
+									+ ((RPCoreSTStateChanApiBuilder) apigen).getExtName(pet[0]) //a.payload.elems.get(i)
 
 							+ ", splitFn" + i + " func(" + RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + i + " "
 
 											// HACK
 									+ ((((RPCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0])) ? "*" : "")
-									+ ((RPCoreSTStateChanApiBuilder) apigen).batesHack(pet[0])
+									+ ((RPCoreSTStateChanApiBuilder) apigen).getExtName(pet[0])
 
 									+ ", i" + i + " int) "
 									
 									+ ((((RPCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0])) ? "*" : "")
-									+ ((RPCoreSTStateChanApiBuilder) apigen).batesHack(pet[0])
+									+ ((RPCoreSTStateChanApiBuilder) apigen).getExtName(pet[0])
 
 							).collect(Collectors.joining(", "));
 	}

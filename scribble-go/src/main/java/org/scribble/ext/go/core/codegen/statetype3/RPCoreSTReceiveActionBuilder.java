@@ -11,6 +11,7 @@ import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.name.DataType;
 
 public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 {
@@ -27,9 +28,9 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	public String buildArgs(STStateChanApiBuilder api, EAction a)
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG
-							+ i + " []" + ((RPCoreSTStateChanApiBuilder) api).batesHack(a.payload.elems.get(i))) //a.payload.elems.get(i)
-					.collect(Collectors.joining(", "));
+				.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG + i + " []"
+						+ ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) a.payload.elems.get(i))) //a.payload.elems.get(i)
+				.collect(Collectors.joining(", "));
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			throw new RuntimeException("[param-core] [TODO] payload size > 1: " + a);
 		}
 
-		String extName = rpapi.batesHack(a.payload.elems.get(0));
+		String extName = rpapi.getExtName((DataType) a.payload.elems.get(0));
 
 		if (((GoJob) rpapi.job).noCopy)
 		{
@@ -87,8 +88,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 			if (!a.payload.elems.isEmpty())
 			{
-				res += "var tmp " + extName + "\n"  // var tmp needed for deserialization -- FIXME?
-					+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK? for passthru?
+				res += "var tmp " + extName + "\n"  // tmp var decl needed for deserialization -- FIXME?
+					+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
 					+ "if err := " + sEpRecv + "[i]"
 					+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
 							+ "(&tmp)"
