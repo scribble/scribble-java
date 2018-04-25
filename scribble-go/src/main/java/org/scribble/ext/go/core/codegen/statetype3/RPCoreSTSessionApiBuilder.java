@@ -166,11 +166,12 @@ public class RPCoreSTSessionApiBuilder
 						+ "func New(p session.Protocol, " //+"params map[string]int," 
 								+ ivars.stream().map(x -> x + " int, ").collect(Collectors.joining(""))
 								+ "self int) *" + epkindTypeName + " {\n"
-						+ "conns := make(map[string]map[int]transport.Channel)\n"
+						/*+ "conns := make(map[string]map[int]transport.Channel)\n"
 						+ this.apigen.variants.entrySet().stream()
 								.map(e -> "conns[\"" + e.getKey().getLastElement() + "\"] = " + "make(map[int]transport.Channel)\n")
-								.collect(Collectors.joining(""))
-						+ "return &" + epkindTypeName + "{p, self, &session.LinearResource{}, session.NewEndpoint(self, conns)" //"params
+								.collect(Collectors.joining(""))*/
+						+ "return &" + epkindTypeName + "{p, self, &session.LinearResource{}, session.NewEndpoint(self, "//conns)" //"params
+								+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "})"
 								+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining(""))
 								+ "}\n"
 						+ "}\n";
@@ -197,15 +198,21 @@ public class RPCoreSTSessionApiBuilder
 						String r = v.getLastElement();
 						String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(v);
 						epkindFile += "\n"
-								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id int, acc transport.Transport) error {\n"
+								+ "func (ini *" + epkindTypeName + ") " + vname
+										+ "_Accept(id int, acc transport.Transport, sfmt session.ScribMessageFormatter) error {\n"
 								+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
 										+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[\"" + r + "\"][id] = acc.Accept()\n"  // CHECKME: connection map keys (cf. variant?)
+								+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
+										+ RPCoreSTApiGenConstants.GO_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"
 								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n"
 								+ "\n"
-								+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id int, req transport.Transport) error {\n"
+								+ "func (ini *" + epkindTypeName + ") " + vname
+										+ "_Dial(id int, req transport.Transport, sfmt session.ScribMessageFormatter) error {\n"
 								+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
 										+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[\"" + r + "\"][id] = req.Connect()\n"  // CHECKME: connection map keys (cf. variant?)
+								+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
+										+ RPCoreSTApiGenConstants.GO_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
 								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n";
 					}

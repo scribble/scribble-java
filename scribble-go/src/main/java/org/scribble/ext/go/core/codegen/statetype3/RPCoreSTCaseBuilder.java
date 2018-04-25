@@ -8,7 +8,6 @@ import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.MessageSigName;
 
@@ -39,7 +38,7 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 		String res = "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(rpapi.variant) + "\n"
 				+ "\n"
 				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
-				//+ "import \"log\"\n"
+				+ "import \"log\"\n"
 				+ ((RPCoreSTStateChanApiBuilder) api).makeMessageImports(s)
 				+ "\n"
 				
@@ -51,7 +50,9 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 		// Case object types
 		for (EAction a: s.getAllActions()) 
 		{
-			String extName = (a.mid.isOp()) ? rpapi.getExtName((DataType) a.mid) : rpapi.getExtName((MessageSigName) a.mid);
+			String extName = (a.mid.isOp()) ? //rpapi.getExtName((DataType) a.mid) 
+					  getOpTypeName(api, s, a.mid)
+					: rpapi.getExtName((MessageSigName) a.mid);
 			res += "\ntype " + getOpTypeName(api, s, a.mid) + " struct {\n"
 						+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + RPCoreSTApiGenerator.getEndpointKindTypeName(null, rpapi.variant) + "\n" 
 						+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"

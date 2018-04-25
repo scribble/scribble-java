@@ -24,6 +24,7 @@ public class RPCoreSTApiGenConstants
 	public static final String GO_ENDPOINT_PARAMS = "Params";
 
 	public static final String GO_CONNECTION_MAP = "Conn";
+	public static final String GO_FORMATTER_MAP = "Fmt";
 
 	public static final String GO_FINALISER_TYPE = "session.Finaliser";  // net.MPSTEndpoint;
 	
