@@ -112,7 +112,9 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 							+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_INT
 							+ "(" + "arg0[j])"  // FIXME: hardcoded arg0*/
-							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_ISEND + "(\"" + r.getName() + "\", i, arg0[j])" 
+							+ "." 
+							+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
+							+ "(\"" + r.getName() + "\", i, arg0[j])"
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n";

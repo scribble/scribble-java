@@ -98,9 +98,9 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 			// FIXME: factor out futher (receive, case)
 			res += //"var msg session.T\n"  // var decl needed for deserialization -- FIXME?
 					  "var msg session2.ScribMessage\n"
-					+ "if err := " + sEpRecv + "[1]"  // FIXME: use peer interval
-					+ "." //+ RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(" + "&msg" + ")"
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", 1, &msg" + ")"
+					+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
+					+ "." //+ RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(" + "&msg" + ")"*/
+					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", 1, &msg" + ")"
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n";
