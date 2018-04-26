@@ -53,7 +53,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG
-							+ i + " *" + a.payload.elems.get(i)
+							+ i + " *" + ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) a.payload.elems.get(i))
 							//+ ", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " []int) int"  // No: singleton choice subj (not multichoices)
 							).collect(Collectors.joining(", "));
 	}
@@ -63,11 +63,6 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 	{
 		RPCoreSTStateChanApiBuilder apigen = (RPCoreSTStateChanApiBuilder) api;
 
-		if(a.payload.elems.size() > 1)
-		{
-			throw new RuntimeException("[rp-core] TODO: " + a);
-		}
-
 		boolean isDeleg = a.payload.elems.stream().anyMatch(pet -> 
 				//pet.isGDelegationType()  // FIXME: currently deleg specified by ParmaCoreDelegDecl, not GDelegationElem
 				((RPCoreSTStateChanApiBuilder) api).isDelegType((DataType) pet));
@@ -75,38 +70,52 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 		{
 			throw new RuntimeException("[rp-core] TODO: " + a);
 		}
+
+		RPIndexedRole peer = (RPIndexedRole) curr.getActions().iterator().next().peer;
+		RPInterval d = peer.intervals.iterator().next();
+		
+		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+		String sEpRecv = sEp + "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN; /*+ "."
+					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + peer.getName() + "\"]";*/
 		
 		String res = "_, selected := <-s._" + a.mid + "_Chan\n"
 				+ "if !selected {\n"
 				+ "\treturn nil // select ignores nilchan\n"
 				+ "}\n";
 
-		RPIndexedRole peer = (RPIndexedRole) curr.getActions().iterator().next().peer;
-		RPInterval d = peer.intervals.iterator().next();
-		
-		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
-		String sEpRecv = sEp + "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + peer.getName() + "\"]";
-
-		if (!a.payload.elems.isEmpty())
+		if (a.mid.isOp())
 		{
-			if (a.payload.elems.size() > 1)
+			if (!a.payload.elems.isEmpty())
 			{
-				throw new RuntimeException("[rp-core] TODO: payload size > 1: " + a);
-			}
+				if (a.payload.elems.size() > 1)
+				{
+					throw new RuntimeException("[rp-core] TODO: payload size > 1: " + a);
+				}
+				String extName = ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) a.payload.elems.get(0));
 
-			if (((GoJob) api.job).noCopy)
-			{
-				//res += "decoded = *bs[0].(*" + a.payload.elems.get(0) + ")\n";
-				throw new RuntimeException("[rp-core] TODO: -nocopy: " + a);
-			}
+				if (((GoJob) api.job).noCopy)
+				{
+					//res += "decoded = *bs[0].(*" + a.payload.elems.get(0) + ")\n";
+					throw new RuntimeException("[rp-core] TODO: -nocopy: " + a);
+				}
 
-			res += "if err := " + sEpRecv; // + (((GoJob) api.job).noCopy ? "Raw" : "");
-			res += "[" + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&arg0); err != nil {\n"
-					+ "log.Fatal(err)\n" + "}\n"
-					+ "ch := make(chan *" + apigen.getStateChanName(curr.getSuccessor(a)) + ", 1)\n"
-					+ "ch <- " + apigen.getSuccStateChan(this, curr, curr.getSuccessor(a), sEp) + "\n";
-					// FIXME: arg0 // FIXME: args depends on label // FIXME: store args in s.args
+				res += "var tmp interface{}\n";
+				res += "if err := " + sEpRecv // + (((GoJob) api.job).noCopy ? "Raw" : "");
+								//+ "[" + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&arg0)"
+								+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
+								+ RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + ", &tmp)"
+						+ "; err != nil {\n"
+						+ "log.Fatal(err)\n"
+						+ "}\n"
+						+ "*arg0 = tmp.(" + extName + ")\n"
+						+ "ch := make(chan *" + apigen.getStateChanName(curr.getSuccessor(a)) + ", 1)\n"
+						+ "ch <- " + apigen.getSuccStateChan(this, curr, curr.getSuccessor(a), sEp) + "\n";
+						// FIXME: arg0 // FIXME: args depends on label // FIXME: store args in s.args
+			}
+		}
+		else //if (a.mid.isMessageSigName())
+		{
+			throw new RuntimeException("[rp-core] TODO: " + a.mid);
 		}
 				
 		return res + "return ch";

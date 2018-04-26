@@ -316,6 +316,42 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get() instanceof RPCoreDelegDecl;  // FIXME: make a map
 	}
+
+	/*protected String getExtName(AbstractName<?> n)
+	{
+		if (n instanceof DataType)
+		{
+			DataType t = (DataType) n;
+			return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get().extName;
+		}
+		else if (n instanceof MessageSigName)
+		{
+			MessageSigName msn = (MessageSigName) n;
+			return this.msnds.stream().filter(x -> x.getDeclName().equals(msn)).findAny().get().extName;
+		}
+		else
+		{
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + n);
+		}
+	}
+
+	protected String getExtSource(AbstractName<?> n)
+	{
+		if (n instanceof DataType)
+		{
+			DataType t = (DataType) n;
+			return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get().extSource;  // FIXME: make a map
+		}
+		else if (n instanceof MessageSigName)
+		{
+			MessageSigName msn = (MessageSigName) n;
+			return this.msnds.stream().filter(x -> x.getDeclName().equals(msn)).findAny().get().extSource; 
+		}
+		else
+		{
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + n);
+		}
+	}*/
 	
 	protected String getExtName(DataType t)
 	{
