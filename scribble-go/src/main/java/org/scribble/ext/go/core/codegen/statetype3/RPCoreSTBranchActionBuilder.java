@@ -60,18 +60,23 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 
 		RPIndexedRole peer = (RPIndexedRole) a.peer;  // Singleton interval
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP
-				+ "[\"" + peer.getName() + "\"]";
+				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN; /*+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP
+				+ "[\"" + peer.getName() + "\"]";*/
 				
 		String res = "";
+			
+		// FIXME: factor out with RPCoreSTStateChanApiBuilder#getSuccStateChan -- don't need terminal check for succ though
+		String ret = RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": "
+				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ", "
+				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";
 		
-		if (a.mid.isOp())
+		if (a.mid.isOp())  // Currently, assuming all mids are Ops; else all mids are sig names
 		{
 			// Duplicated from RPCoreSTReceiveActionBuilder
-			res += "var lab string\n"  // var decl needed for deserializatoin -- FIXME?
-					+ "if err := " + sEpRecv + "[1]"  // FIXME: use peer interval
-					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL
-							+ "(" + "&lab" + ")"
+			res += "var lab interface{}\n"  // string  // cf. RPCoreSTReceiveActionBuilder // var decl needed for deserializatoin -- FIXME?
+					+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
+					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(" + "&lab" + ")"*/
+					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", 1, &lab" + ")"
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n";
@@ -81,29 +86,31 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 					+ "switch lab {\n"
 					+ as.stream().map(x -> 
 								"case \"" + x.mid + "\":\n" + "return &" + RPCoreSTCaseBuilder.getOpTypeName(api, curr, x.mid)
-							+ "{ Ept: s.Ept, Res: new(session.LinearResource) }\n"  // FIXME: factor out with RPCoreSTStateChanApiBuilder buildActionReturn/getSuccStateChan
+							//+ "{ Ept: s.Ept, Res: new(session.LinearResource) }\n"
+							+ "{" + ret + "}\n"
 						).collect(Collectors.joining(""))
-					+ "default: panic(\"Shouldn't get in here: \" + lab)\n"
+					+ "default: panic(\"Shouldn't get in here: \" + lab.(string))\n"
 					+ "}\n"
 					+ "return nil\n";  // FIXME: panic instead
 		}
 		else //if (a.mid.isMessageSigName())
 		{
 			// FIXME: factor out futher (receive, case)
-			res += "var msg session.T\n"  // var decl needed for deserializatoin -- FIXME?
+			res += //"var msg session.T\n"  // var decl needed for deserialization -- FIXME?
+					  "var msg session2.ScribMessage\n"
 					+ "if err := " + sEpRecv + "[1]"  // FIXME: use peer interval
-					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL
-							+ "(" + "&msg" + ")"
+					+ "." //+ RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(" + "&msg" + ")"
+							+ RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", 1, &msg" + ")"
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n";
-			
+
 			res += "\n"
 					+ "switch x := msg.(type) {\n"
 					+ as.stream().map(x ->
 							  "case " + ((RPCoreSTStateChanApiBuilder) api).getExtName((MessageSigName) x.mid) + ":\n"
-							+ "return &" + RPCoreSTCaseBuilder.getOpTypeName(api, curr, x.mid)
-							+ " { Ept: s.Ept, Res: new(session.LinearResource), msg: &x }\n"  // FIXME: factor out with RPCoreSTStateChanApiBuilder buildActionReturn/getSuccStateChan
+							+ "return &" + RPCoreSTCaseBuilder.getOpTypeName(api, curr, x.mid) + " { "
+							+ ret + ", msg: &x }\n"
 						).collect(Collectors.joining(""))
 					+ "default: panic(\"Shouldn't get in here: \" + reflect.TypeOf(msg).String())\n"
 					+ "}\n"

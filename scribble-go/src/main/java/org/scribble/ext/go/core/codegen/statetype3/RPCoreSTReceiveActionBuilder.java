@@ -90,7 +90,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
 			Function<String, String> f = extName -> 
 					  "var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
-					+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
+					//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
 					+ "if err = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
 							+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/

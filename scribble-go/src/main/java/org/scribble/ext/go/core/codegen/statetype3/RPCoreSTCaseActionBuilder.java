@@ -47,19 +47,20 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 		RPIndexedRole peer = (RPIndexedRole) a.peer;  // Singleton interval
 
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP
-				+ "[\"" +  peer.getName() + "\"]";
+				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN; /*+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP
+				+ "[\"" +  peer.getName() + "\"]";*/
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder
 		Function<String, String> f = extName -> 
-				  "var tmp " + extName + "\n"  // var tmp needed for deserialization -- FIXME?
-				+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK: []  // N.B. *arg0 matches buildArgs
-				+ "if err := " + sEpRecv + "[1]"  // FIXME: use peer interval
-						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(&tmp)"
+				  "var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
+				//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK: []  // N.B. *arg0 matches buildArgs
+				+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
+						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(&tmp)"*/
+						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", 1, &tmp)"
 						+ "; err != nil {\n"
 				+ "log.Fatal(err)\n"
 				+ "}\n"
-				+ "*arg0 = tmp\n";  // N.B. *arg0 matches buildArgs
+				+ "*arg0 = tmp.(" + extName + ")\n";  // N.B. *arg0 matches buildArgs
 		
 		String res = "";
 		if (a.mid.isOp())
