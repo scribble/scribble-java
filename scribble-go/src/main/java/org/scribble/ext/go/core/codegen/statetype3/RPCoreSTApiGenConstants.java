@@ -20,9 +20,13 @@ public class RPCoreSTApiGenConstants
 	public static final String GO_MPCHAN_PARAMS = "Params";
 	public static final String GO_MPCHAN_CONN_MAP = "Conns";
 	public static final String GO_MPCHAN_FORMATTER_MAP = "Fmts";
+	public static final String GO_MPCHAN_MSEND = "MSend";
+	public static final String GO_MPCHAN_MRECV = "MRecv";
+	public static final String GO_MPCHAN_ISEND = "ISend";
+	public static final String GO_MPCHAN_IRECV = "IRecv";
+
 	public static final String GO_MPCHAN_WRITEALL = "Send";
 	public static final String GO_MPCHAN_READALL = "Recv";
-
 	public static final String GO_MPCHAN_STARTPROTOCOL = "StartProtocol";
 	public static final String GO_MPCHAN_FINISHPROTOCOL = "FinishProtocol";
 

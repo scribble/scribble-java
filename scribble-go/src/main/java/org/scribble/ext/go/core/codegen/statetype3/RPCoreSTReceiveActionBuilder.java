@@ -89,17 +89,17 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
 			Function<String, String> f = extName -> 
-					  "var tmp " + extName + "\n"  // var tmp needed for deserialization -- FIXME?
+					  "var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
 					+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
 					+ "if err = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
 							+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
-							+ ".RecvInt(\"" + peer.getName() + "\", i, &tmp)" 
+							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
 			
 					+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n"
-					+ "arg0[i-" + start + "] = tmp\n";
+					+ "arg0[i-" + start + "] = tmp.(" + extName + ")\n";
 
 			if (a.mid.isOp())
 			{
@@ -112,11 +112,11 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 					//if (!a.mid.toString().equals("")) // HACK FIXME?  // Now redundant, -param-api checks mid starts uppercase
 					{ 
-						res += "var lab string\n"  // var decl needed for deserialization -- FIXME?
+						res += "var lab interface{}\n"  // string  // var decl needed for deserialization -- FIXME?
 								+ "if err = " + sEpRecv /*+ "[i]"
 										+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(" + "&lab" + ")"
 												+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_STRING + "()"*/
-										+ ".RecvString(\"" + peer.getName() + "\", i, &lab)" 
+										+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &lab)" 
 										+ "; err != nil {\n"
 								+ "log.Fatal(err)\n"
 								+ "}\n";
