@@ -61,7 +61,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		}
 
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP
+				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "." //+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP
+				+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP
 				+ "[\"" +  peer.getName() + "\"]";
 
 		String res = "";
@@ -82,15 +83,18 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		else
 		{
 			String start = RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start);
-			res += "for i := " + start + ";"
+			res += "var err error\n"
+					+ "for i := " + start + ";"
 					+ " i <= " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.end) + "; i++ {\n";
 
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
 			Function<String, String> f = extName -> 
 					  "var tmp " + extName + "\n"  // var tmp needed for deserialization -- FIXME?
 					+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
-					+ "if err := " + sEpRecv + "[i]"  // FIXME: use peer interval
-							+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
+					+ "if tmp, err = " + sEpRecv + "[i]"  // FIXME: use peer interval
+							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
+							+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"
+			
 					+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n"
@@ -107,9 +111,10 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 					//if (!a.mid.toString().equals("")) // HACK FIXME?  // Now redundant, -param-api checks mid starts uppercase
 					{ 
-						res += "var lab string\n"  // var decl needed for deserializatoin -- FIXME?
-								+ "if err := " + sEpRecv + "[i]"
-										+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(" + "&lab" + ")"
+						res += //"var lab string\n"  // var decl needed for deserialization -- FIXME?
+								  "if _, err = " + sEpRecv + "[i]"
+										+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(" + "&lab" + ")"
+										+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_STRING + "()"
 										+ "; err != nil {\n"
 								+ "log.Fatal(err)\n"
 								+ "}\n";

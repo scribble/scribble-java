@@ -56,7 +56,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 		String sEpRecv = 
 				  RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT;
+				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN;
 
 		String res =
 				  "package " + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant) + "\n"
@@ -108,7 +108,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 		else
 		{
 			res +=
-					 "if err := " + sEpRecv + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[\"" + peer.getName() + "\"][" 
+					 "if err := " + sEpRecv + "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + peer.getName() + "\"][" 
 				  		+ RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&op); err != nil {\n"  // g.end = g.start -- CFSM only has ? for input
 					+ "log.Fatal(err)\n"
 					+ "}\n";

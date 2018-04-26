@@ -153,24 +153,25 @@ public class RPCoreSTSessionApiBuilder
 						
 						// Endpoint Kind type
 						+ "type " + epkindTypeName + " struct {\n"
-						+ RPCoreSTApiGenConstants.GO_ENDPOINT_PROTO + " session.Protocol\n"
+						+ RPCoreSTApiGenConstants.GO_MPCHAN_PROTO + " " + RPCoreSTApiGenConstants.GO_PROTOCOL_TYPE + "\n"
 						+ "Self int\n"
-						+ "*session.LinearResource\n"
-						+ RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + " *" + RPCoreSTApiGenConstants.GO_ENDPOINT_TYPE + "\n"
+						+ "*" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"
+						+ RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + " *" + RPCoreSTApiGenConstants.GO_MPCHAN_TYPE + "\n"
 						//+ "Params map[string]int\n"
 						+ ivars.stream().map(x -> x + " int\n").collect(Collectors.joining(""))
 						+ "}\n"
 
 						// Endpoint Kind type constructor -- makes connection maps
 						+ "\n"
-						+ "func New(p session.Protocol, " //+"params map[string]int," 
+						+ "func New(p " + RPCoreSTApiGenConstants.GO_PROTOCOL_TYPE + ", " //+"params map[string]int," 
 								+ ivars.stream().map(x -> x + " int, ").collect(Collectors.joining(""))
 								+ "self int) *" + epkindTypeName + " {\n"
 						/*+ "conns := make(map[string]map[int]transport.Channel)\n"
 						+ this.apigen.variants.entrySet().stream()
 								.map(e -> "conns[\"" + e.getKey().getLastElement() + "\"] = " + "make(map[int]transport.Channel)\n")
 								.collect(Collectors.joining(""))*/
-						+ "return &" + epkindTypeName + "{p, self, &session.LinearResource{}, session.NewEndpoint(self, "//conns)" //"params
+						+ "return &" + epkindTypeName + "{p, self, &" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE
+								+ "{}, " + RPCoreSTApiGenConstants.GO_MPCHAN_CONSTRUCTOR + "(self, "//conns)" //"params
 								+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "})"
 								+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining(""))
 								+ "}\n"
@@ -198,37 +199,45 @@ public class RPCoreSTSessionApiBuilder
 						String r = v.getLastElement();
 						String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(v);
 						epkindFile += "\n"
-								+ "func (ini *" + epkindTypeName + ") " + vname
-										+ "_Accept(id int, acc transport.Transport, sfmt session.ScribMessageFormatter) error {\n"
-								+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
-										+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[\"" + r + "\"][id] = acc.Accept()\n"  // CHECKME: connection map keys (cf. variant?)
-								+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
-										+ RPCoreSTApiGenConstants.GO_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"
-								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id int"
+										+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
+										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+								+ "c, err := ss.Accept()\n"
+								+ "sfmt.Wrap(c)\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"
+								+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n"
 								+ "\n"
-								+ "func (ini *" + epkindTypeName + ") " + vname
-										+ "_Dial(id int, req transport.Transport, sfmt session.ScribMessageFormatter) error {\n"
-								+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
-										+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[\"" + r + "\"][id] = req.Connect()\n"  // CHECKME: connection map keys (cf. variant?)
-								+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
-										+ RPCoreSTApiGenConstants.GO_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
-								+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id int"
+										+ ", host string, port int"
+										+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
+										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+								+ "c, err := dialler(host, port)\n"
+								+ "sfmt.Wrap(c)\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
+								+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n";
 					}
 				}
 						
-				// Top-level Run method
+				// Top-level Run method  // FIXME: add session completion check
 				epkindFile += "\n"
 						+ "func (ini *" + epkindTypeName + ") Run(f func(*Init) End) *End {\n"  // f specifies non-pointer End
+						+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".Close()\n"
 						+ "ini.Use()\n"  // FIXME: int-counter linearity
-						+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + ".CheckConnection()\n"
+						+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"
 						
 						// FIXME: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
 						// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
 						+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
 								? "end := f(newBranchInit(ini))\n"
-								: "end := f(&Init{ new(session.LinearResource), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+								: "end := f(&Init{ new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 
 						+ "return &end\n"
 						+ "}";

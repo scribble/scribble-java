@@ -60,7 +60,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 
 		RPIndexedRole peer = (RPIndexedRole) a.peer;  // Singleton interval
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP
+				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP
 				+ "[\"" + peer.getName() + "\"]";
 				
 		String res = "";
@@ -70,7 +70,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 			// Duplicated from RPCoreSTReceiveActionBuilder
 			res += "var lab string\n"  // var decl needed for deserializatoin -- FIXME?
 					+ "if err := " + sEpRecv + "[1]"  // FIXME: use peer interval
-					+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
+					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL
 							+ "(" + "&lab" + ")"
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
@@ -92,7 +92,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 			// FIXME: factor out futher (receive, case)
 			res += "var msg session.T\n"  // var decl needed for deserializatoin -- FIXME?
 					+ "if err := " + sEpRecv + "[1]"  // FIXME: use peer interval
-					+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
+					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL
 							+ "(" + "&msg" + ")"
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"

@@ -65,7 +65,8 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		}
 		
 		String sEpWrite = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP
+				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "." //+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP
+				+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP
 				+ "[\"" + r.getName() + "\"]";
 
 		// FIXME: single arg  // Currently never true because of RPCoreSTOutputStateBuilder
@@ -81,7 +82,9 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 			// Write label
 			if (!a.mid.toString().equals("")) {  // HACK FIXME?
 				res += "if err := " + sEpWrite + "[i]"
-							+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL + "(\"" + a.mid + "\"" + ")" 
+							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
+							+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_STRING
+							+ "(\"" + a.mid + "\"" + ")" 
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"  // FIXME
 					+ "}\n";
@@ -105,7 +108,8 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 			}
 			
 			res += "if err := " + sEpWrite + "[i]"
-							+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
+							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
+							+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_INT
 							+ "(" + "arg0[j])"  // FIXME: hardcoded arg0
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"

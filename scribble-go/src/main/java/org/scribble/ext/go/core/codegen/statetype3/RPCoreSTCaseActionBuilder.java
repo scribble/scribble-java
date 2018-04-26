@@ -47,7 +47,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 		RPIndexedRole peer = (RPIndexedRole) a.peer;  // Singleton interval
 
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_CONNECTION_MAP
+				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP
 				+ "[\"" +  peer.getName() + "\"]";
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder
@@ -55,7 +55,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 				  "var tmp " + extName + "\n"  // var tmp needed for deserialization -- FIXME?
 				+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK: []  // N.B. *arg0 matches buildArgs
 				+ "if err := " + sEpRecv + "[1]"  // FIXME: use peer interval
-						+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
+						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(&tmp)"
 						+ "; err != nil {\n"
 				+ "log.Fatal(err)\n"
 				+ "}\n"

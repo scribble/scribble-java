@@ -64,12 +64,12 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 		String sEpRecv = 
 				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN
 				+ "." + "Conn";//ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
 		String sEpProto =
 				//"s.ep.Proto"
 				RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
-					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
+					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_MPCHAN_PROTO;
 		/*String sEpErr =
 				//"s.ep.Err"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
@@ -147,7 +147,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 								"var lab string\n"
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
-									+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
+									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
 									+ "&lab" + "); err != nil {\n"
 									+ "log.Fatal(err)\n"
@@ -159,7 +159,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 		
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
-									+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
+									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
 									//+ "&data[i-1]"
 									+ "&tmp"
@@ -197,7 +197,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 								"var lab string\n"
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
-									+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
+									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
 									+ "&lab" + "); err != nil {\n"
 									+ "log.Fatal(err)\n"
@@ -209,7 +209,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 
 							+ "if err := " + sEpRecv
 									+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
-									+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_READALL
+									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL
 									+ "(" //+ sEpProto + "." + r.getName() + ", "
 									//+ "&data[i-1]"
 									+ "&tmp"

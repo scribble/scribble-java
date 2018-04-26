@@ -72,13 +72,13 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 		String sEpWrite = 
 				//s.ep.Write
 				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				 		+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT
+				 		+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN
 						//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL;
 						+ ".Conn";
 		String sEpProto =
 				//"s.ep.Proto"
 				RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
-					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_ENDPOINT_PROTO;
+					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_MPCHAN_PROTO;
 		/*String sEpErr =
 				//"s.ep.Err"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
@@ -168,7 +168,7 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 				+ (a.mid.toString().equals("") ? "" :  // HACK
 					"if err := " + sEpWrite
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
-						+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
+						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
 						+ "\"" + a.mid + "\"" + "); err != nil {\n"
 						+ "log.Fatal(err)\n"
@@ -179,7 +179,7 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 				//+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 				+ "if err := " + sEpWrite
 						+ "[" +  sEpProto + "." + r.getName() + ".Name()][i]"
-						+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
+						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_WRITEALL
 						+ "(" //+ sEpProto + "." + r.getName() + ", "
 						
 						+ "splitFn0(arg0, i)" + "); err != nil {\n"
