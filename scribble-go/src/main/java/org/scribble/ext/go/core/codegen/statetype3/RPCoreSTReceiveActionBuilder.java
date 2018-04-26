@@ -61,9 +61,9 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		}
 
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "." //+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP
+				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN; /*+ "." //+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP
 				+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP
-				+ "[\"" +  peer.getName() + "\"]";
+				+ "[\"" +  peer.getName() + "\"]";*/
 
 		String res = "";
 		if (a.payload.elems.size() > 1)
@@ -91,9 +91,10 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			Function<String, String> f = extName -> 
 					  "var tmp " + extName + "\n"  // var tmp needed for deserialization -- FIXME?
 					+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
-					+ "if tmp, err = " + sEpRecv + "[i]"  // FIXME: use peer interval
+					+ "if err = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
-							+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"
+							+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
+							+ ".RecvInt(\"" + peer.getName() + "\", i, &tmp)" 
 			
 					+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
@@ -111,10 +112,11 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 					//if (!a.mid.toString().equals("")) // HACK FIXME?  // Now redundant, -param-api checks mid starts uppercase
 					{ 
-						res += //"var lab string\n"  // var decl needed for deserialization -- FIXME?
-								  "if _, err = " + sEpRecv + "[i]"
+						res += "var lab string\n"  // var decl needed for deserialization -- FIXME?
+								+ "if err = " + sEpRecv /*+ "[i]"
 										+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(" + "&lab" + ")"
-										+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_STRING + "()"
+												+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_STRING + "()"*/
+										+ ".RecvString(\"" + peer.getName() + "\", i, &lab)" 
 										+ "; err != nil {\n"
 								+ "log.Fatal(err)\n"
 								+ "}\n";
