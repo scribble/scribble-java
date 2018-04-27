@@ -152,10 +152,10 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 	}
 	
 	@Override
-	public Set<RPIndexedRole> getParamRoles()
+	public Set<RPIndexedRole> getIndexedRoles()
 	{
 		Set<RPIndexedRole> res = Stream.of(this.src, this.dest).collect(Collectors.toSet());
-		res.addAll(this.cases.values().iterator().next().getParamRoles());
+		res.addAll(this.cases.values().iterator().next().getIndexedRoles());
 		return res;
 	}
 

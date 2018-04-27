@@ -7,19 +7,24 @@ import java.util.stream.Stream;
 import org.scribble.ext.go.core.ast.global.RPCoreGActionKind;
 import org.scribble.ext.go.core.ast.global.RPCoreGChoice;
 import org.scribble.ext.go.core.ast.global.RPCoreGEnd;
+import org.scribble.ext.go.core.ast.global.RPCoreGForeach;
 import org.scribble.ext.go.core.ast.global.RPCoreGRec;
 import org.scribble.ext.go.core.ast.global.RPCoreGRecVar;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.RPCoreLCrossChoice;
 import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
+import org.scribble.ext.go.core.ast.local.RPCoreLForeach;
 import org.scribble.ext.go.core.ast.local.RPCoreLRec;
 import org.scribble.ext.go.core.ast.local.RPCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.Message;
 import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Role;
 
 
 public class RPCoreAstFactory
@@ -65,6 +70,11 @@ public class RPCoreAstFactory
 	public RPCoreGEnd ParamCoreGEnd()
 	{
 		return RPCoreGEnd.END;
+	}
+
+	public RPCoreGForeach RPCoreGForeach(Role role, RPIndexVar var, RPIndexExpr src, RPIndexExpr dest, RPCoreGType body, RPCoreGType cont)
+	{
+		return new RPCoreGForeach(role, var, src, dest, body, cont);
 	}
 
 	public RPCoreLCrossChoice ParamCoreLCrossChoice(RPIndexedRole role, RPCoreLActionKind kind,
@@ -124,5 +134,10 @@ public class RPCoreAstFactory
 	public RPCoreLEnd ParamCoreLEnd()
 	{
 		return RPCoreLEnd.END;
+	}
+
+	public RPCoreLForeach RPCoreLForeach(Role role, RPIndexVar var, RPIndexExpr src, RPIndexExpr dest, RPCoreLType body, RPCoreLType cont)
+	{
+		return new RPCoreLForeach(role, var, src, dest, body, cont);
 	}
 }

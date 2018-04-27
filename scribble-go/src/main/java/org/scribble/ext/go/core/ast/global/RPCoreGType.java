@@ -22,5 +22,5 @@ public interface RPCoreGType extends RPCoreType<Global>
 	//ParamCoreLType project(ParamCoreAstFactory af, Role subj, Set<ParamRange> ranges) throws ParamCoreSyntaxException;
 	RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException;
 	
-	Set<RPIndexedRole> getParamRoles();
+	Set<RPIndexedRole> getIndexedRoles();
 }

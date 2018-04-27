@@ -1,4 +1,4 @@
-package org.scribble.ext.go.parser.scribble.ast;
+package org.scribble.ext.go.parser.scribble.ast.global;
 
 import java.util.LinkedList;
 import java.util.List;

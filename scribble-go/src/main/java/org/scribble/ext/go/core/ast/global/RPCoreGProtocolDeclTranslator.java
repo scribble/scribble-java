@@ -1,5 +1,6 @@
 package org.scribble.ext.go.core.ast.global;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -22,6 +23,7 @@ import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.ext.go.ast.RPAstFactory;
 import org.scribble.ext.go.ast.global.RPGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
+import org.scribble.ext.go.ast.global.RPGForeach;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.type.RPIndexedRole;
@@ -85,7 +87,7 @@ public class RPCoreGProtocolDeclTranslator
 			{
 				throw new RPCoreSyntaxException(first.getSource(), "[rp-core] Unguarded in choice case: " + first);
 			}
-			if (is.size() > 1)
+			if (!(first instanceof RPGForeach) && is.size() > 1)  // Using Scribble sequencing for foreach continuation
 			{
 				throw new RPCoreSyntaxException(is.get(1).getSource(), "[rp-core] Bad sequential composition after: " + first);
 			}
@@ -108,6 +110,12 @@ public class RPCoreGProtocolDeclTranslator
 			else if (first instanceof GContinue)
 			{
 				return parseGContinue(rvs, checkRecGuard, (GContinue) first);
+			}
+			else if (first instanceof RPGForeach)
+			{
+				Map<RecVar, RecVar> tmp = new HashMap<>(rvs);
+				RPCoreGType seq = parseSeq(is.subList(1, is.size()), tmp, false, false);  // CHECKME: false guards
+				return parseRPGForeach(rvs, checkRecGuard, (RPGForeach) first, seq);
 			}
 			else
 			{
@@ -291,6 +299,12 @@ public class RPCoreGProtocolDeclTranslator
 			recvar = rvs.get(recvar);
 		}
 		return this.af.ParamCoreGRecVar(recvar);
+	}
+	
+	private RPCoreGForeach parseRPGForeach(Map<RecVar, RecVar> rvs, boolean checkRecGuard, RPGForeach gf, RPCoreGType cont) throws RPCoreSyntaxException
+	{
+		RPCoreGType body = parseSeq(gf.getBlock().getInteractionSeq().getInteractions(), Collections.emptyMap(), false, true);
+		return this.af.RPCoreGForeach(gf.subj.toName(), gf.var, gf.start, gf.end, body, cont);
 	}
 
 	// Parses message interactions as unary choices

@@ -30,7 +30,7 @@ public class RPCoreGEnd extends RPCoreEnd<Global> implements RPCoreGType
 	}
 	
 	@Override
-	public Set<RPIndexedRole> getParamRoles()
+	public Set<RPIndexedRole> getIndexedRoles()
 	{
 		return Collections.emptySet();
 	}

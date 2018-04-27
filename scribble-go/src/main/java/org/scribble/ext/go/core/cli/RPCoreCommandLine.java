@@ -313,7 +313,7 @@ public class RPCoreCommandLine extends CommandLine
 			Map<Role, Set<RPRoleVariant>>
 			getProtoRoles(GoJob job, RPCoreGType gt)
 	{
-		Set<RPIndexedRole> prs = gt.getParamRoles();
+		Set<RPIndexedRole> prs = gt.getIndexedRoles();
 		
 		Map<Role, Set<RPIndexedRole>> map
 				= prs.stream()

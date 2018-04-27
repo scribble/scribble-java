@@ -67,6 +67,7 @@ tokens
 	
 	
 	PARAM_DELEG_KW = 'deleg';
+	PARAM_FOREACH_KW = 'foreach';
 	
 
 	/*
@@ -178,10 +179,11 @@ tokens
 	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
 	PARAM_GLOBALDOTMESSAGETRANSFER   = 'PARAM_GLOBALDOTMESSAGETRANSFER';
 	PARAM_GLOBALCHOICE               = 'PARAM_GLOBALCHOICE';
-	PARAM_GLOBALMULTICHOICES         = 'PARAM_GLOBALMULTICHOICES';
-	PARAM_GLOBALMULTICHOICESTRANSFER = 'PARAM_GLOBALMULTICHOICESTRANSFER';
+	/*PARAM_GLOBALMULTICHOICES         = 'PARAM_GLOBALMULTICHOICES';
+	PARAM_GLOBALMULTICHOICESTRANSFER = 'PARAM_GLOBALMULTICHOICESTRANSFER';*/
 	//PARAM_DELEGATION                 = 'PARAM_DELEGATION';
 	PARAM_DELEGDECL                  = 'PARAM_DELEGDECL';
+	PARAM_FOREACH                    = 'PARAM_FOREACH';
 }
 
 
@@ -668,15 +670,25 @@ globalinteraction:
 |
 	globalwrap
 
-|
+/*|
 	globalmultichoices
 |
-	globalmultichoicetransfer
+	globalmultichoicetransfer*/
+|
+	globalforeach
 ;
 /*|
 	globalparallel
 |
 	globalinterruptible*/
+	
+	
+globalforeach:
+	PARAM_FOREACH_KW '[' simplename ':' paramindexexpr ',' paramindexexpr ']' globalprotocolblock  // TODO: generalise
+->
+	^(PARAM_FOREACH rolename simplename paramindexexpr paramindexexpr globalprotocolblock)
+;
+
 
 
 /**
@@ -774,7 +786,7 @@ globalchoice:
 ;
 	
 
-globalmultichoices:
+/*globalmultichoices:
 	CHOICES_KW AT_KW rolename '[' simplename ':' paramindexexpr '..' paramindexexpr ']' globalprotocolblock (OR_KW globalprotocolblock)*
 ->
 	^(PARAM_GLOBALMULTICHOICES rolename simplename paramindexexpr paramindexexpr globalprotocolblock+)
@@ -784,7 +796,7 @@ globalmultichoicetransfer:
 	message FROM_KW rolename '[' simplename ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
 ->
 	^(PARAM_GLOBALMULTICHOICESTRANSFER message rolename rolename simplename paramindexexpr paramindexexpr)
-;
+;*/
 
 
 

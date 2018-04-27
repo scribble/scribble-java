@@ -164,10 +164,10 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	}
 	
 	@Override
-	public Set<RPIndexedRole> getParamRoles()
+	public Set<RPIndexedRole> getIndexedRoles()
 	{
 		Set<RPIndexedRole> res = Stream.of(this.src, this.dest).collect(Collectors.toSet());
-		this.cases.values().forEach(c -> res.addAll(c.getParamRoles()));
+		this.cases.values().forEach(c -> res.addAll(c.getIndexedRoles()));
 		return res;
 	}
 

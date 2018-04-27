@@ -23,6 +23,7 @@ import org.scribble.type.name.Role;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
+@Deprecated
 public class RPGMultiChoices extends GChoice
 {
 	public final RPIndexVar var;

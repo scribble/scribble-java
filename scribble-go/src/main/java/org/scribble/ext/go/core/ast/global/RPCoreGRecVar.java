@@ -29,7 +29,7 @@ public class RPCoreGRecVar extends RPCoreRecVar<Global> implements RPCoreGType
 	}
 	
 	@Override
-	public Set<RPIndexedRole> getParamRoles()
+	public Set<RPIndexedRole> getIndexedRoles()
 	{
 		return Collections.emptySet();
 	}

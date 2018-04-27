@@ -21,6 +21,7 @@ import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
 // Subsumes scatter/gather, src/dest range length one
+@Deprecated
 public class RPGMultiChoicesTransfer extends GMessageTransfer
 {
 	public final RPIndexVar var;
