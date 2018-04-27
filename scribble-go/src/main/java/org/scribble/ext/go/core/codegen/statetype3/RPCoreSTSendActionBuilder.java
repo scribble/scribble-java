@@ -81,11 +81,12 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		{
 			// Write label
 			if (!a.mid.toString().equals("")) {  // HACK FIXME?
-				res += "if err := " + sEpWrite /*+ "[i]"
+				res += "op := \"" + a.mid + "\"\n"  // FIXME: API constant?
+							+ "if err := " + sEpWrite /*+ "[i]"
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 							+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_STRING
 							+ "(\"" + a.mid + "\"" + ")" */
-							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_ISEND + "(\"" + r.getName() + "\", i, \"" + a.mid + "\")" 
+							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_ISEND + "(\"" + r.getName() + "\", i, &op)" 
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"  // FIXME
 					+ "}\n";
@@ -114,7 +115,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 							+ "(" + "arg0[j])"  // FIXME: hardcoded arg0*/
 							+ "." 
 							+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
-							+ "(\"" + r.getName() + "\", i, arg0[j])"
+							+ "(\"" + r.getName() + "\", i, &arg0[j])"
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n";

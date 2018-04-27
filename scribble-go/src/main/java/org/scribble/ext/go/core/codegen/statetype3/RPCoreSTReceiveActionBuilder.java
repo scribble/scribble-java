@@ -99,7 +99,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n"
-					+ "arg0[i-" + start + "] = tmp.(" + extName + ")\n";
+					//+ "arg0[i-" + start + "] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
+					+ "arg0[i-" + start + "] = tmp.(" + extName + ")\n";  // FIXME: gob pointer decoding seems flattened?  ("*" dropped)
 
 			if (a.mid.isOp())
 			{
