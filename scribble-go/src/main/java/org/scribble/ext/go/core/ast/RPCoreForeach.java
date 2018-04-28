@@ -12,7 +12,7 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 	public final RPIndexExpr start;      // Gives the Scribble choices-subj range // Cf. ParamCoreGChoice singleton src
 	public final RPIndexExpr end;  // this.dest == super.role -- arbitrary?
 	public final B body;
-	public final B cont;
+	public final B seq;
 	
 	public RPCoreForeach(Role role, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, B body, B cont)
 	{
@@ -21,13 +21,13 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 		this.start = start;
 		this.end = end;
 		this.body = body;
-		this.cont = cont;
+		this.seq = cont;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "foreach " + this.role + "[" + var + ":" + this.start + "," + this.end + "] do " + this.body + " ; " + this.cont;
+		return "foreach " + this.role + "[" + var + ":" + this.start + "," + this.end + "] do " + this.body + " ; " + this.seq;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 		RPCoreForeach<?, ?> them = (RPCoreForeach<?, ?>) obj;
 		return them.canEquals(this) && this.role.equals(them.role) 
 				&& this.var.equals(them.var) && this.start.equals(them.start)
-				&& this.end.equals(them.end) && this.body.equals(them.body) && this.cont.equals(them.cont);  // FIXME: check B kind is equal?
+				&& this.end.equals(them.end) && this.body.equals(them.body) && this.seq.equals(them.seq);  // FIXME: check B kind is equal?
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 		result = prime * result + this.start.hashCode();
 		result = prime * result + this.end.hashCode();
 		result = prime * result + this.body.hashCode();
-		result = prime * result + this.cont.hashCode();
+		result = prime * result + this.seq.hashCode();
 		return result;
 	}
 }

@@ -12,7 +12,7 @@ import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 import org.scribble.util.ScribParserException;
 
-public class RPAntlrGForeach
+public class RPCoreAntlrGForeach
 {
 	public static final int SUBJECT_CHILD_INDEX = 0;
 

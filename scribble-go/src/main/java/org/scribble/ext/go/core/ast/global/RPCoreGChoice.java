@@ -14,6 +14,7 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreChoice;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
+import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
@@ -41,6 +42,21 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		super(dest, kind, cases);
 		this.src = src;
 		this.dest = dest;
+	}
+	
+	@Override
+	public RPCoreGType subs(RPCoreAstFactory af, RPCoreType<Global> old, RPCoreType<Global> neu)
+	{
+		if (this.equals(old))
+		{
+			return (RPCoreGType) neu;
+		}
+		else
+		{
+			LinkedHashMap<Message, RPCoreGType> tmp = new LinkedHashMap<>();
+			this.cases.forEach((k, v) -> tmp.put(k, v.subs(af, old, neu)));  // Immutable, so neu can be shared by multiple cases
+			return af.ParamCoreGChoice(this.src, RPCoreGActionKind.CROSS_TRANSFER, this.dest, tmp);
+		}
 	}
 	
 	@Override

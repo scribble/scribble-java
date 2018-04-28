@@ -301,10 +301,11 @@ public class RPCoreGProtocolDeclTranslator
 		return this.af.ParamCoreGRecVar(recvar);
 	}
 	
-	private RPCoreGForeach parseRPGForeach(Map<RecVar, RecVar> rvs, boolean checkRecGuard, RPGForeach gf, RPCoreGType cont) throws RPCoreSyntaxException
+	// FIXME: need "cont"?
+	private RPCoreGForeach parseRPGForeach(Map<RecVar, RecVar> rvs, boolean checkRecGuard, RPGForeach gf, RPCoreGType seq) throws RPCoreSyntaxException
 	{
 		RPCoreGType body = parseSeq(gf.getBlock().getInteractionSeq().getInteractions(), Collections.emptyMap(), false, true);
-		return this.af.RPCoreGForeach(gf.subj.toName(), gf.var, gf.start, gf.end, body, cont);
+		return this.af.RPCoreGForeach(gf.subj.toName(), gf.var, gf.start, gf.end, body, seq);
 	}
 
 	// Parses message interactions as unary choices

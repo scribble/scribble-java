@@ -8,7 +8,6 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.DefaultDel;
 import org.scribble.ext.go.ast.global.RPGChoice;
 import org.scribble.ext.go.ast.global.RPGCrossMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
@@ -17,6 +16,7 @@ import org.scribble.ext.go.ast.global.RPGMultiChoices;
 import org.scribble.ext.go.ast.global.RPGMultiChoicesTransfer;
 import org.scribble.ext.go.core.ast.RPCoreDelegDecl;
 import org.scribble.ext.go.del.global.RPGChoiceDel;
+import org.scribble.ext.go.del.global.RPGForeachDel;
 import org.scribble.ext.go.del.global.RPGMessageTransferDel;
 import org.scribble.ext.go.del.global.RPGMultiChoicesDel;
 import org.scribble.ext.go.type.index.RPIndexExpr;
@@ -95,7 +95,7 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 	public RPGForeach RPGForeach(CommonTree source, RoleNode subj, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, GProtocolBlock block)
 	{
 		RPGForeach gf = new RPGForeach(source, subj, var, start, end, block);
-		gf = del(gf, new DefaultDel());
+		gf = del(gf, new RPGForeachDel());
 		return gf;
 	}
 

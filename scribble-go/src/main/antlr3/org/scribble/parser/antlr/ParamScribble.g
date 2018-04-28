@@ -183,7 +183,7 @@ tokens
 	PARAM_GLOBALMULTICHOICESTRANSFER = 'PARAM_GLOBALMULTICHOICESTRANSFER';*/
 	//PARAM_DELEGATION                 = 'PARAM_DELEGATION';
 	PARAM_DELEGDECL                  = 'PARAM_DELEGDECL';
-	PARAM_FOREACH                    = 'PARAM_FOREACH';
+	PARAM_GLOBALFOREACH                    = 'PARAM_GLOBALFOREACH';
 }
 
 
@@ -684,9 +684,9 @@ globalinteraction:
 	
 	
 globalforeach:
-	PARAM_FOREACH_KW '[' simplename ':' paramindexexpr ',' paramindexexpr ']' globalprotocolblock  // TODO: generalise
+	PARAM_FOREACH_KW rolename '[' simplename ':' paramindexexpr ',' paramindexexpr ']' globalprotocolblock  // TODO: generalise
 ->
-	^(PARAM_FOREACH rolename simplename paramindexexpr paramindexexpr globalprotocolblock)
+	^(PARAM_GLOBALFOREACH rolename simplename paramindexexpr paramindexexpr globalprotocolblock)
 ;
 
 

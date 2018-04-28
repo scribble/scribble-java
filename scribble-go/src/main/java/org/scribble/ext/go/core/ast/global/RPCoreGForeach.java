@@ -6,6 +6,8 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreForeach;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
+import org.scribble.ext.go.core.ast.RPCoreType;
+import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPRoleVariant;
@@ -17,41 +19,59 @@ import org.scribble.type.name.Role;
 
 public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implements RPCoreGType
 {
-	public RPCoreGForeach(Role role, RPIndexVar var, RPIndexExpr src, RPIndexExpr dest, RPCoreGType body, RPCoreGType cont)
+	public RPCoreGForeach(Role role, RPIndexVar var, RPIndexExpr src, RPIndexExpr dest, RPCoreGType body, RPCoreGType seq)
 	{
-		super(role, var, src, dest, body, cont);
+		super(role, var, src, dest, body, seq);
+	}
+	
+	@Override
+	public RPCoreGType subs(RPCoreAstFactory af, RPCoreType<Global> old, RPCoreType<Global> neu)
+	{
+		if (this.equals(old))
+		{
+			return (RPCoreGType) neu;
+		}
+		else
+		{
+			return af.RPCoreGForeach(this.role, this.var, this.start, this.end,
+					this.body.subs(af, old, neu), this.seq.subs(af, old, neu));
+		}
 	}
 	
 	@Override
 	public boolean isWellFormed(GoJob job, GProtocolDecl gpd)
 	{
-		//return this.body.isWellFormed(job, gpd);
-		throw new RuntimeException("TODO: ");
+		// FIXME TODO: interval constraints, nested foreach constraints, etc. -- cf. RPCoreGChoice
+		return this.body.isWellFormed(job, gpd);
 	}
 	
 	@Override
 	public Set<RPIndexedRole> getIndexedRoles()
 	{
-		//return this.body.getIndexedRoles();  // foreach subjects?
-		throw new RuntimeException("TODO: ");
+		return this.body.getIndexedRoles();  // Foreach subjects not included, they are binders? -- cf. RPForeachDel#leaveIndexVarCollection
 	}
 
 	@Override
 	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
 	{
-		/*//ParamCoreLType proj = this.body.project(af, r, ranges);
-		RPCoreLType proj = this.body.project(af, subj);
-		if (proj instanceof RPCoreLRecVar)
+		//ParamCoreLType proj = this.body.project(af, r, ranges);
+		RPCoreLType body = this.body.project(af, subj);
+		RPCoreLType seq = this.seq.project(af, subj);
+
+		if (!subj.getName().equals(this.role))  // FIXME: check intervals
 		{
-			RPCoreLRecVar rv = (RPCoreLRecVar) proj;
-			return rv.recvar.equals(this.recvar) ? RPCoreLEnd.END : rv;
+			return af.RPCoreLForeach(subj, this.var, this.start, this.end, body, seq);
 		}
-		else
-		{	
-			return af.ParamCoreLRec(this.recvar, proj);
+		/*else if ()
+		{
+			// ...else substitute cont for end in body
 		}*/
-		throw new RuntimeException("TODO: ");
+		else 
+		{
+			return body.subs(af, RPCoreLEnd.END, seq);
+			//throw new RuntimeException("[rp-core] TODO: " + this + " project onto " + subj);
+		}
 	}
 
 	@Override

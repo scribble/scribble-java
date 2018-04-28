@@ -7,8 +7,8 @@ import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
-import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.type.kind.Global;
 
@@ -23,4 +23,7 @@ public interface RPCoreGType extends RPCoreType<Global>
 	RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException;
 	
 	Set<RPIndexedRole> getIndexedRoles();
+
+	@Override
+	RPCoreGType subs(RPCoreAstFactory af, RPCoreType<Global> old, RPCoreType<Global> neu);
 }

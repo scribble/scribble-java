@@ -6,11 +6,12 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreRec;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
+import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
 import org.scribble.ext.go.core.ast.local.RPCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
-import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
@@ -20,6 +21,19 @@ public class RPCoreGRec extends RPCoreRec<RPCoreGType, Global> implements RPCore
 	public RPCoreGRec(RecVar recvar, RPCoreGType body)
 	{
 		super(recvar, body);
+	}
+	
+	@Override
+	public RPCoreGType subs(RPCoreAstFactory af, RPCoreType<Global> old, RPCoreType<Global> neu)
+	{
+		if (this.equals(old))
+		{
+			return (RPCoreGType) neu;
+		}
+		else
+		{
+			return af.ParamCoreGRec(this.recvar, this.body.subs(af, old, neu));
+		}
 	}
 	
 	@Override

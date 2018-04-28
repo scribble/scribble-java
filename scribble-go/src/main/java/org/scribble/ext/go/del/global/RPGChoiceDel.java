@@ -34,7 +34,7 @@ public class RPGChoiceDel extends GChoiceDel implements RPDel
 		return ScribDelBase.popAndSetVisitorEnv(this, inl, visited);
 	}
 
-	// FIXME: not needed for global -- should be local
+	// FIXME: not really needed for global? -- should be local
 	@Override
 	public ScribNode leaveIndexVarCollection(ScribNode parent, ScribNode child, RPCoreIndexVarCollector coll, ScribNode visited) throws ScribbleException
 	{

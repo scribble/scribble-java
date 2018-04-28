@@ -6,4 +6,6 @@ import org.scribble.type.kind.ProtocolKind;
 public interface RPCoreType<K extends ProtocolKind>
 {
 	boolean canEquals(Object o);
+
+	RPCoreType<K> subs(RPCoreAstFactory af, RPCoreType<K> old, RPCoreType<K> neu);
 }

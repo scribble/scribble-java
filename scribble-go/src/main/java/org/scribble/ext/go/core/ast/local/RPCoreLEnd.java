@@ -3,7 +3,9 @@ package org.scribble.ext.go.core.ast.local;
 import java.util.Collections;
 import java.util.Set;
 
+import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreEnd;
+import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.kind.Local;
 
@@ -15,6 +17,16 @@ public class RPCoreLEnd extends RPCoreEnd<Local> implements RPCoreLType
 	private RPCoreLEnd()
 	{
 		
+	}
+	
+	@Override
+	public RPCoreLType subs(RPCoreAstFactory af, RPCoreType<Local> old, RPCoreType<Local> neu) 
+	{
+		if (this.equals(old))
+		{
+			return (RPCoreLType) neu;
+		}
+		return this;
 	}
 	
 	@Override

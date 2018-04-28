@@ -9,8 +9,7 @@ import org.scribble.ext.go.parser.scribble.ast.RPCoreAntlrModule;
 import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGChoice;
 import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGCrossMessageTransfer;
 import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGDotMessageTransfer;
-import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGMultiChoices;
-import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGMultiChoicesTransfer;
+import org.scribble.ext.go.parser.scribble.ast.global.RPCoreAntlrGForeach;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ScribbleAntlrConstants;
 import org.scribble.util.ScribParserException;
@@ -22,9 +21,10 @@ public class RPAntlrToScribParser extends AntlrToScribParser
 	public static final String PARAM_GLOBALCROSSMESSAGETRANSFER_NODE_TYPE = "PARAM_GLOBALCROSSMESSAGETRANSFER";
 	public static final String PARAM_GLOBALDOTMESSAGETRANSFER_NODE_TYPE = "PARAM_GLOBALDOTMESSAGETRANSFER";
 	public static final String PARAM_GLOBALCHOICE_NODE_TYPE = "PARAM_GLOBALCHOICE";
-	public static final String PARAM_GLOBALMULTICHOICES_NODE_TYPE = "PARAM_GLOBALMULTICHOICES";
-	public static final String PARAM_GLOBALMULTICHOICESTRANSFER_NODE_TYPE = "PARAM_GLOBALMULTICHOICESTRANSFER";
+	/*public static final String PARAM_GLOBALMULTICHOICES_NODE_TYPE = "PARAM_GLOBALMULTICHOICES";
+	public static final String PARAM_GLOBALMULTICHOICESTRANSFER_NODE_TYPE = "PARAM_GLOBALMULTICHOICESTRANSFER";*/
 	public static final String PARAM_DELEGDECL_NODE_TYPE = "PARAM_DELEGDECL";
+	public static final String PARAM_GLOBALFOREACH = "PARAM_GLOBALFOREACH";
 	
 	public RPAntlrToScribParser()
 	{
@@ -50,11 +50,12 @@ public class RPAntlrToScribParser extends AntlrToScribParser
 				return RPAntlrGDotMessageTransfer.parseParamGDotMessageTransfer(this, ct, aaf);
 			case PARAM_GLOBALCHOICE_NODE_TYPE:
 				return RPAntlrGChoice.parseParamGChoice(this, ct, aaf);
-			case PARAM_GLOBALMULTICHOICES_NODE_TYPE:
+			/*case PARAM_GLOBALMULTICHOICES_NODE_TYPE:
 				return RPAntlrGMultiChoices.parseParamGMultiChoices(this, ct, aaf);
 			case PARAM_GLOBALMULTICHOICESTRANSFER_NODE_TYPE:
-				return RPAntlrGMultiChoicesTransfer.parseParamGMultiChoicesTransfer(this, ct, aaf);
-
+				return RPAntlrGMultiChoicesTransfer.parseParamGMultiChoicesTransfer(this, ct, aaf);*/
+			case PARAM_GLOBALFOREACH:
+				return RPCoreAntlrGForeach.parseRPGForeach(this, ct, aaf);
 			case PARAM_DELEGDECL_NODE_TYPE:
 				return RPCoreAntlrDelegDecl.parseDelegDecl(this, ct, aaf);
 

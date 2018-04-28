@@ -7,9 +7,10 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreEnd;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
+import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
-import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.type.kind.Global;
 
@@ -23,6 +24,16 @@ public class RPCoreGEnd extends RPCoreEnd<Global> implements RPCoreGType
 		
 	}
 	
+	@Override
+	public RPCoreGType subs(RPCoreAstFactory af, RPCoreType<Global> old, RPCoreType<Global> neu) 
+	{
+		if (this.equals(old))
+		{
+			return (RPCoreGType) neu;
+		}
+		return this;
+	}
+
 	@Override
 	public boolean isWellFormed(GoJob job, GProtocolDecl gpd)
 	{

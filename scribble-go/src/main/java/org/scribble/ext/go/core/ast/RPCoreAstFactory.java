@@ -72,9 +72,9 @@ public class RPCoreAstFactory
 		return RPCoreGEnd.END;
 	}
 
-	public RPCoreGForeach RPCoreGForeach(Role role, RPIndexVar var, RPIndexExpr src, RPIndexExpr dest, RPCoreGType body, RPCoreGType cont)
+	public RPCoreGForeach RPCoreGForeach(Role role, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, RPCoreGType body, RPCoreGType seq)
 	{
-		return new RPCoreGForeach(role, var, src, dest, body, cont);
+		return new RPCoreGForeach(role, var, start, end, body, seq);
 	}
 
 	public RPCoreLCrossChoice ParamCoreLCrossChoice(RPIndexedRole role, RPCoreLActionKind kind,
@@ -136,8 +136,8 @@ public class RPCoreAstFactory
 		return RPCoreLEnd.END;
 	}
 
-	public RPCoreLForeach RPCoreLForeach(Role role, RPIndexVar var, RPIndexExpr src, RPIndexExpr dest, RPCoreLType body, RPCoreLType cont)
+	public RPCoreLForeach RPCoreLForeach(Role role, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, RPCoreLType body, RPCoreLType seq)
 	{
-		return new RPCoreLForeach(role, var, src, dest, body, cont);
+		return new RPCoreLForeach(role, var, start, end, body, seq);
 	}
 }

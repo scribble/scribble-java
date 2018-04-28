@@ -13,6 +13,7 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreChoice;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
+import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
@@ -264,5 +265,11 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 	public boolean canEquals(Object o)
 	{
 		return o instanceof RPCoreGMultiChoices;
+	}
+
+	@Override
+	public RPCoreGType subs(RPCoreAstFactory af, RPCoreType<Global> old, RPCoreType<Global> neu)
+	{
+		throw new RuntimeException("TODO:");
 	}
 }

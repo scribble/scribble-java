@@ -7,9 +7,10 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreRecVar;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
+import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
-import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
@@ -20,6 +21,16 @@ public class RPCoreGRecVar extends RPCoreRecVar<Global> implements RPCoreGType
 	public RPCoreGRecVar(RecVar var)
 	{
 		super(var);
+	}
+	
+	@Override
+	public RPCoreGType subs(RPCoreAstFactory af, RPCoreType<Global> old, RPCoreType<Global> neu) 
+	{
+		if (this.equals(old))  // Shouldn't happen?
+		{
+			return (RPCoreGType) neu;
+		}
+		return this;
 	}
 	
 	@Override

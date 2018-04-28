@@ -2,7 +2,9 @@ package org.scribble.ext.go.core.ast.local;
 
 import java.util.Set;
 
+import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreForeach;
+import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.kind.Local;
@@ -16,10 +18,23 @@ public class RPCoreLForeach extends RPCoreForeach<RPCoreLType, Local> implements
 	}
 	
 	@Override
+	public RPCoreLType subs(RPCoreAstFactory af, RPCoreType<Local> old, RPCoreType<Local> neu)
+	{
+		if (this.equals(old))
+		{
+			return (RPCoreLType) neu;
+		}
+		else
+		{
+			return af.RPCoreLForeach(this.role, this.var, this.start, this.end,
+					this.body.subs(af, old, neu), this.seq.subs(af, old, neu));
+		}
+	}
+	
+	@Override
 	public Set<RPIndexVar> getIndexVars()
 	{
-		//return this.body.getIndexVars();
-		throw new RuntimeException("TODO: ");
+		return this.body.getIndexVars();  // Foreach subjects not included, they are binders? -- cf. RPCoreGForeach#getIndexVars
 	}
 
 	@Override
