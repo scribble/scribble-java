@@ -1,5 +1,6 @@
 package org.scribble.ext.go.type.index;
 
+// Used directly by source ast parsing -- cf. scrib-assrt, AssrtAntlrToFormulaParser
 // Would correspond to a "types factory" -- cf. AST factory
 public class RPIndexFactory
 {

@@ -11,6 +11,7 @@ import org.scribble.ext.go.ast.RPAstFactory;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.type.name.Role;
 
+// FIXME: rename, and use RPIndexedRoleNode
 // Subsumes scatter/gather, src/dest range length one
 public class RPGCrossMessageTransfer extends RPGMessageTransfer
 {

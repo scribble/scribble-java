@@ -86,7 +86,7 @@ public class DummyProjectionRoleNode extends RoleNode
 	public int hashCode()
 	{
 		int hash = 359;
-		hash = 31 * super.hashCode();
+		hash = 31*hash + super.hashCode();
 		return hash;
 	}
 }

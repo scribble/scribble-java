@@ -3,8 +3,6 @@ package org.scribble.ext.go.type.index;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble.ext.go.type.name.RPRoleParam;
-
 // Variable occurrence
 public class RPIndexVar extends RPIndexExpr  // FIXME: extend AbstractName?  cf. Role -- e.g., for compatibility with NameCollector
 {
@@ -15,10 +13,10 @@ public class RPIndexVar extends RPIndexExpr  // FIXME: extend AbstractName?  cf.
 		this.name = name; 
 	}
 	
-	public RPRoleParam toRoleParam()
+	/*public RPRoleParam toRoleParam()
 	{
 		return new RPRoleParam(this.name);
-	}
+	}*/
 	
 	@Override
 	public String toGoString()

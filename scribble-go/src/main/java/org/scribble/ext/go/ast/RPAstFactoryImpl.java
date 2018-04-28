@@ -14,6 +14,7 @@ import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGForeach;
 import org.scribble.ext.go.ast.global.RPGMultiChoices;
 import org.scribble.ext.go.ast.global.RPGMultiChoicesTransfer;
+import org.scribble.ext.go.ast.name.simple.RPIndexedRoleNode;
 import org.scribble.ext.go.core.ast.RPCoreDelegDecl;
 import org.scribble.ext.go.del.global.RPGChoiceDel;
 import org.scribble.ext.go.del.global.RPGForeachDel;
@@ -97,6 +98,14 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 		RPGForeach gf = new RPGForeach(source, subj, var, start, end, block);
 		gf = del(gf, new RPGForeachDel());
 		return gf;
+	}
+
+	@Override
+	public RPIndexedRoleNode RPIndexedRoleNode(CommonTree source, String identifier, RPIndexExpr start, RPIndexExpr end)
+	{
+		RPIndexedRoleNode irn = new RPIndexedRoleNode(source, identifier, start, end);
+		irn = del(irn, createDefaultDelegate());
+		return irn;
 	}
 
 	// FIXME: deprecate -- explicit foreach instead

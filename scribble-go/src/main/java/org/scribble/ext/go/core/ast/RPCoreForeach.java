@@ -9,8 +9,11 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 {
 	public final Role role;
 	public final RPIndexVar var;
+
+	// FIXME: use RPInterval
 	public final RPIndexExpr start;      // Gives the Scribble choices-subj range // Cf. ParamCoreGChoice singleton src
 	public final RPIndexExpr end;  // this.dest == super.role -- arbitrary?
+
 	public final B body;
 	public final B seq;
 	

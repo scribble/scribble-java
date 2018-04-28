@@ -68,7 +68,7 @@ public class ScopeNode extends SimpleNameNode<ScopeKind>
 	public int hashCode()
 	{
 		int hash = 359;
-		hash = 31 * super.hashCode();
+		hash = 31*hash + super.hashCode();
 		return hash;
 	}
 }

@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 import org.scribble.type.kind.AbstractKind;
 
-public class RPRoleParamKind extends AbstractKind implements Serializable
+public class RPIndexedRoleKind extends AbstractKind implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static final RPRoleParamKind KIND = new RPRoleParamKind();
+	public static final RPIndexedRoleKind KIND = new RPIndexedRoleKind();
 	
-	protected RPRoleParamKind()
+	protected RPIndexedRoleKind()
 	{
 
 	}
@@ -28,16 +28,16 @@ public class RPRoleParamKind extends AbstractKind implements Serializable
 		{
 			return true;
 		}
-		if (!(o instanceof RPRoleParamKind))
+		if (!(o instanceof RPIndexedRoleKind))
 		{
 			return false;
 		}
-		return ((RPRoleParamKind) o).canEqual(this);
+		return ((RPIndexedRoleKind) o).canEqual(this);
 	}
 	
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof RPRoleParamKind;
+		return o instanceof RPIndexedRoleKind;
 	}
 }
