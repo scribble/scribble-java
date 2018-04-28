@@ -32,6 +32,12 @@ public class EModelFactoryImpl implements EModelFactory
 {
 
 	@Override
+	public EState newEState(Set<RecVar> labs)
+	{
+		return new EState(labs);
+	}
+
+	@Override
 	public ESend newESend(Role peer, MessageId<?> mid, Payload payload)
 	{
 		return new ESend(this, peer, mid, payload);
@@ -71,11 +77,5 @@ public class EModelFactoryImpl implements EModelFactory
 	public EWrapServer newEWrapServer(Role peer)
 	{
 		return new EWrapServer(this, peer);
-	}
-
-	@Override
-	public EState newEState(Set<RecVar> labs)
-	{
-		return new EState(labs);
 	}
 }

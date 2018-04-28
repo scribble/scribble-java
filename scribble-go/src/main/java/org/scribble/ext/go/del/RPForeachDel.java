@@ -79,7 +79,16 @@ public class RPForeachDel extends CompoundInteractionNodeDel implements RPDel
 	/*@Override
 	public ScribNode leaveIndexVarCollection(ScribNode parent, ScribNode child, RPCoreIndexVarCollector coll, ScribNode visited) throws ScribbleException
 	{
-		// No: the foreach index vars are bound
+		... // cf. RPCoreGForeach#getIndexedRoles
+		Set<RPInterval> d = Stream.of(new RPInterval(this.start, this.end)).collect(Collectors.toSet());
+		Set<RPInterval> var = Stream.of(new RPInterval(this.var, this.var)).collect(Collectors.toSet());
+		Set<RPIndexedRole> irs = this.body.getIndexedRoles()
+				.stream().map(
+						ir -> ir.intervals.equals(var)
+								? new RPIndexedRole(ir.getName().toString(), d)
+								: ir
+				).collect(Collectors.toSet());
+		return irs;
 	}*/
 
 	/*// Needed? -- how about Recursion?

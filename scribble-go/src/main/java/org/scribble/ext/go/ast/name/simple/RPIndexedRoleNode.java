@@ -9,6 +9,7 @@ import org.scribble.ext.go.type.kind.RPIndexedRoleKind;
 import org.scribble.ext.go.type.name.RPIndexedRole;
 
 
+// FIXME: not currently used, but should use in, e.g., RPGCrossMessageTransfer
 // Currently used for both "actual params" and int literals
 public class RPIndexedRoleNode extends SimpleNameNode<RPIndexedRoleKind>  // Not RoleNode, for distinct Kind -- (though distinction maybe unecessary)
 {

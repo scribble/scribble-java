@@ -45,7 +45,7 @@ public class RPCoreGProtocolDeclTranslator
 
 	private static String makeFreshRecVarName()
 	{
-		return "_X" + recCounter++;
+		return "_X" + RPCoreGProtocolDeclTranslator.recCounter++;
 	}
 	
 	public RPCoreGProtocolDeclTranslator(Job job, RPCoreAstFactory af)

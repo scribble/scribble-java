@@ -15,6 +15,7 @@ import org.scribble.type.name.MessageId;
 
 public interface RPCoreEModelFactory extends EModelFactory
 {
+	... // FIXME: new nested EState
 
 	RPCoreECrossSend newParamCoreECrossSend(RPIndexedRole peer, MessageId<?> mid, Payload payload);
 	RPCoreECrossReceive newParamCoreECrossReceive(RPIndexedRole peer, MessageId<?> mid, Payload payload);

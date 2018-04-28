@@ -29,6 +29,9 @@ import org.scribble.type.name.Role;
 
 public interface EModelFactory
 {
+
+	EState newEState(Set<RecVar> labs);
+
 	ESend newESend(Role peer, MessageId<?> mid, Payload payload);
 	EReceive newEReceive(Role peer, MessageId<?> mid, Payload payload);
 	ERequest newERequest(Role peer, MessageId<?> mid, Payload payload);
@@ -36,6 +39,4 @@ public interface EModelFactory
 	EDisconnect newEDisconnect(Role peer);
 	EWrapClient newEWrapClient(Role peer);
 	EWrapServer newEWrapServer(Role peer);
-
-	EState newEState(Set<RecVar> labs);
 }

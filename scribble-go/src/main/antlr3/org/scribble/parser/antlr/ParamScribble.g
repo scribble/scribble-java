@@ -700,7 +700,7 @@ globalmessagetransfer:
 	^(GLOBALMESSAGETRANSFER message rolename rolename+)
 
 |
-	// For now require all "singleton indexed roles" to be written as singleton intervals
+	// For now require all "singleton indexed roles" to be written as singleton intervals (including foreach-indexed roles)
 	message FROM_KW rolename '[' paramindexexpr ',' paramindexexpr ']' TO_KW rolename '[' paramindexexpr ',' paramindexexpr ']' ';'
 ->
 	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)

@@ -19,6 +19,8 @@ import org.scribble.type.name.Role;
 public class RPCoreEModelFactoryImpl extends EModelFactoryImpl implements RPCoreEModelFactory
 {
 
+	... // FIXME: new nested EState
+
 	@Override
 	public ESend newESend(Role peer, MessageId<?> mid, Payload payload)
 	{

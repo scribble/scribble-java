@@ -1,6 +1,9 @@
 package org.scribble.ext.go.core.ast.global;
 
+import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
@@ -10,6 +13,7 @@ import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPIndexExpr;
@@ -46,22 +50,32 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 	}
 	
 	@Override
-	public Set<RPIndexedRole> getIndexedRoles()
+	public Set<RPIndexedRole> getIndexedRoles()  // cf. RPForeachDel#leaveIndexVarCollection (though not currently used)
 	{
-		return this.body.getIndexedRoles();  // Foreach subjects not included, they are binders? -- cf. RPForeachDel#leaveIndexVarCollection
+		Set<RPInterval> d = Stream.of(new RPInterval(this.start, this.end)).collect(Collectors.toSet());
+		Set<RPInterval> var = Stream.of(new RPInterval(this.var, this.var)).collect(Collectors.toSet());
+		Set<RPIndexedRole> irs = this.body.getIndexedRoles()
+				.stream().map(
+						ir -> ir.intervals.equals(var)
+								? new RPIndexedRole(ir.getName().toString(), d)
+								: ir
+				).collect(Collectors.toSet());
+		return irs;
 	}
 
 	@Override
 	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
 	{
-		//ParamCoreLType proj = this.body.project(af, r, ranges);
-		RPCoreLType body = this.body.project(af, subj);
 		RPCoreLType seq = this.seq.project(af, subj);
 
-		if (!subj.getName().equals(this.role))  // FIXME: check intervals
+		RPInterval v = new RPInterval(this.start, this.end);
+		if (subj.getName().equals(this.role) && subj.intervals.contains(v))  // FIXME: proper interval inclusion? -- also RPCoreGChoice#project?
+				// FIXME: factor out  // cf. RPCoreGChoice#project
 		{
-			return af.RPCoreLForeach(subj, this.var, this.start, this.end, body, seq);
+			RPCoreLType body = this.body.project(af, new RPRoleVariant(subj.getName().toString(),
+					Stream.of(new RPInterval(this.var, this.var)).collect(Collectors.toSet()), Collections.emptySet()));
+			return body.subs(af, RPCoreLEnd.END, seq);
 		}
 		/*else if ()
 		{
@@ -69,7 +83,8 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		}*/
 		else 
 		{
-			return body.subs(af, RPCoreLEnd.END, seq);
+			RPCoreLType body = this.body.project(af, subj);
+			return af.RPCoreLForeach(subj, this.var, this.start, this.end, body, seq);
 			//throw new RuntimeException("[rp-core] TODO: " + this + " project onto " + subj);
 		}
 	}
