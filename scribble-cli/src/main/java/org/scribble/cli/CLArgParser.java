@@ -51,6 +51,7 @@ public class CLArgParser
 	public static final String SGRAPH_PNG_FLAG = "-modelpng";
 	public static final String UNFAIR_SGRAPH_PNG_FLAG = "-umodelpng";
 	public static final String API_GEN_FLAG = "-api";
+	public static final String API_GEN_PS_FLAG = "-api-ps";
 	public static final String SESSION_API_GEN_FLAG = "-sessapi";
 	public static final String STATECHAN_API_GEN_FLAG = "-chanapi";
 	
@@ -86,6 +87,7 @@ public class CLArgParser
 		CLArgParser.NON_UNIQUE_FLAGS.put(CLArgParser.SGRAPH_PNG_FLAG, CLArgFlag.SGRAPH_PNG);
 		CLArgParser.NON_UNIQUE_FLAGS.put(CLArgParser.UNFAIR_SGRAPH_PNG_FLAG, CLArgFlag.UNFAIR_SGRAPH_PNG);
 		CLArgParser.NON_UNIQUE_FLAGS.put(CLArgParser.API_GEN_FLAG, CLArgFlag.API_GEN);
+		CLArgParser.NON_UNIQUE_FLAGS.put(CLArgParser.API_GEN_PS_FLAG, CLArgFlag.API_GEN_PS);
 		CLArgParser.NON_UNIQUE_FLAGS.put(CLArgParser.SESSION_API_GEN_FLAG, CLArgFlag.SESS_API_GEN);
 		CLArgParser.NON_UNIQUE_FLAGS.put(CLArgParser.STATECHAN_API_GEN_FLAG, CLArgFlag.SCHAN_API_GEN);
 	}
@@ -225,6 +227,7 @@ public class CLArgParser
 			case CLArgParser.VALIDATION_EFSM_FLAG:
 			case CLArgParser.UNFAIR_EFSM_FLAG:
 			case CLArgParser.API_GEN_FLAG:
+			case CLArgParser.API_GEN_PS_FLAG:
 			case CLArgParser.STATECHAN_API_GEN_FLAG:
 			{
 				return parseProtoAndRoleArgs(flag, i);
@@ -322,7 +325,7 @@ public class CLArgParser
 	{
 		if ((i + 2) >= this.args.length)
 		{
-			throw new CommandLineException("Missing protocol/role arguments");
+//			throw new CommandLineException("Missing protocol/role arguments");
 		}
 		String proto = this.args[++i];
 		String role = this.args[++i];

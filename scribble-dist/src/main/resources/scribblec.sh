@@ -116,6 +116,8 @@ CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-codegen.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/stringtemplate.jar'
 CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
 
+echo $DIR
+
 usage=0
 verbose=0
 dot=0

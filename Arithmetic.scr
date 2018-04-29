@@ -1,0 +1,21 @@
+module Arithmetic;
+
+type <java> "java.lang.Integer" from "rt.jar" as Integer;
+
+global protocol MathServer(role Client, role Server) {
+    choice at Client { 
+        Add(Integer, Integer) from Client to Server;
+        Sum(Integer) from Server to Client;
+    } or {
+        Multiply(Integer, Integer) from Client to Server;
+        Product(Integer) from Server to Client;
+    } or {
+        Quit() from Client to Server;
+    }
+}
+
+global protocol Ping(role Client, role Server) {
+    Ping() from Client to Server;
+    Pong() from Server to Client;
+    do Ping(Client, Server);
+}

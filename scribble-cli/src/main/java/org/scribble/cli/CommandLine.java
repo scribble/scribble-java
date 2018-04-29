@@ -261,6 +261,10 @@ public class CommandLine
 		{
 			outputEndpointApi(job);
 		}
+		if (this.args.containsKey(CLArgFlag.API_GEN_PS))
+		{
+			outputEndpointApiPureScript(job);
+		}
 	}
 
 	// FIXME: option to write to file, like classes
@@ -382,6 +386,24 @@ public class CommandLine
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Map<String, String> sessClasses = jgen.generateSessionApi(fullname);
+			outputClasses(sessClasses);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Map<String, String> scClasses = jgen.generateStateChannelApi(fullname, role, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
+			outputClasses(scClasses);
+		}
+	}
+
+	private void outputEndpointApiPureScript(Job job) throws ScribbleException, CommandLineException
+	{
+		System.out.println("PureScript code generation:");
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(CLArgFlag.API_GEN_PS);
+		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			System.out.println("[JONATHAN] fullname: " + fullname);
 			Map<String, String> sessClasses = jgen.generateSessionApi(fullname);
 			outputClasses(sessClasses);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
