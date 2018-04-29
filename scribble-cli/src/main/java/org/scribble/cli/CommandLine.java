@@ -27,6 +27,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.java.JEndpointApiGenerator;
+import org.scribble.codegen.purescript.PSEndpointApiGenerator;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
@@ -399,16 +400,13 @@ public class CommandLine
 		System.out.println("PureScript code generation:");
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.API_GEN_PS);
-		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
+		PSEndpointApiGenerator psgen = new PSEndpointApiGenerator(job);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			System.out.println("[JONATHAN] fullname: " + fullname);
-			Map<String, String> sessClasses = jgen.generateSessionApi(fullname);
-			outputClasses(sessClasses);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			Map<String, String> scClasses = jgen.generateStateChannelApi(fullname, role, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
-			outputClasses(scClasses);
+			Map<String, String> classes = psgen.generateApi(fullname);
+			outputClasses(classes);
 		}
 	}
 
