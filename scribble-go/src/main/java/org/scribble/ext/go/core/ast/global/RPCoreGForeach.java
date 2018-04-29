@@ -23,9 +23,9 @@ import org.scribble.type.name.Role;
 
 public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implements RPCoreGType
 {
-	public RPCoreGForeach(Role role, RPIndexVar var, RPIndexExpr src, RPIndexExpr dest, RPCoreGType body, RPCoreGType seq)
+	public RPCoreGForeach(Role role, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, RPCoreGType body, RPCoreGType seq)
 	{
-		super(role, var, src, dest, body, seq);
+		super(role, var, start, end, body, seq);
 	}
 	
 	@Override

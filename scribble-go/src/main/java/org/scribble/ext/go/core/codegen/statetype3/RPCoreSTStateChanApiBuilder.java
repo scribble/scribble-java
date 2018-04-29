@@ -118,8 +118,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					throw new RuntimeException("[rp-core] TODO: " + s);
 				}*/
 				case TERMINAL: 
-					res.put(getFilePath(getStateChanName(s)), this.eb.build(this, s));
-					hasTerm = s.id != this.graph.init.id;  // "End" not built for for single (nested) state FSMs (will be "Init")
+					String name = getStateChanName(s);  // HACK FIXME: to generate names even if state not generated here
+					if (s.id != this.graph.init.id)  // "End" not built for for single (nested) state FSMs (will be "Init")
+					{
+						res.put(getFilePath(name), this.eb.build(this, s));
+						hasTerm = false;
+					}
 					break;
 				default: throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
 			}
@@ -182,17 +186,32 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
 				+ "}\n";
 		
-		
-		...  // TODO: foreach method
+		// Foreach method -- cf. RPCoreSTSessionApiBuilder, top-level Run
+		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+		RPCoreEState init = s.getNested();
+		String initName = "Init_" + init.id;
+		String succName = s.isTerminal() ? "End" : getStateChanName(s);  // FIXME: factor out
+		feach += "\n"
+				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
+						+ ") Foreach(f func(*" + initName + ") End) *End {\n"
+						+ "for " + s.getParam() + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
+								+ s.getParam() + " <= " + generateIndexExpr(s.getInterval().end) + "; " + s.getParam() + " = " + s.getParam() + " + 1 {\n"
+						+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
 
+				// Duplicated from RPCoreSTSessionApiBuilder  // FIXME: factor out
+				+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
+						? "f(newBranch" + initName + "(ini))\n"
+						: "f(&" + initName + "{ new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), s.Ept })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+
+				+ "return " + getSuccStateChan(s, succName, sEp) + "\n"
+
+				+ "}\n"
+				+ "}\n";
 
 		res.put(getFilePath(scTypeName), feach);
 		
-		RPCoreEState init = s.getNested();
 		RPCoreEState term = (RPCoreEState) MState.getTerminal(init);
 		res.putAll(new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, new EGraph(init, term)).build());
-		/*String x = tmp.keySet().stream().filter(y -> y.endsWith("Init")).findAny().get();
-		String removed = tmp.remove(x);*/
 
 		return res;
 	}
@@ -294,7 +313,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		String name = ((RPCoreEState) succ).hasNested()
 				? getIntermediaryStateChanName(succ)
 				: getStateChanName(succ);  //ab.getReturnType(this, curr, succ)
+		return getSuccStateChan(succ, name, sEp);
+	}
 		
+	protected String getSuccStateChan(EState succ, String name, String sEp)
+	{
 		if (((GoJob) this.job).selectApi &&
 				getStateKind(succ) == RPCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
@@ -305,7 +328,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		else
 		{
 			String res = "&" + name + "{ " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
-			if (!succ.isTerminal())
+			if (!succ.isTerminal())  // FIXME: terminal foreach state
 			{
 				res += ", " + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 								+ ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case

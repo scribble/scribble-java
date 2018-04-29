@@ -1,6 +1,8 @@
 package org.scribble.ext.go.core.ast.local;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreForeach;
@@ -12,9 +14,9 @@ import org.scribble.type.name.Role;
 
 public class RPCoreLForeach extends RPCoreForeach<RPCoreLType, Local> implements RPCoreLType
 {
-	public RPCoreLForeach(Role role, RPIndexVar var, RPIndexExpr src, RPIndexExpr dest, RPCoreLType body, RPCoreLType cont)
+	public RPCoreLForeach(Role role, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, RPCoreLType body, RPCoreLType cont)
 	{
-		super(role, var, src, dest, body, cont);
+		super(role, var, start, end, body, cont);
 	}
 	
 	@Override
@@ -34,7 +36,12 @@ public class RPCoreLForeach extends RPCoreForeach<RPCoreLType, Local> implements
 	@Override
 	public Set<RPIndexVar> getIndexVars()
 	{
-		return this.body.getIndexVars();  // Foreach subjects not included, they are binders? -- cf. RPCoreGForeach#getIndexVars
+		Set<RPIndexVar> ivars = Stream.of(this.var).collect(Collectors.toSet());  
+				// FIXME: shouldn't include bound foreach params (cf. RPCoreGForeach#getIndexVars) -- currently included for hacked Foreach method loop (RPCoreSTStateChanApiBuilder)
+		ivars.addAll(this.start.getVars());
+		ivars.addAll(this.end.getVars());
+		ivars.addAll(this.body.getIndexVars());
+		return ivars;
 	}
 
 	@Override

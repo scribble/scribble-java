@@ -1,5 +1,6 @@
 package org.scribble.ext.go.core.codegen.statetype3;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,15 @@ import org.scribble.type.name.Role;
 public class RPCoreSTSessionApiBuilder
 {
 	private RPCoreSTApiGenerator apigen;
+
+	public static final Comparator<RPIndexVar> IVAR_COMP = new Comparator<RPIndexVar>()
+			{
+				@Override
+				public int compare(RPIndexVar i1, RPIndexVar i2)
+				{
+					return i1.toString().compareTo(i2.toString());
+				}
+			};
 
 	public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 	{
@@ -94,7 +104,8 @@ public class RPCoreSTSessionApiBuilder
 				List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());*/
 				
 				List<RPIndexVar> ivars = this.apigen.projections.get(rname).get(variant)
-						.getIndexVars().stream().sorted().collect(Collectors.toList());  // N.B., params only from action subjects (not self)
+						.getIndexVars().stream().sorted(IVAR_COMP)
+						.collect(Collectors.toList());  // N.B., params only from action subjects (not self)
 				ivars.addAll(variant.getIndexVars());  // Do variant params subsume projection params?  (vice versa not true -- e.g., param needed to check self)
 				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 						
@@ -145,7 +156,7 @@ public class RPCoreSTSessionApiBuilder
 				List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());*/
 
 				List<RPIndexVar> ivars = this.apigen.projections.get(rname).get(variant)
-						.getIndexVars().stream().sorted().collect(Collectors.toList());  // N.B., params only from action subjects (not self)
+						.getIndexVars().stream().sorted(IVAR_COMP).collect(Collectors.toList());  // N.B., params only from action subjects (not self)
 				ivars.addAll(variant.getIndexVars());  // Do variant params subsume projection params?  (vice versa not true -- e.g., param needed to check self)
 				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 				
