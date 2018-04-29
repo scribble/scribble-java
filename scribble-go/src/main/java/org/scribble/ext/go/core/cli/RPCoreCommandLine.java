@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
@@ -46,12 +45,11 @@ import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
-import org.scribble.model.endpoint.EState;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribParserException;
 
-// N.B. this is the CL for both -goapi and param-core extensions
+// N.B. this is the CL for both -goapi and rp-core extensions
 public class RPCoreCommandLine extends CommandLine
 {
 	protected final Map<RPCoreCLArgFlag, String[]> rpArgs;  // Maps each flag to list of associated argument values
@@ -155,7 +153,7 @@ public class RPCoreCommandLine extends CommandLine
 					outputClasses(goClasses);
 				}*/
 
-				/*job.debugPrintln("\n[param-core] Running " + ParamCoreSTSessionApiBuilder.class + " for " + fullname);
+				/*job.debugPrintln("\n[rp-core] Running " + ParamCoreSTSessionApiBuilder.class + " for " + fullname);
 
 				Map<String, String> goClasses = new ParamCoreSTSessionApiBuilder((GoJob) job, fullname, this.E0).build();*/
 				//Map<ParamActualRole, EGraph> actuals = this.E0.get(role);
@@ -189,7 +187,7 @@ public class RPCoreCommandLine extends CommandLine
 			paramCoreParseAndCheckWF(j, simpname);  // Includes base passes
 		}
 		
-		// FIXME? param-core FSM building only used for param-core validation -- output tasks, e.g., -api, will still use default Scribble FSMs
+		// FIXME? rp-core FSM building only used for rp-core validation -- output tasks, e.g., -api, will still use default Scribble FSMs
 		// -- but the FSMs should be the same? -- no: action assertions treated differently in core than base
 	}
 
@@ -224,25 +222,25 @@ public class RPCoreCommandLine extends CommandLine
 		Module main = job.getContext().getMainModule();
 		if (!main.hasProtocolDecl(simpname))
 		{
-			throw new RPCoreException("[param-core] Global protocol not found: " + simpname);
+			throw new RPCoreException("[rp-core] Global protocol not found: " + simpname);
 		}
 		this.gpd = (GProtocolDecl) main.getProtocolDecl(simpname);
 
 		RPCoreAstFactory af = new RPCoreAstFactory();
 		RPCoreGType gt = new RPCoreGProtocolDeclTranslator(job, af).translate(this.gpd);
 		
-		job.debugPrintln("\n[param-core] Translated:\n  " + gt);
+		job.debugPrintln("\n[rp-core] Translated:\n  " + gt);
 		
 		if (!gt.isWellFormed(job, gpd))
 		{
-			throw new RPCoreException("[param-core] Global type not well-formed:\n  " + gt);
+			throw new RPCoreException("[rp-core] Global type not well-formed:\n  " + gt);
 		}
 
 		//Map<Role, Set<Set<ParamRange>>> 
 		Map<Role, Set<RPRoleVariant>> 
 				protoRoles = getProtoRoles(job, gt);
 		
-		job.debugPrintln("\n[param-core] Computed roles: " + protoRoles);
+		job.debugPrintln("\n[rp-core] Computed roles: " + protoRoles);
 
 		this.L0 = new HashMap<>();
 		for (Role r : gpd.header.roledecls.getRoles())  // getRoles gives decl names  // CHECKME: can ignore params?
@@ -261,7 +259,7 @@ public class RPCoreCommandLine extends CommandLine
 				}
 				tmp.put(ranges, lt);
 
-				job.debugPrintln("\n[param-core] Projected onto " + r + " for " + ranges + ":\n  " + lt);
+				job.debugPrintln("\n[rp-core] Projected onto " + r + " for " + ranges + ":\n  " + lt);
 			}
 		}
 
@@ -282,23 +280,28 @@ public class RPCoreCommandLine extends CommandLine
 				}
 				tmp.put(ranges, g);
 
-				job.debugPrintln("\n[param-core] Built endpoint graph for " 
+				job.debugPrintln("\n[rp-core] Built endpoint graph for " 
 						//+ r + " for "
 						+ ranges + ":\n" + g.toDot());
 				
-				RecursiveFunctionalInterface<Function<EState, Set<EState>>> getNestedInits
+				RecursiveFunctionalInterface<Function<RPCoreEState, Set<RPCoreEState>>> getNestedInits
 						= new RecursiveFunctionalInterface<>();
 				getNestedInits.func = s ->
 				{
-					Set<EState> all = Stream.of(s).collect(Collectors.toSet());
-					all.addAll(MState.getReachableStates(s));
-					return all.stream()
-							.filter(y -> ((RPCoreEState) y).hasNested())
-							.flatMap(y -> getNestedInits.func.apply(((RPCoreEState) y).getNested()).stream())
-							.collect(Collectors.toSet());
+					Set<RPCoreEState> inits = new HashSet<>();
+					if (s.hasNested())
+					{
+						inits.add(s.getNested());
+					}
+					inits.addAll(MState.getReachableStates(s).stream()
+							.filter(x -> ((RPCoreEState) x).hasNested())
+							.map(x -> ((RPCoreEState) x).getNested())
+							.collect(Collectors.toSet()));
+					inits.forEach(x -> inits.addAll(getNestedInits.func.apply(x)));
+					return inits;
 				};
 				
-				getNestedInits.func.apply(g.init).stream()
+				getNestedInits.func.apply((RPCoreEState) g.init).stream()
 						.forEach(s -> job.debugPrintln("\n" + s.toDot()));
 			}
 		}
@@ -315,7 +318,7 @@ public class RPCoreCommandLine extends CommandLine
 
 				job.debugPrintln
 				//System.out.println
-						("\n[param-core] Unfair transform for " + r + ":\n" + u.toDot());
+						("\n[rp-core] Unfair transform for " + r + ":\n" + u.toDot());
 			}
 			
 			//validate(job, gpd.isExplicitModifier(), U0, true);  //TODO
@@ -377,7 +380,7 @@ public class RPCoreCommandLine extends CommandLine
 			int i = 1;
 			int size = powset.size();
 			
-			job.debugPrintln("\n[param-core] Ranges powerset for " + r + ": " + powset);
+			job.debugPrintln("\n[rp-core] Ranges powerset for " + r + ": " + powset);
 			
 			for (Set<RPInterval> cand : powset)
 			{
@@ -423,9 +426,9 @@ public class RPCoreCommandLine extends CommandLine
 				z3 = //"(declare-const id Int)\n
 						"(assert " + z3 + ")";
 				
-				job.debugPrintln("\n[param-core] Candidate (" + i++ + "/" + size + "): " + cand);
-				job.debugPrintln("[param-core] Co-set: " + coset);
-				job.debugPrintln("[param-core] Running Z3 on:\n" + z3);
+				job.debugPrintln("\n[rp-core] Candidate (" + i++ + "/" + size + "): " + cand);
+				job.debugPrintln("[rp-core] Co-set: " + coset);
+				job.debugPrintln("[rp-core] Running Z3 on:\n" + z3);
 				
 				if (Z3Wrapper.checkSat(job, this.gpd, z3))
 				{
@@ -487,18 +490,18 @@ public class RPCoreCommandLine extends CommandLine
 	{
 		this.model = new ParamCoreSModelBuilder(job.sf).build(this.E0, isExplicit);
 
-		job.debugPrintln("\n[param-core] Built model:\n" + this.model.toDot());
+		job.debugPrintln("\n[rp-core] Built model:\n" + this.model.toDot());
 		
 		if (unfair.length == 0 || !unfair[0])
 		{
 			ParamCoreSafetyErrors serrs = this.model.getSafetyErrors(job, simpname);  // job just for debug printing
 			if (serrs.isSafe())
 			{
-				job.debugPrintln("\n[param-core] Protocol safe.");
+				job.debugPrintln("\n[rp-core] Protocol safe.");
 			}
 			else
 			{
-				throw new ParamException("[param-core] Protocol not safe:\n" + serrs);
+				throw new ParamException("[rp-core] Protocol not safe:\n" + serrs);
 			}
 		}
 		
