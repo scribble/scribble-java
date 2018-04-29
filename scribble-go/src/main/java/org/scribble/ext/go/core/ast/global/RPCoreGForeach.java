@@ -73,8 +73,9 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		if (subj.getName().equals(this.role) && subj.intervals.contains(v))  // FIXME: proper interval inclusion? -- also RPCoreGChoice#project?
 				// FIXME: factor out  // cf. RPCoreGChoice#project
 		{
-			RPCoreLType body = this.body.project(af, new RPRoleVariant(subj.getName().toString(),
-					Stream.of(new RPInterval(this.var, this.var)).collect(Collectors.toSet()), Collections.emptySet()));
+			RPRoleVariant indexed = new RPRoleVariant(subj.getName().toString(),
+					Stream.of(new RPInterval(this.var, this.var)).collect(Collectors.toSet()), Collections.emptySet());
+			RPCoreLType body = this.body.project(af, indexed);
 			return body.subs(af, RPCoreLEnd.END, seq);
 		}
 		/*else if ()

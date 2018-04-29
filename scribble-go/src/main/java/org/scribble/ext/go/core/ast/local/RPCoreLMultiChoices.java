@@ -5,9 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.scribble.ext.go.core.ast.RPCoreAstFactory;
+import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.Message;
+import org.scribble.type.kind.Local;
 
 // FIXME: factor out better with ParamCore(L)Choice -- or deprecate and just use kind?
 @Deprecated
@@ -23,6 +26,12 @@ public class RPCoreLMultiChoices extends RPCoreLChoice
 		super(role, RPCoreLActionKind.MULTICHOICES_RECEIVE, foo(cases, cont));
 		this.var = var;
 	}
+
+	@Override
+	public RPCoreLType subs(RPCoreAstFactory af, RPCoreType<Local> old, RPCoreType<Local> neu)
+	{
+		throw new RuntimeException("[rp-core] Shouldn't get in here: " + this);
+	}
 	
 	@Override
 	public Set<RPIndexVar> getIndexVars()
@@ -36,7 +45,7 @@ public class RPCoreLMultiChoices extends RPCoreLChoice
 		//LinkedHashMap<RPCoreMessage, RPCoreLType> 
 		LinkedHashMap<Message, RPCoreLType> 
 				tmp = new LinkedHashMap<>();
-		cases.stream().forEach(c -> tmp.put(c, cont));
+		cases.forEach(c -> tmp.put(c, cont));
 		return tmp;
 	}
 	

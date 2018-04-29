@@ -1,6 +1,7 @@
 package org.scribble.ext.go.core.model.endpoint;
 
 import java.util.List;
+import java.util.Set;
 
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
@@ -8,29 +9,44 @@ import org.scribble.ext.go.core.model.endpoint.action.RPCoreEDotReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEDotSend;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEMultiChoicesReceive;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EModelFactoryImpl;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.type.Payload;
 import org.scribble.type.name.MessageId;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 public class RPCoreEModelFactoryImpl extends EModelFactoryImpl implements RPCoreEModelFactory
 {
 
-	... // FIXME: new nested EState
+	@Override
+	public RPCoreEState newEState(Set<RecVar> labs)
+	{
+		//throw new RuntimeException("[rp-core] Shouldn't get in here: ");  // No: needed by e.g., EGraphBuilderUtil#init
+		return new RPCoreEState(labs);
+	}
 
+	@Override
+	public RPCoreEState newRPCoreEState(Set<RecVar> labs, RPIndexVar param, RPInterval interval, RPCoreEState nested)
+	{
+		return new RPCoreEState(labs, param, interval, nested);
+	}
+	
+	
 	@Override
 	public ESend newESend(Role peer, MessageId<?> mid, Payload payload)
 	{
-		throw new RuntimeException("[param-core] Shouldn't get in here: ");
+		throw new RuntimeException("[rp-core] Shouldn't get in here: ");
 	}
 
 	@Override
 	public EReceive newEReceive(Role peer, MessageId<?> mid, Payload payload)
 	{
-		throw new RuntimeException("[param-core] Shouldn't get in here: ");
+		throw new RuntimeException("[rp-core] Shouldn't get in here: ");
 	}
 
 	@Override

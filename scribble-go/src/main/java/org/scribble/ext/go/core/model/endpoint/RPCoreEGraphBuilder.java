@@ -4,13 +4,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.scribble.ext.go.core.ast.RPCoreForeach;
 import org.scribble.ext.go.core.ast.RPCoreRecVar;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.RPCoreLChoice;
 import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
+import org.scribble.ext.go.core.ast.local.RPCoreLForeach;
 import org.scribble.ext.go.core.ast.local.RPCoreLRec;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.model.endpoint.EGraph;
@@ -27,24 +30,71 @@ public class RPCoreEGraphBuilder
 {
 	
 	private final GoJob job;
+	private final RPCoreEModelFactory ef;
 	private final EGraphBuilderUtil util;  // Not using any features for unguarded choice/recursion/continue (recursion manually tracked here)
 	
 	public RPCoreEGraphBuilder(GoJob job)
 	{
 		this.job = job;
+		this.ef = (RPCoreEModelFactory) job.ef;
 		this.util = new EGraphBuilderUtil(job.ef);
 	}
 	
+	/*private Pair<RPCoreEState, RPCoreLType> makeRPCoreEState(RPCoreLType lt)
+	{
+		RPCoreEState s;
+		RPCoreLType seq;
+		if (lt instanceof RPCoreLForeach)
+		{
+			RPCoreLForeach fe = (RPCoreLForeach) lt;
+			s = this.ef.newRPCoreEState(Collections.emptySet(), fe.var,
+					new RPInterval(fe.start, fe.end), (RPCoreEState) build(((RPCoreLForeach) lt).body).init);
+			if (fe.seq instanceof RPCoreForeach)  // FIXME: consecutive foreach ("tau" action)
+			{
+				throw new RuntimeException("[rp-core] TODO: " + lt);
+			}
+			seq = fe.seq;
+		}
+		else
+		{
+			s = this.ef.newRPCoreEState(Collections.emptySet(), null, null, null);
+			seq = lt;
+		}
+		return new Pair<>(s, seq);
+	}*/
+	
 	public EGraph build(RPCoreLType lt)
 	{
-		this.util.init(this.job.ef.newEState(Collections.emptySet()));
-		build(lt, this.util.getEntry(), this.util.getExit(), new HashMap<>());
-		return this.util.finalise();
+		/*Pair<RPCoreEState, RPCoreLType> p = makeRPCoreEState(lt);  // Currently always a top-level rec
+		this.util.init(p.left);
+		build(p.right, this.util.getEntry(), this.util.getExit(), new HashMap<>());*/
+		this.util.init(this.ef.newEState(Collections.emptySet()));  // RPCoreEState
+		build(lt, this.util.getEntry(), this.util.getExit(), new HashMap<>());  // lt is always a top-level rec
+		EGraph foo = this.util.finalise();
+		return foo;
 	}
 	
+	// s1 is "current state", which may be mutably modified by foreach (and rec -- GraphBuilerUtil#addEntryLabel done by LRecursionDel)
 	private void build(RPCoreLType lt, EState s1, EState s2, Map<RecVar, EState> recs)
 	{
-		if (lt instanceof RPCoreLChoice)
+		if (lt instanceof RPCoreLForeach)
+		{
+			RPCoreLForeach fe = (RPCoreLForeach) lt;
+			RPCoreEState s = (RPCoreEState) s1;  // FIXME: modify method sig
+			s.setParam(fe.var);
+			s.setInterval(new RPInterval(fe.start, fe.end));
+			RPCoreEGraphBuilder nested = new RPCoreEGraphBuilder(this.job);
+			s.setNested((RPCoreEState) nested.build(fe.body).init);
+			if (fe.seq instanceof RPCoreForeach)  // FIXME: consecutive foreach ("tau" action)
+			{
+				throw new RuntimeException("[rp-core] TODO: " + lt);
+			}
+			else if (!(fe.seq instanceof RPCoreLEnd))
+			{
+				build(fe.seq, s1, s2, recs);
+			}
+		}
+		else if (lt instanceof RPCoreLChoice)
 		{
 			/*if (lt instanceof RPCoreLMultiChoices)
 			{
@@ -60,7 +110,7 @@ public class RPCoreEGraphBuilder
 				RPCoreLChoice lc = (RPCoreLChoice) lt;
 				RPIndexExpr offset = //(lc instanceof RPCoreLDotChoice) ? ((RPCoreLDotChoice) lc).offset :
 						null;
-				lc.cases.entrySet().stream().forEach(e ->
+				lc.cases.entrySet().forEach(e ->
 					buildEdgeAndContinuation(s1, s2, recs, lc.role, lc.getKind(), e.getKey(), e.getValue(), offset)
 				);
 			}
@@ -78,6 +128,7 @@ public class RPCoreEGraphBuilder
 		}
 	}
 
+	// CHECKME: offset redundant?
 	private void buildEdgeAndContinuation(EState s1, EState s2, Map<RecVar, EState> recs, 
 			RPIndexedRole r, RPCoreLActionKind k, //RPCoreMessage a,
 			Message a,

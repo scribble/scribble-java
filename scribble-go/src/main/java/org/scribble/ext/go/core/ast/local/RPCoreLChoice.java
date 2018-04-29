@@ -3,9 +3,7 @@ package org.scribble.ext.go.core.ast.local;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
-import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreChoice;
-import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
@@ -16,21 +14,6 @@ public abstract class RPCoreLChoice extends RPCoreChoice<RPCoreLType, Local> imp
 	protected RPCoreLChoice(RPIndexedRole role, RPCoreLActionKind kind, LinkedHashMap<Message, RPCoreLType> cases)
 	{
 		super(role, kind, cases);
-	}
-	
-	@Override
-	public RPCoreLType subs(RPCoreAstFactory af, RPCoreType<Local> old, RPCoreType<Local> neu)
-	{
-		if (this.equals(old))
-		{
-			return (RPCoreLType) neu;
-		}
-		else
-		{
-			LinkedHashMap<Message, RPCoreLType> tmp = new LinkedHashMap<>();
-			this.cases.forEach((k, v) -> tmp.put(k, v.subs(af, old, neu)));
-			return af.ParamCoreLCrossChoice(this.role, RPCoreLActionKind.CROSS_SEND, tmp);
-		}
 	}
 
 	@Override

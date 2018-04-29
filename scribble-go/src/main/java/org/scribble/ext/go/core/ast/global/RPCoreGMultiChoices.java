@@ -49,7 +49,7 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 		//LinkedHashMap<RPCoreMessage, RPCoreGType>
 		LinkedHashMap<Message, RPCoreGType>
 				tmp = new LinkedHashMap<>();
-		cases.stream().forEach(c -> tmp.put(c, cont));
+		cases.forEach(c -> tmp.put(c, cont));
 		return tmp;
 	}
 	

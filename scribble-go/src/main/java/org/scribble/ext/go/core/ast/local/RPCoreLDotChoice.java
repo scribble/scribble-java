@@ -3,11 +3,14 @@ package org.scribble.ext.go.core.ast.local;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import org.scribble.ext.go.core.ast.RPCoreAstFactory;
+import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.Message;
+import org.scribble.type.kind.Local;
 
 @Deprecated
 public class RPCoreLDotChoice extends RPCoreLChoice
@@ -23,6 +26,12 @@ public class RPCoreLDotChoice extends RPCoreLChoice
 			throw new RuntimeException("[param-core] Shouldn't get in here: " + kind);
 		}
 		this.offset = offset;
+	}
+
+	@Override
+	public RPCoreLType subs(RPCoreAstFactory af, RPCoreType<Local> old, RPCoreType<Local> neu)
+	{
+		throw new RuntimeException("[rp-core] Shouldn't get in here: " + this);
 	}
 	
 	@Override
