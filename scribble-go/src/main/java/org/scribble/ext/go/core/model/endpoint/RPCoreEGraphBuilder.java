@@ -69,13 +69,14 @@ public class RPCoreEGraphBuilder
 		this.util.init(p.left);
 		build(p.right, this.util.getEntry(), this.util.getExit(), new HashMap<>());*/
 		this.util.init(this.ef.newEState(Collections.emptySet()));  // RPCoreEState
-		build(lt, this.util.getEntry(), this.util.getExit(), new HashMap<>());  // lt is always a top-level rec
+		build(lt, (RPCoreEState) this.util.getEntry(),
+				(RPCoreEState) this.util.getExit(), new HashMap<>());  // lt is always a top-level rec
 		EGraph foo = this.util.finalise();
 		return foo;
 	}
 	
 	// s1 is "current state", which may be mutably modified by foreach (and rec -- GraphBuilerUtil#addEntryLabel done by LRecursionDel)
-	private void build(RPCoreLType lt, EState s1, EState s2, Map<RecVar, EState> recs)
+	private void build(RPCoreLType lt, RPCoreEState s1, RPCoreEState s2, Map<RecVar, RPCoreEState> recs)
 	{
 		if (lt instanceof RPCoreLForeach)
 		{
@@ -118,7 +119,7 @@ public class RPCoreEGraphBuilder
 		else if (lt instanceof RPCoreLRec)
 		{
 			RPCoreLRec lr = (RPCoreLRec) lt;
-			Map<RecVar, EState> tmp = new HashMap<>(recs);
+			Map<RecVar, RPCoreEState> tmp = new HashMap<>(recs);
 			tmp.put(lr.recvar, s1);
 			build(lr.body, s1, s2, tmp);
 		}
@@ -129,7 +130,7 @@ public class RPCoreEGraphBuilder
 	}
 
 	// CHECKME: offset redundant?
-	private void buildEdgeAndContinuation(EState s1, EState s2, Map<RecVar, EState> recs, 
+	private void buildEdgeAndContinuation(RPCoreEState s1, RPCoreEState s2, Map<RecVar, RPCoreEState> recs, 
 			RPIndexedRole r, RPCoreLActionKind k, //RPCoreMessage a,
 			Message a,
 			RPCoreLType cont, RPIndexExpr offset)
@@ -146,7 +147,7 @@ public class RPCoreEGraphBuilder
 		}
 		else
 		{
-			EState s = this.util.ef.newEState(Collections.emptySet());  
+			RPCoreEState s = this.ef.newEState(Collections.emptySet());  
 			this.util.addEdge(s1, ea, s);
 			build(cont, s, s2, recs);
 		}

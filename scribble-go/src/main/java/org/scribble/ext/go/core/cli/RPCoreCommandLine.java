@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
@@ -28,11 +30,13 @@ import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator;
 import org.scribble.ext.go.core.main.RPCoreException;
 import org.scribble.ext.go.core.main.RPCoreMainContext;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEGraphBuilder;
+import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.ext.go.util.RecursiveFunctionalInterface;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
@@ -40,7 +44,9 @@ import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
+import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.endpoint.EState;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribParserException;
@@ -279,6 +285,21 @@ public class RPCoreCommandLine extends CommandLine
 				job.debugPrintln("\n[param-core] Built endpoint graph for " 
 						//+ r + " for "
 						+ ranges + ":\n" + g.toDot());
+				
+				RecursiveFunctionalInterface<Function<EState, Set<EState>>> getNestedInits
+						= new RecursiveFunctionalInterface<>();
+				getNestedInits.func = s ->
+				{
+					Set<EState> all = Stream.of(s).collect(Collectors.toSet());
+					all.addAll(MState.getReachableStates(s));
+					return all.stream()
+							.filter(y -> ((RPCoreEState) y).hasNested())
+							.flatMap(y -> getNestedInits.func.apply(((RPCoreEState) y).getNested()).stream())
+							.collect(Collectors.toSet());
+				};
+				
+				getNestedInits.func.apply(g.init).stream()
+						.forEach(s -> job.debugPrintln("\n" + s.toDot()));
 			}
 		}
 				
