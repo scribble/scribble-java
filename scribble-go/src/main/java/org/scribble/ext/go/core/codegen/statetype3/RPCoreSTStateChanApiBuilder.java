@@ -144,7 +144,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			String end = "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
 					+ "\n"
 					+ "type End struct {\n"
-					+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+					//+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
 					+ "}\n";
 			res.put(getFilePath("End"), end);
@@ -203,9 +203,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						? "f(newBranch" + initName + "(ini))\n"
 						: "f(&" + initName + "{ new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), s.Ept })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 
-				+ "return " + getSuccStateChan(s, succName, sEp) + "\n"
-
 				+ "}\n"
+				+ "return " + getSuccStateChan(s, succName, sEp) + "\n"
 				+ "}\n";
 
 		res.put(getFilePath(scTypeName), feach);
