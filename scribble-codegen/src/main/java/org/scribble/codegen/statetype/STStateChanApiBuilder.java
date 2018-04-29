@@ -40,7 +40,7 @@ public abstract class STStateChanApiBuilder
 	public final STCaseBuilder cb;
 	public final STEndStateBuilder eb;
 
-	private Map<Integer, String> names = new HashMap<>();
+	protected Map<Integer, String> names = new HashMap<>();
 	
 	protected STStateChanApiBuilder(Job job, GProtocolName gpn, Role role, EGraph graph,
 			STOutputStateBuilder ob, STReceiveStateBuilder rb, STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
@@ -112,7 +112,7 @@ public abstract class STStateChanApiBuilder
 
 	public abstract String buildAction(STActionBuilder ab, EState curr, EAction a);
 
-	public abstract String getChannelName(STStateChanApiBuilder api, EAction a);
+	public abstract String getChannelName(STStateChanApiBuilder api, EAction a);  // FIXME: redundant?  (supposed to be for Runtime MPChan references?)
 
 	public abstract String buildActionReturn(STActionBuilder ab, EState curr, EState succ);  // FIXME: refactor action builders as interfaces and use generic parameter for kind
 }

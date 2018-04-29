@@ -35,7 +35,7 @@ public class RPCoreSTApiGenerator
 	
 	public final String packpath;  // Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
 	public final Role self;  
-			// FIXME: just a role name -- cf. CL arg
+			// FIXME? just a role name -- cf. CL arg
 			// FIXME: any way to separate Session API (Protocol) from Endpoint/StateChan APIs?
 	
 	public RPCoreSTApiGenerator(GoJob job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, RPCoreLType>> projections, 

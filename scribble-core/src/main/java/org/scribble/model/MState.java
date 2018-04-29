@@ -165,6 +165,7 @@ public abstract class MState<
 		return this.actions.isEmpty();
 	}
 
+	// Returns null if none
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
 			S getTerminal(S start)
 	{

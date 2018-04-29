@@ -13,6 +13,7 @@ import org.scribble.ast.Module;
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.ast.RPCoreDelegDecl;
+import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
 import org.scribble.ext.go.core.type.RPIndexedRole;
@@ -41,6 +42,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	private final Set<DataTypeDecl> dtds; // FIXME: use "main.getDataTypeDecl((DataType) pt);" instead -- cf. OutputSocketGenerator#addSendOpParams
 	private final Set<MessageSigNameDecl> msnds;
 	
+	private Map<Integer, String> imedNames = new HashMap<>();  // Cf. STStateChanApiBuilder.names
+
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later
 	// Pre: variant.getName().equals(this.role)
 	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph)
@@ -76,6 +79,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		Set<EState> states = new LinkedHashSet<>();
 		states.add(this.graph.init);
 		states.addAll(MState.getReachableStates(this.graph.init));
+		boolean hasTerm = false;
 		for (EState s : states)
 		{
 			switch (RPCoreSTStateChanApiBuilder.getStateKind(s))
@@ -113,9 +117,33 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				{
 					throw new RuntimeException("[rp-core] TODO: " + s);
 				}*/
-				case TERMINAL: res.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;
+				case TERMINAL: 
+					res.put(getFilePath(getStateChanName(s)), this.eb.build(this, s));
+					hasTerm = s.id != this.graph.init.id;  // "End" not built for for single (nested) state FSMs (will be "Init")
+					break;
 				default: throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
 			}
+			RPCoreEState s1 = (RPCoreEState) s;
+			if (s1.hasNested())
+			{
+				res.putAll(buildForeachIntermediaryState(s1));
+			}
+		}
+		if (!hasTerm)
+		{
+			// Always make and "End" (including non-terminating FSMs) -- doesn't matter it's not the actual end state
+			//RPCoreEState end = ((RPCoreEModelFactory) this.job.ef).newEState(Collections.emptySet());
+
+			// FIXME: factor out with getStateChanPremable
+			GProtocolName simpname = this.apigen.proto.getSimpleName();
+			String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, this.variant); 
+			String end = "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
+					+ "\n"
+					+ "type End struct {\n"
+					+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
+					+ "}\n";
+			res.put(getFilePath("End"), end);
 		}
 		return res;
 	}
@@ -130,6 +158,43 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return this.gpn.toString().replaceAll("\\.", "/") 
 				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant)  // State chans located with Endpoint Kind API
 				+ "/" + filename + ".go";
+	}
+	
+	// Pre: s.hasNested()
+	// FIXME: factor out with getStateChanPremable
+	protected Map<String, String> buildForeachIntermediaryState(RPCoreEState s)
+	{
+		GProtocolName simpname = this.apigen.proto.getSimpleName();
+		String scTypeName = this.getIntermediaryStateChanName(s);
+		String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, this.variant); 
+		
+		Map<String, String> res = new HashMap<>();
+		
+		String feach =
+				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
+				+ "\n"
+				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
+
+				// State channel type
+		feach += "\n"
+				+ "type " + scTypeName + " struct {\n"
+				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
+				+ "}\n";
+		
+		
+		...  // TODO: foreach method
+
+
+		res.put(getFilePath(scTypeName), feach);
+		
+		RPCoreEState init = s.getNested();
+		RPCoreEState term = (RPCoreEState) MState.getTerminal(init);
+		res.putAll(new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, new EGraph(init, term)).build());
+		/*String x = tmp.keySet().stream().filter(y -> y.endsWith("Init")).findAny().get();
+		String removed = tmp.remove(x);*/
+
+		return res;
 	}
 	
 	// Factored out here from state-specific builders
@@ -226,16 +291,20 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 	protected String getSuccStateChan(STActionBuilder ab, EState curr, EState succ, String sEp)
 	{
+		String name = ((RPCoreEState) succ).hasNested()
+				? getIntermediaryStateChanName(succ)
+				: getStateChanName(succ);  //ab.getReturnType(this, curr, succ)
+		
 		if (((GoJob) this.job).selectApi &&
 				getStateKind(succ) == RPCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
 			// Needs to be here (not in action builder) -- build (hacked) return for all state kinds
 			// FIXME: factor out with RPCoreSTSessionApiBuilder and RPCoreSTSelectStateBuilder#getPreamble
-			return "newBranch" + getStateChanName(succ) + "(" + sEp + ")";
+			return "newBranch" + name + "(" + sEp + ")";
 		}
 		else
 		{
-			String res = "&" + ab.getReturnType(this, curr, succ) + "{ " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
+			String res = "&" + name + "{ " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
 			if (!succ.isTerminal())
 			{
 				res += ", " + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
@@ -254,15 +323,42 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 	
 	@Override
+	public String getStateChanName(EState s)
+	{
+		String name = this.imedNames.get(s.id);
+		if (name == null)
+		{
+			RPCoreEState s1 = (RPCoreEState) s;
+			name = makeSTStateName(s1);
+			if (s1.hasNested())
+			{
+				this.imedNames.put(s1.id, name);  // The "original" name, now used for foreach -- doing this way round for convenience of original state channel naming
+				name = name + "_";  // FIXME
+			}
+			this.names.put(s.id, name);
+		}
+		return name;
+	}
+
+	public String getIntermediaryStateChanName(EState s)
+	{
+		if (!this.names.containsKey(s.id))
+		{
+			throw new RuntimeException("Shouldn't get in here: " + s.id);
+		}
+		return this.imedNames.get(s.id);
+	}
+	
+	@Override
 	protected String makeSTStateName(EState s)
 	{
-		return (s.isTerminal())
-				? makeEndStateName(this.apigen.proto.getSimpleName(), this.variant)
-				: (s.id == this.graph.init.id)
-						? "Init"  // FIXME: factor out (makeInitStateName)
+		return s.id == this.graph.init.id  // Includes single (nested) state endpoint kinds (i.e, Init, not End)
+				? "Init_" + s.id  // FIXME: factor out (makeInitStateName)
+				: (s.isTerminal()
+						? makeEndStateName(this.apigen.proto.getSimpleName(), this.variant)
 						: //this.apigen.proto.getSimpleName() + "_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual) + "_"
 						  "State"
-								+ this.counter++;
+								+ this.counter++);
 	}
 	
 	public static String makeEndStateName(GProtocolName simpname, RPRoleVariant r)
