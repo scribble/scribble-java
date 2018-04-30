@@ -1,14 +1,16 @@
 module Arithmetic;
 
-type <java> "java.lang.Integer" from "rt.jar" as Integer;
+type <purescript> "Int" from "Prim" as Int;
 
 global protocol MathServer(role Client, role Server) {
     choice at Client { 
-        Add(Integer, Integer) from Client to Server;
-        Sum(Integer) from Server to Client;
+        Add(Int, Int) from Client to Server;
+        Sum(Int) from Server to Client;
+        do MathServer(Client, Server);
     } or {
-        Multiply(Integer, Integer) from Client to Server;
-        Product(Integer) from Server to Client;
+        Multiply(Int, Int) from Client to Server;
+        Product(Int) from Server to Client;
+        do MathServer(Client, Server);
     } or {
         Quit() from Client to Server;
     }
