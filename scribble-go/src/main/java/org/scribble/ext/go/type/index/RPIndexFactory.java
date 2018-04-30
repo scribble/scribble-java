@@ -26,4 +26,9 @@ public class RPIndexFactory
 		}*/
 		return new RPIndexVar(text);
 	}
+
+	public static RPForeachVar RPForeachVar(String text)
+	{
+		return new RPForeachVar(text);
+	}
 }

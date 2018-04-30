@@ -19,7 +19,7 @@ public class RPGForeachDel extends RPForeachDel
 		RPGForeach fe = (RPGForeach) visited;
 		RoleNode subj = fe.subj.clone(inlr.job.af);
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) fe.block.del().env()).getTranslation();	
-		RPGForeach inlined = ((RPAstFactory) inlr.job.af).RPGForeach(fe.getSource(), subj, fe.var, fe.start, fe.end, block);
+		RPGForeach inlined = ((RPAstFactory) inlr.job.af).RPGForeach(fe.getSource(), subj, fe.param, fe.start, fe.end, block);
 		inlr.pushEnv(inlr.popEnv().setTranslation(inlined));
 		//return (GChoice) super.leaveProtocolInlining(parent, child, inl, gc);
 		return ScribDelBase.popAndSetVisitorEnv(this, inlr, visited);

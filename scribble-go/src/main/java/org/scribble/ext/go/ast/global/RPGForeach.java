@@ -14,17 +14,17 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.ext.go.ast.RPAstFactory;
 import org.scribble.ext.go.ast.RPForeach;
+import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
 public class RPGForeach extends RPForeach<Global> implements GCompoundInteractionNode
 {
-	public RPGForeach(CommonTree source, RoleNode subj, RPIndexVar var,
+	public RPGForeach(CommonTree source, RoleNode subj, RPForeachVar param,
 			RPIndexExpr start, RPIndexExpr end, GProtocolBlock block)
 	{
-		super(source, subj, var, start, end, block);
+		super(source, subj, param, start, end, block);
 	}
 	
 	@Override
@@ -43,7 +43,7 @@ public class RPGForeach extends RPForeach<Global> implements GCompoundInteractio
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new RPGForeach(this.source, this.subj, this.var, this.start, this.end, getBlock());
+		return new RPGForeach(this.source, this.subj, this.param, this.start, this.end, getBlock());
 	}
 	
 	@Override
@@ -51,14 +51,14 @@ public class RPGForeach extends RPForeach<Global> implements GCompoundInteractio
 	{
 		RoleNode subj = this.subj.clone(af);
 		GProtocolBlock block = getBlock().clone(af);
-		return ((RPAstFactory) af).RPGForeach(this.source, subj, this.var, this.start, this.end, block);
+		return ((RPAstFactory) af).RPGForeach(this.source, subj, this.param, this.start, this.end, block);
 	}
 
 	@Override
-	public RPGForeach reconstruct(RoleNode subj, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, ProtocolBlock<Global> block)
+	public RPGForeach reconstruct(RoleNode subj, RPForeachVar param, RPIndexExpr start, RPIndexExpr end, ProtocolBlock<Global> block)
 	{
 		ScribDel del = del();
-		RPGForeach gc = new RPGForeach(this.source, subj, var, start, end, (GProtocolBlock) block);
+		RPGForeach gc = new RPGForeach(this.source, subj, param, start, end, (GProtocolBlock) block);
 		gc = (RPGForeach) gc.del(del);
 		return gc;
 	}

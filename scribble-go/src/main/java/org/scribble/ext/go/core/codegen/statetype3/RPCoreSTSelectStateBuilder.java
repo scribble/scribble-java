@@ -116,7 +116,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 					 "if err := " + sEpRecv + "." /*+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + peer.getName() + "\"][" 
 				  		+ RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&op)*/
 							+ RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
-				  		+ RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + ", &tmp)"
+				  		+ rpapi.generateIndexExpr(d.start) + ", &tmp)"
 					+ "; err != nil {\n"  // g.end = g.start -- CFSM only has ? for input
 					+ "log.Fatal(err)\n"
 					+ "}\n"

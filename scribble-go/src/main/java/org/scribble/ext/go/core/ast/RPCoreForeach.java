@@ -1,14 +1,14 @@
 package org.scribble.ext.go.core.ast;
 
+import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 
 public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolKind> implements RPCoreType<K>
 {
 	public final Role role;
-	public final RPIndexVar var;
+	public final RPForeachVar param;
 
 	// FIXME: use RPInterval
 	public final RPIndexExpr start;      // Gives the Scribble choices-subj range // Cf. ParamCoreGChoice singleton src
@@ -17,10 +17,10 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 	public final B body;
 	public final B seq;
 	
-	public RPCoreForeach(Role role, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, B body, B cont)
+	public RPCoreForeach(Role role, RPForeachVar param, RPIndexExpr start, RPIndexExpr end, B body, B cont)
 	{
 		this.role = role;
-		this.var = var;
+		this.param = param;
 		this.start = start;
 		this.end = end;
 		this.body = body;
@@ -30,7 +30,7 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 	@Override
 	public String toString()
 	{
-		return "foreach " + this.role + "[" + var + ":" + this.start + "," + this.end + "] do " + this.body + " ; " + this.seq;
+		return "foreach " + this.role + "[" + param + ":" + this.start + "," + this.end + "] do " + this.body + " ; " + this.seq;
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 		}
 		RPCoreForeach<?, ?> them = (RPCoreForeach<?, ?>) obj;
 		return them.canEquals(this) && this.role.equals(them.role) 
-				&& this.var.equals(them.var) && this.start.equals(them.start)
+				&& this.param.equals(them.param) && this.start.equals(them.start)
 				&& this.end.equals(them.end) && this.body.equals(them.body) && this.seq.equals(them.seq);  // FIXME: check B kind is equal?
 	}
 	
@@ -59,7 +59,7 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 		final int prime = 4271;
 		int result = 1;
 		result = prime * result + this.role.hashCode();
-		result = prime * result + this.var.hashCode();
+		result = prime * result + this.param.hashCode();
 		result = prime * result + this.start.hashCode();
 		result = prime * result + this.end.hashCode();
 		result = prime * result + this.body.hashCode();

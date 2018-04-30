@@ -168,8 +168,8 @@ public class RPCoreSTSessionApiBuilder
 						+ "Self int\n"
 						+ "*" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"
 						+ RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + " *" + RPCoreSTApiGenConstants.GO_MPCHAN_TYPE + "\n"
-						//+ "Params map[string]int\n"
 						+ ivars.stream().map(x -> x + " int\n").collect(Collectors.joining(""))
+						+ "Params map[string]int\n"
 						+ "}\n"
 
 						// Endpoint Kind type constructor -- makes connection maps
@@ -184,7 +184,8 @@ public class RPCoreSTSessionApiBuilder
 						+ "return &" + epkindTypeName + "{p, self, &" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE
 								+ "{}, " + RPCoreSTApiGenConstants.GO_MPCHAN_CONSTRUCTOR + "(self, "//conns)" //"params
 								+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "})"
-								+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining(""))
+								+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining("")) + ", "
+								+ "make(map[string]int)"
 								+ "}\n"
 						+ "}\n";
 

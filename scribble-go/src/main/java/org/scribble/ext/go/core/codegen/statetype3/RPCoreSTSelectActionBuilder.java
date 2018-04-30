@@ -61,7 +61,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
-		RPCoreSTStateChanApiBuilder apigen = (RPCoreSTStateChanApiBuilder) api;
+		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
 
 		boolean isDeleg = a.payload.elems.stream().anyMatch(pet -> 
 				//pet.isGDelegationType()  // FIXME: currently deleg specified by ParmaCoreDelegDecl, not GDelegationElem
@@ -103,13 +103,13 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 				res += "if err := " + sEpRecv // + (((GoJob) api.job).noCopy ? "Raw" : "");
 								//+ "[" + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&arg0)"
 								+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
-								+ RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + ", &tmp)"
+								+ rpapi.generateIndexExpr(d.start) + ", &tmp)"
 						+ "; err != nil {\n"
 						+ "log.Fatal(err)\n"
 						+ "}\n"
 						+ "*arg0 = tmp.(" + extName + ")\n"
-						+ "ch := make(chan *" + apigen.getStateChanName(curr.getSuccessor(a)) + ", 1)\n"
-						+ "ch <- " + apigen.getSuccStateChan(this, curr, curr.getSuccessor(a), sEp) + "\n";
+						+ "ch := make(chan *" + rpapi.getStateChanName(curr.getSuccessor(a)) + ", 1)\n"
+						+ "ch <- " + rpapi.getSuccStateChan(this, curr, curr.getSuccessor(a), sEp) + "\n";
 						// FIXME: arg0 // FIXME: args depends on label // FIXME: store args in s.args
 			}
 		}

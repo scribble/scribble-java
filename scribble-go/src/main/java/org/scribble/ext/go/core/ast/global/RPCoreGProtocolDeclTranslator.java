@@ -305,7 +305,7 @@ public class RPCoreGProtocolDeclTranslator
 	private RPCoreGForeach parseRPGForeach(Map<RecVar, RecVar> rvs, boolean checkRecGuard, RPGForeach gf, RPCoreGType seq) throws RPCoreSyntaxException
 	{
 		RPCoreGType body = parseSeq(gf.getBlock().getInteractionSeq().getInteractions(), Collections.emptyMap(), false, true);
-		return this.af.RPCoreGForeach(gf.subj.toName(), gf.var, gf.start, gf.end, body, seq);
+		return this.af.RPCoreGForeach(gf.subj.toName(), gf.param, gf.start, gf.end, body, seq);
 	}
 
 	// Parses message interactions as unary choices

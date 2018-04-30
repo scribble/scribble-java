@@ -20,8 +20,8 @@ import org.scribble.ext.go.core.ast.local.RPCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.Message;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -72,7 +72,7 @@ public class RPCoreAstFactory
 		return RPCoreGEnd.END;
 	}
 
-	public RPCoreGForeach RPCoreGForeach(Role role, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, RPCoreGType body, RPCoreGType seq)
+	public RPCoreGForeach RPCoreGForeach(Role role, RPForeachVar var, RPIndexExpr start, RPIndexExpr end, RPCoreGType body, RPCoreGType seq)
 	{
 		return new RPCoreGForeach(role, var, start, end, body, seq);
 	}
@@ -136,7 +136,7 @@ public class RPCoreAstFactory
 		return RPCoreLEnd.END;
 	}
 
-	public RPCoreLForeach RPCoreLForeach(Role role, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, RPCoreLType body, RPCoreLType seq)
+	public RPCoreLForeach RPCoreLForeach(Role role, RPForeachVar var, RPIndexExpr start, RPIndexExpr end, RPCoreLType body, RPCoreLType seq)
 	{
 		return new RPCoreLForeach(role, var, start, end, body, seq);
 	}

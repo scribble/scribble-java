@@ -82,10 +82,10 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		}
 		else
 		{
-			String start = RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start);
+			String start = rpapi.generateIndexExpr(d.start);
 			res += "var err error\n"
 					+ "for i := " + start + ";"
-					+ " i <= " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.end) + "; i++ {\n";
+					+ " i <= " + rpapi.generateIndexExpr(d.end) + "; i++ {\n";
 
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
 			Function<String, String> f = extName -> 

@@ -82,7 +82,7 @@ public class RPCoreEGraphBuilder
 		{
 			RPCoreLForeach fe = (RPCoreLForeach) lt;
 			RPCoreEState s = (RPCoreEState) s1;  // FIXME: modify method sig
-			s.setParam(fe.var);
+			s.setParam(fe.param);
 			s.setInterval(new RPInterval(fe.start, fe.end));
 			RPCoreEGraphBuilder nested = new RPCoreEGraphBuilder(this.job);
 			s.setNested((RPCoreEState) nested.build(fe.body).init);

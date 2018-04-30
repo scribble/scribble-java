@@ -1,7 +1,10 @@
 package org.scribble.ext.go.core.codegen.statetype3;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +23,7 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexVar;
@@ -43,10 +47,19 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	private final Set<MessageSigNameDecl> msnds;
 	
 	private Map<Integer, String> imedNames = new HashMap<>();  // Cf. STStateChanApiBuilder.names
+	
+	private final Set<RPForeachVar> fvars = new HashSet<>();  // HACK FIXME: should make explicit RPIndexExprNode ast and name disamb endpoint vs. foreach vars
+	private final List<EGraph> todo = new LinkedList<>();  // HACK FIXME: to preserve "order" of state building -- cf. fvars hack for var scope
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later
 	// Pre: variant.getName().equals(this.role)
 	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph)
+	{
+		this(apigen, variant, graph, Collections.emptySet());
+	}
+
+	private RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph,
+			Set<RPForeachVar> fvars)  // HACK FIXME
 	{
 		super(apigen.job, apigen.proto, apigen.self, graph,
 				new RPCoreSTOutputStateBuilder(new RPCoreSTSplitActionBuilder(), new RPCoreSTSendActionBuilder()),
@@ -70,6 +83,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				.filter(d -> (d instanceof DataTypeDecl)).map(d -> ((DataTypeDecl) d)).collect(Collectors.toSet());
 		this.msnds = mod.getNonProtocolDecls().stream()
 				.filter(d -> (d instanceof MessageSigNameDecl)).map(d -> ((MessageSigNameDecl) d)).collect(Collectors.toSet());
+		
+		this.fvars.addAll(fvars);
 	}
 	
 	@Override
@@ -149,6 +164,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					+ "}\n";
 			res.put(getFilePath("End"), end);
 		}
+		
+		// FIXME HACK
+		for (EGraph g : this.todo)
+		{
+			res.putAll(new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, g, this.fvars).build());
+		}
+		
 		return res;
 	}
 
@@ -164,7 +186,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ "/" + filename + ".go";
 	}
 	
-	// Pre: s.hasNested()
+	// Pre: s.hasNested() -- i.e., s is the "outer" state
 	// FIXME: factor out with getStateChanPremable
 	protected Map<String, String> buildForeachIntermediaryState(RPCoreEState s)
 	{
@@ -191,17 +213,22 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		RPCoreEState init = s.getNested();
 		String initName = "Init_" + init.id;
 		String succName = s.isTerminal() ? "End" : getStateChanName(s);  // FIXME: factor out
+		RPForeachVar p = s.getParam();
+		
+		this.fvars.add(p); // HACK FIXME: state visiting order not guaranteed (w.r.t. lexical var scope)
+		
 		feach += "\n"
 				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
 						+ ") Foreach(f func(*" + initName + ") End) *End {\n"
-						+ "for " + s.getParam() + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
-								+ s.getParam() + " <= " + generateIndexExpr(s.getInterval().end) + "; " + s.getParam() + " = " + s.getParam() + " + 1 {\n"
-						+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
+						+ "for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
+								+ p + " <= " + generateIndexExpr(s.getInterval().end) + "; " + p + " = " + p + " + 1 {\n"
+						//+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
+						+ sEp + ".Params[\"" + p + "\"] = " + p + "\n"  // FIXME: nested Endpoint type/struct?
 
 				// Duplicated from RPCoreSTSessionApiBuilder  // FIXME: factor out
 				+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
 						? "f(newBranch" + initName + "(ini))\n"
-						: "f(&" + initName + "{ new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), s.Ept })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+						: "f(&" + initName + "{ new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")," + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 
 				+ "}\n"
 				+ "return " + getSuccStateChan(s, succName, sEp) + "\n"
@@ -210,7 +237,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		res.put(getFilePath(scTypeName), feach);
 		
 		RPCoreEState term = (RPCoreEState) MState.getTerminal(init);
-		res.putAll(new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, new EGraph(init, term)).build());
+		//res.putAll(new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, new EGraph(init, term)).build());
+		this.todo.add(new EGraph(init, term));
 
 		return res;
 	}
@@ -401,7 +429,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return r.getName() + "_" + g.start + "to" + g.end;
 	}
 	
-	public static String generateIndexExpr(RPIndexExpr e)
+	public String generateIndexExpr(RPIndexExpr e)
 	{
 		if (e instanceof RPIndexInt)
 		{
@@ -409,9 +437,18 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		else if (e instanceof RPIndexVar)
 		{
-			return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-					//+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_PARAMS + "[\"" + e + "\"]";
-					+ "." + e;
+			String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+			if (e instanceof RPForeachVar
+					|| this.fvars.stream().anyMatch(p -> p.toString().equals(e.toString())))  // FIXME HACK
+			{
+				return sEp + ".Params[\"" + e + "\"]";
+			}
+			else
+			{
+				return sEp
+						//+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_PARAMS + "[\"" + e + "\"]";
+						+ "." + e;
+			}
 		}
 		else
 		{

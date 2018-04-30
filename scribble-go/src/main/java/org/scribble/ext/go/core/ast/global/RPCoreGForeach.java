@@ -16,14 +16,16 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexFactory;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
 public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implements RPCoreGType
 {
-	public RPCoreGForeach(Role role, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, RPCoreGType body, RPCoreGType seq)
+	public RPCoreGForeach(Role role, RPForeachVar var, RPIndexExpr start, RPIndexExpr end, RPCoreGType body, RPCoreGType seq)
 	{
 		super(role, var, start, end, body, seq);
 	}
@@ -37,7 +39,7 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		}
 		else
 		{
-			return af.RPCoreGForeach(this.role, this.var, this.start, this.end,
+			return af.RPCoreGForeach(this.role, this.param, this.start, this.end,
 					this.body.subs(af, old, neu), this.seq.subs(af, old, neu));
 		}
 	}
@@ -52,8 +54,13 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 	@Override
 	public Set<RPIndexedRole> getIndexedRoles()  // cf. RPForeachDel#leaveIndexVarCollection (though not currently used)
 	{
+		RPIndexVar tmp = RPIndexFactory.ParamIntVar(this.param.toString()); 
+				// HACK FIXME: because RPIndexVar and RPForeachVar now distinguished
+
 		Set<RPInterval> d = Stream.of(new RPInterval(this.start, this.end)).collect(Collectors.toSet());
-		Set<RPInterval> var = Stream.of(new RPInterval(this.var, this.var)).collect(Collectors.toSet());
+		Set<RPInterval> var = Stream.of(//new RPInterval(this.param, this.param)
+				new RPInterval(tmp, tmp)
+		).collect(Collectors.toSet());
 		Set<RPIndexedRole> irs = this.body.getIndexedRoles()
 				.stream().map(
 						ir -> ir.intervals.equals(var)
@@ -67,6 +74,9 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
 	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
 	{
+		RPIndexVar tmp = RPIndexFactory.ParamIntVar(this.param.toString()); 
+				// HACK FIXME: because RPIndexVar and RPForeachVar now distinguished
+
 		RPCoreLType seq = this.seq.project(af, subj);
 
 		RPInterval v = new RPInterval(this.start, this.end);
@@ -74,7 +84,8 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 				// FIXME: factor out  // cf. RPCoreGChoice#project
 		{
 			RPRoleVariant indexed = new RPRoleVariant(subj.getName().toString(),
-					Stream.of(new RPInterval(this.var, this.var)).collect(Collectors.toSet()), Collections.emptySet());
+					Stream.of(//new RPInterval(this.param, this.param))
+							new RPInterval(tmp, tmp)).collect(Collectors.toSet()), Collections.emptySet());
 			RPCoreLType body = this.body.project(af, indexed);
 			return body.subs(af, RPCoreLEnd.END, seq);
 		}
@@ -85,7 +96,7 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		else 
 		{
 			RPCoreLType body = this.body.project(af, subj);
-			return af.RPCoreLForeach(subj, this.var, this.start, this.end, body, seq);
+			return af.RPCoreLForeach(subj, this.param, this.start, this.end, body, seq);
 			//throw new RuntimeException("[rp-core] TODO: " + this + " project onto " + subj);
 		}
 	}

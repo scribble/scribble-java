@@ -74,8 +74,8 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 				//pet.isGDelegationType()  // FIXME: currently deleg specified by ParamCoreDelegDecl, not GDelegationElem
 				rpapi.isDelegType((DataType) pet));
 		
-		String res = "for i, j := " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + ", 0;"
-				+ " i <= " + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.end)+"; i, j = i+1, j+1 {\n";
+		String res = "for i, j := " + rpapi.generateIndexExpr(d.start) + ", 0;"
+				+ " i <= " + rpapi.generateIndexExpr(d.end)+"; i, j = i+1, j+1 {\n";
 
 		if (a.mid.isOp())
 		{

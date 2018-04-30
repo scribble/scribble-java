@@ -11,7 +11,7 @@ public abstract class RPIndexExpr
 	
 	public abstract String toGoString();
 	
-	public abstract Set<RPIndexVar> getVars();
+	public abstract Set<RPIndexVar> getVars();  // Doesn't include foreach params
 
 	public abstract String toSmt2Formula();  // Cf. toString -- but can be useful to separate, for debugging (and printing)
 

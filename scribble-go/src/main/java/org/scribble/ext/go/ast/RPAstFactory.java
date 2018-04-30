@@ -16,6 +16,7 @@ import org.scribble.ext.go.ast.global.RPGMultiChoices;
 import org.scribble.ext.go.ast.global.RPGMultiChoicesTransfer;
 import org.scribble.ext.go.ast.name.simple.RPIndexedRoleNode;
 import org.scribble.ext.go.core.ast.RPCoreDelegDecl;
+import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexVar;
 
@@ -32,7 +33,7 @@ public interface RPAstFactory extends AstFactory
 			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd);
 			RPIndexExpr srcRangeStart, RPIndexExpr srcRangeEnd, RPIndexExpr destRangeStart, RPIndexExpr destRangeEnd);
 	RPGChoice ParamGChoice(CommonTree source, RoleNode subj, RPIndexExpr expr, List<GProtocolBlock> blocks);
-	RPGForeach RPGForeach(CommonTree source, RoleNode subj, RPIndexVar var, RPIndexExpr start, RPIndexExpr end, GProtocolBlock block);
+	RPGForeach RPGForeach(CommonTree source, RoleNode subj, RPForeachVar param, RPIndexExpr start, RPIndexExpr end, GProtocolBlock block);
 	RPIndexedRoleNode RPIndexedRoleNode(CommonTree source, String identifier, RPIndexExpr start, RPIndexExpr end);
 
 	@Deprecated

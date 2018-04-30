@@ -10,8 +10,8 @@ import org.scribble.ext.go.core.model.endpoint.action.RPCoreEDotSend;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEMultiChoicesReceive;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.type.Payload;
 import org.scribble.type.name.MessageId;
@@ -22,7 +22,7 @@ public interface RPCoreEModelFactory extends EModelFactory
 	@Override
 	RPCoreEState newEState(Set<RecVar> labs);
 
-	RPCoreEState newRPCoreEState(Set<RecVar> labs, RPIndexVar param, RPInterval interval, RPCoreEState nested);
+	RPCoreEState newRPCoreEState(Set<RecVar> labs, RPForeachVar param, RPInterval interval, RPCoreEState nested);
 
 	RPCoreECrossSend newParamCoreECrossSend(RPIndexedRole peer, MessageId<?> mid, Payload payload);
 	RPCoreECrossReceive newParamCoreECrossReceive(RPIndexedRole peer, MessageId<?> mid, Payload payload);
