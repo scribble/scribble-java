@@ -30,9 +30,11 @@ import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.util.Pair;
 import org.scribble.visit.util.MessageIdCollector;
 
 public class PSEndpointApiGenerator
@@ -106,10 +108,123 @@ public class PSEndpointApiGenerator
 			EGraph efsm = job.minEfsm ? jc.getMinimisedEGraph(fullname, role) : jc.getEGraph(fullname, role);
 			EState init = efsm.init;
 			EState term = EState.getTerminal(init);
-			System.out.println("Init: " + init);
-			System.out.println("Term: " + term);
-		}
 
+            sb.append("instance initial" + role + " " + getRoleDataTypeName(role) + " :: Initial " + getRoleDataTypeName(role) + " " + getStateTypeName(init) + "\n");
+            if (term != null) {
+                sb.append("instance terminal" + role + " " + getRoleDataTypeName(role) + " :: Terminal " + getRoleDataTypeName(role) + " " + getStateTypeName(term) + "\n");
+            } else {
+                sb.append("instance terminal" + role + " " + getRoleDataTypeName(role) + " :: Terminal " + getRoleDataTypeName(role) + "Void \n");
+            }
+
+			Set<EState> seen = new HashSet<>();
+            Set<EState> level = new HashSet<>();
+
+            // Perform a breadth first traversal over the graph
+            level.add(init);
+
+            while (!level.isEmpty()) {
+                Set<EState> nextlevel = new HashSet<>();
+                for (EState s : level) {
+                    // Don't generate more than once
+                    if (seen.contains(s)) break;
+                    seen.add(s);
+
+                    sb.append("foreign import data " + getStateTypeName(s) + " :: Type\n");
+
+                    // View the successors during the next level
+                    nextlevel.addAll(s.getAllSuccessors());
+
+        			switch (s.getStateKind()) {
+        				case OUTPUT: {
+        				    assert (s.getAllActions().size() > 0);
+        				    if (s.getAllActions().size() == 1) {
+        				        EState to = s.getAllSuccessors().get(0);
+                                EAction action = s.getAllActions().get(0);
+        				        String type = getMessageDataTypeName(action.mid);
+                                String toR = getRoleDataTypeName(action.obj);
+                                sb.append("instance send" + getStateTypeName(s) + " :: Send " + toR + " " +  getStateTypeName(s) + " " + getStateTypeName(to) + " " + type + "\n");
+                            } else {
+                                Set<Pair<String, String>> options = new HashSet<>();
+                                for (int i = 0; i < s.getAllActions().size(); i++) {
+                                    // If there are multiple output actions, we should treat it as a branch and create some dummy states
+                                    // where we send the label
+                                    EAction action = s.getAllActions().get(i);
+                                    EState to = s.getAllSuccessors().get(i);
+                                    String labelState = getStateTypeName(s) + action.mid;
+                                    String label = getLabelFromMessage(action.mid);
+            				        String type = getMessageDataTypeName(action.mid);
+                                    String toR = getRoleDataTypeName(action.obj);
+                                    sb.append("foreign import data " + labelState +  " :: Type\n");
+                                    sb.append("instance send" + labelState + " :: Send " + toR + " " +  labelState + " " + getStateTypeName(to) + " " + type + "\n");
+
+                                    options.add(new Pair(label,labelState));
+                                }
+
+                                // All messages must be to the same role
+                                EAction action = s.getAllActions().get(0);
+                                String toR = getRoleDataTypeName(action.obj);
+                                sb.append("instance select" + getStateTypeName(s) + " :: Select " + toR + " " +  getStateTypeName(s) + " ");
+                                String end = "Nil";
+                                for (Pair<String, String> option : options) {
+                                    sb.append("(Cons \"" + option.left + "\" " + option.right + " ");
+                                    end += ")";
+                                }
+                                sb.append(end + "\n");
+                            }
+                        }
+        					break;
+        				case UNARY_INPUT: {
+        				        EState from = s.getAllSuccessors().get(0);
+                                EAction action = s.getAllActions().get(0);
+        				        String type = getMessageDataTypeName(action.mid);
+                                String fromR = getRoleDataTypeName(action.obj);
+                                sb.append("instance receive" + getStateTypeName(s) + " :: Receive " + fromR + " " +  getStateTypeName(s) + " " + getStateTypeName(from) + " " + type + "\n");
+        				}
+        					break;
+        				case POLY_INPUT: {
+                                Set<Pair<String, String>> options = new HashSet<>();
+                                for (int i = 0; i < s.getAllActions().size(); i++) {
+                                    // If there are multiple output actions, we should treat it as a branch and create some dummy states
+                                    // where we send the label
+                                    EAction action = s.getAllActions().get(i);
+                                    EState to = s.getAllSuccessors().get(i);
+                                    String labelState = getStateTypeName(s) + action.mid;
+                                    String label = getLabelFromMessage(action.mid);
+            				        String type = getMessageDataTypeName(action.mid);
+                                    String fromR = getRoleDataTypeName(action.obj);
+                                    sb.append("foreign import data " + labelState +  " :: Type\n");
+                                    sb.append("instance receive" + labelState + " :: Receive " + fromR + " " +  labelState + " " + getStateTypeName(to) + " " + type + "\n");
+
+                                    options.add(new Pair(label,labelState));
+                                }
+
+                                // All messages must be to the same role
+                                EAction action = s.getAllActions().get(0);
+                                String atR = getRoleDataTypeName(role);
+                                sb.append("instance branch" + getStateTypeName(s) + " :: Branch " + atR + " " +  getStateTypeName(s) + " ");
+                                String end = "Nil";
+                                for (Pair<String, String> option : options) {
+                                    sb.append("(Cons \"" + option.left + "\" " + option.right + " ");
+                                    end += ")";
+                                }
+                                sb.append(end + "\n");
+                        }
+        					break;
+        				case TERMINAL:
+        					break;
+        				case ACCEPT:
+                            throw new ScribbleException(null, "Unsupported action " + s.getStateKind());
+                        case WRAP_SERVER:
+                            throw new ScribbleException(null, "Unsupported action " + s.getStateKind());
+        			}
+
+        		}
+
+
+                level = nextlevel;
+            }
+
+        }
 
 		Map<String, String> map = new HashMap<String, String>();
 		map.put(makePath(moduleName, protocolName), sb.toString());
@@ -117,7 +232,12 @@ public class PSEndpointApiGenerator
 		return map;
 	}
 
-	private static String makePath(String module, String protocol)
+    private String getLabelFromMessage(MessageId<?> mid) {
+        String s = mid.toString().toLowerCase();
+        return (s.isEmpty() || s.charAt(0) < 97 || s.charAt(0) > 122) ? "l" + s : s;  // Hacky? (Yes)
+    }
+
+    private static String makePath(String module, String protocol)
 	{
 		return "Scribble/Protocol/" + module.replace('.', '/') + "/" + protocol + ".purs";
 	}
@@ -135,6 +255,11 @@ public class PSEndpointApiGenerator
 		String s = r.toString();
 		return (s.isEmpty() || s.charAt(0) < 65 || s.charAt(0) > 90) ? "R" + s : s;  // Hacky? (Yes)
 	}
+
+	public static String getStateTypeName(EState s)
+    {
+	    return "S" + s;
+    }
 	
 //	// FIXME: refactor an EndpointApiGenerator -- ?
 //	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribbleException
