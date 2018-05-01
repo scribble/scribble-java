@@ -31,8 +31,11 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.Payload;
+import org.scribble.type.kind.PayloadTypeKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageId;
+import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 import org.scribble.util.Pair;
 import org.scribble.visit.util.MessageIdCollector;
@@ -84,6 +87,7 @@ public class PSEndpointApiGenerator
 		// TODO: Annotate MessageId with its arguments
 		// TODO: Handle polymorphic messages (probably just throw an error)
 		Set<MessageId<?>> mids = new HashSet<>();
+		Map<MessageId<?>, Payload> datatypes = new HashMap<>();
 
 		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
@@ -91,12 +95,6 @@ public class PSEndpointApiGenerator
 		{
             System.out.println(mid);
 		 	mids.add(mid);
-		}
-
-		System.out.println(mids);
-		for (MessageId<?> mid : mids) {
-		    String name = getMessageDataTypeName(mid);
-			sb.append("data " + name + " = " + name + " -- TODO: Add arguments + derive JSON enc/dec\n");
 		}
 
 		// TODO: For each role make a projection, then traverse the graph getting the states + transitions
@@ -143,12 +141,14 @@ public class PSEndpointApiGenerator
         				        String type = getMessageDataTypeName(action.mid);
                                 String toR = getRoleDataTypeName(action.obj);
                                 sb.append("instance send" + getStateTypeName(s) + " :: Send " + toR + " " +  getStateTypeName(s) + " " + getStateTypeName(to) + " " + type + "\n");
+                                addDatatype(datatypes, action);
                             } else {
                                 Set<Pair<String, String>> options = new HashSet<>();
                                 for (int i = 0; i < s.getAllActions().size(); i++) {
                                     // If there are multiple output actions, we should treat it as a branch and create some dummy states
                                     // where we send the label
                                     EAction action = s.getAllActions().get(i);
+                                    addDatatype(datatypes, action);
                                     EState to = s.getAllSuccessors().get(i);
                                     String labelState = getStateTypeName(s) + action.mid;
                                     String label = getLabelFromMessage(action.mid);
@@ -176,6 +176,7 @@ public class PSEndpointApiGenerator
         				case UNARY_INPUT: {
         				        EState from = s.getAllSuccessors().get(0);
                                 EAction action = s.getAllActions().get(0);
+                                addDatatype(datatypes, action);
         				        String type = getMessageDataTypeName(action.mid);
                                 String fromR = getRoleDataTypeName(action.obj);
                                 sb.append("instance receive" + getStateTypeName(s) + " :: Receive " + fromR + " " +  getStateTypeName(s) + " " + getStateTypeName(from) + " " + type + "\n");
@@ -187,6 +188,7 @@ public class PSEndpointApiGenerator
                                     // If there are multiple output actions, we should treat it as a branch and create some dummy states
                                     // where we send the label
                                     EAction action = s.getAllActions().get(i);
+                                    addDatatype(datatypes, action);
                                     EState to = s.getAllSuccessors().get(i);
                                     String labelState = getStateTypeName(s) + action.mid;
                                     String label = getLabelFromMessage(action.mid);
@@ -226,11 +228,40 @@ public class PSEndpointApiGenerator
 
         }
 
+        for (MessageId<?> mid : datatypes.keySet()) {
+            String name = getMessageDataTypeName(mid);
+            sb.append("data " + name + " = " + name);
+            for (PayloadElemType<? extends PayloadTypeKind> type : datatypes.get(mid).elems) {
+                sb.append(" " + type);
+            }
+            sb.append("-- TODO: Derive JSON enc/dec\n");
+        }
+
+       System.out.println(mids);
+       for (MessageId<?> mid : mids) {
+           String name = getMessageDataTypeName(mid);
+           sb.append("data " + name + " = " + name + " -- TODO: Add arguments + derive JSON enc/dec\n");
+       }
+
 		Map<String, String> map = new HashMap<String, String>();
 		map.put(makePath(moduleName, protocolName), sb.toString());
 
 		return map;
 	}
+
+	private void addDatatype(Map<MessageId<?>, Payload> datatypes, EAction action) throws ScribbleException {
+	    if (datatypes.containsKey(action.mid)) {
+	        System.out.println(action.mid + " already there");
+	        System.out.println(datatypes.keySet().toString());
+	        System.out.println(datatypes.get(action.mid) + " - " + action.payload);
+	        if (!datatypes.get(action.mid).equals(action.payload)) {
+                System.out.println("and different!");
+                throw new ScribbleException(null, "Messages with the same name `" + action.mid + "` must have the same payload");
+            }
+        } else {
+	        datatypes.put(action.mid, action.payload);
+        }
+    }
 
     private String getLabelFromMessage(MessageId<?> mid) {
         String s = mid.toString().toLowerCase();
