@@ -15,7 +15,6 @@ package org.scribble.codegen.purescript;
 
 import java.util.*;
 
-import org.scribble.ast.ImportDecl;
 import org.scribble.ast.Module;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
@@ -23,10 +22,11 @@ import org.scribble.ast.global.GProtocolDecl;
 // import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 // import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 // import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
+import org.scribble.codegen.purescript.endpointapi.ForeignType;
+import org.scribble.codegen.purescript.endpointapi.ModuleGen;
 import org.scribble.del.ModuleDel;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
-import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
@@ -42,7 +42,8 @@ import org.scribble.visit.util.MessageIdCollector;
 
 public class PSEndpointApiGenerator
 {
-	public final Job job;
+    public static final String PURESCRIPT_SCHEMA = "purescript";
+    public final Job job;
 
 	public PSEndpointApiGenerator(Job job)
 	{
@@ -71,17 +72,26 @@ public class PSEndpointApiGenerator
 		sb.append("import Type.Row (Cons, Nil)\n");
 		sb.append("import Data.Void (Void)\n");
 
+		Map<String, ForeignType> foreignTypeContext = new HashMap<>();
+
 		// Get the foreign type declarations
 		// TODO: Only include imports that are used
 		// TODO: Make it clear that JSON encoding/decoding instances are required
-		// TODO: Group imports by module?
 		for (NonProtocolDecl<?> foreignType : mod.getNonProtocolDecls()) {
-			if (!foreignType.schema.equals("purescript")) {
+			if (!foreignType.schema.equals(PURESCRIPT_SCHEMA)) {
 				throw new ScribbleException(foreignType.getSource(), "Unsupported data type schema: " + foreignType.schema);
 			}
 			System.out.println(foreignType); // There is a bug in the parser "type <purescript> Int from Int as Int;"
+//            System.out.println("name- " + foreignType.name);
+//            System.out.println("extSource- " + foreignType.extSource);
+//            System.out.println("extName- " + foreignType.extName);
 			sb.append("import " + foreignType.extSource + " (" + foreignType.extName + ")\n");
+			foreignTypeContext.put(foreignType.name.toString(), new ForeignType(foreignType.extName, foreignType.extSource));
 		}
+
+        ModuleGen moduleGen = new ModuleGen(fullname.getPrefix().toString(),
+                fullname.getSimpleName().toString(),
+                new HashSet<>(foreignTypeContext.values()));
 
 		// Go through the global protocol and pull out all the message 'data types'
 		// TODO: Annotate MessageId with its arguments
