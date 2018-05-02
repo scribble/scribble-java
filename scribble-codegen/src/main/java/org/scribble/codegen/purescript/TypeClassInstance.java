@@ -1,4 +1,4 @@
-package org.scribble.codegen.purescript.endpointapi;
+package org.scribble.codegen.purescript;
 
 import java.util.List;
 

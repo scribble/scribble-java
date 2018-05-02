@@ -18,9 +18,6 @@ import java.util.*;
 import org.scribble.ast.Module;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.codegen.purescript.endpointapi.DataType;
-import org.scribble.codegen.purescript.endpointapi.ForeignType;
-import org.scribble.codegen.purescript.endpointapi.TypeClassInstance;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
@@ -65,7 +62,6 @@ public class PSEndpointApiGenerator
 			if (!foreignType.schema.equals(PURESCRIPT_SCHEMA)) {
 				throw new ScribbleException(foreignType.getSource(), "Unsupported data type schema: " + foreignType.schema);
 			}
-			System.out.println(foreignType); // There is a bug in the parser "type <purescript> Int from Int as Int;"
 			foreignImports.put(foreignType.name.toString(), new ForeignType(foreignType.extName, foreignType.extSource));
 		}
 
@@ -218,6 +214,8 @@ public class PSEndpointApiGenerator
 		sections.add(moduleDeclaration(moduleName, protocolName));
         sections.add(staticImports());
 
+        sections.add(jsonImports());
+
         // Foreign imports
         sections.add(ForeignType.generateImports(new HashSet<>(foreignImports.values())));
 
@@ -271,6 +269,19 @@ public class PSEndpointApiGenerator
 		sb.append("import Scribble.FSM (class Branch, class Initial, class Terminal, class Receive, class Select, class Send, kind Role)\n");
 		sb.append("import Type.Row (Cons, Nil)\n");
 		sb.append("import Data.Void (Void)\n");
+        return sb.toString();
+    }
+
+    private static String jsonImports() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-- From purescript-argonaut-codecs\n");
+        sb.append("import Data.Argonaut.Decode\n");
+        sb.append("import Data.Argonaut.Encode\n");
+        sb.append("import Data.Argonaut.Core (Json) -- From purescript-argonaut-core\n");
+        sb.append("import Data.Generic.Rep (class Generic) -- From purescript-generics-rep\n");
+        sb.append("-- From purescript-argonaut-generic\n");
+        sb.append("import Data.Argonaut.Decode.Generic.Rep (genericDecodeJson)\n");
+        sb.append("import Data.Argonaut.Encode.Generic.Rep (genericEncodeJson)\n");
         return sb.toString();
     }
 

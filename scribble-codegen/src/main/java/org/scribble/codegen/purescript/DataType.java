@@ -1,7 +1,4 @@
-package org.scribble.codegen.purescript.endpointapi;
-
-import org.scribble.type.kind.PayloadTypeKind;
-import org.scribble.type.name.PayloadElemType;
+package org.scribble.codegen.purescript;
 
 import java.util.List;
 import java.util.Objects;
@@ -57,7 +54,14 @@ public class DataType {
             for (ForeignType type : params) {
                 sb.append(" " + type.name);
             }
-            sb.append(" -- TODO: Derive JSON enc/dec\n");
+            sb.append("\n");
+            if (kind.equals(KIND_TYPE)) {
+                sb.append("derive instance generic" + name + " :: Generic " + name + " _\n");
+                sb.append("instance encodeJson" + name + " :: EncodeJson " + name + " where\n");
+                sb.append("  encodeJson = genericEncodeJson\n");
+                sb.append("instance decodeJson" + name + " :: DecodeJson " + name + " where\n");
+                sb.append("  decodeJson = genericDecodeJson\n");
+            }
             return sb.toString();
         }
     }

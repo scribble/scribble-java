@@ -1,14 +1,14 @@
-package org.scribble.codegen.purescript.endpointapi;
+package org.scribble.codegen.purescript;
 
 import java.util.*;
 
 public class ForeignType {
+    public static final String PRIM_MODULE = "Prim";
+    public static final String[] PRIMS = new String[]{"Number", "Int", "String", "Char", "Boolean"};
     public final String name;
     public final String source;
     // Primitive types in the language - no need to explicitly import
     // See https://pursuit.purescript.org/builtins/docs/Prim
-    // TODO: Don't generate import statements for them
-    public static final String[] PRIMS = new String[]{"Number", "Int", "String", "Char", "Boolean"};
 
     public ForeignType(String name, String source) {
         this.name = name;
@@ -29,6 +29,8 @@ public class ForeignType {
             }
         }
         for (String source : imports.keySet()) {
+            // No need to explicitly import
+            if (source.equals(PRIM_MODULE)) continue;
             is.append("import " + source + " (");
             List<String> ts = new ArrayList<>(imports.get(source));
             is.append(ts.get(0));
