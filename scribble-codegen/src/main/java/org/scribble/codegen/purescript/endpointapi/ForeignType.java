@@ -21,6 +21,7 @@ public class ForeignType {
 
     // Group by package source
     public static String generateImports(Set<ForeignType> types) {
+        System.out.println(types);
         HashMap<String, Set<String>> imports = new HashMap();
         for (ForeignType type : types) {
             if (imports.containsKey(type.source)) {

@@ -4,7 +4,7 @@ import org.scribble.util.Pair;
 
 public class UnaryTransition {
     private final String state;
-    private final String role;
+    private final DataType role;
     private final Transition kind;
     private final Pair<String, DataType> action;
 
@@ -19,7 +19,7 @@ public class UnaryTransition {
         return null;
     }
 
-    public UnaryTransition(String state, String role, Transition kind, Pair<String, DataType> action) {
+    public UnaryTransition(String state, DataType role, Transition kind, Pair<String, DataType> action) {
         this.state = state;
         this.role = role;
         this.kind = kind;
@@ -28,7 +28,7 @@ public class UnaryTransition {
 
     public String generateTransition() {
         return "instance " + toTypeClass(kind).toLowerCase() + state
-                + " :: " + toTypeClass(kind) + " " + role + " " + state
+                + " :: " + toTypeClass(kind) + " " + role.name + " " + state
                 + " " + action.left + " " + action.right.name + "\n";
     }
 }

@@ -22,8 +22,10 @@ import org.scribble.ast.global.GProtocolDecl;
 // import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 // import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 // import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
+import org.scribble.codegen.purescript.endpointapi.DataType;
 import org.scribble.codegen.purescript.endpointapi.ForeignType;
 import org.scribble.codegen.purescript.endpointapi.ModuleGen;
+import org.scribble.codegen.purescript.endpointapi.TypeClassInstance;
 import org.scribble.del.ModuleDel;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
@@ -39,6 +41,8 @@ import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 import org.scribble.util.Pair;
 import org.scribble.visit.util.MessageIdCollector;
+
+import javax.xml.crypto.Data;
 
 public class PSEndpointApiGenerator
 {
@@ -56,24 +60,14 @@ public class PSEndpointApiGenerator
 		Module mod = this.job.getContext().getModule(fullname.getPrefix());
 		GProtocolName simpname = fullname.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
-		Set<Role> roles = new HashSet<>();
-		for (Role r : gpd.header.roledecls.getRoles()) {
-			System.out.println(r);
-			roles.add(r);
-		}
-
-		StringBuilder sb = new StringBuilder();
 
 		String moduleName = fullname.getPrefix().toString();
-		String protocolName = fullname.getSimpleName().toString();
+        String protocolName = fullname.getSimpleName().toString();
 
-		sb.append("module Scribble.Protocol." + fullname + " where\n");
-		sb.append("import Scribble.FSM (class Branch, class Initial, class Terminal, class Receive, class Select, class Send, kind Role)\n");
-		sb.append("import Type.Row (Cons, Nil)\n");
-		sb.append("import Data.Void (Void)\n");
+        // Message actions and their corresponding datatype
+        Map<String, Payload> datatypes = new HashMap<>();
 
-		Map<String, ForeignType> foreignTypeContext = new HashMap<>();
-
+		Map<String, ForeignType> foreignImports = new HashMap<>();
 		// Get the foreign type declarations
 		// TODO: Only include imports that are used
 		// TODO: Make it clear that JSON encoding/decoding instances are required
@@ -82,147 +76,139 @@ public class PSEndpointApiGenerator
 				throw new ScribbleException(foreignType.getSource(), "Unsupported data type schema: " + foreignType.schema);
 			}
 			System.out.println(foreignType); // There is a bug in the parser "type <purescript> Int from Int as Int;"
-//            System.out.println("name- " + foreignType.name);
-//            System.out.println("extSource- " + foreignType.extSource);
-//            System.out.println("extName- " + foreignType.extName);
-			sb.append("import " + foreignType.extSource + " (" + foreignType.extName + ")\n");
-			foreignTypeContext.put(foreignType.name.toString(), new ForeignType(foreignType.extName, foreignType.extSource));
+			foreignImports.put(foreignType.name.toString(), new ForeignType(foreignType.extName, foreignType.extSource));
 		}
 
-        ModuleGen moduleGen = new ModuleGen(fullname.getPrefix().toString(),
-                fullname.getSimpleName().toString(),
-                new HashSet<>(foreignTypeContext.values()));
+		Map<DataType, Pair<List<DataType>, List<TypeClassInstance>>> efsms = new HashMap();
 
-		// Go through the global protocol and pull out all the message 'data types'
-		// TODO: Annotate MessageId with its arguments
-		// TODO: Handle polymorphic messages (probably just throw an error)
-		Set<MessageId<?>> mids = new HashSet<>();
-		Map<MessageId<?>, Payload> datatypes = new HashMap<>();
-
-		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
-		gpd.accept(coll);
-		for (MessageId<?> mid : coll.getNames())
-		{
-            System.out.println(mid);
-		 	mids.add(mid);
-		}
-
-		// TODO: For each role make a projection, then traverse the graph getting the states + transitions
-		for (Role role : roles) {
-			String name = getRoleDataTypeName(role);
-			sb.append("foreign import data " + role + " :: Role\n");
-
+		// For each role make a projection, then traverse the graph getting the states + transitions
+		for (Role r : gpd.header.roledecls.getRoles()) {
 			JobContext jc = job.getContext();
-			EGraph efsm = job.minEfsm ? jc.getMinimisedEGraph(fullname, role) : jc.getEGraph(fullname, role);
+			EGraph efsm = job.minEfsm ? jc.getMinimisedEGraph(fullname, r) : jc.getEGraph(fullname, r);
+
 			EState init = efsm.init;
 			EState term = EState.getTerminal(init);
 
-            sb.append("instance initial" + role + " " + getRoleDataTypeName(role) + " :: Initial " + getRoleDataTypeName(role) + " " + getStateTypeName(init) + "\n");
-            if (term != null) {
-                sb.append("instance terminal" + role + " " + getRoleDataTypeName(role) + " :: Terminal " + getRoleDataTypeName(role) + " " + getStateTypeName(term) + "\n");
-            } else {
-                sb.append("instance terminal" + role + " " + getRoleDataTypeName(role) + " :: Terminal " + getRoleDataTypeName(role) + "Void \n");
-            }
+			DataType role = new DataType(r.toString(), null, "Role", true);
 
-			Set<EState> seen = new HashSet<>();
+			List<TypeClassInstance> instances = new ArrayList<>();
+			List<DataType> states = new ArrayList<>();
+
+			// Add the instances for initial/terminal nodes
+			instances.add(new TypeClassInstance(("initial" + role.name), "Initial", new String[] {role.name, getStateTypeName(init)}));
+			String t = term == null ? "Void" : getStateTypeName(term);
+            instances.add(new TypeClassInstance(("terminal" + role.name), "Terminal", new String[] {role.name, t}));
+
+			Set<String> seen = new HashSet<>();
             Set<EState> level = new HashSet<>();
 
             // Perform a breadth first traversal over the graph
             level.add(init);
-
             while (!level.isEmpty()) {
                 Set<EState> nextlevel = new HashSet<>();
                 for (EState s : level) {
                     // Don't generate more than once
-                    if (seen.contains(s)) break;
-                    seen.add(s);
-
-                    sb.append("foreign import data " + getStateTypeName(s) + " :: Type\n");
-
+                    if (seen.contains(s.toString())) {
+                        System.out.println(s + "foo");
+                        continue;
+                    }
+                    seen.add(s.toString());
                     // View the successors during the next level
                     nextlevel.addAll(s.getAllSuccessors());
 
+                    // Generate the state type
+                    String curr = getStateTypeName(s);
+                    states.add(new DataType(curr, null, DataType.KIND_TYPE, true));
+
         			switch (s.getStateKind()) {
         				case OUTPUT: {
-        				    assert (s.getAllActions().size() > 0);
         				    if (s.getAllActions().size() == 1) {
-        				        EState to = s.getAllSuccessors().get(0);
+        				        String next = getStateTypeName(s.getAllSuccessors().get(0));
                                 EAction action = s.getAllActions().get(0);
-        				        String type = getMessageDataTypeName(action.mid);
-                                String toR = getRoleDataTypeName(action.obj);
-                                sb.append("instance send" + getStateTypeName(s) + " :: Send " + toR + " " +  getStateTypeName(s) + " " + getStateTypeName(to) + " " + type + "\n");
-                                addDatatype(datatypes, action);
-                            } else {
-                                Set<Pair<String, String>> options = new HashSet<>();
-                                for (int i = 0; i < s.getAllActions().size(); i++) {
-                                    // If there are multiple output actions, we should treat it as a branch and create some dummy states
-                                    // where we send the label
-                                    EAction action = s.getAllActions().get(i);
-                                    addDatatype(datatypes, action);
-                                    EState to = s.getAllSuccessors().get(i);
-                                    String labelState = getStateTypeName(s) + action.mid;
-                                    String label = getLabelFromMessage(action.mid);
-            				        String type = getMessageDataTypeName(action.mid);
-                                    String toR = getRoleDataTypeName(action.obj);
-                                    sb.append("foreign import data " + labelState +  " :: Type\n");
-                                    sb.append("instance send" + labelState + " :: Send " + toR + " " +  labelState + " " + getStateTypeName(to) + " " + type + "\n");
+        				        String type = action.mid.toString();
+                                String to = action.obj.toString();
 
-                                    options.add(new Pair(label,labelState));
+                                // Add the instance and message data type
+                                instances.add(new TypeClassInstance(("send" + curr), "Send", new String[] {to, curr, next, type}));
+                                addDatatype(datatypes, action, foreignImports);
+                            } else {
+                                // If there are multiple output actions, we should treat it as a branch and create some dummy states where we send the label
+                                Set<Pair<String, String>> choices = new HashSet<>();
+                                for (int i = 0; i < s.getAllActions().size(); i++) {
+                                    EAction action = s.getAllActions().get(i);
+                                    String next = getStateTypeName(s.getAllSuccessors().get(i));
+                                    String labelState = getStateTypeName(s) + action.mid;
+                                    String label = action.mid.toString().toLowerCase();
+            				        String type = action.mid.toString();
+                                    String to = action.obj.toString();
+                                    choices.add(new Pair(label, labelState));
+
+                                    // Add the instance and message data type and dummy state
+                                    states.add(new DataType(labelState, null, DataType.KIND_TYPE, true));
+                                    instances.add(new TypeClassInstance("send" + labelState, "Send", new String[] {to, labelState, next, type}));
+                                    addDatatype(datatypes, action, foreignImports);
                                 }
 
-                                // All messages must be to the same role
+                                // All messages must be to the same role, so we can pick the first one
                                 EAction action = s.getAllActions().get(0);
-                                String toR = getRoleDataTypeName(action.obj);
-                                sb.append("instance select" + getStateTypeName(s) + " :: Select " + toR + " " +  getStateTypeName(s) + " ");
+                                String to = action.obj.toString();
+
                                 String end = "Nil";
-                                for (Pair<String, String> option : options) {
-                                    sb.append("(Cons \"" + option.left + "\" " + option.right + " ");
+                                StringBuilder labels = new StringBuilder();
+                                for (Pair<String, String> option : choices) {
+                                    labels.append("(Cons \"" + option.left + "\" " + option.right + " ");
                                     end += ")";
                                 }
-                                sb.append(end + "\n");
+                                labels.append(end);
+
+                                instances.add(new TypeClassInstance("select" + curr, "Select", new String[] {to, curr, labels.toString()}));
                             }
                         }
         					break;
         				case UNARY_INPUT: {
-        				        EState from = s.getAllSuccessors().get(0);
+                                String next = getStateTypeName(s.getAllSuccessors().get(0));
                                 EAction action = s.getAllActions().get(0);
-                                addDatatype(datatypes, action);
-        				        String type = getMessageDataTypeName(action.mid);
-                                String fromR = getRoleDataTypeName(action.obj);
-                                sb.append("instance receive" + getStateTypeName(s) + " :: Receive " + fromR + " " +  getStateTypeName(s) + " " + getStateTypeName(from) + " " + type + "\n");
+        				        String type = action.mid.toString();
+                                String from = action.obj.toString();
+
+                                // Add the instance and message data type
+                                instances.add(new TypeClassInstance("receive" + curr, "Receive", new String[] {from, curr, next, type}));
+                                addDatatype(datatypes, action, foreignImports);
         				}
         					break;
         				case POLY_INPUT: {
-                                Set<Pair<String, String>> options = new HashSet<>();
+                                Set<Pair<String, String>> choices = new HashSet<>();
                                 for (int i = 0; i < s.getAllActions().size(); i++) {
-                                    // If there are multiple output actions, we should treat it as a branch and create some dummy states
-                                    // where we send the label
                                     EAction action = s.getAllActions().get(i);
-                                    addDatatype(datatypes, action);
-                                    EState to = s.getAllSuccessors().get(i);
+                                    String next = getStateTypeName(s.getAllSuccessors().get(i));
                                     String labelState = getStateTypeName(s) + action.mid;
-                                    String label = getLabelFromMessage(action.mid);
-            				        String type = getMessageDataTypeName(action.mid);
-                                    String fromR = getRoleDataTypeName(action.obj);
-                                    sb.append("foreign import data " + labelState +  " :: Type\n");
-                                    sb.append("instance receive" + labelState + " :: Receive " + fromR + " " +  labelState + " " + getStateTypeName(to) + " " + type + "\n");
+                                    String label = action.mid.toString().toLowerCase();
+            				        String type = action.mid.toString();
+                                    String to = action.obj.toString();
+                                    choices.add(new Pair(label, labelState));
 
-                                    options.add(new Pair(label,labelState));
+                                    // Add the instance and message data type and dummy state
+                                    states.add(new DataType(labelState, null, DataType.KIND_TYPE, true));
+                                    instances.add(new TypeClassInstance("receive" + labelState, "Receive", new String[] {to, labelState, next, type}));
+                                    addDatatype(datatypes, action, foreignImports);
                                 }
 
-                                // All messages must be to the same role
+                                // All messages must be to the same role, so we can pick the first one
                                 EAction action = s.getAllActions().get(0);
-                                String atR = getRoleDataTypeName(role);
-                                sb.append("instance branch" + getStateTypeName(s) + " :: Branch " + atR + " " +  getStateTypeName(s) + " ");
+
                                 String end = "Nil";
-                                for (Pair<String, String> option : options) {
-                                    sb.append("(Cons \"" + option.left + "\" " + option.right + " ");
+                                StringBuilder labels = new StringBuilder();
+                                for (Pair<String, String> option : choices) {
+                                    labels.append("(Cons \"" + option.left + "\" " + option.right + " ");
                                     end += ")";
                                 }
-                                sb.append(end + "\n");
+                                labels.append(end);
+
+                                instances.add(new TypeClassInstance("branch" + curr, "Branch", new String[] {role.name, curr, labels.toString()}));
                         }
         					break;
         				case TERMINAL:
+        				    System.out.println("Terminal");
         					break;
         				case ACCEPT:
                             throw new ScribbleException(null, "Unsupported action " + s.getStateKind());
@@ -236,40 +222,102 @@ public class PSEndpointApiGenerator
                 level = nextlevel;
             }
 
+            efsms.put(role, new Pair<>(states, instances));
         }
 
-        for (MessageId<?> mid : datatypes.keySet()) {
-            String name = getMessageDataTypeName(mid);
-            sb.append("data " + name + " = " + name);
-            for (PayloadElemType<? extends PayloadTypeKind> type : datatypes.get(mid).elems) {
-                sb.append(" " + type);
+//        for (MessageId<?> mid : datatypes.keySet()) {
+//            String name = getMessageDataTypeName(mid);
+//            sb.append("data " + name + " = " + name);
+//            for (PayloadElemType<? extends PayloadTypeKind> type : datatypes.get(mid).elems) {
+//                sb.append(" " + type);
+//            }
+//            sb.append("-- TODO: Derive JSON enc/dec\n");
+//        }
+
+//       System.out.println(mids);
+//       for (MessageId<?> mid : mids) {
+//           String name = getMessageDataTypeName(mid);
+//           sb.append("data " + name + " = " + name + " -- TODO: Add arguments + derive JSON enc/dec\n");
+//       }
+
+
+//        	        List<ForeignType> arguments = new ArrayList<>();
+//            for (PayloadElemType<? extends PayloadTypeKind> elem : action.payload.elems) {
+//                arguments.add(foreignImports.get(elem.toString()));
+//            }
+//
+//            datatypes.put(action.mid.toString(), new DataType(action.mid.toString(), arguments, DataType.KIND_TYPE, false));
+
+
+        // Perform the code generation
+        List<String> sections = new ArrayList<>();
+		sections.add(moduleDeclaration(moduleName, protocolName));
+        sections.add(staticImports());
+
+        // Foreign imports
+        sections.add(ForeignType.generateImports(new HashSet<>(foreignImports.values())));
+
+        // Message data types
+        StringBuilder dt = new StringBuilder();
+        for (String type : datatypes.keySet()) {
+   	        List<ForeignType> arguments = new ArrayList<>();
+            for (PayloadElemType<? extends PayloadTypeKind> elem : datatypes.get(type).elems) {
+                arguments.add(foreignImports.get(elem.toString()));
             }
-            sb.append("-- TODO: Derive JSON enc/dec\n");
+            dt.append(new DataType(type, arguments, DataType.KIND_TYPE, false).generateDataType());
+        }
+        sections.add(dt.toString());
+
+        // EFSMs
+        for (DataType role : efsms.keySet()) {
+            sections.add(role.generateDataType());
+
+            StringBuilder states = new StringBuilder();
+            for (DataType state : efsms.get(role).left) {
+                states.append(state.generateDataType());
+            }
+            sections.add(states.toString());
+
+            StringBuilder instances = new StringBuilder();
+            for (TypeClassInstance instance : efsms.get(role).right) {
+                instances.append(instance.generateInstance());
+            }
+            sections.add(instances.toString());
         }
 
-       System.out.println(mids);
-       for (MessageId<?> mid : mids) {
-           String name = getMessageDataTypeName(mid);
-           sb.append("data " + name + " = " + name + " -- TODO: Add arguments + derive JSON enc/dec\n");
-       }
+        // Add newlines between sections
+        StringBuilder module = new StringBuilder();
+        for (String section : sections) {
+            module.append(section);
+            module.append("\n");
+        }
 
-		Map<String, String> map = new HashMap<String, String>();
-		map.put(makePath(moduleName, protocolName), sb.toString());
+        Map<String, String> map = new HashMap<String, String>();
+		map.put(makePath(moduleName, protocolName), module.toString());
 
 		return map;
 	}
 
-	private void addDatatype(Map<MessageId<?>, Payload> datatypes, EAction action) throws ScribbleException {
-	    if (datatypes.containsKey(action.mid)) {
-	        System.out.println(action.mid + " already there");
-	        System.out.println(datatypes.keySet().toString());
-	        System.out.println(datatypes.get(action.mid) + " - " + action.payload);
-	        if (!datatypes.get(action.mid).equals(action.payload)) {
-                System.out.println("and different!");
-                throw new ScribbleException(null, "Messages with the same name `" + action.mid + "` must have the same payload");
+    private static String moduleDeclaration(String moduleName, String protocolName) {
+        return "module Scribble.Protocol." + moduleName + "." + protocolName + " where\n";
+    }
+
+    private static String staticImports() {
+        StringBuilder sb = new StringBuilder();
+		sb.append("import Scribble.FSM (class Branch, class Initial, class Terminal, class Receive, class Select, class Send, kind Role)\n");
+		sb.append("import Type.Row (Cons, Nil)\n");
+		sb.append("import Data.Void (Void)\n");
+        return sb.toString();
+    }
+
+	private void addDatatype(Map<String, Payload> datatypes, EAction action, Map<String, ForeignType> foreignImports) throws RuntimeException {
+	    String datatype = action.mid.toString();
+	    if (datatypes.containsKey(datatype)) {
+	        if (!datatypes.get(datatype).equals(action.payload)) {
+                throw new RuntimeException("Messages with the same name `" + action.mid + "` must have the same payload");
             }
         } else {
-	        datatypes.put(action.mid, action.payload);
+            datatypes.put(datatype, action.payload);
         }
     }
 
@@ -302,33 +350,4 @@ public class PSEndpointApiGenerator
 	    return "S" + s;
     }
 	
-//	// FIXME: refactor an EndpointApiGenerator -- ?
-//	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribbleException
-//	{
-//		/*JobContext jc = this.job.getContext();
-//		if (jc.getEndpointGraph(fullname, self) == null)
-//		{
-//			buildGraph(fullname, self);
-//		}*/
-//		job.debugPrintln("\n[Java API gen] Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
-//		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this.job, fullname, self);
-//		IOInterfacesGenerator iogen = null;
-//		try
-//		{
-//			iogen = new IOInterfacesGenerator(apigen, subtypes);
-//		}
-//		catch (RuntimeScribbleException e)  // FIXME: use IOInterfacesGenerator.skipIOInterfacesGeneration
-//		{
-//			//System.err.println("[Warning] Skipping I/O Interface generation for protocol featuring: " + fullname);
-//			this.job.warningPrintln("Skipping I/O Interface generation for: " + fullname + "\n  Cause: " + e.getMessage());
-//		}
-//		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)
-//		Map<String, String> api = new HashMap<>(); // filepath -> class source  // Store results?
-//		api.putAll(apigen.generateApi());
-//		if (iogen != null)
-//		{
-//			api.putAll(iogen.generateApi());
-//		}
-//		return api;
-//	}
 }

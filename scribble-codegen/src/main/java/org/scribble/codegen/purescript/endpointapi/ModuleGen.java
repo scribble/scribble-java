@@ -1,5 +1,8 @@
 package org.scribble.codegen.purescript.endpointapi;
 
+import org.scribble.util.Pair;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -7,11 +10,13 @@ public class ModuleGen {
     public final String moduleName;
     public final String protocolName;
     public final Set<ForeignType> foreignTypes;
-//    public final Map<String, Map<String,  Transition>>
-    public ModuleGen(String moduleName, String protocolName, Set<ForeignType> foreignTypes) {
+    private Map<DataType, Pair<List<String>, List<DataType>>> efsms;
+
+    public ModuleGen(String moduleName, String protocolName, Set<ForeignType> foreignTypes, Map<DataType, Pair<List<String>, List<DataType>>> efsms) {
         this.moduleName = moduleName;
         this.protocolName = protocolName;
         this.foreignTypes = foreignTypes;
+        this.efsms = efsms;
     }
 
     private String moduleDeclaration() {
@@ -34,7 +39,15 @@ public class ModuleGen {
         StringBuilder sb = new StringBuilder();
         sb.append(moduleDeclaration());
         sb.append(ForeignType.generateImports(foreignTypes));
-
-        return "";
+        for (DataType role : efsms.keySet()) {
+            sb.append(role.generateDataType());
+            for (DataType state : efsms.get(role).right) {
+                sb.append(state.generateDataType());
+            }
+            for (String transition : efsms.get(role).left) {
+                sb.append(transition);
+            }
+        }
+        return sb.toString();
     }
 }

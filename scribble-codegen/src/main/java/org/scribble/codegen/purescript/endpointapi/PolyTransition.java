@@ -9,8 +9,8 @@ import java.util.Set;
 public class PolyTransition {
 
     private final String state;
-    private final String thisRole;
-    private final String thatRole;
+    private final DataType thisRole;
+    private final DataType thatRole;
     private final Transition kind;
     private final Map<String, Pair<String, DataType>> actions;
 
@@ -25,7 +25,7 @@ public class PolyTransition {
         return null;
     }
 
-	public PolyTransition(String state, String thisRole, String thatRole, Transition kind, Map<String, Pair<String, DataType>> actions) {
+	public PolyTransition(String state, DataType thisRole, DataType thatRole, Transition kind, Map<String, Pair<String, DataType>> actions) {
         this.state = state;
         this.thisRole = thisRole;
         this.thatRole = thatRole;
@@ -38,7 +38,7 @@ public class PolyTransition {
 
         t.append("instance " + toTypeClass(kind).toLowerCase() + state + " :: ");
         t.append(toTypeClass(kind) + " ");
-        String role = kind == Transition.BRANCH ? thisRole : thatRole;
+        String role = kind == Transition.BRANCH ? thisRole.name : thatRole.name;
         t.append(role + " " + state + " ");
 
         // The transitions from the intermediate states
@@ -60,7 +60,7 @@ public class PolyTransition {
             ts.append(state + " :: ");
             if (kind == Transition.BRANCH) t.append("Receive");
             else if (kind == Transition.SELECT) t.append("Send");
-            ts.append(" " + thatRole + " " + state + " " + action.left + " " + action.right.name + "\n");
+            ts.append(" " + thatRole.name + " " + state + " " + action.left + " " + action.right.name + "\n");
         }
         t.append(end + "\n");
         t.append(ts.toString());
