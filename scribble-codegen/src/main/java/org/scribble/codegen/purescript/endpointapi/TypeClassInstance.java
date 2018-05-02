@@ -15,7 +15,7 @@ public class TypeClassInstance {
 
     public String generateInstance() {
         StringBuilder sb = new StringBuilder();
-        sb.append("class " + instance + " :: " + typeclass);
+        sb.append("instance " + instance + " :: " + typeclass);
         for (String parameter : parameters) {
             sb.append(" " + parameter);
         }

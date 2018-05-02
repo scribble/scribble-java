@@ -57,7 +57,7 @@ public class DataType {
             for (ForeignType type : params) {
                 sb.append(" " + type.name);
             }
-            sb.append("-- TODO: Derive JSON enc/dec\n");
+            sb.append(" -- TODO: Derive JSON enc/dec\n");
             return sb.toString();
         }
     }

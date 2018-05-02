@@ -397,14 +397,12 @@ public class CommandLine
 
 	private void outputEndpointApiPureScript(Job job) throws ScribbleException, CommandLineException
 	{
-		System.out.println("PureScript code generation:");
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.API_GEN_PS);
 		PSEndpointApiGenerator psgen = new PSEndpointApiGenerator(job);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			System.out.println("[JONATHAN] fullname: " + fullname);
 			Map<String, String> classes = psgen.generateApi(fullname);
 			outputClasses(classes);
 		}

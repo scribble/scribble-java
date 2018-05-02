@@ -15,13 +15,9 @@ public class ForeignType {
         this.source = source;
     }
 
-    public String generateImport() {
-        return "import " + source + " (" + name + ")\n";
-    }
-
     // Group by package source
     public static String generateImports(Set<ForeignType> types) {
-        System.out.println(types);
+        StringBuilder is = new StringBuilder();
         HashMap<String, Set<String>> imports = new HashMap();
         for (ForeignType type : types) {
             if (imports.containsKey(type.source)) {
@@ -33,12 +29,16 @@ public class ForeignType {
             }
         }
         for (String source : imports.keySet()) {
-            String i = "import " + source + " (";
-            for (String s : imports.get(source)) {
-                i += s + ", ";
+            is.append("import " + source + " (");
+            List<String> ts = new ArrayList<>(imports.get(source));
+            is.append(ts.get(0));
+            ts.remove(0);
+            for (String type : ts) {
+                is.append(", " + type);
             }
+            is.append(")\n");
         }
-        return ")\n";
+        return is.toString();
     }
 
     @Override

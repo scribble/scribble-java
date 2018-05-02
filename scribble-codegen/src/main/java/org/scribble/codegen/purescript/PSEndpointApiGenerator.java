@@ -18,15 +18,9 @@ import java.util.*;
 import org.scribble.ast.Module;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
-
-// import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
-// import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
-// import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
 import org.scribble.codegen.purescript.endpointapi.DataType;
 import org.scribble.codegen.purescript.endpointapi.ForeignType;
-import org.scribble.codegen.purescript.endpointapi.ModuleGen;
 import org.scribble.codegen.purescript.endpointapi.TypeClassInstance;
-import org.scribble.del.ModuleDel;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
@@ -36,13 +30,9 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.Payload;
 import org.scribble.type.kind.PayloadTypeKind;
 import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.MessageId;
 import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 import org.scribble.util.Pair;
-import org.scribble.visit.util.MessageIdCollector;
-
-import javax.xml.crypto.Data;
 
 public class PSEndpointApiGenerator
 {
@@ -109,7 +99,6 @@ public class PSEndpointApiGenerator
                 for (EState s : level) {
                     // Don't generate more than once
                     if (seen.contains(s.toString())) {
-                        System.out.println(s + "foo");
                         continue;
                     }
                     seen.add(s.toString());
@@ -208,7 +197,6 @@ public class PSEndpointApiGenerator
                         }
         					break;
         				case TERMINAL:
-        				    System.out.println("Terminal");
         					break;
         				case ACCEPT:
                             throw new ScribbleException(null, "Unsupported action " + s.getStateKind());
@@ -224,30 +212,6 @@ public class PSEndpointApiGenerator
 
             efsms.put(role, new Pair<>(states, instances));
         }
-
-//        for (MessageId<?> mid : datatypes.keySet()) {
-//            String name = getMessageDataTypeName(mid);
-//            sb.append("data " + name + " = " + name);
-//            for (PayloadElemType<? extends PayloadTypeKind> type : datatypes.get(mid).elems) {
-//                sb.append(" " + type);
-//            }
-//            sb.append("-- TODO: Derive JSON enc/dec\n");
-//        }
-
-//       System.out.println(mids);
-//       for (MessageId<?> mid : mids) {
-//           String name = getMessageDataTypeName(mid);
-//           sb.append("data " + name + " = " + name + " -- TODO: Add arguments + derive JSON enc/dec\n");
-//       }
-
-
-//        	        List<ForeignType> arguments = new ArrayList<>();
-//            for (PayloadElemType<? extends PayloadTypeKind> elem : action.payload.elems) {
-//                arguments.add(foreignImports.get(elem.toString()));
-//            }
-//
-//            datatypes.put(action.mid.toString(), new DataType(action.mid.toString(), arguments, DataType.KIND_TYPE, false));
-
 
         // Perform the code generation
         List<String> sections = new ArrayList<>();
@@ -321,28 +285,9 @@ public class PSEndpointApiGenerator
         }
     }
 
-    private String getLabelFromMessage(MessageId<?> mid) {
-        String s = mid.toString().toLowerCase();
-        return (s.isEmpty() || s.charAt(0) < 97 || s.charAt(0) > 122) ? "l" + s : s;  // Hacky? (Yes)
-    }
-
     private static String makePath(String module, String protocol)
 	{
 		return "Scribble/Protocol/" + module.replace('.', '/') + "/" + protocol + ".purs";
-	}
-
-	// Returns the data type name for a message - if it is not a capital letter it will be prefixed by 'M'
-	public static String getMessageDataTypeName(MessageId<?> mid)
-	{
-		String s = mid.toString();
-		return (s.isEmpty() || s.charAt(0) < 65 || s.charAt(0) > 90) ? "M" + s : s;  // Hacky? (Yes)
-	}
-
-	// Returns the data type name for a role - if it is not a capital letter it will be prefixed by 'R'
-	public static String getRoleDataTypeName(Role r)
-	{
-		String s = r.toString();
-		return (s.isEmpty() || s.charAt(0) < 65 || s.charAt(0) > 90) ? "R" + s : s;  // Hacky? (Yes)
 	}
 
 	public static String getStateTypeName(EState s)
