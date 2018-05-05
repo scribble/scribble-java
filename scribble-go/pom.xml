@@ -70,6 +70,7 @@
 						<exclude>**/script.js</exclude>
 						<exclude>**/package-list</exclude>
 						<exclude>**/*.txt</exclude>
+						<exclude>**/*.go</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

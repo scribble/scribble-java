@@ -4,7 +4,7 @@ package org.scribble.ext.go.type.index;
 // Currently only used for parsing foreach param decls -- occurrences of vars inside foreach not disambiguated between endpoint-vars and foreach-vars
 // (Currently no actual RPIndexExprNode ast -- so no name disambiguation)
 
-// FIXME: deprecate? -- causes problems with checking equality between var occurrences, etc
+// FIXME: @Deprecated -- causes problems with checking equality between var occurrences, etc. -- or use same equals/hash for both?...
 public class RPForeachVar extends RPIndexVar 
 {
 	protected RPForeachVar(String name)
