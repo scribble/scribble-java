@@ -96,7 +96,7 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		else 
 		{
 			RPCoreLType body = this.body.project(af, subj);
-			return af.RPCoreLForeach(subj, this.param, this.start, this.end, body, seq);
+			return af.RPCoreLForeach(this.role, this.param, this.start, this.end, body, seq);
 			//throw new RuntimeException("[rp-core] TODO: " + this + " project onto " + subj);
 		}
 	}
