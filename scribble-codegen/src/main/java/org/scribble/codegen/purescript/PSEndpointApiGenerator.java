@@ -51,6 +51,18 @@ public class PSEndpointApiGenerator
 		String moduleName = fullname.getPrefix().toString();
         String protocolName = fullname.getSimpleName().toString();
 
+        // Generate protocol type-level information
+        DataType protocolType = new DataType(protocolName, null, "Protocol", true);
+        TypeClassInstance protocolNameInst = new TypeClassInstance("protocolName" + protocolType.name, "RoleName", new String[] {protocolType.name, ("\"" + protocolType.name + "\"")});
+
+        StringBuilder roleNames = new StringBuilder("(");
+        // For each role make a projection, then traverse the graph getting the states + transitions
+        for (Role r : gpd.header.roledecls.getRoles()) {
+            roleNames.append("\"" +  r.toString() + "\" ::: ");
+        }
+        roleNames.append("SNil)");
+        TypeClassInstance protocolRoleNames = new TypeClassInstance("protocolRoleNames" + protocolType.name, "ProtocolRoleNames", new String[] {protocolType.name, roleNames.toString()});
+
         // Message actions and their corresponding datatype
         Map<String, Payload> datatypes = new HashMap<>();
 
@@ -230,9 +242,19 @@ public class PSEndpointApiGenerator
         }
         sections.add(dt.toString());
 
+
+        // Protocol
+        sections.add(protocolType.generateDataType());
+        sections.add(protocolNameInst.generateInstance());
+        sections.add(protocolRoleNames.generateInstance());
+
+        // ProtocolRoleNames
+
         // EFSMs
         for (DataType role : efsms.keySet()) {
             sections.add(role.generateDataType());
+            TypeClassInstance roleName = new TypeClassInstance("roleName" + role.name, "RoleName", new String[] {role.name, ("\"" + role.name + "\"")});
+            sections.add(roleName.generateInstance());
 
             StringBuilder states = new StringBuilder();
             for (DataType state : efsms.get(role).left) {
@@ -266,7 +288,8 @@ public class PSEndpointApiGenerator
 
     private static String staticImports() {
         StringBuilder sb = new StringBuilder();
-		sb.append("import Scribble.FSM (class Branch, class Initial, class Terminal, class Receive, class Select, class Send, kind Role)\n");
+		sb.append("import Scribble.FSM\n");
+        sb.append("import Scribble.Type.SList\n");
 		sb.append("import Type.Row (Cons, Nil)\n");
 		sb.append("import Data.Void (Void)\n");
         return sb.toString();
