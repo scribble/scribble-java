@@ -56,6 +56,7 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 					  getOpTypeName(api, s, a.mid)
 					: rpapi.getExtName((MessageSigName) a.mid);
 			res += "\ntype " + getOpTypeName(api, s, a.mid) + " struct {\n"
+						+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
 						+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + RPCoreSTApiGenerator.getEndpointKindTypeName(null, rpapi.variant) + "\n" 
 						+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"
 						+ (a.mid.isMessageSigName() ? "msg *" + extName + "\n" : "")

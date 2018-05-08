@@ -246,7 +246,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				// Duplicated from RPCoreSTSessionApiBuilder  // FIXME: factor out
 				+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
 						? "f(newBranch" + initName + "(ini))\n"
-						: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")," + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+						: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), " + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 
 				+ "}\n"
 				+ "return " + makeCreateSuccStateChan(s, succName) + "\n"

@@ -52,6 +52,8 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
+		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
+		
 		List<EAction> as = curr.getAllActions();
 		if (!as.stream().allMatch(x -> x.mid.isOp()) && !as.stream().allMatch(x -> x.mid.isMessageSigName()))
 		{
@@ -78,7 +80,9 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(" + "&lab" + ")"*/
 					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", 1, &lab" + ")"
 							+ "; err != nil {\n"
-					+ "log.Fatal(err)\n"
+					//+ "log.Fatal(err)\n"
+					//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+					+ "panic(err)\n"  // FIXME: which case object to return for error?  make "default" error case object?
 					+ "}\n";
 
 			// Switch and return Cases value
