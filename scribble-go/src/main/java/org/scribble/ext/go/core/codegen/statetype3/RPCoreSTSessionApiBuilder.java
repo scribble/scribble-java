@@ -9,8 +9,12 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.model.MState;
+import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
@@ -239,11 +243,13 @@ public class RPCoreSTSessionApiBuilder
 				}
 						
 				// Top-level Run method  // FIXME: add session completion check
-				/*EGraph g = this.apigen.variants.get(variant.getName()).get(variant);
-				String endName = g.init.isTerminal() ? "Init" : "End";  // FIXME: factor out -- cf. RPCoreSTStateChanApiBuilder#makeSTStateName(*/
+				EGraph g = this.apigen.variants.get(variant.getName()).get(variant);
+				//String endName = g.init.isTerminal() ? "Init" : "End";  // FIXME: factor out -- cf. RPCoreSTStateChanApiBuilder#makeSTStateName(*/
+				EState term = MState.getTerminal(g.init);
+				String endName = (g.init.id == term.id ? "Init" : "End") + ((term != null && ((RPCoreEState) term).hasNested()) ? "_" + term.id : "");
 				String init = "Init_" + this.apigen.variants.get(variant.getName()).get(variant).init;
 				epkindFile += "\n"
-						+ "func (ini *" + epkindTypeName + ") Run(f func(*" + init + ") End) *End {\n"  // f specifies non-pointer End
+						+ "func (ini *" + epkindTypeName + ") Run(f func(*" + init + ") " + endName + ") *" + endName + " {\n"  // f specifies non-pointer End
 						+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".Close()\n"
 						+ "ini.Use()\n"  // FIXME: int-counter linearity
 						+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"

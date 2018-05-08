@@ -46,7 +46,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	private final Set<DataTypeDecl> dtds; // FIXME: use "main.getDataTypeDecl((DataType) pt);" instead -- cf. OutputSocketGenerator#addSendOpParams
 	private final Set<MessageSigNameDecl> msnds;
 	
-	private Map<Integer, String> imedNames = new HashMap<>();  // Cf. STStateChanApiBuilder.names
+	private Map<Integer, String> imedNames = new HashMap<>();  // "Original" state names -- FIXME: deprecate  // Cf. STStateChanApiBuilder.names
 	
 	private final Set<RPForeachVar> fvars = new HashSet<>();  // HACK FIXME: should make explicit RPIndexExprNode ast and name disamb endpoint vs. foreach vars
 	private final List<EGraph> todo = new LinkedList<>();  // HACK FIXME: to preserve "order" of state building -- cf. fvars hack for var scope
@@ -55,11 +55,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	// Pre: variant.getName().equals(this.role)
 	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph)
 	{
-		this(apigen, variant, graph, Collections.emptySet());
+		this(apigen, variant, graph, Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet());
 	}
 
-	private RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph,
-			Set<RPForeachVar> fvars)  // HACK FIXME
+	private RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph, 
+			Map<Integer, String> names, Map<Integer, String> imedNames, Set<RPForeachVar> fvars)  // HACK FIXME -- make a "nested builder"
 	{
 		super(apigen.job, apigen.proto, apigen.self, graph,
 				new RPCoreSTOutputStateBuilder(new RPCoreSTSplitActionBuilder(), new RPCoreSTSendActionBuilder()),
@@ -84,6 +84,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		this.msnds = mod.getNonProtocolDecls().stream()
 				.filter(d -> (d instanceof MessageSigNameDecl)).map(d -> ((MessageSigNameDecl) d)).collect(Collectors.toSet());
 		
+		this.names.putAll(names);
+		this.imedNames.putAll(imedNames);
 		this.fvars.addAll(fvars);
 	}
 	
@@ -136,8 +138,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					String name = getStateChanName(s);  // HACK FIXME: to generate names even if state not generated here
 					if (s.id != this.graph.init.id)  // "End" not built for for single (nested) state FSMs (will be "Init")
 					{
-						res.put(getFilePath(name), this.eb.build(this, s));
-						hasTerm = false;
+						if (!((RPCoreEState) s).hasNested())
+						{
+							res.put(getFilePath(name), this.eb.build(this, s));
+							hasTerm = true;
+						}
 					}
 					break;
 				default: throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
@@ -145,12 +150,17 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			RPCoreEState s1 = (RPCoreEState) s;
 			if (s1.hasNested())
 			{
-				res.putAll(buildForeachIntermediaryState(s1));
+				Map<String, String> tmp = buildForeachIntermediaryState(s1);
+				res.putAll(tmp);
+				if (s.isTerminal())
+				{
+					hasTerm = true;
+				}
 			}
 		}
-		if (!hasTerm)
+		if (!hasTerm) //&& res.keySet().stream().noneMatch(k -> k.endsWith("End.go")))  // FIXME -- Need to distinguish "End" if nested -- only use "End" for non-nested?
 		{
-			// Always make and "End" (including non-terminating FSMs) -- doesn't matter it's not the actual end state
+			// Always make an "End" (including non-terminating FSMs) -- doesn't matter it's not the actual end state
 			//RPCoreEState end = ((RPCoreEModelFactory) this.job.ef).newEState(Collections.emptySet());
 
 			// FIXME: factor out with getStateChanPremable
@@ -168,7 +178,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		// FIXME HACK
 		for (EGraph g : this.todo)
 		{
-			res.putAll(new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, g, this.fvars).build());
+			Map<String, String> tmp = new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, g, this.names, this.imedNames, this.fvars).build();
+			res.putAll(tmp);
 		}
 		
 		return res;
@@ -317,7 +328,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					"func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 						+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
 						+ ab.buildArgs(this, a)
-						+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
+						+ ") *" //+ ab.getReturnType(this, curr, succ) 
+								+ getSuccStateChanName(succ)
+						+ " {\n"
 				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
 				+ ab.buildBody(this, curr, a, succ) + "\n"
@@ -335,11 +348,18 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return res;
 	}
 
+	protected String getSuccStateChanName(EState succ)
+	{
+		RPCoreEState s = (RPCoreEState) succ;
+		String name = s.hasNested()
+				? (s.isTerminal() ? getStateChanName(s) : getIntermediaryStateChanName(s))  // HACK FIXME -- first call to getStateChanName (intermed name not made yet)
+				: getStateChanName(s);  //ab.getReturnType(this, curr, succ)
+		return name;
+	}
+
 	protected String getSuccStateChan(STActionBuilder ab, EState curr, EState succ, String sEp)
 	{
-		String name = ((RPCoreEState) succ).hasNested()
-				? getIntermediaryStateChanName(succ)
-				: getStateChanName(succ);  //ab.getReturnType(this, curr, succ)
+		String name = getSuccStateChanName(succ);
 		return getSuccStateChan(succ, name, sEp);
 	}
 		
@@ -378,11 +398,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		String name = this.imedNames.get(s.id);
 		if (name == null)
 		{
-			RPCoreEState s1 = (RPCoreEState) s;
-			name = makeSTStateName(s1);
-			if (s1.hasNested())
+			RPCoreEState rps = (RPCoreEState) s;
+			name = makeSTStateName(rps);
+			this.imedNames.put(rps.id, name);  // The "original" name, now used for foreach -- doing this way round for convenience of original state channel naming
+			if (rps.hasNested() && !rps.isTerminal())
 			{
-				this.imedNames.put(s1.id, name);  // The "original" name, now used for foreach -- doing this way round for convenience of original state channel naming
 				name = name + "_";  // FIXME
 			}
 			this.names.put(s.id, name);
@@ -394,7 +414,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		if (!this.names.containsKey(s.id))
 		{
-			throw new RuntimeException("Shouldn't get in here: " + s.id);
+			throw new RuntimeException("Shouldn't get in here: " + s.id); 
+			//getStateChanName(s);  // HACK FIXME
 		}
 		return this.imedNames.get(s.id);
 	}
@@ -402,20 +423,23 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	@Override
 	protected String makeSTStateName(EState s)
 	{
-		return s.id == this.graph.init.id  // Includes single (nested) state endpoint kinds (i.e, Init, not End)
+		RPCoreEState rps = (RPCoreEState) s;
+		String name = s.id == this.graph.init.id  // Includes single (nested) state endpoint kinds (i.e, Init, not End)
 				? "Init_" + s.id  // FIXME: factor out (makeInitStateName)
 				: (s.isTerminal()
-						? makeEndStateName(this.apigen.proto.getSimpleName(), this.variant)
+						? //makeEndStateName(this.apigen.proto.getSimpleName(), this.variant)
+								"End" + (rps.hasNested() ? "_" + s.id : "")
 						: //this.apigen.proto.getSimpleName() + "_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(this.actual) + "_"
 						  "State"
 								+ this.counter++);
+		return name;
 	}
 	
-	public static String makeEndStateName(GProtocolName simpname, RPRoleVariant r)
+	/*public static String makeEndStateName(GProtocolName simpname, RPRoleVariant r)
 	{
 		return //simpname + "_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(r) + "_" + 
 				RPCoreSTApiGenConstants.GO_SCHAN_END_TYPE;
-	}
+	}*/
 	
 	// Not actual variants -- rather, indexed roles in EFSM actions -- cf. ParamCoreSTEndpointApiGenerator.getGeneratedRoleVariantName
 	public static String getGeneratedIndexedRoleName(RPIndexedRole r) 
