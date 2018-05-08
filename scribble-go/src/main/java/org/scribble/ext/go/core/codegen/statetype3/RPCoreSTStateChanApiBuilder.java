@@ -55,11 +55,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	// Pre: variant.getName().equals(this.role)
 	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph)
 	{
-		this(apigen, variant, graph, Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet());
+		this(apigen, variant, graph, 2, Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet());
 	}
 
 	private RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph, 
-			Map<Integer, String> names, Map<Integer, String> imedNames, Set<RPForeachVar> fvars)  // HACK FIXME -- make a "nested builder"
+			int counter, Map<Integer, String> names, Map<Integer, String> imedNames, Set<RPForeachVar> fvars)  
+					// HACK FIXME -- make a "nested builder" -- problem is final this.graph 
+					// FIXME: probably easier to to make a "nested" constructor
 	{
 		super(apigen.job, apigen.proto, apigen.self, graph,
 				new RPCoreSTOutputStateBuilder(new RPCoreSTSplitActionBuilder(), new RPCoreSTSendActionBuilder()),
@@ -84,6 +86,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		this.msnds = mod.getNonProtocolDecls().stream()
 				.filter(d -> (d instanceof MessageSigNameDecl)).map(d -> ((MessageSigNameDecl) d)).collect(Collectors.toSet());
 		
+		this.counter = counter;
 		this.names.putAll(names);
 		this.imedNames.putAll(imedNames);
 		this.fvars.addAll(fvars);
@@ -178,8 +181,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		// FIXME HACK
 		for (EGraph g : this.todo)
 		{
-			Map<String, String> tmp = new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, g, this.names, this.imedNames, this.fvars).build();
-			res.putAll(tmp);
+			RPCoreSTStateChanApiBuilder nested = new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, g,
+					this.counter, this.names, this.imedNames, this.fvars);
+			res.putAll(nested.build());
 		}
 		
 		return res;
