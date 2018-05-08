@@ -67,6 +67,7 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 								? new RPIndexedRole(ir.getName().toString(), d)
 								: ir
 				).collect(Collectors.toSet());
+		irs.addAll(this.seq.getIndexedRoles());
 		return irs;
 	}
 
