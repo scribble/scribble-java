@@ -52,7 +52,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
-		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
+		//RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
 		
 		List<EAction> as = curr.getAllActions();
 		if (!as.stream().allMatch(x -> x.mid.isOp()) && !as.stream().allMatch(x -> x.mid.isMessageSigName()))
@@ -106,7 +106,8 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 					+ "." //+ RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(" + "&msg" + ")"*/
 					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", 1, &msg" + ")"
 							+ "; err != nil {\n"
-					+ "log.Fatal(err)\n"
+					//+ "log.Fatal(err)\n"
+					+ "panic(err)\n"  // FIXME: which case object to return for error?  make "default" error case object?
 					+ "}\n";
 
 			res += "\n"
