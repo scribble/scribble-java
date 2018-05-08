@@ -234,7 +234,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		
 		feach += "\n"
 				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
-						+ ") Foreach(f func(*" + initName + ") End) *End {\n"
+						+ ") Foreach(f func(*" + initName + ") End) *" + succName + " {\n"
 						+ "for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
 								+ p + " <= " + generateIndexExpr(s.getInterval().end) + "; " + p + " = " + p + " + 1 {\n"
 						//+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
@@ -411,7 +411,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			}
 			this.names.put(s.id, name);
 		}
-		return name;
+		return this.names.get(s.id);
 	}
 
 	public String getIntermediaryStateChanName(EState s)
