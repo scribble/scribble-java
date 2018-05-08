@@ -88,13 +88,14 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					+ " i <= " + rpapi.generateIndexExpr(d.end) + "; i++ {\n";
 
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
-			Function<String, String> f = extName -> 
-					  "var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
+			Function<String, String> makeReceiveExtName = extName -> 
+					  //"var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
+					  "var tmp " + RPCoreSTApiGenConstants.GO_SCRIBMESSAGE_TYPE + "\n"  // var tmp needed for deserialization -- FIXME?
 					//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
 					+ "if err = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
 							+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
-							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
+							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
 			
 					+ "; err != nil {\n"
 					//+ "log.Fatal(err)\n"
@@ -125,12 +126,12 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 								+ "}\n";
 					}
 
-					res += f.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
+					res += makeReceiveExtName.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
 				}
 			}
 			else //if (a.mid.isMessageSigName())
 			{
-				res += f.apply(rpapi.getExtName((MessageSigName) a.mid));
+				res += makeReceiveExtName.apply(rpapi.getExtName((MessageSigName) a.mid));
 			}
 		
 			res += "}\n";

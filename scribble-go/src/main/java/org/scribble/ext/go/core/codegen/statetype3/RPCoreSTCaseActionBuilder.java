@@ -51,7 +51,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 				+ "[\"" +  peer.getName() + "\"]";*/
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder
-		Function<String, String> f = extName -> 
+		Function<String, String> makeCaseReceive = extName -> 
 				  "var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
 				//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK: []  // N.B. *arg0 matches buildArgs
 				+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
@@ -72,7 +72,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 					throw new RuntimeException("[rp-core] [-param-api] TODO: " + a);
 				}
 
-				res += f.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
+				res += makeCaseReceive.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
 			}
 		}
 		else //if (a.mid.isMessageSigName())

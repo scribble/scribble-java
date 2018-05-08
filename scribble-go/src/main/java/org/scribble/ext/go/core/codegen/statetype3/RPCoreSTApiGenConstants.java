@@ -45,6 +45,7 @@ public class RPCoreSTApiGenConstants
 	public static final String GO_PARAMROLE_TYPE = "session2.ParamRole";
 
 	public static final String GO_PROTOCOL_TYPE = "session2.Protocol";
+	public static final String GO_SCRIBMESSAGE_TYPE = "session2.ScribMessage";
 	public static final String GO_FORMATTER_TYPE = "session2.ScribMessageFormatter";
 	public static final String GO_SCRIB_LISTENER_TYPE = "transport2.ScribListener";
 	public static final String GO_SCRIB_BINARY_CHAN_TYPE = "transport2.BinChannel";
