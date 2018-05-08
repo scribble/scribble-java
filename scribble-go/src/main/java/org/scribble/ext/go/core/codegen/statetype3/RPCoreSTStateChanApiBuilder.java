@@ -172,6 +172,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			String end = "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
 					+ "\n"
 					+ "type End struct {\n"
+						+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
 					//+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
 					+ "}\n";
@@ -219,6 +220,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				// State channel type
 		feach += "\n"
 				+ "type " + scTypeName + " struct {\n"
+				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
 				+ "}\n";
@@ -235,6 +237,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		feach += "\n"
 				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
 						+ ") Foreach(f func(*" + initName + ") End) *" + succName + " {\n"
+						+ "var " + RPCoreSTApiGenConstants.GO_IO_METHOD_ERROR + " error\n"
 						+ "for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
 								+ p + " <= " + generateIndexExpr(s.getInterval().end) + "; " + p + " = " + p + " + 1 {\n"
 						//+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
@@ -243,10 +246,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				// Duplicated from RPCoreSTSessionApiBuilder  // FIXME: factor out
 				+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
 						? "f(newBranch" + initName + "(ini))\n"
-						: "f(&" + initName + "{ new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")," + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+						: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")," + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 
 				+ "}\n"
-				+ "return " + getSuccStateChan(s, succName, sEp) + "\n"
+				+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
 				+ "}\n";
 
 		res.put(getFilePath(scTypeName), feach);
@@ -268,10 +271,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		String res =
 				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
 				+ "\n"
-				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
+				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
 
 				// FIXME: error handling via Err field -- fallback should be panic
-				+ "import \"log\"\n";
+				//+ "import \"log\"\n";
 				
 		// Not needed by select-branch or Case objects  // FIXME: refactor back into state-specific builders?
 		if (s.getStateKind() == EStateKind.OUTPUT || s.getStateKind() == EStateKind.UNARY_INPUT
@@ -293,6 +296,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				// State channel type
 		res += "\n"
 				+ "type " + scTypeName + " struct {\n"
+				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
 				+ "}\n";
@@ -335,8 +339,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						+ ") *" //+ ab.getReturnType(this, curr, succ) 
 								+ getSuccStateChanName(succ)
 						+ " {\n"
+				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
+				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
+				+ "}\n"
 				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
+				+ "var " + RPCoreSTApiGenConstants.GO_IO_METHOD_ERROR + " error\n"
 				+ ab.buildBody(this, curr, a, succ) + "\n"
 				+ "}";
 	}
@@ -346,9 +354,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	@Override
 	public String buildActionReturn(STActionBuilder ab, EState curr, EState succ)
 	{
-		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 		String res = "";
-		res += "return " + getSuccStateChan(ab, curr, succ, sEp);
+		res += "return " + //makeCreateSuccStateChan(ab, curr, succ);
+				makeCreateSuccStateChan(succ);
 		return res;
 	}
 
@@ -362,14 +370,16 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return name;
 	}
 
-	protected String getSuccStateChan(STActionBuilder ab, EState curr, EState succ, String sEp)
+	//protected String makeCreateSuccStateChan(STActionBuilder ab, EState curr, EState succ)
+	protected String makeCreateSuccStateChan(EState succ)
 	{
 		String name = getSuccStateChanName(succ);
-		return getSuccStateChan(succ, name, sEp);
+		return makeCreateSuccStateChan(succ, name);
 	}
 		
-	protected String getSuccStateChan(EState succ, String name, String sEp)
+	protected String makeCreateSuccStateChan(EState succ, String name)
 	{
+		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 		if (((GoJob) this.job).selectApi &&
 				getStateKind(succ) == RPCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
@@ -379,7 +389,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		else
 		{
-			String res = "&" + name + "{ " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
+			String res = "&" + name + "{ " + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ": " + RPCoreSTApiGenConstants.GO_IO_METHOD_ERROR
+					+ ", " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
 			if (!succ.isTerminal())  // FIXME: terminal foreach state
 			{
 				res += ", " + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE

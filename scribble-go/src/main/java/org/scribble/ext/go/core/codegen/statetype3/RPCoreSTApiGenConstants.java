@@ -54,10 +54,12 @@ public class RPCoreSTApiGenConstants
 
 	public static final String GO_SCHAN_ENDPOINT       = "Ept";  // ep;
 	public static final String GO_SCHAN_LINEARRESOURCE = "Res";  // state
+	public static final String GO_SCHAN_ERROR = "Err";           // error
 
 	public static final String GO_SCHAN_END_TYPE = "End";
 	
 	public static final String GO_IO_METHOD_RECEIVER = "s";
+	public static final String GO_IO_METHOD_ERROR = "err";
 	
 	public static final String GO_CROSS_SPLIT_FUN_PREFIX = "Split";
 	public static final String GO_CROSS_SEND_FUN_PREFIX = "Send";

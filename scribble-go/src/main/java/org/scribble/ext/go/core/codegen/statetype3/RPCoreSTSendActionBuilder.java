@@ -82,13 +82,14 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 			// Write label
 			if (!a.mid.toString().equals("")) {  // HACK FIXME?
 				res += "op := \"" + a.mid + "\"\n"  // FIXME: API constant?
-							+ "if err := " + sEpWrite /*+ "[i]"
+							+ "if err = " + sEpWrite /*+ "[i]"
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 							+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_STRING
 							+ "(\"" + a.mid + "\"" + ")" */
 							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_ISEND + "(\"" + r.getName() + "\", i, &op)" 
 							+ "; err != nil {\n"
-					+ "log.Fatal(err)\n"  // FIXME
+					//+ "log.Fatal(err)\n"  // FIXME
+					+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 					+ "}\n";
 			}
 		}
@@ -109,16 +110,20 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 				throw new RuntimeException("[rp-core] [param-api] TODO: " + a);
 			}
 			
-			res += "if err := " + sEpWrite /*+ "[i]"
+			/*res += "if err := " + sEpWrite /*+ "[i]"
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 							+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_INT
-							+ "(" + "arg0[j])"  // FIXME: hardcoded arg0*/
+							+ "(" + "arg0[j])"  // FIXME: hardcoded arg0* /
 							+ "." 
 							+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
 							+ "(\"" + r.getName() + "\", i, &arg0[j])"
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
-					+ "}\n";
+					+ "}\n";*/
+			res += "err = " + sEpWrite 
+							+ "." 
+							+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
+							+ "(\"" + r.getName() + "\", i, &arg0[j])\n";
 		}
 
 		res += "}\n";

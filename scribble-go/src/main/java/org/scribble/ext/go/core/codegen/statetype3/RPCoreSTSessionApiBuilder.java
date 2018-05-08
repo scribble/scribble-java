@@ -255,7 +255,7 @@ public class RPCoreSTSessionApiBuilder
 						// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
 						+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
 								? "end := f(newBranch" + init + "(ini))\n"
-								: "end := f(&" + init + "{ new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+								: "end := f(&" + init + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 
 						+ "return &end\n"
 						+ "}";

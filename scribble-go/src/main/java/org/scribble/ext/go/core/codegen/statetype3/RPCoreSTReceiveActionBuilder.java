@@ -83,8 +83,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		else
 		{
 			String start = rpapi.generateIndexExpr(d.start);
-			res += "var err error\n"
-					+ "for i := " + start + ";"
+			res += //"var err error\n"
+					  "for i := " + start + ";"
 					+ " i <= " + rpapi.generateIndexExpr(d.end) + "; i++ {\n";
 
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
@@ -97,7 +97,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
 			
 					+ "; err != nil {\n"
-					+ "log.Fatal(err)\n"
+					//+ "log.Fatal(err)\n"
+					+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 					+ "}\n"
 					//+ "arg0[i-" + start + "] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
 					+ "arg0[i-" + start + "] = tmp.(" + extName + ")\n";  // FIXME: gob pointer decoding seems flattened?  ("*" dropped)
@@ -119,7 +120,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 												+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_STRING + "()"*/
 										+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &lab)" 
 										+ "; err != nil {\n"
-								+ "log.Fatal(err)\n"
+								//+ "log.Fatal(err)\n"
+								+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 								+ "}\n";
 					}
 
