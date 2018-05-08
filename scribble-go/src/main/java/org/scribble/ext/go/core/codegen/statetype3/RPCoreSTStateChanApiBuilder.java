@@ -356,7 +356,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		RPCoreEState s = (RPCoreEState) succ;
 		String name = s.hasNested()
-				? (s.isTerminal() ? getStateChanName(s) : getIntermediaryStateChanName(s))  // HACK FIXME -- first call to getStateChanName (intermed name not made yet)
+				//? (s.isTerminal() ? getStateChanName(s) : getIntermediaryStateChanName(s))  // HACK FIXME -- first call to getStateChanName (intermed name not made yet)
+				? getIntermediaryStateChanName(s)
 				: getStateChanName(s);  //ab.getReturnType(this, curr, succ)
 		return name;
 	}
@@ -418,8 +419,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		if (!this.names.containsKey(s.id))
 		{
-			throw new RuntimeException("Shouldn't get in here: " + s.id); 
-			//getStateChanName(s);  // HACK FIXME
+			//throw new RuntimeException("Shouldn't get in here: " + s.id);   // No: e.g., buildActionReturn, may refer to "ahead" state before that state is built
+			getStateChanName(s);  // HACK FIXME
 		}
 		return this.imedNames.get(s.id);
 	}
