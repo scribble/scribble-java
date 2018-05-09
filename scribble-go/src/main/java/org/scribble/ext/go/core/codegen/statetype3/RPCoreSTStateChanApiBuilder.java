@@ -339,9 +339,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						+ ") *" //+ ab.getReturnType(this, curr, succ) 
 								+ getSuccStateChanName(succ)
 						+ " {\n"
+
+				  // FIXME: currently redundant for case objects (cf. branch action err handling)
 				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
 				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
 				+ "}\n"
+
 				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
 				+ "var " + RPCoreSTApiGenConstants.GO_IO_METHOD_ERROR + " error\n"

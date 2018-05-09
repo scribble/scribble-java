@@ -88,21 +88,6 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					+ " i <= " + rpapi.generateIndexExpr(d.end) + "; i++ {\n";
 
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
-			Function<String, String> makeReceiveExtName = extName -> 
-					  //"var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
-					  "var tmp " + RPCoreSTApiGenConstants.GO_SCRIBMESSAGE_TYPE + "\n"  // var tmp needed for deserialization -- FIXME?
-					//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
-					+ "if err = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
-							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
-							+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
-							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
-			
-					+ "; err != nil {\n"
-					//+ "log.Fatal(err)\n"
-					+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
-					+ "}\n"
-					//+ "arg0[i-" + start + "] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
-					+ "arg0[i-" + start + "] = tmp.(" + extName + ")\n";  // FIXME: gob pointer decoding seems flattened?  ("*" dropped)
 
 			if (a.mid.isOp())
 			{
@@ -126,11 +111,37 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 								+ "}\n";
 					}
 
-					res += makeReceiveExtName.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
+					Function<String, String> makeReceiveType = extName -> 
+								"var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
+							//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
+							+ "if err = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
+									+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
+									+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
+									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
+					
+							+ "; err != nil {\n"
+							//+ "log.Fatal(err)\n"
+							+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+							+ "}\n"
+							//+ "arg0[i-" + start + "] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
+							+ "arg0[i-" + start + "] = tmp.(" + extName + ")\n";  // FIXME: gob pointer decoding seems flattened?  ("*" dropped)
+					res += makeReceiveType.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
 				}
 			}
 			else //if (a.mid.isMessageSigName())
 			{
+				Function<String, String> makeReceiveExtName = extName -> 
+							"var tmp " + RPCoreSTApiGenConstants.GO_SCRIBMESSAGE_TYPE + "\n"  // var tmp needed for deserialization -- FIXME?
+						+ "if err = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
+								+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
+								+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
+				
+						+ "; err != nil {\n"
+						//+ "log.Fatal(err)\n"
+						+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+						+ "}\n"
+						//+ "arg0[i-" + start + "] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
+						+ "arg0[i-" + start + "] = tmp.(" + extName + ")\n";  // FIXME: gob pointer decoding seems flattened?  ("*" dropped)
 				res += makeReceiveExtName.apply(rpapi.getExtName((MessageSigName) a.mid));
 			}
 		

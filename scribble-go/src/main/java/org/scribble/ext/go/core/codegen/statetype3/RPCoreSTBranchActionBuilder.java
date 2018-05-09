@@ -24,6 +24,9 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 				  "func (s *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "(" 
 						+ buildArgs(null, a)
 						+ ") " + getReturnType(api, curr, succ) + " {\n"  // HACK: return type is interface, so no need for *return (unlike other state chans)
+				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
+				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
+				+ "}\n"
 				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
 				+ buildBody(api, curr, a, succ) + "\n"
