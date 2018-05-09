@@ -48,6 +48,7 @@ import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
+import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribUtil;
 
@@ -61,6 +62,7 @@ public class RPCoreCommandLine extends CommandLine
 	protected Map<Role, Map<RPRoleVariant, RPCoreLType>> L0;
 	protected Map<Role, Map<RPRoleVariant, EGraph>> E0;
 	//protected ParamCoreSModel model;
+	protected Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;
 	
 	public RPCoreCommandLine(String... args) throws CommandLineException
 	{
@@ -159,7 +161,7 @@ public class RPCoreCommandLine extends CommandLine
 
 				Map<String, String> goClasses = new ParamCoreSTSessionApiBuilder((GoJob) job, fullname, this.E0).build();*/
 				//Map<ParamActualRole, EGraph> actuals = this.E0.get(role);
-				Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, this.L0, this.E0, impath, role).build();
+				Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, this.L0, this.E0, this.families, impath, role).build();
 				outputClasses(goClasses);
 			}
 		}
@@ -330,18 +332,19 @@ public class RPCoreCommandLine extends CommandLine
 
 		//return gt;
 		
-		getFamilies(job);
+		this.families = new HashSet<>();
+		this.families.addAll(getFamilies(job));
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
 	
 	//..HERE FIXME ActualParam -- ParamRange is now already a Set
 	
-	private Set<Set<RPRoleVariant>> getFamilies(GoJob job)
+	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> getFamilies(GoJob job)
 	{
 		job.debugPrintln("\n[rp-core] Computing families:");
 
-		Set<Set<RPRoleVariant>> fams = new HashSet<>();
+		Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> fams = new HashSet<>();
 
 		Set<RPRoleVariant> all = this.L0.values().stream()
 				.flatMap(m -> m.keySet().stream()).collect(Collectors.toSet());
@@ -375,7 +378,7 @@ public class RPCoreCommandLine extends CommandLine
 			boolean isSat = Z3Wrapper.checkSat(job, this.gpd, smt2);
 			if (isSat)
 			{
-				//variants.get(r).add(new RPRoleVariant(r.toString(), cand, coset));
+				fams.add(new Pair<>(cand, coset));
 			}
 			job.debugPrintln("[rp-core] Checked sat: " + isSat);
 		}

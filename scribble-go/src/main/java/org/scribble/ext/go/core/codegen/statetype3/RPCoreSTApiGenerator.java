@@ -2,8 +2,10 @@ package org.scribble.ext.go.core.codegen.statetype3;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
@@ -21,6 +23,7 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.util.Pair;
 import org.scribble.visit.util.MessageIdCollector;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTEndpointApiGenerator
@@ -32,6 +35,7 @@ public class RPCoreSTApiGenerator
   // FIXME: factor out an RPCoreJob(Context)
 	public final Map<Role, Map<RPRoleVariant, RPCoreLType>> projections;
 	public final Map<Role, Map<RPRoleVariant, EGraph>> variants;
+	protected Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;
 	
 	public final String packpath;  // Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
 	public final Role self;  
@@ -39,7 +43,8 @@ public class RPCoreSTApiGenerator
 			// FIXME: any way to separate Session API (Protocol) from Endpoint/StateChan APIs?
 	
 	public RPCoreSTApiGenerator(GoJob job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, RPCoreLType>> projections, 
-			Map<Role, Map<RPRoleVariant, EGraph>> variants, String packpath, Role self)
+			Map<Role, Map<RPRoleVariant, EGraph>> variants, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families,
+			String packpath, Role self)
 	{
 		this.job = job;
 		this.proto = fullname;
@@ -53,6 +58,7 @@ public class RPCoreSTApiGenerator
 							e -> e.getKey(),
 							e -> Collections.unmodifiableMap(e.getValue())
 					)));
+		this.families = new HashSet<>(families);
 		this.packpath = packpath;
 		this.self = self;
 	}
