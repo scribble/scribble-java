@@ -63,7 +63,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					// HACK FIXME -- make a "nested builder" -- problem is final this.graph 
 					// FIXME: probably easier to to make a "nested" constructor
 	{
-		super(apigen.job, apigen.proto, apigen.self, graph,
+		super(apigen.job, apigen.proto, //apigen.self, 
+				variant.getName(),
+				graph,
 				new RPCoreSTOutputStateBuilder(new RPCoreSTSplitActionBuilder(), new RPCoreSTSendActionBuilder()),
 				new RPCoreSTReceiveStateBuilder(new RPCoreSTReduceActionBuilder(), new RPCoreSTReceiveActionBuilder()),
 

@@ -51,7 +51,8 @@ public class RPCoreSTSessionApiBuilder
 	private void buildProtocolApi(ProtocolDecl<Global> gpd, String basedir, Map<String, String> res)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
-		List<Role> rolenames = gpd.header.roledecls.getRoles();
+		List<Role> rolenames = //gpd.header.roledecls.getRoles();
+				this.apigen.selfs;
 
 		// roles
 		String protoFile =
@@ -133,7 +134,8 @@ public class RPCoreSTSessionApiBuilder
 	private void buildEndpointKindApi(ProtocolDecl<Global> gpd, String basedir, Map<String, String> res)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
-		List<Role> roles = gpd.header.roledecls.getRoles();
+		List<Role> roles = //gpd.header.roledecls.getRoles();
+				this.apigen.selfs;
 
 		String epkindImports = "\n"  // Package decl done later (per variant)
 				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"

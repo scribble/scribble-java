@@ -2,7 +2,7 @@ package org.scribble.ext.go.core.codegen.statetype3;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -35,16 +35,19 @@ public class RPCoreSTApiGenerator
   // FIXME: factor out an RPCoreJob(Context)
 	public final Map<Role, Map<RPRoleVariant, RPCoreLType>> projections;
 	public final Map<Role, Map<RPRoleVariant, EGraph>> variants;
-	protected Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;
+	//public final Map<RPRoleVariant, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>> families;
+	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> families;
 	
 	public final String packpath;  // Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
-	public final Role self;  
+	//public final Role self;  
+	public final List<Role> selfs;  
 			// FIXME? just a role name -- cf. CL arg
 			// FIXME: any way to separate Session API (Protocol) from Endpoint/StateChan APIs?
 	
 	public RPCoreSTApiGenerator(GoJob job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, RPCoreLType>> projections, 
 			Map<Role, Map<RPRoleVariant, EGraph>> variants, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families,
-			String packpath, Role self)
+			String packpath, //Role self)
+			List<Role> selfs)
 	{
 		this.job = job;
 		this.proto = fullname;
@@ -58,9 +61,35 @@ public class RPCoreSTApiGenerator
 							e -> e.getKey(),
 							e -> Collections.unmodifiableMap(e.getValue())
 					)));
-		this.families = new HashSet<>(families);
+
+		/*Map<RPRoleVariant, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>> fs = new HashMap<>();
+		for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> f : families)
+		{
+			for (RPRoleVariant v : f.left)
+			{
+				Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> tmp2 = fs.get(v);
+				if (tmp2 == null)
+				{
+					tmp2 = new HashSet<>();
+					fs.put(v, tmp2);
+				}
+				tmp2.add(f);
+			}
+		}
+		this.families = Collections.unmodifiableMap(
+					fs.entrySet().stream().collect(Collectors.toMap(
+							e -> e.getKey(),
+							e -> Collections.unmodifiableSet(e.getValue())
+					)));*/
+		int[] i = { 1 };
+		this.families = Collections.unmodifiableMap(families.stream().collect(Collectors.toMap(
+					f -> f, 
+					f -> i[0]++)
+				));
+
 		this.packpath = packpath;
-		this.self = self;
+		//this.self = self;
+		this.selfs = Collections.unmodifiableList(selfs);
 	}
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
@@ -105,11 +134,15 @@ public class RPCoreSTApiGenerator
 			}
 		}
 		
+		// Build Session API (Protocol and Endpoint types) and State Channel API
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
 		res.putAll(buildSessionApi());
-		for (Entry<RPRoleVariant, EGraph> variant : this.variants.get(this.self).entrySet())
+		for (Role self : this.selfs)
 		{
-			res.putAll(buildStateChannelApi(variant.getKey(), variant.getValue()));
+			for (Entry<RPRoleVariant, EGraph> variant : this.variants.get(self).entrySet())
+			{
+				res.putAll(buildStateChannelApi(variant.getKey(), variant.getValue()));
+			}
 		}
 		return res;
 	}
@@ -117,14 +150,14 @@ public class RPCoreSTApiGenerator
 	//@Override
 	public Map<String, String> buildSessionApi()  // FIXME: factor out
 	{
-		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTSessionApiBuilder.class + " for " + this.proto + "@" + this.self);
+		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTSessionApiBuilder.class + " for " + this.proto + "@" + this.selfs);
 		return new RPCoreSTSessionApiBuilder(this).build();
 	}
 	
-	public Map<String, String> buildStateChannelApi(RPRoleVariant actual, EGraph graph)  // FIXME: factor out
+	public Map<String, String> buildStateChannelApi(RPRoleVariant variant, EGraph graph)  // FIXME: factor out
 	{
-		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + this.self);
-		return new RPCoreSTStateChanApiBuilder(this, actual, graph).build();
+		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + variant);
+		return new RPCoreSTStateChanApiBuilder(this, variant, graph).build();
 	}
 	
 	//@Override

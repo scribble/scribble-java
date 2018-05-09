@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -143,13 +144,26 @@ public class RPCoreCommandLine extends CommandLine
 		if (this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_API_GEN))
 		{
 			JobContext jcontext = job.getContext();
+			String simpname = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_PARAM)[0];
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, simpname);
+			String impath = null;
 			String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_API_GEN);
+			List<Role> roles = new LinkedList<>();
 			for (int i = 0; i < args.length; i += 2)
 			{
-				String simpname = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_PARAM)[0];
-				GProtocolName fullname = checkGlobalProtocolArg(jcontext, simpname);
+				if (impath == null)
+				{
+					impath = args[i+1];
+				}
+				else
+				{
+					if (!impath.equals(args[i+1]))
+					{
+						throw new RuntimeException("[rp-core] Inconsistent Go API generation import paths: " + impath + ", " + args[i+1]);
+					}
+				}
 				Role role = checkRoleArg(jcontext, fullname, args[i]);
-				String impath = args[i+1];
+				roles.add(role);
 				/*for (ParamActualRole ranges : this.P0.get(role).keySet())
 				{
 					EGraph efsm = this.E0.get(role).get(ranges);
@@ -159,11 +173,14 @@ public class RPCoreCommandLine extends CommandLine
 
 				/*job.debugPrintln("\n[rp-core] Running " + ParamCoreSTSessionApiBuilder.class + " for " + fullname);
 
-				Map<String, String> goClasses = new ParamCoreSTSessionApiBuilder((GoJob) job, fullname, this.E0).build();*/
+				/*Map<String, String> goClasses = new ParamCoreSTSessionApiBuilder((GoJob) job, fullname, this.E0).build();* /
 				//Map<ParamActualRole, EGraph> actuals = this.E0.get(role);
 				Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, this.L0, this.E0, this.families, impath, role).build();
-				outputClasses(goClasses);
+				outputClasses(goClasses);*/
 			}
+
+			Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, this.L0, this.E0, this.families, impath, roles).build();
+			outputClasses(goClasses);
 		}
 		else
 		{
@@ -378,7 +395,7 @@ public class RPCoreCommandLine extends CommandLine
 			boolean isSat = Z3Wrapper.checkSat(job, this.gpd, smt2);
 			if (isSat)
 			{
-				fams.add(new Pair<>(cand, coset));
+				fams.add(new Pair<>(Collections.unmodifiableSet(cand), Collections.unmodifiableSet(coset)));
 			}
 			job.debugPrintln("[rp-core] Checked sat: " + isSat);
 		}
