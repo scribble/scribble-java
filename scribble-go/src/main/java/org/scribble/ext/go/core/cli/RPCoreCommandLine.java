@@ -146,22 +146,11 @@ public class RPCoreCommandLine extends CommandLine
 			JobContext jcontext = job.getContext();
 			String simpname = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_PARAM)[0];
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, simpname);
-			String impath = null;
+			String impath = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_PARAM)[1];
 			String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_API_GEN);
 			List<Role> roles = new LinkedList<>();
-			for (int i = 0; i < args.length; i += 2)
+			for (int i = 0; i < args.length; i += 1)
 			{
-				if (impath == null)
-				{
-					impath = args[i+1];
-				}
-				else
-				{
-					if (!impath.equals(args[i+1]))
-					{
-						throw new RuntimeException("[rp-core] Inconsistent Go API generation import paths: " + impath + ", " + args[i+1]);
-					}
-				}
 				Role role = checkRoleArg(jcontext, fullname, args[i]);
 				roles.add(role);
 				/*for (ParamActualRole ranges : this.P0.get(role).keySet())

@@ -35,11 +35,13 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageSigName;
+import org.scribble.util.Pair;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
 public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 {
 	protected final RPCoreSTApiGenerator apigen;
+	public final Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family;
 	public final RPRoleVariant variant;  // variant.getName().equals(this.role)
 	
 	private int counter = 2;  // 1 named as Init
@@ -53,12 +55,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later
 	// Pre: variant.getName().equals(this.role)
-	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph)
+	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen,
+			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant, EGraph graph)
 	{
-		this(apigen, variant, graph, 2, Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet());
+		this(apigen, family, variant, graph, 2, Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet());
 	}
 
-	private RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, RPRoleVariant variant, EGraph graph, 
+	private RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen,
+			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant, EGraph graph, 
 			int counter, Map<Integer, String> names, Map<Integer, String> imedNames, Set<RPForeachVar> fvars)  
 					// HACK FIXME -- make a "nested builder" -- problem is final this.graph 
 					// FIXME: probably easier to to make a "nested" constructor
@@ -80,6 +84,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				new RPCoreSTEndStateBuilder());
 
 		this.apigen = apigen;
+		this.family = family;
 		this.variant = variant;
 		
 		Module mod = apigen.job.getContext().getModule(this.apigen.proto.getPrefix());
@@ -184,7 +189,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		// FIXME HACK
 		for (EGraph g : this.todo)
 		{
-			RPCoreSTStateChanApiBuilder nested = new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, g,
+			RPCoreSTStateChanApiBuilder nested = new RPCoreSTStateChanApiBuilder(
+					this.apigen, this.family, this.variant, g,
 					this.counter, this.names, this.imedNames, this.fvars);
 			res.putAll(nested.build());
 		}
@@ -200,6 +206,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			filename = "$" + filename.substring(1);
 		}
 		return this.gpn.toString().replaceAll("\\.", "/") 
+				+ "/" + this.apigen.getFamilyPackageName(family)
 				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant)  // State chans located with Endpoint Kind API
 				+ "/" + filename + ".go";
 	}

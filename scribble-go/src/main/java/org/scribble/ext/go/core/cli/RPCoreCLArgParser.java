@@ -67,14 +67,14 @@ public class RPCoreCLArgParser extends CLArgParser
 		switch (flag)
 		{
 			// Unique flags
-			case RPCoreCLArgParser.RPCORE_PARAM_FLAG:         return rpParseParam(i);
+			case RPCoreCLArgParser.RPCORE_PARAM_FLAG:         return rpParsePackagePathAndParam(i);
 			case RPCoreCLArgParser.RPCORE_SELECT_BRANCH_FLAG: return rpParseSelectBranch(i);
 			case RPCoreCLArgParser.RPCORE_NOCOPY_FLAG:        return rpParseNoCopy(i);
 			
 			// Non-unique flags
 			case RPCoreCLArgParser.RPCORE_EFSM_FLAG:     return rpParseRoleArg(flag, i);
 			case RPCoreCLArgParser.RPCORE_EFSM_PNG_FLAG: return rpParseRoleAndFileArgs(flag, i);
-			case RPCoreCLArgParser.RPCORE_API_GEN_FLAG:  return rpParsePackagePathAndRoleArgs(flag, i);
+			case RPCoreCLArgParser.RPCORE_API_GEN_FLAG:  return rpParseRoleArg(flag, i);
 			
 			// Base CL
 			default:
@@ -84,14 +84,15 @@ public class RPCoreCLArgParser extends CLArgParser
 		}
 	}
 
-	private int rpParseParam(int i) throws CommandLineException
+	private int rpParsePackagePathAndParam(int i) throws CommandLineException
 	{
-		if ((i + 1) >= this.args.length)
+		if ((i + 2) >= this.args.length)
 		{
-			throw new CommandLineException("Missing simple global protocol name argument.");
+			throw new CommandLineException("Missing simple global protocol name and/or Go API package path arguments.");
 		}
 		String proto = this.args[++i];
-		rpCheckAndAddUniqueFlag(RPCoreCLArgParser.RPCORE_PARAM_FLAG, new String[] { proto });
+		String packpath = this.args[++i];
+		rpCheckAndAddUniqueFlag(RPCoreCLArgParser.RPCORE_PARAM_FLAG, new String[] { proto, packpath });
 		return i;
 	}
 
@@ -129,7 +130,7 @@ public class RPCoreCLArgParser extends CLArgParser
 		return i;
 	}
 
-	protected int rpParseRoleAndFileArgs(String f, int i) throws CommandLineException
+	private int rpParseRoleAndFileArgs(String f, int i) throws CommandLineException
 	{
 		RPCoreCLArgFlag flag = RPCoreCLArgParser.RPCORE_NON_UNIQUE_FLAGS.get(f);
 		if ((i + 2) >= this.args.length)
@@ -142,8 +143,8 @@ public class RPCoreCLArgParser extends CLArgParser
 		return i;
 	}
 
-	// path is absolute package path prefix for API imports
-	protected int rpParsePackagePathAndRoleArgs(String f, int i) throws CommandLineException
+	/*// path is absolute package path prefix for API imports
+	private int rpParsePackagePathAndRoleArgs(String f, int i) throws CommandLineException
 	{
 		RPCoreCLArgFlag flag = RPCoreCLArgParser.RPCORE_NON_UNIQUE_FLAGS.get(f);
 		if ((i + 2) >= this.args.length)
@@ -154,7 +155,7 @@ public class RPCoreCLArgParser extends CLArgParser
 		String role = this.args[++i];
 		goConcatArgs(flag, role, path);
 		return i;
-	}
+	}*/
 
 	/*// FIXME: factor out with core arg parser -- issue is GoCLArgFlag is currently an unlreated type to CLArgFlag
 	private int goParseProtoAndRoleArgs(String f, int i) throws CommandLineException

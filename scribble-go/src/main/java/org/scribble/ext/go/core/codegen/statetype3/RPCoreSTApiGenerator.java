@@ -139,9 +139,15 @@ public class RPCoreSTApiGenerator
 		res.putAll(buildSessionApi());
 		for (Role self : this.selfs)
 		{
-			for (Entry<RPRoleVariant, EGraph> variant : this.variants.get(self).entrySet())
+			for (Entry<RPRoleVariant, EGraph> e : this.variants.get(self).entrySet())
 			{
-				res.putAll(buildStateChannelApi(variant.getKey(), variant.getValue()));
+				RPRoleVariant variant = e.getKey();
+				for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
+						(Iterable<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>) 
+								this.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)
+				{
+					res.putAll(buildStateChannelApi(family, variant, e.getValue()));
+				}
 			}
 		}
 		return res;
@@ -154,10 +160,11 @@ public class RPCoreSTApiGenerator
 		return new RPCoreSTSessionApiBuilder(this).build();
 	}
 	
-	public Map<String, String> buildStateChannelApi(RPRoleVariant variant, EGraph graph)  // FIXME: factor out
+	public Map<String, String> buildStateChannelApi(
+			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant, EGraph graph)  // FIXME: factor out
 	{
 		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + variant);
-		return new RPCoreSTStateChanApiBuilder(this, variant, graph).build();
+		return new RPCoreSTStateChanApiBuilder(this, family, variant, graph).build();
 	}
 	
 	//@Override
@@ -170,6 +177,11 @@ public class RPCoreSTApiGenerator
 	{
 		return "package " + getApiRootPackageName();
 	}*/
+
+	public String getFamilyPackageName(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family)
+	{
+		return "family_" + this.families.get(family);
+	}
 
 	public static String getEndpointKindPackageName(RPRoleVariant variant)
 	{
