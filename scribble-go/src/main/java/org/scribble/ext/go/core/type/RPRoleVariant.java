@@ -35,9 +35,11 @@ public class RPRoleVariant extends RPIndexedRole
 	@Override
 	public String toString()
 	{
-		// Duplicated from super to make braces mandatory
+		// Duplicated from super to make rs1 braces mandatory 
 		String rs1 = "{" + this.intervals.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
-		String rs2 = "{" + this.cointervals.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
+		String rs2 = this.cointervals.isEmpty()
+				? ""
+				: "{" + this.cointervals.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
 		return super.getLastElement() + rs1 + rs2;
 	}
 	

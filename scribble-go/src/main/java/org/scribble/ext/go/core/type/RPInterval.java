@@ -23,7 +23,7 @@ public class RPInterval
 	}
 	
 	//public Set<ParamRoleParam> getActualParams()  // Hack
-	public Set<RPIndexVar> getVars()
+	public Set<RPIndexVar> getIndexVars()
 	{
 		//return Stream.of(this.start, this.end).filter(p -> !p.isConstant()).collect(Collectors.toSet());
 		return Stream.of(this.start, this.end).flatMap(p -> p.getVars().stream()).collect(Collectors.toSet());
@@ -32,7 +32,7 @@ public class RPInterval
 	@Override
 	public String toString()
 	{
-		return "[" + this.start + ((this.start == this.end) ? "" : ".." + this.end) + "]";
+		return "[" + this.start + ((this.start == this.end) ? "" : "," + this.end) + "]";
 	}
 	
 	@Override

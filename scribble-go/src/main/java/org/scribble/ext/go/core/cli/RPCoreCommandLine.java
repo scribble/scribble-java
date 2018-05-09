@@ -5,13 +5,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
@@ -48,6 +49,7 @@ import org.scribble.model.endpoint.EGraph;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribParserException;
+import org.scribble.util.ScribUtil;
 
 // N.B. this is the CL for both -goapi and rp-core extensions
 public class RPCoreCommandLine extends CommandLine
@@ -238,15 +240,15 @@ public class RPCoreCommandLine extends CommandLine
 
 		//Map<Role, Set<Set<ParamRange>>> 
 		Map<Role, Set<RPRoleVariant>> 
-				protoRoles = getProtoRoles(job, gt);
+				variants = getVariants(job, gt);
 		
-		job.debugPrintln("\n[rp-core] Computed roles: " + protoRoles);
+		job.debugPrintln("\n[rp-core] Computed roles: " + variants);
 
 		this.L0 = new HashMap<>();
 		for (Role r : gpd.header.roledecls.getRoles())  // getRoles gives decl names  // CHECKME: can ignore params?
 		{
 			//for (Set<ParamRange> ranges : protoRoles.get(r))
-			for (RPRoleVariant ranges : protoRoles.get(r))
+			for (RPRoleVariant ranges : variants.get(r))
 			{
 				//ParamCoreLType lt = gt.project(af, r, ranges);
 				RPCoreLType lt = gt.project(af, ranges);
@@ -327,15 +329,63 @@ public class RPCoreCommandLine extends CommandLine
 		//((ParamJob) job).runF17ProjectionPasses();  // projections not built on demand; cf. models
 
 		//return gt;
+		
+		getFamilies(job);
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
 	
 	//..HERE FIXME ActualParam -- ParamRange is now already a Set
 	
+	private Set<Set<RPRoleVariant>> getFamilies(GoJob job)
+	{
+		job.debugPrintln("\n[rp-core] Computing families:");
+
+		Set<Set<RPRoleVariant>> fams = new HashSet<>();
+
+		Set<RPRoleVariant> all = this.L0.values().stream()
+				.flatMap(m -> m.keySet().stream()).collect(Collectors.toSet());
+		Set<RPIndexVar> vars = all.stream()
+				.flatMap(v -> v.getIndexVars().stream()).collect(Collectors.toSet());
+		Set<Set<RPRoleVariant>> pset = ScribUtil.makePowerSet(all).stream()
+				.filter(x -> x.size() >= 2).collect(Collectors.toSet());
+		
+		int size = pset.size();
+		int i = 1;
+		for (Set<RPRoleVariant> cand : pset)
+		{
+			Set<RPRoleVariant> coset = all.stream()
+					.filter(x -> !cand.contains(x)).collect(Collectors.toSet());
+			
+			String smt2 = "(assert ";
+			smt2 += "(exists (" + vars.stream().map(x -> "(" + x + " Int)").collect(Collectors.joining(" ")) + ")\n";  // FIXME: factor up -- and factor out with getVariants
+			smt2 += "(and\n";
+			smt2 += "(and " + cand.stream()
+					.map(v -> makePhiSmt2(v.intervals, v.cointervals)).collect(Collectors.joining(" ")) + ")\n";
+			smt2 += (coset.size() > 0)
+					? "(and " + coset.stream()
+							.map(v -> "(not " + makePhiSmt2(v.intervals, v.cointervals) + ")").collect(Collectors.joining(" ")) + ")\n"
+					: "";
+			smt2 += ")))";
+			
+			job.debugPrintln("\n[rp-core] Candidate (" + i++ + "/" + size + "): " + cand);
+			job.debugPrintln("[rp-core] Co-set: " + coset);
+			job.debugPrintln("[rp-core] Running Z3 on:\n" + smt2);
+			
+			boolean isSat = Z3Wrapper.checkSat(job, this.gpd, smt2);
+			if (isSat)
+			{
+				//variants.get(r).add(new RPRoleVariant(r.toString(), cand, coset));
+			}
+			job.debugPrintln("[rp-core] Checked sat: " + isSat);
+		}
+		
+		return fams;
+	}
+	
 	private //Map<Role, Set<Set<ParamRange>>> 
 			Map<Role, Set<RPRoleVariant>>
-			getProtoRoles(GoJob job, RPCoreGType gt)
+			getVariants(GoJob job, RPCoreGType gt)
 	{
 		Set<RPIndexedRole> prs = gt.getIndexedRoles();
 		
@@ -348,32 +398,17 @@ public class RPCoreCommandLine extends CommandLine
 		Map<Role, Set<Set<RPInterval>>> powersets = map.keySet().stream().collect(Collectors.toMap(k -> k, k -> new HashSet<>()));
 		for (Role n : map.keySet())
 		{
-			Set<Set<RPInterval>> tmp = powersets.get(n);
-			Set<RPIndexedRole> todo = new HashSet<>(map.get(n));
-			while (!todo.isEmpty())
+			Set<RPIndexedRole> tmp = map.get(n);
+			Optional<RPIndexedRole> foo = tmp.stream().filter(x -> x.intervals.size() > 1).findAny();
+			if (foo.isPresent())
 			{
-				Iterator<RPIndexedRole> i = todo.iterator();
-				RPIndexedRole next = i.next();
-				i.remove();
-				Set<RPInterval> range = new HashSet<>();
-				//range.add(next.range);
-				range.add(next.intervals.iterator().next());
-				if (!tmp.contains(next))
-				{
-					tmp.addAll(tmp.stream().map(t -> 
-					{
-						Set<RPInterval> ggg = new HashSet<>();
-						ggg.addAll(t);
-						ggg.add(range.iterator().next());
-						return ggg;
-					}).collect(Collectors.toSet()));
-					tmp.add(range);
-				}
+				throw new RuntimeException("[rp-core] TODO: multi-dimension intervals: " + foo.get());
 			}
+			powersets.put(n, ScribUtil.makePowerSet(tmp.stream().flatMap(v -> v.intervals.stream()).collect(Collectors.toSet())));
 		}
 		
 		//Map<Role, Set<Set<ParamRange>>> protoRoles = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
-		Map<Role, Set<RPRoleVariant>> protoRoles = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
+		Map<Role, Set<RPRoleVariant>> variants = powersets.keySet().stream().collect(Collectors.toMap(x -> x, x -> new HashSet<>()));
 		for (Role r : powersets.keySet())
 		{
 			Set<Set<RPInterval>> powset = powersets.get(r);
@@ -384,60 +419,72 @@ public class RPCoreCommandLine extends CommandLine
 			
 			for (Set<RPInterval> cand : powset)
 			{
-				Set<RPInterval> coset = powset.stream().filter(f -> f.stream().noneMatch(g -> cand.contains(g))).flatMap(Collection::stream).collect(Collectors.toSet());
+				Set<RPInterval> coset = powset.stream()
+						.filter(f -> f.stream().noneMatch(g -> cand.contains(g)))
+						.flatMap(Collection::stream)
+						.collect(Collectors.toSet());
 				
-				String z3 = "";
-
-				if (cand.size() > 0)
+				String z3 = makePhiSmt2(cand, coset);
+				Set<RPIndexVar> vars = Stream.concat(
+							cand.stream().flatMap(c -> c.getIndexVars().stream()),
+							coset.stream().flatMap(c -> c.getIndexVars().stream())
+						).collect(Collectors.toSet());
+				if (!vars.isEmpty())
 				{
-					z3 += cand.stream().map(c -> "(and (>= id " + c.start.toSmt2Formula() + ") (<= id " + c.end.toSmt2Formula() + ")"
-								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
-								+ ")")
-							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
-				}
-
-				if (coset.size() > 0)
-				{
-					if (cand.size() > 0)
-					{
-						z3 = "(and " + z3 + " ";
-					}
-					z3 += coset.stream().map(c -> "(and (not (and (>= id " + c.start.toSmt2Formula() + ") (<= id " + c.end.toSmt2Formula() + ")))"
-								+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
-								+ ")")
-							.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
-					if (cand.size() > 0)
-					{
-						z3 += ")";
-					}
-				}
-					
-				//Set<ParamRoleParam> actuals
-				Set<RPIndexVar> actuals
-						= cand.stream().flatMap(c -> c.getVars().stream()).collect(Collectors.toSet());
-				actuals.addAll(coset.stream().flatMap(c -> c.getVars().stream()).collect(Collectors.toSet()));
-				//if (!actuals.isEmpty())
-				{
-					z3 = "(exists ((id Int) "
-							+ actuals.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" "))
+					z3 = "(exists ("
+							+ vars.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" "))
 							+ ") " + z3 + ")";
 				}
-				
-				z3 = //"(declare-const id Int)\n
-						"(assert " + z3 + ")";
+				z3 = "(assert " + z3 + ")";
 				
 				job.debugPrintln("\n[rp-core] Candidate (" + i++ + "/" + size + "): " + cand);
 				job.debugPrintln("[rp-core] Co-set: " + coset);
 				job.debugPrintln("[rp-core] Running Z3 on:\n" + z3);
 				
-				if (Z3Wrapper.checkSat(job, this.gpd, z3))
+				boolean isSat = Z3Wrapper.checkSat(job, this.gpd, z3);
+				if (isSat)
 				{
 					//protoRoles.get(r).add(cand);
-					protoRoles.get(r).add(new RPRoleVariant(r.toString(), cand, coset));
+					variants.get(r).add(new RPRoleVariant(r.toString(), cand, coset));
 				}
+				job.debugPrintln("[rp-core] Checked sat: " + isSat);
 			}
 		}
-		return protoRoles;
+		return variants;
+	}
+
+	// Doesn't include "assert", nor exists-bind index vars
+	private String makePhiSmt2(Set<RPInterval> cand, Set<RPInterval> coset)
+	{
+		String z3 = "";
+
+		if (cand.size() > 0)
+		{
+			z3 += cand.stream().map(c -> "(and (>= self " + c.start.toSmt2Formula() + ") (<= self " + c.end.toSmt2Formula() + ")"
+						+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
+						+ ")")
+					.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
+		}
+
+		if (coset.size() > 0)
+		{
+			if (cand.size() > 0)
+			{
+				z3 = "(and " + z3 + " ";
+			}
+			z3 += coset.stream().map(c -> "(and (not (and (>= self " + c.start.toSmt2Formula() + ") (<= self " + c.end.toSmt2Formula() + ")))"
+						+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
+						+ ")")
+					.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
+			if (cand.size() > 0)
+			{
+				z3 += ")";
+			}
+		}
+
+		z3 = "(exists ((self Int))" + z3 + ")";
+
+		return z3;
 	}
 
 	// FIXME: factor out -- cf. super.doAttemptableOutputTasks

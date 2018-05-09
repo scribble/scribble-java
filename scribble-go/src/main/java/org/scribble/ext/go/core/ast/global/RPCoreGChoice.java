@@ -67,7 +67,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		
 		RPInterval srcRange = this.src.getParsedRange();
 		RPInterval destRange = this.dest.getParsedRange();
-		Set<RPIndexVar> vars = Stream.of(srcRange, destRange).flatMap(r -> r.getVars().stream()).collect(Collectors.toSet());
+		Set<RPIndexVar> vars = Stream.of(srcRange, destRange).flatMap(r -> r.getIndexVars().stream()).collect(Collectors.toSet());
 		
 		/*// CHECKME: is range size>0 already ensured by syntax?
 		Function<ParamRange, String> foo1 = r -> 

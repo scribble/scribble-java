@@ -19,9 +19,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ScribNode;
@@ -120,5 +123,20 @@ public class ScribUtil
 		{
 			throw new ScribbleException(e);
 		}
+	}
+
+	public static <T> Set<Set<T>> makePowerSet(Set<T> ts)
+	{
+		Set<Set<T>> pset = new HashSet<>();
+		for (T t : ts)
+		{
+			Set<T> curr = Stream.of(t).collect(Collectors.toSet());
+			Set<Set<T>> tmp = pset.stream()
+					.map(x -> Stream.concat(x.stream(), Stream.of(t)).collect(Collectors.toSet()))
+					.collect(Collectors.toSet());
+			pset.add(curr);
+			pset.addAll(tmp);  // tmp.equals(curr) for first t
+		}
+		return pset;
 	}
 }
