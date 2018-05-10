@@ -1,7 +1,6 @@
 package org.scribble.ext.go.core.cli;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -361,8 +360,9 @@ public class RPCoreCommandLine extends CommandLine
 
 		Map<RPRoleVariant, Set<RPRoleVariant>> map = new HashMap<>();
 
-		String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_API_GEN);
-		for (Role rname : (Iterable<Role>) Arrays.asList(args).stream().map(r -> new Role(r))::iterator)
+		/*String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_API_GEN);
+		for (Role rname : (Iterable<Role>) Arrays.asList(args).stream().map(r -> new Role(r))::iterator)*/
+		for (Role rname : this.gpd.header.roledecls.getRoles())
 		{
 			for (RPRoleVariant self : this.E0.get(rname).keySet()) 
 			{
