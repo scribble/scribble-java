@@ -1,6 +1,7 @@
 package org.scribble.ext.go.core.cli;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import org.scribble.ext.go.core.main.RPCoreException;
 import org.scribble.ext.go.core.main.RPCoreMainContext;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEGraphBuilder;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
@@ -59,11 +61,12 @@ public class RPCoreCommandLine extends CommandLine
 	protected final Map<RPCoreCLArgFlag, String[]> rpArgs;  // Maps each flag to list of associated argument values
 
 	// HACK: store in (Core) Job/JobContext?
-	protected GProtocolDecl gpd;
-	protected Map<Role, Map<RPRoleVariant, RPCoreLType>> L0;
-	protected Map<Role, Map<RPRoleVariant, EGraph>> E0;
+	private GProtocolDecl gpd;
+	private Map<Role, Map<RPRoleVariant, RPCoreLType>> L0;
+	private Map<Role, Map<RPRoleVariant, EGraph>> E0;
 	//protected ParamCoreSModel model;
-	protected Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;
+	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;
+	private Map<RPRoleVariant, Set<RPRoleVariant>> peers;
 	
 	public RPCoreCommandLine(String... args) throws CommandLineException
 	{
@@ -168,7 +171,8 @@ public class RPCoreCommandLine extends CommandLine
 				outputClasses(goClasses);*/
 			}
 
-			Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, this.L0, this.E0, this.families, impath, roles).build();
+			Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, 
+					this.L0, this.E0, this.families, this.peers, impath, roles).build();
 			outputClasses(goClasses);
 		}
 		else
@@ -340,11 +344,89 @@ public class RPCoreCommandLine extends CommandLine
 		
 		this.families = new HashSet<>();
 		this.families.addAll(getFamilies(job));
+		this.peers = new HashMap<>();
+		this.peers.putAll(getPeers(job));
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
 	
 	//..HERE FIXME ActualParam -- ParamRange is now already a Set
+	
+	
+	// Compute variant peers of each variant
+	private Map<RPRoleVariant, Set<RPRoleVariant>> getPeers(GoJob job)
+	{
+		job.debugPrintln("\n[rp-core] Computing peers:");
+
+		Map<RPRoleVariant, Set<RPRoleVariant>> foo = new HashMap<>();
+
+		String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_API_GEN);
+		for (Role rname : (Iterable<Role>) Arrays.asList(args).stream().map(r -> new Role(r))::iterator)
+		{
+			for (RPRoleVariant variant : this.E0.get(rname).keySet()) 
+			{
+				/*for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
+						(Iterable<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>) 
+								this.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)  // FIXME: use family to make accept/dial
+				{*/
+					Set<RPIndexedRole> irs = MState.getReachableActions(this.E0.get(rname).get(variant).init).stream()
+							.map(a -> ((RPCoreEAction) a).getPeer()).collect(Collectors.toSet());
+					Set<RPRoleVariant> bar = new HashSet<>();
+					next: for (RPRoleVariant v : (Iterable<RPRoleVariant>)
+							this.E0.values().stream()
+									.flatMap(m -> m.keySet().stream())::iterator)
+					{
+						if (!v.equals(variant) && !bar.contains(v))
+						{
+							job.debugPrintln("\n[rp-core] For " + variant + ", checking potential peer: " + v);
+
+							for (RPIndexedRole ir : irs)
+							{
+								if (ir.getName().equals(v.getName()))
+								{
+									if (ir.intervals.size() > 1)
+									{
+										throw new RuntimeException("[rp-core] TODO: multi-dimension intervals: " + ir);
+									}
+									RPInterval d = ir.intervals.stream().findAny().get();
+									
+									Set<RPIndexVar> vars = Stream.concat(v.intervals.stream().flatMap(x -> x.getIndexVars().stream()), v.cointervals.stream().flatMap(x -> x.getIndexVars().stream()))
+											.collect(Collectors.toSet());
+									vars.addAll(ir.getIndexVars());
+
+									String smt2 = "(assert ";
+									smt2 += "(exists ((self Int) "
+											+  (vars.isEmpty() ? "" : vars.stream().map(x -> "(" + x + " Int)").collect(Collectors.joining(" "))) + ")\n";
+									smt2 += "(and \n";
+									smt2 += v.intervals.stream().map(x -> "(>= self " + x.start + ") (<= self " + x.end + ")").collect(Collectors.joining(" ")) + "\n";
+									smt2 += v.cointervals.isEmpty() 
+											? ""
+											: "(or " + v.cointervals.stream().map(x -> "(< self " + x.start + ") (> self " + x.end + ")").collect(Collectors.joining(" ")) + ")\n";
+									smt2 += "(>= self " + d.start + ") (<= self " + d.end + ")\n";
+									smt2 += ")";
+									smt2 += ")";
+									smt2 += ")";
+									
+									job.debugPrintln("[rp-core] Running Z3 on:\n" + smt2);
+									
+									boolean isSat = Z3Wrapper.checkSat(job, gpd, smt2);
+									job.debugPrintln("[rp-core] Checked sat: " + isSat);
+									if (isSat)
+									{
+										bar.add(v);
+										continue next;
+									}
+								}
+							}
+						}
+					}
+					foo.put(variant, bar);
+				//}
+			}
+		}
+		return foo;
+	}	
+	
 	
 	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> getFamilies(GoJob job)
 	{
