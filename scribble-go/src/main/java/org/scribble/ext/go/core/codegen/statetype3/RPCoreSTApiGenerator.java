@@ -1,6 +1,7 @@
 package org.scribble.ext.go.core.codegen.statetype3;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,10 +83,15 @@ public class RPCoreSTApiGenerator
 							e -> Collections.unmodifiableSet(e.getValue())
 					)));*/
 		int[] i = { 1 };
-		this.families = Collections.unmodifiableMap(families.stream().collect(Collectors.toMap(
-					f -> f, 
-					f -> i[0]++)
-				));
+		this.families = Collections.unmodifiableMap(families.stream()
+				.sorted(new Comparator<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>()
+					{
+						@Override
+						public int compare(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> f1, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> f2)
+						{
+							return f1.toString().compareTo(f2.toString());
+						}})
+				.collect(Collectors.toMap(f -> f, f -> i[0]++)));
 
 		this.packpath = packpath;
 		//this.self = self;
