@@ -64,26 +64,20 @@ public class RPCoreSTSessionApiBuilder
 						{
 							Set<RPRoleVariant> variants = this.apigen.variants.get(rname).keySet();
 							return
-							variants.stream().map(v -> 
-							{
-								String epkindPackName = RPCoreSTApiGenerator.getEndpointKindPackageName(v);
-
-								return
-								this.apigen.families.keySet().stream().filter(f -> f.left.contains(v)).map(f ->
-								{	
-
-								return "import " + this.apigen.getFamilyPackageName(f) + "_" + epkindPackName
-										+ " \"" + this.apigen.packpath  // "Absolute" -- cf. getProtocol/EndpointFilePath, "relative"
-										+ "/" + this.apigen.getApiRootPackageName()
-										+ "/" + this.apigen.getFamilyPackageName(f)
-										+ "/" + epkindPackName + "\"\n";
-
-								}).collect(Collectors.joining(""));
-								
-								
-							}).collect(Collectors.joining(""));
-						}).collect(Collectors.joining(""))
-				);
+									variants.stream().map(v -> 
+									{
+										String epkindPackName = RPCoreSTApiGenerator.getEndpointKindPackageName(v);
+										boolean isCommonEndpointKind = this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(v));  // Cf. getEndpointKindFilePath
+										return
+												this.apigen.families.keySet().stream().filter(f -> f.left.contains(v)).map(f ->
+												{	
+													return "import " + this.apigen.getFamilyPackageName(f) + "_" + epkindPackName
+															+ " \"" + this.apigen.packpath + "/" + this.apigen.getApiRootPackageName()  // "Absolute" -- cf. getProtocol/EndpointKindFilePath, "relative"
+															+ (isCommonEndpointKind ? "" : "/" + this.apigen.getFamilyPackageName(f))
+															+ "/" + epkindPackName + "\"\n";
+												}).collect(Collectors.joining(""));
+									}).collect(Collectors.joining(""));
+						}).collect(Collectors.joining("")));
 					
 		protoFile += "\n"
 				// Protocol type
@@ -109,44 +103,44 @@ public class RPCoreSTSessionApiBuilder
 						(Iterable<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>) 
 								this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)  // FIXME: use family to make accept/dial
 				{	
-				/*RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
-				try
-				{
-					gpd.accept(coll);  // FIXME: should be lpd -- not currently used due to using RPCoreType
+					/*RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
+					try
+					{
+						gpd.accept(coll);  // FIXME: should be lpd -- not currently used due to using RPCoreType
+					}
+					catch (ScribbleException e)
+					{
+						throw new RuntimeException("[rp-core] Shouldn't get in here: ", e);
+					}
+					List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());*/
+					
+					List<RPIndexVar> ivars = this.apigen.projections.get(rname).get(variant)
+							.getIndexVars().stream().sorted(IVAR_COMP)
+							.collect(Collectors.toList());  // N.B., params only from action subjects (not self)
+					ivars.addAll(variant.getIndexVars());  // Do variant params subsume projection params?  (vice versa not true -- e.g., param needed to check self)
+					String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
+							
+					// Endpoint Kind constructor -- makes index var value maps
+					String tmp = "func (p *" + simpname + ") New"
+							+ "_" + this.apigen.getFamilyPackageName(family) + "_" + epkindTypeName  // FIXME: factor out common variants between families
+							+ "(" + ivars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
+							+ " *"
+							+ this.apigen.getFamilyPackageName(family) + "_" + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant)  // FIXME: factor out (and separate type name from package name)
+							+ "." + epkindTypeName
+							+ " {\n"
+							/*+ "params := make(map[string]int)\n"
+							//+ decls.iterator().next().params
+							+ ivars
+									.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))*/
+							+ "return "
+									+ this.apigen.getFamilyPackageName(family) + "_" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant)  // FIXME: factor out
+									+ ".New" + "(p" //", params"
+									+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining(""))
+									+ ", self)\n"
+							+ "}\n";
+					
+					protoFile += "\n" + tmp;
 				}
-				catch (ScribbleException e)
-				{
-					throw new RuntimeException("[rp-core] Shouldn't get in here: ", e);
-				}
-				List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());*/
-				
-				List<RPIndexVar> ivars = this.apigen.projections.get(rname).get(variant)
-						.getIndexVars().stream().sorted(IVAR_COMP)
-						.collect(Collectors.toList());  // N.B., params only from action subjects (not self)
-				ivars.addAll(variant.getIndexVars());  // Do variant params subsume projection params?  (vice versa not true -- e.g., param needed to check self)
-				String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
-						
-				// Endpoint Kind constructor -- makes index var value maps
-				String tmp = "func (p *" + simpname + ") New"
-						+ "_" + this.apigen.getFamilyPackageName(family) + "_" + epkindTypeName  // FIXME: factor out common variants between families
-						+ "(" + ivars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
-						+ " *"
-						+ this.apigen.getFamilyPackageName(family) + "_" + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant)  // FIXME: factor out (and separate type name from package name)
-						+ "." + epkindTypeName
-						+ " {\n"
-						/*+ "params := make(map[string]int)\n"
-						//+ decls.iterator().next().params
-						+ ivars
-								.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))*/
-						+ "return "
-								+ this.apigen.getFamilyPackageName(family) + "_" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant)  // FIXME: factor out
-								+ ".New" + "(p" //", params"
-								+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining(""))
-								+ ", self)\n"
-						+ "}\n";
-				
-				protoFile += "\n" + tmp;
-			}
 			}
 		}
 
@@ -290,7 +284,7 @@ public class RPCoreSTSessionApiBuilder
 							+ "return &end\n"
 							+ "}";
 				
-					res.put(getEndpointFilePath(family, variant)
+					res.put(getEndpointKindFilePath(family, variant)
 									+ "/" + RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant) + ".go",
 							"package " + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "\n" + epkindFile);
 				}
@@ -310,11 +304,12 @@ public class RPCoreSTSessionApiBuilder
 	// Returns path to use as offset to -d
 	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
 	// FIXME: factor up to super -- cf. STStateChanApiBuilder#getStateChannelFilePath
-	public String getEndpointFilePath(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant)
+	public String getEndpointKindFilePath(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant)
 	{
+		boolean isCommonEndpointKind = this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(variant));
 		String basedir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
 		return basedir
-				+ "/" + this.apigen.getFamilyPackageName(family)
+				+ (isCommonEndpointKind ? "" : "/" + this.apigen.getFamilyPackageName(family))
 				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant);
 	}
 }

@@ -207,8 +207,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			filename = "$" + filename.substring(1);
 		}
+		// Duplicated from RPCoreSTSessionApiBuilder#getEndpointKindFilePath
+		boolean isCommonEndpointKind = this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(this.variant));  
 		return this.gpn.toString().replaceAll("\\.", "/") 
-				+ "/" + this.apigen.getFamilyPackageName(family)
+				+ (isCommonEndpointKind ? "" : "/" + this.apigen.getFamilyPackageName(family))
 				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant)  // State chans located with Endpoint Kind API
 				+ "/" + filename + ".go";
 	}
