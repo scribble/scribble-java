@@ -49,6 +49,8 @@ public class RPCoreSTSessionApiBuilder
 		return res;
 	}
 	
+	// basedir is derived from protocol full name, and is used as offset to -d
+	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
 	private void buildProtocolApi(ProtocolDecl<Global> gpd, String basedir, Map<String, String> res)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
@@ -74,7 +76,8 @@ public class RPCoreSTSessionApiBuilder
 								{	
 
 								return "import " + this.apigen.getFamilyPackageName(f) + "_" + epkindPackName
-										+ " \"" + this.apigen.packpath + "/" + this.apigen.getApiRootPackageName()
+										+ " \"" + this.apigen.packpath  // "Absolute" -- cf. getEndpointFilePath, "relative"
+										+ "/" + this.apigen.getApiRootPackageName()
 										+ "/" + this.apigen.getFamilyPackageName(f)
 										+ "/" + epkindPackName + "\"\n";
 
@@ -154,6 +157,8 @@ public class RPCoreSTSessionApiBuilder
 	}
 
 	// FIXME: should be lpd
+	// basedir is derived from protocol full name, and is used as offset to -d
+	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
 	private void buildEndpointKindApi(ProtocolDecl<Global> gpd, String basedir, Map<String, String> res)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
@@ -237,6 +242,7 @@ public class RPCoreSTSessionApiBuilder
 					{
 						if (!v.equals(variant))  // FIXME: endpoint families -- and id value checks
 						{
+							// Accept/Dial methods
 							String r = v.getLastElement();
 							String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(v);
 							epkindFile += "\n"
@@ -289,13 +295,21 @@ public class RPCoreSTSessionApiBuilder
 							+ "return &end\n"
 							+ "}";
 				
-					res.put(basedir
-									+ "/" + this.apigen.getFamilyPackageName(family)
-									+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant)
+					res.put(getEndpointFilePath(basedir, family, variant)
 									+ "/" + RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant) + ".go",
 							"package " + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "\n" + epkindFile);
 				}
 			}
 		}
+	}
+	
+	// basedir is derived from protocol full name, and is used as offset to -d
+	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
+	protected String getEndpointFilePath(String basedir,
+			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant)
+	{
+		return basedir
+				+ "/" + this.apigen.getFamilyPackageName(family)
+				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant);
 	}
 }

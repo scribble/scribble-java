@@ -168,7 +168,7 @@ public class RPCoreSTApiGenerator
 	}
 	
 	//@Override
-	public String getApiRootPackageName()  // Derives only from proto name
+	public String getApiRootPackageName()  // Derives only from simple proto name
 	{
 		return this.proto.getSimpleName().toString();
 	}
