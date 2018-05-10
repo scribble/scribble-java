@@ -108,7 +108,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 
 	@Override
-	public String getFilePath(String filename)
+	public String getStateChannelFilePath(String filename)
 	{
 		//throw new RuntimeException("[param-core] TODO:");
 		if (filename.startsWith("_"))  // Cannot use "_" prefix, ignored by Go
@@ -305,17 +305,17 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			switch (getStateKind(s))
 			{
-				case CROSS_SEND:      api.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
+				case CROSS_SEND:      api.put(getStateChannelFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
 				case CROSS_RECEIVE: 
 				{
 					if (s.getActions().size() > 1)
 					{
-						api.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
+						api.put(getStateChannelFilePath(getStateChanName(s)), this.bb.build(this, s));
 						//api.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));  // FIXME: factor out
 					}
 					else
 					{
-						api.put(getFilePath(getStateChanName(s)), this.rb.build(this, s));
+						api.put(getStateChannelFilePath(getStateChanName(s)), this.rb.build(this, s));
 					}
 					break;
 				}
@@ -331,7 +331,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				{
 					throw new RuntimeException("[param-core] TODO: " + s);
 				}
-				case TERMINAL:    api.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
+				case TERMINAL:    api.put(getStateChannelFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
 				default:          throw new RuntimeException("[param-core] Shouldn't get in here: " + s);
 			}
 		}

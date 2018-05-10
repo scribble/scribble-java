@@ -44,7 +44,7 @@ public class GoSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 
 	@Override
-	public String getFilePath(String filename)
+	public String getStateChannelFilePath(String filename)
 	{
 		if (filename.startsWith("_"))  // Cannot use "_" prefix, ignored by Go
 		{

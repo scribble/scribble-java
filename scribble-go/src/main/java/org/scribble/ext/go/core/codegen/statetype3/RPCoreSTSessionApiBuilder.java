@@ -42,16 +42,13 @@ public class RPCoreSTSessionApiBuilder
 	{
 		Module mod = this.apigen.job.getContext().getModule(this.apigen.proto.getPrefix());
 		ProtocolDecl<Global> gpd = mod.getProtocolDecl(this.apigen.proto.getSimpleName());
-		String basedir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
 		Map<String, String> res = new HashMap<>();  // filepath -> source
-		buildProtocolApi(gpd, basedir, res);
-		buildEndpointKindApi(gpd, basedir, res);
+		buildProtocolApi(gpd, res);
+		buildEndpointKindApi(gpd, res);
 		return res;
 	}
 	
-	// basedir is derived from protocol full name, and is used as offset to -d
-	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
-	private void buildProtocolApi(ProtocolDecl<Global> gpd, String basedir, Map<String, String> res)
+	private void buildProtocolApi(ProtocolDecl<Global> gpd, Map<String, String> res)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		List<Role> rolenames = //gpd.header.roledecls.getRoles();
@@ -76,7 +73,7 @@ public class RPCoreSTSessionApiBuilder
 								{	
 
 								return "import " + this.apigen.getFamilyPackageName(f) + "_" + epkindPackName
-										+ " \"" + this.apigen.packpath  // "Absolute" -- cf. getEndpointFilePath, "relative"
+										+ " \"" + this.apigen.packpath  // "Absolute" -- cf. getProtocol/EndpointFilePath, "relative"
 										+ "/" + this.apigen.getApiRootPackageName()
 										+ "/" + this.apigen.getFamilyPackageName(f)
 										+ "/" + epkindPackName + "\"\n";
@@ -153,13 +150,11 @@ public class RPCoreSTSessionApiBuilder
 			}
 		}
 
-		res.put(basedir + simpname + ".go", protoFile);
+		res.put(getProtocolFilePath() + simpname + ".go", protoFile);
 	}
 
 	// FIXME: should be lpd
-	// basedir is derived from protocol full name, and is used as offset to -d
-	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
-	private void buildEndpointKindApi(ProtocolDecl<Global> gpd, String basedir, Map<String, String> res)
+	private void buildEndpointKindApi(ProtocolDecl<Global> gpd, Map<String, String> res)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		List<Role> roles = //gpd.header.roledecls.getRoles();
@@ -295,7 +290,7 @@ public class RPCoreSTSessionApiBuilder
 							+ "return &end\n"
 							+ "}";
 				
-					res.put(getEndpointFilePath(basedir, family, variant)
+					res.put(getEndpointFilePath(family, variant)
 									+ "/" + RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant) + ".go",
 							"package " + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "\n" + epkindFile);
 				}
@@ -303,11 +298,21 @@ public class RPCoreSTSessionApiBuilder
 		}
 	}
 	
-	// basedir is derived from protocol full name, and is used as offset to -d
+	// Returns path to use as offset to -d
 	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
-	protected String getEndpointFilePath(String basedir,
-			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant)
+	// FIXME: factor up to super -- cf. STStateChanApiBuilder#getStateChannelFilePath
+	public String getProtocolFilePath()
 	{
+		String basedir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
+		return basedir;
+	}
+
+	// Returns path to use as offset to -d
+	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
+	// FIXME: factor up to super -- cf. STStateChanApiBuilder#getStateChannelFilePath
+	public String getEndpointFilePath(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant)
+	{
+		String basedir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
 		return basedir
 				+ "/" + this.apigen.getFamilyPackageName(family)
 				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant);

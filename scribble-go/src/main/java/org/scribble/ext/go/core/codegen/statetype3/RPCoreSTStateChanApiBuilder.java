@@ -111,24 +111,24 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			switch (RPCoreSTStateChanApiBuilder.getStateKind(s))
 			{
-				case CROSS_SEND: res.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
+				case CROSS_SEND: res.put(getStateChannelFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
 				case CROSS_RECEIVE: 
 				{
 					if (s.getActions().size() > 1)
 					{
 						if (((GoJob) this.job).selectApi)  // Select-based branch
 						{
-							res.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
+							res.put(getStateChannelFilePath(getStateChanName(s)), this.bb.build(this, s));
 						}
 						else // Type switch -based branch
 						{
-							res.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
-							res.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));
+							res.put(getStateChannelFilePath(getStateChanName(s)), this.bb.build(this, s));
+							res.put(getStateChannelFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));
 						}
 					}
 					else
 					{
-						res.put(getFilePath(getStateChanName(s)), this.rb.build(this, s));
+						res.put(getStateChannelFilePath(getStateChanName(s)), this.rb.build(this, s));
 					}
 					break;
 				}
@@ -150,7 +150,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					{
 						if (!((RPCoreEState) s).hasNested())
 						{
-							res.put(getFilePath(name), this.eb.build(this, s));
+							res.put(getStateChannelFilePath(name), this.eb.build(this, s));
 							hasTerm = true;
 						}
 					}
@@ -183,7 +183,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					//+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
 					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
 					+ "}\n";
-			res.put(getFilePath("End"), end);
+			res.put(getStateChannelFilePath("End"), end);
 		}
 		
 		// FIXME HACK
@@ -198,8 +198,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return res;
 	}
 
+	// Returns path to use as offset to -d
+	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
 	@Override
-	public String getFilePath(String filename)
+	public String getStateChannelFilePath(String filename)
 	{
 		if (filename.startsWith("_"))  // Cannot use "_" prefix, ignored by Go
 		{
@@ -261,7 +263,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
 				+ "}\n";
 
-		res.put(getFilePath(scTypeName), feach);
+		res.put(getStateChannelFilePath(scTypeName), feach);
 		
 		RPCoreEState term = (RPCoreEState) MState.getTerminal(init);
 		//res.putAll(new RPCoreSTStateChanApiBuilder(this.apigen, this.variant, new EGraph(init, term)).build());
