@@ -358,7 +358,7 @@ public class RPCoreCommandLine extends CommandLine
 	{
 		job.debugPrintln("\n[rp-core] Computing peers:");
 
-		Map<RPRoleVariant, Set<RPRoleVariant>> foo = new HashMap<>();
+		Map<RPRoleVariant, Set<RPRoleVariant>> map = new HashMap<>();
 
 		String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_API_GEN);
 		for (Role rname : (Iterable<Role>) Arrays.asList(args).stream().map(r -> new Role(r))::iterator)
@@ -371,12 +371,12 @@ public class RPCoreCommandLine extends CommandLine
 				{*/
 					Set<RPIndexedRole> irs = MState.getReachableActions(this.E0.get(rname).get(variant).init).stream()
 							.map(a -> ((RPCoreEAction) a).getPeer()).collect(Collectors.toSet());
-					Set<RPRoleVariant> bar = new HashSet<>();
+					Set<RPRoleVariant> peers = new HashSet<>();
 					next: for (RPRoleVariant v : (Iterable<RPRoleVariant>)
 							this.E0.values().stream()
 									.flatMap(m -> m.keySet().stream())::iterator)
 					{
-						if (!v.equals(variant) && !bar.contains(v))
+						if (!v.equals(variant) && !peers.contains(v))
 						{
 							job.debugPrintln("\n[rp-core] For " + variant + ", checking potential peer: " + v);
 
@@ -409,22 +409,22 @@ public class RPCoreCommandLine extends CommandLine
 									
 									job.debugPrintln("[rp-core] Running Z3 on:\n" + smt2);
 									
-									boolean isSat = Z3Wrapper.checkSat(job, gpd, smt2);
+									boolean isSat = Z3Wrapper.checkSat(job, this.gpd, smt2);
 									job.debugPrintln("[rp-core] Checked sat: " + isSat);
 									if (isSat)
 									{
-										bar.add(v);
+										peers.add(v);
 										continue next;
 									}
 								}
 							}
 						}
 					}
-					foo.put(variant, bar);
+					map.put(variant, peers);
 				//}
 			}
 		}
-		return foo;
+		return map;
 	}	
 	
 	
