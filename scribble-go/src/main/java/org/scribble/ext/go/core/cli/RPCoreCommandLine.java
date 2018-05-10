@@ -455,15 +455,22 @@ public class RPCoreCommandLine extends CommandLine
 					.filter(x -> !cand.contains(x)).collect(Collectors.toSet());
 			
 			String smt2 = "(assert ";
-			smt2 += "(exists (" + vars.stream().map(x -> "(" + x + " Int)").collect(Collectors.joining(" ")) + ")\n";  // FIXME: factor up -- and factor out with getVariants
-			smt2 += "(and\n";
+			if (!vars.isEmpty())
+			{
+				smt2 += "(exists (" + vars.stream().map(x -> "(" + x + " Int)").collect(Collectors.joining(" ")) + ")\n";  // FIXME: factor up -- and factor out with getVariants
+				smt2 += "(and\n";
+			}
 			smt2 += "(and " + cand.stream()
 					.map(v -> makePhiSmt2(v.intervals, v.cointervals)).collect(Collectors.joining(" ")) + ")\n";
 			smt2 += (coset.size() > 0)
 					? "(and " + coset.stream()
 							.map(v -> "(not " + makePhiSmt2(v.intervals, v.cointervals) + ")").collect(Collectors.joining(" ")) + ")\n"
 					: "";
-			smt2 += ")))";
+			if (!vars.isEmpty())
+			{
+				smt2 += "))";
+			}
+			smt2 += ")";
 			
 			job.debugPrintln("\n[rp-core] Candidate (" + i++ + "/" + size + "): " + cand);
 			job.debugPrintln("[rp-core] Co-set: " + coset);
