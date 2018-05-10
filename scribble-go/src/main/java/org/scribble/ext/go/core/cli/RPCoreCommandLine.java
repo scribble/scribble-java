@@ -382,6 +382,8 @@ public class RPCoreCommandLine extends CommandLine
 						{
 							job.debugPrintln("\n[rp-core] For " + variant + ", checking potential peer: " + peer);
 							
+							//System.out.println("aaa: " + irs + ",, " + peer);
+							
 							for (RPIndexedRole ir : irs)
 							{
 								if (ir.getName().equals(peer.getName()))

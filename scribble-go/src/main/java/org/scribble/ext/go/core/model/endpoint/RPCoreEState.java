@@ -137,11 +137,15 @@ public class RPCoreEState extends EState
 	{
 		Set<RPCoreEState> res = MState.getReachableStates(start).stream()
 				.map(s -> (RPCoreEState) s).collect(Collectors.toSet());
+
+		//System.out.println("ccc: " + start.id + ",, " + res);
+
 		Set<RPCoreEState> nested = res.stream()
 				.flatMap(s -> s.hasNested() ? Stream.concat(Stream.of(s.nested), getReachableStates(s.nested).stream()) : Stream.of()).collect(Collectors.toSet());
 		res.addAll(nested);
 		if (start.hasNested())  // N.B. start itself is not considered reachable -- correct?
 		{
+			res.add(start.nested);
 			res.addAll(getReachableStates(start.nested));
 		}
 		return res;
@@ -154,6 +158,9 @@ public class RPCoreEState extends EState
 		rs.add(start);
 		Set<RPCoreEAction> tmp = rs.stream()
 				.flatMap(s -> s.getAllActions().stream().map(a -> (RPCoreEAction) a)).collect(Collectors.toSet());
+		
+		//System.out.println("bbb: " + start.id + ",, " + rs + ",, " + tmp);
+		
 		return tmp;
 	}
 }
