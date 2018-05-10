@@ -1,16 +1,22 @@
 package org.scribble.ext.go.core.model.endpoint;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
+import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.model.endpoint.actions.EReceive;
+import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.type.name.RecVar;
 
 // Cf. AssrtEState
@@ -152,12 +158,56 @@ public class RPCoreEState extends EState
 	}
 
 	// FIXME: make not static -- otherwise choosing statics (cf. MState) by overloading, error prone
-	public static Set<RPCoreEAction> getReachableActions(RPCoreEState start)
+	// cf. RPCoreGForeach#getIndexedRoles
+	public static Set<RPCoreEAction> getReachableActions(RPCoreEModelFactory ef, RPCoreEState start)
 	{
 		Set<RPCoreEState> rs = getReachableStates(start);
 		rs.add(start);
 		Set<RPCoreEAction> tmp = rs.stream()
 				.flatMap(s -> s.getAllActions().stream().map(a -> (RPCoreEAction) a)).collect(Collectors.toSet());
+		
+		if (start.hasNested())
+		{
+			Set<RPCoreEAction> tmp2 = new HashSet<>();
+			for (RPCoreEAction a : tmp)
+			{
+				if (a.getPeer().intervals.stream().flatMap(d -> d.getIndexVars().stream()).anyMatch(x -> x.toString().equals(start.param.toString())))
+				{
+					Set<RPInterval> blah = new HashSet<>();
+					for (RPInterval d : a.getPeer().intervals)
+					{
+						// FIXME: current assuming if any I occurrence, then interval is be [I,I]
+						if (d.getIndexVars().stream().anyMatch(x -> x.toString().equals(start.param.toString())))
+						{
+							blah.add(start.interval);
+						}
+						else
+						{
+							blah.add(d);
+						}
+					}
+					RPIndexedRole b = new RPIndexedRole(a.getPeer().getName().toString(), blah);
+
+					if (a instanceof RPCoreECrossSend)
+					{
+						tmp2.add(ef.newParamCoreECrossSend(b, ((ESend) a).mid, ((ESend) a).payload));
+					}
+					else if (a instanceof RPCoreECrossReceive)
+					{
+						tmp2.add(ef.newParamCoreECrossReceive(b, ((EReceive) a).mid, ((EReceive) a).payload));
+					}
+					else
+					{
+						throw new RuntimeException("[rp-core] Shouldn't get in here: " + a);
+					}
+				}
+				else
+				{
+					tmp2.add(a);
+				}
+			}
+			tmp = tmp2;
+		}
 		
 		//System.out.println("bbb: " + start.id + ",, " + rs + ",, " + tmp);
 		

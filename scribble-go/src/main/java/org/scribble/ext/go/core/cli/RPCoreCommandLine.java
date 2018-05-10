@@ -32,6 +32,7 @@ import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator;
 import org.scribble.ext.go.core.main.RPCoreException;
 import org.scribble.ext.go.core.main.RPCoreMainContext;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEGraphBuilder;
+import org.scribble.ext.go.core.model.endpoint.RPCoreEModelFactory;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
 import org.scribble.ext.go.core.type.RPIndexedRole;
@@ -363,26 +364,27 @@ public class RPCoreCommandLine extends CommandLine
 		String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_API_GEN);
 		for (Role rname : (Iterable<Role>) Arrays.asList(args).stream().map(r -> new Role(r))::iterator)
 		{
-			for (RPRoleVariant variant : this.E0.get(rname).keySet()) 
+			for (RPRoleVariant self : this.E0.get(rname).keySet()) 
 			{
 				/*for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
 						(Iterable<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>) 
 								this.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)  // FIXME: use family to make accept/dial
 				{*/
+					// CHECKME: use local types instead of FSMs?  (RPCoreGForeach#getIndexedRoles)
 					Set<RPIndexedRole> irs = //MState.getReachableActions
-							RPCoreEState.getReachableActions
-									((RPCoreEState) this.E0.get(rname).get(variant).init).stream()  // FIXME: cast needed to select correct static
+							RPCoreEState.getReachableActions((RPCoreEModelFactory) job.ef,
+									(RPCoreEState) this.E0.get(rname).get(self).init).stream()  // FIXME: static "overloading" (cf. MState) error prone
 							.map(a -> ((RPCoreEAction) a).getPeer()).collect(Collectors.toSet());
 					Set<RPRoleVariant> peers = new HashSet<>();
 					next: for (RPRoleVariant peer : (Iterable<RPRoleVariant>)  // Candidate
 							this.E0.values().stream()
 									.flatMap(m -> m.keySet().stream())::iterator)
 					{
-						if (!peer.equals(variant) && !peers.contains(peer))
+						if (!peer.equals(self) && !peers.contains(peer))
 						{
-							job.debugPrintln("\n[rp-core] For " + variant + ", checking potential peer: " + peer);
+							job.debugPrintln("\n[rp-core] For " + self + ", checking potential peer: " + peer);
 							
-							//System.out.println("aaa: " + irs + ",, " + peer);
+							//System.out.println("aaa: " + self + ",, "+ peer + ",, " + irs);
 							
 							for (RPIndexedRole ir : irs)
 							{
@@ -424,7 +426,7 @@ public class RPCoreCommandLine extends CommandLine
 							}
 						}
 					}
-					map.put(variant, peers);
+					map.put(self, peers);
 				//}
 			}
 		}

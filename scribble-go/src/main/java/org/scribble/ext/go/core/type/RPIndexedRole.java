@@ -19,10 +19,10 @@ public class RPIndexedRole extends Role
 	//public final ParamRange range;
 	public final Set<RPInterval> intervals;  // size >= 1 -- size == 1 for parsed syntax
 	
-	public RPIndexedRole(String name, Set<RPInterval> ranges)
+	public RPIndexedRole(String name, Set<RPInterval> intervals)
 	{
 		super(name);
-		this.intervals = Collections.unmodifiableSet(ranges);
+		this.intervals = Collections.unmodifiableSet(intervals);
 	}
 
 	public Set<RPIndexVar> getIndexVars()
