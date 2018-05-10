@@ -3,22 +3,29 @@ package org.scribble.ext.go.core.codegen.statetype3;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.del.ModuleDel;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.cli.RPCoreCLArgParser;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
+import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.main.ScribbleException;
+import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
@@ -38,6 +45,7 @@ public class RPCoreSTApiGenerator
 	public final Map<Role, Map<RPRoleVariant, EGraph>> variants;
 	//public final Map<RPRoleVariant, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>> families;
 	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> families;
+	public final Map<RPRoleVariant, Set<RPRoleVariant>> peers;
 	
 	public final String packpath;  // Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
 	//public final Role self;  
@@ -96,6 +104,71 @@ public class RPCoreSTApiGenerator
 		this.packpath = packpath;
 		//this.self = self;
 		this.selfs = Collections.unmodifiableList(selfs);
+		
+		Map<RPRoleVariant, Set<RPRoleVariant>> foo = new HashMap<>();
+		Module mod = job.getContext().getModule(this.proto.getPrefix());
+		ProtocolDecl<Global> gpd = mod.getProtocolDecl(this.proto.getSimpleName());
+		for (Role rname : selfs)
+		{
+			for (RPRoleVariant variant : variants.get(rname).keySet()) 
+			{
+				/*for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
+						(Iterable<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>) 
+								this.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)  // FIXME: use family to make accept/dial
+				{*/
+					Set<RPIndexedRole> irs = MState.getReachableActions(variants.get(rname).get(variant).init).stream()
+							.map(a -> ((RPCoreEAction) a).getPeer()).collect(Collectors.toSet());
+					Set<RPRoleVariant> bar = new HashSet<>();
+					next: for (RPRoleVariant v : (Iterable<RPRoleVariant>)
+							variants.values().stream()
+									.flatMap(m -> m.keySet().stream())::iterator)
+					{
+						if (!v.equals(variant) && !bar.contains(v))
+						{
+							for (RPIndexedRole ir : irs)
+							{
+								if (ir.getName().equals(v.getName()))
+								{
+									if (ir.intervals.size() > 1)
+									{
+										throw new RuntimeException("[rp-core] TODO: multi-dimension intervals: " + ir);
+									}
+									RPInterval d = ir.intervals.stream().findAny().get();
+									
+									Set<RPIndexVar> vars = Stream.concat(v.intervals.stream().flatMap(x -> x.getIndexVars().stream()), v.cointervals.stream().flatMap(x -> x.getIndexVars().stream()))
+											.collect(Collectors.toSet());
+									vars.addAll(ir.getIndexVars());
+
+									String smt2 = "(assert ";
+									smt2 += "(exists ((self Int) "
+											+  (vars.isEmpty() ? "" : vars.stream().map(x -> "(" + x + " Int)").collect(Collectors.joining(" "))) + ")\n";
+									smt2 += "(and \n";
+									smt2 += v.intervals.stream().map(x -> "(>= self " + x.start + ") (<= self " + x.end + ")").collect(Collectors.joining(" ")) + "\n";
+									smt2 += v.cointervals.isEmpty() 
+											? ""
+											: "(or " + v.cointervals.stream().map(x -> "(< self " + x.start + ") (> self " + x.end + ")").collect(Collectors.joining(" ")) + ")\n";
+									smt2 += "(>= self " + d.start + ") (<= self " + d.end + ")\n";
+									smt2 += ")";
+									smt2 += ")";
+									smt2 += ")";
+									boolean isSat = Z3Wrapper.checkSat(job, gpd, smt2);
+									//System.out.println("bbb smt2: " + variant + ",, " + v + ",, " + ir + "\n" + smt2);
+									//System.out.println("ccc checked sat: " + isSat + "\n");
+									if (isSat)
+									{
+										bar.add(v);
+										continue next;
+									}
+								}
+							}
+						}
+					}
+					foo.put(variant, Collections.unmodifiableSet(bar));
+				//}
+			}
+		}
+		this.peers = Collections.unmodifiableMap(foo);
+		//System.out.println("aaa: " + peers);
 	}
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later

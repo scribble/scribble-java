@@ -463,7 +463,7 @@ public class RPCoreCommandLine extends CommandLine
 	}
 
 	// Doesn't include "assert", nor exists-bind index vars
-	private String makePhiSmt2(Set<RPInterval> cand, Set<RPInterval> coset)
+	private static String makePhiSmt2(Set<RPInterval> cand, Set<RPInterval> coset)
 	{
 		String z3 = "";
 

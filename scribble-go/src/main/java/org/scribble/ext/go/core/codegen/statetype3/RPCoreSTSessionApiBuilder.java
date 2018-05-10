@@ -67,13 +67,18 @@ public class RPCoreSTSessionApiBuilder
 									variants.stream().map(v -> 
 									{
 										String epkindPackName = RPCoreSTApiGenerator.getEndpointKindPackageName(v);
-										boolean isCommonEndpointKind = this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(v));  // Cf. getEndpointKindFilePath
+										// Cf. getEndpointKindFilePath
+										boolean isCommonEndpointKind = //this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(v));  // No: doesn't consider dial/accept
+												//this.apigen.families.keySet().stream().filter(f -> f.left.contains(v)).distinct().count() == 1;  // No: too conservative -- should be about required peer endpoint kinds (to dial/accept with)
+												this.apigen.peers.get(v).size() == 1;
+
 										return
 												this.apigen.families.keySet().stream().filter(f -> f.left.contains(v)).map(f ->
 												{	
 													return "import " + this.apigen.getFamilyPackageName(f) + "_" + epkindPackName
-															+ " \"" + this.apigen.packpath + "/" + this.apigen.getApiRootPackageName()  // "Absolute" -- cf. getProtocol/EndpointKindFilePath, "relative"
+															//+ " \"" + this.apigen.packpath + "/" + this.apigen.getApiRootPackageName()  // "Absolute" -- cf. getProtocol/EndpointKindFilePath, "relative"
 															+ (isCommonEndpointKind ? "" : "/" + this.apigen.getFamilyPackageName(f))
+															+ "/" + this.apigen.getFamilyPackageName(f)
 															+ "/" + epkindPackName + "\"\n";
 												}).collect(Collectors.joining(""));
 									}).collect(Collectors.joining(""));
@@ -225,9 +230,13 @@ public class RPCoreSTSessionApiBuilder
 									+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[rolename][id] = req.Connect()\n"
 							+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
 							+ "}\n";*/
-					for (RPRoleVariant v : (Iterable<RPRoleVariant>)
+
+					//Map<RPRoleVariant, EGraph> map = this.apigen.variants.get(rname);
+
+					/*for (RPRoleVariant v : (Iterable<RPRoleVariant>)
 							this.apigen.variants.values().stream()
-									.flatMap(m -> m.keySet().stream())::iterator)
+									.flatMap(m -> m.keySet().stream())::iterator)*/
+					for (RPRoleVariant v : this.apigen.peers.get(variant))
 					{
 						if (!v.equals(variant))  // FIXME: endpoint families -- and id value checks
 						{
@@ -306,9 +315,12 @@ public class RPCoreSTSessionApiBuilder
 	// FIXME: factor up to super -- cf. STStateChanApiBuilder#getStateChannelFilePath
 	public String getEndpointKindFilePath(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant)
 	{
-		boolean isCommonEndpointKind = this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(variant));
+		boolean isCommonEndpointKind = //this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(variant));  // No: doesn't consider dial/accept
+				//this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant)).distinct().count() == 1;
+				this.apigen.peers.get(variant).size() == 1;
 		String basedir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
 		return basedir
+				//+ "/" + this.apigen.getFamilyPackageName(family)
 				+ (isCommonEndpointKind ? "" : "/" + this.apigen.getFamilyPackageName(family))
 				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant);
 	}
