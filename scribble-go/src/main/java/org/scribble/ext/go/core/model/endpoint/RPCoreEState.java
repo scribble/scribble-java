@@ -1,7 +1,10 @@
 package org.scribble.ext.go.core.model.endpoint;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.model.MState;
@@ -127,5 +130,30 @@ public class RPCoreEState extends EState
 	protected boolean canEquals(MState<?, ?, ?, ?> s)
 	{
 		return s instanceof RPCoreEState;
+	}
+
+	// FIXME: make not static -- otherwise choosing statics (cf. MState) by overloading, error prone
+	public static Set<RPCoreEState> getReachableStates(RPCoreEState start)
+	{
+		Set<RPCoreEState> res = MState.getReachableStates(start).stream()
+				.map(s -> (RPCoreEState) s).collect(Collectors.toSet());
+		Set<RPCoreEState> nested = res.stream()
+				.flatMap(s -> s.hasNested() ? Stream.concat(Stream.of(s.nested), getReachableStates(s.nested).stream()) : Stream.of()).collect(Collectors.toSet());
+		res.addAll(nested);
+		if (start.hasNested())  // N.B. start itself is not considered reachable -- correct?
+		{
+			res.addAll(getReachableStates(start.nested));
+		}
+		return res;
+	}
+
+	// FIXME: make not static -- otherwise choosing statics (cf. MState) by overloading, error prone
+	public static Set<RPCoreEAction> getReachableActions(RPCoreEState start)
+	{
+		Set<RPCoreEState> rs = getReachableStates(start);
+		rs.add(start);
+		Set<RPCoreEAction> tmp = rs.stream()
+				.flatMap(s -> s.getAllActions().stream().map(a -> (RPCoreEAction) a)).collect(Collectors.toSet());
+		return tmp;
 	}
 }

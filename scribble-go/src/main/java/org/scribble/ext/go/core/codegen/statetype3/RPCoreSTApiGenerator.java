@@ -85,13 +85,24 @@ public class RPCoreSTApiGenerator
 							e -> Collections.unmodifiableSet(e.getValue())
 					)));*/
 		int[] i = { 1 };
+		Comparator<RPRoleVariant> variantComp = new Comparator<RPRoleVariant>()  // FIXME: factor out
+			{
+				@Override
+				public int compare(RPRoleVariant i1, RPRoleVariant i2)
+				{
+					return i1.toString().compareTo(i2.toString());
+				}
+			};
 		this.families = Collections.unmodifiableMap(families.stream()
 				.sorted(new Comparator<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>()
 					{
+						// FIXME refactor properly
 						@Override
 						public int compare(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> f1, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> f2)
 						{
-							return f1.toString().compareTo(f2.toString());
+							//return f1.toString().compareTo(f2.toString());  // No: Set elements
+							return (f1.left.stream().sorted(variantComp).map(x -> x.toString()).collect(Collectors.joining("_")) + "_not_" + f1.right.stream().sorted(variantComp).map(x -> x.toString()).collect(Collectors.joining("_")))
+									.compareTo(f2.left.stream().sorted(variantComp).map(x -> x.toString()).collect(Collectors.joining("_")) + "_not_" + f2.right.stream().sorted(variantComp).map(x -> x.toString()).collect(Collectors.joining("_")));
 						}})
 				.collect(Collectors.toMap(f -> f, f -> i[0]++)));
 

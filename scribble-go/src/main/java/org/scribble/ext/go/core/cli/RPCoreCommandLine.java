@@ -369,20 +369,22 @@ public class RPCoreCommandLine extends CommandLine
 						(Iterable<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>) 
 								this.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)  // FIXME: use family to make accept/dial
 				{*/
-					Set<RPIndexedRole> irs = MState.getReachableActions(this.E0.get(rname).get(variant).init).stream()
+					Set<RPIndexedRole> irs = //MState.getReachableActions
+							RPCoreEState.getReachableActions
+									((RPCoreEState) this.E0.get(rname).get(variant).init).stream()  // FIXME: cast needed to select correct static
 							.map(a -> ((RPCoreEAction) a).getPeer()).collect(Collectors.toSet());
 					Set<RPRoleVariant> peers = new HashSet<>();
-					next: for (RPRoleVariant v : (Iterable<RPRoleVariant>)
+					next: for (RPRoleVariant peer : (Iterable<RPRoleVariant>)  // Candidate
 							this.E0.values().stream()
 									.flatMap(m -> m.keySet().stream())::iterator)
 					{
-						if (!v.equals(variant) && !peers.contains(v))
+						if (!peer.equals(variant) && !peers.contains(peer))
 						{
-							job.debugPrintln("\n[rp-core] For " + variant + ", checking potential peer: " + v);
-
+							job.debugPrintln("\n[rp-core] For " + variant + ", checking potential peer: " + peer);
+							
 							for (RPIndexedRole ir : irs)
 							{
-								if (ir.getName().equals(v.getName()))
+								if (ir.getName().equals(peer.getName()))
 								{
 									if (ir.intervals.size() > 1)
 									{
@@ -390,19 +392,19 @@ public class RPCoreCommandLine extends CommandLine
 									}
 									RPInterval d = ir.intervals.stream().findAny().get();
 									
-									Set<RPIndexVar> vars = Stream.concat(v.intervals.stream().flatMap(x -> x.getIndexVars().stream()), v.cointervals.stream().flatMap(x -> x.getIndexVars().stream()))
+									Set<RPIndexVar> vars = Stream.concat(peer.intervals.stream().flatMap(x -> x.getIndexVars().stream()), peer.cointervals.stream().flatMap(x -> x.getIndexVars().stream()))
 											.collect(Collectors.toSet());
 									vars.addAll(ir.getIndexVars());
 
 									String smt2 = "(assert ";
-									smt2 += "(exists ((self Int) "
+									smt2 += "(exists ((peer Int) "
 											+  (vars.isEmpty() ? "" : vars.stream().map(x -> "(" + x + " Int)").collect(Collectors.joining(" "))) + ")\n";
 									smt2 += "(and \n";
-									smt2 += v.intervals.stream().map(x -> "(>= self " + x.start + ") (<= self " + x.end + ")").collect(Collectors.joining(" ")) + "\n";
-									smt2 += v.cointervals.isEmpty() 
+									smt2 += peer.intervals.stream().map(x -> "(>= peer " + x.start + ") (<= peer " + x.end + ")").collect(Collectors.joining(" ")) + "\n";
+									smt2 += peer.cointervals.isEmpty() 
 											? ""
-											: "(or " + v.cointervals.stream().map(x -> "(< self " + x.start + ") (> self " + x.end + ")").collect(Collectors.joining(" ")) + ")\n";
-									smt2 += "(>= self " + d.start + ") (<= self " + d.end + ")\n";
+											: "(or " + peer.cointervals.stream().map(x -> "(< peer " + x.start + ") (> peer " + x.end + ")").collect(Collectors.joining(" ")) + ")\n";
+									smt2 += "(>= peer " + d.start + ") (<= peer " + d.end + ")\n";
 									smt2 += ")";
 									smt2 += ")";
 									smt2 += ")";
@@ -413,7 +415,7 @@ public class RPCoreCommandLine extends CommandLine
 									job.debugPrintln("[rp-core] Checked sat: " + isSat);
 									if (isSat)
 									{
-										peers.add(v);
+										peers.add(peer);
 										continue next;
 									}
 								}
