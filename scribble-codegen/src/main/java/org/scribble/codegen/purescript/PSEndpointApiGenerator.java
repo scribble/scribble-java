@@ -53,7 +53,7 @@ public class PSEndpointApiGenerator
 
         // Generate protocol type-level information
         DataType protocolType = new DataType(protocolName, null, "Protocol", true);
-        TypeClassInstance protocolNameInst = new TypeClassInstance("protocolName" + protocolType.name, "RoleName", new String[] {protocolType.name, ("\"" + protocolType.name + "\"")});
+        TypeClassInstance protocolNameInst = new TypeClassInstance("protocolName" + protocolType.name, "ProtocolName", new String[] {protocolType.name, ("\"" + protocolType.name + "\"")});
 
         StringBuilder roleNames = new StringBuilder("(");
         // For each role make a projection, then traverse the graph getting the states + transitions
@@ -289,7 +289,7 @@ public class PSEndpointApiGenerator
     private static String staticImports() {
         StringBuilder sb = new StringBuilder();
 		sb.append("import Scribble.FSM\n");
-        sb.append("import Scribble.Type.SList\n");
+        sb.append("import Scribble.Type.SList (type (:::), SLProxy(..), SNil, symbols)\n");
 		sb.append("import Type.Row (Cons, Nil)\n");
 		sb.append("import Data.Void (Void)\n");
         return sb.toString();
@@ -298,8 +298,8 @@ public class PSEndpointApiGenerator
     private static String jsonImports() {
         StringBuilder sb = new StringBuilder();
         sb.append("-- From purescript-argonaut-codecs\n");
-        sb.append("import Data.Argonaut.Decode\n");
-        sb.append("import Data.Argonaut.Encode\n");
+        sb.append("import Data.Argonaut.Decode (class DecodeJson)\n");
+        sb.append("import Data.Argonaut.Encode (class EncodeJson)\n");
         sb.append("import Data.Argonaut.Core (Json) -- From purescript-argonaut-core\n");
         sb.append("import Data.Generic.Rep (class Generic) -- From purescript-generics-rep\n");
         sb.append("-- From purescript-argonaut-generic\n");

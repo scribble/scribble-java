@@ -45,7 +45,7 @@ public class DataType {
 
     public String generateDataType() {
         if (isForeign) {
-            return "foreign import data " + name + (kind.equals(KIND_TYPE) ? "" : (" :: " + kind)) + "\n";
+            return "foreign import data " + name + " :: " + kind + "\n";
         } else {
             // TODO: Potential newtype optimisation for constructors with exactly one value
             // TODO: Derive JSON encoding/decoding
