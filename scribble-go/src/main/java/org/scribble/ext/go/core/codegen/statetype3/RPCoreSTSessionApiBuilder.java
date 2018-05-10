@@ -76,9 +76,9 @@ public class RPCoreSTSessionApiBuilder
 												this.apigen.families.keySet().stream().filter(f -> f.left.contains(v)).map(f ->
 												{	
 													return "import " + this.apigen.getFamilyPackageName(f) + "_" + epkindPackName
-															//+ " \"" + this.apigen.packpath + "/" + this.apigen.getApiRootPackageName()  // "Absolute" -- cf. getProtocol/EndpointKindFilePath, "relative"
+															+ " \"" + this.apigen.packpath + "/" + this.apigen.getApiRootPackageName()  // "Absolute" -- cf. getProtocol/EndpointKindFilePath, "relative"
 															+ (isCommonEndpointKind ? "" : "/" + this.apigen.getFamilyPackageName(f))
-															+ "/" + this.apigen.getFamilyPackageName(f)
+															//+ "/" + this.apigen.getFamilyPackageName(f)
 															+ "/" + epkindPackName + "\"\n";
 												}).collect(Collectors.joining(""));
 									}).collect(Collectors.joining(""));
@@ -238,7 +238,7 @@ public class RPCoreSTSessionApiBuilder
 									.flatMap(m -> m.keySet().stream())::iterator)*/
 					for (RPRoleVariant v : this.apigen.peers.get(variant))
 					{
-						if (!v.equals(variant))  // FIXME: endpoint families -- and id value checks
+						if (!v.equals(variant) && family.left.contains(v))  // FIXME: endpoint families -- and id value checks
 						{
 							// Accept/Dial methods
 							String r = v.getLastElement();

@@ -105,6 +105,7 @@ public class RPCoreSTApiGenerator
 		//this.self = self;
 		this.selfs = Collections.unmodifiableList(selfs);
 		
+		// Compute variant peers of each variant
 		Map<RPRoleVariant, Set<RPRoleVariant>> foo = new HashMap<>();
 		Module mod = job.getContext().getModule(this.proto.getPrefix());
 		ProtocolDecl<Global> gpd = mod.getProtocolDecl(this.proto.getSimpleName());
