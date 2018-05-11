@@ -67,7 +67,18 @@ public class RPCoreCLArgParser extends CLArgParser
 		switch (flag)
 		{
 			// Unique flags
-			case RPCoreCLArgParser.RPCORE_PARAM_FLAG:         return rpParsePackagePathAndParam(i);
+			case RPCoreCLArgParser.RPCORE_PARAM_FLAG:
+			{
+				if (this.rpParsed.containsKey(RPCoreCLArgFlag.RPCORE_API_GEN)
+						|| Arrays.asList(this.args).stream().anyMatch(a -> a.equals(RPCoreCLArgParser.RPCORE_API_GEN_FLAG)) )  // HACK FIXME -- also subsumes above condition
+				{
+					return rpParseParamAndPackagePath(i);
+				}
+				else
+				{
+					return rpParseParam(i);
+				}
+			}
 			case RPCoreCLArgParser.RPCORE_SELECT_BRANCH_FLAG: return rpParseSelectBranch(i);
 			case RPCoreCLArgParser.RPCORE_NOCOPY_FLAG:        return rpParseNoCopy(i);
 			
@@ -84,7 +95,18 @@ public class RPCoreCLArgParser extends CLArgParser
 		}
 	}
 
-	private int rpParsePackagePathAndParam(int i) throws CommandLineException
+	private int rpParseParam(int i) throws CommandLineException
+	{
+		if ((i + 1) >= this.args.length)
+		{
+			throw new CommandLineException("Missing simple global protocol name argument.");
+		}
+		String proto = this.args[++i];
+		rpCheckAndAddUniqueFlag(RPCoreCLArgParser.RPCORE_PARAM_FLAG, new String[] { proto });
+		return i;
+	}
+
+	private int rpParseParamAndPackagePath(int i) throws CommandLineException
 	{
 		if ((i + 2) >= this.args.length)
 		{

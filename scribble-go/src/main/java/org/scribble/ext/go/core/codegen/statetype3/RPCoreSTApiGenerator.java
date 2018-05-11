@@ -121,6 +121,7 @@ public class RPCoreSTApiGenerator
 							e -> Collections.unmodifiableSet(e.getValue())
 					)));
 
+		// FIXME: move into RPCoreSTSessionApiBuilder to avoid redundant work
 		this.stateChanNames = Collections.unmodifiableMap(makeStateChanNames()
 				.entrySet().stream().collect(Collectors.toMap(
 						e -> e.getKey(), 
@@ -145,8 +146,9 @@ public class RPCoreSTApiGenerator
 		Module mod = this.job.getContext().getModule(this.proto.getPrefix());
 		MessageIdCollector midcol = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
 		ProtocolDecl<Global> gpd = mod.getProtocolDecl(this.proto.getSimpleName());
+
 		// Duplicated from. SessionApiGeneration#constructOpClasses
-		gpd.accept(midcol);
+		/*gpd.accept(midcol);
 		for (MessageId<?> mid : midcol.getNames())
 		{
 			String mname = mid.toString();
@@ -156,7 +158,7 @@ public class RPCoreSTApiGenerator
 				throw new ScribbleException("[rpcore] [" + RPCoreCLArgParser.RPCORE_API_GEN_FLAG + "]" 
 						+ " Message identifiers must start uppercase for Go accessibility: " + mname);
 			}
-		}
+		}*/
 
 		RPCoreIndexVarCollector ivarcol = new RPCoreIndexVarCollector(this.job);
 		gpd.accept(ivarcol);

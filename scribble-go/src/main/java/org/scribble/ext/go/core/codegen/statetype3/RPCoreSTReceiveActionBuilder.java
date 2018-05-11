@@ -111,7 +111,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 								+ "}\n";
 					}
 
-					Function<String, String> makeReceiveType = extName -> 
+					Function<String, String> makeReceivePayType = pt -> 
 								"var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
 							//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
 							+ "if err = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
@@ -123,9 +123,9 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 							//+ "log.Fatal(err)\n"
 							+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 							+ "}\n"
-							//+ "arg0[i-" + start + "] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
-							+ "arg0[i-" + start + "] = tmp.(" + extName + ")\n";  // FIXME: gob pointer decoding seems flattened?  ("*" dropped)
-					res += makeReceiveType.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
+							+ "arg0[i-" + start + "] = *(tmp.(*" + pt + "))\n";  // FIXME: doesn't work for gob, pointer decoding seems flattened? ("*" dropped) ...  // Cf. ISend in RPCoreSTSendActionBuilder
+							//+ "arg0[i-" + start + "] = tmp.(" + pt + ")\n";  // FIXME: ... but doesn't work for shm
+					res += makeReceivePayType.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
 				}
 			}
 			else //if (a.mid.isMessageSigName())
@@ -140,8 +140,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 						//+ "log.Fatal(err)\n"
 						+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 						+ "}\n"
-						//+ "arg0[i-" + start + "] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
-						+ "arg0[i-" + start + "] = tmp.(" + extName + ")\n";  // FIXME: gob pointer decoding seems flattened?  ("*" dropped)
+						+ "arg0[i-" + start + "] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
 				res += makeReceiveExtName.apply(rpapi.getExtName((MessageSigName) a.mid));
 			}
 		
