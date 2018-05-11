@@ -5,6 +5,7 @@ import org.scribble.ext.go.type.kind.RPIndexedRoleKind;
 import org.scribble.type.name.AbstractName;
 
 // Currently used for both "actual params" and int literals -- cf. ParamRoleParamRoleNode, and isConstant
+@Deprecated  // Not currently used -- FIXME: name clash with org.scribble.ext.go.core.type.RPIndexedRole
 public class RPIndexedRole extends AbstractName<RPIndexedRoleKind>
 {
 	public final RPIndexExpr start;

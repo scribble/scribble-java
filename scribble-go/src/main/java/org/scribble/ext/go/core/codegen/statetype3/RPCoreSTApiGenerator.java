@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.codegen.statetype3;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,6 +15,7 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.del.ModuleDel;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.cli.RPCoreCLArgParser;
+import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
 import org.scribble.ext.go.main.GoJob;
@@ -39,6 +41,9 @@ public class RPCoreSTApiGenerator
 	//public final Map<RPRoleVariant, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>> families;
 	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> families;
 	public final Map<RPRoleVariant, Set<RPRoleVariant>> peers;
+	
+	public final Map<RPRoleVariant, Map<Integer, String>> stateChanNames;  // State2
+	//private Map<RPRoleVariant, Map<Integer, String>> foreachNames = new HashMap<>();    // State2_ intermediary name (N.B. RPCoreSTStateChanApiBuilder swaps them around for convenience)
 	
 	public final String packpath;  // Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
 	//public final Role self;  
@@ -115,6 +120,12 @@ public class RPCoreSTApiGenerator
 							e -> e.getKey(),
 							e -> Collections.unmodifiableSet(e.getValue())
 					)));
+
+		this.stateChanNames = Collections.unmodifiableMap(makeStateChanNames()
+				.entrySet().stream().collect(Collectors.toMap(
+						e -> e.getKey(), 
+						e -> Collections.unmodifiableMap(e.getValue())))
+		);
 	}
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
@@ -160,6 +171,7 @@ public class RPCoreSTApiGenerator
 		}
 		
 		// Build Session API (Protocol and Endpoint types) and State Channel API
+		makeStateChanNames();
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
 		res.putAll(buildSessionApi());
 		for (Role self : this.selfs)
@@ -189,7 +201,56 @@ public class RPCoreSTApiGenerator
 			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant, EGraph graph)  // FIXME: factor out
 	{
 		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + variant);
-		return new RPCoreSTStateChanApiBuilder(this, family, variant, graph).build();
+		return new RPCoreSTStateChanApiBuilder(this, family, variant, graph, this.stateChanNames.get(variant)).build();
+	}
+	
+	private Map<RPRoleVariant, Map<Integer, String>> makeStateChanNames()
+	{
+		Map<RPRoleVariant, Map<Integer, String>> names = new HashMap<>();
+		for (Entry<RPRoleVariant, EGraph> e : (Iterable<Entry<RPRoleVariant, EGraph>>)
+				this.variants.values().stream().flatMap(v -> v.entrySet().stream())::iterator)
+		{
+			int[] counter = {2};
+			RPRoleVariant v = e.getKey();
+			EGraph g = e.getValue();
+			
+			Map<Integer, String> curr = new HashMap<>();
+			//Map<Integer, String> inames = new HashMap<>();
+			names.put(v, curr);
+			//this.foreachNames.put(v, inames);
+			Set<RPCoreEState> rs = RPCoreEState.getReachableStates((RPCoreEState) g.init);  // FIXME: cast needed to select correct static
+			rs.add((RPCoreEState) g.init);  // Adding for following loop; removed again later
+			for (RPCoreEState s : new HashSet<>(rs))
+			{
+				if (s.hasNested())  // Nested inits
+				{
+					RPCoreEState nested = s.getNested();
+					curr.put(nested.id, "Init_" + nested.id);
+					rs.remove(nested);
+				}
+			}
+			// Handling top-level init/end must come after handling nested
+			curr.put(g.init.id, "Init");
+			rs.remove(g.init);
+			if (g.term != null && g.term.id != g.init.id)
+			{
+				rs.remove(g.term);  // Remove top-level term from rs
+				curr.put(g.term.id, "End");
+			}
+			rs.forEach(s ->
+			{
+				String n = s.isTerminal()
+						? (s.hasNested() ? "End_" + s.id : "End")  // Nested or "regular" term
+						: "State" + counter[0]++;
+				/*if (s.hasNested())
+				{
+					inames.put(s.id, n);
+					n = n + "_";
+				}*/
+				curr.put(s.id, n);
+			});
+		}
+		return names;
 	}
 	
 	//@Override

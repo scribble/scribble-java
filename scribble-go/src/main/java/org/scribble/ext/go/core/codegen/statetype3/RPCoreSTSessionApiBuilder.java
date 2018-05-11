@@ -206,7 +206,11 @@ public class RPCoreSTSessionApiBuilder
 							+ "*" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"
 							+ RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + " *" + RPCoreSTApiGenConstants.GO_MPCHAN_TYPE + "\n"
 							+ ivars.stream().map(x -> x + " int\n").collect(Collectors.joining(""))
-							+ "Params map[string]int\n"
+
+							+ "Params map[string]int\n"  // FIXME: currently used to record foreach params (and provide access to user)
+							
+							//+ ...TODO: pre-create state chans
+
 							+ "}\n"
 
 							// Endpoint Kind type constructor -- makes connection maps
@@ -286,7 +290,8 @@ public class RPCoreSTSessionApiBuilder
 					EState term = MState.getTerminal(g.init);
 					String endName = (g.init.id == term.id ? "Init" : "End") + ((term != null && ((RPCoreEState) term).hasNested()) ? "_" + term.id : "");*/
 					String endName = "End";
-					String init = "Init_" + this.apigen.variants.get(variant.getName()).get(variant).init;
+					String init = //"Init_" + this.apigen.variants.get(variant.getName()).get(variant).init;
+							"Init";
 					epkindFile += "\n"
 							+ "func (ini *" + epkindTypeName + ") Run(f func(*" + init + ") " + endName + ") *" + endName + " {\n"  // f specifies non-pointer End
 							+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".Close()\n"
