@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -209,10 +210,21 @@ public class RPCoreSTSessionApiBuilder
 
 							+ "Params map[string]int\n"  // FIXME: currently used to record foreach params (and provide access to user)
 							
-							+ this.apigen.stateChanNames.get(variant).keySet().stream().sorted().map(k ->
+								// FIXME TODO: case objects?
+							+ this.apigen.stateChanNames.get(variant).entrySet().stream().sorted(
+									new Comparator<Entry<Integer, String>>()
+										{
+											@Override
+											public int compare(Entry<Integer, String> o1, Entry<Integer, String> o2)
+											{
+												return o1.getKey().compareTo(o2.getKey());
+											}
+										}
+									)
+									.map(e -> e.getValue())
+									.distinct()
+									.map(n ->
 									{
-										// FIXME TODO: case objects?
-										String n = this.apigen.stateChanNames.get(variant).get(k);
 										return "_" + n + " *" + n + "\n";
 									}).collect(Collectors.joining())
 
@@ -235,18 +247,29 @@ public class RPCoreSTSessionApiBuilder
 											+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "}),\n"
 									+ ivars.stream().map(x ->  x + ",\n").collect(Collectors.joining(""))
 									+ "make(map[string]int),\n"  // Trailing comma needed
-									+ this.apigen.stateChanNames.get(variant).keySet().stream().map(k -> "nil,\n").collect(Collectors.joining())
+									+ this.apigen.stateChanNames.get(variant).values().stream().distinct().map(k -> "nil,\n").collect(Collectors.joining())
 									+ "}\n"
-									+ this.apigen.stateChanNames.get(variant).keySet().stream().sorted().map(k ->
-											{
-												// FIXME TODO: case objects?
-												String n = this.apigen.stateChanNames.get(variant).get(k);
-												return (n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
-														? "ep._End = &End{ nil, ep }\n"
-														: "ep._" + n + " = &" + n + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ep }\n"; 
-														// cf. state chan builder  // CHECKME: reusing pre-created chan structs OK for Err handling?
-											}
-										).collect(Collectors.joining())
+									+ this.apigen.stateChanNames.get(variant).entrySet().stream().sorted(
+											new Comparator<Entry<Integer, String>>()
+												{
+													@Override
+													public int compare(Entry<Integer, String> o1, Entry<Integer, String> o2)
+													{
+														return o1.getKey().compareTo(o2.getKey());
+													}
+												}
+											)
+											.map(e -> e.getValue())
+											.distinct()
+											.map(n ->
+													{
+														// FIXME TODO: case objects?
+														return (n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
+																? "ep._End = &End{ nil, ep }\n"
+																: "ep._" + n + " = &" + n + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ep }\n"; 
+																// cf. state chan builder  // CHECKME: reusing pre-created chan structs OK for Err handling?
+													}
+												).collect(Collectors.joining())
 									+ "return ep\n";
 
 							epkindFile += "}\n";
