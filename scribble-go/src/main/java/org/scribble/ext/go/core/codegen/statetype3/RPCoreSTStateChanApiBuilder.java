@@ -237,14 +237,17 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		
 		String feach =
 				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
-				+ "\n"
-				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
+				+ "\n";
+				//+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
 
 				// State channel type
 		feach += "\n"
 				+ "type " + scTypeName + " struct {\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+
+				//+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+				+ "id uint64\n"
+
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
 				+ "}\n";
 		
@@ -269,10 +272,16 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						//+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
 						+ sEp + ".Params[\"" + p + "\"] = " + p + "\n"  // FIXME: nested Endpoint type/struct?
 
-				// Duplicated from RPCoreSTSessionApiBuilder  // FIXME: factor out
-				+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
+				// Duplicated from RPCoreSTSessionApiBuilder  // FIXME: factor out with makeReturnSuccStateChan
+				/*+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
 						? "f(newBranch" + initName + "(ini))\n"
-						: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), " + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+						: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), " + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse*/
+				+ "succ := " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + initName + "\n"
+					+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
+							+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
+					+ "succ.id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n"
+					+ "succ." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " = err\n"
+					+ "f(succ)\n"
 
 				+ "}\n"
 				//+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
@@ -300,8 +309,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		
 		String res =
 				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
-				+ "\n"
-				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
+				+ "\n";
+				//+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
 
 				// FIXME: error handling via Err field -- fallback should be panic
 				//+ "import \"log\"\n";
@@ -316,18 +325,28 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		// FIXME: still needed? -- refactor back into state-specific builders?
 		if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 		{
-			res += "import \"sort\"\n";
+			res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
+
+			res += "import \"sync/atomic\"\n";
 			res += "import \"reflect\"\n";
+			res += "import \"sort\"\n";
 			res += "\n";
-			res += "var _ = sort.Sort\n";
+			
+			res += "var _ = session2.NewMPChan\n";
+
+			res += "var _ = atomic.AddUint64\n";
 			res += "var _ = reflect.TypeOf\n";
+			res += "var _ = sort.Sort\n";
 		}
 
 				// State channel type
 		res += "\n"
 				+ "type " + scTypeName + " struct {\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+
+				//+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+				+ "id uint64\n"
+
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
 				+ "}\n";
 
@@ -376,8 +395,20 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
 				+ "}\n"
 
-				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
+				  // HACK FIXME: pre-create case objects
+				+ ((ab instanceof RPCoreSTCaseActionBuilder)
+						? RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+								+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
+						: "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
+										//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
+										+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin"
+										+ " {\n"
+								+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
+								+ "}\n"
+				  )
+				/*+ "atomic.AddUint64(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+						+ "." + "lin" + ")\n"*/
+
 				+ "var " + RPCoreSTApiGenConstants.GO_IO_METHOD_ERROR + " error\n"
 				+ ab.buildBody(this, curr, a, succ) + "\n"
 				+ "}";
@@ -472,6 +503,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			res += " }";*/
 			String res =
 					  "succ := " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + name + "\n"
+					+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
+							+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
+					+ "succ.id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n"
 					+ "succ." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " = err\n"
 					+ "return succ";
 			return res;

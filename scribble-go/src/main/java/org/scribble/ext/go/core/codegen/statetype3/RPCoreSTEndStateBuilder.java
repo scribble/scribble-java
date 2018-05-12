@@ -29,6 +29,9 @@ public class RPCoreSTEndStateBuilder extends STEndStateBuilder
 				+ "\n"
 				+ "type " + scTypeName + " struct {\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
+
+				+ "id uint64\n"
+
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *"
 						+ RPCoreSTApiGenerator.getEndpointKindTypeName(api.gpn.getSimpleName(), schangen.variant) + "\n"  // FIXME: factor out
 				+ "}";

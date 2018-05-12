@@ -286,7 +286,10 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 							+ "type " + epkindTypeName + " struct {\n"
 							+ RPCoreSTApiGenConstants.GO_MPCHAN_PROTO + " " + RPCoreSTApiGenConstants.GO_PROTOCOL_TYPE + "\n"
 							+ "Self int\n"
-							+ "*" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"
+
+							+ "*" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"  // This is for the Endpoint itself
+							+ "lin uint64\n"
+
 							+ RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + " *" + RPCoreSTApiGenConstants.GO_MPCHAN_TYPE + "\n"
 							+ ivars.stream().map(x -> x + " int\n").collect(Collectors.joining(""))
 
@@ -332,7 +335,10 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 							+ "ep := &" + epkindTypeName + "{\n"
 									+ "p,\n"
 									+ "self,\n"
-									+ "&" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "{},\n"
+
+									+ "&" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "{},\n"  // For Endpoint itself
+									+ "1,\n"
+
 									+ RPCoreSTApiGenConstants.GO_MPCHAN_CONSTRUCTOR + "(self, "//conns)" //"params
 											+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "}),\n"
 									+ ivars.stream().map(x ->  x + ",\n").collect(Collectors.joining(""))
@@ -367,8 +373,11 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 													{
 														// FIXME TODO: case objects?
 														return (n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
-																? "ep._End = &End{ nil, ep }\n"
-																: "ep._" + n + " = &" + n + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ep }\n"; 
+																? "ep._End = &End{ nil, 0, ep }\n"  // Now same as below?
+																: "ep._" + n + " = &" + n + "{ nil,"
+																		//+ " new(RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE),"
+																		+ (n.equals("Init") ? " 1," : " 0,")
+																		+ " ep }\n"; 
 																// cf. state chan builder  // CHECKME: reusing pre-created chan structs OK for Err handling?
 													}
 												).collect(Collectors.joining())
@@ -451,7 +460,8 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 									? "end := f(newBranch" + init + "(ini))\n"
 									: //"end := f(&" + init + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ini })\n")  
 												// cf. state chan builder  // FIXME: chan struct reuse
-										"end := f(ini._" + init + ")\n")
+										//"ini._" + init + ".id = 1\n" +
+												"end := f(ini._" + init + ")\n")
 
 							+ "return &end\n"
 							+ "}";
