@@ -209,7 +209,12 @@ public class RPCoreSTSessionApiBuilder
 
 							+ "Params map[string]int\n"  // FIXME: currently used to record foreach params (and provide access to user)
 							
-							//+ ...TODO: pre-create state chans
+							+ this.apigen.stateChanNames.get(variant).keySet().stream().sorted().map(k ->
+									{
+										// FIXME TODO: case objects?
+										String n = this.apigen.stateChanNames.get(variant).get(k);
+										return "_" + n + " *" + n + "\n";
+									}).collect(Collectors.joining())
 
 							+ "}\n"
 
@@ -222,13 +227,29 @@ public class RPCoreSTSessionApiBuilder
 							+ this.apigen.variants.entrySet().stream()
 									.map(e -> "conns[\"" + e.getKey().getLastElement() + "\"] = " + "make(map[int]transport.Channel)\n")
 									.collect(Collectors.joining(""))*/
-							+ "return &" + epkindTypeName + "{p, self, &" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE
-									+ "{}, " + RPCoreSTApiGenConstants.GO_MPCHAN_CONSTRUCTOR + "(self, "//conns)" //"params
-									+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "})"
-									+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining("")) + ", "
-									+ "make(map[string]int)"
+							+ "ep := &" + epkindTypeName + "{\n"
+									+ "p,\n"
+									+ "self,\n"
+									+ "&" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "{},\n"
+									+ RPCoreSTApiGenConstants.GO_MPCHAN_CONSTRUCTOR + "(self, "//conns)" //"params
+											+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "}),\n"
+									+ ivars.stream().map(x ->  x + ",\n").collect(Collectors.joining(""))
+									+ "make(map[string]int),\n"  // Trailing comma needed
+									+ this.apigen.stateChanNames.get(variant).keySet().stream().map(k -> "nil,\n").collect(Collectors.joining())
 									+ "}\n"
-							+ "}\n";
+									+ this.apigen.stateChanNames.get(variant).keySet().stream().sorted().map(k ->
+											{
+												// FIXME TODO: case objects?
+												String n = this.apigen.stateChanNames.get(variant).get(k);
+												return (n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
+														? "ep._End = &End{ nil, ep }\n"
+														: "ep._" + n + " = &" + n + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ep }\n"; 
+														// cf. state chan builder  // CHECKME: reusing pre-created chan structs OK for Err handling?
+											}
+										).collect(Collectors.joining())
+									+ "return ep\n";
+
+							epkindFile += "}\n";
 
 							// Dial/Accept methdos -- FIXME: internalise peers
 							/*+ "\n"
@@ -302,7 +323,9 @@ public class RPCoreSTSessionApiBuilder
 							// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
 							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
 									? "end := f(newBranch" + init + "(ini))\n"
-									: "end := f(&" + init + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ini })\n")  // cf. state chan builder  // FIXME: chan struct reuse
+									: //"end := f(&" + init + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ini })\n")  
+												// cf. state chan builder  // FIXME: chan struct reuse
+										"end := f(ini._" + init + ")\n")
 
 							+ "return &end\n"
 							+ "}";

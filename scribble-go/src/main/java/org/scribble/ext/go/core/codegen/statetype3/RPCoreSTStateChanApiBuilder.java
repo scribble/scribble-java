@@ -275,7 +275,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), " + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse
 
 				+ "}\n"
-				+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
+				//+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
+				+ makeReturnSuccStateChan(s, succName) + "\n"
 				+ "}\n";
 
 		res.put(getStateChannelFilePath(scTypeName), feach);
@@ -388,8 +389,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public String buildActionReturn(STActionBuilder ab, EState curr, EState succ)
 	{
 		String res = "";
-		res += "return " + //makeCreateSuccStateChan(ab, curr, succ);
-				makeCreateSuccStateChan(succ);
+		res += /*"return " + //makeCreateSuccStateChan(ab, curr, succ);
+				makeCreateSuccStateChan(succ);*/
+					makeReturnSuccStateChan(succ);
 		return res;
 	}
 
@@ -405,12 +407,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 
 	//protected String makeCreateSuccStateChan(STActionBuilder ab, EState curr, EState succ)
+	@Deprecated
 	protected String makeCreateSuccStateChan(EState succ)
 	{
 		String name = getSuccStateChanName(succ);
 		return makeCreateSuccStateChan(succ, name);
 	}
 		
+	@Deprecated
 	protected String makeCreateSuccStateChan(EState succ, String name)
 	{
 		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
@@ -423,14 +427,53 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		else
 		{
-			String res = "&" + name + "{ " + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ": " + RPCoreSTApiGenConstants.GO_IO_METHOD_ERROR
+			/*String res = "&" + name + "{ " + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ": " + RPCoreSTApiGenConstants.GO_IO_METHOD_ERROR
 					+ ", " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
 			if (!succ.isTerminal())  // FIXME: terminal foreach state
 			{
 				res += ", " + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 								+ ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case
 			}
-			res += " }";
+			res += " }";*/
+			String res =
+					  /*"succ := " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "._" + name + "\n"
+					+ "succ." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " = err\n"
+					+ "return succ\n"*/
+					RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "._" + name;
+			return res;
+		}
+	}
+	
+	protected String makeReturnSuccStateChan(EState succ)
+	{
+		String name = getSuccStateChanName(succ);
+		return makeReturnSuccStateChan(succ, name);
+	}
+	
+	protected String makeReturnSuccStateChan(EState succ, String name)
+	{
+		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+		if (((GoJob) this.job).selectApi &&
+				getStateKind(succ) == RPCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
+		{
+			// Needs to be here (not in action builder) -- build (hacked) return for all state kinds
+			// FIXME: factor out with RPCoreSTSessionApiBuilder and RPCoreSTSelectStateBuilder#getPreamble
+			return "return newBranch" + name + "(" + sEp + ")";
+		}
+		else
+		{
+			/*String res = "&" + name + "{ " + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ": " + RPCoreSTApiGenConstants.GO_IO_METHOD_ERROR
+					+ ", " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": " + sEp;
+			if (!succ.isTerminal())  // FIXME: terminal foreach state
+			{
+				res += ", " + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+								+ ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case
+			}
+			res += " }";*/
+			String res =
+					  "succ := " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + name + "\n"
+					+ "succ." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " = err\n"
+					+ "return succ";
 			return res;
 		}
 	}

@@ -107,7 +107,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 										+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &lab)" 
 										+ "; err != nil {\n"
 								//+ "log.Fatal(err)\n"
-								+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+								//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+								+ rpapi.makeReturnSuccStateChan(succ) + "\n"
 								+ "}\n";
 					}
 
@@ -121,7 +122,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					
 							+ "; err != nil {\n"
 							//+ "log.Fatal(err)\n"
-							+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+							//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+							+ rpapi.makeReturnSuccStateChan(succ) + "\n"
 							+ "}\n"
 							+ "arg0[i-" + start + "] = *(tmp.(*" + pt + "))\n";  // FIXME: doesn't work for gob, pointer decoding seems flattened? ("*" dropped) ...  // Cf. ISend in RPCoreSTSendActionBuilder
 							//+ "arg0[i-" + start + "] = tmp.(" + pt + ")\n";  // FIXME: ... but doesn't work for shm
@@ -138,7 +140,8 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 				
 						+ "; err != nil {\n"
 						//+ "log.Fatal(err)\n"
-						+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+						//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+						+ rpapi.makeReturnSuccStateChan(succ) + "\n"
 						+ "}\n"
 						+ "arg0[i-" + start + "] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
 				res += makeReceiveExtName.apply(rpapi.getExtName((MessageSigName) a.mid));

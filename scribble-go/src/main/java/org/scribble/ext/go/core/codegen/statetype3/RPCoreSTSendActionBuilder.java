@@ -89,7 +89,8 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_ISEND + "(\"" + r.getName() + "\", i, &op)" 
 							+ "; err != nil {\n"
 					//+ "log.Fatal(err)\n"  // FIXME
-					+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+					//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+					+ rpapi.makeReturnSuccStateChan(succ) + "\n"
 					+ "}\n";
 			}
 		}

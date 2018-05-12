@@ -59,7 +59,8 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", 1, &tmp)"
 						+ "; err != nil {\n"
 				//+ "log.Fatal(err)\n"
-				+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+				//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+				+ rpapi.makeReturnSuccStateChan(succ) + "\n"
 				+ "}\n"
 				+ "*arg0 = tmp.(" + extName + ")\n";  // N.B. *arg0 matches buildArgs
 		
