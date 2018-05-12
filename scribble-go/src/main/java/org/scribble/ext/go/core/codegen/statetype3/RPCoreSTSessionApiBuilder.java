@@ -1,7 +1,9 @@
 package org.scribble.ext.go.core.codegen.statetype3;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,21 +13,32 @@ import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.Pair;
 
+// Build Session API for this.apigen.selfs
 // RP Session API = Protocol API + Endpoint Kind APIs 
 // Cf. STStateChanApiBuilder
 public class RPCoreSTSessionApiBuilder
 {
+	/*... move stateChanNames (and peers?) here
+	... cache reachable states, use for state chan pre-creation (to include intermed states -- and case objects?)
+	... do "global" linearity counter*/
+	
+	protected final Map<RPRoleVariant, Set<RPCoreEState>> reachable = new HashMap<>();
+	protected final Map<RPRoleVariant, Map<Integer, String>> stateChanNames;  // State2
+	//private Map<RPRoleVariant, Map<Integer, String>> foreachNames = new HashMap<>();    // State2_ intermediary name (N.B. RPCoreSTStateChanApiBuilder swaps them around for convenience)
+	
 	private RPCoreSTApiGenerator apigen;
 
-	public static final Comparator<RPIndexVar> IVAR_COMP = new Comparator<RPIndexVar>()
+	private static final Comparator<RPIndexVar> IVAR_COMP = new Comparator<RPIndexVar>()
 			{
 				@Override
 				public int compare(RPIndexVar i1, RPIndexVar i2)
@@ -33,10 +46,79 @@ public class RPCoreSTSessionApiBuilder
 					return i1.toString().compareTo(i2.toString());
 				}
 			};
+			
+	private static final Comparator<RPCoreEState> ESTATE_COMP = new Comparator<RPCoreEState>()
+			{
+				@Override
+				public int compare(RPCoreEState o1, RPCoreEState o2)
+				{
+					return new Integer(o1.id).compareTo(o2.id);
+				}
+			};
 
-	public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
+public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 	{
 		this.apigen = apigen;
+
+		this.stateChanNames = Collections.unmodifiableMap(makeStateChanNames()
+				.entrySet().stream().collect(Collectors.toMap(
+						e -> e.getKey(), 
+						e -> Collections.unmodifiableMap(e.getValue())))
+		);
+	}
+
+	private Map<RPRoleVariant, Map<Integer, String>> makeStateChanNames()
+	{
+		Map<RPRoleVariant, Map<Integer, String>> names = new HashMap<>();
+		for (Entry<RPRoleVariant, EGraph> e : (Iterable<Entry<RPRoleVariant, EGraph>>)
+				this.apigen.selfs.stream()
+						.map(r -> this.apigen.variants.get(r))
+						.flatMap(v -> v.entrySet().stream())::iterator)
+		{
+			int[] counter = {2};
+			RPRoleVariant v = e.getKey();
+			EGraph g = e.getValue();
+			
+			Map<Integer, String> curr = new HashMap<>();
+			//Map<Integer, String> inames = new HashMap<>();
+			names.put(v, curr);
+			//this.foreachNames.put(v, inames);
+			Set<RPCoreEState> rs = RPCoreEState.getReachableStates((RPCoreEState) g.init);  // FIXME: cast needed to select correct static
+			rs.add((RPCoreEState) g.init);  // Adding for following loop; removed again later
+			
+			this.reachable.put(v, Collections.unmodifiableSet(new HashSet<>(rs)));
+			
+			for (RPCoreEState s : new HashSet<>(rs))
+			{
+				if (s.hasNested())  // Nested inits
+				{
+					RPCoreEState nested = s.getNested();
+					curr.put(nested.id, "Init_" + nested.id);
+					rs.remove(nested);
+				}
+			}
+			// Handling top-level init/end must come after handling nested
+			curr.put(g.init.id, "Init");
+			rs.remove(g.init);
+			if (g.term != null && g.term.id != g.init.id)
+			{
+				rs.remove(g.term);  // Remove top-level term from rs
+				curr.put(g.term.id, "End");
+			}
+			rs.forEach(s ->
+			{
+				String n = s.isTerminal()
+						? (s.hasNested() ? "End_" + s.id : "End")  // Nested or "regular" term
+						: "State" + counter[0]++;
+				/*if (s.hasNested())
+				{
+					inames.put(s.id, n);
+					n = n + "_";
+				}*/
+				curr.put(s.id, n);
+			});
+		}
+		return names;
 	}
 
 	//@Override
@@ -210,8 +292,9 @@ public class RPCoreSTSessionApiBuilder
 
 							+ "Params map[string]int\n"  // FIXME: currently used to record foreach params (and provide access to user)
 							
+								// FIXME TODO: foreach intermed states
 								// FIXME TODO: case objects?
-							+ this.apigen.stateChanNames.get(variant).entrySet().stream().sorted(
+							/*+ this.apigen.stateChanNames.get(variant).entrySet().stream().sorted(
 									new Comparator<Entry<Integer, String>>()
 										{
 											@Override
@@ -220,8 +303,16 @@ public class RPCoreSTSessionApiBuilder
 												return o1.getKey().compareTo(o2.getKey());
 											}
 										}
-									)
-									.map(e -> e.getValue())
+									)*/
+							+ this.reachable.get(variant).stream().sorted(ESTATE_COMP)
+									//.map(s -> this.stateChanNames.get(s.id))
+									.flatMap(s ->
+										{
+											String n = this.stateChanNames.get(variant).get(s.id);
+											return s.hasNested()
+												? Stream.of(n, s.isTerminal() ? "End" : n + "_")  // FIXME: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
+												: Stream.of(n);
+										})
 									.distinct()
 									.map(n ->
 									{
@@ -247,22 +338,33 @@ public class RPCoreSTSessionApiBuilder
 											+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "}),\n"
 									+ ivars.stream().map(x ->  x + ",\n").collect(Collectors.joining(""))
 									+ "make(map[string]int),\n"  // Trailing comma needed
-									+ this.apigen.stateChanNames.get(variant).values().stream().distinct().map(k -> "nil,\n").collect(Collectors.joining())
-									+ "}\n"
-									+ this.apigen.stateChanNames.get(variant).entrySet().stream().sorted(
-											new Comparator<Entry<Integer, String>>()
-												{
-													@Override
-													public int compare(Entry<Integer, String> o1, Entry<Integer, String> o2)
+
+									//+ this.apigen.stateChanNames.get(variant).values().stream().distinct().map(k -> "nil,\n").collect(Collectors.joining())
+									+ this.reachable.get(variant).stream().sorted(ESTATE_COMP)
+											.flatMap(s -> 
 													{
-														return o1.getKey().compareTo(o2.getKey());
-													}
-												}
-											)
-											.map(e -> e.getValue())
+														String n = this.stateChanNames.get(variant).get(s.id);
+														return s.hasNested()
+															? Stream.of(n, s.isTerminal() ? "End" : n + "_")  // FIXME: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
+															: Stream.of(n);
+													})
+											.distinct()
+											.map(k -> "nil,\n").collect(Collectors.joining())
+									
+									+ "}\n"
+
+									+ this.reachable.get(variant).stream().sorted(ESTATE_COMP)
+											.flatMap(s -> 
+													{
+														String n = this.stateChanNames.get(variant).get(s.id);
+														return s.hasNested()
+															? Stream.of(n, s.isTerminal() ? "End" : n + "_")  // FIXME: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
+															: Stream.of(n);
+													})
 											.distinct()
 											.map(n ->
 													{
+														// FIXME TODO: foreach intermed states
 														// FIXME TODO: case objects?
 														return (n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
 																? "ep._End = &End{ nil, ep }\n"
@@ -270,6 +372,7 @@ public class RPCoreSTSessionApiBuilder
 																// cf. state chan builder  // CHECKME: reusing pre-created chan structs OK for Err handling?
 													}
 												).collect(Collectors.joining())
+
 									+ "return ep\n";
 
 							epkindFile += "}\n";
