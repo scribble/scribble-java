@@ -340,7 +340,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				s.getAllActions().stream()
 				 .filter(a -> a.mid.isOp())
 				 .flatMap(a -> a.payload.elems.stream()
-						.filter(p -> !getExtName((DataType) p).matches("(\\[\\])*(int|string|byte)")))
+						.filter(p -> !getExtName((DataType) p).matches("(\\[\\])*(int|string|byte)"))
+						.filter(p -> !getExtName((DataType) p).matches("(\\*)*(int|string|byte)")))
 				 .map(p -> getExtSource((DataType) p))
 				 .distinct()::iterator)
 		{
