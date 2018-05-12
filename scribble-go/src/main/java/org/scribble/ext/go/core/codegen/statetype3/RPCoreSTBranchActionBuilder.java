@@ -90,13 +90,14 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 
 			// Switch and return Cases value
 			res += "\n"
-					+ "switch lab {\n"
+					+ "cast := *(lab.(*string))\n"
+					+ "switch cast {\n"
 					+ as.stream().map(x -> 
 								"case \"" + x.mid + "\":\n" + "return &" + RPCoreSTCaseBuilder.getOpTypeName(api, curr, x.mid)
 							//+ "{ Ept: s.Ept, Res: new(session.LinearResource) }\n"
 							+ "{" + ret + "}\n"
 						).collect(Collectors.joining(""))
-					+ "default: panic(\"Shouldn't get in here: \" + lab.(string))\n"
+					+ "default: panic(\"Shouldn't get in here: \" + cast)\n"
 					+ "}\n"
 					+ "return nil\n";  // FIXME: panic instead
 		}

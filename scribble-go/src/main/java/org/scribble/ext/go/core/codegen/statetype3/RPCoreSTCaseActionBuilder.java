@@ -51,7 +51,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 				+ "[\"" +  peer.getName() + "\"]";*/
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder
-		Function<String, String> makeCaseReceive = extName -> 
+		Function<String, String> makeCaseReceive = pt -> 
 				  "var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
 				//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK: []  // N.B. *arg0 matches buildArgs
 				+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
@@ -62,7 +62,8 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 				//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 				+ rpapi.makeReturnSuccStateChan(succ) + "\n"
 				+ "}\n"
-				+ "*arg0 = tmp.(" + extName + ")\n";  // N.B. *arg0 matches buildArgs
+				//+ "*arg0 = tmp.(" + extName + ")\n";  // N.B. *arg0 matches buildArgs
+				+ "*arg0 = *(tmp.(*" + pt + "))\n";  // Cf. RPCoreSTReceiveActionBuilder // N.B. *arg0 matches buildArgs
 		
 		String res = "";
 		if (a.mid.isOp())
@@ -74,7 +75,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 					throw new RuntimeException("[rp-core] [-param-api] TODO: " + a);
 				}
 
-				res += makeCaseReceive.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
+				res += makeCaseReceive.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));  // Payload "type"
 			}
 		}
 		else //if (a.mid.isMessageSigName())
