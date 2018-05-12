@@ -117,9 +117,9 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 			res += "\n"
 					+ "switch x := msg.(type) {\n"
 					+ as.stream().map(x ->
-							  "case " + ((RPCoreSTStateChanApiBuilder) api).getExtName((MessageSigName) x.mid) + ":\n"
+							  "case *" + ((RPCoreSTStateChanApiBuilder) api).getExtName((MessageSigName) x.mid) + ":\n"
 							+ "return &" + RPCoreSTCaseBuilder.getOpTypeName(api, curr, x.mid) + " { "
-							+ ret + ", msg: &x }\n"
+							+ ret + ", msg: x }\n"
 						).collect(Collectors.joining(""))
 					+ "default: panic(\"Shouldn't get in here: \" + reflect.TypeOf(msg).String())\n"
 					+ "}\n"

@@ -292,8 +292,6 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 
 							+ "Params map[string]int\n"  // FIXME: currently used to record foreach params (and provide access to user)
 							
-								// FIXME TODO: foreach intermed states
-								// FIXME TODO: case objects?
 							/*+ this.apigen.stateChanNames.get(variant).entrySet().stream().sorted(
 									new Comparator<Entry<Integer, String>>()
 										{
@@ -304,6 +302,7 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 											}
 										}
 									)*/
+								// FIXME TODO: case objects?
 							+ this.reachable.get(variant).stream().sorted(ESTATE_COMP)
 									//.map(s -> this.stateChanNames.get(s.id))
 									.flatMap(s ->
@@ -340,6 +339,7 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 									+ "make(map[string]int),\n"  // Trailing comma needed
 
 									//+ this.apigen.stateChanNames.get(variant).values().stream().distinct().map(k -> "nil,\n").collect(Collectors.joining())
+									  // FIXME: factor out with above
 									+ this.reachable.get(variant).stream().sorted(ESTATE_COMP)
 											.flatMap(s -> 
 													{
@@ -353,6 +353,7 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 									
 									+ "}\n"
 
+									  // FIXME: factor out with above
 									+ this.reachable.get(variant).stream().sorted(ESTATE_COMP)
 											.flatMap(s -> 
 													{
@@ -364,7 +365,6 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 											.distinct()
 											.map(n ->
 													{
-														// FIXME TODO: foreach intermed states
 														// FIXME TODO: case objects?
 														return (n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
 																? "ep._End = &End{ nil, ep }\n"
