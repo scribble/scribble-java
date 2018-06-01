@@ -292,6 +292,7 @@ public class PSEndpointApiGenerator
         sb.append("import Scribble.Type.SList (type (:::), SLProxy(..), SNil, symbols)\n");
 		sb.append("import Type.Row (Cons, Nil)\n");
 		sb.append("import Data.Void (Void)\n");
+        sb.append("import Data.Tuple (Tuple)\n");
         return sb.toString();
     }
 
