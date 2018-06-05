@@ -260,9 +260,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		String succName = s.isTerminal() ? "End" : getStateChanName(s);  // FIXME: factor out
 			//getIntermediaryStateChanName(s);  // Functionality subsumed by getStateChanName
 		RPForeachVar p = s.getParam();
-		
+
 		this.fvars.add(p); // HACK FIXME: state visiting order not guaranteed (w.r.t. lexical var scope)
-		
+
+        String initState = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + initName;
 		feach += "\n"
 				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
 						+ ") Foreach(f func(*" + initName + ") " + termName + ") *" + succName + " {\n"
@@ -275,11 +276,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				/*+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
 						? "f(newBranch" + initName + "(ini))\n"
 						: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), " + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse*/
-				+ "succ := " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + initName + "\n"
 					+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
 							+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
-					+ "succ.id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n"
-					+ "succ." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " = err\n"
+					+ initState +".id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n"
 					+ "f(succ)\n"
 
 				+ "}\n"
@@ -499,24 +498,22 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 								+ ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case
 			}
 			res += " }";*/
-			String res =
-					  "succ := " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + name + "\n"
-					+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
-							+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
-					+ "succ.id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n"
-					+ "succ." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " = err\n"
-					+ "return succ";
+			String nextState = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + name;
+			String res = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
+                        + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
+                        + nextState + ".id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n"
+                        + "return "+ nextState + "\n";
 			return res;
 		}
 	}
-	
+
 	@Override
 	public String getChannelName(STStateChanApiBuilder api, EAction a)  // Not used?
 	{
 		throw new RuntimeException("[rp-core] Shouldn't get in here: " + a);
 		//return "s.ep.GetChan(s.ep.Proto.(*" + api.gpn.getSimpleName() + ")." + a.peer + ")";
 	}
-	
+
 	// Super is used for both state chan type name (type decl and method receivers), and return type of actions
 	// Now, only using for state chan type name -- return type hardcoded to "base" name (via this.names) of successor
 	@Override
