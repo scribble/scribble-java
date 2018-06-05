@@ -77,17 +77,22 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		String res = "for i, j := " + rpapi.generateIndexExpr(d.start) + ", 0;"
 				+ " i <= " + rpapi.generateIndexExpr(d.end)+"; i, j = i+1, j+1 {\n";
 
+		String errorField = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
+                            + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
+                            + "_" + rpapi.getSuccStateChanName(succ) + "."
+                            + RPCoreSTApiGenConstants.GO_MPCHAN_ERR;
+
 		if (a.mid.isOp())
 		{
 			// Write label
 			if (!a.mid.toString().equals("")) {  // HACK FIXME?
 				res += "op := \"" + a.mid + "\"\n"  // FIXME: API constant?
-							+ "if err = " + sEpWrite /*+ "[i]"
+							+ "if " + errorField + " = " + sEpWrite /*+ "[i]"
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 							+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_STRING
 							+ "(\"" + a.mid + "\"" + ")" */
-							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_ISEND + "(\"" + r.getName() + "\", i, &op)" 
-							+ "; err != nil {\n"
+							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_ISEND + "(\"" + r.getName() + "\", i, &op)"
+							+ "; " + errorField + " != nil {\n"
 					//+ "log.Fatal(err)\n"  // FIXME
 					//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 					+ rpapi.makeReturnSuccStateChan(succ) + "\n"
@@ -121,10 +126,11 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 							+ "; err != nil {\n"
 					+ "log.Fatal(err)\n"
 					+ "}\n";*/
-			res += "err = " + sEpWrite 
-							+ "." 
-							+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
-							+ "(\"" + r.getName() + "\", i, &arg0[j])\n";
+			res += errorField + " = "
+					+ sEpWrite
+                    + "."
+                    + (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
+                    + "(\"" + r.getName() + "\", i, &arg0[j])\n";
 		}
 
 		res += "}\n";

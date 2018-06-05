@@ -266,7 +266,6 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		feach += "\n"
 				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
 						+ ") Foreach(f func(*" + initName + ") " + termName + ") *" + succName + " {\n"
-						+ "var " + RPCoreSTApiGenConstants.GO_IO_METHOD_ERROR + " error\n"
 						+ "for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
 								+ p + " <= " + generateIndexExpr(s.getInterval().end) + "; " + p + " = " + p + " + 1 {\n"
 						//+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
@@ -409,7 +408,6 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				/*+ "atomic.AddUint64(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 						+ "." + "lin" + ")\n"*/
 
-				+ "var " + RPCoreSTApiGenConstants.GO_IO_METHOD_ERROR + " error\n"
 				+ ab.buildBody(this, curr, a, succ) + "\n"
 				+ "}";
 	}
