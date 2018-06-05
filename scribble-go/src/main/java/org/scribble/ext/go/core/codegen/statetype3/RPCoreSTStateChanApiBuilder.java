@@ -279,7 +279,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
 							+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
 					+ initState +".id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n"
-					+ "f(succ)\n"
+					+ "f(" + initState + ")\n"
 
 				+ "}\n"
 				//+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
