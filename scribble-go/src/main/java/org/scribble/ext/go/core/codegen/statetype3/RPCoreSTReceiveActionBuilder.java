@@ -89,6 +89,11 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
 
+			String errorField = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
+                                + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
+                                + "_" + rpapi.getSuccStateChanName(succ) + "."
+                                + RPCoreSTApiGenConstants.GO_MPCHAN_ERR;
+
 			if (a.mid.isOp())
 			{
 				if (!a.payload.elems.isEmpty())
@@ -101,11 +106,11 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					//if (!a.mid.toString().equals("")) // HACK FIXME?  // Now redundant, -param-api checks mid starts uppercase
 					{ 
 						res += "var lab interface{}\n"  // string  // var decl needed for deserialization -- FIXME?
-								+ "if err = " + sEpRecv /*+ "[i]"
+								+ "if " + errorField + " = " + sEpRecv /*+ "[i]"
 										+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(" + "&lab" + ")"
 												+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_STRING + "()"*/
 										+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &lab)" 
-										+ "; err != nil {\n"
+										+ "; " + errorField + " != nil {\n"
 								//+ "log.Fatal(err)\n"
 								//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 								+ rpapi.makeReturnSuccStateChan(succ) + "\n"
@@ -115,12 +120,12 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					Function<String, String> makeReceivePayType = pt -> 
 								"var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
 							//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
-							+ "if err = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
+							+ "if " + errorField + " = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
 									+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
 									+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
 									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
 					
-							+ "; err != nil {\n"
+							+ "; " + errorField + " != nil {\n"
 							//+ "log.Fatal(err)\n"
 							//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 							+ rpapi.makeReturnSuccStateChan(succ) + "\n"
@@ -134,11 +139,11 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			{
 				Function<String, String> makeReceiveExtName = extName -> 
 							"var tmp " + RPCoreSTApiGenConstants.GO_SCRIBMESSAGE_TYPE + "\n"  // var tmp needed for deserialization -- FIXME?
-						+ "if err = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
+						+ "if " + errorField + " = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
 								+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
 								+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
 				
-						+ "; err != nil {\n"
+						+ "; " + errorField + " != nil {\n"
 						//+ "log.Fatal(err)\n"
 						//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 						+ rpapi.makeReturnSuccStateChan(succ) + "\n"
