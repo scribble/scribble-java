@@ -18,6 +18,7 @@ public class RPCoreSTApiGenConstants
 	public static final String GO_MPCHAN_FINALISE = "Finalise";
 	public static final String GO_MPCHAN_SESSCHAN = "MPChan";
 	public static final String GO_MPCHAN_PARAMS = "Params";
+	public static final String GO_MPCHAN_CONN_WG = "ConnWg"; // Counts initiated but unestablished connection
 	public static final String GO_MPCHAN_CONN_MAP = "Conns";
 	public static final String GO_MPCHAN_FORMATTER_MAP = "Fmts";
 	public static final String GO_MPCHAN_MSEND = "MSend";
