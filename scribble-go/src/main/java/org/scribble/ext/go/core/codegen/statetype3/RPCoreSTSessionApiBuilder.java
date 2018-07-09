@@ -449,7 +449,7 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 					String init = //"Init_" + this.apigen.variants.get(variant.getName()).get(variant).init;
 							"Init";
 					epkindFile += "\n"
-							+ "func (ini *" + epkindTypeName + ") Run(f func(*" + init + ") " + endName + ") *" + endName + " {\n"  // f specifies non-pointer End
+							+ "func (ini *" + epkindTypeName + ") Run(f func(*" + init + ") " + endName + ") " + endName + " {\n"  // f specifies non-pointer End
 							+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".Close()\n"
 							+ "ini.Use()\n"  // FIXME: int-counter linearity
 							+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"
@@ -457,13 +457,12 @@ public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 							// FIXME: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
 							// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
 							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
-									? "end := f(newBranch" + init + "(ini))\n"
+									? "return f(newBranch" + init + "(ini))\n"
 									: //"end := f(&" + init + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ini })\n")  
 												// cf. state chan builder  // FIXME: chan struct reuse
 										//"ini._" + init + ".id = 1\n" +
-												"end := f(ini._" + init + ")\n")
+												"return f(ini._" + init + ")\n")
 
-							+ "return &end\n"
 							+ "}";
 				
 					res.put(getEndpointKindFilePath(family, variant)
