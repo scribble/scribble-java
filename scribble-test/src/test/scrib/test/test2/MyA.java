@@ -21,6 +21,7 @@ public class MyA
 {
 	public static void main(String[] args) throws IOException
 	{
+		//foo1();
 		foo3();
 	}
 
@@ -78,7 +79,10 @@ public class MyA
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 
-			new test.test2.Test2.Proto1.statechans.A.Proto1_A_1(a).send(B, _1, 123);
+			test.test2.Test2.Proto1.statechans.A.Proto1_A_1 s
+					= new test.test2.Test2.Proto1.statechans.A.Proto1_A_1(a);
+			s.send(B, _1, 123);
+
 			//new Proto1_A_1(a).send(B, _2, "abc");
 		}
 		catch (Exception e)

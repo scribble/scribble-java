@@ -10,7 +10,7 @@ global protocol Proto1(role A, role B, role C)
 {
 	choice at A
 	{
-		1(Int) from A to B;
+		1(Int) from A to B;  //@ statename="mystatename"
 		2(Int) from B to C;
 		do Proto1(A, B, C);
 	}

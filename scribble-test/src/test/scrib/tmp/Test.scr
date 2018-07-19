@@ -36,6 +36,7 @@ module tmp.Test;
 
 
 
+/*
 //type <dotnet> "System.UInt32" from "..." as int;
 
 global protocol Proto1(role A, role B)
@@ -49,6 +50,7 @@ global protocol Proto1(role A, role B)
 		2() from A to B;
 	}
 }
+//*/
 
 
 
@@ -56,7 +58,7 @@ global protocol Proto1(role A, role B)
 
 
 
-/*
+//*
 type <dotnet> "System.UInt32" from "..." as int;
 
 global protocol SH(role P, role R, role C)

@@ -18,12 +18,15 @@ public class MyA
 	public static void main(String[] args) throws IOException
 	{
 		Proto1 P1 = new Proto1();
-		try (Proto1_A<int[]> a = new Proto1_A<>(P1, A, new ObjectStreamFormatter(), new int[1]))
+		try (Proto1_A<int[]> a
+				= new Proto1_A<>(P1, A, new ObjectStreamFormatter(), new int[1]))
 		{
 			a.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			
 			a.icallback(Proto1_A_1.id,
-					x -> (x[0]++ < 3) ? new Proto1_A_1.B._1(123) : new Proto1_A_1.B._3("abc")
+					x -> (x[0]++ < 3)
+									? new Proto1_A_1.B._1(123)
+									: new Proto1_A_1.B._3("abc")
 			);
 
 			Future<Void> f = a.run();

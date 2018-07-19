@@ -26,9 +26,10 @@ import test.test2.Test2.Proto1.statechans.B.Proto1_B_1_Handler;
 
 public class MyB
 {
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, ScribbleRuntimeException
 	{
 		foo3();
+		//foo1();
 	}
 
 	public static void foo3() throws IOException
@@ -113,7 +114,7 @@ public class MyB
 			@Override
 			public void receive(EndSocket schan, _2 op, Buf<String> arg1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 			{
-				System.out.println("Done 1");
+				System.out.println("Done 2");
 			}
 		}
 
