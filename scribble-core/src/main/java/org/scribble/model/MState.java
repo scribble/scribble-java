@@ -188,6 +188,7 @@ public abstract class MState<
 	// Note: doesn't implicitly include start (only if start is explicitly reachable from start, of course)
 	/*public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			Set<S> getAllReachable(S start)*/
+	// FIXME: cache
 	@SuppressWarnings("unchecked")
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
 			Set<S> getReachableStates(MState<L, A, S, K> start)
@@ -225,6 +226,7 @@ public abstract class MState<
 	}
 
 	@SuppressWarnings("unchecked")
+	// FIXME: cache
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
 			//Set<A> getAllReachableActions(S start)
 			Set<A> getReachableActions(MState<L, A, S, K> start)
