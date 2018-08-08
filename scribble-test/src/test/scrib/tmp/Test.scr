@@ -2,8 +2,8 @@
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/Test.scr
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr
 
-//$ bin/scribblec.sh -ip scribble-core/src/test/scrib/ -d scribble-core/src/test/scrib/tmp/ scribble-core/src/test/scrib/tmp/Test.scr
-//$ bin/scribblec.sh -ip scribble-core/src/test/scrib/ -d scribble-core/src/test/scrib/tmp/ scribble-core/src/test/scrib/tmp/Test.scr -api Proto1 B
+//$ bin/scribblec.sh -ip scribble-test/src/test/scrib/ -d scribble-test/src/test/scrib/tmp/ scribble-test/src/test/scrib/tmp/Test.scr
+//$ bin/scribblec.sh -ip scribble-test/src/test/scrib/ -d scribble-test/src/test/scrib/tmp/ scribble-test/src/test/scrib/tmp/Test.scr -api Proto1 B
 
 
 //http://sandbox.kidstrythisathome.com/erdos/
@@ -41,19 +41,70 @@ module tmp.Test;
 
 global protocol Proto1(role A, role B)
 {
-	choice at A
+	Foo() from A to B;
+	/*choice at A
 	{	
 		1() from A to B;
 	}
 	or
 	{
 		2() from A to B;
-	}
+	}* /
 }
 //*/
 
 
 
+/*
+global protocol SH2(role P, role R, role C)
+{
+	plane(x1:int, x2:int, x3:int, x4:int) from P to R;
+	do Loop2(P, R, C);
+}
+
+aux global protocol Loop2(role P, role R, role C)
+{
+	choice at P
+	{
+		Above(v1:int) from P to R;   
+		Res(b1:int) from R to P;
+		Above(v2:int) from P to R;   
+		Res(b2:int) from R to P;
+		choice at P
+		{
+			BothIn() from P to R;
+			BothIn(r1:int) from P to C;
+			do Loop2(P, R, C);
+		}
+		or
+		{
+			BothOut() from P to R;
+			BothOut() from P to C;
+			do Loop2(P, R, C);
+		}
+		or
+		{
+			Intersect() from P to R;
+			Res(i:int) from R to P;
+			choice at P
+			{
+				One(r2:int) from P to C;
+				do Loop2(P, R, C);
+			}
+			or
+			{
+				Two(r3:int, r4:int) from P to C;
+				do Loop2(P, R, C);
+			}
+		}
+	}
+	or
+	{
+		Close() from P to R;   
+		Close() from P to C;
+	}
+}
+//*/
 
 
 
@@ -79,11 +130,13 @@ aux global protocol Loop(role P, role R, role C)
 		{
 			BothIn() from P to R;
 			BothIn(int) from P to C;
+			//do Loop(P, R, C);
 		}
 		or
 		{
 			BothOut() from P to R;
 			BothOut() from P to C;
+			//do Loop(P, R, C);
 		}
 		or
 		{
@@ -92,13 +145,15 @@ aux global protocol Loop(role P, role R, role C)
 			choice at P
 			{
 				One(int) from P to C;
+				//do Loop(P, R, C);
 			}
 			or
 			{
 				Two(int, int) from P to C;
+				//do Loop(P, R, C);
 			}
 		}
-		do Loop(P, R, C);
+		do Loop(P, R, C);  // FIXME: -spin fail if commented
 	}
 	or
 	{
@@ -129,6 +184,52 @@ global protocol Proto1(role A, role B, role C)
 	}
 }
 //*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

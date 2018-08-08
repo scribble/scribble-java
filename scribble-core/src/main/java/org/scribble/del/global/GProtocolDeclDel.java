@@ -282,7 +282,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		eventualStability = "[](" + eventualStability + ")";  // FIXME: current "eventual reception", not eventual stability
 		clauses.add(eventualStability);
 
-		int batchSize = 10;  // FIXME: factor out
+		//int batchSize = 10;  // FIXME: factor out
+		int batchSize = 6;  // FIXME: factor out  // FIXME: dynamic batch sizing based on previous batch duration?
 		for (int i = 0; i < clauses.size(); )
 		{
 			int j = (i+batchSize < clauses.size()) ? i+batchSize : clauses.size();
@@ -292,7 +293,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 			{
 				System.out.println("[-spin] Batched ltl:\n" + ltl + "\n");
 			}
-			if (!runSpin(pml + "\n\n" + ltl))
+			if (!runSpin(fullname.toString(), pml + "\n\n" + ltl))
 			{
 				throw new ScribbleException("Protocol not valid:\n" + gpd);
 			}
@@ -301,12 +302,12 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 
 	// FIXME: move
-	private static boolean runSpin(String pml) //throws ScribbleException
+	private static boolean runSpin(String prefix, String pml) //throws ScribbleException
 	{
 		File tmp;
 		try
 		{
-			tmp = File.createTempFile("gpd.header.name", ".pml.tmp");
+			tmp = File.createTempFile(prefix, ".pml.tmp");
 			try
 			{
 				String tmpName = tmp.getAbsolutePath();				
