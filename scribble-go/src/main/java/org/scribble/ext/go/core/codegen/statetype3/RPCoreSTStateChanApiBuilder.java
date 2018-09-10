@@ -15,13 +15,13 @@ import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
-import org.scribble.ext.go.core.ast.RPCoreDelegDecl;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
@@ -32,9 +32,12 @@ import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.type.kind.PayloadTypeKind;
 import org.scribble.type.name.DataType;
+import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageSigName;
+import org.scribble.type.name.PayloadElemType;
 import org.scribble.util.Pair;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
@@ -357,7 +360,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		for (String extSource : (Iterable<String>)
 				s.getAllActions().stream()
 				 .filter(a -> a.mid.isOp())
-				 .flatMap(a -> a.payload.elems.stream()
+				 .flatMap(a -> a.payload.elems.stream().filter(p -> !(p instanceof GDelegationType))  // FIXME: delegation  // HERE
 						.filter(p -> !getExtName((DataType) p).matches("(\\[\\])*(int|string|byte)"))
 						.filter(p -> !getExtName((DataType) p).matches("(\\*)*(int|string|byte)")))
 				 .map(p -> getExtSource((DataType) p))
@@ -576,7 +579,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				RPCoreSTApiGenConstants.GO_SCHAN_END_TYPE;
 	}*/
 	
-	// Not actual variants -- rather, indexed roles in EFSM actions -- cf. ParamCoreSTEndpointApiGenerator#getGeneratedRoleVariantName
+	// Not variants -- just indexed roles (in EFSM actions) -- cf. ParamCoreSTEndpointApiGenerator#getGeneratedRoleVariantName
 	public static String getGeneratedIndexedRoleName(RPIndexedRole r) 
 	{
 		//return r.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");
@@ -626,10 +629,39 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	
 
-	protected boolean isDelegType(DataType t)
+	protected boolean isDelegType(PayloadElemType<?> t)
 	{
-		return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get() instanceof RPCoreDelegDecl;  // FIXME: make a map
+		//return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get() instanceof RPCoreDelegDecl;  // FIXME: make a map
+				// "Old style", when deleg state chan types were directly imported by user as regular Go types
+		return t.isGDelegationType();  // CHECKME: distinguish RPCoreGDelegationType?
 	}
+	
+	// Cf. getExtName
+	protected String getPayloadElemTypeName(PayloadElemType<?> pet)
+	{
+		if (pet instanceof RPCoreGDelegationType)
+		{
+			//return ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) pet);
+			RPCoreGDelegationType gdt = (RPCoreGDelegationType) pet;
+			GProtocolName proto = gdt.getGlobalProtocol();
+			RPRoleVariant variant = gdt.getVariant();
+			String tmp = RPCoreSTApiGenerator.getEndpointKindTypeName(proto.getSimpleName(), variant) + ".Init";
+					// FIXME factor out
+			
+			System.out.println("DDD: " + tmp);
+			
+			return tmp;
+		}
+		else if (pet instanceof DataType)
+		{
+			return getExtName((DataType) pet);
+		}
+		else
+		{
+			throw new RuntimeException("[rp-core] TODO: " + pet);
+		}
+	}
+
 
 	/*protected String getExtName(AbstractName<?> n)
 	{

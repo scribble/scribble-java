@@ -56,7 +56,7 @@ public class RPCoreSTSessionApiBuilder
 				}
 			};
 
-public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
+	public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 	{
 		this.apigen = apigen;
 

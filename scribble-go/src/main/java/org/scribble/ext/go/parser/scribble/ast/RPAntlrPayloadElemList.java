@@ -23,6 +23,7 @@ import org.scribble.ast.PayloadElem;
 import org.scribble.ast.PayloadElemList;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.ext.go.ast.RPAstFactory;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.AntlrToScribParserUtil;
 import org.scribble.parser.scribble.ast.AntlrPayloadElemList;
@@ -43,13 +44,18 @@ public class RPAntlrPayloadElemList
 	public static PayloadElem<?> parsePayloadElem(CommonTree ct, AstFactory af)
 	{
 		String type = ct.getToken().getText();  // FIXME from AntlrToScribParser#getAntlrNodeType
+		
+		System.out.println("BBB: " + type);
+		
 		switch (type)
 		{
 			case "PARAM_DELEGATION":
+			{
 				// Duplicated from AntlrPayloadElemList.parsePayloadElem
 				RoleNode rn = AntlrSimpleName.toRoleNode((CommonTree) ct.getChild(0), af);
 				GProtocolNameNode gpnn = AntlrQualifiedName.toGProtocolNameNode((CommonTree) ct.getChild(1), af);
-				return af.GDelegationElem(ct, gpnn, rn);
+				return ((RPAstFactory) af).RPGDelegationElem(ct, gpnn, rn);
+			}
 
 			default: return AntlrPayloadElemList.parsePayloadElem(ct, af);
 		}

@@ -3,7 +3,6 @@ package org.scribble.ext.go.core.type.name;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
 
 public class RPCoreGDelegationType extends GDelegationType
 {
@@ -14,7 +13,7 @@ public class RPCoreGDelegationType extends GDelegationType
 		super(proto, v);
 	}
 
-	public Role getVariant()
+	public RPRoleVariant getVariant()
 	{
 		return (RPRoleVariant) this.role;
 	}

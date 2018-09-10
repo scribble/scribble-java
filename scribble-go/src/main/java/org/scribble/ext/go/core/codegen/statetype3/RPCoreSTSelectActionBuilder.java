@@ -65,7 +65,8 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 
 		boolean isDeleg = a.payload.elems.stream().anyMatch(pet -> 
 				//pet.isGDelegationType()  // FIXME: currently deleg specified by ParmaCoreDelegDecl, not GDelegationElem
-				((RPCoreSTStateChanApiBuilder) api).isDelegType((DataType) pet));
+				((RPCoreSTStateChanApiBuilder) api)//.isDelegType((DataType) pet));
+							.isDelegType(pet));
 		if (isDeleg)
 		{
 			throw new RuntimeException("[rp-core] TODO: " + a);

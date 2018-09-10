@@ -12,7 +12,6 @@ import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
 import org.scribble.type.name.MessageSigName;
 
 public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
@@ -34,7 +33,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		{
 			return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG + i + " []"
-							+ rpapi.getExtName((DataType) a.payload.elems.get(i)))
+							+ rpapi.getPayloadElemTypeName(a.payload.elems.get(i)))
 					.collect(Collectors.joining(", "));
 		}
 		else //if (a.mid.isMessageSigName())
@@ -132,7 +131,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 							+ "}\n"
 							+ "arg0[i-" + start + "] = *(tmp.(*" + pt + "))\n";  // FIXME: doesn't work for gob, pointer decoding seems flattened? ("*" dropped) ...  // Cf. ISend in RPCoreSTSendActionBuilder
 							//+ "arg0[i-" + start + "] = tmp.(" + pt + ")\n";  // FIXME: ... but doesn't work for shm
-					res += makeReceivePayType.apply(rpapi.getExtName((DataType) a.payload.elems.get(0)));
+					res += makeReceivePayType.apply(rpapi.getPayloadElemTypeName(a.payload.elems.get(0)));
 				}
 			}
 			else //if (a.mid.isMessageSigName())

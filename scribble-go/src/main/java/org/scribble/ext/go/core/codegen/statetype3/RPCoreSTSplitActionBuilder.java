@@ -8,14 +8,15 @@ import java.util.stream.IntStream;
 import org.scribble.codegen.statetype.STSendActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
-import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
+import org.scribble.type.name.PayloadElemType;
 
 public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 {
@@ -31,25 +32,27 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 	@Override
 	public String buildArgs(STStateChanApiBuilder apigen, EAction a)
 	{
-		DataType[] pet = new DataType[1];
+		RPCoreSTStateChanApiBuilder api = (RPCoreSTStateChanApiBuilder) apigen;
+		//DataType[] pet = new DataType[1];
+		PayloadElemType[] pet = new PayloadElemType[1];
 		return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG
 							+ i + " "
 							
 											// HACK
-									+ ((((RPCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0] = ((DataType) a.payload.elems.get(i)))) ? "*" : "")
-									+ ((RPCoreSTStateChanApiBuilder) apigen).getExtName(pet[0]) //a.payload.elems.get(i)
+									+ ((api.isDelegType(pet[0] = a.payload.elems.get(i))) ? "*" : "")
+									+ api.getPayloadElemTypeName(pet[0]) //a.payload.elems.get(i)
 
 							+ ", splitFn" + i + " func(" + RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + i + " "
 
 											// HACK
-									+ ((((RPCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0])) ? "*" : "")
-									+ ((RPCoreSTStateChanApiBuilder) apigen).getExtName(pet[0])
+									+ (api.isDelegType(pet[0]) ? "*" : "")
+									+ api.getPayloadElemTypeName(pet[0])
 
 									+ ", i" + i + " int) "
 									
-									+ ((((RPCoreSTStateChanApiBuilder) apigen).isDelegType(pet[0])) ? "*" : "")
-									+ ((RPCoreSTStateChanApiBuilder) apigen).getExtName(pet[0])
+									+ (api.isDelegType(pet[0]) ? "*" : "")
+									+ api.getPayloadElemTypeName(pet[0])
 
 							).collect(Collectors.joining(", "));
 	}

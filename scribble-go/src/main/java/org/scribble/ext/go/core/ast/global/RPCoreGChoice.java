@@ -20,6 +20,7 @@ import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.Z3Wrapper;
@@ -212,9 +213,13 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				{
 					if (pet instanceof GDelegationType)
 					{
-						GDelegationType gdt = (GDelegationType) pet;  // Payload types come from ParamCoreGProtocolDeclTranslator#parsePayload (toMessage)
+						if (!(pet instanceof RPCoreGDelegationType))
+						{
+							throw new RuntimeException("[rp-core] TODO: " + pet);
+						}
+						RPCoreGDelegationType gdt = (RPCoreGDelegationType) pet;  // Payload types come from ParamCoreGProtocolDeclTranslator#parsePayload (toMessage)
 
-						System.out.println("aaa: " + this + ", " + gdt.getGlobalProtocol() + ", " + gdt.getRole());
+						System.out.println("CCC: " + this + ", " + gdt.getGlobalProtocol() + ", " + gdt.getRole());
 						
 						// cf. GDelegationElem#project
 						

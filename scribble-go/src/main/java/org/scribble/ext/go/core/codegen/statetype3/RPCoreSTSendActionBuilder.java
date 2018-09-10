@@ -11,7 +11,6 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
 import org.scribble.type.name.MessageSigName;
 
 public class RPCoreSTSendActionBuilder extends STSendActionBuilder
@@ -28,17 +27,18 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 	@Override
 	public String buildArgs(STStateChanApiBuilder api, EAction a)
 	{
+		RPCoreSTStateChanApiBuilder apigen = (RPCoreSTStateChanApiBuilder) api;
 		if (a.mid.isOp())
 		{
 			return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + i + " []"
-							+ ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) a.payload.elems.get(i))) //a.payload.elems.get(i)
+							+ apigen.getPayloadElemTypeName(a.payload.elems.get(i))) //a.payload.elems.get(i)
 					.collect(Collectors.joining(", "));
 		}
 		else //if (a.mid.isMessageSigName())
 		{
 			return RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + "0 []"
-					+ ((RPCoreSTStateChanApiBuilder) api).getExtName((MessageSigName) a.mid);
+					+ apigen.getExtName((MessageSigName) a.mid);
 		}
 	}
 
@@ -72,7 +72,8 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		// FIXME: single arg  // Currently never true because of RPCoreSTOutputStateBuilder
 		boolean isDeleg = a.payload.elems.stream().anyMatch(pet -> 
 				//pet.isGDelegationType()  // FIXME: currently deleg specified by ParamCoreDelegDecl, not GDelegationElem
-				rpapi.isDelegType((DataType) pet));
+				rpapi//.isDelegType((DataType) pet));
+							.isDelegType(pet));
 		
 		String res = "for i, j := " + rpapi.generateIndexExpr(d.start) + ", 0;"
 				+ " i <= " + rpapi.generateIndexExpr(d.end)+"; i, j = i+1, j+1 {\n";

@@ -8,7 +8,6 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EDisconnect;
 import org.scribble.model.endpoint.actions.ERequest;
 import org.scribble.model.endpoint.actions.ESend;
-import org.scribble.type.name.DataType;
 
 public class RPCoreSTOutputStateBuilder extends STOutputStateBuilder
 {
@@ -39,9 +38,10 @@ public class RPCoreSTOutputStateBuilder extends STOutputStateBuilder
 			{
 				//out += this.sb.build(api, s, a);
 
-				// FIXME: delegation 
+				/*// FIXME: delegation 
 				if (!a.payload.elems.stream()
-						.anyMatch(pet -> ((RPCoreSTStateChanApiBuilder) api).isDelegType((DataType) pet)))
+						.anyMatch(pet -> ((RPCoreSTStateChanApiBuilder) api)//.isDelegType((DataType) pet)))
+							.isDelegType(pet)))*/
 				{
 					out += "\n\n";
 					out += this.nb.build(api, s, a);

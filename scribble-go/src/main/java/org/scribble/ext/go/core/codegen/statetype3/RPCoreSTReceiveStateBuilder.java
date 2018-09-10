@@ -41,9 +41,10 @@ public class RPCoreSTReceiveStateBuilder extends STReceiveStateBuilder
 		/*out += "\n\n";
 		out += this.rb.build(api, s, a);*/
 
-		// FIXME: delegation 
+		/*// FIXME: delegation 
 		if (!a.payload.elems.stream()
-				.anyMatch(pet -> ((RPCoreSTStateChanApiBuilder) api).isDelegType((DataType) pet)))
+				.anyMatch(pet -> ((RPCoreSTStateChanApiBuilder) api)//.isDelegType((DataType) pet)))
+							.isDelegType(pet)))*/
 		{
 			out += "\n\n";
 			out += this.vb.build(api, s, a);

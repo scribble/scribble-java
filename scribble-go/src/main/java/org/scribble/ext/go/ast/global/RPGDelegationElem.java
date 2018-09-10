@@ -74,7 +74,7 @@ public class RPGDelegationElem extends GDelegationElem
 	{
 		// FIXME all HACK
 		String tmp = this.role.toString();
-		int i = tmp.indexOf("_");  // Cf. RPCoreSTStateChanApiBuilder#getGeneratedIndexedRoleName
+		int i = tmp.indexOf("_");  // Cf. RPCoreSTApiGenerator#getEndpointKindTypeName
 		String name;
 		int start;
 		int end;

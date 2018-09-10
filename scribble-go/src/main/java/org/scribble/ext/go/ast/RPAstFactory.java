@@ -49,5 +49,5 @@ public interface RPAstFactory extends AstFactory
 	//RPCoreDelegDecl ParamCoreDelegDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name);
 
 	RPGDelegationElem RPGDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role);
-	//RPLDelegationElem RPLDelegationElem(CommonTree source, LProtocolNameNode proto);
+	//RPLDelegationElem RPLDelegationElem(CommonTree source, LProtocolNameNode proto);  // Delegation currently supported only by core, and just uses RPCoreGDelegationType
 }
