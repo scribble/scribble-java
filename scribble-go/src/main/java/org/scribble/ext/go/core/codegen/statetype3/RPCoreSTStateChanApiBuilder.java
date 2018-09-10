@@ -576,7 +576,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				RPCoreSTApiGenConstants.GO_SCHAN_END_TYPE;
 	}*/
 	
-	// Not actual variants -- rather, indexed roles in EFSM actions -- cf. ParamCoreSTEndpointApiGenerator.getGeneratedRoleVariantName
+	// Not actual variants -- rather, indexed roles in EFSM actions -- cf. ParamCoreSTEndpointApiGenerator#getGeneratedRoleVariantName
 	public static String getGeneratedIndexedRoleName(RPIndexedRole r) 
 	{
 		//return r.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");

@@ -6,16 +6,19 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.ast.name.qualified.DataTypeNode;
+import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.ext.go.ast.global.RPGChoice;
 import org.scribble.ext.go.ast.global.RPGCrossMessageTransfer;
+import org.scribble.ext.go.ast.global.RPGDelegationElem;
 import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGForeach;
 import org.scribble.ext.go.ast.global.RPGMultiChoices;
 import org.scribble.ext.go.ast.global.RPGMultiChoicesTransfer;
 import org.scribble.ext.go.ast.name.simple.RPIndexedRoleNode;
-import org.scribble.ext.go.core.ast.RPCoreDelegDecl;
+import org.scribble.ext.go.core.ast.local.RPCoreLDelegationElem;
 import org.scribble.ext.go.del.global.RPGChoiceDel;
 import org.scribble.ext.go.del.global.RPGForeachDel;
 import org.scribble.ext.go.del.global.RPGMessageTransferDel;
@@ -153,13 +156,33 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 
 	// Explicitly creating new Assrt nodes
 
-	public RPCoreDelegDecl ParamCoreDelegDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name)
+	/*public RPCoreDelegDecl ParamCoreDelegDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name)
 	{
 		RPCoreDelegDecl dtd = new RPCoreDelegDecl(source, schema, extName, extSource, name);
 		dtd = del(dtd, createDefaultDelegate());
 		return dtd;
+	}*/
+
+	@Override
+	public RPGDelegationElem RPGDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
+	{
+		RPGDelegationElem de = new RPGDelegationElem(source, proto, role);
+		de = del(de, new GDelegationElemDel());  // FIXME CHECKME
+		return de;
 	}
 
+	/*@Override
+	public RPCoreLDelegationElem RPCoreLDelegationElem(CommonTree source, LProtocolNameNode proto)
+	{
+		RPCoreLDelegationElem de = new RPCoreLDelegationElem(source, proto);
+		de = del(de, createDefaultDelegate());
+		return de;
+	}*/
+
+	
+	
+	
+	
 
 	@Override
 	protected RPDel createDefaultDelegate()

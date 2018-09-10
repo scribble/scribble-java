@@ -27,6 +27,7 @@ import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 
+// For "core" stuff -- not "full" AF (Antlr) AST
 public class RPCoreAstFactory
 {
 	public RPCoreAstFactory()

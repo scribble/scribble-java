@@ -30,8 +30,10 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.main.Job;
 import org.scribble.type.Message;
+import org.scribble.type.MessageSig;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.DataType;
+import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.RecVar;
 
 public class RPCoreGProtocolDeclTranslator
@@ -313,6 +315,13 @@ public class RPCoreGProtocolDeclTranslator
 	{
 		//RPCoreMessage a = this.af.ParamCoreAction(parseOp(gmt), parsePayload(gmt));
 		Message a = gmt.msg.toMessage();
+		if (a.getId().isOp())  // a instanceof MessageSig
+		{
+			/*if (((MessageSig) a).payload.elems.stream().anyMatch(pt -> pt instanceof GDelegationType))  // OK: main work is in API gen
+			{
+				throw new RuntimeException("[rp-core] TODO: delegation: " + a);
+			}*/
+		}
 		String srcName = parseSourceRole(gmt);
 		String destName = parseDestinationRole(gmt);
 		RPCoreGActionKind kind;

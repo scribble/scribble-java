@@ -284,6 +284,9 @@ public class RPCoreCommandLine extends CommandLine
 			//for (Set<ParamRange> ranges : this.P0.get(r).keySet())
 			for (RPRoleVariant ranges : this.L0.get(r).keySet())
 			{
+				
+				System.out.println("aaa: " + r + ", " + this.L0.get(r).get(ranges));
+				
 				EGraph g = builder.build(this.L0.get(r).get(ranges));
 				//Map<Set<ParamRange>, EGraph> tmp = this.E0.get(r);
 				Map<RPRoleVariant, EGraph> tmp = this.E0.get(r);

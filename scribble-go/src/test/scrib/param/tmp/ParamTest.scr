@@ -13,6 +13,9 @@ type <go> "string" from "..." as string;
 type <go> "TwoBuyer.Address" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Address;
 type <go> "TwoBuyer.Date" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Date;
 
+sig <go> "..."
+		from "..."
+		as Data;
 
 
 /*
@@ -47,16 +50,28 @@ message passing
 
 // paramterisation subsumes multicast
 
+global protocol Proto1(role A, role B) {
+  foreach A[I:1,K], B[J:2,KK]
+  {
+    Data from A[I,I] to B[J,J];
+  }
+}
+
+/*global protocol ScatterGather(role M, role S) {
+   (int) from M[1,1] to S[1,N];
+}*/
 
 
+/*
 global protocol Proto1(role A(n))
 {
 	/*a() from A[n-1..n-1] to A[n..n];
 	b() from A[n-2..n-2] to A[n..n];
-	do Proto1(A(n-1));  // FIXME?*/
+	do Proto1(A(n-1));  // FIXME? * /
 
 	a() dot A[1..1] to A[n..n];
 }
+//*/
 
 
 

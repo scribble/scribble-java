@@ -6,16 +6,16 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.ast.name.qualified.DataTypeNode;
+import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.global.RPGChoice;
 import org.scribble.ext.go.ast.global.RPGCrossMessageTransfer;
+import org.scribble.ext.go.ast.global.RPGDelegationElem;
 import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGForeach;
 import org.scribble.ext.go.ast.global.RPGMultiChoices;
 import org.scribble.ext.go.ast.global.RPGMultiChoicesTransfer;
 import org.scribble.ext.go.ast.name.simple.RPIndexedRoleNode;
-import org.scribble.ext.go.core.ast.RPCoreDelegDecl;
 import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexVar;
@@ -44,7 +44,10 @@ public interface RPAstFactory extends AstFactory
 			RPIndexVar var, RPIndexExpr destRangeStart, RPIndexExpr destRangeEnd);
 
 
-	// param-core
+	// param-core -- RPCoreAstFactory is for core subset, "full" AST (Antlr) stuff still here
 
-	RPCoreDelegDecl ParamCoreDelegDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name);
+	//RPCoreDelegDecl ParamCoreDelegDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name);
+
+	RPGDelegationElem RPGDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role);
+	//RPLDelegationElem RPLDelegationElem(CommonTree source, LProtocolNameNode proto);
 }

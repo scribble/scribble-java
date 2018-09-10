@@ -8,10 +8,11 @@ import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.MemberNameNode;
 import org.scribble.del.ScribDel;
-import org.scribble.ext.go.ast.RPAstFactory;
 import org.scribble.type.kind.DataTypeKind;
 
+// CHECKME: for declaring "deleg <go> ..." declaration type imports? (variant types from external packages?)
 // HACK -- extending P@r[e] syntax is not clear yet
+@Deprecated
 public class RPCoreDelegDecl extends DataTypeDecl
 {
 	public RPCoreDelegDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name)
@@ -29,7 +30,8 @@ public class RPCoreDelegDecl extends DataTypeDecl
 	public RPCoreDelegDecl clone(AstFactory af)
 	{
 		DataTypeNode name = (DataTypeNode) this.name.clone(af);
-		return ((RPAstFactory) af).ParamCoreDelegDecl(this.source, this.schema, this.extName, this.extSource, name);
+		//return ((RPAstFactory) af).ParamCoreDelegDecl(this.source, this.schema, this.extName, this.extSource, name);
+		throw new RuntimeException("TODO");
 	}
 
 	@Override

@@ -23,13 +23,19 @@ public class GDelegationType implements PayloadElemType<Local>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
-	private GProtocolName proto;  // Cannot be final, for Serializable
-	private Role role;
+	protected GProtocolName proto;  // Cannot be final, for Serializable
+	protected Role role;
 
 	public GDelegationType(GProtocolName proto, Role role)
 	{
 		this.proto = proto;
 		this.role = role;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return this.proto + "@" + this.role;
 	}
 
 	@Override

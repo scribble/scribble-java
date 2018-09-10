@@ -106,7 +106,8 @@ tokens
 	//QUALIFIEDMEMBERNAME = 'qualified-member-name';
 
 	MESSAGESIGNATURE = 'MESSAGESIGNATURE';
-	DELEGATION = 'DELEGATION';
+	//DELEGATION = 'DELEGATION';
+	PARAM_DELEGATION = 'PARAM_DELEGATION';
 	
 
 	// Parsed "directly" by AntlrToScribParser
@@ -378,6 +379,8 @@ recursionvarname: simplename;
 rolename:         simplename;
 scopename:        simplename;
 
+variantname:         simplename;
+
 ambiguousname:
 	simplename
 ->
@@ -480,11 +483,11 @@ payloadtypedecl:
 
 
 // param-core
-delegdecl:
+/*delegdecl:
 	PARAM_DELEG_KW '<' IDENTIFIER '>' EXTIDENTIFIER FROM_KW EXTIDENTIFIER AS_KW simplepayloadtypename ';'
 ->
 	^(PARAM_DELEGDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplepayloadtypename)
-;
+;*/
 
 
 messagesignaturedecl:
@@ -532,12 +535,12 @@ payloadelement:
 |*/
 	qualifiedname  // This case subsumes simple names  // FIXME: ambiguousqualifiedname (or ambiguousname should just be qualified)
 |
-	protocolname '@' rolename
+	protocolname '@' variantname
 ->
-	^(DELEGATION rolename protocolname)
-
+	//^(DELEGATION rolename protocolname)
+	^(PARAM_DELEGATION variantname protocolname)
 /*|
-	protocolname '@' rolename '[' paramindexexpr ']'
+	protocolname '@' rolename '[' paramindexexpr ']'  // FIXME: should be @variant -- need user syntax for variant
 ->
 	^(PARAM_DELEGATION rolename protocolname) paramindexexpr)*/
 ;
