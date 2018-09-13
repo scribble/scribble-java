@@ -421,6 +421,10 @@ public class RPCoreSTSessionApiBuilder
 									+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
 											+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
 									+ "c, err := ss.Accept()\n"
+									+ "if err != nil {\n"
+									+ "return err\n"
+									+ "}\n"
+									+ "\n"
 									+ "sfmt.Wrap(c)\n"
 									+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
 											+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
@@ -438,6 +442,10 @@ public class RPCoreSTSessionApiBuilder
 									+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
 											+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
 									+ "c, err := dialler(host, port)\n"
+									+ "if err != nil {\n"
+									+ "return err\n"
+									+ "}\n"
+									+ "\n"
 									+ "sfmt.Wrap(c)\n"
 									+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
 											+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
@@ -458,19 +466,37 @@ public class RPCoreSTSessionApiBuilder
 							"Init";
 					epkindFile += "\n"
 							+ "func (ini *" + epkindTypeName + ") Run(f func(*" + init + ") " + endName + ") " + endName + " {\n"  // f specifies non-pointer End
-							+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".Close()\n"
+							/*+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".Close()\n"
 							+ "ini.Use()\n"  // FIXME: int-counter linearity
-							+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"
+							+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"*/
+							+ "defer ini.Close()\n"
+							//+ "ini.Init()\n"
 							
 							// FIXME: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
 							// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
-							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
+							/*+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
 									? "return f(newBranch" + init + "(ini))\n"
 									: //"end := f(&" + init + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ini })\n")  
 												// cf. state chan builder  // FIXME: chan struct reuse
 										//"ini._" + init + ".id = 1\n" +
-												"return f(ini._" + init + ")\n")
+												"return f(ini._" + init + ")\n")*/
+							+ "return f(ini.Init())\n"
 
+							+ "}";
+					
+					epkindFile += "\n\n"
+							+ "func (ini *" + epkindTypeName + ") Init() *Init {\n"
+							+ "ini.Use()\n"  // FIXME: int-counter linearity
+							+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"
+							+ "return "
+							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
+									? "newBranch" + init + "(ini)"
+									: "ini._" + init) + "\n"
+							+ "}";
+
+					epkindFile += "\n\n"
+							+ "func (ini *" + epkindTypeName + ") Close() {\n"
+							+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".Close()\n"
 							+ "}";
 				
 					res.put(getEndpointKindFilePath(family, variant)

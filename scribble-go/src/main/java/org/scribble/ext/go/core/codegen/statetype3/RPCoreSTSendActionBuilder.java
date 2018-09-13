@@ -102,11 +102,11 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		}
 
 		// Write message sig or payload
-		if (isDeleg)  //... FIXME: delegation: take pointer?  send underlying ept? -- don't do (multi)"send"?
+		/*if (isDeleg)  //... FIXME: delegation: take pointer?  send underlying ept? -- don't do (multi)"send"?
 		{
 			res += "log.Fatal(\"TODO\")\n";
 		}
-		else
+		else*/
 		{
 			if (a.mid.isOp() && a.payload.elems.size() < 1)
 			{

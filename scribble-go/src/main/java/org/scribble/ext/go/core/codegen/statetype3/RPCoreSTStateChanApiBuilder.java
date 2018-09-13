@@ -32,7 +32,6 @@ import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.kind.PayloadTypeKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.GProtocolName;
@@ -217,13 +216,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			filename = "$" + filename.substring(1);
 		}
-		// Duplicated from RPCoreSTSessionApiBuilder#getEndpointKindFilePath
 		boolean isCommonEndpointKind = //this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(this.variant));  // No: doesn't consider dial/accept
 				//this.apigen.families.keySet().stream().filter(f -> f.left.contains(this.variant)).distinct().count() == 1;  // No: too conservative -- should be about required peer endpoint kinds (to dial/accept with)
 				this.apigen.peers.get(this.variant).size() == 1;
-		return this.gpn.toString().replaceAll("\\.", "/") 
-				//+ "/" + this.apigen.getFamilyPackageName(family)
-				+ (isCommonEndpointKind ? "" : "/" + this.apigen.getFamilyPackageName(family))
+		return //getStateChannelPackagePathPrefix() 
+					// Duplicated from RPCoreSTSessionApiBuilder#getEndpointKindFilePath
+					this.gpn.toString().replaceAll("\\.", "/") 
+					//+ "/" + this.apigen.getFamilyPackageName(family)
+				+ (isCommonEndpointKind ? "" : "/" + this.apigen.getFamilyPackageName(this.family))
 				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant)  // State chans located with Endpoint Kind API
 				+ "/" + filename + ".go";
 	}
@@ -357,20 +357,30 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public String makeMessageImports(EState s)
 	{
 		String res = "";
-		for (String extSource : (Iterable<String>)
-				s.getAllActions().stream()
-				 .filter(a -> a.mid.isOp())
-				 .flatMap(a -> a.payload.elems.stream().filter(p -> !(p instanceof GDelegationType))  // FIXME: delegation  // HERE
+		for (String extSource : (Iterable<String>) s.getAllActions().stream()
+				.filter(a -> a.mid.isOp())
+				.flatMap(a -> a.payload.elems.stream().filter(p -> !(p instanceof GDelegationType))
 						.filter(p -> !getExtName((DataType) p).matches("(\\[\\])*(int|string|byte)"))
 						.filter(p -> !getExtName((DataType) p).matches("(\\*)*(int|string|byte)")))
-				 .map(p -> getExtSource((DataType) p))
-				 .distinct()::iterator)
+				.map(p -> getExtSource((DataType) p))
+				.distinct()::iterator)
 		{
 			res += "import \"" + extSource + "\"\n";
 		}
-		for (String extSource : (Iterable<String>)
-				s.getAllActions().stream().filter(a -> a.mid.isMessageSigName())
-				 .map(a -> getExtSource((MessageSigName) a.mid)).distinct()::iterator)
+		for (PayloadElemType<?> pet : (Iterable<PayloadElemType<?>>) s.getAllActions().stream()
+				.filter(a -> a.mid.isOp())
+				.flatMap(a -> a.payload.elems.stream().filter(p -> (p instanceof RPCoreGDelegationType))
+				//.map(p -> getDelegatedChanPackageName((RPCoreGDelegationType) p))
+						)
+				.distinct()::iterator)
+		{
+			res += "import \"" + this.apigen.packpath + "/" + ((RPCoreGDelegationType) pet).getGlobalProtocol().getSimpleName()
+							// *pet* gpn name (i.e., for state chan type being delegated) -- cf. *this*.gpn.toString() in getStateChannelFilePath
+					+ "/" + getDelegatedChanPackageName((RPCoreGDelegationType) pet) + "\"\n";
+		}
+		for (String extSource : (Iterable<String>) s.getAllActions().stream()
+				.filter(a -> a.mid.isMessageSigName())
+				.map(a -> getExtSource((MessageSigName) a.mid)).distinct()::iterator)
 		{
 			res += "import \"" + extSource + "\"\n";
 		}
@@ -643,10 +653,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			//return ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) pet);
 			RPCoreGDelegationType gdt = (RPCoreGDelegationType) pet;
-			GProtocolName proto = gdt.getGlobalProtocol();
-			RPRoleVariant variant = gdt.getVariant();
-			String tmp = RPCoreSTApiGenerator.getEndpointKindTypeName(proto.getSimpleName(), variant) + ".Init";
-					// FIXME factor out
+			String tmp = "*" + getDelegatedChanPackageName(gdt) + ".Init";  // FIXME: not necessarily Init
 			
 			System.out.println("DDD: " + tmp);
 			
@@ -660,6 +667,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			throw new RuntimeException("[rp-core] TODO: " + pet);
 		}
+	}
+	
+	protected static String getDelegatedChanPackageName(RPCoreGDelegationType gdt)
+	{
+		GProtocolName proto = gdt.getGlobalProtocol();
+		RPRoleVariant variant = gdt.getVariant();
+		return RPCoreSTApiGenerator.getEndpointKindTypeName(proto.getSimpleName(), variant);
 	}
 
 

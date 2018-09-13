@@ -40,7 +40,8 @@ public class RPCoreSTApiGenerator
 	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> families;
 	public final Map<RPRoleVariant, Set<RPRoleVariant>> peers;
 	
-	public final String packpath;  // Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
+	public final String packpath;  
+			// Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
 	//public final Role self;  
 	public final List<Role> selfs;  
 			// FIXME? just a role name -- cf. CL arg

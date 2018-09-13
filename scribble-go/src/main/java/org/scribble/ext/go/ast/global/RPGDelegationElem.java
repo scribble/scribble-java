@@ -28,13 +28,14 @@ import org.scribble.ext.go.ast.RPAstFactory;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
+import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexFactory;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.PayloadElemType;
 
 public class RPGDelegationElem extends GDelegationElem
 {
-	// FIXME: RoleNode used for variant name -- cf. toPayloadType, RPRoleVariant construction
+	// FIXME: RoleNode (its String value) is used for *variant name* -- cf. toPayloadType, RPRoleVariant construction
 	public RPGDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
 	{
 		super(source, proto, role);
@@ -76,24 +77,26 @@ public class RPGDelegationElem extends GDelegationElem
 		String tmp = this.role.toString();
 		int i = tmp.indexOf("_");  // Cf. RPCoreSTApiGenerator#getEndpointKindTypeName
 		String name;
-		int start;
-		int end;
+		RPIndexExpr start;
+		RPIndexExpr end;
 		if (i == -1)
 		{
 			name = tmp;
-			start = 1;
-			end = 1;
+			start = RPIndexFactory.ParamIntVal(1);
+			end = RPIndexFactory.ParamIntVal(1);
 		}
 		else
 		{
+			System.out.println("111: " + tmp);
 			name = tmp.substring(0, i);
-			int j = tmp.indexOf("_", i+1);
-			start = Integer.parseInt(tmp.substring(i, j));
-			end = Integer.parseInt(tmp.substring(j));
+			int j = tmp.indexOf("t", i+1);  // "to"  // HACK FIXME
+			String s = tmp.substring(i+1, j);
+			String e = tmp.substring(j+2);
+			start = (s.charAt(0) >= '0' && s.charAt(0) <= '9') ? RPIndexFactory.ParamIntVal(Integer.parseInt(s)) : RPIndexFactory.ParamIntVar(s);
+			end = (e.charAt(0) >= '0' && e.charAt(0) <= '9') ? RPIndexFactory.ParamIntVal(Integer.parseInt(e)) : RPIndexFactory.ParamIntVar(e);
 		}
 		RPRoleVariant variant = new RPRoleVariant(name, 
-				Stream.of(new RPInterval(RPIndexFactory.ParamIntVal(start), RPIndexFactory.ParamIntVal(end))).collect(Collectors.toSet()), 
-				Collections.emptySet());
+				Stream.of(new RPInterval(start, end)).collect(Collectors.toSet()), Collections.emptySet());
 		return new RPCoreGDelegationType(this.proto.toName(), variant);
 	}
 }
