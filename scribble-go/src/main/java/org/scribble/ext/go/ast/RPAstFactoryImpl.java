@@ -162,9 +162,9 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 	}*/
 
 	@Override
-	public RPGDelegationElem RPGDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
+	public RPGDelegationElem RPGDelegationElem(CommonTree source, GProtocolNameNode root, GProtocolNameNode state, RoleNode role)
 	{
-		RPGDelegationElem de = new RPGDelegationElem(source, proto, role);
+		RPGDelegationElem de = new RPGDelegationElem(source, root, state, role);
 		de = del(de, new RPGDelegationElemDel());
 		return de;
 	}

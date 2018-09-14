@@ -543,6 +543,10 @@ payloadelement:
 	protocolname '@' rolename '[' paramindexexpr ']'  // FIXME: should be @variant -- need user syntax for variant
 ->
 	^(PARAM_DELEGATION rolename protocolname) paramindexexpr)*/
+|
+	protocolname ':' protocolname '@' variantname
+->
+	^(PARAM_DELEGATION variantname protocolname protocolname)
 ;
 
 

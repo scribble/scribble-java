@@ -220,6 +220,7 @@ public class RPCoreSTApiGenerator
 		return getGeneratedRoleVariantName(variant);
 	}
 	
+	// FIXME: doesn't need simpname
 	// Role variant = Endpoint kind -- e.g., S_1To1, W_1Ton
 	public static String getEndpointKindTypeName(GProtocolName simpname, RPRoleVariant variant)
 	{

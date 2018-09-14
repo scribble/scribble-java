@@ -17,12 +17,14 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.ext.go.ast.global.RPGDelegationElem;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
+import org.scribble.visit.AstVisitor;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class RPGDelegationElemDel extends GDelegationElemDel
@@ -31,7 +33,7 @@ public class RPGDelegationElemDel extends GDelegationElemDel
 	{
 	
 	}
-
+	
 	// Duplicated from super
 	@Override
 	public RPGDelegationElem visitForNameDisambiguation(NameDisambiguator disamb, GDelegationElem de) throws ScribbleException
@@ -50,7 +52,9 @@ public class RPGDelegationElemDel extends GDelegationElemDel
 			}
 		}
 
-		GProtocolNameNode pnn = (GProtocolNameNode) disamb.job.af.QualifiedNameNode(de.proto.getSource(), fullname.getKind(), fullname.getElements());  // Not keeping original namenode del
-		return (RPGDelegationElem) de.reconstruct(pnn, de.role);
+		RPGDelegationElem rpde = (RPGDelegationElem) de;
+		GProtocolNameNode root = (GProtocolNameNode) disamb.job.af.QualifiedNameNode(rpde.proto.getSource(), fullname.getKind(), fullname.getElements());  // Not keeping original namenode del
+		GProtocolNameNode state = (GProtocolNameNode) disamb.job.af.QualifiedNameNode(rpde.state.getSource(), fullname.getKind(), fullname.getElements());  // Not keeping original namenode del
+		return (RPGDelegationElem) rpde.reconstruct(root, state, de.role);
 	}
 }

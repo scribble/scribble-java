@@ -673,7 +673,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		GProtocolName proto = gdt.getGlobalProtocol();
 		RPRoleVariant variant = gdt.getVariant();
-		return RPCoreSTApiGenerator.getEndpointKindTypeName(proto.getSimpleName(), variant);
+		return RPCoreSTApiGenerator.getEndpointKindTypeName(proto.getSimpleName(), variant);  // N.B. doesn't use proto
 	}
 
 

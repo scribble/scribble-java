@@ -52,9 +52,13 @@ public class RPAntlrPayloadElemList
 			case "PARAM_DELEGATION":
 			{
 				// Duplicated from AntlrPayloadElemList.parsePayloadElem
-				RoleNode rn = AntlrSimpleName.toRoleNode((CommonTree) ct.getChild(0), af);
-				GProtocolNameNode gpnn = AntlrQualifiedName.toGProtocolNameNode((CommonTree) ct.getChild(1), af);
-				return ((RPAstFactory) af).RPGDelegationElem(ct, gpnn, rn);
+				RoleNode rn = AntlrSimpleName.toRoleNode((CommonTree) ct.getChild(0), af);  // FIXME: factor out constants
+				GProtocolNameNode root = AntlrQualifiedName.toGProtocolNameNode((CommonTree) ct.getChild(1), af);
+				CommonTree tmp = (CommonTree) ct.getChild(2);
+				GProtocolNameNode state = (tmp != null) 
+						? AntlrQualifiedName.toGProtocolNameNode((CommonTree) ct.getChild(1), af) 
+						: root;
+				return ((RPAstFactory) af).RPGDelegationElem(ct, root, state, rn);
 			}
 
 			default: return AntlrPayloadElemList.parsePayloadElem(ct, af);

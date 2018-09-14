@@ -7,15 +7,25 @@ import org.scribble.type.name.GProtocolName;
 public class RPCoreGDelegationType extends GDelegationType
 {
 	private static final long serialVersionUID = 1L;
+
+	protected GProtocolName state;  // Cf. RPGDelegationElem
 	
-	public RPCoreGDelegationType(GProtocolName proto, RPRoleVariant v)
+	// super.proto used for root
+	public RPCoreGDelegationType(GProtocolName root, GProtocolName state, RPRoleVariant v)
 	{
-		super(proto, v);
+		super(root, v);
+		this.state = state;
 	}
 
 	public RPRoleVariant getVariant()
 	{
 		return (RPRoleVariant) this.role;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return this.proto + ":" + this.state + "@" + this.role;
 	}
 
 	@Override
@@ -30,7 +40,7 @@ public class RPCoreGDelegationType extends GDelegationType
 			return false;
 		}
 		RPCoreGDelegationType them = (RPCoreGDelegationType) o;
-		return them.canEqual(this) && super.equals(o);
+		return them.canEqual(this) && super.equals(o) && this.state.equals(them.state);
 	}
 	
 	public boolean canEqual(Object o)
@@ -43,6 +53,7 @@ public class RPCoreGDelegationType extends GDelegationType
 	{
 		int hash = 6673;
 		hash = 31 * super.hashCode();
+		hash = 31 * this.state.hashCode();
 		return hash;
 	}
 

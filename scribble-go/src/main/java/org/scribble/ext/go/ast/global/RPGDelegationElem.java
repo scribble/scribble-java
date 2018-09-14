@@ -30,15 +30,21 @@ import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexFactory;
+import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.PayloadElemType;
+import org.scribble.visit.AstVisitor;
 
 public class RPGDelegationElem extends GDelegationElem
 {
+	public final GProtocolNameNode state;
+
+	// super.proto used for root
 	// FIXME: RoleNode (its String value) is used for *variant name* -- cf. toPayloadType, RPRoleVariant construction
-	public RPGDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
+	public RPGDelegationElem(CommonTree source, GProtocolNameNode root, GProtocolNameNode state, RoleNode role)
 	{
-		super(source, proto, role);
+		super(source, root, role);
+		this.state = state;
 	}
 	
 	@Override
@@ -51,23 +57,39 @@ public class RPGDelegationElem extends GDelegationElem
 	@Override
 	protected RPGDelegationElem copy()
 	{
-		return new RPGDelegationElem(this.source, this.proto, this.role);
+		return new RPGDelegationElem(this.source, this.proto, this.state, this.role);
 	}
 	
 	@Override
 	public RPGDelegationElem clone(AstFactory af)
 	{
-		GProtocolNameNode name = (GProtocolNameNode) this.proto.clone(af);
+		GProtocolNameNode root = (GProtocolNameNode) this.proto.clone(af);
+		GProtocolNameNode state = (GProtocolNameNode) this.state.clone(af);
 		RoleNode role = (RoleNode) this.role.clone(af);
-		return ((RPAstFactory) af).RPGDelegationElem(this.source, name, role);
+		return ((RPAstFactory) af).RPGDelegationElem(this.source, root, state, role);
 	}
 
-	public RPGDelegationElem reconstruct(GProtocolNameNode proto, RoleNode role)
+	@Override
+	public RPGDelegationElem reconstruct(GProtocolNameNode root, RoleNode role)
+	{
+		throw new RuntimeException("Shouldn't get in here: " + this);
+	}
+
+	public RPGDelegationElem reconstruct(GProtocolNameNode root, GProtocolNameNode state, RoleNode role)
 	{
 		ScribDel del = del();
-		RPGDelegationElem elem = new RPGDelegationElem(this.source, proto, role);
+		RPGDelegationElem elem = new RPGDelegationElem(this.source, root, state, role);
 		elem = (RPGDelegationElem) elem.del(del);
 		return elem;
+	}
+
+	@Override
+	public RPGDelegationElem visitChildren(AstVisitor nv) throws ScribbleException
+	{
+		GProtocolNameNode root = (GProtocolNameNode) visitChild(this.proto, nv);
+		GProtocolNameNode state = (GProtocolNameNode) visitChild(this.state, nv);
+		RoleNode role = (RoleNode) visitChild(this.role, nv);
+		return reconstruct(root, state, role);
 	}
 
 	@Override
@@ -76,6 +98,7 @@ public class RPGDelegationElem extends GDelegationElem
 		// FIXME all HACK
 		String tmp = this.role.toString();
 		int i = tmp.indexOf("_");  // Cf. RPCoreSTApiGenerator#getEndpointKindTypeName
+				// Treating singleton variant as special case (although not done elsewhere, e.g., A[1,1])
 		String name;
 		RPIndexExpr start;
 		RPIndexExpr end;
@@ -97,6 +120,6 @@ public class RPGDelegationElem extends GDelegationElem
 		}
 		RPRoleVariant variant = new RPRoleVariant(name, 
 				Stream.of(new RPInterval(start, end)).collect(Collectors.toSet()), Collections.emptySet());
-		return new RPCoreGDelegationType(this.proto.toName(), variant);
+		return new RPCoreGDelegationType(this.proto.toName(), this.state.toName(), variant);
 	}
 }
