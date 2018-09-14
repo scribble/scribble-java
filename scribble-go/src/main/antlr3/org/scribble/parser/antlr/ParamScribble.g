@@ -417,11 +417,11 @@ messagesignaturename: membername;
  * Section 3.2.2 Top-level Module Structure
  */
 module:
-	//moduledecl importdecl* datatypedecl* protocoldecl* EOF
-	moduledecl importdecl* datatypedecl* delegdecl* protocoldecl* EOF
+	moduledecl importdecl* datatypedecl* protocoldecl* EOF
+	//moduledecl importdecl* datatypedecl* delegdecl* protocoldecl* EOF
 ->
-	//^(MODULE moduledecl importdecl* datatypedecl* protocoldecl*)
-	^(MODULE moduledecl importdecl* datatypedecl* delegdecl* protocoldecl*)
+	^(MODULE moduledecl importdecl* datatypedecl* protocoldecl*)
+	//^(MODULE moduledecl importdecl* datatypedecl* delegdecl* protocoldecl*)
 ;
 
 
