@@ -100,8 +100,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 		res += "\n"
 				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName + ") branch() {\n"
 				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
-			  + "var tmp interface{}\n";
+						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
 		if (((GoJob) rpapi.job).noCopy)
 		{
 			/*res += 
@@ -116,11 +115,10 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 					 "if err := " + sEpRecv + "." /*+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + peer.getName() + "\"][" 
 				  		+ RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&op)*/
 							+ RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
-				  		+ rpapi.generateIndexExpr(d.start) + ", &tmp)"
+				  		+ rpapi.generateIndexExpr(d.start) + ", &op)"
 					+ "; err != nil {\n"  // g.end = g.start -- CFSM only has ? for input
 					+ "log.Fatal(err)\n"
-					+ "}\n"
-					+ "op := tmp.(string)\n";
+					+ "}\n";
 		}
 		res+= "if " + s.getActions().stream().map(a ->
 					{

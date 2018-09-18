@@ -86,7 +86,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 		if (a.mid.isOp())  // Currently, assuming all mids are Ops; else all mids are sig names
 		{
 			// Duplicated from RPCoreSTReceiveActionBuilder
-			res += "var lab interface{}\n"  // string  // cf. RPCoreSTReceiveActionBuilder // var decl needed for deserializatoin -- FIXME?
+			res += "var lab string\n" // cf. RPCoreSTReceiveActionBuilder
 					+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(" + "&lab" + ")"*/
 					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", 1, &lab" + ")"
@@ -98,14 +98,13 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 
 			// Switch and return Cases value
 			res += "\n"
-					+ "cast := *(lab.(*string))\n"
-					+ "switch cast {\n"
+					+ "switch lab {\n"
 					+ as.stream().map(x -> 
 								"case \"" + x.mid + "\":\n" + "return &" + RPCoreSTCaseBuilder.getOpTypeName(api, curr, x.mid)
 							//+ "{ Ept: s.Ept, Res: new(session.LinearResource) }\n"
 							+ "{" + ret + "}\n"
 						).collect(Collectors.joining(""))
-					+ "default: panic(\"Shouldn't get in here: \" + cast)\n"
+					+ "default: panic(\"Shouldn't get in here: \" + lab)\n"
 					+ "}\n"
 					+ "return nil\n";  // FIXME: panic instead
 		}
