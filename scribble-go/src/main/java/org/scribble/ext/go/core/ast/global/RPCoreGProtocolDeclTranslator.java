@@ -30,10 +30,8 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.main.Job;
 import org.scribble.type.Message;
-import org.scribble.type.MessageSig;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.DataType;
-import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.RecVar;
 
 public class RPCoreGProtocolDeclTranslator
@@ -45,6 +43,7 @@ public class RPCoreGProtocolDeclTranslator
 	
 	private static int recCounter = 1;
 
+	@SuppressWarnings("unused")  // Disabling this would make finding target state chan name of P1:P2@v easier (but not actually currently done)
 	private static String makeFreshRecVarName()
 	{
 		return "_X" + RPCoreGProtocolDeclTranslator.recCounter++;
@@ -279,7 +278,9 @@ public class RPCoreGProtocolDeclTranslator
 		RecVar recvar = gr.recvar.toName();
 		if (recvar.toString().contains("__"))  // HACK: "inlined proto rec var"
 		{
-			RecVarNode rvn = (RecVarNode) ((RPAstFactory) this.job.af).SimpleNameNode(null, RecVarKind.KIND, makeFreshRecVarName());
+			String name = //makeFreshRecVarName();
+					recvar.toString();  // FIXME HACK to support state lookup for delegation via inlined protocol name -- cf. RPCoreSTStateChanApiBuilder#getPayloadElemTypeName
+			RecVarNode rvn = (RecVarNode) ((RPAstFactory) this.job.af).SimpleNameNode(null, RecVarKind.KIND, name);
 			rvs.put(recvar, rvn.toName());
 			recvar = rvn.toName();
 		}

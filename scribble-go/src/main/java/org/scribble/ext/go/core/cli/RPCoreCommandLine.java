@@ -603,7 +603,7 @@ public class RPCoreCommandLine extends CommandLine
 			String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_EFSM);
 			for (int i = 0; i < args.length; i += 1)
 			{
-				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
+				Role role = CommandLine.checkRoleArg(job.getContext(), this.gpd.getHeader().getDeclName(), args[i]);
 				this.E0.get(role).entrySet().forEach(e ->
 				{
 					String out = e.getValue().toDot();
@@ -616,7 +616,7 @@ public class RPCoreCommandLine extends CommandLine
 			String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_EFSM_PNG);
 			for (int i = 0; i < args.length; i += 2)
 			{
-				Role role = CommandLine.checkRoleArg(job.getContext(), gpd.getHeader().getDeclName(), args[i]);
+				Role role = CommandLine.checkRoleArg(job.getContext(), this.gpd.getHeader().getDeclName(), args[i]);
 				String png = args[i+1];
 				//for (Entry<Set<ParamRange>, EGraph> e : this.E0.get(role).entrySet())
 				for (Entry<RPRoleVariant, EGraph> e : this.E0.get(role).entrySet())

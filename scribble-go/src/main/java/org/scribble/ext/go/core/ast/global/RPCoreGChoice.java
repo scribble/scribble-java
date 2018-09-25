@@ -218,8 +218,6 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 							throw new RuntimeException("[rp-core] TODO: " + pet);
 						}
 						RPCoreGDelegationType gdt = (RPCoreGDelegationType) pet;  // Payload types come from ParamCoreGProtocolDeclTranslator#parsePayload (toMessage)
-
-						System.out.println("CCC: " + this + ", " + gdt.getGlobalProtocol() + ", " + gdt.getRole());
 						
 						// cf. GDelegationElem#project
 						

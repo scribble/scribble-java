@@ -48,6 +48,12 @@ public class RPGDelegationElem extends GDelegationElem
 	}
 	
 	@Override
+	public String toString()
+	{
+		return this.proto + ":" + this.state + "@" + this.role;
+	}
+	
+	@Override
 	public LDelegationElem project(AstFactory af)
 	{
 		//return af.RPCoreLDelegationElem(this.source, Projector.makeProjectedFullNameNode(af, this.source, this.proto.toName(), this.role.toName()));
@@ -110,7 +116,6 @@ public class RPGDelegationElem extends GDelegationElem
 		}
 		else
 		{
-			System.out.println("111: " + tmp);
 			name = tmp.substring(0, i);
 			int j = tmp.indexOf("t", i+1);  // "to"  // HACK FIXME
 			String s = tmp.substring(i+1, j);
@@ -120,6 +125,7 @@ public class RPGDelegationElem extends GDelegationElem
 		}
 		RPRoleVariant variant = new RPRoleVariant(name, 
 				Stream.of(new RPInterval(start, end)).collect(Collectors.toSet()), Collections.emptySet());
+		
 		return new RPCoreGDelegationType(this.proto.toName(), this.state.toName(), variant);
 	}
 }

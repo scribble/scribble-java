@@ -44,9 +44,6 @@ public class RPAntlrPayloadElemList
 	public static PayloadElem<?> parsePayloadElem(CommonTree ct, AstFactory af)
 	{
 		String type = ct.getToken().getText();  // FIXME from AntlrToScribParser#getAntlrNodeType
-		
-		System.out.println("BBB: " + type);
-		
 		switch (type)
 		{
 			case "PARAM_DELEGATION":
@@ -56,7 +53,7 @@ public class RPAntlrPayloadElemList
 				GProtocolNameNode root = AntlrQualifiedName.toGProtocolNameNode((CommonTree) ct.getChild(1), af);
 				CommonTree tmp = (CommonTree) ct.getChild(2);
 				GProtocolNameNode state = (tmp != null) 
-						? AntlrQualifiedName.toGProtocolNameNode((CommonTree) ct.getChild(1), af) 
+						? AntlrQualifiedName.toGProtocolNameNode(tmp, af) 
 						: root;
 				return ((RPAstFactory) af).RPGDelegationElem(ct, root, state, rn);
 			}

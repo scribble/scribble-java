@@ -16,6 +16,16 @@ public class RPCoreGDelegationType extends GDelegationType
 		super(root, v);
 		this.state = state;
 	}
+	
+	public GProtocolName getRoot()
+	{
+		return getGlobalProtocol();
+	}
+	
+	public GProtocolName getState()
+	{
+		return this.state;
+	}
 
 	public RPRoleVariant getVariant()
 	{

@@ -13,8 +13,14 @@ import java.util.stream.Collectors;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.ast.RPCoreAstFactory;
+import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
+import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
+import org.scribble.ext.go.core.ast.global.RPCoreGType;
+import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
@@ -653,11 +659,39 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			//return ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) pet);
 			RPCoreGDelegationType gdt = (RPCoreGDelegationType) pet;
-			String tmp = "*" + getDelegatedChanPackageName(gdt) + ".Init";  // FIXME: not necessarily Init
+			String name;
 			
-			System.out.println("DDD: " + tmp);
+			GProtocolName root = gdt.getRoot();
+			GProtocolName state = gdt.getState();
+			RPRoleVariant v = gdt.getVariant();
+			RPCoreAstFactory af = new RPCoreAstFactory();
 			
-			return tmp;
+			// Based on RPCoreCommandLine.paramCoreParseAndCheckWF  // FIXME: integrate? (e.g., process all protocols, not just target main -- then won't need to separately run CL first on delegated proto)
+			GProtocolDecl gpd = (GProtocolDecl) this.job.getContext().getMainModule()
+					.getProtocolDecl(root.getSimpleName());  // FIXME: delegated protocol may not be in main module
+			try
+			{
+				RPCoreGType gt = new RPCoreGProtocolDeclTranslator(this.job, af).translate(gpd);
+				RPCoreLType lt = gt.project(af, v);
+				
+				/* // FIXME: currently cannot determine state chan name of target state in delegated protocol because of decoupled state numbering 
+				   // If we rebuild the target endpoint graph here, the state numbering won't match
+				RPCoreEGraphBuilder builder = new RPCoreEGraphBuilder(job);
+				EGraph g = builder.build(this.L0.get(r).get(ranges));*/
+			}
+			catch (RPCoreSyntaxException e)
+			{
+				throw new RuntimeException("Shouldn't get in here: ", e);
+			}
+			
+			// FIXME: hardcoded to Init because of above FIXME
+			if (!root.equals(state))
+			{
+				throw new RuntimeException("[rp-core] TODO: delegation of non-initial state of target protocol: " + state);
+			}
+			name = "Init";
+			
+			return "*" + getDelegatedChanPackageName(gdt) + "." + name;
 		}
 		else if (pet instanceof DataType)
 		{

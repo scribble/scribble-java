@@ -47,7 +47,6 @@ public class RPAntlrToScribParser extends AntlrToScribParser
 				return RPCoreAntlrModule.parseModule(this, ct, af);
 			case ScribbleAntlrConstants.PAYLOAD_NODE_TYPE:                   
 			{
-				System.out.println("AAA: " + ct);
 				return RPAntlrPayloadElemList.parsePayloadElemList(this, ct, af);
 			}
 
