@@ -100,15 +100,14 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 					throw new RuntimeException("[rp-core] TODO: -nocopy: " + a);
 				}
 
-				res += "var tmp interface{}\n";
 				res += "if err := " + sEpRecv // + (((GoJob) api.job).noCopy ? "Raw" : "");
 								//+ "[" + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&arg0)"
 								+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
-								+ rpapi.generateIndexExpr(d.start) + ", &tmp)"
+								+ rpapi.generateIndexExpr(d.start) + ", &arg0)"
 						+ "; err != nil {\n"
 						+ "log.Fatal(err)\n"
 						+ "}\n"
-						+ "*arg0 = tmp.(" + extName + ")\n"
+						//+ "*arg0 = tmp.(" + extName + ")\n"
 						+ "ch := make(chan *" + rpapi.getStateChanName(curr.getSuccessor(a)) + ", 1)\n"
 						//+ "ch <- " + rpapi.makeCreateSuccStateChan(this, curr, curr.getSuccessor(a), sEp) + "\n";
 						+ "ch <- " + rpapi.makeCreateSuccStateChan(curr.getSuccessor(a)) + "\n";

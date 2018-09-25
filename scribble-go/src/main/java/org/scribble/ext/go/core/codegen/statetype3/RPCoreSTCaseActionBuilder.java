@@ -52,19 +52,18 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder
 		Function<String, String> makeCaseReceive = pt -> 
-				  "var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
 				//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK: []  // N.B. *arg0 matches buildArgs
-				+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
+				  "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(&tmp)"*/
-						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", 1, &tmp)"
+						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", 1, &arg0)"
 						+ "; err != nil {\n"
 				//+ "log.Fatal(err)\n"
 				//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 				+ rpapi.makeReturnSuccStateChan(succ) + "\n"
-				+ "}\n"
+				+ "}\n";
 				//+ "*arg0 = tmp.(" + extName + ")\n";  // N.B. *arg0 matches buildArgs
-				+ "*arg0 = *(tmp.(*" + pt + "))\n";  // Cf. RPCoreSTReceiveActionBuilder // N.B. *arg0 matches buildArgs
-		
+				//+ "*arg0 = *(tmp.(*" + pt + "))\n";  // Cf. RPCoreSTReceiveActionBuilder  // N.B. *arg0 matches buildArgs
+
 		String res = "";
 		if (a.mid.isOp())
 		{

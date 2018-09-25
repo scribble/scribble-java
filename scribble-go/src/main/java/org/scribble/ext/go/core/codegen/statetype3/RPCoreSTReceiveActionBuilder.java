@@ -104,7 +104,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 					//if (!a.mid.toString().equals("")) // HACK FIXME?  // Now redundant, -param-api checks mid starts uppercase
 					{ 
-						res += "var lab interface{}\n"  // string  // var decl needed for deserialization -- FIXME?
+						res += "var lab string\n"
 								+ "if " + errorField + " = " + sEpRecv /*+ "[i]"
 										+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(" + "&lab" + ")"
 												+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_STRING + "()"*/
@@ -117,19 +117,18 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					}
 
 					Function<String, String> makeReceivePayType = pt -> 
-								"var tmp interface{}\n"  // var tmp needed for deserialization -- FIXME?
 							//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(arg0))\n" : "")  // HACK? for passthru?
-							+ "if " + errorField + " = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
+							"if " + errorField + " = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
 									+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
 									+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
-									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
+									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &arg0[i-" + start + "])"
 					
 							+ "; " + errorField + " != nil {\n"
 							//+ "log.Fatal(err)\n"
 							//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 							+ rpapi.makeReturnSuccStateChan(succ) + "\n"
-							+ "}\n"
-							+ "arg0[i-" + start + "] = *(tmp.(*" + pt + "))\n";  // FIXME: doesn't work for gob, pointer decoding seems flattened? ("*" dropped) ...  // Cf. ISend in RPCoreSTSendActionBuilder
+							+ "}\n";
+							// + "arg0[i-" + start + "] = *(tmp.(*" + pt + "))\n";  // FIXME: doesn't work for gob, pointer decoding seems flattened? ("*" dropped) ...  // Cf. ISend in RPCoreSTSendActionBuilder
 							//+ "arg0[i-" + start + "] = tmp.(" + pt + ")\n";  // FIXME: ... but doesn't work for shm
 					res += makeReceivePayType.apply(rpapi.getPayloadElemTypeName(a.payload.elems.get(0)));
 				}
