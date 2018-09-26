@@ -8,14 +8,26 @@
 module param.tmp.ParamTest;
 
 
-type <go> "int" from "..." as int;
-type <go> "string" from "..." as string;
-type <go> "TwoBuyer.Address" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Address;
-type <go> "TwoBuyer.Date" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Date;
+//*
+type <go> "int" from "builtin" as int;
+type <go> "string" from "builtin" as string;
+sig <go> "msgsig.Request" from "github.com/nickng/httpget/msgsig" as Request;
+sig <go> "msgsig.Response" from "github.com/nickng/httpget/msgsig" as Response;
 
-sig <go> "..."
-		from "..."
-		as Data;
+global protocol Proto1(role Master, role Fetcher, role Server) {
+  URL(int) from Master[1,1] to Fetcher[1,N];
+
+  foreach Fetcher[I:1,N] {
+    Request from Fetcher[I,I] to Server[1,1];
+    Response from Server[1,1] to Fetcher[I,I];
+    //tmp() from Server[1,1] to Master[1,1];  // FIXME: projection
+  }
+
+  Done(string) from Fetcher[1,N] to Master[1,1];
+}
+//*/
+
+
 
 
 /*
@@ -50,12 +62,26 @@ message passing
 
 // paramterisation subsumes multicast
 
+
+/*
+type <go> "int" from "..." as int;
+type <go> "string" from "..." as string;
+type <go> "TwoBuyer.Address" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Address;
+type <go> "TwoBuyer.Date" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Date;
+
+sig <go> "..."
+		from "..."
+		as Data;
+
 global protocol Proto1(role A, role B) {
   foreach A[I:1,K], B[J:2,KK]
   {
     Data from A[I,I] to B[J,J];
   }
 }
+//*/
+
+
 
 /*global protocol ScatterGather(role M, role S) {
    (int) from M[1,1] to S[1,N];
