@@ -31,4 +31,9 @@ public class RPIndexFactory
 	{
 		return new RPForeachVar(text);
 	}
+	
+	public static RPIndexSelf RPIndexSelf()
+	{
+		return RPIndexSelf.SELF;
+	}
 }

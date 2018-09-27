@@ -17,11 +17,17 @@ import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
+import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.RPBinIndexExpr.Op;
+import org.scribble.ext.go.type.index.RPForeachVar;
+import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexFactory;
+import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.type.Message;
@@ -315,17 +321,49 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		Role subjName = subj.getName();
 		RPInterval srcRange = this.src.getParsedRange();
 		RPInterval destRange = this.dest.getParsedRange();
+		Set<String> fvars = ivals.stream().map(x -> x.var.toString()).collect(Collectors.toSet());
 		if (this.kind == RPCoreGActionKind.CROSS_TRANSFER)
 		{	
-			if //(srcName.equals(subjName) && subj.intervals.contains(srcRange))
-				(this.src.equals(subj))  // N.B. subj uses RPIndexVar (not RPForeachVar) -- cf. the invocation of project3 in RPCoreGForeach#project2
+			if (this.src.equals(subj))  // N.B. subj uses RPIndexVar (not RPForeachVar) -- cf. the invocation of project3 in RPCoreGForeach#project2
 			{
 				//return af.ParamCoreLCrossChoice(this.dest, RPCoreLActionKind.CROSS_SEND, projs);
+				if (srcRange.start.equals(srcRange.end) && srcRange.start instanceof RPIndexVar
+						&& destRange.start.equals(destRange.end) && destRange.start instanceof RPIndexVar)
+				{
+					RPIndexVar srcVar = (RPIndexVar) srcRange.start;
+					RPIndexVar destVar = (RPIndexVar) destRange.start;
+					if (roles.contains(destName) && fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
+					{
+						RPIndexExpr destExpr = RPIndexFactory.ParamBinIndexExpr(Op.Add, RPIndexSelf.SELF, RPIndexFactory.ParamBinIndexExpr(Op.Subt, destVar, srcVar));
+						RPIndexedRole dest = new RPIndexedRole(destName.toString(), Stream.of(new RPInterval(destExpr, destExpr)).collect(Collectors.toSet()));
+						return af.ParamCoreLCrossChoice(dest, RPCoreLActionKind.CROSS_SEND, projs);
+					}
+					else if (!roles.contains(destName) || !(fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString())))
+					{
+						return af.ParamCoreLCrossChoice(this.dest, RPCoreLActionKind.CROSS_SEND, projs);
+					}
+				}
+				// Otherwise try merge (if neither src/dest are subj)
 			}
-			else if //(destName.equals(subjName) && subj.intervals.contains(destRange))
-				... HERE
+			else if (this.dest.equals(subj))
 			{
-				//return af.ParamCoreLCrossChoice(this.src, RPCoreLActionKind.CROSS_RECEIVE, projs);
+				if (srcRange.start.equals(srcRange.end) && srcRange.start instanceof RPIndexVar
+						&& destRange.start.equals(destRange.end) && destRange.start instanceof RPIndexVar)
+				{
+					RPIndexVar srcVar = (RPIndexVar) srcRange.start;
+					RPIndexVar destVar = (RPIndexVar) destRange.start;
+					if (roles.contains(destName) && fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
+					{
+						RPIndexExpr srcExpr = RPIndexFactory.ParamBinIndexExpr(Op.Add, RPIndexSelf.SELF, RPIndexFactory.ParamBinIndexExpr(Op.Subt, srcVar, destVar));
+						RPIndexedRole src = new RPIndexedRole(destName.toString(), Stream.of(new RPInterval(srcExpr, srcExpr)).collect(Collectors.toSet()));
+						return af.ParamCoreLCrossChoice(src, RPCoreLActionKind.CROSS_SEND, projs);
+					}
+					else
+					{
+						return af.ParamCoreLCrossChoice(this.src, RPCoreLActionKind.CROSS_RECEIVE, projs);
+					}
+				}
+				// Otherwise merge (if neither src/dest are subj)
 			}
 		}
 		else
@@ -334,7 +372,14 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		}
 		
 		// Not CROSS_TRANSFER, or subj is not sender nor receiver
-		return merge(af, subj, projs);
+		if (!this.src.equals(subj) && !this.src.equals(subj))
+		{
+			return merge3(af, subj, projs);
+		}
+		else
+		{
+			throw new RuntimeException("[rp-core] Projection not defined: " + this + ", " + subj);
+		}
 	}
 		
 	//private ParamCoreLType merge(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges, Map<ParamCoreMessage, ParamCoreLType> projs) throws ParamCoreSyntaxException
@@ -351,6 +396,17 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 					+ ": cannot merge for: " + projs.keySet());
 		}
 		
+		return values.iterator().next();
+	}
+
+	// Cf. merge above
+	private RPCoreLType merge3(RPCoreAstFactory af, RPIndexedRole r, Map<Message, RPCoreLType> projs) throws RPCoreSyntaxException
+	{
+		Set<RPCoreLType> values = new HashSet<>(projs.values());
+		if (values.size() > 1)
+		{
+			throw new RPCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + r + ": cannot merge for: " + projs.keySet());
+		}
 		return values.iterator().next();
 	}
 	

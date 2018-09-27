@@ -23,10 +23,12 @@ public class RPIndexedRole extends Role
 	public RPIndexedRole(String name, Set<? extends RPInterval> intervals)
 	{
 		super(name);
-		if (intervals.size() != 1) // FIXME: this set was meant for multidim nat intervals, but multidim should be factored into the RPInterval itself
+		/*if (intervals.size() != 1) 
+			// FIXME: this set was meant for multidim nat intervals, but multidim should be factored into the RPInterval itself
+			// No: above is incorrect
 		{
 			throw new RuntimeException("TODO: " + intervals);
-		}
+		}*/
 		this.intervals = Collections.unmodifiableSet(intervals);
 	}
 
