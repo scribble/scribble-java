@@ -1,6 +1,7 @@
 package org.scribble.ext.go.core.ast;
 
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,6 +19,7 @@ import org.scribble.ext.go.core.ast.local.RPCoreLForeach;
 import org.scribble.ext.go.core.ast.local.RPCoreLRec;
 import org.scribble.ext.go.core.ast.local.RPCoreLRecVar;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
+import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.type.index.RPForeachVar;
@@ -73,9 +75,13 @@ public class RPCoreAstFactory
 		return RPCoreGEnd.END;
 	}
 
-	public RPCoreGForeach RPCoreGForeach(Role role, RPForeachVar var, RPIndexExpr start, RPIndexExpr end, RPCoreGType body, RPCoreGType seq)
+	public RPCoreGForeach RPCoreGForeach(//Role role, RPForeachVar var, RPIndexExpr start, RPIndexExpr end, 
+			Set<Role> roles, Set<RPAnnotatedInterval> ivals,
+			RPCoreGType body, RPCoreGType seq)
 	{
-		return new RPCoreGForeach(role, var, start, end, body, seq);
+		return new RPCoreGForeach(//role, var, start, end, 
+				roles, ivals,
+				body, seq);
 	}
 
 	public RPCoreLCrossChoice ParamCoreLCrossChoice(RPIndexedRole role, RPCoreLActionKind kind,
@@ -137,8 +143,12 @@ public class RPCoreAstFactory
 		return RPCoreLEnd.END;
 	}
 
-	public RPCoreLForeach RPCoreLForeach(Role role, RPForeachVar var, RPIndexExpr start, RPIndexExpr end, RPCoreLType body, RPCoreLType seq)
+	public RPCoreLForeach RPCoreLForeach(//Role role, RPForeachVar var, RPIndexExpr start, RPIndexExpr end, 
+			Set<Role> roles, Set<RPAnnotatedInterval> ivals,
+			RPCoreLType body, RPCoreLType seq)
 	{
-		return new RPCoreLForeach(role, var, start, end, body, seq);
+		return new RPCoreLForeach(//role, var, start, end, 
+				roles, ivals,
+				body, seq);
 	}
 }

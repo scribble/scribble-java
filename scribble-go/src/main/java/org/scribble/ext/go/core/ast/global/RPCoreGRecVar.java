@@ -9,11 +9,13 @@ import org.scribble.ext.go.core.ast.RPCoreRecVar;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
+import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Role;
 
 	
 public class RPCoreGRecVar extends RPCoreRecVar<Global> implements RPCoreGType
@@ -48,6 +50,13 @@ public class RPCoreGRecVar extends RPCoreRecVar<Global> implements RPCoreGType
 	@Override
 	//public ParamCoreLRecVar project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges)
 	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
+	{
+		return af.ParamCoreLRecVar(this.recvar);
+	}
+	
+  // G proj R \vec{C} r[z]
+	@Override
+	public RPCoreLType project3(RPCoreAstFactory af, Set<Role> roles, Set<RPAnnotatedInterval> ivals, RPIndexedRole subj) throws RPCoreSyntaxException
 	{
 		return af.ParamCoreLRecVar(this.recvar);
 	}

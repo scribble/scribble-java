@@ -1,6 +1,6 @@
 package org.scribble.ext.go.type.index;
 
-// Foreach index variable occurrence -- hacky?
+// Foreach index variable occurrence -- hacky? -- CHECKME: why distinguish from RPIndexVar?
 // Currently only used for parsing foreach param decls -- occurrences of vars inside foreach not disambiguated between endpoint-vars and foreach-vars
 // (Currently no actual RPIndexExprNode ast -- so no name disambiguation)
 

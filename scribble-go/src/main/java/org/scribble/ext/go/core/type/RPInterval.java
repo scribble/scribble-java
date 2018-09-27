@@ -28,6 +28,12 @@ public class RPInterval
 		//return Stream.of(this.start, this.end).filter(p -> !p.isConstant()).collect(Collectors.toSet());
 		return Stream.of(this.start, this.end).flatMap(p -> p.getVars().stream()).collect(Collectors.toSet());
 	}
+	
+	// Cf. equals -- also cf. "contains"
+	public boolean isSame(RPInterval i)
+	{
+		return this.start == i.start && this.end == i.end;
+	}
 
 	@Override
 	public String toString()
@@ -56,6 +62,11 @@ public class RPInterval
 			return false;
 		}
 		RPInterval them = (RPInterval) obj;
-		return this.start.equals(them.start) && this.end.equals(them.end);
+		return them.canEqual(this) && this.start.equals(them.start) && this.end.equals(them.end);
+	}
+	
+	public boolean canEqual(RPInterval o)
+	{
+		return o instanceof RPInterval;
 	}
 }

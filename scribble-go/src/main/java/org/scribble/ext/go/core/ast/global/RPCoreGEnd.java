@@ -8,11 +8,14 @@ import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreEnd;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.RPCoreType;
+import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
+import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.type.kind.Global;
+import org.scribble.type.name.Role;
 
 
 public class RPCoreGEnd extends RPCoreEnd<Global> implements RPCoreGType
@@ -51,6 +54,13 @@ public class RPCoreGEnd extends RPCoreEnd<Global> implements RPCoreGType
 	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
 	{
 		return af.ParamCoreLEnd();
+	}
+	
+  // G proj R \vec{C} r[z]
+	@Override
+	public RPCoreLType project3(RPCoreAstFactory af, Set<Role> roles, Set<RPAnnotatedInterval> ivals, RPIndexedRole subj) throws RPCoreSyntaxException
+	{
+		return RPCoreLEnd.END;
 	}
 	
 	@Override

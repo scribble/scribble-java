@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GContinue;
@@ -26,6 +28,7 @@ import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGForeach;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
+import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.main.Job;
@@ -308,7 +311,10 @@ public class RPCoreGProtocolDeclTranslator
 	private RPCoreGForeach parseRPGForeach(Map<RecVar, RecVar> rvs, boolean checkRecGuard, RPGForeach gf, RPCoreGType seq) throws RPCoreSyntaxException
 	{
 		RPCoreGType body = parseSeq(gf.getBlock().getInteractionSeq().getInteractions(), Collections.emptyMap(), false, true);
-		return this.af.RPCoreGForeach(gf.subj.toName(), gf.param, gf.start, gf.end, body, seq);
+		return this.af.RPCoreGForeach(//gf.subj.toName(), gf.param, gf.start, gf.end, 
+				Stream.of(gf.subj.toName()).collect(Collectors.toSet()), Stream.of(new RPAnnotatedInterval(gf.param, gf.start, gf.end)).collect(Collectors.toSet()),
+						// FIXME: generalised foreach sig in source AST
+				body, seq);
 	}
 
 	// Parses message interactions as unary choices

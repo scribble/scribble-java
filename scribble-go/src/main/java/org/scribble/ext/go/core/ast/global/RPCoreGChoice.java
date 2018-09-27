@@ -298,6 +298,44 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		//return merge(af, r, ranges, projs);
 		return merge(af, subj, projs);
 	}
+
+	// Duplicated from project above
+	@Override
+	public RPCoreLType project3(RPCoreAstFactory af, Set<Role> roles, Set<RPAnnotatedInterval> ivals, RPIndexedRole subj) throws RPCoreSyntaxException
+	{
+		LinkedHashMap<Message, RPCoreLType> projs = new LinkedHashMap<>();
+		for (Entry<Message, RPCoreGType> e : this.cases.entrySet())
+		{
+			Message a = e.getKey();
+			projs.put(a, e.getValue().project3(af, roles, ivals, subj));
+		}
+		
+		Role srcName = this.src.getName();
+		Role destName = this.dest.getName();
+		Role subjName = subj.getName();
+		RPInterval srcRange = this.src.getParsedRange();
+		RPInterval destRange = this.dest.getParsedRange();
+		if (this.kind == RPCoreGActionKind.CROSS_TRANSFER)
+		{	
+			if //(srcName.equals(subjName) && subj.intervals.contains(srcRange))
+				(this.src.equals(subj))  // N.B. subj uses RPIndexVar (not RPForeachVar) -- cf. the invocation of project3 in RPCoreGForeach#project2
+			{
+				//return af.ParamCoreLCrossChoice(this.dest, RPCoreLActionKind.CROSS_SEND, projs);
+			}
+			else if //(destName.equals(subjName) && subj.intervals.contains(destRange))
+				... HERE
+			{
+				//return af.ParamCoreLCrossChoice(this.src, RPCoreLActionKind.CROSS_RECEIVE, projs);
+			}
+		}
+		else
+		{
+			throw new RuntimeException("[param-core] TODO: " + this);
+		}
+		
+		// Not CROSS_TRANSFER, or subj is not sender nor receiver
+		return merge(af, subj, projs);
+	}
 		
 	//private ParamCoreLType merge(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges, Map<ParamCoreMessage, ParamCoreLType> projs) throws ParamCoreSyntaxException
 	private RPCoreLType merge(RPCoreAstFactory af, RPRoleVariant r, 

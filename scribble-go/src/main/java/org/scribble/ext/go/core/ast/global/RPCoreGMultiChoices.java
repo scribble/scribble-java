@@ -16,6 +16,7 @@ import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
+import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
@@ -23,6 +24,7 @@ import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Global;
+import org.scribble.type.name.Role;
 
 @Deprecated
 public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> implements RPCoreGType
@@ -209,6 +211,13 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 		// src name != dest name
 		//return merge(af, r, ranges, projs);
 		return merge(af, subj, projs);
+	}
+	
+  // G proj R \vec{C} r[z]
+	@Override
+	public RPCoreLType project3(RPCoreAstFactory af, Set<Role> roles, Set<RPAnnotatedInterval> ivals, RPIndexedRole subj) throws RPCoreSyntaxException
+	{
+		throw new RuntimeException("Shouldn't get in here: " + this);
 	}
 		
 	//private ParamCoreLType merge(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges, Map<ParamCoreMessage, ParamCoreLType> projs) throws ParamCoreSyntaxException

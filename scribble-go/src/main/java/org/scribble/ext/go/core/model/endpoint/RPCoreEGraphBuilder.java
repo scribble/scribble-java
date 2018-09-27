@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.model.endpoint;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.scribble.ext.go.core.ast.RPCoreForeach;
 import org.scribble.ext.go.core.ast.RPCoreRecVar;
@@ -12,6 +13,7 @@ import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
 import org.scribble.ext.go.core.ast.local.RPCoreLForeach;
 import org.scribble.ext.go.core.ast.local.RPCoreLRec;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
+import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.main.GoJob;
@@ -82,8 +84,13 @@ public class RPCoreEGraphBuilder
 		{
 			RPCoreLForeach fe = (RPCoreLForeach) lt;
 			RPCoreEState s = (RPCoreEState) s1;  // FIXME: modify method sig
-			s.setParam(fe.param);
-			s.setInterval(new RPInterval(fe.start, fe.end));
+			if (fe.ivals.size() > 1)
+			{
+				throw new RuntimeException("[rp-core] TODO: " + fe.ivals);
+			}
+			RPAnnotatedInterval iv = fe.ivals.stream().findFirst().get();
+			s.setParam(iv.var);
+			s.setInterval(new RPInterval(iv.start, iv.end));
 			RPCoreEGraphBuilder nested = new RPCoreEGraphBuilder(this.job);
 			s.setNested((RPCoreEState) nested.build(fe.body).init);
 			if (fe.seq instanceof RPCoreForeach)  // FIXME: consecutive foreach ("tau" action)

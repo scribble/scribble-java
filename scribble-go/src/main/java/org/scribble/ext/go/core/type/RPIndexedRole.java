@@ -18,10 +18,15 @@ public class RPIndexedRole extends Role
 
 	//public final ParamRange range;
 	public final Set<RPInterval> intervals;  // size >= 1 -- size == 1 for parsed syntax
+			// FIXME: this set was meant for multidim nat intervals, but multidim should be factored into the RPInterval itself
 	
-	public RPIndexedRole(String name, Set<RPInterval> intervals)
+	public RPIndexedRole(String name, Set<? extends RPInterval> intervals)
 	{
 		super(name);
+		if (intervals.size() != 1) // FIXME: this set was meant for multidim nat intervals, but multidim should be factored into the RPInterval itself
+		{
+			throw new RuntimeException("TODO: " + intervals);
+		}
 		this.intervals = Collections.unmodifiableSet(intervals);
 	}
 
