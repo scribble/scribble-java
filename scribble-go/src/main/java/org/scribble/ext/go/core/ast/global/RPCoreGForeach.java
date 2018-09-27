@@ -81,19 +81,22 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		RPCoreLType seq = this.seq.project(af, subj);
 
 		RPInterval v = new RPInterval(this.start, this.end);
-		if (subj.getName().equals(this.role) && subj.intervals.contains(v))  // FIXME: proper interval inclusion? -- also RPCoreGChoice#project?
-				// FIXME: factor out  // cf. RPCoreGChoice#project
+		if (subj.getName().equals(this.role))  // FIXME: factor out  // cf. RPCoreGChoice#project
 		{
-			RPRoleVariant indexed = new RPRoleVariant(subj.getName().toString(),
-					Stream.of(//new RPInterval(this.param, this.param))
-							new RPInterval(tmp, tmp)).collect(Collectors.toSet()), Collections.emptySet());
-			RPCoreLType body = this.body.project(af, indexed);
-			return body.subs(af, RPCoreLEnd.END, seq);
+			if (subj.intervals.contains(v))   // FIXME: proper interval inclusion? -- also RPCoreGChoice#project?
+			{
+				RPRoleVariant indexed = new RPRoleVariant(subj.getName().toString(),
+						Stream.of(//new RPInterval(this.param, this.param))
+								new RPInterval(tmp, tmp)).collect(Collectors.toSet()), Collections.emptySet());
+				RPCoreLType body = this.body.project(af, indexed);
+				return body.subs(af, RPCoreLEnd.END, seq);
+			}
+			else
+			{
+				// ...else substitute cont for end in body ?
+				throw new RuntimeException("Shouldn't get in here? " + this + ", " + subj);
+			}
 		}
-		/*else if ()
-		{
-			// ...else substitute cont for end in body
-		}*/
 		else 
 		{
 			RPCoreLType body = this.body.project(af, subj);
