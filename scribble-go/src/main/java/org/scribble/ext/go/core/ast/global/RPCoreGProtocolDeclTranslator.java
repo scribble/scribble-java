@@ -28,6 +28,8 @@ import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGForeach;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
+import org.scribble.ext.go.core.ast.local.RPCoreLCont;
+import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
 import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
@@ -311,6 +313,7 @@ public class RPCoreGProtocolDeclTranslator
 	private RPCoreGForeach parseRPGForeach(Map<RecVar, RecVar> rvs, boolean checkRecGuard, RPGForeach gf, RPCoreGType seq) throws RPCoreSyntaxException
 	{
 		RPCoreGType body = parseSeq(gf.getBlock().getInteractionSeq().getInteractions(), Collections.emptyMap(), false, true);
+		body = body.subs(af, RPCoreGEnd.END, RPCoreGCont.CONT);
 		return this.af.RPCoreGForeach(//gf.subj.toName(), gf.param, gf.start, gf.end, 
 				Stream.of(gf.subj.toName()).collect(Collectors.toSet()), Stream.of(new RPAnnotatedInterval(gf.param, gf.start, gf.end)).collect(Collectors.toSet()),
 						// FIXME: generalised foreach sig in source AST

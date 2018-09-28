@@ -38,7 +38,7 @@ public class RPInterval
 	@Override
 	public String toString()
 	{
-		return "[" + this.start + ((this.start == this.end) ? "" : "," + this.end) + "]";
+		return "[" + this.start + ((this.start.equals(this.end)) ? "" : "," + this.end) + "]";
 	}
 	
 	@Override

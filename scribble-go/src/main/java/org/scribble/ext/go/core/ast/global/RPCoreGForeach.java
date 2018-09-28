@@ -10,6 +10,7 @@ import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreForeach;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.RPCoreType;
+import org.scribble.ext.go.core.ast.local.RPCoreLCont;
 import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPAnnotatedInterval;
@@ -106,6 +107,9 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
 	{
 		RPCoreLType seq = this.seq.project(af, subj);
+		
+		System.out.println("DDD1:" + this + " ,, " + subj);
+		
 		if (this.roles.contains(subj.getName()))  // FIXME: factor out -- cf. RPCoreGChoice#project
 		{
 			/*RPIndexVar tmp = RPIndexFactory.ParamIntVar(this.param.toString()); 
@@ -119,9 +123,14 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 			Set<RPAnnotatedInterval> filtered = this.ivals.stream().filter(iv -> subj.intervals.stream().anyMatch(x -> iv.isSame(x))).collect(Collectors.toSet());
 					// CHECKME: actual interval inclusion? (vs. isSame) -- also RPCoreGChoice#project?
 			//RPIndexedRole tmp = new RPIndexedRole(subj.getName().toString(), filtered);  // FIXME: should be this, but currently RPIndexedRole interval set for multidim nat intervals (but with >1 TODO exception)
-			RPCoreGForeach tmp = af.RPCoreGForeach(this.roles, this.ivals, body, af.ParamCoreGEnd());  // FIXME: "cont", not "end"?
+			RPCoreGForeach tmp = af.RPCoreGForeach(this.roles, this.ivals, body, af.ParamCoreGEnd());  
+					// CHECKME: should be "end" so that it will be discarded?  seq will be substituted for cont in the final "unrolling" of foreach
+			
 			RPCoreLType proj = tmp.project2(af, subj.getName(), filtered);
-			return proj.subs(af, RPCoreLEnd.END, seq);
+
+			System.out.println("DDD2:" + tmp + " ,, " + filtered + " ,, " + proj);
+
+			return proj.subs(af, RPCoreLCont.CONT, seq);
 		}
 		else 
 		{
@@ -157,7 +166,7 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 
 		if (ivals.isEmpty())
 		{
-			return RPCoreLEnd.END;
+			return RPCoreLCont.CONT;
 		}
 		RPAnnotatedInterval max = ivals.stream()
 				.filter(x -> ivals.stream().filter(y -> !x.equals(y)).allMatch(y -> ((RPIndexInt) x.start).val > ((RPIndexInt) y.start).val))
@@ -166,9 +175,12 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		RPIndexVar var = RPIndexFactory.ParamIntVar(max.var.toString());  // N.B. not RPForeachVar -- occurrences in body are parsed as RPIndexVar, not RPForeachVar
 		RPCoreLType proj = this.body.project3(af, this.roles, this.ivals, 
 				new RPIndexedRole(name.toString(), Stream.of(new RPInterval(var, var)).collect(Collectors.toSet())));
+		
+		System.out.println("DDD3: " + max + " ,, " + this.body + " ,, " + proj);
+		
 		Set<RPAnnotatedInterval> tmp = new HashSet<>(ivals);
 		tmp.remove(max);
-		return proj.subs(af, RPCoreLEnd.END, project2(af, name, tmp));
+		return proj.subs(af, RPCoreLCont.CONT, project2(af, name, tmp));
 	}
 
   // G proj R \vec{C} r[z]

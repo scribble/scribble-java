@@ -2,6 +2,7 @@ package org.scribble.ext.go.core.ast;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.type.kind.ProtocolKind;
@@ -40,7 +41,8 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 	public String toString()
 	{
 		return "foreach " //+ this.role + "[" + param + ":" + this.start + "," + this.end + "] do " 
-				+ this.roles + "[" + this.ivals + "] do "
+				+ "{" + this.roles.stream().map(r -> r.toString()).collect(Collectors.joining(", ")) + "}"
+				+ "{" + this.ivals.stream().map(x -> x.var + ":" + x.start + ".." + x.end).collect(Collectors.joining(", ")) + "} do "
 				+ this.body + " ; " + this.seq;
 	}
 

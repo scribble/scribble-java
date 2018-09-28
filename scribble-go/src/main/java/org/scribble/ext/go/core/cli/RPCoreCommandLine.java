@@ -260,10 +260,10 @@ public class RPCoreCommandLine extends CommandLine
 		for (Role r : gpd.header.roledecls.getRoles())  // getRoles gives decl names  // CHECKME: can ignore params?
 		{
 			//for (Set<ParamRange> ranges : protoRoles.get(r))
-			for (RPRoleVariant ranges : variants.get(r))
+			for (RPRoleVariant variant : variants.get(r))
 			{
 				//ParamCoreLType lt = gt.project(af, r, ranges);
-				RPCoreLType lt = gt.project(af, ranges);
+				RPCoreLType lt = gt.project(af, variant);
 				//Map<Set<ParamRange>, ParamCoreLType> tmp = P0.get(r);
 				Map<RPRoleVariant, RPCoreLType> tmp = L0.get(r);
 				if (tmp == null)
@@ -271,9 +271,9 @@ public class RPCoreCommandLine extends CommandLine
 					tmp = new HashMap<>();
 					L0.put(r, tmp);
 				}
-				tmp.put(ranges, lt);
+				tmp.put(variant, lt);
 
-				job.debugPrintln("\n[rp-core] Projected onto " + r + " for " + ranges + ":\n  " + lt);
+				job.debugPrintln("\n[rp-core] Projected onto " + variant + ":\n  " + lt);
 			}
 		}
 
@@ -349,6 +349,8 @@ public class RPCoreCommandLine extends CommandLine
 		this.families.addAll(getFamilies(job));
 		this.peers = new HashMap<>();
 		this.peers.putAll(getPeers(job));
+		
+		System.out.println("AAA: " + this.peers);
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
@@ -387,7 +389,7 @@ public class RPCoreCommandLine extends CommandLine
 						{
 							job.debugPrintln("\n[rp-core] For " + self + ", checking potential peer: " + peer);
 							
-							//System.out.println("aaa: " + self + ",, "+ peer + ",, " + irs);
+							System.out.println("bbb: " + self + ",, "+ peer + ",, " + irs);
 							
 							for (RPIndexedRole ir : irs)
 							{

@@ -3,12 +3,12 @@ package org.scribble.ext.go.core.model.endpoint;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.scribble.ext.go.core.ast.RPCoreForeach;
 import org.scribble.ext.go.core.ast.RPCoreRecVar;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
 import org.scribble.ext.go.core.ast.local.RPCoreLChoice;
+import org.scribble.ext.go.core.ast.local.RPCoreLCont;
 import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
 import org.scribble.ext.go.core.ast.local.RPCoreLForeach;
 import org.scribble.ext.go.core.ast.local.RPCoreLRec;
@@ -129,6 +129,10 @@ public class RPCoreEGraphBuilder
 			Map<RecVar, RPCoreEState> tmp = new HashMap<>(recs);
 			tmp.put(lr.recvar, s1);
 			build(lr.body, s1, s2, tmp);
+		}
+		else if (lt instanceof RPCoreLCont)
+		{
+			// skip
 		}
 		else
 		{

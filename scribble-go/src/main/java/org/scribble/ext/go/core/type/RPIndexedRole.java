@@ -25,7 +25,7 @@ public class RPIndexedRole extends Role
 		super(name);
 		/*if (intervals.size() != 1) 
 			// FIXME: this set was meant for multidim nat intervals, but multidim should be factored into the RPInterval itself
-			// No: above is incorrect
+			// No: above is true for parsed globals, but Set needed for variants (subclass of this)
 		{
 			throw new RuntimeException("TODO: " + intervals);
 		}*/
