@@ -18,28 +18,21 @@ public class RPAntlrGCrossMessageTransfer
 	public static final int MESSAGE_CHILD_INDEX = 0;
 	public static final int SOURCE_CHILD_INDEX = 1;
 	public static final int DESTINATION_CHILD_INDEX = 2;
-	
-	// New
-	public static final int SOURCE_START_CHILD_INDEX = 3;
-	public static final int SOURCE_END_CHILD_INDEX = 4;
-	public static final int DEST_START_CHILD_INDEX = 5;
-	public static final int DEST_END_CHILD_INDEX = 6;
 
 	public static RPGCrossMessageTransfer
 			parseParamGCrossMessageTransfer(AntlrToScribParser parser, CommonTree root, RPAstFactory af) throws ScribParserException
 	{
-		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(root), af);
 		MessageNode msg = AntlrGMessageTransfer.parseMessage(parser, getMessageChild(root), af);
-		RoleNode dest =  AntlrSimpleName.toRoleNode(getDestChild(root), af);
-		/*ParamRoleParamNode sourceStart = ParamAntlrSimpleName.toParamRoleParamNode(getSourceRangeStartChild(root), af);
-		ParamRoleParamNode sourceEnd = ParamAntlrSimpleName.toParamRoleParamNode(getSourceRangeEndChild(root), af);
-		ParamRoleParamNode destStart = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeStartChild(root), af);
-		ParamRoleParamNode destEnd = ParamAntlrSimpleName.toParamRoleParamNode(getDestRangeEndChild(root), af);*/
-		RPIndexExpr sourceStart = RPAntlrIndexExpr.parseParamIndexExpr(getSourceRangeStartChild(root), af);
-		RPIndexExpr sourceEnd = RPAntlrIndexExpr.parseParamIndexExpr(getSourceRangeEndChild(root), af);
-		RPIndexExpr destStart = RPAntlrIndexExpr.parseParamIndexExpr(getDestRangeStartChild(root), af);
-		RPIndexExpr destEnd = RPAntlrIndexExpr.parseParamIndexExpr(getDestRangeEndChild(root), af);
-		return af.ParamGCrossMessageTransfer(root, src, msg, dest, sourceStart, sourceEnd, destStart, destEnd);
+		CommonTree src = getSourceChild(root);
+		CommonTree dest =  getDestChild(root);
+		
+		RoleNode srcName = AntlrSimpleName.toRoleNode(getParamIndexedRoleNameChild(src), af);
+		RPIndexExpr srcStart = RPAntlrIndexExpr.parseParamIndexExpr(getParamIndexedRoleStartChild(src), af);
+		RPIndexExpr srcEnd = RPAntlrIndexExpr.parseParamIndexExpr(getParamIndexedRoleEndChild(src), af);
+		RoleNode destName =  AntlrSimpleName.toRoleNode(getParamIndexedRoleNameChild(dest), af);
+		RPIndexExpr destStart = RPAntlrIndexExpr.parseParamIndexExpr(getParamIndexedRoleStartChild(dest), af);
+		RPIndexExpr destEnd = RPAntlrIndexExpr.parseParamIndexExpr(getParamIndexedRoleEndChild(dest), af);
+		return af.ParamGCrossMessageTransfer(root, srcName, msg, destName, srcStart, srcEnd, destStart, destEnd);
 	}
 
 	public static CommonTree getMessageChild(CommonTree root)
@@ -56,24 +49,25 @@ public class RPAntlrGCrossMessageTransfer
 	{
 		return (CommonTree) root.getChild(DESTINATION_CHILD_INDEX);
 	}
+
+
+	// "ParamIndexedRole" -- factor out?
+	public static final int PARAMINDEXEDROLE_NAME_CHILD_INDEX = 0;
+	public static final int PARAMINDEXEDROLE_START_CHILD_INDEX = 1;
+	public static final int PARAMINDEXEDROLE_END_CHILD_INDEX = 2;
+
+	public static CommonTree getParamIndexedRoleNameChild(CommonTree root)
+	{
+		return (CommonTree) root.getChild(PARAMINDEXEDROLE_NAME_CHILD_INDEX);
+	}
 	
-	public static CommonTree getSourceRangeStartChild(CommonTree root)
+	public static CommonTree getParamIndexedRoleStartChild(CommonTree root)
 	{
-		return (CommonTree) root.getChild(SOURCE_START_CHILD_INDEX);
+		return (CommonTree) root.getChild(PARAMINDEXEDROLE_START_CHILD_INDEX);
 	}
 
-	public static CommonTree getSourceRangeEndChild(CommonTree root)
+	public static CommonTree getParamIndexedRoleEndChild(CommonTree root)
 	{
-		return (CommonTree) root.getChild(SOURCE_END_CHILD_INDEX);
-	}
-
-	public static CommonTree getDestRangeStartChild(CommonTree root)
-	{
-		return (CommonTree) root.getChild(DEST_START_CHILD_INDEX);
-	}
-
-	public static CommonTree getDestRangeEndChild(CommonTree root)
-	{
-		return (CommonTree) root.getChild(DEST_END_CHILD_INDEX);
+		return (CommonTree) root.getChild(PARAMINDEXEDROLE_END_CHILD_INDEX);
 	}
 }

@@ -177,6 +177,7 @@ tokens
 
 	PARAM_BININDEXEXPR               = 'PARAM_BININDEXEXPR';  // FIXME: rename bin part
 	//PARAM_ROLEDECL                   = 'PARAM_ROLEDECL';
+	PARAM_INDEXEDROLE                = 'PARAM_INDEXEDROLE';
 	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
 	PARAM_GLOBALDOTMESSAGETRANSFER   = 'PARAM_GLOBALDOTMESSAGETRANSFER';
 	PARAM_GLOBALCHOICE               = 'PARAM_GLOBALCHOICE';
@@ -688,13 +689,6 @@ globalinteraction:
 	globalparallel
 |
 	globalinterruptible*/
-	
-	
-globalforeach:
-	PARAM_FOREACH_KW rolename '[' simplename ':' paramindexexpr ',' paramindexexpr ']' globalprotocolblock  // TODO: generalise
-->
-	^(PARAM_GLOBALFOREACH rolename simplename paramindexexpr paramindexexpr globalprotocolblock)
-;
 
 
 
@@ -708,13 +702,19 @@ globalmessagetransfer:
 
 |
 	// For now require all "singleton indexed roles" to be written as singleton intervals (including foreach-indexed roles)
-	message FROM_KW rolename '[' paramindexexpr ',' paramindexexpr ']' TO_KW rolename '[' paramindexexpr ',' paramindexexpr ']' ';'
+	message FROM_KW paramindexedrole TO_KW paramindexedrole ';'
 ->
-	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)
+	^(PARAM_GLOBALCROSSMESSAGETRANSFER message paramindexedrole paramindexedrole)
 /*|
 	message DOT_KW rolename '[' paramindexexpr '..' paramindexexpr ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
 ->
 	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)*/
+;
+	
+paramindexedrole:
+	rolename '[' paramindexexpr ',' paramindexexpr ']'
+->
+	^(PARAM_INDEXEDROLE rolename paramindexexpr paramindexexpr)
 ;
 	
 /*rpindex:
@@ -914,6 +914,17 @@ argumentinstantiation:
 	qualifiedname
 ;
 
+	
+	
+globalforeach:
+	PARAM_FOREACH_KW rolename '[' simplename ':' paramindexexpr ',' paramindexexpr ']' globalprotocolblock  // TODO: generalise
+->
+	^(PARAM_GLOBALFOREACH rolename simplename paramindexexpr paramindexexpr globalprotocolblock)
+;
+
+	
+	
+	
 
 /*
  * Section 3.8 Local Protocol Declarations
