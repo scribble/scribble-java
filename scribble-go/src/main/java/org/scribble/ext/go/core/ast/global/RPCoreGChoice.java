@@ -397,8 +397,9 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				{
 					RPIndexExpr srcStart = srcRange.start;
 					RPIndexExpr destStart = destRange.start;
-					Set<RPIndexExpr> tmp = Stream.of(srcStart, destStart).filter(x -> x instanceof RPIndexVar).map(x -> (RPIndexVar) x).collect(Collectors.toSet());
-					if (roles.contains(destName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
+					Set<String> tmp = Stream.of(srcStart, destStart).filter(x -> x instanceof RPIndexVar).map(x -> x.toString()).collect(Collectors.toSet());
+							// FIXME: awardness of RPIndexVar and RPForeachVar
+					if (!tmp.isEmpty() && roles.contains(destName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
 							fvars.containsAll(tmp))
 					{
 						RPIndexExpr destExpr = RPIndexFactory.ParamBinIndexExpr(Op.Add, RPIndexSelf.SELF, RPIndexFactory.ParamBinIndexExpr(Op.Subt, destStart, srcStart));
@@ -420,8 +421,8 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				{
 					RPIndexExpr srcStart = srcRange.start;
 					RPIndexExpr destStart = destRange.start;
-					Set<RPIndexVar> tmp = Stream.of(srcStart, destStart).filter(x -> x instanceof RPIndexVar).map(x -> (RPIndexVar) x).collect(Collectors.toSet());
-					if (roles.contains(srcName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
+					Set<String> tmp = Stream.of(srcStart, destStart).filter(x -> x instanceof RPIndexVar).map(x -> x.toString()).collect(Collectors.toSet());
+					if (!tmp.isEmpty() && roles.contains(srcName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
 							fvars.containsAll(tmp))
 					{
 						RPIndexExpr srcExpr = RPIndexFactory.ParamBinIndexExpr(Op.Add, RPIndexSelf.SELF, RPIndexFactory.ParamBinIndexExpr(Op.Subt, srcStart, destStart));

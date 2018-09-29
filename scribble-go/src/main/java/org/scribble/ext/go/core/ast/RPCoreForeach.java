@@ -16,6 +16,7 @@ public abstract class RPCoreForeach<B extends RPCoreType<K>, K extends ProtocolK
 	public final RPIndexExpr start;      // Gives the Scribble choices-subj range // Cf. ParamCoreGChoice singleton src
 	public final RPIndexExpr end;  // this.dest == super.role -- arbitrary?*/
 	
+	// FIXME: record original role-ival bindings -- to check valid foreach index usage per rolename in WF 
 	public final Set<Role> roles;
 	public final Set<RPAnnotatedInterval> ivals;  // FIXME: co-intervals?
 

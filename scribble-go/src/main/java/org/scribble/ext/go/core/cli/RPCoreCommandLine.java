@@ -403,13 +403,18 @@ public class RPCoreCommandLine extends CommandLine
 
 									String smt2 = "(assert ";
 									smt2 += "(exists ((peer Int) "
-											+  (vars.isEmpty() ? "" : vars.stream().map(x -> "(" + x + " Int)").collect(Collectors.joining(" "))) + ")\n";
+											+  (vars.isEmpty() ? "" : vars.stream()
+													.map(x -> "(" + x + " Int)").collect(Collectors.joining(" "))) + ")\n";
 									smt2 += "(and \n";
-									smt2 += peer.intervals.stream().map(x -> "(>= peer " + x.start + ") (<= peer " + x.end + ")").collect(Collectors.joining(" ")) + "\n";
+									smt2 += peer.intervals.stream()
+											.map(x -> "(>= peer " + x.start.toSmt2Formula() + ") (<= peer " + x.end.toSmt2Formula() + ")")
+											.collect(Collectors.joining(" ")) + "\n";
 									smt2 += peer.cointervals.isEmpty() 
 											? ""
-											: "(or " + peer.cointervals.stream().map(x -> "(< peer " + x.start + ") (> peer " + x.end + ")").collect(Collectors.joining(" ")) + ")\n";
-									smt2 += "(>= peer " + d.start + ") (<= peer " + d.end + ")\n";
+											: "(or " + peer.cointervals.stream()
+											    .map(x -> "(< peer " + x.start.toSmt2Formula() + ") (> peer " + x.end.toSmt2Formula() + ")")
+											    .collect(Collectors.joining(" ")) + ")\n";
+									smt2 += "(>= peer " + d.start.toSmt2Formula() + ") (<= peer " + d.end.toSmt2Formula() + ")\n";
 									smt2 += ")";
 									smt2 += ")";
 									smt2 += ")";

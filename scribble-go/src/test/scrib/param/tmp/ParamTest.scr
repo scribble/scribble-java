@@ -7,8 +7,13 @@
 
 module param.tmp.ParamTest;
 
+global protocol Proto1(role A, role B) {
+	foreach B[I:1,K-1] {
+		Foo() from A[1] to B[I];	
+	}	
+}
 
-//*
+/*
 type <go> "int" from "builtin" as int;
 type <go> "string" from "builtin" as string;
 sig <go> "msgsig.Request" from "github.com/nickng/httpget/msgsig" as Request;
