@@ -177,7 +177,6 @@ tokens
 
 	PARAM_BININDEXEXPR               = 'PARAM_BININDEXEXPR';  // FIXME: rename bin part
 	//PARAM_ROLEDECL                   = 'PARAM_ROLEDECL';
-	PARAM_INDEXEDROLE                = 'PARAM_INDEXEDROLE';
 	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
 	PARAM_GLOBALDOTMESSAGETRANSFER   = 'PARAM_GLOBALDOTMESSAGETRANSFER';
 	PARAM_GLOBALCHOICE               = 'PARAM_GLOBALCHOICE';
@@ -186,6 +185,8 @@ tokens
 	//PARAM_DELEGATION                 = 'PARAM_DELEGATION';
 	PARAM_DELEGDECL                  = 'PARAM_DELEGDECL';
 	PARAM_GLOBALFOREACH              = 'PARAM_GLOBALFOREACH';
+
+	PARAM_INDEXINTERVAL                = 'PARAM_INDEXINTERVAL';
 }
 
 
@@ -702,19 +703,23 @@ globalmessagetransfer:
 
 |
 	// For now require all "singleton indexed roles" to be written as singleton intervals (including foreach-indexed roles)
-	message FROM_KW paramindexedrole TO_KW paramindexedrole ';'
+	message FROM_KW rolename paramindexinterval TO_KW rolename paramindexinterval ';'
 ->
-	^(PARAM_GLOBALCROSSMESSAGETRANSFER message paramindexedrole paramindexedrole)
+	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename paramindexinterval paramindexinterval)
 /*|
 	message DOT_KW rolename '[' paramindexexpr '..' paramindexexpr ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
 ->
 	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)*/
 ;
 	
-paramindexedrole:
-	rolename '[' paramindexexpr ',' paramindexexpr ']'
+paramindexinterval:
+	('[' paramindexexpr? ',' paramindexexpr ']')=> '[' paramindexexpr? ',' paramindexexpr ']'
 ->
-	^(PARAM_INDEXEDROLE rolename paramindexexpr paramindexexpr)
+	^(PARAM_INDEXINTERVAL paramindexexpr paramindexexpr)
+|
+	'[' paramindexexpr ']'
+->
+	^(PARAM_INDEXINTERVAL paramindexexpr paramindexexpr)
 ;
 	
 /*rpindex:
