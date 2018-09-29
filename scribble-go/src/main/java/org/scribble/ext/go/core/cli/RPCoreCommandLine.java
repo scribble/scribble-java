@@ -282,12 +282,12 @@ public class RPCoreCommandLine extends CommandLine
 		for (Role r : L0.keySet())
 		{
 			//for (Set<ParamRange> ranges : this.P0.get(r).keySet())
-			for (RPRoleVariant ranges : this.L0.get(r).keySet())
+			for (RPRoleVariant variant : this.L0.get(r).keySet())
 			{
 				
-				System.out.println("111: " + r + ", " + this.L0.get(r).get(ranges));
+				System.out.println("Projection onto " + variant + ": " + this.L0.get(r).get(variant));
 				
-				EGraph g = builder.build(this.L0.get(r).get(ranges));
+				EGraph g = builder.build(this.L0.get(r).get(variant));
 				//Map<Set<ParamRange>, EGraph> tmp = this.E0.get(r);
 				Map<RPRoleVariant, EGraph> tmp = this.E0.get(r);
 				if (tmp == null)
@@ -295,11 +295,11 @@ public class RPCoreCommandLine extends CommandLine
 					tmp = new HashMap<>();
 					this.E0.put(r, tmp);
 				}
-				tmp.put(ranges, g);
+				tmp.put(variant, g);
 
 				job.debugPrintln("\n[rp-core] Built endpoint graph for " 
 						//+ r + " for "
-						+ ranges + ":\n" + g.toDot());
+						+ variant + ":\n" + g.toDot());
 				
 				RecursiveFunctionalInterface<Function<RPCoreEState, Set<RPCoreEState>>> getNestedInits
 						= new RecursiveFunctionalInterface<>();
@@ -349,8 +349,6 @@ public class RPCoreCommandLine extends CommandLine
 		this.families.addAll(getFamilies(job));
 		this.peers = new HashMap<>();
 		this.peers.putAll(getPeers(job));
-		
-		System.out.println("AAA: " + this.peers);
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
@@ -388,9 +386,6 @@ public class RPCoreCommandLine extends CommandLine
 						if (!peer.equals(self) && !peers.contains(peer))
 						{
 							job.debugPrintln("\n[rp-core] For " + self + ", checking potential peer: " + peer);
-							
-							System.out.println("bbb: " + self + ",, "+ peer + ",, " + irs);
-							
 							for (RPIndexedRole ir : irs)
 							{
 								if (ir.getName().equals(peer.getName()))

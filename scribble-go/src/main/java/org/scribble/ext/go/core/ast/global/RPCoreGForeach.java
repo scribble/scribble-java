@@ -107,9 +107,6 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
 	{
 		RPCoreLType seq = this.seq.project(af, subj);
-		
-		System.out.println("DDD1:" + this + " ,, " + subj);
-		
 		if (this.roles.contains(subj.getName()))  // FIXME: factor out -- cf. RPCoreGChoice#project
 		{
 			/*RPIndexVar tmp = RPIndexFactory.ParamIntVar(this.param.toString()); 
@@ -127,9 +124,6 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 					// CHECKME: should be "end" so that it will be discarded?  seq will be substituted for cont in the final "unrolling" of foreach
 			
 			RPCoreLType proj = tmp.project2(af, subj.getName(), filtered);
-
-			System.out.println("DDD2:" + tmp + " ,, " + filtered + " ,, " + proj);
-
 			return proj.subs(af, RPCoreLCont.CONT, seq);
 		}
 		else 
@@ -175,9 +169,6 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		RPIndexVar var = RPIndexFactory.ParamIntVar(max.var.toString());  // N.B. not RPForeachVar -- occurrences in body are parsed as RPIndexVar, not RPForeachVar
 		RPCoreLType proj = this.body.project3(af, this.roles, this.ivals, 
 				new RPIndexedRole(name.toString(), Stream.of(new RPInterval(var, var)).collect(Collectors.toSet())));
-		
-		System.out.println("DDD3: " + max + " ,, " + this.body + " ,, " + proj);
-		
 		Set<RPAnnotatedInterval> tmp = new HashSet<>(ivals);
 		tmp.remove(max);
 		return proj.subs(af, RPCoreLCont.CONT, project2(af, name, tmp));

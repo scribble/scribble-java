@@ -39,23 +39,22 @@ public class RPCoreLForeach extends RPCoreForeach<RPCoreLType, Local> implements
 	}
 	
 	@Override
-	public Set<RPIndexVar> getIndexVars()
+	public Set<RPIndexVar> getIndexVars()  // For user-supplied params to endpoint kind constructor, i.e., excluding RPForeachVar
 	{
 		Set<RPIndexVar> res = 
 				//Stream.of(this.param).collect(Collectors.toSet());  
 						// FIXME: shouldn't include bound foreach params (cf. RPCoreGForeach#getIndexVars) -- currently included for hacked Foreach method loop (RPCoreSTStateChanApiBuilder)
 				new HashSet<>();
+		res.addAll(this.body.getIndexVars());
 		for (RPAnnotatedInterval iv : this.ivals)
 		{
-			Set<RPIndexVar> tmp = new HashSet<>();
-			tmp.addAll(iv.start.getVars());
-			tmp.addAll(iv.end.getVars());
-			tmp = tmp.stream()
+			//Set<RPIndexVar> tmp = new HashSet<>();
+			res = res.stream()
 					.filter(v -> !v.toString().equals(iv.var.toString()))  // HACK FIXME -- RPIndexVar distinguished from RPForeachVar (equals)
 					.collect(Collectors.toSet());
-			res.addAll(tmp);
+			res.addAll(iv.start.getVars());  // CHECKME: already checked iv.var not in here?
+			res.addAll(iv.end.getVars());
 		}
-		res.addAll(this.body.getIndexVars());
 		return res;
 	}
 

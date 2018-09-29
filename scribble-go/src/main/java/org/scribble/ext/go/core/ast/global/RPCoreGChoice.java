@@ -241,9 +241,6 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		RPInterval destRange = this.dest.getParsedRange();
 		if (this.kind == RPCoreGActionKind.CROSS_TRANSFER)
 		{	
-			System.out.println("CCC1: " + this + ", " + subj);
-			System.out.println("CCC2: " + srcName + ", " + destName + ", " + subjName);
-			
 			//if (this.src.getName().equals(r))
 			if (srcName.equals(subjName) && subj.intervals.contains(srcRange))  // FIXME: factor out?
 			{
@@ -320,16 +317,12 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		
 		Role srcName = this.src.getName();
 		Role destName = this.dest.getName();
-		Role subjName = subj.getName();
+		//Role subjName = subj.getName();
 		RPInterval srcRange = this.src.getParsedRange();
 		RPInterval destRange = this.dest.getParsedRange();
 		Set<String> fvars = ivals.stream().map(x -> x.var.toString()).collect(Collectors.toSet());
 		if (this.kind == RPCoreGActionKind.CROSS_TRANSFER)
 		{	
-			
-			System.out.println("DDD4: " + this.src + " ,, " + this.dest + " ,, " + subj);
-			System.out.println("DDD5: " + this.dest.equals(subj));
-			
 			if (this.src.equals(subj))  // N.B. subj uses RPIndexVar (not RPForeachVar) -- cf. the invocation of project3 in RPCoreGForeach#project2
 			{
 				//return af.ParamCoreLCrossChoice(this.dest, RPCoreLActionKind.CROSS_SEND, projs);
@@ -356,9 +349,6 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			}
 			else if (this.dest.equals(subj))
 			{
-				
-				System.out.println("DDD6: " + " " + srcRange.start + " ,, " + srcRange.end + " ,, " + srcRange.start.equals(srcRange.end) + " ,, " + srcRange.start.getClass());
-				
 				if (srcRange.start.equals(srcRange.end) //&& srcRange.start instanceof RPIndexVar
 						&& destRange.start.equals(destRange.end) //&& destRange.start instanceof RPIndexVar)
 						)
@@ -366,15 +356,12 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 					RPIndexExpr srcStart = srcRange.start;
 					RPIndexExpr destStart = destRange.start;
 					Set<RPIndexVar> tmp = Stream.of(srcStart, destStart).filter(x -> x instanceof RPIndexVar).map(x -> (RPIndexVar) x).collect(Collectors.toSet());
-					
-					System.out.println("DDD7: " + " ,, " + fvars + " ,, " + srcStart + " ,, " + destStart);
-					
-					if (roles.contains(destName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
+					if (roles.contains(srcName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
 							fvars.containsAll(tmp))
 					{
 						RPIndexExpr srcExpr = RPIndexFactory.ParamBinIndexExpr(Op.Add, RPIndexSelf.SELF, RPIndexFactory.ParamBinIndexExpr(Op.Subt, srcStart, destStart));
 						RPIndexedRole src = new RPIndexedRole(destName.toString(), Stream.of(new RPInterval(srcExpr, srcExpr)).collect(Collectors.toSet()));
-						return af.ParamCoreLCrossChoice(src, RPCoreLActionKind.CROSS_SEND, projs);
+						return af.ParamCoreLCrossChoice(src, RPCoreLActionKind.CROSS_RECEIVE, projs);
 					}
 					else
 					{

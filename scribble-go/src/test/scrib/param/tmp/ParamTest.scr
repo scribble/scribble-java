@@ -1,6 +1,6 @@
 //Raymond@HZHL3 ~/code/eclipse/scribble/github.com/rhu1-go/scribble-java
 //$ bin/scribblec-param.sh -ip scribble-go/src/test/scrib/ -d scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/tmp/ParamTest.scr -V -param Proto1
-
+//$ bin/scribblec-param.sh -ip scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/tmp/ParamTest.scr -V -param Proto1 github.com/rhu1-go/scribble-java/src/test/scrib/param/tmp/ParamTest -param-api S
 
 // http://sandbox.kidstrythisathome.com/erdos/
 
@@ -14,16 +14,16 @@ type <go> "string" from "builtin" as string;
 sig <go> "msgsig.Request" from "github.com/nickng/httpget/msgsig" as Request;
 sig <go> "msgsig.Response" from "github.com/nickng/httpget/msgsig" as Response;
 
-global protocol Proto1(role Master, role Fetcher, role Server) {
-  URL(int) from Master[1,1] to Fetcher[1,N];
+global protocol Proto1(role M, role F, role S) {
+  URL(int) from M[1,1] to F[1,N];
 
-  foreach Fetcher[I:1,N] {
-    Request from Fetcher[I,I] to Server[1,1];
-    Response from Server[1,1] to Fetcher[I,I];
-    //tmp() from Server[1,1] to Master[1,1];  // FIXME: projection
+  foreach F[I:1,N] {
+    Request from F[I,I] to S[1,1];
+    Response from S[1,1] to F[I,I];
+    //tmp() from S[1,1] to M[1,1];  // FIXME: projection
   }
 
-  Done(string) from Fetcher[1,N] to Master[1,1];
+  Done(string) from F[1,N] to M[1,1];
 }
 //*/
 
