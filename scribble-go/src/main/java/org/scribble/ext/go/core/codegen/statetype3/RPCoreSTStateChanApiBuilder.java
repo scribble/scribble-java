@@ -605,7 +605,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			throw new RuntimeException("[rp-core] TODO: " + r);
 		}
 		RPInterval g = r.intervals.iterator().next();
-		return r.getName() + "_" + g.start + "to" + g.end;
+		return r.getName() + "_" + RPCoreSTApiGenerator.getGeneratedNameLabel(g.start)
+				+ (g.start.equals(g.end) ? "" : "to" + RPCoreSTApiGenerator.getGeneratedNameLabel(g.end));
 	}
 	
 	// Expressions to be used in code -- cf. RPCoreSTApiGenerator.getGeneratedNameLabel

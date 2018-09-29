@@ -397,12 +397,19 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				{
 					RPIndexExpr srcStart = srcRange.start;
 					RPIndexExpr destStart = destRange.start;
-					Set<String> tmp = Stream.of(srcStart, destStart).filter(x -> x instanceof RPIndexVar).map(x -> x.toString()).collect(Collectors.toSet());
-							// FIXME: awardness of RPIndexVar and RPForeachVar
+					//Set<String> tmp = Stream.of(srcStart, destStart).filter(x -> x instanceof RPIndexVar).map(x -> x.toString()).collect(Collectors.toSet());
+					String srcTmp = (srcStart instanceof RPIndexVar) ? ((RPIndexVar) srcStart).name : null;
+					String destTmp = (destStart instanceof RPIndexVar) ? ((RPIndexVar) destStart).name : null;
+							// FIXME: awkwardness of RPIndexVar and RPForeachVar
+					Set<String> tmp = Stream.of(srcTmp, destTmp).filter(x -> x != null).collect(Collectors.toSet());
 					if (!tmp.isEmpty() && roles.contains(destName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
 							fvars.containsAll(tmp))
 					{
-						RPIndexExpr destExpr = RPIndexFactory.ParamBinIndexExpr(Op.Add, RPIndexSelf.SELF, RPIndexFactory.ParamBinIndexExpr(Op.Subt, destStart, srcStart));
+						RPIndexExpr upper = (destTmp != null) ? ivals.stream().filter(x -> x.var.name.equals(destTmp)).findFirst().get().start : destStart;
+						RPIndexExpr lower = (srcTmp != null) ? ivals.stream().filter(x -> x.var.name.equals(srcTmp)).findFirst().get().start : srcStart;
+						RPIndexExpr destExpr = RPIndexFactory.ParamBinIndexExpr(Op.Add, RPIndexSelf.SELF,
+								//RPIndexFactory.ParamBinIndexExpr(Op.Subt, destStart, srcStart));
+								RPIndexFactory.ParamBinIndexExpr(Op.Subt, upper, lower));
 						RPIndexedRole dest = new RPIndexedRole(destName.toString(), Stream.of(new RPInterval(destExpr, destExpr)).collect(Collectors.toSet()));
 						return af.ParamCoreLCrossChoice(dest, RPCoreLActionKind.CROSS_SEND, projs);
 					}
@@ -421,11 +428,19 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				{
 					RPIndexExpr srcStart = srcRange.start;
 					RPIndexExpr destStart = destRange.start;
-					Set<String> tmp = Stream.of(srcStart, destStart).filter(x -> x instanceof RPIndexVar).map(x -> x.toString()).collect(Collectors.toSet());
+					//Set<String> tmp = Stream.of(srcStart, destStart).filter(x -> x instanceof RPIndexVar).map(x -> x.toString()).collect(Collectors.toSet());
+					String srcTmp = (srcStart instanceof RPIndexVar) ? ((RPIndexVar) srcStart).name : null;
+					String destTmp = (destStart instanceof RPIndexVar) ? ((RPIndexVar) destStart).name : null;
+							// FIXME: awkwardness of RPIndexVar and RPForeachVar
+					Set<String> tmp = Stream.of(srcTmp, destTmp).filter(x -> x != null).collect(Collectors.toSet());
 					if (!tmp.isEmpty() && roles.contains(srcName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
 							fvars.containsAll(tmp))
 					{
-						RPIndexExpr srcExpr = RPIndexFactory.ParamBinIndexExpr(Op.Add, RPIndexSelf.SELF, RPIndexFactory.ParamBinIndexExpr(Op.Subt, srcStart, destStart));
+						RPIndexExpr upper = (srcTmp != null) ? ivals.stream().filter(x -> x.var.name.equals(srcTmp)).findFirst().get().start : srcStart;
+						RPIndexExpr lower = (destTmp != null) ? ivals.stream().filter(x -> x.var.name.equals(destTmp)).findFirst().get().start : destStart;
+						RPIndexExpr srcExpr = RPIndexFactory.ParamBinIndexExpr(Op.Add, RPIndexSelf.SELF,
+								//RPIndexFactory.ParamBinIndexExpr(Op.Subt, srcStart, destStart));
+								RPIndexFactory.ParamBinIndexExpr(Op.Subt, upper, lower));
 						RPIndexedRole src = new RPIndexedRole(destName.toString(), Stream.of(new RPInterval(srcExpr, srcExpr)).collect(Collectors.toSet()));
 						return af.ParamCoreLCrossChoice(src, RPCoreLActionKind.CROSS_RECEIVE, projs);
 					}

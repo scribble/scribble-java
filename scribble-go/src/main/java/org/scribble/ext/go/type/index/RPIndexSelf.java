@@ -8,12 +8,6 @@ public class RPIndexSelf extends RPIndexVar
 	{
 		super("self");
 	}
-
-	@Override
-	public String toSmt2Formula()
-	{
-		throw new RuntimeException("Shouldn't get in here: ");
-	}
 	
 	@Override
 	public String toString()

@@ -218,7 +218,8 @@ public class RPCoreSTSessionApiBuilder
 					String tmp = "func (p *" + simpname + ") New" + "_"
 							+ (isCommonEndpointKind ? "" : this.apigen.getFamilyPackageName(family) + "_") 
 							+ epkindTypeName  // FIXME: factor out common variants between families
-							+ "(" + ivars.stream().map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
+							+ "(" + ivars.stream().filter(x -> !x.name.equals("self"))  // CHECKME: can check for RPIndexSelf instead?
+							    .map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
 							+ " *"
 							+ (isCommonEndpointKind ? "" : this.apigen.getFamilyPackageName(family) + "_")
 							+ RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant)  // FIXME: factor out (and separate type name from package name)
@@ -232,7 +233,8 @@ public class RPCoreSTSessionApiBuilder
 									+ (isCommonEndpointKind ? "" : this.apigen.getFamilyPackageName(family) + "_")
 									+ RPCoreSTApiGenerator.getEndpointKindPackageName(variant)  // FIXME: factor out
 									+ ".New" + "(p" //", params"
-									+ ivars.stream().map(x -> ", " + x).collect(Collectors.joining(""))
+									+ ivars.stream().filter(x -> !x.name.equals("self"))  // CHECKME: can check for RPIndexSelf instead?
+									    .map(x -> ", " + x).collect(Collectors.joining(""))
 									+ ", self)\n"
 							+ "}\n";
 					
@@ -326,7 +328,7 @@ public class RPCoreSTSessionApiBuilder
 							// Endpoint Kind type constructor -- makes connection maps
 							+ "\n"
 							+ "func New(p " + RPCoreSTApiGenConstants.GO_PROTOCOL_TYPE + ", " //+"params map[string]int," 
-									+ ivars.stream().map(x -> x + " int, ").collect(Collectors.joining(""))
+									+ ivars.stream().filter(x -> !x.name.equals("self")).map(x -> x + " int, ").collect(Collectors.joining(""))  // CHECKME: can check for RPIndexSelf instead?
 									+ "self int) *" + epkindTypeName + " {\n"
 							/*+ "conns := make(map[string]map[int]transport.Channel)\n"
 							+ this.apigen.variants.entrySet().stream()
