@@ -29,6 +29,7 @@ import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.RPBinIndexExpr;
 import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexInt;
@@ -607,30 +608,36 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return r.getName() + "_" + g.start + "to" + g.end;
 	}
 	
+	// Expressions to be used in code -- cf. RPCoreSTApiGenerator.getGeneratedNameLabel
 	public String generateIndexExpr(RPIndexExpr e)
 	{
 		if (e instanceof RPIndexInt)
 		{
-			return e.toString();
+			return e.toGoString();
 		}
 		else if (e instanceof RPIndexVar)
 		{
 			String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 			if (e instanceof RPForeachVar
-					|| this.fvars.stream().anyMatch(p -> p.toString().equals(e.toString())))  // FIXME HACK
+					|| this.fvars.stream().anyMatch(p -> p.toString().equals(e.toString())))  // FIXME HACK -- foreach var occurrences inside foreach body are RPIndexVars
 			{
-				return sEp + ".Params[\"" + e + "\"]";
+				return sEp + ".Params[\"" + e.toGoString() + "\"]";
 			}
 			else
 			{
 				return sEp
 						//+ "." + RPCoreSTApiGenConstants.GO_ENDPOINT_PARAMS + "[\"" + e + "\"]";
-						+ "." + e;
+						+ "." + e.toGoString();
 			}
+		}
+		else if (e instanceof RPBinIndexExpr)
+		{
+			RPBinIndexExpr b = (RPBinIndexExpr) e;
+			return "(" + generateIndexExpr(b.left) + b.op.toString() + generateIndexExpr(b.right) + ")";
 		}
 		else
 		{
-			throw new RuntimeException("[rp-core] TODO: " + e);
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + e);
 		}
 	}
 

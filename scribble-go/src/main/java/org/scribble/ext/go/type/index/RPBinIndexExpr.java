@@ -40,7 +40,8 @@ public class RPBinIndexExpr extends RPIndexExpr
 	@Override
 	public String toGoString()
 	{
-		throw new RuntimeException("[param-core] TODO: " + this);
+		//throw new RuntimeException("[param-core] TODO: " + this);
+		return toString();
 	}
 	
 	@Override

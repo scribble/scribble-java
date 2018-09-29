@@ -9,7 +9,7 @@ public abstract class RPIndexExpr
 		return false;
 	}
 	
-	public abstract String toGoString();
+	public abstract String toGoString();  // As basic Go expressions, but not (necessarily) actual code generation "ouput"
 	
 	public abstract Set<RPIndexVar> getVars();  // Doesn't include foreach params
 

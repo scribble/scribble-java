@@ -21,7 +21,7 @@ public class RPIndexVar extends RPIndexExpr  // FIXME: extend AbstractName?  cf.
 	@Override
 	public String toGoString()
 	{
-		return this.name;
+		return toString();
 	}
 		
 	@Override
