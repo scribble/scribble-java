@@ -186,7 +186,8 @@ tokens
 	PARAM_DELEGDECL                  = 'PARAM_DELEGDECL';
 	PARAM_GLOBALFOREACH              = 'PARAM_GLOBALFOREACH';
 
-	PARAM_INDEXINTERVAL                = 'PARAM_INDEXINTERVAL';
+	PARAM_INDEXINTERVAL              = 'PARAM_INDEXINTERVAL';
+	PARAM_FOREACHINTERVAL            = 'PARAM_FOREACHINTERVAL';
 }
 
 
@@ -702,7 +703,6 @@ globalmessagetransfer:
 	^(GLOBALMESSAGETRANSFER message rolename rolename+)
 
 |
-	// For now require all "singleton indexed roles" to be written as singleton intervals (including foreach-indexed roles)
 	message FROM_KW rolename paramindexinterval TO_KW rolename paramindexinterval ';'
 ->
 	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename paramindexinterval paramindexinterval)
@@ -712,6 +712,7 @@ globalmessagetransfer:
 	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)*/
 ;
 	
+// TODO: syntactically allow mix of indexed and non-indexed roles
 paramindexinterval:
 	('[' paramindexexpr? ',' paramindexexpr ']')=> '[' paramindexexpr? ',' paramindexexpr ']'
 ->
@@ -922,11 +923,17 @@ argumentinstantiation:
 	
 	
 globalforeach:
-	PARAM_FOREACH_KW rolename '[' simplename ':' paramindexexpr ',' paramindexexpr ']' globalprotocolblock  // TODO: generalise
+	PARAM_FOREACH_KW paramforeachinterval (',' paramforeachinterval)* globalprotocolblock  // TODO: generalise
 ->
-	^(PARAM_GLOBALFOREACH rolename simplename paramindexexpr paramindexexpr globalprotocolblock)
+	^(PARAM_GLOBALFOREACH globalprotocolblock paramforeachinterval+)
 ;
 
+// Cf. paramindexinterval
+paramforeachinterval:
+	rolename '[' simplename ':' paramindexexpr? ',' paramindexexpr ']'
+->
+	^(PARAM_FOREACHINTERVAL rolename simplename paramindexexpr paramindexexpr)
+;
 	
 	
 	

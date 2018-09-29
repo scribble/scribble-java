@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -245,7 +246,7 @@ public class RPCoreCommandLine extends CommandLine
 		
 		job.debugPrintln("\n[rp-core] Translated:\n  " + gt);
 		
-		if (!gt.isWellFormed(job, gpd))
+		if (!gt.isWellFormed(job, new Stack<>(), gpd))
 		{
 			throw new RPCoreException("[rp-core] Global type not well-formed:\n  " + gt);
 		}

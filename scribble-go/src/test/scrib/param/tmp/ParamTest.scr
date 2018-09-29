@@ -15,15 +15,15 @@ sig <go> "msgsig.Request" from "github.com/nickng/httpget/msgsig" as Request;
 sig <go> "msgsig.Response" from "github.com/nickng/httpget/msgsig" as Response;
 
 global protocol Proto1(role M, role F, role S) {
-  URL(int) from M[1,1] to F[1,N];
+  URL(int) from M[1] to F[1,N];
 
   foreach F[I:1,N] {
-    Request from F[I,I] to S[1,1];
-    Response from S[1,1] to F[I,I];
-    //tmp() from S[1,1] to M[1,1];  // FIXME: projection
+    Request from F[I] to S[1];
+    Response from S[1] to F[I];
+    //tmp() from S[1] to M[1];  // FIXME: projection
   }
 
-  Done(string) from F[1,N] to M[1,1];
+  Done(string) from F[1,N] to M[1];
 }
 //*/
 

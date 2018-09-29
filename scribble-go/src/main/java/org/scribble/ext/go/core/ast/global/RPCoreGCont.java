@@ -1,7 +1,9 @@
 package org.scribble.ext.go.core.ast.global;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
@@ -12,8 +14,10 @@ import org.scribble.ext.go.core.ast.local.RPCoreLCont;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
@@ -38,7 +42,7 @@ public class RPCoreGCont extends RPCoreCont<Global> implements RPCoreGType
 	}
 
 	@Override
-	public boolean isWellFormed(GoJob job, GProtocolDecl gpd)
+	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd)
 	{
 		return true;
 	}

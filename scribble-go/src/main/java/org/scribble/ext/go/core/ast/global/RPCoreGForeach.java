@@ -1,7 +1,10 @@
 package org.scribble.ext.go.core.ast.global;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,6 +21,7 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexFactory;
 import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexVar;
@@ -50,10 +54,15 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 	}
 	
 	@Override
-	public boolean isWellFormed(GoJob job, GProtocolDecl gpd)
+	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd)
 	{
-		// FIXME TODO: interval constraints, nested foreach constraints, etc. -- cf. RPCoreGChoice
-		return this.body.isWellFormed(job, gpd);
+		// CHECKME: interval constraints, nested foreach constraints, etc. -- cf. RPCoreGChoice
+		Map<RPForeachVar, RPInterval> curr = new HashMap<>();
+		this.ivals.forEach(ival -> curr.put(ival.var, ival));
+		context.push(curr);
+		boolean res = this.body.isWellFormed(job, context, gpd);
+		context.pop();
+		return res;
 	}
 	
 	@Override
@@ -118,7 +127,7 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 				throw new RuntimeException("TODO: " + )
 			}*/
 			Set<RPAnnotatedInterval> filtered = this.ivals.stream().filter(iv -> subj.intervals.stream().anyMatch(x -> iv.isSame(x))).collect(Collectors.toSet());
-					// CHECKME: actual interval inclusion? (vs. isSame) -- also RPCoreGChoice#project?
+					// CHECKME: actual interval inclusion? (vs. "syntactic" equals) -- also RPCoreGChoice#project?
 			//RPIndexedRole tmp = new RPIndexedRole(subj.getName().toString(), filtered);  // FIXME: should be this, but currently RPIndexedRole interval set for multidim nat intervals (but with >1 TODO exception)
 			RPCoreGForeach tmp = af.RPCoreGForeach(this.roles, this.ivals, body, af.ParamCoreGEnd());  
 					// CHECKME: should be "end" so that it will be discarded?  seq will be substituted for cont in the final "unrolling" of foreach

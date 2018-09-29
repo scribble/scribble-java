@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPBinIndexExpr.Op;
+import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexFactory;
 import org.scribble.ext.go.type.index.RPIndexSelf;
@@ -65,8 +67,9 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		}
 	}
 	
+	// gpd only for calling Z3Wrapper.checkSat
 	@Override
-	public boolean isWellFormed(GoJob job, GProtocolDecl gpd)
+	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd)
 	{
 		// src (i.e., choice subj) range size=1 for non-unary choices enforced by ParamScribble.g syntax
 		// Directed choice check by ParamCoreGProtocolDeclTranslator ensures all dests (including ranges) are (syntactically) the same
@@ -140,7 +143,69 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				String smt2 = "(assert (exists ((foobartmp Int)";  // FIXME: factor out
 				smt2 += vars.stream().map(v -> " (" + v.name + " Int)").collect(Collectors.joining(""));
 				smt2 += ") (and";
-				smt2 += vars.isEmpty() ? "" : vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""));  // FIXME: lower bound constant -- replace by global invariant
+				smt2 += vars.isEmpty() ? "" : vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""));  
+						// FIXME: lower bound constant -- replace by global invariant
+
+				Map<RPForeachVar, RPInterval> peek = context.peek();
+				Set<String> all = context.stream().flatMap(m -> m.keySet().stream().map(k -> k.toString())).collect(Collectors.toSet());
+				Set<String> curr = peek.keySet().stream().map(k -> k.toString()).collect(Collectors.toSet());
+				Set<RPIndexVar> srcVars = this.src.getIndexVars();
+				for (RPIndexVar sv : srcVars)
+				{
+					String tmp = sv.toString();
+					if (all.contains(tmp))  // FIXME: awkwardness of RPForeachVar and RPIndexVar
+					{
+						if (!curr.contains(tmp))
+						{
+							job.debugPrintln("\n[param-core] [WF] Illegal access of outer foreach-var: " + this.src);
+							return false;
+						}
+						RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp));
+						Set<RPInterval> srcIvals = this.src.intervals;
+						if (srcIvals.size() > 1 || !srcIvals.iterator().next().isSingleton())
+						{
+							job.debugPrintln("\n[param-core] [WF] Non-singleton usage of foreach-var: " + this.src + ", " + ival);
+							return false;
+						}
+						smt2 += " (= " + sv + " " + ival.start + ")";
+					}
+				}
+				Set<RPIndexVar> destVars = this.dest.getIndexVars();  // FIXME: factor out with above
+				for (RPIndexVar dv : destVars)
+				{
+					String tmp = dv.toString();
+					if (all.contains(tmp))  // FIXME: awkwardness of RPForeachVar and RPIndexVar
+					{
+						if (!curr.contains(tmp))
+						{
+							job.debugPrintln("\n[param-core] [WF] Illegal access of outer foreach-var: " + this.dest);
+							return false;
+						}
+						RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp));
+						Set<RPInterval> destIvals = this.dest.intervals;
+						if (destIvals.size() > 1 || !destIvals.iterator().next().isSingleton())
+						{
+							job.debugPrintln("\n[param-core] [WF] Non-singleton usage of foreach-var: " + this.dest + ", " + ival);
+							return false;
+						}
+						smt2 += " (= " + dv + " " + ival.start + ")";
+					}
+				}
+				if (src.getName().equals(dest.getName()) && srcVars.size() == 1 && destVars.size() == 1)
+				{
+					String sv = srcVars.iterator().next().toString();
+					String dv = destVars.iterator().next().toString();
+					if (curr.contains(sv) && curr.contains(dv))
+					{
+						if (peek.get(RPIndexFactory.RPForeachVar(sv)).start.equals(peek.get(RPIndexFactory.RPForeachVar(sv))))
+								// FIXME: need to prove not equal (not just check for syntactic equality)
+						{
+							job.debugPrintln("\n[param-core] (Potential) illegal self-communication: " + this);
+							return false;
+						}
+					}
+				}
+
 				smt2 += Stream.of(srcRange, destRange)
 						.map(r -> " (>= foobartmp " + r.start.toSmt2Formula() + ") (<= foobartmp " + r.end.toSmt2Formula() + ")")
 						.collect(Collectors.joining());
@@ -376,8 +441,8 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			throw new RuntimeException("[param-core] TODO: " + this);
 		}
 		
-		// Not CROSS_TRANSFER, or subj is not sender nor receiver
-		if (!this.src.equals(subj) && !this.src.equals(subj))
+		// CROSS_TRANSFER, and subj not sender nor receiver
+		if (!this.src.equals(subj) && !this.dest.equals(subj))
 		{
 			return merge3(af, subj, projs);
 		}

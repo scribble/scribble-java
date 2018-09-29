@@ -33,7 +33,8 @@ public interface RPAstFactory extends AstFactory
 			//ParamRoleParamNode srcRangeStart, ParamRoleParamNode srcRangeEnd, ParamRoleParamNode destRangeStart, ParamRoleParamNode destRangeEnd);
 			RPIndexExpr srcRangeStart, RPIndexExpr srcRangeEnd, RPIndexExpr destRangeStart, RPIndexExpr destRangeEnd);
 	RPGChoice ParamGChoice(CommonTree source, RoleNode subj, RPIndexExpr expr, List<GProtocolBlock> blocks);
-	RPGForeach RPGForeach(CommonTree source, RoleNode subj, RPForeachVar param, RPIndexExpr start, RPIndexExpr end, GProtocolBlock block);
+	RPGForeach RPGForeach(CommonTree source, List<RoleNode> subjs,
+			List<RPForeachVar> params, List<RPIndexExpr> starts, List<RPIndexExpr> ends, GProtocolBlock block);
 	RPIndexedRoleNode RPIndexedRoleNode(CommonTree source, String identifier, RPIndexExpr start, RPIndexExpr end);
 
 	@Deprecated

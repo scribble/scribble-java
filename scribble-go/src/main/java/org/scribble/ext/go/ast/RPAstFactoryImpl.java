@@ -95,9 +95,10 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 	}
 
 	@Override
-	public RPGForeach RPGForeach(CommonTree source, RoleNode subj, RPForeachVar param, RPIndexExpr start, RPIndexExpr end, GProtocolBlock block)
+	public RPGForeach RPGForeach(CommonTree source, List<RoleNode> subjs,
+			List<RPForeachVar> params, List<RPIndexExpr> starts, List<RPIndexExpr> ends, GProtocolBlock block)
 	{
-		RPGForeach gf = new RPGForeach(source, subj, param, start, end, block);
+		RPGForeach gf = new RPGForeach(source, subjs, params, starts, ends, block);
 		gf = del(gf, new RPGForeachDel());
 		return gf;
 	}

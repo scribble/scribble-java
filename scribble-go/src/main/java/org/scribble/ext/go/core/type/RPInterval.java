@@ -29,10 +29,16 @@ public class RPInterval
 		return Stream.of(this.start, this.end).flatMap(p -> p.getVars().stream()).collect(Collectors.toSet());
 	}
 	
-	// Cf. equals -- also cf. "contains"
+	// FIXME: cf. equals -- this is to avoid awkwardness of RPInterval and RPAnnotatedInterval
+	// Althoug, also cf. "contains" -- currently "syntactic equality", generalise?
 	public boolean isSame(RPInterval i)
 	{
-		return this.start == i.start && this.end == i.end;
+		return this.start.equals(i.start) && this.end.equals(i.end); 
+	}
+	
+	public boolean isSingleton()
+	{
+		return this.start.equals(this.end);
 	}
 
 	@Override

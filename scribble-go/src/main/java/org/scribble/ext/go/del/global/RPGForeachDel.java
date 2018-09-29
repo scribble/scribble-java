@@ -1,5 +1,8 @@
 package org.scribble.ext.go.del.global;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
@@ -17,9 +20,9 @@ public class RPGForeachDel extends RPForeachDel
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inlr, ScribNode visited) throws ScribbleException
 	{
 		RPGForeach fe = (RPGForeach) visited;
-		RoleNode subj = fe.subj.clone(inlr.job.af);
+		List<RoleNode> subjs = fe.subjs.stream().map(r -> r.clone(inlr.job.af)).collect(Collectors.toList());
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) fe.block.del().env()).getTranslation();	
-		RPGForeach inlined = ((RPAstFactory) inlr.job.af).RPGForeach(fe.getSource(), subj, fe.param, fe.start, fe.end, block);
+		RPGForeach inlined = ((RPAstFactory) inlr.job.af).RPGForeach(fe.getSource(), subjs, fe.params, fe.starts, fe.ends, block);
 		inlr.pushEnv(inlr.popEnv().setTranslation(inlined));
 		//return (GChoice) super.leaveProtocolInlining(parent, child, inl, gc);
 		return ScribDelBase.popAndSetVisitorEnv(this, inlr, visited);

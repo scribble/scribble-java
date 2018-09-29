@@ -1,5 +1,10 @@
 package org.scribble.ext.go.ast;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.CompoundInteractionNode;
@@ -13,23 +18,27 @@ import org.scribble.visit.AstVisitor;
 
 public abstract class RPForeach<K extends ProtocolKind> extends CompoundInteractionNode<K>
 {
-	public final RoleNode subj;
-	public final RPForeachVar param;
-	public final RPIndexExpr start;
-	public final RPIndexExpr end;
+	public final List<RoleNode> subjs;
+	public final List<RPForeachVar> params;
+	public final List<RPIndexExpr> starts;
+	public final List<RPIndexExpr> ends;
 	public final ProtocolBlock<K> block;
 
-	protected RPForeach(CommonTree source, RoleNode subj, RPForeachVar param, RPIndexExpr start, RPIndexExpr end, ProtocolBlock<K> block)
+	// Pre: subjs/params/starts/ends same length -- FIXME: factor out?
+	protected RPForeach(CommonTree source, List<RoleNode> subjs,
+			List<RPForeachVar> params, List<RPIndexExpr> starts, List<RPIndexExpr> ends, 
+			ProtocolBlock<K> block)
 	{
 		super(source);
-		this.subj = subj;
-		this.param = param;
-		this.start = start;
-		this.end = end;
+		this.subjs = Collections.unmodifiableList(subjs);
+		this.params = Collections.unmodifiableList(params);
+		this.starts = Collections.unmodifiableList(starts);
+		this.ends = Collections.unmodifiableList(ends);
 		this.block = block;
 	}
 
-	public abstract RPForeach<K> reconstruct(RoleNode subj, RPForeachVar param, RPIndexExpr start, RPIndexExpr end, ProtocolBlock<K> block);
+	public abstract RPForeach<K> reconstruct(List<RoleNode> subjs,
+			List<RPForeachVar> params, List<RPIndexExpr> starts, List<RPIndexExpr> ends, ProtocolBlock<K> block);
 	
 	@Override
 	public abstract RPForeach<K> clone(AstFactory af);
@@ -37,9 +46,9 @@ public abstract class RPForeach<K extends ProtocolKind> extends CompoundInteract
 	@Override
 	public RPForeach<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		RoleNode subj = (RoleNode) visitChild(this.subj, nv);
+		List<RoleNode> subjs = visitChildListWithClassEqualityCheck(this, this.subjs, nv);
 		ProtocolBlock<K> block = visitChildWithClassEqualityCheck(this, this.block, nv);
-		return reconstruct(subj, param, start, end, block);
+		return reconstruct(subjs, this.params, this.starts, this.ends, block);
 	}
 	
 	public abstract ProtocolBlock<K> getBlock();
@@ -47,6 +56,9 @@ public abstract class RPForeach<K extends ProtocolKind> extends CompoundInteract
 	@Override
 	public String toString()
 	{
-		return "foreach " + this.subj + "[" + this.param + ":" + this.start + "," + this.end + "] " + this.block;
+		return "foreach " + IntStream.of(0, this.subjs.size()-1).mapToObj(i ->
+						this.subjs.get(i) + "[" + this.params.get(i) + ":" + this.starts.get(i) + "," + this.ends.get(i) + "]"
+				).collect(Collectors.joining(", "))
+				+ this.block;
 	}
 }

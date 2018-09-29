@@ -19,6 +19,7 @@ public class RPIndexedRole extends Role
 	//public final ParamRange range;
 	public final Set<RPInterval> intervals;  // size >= 1 -- size == 1 for parsed syntax
 			// FIXME: this set was meant for multidim nat intervals, but multidim should be factored into the RPInterval itself
+			// No, above is wrong -- this set is actually for multiple intervals, but currently only non-singleton at local level (i.e, variants)
 	
 	public RPIndexedRole(String name, Set<? extends RPInterval> intervals)
 	{
@@ -30,6 +31,17 @@ public class RPIndexedRole extends Role
 			throw new RuntimeException("TODO: " + intervals);
 		}*/
 		this.intervals = Collections.unmodifiableSet(intervals);
+	}
+	
+	// FIXME: currently just a syntactic singleton check on a single interval -- false negatives possible in general case (multiple intervals)
+	public boolean isSingleton()
+	{
+		if (this.intervals.size() != 1)
+		{
+			return false;
+		}
+		RPInterval ival = this.intervals.stream().findFirst().get();
+		return ival.isSingleton();
 	}
 
 	public Set<RPIndexVar> getIndexVars()
