@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.scribble.codegen.statetype.STBranchActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.MessageSigName;
@@ -63,7 +64,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
-		//RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
+		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
 		
 		List<EAction> as = curr.getAllActions();
 		if (!as.stream().allMatch(x -> x.mid.isOp()) && !as.stream().allMatch(x -> x.mid.isMessageSigName()))
@@ -83,13 +84,24 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ", "
 				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";
 		
+		// Duplicated from RPCoreSTReceiveActionBuilder
+		RPInterval d = peer.intervals.iterator().next();
+		if (peer.intervals.size() > 1)
+		{
+			throw new RuntimeException("[rp-core] TODO: " + a);
+		}
+		if (!d.isSingleton())
+		{
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + a);
+		}
 		if (a.mid.isOp())  // Currently, assuming all mids are Ops; else all mids are sig names
 		{
 			// Duplicated from RPCoreSTReceiveActionBuilder
-			res += "var lab string\n" // cf. RPCoreSTReceiveActionBuilder
+				res += "var lab string\n" // cf. RPCoreSTReceiveActionBuilder
 					+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(" + "&lab" + ")"*/
-					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", 1, &lab" + ")"
+					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
+							+ rpapi.generateIndexExpr(d.start) + ", &lab" + ")"
 							+ "; err != nil {\n"
 					//+ "log.Fatal(err)\n"
 					//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
@@ -115,7 +127,8 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 					  "var msg session2.ScribMessage\n"
 					+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 					+ "." //+ RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(" + "&msg" + ")"*/
-					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", 1, &msg" + ")"
+					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", "
+							+ rpapi.generateIndexExpr(d.start) + ", &msg" + ")"
 							+ "; err != nil {\n"
 					//+ "log.Fatal(err)\n"
 					+ "panic(err)\n"  // FIXME: which case object to return for error?  make "default" error case object?

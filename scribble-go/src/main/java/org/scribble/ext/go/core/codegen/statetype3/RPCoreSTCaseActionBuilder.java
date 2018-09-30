@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 import org.scribble.codegen.statetype.STCaseActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
@@ -51,11 +52,21 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 				+ "[\"" +  peer.getName() + "\"]";*/
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder
+		RPInterval d = peer.intervals.iterator().next();
+		if (peer.intervals.size() > 1)
+		{
+			throw new RuntimeException("[rp-core] TODO: " + a);
+		}
+		if (!d.isSingleton())
+		{
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + a);
+		}
 		Function<String, String> makeCaseReceive = pt -> 
 				//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK: []  // N.B. *arg0 matches buildArgs
 				  "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(&tmp)"*/
-						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", 1, &arg0)"
+						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
+								+ rpapi.generateIndexExpr(d.start) + ", &arg0)"
 						+ "; err != nil {\n"
 				//+ "log.Fatal(err)\n"
 				//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?

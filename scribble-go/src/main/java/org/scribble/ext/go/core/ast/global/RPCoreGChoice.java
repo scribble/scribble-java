@@ -18,6 +18,7 @@ import org.scribble.ext.go.core.ast.RPCoreChoice;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLActionKind;
+import org.scribble.ext.go.core.ast.local.RPCoreLCrossChoice;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;
@@ -513,14 +514,41 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	{
 		// "Merge"
 		Set<RPCoreLType> values = new HashSet<>(projs.values());
-		if (values.size() > 1)
+		/*if (values.size() > 1)
 		{
 			throw new RPCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + r 
 					//+ " for " + ranges
-					+ ": cannot merge for: " + projs.keySet());
+					+ ": cannot merge: " + projs);
+		}*/
+		if (values.size() == 1)  // Handles output choices
+		{
+			return values.iterator().next();
 		}
-		
-		return values.iterator().next();
+		RPIndexedRole peer = null;
+		LinkedHashMap<Message, RPCoreLType> cases = new LinkedHashMap<>();
+		for (Message m : projs.keySet())
+		{
+			RPCoreLType p = projs.get(m);
+			if (!(p instanceof RPCoreLCrossChoice))
+			{
+				throw new RPCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + r + ": cannot merge: " + projs);
+			}
+			RPCoreLCrossChoice c = (RPCoreLCrossChoice) p;
+			if (c.kind != RPCoreLActionKind.CROSS_RECEIVE)  // FIXME generalise
+			{
+				throw new RPCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + r + ": cannot merge: " + projs);
+			}
+			if (peer == null)
+			{
+				peer = c.role;
+			}
+			else if (!c.role.equals(peer))
+			{
+				throw new RPCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + r + ": cannot merge: " + projs);
+			}
+			cases.putAll(c.cases);
+		}
+		return af.ParamCoreLCrossChoice(peer, RPCoreLActionKind.CROSS_RECEIVE, cases);
 	}
 
 	// Cf. merge above
@@ -529,7 +557,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		Set<RPCoreLType> values = new HashSet<>(projs.values());
 		if (values.size() > 1)
 		{
-			throw new RPCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + r + ": cannot merge for: " + projs.keySet());
+			throw new RPCoreSyntaxException("[param-core] Cannot project \n" + this + "\n onto " + r + ": cannot merge: " + values);
 		}
 		return values.iterator().next();
 	}

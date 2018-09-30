@@ -286,7 +286,7 @@ public class RPCoreCommandLine extends CommandLine
 			for (RPRoleVariant variant : this.L0.get(r).keySet())
 			{
 				
-				System.out.println("Projection onto " + variant + ": " + this.L0.get(r).get(variant));
+				System.out.println("\nProjection onto " + variant + ": " + this.L0.get(r).get(variant));
 				
 				EGraph g = builder.build(this.L0.get(r).get(variant));
 				//Map<Set<ParamRange>, EGraph> tmp = this.E0.get(r);

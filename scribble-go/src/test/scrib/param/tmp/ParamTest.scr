@@ -26,6 +26,30 @@ global protocol Proto1(role B) {
 //*/
 
 
+/*
+global protocol Proto1(role A, role B) {
+	foreach B[I:1,K] {
+		Foo() from A[1] to B[2];  // OK?  FIXME projection -- have to consider if 2 is inside 1,K?
+		//Foo() from A[I] to B[I];  // FIXME TODO
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B) {
+	choice at A[1]
+	{
+		Foo() from A[1] to B[1];
+	}	
+	or
+	{
+		Bar() from A[1] to B[2];
+	}
+}
+//*/
+
+
 
 /*
 global protocol Proto1(role A, role B) {
