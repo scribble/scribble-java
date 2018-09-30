@@ -225,7 +225,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		boolean isCommonEndpointKind = //this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(this.variant));  // No: doesn't consider dial/accept
 				//this.apigen.families.keySet().stream().filter(f -> f.left.contains(this.variant)).distinct().count() == 1;  // No: too conservative -- should be about required peer endpoint kinds (to dial/accept with)
-				this.apigen.peers.get(this.variant).size() == 1;
+				//this.apigen.peers.get(this.variant).size() == 1;
+				this.apigen.isCommonEndpointKind(variant);
 		return //getStateChannelPackagePathPrefix() 
 					// Duplicated from RPCoreSTSessionApiBuilder#getEndpointKindFilePath
 					this.gpn.toString().replaceAll("\\.", "/") 

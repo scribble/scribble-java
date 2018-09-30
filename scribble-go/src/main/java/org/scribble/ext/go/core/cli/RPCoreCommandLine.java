@@ -357,7 +357,7 @@ public class RPCoreCommandLine extends CommandLine
 	//..HERE FIXME ActualParam -- ParamRange is now already a Set
 	
 	
-	// Compute variant peers of each variant
+	// Compute variant peers of each variant -- for "common" endpoint kind factoring (w.r.t. dial/accept -- i.e., looking for variants whose set of dial/accept methods is the same for all families it is involved in)
 	private Map<RPRoleVariant, Set<RPRoleVariant>> getPeers(GoJob job)
 	{
 		job.debugPrintln("\n[rp-core] Computing peers:");
@@ -379,6 +379,8 @@ public class RPCoreCommandLine extends CommandLine
 							RPCoreEState.getReachableActions((RPCoreEModelFactory) job.ef,
 									(RPCoreEState) this.E0.get(rname).get(self).init).stream()  // FIXME: static "overloading" (cf. MState) error prone
 							.map(a -> ((RPCoreEAction) a).getPeer()).collect(Collectors.toSet());
+									// CHECKME: in presence of foreach, actions will include unqualified foreachvars -- is that what the following Z3 assertion is/should be doing?
+
 					Set<RPRoleVariant> peers = new HashSet<>();
 					next: for (RPRoleVariant peer : (Iterable<RPRoleVariant>)  // Candidate
 							this.E0.values().stream()
@@ -387,13 +389,14 @@ public class RPCoreCommandLine extends CommandLine
 						if (!peer.equals(self) && !peers.contains(peer))
 						{
 							job.debugPrintln("\n[rp-core] For " + self + ", checking potential peer: " + peer);
+									// "checking potential peer" means checking if any of our action-peer indexed roles fits the candidate variant-peer (so we would need a dial/accept for them)
 							for (RPIndexedRole ir : irs)
 							{
 								if (ir.getName().equals(peer.getName()))
 								{
 									if (ir.intervals.size() > 1)
 									{
-										throw new RuntimeException("[rp-core] TODO: multi-dimension intervals: " + ir);
+										throw new RuntimeException("[rp-core] TODO: multi-dimension intervals: " + ir);  // No?  Multiple intervals is not actually about multidim intervals, it's about constraint intersection?  (A multdim interval should be a single interval value?)
 									}
 									RPInterval d = ir.intervals.stream().findAny().get();
 									

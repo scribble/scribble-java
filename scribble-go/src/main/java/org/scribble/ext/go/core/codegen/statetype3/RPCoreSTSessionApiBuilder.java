@@ -28,6 +28,8 @@ import org.scribble.util.Pair;
 // Cf. STStateChanApiBuilder
 public class RPCoreSTSessionApiBuilder
 {
+	private final RPCoreSTApiGenerator apigen;
+
 	/*... move stateChanNames (and peers?) here
 	... cache reachable states, use for state chan pre-creation (to include intermed states -- and case objects?)
 	... do "global" linearity counter*/
@@ -35,8 +37,6 @@ public class RPCoreSTSessionApiBuilder
 	protected final Map<RPRoleVariant, Set<RPCoreEState>> reachable = new HashMap<>();
 	protected final Map<RPRoleVariant, Map<Integer, String>> stateChanNames;  // State2
 	//private Map<RPRoleVariant, Map<Integer, String>> foreachNames = new HashMap<>();    // State2_ intermediary name (N.B. RPCoreSTStateChanApiBuilder swaps them around for convenience)
-	
-	private RPCoreSTApiGenerator apigen;
 
 	private static final Comparator<RPIndexVar> IVAR_COMP = new Comparator<RPIndexVar>()
 			{
@@ -154,7 +154,8 @@ public class RPCoreSTSessionApiBuilder
 										// Cf. getEndpointKindFilePath
 										boolean isCommonEndpointKind = //this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(v));  // No: doesn't consider dial/accept
 												//this.apigen.families.keySet().stream().filter(f -> f.left.contains(v)).distinct().count() == 1;  // No: too conservative -- should be about required peer endpoint kinds (to dial/accept with)
-												this.apigen.peers.get(v).size() == 1;
+												//this.apigen.peers.get(v).size() == 1;  // Cf.
+												this.apigen.isCommonEndpointKind(v);
 
 										return isCommonEndpointKind
 												? "import " + epkindPackName
@@ -185,12 +186,13 @@ public class RPCoreSTSessionApiBuilder
 				+ "func New() *" + simpname + " {\n"
 				+ "return &" + simpname + "{ }\n"
 				+ "}\n";
-
+		
 		for (Role rname : rolenames)
 		{
 			for (RPRoleVariant variant : this.apigen.variants.get(rname).keySet())
 			{
-				boolean isCommonEndpointKind = this.apigen.peers.get(variant).size() == 1;
+				boolean isCommonEndpointKind = this.apigen.isCommonEndpointKind(variant);
+				
 				Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families = isCommonEndpointKind
 						? Stream.of((Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>) null).collect(Collectors.toSet())  // FIXME HACK: when isCommonEndpointKind, just loop once (to make one New)
 						: this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant)).collect(Collectors.toSet());
@@ -525,11 +527,36 @@ public class RPCoreSTSessionApiBuilder
 	{
 		boolean isCommonEndpointKind = //this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(variant));  // No: doesn't consider dial/accept
 				//this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant)).distinct().count() == 1;
-				this.apigen.peers.get(variant).size() == 1;
+				//this.apigen.peers.get(variant).size() == 1;
+				this.apigen.isCommonEndpointKind(variant);
 		String basedir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
 		return basedir
 				//+ "/" + this.apigen.getFamilyPackageName(family)
 				+ (isCommonEndpointKind ? "" : "/" + this.apigen.getFamilyPackageName(family))
 				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(variant);
+				
+				/*// "Syntactically" determining common endpoint kinds difficult because concrete peers depends on param (and foreachvar) values, e.g., M in PGet w.r.t. #F
+				// Also, family factoring is more about dial/accept
+				isCommonEndpointKind = true;
+				Set<Role> peers = null;
+				X: for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.apigen.families.keySet())
+				{
+					if (fam.left.contains(variant))
+					{
+						EGraph g = this.apigen.variants.get(rname).get(variant);
+						Set<RPCoreEAction> as = RPCoreEState.getReachableActions((RPCoreEModelFactory) this.apigen.job.ef, (RPCoreEState) g.init);
+						Set<Role> tmp = as.stream().map(a -> a.getPeer()).collect(Collectors.toSet());
+						if (peers == null)
+						{
+							peers = tmp;
+						}
+						else if (!peers.equals(tmp))
+						{
+							isCommonEndpointKind = false;
+							break X;
+						}
+					}
+				}
+				//*/
 	}
 }

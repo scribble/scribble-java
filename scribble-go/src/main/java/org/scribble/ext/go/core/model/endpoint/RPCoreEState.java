@@ -158,6 +158,7 @@ public class RPCoreEState extends EState
 	}
 
 	// FIXME: make not static -- otherwise choosing statics (cf. MState) by overloading, error prone
+	// Note: returns "syntactic" results, e.g., foreachvars directly returned unqualified
 	// cf. RPCoreGForeach#getIndexedRoles
 	public static Set<RPCoreEAction> getReachableActions(RPCoreEModelFactory ef, RPCoreEState start)
 	{

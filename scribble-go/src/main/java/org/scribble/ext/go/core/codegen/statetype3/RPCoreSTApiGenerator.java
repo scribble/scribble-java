@@ -40,8 +40,8 @@ public class RPCoreSTApiGenerator
 	public final Map<Role, Map<RPRoleVariant, RPCoreLType>> projections;
 	public final Map<Role, Map<RPRoleVariant, EGraph>> variants;
 	//public final Map<RPRoleVariant, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>> families;
-	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> families;
-	public final Map<RPRoleVariant, Set<RPRoleVariant>> peers;
+	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> families;  // int is arbitrary familiy id
+	public final Map<RPRoleVariant, Set<RPRoleVariant>> peers;  // For "common" endpoint kind factoring
 	
 	public final String packpath;  
 			// Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
@@ -278,6 +278,46 @@ public class RPCoreSTApiGenerator
 		{
 			throw new RuntimeException("Shouldn't get here: " + e);
 		} 
+	}
+	
+	public boolean isCommonEndpointKind(RPRoleVariant variant)
+	{
+		// For factoring out "common" endpoint kinds from families -- FIXME: do earlier with/after family computation?
+		// Means current variant talks to at most the same single peer in all families (but maybe not involved in some families -- but that is fine, considering a distributed projection needs only to know what to do in its relevant families)
+		// Note: without explicit connections, even if don't directly talk with a family co-member, basic session model still forms the connection
+		// E.g., basic pipeline, left/right not "common" because of "connections to right/[middle]/left" distinguished from "connections to *neighbours*"
+		// Ideally, want to reason about dial/accept to make only the "necessary connections" => explicit connections
+		//boolean isCommonEndpointKind = this.apigen.peers.get(variant).size() == 1;
+				// CHECKME: why 1, should it be generalised?
+				// CHECKME: peers doesn't consider families -- should isCommonEndpointKind be determined from families?
+		boolean isCommonEndpointKind = this.families.keySet().stream().filter(p -> p.left.contains(variant))
+						// Would also be reasonable to require variant to be in every family -- but not necessary since a distributed projection is only for the families that the variant is involved in
+				.allMatch(p -> p.left.containsAll(this.peers.get(variant)));
+		return isCommonEndpointKind;
+				
+		/*// "Syntactically" determining common endpoint kinds difficult because concrete peers depends on param (and foreachvar) values, e.g., M in PGet w.r.t. #F
+		// Also, family factoring is more about dial/accept
+		isCommonEndpointKind = true;
+		Set<Role> peers = null;
+		X: for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.apigen.families.keySet())
+		{
+			if (fam.left.contains(variant))
+			{
+				EGraph g = this.apigen.variants.get(rname).get(variant);
+				Set<RPCoreEAction> as = RPCoreEState.getReachableActions((RPCoreEModelFactory) this.apigen.job.ef, (RPCoreEState) g.init);
+				Set<Role> tmp = as.stream().map(a -> a.getPeer()).collect(Collectors.toSet());
+				if (peers == null)
+				{
+					peers = tmp;
+				}
+				else if (!peers.equals(tmp))
+				{
+					isCommonEndpointKind = false;
+					break X;
+				}
+			}
+		}
+		//*/
 	}
 	
 	
