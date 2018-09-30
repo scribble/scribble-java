@@ -9,15 +9,80 @@ module param.tmp.ParamTest;
 
 
 /*
-global protocol Proto1(role A, role B) {
-	foreach B[I:1,K-1] {
-		Foo() from A[1] to B[I];	
+global protocol Proto1(role B) {
+	foreach B[I:2,K-1] {
+		Foo() from B[I+1] to B[1];	// FIXME: projection
 	}	
 }
 //*/
 
 
-//*
+/*
+global protocol Proto1(role B) {
+	foreach B[I:1,K], B[J:K,K+K] {  // FIXME TODO foreach interval constraint
+		Foo() from B[I] to B[J];
+	}	
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B) {
+	foreach B[I:1,K-1] {
+		Foo() from A[1] to B[I];
+		//Foo() from A[1] to B[I+1];  // Bad if uncommented
+		//Foo() from B[I+1] to A[1];  // Bad if uncommented	   
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	foreach B[I:1,K] {
+		Foo() from B[I] to B[I];  // Bad
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	foreach B[I:1,K], B[J:1,K] {
+		Foo() from B[I] to B[J];  // Bad
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	foreach B[I:1,K-1], B[J:2,K] {
+		Foo() from B[I] to B[J];  // OK
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	foreach B[I:1,K], B[J:2,K+1] {  // Bad
+		Foo() from B[I] to B[J];
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	Foo() from B[1,2] to B[1,K];  // Bad
+	Foo() from B[1,2] to B[J,J+1];  // Bad
+}
+//*/
+
+
+/*
 type <go> "int" from "builtin" as int;
 type <go> "string" from "builtin" as string;
 sig <go> "msgsig.Request" from "github.com/nickng/httpget/msgsig" as Request;
