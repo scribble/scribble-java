@@ -209,11 +209,7 @@ public class RPCoreSTSessionApiBuilder
 						throw new RuntimeException("[rp-core] Shouldn't get in here: ", e);
 					}
 					List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());*/
-					
-					List<RPIndexVar> ivars = this.apigen.projections.get(rname).get(variant)
-							.getIndexVars().stream().sorted(IVAR_COMP)
-							.collect(Collectors.toList());  // N.B., params only from action subjects (not self)
-					ivars.addAll(variant.getIndexVars());  // Do variant params subsume projection params?  (vice versa not true -- e.g., param needed to check self)
+					List<RPIndexVar> ivars = getParameters(variant);
 					String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 
 					// Endpoint Kind constructor -- makes index var value maps
@@ -279,9 +275,8 @@ public class RPCoreSTSessionApiBuilder
 					}
 					List<RPIndexVar> ivars = coll.getIndexVars().stream().sorted().collect(Collectors.toList());*/
 
-					List<RPIndexVar> ivars = this.apigen.projections.get(rname).get(variant)
-							.getIndexVars().stream().sorted(IVAR_COMP).collect(Collectors.toList());  // N.B., params only from action subjects (not self)
-					ivars.addAll(variant.getIndexVars());  // Do variant params subsume projection params?  (vice versa not true -- e.g., param needed to check self)
+					List<RPIndexVar> ivars = getParameters(variant);
+
 					String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 					
 					String epkindFile = epkindImports + "\n"
@@ -509,6 +504,15 @@ public class RPCoreSTSessionApiBuilder
 				}
 			}
 		}
+	}
+
+	private List<RPIndexVar> getParameters(RPRoleVariant variant)
+	{
+		List<RPIndexVar> ivars = this.apigen.projections.get(variant.getName()).get(variant)
+				.getIndexVars().stream().sorted(IVAR_COMP).collect(Collectors.toList());  // N.B., params only from action subjects (not self)
+		ivars.addAll(variant.getIndexVars().stream().filter(x -> !ivars.contains(x))
+				.sorted(IVAR_COMP).collect(Collectors.toList()));  // Do variant params subsume projection params? -- nope: often projections [self] and variant [K]
+		return ivars;
 	}
 	
 	// Returns path to use as offset to -d
