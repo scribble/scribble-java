@@ -271,16 +271,17 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		return true;
 	}
 
-	public static boolean hasValidForeachVarIndex(Stack<Map<RPForeachVar, RPInterval>> context, RPIndexedRole xxx)
+	public static boolean hasValidForeachVarIndex(Stack<Map<RPForeachVar, RPInterval>> context, RPIndexedRole ir)
 	{
 		if (context.isEmpty())
 		{
 			return false;
 		}
-		Set<String> curr = context.peek().keySet().stream().map(k -> k.toString()).collect(Collectors.toSet());
-		RPInterval ival = xxx.intervals.iterator().next();
-		return xxx.intervals.size() == 1 && ival.isSingleton() 
-				&& (ival.start instanceof RPIndexVar) && curr.contains(((RPIndexVar) ival.start).name);  // N.B. RPIndexVar, not RPForeachVar (FIXME)
+		//Set<String> curr = context.peek().keySet().stream().map(k -> k.toString()).collect(Collectors.toSet());
+		Set<String> all = context.stream().flatMap(m -> m.keySet().stream().map(k -> k.name)).collect(Collectors.toSet());  // FIXME: awkwardness of RPForeachVar and RPIndexVar
+		RPInterval ival = ir.intervals.iterator().next();
+		return ir.intervals.size() == 1 && ival.isSingleton() 
+				&& (ival.start instanceof RPIndexVar) && all.contains(((RPIndexVar) ival.start).name);  // N.B. RPIndexVar, not RPForeachVar (FIXME)
 	}
 				
 	@Override

@@ -8,6 +8,68 @@
 module param.tmp.ParamTest;
 
 
+
+
+
+global protocol Proto1(role A, role B)
+{
+	foreach A[I:1,KA]
+	{
+		foreach B[J:1,KB]
+		{
+			Foo() from A[I] to B[J];
+		}
+	}
+}
+
+
+
+
+/*
+sig <go> "http.HeadReq" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Head;
+sig <go> "http.GetReq" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Get;
+sig <go> "http.Response" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Res;
+
+sig <go> "msg.Meta" from "github.com/rhu1/scribble-go-examples/9_pget/msg" as Meta;
+sig <go> "msg.Job" from "github.com/rhu1/scribble-go-examples/9_pget/msg" as Job;
+sig <go> "msg.Data" from "github.com/rhu1/scribble-go-examples/9_pget/msg" as Data;
+sig <go> "msg.Done" from "github.com/rhu1/scribble-go-examples/9_pget/msg" as Done;
+
+global protocol Proto1(role M, role F, role S) {
+  // Get metadata (size)
+  Head from F[1] to S[1];
+  Res from S[1] to F[1];
+  Meta from F[1] to M[1];
+
+  // Send jobs.
+  Job from M[1] to F[1,K];
+  Get from F[1,K] to S[1];
+  Res from S[1] to F[1,K];
+  Data from F[1,K] to M[1];
+
+  Foo(Sync@A) from F[1,K] to M[1];
+}
+
+aux global protocol Sync(role A, role B) {
+  Done from A[1] to B[1];
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B) 
+{
+	Foo(Proto1a@C) from A[1] to B[1];
+}
+
+aux global protocol Proto1a(role C, role D) 
+{
+	Bar() from C[1] to D[1];
+}
+//*/
+
+
 /*
 global protocol Proto1(role B) {
 	foreach B[I:2,K-1] {

@@ -509,10 +509,10 @@ public class RPCoreSTSessionApiBuilder
 	private List<RPIndexVar> getParameters(RPRoleVariant variant)
 	{
 		List<RPIndexVar> ivars = this.apigen.projections.get(variant.getName()).get(variant)
-				.getIndexVars().stream().sorted(IVAR_COMP).collect(Collectors.toList());  // N.B., params only from action subjects (not self)
+				.getIndexVars().stream().collect(Collectors.toList());  // N.B., params only from action subjects (not self)
 		ivars.addAll(variant.getIndexVars().stream().filter(x -> !ivars.contains(x))
-				.sorted(IVAR_COMP).collect(Collectors.toList()));  // Do variant params subsume projection params? -- nope: often projections [self] and variant [K]
-		return ivars;
+				.collect(Collectors.toList()));  // Do variant params subsume projection params? -- nope: often projections [self] and variant [K]
+		return ivars.stream().sorted(IVAR_COMP).collect(Collectors.toList());
 	}
 	
 	// Returns path to use as offset to -d
