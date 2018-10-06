@@ -36,6 +36,55 @@ public class RPBinIndexExpr extends RPIndexExpr
 		this.right = right;
 		this.op = op;
 	}
+
+	@Override
+	public RPIndexExpr minimise(int self)
+	{
+		// FIXME: consider associativity for "maximal" reduction (or normal forms)
+		RPIndexExpr left = this.left.minimise(self);
+		RPIndexExpr right = this.right.minimise(self);
+		if (right instanceof RPIndexInt)
+		{
+			int y = ((RPIndexInt) right).val;
+			if (left instanceof RPIndexInt)
+			{
+				int x = ((RPIndexInt) left).val;
+				switch (this.op) 
+				{
+					case Add:  return RPIndexFactory.ParamIntVal(x + y);
+					case Mult: return RPIndexFactory.ParamIntVal(x * y);
+					case Subt: return RPIndexFactory.ParamIntVal(x - y);
+					default: throw new RuntimeException("Shouldn't get in here: " + this);
+				}
+			}
+			else
+			{
+				if (y < 0)
+				{
+					if  (this.op == Op.Add)
+					{
+						return RPIndexFactory.ParamBinIndexExpr(Op.Subt, left, RPIndexFactory.ParamIntVal(-y));
+					}
+					else if  (this.op == Op.Subt)
+					{
+						return RPIndexFactory.ParamBinIndexExpr(Op.Add, left, RPIndexFactory.ParamIntVal(-y));
+					}
+				}
+			}
+		}
+		else
+		{
+			if (left instanceof RPIndexInt)
+			{
+				int x = ((RPIndexInt) left).val;
+				if (x < 0 && this.op == Op.Add)
+				{
+					return RPIndexFactory.ParamBinIndexExpr(Op.Subt, right, RPIndexFactory.ParamIntVal(-x));
+				}
+			}
+		}
+		return RPIndexFactory.ParamBinIndexExpr(this.op, left, right);
+	}
 	
 	@Override
 	public String toGoString()

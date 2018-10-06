@@ -6,6 +6,7 @@ import java.util.Set;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreEnd;
 import org.scribble.ext.go.core.ast.RPCoreType;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.kind.Local;
 
@@ -17,6 +18,12 @@ public class RPCoreLEnd extends RPCoreEnd<Local> implements RPCoreLType
 	private RPCoreLEnd()
 	{
 		
+	}
+
+	@Override
+	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant subj)
+	{
+		return this;
 	}
 	
 	@Override

@@ -7,10 +7,14 @@ import java.util.Set;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
 
+// FIXME: rename
 public class RPCoreLCrossChoice extends RPCoreLChoice
 {
 	//public RPCoreLCrossChoice(RPIndexedRole role, RPCoreLActionKind kind, LinkedHashMap<RPCoreMessage, RPCoreLType> cases)
@@ -21,6 +25,27 @@ public class RPCoreLCrossChoice extends RPCoreLChoice
 		{
 			throw new RuntimeException("[param-core] Shouldn't get in here: " + kind);
 		}
+	}
+
+	@Override
+	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant subj)
+	{
+		// FIXME: factor out with RPCoreLForeach
+		int self = -1000;
+		RPRoleVariant msubj = subj.minimise(self);
+		if (msubj.isSingleton())
+		{
+			RPInterval ival = msubj.intervals.iterator().next();
+			if (ival.start instanceof RPIndexInt)
+			{
+				self = ((RPIndexInt) ival.start).val;
+			}
+		}
+
+		RPIndexedRole mrole = this.role.minimise(self);
+		LinkedHashMap<Message, RPCoreLType> tmp = new LinkedHashMap<>();
+		this.cases.forEach((k, v) -> tmp.put(k, v.minimise(af, subj)));
+		return af.ParamCoreLCrossChoice(mrole, getKind(), tmp);
 	}
 	
 	@Override

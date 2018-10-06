@@ -22,6 +22,12 @@ public class RPInterval
 		this.end = end;
 	}
 	
+	// FIXME: rename
+	public RPInterval minimise(int self)
+	{
+		return new RPInterval(this.start.minimise(self), this.end.minimise(self));
+	}
+	
 	//public Set<ParamRoleParam> getActualParams()  // Hack
 	public Set<RPIndexVar> getIndexVars()
 	{

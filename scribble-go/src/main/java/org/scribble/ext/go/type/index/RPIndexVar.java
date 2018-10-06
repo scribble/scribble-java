@@ -12,6 +12,12 @@ public class RPIndexVar extends RPIndexExpr  // FIXME: extend AbstractName?  cf.
 	{
 		this.name = name; 
 	}
+
+	@Override
+	public RPIndexExpr minimise(int self)
+	{
+		return this;
+	}
 	
 	/*public RPRoleParam toRoleParam()
 	{

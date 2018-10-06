@@ -8,6 +8,9 @@ import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreForeach;
 import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.type.RPAnnotatedInterval;
+import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
@@ -21,6 +24,26 @@ public class RPCoreLForeach extends RPCoreForeach<RPCoreLType, Local> implements
 		super(//role, param, start, end, 
 				roles, ivals,
 				body, cont);
+	}
+
+	@Override
+	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant subj)
+	{
+		// FIXME: factor out with RPCoreLChoice
+		int self = -1000;
+		RPRoleVariant msubj = subj.minimise(self);
+		if (msubj.isSingleton())
+		{
+			RPInterval ival = msubj.intervals.iterator().next();
+			if (ival.start instanceof RPIndexInt)
+			{
+				self = ((RPIndexInt) ival.start).val;
+			}
+		}
+
+		int y = self;
+		Set<RPAnnotatedInterval> tmp = this.ivals.stream().map(x -> (RPAnnotatedInterval) x.minimise(y)).collect(Collectors.toSet());
+			return af.RPCoreLForeach(this.roles, tmp, this.body.minimise(af, subj), this.seq.minimise(af, subj));
 	}
 	
 	@Override

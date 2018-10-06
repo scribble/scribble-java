@@ -5,6 +5,7 @@ import java.util.Set;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreRec;
 import org.scribble.ext.go.core.ast.RPCoreType;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
@@ -15,6 +16,12 @@ public class RPCoreLRec extends RPCoreRec<RPCoreLType, Local> implements RPCoreL
 	{
 		//super(recvar, annot, init, body);
 		super(recvar, body);
+	}
+
+	@Override
+	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant subj)
+	{
+		return af.ParamCoreLRec(this.recvar, this.body.minimise(af, subj));
 	}
 	
 	@Override

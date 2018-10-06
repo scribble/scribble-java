@@ -1,6 +1,7 @@
 package org.scribble.ext.go.core.type;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,6 +22,27 @@ public class RPRoleVariant extends RPIndexedRole
 		super(name, ranges);
 		this.cointervals = Collections.unmodifiableSet(coranges);
 	}
+
+	// self is irrelevant -- variants don't contain self
+	@Override
+	public RPRoleVariant minimise(int self)
+	{
+		Set<RPInterval> ivals = this.intervals.stream().map(x -> x.minimise(self)).collect(Collectors.toSet());
+		Optional<RPInterval> o = ivals.stream().filter(x -> x.isSingleton()).findFirst();
+		if (o.isPresent())  // FIXME: more general interval "merge"?
+		{
+			ivals = Stream.of(o.get()).collect(Collectors.toSet());
+			return new RPRoleVariant(this.getLastElement(), ivals, Collections.emptySet());
+		}
+		Set<RPInterval> coivals = this.cointervals.stream().map(x -> x.minimise(self)).collect(Collectors.toSet());
+		return new RPRoleVariant(this.getLastElement(), ivals, coivals);
+	}
+	
+	/*@Override
+	public boolean isSingleton()
+	{
+		return super.isSingleton();
+	}*/
 
 	@Override
 	public Set<RPIndexVar> getIndexVars()

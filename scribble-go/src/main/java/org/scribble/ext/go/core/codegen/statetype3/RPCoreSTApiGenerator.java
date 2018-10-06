@@ -43,6 +43,8 @@ public class RPCoreSTApiGenerator
 	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> families;  // int is arbitrary familiy id
 	public final Map<RPRoleVariant, Set<RPRoleVariant>> peers;  // For "common" endpoint kind factoring
 	
+	public final Map<RPRoleVariant, String> aliases;
+	
 	public final String packpath;  
 			// Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
 	//public final Role self;  
@@ -53,6 +55,7 @@ public class RPCoreSTApiGenerator
 	public RPCoreSTApiGenerator(GoJob job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, RPCoreLType>> projections, 
 			Map<Role, Map<RPRoleVariant, EGraph>> variants, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families,
 			Map<RPRoleVariant, Set<RPRoleVariant>> peers,
+			Map<RPRoleVariant, String> aliases,
 			String packpath, //Role self)
 			List<Role> selfs)
 	{
@@ -119,6 +122,8 @@ public class RPCoreSTApiGenerator
 							e -> e.getKey(),
 							e -> Collections.unmodifiableSet(e.getValue())
 					)));
+		
+		this.aliases = Collections.unmodifiableMap(aliases);
 	}
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
@@ -290,11 +295,12 @@ public class RPCoreSTApiGenerator
 		//boolean isCommonEndpointKind = this.apigen.peers.get(variant).size() == 1;
 				// CHECKME: why 1, should it be generalised?
 				// CHECKME: peers doesn't consider families -- should isCommonEndpointKind be determined from families?
-		boolean isCommonEndpointKind = this.families.keySet().stream().filter(p -> p.left.contains(variant))
+		/*boolean isCommonEndpointKind = this.families.keySet().stream().filter(p -> p.left.contains(variant))
 						// Would also be reasonable to require variant to be in every family -- but not necessary since a distributed projection is only for the families that the variant is involved in
 				.allMatch(p -> p.left.containsAll(this.peers.get(variant)));
-		return isCommonEndpointKind;
-				
+		return isCommonEndpointKind;*/
+		return this.families.size() == 1;  // Now essentially disabled, to make "variant equivalence" easier
+		
 		/*// "Syntactically" determining common endpoint kinds difficult because concrete peers depends on param (and foreachvar) values, e.g., M in PGet w.r.t. #F
 		// Also, family factoring is more about dial/accept
 		isCommonEndpointKind = true;

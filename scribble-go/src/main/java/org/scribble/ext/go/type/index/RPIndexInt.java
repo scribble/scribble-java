@@ -14,6 +14,12 @@ public class RPIndexInt extends RPIndexExpr
 	}
 
 	@Override
+	public RPIndexExpr minimise(int self)
+	{
+		return this;
+	}
+
+	@Override
 	public boolean isConstant()
 	{
 		return true;

@@ -25,7 +25,7 @@ public interface RPCoreGType extends RPCoreType<Global>
 	// context records nested foreach vars -- only accesses to top-level vars are valid
 	boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd);
 
-	// FIXME: clarify, Role subj is used as "role name"
+	// TODO: clarify, Role subj is used as "role name"
 	//ParamCoreLType project(ParamCoreAstFactory af, Role subj, Set<ParamRange> ranges) throws ParamCoreSyntaxException;
 	RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException;  // G proj r \vec{D}
 	RPCoreLType project3(RPCoreAstFactory af, Set<Role> roles, Set<RPAnnotatedInterval> ivals, RPIndexedRole subj) throws RPCoreSyntaxException;  // G proj R \vec{C} r[z]

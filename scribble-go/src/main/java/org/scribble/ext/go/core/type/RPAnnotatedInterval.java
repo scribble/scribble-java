@@ -14,6 +14,12 @@ public class RPAnnotatedInterval extends RPInterval
 	}
 
 	@Override
+	public RPInterval minimise(int self)
+	{
+		return new RPAnnotatedInterval(var, this.start.minimise(self), this.end.minimise(self));
+	}
+
+	@Override
 	public String toString()
 	{
 		return "[" + this.var + ":" + this.start + ((this.start == this.end) ? "" : "," + this.end) + "]";

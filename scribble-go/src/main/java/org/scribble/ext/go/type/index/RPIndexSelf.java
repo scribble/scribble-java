@@ -1,5 +1,6 @@
 package org.scribble.ext.go.type.index;
 
+// Does not occur in RPRoleVariant, only RPIndexedRole
 public class RPIndexSelf extends RPIndexVar
 {
 	public static final RPIndexSelf SELF = new RPIndexSelf();
@@ -7,6 +8,13 @@ public class RPIndexSelf extends RPIndexVar
 	private RPIndexSelf()
 	{
 		super("self");
+	}
+
+	@Override
+	public RPIndexExpr minimise(int self)
+	{
+		// FIXME: factor out constant
+		return (self < 1) ? this : RPIndexFactory.ParamIntVal(self);
 	}
 	
 	@Override

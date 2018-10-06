@@ -7,6 +7,7 @@ import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.Message;
@@ -26,6 +27,12 @@ public class RPCoreLDotChoice extends RPCoreLChoice
 			throw new RuntimeException("[param-core] Shouldn't get in here: " + kind);
 		}
 		this.offset = offset;
+	}
+
+	@Override
+	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant subj)
+	{
+		throw new RuntimeException("[rp-core] Shouldn't get in here: " + this);
 	}
 
 	@Override

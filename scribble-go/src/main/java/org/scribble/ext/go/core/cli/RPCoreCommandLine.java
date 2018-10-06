@@ -70,6 +70,8 @@ public class RPCoreCommandLine extends CommandLine
 	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;
 	private Map<RPRoleVariant, Set<RPRoleVariant>> peers;
 	
+	private Map<RPRoleVariant, String> aliases;
+	
 	public RPCoreCommandLine(String... args) throws CommandLineException
 	{
 		this(new RPCoreCLArgParser(args));
@@ -173,8 +175,10 @@ public class RPCoreCommandLine extends CommandLine
 				outputClasses(goClasses);*/
 			}
 
+			this.aliases = Collections.emptyMap();  // FIXME:
+			
 			Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, 
-					this.L0, this.E0, this.families, this.peers, impath, roles).build();
+					this.L0, this.E0, this.families, this.peers, this.aliases, impath, roles).build();
 			outputClasses(goClasses);
 		}
 		else
@@ -266,6 +270,10 @@ public class RPCoreCommandLine extends CommandLine
 			{
 				//ParamCoreLType lt = gt.project(af, r, ranges);
 				RPCoreLType lt = gt.project(af, variant);
+				
+				System.out.println("AAA: " + variant + " ,, " + lt + "\n" + lt.minimise(af, variant) + "\n");
+				lt = lt.minimise(af, variant);
+				
 				//Map<Set<ParamRange>, ParamCoreLType> tmp = P0.get(r);
 				Map<RPRoleVariant, RPCoreLType> tmp = L0.get(r);
 				if (tmp == null)
