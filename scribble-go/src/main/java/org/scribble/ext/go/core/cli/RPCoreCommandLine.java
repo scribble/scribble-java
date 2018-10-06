@@ -468,6 +468,7 @@ public class RPCoreCommandLine extends CommandLine
 			{
 				smt2 += "(exists (" + vars.stream().map(x -> "(" + x + " Int)").collect(Collectors.joining(" ")) + ")\n";  // FIXME: factor up -- and factor out with getVariants
 				smt2 += "(and\n";
+				smt2 += vars.stream().map(x -> "(>= " + x + " 1)").collect(Collectors.joining(" ")) + "\n";  // FIXME: generalise, parameter domain annotations
 			}
 			smt2 += "(and " + cand.stream()
 					.map(v -> makePhiSmt2(v.intervals, v.cointervals)).collect(Collectors.joining(" ")) + ")\n";

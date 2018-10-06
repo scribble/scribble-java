@@ -138,7 +138,7 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		else 
 		{
 			RPCoreLType body = this.body.project(af, subj);
-			if (body instanceof RPCoreLEnd)
+			if (body instanceof RPCoreLCont)  // Cf. project2, ivals.isEmpty case
 			{
 				return seq;
 			}
