@@ -8,8 +8,13 @@
 module param.tmp.ParamTest;
 
 
+global protocol Proto1(role A, role B)
+{
+	Foo() from A[1] to B[1,K];
+}
 
-//*
+
+/*
 global protocol Proto1(role F, role S, role M)
 {
   Head() from F[1] to S[1];

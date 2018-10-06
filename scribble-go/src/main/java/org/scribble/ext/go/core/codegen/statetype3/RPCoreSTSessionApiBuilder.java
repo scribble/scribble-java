@@ -404,9 +404,11 @@ public class RPCoreSTSessionApiBuilder
 					/*for (RPRoleVariant v : (Iterable<RPRoleVariant>)
 							this.apigen.variants.values().stream()
 									.flatMap(m -> m.keySet().stream())::iterator)*/
+							
 					for (RPRoleVariant v : this.apigen.peers.get(variant))
 					{
-						if (!v.equals(variant) && family.left.contains(v))  // FIXME: endpoint families -- and id value checks
+						if (//!v.equals(variant) &&  // No: e.g., pipe/ring middlemen
+								family.left.contains(v))  // FIXME: endpoint families -- and id value checks
 						{
 							// Accept/Dial methods
 							String r = v.getLastElement();

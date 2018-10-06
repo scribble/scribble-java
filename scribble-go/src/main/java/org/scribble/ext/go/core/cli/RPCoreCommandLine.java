@@ -39,6 +39,7 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.RecursiveFunctionalInterface;
 import org.scribble.ext.go.util.Z3Wrapper;
@@ -286,7 +287,7 @@ public class RPCoreCommandLine extends CommandLine
 			for (RPRoleVariant variant : this.L0.get(r).keySet())
 			{
 				
-				System.out.println("\nProjection onto " + variant + ": " + this.L0.get(r).get(variant));
+				//System.out.println("\nProjection onto " + variant + ": " + this.L0.get(r).get(variant));
 				
 				EGraph g = builder.build(this.L0.get(r).get(variant));
 				//Map<Set<ParamRange>, EGraph> tmp = this.E0.get(r);
@@ -357,7 +358,8 @@ public class RPCoreCommandLine extends CommandLine
 	//..HERE FIXME ActualParam -- ParamRange is now already a Set
 	
 	
-	// Compute variant peers of each variant -- for "common" endpoint kind factoring (w.r.t. dial/accept -- i.e., looking for variants whose set of dial/accept methods is the same for all families it is involved in)
+	// Compute variant peers of each variant -- which peer variants (possibly self variant) can match the indexed-role peers of self's I/O actions
+	// for "common" endpoint kind factoring (w.r.t. dial/accept, i.e., to look for variants whose set of dial/accept methods is the same for all families it is involved in)
 	private Map<RPRoleVariant, Set<RPRoleVariant>> getPeers(GoJob job)
 	{
 		job.debugPrintln("\n[rp-core] Computing peers:");
@@ -375,24 +377,25 @@ public class RPCoreCommandLine extends CommandLine
 								this.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)  // FIXME: use family to make accept/dial
 				{*/
 					// CHECKME: use local types instead of FSMs?  (RPCoreGForeach#getIndexedRoles)
-					Set<RPIndexedRole> irs = //MState.getReachableActions
+					Set<RPIndexedRole> actionIRs = //MState.getReachableActions
 							RPCoreEState.getReachableActions((RPCoreEModelFactory) job.ef,
 									(RPCoreEState) this.E0.get(rname).get(self).init).stream()  // FIXME: static "overloading" (cf. MState) error prone
 							.map(a -> ((RPCoreEAction) a).getPeer()).collect(Collectors.toSet());
 									// CHECKME: in presence of foreach, actions will include unqualified foreachvars -- is that what the following Z3 assertion is/should be doing?
 
 					Set<RPRoleVariant> peers = new HashSet<>();
-					next: for (RPRoleVariant peer : (Iterable<RPRoleVariant>)  // Candidate
+					next: for (RPRoleVariant peerVariant : (Iterable<RPRoleVariant>)  // Candidate
 							this.E0.values().stream()
 									.flatMap(m -> m.keySet().stream())::iterator)
 					{
-						if (!peer.equals(self) && !peers.contains(peer))
+						if (//!peerVariant.equals(self) &&   // No: e.g., pipe/ring middlemen
+								!peers.contains(peerVariant))
 						{
-							job.debugPrintln("\n[rp-core] For " + self + ", checking potential peer: " + peer);
+							job.debugPrintln("\n[rp-core] For " + self + ", checking potential peer: " + peerVariant);
 									// "checking potential peer" means checking if any of our action-peer indexed roles fits the candidate variant-peer (so we would need a dial/accept for them)
-							for (RPIndexedRole ir : irs)
+							for (RPIndexedRole ir : actionIRs)
 							{
-								if (ir.getName().equals(peer.getName()))
+								if (ir.getName().equals(peerVariant.getName()))
 								{
 									if (ir.intervals.size() > 1)
 									{
@@ -400,7 +403,7 @@ public class RPCoreCommandLine extends CommandLine
 									}
 									RPInterval d = ir.intervals.stream().findAny().get();
 									
-									Set<RPIndexVar> vars = Stream.concat(peer.intervals.stream().flatMap(x -> x.getIndexVars().stream()), peer.cointervals.stream().flatMap(x -> x.getIndexVars().stream()))
+									Set<RPIndexVar> vars = Stream.concat(peerVariant.intervals.stream().flatMap(x -> x.getIndexVars().stream()), peerVariant.cointervals.stream().flatMap(x -> x.getIndexVars().stream()))
 											.collect(Collectors.toSet());
 									vars.addAll(ir.getIndexVars());
 
@@ -409,26 +412,47 @@ public class RPCoreCommandLine extends CommandLine
 											+  (vars.isEmpty() ? "" : vars.stream()
 													.map(x -> "(" + x + " Int)").collect(Collectors.joining(" "))) + ")\n";
 									smt2 += "(and \n";
-									smt2 += peer.intervals.stream()
+									smt2 += vars.stream().map(x -> "(>= " + x + " 1)").collect(Collectors.joining(" ")) + "\n";  // FIXME: generalise, parameter domain annotations
+
+									smt2 += peerVariant.intervals.stream()
 											.map(x -> "(>= peer " + x.start.toSmt2Formula() + ") (<= peer " + x.end.toSmt2Formula() + ")")
+													// Is there a peer index inside all the peer-variant intervals
 											.collect(Collectors.joining(" ")) + "\n";
-									smt2 += peer.cointervals.isEmpty() 
+									smt2 += peerVariant.cointervals.isEmpty() 
 											? ""
-											: "(or " + peer.cointervals.stream()
+											: "(or " + peerVariant.cointervals.stream()
 											    .map(x -> "(< peer " + x.start.toSmt2Formula() + ") (> peer " + x.end.toSmt2Formula() + ")")
 											    .collect(Collectors.joining(" ")) + ")\n";
+													// ...and the peer index is outside one of the peer-variant cointervals
 									smt2 += "(>= peer " + d.start.toSmt2Formula() + ") (<= peer " + d.end.toSmt2Formula() + ")\n";
+													// ...and the peer index is inside our I/O action interval -- then this is peer-variant is a peer
+									
+									if (vars.contains(RPIndexSelf.SELF))
+									{
+										// FIXME: factor variant/covariant inclusion/exclusion
+										smt2 += self.intervals.stream()
+												.map(x -> "(>= self " + x.start.toSmt2Formula() + ") (<= self " + x.end.toSmt2Formula() + ")")
+														// Is there a self index inside all the self-variant intervals
+												.collect(Collectors.joining(" ")) + "\n";
+										smt2 += self.cointervals.isEmpty() 
+												? ""
+												: "(or " + self.cointervals.stream()
+														.map(x -> "(< self " + x.start.toSmt2Formula() + ") (> self " + x.end.toSmt2Formula() + ")")
+														.collect(Collectors.joining(" ")) + ")\n";
+														// ...and the peer index is outside one of the peer-variant cointervals
+									}
+									
 									smt2 += ")";
 									smt2 += ")";
 									smt2 += ")";
 									
-									job.debugPrintln("[rp-core] Running Z3 on:\n" + smt2);
+									job.debugPrintln("[rp-core] Running Z3 on " + d + " :\n" + smt2);
 									
 									boolean isSat = Z3Wrapper.checkSat(job, this.gpd, smt2);
 									job.debugPrintln("[rp-core] Checked sat: " + isSat);
 									if (isSat)
 									{
-										peers.add(peer);
+										peers.add(peerVariant);
 										continue next;
 									}
 								}
