@@ -9,6 +9,45 @@ module param.tmp.ParamTest;
 
 
 
+//*
+global protocol Proto1(role F, role S, role M)
+{
+  Head() from F[1] to S[1];
+  Res()  from S[1] to F[1];
+  Meta() from F[1] to M[1];
+
+  Job() from M[1] to F[1,K];
+  // Send jobs.
+  foreach F[I:1,K]
+  {
+    Get() from F[I] to S[1];
+    Res() from S[1] to F[I];
+  }
+  Data() from F[1,K] to M[1];
+ }
+//*/
+
+/*Projection onto S{[1]}: mu param_tmp_ParamTest_Proto1___F__S__M_.F[1]?Head().F[1]!Res().foreach {F}{I:1..K} do F[I]?Get().F[I]!Res().cont ; end
+
+[rp-core] Built endpoint graph for S{[1]}:
+digraph G {
+compound = true;
+"14" [ label="14: " ];
+"14" -> "16" [ label="F[1]?Head()" ];
+"16" [ label="16: " ];
+"16" -> "17" [ label="F[1]!Res()" ];
+"17" [ label="17: I:[1,K]; 10" ];
+}
+
+digraph G {
+compound = true;
+"10" [ label="10: " ];
+"10" -> "12" [ label="F[I]?Get()" ];
+"12" [ label="12: " ];
+"12" -> "13" [ label="F[I]!Res()" ];
+"13" [ label="13: " ];
+}*/
+
 
 
 /*
@@ -27,7 +66,7 @@ global protocol Proto1(role A, role B)
 
 
 
-//*
+/*
 sig <go> "http.HeadReq" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Head;
 sig <go> "http.GetReq" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Get;
 sig <go> "http.Response" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Res;
