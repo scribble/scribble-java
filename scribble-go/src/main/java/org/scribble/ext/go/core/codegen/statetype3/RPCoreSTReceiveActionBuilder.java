@@ -95,25 +95,25 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 			if (a.mid.isOp())
 			{
+				//if (!a.mid.toString().equals("")) // HACK FIXME?  // Now redundant, -param-api checks mid starts uppercase
+				{ 
+					res += "var lab string\n"
+							+ "if " + errorField + " = " + sEpRecv /*+ "[i]"
+									+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(" + "&lab" + ")"
+											+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_STRING + "()"*/
+									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &lab)" 
+									+ "; " + errorField + " != nil {\n"
+							//+ "log.Fatal(err)\n"
+							//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
+							+ rpapi.makeReturnSuccStateChan(succ) + "\n"
+							+ "}\n";
+				}
+
 				if (!a.payload.elems.isEmpty())
 				{
 					if (a.payload.elems.size() > 1)
 					{
 						throw new RuntimeException("[rp-core] [-param-api] TODO: " + a);
-					}
-
-					//if (!a.mid.toString().equals("")) // HACK FIXME?  // Now redundant, -param-api checks mid starts uppercase
-					{ 
-						res += "var lab string\n"
-								+ "if " + errorField + " = " + sEpRecv /*+ "[i]"
-										+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(" + "&lab" + ")"
-												+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_STRING + "()"*/
-										+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &lab)" 
-										+ "; " + errorField + " != nil {\n"
-								//+ "log.Fatal(err)\n"
-								//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
-								+ rpapi.makeReturnSuccStateChan(succ) + "\n"
-								+ "}\n";
 					}
 
 					Function<String, String> makeReceivePayType = pt -> 

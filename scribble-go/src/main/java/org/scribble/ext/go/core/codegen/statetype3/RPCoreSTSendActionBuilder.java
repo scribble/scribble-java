@@ -108,30 +108,47 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		}
 		else*/
 		{
-			if (a.mid.isOp() && a.payload.elems.size() < 1)
+			/*if (a.mid.isOp() && a.payload.elems.size() < 1)
 			{
 				throw new RuntimeException("[rp-core] [param-api] TODO: " + a);
-			}
-			if (a.payload.elems.size() > 1)
+			}*/
+			if (a.mid.isOp())
 			{
-				throw new RuntimeException("[rp-core] [param-api] TODO: " + a);
+				/*res += "if err := " + sEpWrite /*+ "[i]"
+								+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
+								+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_INT
+								+ "(" + "arg0[j])"  // FIXME: hardcoded arg0* /
+								+ "." 
+								+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
+								+ "(\"" + r.getName() + "\", i, &arg0[j])"
+								+ "; err != nil {\n"
+						+ "log.Fatal(err)\n"
+						+ "}\n";*/
+				if (!a.payload.elems.isEmpty())
+				{
+					if (a.payload.elems.size() > 1)
+					{
+						throw new RuntimeException("[rp-core] [param-api] TODO: " + a);
+					}
+				
+					res += errorField + " = "
+							+ sEpWrite
+												+ "."
+												+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
+												+ "(\"" + r.getName() + "\", i" 
+												+ IntStream.range(0, a.payload.elems.size()).mapToObj(i -> ", &arg" + i + "[j]").collect(Collectors.joining(""))
+												+ ")\n";
+				}
 			}
-			
-			/*res += "if err := " + sEpWrite /*+ "[i]"
-							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
-							+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_INT
-							+ "(" + "arg0[j])"  // FIXME: hardcoded arg0* /
-							+ "." 
-							+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
-							+ "(\"" + r.getName() + "\", i, &arg0[j])"
-							+ "; err != nil {\n"
-					+ "log.Fatal(err)\n"
-					+ "}\n";*/
-			res += errorField + " = "
-					+ sEpWrite
-                    + "."
-                    + (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
-                    + "(\"" + r.getName() + "\", i, &arg0[j])\n";
+			else //(a.mid.isMessageSigName)
+			{
+				// FIXME: factor out with above
+				res += errorField + " = "
+						+ sEpWrite
+											+ "."
+											+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
+											+ "(\"" + r.getName() + "\", i, &arg0[0])\n";
+			}
 		}
 
 		res += "}\n";

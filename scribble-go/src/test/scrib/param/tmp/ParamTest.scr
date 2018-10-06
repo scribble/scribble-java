@@ -11,6 +11,7 @@ module param.tmp.ParamTest;
 
 
 
+/*
 global protocol Proto1(role A, role B)
 {
 	foreach A[I:1,KA]
@@ -21,11 +22,12 @@ global protocol Proto1(role A, role B)
 		}
 	}
 }
+//*/
 
 
 
 
-/*
+//*
 sig <go> "http.HeadReq" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Head;
 sig <go> "http.GetReq" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Get;
 sig <go> "http.Response" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Res;
