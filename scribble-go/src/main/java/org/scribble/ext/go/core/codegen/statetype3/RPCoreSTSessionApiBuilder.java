@@ -262,7 +262,7 @@ public class RPCoreSTSessionApiBuilder
 			{
 				for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
 						(Iterable<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>) 
-								this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)  // FIXME: use family to make accept/dial
+								this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)  
 				{	
 					/*RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
 					try
@@ -279,7 +279,10 @@ public class RPCoreSTSessionApiBuilder
 
 					String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 					
-					String epkindFile = epkindImports + "\n"
+					String epkindFile = "//" + family.left.toString() + "\n\n";
+
+					epkindFile +=
+							epkindImports + "\n"
 							
 							// Endpoint Kind type
 							+ "type " + epkindTypeName + " struct {\n"
@@ -405,11 +408,15 @@ public class RPCoreSTSessionApiBuilder
 							this.apigen.variants.values().stream()
 									.flatMap(m -> m.keySet().stream())::iterator)*/
 							
-					for (RPRoleVariant v : this.apigen.peers.get(variant))
+					/*for (RPRoleVariant v : this.apigen.peers.get(variant))
 					{
 						if (//!v.equals(variant) &&  // No: e.g., pipe/ring middlemen
 								family.left.contains(v))  // FIXME: endpoint families -- and id value checks
-						{
+										// FIXME: should record peers according to families and lookup directly -- wouldn't need to re-check family inclusion here
+						{*/
+					Set<RPRoleVariant> peers = this.apigen.peers.get(variant).get(family);
+					for (RPRoleVariant v : peers)
+					{
 							// Accept/Dial methods
 							String r = v.getLastElement();
 							String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(v);
@@ -454,7 +461,7 @@ public class RPCoreSTSessionApiBuilder
 											+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
 									+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
 									+ "}\n";
-						}
+						//}
 					}
 							
 					// Top-level Run method  // FIXME: add session completion check

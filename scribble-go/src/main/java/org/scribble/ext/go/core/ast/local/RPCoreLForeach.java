@@ -27,11 +27,11 @@ public class RPCoreLForeach extends RPCoreForeach<RPCoreLType, Local> implements
 	}
 
 	@Override
-	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant subj)
+	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant vself)
 	{
 		// FIXME: factor out with RPCoreLChoice
 		int self = -1000;
-		RPRoleVariant msubj = subj.minimise(self);
+		RPRoleVariant msubj = vself.minimise(self);
 		if (msubj.isSingleton())
 		{
 			RPInterval ival = msubj.intervals.iterator().next();
@@ -43,7 +43,7 @@ public class RPCoreLForeach extends RPCoreForeach<RPCoreLType, Local> implements
 
 		int y = self;
 		Set<RPAnnotatedInterval> tmp = this.ivals.stream().map(x -> (RPAnnotatedInterval) x.minimise(y)).collect(Collectors.toSet());
-			return af.RPCoreLForeach(this.roles, tmp, this.body.minimise(af, subj), this.seq.minimise(af, subj));
+			return af.RPCoreLForeach(this.roles, tmp, this.body.minimise(af, vself), this.seq.minimise(af, vself));
 	}
 	
 	@Override

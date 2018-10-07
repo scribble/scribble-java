@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.cli;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -67,8 +68,8 @@ public class RPCoreCommandLine extends CommandLine
 	private Map<Role, Map<RPRoleVariant, RPCoreLType>> L0;
 	private Map<Role, Map<RPRoleVariant, EGraph>> E0;
 	//protected ParamCoreSModel model;
-	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;
-	private Map<RPRoleVariant, Set<RPRoleVariant>> peers;
+	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;  // Factor out Family (cf. RPRoleVariant)
+	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers;
 	
 	private Map<RPRoleVariant, String> aliases;
 	
@@ -271,7 +272,7 @@ public class RPCoreCommandLine extends CommandLine
 				//ParamCoreLType lt = gt.project(af, r, ranges);
 				RPCoreLType lt = gt.project(af, variant);
 				
-				System.out.println("AAA: " + variant + " ,, " + lt + "\n" + lt.minimise(af, variant) + "\n");
+				//System.out.println("AAA: " + variant + " ,, " + lt + "\n" + lt.minimise(af, variant) + "\n");
 				lt = lt.minimise(af, variant);
 				
 				//Map<Set<ParamRange>, ParamCoreLType> tmp = P0.get(r);
@@ -357,8 +358,74 @@ public class RPCoreCommandLine extends CommandLine
 		
 		this.families = new HashSet<>();
 		this.families.addAll(getFamilies(job));
+
+		minimise();
+
 		this.peers = new HashMap<>();
 		this.peers.putAll(getPeers(job));
+		
+	}
+	
+	private void minimise()
+	{
+	  //Map<Role, Map<RPRoleVariant, RPCoreLType>> L0 = 
+		//Map<Role, Map<RPRoleVariant, EGraph>> E0;
+		/*Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families
+		= this.families.stream().map(
+				p -> new Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>(new HashSet<>(p.left), new HashSet<>(p.right))
+				).collect(Collectors.toSet());*/
+		
+		/*Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers
+		= 
+					this.peers.entrySet().stream().collect(Collectors.toMap(
+							e -> e.getKey(),
+							e -> e.getValue().entrySet().stream().collect(Collectors.toMap(
+									ee -> ee.getKey(), 
+									ee -> new HashSet<>(ee.getValue())
+								))
+					));*/
+		RPCoreAstFactory af = new RPCoreAstFactory();
+
+		Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families = new HashSet<>();
+		//Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers = new HashMap<>();
+		for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.families)
+		{
+			Set<RPRoleVariant> tmp = new HashSet<>();
+			Set<RPRoleVariant> vs = fam.left;
+			Next: for (RPRoleVariant v : vs)
+			{
+				if (!v.isSingleton())
+				{
+					tmp.add(v);
+				}
+				else
+				{
+					for (RPRoleVariant u : vs)
+					{
+						if (!u.equals(v))
+						{
+							RPCoreLType vL = this.L0.get(v.getName()).get(v);
+							RPCoreLType uL = this.L0.get(u.getName()).get(u);
+
+							//System.out.println("4444: " + v + " \n " + vL + " ,, " + vL.minimise(af, v) + " \n " + u + " ,, " + uL + " ,, " + uL.minimise(af, v) + "\n");
+							if (vL.minimise(af, v).equals(uL.minimise(af, v)))
+							{
+								//System.out.println("5555: " + v + "  subsumed by  " + u);
+								continue Next;
+							}
+						}
+					}
+					tmp.add(v);
+				}
+			}
+			
+			families.add(new Pair<>(tmp, fam.right));  // Subsumed variants are neither in left nor right
+
+			System.out.println("\n8888:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n")) + "\n\n"
+			+ tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));
+		}
+		
+		//this.families = families;
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
@@ -368,11 +435,12 @@ public class RPCoreCommandLine extends CommandLine
 	
 	// Compute variant peers of each variant -- which peer variants (possibly self variant) can match the indexed-role peers of self's I/O actions
 	// for "common" endpoint kind factoring (w.r.t. dial/accept, i.e., to look for variants whose set of dial/accept methods is the same for all families it is involved in)
-	private Map<RPRoleVariant, Set<RPRoleVariant>> getPeers(GoJob job)
+	// FIXME: optimise, peers are symmetric
+	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> getPeers(GoJob job)
 	{
 		job.debugPrintln("\n[rp-core] Computing peers:");
 
-		Map<RPRoleVariant, Set<RPRoleVariant>> map = new HashMap<>();
+		Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> res = new HashMap<>();
 
 		/*String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_API_GEN);
 		for (Role rname : (Iterable<Role>) Arrays.asList(args).stream().map(r -> new Role(r))::iterator)*/
@@ -437,7 +505,7 @@ public class RPCoreCommandLine extends CommandLine
 									
 									if (vars.contains(RPIndexSelf.SELF))
 									{
-										// FIXME: factor variant/covariant inclusion/exclusion
+										// FIXME: factor out variant/covariant inclusion/exclusion with above
 										smt2 += self.intervals.stream()
 												.map(x -> "(>= self " + x.start.toSmt2Formula() + ") (<= self " + x.end.toSmt2Formula() + ")")
 														// Is there a self index inside all the self-variant intervals
@@ -467,11 +535,24 @@ public class RPCoreCommandLine extends CommandLine
 							}
 						}
 					}
-					map.put(self, peers);
+
+					Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>> tmp = new HashMap<>();
+					res.put(self, tmp);
+					for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.families)
+					{
+						if (fam.left.contains(self))
+						{
+							Set<RPRoleVariant> tmp2 = new HashSet<>(peers);
+							tmp2.retainAll(fam.left);
+							tmp.put(fam, tmp2);
+						}
+					}
 				//}
+					
 			}
 		}
-		return map;
+
+		return res;
 	}	
 	
 	

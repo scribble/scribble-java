@@ -14,7 +14,6 @@ import org.scribble.ext.go.core.ast.RPCoreForeach;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.RPCoreType;
 import org.scribble.ext.go.core.ast.local.RPCoreLCont;
-import org.scribble.ext.go.core.ast.local.RPCoreLEnd;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.type.RPAnnotatedInterval;
 import org.scribble.ext.go.core.type.RPIndexedRole;

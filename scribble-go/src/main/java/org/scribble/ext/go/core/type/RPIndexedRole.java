@@ -49,12 +49,13 @@ public class RPIndexedRole extends Role
 	// FIXME: currently just a syntactic singleton check on a single interval -- false negatives possible in general case (multiple intervals)
 	public boolean isSingleton()
 	{
-		if (this.intervals.size() != 1)
+		/*if (this.intervals.size() != 1)
 		{
 			return false;
 		}
 		RPInterval ival = this.intervals.stream().findFirst().get();
-		return ival.isSingleton();
+		return ival.isSingleton();*/
+		return this.intervals.stream().anyMatch(x -> x.isSingleton());
 	}
 
 	public Set<RPIndexVar> getIndexVars()

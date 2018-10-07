@@ -41,7 +41,8 @@ public class RPCoreSTApiGenerator
 	public final Map<Role, Map<RPRoleVariant, EGraph>> variants;
 	//public final Map<RPRoleVariant, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>> families;
 	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> families;  // int is arbitrary familiy id
-	public final Map<RPRoleVariant, Set<RPRoleVariant>> peers;  // For "common" endpoint kind factoring
+	public final Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers;  
+			// For "common" endpoint kind factoring (dial/accept methods)
 	
 	public final Map<RPRoleVariant, String> aliases;
 	
@@ -54,7 +55,7 @@ public class RPCoreSTApiGenerator
 	
 	public RPCoreSTApiGenerator(GoJob job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, RPCoreLType>> projections, 
 			Map<Role, Map<RPRoleVariant, EGraph>> variants, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families,
-			Map<RPRoleVariant, Set<RPRoleVariant>> peers,
+			Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers,
 			Map<RPRoleVariant, String> aliases,
 			String packpath, //Role self)
 			List<Role> selfs)
@@ -120,7 +121,7 @@ public class RPCoreSTApiGenerator
 		this.peers = Collections.unmodifiableMap(
 					peers.entrySet().stream().collect(Collectors.toMap(
 							e -> e.getKey(),
-							e -> Collections.unmodifiableSet(e.getValue())
+							e -> Collections.unmodifiableMap(e.getValue())
 					)));
 		
 		this.aliases = Collections.unmodifiableMap(aliases);
