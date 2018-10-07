@@ -414,55 +414,136 @@ public class RPCoreSTSessionApiBuilder
 								family.left.contains(v))  // FIXME: endpoint families -- and id value checks
 										// FIXME: should record peers according to families and lookup directly -- wouldn't need to re-check family inclusion here
 						{*/
-					Set<RPRoleVariant> peers = this.apigen.peers.get(variant).get(family);
+					
+					Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> orig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
+					Set<RPRoleVariant> peers = this.apigen.peers.get(variant).get(orig);
+					
+					RPRoleVariant subbdbyus = null;
+					for (RPRoleVariant subbd : this.apigen.aliases.keySet())
+					{
+						Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
+						if (ais.containsKey(orig) && ais.get(orig).equals(variant))
+						{
+							subbdbyus = subbd;
+							break;
+						}
+					}
+					
+					//System.out.println("ffff: " + family + "\n" + variant + " ,, " + peers);
+					
 					for (RPRoleVariant v : peers)
 					{
-							// Accept/Dial methods
-							String r = v.getLastElement();
-							String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(v);
-							epkindFile += "\n"
-									+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id int"
-											+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
-											+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
-									+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-											+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
-									+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-											+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
-									+ "c, err := ss.Accept()\n"
-									+ "if err != nil {\n"
-									+ "return err\n"
-									+ "}\n"
-									+ "\n"
-									+ "sfmt.Wrap(c)\n"
-									+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-											+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
-									+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-											+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"
-									+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
-									+ "}\n"
-									+ "\n"
-									+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id int"
-											+ ", host string, port int"
-											+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
-											+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
-									+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-											+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
-									+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-											+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
-									+ "c, err := dialler(host, port)\n"
-									+ "if err != nil {\n"
-									+ "return err\n"
-									+ "}\n"
-									+ "\n"
-									+ "sfmt.Wrap(c)\n"
-									+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-											+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
-									+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-											+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
-									+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
-									+ "}\n";
+						RPRoleVariant pp = v;
+						if (this.apigen.aliases.containsKey(v))
+						{
+							Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ali = this.apigen.aliases.get(v);
+							if (ali.containsKey(orig))
+							{
+								pp = ali.get(orig);
+								if (peers.contains(pp))
+								{
+									continue;
+								}
+							}
+						}
+						
+						// Accept/Dial methods
+						String r = pp.getLastElement();
+						String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(pp);
+						epkindFile += "\n"
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id int"
+										+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
+										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+								+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
+								+ "c, err := ss.Accept()\n"
+								+ "if err != nil {\n"
+								+ "return err\n"
+								+ "}\n"
+								+ "\n"
+								+ "sfmt.Wrap(c)\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"
+								+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
+								+ "}\n"
+								+ "\n"
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id int"
+										+ ", host string, port int"
+										+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
+										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+								+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
+								+ "c, err := dialler(host, port)\n"
+								+ "if err != nil {\n"
+								+ "return err\n"
+								+ "}\n"
+								+ "\n"
+								+ "sfmt.Wrap(c)\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
+								+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
+								+ "}\n";
 						//}
 					}
+					if (subbdbyus != null)
+					{
+						// FIXME: factor out with above
+						RPRoleVariant pp = subbdbyus;
+						// Accept/Dial methods
+						String r = pp.getLastElement();
+						String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(pp);
+						epkindFile += "\n"
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id int"
+										+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
+										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+								+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
+								+ "c, err := ss.Accept()\n"
+								+ "if err != nil {\n"
+								+ "return err\n"
+								+ "}\n"
+								+ "\n"
+								+ "sfmt.Wrap(c)\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"
+								+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
+								+ "}\n"
+								+ "\n"
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id int"
+										+ ", host string, port int"
+										+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
+										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+								+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
+								+ "c, err := dialler(host, port)\n"
+								+ "if err != nil {\n"
+								+ "return err\n"
+								+ "}\n"
+								+ "\n"
+								+ "sfmt.Wrap(c)\n"
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
+								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+										+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
+								+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
+								+ "}\n";
+					}
+					
+					
 							
 					// Top-level Run method  // FIXME: add session completion check
 					/*EGraph g = this.apigen.variants.get(variant.getName()).get(variant);

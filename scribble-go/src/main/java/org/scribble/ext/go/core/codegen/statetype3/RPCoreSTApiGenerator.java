@@ -44,7 +44,8 @@ public class RPCoreSTApiGenerator
 	public final Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers;  
 			// For "common" endpoint kind factoring (dial/accept methods)
 	
-	public final Map<RPRoleVariant, String> aliases;
+	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum;
+	public final Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases;
 	
 	public final String packpath;  
 			// Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
@@ -56,7 +57,8 @@ public class RPCoreSTApiGenerator
 	public RPCoreSTApiGenerator(GoJob job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, RPCoreLType>> projections, 
 			Map<Role, Map<RPRoleVariant, EGraph>> variants, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families,
 			Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers,
-			Map<RPRoleVariant, String> aliases,
+			Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum,
+			Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases,
 			String packpath, //Role self)
 			List<Role> selfs)
 	{
@@ -113,6 +115,7 @@ public class RPCoreSTApiGenerator
 									.compareTo(f2.left.stream().sorted(variantComp).map(x -> x.toString()).collect(Collectors.joining("_")) + "_not_" + f2.right.stream().sorted(variantComp).map(x -> x.toString()).collect(Collectors.joining("_")));
 						}})
 				.collect(Collectors.toMap(f -> f, f -> i[0]++)));
+				// CHECKME: deep copy?
 
 		this.packpath = packpath;
 		//this.self = self;
@@ -124,7 +127,9 @@ public class RPCoreSTApiGenerator
 							e -> Collections.unmodifiableMap(e.getValue())
 					)));
 		
+		this.subsum = Collections.unmodifiableMap(subsum);
 		this.aliases = Collections.unmodifiableMap(aliases);
+				// FIXME: deep copies
 	}
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later

@@ -3,7 +3,6 @@ package org.scribble.ext.go.core.cli;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -71,7 +70,8 @@ public class RPCoreCommandLine extends CommandLine
 	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;  // Factor out Family (cf. RPRoleVariant)
 	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers;
 	
-	private Map<RPRoleVariant, String> aliases;
+	private Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum;
+	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases;
 	
 	public RPCoreCommandLine(String... args) throws CommandLineException
 	{
@@ -175,11 +175,9 @@ public class RPCoreCommandLine extends CommandLine
 				Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, this.L0, this.E0, this.families, impath, role).build();
 				outputClasses(goClasses);*/
 			}
-
-			this.aliases = Collections.emptyMap();  // FIXME:
 			
 			Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, 
-					this.L0, this.E0, this.families, this.peers, this.aliases, impath, roles).build();
+					this.L0, this.E0, this.families, this.peers, this.subsum, this.aliases, impath, roles).build();
 			outputClasses(goClasses);
 		}
 		else
@@ -358,16 +356,17 @@ public class RPCoreCommandLine extends CommandLine
 		
 		this.families = new HashSet<>();
 		this.families.addAll(getFamilies(job));
-
-		minimise();
-
 		this.peers = new HashMap<>();
 		this.peers.putAll(getPeers(job));
 		
+		minimise();
 	}
 	
 	private void minimise()
 	{
+		this.subsum = new HashMap<>();
+		this.aliases = new HashMap<>();
+		
 	  //Map<Role, Map<RPRoleVariant, RPCoreLType>> L0 = 
 		//Map<Role, Map<RPRoleVariant, EGraph>> E0;
 		/*Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families
@@ -387,7 +386,7 @@ public class RPCoreCommandLine extends CommandLine
 		RPCoreAstFactory af = new RPCoreAstFactory();
 
 		Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families = new HashSet<>();
-		//Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers = new HashMap<>();
+		////Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers = new HashMap<>();
 		for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.families)
 		{
 			Set<RPRoleVariant> tmp = new HashSet<>();
@@ -411,6 +410,15 @@ public class RPCoreCommandLine extends CommandLine
 							if (vL.minimise(af, v).equals(uL.minimise(af, v)))
 							{
 								//System.out.println("5555: " + v + "  subsumed by  " + u);
+								
+								Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> m = this.aliases.get(v);
+								if (m == null)
+								{
+									m = new HashMap<>();
+									this.aliases.put(v, m);
+									m.put(fam, u);
+								}
+								
 								continue Next;
 							}
 						}
@@ -419,13 +427,22 @@ public class RPCoreCommandLine extends CommandLine
 				}
 			}
 			
-			families.add(new Pair<>(tmp, fam.right));  // Subsumed variants are neither in left nor right
+			//if (!tmp.equals(fam.left))
+			{
+				Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> compressed = new Pair<>(tmp, fam.right);
+				families.add(compressed);  // Subsumed variants are neither in left nor right
 
-			System.out.println("\n8888:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n")) + "\n\n"
-			+ tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));
+				System.out.println("\n8888:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n")) + "\n\n"
+				+ tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));
+					
+				if (!tmp.equals(fam.left))
+				{
+					this.subsum.put(compressed, fam);
+				}
+			}
 		}
 		
-		//this.families = families;
+		this.families = families;
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
