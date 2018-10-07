@@ -76,6 +76,7 @@ public class RPCoreCommandLine extends CommandLine
 			// new-family-after-subsumptions -> original-family-before-subsumptions
 	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases;
 			// subsumed-variant -> original-family-subsumed-in -> subsuming-variant 
+			// FIXME: can a variant be subsumed by mutiple other variants?  currently only recording one
 	
 	public RPCoreCommandLine(String... args) throws CommandLineException
 	{
@@ -420,8 +421,8 @@ public class RPCoreCommandLine extends CommandLine
 								{
 									m = new HashMap<>();
 									this.aliases.put(v, m);
-									m.put(fam, u);
 								}
+								m.put(fam, u);  // FIXME: can a variant be subsumed by mutiple other variants?  currently only recording one
 								
 								continue Next;
 							}

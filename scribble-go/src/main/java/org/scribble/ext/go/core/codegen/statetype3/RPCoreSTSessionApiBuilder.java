@@ -424,7 +424,7 @@ public class RPCoreSTSessionApiBuilder
 						Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
 						if (ais.containsKey(orig) && ais.get(orig).equals(variant))
 						{
-							subbdbyus = subbd;
+							subbdbyus = subbd;  // We subsumed "subbd", so we need to inherit all their peers
 							break;
 						}
 					}
@@ -439,8 +439,8 @@ public class RPCoreSTSessionApiBuilder
 							Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ali = this.apigen.aliases.get(v);
 							if (ali.containsKey(orig))
 							{
-								pp = ali.get(orig);
-								if (peers.contains(pp))
+								pp = ali.get(orig);  // Replace subsumed-peer by subsuming-peer
+								if (peers.contains(pp))  // ...but skip if we're already peers with subsuming-peer
 								{
 									continue;
 								}
