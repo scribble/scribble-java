@@ -147,7 +147,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 						+ sEpWrite
 											+ "."
 											+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
-											+ "(\"" + r.getName() + "\", i, &arg0[0])\n";
+											+ "(\"" + r.getName() + "\", i, &arg0[j])\n";
 			}
 		}
 
