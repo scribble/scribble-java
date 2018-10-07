@@ -68,10 +68,14 @@ public class RPCoreCommandLine extends CommandLine
 	private Map<Role, Map<RPRoleVariant, EGraph>> E0;
 	//protected ParamCoreSModel model;
 	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;  // Factor out Family (cf. RPRoleVariant)
+		// families after subsumption
 	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers;
+		// variant-from-an-original-family -> an-original-family -> peer-variants-in-that-family
 	
 	private Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum;
+			// new-family-after-subsumptions -> original-family-before-subsumptions
 	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases;
+			// subsumed-variant -> original-family-subsumed-in -> subsuming-variant 
 	
 	public RPCoreCommandLine(String... args) throws CommandLineException
 	{
