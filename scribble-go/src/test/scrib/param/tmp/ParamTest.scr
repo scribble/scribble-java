@@ -10,8 +10,16 @@ module param.tmp.ParamTest;
 
 global protocol Proto1(role A, role B)
 {
+	foreach A[I:1,N], B[J:1,N] {
+		Foo() from A[I] to B[J];
+	}
+}
+/*
+global protocol Proto1(role A, role B)
+{
 	Foo() from A[1] to B[1,K];
 }
+*/
 
 
 /*
