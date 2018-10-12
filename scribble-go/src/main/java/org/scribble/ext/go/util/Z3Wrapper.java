@@ -22,6 +22,11 @@ public class Z3Wrapper
 		{
 			throw new RuntimeException("Cannot overwrite: " + tmpName);
 		}
+		smt2 = "(declare-datatypes (T1 T2) ((Pair (mk-pair (first T1) (second T2)))))\n"
+				+ "(define-fun pair_lt ((p!1 (Pair Int Int)) (p!2 (Pair Int Int))) Bool\n"
+				+ "(or (< (first p!1) (first p!2)) (< (second p!1) (second p!2)))\n"
+				+ ")\n"
+				+ smt2;
 		smt2 = smt2 + "\n(check-sat)\n(exit)";
 		try
 		{

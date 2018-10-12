@@ -17,7 +17,7 @@ public class RPAntlrIndexExpr
 			case "PARAM_BININDEXEXPR":  // FIXME: factor out
 			{
 				RPIndexExpr left = parseParamIndexExpr((CommonTree) ct.getChild(0), af);
-				if (ct.getChildCount() < 2)
+				if (ct.getChildCount() < 3)
 				{
 					return left;
 				}
@@ -31,6 +31,16 @@ public class RPAntlrIndexExpr
 					default:  throw new RuntimeException("[param] Shouldn't get in here: " + ct);
 				}
 				return RPIndexFactory.ParamBinIndexExpr(op, left, right);
+			}
+			case "PARAM_PAIR":  // FIXME
+			{
+				RPIndexExpr left = parseParamIndexExpr((CommonTree) ct.getChild(0), af);
+				if (ct.getChildCount() < 2)
+				{
+					return left;
+				}
+				RPIndexExpr right = parseParamIndexExpr((CommonTree) ct.getChild(1), af);
+				return RPIndexFactory.RPIndexPair(left, right);
 			}
 			default:
 			{

@@ -188,6 +188,8 @@ tokens
 
 	PARAM_INDEXINTERVAL              = 'PARAM_INDEXINTERVAL';
 	PARAM_FOREACHINTERVAL            = 'PARAM_FOREACHINTERVAL';
+	
+	PARAM_PAIR = 'PARAM_PAIR';
 }
 
 
@@ -751,6 +753,10 @@ paramindexexpr:
 
 unaryparamindexexpr:
 	simplename
+|
+	'(' simplename ',' simplename ')'
+->
+	^(PARAM_PAIR simplename simplename)
 |
 	'(' paramindexexpr ')'
 -> 

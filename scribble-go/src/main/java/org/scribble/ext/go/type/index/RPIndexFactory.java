@@ -36,4 +36,9 @@ public class RPIndexFactory
 	{
 		return RPIndexSelf.SELF;
 	}
+	
+	public static RPIndexPair RPIndexPair(RPIndexExpr left, RPIndexExpr right)
+	{
+		return new RPIndexPair(left, right);
+	}
 }
