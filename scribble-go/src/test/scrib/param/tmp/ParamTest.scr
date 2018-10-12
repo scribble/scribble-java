@@ -8,12 +8,57 @@
 module param.tmp.ParamTest;
 
 
+/*//foreach { A , B , C }{ i:k 11 ..k wh } do ( A [ i ]→ C [ i ] :Val.B [ i ]→ C [ i ] :Val.cont ) ;end
+global protocol Proto1(role A, role B, role C)
+{
+	for A[I:1]
+}*/
+
+global protocol Proto1(role W)
+{
+  foreach W[I2:1,K-2], W[I1:2,K-1], W[I:3,K]
+  {
+    Foo() from W[I2] to W[I];
+    Foo() from W[I1] to W[I];
+  }
+}
+
+/*
+W{[1,(K-2)], [3,K]}{[I1]},
+W{[I1], [3,K]}{[1,(K-2)]},
+W{[I1]}{[1,(K-2)], [3,K]}, 
+W{[3,K]}{[1,(K-2)], [I1]}, 
+W{[1,(K-2)], [I1], [3,K]}, 
+W{[1,(K-2)], [I1]}{[3,K]}, 
+W{[1,(K-2)]}{[I1], [3,K]}
+//*/
+
+
+
+/*
 global protocol Proto1(role A, role B)
 {
 	foreach A[I:1,N], B[J:1,N] {
 		Foo() from A[I] to B[J];
 	}
 }
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+    foreach Manufacturer[J:1,M] {
+      QuoteReq from Supplier[1,S] to Manufacturer[J];
+      Quote from Manufacturer[J] to Supplier[1,S];
+    }
+}
+//*/
+
+
+
+
+
 /*
 global protocol Proto1(role A, role B)
 {

@@ -637,7 +637,6 @@ public class RPCoreCommandLine extends CommandLine
 			getVariants(GoJob job, RPCoreGType gt)
 	{
 		Set<RPIndexedRole> prs = gt.getIndexedRoles();
-		
 		Map<Role, Set<RPIndexedRole>> map
 				= prs.stream()
 				.map(x -> x.getName())

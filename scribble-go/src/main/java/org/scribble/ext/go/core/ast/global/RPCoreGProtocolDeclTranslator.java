@@ -313,7 +313,7 @@ public class RPCoreGProtocolDeclTranslator
 	{
 		RPCoreGType body = parseSeq(gf.getBlock().getInteractionSeq().getInteractions(), Collections.emptyMap(), false, true);
 		body = body.subs(af, RPCoreGEnd.END, RPCoreGCont.CONT);
-		Set<RPAnnotatedInterval> ivals = IntStream.of(0, gf.params.size()-1)
+		Set<RPAnnotatedInterval> ivals = IntStream.range(0, gf.params.size())
 				.mapToObj(i -> new RPAnnotatedInterval(gf.params.get(i), gf.starts.get(i), gf.ends.get(i))).collect(Collectors.toSet());
 		return this.af.RPCoreGForeach(//gf.subj.toName(), gf.param, gf.start, gf.end, 
 				gf.subjs.stream().map(r -> r.toName()).collect(Collectors.toSet()), ivals,

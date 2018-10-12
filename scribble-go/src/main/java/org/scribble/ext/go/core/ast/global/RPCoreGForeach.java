@@ -90,14 +90,14 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 			RPIndexVar tmp = RPIndexFactory.ParamIntVar(ival.var.toString()); 
 					// HACK FIXME: because RPIndexVar and RPForeachVar now distinguished -- unify?
 
-			Set<RPInterval> d = Stream.of(new RPInterval(ival.start, ival.end)).collect(Collectors.toSet()); 
-					// TODO: multidim intervals (currently singleton set for onedim)
 			Set<RPInterval> var = Stream.of(new RPInterval(tmp, tmp)).collect(Collectors.toSet());
 			for (RPIndexedRole ir : found)
 			{
 				if (ir.intervals.equals(var))
 				{
 					done.add(ir);
+					Set<RPInterval> d = Stream.of(new RPInterval(ival.start, ival.end)).collect(Collectors.toSet()); 
+							// TODO: multidim intervals (currently singleton set for onedim)
 					res.add(new RPIndexedRole(ir.getName().toString(), d));
 				}
 			}
