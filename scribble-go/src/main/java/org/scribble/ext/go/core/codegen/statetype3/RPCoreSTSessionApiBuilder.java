@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EGraph;
@@ -140,7 +141,10 @@ public class RPCoreSTSessionApiBuilder
 
 		// roles
 		String protoFile =
-					"package " + this.apigen.getApiRootPackageName() + "\n"
+
+				    "// Package " + this.apigen.getApiRootPackageName() + " is the generated API for the " + this.apigen.proto.getPrefix().getSimpleName().toString() + "." + this.apigen.getApiRootPackageName() + " protocol.\n"
+				+ "// Use functions in this package to create instances of role variants.\n"
+				+ "package " + this.apigen.getApiRootPackageName() + "\n"
 				+ "\n"
 							
 				// Import Endpoint Kind APIs -- FIXME: CL args
@@ -173,6 +177,7 @@ public class RPCoreSTSessionApiBuilder
 					
 		protoFile += "\n"
 				// Protocol type
+				+ "// " + simpname + " is an instance of the " + this.apigen.proto.getPrefix().getSimpleName().toString() + "." + this.apigen.getApiRootPackageName() + " protocol.\n"
 				+ "type " + simpname + " struct {\n"
 				+ "}\n"
 				
@@ -183,6 +188,7 @@ public class RPCoreSTSessionApiBuilder
 				
 				// Protocol type constructor
 				+ "\n"
+				+ "// New returns a new instance of the protocol.\n"
 				+ "func New() *" + simpname + " {\n"
 				+ "return &" + simpname + "{ }\n"
 				+ "}\n";
@@ -212,10 +218,11 @@ public class RPCoreSTSessionApiBuilder
 					List<RPIndexVar> ivars = getParameters(variant);
 					String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 
+					String fnName =  "New_" + (isCommonEndpointKind ? "" : this.apigen.getFamilyPackageName(family) + "_") + epkindTypeName;
+
 					// Endpoint Kind constructor -- makes index var value maps
-					String tmp = "func (p *" + simpname + ") New" + "_"
-							+ (isCommonEndpointKind ? "" : this.apigen.getFamilyPackageName(family) + "_") 
-							+ epkindTypeName  // FIXME: factor out common variants between families
+					String tmp = "// " + fnName + " returns a new instance of " + epkindTypeName + " role variant.\n"
+							+ "func (p *" + simpname + ") " + fnName // FIXME: factor out common variants between families
 							+ "(" + ivars.stream().filter(x -> !x.name.equals("self"))  // CHECKME: can check for RPIndexSelf instead?
 							    .map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
 							+ " *"
@@ -594,10 +601,47 @@ public class RPCoreSTSessionApiBuilder
 				
 					res.put(getEndpointKindFilePath(family, variant)
 									+ "/" + RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant) + ".go",
-							"package " + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "\n" + epkindFile);
+							"// Generated API for the " + variant.getName() + humanReadableName(variant) + " role variant.\n"
+							+ "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "\n" + epkindFile);
 				}
 			}
 		}
+	}
+
+	private String humanReadableName(RPRoleVariant variant) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("["); // array index notation.
+		for (RPInterval iv : variant.intervals) {
+			sb.append("{");
+		    if (iv.isSingleton()) {
+		        sb.append(iv.start.toString());
+			} else {
+		        sb.append(iv.start.toString());
+		        sb.append(",..,");
+		        sb.append(iv.end.toString());
+			}
+			sb.append("}");
+			sb.append("∩");
+		}
+        sb.deleteCharAt(sb.length()-1);
+	    if (variant.cointervals.size() > 0) {
+	        sb.append(" - ");
+			for (RPInterval iv : variant.cointervals) {
+				sb.append("{");
+				if (iv.isSingleton()) {
+					sb.append(iv.start.toString());
+				} else {
+					sb.append(iv.start.toString());
+					sb.append(",..,");
+					sb.append(iv.end.toString());
+				}
+				sb.append("}");
+				sb.append("∩");
+			}
+			sb.deleteCharAt(sb.length()-1);
+		}
+		sb.append("]"); // array index notation.
+		return sb.toString();
 	}
 
 	private List<RPIndexVar> getParameters(RPRoleVariant variant)
