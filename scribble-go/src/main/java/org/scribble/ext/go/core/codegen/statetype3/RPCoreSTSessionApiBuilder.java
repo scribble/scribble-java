@@ -569,7 +569,11 @@ public class RPCoreSTSessionApiBuilder
 												// cf. state chan builder  // FIXME: chan struct reuse
 										//"ini._" + init + ".id = 1\n" +
 												"return f(ini._" + init + ")\n")*/
-							+ "return f(ini.Init())\n"
+							+ "end := f(ini.Init())\n"
+							+ "if end." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " != nil {\n"
+							+ "panic(end." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + ")\n"
+							+ "}\n"
+							+ "return end\n"
 
 							+ "}";
 					

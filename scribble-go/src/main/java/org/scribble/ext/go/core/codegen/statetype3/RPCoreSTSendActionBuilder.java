@@ -42,6 +42,24 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		}
 	}
 
+	/**
+	 * checkError helper function surrounds the given expression expr with Go's error check
+	 * and assigns errorField with err if it exists, i.e.
+	 *
+	 * <pre>{@code
+	 * if err := $expression; err != nil {
+	 * 	 $errField = err
+	 * }
+	 * }</pre>
+	 *
+	 * @param expr Expression that returns error
+	 * @param errField Location to store the error
+	 * @return code fragment of expr with error check
+	 */
+	private String checkError(String expr, String errField) {
+		return "if err := " + expr + "; err != nil {\n" + errField + " = err\n" + "}\n";
+	}
+
 	@Override
 	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
 	{
@@ -131,23 +149,21 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 						throw new RuntimeException("[rp-core] [param-api] TODO: " + a);
 					}
 				
-					res += errorField + " = "
-							+ sEpWrite
+					res +=  checkError(sEpWrite
 												+ "."
 												+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
 												+ "(\"" + r.getName() + "\", i" 
 												+ IntStream.range(0, a.payload.elems.size()).mapToObj(i -> ", &arg" + i + "[j]").collect(Collectors.joining(""))
-												+ ")\n";
+												+ ")", errorField);
 				}
 			}
 			else //(a.mid.isMessageSigName)
 			{
 				// FIXME: factor out with above
-				res += errorField + " = "
-						+ sEpWrite
+				res += checkError( sEpWrite
 											+ "."
 											+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
-											+ "(\"" + r.getName() + "\", i, &arg0[j])\n";
+											+ "(\"" + r.getName() + "\", i, &arg0[j])", errorField);
 			}
 		}
 
