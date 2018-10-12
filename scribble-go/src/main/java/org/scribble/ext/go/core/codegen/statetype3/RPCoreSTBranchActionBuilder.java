@@ -20,9 +20,12 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 		//RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
 		//String scTypeName = rpapi.getStateChanName(curr);
 
-		EState succ = curr.getSuccessor(a); 
+		EState succ = curr.getSuccessor(a);
+		String labels = curr.getAllSuccessors().stream().map(s -> s.getActions().get(0)).map(act -> act.mid.toString()).collect(Collectors.joining(" or "));
 		return
-				  "func (s *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "(" 
+				  "// " + getActionName(api, a) + " is a branch with branch label\n"
+				+ "// " + labels + "\n"
+				+ "func (s *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "("
 						+ buildArgs(null, a)
 						+ ") " + getReturnType(api, curr, succ) + " {\n"  // HACK: return type is interface, so no need for *return (unlike other state chans)
 				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
