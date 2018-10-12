@@ -636,7 +636,7 @@ public class RPCoreSTSessionApiBuilder
 					sb.append(iv.end.toString());
 				}
 				sb.append("}");
-				sb.append("∩");
+				sb.append("∪");
 			}
 			sb.deleteCharAt(sb.length()-1);
 		}
