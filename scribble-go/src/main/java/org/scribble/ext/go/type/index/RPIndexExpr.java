@@ -14,6 +14,7 @@ public abstract class RPIndexExpr
 	public abstract RPIndexExpr minimise(int self);
 	
 	public abstract String toGoString();  // As basic Go expressions, but not (necessarily) actual code generation "ouput"
+			// N.B. "value" expressions -- though may also be used for, e.g., names (e.g., RPCoreSTApiGenerator.getGeneratedNameLabel) 
 	
 	public abstract Set<RPIndexExpr> getVals();  // TODO: factor out a "value" interface
 	public abstract Set<RPIndexVar> getVars();  // N.B. doesn't include foreach params

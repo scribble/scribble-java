@@ -46,8 +46,7 @@ public class RPIndexPair extends RPIndexExpr implements RPIndexVal
 	@Override
 	public String toGoString()
 	{
-		throw new RuntimeException("[param-core] TODO: " + this);
-		//return toString();
+		return "util.Pair{" + this.left.toGoString() + ", " + this.right.toGoString() + "}";
 	}
 	
 	@Override

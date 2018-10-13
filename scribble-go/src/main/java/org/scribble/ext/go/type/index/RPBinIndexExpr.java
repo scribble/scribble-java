@@ -96,7 +96,7 @@ public class RPBinIndexExpr extends RPIndexExpr
 						{
 							case Add:  return RPIndexFactory.RPIndexPair(RPIndexFactory.ParamIntVal(((RPIndexInt) x.left).val + ((RPIndexInt) y.left).val),
 									RPIndexFactory.ParamIntVal(((RPIndexInt) x.right).val + ((RPIndexInt) y.right).val));
-							case Subt: RPIndexFactory.RPIndexPair(RPIndexFactory.ParamIntVal(((RPIndexInt) x.left).val - ((RPIndexInt) y.left).val),
+							case Subt: return RPIndexFactory.RPIndexPair(RPIndexFactory.ParamIntVal(((RPIndexInt) x.left).val - ((RPIndexInt) y.left).val),
 									RPIndexFactory.ParamIntVal(((RPIndexInt) x.right).val - ((RPIndexInt) y.right).val));
 							case Mult: //return RPIndexFactory.ParamIntVal(x * y);
 							default: throw new RuntimeException("Shouldn't get in here: " + this);

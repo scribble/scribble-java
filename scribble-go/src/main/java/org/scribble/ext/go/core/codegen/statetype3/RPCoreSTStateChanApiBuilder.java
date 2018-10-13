@@ -33,6 +33,7 @@ import org.scribble.ext.go.type.index.RPBinIndexExpr;
 import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexInt;
+import org.scribble.ext.go.type.index.RPIndexPair;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
@@ -614,6 +615,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public String generateIndexExpr(RPIndexExpr e)
 	{
 		if (e instanceof RPIndexInt)
+		{
+			return e.toGoString();
+		}
+		else if (e instanceof RPIndexPair)
 		{
 			return e.toGoString();
 		}

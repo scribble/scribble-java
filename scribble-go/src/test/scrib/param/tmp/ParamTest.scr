@@ -8,6 +8,38 @@
 module param.tmp.ParamTest;
 
 
+sig <go> "message.QuoteReq" from "github.com/nickng/scribble-go-examples/11_quote-request/message" as QuoteReq;
+type <go> "message.Quote" from "github.com/nickng/scribble-go-examples/11_quote-request/message" as Quote;
+
+
+global protocol Proto1(role Buyer, role Supplier, role Manufacturer) {
+  // (5) Supplier received updated quote
+  foreach Supplier[I:1,S] {
+    choice at Supplier[I] {
+      // (5a) Either Supplier respond by agreeing to it and sending a confirmation
+      Confirm() from Supplier[I] to Buyer[1];
+      End() from Supplier[I] to Manufacturer[1,M];
+    } or {
+      // (5b) Or Supplier modify it and sending it back to Buyer.
+      //      Buyer goes back to (4)
+      Modify() from Supplier[I] to Buyer[1];
+      NoOp() from Supplier[I] to Manufacturer[1,M];
+      //do MakeDeal(Buyer, Supplier, Manufacturer);
+    } or {
+      // (5c) Or Supplier reject updated quote.
+      Reject() from Supplier[I] to Buyer[1];
+      End() from Supplier[I] to Manufacturer[1,M];
+    } or {
+      // (5d) Or Supplier renegotiate with the Manufacturers
+      //      going back to (3)
+      Renegotiate() from Supplier[I] to Buyer[1];
+      Renegotiate() from Supplier[I] to Manufacturer[1,M];
+      //do Negotiate(Buyer, Supplier, Manufacturer);
+    }
+  }
+}
+
+
 /*
 global protocol Proto1(role A, role B)
 {
@@ -38,7 +70,7 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
-//*
+/*
 //foreach W { i 1 :k 11 ..k wh -(1,0) , i 2 :k 11 +(1,0)..k wh } do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;
 //foreach W { i 1 :k w1 ..k wh , i 2 :k 11 ..k 1h } do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;
 //foreach W { i 1 :k 11 ..k 1h -(0,1) , i 2 :k 11 +(0,1)..k 1h } do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;W [ k 1h ]→ W [ k 11 ] .end

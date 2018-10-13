@@ -576,7 +576,8 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 					String destTmp = (destStart instanceof RPIndexVar) ? ((RPIndexVar) destStart).name : null;
 							// FIXME: awkwardness of RPIndexVar and RPForeachVar
 					Set<String> tmp = Stream.of(srcTmp, destTmp).filter(x -> x != null).collect(Collectors.toSet());
-					if (!tmp.isEmpty() && roles.contains(destName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
+					if (//!tmp.isEmpty() && 
+							roles.contains(destName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
 							fvars.containsAll(tmp))
 					{
 						RPIndexExpr upper = (destTmp != null) ? ivals.stream().filter(x -> x.var.name.equals(destTmp)).findFirst().get().start : destStart;
@@ -592,6 +593,8 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 						return af.ParamCoreLCrossChoice(this.dest, RPCoreLActionKind.CROSS_SEND, projs);
 					}
 				}
+				System.out.println("BBB: " + srcRange.start + " ,, " + srcRange.end + " ,, " + srcRange.start.equals(srcRange.end));
+				System.out.println("BBB: " + destRange.start + " ,, " + destRange.end + " ,, " + destRange.start.equals(destRange.end));
 				// Otherwise try merge (if neither src/dest are subj)
 			}
 			else if (this.dest.equals(subj))
@@ -607,7 +610,8 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 					String destTmp = (destStart instanceof RPIndexVar) ? ((RPIndexVar) destStart).name : null;
 							// FIXME: awkwardness of RPIndexVar and RPForeachVar
 					Set<String> tmp = Stream.of(srcTmp, destTmp).filter(x -> x != null).collect(Collectors.toSet());
-					if (!tmp.isEmpty() && roles.contains(srcName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
+					if (//!tmp.isEmpty() && 
+							roles.contains(srcName) && //fvars.contains(srcVar.toString()) && fvars.contains(destVar.toString()))
 							fvars.containsAll(tmp))
 					{
 						RPIndexExpr upper = (srcTmp != null) ? ivals.stream().filter(x -> x.var.name.equals(srcTmp)).findFirst().get().start : srcStart;
@@ -638,6 +642,8 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		}
 		else
 		{
+			System.out.println("AAA: " + this.src + " ,, " + subj + " ,, " + this.src.equals(subj));
+			System.out.println("AAA: " + this.dest + " ,, " + subj + " ,, " + this.dest.equals(subj));
 			throw new RuntimeException("[rp-core] Projection not defined: " + this + ", " + subj);
 		}
 	}

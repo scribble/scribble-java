@@ -65,6 +65,8 @@ public class RPCoreCommandLine extends CommandLine
 
 	// HACK: store in (Core) Job/JobContext?
 	private GProtocolDecl gpd;
+	private RPCoreGType gt;
+	private Smt2Translator smt2t;
 	private Map<Role, Map<RPRoleVariant, RPCoreLType>> L0;
 	private Map<Role, Map<RPRoleVariant, EGraph>> E0;
 	//protected ParamCoreSModel model;
@@ -183,7 +185,7 @@ public class RPCoreCommandLine extends CommandLine
 			}
 			
 			Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, 
-					this.L0, this.E0, this.families, this.peers, this.subsum, this.aliases, impath, roles).build();
+					this.L0, this.E0, this.families, this.peers, this.subsum, this.aliases, impath, roles, this.smt2t).build();
 			outputClasses(goClasses);
 		}
 		else
@@ -252,9 +254,9 @@ public class RPCoreCommandLine extends CommandLine
 		this.gpd = (GProtocolDecl) main.getProtocolDecl(simpname);
 
 		RPCoreAstFactory af = new RPCoreAstFactory();
-		RPCoreGType gt = new RPCoreGProtocolDeclTranslator(job, af).translate(this.gpd);
+		this.gt = new RPCoreGProtocolDeclTranslator(job, af).translate(this.gpd);
 
-		Smt2Translator smt2t = Z3Wrapper.getSmt2Translator(gt);
+		this.smt2t = Z3Wrapper.getSmt2Translator(gt);
 		
 		job.debugPrintln("\n[rp-core] Translated:\n  " + gt);
 		
