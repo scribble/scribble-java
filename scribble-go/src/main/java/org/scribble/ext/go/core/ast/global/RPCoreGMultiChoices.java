@@ -24,6 +24,7 @@ import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
@@ -58,7 +59,7 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 	}
 	
 	@Override
-	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd)
+	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd, Smt2Translator smt2t)
 	{
 		// src (i.e., choice subj) range size=1 for non-unary choices enforced by ParamScribble.g syntax
 		// Directed choice check by ParamCoreGProtocolDeclTranslator ensures all dests (including ranges) are (syntactically) the same

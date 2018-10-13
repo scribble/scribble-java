@@ -32,6 +32,7 @@ import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexFactory;
 import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.type.Message;
 import org.scribble.type.MessageSig;
@@ -71,7 +72,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	
 	// gpd only for calling Z3Wrapper.checkSat
 	@Override
-	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd)
+	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd, Smt2Translator smt2t)
 	{
 		// src (i.e., choice subj) range size=1 for non-unary choices enforced by ParamScribble.g syntax
 		// Directed choice check by ParamCoreGProtocolDeclTranslator ensures all dests (including ranges) are (syntactically) the same
@@ -81,7 +82,220 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		Set<RPIndexVar> vars = Stream.of(srcRange, destRange).flatMap(r -> r.getIndexVars().stream()).collect(Collectors.toSet());
 				// FIXME: record foreachvars separately, for additional constraint generation
 		
-		/*// CHECKME: is range size>0 already ensured by syntax?
+		//if (!checkNonEmptyIntervals(...))
+		if (!checkIntervalRanges(job, gpd, vars, smt2t))
+		{
+			return false;
+		}
+
+		if (this.kind == RPCoreGActionKind.CROSS_TRANSFER)
+		{
+			if (this.cases.size() > 1)
+			{
+				if (!checkSingletonChoiceSubject(job, gpd, vars, smt2t))
+				{
+					return false;
+				}
+			}
+			
+			if (!checkForeachVars(job, context, smt2t))
+			{
+				return false;
+			}
+		}
+		
+		if (this.src.getName().equals(this.dest.getName()))
+		{
+			if (this.kind != RPCoreGActionKind.CROSS_TRANSFER)
+			{
+				throw new RuntimeException("Shouldn't get here: " + this.kind);
+			}
+
+			if (!checkOverlappingIntervals(job, context, gpd, vars, smt2t) || !checkForeachVarAlignment(job, context, gpd, smt2t))
+			{
+				return false;
+			}
+		}
+
+		/*// Now redundant -- restore for "pair/pipe" sugar
+		if (this.kind == RPCoreGActionKind.DOT_TRANSFER)
+		{
+			String smt2 = "(assert"
+					+ (vars.isEmpty() ? "" : " (forall (" + vars.stream().map(v -> "(" + v + " Int)").collect(Collectors.joining(" "))) + ") "
+					+ "(and (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") (- "
+							+ destRange.end.toSmt2Formula() + " " + destRange.start.toSmt2Formula() + "))"
+					+ (!this.src.getName().equals(this.dest.getName()) ? "" :
+						" (not (= " + srcRange.start.toSmt2Formula() + " " + destRange.start.toSmt2Formula() + "))")
+				  + ")"
+					+ (vars.isEmpty() ? "" : ")")
+					+ ")";
+			
+			job.debugPrintln("\n[param-core] [WF] Checking dot-range alignment between " + srcRange + " and " + destRange + ":\n  " + smt2);
+			
+			if (!Z3Wrapper.checkSat(job, gpd, smt2))
+			{
+				return false;
+			}
+		}*/
+
+		return true;
+	}
+
+	// Returns true if OK
+	private boolean checkForeachVarAlignment(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd, Smt2Translator smt2t)
+	{
+		RPInterval srcRange = this.src.getParsedRange();
+		RPInterval destRange = this.dest.getParsedRange();
+
+		Map<RPForeachVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
+		// FIXME: only do if both are foreachvars
+		if (hasValidForeachVarIndex(context, this.src) && hasValidForeachVarIndex(context, this.dest))
+		{
+			String sv = ((RPIndexVar) this.src.intervals.iterator().next().start).toString();
+			String dv = ((RPIndexVar) this.dest.intervals.iterator().next().end).toString();
+			RPInterval s = peek.get(RPIndexFactory.RPForeachVar(sv));
+			RPInterval d = peek.get(RPIndexFactory.RPForeachVar(dv));
+			Set<RPIndexVar> tmp = Stream.of(s, d).flatMap(r -> r.getIndexVars().stream()).collect(Collectors.toSet());
+			// Duplicated from DOT_TRANSFER
+			String smt2 = "(assert"
+					+ (tmp.isEmpty() ? "" : " (forall (" + tmp.stream().map(v -> "(" + v + " Int)").collect(Collectors.joining(" "))) + ") "
+					+ "(and (= (- " + s.end.toSmt2Formula() + " " + s.start.toSmt2Formula() + ") (- "
+							+ d.end.toSmt2Formula() + " " + d.start.toSmt2Formula() + "))"
+					+ (!this.src.getName().equals(this.dest.getName()) ? "" :
+						" (not (= " + s.start.toSmt2Formula() + " " + d.start.toSmt2Formula() + "))")
+					+ ")"
+					+ (tmp.isEmpty() ? "" : ")")
+					+ ")";
+		
+			job.debugPrintln("\n[param-core] [WF] Checking foreach-var alignment between " + srcRange + " and " + destRange + ":\n  " + smt2);
+			
+			if (!Z3Wrapper.checkSat(job, gpd, smt2))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/*private boolean checkSelfCommunication(...)
+	 {
+		//Set<String> curr = peek.keySet().stream().map(k -> k.toString()).collect(Collectors.toSet());
+		if (isValidForeachIndexVar(context, this.src) && isValidForeachIndexVar(context, this.dest))
+		{
+			String sv = srcVars.iterator().next().toString();
+			String dv = destVars.iterator().next().toString();
+			if (curr.contains(sv) && curr.contains(dv))
+			{
+				RPIndexExpr s = peek.get(RPIndexFactory.RPForeachVar(sv)).start;
+				RPIndexExpr d = peek.get(RPIndexFactory.RPForeachVar(dv)).start;
+				if (!(s instanceof RPIndexInt) && !(s instanceof RPIndexInt))
+				{
+					System.err.println("\n[param-core] Interval separation not being fully proved: " + s + "  and  " + d);
+				}
+				if (s.equals(d))
+						// FIXME: use Z3 to prove intervals not equal (not just checking against syntactic equality)
+				{
+					job.debugPrintln("\n[param-core] (Potential) illegal self-communication: " + this);
+					return false;
+				}
+			}
+		}
+	}*/
+				
+	// Returns true if OK
+	private boolean checkOverlappingIntervals(GoJob job,
+			Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd, Set<RPIndexVar> vars, Smt2Translator smt2t)
+	{
+		RPInterval srcRange = this.src.getParsedRange();
+		RPInterval destRange = this.dest.getParsedRange();
+
+		String smt2 = "(assert (exists ((foobartmp Int)";  // FIXME: factor out
+		smt2 += vars.stream().map(v -> " (" + v.name + " Int)").collect(Collectors.joining(""));
+		smt2 += ") (and";
+		smt2 += vars.isEmpty() ? "" : vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""));  
+				// FIXME: lower bound constant '1' -- replace by global invariant
+
+		Map<RPForeachVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
+		Set<String> curr = peek.keySet().stream().map(k -> k.name).collect(Collectors.toSet());
+		Set<RPIndexVar> srcAndDestVars = new HashSet<>();
+		srcAndDestVars.addAll(this.src.getIndexVars());
+		srcAndDestVars.addAll(this.dest.getIndexVars());
+		for (RPIndexVar sv : srcAndDestVars)
+		{
+			String tmp = sv.toString();
+			if (curr.contains(tmp))  // FIXME: awkwardness of RPForeachVar and RPIndexVar
+			{
+				RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp));
+				smt2 += " (= " + sv + " " + ival.start + ")";
+			}
+		}
+
+		smt2 += Stream.of(srcRange, destRange)
+				.map(r -> " (>= foobartmp " + r.start.toSmt2Formula() + ") (<= foobartmp " + r.end.toSmt2Formula() + ")")
+				.collect(Collectors.joining());
+		smt2 += ")))";
+		
+		job.debugPrintln("\n[param-core] [WF] Checking non-overlapping ranges (potential self-communication) for " + this.src.getName() + ":\n  " + smt2);
+		
+		if (Z3Wrapper.checkSat(job, gpd, smt2))
+		{
+			return false;
+		}
+
+		// CHECKME: projection cases for rolename self-comm but non-overlapping intervals
+
+		return true;
+	}
+
+	// Returns true if OK
+	private boolean checkForeachVars(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, Smt2Translator smt2t)
+	{
+		Set<String> all = context.stream().flatMap(m -> m.keySet().stream().map(k -> k.name)).collect(Collectors.toSet());  // FIXME: awkwardness of RPForeachVar and RPIndexVar
+		Function<RPIndexedRole, Boolean> checkForeachVarIndex = ir ->
+		{
+			Set<String> vs = ir.getIndexVars().stream().map(x -> x.name).collect(Collectors.toSet());  // FIXME: awkwardness of RPForeachVar and RPIndexVar
+			if (vs.stream().anyMatch(x -> all.contains(x)))
+			{
+				if (!hasValidForeachVarIndex(context, ir))
+				{
+					// FIXME: check in name disamb pass?
+					job.debugPrintln("\n[param-core] [WF] Illegal use/access of foreach-var: " + ir);
+					return false;
+				}
+			}
+			return true;
+		};
+		if (!checkForeachVarIndex.apply(this.src) || !checkForeachVarIndex.apply(this.dest))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	// Returns true if OK
+	private boolean checkSingletonChoiceSubject(GoJob job, GProtocolDecl gpd, Set<RPIndexVar> vars, Smt2Translator smt2t)
+	{
+		RPInterval srcRange = this.src.getParsedRange();
+		String bar = "(assert "
+				+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and ")
+				+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
+				+ "(not (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") 0))"
+				+ (vars.isEmpty() ? "" : "))")
+				+ ")";
+
+		job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subject for " + this.src + ":\n  " + bar); 
+
+		if (Z3Wrapper.checkSat(job, gpd, bar))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	/*// Returns true if OK
+	private boolean checkNonEmptyIntervals(...)
+	{
+		// CHECKME: is range size>0 already ensured by syntax?
 		Function<ParamRange, String> foo1 = r -> 
 				  "(assert (exists ((foobartmp Int)"
 				+ vars.stream().map(v -> " (" + v.name + " Int)").collect(Collectors.joining(""))
@@ -95,7 +309,16 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			job.debugPrintln("\n[param-core] [WF] Checking non-empty ranges:\n  " + foo);
 
 			return Z3Wrapper.checkSat(job, gpd, foo);
-		};*/
+		};
+		...
+	*/
+
+	// Returns true if OK
+	private boolean checkIntervalRanges(GoJob job, GProtocolDecl gpd, Set<RPIndexVar> vars, Smt2Translator smt2t)
+	{
+		RPInterval srcRange = this.src.getParsedRange();
+		RPInterval destRange = this.dest.getParsedRange();
+
 		Function<RPInterval, String> foo1 = r ->  // FIXME: factor out with above
 				  "(assert "
 				+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and (and")
@@ -117,158 +340,6 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		{
 			return false;
 		}
-
-
-		if (this.kind == RPCoreGActionKind.CROSS_TRANSFER)
-		{
-			if (this.cases.size() > 1)
-			{
-				String bar = "(assert "
-						+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and ")
-						+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
-						+ "(not (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") 0))"
-						+ (vars.isEmpty() ? "" : "))")
-						+ ")";
-
-				job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subject for " + this.src + ":\n  " + bar); 
-
-				if (Z3Wrapper.checkSat(job, gpd, bar))
-				{
-					return false;
-				}
-			}
-			
-			Set<String> all = context.stream().flatMap(m -> m.keySet().stream().map(k -> k.name)).collect(Collectors.toSet());  // FIXME: awkwardness of RPForeachVar and RPIndexVar
-			Function<RPIndexedRole, Boolean> checkForeachVarIndex = ir ->
-			{
-				Set<String> vs = ir.getIndexVars().stream().map(x -> x.name).collect(Collectors.toSet());  // FIXME: awkwardness of RPForeachVar and RPIndexVar
-				if (vs.stream().anyMatch(x -> all.contains(x)))
-				{
-					if (!hasValidForeachVarIndex(context, ir))
-					{
-						// FIXME: check in name disamb pass?
-						job.debugPrintln("\n[param-core] [WF] Illegal use/access of foreach-var: " + ir);
-						return false;
-					}
-				}
-				return true;
-			};
-			if (!checkForeachVarIndex.apply(this.src) || !checkForeachVarIndex.apply(this.dest))
-			{
-				return false;
-			}
-		}
-		
-		if (this.src.getName().equals(this.dest.getName()))
-		{
-			if (this.kind == RPCoreGActionKind.CROSS_TRANSFER)
-			{
-				String smt2 = "(assert (exists ((foobartmp Int)";  // FIXME: factor out
-				smt2 += vars.stream().map(v -> " (" + v.name + " Int)").collect(Collectors.joining(""));
-				smt2 += ") (and";
-				smt2 += vars.isEmpty() ? "" : vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""));  
-						// FIXME: lower bound constant '1' -- replace by global invariant
-
-				Map<RPForeachVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
-				Set<String> curr = peek.keySet().stream().map(k -> k.name).collect(Collectors.toSet());
-				Set<RPIndexVar> srcAndDestVars = new HashSet<>();
-				srcAndDestVars.addAll(this.src.getIndexVars());
-				srcAndDestVars.addAll(this.dest.getIndexVars());
-				for (RPIndexVar sv : srcAndDestVars)
-				{
-					String tmp = sv.toString();
-					if (curr.contains(tmp))  // FIXME: awkwardness of RPForeachVar and RPIndexVar
-					{
-						RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp));
-						smt2 += " (= " + sv + " " + ival.start + ")";
-					}
-				}
-
-				/*//Set<String> curr = peek.keySet().stream().map(k -> k.toString()).collect(Collectors.toSet());
-				if (isValidForeachIndexVar(context, this.src) && isValidForeachIndexVar(context, this.dest))
-				{
-					String sv = srcVars.iterator().next().toString();
-					String dv = destVars.iterator().next().toString();
-					if (curr.contains(sv) && curr.contains(dv))
-					{
-						RPIndexExpr s = peek.get(RPIndexFactory.RPForeachVar(sv)).start;
-						RPIndexExpr d = peek.get(RPIndexFactory.RPForeachVar(dv)).start;
-						if (!(s instanceof RPIndexInt) && !(s instanceof RPIndexInt))
-						{
-							System.err.println("\n[param-core] Interval separation not being fully proved: " + s + "  and  " + d);
-						}
-						if (s.equals(d))
-								// FIXME: use Z3 to prove intervals not equal (not just checking against syntactic equality)
-						{
-							job.debugPrintln("\n[param-core] (Potential) illegal self-communication: " + this);
-							return false;
-						}
-					}
-				}*/
-
-				smt2 += Stream.of(srcRange, destRange)
-						.map(r -> " (>= foobartmp " + r.start.toSmt2Formula() + ") (<= foobartmp " + r.end.toSmt2Formula() + ")")
-						.collect(Collectors.joining());
-				smt2 += ")))";
-				
-				job.debugPrintln("\n[param-core] [WF] Checking non-overlapping ranges (potential self-communication) for " + this.src.getName() + ":\n  " + smt2);
-				
-				if (Z3Wrapper.checkSat(job, gpd, smt2))
-				{
-					return false;
-				}
-				// CHECKME: projection cases for rolename self-comm but non-overlapping intervals
-				
-				// FIXME: only do if both are foreachvars
-				if (hasValidForeachVarIndex(context, this.src) && hasValidForeachVarIndex(context, this.dest))
-				{
-					String sv = ((RPIndexVar) this.src.intervals.iterator().next().start).toString();
-					String dv = ((RPIndexVar) this.dest.intervals.iterator().next().end).toString();
-					RPInterval s = peek.get(RPIndexFactory.RPForeachVar(sv));
-					RPInterval d = peek.get(RPIndexFactory.RPForeachVar(dv));
-					Set<RPIndexVar> tmp = Stream.of(s, d).flatMap(r -> r.getIndexVars().stream()).collect(Collectors.toSet());
-					// Duplicated from DOT_TRANSFER
-					smt2 = "(assert"
-							+ (tmp.isEmpty() ? "" : " (forall (" + tmp.stream().map(v -> "(" + v + " Int)").collect(Collectors.joining(" "))) + ") "
-							+ "(and (= (- " + s.end.toSmt2Formula() + " " + s.start.toSmt2Formula() + ") (- "
-									+ d.end.toSmt2Formula() + " " + d.start.toSmt2Formula() + "))"
-							+ (!this.src.getName().equals(this.dest.getName()) ? "" :
-								" (not (= " + s.start.toSmt2Formula() + " " + d.start.toSmt2Formula() + "))")
-							+ ")"
-							+ (tmp.isEmpty() ? "" : ")")
-							+ ")";
-				
-					job.debugPrintln("\n[param-core] [WF] Checking foreach-var alignment between " + srcRange + " and " + destRange + ":\n  " + smt2);
-					
-					if (!Z3Wrapper.checkSat(job, gpd, smt2))
-					{
-						return false;
-					}
-				}
-			}
-		}
-
-		// Now redundant
-		if (this.kind == RPCoreGActionKind.DOT_TRANSFER)
-		{
-			String smt2 = "(assert"
-					+ (vars.isEmpty() ? "" : " (forall (" + vars.stream().map(v -> "(" + v + " Int)").collect(Collectors.joining(" "))) + ") "
-					+ "(and (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") (- "
-							+ destRange.end.toSmt2Formula() + " " + destRange.start.toSmt2Formula() + "))"
-					+ (!this.src.getName().equals(this.dest.getName()) ? "" :
-						" (not (= " + srcRange.start.toSmt2Formula() + " " + destRange.start.toSmt2Formula() + "))")
-				  + ")"
-					+ (vars.isEmpty() ? "" : ")")
-					+ ")";
-			
-			job.debugPrintln("\n[param-core] [WF] Checking dot-range alignment between " + srcRange + " and " + destRange + ":\n  " + smt2);
-			
-			if (!Z3Wrapper.checkSat(job, gpd, smt2))
-			{
-				return false;
-			}
-		}
-
 		return true;
 	}
 

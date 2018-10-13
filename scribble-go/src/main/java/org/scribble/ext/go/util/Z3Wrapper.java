@@ -2,9 +2,13 @@ package org.scribble.ext.go.util;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Set;
 
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ext.go.core.ast.global.RPCoreGType;
+import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.RPIndexPair;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.util.ScribUtil;
@@ -92,6 +96,23 @@ public class Z3Wrapper
 		}
 		return "(" + op + " " + x.toSmt2Formula() + " " + y.toSmt2Formula() + ")";
 	}*/
+
+	public static Smt2Translator getSmt2Translator(RPCoreGType gt)
+	{
+		Set<RPIndexedRole> irs = gt.getIndexedRoles();
+		if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().allMatch(z -> z instanceof RPIndexPair))))
+		{
+			return new PairSmt2Translator();
+		}
+		else if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().noneMatch(z -> z instanceof RPIndexPair))))
+		{
+			return new IntSmt2Translator();
+		}
+		else
+		{
+			throw new RuntimeException("Shouldn't get in here: " + irs);
+		}
+	}
 
 	// Based on CommandLine::runDot, JobContext::runAut, etc
 	public static boolean checkSat(GoJob job, ProtocolDecl<Global> gpd, String smt2) //throws ScribbleException

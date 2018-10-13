@@ -39,11 +39,8 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
-import org.scribble.ext.go.type.index.RPIndexPair;
 import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
-import org.scribble.ext.go.util.IntSmt2Translator;
-import org.scribble.ext.go.util.PairSmt2Translator;
 import org.scribble.ext.go.util.RecursiveFunctionalInterface;
 import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.ext.go.util.Z3Wrapper;
@@ -256,27 +253,14 @@ public class RPCoreCommandLine extends CommandLine
 
 		RPCoreAstFactory af = new RPCoreAstFactory();
 		RPCoreGType gt = new RPCoreGProtocolDeclTranslator(job, af).translate(this.gpd);
+
+		Smt2Translator smt2t = Z3Wrapper.getSmt2Translator(gt);
 		
 		job.debugPrintln("\n[rp-core] Translated:\n  " + gt);
 		
-		if (!gt.isWellFormed(job, new Stack<>(), gpd))
+		if (!gt.isWellFormed(job, new Stack<>(), gpd, smt2t))
 		{
 			throw new RPCoreException("[rp-core] Global type not well-formed:\n  " + gt);
-		}
-
-		Smt2Translator smt2t;
-		Set<RPIndexedRole> irs = gt.getIndexedRoles();
-		if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().allMatch(z -> z instanceof RPIndexPair))))
-		{
-			smt2t = new PairSmt2Translator();
-		}
-		else if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().noneMatch(z -> z instanceof RPIndexPair))))
-		{
-			smt2t = new IntSmt2Translator();
-		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get in here: " + irs);
 		}
 
 		//Map<Role, Set<Set<ParamRange>>> 

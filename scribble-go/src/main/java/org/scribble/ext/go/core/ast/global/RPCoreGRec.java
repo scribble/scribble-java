@@ -18,6 +18,7 @@ import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPForeachVar;
+import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -43,9 +44,9 @@ public class RPCoreGRec extends RPCoreRec<RPCoreGType, Global> implements RPCore
 	}
 	
 	@Override
-	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd)
+	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd, Smt2Translator smt2t)
 	{
-		return this.body.isWellFormed(job, context, gpd);
+		return this.body.isWellFormed(job, context, gpd, smt2t);
 	}
 	
 	@Override
