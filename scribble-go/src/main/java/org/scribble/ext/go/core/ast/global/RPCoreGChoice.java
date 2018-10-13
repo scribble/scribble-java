@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -315,16 +316,26 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	private boolean checkSingletonChoiceSubject(GoJob job, GProtocolDecl gpd, Set<RPIndexVar> vars, Smt2Translator smt2t)
 	{
 		RPInterval srcRange = this.src.getParsedRange();
-		String bar = "(assert "
+		/*String bar = "(assert "
 				+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and ")
 				+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
 				+ "(not (= (- " + srcRange.end.toSmt2Formula() + " " + srcRange.start.toSmt2Formula() + ") 0))"
 				+ (vars.isEmpty() ? "" : "))")
-				+ ")";
+				+ ")";*/
+		
+		List<String> cs = new LinkedList<>();
+		vars.forEach(v -> cs.add(smt2t.makeGte(v.toSmt2Formula(), "1")));
+		cs.add(smt2t.makeNot(smt2t.makeEq(smt2t.makeSub(srcRange.end.toSmt2Formula(), srcRange.start.toSmt2Formula()), "0")));
+		String smt2 = smt2t.makeAnd(cs);
+		if (!vars.isEmpty())
+		{
+			smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula()).collect(Collectors.toList()), smt2);
+		}
+		smt2 = smt2t.makeAssert(smt2);
 
-		job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subject for " + this.src + ":\n  " + bar); 
+		job.debugPrintln("\n[param-core] [WF] Checking singleton choice-subject for " + this.src + ":\n  " + smt2); 
 
-		if (Z3Wrapper.checkSat(job, gpd, bar))
+		if (Z3Wrapper.checkSat(job, gpd, smt2))
 		{
 			return false;
 		}
