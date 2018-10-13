@@ -84,6 +84,50 @@ public class RPBinIndexExpr extends RPIndexExpr
 					return RPIndexFactory.ParamBinIndexExpr(Op.Subt, right, RPIndexFactory.ParamIntVal(-x));
 				}
 			}
+			else
+			{
+				if (right instanceof RPIndexPair)
+				{
+					RPIndexPair y = ((RPIndexPair) right);
+					if (left instanceof RPIndexPair)
+					{
+						RPIndexPair x = ((RPIndexPair) left);
+						switch (this.op) 
+						{
+							case Add:  return RPIndexFactory.RPIndexPair(RPIndexFactory.ParamIntVal(((RPIndexInt) x.left).val + ((RPIndexInt) y.left).val),
+									RPIndexFactory.ParamIntVal(((RPIndexInt) x.right).val + ((RPIndexInt) y.right).val));
+							case Subt: RPIndexFactory.RPIndexPair(RPIndexFactory.ParamIntVal(((RPIndexInt) x.left).val - ((RPIndexInt) y.left).val),
+									RPIndexFactory.ParamIntVal(((RPIndexInt) x.right).val - ((RPIndexInt) y.right).val));
+							case Mult: //return RPIndexFactory.ParamIntVal(x * y);
+							default: throw new RuntimeException("Shouldn't get in here: " + this);
+						}
+					}
+					else
+					{
+						/*if (y < 0)  // TODO
+						{
+							if  (this.op == Op.Add)
+							{
+								return RPIndexFactory.ParamBinIndexExpr(Op.Subt, left, RPIndexFactory.ParamIntVal(-y));
+							}
+							else if  (this.op == Op.Subt)
+							{
+								return RPIndexFactory.ParamBinIndexExpr(Op.Add, left, RPIndexFactory.ParamIntVal(-y));
+							}
+						}*/
+					}
+				}
+				else
+				{
+					/*if (left instanceof RPIndexPair)  // TODO
+					{
+						int x = ((RPIndexInt) left).val;
+						if (x < 0 && this.op == Op.Add)
+						{
+							return RPIndexFactory.ParamBinIndexExpr(Op.Subt, right, RPIndexFactory.ParamIntVal(-x));
+					}*/
+				}
+			}
 		}
 		return RPIndexFactory.ParamBinIndexExpr(this.op, left, right);
 	}

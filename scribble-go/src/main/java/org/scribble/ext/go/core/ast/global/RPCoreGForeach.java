@@ -171,10 +171,11 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		{
 			return RPCoreLCont.CONT;
 		}
+		
 		RPAnnotatedInterval max = ivals.stream()
 				.filter(x -> ivals.stream().filter(y -> !x.equals(y))
-						//.allMatch(y -> ((RPIndexInt) x.start).val >= ((RPIndexInt) y.start).val))
-						.allMatch(y -> ((RPIndexVal) x.start).gtEq(((RPIndexVal) y.start))))
+						////.allMatch(y -> ((RPIndexInt) x.start).val >= ((RPIndexInt) y.start).val))
+						.allMatch(y -> ((RPIndexVal) x.start).gtEq(((RPIndexVal) y.start))))  // FIXME: general index expressions
 				.findFirst().get();
 						// FIXME: non-RPIndexInt start exprs for nat intervals -- FIXME: generalised interval comparison (multidim)
 		RPIndexVar var = RPIndexFactory.ParamIntVar(max.var.toString());  // N.B. not RPForeachVar -- occurrences in body are parsed as RPIndexVar, not RPForeachVar
