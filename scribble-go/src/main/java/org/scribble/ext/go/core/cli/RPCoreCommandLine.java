@@ -524,7 +524,7 @@ public class RPCoreCommandLine extends CommandLine
 											.collect(Collectors.toSet());
 									vars.addAll(ir.getIndexVars());
 
-									String smt2 = "(assert ";
+									/*String smt2 = "(assert ";
 									smt2 += "(exists ((peer Int) "
 											+  (vars.isEmpty() ? "" : vars.stream()
 													.map(x -> "(" + x + " Int)").collect(Collectors.joining(" "))) + ")\n";
@@ -543,7 +543,7 @@ public class RPCoreCommandLine extends CommandLine
 													// ...and the peer index is outside one of the peer-variant cointervals
 									smt2 += "(>= peer " + d.start.toSmt2Formula() + ") (<= peer " + d.end.toSmt2Formula() + ")\n";
 													// ...and the peer index is inside our I/O action interval -- then this is peer-variant is a peer
-									
+
 									if (vars.contains(RPIndexSelf.SELF))
 									{
 										// FIXME: factor out variant/covariant inclusion/exclusion with above
@@ -556,12 +556,47 @@ public class RPCoreCommandLine extends CommandLine
 												: "(or " + self.cointervals.stream()
 														.map(x -> "(< self " + x.start.toSmt2Formula() + ") (> self " + x.end.toSmt2Formula() + ")")
 														.collect(Collectors.joining(" ")) + ")\n";
-														// ...and the peer index is outside one of the peer-variant cointervals
+														// ...and the self index is outside one of the self-variant cointervals
 									}
+
+									smt2 += ")";
+									smt2 += ")";
+									smt2 += ")";
+									*/
 									
-									smt2 += ")";
-									smt2 += ")";
-									smt2 += ")";
+									List<String> cs = new LinkedList<>();
+									cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(), "1")).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
+									for (RPInterval ival : peerVariant.intervals)  // Is there a peer index inside all the peer-variant intervals
+									{
+										cs.add(smt2t.makeGte("peer", ival.start.toSmt2Formula()));
+										cs.add(smt2t.makeLte("peer", ival.end.toSmt2Formula()));
+									}
+									cs.addAll(peerVariant.cointervals.stream()  // ...and the peer index is outside one of the peer-variant cointervals
+											.map(x -> smt2t.makeOr(smt2t.makeLt("peer", x.start.toSmt2Formula()), smt2t.makeGt("peer", x.end.toSmt2Formula()))).collect(Collectors.toList())
+									);
+									// ...and the peer index is inside our I/O action interval -- then this is peer-variant is a peer
+									cs.add(smt2t.makeGte("peer", d.start.toSmt2Formula()));
+									cs.add(smt2t.makeLte("peer", d.end.toSmt2Formula()));
+
+									if (vars.contains(RPIndexSelf.SELF))
+									{
+										// FIXME: factor out variant/covariant inclusion/exclusion with above
+										for (RPInterval ival : self.intervals)  // Is there a self index inside all the self-variant intervals
+										{
+											cs.add(smt2t.makeGte("peer", ival.start.toSmt2Formula()));
+											cs.add(smt2t.makeLte("peer", ival.end.toSmt2Formula()));
+										}
+										cs.addAll(self.cointervals.stream()  // ...and the self index is outside one of the self-variant cointervals
+												.map(x -> smt2t.makeOr(smt2t.makeLt("self", x.start.toSmt2Formula()), smt2t.makeGt("peer", x.end.toSmt2Formula()))).collect(Collectors.toList())
+										);
+									}
+
+									String smt2 = smt2t.makeAnd(cs);
+									List<String> tmp = new LinkedList<>();
+									tmp.add("peer");
+									tmp.addAll(vars.stream().map(x -> x.toSmt2Formula()).collect(Collectors.toList()));
+									smt2 = smt2t.makeExists(tmp, smt2); 
+									smt2 = smt2t.makeAssert(smt2);
 									
 									job.debugPrintln("[rp-core] Running Z3 on " + d + " :\n" + smt2);
 									
@@ -646,7 +681,7 @@ public class RPCoreCommandLine extends CommandLine
 			}
 			smt2 = smt2t.makeAssert(smt2);
 			
-			job.debugPrintln("\n[rp-core] Candidate (" + i++ + "/" + size + "): " + cand);
+			job.debugPrintln("\n[rp-core] Family candidate (" + i++ + "/" + size + "): " + cand);
 			job.debugPrintln("[rp-core] Co-set: " + coset);
 			job.debugPrintln("[rp-core] Running Z3 on:\n" + smt2);
 			
@@ -714,7 +749,7 @@ public class RPCoreCommandLine extends CommandLine
 				}
 				z3 = smt2t.makeAssert(z3);
 				
-				job.debugPrintln("\n[rp-core] Candidate (" + i++ + "/" + size + "): " + cand);
+				job.debugPrintln("\n[rp-core] Variant andidate (" + i++ + "/" + size + "): " + cand);
 				job.debugPrintln("[rp-core] Co-set: " + coset);
 				job.debugPrintln("[rp-core] Running Z3 on:\n" + z3);
 				
