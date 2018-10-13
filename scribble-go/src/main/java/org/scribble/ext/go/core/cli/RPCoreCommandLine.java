@@ -39,9 +39,13 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.index.RPIndexPair;
 import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.ext.go.util.IntSmt2Translator;
+import org.scribble.ext.go.util.PairSmt2Translator;
 import org.scribble.ext.go.util.RecursiveFunctionalInterface;
+import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.main.AntlrSourceException;
 import org.scribble.main.Job;
@@ -260,9 +264,24 @@ public class RPCoreCommandLine extends CommandLine
 			throw new RPCoreException("[rp-core] Global type not well-formed:\n  " + gt);
 		}
 
+		Smt2Translator smt2t;
+		Set<RPIndexedRole> irs = gt.getIndexedRoles();
+		if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().allMatch(z -> z instanceof RPIndexPair))))
+		{
+			smt2t = new PairSmt2Translator();
+		}
+		else if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().noneMatch(z -> z instanceof RPIndexPair))))
+		{
+			smt2t = new IntSmt2Translator();
+		}
+		else
+		{
+			throw new RuntimeException("Shouldn't get in here: " + irs);
+		}
+
 		//Map<Role, Set<Set<ParamRange>>> 
 		Map<Role, Set<RPRoleVariant>> 
-				variants = getVariants(job, gt);
+				variants = getVariants(job, gt, smt2t);
 		
 		job.debugPrintln("\n[rp-core] Computed roles: " + variants);
 
@@ -360,9 +379,9 @@ public class RPCoreCommandLine extends CommandLine
 		//return gt;
 		
 		this.families = new HashSet<>();
-		this.families.addAll(getFamilies(job));
+		this.families.addAll(getFamilies(job, smt2t));
 		this.peers = new HashMap<>();
-		this.peers.putAll(getPeers(job));
+		this.peers.putAll(getPeers(job, smt2t));
 		
 		minimise();
 	}
@@ -458,7 +477,7 @@ public class RPCoreCommandLine extends CommandLine
 	// Compute variant peers of each variant -- which peer variants (possibly self variant) can match the indexed-role peers of self's I/O actions
 	// for "common" endpoint kind factoring (w.r.t. dial/accept, i.e., to look for variants whose set of dial/accept methods is the same for all families it is involved in)
 	// FIXME: optimise, peers are symmetric
-	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> getPeers(GoJob job)
+	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> getPeers(GoJob job, Smt2Translator smt2t)
 	{
 		job.debugPrintln("\n[rp-core] Computing peers:");
 
@@ -577,7 +596,7 @@ public class RPCoreCommandLine extends CommandLine
 		return res;
 	}	
 	
-	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> getFamilies(GoJob job)
+	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> getFamilies(GoJob job, Smt2Translator smt2t)
 	{
 		job.debugPrintln("\n[rp-core] Computing families:");
 
@@ -605,10 +624,10 @@ public class RPCoreCommandLine extends CommandLine
 				smt2 += vars.stream().map(x -> "(>= " + x + " 1)").collect(Collectors.joining(" ")) + "\n";  // FIXME: generalise, parameter domain annotations
 			}
 			smt2 += "(and " + cand.stream()
-					.map(v -> makePhiSmt2(v.intervals, v.cointervals)).collect(Collectors.joining(" ")) + ")\n";
+					.map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t)).collect(Collectors.joining(" ")) + ")\n";
 			smt2 += (coset.size() > 0)
 					? "(and " + coset.stream()
-							.map(v -> "(not " + makePhiSmt2(v.intervals, v.cointervals) + ")").collect(Collectors.joining(" ")) + ")\n"
+							.map(v -> "(not " + makePhiSmt2(v.intervals, v.cointervals, smt2t) + ")").collect(Collectors.joining(" ")) + ")\n"
 					: "";
 			if (!vars.isEmpty())
 			{
@@ -633,7 +652,7 @@ public class RPCoreCommandLine extends CommandLine
 	
 	private //Map<Role, Set<Set<ParamRange>>> 
 			Map<Role, Set<RPRoleVariant>>
-			getVariants(GoJob job, RPCoreGType gt)
+			getVariants(GoJob job, RPCoreGType gt, Smt2Translator smt2t)
 	{
 		Set<RPIndexedRole> prs = gt.getIndexedRoles();
 		
@@ -672,16 +691,15 @@ public class RPCoreCommandLine extends CommandLine
 						.flatMap(Collection::stream)
 						.collect(Collectors.toSet());
 				
-				String z3 = makePhiSmt2(cand, coset);
-				Set<RPIndexVar> vars = Stream.concat(
+				String z3 = makePhiSmt2(cand, coset, smt2t);
+				List<RPIndexVar> vars = Stream.concat(
 							cand.stream().flatMap(c -> c.getIndexVars().stream()),
 							coset.stream().flatMap(c -> c.getIndexVars().stream())
-						).collect(Collectors.toSet());
+						).collect(Collectors.toList());
 				if (!vars.isEmpty())
 				{
-					z3 = "(exists ("
-							+ vars.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" "))
-							+ ") " + z3 + ")";
+					//z3 = "(exists (" + vars.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" ")) + ") " + z3 + ")";
+					z3 = smt2t.makeExists(vars.stream().map(v -> v.toSmt2Formula()).collect(Collectors.toList()), z3);
 				}
 				z3 = "(assert " + z3 + ")";
 				
@@ -702,36 +720,64 @@ public class RPCoreCommandLine extends CommandLine
 	}
 
 	// Doesn't include "assert", nor exists-bind index vars
-	private static String makePhiSmt2(Set<RPInterval> cand, Set<RPInterval> coset)
+	private static String makePhiSmt2(Set<RPInterval> cand, Set<RPInterval> coset, Smt2Translator smt2t)
 	{
-		String z3 = "";
+		List<String> cs = new LinkedList<>();
 
-		if (cand.size() > 0)
+		//if (cand.size() > 0)
 		{
-			z3 += cand.stream().map(c -> 
-						 "(and (>= self " + c.start.toSmt2Formula() + ") (<= self " + c.end.toSmt2Formula() + ")"
-						+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
-						+ ")"
-					).reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
+			//z3 += smt2t.makeAnd(
+			cs.addAll(
+				cand.stream().map(c -> 
+					 //"(and (>= self " + c.start.toSmt2Formula() + ") (<= self " + c.end.toSmt2Formula() + ")" + ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "") + ")"
+					{
+						List<String> tmp = new LinkedList<>();
+						tmp.add(smt2t.makeGte("self", c.start.toSmt2Formula()));
+						tmp.add(smt2t.makeLte("self", c.end.toSmt2Formula()));
+						if (!c.start.isConstant() || !c.end.isConstant())
+						{
+							tmp.add(smt2t.makeLte(c.start.toSmt2Formula(), c.end.toSmt2Formula()));
+						}
+						return smt2t.makeAnd(tmp);
+					})
+				//.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
+				.collect(Collectors.toList())
+			);
 		}
 
-		if (coset.size() > 0)
+		/*if (coset.size() > 0)
 		{
 			if (cand.size() > 0)
 			{
 				z3 = "(and " + z3 + " ";
-			}
-			z3 += coset.stream().map(c -> "(and (not (and (>= self " + c.start.toSmt2Formula() + ") (<= self " + c.end.toSmt2Formula() + ")))"
-						+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
-						+ ")")
-					.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
-			if (cand.size() > 0)
+			}*/
+			cs.addAll(
+				coset.stream().map(c -> 
+				//z3 += coset.stream().map(c -> "(and (not (and (>= self " + c.start.toSmt2Formula() + ") (<= self " + c.end.toSmt2Formula() + ")))" + ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "") + ")")
+					{
+						List<String> tmp = new LinkedList<>();
+						//tmp.add(smt2t.makeOr(smt2t.makeLt("self", c.start.toSmt2Formula()), smt2t.makeGt("self", c.end.toSmt2Formula())));
+						tmp.add(smt2t.makeNot(smt2t.makeAnd(smt2t.makeGte("self", c.start.toSmt2Formula()), smt2t.makeLte("self", c.end.toSmt2Formula()))));
+						if (!c.start.isConstant() || !c.end.isConstant())
+						{
+							tmp.add(smt2t.makeLte(c.start.toSmt2Formula(), c.end.toSmt2Formula()));  // CHECKME: Needed?
+						}
+						return //(tmp.size() == 1) ? tmp.get(0) :
+								smt2t.makeAnd(tmp); 
+					})
+				//.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
+				.collect(Collectors.toList())
+				
+				 //(and (not (and (and (>= self 1) (<= self K))) (<= 1 K)))
+			);
+			/*if (cand.size() > 0)
 			{
 				z3 += ")";
 			}
-		}
+		}*/
 
-		z3 = "(exists ((self Int))" + z3 + ")";
+		String z3 = //"(exists ((self Int))" + z3 + ")";
+				smt2t.makeExists(Stream.of("self").collect(Collectors.toList()), smt2t.makeAnd(cs));
 
 		return z3;
 	}

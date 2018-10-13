@@ -13,7 +13,8 @@ public abstract class RPIndexExpr
 	
 	public abstract String toGoString();  // As basic Go expressions, but not (necessarily) actual code generation "ouput"
 	
-	public abstract Set<RPIndexVar> getVars();  // Doesn't include foreach params
+	public abstract Set<RPIndexExpr> getVals();  // TODO: factor out a "value" interface
+	public abstract Set<RPIndexVar> getVars();  // N.B. doesn't include foreach params
 
 	public abstract String toSmt2Formula();  // Cf. toString -- but can be useful to separate, for debugging (and printing)
 			// TODO: factor out Smt2 translation interface

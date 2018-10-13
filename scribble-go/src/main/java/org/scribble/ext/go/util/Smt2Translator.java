@@ -1,6 +1,7 @@
 package org.scribble.ext.go.util;
 
-import java.util.Set;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ext.go.type.index.RPIndexVar;
@@ -22,24 +23,28 @@ public abstract class Smt2Translator
 	public abstract String getGtOp();
 	public abstract String getGteOp();
 	
-	public String makeVarDecl(RPIndexVar v)
+	//public String makeVarDecl(RPIndexVar v)
+	public String makeVarDecl(String v)
 	{
-		return "(" + v.toSmt2Formula() + " " + getSort() + ")";  // Factor out
+		return "(" + v//.toSmt2Formula() 
+				+ " " + getSort() + ")";  // Factor out
 	}
 
-	public String makeExists(Set<RPIndexVar> vars, String body)
+	//public String makeExists(List<RPIndexVar> vars, String body)
+	public String makeExists(List<String> vars, String body)
 	{
 		return "(exists "
 				+ "(" + vars.stream().map(x -> makeVarDecl(x)).collect(Collectors.joining(" ")) + ")"
-				+ body + ")";
+				+ " " + body + ")";
 	}
 
-	public String makeForall(Set<RPIndexVar> vars, String body)
+	//public String makeForall(List<RPIndexVar> vars, String body)
+	public String makeForall(List<String> vars, String body)
 	{
 		// TODO: factor out with above
 		return "(forall "
 				+ "(" + vars.stream().map(x -> makeVarDecl(x)).collect(Collectors.joining(" ")) + ")"
-				+ body + ")";
+				+ " " + body + ")";
 	}
 
 	public String makeLt(String x, String y)
@@ -62,18 +67,33 @@ public abstract class Smt2Translator
 		return "(" + getGteOp() + " " + x + " " + y + ")"; 
 	}
 
-	public String makeAnd(Set<String> cs)
+	public String makeAnd(String... cs)  // OK because cs last parameter
+	{
+		return makeAnd(Arrays.asList(cs)); 
+	}
+
+	public String makeAnd(List<String> cs)
 	{
 		return "(and " + cs.stream().collect(Collectors.joining(" ")) + ")"; 
 	}
 
-	public String makeOr(Set<String> cs)
+	public String makeOr(String... cs)
+	{
+		return makeOr(Arrays.asList(cs)); 
+	}
+
+	public String makeOr(List<String> cs)
 	{
 		return "(or " + cs.stream().collect(Collectors.joining(" ")) + ")"; 
 	}
 
 	public String makeNot(String c)
 	{
-		return "(not " + "(" + c + "))"; 
+		return "(not " + c + ")"; 
+	}
+	
+	public String makeAssert(String body)
+	{
+		return "(assert " + body + ")";
 	}
 }

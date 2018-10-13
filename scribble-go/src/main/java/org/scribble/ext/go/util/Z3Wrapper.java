@@ -5,8 +5,6 @@ import java.util.Arrays;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ext.go.main.GoJob;
-import org.scribble.ext.go.type.index.RPIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexPair;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.util.ScribUtil;

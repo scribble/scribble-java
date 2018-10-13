@@ -28,6 +28,11 @@ public class RPInterval
 		return new RPInterval(this.start.minimise(self), this.end.minimise(self));
 	}
 	
+	public Set<RPIndexExpr> getIndexVals()
+	{
+		return Stream.of(this.start, this.end).flatMap(p -> p.getVals().stream()).collect(Collectors.toSet());
+	}
+
 	//public Set<ParamRoleParam> getActualParams()  // Hack
 	public Set<RPIndexVar> getIndexVars()
 	{

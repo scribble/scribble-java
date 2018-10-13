@@ -110,6 +110,14 @@ public class RPBinIndexExpr extends RPIndexExpr
 	}
 
 	@Override
+	public Set<RPIndexExpr> getVals()
+	{
+		Set<RPIndexExpr> vals = new HashSet<>(this.left.getVals());
+		vals.addAll(this.right.getVals());
+		return vals;
+	}
+
+	@Override
 	public Set<RPIndexVar> getVars()
 	{
 		Set<RPIndexVar> vars = new HashSet<>(this.left.getVars());

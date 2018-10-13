@@ -2,6 +2,8 @@ package org.scribble.ext.go.type.index;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // Integer literal
 public class RPIndexInt extends RPIndexExpr
@@ -35,6 +37,12 @@ public class RPIndexInt extends RPIndexExpr
 	public String toSmt2Formula()
 	{
 		return Integer.toString(this.val);
+	}
+
+	@Override
+	public Set<RPIndexExpr> getVals()
+	{
+		return Stream.of(this).collect(Collectors.toSet());
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package org.scribble.ext.go.type.index;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,6 +42,12 @@ public class RPIndexVar extends RPIndexExpr  // FIXME: extend AbstractName?  cf.
 		return this.name;
 	}
 	
+	@Override
+	public Set<RPIndexExpr> getVals()
+	{
+		return Collections.emptySet();
+	}
+
 	@Override
 	public Set<RPIndexVar> getVars()
 	{
