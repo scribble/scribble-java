@@ -52,12 +52,12 @@ public class PairSmt2Translator extends Smt2Translator
 	@Override
 	public String getPlusOp()
 	{
-		throw new RuntimeException("TODO: ");
+		return "pair_plus";
 	}
 
 	@Override
 	public String getSubOp()
 	{
-		throw new RuntimeException("TODO: ");
+		return "pair_sub";
 	}
 }

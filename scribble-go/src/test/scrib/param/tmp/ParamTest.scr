@@ -8,11 +8,13 @@
 module param.tmp.ParamTest;
 
 
+/*
 global protocol Proto1(role A, role B)
 {
 	Foo() from A[(1,1)] to B[K];
 	//Foo() from A[1] to B[1];
 }
+//*/
 
 
 /*
@@ -23,10 +25,15 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-/*//foreach { A , B , C }{ i:k 11 ..k wh } do ( A [ i ]→ C [ i ] :Val.B [ i ]→ C [ i ] :Val.cont ) ;end
+//*
+//foreach { A , B , C }{ i:k 11 ..k wh } do ( A [ i ]→ C [ i ] :Val.B [ i ]→ C [ i ] :Val.cont ) ;end
 global protocol Proto1(role A, role B, role C)
 {
-	foreach A[I:(1,1),(W,H)]
+	foreach A[IA:(1,1),K], B[IB:(1,1),K], C[IC:(1,1),K]
+	{
+		Foo() from A[IA] to C[IC];
+		Bar() from B[IB] to C[IC];
+	}
 }
 //*/
 

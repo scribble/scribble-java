@@ -492,7 +492,7 @@ public class RPCoreCommandLine extends CommandLine
 						if (//!peerVariant.equals(self) &&   // No: e.g., pipe/ring middlemen
 								!peers.contains(peerVariant))
 						{
-							job.debugPrintln("\n[rp-core] For " + self + ", checking potential peer: " + peerVariant);
+							job.debugPrintln("\n[rp-core] For " + self + ", checking peer candidate: " + peerVariant);
 									// "checking potential peer" means checking if any of our action-peer indexed roles fits the candidate variant-peer (so we would need a dial/accept for them)
 							for (RPIndexedRole ir : actionIRs)
 							{
@@ -549,36 +549,36 @@ public class RPCoreCommandLine extends CommandLine
 									*/
 									
 									List<String> cs = new LinkedList<>();
-									cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
+									cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
 									for (RPInterval ival : peerVariant.intervals)  // Is there a peer index inside all the peer-variant intervals
 									{
-										cs.add(smt2t.makeGte("peer", ival.start.toSmt2Formula()));
-										cs.add(smt2t.makeLte("peer", ival.end.toSmt2Formula()));
+										cs.add(smt2t.makeGte("peer", ival.start.toSmt2Formula(smt2t)));
+										cs.add(smt2t.makeLte("peer", ival.end.toSmt2Formula(smt2t)));
 									}
 									cs.addAll(peerVariant.cointervals.stream()  // ...and the peer index is outside one of the peer-variant cointervals
-											.map(x -> smt2t.makeOr(smt2t.makeLt("peer", x.start.toSmt2Formula()), smt2t.makeGt("peer", x.end.toSmt2Formula()))).collect(Collectors.toList())
+											.map(x -> smt2t.makeOr(smt2t.makeLt("peer", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("peer", x.end.toSmt2Formula(smt2t)))).collect(Collectors.toList())
 									);
 									// ...and the peer index is inside our I/O action interval -- then this is peer-variant is a peer
-									cs.add(smt2t.makeGte("peer", d.start.toSmt2Formula()));
-									cs.add(smt2t.makeLte("peer", d.end.toSmt2Formula()));
+									cs.add(smt2t.makeGte("peer", d.start.toSmt2Formula(smt2t)));
+									cs.add(smt2t.makeLte("peer", d.end.toSmt2Formula(smt2t)));
 
 									if (vars.contains(RPIndexSelf.SELF))
 									{
 										// FIXME: factor out variant/covariant inclusion/exclusion with above
 										for (RPInterval ival : self.intervals)  // Is there a self index inside all the self-variant intervals
 										{
-											cs.add(smt2t.makeGte("peer", ival.start.toSmt2Formula()));
-											cs.add(smt2t.makeLte("peer", ival.end.toSmt2Formula()));
+											cs.add(smt2t.makeGte("peer", ival.start.toSmt2Formula(smt2t)));
+											cs.add(smt2t.makeLte("peer", ival.end.toSmt2Formula(smt2t)));
 										}
 										cs.addAll(self.cointervals.stream()  // ...and the self index is outside one of the self-variant cointervals
-												.map(x -> smt2t.makeOr(smt2t.makeLt("self", x.start.toSmt2Formula()), smt2t.makeGt("peer", x.end.toSmt2Formula()))).collect(Collectors.toList())
+												.map(x -> smt2t.makeOr(smt2t.makeLt("self", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("peer", x.end.toSmt2Formula(smt2t)))).collect(Collectors.toList())
 										);
 									}
 
 									String smt2 = smt2t.makeAnd(cs);
 									List<String> tmp = new LinkedList<>();
 									tmp.add("peer");
-									tmp.addAll(vars.stream().map(x -> x.toSmt2Formula()).collect(Collectors.toList()));
+									tmp.addAll(vars.stream().map(x -> x.toSmt2Formula(smt2t)).collect(Collectors.toList()));
 									smt2 = smt2t.makeExists(tmp, smt2); 
 									smt2 = smt2t.makeAssert(smt2);
 									
@@ -655,13 +655,13 @@ public class RPCoreCommandLine extends CommandLine
 			smt2 += ")";*/
 			
 			List<String> cs = new LinkedList<>();
-			cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
+			cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
 			cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t)).collect(Collectors.toList()));
 			cs.addAll(coset.stream().map(v -> smt2t.makeNot(makePhiSmt2(v.intervals, v.cointervals, smt2t))).collect(Collectors.toList()));
 			String smt2 = smt2t.makeAnd(cs);
 			if (!vars.isEmpty())
 			{
-				smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula()).collect(Collectors.toList()), smt2); 
+				smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula(smt2t)).collect(Collectors.toList()), smt2); 
 			}
 			smt2 = smt2t.makeAssert(smt2);
 			
@@ -729,7 +729,7 @@ public class RPCoreCommandLine extends CommandLine
 				if (!vars.isEmpty())
 				{
 					//z3 = "(exists (" + vars.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" ")) + ") " + z3 + ")";
-					z3 = smt2t.makeExists(vars.stream().map(v -> v.toSmt2Formula()).collect(Collectors.toList()), z3);
+					z3 = smt2t.makeExists(vars.stream().map(v -> v.toSmt2Formula(smt2t)).collect(Collectors.toList()), z3);
 				}
 				z3 = smt2t.makeAssert(z3);
 				
@@ -762,11 +762,11 @@ public class RPCoreCommandLine extends CommandLine
 					 //"(and (>= self " + c.start.toSmt2Formula() + ") (<= self " + c.end.toSmt2Formula() + ")" + ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "") + ")"
 					{
 						List<String> tmp = new LinkedList<>();
-						tmp.add(smt2t.makeGte("self", c.start.toSmt2Formula()));
-						tmp.add(smt2t.makeLte("self", c.end.toSmt2Formula()));
+						tmp.add(smt2t.makeGte("self", c.start.toSmt2Formula(smt2t)));
+						tmp.add(smt2t.makeLte("self", c.end.toSmt2Formula(smt2t)));
 						if (!c.start.isConstant() || !c.end.isConstant())
 						{
-							tmp.add(smt2t.makeLte(c.start.toSmt2Formula(), c.end.toSmt2Formula()));
+							tmp.add(smt2t.makeLte(c.start.toSmt2Formula(smt2t), c.end.toSmt2Formula(smt2t)));
 						}
 						return smt2t.makeAnd(tmp);
 					})
@@ -787,10 +787,10 @@ public class RPCoreCommandLine extends CommandLine
 					{
 						List<String> tmp = new LinkedList<>();
 						//tmp.add(smt2t.makeOr(smt2t.makeLt("self", c.start.toSmt2Formula()), smt2t.makeGt("self", c.end.toSmt2Formula())));
-						tmp.add(smt2t.makeNot(smt2t.makeAnd(smt2t.makeGte("self", c.start.toSmt2Formula()), smt2t.makeLte("self", c.end.toSmt2Formula()))));
+						tmp.add(smt2t.makeNot(smt2t.makeAnd(smt2t.makeGte("self", c.start.toSmt2Formula(smt2t)), smt2t.makeLte("self", c.end.toSmt2Formula(smt2t)))));
 						if (!c.start.isConstant() || !c.end.isConstant())
 						{
-							tmp.add(smt2t.makeLte(c.start.toSmt2Formula(), c.end.toSmt2Formula()));  // CHECKME: Needed?
+							tmp.add(smt2t.makeLte(c.start.toSmt2Formula(smt2t), c.end.toSmt2Formula(smt2t)));  // CHECKME: Needed?
 						}
 						return (tmp.size() == 1) ? tmp.get(0) : smt2t.makeAnd(tmp); 
 					})

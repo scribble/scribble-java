@@ -5,9 +5,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.scribble.ext.go.util.Smt2Translator;
+
 
 // Currently only considered as a value
-public class RPIndexPair extends RPIndexExpr
+public class RPIndexPair extends RPIndexExpr implements RPIndexVal
 {
 	public final RPIndexExpr left;
 	public final RPIndexExpr right;
@@ -29,6 +31,13 @@ public class RPIndexPair extends RPIndexExpr
 	}*/
 
 	@Override
+	public boolean gtEq(RPIndexVal them)
+	{
+		RPIndexPair p = (RPIndexPair) them;
+		return ((RPIndexInt) this.left).val >= ((RPIndexInt) p.left).val && ((RPIndexInt) this.right).val >= ((RPIndexInt) p.right).val;
+	}
+
+	@Override
 	public RPIndexExpr minimise(int self)
 	{
 		return RPIndexFactory.RPIndexPair(this.left.minimise(self), this.right.minimise(self));
@@ -42,10 +51,10 @@ public class RPIndexPair extends RPIndexExpr
 	}
 	
 	@Override
-	public String toSmt2Formula()
+	public String toSmt2Formula(Smt2Translator smt2t)
 	{
-		String left = this.left.toSmt2Formula();
-		String right = this.right.toSmt2Formula();
+		String left = this.left.toSmt2Formula(smt2t);
+		String right = this.right.toSmt2Formula(smt2t);
 		return "(mk-pair " + left + " " + right + ")";
 	}
 

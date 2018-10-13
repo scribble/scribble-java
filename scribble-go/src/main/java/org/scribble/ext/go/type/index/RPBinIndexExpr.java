@@ -3,6 +3,8 @@ package org.scribble.ext.go.type.index;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.scribble.ext.go.util.Smt2Translator;
+
 
 // Binary arithmetic
 public class RPBinIndexExpr extends RPIndexExpr
@@ -20,8 +22,8 @@ public class RPBinIndexExpr extends RPIndexExpr
 			{
 				case Add:  return "+";
 				case Subt: return "-";
-				case Mult: return "*";
-				default: throw new RuntimeException("[param] Won't get in here: " + this);
+				case Mult: //return "*";
+				default: throw new RuntimeException("[param] Shouldn't get in here: " + this);
 			}
 		}
 	}
@@ -94,16 +96,16 @@ public class RPBinIndexExpr extends RPIndexExpr
 	}
 	
 	@Override
-	public String toSmt2Formula()
+	public String toSmt2Formula(Smt2Translator smt2t)
 	{
-		String left = this.left.toSmt2Formula();
-		String right = this.right.toSmt2Formula();
+		String left = this.left.toSmt2Formula(smt2t);
+		String right = this.right.toSmt2Formula(smt2t);
 		String op;
 		switch(this.op)
 		{
-			case Add:  op = "+"; break;
-			case Subt: op = "-"; break;
-			case Mult: op = "*"; break;
+			case Add:  op = smt2t.getPlusOp(); break;
+			case Subt: op = smt2t.getSubOp(); break;
+			//case Mult: op = "*"; break;
 			default:   throw new RuntimeException("[param] Shouldn't get in here: " + this.op);
 		}
 		return "(" + op + " " + left + " " + right + ")";

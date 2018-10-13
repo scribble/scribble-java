@@ -5,14 +5,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.scribble.ext.go.util.Smt2Translator;
+
 // Integer literal
-public class RPIndexInt extends RPIndexExpr
+public class RPIndexInt extends RPIndexExpr implements RPIndexVal
 {
 	public final int val;
 
 	protected RPIndexInt(int i)
 	{
 		this.val = i; 
+	}
+
+	@Override
+	public boolean gtEq(RPIndexVal them)
+	{
+		return this.val >= ((RPIndexInt) them).val;
 	}
 
 	@Override
@@ -34,7 +42,7 @@ public class RPIndexInt extends RPIndexExpr
 	}
 		
 	@Override
-	public String toSmt2Formula()
+	public String toSmt2Formula(Smt2Translator smt2t)
 	{
 		return Integer.toString(this.val);
 	}

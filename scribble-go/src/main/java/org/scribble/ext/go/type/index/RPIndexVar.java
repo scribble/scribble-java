@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.scribble.ext.go.util.Smt2Translator;
+
 // Variable occurrence
 public class RPIndexVar extends RPIndexExpr  // FIXME: extend AbstractName?  cf. Role -- e.g., for compatibility with NameCollector
 {
@@ -32,7 +34,7 @@ public class RPIndexVar extends RPIndexExpr  // FIXME: extend AbstractName?  cf.
 	}
 		
 	@Override
-	public String toSmt2Formula()
+	public String toSmt2Formula(Smt2Translator smt2t)
 	{
 		/*if (this.name.startsWith("_dum"))  // FIXME
 		{

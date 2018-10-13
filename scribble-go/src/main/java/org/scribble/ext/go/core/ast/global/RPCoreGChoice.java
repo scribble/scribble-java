@@ -170,15 +170,15 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 					+ ")";*/
 			
 			List<String> cs = new LinkedList<>();
-			cs.add(smt2t.makeEq(smt2t.makeSub(s.end.toSmt2Formula(), s.start.toSmt2Formula()), smt2t.makeSub(d.end.toSmt2Formula(), d.start.toSmt2Formula())));
+			cs.add(smt2t.makeEq(smt2t.makeSub(s.end.toSmt2Formula(smt2t), s.start.toSmt2Formula(smt2t)), smt2t.makeSub(d.end.toSmt2Formula(smt2t), d.start.toSmt2Formula(smt2t))));
 			if (this.src.getName().equals(this.dest.getName()))
 			{
-				cs.add(smt2t.makeNot(smt2t.makeEq(s.start.toSmt2Formula(), d.start.toSmt2Formula())));
+				cs.add(smt2t.makeNot(smt2t.makeEq(s.start.toSmt2Formula(smt2t), d.start.toSmt2Formula(smt2t))));
 			}
 			String smt2 = (cs.size() == 1) ? cs.get(0) : smt2t.makeAnd(cs);
 			if (!vars.isEmpty())
 			{
-				smt2 = smt2t.makeForall(vars.stream().map(x -> x.toSmt2Formula()).collect(Collectors.toList()), smt2);
+				smt2 = smt2t.makeForall(vars.stream().map(x -> x.toSmt2Formula(smt2t)).collect(Collectors.toList()), smt2);
 			}
 			smt2 = smt2t.makeAssert(smt2);
 		
@@ -251,7 +251,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		smt2 += ")))";*/
 		
 		List<String> cs = new LinkedList<>();
-		vars.forEach(x -> cs.add(smt2t.makeGte(x.toSmt2Formula(), smt2t.getDefaultBaseValue())));
+		vars.forEach(x -> cs.add(smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())));
 		Set<RPIndexVar> srcAndDestVars = new HashSet<>();
 		srcAndDestVars.addAll(this.src.getIndexVars());
 		srcAndDestVars.addAll(this.dest.getIndexVars());
@@ -261,17 +261,17 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			if (curr.contains(tmp))  // FIXME: awkwardness of RPForeachVar and RPIndexVar
 			{
 				RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp));
-				cs.add(smt2t.makeEq(sv.toSmt2Formula(), ival.start.toSmt2Formula()));
+				cs.add(smt2t.makeEq(sv.toSmt2Formula(smt2t), ival.start.toSmt2Formula(smt2t)));
 			}
 		}
 		Stream.of(srcRange, destRange).forEach(r -> 
 		{
-			cs.add(smt2t.makeGte("foobartmp", r.start.toSmt2Formula()));
-			cs.add(smt2t.makeLte("foobartmp", r.end.toSmt2Formula()));
+			cs.add(smt2t.makeGte("foobartmp", r.start.toSmt2Formula(smt2t)));
+			cs.add(smt2t.makeLte("foobartmp", r.end.toSmt2Formula(smt2t)));
 		});
 		List<String> tmp = new LinkedList<>();
 		tmp.add("foobartmp");
-		vars.forEach(x -> tmp.add(x.toSmt2Formula()));
+		vars.forEach(x -> tmp.add(x.toSmt2Formula(smt2t)));
 		String smt2 = smt2t.makeAssert(smt2t.makeExists(tmp, smt2t.makeAnd(cs)));
 		
 		job.debugPrintln("\n[param-core] [WF] Checking non-overlapping ranges (potential self-communication) for " + this.src.getName() + ":\n  " + smt2);
@@ -323,12 +323,12 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				+ ")";*/
 		
 		List<String> cs = new LinkedList<>();
-		vars.forEach(v -> cs.add(smt2t.makeGte(v.toSmt2Formula(), smt2t.getDefaultBaseValue())));
-		cs.add(smt2t.makeNot(smt2t.makeEq(smt2t.makeSub(srcRange.end.toSmt2Formula(), srcRange.start.toSmt2Formula()), smt2t.getZeroValue())));
+		vars.forEach(v -> cs.add(smt2t.makeGte(v.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())));
+		cs.add(smt2t.makeNot(smt2t.makeEq(smt2t.makeSub(srcRange.end.toSmt2Formula(smt2t), srcRange.start.toSmt2Formula(smt2t)), smt2t.getZeroValue())));
 		String smt2 = smt2t.makeAnd(cs);
 		if (!vars.isEmpty())
 		{
-			smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula()).collect(Collectors.toList()), smt2);
+			smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula(smt2t)).collect(Collectors.toList()), smt2);
 		}
 		smt2 = smt2t.makeAssert(smt2);
 
@@ -381,12 +381,12 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		Function<RPInterval, String> foo1 = r ->  // FIXME: factor out with above
 		{
 			List<String> cs = new LinkedList<>();
-			vars.forEach(x -> cs.add(smt2t.makeGte(x.toSmt2Formula(), smt2t.getDefaultBaseValue())));
-			cs.add(smt2t.makeGt(r.start.toSmt2Formula(), r.end.toSmt2Formula()));
+			vars.forEach(x -> cs.add(smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())));
+			cs.add(smt2t.makeGt(r.start.toSmt2Formula(smt2t), r.end.toSmt2Formula(smt2t)));
 			String smt2 = smt2t.makeAnd(cs);
 			if (!vars.isEmpty())
 			{
-				smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula()).collect(Collectors.toList()), smt2);
+				smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula(smt2t)).collect(Collectors.toList()), smt2);
 			}
 			return smt2t.makeAssert(smt2);
 		};
