@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.cli;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -298,10 +299,24 @@ public class RPCoreCommandLine extends CommandLine
 
 		RPCoreEGraphBuilder builder = new RPCoreEGraphBuilder(job);
 		this.E0 = new HashMap<>();
-		for (Role r : L0.keySet())
+		for (Role r : (Iterable<Role>) L0.keySet().stream().sorted(  // For consistent state numbering
+					new Comparator<Role>() {
+						@Override
+						public int compare(Role o1, Role o2) {
+							return o1.toString().compareTo(o2.toString());
+						}
+					}				
+				)::iterator)
 		{
 			//for (Set<ParamRange> ranges : this.P0.get(r).keySet())
-			for (RPRoleVariant variant : this.L0.get(r).keySet())
+			for (RPRoleVariant variant : (Iterable<RPRoleVariant>) this.L0.get(r).keySet().stream().sorted(
+						new Comparator<RPRoleVariant>() {
+							@Override
+							public int compare(RPRoleVariant o1, RPRoleVariant o2) {
+								return o1.toString().compareTo(o2.toString());
+							}
+						}				
+					)::iterator)
 			{
 				
 				//System.out.println("\nProjection onto " + variant + ": " + this.L0.get(r).get(variant));

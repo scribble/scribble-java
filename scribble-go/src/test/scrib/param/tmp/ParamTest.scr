@@ -11,8 +11,45 @@ module param.tmp.ParamTest;
 sig <go> "message.QuoteReq" from "github.com/nickng/scribble-go-examples/11_quote-request/message" as QuoteReq;
 type <go> "message.Quote" from "github.com/nickng/scribble-go-examples/11_quote-request/message" as Quote;
 
-
 global protocol Proto1(role Buyer, role Supplier, role Manufacturer) {
+  // (1) Buyer requests quote from Suppliers.
+  QuoteReq from Buyer[1] to Supplier[1,S];
+  do Negotiate(Buyer, Supplier, Manufacturer);
+}
+
+aux global protocol Negotiate(role Buyer, role Supplier, role Manufacturer) {
+  // (2) All Suppliers forward quote request to their Manufacturers.
+  /*foreach Supplier[I:1,S] {
+    foreach Manufacturer[J:1,M] {
+      QuoteReq from Supplier[I] to Manufacturer[J];
+      Reply(Quote) from Manufacturer[J] to Supplier[I];
+    }
+  }*/
+  QuoteReq from Supplier[1,S] to Manufacturer[1,M];
+  Reply(Quote) from Manufacturer[1,M] to Supplier[1,S];
+  // (3) Suppliers build quote for the Buyer,
+  //     which is then sent back to the Buyer.
+  Reply(Quote) from Supplier[1,S] to Buyer[1];
+  do MakeDeal(Buyer, Supplier, Manufacturer);
+}
+
+aux global protocol MakeDeal(role Buyer, role Supplier, role Manufacturer) {
+  choice at Buyer[1] {
+    // (4a) Either the Buyer agrees to the quote and place order.
+    Order(Quote) from Buyer[1] to Supplier[1,S];
+    End() from Supplier[1] to Manufacturer[1,M];
+    End() from Supplier[1,S] to Manufacturer[1,M];
+  } or {
+    // (4b) Or the Buyer modify the quote and send back to Suppliers.
+    Modify(Quote) from Buyer[1] to Supplier[1,S];
+    Wait() from Supplier[1] to Manufacturer[1,M];
+    Wait() from Supplier[1,S] to Manufacturer[1,M];
+
+    do UpdatedQuoteRequest(Buyer, Supplier, Manufacturer);
+  }
+}
+
+aux global protocol UpdatedQuoteRequest(role Buyer, role Supplier, role Manufacturer) {
   // (5) Supplier received updated quote
   foreach Supplier[I:1,S] {
     choice at Supplier[I] {
@@ -22,9 +59,9 @@ global protocol Proto1(role Buyer, role Supplier, role Manufacturer) {
     } or {
       // (5b) Or Supplier modify it and sending it back to Buyer.
       //      Buyer goes back to (4)
-      Modify() from Supplier[I] to Buyer[1];
+      Modify(Quote) from Supplier[I] to Buyer[1];
       NoOp() from Supplier[I] to Manufacturer[1,M];
-      //do MakeDeal(Buyer, Supplier, Manufacturer);
+      do MakeDeal(Buyer, Supplier, Manufacturer);
     } or {
       // (5c) Or Supplier reject updated quote.
       Reject() from Supplier[I] to Buyer[1];
@@ -38,7 +75,6 @@ global protocol Proto1(role Buyer, role Supplier, role Manufacturer) {
     }
   }
 }
-
 
 /*
 global protocol Proto1(role A, role B)
