@@ -616,7 +616,7 @@ public class RPCoreCommandLine extends CommandLine
 			Set<RPRoleVariant> coset = all.stream()
 					.filter(x -> !cand.contains(x)).collect(Collectors.toSet());
 			
-			String smt2 = "(assert ";
+			/*String smt2 = "(assert ";
 			if (!vars.isEmpty())
 			{
 				smt2 += "(exists (" + vars.stream().map(x -> "(" + x + " Int)").collect(Collectors.joining(" ")) + ")\n";  // FIXME: factor up -- and factor out with getVariants
@@ -633,7 +633,18 @@ public class RPCoreCommandLine extends CommandLine
 			{
 				smt2 += "))";
 			}
-			smt2 += ")";
+			smt2 += ")";*/
+			
+			List<String> cs = new LinkedList<>();
+			cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(), "1")).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
+			cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t)).collect(Collectors.toList()));
+			cs.addAll(coset.stream().map(v -> smt2t.makeNot(makePhiSmt2(v.intervals, v.cointervals, smt2t))).collect(Collectors.toList()));
+			String smt2 = smt2t.makeAnd(cs);
+			if (!vars.isEmpty())
+			{
+				smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula()).collect(Collectors.toList()), smt2); 
+			}
+			smt2 = smt2t.makeAssert(smt2);
 			
 			job.debugPrintln("\n[rp-core] Candidate (" + i++ + "/" + size + "): " + cand);
 			job.debugPrintln("[rp-core] Co-set: " + coset);
@@ -701,7 +712,7 @@ public class RPCoreCommandLine extends CommandLine
 					//z3 = "(exists (" + vars.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" ")) + ") " + z3 + ")";
 					z3 = smt2t.makeExists(vars.stream().map(v -> v.toSmt2Formula()).collect(Collectors.toList()), z3);
 				}
-				z3 = "(assert " + z3 + ")";
+				z3 = smt2t.makeAssert(z3);
 				
 				job.debugPrintln("\n[rp-core] Candidate (" + i++ + "/" + size + "): " + cand);
 				job.debugPrintln("[rp-core] Co-set: " + coset);
@@ -762,8 +773,7 @@ public class RPCoreCommandLine extends CommandLine
 						{
 							tmp.add(smt2t.makeLte(c.start.toSmt2Formula(), c.end.toSmt2Formula()));  // CHECKME: Needed?
 						}
-						return //(tmp.size() == 1) ? tmp.get(0) :
-								smt2t.makeAnd(tmp); 
+						return (tmp.size() == 1) ? tmp.get(0) : smt2t.makeAnd(tmp); 
 					})
 				//.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 				.collect(Collectors.toList())
