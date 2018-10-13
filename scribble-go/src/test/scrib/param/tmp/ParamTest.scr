@@ -10,7 +10,8 @@ module param.tmp.ParamTest;
 
 global protocol Proto1(role A, role B)
 {
-	Foo() from A[(1,1)] to B[(1,1)];
+	//Foo() from A[(1,1)] to B[(1,1)];
+	Foo() from A[1] to B[1];
 }
 
 

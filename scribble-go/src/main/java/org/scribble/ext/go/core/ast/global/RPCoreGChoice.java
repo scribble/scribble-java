@@ -102,6 +102,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
 				+ (vars.isEmpty() ? "" : ")")
 				+ " (> " + r.start.toSmt2Formula() + " " + r.end.toSmt2Formula() + ")"
+				//+ Z3Wrapper.getSmt2_gt(r.start, r.end)
 				+ (vars.isEmpty() ? "" : "))")
 				+ ")";
 		Predicate<RPInterval> foo2 = r ->

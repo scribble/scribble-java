@@ -577,7 +577,6 @@ public class RPCoreCommandLine extends CommandLine
 		return res;
 	}	
 	
-	
 	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> getFamilies(GoJob job)
 	{
 		job.debugPrintln("\n[rp-core] Computing families:");
@@ -709,10 +708,11 @@ public class RPCoreCommandLine extends CommandLine
 
 		if (cand.size() > 0)
 		{
-			z3 += cand.stream().map(c -> "(and (>= self " + c.start.toSmt2Formula() + ") (<= self " + c.end.toSmt2Formula() + ")"
+			z3 += cand.stream().map(c -> 
+						 "(and (>= self " + c.start.toSmt2Formula() + ") (<= self " + c.end.toSmt2Formula() + ")"
 						+ ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "")
-						+ ")")
-					.reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
+						+ ")"
+					).reduce((c1, c2) -> "(and " + c1 + " " + c2 +")").get();
 		}
 
 		if (coset.size() > 0)

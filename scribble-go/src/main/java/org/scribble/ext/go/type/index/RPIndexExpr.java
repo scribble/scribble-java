@@ -16,6 +16,7 @@ public abstract class RPIndexExpr
 	public abstract Set<RPIndexVar> getVars();  // Doesn't include foreach params
 
 	public abstract String toSmt2Formula();  // Cf. toString -- but can be useful to separate, for debugging (and printing)
+			// TODO: factor out Smt2 translation interface
 
 	// N.B. "syntactic" comparison
 	@Override
