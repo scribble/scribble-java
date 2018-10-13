@@ -17,86 +17,6 @@ import org.scribble.util.ScribUtil;
 public class Z3Wrapper
 {
 
-	/*public static String getSmt2VarDecl(RPIndexExpr x)
-	{
-		if (x instanceof RPIndexPair)
-		{
-			return ()
-		}
-	}*/
-
-	/*public static String getSmt2_lte(RPIndexExpr x, RPIndexExpr y)
-	{
-		String op;
-		if (x instanceof RPIndexPair)
-		{
-			if (!(y instanceof RPIndexPair))
-			{
-				throw new RuntimeException("Shouldn't get in here: " + x + ", " + y);
-			}
-			op = "pair_lte";
-		}
-		else
-		{
-			op = "<=";
-		}
-		return "(" + op + " " + x.toSmt2Formula() + " " + y.toSmt2Formula() + ")";
-	}
-
-	public static String getSmt2_lt(RPIndexExpr x, RPIndexExpr y)
-	{
-		String op;
-		if (x instanceof RPIndexPair)
-		{
-			if (!(y instanceof RPIndexPair))
-			{
-				throw new RuntimeException("Shouldn't get in here: " + x + ", " + y);
-			}
-			op = "pair_lt";
-		}
-		else
-		{
-			op = "<";
-		}
-		return "(" + op + " " + x.toSmt2Formula() + " " + y.toSmt2Formula() + ")";
-	}
-
-	public static String getSmt2_gte(RPIndexExpr x, RPIndexExpr y)
-	{
-		String op;
-		if (x instanceof RPIndexPair)
-		{
-			if (!(y instanceof RPIndexPair))
-			{
-				throw new RuntimeException("Shouldn't get in here: " + x + ", " + y);
-			}
-			op = "pair_gte";
-		}
-		else
-		{
-			op = ">=";
-		}
-		return "(" + op + " " + x.toSmt2Formula() + " " + y.toSmt2Formula() + ")";
-	}
-
-	public static String getSmt2_gt(RPIndexExpr x, RPIndexExpr y)
-	{
-		String op;
-		if (x instanceof RPIndexPair)
-		{
-			if (!(y instanceof RPIndexPair))
-			{
-				throw new RuntimeException("Shouldn't get in here: " + x + ", " + y);
-			}
-			op = "pair_gt";
-		}
-		else
-		{
-			op = ">";
-		}
-		return "(" + op + " " + x.toSmt2Formula() + " " + y.toSmt2Formula() + ")";
-	}*/
-
 	public static Smt2Translator getSmt2Translator(RPCoreGType gt)
 	{
 		Set<RPIndexedRole> irs = gt.getIndexedRoles();
@@ -132,6 +52,8 @@ public class Z3Wrapper
 			+ "(define-fun pair_lt ((p!1 (Pair Int Int)) (p!2 (Pair Int Int))) Bool (and (pair_lte p!1 p!2) (not (= p!1 p!2))))\n"
 			+ "(define-fun pair_gte ((p!1 (Pair Int Int)) (p!2 (Pair Int Int))) Bool (pair_lte p!2 p!1))\n"
 			+ "(define-fun pair_gt ((p!1 (Pair Int Int)) (p!2 (Pair Int Int))) Bool (pair_lt p!2 p!1))\n"
+			+ "(define-fun pair_plus ((p!1 (Pair Int Int)) (p!2 (Pair Int Int))) (Pair Int Int) (mk-pair (+ (fst p!1) (fst p!2)) (+ (snd p!1) (snd p!2))))\n"
+			+ "(define-fun pair_sub ((p!1 (Pair Int Int)) (p!2 (Pair Int Int))) (Pair Int Int) (mk-pair (- (fst p!1) (fst p!2)) (- (snd p!1) (snd p!2))))\n"
 			+ smt2;
 		smt2 = smt2 + "\n(check-sat)\n(exit)";
 		try

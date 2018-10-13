@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ext.go.type.index.RPIndexVar;
-
 public abstract class Smt2Translator
 {
 	/*enum Sort { Int, Pair }
@@ -24,6 +22,9 @@ public abstract class Smt2Translator
 	public abstract String getGteOp();
 	public abstract String getPlusOp();
 	public abstract String getSubOp();
+	
+	public abstract String getZeroValue();
+	public abstract String getDefaultBaseValue();
 	
 	//public String makeVarDecl(RPIndexVar v)
 	public String makeVarDecl(String v)

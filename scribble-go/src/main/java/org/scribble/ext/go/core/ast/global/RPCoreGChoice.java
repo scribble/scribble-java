@@ -251,7 +251,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		smt2 += ")))";*/
 		
 		List<String> cs = new LinkedList<>();
-		vars.forEach(x -> cs.add(smt2t.makeGte(x.toSmt2Formula(), "1")));
+		vars.forEach(x -> cs.add(smt2t.makeGte(x.toSmt2Formula(), smt2t.getDefaultBaseValue())));
 		Set<RPIndexVar> srcAndDestVars = new HashSet<>();
 		srcAndDestVars.addAll(this.src.getIndexVars());
 		srcAndDestVars.addAll(this.dest.getIndexVars());
@@ -323,8 +323,8 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				+ ")";*/
 		
 		List<String> cs = new LinkedList<>();
-		vars.forEach(v -> cs.add(smt2t.makeGte(v.toSmt2Formula(), "1")));
-		cs.add(smt2t.makeNot(smt2t.makeEq(smt2t.makeSub(srcRange.end.toSmt2Formula(), srcRange.start.toSmt2Formula()), "0")));
+		vars.forEach(v -> cs.add(smt2t.makeGte(v.toSmt2Formula(), smt2t.getDefaultBaseValue())));
+		cs.add(smt2t.makeNot(smt2t.makeEq(smt2t.makeSub(srcRange.end.toSmt2Formula(), srcRange.start.toSmt2Formula()), smt2t.getZeroValue())));
 		String smt2 = smt2t.makeAnd(cs);
 		if (!vars.isEmpty())
 		{
@@ -381,7 +381,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		Function<RPInterval, String> foo1 = r ->  // FIXME: factor out with above
 		{
 			List<String> cs = new LinkedList<>();
-			vars.forEach(x -> cs.add(smt2t.makeGte(x.toSmt2Formula(), "1")));
+			vars.forEach(x -> cs.add(smt2t.makeGte(x.toSmt2Formula(), smt2t.getDefaultBaseValue())));
 			cs.add(smt2t.makeGt(r.start.toSmt2Formula(), r.end.toSmt2Formula()));
 			String smt2 = smt2t.makeAnd(cs);
 			if (!vars.isEmpty())

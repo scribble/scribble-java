@@ -7,9 +7,22 @@ public class IntSmt2Translator extends Smt2Translator
 		//super(Sort.Int);
 	}
 	
+	@Override
 	public String getSort()
 	{
 		return "Int";
+	}
+
+	@Override
+	public String getZeroValue()
+	{
+		return "0";
+	}
+
+	@Override
+	public String getDefaultBaseValue()
+	{
+		return "1";
 	}
 
 	@Override

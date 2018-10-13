@@ -7,9 +7,22 @@ public class PairSmt2Translator extends Smt2Translator
 		//super(Sort.Pair);
 	}
 	
+	@Override
 	public String getSort()
 	{
-		return "Pair";
+		return "(Pair Int Int)";
+	}
+
+	@Override
+	public String getZeroValue()
+	{
+		return "(mk-pair 0 0)";
+	}
+
+	@Override
+	public String getDefaultBaseValue()
+	{
+		return "(mk-pair 1 1)";
 	}
 
 	@Override

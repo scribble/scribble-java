@@ -549,7 +549,7 @@ public class RPCoreCommandLine extends CommandLine
 									*/
 									
 									List<String> cs = new LinkedList<>();
-									cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(), "1")).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
+									cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
 									for (RPInterval ival : peerVariant.intervals)  // Is there a peer index inside all the peer-variant intervals
 									{
 										cs.add(smt2t.makeGte("peer", ival.start.toSmt2Formula()));
@@ -655,7 +655,7 @@ public class RPCoreCommandLine extends CommandLine
 			smt2 += ")";*/
 			
 			List<String> cs = new LinkedList<>();
-			cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(), "1")).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
+			cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
 			cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t)).collect(Collectors.toList()));
 			cs.addAll(coset.stream().map(v -> smt2t.makeNot(makePhiSmt2(v.intervals, v.cointervals, smt2t))).collect(Collectors.toList()));
 			String smt2 = smt2t.makeAnd(cs);
