@@ -35,4 +35,16 @@ public class PairSmt2Translator extends Smt2Translator
 	{
 		return "pair_gte";
 	}
+
+	@Override
+	public String getPlusOp()
+	{
+		throw new RuntimeException("TODO: ");
+	}
+
+	@Override
+	public String getSubOp()
+	{
+		throw new RuntimeException("TODO: ");
+	}
 }

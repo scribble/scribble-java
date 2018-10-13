@@ -3,6 +3,8 @@ package org.scribble.ext.go.core.ast.global;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -155,17 +157,30 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			String dv = ((RPIndexVar) this.dest.intervals.iterator().next().end).toString();
 			RPInterval s = peek.get(RPIndexFactory.RPForeachVar(sv));
 			RPInterval d = peek.get(RPIndexFactory.RPForeachVar(dv));
-			Set<RPIndexVar> tmp = Stream.of(s, d).flatMap(r -> r.getIndexVars().stream()).collect(Collectors.toSet());
+			Set<RPIndexVar> vars = Stream.of(s, d).flatMap(r -> r.getIndexVars().stream()).collect(Collectors.toSet());
 			// Duplicated from DOT_TRANSFER
-			String smt2 = "(assert"
-					+ (tmp.isEmpty() ? "" : " (forall (" + tmp.stream().map(v -> "(" + v + " Int)").collect(Collectors.joining(" "))) + ") "
+			/*String smt2 = "(assert"
+					+ (tmp.isEmpty() ? "" : " (forall (" + vars.stream().map(v -> "(" + v + " Int)").collect(Collectors.joining(" "))) + ") "
 					+ "(and (= (- " + s.end.toSmt2Formula() + " " + s.start.toSmt2Formula() + ") (- "
 							+ d.end.toSmt2Formula() + " " + d.start.toSmt2Formula() + "))"
 					+ (!this.src.getName().equals(this.dest.getName()) ? "" :
 						" (not (= " + s.start.toSmt2Formula() + " " + d.start.toSmt2Formula() + "))")
 					+ ")"
 					+ (tmp.isEmpty() ? "" : ")")
-					+ ")";
+					+ ")";*/
+			
+			List<String> cs = new LinkedList<>();
+			cs.add(smt2t.makeEq(smt2t.makeSub(s.end.toSmt2Formula(), s.start.toSmt2Formula()), smt2t.makeSub(d.end.toSmt2Formula(), d.start.toSmt2Formula())));
+			if (this.src.getName().equals(this.dest.getName()))
+			{
+				cs.add(smt2t.makeNot(smt2t.makeEq(s.start.toSmt2Formula(), d.start.toSmt2Formula())));
+			}
+			String smt2 = (cs.size() == 1) ? cs.get(0) : smt2t.makeAnd(cs);
+			if (!vars.isEmpty())
+			{
+				smt2 = smt2t.makeForall(vars.stream().map(x -> x.toSmt2Formula()).collect(Collectors.toList()), smt2);
+			}
+			smt2 = smt2t.makeAssert(smt2);
 		
 			job.debugPrintln("\n[param-core] [WF] Checking foreach-var alignment between " + srcRange + " and " + destRange + ":\n  " + smt2);
 			
@@ -208,15 +223,15 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	{
 		RPInterval srcRange = this.src.getParsedRange();
 		RPInterval destRange = this.dest.getParsedRange();
+		Map<RPForeachVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
+		Set<String> curr = peek.keySet().stream().map(k -> k.name).collect(Collectors.toSet());
 
-		String smt2 = "(assert (exists ((foobartmp Int)";  // FIXME: factor out
+		/*String smt2 = "(assert (exists ((foobartmp Int)";  // FIXME: factor out
 		smt2 += vars.stream().map(v -> " (" + v.name + " Int)").collect(Collectors.joining(""));
 		smt2 += ") (and";
 		smt2 += vars.isEmpty() ? "" : vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""));  
 				// FIXME: lower bound constant '1' -- replace by global invariant
 
-		Map<RPForeachVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
-		Set<String> curr = peek.keySet().stream().map(k -> k.name).collect(Collectors.toSet());
 		Set<RPIndexVar> srcAndDestVars = new HashSet<>();
 		srcAndDestVars.addAll(this.src.getIndexVars());
 		srcAndDestVars.addAll(this.dest.getIndexVars());
@@ -233,7 +248,31 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		smt2 += Stream.of(srcRange, destRange)
 				.map(r -> " (>= foobartmp " + r.start.toSmt2Formula() + ") (<= foobartmp " + r.end.toSmt2Formula() + ")")
 				.collect(Collectors.joining());
-		smt2 += ")))";
+		smt2 += ")))";*/
+		
+		List<String> cs = new LinkedList<>();
+		vars.forEach(x -> cs.add(smt2t.makeGte(x.toSmt2Formula(), "1")));
+		Set<RPIndexVar> srcAndDestVars = new HashSet<>();
+		srcAndDestVars.addAll(this.src.getIndexVars());
+		srcAndDestVars.addAll(this.dest.getIndexVars());
+		for (RPIndexVar sv : srcAndDestVars)
+		{
+			String tmp = sv.toString();
+			if (curr.contains(tmp))  // FIXME: awkwardness of RPForeachVar and RPIndexVar
+			{
+				RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp));
+				cs.add(smt2t.makeEq(sv.toSmt2Formula(), ival.start.toSmt2Formula()));
+			}
+		}
+		Stream.of(srcRange, destRange).forEach(r -> 
+		{
+			cs.add(smt2t.makeGte("foobartmp", r.start.toSmt2Formula()));
+			cs.add(smt2t.makeLte("foobartmp", r.end.toSmt2Formula()));
+		});
+		List<String> tmp = new LinkedList<>();
+		tmp.add("foobartmp");
+		vars.forEach(x -> tmp.add(x.toSmt2Formula()));
+		String smt2 = smt2t.makeAssert(smt2t.makeExists(tmp, smt2t.makeAnd(cs)));
 		
 		job.debugPrintln("\n[param-core] [WF] Checking non-overlapping ranges (potential self-communication) for " + this.src.getName() + ":\n  " + smt2);
 		

@@ -35,4 +35,16 @@ public class IntSmt2Translator extends Smt2Translator
 	{
 		return ">=";
 	}
+
+	@Override
+	public String getPlusOp()
+	{
+		return "+";
+	}
+
+	@Override
+	public String getSubOp()
+	{
+		return "-";
+	}
 }

@@ -22,6 +22,8 @@ public abstract class Smt2Translator
 	public abstract String getLteOp();
 	public abstract String getGtOp();
 	public abstract String getGteOp();
+	public abstract String getPlusOp();
+	public abstract String getSubOp();
 	
 	//public String makeVarDecl(RPIndexVar v)
 	public String makeVarDecl(String v)
@@ -65,6 +67,21 @@ public abstract class Smt2Translator
 	public String makeGte(String x, String y)
 	{
 		return "(" + getGteOp() + " " + x + " " + y + ")"; 
+	}
+
+	public String makePlus(String x, String y)
+	{
+		return "(" + getPlusOp() + " " + x + " " + y + ")"; 
+	}
+
+	public String makeSub(String x, String y)
+	{
+		return "(" + getSubOp() + " " + x + " " + y + ")"; 
+	}
+
+	public String makeEq(String x, String y)
+	{
+		return "(= " + x + " " + y + ")"; 
 	}
 
 	public String makeAnd(String... cs)  // OK because cs last parameter
