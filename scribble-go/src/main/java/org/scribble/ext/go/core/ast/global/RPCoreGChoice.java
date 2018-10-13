@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -369,7 +368,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		RPInterval srcRange = this.src.getParsedRange();
 		RPInterval destRange = this.dest.getParsedRange();
 
-		Function<RPInterval, String> foo1 = r ->  // FIXME: factor out with above
+		/*Function<RPInterval, String> foo1 = r ->  // FIXME: factor out with above
 				  "(assert "
 				+ (vars.isEmpty() ? "" : "(exists (" + vars.stream().map(v -> "(" + v.name + " Int)").collect(Collectors.joining(" ")) + ") (and (and")
 				+ vars.stream().map(v -> " (>= " + v + " 1)").collect(Collectors.joining(""))  // FIXME: lower bound constant -- replace by global invariant
@@ -377,7 +376,20 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 				+ " (> " + r.start.toSmt2Formula() + " " + r.end.toSmt2Formula() + ")"
 				//+ Z3Wrapper.getSmt2_gt(r.start, r.end)
 				+ (vars.isEmpty() ? "" : "))")
-				+ ")";
+				+ ")";*/
+				
+		Function<RPInterval, String> foo1 = r ->  // FIXME: factor out with above
+		{
+			List<String> cs = new LinkedList<>();
+			vars.forEach(x -> cs.add(smt2t.makeGte(x.toSmt2Formula(), "1")));
+			cs.add(smt2t.makeGt(r.start.toSmt2Formula(), r.end.toSmt2Formula()));
+			String smt2 = smt2t.makeAnd(cs);
+			if (!vars.isEmpty())
+			{
+				smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula()).collect(Collectors.toList()), smt2);
+			}
+			return smt2t.makeAssert(smt2);
+		};
 		Predicate<RPInterval> foo2 = r ->
 		{
 			String foo = foo1.apply(r);
