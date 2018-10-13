@@ -20,13 +20,14 @@ public class Z3Wrapper
 	public static Smt2Translator getSmt2Translator(RPCoreGType gt)
 	{
 		Set<RPIndexedRole> irs = gt.getIndexedRoles();
-		if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().allMatch(z -> z instanceof RPIndexPair))))
-		{
-			return new PairSmt2Translator();
-		}
-		else if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().noneMatch(z -> z instanceof RPIndexPair))))
+		if (irs.isEmpty() ||
+				irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().noneMatch(z -> z instanceof RPIndexPair))))
 		{
 			return new IntSmt2Translator();
+		}
+		else if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().allMatch(z -> z instanceof RPIndexPair))))
+		{
+			return new PairSmt2Translator();
 		}
 		else
 		{
