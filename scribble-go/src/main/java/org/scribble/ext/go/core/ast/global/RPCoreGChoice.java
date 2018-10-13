@@ -593,8 +593,10 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 						return af.ParamCoreLCrossChoice(this.dest, RPCoreLActionKind.CROSS_SEND, projs);
 					}
 				}
-				System.out.println("BBB: " + srcRange.start + " ,, " + srcRange.end + " ,, " + srcRange.start.equals(srcRange.end));
-				System.out.println("BBB: " + destRange.start + " ,, " + destRange.end + " ,, " + destRange.start.equals(destRange.end));
+				else if (!roles.contains(destName) || !(fvars.contains(srcRange.getIndexVars()) && fvars.contains(destRange.getIndexVars())))
+				{
+					return af.ParamCoreLCrossChoice(this.dest, RPCoreLActionKind.CROSS_SEND, projs);
+				}
 				// Otherwise try merge (if neither src/dest are subj)
 			}
 			else if (this.dest.equals(subj))
@@ -622,10 +624,14 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 						RPIndexedRole src = new RPIndexedRole(destName.toString(), Stream.of(new RPInterval(srcExpr, srcExpr)).collect(Collectors.toSet()));
 						return af.ParamCoreLCrossChoice(src, RPCoreLActionKind.CROSS_RECEIVE, projs);
 					}
-					else
+					else if (!roles.contains(srcName) || !(fvars.contains(srcStart.toString()) && fvars.contains(destStart.toString())))
 					{
 						return af.ParamCoreLCrossChoice(this.src, RPCoreLActionKind.CROSS_RECEIVE, projs);
 					}
+				}
+				else if (!roles.contains(srcName) || !(fvars.contains(srcRange.getIndexVars()) && fvars.contains(destRange.getIndexVars())))
+				{
+					return af.ParamCoreLCrossChoice(this.src, RPCoreLActionKind.CROSS_RECEIVE, projs);
 				}
 				// Otherwise merge (if neither src/dest are subj)
 			}
@@ -642,8 +648,6 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		}
 		else
 		{
-			System.out.println("AAA: " + this.src + " ,, " + subj + " ,, " + this.src.equals(subj));
-			System.out.println("AAA: " + this.dest + " ,, " + subj + " ,, " + this.dest.equals(subj));
 			throw new RuntimeException("[rp-core] Projection not defined: " + this + ", " + subj);
 		}
 	}
