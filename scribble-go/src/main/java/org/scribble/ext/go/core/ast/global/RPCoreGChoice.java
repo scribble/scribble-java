@@ -621,7 +621,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 						RPIndexExpr srcExpr = RPIndexFactory.ParamBinIndexExpr(Op.Add, RPIndexSelf.SELF,
 								//RPIndexFactory.ParamBinIndexExpr(Op.Subt, srcStart, destStart));
 								RPIndexFactory.ParamBinIndexExpr(Op.Subt, upper, lower));
-						RPIndexedRole src = new RPIndexedRole(destName.toString(), Stream.of(new RPInterval(srcExpr, srcExpr)).collect(Collectors.toSet()));
+						RPIndexedRole src = new RPIndexedRole(srcName.toString(), Stream.of(new RPInterval(srcExpr, srcExpr)).collect(Collectors.toSet()));
 						return af.ParamCoreLCrossChoice(src, RPCoreLActionKind.CROSS_RECEIVE, projs);
 					}
 					else if (!roles.contains(srcName) || !(fvars.contains(srcStart.toString()) && fvars.contains(destStart.toString())))

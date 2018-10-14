@@ -166,7 +166,6 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 			// ...else substitute cont for end in body ?
 			throw new RuntimeException("Shouldn't get in here? " + this + ", " + subj);
 		}*/
-
 		if (ivals.isEmpty())
 		{
 			return RPCoreLCont.CONT;

@@ -297,7 +297,6 @@ public class RPCoreCommandLine extends CommandLine
 				//ParamCoreLType lt = gt.project(af, r, ranges);
 				RPCoreLType lt = gt.project(af, variant);
 				
-				//System.out.println("AAA: " + variant + " ,, " + lt + "\n" + lt.minimise(af, variant) + "\n");
 				lt = lt.minimise(af, variant);
 				
 				//Map<Set<ParamRange>, ParamCoreLType> tmp = P0.get(r);
@@ -473,7 +472,7 @@ public class RPCoreCommandLine extends CommandLine
 				Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> compressed = new Pair<>(tmp, fam.right);
 				families.add(compressed);  // Subsumed variants are neither in left nor right
 
-				System.out.println("\n8888:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n")) + "\n\n"
+				System.out.println("\nFamily:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n")) + "\nCompacted:\n"
 				+ tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));
 					
 				if (!tmp.equals(fam.left))
@@ -537,9 +536,6 @@ public class RPCoreCommandLine extends CommandLine
 										throw new RuntimeException("[rp-core] TODO: multi-dimension intervals: " + ir);  // No?  Multiple intervals is not actually about multidim intervals, it's about constraint intersection?  (A multdim interval should be a single interval value?)
 									}
 									RPInterval d = ir.intervals.stream().findAny().get();
-									
-							System.out.println("AAA: " + ir + " ,, " + d.start + " ,, " + d.end);
-
 									Set<RPIndexVar> vars = Stream.concat(peerVariant.intervals.stream().flatMap(x -> x.getIndexVars().stream()), peerVariant.cointervals.stream().flatMap(x -> x.getIndexVars().stream()))
 											.collect(Collectors.toSet());
 									vars.addAll(ir.getIndexVars());
