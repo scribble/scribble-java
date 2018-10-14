@@ -8,6 +8,18 @@
 module param.tmp.ParamTest;
 
 
+global protocol Proto1(role P, role Q)
+{
+	Play(Game@A) from Q[1] to P[1,K];
+}
+
+global protocol Game(role A, role B, role C)
+{
+	Foo() from A[1] to B[1];
+	Bar() from A[1] to C[1];
+}
+
+
 /*
 global protocol Proto1(role A, role B) 
 {
@@ -94,6 +106,8 @@ aux global protocol UpdatedQuoteRequest(role Buyer, role Supplier, role Manufact
     }
   }
 }
+//*/
+
 
 /*
 global protocol Proto1(role A, role B)
@@ -125,7 +139,7 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
-//*
+/*
 //foreach W { i1 :k 11 ..k wh -(1,0) , i2 :k 11 +(1,0)..k wh } do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;
 //foreach W { i1 :k w1 ..k wh ,        i2 :k 11 ..k 1h }       do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;
 //foreach W { i1 :k 11 ..k 1h -(0,1) , i2 :k 11 +(0,1)..k 1h } do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;W [ k 1h ]→ W [ k 11 ] .end
@@ -141,7 +155,7 @@ global protocol Proto1(role W, role M)
 	Bar() from W[(1,1),K] to M[1];
 	/*foreach W[I1:(1,1),(1,H)-(0,1)], W[I2:(1,1)+(0,1),(1,H)] {
 		Foo() from W[I1] to W[I2];
-	}*/
+	}* /
 }
 //*/
 

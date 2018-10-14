@@ -287,7 +287,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			case Int:  
 			{
 				lte = " <= " + generateIndexExpr(s.getInterval().end);  
-				inc = "p+1";
+				inc = p + "+1";
 				break;
 			}
 			case IntPair:  
