@@ -527,6 +527,7 @@ public class RPCoreCommandLine extends CommandLine
 						{
 							job.debugPrintln("\n[rp-core] For " + self + ", checking peer candidate: " + peerVariant);
 									// "checking potential peer" means checking if any of our action-peer indexed roles fits the candidate variant-peer (so we would need a dial/accept for them)
+							
 							for (RPIndexedRole ir : actionIRs)
 							{
 								if (ir.getName().equals(peerVariant.getName()))
@@ -537,6 +538,8 @@ public class RPCoreCommandLine extends CommandLine
 									}
 									RPInterval d = ir.intervals.stream().findAny().get();
 									
+							System.out.println("AAA: " + ir + " ,, " + d.start + " ,, " + d.end);
+
 									Set<RPIndexVar> vars = Stream.concat(peerVariant.intervals.stream().flatMap(x -> x.getIndexVars().stream()), peerVariant.cointervals.stream().flatMap(x -> x.getIndexVars().stream()))
 											.collect(Collectors.toSet());
 									vars.addAll(ir.getIndexVars());
@@ -607,8 +610,11 @@ public class RPCoreCommandLine extends CommandLine
 
 									if (vars.contains(RPIndexSelf.SELF))
 									{
-										// peer is not self
-										cs.add(smt2t.makeNot(smt2t.makeEq("peer", "self")));
+										// If self name is peer name, peer index is not self index
+										if (peerVariant.getName().equals(self.getName()))
+										{
+											cs.add(smt2t.makeNot(smt2t.makeEq("peer", "self")));
+										}
 										// TODO: factor out variant/covariant inclusion/exclusion with above
 										for (RPInterval ival : self.intervals)  // Is there a self index inside all the self-variant intervals
 										{
