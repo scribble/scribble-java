@@ -43,6 +43,7 @@ import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.ext.go.util.IntPairSmt2Translator;
 import org.scribble.ext.go.util.IntSmt2Translator;
 import org.scribble.ext.go.util.RecursiveFunctionalInterface;
 import org.scribble.ext.go.util.Smt2Translator;
@@ -192,7 +193,7 @@ public class RPCoreCommandLine extends CommandLine
 			{
 				mode = Mode.Int;
 			}
-			else if (this.smt2t instanceof IntSmt2Translator)
+			else if (this.smt2t instanceof IntPairSmt2Translator)
 			{
 				mode = Mode.IntPair;
 			}
