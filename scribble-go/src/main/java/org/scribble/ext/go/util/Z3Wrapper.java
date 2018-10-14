@@ -1,6 +1,7 @@
 package org.scribble.ext.go.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -40,11 +41,11 @@ public class Z3Wrapper
 	public static boolean checkSat(GoJob job, ProtocolDecl<Global> gpd, String smt2) //throws ScribbleException
 	{
 		String tmpName = gpd.header.name + ".smt2.tmp";
-		File tmp = new File(tmpName);
-		if (tmp.exists())  // Factor out with CommandLine.runDot (file exists check)
+		File tmp = null; //= new File(tmpName);
+		/*if (tmp.exists())  // Factor out with CommandLine.runDot (file exists check)
 		{
 			throw new RuntimeException("Cannot overwrite: " + tmpName);
-		}
+		}*/
 		smt2 = "(declare-datatypes (T1 T2) ((Pair (mk-pair (fst T1) (snd T2)))))\n"
 			+ "(define-fun pair_max ((p!1 (Pair Int Int))) Int (ite (< (fst p!1) (snd p!1)) (snd p!1) (fst p!1) ) )\n"
 			+	"(define-fun pair_min ((p!1 (Pair Int Int))) Int (ite (< (fst p!1) (snd p!1)) (fst p!1) (snd p!1)))\n"
@@ -60,6 +61,7 @@ public class Z3Wrapper
 		smt2 = smt2 + "\n(check-sat)\n(exit)";
 		try
 		{
+			tmp = File.createTempFile(gpd.header.name.toString(), ".smt2.tmp");
 			ScribUtil.writeToFile(tmpName, smt2);
 			String[] res = ScribUtil.runProcess("z3", tmpName);
 			String trim = res[0].trim();
@@ -76,13 +78,20 @@ public class Z3Wrapper
 				throw new RuntimeException("[assrt] Z3 error: " + Arrays.toString(res));
 			}
 		}
+		catch (IOException x)
+		{
+			throw new RuntimeException(x);
+		}
 		catch (ScribbleException e)
 		{
 			throw new RuntimeException(e);
 		}
 		finally
 		{
-			tmp.delete();
+			if (tmp != null)
+			{
+				tmp.delete();
+			}
 		}
 	}
 }

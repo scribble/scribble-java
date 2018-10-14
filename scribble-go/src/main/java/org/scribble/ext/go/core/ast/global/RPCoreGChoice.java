@@ -255,13 +255,17 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		Set<RPIndexVar> srcAndDestVars = new HashSet<>();
 		srcAndDestVars.addAll(this.src.getIndexVars());
 		srcAndDestVars.addAll(this.dest.getIndexVars());
+		List<String> tmp = new LinkedList<>();
+		tmp.add("foobartmp");
+		vars.forEach(x -> tmp.add(x.toSmt2Formula(smt2t)));
 		for (RPIndexVar sv : srcAndDestVars)
 		{
-			String tmp = sv.toString();
-			if (curr.contains(tmp))  // FIXME: awkwardness of RPForeachVar and RPIndexVar
+			String tmp2 = sv.toString();
+			if (curr.contains(tmp2))  // FIXME: awkwardness of RPForeachVar and RPIndexVar
 			{
-				RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp));
+				RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp2));
 				cs.add(smt2t.makeEq(sv.toSmt2Formula(smt2t), ival.start.toSmt2Formula(smt2t)));
+				ival.start.getVars().stream().map(x -> x.toSmt2Formula(smt2t)).forEach(x -> tmp.add(x));
 			}
 		}
 		Stream.of(srcRange, destRange).forEach(r -> 
@@ -269,9 +273,6 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			cs.add(smt2t.makeGte("foobartmp", r.start.toSmt2Formula(smt2t)));
 			cs.add(smt2t.makeLte("foobartmp", r.end.toSmt2Formula(smt2t)));
 		});
-		List<String> tmp = new LinkedList<>();
-		tmp.add("foobartmp");
-		vars.forEach(x -> tmp.add(x.toSmt2Formula(smt2t)));
 		String smt2 = smt2t.makeAssert(smt2t.makeExists(tmp, smt2t.makeAnd(cs)));
 		
 		job.debugPrintln("\n[param-core] [WF] Checking non-overlapping ranges (potential self-communication) for " + this.src.getName() + ":\n  " + smt2);
