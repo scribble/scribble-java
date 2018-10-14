@@ -195,10 +195,8 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 					smt2 = smt2t.makeForall(vars, smt2);
 				}
 				smt2 = smt2t.makeAssert(smt2);
-				boolean ddd;
-				if (ddd = Z3Wrapper.checkSat(smt2t.job, smt2t.global, smt2))
+				if (Z3Wrapper.checkSat(smt2t.job, smt2t.global, smt2))
 				{
-					System.out.println(ddd);
 					max = ival;
 					break;
 				}
