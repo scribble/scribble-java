@@ -238,7 +238,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 	
 	// Pre: s.hasNested() -- i.e., s is the "outer" state
-	// FIXME: factor out with getStateChanPremable
+	// TODO: factor out with getStateChanPremable
 	protected Map<String, String> buildForeachIntermediaryState(RPCoreEState s)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
@@ -250,9 +250,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		String feach =
 				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
 				+ "\n";
-				//+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
+	
+		if (this.apigen.mode == Mode.IntPair)
+		{
+			feach += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";
+		}
 
-				// State channel type
+		// State channel type
 		feach += "\n"
 				+ "type " + scTypeName + " struct {\n"
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
@@ -275,12 +279,32 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 		this.fvars.add(p); // HACK FIXME: state visiting order not guaranteed (w.r.t. lexical var scope)
 
-        String initState = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + initName;
+		// TODO: factor out with send, receive, etc.
+		String lte;
+		String inc;
+		switch (this.apigen.mode)
+		{
+			case Int:  
+			{
+				lte = " <= " + generateIndexExpr(s.getInterval().end);  
+				inc = "p+1";
+				break;
+			}
+			case IntPair:  
+			{
+				lte = ".Lte(" + generateIndexExpr(s.getInterval().end) + ")";  
+				inc = p + ".Inc(" + generateIndexExpr(s.getInterval().end) + ")";
+				break;
+			}
+			default:  throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
+		}
+
+    String initState = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + initName;
 		feach += "\n"
 				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
 						+ ") Foreach(f func(*" + initName + ") " + termName + ") *" + succName + " {\n"
 						+ "for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
-								+ p + " <= " + generateIndexExpr(s.getInterval().end) + "; " + p + " = " + p + " + 1 {\n"
+								+ p + lte + "; " + p + " = " + inc + "{\n"
 						//+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
 						+ sEp + ".Params[\"" + p + "\"] = " + p + "\n"  // FIXME: nested Endpoint type/struct?
 
@@ -358,6 +382,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			if (this.apigen.mode == Mode.IntPair)
 			{
 				res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";
+				res += "\n";
+				res += "var _ = session2.XY\n";  // For nested states that only use foreach vars (so no session2.XY)
 			}
 		}
 

@@ -81,18 +81,24 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		}
 		else
 		{
+
+			// TODO: factor out with send, etc.
 			String lte;
-			switch (rpapi.apigen.mode)
-			{
-				case Int:  lte = " <= " + rpapi.generateIndexExpr(d.end);  break;
-				case IntPair:  lte = ".Lte(" + rpapi.generateIndexExpr(d.end) + ")";  break;
-				default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.apigen.mode);
-			}
 			String inc;
 			switch (rpapi.apigen.mode)
 			{
-				case Int:  inc = "i+1";  break;
-				case IntPair:  inc = "i.Inc(" + rpapi.generateIndexExpr(d.end) + ")";  break;
+				case Int:  
+				{
+					lte = " <= " + rpapi.generateIndexExpr(d.end);  
+					inc = "i+1";
+					break;
+				}
+				case IntPair:  
+				{
+					lte = ".Lte(" + rpapi.generateIndexExpr(d.end) + ")";  
+					inc = "i.Inc(" + rpapi.generateIndexExpr(d.end) + ")"; 
+					break;
+				}
 				default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.apigen.mode);
 			}
 
