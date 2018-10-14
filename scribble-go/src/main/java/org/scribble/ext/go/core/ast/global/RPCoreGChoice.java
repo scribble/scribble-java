@@ -178,6 +178,9 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			String smt2 = (cs.size() == 1) ? cs.get(0) : smt2t.makeAnd(cs);
 			if (!vars.isEmpty())
 			{
+				smt2 = smt2t.makeImplies(
+						smt2t.makeAnd(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList())),
+						smt2);
 				smt2 = smt2t.makeForall(vars.stream().map(x -> x.toSmt2Formula(smt2t)).collect(Collectors.toList()), smt2);
 			}
 			smt2 = smt2t.makeAssert(smt2);
@@ -265,7 +268,11 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			{
 				RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp2));
 				cs.add(smt2t.makeEq(sv.toSmt2Formula(smt2t), ival.start.toSmt2Formula(smt2t)));
-				ival.start.getVars().stream().map(x -> x.toSmt2Formula(smt2t)).forEach(x -> tmp.add(x));
+				ival.start.getVars().stream().map(x -> x.toSmt2Formula(smt2t)).forEach(x -> 
+				{
+					tmp.add(x);
+					cs.add(smt2t.makeGte(x, smt2t.getDefaultBaseValue()));
+				});
 			}
 		}
 		Stream.of(srcRange, destRange).forEach(r -> 
