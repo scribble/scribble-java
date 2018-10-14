@@ -678,7 +678,24 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		else if (e instanceof RPBinIndexExpr)
 		{
 			RPBinIndexExpr b = (RPBinIndexExpr) e;
-			return "(" + generateIndexExpr(b.left) + b.op.toString() + generateIndexExpr(b.right) + ")";
+			// TODO: factor out
+			switch (this.apigen.mode)
+			{
+				case Int:  return "(" + generateIndexExpr(b.left) + b.op.toString() + generateIndexExpr(b.right) + ")";
+				case IntPair:
+				{
+					String op;
+					switch (b.op)
+					{
+						case Add:  op = "Plus";  break;
+						case Subt:  op = "Sub";  break;
+						case Mult:
+						default:  throw new RuntimeException("[rp-core] Shouldn't get in here: " + e);
+					}
+					 return "(" + generateIndexExpr(b.left) + "." + op + "(" + generateIndexExpr(b.right) + "))";
+				}
+				default:  throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
+			}
 		}
 		else
 		{
