@@ -572,10 +572,13 @@ public class RPCoreCommandLine extends CommandLine
 										cs.add(smt2t.makeGte("peer", ival.start.toSmt2Formula(smt2t)));
 										cs.add(smt2t.makeLte("peer", ival.end.toSmt2Formula(smt2t)));
 									}
-									cs.add(smt2t.makeOr(  // ...and the peer index is outside one of the peer-variant cointervals
-										self.cointervals.stream().flatMap(x ->
-												Stream.of(smt2t.makeLt("peer", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("peer", x.end.toSmt2Formula(smt2t)))
-										).collect(Collectors.toList())));
+									if (!self.cointervals.isEmpty())
+									{
+										cs.add(smt2t.makeOr(  // ...and the peer index is outside one of the peer-variant cointervals
+											self.cointervals.stream().flatMap(x ->
+													Stream.of(smt2t.makeLt("peer", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("peer", x.end.toSmt2Formula(smt2t)))
+											).collect(Collectors.toList())));
+									}
 									// ...and the peer index is inside our I/O action interval -- then this is peer-variant is a peer
 									cs.add(smt2t.makeGte("peer", d.start.toSmt2Formula(smt2t)));
 									cs.add(smt2t.makeLte("peer", d.end.toSmt2Formula(smt2t)));
@@ -588,10 +591,13 @@ public class RPCoreCommandLine extends CommandLine
 											cs.add(smt2t.makeGte("self", ival.start.toSmt2Formula(smt2t)));
 											cs.add(smt2t.makeLte("self", ival.end.toSmt2Formula(smt2t)));
 										}
-										cs.add(smt2t.makeOr(  // ...and the self index is outside one of the self-variant cointervals
-											self.cointervals.stream().flatMap(x ->
-													Stream.of(smt2t.makeLt("self", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("self", x.end.toSmt2Formula(smt2t)))
-											).collect(Collectors.toList())));
+										if (!self.cointervals.isEmpty())
+										{
+											cs.add(smt2t.makeOr(  // ...and the self index is outside one of the self-variant cointervals
+												self.cointervals.stream().flatMap(x ->
+														Stream.of(smt2t.makeLt("self", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("self", x.end.toSmt2Formula(smt2t)))
+												).collect(Collectors.toList())));
+										}
 									}
 
 									String smt2 = smt2t.makeAnd(cs);
