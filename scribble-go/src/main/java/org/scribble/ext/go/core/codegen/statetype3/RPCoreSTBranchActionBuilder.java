@@ -22,11 +22,12 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 
 		EState succ = curr.getSuccessor(a);
 		
-		//String labels = curr.getAllSuccessors().stream().map(s -> s.getActions().get(0)).map(act -> act.mid.toString()).collect(Collectors.joining(" or "));
+		String branchComment =
+				  "// " + getActionName(api, a) + " is a branch with branch label\n"
+				+ "// " + curr.getActions().stream().map(action -> action.mid.toString()).collect(Collectors.joining(" or ")) + "\n";
 		return
-				/*  "// " + getActionName(api, a) + " is a branch with branch label\n"
-				//+ "// " + labels + "\n"*/
-				"func (s *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "("
+				branchComment
+				+ "func (s *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "("
 						+ buildArgs(null, a)
 						+ ") " + getReturnType(api, curr, succ) + " {\n"  // HACK: return type is interface, so no need for *return (unlike other state chans)
 				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
