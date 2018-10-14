@@ -267,7 +267,7 @@ public class RPCoreSTApiGenerator
 						    .sorted().collect(Collectors.joining("and")));
 	}
 
-	// For type name generation -- cf. RPCoreSTStateChanApiBuilder#generateIndexExpr
+	// For type name generation -- not code exprs, cf. RPCoreSTStateChanApiBuilder#generateIndexExpr
 	public static String getGeneratedNameLabel(RPIndexExpr e)
 	{
 		if (e instanceof RPIndexInt)
@@ -282,7 +282,11 @@ public class RPCoreSTApiGenerator
 		{
 			//return e.toGoString();  // No: that gives the "value" expression
 			RPIndexIntPair p = (RPIndexIntPair) e;
-			return "l" + p.left.toGoString() + "r" + p.right.toGoString();
+			int l = ((RPIndexInt) p.left).val;
+			int r = ((RPIndexInt) p.right).val;
+			String ll = (l < 0) ? "neg" + (-1*l) : Integer.toString(l);
+			String rr = (r < 0) ? "neg" + (-1*r) : Integer.toString(r);
+			return "l" + ll + "r" + rr;
 		}
 		else if (e instanceof RPBinIndexExpr)
 		{

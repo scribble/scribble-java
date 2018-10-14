@@ -8,6 +8,7 @@
 module param.tmp.ParamTest;
 
 
+/*
 global protocol Proto1(role A, role B) 
 {
 	foreach B[I:1,K]
@@ -22,6 +23,7 @@ global protocol Proto1(role A, role B)
 		}
 	}
 }
+//*/
 
 
 /*
@@ -78,7 +80,7 @@ aux global protocol UpdatedQuoteRequest(role Buyer, role Supplier, role Manufact
       //      Buyer goes back to (4)
       Modify(Quote) from Supplier[I] to Buyer[1];
       NoOp() from Supplier[I] to Manufacturer[1,M];
-      //do MakeDeal(Buyer, Supplier, Manufacturer);
+      //do MakeDeal(Buyer, Supplier, Manufacturer);  // No: recursion out of foreach
     } or {
       // (5c) Or Supplier reject updated quote.
       Reject() from Supplier[I] to Buyer[1];
@@ -88,7 +90,7 @@ aux global protocol UpdatedQuoteRequest(role Buyer, role Supplier, role Manufact
       //      going back to (3)
       Renegotiate() from Supplier[I] to Buyer[1];
       Renegotiate() from Supplier[I] to Manufacturer[1,M];
-      //do Negotiate(Buyer, Supplier, Manufacturer);
+      //do Negotiate(Buyer, Supplier, Manufacturer);  // No: recursion out of foreach
     }
   }
 }
@@ -123,7 +125,7 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
-/*
+//*
 //foreach W { i 1 :k 11 ..k wh -(1,0) , i 2 :k 11 +(1,0)..k wh } do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;
 //foreach W { i 1 :k w1 ..k wh , i 2 :k 11 ..k 1h } do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;
 //foreach W { i 1 :k 11 ..k 1h -(0,1) , i 2 :k 11 +(0,1)..k 1h } do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;W [ k 1h ]→ W [ k 11 ] .end
