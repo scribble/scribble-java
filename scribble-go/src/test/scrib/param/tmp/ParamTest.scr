@@ -8,6 +8,23 @@
 module param.tmp.ParamTest;
 
 
+global protocol Proto1(role A, role B) 
+{
+	foreach B[I:1,K]
+	{
+		choice at A[1]
+		{
+			Foo() from A[1] to B[I];
+		}	
+		or
+		{
+			Bar() from A[1] to B[I];
+		}
+	}
+}
+
+
+/*
 sig <go> "message.QuoteReq" from "github.com/nickng/scribble-go-examples/11_quote-request/message" as QuoteReq;
 type <go> "message.Quote" from "github.com/nickng/scribble-go-examples/11_quote-request/message" as Quote;
 
@@ -24,7 +41,7 @@ aux global protocol Negotiate(role Buyer, role Supplier, role Manufacturer) {
       QuoteReq from Supplier[I] to Manufacturer[J];
       Reply(Quote) from Manufacturer[J] to Supplier[I];
     }
-  }*/
+  }* /
   QuoteReq from Supplier[1,S] to Manufacturer[1,M];
   Reply(Quote) from Manufacturer[1,M] to Supplier[1,S];
   // (3) Suppliers build quote for the Buyer,

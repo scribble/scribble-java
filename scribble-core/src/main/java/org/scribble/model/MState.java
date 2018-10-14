@@ -173,7 +173,7 @@ public abstract class MState<
 		{
 			return start;
 		}
-		Set<S> terms = MState.getReachableStates(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
+		Set<S> terms = MState.getReachableStates(start).stream().filter(s -> s.isTerminal()).collect(Collectors.toSet());
 		if (terms.size() > 1)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + terms);

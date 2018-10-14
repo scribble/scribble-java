@@ -147,7 +147,7 @@ public class RPCoreEGraphBuilder
 			RPCoreLType cont, RPIndexExpr offset)
 	{
 		EAction ea = toEAction(r, k, a, offset);
-		if (cont instanceof RPCoreLEnd)
+		if (cont instanceof RPCoreLEnd || cont instanceof RPCoreLCont)
 		{
 			this.util.addEdge(s1, ea, s2);
 		}
