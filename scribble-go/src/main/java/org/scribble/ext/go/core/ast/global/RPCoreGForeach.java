@@ -2,6 +2,7 @@ package org.scribble.ext.go.core.ast.global;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -184,15 +185,20 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		{
 			for (RPAnnotatedInterval ival : ivals)
 			{
-				List<String> cs = ivals.stream().filter(x -> !x.equals(ival)).map(x -> smt2t.makeLte(x.start.toSmt2Formula(smt2t), ival.start.toSmt2Formula(smt2t))).collect(Collectors.toList());
+				List<String> cs = new LinkedList<>();
+				cs.addAll(ivals.stream().filter(x -> !x.equals(ival)).map(x -> smt2t.makeLte(x.start.toSmt2Formula(smt2t), ival.start.toSmt2Formula(smt2t))).collect(Collectors.toList()));
 				String smt2 = smt2t.makeAnd(cs);
 				if (!vars.isEmpty())
 				{
+					smt2 = smt2t.makeImplies(
+							smt2t.makeAnd(vars.stream().map(x -> smt2t.makeGte(x, smt2t.getDefaultBaseValue())).collect(Collectors.toList())), smt2); 
 					smt2 = smt2t.makeForall(vars, smt2);
 				}
 				smt2 = smt2t.makeAssert(smt2);
-				if (Z3Wrapper.checkSat(smt2t.job, smt2t.global, smt2))
+				boolean ddd;
+				if (ddd = Z3Wrapper.checkSat(smt2t.job, smt2t.global, smt2))
 				{
+					System.out.println(ddd);
 					max = ival;
 					break;
 				}

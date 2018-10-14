@@ -1,5 +1,6 @@
 package org.scribble.ext.go.type.index;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -65,8 +66,8 @@ public class RPIndexIntPair extends RPIndexExpr implements RPIndexVal
 	@Override
 	public Set<RPIndexVar> getVars()
 	{
-		return Stream.of(this.left.getVars(), this.right.getVars()).flatMap(x -> x.stream()).collect(Collectors.toSet());
-		//return Collections.emptySet();  // Currently only considered as a value
+		//return Stream.of(this.left.getVars(), this.right.getVars()).flatMap(x -> x.stream()).collect(Collectors.toSet());
+		return Collections.emptySet();  // Currently only considered as a value
 	}
 
 	@Override

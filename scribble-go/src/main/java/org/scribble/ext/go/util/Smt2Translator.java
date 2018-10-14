@@ -103,6 +103,11 @@ public abstract class Smt2Translator
 		return "(and " + cs.stream().collect(Collectors.joining(" ")) + ")"; 
 	}
 
+	public String makeImplies(String left, String right)
+	{
+		return "(implies " + left + " " + right + ")"; 
+	}
+
 	public String makeOr(String... cs)
 	{
 		return makeOr(Arrays.asList(cs)); 
