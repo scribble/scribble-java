@@ -61,12 +61,16 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 		{
 			throw new RuntimeException("[rp-core] Shouldn't get in here: " + a);
 		}
+		// makeCaseReceive is called only for payload type which involves the
+		// use of IRecv. The caller is Recv_Label(arg0 *T) for Label(T) message.
+		// IRecv accepts pointer as parameter so passing arg0 here (of type *T)
+		// instead of &arg0 (or type **T).
 		Function<String, String> makeCaseReceive = pt -> 
 				//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK: []  // N.B. *arg0 matches buildArgs
 				  "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(&tmp)"*/
 						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
-								+ rpapi.generateIndexExpr(d.start) + ", &arg0)"
+								+ rpapi.generateIndexExpr(d.start) + ", arg0)"
 						+ "; err != nil {\n"
 				//+ "log.Fatal(err)\n"
 				//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
