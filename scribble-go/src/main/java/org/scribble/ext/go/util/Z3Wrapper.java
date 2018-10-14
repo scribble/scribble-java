@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.main.GoJob;
@@ -17,17 +18,17 @@ import org.scribble.util.ScribUtil;
 public class Z3Wrapper
 {
 
-	public static Smt2Translator getSmt2Translator(RPCoreGType gt)
+	public static Smt2Translator getSmt2Translator(GoJob job, GProtocolDecl gpd, RPCoreGType gt)
 	{
 		Set<RPIndexedRole> irs = gt.getIndexedRoles();
 		if (irs.isEmpty() ||
 				irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().noneMatch(z -> z instanceof RPIndexIntPair))))
 		{
-			return new IntSmt2Translator();
+			return new IntSmt2Translator(job, gpd);
 		}
 		else if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().allMatch(z -> z instanceof RPIndexIntPair))))
 		{
-			return new IntPairSmt2Translator();
+			return new IntPairSmt2Translator(job, gpd);
 		}
 		else
 		{

@@ -1,10 +1,13 @@
 package org.scribble.ext.go.util;
 
+import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ext.go.main.GoJob;
+
 public class IntPairSmt2Translator extends Smt2Translator
 {
-	public IntPairSmt2Translator()
+	public IntPairSmt2Translator(GoJob job, GProtocolDecl global)
 	{
-		//super(Sort.Pair);
+		super(job, global); //Sort.Pair);
 	}
 	
 	@Override

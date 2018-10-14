@@ -57,10 +57,10 @@ public class RPCoreGRec extends RPCoreRec<RPCoreGType, Global> implements RPCore
 
 	@Override
 	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
-	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
+	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj, Smt2Translator smt2t) throws RPCoreSyntaxException
 	{
 		//ParamCoreLType proj = this.body.project(af, r, ranges);
-		RPCoreLType proj = this.body.project(af, subj);
+		RPCoreLType proj = this.body.project(af, subj, smt2t);
 		if (proj instanceof RPCoreLRecVar)
 		{
 			RPCoreLRecVar rv = (RPCoreLRecVar) proj;

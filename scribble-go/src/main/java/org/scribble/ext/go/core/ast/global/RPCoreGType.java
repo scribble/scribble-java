@@ -28,7 +28,7 @@ public interface RPCoreGType extends RPCoreType<Global>
 
 	// TODO: clarify, Role subj is used as "role name"
 	//ParamCoreLType project(ParamCoreAstFactory af, Role subj, Set<ParamRange> ranges) throws ParamCoreSyntaxException;
-	RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException;  // G proj r \vec{D}
+	RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj, Smt2Translator smt2t) throws RPCoreSyntaxException;  // G proj r \vec{D}
 	RPCoreLType project3(RPCoreAstFactory af, Set<Role> roles, Set<RPAnnotatedInterval> ivals, RPIndexedRole subj) throws RPCoreSyntaxException;  // G proj R \vec{C} r[z]
 	
 	Set<RPIndexedRole> getIndexedRoles();

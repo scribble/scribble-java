@@ -55,7 +55,7 @@ public class RPCoreGCont extends RPCoreCont<Global> implements RPCoreGType
 	}
 
 	@Override
-	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
+	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj, Smt2Translator smt2t) throws RPCoreSyntaxException
 	{
 		return af.ParamCoreLCont();
 	}

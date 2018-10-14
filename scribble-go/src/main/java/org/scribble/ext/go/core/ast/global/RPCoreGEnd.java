@@ -56,7 +56,7 @@ public class RPCoreGEnd extends RPCoreEnd<Global> implements RPCoreGType
 
 	@Override
 	//public ParamCoreLEnd project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges)
-	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
+	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj, Smt2Translator smt2t) throws RPCoreSyntaxException
 	{
 		return af.ParamCoreLEnd();
 	}

@@ -273,7 +273,7 @@ public class RPCoreCommandLine extends CommandLine
 		RPCoreAstFactory af = new RPCoreAstFactory();
 		this.gt = new RPCoreGProtocolDeclTranslator(job, af).translate(this.gpd);
 
-		this.smt2t = Z3Wrapper.getSmt2Translator(gt);
+		this.smt2t = Z3Wrapper.getSmt2Translator(job, this.gpd, gt);
 		
 		job.debugPrintln("\n[rp-core] Translated:\n  " + gt);
 		
@@ -295,7 +295,7 @@ public class RPCoreCommandLine extends CommandLine
 			for (RPRoleVariant variant : variants.get(r))
 			{
 				//ParamCoreLType lt = gt.project(af, r, ranges);
-				RPCoreLType lt = gt.project(af, variant);
+				RPCoreLType lt = gt.project(af, variant, this.smt2t);
 				
 				lt = lt.minimise(af, variant);
 				

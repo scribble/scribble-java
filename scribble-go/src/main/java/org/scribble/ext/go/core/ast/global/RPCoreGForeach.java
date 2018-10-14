@@ -2,6 +2,7 @@ package org.scribble.ext.go.core.ast.global;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -22,9 +23,9 @@ import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexFactory;
-import org.scribble.ext.go.type.index.RPIndexVal;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.Smt2Translator;
+import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
@@ -113,9 +114,9 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 	// G proj r \vec{D}
 	@Override
 	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
-	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
+	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj, Smt2Translator smt2t) throws RPCoreSyntaxException
 	{
-		RPCoreLType seq = this.seq.project(af, subj);
+		RPCoreLType seq = this.seq.project(af, subj, smt2t);
 		if (this.roles.contains(subj.getName()))  // FIXME: factor out -- cf. RPCoreGChoice#project
 		{
 			/*RPIndexVar tmp = RPIndexFactory.ParamIntVar(this.param.toString()); 
@@ -132,12 +133,12 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 			RPCoreGForeach tmp = af.RPCoreGForeach(this.roles, this.ivals, body, af.ParamCoreGEnd());  
 					// CHECKME: should be "end" so that it will be discarded?  seq will be substituted for cont in the final "unrolling" of foreach
 			
-			RPCoreLType proj = tmp.project2(af, subj.getName(), filtered);
+			RPCoreLType proj = tmp.project2(af, subj.getName(), filtered, smt2t);
 			return proj.subs(af, RPCoreLCont.CONT, seq);
 		}
 		else 
 		{
-			RPCoreLType body = this.body.project(af, subj);
+			RPCoreLType body = this.body.project(af, subj, smt2t);
 			if (body instanceof RPCoreLCont)  // Cf. project2, ivals.isEmpty case
 			{
 				return seq;
@@ -150,7 +151,7 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 	}
 
 	// G proj r \vec{C}
-	private RPCoreLType project2(RPCoreAstFactory af, Role name, Set<RPAnnotatedInterval> ivals) throws RPCoreSyntaxException
+	private RPCoreLType project2(RPCoreAstFactory af, Role name, Set<RPAnnotatedInterval> ivals, Smt2Translator smt2t) throws RPCoreSyntaxException
 	{
 		/*RPInterval v = new RPInterval(this.start, this.end);
 		if (subj.intervals.contains(v))
@@ -171,18 +172,47 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 			return RPCoreLCont.CONT;
 		}
 		
-		RPAnnotatedInterval max = ivals.stream()
+		/*RPAnnotatedInterval max = ivals.stream()
 				.filter(x -> ivals.stream().filter(y -> !x.equals(y))
-						////.allMatch(y -> ((RPIndexInt) x.start).val >= ((RPIndexInt) y.start).val))
 						.allMatch(y -> ((RPIndexVal) x.start).gtEq(((RPIndexVal) y.start))))  // FIXME: general index expressions
 				.findFirst().get();
-						// FIXME: non-RPIndexInt start exprs for nat intervals -- FIXME: generalised interval comparison (multidim)
+						// FIXME: non-RPIndexInt start exprs for nat intervals -- FIXME: generalised interval comparison (multidim)*/
+
+		RPAnnotatedInterval max = null;
+		List<String> vars = ivals.stream().flatMap(x -> x.getIndexVars().stream().map(y -> y.toSmt2Formula(smt2t))).distinct().collect(Collectors.toList());
+		if (ivals.size() > 1)
+		{
+			for (RPAnnotatedInterval ival : ivals)
+			{
+				List<String> cs = ivals.stream().filter(x -> !x.equals(ival)).map(x -> smt2t.makeLte(x.start.toSmt2Formula(smt2t), ival.start.toSmt2Formula(smt2t))).collect(Collectors.toList());
+				String smt2 = smt2t.makeAnd(cs);
+				if (!vars.isEmpty())
+				{
+					smt2 = smt2t.makeForall(vars, smt2);
+				}
+				smt2 = smt2t.makeAssert(smt2);
+				if (Z3Wrapper.checkSat(smt2t.job, smt2t.global, smt2))
+				{
+					max = ival;
+					break;
+				}
+			}
+			if (max == null)
+			{
+				throw new RuntimeException("Shouldn't get in here: " + ivals);
+			}
+		}
+		else
+		{
+			max = ivals.iterator().next();
+		}
+
 		RPIndexVar var = RPIndexFactory.ParamIntVar(max.var.toString());  // N.B. not RPForeachVar -- occurrences in body are parsed as RPIndexVar, not RPForeachVar
 		RPCoreLType proj = this.body.project3(af, this.roles, this.ivals, 
 				new RPIndexedRole(name.toString(), Stream.of(new RPInterval(var, var)).collect(Collectors.toSet())));
 		Set<RPAnnotatedInterval> tmp = new HashSet<>(ivals);
 		tmp.remove(max);
-		return proj.subs(af, RPCoreLCont.CONT, project2(af, name, tmp));
+		return proj.subs(af, RPCoreLCont.CONT, project2(af, name, tmp, smt2t));
 	}
 
   // G proj R \vec{C} r[z]

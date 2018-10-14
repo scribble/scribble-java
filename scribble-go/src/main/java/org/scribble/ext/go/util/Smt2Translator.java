@@ -4,14 +4,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ext.go.main.GoJob;
+
 public abstract class Smt2Translator
 {
+	public final GoJob job;
+	public final GProtocolDecl global;
+	
 	/*enum Sort { Int, Pair }
 	
 	private final Sort sort;*/
 	
-	public Smt2Translator()
+	public Smt2Translator(GoJob job, GProtocolDecl global)
 	{
+		this.job = job;
+		this.global = global;
 		//this.sort = sort;
 	}
 	

@@ -434,7 +434,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 
 	@Override
 	public RPCoreLType project(RPCoreAstFactory af, //Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
-				RPRoleVariant subj) throws RPCoreSyntaxException
+				RPRoleVariant subj, Smt2Translator smt2t) throws RPCoreSyntaxException
 	{
 		//LinkedHashMap<RPCoreMessage, RPCoreLType>
 		LinkedHashMap<Message, RPCoreLType>
@@ -446,7 +446,7 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			//RPCoreMessage a = e.getKey();
 			Message a = e.getKey();
 			//projs.put(a, e.getValue().project(af, r, ranges));
-			projs.put(a, e.getValue().project(af, subj));
+			projs.put(a, e.getValue().project(af, subj, smt2t));
 					// N.B. local actions directly preserved from globals -- so core-receive also has assertion (cf. ParamGActionTransfer.project, currently no ParamLReceive)
 					// FIXME: receive assertion projection -- should not be the same as send?
 			

@@ -741,8 +741,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			try
 			{
 				RPCoreGType gt = new RPCoreGProtocolDeclTranslator(this.job, af).translate(gpd);
-				//RPCoreLType lt = 
-				gt.project(af, v);
+				//RPCoreLType lt = gt.project(af, v, smt2t);
 				
 				/* // FIXME: currently cannot determine state chan name of target state in delegated protocol because of decoupled state numbering 
 				   // If we rebuild the target endpoint graph here, the state numbering won't match

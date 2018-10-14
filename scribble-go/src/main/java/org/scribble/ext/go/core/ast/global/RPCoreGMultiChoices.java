@@ -167,7 +167,7 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 
 	@Override
 	//public ParamCoreLType project(ParamCoreAstFactory af, Role r, Set<ParamRange> ranges) throws ParamCoreSyntaxException
-	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj) throws RPCoreSyntaxException
+	public RPCoreLType project(RPCoreAstFactory af, RPRoleVariant subj, Smt2Translator smt2t) throws RPCoreSyntaxException
 	{
 		if (this.kind != RPCoreGActionKind.CROSS_TRANSFER)
 		{
@@ -185,7 +185,7 @@ public class RPCoreGMultiChoices extends RPCoreChoice<RPCoreGType, Global> imple
 			Message a
 					= e.getKey();
 			//projs.put(a, e.getValue().project(af, r, ranges));
-			projs.put(a, e.getValue().project(af, subj));
+			projs.put(a, e.getValue().project(af, subj, smt2t));
 					// N.B. local actions directly preserved from globals -- so core-receive also has assertion (cf. ParamGActionTransfer.project, currently no ParamLReceive)
 					// FIXME: receive assertion projection -- should not be the same as send?
 		}
