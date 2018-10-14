@@ -36,9 +36,17 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
 		String casename = getCaseActionName(api, s);
 		String res = "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(rpapi.variant) + "\n"
-				+ "\n"
-				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
-				+ "import \"log\"\n"
+				+ "\n";
+		
+		switch (rpapi.apigen.mode)
+		{
+			case Int:  res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";  break;
+			case IntPair:  res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";  break;
+			default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.apigen.mode);
+		}
+
+		res += 
+				"import \"log\"\n"
 				+ ((RPCoreSTStateChanApiBuilder) api).makeMessageImports(s)
 				+ "\n"
 				+ "var _ = log.Fatal\n"
