@@ -565,6 +565,8 @@ public class RPCoreCommandLine extends CommandLine
 									smt2 += ")";
 									*/
 									
+									// FIXME: need to constrain K (by family?)
+									
 									List<String> cs = new LinkedList<>();
 									cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
 									for (RPInterval ival : peerVariant.intervals)  // Is there a peer index inside all the peer-variant intervals
@@ -572,12 +574,16 @@ public class RPCoreCommandLine extends CommandLine
 										cs.add(smt2t.makeGte("peer", ival.start.toSmt2Formula(smt2t)));
 										cs.add(smt2t.makeLte("peer", ival.end.toSmt2Formula(smt2t)));
 									}
-									if (!self.cointervals.isEmpty())
+									if (!peerVariant.cointervals.isEmpty())
 									{
-										cs.add(smt2t.makeOr(  // ...and the peer index is outside one of the peer-variant cointervals
+										// ...and the peer index is outside one of the peer-variant cointervals
+										/*cs.add(smt2t.makeOr(
 											self.cointervals.stream().flatMap(x ->
 													Stream.of(smt2t.makeLt("peer", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("peer", x.end.toSmt2Formula(smt2t)))
-											).collect(Collectors.toList())));
+											).collect(Collectors.toList())));*/
+										cs.addAll(peerVariant.cointervals.stream().map(x ->
+													smt2t.makeOr(smt2t.makeLt("peer", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("peer", x.end.toSmt2Formula(smt2t)))
+										).collect(Collectors.toList()));
 									}
 									// ...and the peer index is inside our I/O action interval -- then this is peer-variant is a peer
 									cs.add(smt2t.makeGte("peer", d.start.toSmt2Formula(smt2t)));
@@ -585,7 +591,9 @@ public class RPCoreCommandLine extends CommandLine
 
 									if (vars.contains(RPIndexSelf.SELF))
 									{
-										// FIXME: factor out variant/covariant inclusion/exclusion with above
+										// peer is not self
+										cs.add(smt2t.makeNot(smt2t.makeEq("peer", "self")));
+										// TODO: factor out variant/covariant inclusion/exclusion with above
 										for (RPInterval ival : self.intervals)  // Is there a self index inside all the self-variant intervals
 										{
 											cs.add(smt2t.makeGte("self", ival.start.toSmt2Formula(smt2t)));
@@ -593,10 +601,14 @@ public class RPCoreCommandLine extends CommandLine
 										}
 										if (!self.cointervals.isEmpty())
 										{
-											cs.add(smt2t.makeOr(  // ...and the self index is outside one of the self-variant cointervals
+											// ...and the self index is outside one of the self-variant cointervals
+											/*cs.add(smt2t.makeOr(
 												self.cointervals.stream().flatMap(x ->
 														Stream.of(smt2t.makeLt("self", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("self", x.end.toSmt2Formula(smt2t)))
-												).collect(Collectors.toList())));
+												).collect(Collectors.toList())));*/
+											cs.addAll(self.cointervals.stream().map(x ->
+													smt2t.makeOr(smt2t.makeLt("self", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("self", x.end.toSmt2Formula(smt2t)))
+											).collect(Collectors.toList()));
 										}
 									}
 
