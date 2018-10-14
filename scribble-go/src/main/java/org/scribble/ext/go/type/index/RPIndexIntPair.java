@@ -1,6 +1,5 @@
 package org.scribble.ext.go.type.index;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
