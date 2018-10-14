@@ -46,7 +46,7 @@ public class RPIndexIntPair extends RPIndexExpr implements RPIndexVal
 	@Override
 	public String toGoString()
 	{
-		return "util.Pair{" + this.left.toGoString() + ", " + this.right.toGoString() + "}";
+		return "(session2.XY(" + this.left.toGoString() + ", " + this.right.toGoString() + "))";
 	}
 	
 	@Override

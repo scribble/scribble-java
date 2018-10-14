@@ -94,8 +94,23 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 				rpapi//.isDelegType((DataType) pet));
 							.isDelegType(pet));
 		
+		String lte;
+		switch (rpapi.apigen.mode)
+		{
+			case Int:  lte = " <= " + rpapi.generateIndexExpr(d.end);  break;
+			case IntPair:  lte = ".Lte(" + rpapi.generateIndexExpr(d.end) + ")";  break;
+			default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.apigen.mode);
+		}
+		String inc;
+		switch (rpapi.apigen.mode)
+		{
+			case Int:  inc = "i+1";  break;
+			case IntPair:  inc = "i.Inc(" + rpapi.generateIndexExpr(d.end) + ")";  break;
+			default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.apigen.mode);
+		}
+		
 		String res = "for i, j := " + rpapi.generateIndexExpr(d.start) + ", 0;"
-				+ " i <= " + rpapi.generateIndexExpr(d.end)+"; i, j = i+1, j+1 {\n";
+				+ " i" + lte + "; i, j = " + inc + ", j+1 {\n";
 
 		String errorField = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
                             + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."

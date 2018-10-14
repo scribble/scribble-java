@@ -81,10 +81,25 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		}
 		else
 		{
+			String lte;
+			switch (rpapi.apigen.mode)
+			{
+				case Int:  lte = " <= " + rpapi.generateIndexExpr(d.end);  break;
+				case IntPair:  lte = ".Lte(" + rpapi.generateIndexExpr(d.end) + ")";  break;
+				default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.apigen.mode);
+			}
+			String inc;
+			switch (rpapi.apigen.mode)
+			{
+				case Int:  inc = "i+1";  break;
+				case IntPair:  inc = "i.Inc(" + rpapi.generateIndexExpr(d.end) + ")";  break;
+				default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.apigen.mode);
+			}
+
 			String start = rpapi.generateIndexExpr(d.start);
 			res += //"var err error\n"
-					  "for i := " + start + ";"
-					+ " i <= " + rpapi.generateIndexExpr(d.end) + "; i++ {\n";
+					  "for i, j := " + start + ", 0;"
+					+ " i " + lte + "; i, j = " + inc + ", j+1 {\n";
 
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
 
@@ -121,7 +136,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 							"if " + errorField + " = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
 									+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
 									+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
-									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &arg0[i-" + start + "])"
+									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &arg0[j])"
 					
 							+ "; " + errorField + " != nil {\n"
 							//+ "log.Fatal(err)\n"
@@ -146,7 +161,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 						//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
 						+ rpapi.makeReturnSuccStateChan(succ) + "\n"
 						+ "}\n"
-						+ "arg0[i-" + start + "] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
+						+ "arg0[j] = *(tmp.(*" + extName + "))\n";  // Cf. ISend in RPCoreSTSendActionBuilder
 				res += makeReceiveExtName.apply(rpapi.getExtName((MessageSigName) a.mid));
 			}
 		

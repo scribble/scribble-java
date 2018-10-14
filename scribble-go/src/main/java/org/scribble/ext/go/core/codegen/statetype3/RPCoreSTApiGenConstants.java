@@ -4,6 +4,7 @@ public class RPCoreSTApiGenConstants
 {
 	//public static final String GO_SCRIBBLERUNTIME_PACKAGE = "org/scribble/runtime/net";
 	public static final String GO_SCRIBBLERUNTIME_SESSION_PACKAGE = "github.com/rhu1/scribble-go-runtime/runtime/session2";
+	public static final String GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE = "github.com/rhu1/scribble-go-runtime/runtime/twodim/session2";
 	public static final String GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE = "github.com/rhu1/scribble-go-runtime/runtime/transport2";
 	public static final String GO_SCRIBBLERUNTIME_SHM_PACKAGE = "github.com/scribble/go-runtime/transport2/shm";
 	public static final String GO_SCRIBBLERUNTIME_BYTES_PACKAGE = "bytes";

@@ -20,7 +20,7 @@ import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
-import org.scribble.ext.go.core.ast.local.RPCoreLType;
+import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
@@ -335,7 +335,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		// FIXME: still needed? -- refactor back into state-specific builders?
 		if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 		{
-			res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
+			switch (this.apigen.mode)
+			{
+				case Int:  res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";  break;
+				case IntPair:  res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";  break;
+				default:  throw new RuntimeException("Shouldn't get in here:" + this.apigen.mode);
+			}
 
 			res += "import \"sync/atomic\"\n";
 			res += "import \"reflect\"\n";
@@ -347,6 +352,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			res += "var _ = atomic.AddUint64\n";
 			res += "var _ = reflect.TypeOf\n";
 			res += "var _ = sort.Sort\n";
+		}
+		else if (s.getStateKind() == EStateKind.OUTPUT)
+		{
+			if (this.apigen.mode == Mode.IntPair)
+			{
+				res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";
+			}
 		}
 
 				// State channel type

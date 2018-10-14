@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
@@ -125,15 +126,23 @@ public class RPCoreSTSessionApiBuilder
 	//@Override
 	public Map<String, String> build()  // FIXME: factor out
 	{
+		String indexType; 
+		switch (this.apigen.mode)
+		{
+			case Int:     indexType = "int";  break; // Factor into the mode?
+			case IntPair: indexType = "session2.Pair";  break;
+			default: throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
+		}
+
 		Module mod = this.apigen.job.getContext().getModule(this.apigen.proto.getPrefix());
 		ProtocolDecl<Global> gpd = mod.getProtocolDecl(this.apigen.proto.getSimpleName());
 		Map<String, String> res = new HashMap<>();  // filepath -> source
-		buildProtocolApi(gpd, res);
-		buildEndpointKindApi(gpd, res);
+		buildProtocolApi(gpd, res, indexType);
+		buildEndpointKindApi(gpd, res, indexType);
 		return res;
 	}
 	
-	private void buildProtocolApi(ProtocolDecl<Global> gpd, Map<String, String> res)
+	private void buildProtocolApi(ProtocolDecl<Global> gpd, Map<String, String> res, String indexType)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		List<Role> rolenames = //gpd.header.roledecls.getRoles();
@@ -145,10 +154,16 @@ public class RPCoreSTSessionApiBuilder
 				    "// Package " + this.apigen.getApiRootPackageName() + " is the generated API for the " + this.apigen.proto.getPrefix().getSimpleName().toString() + "." + this.apigen.getApiRootPackageName() + " protocol.\n"
 				+ "// Use functions in this package to create instances of role variants.\n"
 				+ "package " + this.apigen.getApiRootPackageName() + "\n"
-				+ "\n"
+				+ "\n";
+
+		if (this.apigen.mode == Mode.IntPair)
+		{
+			protoFile += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";
+		}
 							
+		protoFile +=
 				// Import Endpoint Kind APIs -- FIXME: CL args
-				+ (rolenames.stream().map(rname ->
+				  (rolenames.stream().map(rname ->
 						{
 							Set<RPRoleVariant> variants = this.apigen.variants.get(rname).keySet();
 							return
@@ -224,7 +239,7 @@ public class RPCoreSTSessionApiBuilder
 					String tmp = "// " + fnName + " returns a new instance of " + epkindTypeName + " role variant.\n"
 							+ "func (p *" + simpname + ") " + fnName // FIXME: factor out common variants between families
 							+ "(" + ivars.stream().filter(x -> !x.name.equals("self"))  // CHECKME: can check for RPIndexSelf instead?
-							    .map(v -> v + " int, ").collect(Collectors.joining("")) + "self int" + ")"
+							    .map(v -> v + " " + indexType + ", ").collect(Collectors.joining("")) + "self " + indexType + ")"
 							+ " *"
 							+ (isCommonEndpointKind ? "" : this.apigen.getFamilyPackageName(family) + "_")
 							+ RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant)  // FIXME: factor out (and separate type name from package name)
@@ -252,15 +267,20 @@ public class RPCoreSTSessionApiBuilder
 	}
 
 	// FIXME: should be lpd
-	private void buildEndpointKindApi(ProtocolDecl<Global> gpd, Map<String, String> res)
+	private void buildEndpointKindApi(ProtocolDecl<Global> gpd, Map<String, String> res, String indexType)
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		List<Role> roles = //gpd.header.roledecls.getRoles();
 				this.apigen.selfs;
 
-		String epkindImports = "\n"  // Package decl done later (per variant)
-				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
-				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
+		String epkindImports = "\n";  // Package decl done later (per variant)
+		switch (this.apigen.mode)
+		{
+			case Int:  epkindImports += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";  break;
+			case IntPair:  epkindImports += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";  break;
+			default:  throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
+		}
+		epkindImports += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
 		
 		// Endpoint Kind API per role variant
 		for (Role rname : roles)
@@ -293,16 +313,23 @@ public class RPCoreSTSessionApiBuilder
 							
 							// Endpoint Kind type
 							+ "type " + epkindTypeName + " struct {\n"
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_PROTO + " " + RPCoreSTApiGenConstants.GO_PROTOCOL_TYPE + "\n"
-							+ "Self int\n"
+							+ RPCoreSTApiGenConstants.GO_MPCHAN_PROTO + " " + RPCoreSTApiGenConstants.GO_PROTOCOL_TYPE + "\n";
 
-							+ "*" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"  // This is for the Endpoint itself
+					switch (this.apigen.mode)
+					{
+						case Int:  epkindFile += "Self int\n";  break;
+						case IntPair:  epkindFile += "Self session2.Pair\n";  break;
+						default:  throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
+					}
+
+					epkindFile +=
+							  "*" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"  // This is for the Endpoint itself
 							+ "lin uint64\n"
 
 							+ RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + " *" + RPCoreSTApiGenConstants.GO_MPCHAN_TYPE + "\n"
-							+ ivars.stream().map(x -> x + " int\n").collect(Collectors.joining(""))
+							+ ivars.stream().map(x -> x + " " + indexType + "\n").collect(Collectors.joining(""))
 
-							+ "Params map[string]int\n"  // FIXME: currently used to record foreach params (and provide access to user)
+							+ "Params map[string]" + indexType + "\n"  // FIXME: currently used to record foreach params (and provide access to user)
 							
 							/*+ this.apigen.stateChanNames.get(variant).entrySet().stream().sorted(
 									new Comparator<Entry<Integer, String>>()
@@ -335,8 +362,8 @@ public class RPCoreSTSessionApiBuilder
 							// Endpoint Kind type constructor -- makes connection maps
 							+ "\n"
 							+ "func New(p " + RPCoreSTApiGenConstants.GO_PROTOCOL_TYPE + ", " //+"params map[string]int," 
-									+ ivars.stream().filter(x -> !x.name.equals("self")).map(x -> x + " int, ").collect(Collectors.joining(""))  // CHECKME: can check for RPIndexSelf instead?
-									+ "self int) *" + epkindTypeName + " {\n"
+									+ ivars.stream().filter(x -> !x.name.equals("self")).map(x -> x + " " + indexType + ", ").collect(Collectors.joining(""))  // CHECKME: can check for RPIndexSelf instead?
+									+ "self " + indexType + ") *" + epkindTypeName + " {\n"
 							/*+ "conns := make(map[string]map[int]transport.Channel)\n"
 							+ this.apigen.variants.entrySet().stream()
 									.map(e -> "conns[\"" + e.getKey().getLastElement() + "\"] = " + "make(map[int]transport.Channel)\n")
@@ -351,7 +378,7 @@ public class RPCoreSTSessionApiBuilder
 									+ RPCoreSTApiGenConstants.GO_MPCHAN_CONSTRUCTOR + "(self, "//conns)" //"params
 											+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "}),\n"
 									+ ivars.stream().map(x ->  x + ",\n").collect(Collectors.joining(""))
-									+ "make(map[string]int),\n"  // Trailing comma needed
+									+ "make(map[string]" + indexType + "),\n"  // Trailing comma needed
 
 									//+ this.apigen.stateChanNames.get(variant).values().stream().distinct().map(k -> "nil,\n").collect(Collectors.joining())
 									  // FIXME: factor out with above
@@ -458,7 +485,7 @@ public class RPCoreSTSessionApiBuilder
 						String r = pp.getLastElement();
 						String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(pp);
 						epkindFile += "\n"
-								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id int"
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id " + indexType
 										+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
 										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
 								+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
@@ -478,7 +505,7 @@ public class RPCoreSTSessionApiBuilder
 								+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n"
 								+ "\n"
-								+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id int"
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id " + indexType
 										+ ", host string, port int"
 										+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
 										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
@@ -508,7 +535,7 @@ public class RPCoreSTSessionApiBuilder
 						String r = pp.getLastElement();
 						String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(pp);
 						epkindFile += "\n"
-								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id int"
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id " + indexType
 										+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
 										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
 								+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
@@ -528,7 +555,7 @@ public class RPCoreSTSessionApiBuilder
 								+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
 								+ "}\n"
 								+ "\n"
-								+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id int"
+								+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id " + indexType
 										+ ", host string, port int"
 										+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
 										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
