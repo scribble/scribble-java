@@ -61,7 +61,7 @@ aux global protocol UpdatedQuoteRequest(role Buyer, role Supplier, role Manufact
       //      Buyer goes back to (4)
       Modify(Quote) from Supplier[I] to Buyer[1];
       NoOp() from Supplier[I] to Manufacturer[1,M];
-      do MakeDeal(Buyer, Supplier, Manufacturer);
+      //do MakeDeal(Buyer, Supplier, Manufacturer);
     } or {
       // (5c) Or Supplier reject updated quote.
       Reject() from Supplier[I] to Buyer[1];
