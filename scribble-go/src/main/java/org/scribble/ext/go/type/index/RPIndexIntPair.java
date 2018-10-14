@@ -66,10 +66,8 @@ public class RPIndexIntPair extends RPIndexExpr implements RPIndexVal
 	@Override
 	public Set<RPIndexVar> getVars()
 	{
-		/*Set<RPIndexVar> vars = new HashSet<>(this.left.getVars());
-		vars.addAll(this.right.getVars());
-		return vars;*/
-		return Collections.emptySet();  // Currently only considered as a value
+		return Stream.of(this.left.getVars(), this.right.getVars()).flatMap(x -> x.stream()).collect(Collectors.toSet());
+		//return Collections.emptySet();  // Currently only considered as a value
 	}
 
 	@Override
