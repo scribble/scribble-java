@@ -9,12 +9,12 @@ import org.scribble.ext.go.util.Smt2Translator;
 
 
 // Currently only considered as a value
-public class RPIndexPair extends RPIndexExpr implements RPIndexVal
+public class RPIndexIntPair extends RPIndexExpr implements RPIndexVal
 {
 	public final RPIndexExpr left;
 	public final RPIndexExpr right;
 
-	protected RPIndexPair(RPIndexExpr left, RPIndexExpr right)
+	protected RPIndexIntPair(RPIndexExpr left, RPIndexExpr right)
 	{
 		//if (!isUnaryExpr(left) || !isUnaryExpr(right))
 		if (!(left instanceof RPIndexInt) || !(right instanceof RPIndexInt))
@@ -33,7 +33,7 @@ public class RPIndexPair extends RPIndexExpr implements RPIndexVal
 	@Override
 	public boolean gtEq(RPIndexVal them)
 	{
-		RPIndexPair p = (RPIndexPair) them;
+		RPIndexIntPair p = (RPIndexIntPair) them;
 		return ((RPIndexInt) this.left).val >= ((RPIndexInt) p.left).val && ((RPIndexInt) this.right).val >= ((RPIndexInt) p.right).val;
 	}
 
@@ -85,11 +85,11 @@ public class RPIndexPair extends RPIndexExpr implements RPIndexVal
 		{
 			return true;
 		}
-		if (!(o instanceof RPIndexPair))
+		if (!(o instanceof RPIndexIntPair))
 		{
 			return false;
 		}
-		RPIndexPair f = (RPIndexPair) o;
+		RPIndexIntPair f = (RPIndexIntPair) o;
 		return super.equals(this)  // Does canEqual
 				&& this.left.equals(f.left) && this.right.equals(f.right);  
 	}
@@ -97,7 +97,7 @@ public class RPIndexPair extends RPIndexExpr implements RPIndexVal
 	@Override
 	protected boolean canEqual(Object o)
 	{
-		return o instanceof RPIndexPair;
+		return o instanceof RPIndexIntPair;
 	}
 
 	@Override

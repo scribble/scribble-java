@@ -20,9 +20,8 @@ import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPBinIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexInt;
-import org.scribble.ext.go.type.index.RPIndexPair;
+import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.ext.go.type.index.RPIndexVar;
-import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.type.kind.Global;
@@ -35,9 +34,11 @@ import org.scribble.visit.util.MessageIdCollector;
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTEndpointApiGenerator
 public class RPCoreSTApiGenerator
 {
+	public enum Mode { Int, IntPair }
+	
 	public final GoJob job;
 	public final GProtocolName proto;  // Full name
-	public final Smt2Translator smt2t;
+	public final Mode mode;
 
   // FIXME: factor out an RPCoreJob(Context)
 	public final Map<Role, Map<RPRoleVariant, RPCoreLType>> projections;
@@ -63,7 +64,7 @@ public class RPCoreSTApiGenerator
 			Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum,
 			Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases,
 			String packpath, //Role self)
-			List<Role> selfs, Smt2Translator smt2t)
+			List<Role> selfs, Mode mode)
 	{
 		this.job = job;
 		this.proto = fullname;
@@ -134,7 +135,7 @@ public class RPCoreSTApiGenerator
 		this.aliases = Collections.unmodifiableMap(aliases);
 				// FIXME: deep copies
 		
-		this.smt2t = smt2t;
+		this.mode = mode;
 	}
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
@@ -277,10 +278,10 @@ public class RPCoreSTApiGenerator
 		{
 			return e.toGoString();
 		}
-		else if (e instanceof RPIndexPair)
+		else if (e instanceof RPIndexIntPair)
 		{
 			//return e.toGoString();  // No: that gives the "value" expression
-			RPIndexPair p = (RPIndexPair) e;
+			RPIndexIntPair p = (RPIndexIntPair) e;
 			return "l" + p.left.toGoString() + "r" + p.right.toGoString();
 		}
 		else if (e instanceof RPBinIndexExpr)

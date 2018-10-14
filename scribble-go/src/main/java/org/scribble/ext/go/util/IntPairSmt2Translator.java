@@ -1,8 +1,8 @@
 package org.scribble.ext.go.util;
 
-public class PairSmt2Translator extends Smt2Translator
+public class IntPairSmt2Translator extends Smt2Translator
 {
-	public PairSmt2Translator()
+	public IntPairSmt2Translator()
 	{
 		//super(Sort.Pair);
 	}

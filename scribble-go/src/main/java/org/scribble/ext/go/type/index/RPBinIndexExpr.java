@@ -86,12 +86,12 @@ public class RPBinIndexExpr extends RPIndexExpr
 			}
 			else
 			{
-				if (right instanceof RPIndexPair)
+				if (right instanceof RPIndexIntPair)
 				{
-					RPIndexPair y = ((RPIndexPair) right);
-					if (left instanceof RPIndexPair)
+					RPIndexIntPair y = ((RPIndexIntPair) right);
+					if (left instanceof RPIndexIntPair)
 					{
-						RPIndexPair x = ((RPIndexPair) left);
+						RPIndexIntPair x = ((RPIndexIntPair) left);
 						switch (this.op) 
 						{
 							case Add:  return RPIndexFactory.RPIndexPair(RPIndexFactory.ParamIntVal(((RPIndexInt) x.left).val + ((RPIndexInt) y.left).val),

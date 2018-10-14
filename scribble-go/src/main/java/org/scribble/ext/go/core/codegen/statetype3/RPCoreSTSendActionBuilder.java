@@ -88,7 +88,8 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 				+ "[\"" + r.getName() + "\"]";*/
 
 		// FIXME: single arg  // Currently never true because of RPCoreSTOutputStateBuilder
-		boolean isDeleg = a.payload.elems.stream().anyMatch(pet -> 
+		//boolean isDeleg = 
+		a.payload.elems.stream().anyMatch(pet -> 
 				//pet.isGDelegationType()  // FIXME: currently deleg specified by ParamCoreDelegDecl, not GDelegationElem
 				rpapi//.isDelegType((DataType) pet));
 							.isDelegType(pet));

@@ -2,7 +2,6 @@ package org.scribble.ext.go.del.global;
 
 import java.util.List;
 
-import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.del.global.GMessageTransferDel;
@@ -11,7 +10,6 @@ import org.scribble.ext.go.ast.global.RPGMessageTransfer;
 import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.name.Role;
-import org.scribble.visit.util.RoleCollector;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class RPGMessageTransferDel extends GMessageTransferDel implements RPDel

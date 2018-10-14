@@ -30,6 +30,7 @@ import org.scribble.ext.go.core.ast.local.RPCoreLType;
 //import org.scribble.ext.go.core.codegen.statetype.ParamCoreSTEndpointApiGenerator;
 //import org.scribble.ext.go.core.codegen.statetype2.ParamCoreSTEndpointApiGenerator;
 import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator;
+import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.main.RPCoreException;
 import org.scribble.ext.go.core.main.RPCoreMainContext;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEGraphBuilder;
@@ -42,6 +43,7 @@ import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.ext.go.util.IntSmt2Translator;
 import org.scribble.ext.go.util.RecursiveFunctionalInterface;
 import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.ext.go.util.Z3Wrapper;
@@ -185,8 +187,21 @@ public class RPCoreCommandLine extends CommandLine
 				outputClasses(goClasses);*/
 			}
 			
+			Mode mode;
+			if (this.smt2t instanceof IntSmt2Translator)
+			{
+				mode = Mode.Int;
+			}
+			else if (this.smt2t instanceof IntSmt2Translator)
+			{
+				mode = Mode.IntPair;
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + this.smt2t.getClass());
+			}
 			Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, 
-					this.L0, this.E0, this.families, this.peers, this.subsum, this.aliases, impath, roles, this.smt2t).build();
+					this.L0, this.E0, this.families, this.peers, this.subsum, this.aliases, impath, roles, mode).build();
 			outputClasses(goClasses);
 		}
 		else
@@ -565,7 +580,7 @@ public class RPCoreCommandLine extends CommandLine
 									smt2 += ")";
 									*/
 									
-									// FIXME: need to constrain K (by family?)
+									// CHECKME: need to further constrain K? (by family?)
 									
 									List<String> cs = new LinkedList<>();
 									cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations

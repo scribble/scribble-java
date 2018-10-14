@@ -8,7 +8,7 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.main.GoJob;
-import org.scribble.ext.go.type.index.RPIndexPair;
+import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.util.ScribUtil;
@@ -21,13 +21,13 @@ public class Z3Wrapper
 	{
 		Set<RPIndexedRole> irs = gt.getIndexedRoles();
 		if (irs.isEmpty() ||
-				irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().noneMatch(z -> z instanceof RPIndexPair))))
+				irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().noneMatch(z -> z instanceof RPIndexIntPair))))
 		{
 			return new IntSmt2Translator();
 		}
-		else if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().allMatch(z -> z instanceof RPIndexPair))))
+		else if (irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().allMatch(z -> z instanceof RPIndexIntPair))))
 		{
-			return new PairSmt2Translator();
+			return new IntPairSmt2Translator();
 		}
 		else
 		{

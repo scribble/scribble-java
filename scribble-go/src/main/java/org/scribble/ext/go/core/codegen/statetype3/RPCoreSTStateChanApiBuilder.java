@@ -33,7 +33,7 @@ import org.scribble.ext.go.type.index.RPBinIndexExpr;
 import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexInt;
-import org.scribble.ext.go.type.index.RPIndexPair;
+import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
@@ -618,7 +618,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			return e.toGoString();
 		}
-		else if (e instanceof RPIndexPair)
+		else if (e instanceof RPIndexIntPair)
 		{
 			return e.toGoString();
 		}
@@ -686,7 +686,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			try
 			{
 				RPCoreGType gt = new RPCoreGProtocolDeclTranslator(this.job, af).translate(gpd);
-				RPCoreLType lt = gt.project(af, v);
+				//RPCoreLType lt = 
+				gt.project(af, v);
 				
 				/* // FIXME: currently cannot determine state chan name of target state in delegated protocol because of decoupled state numbering 
 				   // If we rebuild the target endpoint graph here, the state numbering won't match

@@ -7,7 +7,6 @@ import org.scribble.codegen.statetype.STReceiveStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
 
 public class RPCoreSTReceiveStateBuilder extends STReceiveStateBuilder
 {
