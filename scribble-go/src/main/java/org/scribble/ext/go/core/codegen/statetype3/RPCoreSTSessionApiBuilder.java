@@ -199,6 +199,7 @@ public class RPCoreSTSessionApiBuilder
 						}).collect(Collectors.joining("")));
 		
 		protoFile += "\nvar _ = strconv.Itoa\n";
+		protoFile += "\nvar _ = util.IsectIntIntervals\n";
 					
 		protoFile += "\n"
 				// Protocol type
