@@ -224,9 +224,11 @@ public class RPCoreSTSessionApiBuilder
 			{
 				boolean isCommonEndpointKind = this.apigen.isCommonEndpointKind(variant);
 				
+				// HACK: setting family to null for common endpoint kind
 				Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families = isCommonEndpointKind
 						? Stream.of((Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>) null).collect(Collectors.toSet())  // FIXME HACK: when isCommonEndpointKind, just loop once (to make one New)
 						: this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant)).collect(Collectors.toSet());
+
 				for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
 						families)  // FIXME: use family to make accept/dial
 				{	
@@ -274,7 +276,7 @@ public class RPCoreSTSessionApiBuilder
 							+ ivars
 									.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))*/
 					
-					tmp += makeFamilyCheck(family, ivars);
+					tmp += makeFamilyCheck((family == null) ? this.apigen.families.keySet().iterator().next() : family, ivars);  // FIXME: due to above family null hack
 					tmp += makeSelfCheck(variant, ivars, subbdbyus);
 
 					tmp += "return "
@@ -297,17 +299,6 @@ public class RPCoreSTSessionApiBuilder
 	private String makeFamilyCheck(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fff, List<RPIndexVar> ivars)
 	{
 		String res = "";
-		/*Set<RPRoleVariant> left = fff.left;
-		Set<RPRoleVariant> right = fff.right;
-		for (RPRoleVariant cov : right)
-		{
-			res += "covistarts := " +
-					"[]{" + ((this.apigen.mode == Mode.Int) ? "int" : "session2.Pair")
-					+ "{" + cov.intervals.stream().map(x -> x.start.toGoString()).collect(Collectors.joining("")) + "}};\n";
-			res += "coviends := " +
-					"[]{" + ((this.apigen.mode == Mode.Int) ? "int" : "session2.Pair")
-					+ "{" + cov.intervals.stream().map(x -> x.end.toGoString()).collect(Collectors.joining("")) + "}};\n";
-		}*/
 		String ivalkind;
 		switch (this.apigen.mode)
 		{
