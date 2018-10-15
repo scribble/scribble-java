@@ -472,8 +472,7 @@ public class RPCoreCommandLine extends CommandLine
 				Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> compressed = new Pair<>(tmp, fam.right);
 				families.add(compressed);  // Subsumed variants are neither in left nor right
 
-				System.out.println("\nFamily:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n")) + "\nCompacted:\n"
-				+ tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));
+				//System.out.println("\nFamily:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n")) + "\nCompacted:\n" + tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));
 					
 				if (!tmp.equals(fam.left))
 				{
