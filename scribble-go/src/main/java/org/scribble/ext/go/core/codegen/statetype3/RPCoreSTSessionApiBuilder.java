@@ -4,10 +4,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -159,6 +161,7 @@ public class RPCoreSTSessionApiBuilder
 				+ "package " + this.apigen.getApiRootPackageName() + "\n"
 				+ "\n"
 				+ "import \"strconv\"\n"
+				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_UTIL_PACKAGE + "\"\n"
 				+ "\n";
 
 		if (this.apigen.mode == Mode.IntPair)
@@ -305,6 +308,37 @@ public class RPCoreSTSessionApiBuilder
 					"[]{" + ((this.apigen.mode == Mode.Int) ? "int" : "session2.Pair")
 					+ "{" + cov.intervals.stream().map(x -> x.end.toGoString()).collect(Collectors.joining("")) + "}};\n";
 		}*/
+		String ivalkind;
+		switch (this.apigen.mode)
+		{
+			case Int:  ivalkind = "IntInterval";  break;
+			case IntPair:  ivalkind = "IntPairInterval";  break;
+			default:  throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
+		}
+		List<String> tmp = new LinkedList<>();
+		Function<Set<RPRoleVariant>, String> ggg = vs ->
+		{
+			for (RPRoleVariant v : vs)
+			{
+				v.intervals.forEach(x -> 
+				{
+					String start = (this.apigen.mode == Mode.Int) ? x.start.toGoString() : makeGoIndexExpr(x.start);
+					String end = (this.apigen.mode == Mode.Int) ? x.end.toGoString() : makeGoIndexExpr(x.end);
+					tmp.add("util." + ivalkind + "{" + start + ", " + end + "}");
+				});
+			}
+			return "[]util." + ivalkind + "{" + tmp.stream().collect(Collectors.joining(", ")) + "}\n";
+		};
+		res += "in := " + ggg.apply(fff.left);
+		res += "if util.Isect" + ivalkind + "s(in).IsEmpty() {\n";
+		res += makeParamsSelfPanic(ivars);
+		res += "}\n";
+
+		tmp.clear();
+		res += "out := " + ggg.apply(fff.right);
+		res += "if !util.Isect" + ivalkind + "s(out).IsEmpty() {\n";
+		res += makeParamsSelfPanic(ivars);
+		res += "}\n";
 		return res;
 	}
 
@@ -324,20 +358,24 @@ public class RPCoreSTSessionApiBuilder
 		}
 		else
 		{
-			res +=	
-					"panic(\"Invalid params/self: \" + "
-							+ ivars.stream().filter(x -> !x.name.equals("self")).map(x ->
-									((this.apigen.mode == Mode.Int)
-											? "strconv.Itoa(" + x.toGoString() + ")"
-											: x.toGoString() + ".String()"
-									) + " + \", \" + ").collect(Collectors.joining(""))
-							+ ((this.apigen.mode == Mode.Int) ? "strconv.Itoa(self)" : "self.String()")
-					+ ")\n";
+			res +=	makeParamsSelfPanic(ivars);
 		}
 
 		res += "}\n";
 		
 		return res;
+	}
+
+	private String makeParamsSelfPanic(List<RPIndexVar> ivars)
+	{
+		return "panic(\"Invalid params/self: \" + "
+				+ ivars.stream().filter(x -> !x.name.equals("self")).map(x ->
+						((this.apigen.mode == Mode.Int)
+								? "strconv.Itoa(" + x.toGoString() + ")"
+								: x.toGoString() + ".String()"
+						) + " + \", \" + ").collect(Collectors.joining(""))
+				+ ((this.apigen.mode == Mode.Int) ? "strconv.Itoa(self)" : "self.String()")
+		+ ")\n";
 	}
 
 	// Factor out with RPCoreSTStateChanApiGenerator#generateIndexExpr
