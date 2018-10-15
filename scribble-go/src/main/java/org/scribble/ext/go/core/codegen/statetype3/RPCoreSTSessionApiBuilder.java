@@ -17,6 +17,9 @@ import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.type.index.RPBinIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EStateKind;
@@ -154,6 +157,8 @@ public class RPCoreSTSessionApiBuilder
 				    "// Package " + this.apigen.getApiRootPackageName() + " is the generated API for the " + this.apigen.proto.getPrefix().getSimpleName().toString() + "." + this.apigen.getApiRootPackageName() + " protocol.\n"
 				+ "// Use functions in this package to create instances of role variants.\n"
 				+ "package " + this.apigen.getApiRootPackageName() + "\n"
+				+ "\n"
+				+ "import \"strconv\"\n"
 				+ "\n";
 
 		if (this.apigen.mode == Mode.IntPair)
@@ -189,6 +194,8 @@ public class RPCoreSTSessionApiBuilder
 														}).collect(Collectors.joining(""));
 									}).collect(Collectors.joining(""));
 						}).collect(Collectors.joining("")));
+		
+		protoFile += "\nvar _ = strconv.Itoa\n";
 					
 		protoFile += "\n"
 				// Protocol type
@@ -220,6 +227,20 @@ public class RPCoreSTSessionApiBuilder
 				for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
 						families)  // FIXME: use family to make accept/dial
 				{	
+					
+					// Factor out with below
+					Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> orig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
+					RPRoleVariant subbdbyus = null;
+					for (RPRoleVariant subbd : this.apigen.aliases.keySet())
+					{
+						Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
+						if (ais.containsKey(orig) && ais.get(orig).equals(variant))
+						{
+							subbdbyus = subbd;  // We subsumed "subbd", so we need to inherit all their peers
+							break;
+						}
+					}
+					
 					/*RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
 					try
 					{
@@ -244,12 +265,16 @@ public class RPCoreSTSessionApiBuilder
 							+ (isCommonEndpointKind ? "" : this.apigen.getFamilyPackageName(family) + "_")
 							+ RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant)  // FIXME: factor out (and separate type name from package name)
 							+ "." + epkindTypeName
-							+ " {\n"
+							+ " {\n";
 							/*+ "params := make(map[string]int)\n"
 							//+ decls.iterator().next().params
 							+ ivars
 									.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))*/
-							+ "return "
+					
+					tmp += makeFamilyCheck(family, ivars);
+					tmp += makeSelfCheck(variant, ivars, subbdbyus);
+
+					tmp += "return "
 									+ (isCommonEndpointKind ? "" : this.apigen.getFamilyPackageName(family) + "_")
 									+ RPCoreSTApiGenerator.getEndpointKindPackageName(variant)  // FIXME: factor out
 									+ ".New" + "(p" //", params"
@@ -264,6 +289,82 @@ public class RPCoreSTSessionApiBuilder
 		}
 
 		res.put(getProtocolFilePath() + simpname + ".go", protoFile);
+	}
+
+	private String makeFamilyCheck(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fff, List<RPIndexVar> ivars)
+	{
+		String res = "";
+		/*Set<RPRoleVariant> left = fff.left;
+		Set<RPRoleVariant> right = fff.right;
+		for (RPRoleVariant cov : right)
+		{
+			res += "covistarts := " +
+					"[]{" + ((this.apigen.mode == Mode.Int) ? "int" : "session2.Pair")
+					+ "{" + cov.intervals.stream().map(x -> x.start.toGoString()).collect(Collectors.joining("")) + "}};\n";
+			res += "coviends := " +
+					"[]{" + ((this.apigen.mode == Mode.Int) ? "int" : "session2.Pair")
+					+ "{" + cov.intervals.stream().map(x -> x.end.toGoString()).collect(Collectors.joining("")) + "}};\n";
+		}*/
+		return res;
+	}
+
+	private String makeSelfCheck(RPRoleVariant vvv, List<RPIndexVar> ivars, RPRoleVariant subbd)
+	{
+		String res = "if "
+				+ vvv.intervals.stream().map(x ->
+						((this.apigen.mode == Mode.Int)
+							? "(self < " + x.start.toGoString() + ") || (self > " + x.end.toGoString() + ")"
+							: "(self.Lt(" + makeGoIndexExpr(x.start) + ")) || (self.Gt(" + makeGoIndexExpr(x.end) + "))"
+						)
+				).collect(Collectors.joining(" || ")) + " {\n";
+		
+		if (subbd != null)
+		{
+			res += makeSelfCheck(subbd, ivars, null);
+		}
+		else
+		{
+			res +=	
+					"panic(\"Invalid params/self: \" + "
+							+ ivars.stream().filter(x -> !x.name.equals("self")).map(x ->
+									((this.apigen.mode == Mode.Int)
+											? "strconv.Itoa(" + x.toGoString() + ")"
+											: x.toGoString() + ".String()"
+									) + " + \", \" + ").collect(Collectors.joining(""))
+							+ ((this.apigen.mode == Mode.Int) ? "strconv.Itoa(self)" : "self.String()")
+					+ ")\n";
+		}
+
+		res += "}\n";
+		
+		return res;
+	}
+
+	// Factor out with RPCoreSTStateChanApiGenerator#generateIndexExpr
+	private String makeGoIndexExpr(RPIndexExpr e)
+	{
+		if (e instanceof RPIndexIntPair || e instanceof RPIndexVar)
+		{
+			return e.toGoString();
+		}
+		else if (e instanceof RPBinIndexExpr)
+		{
+			RPBinIndexExpr b = (RPBinIndexExpr) e;
+			// TODO: factor out
+					String op;
+					switch (b.op)
+					{
+						case Add:  op = "Plus";  break;
+						case Subt:  op = "Sub";  break;
+						case Mult:
+						default:  throw new RuntimeException("[rp-core] Shouldn't get in here: " + e);
+					}
+				 return "(" + makeGoIndexExpr(b.left) + "." + op + "(" + makeGoIndexExpr(b.right) + "))";
+		}
+		else
+		{
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + e);
+		}
 	}
 
 	// FIXME: should be lpd
@@ -291,6 +392,23 @@ public class RPCoreSTSessionApiBuilder
 						(Iterable<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>) 
 								this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)  
 				{	
+					
+					// Factor out with above
+					Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> orig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
+					RPRoleVariant subbdbyus = null;
+					for (RPRoleVariant subbd : this.apigen.aliases.keySet())
+					{
+						Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
+						if (ais.containsKey(orig) && ais.get(orig).equals(variant))
+						{
+							subbdbyus = subbd;  // We subsumed "subbd", so we need to inherit all their peers
+							break;
+						}
+					}
+
+					//System.out.println("ffff: " + family + "\n" + variant + " ,, " + peers);
+					
+					
 					/*RPCoreIndexVarCollector coll = new RPCoreIndexVarCollector(this.apigen.job);
 					try
 					{
@@ -449,21 +567,7 @@ public class RPCoreSTSessionApiBuilder
 										// FIXME: should record peers according to families and lookup directly -- wouldn't need to re-check family inclusion here
 						{*/
 					
-					Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> orig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
 					Set<RPRoleVariant> peers = this.apigen.peers.get(variant).get(orig);
-					
-					RPRoleVariant subbdbyus = null;
-					for (RPRoleVariant subbd : this.apigen.aliases.keySet())
-					{
-						Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
-						if (ais.containsKey(orig) && ais.get(orig).equals(variant))
-						{
-							subbdbyus = subbd;  // We subsumed "subbd", so we need to inherit all their peers
-							break;
-						}
-					}
-					
-					//System.out.println("ffff: " + family + "\n" + variant + " ,, " + peers);
 					
 					for (RPRoleVariant v : peers)
 					{
@@ -527,6 +631,7 @@ public class RPCoreSTSessionApiBuilder
 								+ "}\n";
 						//}
 					}
+
 					if (subbdbyus != null)
 					{
 						// FIXME: factor out with above

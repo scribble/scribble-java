@@ -8,6 +8,14 @@
 module param.tmp.ParamTest;
 
 
+global protocol Proto1(role A, role B)
+{
+		
+}
+
+
+
+/*
 global protocol Proto1(role P, role Q)
 {
 	Play(Game@A) from Q[1] to P[1,K];
@@ -18,6 +26,7 @@ global protocol Game(role A, role B, role C)
 	Foo() from A[1] to B[1];
 	Bar() from A[1] to C[1];
 }
+//*/
 
 
 /*

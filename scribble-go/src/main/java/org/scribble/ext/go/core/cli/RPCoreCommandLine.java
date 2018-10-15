@@ -718,6 +718,7 @@ public class RPCoreCommandLine extends CommandLine
 			{
 				smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula(smt2t)).collect(Collectors.toList()), smt2); 
 			}
+			//smt2 = smt2t.makeExists(Stream.of("self").collect(Collectors.toList()), smt2);
 			smt2 = smt2t.makeAssert(smt2);
 			
 			job.debugPrintln("\n[rp-core] Family candidate (" + i++ + "/" + size + "): " + cand);
@@ -786,9 +787,10 @@ public class RPCoreCommandLine extends CommandLine
 					//z3 = "(exists (" + vars.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" ")) + ") " + z3 + ")";
 					z3 = smt2t.makeExists(vars.stream().map(v -> v.toSmt2Formula(smt2t)).collect(Collectors.toList()), z3);
 				}
+				//z3 = smt2t.makeExists(Stream.of("self").collect(Collectors.toList()), z3);
 				z3 = smt2t.makeAssert(z3);
 				
-				job.debugPrintln("\n[rp-core] Variant andidate (" + i++ + "/" + size + "): " + cand);
+				job.debugPrintln("\n[rp-core] Variant candidate (" + i++ + "/" + size + "): " + cand);
 				job.debugPrintln("[rp-core] Co-set: " + coset);
 				job.debugPrintln("[rp-core] Running Z3 on:\n" + z3);
 				
