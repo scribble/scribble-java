@@ -634,12 +634,14 @@ public class RPCoreSTSessionApiBuilder
 											.map(n ->
 													{
 														// FIXME TODO: case objects?
-														return (n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
-																? "ep._End = &End{ nil, 0, ep }\n"  // Now same as below?
+														return ((n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
+																? "ep._End = &End{ nil, 0, "  // Now same as below?
 																: "ep._" + n + " = &" + n + "{ nil,"
 																		//+ " new(RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE),"
 																		+ (n.equals("Init") ? " 1," : " 0,")
-																		+ " ep }\n"; 
+																		)
+														
+																+ " ep" + (this.apigen.job.parForeach ? ", 1" : "") + "}\n";
 																// cf. state chan builder  // CHECKME: reusing pre-created chan structs OK for Err handling?
 													}
 												).collect(Collectors.joining());

@@ -34,6 +34,9 @@ public class RPCoreSTEndStateBuilder extends STEndStateBuilder
 
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *"
 						+ RPCoreSTApiGenerator.getEndpointKindTypeName(api.gpn.getSimpleName(), schangen.variant) + "\n"  // FIXME: factor out
+						
+				+ (((RPCoreSTStateChanApiBuilder) api).apigen.job.parForeach ? "Thread int\n"	: "")
+						
 				+ "}";
 		return res;  // No LinearResource
 	}
