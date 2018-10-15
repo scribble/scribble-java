@@ -440,7 +440,7 @@ public class RPCoreCommandLine extends CommandLine
 				}
 				else
 				{
-					for (RPRoleVariant u : vs)
+					for (RPRoleVariant u : vs.stream().filter(x -> x.getName().equals(v.getName())).collect(Collectors.toList()))
 					{
 						if (!u.equals(v))
 						{
