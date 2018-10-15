@@ -277,7 +277,8 @@ public class RPCoreSTSessionApiBuilder
 									.stream().map(x -> "params[\"" + x + "\"] = " + x + "\n").collect(Collectors.joining(""))*/
 					
 					tmp += makeFamilyCheck((family == null) ? this.apigen.families.keySet().iterator().next() : family, ivars);  // FIXME: due to above family null hack
-					tmp += makeSelfCheck(variant, ivars, subbdbyus);
+					tmp += makeSelfCheck1(variant, ivars, subbdbyus);
+					tmp += makeSelfCheck2(variant, ivars, subbdbyus);
 
 					tmp += "return "
 									+ (isCommonEndpointKind ? "" : this.apigen.getFamilyPackageName(family) + "_")
@@ -337,7 +338,7 @@ public class RPCoreSTSessionApiBuilder
 		return res;
 	}
 
-	private String makeSelfCheck(RPRoleVariant vvv, List<RPIndexVar> ivars, RPRoleVariant subbd)
+	private String makeSelfCheck1(RPRoleVariant vvv, List<RPIndexVar> ivars, RPRoleVariant subbd)
 	{
 		String res = "if "
 				+ vvv.intervals.stream().map(x ->
@@ -346,18 +347,45 @@ public class RPCoreSTSessionApiBuilder
 							: "(self.Lt(" + makeGoIndexExpr(x.start) + ")) || (self.Gt(" + makeGoIndexExpr(x.end) + "))"
 						)
 				).collect(Collectors.joining(" || ")) + " {\n";
-		
 		if (subbd != null)
 		{
-			res += makeSelfCheck(subbd, ivars, null);
+			res += makeSelfCheck1(subbd, ivars, null);
 		}
 		else
 		{
 			res +=	makeParamsSelfPanic(ivars);
 		}
-
 		res += "}\n";
-		
+		return res;
+	}
+
+	private String makeSelfCheck2(RPRoleVariant vvv, List<RPIndexVar> ivars, RPRoleVariant subbd)
+	{
+		String res = "";
+		if (!vvv.cointervals.isEmpty()) {
+		res += "if "
+				+ vvv.cointervals.stream().map(x ->
+						((this.apigen.mode == Mode.Int)
+							? "(self >= " + x.start.toGoString() + ") && (self <= " + x.end.toGoString() + ")"
+							: "(self.Gte(" + makeGoIndexExpr(x.start) + ")) && (self.Lt(" + makeGoIndexExpr(x.end) + "))"
+						)
+				).collect(Collectors.joining(" || ")) + " {\n";
+		}
+		if (subbd != null)
+		{
+			res += makeSelfCheck1(subbd, ivars, null);
+		}
+		else
+		{
+			if (!vvv.cointervals.isEmpty())
+			{
+				res +=	makeParamsSelfPanic(ivars);
+			}
+		}
+		if (!vvv.cointervals.isEmpty())
+		{	
+			res += "}\n";
+		}
 		return res;
 	}
 
