@@ -606,14 +606,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 							+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
 					+ nextState + ".id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n";
 
-			if (this.apigen.job.parForeach)
+			/*if (this.apigen.job.parForeach)
 			{
 				res += RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Thread = "  // FIXME: sync
 								+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Thread + 1\n"
 						+ nextState + ".Thread = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Thread\n";
-			}
-			res +=
-                        "return "+ nextState + "\n";
+			}*/
+
+			res += "return "+ nextState + "\n";
 			return res;
 		}
 	}
@@ -719,7 +719,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			{
 				if (this.apigen.job.parForeach)
 				{
-					return sEp + ".Params[s.Ept.Thread][\"" + e.toGoString() + "\"]";
+					return sEp + ".Params[" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread][\"" + e.toGoString() + "\"]";
 				}
 				else
 				{
