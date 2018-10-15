@@ -299,6 +299,11 @@ public class RPCoreSTSessionApiBuilder
 
 	private String makeFamilyCheck(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fff, List<RPIndexVar> ivars)
 	{
+		if (ivars.isEmpty())
+		{
+			return "";
+		}
+
 		String res = "";
 		String ivalkind;
 		switch (this.apigen.mode)
@@ -340,6 +345,13 @@ public class RPCoreSTSessionApiBuilder
 
 	private String makeSelfCheck1(RPRoleVariant vvv, List<RPIndexVar> ivars, RPRoleVariant subbd)
 	{
+		/*if (ivars.isEmpty())
+		{
+			return "if self != " + ((this.apigen.mode == Mode.Int) ? "1" : "session2.XY(1, 1)") + " {\n"
+					+ makeParamsSelfPanic(ivars)
+					+ "}\n";
+		}*/
+		
 		String res = "if "
 				+ vvv.intervals.stream().map(x ->
 						((this.apigen.mode == Mode.Int)
@@ -361,6 +373,11 @@ public class RPCoreSTSessionApiBuilder
 
 	private String makeSelfCheck2(RPRoleVariant vvv, List<RPIndexVar> ivars, RPRoleVariant subbd)
 	{
+		if (ivars.isEmpty())
+		{
+			return "";
+		}
+
 		String res = "";
 		if (!vvv.cointervals.isEmpty()) {
 		res += "if "

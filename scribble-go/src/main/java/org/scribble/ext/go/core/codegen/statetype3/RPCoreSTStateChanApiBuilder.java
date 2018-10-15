@@ -302,8 +302,23 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
     String initState = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + initName;
 		feach += "\n"
 				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
-						+ ") Foreach(f func(*" + initName + ") " + termName + ") *" + succName + " {\n"
-						+ "for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
+						+ ") Foreach(f func(*" + initName + ") " + termName + ") *" + succName + " {\n";
+						
+		// Duplicated from buildAction
+		feach +=
+				  "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
+				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
+				+ "}\n"
+
+				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
+										//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
+										+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin"
+										+ " {\n"
+								+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
+								+ "}\n";
+						
+		feach +=
+						  "for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
 								+ p + lte + "; " + p + " = " + inc + "{\n"
 						//+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
 						+ sEp + ".Params[\"" + p + "\"] = " + p + "\n"  // FIXME: nested Endpoint type/struct?
@@ -321,6 +336,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				//+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
 				+ makeReturnSuccStateChan(s, succName) + "\n"
 				+ "}\n";
+		
+		// Parallel method
+		//feach += "\n";
+		
 
 		res.put(getStateChannelFilePath(scTypeName), feach);
 		
