@@ -373,10 +373,10 @@ public class RPCoreSTSessionApiBuilder
 
 	private String makeSelfCheck2(RPRoleVariant vvv, List<RPIndexVar> ivars, RPRoleVariant subbd)
 	{
-		if (ivars.isEmpty())
+		/*if (ivars.isEmpty())
 		{
 			return "";
-		}
+		}*/
 
 		String res = "";
 		if (!vvv.cointervals.isEmpty()) {
