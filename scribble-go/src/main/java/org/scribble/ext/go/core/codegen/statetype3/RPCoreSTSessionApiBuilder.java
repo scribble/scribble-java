@@ -315,30 +315,34 @@ public class RPCoreSTSessionApiBuilder
 			case IntPair:  ivalkind = "IntPairInterval";  break;
 			default:  throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
 		}
-		List<String> tmp = new LinkedList<>();
-		Function<Set<RPRoleVariant>, String> ggg = vs ->
-		{
-			for (RPRoleVariant v : vs)
-			{
-				v.intervals.forEach(x -> 
-				{
-					String start = (this.apigen.mode == Mode.Int) ? x.start.toGoString() : makeGoIndexExpr(x.start);
-					String end = (this.apigen.mode == Mode.Int) ? x.end.toGoString() : makeGoIndexExpr(x.end);
-					tmp.add("util." + ivalkind + "{" + start + ", " + end + "}");
-				});
-			}
-			return "[]util." + ivalkind + "{" + tmp.stream().collect(Collectors.joining(", ")) + "}\n";
-		};
-		res += "in := " + ggg.apply(fff.left);
-		res += "if util.Isect" + ivalkind + "s(in).IsEmpty() {\n";
-		res += makeParamsSelfPanic(ivars);
-		res += "}\n";
 
-		tmp.clear();
-		res += "out := " + ggg.apply(fff.right);
-		res += "if !util.Isect" + ivalkind + "s(out).IsEmpty() {\n";
-		res += makeParamsSelfPanic(ivars);
-		res += "}\n";
+		res += "var tmp []util." + ivalkind + "\n";
+		Function<RPRoleVariant, String> makeIvals = vvv ->
+		{
+			List<String> ivals = new LinkedList<>();
+			vvv.intervals.forEach(x -> 
+			{
+				String start = (this.apigen.mode == Mode.Int) ? x.start.toGoString() : makeGoIndexExpr(x.start);
+				String end = (this.apigen.mode == Mode.Int) ? x.end.toGoString() : makeGoIndexExpr(x.end);
+				ivals.add("util." + ivalkind + "{" + start + ", " + end + "}");
+			});
+			return "tmp = []util." + ivalkind + "{" + ivals.stream().collect(Collectors.joining(", ")) + "}\n";
+		};
+
+		for (RPRoleVariant v : fff.left)
+		{
+			res += makeIvals.apply(v);
+			res += "if util.Isect" + ivalkind + "s(tmp).IsEmpty() {\n";
+			res += makeParamsSelfPanic(ivars);
+			res += "}\n";
+		}
+		for (RPRoleVariant v : fff.right)
+		{
+			res += makeIvals.apply(v);
+			res += "if !util.Isect" + ivalkind + "s(tmp).IsEmpty() {\n";
+			res += makeParamsSelfPanic(ivars);
+			res += "}\n";
+		}
 		return res;
 	}
 
