@@ -19,6 +19,7 @@ import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPBinIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexIntPair;
@@ -199,7 +200,7 @@ public class RPCoreSTSessionApiBuilder
 						}).collect(Collectors.joining("")));
 		
 		protoFile += "\nvar _ = strconv.Itoa\n";
-		protoFile += "\nvar _ = util.IsectIntIntervals\n";
+		protoFile += "var _ = util.IsectIntIntervals\n";
 					
 		protoFile += "\n"
 				// Protocol type
@@ -524,22 +525,31 @@ public class RPCoreSTSessionApiBuilder
 							+ "lin uint64\n"
 
 							+ RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + " *" + RPCoreSTApiGenConstants.GO_MPCHAN_TYPE + "\n"
-							+ ivars.stream().map(x -> x + " " + indexType + "\n").collect(Collectors.joining(""))
+							+ ivars.stream().map(x -> x + " " + indexType + "\n").collect(Collectors.joining(""));
 
-							+ "Params map[string]" + indexType + "\n"  // FIXME: currently used to record foreach params (and provide access to user)
+					if (this.apigen.job.parForeach)
+					{
+						epkindFile += "Params map[int]map[string]" + indexType + "\n";  // FIXME: currently used to record foreach params (and provide access to user)
+					}
+					else
+					{
+						epkindFile += "Params map[string]" + indexType + "\n";  // FIXME: currently used to record foreach params (and provide access to user)
+					}
 							
-							/*+ this.apigen.stateChanNames.get(variant).entrySet().stream().sorted(
-									new Comparator<Entry<Integer, String>>()
+						/*+ this.apigen.stateChanNames.get(variant).entrySet().stream().sorted(
+								new Comparator<Entry<Integer, String>>()
+									{
+										@Override
+										public int compare(Entry<Integer, String> o1, Entry<Integer, String> o2)
 										{
-											@Override
-											public int compare(Entry<Integer, String> o1, Entry<Integer, String> o2)
-											{
-												return o1.getKey().compareTo(o2.getKey());
-											}
+											return o1.getKey().compareTo(o2.getKey());
 										}
-									)*/
+									}
+								)*/
+
+					epkindFile +=
 								// FIXME TODO: case objects?
-							+ this.reachable.get(variant).stream().sorted(ESTATE_COMP)
+							 this.reachable.get(variant).stream().sorted(ESTATE_COMP)
 									//.map(s -> this.stateChanNames.get(s.id))
 									.flatMap(s ->
 										{
@@ -552,9 +562,14 @@ public class RPCoreSTSessionApiBuilder
 									.map(n ->
 									{
 										return "_" + n + " *" + n + "\n";
-									}).collect(Collectors.joining())
+									}).collect(Collectors.joining());
+					
+					if (this.apigen.job.parForeach)
+					{
+						epkindFile += "Thread int\n";
+					}
 
-							+ "}\n"
+					epkindFile += "}\n"
 
 							// Endpoint Kind type constructor -- makes connection maps
 							+ "\n"
@@ -574,12 +589,21 @@ public class RPCoreSTSessionApiBuilder
 
 									+ RPCoreSTApiGenConstants.GO_MPCHAN_CONSTRUCTOR + "(self, "//conns)" //"params
 											+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "}),\n"
-									+ ivars.stream().map(x ->  x + ",\n").collect(Collectors.joining(""))
-									+ "make(map[string]" + indexType + "),\n"  // Trailing comma needed
+									+ ivars.stream().map(x ->  x + ",\n").collect(Collectors.joining(""));
 
+					if (this.apigen.job.parForeach)
+					{
+						epkindFile += "make(map[int]map[string]" + indexType + "),\n";
+					}
+					else
+					{
+						epkindFile += "make(map[string]" + indexType + "),\n";  // Trailing comma needed
+					}
+
+					epkindFile +=
 									//+ this.apigen.stateChanNames.get(variant).values().stream().distinct().map(k -> "nil,\n").collect(Collectors.joining())
 									  // FIXME: factor out with above
-									+ this.reachable.get(variant).stream().sorted(ESTATE_COMP)
+									 this.reachable.get(variant).stream().sorted(ESTATE_COMP)
 											.flatMap(s -> 
 													{
 														String n = this.stateChanNames.get(variant).get(s.id);
@@ -588,9 +612,14 @@ public class RPCoreSTSessionApiBuilder
 															: Stream.of(n);
 													})
 											.distinct()
-											.map(k -> "nil,\n").collect(Collectors.joining())
+											.map(k -> "nil,\n").collect(Collectors.joining());
+					
+					if (this.apigen.job.parForeach)
+					{
+						epkindFile += "1,\n";
+					}
 									
-									+ "}\n"
+					epkindFile += "}\n"
 
 									  // FIXME: factor out with above
 									+ this.reachable.get(variant).stream().sorted(ESTATE_COMP)
@@ -613,9 +642,14 @@ public class RPCoreSTSessionApiBuilder
 																		+ " ep }\n"; 
 																// cf. state chan builder  // CHECKME: reusing pre-created chan structs OK for Err handling?
 													}
-												).collect(Collectors.joining())
+												).collect(Collectors.joining());
+										
+							if (this.apigen.job.parForeach)
+							{
+								epkindFile += "ep.Params[ep.Thread] = make(map[string]" + indexType + ")\n";
+							}
 
-									+ "return ep\n";
+							epkindFile += "return ep\n";
 
 							epkindFile += "}\n";
 

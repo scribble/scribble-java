@@ -8,17 +8,18 @@
 module param.tmp.ParamTest;
 
 
-/*
+//*
 global protocol Proto1(role A, role B)
 {
 	foreach B[I:1,K]
 	{
-		Foo() from A[1] to B[K];
+		Foo() from A[1] to B[I];
 	}		
 }
 //*/
 
 
+/*
 sig <go> "message.Parse" from "github.com/nickng/scribble-go-examples/20_webcrawler/message" as Parse;
 sig <go> "message.Index" from "github.com/nickng/scribble-go-examples/20_webcrawler/message" as Index;
 sig <go> "message.URL" from "github.com/nickng/scribble-go-examples/20_webcrawler/message" as URL;
@@ -30,7 +31,7 @@ global protocol Proto1(role Downloader, role Parser, role Indexer, role Master) 
     Index from Parser[1,N] to Indexer[1];
     URL from Indexer[1] to Master[1];
 }
-
+//*/
 
 
 /*

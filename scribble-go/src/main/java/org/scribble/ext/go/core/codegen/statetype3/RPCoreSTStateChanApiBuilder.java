@@ -319,15 +319,24 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						
 		feach +=
 						  "for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
-								+ p + lte + "; " + p + " = " + inc + "{\n"
+								+ p + lte + "; " + p + " = " + inc + "{\n";
 						//+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
-						+ sEp + ".Params[\"" + p + "\"] = " + p + "\n"  // FIXME: nested Endpoint type/struct?
+		
+		if (this.apigen.job.parForeach)
+		{
+		  feach += sEp + ".Params[" + sEp + ".Thread][\"" + p + "\"] = " + p + "\n";
+		}
+		else
+		{
+			feach += sEp + ".Params[\"" + p + "\"] = " + p + "\n";  // FIXME: nested Endpoint type/struct?
+		}
 
+		feach +=
 				// Duplicated from RPCoreSTSessionApiBuilder  // FIXME: factor out with makeReturnSuccStateChan
 				/*+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
 						? "f(newBranch" + initName + "(ini))\n"
 						: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), " + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse*/
-					+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
+					  RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
 					+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
 					+ initState +".id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n"
 					+ "f(" + initState + ")\n"
@@ -685,7 +694,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			if (e instanceof RPForeachVar
 					|| this.fvars.stream().anyMatch(p -> p.toString().equals(e.toString())))  // FIXME HACK -- foreach var occurrences inside foreach body are RPIndexVars
 			{
-				return sEp + ".Params[\"" + e.toGoString() + "\"]";
+				if (this.apigen.job.parForeach)
+				{
+					return sEp + ".Params[s.Ept.Thread][\"" + e.toGoString() + "\"]";
+				}
+				else
+				{
+					return sEp + ".Params[\"" + e.toGoString() + "\"]";
+				}
 			}
 			else
 			{
