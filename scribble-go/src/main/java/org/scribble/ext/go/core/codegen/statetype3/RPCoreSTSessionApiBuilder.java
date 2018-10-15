@@ -316,6 +316,7 @@ public class RPCoreSTSessionApiBuilder
 		}
 
 		res += "var tmp []util." + ivalkind + "\n";
+		//res += "var tmp2 []util." + ivalkind + "\n";
 		Function<RPRoleVariant, String> makeIvals = vvv ->
 		{
 			List<String> ivals = new LinkedList<>();
@@ -327,21 +328,36 @@ public class RPCoreSTSessionApiBuilder
 			});
 			return "tmp = []util." + ivalkind + "{" + ivals.stream().collect(Collectors.joining(", ")) + "}\n";
 		};
+		/*Function<RPRoleVariant, String> makeCoIvals = vvv ->
+		{
+			List<String> coivals = new LinkedList<>();
+			vvv.cointervals.forEach(x -> 
+			{
+				String start = (this.apigen.mode == Mode.Int) ? x.start.toGoString() : makeGoIndexExpr(x.start);
+				String end = (this.apigen.mode == Mode.Int) ? x.end.toGoString() : makeGoIndexExpr(x.end);
+				coivals.add("util." + ivalkind + "{" + start + ", " + end + "}");
+			});
+			return "tmp2 = []util." + ivalkind + "{" + coivals.stream().collect(Collectors.joining(", ")) + "}\n";
+		};*/
 
 		for (RPRoleVariant v : fff.left)
 		{
 			res += makeIvals.apply(v);
-			res += "if util.Isect" + ivalkind + "s(tmp).IsEmpty() {\n";
+			//res += makeCoIvals.apply(v);
+			res += "if util.Isect" + ivalkind + "s(tmp)"//.SubtIntIntervals(tmp2)
+					+ ".IsEmpty() {\n";
 			res += makeParamsSelfPanic(ivars);
 			res += "}\n";
 		}
-		for (RPRoleVariant v : fff.right)
+		/*for (RPRoleVariant v : fff.right)
 		{
 			res += makeIvals.apply(v);
-			res += "if !util.Isect" + ivalkind + "s(tmp).IsEmpty() {\n";
+			//res += makeCoIvals.apply(v);
+			res += "if !util.Isect" + ivalkind + "s(tmp)"//.SubtIntIntervals(tmp2)
+					+ ".IsEmpty() {\n";
 			res += makeParamsSelfPanic(ivars);
 			res += "}\n";
-		}
+		}*/
 		return res;
 	}
 

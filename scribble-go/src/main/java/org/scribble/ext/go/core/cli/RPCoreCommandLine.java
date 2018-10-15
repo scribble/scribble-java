@@ -473,7 +473,9 @@ public class RPCoreCommandLine extends CommandLine
 				Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> compressed = new Pair<>(tmp, fam.right);
 				families.add(compressed);  // Subsumed variants are neither in left nor right
 
-				//System.out.println("\nFamily:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n")) + "\nCompacted:\n" + tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));
+				/*System.out.println("\nFamily:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n"))
+						+ "\nCovars:\n" + fam.right.stream().map(x -> x.toString()).collect(Collectors.joining("\n"))
+						+ "\nCompacted:\n" + tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));*/
 					
 				if (!tmp.equals(fam.left))
 				{
@@ -781,7 +783,7 @@ public class RPCoreCommandLine extends CommandLine
 				List<RPIndexVar> vars = Stream.concat(
 							cand.stream().flatMap(c -> c.getIndexVars().stream()),
 							coset.stream().flatMap(c -> c.getIndexVars().stream())
-						).collect(Collectors.toList());
+						).distinct().collect(Collectors.toList());
 				if (!vars.isEmpty())
 				{
 					//z3 = "(exists (" + vars.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" ")) + ") " + z3 + ")";
@@ -803,6 +805,7 @@ public class RPCoreCommandLine extends CommandLine
 				job.debugPrintln("[rp-core] Checked sat: " + isSat);
 			}
 		}
+		
 		return variants;
 	}
 
