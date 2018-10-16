@@ -185,14 +185,36 @@ public class RPCoreSTApiGenerator
 		//makeStateChanNames();
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
 		res.putAll(buildSessionApi());
-		for (Role self : this.selfs)
+		for (Role self : this.selfs.stream().sorted(new Comparator<Role>()
+			{
+				@Override
+				public int compare(Role o1, Role o2)
+				{
+					return o1.toString().compareTo(o2.toString());
+				}
+			}).collect(Collectors.toList()))
 		{
-			for (Entry<RPRoleVariant, EGraph> e : this.variants.get(self).entrySet())
+			for (Entry<RPRoleVariant, EGraph> e : this.variants.get(self).entrySet().stream().sorted(new Comparator<Entry<RPRoleVariant, EGraph>>()
+				{
+					@Override
+					public int compare(Entry<RPRoleVariant, EGraph> o1, Entry<RPRoleVariant, EGraph> o2)
+					{
+						return o1.getValue().init.id - o2.getValue().init.id;
+					}
+				}).collect(Collectors.toList()))
 			{
 				RPRoleVariant variant = e.getKey();
 				for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
-						(Iterable<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>) 
-								this.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)
+						this.families.entrySet().stream().filter(x -> x.getKey().left.contains(variant))
+						.sorted(new Comparator<Entry<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer>>()
+							{
+								@Override
+								public int compare(Entry<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> o1,
+										Entry<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> o2)
+								{
+									return o1.getValue() - o2.getValue();
+								}
+							}).map(x -> x.getKey()).collect(Collectors.toList()))
 				{
 					res.putAll(buildStateChannelApi(family, variant, e.getValue()));
 				}

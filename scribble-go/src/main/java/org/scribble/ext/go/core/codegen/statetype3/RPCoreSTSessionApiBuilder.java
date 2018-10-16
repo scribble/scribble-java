@@ -19,9 +19,9 @@ import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
-import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPBinIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EGraph;
@@ -408,7 +408,7 @@ public class RPCoreSTSessionApiBuilder
 		}
 		if (subbd != null)
 		{
-			res += makeSelfCheck1(subbd, ivars, null);
+			res += makeSelfCheck2(subbd, ivars, null);
 		}
 		else
 		{
@@ -463,6 +463,131 @@ public class RPCoreSTSessionApiBuilder
 		}
 	}
 
+	private String makeGoIndexExprInt2(RPIndexExpr e)
+	{
+		if (e instanceof RPIndexInt)
+		{
+			return e.toGoString();
+		}
+		else if (e instanceof RPIndexVar)
+		{
+			return "ini." + e.toGoString();
+		}
+		else if (e instanceof RPBinIndexExpr)
+		{
+			RPBinIndexExpr b = (RPBinIndexExpr) e;
+			// TODO: factor out
+				String op;
+				switch (b.op)
+				{
+					case Add:  op = " + ";  break;
+					case Subt:  op = " - ";  break;
+					case Mult:
+					default:  throw new RuntimeException("[rp-core] Shouldn't get in here: " + e);
+				}
+			 return "(" + makeGoIndexExprInt2(b.left) + op + "(" + makeGoIndexExprInt2(b.right) + "))";
+		}
+		else
+		{
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + e);
+		}
+	}
+
+	private String makeGoIndexIntPairExpr2(RPIndexExpr e)
+	{
+		if (e instanceof RPIndexIntPair)
+		{
+			return e.toGoString();
+		}
+		else if (e instanceof RPIndexVar)
+		{
+			return "ini." + e.toGoString();
+		}
+		else if (e instanceof RPBinIndexExpr)
+		{
+			RPBinIndexExpr b = (RPBinIndexExpr) e;
+			// TODO: factor out
+				String op;
+				switch (b.op)
+				{
+					case Add:  op = "Plus";  break;
+					case Subt:  op = "Sub";  break;
+					case Mult:
+					default:  throw new RuntimeException("[rp-core] Shouldn't get in here: " + e);
+				}
+			 return "(" + makeGoIndexIntPairExpr2(b.left) + "." + op + "(" + makeGoIndexIntPairExpr2(b.right) + "))";
+		}
+		else
+		{
+			throw new RuntimeException("[rp-core] Shouldn't get in here: " + e);
+		}
+	}
+
+	// TODO: factor out with above
+	private String makePeerIdCheck1(RPRoleVariant vvv, List<RPIndexVar> ivars, RPRoleVariant subbd)
+	{
+		String res = "if "
+				+ vvv.intervals.stream().map(x ->
+						((this.apigen.mode == Mode.Int)
+							? "(id < " + makeGoIndexExprInt2(x.start) + ") || (id > " + makeGoIndexExprInt2(x.end) + ")"
+							: "(id.Lt(" + makeGoIndexIntPairExpr2(x.start) + ")) || (id.Gt(" + makeGoIndexIntPairExpr2(x.end) + "))"
+						)
+				).collect(Collectors.joining(" || ")) + " {\n";
+		if (subbd != null)
+		{
+			res += makePeerIdCheck1(subbd, ivars, null);
+		}
+		else
+		{
+			res +=	makeParamsPeerIdPanic(ivars);
+		}
+		res += "}\n";
+		return res;
+	}
+
+	private String makePeerIdCheck2(RPRoleVariant vvv, List<RPIndexVar> ivars, RPRoleVariant subbd)
+	{
+
+		String res = "";
+		if (!vvv.cointervals.isEmpty()) {
+		res += "if "
+				+ vvv.cointervals.stream().map(x ->
+						((this.apigen.mode == Mode.Int)
+							? "(id >= " + makeGoIndexExprInt2(x.start) + ") && (id <= " + makeGoIndexExprInt2(x.end) + ")"
+							: "(id.Gte(" + makeGoIndexIntPairExpr2(x.start) + ")) && (id.Lt(" + makeGoIndexIntPairExpr2(x.end) + "))"
+						)
+				).collect(Collectors.joining(" || ")) + " {\n";
+		}
+		if (subbd != null)
+		{
+			res += makePeerIdCheck2(subbd, ivars, null);
+		}
+		else
+		{
+			if (!vvv.cointervals.isEmpty())
+			{
+				res +=	makeParamsPeerIdPanic(ivars);
+			}
+		}
+		if (!vvv.cointervals.isEmpty())
+		{	
+			res += "}\n";
+		}
+		return res;
+	}
+
+	private String makeParamsPeerIdPanic(List<RPIndexVar> ivars)
+	{
+		return "panic(\"Invalid params/id: \" + "
+				+ ivars.stream().filter(x -> !x.name.equals("self")).map(x ->
+						((this.apigen.mode == Mode.Int)
+								? "strconv.Itoa(ini." + x.toGoString() + ")"
+								: "ini." + x.toGoString() + ".String()"
+						) + " + \", \" + ").collect(Collectors.joining(""))
+				+ ((this.apigen.mode == Mode.Int) ? "strconv.Itoa(id)" : "id.String()")
+		+ ")\n";
+	}
+
 	// FIXME: should be lpd
 	private void buildEndpointKindApi(ProtocolDecl<Global> gpd, Map<String, String> res, String indexType)
 	{
@@ -478,6 +603,9 @@ public class RPCoreSTSessionApiBuilder
 			default:  throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
 		}
 		epkindImports += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_TRANSPORT_PACKAGE + "\"\n";
+		epkindImports += "import \"strconv\"\n";
+
+		epkindImports += "\nvar _ = strconv.Itoa\n";
 		
 		// Endpoint Kind API per role variant
 		for (Role rname : roles)
@@ -703,6 +831,20 @@ public class RPCoreSTSessionApiBuilder
 					for (RPRoleVariant v : peers)
 					{
 						RPRoleVariant pp = v;
+						
+						// TODO: factor out with above
+						Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> peerorig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
+						RPRoleVariant subbdbypeer = null;
+						for (RPRoleVariant subbd : this.apigen.aliases.keySet())
+						{
+							Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
+							if (ais.containsKey(peerorig) && ais.get(peerorig).equals(variant))
+							{
+								subbdbypeer = subbd;  // We subsumed "subbd", so we need to inherit all their peers
+								break;
+							}
+						}
+						
 						if (this.apigen.aliases.containsKey(v))
 						{
 							Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ali = this.apigen.aliases.get(v);
@@ -723,6 +865,10 @@ public class RPCoreSTSessionApiBuilder
 								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id " + indexType
 										+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
 										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+										
+								+ makePeerIdCheck1(v, ivars, subbdbypeer)		
+								+ makePeerIdCheck2(v, ivars, subbdbypeer)		
+										
 								+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
 										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
 								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
@@ -744,6 +890,10 @@ public class RPCoreSTSessionApiBuilder
 										+ ", host string, port int"
 										+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
 										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+
+								+ makePeerIdCheck1(v, ivars, subbdbypeer)		
+								+ makePeerIdCheck2(v, ivars, subbdbypeer)		
+
 								+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
 										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
 								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."

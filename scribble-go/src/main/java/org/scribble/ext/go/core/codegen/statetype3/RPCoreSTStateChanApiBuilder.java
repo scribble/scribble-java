@@ -1,6 +1,7 @@
 package org.scribble.ext.go.core.codegen.statetype3;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -122,7 +123,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		states.add(this.graph.init);
 		states.addAll(MState.getReachableStates(this.graph.init));
 		boolean hasTerm = false;
-		for (EState s : states)
+		for (EState s : states.stream().sorted(new Comparator<EState>()
+			{
+				@Override
+				public int compare(EState o1, EState o2)
+				{
+					return o1.id - o2.id;
+				}
+			}).collect(Collectors.toList()))
 		{
 			switch (RPCoreSTStateChanApiBuilder.getStateKind(s))
 			{
