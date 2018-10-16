@@ -47,7 +47,7 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 
 		res += 
 				"import \"log\"\n"
-				+ ((RPCoreSTStateChanApiBuilder) api).makeMessageImports(s)
+				+ ((RPCoreSTStateChanApiBuilder) api).makeMessageImports(s, true)
 				+ "\n"
 				+ "var _ = log.Fatal\n"
 				+ "\n"

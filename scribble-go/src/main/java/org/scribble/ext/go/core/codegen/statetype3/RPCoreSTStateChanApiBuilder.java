@@ -398,7 +398,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		if (s.getStateKind() == EStateKind.OUTPUT || s.getStateKind() == EStateKind.UNARY_INPUT
 				|| (s.getStateKind() == EStateKind.POLY_INPUT && !this.apigen.job.selectApi))
 		{
-			res += makeMessageImports(s);
+			res += makeMessageImports(s, true);
 		}
 
 		// FIXME: still needed? -- refactor back into state-specific builders?
@@ -452,29 +452,32 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return res;
 	}
 
-	public String makeMessageImports(EState s)
+	public String makeMessageImports(EState s, boolean pays)
 	{
 		String res = "";
-		for (String extSource : (Iterable<String>) s.getAllActions().stream()
-				.filter(a -> a.mid.isOp())
-				.flatMap(a -> a.payload.elems.stream().filter(p -> !(p instanceof GDelegationType))
-						.filter(p -> !getExtName((DataType) p).matches("(\\[\\])*(int|string|byte)"))
-						.filter(p -> !getExtName((DataType) p).matches("(\\*)*(int|string|byte)")))
-				.map(p -> getExtSource((DataType) p))
-				.distinct()::iterator)
+		if (pays)
 		{
-			res += "import \"" + extSource + "\"\n";
-		}
-		for (PayloadElemType<?> pet : (Iterable<PayloadElemType<?>>) s.getAllActions().stream()
-				.filter(a -> a.mid.isOp())
-				.flatMap(a -> a.payload.elems.stream().filter(p -> (p instanceof RPCoreGDelegationType))
-				//.map(p -> getDelegatedChanPackageName((RPCoreGDelegationType) p))
-						)
-				.distinct()::iterator)
-		{
-			res += "import \"" + this.apigen.packpath + "/" + ((RPCoreGDelegationType) pet).getGlobalProtocol().getSimpleName()
-							// *pet* gpn name (i.e., for state chan type being delegated) -- cf. *this*.gpn.toString() in getStateChannelFilePath
-					+ "/" + getDelegatedChanPackageName((RPCoreGDelegationType) pet) + "\"\n";
+			for (String extSource : (Iterable<String>) s.getAllActions().stream()
+					.filter(a -> a.mid.isOp())
+					.flatMap(a -> a.payload.elems.stream().filter(p -> !(p instanceof GDelegationType))
+							.filter(p -> !getExtName((DataType) p).matches("(\\[\\])*(int|string|byte)"))
+							.filter(p -> !getExtName((DataType) p).matches("(\\*)*(int|string|byte)")))
+					.map(p -> getExtSource((DataType) p))
+					.distinct()::iterator)
+			{
+				res += "import \"" + extSource + "\"\n";
+			}
+			for (PayloadElemType<?> pet : (Iterable<PayloadElemType<?>>) s.getAllActions().stream()
+					.filter(a -> a.mid.isOp())
+					.flatMap(a -> a.payload.elems.stream().filter(p -> (p instanceof RPCoreGDelegationType))
+					//.map(p -> getDelegatedChanPackageName((RPCoreGDelegationType) p))
+							)
+					.distinct()::iterator)
+			{
+				res += "import \"" + this.apigen.packpath + "/" + ((RPCoreGDelegationType) pet).getGlobalProtocol().getSimpleName()
+								// *pet* gpn name (i.e., for state chan type being delegated) -- cf. *this*.gpn.toString() in getStateChannelFilePath
+						+ "/" + getDelegatedChanPackageName((RPCoreGDelegationType) pet) + "\"\n";
+			}
 		}
 		for (String extSource : (Iterable<String>) s.getAllActions().stream()
 				.filter(a -> a.mid.isMessageSigName())
