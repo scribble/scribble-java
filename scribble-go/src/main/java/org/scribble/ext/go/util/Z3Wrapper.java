@@ -63,7 +63,7 @@ public class Z3Wrapper
 		{
 			tmp = File.createTempFile(gpd.header.name.toString(), ".smt2.tmp");
 			ScribUtil.writeToFile(tmpName, smt2);
-			String[] res = ScribUtil.runProcess("z3", tmpName);
+			String[] res = ScribUtil.runProcess("z3", tmpName);//, "-T:60");
 			String trim = res[0].trim();
 			if (trim.equals("sat"))  // FIXME: factor out
 			{
