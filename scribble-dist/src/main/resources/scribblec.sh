@@ -70,7 +70,7 @@ Options:
 
 
   -model <simple global protocol name>          Generate global model
-  -modelpng <simple global protocol name> <role> <output file>
+  -modelpng <simple global protocol name> <output file>
           Draw global model as png (requires dot)
   -fair                                         Assume fair output choices
   -umodel, -umodelpng (with appropriate args)   "Unfair" variant
