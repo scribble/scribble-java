@@ -320,12 +320,15 @@ public class RPCoreSTSessionApiBuilder
 		Function<RPRoleVariant, String> makeIvals = vvv ->
 		{
 			List<String> ivals = new LinkedList<>();
-			vvv.intervals.forEach(x -> 
+			for (RPInterval x : vvv.intervals) 
 			{
-				String start = (this.apigen.mode == Mode.Int) ? x.start.toGoString() : makeGoIndexExpr(x.start);
-				String end = (this.apigen.mode == Mode.Int) ? x.end.toGoString() : makeGoIndexExpr(x.end);
-				ivals.add("util." + ivalkind + "{" + start + ", " + end + "}");
-			});
+				if (ivars.containsAll(x.getIndexVars()))
+				{
+					String start = (this.apigen.mode == Mode.Int) ? x.start.toGoString() : makeGoIndexExpr(x.start);
+					String end = (this.apigen.mode == Mode.Int) ? x.end.toGoString() : makeGoIndexExpr(x.end);
+					ivals.add("util." + ivalkind + "{" + start + ", " + end + "}");
+				}
+			}
 			return "tmp = []util." + ivalkind + "{" + ivals.stream().collect(Collectors.joining(", ")) + "}\n";
 		};
 		/*Function<RPRoleVariant, String> makeCoIvals = vvv ->
