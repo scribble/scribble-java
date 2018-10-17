@@ -473,9 +473,9 @@ public class RPCoreCommandLine extends CommandLine
 				Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> compressed = new Pair<>(tmp, fam.right);
 				families.add(compressed);  // Subsumed variants are neither in left nor right
 
-				/*System.out.println("\nFamily:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n"))
+				System.out.println("\nFamily:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n"))
 						+ "\nCovars:\n" + fam.right.stream().map(x -> x.toString()).collect(Collectors.joining("\n"))
-						+ "\nCompacted:\n" + tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));*/
+						+ "\nCompacted:\n" + tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));
 					
 				if (!tmp.equals(fam.left))
 				{
@@ -713,8 +713,8 @@ public class RPCoreCommandLine extends CommandLine
 			
 			List<String> cs = new LinkedList<>();
 			cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
-			cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t)).collect(Collectors.toList()));
-			cs.addAll(coset.stream().map(v -> smt2t.makeNot(makePhiSmt2(v.intervals, v.cointervals, smt2t))).collect(Collectors.toList()));
+			cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, false)).collect(Collectors.toList()));
+			cs.addAll(coset.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, true)).collect(Collectors.toList()));
 			String smt2 = smt2t.makeAnd(cs);
 			if (!vars.isEmpty())
 			{
@@ -779,7 +779,7 @@ public class RPCoreCommandLine extends CommandLine
 						.flatMap(Collection::stream)
 						.collect(Collectors.toSet());
 				
-				String z3 = makePhiSmt2(cand, coset, smt2t);
+				String z3 = makePhiSmt2(cand, coset, smt2t, false);
 				List<RPIndexVar> vars = Stream.concat(
 							cand.stream().flatMap(c -> c.getIndexVars().stream()),
 							coset.stream().flatMap(c -> c.getIndexVars().stream())
@@ -809,10 +809,11 @@ public class RPCoreCommandLine extends CommandLine
 		return variants;
 	}
 
-	// Doesn't include "assert", nor exists-bind index vars
-	private static String makePhiSmt2(Set<RPInterval> cand, Set<RPInterval> coset, Smt2Translator smt2t)
+	// Doesn't include "assert", nor exists-bind index vars (but does exists-bind self)
+	private static String makePhiSmt2(Set<RPInterval> cand, Set<RPInterval> coset, Smt2Translator smt2t, boolean not)
 	{
 		List<String> cs = new LinkedList<>();
+		List<String> dom = new LinkedList<>();
 
 		//if (cand.size() > 0)
 		{
@@ -826,7 +827,7 @@ public class RPCoreCommandLine extends CommandLine
 						tmp.add(smt2t.makeLte("self", c.end.toSmt2Formula(smt2t)));
 						if (!c.start.isConstant() || !c.end.isConstant())
 						{
-							tmp.add(smt2t.makeLte(c.start.toSmt2Formula(smt2t), c.end.toSmt2Formula(smt2t)));
+							dom.add(smt2t.makeLte(c.start.toSmt2Formula(smt2t), c.end.toSmt2Formula(smt2t)));
 						}
 						return smt2t.makeAnd(tmp);
 					})
@@ -850,7 +851,7 @@ public class RPCoreCommandLine extends CommandLine
 						tmp.add(smt2t.makeNot(smt2t.makeAnd(smt2t.makeGte("self", c.start.toSmt2Formula(smt2t)), smt2t.makeLte("self", c.end.toSmt2Formula(smt2t)))));
 						if (!c.start.isConstant() || !c.end.isConstant())
 						{
-							tmp.add(smt2t.makeLte(c.start.toSmt2Formula(smt2t), c.end.toSmt2Formula(smt2t)));  // CHECKME: Needed?
+							dom.add(smt2t.makeLte(c.start.toSmt2Formula(smt2t), c.end.toSmt2Formula(smt2t)));  // Must be outside the not (if one)
 						}
 						return (tmp.size() == 1) ? tmp.get(0) : smt2t.makeAnd(tmp); 
 					})
@@ -866,7 +867,13 @@ public class RPCoreCommandLine extends CommandLine
 		}*/
 
 		String z3 = //"(exists ((self Int))" + z3 + ")";
-				smt2t.makeExists(Stream.of("self").collect(Collectors.toList()), smt2t.makeAnd(cs));
+				smt2t.makeExists(Stream.of("self").collect(Collectors.toList()), smt2t.makeAnd(cs));  // CHECKME: need explicit self >= 1?
+		if (not)
+		{
+			z3 = smt2t.makeNot(z3);
+		}
+		dom.add(z3);
+		z3 = smt2t.makeAnd(dom);
 
 		return z3;
 	}
