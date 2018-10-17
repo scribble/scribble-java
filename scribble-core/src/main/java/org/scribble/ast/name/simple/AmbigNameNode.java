@@ -104,7 +104,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageN
 	public int hashCode()
 	{
 		int hash = 331;
-		hash = 31 * super.hashCode();
+		hash = 31*hash + super.hashCode();
 		return hash;
 	}
 }

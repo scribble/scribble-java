@@ -36,7 +36,7 @@ public class LAcceptDel extends LConnectionActionDel implements LSimpleInteracti
 		Role peer = la.src.toName();
 		MessageId<?> mid = la.msg.toMessage().getId();
 		Payload payload = la.msg.isMessageSigNode()  // Hacky?
-					? ((MessageSigNode) la.msg).payloads.toPayload()
+					? ((MessageSigNode) la.msg).payload.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newEAccept(peer, mid, payload), builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), new Accept(peer), builder.builder.getExit());

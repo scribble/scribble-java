@@ -77,7 +77,7 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 	public int hashCode()
 	{
 		int hash = 349;
-		hash = 31 * super.hashCode();
+		hash = 31*hash + super.hashCode();
 		return hash;
 	}
 }

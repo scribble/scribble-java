@@ -95,7 +95,7 @@ public class GDelegationElemDel extends ScribDelBase
 	{
 		GProtocolName gpn = de.proto.toName();  // leaveDisambiguation has fully qualified the target name
 		builder.addGlobalProtocolDependency(mt.src.toName(), gpn, de.role.toName());  // FIXME: does it make sense to use projection role as dependency target role? (seems to be used for Job.getProjections)
-		mt.getDestinationRoles().forEach((r) -> builder.addGlobalProtocolDependency(r, gpn, de.role.toName()));
+		mt.getDestinationRoles().forEach(r -> builder.addGlobalProtocolDependency(r, gpn, de.role.toName()));
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class GDelegationElemDel extends ScribDelBase
 		// FIXME: does this already contain transitive do-dependencies?  But doesn't contain transitive delegation-dependencies..?
 		Set<GProtocolName> init = 
 				((GProtocolDeclDel) targetgpd.del()).getProtocolDeclContext().getDependencyMap().getDependencies()
-				.values().stream().flatMap((v) -> v.keySet().stream()).collect(Collectors.toSet());
+				.values().stream().flatMap(v -> v.keySet().stream()).collect(Collectors.toSet());
 		todo.addAll(init);
 
 		Set<GProtocolName> seen = new HashSet<>();
@@ -134,8 +134,8 @@ public class GDelegationElemDel extends ScribDelBase
 			ProtocolDecl<Global> nextgpd = checker.job.getContext().getModule(targetfullname.getPrefix()).getProtocolDecl(nextfullname.getSimpleName());
 			Set<GProtocolName> tmp = 
 					((GProtocolDeclDel) nextgpd.del()).getProtocolDeclContext().getDependencyMap().getDependencies()
-					.values().stream().flatMap((v) -> v.keySet().stream())
-					.filter((n) -> !seen.contains(n))
+					.values().stream().flatMap(v -> v.keySet().stream())
+					.filter(n -> !seen.contains(n))
 					.collect(Collectors.toSet());
 			todo.addAll(tmp);
 		}

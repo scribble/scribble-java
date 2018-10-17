@@ -468,7 +468,7 @@ public class CommandLine
 
 	protected static List<Path> parseImportPaths(String paths)
 	{
-		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
+		return Arrays.stream(paths.split(File.pathSeparator)).map(s -> Paths.get(s)).collect(Collectors.toList());
 	}
 
 	protected static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname) throws CommandLineException

@@ -165,6 +165,7 @@ public abstract class MState<
 		return this.actions.isEmpty();
 	}
 
+	// Returns null if none
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
 			S getTerminal(S start)
 	{
@@ -172,7 +173,7 @@ public abstract class MState<
 		{
 			return start;
 		}
-		Set<S> terms = MState.getReachableStates(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
+		Set<S> terms = MState.getReachableStates(start).stream().filter(s -> s.isTerminal()).collect(Collectors.toSet());
 		if (terms.size() > 1)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + terms);

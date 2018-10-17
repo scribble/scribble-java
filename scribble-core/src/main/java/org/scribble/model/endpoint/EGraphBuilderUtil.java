@@ -64,7 +64,7 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 	public void init(EState init)
 	{
 		clear();
-		reset(this.ef.newEState(Collections.emptySet()), this.ef.newEState(Collections.emptySet()));
+		reset(init, this.ef.newEState(Collections.emptySet()));
 	}
 
 	protected void clear()

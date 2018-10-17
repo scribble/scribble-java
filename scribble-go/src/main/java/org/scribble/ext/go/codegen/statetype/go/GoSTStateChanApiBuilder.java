@@ -44,7 +44,7 @@ public class GoSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 
 	@Override
-	public String getFilePath(String filename)
+	public String getStateChannelFilePath(String filename)
 	{
 		if (filename.startsWith("_"))  // Cannot use "_" prefix, ignored by Go
 		{
@@ -90,13 +90,14 @@ public class GoSTStateChanApiBuilder extends STStateChanApiBuilder
 		return res;
 	}
 
+  // Here because action builder hierarchy not suitable (extended by action kind, not by target language)
 	@Override
-	public String buildAction(STActionBuilder ab, EState curr, EAction a)  // Here because action builder hierarchy not suitable (extended by action kind, not by target language)
+	public String buildAction(STActionBuilder ab, EState curr, EAction a)
 	{
 		EState succ = curr.getSuccessor(a);
 		return
 				  "func (s *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-				+ ab.buildArgs(a)
+				+ ab.buildArgs(this, a)
 				+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
 				+ "s.state.Use()\n"
 				+ ab.buildBody(this, curr, a, succ) + "\n"

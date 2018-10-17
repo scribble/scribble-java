@@ -34,7 +34,7 @@ public class LReceiveDel extends LMessageTransferDel
 		Role peer = lr.src.toName();
 		MessageId<?> mid = lr.msg.toMessage().getId();
 		Payload payload = (lr.msg.isMessageSigNode())  // Hacky?
-				? ((MessageSigNode) lr.msg).payloads.toPayload()
+				? ((MessageSigNode) lr.msg).payload.toPayload()
 				: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newEReceive(peer, mid, payload), builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Receive.get(peer, mid, payload), builder.builder.getExit());

@@ -85,7 +85,7 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 	public int hashCode()
 	{
 		int hash = 353;
-		hash = 31 * super.hashCode();
+		hash = 31*hash + super.hashCode();
 		return hash;
 	}
 }

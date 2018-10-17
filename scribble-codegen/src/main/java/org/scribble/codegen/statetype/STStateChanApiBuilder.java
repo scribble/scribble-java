@@ -40,7 +40,7 @@ public abstract class STStateChanApiBuilder
 	public final STCaseBuilder cb;
 	public final STEndStateBuilder eb;
 
-	private Map<Integer, String> names = new HashMap<>();
+	protected Map<Integer, String> names = new HashMap<>();
 	
 	protected STStateChanApiBuilder(Job job, GProtocolName gpn, Role role, EGraph graph,
 			STOutputStateBuilder ob, STReceiveStateBuilder rb, STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
@@ -71,17 +71,17 @@ public abstract class STStateChanApiBuilder
 			switch (s.getStateKind())
 			{
 				case ACCEPT:      throw new RuntimeException("[TODO]: " + s.getStateKind());
-				case OUTPUT:      api.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
+				case OUTPUT:      api.put(getStateChannelFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
 				case POLY_INPUT: 
 				{
-					api.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
-					api.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));  // FIXME: factor out
+					api.put(getStateChannelFilePath(getStateChanName(s)), this.bb.build(this, s));
+					api.put(getStateChannelFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));  // FIXME: factor out
 					break;
 				}
-				case TERMINAL:    api.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
+				case TERMINAL:    api.put(getStateChannelFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
 				case UNARY_INPUT:
 				{
-					api.put(getFilePath(getStateChanName(s)), this.rb.build(this, s));
+					api.put(getStateChannelFilePath(getStateChanName(s)), this.rb.build(this, s));
 					//api.put(getFilePath(getStateChanName(s) + "_Cases"), this.cb.build(this, s));  // FIXME: factor out
 					break;
 				}
@@ -91,8 +91,9 @@ public abstract class STStateChanApiBuilder
 		}
 		return api;
 	}
-	
-	public abstract String getFilePath(String name);
+
+	// Returns path to use as offset to -d
+	public abstract String getStateChannelFilePath(String name);
 
 	//public abstract String getPackage();
 	
@@ -112,7 +113,7 @@ public abstract class STStateChanApiBuilder
 
 	public abstract String buildAction(STActionBuilder ab, EState curr, EAction a);
 
-	public abstract String getChannelName(STStateChanApiBuilder api, EAction a);
+	public abstract String getChannelName(STStateChanApiBuilder api, EAction a);  // FIXME: redundant?  (supposed to be for Runtime MPChan references?)
 
 	public abstract String buildActionReturn(STActionBuilder ab, EState curr, EState succ);  // FIXME: refactor action builders as interfaces and use generic parameter for kind
 }

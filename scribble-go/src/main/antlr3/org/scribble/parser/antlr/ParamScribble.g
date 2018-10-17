@@ -65,6 +65,10 @@ tokens
 	DOT_KW = 'dot';
 	CHOICES_KW = 'choices';
 	
+	
+	PARAM_DELEG_KW = 'deleg';
+	PARAM_FOREACH_KW = 'foreach';
+	
 
 	/*
 	 * Parser output "node types" (corresponding to the various syntactic
@@ -102,7 +106,8 @@ tokens
 	//QUALIFIEDMEMBERNAME = 'qualified-member-name';
 
 	MESSAGESIGNATURE = 'MESSAGESIGNATURE';
-	DELEGATION = 'DELEGATION';
+	//DELEGATION = 'DELEGATION';
+	PARAM_DELEGATION = 'PARAM_DELEGATION';
 	
 
 	// Parsed "directly" by AntlrToScribParser
@@ -170,13 +175,21 @@ tokens
 	LOCALRECEIVE = 'local-receive';*/
 
 
-	PARAM_BININDEXEXPR = 'PARAM_BININDEXEXPR';  // FIXME: rename bin part
-	PARAM_ROLEDECL = 'PARAM_ROLEDECL';
+	PARAM_BININDEXEXPR               = 'PARAM_BININDEXEXPR';  // FIXME: rename bin part
+	//PARAM_ROLEDECL                   = 'PARAM_ROLEDECL';
 	PARAM_GLOBALCROSSMESSAGETRANSFER = 'PARAM_GLOBALCROSSMESSAGETRANSFER';
-	PARAM_GLOBALDOTMESSAGETRANSFER = 'PARAM_GLOBALDOTMESSAGETRANSFER';
-	PARAM_GLOBALCHOICE = 'PARAM_GLOBALCHOICE';
-	PARAM_GLOBALMULTICHOICES = 'PARAM_GLOBALMULTICHOICES';
-	PARAM_GLOBALMULTICHOICESTRANSFER = 'PARAM_GLOBALMULTICHOICESTRANSFER';
+	PARAM_GLOBALDOTMESSAGETRANSFER   = 'PARAM_GLOBALDOTMESSAGETRANSFER';
+	PARAM_GLOBALCHOICE               = 'PARAM_GLOBALCHOICE';
+	/*PARAM_GLOBALMULTICHOICES         = 'PARAM_GLOBALMULTICHOICES';
+	PARAM_GLOBALMULTICHOICESTRANSFER = 'PARAM_GLOBALMULTICHOICESTRANSFER';*/
+	//PARAM_DELEGATION                 = 'PARAM_DELEGATION';
+	PARAM_DELEGDECL                  = 'PARAM_DELEGDECL';
+	PARAM_GLOBALFOREACH              = 'PARAM_GLOBALFOREACH';
+
+	PARAM_INDEXINTERVAL              = 'PARAM_INDEXINTERVAL';
+	PARAM_FOREACHINTERVAL            = 'PARAM_FOREACHINTERVAL';
+	
+	PARAM_PAIR = 'PARAM_PAIR';
 }
 
 
@@ -327,7 +340,7 @@ IDENTIFIER:
 fragment SYMBOL:
 	'{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '\#'
 |
-	'&' | '?' | '!'	| UNDERSCORE
+	'&' | '?' | '!'	| UNDERSCORE | '-' | '*'
 ;
 
 // Comes after SYMBOL due to an ANTLR syntax highlighting issue involving
@@ -371,6 +384,8 @@ recursionvarname: simplename;
 rolename:         simplename;
 scopename:        simplename;
 
+variantname:         simplename;
+
 ambiguousname:
 	simplename
 ->
@@ -408,8 +423,10 @@ messagesignaturename: membername;
  */
 module:
 	moduledecl importdecl* datatypedecl* protocoldecl* EOF
+	//moduledecl importdecl* datatypedecl* delegdecl* protocoldecl* EOF
 ->
 	^(MODULE moduledecl importdecl* datatypedecl* protocoldecl*)
+	//^(MODULE moduledecl importdecl* datatypedecl* delegdecl* protocoldecl*)
 ;
 
 
@@ -469,6 +486,15 @@ payloadtypedecl:
 	^(PAYLOADTYPEDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplepayloadtypename)
 ;
 
+
+// param-core
+/*delegdecl:
+	PARAM_DELEG_KW '<' IDENTIFIER '>' EXTIDENTIFIER FROM_KW EXTIDENTIFIER AS_KW simplepayloadtypename ';'
+->
+	^(PARAM_DELEGDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplepayloadtypename)
+;*/
+
+
 messagesignaturedecl:
 	SIG_KW '<' IDENTIFIER '>' EXTIDENTIFIER FROM_KW EXTIDENTIFIER AS_KW simplemessagesignaturename ';'
 ->
@@ -514,9 +540,18 @@ payloadelement:
 |*/
 	qualifiedname  // This case subsumes simple names  // FIXME: ambiguousqualifiedname (or ambiguousname should just be qualified)
 |
-	protocolname '@' rolename
+	protocolname '@' variantname
 ->
-	^(DELEGATION rolename protocolname)
+	//^(DELEGATION rolename protocolname)
+	^(PARAM_DELEGATION variantname protocolname)
+/*|
+	protocolname '@' rolename '[' paramindexexpr ']'  // FIXME: should be @variant -- need user syntax for variant
+->
+	^(PARAM_DELEGATION rolename protocolname) paramindexexpr)*/
+|
+	protocolname ':' protocolname '@' variantname
+->
+	^(PARAM_DELEGATION variantname protocolname protocolname)
 ;
 
 
@@ -578,10 +613,10 @@ roledecl:
 ->
 	^(ROLEDECL rolename)
 	
-|
+/*|
 	ROLE_KW rolename '(' simplename (',' simplename)* ')'
 ->
-	^(PARAM_ROLEDECL rolename simplename+)
+	^(PARAM_ROLEDECL rolename simplename+)*/
 ;
 
 parameterdecllist:
@@ -647,15 +682,18 @@ globalinteraction:
 |
 	globalwrap
 
-|
+/*|
 	globalmultichoices
 |
-	globalmultichoicetransfer
+	globalmultichoicetransfer*/
+|
+	globalforeach
 ;
 /*|
 	globalparallel
 |
 	globalinterruptible*/
+
 
 
 /**
@@ -667,24 +705,44 @@ globalmessagetransfer:
 	^(GLOBALMESSAGETRANSFER message rolename rolename+)
 
 |
-	message FROM_KW rolename '[' paramindexexpr '..' paramindexexpr ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
+	message FROM_KW rolename paramindexinterval TO_KW rolename paramindexinterval ';'
 ->
-	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)
-|
+	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename paramindexinterval paramindexinterval)
+/*|
 	message DOT_KW rolename '[' paramindexexpr '..' paramindexexpr ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
 ->
-	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)
+	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename paramindexexpr paramindexexpr paramindexexpr paramindexexpr)*/
+;
+	
+// TODO: syntactically allow mix of indexed and non-indexed roles
+paramindexinterval:
+	('[' paramindexexpr? ',' paramindexexpr ']')=> '[' paramindexexpr? ',' paramindexexpr ']'
+->
+	^(PARAM_INDEXINTERVAL paramindexexpr paramindexexpr)
+|
+	'[' paramindexexpr ']'
+->
+	^(PARAM_INDEXINTERVAL paramindexexpr paramindexexpr)
+;
+	
+/*rpindex:
+	rpsingletonindex
+|
+	rpinterval
 ;
 
-/*|
-	message FROM_KW rolename '[' simplename '..' simplename ']' TO_KW rolename '[' simplename '..' simplename ']' ';'
+rpsingletonindex:
+	'[' paramindexexpr ']'
 ->
-	^(PARAM_GLOBALCROSSMESSAGETRANSFER message rolename rolename simplename simplename simplename simplename)
-|
-	message DOT_KW rolename '[' simplename '..' simplename ']' TO_KW rolename '[' simplename '..' simplename ']' ';'
+	...
+;
+
+rpinterval:
+	'[' paramindexexpr ',' paramindexexpr ']'
 ->
-	^(PARAM_GLOBALDOTMESSAGETRANSFER message rolename rolename simplename simplename simplename simplename)
+	...
 ;*/
+
 	
 paramindexexpr:
 	unaryparamindexexpr (op=('+' | '-' | '*') unaryparamindexexpr)?
@@ -695,6 +753,10 @@ paramindexexpr:
 
 unaryparamindexexpr:
 	simplename
+|
+	'(' simplename ',' simplename ')'
+->
+	^(PARAM_PAIR simplename simplename)
 |
 	'(' paramindexexpr ')'
 -> 
@@ -762,7 +824,7 @@ globalchoice:
 ;
 	
 
-globalmultichoices:
+/*globalmultichoices:
 	CHOICES_KW AT_KW rolename '[' simplename ':' paramindexexpr '..' paramindexexpr ']' globalprotocolblock (OR_KW globalprotocolblock)*
 ->
 	^(PARAM_GLOBALMULTICHOICES rolename simplename paramindexexpr paramindexexpr globalprotocolblock+)
@@ -772,7 +834,7 @@ globalmultichoicetransfer:
 	message FROM_KW rolename '[' simplename ']' TO_KW rolename '[' paramindexexpr '..' paramindexexpr ']' ';'
 ->
 	^(PARAM_GLOBALMULTICHOICESTRANSFER message rolename rolename simplename paramindexexpr paramindexexpr)
-;
+;*/
 
 
 
@@ -864,6 +926,23 @@ argumentinstantiation:
 	qualifiedname
 ;
 
+	
+	
+globalforeach:
+	PARAM_FOREACH_KW paramforeachinterval (',' paramforeachinterval)* globalprotocolblock  // TODO: generalise
+->
+	^(PARAM_GLOBALFOREACH globalprotocolblock paramforeachinterval+)
+;
+
+// Cf. paramindexinterval
+paramforeachinterval:
+	rolename '[' simplename ':' paramindexexpr? ',' paramindexexpr ']'
+->
+	^(PARAM_FOREACHINTERVAL rolename simplename paramindexexpr paramindexexpr)
+;
+	
+	
+	
 
 /*
  * Section 3.8 Local Protocol Declarations

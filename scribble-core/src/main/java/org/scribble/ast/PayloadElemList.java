@@ -84,7 +84,7 @@ public class PayloadElemList extends ScribNodeBase
 	public Payload toPayload()
 	{
 		//List<PayloadType<?>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadType()).collect(Collectors.toList());
-		List<PayloadElemType<?>> pts = this.elems.stream().map((pe) -> pe.toPayloadType()).collect(Collectors.toList());
+		List<PayloadElemType<?>> pts = this.elems.stream().map(pe -> pe.toPayloadType()).collect(Collectors.toList());
 		return new Payload(pts);
 	}
 
@@ -96,6 +96,6 @@ public class PayloadElemList extends ScribNodeBase
 	@Override
 	public String toString()
 	{
-		return "(" + this.elems.stream().map((pe) -> pe.toString()).collect(Collectors.joining(", " )) + ")";
+		return "(" + this.elems.stream().map(pe -> pe.toString()).collect(Collectors.joining(", " )) + ")";
 	}
 }

@@ -1,17 +1,477 @@
 //Raymond@HZHL3 ~/code/eclipse/scribble/github.com/rhu1-go/scribble-java
-//$ bin/scribblec-go.sh -ip scribble-go/src/test/scrib/ -d scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/tmp/ParamTest.scr -V -param Proto1
-
+//$ bin/scribblec-param.sh -ip scribble-go/src/test/scrib/ -d scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/tmp/ParamTest.scr -V -param Proto1
+//$ bin/scribblec-param.sh -ip scribble-go/src/test/scrib/ scribble-go/src/test/scrib/param/tmp/ParamTest.scr -V -param Proto1 github.com/rhu1-go/scribble-java/src/test/scrib/param/tmp/ParamTest -param-api S
 
 // http://sandbox.kidstrythisathome.com/erdos/
 
 
-module assrt.tmp.ParamTest;
+module param.tmp.ParamTest;
 
 
-type <go> "int" from "..." as int;
-type <go> "string" from "..." as string;
-type <go> "TwoBuyer.Address" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Address;
-type <go> "TwoBuyer.Date" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Date;
+global protocol Proto1(role A, role B, role C)
+{
+	Foo() from A[1] to C[1];
+	Foo() from A[1] to B[1];
+	Foo() from A[1] to B[1,K];
+	Foo() from A[1] to B[2,K];  // Testing "domain" clauses, here 2 <= K, put outside neg of neg Phi for family check
+	//Foo() from B[1] to B[2,K];
+}
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	foreach B[I:1,K]
+	{
+		Foo() from A[1] to B[I];
+	}		
+}
+//*/
+
+
+/*
+sig <go> "message.Parse" from "github.com/nickng/scribble-go-examples/20_webcrawler/message" as Parse;
+sig <go> "message.Index" from "github.com/nickng/scribble-go-examples/20_webcrawler/message" as Index;
+sig <go> "message.URL" from "github.com/nickng/scribble-go-examples/20_webcrawler/message" as URL;
+
+global protocol Proto1(role Downloader, role Parser, role Indexer, role Master) {
+    foreach Downloader[I:1,N], Parser[J:1,N] {
+        Parse from Downloader[I] to Parser[J];
+    }
+    Index from Parser[1,N] to Indexer[1];
+    URL from Indexer[1] to Master[1];
+}
+//*/
+
+
+/*
+global protocol Proto1(role P, role Q)
+{
+	Play(Game@A) from Q[1] to P[1,K];
+}
+
+global protocol Game(role A, role B, role C)
+{
+	Foo() from A[1] to B[1];
+	Bar() from A[1] to C[1];
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B) 
+{
+	foreach B[I:1,K]
+	{
+		choice at A[1]
+		{
+			Foo() from A[1] to B[I];
+		}	
+		or
+		{
+			Bar() from A[1] to B[I];
+		}
+	}
+}
+//*/
+
+
+/*
+sig <go> "message.QuoteReq" from "github.com/nickng/scribble-go-examples/11_quote-request/message" as QuoteReq;
+type <go> "message.Quote" from "github.com/nickng/scribble-go-examples/11_quote-request/message" as Quote;
+
+global protocol Proto1(role Buyer, role Supplier, role Manufacturer) {
+  // (1) Buyer requests quote from Suppliers.
+  QuoteReq from Buyer[1] to Supplier[1,S];
+  do Negotiate(Buyer, Supplier, Manufacturer);
+}
+
+aux global protocol Negotiate(role Buyer, role Supplier, role Manufacturer) {
+  // (2) All Suppliers forward quote request to their Manufacturers.
+  /*foreach Supplier[I:1,S] {
+    foreach Manufacturer[J:1,M] {
+      QuoteReq from Supplier[I] to Manufacturer[J];
+      Reply(Quote) from Manufacturer[J] to Supplier[I];
+    }
+  }* /
+  QuoteReq from Supplier[1,S] to Manufacturer[1,M];
+  Reply(Quote) from Manufacturer[1,M] to Supplier[1,S];
+  // (3) Suppliers build quote for the Buyer,
+  //     which is then sent back to the Buyer.
+  Reply(Quote) from Supplier[1,S] to Buyer[1];
+  do MakeDeal(Buyer, Supplier, Manufacturer);
+}
+
+aux global protocol MakeDeal(role Buyer, role Supplier, role Manufacturer) {
+  choice at Buyer[1] {
+    // (4a) Either the Buyer agrees to the quote and place order.
+    Order(Quote) from Buyer[1] to Supplier[1,S];
+    End() from Supplier[1] to Manufacturer[1,M];
+    End() from Supplier[1,S] to Manufacturer[1,M];
+  } or {
+    // (4b) Or the Buyer modify the quote and send back to Suppliers.
+    Modify(Quote) from Buyer[1] to Supplier[1,S];
+    Wait() from Supplier[1] to Manufacturer[1,M];
+    Wait() from Supplier[1,S] to Manufacturer[1,M];
+
+    do UpdatedQuoteRequest(Buyer, Supplier, Manufacturer);
+  }
+}
+
+aux global protocol UpdatedQuoteRequest(role Buyer, role Supplier, role Manufacturer) {
+  // (5) Supplier received updated quote
+  foreach Supplier[I:1,S] {
+    choice at Supplier[I] {
+      // (5a) Either Supplier respond by agreeing to it and sending a confirmation
+      Confirm() from Supplier[I] to Buyer[1];
+      End() from Supplier[I] to Manufacturer[1,M];
+    } or {
+      // (5b) Or Supplier modify it and sending it back to Buyer.
+      //      Buyer goes back to (4)
+      Modify(Quote) from Supplier[I] to Buyer[1];
+      NoOp() from Supplier[I] to Manufacturer[1,M];
+      //do MakeDeal(Buyer, Supplier, Manufacturer);  // No: recursion out of foreach
+    } or {
+      // (5c) Or Supplier reject updated quote.
+      Reject() from Supplier[I] to Buyer[1];
+      End() from Supplier[I] to Manufacturer[1,M];
+    } or {
+      // (5d) Or Supplier renegotiate with the Manufacturers
+      //      going back to (3)
+      Renegotiate() from Supplier[I] to Buyer[1];
+      Renegotiate() from Supplier[I] to Manufacturer[1,M];
+      //do Negotiate(Buyer, Supplier, Manufacturer);  // No: recursion out of foreach
+    }
+  }
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	Foo() from A[(1,1)] to B[K];
+	//Foo() from A[1] to B[1];
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	Foo() from A[K] to B[K];  // FIXME: 1d or 2d?
+}
+//*/
+
+
+/*
+//foreach { A , B , C }{ i:k 11 ..k wh } do ( A [ i ]→ C [ i ] :Val.B [ i ]→ C [ i ] :Val.cont ) ;end
+global protocol Proto1(role A, role B, role C)
+{
+	foreach A[IA:(1,1),K], B[IB:(1,1),K], C[IC:(1,1),K]
+	{
+		Foo() from A[IA] to C[IC];
+		Bar() from B[IB] to C[IC];
+	}
+}
+//*/
+
+
+/*
+//foreach W { i1 :k 11 ..k wh -(1,0) , i2 :k 11 +(1,0)..k wh } do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;
+//foreach W { i1 :k w1 ..k wh ,        i2 :k 11 ..k 1h }       do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;
+//foreach W { i1 :k 11 ..k 1h -(0,1) , i2 :k 11 +(0,1)..k 1h } do ( W [ i 1 ]→ W [ i 2 ] .cont ) ;W [ k 1h ]→ W [ k 11 ] .end
+global protocol Proto1(role W, role M)
+{
+	foreach W[I1:(1,1),K-(1,0)], W[I2:(1,1)+(1,0),K] {
+		Foo() from W[I1] to W[I2];
+	}	
+	/*Bar() from W[(1,1),Kwh] to M[1];
+	foreach W[I1:(W,1),K], W[I2:(1,1),(1,H)] {
+		Foo() from W[I1] to W[I2];
+	}	
+	Bar() from W[(1,1),K] to M[1];
+	/*foreach W[I1:(1,1),(1,H)-(0,1)], W[I2:(1,1)+(0,1),(1,H)] {
+		Foo() from W[I1] to W[I2];
+	}* /
+}
+//*/
+
+
+/*
+global protocol Proto1(role W)
+{
+  foreach W[I2:1,K-2], W[I1:2,K-1], W[I:3,K]
+  {
+    Foo() from W[I2] to W[I];
+    Foo() from W[I1] to W[I];
+  }
+}
+
+/*
+W{[1,(K-2)], [3,K]}{[I1]},
+W{[I1], [3,K]}{[1,(K-2)]},
+W{[I1]}{[1,(K-2)], [3,K]}, 
+W{[3,K]}{[1,(K-2)], [I1]}, 
+W{[1,(K-2)], [I1], [3,K]}, 
+W{[1,(K-2)], [I1]}{[3,K]}, 
+W{[1,(K-2)]}{[I1], [3,K]}
+*/
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	foreach A[I:1,N], B[J:1,N] {
+		Foo() from A[I] to B[J];
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+    foreach Manufacturer[J:1,M] {
+      QuoteReq from Supplier[1,S] to Manufacturer[J];
+      Quote from Manufacturer[J] to Supplier[1,S];
+    }
+}
+//*/
+
+
+
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	Foo() from A[1] to B[1,K];
+}
+*/
+
+
+/*
+global protocol Proto1(role F, role S, role M)
+{
+  Head() from F[1] to S[1];
+  Res()  from S[1] to F[1];
+  Meta() from F[1] to M[1];
+
+  Job() from M[1] to F[1,K];
+  // Send jobs.
+  foreach F[I:1,K]
+  {
+    Get() from F[I] to S[1];
+    Res() from S[1] to F[I];
+  }
+  Data() from F[1,K] to M[1];
+ }
+//*/
+
+/*Projection onto S{[1]}: mu param_tmp_ParamTest_Proto1___F__S__M_.F[1]?Head().F[1]!Res().foreach {F}{I:1..K} do F[I]?Get().F[I]!Res().cont ; end
+
+[rp-core] Built endpoint graph for S{[1]}:
+digraph G {
+compound = true;
+"14" [ label="14: " ];
+"14" -> "16" [ label="F[1]?Head()" ];
+"16" [ label="16: " ];
+"16" -> "17" [ label="F[1]!Res()" ];
+"17" [ label="17: I:[1,K]; 10" ];
+}
+
+digraph G {
+compound = true;
+"10" [ label="10: " ];
+"10" -> "12" [ label="F[I]?Get()" ];
+"12" [ label="12: " ];
+"12" -> "13" [ label="F[I]!Res()" ];
+"13" [ label="13: " ];
+}*/
+
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	foreach A[I:1,KA]
+	{
+		foreach B[J:1,KB]
+		{
+			Foo() from A[I] to B[J];
+		}
+	}
+}
+//*/
+
+
+
+
+/*
+sig <go> "http.HeadReq" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Head;
+sig <go> "http.GetReq" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Get;
+sig <go> "http.Response" from "github.com/rhu1/scribble-go-examples/9_pget/http" as Res;
+
+sig <go> "msg.Meta" from "github.com/rhu1/scribble-go-examples/9_pget/msg" as Meta;
+sig <go> "msg.Job" from "github.com/rhu1/scribble-go-examples/9_pget/msg" as Job;
+sig <go> "msg.Data" from "github.com/rhu1/scribble-go-examples/9_pget/msg" as Data;
+sig <go> "msg.Done" from "github.com/rhu1/scribble-go-examples/9_pget/msg" as Done;
+
+global protocol Proto1(role M, role F, role S) {
+  // Get metadata (size)
+  Head from F[1] to S[1];
+  Res from S[1] to F[1];
+  Meta from F[1] to M[1];
+
+  // Send jobs.
+  Job from M[1] to F[1,K];
+  Get from F[1,K] to S[1];
+  Res from S[1] to F[1,K];
+  Data from F[1,K] to M[1];
+
+  Foo(Sync@A) from F[1,K] to M[1];
+}
+
+aux global protocol Sync(role A, role B) {
+  Done from A[1] to B[1];
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B) 
+{
+	Foo(Proto1a@C) from A[1] to B[1];
+}
+
+aux global protocol Proto1a(role C, role D) 
+{
+	Bar() from C[1] to D[1];
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	foreach B[I:2,K-1] {
+		Foo() from B[I+1] to B[1];	// FIXME: projection
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	foreach B[I:1,K], B[J:K,K+K] {  // FIXME TODO foreach interval constraint
+		Foo() from B[I] to B[J];
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B) {
+	foreach B[I:1,K] {
+		Foo() from A[1] to B[2];  // OK?  FIXME projection -- have to consider if 2 is inside 1,K?
+		//Foo() from A[I] to B[I];  // FIXME TODO
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B) {
+	choice at A[1]
+	{
+		Foo() from A[1] to B[1];
+	}	
+	or
+	{
+		Bar() from A[1] to B[2];
+	}
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B) {
+	foreach B[I:1,K-1] {
+		Foo() from A[1] to B[I];
+		//Foo() from A[1] to B[I+1];  // Bad if uncommented
+		//Foo() from B[I+1] to A[1];  // Bad if uncommented	   
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	foreach B[I:1,K] {
+		Foo() from B[I] to B[I];  // Bad
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	foreach B[I:1,K], B[J:1,K] {
+		Foo() from B[I] to B[J];  // Bad
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	foreach B[I:1,K-1], B[J:2,K] {
+		Foo() from B[I] to B[J];  // OK
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	foreach B[I:1,K], B[J:2,K+1] {  // Bad
+		Foo() from B[I] to B[J];
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role B) {
+	Foo() from B[1,2] to B[1,K];  // Bad
+	Foo() from B[1,2] to B[J,J+1];  // Bad
+}
+//*/
+
+
+/*
+type <go> "int" from "builtin" as int;
+type <go> "string" from "builtin" as string;
+sig <go> "msgsig.Request" from "github.com/nickng/httpget/msgsig" as Request;
+sig <go> "msgsig.Response" from "github.com/nickng/httpget/msgsig" as Response;
+
+global protocol Proto1(role M, role F, role S) {
+  URL(int) from M[1] to F[1,N];
+
+  foreach F[I:1,N] {
+    Request from F[I] to S[1];
+    Response from S[1] to F[I];
+    //tmp() from S[1] to M[1];  // FIXME: projection
+  }
+
+  Done(string) from F[1,N] to M[1];
+}
+//*/
+
 
 
 
@@ -48,6 +508,109 @@ message passing
 // paramterisation subsumes multicast
 
 
+/*
+type <go> "int" from "..." as int;
+type <go> "string" from "..." as string;
+type <go> "TwoBuyer.Address" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Address;
+type <go> "TwoBuyer.Date" from "scrib/twobuyer/TwoBuyer/TwoBuyer/types.go" as Date;
+
+sig <go> "..."
+		from "..."
+		as Data;
+
+global protocol Proto1(role A, role B) {
+  foreach A[I:1,K], B[J:2,KK]
+  {
+    Data from A[I,I] to B[J,J];
+  }
+}
+//*/
+
+
+
+/*global protocol ScatterGather(role M, role S) {
+   (int) from M[1,1] to S[1,N];
+}*/
+
+
+/*
+global protocol Proto1(role A(n))
+{
+	/*a() from A[n-1..n-1] to A[n..n];
+	b() from A[n-2..n-2] to A[n..n];
+	do Proto1(A(n-1));  // FIXME? * /
+
+	a() dot A[1..1] to A[n..n];
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A(n, m), role B(n, m))
+{
+	1() from A[1..n] to B[1..m];  // (a) All-to-all, (unary) mult. choices
+}
+
+global protocol Proto2(role A(n), role B(n))
+{
+	1() dot A[1..n] to B[1..n];  // (b) ones-to-ones, (unary) multi. choices
+}
+//*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*global protocol Proto3(role A(n), role B(n))
+{
+	choices at A[i:1..n]
+	{
+		1() dot A[1..n] to B[1..n];  // TODO (b) ones-to-ones, multi. choices
+	}
+	or
+	{
+		2() dot A[1..n] to B[1..n];
+	}
+}*/
+
+
+/*
+global protocol Proto1(role A(n), role B(n))
+{
+	choice at A[1]
+	{
+		//0() from A[1..n] to B[1..n];  // FIXME when unary-choice -- or OK?
+		//0() dot A[1..n] to B[1..n];  // FIXME when unary-choice -- or OK?
+		0() from A[1..n] to B[1..n];
+	}
+	or
+	{
+		1() from A[1..n] to B[1..n];
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A(n,m), role B(n,m))
+{
+	0() dot A[1..n] to B[(m*2)+1..(m*2)+n];
+}
+*/
+
+
+/*
 global protocol Proto1(role A(n), role B(n), role S(n))
 {
 	title(string) from A[1..1] to S[1..1];
@@ -80,6 +643,7 @@ global protocol Proto1(role A(n), role B(n), role S(n))
 		}
 	}
 }
+*/
 
 /*
 global protocol Proto1(role A(n, m), role B(n, m))

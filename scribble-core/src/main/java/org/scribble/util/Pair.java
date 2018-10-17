@@ -25,6 +25,12 @@ public class Pair<T1, T2>
 	}
 	
 	@Override
+	public String toString()
+	{
+		return "(" + this.left + ", " + this.right + ")";
+	}
+	
+	@Override
 	public int hashCode()
 	{
 		int hash = 11;

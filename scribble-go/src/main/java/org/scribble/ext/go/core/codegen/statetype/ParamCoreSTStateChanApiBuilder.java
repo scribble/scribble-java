@@ -10,14 +10,14 @@ import java.util.stream.Stream;
 
 import org.scribble.codegen.statetype.STActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
-import org.scribble.ext.go.core.model.endpoint.action.ParamCoreECrossReceive;
-import org.scribble.ext.go.core.model.endpoint.action.ParamCoreECrossSend;
-import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotReceive;
-import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEDotSend;
-import org.scribble.ext.go.core.model.endpoint.action.ParamCoreEMultiChoicesReceive;
-import org.scribble.ext.go.core.type.ParamActualRole;
-import org.scribble.ext.go.core.type.ParamRange;
-import org.scribble.ext.go.core.type.ParamRole;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreEDotReceive;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreEDotSend;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreEMultiChoicesReceive;
+import org.scribble.ext.go.core.type.RPRoleVariant;
+import org.scribble.ext.go.core.type.RPInterval;
+import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
@@ -30,14 +30,14 @@ import org.scribble.type.name.Role;
 public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 {
 	protected final ParamCoreSTEndpointApiGenerator apigen;
-	public final ParamActualRole actual;  // this.apigen.self.equals(this.actual.getName())
+	public final RPRoleVariant actual;  // this.apigen.self.equals(this.actual.getName())
 	//public final EGraph graph;
 	
 	private int counter = 1;
 	
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later
 	// actual.getName().equals(this.role)
-	public ParamCoreSTStateChanApiBuilder(ParamCoreSTEndpointApiGenerator apigen, ParamActualRole actual, EGraph graph)
+	public ParamCoreSTStateChanApiBuilder(ParamCoreSTEndpointApiGenerator apigen, RPRoleVariant actual, EGraph graph)
 	{
 		super(apigen.job, apigen.proto, apigen.self, graph,
 				new ParamCoreSTOutputStateBuilder(new ParamCoreSTSendActionBuilder()),
@@ -51,20 +51,20 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		this.actual = actual;
 	}
 	
-	protected ParamActualRole getSelf()
+	protected RPRoleVariant getSelf()
 	{
-		return (ParamActualRole) this.getSelf();
+		return (RPRoleVariant) this.getSelf();
 	}
 	
 	// Not actual roles; param roles in EFSM actions -- cf. ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName
-	public static String getGeneratedParamRoleName(ParamRole r) 
+	public static String getGeneratedParamRoleName(RPIndexedRole r) 
 	{
 		//return r.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");
-		if (r.ranges.size() > 1)
+		if (r.intervals.size() > 1)
 		{
 			throw new RuntimeException("[param-core] TODO: " + r);
 		}
-		ParamRange g = r.ranges.iterator().next();
+		RPInterval g = r.intervals.iterator().next();
 		return r.getName() + "_" + g.start + "To" + g.end;
 	}
 	
@@ -91,13 +91,13 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				+ "_" + this.counter++;
 	}
 	
-	public static String makeEndStateName(GProtocolName simpname, ParamActualRole r)
+	public static String makeEndStateName(GProtocolName simpname, RPRoleVariant r)
 	{
 		return simpname + "_" + ParamCoreSTEndpointApiGenerator.getGeneratedActualRoleName(r) + "_" + ParamCoreSTApiGenConstants.GO_SCHAN_END_TYPE;
 	}
 
 	@Override
-	public String getFilePath(String filename)
+	public String getStateChannelFilePath(String filename)
 	{
 		//throw new RuntimeException("[param-core] TODO:");
 		if (filename.startsWith("_"))  // Cannot use "_" prefix, ignored by Go
@@ -158,7 +158,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			return
 						"func (" + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-								+ ab.buildArgs(a)
+								+ ab.buildArgs(this, a)
 								+ ") <-chan *" + ab.getReturnType(this, curr, succ) + " {\n"
 					+ ab.buildBody(this, curr, a, succ) + "\n"
 					+ "}";
@@ -169,7 +169,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			return
 						"func (" + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER
 								+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-								+ ab.buildArgs(a)
+								+ ab.buildArgs(this, a)
 								+ ") *" + ab.getReturnType(this, curr, succ) + " {\n"
 					+ ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 							+ "." + ParamCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
@@ -239,17 +239,17 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			switch (getStateKind(s))
 			{
-				case CROSS_SEND:      api.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
+				case CROSS_SEND:      api.put(getStateChannelFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
 				case CROSS_RECEIVE: 
 				{
 					if (s.getActions().size() > 1)
 					{
-						api.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
+						api.put(getStateChannelFilePath(getStateChanName(s)), this.bb.build(this, s));
 						//api.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));  // FIXME: factor out
 					}
 					else
 					{
-						api.put(getFilePath(getStateChanName(s)), this.rb.build(this, s));
+						api.put(getStateChannelFilePath(getStateChanName(s)), this.rb.build(this, s));
 					}
 					break;
 				}
@@ -265,7 +265,7 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				{
 					throw new RuntimeException("[param-core] TODO: " + s);
 				}
-				case TERMINAL:    api.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
+				case TERMINAL:    api.put(getStateChannelFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
 				default:          throw new RuntimeException("[param-core] Shouldn't get in here: " + s);
 			}
 		}
@@ -283,23 +283,23 @@ public class ParamCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			return ParamCoreEStateKind.TERMINAL;	
 		}
-		else if (as.stream().allMatch(a -> a instanceof ParamCoreECrossSend))
+		else if (as.stream().allMatch(a -> a instanceof RPCoreECrossSend))
 		{
 			return ParamCoreEStateKind.CROSS_SEND;
 		}
-		else if (as.stream().allMatch(a -> a instanceof ParamCoreECrossReceive))
+		else if (as.stream().allMatch(a -> a instanceof RPCoreECrossReceive))
 		{
 			return ParamCoreEStateKind.CROSS_RECEIVE;
 		}
-		else if (as.stream().allMatch(a -> a instanceof ParamCoreEDotSend))
+		else if (as.stream().allMatch(a -> a instanceof RPCoreEDotSend))
 		{
 			return ParamCoreEStateKind.DOT_SEND;
 		}
-		else if (as.stream().allMatch(a -> a instanceof ParamCoreEDotReceive))
+		else if (as.stream().allMatch(a -> a instanceof RPCoreEDotReceive))
 		{
 			return ParamCoreEStateKind.DOT_RECEIVE;
 		}
-		else if (as.stream().allMatch(a -> a instanceof ParamCoreEMultiChoicesReceive))
+		else if (as.stream().allMatch(a -> a instanceof RPCoreEMultiChoicesReceive))
 		{
 			return ParamCoreEStateKind.MULTICHOICES_RECEIVE;
 		}
