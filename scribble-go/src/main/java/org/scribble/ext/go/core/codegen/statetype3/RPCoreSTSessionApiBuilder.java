@@ -329,7 +329,7 @@ public class RPCoreSTSessionApiBuilder
 					ivals.add("util." + ivalkind + "{" + start + ", " + end + "}");
 				}
 			}
-			return "tmp = []util." + ivalkind + "{" + ivals.stream().collect(Collectors.joining(", ")) + "}\n";
+			return ivals.isEmpty() ? null : "tmp = []util." + ivalkind + "{" + ivals.stream().collect(Collectors.joining(", ")) + "}\n";
 		};
 		/*Function<RPRoleVariant, String> makeCoIvals = vvv ->
 		{
@@ -345,12 +345,16 @@ public class RPCoreSTSessionApiBuilder
 
 		for (RPRoleVariant v : fff.left)
 		{
-			res += makeIvals.apply(v);
-			//res += makeCoIvals.apply(v);
-			res += "if util.Isect" + ivalkind + "s(tmp)"//.SubtIntIntervals(tmp2)
-					+ ".IsEmpty() {\n";
-			res += makeParamsSelfPanic(ivars);
-			res += "}\n";
+			String tmp = makeIvals.apply(v);
+			if (tmp != null)
+			{
+				res += tmp;
+				//res += makeCoIvals.apply(v);
+				res += "if util.Isect" + ivalkind + "s(tmp)"//.SubtIntIntervals(tmp2)
+						+ ".IsEmpty() {\n";
+				res += makeParamsSelfPanic(ivars);
+				res += "}\n";
+			}
 		}
 		/*for (RPRoleVariant v : fff.right)
 		{
