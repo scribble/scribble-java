@@ -266,16 +266,26 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			feach += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";
 		}
+		else if (this.apigen.job.parForeach)
+		{
+			feach += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
+		}
 
 		// State channel type
 		feach += "\n"
 				+ "type " + scTypeName + " struct {\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
+				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n";
 
-				//+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
-				+ "id uint64\n"
+		if (this.apigen.job.parForeach)
+		{
+			feach += RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n";
+		}
+		else
+		{
+			feach += "id uint64\n";
+		}
 
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n";
+		feach += RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n";
 		
 		if (this.apigen.job.parForeach)
 		{
@@ -474,17 +484,27 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				res += "\n";
 				res += "var _ = session2.XY\n";  // For nested states that only use foreach vars (so no session2.XY)
 			}
+			else if (this.apigen.job.parForeach)
+			{
+				res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
+			}
 		}
 
 				// State channel type
 		res += "\n"
 				+ "type " + scTypeName + " struct {\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
+				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n";
 
-				//+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
-				+ "id uint64\n"
+		if (this.apigen.job.parForeach)
+		{
+			res += RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n";
+		}
+		else
+		{
+			res += "id uint64\n";
+		}
 
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n";
+		res += RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n";
 
 		if (this.apigen.job.parForeach)
 		{
@@ -538,7 +558,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public String buildAction(STActionBuilder ab, EState curr, EAction a)
 	{
 		EState succ = curr.getSuccessor(a);
-		return
+		String res =
 					"func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 						+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
 						+ ab.buildArgs(this, a)
@@ -549,10 +569,18 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				  // FIXME: currently redundant for case objects (cf. branch action err handling)
 				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
 				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
-				+ "}\n"
+				+ "}\n";
 
+		if (this.apigen.job.parForeach)
+		{
+			res += RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+								+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+		}
+		else
+		{
+			res +=
 				  // HACK FIXME: pre-create case objects
-				+ ((ab instanceof RPCoreSTCaseActionBuilder)
+				  ((ab instanceof RPCoreSTCaseActionBuilder)
 						? RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 								+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
 						: "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
@@ -561,12 +589,15 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 										+ " {\n"
 								+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
 								+ "}\n"
-				  )
+				  );
 				/*+ "atomic.AddUint64(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
 						+ "." + "lin" + ")\n"*/
+		}
 
-				+ ab.buildBody(this, curr, a, succ) + "\n"
+		res += ab.buildBody(this, curr, a, succ) + "\n"
 				+ "}";
+
+		return res;
 	}
 
 	// "Base case" -- more specific versions should be overriden in action builders
@@ -664,22 +695,19 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						RPCoreSTSessionApiBuilder.makeStateChanInstance(
 								this.apigen,
 								name,
-								RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT,
+								sEp,
 								RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread"
 								);
 				String res = nextState
-								+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
-								+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
-						+ "succ.id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n";
-				res += "return succ\n";
+						+ "return succ\n";
 				return res;
 			}
 			else
 			{
-				nextState = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + name;
-				String res = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
-								+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
-						+ nextState + ".id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n";
+				nextState = sEp + "._" + name;
+				String res = sEp + ".lin = "  // FIXME: sync
+								+ sEp + ".lin + 1\n"
+						+ nextState + ".id = " + sEp + ".lin\n";
 				res += "return "+ nextState + "\n";
 				return res;
 			}

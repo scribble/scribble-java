@@ -971,8 +971,9 @@ public class RPCoreSTSessionApiBuilder
 		return ((n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
 				? "&End{ nil, 0, "  // Now same as below?
 				: "&" + n + "{ nil, "
-						//+ " new(RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE),"
-						+ (n.equals("Init") ? " 1," : " 0,")
+						+ (apigen.job.parForeach
+							? " new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "),"
+							: (n.equals("Init") ? " 1," : " 0,"))
 						)
 		
 				+ ep + (apigen.job.parForeach ? ", " + id : "") + " }\n";
