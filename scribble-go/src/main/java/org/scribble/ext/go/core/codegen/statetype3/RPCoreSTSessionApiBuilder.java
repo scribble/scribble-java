@@ -717,7 +717,7 @@ public class RPCoreSTSessionApiBuilder
 					
 					if (this.apigen.job.parForeach)
 					{
-						epkindFile += "Thread int\n";
+						epkindFile += "Thread int\n";  // FIXME: deprecate -- recorded in state chan instead
 					}
 
 					epkindFile += "}\n"
@@ -781,21 +781,27 @@ public class RPCoreSTSessionApiBuilder
 															? Stream.of(n, s.isTerminal() ? "End" : n + "_")  // FIXME: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
 															: Stream.of(n);
 													})
-											.distinct()
+											.distinct()  // CHECKME: for End's?
 											.map(n ->
 													{
 														// FIXME TODO: case objects?
-														return ((n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
-																? "ep._End = &End{ nil, 0, "  // Now same as below?
-																: "ep._" + n + " = &" + n + "{ nil,"
-																		//+ " new(RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE),"
-																		+ (n.equals("Init") ? " 1," : " 0,")
-																		)
-														
-																+ " ep" + (this.apigen.job.parForeach ? ", 1" : "") + "}\n";
+														return "ep._" + n + " = " + makeStateChanInstance(this.apigen, n, "ep", "1");
 																// cf. state chan builder  // CHECKME: reusing pre-created chan structs OK for Err handling?
 													}
-												).collect(Collectors.joining());
+												)
+												/*.map(s -> 
+												{
+													String n = this.stateChanNames.get(variant).get(s.id);
+													String tmp = makeStateChanInstance(this.apigen, n);
+													if (s.hasNested())
+													{
+														tmp = tmp + (s.isTerminal() 
+																? makeStateChanInstance(this.apigen, n + "_")
+																: makeStateChanInstance(this.apigen, "End"));
+													}
+													return tmp;
+												})*/
+												.collect(Collectors.joining());
 										
 							if (this.apigen.job.parForeach)
 							{
@@ -932,10 +938,13 @@ public class RPCoreSTSessionApiBuilder
 							+ "func (ini *" + epkindTypeName + ") Init() *Init {\n"
 							+ "ini.Use()\n"  // FIXME: int-counter linearity
 							+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"
+
+							// TODO: Factor out with RPCoreSTStateChanApiBuilder#makeReturnSuccStateChan
 							+ "return "
 							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
 									? "newBranch" + init + "(ini)"
 									: "ini._" + init) + "\n"
+
 							+ "}";
 
 					epkindFile += "\n\n"
@@ -950,6 +959,23 @@ public class RPCoreSTSessionApiBuilder
 				}
 			}
 		}
+	}
+
+	/*public static String makeStateChanInstance(RPCoreSTApiGenerator apigen, EState s)
+	{
+		return makeStateChanInstance(apigen, this.stateChanNames.get(variant).get(s.id));
+	}*/
+
+	public static String makeStateChanInstance(RPCoreSTApiGenerator apigen, String n, String ep, String id)
+	{
+		return ((n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
+				? "&End{ nil, 0, "  // Now same as below?
+				: "&" + n + "{ nil, "
+						//+ " new(RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE),"
+						+ (n.equals("Init") ? " 1," : " 0,")
+						)
+		
+				+ ep + (apigen.job.parForeach ? ", " + id : "") + " }\n";
 	}
 
 	private String makeDialsAccepts(String indexType, RPRoleVariant variant,

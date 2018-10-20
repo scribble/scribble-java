@@ -87,7 +87,8 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 		// FIXME: factor out with RPCoreSTStateChanApiBuilder#getSuccStateChan -- don't need terminal check for succ though
 		String ret = RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": "
 				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ", "
-				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";
+				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")"
+				+ (rpapi.apigen.job.parForeach ? ", Thread: " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread" : "");
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder
 		RPInterval d = peer.intervals.iterator().next();

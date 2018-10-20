@@ -612,10 +612,33 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 								+ ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";  // FIXME: EndSocket LinearResource special case
 			}
 			res += " }";*/
-			String nextState = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + name;
-			String res = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
-							+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
-					+ nextState + ".id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n";
+
+			String nextState;
+			if (this.apigen.job.parForeach)
+			{
+				nextState = "succ := " +
+						RPCoreSTSessionApiBuilder.makeStateChanInstance(
+								this.apigen,
+								name,
+								RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT,
+								RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread"
+								);
+				String res = nextState
+								+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
+								+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
+						+ "succ.id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n";
+				res += "return succ\n";
+				return res;
+			}
+			else
+			{
+				nextState = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + name;
+				String res = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
+								+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
+						+ nextState + ".id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n";
+				res += "return "+ nextState + "\n";
+				return res;
+			}
 
 			/*if (this.apigen.job.parForeach)
 			{
@@ -623,9 +646,6 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 								+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Thread + 1\n"
 						+ nextState + ".Thread = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Thread\n";
 			}*/
-
-			res += "return "+ nextState + "\n";
-			return res;
 		}
 	}
 
