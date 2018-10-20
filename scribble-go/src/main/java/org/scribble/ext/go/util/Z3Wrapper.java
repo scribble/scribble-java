@@ -40,11 +40,11 @@ public class Z3Wrapper
 	// Based on CommandLine::runDot, JobContext::runAut, etc
 	public static boolean checkSat(GoJob job, ProtocolDecl<Global> gpd, String smt2) //throws ScribbleException
 	{
-		String tmpName = gpd.header.name + ".smt2.tmp";
+		//String tmpName = gpd.header.name + "_" + ".smt2.tmp";
 		File tmp = null; //= new File(tmpName);
-		/*if (tmp.exists())  // Factor out with CommandLine.runDot (file exists check)
+		/*if (tmp.exists())  // Factor out with CommandLine.runDot (file exists check)  // Now redundant, using createTempFile
 		{
-			throw new RuntimeException("Cannot overwrite: " + tmpName);
+			throw new RuntimeException("Cannot overwrite: " + tmp.getAbsolutePath());
 		}*/
 		smt2 = "(declare-datatypes (T1 T2) ((Pair (mk-pair (fst T1) (snd T2)))))\n"
 			+ "(define-fun pair_max ((p!1 (Pair Int Int))) Int (ite (< (fst p!1) (snd p!1)) (snd p!1) (fst p!1) ) )\n"
@@ -62,8 +62,8 @@ public class Z3Wrapper
 		try
 		{
 			tmp = File.createTempFile(gpd.header.name.toString(), ".smt2.tmp");
-			ScribUtil.writeToFile(tmpName, smt2);
-			String[] res = ScribUtil.runProcess("z3", tmpName);//, "-T:60");
+			ScribUtil.writeToFile(tmp, smt2);
+			String[] res = ScribUtil.runProcess("z3", tmp.getAbsolutePath());//, "-T:60");
 			String trim = res[0].trim();
 			if (trim.equals("sat"))  // FIXME: factor out
 			{

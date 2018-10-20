@@ -108,7 +108,13 @@ public class ScribUtil
 	// Warning: doesn't check if file exists
 	public static void writeToFile(String path, String text) throws ScribbleException
 	{
+		// TODO: add optional file existence check here (e.g., refactor from Z3Wrapper)
 		File file = new File(path);
+		writeToFile(file, text);
+	}
+
+	public static void writeToFile(File file, String text) throws ScribbleException
+	{
 		File parent = file.getParentFile();
 		if (parent != null)
 		{
