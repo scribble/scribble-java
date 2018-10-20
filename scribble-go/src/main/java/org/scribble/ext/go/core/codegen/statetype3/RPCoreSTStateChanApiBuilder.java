@@ -335,14 +335,22 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		feach +=
 				  "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
 				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
-				+ "}\n"
+				+ "}\n";
 
-				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
+		if (this.apigen.job.parForeach)
+		{
+			feach += RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+								+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+		}
+		else
+		{
+			feach += "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
 										//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
 										+ sEp + "." + "lin"
 										+ " {\n"
 								+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
 								+ "}\n";
+		}
 	
 		if (this.apigen.job.parForeach)
 		{
@@ -390,12 +398,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		if (this.apigen.job.parForeach)
 		{
 			feach += "nested := " + RPCoreSTSessionApiBuilder.makeStateChanInstance(apigen, initName, sEp, "tid");
-			feach += "nested.id = " + sEp + ".lin\n";
+			//feach += "nested.id = " + sEp + ".lin\n";
 			feach += "chs[" + p + "] = make(chan int)\n";
-			feach += "go func() {\n";
-			feach += "go f(nested)\n";
-			feach += "chs[" + p + "] <- 0\n";
-			feach += "}()\n";
+			feach += "go func(ch chan int) {\n";
+			feach += "f(nested)\n";
+			feach += "ch <- 0\n";
+			feach += "}(chs[" + p + "])\n";
 		}
 		else
 		{
