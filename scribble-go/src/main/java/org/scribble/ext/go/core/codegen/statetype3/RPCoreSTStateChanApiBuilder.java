@@ -352,11 +352,6 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 								+ "}\n";
 		}
 	
-		if (this.apigen.job.parForeach)
-		{
-			feach += "chs := make(map[int]chan int)\n";
-		}
-						
 		feach +=
 						  "for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
 								+ p + lte + "; " + p + " = " + inc + "{\n";
@@ -364,11 +359,65 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		
 		if (this.apigen.job.parForeach)
 		{
+			feach += sEp + ".Params[" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread][\"" + p + "\"] = " + p + " \n";
+		}
+		else
+		{
+			feach += sEp + ".Params[\"" + p + "\"] = " + p + "\n";  // FIXME: nested Endpoint type/struct?
+		}
+
+		if (this.apigen.job.parForeach)
+		{
+			feach += "nested := " + RPCoreSTSessionApiBuilder.makeStateChanInstance(apigen, initName, sEp, RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread");
+			//feach += "nested.id = " + sEp + ".lin\n";
+			feach += "f(nested)\n";
+		}
+		else
+		{
+			feach +=
+					// Duplicated from RPCoreSTSessionApiBuilder  // FIXME: factor out with makeReturnSuccStateChan
+					/*+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
+							? "f(newBranch" + initName + "(ini))\n"
+							: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), " + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse*/
+							sEp + ".lin = "  // FIXME: sync
+						+ sEp + ".lin + 1\n";
+			feach += initState +".id = " + sEp + ".lin\n";
+			feach += "f(" + initState + ")\n";
+		}
+
+		feach += "}\n";
+		
+		feach += //+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
+				  makeReturnSuccStateChan(s, succName) + "\n"
+				+ "}\n";
+		
+		// Parallel method
+		if (this.apigen.job.parForeach)
+		{
+			feach += "\n"
+					+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
+							+ ") Parallel(f func(*" + initName + ") " + termName + ") *" + succName + " {\n";
+							
+			// Duplicated from buildAction
+			feach +=
+						"if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
+					+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
+					+ "}\n";
+
+			feach += RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+								+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+		
+			feach += "chs := make(map[int]chan int)\n";
+							
+			feach +=
+								"for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
+									+ p + lte + "; " + p + " = " + inc + "{\n";
+							//+ sEp + "." + s.getParam() + "=" + s.getParam() + "\n"  // FIXME: nested Endpoint type/struct?
+			
 			// inc Ept thread
 			// copy Ept params for new thread
 			// make new nested init with new thread
 			// spawn
-
 			feach += "tid := " + sEp + ".Thread + 1\n";  // FIXME: sync (factor up as a sync function in the ep) -- e.g., if a thread spawns more subthreads
 			feach += sEp + ".Thread = tid\n";
 			feach += "tmp := make(map[string]int)\n";
@@ -376,57 +425,28 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			feach += "tmp[k] = v\n";
 			feach += "}\n";
 			feach += sEp + ".Params[tid] = tmp\n";
-		}
-		
-		if (this.apigen.job.parForeach)
-		{
-		  feach += "tmp[\"" + p + "\"] = " + p + "\n";
-		}
-		else
-		{
-			feach += sEp + ".Params[\"" + p + "\"] = " + p + "\n";  // FIXME: nested Endpoint type/struct?
-		}
+			
+			feach += "tmp[\"" + p + "\"] = " + p + "\n";
 
-		feach +=
-				// Duplicated from RPCoreSTSessionApiBuilder  // FIXME: factor out with makeReturnSuccStateChan
-				/*+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
-						? "f(newBranch" + initName + "(ini))\n"
-						: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), " + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse*/
-						sEp + ".lin = "  // FIXME: sync
-					+ sEp + ".lin + 1\n";
-
-		if (this.apigen.job.parForeach)
-		{
 			feach += "nested := " + RPCoreSTSessionApiBuilder.makeStateChanInstance(apigen, initName, sEp, "tid");
-			//feach += "nested.id = " + sEp + ".lin\n";
 			feach += "chs[" + p + "] = make(chan int)\n";
 			feach += "go func(ch chan int) {\n";
 			feach += "f(nested)\n";
 			feach += "ch <- 0\n";
 			feach += "}(chs[" + p + "])\n";
-		}
-		else
-		{
-			feach += initState +".id = " + sEp + ".lin\n";
-			feach += "f(" + initState + ")\n";
-		}
 
-		feach += "}\n";
+			feach += "}\n";
 		
-		if (this.apigen.job.parForeach) {
 			feach +=
 								"for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
 									+ p + lte + "; " + p + " = " + inc + "{\n";
 			feach += "<- chs[" + p + "]\n";
 			feach += "}\n";
+			
+			feach += //+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
+						makeReturnSuccStateChan(s, succName) + "\n"
+					+ "}\n";
 		}
-		
-		feach += //+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
-				  makeReturnSuccStateChan(s, succName) + "\n"
-				+ "}\n";
-		
-		// Parallel method
-		//feach += "\n";
 		
 
 		res.put(getStateChannelFilePath(scTypeName), feach);
