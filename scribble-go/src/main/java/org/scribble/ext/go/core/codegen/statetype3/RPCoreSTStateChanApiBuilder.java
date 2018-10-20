@@ -316,7 +316,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			default:  throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
 		}
 
-    String initState = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "._" + initName;
+    String initState = sEp + "._" + initName;
 		feach += "\n"
 				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
 						+ ") Foreach(f func(*" + initName + ") " + termName + ") *" + succName + " {\n";
@@ -329,10 +329,15 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
 										//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
-										+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin"
+										+ sEp + "." + "lin"
 										+ " {\n"
 								+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
 								+ "}\n";
+	
+		if (this.apigen.job.parForeach)
+		{
+			feach += "chs := make(map[int]chan int)\n";
+		}
 						
 		feach +=
 						  "for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
@@ -341,7 +346,23 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		
 		if (this.apigen.job.parForeach)
 		{
-		  feach += sEp + ".Params[" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread][\"" + p + "\"] = " + p + "\n";
+			// inc Ept thread
+			// copy Ept params for new thread
+			// make new nested init with new thread
+			// spawn
+
+			feach += "tid := " + sEp + ".Thread + 1\n";
+			feach += sEp + ".Thread = tid\n";
+			feach += "tmp := make(map[string]int)\n";
+			feach += "for k,v := range " + sEp + ".Params[" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread]" + "{\n";
+			feach += "tmp[k] = v\n";
+			feach += "}\n";
+			feach += sEp + ".Params[tid] = tmp\n";
+		}
+		
+		if (this.apigen.job.parForeach)
+		{
+		  feach += "tmp[\"" + p + "\"] = " + p + "\n";
 		}
 		else
 		{
@@ -353,14 +374,37 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				/*+ ((this.apigen.job.selectApi && init.getStateKind() == EStateKind.POLY_INPUT)
 						? "f(newBranch" + initName + "(ini))\n"
 						: "f(&" + initName + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), " + sEp + " })\n")  // cf. state chan builder  // FIXME: chan struct reuse*/
-					  RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin = "  // FIXME: sync
-					+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin + 1\n"
-					+ initState +".id = " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".lin\n"
-					+ "f(" + initState + ")\n"
+						sEp + ".lin = "  // FIXME: sync
+					+ sEp + ".lin + 1\n";
 
-				+ "}\n"
-				//+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
-				+ makeReturnSuccStateChan(s, succName) + "\n"
+		if (this.apigen.job.parForeach)
+		{
+			feach += "nested := " + RPCoreSTSessionApiBuilder.makeStateChanInstance(apigen, initName, sEp, "tid");
+			feach += "nested.id = " + sEp + ".lin\n";
+			feach += "chs[" + p + "] = make(chan int)\n";
+			feach += "go func() {\n";
+			feach += "go f(nested)\n";
+			feach += "chs[" + p + "] <- 0\n";
+			feach += "}()\n";
+		}
+		else
+		{
+			feach += initState +".id = " + sEp + ".lin\n";
+			feach += "f(" + initState + ")\n";
+		}
+
+		feach += "}\n";
+		
+		if (this.apigen.job.parForeach) {
+			feach +=
+								"for " + p + " := " + generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
+									+ p + lte + "; " + p + " = " + inc + "{\n";
+			feach += "<- chs[" + p + "]\n";
+			feach += "}\n";
+		}
+		
+		feach += //+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
+				  makeReturnSuccStateChan(s, succName) + "\n"
 				+ "}\n";
 		
 		// Parallel method
