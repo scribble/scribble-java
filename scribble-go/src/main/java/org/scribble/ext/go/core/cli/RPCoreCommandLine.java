@@ -787,6 +787,9 @@ public class RPCoreCommandLine extends CommandLine
 				if (!vars.isEmpty())
 				{
 					//z3 = "(exists (" + vars.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" ")) + ") " + z3 + ")";
+					List<String> tmp = vars.stream().map(v -> smt2t.makeLte(smt2t.getDefaultBaseValue(), v.toSmt2Formula(smt2t))).collect(Collectors.toList());
+					tmp.add(z3);
+					z3 = smt2t.makeAnd(tmp);
 					z3 = smt2t.makeExists(vars.stream().map(v -> v.toSmt2Formula(smt2t)).collect(Collectors.toList()), z3);
 				}
 				//z3 = smt2t.makeExists(Stream.of("self").collect(Collectors.toList()), z3);
