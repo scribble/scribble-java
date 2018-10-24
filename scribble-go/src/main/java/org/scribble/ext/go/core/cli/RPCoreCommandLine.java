@@ -692,42 +692,13 @@ public class RPCoreCommandLine extends CommandLine
 			Set<RPRoleVariant> coset = all.stream()
 					.filter(x -> !cand.contains(x)).collect(Collectors.toSet());
 			
-			/*String smt2 = "(assert ";
-			if (!vars.isEmpty())
-			{
-				smt2 += "(exists (" + vars.stream().map(x -> "(" + x + " Int)").collect(Collectors.joining(" ")) + ")\n";  // FIXME: factor up -- and factor out with getVariants
-				smt2 += "(and\n";
-				smt2 += vars.stream().map(x -> "(>= " + x + " 1)").collect(Collectors.joining(" ")) + "\n";  // FIXME: generalise, parameter domain annotations
-			}
-			smt2 += "(and " + cand.stream()
-					.map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t)).collect(Collectors.joining(" ")) + ")\n";
-			smt2 += (coset.size() > 0)
-					? "(and " + coset.stream()
-							.map(v -> "(not " + makePhiSmt2(v.intervals, v.cointervals, smt2t) + ")").collect(Collectors.joining(" ")) + ")\n"
-					: "";
-			if (!vars.isEmpty())
-			{
-				smt2 += "))";
-			}
-			smt2 += ")";*/
-			
-			List<String> cs = new LinkedList<>();
-			cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
-			cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, false)).collect(Collectors.toList()));
-			cs.addAll(coset.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, true)).collect(Collectors.toList()));
-			String smt2 = smt2t.makeAnd(cs);
-			if (!vars.isEmpty())
-			{
-				smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula(smt2t)).collect(Collectors.toList()), smt2); 
-			}
-			//smt2 = smt2t.makeExists(Stream.of("self").collect(Collectors.toList()), smt2);
-			smt2 = smt2t.makeAssert(smt2);
+			String smt2 = makeFamilyCheck(smt2t, vars, cand, coset);
 			
 			job.debugPrintln("\n[rp-core] Family candidate (" + i++ + "/" + size + "): " + cand);
 			job.debugPrintln("[rp-core] Co-set: " + coset);
 			job.debugPrintln("[rp-core] Running Z3 on:\n" + smt2);
 			
-			boolean isSat = Z3Wrapper.checkSat(job, this.gpd, smt2);
+			boolean isSat = Z3Wrapper.checkSat(job, smt2t.global, smt2);
 			if (isSat)
 			{
 				fams.add(new Pair<>(Collections.unmodifiableSet(cand), Collections.unmodifiableSet(coset)));
@@ -736,6 +707,21 @@ public class RPCoreCommandLine extends CommandLine
 		}
 		
 		return fams;
+	}
+
+	public static String makeFamilyCheck(Smt2Translator smt2t, Set<RPIndexVar> vars, Set<RPRoleVariant> cand, Set<RPRoleVariant> coset)
+	{
+		List<String> cs = new LinkedList<>();
+		cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
+		cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, false)).collect(Collectors.toList()));
+		cs.addAll(coset.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, true)).collect(Collectors.toList()));
+		String smt2 = smt2t.makeAnd(cs);
+		if (!vars.isEmpty())
+		{
+			smt2 = smt2t.makeExists(vars.stream().map(x -> x.toSmt2Formula(smt2t)).collect(Collectors.toList()), smt2); 
+		}
+		smt2 = smt2t.makeAssert(smt2);
+		return smt2;
 	}
 	
 	private //Map<Role, Set<Set<ParamRange>>> 

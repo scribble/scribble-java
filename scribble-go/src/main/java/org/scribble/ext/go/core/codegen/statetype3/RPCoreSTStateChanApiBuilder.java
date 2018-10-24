@@ -421,6 +421,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			feach += "tid := " + sEp + ".Thread + 1\n";  // FIXME: sync (factor up as a sync function in the ep) -- e.g., if a thread spawns more subthreads
 			feach += sEp + ".Thread = tid\n";
 			feach += "tmp := make(map[string]int)\n";
+			// FIXME: sync (factor up as a sync function in the ep) -- e.g., if a thread spawns more subthreads
 			feach += "for k,v := range " + sEp + ".Params[" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread]" + "{\n";
 			feach += "tmp[k] = v\n";
 			feach += "}\n";

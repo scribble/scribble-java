@@ -22,7 +22,7 @@ public class Z3Wrapper
 	public static Smt2Translator getSmt2Translator(GoJob job, GProtocolDecl gpd, RPCoreGType gt)
 	{
 		Set<RPIndexedRole> irs = gt.getIndexedRoles();
-		if (irs.isEmpty() ||
+		if (irs.isEmpty() ||  // FIXME: hardcoded default
 				irs.stream().allMatch(x -> x.intervals.stream().allMatch(y -> y.getIndexVals().stream().noneMatch(z -> z instanceof RPIndexIntPair))))
 		{
 			return new IntSmt2Translator(job, gpd);
