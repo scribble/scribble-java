@@ -190,6 +190,8 @@ tokens
 	PARAM_FOREACHINTERVAL            = 'PARAM_FOREACHINTERVAL';
 	
 	PARAM_PAIR = 'PARAM_PAIR';
+	//PARAM_NOMODS = 'PARAM_NOMODS';
+	PARAM_GLOBALPROTOCOLHEADER = 'PARAM_GLOBALPROTOCOLHEADER';
 }
 
 
@@ -340,7 +342,7 @@ IDENTIFIER:
 fragment SYMBOL:
 	'{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '\#'
 |
-	'&' | '?' | '!'	| UNDERSCORE | '-' | '*'
+	'&' | '?' | '!'	| UNDERSCORE | ',' | '=' | '<' | '>' | '-' | '*'
 ;
 
 // Comes after SYMBOL due to an ANTLR syntax highlighting issue involving
@@ -569,7 +571,7 @@ protocoldecl:
  * Section 3.7 Global Protocol Declarations
  */
 globalprotocoldecl:
-	globalprotocolheader globalprotocoldefinition
+	globalprotocolheader globalprotocoldefinition  // TODO: refactor into below (e.g., PARAM_NOMODS)
 ->
 	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition)
 |
@@ -577,6 +579,16 @@ globalprotocoldecl:
 ->
 	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition globalprotocoldeclmodifiers)
 ;
+
+/*// CHECKME: refactor to header?  cf. Assrt
+|
+	globalprotocolheader '@' EXTIDENTIFIER globalprotocoldefinition
+->
+	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition PARAM_NOMODS EXTIDENTIFIER)
+|
+	globalprotocoldeclmodifiers globalprotocolheader '@' EXTIDENTIFIER globalprotocoldefinition
+->
+	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition globalprotocoldeclmodifiers EXTIDENTIFIER)*/
 	
 globalprotocoldeclmodifiers:
 	AUX_KW EXPLICIT_KW 
@@ -600,6 +612,12 @@ globalprotocolheader:
 	GLOBAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist roledecllist
 ->
 	^(GLOBALPROTOCOLHEADER simpleprotocolname parameterdecllist roledecllist)
+
+// TODO: parameterdecllist and annot (cf. Assrt)
+|
+	GLOBAL_KW PROTOCOL_KW simpleprotocolname roledecllist '@' EXTIDENTIFIER
+->
+	^(PARAM_GLOBALPROTOCOLHEADER simpleprotocolname ^(PARAMETERDECLLIST) roledecllist EXTIDENTIFIER)
 ;
 
 roledecllist:

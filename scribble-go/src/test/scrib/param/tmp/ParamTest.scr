@@ -8,6 +8,13 @@
 module param.tmp.ParamTest;
 
 
+global protocol Proto1(role A, role B) @"abc"
+{
+	Foo() from A[1] to B[1];
+}
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	Foo() from A[1] to C[1];
@@ -16,6 +23,7 @@ global protocol Proto1(role A, role B, role C)
 	Foo() from A[1] to B[2,K];  // Testing "domain" clauses, here 2 <= K, put outside neg of neg Phi for family check
 	//Foo() from B[1] to B[2,K];
 }
+/*/
 
 
 /*

@@ -5,6 +5,8 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
+import org.scribble.ast.NonRoleParamDeclList;
+import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
@@ -15,6 +17,7 @@ import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGForeach;
 import org.scribble.ext.go.ast.global.RPGMultiChoices;
 import org.scribble.ext.go.ast.global.RPGMultiChoicesTransfer;
+import org.scribble.ext.go.ast.global.RPGProtocolHeader;
 import org.scribble.ext.go.ast.name.simple.RPIndexedRoleNode;
 import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
@@ -51,4 +54,8 @@ public interface RPAstFactory extends AstFactory
 
 	RPGDelegationElem RPGDelegationElem(CommonTree source, GProtocolNameNode root, GProtocolNameNode state, RoleNode role);
 	//RPLDelegationElem RPLDelegationElem(CommonTree source, LProtocolNameNode proto);  // Delegation currently supported only by core, and just uses RPCoreGDelegationType
+	
+	//RPGProtocolDecl RPGProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def, String annot);
+
+	RPGProtocolHeader RPGProtocolHeader(CommonTree source, GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls, String annot);
 }

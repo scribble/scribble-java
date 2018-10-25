@@ -43,7 +43,7 @@ public class AntlrGProtocolDecl
 		}*/
 		if (hasModifiersChild(ct))
 		{
-			for (CommonTree mod :getModifierChildren(ct))
+			for (CommonTree mod : getModifierChildren(ct))
 			{
 				switch (mod.getText())
 				{
@@ -75,7 +75,7 @@ public class AntlrGProtocolDecl
 	{
 		//return (CommonTree) ct.getChild(MODIFIERS_CHILD_INDEX);
 		return ((List<?>) ((CommonTree) ct.getChild(MODIFIERS_CHILD_INDEX)).getChildren()).stream()
-				.map((c) -> (CommonTree) c).collect(Collectors.toList());
+				.map(c -> (CommonTree) c).collect(Collectors.toList());
 	}
 
 	/*public static boolean isExplicitConnections(CommonTree ct)
