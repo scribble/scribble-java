@@ -591,8 +591,8 @@ public class RPCoreCommandLine extends CommandLine
 									
 									if (this.gpd.header instanceof RPGProtocolHeader)
 									{
+										// FIXME: WIP
 										RPAnnotExpr annot = RPAnnotExpr.parse(((RPGProtocolHeader) this.gpd.header).annot);
-										System.out.println("AAA: " + annot + " ,, " + annot.toSmt2Formula(smt2t));
 										if (annot.getVars().stream().map(x -> x.toString()).allMatch(x ->
 												vars.stream().map(y -> y.toString()).anyMatch(y -> x.equals(y))))  // TODO: refactor
 										{
@@ -729,6 +729,21 @@ public class RPCoreCommandLine extends CommandLine
 		cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
 		cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, false)).collect(Collectors.toList()));
 		cs.addAll(coset.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, true)).collect(Collectors.toList()));
+
+		if (!vars.isEmpty())
+		{
+			if (smt2t.global.header instanceof RPGProtocolHeader)
+			{
+				// FIXME: WIP
+				RPAnnotExpr annot = RPAnnotExpr.parse(((RPGProtocolHeader) smt2t.global.header).annot);
+				if (annot.getVars().stream().map(x -> x.toString()).allMatch(x ->
+						vars.stream().map(y -> y.toString()).anyMatch(y -> x.equals(y))))  // TODO: refactor
+				{
+					cs.add(annot.toSmt2Formula(smt2t));
+				}
+			}
+		}
+
 		String smt2 = smt2t.makeAnd(cs);
 		if (!vars.isEmpty())
 		{
@@ -788,6 +803,18 @@ public class RPCoreCommandLine extends CommandLine
 				{
 					//z3 = "(exists (" + vars.stream().map(p -> "(" + p + " Int)").collect(Collectors.joining(" ")) + ") " + z3 + ")";
 					List<String> tmp = vars.stream().map(v -> smt2t.makeLte(smt2t.getDefaultBaseValue(), v.toSmt2Formula(smt2t))).collect(Collectors.toList());
+
+					if (this.gpd.header instanceof RPGProtocolHeader)
+					{
+						// FIXME: WIP
+						RPAnnotExpr annot = RPAnnotExpr.parse(((RPGProtocolHeader) this.gpd.header).annot);
+						if (annot.getVars().stream().map(x -> x.toString()).allMatch(x ->
+								vars.stream().map(y -> y.toString()).anyMatch(y -> x.equals(y))))  // TODO: refactor
+						{
+							tmp.add(annot.toSmt2Formula(smt2t));
+						}
+					}
+
 					tmp.add(z3);
 					z3 = smt2t.makeAnd(tmp);
 					z3 = smt2t.makeExists(vars.stream().map(v -> v.toSmt2Formula(smt2t)).collect(Collectors.toList()), z3);
