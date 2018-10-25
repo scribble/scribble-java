@@ -22,6 +22,7 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.cli.CLArgFlag;
 import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineException;
+import org.scribble.ext.go.ast.global.RPGProtocolHeader;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
@@ -41,6 +42,7 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
+import org.scribble.ext.go.type.annot.RPAnnotExpr;
 import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.IntPairSmt2Translator;
@@ -586,6 +588,18 @@ public class RPCoreCommandLine extends CommandLine
 									
 									List<String> cs = new LinkedList<>();
 									cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
+									
+									if (this.gpd.header instanceof RPGProtocolHeader)
+									{
+										RPAnnotExpr annot = RPAnnotExpr.parse(((RPGProtocolHeader) this.gpd.header).annot);
+										System.out.println("AAA: " + annot + " ,, " + annot.toSmt2Formula(smt2t));
+										if (annot.getVars().stream().map(x -> x.toString()).allMatch(x ->
+												vars.stream().map(y -> y.toString()).anyMatch(y -> x.equals(y))))  // TODO: refactor
+										{
+											cs.add(annot.toSmt2Formula(smt2t));
+										}
+									}
+									
 									for (RPInterval ival : peerVariant.intervals)  // Is there a peer index inside all the peer-variant intervals
 									{
 										cs.add(smt2t.makeGte("peer", ival.start.toSmt2Formula(smt2t)));

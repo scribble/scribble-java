@@ -120,8 +120,8 @@ public class RPGDelegationElem extends GDelegationElem
 			int j = tmp.indexOf("t", i+1);  // "to"  // HACK FIXME
 			String s = tmp.substring(i+1, j);
 			String e = tmp.substring(j+2);
-			start = (s.charAt(0) >= '0' && s.charAt(0) <= '9') ? RPIndexFactory.ParamIntVal(Integer.parseInt(s)) : RPIndexFactory.ParamIntVar(s);
-			end = (e.charAt(0) >= '0' && e.charAt(0) <= '9') ? RPIndexFactory.ParamIntVal(Integer.parseInt(e)) : RPIndexFactory.ParamIntVar(e);
+			start = (s.charAt(0) >= '0' && s.charAt(0) <= '9') ? RPIndexFactory.ParamIntVal(Integer.parseInt(s)) : RPIndexFactory.ParamIndexVar(s);
+			end = (e.charAt(0) >= '0' && e.charAt(0) <= '9') ? RPIndexFactory.ParamIntVal(Integer.parseInt(e)) : RPIndexFactory.ParamIndexVar(e);
 		}
 		RPRoleVariant variant = new RPRoleVariant(name, 
 				Stream.of(new RPInterval(start, end)).collect(Collectors.toSet()), Collections.emptySet());

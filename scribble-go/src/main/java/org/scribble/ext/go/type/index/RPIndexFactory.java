@@ -15,7 +15,7 @@ public class RPIndexFactory
 		return new RPIndexInt(i);
 	}
 
-	public static RPIndexVar ParamIntVar(String text)
+	public static RPIndexVar ParamIndexVar(String text)
 	{
 		/*// Check here?  Or in API gen
 		char c = text.charAt(0);
