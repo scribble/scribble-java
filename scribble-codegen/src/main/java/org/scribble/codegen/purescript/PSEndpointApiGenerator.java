@@ -116,20 +116,29 @@ public class PSEndpointApiGenerator
                     // Generate the state type
                     String curr = getStateTypeName(s);
                     states.add(new DataType(curr, null, DataType.KIND_TYPE, true));
-
         			switch (s.getStateKind()) {
         				case OUTPUT: {
         				    if (s.getAllActions().size() == 1) {
         				        String next = getStateTypeName(s.getAllSuccessors().get(0));
                                 EAction action = s.getAllActions().get(0);
-        				        String type = action.mid.toString();
                                 String to = action.obj.toString();
+                                if (action.isSend()) {
+                                    String type = action.mid.toString();
+                                    // Add the instance and message data type
+                                    instances.add(new TypeClassInstance(("send" + curr), "Send", new String[]{to, curr, next, type}));
+                                    addDatatype(datatypes, action, foreignImports);
+                                } else if (action.isDisconnect()) {
+                                    instances.add(new TypeClassInstance(("disconnect" + curr), "Disconnect", new String[]{r.toString(), to, curr, next}));
 
-                                // Add the instance and message data type
-                                instances.add(new TypeClassInstance(("send" + curr), "Send", new String[] {to, curr, next, type}));
-                                addDatatype(datatypes, action, foreignImports);
+                                } else if (action.isRequest()) {
+                                    instances.add(new TypeClassInstance(("request" + curr), "Request", new String[]{r.toString(), to, curr, next}));
+                                } else {
+                                    // TODO: What is wrap-client + do we need to handle it?
+                                    throw new ScribbleException(null, "Unsupported action " + s.getStateKind());
+                                }
                             } else {
                                 // If there are multiple output actions, we should treat it as a branch and create some dummy states where we send the label
+                                // TODO: I'm making the assumption that if there are multiple outputs, they are all send -- probably should test this
                                 Set<Pair<String, String>> choices = new HashSet<>();
                                 for (int i = 0; i < s.getAllActions().size(); i++) {
                                     EAction action = s.getAllActions().get(i);
@@ -207,7 +216,11 @@ public class PSEndpointApiGenerator
         				case TERMINAL:
         					break;
         				case ACCEPT:
-                            throw new ScribbleException(null, "Unsupported action " + s.getStateKind());
+                            EAction action = s.getAllActions().get(0);
+                            String next = getStateTypeName(s.getAllSuccessors().get(0));
+                            String to = action.obj.toString();
+                            instances.add(new TypeClassInstance(("connect" + curr), "Connect", new String[]{r.toString(), to, curr, next}));
+                            break;
                         case WRAP_SERVER:
                             throw new ScribbleException(null, "Unsupported action " + s.getStateKind());
         			}
