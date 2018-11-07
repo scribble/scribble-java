@@ -205,7 +205,7 @@ public class RPCoreCommandLine extends CommandLine
 				throw new RuntimeException("Shouldn't get in here: " + this.smt2t.getClass());
 			}
 			Map<String, String> goClasses = new RPCoreSTApiGenerator(gjob, fullname, 
-					this.L0, this.E0, this.families, this.peers, this.subsum, this.aliases, impath, roles, mode).build();
+					this.L0, this.E0, this.families, this.peers, this.subsum, this.aliases, impath, roles, mode, this.smt2t).build();
 			outputClasses(goClasses);
 		}
 		else

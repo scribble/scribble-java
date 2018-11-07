@@ -22,6 +22,7 @@ import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.type.kind.Global;
@@ -58,13 +59,15 @@ public class RPCoreSTApiGenerator
 			// FIXME? just a role name -- cf. CL arg
 			// FIXME: any way to separate Session API (Protocol) from Endpoint/StateChan APIs?
 	
+	public final Smt2Translator smt2t;
+	
 	public RPCoreSTApiGenerator(GoJob job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, RPCoreLType>> projections, 
 			Map<Role, Map<RPRoleVariant, EGraph>> variants, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families,
 			Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers,
 			Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum,
 			Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases,
 			String packpath, //Role self)
-			List<Role> selfs, Mode mode)
+			List<Role> selfs, Mode mode, Smt2Translator smt2t)
 	{
 		this.job = job;
 		this.proto = fullname;
@@ -136,6 +139,7 @@ public class RPCoreSTApiGenerator
 				// FIXME: deep copies
 		
 		this.mode = mode;
+		this.smt2t = smt2t;
 	}
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) param-core class later

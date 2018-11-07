@@ -315,7 +315,7 @@ public class RPCoreSTSessionApiBuilder
 
 	private String makeFamilyCheckIntPairIntervals(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fff, List<RPIndexVar> ivars)
 	{
-		Smt2Translator smt2t = new IntPairSmt2Translator(null, null);  // FIXME: factor out, and null arg hacks
+		Smt2Translator smt2t = this.apigen.smt2t; //new IntPairSmt2Translator(null, null);  // FIXME: factor out, and null arg hacks
 		return "util.CheckSat(\"" + RPCoreCommandLine.makeFamilyCheck(smt2t, new HashSet<>(ivars), fff.left, fff.right) + "\")\n";
 	}
 
