@@ -46,7 +46,7 @@ public class RPAntlrIndexExpr
 			{
 				return isInteger(type)
 						? RPIndexFactory.ParamIntVal(Integer.parseInt(type))
-						: RPIndexFactory.ParamIntVar(type);
+						: RPIndexFactory.ParamIndexVar(type);
 			}
 		}
 	}

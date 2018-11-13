@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ext.go.core.cli.RPCoreCommandLine;
 import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPInterval;
@@ -24,6 +25,9 @@ import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.ext.go.type.index.RPIndexVar;
+import org.scribble.ext.go.util.IntPairSmt2Translator;
+import org.scribble.ext.go.util.Smt2Translator;
+import org.scribble.ext.go.util.Z3Wrapper;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
@@ -301,6 +305,22 @@ public class RPCoreSTSessionApiBuilder
 
 	private String makeFamilyCheck(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fff, List<RPIndexVar> ivars)
 	{
+		switch (this.apigen.mode)
+		{
+			case Int:      return makeFamilyCheckIntIntervals(fff, ivars);
+			case IntPair:  return makeFamilyCheckIntPairIntervals(fff, ivars);
+			default:       throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
+		}
+	}
+
+	private String makeFamilyCheckIntPairIntervals(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fff, List<RPIndexVar> ivars)
+	{
+		Smt2Translator smt2t = this.apigen.smt2t; //new IntPairSmt2Translator(null, null);  // FIXME: factor out, and null arg hacks
+		return "util.CheckSat(\"" + RPCoreCommandLine.makeFamilyCheck(smt2t, new HashSet<>(ivars), fff.left, fff.right) + "\")\n";
+	}
+
+	private String makeFamilyCheckIntIntervals(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fff, List<RPIndexVar> ivars)
+	{
 		if (ivars.isEmpty())
 		{
 			return "";
@@ -311,12 +331,12 @@ public class RPCoreSTSessionApiBuilder
 		switch (this.apigen.mode)
 		{
 			case Int:  ivalkind = "IntInterval";  break;
-			case IntPair:  ivalkind = "IntPairInterval";  break;
+			case IntPair:  ivalkind = "IntPairInterval";  break;  // FIXME: now redundant (and etc. below)
 			default:  throw new RuntimeException("Shouldn't get in here: " + this.apigen.mode);
 		}
 
 		res += "var tmp []util." + ivalkind + "\n";
-		//res += "var tmp2 []util." + ivalkind + "\n";
+		res += "var tmp2 []util." + ivalkind + "\n";
 		Function<RPRoleVariant, String> makeIvals = vvv ->
 		{
 			List<String> ivals = new LinkedList<>();
@@ -331,7 +351,7 @@ public class RPCoreSTSessionApiBuilder
 			}
 			return ivals.isEmpty() ? null : "tmp = []util." + ivalkind + "{" + ivals.stream().collect(Collectors.joining(", ")) + "}\n";
 		};
-		/*Function<RPRoleVariant, String> makeCoIvals = vvv ->
+		Function<RPRoleVariant, String> makeCoIvals = vvv ->
 		{
 			List<String> coivals = new LinkedList<>();
 			vvv.cointervals.forEach(x -> 
@@ -341,7 +361,7 @@ public class RPCoreSTSessionApiBuilder
 				coivals.add("util." + ivalkind + "{" + start + ", " + end + "}");
 			});
 			return "tmp2 = []util." + ivalkind + "{" + coivals.stream().collect(Collectors.joining(", ")) + "}\n";
-		};*/
+		};
 
 		for (RPRoleVariant v : fff.left)
 		{
@@ -349,22 +369,22 @@ public class RPCoreSTSessionApiBuilder
 			if (tmp != null)
 			{
 				res += tmp;
-				//res += makeCoIvals.apply(v);
-				res += "if util.Isect" + ivalkind + "s(tmp)"//.SubtIntIntervals(tmp2)
+				res += makeCoIvals.apply(v);
+				res += "if util.Isect" + ivalkind + "s(tmp).SubIntIntervals(tmp2)"  // FIXME: non int intervals
 						+ ".IsEmpty() {\n";
 				res += makeParamsSelfPanic(ivars);
 				res += "}\n";
 			}
 		}
-		/*for (RPRoleVariant v : fff.right)
+		for (RPRoleVariant v : fff.right)
 		{
 			res += makeIvals.apply(v);
-			//res += makeCoIvals.apply(v);
-			res += "if !util.Isect" + ivalkind + "s(tmp)"//.SubtIntIntervals(tmp2)
+			res += makeCoIvals.apply(v);
+			res += "if !util.Isect" + ivalkind + "s(tmp).SubIntIntervals(tmp2)"
 					+ ".IsEmpty() {\n";
 			res += makeParamsSelfPanic(ivars);
 			res += "}\n";
-		}*/
+		}
 		return res;
 	}
 
@@ -717,7 +737,7 @@ public class RPCoreSTSessionApiBuilder
 					
 					if (this.apigen.job.parForeach)
 					{
-						epkindFile += "Thread int\n";
+						epkindFile += "Thread int\n";  // FIXME: deprecate -- recorded in state chan instead
 					}
 
 					epkindFile += "}\n"
@@ -781,21 +801,27 @@ public class RPCoreSTSessionApiBuilder
 															? Stream.of(n, s.isTerminal() ? "End" : n + "_")  // FIXME: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
 															: Stream.of(n);
 													})
-											.distinct()
+											.distinct()  // CHECKME: for End's?
 											.map(n ->
 													{
 														// FIXME TODO: case objects?
-														return ((n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
-																? "ep._End = &End{ nil, 0, "  // Now same as below?
-																: "ep._" + n + " = &" + n + "{ nil,"
-																		//+ " new(RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE),"
-																		+ (n.equals("Init") ? " 1," : " 0,")
-																		)
-														
-																+ " ep" + (this.apigen.job.parForeach ? ", 1" : "") + "}\n";
+														return "ep._" + n + " = " + makeStateChanInstance(this.apigen, n, "ep", "1");
 																// cf. state chan builder  // CHECKME: reusing pre-created chan structs OK for Err handling?
 													}
-												).collect(Collectors.joining());
+												)
+												/*.map(s -> 
+												{
+													String n = this.stateChanNames.get(variant).get(s.id);
+													String tmp = makeStateChanInstance(this.apigen, n);
+													if (s.hasNested())
+													{
+														tmp = tmp + (s.isTerminal() 
+																? makeStateChanInstance(this.apigen, n + "_")
+																: makeStateChanInstance(this.apigen, "End"));
+													}
+													return tmp;
+												})*/
+												.collect(Collectors.joining());
 										
 							if (this.apigen.job.parForeach)
 							{
@@ -932,10 +958,13 @@ public class RPCoreSTSessionApiBuilder
 							+ "func (ini *" + epkindTypeName + ") Init() *Init {\n"
 							+ "ini.Use()\n"  // FIXME: int-counter linearity
 							+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"
+
+							// TODO: Factor out with RPCoreSTStateChanApiBuilder#makeReturnSuccStateChan
 							+ "return "
 							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
 									? "newBranch" + init + "(ini)"
 									: "ini._" + init) + "\n"
+
 							+ "}";
 
 					epkindFile += "\n\n"
@@ -950,6 +979,24 @@ public class RPCoreSTSessionApiBuilder
 				}
 			}
 		}
+	}
+
+	/*public static String makeStateChanInstance(RPCoreSTApiGenerator apigen, EState s)
+	{
+		return makeStateChanInstance(apigen, this.stateChanNames.get(variant).get(s.id));
+	}*/
+
+	public static String makeStateChanInstance(RPCoreSTApiGenerator apigen, String n, String ep, String id)
+	{
+		return ((n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
+				? "&End{ nil, 0, "  // Now same as below?
+				: "&" + n + "{ nil, "
+						+ (apigen.job.parForeach
+							? " new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "),"
+							: (n.equals("Init") ? " 1," : " 0,"))
+						)
+		
+				+ ep + (apigen.job.parForeach ? ", " + id : "") + " }\n";
 	}
 
 	private String makeDialsAccepts(String indexType, RPRoleVariant variant,

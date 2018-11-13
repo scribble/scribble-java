@@ -17,7 +17,8 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 	@Override
 	public String build(STStateChanApiBuilder api, EState curr, EAction a)  // FIXME: "overriding" STStateChanAPIBuilder.buildAction to hack around *interface return  // FIXME: factor out
 	{
-		//RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
+
+		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
 		//String scTypeName = rpapi.getStateChanName(curr);
 
 		EState succ = curr.getSuccessor(a);
@@ -25,26 +26,35 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 		String branchComment =
 				  "// " + getActionName(api, a) + " is a branch with branch label\n"
 				+ "// " + curr.getActions().stream().map(action -> action.mid.toString()).collect(Collectors.joining(" or ")) + "\n";
-		return
+		
+		String res =
 				branchComment
 				+ "func (s *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "("
 						+ buildArgs(null, a)
 						+ ") " + getReturnType(api, curr, succ) + " {\n"  // HACK: return type is interface, so no need for *return (unlike other state chans)
 				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
 				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
-				+ "}\n"
+				+ "}\n";
 
-				/*+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"*/
-				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
+		if (rpapi.apigen.job.parForeach)
+		{
+			res += RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
+						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+		}
+		else
+		{
+			res += "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
 						//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
 						+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin"
-						+ " {\n"
+				+ " {\n"
 				+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
-				+ "}\n"
+				+ "}\n";
+		}
 
-				+ buildBody(api, curr, a, succ) + "\n"
+		res += buildBody(api, curr, a, succ) + "\n"
 				+ "}";
+
+		return res;
 	}
 
 	@Override
@@ -87,7 +97,8 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 		// FIXME: factor out with RPCoreSTStateChanApiBuilder#getSuccStateChan -- don't need terminal check for succ though
 		String ret = RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": "
 				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ", "
-				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")";
+				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")"
+				+ (rpapi.apigen.job.parForeach ? ", Thread: " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread" : "");
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder
 		RPInterval d = peer.intervals.iterator().next();

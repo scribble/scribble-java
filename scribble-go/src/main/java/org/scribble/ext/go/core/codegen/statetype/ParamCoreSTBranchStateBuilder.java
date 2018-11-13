@@ -77,7 +77,7 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 						+ "data: make(chan " + (((GoJob) api.job).noCopy ? "[]interface{}" : "[][]byte") + ", 1)"
 
 						+ "}\n"
-				+ "go s.foo()\n"
+				+ "s.foo()\n"
 				+ "return s\n"
 				+ "}\n";
 
@@ -126,28 +126,39 @@ public class ParamCoreSTBranchStateBuilder extends STBranchStateBuilder
 			res +=
 						"b := " + sEpRecv + (((GoJob) api.job).noCopy ? "Raw" : "")
 						+ "(" + sEpProto + "." + peer.getName() + ", "
-								+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n"
-					+ "s.data <- b\n";
-							// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
+						+ foo.apply(g.start) + ", " + foo.apply(g.end) + ")\n";
+						// See below for sending b to s.data
+						// FIXME: arg0  // FIXME: args depends on label  // FIXME: store args in s.args
 		}
-				
-		res+= "if "
+
+		res+= "switch op {\n"
 				+ s.getActions().stream().map(a ->
 					{
 						String sEp = 
 								ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
 						return
-								"op == \"" + a.mid + "\" {\n"
-								+ "\tch := make(chan *" + apigen.getStateChanName(s.getSuccessor(a)) + ", 1)\n"
-								+ "\tch <- " + apigen.getSuccStateChan(this.bb, s, s.getSuccessor(a), sEp) + "\n"
-								+ "\ts._" + a.mid + "_Chan <- ch\n"
-								+ "\t" + s.getActions().stream()
+								"\tcase \"" + a.mid + "\":\n"
+								+ "\t\tch := make(chan *" + apigen.getStateChanName(s.getSuccessor(a)) + ", 1)\n"
+								+ "\t\tch <- " + apigen.getSuccStateChan(this.bb, s, s.getSuccessor(a), sEp) + "\n"
+								+ "\t\ts._" + a.mid + "_Chan <- ch\n"
+								+ "\t\t" + s.getActions().stream()
 										.filter(otheract -> otheract.mid != a.mid)
 										.map(otheract -> { return "close(s._" + otheract.mid + "_Chan)"; })
-										.collect(Collectors.joining("\n\t")) + "\n"
-								+ "}";
-					}).collect(Collectors.joining(" else if ")) + "\n"
-				+ "}\n";
+										.collect(Collectors.joining("\n\t")) + "\n";
+					}).collect(Collectors.joining("\n"))
+				+ "\n"
+				+ "\tdefault:\n" // default case captures unrecognised choice label
+				+ "\t\t" + ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "." + ParamCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
+				+ "Errors <- session.UnknownChoiceLabelError{Label: op}\n"
+				+ "\t}\n"; // End of switch
+
+		if (!allEmpty)
+		{
+			// b is result of a sEpRecv/sEpRecvRaw
+			res += "\ts.data <- b\n";
+		}
+
+        res += "}\n"; // End of func foo
 
 		return res;
 	}

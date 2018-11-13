@@ -9,6 +9,8 @@ import org.scribble.ext.go.parser.scribble.ast.RPCoreAntlrModule;
 import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGChoice;
 import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGCrossMessageTransfer;
 import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGDotMessageTransfer;
+import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGProtocolDecl;
+import org.scribble.ext.go.parser.scribble.ast.global.RPAntlrGProtocolHeader;
 import org.scribble.ext.go.parser.scribble.ast.global.RPCoreAntlrGForeach;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ScribbleAntlrConstants;
@@ -28,6 +30,8 @@ public class RPAntlrToScribParser extends AntlrToScribParser
 
 	public static final String PARAM_DELEGATION = "PARAM_DELEGATION";
 	
+	public static final String PARAM_GLOBALPROTOCOLHEADER = "PARAM_GLOBALPROTOCOLHEADER";
+	
 	public RPAntlrToScribParser()
 	{
 
@@ -46,9 +50,9 @@ public class RPAntlrToScribParser extends AntlrToScribParser
 			case ScribbleAntlrConstants.MODULE_NODE_TYPE: 
 				return RPCoreAntlrModule.parseModule(this, ct, af);
 			case ScribbleAntlrConstants.PAYLOAD_NODE_TYPE:                   
-			{
 				return RPAntlrPayloadElemList.parsePayloadElemList(this, ct, af);
-			}
+			/*case ScribbleAntlrConstants.GLOBALPROTOCOLDECL_NODE_TYPE:
+				return RPAntlrGProtocolDecl.parseGPrototocolDecl(this, ct, af);*/
 
 
 			// "Extensions"
@@ -67,7 +71,8 @@ public class RPAntlrToScribParser extends AntlrToScribParser
 				return RPCoreAntlrGForeach.parseRPGForeach(this, ct, aaf);
 			/*case PARAM_DELEGDECL_NODE_TYPE:  // FIXME: deprecate
 				return RPCoreAntlrDelegDecl.parseDelegDecl(this, ct, aaf);*/
-
+			case PARAM_GLOBALPROTOCOLHEADER:
+				return RPAntlrGProtocolHeader.parseGProtocolHeader(this, ct, aaf);
 
 			default: return super.parse(ct, af);
 		}

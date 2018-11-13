@@ -5,6 +5,8 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
+import org.scribble.ast.NonRoleParamDeclList;
+import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
@@ -15,6 +17,7 @@ import org.scribble.ext.go.ast.global.RPGDotMessageTransfer;
 import org.scribble.ext.go.ast.global.RPGForeach;
 import org.scribble.ext.go.ast.global.RPGMultiChoices;
 import org.scribble.ext.go.ast.global.RPGMultiChoicesTransfer;
+import org.scribble.ext.go.ast.global.RPGProtocolHeader;
 import org.scribble.ext.go.ast.name.simple.RPIndexedRoleNode;
 import org.scribble.ext.go.del.global.RPGChoiceDel;
 import org.scribble.ext.go.del.global.RPGDelegationElemDel;
@@ -148,6 +151,14 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 			return super.SimpleNameNode(source, kind, identifier);
 		}
 	}*/
+
+	@Override
+	public RPGProtocolHeader RPGProtocolHeader(CommonTree source, GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls, String annot)
+	{
+		RPGProtocolHeader gph = new RPGProtocolHeader(source, name, roledecls, paramdecls, annot);
+		gph = del(gph, createDefaultDelegate());
+		return gph;
+	}
 
 
 

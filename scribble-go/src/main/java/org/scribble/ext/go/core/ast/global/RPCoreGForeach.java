@@ -90,7 +90,7 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 		Set<RPIndexedRole> res = new HashSet<>();
 		for (RPAnnotatedInterval ival : this.ivals)
 		{
-			RPIndexVar tmp = RPIndexFactory.ParamIntVar(ival.var.toString()); 
+			RPIndexVar tmp = RPIndexFactory.ParamIndexVar(ival.var.toString()); 
 					// HACK FIXME: because RPIndexVar and RPForeachVar now distinguished -- unify?
 
 			Set<RPInterval> var = Stream.of(new RPInterval(tmp, tmp)).collect(Collectors.toSet());
@@ -211,7 +211,7 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 			max = ivals.iterator().next();
 		}
 
-		RPIndexVar var = RPIndexFactory.ParamIntVar(max.var.toString());  // N.B. not RPForeachVar -- occurrences in body are parsed as RPIndexVar, not RPForeachVar
+		RPIndexVar var = RPIndexFactory.ParamIndexVar(max.var.toString());  // N.B. not RPForeachVar -- occurrences in body are parsed as RPIndexVar, not RPForeachVar
 		RPCoreLType proj = this.body.project3(af, this.roles, this.ivals, 
 				new RPIndexedRole(name.toString(), Stream.of(new RPInterval(var, var)).collect(Collectors.toSet())));
 		Set<RPAnnotatedInterval> tmp = new HashSet<>(ivals);
