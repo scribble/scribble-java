@@ -123,6 +123,12 @@ public class RPCoreCommandLine extends CommandLine
 		boolean selectApi = this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_SELECT_BRANCH);
 		boolean noCopy = this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_NO_COPY);
 		boolean parForeach = this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_PARFOREACH);
+		boolean dotApi = this.rpArgs.containsKey(RPCoreCLArgFlag.RPCORE_DOTAPI);
+		
+		if (selectApi || noCopy || (parForeach && dotApi))
+		{
+			throw new RuntimeException("TODO: ");
+		}
 
 		List<Path> impaths = this.args.containsKey(CLArgFlag.IMPORT_PATH)
 				? CommandLine.parseImportPaths(this.args.get(CLArgFlag.IMPORT_PATH)[0])
@@ -138,7 +144,7 @@ public class RPCoreCommandLine extends CommandLine
 		{
 			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
 			return new RPCoreMainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, noCopy, selectApi, parForeach);
+					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, noCopy, selectApi, parForeach, dotApi);
 		}
 	}
 
