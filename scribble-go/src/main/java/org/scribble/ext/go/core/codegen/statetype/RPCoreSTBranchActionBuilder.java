@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype3;
+package org.scribble.ext.go.core.codegen.statetype;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype3;
+package org.scribble.ext.go.core.codegen.statetype;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.del.ModuleDel;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.cli.RPCoreCLArgParser;
+import org.scribble.ext.go.core.type.RPFamily;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
 import org.scribble.ext.go.main.GoJob;
@@ -29,7 +31,6 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
-import org.scribble.util.Pair;
 import org.scribble.visit.util.MessageIdCollector;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTEndpointApiGenerator
@@ -44,13 +45,19 @@ public class RPCoreSTApiGenerator
   // FIXME: factor out an RPCoreJob(Context)
 	public final Map<Role, Map<RPRoleVariant, RPCoreLType>> projections;
 	public final Map<Role, Map<RPRoleVariant, EGraph>> variants;
+
 	//public final Map<RPRoleVariant, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>> families;
-	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> families;  // int is arbitrary familiy id
-	public final Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers;  
+	//public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> families;  // int is arbitrary familiy id
+	public final Map<RPFamily, Integer> families;  // int is arbitrary familiy id  // CHECKME: reverse the map?
+
+	//public final Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers;  
+	public final Map<RPRoleVariant, Map<RPFamily, Set<RPRoleVariant>>> peers;  
 			// For "common" endpoint kind factoring (dial/accept methods)
 	
-	public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum;
-	public final Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases;
+	//public final Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum;
+	public final Map<RPFamily, RPFamily> subsum;
+	//public final Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases;
+	public final Map<RPRoleVariant, Map<RPFamily, RPRoleVariant>> aliases;
 	
 	public final String packpath;  
 			// Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
@@ -62,10 +69,14 @@ public class RPCoreSTApiGenerator
 	public final Smt2Translator smt2t;
 	
 	public RPCoreSTApiGenerator(GoJob job, GProtocolName fullname, Map<Role, Map<RPRoleVariant, RPCoreLType>> projections, 
-			Map<Role, Map<RPRoleVariant, EGraph>> variants, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families,
-			Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers,
-			Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum,
-			Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases,
+			//Map<Role, Map<RPRoleVariant, EGraph>> variants, Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families,
+			Map<Role, Map<RPRoleVariant, EGraph>> variants, Set<RPFamily> families,
+			//Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers,
+			Map<RPRoleVariant, Map<RPFamily, Set<RPRoleVariant>>> peers,
+			//Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum,
+			Map<RPFamily, RPFamily> subsum,
+			//Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases,
+			Map<RPRoleVariant, Map<RPFamily, RPRoleVariant>> aliases,
 			String packpath, //Role self)
 			List<Role> selfs, Mode mode, Smt2Translator smt2t)
 	{
@@ -101,8 +112,8 @@ public class RPCoreSTApiGenerator
 							e -> e.getKey(),
 							e -> Collections.unmodifiableSet(e.getValue())
 					)));*/
-		int[] i = { 1 };
-		Comparator<RPRoleVariant> variantComp = new Comparator<RPRoleVariant>()  // FIXME: factor out
+		int[] i = { 1 };  // Default family ID starts from 1
+		/*Comparator<RPRoleVariant> variantComp = new Comparator<RPRoleVariant>()  // FIXME: factor out
 			{
 				@Override
 				public int compare(RPRoleVariant i1, RPRoleVariant i2)
@@ -122,7 +133,8 @@ public class RPCoreSTApiGenerator
 									.compareTo(f2.left.stream().sorted(variantComp).map(x -> x.toString()).collect(Collectors.joining("_")) + "_not_" + f2.right.stream().sorted(variantComp).map(x -> x.toString()).collect(Collectors.joining("_")));
 						}})
 				.collect(Collectors.toMap(f -> f, f -> i[0]++)));
-				// CHECKME: deep copy?
+				// CHECKME: deep copy?*/
+		this.families = Collections.unmodifiableMap(families.stream().sorted(RPFamily.COMPARATOR).collect(Collectors.toMap(f -> f, f -> i[0]++)));
 
 		this.packpath = packpath;
 		//this.self = self;
@@ -189,36 +201,33 @@ public class RPCoreSTApiGenerator
 		//makeStateChanNames();
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
 		res.putAll(buildSessionApi());
-		for (Role self : this.selfs.stream().sorted(new Comparator<Role>()
-			{
-				@Override
-				public int compare(Role o1, Role o2)
-				{
-					return o1.toString().compareTo(o2.toString());
-				}
-			}).collect(Collectors.toList()))
+		for (Role self : (Iterable<Role>) this.selfs.stream().sorted(Role.COMPARATOR)::iterator)
 		{
 			for (Entry<RPRoleVariant, EGraph> e : this.variants.get(self).entrySet().stream().sorted(new Comparator<Entry<RPRoleVariant, EGraph>>()
 				{
 					@Override
 					public int compare(Entry<RPRoleVariant, EGraph> o1, Entry<RPRoleVariant, EGraph> o2)
 					{
-						return o1.getValue().init.id - o2.getValue().init.id;
+						return new Integer(o1.getValue().init.id).compareTo(o2.getValue().init.id); //o1.getValue().init.id - o2.getValue().init.id;
 					}
 				}).collect(Collectors.toList()))
 			{
 				RPRoleVariant variant = e.getKey();
-				for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
-						this.families.entrySet().stream().filter(x -> x.getKey().left.contains(variant))
-						.sorted(new Comparator<Entry<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer>>()
+				/*for (RPFamily family :
+						this.families.entrySet().stream().filter(x -> x.getKey().variants.contains(variant))
+						.sorted(new Comparator<Entry<RPFamily, Integer>>()
 							{
 								@Override
-								public int compare(Entry<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> o1,
-										Entry<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Integer> o2)
+								public int compare(Entry<RPFamily, Integer> o1,
+										Entry<RPFamily, Integer> o2)
 								{
 									return o1.getValue() - o2.getValue();
 								}
-							}).map(x -> x.getKey()).collect(Collectors.toList()))
+							}).map(x -> x.getKey()).collect(Collectors.toList()))*/
+				for (RPFamily family : (Iterable<RPFamily>) IntStream.range(1, this.families.size()+1)  // TODO: factor out constant
+						.mapToObj(x -> this.families.entrySet().stream().filter(y -> y.getValue() == x).findAny().get().getKey())
+						.filter(x -> x.variants.contains(variant))::iterator)
+								// TODO: reverse families map?
 				{
 					res.putAll(buildStateChannelApi(family, variant, e.getValue()));
 				}
@@ -239,7 +248,7 @@ public class RPCoreSTApiGenerator
 	}
 	
 	public Map<String, String> buildStateChannelApi(
-			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant, EGraph graph)  // FIXME: factor out
+			RPFamily family, RPRoleVariant variant, EGraph graph)  // FIXME: factor out
 	{
 		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + variant);
 		return new RPCoreSTStateChanApiBuilder(this, family, variant, graph, this.stateChanNames.get(variant)).build();
@@ -256,7 +265,8 @@ public class RPCoreSTApiGenerator
 		return "package " + getApiRootPackageName();
 	}*/
 
-	public String getFamilyPackageName(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family)
+	//public String getFamilyPackageName(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family)
+	public String getFamilyPackageName(RPFamily family)
 	{
 		return "family_" + this.families.get(family);
 	}

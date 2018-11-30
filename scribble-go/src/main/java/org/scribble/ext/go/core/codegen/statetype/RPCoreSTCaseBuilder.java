@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype3;
+package org.scribble.ext.go.core.codegen.statetype;
 
 import java.util.HashMap;
 import java.util.Map;

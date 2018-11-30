@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype3;
+package org.scribble.ext.go.core.codegen.statetype;
 
 public class RPCoreSTApiGenConstants
 {

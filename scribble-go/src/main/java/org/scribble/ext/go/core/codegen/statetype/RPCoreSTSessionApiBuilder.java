@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype3;
+package org.scribble.ext.go.core.codegen.statetype;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,8 +16,9 @@ import java.util.stream.Stream;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ext.go.core.cli.RPCoreCommandLine;
-import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator.Mode;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
+import org.scribble.ext.go.core.type.RPFamily;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.type.index.RPBinIndexExpr;
@@ -31,7 +32,6 @@ import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
-import org.scribble.util.Pair;
 
 // Build Session API for this.apigen.selfs
 // RP Session API = Protocol API + Endpoint Kind APIs 
@@ -48,14 +48,14 @@ public class RPCoreSTSessionApiBuilder
 	protected final Map<RPRoleVariant, Map<Integer, String>> stateChanNames;  // State2
 	//private Map<RPRoleVariant, Map<Integer, String>> foreachNames = new HashMap<>();    // State2_ intermediary name (N.B. RPCoreSTStateChanApiBuilder swaps them around for convenience)
 
-	private static final Comparator<RPIndexVar> IVAR_COMP = new Comparator<RPIndexVar>()
+	/*private static final Comparator<RPIndexVar> IVAR_COMP = new Comparator<RPIndexVar>()
 			{
 				@Override
 				public int compare(RPIndexVar i1, RPIndexVar i2)
 				{
 					return i1.toString().compareTo(i2.toString());
 				}
-			};
+			};*/
 			
 	private static final Comparator<RPCoreEState> ESTATE_COMP = new Comparator<RPCoreEState>()
 			{
@@ -191,7 +191,7 @@ public class RPCoreSTSessionApiBuilder
 												? "import " + epkindPackName
 														+ " \"" + this.apigen.packpath + "/" + this.apigen.getApiRootPackageName()  // "Absolute" -- cf. getProtocol/EndpointKindFilePath, "relative"
 														+ "/" + epkindPackName + "\"\n"
-												: this.apigen.families.keySet().stream().filter(f -> f.left.contains(v)).map(f ->
+												: this.apigen.families.keySet().stream().filter(f -> f.variants.contains(v)).map(f ->
 														{	
 															return "import " + this.apigen.getFamilyPackageName(f) + "_" + epkindPackName
 																	+ " \"" + this.apigen.packpath + "/" + this.apigen.getApiRootPackageName()  // "Absolute" -- cf. getProtocol/EndpointKindFilePath, "relative"
@@ -229,20 +229,20 @@ public class RPCoreSTSessionApiBuilder
 				boolean isCommonEndpointKind = this.apigen.isCommonEndpointKind(variant);
 				
 				// HACK: setting family to null for common endpoint kind
-				Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families = isCommonEndpointKind
-						? Stream.of((Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>) null).collect(Collectors.toSet())  // FIXME HACK: when isCommonEndpointKind, just loop once (to make one New)
-						: this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant)).collect(Collectors.toSet());
+				Set<RPFamily> families = isCommonEndpointKind
+						? Stream.of((RPFamily) null).collect(Collectors.toSet())  // FIXME HACK: when isCommonEndpointKind, just loop once (to make one New)
+						: this.apigen.families.keySet().stream().filter(f -> f.variants.contains(variant)).collect(Collectors.toSet());
 
-				for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
+				for (RPFamily family :
 						families)  // FIXME: use family to make accept/dial
 				{	
 					
 					// Factor out with below
-					Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> orig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
+					RPFamily orig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
 					RPRoleVariant subbdbyus = null;
 					for (RPRoleVariant subbd : this.apigen.aliases.keySet())
 					{
-						Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
+						Map<RPFamily, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
 						if (ais.containsKey(orig) && ais.get(orig).equals(variant))
 						{
 							subbdbyus = subbd;  // We subsumed "subbd", so we need to inherit all their peers
@@ -301,7 +301,7 @@ public class RPCoreSTSessionApiBuilder
 		res.put(getProtocolFilePath() + simpname + ".go", protoFile);
 	}
 
-	private String makeFamilyCheck(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fff, List<RPIndexVar> ivars)
+	private String makeFamilyCheck(RPFamily fff, List<RPIndexVar> ivars)
 	{
 		switch (this.apigen.mode)
 		{
@@ -311,13 +311,13 @@ public class RPCoreSTSessionApiBuilder
 		}
 	}
 
-	private String makeFamilyCheckIntPairIntervals(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fff, List<RPIndexVar> ivars)
+	private String makeFamilyCheckIntPairIntervals(RPFamily fff, List<RPIndexVar> ivars)
 	{
 		Smt2Translator smt2t = this.apigen.smt2t; //new IntPairSmt2Translator(null, null);  // FIXME: factor out, and null arg hacks
-		return "util.CheckSat(\"" + RPCoreCommandLine.makeFamilyCheck(smt2t, new HashSet<>(ivars), fff.left, fff.right) + "\")\n";
+		return "util.CheckSat(\"" + RPCoreCommandLine.makeFamilyCheck(smt2t, new HashSet<>(ivars), fff.variants, fff.covariants) + "\")\n";
 	}
 
-	private String makeFamilyCheckIntIntervals(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fff, List<RPIndexVar> ivars)
+	private String makeFamilyCheckIntIntervals(RPFamily fff, List<RPIndexVar> ivars)
 	{
 		if (ivars.isEmpty())
 		{
@@ -361,7 +361,7 @@ public class RPCoreSTSessionApiBuilder
 			return "tmp2 = []util." + ivalkind + "{" + coivals.stream().collect(Collectors.joining(", ")) + "}\n";
 		};
 
-		for (RPRoleVariant v : fff.left)
+		for (RPRoleVariant v : fff.variants)
 		{
 			String tmp = makeIvals.apply(v);
 			if (tmp != null)
@@ -374,7 +374,7 @@ public class RPCoreSTSessionApiBuilder
 				res += "}\n";
 			}
 		}
-		for (RPRoleVariant v : fff.right)
+		for (RPRoleVariant v : fff.covariants)
 		{
 			res += makeIvals.apply(v);
 			res += makeCoIvals.apply(v);
@@ -637,17 +637,17 @@ public class RPCoreSTSessionApiBuilder
 		{
 			for (RPRoleVariant variant : this.apigen.variants.get(rname).keySet()) 
 			{
-				for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family :
-						(Iterable<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>>) 
-								this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant))::iterator)  
+				for (RPFamily family :
+						(Iterable<RPFamily>) 
+								this.apigen.families.keySet().stream().filter(f -> f.variants.contains(variant))::iterator)  
 				{	
 					
 					// Factor out with above
-					Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> orig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
+					RPFamily orig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
 					RPRoleVariant subbdbyus = null;
 					for (RPRoleVariant subbd : this.apigen.aliases.keySet())
 					{
-						Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
+						Map<RPFamily, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
 						if (ais.containsKey(orig) && ais.get(orig).equals(variant))
 						{
 							subbdbyus = subbd;  // We subsumed "subbd", so we need to inherit all their peers
@@ -673,7 +673,7 @@ public class RPCoreSTSessionApiBuilder
 
 					String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant);
 					
-					String epkindFile = "//" + family.left.toString() + "\n\n";
+					String epkindFile = "//" + family.variants.toString() + "\n\n";
 
 					epkindFile +=
 							epkindImports + "\n"
@@ -998,7 +998,7 @@ public class RPCoreSTSessionApiBuilder
 	}
 
 	private String makeDialsAccepts(String indexType, RPRoleVariant variant,
-			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> orig,
+			RPFamily family, RPFamily orig,
 			List<RPIndexVar> ivars, String epkindTypeName, String epkindFile, Set<RPRoleVariant> peers)
 	{
 		for (RPRoleVariant v : peers)
@@ -1006,11 +1006,11 @@ public class RPCoreSTSessionApiBuilder
 			RPRoleVariant pp = v;
 			
 			// TODO: factor out with above
-			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> peerorig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
+			RPFamily peerorig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
 			RPRoleVariant subbdbypeer = null;
 			for (RPRoleVariant subbd : this.apigen.aliases.keySet())
 			{
-				Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
+				Map<RPFamily, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
 				if (ais.containsKey(peerorig) && ais.get(peerorig).equals(variant))
 				{
 					subbdbypeer = subbd;  // We can connect to peer or who they subbd
@@ -1020,7 +1020,7 @@ public class RPCoreSTSessionApiBuilder
 			
 			if (this.apigen.aliases.containsKey(v))
 			{
-				Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> ali = this.apigen.aliases.get(v);
+				Map<RPFamily, RPRoleVariant> ali = this.apigen.aliases.get(v);
 				if (ali.containsKey(orig))
 				{
 					pp = ali.get(orig);  // Replace subsumed-peer by subsuming-peer
@@ -1130,7 +1130,7 @@ public class RPCoreSTSessionApiBuilder
 				.getIndexVars().stream().collect(Collectors.toList());  // N.B., params only from action subjects (not self)
 		ivars.addAll(variant.getIndexVars().stream().filter(x -> !ivars.contains(x))
 				.collect(Collectors.toList()));  // Do variant params subsume projection params? -- nope: often projections [self] and variant [K]
-		return ivars.stream().sorted(IVAR_COMP).collect(Collectors.toList());
+		return ivars.stream().sorted(RPIndexVar.COMPARATOR).collect(Collectors.toList());
 	}
 	
 	// Returns path to use as offset to -d
@@ -1145,7 +1145,7 @@ public class RPCoreSTSessionApiBuilder
 	// Returns path to use as offset to -d
 	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
 	// FIXME: factor up to super -- cf. STStateChanApiBuilder#getStateChannelFilePath
-	public String getEndpointKindFilePath(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant)
+	public String getEndpointKindFilePath(RPFamily family, RPRoleVariant variant)
 	{
 		boolean isCommonEndpointKind = //this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(variant));  // No: doesn't consider dial/accept
 				//this.apigen.families.keySet().stream().filter(f -> f.left.contains(variant)).distinct().count() == 1;

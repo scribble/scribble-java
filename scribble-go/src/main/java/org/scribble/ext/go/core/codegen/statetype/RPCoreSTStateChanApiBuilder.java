@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype3;
+package org.scribble.ext.go.core.codegen.statetype;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,10 +21,11 @@ import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
-import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator.Mode;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
+import org.scribble.ext.go.core.type.RPFamily;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
@@ -52,7 +53,10 @@ import org.scribble.util.Pair;
 public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 {
 	protected final RPCoreSTApiGenerator apigen;
-	public final Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family;
+
+	//public final Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family;
+	public final RPFamily family;
+
 	public final RPRoleVariant variant;  // variant.getName().equals(this.role)
 	
 	//private int counter = 2;  // 1 named as Init
@@ -66,8 +70,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later
 	// Pre: variant.getName().equals(this.role)
-	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen,
-			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant, EGraph graph, Map<Integer, String> names)
+	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen, //Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, 
+			RPFamily family,
+			RPRoleVariant variant, EGraph graph, Map<Integer, String> names)
 	{
 		this(apigen, family, variant, graph, //2, 
 				names, //Collections.emptyMap(), 
@@ -75,7 +80,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 
 	private RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen,
-			Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, RPRoleVariant variant, EGraph graph, 
+			//Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family, 
+			RPFamily family,
+			RPRoleVariant variant, EGraph graph, 
 			//int counter, 
 			Map<Integer, String> names, 
 			//Map<Integer, String> imedNames, 

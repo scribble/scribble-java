@@ -1,6 +1,7 @@
 package org.scribble.ext.go.type.index;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,6 +10,15 @@ import org.scribble.ext.go.util.Smt2Translator;
 // Variable occurrence
 public class RPIndexVar extends RPIndexExpr  // FIXME: extend AbstractName?  cf. Role -- e.g., for compatibility with NameCollector
 {
+	public static final Comparator<RPIndexVar> COMPARATOR = new Comparator<RPIndexVar>()
+			{
+				@Override
+				public int compare(RPIndexVar i1, RPIndexVar i2)
+				{
+					return i1.toString().compareTo(i2.toString());
+				}
+			};
+
 	public final String name; 
 
 	protected RPIndexVar(String name)

@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype3;
+package org.scribble.ext.go.core.codegen.statetype;
 
 import org.scribble.codegen.statetype.STEndStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;

@@ -74,16 +74,20 @@ public class RPIndexedRole extends Role
 		return this.intervals.iterator().next();
 	}
 	
-	// FIXME
+	// CHECKME
 	public Role getName()
 	{
 		return new Role(this.getLastElement());
 	}
 
+	// if equals, then toString.equals
 	@Override
 	public String toString()
 	{
-		String rs = this.intervals.stream().map(Object::toString).collect(Collectors.joining(", "));
+		String rs = this.intervals.stream()
+				.sorted(RPInterval.COMPARATOR)
+				.map(Object::toString)
+				.collect(Collectors.joining(", "));
 		if (this.intervals.size() > 1)
 		{
 			rs = "{" + rs + "}";

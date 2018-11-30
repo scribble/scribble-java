@@ -28,16 +28,15 @@ import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
-//import org.scribble.ext.go.core.codegen.statetype.ParamCoreSTEndpointApiGenerator;
-//import org.scribble.ext.go.core.codegen.statetype2.ParamCoreSTEndpointApiGenerator;
-import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator;
-import org.scribble.ext.go.core.codegen.statetype3.RPCoreSTApiGenerator.Mode;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.main.RPCoreException;
 import org.scribble.ext.go.core.main.RPCoreMainContext;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEGraphBuilder;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEModelFactory;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
+import org.scribble.ext.go.core.type.RPFamily;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
@@ -60,7 +59,6 @@ import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
-import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribUtil;
 
@@ -76,14 +74,21 @@ public class RPCoreCommandLine extends CommandLine
 	private Map<Role, Map<RPRoleVariant, RPCoreLType>> L0;
 	private Map<Role, Map<RPRoleVariant, EGraph>> E0;
 	//protected ParamCoreSModel model;
-	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;  // Factor out Family (cf. RPRoleVariant)
-		// families after subsumption
-	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers;
-		// variant-from-an-original-family -> an-original-family -> peer-variants-in-that-family
+
+	//private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;  // Factor out Family (cf. RPRoleVariant)
+	private Set<RPFamily> families;
+		// families *after* subsumption ("minimisation")
+
+	//private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers;
+	private Map<RPRoleVariant, Map<RPFamily, Set<RPRoleVariant>>>  peers;
+		// variant-from-an-original-family -> an-original-family -> peer-variants-in-that-family  // peer-variants is a subset of original-family variants
 	
-	private Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum;
+	//private Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum;
+	private Map<RPFamily, RPFamily> subsum;
 			// new-family-after-subsumptions -> original-family-before-subsumptions
-	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases;
+
+	//private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant>> aliases;
+	private Map<RPRoleVariant, Map<RPFamily, RPRoleVariant>> aliases;
 			// subsumed-variant -> original-family-subsumed-in -> subsuming-variant 
 			// FIXME: can a variant be subsumed by mutiple other variants?  currently only recording one
 	
@@ -434,12 +439,16 @@ public class RPCoreCommandLine extends CommandLine
 					));*/
 		RPCoreAstFactory af = new RPCoreAstFactory();
 
-		Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families = new HashSet<>();
+		//Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families = new HashSet<>();
+		Set<RPFamily> families = new HashSet<>();
+
 		////Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers = new HashMap<>();
-		for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.families)
+		//for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.families)
+		for (RPFamily fam : this.families)
 		{
 			Set<RPRoleVariant> tmp = new HashSet<>();
-			Set<RPRoleVariant> vs = fam.left;
+			//Set<RPRoleVariant> vs = fam.left;
+			Set<RPRoleVariant> vs = fam.variants;
 			Next: for (RPRoleVariant v : vs)
 			{
 				if (!v.isSingleton())
@@ -460,7 +469,8 @@ public class RPCoreCommandLine extends CommandLine
 							{
 								//System.out.println("5555: " + v + "  subsumed by  " + u);
 								
-								Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> m = this.aliases.get(v);
+								//Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, RPRoleVariant> m = this.aliases.get(v);
+								Map<RPFamily, RPRoleVariant> m = this.aliases.get(v);
 								if (m == null)
 								{
 									m = new HashMap<>();
@@ -478,14 +488,18 @@ public class RPCoreCommandLine extends CommandLine
 			
 			//if (!tmp.equals(fam.left))
 			{
-				Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> compressed = new Pair<>(tmp, fam.right);
+				//Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> compressed = new Pair<>(tmp, fam.right);
+
+				//RPFamily compressed = new RPFamily(tmp, fam.right);
+				RPFamily compressed = new RPFamily(tmp, fam.covariants);
 				families.add(compressed);  // Subsumed variants are neither in left nor right
 
-				/*System.out.println("\nFamily:\n" + fam.left.stream().map(x -> x.toString()).collect(Collectors.joining("\n"))
-						+ "\nCovars:\n" + fam.right.stream().map(x -> x.toString()).collect(Collectors.joining("\n"))
+				/*System.out.println("\nFamily:\n" + fam.variants.stream().map(x -> x.toString()).collect(Collectors.joining("\n"))
+						+ "\nCovars:\n" + fam.covariants.stream().map(x -> x.toString()).collect(Collectors.joining("\n"))
 						+ "\nCompacted:\n" + tmp.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));*/
 					
-				if (!tmp.equals(fam.left))
+				//if (!tmp.equals(fam.left))
+				if (!tmp.equals(fam.variants))
 				{
 					this.subsum.put(compressed, fam);
 				}
@@ -503,11 +517,15 @@ public class RPCoreCommandLine extends CommandLine
 	// Compute variant peers of each variant -- which peer variants (possibly self variant) can match the indexed-role peers of self's I/O actions
 	// for "common" endpoint kind factoring (w.r.t. dial/accept, i.e., to look for variants whose set of dial/accept methods is the same for all families it is involved in)
 	// FIXME: optimise, peers are symmetric
-	private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> getPeers(GoJob job, Smt2Translator smt2t)
+	private //Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> 
+			Map<RPRoleVariant, Map<RPFamily, Set<RPRoleVariant>>>
+			getPeers(GoJob job, Smt2Translator smt2t)
 	{
 		job.debugPrintln("\n[rp-core] Computing peers:");
 
-		Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> res = new HashMap<>();
+		//Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> 
+		Map<RPRoleVariant, Map<RPFamily, Set<RPRoleVariant>>>
+				res = new HashMap<>();
 
 		/*String[] args = this.rpArgs.get(RPCoreCLArgFlag.RPCORE_API_GEN);
 		for (Role rname : (Iterable<Role>) Arrays.asList(args).stream().map(r -> new Role(r))::iterator)*/
@@ -673,14 +691,18 @@ public class RPCoreCommandLine extends CommandLine
 						}
 					}
 
-					Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>> tmp = new HashMap<>();
+					//Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>> 
+					Map<RPFamily, Set<RPRoleVariant>>
+							tmp = new HashMap<>();
 					res.put(self, tmp);
-					for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.families)
+					//for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.families)
+					for (RPFamily fam : this.families)
 					{
-						if (fam.left.contains(self))
+						//if (fam.left.contains(self))
 						{
 							Set<RPRoleVariant> tmp2 = new HashSet<>(peers);
-							tmp2.retainAll(fam.left);
+							//tmp2.retainAll(fam.left);
+							tmp2.retainAll(fam.variants);
 							tmp.put(fam, tmp2);
 						}
 					}
@@ -692,11 +714,14 @@ public class RPCoreCommandLine extends CommandLine
 		return res;
 	}	
 	
-	private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> getFamilies(GoJob job, Smt2Translator smt2t)
+	private //Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> 
+			Set<RPFamily>
+			getFamilies(GoJob job, Smt2Translator smt2t)
 	{
 		job.debugPrintln("\n[rp-core] Computing families:");
 
-		Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> fams = new HashSet<>();
+		//Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> fams = new HashSet<>();
+		Set<RPFamily> fams = new HashSet<>();
 
 		Set<RPRoleVariant> all = this.L0.values().stream()
 				.flatMap(m -> m.keySet().stream()).collect(Collectors.toSet());
@@ -721,7 +746,8 @@ public class RPCoreCommandLine extends CommandLine
 			boolean isSat = Z3Wrapper.checkSat(job, smt2t.global, smt2);
 			if (isSat)
 			{
-				fams.add(new Pair<>(Collections.unmodifiableSet(cand), Collections.unmodifiableSet(coset)));
+				//fams.add(new Pair<>(Collections.unmodifiableSet(cand), Collections.unmodifiableSet(coset)));
+				fams.add(new RPFamily(cand, coset));
 			}
 			job.debugPrintln("[rp-core] Checked sat: " + isSat);
 		}

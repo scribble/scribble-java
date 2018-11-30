@@ -1,6 +1,7 @@
 package org.scribble.ext.go.core.type;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,6 +15,16 @@ public class RPRoleVariant extends RPIndexedRole
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	public static final
+	Comparator<RPRoleVariant> COMPARATOR = new Comparator<RPRoleVariant>()
+			{
+				@Override
+				public int compare(RPRoleVariant i1, RPRoleVariant i2)
+				{
+					return i1.toString().compareTo(i2.toString());
+				}
+			};
 	
 	public final Set<RPInterval> cointervals;
 	
@@ -54,15 +65,20 @@ public class RPRoleVariant extends RPIndexedRole
 		return ivars;
 	}
 
+	// if equals, then toString.equals
 	@Override
 	public String toString()
 	{
 		// Duplicated from super to make rs1 braces mandatory 
-		String rs1 = "{" + this.intervals.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
+		/*String rs1 = "{" + this.intervals.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
 		String rs2 = this.cointervals.isEmpty()
 				? ""
-				: "{" + this.cointervals.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";
-		return super.getLastElement() + rs1 + rs2;
+				: "{" + this.cointervals.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";*/
+		String rs1 = "{" + this.intervals.stream().sorted(RPInterval.COMPARATOR).map(Object::toString).collect(Collectors.joining(", ")) + "}";
+		String rs2 = this.cointervals.isEmpty()
+				? ""
+				: "{" + this.cointervals.stream().sorted(RPInterval.COMPARATOR).map(Object::toString).collect(Collectors.joining(", ")) + "}";
+		return getName() + rs1 + rs2;
 	}
 	
 	@Override
