@@ -10,8 +10,8 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ext.go.ast.RPAstFactory;
 import org.scribble.ext.go.ast.global.RPGForeach;
 import org.scribble.ext.go.parser.scribble.ast.index.RPAntlrIndexExpr;
-import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
 import org.scribble.util.ScribParserException;
@@ -28,13 +28,15 @@ public class RPCoreAntlrGForeach
 		GProtocolBlock block = (GProtocolBlock) parser.parse(getBlockChild(root), af);
 
 		List<RoleNode> subjs = new LinkedList<>();
-		List<RPForeachVar> vars = new LinkedList<>();
+		//List<RPForeachVar> vars = new LinkedList<>();
+		List<RPIndexVar> vars = new LinkedList<>();
 		List<RPIndexExpr> starts = new LinkedList<>();
 		List<RPIndexExpr> ends = new LinkedList<>();
 		for (CommonTree fi : getForeachIntevalChildren(root))
 		{
 			subjs.add(AntlrSimpleName.toRoleNode(getForeachIntervalSubjectChild(fi), af));
-			vars.add((RPForeachVar) RPAntlrIndexExpr.parseRPForeachVar(getForeachIntervalIndexVarChild(fi), af));
+			//vars.add((RPForeachVar) RPAntlrIndexExpr.parseRPForeachVar(getForeachIntervalIndexVarChild(fi), af));
+			vars.add((RPIndexVar) RPAntlrIndexExpr.parseParamIndexExpr(getForeachIntervalIndexVarChild(fi), af));
 			starts.add(RPAntlrIndexExpr.parseParamIndexExpr(getForeachIntervalStartIndexExprChild(fi), af));
 			ends.add(RPAntlrIndexExpr.parseParamIndexExpr(getForeachIntervalEndIndexExprChild(fi), af));
 		}

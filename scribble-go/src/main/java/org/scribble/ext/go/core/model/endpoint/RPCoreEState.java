@@ -10,7 +10,7 @@ import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
-import org.scribble.ext.go.type.index.RPForeachVar;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.endpoint.EState;
@@ -24,7 +24,8 @@ public class RPCoreEState extends EState
 {
 	
 	// Mutable -- not used in hashCode/equals (state ID only) -- cf. EState#hashCode/equals (and mutable label set)
-	private RPForeachVar param;
+	//private RPForeachVar param;
+	private RPIndexVar param;
 	private RPInterval interval;
 	private RPCoreEState nested;  // null if no nested FSM (then above also null)
 
@@ -33,7 +34,9 @@ public class RPCoreEState extends EState
 		this(labs, null, null, null);
 	}
 
-	protected RPCoreEState(Set<RecVar> labs, RPForeachVar param, RPInterval interval, RPCoreEState nested)
+	protected RPCoreEState(Set<RecVar> labs, //RPForeachVar param, 
+			RPIndexVar param, 
+			RPInterval interval, RPCoreEState nested)
 	{
 		super(labs);
 		this.param = param;
@@ -54,12 +57,14 @@ public class RPCoreEState extends EState
 	
 	// Mutable getters/setters -- cf. super label set
 
-	public RPForeachVar getParam()
+	//public RPForeachVar getParam()
+	public RPIndexVar getParam()
 	{
 		return this.param;
 	}
 
-	public void setParam(RPForeachVar param)
+	//public void setParam(RPForeachVar param)
+	public void setParam(RPIndexVar param)
 	{
 		this.param = param;
 	}

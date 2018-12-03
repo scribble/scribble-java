@@ -24,7 +24,6 @@ import org.scribble.ext.go.del.global.RPGDelegationElemDel;
 import org.scribble.ext.go.del.global.RPGForeachDel;
 import org.scribble.ext.go.del.global.RPGMessageTransferDel;
 import org.scribble.ext.go.del.global.RPGMultiChoicesDel;
-import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexVar;
 
@@ -99,7 +98,9 @@ public class RPAstFactoryImpl extends AstFactoryImpl implements RPAstFactory
 
 	@Override
 	public RPGForeach RPGForeach(CommonTree source, List<RoleNode> subjs,
-			List<RPForeachVar> params, List<RPIndexExpr> starts, List<RPIndexExpr> ends, GProtocolBlock block)
+			//List<RPForeachVar> params, 
+			List<RPIndexVar> params, 
+			List<RPIndexExpr> starts, List<RPIndexExpr> ends, GProtocolBlock block)
 	{
 		RPGForeach gf = new RPGForeach(source, subjs, params, starts, ends, block);
 		gf = del(gf, new RPGForeachDel());

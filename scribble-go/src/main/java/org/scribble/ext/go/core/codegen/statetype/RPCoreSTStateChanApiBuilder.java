@@ -32,7 +32,6 @@ import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPBinIndexExpr;
-import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexIntPair;
@@ -47,7 +46,6 @@ import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.PayloadElemType;
-import org.scribble.util.Pair;
 
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
 public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
@@ -65,7 +63,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	//private Map<Integer, String> imedNames = new HashMap<>();  // "Original" state names -- FIXME: deprecate  // Cf. STStateChanApiBuilder.names
 	
-	private final Set<RPForeachVar> fvars = new HashSet<>();  // HACK FIXME: should make explicit RPIndexExprNode ast and name disamb endpoint vs. foreach vars
+	//private final Set<RPForeachVar> fvars = new HashSet<>();  // HACK FIXME: should make explicit RPIndexExprNode ast and name disamb endpoint vs. foreach vars
+	private final Set<RPIndexVar> fvars = new HashSet<>();
 	private final List<EGraph> todo = new LinkedList<>();  // HACK FIXME: to preserve "order" of state building -- cf. fvars hack for var scope
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later
@@ -86,7 +85,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			//int counter, 
 			Map<Integer, String> names, 
 			//Map<Integer, String> imedNames, 
-			Set<RPForeachVar> fvars)  
+			//Set<RPForeachVar> fvars)  
+			Set<RPIndexVar> fvars)  
 					// HACK FIXME -- make a "nested builder" -- problem is final this.graph 
 					// FIXME: probably easier to to make a "nested" constructor
 	{
@@ -309,7 +309,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		String termName = (term == null) ? "End" : this.names.get(term.id);
 		String succName = s.isTerminal() ? "End" : getStateChanName(s);  // FIXME: factor out
 			//getIntermediaryStateChanName(s);  // Functionality subsumed by getStateChanName
-		RPForeachVar p = s.getParam();
+		//RPForeachVar p = s.getParam();
+		RPIndexVar p = s.getParam();
 
 		this.fvars.add(p); // HACK FIXME: state visiting order not guaranteed (w.r.t. lexical var scope)
 
@@ -853,8 +854,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		else if (e instanceof RPIndexVar)
 		{
 			String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
-			if (e instanceof RPForeachVar
-					|| this.fvars.stream().anyMatch(p -> p.toString().equals(e.toString())))  // FIXME HACK -- foreach var occurrences inside foreach body are RPIndexVars
+			//if (e instanceof RPForeachVar ||
+			if (
+					this.fvars.stream().anyMatch(p -> p.toString().equals(e.toString())))  // FIXME HACK -- foreach var occurrences inside foreach body are RPIndexVars
 			{
 				if (this.apigen.job.parForeach)
 				{
