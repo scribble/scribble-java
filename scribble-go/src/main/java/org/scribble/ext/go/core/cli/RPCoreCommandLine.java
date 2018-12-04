@@ -732,24 +732,17 @@ public class RPCoreCommandLine extends CommandLine
 		
 		int size = pset.size();
 		int i = 1;
+
 		for (Set<RPRoleVariant> cand : pset)
 		{
 			Set<RPRoleVariant> coset = all.stream()
 					.filter(x -> !cand.contains(x)).collect(Collectors.toSet());
 			
-			String smt2 = makeFamilyCheck(smt2t, vars, cand, coset);
-			
-			job.debugPrintln("\n[rp-core] Family candidate (" + i++ + "/" + size + "): " + cand);
-			job.debugPrintln("[rp-core] Co-set: " + coset);
-			job.debugPrintln("[rp-core] Running Z3 on:\n" + smt2);
-			
-			boolean isSat = Z3Wrapper.checkSat(job, smt2t.global, smt2);
-			if (isSat)
+			RPFamily test = new RPFamily(cand, coset);
+			if (test.isValid(smt2t, vars))
 			{
-				//fams.add(new Pair<>(Collections.unmodifiableSet(cand), Collections.unmodifiableSet(coset)));
-				fams.add(new RPFamily(cand, coset));
+				fams.add(test);
 			}
-			job.debugPrintln("[rp-core] Checked sat: " + isSat);
 		}
 		
 		return fams;
@@ -759,8 +752,10 @@ public class RPCoreCommandLine extends CommandLine
 	{
 		List<String> cs = new LinkedList<>();
 		cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
-		cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, false)).collect(Collectors.toList()));
-		cs.addAll(coset.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, true)).collect(Collectors.toList()));
+		/*cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, false)).collect(Collectors.toList()));
+		cs.addAll(coset.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, true)).collect(Collectors.toList()));*/
+		cs.addAll(cand.stream().map(v -> v.makePhiSmt2(smt2t, false)).collect(Collectors.toList()));
+		cs.addAll(coset.stream().map(v -> v.makePhiSmt2(smt2t, true)).collect(Collectors.toList()));
 
 		if (!vars.isEmpty())
 		{
@@ -826,7 +821,14 @@ public class RPCoreCommandLine extends CommandLine
 						.flatMap(Collection::stream)
 						.collect(Collectors.toSet());
 				
-				String z3 = makePhiSmt2(cand, coset, smt2t, false);
+				RPRoleVariant test = new RPRoleVariant(r.toString(), cand, coset);
+
+				if (test.isValid(smt2t))
+				{
+					variants.get(r).add(test);
+				}
+				
+				/*String z3 = makePhiSmt2(cand, coset, smt2t, false);
 				List<RPIndexVar> vars = Stream.concat(
 							cand.stream().flatMap(c -> c.getIndexVars().stream()),
 							coset.stream().flatMap(c -> c.getIndexVars().stream())
@@ -864,14 +866,14 @@ public class RPCoreCommandLine extends CommandLine
 					//protoRoles.get(r).add(cand);
 					variants.get(r).add(new RPRoleVariant(r.toString(), cand, coset));
 				}
-				job.debugPrintln("[rp-core] Checked sat: " + isSat);
+				job.debugPrintln("[rp-core] Checked sat: " + isSat);*/
 			}
 		}
 		
 		return variants;
 	}
 
-	// Doesn't include "assert", nor exists-bind index vars (but does exists-bind self)
+	/*// Doesn't include "assert", nor exists-bind index vars (but does exists-bind self)
 	private static String makePhiSmt2(Set<RPInterval> cand, Set<RPInterval> coset, Smt2Translator smt2t, boolean not)
 	{
 		List<String> cs = new LinkedList<>();
@@ -903,7 +905,7 @@ public class RPCoreCommandLine extends CommandLine
 			if (cand.size() > 0)
 			{
 				z3 = "(and " + z3 + " ";
-			}*/
+			}* /
 			cs.addAll(
 				coset.stream().map(c -> 
 				//z3 += coset.stream().map(c -> "(and (not (and (>= self " + c.start.toSmt2Formula() + ") (<= self " + c.end.toSmt2Formula() + ")))" + ((!c.start.isConstant() || !c.end.isConstant()) ? " (<= " + c.start.toSmt2Formula() + " " + c.end.toSmt2Formula() + ")" : "") + ")")
@@ -926,7 +928,7 @@ public class RPCoreCommandLine extends CommandLine
 			{
 				z3 += ")";
 			}
-		}*/
+		}* /
 
 		String z3 = //"(exists ((self Int))" + z3 + ")";
 				smt2t.makeExists(Stream.of("self").collect(Collectors.toList()), smt2t.makeAnd(cs));  // CHECKME: need explicit self >= 1?
@@ -938,7 +940,7 @@ public class RPCoreCommandLine extends CommandLine
 		z3 = smt2t.makeAnd(dom);
 
 		return z3;
-	}
+	}*/
 
 	// FIXME: factor out -- cf. super.doAttemptableOutputTasks
 	@Override
