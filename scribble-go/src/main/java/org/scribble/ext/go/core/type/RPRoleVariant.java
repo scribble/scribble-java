@@ -40,22 +40,47 @@ public class RPRoleVariant extends RPIndexedRole
 		super(name, ranges);
 		this.cointervals = Collections.unmodifiableSet(coranges);
 	}
+	
 
 	public boolean isPotentialPeer(Smt2Translator smt2t, RPIndexedRole subj, RPRoleVariant cand)
 	{
-		RPRoleVariant self = this;
 		RPRoleVariant peerVariant = cand;
 		
 		if (!subj.getName().equals(peerVariant.getName()))
 		{
 			return false;
 		}
+		
+		String smt2 = makePeerCheckSmt2(smt2t, subj, cand);
 
+		smt2t.job.debugPrintln("[rp-core] Running Z3 on " + subj + " :\n" + smt2);
+		
+		boolean isSat = Z3Wrapper.checkSat(smt2t.job, smt2t.global, smt2);
+		smt2t.job.debugPrintln("[rp-core] Checked sat: " + isSat);
+		/*if (isSat)
+		{
+			peers.add(peerVariant);
+			continue next;
+		}*/
+		return isSat;
+	//*/
+	}
+
+	public String makePeerCheckSmt2(Smt2Translator smt2t, RPIndexedRole subj, RPRoleVariant cand)
+	{
+		RPRoleVariant self = this;
+		RPRoleVariant peerVariant = cand;
+
+		if (!subj.getName().equals(peerVariant.getName()))
+		{
+			throw new RuntimeException("[rp-core] Shouldn't get here: ");
+		}
 		if (subj.intervals.size() > 1)
 		{
-			throw new RuntimeException("[rp-core] TODO: multi-dimension intervals: " + subj);  // No?  Multiple intervals is not actually about multidim intervals, it's about constraint intersection?  (A multdim interval should be a single interval value?)
+			throw new RuntimeException("[rp-core] TODO: " + subj);  // No?  Multiple intervals is not actually about multidim intervals, it's about constraint intersection?  (A multdim interval should be a single interval value?)
 		}
 		RPInterval d = subj.intervals.stream().findAny().get();
+
 		Set<RPIndexVar> vars = Stream.concat(peerVariant.intervals.stream().flatMap(x -> x.getIndexVars().stream()), peerVariant.cointervals.stream().flatMap(x -> x.getIndexVars().stream()))
 				.collect(Collectors.toSet());
 		vars.addAll(subj.getIndexVars());
@@ -121,17 +146,7 @@ public class RPRoleVariant extends RPIndexedRole
 		smt2 = smt2t.makeExists(tmp, smt2); 
 		smt2 = smt2t.makeAssert(smt2);
 		
-		smt2t.job.debugPrintln("[rp-core] Running Z3 on " + d + " :\n" + smt2);
-		
-		boolean isSat = Z3Wrapper.checkSat(smt2t.job, smt2t.global, smt2);
-		smt2t.job.debugPrintln("[rp-core] Checked sat: " + isSat);
-		/*if (isSat)
-		{
-			peers.add(peerVariant);
-			continue next;
-		}*/
-		return isSat;
-	//*/
+		return smt2;
 	}
 	
 	public boolean isValid(Smt2Translator smt2t)
