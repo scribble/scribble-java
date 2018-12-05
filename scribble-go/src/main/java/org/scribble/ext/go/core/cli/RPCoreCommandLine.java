@@ -74,11 +74,13 @@ public class RPCoreCommandLine extends CommandLine
 
 	//private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;  // Factor out Family (cf. RPRoleVariant)
 	private Set<RPFamily> families;
-		// families *after* subsumption ("minimisation")
+		// Prior to compactFamilies, the "original" families
+		// Post compactFamilies, the families after subsumption ("minimisation"/"compacting")
 
 	//private Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers;
 	private Map<RPRoleVariant, Map<RPFamily, Set<RPRoleVariant>>>  peers;
 		// variant-from-an-original-family -> an-original-family -> peer-variants-in-that-family  // peer-variants is a subset of original-family variants
+		// ("Original" families because done before compactFamilies)
 	
 	//private Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> subsum;
 	private Map<RPFamily, RPFamily> subsum;
@@ -465,7 +467,7 @@ public class RPCoreCommandLine extends CommandLine
 					));*/
 
 		//Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families = new HashSet<>();
-		Set<RPFamily> families = new HashSet<>();
+		Set<RPFamily> families = new HashSet<>();  // Will replace "originals" by "compacted"
 
 		////Map<RPRoleVariant, Map<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>, Set<RPRoleVariant>>> peers = new HashMap<>();
 		//for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.families)
@@ -531,7 +533,7 @@ public class RPCoreCommandLine extends CommandLine
 			}
 		}
 		
-		this.families = families;
+		this.families = families;  // Replace "original" families by "compacted" families (relationships recorded in this.subsum)
 	}
 
 	// ..FIXME: generalise to multirole processes?  i.e. all roles are A with different indices? -- also subsumes MP with single rolename?
@@ -741,7 +743,7 @@ public class RPCoreCommandLine extends CommandLine
 							tmp = new HashMap<>();
 					res.put(self, tmp);
 					//for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.families)
-					for (RPFamily fam : this.families)
+					for (RPFamily fam : this.families)  // "Original" families (before "compacting")
 					{
 						//if (fam.left.contains(self))
 						{
