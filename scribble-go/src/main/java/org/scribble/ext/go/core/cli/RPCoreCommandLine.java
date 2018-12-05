@@ -15,14 +15,12 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.cli.CLArgFlag;
 import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineException;
-import org.scribble.ext.go.ast.global.RPGProtocolHeader;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
@@ -41,8 +39,6 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
-import org.scribble.ext.go.type.annot.RPAnnotExpr;
-import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.IntPairSmt2Translator;
 import org.scribble.ext.go.util.IntSmt2Translator;
@@ -238,7 +234,7 @@ public class RPCoreCommandLine extends CommandLine
 		GProtocolName simpname = new GProtocolName(this.rpArgs.get(RPCoreCLArgFlag.RPCORE_PARAM)[0]);
 		if (simpname.toString().equals("[ParamCoreAllTest]"))  // HACK: ParamCoreAllTest
 		{
-			paramCoreParseAndCheckWF(j);  // Includes base passes
+			paramCoreParseAndCheckWFAll(j);  // Includes base passes
 		}
 		else
 		{
@@ -262,7 +258,7 @@ public class RPCoreCommandLine extends CommandLine
 	}
 
 	// Pre: assrtPreContextBuilding(job)
-	private void paramCoreParseAndCheckWF(GoJob job) throws RPCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
+	private void paramCoreParseAndCheckWFAll(GoJob job) throws RPCoreSyntaxException, ScribbleException, ScribParserException, CommandLineException
 	{
 		Module main = job.getContext().getMainModule();
 		for (GProtocolDecl gpd : main.getGlobalProtocolDecls())
@@ -543,21 +539,37 @@ public class RPCoreCommandLine extends CommandLine
 									(RPCoreEState) this.E0.get(rname).get(self).init).stream()  // FIXME: static "overloading" (cf. MState) error prone
 							.map(a -> ((RPCoreEAction) a).getPeer()).collect(Collectors.toSet());
 									// CHECKME: in presence of foreach, actions will include unqualified foreachvars -- is that what the following Z3 assertion is/should be doing?
+					//*/
 
 					Set<RPRoleVariant> peers = new HashSet<>();
-					next: for (RPRoleVariant peerVariant : (Iterable<RPRoleVariant>)  // Candidate
+					next: 
+					for (RPRoleVariant peerVariant : (Iterable<RPRoleVariant>)  // Candidate
 							this.E0.values().stream()
 									.flatMap(m -> m.keySet().stream())::iterator)
 					{
 						if (//!peerVariant.equals(self) &&   // No: e.g., pipe/ring middlemen
 								!peers.contains(peerVariant))
 						{
+							/*if (((RPCoreEState) this.E0.get(rname).get(self).init).isPeer(smt2t, self, peerVariant))
+							{
+								peers.add(peerVariant);
+								//continue next;
+							}*/
+
+							//*
 							job.debugPrintln("\n[rp-core] For " + self + ", checking peer candidate: " + peerVariant);
 									// "checking potential peer" means checking if any of our action-peer indexed roles fits the candidate variant-peer (so we would need a dial/accept for them)
 							
 							for (RPIndexedRole ir : actionIRs)
 							{
-								if (ir.getName().equals(peerVariant.getName()))
+								//if (ir.isPotentialPeer(smt2t, self, peerVariant))
+								if (self.isPotentialPeer(smt2t, ir, peerVariant))
+								{
+										peers.add(peerVariant);
+										continue next;
+								}
+
+								/*if (ir.getName().equals(peerVariant.getName()))
 								{
 									if (ir.intervals.size() > 1)
 									{
@@ -606,7 +618,7 @@ public class RPCoreCommandLine extends CommandLine
 									smt2 += ")";
 									smt2 += ")";
 									smt2 += ")";
-									*/
+									* /
 									
 									// CHECKME: need to further constrain K? (by family?)
 									
@@ -635,7 +647,8 @@ public class RPCoreCommandLine extends CommandLine
 										/*cs.add(smt2t.makeOr(
 											self.cointervals.stream().flatMap(x ->
 													Stream.of(smt2t.makeLt("peer", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("peer", x.end.toSmt2Formula(smt2t)))
-											).collect(Collectors.toList())));*/
+											).collect(Collectors.toList())));
+											* /
 										cs.addAll(peerVariant.cointervals.stream().map(x ->
 													smt2t.makeOr(smt2t.makeLt("peer", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("peer", x.end.toSmt2Formula(smt2t)))
 										).collect(Collectors.toList()));
@@ -663,7 +676,8 @@ public class RPCoreCommandLine extends CommandLine
 											/*cs.add(smt2t.makeOr(
 												self.cointervals.stream().flatMap(x ->
 														Stream.of(smt2t.makeLt("self", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("self", x.end.toSmt2Formula(smt2t)))
-												).collect(Collectors.toList())));*/
+												).collect(Collectors.toList())));
+												* /
 											cs.addAll(self.cointervals.stream().map(x ->
 													smt2t.makeOr(smt2t.makeLt("self", x.start.toSmt2Formula(smt2t)), smt2t.makeGt("self", x.end.toSmt2Formula(smt2t)))
 											).collect(Collectors.toList()));
@@ -687,7 +701,9 @@ public class RPCoreCommandLine extends CommandLine
 										continue next;
 									}
 								}
+								//*/
 							}
+							//*/
 						}
 					}
 
@@ -748,12 +764,12 @@ public class RPCoreCommandLine extends CommandLine
 		return fams;
 	}
 
-	public static String makeFamilyCheck(Smt2Translator smt2t, Set<RPIndexVar> vars, Set<RPRoleVariant> cand, Set<RPRoleVariant> coset)
+	/*public static String makeFamilyCheck(Smt2Translator smt2t, Set<RPIndexVar> vars, Set<RPRoleVariant> cand, Set<RPRoleVariant> coset)
 	{
 		List<String> cs = new LinkedList<>();
 		cs.addAll(vars.stream().map(x -> smt2t.makeGte(x.toSmt2Formula(smt2t), smt2t.getDefaultBaseValue())).collect(Collectors.toList()));  // FIXME: generalise, parameter domain annotations
 		/*cs.addAll(cand.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, false)).collect(Collectors.toList()));
-		cs.addAll(coset.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, true)).collect(Collectors.toList()));*/
+		cs.addAll(coset.stream().map(v -> makePhiSmt2(v.intervals, v.cointervals, smt2t, true)).collect(Collectors.toList()));* /
 		cs.addAll(cand.stream().map(v -> v.makePhiSmt2(smt2t, false)).collect(Collectors.toList()));
 		cs.addAll(coset.stream().map(v -> v.makePhiSmt2(smt2t, true)).collect(Collectors.toList()));
 
@@ -778,7 +794,7 @@ public class RPCoreCommandLine extends CommandLine
 		}
 		smt2 = smt2t.makeAssert(smt2);
 		return smt2;
-	}
+	}*/
 	
 	private //Map<Role, Set<Set<ParamRange>>> 
 			Map<Role, Set<RPRoleVariant>>

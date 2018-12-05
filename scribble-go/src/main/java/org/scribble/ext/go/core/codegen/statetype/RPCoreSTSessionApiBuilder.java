@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ext.go.core.cli.RPCoreCommandLine;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPFamily;
@@ -314,7 +313,9 @@ public class RPCoreSTSessionApiBuilder
 	private String makeFamilyCheckIntPairIntervals(RPFamily fff, List<RPIndexVar> ivars)
 	{
 		Smt2Translator smt2t = this.apigen.smt2t; //new IntPairSmt2Translator(null, null);  // FIXME: factor out, and null arg hacks
-		return "util.CheckSat(\"" + RPCoreCommandLine.makeFamilyCheck(smt2t, new HashSet<>(ivars), fff.variants, fff.covariants) + "\")\n";
+		return "util.CheckSat(\"" //+ RPCoreCommandLine.makeFamilyCheck(smt2t, new HashSet<>(ivars), fff.variants, fff.covariants) 
+				+ fff.makeXiSmt2(smt2t, new HashSet<>(ivars))
+				+ "\")\n";
 	}
 
 	private String makeFamilyCheckIntIntervals(RPFamily fff, List<RPIndexVar> ivars)
