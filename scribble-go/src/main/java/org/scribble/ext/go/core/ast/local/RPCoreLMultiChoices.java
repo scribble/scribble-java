@@ -29,7 +29,7 @@ public class RPCoreLMultiChoices extends RPCoreLChoice
 	}
 
 	@Override
-	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant subj)
+	public RPCoreLType compactSingletonIvals(RPCoreAstFactory af, RPRoleVariant subj)
 	{
 		throw new RuntimeException("[rp-core] Shouldn't get in here: " + this);
 	}

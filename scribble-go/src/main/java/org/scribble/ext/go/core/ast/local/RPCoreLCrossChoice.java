@@ -28,7 +28,7 @@ public class RPCoreLCrossChoice extends RPCoreLChoice
 	}
 
 	@Override
-	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant vself)
+	public RPCoreLType compactSingletonIvals(RPCoreAstFactory af, RPRoleVariant vself)
 	{
 		// FIXME: factor out with RPCoreLForeach
 		int self = -1000;
@@ -44,7 +44,7 @@ public class RPCoreLCrossChoice extends RPCoreLChoice
 
 		RPIndexedRole mrole = this.role.minimise(self);
 		LinkedHashMap<Message, RPCoreLType> tmp = new LinkedHashMap<>();
-		this.cases.forEach((k, v) -> tmp.put(k, v.minimise(af, vself)));
+		this.cases.forEach((k, v) -> tmp.put(k, v.compactSingletonIvals(af, vself)));
 		return af.ParamCoreLCrossChoice(mrole, getKind(), tmp);
 	}
 	

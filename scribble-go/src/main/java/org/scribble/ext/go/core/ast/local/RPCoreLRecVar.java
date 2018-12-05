@@ -20,7 +20,7 @@ public class RPCoreLRecVar extends RPCoreRecVar<Local> implements RPCoreLType
 	}
 
 	@Override
-	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant subj)
+	public RPCoreLType compactSingletonIvals(RPCoreAstFactory af, RPRoleVariant subj)
 	{
 		return this;
 	}

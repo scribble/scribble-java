@@ -19,9 +19,9 @@ public class RPCoreLRec extends RPCoreRec<RPCoreLType, Local> implements RPCoreL
 	}
 
 	@Override
-	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant subj)
+	public RPCoreLType compactSingletonIvals(RPCoreAstFactory af, RPRoleVariant subj)
 	{
-		return af.ParamCoreLRec(this.recvar, this.body.minimise(af, subj));
+		return af.ParamCoreLRec(this.recvar, this.body.compactSingletonIvals(af, subj));
 	}
 	
 	@Override

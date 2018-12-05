@@ -281,50 +281,60 @@ public class RPCoreCommandLine extends CommandLine
 		this.gpd = (GProtocolDecl) main.getProtocolDecl(simpname);
 
 		RPCoreAstFactory af = new RPCoreAstFactory();
-		this.gt = new RPCoreGProtocolDeclTranslator(job, af).translate(this.gpd);
 
-		this.smt2t = Z3Wrapper.getSmt2Translator(job, this.gpd, gt);
+		this.gt = parse(job, af, simpname);
+
+		this.smt2t = Z3Wrapper.getSmt2Translator(job, this.gpd, this.gt);
 		
-		job.debugPrintln("\n[rp-core] Translated:\n  " + gt);
-		
-		if (!gt.isWellFormed(job, new Stack<>(), gpd, smt2t))
+		if (!checkWF(job))
 		{
-			throw new RPCoreException("[rp-core] Global type not well-formed:\n  " + gt);
+			throw new RPCoreException("[rp-core] Global type not well-formed:\n  " + this.gt);
 		}
 
 		//Map<Role, Set<Set<ParamRange>>> 
-		Map<Role, Set<RPRoleVariant>> 
-				variants = getVariants(job, gt, smt2t);
+		Map<Role, Set<RPRoleVariant>> variants = getVariants(job, gt, smt2t);
 		
 		job.debugPrintln("\n[rp-core] Computed roles: " + variants);
 
-		this.L0 = new HashMap<>();
-		for (Role r : gpd.header.roledecls.getRoles())  // getRoles gives decl names  // CHECKME: can ignore params?
+		boolean compactSingletonIvals = true;
+		this.L0 = project(job, af, variants, compactSingletonIvals);
+
+		this.E0 = generateFSMs(job);
+				
+		/*assrtCoreValidate(job, simpname, gpd.isExplicitModifier());//, this.E0);  // TODO
+
+		/*if (!job.fair)
 		{
-			//for (Set<ParamRange> ranges : protoRoles.get(r))
-			for (RPRoleVariant variant : variants.get(r))
+			Map<Role, EState> U0 = new HashMap<>();
+			for (Role r : E0.keySet())
 			{
-				//ParamCoreLType lt = gt.project(af, r, ranges);
-				RPCoreLType lt = gt.project(af, variant, this.smt2t);
-				
-				lt = lt.minimise(af, variant);
-				
-				//Map<Set<ParamRange>, ParamCoreLType> tmp = P0.get(r);
-				Map<RPRoleVariant, RPCoreLType> tmp = L0.get(r);
-				if (tmp == null)
-				{
-					tmp = new HashMap<>();
-					L0.put(r, tmp);
-				}
-				tmp.put(variant, lt);
+				EState u = E0.get(r).unfairTransform();
+				U0.put(r, u);
 
-				job.debugPrintln("\n[rp-core] Projected onto " + variant + ":\n  " + lt);
+				job.debugPrintln
+				//System.out.println
+						("\n[rp-core] Unfair transform for " + r + ":\n" + u.toDot());
 			}
-		}
+			
+			//validate(job, gpd.isExplicitModifier(), U0, true);  //TODO
+		}*/
+		
+		//((ParamJob) job).runF17ProjectionPasses();  // projections not built on demand; cf. models
 
+		//return gt;
+		
+		this.families = getFamilies(job, smt2t);
+		this.peers = getPeers(job, smt2t);
+		
+		compactFamilies(af);
+	}
+
+	private Map<Role, Map<RPRoleVariant, EGraph>> generateFSMs(GoJob job)
+	{
 		RPCoreEGraphBuilder builder = new RPCoreEGraphBuilder(job);
-		this.E0 = new HashMap<>();
-		for (Role r : (Iterable<Role>) L0.keySet().stream().sorted(  // For consistent state numbering
+		Map<Role, Map<RPRoleVariant, EGraph>> E0 = new HashMap<>();
+
+		for (Role r : (Iterable<Role>) this.L0.keySet().stream().sorted(  // For consistent state numbering
 					new Comparator<Role>() {
 						@Override
 						public int compare(Role o1, Role o2) {
@@ -348,11 +358,11 @@ public class RPCoreCommandLine extends CommandLine
 				
 				EGraph g = builder.build(this.L0.get(r).get(variant));
 				//Map<Set<ParamRange>, EGraph> tmp = this.E0.get(r);
-				Map<RPRoleVariant, EGraph> tmp = this.E0.get(r);
+				Map<RPRoleVariant, EGraph> tmp = E0.get(r);
 				if (tmp == null)
 				{
 					tmp = new HashMap<>();
-					this.E0.put(r, tmp);
+					E0.put(r, tmp);
 				}
 				tmp.put(variant, g);
 
@@ -381,38 +391,57 @@ public class RPCoreCommandLine extends CommandLine
 						.forEach(s -> job.debugPrintln("\n" + s.toDot()));
 			}
 		}
-				
-		/*assrtCoreValidate(job, simpname, gpd.isExplicitModifier());//, this.E0);  // TODO
+		
+		return E0;
+	}
 
-		/*if (!job.fair)
+	public Map<Role, Map<RPRoleVariant, RPCoreLType>> project(GoJob job, RPCoreAstFactory af, Map<Role, Set<RPRoleVariant>> variants, boolean compact) throws RPCoreSyntaxException
+	{
+		Map<Role, Map<RPRoleVariant, RPCoreLType>> L0 = new HashMap<>();
+		for (Role r : this.gpd.header.roledecls.getRoles())  // getRoles gives decl names  // CHECKME: can ignore params?
 		{
-			Map<Role, EState> U0 = new HashMap<>();
-			for (Role r : E0.keySet())
+			//for (Set<ParamRange> ranges : protoRoles.get(r))
+			for (RPRoleVariant variant : variants.get(r))
 			{
-				EState u = E0.get(r).unfairTransform();
-				U0.put(r, u);
+				//ParamCoreLType lt = gt.project(af, r, ranges);
+				RPCoreLType lt = this.gt.project(af, variant, this.smt2t);
+				
+				if (compact)
+				{
+					lt = lt.compactSingletonIvals(af, variant);
+				}
+				
+				//Map<Set<ParamRange>, ParamCoreLType> tmp = P0.get(r);
+				Map<RPRoleVariant, RPCoreLType> tmp = L0.get(r);
+				if (tmp == null)
+				{
+					tmp = new HashMap<>();
+					L0.put(r, tmp);
+				}
+				tmp.put(variant, lt);
 
-				job.debugPrintln
-				//System.out.println
-						("\n[rp-core] Unfair transform for " + r + ":\n" + u.toDot());
+				job.debugPrintln("\n[rp-core] Projected onto " + variant + ":\n  " + lt);
 			}
-			
-			//validate(job, gpd.isExplicitModifier(), U0, true);  //TODO
-		}*/
-		
-		//((ParamJob) job).runF17ProjectionPasses();  // projections not built on demand; cf. models
+		}
 
-		//return gt;
+		return L0;
+	}
+
+	private boolean checkWF(GoJob job) throws RPCoreException
+	{
+		return this.gt.isWellFormed(job, new Stack<>(), this.gpd, this.smt2t);
+	}
+
+	private RPCoreGType parse(GoJob job, RPCoreAstFactory af, GProtocolName simpname) throws RPCoreException, RPCoreSyntaxException
+	{
+		RPCoreGType gt = new RPCoreGProtocolDeclTranslator(job, af).translate(this.gpd);
 		
-		this.families = new HashSet<>();
-		this.families.addAll(getFamilies(job, smt2t));
-		this.peers = new HashMap<>();
-		this.peers.putAll(getPeers(job, smt2t));
+		job.debugPrintln("\n[rp-core] Translated:\n  " + gt);
 		
-		minimise();
+		return gt;
 	}
 	
-	private void minimise()
+	private void compactFamilies(RPCoreAstFactory af)
 	{
 		this.subsum = new HashMap<>();
 		this.aliases = new HashMap<>();
@@ -433,7 +462,6 @@ public class RPCoreCommandLine extends CommandLine
 									ee -> new HashSet<>(ee.getValue())
 								))
 					));*/
-		RPCoreAstFactory af = new RPCoreAstFactory();
 
 		//Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families = new HashSet<>();
 		Set<RPFamily> families = new HashSet<>();
@@ -461,7 +489,7 @@ public class RPCoreCommandLine extends CommandLine
 							RPCoreLType uL = this.L0.get(u.getName()).get(u);
 
 							//System.out.println("4444: " + v + " \n " + vL + " ,, " + vL.minimise(af, v) + " \n " + u + " ,, " + uL + " ,, " + uL.minimise(af, v) + "\n");
-							if (vL.minimise(af, v).equals(uL.minimise(af, v)))
+							if (vL.compactSingletonIvals(af, v).equals(uL.compactSingletonIvals(af, v)))
 							{
 								//System.out.println("5555: " + v + "  subsumed by  " + u);
 								
