@@ -65,10 +65,11 @@ public class RPCoreCommandLine extends CommandLine
 
 	// HACK: store in (Core) Job/JobContext?
 	private GProtocolDecl gpd;
-	private RPCoreGType gt;
 	private Smt2Translator smt2t;
-	private Map<Role, Map<RPRoleVariant, RPCoreLType>> L0;
-	private Map<Role, Map<RPRoleVariant, EGraph>> E0;
+
+	private RPCoreGType gt;  // RP-core global type translation
+	private Map<Role, Map<RPRoleVariant, RPCoreLType>> L0;  // Projections (with singleton ivals compacted)
+	private Map<Role, Map<RPRoleVariant, EGraph>> E0;  // RP-core EFSMs
 	//protected ParamCoreSModel model;
 
 	//private Set<Pair<Set<RPRoleVariant>, Set<RPRoleVariant>>> families;  // Factor out Family (cf. RPRoleVariant)
