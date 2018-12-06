@@ -19,10 +19,6 @@ import org.scribble.ext.go.core.type.RPFamily;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
 import org.scribble.ext.go.main.GoJob;
-import org.scribble.ext.go.type.index.RPBinIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexExpr;
-import org.scribble.ext.go.type.index.RPIndexInt;
-import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.main.ScribbleException;
@@ -41,14 +37,27 @@ import org.scribble.visit.util.MessageIdCollector;
 // Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTEndpointApiGenerator
 public class RPCoreDotApiGen
 {
-	public enum Mode { Int, IntPair }
+	public enum Mode
+	{
+		Int("int"),
+		IntPair("session2.Pair");
+		
+		public final String indexType;
+		
+		Mode(String indexType)
+		{
+			this.indexType = indexType;
+		}
+	}
+	
+	public final RPCoreDotApiNameGen namegen = new RPCoreDotApiNameGen(this);
 
-	public final Smt2Translator smt2t;
 	public final Mode mode;
+	public final Smt2Translator smt2t;
 	
 	public final GoJob job;
 	public final GProtocolName proto;  // Full name
-	public final String packpath;  
+	public final String packpath;  // e.g.,github.com/rhu1/scribble-go-runtime/test/foreach/foreach12 -- N.B. now no trailing /Foreach12 (module name)
 			// Prefix for absolute imports in generated APIs (e.g., "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied by Scribble module
 	public final List<Role> selfs;  
 	
@@ -65,7 +74,7 @@ public class RPCoreDotApiGen
 	public final Map<RPFamily, RPFamily> subsum;  // new-family-after-subsumptions -> original-family-before-subsumptions
 	public final Map<RPRoleVariant, Map<RPFamily, RPRoleVariant>> aliases;  // subsumed-variant -> original-family-subsumed-in -> subsuming-variant 
 	
-	private Map<RPRoleVariant, Map<Integer, String>> stateChanNames = new HashMap<>();
+	//private Map<RPRoleVariant, Map<Integer, String>> stateChanNames = new HashMap<>();  // In RPCoreDotSessionApiBuilder
 	
 	public RPCoreDotApiGen(Mode mode, Smt2Translator smt2t, GoJob job, GProtocolName fullname,
 			String packpath, List<Role> selfs, 
@@ -162,9 +171,10 @@ public class RPCoreDotApiGen
 		res.putAll(buildSessionApi());
 
 		// Build State Channel API
-		for (Role self : (Iterable<Role>) this.selfs.stream().sorted(Role.COMPARATOR)::iterator)
+		for (Role rname : (Iterable<Role>) this.selfs.stream().sorted(Role.COMPARATOR)::iterator)
 		{
-			for (Entry<RPRoleVariant, EGraph> e : this.variants.get(self).entrySet().stream()
+			// For each variant/EFSM, in order of FSM init state ID
+			for (Entry<RPRoleVariant, EGraph> e : this.variants.get(rname).entrySet().stream()
 						.sorted(new Comparator<Entry<RPRoleVariant, EGraph>>()
 				{
 					@Override
@@ -174,13 +184,14 @@ public class RPCoreDotApiGen
 					}
 				}).collect(Collectors.toList()))
 			{
-				RPRoleVariant variant = e.getKey();
+				RPRoleVariant self = e.getKey();
+				// Foreach family that self belongs to, in order of family ID
 				for (RPFamily family : (Iterable<RPFamily>) IntStream.range(INIT_FAMILY_ID, this.families.size()+INIT_FAMILY_ID)
 						.mapToObj(x -> this.families.entrySet().stream().filter(y -> y.getValue() == x).findAny().get().getKey())
-						.filter(x -> x.variants.contains(variant))::iterator)
+						.filter(x -> x.variants.contains(self))::iterator)
 								// CHECKME: reverse families map?
 				{
-					res.putAll(buildStateChannelApi(family, variant, e.getValue()));
+					res.putAll(buildStateChannelApi(family, self, e.getValue()));
 				}
 			}
 		}
@@ -205,95 +216,7 @@ public class RPCoreDotApiGen
 		throw new RuntimeException("TODO");
 	}
 	
-	//@Override
-	public String getApiRootPackageName()  // Derives only from simple proto name
-	{
-		return this.proto.getSimpleName().toString();
-	}
-
-	/*public String makeApiRootPackageDecl()
-	{
-		return "package " + getApiRootPackageName();
-	}*/
-
-	//public String getFamilyPackageName(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family)
-	public String getFamilyPackageName(RPFamily family)
-	{
-		return "family_" + this.families.get(family);
-	}
-
-	public static String getEndpointKindPackageName(RPRoleVariant variant)
-	{
-		return getGeneratedRoleVariantName(variant);
-	}
-	
-	// FIXME: doesn't need simpname
-	// Role variant = Endpoint kind -- e.g., S_1To1, W_1Ton
-	public static String getEndpointKindTypeName(GProtocolName simpname, RPRoleVariant variant)
-	{
-		//return simpname + "_" + getGeneratedActualRoleName(r);
-		return getGeneratedRoleVariantName(variant);
-	}
-	
-	public static String getGeneratedRoleVariantName(RPRoleVariant variant)
-	{
-		/*return actual.getName()
-				+ actual.ranges.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");*/
-		/*if (actual.ranges.size() > 1 || actual.coranges.size() > 0)
-		{
-			throw new RuntimeException("[param-core] TODO: " + actual);
-		}
-		ParamRange g = actual.ranges.iterator().next();
-		return actual.getName() + "_" + g.start + "To" + g.end;*/
-		return variant.getName() + "_"
-				+ variant.intervals.stream().map(g -> getGeneratedNameLabel(g.start) + "to" + getGeneratedNameLabel(g.end))
-				    .sorted().collect(Collectors.joining("and"))
-				+ (variant.cointervals.isEmpty()
-						? ""
-						: "_not_" + variant.cointervals.stream().map(g -> getGeneratedNameLabel(g.start) + "to" + getGeneratedNameLabel(g.end))
-						    .sorted().collect(Collectors.joining("and")));
-	}
-
-	// For type name generation -- not code exprs, cf. RPCoreSTStateChanApiBuilder#generateIndexExpr
-	public static String getGeneratedNameLabel(RPIndexExpr e)
-	{
-		if (e instanceof RPIndexInt)
-		{
-			return e.toGoString();
-		}
-		else if (e instanceof RPIndexVar)
-		{
-			return e.toGoString();
-		}
-		else if (e instanceof RPIndexIntPair)
-		{
-			//return e.toGoString();  // No: that gives the "value" expression
-			RPIndexIntPair p = (RPIndexIntPair) e;
-			int l = ((RPIndexInt) p.left).val;
-			int r = ((RPIndexInt) p.right).val;
-			String ll = (l < 0) ? "neg" + (-1*l) : Integer.toString(l);
-			String rr = (r < 0) ? "neg" + (-1*r) : Integer.toString(r);
-			return "l" + ll + "r" + rr;
-		}
-		else if (e instanceof RPBinIndexExpr)
-		{
-			RPBinIndexExpr b = (RPBinIndexExpr) e;
-			String op;
-			switch (b.op)
-			{
-				case Add:  op = "plus"; break;
-				case Subt: op = "sub";  break;
-				case Mult: op = "mul";  //break;
-				default: throw new RuntimeException("TODO: " + b.op);
-			}
-			return getGeneratedNameLabel(b.left) + op + getGeneratedNameLabel(b.right);  // FIXME: pre/postfix more consistent?
-		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get here: " + e);
-		} 
-	}
-	
+	/*
 	public boolean isCommonEndpointKind(RPRoleVariant variant)
 	{
 		// For factoring out "common" endpoint kinds from families -- FIXME: do earlier with/after family computation?
@@ -307,10 +230,10 @@ public class RPCoreDotApiGen
 		/*boolean isCommonEndpointKind = this.families.keySet().stream().filter(p -> p.left.contains(variant))
 						// Would also be reasonable to require variant to be in every family -- but not necessary since a distributed projection is only for the families that the variant is involved in
 				.allMatch(p -> p.left.containsAll(this.peers.get(variant)));
-		return isCommonEndpointKind;*/
+		return isCommonEndpointKind;* /
 		return this.families.size() == 1;  // Now essentially disabled, to make "variant equivalence" easier
 		
-		/*// "Syntactically" determining common endpoint kinds difficult because concrete peers depends on param (and foreachvar) values, e.g., M in PGet w.r.t. #F
+		/* // "Syntactically" determining common endpoint kinds difficult because concrete peers depends on param (and foreachvar) values, e.g., M in PGet w.r.t. #F
 		// Also, family factoring is more about dial/accept
 		isCommonEndpointKind = true;
 		Set<Role> peers = null;
@@ -332,8 +255,8 @@ public class RPCoreDotApiGen
 				}
 			}
 		}
-		//*/
-	}
+		//* /
+	}*/
 	
 	
 	
