@@ -216,6 +216,27 @@ public class RPCoreDotApiGen
 		throw new RuntimeException("TODO");
 	}
 	
+	public String makeLinearResourceInstance()
+	{
+		// Same as new(...)
+		return "&" + RPCoreDotApiGenConstants.RUNTIME_LINEARRESOURCE_TYPE + "{}";
+	}
+
+	// FIXME: refactor, e.g., take state ID, factor out "End"
+	public String makeStateChanInstance(String schanName, String epName, String threadId)  // CHECKME: epName is always "ep"?
+	{
+		return ("&" + schanName + "{ nil, "
+				+ (this.job.parForeach ? makeLinearResourceInstance() + ", " : (schanName.equals("Init") ? "1, " : "0, "))
+						// FIXME: factor out constants
+				)
+				+ epName + (this.job.parForeach ? ", " + threadId : "") + " }";
+	}
+	
+	public String getEndpointKindStateChanField(String schanName)
+	{
+		return "_" + schanName;
+	}
+	
 	/*
 	public boolean isCommonEndpointKind(RPRoleVariant variant)
 	{

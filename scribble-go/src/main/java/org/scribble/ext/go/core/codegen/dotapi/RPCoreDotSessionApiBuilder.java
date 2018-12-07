@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ext.go.core.codegen.dotapi.RPCoreDotApiGen.Mode;
@@ -30,6 +31,7 @@ import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
@@ -42,10 +44,11 @@ public class RPCoreDotSessionApiBuilder
 {
 	private final RPCoreDotApiGen apigen;
 
+	// FIXME: refactor into RPCoreDotApiGen
 	protected final Map<RPRoleVariant, Set<RPCoreEState>> reachable;
 	protected final Map<RPRoleVariant, Map<Integer, String>> stateChanNames;  // State2
 
-	private static final Comparator<RPCoreEState> ESTATE_COMP = new Comparator<RPCoreEState>()
+	private static final Comparator<RPCoreEState> RPCOREESTATE_COMP = new Comparator<RPCoreEState>()
 			{
 				@Override
 				public int compare(RPCoreEState o1, RPCoreEState o2)
@@ -177,7 +180,7 @@ public class RPCoreDotSessionApiBuilder
 				for (RPFamily family : (Iterable<RPFamily>) families.stream().sorted(RPFamily.COMPARATOR)::iterator)  
 						// FIXME: use family to make accept/dial
 				{	
-					RPRoleVariant subbdbyus = getSubbdByUs(variant, family);
+					RPRoleVariant subbdbyus = getSubbedBy(variant, family);
 					String fctryFn = makeEndpointKindFactoryFn(protoTypeName, variant, family, subbdbyus, isCommonEndpointKind);
 					
 					LinkedHashMap<RPFamily, String> tmp = epKindFctryFns.get(variant);
@@ -264,7 +267,7 @@ public class RPCoreDotSessionApiBuilder
 				+ "type " + protoTypeName + " struct {\n"
 				+ "}\n"
 				
-				// session.Protocol interface
+				// Implement session.Protocol interface
 				+ "\n" 
 				+ "func (*" + protoTypeName +") IsProtocol() {\n"
 				+ "}\n"
@@ -286,7 +289,7 @@ public class RPCoreDotSessionApiBuilder
 		String importAlias = famPackName + epkindPackName;  // Cf. getProtocolApiImports
 		String cnstrFnName =  "New_" + importAlias;
 		String epkindTypeName = this.apigen.namegen.getEndpointKindTypeName(variant);
-		List<RPIndexVar> ivars = getParameters(variant);
+		List<RPIndexVar> ivars = getSortedParams(variant);
 
 		// Endpoint Kind factory function -- makes index/foreach var value maps
 		String sig = "func (p *" + protoTypeName + ") " + cnstrFnName
@@ -304,7 +307,7 @@ public class RPCoreDotSessionApiBuilder
 				+ makeSelfIvalsCheck(variant, ivars, subbdbyus)
 				+ makeSelfCoivalsCheck(variant, ivars, subbdbyus)
 				
-				// Call Endpoint Kind constructor with params, cf. makeEndpointKindConstructor
+				// Call Endpoint Kind constructor, cf. makeEndpointKindConstructor
 				+ "return " + importAlias + ".New" + "(p"
 						+ ivars.stream().filter(x -> !(x instanceof RPIndexSelf)).map(x -> ", " + x).collect(Collectors.joining(""))
 						+ ", " + RPIndexSelf.SELF.name + ")\n";
@@ -485,48 +488,21 @@ public class RPCoreDotSessionApiBuilder
 				for (RPFamily family : (Iterable<RPFamily>) this.apigen.families.keySet().stream()
 								.filter(f -> f.variants.contains(variant)).sorted(RPFamily.COMPARATOR)::iterator)  
 				{	
-					List<RPIndexVar> ivars = getParameters(variant);
-					RPRoleVariant subbdbyus = getSubbdByUs(variant, family);
+					List<RPIndexVar> ivars = getSortedParams(variant);
+					RPFamily orig = this.apigen.subsum.containsKey(family) ? this.apigen.subsum.get(family) : family;
+					RPRoleVariant subbdbyus = getSubbedBy(variant, family);
 					String epkindTypeName = this.apigen.namegen.getEndpointKindTypeName( variant);
 							
 					String epkindType;
+					String epkindConstr;
 
 					// Endpoint Kind type
 					epkindType = makeEndpointKindType(variant, ivars, epkindTypeName);
-
-					// Endpoint Kind type constructor -- makes connection maps
-
-							// Dial/Accept methdos -- FIXME: internalise peers
-							/*+ "\n"
-							+ "func (ini *" + epkindTypeName + ") Accept(rolename string, id int, acc transport.Transport) error {\n"
-							+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
-									+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[rolename][id] = acc.Accept()\n"
-							+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
-							+ "}\n"
-							+ "\n"
-							+ "func (ini *" + epkindTypeName + ") Dial(rolename string, id int, req transport.Transport) error {\n"
-							+ "ini." + RPCoreSTApiGenConstants.GO_ENDPOINT_ENDPOINT + "."
-									+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP + "[rolename][id] = req.Connect()\n"
-							+ "return nil\n"  // FIXME: runtime currently does log.Fatal on error
-							+ "}\n";*/
-
-					//Map<RPRoleVariant, EGraph> map = this.apigen.variants.get(rname);
-
-					/*for (RPRoleVariant v : (Iterable<RPRoleVariant>)
-							this.apigen.variants.values().stream()
-									.flatMap(m -> m.keySet().stream())::iterator)*/
-							
-					/*for (RPRoleVariant v : this.apigen.peers.get(variant))
-					{
-						if (//!v.equals(variant) &&  // No: e.g., pipe/ring middlemen
-								family.left.contains(v))  // FIXME: endpoint families -- and id value checks
-										// FIXME: should record peers according to families and lookup directly -- wouldn't need to re-check family inclusion here
-						{*/
-					
-					Set<RPRoleVariant> peers = this.apigen.peers.get(variant).get(orig);
+					epkindConstr = makeEndpointKindConstructor(variant, ivars, epkindTypeName);
 					
 					epkindFile = makeDialsAccepts(indexType, variant, family, orig, ivars, epkindTypeName, epkindFile, peers);
 
+					// FIXME: refactor into makeDialsAccepts
 					if (subbdbyus != null)
 					{
 						Set<RPRoleVariant> peers2 = this.apigen.peers.get(subbdbyus).get(orig);
@@ -534,82 +510,20 @@ public class RPCoreDotSessionApiBuilder
 						epkindFile = makeDialsAccepts(indexType, variant, family, orig, ivars, epkindTypeName, epkindFile, peers2);
 					}
 
-					/*if (subbdbyus != null)
-					{
-						// FIXME: factor out with above
-						RPRoleVariant pp = subbdbyus;
-						// Accept/Dial methods
-						String r = pp.getLastElement();
-						String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(pp);
-						epkindFile += "\n"
-								+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id " + indexType
-										+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
-										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
-								+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
-								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
-								+ "c, err := ss.Accept()\n"
-								+ "if err != nil {\n"
-								+ "return err\n"
-								+ "}\n"
-								+ "\n"
-								+ "sfmt.Wrap(c)\n"
-								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
-								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-										+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"
-								+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
-								+ "}\n"
-								+ "\n"
-								+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id " + indexType
-										+ ", host string, port int"
-										+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
-										+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
-								+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
-								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
-								+ "c, err := dialler(host, port)\n"
-								+ "if err != nil {\n"
-								+ "return err\n"
-								+ "}\n"
-								+ "\n"
-								+ "sfmt.Wrap(c)\n"
-								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-										+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
-								+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-										+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
-								+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
-								+ "}\n";
-					}*/
-					
-					
 							
 					// Top-level Run method  // FIXME: add session completion check
 					/*EGraph g = this.apigen.variants.get(variant.getName()).get(variant);
 					//String endName = g.init.isTerminal() ? "Init" : "End";  // FIXME: factor out -- cf. RPCoreSTStateChanApiBuilder#makeSTStateName(
-					EState term = MState.getTerminal(g.init);
-					String endName = (g.init.id == term.id ? "Init" : "End") + ((term != null && ((RPCoreEState) term).hasNested()) ? "_" + term.id : "");*/
+					*/
 					String endName = "End";
 					String init = //"Init_" + this.apigen.variants.get(variant.getName()).get(variant).init;
 							"Init";
 					epkindFile += "\n"
 							+ "func (ini *" + epkindTypeName + ") Run(f func(*" + init + ") " + endName + ") " + endName + " {\n"  // f specifies non-pointer End
-							/*+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".Close()\n"
-							+ "ini.Use()\n"  // FIXME: int-counter linearity
-							+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"*/
 							+ "defer ini.Close()\n"
-							//+ "ini.Init()\n"
 							
 							// FIXME: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
 							// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
-							/*+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
-									? "return f(newBranch" + init + "(ini))\n"
-									: //"end := f(&" + init + "{ nil, new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), ini })\n")  
-												// cf. state chan builder  // FIXME: chan struct reuse
-										//"ini._" + init + ".id = 1\n" +
-												"return f(ini._" + init + ")\n")*/
 							+ "end := f(ini.Init())\n"
 							+ "if end." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " != nil {\n"
 							+ "panic(end." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + ")\n"
@@ -649,6 +563,131 @@ public class RPCoreDotSessionApiBuilder
 		return res;
 	}
 
+	private String makeDialsAccepts(RPRoleVariant variant, RPFamily family,
+			List<RPIndexVar> ivars, String epkindTypeName)
+	{
+		 String epkindFile;
+
+		RPFamily orig = this.apigen.subsum.containsKey(family) ? this.apigen.subsum.get(family) : family;
+		Set<RPRoleVariant> origPeers = this.apigen.peers.get(variant).get(orig);
+
+		for (RPRoleVariant origPeer : origPeers)
+		{
+			RPRoleVariant peer = origPeer;
+			
+			// TODO: factor out with above
+			RPRoleVariant subbdbypeer = null;
+			for (RPRoleVariant subbd : this.apigen.aliases.keySet())
+			{
+				Map<RPFamily, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
+				if (ais.containsKey(orig) && ais.get(orig).equals(variant))
+				{
+					subbdbypeer = subbd;  // We can connect to peer or who they subbd
+					break;
+				}
+			}
+			
+			if (this.apigen.aliases.containsKey(origPeer))
+			{
+				Map<RPFamily, RPRoleVariant> ali = this.apigen.aliases.get(origPeer);
+				if (ali.containsKey(orig))
+				{
+					peer = ali.get(orig);  // Replace subsumed-peer by subsuming-peer
+					if (origPeers.contains(peer))  // ...but skip if we're already peers with subsuming-peer
+					{
+						continue;
+					}
+				}
+			}
+			
+			// Accept/Dial methods
+			String r = peer.getLastElement();
+			String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(peer);
+			String accept = makeAccept(indexType, ivars, epkindTypeName, origPeer, subbdbypeer, r, vname);
+			String dial = makeDial(indexType, ivars, epkindTypeName, origPeer, subbdbypeer, r, vname);
+
+			epkindFile += accept + "\n" + dial;
+			//}
+		}
+		return epkindFile;
+	}
+
+	public String makeDial(String indexType, List<RPIndexVar> ivars, String epkindTypeName, RPRoleVariant v,
+			RPRoleVariant subbdbypeer, String r, String vname)
+	{
+		String dial = "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id " + indexType
+					+ ", host string, port int"
+					+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
+					+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+
+			+ makePeerIdCheck1(v, ivars, subbdbypeer)		
+			+ makePeerIdCheck2(v, ivars, subbdbypeer)		
+
+			+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
+			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
+			+ "c, err := dialler(host, port)\n"
+			+ "if err != nil {\n"
+			+ "return err\n"
+			+ "}\n"
+			+ "\n"
+			+ "sfmt.Wrap(c)\n"
+			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
+			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+					+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
+			+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
+			+ "}\n";
+		return dial;
+	}
+
+	public String makeAccept(String indexType, List<RPIndexVar> ivars, String epkindTypeName, RPRoleVariant v,
+			RPRoleVariant subbdbypeer, String r, String vname)
+	{
+		String dial = "\n"
+				+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id " + indexType
+						+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
+						+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+						
+				+ makePeerIdCheck1(v, ivars, subbdbypeer)		
+				+ makePeerIdCheck2(v, ivars, subbdbypeer)		
+						
+				+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+						+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
+				+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+						+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
+				+ "c, err := ss.Accept()\n"
+				+ "if err != nil {\n"
+				+ "return err\n"
+				+ "}\n"
+				+ "\n"
+				+ "sfmt.Wrap(c)\n"
+				+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+						+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
+				+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+						+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"
+				+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
+				+ "}\n";
+		return dial;
+	}
+
+	// Sorted by state ID
+	// TODO CHECKME: case objects?
+	private List<String> getSortedStateChanTypeNames(RPRoleVariant variant)
+	{
+		return this.reachable.get(variant).stream().sorted(RPCOREESTATE_COMP)
+				.flatMap(s ->
+					{
+						String n = this.stateChanNames.get(variant).get(s.id);
+						return (s.hasNested() && !s.isTerminal())
+							? Stream.of(n, n + "_")  // FIXME: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
+							: Stream.of(n);
+					})
+				.distinct()
+				.collect(Collectors.toList());
+	}
+
 	private String makeEndpointKindType(RPRoleVariant variant, List<RPIndexVar> ivars, String epkindTypeName)
 	{
 		String protoField;
@@ -657,7 +696,7 @@ public class RPCoreDotSessionApiBuilder
 		String sChanLinCounter;  // For the state channels
 		String mpChanField;
 		String paramFields;
-		String paramsMap;  // CHECKME: foreach vars only?
+		String paramsMap;  // CHECKME: foreach vars only?  // CHECKME: foreach var shadowing
 		String stateChans;
 		
 		protoField = RPCoreDotApiGenConstants.ENDPOINT_PROTO_FIELD + " " + RPCoreDotApiGenConstants.ENDPOINT_PROTOCOL_TYPE + "\n";
@@ -667,23 +706,12 @@ public class RPCoreDotSessionApiBuilder
 		mpChanField = RPCoreDotApiGenConstants.ENDPOINT_MPCHAN_FIELD + " *" + RPCoreDotApiGenConstants.ENDPOINT_MPCHAN_TYPE + "\n";
 		paramFields = ivars.stream().map(x -> x + " " + this.apigen.mode.indexType + "\n").collect(Collectors.joining(""));
 
-		// CHECKME: currently used to record foreach params (and provide access to user)
+		// CHECKME: currently used to record foreach params only (and provide access to user)
 		paramsMap = " " + (this.apigen.job.parForeach ? "map[int]map[string]" : "map[string]") + this.apigen.mode.indexType + "\n";
 				
-		// CHECKME TODO: case objects?
-		stateChans = this.reachable.get(variant).stream().sorted(ESTATE_COMP)
-				.flatMap(s ->
-					{
-						String n = this.stateChanNames.get(variant).get(s.id);
-						return (s.hasNested() && !s.isTerminal())
-							? Stream.of(n, n + "_")  // FIXME: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
-							: Stream.of(n);
-					})
-				.distinct()
-				.map(n ->
-				{
-					return "_" + n + " *" + n + "\n";
-				}).collect(Collectors.joining());
+		// TODO CHECKME: case objects?
+		stateChans = getSortedStateChanTypeNames(variant).stream()
+				.map(n -> this.apigen.getEndpointKindStateChanField(n) + " *" + n + "\n").collect(Collectors.joining());
 
 		String epkindType = "type " + epkindTypeName + " struct {\n"
 				+ protoField
@@ -694,101 +722,76 @@ public class RPCoreDotSessionApiBuilder
 				+ paramFields
 				+ paramsMap
 				+ stateChans;
+
 		if (this.apigen.job.parForeach)
 		{
-			epkindType += "Thread int\n";  // CHECKME: deprecate -- recorded in state chan instead
+			epkindType += RPCoreDotApiGenConstants.ENDPOINT_THREAD_FIELD + " int\n";  // CHECKME: deprecate -- recorded in state chan instead
 		}
+
 		epkindType += "}\n";
 		return epkindType;
 	}
 
+	public static final int LIN_COUNTER_START = 1;
+	
 	public String makeEndpointKindConstructor(RPRoleVariant variant, List<RPIndexVar> ivars, String epkindTypeName)
 	{
-		String epkindFile = "\n";
+		String sig;
+		String instance;
+		String sChans;
 
-		epkindFile = "func New(p " + RPCoreSTApiGenConstants.GO_PROTOCOL_TYPE + ", "
-									+ ivars.stream().filter(x -> !x.name.equals("self")).map(x -> x + " " + this.apigen.mode.indexType + ", ").collect(Collectors.joining(""))  // CHECKME: can check for RPIndexSelf instead?
-									+ "self " + indexType + ") *" + epkindTypeName + " {\n"
-							+ "ep := &" + epkindTypeName + "{\n"
-									+ "p,\n"
-									+ "self,\n"
+		sig = "func New("
 
-									+ "&" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "{},\n"  // For Endpoint itself
-									+ "1,\n"
+				// Params
+				+ "p " + RPCoreDotApiGenConstants.ENDPOINT_PROTOCOL_TYPE + ", "
+				+ ivars.stream().filter(x -> !(x instanceof RPIndexSelf))
+						.map(x -> x + " " + this.apigen.mode.indexType + ", ").collect(Collectors.joining(""))  
+				+ "self " + this.apigen.mode.indexType + ") "
 
-									+ RPCoreSTApiGenConstants.GO_MPCHAN_CONSTRUCTOR + "(self, "//conns)" //"params
-											+ "[]string{" + roles.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "}),\n"
-									+ ivars.stream().map(x ->  x + ",\n").collect(Collectors.joining(""));
+				// Return 
+				+ "*" + epkindTypeName;
 
-					if (this.apigen.job.parForeach)
-					{
-						epkindFile += "make(map[int]map[string]" + indexType + "),\n";
-					}
-					else
-					{
-						epkindFile += "make(map[string]" + indexType + "),\n";  // Trailing comma needed
-					}
+		instance = "ep := &" + epkindTypeName + "{\n"
 
-					epkindFile +=
-									//+ this.apigen.stateChanNames.get(variant).values().stream().distinct().map(k -> "nil,\n").collect(Collectors.joining())
-									  // FIXME: factor out with above
-									 this.reachable.get(variant).stream().sorted(ESTATE_COMP)
-											.flatMap(s -> 
-													{
-														String n = this.stateChanNames.get(variant).get(s.id);
-														return s.hasNested()
-															? Stream.of(n, s.isTerminal() ? "End" : n + "_")  // FIXME: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
-															: Stream.of(n);
-													})
-											.distinct()
-											.map(k -> "nil,\n").collect(Collectors.joining());
+				// Args -- cf. makeEndpointKindType
+				+ "p,\n"  // protoField
+				+ "self,\n"  // selfField
+				+ this.apigen.makeLinearResourceInstance() + ",\n"  // epLinObject -- for the Endpoint itself
+				+ LIN_COUNTER_START + ",\n"  // sChanLinCounter
+				+ RPCoreDotApiGenConstants.RUNTIME_MPCHAN_CONSTRUCTOR + "(self, "  // mpChanField
+						+ "[]string{" + this.apigen.selfs.stream().map(x -> "\"" + x + "\"").collect(Collectors.joining(", ")) + "}),\n"
+				+ ivars.stream().map(x ->  x + ",\n").collect(Collectors.joining(""))  // paramFields
+				+ "make(" + (this.apigen.job.parForeach ? "map[int]map[string]" : "map[string]")  // paramsMap
+						+ this.apigen.mode.indexType + "),\n"  // Trailing comma needed
+				+ getSortedStateChanTypeNames(variant).stream().map(x -> "nil,\n");  // stateChans
 					
-					if (this.apigen.job.parForeach)
-					{
-						epkindFile += "1,\n";
-					}
-									
-					epkindFile += "}\n"
+		if (this.apigen.job.parForeach)
+		{
+			instance += "1,\n";
+		}
+							
+		instance += "}\n";
 
-									  // FIXME: factor out with above
-									+ this.reachable.get(variant).stream().sorted(ESTATE_COMP)
-											.flatMap(s -> 
-													{
-														String n = this.stateChanNames.get(variant).get(s.id);
-														return s.hasNested()
-															? Stream.of(n, s.isTerminal() ? "End" : n + "_")  // FIXME: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
-															: Stream.of(n);
-													})
-											.distinct()  // CHECKME: for End's?
-											.map(n ->
-													{
-														// FIXME TODO: case objects?
-														return "ep._" + n + " = " + makeStateChanInstance(this.apigen, n, "ep", "1");
-																// cf. state chan builder  // CHECKME: reusing pre-created chan structs OK for Err handling?
-													}
-												)
-												/*.map(s -> 
-												{
-													String n = this.stateChanNames.get(variant).get(s.id);
-													String tmp = makeStateChanInstance(this.apigen, n);
-													if (s.hasNested())
-													{
-														tmp = tmp + (s.isTerminal() 
-																? makeStateChanInstance(this.apigen, n + "_")
-																: makeStateChanInstance(this.apigen, "End"));
-													}
-													return tmp;
-												})*/
-												.collect(Collectors.joining());
+		// TODO CHECKME: case objects?
+		sChans = getSortedStateChanTypeNames(variant).stream()
+				.map(n -> "ep." + this.apigen.getEndpointKindStateChanField(n) + " = "
+							+ this.apigen.makeStateChanInstance(n, "ep", "1") + "\n")
+				.collect(Collectors.joining());
+						// CHECKME: reusing pre-created chan structs OK for Err handling?
 										
-							if (this.apigen.job.parForeach)
-							{
-								epkindFile += "ep.Params[ep.Thread] = make(map[string]" + indexType + ")\n";
-							}
-
-							epkindFile += "return ep\n";
-
-							epkindFile += "}\n";
+		String epkindConstr = 
+				  sig + " {\n"
+				+ instance
+				+ sChans;
+		if (this.apigen.job.parForeach)
+		{
+			epkindConstr += "ep." + RPCoreDotApiGenConstants.ENDPOINT_FVARS_FIELD
+					+ "[ep." + RPCoreDotApiGenConstants.ENDPOINT_THREAD_FIELD + "] = make(map[string]"
+					+ this.apigen.mode.indexType + ")\n";
+		}
+		epkindConstr += "return ep\n"
+				+ "}\n";
+		return epkindConstr;
 	}
 
 	public String getEndpointKindImports()
@@ -880,143 +883,33 @@ public class RPCoreDotSessionApiBuilder
 		+ ")\n";
 	}
 
-	/*public static String makeStateChanInstance(RPCoreSTApiGenerator apigen, EState s)
+	private List<RPIndexVar> getSortedParams(RPRoleVariant variant)
 	{
-		return makeStateChanInstance(apigen, this.stateChanNames.get(variant).get(s.id));
-	}*/
-
-	public static String makeStateChanInstance(RPCoreSTApiGenerator apigen, String n, String ep, String id)
-	{
-		return ((n.equals("End"))  // Terminal foreach will be suffixed (and need linear check) // FIXME: factor out properly
-				? "&End{ nil, 0, "  // Now same as below?
-				: "&" + n + "{ nil, "
-						+ (apigen.job.parForeach
-							? " new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "),"
-							: (n.equals("Init") ? " 1," : " 0,"))
-						)
-		
-				+ ep + (apigen.job.parForeach ? ", " + id : "") + " }\n";
+		Stream<RPIndexVar> ivars = this.apigen.projections.get(variant.getName()).get(variant)
+				.getIndexVars().stream();  // N.B., params only from action subjects (not self)
+		ivars = Stream.concat(ivars, variant.getIndexVars().stream());  // Do variant params subsume projection params? -- nope: often projections [self] and variant [K]
+		return ivars.distinct().sorted(RPIndexVar.COMPARATOR).collect(Collectors.toList());
 	}
 
-	private String makeDialsAccepts(String indexType, RPRoleVariant variant,
-			RPFamily family, RPFamily orig,
-			List<RPIndexVar> ivars, String epkindTypeName, String epkindFile, Set<RPRoleVariant> peers)
-	{
-		for (RPRoleVariant v : peers)
-		{
-			RPRoleVariant pp = v;
-			
-			// TODO: factor out with above
-			RPFamily peerorig = (this.apigen.subsum.containsKey(family)) ? this.apigen.subsum.get(family) : family;
-			RPRoleVariant subbdbypeer = null;
-			for (RPRoleVariant subbd : this.apigen.aliases.keySet())
-			{
-				Map<RPFamily, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
-				if (ais.containsKey(peerorig) && ais.get(peerorig).equals(variant))
-				{
-					subbdbypeer = subbd;  // We can connect to peer or who they subbd
-					break;
-				}
-			}
-			
-			if (this.apigen.aliases.containsKey(v))
-			{
-				Map<RPFamily, RPRoleVariant> ali = this.apigen.aliases.get(v);
-				if (ali.containsKey(orig))
-				{
-					pp = ali.get(orig);  // Replace subsumed-peer by subsuming-peer
-					if (peers.contains(pp))  // ...but skip if we're already peers with subsuming-peer
-					{
-						continue;
-					}
-				}
-			}
-			
-			// Accept/Dial methods
-			String r = pp.getLastElement();
-			String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(pp);
-			epkindFile += "\n"
-					+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id " + indexType
-							+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
-							+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
-							
-					+ makePeerIdCheck1(v, ivars, subbdbypeer)		
-					+ makePeerIdCheck2(v, ivars, subbdbypeer)		
-							
-					+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
-					+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
-					+ "c, err := ss.Accept()\n"
-					+ "if err != nil {\n"
-					+ "return err\n"
-					+ "}\n"
-					+ "\n"
-					+ "sfmt.Wrap(c)\n"
-					+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
-					+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"
-					+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
-					+ "}\n"
-					+ "\n"
-					+ "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id " + indexType
-							+ ", host string, port int"
-							+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
-							+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
-
-					+ makePeerIdCheck1(v, ivars, subbdbypeer)		
-					+ makePeerIdCheck2(v, ivars, subbdbypeer)		
-
-					+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
-					+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
-					+ "c, err := dialler(host, port)\n"
-					+ "if err != nil {\n"
-					+ "return err\n"
-					+ "}\n"
-					+ "\n"
-					+ "sfmt.Wrap(c)\n"
-					+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
-					+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
-					+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
-					+ "}\n";
-			//}
-		}
-		return epkindFile;
-	}
-
-	private List<RPIndexVar> getParameters(RPRoleVariant variant)
-	{
-		List<RPIndexVar> ivars = this.apigen.projections.get(variant.getName()).get(variant)
-				.getIndexVars().stream().collect(Collectors.toList());  // N.B., params only from action subjects (not self)
-		ivars.addAll(variant.getIndexVars().stream().filter(x -> !ivars.contains(x))
-				.collect(Collectors.toList()));  // Do variant params subsume projection params? -- nope: often projections [self] and variant [K]
-		return ivars.stream().sorted(RPIndexVar.COMPARATOR).collect(Collectors.toList());
-	}
-
-	public RPRoleVariant getSubbdByUs(RPRoleVariant variant, RPFamily family)
+	public RPRoleVariant getSubbedBy(RPRoleVariant subber, RPFamily family)
 	{
 		RPFamily orig = this.apigen.subsum.containsKey(family) ? this.apigen.subsum.get(family) : family;
-		RPRoleVariant subbdbyus = null;
-		for (RPRoleVariant subbd : this.apigen.aliases.keySet())
+		RPRoleVariant subbed = null;
+		for (RPRoleVariant v : this.apigen.aliases.keySet())
 		{
-			Map<RPFamily, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
-			if (ais.containsKey(orig) && ais.get(orig).equals(variant))
+			Map<RPFamily, RPRoleVariant> subbers = this.apigen.aliases.get(v);
+			if (subbers.containsKey(orig) && subbers.get(orig).equals(subber))
 			{
-				if (subbdbyus != null)
+				if (subbed != null)
 				{
-					throw new RuntimeException("[rp-core] [-dotapi] TODO: " + variant + " is subsuming multiple variants ("
-							+ subbdbyus + ", " + subbd + ") in one family (" + orig + ")");
+					throw new RuntimeException("[rp-core] [-dotapi] TODO: " + subber + " is subsuming multiple variants ("
+							+ subbed + ", " + v + ") in one family (" + orig + ")");
 							// CHECKME: just generalise subbdbyus to a Collection?
 				}
-				subbdbyus = subbd;  // We subsumed "subbd", so we need to inherit all their peers
+				subbed = v;  // We subsumed "subbed", so we need to inherit all their peers for dial/accepts
 			}
 		}
-		return subbdbyus;
+		return subbed;
 	}
 	
 	// Returns path to use as offset to -d
