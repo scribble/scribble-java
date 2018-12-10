@@ -63,11 +63,14 @@ public class RPCoreDotApiGen
 	
 	public final Map<Role, Map<RPRoleVariant, RPCoreLType>> projections;
 	public final Map<Role, Map<RPRoleVariant, EGraph>> variants;
+			// All the original variants
 
 	public static final int INIT_FAMILY_ID = 1;
 	public final Map<RPFamily, Integer> families;  // int is arbitrary familiy id  // CHECKME: reverse the map?
+			// "Compacted" families
 
 	public final Map<RPRoleVariant, Map<RPFamily, Set<RPRoleVariant>>> peers;  
+			// "Original" families -- see RPCoreCommandLine
 			// For dial/accept
 			// Also for "common" endpoint kind factoring (currently disabled)
 	

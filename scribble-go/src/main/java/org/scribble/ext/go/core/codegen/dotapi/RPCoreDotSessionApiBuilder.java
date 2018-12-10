@@ -166,30 +166,31 @@ public class RPCoreDotSessionApiBuilder
 
 		// Populate epKindConstrFns
 		for (Role rname : (Iterable<Role>) this.apigen.selfs.stream().sorted(Role.COMPARATOR)::iterator)
+				// Only do the variants of the specified role names
 		{
-			for (RPRoleVariant variant : (Iterable<RPRoleVariant>) 
+			for (RPRoleVariant originalVariant : (Iterable<RPRoleVariant>) 
 					this.apigen.variants.get(rname).keySet().stream().sorted(RPRoleVariant.COMPARATOR)::iterator)
 			{
 				boolean isCommonEndpointKind = false;//this.apigen.isCommonEndpointKind(variant);
 				
 				// HACK: setting family to null for common endpoint kind
-				Set<RPFamily> families = /*isCommonEndpointKind
+				Set<RPFamily> compactedFamilies = /*isCommonEndpointKind
 						? Stream.of((RPFamily) null).collect(Collectors.toSet())  // FIXME HACK: when isCommonEndpointKind, just loop once (to make one New)
-						:*/ this.apigen.families.keySet().stream().filter(f -> f.variants.contains(variant)).collect(Collectors.toSet());
+						:*/ this.apigen.families.keySet().stream().filter(f -> f.variants.contains(originalVariant)).collect(Collectors.toSet());
 
-				for (RPFamily family : (Iterable<RPFamily>) families.stream().sorted(RPFamily.COMPARATOR)::iterator)  
+				for (RPFamily compactedFamily : (Iterable<RPFamily>) compactedFamilies.stream().sorted(RPFamily.COMPARATOR)::iterator)  
 						// FIXME: use family to make accept/dial
 				{	
-					RPRoleVariant subbdbyus = getSubbedBy(variant, family);
-					String fctryFn = makeEndpointKindFactoryFn(protoTypeName, variant, family, subbdbyus, isCommonEndpointKind);
+					RPRoleVariant subbdbyus = getSubbedBy(originalVariant, compactedFamily);
+					String fctryFn = makeEndpointKindFactoryFn(protoTypeName, originalVariant, compactedFamily, subbdbyus, isCommonEndpointKind);
 					
-					LinkedHashMap<RPFamily, String> tmp = epKindFctryFns.get(variant);
+					LinkedHashMap<RPFamily, String> tmp = epKindFctryFns.get(originalVariant);
 					if (tmp == null)
 					{
 						tmp = new LinkedHashMap<>();
-						epKindFctryFns.put(variant, tmp);
+						epKindFctryFns.put(originalVariant, tmp);
 					}
-					tmp.put(family, fctryFn);
+					tmp.put(compactedFamily, fctryFn);
 				}
 			}
 		}
@@ -478,36 +479,37 @@ public class RPCoreDotSessionApiBuilder
 		epkindImports = getEndpointKindImports();
 		
 		// Endpoint Kind API per role variant
-		for (Role rname : this.apigen.selfs)
+		for (Role rname : (Iterable<Role>) this.apigen.selfs.stream().sorted(Role.COMPARATOR)::iterator)
+				// Only do the variants of the specified role names
 		{
-			/*for (RPRoleVariant variant : (Iterable<RPRoleVariant>) this.apigen.variants.values().stream()
-					.flatMap(x -> x.keySet().stream()).sorted(RPRoleVariant.COMPARATOR)::iterator)*/
-			for (RPRoleVariant variant : (Iterable<RPRoleVariant>) 
+			for (RPRoleVariant origVariant : (Iterable<RPRoleVariant>) 
 					this.apigen.variants.get(rname).keySet().stream().sorted(RPRoleVariant.COMPARATOR)::iterator) 
 			{
-				for (RPFamily family : (Iterable<RPFamily>) this.apigen.families.keySet().stream()
-								.filter(f -> f.variants.contains(variant)).sorted(RPFamily.COMPARATOR)::iterator)  
+				// Some of the above original variants won't be in any compated family
+				for (RPFamily compactedFamily : (Iterable<RPFamily>) this.apigen.families.keySet().stream()
+								.filter(f -> f.variants.contains(origVariant)).sorted(RPFamily.COMPARATOR)::iterator)  
 				{	
-					List<RPIndexVar> ivars = getSortedParams(variant);
-					RPFamily orig = this.apigen.subsum.containsKey(family) ? this.apigen.subsum.get(family) : family;
-					RPRoleVariant subbdbyus = getSubbedBy(variant, family);
-					String epkindTypeName = this.apigen.namegen.getEndpointKindTypeName( variant);
+					List<RPIndexVar> ivars = getSortedParams(origVariant);
+					RPRoleVariant subbdbyus = getSubbedBy(origVariant, compactedFamily);
+					String epkindTypeName = this.apigen.namegen.getEndpointKindTypeName(origVariant);
+					RPFamily orig = this.apigen.subsum.containsKey(compactedFamily) ? this.apigen.subsum.get(compactedFamily) : compactedFamily;
 							
 					String epkindType;
 					String epkindConstr;
 
 					// Endpoint Kind type
-					epkindType = makeEndpointKindType(variant, ivars, epkindTypeName);
-					epkindConstr = makeEndpointKindConstructor(variant, ivars, epkindTypeName);
+					epkindType = makeEndpointKindType(origVariant, ivars, epkindTypeName);
+					epkindConstr = makeEndpointKindConstructor(origVariant, ivars, epkindTypeName);
 					
-					epkindFile = makeDialsAccepts(indexType, variant, family, orig, ivars, epkindTypeName, epkindFile, peers);
+					epkindFile = makeDialsAccepts(origVariant, orig, ivars, epkindTypeName, epkindFile, peers);
 
+					// Connect with subbedbyus
 					// FIXME: refactor into makeDialsAccepts
 					if (subbdbyus != null)
 					{
 						Set<RPRoleVariant> peers2 = this.apigen.peers.get(subbdbyus).get(orig);
 						peers2.removeAll(peers);
-						epkindFile = makeDialsAccepts(indexType, variant, family, orig, ivars, epkindTypeName, epkindFile, peers2);
+						epkindFile = makeDialsAccepts(origVariant, orig, ivars, epkindTypeName, epkindFile, peers2);
 					}
 
 							
@@ -539,7 +541,7 @@ public class RPCoreDotSessionApiBuilder
 
 							// TODO: Factor out with RPCoreSTStateChanApiBuilder#makeReturnSuccStateChan
 							+ "return "
-							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(variant).init.getStateKind() == EStateKind.POLY_INPUT)
+							+ ((this.apigen.job.selectApi && this.apigen.variants.get(rname).get(origVariant).init.getStateKind() == EStateKind.POLY_INPUT)
 									? "newBranch" + init + "(ini)"
 									: "ini._" + init) + "\n"
 
@@ -550,11 +552,11 @@ public class RPCoreDotSessionApiBuilder
 							+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".Close()\n"
 							+ "}";
 				
-					res.put(getEndpointKindFilePath(family, variant)
-									+ "/" + RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, variant) + ".go",
-							"// Generated API for the " + variant.getName() + getHumanReadableName(variant) + " role variant.\n"
-							+ "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(variant) + "\n"
-							+ "//" + family.variants.toString() + "\n\n"
+					res.put(getEndpointKindFilePath(compactedFamily, origVariant)
+									+ "/" + RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, origVariant) + ".go",
+							"// Generated API for the " + origVariant.getName() + getHumanReadableName(origVariant) + " role variant.\n"
+							+ "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(origVariant) + "\n"
+							+ "//" + compactedFamily.variants.toString() + "\n\n"
 							+ epkindFile);
 				}
 			}
@@ -563,48 +565,57 @@ public class RPCoreDotSessionApiBuilder
 		return res;
 	}
 
-	private String makeDialsAccepts(RPRoleVariant variant, RPFamily family,
+	private String makeDialsAccepts(RPRoleVariant self, RPFamily origFamily,
 			List<RPIndexVar> ivars, String epkindTypeName)
 	{
 		 String epkindFile;
 
-		RPFamily orig = this.apigen.subsum.containsKey(family) ? this.apigen.subsum.get(family) : family;
-		Set<RPRoleVariant> origPeers = this.apigen.peers.get(variant).get(orig);
+		Set<RPRoleVariant> origPeers = this.apigen.peers.get(self).get(origFamily);
 
 		for (RPRoleVariant origPeer : origPeers)
 		{
-			RPRoleVariant peer = origPeer;
 			
-			// TODO: factor out with above
+			... HERE factor out makeDialAndAccept for single candidate original peer
+			... maybe redo getSubbedBy to take both original variant and family?
+			
+			RPRoleVariant subbsPeer = null;
 			RPRoleVariant subbdbypeer = null;
+			
+			// If peer is subsumed, use subsumer instead for error feedback -- but peer ID params check still uses original peer variant
+			if (this.apigen.aliases.containsKey(origPeer))
+			{
+				Map<RPFamily, RPRoleVariant> tmp = this.apigen.aliases.get(origPeer);
+				if (tmp.containsKey(origFamily))
+				{
+					if (origPeers.contains(subbsPeer))  // Skip if we're already peers with subsuming-peer
+					{
+						break;
+					}
+					subbsPeer = tmp.get(origFamily);
+				}
+			}
+			
+			// If (original) peer is subsumer, allow connect (i.e., pass params/self check) with their subsumed (though still connect via peer)
+			// Similar to getSubbedBy, but here family is the original (not the compacted) -- TODO: factor out with getSubbedBy ?
 			for (RPRoleVariant subbd : this.apigen.aliases.keySet())
 			{
 				Map<RPFamily, RPRoleVariant> ais = this.apigen.aliases.get(subbd);
-				if (ais.containsKey(orig) && ais.get(orig).equals(variant))
+				if (ais.containsKey(origFamily) && ais.get(origFamily).equals(origPeer))
 				{
 					subbdbypeer = subbd;  // We can connect to peer or who they subbd
 					break;
 				}
 			}
 			
-			if (this.apigen.aliases.containsKey(origPeer))
+			if (subbsPeer != null && subbdbypeer != null)
 			{
-				Map<RPFamily, RPRoleVariant> ali = this.apigen.aliases.get(origPeer);
-				if (ali.containsKey(orig))
-				{
-					peer = ali.get(orig);  // Replace subsumed-peer by subsuming-peer
-					if (origPeers.contains(peer))  // ...but skip if we're already peers with subsuming-peer
-					{
-						continue;
-					}
-				}
+				throw new RuntimeException("[rp-core] Shouldn't get in here: " + origPeer + ", " + subbsPeer + ", " + subbdbypeer);
+						// Should be restricted out earlier in the toolchain
 			}
 			
 			// Accept/Dial methods
-			String r = peer.getLastElement();
-			String vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(peer);
-			String accept = makeAccept(indexType, ivars, epkindTypeName, origPeer, subbdbypeer, r, vname);
-			String dial = makeDial(indexType, ivars, epkindTypeName, origPeer, subbdbypeer, r, vname);
+			String accept = makeAccept(ivars, epkindTypeName, origPeer, subbdbypeer, subbsPeer);
+			String dial = makeDial(ivars, epkindTypeName, origPeer, subbdbypeer, subbsPeer);
 
 			epkindFile += accept + "\n" + dial;
 			//}
@@ -612,46 +623,31 @@ public class RPCoreDotSessionApiBuilder
 		return epkindFile;
 	}
 
-	public String makeDial(String indexType, List<RPIndexVar> ivars, String epkindTypeName, RPRoleVariant v,
-			RPRoleVariant subbdbypeer, String r, String vname)
+	// FIXME: factor out with makeDial
+	// subbedPeer is (possibly) subsumer; o/w origPeer == subbedPeer
+	public String makeAccept(List<RPIndexVar> ivars, String epkindTypeName,
+			RPRoleVariant origPeer, RPRoleVariant subbdbypeer, RPRoleVariant subsPeer)
 	{
-		String dial = "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id " + indexType
-					+ ", host string, port int"
-					+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
-					+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+		String r;
+		String vname;
+		if (subsPeer == null)
+		{
+			r = origPeer.getLastElement();
+			vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(origPeer);
+		}
+		else
+		{
+			r = subsPeer.getLastElement();
+			vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(subsPeer);
+		}
 
-			+ makePeerIdCheck1(v, ivars, subbdbypeer)		
-			+ makePeerIdCheck2(v, ivars, subbdbypeer)		
-
-			+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
-			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
-			+ "c, err := dialler(host, port)\n"
-			+ "if err != nil {\n"
-			+ "return err\n"
-			+ "}\n"
-			+ "\n"
-			+ "sfmt.Wrap(c)\n"
-			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
-			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-					+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
-			+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
-			+ "}\n";
-		return dial;
-	}
-
-	public String makeAccept(String indexType, List<RPIndexVar> ivars, String epkindTypeName, RPRoleVariant v,
-			RPRoleVariant subbdbypeer, String r, String vname)
-	{
 		String dial = "\n"
-				+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id " + indexType
+				+ "func (ini *" + epkindTypeName + ") " + vname + "_Accept(id " + this.apigen.mode.indexType
 						+ ", ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE
 						+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
 						
-				+ makePeerIdCheck1(v, ivars, subbdbypeer)		
-				+ makePeerIdCheck2(v, ivars, subbdbypeer)		
+				+ makePeerIdCheck1(origPeer, ivars, subbdbypeer)		
+				+ makePeerIdCheck2(origPeer, ivars, subbdbypeer)		
 						
 				+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
 						+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
@@ -669,6 +665,50 @@ public class RPCoreDotSessionApiBuilder
 						+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"
 				+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
 				+ "}\n";
+		return dial;
+	}
+
+	// subbedPeer is (possibly) subsumer; o/w origPeer == subbedPeer
+	public String makeDial(List<RPIndexVar> ivars, String epkindTypeName, RPRoleVariant origPeer,
+			RPRoleVariant subbdbypeer, RPRoleVariant subsPeer)
+	{
+		String r;
+		String vname;
+		if (subsPeer == null)
+		{
+			r = origPeer.getLastElement();
+			vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(origPeer);
+		}
+		else
+		{
+			r = subsPeer.getLastElement();
+			vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(subsPeer);
+		}
+
+		String dial = "func (ini *" + epkindTypeName + ") " + vname + "_Dial(id " + this.apigen.mode.indexType
+					+ ", host string, port int"
+					+ ", dialler func (string, int) (" + RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)"
+					+ ", sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+
+			+ makePeerIdCheck1(origPeer, ivars, subbdbypeer)		
+			+ makePeerIdCheck2(origPeer, ivars, subbdbypeer)		
+
+			+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
+			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
+			+ "c, err := dialler(host, port)\n"
+			+ "if err != nil {\n"
+			+ "return err\n"
+			+ "}\n"
+			+ "\n"
+			+ "sfmt.Wrap(c)\n"
+			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
+			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+					+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
+			+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
+			+ "}\n";
 		return dial;
 	}
 
@@ -891,6 +931,8 @@ public class RPCoreDotSessionApiBuilder
 		return ivars.distinct().sorted(RPIndexVar.COMPARATOR).collect(Collectors.toList());
 	}
 
+	// subber is an original-family variant, but family is the compacted family -- CHECKME: make more uniform?
+	// Returns: original-family variant subsumed by subber in the original family
 	public RPRoleVariant getSubbedBy(RPRoleVariant subber, RPFamily family)
 	{
 		RPFamily orig = this.apigen.subsum.containsKey(family) ? this.apigen.subsum.get(family) : family;
@@ -905,6 +947,7 @@ public class RPCoreDotSessionApiBuilder
 					throw new RuntimeException("[rp-core] [-dotapi] TODO: " + subber + " is subsuming multiple variants ("
 							+ subbed + ", " + v + ") in one family (" + orig + ")");
 							// CHECKME: just generalise subbdbyus to a Collection?
+							// TODO: subsumer also subsumed? (transitivity)
 				}
 				subbed = v;  // We subsumed "subbed", so we need to inherit all their peers for dial/accepts
 			}

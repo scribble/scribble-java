@@ -243,7 +243,9 @@ public class RPCoreCommandLine extends CommandLine
 									m = new HashMap<>();
 									this.aliases.put(v, m);
 								}
-								m.put(fam, u);  // FIXME: can a variant be subsumed by mutiple other variants?  currently only recording one
+								m.put(fam, u);  
+										// FIXME: can a variant be subsumed by mutiple other variants?  currently only recording one
+										// FIXME CHECKME: transitive subsuming
 								
 								continue Next;
 							}
