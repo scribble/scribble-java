@@ -568,34 +568,36 @@ public class RPCoreDotSessionApiBuilder
 	private String makeDialsAccepts(RPRoleVariant self, RPFamily origFamily,
 			List<RPIndexVar> ivars, String epkindTypeName)
 	{
-		 String epkindFile;
+		String res = "";
 
 		Set<RPRoleVariant> origPeers = this.apigen.peers.get(self).get(origFamily);
-
-		for (RPRoleVariant origPeer : origPeers)
+		
+		for (RPRoleVariant origPeer : (Iterable<RPRoleVariant>)
+				origPeers.stream().sorted(RPRoleVariant.COMPARATOR)::iterator)
 		{
-			
-			... HERE factor out makeDialAndAccept for single candidate original peer
-			... maybe redo getSubbedBy to take both original variant and family?
+			...HERE
+			//... Maybe redo getSubbedBy to take both original variant and family?
 			
 			RPRoleVariant subbsPeer = null;
 			RPRoleVariant subbdbypeer = null;
 			
-			// If peer is subsumed, use subsumer instead for error feedback -- but peer ID params check still uses original peer variant
+			// If peer is subsumed, use subsumer's name instead in *error messages* -- but peer ID params check still uses original peer variant
 			if (this.apigen.aliases.containsKey(origPeer))
 			{
 				Map<RPFamily, RPRoleVariant> tmp = this.apigen.aliases.get(origPeer);
 				if (tmp.containsKey(origFamily))
 				{
-					if (origPeers.contains(subbsPeer))  // Skip if we're already peers with subsuming-peer
-					{
-						break;
-					}
 					subbsPeer = tmp.get(origFamily);
+					if (origPeers.contains(subbsPeer))  
+							// Skip dial/accept with the original peer if we're already peers with this subsuming-peer we just found
+					{
+						continue;  // Go to next origPeer (if any)
+								// Generating peer/self check to allow both subsumed and subsumer via the same dial/accept is handled via the subsumer side (below)
+					}
 				}
 			}
 			
-			// If (original) peer is subsumer, allow connect (i.e., pass params/self check) with their subsumed (though still connect via peer)
+			// If (original) peer is a subsumer, allow connect (i.e., pass params/self check) with their subsumed (though still connect via peer)
 			// Similar to getSubbedBy, but here family is the original (not the compacted) -- TODO: factor out with getSubbedBy ?
 			for (RPRoleVariant subbd : this.apigen.aliases.keySet())
 			{
@@ -617,13 +619,14 @@ public class RPCoreDotSessionApiBuilder
 			String accept = makeAccept(ivars, epkindTypeName, origPeer, subbdbypeer, subbsPeer);
 			String dial = makeDial(ivars, epkindTypeName, origPeer, subbdbypeer, subbsPeer);
 
-			epkindFile += accept + "\n" + dial;
+			res += accept + "\n" + dial;
 			//}
 		}
-		return epkindFile;
+		return res;
 	}
 
 	// FIXME: factor out with makeDial
+	// Pre: subbdbypeer == null || subsPeer == null
 	// subbedPeer is (possibly) subsumer; o/w origPeer == subbedPeer
 	public String makeAccept(List<RPIndexVar> ivars, String epkindTypeName,
 			RPRoleVariant origPeer, RPRoleVariant subbdbypeer, RPRoleVariant subsPeer)
