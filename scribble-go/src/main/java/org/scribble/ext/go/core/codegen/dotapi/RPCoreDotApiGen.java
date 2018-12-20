@@ -70,7 +70,7 @@ public class RPCoreDotApiGen
 			// "Compacted" families
 
 	public final Map<RPRoleVariant, Map<RPFamily, Set<RPRoleVariant>>> peers;  
-			// "Original" families -- see RPCoreCommandLine
+			// "Original" families (with all orig-variants, which includes any subsumers) -- see RPCoreCommandLine (getPeers done before compactFamilies)
 			// For dial/accept
 			// Also for "common" endpoint kind factoring (currently disabled)
 	
