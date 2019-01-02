@@ -271,18 +271,18 @@ public class RPCoreSTApiGenerator
 		return "family_" + this.families.get(family);
 	}
 
-	public static String getEndpointKindPackageName(RPRoleVariant variant)
+	/*public static String getEndpointKindPackageName(RPRoleVariant variant)
 	{
 		return getGeneratedRoleVariantName(variant);
-	}
+	}*/
 	
-	// FIXME: doesn't need simpname
+	/*// FIXME: doesn't need simpname
 	// Role variant = Endpoint kind -- e.g., S_1To1, W_1Ton
 	public static String getEndpointKindTypeName(GProtocolName simpname, RPRoleVariant variant)
 	{
 		//return simpname + "_" + getGeneratedActualRoleName(r);
 		return getGeneratedRoleVariantName(variant);
-	}
+	}*/
 	
 	public static String getGeneratedRoleVariantName(RPRoleVariant variant)
 	{
