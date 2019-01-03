@@ -240,13 +240,24 @@ public class RPCoreDotApiGen
 		return "_" + schanName;
 	}
 	
+	/**
+	 * For factoring out "common" endpoint kinds from families -- CHECKME: do
+	 * earlier with/after family computation?
+	 * Means current variant talks to at most the same single peer in all families
+	 * (but maybe not involved in some families -- but that is fine, considering a
+	 * distributed projection needs only to know what to do in its relevant
+	 * families).
+	 * Note: without explicit connections, even if don't directly talk with a
+	 * family co-member, basic session model still forms the connection.
+	 * E.g., basic pipeline, left/right not "common" because of "connections to
+	 * right/[middle]/left" distinguished from "connections to *neighbours*".
+	 * Ideally, want to reason about dial/accept to make only the "necessary
+	 * connections" => explicit connections
+	 * 
+	 * --- Currently only applied to singleton families
+	 */
 	public boolean isCommonEndpointKind(RPRoleVariant variant)
 	{
-		// For factoring out "common" endpoint kinds from families -- FIXME: do earlier with/after family computation?
-		// Means current variant talks to at most the same single peer in all families (but maybe not involved in some families -- but that is fine, considering a distributed projection needs only to know what to do in its relevant families)
-		// Note: without explicit connections, even if don't directly talk with a family co-member, basic session model still forms the connection
-		// E.g., basic pipeline, left/right not "common" because of "connections to right/[middle]/left" distinguished from "connections to *neighbours*"
-		// Ideally, want to reason about dial/accept to make only the "necessary connections" => explicit connections
 		//boolean isCommonEndpointKind = this.apigen.peers.get(variant).size() == 1;
 				// CHECKME: why 1, should it be generalised?
 				// CHECKME: peers doesn't consider families -- should isCommonEndpointKind be determined from families?
@@ -280,6 +291,7 @@ public class RPCoreDotApiGen
 		}
 		//*/
 	}
+	
 	
 	
 	
