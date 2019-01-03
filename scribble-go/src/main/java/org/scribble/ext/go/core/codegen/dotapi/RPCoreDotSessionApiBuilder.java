@@ -32,12 +32,12 @@ import org.scribble.type.name.Role;
 
 // Build Session API for this.apigen.selfs
 // rp-core Session API = Protocol API + Endpoint Kind APIs 
-// CHECKME: can be factored out between standard and -dotapi State Chan APIs?
+// TODO CHECKME: can be factored out between standard and -dotapi State Chan APIs?
 public class RPCoreDotSessionApiBuilder
 {
 	private final RPCoreDotApiGen apigen;
 
-	// FIXME: refactor into RPCoreDotApiGen
+	// TODO: refactor into RPCoreDotApiGen
 	protected final Map<RPRoleVariant, Set<RPCoreEState>> reachable;
 	protected final Map<RPRoleVariant, Map<Integer, String>> stateChanNames;  // State2
 
@@ -76,7 +76,7 @@ public class RPCoreDotSessionApiBuilder
 			Set<RPCoreEState> rs = new HashSet<>();
 			rs.add((RPCoreEState) g.init);
 			rs.addAll(RPCoreEState.getReachableStates((RPCoreEState) g.init));
-			// FIXME: cast needed to select correct static
+				// FIXME: cast needed to select correct static -- refactor to eliminate cast
 			res.put(v, Collections.unmodifiableSet(new HashSet<>(rs)));
 		}
 
@@ -174,7 +174,7 @@ public class RPCoreDotSessionApiBuilder
 				
 				// HACK: setting family to null for common endpoint kind
 				Set<RPFamily> compactedFamilies = /*isCommonEndpointKind
-						? Stream.of((RPFamily) null).collect(Collectors.toSet())  // FIXME HACK: when isCommonEndpointKind, just loop once (to make one New)
+						? Stream.of((RPFamily) null).collect(Collectors.toSet())  // HACK: when isCommonEndpointKind, just loop once (to make one New)
 						:*/ this.apigen.families.keySet().stream().filter(f -> f.variants.contains(origVariant)).collect(Collectors.toSet());
 
 				for (RPFamily compactFamily : (Iterable<RPFamily>) 
@@ -382,7 +382,7 @@ public class RPCoreDotSessionApiBuilder
 			if (tmp != null)
 			{
 				res += tmp;
-				res += makeIntCoIvals(v);
+				res += makeIntCoivals(v);
 				res += "if util.Isect" + ivalkind + "s(tmp).SubIntIntervals(tmp2)"
 					// FIXME: non int intervals
 						+ ".IsEmpty() {\n";
@@ -393,7 +393,7 @@ public class RPCoreDotSessionApiBuilder
 		for (RPRoleVariant v : fam.covariants)
 		{
 			res += makeIntIvals(v, ivars);
-			res += makeIntCoIvals(v);
+			res += makeIntCoivals(v);
 			res += "if !util.Isect" + ivalkind + "s(tmp).SubIntIntervals(tmp2)"
 					+ ".IsEmpty() {\n";
 			res += makeParamsSelfPanic(ivars);
@@ -422,7 +422,7 @@ public class RPCoreDotSessionApiBuilder
 						+ ivals.stream().collect(Collectors.joining(", ")) + "}\n";
 	}
 
-	private static String makeIntCoIvals(RPRoleVariant variant)
+	private static String makeIntCoivals(RPRoleVariant variant)
 	{
 		String ivalkind = "IntInterval";
 		List<String> coivals = new LinkedList<>();
@@ -520,7 +520,7 @@ public class RPCoreDotSessionApiBuilder
 					this.apigen.variants.get(rname).keySet().stream()
 						.sorted(RPRoleVariant.COMPARATOR)::iterator)
 			{
-				// Some of the above original variants won't be in any compated family
+				// Some of the above original variants won't be in any compacted family
 				for (RPFamily compactedFamily : (Iterable<RPFamily>) 
 						this.apigen.families.keySet().stream()
 							.filter(f -> f.variants.contains(origVariant))
@@ -707,6 +707,7 @@ public class RPCoreDotSessionApiBuilder
 	}
 
 	// Pre: subbdbypeer == null || subsPeer == null
+	// "Connect" means "Dial" or "Accept" (i.e., methSuff)
 	// subbedPeer is (possibly) subsumer; o/w origPeer == subbedPeer
 	public String makeConnect(List<RPIndexVar> ivars, String epkindTypeName,
 			RPRoleVariant origPeer, RPRoleVariant subbdbypeer, RPRoleVariant subsPeer,
@@ -731,7 +732,7 @@ public class RPCoreDotSessionApiBuilder
 						+ methParams + ", "
 						+ "sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
 				+ makePeerIdIvalsCheck(origPeer, ivars, subbdbypeer)		
-				+ makePeerIdCoIvalsCheck(origPeer, ivars, subbdbypeer)		
+				+ makePeerIdCoivalsCheck(origPeer, ivars, subbdbypeer)		
 						
 				+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
 						+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
@@ -999,7 +1000,7 @@ public class RPCoreDotSessionApiBuilder
 		return res;
 	}
 
-	private String makePeerIdCoIvalsCheck(RPRoleVariant vvv,
+	private String makePeerIdCoivalsCheck(RPRoleVariant vvv,
 			List<RPIndexVar> ivars, RPRoleVariant subbd)
 	{
 
@@ -1018,7 +1019,7 @@ public class RPCoreDotSessionApiBuilder
 		}
 		if (subbd != null)
 		{
-			res += makePeerIdCoIvalsCheck(subbd, ivars, null);
+			res += makePeerIdCoivalsCheck(subbd, ivars, null);
 		}
 		else
 		{
@@ -1084,7 +1085,7 @@ public class RPCoreDotSessionApiBuilder
 	
 	// Returns path to use as offset to -d
 	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
-	// FIXME: factor up to super -- cf. STStateChanApiBuilder#getStateChannelFilePath
+	// TODO: factor up to super -- cf. STStateChanApiBuilder#getStateChannelFilePath
 	public String getProtocolFilePath()
 	{
 		String basedir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
@@ -1093,7 +1094,7 @@ public class RPCoreDotSessionApiBuilder
 
 	// Returns path to use as offset to -d
 	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
-	// FIXME: factor up to super -- cf. STStateChanApiBuilder#getStateChannelFilePath
+	// TODO: factor up to super -- cf. STStateChanApiBuilder#getStateChannelFilePath
 	public String getEndpointKindFilePath(RPFamily family, RPRoleVariant variant, boolean isCommonEndpointKind)
 	{
 		String basedir = this.apigen.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
@@ -1126,7 +1127,7 @@ public class RPCoreDotSessionApiBuilder
 				//*/
 	}
 
-	// Factor out with RPCoreSTStateChanApiGenerator#generateIndexExpr
+	// TODO: Factor out with RPCoreSTStateChanApiGenerator#generateIndexExpr
 	private String makeGoIntIndexExpr(RPIndexExpr e, String ctxt)
 	{
 		if (e instanceof RPIndexInt)

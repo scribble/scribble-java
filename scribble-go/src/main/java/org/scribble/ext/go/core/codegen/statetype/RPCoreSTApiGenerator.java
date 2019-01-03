@@ -271,18 +271,20 @@ public class RPCoreSTApiGenerator
 		return "family_" + this.families.get(family);
 	}
 
-	/*public static String getEndpointKindPackageName(RPRoleVariant variant)
+	// static used by org.scribble.ext.go.core.codegen.statetype (cf. codegen.dotapi namegen)
+	public static String getEndpointKindPackageName(RPRoleVariant variant)
 	{
 		return getGeneratedRoleVariantName(variant);
-	}*/
+	}
 	
-	/*// FIXME: doesn't need simpname
+	// static used by org.scribble.ext.go.core.codegen.statetype (cf. codegen.dotapi namegen)
+	// TODO: doesn't need simpname, remove
 	// Role variant = Endpoint kind -- e.g., S_1To1, W_1Ton
 	public static String getEndpointKindTypeName(GProtocolName simpname, RPRoleVariant variant)
 	{
 		//return simpname + "_" + getGeneratedActualRoleName(r);
 		return getGeneratedRoleVariantName(variant);
-	}*/
+	}
 	
 	public static String getGeneratedRoleVariantName(RPRoleVariant variant)
 	{
