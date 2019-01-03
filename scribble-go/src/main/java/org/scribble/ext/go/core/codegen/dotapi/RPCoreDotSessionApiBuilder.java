@@ -35,6 +35,8 @@ import org.scribble.type.name.Role;
 // TODO CHECKME: can be factored out between standard and -dotapi State Chan APIs?
 public class RPCoreDotSessionApiBuilder
 {
+	private static final int LIN_COUNTER_START = 1;
+
 	private final RPCoreDotApiGen apigen;
 
 	// TODO: refactor into RPCoreDotApiGen
@@ -90,7 +92,7 @@ public class RPCoreDotSessionApiBuilder
 		for (RPRoleVariant v : this.reachable.keySet())
 		{
 			EGraph g = this.apigen.variants.get(v.getName()).get(v);
-			Set<RPCoreEState> todo = this.reachable.get(v);
+			Set<RPCoreEState> todo = new HashSet<>(this.reachable.get(v));
 			Map<Integer, String> curr = new HashMap<>();
 			res.put(v, curr);
 
@@ -170,7 +172,7 @@ public class RPCoreDotSessionApiBuilder
 					this.apigen.variants.get(rname).keySet().stream()
 						.sorted(RPRoleVariant.COMPARATOR)::iterator)
 			{
-				boolean isCommonEndpointKind = false;// this.apigen.isCommonEndpointKind(variant);
+				boolean isCommonEndpointKind = this.apigen.isCommonEndpointKind(origVariant);
 				
 				// HACK: setting family to null for common endpoint kind
 				Set<RPFamily> compactedFamilies = /*isCommonEndpointKind
@@ -179,7 +181,6 @@ public class RPCoreDotSessionApiBuilder
 
 				for (RPFamily compactFamily : (Iterable<RPFamily>) 
 						compactedFamilies.stream().sorted(RPFamily.COMPARATOR)::iterator)
-						// FIXME: use family to make accept/dial
 				{	
 					
 					RPFamily origFamily = this.apigen.subsum.containsKey(compactFamily)
@@ -236,30 +237,20 @@ public class RPCoreDotSessionApiBuilder
 			{
 				String epkindPackName = this.apigen.namegen
 						.getEndpointKindPackageName(v);
-				/* // Cf. getEndpointKindFilePath
-				boolean isCommonEndpointKind = //this.apigen.families.keySet().stream().allMatch(f -> f.left.contains(v));  // No: doesn't consider dial/accept
-						//this.apigen.families.keySet().stream().filter(f -> f.left.contains(v)).distinct().count() == 1;  // No: too conservative -- should be about required peer endpoint kinds (to dial/accept with)
-						//this.apigen.peers.get(v).size() == 1;  // Cf.
-						this.apigen.isCommonEndpointKind(v);
-				/*if (isCommonEndpointKind)
-				{
-					res += "import " + epkindPackName
-							+ " \"" + this.apigen.packpath + "/" + this.apigen.getApiRootPackageName()  // "Absolute" -- cf. getProtocol/EndpointKindFilePath, "relative"
-							+ "/" + epkindPackName + "\"\n";
-				}
-				else*/
 				{
 					for (RPFamily f : (Iterable<RPFamily>) 
 							this.apigen.families.keySet().stream()
 								.filter(x -> x.variants.contains(v))
 								.sorted(RPFamily.COMPARATOR)::iterator)
 					{
+						boolean isCommonEndpointKind = this.apigen.isCommonEndpointKind(v);  
+							// Currently means singleton family
 						String fampack = this.apigen.namegen.getFamilyPackageName(f);
-						String alias = fampack + "_" + epkindPackName;
+						String alias = (isCommonEndpointKind ? "" : fampack + "_") + epkindPackName;
 						res += "import " + alias + " \""
 								+ this.apigen.namegen.getApiRootPackageFullPath()
 									// "Absolute" -- cf. getProtocol/EndpointKindFilePath, "relative"
-								+ "/" + fampack
+								+ (isCommonEndpointKind ? "" : "/" + fampack)
 								+ "/" + epkindPackName 
 								+ "\"\n";
 					}
@@ -532,8 +523,7 @@ public class RPCoreDotSessionApiBuilder
 					List<RPIndexVar> ivars = getSortedParams(origVariant);
 					RPRoleVariant subbdbyus = getSubbedBy(origVariant, origFamily);
 					String epkindTypeName = this.apigen.namegen.getEndpointKindTypeName(origVariant);
-					boolean isCommonEndpointKind = false;//this.apigen.isCommonEndpointKind(variant);  
-						// Duplicated from buildProtocolApi
+					boolean isCommonEndpointKind = this.apigen.isCommonEndpointKind(origVariant);  
 							
 					String epkindType;
 					String epkindConstr;
@@ -597,7 +587,7 @@ public class RPCoreDotSessionApiBuilder
 	private String makeRun(String epkindTypeName, String initName)
 	{
 		/*EGraph g = this.apigen.variants.get(variant.getName()).get(variant);
-		//String endName = g.init.isTerminal() ? "Init" : "End";  // FIXME: factor out -- cf. RPCoreSTStateChanApiBuilder#makeSTStateName(
+		//String endName = g.init.isTerminal() ? "Init" : "End";  // TODO: factor out -- cf. RPCoreSTStateChanApiBuilder#makeSTStateName(
 		*/
 		String endName = "End";
 		String init = //"Init_" + this.apigen.variants.get(variant.getName()).get(variant).init;
@@ -607,8 +597,8 @@ public class RPCoreDotSessionApiBuilder
 					+ endName + ") " + endName + " {\n"  // f specifies non-pointer End
 				+ "defer ini.Close()\n"
 				
-				// FIXME: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
-				// (FIXME: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
+				// TODO: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
+				// (TODO: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
 				+ "end := f(ini.Init())\n"
 				+ "if end." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " != nil {\n"
 				+ "panic(end." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + ")\n"
@@ -623,7 +613,7 @@ public class RPCoreDotSessionApiBuilder
 	{
 		String res = "\n\n"
 				+ "func (ini *" + epkindTypeName + ") Init() *Init {\n"
-				+ "ini.Use()\n"  // FIXME: int-counter linearity
+				+ "ini.Use()\n"  // CHECKME: use int-counter linearity for endpoints??
 				+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"
 
 				// TODO: Factor out with RPCoreSTStateChanApiBuilder#makeReturnSuccStateChan
@@ -794,7 +784,7 @@ public class RPCoreDotSessionApiBuilder
 			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
 					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r + "\"][id] = c\n"  // CHECKME: connection map keys (cf. variant?)
 			+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
-					+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // FIXME: factor out with Accept
+					+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r + "\"][id] = sfmt\n"  // TODO: factor out with Accept
 			+ "return err\n"  // FIXME: runtime currently does log.Fatal on error
 			+ "}\n";
 		return dial;
@@ -870,8 +860,6 @@ public class RPCoreDotSessionApiBuilder
 		epkindType += "}\n";
 		return epkindType;
 	}
-
-	public static final int LIN_COUNTER_START = 1;
 	
 	public String makeEndpointKindConstructor(RPRoleVariant variant,
 			List<RPIndexVar> ivars, String epkindTypeName)
@@ -893,7 +881,7 @@ public class RPCoreDotSessionApiBuilder
 
 		instance = "ep := &" + epkindTypeName + "{\n"
 
-				// Args -- cf. makeEndpointKindType
+				// Endpoint constructor args -- cf. makeEndpointKindType
 				// protoField
 				+ "p,\n"
 				// selfField

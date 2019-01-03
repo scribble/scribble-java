@@ -34,7 +34,7 @@ import org.scribble.visit.util.MessageIdCollector;
 // FIXME: -parforeach race condition
 
 
-// Duplicated from org.scribble.ext.go.codegen.statetype.go.GoSTEndpointApiGenerator
+// TODO CHECKME: factor out with RPCoreSTApiGenerator?
 public class RPCoreDotApiGen
 {
 	public enum Mode
@@ -76,8 +76,6 @@ public class RPCoreDotApiGen
 	
 	public final Map<RPFamily, RPFamily> subsum;  // new-family-after-subsumptions -> original-family-before-subsumptions
 	public final Map<RPRoleVariant, Map<RPFamily, RPRoleVariant>> aliases;  // subsumed-variant -> original-family-subsumed-in -> subsuming-variant 
-	
-	//private Map<RPRoleVariant, Map<Integer, String>> stateChanNames = new HashMap<>();  // In RPCoreDotSessionApiBuilder
 	
 	public RPCoreDotApiGen(Mode mode, Smt2Translator smt2t, GoJob job, GProtocolName fullname,
 			String packpath, List<Role> selfs, 
@@ -201,14 +199,15 @@ public class RPCoreDotApiGen
 		return res;
 	}
 
+	//private Map<RPRoleVariant, Map<Integer, String>> stateChanNames = new HashMap<>();  // FIXME: currently cached from RPCoreDotSessionApiBuilder
+
 	//@Override
 	public Map<String, String> buildSessionApi()  // FIXME: factor out
 	{
-		/*this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTSessionApiBuilder.class + " for " + this.proto + "@" + this.selfs);
-		RPCoreSTSessionApiBuilder b = new RPCoreSTSessionApiBuilder(this);
-		this.stateChanNames.putAll(b.stateChanNames);
-		return b.build();*/
-		throw new RuntimeException("TODO");
+		this.job.debugPrintln("\n[rp-core] Running " + RPCoreDotSessionApiBuilder.class + " for " + this.proto + "@" + this.selfs);
+		RPCoreDotSessionApiBuilder b = new RPCoreDotSessionApiBuilder(this);
+		//this.stateChanNames.putAll(b.stateChanNames);
+		return b.build();
 	}
 	
 	public Map<String, String> buildStateChannelApi(
@@ -216,7 +215,8 @@ public class RPCoreDotApiGen
 	{
 		/*this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + variant);
 		return new RPCoreSTStateChanApiBuilder(this, family, variant, graph, this.stateChanNames.get(variant)).build();*/
-		throw new RuntimeException("TODO");
+		//throw new RuntimeException("TODO");
+		return Collections.emptyMap();
 	}
 	
 	public String makeLinearResourceInstance()
@@ -240,7 +240,6 @@ public class RPCoreDotApiGen
 		return "_" + schanName;
 	}
 	
-	/*
 	public boolean isCommonEndpointKind(RPRoleVariant variant)
 	{
 		// For factoring out "common" endpoint kinds from families -- FIXME: do earlier with/after family computation?
@@ -254,8 +253,8 @@ public class RPCoreDotApiGen
 		/*boolean isCommonEndpointKind = this.families.keySet().stream().filter(p -> p.left.contains(variant))
 						// Would also be reasonable to require variant to be in every family -- but not necessary since a distributed projection is only for the families that the variant is involved in
 				.allMatch(p -> p.left.containsAll(this.peers.get(variant)));
-		return isCommonEndpointKind;* /
-		return this.families.size() == 1;  // Now essentially disabled, to make "variant equivalence" easier
+		return isCommonEndpointKind;*/
+		return this.families.size() == 1;  // Now essentially disabled (only singleton families treated), to make "variant equivalence" easier
 		
 		/* // "Syntactically" determining common endpoint kinds difficult because concrete peers depends on param (and foreachvar) values, e.g., M in PGet w.r.t. #F
 		// Also, family factoring is more about dial/accept
@@ -279,8 +278,8 @@ public class RPCoreDotApiGen
 				}
 			}
 		}
-		//* /
-	}*/
+		//*/
+	}
 	
 	
 	
