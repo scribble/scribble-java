@@ -819,7 +819,7 @@ public class RPCoreDotSessionApiBuilder
 		
 		protoField = RPCoreDotApiGenConstants.ENDPOINT_PROTO_FIELD + " "
 				+ RPCoreDotApiGenConstants.ENDPOINT_PROTOCOL_TYPE + "\n";
-		selfField = RPCoreDotApiGenConstants.ENDPOINT_SELF_FIELD
+		selfField = RPCoreDotApiGenConstants.ENDPOINT_SELF_FIELD + " "
 				+ this.apigen.mode.indexType + "\n";
 		epLinObject = "*" + RPCoreDotApiGenConstants.RUNTIME_LINEARRESOURCE_TYPE
 				+ "\n";  // For the Endpoint itself (e.g., Run)
@@ -831,7 +831,7 @@ public class RPCoreDotSessionApiBuilder
 				.collect(Collectors.joining(""));
 
 		// CHECKME: currently used to record foreach params only (and provide access to user)
-		paramsMap = " "
+		paramsMap = "Params "
 				+ (this.apigen.job.parForeach ? "map[int]map[string]" : "map[string]")
 				+ this.apigen.mode.indexType + "\n";
 				
@@ -903,7 +903,8 @@ public class RPCoreDotSessionApiBuilder
 							? "map[int]map[string]" : "map[string]")
 						+ this.apigen.mode.indexType + "),\n"  // Trailing comma needed
 				// stateChans
-				+ getSortedStateChanTypeNames(variant).stream().map(x -> "nil,\n");
+				+ getSortedStateChanTypeNames(variant).stream().map(x -> "nil,\n")
+						.collect(Collectors.joining());
 					
 		if (this.apigen.job.parForeach)
 		{
