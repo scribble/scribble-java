@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype;
+package org.scribble.ext.go.core.codegen.statetype.flat;
 
 import java.util.List;
 

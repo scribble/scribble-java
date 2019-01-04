@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype;
+package org.scribble.ext.go.core.codegen.statetype.flat;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +21,9 @@ import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTSessionApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;

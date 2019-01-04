@@ -1,9 +1,11 @@
-package org.scribble.ext.go.core.codegen.statetype;
+package org.scribble.ext.go.core.codegen.statetype.flat;
 
 import java.util.stream.Collectors;
 
 import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;

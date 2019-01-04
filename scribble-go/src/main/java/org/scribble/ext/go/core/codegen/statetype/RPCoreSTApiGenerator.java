@@ -15,6 +15,7 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.del.ModuleDel;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.cli.RPCoreCLArgParser;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTStateChanApiBuilder;
 import org.scribble.ext.go.core.type.RPFamily;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;

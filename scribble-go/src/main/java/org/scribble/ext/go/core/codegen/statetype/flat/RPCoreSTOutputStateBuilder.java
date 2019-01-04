@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype;
+package org.scribble.ext.go.core.codegen.statetype.flat;
 
 import org.scribble.codegen.statetype.STOutputStateBuilder;
 import org.scribble.codegen.statetype.STSendActionBuilder;
