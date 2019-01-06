@@ -23,9 +23,8 @@ import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiNameGen;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTSessionApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiNameGen;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
@@ -263,7 +262,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	// TODO: factor out with getStateChanPremable
 	protected Map<String, String> buildForeachIntermediaryState(RPCoreEState s)
 	{
-		GProtocolName simpname = this.apigen.proto.getSimpleName();
+		//GProtocolName simpname = this.apigen.proto.getSimpleName();
 		String scTypeName = this.names.get(s.id);  //this.getStateChanName(s);  //this.getIntermediaryStateChanName(s);
 		String epkindTypeName = this.apigen.namegen.getEndpointKindTypeName(this.variant); 
 		
@@ -478,7 +477,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	// Factored out here from state-specific builders
 	protected String getStateChanPremable(EState s)
 	{
-		GProtocolName simpname = this.apigen.proto.getSimpleName();
+		//GProtocolName simpname = this.apigen.proto.getSimpleName();
 		String scTypeName = this.getStateChanName(s);
 		String epkindTypeName = this.apigen.namegen.getEndpointKindTypeName(this.variant); 
 		

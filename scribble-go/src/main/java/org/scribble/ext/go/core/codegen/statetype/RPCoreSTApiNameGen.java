@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.dotapi;
+package org.scribble.ext.go.core.codegen.statetype;
 
 import java.util.stream.Collectors;
 
@@ -10,11 +10,11 @@ import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.ext.go.type.index.RPIndexVar;
 
-public class RPCoreDotApiNameGen
+public class RPCoreSTApiNameGen
 {
-	private final RPCoreDotApiGen apigen; 
+	private final RPCoreSTApiGenerator apigen; 
 
-	public RPCoreDotApiNameGen(RPCoreDotApiGen apigen)
+	public RPCoreSTApiNameGen(RPCoreSTApiGenerator apigen)
 	{
 		this.apigen = apigen;
 	}
@@ -73,7 +73,8 @@ public class RPCoreDotApiNameGen
 	}
 
 	// For type name generation -- not actual code exprs, cf. RPCoreSTStateChanApiBuilder#generateIndexExpr
-	private static String getGeneratedNameLabel(RPIndexExpr e)
+	// TODO: refactor toGoName alongside toGoString ?  (rename latter to toGoExpr)
+	public static String getGeneratedNameLabel(RPIndexExpr e)
 	{
 		if (e instanceof RPIndexInt)
 		{

@@ -234,8 +234,15 @@ public class RPCoreSTApiGenerator
 	public Map<String, String> buildStateChannelApi(
 			RPFamily family, RPRoleVariant variant, EGraph graph)  // FIXME: factor out
 	{
-		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + variant);
-		return new RPCoreSTStateChanApiBuilder(this, family, variant, graph, this.stateChanNames.get(variant)).build();
+		if (this.job.dotApi)
+		{
+			throw new RuntimeException("TODO");  // HERE -- refactor genconstants;  do flat state chan builder 
+		}
+		else
+		{
+			this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + variant);
+			return new RPCoreSTStateChanApiBuilder(this, family, variant, graph, this.stateChanNames.get(variant)).build();
+		}
 	}
 	
 	public String makeLinearResourceInstance()

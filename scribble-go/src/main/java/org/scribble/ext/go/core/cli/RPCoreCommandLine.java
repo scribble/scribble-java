@@ -26,7 +26,6 @@ import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
-import org.scribble.ext.go.core.codegen.dotapi.RPCoreDotApiGen;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.main.RPCoreException;
@@ -979,26 +978,20 @@ public class RPCoreCommandLine extends CommandLine
 			}
 			
 			Mode mode;
-			RPCoreDotApiGen.Mode mmm;  // FIXME HACK
 			if (this.smt2t instanceof IntSmt2Translator)
 			{
 				mode = Mode.Int;
-				mmm = RPCoreDotApiGen.Mode.Int;
 			}
 			else if (this.smt2t instanceof IntPairSmt2Translator)
 			{
 				mode = Mode.IntPair;
-				mmm = RPCoreDotApiGen.Mode.IntPair;
 			}
 			else
 			{
 				throw new RuntimeException("Shouldn't get in here: " + this.smt2t.getClass());
 			}
-			Map<String, String> goClasses = gjob.dotApi
-					? new RPCoreDotApiGen(mmm, this.smt2t, gjob, fullname, impath, roles,
-							this.L0, this.E0, this.families, this.peers, this.subsum,
-							this.aliases).build()
-					: new RPCoreSTApiGenerator(mode, this.smt2t, gjob, fullname, impath,
+			Map<String, String> goClasses = 
+					new RPCoreSTApiGenerator(mode, this.smt2t, gjob, fullname, impath,
 							roles, this.L0, this.E0, this.families, this.peers, this.subsum,
 							this.aliases).build();
 			outputClasses(goClasses);
