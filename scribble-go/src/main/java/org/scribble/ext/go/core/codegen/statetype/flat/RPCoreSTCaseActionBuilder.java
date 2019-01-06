@@ -49,7 +49,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 		RPIndexedRole peer = (RPIndexedRole) a.peer;  // Singleton interval
 
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN; /*+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP
+				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD; /*+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP
 				+ "[\"" +  peer.getName() + "\"]";*/
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder

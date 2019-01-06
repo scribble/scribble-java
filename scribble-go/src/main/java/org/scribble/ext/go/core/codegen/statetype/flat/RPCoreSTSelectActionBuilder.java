@@ -77,7 +77,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 		RPInterval d = peer.intervals.iterator().next();
 		
 		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
-		String sEpRecv = sEp + "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN; /*+ "."
+		String sEpRecv = sEp + "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD; /*+ "."
 					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + peer.getName() + "\"]";*/
 		
 		String res = "_, selected := <-s._" + a.mid + "_Chan\n"

@@ -6,7 +6,6 @@ import java.util.Map;
 import org.scribble.codegen.statetype.STCaseBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
@@ -33,29 +32,30 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 	}
 	
 	@Override
-	public String getPreamble(STStateChanApiBuilder api, EState s)
+	public String getPreamble(STStateChanApiBuilder apib, EState s)
 	{
-		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
-		String casename = getCaseActionName(api, s);
-		String res = "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(rpapi.variant) + "\n"
+		RPCoreSTStateChanApiBuilder rpapib = (RPCoreSTStateChanApiBuilder) apib;
+		String casename = getCaseActionName(apib, s);
+		String res = "package " + rpapib.apigen.namegen.getEndpointKindPackageName(rpapib.variant) + "\n"
 				+ "\n";
 		
-		switch (rpapi.apigen.mode)
+		// FIXME: factor out
+		switch (rpapib.apigen.mode)
 		{
-			case Int:  res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";  break;
-			case IntPair:  res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";  break;
-			default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.apigen.mode);
+			case Int:  res += "import \"" + RPCoreSTApiGenConstants.INT_RUNTIME_SESSION_PACKAGE + "\"\n";  break;
+			case IntPair:  res += "import \"" + RPCoreSTApiGenConstants.INTPAIR_RUNTIME_SESSION_PACKAGE + "\"\n";  break;
+			default:  throw new RuntimeException("Shouldn't get in here: " + rpapib.apigen.mode);
 		}
 
 		res += 
 				"import \"log\"\n"
-				+ ((RPCoreSTStateChanApiBuilder) api).makeMessageImports(s, true)
+				+ ((RPCoreSTStateChanApiBuilder) apib).makeMessageImports(s, true)
 				+ "\n"
 				+ "var _ = log.Fatal\n"
 				+ "\n"
 				
 				// Case object interface
-				+ "type " + getCaseStateChanName(api, s) + " interface {\n"
+				+ "type " + getCaseStateChanName(apib, s) + " interface {\n"
 			  + casename + "()\n"
 			  + "}\n";
 			  
@@ -63,19 +63,19 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 		for (EAction a: s.getAllActions()) 
 		{
 			String extName = (a.mid.isOp()) ? //rpapi.getExtName((DataType) a.mid) 
-					  getOpTypeName(api, s, a.mid)
-					: rpapi.getExtName((MessageSigName) a.mid);
-			res += "\ntype " + getOpTypeName(api, s, a.mid) + " struct {\n"
+					  getOpTypeName(apib, s, a.mid)
+					: rpapib.getExtName((MessageSigName) a.mid);
+			res += "\ntype " + getOpTypeName(apib, s, a.mid) + " struct {\n"
 						+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"  // FIXME: never set -- branch action won't return an actual case object upon error
-						+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + RPCoreSTApiGenerator.getEndpointKindTypeName(null, rpapi.variant) + "\n" 
+						+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + rpapib.apigen.namegen.getEndpointKindTypeName(rpapib.variant) + "\n" 
 						+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"
 						+ (a.mid.isMessageSigName() ? "msg *" + extName + "\n" : "")
-						+ (rpapi.apigen.job.parForeach ? "Thread int\n" : "")
+						+ (rpapib.apigen.job.parForeach ? "Thread int\n" : "")
 			  		+ "}\n"
 
 			  		+ "\n"
 
-			  	  + "func (*" + getOpTypeName(api, s, a.mid) + ") " + casename + "() {}\n";
+			  	  + "func (*" + getOpTypeName(apib, s, a.mid) + ") " + casename + "() {}\n";
 		}
 
 		return res;

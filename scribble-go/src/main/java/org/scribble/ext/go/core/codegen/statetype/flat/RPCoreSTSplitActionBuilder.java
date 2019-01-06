@@ -76,7 +76,7 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 		String sEpWrite = 
 				//s.ep.Write
 				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				 		+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN
+				 		+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD
 						//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL;
 						+ ".Conn";
 		String sEpProto =

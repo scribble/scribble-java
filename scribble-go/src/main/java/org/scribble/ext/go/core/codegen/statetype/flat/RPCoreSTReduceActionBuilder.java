@@ -68,7 +68,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 		String sEpRecv = 
 				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN
+				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD
 				+ "." + "Conn";//ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
 		String sEpProto =
 				//"s.ep.Proto"

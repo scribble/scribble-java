@@ -998,9 +998,9 @@ public class RPCoreCommandLine extends CommandLine
 					? new RPCoreDotApiGen(mmm, this.smt2t, gjob, fullname, impath, roles,
 							this.L0, this.E0, this.families, this.peers, this.subsum,
 							this.aliases).build()
-					: new RPCoreSTApiGenerator(gjob, fullname, this.L0, this.E0,
-							this.families, this.peers, this.subsum, this.aliases, impath,
-							roles, mode, this.smt2t).build();
+					: new RPCoreSTApiGenerator(mode, this.smt2t, gjob, fullname, impath,
+							roles, this.L0, this.E0, this.families, this.peers, this.subsum,
+							this.aliases).build();
 			outputClasses(goClasses);
 		}
 		else

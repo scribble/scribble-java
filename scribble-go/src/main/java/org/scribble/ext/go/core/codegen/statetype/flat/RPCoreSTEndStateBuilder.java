@@ -3,7 +3,6 @@ package org.scribble.ext.go.core.codegen.statetype.flat;
 import org.scribble.codegen.statetype.STEndStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
 import org.scribble.model.endpoint.EState;
 
 public class RPCoreSTEndStateBuilder extends STEndStateBuilder
@@ -20,12 +19,12 @@ public class RPCoreSTEndStateBuilder extends STEndStateBuilder
 	}
 
 	@Override
-	public String getPreamble(STStateChanApiBuilder api, EState s)
+	public String getPreamble(STStateChanApiBuilder apib, EState s)
 	{
-		RPCoreSTStateChanApiBuilder schangen = (RPCoreSTStateChanApiBuilder) api;
-		String scTypeName = api.getStateChanName(s);
+		RPCoreSTStateChanApiBuilder rpapib = (RPCoreSTStateChanApiBuilder) apib;
+		String scTypeName = apib.getStateChanName(s);
 		String res =
-				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(((RPCoreSTStateChanApiBuilder) api).variant) + "\n"
+				  "package " + rpapib.apigen.namegen.getEndpointKindPackageName(rpapib.variant) + "\n"
 				+ "\n"
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
 				+ "\n"
@@ -35,9 +34,9 @@ public class RPCoreSTEndStateBuilder extends STEndStateBuilder
 				+ "id uint64\n"
 
 				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *"
-						+ RPCoreSTApiGenerator.getEndpointKindTypeName(api.gpn.getSimpleName(), schangen.variant) + "\n"  // FIXME: factor out
+						+ rpapib.apigen.namegen.getEndpointKindTypeName(rpapib.variant) + "\n"  // FIXME: factor out
 						
-				+ (((RPCoreSTStateChanApiBuilder) api).apigen.job.parForeach ? "Thread int\n"	: "")
+				+ (((RPCoreSTStateChanApiBuilder) apib).apigen.job.parForeach ? "Thread int\n"	: "")
 						
 				+ "}";
 		return res;  // No LinearResource

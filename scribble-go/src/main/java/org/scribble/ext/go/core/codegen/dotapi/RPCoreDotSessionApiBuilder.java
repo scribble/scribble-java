@@ -614,7 +614,7 @@ public class RPCoreDotSessionApiBuilder
 		String res = "\n\n"
 				+ "func (ini *" + epkindTypeName + ") Init() *Init {\n"
 				+ "ini.Use()\n"  // CHECKME: use int-counter linearity for endpoints??
-				+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".CheckConnection()\n"
+				+ "ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + ".CheckConnection()\n"
 
 				// TODO: Factor out with RPCoreSTStateChanApiBuilder#makeReturnSuccStateChan
 				+ "return "
@@ -630,7 +630,7 @@ public class RPCoreDotSessionApiBuilder
 	{
 		String res = "\n\n"
 				+ "func (ini *" + epkindTypeName + ") Close() {\n"
-				+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + ".Close()\n"
+				+ "defer ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + ".Close()\n"
 				+ "}";
 		return res;
 	}
@@ -708,12 +708,12 @@ public class RPCoreDotSessionApiBuilder
 		if (subsPeer == null)
 		{
 			r = origPeer.getLastElement();
-			vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(origPeer);
+			vname = this.apigen.namegen.getEndpointKindTypeName(origPeer);
 		}
 		else
 		{
 			r = subsPeer.getLastElement();
-			vname = RPCoreSTApiGenerator.getGeneratedRoleVariantName(subsPeer);
+			vname = this.apigen.namegen.getEndpointKindTypeName(subsPeer);
 		}
 
 		String dial = "\n"
@@ -724,9 +724,9 @@ public class RPCoreDotSessionApiBuilder
 				+ makePeerIdIvalsCheck(origPeer, ivars, subbdbypeer)		
 				+ makePeerIdCoivalsCheck(origPeer, ivars, subbdbypeer)		
 						
-				+ "defer ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+				+ "defer ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + "."
 						+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
-				+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+				+ "ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + "."
 						+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
 				+ "c, err := " + newChan + "\n"
 				+ "if err != nil {\n"
@@ -734,11 +734,11 @@ public class RPCoreDotSessionApiBuilder
 				+ "}\n"
 				+ "\n"
 				+ "sfmt.Wrap(c)\n"
-				+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+				+ "ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + "."
 					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r
 					+ "\"][id] = c\n"
 						// CHECKME: connection map keys (cf. variant?)
-				+ "ini." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN + "."
+				+ "ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + "."
 					+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r
 					+ "\"][id] = sfmt\n"				+ "return err\n"  
 						// FIXME: runtime currently does log.Fatal on error

@@ -23,6 +23,7 @@ import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiNameGen;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTSessionApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
@@ -207,9 +208,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			//RPCoreEState end = ((RPCoreEModelFactory) this.job.ef).newEState(Collections.emptySet());
 
 			// FIXME: factor out with getStateChanPremable
-			GProtocolName simpname = this.apigen.proto.getSimpleName();
-			String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, this.variant); 
-			String end = "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
+			//GProtocolName simpname = this.apigen.proto.getSimpleName();
+			String epkindTypeName = this.apigen.namegen.getEndpointKindTypeName(this.variant); 
+			String end = "package " + this.apigen.namegen.getEndpointKindPackageName(this.variant) + "\n"
 					+ "\n"
 					+ "type End struct {\n"
 						+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
@@ -253,8 +254,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					// Duplicated from RPCoreSTSessionApiBuilder#getEndpointKindFilePath
 					this.gpn.toString().replaceAll("\\.", "/") 
 					//+ "/" + this.apigen.getFamilyPackageName(family)
-				+ (isCommonEndpointKind ? "" : "/" + this.apigen.getFamilyPackageName(this.family))
-				+ "/" + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant)  // State chans located with Endpoint Kind API
+				+ (isCommonEndpointKind ? "" : "/" + this.apigen.namegen.getFamilyPackageName(this.family))
+				+ "/" + this.apigen.namegen.getEndpointKindPackageName(this.variant)  // State chans located with Endpoint Kind API
 				+ "/" + filename + ".go";
 	}
 	
@@ -264,21 +265,22 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		String scTypeName = this.names.get(s.id);  //this.getStateChanName(s);  //this.getIntermediaryStateChanName(s);
-		String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, this.variant); 
+		String epkindTypeName = this.apigen.namegen.getEndpointKindTypeName(this.variant); 
 		
 		Map<String, String> res = new HashMap<>();
 		
 		String feach =
-				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
+				  "package " + this.apigen.namegen.getEndpointKindPackageName(this.variant) + "\n"
 				+ "\n";
 	
+		// FIXME: factor out
 		if (this.apigen.mode == Mode.IntPair)
 		{
-			feach += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";
+			feach += "import \"" + RPCoreSTApiGenConstants.INT_RUNTIME_SESSION_PACKAGE + "\"\n";
 		}
 		else if (this.apigen.job.parForeach)
 		{
-			feach += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
+			feach += "import \"" + RPCoreSTApiGenConstants.INTPAIR_RUNTIME_SESSION_PACKAGE + "\"\n";
 		}
 
 		// State channel type
@@ -379,7 +381,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 		if (this.apigen.job.parForeach)
 		{
-			feach += "nested := " + RPCoreSTSessionApiBuilder.makeStateChanInstance(apigen, initName, sEp, RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread");
+			feach += "nested := " + this.apigen.makeStateChanInstance(initName, sEp, RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread");
 			//feach += "nested.id = " + sEp + ".lin\n";
 			feach += "f(nested)\n";
 		}
@@ -440,7 +442,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			
 			feach += "tmp[\"" + p + "\"] = " + p + "\n";
 
-			feach += "nested := " + RPCoreSTSessionApiBuilder.makeStateChanInstance(apigen, initName, sEp, "tid");
+			feach += "nested := " + this.apigen.makeStateChanInstance(initName, sEp, "tid");
 			feach += "chs[" + p + "] = make(chan int)\n";
 			feach += "go func(ch chan int) {\n";
 			feach += "f(nested)\n";
@@ -478,10 +480,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		GProtocolName simpname = this.apigen.proto.getSimpleName();
 		String scTypeName = this.getStateChanName(s);
-		String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, this.variant); 
+		String epkindTypeName = this.apigen.namegen.getEndpointKindTypeName(this.variant); 
 		
 		String res =
-				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(this.variant) + "\n"
+				  "package " + this.apigen.namegen.getEndpointKindPackageName(this.variant) + "\n"
 				+ "\n";
 				//+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
 
@@ -500,8 +502,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			switch (this.apigen.mode)
 			{
-				case Int:  res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";  break;
-				case IntPair:  res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";  break;
+				case Int:  res += "import \"" + RPCoreSTApiGenConstants.INT_RUNTIME_SESSION_PACKAGE + "\"\n";  break;
+				case IntPair:  res += "import \"" + RPCoreSTApiGenConstants.INTPAIR_RUNTIME_SESSION_PACKAGE + "\"\n";  break;
 				default:  throw new RuntimeException("Shouldn't get in here:" + this.apigen.mode);
 			}
 
@@ -520,13 +522,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			if (this.apigen.mode == Mode.IntPair)
 			{
-				res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";
+				res += "import \"" + RPCoreSTApiGenConstants.INTPAIR_RUNTIME_SESSION_PACKAGE + "\"\n";
 				res += "\n";
 				res += "var _ = session2.XY\n";  // For nested states that only use foreach vars (so no session2.XY)
 			}
 			else if (this.apigen.job.parForeach)
 			{
-				res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";
+				res += "import \"" + RPCoreSTApiGenConstants.INT_RUNTIME_SESSION_PACKAGE + "\"\n";
 			}
 		}
 
@@ -732,8 +734,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			if (this.apigen.job.parForeach)
 			{
 				nextState = "succ := " +
-						RPCoreSTSessionApiBuilder.makeStateChanInstance(
-								this.apigen,
+						this.apigen.makeStateChanInstance(
 								name,
 								sEp,
 								RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread"
@@ -839,8 +840,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			throw new RuntimeException("[rp-core] TODO: " + r);
 		}
 		RPInterval g = r.intervals.iterator().next();
-		return r.getName() + "_" + RPCoreSTApiGenerator.getGeneratedNameLabel(g.start)
-				+ (g.start.equals(g.end) ? "" : "to" + RPCoreSTApiGenerator.getGeneratedNameLabel(g.end));
+		return r.getName() + "_" + RPCoreSTApiNameGen.getGeneratedNameLabel(g.start)
+				+ (g.start.equals(g.end) ? "" : "to" + RPCoreSTApiNameGen.getGeneratedNameLabel(g.end));
 	}
 	
 	// Expressions to be used in code -- cf. RPCoreSTApiGenerator.getGeneratedNameLabel
@@ -974,11 +975,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 	}
 	
-	protected static String getDelegatedChanPackageName(RPCoreGDelegationType gdt)
+	protected String getDelegatedChanPackageName(RPCoreGDelegationType gdt)
 	{
-		GProtocolName proto = gdt.getGlobalProtocol();
+		//GProtocolName proto = gdt.getGlobalProtocol();
 		RPRoleVariant variant = gdt.getVariant();
-		return RPCoreSTApiGenerator.getEndpointKindTypeName(proto.getSimpleName(), variant);  // N.B. doesn't use proto
+		return this.apigen.namegen.getEndpointKindTypeName(variant);
 	}
 
 

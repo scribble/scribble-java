@@ -15,6 +15,7 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.del.ModuleDel;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.cli.RPCoreCLArgParser;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTStateChanApiBuilder;
 import org.scribble.ext.go.core.type.RPFamily;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
@@ -217,7 +218,7 @@ public class RPCoreSTApiGenerator
 		return res;
 	}
 
-	//private Map<RPRoleVariant, Map<Integer, String>> stateChanNames = new HashMap<>();  // FIXME: currently cached from RPCoreDotSessionApiBuilder
+	private Map<RPRoleVariant, Map<Integer, String>> stateChanNames = new HashMap<>();  // FIXME: currently cached from RPCoreDotSessionApiBuilder
 
 	//@Override
 	public Map<String, String> buildSessionApi()  // FIXME: factor out
@@ -226,17 +227,15 @@ public class RPCoreSTApiGenerator
 				.debugPrintln("\n[rp-core] Running " + RPCoreSTSessionApiBuilder.class
 						+ " for " + this.proto + "@" + this.selfs);
 		RPCoreSTSessionApiBuilder b = new RPCoreSTSessionApiBuilder(this);
-		//this.stateChanNames.putAll(b.stateChanNames);
+		this.stateChanNames.putAll(b.stateChanNames);
 		return b.build();
 	}
 	
 	public Map<String, String> buildStateChannelApi(
 			RPFamily family, RPRoleVariant variant, EGraph graph)  // FIXME: factor out
 	{
-		/*this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + variant);
-		return new RPCoreSTStateChanApiBuilder(this, family, variant, graph, this.stateChanNames.get(variant)).build();*/
-		//throw new RuntimeException("TODO");
-		return Collections.emptyMap();
+		this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + variant);
+		return new RPCoreSTStateChanApiBuilder(this, family, variant, graph, this.stateChanNames.get(variant)).build();
 	}
 	
 	public String makeLinearResourceInstance()

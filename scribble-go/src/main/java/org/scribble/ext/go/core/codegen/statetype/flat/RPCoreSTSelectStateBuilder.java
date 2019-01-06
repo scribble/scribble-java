@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
@@ -46,24 +45,24 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 
 	// Cf. RPCoreSTStateChanApiBuilder -- the hierarchy splits off branch state building separately
 	@Override
-	public String getPreamble(STStateChanApiBuilder api, EState s)
+	public String getPreamble(STStateChanApiBuilder apib, EState s)
 	{
-		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
+		RPCoreSTStateChanApiBuilder rpapib = (RPCoreSTStateChanApiBuilder) apib;
 
-		GProtocolName simpname = rpapi.apigen.proto.getSimpleName();
-		RPRoleVariant variant = ((RPCoreSTStateChanApiBuilder) api).variant;
-		String scTypeName = rpapi.getStateChanName(s);
-		String epTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, rpapi.variant); 
+		GProtocolName simpname = rpapib.apigen.proto.getSimpleName();
+		RPRoleVariant variant = ((RPCoreSTStateChanApiBuilder) apib).variant;
+		String scTypeName = rpapib.getStateChanName(s);
+		String epTypeName = rpapib.apigen.namegen.getEndpointKindTypeName(rpapib.variant); 
 
 		String sEpRecv = 
 				  RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
 				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN;
+				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD;
 
 		String res =
-				  "package " + RPCoreSTApiGenerator.getGeneratedRoleVariantName(variant) + "\n"
+				  "package " + rpapib.apigen.namegen.getEndpointKindPackageName(variant) + "\n"
 				+ "\n"
-				+ "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
+				+ "import \"" + RPCoreSTApiGenConstants.INT_RUNTIME_SESSION_PACKAGE + "\"\n"
 				+ "import \"log\"\n"
 
 				// State channel type
@@ -103,7 +102,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName + ") branch() {\n"
 				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
 						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
-		if (((GoJob) rpapi.job).noCopy)
+		if (((GoJob) rpapib.job).noCopy)
 		{
 			/*res += 
 					  "label := " + sEpRecv + "Raw(\"" + peer.getName() + "\", "
@@ -117,7 +116,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 					 "if err := " + sEpRecv + "." /*+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + peer.getName() + "\"][" 
 				  		+ RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&op)*/
 							+ RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
-				  		+ rpapi.generateIndexExpr(d.start) + ", &op)"
+				  		+ rpapib.generateIndexExpr(d.start) + ", &op)"
 					+ "; err != nil {\n"  // g.end = g.start -- CFSM only has ? for input
 					+ "log.Fatal(err)\n"
 					+ "}\n";

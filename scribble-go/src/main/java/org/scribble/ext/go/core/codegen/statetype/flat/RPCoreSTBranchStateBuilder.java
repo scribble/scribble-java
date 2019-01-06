@@ -3,7 +3,6 @@ package org.scribble.ext.go.core.codegen.statetype.flat;
 import org.scribble.codegen.statetype.STBranchStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
@@ -48,10 +47,10 @@ public class RPCoreSTBranchStateBuilder extends STBranchStateBuilder
 	{
 		GProtocolName simpname = apib.apigen.proto.getSimpleName();
 		String scTypeName = apib.getStateChanName(s);
-		String epkindTypeName = RPCoreSTApiGenerator.getEndpointKindTypeName(simpname, apib.variant); 
+		String epkindTypeName = apib.apigen.namegen.getEndpointKindTypeName(apib.variant); 
 		
 		String res =
-				  "package " + RPCoreSTApiGenerator.getEndpointKindPackageName(apib.variant) + "\n"
+				  "package " + apib.apigen.namegen.getEndpointKindTypeName(apib.variant) + "\n"
 				+ "\n";
 				
 		// Not needed by select-branch or Case objects  // FIXME: refactor back into state-specific builders?
@@ -64,10 +63,11 @@ public class RPCoreSTBranchStateBuilder extends STBranchStateBuilder
 		// FIXME: still needed? -- refactor back into state-specific builders?
 		if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 		{
+			// FIXME: factor out
 			switch (apib.apigen.mode)
 			{
-				case Int:  res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n";  break;
-				case IntPair:  res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";  break;
+				case Int:  res += "import \"" + RPCoreSTApiGenConstants.INT_RUNTIME_SESSION_PACKAGE + "\"\n";  break;
+				case IntPair:  res += "import \"" + RPCoreSTApiGenConstants.INTPAIR_RUNTIME_SESSION_PACKAGE + "\"\n";  break;
 				default:  throw new RuntimeException("Shouldn't get in here:" + apib.apigen.mode);
 			}
 
@@ -86,7 +86,7 @@ public class RPCoreSTBranchStateBuilder extends STBranchStateBuilder
 		{
 			if (apib.apigen.mode == Mode.IntPair)
 			{
-				res += "import \"" + RPCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_PAIR_SESSION_PACKAGE + "\"\n";
+				res += "import \"" + RPCoreSTApiGenConstants.INTPAIR_RUNTIME_SESSION_PACKAGE + "\"\n";
 				res += "\n";
 				res += "var _ = session2.XY\n";  // For nested states that only use foreach vars (so no session2.XY)
 			}

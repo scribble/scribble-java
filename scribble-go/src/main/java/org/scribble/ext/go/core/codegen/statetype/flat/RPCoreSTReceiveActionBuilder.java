@@ -61,7 +61,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		}
 
 		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
-				+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_SESSCHAN; /*+ "." //+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP
+				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD; /*+ "." //+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP
 				+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP
 				+ "[\"" +  peer.getName() + "\"]";*/
 
