@@ -219,7 +219,7 @@ public class RPCoreSTApiGenerator
 	}
 
 	private Map<RPRoleVariant, Map<Integer, String>> stateChanNames = new HashMap<>();  
-			// FIXME HACK: currently cached from RPCoreDotSessionApiBuilder
+			// FIXME HACK: currently cached from RPCoreDotSessionApiBuilder -- move into here?
 
 	//@Override
 	public Map<String, String> buildSessionApi()  // TODO: factor out

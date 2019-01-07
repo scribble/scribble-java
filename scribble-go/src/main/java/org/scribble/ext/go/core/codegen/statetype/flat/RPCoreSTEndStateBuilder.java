@@ -24,7 +24,7 @@ public class RPCoreSTEndStateBuilder extends STEndStateBuilder
 		RPCoreSTStateChanApiBuilder rpapib = (RPCoreSTStateChanApiBuilder) apib;
 		String scTypeName = apib.getStateChanName(s);
 		String res =
-				  "package " + rpapib.apigen.namegen.getEndpointKindPackageName(rpapib.variant) + "\n"
+				  "package " + rpapib.parent.namegen.getEndpointKindPackageName(rpapib.variant) + "\n"
 				+ "\n"
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
 				+ "\n"
@@ -34,9 +34,9 @@ public class RPCoreSTEndStateBuilder extends STEndStateBuilder
 				+ "id uint64\n"
 
 				+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *"
-						+ rpapib.apigen.namegen.getEndpointKindTypeName(rpapib.variant) + "\n"  // FIXME: factor out
+						+ rpapib.parent.namegen.getEndpointKindTypeName(rpapib.variant) + "\n"  // FIXME: factor out
 						
-				+ (((RPCoreSTStateChanApiBuilder) apib).apigen.job.parForeach ? "Thread int\n"	: "")
+				+ (((RPCoreSTStateChanApiBuilder) apib).parent.job.parForeach ? "Thread int\n"	: "")
 						
 				+ "}";
 		return res;  // No LinearResource

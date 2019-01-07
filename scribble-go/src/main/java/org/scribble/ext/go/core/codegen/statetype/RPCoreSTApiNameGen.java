@@ -10,18 +10,19 @@ import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.ext.go.type.index.RPIndexVar;
 
+// Also some paths
 public class RPCoreSTApiNameGen
 {
-	private final RPCoreSTApiGenerator apigen; 
+	private final RPCoreSTApiGenerator parent; 
 
 	public RPCoreSTApiNameGen(RPCoreSTApiGenerator apigen)
 	{
-		this.apigen = apigen;
+		this.parent = apigen;
 	}
 	
 	public String getApiRootPackageFullPath()
 	{
-		return this.apigen.packpath + "/" + this.apigen.proto.toString().replaceAll("\\.", "/");
+		return this.parent.packpath + "/" + this.parent.proto.toString().replaceAll("\\.", "/");
 	}
 
 	//@Override
@@ -29,12 +30,12 @@ public class RPCoreSTApiNameGen
 			// Derives only from simple proto name -- remainder of full name is (full) module name
 			// CHECKME: use full proto name?  e.g., in gen API package decls
 	{
-		return this.apigen.proto.getSimpleName().toString();
+		return this.parent.proto.getSimpleName().toString();
 	}
 
 	public String getProtoTypeName()  
 	{
-		return this.apigen.proto.getSimpleName().toString();
+		return this.parent.proto.getSimpleName().toString();
 	}
 
 	/*public String makeApiRootPackageDecl()
@@ -45,7 +46,7 @@ public class RPCoreSTApiNameGen
 	//public String getFamilyPackageName(Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> family)
 	public String getFamilyPackageName(RPFamily family)
 	{
-		return "family_" + this.apigen.families.get(family);
+		return "family_" + this.parent.families.get(family);
 	}
 
 	public String getEndpointKindPackageName(RPRoleVariant variant)
@@ -111,5 +112,49 @@ public class RPCoreSTApiNameGen
 		{
 			throw new RuntimeException("Shouldn't get here: " + e);
 		} 
+	}
+
+	// Returns path to target *directory* as an offset to -d -- does not include the target file itself
+	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
+	public String getEndpointKindDirPath(RPFamily family, RPRoleVariant variant, boolean isCommonEndpointKind)
+	{
+		String basedir = this.parent.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
+		return basedir
+				+ (isCommonEndpointKind ? "" : "/" + this.parent.namegen.getFamilyPackageName(family))
+				+ "/" + this.parent.namegen.getEndpointKindPackageName(variant);
+				
+				/*// "Syntactically" determining common endpoint kinds difficult because concrete peers depends on param (and foreachvar) values, e.g., M in PGet w.r.t. number of F's
+				// Also, family factoring is more about dial/accept
+				isCommonEndpointKind = true;
+				Set<Role> peers = null;
+				X: for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.apigen.families.keySet())
+				{
+					if (fam.left.contains(variant))
+					{
+						EGraph g = this.apigen.variants.get(rname).get(variant);
+						Set<RPCoreEAction> as = RPCoreEState.getReachableActions((RPCoreEModelFactory) this.apigen.job.ef, (RPCoreEState) g.init);
+						Set<Role> tmp = as.stream().map(a -> a.getPeer()).collect(Collectors.toSet());
+						if (peers == null)
+						{
+							peers = tmp;
+						}
+						else if (!peers.equals(tmp))
+						{
+							isCommonEndpointKind = false;
+							break X;
+						}
+					}
+				}
+				//*/
+	}
+
+	// Duplicated from getEndpointKindFilePath
+	// Returns path to target *directory* as an offset to -d -- does not include the target file itself
+	public String getStateChannelDirPath(RPFamily family, RPRoleVariant variant, boolean isCommonEndpointKind)
+	{
+		String basedir = this.parent.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
+		return basedir
+				+ (isCommonEndpointKind ? "" : "/" + this.parent.namegen.getFamilyPackageName(family))
+				+ "/" + this.parent.namegen.getEndpointKindPackageName(variant);  // State chans located with Endpoint Kind API
 	}
 }

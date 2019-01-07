@@ -86,7 +86,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			// TODO: factor out with send, etc.
 			String lte;
 			String inc;
-			switch (rpapi.apigen.mode)
+			switch (rpapi.parent.mode)
 			{
 				case Int:  
 				{
@@ -100,7 +100,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 					inc = "i.Inc(" + rpapi.generateIndexExpr(d.end) + ")"; 
 					break;
 				}
-				default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.apigen.mode);
+				default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.parent.mode);
 			}
 
 			String start = rpapi.generateIndexExpr(d.start);

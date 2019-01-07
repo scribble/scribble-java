@@ -36,15 +36,15 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 	{
 		RPCoreSTStateChanApiBuilder rpapib = (RPCoreSTStateChanApiBuilder) apib;
 		String casename = getCaseActionName(apib, s);
-		String res = "package " + rpapib.apigen.namegen.getEndpointKindPackageName(rpapib.variant) + "\n"
+		String res = "package " + rpapib.parent.namegen.getEndpointKindPackageName(rpapib.variant) + "\n"
 				+ "\n";
 		
 		// FIXME: factor out
-		switch (rpapib.apigen.mode)
+		switch (rpapib.parent.mode)
 		{
 			case Int:  res += "import \"" + RPCoreSTApiGenConstants.INT_RUNTIME_SESSION_PACKAGE + "\"\n";  break;
 			case IntPair:  res += "import \"" + RPCoreSTApiGenConstants.INTPAIR_RUNTIME_SESSION_PACKAGE + "\"\n";  break;
-			default:  throw new RuntimeException("Shouldn't get in here: " + rpapib.apigen.mode);
+			default:  throw new RuntimeException("Shouldn't get in here: " + rpapib.parent.mode);
 		}
 
 		res += 
@@ -67,10 +67,10 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 					: rpapib.getExtName((MessageSigName) a.mid);
 			res += "\ntype " + getOpTypeName(apib, s, a.mid) + " struct {\n"
 						+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n"  // FIXME: never set -- branch action won't return an actual case object upon error
-						+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *" + rpapib.apigen.namegen.getEndpointKindTypeName(rpapib.variant) + "\n" 
+						+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *" + rpapib.parent.namegen.getEndpointKindTypeName(rpapib.variant) + "\n" 
 						+ RPCoreSTApiGenConstants.SCHAN_RES_FIELD + " *" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE + "\n"
 						+ (a.mid.isMessageSigName() ? "msg *" + extName + "\n" : "")
-						+ (rpapib.apigen.job.parForeach ? "Thread int\n" : "")
+						+ (rpapib.parent.job.parForeach ? "Thread int\n" : "")
 			  		+ "}\n"
 
 			  		+ "\n"

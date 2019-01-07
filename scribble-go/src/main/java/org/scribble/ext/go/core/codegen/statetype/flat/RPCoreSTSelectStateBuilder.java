@@ -49,10 +49,10 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 	{
 		RPCoreSTStateChanApiBuilder rpapib = (RPCoreSTStateChanApiBuilder) apib;
 
-		GProtocolName simpname = rpapib.apigen.proto.getSimpleName();
+		GProtocolName simpname = rpapib.parent.proto.getSimpleName();
 		RPRoleVariant variant = ((RPCoreSTStateChanApiBuilder) apib).variant;
 		String scTypeName = rpapib.getStateChanName(s);
-		String epTypeName = rpapib.apigen.namegen.getEndpointKindTypeName(rpapib.variant); 
+		String epTypeName = rpapib.parent.namegen.getEndpointKindTypeName(rpapib.variant); 
 
 		String sEpRecv = 
 				  RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER
@@ -60,7 +60,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD;
 
 		String res =
-				  "package " + rpapib.apigen.namegen.getEndpointKindPackageName(variant) + "\n"
+				  "package " + rpapib.parent.namegen.getEndpointKindPackageName(variant) + "\n"
 				+ "\n"
 				+ "import \"" + RPCoreSTApiGenConstants.INT_RUNTIME_SESSION_PACKAGE + "\"\n"
 				+ "import \"log\"\n"

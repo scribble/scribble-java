@@ -45,17 +45,17 @@ public class RPCoreSTBranchStateBuilder extends STBranchStateBuilder
 	// FIXME refactor -- duplicated from RPCoreSTStateChanApiBuilder#getStateChanPremable, just to set false in apib.makeMessageImports(s, false);
 	protected String getStateChanPremable(RPCoreSTStateChanApiBuilder apib, EState s)
 	{
-		GProtocolName simpname = apib.apigen.proto.getSimpleName();
+		GProtocolName simpname = apib.parent.proto.getSimpleName();
 		String scTypeName = apib.getStateChanName(s);
-		String epkindTypeName = apib.apigen.namegen.getEndpointKindTypeName(apib.variant); 
+		String epkindTypeName = apib.parent.namegen.getEndpointKindTypeName(apib.variant); 
 		
 		String res =
-				  "package " + apib.apigen.namegen.getEndpointKindTypeName(apib.variant) + "\n"
+				  "package " + apib.parent.namegen.getEndpointKindTypeName(apib.variant) + "\n"
 				+ "\n";
 				
 		// Not needed by select-branch or Case objects  // FIXME: refactor back into state-specific builders?
 		if (s.getStateKind() == EStateKind.OUTPUT || s.getStateKind() == EStateKind.UNARY_INPUT
-				|| (s.getStateKind() == EStateKind.POLY_INPUT && !apib.apigen.job.selectApi))
+				|| (s.getStateKind() == EStateKind.POLY_INPUT && !apib.parent.job.selectApi))
 		{
 			res += apib.makeMessageImports(s, false);
 		}
@@ -64,11 +64,11 @@ public class RPCoreSTBranchStateBuilder extends STBranchStateBuilder
 		if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
 		{
 			// FIXME: factor out
-			switch (apib.apigen.mode)
+			switch (apib.parent.mode)
 			{
 				case Int:  res += "import \"" + RPCoreSTApiGenConstants.INT_RUNTIME_SESSION_PACKAGE + "\"\n";  break;
 				case IntPair:  res += "import \"" + RPCoreSTApiGenConstants.INTPAIR_RUNTIME_SESSION_PACKAGE + "\"\n";  break;
-				default:  throw new RuntimeException("Shouldn't get in here:" + apib.apigen.mode);
+				default:  throw new RuntimeException("Shouldn't get in here:" + apib.parent.mode);
 			}
 
 			res += "import \"sync/atomic\"\n";
@@ -84,7 +84,7 @@ public class RPCoreSTBranchStateBuilder extends STBranchStateBuilder
 		}
 		else if (s.getStateKind() == EStateKind.OUTPUT)
 		{
-			if (apib.apigen.mode == Mode.IntPair)
+			if (apib.parent.mode == Mode.IntPair)
 			{
 				res += "import \"" + RPCoreSTApiGenConstants.INTPAIR_RUNTIME_SESSION_PACKAGE + "\"\n";
 				res += "\n";
@@ -97,7 +97,7 @@ public class RPCoreSTBranchStateBuilder extends STBranchStateBuilder
 				+ "type " + scTypeName + " struct {\n"
 				+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n";
 
-		if (apib.apigen.job.parForeach)
+		if (apib.parent.job.parForeach)
 		{
 			res += RPCoreSTApiGenConstants.SCHAN_RES_FIELD + " *" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE + "\n";
 		}
@@ -108,7 +108,7 @@ public class RPCoreSTBranchStateBuilder extends STBranchStateBuilder
 
 		res += RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *" + epkindTypeName + "\n";
 
-		if (apib.apigen.job.parForeach)
+		if (apib.parent.job.parForeach)
 		{
 			res += "Thread int\n";
 		}

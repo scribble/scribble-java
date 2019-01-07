@@ -83,6 +83,7 @@ public class RPCoreSTSessionApiBuilder
 		return res;
 	}
 
+	// TODO: factor up toe RPCoreSTApiGenerator
 	private Map<RPRoleVariant, Map<Integer, String>> makeStateChanNames()
 	{
 		Map<RPRoleVariant, Map<Integer, String>> res = new HashMap<>();
@@ -575,8 +576,9 @@ public class RPCoreSTSessionApiBuilder
 							+ init + "\n\n" 
 							+ close;
 					res.put(
-							getEndpointKindFilePath(compactedFamily, origVariant,
-									isCommonEndpointKind) + "/" + epkindTypeName + ".go",
+							this.parent.namegen.getEndpointKindDirPath(compactedFamily,
+										origVariant, isCommonEndpointKind)
+									+ "/" + epkindTypeName + ".go",
 							epkindFile);
 				}
 			}
@@ -1085,41 +1087,6 @@ public class RPCoreSTSessionApiBuilder
 	{
 		String basedir = this.parent.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
 		return basedir;
-	}
-
-	// Returns path to use as offset to -d
-	// -- cf. packpath, "absolute" Go import path (github.com/...) -- would coincide if protocol full name (i.e., module) used "github.com/..."
-	// TODO: factor up to super -- cf. STStateChanApiBuilder#getStateChannelFilePath
-	public String getEndpointKindFilePath(RPFamily family, RPRoleVariant variant, boolean isCommonEndpointKind)
-	{
-		String basedir = this.parent.proto.toString().replaceAll("\\.", "/") + "/";  // Full name
-		return basedir
-				+ (isCommonEndpointKind ? "" : "/" + this.parent.namegen.getFamilyPackageName(family))
-				+ "/" + this.parent.namegen.getEndpointKindPackageName(variant);
-				
-				/*// "Syntactically" determining common endpoint kinds difficult because concrete peers depends on param (and foreachvar) values, e.g., M in PGet w.r.t. number of F's
-				// Also, family factoring is more about dial/accept
-				isCommonEndpointKind = true;
-				Set<Role> peers = null;
-				X: for (Pair<Set<RPRoleVariant>, Set<RPRoleVariant>> fam : this.apigen.families.keySet())
-				{
-					if (fam.left.contains(variant))
-					{
-						EGraph g = this.apigen.variants.get(rname).get(variant);
-						Set<RPCoreEAction> as = RPCoreEState.getReachableActions((RPCoreEModelFactory) this.apigen.job.ef, (RPCoreEState) g.init);
-						Set<Role> tmp = as.stream().map(a -> a.getPeer()).collect(Collectors.toSet());
-						if (peers == null)
-						{
-							peers = tmp;
-						}
-						else if (!peers.equals(tmp))
-						{
-							isCommonEndpointKind = false;
-							break X;
-						}
-					}
-				}
-				//*/
 	}
 
 	// TODO: Factor out with RPCoreSTStateChanApiGenerator#generateIndexExpr

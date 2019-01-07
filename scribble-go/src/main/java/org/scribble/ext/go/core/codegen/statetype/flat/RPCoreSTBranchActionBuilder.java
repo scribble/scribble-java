@@ -37,7 +37,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 				+ "panic(" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + ")\n"
 				+ "}\n";
 
-		if (rpapi.apigen.job.parForeach)
+		if (rpapi.parent.job.parForeach)
 		{
 			res += RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_RES_FIELD
 						+ "." + RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n";
@@ -99,7 +99,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 		String ret = RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + ": "
 				+ RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + ", "
 				+ RPCoreSTApiGenConstants.SCHAN_RES_FIELD + ": new(" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE + ")"
-				+ (rpapi.apigen.job.parForeach ? ", Thread: " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread" : "");
+				+ (rpapi.parent.job.parForeach ? ", Thread: " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread" : "");
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder
 		RPInterval d = peer.intervals.iterator().next();
