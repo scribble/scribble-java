@@ -31,13 +31,13 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 		if (a.mid.isOp())
 		{
 			return IntStream.range(0, a.payload.elems.size()) 
-						.mapToObj(i -> RPCoreSTApiGenConstants.GO_CASE_METHOD_ARG + i
+						.mapToObj(i -> RPCoreSTApiGenConstants.API_CASE_ARG + i
 								+ " *" + rpapi.getExtName((DataType) a.payload.elems.get(i)))
 						.collect(Collectors.joining(", "));
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			return RPCoreSTApiGenConstants.GO_CASE_METHOD_ARG + "0 *"
+			return RPCoreSTApiGenConstants.API_CASE_ARG + "0 *"
 					+ rpapi.getExtName((MessageSigName) a.mid);
 		}
 	}
@@ -48,7 +48,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
 		RPIndexedRole peer = (RPIndexedRole) a.peer;  // Singleton interval
 
-		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+		String sEpRecv = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD
 				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD; /*+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP
 				+ "[\"" +  peer.getName() + "\"]";*/
 		
@@ -70,7 +70,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 				//+ (extName.startsWith("[]") ? "tmp = make(" + extName + ", len(*arg0))\n" : "")  // HACK: []  // N.B. *arg0 matches buildArgs
 				  "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(&tmp)"*/
-						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
+						+ "." + RPCoreSTApiGenConstants.MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
 								+ rpapi.generateIndexExpr(d.start) + ", arg0)"
 						+ "; err != nil {\n"
 				//+ "log.Fatal(err)\n"

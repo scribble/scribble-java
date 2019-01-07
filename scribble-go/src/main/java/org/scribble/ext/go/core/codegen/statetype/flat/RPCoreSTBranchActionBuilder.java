@@ -33,20 +33,20 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 				+ "func (s *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "("
 						+ buildArgs(null, a)
 						+ ") " + getReturnType(api, curr, succ) + " {\n"  // HACK: return type is interface, so no need for *return (unlike other state chans)
-				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
-				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
+				+ "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " != nil {\n"
+				+ "panic(" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + ")\n"
 				+ "}\n";
 
 		if (rpapi.apigen.job.parForeach)
 		{
-			res += RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+			res += RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_RES_FIELD
+						+ "." + RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n";
 		}
 		else
 		{
-			res += "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
+			res += "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
 						//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
-						+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin"
+						+ RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "." + "lin"
 				+ " {\n"
 				+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
 				+ "}\n";
@@ -89,17 +89,17 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 		}
 
 		RPIndexedRole peer = (RPIndexedRole) a.peer;  // Singleton interval
-		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+		String sEpRecv = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD
 				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD; /*+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP
 				+ "[\"" + peer.getName() + "\"]";*/
 				
 		String res = "";
 			
 		// FIXME: factor out with RPCoreSTStateChanApiBuilder#getSuccStateChan -- don't need terminal check for succ though
-		String ret = RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": "
-				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ", "
-				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + ")"
-				+ (rpapi.apigen.job.parForeach ? ", Thread: " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread" : "");
+		String ret = RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + ": "
+				+ RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + ", "
+				+ RPCoreSTApiGenConstants.SCHAN_RES_FIELD + ": new(" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE + ")"
+				+ (rpapi.apigen.job.parForeach ? ", Thread: " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread" : "");
 		
 		// Duplicated from RPCoreSTReceiveActionBuilder
 		RPInterval d = peer.intervals.iterator().next();
@@ -117,7 +117,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 				res += "var lab string\n" // cf. RPCoreSTReceiveActionBuilder
 					+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(" + "&lab" + ")"*/
-					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
+					+ "." + RPCoreSTApiGenConstants.MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
 							+ rpapi.generateIndexExpr(d.start) + ", &lab" + ")"  // peer must have singleton interval
 							+ "; err != nil {\n"
 					//+ "log.Fatal(err)\n"
@@ -144,7 +144,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 					  "var msg session2.ScribMessage\n"
 					+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 					+ "." //+ RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(" + "&msg" + ")"*/
-					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", "
+					+ "." + RPCoreSTApiGenConstants.MPCHAN_MRECV + "(\"" + peer.getName() + "\", "
 							+ rpapi.generateIndexExpr(d.start) + ", &msg" + ")"  // peer must have singleton interval
 							+ "; err != nil {\n"
 					//+ "log.Fatal(err)\n"

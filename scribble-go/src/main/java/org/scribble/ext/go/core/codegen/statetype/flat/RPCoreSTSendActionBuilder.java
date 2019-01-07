@@ -21,7 +21,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
 		return RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
-				+ "_" + RPCoreSTApiGenConstants.RP_SCATTER_METHOD_PREFIX  // FIXME: make unary Send special case
+				+ "_" + RPCoreSTApiGenConstants.API_SCATTER_PREFIX  // FIXME: make unary Send special case
 				+ "_" + a.mid;
 	}
 
@@ -32,13 +32,13 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		if (a.mid.isOp())
 		{
 			return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + i + " []"
+					.mapToObj(i -> RPCoreSTApiGenConstants.API_SEND_ARG + i + " []"
 							+ apigen.getPayloadElemTypeName(a.payload.elems.get(i))) //a.payload.elems.get(i)
 					.collect(Collectors.joining(", "));
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			return RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + "0 []"
+			return RPCoreSTApiGenConstants.API_SEND_ARG + "0 []"
 					+ apigen.getExtName((MessageSigName) a.mid);
 		}
 	}
@@ -83,7 +83,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 			throw new RuntimeException("[rp-core] TODO: " + a);
 		}
 		
-		String sEpWrite = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+		String sEpWrite = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD
 				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD; /*+ "." //+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP
 				+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP
 				+ "[\"" + r.getName() + "\"]";*/
@@ -118,10 +118,10 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		String res = "for i, j := " + rpapi.generateIndexExpr(d.start) + ", 0;"
 				+ " i" + lte + "; i, j = " + inc + ", j+1 {\n";
 
-		String errorField = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
-                            + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
+		String errorField = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+                            + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "."
                             + "_" + rpapi.getSuccStateChanName(succ) + "."
-                            + RPCoreSTApiGenConstants.GO_MPCHAN_ERR;
+                            + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD;
 
 		if (a.mid.isOp())
 		{
@@ -132,7 +132,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 							+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_STRING
 							+ "(\"" + a.mid + "\"" + ")" */
-							+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_ISEND + "(\"" + r.getName() + "\", i, &op)"
+							+ "." + RPCoreSTApiGenConstants.MPCHAN_ISEND + "(\"" + r.getName() + "\", i, &op)"
 							+ "; " + errorField + " != nil {\n"
 					//+ "log.Fatal(err)\n"  // FIXME
 					//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
@@ -173,7 +173,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 				
 					res +=  checkError(sEpWrite
 												+ "."
-												+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
+												+ (a.mid.isOp() ? RPCoreSTApiGenConstants.MPCHAN_ISEND : RPCoreSTApiGenConstants.MPCHAN_MSEND)
 												+ "(\"" + r.getName() + "\", i" 
 												+ IntStream.range(0, a.payload.elems.size()).mapToObj(i -> ", &arg" + i + "[j]").collect(Collectors.joining(""))
 												+ ")", errorField);
@@ -184,7 +184,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 				// FIXME: factor out with above
 				res += checkError( sEpWrite
 											+ "."
-											+ (a.mid.isOp() ? RPCoreSTApiGenConstants.GO_MPCHAN_ISEND : RPCoreSTApiGenConstants.GO_MPCHAN_MSEND)
+											+ (a.mid.isOp() ? RPCoreSTApiGenConstants.MPCHAN_ISEND : RPCoreSTApiGenConstants.MPCHAN_MSEND)
 											+ "(\"" + r.getName() + "\", i, &arg0[j])", errorField);
 			}
 		}

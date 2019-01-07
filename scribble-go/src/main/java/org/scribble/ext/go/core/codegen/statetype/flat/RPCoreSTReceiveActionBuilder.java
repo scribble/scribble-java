@@ -22,7 +22,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
 		return RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
-				+ "_" + RPCoreSTApiGenConstants.RP_GATHER_METHOD_PREFIX  // FIXME: make unary Receive special case
+				+ "_" + RPCoreSTApiGenConstants.API_GATHER_PREFIX  // FIXME: make unary Receive special case
 				+ "_" + a.mid;
 	}
 
@@ -33,13 +33,13 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 		if (a.mid.isOp())
 		{
 			return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG + i + " []"
+					.mapToObj(i -> RPCoreSTApiGenConstants.API_RECEIVE_ARG + i + " []"
 							+ rpapi.getPayloadElemTypeName(a.payload.elems.get(i)))
 					.collect(Collectors.joining(", "));
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			return RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG + "0 []"
+			return RPCoreSTApiGenConstants.API_RECEIVE_ARG + "0 []"
 					+ rpapi.getExtName((MessageSigName) a.mid);
 		}
 	}
@@ -60,7 +60,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			throw new RuntimeException("[rp-core] TODO: " + a);
 		}
 
-		String sEpRecv = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+		String sEpRecv = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD
 				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD; /*+ "." //+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP
 				+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP
 				+ "[\"" +  peer.getName() + "\"]";*/
@@ -110,10 +110,10 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 
 			// For payloads -- FIXME: currently hardcoded for exactly one payload
 
-			String errorField = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
-                                + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "."
+			String errorField = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+                                + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "."
                                 + "_" + rpapi.getSuccStateChanName(succ) + "."
-                                + RPCoreSTApiGenConstants.GO_MPCHAN_ERR;
+                                + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD;
 
 			if (a.mid.isOp())
 			{
@@ -123,7 +123,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 							+ "if " + errorField + " = " + sEpRecv /*+ "[i]"
 									+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(" + "&lab" + ")"
 											+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_STRING + "()"*/
-									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &lab)" 
+									+ "." + RPCoreSTApiGenConstants.MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &lab)" 
 									+ "; " + errorField + " != nil {\n"
 							//+ "log.Fatal(err)\n"
 							//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
@@ -143,7 +143,7 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 							"if " + errorField + " = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
 									+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_READALL + "(&tmp)"
 									+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
-									+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &arg0[j])"
+									+ "." + RPCoreSTApiGenConstants.MPCHAN_IRECV + "(\"" + peer.getName() + "\", i, &arg0[j])"
 					
 							+ "; " + errorField + " != nil {\n"
 							//+ "log.Fatal(err)\n"
@@ -158,10 +158,10 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			else //if (a.mid.isMessageSigName())
 			{
 				Function<String, String> makeReceiveExtName = extName -> 
-							"var tmp " + RPCoreSTApiGenConstants.GO_SCRIBMESSAGE_TYPE + "\n"  // var tmp needed for deserialization -- FIXME?
+							"var tmp " + RPCoreSTApiGenConstants.SCRIB_MESSAGE_TYPE + "\n"  // var tmp needed for deserialization -- FIXME?
 						+ "if " + errorField + " = " + sEpRecv /*+ "[i]"  // FIXME: use peer interval
 								+ RPCoreSTApiGenConstants.GO_FORMATTER_DECODE_INT + "()"*/
-								+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_MRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
+								+ "." + RPCoreSTApiGenConstants.MPCHAN_MRECV + "(\"" + peer.getName() + "\", i, &tmp)" 
 				
 						+ "; " + errorField + " != nil {\n"
 						//+ "log.Fatal(err)\n"

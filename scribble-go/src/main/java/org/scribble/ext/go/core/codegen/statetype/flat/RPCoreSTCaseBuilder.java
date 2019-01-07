@@ -66,9 +66,9 @@ public class RPCoreSTCaseBuilder extends STCaseBuilder
 					  getOpTypeName(apib, s, a.mid)
 					: rpapib.getExtName((MessageSigName) a.mid);
 			res += "\ntype " + getOpTypeName(apib, s, a.mid) + " struct {\n"
-						+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"  // FIXME: never set -- branch action won't return an actual case object upon error
-						+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + rpapib.apigen.namegen.getEndpointKindTypeName(rpapib.variant) + "\n" 
-						+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n"
+						+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n"  // FIXME: never set -- branch action won't return an actual case object upon error
+						+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *" + rpapib.apigen.namegen.getEndpointKindTypeName(rpapib.variant) + "\n" 
+						+ RPCoreSTApiGenConstants.SCHAN_RES_FIELD + " *" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE + "\n"
 						+ (a.mid.isMessageSigName() ? "msg *" + extName + "\n" : "")
 						+ (rpapib.apigen.job.parForeach ? "Thread int\n" : "")
 			  		+ "}\n"

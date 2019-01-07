@@ -177,7 +177,10 @@ public class RPCoreSTSessionApiBuilder
 				// HACK: setting family to null for common endpoint kind
 				Set<RPFamily> compactedFamilies = /*isCommonEndpointKind
 						? Stream.of((RPFamily) null).collect(Collectors.toSet())  // HACK: when isCommonEndpointKind, just loop once (to make one New)
-						:*/ this.apigen.families.keySet().stream().filter(f -> f.variants.contains(origVariant)).collect(Collectors.toSet());
+						:*/ 
+						this.apigen.families.keySet().stream()
+								.filter(f -> f.variants.contains(origVariant))
+								.collect(Collectors.toSet());
 
 				for (RPFamily compactFamily : (Iterable<RPFamily>) 
 						compactedFamilies.stream().sorted(RPFamily.COMPARATOR)::iterator)
@@ -221,7 +224,7 @@ public class RPCoreSTSessionApiBuilder
 	{
 		String res = "import \"strconv\"\n"
 				+ "import \""
-				+ RPCoreSTApiGenConstants.RUNTIME_UTIL_PACKAGE + "\"\n";
+				+ RPCoreSTApiGenConstants.UTIL_PACKAGE + "\"\n";
 		if (this.apigen.mode == Mode.IntPair)
 		{
 			res += "import \""
@@ -324,7 +327,8 @@ public class RPCoreSTSessionApiBuilder
 				
 				// Call Endpoint Kind constructor, cf. makeEndpointKindConstructor
 				+ "return " + importAlias + ".New" + "(p"
-						+ ivars.stream().filter(x -> !(x instanceof RPIndexSelf)).map(x -> ", " + x).collect(Collectors.joining(""))
+						+ ivars.stream().filter(x -> !(x instanceof RPIndexSelf))
+								.map(x -> ", " + x).collect(Collectors.joining(""))
 						+ ", " + RPIndexSelf.SELF.name + ")\n";
 
 		return "// " + cnstrFnName + " returns a new instance of "
@@ -600,8 +604,8 @@ public class RPCoreSTSessionApiBuilder
 				// TODO: factor out with RPCoreSTStateChanApiBuilder#buildActionReturn (i.e., returning initial state)
 				// (TODO: factor out with RPCoreSTSessionApiBuilder#getSuccStateChan and RPCoreSTSelectStateBuilder#getPreamble)
 				+ "end := f(ini.Init())\n"
-				+ "if end." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " != nil {\n"
-				+ "panic(end." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + ")\n"
+				+ "if end." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " != nil {\n"
+				+ "panic(end." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + ")\n"
 				+ "}\n"
 				+ "return end\n"
 
@@ -682,12 +686,12 @@ public class RPCoreSTSessionApiBuilder
 			// Accept/Dial methods
 			String accept = makeConnect(ivars, epkindTypeName, origPeer, subbdbypeer,
 					subbsPeer, "Accept",
-					"ss " + RPCoreSTApiGenConstants.GO_SCRIB_LISTENER_TYPE,
+					"ss " + RPCoreSTApiGenConstants.SCRIB_LISTENER_TYPE,
 					"ss.Accept()");
 			String dial = makeConnect(ivars, epkindTypeName, origPeer, subbdbypeer,
 					subbsPeer, "Dial",
 					"host string, port int, dialler func (string, int) ("
-							+ RPCoreSTApiGenConstants.GO_SCRIB_BINARY_CHAN_TYPE + ", error)",
+							+ RPCoreSTApiGenConstants.SCRIB_BINCHAN_TYPE + ", error)",
 					"dialler(host, port)");
 
 			res += accept + "\n" + dial;
@@ -716,34 +720,38 @@ public class RPCoreSTSessionApiBuilder
 			vname = this.apigen.namegen.getEndpointKindTypeName(origPeer);
 		}
 
-		String dial = "\n"
+		String conn = "\n"
 				+ "func (ini *" + epkindTypeName + ") " + vname + "_" + methSuff + "("
 						+ "id " + this.apigen.mode.indexType + ", "
 						+ methParams + ", "
-						+ "sfmt " + RPCoreSTApiGenConstants.GO_FORMATTER_TYPE + ") error {\n"
+						+ "sfmt " + RPCoreSTApiGenConstants.SCRIB_FORMATTER_TYPE + ") error {\n"
 				+ makePeerIdIvalsCheck(origPeer, ivars, subbdbypeer)		
-				+ makePeerIdCoivalsCheck(origPeer, ivars, subbdbypeer)		
+				+ makePeerIdCoivalsCheck(origPeer, ivars, subbdbypeer);
 						
-				+ "defer ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + "."
+		/* (Partial) workaround for concurrent dials/accepts (concurrent mpchan map
+		 * access) -- but concurrent dial/accept not currently supported
+		conn += "defer ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + "."
 						+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Done()\n"
 				+ "ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + "."
-						+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n"
-				+ "c, err := " + newChan + "\n"
+						+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_WG + ".Add(1)\n";
+		//*/
+
+		conn += "c, err := " + newChan + "\n"
 				+ "if err != nil {\n"
 				+ "return err\n"
 				+ "}\n"
 				+ "\n"
 				+ "sfmt.Wrap(c)\n"
 				+ "ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + "."
-					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + r
+					+ RPCoreSTApiGenConstants.MPCHAN_CONNS_FIELD + "[\"" + r
 					+ "\"][id] = c\n"
 						// CHECKME: connection map keys (cf. variant?)
 				+ "ini." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + "."
-					+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP + "[\"" + r
+					+ RPCoreSTApiGenConstants.MPCHAN_FMTS_FIELD + "[\"" + r
 					+ "\"][id] = sfmt\n"				+ "return err\n"  
 						// FIXME: runtime currently does log.Fatal on error
 				+ "}\n";
-		return dial;
+		return conn;
 	}
 
 	/*// subbedPeer is (possibly) subsumer; o/w origPeer == subbedPeer
@@ -818,10 +826,10 @@ public class RPCoreSTSessionApiBuilder
 		String stateChans;
 		
 		protoField = RPCoreSTApiGenConstants.ENDPOINT_PROTO_FIELD + " "
-				+ RPCoreSTApiGenConstants.ENDPOINT_PROTOCOL_TYPE + "\n";
+				+ RPCoreSTApiGenConstants.SCRIB_PROTOCOL_TYPE + "\n";
 		selfField = RPCoreSTApiGenConstants.ENDPOINT_SELF_FIELD + " "
 				+ this.apigen.mode.indexType + "\n";
-		epLinObject = "*" + RPCoreSTApiGenConstants.RUNTIME_LINEARRESOURCE_TYPE
+		epLinObject = "*" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE
 				+ "\n";  // For the Endpoint itself (e.g., Run)
 		sChanLinCounter = RPCoreSTApiGenConstants.ENDPOINT_LIN_FIELD + " uint64\n";
 		mpChanField = RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD + " *"
@@ -871,7 +879,7 @@ public class RPCoreSTSessionApiBuilder
 		sig = "func New("
 
 				// Params
-				+ "p " + RPCoreSTApiGenConstants.ENDPOINT_PROTOCOL_TYPE + ", "
+				+ "p " + RPCoreSTApiGenConstants.SCRIB_PROTOCOL_TYPE + ", "
 				+ ivars.stream().filter(x -> !(x instanceof RPIndexSelf))
 						.map(x -> x + " " + this.apigen.mode.indexType + ", ").collect(Collectors.joining(""))  
 				+ "self " + this.apigen.mode.indexType + ") "
@@ -891,7 +899,7 @@ public class RPCoreSTSessionApiBuilder
 				// sChanLinCounter
 				+ LIN_COUNTER_START + ",\n"
 				// mpChanField
-				+ RPCoreSTApiGenConstants.RUNTIME_MPCHAN_CONSTRUCTOR + "(self, "
+				+ RPCoreSTApiGenConstants.MPCHAN_CONSTR + "(self, "
 					+ "[]string{"
 					+ this.apigen.selfs.stream().map(x -> "\"" + x + "\"")
 							.collect(Collectors.joining(", "))
@@ -957,7 +965,7 @@ public class RPCoreSTSessionApiBuilder
 		}
 		epkindImports += "\"\n";
 		epkindImports += "import \""
-				+ RPCoreSTApiGenConstants.RUNTIME_TRANSPORT_PACKAGE + "\"\n";
+				+ RPCoreSTApiGenConstants.TRANSPORT_PACKAGE + "\"\n";
 		epkindImports += "import \"strconv\"\n";
 		epkindImports += "\nvar _ = strconv.Itoa\n";
 		return epkindImports;

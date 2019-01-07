@@ -28,7 +28,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 		{
 			// HACK FIXME: move to action builder
 			return
-					  "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
+					  "func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER
 								+ " *" + getStateChanType(api, curr, a) + ") " + getActionName(api, a) + "(" 
 								+ buildArgs(api, a)
 								+ ") <-chan *" + getReturnType(api, curr, succ) + " {\n"
@@ -45,7 +45,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 	public String getActionName(STStateChanApiBuilder api, EAction a)
 	{
 		return RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
-				+ "_" + RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX
+				+ "_" + RPCoreSTApiGenConstants.API_RECEIVE_PREFIX
 				+ "_" + a.mid;
 	}
 
@@ -53,7 +53,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 	public String buildArgs(STStateChanApiBuilder api, EAction a)
 	{
 		return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG
+					.mapToObj(i -> RPCoreSTApiGenConstants.API_RECEIVE_ARG
 							+ i + " *" + ((RPCoreSTStateChanApiBuilder) api).getExtName((DataType) a.payload.elems.get(i))
 							//+ ", reduceFn" + i + " func(" + ParamCoreSTApiGenConstants.GO_CROSS_SEND_FUN_ARG + i + " []int) int"  // No: singleton choice subj (not multichoices)
 							).collect(Collectors.joining(", "));
@@ -76,7 +76,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 		RPIndexedRole peer = (RPIndexedRole) curr.getActions().iterator().next().peer;
 		RPInterval d = peer.intervals.iterator().next();
 		
-		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+		String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 		String sEpRecv = sEp + "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD; /*+ "."
 					+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + peer.getName() + "\"]";*/
 		
@@ -103,7 +103,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 
 				res += "if err := " + sEpRecv // + (((GoJob) api.job).noCopy ? "Raw" : "");
 								//+ "[" + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&arg0)"
-								+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
+								+ "." + RPCoreSTApiGenConstants.MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
 								+ rpapi.generateIndexExpr(d.start) + ", &arg0)"
 						+ "; err != nil {\n"
 						+ "log.Fatal(err)\n"

@@ -55,8 +55,8 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 		String epTypeName = rpapib.apigen.namegen.getEndpointKindTypeName(rpapib.variant); 
 
 		String sEpRecv = 
-				  RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
-				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+				  RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER
+				+ "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD
 				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD;
 
 		String res =
@@ -68,8 +68,8 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 				// State channel type
 				+ "\n"
 				+ "type " + scTypeName + " struct{\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epTypeName + "\n" 
-				+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
+				+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *" + epTypeName + "\n" 
+				+ RPCoreSTApiGenConstants.SCHAN_RES_FIELD + " *" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE +"\n"
 				+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan chan string\n").collect(Collectors.joining(""))
 				+ "}\n";
 
@@ -77,8 +77,8 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 		res += "\n"
 				+ "func newBranch"   // FIXME: factor out, RPCoreSTStateChanApiBuilder#getSuccStateChan and RPCoreSTSelectActionBuilder#buildEndpointKindApi
 						+ scTypeName + "(ep *" + epTypeName + ") *" + scTypeName + " {\n"
-				+ "s := &" + scTypeName + " { " + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": ep" + ", "
-						+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + ": new(" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "), "
+				+ "s := &" + scTypeName + " { " + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + ": ep" + ", "
+						+ RPCoreSTApiGenConstants.SCHAN_RES_FIELD + ": new(" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE + "), "
 						+ s.getActions().stream().map(a -> "_" + a.mid + "_Chan: make(chan string, 1)").collect(Collectors.joining(", ")) + " "
 						+ "}\n"
 				+ "go s.branch()\n"
@@ -99,9 +99,9 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 		}
 		
 		res += "\n"
-				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName + ") branch() {\n"
-				+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-						+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+				+ "func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + " *" + scTypeName + ") branch() {\n"
+				+ RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_RES_FIELD
+						+ "." + RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n";
 		if (((GoJob) rpapib.job).noCopy)
 		{
 			/*res += 
@@ -115,7 +115,7 @@ public class RPCoreSTSelectStateBuilder extends STBranchStateBuilder
 			res +=
 					 "if err := " + sEpRecv + "." /*+ RPCoreSTApiGenConstants.GO_MPCHAN_CONN_MAP + "[\"" + peer.getName() + "\"][" 
 				  		+ RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&op)*/
-							+ RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
+							+ RPCoreSTApiGenConstants.MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
 				  		+ rpapib.generateIndexExpr(d.start) + ", &op)"
 					+ "; err != nil {\n"  // g.end = g.start -- CFSM only has ? for input
 					+ "log.Fatal(err)\n"

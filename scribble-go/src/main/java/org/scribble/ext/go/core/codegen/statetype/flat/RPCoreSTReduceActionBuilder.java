@@ -19,6 +19,7 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.PayloadElemType;
 
+// Currently unused (usage commented out in RPCoreSTReceiveStateBuilder)
 public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 {
 
@@ -38,12 +39,12 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 		//DataType[] pet = new DataType[1];
 		PayloadElemType[] pet = new PayloadElemType[1];
 		return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_RECEIVE_METHOD_ARG
+					.mapToObj(i -> RPCoreSTApiGenConstants.API_RECEIVE_ARG
 							+ i + " *" + api.getPayloadElemTypeName(pet[0] = a.payload.elems.get(i)) //a.payload.elems.get(i)
 
 							// HACK
 							+ (api.isDelegType(pet[0]) ? "" :
-								", reduceFn" + i + " func(" + RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + i
+								", reduceFn" + i + " func(" + RPCoreSTApiGenConstants.API_SEND_ARG + i
 									//+ " []" + a.payload.elems.get(i) + ") " + a.payload.elems.get(i)
 									+ " []" 
 									
@@ -66,14 +67,14 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 		}
 
 		String sEpRecv = 
-				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
-				+ "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+				 RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER
+				+ "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD
 				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD
 				+ "." + "Conn";//ParamCoreSTApiGenConstants.GO_ENDPOINT_READALL;
 		String sEpProto =
 				//"s.ep.Proto"
-				RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
-					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_MPCHAN_PROTO;
+				RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "." + RPCoreSTApiGenConstants.ENDPOINT_PROTO_FIELD;
 		/*String sEpErr =
 				//"s.ep.Err"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
@@ -89,8 +90,8 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 			}
 			else if (e instanceof RPIndexVar)
 			{
-				return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
-					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
+				return RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + ".Params[\"" + e + "\"]";
 			}
 			else
 			{
@@ -171,7 +172,7 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 											+ "); err != nil {\n"
 									+ "log.Fatal(err)\n"
 									+ "}\n"
-									+ "arg0 = &" + extName + "{" + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ": tmp." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " }\n"
+									+ "arg0 = &" + extName + "{" + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + ": tmp." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " }\n"
 							+ "}\n";
 
 			}

@@ -95,18 +95,18 @@ public class RPCoreSTBranchStateBuilder extends STBranchStateBuilder
 				// State channel type
 		res += "\n"
 				+ "type " + scTypeName + " struct {\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n";
+				+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n";
 
 		if (apib.apigen.job.parForeach)
 		{
-			res += RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n";
+			res += RPCoreSTApiGenConstants.SCHAN_RES_FIELD + " *" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE + "\n";
 		}
 		else
 		{
 			res += "id uint64\n";
 		}
 
-		res += RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n";
+		res += RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *" + epkindTypeName + "\n";
 
 		if (apib.apigen.job.parForeach)
 		{

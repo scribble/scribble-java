@@ -29,11 +29,11 @@ public class RPCoreSTEndStateBuilder extends STEndStateBuilder
 				//+ "import \"" + ParamCoreSTApiGenConstants.GO_SCRIBBLERUNTIME_SESSION_PACKAGE + "\"\n"
 				+ "\n"
 				+ "type " + scTypeName + " struct {\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
+				+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n"
 
 				+ "id uint64\n"
 
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *"
+				+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *"
 						+ rpapib.apigen.namegen.getEndpointKindTypeName(rpapib.variant) + "\n"  // FIXME: factor out
 						
 				+ (((RPCoreSTStateChanApiBuilder) apib).apigen.job.parForeach ? "Thread int\n"	: "")

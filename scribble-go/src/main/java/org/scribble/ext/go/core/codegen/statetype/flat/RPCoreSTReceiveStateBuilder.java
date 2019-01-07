@@ -12,10 +12,10 @@ public class RPCoreSTReceiveStateBuilder extends STReceiveStateBuilder
 {
 	public final RPCoreSTReceiveActionBuilder vb;
 	
-	// sb is ParamCoreSTReduceActionBuilder
-	public RPCoreSTReceiveStateBuilder(STReceiveActionBuilder sb, RPCoreSTReceiveActionBuilder vb)
+	// rb is ParamCoreSTReduceActionBuilder
+	public RPCoreSTReceiveStateBuilder(STReceiveActionBuilder rb, RPCoreSTReceiveActionBuilder vb)
 	{
-		super(sb);
+		super(rb);
 		this.vb = vb;
 	}
 	

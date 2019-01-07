@@ -212,9 +212,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			String end = "package " + this.apigen.namegen.getEndpointKindPackageName(this.variant) + "\n"
 					+ "\n"
 					+ "type End struct {\n"
-						+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n"
+						+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n"
 					//+ RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE +"\n"
-					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n" 
+					+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *" + epkindTypeName + "\n" 
 
 					+ (this.apigen.job.parForeach ? "Thread int\n" : "")
 
@@ -285,18 +285,18 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		// State channel type
 		feach += "\n"
 				+ "type " + scTypeName + " struct {\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n";
+				+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n";
 
 		if (this.apigen.job.parForeach)
 		{
-			feach += RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n";
+			feach += RPCoreSTApiGenConstants.SCHAN_RES_FIELD + " *" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE + "\n";
 		}
 		else
 		{
 			feach += "id uint64\n";
 		}
 
-		feach += RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n";
+		feach += RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *" + epkindTypeName + "\n";
 		
 		if (this.apigen.job.parForeach)
 		{
@@ -306,7 +306,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		feach += "}\n";
 		
 		// Foreach method -- cf. RPCoreSTSessionApiBuilder, top-level Run
-		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+		String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 		RPCoreEState init = s.getNested();
 		RPCoreEState term = (RPCoreEState) MState.getTerminal(init);
 		String initName = this.names.get(init.id); //"Init_" + init.id;
@@ -340,23 +340,23 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
     String initState = sEp + "._" + initName;
 		feach += "\n"
-				+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
+				+ "func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + " *" + scTypeName
 						+ ") Foreach(f func(*" + initName + ") " + termName + ") *" + succName + " {\n";
 						
 		// Duplicated from buildAction
 		feach +=
-				  "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
-				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
+				  "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " != nil {\n"
+				+ "panic(" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + ")\n"
 				+ "}\n";
 
 		if (this.apigen.job.parForeach)
 		{
-			feach += RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-								+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+			feach += RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_RES_FIELD
+								+ "." + RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n";
 		}
 		else
 		{
-			feach += "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
+			feach += "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
 										//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
 										+ sEp + "." + "lin"
 										+ " {\n"
@@ -371,7 +371,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		
 		if (this.apigen.job.parForeach)
 		{
-			feach += sEp + ".Params[" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread][\"" + p + "\"] = " + p + " \n";
+			feach += sEp + ".Params[" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread][\"" + p + "\"] = " + p + " \n";
 		}
 		else
 		{
@@ -380,7 +380,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 		if (this.apigen.job.parForeach)
 		{
-			feach += "nested := " + this.apigen.makeStateChanInstance(initName, sEp, RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread");
+			feach += "nested := " + this.apigen.makeStateChanInstance(initName, sEp, RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread");
 			//feach += "nested.id = " + sEp + ".lin\n";
 			feach += "f(nested)\n";
 		}
@@ -407,17 +407,17 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		if (this.apigen.job.parForeach)
 		{
 			feach += "\n"
-					+ "func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + " *" + scTypeName
+					+ "func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + " *" + scTypeName
 							+ ") Parallel(f func(*" + initName + ") " + termName + ") *" + succName + " {\n";
 							
 			// Duplicated from buildAction
 			feach +=
-						"if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
-					+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
+						"if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " != nil {\n"
+					+ "panic(" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + ")\n"
 					+ "}\n";
 
-			feach += RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-								+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+			feach += RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_RES_FIELD
+								+ "." + RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n";
 		
 			feach += "chs := make(map[int]chan int)\n";
 							
@@ -434,7 +434,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			feach += sEp + ".Thread = tid\n";
 			feach += "tmp := make(map[string]int)\n";
 			// FIXME: sync (factor up as a sync function in the ep) -- e.g., if a thread spawns more subthreads
-			feach += "for k,v := range " + sEp + ".Params[" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread]" + "{\n";
+			feach += "for k,v := range " + sEp + ".Params[" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread]" + "{\n";
 			feach += "tmp[k] = v\n";
 			feach += "}\n";
 			feach += sEp + ".Params[tid] = tmp\n";
@@ -534,18 +534,18 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				// State channel type
 		res += "\n"
 				+ "type " + scTypeName + " struct {\n"
-				+ RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " error\n";
+				+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n";
 
 		if (this.apigen.job.parForeach)
 		{
-			res += RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE + " *" + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_TYPE + "\n";
+			res += RPCoreSTApiGenConstants.SCHAN_RES_FIELD + " *" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE + "\n";
 		}
 		else
 		{
 			res += "id uint64\n";
 		}
 
-		res += RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + " *" + epkindTypeName + "\n";
+		res += RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *" + epkindTypeName + "\n";
 
 		if (this.apigen.job.parForeach)
 		{
@@ -600,7 +600,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		EState succ = curr.getSuccessor(a);
 		String res =
-					"func (" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER
+					"func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER
 						+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
 						+ ab.buildArgs(this, a)
 						+ ") *" //+ ab.getReturnType(this, curr, succ)  // No: uses getStateChanName, which returns intermed name for nested states
@@ -608,25 +608,25 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						+ " {\n"
 
 				  // FIXME: currently redundant for case objects (cf. branch action err handling)
-				+ "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + " != nil {\n"
-				+ "panic(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ERROR + ")\n"
+				+ "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " != nil {\n"
+				+ "panic(" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + ")\n"
 				+ "}\n";
 
 		if (this.apigen.job.parForeach)
 		{
-			res += RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-								+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n";
+			res += RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_RES_FIELD
+								+ "." + RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n";
 		}
 		else
 		{
 			res +=
 				  // HACK FIXME: pre-create case objects
 				  ((ab instanceof RPCoreSTCaseActionBuilder)
-						? RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_LINEARRESOURCE
-								+ "." + RPCoreSTApiGenConstants.GO_LINEARRESOURCE_USE + "()\n"
-						: "if " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
+						? RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_RES_FIELD
+								+ "." + RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n"
+						: "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
 										//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
-										+ RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin"
+										+ RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "." + "lin"
 										+ " {\n"
 								+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
 								+ "}\n"
@@ -675,7 +675,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	@Deprecated
 	protected String makeCreateSuccStateChan(EState succ, String name)
 	{
-		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+		String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 		if (((GoJob) this.job).selectApi &&
 				getStateKind(succ) == RPCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
@@ -697,7 +697,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 					  /*"succ := " + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "._" + name + "\n"
 					+ "succ." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_MPCHAN_ERR + " = err\n"
 					+ "return succ\n"*/
-					RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "._" + name;
+					RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "._" + name;
 			return res;
 		}
 	}
@@ -710,7 +710,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	protected String makeReturnSuccStateChan(EState succ, String name)
 	{
-		String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+		String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 		if (((GoJob) this.job).selectApi &&
 				getStateKind(succ) == RPCoreEStateKind.CROSS_RECEIVE && succ.getActions().size() > 1)
 		{
@@ -736,7 +736,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						this.apigen.makeStateChanInstance(
 								name,
 								sEp,
-								RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread"
+								RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread"
 								);
 				String res = nextState
 						+ "return succ\n";
@@ -856,14 +856,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		else if (e instanceof RPIndexVar)
 		{
-			String sEp = RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT;
+			String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 			//if (e instanceof RPForeachVar ||
 			if (
 					this.fvars.stream().anyMatch(p -> p.toString().equals(e.toString())))  // FIXME HACK -- foreach var occurrences inside foreach body are RPIndexVars
 			{
 				if (this.apigen.job.parForeach)
 				{
-					return sEp + ".Params[" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + ".Thread][\"" + e.toGoString() + "\"]";
+					return sEp + ".Params[" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread][\"" + e.toGoString() + "\"]";
 				}
 				else
 				{
@@ -937,7 +937,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			RPRoleVariant v = gdt.getVariant();
 			RPCoreAstFactory af = new RPCoreAstFactory();
 			
-			// Based on RPCoreCommandLine.paramCoreParseAndCheckWF  // FIXME: integrate? (e.g., process all protocols, not just target main -- then won't need to separately run CL first on delegated proto)
+			// Based on RPCoreCommandLine.paramCoreParseAndCheckWF  // CHECKME: integrate? (e.g., process all protocols, not just target main -- then won't need to separately run CL first on delegated proto)
 			GProtocolDecl gpd = (GProtocolDecl) this.job.getContext().getMainModule()
 					.getProtocolDecl(root.getSimpleName());  // FIXME: delegated protocol may not be in main module
 			try

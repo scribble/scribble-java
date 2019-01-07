@@ -218,10 +218,11 @@ public class RPCoreSTApiGenerator
 		return res;
 	}
 
-	private Map<RPRoleVariant, Map<Integer, String>> stateChanNames = new HashMap<>();  // FIXME: currently cached from RPCoreDotSessionApiBuilder
+	private Map<RPRoleVariant, Map<Integer, String>> stateChanNames = new HashMap<>();  
+			// FIXME HACK: currently cached from RPCoreDotSessionApiBuilder
 
 	//@Override
-	public Map<String, String> buildSessionApi()  // FIXME: factor out
+	public Map<String, String> buildSessionApi()  // TODO: factor out
 	{
 		this.job
 				.debugPrintln("\n[rp-core] Running " + RPCoreSTSessionApiBuilder.class
@@ -232,23 +233,26 @@ public class RPCoreSTApiGenerator
 	}
 	
 	public Map<String, String> buildStateChannelApi(
-			RPFamily family, RPRoleVariant variant, EGraph graph)  // FIXME: factor out
+			RPFamily family, RPRoleVariant variant, EGraph graph)  // TODO: factor out
 	{
 		if (this.job.dotApi)
 		{
-			throw new RuntimeException("TODO");  // HERE -- refactor genconstants;  do flat state chan builder 
+			throw new RuntimeException("TODO");
 		}
 		else
 		{
-			this.job.debugPrintln("\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for " + this.proto + "@" + variant);
-			return new RPCoreSTStateChanApiBuilder(this, family, variant, graph, this.stateChanNames.get(variant)).build();
+			this.job.debugPrintln(
+					"\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for "
+							+ this.proto + "@" + variant);
+			return new RPCoreSTStateChanApiBuilder(this, family, variant, graph,
+					this.stateChanNames.get(variant)).build();
 		}
 	}
 	
 	public String makeLinearResourceInstance()
 	{
 		// Same as new(...)
-		return "&" + RPCoreSTApiGenConstants.RUNTIME_LINEARRESOURCE_TYPE + "{}";
+		return "&" + RPCoreSTApiGenConstants.LINEARRESOURCE_TYPE + "{}";
 	}
 
 	// FIXME: refactor, e.g., take state ID, factor out "End"

@@ -19,6 +19,7 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.PayloadElemType;
 
+// Currently unused (usage commented out in RPCoreSTReceiveStateBuilder)
 public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 {
 
@@ -37,14 +38,14 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 		//DataType[] pet = new DataType[1];
 		PayloadElemType[] pet = new PayloadElemType[1];
 		return IntStream.range(0, a.payload.elems.size()) 
-					.mapToObj(i -> RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG
+					.mapToObj(i -> RPCoreSTApiGenConstants.API_SEND_ARG
 							+ i + " "
 							
 											// HACK
 									+ ((api.isDelegType(pet[0] = a.payload.elems.get(i))) ? "*" : "")
 									+ api.getPayloadElemTypeName(pet[0]) //a.payload.elems.get(i)
 
-							+ ", splitFn" + i + " func(" + RPCoreSTApiGenConstants.GO_CROSS_SEND_METHOD_ARG + i + " "
+							+ ", splitFn" + i + " func(" + RPCoreSTApiGenConstants.API_SEND_ARG + i + " "
 
 											// HACK
 									+ (api.isDelegType(pet[0]) ? "*" : "")
@@ -75,14 +76,14 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 
 		String sEpWrite = 
 				//s.ep.Write
-				 RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
+				 RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD
 				 		+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD
 						//+ "." + ParamCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL;
 						+ ".Conn";
 		String sEpProto =
 				//"s.ep.Proto"
-				RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
-					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + RPCoreSTApiGenConstants.GO_MPCHAN_PROTO;
+				RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "." + RPCoreSTApiGenConstants.ENDPOINT_PROTO_FIELD;
 		/*String sEpErr =
 				//"s.ep.Err"
 				ParamCoreSTApiGenConstants.GO_IO_FUN_RECEIVER + "."
@@ -98,8 +99,8 @@ public class RPCoreSTSplitActionBuilder extends STSendActionBuilder
 			}
 			else if (e instanceof RPIndexVar)
 			{
-				return RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "."
-					+ RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + ".Params[\"" + e + "\"]";
+				return RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + ".Params[\"" + e + "\"]";
 			}
 			else
 			{
