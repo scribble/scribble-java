@@ -17,6 +17,6 @@ import org.scribble.model.endpoint.EState;
 
 public abstract class STStateChanBuilder
 {
-	public abstract String getPreamble(STStateChanApiBuilder api, EState s);
-	public abstract String build(STStateChanApiBuilder api, EState s);
+	public abstract String getPreamble(STStateChanApiBuilder scb, EState s);
+	public abstract String build(STStateChanApiBuilder scb, EState s);
 }

@@ -27,7 +27,8 @@ public class RPCoreEState extends EState
 	//private RPForeachVar param;
 	private RPIndexVar param;
 	private RPInterval interval;
-	private RPCoreEState nested;  // null if no nested FSM (then above also null)
+	private RPCoreEState nested;  // null if no nested FSM (then above also null)  
+			// FIXME: formalism of non-nesting as nesting of "singleton" state doesn't work (would be infinitely nesting)
 
 	protected RPCoreEState(Set<RecVar> labs)
 	{

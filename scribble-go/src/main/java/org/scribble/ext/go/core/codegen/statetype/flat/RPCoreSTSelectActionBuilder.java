@@ -111,7 +111,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 						//+ "*arg0 = tmp.(" + extName + ")\n"
 						+ "ch := make(chan *" + rpapi.getStateChanName(curr.getSuccessor(a)) + ", 1)\n"
 						//+ "ch <- " + rpapi.makeCreateSuccStateChan(this, curr, curr.getSuccessor(a), sEp) + "\n";
-						+ "ch <- " + rpapi.makeCreateSuccStateChan(curr.getSuccessor(a)) + "\n";
+						+ "ch <- " + "FIXME" + /*FIXME: rpapi.makeCreateSuccStateChan(curr.getSuccessor(a)) +*/ "\n";
 						// FIXME: arg0 // FIXME: args depends on label // FIXME: store args in s.args
 			}
 		}

@@ -28,7 +28,7 @@ public class RPCoreSTApiGenConstants
 	public static final String ENDPOINT_THREAD_FIELD = "Thread";
 
 	public static final String LINEARRESOURCE_TYPE = "session2.LinearResource";  
-			// Embedded field, so no field name
+			// Type of ENDPOINT_LIN_FIELD
 	public static final String LINEARRESOURCE_USE = "Use";  // net.LinearResource
 
 	public static final String ENDPOINT_MPCHAN_TYPE = "session2.MPChan";
