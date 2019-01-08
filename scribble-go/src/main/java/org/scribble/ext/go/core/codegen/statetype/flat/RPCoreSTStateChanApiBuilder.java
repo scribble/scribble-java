@@ -84,9 +84,15 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		super(apigen.job, apigen.proto, //apigen.self, 
 				variant.getName(),
 				graph,
-				new RPCoreSTOutputStateBuilder(null, //new RPCoreSTSplitActionBuilder(),  // TODO
+				
+				// FIXME: refactor to parameterise on flat/nested builders
+				// Similarly for -parforeach?
+				
+				new RPCoreSTOutputStateBuilder(
+						null, //new RPCoreSTSplitActionBuilder(),  // TODO
 						new RPCoreSTSendActionBuilder()),
-				new RPCoreSTReceiveStateBuilder(null, //new RPCoreSTReduceActionBuilder(),  // TODO
+				new RPCoreSTReceiveStateBuilder(
+						null, //new RPCoreSTReduceActionBuilder(),  // TODO
 						new RPCoreSTReceiveActionBuilder()),
 
 				// Select-based branch, or type switch branch by default
@@ -302,10 +308,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 	
 	// State channel type decl
+	// Factored out here from state-specific builders
 	public String makeStateChannelType(RPCoreEState s)
 	{
 		String schanTypeName = this.getStateChanName(s);
 		String epkindTypeName = this.parent.namegen.getEndpointKindTypeName(this.variant); 
+
 		String res = "type " + schanTypeName + " struct {\n"
 				+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n";
 
@@ -619,6 +627,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	// CHECKME: currently redundant?  (no dot/multichoices) -- but maybe needed again for pipe/pair
 	protected enum RPCoreEStateKind { CROSS_SEND, CROSS_RECEIVE, DOT_SEND, DOT_RECEIVE, MULTICHOICES_RECEIVE, TERMINAL }
 	
+	// FIXME: refactor into RPCoreEState?
 	protected static RPCoreEStateKind getStateKind(EState s)
 	{
 		List<EAction> as = s.getActions();
