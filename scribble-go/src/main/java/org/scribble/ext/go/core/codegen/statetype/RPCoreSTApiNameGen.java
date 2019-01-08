@@ -3,6 +3,8 @@ package org.scribble.ext.go.core.codegen.statetype;
 import java.util.stream.Collectors;
 
 import org.scribble.ext.go.core.type.RPFamily;
+import org.scribble.ext.go.core.type.RPIndexedRole;
+import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.type.index.RPBinIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexExpr;
@@ -65,17 +67,30 @@ public class RPCoreSTApiNameGen
 	private String getGeneratedRoleVariantName(RPRoleVariant variant)
 	{
 		return variant.getName() + "_"
-				+ variant.intervals.stream().map(g -> getGeneratedNameLabel(g.start) + "to" + getGeneratedNameLabel(g.end))
+				+ variant.intervals.stream().map(g -> getGeneratedLabel(g.start) + "to" + getGeneratedLabel(g.end))
 				    .sorted().collect(Collectors.joining("and"))
 				+ (variant.cointervals.isEmpty()
 						? ""
-						: "_not_" + variant.cointervals.stream().map(g -> getGeneratedNameLabel(g.start) + "to" + getGeneratedNameLabel(g.end))
+						: "_not_" + variant.cointervals.stream().map(g -> getGeneratedLabel(g.start) + "to" + getGeneratedLabel(g.end))
 						    .sorted().collect(Collectors.joining("and")));
+	}
+
+	// Not variants -- just indexed roles (in EFSM actions) -- cf. ParamCoreSTEndpointApiGenerator#getGeneratedRoleVariantName
+	public String getGeneratedIndexedRoleName(RPIndexedRole r) 
+	{
+		//return r.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");
+		if (r.intervals.size() > 1)
+		{
+			throw new RuntimeException("[rp-core] TODO: " + r);
+		}
+		RPInterval g = r.intervals.iterator().next();
+		return r.getName() + "_" + getGeneratedLabel(g.start)
+				+ (g.start.equals(g.end) ? "" : "to" + getGeneratedLabel(g.end));
 	}
 
 	// For type name generation -- not actual code exprs, cf. RPCoreSTStateChanApiBuilder#generateIndexExpr
 	// TODO: refactor toGoName alongside toGoString ?  (rename latter to toGoExpr)
-	public static String getGeneratedNameLabel(RPIndexExpr e)
+	private String getGeneratedLabel(RPIndexExpr e)
 	{
 		if (e instanceof RPIndexInt)
 		{
@@ -106,7 +121,7 @@ public class RPCoreSTApiNameGen
 				case Mult: op = "mul";  //break;
 				default: throw new RuntimeException("TODO: " + b.op);
 			}
-			return getGeneratedNameLabel(b.left) + op + getGeneratedNameLabel(b.right);  // FIXME: pre/postfix more consistent?
+			return getGeneratedLabel(b.left) + op + getGeneratedLabel(b.right);  // FIXME: pre/postfix more consistent?
 		}
 		else
 		{

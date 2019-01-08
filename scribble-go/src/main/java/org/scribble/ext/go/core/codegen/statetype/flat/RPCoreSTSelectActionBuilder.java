@@ -24,7 +24,9 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 	{
 		EState succ = curr.getSuccessor(a);
 		if (//((GoJob) api.job).selectApi &&
-				RPCoreSTStateChanApiBuilder.getStateKind(curr) == RPCoreEStateKind.CROSS_RECEIVE && curr.getActions().size() > 1)
+		RPCoreSTStateChanApiBuilder
+				.getStateKind(curr) == RPCoreEStateKind.CROSS_RECEIVE
+				&& curr.getActions().size() > 1)
 		{
 			// HACK FIXME: move to action builder
 			return
@@ -42,11 +44,11 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 	}
 
 	@Override
-	public String getActionName(STStateChanApiBuilder api, EAction a)
+	public String getActionName(STStateChanApiBuilder scb, EAction a)
 	{
-		return RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
-				+ "_" + RPCoreSTApiGenConstants.API_RECEIVE_PREFIX
-				+ "_" + a.mid;
+		return ((RPCoreSTStateChanApiBuilder) scb).parent.namegen
+					.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer()) + "_"
+				+ RPCoreSTApiGenConstants.API_RECEIVE_PREFIX + "_" + a.mid;
 	}
 
 	@Override

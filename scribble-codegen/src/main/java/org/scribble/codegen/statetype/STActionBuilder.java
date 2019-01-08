@@ -18,27 +18,27 @@ import org.scribble.model.endpoint.actions.EAction;
 
 public abstract class STActionBuilder
 {
-	public String build(STStateChanApiBuilder api, EState curr, EAction a)
+	public String build(STStateChanApiBuilder scb, EState curr, EAction a)
 	{
-		return api.buildAction(this, curr, a);  // Because action builder hierarchy not suitable (extended by action kinds, not by target language) 
+		return scb.buildAction(this, curr, a);  // Because action builder hierarchy not suitable (extended by action kinds, not by target language) 
 	}
 
-	public String buildReturn(STStateChanApiBuilder api, EState curr, EState succ)
+	public String buildReturn(STStateChanApiBuilder scb, EState curr, EState succ)
 	{
-		return api.buildActionReturn(this, curr, succ);
+		return scb.buildActionReturn(this, curr, succ);
 	}
 
 	public abstract String getActionName(STStateChanApiBuilder api, EAction a);
 	public abstract String buildArgs(STStateChanApiBuilder api, EAction a);
 	public abstract String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ);
 
-	public String getReturnType(STStateChanApiBuilder api, EState curr, EState succ)
+	public String getReturnType(STStateChanApiBuilder scb, EState curr, EState succ)
 	{
-		return api.getStateChanName(succ);
+		return scb.getStateChanName(succ);
 	}
 	
-	public String getStateChanType(STStateChanApiBuilder api, EState curr, EAction a)
+	public String getStateChanType(STStateChanApiBuilder scb, EState curr, EAction a)
 	{
-		return api.getStateChanName(curr);
+		return scb.getStateChanName(curr);
 	}
 }

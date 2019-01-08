@@ -49,6 +49,12 @@ import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.PayloadElemType;
 
+	
+
+	//.. refactor schan name making into parent api gen
+	//.. refactor import generation
+
+
 // Following org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
 public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 {
@@ -508,23 +514,6 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
 	}
-	
-
-	// Not variants -- just indexed roles (in EFSM actions) -- cf. ParamCoreSTEndpointApiGenerator#getGeneratedRoleVariantName
-	public static String getGeneratedIndexedRoleName(RPIndexedRole r) 
-	{
-		//return r.toString().replaceAll("\\[", "_").replaceAll("\\]", "_").replaceAll("\\.", "_");
-		if (r.intervals.size() > 1)
-		{
-			throw new RuntimeException("[rp-core] TODO: " + r);
-		}
-		RPInterval g = r.intervals.iterator().next();
-		return r.getName() + "_" + RPCoreSTApiNameGen.getGeneratedNameLabel(g.start)
-				+ (g.start.equals(g.end) ? "" : "to" + RPCoreSTApiNameGen.getGeneratedNameLabel(g.end));
-	}
-
-	
-	
 
 	protected boolean isDelegType(PayloadElemType<?> t)
 	{

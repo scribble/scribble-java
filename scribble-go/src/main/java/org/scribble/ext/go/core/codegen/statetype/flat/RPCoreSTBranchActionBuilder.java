@@ -59,9 +59,10 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 	}
 
 	@Override
-	public String getActionName(STStateChanApiBuilder api, EAction a)
+	public String getActionName(STStateChanApiBuilder scb, EAction a)
 	{
-		return RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName((RPIndexedRole) a.peer) + "_Branch";
+		return ((RPCoreSTStateChanApiBuilder) scb).parent.namegen
+				.getGeneratedIndexedRoleName((RPIndexedRole) a.peer) + "_Branch";
 	}
 
 	@Override

@@ -24,11 +24,12 @@ public class RPCoreSTReduceActionBuilder extends STReceiveActionBuilder
 {
 
 	@Override
-	public String getActionName(STStateChanApiBuilder api, EAction a)
+	public String getActionName(STStateChanApiBuilder scb, EAction a)
 	{
 		//return ParamCoreSTApiGenConstants.GO_CROSS_RECEIVE_FUN_PREFIX + "_"
 		return RPCoreSTApiGenConstants.GO_CROSS_REDUCE_FUN_PREFIX + "_"
-				+ RPCoreSTStateChanApiBuilder.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
+				+ ((RPCoreSTStateChanApiBuilder) scb).parent.namegen
+						.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer())
 				+ "_" + a.mid;
 	}
 
