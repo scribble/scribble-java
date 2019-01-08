@@ -52,10 +52,10 @@ import org.scribble.type.name.PayloadElemType;
 
 
 // Following org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
-// CHECKME: can this be factored out between "flat" and "nested"?
+// CHECKME: can this be factored out between "flat" and "nested"? -- take state/action builders as params
 public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 {
-	protected final RPCoreSTApiGenerator parent;
+	public final RPCoreSTApiGenerator parent;
 	public final RPFamily family;
 	public final RPRoleVariant variant;  // variant.getName().equals(this.role)
 	
@@ -218,15 +218,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 	
 	// Factored out here from state-specific builders
-	protected String getStateChanPremable(EState s)
+	public String getStateChanPremable(EState s)
 	{
-		String schanTypeName = this.getStateChanName(s);
-		String epkindTypeName = this.parent.namegen.getEndpointKindTypeName(this.variant); 
-		
 		String packDecl;
 		String msgImports;
 		String sessPackImport = "";
-		String schanType;
 		
 		packDecl = "package " + this.parent.namegen.getEndpointKindPackageName(this.variant) + "\n";
 				
@@ -298,21 +294,18 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			}
 		}
 
-		// State channel type
-		schanType = makeStateChannelType(schanTypeName, epkindTypeName);  
-				// Not really "preamble", but convenient to do here
-
 		String res = packDecl
 				+ "\n"
 				+ msgImports 
-				+ sessPackImport 
-				+ "\n" 
-				+ schanType;
+				+ sessPackImport;
 		return res;
 	}
 	
-	private String makeStateChannelType(String schanTypeName, String epkindTypeName)
+	// State channel type decl
+	public String makeStateChannelType(RPCoreEState s)
 	{
+		String schanTypeName = this.getStateChanName(s);
+		String epkindTypeName = this.parent.namegen.getEndpointKindTypeName(this.variant); 
 		String res = "type " + schanTypeName + " struct {\n"
 				+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n";
 
@@ -439,12 +432,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return makeReturnSuccStateChan(succ);
 	}
 
-	protected String getSuccStateChanName(EState succ)
+	public String getSuccStateChanName(EState succ)
 	{
-		return this.names.get(succ.id);
+		//return this.names.get(succ.id);
+		return getStateChanBaseName(succ.id);  // Returns "base" name, cf. getStateChanName
 	}
 
-	protected String makeReturnSuccStateChan(EState succ)
+	public String makeReturnSuccStateChan(EState succ)
 	{
 		String name = getSuccStateChanName(succ);
 		if (((GoJob) this.job).selectApi
@@ -530,7 +524,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
 	}
 
-	protected boolean isDelegType(PayloadElemType<?> t)
+	public boolean isDelegType(PayloadElemType<?> t)
 	{
 		//return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get() instanceof RPCoreDelegDecl;  // FIXME: make a map
 				// "Old style", when deleg state chan types were directly imported by user as regular Go types
@@ -539,7 +533,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	// Cf. getExtName
 	// TODO: refactor into namegen ?
-	protected String getPayloadElemTypeName(PayloadElemType<?> pet)
+	public String getPayloadElemTypeName(PayloadElemType<?> pet)
 	{
 		if (pet instanceof RPCoreGDelegationType)
 		{
@@ -608,7 +602,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get().extSource;  // FIXME: make a map
 	}
 
-	protected String getExtName(MessageSigName n)
+	public String getExtName(MessageSigName n)
 	{
 		return this.msnds.stream().filter(x -> x.getDeclName().equals(n)).findAny().get().extName;
 	}

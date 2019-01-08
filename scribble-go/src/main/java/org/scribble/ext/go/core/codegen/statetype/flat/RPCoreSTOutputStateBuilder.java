@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.codegen.statetype.flat;
 import org.scribble.codegen.statetype.STOutputStateBuilder;
 import org.scribble.codegen.statetype.STSendActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.endpoint.actions.EDisconnect;
@@ -21,15 +22,16 @@ public class RPCoreSTOutputStateBuilder extends STOutputStateBuilder
 	}
 	
 	@Override
-	public String getPreamble(STStateChanApiBuilder api, EState s)
+	public String getPreamble(STStateChanApiBuilder apib, EState s)
 	{
-		return ((RPCoreSTStateChanApiBuilder) api).getStateChanPremable(s);
+		return ((RPCoreSTStateChanApiBuilder) apib).getStateChanPremable(s);
 	}
 	
 	@Override
-	public String build(STStateChanApiBuilder api, EState s)
+	public String build(STStateChanApiBuilder apib, EState s)
 	{
-		String out = getPreamble(api, s);
+		String out = getPreamble(apib, s)
+			+ ((RPCoreSTStateChanApiBuilder) apib).makeStateChannelType((RPCoreEState) s); 
 		
 		for (EAction a : s.getActions())
 		{
@@ -44,7 +46,7 @@ public class RPCoreSTOutputStateBuilder extends STOutputStateBuilder
 							.isDelegType(pet)))*/
 				{
 					out += "\n\n";
-					out += this.nb.build(api, s, a);
+					out += this.nb.build(apib, s, a);
 				}
 			}
 			else if (a instanceof ERequest)

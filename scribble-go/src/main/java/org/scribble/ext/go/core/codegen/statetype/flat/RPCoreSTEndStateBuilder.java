@@ -5,6 +5,7 @@ import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
 import org.scribble.model.endpoint.EState;
 
+// CHECKME: factor out between "flat" and "nested" APIs?
 public class RPCoreSTEndStateBuilder extends STEndStateBuilder
 {
 	public RPCoreSTEndStateBuilder()
