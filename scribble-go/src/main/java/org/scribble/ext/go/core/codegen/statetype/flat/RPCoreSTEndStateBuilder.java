@@ -30,9 +30,7 @@ public class RPCoreSTEndStateBuilder extends STEndStateBuilder
 				+ "\n"
 				+ "type " + scTypeName + " struct {\n"
 				+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n"
-
-				+ "id uint64\n"
-
+				+ "id uint64\n"  // TODO: use for session completion check
 				+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *"
 						+ rpapib.parent.namegen.getEndpointKindTypeName(rpapib.variant) + "\n"  // FIXME: factor out
 						

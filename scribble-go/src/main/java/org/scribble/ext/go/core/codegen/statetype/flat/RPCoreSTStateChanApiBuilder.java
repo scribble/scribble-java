@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,13 +22,10 @@ import org.scribble.ext.go.core.ast.global.RPCoreGType;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiNameGen;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
 import org.scribble.ext.go.core.type.RPFamily;
-import org.scribble.ext.go.core.type.RPIndexedRole;
-import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
 import org.scribble.ext.go.main.GoJob;
@@ -68,7 +64,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	private final Set<DataTypeDecl> dtds; // FIXME: use "main.getDataTypeDecl((DataType) pt);" instead -- cf. OutputSocketGenerator#addSendOpParams
 	private final Set<MessageSigNameDecl> msnds;
 
-	private final Set<RPIndexVar> fvars = new HashSet<>();
+	protected final Set<RPIndexVar> fvars = new HashSet<>();
 	//private final List<EGraph> todo = new LinkedList<>();  // HACK FIXME: to preserve "order" of state building -- cf. fvars hack for var scope
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later
@@ -133,13 +129,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		// Always make an "End" (including for non-terminating EFSMs)
 		// "End" is a "true End", i.e., no further methods (I/O or Foreach) -- thus, a nesting terminal has "reversed End" and "End_x" naming
 		// And "End" is reused for every "true End" (e.g., for every nested End)
-		// TODO: factor out with RPCoreSTEndStateBuilder
+		// TODO: factor out with RPCoreSTEndStateBuilder  // FIXME: RPCoreSTEndStateBuilder currently unused
 		// TODO: factor out with getStateChanPremable?
 		String epkindTypeName = this.parent.namegen.getEndpointKindTypeName(this.variant); 
 		String end = "package " + this.parent.namegen.getEndpointKindPackageName(this.variant) + "\n"
 				+ "\n"
 				+ "type End struct {\n"
 				+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " error\n"
+				+ "id uint64\n"
 				+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + " *" + epkindTypeName + "\n" 
 				+ (this.parent.job.parForeach ? "Thread int\n" : "")  // TODO: use default Thread field for non -parforeach
 				+ "}\n";
@@ -445,35 +442,41 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	protected String makeReturnSuccStateChan(EState succ)
 	{
 		String name = getSuccStateChanName(succ);
-		return makeReturnSuccStateChan(succ, name);
-	}
-	
-	protected String makeReturnSuccStateChan(EState succ, String name)
-	{
-		String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
-				+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 		if (((GoJob) this.job).selectApi
 				&& getStateKind(succ) == RPCoreEStateKind.CROSS_RECEIVE
 				&& succ.getActions().size() > 1)
 		{
+			/*String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 			// Needs to be here (not in action builder) -- build (hacked) return for all state kinds
 			// TODO: factor out with RPCoreSTSessionApiBuilder and RPCoreSTSelectStateBuilder#getPreamble
-			return "return newBranch" + name + "(" + sEp + ")";
+			return "return newBranch" + name + "(" + sEp + ")";*/
+			throw new RuntimeException("[rp-core] TODO: -select");
 		}
 		else
+		{
+			return makeReturnSuccStateChan(name);
+		}
+	}
+	
+	// Parameterised on "name" (not state) for foreach intermed state building
+	protected String makeReturnSuccStateChan(String succName)
+	{
+		String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+				+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 		{
 			String nextState;
 			if (this.parent.job.parForeach)
 			{
 				nextState = "succ := "
-						+ this.parent.makeStateChanInstance(name, sEp,
+						+ this.parent.makeStateChanInstance(succName, sEp,
 								RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread");
 				return nextState + "\n"
 						+ "return succ\n";
 			}
 			else
 			{
-				nextState = sEp + "._" + name;
+				nextState = sEp + "._" + succName;
 				String res = sEp + ".lin = " + sEp + ".lin + 1\n" // TODO: sync
 						+ nextState + ".id = " + sEp + ".lin\n"
 						+ "return "+ nextState + "\n";
@@ -507,6 +510,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		String n = this.names.get(s.id);
 		return ((RPCoreEState) s).hasNested() ? n + "_" : n;  // TODO: factor out intermed naming with RPCoreSTForeachIntermedStateBuilder
 				// If nesting, generate outer I/O actions on intermed statechan 
+	}
+
+	// this.names records "base" names -- cf. getStateChanName, implicitly adds "_" suffix for intermed state naming
+	protected String getStateChanBaseName(int id)  // Take id instead of state to distinguish from getStateChanName
+	{
+		return this.names.get(id);
 	}
 	
 	@Override
