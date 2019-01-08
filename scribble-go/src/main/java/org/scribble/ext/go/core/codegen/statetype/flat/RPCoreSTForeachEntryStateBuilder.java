@@ -9,9 +9,11 @@ import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EState;
 
-public class RPCoreSTForeachIntermedStateBuilder extends STStateChanBuilder
+// Foreach "entry" state has the "base" state name
+// Top-level I/O done on "intermediary" state, built via "base" action builders with state name mangling
+public class RPCoreSTForeachEntryStateBuilder extends STStateChanBuilder
 {
-	public RPCoreSTForeachIntermedStateBuilder()
+	public RPCoreSTForeachEntryStateBuilder()
 	{
 	}
 	
@@ -53,7 +55,7 @@ public class RPCoreSTForeachIntermedStateBuilder extends STStateChanBuilder
 				.getEndpointKindTypeName(rpscb.variant);
 	
 		//Map<String, String> res = new HashMap<>();
-		String feach = "";
+		String feach = getPreamble(rpscb, outer);
 		
 		// State channel type
 		feach += "\n"
@@ -92,7 +94,6 @@ public class RPCoreSTForeachIntermedStateBuilder extends STStateChanBuilder
 				// TODO: factor out ("End"?)
 
 		RPIndexVar p = s.getParam();
-		rpscb.fvars.add(p); // HACK FIXME: state visiting order not guaranteed (w.r.t. lexical var scope)
 
 		// TODO: factor out with send, receive, etc.
 		String lte;
@@ -187,8 +188,9 @@ public class RPCoreSTForeachIntermedStateBuilder extends STStateChanBuilder
 		if (rpscb.parent.job.parForeach)
 		{
 			feach += "\n"
-					+ "func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + " *" + scTypeName
-							+ ") Parallel(f func(*" + initName + ") " + termName + ") *" + succName + " {\n";
+					+ "func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + " *"
+						+ scTypeName + ") Parallel(f func(*" + initName + ") " + termName
+						+ ") *" + succName + " {\n";
 							
 			// Duplicated from buildAction
 			feach += "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."

@@ -58,8 +58,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public final RPFamily family;
 	public final RPRoleVariant variant;  // variant.getName().equals(this.role)
 	
-	public final RPCoreSTForeachIntermedStateBuilder fib 
-			= new RPCoreSTForeachIntermedStateBuilder();
+	public final RPCoreSTForeachEntryStateBuilder feb 
+			= new RPCoreSTForeachEntryStateBuilder();
 	
 	private final Set<DataTypeDecl> dtds; // FIXME: use "main.getDataTypeDecl((DataType) pt);" instead -- cf. OutputSocketGenerator#addSendOpParams
 	private final Set<MessageSigNameDecl> msnds;
@@ -182,15 +182,19 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				default: throw new RuntimeException("[rp-core] Shouldn't get in here: " + s);
 			}
 
+			// Generate APIs for nested EFSMs
 			RPCoreEState s1 = (RPCoreEState) s;
 			if (s1.hasNested())
 			{
 				Map<String, String> tmp = new HashMap<>();
-				String fib = this.fib.build(this, s1);
+				String fib = this.feb.build(this, s1);
 				tmp.put(getStateChannelFilePath(this.names.get(s1.id)), fib);
-				tmp.putAll(new RPCoreSTStateChanApiBuilder(this.parent, this.family,
-						this.variant, new EGraph(s1.getNested(), MState.getTerminal(s1)),
-						this.names).build());  // Includes another "End", but doesn't matter
+				EGraph nested = new EGraph(s1.getNested(), MState.getTerminal(s1));
+				Set<RPIndexVar> tmp2 = new HashSet<>(this.fvars);
+				tmp2.add(s1.getParam());  // CHECKME: state visiting order(?)  not guaranteed (w.r.t. lexical var scope)
+				RPCoreSTStateChanApiBuilder nestedBuilder = new RPCoreSTStateChanApiBuilder(
+						this.parent, this.family, this.variant, nested, this.names, tmp2);
+				tmp.putAll(nestedBuilder.build());  // Includes another "End", but doesn't matter
 				res.putAll(tmp);
 			}
 		}
@@ -508,11 +512,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			throw new RuntimeException("[rp-core] Shouldn't get here: " + s);
 		}
 		String n = this.names.get(s.id);
-		return ((RPCoreEState) s).hasNested() ? n + "_" : n;  // TODO: factor out intermed naming with RPCoreSTForeachIntermedStateBuilder
-				// If nesting, generate outer I/O actions on intermed statechan 
+		return ((RPCoreEState) s).hasNested() ? n + "_" : n;  // TODO: factor out intermed naming with RPCoreSTForeachEntryStateBuilder
+				// If nesting, generate outer I/O actions on intermed statechan (built via "base" action builders with state name mangling)
 	}
 
 	// this.names records "base" names -- cf. getStateChanName, implicitly adds "_" suffix for intermed state naming
+	// Additional foreach "entry" state uses the "base" name
 	protected String getStateChanBaseName(int id)  // Take id instead of state to distinguish from getStateChanName
 	{
 		return this.names.get(id);
