@@ -52,6 +52,7 @@ import org.scribble.type.name.PayloadElemType;
 
 
 // Following org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
+// CHECKME: can this be factored out between "flat" and "nested"?
 public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 {
 	protected final RPCoreSTApiGenerator parent;
@@ -79,8 +80,6 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	private RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen,
 			RPFamily family, RPRoleVariant variant, EGraph graph,
 			Map<Integer, String> names, Set<RPIndexVar> fvars)
-					// HACK FIXME -- make a "nested builder" -- problem is final this.graph (i.e., cannot just set this.graph to nested and apply recursively)
-					// FIXME: probably easier to to make a "nested" constructor
 	{
 		super(apigen.job, apigen.proto, //apigen.self, 
 				variant.getName(),
@@ -388,36 +387,38 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public String buildAction(STActionBuilder ab, EState curr, EAction a)
 	{
 		EState succ = curr.getSuccessor(a);
-		String res =
-					"func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER
-						+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
-						+ ab.buildArgs(this, a)
-						+ ") *" //+ ab.getReturnType(this, curr, succ)  // No: uses getStateChanName, which returns intermed name for nested states
-								+ getSuccStateChanName(succ)
-						+ " {\n"
+		String res = "func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER
+				+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
+					+ ab.buildArgs(this, a)
+					+ ") *" //+ ab.getReturnType(this, curr, succ)  // No: uses getStateChanName, which returns intermed name for nested states
+					+ getSuccStateChanName(succ)
+					+ " {\n"
 
 				  // FIXME: currently redundant for case objects (cf. branch action err handling)
-				+ "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " != nil {\n"
-				+ "panic(" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + ")\n"
-				+ "}\n";
+				+ "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " != nil {\n" + "panic("
+					+ RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + ")\n"				+ "}\n";
 
 		if (this.parent.job.parForeach)
 		{
-			res += RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_RES_FIELD
-								+ "." + RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n";
+			res += RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					+ RPCoreSTApiGenConstants.SCHAN_RES_FIELD + "."
+					+ RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n";
 		}
 		else
 		{
-			res +=
-				  // HACK FIXME: pre-create case objects
-				  ((ab instanceof RPCoreSTCaseActionBuilder)
-						? RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_RES_FIELD
-								+ "." + RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n"
-						: "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + "id != "  // Not using atomic.LoadUint64 on id for now
-										//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
-										+ RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "." + "lin"
-										+ " {\n"
-								+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
+			// HACK FIXME: pre-create case objects
+			res += ((ab instanceof RPCoreSTCaseActionBuilder)
+					? RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+							+ RPCoreSTApiGenConstants.SCHAN_RES_FIELD + "."
+							+ RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n"
+					: "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+								+ "id != "  // Not using atomic.LoadUint64 on id for now
+								//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
+								+ RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "." + "lin"
+								+ " {\n"
+							+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
 								+ "}\n"
 				  );
 				/*+ "atomic.AddUint64(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT
