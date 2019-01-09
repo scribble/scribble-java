@@ -116,6 +116,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			// These are the "base" names; getStateChanName adapted to return mangled names for generating I/O actions on "intermed" states
 			// (The "base" names are used for the foreach entry states)
 			// TODO: refactor base framework for better support
+			//
+			// FIXME: separate "entry" state management from "base" states -- e.g., naming, and also state chan instance creation -- cf. RPCoreSTSessionApiBuilder.getSortedStateChan(Entry)TypeNames
 	}
 	
 	@Override

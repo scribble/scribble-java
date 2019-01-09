@@ -33,7 +33,7 @@ public class RPCoreNOutputStateBuilder extends STOutputStateBuilder
 		return ((RPCoreSTStateChanApiBuilder) apib).getStateChanPremable(s);
 	}
 
-	// TODO: factor out with other state kinds
+	// TODO: factor out with other relevant state kinds (e.g., receive, not entry states though)
 	private String makeStateChannelType(RPCoreSTStateChanApiBuilder apib,
 			RPCoreEState s)
 	{

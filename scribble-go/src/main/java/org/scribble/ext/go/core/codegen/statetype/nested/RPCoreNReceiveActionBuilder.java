@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype.flat;
+package org.scribble.ext.go.core.codegen.statetype.nested;
 
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -16,7 +16,7 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.MessageSigName;
 
-public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
+public class RPCoreNReceiveActionBuilder extends STReceiveActionBuilder
 {
 
 	@Override
@@ -51,10 +51,10 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 	{
 		// Duplicated form RPCoreNSendActionBuilder
 		String schan = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER;
-		/*if (((RPCoreSTStateChanApiBuilder) api).parent.job.dotApi)
+		if (((RPCoreSTStateChanApiBuilder) api).parent.job.dotApi)
 		{
 			schan += ".schan";
-		}*/
+		}
 
 		if(a.payload.elems.size() > 1)
 		{

@@ -33,6 +33,8 @@ import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTSelectActionBuild
 import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTSelectStateBuilder;
 import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTSendActionBuilder;
 import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNOutputStateBuilder;
+import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNReceiveActionBuilder;
+import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNReceiveStateBuilder;
 import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNSendActionBuilder;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
@@ -346,9 +348,9 @@ public class RPCoreSTApiGenerator
 			ob = new RPCoreNOutputStateBuilder(
 					null, //new RPCoreSTSplitActionBuilder(),  // TODO
 					new RPCoreNSendActionBuilder());
-			rb = new RPCoreSTReceiveStateBuilder(
+			rb = new RPCoreNReceiveStateBuilder(
 					null, //new RPCoreSTReduceActionBuilder(),  // TODO
-					new RPCoreSTReceiveActionBuilder());
+					new RPCoreNReceiveActionBuilder());
 				// Select-based branch, or type switch branch by default
 			bb = (this.job.selectApi)
 					? new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder())
@@ -438,7 +440,25 @@ public class RPCoreSTApiGenerator
 		{
 			RPCoreEAction rpa = (RPCoreEAction) a;
 			RPIndexedRole peer = rpa.getPeer();
-			String action = "Scatter";  // TODO: generalise
+			String action;  // TODO: generalise
+			switch (RPCoreSTStateChanApiBuilder.getStateKind(s))
+			{
+				case CROSS_RECEIVE:
+					if (s.getActions().size() > 1) 
+					{
+						throw new RuntimeException("[rp-core] TODO: " + s.getStateKind());
+					}
+					else
+					{
+						action = "Gather";
+					}
+					break;
+				case CROSS_SEND:
+					action = "Scatter";
+					break;
+				default:
+					throw new RuntimeException("[rp-core] Shouldn't get here: " + s.getStateKind());
+			}
 			Set<String> tmp = menu.get(peer);  // CHECKME: always singleton?
 			if (tmp == null)
 			{

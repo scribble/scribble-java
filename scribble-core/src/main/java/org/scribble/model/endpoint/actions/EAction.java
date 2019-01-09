@@ -50,6 +50,7 @@ public abstract class EAction extends MAction<Local>
 	//public abstract GModelAction toGlobal(Role self);
 	public abstract SAction toGlobal(SModelFactory sf, Role self);
 
+	// cf. state kind enum
 	public boolean isSend()
 	{
 		return false;
