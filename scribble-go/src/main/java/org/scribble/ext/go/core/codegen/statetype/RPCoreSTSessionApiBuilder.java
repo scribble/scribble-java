@@ -1,6 +1,5 @@
 package org.scribble.ext.go.core.codegen.statetype;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,10 +13,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPFamily;
+import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.type.index.RPBinIndexExpr;
@@ -26,7 +24,6 @@ import org.scribble.ext.go.type.index.RPIndexInt;
 import org.scribble.ext.go.type.index.RPIndexIntPair;
 import org.scribble.ext.go.type.index.RPIndexSelf;
 import org.scribble.ext.go.type.index.RPIndexVar;
-import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.type.name.Role;
 
@@ -38,9 +35,8 @@ public class RPCoreSTSessionApiBuilder
 	private final RPCoreSTApiGenerator parent;
 
 	// TODO: refactor into RPCoreDotApiGen
-	protected final Map<RPRoleVariant, Set<RPCoreEState>> reachable;
-	protected final Map<RPRoleVariant, Map<Integer, String>> stateChanNames;  // State2
 
+	// FIXME: already in RPCoreEState
 	private static final Comparator<RPCoreEState> RPCOREESTATE_COMP = new Comparator<RPCoreEState>()
 		{
 			@Override
@@ -53,83 +49,9 @@ public class RPCoreSTSessionApiBuilder
 	public RPCoreSTSessionApiBuilder(RPCoreSTApiGenerator apigen)
 	{
 		this.parent = apigen;
-		this.reachable = Collections.unmodifiableMap(getReachable());
-		this.stateChanNames = Collections.unmodifiableMap(
-				makeStateChanNames().entrySet().stream().collect(Collectors.toMap(
-						e -> e.getKey(),
-						e -> Collections.unmodifiableMap(e.getValue())
-				)));
-	}
-
-	private Map<RPRoleVariant, Set<RPCoreEState>> getReachable()
-	{
-		Map<RPRoleVariant, Set<RPCoreEState>> res = new HashMap<>();
-
-		// For each variant/EFSM
-		for (Entry<RPRoleVariant, EGraph> e : (Iterable<Entry<RPRoleVariant, EGraph>>) 
-				this.parent.selfs.stream().map(r -> this.parent.variants.get(r))
-					.flatMap(x -> x.entrySet().stream())::iterator)
-		{
-			RPRoleVariant v = e.getKey();
-			EGraph g = e.getValue();
-
-			Set<RPCoreEState> rs = new HashSet<>();
-			rs.add((RPCoreEState) g.init);
-			rs.addAll(RPCoreEState.getReachableStates((RPCoreEState) g.init));
-				// FIXME: cast needed to select correct static -- refactor to eliminate cast
-			res.put(v, Collections.unmodifiableSet(new HashSet<>(rs)));
-		}
-
-		return res;
 	}
 
 	// TODO: factor up toe RPCoreSTApiGenerator
-	private Map<RPRoleVariant, Map<Integer, String>> makeStateChanNames()
-	{
-		Map<RPRoleVariant, Map<Integer, String>> res = new HashMap<>();
-
-		for (RPRoleVariant v : this.reachable.keySet())
-		{
-			EGraph g = this.parent.variants.get(v.getName()).get(v);
-			Set<RPCoreEState> todo = new HashSet<>(this.reachable.get(v));
-			Map<Integer, String> curr = new HashMap<>();
-			res.put(v, curr);
-
-			for (RPCoreEState s : new HashSet<>(todo))
-			{
-				if (s.hasNested()) // Nested inits
-				{
-					RPCoreEState nested = s.getNested();
-					curr.put(nested.id, "Init_" + nested.id);
-					todo.remove(nested);
-				}
-			}
-
-			// Handling top-level init/end must come after handling nested
-			curr.put(g.init.id, "Init");
-			todo.remove(g.init);
-			if (g.term != null && g.term.id != g.init.id)
-				// Latter is for single top-level foreach states
-			{
-				todo.remove(g.term); // Remove top-level term from rs
-				curr.put(g.term.id, "End");
-			}
-
-			int[] counter = { 2 }; // 1 is Init
-			todo.forEach(s ->
-			{
-				String n = s.isTerminal() // Includes nested terminals
-						? (s.hasNested() ? "End_" + s.id : "End") 
-							// "Nesting" or "plain" terminal (all "plain" terminals can be
-							// treated the same)
-						: "State" + counter[0]++;
-				curr.put(s.id, n);
-			});
-		}
-
-		return res;
-	}
-
 	//@Override
 	public Map<String, String> build()  // TODO: factor out
 	{
@@ -799,17 +721,36 @@ public class RPCoreSTSessionApiBuilder
 	}*/
 
 	// Sorted by state ID
+	private List<RPCoreEState> getSortedStateChans(RPRoleVariant variant)
+	{
+		return this.parent.reachable.get(variant).stream().sorted(RPCOREESTATE_COMP)
+				.collect(Collectors.toList());
+	}
+
 	// TODO CHECKME: case objects?
 	private List<String> getSortedStateChanTypeNames(RPRoleVariant variant)
 	{
-		return this.reachable.get(variant).stream().sorted(RPCOREESTATE_COMP)
+		return getSortedStateChans(variant).stream()
 				.flatMap(s ->
 				{
-					String n = this.stateChanNames.get(variant).get(s.id);
+					String n = this.parent.stateChanNames.get(variant).get(s.id);
 					return (s.hasNested() && !s.isTerminal()) 
-							? Stream.of(n, n + "_")
+							? Stream.of(n)
 								// TODO: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
 							: Stream.of(n);
+				}).distinct().collect(Collectors.toList());
+	}
+
+	private List<String> getSortedStateChanEntryTypeNames(RPRoleVariant variant)
+	{
+		return getSortedStateChans(variant).stream()
+				.flatMap(s ->
+				{
+					String n = this.parent.stateChanNames.get(variant).get(s.id);
+					return (s.hasNested() && !s.isTerminal()) 
+							? Stream.of(n + "_")
+								// TODO: factor out with RPCoreSTStateChanApiBuilder#getStateChanName
+							: Stream.of();
 				}).distinct().collect(Collectors.toList());
 	}
 
@@ -847,6 +788,10 @@ public class RPCoreSTSessionApiBuilder
 		stateChans = getSortedStateChanTypeNames(variant).stream()
 				.map(
 						n -> this.parent.getEndpointKindStateChanField(n) + " *" + n + "\n")
+				.collect(Collectors.joining())
+				+ getSortedStateChanEntryTypeNames(variant).stream()
+				.map(
+						n -> this.parent.getEndpointKindStateChanField(n) + " *" + n + "\n")
 				.collect(Collectors.joining());
 
 		String epkindType = "type " + epkindTypeName + " struct {\n"
@@ -875,6 +820,7 @@ public class RPCoreSTSessionApiBuilder
 		String sig;
 		String instance;
 		String sChans;
+		String nested = "";
 
 		sig = "func New("
 
@@ -912,6 +858,8 @@ public class RPCoreSTSessionApiBuilder
 						+ this.parent.mode.indexType + "),\n"  // Trailing comma needed
 				// stateChans
 				+ getSortedStateChanTypeNames(variant).stream().map(x -> "nil,\n")
+						.collect(Collectors.joining())
+				+ getSortedStateChanEntryTypeNames(variant).stream().map(x -> "nil,\n")
 						.collect(Collectors.joining());
 					
 		if (this.parent.job.parForeach)
@@ -922,16 +870,63 @@ public class RPCoreSTSessionApiBuilder
 		instance += "}\n";
 
 		// TODO CHECKME: case objects?
-		sChans = getSortedStateChanTypeNames(variant).stream()
-				.map(n -> "ep." + this.parent.getEndpointKindStateChanField(n) + " = "
-							+ this.parent.makeStateChanInstance(n, "ep", "1") + "\n")
+		sChans = getSortedStateChans(variant).stream()
+				.map(s -> 
+				{
+					String n = this.parent.stateChanNames.get(variant).get(s.id);
+					System.out.println("AAA: " + n + " ,, " + this.parent.stateChanNames.get(variant) + " ,, " + s.id);
+					String res = "ep." + this.parent.getEndpointKindStateChanField(n) + " = "
+							+ this.parent.makeStateChanInstance(n, "ep", "1", s) + "\n";
+					return res;
+				})
 				.collect(Collectors.joining());
 						// CHECKME: reusing pre-created chan structs OK for Err handling?
+		sChans += getSortedStateChanEntryTypeNames(variant).stream()
+				.map(n -> "ep." + this.parent.getEndpointKindStateChanField(n) + " = "
+							+ this.parent.makeStateChanInstance(n, "ep", "1", null) + "\n")
+				.collect(Collectors.joining());
+						// CHECKME: reusing pre-created chan structs OK for Err handling?
+		
+		if (this.parent.job.dotApi)
+		{
+			for (RPCoreEState s : this.parent.reachable.get(variant))
+			{
+				Map<RPIndexedRole, Set<String>> menu = this.parent.getStateChanMenu(s);
+
+				for (Entry<RPIndexedRole, Set<String>> e : 
+					(Iterable<Entry<RPIndexedRole, Set<String>>>) menu.entrySet().stream()
+						.sorted(new Comparator<Entry<RPIndexedRole, Set<String>>>()
+							{
+								@Override
+								public int compare(Entry<RPIndexedRole, Set<String>> e1,
+										Entry<RPIndexedRole, Set<String>> e2)
+								{
+									return RPIndexedRole.COMPARATOR.compare(e1.getKey(),
+											e2.getKey());
+								}
+							})::iterator)
+				{
+					//ep._Init.W_1toK = &W_1toK{&Scatter_4{ep._Init}}
+					// TODO factor out explicit "type name"
+					RPIndexedRole peer = e.getKey();
+					String n = this.parent.stateChanNames.get(variant).get(s.id);
+					String r = this.parent.namegen.getGeneratedIndexedRoleName(peer);
+					nested += "ep._" + n + "."
+							+ r + " = " + "&" + r + "{";
+					for (String action : e.getValue())
+					{
+						nested += "&" + action + "_" + s.id + "{ep._" + n + "}";
+					}
+					nested += "}\n";
+				}
+			}
+		}
 										
 		String epkindConstr = 
 				  sig + " {\n"
 				+ instance
-				+ sChans;
+				+ sChans
+				+ nested;
 		if (this.parent.job.parForeach)
 		{
 			epkindConstr += "ep." + RPCoreSTApiGenConstants.ENDPOINT_FVARS_FIELD

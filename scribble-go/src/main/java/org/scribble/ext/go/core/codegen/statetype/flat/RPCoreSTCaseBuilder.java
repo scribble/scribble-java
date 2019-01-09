@@ -6,6 +6,7 @@ import java.util.Map;
 import org.scribble.codegen.statetype.STCaseBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTStateChanApiBuilder;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;

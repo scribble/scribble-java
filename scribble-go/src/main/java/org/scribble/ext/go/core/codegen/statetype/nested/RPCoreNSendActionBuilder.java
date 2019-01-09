@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype.flat;
+package org.scribble.ext.go.core.codegen.statetype.nested;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +15,7 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.MessageSigName;
 
-public class RPCoreSTSendActionBuilder extends STSendActionBuilder
+public class RPCoreNSendActionBuilder extends STSendActionBuilder
 {
 
 	@Override
@@ -29,20 +29,20 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 	}
 
 	@Override
-	public String buildArgs(STStateChanApiBuilder api, EAction a)
+	public String buildArgs(STStateChanApiBuilder scb, EAction a)
 	{
-		RPCoreSTStateChanApiBuilder apigen = (RPCoreSTStateChanApiBuilder) api;
+		RPCoreSTStateChanApiBuilder rpscb = (RPCoreSTStateChanApiBuilder) scb;
 		if (a.mid.isOp())
 		{
 			return IntStream.range(0, a.payload.elems.size()) 
 					.mapToObj(i -> RPCoreSTApiGenConstants.API_SEND_ARG + i + " []"
-							+ apigen.getPayloadElemTypeName(a.payload.elems.get(i))) //a.payload.elems.get(i)
+							+ rpscb.getPayloadElemTypeName(a.payload.elems.get(i))) //a.payload.elems.get(i)
 					.collect(Collectors.joining(", "));
 		}
 		else //if (a.mid.isMessageSigName())
 		{
 			return RPCoreSTApiGenConstants.API_SEND_ARG + "0 []"
-					+ apigen.getExtName((MessageSigName) a.mid);
+					+ rpscb.getExtName((MessageSigName) a.mid);
 		}
 	}
 
@@ -66,8 +66,16 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 	}
 
 	@Override
-	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a, EState succ)
+	public String buildBody(STStateChanApiBuilder api, EState curr, EAction a,
+			EState succ)
 	{
+		// Duplicated from RPCoreSTStateChanApiBuilder#buildAction
+		String schan = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER;
+		if (((RPCoreSTStateChanApiBuilder) api).parent.job.dotApi)
+		{
+			schan += ".schan";
+		}
+
 		if(a.payload.elems.size() > 1)
 		{
 			throw new RuntimeException("[param-core] TODO: " + a);
@@ -76,18 +84,21 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		List<EAction> as = curr.getActions();
 		if (as.size() > 1 && as.stream().anyMatch(b -> b.mid.toString().equals("")))  // HACK
 		{
-			throw new RuntimeException("[param-core] Empty labels not allowed in non-unary choices: " + curr.getActions());
+			throw new RuntimeException(
+					"[param-core] Empty labels not allowed in non-unary choices: "
+							+ curr.getActions());
 		}
 
 		RPCoreSTStateChanApiBuilder rpapi = (RPCoreSTStateChanApiBuilder) api;
-		RPIndexedRole r = (RPIndexedRole) a.peer;
-		RPInterval d = r.intervals.iterator().next();
-		if (r.intervals.size() > 1)
+		RPIndexedRole peer = (RPIndexedRole) a.peer;
+		RPInterval d = peer.intervals.iterator().next();
+		if (peer.intervals.size() > 1)
 		{
 			throw new RuntimeException("[rp-core] TODO: " + a);
 		}
 		
-		String sEpWrite = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD
+		String sEp = schan + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
+		String sEpWrite = sEp
 				+ "." + RPCoreSTApiGenConstants.ENDPOINT_MPCHAN_FIELD; /*+ "." //+ RPCoreSTApiGenConstants.GO_CONNECTION_MAP
 				+ RPCoreSTApiGenConstants.GO_MPCHAN_FORMATTER_MAP
 				+ "[\"" + r.getName() + "\"]";*/
@@ -122,8 +133,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		String res = "for i, j := " + rpapi.generateIndexExpr(d.start) + ", 0;"
 				+ " i" + lte + "; i, j = " + inc + ", j+1 {\n";
 
-		String errorField = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
-                            + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "."
+		String errorField = sEp + "."
                             + "_" + rpapi.getSuccStateChanName(succ) + "."
                             + RPCoreSTApiGenConstants.SCHAN_ERR_FIELD;
 
@@ -136,7 +146,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 							+ "." //+ RPCoreSTApiGenConstants.GO_ENDPOINT_WRITEALL
 							+ RPCoreSTApiGenConstants.GO_FORMATTER_ENCODE_STRING
 							+ "(\"" + a.mid + "\"" + ")" */
-							+ "." + RPCoreSTApiGenConstants.MPCHAN_ISEND + "(\"" + r.getName() + "\", i, &op)"
+							+ "." + RPCoreSTApiGenConstants.MPCHAN_ISEND + "(\"" + peer.getName() + "\", i, &op)"
 							+ "; " + errorField + " != nil {\n"
 					//+ "log.Fatal(err)\n"  // FIXME
 					//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
@@ -178,7 +188,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 					res +=  checkError(sEpWrite
 												+ "."
 												+ (a.mid.isOp() ? RPCoreSTApiGenConstants.MPCHAN_ISEND : RPCoreSTApiGenConstants.MPCHAN_MSEND)
-												+ "(\"" + r.getName() + "\", i" 
+												+ "(\"" + peer.getName() + "\", i" 
 												+ IntStream.range(0, a.payload.elems.size()).mapToObj(i -> ", &arg" + i + "[j]").collect(Collectors.joining(""))
 												+ ")", errorField);
 				}
@@ -189,7 +199,7 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 				res += checkError( sEpWrite
 											+ "."
 											+ (a.mid.isOp() ? RPCoreSTApiGenConstants.MPCHAN_ISEND : RPCoreSTApiGenConstants.MPCHAN_MSEND)
-											+ "(\"" + r.getName() + "\", i, &arg0[j])", errorField);
+											+ "(\"" + peer.getName() + "\", i, &arg0[j])", errorField);
 			}
 		}
 

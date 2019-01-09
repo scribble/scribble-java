@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.codegen.statetype.flat;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.codegen.statetype.STStateChanBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTStateChanApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.type.index.RPIndexVar;
@@ -161,7 +162,7 @@ public class RPCoreSTForeachEntryStateBuilder extends STStateChanBuilder
 		if (rpscb.parent.job.parForeach)
 		{
 			feach += "nested := " + rpscb.parent.makeStateChanInstance(initName, sEp,
-					RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread");
+					RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread", null);
 			//feach += "nested.id = " + sEp + ".lin\n";
 			feach += "f(nested)\n";
 		}
@@ -225,7 +226,7 @@ public class RPCoreSTForeachEntryStateBuilder extends STStateChanBuilder
 			feach += "tmp[\"" + p + "\"] = " + p + "\n";
 
 			feach += "nested := "
-					+ rpscb.parent.makeStateChanInstance(initName, sEp, "tid");
+					+ rpscb.parent.makeStateChanInstance(initName, sEp, "tid", null);
 			feach += "chs[" + p + "] = make(chan int)\n";
 			feach += "go func(ch chan int) {\n";
 			feach += "f(nested)\n";

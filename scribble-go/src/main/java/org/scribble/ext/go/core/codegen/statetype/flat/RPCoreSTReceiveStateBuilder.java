@@ -5,6 +5,7 @@ import java.util.List;
 import org.scribble.codegen.statetype.STReceiveActionBuilder;
 import org.scribble.codegen.statetype.STReceiveStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTStateChanApiBuilder;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;

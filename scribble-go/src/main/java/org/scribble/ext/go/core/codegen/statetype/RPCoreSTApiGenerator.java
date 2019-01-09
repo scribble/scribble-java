@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.codegen.statetype;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,11 +13,31 @@ import java.util.stream.IntStream;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.codegen.statetype.STBranchStateBuilder;
+import org.scribble.codegen.statetype.STCaseBuilder;
+import org.scribble.codegen.statetype.STEndStateBuilder;
+import org.scribble.codegen.statetype.STOutputStateBuilder;
+import org.scribble.codegen.statetype.STReceiveStateBuilder;
 import org.scribble.del.ModuleDel;
 import org.scribble.ext.go.core.ast.local.RPCoreLType;
 import org.scribble.ext.go.core.cli.RPCoreCLArgParser;
-import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTStateChanApiBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTBranchActionBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTBranchStateBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTCaseActionBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTCaseBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTEndStateBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTOutputStateBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTReceiveActionBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTReceiveStateBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTSelectActionBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTSelectStateBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTSendActionBuilder;
+import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNOutputStateBuilder;
+import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNSendActionBuilder;
+import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
 import org.scribble.ext.go.core.type.RPFamily;
+import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.visit.RPCoreIndexVarCollector;
 import org.scribble.ext.go.main.GoJob;
@@ -24,6 +45,7 @@ import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.Smt2Translator;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageId;
@@ -50,7 +72,6 @@ public class RPCoreSTApiGenerator
 			this.indexType = indexType;
 		}
 	}
-	
 	public final RPCoreSTApiNameGen namegen = new RPCoreSTApiNameGen(this);
 
 	public final Mode mode;
@@ -66,10 +87,14 @@ public class RPCoreSTApiGenerator
 		// "github.com/rhu1/scribble-go-runtime/test2/bar/bar02/Bar2") -- not supplied
 		// by Scribble module
 	public final List<Role> selfs;  
-	
+
 	public final Map<Role, Map<RPRoleVariant, RPCoreLType>> projections;
 	public final Map<Role, Map<RPRoleVariant, EGraph>> variants;
 		// All the original variants
+	
+	protected final Map<RPRoleVariant, Set<RPCoreEState>> reachable;
+	protected final Map<RPRoleVariant, Map<Integer, String>> stateChanNames;  // State2
+			// These are the "base" names (not the intermed names)
 
 	public static final int INIT_FAMILY_ID = 1;
 	public final Map<RPFamily, Integer> families;  // int is arbitrary familiy id  // CHECKME: reverse the map?
@@ -114,6 +139,13 @@ public class RPCoreSTApiGenerator
 							e -> Collections.unmodifiableMap(e.getValue())
 					)));
 
+		this.reachable = Collections.unmodifiableMap(getReachable());
+		this.stateChanNames = Collections.unmodifiableMap(
+				makeStateChanNames().entrySet().stream().collect(Collectors.toMap(
+						e -> e.getKey(),
+						e -> Collections.unmodifiableMap(e.getValue())
+				)));
+
 		int[] i = { INIT_FAMILY_ID };
 		this.families = Collections
 				.unmodifiableMap(families.stream().sorted(RPFamily.COMPARATOR)
@@ -132,6 +164,75 @@ public class RPCoreSTApiGenerator
 							e -> Collections.unmodifiableMap(e.getValue())
 					)));
 	}
+
+	private Map<RPRoleVariant, Set<RPCoreEState>> getReachable()
+	{
+		Map<RPRoleVariant, Set<RPCoreEState>> res = new HashMap<>();
+
+		// For each variant/EFSM
+		for (Entry<RPRoleVariant, EGraph> e : (Iterable<Entry<RPRoleVariant, EGraph>>) 
+				this.selfs.stream().map(r -> this.variants.get(r))
+					.flatMap(x -> x.entrySet().stream())::iterator)
+		{
+			RPRoleVariant v = e.getKey();
+			EGraph g = e.getValue();
+
+			Set<RPCoreEState> rs = new HashSet<>();
+			rs.add((RPCoreEState) g.init);
+			rs.addAll(RPCoreEState.getReachableStates((RPCoreEState) g.init));
+				// FIXME: cast needed to select correct static -- refactor to eliminate cast
+			res.put(v, Collections.unmodifiableSet(new HashSet<>(rs)));
+		}
+
+		return res;
+	}
+
+	private Map<RPRoleVariant, Map<Integer, String>> makeStateChanNames()
+	{
+		Map<RPRoleVariant, Map<Integer, String>> res = new HashMap<>();
+
+		for (RPRoleVariant v : this.reachable.keySet())
+		{
+			EGraph g = this.variants.get(v.getName()).get(v);
+			Set<RPCoreEState> todo = new HashSet<>(this.reachable.get(v));
+			Map<Integer, String> curr = new HashMap<>();
+			res.put(v, curr);
+
+			for (RPCoreEState s : new HashSet<>(todo))
+			{
+				if (s.hasNested()) // Nested inits
+				{
+					RPCoreEState nested = s.getNested();
+					curr.put(nested.id, "Init_" + nested.id);
+					todo.remove(nested);
+				}
+			}
+
+			// Handling top-level init/end must come after handling nested
+			curr.put(g.init.id, "Init");
+			todo.remove(g.init);
+			if (g.term != null && g.term.id != g.init.id)
+				// Latter is for single top-level foreach states
+			{
+				todo.remove(g.term); // Remove top-level term from rs
+				curr.put(g.term.id, "End");
+			}
+
+			int[] counter = { 2 }; // 1 is Init
+			todo.forEach(s ->
+			{
+				String n = s.isTerminal() // Includes nested terminals
+						? (s.hasNested() ? "End_" + s.id : "End") 
+							// "Nesting" or "plain" terminal (all "plain" terminals can be
+							// treated the same)
+						: "State" + counter[0]++;
+				curr.put(s.id, n);
+			});
+		}
+
+		return res;
+	}
+
 
 	// N.B. the base EGraph class will probably be replaced by a more specific
 	// (and more helpful) param-core class later
@@ -218,35 +319,62 @@ public class RPCoreSTApiGenerator
 		return res;
 	}
 
-	private Map<RPRoleVariant, Map<Integer, String>> stateChanNames = new HashMap<>();  
-			// FIXME HACK: currently cached from RPCoreDotSessionApiBuilder -- move into here?
-
 	//@Override
 	public Map<String, String> buildSessionApi()  // TODO: factor out
 	{
 		this.job
 				.debugPrintln("\n[rp-core] Running " + RPCoreSTSessionApiBuilder.class
 						+ " for " + this.proto + "@" + this.selfs);
-		RPCoreSTSessionApiBuilder b = new RPCoreSTSessionApiBuilder(this);
-		this.stateChanNames.putAll(b.stateChanNames);
-		return b.build();
+		return new RPCoreSTSessionApiBuilder(this).build();
 	}
 	
 	public Map<String, String> buildStateChannelApi(
 			RPFamily family, RPRoleVariant variant, EGraph graph)  // TODO: factor out
 	{
+		this.job.debugPrintln(
+				"\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for "
+						+ this.proto + "@" + variant);
+
+		STOutputStateBuilder ob;
+		STReceiveStateBuilder rb;
+		STBranchStateBuilder bb;
+		STCaseBuilder cb;
+		STEndStateBuilder eb = new RPCoreSTEndStateBuilder();
 		if (this.job.dotApi)
 		{
-			throw new RuntimeException("TODO");
+			//throw new RuntimeException("[rp-core] TODO");
+			ob = new RPCoreNOutputStateBuilder(
+					null, //new RPCoreSTSplitActionBuilder(),  // TODO
+					new RPCoreNSendActionBuilder());
+			rb = new RPCoreSTReceiveStateBuilder(
+					null, //new RPCoreSTReduceActionBuilder(),  // TODO
+					new RPCoreSTReceiveActionBuilder());
+				// Select-based branch, or type switch branch by default
+			bb = (this.job.selectApi)
+					? new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder())
+					: new RPCoreSTBranchStateBuilder(new RPCoreSTBranchActionBuilder());
+			cb = (this.job.selectApi)
+					? null
+					: new RPCoreSTCaseBuilder(new RPCoreSTCaseActionBuilder());
 		}
 		else
 		{
-			this.job.debugPrintln(
-					"\n[rp-core] Running " + RPCoreSTStateChanApiBuilder.class + " for "
-							+ this.proto + "@" + variant);
-			return new RPCoreSTStateChanApiBuilder(this, family, variant, graph,
-					this.stateChanNames.get(variant)).build();
+			ob = new RPCoreSTOutputStateBuilder(
+					null, //new RPCoreSTSplitActionBuilder(),  // TODO
+					new RPCoreSTSendActionBuilder());
+			rb = new RPCoreSTReceiveStateBuilder(
+					null, //new RPCoreSTReduceActionBuilder(),  // TODO
+					new RPCoreSTReceiveActionBuilder());
+				// Select-based branch, or type switch branch by default
+			bb = (this.job.selectApi)
+					? new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder())
+					: new RPCoreSTBranchStateBuilder(new RPCoreSTBranchActionBuilder());
+			cb = (this.job.selectApi)
+					? null
+					: new RPCoreSTCaseBuilder(new RPCoreSTCaseActionBuilder());
 		}
+		return new RPCoreSTStateChanApiBuilder(this, family, variant, graph,
+				this.stateChanNames.get(variant), ob, rb, bb, cb, eb).build();
 	}
 	
 	public String makeLinearResourceInstance()
@@ -256,20 +384,70 @@ public class RPCoreSTApiGenerator
 	}
 
 	// FIXME: refactor, e.g., take state ID, factor out "End"
+	// TODO: consider best way to support different combinations of -dotpai (menu), -parforeach (threadId), etc.
 	public String makeStateChanInstance(String schanName, String epName,
-			String threadId)
+			String threadId, RPCoreEState s)
 		// CHECKME: epName is always "ep"?
 	{
-		return ("&" + schanName + "{ nil, "
-				+ (this.job.parForeach ? makeLinearResourceInstance() + ", "
-						: (schanName.equals("Init") ? "1, " : "0, "))
-					// TODO: factor out constants
-		) + epName + (this.job.parForeach ? ", " + threadId : "") + " }";
+		String res = ("&" + schanName + "{ nil, "
+				+ (this.job.parForeach
+						? makeLinearResourceInstance() + ", "
+						: (schanName.equals("Init") ? "1, " : "0, ")))
+					// TODO: factor out constants 
+				+ epName + (this.job.parForeach ? ", " + threadId : "");
+		if (this.job.dotApi && s != null)  // HACK FIXME
+		{
+			Map<RPIndexedRole, Set<String>> menu = getStateChanMenu(s);
+			for (Entry<RPIndexedRole, Set<String>> e : 
+				(Iterable<Entry<RPIndexedRole, Set<String>>>) menu.entrySet().stream()
+					.sorted(new Comparator<Entry<RPIndexedRole, Set<String>>>()
+						{
+							@Override
+							public int compare(Entry<RPIndexedRole, Set<String>> e1,
+									Entry<RPIndexedRole, Set<String>> e2)
+							{
+								return RPIndexedRole.COMPARATOR.compare(e1.getKey(),
+										e2.getKey());
+							}
+						})::iterator)
+			{
+				//ep._Init.W_1toK = &W_1toK{&Scatter_4{ep._Init}}
+				// TODO factor out explicit "type name"
+				/*RPIndexedRole peer = e.getKey();
+				res += ", &" + this.namegen.getGeneratedIndexedRoleName(peer) + "{";
+				for (String action : e.getValue())
+				{
+					res += "&" + action + "_" + s.id + "{" + epName + "._" + schanName + "}";
+				}
+				res += "}";*/
+				res += ", nil";
+			}
+		}
+		return res + " }";
 	}
 	
 	public String getEndpointKindStateChanField(String schanName)
 	{
 		return "_" + schanName;
+	}
+
+	public Map<RPIndexedRole, Set<String>> getStateChanMenu(RPCoreEState s)
+	{
+		Map<RPIndexedRole, Set<String>> menu = new HashMap<>();  // CHECKME: apply sorting here?
+		for (EAction a : s.getActions())
+		{
+			RPCoreEAction rpa = (RPCoreEAction) a;
+			RPIndexedRole peer = rpa.getPeer();
+			String action = "Scatter";  // TODO: generalise
+			Set<String> tmp = menu.get(peer);  // CHECKME: always singleton?
+			if (tmp == null)
+			{
+				tmp = new HashSet<>();
+				menu.put(peer, tmp);
+			}
+			tmp.add(action);
+		}
+		return menu;
 	}
 	
 	/**

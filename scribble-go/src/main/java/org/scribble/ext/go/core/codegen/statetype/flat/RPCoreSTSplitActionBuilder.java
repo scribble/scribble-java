@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 import org.scribble.codegen.statetype.STSendActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTStateChanApiBuilder;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;

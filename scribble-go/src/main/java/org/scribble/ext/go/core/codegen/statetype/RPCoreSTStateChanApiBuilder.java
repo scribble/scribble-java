@@ -1,4 +1,4 @@
-package org.scribble.ext.go.core.codegen.statetype.flat;
+package org.scribble.ext.go.core.codegen.statetype;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,18 +14,25 @@ import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.statetype.STActionBuilder;
+import org.scribble.codegen.statetype.STBranchStateBuilder;
+import org.scribble.codegen.statetype.STCaseBuilder;
+import org.scribble.codegen.statetype.STEndStateBuilder;
+import org.scribble.codegen.statetype.STOutputStateBuilder;
+import org.scribble.codegen.statetype.STReceiveStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.ast.RPCoreAstFactory;
 import org.scribble.ext.go.core.ast.RPCoreSyntaxException;
 import org.scribble.ext.go.core.ast.global.RPCoreGProtocolDeclTranslator;
 import org.scribble.ext.go.core.ast.global.RPCoreGType;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
-import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTCaseActionBuilder;
+import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTForeachEntryStateBuilder;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
+import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossReceive;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreECrossSend;
 import org.scribble.ext.go.core.type.RPFamily;
+import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
 import org.scribble.ext.go.main.GoJob;
@@ -47,8 +54,10 @@ import org.scribble.type.name.PayloadElemType;
 
 	
 
-	//.. refactor schan name making into parent api gen
 	//.. refactor import generation
+		
+//		.. make nested action builders
+//		.. adapt (nested) field constructors (inside endpoint kind constructor)
 
 
 // Following org.scribble.ext.go.codegen.statetype.go.GoSTStateChanAPIBuilder
@@ -70,40 +79,25 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 	// N.B. the base EGraph class will probably be replaced by a more specific (and more helpful) rp-core class later
 	// Pre: variant.getName().equals(this.role)
+	// TODO: parameterise builders for -parforeach?
 	public RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen,
 			RPFamily family, RPRoleVariant variant, EGraph graph,
-			Map<Integer, String> names)
+			Map<Integer, String> names, STOutputStateBuilder ob,  // Maybe collect up builders in some wrapper
+			STReceiveStateBuilder rb, STBranchStateBuilder bb, STCaseBuilder cb,
+			STEndStateBuilder eb)
 	{
-		this(apigen, family, variant, graph, names, Collections.emptySet());
+		this(apigen, family, variant, graph, names, Collections.emptySet(), ob, rb,
+				bb, cb, eb);
 	}
 
 	private RPCoreSTStateChanApiBuilder(RPCoreSTApiGenerator apigen,
 			RPFamily family, RPRoleVariant variant, EGraph graph,
-			Map<Integer, String> names, Set<RPIndexVar> fvars)
+			Map<Integer, String> stateChanNames, Set<RPIndexVar> fvars,
+			STOutputStateBuilder ob, STReceiveStateBuilder rb,
+			STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
 	{
-		super(apigen.job, apigen.proto, //apigen.self, 
-				variant.getName(),
-				graph,
-				
-				// FIXME: refactor to parameterise on flat/nested builders
-				// Similarly for -parforeach?
-				
-				new RPCoreSTOutputStateBuilder(
-						null, //new RPCoreSTSplitActionBuilder(),  // TODO
-						new RPCoreSTSendActionBuilder()),
-				new RPCoreSTReceiveStateBuilder(
-						null, //new RPCoreSTReduceActionBuilder(),  // TODO
-						new RPCoreSTReceiveActionBuilder()),
-
-				// Select-based branch, or type switch branch by default
-				(apigen.job.selectApi)
-						? new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder())
-						: new RPCoreSTBranchStateBuilder(new RPCoreSTBranchActionBuilder()),
-				(apigen.job.selectApi)
-						? null
-						: new RPCoreSTCaseBuilder(new RPCoreSTCaseActionBuilder()),
-
-				new RPCoreSTEndStateBuilder());
+		super(apigen.job, apigen.proto, // apigen.self,
+				variant.getName(), graph, ob, rb, bb, cb, eb);
 
 		this.parent = apigen;
 		this.family = family;
@@ -117,9 +111,11 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 		this.fvars.addAll(fvars);
 		
-		this.names.putAll(names);  
-			// Names already pre-allocated; not using the "on-demand" name creation of the base framework
-			// TODO: refactor base framework
+		this.names.putAll(stateChanNames);  
+			// Names already pre-allocated by RPCoreSTApiGenerator; not using the "on-demand" name creation of the base framework
+			// These are the "base" names; getStateChanName adapted to return mangled names for generating I/O actions on "intermed" states
+			// (The "base" names are used for the foreach entry states)
+			// TODO: refactor base framework for better support
 	}
 	
 	@Override
@@ -198,7 +194,8 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 				Set<RPIndexVar> tmp2 = new HashSet<>(this.fvars);
 				tmp2.add(s1.getParam());  // CHECKME: state visiting order(?)  not guaranteed (w.r.t. lexical var scope)
 				RPCoreSTStateChanApiBuilder nestedBuilder = new RPCoreSTStateChanApiBuilder(
-						this.parent, this.family, this.variant, nested, this.names, tmp2);
+						this.parent, this.family, this.variant, nested, this.names, tmp2,
+						this.ob, this.rb, this.bb, this.cb, this.eb);
 				tmp.putAll(nestedBuilder.build());  // Includes another "End", but doesn't matter
 				res.putAll(tmp);
 			}
@@ -388,22 +385,36 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	public String buildAction(STActionBuilder ab, EState curr, EAction a)
 	{
 		EState succ = curr.getSuccessor(a);
+		String schan = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER;
+		if (this.parent.job.dotApi)
+		{
+			schan += ".schan";
+		}
+		
+		Map<RPIndexedRole, Set<String>> menu = this.parent.getStateChanMenu((RPCoreEState) curr);
+		RPCoreEAction rpa = (RPCoreEAction) a;
+		
 		String res = "func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER
-				+ " *" + ab.getStateChanType(this, curr, a) + ") " + ab.getActionName(this, a) + "(" 
+				+ " *" 
+				// FIXME: change peer-action map to key on actual action
+					+ (this.parent.job.dotApi 
+							? menu.get(rpa.getPeer()).iterator().next() + "_" + curr.id   // HACK FIXME
+							: ab.getStateChanType(this, curr, a)) 
+					+ ") " + ab.getActionName(this, a) + "(" 
 					+ ab.buildArgs(this, a)
 					+ ") *" //+ ab.getReturnType(this, curr, succ)  // No: uses getStateChanName, which returns intermed name for nested states
 					+ getSuccStateChanName(succ)
 					+ " {\n"
 
 				  // FIXME: currently redundant for case objects (cf. branch action err handling)
-				+ "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+				+ "if " + schan + "."
 					+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + " != nil {\n" + "panic("
-					+ RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					+ schan + "."
 					+ RPCoreSTApiGenConstants.SCHAN_ERR_FIELD + ")\n"				+ "}\n";
 
 		if (this.parent.job.parForeach)
 		{
-			res += RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+			res += schan + "."
 					+ RPCoreSTApiGenConstants.SCHAN_RES_FIELD + "."
 					+ RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n";
 		}
@@ -411,13 +422,13 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		{
 			// HACK FIXME: pre-create case objects
 			res += ((ab instanceof RPCoreSTCaseActionBuilder)
-					? RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					? schan + "."
 							+ RPCoreSTApiGenConstants.SCHAN_RES_FIELD + "."
 							+ RPCoreSTApiGenConstants.LINEARRESOURCE_USE + "()\n"
-					: "if " + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+					: "if " + schan + "."
 								+ "id != "  // Not using atomic.LoadUint64 on id for now
 								//+ "atomic.LoadUint64(&" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.GO_SCHAN_ENDPOINT + "." + "lin)"
-								+ RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "." + "lin"
+								+ schan + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD + "." + "lin"
 								+ " {\n"
 							+ "panic(\"Linear resource already used\")\n" // + reflect.TypeOf(" + RPCoreSTApiGenConstants.GO_IO_METHOD_RECEIVER + "))\n"
 								+ "}\n"
@@ -426,6 +437,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						+ "." + "lin" + ")\n"*/
 		}
 
+		// Delegate back to action builder
 		res += ab.buildBody(this, curr, a, succ) + "\n"
 				+ "}";
 
@@ -467,9 +479,10 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 	
 	// Parameterised on "name" (not state) for foreach intermed state building
-	protected String makeReturnSuccStateChan(String succName)
+	public String makeReturnSuccStateChan(String succName)
 	{
 		String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
+				+ (this.parent.job.dotApi ? "schan." : "")
 				+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 		{
 			String nextState;
@@ -477,7 +490,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			{
 				nextState = "succ := "
 						+ this.parent.makeStateChanInstance(succName, sEp,
-								RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread");
+								RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + ".Thread", null);
 				return nextState + "\n"
 						+ "return succ\n";
 			}
@@ -521,7 +534,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 
 	// this.names records "base" names -- cf. getStateChanName, implicitly adds "_" suffix for intermed state naming
 	// Additional foreach "entry" state uses the "base" name
-	protected String getStateChanBaseName(int id)  // Take id instead of state to distinguish from getStateChanName
+	public String getStateChanBaseName(int id)  // Take id instead of state to distinguish from getStateChanName
 	{
 		return this.names.get(id);
 	}
@@ -575,7 +588,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			// FIXME: hardcoded to Init because of above FIXME
 			if (!root.equals(state))
 			{
-				throw new RuntimeException("[rp-core] TODO: delegation of non-initial state of target protocol: " + state);
+				throw new RuntimeException(
+						"[rp-core] TODO: delegation of non-initial state of target protocol: "
+								+ state);
 			}
 			name = "Init";
 			
@@ -600,7 +615,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	}
 	
 	// TODO: refactor into namegen
-	protected String getExtName(DataType t)
+	public String getExtName(DataType t)
 	{
 		return this.dtds.stream().filter(x -> x.getDeclName().equals(t)).findAny().get().extName;
 	}
@@ -625,10 +640,18 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	// TODO: rename cross/dot
 	// CHECKME: currently redundant?  (no dot/multichoices) -- but maybe needed again for pipe/pair
-	protected enum RPCoreEStateKind { CROSS_SEND, CROSS_RECEIVE, DOT_SEND, DOT_RECEIVE, MULTICHOICES_RECEIVE, TERMINAL }
+	public enum RPCoreEStateKind
+	{
+		CROSS_SEND, 
+		CROSS_RECEIVE, 
+		DOT_SEND, 
+		DOT_RECEIVE, 
+		MULTICHOICES_RECEIVE,
+		TERMINAL
+	}
 	
 	// FIXME: refactor into RPCoreEState?
-	protected static RPCoreEStateKind getStateKind(EState s)
+	public static RPCoreEStateKind getStateKind(EState s)
 	{
 		List<EAction> as = s.getActions();
 		if (as.isEmpty())
@@ -678,7 +701,9 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		else if (e instanceof RPIndexVar)
 		{
-			String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
+			String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER 
+					+ (this.parent.job.dotApi ? ".schan" : "")  // FIXME factor out
+					+ "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 			//if (e instanceof RPForeachVar ||
 			if (
 					this.fvars.stream().anyMatch(p -> p.toString().equals(e.toString())))  // FIXME HACK -- foreach var occurrences inside foreach body are RPIndexVars

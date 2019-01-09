@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.codegen.statetype.flat;
 import org.scribble.codegen.statetype.STEndStateBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTStateChanApiBuilder;
 import org.scribble.model.endpoint.EState;
 
 // CHECKME: factor out between "flat" and "nested" APIs?

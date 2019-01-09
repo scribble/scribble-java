@@ -1,6 +1,7 @@
 package org.scribble.ext.go.core.type;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,6 +17,17 @@ public class RPIndexedRole extends Role
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	public static final
+	Comparator<RPIndexedRole> COMPARATOR = new Comparator<RPIndexedRole>()
+			{
+				@Override
+				public int compare(RPIndexedRole i1, RPIndexedRole i2)
+				{
+					return i1.toString().compareTo(i2.toString());  // CHECKME: consistent with namegen string ordering?
+				}
+			};
+	
 
 	//public final ParamRange range;
 	public final Set<RPInterval> intervals;  // size >= 1 -- size == 1 for parsed syntax

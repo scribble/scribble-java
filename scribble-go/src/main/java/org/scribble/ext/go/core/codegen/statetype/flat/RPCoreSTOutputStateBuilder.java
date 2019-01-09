@@ -3,6 +3,7 @@ package org.scribble.ext.go.core.codegen.statetype.flat;
 import org.scribble.codegen.statetype.STOutputStateBuilder;
 import org.scribble.codegen.statetype.STSendActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTStateChanApiBuilder;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
