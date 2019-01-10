@@ -394,8 +394,12 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			schan += ".schan";
 			menu = this.parent.getStateChanMenu((RPCoreEState) curr);
 		}
-		 
+
 		RPCoreEAction rpa = (RPCoreEAction) a;
+		if (this.parent.job.dotApi && menu.get(rpa.getPeer()).size() > 1)
+		{
+			throw new RuntimeException("[rp-core][-dotapi] TODO: " + a);
+		}
 		String res = "func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER
 				+ " *" 
 				// FIXME: change peer-action map to key on actual action

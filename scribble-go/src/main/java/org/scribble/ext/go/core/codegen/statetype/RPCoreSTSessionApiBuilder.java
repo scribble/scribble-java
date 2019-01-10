@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenerator.Mode;
+import org.scribble.ext.go.core.codegen.statetype.RPCoreSTStateChanApiBuilder.RPCoreEStateKind;
 import org.scribble.ext.go.core.model.endpoint.RPCoreEState;
 import org.scribble.ext.go.core.type.RPFamily;
 import org.scribble.ext.go.core.type.RPIndexedRole;
@@ -914,9 +915,18 @@ public class RPCoreSTSessionApiBuilder
 					String r = this.parent.namegen.getGeneratedIndexedRoleName(peer);
 					nested += "ep._" + n + "."
 							+ r + " = " + "&" + r + "{";
-					for (String action : e.getValue())
+					if (RPCoreSTStateChanApiBuilder
+							.getStateKind(s) == RPCoreEStateKind.CROSS_RECEIVE
+							&& s.getActions().size() > 1)  // HACK FIXME
 					{
-						nested += "&" + action + "_" + s.id + "{ep._" + n + "}";
+						nested += "ep._" + n;
+					}
+					else
+					{
+						for (String action : e.getValue())
+						{
+							nested += "&" + action + "_" + s.id + "{ep._" + n + "}";
+						}
 					}
 					nested += "}\n";
 				}

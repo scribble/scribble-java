@@ -32,6 +32,45 @@ public class RPCoreNOutputStateBuilder extends STOutputStateBuilder
 	{
 		return ((RPCoreSTStateChanApiBuilder) apib).getStateChanPremable(s);
 	}
+	
+	@Override
+	public String build(STStateChanApiBuilder apib, EState s)
+	{
+		String out = getPreamble(apib, s) 
+				+ makeStateChannelType((RPCoreSTStateChanApiBuilder) apib, (RPCoreEState) s);
+		
+		for (EAction a : s.getActions())
+		{
+			out += "\n\n";
+			if (a instanceof ESend)  // FIXME: factor out action kind
+			{
+				//out += this.sb.build(api, s, a);
+
+				/*// FIXME: delegation 
+				if (!a.payload.elems.stream()
+						.anyMatch(pet -> ((RPCoreSTStateChanApiBuilder) api)//.isDelegType((DataType) pet)))
+							.isDelegType(pet)))*/
+				{
+					out += "\n\n";
+					out += this.nb.build(apib, s, a);
+				}
+			}
+			else if (a instanceof ERequest)
+			{
+				throw new RuntimeException("TODO: " + a);
+			}
+			else if (a instanceof EDisconnect)
+			{
+				throw new RuntimeException("TODO: " + a);
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + a);
+			}
+		}
+
+		return out;
+	}
 
 	// TODO: factor out with other relevant state kinds (e.g., receive, not entry states though)
 	private String makeStateChannelType(RPCoreSTStateChanApiBuilder apib,
@@ -99,44 +138,5 @@ public class RPCoreNOutputStateBuilder extends STOutputStateBuilder
 //end := s.W_1toK.Scatter.W_1toK_Scatter_A(pay)
 
 		return res;
-	}
-	
-	@Override
-	public String build(STStateChanApiBuilder apib, EState s)
-	{
-		String out = getPreamble(apib, s) 
-				+ makeStateChannelType((RPCoreSTStateChanApiBuilder) apib, (RPCoreEState) s);
-		
-		for (EAction a : s.getActions())
-		{
-			out += "\n\n";
-			if (a instanceof ESend)  // FIXME: factor out action kind
-			{
-				//out += this.sb.build(api, s, a);
-
-				/*// FIXME: delegation 
-				if (!a.payload.elems.stream()
-						.anyMatch(pet -> ((RPCoreSTStateChanApiBuilder) api)//.isDelegType((DataType) pet)))
-							.isDelegType(pet)))*/
-				{
-					out += "\n\n";
-					out += this.nb.build(apib, s, a);
-				}
-			}
-			else if (a instanceof ERequest)
-			{
-				throw new RuntimeException("TODO: " + a);
-			}
-			else if (a instanceof EDisconnect)
-			{
-				throw new RuntimeException("TODO: " + a);
-			}
-			else
-			{
-				throw new RuntimeException("Shouldn't get in here: " + a);
-			}
-		}
-
-		return out;
 	}
 }

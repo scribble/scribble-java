@@ -32,6 +32,10 @@ import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTReceiveStateBuild
 import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTSelectActionBuilder;
 import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTSelectStateBuilder;
 import org.scribble.ext.go.core.codegen.statetype.flat.RPCoreSTSendActionBuilder;
+import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNBranchActionBuilder;
+import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNBranchStateBuilder;
+import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNCaseActionBuilder;
+import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNCaseBuilder;
 import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNOutputStateBuilder;
 import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNReceiveActionBuilder;
 import org.scribble.ext.go.core.codegen.statetype.nested.RPCoreNReceiveStateBuilder;
@@ -352,12 +356,12 @@ public class RPCoreSTApiGenerator
 					null, //new RPCoreSTReduceActionBuilder(),  // TODO
 					new RPCoreNReceiveActionBuilder());
 				// Select-based branch, or type switch branch by default
-			bb = (this.job.selectApi)
-					? new RPCoreSTSelectStateBuilder(new RPCoreSTSelectActionBuilder())
-					: new RPCoreSTBranchStateBuilder(new RPCoreSTBranchActionBuilder());
-			cb = (this.job.selectApi)
-					? null
-					: new RPCoreSTCaseBuilder(new RPCoreSTCaseActionBuilder());
+			if (this.job.selectApi)
+			{
+				throw new RuntimeException("[rp-core][-dotapi] TODO: -select");
+			}
+			bb = new RPCoreNBranchStateBuilder(new RPCoreNBranchActionBuilder());
+			cb = new RPCoreNCaseBuilder(new RPCoreNCaseActionBuilder());
 		}
 		else
 		{
@@ -444,20 +448,27 @@ public class RPCoreSTApiGenerator
 			switch (RPCoreSTStateChanApiBuilder.getStateKind(s))
 			{
 				case CROSS_RECEIVE:
+				{
 					if (s.getActions().size() > 1) 
 					{
-						throw new RuntimeException("[rp-core] TODO: " + s.getStateKind());
+						action = "Branch";
 					}
 					else
 					{
 						action = "Gather";
 					}
 					break;
+				}
 				case CROSS_SEND:
+				{
 					action = "Scatter";
 					break;
+				}
 				default:
-					throw new RuntimeException("[rp-core] Shouldn't get here: " + s.getStateKind());
+				{
+					throw new RuntimeException(
+							"[rp-core] Shouldn't get here: " + s.getStateKind());
+				}
 			}
 			Set<String> tmp = menu.get(peer);  // CHECKME: always singleton?
 			if (tmp == null)
