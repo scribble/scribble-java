@@ -388,14 +388,14 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	{
 		EState succ = curr.getSuccessor(a);
 		String schan = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER;
+		Map<RPIndexedRole, Set<String>> menu = null;
 		if (this.parent.job.dotApi)
 		{
 			schan += ".schan";
+			menu = this.parent.getStateChanMenu((RPCoreEState) curr);
 		}
-		
-		Map<RPIndexedRole, Set<String>> menu = this.parent.getStateChanMenu((RPCoreEState) curr);
+		 
 		RPCoreEAction rpa = (RPCoreEAction) a;
-		
 		String res = "func (" + RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER
 				+ " *" 
 				// FIXME: change peer-action map to key on actual action
