@@ -476,15 +476,15 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		}
 		else
 		{
-			return makeReturnSuccStateChan(name);
+			return makeReturnSuccStateChan(name, true);
 		}
 	}
 	
 	// Parameterised on "name" (not state) for foreach intermed state building
-	public String makeReturnSuccStateChan(String succName)
+	public String makeReturnSuccStateChan(String succName, boolean checkDotApi)  // HACK FIXME
 	{
 		String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."
-				+ (this.parent.job.dotApi ? "schan." : "")
+				+ (checkDotApi && this.parent.job.dotApi ? "schan." : "")
 				+ RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 		{
 			String nextState;
@@ -691,7 +691,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 	
 	// Expressions to be used in code -- cf. RPCoreSTApiGenerator.getGeneratedNameLabel
 	// TODO: refactor into RPIndexExpr -- cf. toGoString ?
-	public String generateIndexExpr(RPIndexExpr e)
+	public String generateIndexExpr(RPIndexExpr e, boolean checkDotApi)  // HACK FIXME
 	{
 		if (e instanceof RPIndexInt)
 		{
@@ -704,7 +704,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 		else if (e instanceof RPIndexVar)
 		{
 			String sEp = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER 
-					+ (this.parent.job.dotApi ? ".schan" : "")  // FIXME factor out
+					+ (checkDotApi && this.parent.job.dotApi ? ".schan" : "")  // FIXME factor out
 					+ "." + RPCoreSTApiGenConstants.SCHAN_EPT_FIELD;
 			//if (e instanceof RPForeachVar ||
 			if (
@@ -732,7 +732,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 			// TODO: factor out
 			switch (this.parent.mode)
 			{
-				case Int:  return "(" + generateIndexExpr(b.left) + b.op.toString() + generateIndexExpr(b.right) + ")";
+				case Int:  return "(" + generateIndexExpr(b.left, true) + b.op.toString() + generateIndexExpr(b.right, true) + ")";
 				case IntPair:
 				{
 					String op;
@@ -743,7 +743,7 @@ public class RPCoreSTStateChanApiBuilder extends STStateChanApiBuilder
 						case Mult:
 						default:  throw new RuntimeException("[rp-core] Shouldn't get in here: " + e);
 					}
-					 return "(" + generateIndexExpr(b.left) + "." + op + "(" + generateIndexExpr(b.right) + "))";
+					 return "(" + generateIndexExpr(b.left, true) + "." + op + "(" + generateIndexExpr(b.right, true) + "))";
 				}
 				default:  throw new RuntimeException("Shouldn't get in here: " + this.parent.mode);
 			}

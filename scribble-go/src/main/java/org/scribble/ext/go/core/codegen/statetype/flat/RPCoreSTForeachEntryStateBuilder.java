@@ -103,14 +103,14 @@ public class RPCoreSTForeachEntryStateBuilder extends STStateChanBuilder
 		{
 			case Int:  
 			{
-				lte = " <= " + rpscb.generateIndexExpr(s.getInterval().end);  
+				lte = " <= " + rpscb.generateIndexExpr(s.getInterval().end, false);  
 				inc = p + "+1";
 				break;
 			}
 			case IntPair:  
 			{
-				lte = ".Lte(" + rpscb.generateIndexExpr(s.getInterval().end) + ")";
-				inc = p + ".Inc(" + rpscb.generateIndexExpr(s.getInterval().end) + ")";
+				lte = ".Lte(" + rpscb.generateIndexExpr(s.getInterval().end, false) + ")";
+				inc = p + ".Inc(" + rpscb.generateIndexExpr(s.getInterval().end, false) + ")";
 				break;
 			}
 			default:
@@ -146,7 +146,7 @@ public class RPCoreSTForeachEntryStateBuilder extends STStateChanBuilder
 					+ "}\n";
 		}
 	
-		feach += "for " + p + " := " + rpscb.generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
+		feach += "for " + p + " := " + rpscb.generateIndexExpr(s.getInterval().start, false) + "; "  // FIXME: general interval expressions
 				+ p + lte + "; " + p + " = " + inc + "{\n";
 		
 		if (rpscb.parent.job.parForeach)
@@ -182,7 +182,7 @@ public class RPCoreSTForeachEntryStateBuilder extends STStateChanBuilder
 		feach += "}\n";
 		
 		feach += //+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
-				  rpscb.makeReturnSuccStateChan(succName) + "\n"
+				  rpscb.makeReturnSuccStateChan(succName, false) + "\n"
 				+ "}\n";
 		
 		// Parallel method
@@ -205,7 +205,7 @@ public class RPCoreSTForeachEntryStateBuilder extends STStateChanBuilder
 		
 			feach += "chs := make(map[int]chan int)\n";
 							
-			feach += "for " + p + " := " + rpscb.generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
+			feach += "for " + p + " := " + rpscb.generateIndexExpr(s.getInterval().start, false) + "; "  // FIXME: general interval expressions
 					+ p + lte + "; " + p + " = " + inc + "{\n";
 			
 			// inc Ept thread
@@ -235,13 +235,13 @@ public class RPCoreSTForeachEntryStateBuilder extends STStateChanBuilder
 
 			feach += "}\n";
 		
-			feach += "for " + p + " := " + rpscb.generateIndexExpr(s.getInterval().start) + "; "  // FIXME: general interval expressions
+			feach += "for " + p + " := " + rpscb.generateIndexExpr(s.getInterval().start, false) + "; "  // FIXME: general interval expressions
 					+ p + lte + "; " + p + " = " + inc + "{\n";
 			feach += "<- chs[" + p + "]\n";
 			feach += "}\n";
 			
 			feach += //+ "return " + makeCreateSuccStateChan(s, succName) + "\n"
-						rpscb.makeReturnSuccStateChan(succName) + "\n"
+						rpscb.makeReturnSuccStateChan(succName, false) + "\n"
 					+ "}\n";
 		}
 

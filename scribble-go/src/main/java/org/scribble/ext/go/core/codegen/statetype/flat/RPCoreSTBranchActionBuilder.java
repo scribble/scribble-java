@@ -120,7 +120,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 					+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 					+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_IRECV + "(" + "&lab" + ")"*/
 					+ "." + RPCoreSTApiGenConstants.MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
-							+ rpapi.generateIndexExpr(d.start) + ", &lab" + ")"  // peer must have singleton interval
+							+ rpapi.generateIndexExpr(d.start, true) + ", &lab" + ")"  // peer must have singleton interval
 							+ "; err != nil {\n"
 					//+ "log.Fatal(err)\n"
 					//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?
@@ -147,7 +147,7 @@ public class RPCoreSTBranchActionBuilder extends STBranchActionBuilder
 					+ "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 					+ "." //+ RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(" + "&msg" + ")"*/
 					+ "." + RPCoreSTApiGenConstants.MPCHAN_MRECV + "(\"" + peer.getName() + "\", "
-							+ rpapi.generateIndexExpr(d.start) + ", &msg" + ")"  // peer must have singleton interval
+							+ rpapi.generateIndexExpr(d.start, true) + ", &msg" + ")"  // peer must have singleton interval
 							+ "; err != nil {\n"
 					//+ "log.Fatal(err)\n"
 					+ "panic(err)\n"  // FIXME: which case object to return for error?  make "default" error case object?

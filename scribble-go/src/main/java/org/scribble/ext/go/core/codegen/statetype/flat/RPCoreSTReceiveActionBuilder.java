@@ -100,20 +100,20 @@ public class RPCoreSTReceiveActionBuilder extends STReceiveActionBuilder
 			{
 				case Int:  
 				{
-					lte = " <= " + rpapi.generateIndexExpr(d.end);  
+					lte = " <= " + rpapi.generateIndexExpr(d.end, true);  
 					inc = "i+1";
 					break;
 				}
 				case IntPair:  
 				{
-					lte = ".Lte(" + rpapi.generateIndexExpr(d.end) + ")";  
-					inc = "i.Inc(" + rpapi.generateIndexExpr(d.end) + ")"; 
+					lte = ".Lte(" + rpapi.generateIndexExpr(d.end, true) + ")";  
+					inc = "i.Inc(" + rpapi.generateIndexExpr(d.end, true) + ")"; 
 					break;
 				}
 				default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.parent.mode);
 			}
 
-			String start = rpapi.generateIndexExpr(d.start);
+			String start = rpapi.generateIndexExpr(d.start, true);
 			res += //"var err error\n"
 					  "for i, j := " + start + ", 0;"
 					+ " i " + lte + "; i, j = " + inc + ", j+1 {\n";

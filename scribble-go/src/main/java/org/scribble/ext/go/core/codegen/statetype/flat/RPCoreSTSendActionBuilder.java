@@ -106,20 +106,20 @@ public class RPCoreSTSendActionBuilder extends STSendActionBuilder
 		{
 			case Int:  
 			{
-				lte = " <= " + rpapi.generateIndexExpr(d.end);
+				lte = " <= " + rpapi.generateIndexExpr(d.end, true);
 				inc = "i+1";  
 				break;
 			}
 			case IntPair:  
 			{
-				lte = ".Lte(" + rpapi.generateIndexExpr(d.end) + ")";  
-				inc = "i.Inc(" + rpapi.generateIndexExpr(d.end) + ")";
+				lte = ".Lte(" + rpapi.generateIndexExpr(d.end, true) + ")";  
+				inc = "i.Inc(" + rpapi.generateIndexExpr(d.end, true) + ")";
 				break;
 			}
 			default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.parent.mode);
 		}
 		
-		String res = "for i, j := " + rpapi.generateIndexExpr(d.start) + ", 0;"
+		String res = "for i, j := " + rpapi.generateIndexExpr(d.start, true) + ", 0;"
 				+ " i" + lte + "; i, j = " + inc + ", j+1 {\n";
 
 		String errorField = RPCoreSTApiGenConstants.API_IO_METHOD_RECEIVER + "."

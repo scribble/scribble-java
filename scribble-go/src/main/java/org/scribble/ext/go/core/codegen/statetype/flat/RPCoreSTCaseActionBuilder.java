@@ -72,7 +72,7 @@ public class RPCoreSTCaseActionBuilder extends STCaseActionBuilder
 				  "if err := " + sEpRecv /*+ "[1]"  // FIXME: use peer interval
 						+ "." + RPCoreSTApiGenConstants.GO_MPCHAN_READALL + "(&tmp)"*/
 						+ "." + RPCoreSTApiGenConstants.MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
-								+ rpapi.generateIndexExpr(d.start) + ", arg0)"
+								+ rpapi.generateIndexExpr(d.start, true) + ", arg0)"
 						+ "; err != nil {\n"
 				//+ "log.Fatal(err)\n"
 				//+ "return " + rpapi.makeCreateSuccStateChan(succ) + "\n"  // FIXME: disable linearity check for error chan?  Or doesn't matter -- only need to disable completion check?

@@ -857,6 +857,7 @@ public class RPCoreSTSessionApiBuilder
 							? "map[int]map[string]" : "map[string]")
 						+ this.parent.mode.indexType + "),\n"  // Trailing comma needed
 				// stateChans
+				// FIXME: refactor below
 				+ getSortedStateChanTypeNames(variant).stream().map(x -> "nil,\n")
 						.collect(Collectors.joining())
 				+ getSortedStateChanEntryTypeNames(variant).stream().map(x -> "nil,\n")
@@ -869,12 +870,12 @@ public class RPCoreSTSessionApiBuilder
 							
 		instance += "}\n";
 
+		// FIXME refactor below
 		// TODO CHECKME: case objects?
 		sChans = getSortedStateChans(variant).stream()
 				.map(s -> 
 				{
 					String n = this.parent.stateChanNames.get(variant).get(s.id);
-					System.out.println("AAA: " + n + " ,, " + this.parent.stateChanNames.get(variant) + " ,, " + s.id);
 					String res = "ep." + this.parent.getEndpointKindStateChanField(n) + " = "
 							+ this.parent.makeStateChanInstance(n, "ep", "1", s) + "\n";
 					return res;

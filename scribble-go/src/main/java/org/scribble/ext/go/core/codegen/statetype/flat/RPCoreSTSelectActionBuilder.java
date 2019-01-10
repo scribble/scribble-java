@@ -107,7 +107,7 @@ public class RPCoreSTSelectActionBuilder extends STBranchActionBuilder
 				res += "if err := " + sEpRecv // + (((GoJob) api.job).noCopy ? "Raw" : "");
 								//+ "[" + RPCoreSTStateChanApiBuilder.generateIndexExpr(d.start) + "].Recv(&arg0)"
 								+ "." + RPCoreSTApiGenConstants.MPCHAN_IRECV + "(\"" + peer.getName() + "\", "
-								+ rpapi.generateIndexExpr(d.start) + ", &arg0)"
+								+ rpapi.generateIndexExpr(d.start, true) + ", &arg0)"
 						+ "; err != nil {\n"
 						+ "log.Fatal(err)\n"
 						+ "}\n"

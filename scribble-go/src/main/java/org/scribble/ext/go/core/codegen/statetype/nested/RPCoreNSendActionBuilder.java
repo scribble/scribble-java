@@ -8,7 +8,6 @@ import org.scribble.codegen.statetype.STSendActionBuilder;
 import org.scribble.codegen.statetype.STStateChanApiBuilder;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTApiGenConstants;
 import org.scribble.ext.go.core.codegen.statetype.RPCoreSTStateChanApiBuilder;
-import org.scribble.ext.go.core.model.endpoint.action.RPCoreEAction;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.model.endpoint.EState;
@@ -21,11 +20,11 @@ public class RPCoreNSendActionBuilder extends STSendActionBuilder
 	@Override
 	public String getActionName(STStateChanApiBuilder scb, EAction a)
 	{
-		return ((RPCoreSTStateChanApiBuilder) scb).parent.namegen
+		return /*((RPCoreSTStateChanApiBuilder) scb).parent.namegen
 				.getGeneratedIndexedRoleName(((RPCoreEAction) a).getPeer()) + "_"
 				+ RPCoreSTApiGenConstants.API_SCATTER_PREFIX  
 					// FIXME: make unary Send special case
-				+ "_" + a.mid;
+				+ "_" +*/ a.mid.toString();
 	}
 
 	@Override
@@ -117,20 +116,20 @@ public class RPCoreNSendActionBuilder extends STSendActionBuilder
 		{
 			case Int:  
 			{
-				lte = " <= " + rpapi.generateIndexExpr(d.end);
+				lte = " <= " + rpapi.generateIndexExpr(d.end, true);
 				inc = "i+1";  
 				break;
 			}
 			case IntPair:  
 			{
-				lte = ".Lte(" + rpapi.generateIndexExpr(d.end) + ")";  
-				inc = "i.Inc(" + rpapi.generateIndexExpr(d.end) + ")";
+				lte = ".Lte(" + rpapi.generateIndexExpr(d.end, true) + ")";  
+				inc = "i.Inc(" + rpapi.generateIndexExpr(d.end, true) + ")";
 				break;
 			}
 			default:  throw new RuntimeException("Shouldn't get in here: " + rpapi.parent.mode);
 		}
 		
-		String res = "for i, j := " + rpapi.generateIndexExpr(d.start) + ", 0;"
+		String res = "for i, j := " + rpapi.generateIndexExpr(d.start, true) + ", 0;"
 				+ " i" + lte + "; i, j = " + inc + ", j+1 {\n";
 
 		String errorField = sEp + "."
