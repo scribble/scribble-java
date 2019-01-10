@@ -912,9 +912,10 @@ public class RPCoreSTSessionApiBuilder
 					// TODO factor out explicit "type name"
 					RPIndexedRole peer = e.getKey();
 					String n = this.parent.stateChanNames.get(variant).get(s.id);
-					String r = this.parent.namegen.getGeneratedIndexedRoleName(peer);
+					String peerFieldName = this.parent.namegen.getGeneratedIndexedRoleName(peer);
+					String peerTypeName = peerFieldName + "__" + s.id;
 					nested += "ep._" + n + "."
-							+ r + " = " + "&" + r + "{";
+							+ peerFieldName + " = " + "&" + peerTypeName + "{";
 					if (RPCoreSTStateChanApiBuilder
 							.getStateKind(s) == RPCoreEStateKind.CROSS_RECEIVE
 							&& s.getActions().size() > 1)  // HACK FIXME

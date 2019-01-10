@@ -64,9 +64,9 @@ public class RPCoreNReceiveStateBuilder extends STReceiveStateBuilder
 
 		for (RPIndexedRole peer : menu.keySet())
 		{
-			String fieldname = apib.parent.namegen.getGeneratedIndexedRoleName(peer);
-			String typename = fieldname;  // CHECKME: alternative type name?
-			res += fieldname + " *" + typename + "\n";
+			String peerFieldName = apib.parent.namegen.getGeneratedIndexedRoleName(peer);
+			String peerTypeName = peerFieldName + "__" + s.id;  // CHECKME: alternative type name?
+			res += peerFieldName + " *" + peerTypeName + "\n";
 		}
 
 		res += "}\n";
@@ -74,7 +74,8 @@ public class RPCoreNReceiveStateBuilder extends STReceiveStateBuilder
 		// Peer types
 		for (RPIndexedRole peer : menu.keySet())  // FIXME: sort
 		{
-			String typename = apib.parent.namegen.getGeneratedIndexedRoleName(peer);  // Cf. above
+			String typename = apib.parent.namegen.getGeneratedIndexedRoleName(peer)
+					+ "__" + s.id;  // Cf. above
 			res += "\n"
 					+ "type " + typename + " struct {\n";
 			for (String action : menu.get(peer))

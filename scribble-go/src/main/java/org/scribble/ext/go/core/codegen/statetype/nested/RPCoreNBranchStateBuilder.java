@@ -153,9 +153,9 @@ public class RPCoreNBranchStateBuilder extends STBranchStateBuilder
 
 		for (RPIndexedRole peer : menu.keySet())
 		{
-			String fieldname = apib.parent.namegen.getGeneratedIndexedRoleName(peer);
-			String typename = fieldname;  // CHECKME: alternative type name?
-			res += fieldname + " *" + typename + "\n";
+			String peerFieldName = apib.parent.namegen.getGeneratedIndexedRoleName(peer);
+			String peerTypeName = peerFieldName + "__" + s.id;  // CHECKME: alternative type name?
+			res += peerFieldName + " *" + peerTypeName + "\n";
 		}
 
 		res += "}\n";
@@ -163,9 +163,10 @@ public class RPCoreNBranchStateBuilder extends STBranchStateBuilder
 		// Peer types
 		for (RPIndexedRole peer : menu.keySet())  // FIXME: sort
 		{
-			String typename = apib.parent.namegen.getGeneratedIndexedRoleName(peer);  // Cf. above
+			String peerTypeName = apib.parent.namegen
+					.getGeneratedIndexedRoleName(peer) + "__" + s.id;  // Cf. above
 			res += "\n"
-					+ "type " + typename + " struct {\n";
+					+ "type " + peerTypeName + " struct {\n";
 			/*for (String action : menu.get(peer))
 			{
 				String actionTypeName = action + "_" + s.id;  // CHECKME: alternative type name?

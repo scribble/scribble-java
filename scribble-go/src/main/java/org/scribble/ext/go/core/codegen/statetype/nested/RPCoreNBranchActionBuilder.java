@@ -41,7 +41,7 @@ public class RPCoreNBranchActionBuilder extends STBranchActionBuilder
 				branchComment
 				+ "func (s *"
 					+ (rpapi.parent.job.dotApi 
-							? rpapi.parent.namegen.getGeneratedIndexedRoleName(rpa.getPeer()) //+ "_" + curr.id   // FIXME add sid suffix (also elsewhere)
+							? rpapi.parent.namegen.getGeneratedIndexedRoleName(rpa.getPeer()) + "__" + curr.id
 							: getStateChanType(api, curr, a)) 
 					+ ") "
 						+ getActionName(api, a) + "("
