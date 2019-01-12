@@ -227,7 +227,6 @@ public class CLArgParser
 			case CLArgParser.VALIDATION_EFSM_FLAG:
 			case CLArgParser.UNFAIR_EFSM_FLAG:
 			case CLArgParser.API_GEN_FLAG:
-			case CLArgParser.API_GEN_PS_FLAG:
 			case CLArgParser.STATECHAN_API_GEN_FLAG:
 			{
 				return parseProtoAndRoleArgs(flag, i);
@@ -241,6 +240,7 @@ public class CLArgParser
 			case CLArgParser.SGRAPH_FLAG:
 			case CLArgParser.UNFAIR_SGRAPH_FLAG:
 			case CLArgParser.SESSION_API_GEN_FLAG:
+			case CLArgParser.API_GEN_PS_FLAG:
 			{
 				return parseProtoArg(flag, i);
 			}

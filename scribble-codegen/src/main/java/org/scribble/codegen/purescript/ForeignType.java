@@ -1,5 +1,7 @@
 package org.scribble.codegen.purescript;
 
+import org.scribble.main.RuntimeScribbleException;
+
 import java.util.*;
 
 public class ForeignType {
@@ -31,6 +33,9 @@ public class ForeignType {
         for (String source : imports.keySet()) {
             // No need to explicitly import
             if (source.equals(PRIM_MODULE)) continue;
+            if (source.trim().length() == 0) {
+                throw new RuntimeScribbleException("Foreign type import source for " + imports.get(source) + " cannot be empty");
+            }
             is.append("import " + source + " (");
             List<String> ts = new ArrayList<>(imports.get(source));
             is.append(ts.get(0));

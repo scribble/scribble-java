@@ -20,6 +20,7 @@ import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.Job;
 import org.scribble.main.JobContext;
+import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
@@ -48,20 +49,24 @@ public class PSEndpointApiGenerator
 		GProtocolName simpname = fullname.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
 
+        if (!gpd.isExplicitModifier()) {
+            throw new RuntimeScribbleException("Only protocols with explicit connections are currently supported in this version");
+        }
+
 		String moduleName = fullname.getPrefix().toString();
         String protocolName = fullname.getSimpleName().toString();
 
         // Generate protocol type-level information
         DataType protocolType = new DataType(protocolName, null, "Protocol", true);
-        TypeClassInstance protocolNameInst = new TypeClassInstance("protocolName" + protocolType.name, "ProtocolName", new String[] {protocolType.name, ("\"" + protocolType.name + "\"")});
+//        TypeClassInstance protocolNameInst = new TypeClassInstance("protocolName" + protocolType.name, "ProtocolName", new String[] {protocolType.name, ("\"" + protocolType.name + "\"")});
 
-        StringBuilder roleNames = new StringBuilder("(");
-        // For each role make a projection, then traverse the graph getting the states + transitions
-        for (Role r : gpd.header.roledecls.getRoles()) {
-            roleNames.append("\"" +  r.toString() + "\" ::: ");
-        }
-        roleNames.append("SNil)");
-        TypeClassInstance protocolRoleNames = new TypeClassInstance("protocolRoleNames" + protocolType.name, "ProtocolRoleNames", new String[] {protocolType.name, roleNames.toString()});
+//        StringBuilder roleNames = new StringBuilder("(");
+//        // For each role make a projection, then traverse the graph getting the states + transitions
+//        for (Role r : gpd.header.roledecls.getRoles()) {
+//            roleNames.append("\"" +  r.toString() + "\" ::: ");
+//        }
+//        roleNames.append("SNil)");
+//        TypeClassInstance protocolRoleNames = new TypeClassInstance("protocolRoleNames" + protocolType.name, "ProtocolRoleNames", new String[] {protocolType.name, roleNames.toString()});
 
         // Message actions and their corresponding datatype
         Map<String, Payload> datatypes = new HashMap<>();
@@ -131,7 +136,13 @@ public class PSEndpointApiGenerator
                                     instances.add(new TypeClassInstance(("disconnect" + curr), "Disconnect", new String[]{r.toString(), to, curr, next}));
 
                                 } else if (action.isRequest()) {
-                                    instances.add(new TypeClassInstance(("request" + curr), "Request", new String[]{r.toString(), to, curr, next}));
+                                    String connectedState = curr + "Connected";
+                                    instances.add(new TypeClassInstance(("connect" + curr), "Connect", new String[]{r.toString(), to, curr, connectedState}));
+                                    String type = action.mid.toString();
+                                    // Add the instance and message data type
+                                    states.add(new DataType(curr + "Connected", null, DataType.KIND_TYPE, true));
+                                    instances.add(new TypeClassInstance(("send" + curr), "Send", new String[]{to, connectedState, next, type}));
+                                    addDatatype(datatypes, action, foreignImports);
                                 } else {
                                     // TODO: What is wrap-client + do we need to handle it?
                                     throw new ScribbleException(null, "Unsupported action " + s.getStateKind());
@@ -219,10 +230,10 @@ public class PSEndpointApiGenerator
                             EAction action = s.getAllActions().get(0);
                             String next = getStateTypeName(s.getAllSuccessors().get(0));
                             String to = action.obj.toString();
-                            instances.add(new TypeClassInstance(("connect" + curr), "Connect", new String[]{r.toString(), to, curr, next}));
+                            instances.add(new TypeClassInstance(("accept" + curr), "Accept", new String[]{r.toString(), to, curr, next}));
                             break;
                         case WRAP_SERVER:
-                            throw new ScribbleException(null, "Unsupported action " + s.getStateKind());
+                            throw new RuntimeScribbleException("Unsupported action " + s.getStateKind());
         			}
 
         		}
@@ -258,8 +269,8 @@ public class PSEndpointApiGenerator
 
         // Protocol
         sections.add(protocolType.generateDataType());
-        sections.add(protocolNameInst.generateInstance());
-        sections.add(protocolRoleNames.generateInstance());
+//        sections.add(protocolNameInst.generateInstance());
+//        sections.add(protocolRoleNames.generateInstance());
 
         // ProtocolRoleNames
 
@@ -302,7 +313,7 @@ public class PSEndpointApiGenerator
     private static String staticImports() {
         StringBuilder sb = new StringBuilder();
 		sb.append("import Scribble.FSM\n");
-        sb.append("import Scribble.Type.SList (type (:::), SLProxy(..), SNil, symbols)\n");
+//        sb.append("import Scribble.Type.SList (type (:::), SLProxy(..), SNil, symbols)\n");
 		sb.append("import Type.Row (Cons, Nil)\n");
 		sb.append("import Data.Void (Void)\n");
         sb.append("import Data.Tuple (Tuple)\n");
