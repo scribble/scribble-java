@@ -211,7 +211,7 @@ public class PSEndpointApiGenerator
                                 }
 
                                 // All messages must be to the same role, so we can pick the first one
-                                EAction action = s.getAllActions().get(0);
+                                String choosing = s.getAllActions().get(0).obj.toString();
 
                                 String end = "Nil";
                                 StringBuilder labels = new StringBuilder();
@@ -221,7 +221,7 @@ public class PSEndpointApiGenerator
                                 }
                                 labels.append(end);
 
-                                instances.add(new TypeClassInstance("branch" + curr, "Branch", new String[] {role.name, curr, labels.toString()}));
+                                instances.add(new TypeClassInstance("branch" + curr, "Branch", new String[] {role.name, choosing, curr, labels.toString()}));
                         }
         					break;
         				case TERMINAL:
