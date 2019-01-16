@@ -14,6 +14,7 @@ public class RPCoreCLArgParser extends CLArgParser
 	public static final String RPCORE_SELECT_BRANCH_FLAG = "-param-select";
 	public static final String RPCORE_NOCOPY_FLAG        = "-nocopy";
 	public static final String RPCORE_PARFOREACH_FLAG    = "-parforeach";
+	public static final String RPCORE_DOTAPI_FLAG        = "-dotapi";
 
 	// Non-unique flags
 	public static final String RPCORE_EFSM_FLAG     = "-param-fsm";
@@ -26,6 +27,7 @@ public class RPCoreCLArgParser extends CLArgParser
 		RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_SELECT_BRANCH_FLAG, RPCoreCLArgFlag.RPCORE_SELECT_BRANCH);
 		RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_NOCOPY_FLAG, RPCoreCLArgFlag.RPCORE_NO_COPY);
 		RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_PARFOREACH_FLAG, RPCoreCLArgFlag.RPCORE_PARFOREACH);
+		RPCoreCLArgParser.RPCORE_UNIQUE_FLAGS.put(RPCoreCLArgParser.RPCORE_DOTAPI_FLAG, RPCoreCLArgFlag.RPCORE_DOTAPI);
 	}
 
 	private static final Map<String, RPCoreCLArgFlag> RPCORE_NON_UNIQUE_FLAGS = new HashMap<>();
@@ -84,6 +86,7 @@ public class RPCoreCLArgParser extends CLArgParser
 			case RPCoreCLArgParser.RPCORE_SELECT_BRANCH_FLAG: return rpParseSelectBranch(i);
 			case RPCoreCLArgParser.RPCORE_NOCOPY_FLAG:        return rpParseNoCopy(i);
 			case RPCoreCLArgParser.RPCORE_PARFOREACH_FLAG:    return rpParseParForeach(i);
+			case RPCoreCLArgParser.RPCORE_DOTAPI_FLAG:        return rpParseDotApi(i);
 			
 			// Non-unique flags
 			case RPCoreCLArgParser.RPCORE_EFSM_FLAG:     return rpParseRoleArg(flag, i);
@@ -136,6 +139,12 @@ public class RPCoreCLArgParser extends CLArgParser
 	private int rpParseParForeach(int i) throws CommandLineException
 	{
 		rpCheckAndAddUniqueFlag(RPCoreCLArgParser.RPCORE_PARFOREACH_FLAG, new String[] { });
+		return i;
+	}
+
+	private int rpParseDotApi(int i) throws CommandLineException
+	{
+		rpCheckAndAddUniqueFlag(RPCoreCLArgParser.RPCORE_DOTAPI_FLAG, new String[] { });
 		return i;
 	}
 

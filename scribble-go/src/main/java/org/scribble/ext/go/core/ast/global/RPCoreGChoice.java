@@ -29,7 +29,6 @@ import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.core.type.name.RPCoreGDelegationType;
 import org.scribble.ext.go.main.GoJob;
 import org.scribble.ext.go.type.index.RPBinIndexExpr.Op;
-import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexFactory;
 import org.scribble.ext.go.type.index.RPIndexSelf;
@@ -74,7 +73,9 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	
 	// gpd only for calling Z3Wrapper.checkSat
 	@Override
-	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd, Smt2Translator smt2t)
+	public boolean isWellFormed(GoJob job, //Stack<Map<RPForeachVar, RPInterval>> context, 
+			Stack<Map<RPIndexVar, RPInterval>> context,
+			GProtocolDecl gpd, Smt2Translator smt2t)
 	{
 		// src (i.e., choice subj) range size=1 for non-unary choices enforced by ParamScribble.g syntax
 		// Directed choice check by ParamCoreGProtocolDeclTranslator ensures all dests (including ranges) are (syntactically) the same
@@ -144,19 +145,24 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	}
 
 	// Returns true if OK
-	private boolean checkForeachVarAlignment(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd, Smt2Translator smt2t)
+	private boolean checkForeachVarAlignment(GoJob job, //Stack<Map<RPForeachVar, RPInterval>> context,
+			Stack<Map<RPIndexVar, RPInterval>> context, 
+			GProtocolDecl gpd, Smt2Translator smt2t)
 	{
 		RPInterval srcRange = this.src.getParsedRange();
 		RPInterval destRange = this.dest.getParsedRange();
 
-		Map<RPForeachVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
+		//Map<RPForeachVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
+		Map<RPIndexVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
 		// FIXME: only do if both are foreachvars
 		if (hasValidForeachVarIndex(context, this.src) && hasValidForeachVarIndex(context, this.dest))
 		{
 			String sv = ((RPIndexVar) this.src.intervals.iterator().next().start).toString();
 			String dv = ((RPIndexVar) this.dest.intervals.iterator().next().end).toString();
-			RPInterval s = peek.get(RPIndexFactory.RPForeachVar(sv));
-			RPInterval d = peek.get(RPIndexFactory.RPForeachVar(dv));
+			//RPInterval s = peek.get(RPIndexFactory.RPForeachVar(sv));
+			RPInterval s = peek.get(RPIndexFactory.ParamIndexVar(sv));
+			//RPInterval d = peek.get(RPIndexFactory.RPForeachVar(dv));
+			RPInterval d = peek.get(RPIndexFactory.ParamIndexVar(dv));
 			Set<RPIndexVar> vars = Stream.of(s, d).flatMap(r -> r.getIndexVars().stream()).collect(Collectors.toSet());
 			// Duplicated from DOT_TRANSFER
 			/*String smt2 = "(assert"
@@ -221,12 +227,14 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	}*/
 				
 	// Returns true if OK
-	private boolean checkOverlappingIntervals(GoJob job,
-			Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd, Set<RPIndexVar> vars, Smt2Translator smt2t)
+	private boolean checkOverlappingIntervals(GoJob job, //Stack<Map<RPForeachVar, RPInterval>> context, 
+			Stack<Map<RPIndexVar, RPInterval>> context,
+			GProtocolDecl gpd, Set<RPIndexVar> vars, Smt2Translator smt2t)
 	{
 		RPInterval srcRange = this.src.getParsedRange();
 		RPInterval destRange = this.dest.getParsedRange();
-		Map<RPForeachVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
+		//Map<RPForeachVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
+		Map<RPIndexVar, RPInterval> peek = context.isEmpty() ? Collections.emptyMap() : context.peek();
 		Set<String> curr = peek.keySet().stream().map(k -> k.name).collect(Collectors.toSet());
 
 		/*String smt2 = "(assert (exists ((foobartmp Int)";  // FIXME: factor out
@@ -266,7 +274,8 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 			String tmp2 = sv.toString();
 			if (curr.contains(tmp2))  // FIXME: awkwardness of RPForeachVar and RPIndexVar
 			{
-				RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp2));
+				//RPInterval ival = peek.get(RPIndexFactory.RPForeachVar(tmp2));
+				RPInterval ival = peek.get(RPIndexFactory.ParamIndexVar(tmp2));
 				cs.add(smt2t.makeEq(sv.toSmt2Formula(smt2t), ival.start.toSmt2Formula(smt2t)));
 				ival.start.getVars().stream().map(x -> x.toSmt2Formula(smt2t)).forEach(x -> 
 				{
@@ -295,7 +304,9 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 	}
 
 	// Returns true if OK
-	private boolean checkForeachVars(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, Smt2Translator smt2t)
+	private boolean checkForeachVars(GoJob job, //Stack<Map<RPForeachVar, RPInterval>> context, 
+			Stack<Map<RPIndexVar, RPInterval>> context,
+			Smt2Translator smt2t)
 	{
 		Set<String> all = context.stream().flatMap(m -> m.keySet().stream().map(k -> k.name)).collect(Collectors.toSet());  // FIXME: awkwardness of RPForeachVar and RPIndexVar
 		Function<RPIndexedRole, Boolean> checkForeachVarIndex = ir ->
@@ -413,7 +424,9 @@ public class RPCoreGChoice extends RPCoreChoice<RPCoreGType, Global> implements 
 		return true;
 	}
 
-	public static boolean hasValidForeachVarIndex(Stack<Map<RPForeachVar, RPInterval>> context, RPIndexedRole ir)
+	public static boolean hasValidForeachVarIndex(//Stack<Map<RPForeachVar, RPInterval>> context, 
+			Stack<Map<RPIndexVar, RPInterval>> context,
+			RPIndexedRole ir)
 	{
 		if (context.isEmpty())
 		{

@@ -14,16 +14,18 @@ public class GoJob extends Job
 	public final boolean selectApi;
 	public final boolean noCopy;
 	public final boolean parForeach;
+	public final boolean dotApi;
 	
 	public GoJob(boolean debug, Map<ModuleName, Module> parsed, ModuleName main,
 			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
 			boolean noAcceptCorrelationCheck, boolean noValidation, 
-			AstFactory af, EModelFactory ef, SModelFactory sf, boolean noCopy, boolean selectApi, boolean parForeach)
+			AstFactory af, EModelFactory ef, SModelFactory sf, boolean noCopy, boolean selectApi, boolean parForeach, boolean dotApi)
 	{
 		super(debug, parsed, main, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, af, ef, sf);
 		this.noCopy = noCopy;
 		this.selectApi = selectApi;
 		this.parForeach = parForeach;
+		this.dotApi = dotApi;
 	}
 	
 	/*// FIXME: move to MainContext::newJob?

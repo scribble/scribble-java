@@ -20,16 +20,19 @@ public class RPCoreMainContext extends MainContext
 	protected final boolean selectApi;
 	protected final boolean noCopy;
 	protected final boolean parForeach;
+	protected final boolean dotApi;
 	
 	// Load main module from file system
 	public RPCoreMainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean noCopy, boolean selectApi, boolean parForeach)
+			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation,
+			boolean noCopy, boolean selectApi, boolean parForeach, boolean dotApi)
 					throws ScribParserException, ScribbleException
 	{
 		super(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
 		this.noCopy = noCopy;
 		this.selectApi = selectApi;
 		this.parForeach = parForeach;
+		this.dotApi = dotApi;
 	}
 
 	@Override
@@ -37,7 +40,7 @@ public class RPCoreMainContext extends MainContext
 	{
 		return new GoJob(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
 				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck, this.noValidation,
-				this.af, this.ef, this.sf, this.noCopy, this.selectApi, this.parForeach);
+				this.af, this.ef, this.sf, this.noCopy, this.selectApi, this.parForeach, this.dotApi);
 	}
 
 	@Override

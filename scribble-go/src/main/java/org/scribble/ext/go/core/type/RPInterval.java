@@ -1,5 +1,6 @@
 package org.scribble.ext.go.core.type;
 
+import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -9,6 +10,15 @@ import org.scribble.ext.go.type.index.RPIndexVar;
 
 public class RPInterval
 {
+	public static final Comparator<RPInterval> COMPARATOR = new Comparator<RPInterval>()
+			{
+				@Override
+				public int compare(RPInterval i1, RPInterval i2)
+				{
+					return i1.toString().compareTo(i2.toString());
+				}
+			};
+
 	/*public final ParamRoleParam start;
 	public final ParamRoleParam end;  // Inclusive*/
 	

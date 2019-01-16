@@ -13,14 +13,26 @@
  */
 package org.scribble.type.name;
 
+import java.util.Comparator;
+
 import org.scribble.type.kind.RoleKind;
 
 
 public class Role extends AbstractName<RoleKind>
 {
-	public static final Role EMPTY_ROLE = new Role();
 
 	private static final long serialVersionUID = 1L;
+
+	public static final Role EMPTY_ROLE = new Role();
+
+	public static final Comparator<Role> COMPARATOR = new Comparator<Role>()
+			{
+				@Override
+				public int compare(Role o1, Role o2)
+				{
+					return o1.toString().compareTo(o2.toString());
+				}
+			};
 
 	protected Role()
 	{

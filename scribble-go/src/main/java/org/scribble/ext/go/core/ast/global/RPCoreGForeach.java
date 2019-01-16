@@ -22,7 +22,6 @@ import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
 import org.scribble.ext.go.core.type.RPRoleVariant;
 import org.scribble.ext.go.main.GoJob;
-import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexFactory;
 import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.ext.go.util.Smt2Translator;
@@ -56,10 +55,12 @@ public class RPCoreGForeach extends RPCoreForeach<RPCoreGType, Global> implement
 	}
 	
 	@Override
-	public boolean isWellFormed(GoJob job, Stack<Map<RPForeachVar, RPInterval>> context, GProtocolDecl gpd, Smt2Translator smt2t)
+	public boolean isWellFormed(GoJob job, //Stack<Map<RPForeachVar, RPInterval>> context, 
+			Stack<Map<RPIndexVar, RPInterval>> context, 
+			GProtocolDecl gpd, Smt2Translator smt2t)
 	{
 		// CHECKME: interval constraints, nested foreach constraints, etc. -- cf. RPCoreGChoice
-		Map<RPForeachVar, RPInterval> curr = new HashMap<>();
+		Map<RPIndexVar, RPInterval> curr = new HashMap<>();
 		this.ivals.forEach(ival -> curr.put(ival.var, ival));
 		context.push(curr);
 		boolean res = this.body.isWellFormed(job, context, gpd, smt2t);

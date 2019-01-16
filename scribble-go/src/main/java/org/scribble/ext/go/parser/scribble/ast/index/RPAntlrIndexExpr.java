@@ -3,7 +3,6 @@ package org.scribble.ext.go.parser.scribble.ast.index;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ext.go.type.index.RPBinIndexExpr;
-import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
 import org.scribble.ext.go.type.index.RPIndexFactory;
 
@@ -51,12 +50,12 @@ public class RPAntlrIndexExpr
 		}
 	}
 
-	public static RPForeachVar parseRPForeachVar(CommonTree ct, AstFactory af)
+	/*public static RPForeachVar parseRPForeachVar(CommonTree ct, AstFactory af)
 	{
 		// Duplicated from above
 		String type = ct.getToken().getText();  // Parsed as simplename
 		return RPIndexFactory.RPForeachVar(type);
-	}
+	}*/
 
 	private static boolean isInteger(String s)
 	{

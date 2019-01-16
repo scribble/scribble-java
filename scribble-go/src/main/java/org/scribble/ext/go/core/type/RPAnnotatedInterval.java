@@ -1,13 +1,14 @@
 package org.scribble.ext.go.core.type;
 
-import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexVar;
 
 public class RPAnnotatedInterval extends RPInterval
 {
-	public final RPForeachVar var;  // FIXME: generally deprecate RPForeachVar for RPIndexVar?
+	//public final RPForeachVar var;  // FIXME: generally deprecate RPForeachVar for RPIndexVar?
+	public final RPIndexVar var;
 	
-	public RPAnnotatedInterval(RPForeachVar var, RPIndexExpr start, RPIndexExpr end)
+	public RPAnnotatedInterval(RPIndexVar var, RPIndexExpr start, RPIndexExpr end)
 	{
 		super(start, end);
 		this.var = var;

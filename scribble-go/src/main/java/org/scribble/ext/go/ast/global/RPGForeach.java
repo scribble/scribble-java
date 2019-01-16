@@ -15,15 +15,17 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.ext.go.ast.RPAstFactory;
 import org.scribble.ext.go.ast.RPForeach;
-import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
 public class RPGForeach extends RPForeach<Global> implements GCompoundInteractionNode
 {
 	public RPGForeach(CommonTree source, List<RoleNode> subjs, 
-			List<RPForeachVar> params, List<RPIndexExpr> starts, List<RPIndexExpr> ends, 
+			//List<RPForeachVar> params, 
+			List<RPIndexVar> params, 
+			List<RPIndexExpr> starts, List<RPIndexExpr> ends, 
 			GProtocolBlock block)
 	{
 		super(source, subjs, params, starts, ends, block);
@@ -57,7 +59,9 @@ public class RPGForeach extends RPForeach<Global> implements GCompoundInteractio
 	}
 
 	@Override
-	public RPGForeach reconstruct(List<RoleNode> subjs, List<RPForeachVar> params, List<RPIndexExpr> starts, List<RPIndexExpr> ends, ProtocolBlock<Global> block)
+	public RPGForeach reconstruct(List<RoleNode> subjs, //List<RPForeachVar> params, 
+			List<RPIndexVar> params,
+			List<RPIndexExpr> starts, List<RPIndexExpr> ends, ProtocolBlock<Global> block)
 	{
 		ScribDel del = del();
 		RPGForeach gc = new RPGForeach(this.source, subjs, params, starts, ends, (GProtocolBlock) block);

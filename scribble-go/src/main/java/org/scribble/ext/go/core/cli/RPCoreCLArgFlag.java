@@ -7,6 +7,7 @@ public enum RPCoreCLArgFlag
 	RPCORE_SELECT_BRANCH,  // Default is type switch
 	RPCORE_NO_COPY,
 	RPCORE_PARFOREACH,
+	RPCORE_DOTAPI,
 
 	// Non-unique flags
 	RPCORE_EFSM,

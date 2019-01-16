@@ -10,8 +10,8 @@ import org.scribble.ext.go.core.model.endpoint.action.RPCoreEDotSend;
 import org.scribble.ext.go.core.model.endpoint.action.RPCoreEMultiChoicesReceive;
 import org.scribble.ext.go.core.type.RPIndexedRole;
 import org.scribble.ext.go.core.type.RPInterval;
-import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.model.endpoint.EModelFactoryImpl;
 import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
@@ -31,7 +31,9 @@ public class RPCoreEModelFactoryImpl extends EModelFactoryImpl implements RPCore
 	}
 
 	@Override
-	public RPCoreEState newRPCoreEState(Set<RecVar> labs, RPForeachVar param, RPInterval interval, RPCoreEState nested)
+	public RPCoreEState newRPCoreEState(Set<RecVar> labs, //RPForeachVar param, 
+			RPIndexVar param,
+			RPInterval interval, RPCoreEState nested)
 	{
 		return new RPCoreEState(labs, param, interval, nested);
 	}

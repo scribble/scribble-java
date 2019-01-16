@@ -21,7 +21,7 @@ public class RPCoreLEnd extends RPCoreEnd<Local> implements RPCoreLType
 	}
 
 	@Override
-	public RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant subj)
+	public RPCoreLType compactSingletonIvals(RPCoreAstFactory af, RPRoleVariant subj)
 	{
 		return this;
 	}

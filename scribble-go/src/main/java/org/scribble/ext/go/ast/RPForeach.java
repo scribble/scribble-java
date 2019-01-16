@@ -10,8 +10,8 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.ext.go.type.index.RPForeachVar;
 import org.scribble.ext.go.type.index.RPIndexExpr;
+import org.scribble.ext.go.type.index.RPIndexVar;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
@@ -19,14 +19,17 @@ import org.scribble.visit.AstVisitor;
 public abstract class RPForeach<K extends ProtocolKind> extends CompoundInteractionNode<K>
 {
 	public final List<RoleNode> subjs;
-	public final List<RPForeachVar> params;
+	//public final List<RPForeachVar> params;
+	public final List<RPIndexVar> params;
 	public final List<RPIndexExpr> starts;
 	public final List<RPIndexExpr> ends;
 	public final ProtocolBlock<K> block;
 
 	// Pre: subjs/params/starts/ends same length -- FIXME: factor out?
 	protected RPForeach(CommonTree source, List<RoleNode> subjs,
-			List<RPForeachVar> params, List<RPIndexExpr> starts, List<RPIndexExpr> ends, 
+			//List<RPForeachVar> params, 
+			List<RPIndexVar> params, 
+			List<RPIndexExpr> starts, List<RPIndexExpr> ends, 
 			ProtocolBlock<K> block)
 	{
 		super(source);
@@ -38,7 +41,9 @@ public abstract class RPForeach<K extends ProtocolKind> extends CompoundInteract
 	}
 
 	public abstract RPForeach<K> reconstruct(List<RoleNode> subjs,
-			List<RPForeachVar> params, List<RPIndexExpr> starts, List<RPIndexExpr> ends, ProtocolBlock<K> block);
+			//List<RPForeachVar> params, 
+			List<RPIndexVar> params, 
+			List<RPIndexExpr> starts, List<RPIndexExpr> ends, ProtocolBlock<K> block);
 	
 	@Override
 	public abstract RPForeach<K> clone(AstFactory af);

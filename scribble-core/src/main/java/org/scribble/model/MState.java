@@ -14,6 +14,7 @@
 package org.scribble.model;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,6 +37,16 @@ public abstract class MState<
 		K extends ProtocolKind         // Global/Local
 >
 {
+	public static final Comparator<MState<?, ?, ?, ?>> COMPARATOR = 
+			new Comparator<MState<?, ?, ?, ?>>()
+			{
+				@Override
+				public int compare(MState<?, ?, ?, ?> s1, MState<?, ?, ?, ?> s2)
+				{
+					return s1.id - s2.id;
+				}
+			};
+
 	private static int count = 0;  // FIXME: factor out with ModelAction
 	
 	public final int id;

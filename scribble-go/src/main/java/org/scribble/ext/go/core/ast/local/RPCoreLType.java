@@ -18,5 +18,5 @@ public interface RPCoreLType extends RPCoreType<Local>
 
 	// N.B. subj not necessarily minimised
 	// TODO: rename
-	RPCoreLType minimise(RPCoreAstFactory af, RPRoleVariant vself);
+	RPCoreLType compactSingletonIvals(RPCoreAstFactory af, RPRoleVariant vself);
 }

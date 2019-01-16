@@ -39,7 +39,7 @@ public class JobContext
 {
 	private final Job job;
 
-	public final ModuleName main;
+	public final ModuleName main;  // Full name
 	
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
 	private final Map<ModuleName, Module> parsed;// = new HashMap<>();
