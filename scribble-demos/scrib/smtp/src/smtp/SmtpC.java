@@ -12,8 +12,7 @@
  * the License.
  */
 
-
-//$ java -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/target/classes smtp.SmtpC smtp.cc.ic.ac.uk foo@foo.com bar@bar.com subj body
+//$ java -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/target/classes smtp.SmtpC smtp.cc.ic.ac.uk recipient@foo.com sender@bar.com subj body
 
 
 package smtp;
@@ -72,8 +71,8 @@ public class SmtpC
 	private static final int PORT = 25;
 
 	private final String server;    // e.g., smtp.cc.ic.ac.uk;
-	private final String mailTo;    // foo@foo.com
-	private final String rcptFrom;  // bar@bar.com
+	private final String mailTo;    // recipient@foo.com
+	private final String rcptFrom;  // sender@bar.com
 	private final String subj;
 	private final String body;
 	

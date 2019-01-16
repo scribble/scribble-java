@@ -11,7 +11,8 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/demos/target/classes smtp.SimpleSmtpC
+
+//$ java -cp scribble-runtime/target/classes/';'scribble-core/target/classes';'scribble-demos/target/classes smtp.SimpleSmtpC
 
 
 package smtp;
@@ -19,6 +20,7 @@ package smtp;
 import static smtp.Smtp.Smtp.Smtp.C;
 import static smtp.Smtp.Smtp.Smtp.S;
 import static smtp.Smtp.Smtp.Smtp._220;
+import static smtp.Smtp.Smtp.Smtp._221;
 import static smtp.Smtp.Smtp.Smtp._235;
 import static smtp.Smtp.Smtp.Smtp._250;
 import static smtp.Smtp.Smtp.Smtp._250d;
@@ -106,12 +108,12 @@ public class SimpleSmtpC
 						.send(S, new DataLine(body))            
 						.send(S, new EndOfData())             
 						.receive(S, _250, new Buf<>())          
-						.send(S, new Quit());                   
+						.send(S, new Quit()).async(S, _221);                  
 					break;
 				}
 				case _501:
 				{
-					cases.receive(_501).send(S, new Quit());
+					cases.receive(_501).send(S, new Quit()).async(S, _221);
 				}
 			}
 		}
