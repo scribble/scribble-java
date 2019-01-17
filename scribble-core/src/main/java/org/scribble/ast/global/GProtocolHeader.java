@@ -13,6 +13,7 @@
  */
 package org.scribble.ast.global;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
@@ -31,6 +32,11 @@ import org.scribble.type.name.Role;
 
 public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 {
+	public GProtocolHeader(Token t)
+	{
+		super(t);
+	}
+
 	public GProtocolHeader(CommonTree source, GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
 		super(source, name, roledecls, paramdecls);

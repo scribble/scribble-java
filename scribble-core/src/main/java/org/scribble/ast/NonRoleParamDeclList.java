@@ -16,6 +16,7 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.type.kind.NonRoleParamKind;
@@ -27,6 +28,11 @@ import org.scribble.util.ScribUtil;
 // But OK because the NonRoleParamDecl nodes are immutable (the generic kind value is never rewritten after instantiation, only read)
 public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 {
+	public NonRoleParamDeclList(Token t)
+	{
+		super(t);
+	}
+
 	public NonRoleParamDeclList(CommonTree source, List<NonRoleParamDecl<NonRoleParamKind>> decls)
 	{
 		super(source, decls);

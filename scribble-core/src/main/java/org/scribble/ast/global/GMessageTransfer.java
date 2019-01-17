@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
@@ -34,6 +35,11 @@ import org.scribble.util.ScribUtil;
 
 public class GMessageTransfer extends MessageTransfer<Global> implements GSimpleInteractionNode
 {
+	public GMessageTransfer(Token t)
+	{
+		super(t);
+	}
+
 	public GMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		super(source, src, msg, dests);

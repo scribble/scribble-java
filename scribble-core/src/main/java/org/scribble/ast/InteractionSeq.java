@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
@@ -29,6 +30,12 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 	
 	/*@SuppressWarnings("unchecked")
 	private final Function<ScribNode, InteractionNode<K>> cast = (n) -> (InteractionNode<K>) n;*/
+
+	public InteractionSeq(Token t)
+	{
+		super(t);
+		this.inters = null;
+	}
 
 	protected InteractionSeq(CommonTree source, List<? extends InteractionNode<K>> inters)
 	{

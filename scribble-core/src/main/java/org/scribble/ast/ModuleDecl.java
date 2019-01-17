@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.main.ScribbleException;
@@ -22,6 +23,11 @@ import org.scribble.visit.AstVisitor;
 
 public class ModuleDecl extends NameDeclNode<ModuleKind>
 {
+	public ModuleDecl(Token t)
+	{
+		super(t);
+	}
+
 	public ModuleDecl(CommonTree source, ModuleNameNode fullmodname)
 	{
 		super(source, fullmodname);

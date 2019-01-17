@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.main.ScribbleException;
@@ -24,6 +25,11 @@ import org.scribble.visit.AstVisitor;
 // RoleKind or (NonRole)ParamKind
 public abstract class HeaderParamDecl<K extends ParamKind> extends NameDeclNode<K>
 {
+	public HeaderParamDecl(Token t)
+	{
+		super(t);
+	}
+
 	protected HeaderParamDecl(CommonTree source, SimpleNameNode<K> name)
 	{
 		super(source, name);

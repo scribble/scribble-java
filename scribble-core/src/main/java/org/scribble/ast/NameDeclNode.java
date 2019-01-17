@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.type.kind.Kind;
@@ -21,6 +22,12 @@ import org.scribble.type.name.Name;
 public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase
 { 
 	public final NameNode<K> name;
+
+	public NameDeclNode(Token t)
+	{
+		super(t);
+		this.name = null;
+	}
 	
 	protected NameDeclNode(CommonTree source, NameNode<K> name)
 	{

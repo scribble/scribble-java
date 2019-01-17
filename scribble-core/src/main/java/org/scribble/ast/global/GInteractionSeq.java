@@ -16,6 +16,7 @@ package org.scribble.ast.global;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.InteractionNode;
@@ -29,6 +30,11 @@ import org.scribble.util.ScribUtil;
 
 public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 {
+	public GInteractionSeq(Token t)
+	{
+		super(t);
+	}
+
 	public GInteractionSeq(CommonTree source, List<GInteractionNode> actions)
 	{
 		super(source, actions);

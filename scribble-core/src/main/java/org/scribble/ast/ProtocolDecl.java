@@ -16,6 +16,7 @@ package org.scribble.ast;
 import java.util.Collections;
 import java.util.List;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
@@ -32,6 +33,14 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	// Maybe just use standard pattern, make private with casting getters -- works better (e.g. to use overridden getName)
 	public final ProtocolHeader<K> header;
 	public final ProtocolDef<K> def;
+
+	protected ProtocolDecl(Token t)
+	{
+		super(t);
+		this.modifiers = null;
+		this.header = null;
+		this.def = null;
+	}
 
 	protected ProtocolDecl(CommonTree source, List<Modifiers> modifiers, ProtocolHeader<K> header, ProtocolDef<K> def)
 	{

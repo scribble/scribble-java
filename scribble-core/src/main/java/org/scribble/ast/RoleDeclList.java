@@ -16,6 +16,7 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.type.kind.RoleKind;
@@ -24,6 +25,11 @@ import org.scribble.util.ScribUtil;
 
 public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 {
+	public RoleDeclList(Token t)
+	{
+		super(t);
+	}
+
 	public RoleDeclList(CommonTree source, List<RoleDecl> decls)
 	{
 		super(source, decls);

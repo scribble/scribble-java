@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
@@ -26,6 +27,13 @@ public abstract class ProtocolHeader<K extends ProtocolKind> extends NameDeclNod
 {
 	public final RoleDeclList roledecls;
 	public final NonRoleParamDeclList paramdecls;
+
+	public ProtocolHeader(Token t)
+	{
+		super(t);
+		this.roledecls = null;
+		this.paramdecls = null;
+	}
 
 	protected ProtocolHeader(CommonTree source, NameNode<K> name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{

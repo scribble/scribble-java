@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ParamKind;
@@ -30,6 +31,12 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 {
 	private final List<? extends HeaderParamDecl<K>> decls;
 	
+	public HeaderParamDeclList(Token t)
+	{
+		super(t);
+		this.decls = null;
+	}
+
 	protected HeaderParamDeclList(CommonTree source, List<? extends HeaderParamDecl<K>> decls)
 	{
 		super(source);

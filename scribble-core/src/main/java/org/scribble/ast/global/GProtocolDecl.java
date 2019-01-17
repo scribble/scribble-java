@@ -15,6 +15,7 @@ package org.scribble.ast.global;
 
 import java.util.List;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
@@ -33,6 +34,11 @@ import org.scribble.type.name.Role;
 
 public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 {
+	public GProtocolDecl(Token t)
+	{
+		super(t);
+	}
+
 	public GProtocolDecl(CommonTree source, List<Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)
 	{
 		super(source, modifiers, header, def);

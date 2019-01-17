@@ -20,6 +20,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
@@ -43,7 +44,16 @@ public class Module extends ScribNodeBase
 	private final List<ImportDecl<?>> imports;
 	private final List<NonProtocolDecl<?>> data;
 	private final List<ProtocolDecl<?>> protos;
-	
+
+	public Module(Token payload)
+	{
+		super(payload);
+		this.moddecl = null;
+		this.imports = null;
+		this.data = null;
+		this.protos = null;
+	}
+
 	public Module(CommonTree source, ModuleDecl moddecl, List<ImportDecl<?>> imports,
 			List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos)
 	{

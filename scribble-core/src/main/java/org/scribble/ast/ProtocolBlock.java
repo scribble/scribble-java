@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
@@ -21,6 +22,12 @@ import org.scribble.visit.AstVisitor;
 public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInteraction implements ProtocolKindNode<K>
 {
 	public final InteractionSeq<K> seq;
+
+	public ProtocolBlock(Token t)
+	{
+		super(t);
+		this.seq = null;
+	}
 
 	public ProtocolBlock(CommonTree source, InteractionSeq<K> seq)
 	{

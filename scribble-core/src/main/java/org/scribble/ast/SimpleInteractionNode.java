@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 
@@ -20,6 +21,11 @@ import org.scribble.type.kind.ProtocolKind;
 public abstract class SimpleInteractionNode<K extends ProtocolKind>
 		extends ScribNodeBase implements InteractionNode<K>
 {
+	public SimpleInteractionNode(Token t)
+	{
+		super(t);
+	}
+
 	protected SimpleInteractionNode(CommonTree source)
 	{
 		super(source);

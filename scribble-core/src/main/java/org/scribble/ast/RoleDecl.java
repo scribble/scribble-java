@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
@@ -23,6 +24,11 @@ import org.scribble.type.name.Role;
 
 public class RoleDecl extends HeaderParamDecl<RoleKind>
 {
+	public RoleDecl(Token t)
+	{
+		super(t);
+	}
+
 	public RoleDecl(CommonTree source, RoleNode name)
 	{
 		super(source, name);
