@@ -15,7 +15,8 @@ options
 {
 	language = Java;
 	output = AST;
-	ASTLabelType = CommonTree;
+	//ASTLabelType = MyCommonTree;
+	ASTLabelType = ScribNodeBase;
 	//backtrack = true;  // backtracking disabled by default? Is it bad to require this option?
 	//memoize = true;
 }
@@ -177,6 +178,8 @@ tokens
 	package org.scribble.parser.antlr;
 	
 	//import org.scribble.main.RuntimeScribbleException;
+	//import org.scribble.parser.scribble.ast.tree.MyCommonTree;
+	import org.scribble.ast.ScribNodeBase;
 }
 
 @lexer::header

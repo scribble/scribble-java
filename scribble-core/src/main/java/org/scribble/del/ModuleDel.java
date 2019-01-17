@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
@@ -132,7 +133,10 @@ public class ModuleDel extends ScribDelBase
 			for (Role role : deps.get(gpn))
 			{
 				LProtocolName targetsimpname = Projector.projectSimpleProtocolName(gpn.getSimpleName(), role);
-				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(proj.job.af, null,  // FIXME? projected import sources?
+				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(proj.job.af, //null,  // FIXME? projected import sources?
+
+						new CommonTree(),  // FIXME -- 
+
 							gpn.getPrefix(), targetsimpname);
 				if (!targetmodname.toName().equals(modname.toName()))  // Self dependency -- each projected local is in its own module now, so can compare module names
 				{

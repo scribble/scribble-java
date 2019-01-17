@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
@@ -32,19 +33,29 @@ import org.scribble.visit.Substitutor;
  * This is the generic object from which all Scribble model objects
  * are derived.
  */
-public abstract class ScribNodeBase implements ScribNode
+public abstract class ScribNodeBase extends CommonTree implements ScribNode 
 {
 	protected final CommonTree source;  // Consequently, core depends on Antlr
 			// Used to be for parsed entities; null if not parsed
 			// Now: for the original parsed entity for error blaming; should not be null unless a purely generated entity
+			// CHECKME: not needed any more?
 
 	protected ScribDel del;
 	
-	protected ScribNodeBase(CommonTree source)
+	// Used by (Scrib)TreeAdapator
+	public ScribNodeBase(Token payload)
 	{
-		this.source = source;
+		super(payload);
+		this.source = this;  // TODO: redundant
 	}
-	
+
+	// Copy constructor
+	protected ScribNodeBase(CommonTree node)
+	{
+		super(node);
+		this.source = node;  // TODO: redundant
+	}
+
 	@Override
 	public final CommonTree getSource()
 	{
@@ -55,7 +66,15 @@ public abstract class ScribNodeBase implements ScribNode
 	// Generally copy is only for shallow copy of object and "immediate" fields (not super fields), cf. ProtocolDecl, ProtocolDeclContext, etc
 	protected abstract ScribNodeBase copy();
 
-	// Deep clone
+	// FIXME: rework as ANTLR node (deep) copy (maybe "clone")
+	// FIXME TODO: rework children using ANTLR children
+	@Override
+	public ScribNodeBase dupNode()
+	{
+		return copy();
+	}
+
+	// Deep (tree) clone
 	@Override
 	public abstract ScribNodeBase clone(AstFactory af);
 	

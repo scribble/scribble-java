@@ -29,6 +29,10 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 	public NameNode(CommonTree source, String... elems)
 	{
 		super(source);
+		if (source == null)
+		{
+			throw new RuntimeException("ccf");
+		}
 		this.elems = elems;
 	}
 	

@@ -45,10 +45,13 @@ public class ScribbleAntlrWrapper
 	{
 		return new ScribbleParser(cts);
 	}*/
+
+	// Because no convenient way to expose an interface for all ScribbleParsers with top-level "module" method?
 	protected CommonTree runScribbleParser(CommonTokenStream cts) throws RecognitionException
 	{
-		// Because no convenient way to expose an interface for all ScribbleParsers with top-level "module" method?
-		return (CommonTree) new ScribbleParser(cts).module().getTree();
+		ScribbleParser p = new ScribbleParser(cts);
+		p.setTreeAdaptor(new ScribTreeAdaptor());
+		return (CommonTree) p.module().getTree();
 	}
 
 	public CommonTree parseAntlrTree(Resource res)
@@ -66,7 +69,6 @@ public class ScribbleAntlrWrapper
 				/*// FIXME: need an interface for Scribble top-level module method (ANTLR "grammar actions"?)
 				Method m = c.getMethod("module");
 				return (CommonTree) ((ParserRuleReturnScope) m.invoke(parser)).getTree();*/  // No: reflection doesn't work well with ANTLR error handling
-			
 				return runScribbleParser(new CommonTokenStream(lex));
 			}
 			/*catch (NoSuchMethodException nsme)
