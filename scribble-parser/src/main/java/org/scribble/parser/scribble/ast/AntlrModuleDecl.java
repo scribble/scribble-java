@@ -13,11 +13,16 @@
  */
 package org.scribble.parser.scribble.ast;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ModuleDecl;
+import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.parser.scribble.AntlrToScribParser;
-import org.scribble.parser.scribble.ast.name.AntlrQualifiedName;
+import org.scribble.type.kind.ModuleKind;
 
 public class AntlrModuleDecl
 {
@@ -25,7 +30,16 @@ public class AntlrModuleDecl
 
 	public static ModuleDecl parseModuleDecl(AntlrToScribParser parser, CommonTree ct, AstFactory af)
 	{
-		return af.ModuleDecl(ct, AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct), af));
+		//return af.ModuleDecl(ct, AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct), af));
+
+		System.out.println("bbb: " + ct.getChildren().stream().map(x -> x.getClass().toString()).collect(Collectors.joining("")));
+		System.out.println("ccc: " + ((CommonTree) ct.getChild(0)).getChildren().stream().map(x -> x.getClass().toString()).collect(Collectors.joining("")));
+
+		// HACK FIXME
+		//List<String> collect = ((Stream<?>) ct.getChildren().stream()).map(x -> ((CommonTree) x).getText()).collect(Collectors.toList());
+		List<String> collect = ((Stream<?>) ((CommonTree) ct.getChild(0)).getChildren().stream()).map(x -> ((CommonTree) x).getText()).collect(Collectors.toList());
+		
+		return af.ModuleDecl(ct, (ModuleNameNode) af.QualifiedNameNode(ct, ModuleKind.KIND, collect.toArray(new String[0])));
 	}
 
 	public static CommonTree getModuleNameChild(CommonTree ct)

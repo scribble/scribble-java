@@ -13,6 +13,7 @@
  */
 package org.scribble.ast.name.qualified;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.type.kind.ModuleKind;
@@ -21,6 +22,11 @@ import org.scribble.type.name.PackageName;
 
 public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 {
+	public ModuleNameNode(Token t)
+	{
+		super(t);
+	}
+
 	public ModuleNameNode(CommonTree source, String... ns)
 	{
 		super(source, ns);

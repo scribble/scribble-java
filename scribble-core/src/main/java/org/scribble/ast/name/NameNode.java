@@ -15,6 +15,7 @@ package org.scribble.ast.name;
 
 import java.util.Arrays;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ScribNodeBase;
@@ -25,6 +26,12 @@ import org.scribble.type.name.Named;
 public abstract class NameNode<K extends Kind> extends ScribNodeBase implements Named<K>
 {
 	protected final String[] elems;
+
+	public NameNode(Token t)
+	{
+		super(t);
+		this.elems = null;
+	}
 
 	public NameNode(CommonTree source, String... elems)
 	{

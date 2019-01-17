@@ -1,7 +1,6 @@
 package org.scribble.parser.scribble;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.AstFactoryImpl;
@@ -16,7 +15,9 @@ import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
+import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.parser.scribble.ast.tree.MyCommonTree;
+import org.scribble.type.name.ModuleName;
 
 public class ScribTreeAdaptor extends CommonTreeAdaptor
 {
@@ -37,7 +38,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			//return new MyCommonTree(payload);
 			lab = t.getText();
 		}
-		CommonTree empty = new CommonTree(t);  // CommonTree constr sets this.token = payload.token
+		//CommonTree empty = new CommonTree(t);  // CommonTree constr sets this.token = payload.token
 		switch (lab)
 		{
 			case "MODULE": //return this.f.Module(empty, null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -62,9 +63,18 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new GInteractionSeq(t);
 			case "GLOBALMESSAGETRANSFER": //return this.f.GMessageTransfer(empty, null, null, Collections.emptyList());
 				return new GMessageTransfer(t);
-			//case "QUALIFIEDNAME": return this.f.Q
-			//case "MESSAGESIGNATURE": return this.f.Me
-			//case "PAYLOAD":
+			//case "QUALIFIEDNAME": //return this.f.Q
+			case "MODULENAME": //return this.f.Q
+				//return new ModuleNameNode(t); 
+				return new ModuleNameNode(t);  /*.. HERE ambigname -- or qualifiedname? (ambigname currently singleton name)
+						-- or modulename just as identifiers? -- ANTLR uses every (leaf) token as singleton node
+								-- AntlrTokenTree? -- i.e. CommonTree (wrapper for Token)*/
+				//..here: do for other names
+
+			/*case "MESSAGESIGNATURE": //return this.f.Me
+				throw new RuntimeException("Shouldn't get here: " + lab);
+			case "PAYLOAD":
+				throw new RuntimeException("Shouldn't get here: " + lab);*/
 			/*case tmp
 			case Test
 			case Proto1
@@ -73,7 +83,8 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case 1
 			case A
 			case B*/
-			default: //throw new RuntimeException("Shouldn't get here: " + lab);
+			default:
+				//throw new RuntimeException("Shouldn't get here: " + lab);
 				return new MyCommonTree(t);
 				//return empty;
 		}

@@ -97,6 +97,9 @@ tokens
 	//NAME = 'name';
 	AMBIGUOUSNAME = 'AMBIGUOUSNAME';
 	QUALIFIEDNAME = 'QUALIFIEDNAME';
+
+	MODULENAME = 'MODULENAME';
+
 	//PACKAGENAME = 'package-name';
 	//FULLMODULENAME = 'full-module-name';
 	//SIMPLEMEMBERNAME = 'simple-member-name';
@@ -382,8 +385,15 @@ qualifiedname:
 ;
 
 packagename:          qualifiedname;
-modulename:           qualifiedname;
+//modulename:           qualifiedname;
 membername:           qualifiedname;
+
+modulename:
+	IDENTIFIER ('.' IDENTIFIER)*
+->
+	^(MODULENAME IDENTIFIER+)
+;
+
 
 protocolname:         membername;
 payloadtypename:      membername;
@@ -403,6 +413,8 @@ module:
 /**
  * Section 3.2.3 Module Declarations
  */
+//	MODULE_KW IDENTIFIER ('.' IDENTIFIER)* ';'
+//	^(MODULEDECL IDENTIFIER+)
 moduledecl:
 	MODULE_KW modulename ';'
 ->
