@@ -13,19 +13,26 @@
  */
 package org.scribble.ast.name.qualified;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.type.kind.SigKind;
 import org.scribble.type.name.MessageSigName;
 
-public class MessageSigNameNode extends MemberNameNode<SigKind> implements MessageNode
+public class MessageSigNameNode extends MemberNameNode<SigKind>
+		implements MessageNode
 {
+	public MessageSigNameNode(Token t)
+	{
+		super(t);
+	}
+
 	public MessageSigNameNode(CommonTree source, String... elems)
 	{
 		super(source, elems);
 	}
-	
+
 	@Override
 	public MessageNode project(AstFactory af)
 	{
@@ -37,19 +44,19 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 	{
 		return new MessageSigNameNode(this.source, this.elems);
 	}
-	
+
 	@Override
 	public MessageSigNameNode clone(AstFactory af)
 	{
-		return (MessageSigNameNode) af.QualifiedNameNode(this.source, SigKind.KIND, this.elems);
+		return (MessageSigNameNode) af.QualifiedNameNode(this.source, SigKind.KIND,
+				this.elems);
 	}
-	
+
 	@Override
 	public MessageSigName toName()
 	{
 		MessageSigName membname = new MessageSigName(getLastElement());
-		return isPrefixed()
-				? new MessageSigName(getModuleNamePrefix(), membname)
+		return isPrefixed() ? new MessageSigName(getModuleNamePrefix(), membname)
 				: membname;
 	}
 
@@ -59,8 +66,9 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 		return true;
 	}
 
+	// Difference between toName and toMessage is scope? does that make sense?
 	@Override
-	public MessageSigName toMessage()  // Difference between toName and toMessage is scope? does that make sense?
+	public MessageSigName toMessage() 
 	{
 		return toName();
 	}
@@ -70,7 +78,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 	{
 		return toMessage();
 	}
-	
+
 	@Override
 	public boolean equals(Object o)
 	{
@@ -84,13 +92,13 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 		}
 		return ((MessageSigNameNode) o).canEqual(this) && super.equals(o);
 	}
-	
+
 	@Override
 	public boolean canEqual(Object o)
 	{
 		return o instanceof MessageSigNameNode;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{

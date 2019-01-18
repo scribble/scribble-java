@@ -22,6 +22,8 @@ options
 }
 
 
+// FIXME: match tokens to keywords?
+
 tokens
 {
 	/*
@@ -75,7 +77,7 @@ tokens
 	 * field)
 	 */
 	
-	// Purely util constants -- not parsed as node types
+	// Purely util constants -- not parsed as node types -- N.B. but are still "tokens" (FIXME: match with keywords)
 
 	KIND_MESSAGESIGNATURE = 'KIND_MESSAGESIGNATURE';
 	KIND_PAYLOADTYPE = 'KIND_PAYLOADTYPE';

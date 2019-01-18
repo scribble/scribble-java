@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ImportDecl;
@@ -107,7 +108,11 @@ public class MainContext
 		// FIXME: checking main module resource exists at specific location should be factored out to front-end (e.g. CommandLine) -- main module resource is specified at local front end level of abstraction, while MainContext uses abstract resource loading
 		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
 		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);  // FIXME: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
-		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res), this.af);  // FIXME: rename exceptions
+		CommonTree atree = this.antlrParser.parseAntlrTree(res);
+
+		System.out.println("111: " + atree.getClass());
+
+		Module mod = (Module) this.scribParser.parse(atree, this.af);  // FIXME: rename exceptions
 		checkMainModuleName(mainpath, mod);
 		
 		init(res, mod);

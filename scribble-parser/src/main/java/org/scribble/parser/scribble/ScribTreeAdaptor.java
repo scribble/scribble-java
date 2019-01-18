@@ -15,6 +15,7 @@ import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
+import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.parser.scribble.ast.tree.MyCommonTree;
 import org.scribble.type.name.ModuleName;
@@ -69,12 +70,10 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new ModuleNameNode(t);  /*.. HERE ambigname -- or qualifiedname? (ambigname currently singleton name)
 						-- or modulename just as identifiers? -- ANTLR uses every (leaf) token as singleton node
 								-- AntlrTokenTree? -- i.e. CommonTree (wrapper for Token)*/
-				//..here: do for other names
-
-			/*case "MESSAGESIGNATURE": //return this.f.Me
-				throw new RuntimeException("Shouldn't get here: " + lab);
+			case "MESSAGESIGNATURE": //return this.f.Me
+				return new MessageSigNameNode(t);
 			case "PAYLOAD":
-				throw new RuntimeException("Shouldn't get here: " + lab);*/
+				return new MyCommonTree(t);  // FIXME: placeholder for deleg, qualified or ambig
 			/*case tmp
 			case Test
 			case Proto1
@@ -83,9 +82,11 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case 1
 			case A
 			case B*/
-			default:
-				//throw new RuntimeException("Shouldn't get here: " + lab);
+			case "":  // CHECKME ?
 				return new MyCommonTree(t);
+			default:
+				//throw new RuntimeException("Shouldn't get here: " + lab + " ,, " + lab.length());
+				return new MyCommonTree(t);  // FIXME: rename ID
 				//return empty;
 		}
 	}
