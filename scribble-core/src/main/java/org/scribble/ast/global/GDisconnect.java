@@ -13,51 +13,90 @@
  */
 package org.scribble.ast.global;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
-import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.Constants;
-import org.scribble.ast.MessageNode;
-import org.scribble.ast.MessageSigNode;
+import org.scribble.ast.DisconnectAction;
 import org.scribble.ast.local.LNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
 
-public class GDisconnect extends ConnectionAction<Global> implements GSimpleInteractionNode
+public class GDisconnect extends DisconnectAction<Global> implements GSimpleInteractionNode
 {
-
-	//public GDisconnect(CommonTree source, RoleNode src, RoleNode dest)
-	public GDisconnect(CommonTree source, MessageSigNode unit, RoleNode src, RoleNode dest)
+	// ScribTreeAdaptor#create constructor
+	public GDisconnect(Token t)
 	{
-		super(source, src, unit, dest);
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public GDisconnect(GDisconnect node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public GDisconnect dupNode()
+	{
+		return new GDisconnect(this);
 	}
 
 	public LNode project(AstFactory af, Role self)
 	{
-		Role srcrole = this.src.toName();
-		Role destrole = this.dest.toName();
-		LNode projection = null;
-		if (srcrole.equals(self) || destrole.equals(self))
+		RoleNode leftNode = this.getLeftChild();
+		RoleNode rightNode = this.getRightChild();
+		Role left = leftNode.toName();
+		Role right = rightNode.toName();
+		LNode proj = null;
+		if (left.equals(self) || right.equals(self))
 		{
-			RoleNode src = (RoleNode) af.SimpleNameNode(this.src.getSource(), RoleKind.KIND, this.src.toName().toString());  // clone?
-			RoleNode dest = (RoleNode) af.SimpleNameNode(this.dest.getSource(), RoleKind.KIND, this.dest.toName().toString());
-			if (srcrole.equals(self))
+			RoleNode leftNode1 = (RoleNode) af.SimpleNameNode(leftNode.getSource(),
+					RoleKind.KIND, leftNode.toName().toString()); // clone?
+			RoleNode rightNode1 = (RoleNode) af.SimpleNameNode(rightNode.getSource(),
+					RoleKind.KIND, rightNode.toName().toString());
+			if (left.equals(self))
 			{
-				projection = af.LDisconnect(this.source, src, dest);
+				proj = af.LDisconnect(this.source, leftNode1, rightNode1);
 			}
-			if (destrole.equals(self))
+			if (right.equals(self))
 			{
-				projection = af.LDisconnect(this.source, dest, src);
+				proj = af.LDisconnect(this.source, rightNode1, leftNode1);
 			}
 		}
-		return projection;
+		return proj;
 	}
 
-
 	@Override
+	public String toString()
+	{
+		return Constants.DISCONNECT_KW + " " + getLeftChild()
+				+ " " + Constants.TO_KW + " " + getRightChild() + ";";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	//public GDisconnect(CommonTree source, RoleNode src, RoleNode dest)
+	public GDisconnect(CommonTree source, RoleNode left, RoleNode right)
+	{
+		super(source, left, right);
+	}
+
+	/*@Override
 	protected GDisconnect copy()
 	{
 		return new GDisconnect(this.source, (MessageSigNode) this.msg, this.src, this.dest);
@@ -79,18 +118,5 @@ public class GDisconnect extends ConnectionAction<Global> implements GSimpleInte
 		GDisconnect gd = new GDisconnect(this.source, (MessageSigNode) this.msg, src, dest);
 		gd = (GDisconnect) gd.del(del);
 		return gd;
-	}
-
-	@Override
-	public String toString()
-	{
-		return Constants.DISCONNECT_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
-	}
-
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GSimpleInteractionNode.super.getKind();
 	}*/
 }

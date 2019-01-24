@@ -13,7 +13,7 @@
  */
 package org.scribble.del;
 
-import org.scribble.ast.ConnectionAction;
+import org.scribble.ast.ConnectAction;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
@@ -30,12 +30,12 @@ public abstract class ConnectionActionDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
-	public ConnectionAction<?> leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ConnectAction<?> leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
-		ConnectionAction<?> c = (ConnectionAction<?>) visited;
-		ConnectionAction<?> inlined = (ConnectionAction<?>) c.clone(inl.job.af);
+		ConnectAction<?> c = (ConnectAction<?>) visited;
+		ConnectAction<?> inlined = (ConnectAction<?>) c.clone(inl.job.af);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
-		return (ConnectionAction<?>) super.leaveProtocolInlining(parent, child, inl, c);
+		return (ConnectAction<?>) super.leaveProtocolInlining(parent, child, inl, c);
 	}
 
 	/*@Override
@@ -57,7 +57,7 @@ public abstract class ConnectionActionDel extends SimpleInteractionNodeDel
 	@Override
 	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited)
 	{
-		ConnectionAction<?> c = (ConnectionAction<?>) visited;
+		ConnectAction<?> c = (ConnectAction<?>) visited;
 		coll.addName(c.src.toName());
 		coll.addName(c.dest.toName());
 		return visited;

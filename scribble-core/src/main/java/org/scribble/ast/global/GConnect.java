@@ -13,9 +13,10 @@
  */
 package org.scribble.ast.global;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
-import org.scribble.ast.ConnectionAction;
+import org.scribble.ast.ConnectAction;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.local.LNode;
@@ -25,59 +26,59 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
 
-public class GConnect extends ConnectionAction<Global> implements GSimpleInteractionNode
+// TODO: make GConnectionAction and factor this class with GWrap (cf. LConnectionAction)
+public class GConnect extends ConnectAction<Global>
+		implements GSimpleInteractionNode
 {
-	public GConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
-	//public GConnect(RoleNode src, RoleNode dest)
+	// ScribTreeAdaptor#create constructor
+	public GConnect(Token t)
 	{
-		super(source, src, msg, dest);
-		//super(src, dest);
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public GConnect(GConnect node)
+	{
+		super(node);
 	}
 
 	public LNode project(AstFactory af, Role self)
 	{
-		Role srcrole = this.src.toName();
-		Role destrole = this.dest.toName();
-		LNode projection = null;
-		if (srcrole.equals(self) || destrole.equals(self))
+		Role src = this.src.toName();
+		Role dest = this.dest.toName();
+		LNode proj = null;
+		if (src.equals(self) || dest.equals(self))
 		{
-			if (srcrole.equals(destrole))
+			if (src.equals(dest))
 			{
-				throw new RuntimeException("Shouldn't get in here (self-connection): " + this);
+				throw new RuntimeException(
+						"Shouldn't get in here (self-connection): " + this);
 			}
 			
-			RoleNode src = (RoleNode) af.SimpleNameNode(this.src.getSource(), RoleKind.KIND, this.src.toName().toString());  // clone?
-			MessageNode msg = (MessageNode) this.msg;  // FIXME: need namespace prefix update?
-			RoleNode dest = (RoleNode) af.SimpleNameNode(this.dest.getSource(), RoleKind.KIND, this.dest.toName().toString());
-			if (srcrole.equals(self))
+			RoleNode srcNode = getSourceChild();
+			RoleNode destNode = getDestinationChild();
+			RoleNode srcNode1 = (RoleNode) af.SimpleNameNode(srcNode.getSource(),
+					RoleKind.KIND, srcNode.toName().toString()); // clone?
+			MessageNode msgNode1 = (MessageNode) this.msg;  // FIXME: need namespace prefix update?
+			RoleNode destNode1 = (RoleNode) af.SimpleNameNode(destNode.getSource(),
+					RoleKind.KIND, destNode.toName().toString());
+			if (src.equals(self))
 			{
-				projection = af.LConnect(this.source, src, msg, dest);
+				proj = af.LConnect(this.source, srcNode1, msgNode1, destNode1);
 				//projection = AstFactoryImpl.FACTORY.LConnect(src, dest);  // src and dest (not self and peer)
 			}
-			if (destrole.equals(self))
+			if (dest.equals(self))
 			{
-				projection = af.LAccept(this.source, src, msg, dest);
+				proj = af.LAccept(this.source, srcNode1, msgNode1, destNode1);
 				//projection = AstFactoryImpl.FACTORY.LAccept(src, dest);
 			}
 		}
-		return projection;
-	}
-
-	@Override
-	protected GConnect copy()
-	{
-		return new GConnect(this.source, this.src, this.msg, this.dest);
-		//return new GConnect(this.src, this.dest);
+		return proj;
 	}
 	
-	@Override
-	public GConnect clone(AstFactory af)
+	public GConnect dupNode()
 	{
-		RoleNode src = this.src.clone(af);
-		MessageNode msg = this.msg.clone(af);
-		RoleNode dest = this.dest.clone(af);
-		return af.GConnect(this.source, src, msg, dest);
-		//return AstFactoryImpl.FACTORY.GConnect(src, dest);
+		return new GConnect(this);
 	}
 
 	@Override
@@ -94,7 +95,8 @@ public class GConnect extends ConnectionAction<Global> implements GSimpleInterac
 	@Override
 	public String toString()
 	{
-		return (isUnitMessage() ? "" : this.msg + " ") + Constants.CONNECT_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
+		return (isUnitMessage() ? "" : this.msg + " ") + Constants.CONNECT_KW + " "
+				+ this.src + " " + Constants.TO_KW + " " + this.dest + ";";
 		//return Constants.CONNECT_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
 	}
 
@@ -103,5 +105,43 @@ public class GConnect extends ConnectionAction<Global> implements GSimpleInterac
 	public Global getKind()
 	{
 		return GSimpleInteractionNode.super.getKind();
+	}*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public GConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
+	//public GConnect(RoleNode src, RoleNode dest)
+	{
+		super(source, src, msg, dest);
+		//super(src, dest);
+	}
+
+	/*@Override
+	protected GConnect copy()
+	{
+		return new GConnect(this.source, this.src, this.msg, this.dest);
+		//return new GConnect(this.src, this.dest);
+	}
+	
+	@Override
+	public GConnect clone(AstFactory af)
+	{
+		RoleNode src = this.src.clone(af);
+		MessageNode msg = this.msg.clone(af);
+		RoleNode dest = this.dest.clone(af);
+		return af.GConnect(this.source, src, msg, dest);
+		//return AstFactoryImpl.FACTORY.GConnect(src, dest);
 	}*/
 }

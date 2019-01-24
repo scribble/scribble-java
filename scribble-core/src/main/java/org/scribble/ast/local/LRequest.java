@@ -16,13 +16,9 @@ package org.scribble.ast.local;
 import java.util.Collections;
 import java.util.Set;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
-import org.scribble.ast.MessageNode;
-import org.scribble.ast.ScribNodeBase;
-import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.Message;
@@ -31,7 +27,73 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LRequest extends LConnectionAction implements LSimpleInteractionNode
 {
-	public LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
+	// ScribTreeAdaptor#create constructor
+	public LRequest(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public LRequest(LRequest node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public LRequest dupNode()
+	{
+		return new LRequest(this);
+	}
+
+	// Could make a LMessageTransfer to factor this out with LReceive
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		return getSourceChild().toName();
+		//throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+			throws ScribbleException
+	{
+		throw new RuntimeScribbleException("Invalid merge on LRequest: " + this);
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		return false;
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		return Collections.emptySet();
+	}
+
+	@Override
+	public String toString()
+	{
+		return (isUnitMessage() ? "" : getMessageNodeChild() + " ")
+				+ Constants.CONNECT_KW + " " + getDestinationChild().toString() + ";";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*public LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//public LConnect(RoleNode src, RoleNode dest)
 	{
 		super(source, src, msg, dest);
@@ -64,44 +126,5 @@ public class LRequest extends LConnectionAction implements LSimpleInteractionNod
 		//LConnect ls = new LConnect(src, dest);
 		ls = (LRequest) ls.del(del);
 		return ls;
-	}
-
-	// Could make a LMessageTransfer to factor this out with LReceive
-	@Override
-	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
-	{
-		return this.src.toName();
-		//throw new RuntimeException("TODO: " + this);
-	}
-
-	@Override
-	public String toString()
-	{
-		return (isUnitMessage() ? "" : this.msg+ " ") + Constants.CONNECT_KW + " " + this.dest.toString() + ";";
-	}
-
-	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
-	{
-		throw new RuntimeScribbleException("Invalid merge on LConnect: " + this);
-	}
-
-	@Override
-	public boolean canMerge(LInteractionNode ln)
-	{
-		return false;
-	}
-
-	@Override
-	public Set<Message> getEnabling()
-	{
-		return Collections.emptySet();
-	}
-
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LSimpleInteractionNode.super.getKind();
 	}*/
 }

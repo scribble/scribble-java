@@ -72,12 +72,16 @@ public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInte
 				.collect(Collectors.toList());
 	}
 
-	public MessageTransfer<K> reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public MessageTransfer<K> reconstruct(RoleNode src, MessageNode msg,
+			List<RoleNode> dests)
 	{
-		MessageTransfer<K> pd = dupNode();
+		MessageTransfer<K> mt = dupNode();
+		mt.addChild(msg);
+		mt.addChild(src);
+		mt.addChildren(dests);
 		ScribDel del = del();
-		pd.setDel(del);  // No copy
-		return pd;
+		mt.setDel(del);  // No copy
+		return mt;
 	}
 
 	@Override

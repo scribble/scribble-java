@@ -16,14 +16,12 @@ package org.scribble.ast.local;
 import java.util.Collections;
 import java.util.Set;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
-import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.Message;
@@ -32,12 +30,74 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LWrapServer extends LConnectionAction implements LSimpleInteractionNode
 {
+	// ScribTreeAdaptor#create constructor
+	public LWrapServer(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public LWrapServer(LWrapServer node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public LWrapServer dupNode()
+	{
+		return new LWrapServer(this);
+	}
+
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		fixer.setChoiceSubject(getSourceChild().toName());
+		return getSourceChild().toName();
+	}
+
+	@Override
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+			throws ScribbleException
+	{
+		throw new RuntimeScribbleException("Invalid merge on LWrapServer: " + this);
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		return false;
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		return Collections.emptySet();
+	}
+
+	@Override
+	public String toString()
+	{
+		return Constants.WRAP_KW + " " + Constants.FROM_KW + " " + this.src + ";";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public LWrapServer(CommonTree source, MessageSigNode unit, RoleNode src, RoleNode dest)
 	{
 		super(source, src, unit, dest);
 	}
 
-	@Override
+	/*@Override
 	protected ScribNodeBase copy()
 	{
 		return new LWrapServer(this.source, (MessageSigNode) this.msg, this.src, this.dest);
@@ -59,43 +119,5 @@ public class LWrapServer extends LConnectionAction implements LSimpleInteraction
 		LWrapServer lr = new LWrapServer(this.source, (MessageSigNode) this.msg, src, dest);
 		lr = (LWrapServer) lr.del(del);
 		return lr;
-	}
-
-	@Override
-	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
-	{
-		fixer.setChoiceSubject(this.src.toName());
-		return this.src.toName();
-	}
-
-	@Override
-	public String toString()
-	{
-		return Constants.WRAP_KW + " " + Constants.FROM_KW + " " + this.src + ";";
-	}
-
-	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
-	{
-		throw new RuntimeScribbleException("Invalid merge on LWrapServer: " + this);
-	}
-
-	@Override
-	public boolean canMerge(LInteractionNode ln)
-	{
-		return false;
-	}
-
-	@Override
-	public Set<Message> getEnabling()
-	{
-		return Collections.emptySet();
-	}
-
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LSimpleInteractionNode.super.getKind();
 	}*/
 }
