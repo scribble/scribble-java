@@ -56,45 +56,61 @@ public class ModuleDel extends ScribDelBase
 	}
 
 	@Override
-	public void enterModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder) throws ScribbleException
+	public void enterModuleContextBuilding(ScribNode parent, ScribNode child,
+			ModuleContextBuilder builder) throws ScribbleException
 	{
 		builder.setModuleContext(new ModuleContext(builder.job.getContext(), (Module) child));
 	}
 
 	// Maybe better to create on enter, so can be used during the context build pass (Context would need to be "cached" in the visitor to be accessed)
 	@Override
-	public Module leaveModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder, ScribNode visited) throws ScribbleException
+	public Module leaveModuleContextBuilding(ScribNode parent, ScribNode child,
+			ModuleContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		ModuleDel del = setModuleContext(builder.getModuleContext());
 		return (Module) visited.del(del);
 	}
 		
 	@Override
-	public Module leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public Module leaveDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		Module mod = (Module) visited;
 		// Imports checked in ModuleContext -- that is built before disamb is run
-		List<NonProtocolDecl<?>> npds = mod.getNonProtocolDecls();
-		List<String> npdnames = npds.stream().map((npd) -> npd.getDeclName().toString()).collect(Collectors.toList()); 
+		List<NonProtocolDecl<?>> npds = mod.getNonProtoDeclChildren();
+		List<String> npdnames = npds.stream()
+				.map(x -> x.getDeclName().toString())
+				.collect(Collectors.toList());
 				// Have to use Strings, as can be different kinds (datatype, sig)
 		final Set<String> dups1 = getDuplicates(npdnames);
 		//if (npds.size() != npdnames.stream().distinct().count())
 		if (!dups1.isEmpty())
 		{
 			NonProtocolDecl<?> first =
-					npds.stream().filter((npd) -> dups1.contains(npd.getDeclName().toString())).collect(Collectors.toList()).get(0);
-			throw new ScribbleException(first.getSource(), "Duplicate non-protocol decls: " + first.getDeclName());
+					npds.stream()
+							.filter(x -> dups1.contains(x.getDeclName().toString()))
+							.collect(Collectors.toList()).get(0);
+			throw new ScribbleException(first.getSource(),
+					"Duplicate non-protocol decls: " + first.getDeclName());
 		}
-		List<ProtocolDecl<?>> pds = mod.getProtocolDecls();
-		List<String> pdnames = pds.stream().map((pd) -> pd.header.getDeclName().toString()).collect(Collectors.toList());
+		List<ProtocolDecl<?>> pds = mod.getProtoDeclChildren();
+		List<String> pdnames = pds.stream()
+				.map(pd -> pd.getHeaderChild().getDeclName().toString())
+				.collect(Collectors.toList());
 				// Have to use Strings, as can be different kinds (global, local)
 		final Set<String> dups2 = getDuplicates(pdnames);
 		if (pds.size() != pdnames.stream().distinct().count())
 		if (!dups2.isEmpty())
 		{
 			ProtocolDecl<?> first =
-					pds.stream().filter((pd) -> dups2.contains(pd.header.getDeclName().toString())).collect(Collectors.toList()).get(0);
-			throw new ScribbleException(first.getSource(), "Duplicate protocol decls: " + first.header.getDeclName());  // Global and locals also required to be distinct
+						pds.stream()
+								.filter(x -> dups2
+										.contains(x.getHeaderChild().getDeclName().toString()))
+								.collect(Collectors.toList()).get(0);
+				throw new ScribbleException(first.getSource(),
+						"Duplicate protocol decls: "
+								+ first.getHeaderChild().getDeclName());
+						// Global and locals also required to be distinct
 		}
 		return mod;
 	}
@@ -122,17 +138,23 @@ public class ModuleDel extends ScribDelBase
 	}
 
 	// lpd is the projected local protocol
-	public Module createModuleForProjection(Projector proj, Module root, GProtocolDecl gpd, LProtocolDecl lpd, Map<GProtocolName, Set<Role>> deps)
+	public Module createModuleForProjection(Projector proj, Module root,
+			GProtocolDecl gpd, LProtocolDecl lpd, Map<GProtocolName, Set<Role>> deps)
 	{
-		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(proj.job.af, root.moddecl.name.getSource(),  // Or ignore blame source for purely generated?
-				root.moddecl.getFullModuleName(), lpd.getHeader().getDeclName());
-		ModuleDecl moddecl = proj.job.af.ModuleDecl(root.moddecl.getSource(), modname);
+		ModuleDecl rootModDecl = root.getModuleDeclChild();
+		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(proj.job.af,
+				rootModDecl.getNameNodeChild().getSource(),
+						// Or ignore blame source for purely generated?
+				rootModDecl.getFullModuleName(), lpd.getHeaderChild().getDeclName());
+		ModuleDecl modDecl = proj.job.af
+				.ModuleDecl(root.getModuleDeclChild().getSource(), modname);
 		List<ImportDecl<?>> imports = new LinkedList<>();
 		for (GProtocolName gpn : deps.keySet())
 		{
 			for (Role role : deps.get(gpn))
 			{
-				LProtocolName targetsimpname = Projector.projectSimpleProtocolName(gpn.getSimpleName(), role);
+				LProtocolName targetsimpname = Projector
+						.projectSimpleProtocolName(gpn.getSimpleName(), role);
 				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(proj.job.af, //null,  // FIXME? projected import sources?
 
 						new CommonTree(),  // FIXME -- 
@@ -145,9 +167,10 @@ public class ModuleDel extends ScribDelBase
 			}
 		}
 		
-		List<NonProtocolDecl<?>> data = new LinkedList<>(root.getNonProtocolDecls());  // FIXME: copy?  // FIXME: only project the dependencies
+		List<NonProtocolDecl<?>> data = new LinkedList<>(root.getNonProtoDeclChildren());  // FIXME: copy?  // FIXME: only project the dependencies
 		List<ProtocolDecl<?>> protos = Arrays.asList(lpd);
-		return proj.job.af.Module(gpd.header.getSource(), moddecl, imports, data, protos);
+		return proj.job.af.Module(gpd.getHeaderChild().getSource(), modDecl,
+				imports, data, protos);
 	}
 	
 	@Override 

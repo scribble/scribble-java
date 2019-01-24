@@ -19,5 +19,5 @@ import org.scribble.type.kind.Global;
 // Alternatively to interface, use GlobalNode subclass with delegation to "super" base (e.g. Choice) classes
 public interface GInteractionNode extends InteractionNode<Global>, GNode
 {
-
+	//public LInteractionSeq project(AstFactory af, Role self);  // TODO
 }

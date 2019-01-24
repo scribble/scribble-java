@@ -60,7 +60,7 @@ public abstract class DoArgListDel extends ScribDelBase
 			throw new ScribbleException("Protocol decl not visible: " + simpname);
 		}*/
 		ProtocolName<?> fullname = mc.getVisibleProtocolDeclFullName(pn);  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
-		return jc.getModule(fullname.getPrefix()).getProtocolDecl(pn.getSimpleName());
+		return jc.getModule(fullname.getPrefix()).getProtocolDeclChild(pn.getSimpleName());
 	}
 	
 	protected abstract HeaderParamDeclList<?> getParamDeclList(ProtocolDecl<?> pd);

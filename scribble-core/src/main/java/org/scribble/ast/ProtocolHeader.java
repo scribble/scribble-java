@@ -17,62 +17,104 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.visit.AstVisitor;
 
 // TODO: parameterize on global/local name node and role decl list (i.e. self roles)
-public abstract class ProtocolHeader<K extends ProtocolKind> extends NameDeclNode<K> implements ProtocolKindNode<K>
+public abstract class ProtocolHeader<K extends ProtocolKind>
+		extends NameDeclNode<K> implements ProtocolKindNode<K>
 {
-	public final RoleDeclList roledecls;
-	public final NonRoleParamDeclList paramdecls;
-
+	// ScribTreeAdaptor#create constructor
 	public ProtocolHeader(Token t)
 	{
 		super(t);
 		this.roledecls = null;
 		this.paramdecls = null;
 	}
-
-	protected ProtocolHeader(CommonTree source, NameNode<K> name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	
+	// Tree#dupNode constructor
+	protected ProtocolHeader(ProtocolHeader<K> node)
 	{
-		super(source, name);
-		this.roledecls = roledecls;
-		this.paramdecls = paramdecls;
+		super(node);
+		this.roledecls = null;
+		this.paramdecls = null;
 	}
 	
-	public abstract ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name, RoleDeclList rdl, NonRoleParamDeclList pdl);
+	public abstract ProtocolHeader<K> dupNode();
+	
+	// Simple name
+	@Override
+	public abstract ProtocolNameNode<K> getNameNodeChild();
+	
+	public RoleDeclList getRoleDeclListChild()
+	{
+		return (RoleDeclList) getChild(1);
+	}
+	
+	public NonRoleParamDeclList getParamDeclListChild()
+	{
+		return (NonRoleParamDeclList) getChild(2);
+	}
+	
+	public ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
+	{
+		ProtocolHeader<K> pd = dupNode();
+		ScribDel del = del();
+		pd.addChild(name);
+		pd.addChild(rdl);
+		pd.addChild(pdl);
+		pd.setDel(del);  // No copy
+		return pd;
+	}
 	
 	@Override
 	public ProtocolHeader<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		RoleDeclList rdl = (RoleDeclList) visitChild(this.roledecls, nv);
-		NonRoleParamDeclList pdl = (NonRoleParamDeclList) visitChild(this.paramdecls, nv);
-		return reconstruct((ProtocolNameNode<K>) this.name, rdl, pdl);
+		RoleDeclList rdl = (RoleDeclList) visitChild(getRoleDeclListChild(), nv);
+		NonRoleParamDeclList pdl = (NonRoleParamDeclList) 
+				visitChild(getParamDeclListChild(), nv);
+		return reconstruct(getNameNodeChild(), rdl, pdl);
 	}
 
 	public boolean isParameterDeclListEmpty()
 	{
 		return this.paramdecls.isEmpty();
 	}
-	
-	public abstract ProtocolNameNode<K> getNameNode();
-	
+
 	@Override
 	public ProtocolName<K> getDeclName()
 	{
-		return (ProtocolName<K>) super.getDeclName();
+		return getNameNodeChild().toName();
 	}
 
 	@Override
 	public String toString()
 	{
-		String s = Constants.PROTOCOL_KW + " " + this.name;
+		String s = Constants.PROTOCOL_KW + " " + getNameNodeChild();
 		if (!isParameterDeclListEmpty())
 		{
-			s += this.paramdecls;
+			s += getParamDeclListChild();
 		}
-		return s + this.roledecls;
+		return s + getRoleDeclListChild();
+	}
+
+	
+	
+	
+	
+	
+	
+	private final RoleDeclList roledecls;
+	private final NonRoleParamDeclList paramdecls;
+
+	// name = simple name
+	protected ProtocolHeader(CommonTree source, NameNode<K> name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	{
+		super(source, name);
+		this.roledecls = roledecls;
+		this.paramdecls = paramdecls;
 	}
 }

@@ -17,13 +17,28 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 
 // ProtocolBlock or CompoundInteractionNode
-public abstract class CompoundInteraction extends ScribNodeBase
+public abstract class CompoundInteraction<K> extends ScribNodeBase
 {
+	// ScribTreeAdaptor#create constructor
 	public CompoundInteraction(Token t)
 	{
 		super(t);
 	}
 
+	// Tree#dupNode constructor
+	protected CompoundInteraction(CompoundInteraction<K> node)
+	{
+		super(node);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
 	public CompoundInteraction(CommonTree source)
 	{
 		super(source);

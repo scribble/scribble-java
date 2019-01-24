@@ -16,24 +16,36 @@ package org.scribble.ast.global;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
-import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
 public class GProtocolBlock extends ProtocolBlock<Global> implements GNode
 {
+	// ScribTreeAdaptor#create constructor
 	public GProtocolBlock(Token t)
 	{
 		super(t);
 	}
 
-	public GProtocolBlock(CommonTree source, GInteractionSeq seq)
+	// Tree#dupNode constructor
+	protected GProtocolBlock(GProtocolBlock node)
 	{
-		super(source, seq);
+		super(node);
+	}
+
+	@Override
+	public GProtocolBlock dupNode()
+	{
+		return new GProtocolBlock(this);
+	}
+
+	@Override
+	public GInteractionSeq getInteractSeqChild()
+	{
+		return (GInteractionSeq) getChild(0);
 	}
 
 	public LProtocolBlock project(AstFactory af, Role self, LInteractionSeq seq)
@@ -41,39 +53,43 @@ public class GProtocolBlock extends ProtocolBlock<Global> implements GNode
 		LProtocolBlock projection = af.LProtocolBlock(this.source, seq);
 		return projection;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
-	@Override
+	public GProtocolBlock(CommonTree source, GInteractionSeq seq)
+	{
+		super(source, seq);
+	}
+
+	/*@Override
 	protected GProtocolBlock copy()
 	{
-		return new GProtocolBlock(this.source, getInteractionSeq());
+		return new GProtocolBlock(this.source, getInteractSeqChild());
 	}
 	
 	@Override
 	public GProtocolBlock clone(AstFactory af)
 	{
-		GInteractionSeq gis = getInteractionSeq().clone(af);
+		GInteractionSeq gis = getInteractSeqChild().clone(af);
 		return af.GProtocolBlock(this.source, gis);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public GProtocolBlock reconstruct(InteractionSeq<Global> seq)
 	{
 		ScribDel del = del();
 		GProtocolBlock gpb = new GProtocolBlock(this.source, (GInteractionSeq) seq);
 		gpb = (GProtocolBlock) gpb.del(del);
 		return gpb;
-	}
-
-	@Override
-	public GInteractionSeq getInteractionSeq()
-	{
-		return (GInteractionSeq) this.seq;
-	}
-
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GNode.super.getKind();
 	}*/
 }

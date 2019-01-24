@@ -174,7 +174,7 @@ public class MainContext
 	private void loadAllModules(Pair<Resource, Module> module) throws ScribParserException, ScribbleException
 	{
 		this.parsed.put(module.right.getFullModuleName(), module);
-		for (ImportDecl<?> id : module.right.getImportDecls())
+		for (ImportDecl<?> id : module.right.getImportDeclChildren())
 		{
 			if (id.isImportModule())
 			{
@@ -202,7 +202,9 @@ public class MainContext
 		{
 			if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))  // ModuleName.toString hack?
 			{
-				throw new ScribbleException(main.moddecl.name.getSource(), "Simple module name at path " + path + " mismatch: " + main.getFullModuleName());
+				CommonTree source = main.getModuleDeclChild().name.getSource();
+				throw new ScribbleException(source, "Simple module name at path " + path
+						+ " mismatch: " + main.getFullModuleName());
 			}
 		}
 	}

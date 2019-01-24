@@ -42,12 +42,12 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<GInteractionNode> gins = new LinkedList<GInteractionNode>();
-		for (GInteractionNode gi : gis.getInteractions())
+		for (GInteractionNode gi : gis.getInteractNodeChildren())
 		{
 			ScribNode inlined = ((InlineProtocolEnv) gi.del().env()).getTranslation();
 			if (inlined instanceof GInteractionSeq)  // A do got inlined
 			{
-				gins.addAll(((GInteractionSeq) inlined).getInteractions());
+				gins.addAll(((GInteractionSeq) inlined).getInteractNodeChildren());
 			}
 			else
 			{
@@ -70,14 +70,14 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<LInteractionNode> lis = new LinkedList<>();
-		for (GInteractionNode gi : gis.getInteractions())  // FIXME: rewrite using flatMap
+		for (GInteractionNode gi : gis.getInteractNodeChildren())  // FIXME: rewrite using flatMap
 		{
 			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			//LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
 			// FIXME: move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
-				lis.addAll(((LInteractionSeq) ln).getInteractions());
+				lis.addAll(((LInteractionSeq) ln).getInteractNodeChildren());
 			}
 			else if (ln != null) // null is used for empty projection
 			{
@@ -127,9 +127,9 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
-		List<GInteractionNode> gins = gis.getInteractions().stream().flatMap((gi) -> 
+		List<GInteractionNode> gins = gis.getInteractNodeChildren().stream().flatMap((gi) -> 
 					(gi instanceof GRecursion && rem.toRemove(((GRecursion) gi).recvar.toName()))
-						? ((GRecursion) gi).getBlock().getInteractionSeq().getInteractions().stream()
+						? ((GRecursion) gi).getBlock().getInteractSeqChild().getInteractNodeChildren().stream()
 						: Stream.of(gi)
 				).collect(Collectors.toList());
 		return rem.job.af.GInteractionSeq(gis.getSource(), gins);

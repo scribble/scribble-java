@@ -69,9 +69,15 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	}
 	
 	@Override
+	public RoleNode getNameNodeChild()
+	{
+		return (RoleNode) getNameNodeChild();
+	}
+
+	@Override
 	public Role getDeclName()
 	{
-		return (Role) super.getDeclName();
+		return getNameNodeChild().toName();
 	}
 	
 	public boolean isSelfRoleDecl()

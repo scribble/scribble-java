@@ -13,6 +13,7 @@
  */
 package org.scribble.ast.name.simple;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.type.kind.Kind;
@@ -20,13 +21,35 @@ import org.scribble.type.kind.Kind;
 // Parser Identifier
 public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 {
-	public SimpleNameNode(CommonTree source, String identifier)
+	// ScribTreeAdaptor#create constructor
+	public SimpleNameNode(Token t)
 	{
-		super(source, new String[] { identifier });
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected SimpleNameNode(SimpleNameNode<K> node, String id)
+	{
+		super(node, id);
 	}
 	
 	public String getIdentifier()
 	{
 		return getLastElement();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public SimpleNameNode(CommonTree source, String id)
+	{
+		super(source, new String[]{id});
 	}
 }

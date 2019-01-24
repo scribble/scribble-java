@@ -15,40 +15,69 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase implements ProtocolKindNode<K>
+public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase
+		implements ProtocolKindNode<K>
 {
-	public final ProtocolBlock<K> block;
-
+	// ScribTreeAdaptor#create constructor
 	public ProtocolDef(Token t)
 	{
 		super(t);
 		this.block = null;
 	}
 
-	protected ProtocolDef(CommonTree source, ProtocolBlock<K> block)
+	// Tree#dupNode constructor
+	protected ProtocolDef(ProtocolDef<K> node)
 	{
-		super(source);
-		this.block = block;
+		super(node);
+		this.block = null;
 	}
 	
-	public abstract ProtocolDef<K> reconstruct(ProtocolBlock<K> block);
+	public abstract ProtocolDef<K> dupNode();
 
-	public abstract ProtocolBlock<K> getBlock();
+	public abstract ProtocolBlock<K> getBlockChild();
+	
+	public ProtocolDef<K> reconstruct(ProtocolBlock<K> block)
+	{
+		ProtocolDef<K> pd = dupNode();
+		ScribDel del = del();
+		pd.addChild(block);
+		pd.setDel(del);  // No copy
+		return pd;
+	}
 	
 	@Override
 	public ProtocolDef<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		ProtocolBlock<K> block = visitChildWithClassEqualityCheck(this, this.block, nv);
+		ProtocolBlock<K> block = 
+				visitChildWithClassEqualityCheck(this, getBlockChild(), nv);
 		return reconstruct(block);
 	}
 
 	@Override
 	public String toString()
 	{
-		return this.block.toString();
+		return getBlockChild().toString();
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private final ProtocolBlock<K> block;
+
+	protected ProtocolDef(CommonTree source, ProtocolBlock<K> block)
+	{
+		super(source);
+		this.block = block;
 	}
 }

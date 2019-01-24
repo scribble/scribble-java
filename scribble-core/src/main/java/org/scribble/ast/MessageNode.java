@@ -20,7 +20,7 @@ public interface MessageNode extends NonRoleArgNode
 {
 	Message toMessage();
 	
-	MessageNode clone(AstFactory af);
+	//MessageNode clone(AstFactory af);
 
 	//Arg<? extends SigKind> toArg();  // Not possible due to "diamond" with PayloadElemNameNode at AmbigNameNode
 	

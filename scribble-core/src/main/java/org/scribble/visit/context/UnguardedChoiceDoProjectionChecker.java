@@ -71,9 +71,9 @@ public class UnguardedChoiceDoProjectionChecker extends SubprotocolVisitor<Ungua
 
 	private ScribNode visitOverrideForLDoPruning(ScribNode parent, LChoice lc) throws ScribbleException
 	{
-		for (LProtocolBlock b : lc.getBlocks())
+		for (LProtocolBlock b : lc.getBlockChildren())
 		{
-			LInteractionNode in = b.getInteractionSeq().getInteractions().get(0);
+			LInteractionNode in = b.getInteractSeqChild().getInteractNodeChildren().get(0);
 			if (in instanceof LDo)
 			{
 				LDo ld = (LDo) in;

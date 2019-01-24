@@ -54,7 +54,7 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 		if (child instanceof GProtocolDecl)
 		{
 			GProtocolDecl gpd = (GProtocolDecl) child;
-			if (gpd.isAuxModifier())
+			if (gpd.isAux())
 			{
 				return child;  // bypass aux protocols  // FIXME: integrate bypass functionality into made enter/visit/leave pattern
 			}

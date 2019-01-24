@@ -13,42 +13,46 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.DataTypeNode;
-import org.scribble.ast.name.qualified.MemberNameNode;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.DataTypeKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.ModuleName;
 
 public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 {
-	public DataTypeDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name)
+	// ScribTreeAdaptor#create constructor
+	public DataTypeDecl(Token payload, String schema, String extName,
+			String extSource)
 	{
-		super(source, schema, extName, extSource, name);
+		super(payload, schema, extName, extSource);
 	}
 
-	@Override
-	protected ScribNodeBase copy()
+	// Tree#dupNode constructor
+	protected DataTypeDecl(DataTypeDecl node, String schema, String extName,
+			String extSource)
 	{
-		return new DataTypeDecl(this.source, this.schema, this.extName, this.extSource, getNameNode());
-	}
-	
-	@Override
-	public DataTypeDecl clone(AstFactory af)
-	{
-		DataTypeNode name = (DataTypeNode) this.name.clone(af);
-		return af.DataTypeDecl(this.source, this.schema, this.extName, this.extSource, name);
+		super(node, schema, extName, extSource);
 	}
 
+	// Cf. CommonTree#dupNode
 	@Override
-	public DataTypeDecl reconstruct(String schema, String extName, String extSource, MemberNameNode<DataTypeKind> name)
+	public DataTypeDecl dupNode()
 	{
+		return new DataTypeDecl(this, this.schema, this.extName, this.extSource);
+	}
+
+	/*@Override
+	public DataTypeDecl reconstruct(String schema, String extName, String extSource, //MemberNameNode<DataTypeKind> name)
+			NameNode<DataTypeKind> name)
+	{
+		DataTypeDecl dtd = dupNode();
 		ScribDel del = del();
-		DataTypeDecl dtd = new DataTypeDecl(this.source, schema, extName, extSource, (DataTypeNode) name);
-		dtd = (DataTypeDecl) dtd.del(del);
+		dtd.addChild(getNameNode());
+		dtd.setDel(del);
 		return dtd;
-	}
+	}*/
 	
 	@Override
 	public boolean isDataTypeDecl()
@@ -57,15 +61,16 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	}
 
 	@Override
-	public DataTypeNode getNameNode()
+	public DataTypeNode getNameNodeChild()
 	{
-		return (DataTypeNode) super.getNameNode();
+		return (DataTypeNode) getChild();
 	}
 
+  // Simple name (ModuleDecl is the only NameDeclNode that uses qualified names)
 	@Override
 	public DataType getDeclName()
 	{
-		return (DataType) super.getDeclName();
+		return getNameNodeChild().toName();
 	}
 
 	@Override
@@ -80,6 +85,38 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	{
 		return Constants.TYPE_KW + " <" + this.schema + "> " + this.extName
 				+ " " + Constants.FROM_KW + " " + this.extSource + " "
-				+ Constants.AS_KW + " " + this.name + ";";
+				+ Constants.AS_KW + " " + getDeclName() + ";";
 	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public DataTypeDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name)
+	{
+		super(source, schema, extName, extSource, name);
+	}
+	
+	/*@Override
+	protected ScribNodeBase copy()
+	{
+		return new DataTypeDecl(this.source, this.schema, this.extName, this.extSource, getNameNode());
+	}
+	
+	@Override
+	public DataTypeDecl clone(AstFactory af)
+	{
+		DataTypeNode name = (DataTypeNode) this.name.clone(af);
+		return af.DataTypeDecl(this.source, this.schema, this.extName, this.extSource, name);
+	}*/
 }

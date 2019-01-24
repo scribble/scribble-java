@@ -42,7 +42,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GChoice gc = (GChoice) visited;
-		List<GProtocolBlock> blocks = gc.getBlocks().stream()
+		List<GProtocolBlock> blocks = gc.getBlockChildren().stream()
 				.map(b -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
 		RoleNode subj = gc.subj.clone(inl.job.af);
 		GChoice inlined = inl.job.af.GChoice(gc.getSource(), subj, blocks);
@@ -72,7 +72,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		
 		// Enabled senders checked in GMessageTransferDel
 		List<WFChoiceEnv> all =
-				cho.getBlocks().stream().map(b -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlockChildren().stream().map(b -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
 		if (checker.job.useOldWf)  // ****
 		{
 			if (all.size() > 1)
@@ -150,7 +150,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 	{
 		GChoice gc = (GChoice) visited;
 		List<LProtocolBlock> blocks =
-				gc.getBlocks().stream().map(b -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());
+				gc.getBlockChildren().stream().map(b -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());
 				//gc.getBlocks().stream().map(b -> ((GProtocolBlockDel) b.del()).project(b, self)).collect(Collectors.toList());
 		LChoice projection = gc.project(proj.job.af, proj.peekSelf(), blocks);
 		proj.pushEnv(proj.popEnv().setProjection(projection));

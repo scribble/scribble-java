@@ -80,7 +80,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 					{
 						throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
 					}
-					DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);
+					DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);
 					ScribSockGen.checkJavaDataTypeDecl(dtd);
 					String type = dtd.extName;
 					types.add(type);
@@ -92,7 +92,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 		}
 		else
 		{
-			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());
+			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());
 			ScribSockGen.checkMessageSigNameDecl(msd);
 			String type = msd.extName;
 			types.add(type);

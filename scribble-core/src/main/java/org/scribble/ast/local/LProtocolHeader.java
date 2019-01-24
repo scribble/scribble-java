@@ -13,18 +13,15 @@
  */
 package org.scribble.ast.local;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
 import org.scribble.ast.NameDeclNode;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Local;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.LProtocolName;
@@ -32,21 +29,81 @@ import org.scribble.type.name.Role;
 
 public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 {
+	// ScribTreeAdaptor#create constructor
+	public LProtocolHeader(Token t)
+	{
+		super(t);
+	}
+	
+	// Tree#dupNode constructor
+	protected LProtocolHeader(LProtocolHeader node)
+	{
+		super(node);
+	}
+	
+	public LProtocolHeader dupNode()
+	{
+		return new LProtocolHeader(this);
+	}
+
+	public Role getSelfRole()
+	{
+		RoleDeclList rdl = getRoleDeclListChild();
+		for (NameDeclNode<RoleKind> rd : rdl.getDecls())
+		{
+			RoleDecl tmp = (RoleDecl) rd;
+			if (tmp.isSelfRoleDecl())
+			{
+				return tmp.getDeclName();
+			}
+		}
+		throw new RuntimeException("Shouldn't get here: " + rdl);
+	}
+		
+	@Override
+	public LProtocolNameNode getNameNodeChild()
+	{
+		return (LProtocolNameNode) getNameNodeChild();
+	}
+
+	@Override
+	public LProtocolName getDeclName()
+	{
+		return getNameNodeChild().toName();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return Constants.LOCAL_KW + " " + super.toString();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public LProtocolHeader(CommonTree source, LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
 		super(source, name, roledecls, paramdecls);
 	}
 
-	@Override
+	/*@Override
 	protected ScribNodeBase copy()
 	{
-		return new LProtocolHeader(this.source, getNameNode(), this.roledecls, this.paramdecls);
+		return new LProtocolHeader(this.source, getNameNodeChild(), this.roledecls, this.paramdecls);
 	}
 	
 	@Override
 	public LProtocolHeader clone(AstFactory af)
 	{
-		LProtocolNameNode name = getNameNode().clone(af);
+		LProtocolNameNode name = getNameNodeChild().clone(af);
 		RoleDeclList roledecls = this.roledecls.clone(af);
 		NonRoleParamDeclList paramdecls = this.paramdecls.clone(af);
 		return af.LProtocolHeader(this.source, name, roledecls, paramdecls);
@@ -59,36 +116,5 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 		LProtocolHeader gph = new LProtocolHeader(this.source, (LProtocolNameNode) name, rdl, pdl);
 		gph = (LProtocolHeader) gph.del(del);
 		return gph;
-	}
-
-	public Role getSelfRole()
-	{
-		for (NameDeclNode<RoleKind> rd : this.roledecls.getDecls())
-		{
-			RoleDecl tmp = (RoleDecl) rd;
-			if (tmp.isSelfRoleDecl())
-			{
-				return tmp.getDeclName();
-			}
-		}
-		throw new RuntimeException("Shouldn't get here: " + this.roledecls);
-	}
-
-	@Override
-	public LProtocolNameNode getNameNode()
-	{
-		return (LProtocolNameNode) this.name;
-	}
-	
-	@Override
-	public LProtocolName getDeclName()
-	{
-		return (LProtocolName) super.getDeclName();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return Constants.LOCAL_KW + " " + super.toString();
-	}
+	}*/
 }

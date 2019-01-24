@@ -97,7 +97,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		// Doing it off the global roledecls allows this to be done in one pass, but would probably be easier to split into two (e.g. 1st cache the proposed changes, 2nd write all changes -- the problem with a single pass is e.g. looking up the localdecl info while localdecls are being rewritten during the pass)
 		// Could possibly factor out rolemap making with SubprotocolVisitor a bit, but there it maps to RoleNode and works off a root map
 		GProtocolName source = ((LProjectionDeclDel) lpd.del()).getSourceProtocol();
-		GProtocolDecl gpd = (GProtocolDecl) jc.getModule(source.getPrefix()).getProtocolDecl(source.getSimpleName());
+		GProtocolDecl gpd = (GProtocolDecl) jc.getModule(source.getPrefix()).getProtocolDeclChild(source.getSimpleName());
 		Iterator<RoleArg> roleargs = ld.roles.getDoArgs().iterator();
 		Map<Role, Role> rolemap = gpd.header.roledecls.getRoles().stream().collect(
 				Collectors.toMap(r -> r, r -> roleargs.next().val.toName()));

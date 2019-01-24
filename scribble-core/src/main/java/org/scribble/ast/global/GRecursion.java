@@ -69,7 +69,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 		{
 			return block;
 		}
-		List<? extends LInteractionNode> lis = block.getInteractionSeq().getInteractions();
+		List<? extends LInteractionNode> lis = block.getInteractSeqChild().getInteractNodeChildren();
 		if (lis.size() > 1)
 		{
 			return block;
@@ -100,7 +100,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 				if (lin instanceof LChoice)
 				{
 					List<LProtocolBlock> pruned = new LinkedList<LProtocolBlock>();
-					for (LProtocolBlock b : ((LChoice) lin).getBlocks())
+					for (LProtocolBlock b : ((LChoice) lin).getBlockChildren())
 					{
 						if (!prune(af, b, rvs).isEmpty())
 						{

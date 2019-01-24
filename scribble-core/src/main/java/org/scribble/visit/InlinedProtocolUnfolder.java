@@ -111,7 +111,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 		//RecVarNode dummy = rec.recvar.clone();
 		ScribNode n = rec.reconstruct(dummy, ScribUtil.checkNodeClassEquality(pb, pb.accept(this)));  // Returning a rec because it needs to go into the InteractionSeq
 				// reconstruct makes sense here, actually reconstructing this rec with new label but same block (and keep the same del etc)*/
-		InteractionSeq<K> seq = pb.getInteractionSeq();
+		InteractionSeq<K> seq = pb.getInteractSeqChild();
 		ScribNode n = seq.accept(this); 
 		this.recsToUnfold.remove(rv);
 		return n;

@@ -20,66 +20,48 @@ import org.scribble.ast.Constants;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.RoleDeclList;
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
 public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 {
+	// ScribTreeAdaptor#create constructor
 	public GProtocolHeader(Token t)
 	{
 		super(t);
 	}
-
-	public GProtocolHeader(CommonTree source, GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	
+	// Tree#dupNode constructor
+	protected GProtocolHeader(GProtocolHeader node)
 	{
-		super(source, name, roledecls, paramdecls);
+		super(node);
 	}
 
-	@Override
-	protected ScribNodeBase copy()
+	public GProtocolHeader dupNode()
 	{
-		return new GProtocolHeader(this.source, getNameNode(), this.roledecls, this.paramdecls);
+		return new GProtocolHeader(this);
 	}
 	
 	@Override
-	public GProtocolHeader clone(AstFactory af)
+	public GProtocolNameNode getNameNodeChild()
 	{
-		GProtocolNameNode name = getNameNode().clone(af);
-		RoleDeclList roledecls = this.roledecls.clone(af);
-		NonRoleParamDeclList paramdecls = this.paramdecls.clone(af);
-		return af.GProtocolHeader(this.source, name, roledecls, paramdecls);
+		return (GProtocolNameNode) getNameNodeChild();
 	}
 
-	@Override
-	public GProtocolHeader reconstruct(ProtocolNameNode<Global> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
-	{
-		ScribDel del = del();
-		GProtocolHeader gph = new GProtocolHeader(this.source, (GProtocolNameNode) name, rdl, pdl);
-		gph = (GProtocolHeader) gph.del(del);
-		return gph;
-	}
-
-	@Override
-	public GProtocolNameNode getNameNode()
-	{
-		return (GProtocolNameNode) this.name;
-	}
-	
 	@Override
 	public GProtocolName getDeclName()
 	{
-		return (GProtocolName) super.getDeclName();
+		return getNameNodeChild().toName();
 	}
 
-	// FIXME: make a delegate and move there?
-	public LProtocolHeader project(AstFactory af, Role self, LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	// CHECKME: make a delegate and move there?
+	public LProtocolHeader project(AstFactory af, Role self,
+			LProtocolNameNode name, RoleDeclList roledecls,
+			NonRoleParamDeclList paramdecls)
 	{
 		return af.LProtocolHeader(this.source, name, roledecls, paramdecls);
 	}
@@ -89,4 +71,51 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 	{
 		return Constants.GLOBAL_KW + " " + super.toString();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public GProtocolHeader(CommonTree source, GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	{
+		super(source, name, roledecls, paramdecls);
+	}
+
+	/*@Override
+	protected ScribNodeBase copy()
+	{
+		return new GProtocolHeader(this.source, getNameNodeChild(), this.roledecls, this.paramdecls);
+	}
+	
+	@Override
+	public GProtocolHeader clone(AstFactory af)
+	{
+		GProtocolNameNode name = getNameNodeChild().clone(af);
+		RoleDeclList roledecls = this.roledecls.clone(af);
+		NonRoleParamDeclList paramdecls = this.paramdecls.clone(af);
+		return af.GProtocolHeader(this.source, name, roledecls, paramdecls);
+	}*/
+
+	/*@Override
+	public GProtocolHeader reconstruct(ProtocolNameNode<Global> name,
+			RoleDeclList rdl, NonRoleParamDeclList pdl)
+	{
+		ScribDel del = del();
+		GProtocolHeader gph = new GProtocolHeader(this.source, (GProtocolNameNode) name, rdl, pdl);
+		gph = (GProtocolHeader) gph.del(del);
+		return gph;
+	}*/
 }

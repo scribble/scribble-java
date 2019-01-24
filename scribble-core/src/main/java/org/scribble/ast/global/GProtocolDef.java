@@ -15,28 +15,52 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
-import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDef;
-import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.ast.local.LProtocolDef;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
-import org.scribble.type.name.Role;
 
 public class GProtocolDef extends ProtocolDef<Global> implements GNode
 {
+	// ScribTreeAdaptor#create constructor
 	public GProtocolDef(Token t)
 	{
 		super(t);
 	}
 
+	// Tree#dupNode constructor
+	protected GProtocolDef(GProtocolDef node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public GProtocolDef dupNode()
+	{
+		return new GProtocolDef(this);
+	}
+
+	@Override
+	public GProtocolBlock getBlockChild()
+	{
+		return (GProtocolBlock) getChild(0);
+	}
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public GProtocolDef(CommonTree source, GProtocolBlock block)
 	{
 		super(source, block);
 	}
 
-	@Override
+	/*@Override
 	protected GProtocolDef copy()
 	{
 		return new GProtocolDef(this.source, getBlock());
@@ -62,18 +86,5 @@ public class GProtocolDef extends ProtocolDef<Global> implements GNode
 		GProtocolDef gpd = new GProtocolDef(this.source, (GProtocolBlock) block);
 		gpd = (GProtocolDef) gpd.del(del);
 		return gpd;
-	}
-
-	@Override
-	public GProtocolBlock getBlock()
-	{
-		return (GProtocolBlock) this.block;
-	}
-	
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GNode.super.getKind();
 	}*/
 }

@@ -15,31 +15,78 @@ package org.scribble.ast.local;
 
 import java.util.Set;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
-import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
-import org.scribble.del.ScribDel;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
 
 public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 {
+	// ScribTreeAdaptor#create constructor
+	public LProtocolBlock(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected LProtocolBlock(LProtocolBlock node)
+	{
+		super(node);
+	}
+
+	@Override
+	public LProtocolBlock dupNode()
+	{
+		return new LProtocolBlock(this);
+	}
+	
+	@Override
+	public LProtocolBlock clone()
+	{
+		return (LProtocolBlock) super.clone();
+	}
+
+	@Override
+	public LInteractionSeq getInteractSeqChild()
+	{
+		return (LInteractionSeq) getChild(0);
+	}
+	
+	public Set<Message> getEnabling()
+	{
+		return getInteractSeqChild().getEnabling();
+	}
+	
+	public LProtocolBlock merge(LProtocolBlock lpb)
+	{
+		throw new RuntimeException("TODO: " + this + ", " + lpb);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 	public LProtocolBlock(CommonTree source, LInteractionSeq seq)
 	{
 		super(source, seq);
 	}
 
-	@Override
+	/*@Override
 	protected LProtocolBlock copy()
 	{
-		return new LProtocolBlock(this.source, getInteractionSeq());
+		return new LProtocolBlock(this.source, getInteractSeqChild());
 	}
 	
 	@Override
 	public LProtocolBlock clone(AstFactory af)
 	{
-		LInteractionSeq lis = getInteractionSeq().clone(af);
+		LInteractionSeq lis = getInteractSeqChild().clone(af);
 		return af.LProtocolBlock(this.source, lis);
 	}
 
@@ -50,28 +97,5 @@ public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 		LProtocolBlock lpb = new LProtocolBlock(this.source, (LInteractionSeq) seq);
 		lpb = (LProtocolBlock) lpb.del(del);
 		return lpb;
-	}
-
-	@Override
-	public LInteractionSeq getInteractionSeq()
-	{
-		return (LInteractionSeq) this.seq;
-	}
-	
-	public LProtocolBlock merge(LProtocolBlock lpb)
-	{
-		throw new RuntimeException("TODO: " + this + ", " + lpb);
-	}
-	
-	public Set<Message> getEnabling()
-	{
-		return getInteractionSeq().getEnabling();
-	}
-	
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LNode.super.getKind();
 	}*/
 }

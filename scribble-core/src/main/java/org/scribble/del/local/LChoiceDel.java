@@ -52,7 +52,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	{
 		Choice<?> cho = (Choice<?>) visited;
 		List<UnguardedChoiceDoEnv> benvs =
-				cho.getBlocks().stream().map((b) -> (UnguardedChoiceDoEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlockChildren().stream().map((b) -> (UnguardedChoiceDoEnv) b.del().env()).collect(Collectors.toList());
 		UnguardedChoiceDoEnv merged = checker.popEnv().mergeContexts(benvs); 
 		checker.pushEnv(merged);
 		return (Choice<?>) super.leaveUnguardedChoiceDoProjectionCheck(parent, child, checker, cho);  // Done merge of children here, super does merge into parent
@@ -62,7 +62,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	public ScribNode leaveProjectedChoiceDoPruning(ScribNode parent, ScribNode child, ProjectedChoiceDoPruner pruner, ScribNode visited) throws ScribbleException
 	{
 		LChoice lc = (LChoice) visited;
-		List<LProtocolBlock> blocks = lc.getBlocks().stream().filter((b) -> !b.isEmpty()).collect(Collectors.toList());
+		List<LProtocolBlock> blocks = lc.getBlockChildren().stream().filter((b) -> !b.isEmpty()).collect(Collectors.toList());
 		if (blocks.isEmpty())
 		{
 			return null;
@@ -74,10 +74,10 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited) throws ScribbleException
 	{
 		LChoice lc = (LChoice) visited;
-		List<LProtocolBlock> blocks = lc.getBlocks();
+		List<LProtocolBlock> blocks = lc.getBlockChildren();
 		
 		Set<Role> subjs = blocks.stream()
-				.map((b) -> b.getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer))
+				.map((b) -> b.getInteractSeqChild().getInteractNodeChildren().get(0).inferLocalChoiceSubject(fixer))
 				//.filter((r) -> !r.toString().equals(DummyProjectionRoleNode.DUMMY_PROJECTION_ROLE))
 				.collect(Collectors.toSet());
 		if (subjs.size() == 0)
@@ -115,7 +115,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	{
 		LChoice lc = (LChoice) visited;
 		List<LProtocolBlock> blocks = 
-				lc.getBlocks().stream().map((b) -> (LProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
+				lc.getBlockChildren().stream().map((b) -> (LProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
 		RoleNode subj = lc.subj.clone(inl.job.af);
 		LChoice inlined = inl.job.af.LChoice(lc.getSource(), subj, blocks);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
@@ -127,7 +127,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	{
 		LChoice cho = (LChoice) visited;
 		List<ReachabilityEnv> benvs =
-				cho.getBlocks().stream().map((b) -> (ReachabilityEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlockChildren().stream().map((b) -> (ReachabilityEnv) b.del().env()).collect(Collectors.toList());
 		ReachabilityEnv merged = checker.popEnv().mergeForChoice(benvs);
 		checker.pushEnv(merged);
 		return (LChoice) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
@@ -144,7 +144,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	{
 		try
 		{
-			for (LProtocolBlock block : child.getBlocks())
+			for (LProtocolBlock block : child.getBlockChildren())
 			{
 				graph.util.pushChoiceBlock();
 				block.accept(graph);

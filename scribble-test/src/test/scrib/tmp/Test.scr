@@ -34,10 +34,10 @@ module tmp.Test;
 
 
 
-global protocol Proto1(role A, role B)
+/*global protocol Proto1(role A, role B)
 {
 	1() from A to B;
-}
+}*/
 
 
 /*

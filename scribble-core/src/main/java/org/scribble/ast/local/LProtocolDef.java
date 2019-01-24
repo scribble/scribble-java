@@ -13,21 +13,57 @@
  */
 package org.scribble.ast.local;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
-import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDef;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Local;
 
 public class LProtocolDef extends ProtocolDef<Local> implements LNode
 {
+	// ScribTreeAdaptor#create constructor
+	public LProtocolDef(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected LProtocolDef(LProtocolDef node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public LProtocolDef dupNode()
+	{
+		return new LProtocolDef(this);
+	}
+
+	@Override
+	public LProtocolBlock getBlockChild()
+	{
+		return (LProtocolBlock) getChild(0);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public LProtocolDef(CommonTree source, LProtocolBlock block)
 	{
 		super(source, block);
 	}
 
-	@Override
+	/*@Override
 	protected LProtocolDef copy()
 	{
 		return new LProtocolDef(this.source, getBlock());
@@ -47,18 +83,5 @@ public class LProtocolDef extends ProtocolDef<Local> implements LNode
 		LProtocolDef lpd = new LProtocolDef(this.source, (LProtocolBlock) block);
 		lpd = (LProtocolDef) lpd.del(del);
 		return lpd;
-	}
-	
-	@Override
-	public LProtocolBlock getBlock()
-	{
-		return (LProtocolBlock) this.block;
-	}
-	
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
-	{
-		return LNode.super.getKind();
 	}*/
 }

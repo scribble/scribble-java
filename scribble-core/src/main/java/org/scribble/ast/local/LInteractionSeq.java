@@ -18,49 +18,37 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
-import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
-import org.scribble.ast.ScribNodeBase;
-import org.scribble.del.ScribDel;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
-import org.scribble.util.ScribUtil;
 
 public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 {
-	public LInteractionSeq(CommonTree source, List<LInteractionNode> lis)
+	// ScribTreeAdaptor#create constructor
+	public LInteractionSeq(Token t)
 	{
-		super(source, lis);
+		super(t);
 	}
 
-	@Override
-	protected ScribNodeBase copy()
+	// Tree#dupNode constructor
+	public LInteractionSeq(LInteractionSeq node)
 	{
-		return new LInteractionSeq(this.source, getInteractions());
+		super(node);
 	}
 	
 	@Override
-	public LInteractionSeq clone(AstFactory af)
+	public LInteractionSeq dupNode()
 	{
-		List<LInteractionNode> lis = ScribUtil.cloneList(af, getInteractions());
-		return af.LInteractionSeq(this.source, lis);
-	}
-
-	@Override
-	public LInteractionSeq reconstruct(List<? extends InteractionNode<Local>> actions)
-	{
-		ScribDel del = del();
-		LInteractionSeq lis = new LInteractionSeq(this.source, castNodes(actions));
-		lis = (LInteractionSeq) lis.del(del);
-		return lis;
+		return new LInteractionSeq(this);
 	}
 	
 	@Override
-	public List<LInteractionNode> getInteractions()
+	public List<LInteractionNode> getInteractNodeChildren()
 	{
-		return castNodes(super.getInteractions());
+		return getChildren().stream().map(n -> (LInteractionNode) n)
+				.collect(Collectors.toList());
 	}
 
 	@Override	
@@ -68,17 +56,12 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	{
 		return true;
 	}
-	
-	private static List<LInteractionNode> castNodes(List<? extends InteractionNode<Local>> nodes)
-	{
-		return nodes.stream().map((n) -> (LInteractionNode) n).collect(Collectors.toList());
-	}
 
 	public Set<Message> getEnabling()
 	{
 		if (!this.isEmpty())
 		{
-			for (LInteractionNode ln : getInteractions())
+			for (LInteractionNode ln : getInteractNodeChildren())
 			{
 				Set<Message> enab = ln.getEnabling();
 				if (!enab.isEmpty())
@@ -90,10 +73,42 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 		return Collections.emptySet();
 	}
 	
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Local getKind()
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public LInteractionSeq(CommonTree source, List<LInteractionNode> lis)
 	{
-		return LNode.super.getKind();
+		super(source, lis);
+	}
+
+	/*@Override
+	protected ScribNodeBase copy()
+	{
+		return new LInteractionSeq(this.source, getInteractNodeChildren());
+	}
+	
+	@Override
+	public LInteractionSeq clone(AstFactory af)
+	{
+		List<LInteractionNode> lis = ScribUtil.cloneList(af, getInteractNodeChildren());
+		return af.LInteractionSeq(this.source, lis);
+	}
+
+	@Override
+	public LInteractionSeq reconstruct(List<? extends InteractionNode<Local>> actions)
+	{
+		ScribDel del = del();
+		LInteractionSeq lis = new LInteractionSeq(this.source, castNodes(actions));
+		lis = (LInteractionSeq) lis.del(del);
+		return lis;
 	}*/
 }

@@ -13,20 +13,90 @@
  */
 package org.scribble.ast;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
 public abstract class Choice<K extends ProtocolKind> extends CompoundInteractionNode<K>
 {
-	public final RoleNode subj;
+	// ScribTreeAdaptor#create constructor
+	public Choice(Token t)
+	{
+		super(t);
+		this.subj = null;
+		this.blocks = null;
+	}
+
+	// Tree#dupNode constructor
+	protected Choice(Choice<K> node)
+	{
+		super(node);
+		this.subj = null;
+		this.blocks = null;
+	}
+	
+	public abstract Choice<K> dupNode();
+	
+	public RoleNode getSubjectChild()
+	{
+		return (RoleNode) getChild(0);
+	}
+
+	// Override in concrete sub for cast
+	public abstract List<? extends ProtocolBlock<K>> getBlockChildren();
+	
+	public Choice<K> reconstruct(RoleNode subj, List<? extends ProtocolBlock<K>> blocks)
+	{
+		Choice<K> pd = dupNode();
+		ScribDel del = del();
+		pd.addChild(subj);
+		pd.addChildren(blocks);
+		pd.setDel(del);  // No copy
+		return pd;
+	}
+	
+	@Override
+	public Choice<K> visitChildren(AstVisitor nv) throws ScribbleException
+	{
+		RoleNode subj = (RoleNode) visitChild(getSubjectChild(), nv);
+		List<? extends ProtocolBlock<K>> blocks = 
+				visitChildListWithClassEqualityCheck(this, getBlockChildren(), nv);
+		return reconstruct(subj, blocks);
+	}
+	
+	@Override
+	public String toString()
+	{
+		String sep = " " + Constants.OR_KW + " ";
+		return Constants.CHOICE_KW + " "
+				+ Constants.AT_KW + " " + getSubjectChild() + " "
+				+ getBlockChildren().stream().map(b -> b.toString())
+						.collect(Collectors.joining(sep));
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	private final RoleNode subj;
 	private final List<? extends ProtocolBlock<K>> blocks;  
 			// Factor up? And specialise to singleton for Recursion/Interruptible? Maybe too artificial -- could separate unaryblocked and multiblocked compound ops?
 
@@ -36,33 +106,4 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 		this.subj = subj;
 		this.blocks = new LinkedList<>(blocks);
 	}
-	
-	public abstract Choice<K> reconstruct(RoleNode subj, List<? extends ProtocolBlock<K>> blocks);
-	
-	@Override
-	public Choice<K> visitChildren(AstVisitor nv) throws ScribbleException
-	{
-		RoleNode subj = (RoleNode) visitChild(this.subj, nv);
-		List<? extends ProtocolBlock<K>> blocks = visitChildListWithClassEqualityCheck(this, this.blocks, nv);
-		return reconstruct(subj, blocks);
-	}
-	
-	public List<? extends ProtocolBlock<K>> getBlocks()
-	{
-		return Collections.unmodifiableList(this.blocks);
-	}
-	
-	@Override
-	public String toString()
-	{
-		String sep = " " + Constants.OR_KW + " ";
-		return Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj + " "
-				+ this.blocks.stream().map((b) -> b.toString()).collect(Collectors.joining(sep));
-	}
-	
-	/*@Override
-	public Map<Role, MessageId> getEnablingMessages()
-	{
-		
-	}*/
 }

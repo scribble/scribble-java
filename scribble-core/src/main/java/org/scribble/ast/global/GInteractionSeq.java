@@ -19,25 +19,30 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
-import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
-import org.scribble.util.ScribUtil;
 
 public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 {
+	// ScribTreeAdaptor#create constructor
 	public GInteractionSeq(Token t)
 	{
 		super(t);
 	}
 
-	public GInteractionSeq(CommonTree source, List<GInteractionNode> actions)
+	// Tree#dupNode constructor
+	public GInteractionSeq(GInteractionSeq node)
 	{
-		super(source, actions);
+		super(node);
+	}
+	
+	@Override
+	public GInteractionSeq dupNode()
+	{
+		return new GInteractionSeq(this);
 	}
 
 	// Move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
@@ -46,17 +51,40 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 		LInteractionSeq projection = af.LInteractionSeq(this.source, lis);
 		return projection;
 	}
-
+	
 	@Override
+	public List<GInteractionNode> getInteractNodeChildren()
+	{
+		return getChildren().stream().map(n -> (GInteractionNode) n)
+				.collect(Collectors.toList());
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public GInteractionSeq(CommonTree source, List<GInteractionNode> actions)
+	{
+		super(source, actions);
+	}
+
+	/*@Override
 	protected GInteractionSeq copy()
 	{
-		return new GInteractionSeq(this.source, getInteractions());
+		return new GInteractionSeq(this.source, getInteractNodeChildren());
 	}
 	
 	@Override
 	public GInteractionSeq clone(AstFactory af)
 	{
-		List<GInteractionNode> gis = ScribUtil.cloneList(af, getInteractions());
+		List<GInteractionNode> gis = ScribUtil.cloneList(af, getInteractNodeChildren());
 		return af.GInteractionSeq(this.source, gis);
 	}
 
@@ -67,23 +95,5 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 		GInteractionSeq gis = new GInteractionSeq(this.source, castNodes(ins));
 		gis = (GInteractionSeq) gis.del(del);
 		return gis;
-	}
-	
-	@Override
-	public List<GInteractionNode> getInteractions()
-	{
-		return castNodes(super.getInteractions());
-	}
-	
-	private static List<GInteractionNode> castNodes(List<? extends InteractionNode<Global>> nodes)
-	{
-		return nodes.stream().map((n) -> (GInteractionNode) n).collect(Collectors.toList());
-	}
-	
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GNode.super.getKind();
 	}*/
 }

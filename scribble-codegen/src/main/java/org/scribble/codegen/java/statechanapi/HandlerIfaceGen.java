@@ -106,7 +106,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			ReceiveSockGen.addReceiveMessageSigNameParams(mb, msd, false);
 		}
 	}

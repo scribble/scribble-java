@@ -18,8 +18,8 @@ import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.parser.scribble.ast.tree.MyCommonTree;
-import org.scribble.type.name.ModuleName;
 
+// get/setType don't seem to be really used
 public class ScribTreeAdaptor extends CommonTreeAdaptor
 {
 	private final AstFactory f = new AstFactoryImpl();
@@ -46,6 +46,12 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new Module(t);
 			case "MODULEDECL": //return this.f.ModuleDecl(empty, null);
 				return new ModuleDecl(t);
+			case "MODULENAME": //return this.f.Q
+				//return new ModuleNameNode(t); 
+				return new ModuleNameNode(t);  /*.. HERE ambigname -- or qualifiedname? (ambigname currently singleton name)
+						-- or modulename just as identifiers? -- ANTLR uses every (leaf) token as singleton node
+								-- AntlrTokenTree? -- i.e. CommonTree (wrapper for Token)*/
+
 			case "GLOBALPROTOCOLDECL": //return this.f.GProtocolDecl(empty, Collections.emptyList(), null, null);
 				return new GProtocolDecl(t);
 			case "GLOBALPROTOCOLHEADER": //return this.f.GProtocolHeader(empty, null, null, null);
@@ -60,20 +66,16 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new GProtocolDef(t);
 			case "GLOBALPROTOCOLBLOCK": //return this.f.GProtocolBlock(empty, null);
 				return new GProtocolBlock(t);
+
 			case "GLOBALINTERACTIONSEQUENCE": //return this.f.GInteractionSeq(empty, Collections.emptyList());
 				return new GInteractionSeq(t);
 			case "GLOBALMESSAGETRANSFER": //return this.f.GMessageTransfer(empty, null, null, Collections.emptyList());
 				return new GMessageTransfer(t);
-			//case "QUALIFIEDNAME": //return this.f.Q
-			case "MODULENAME": //return this.f.Q
-				//return new ModuleNameNode(t); 
-				return new ModuleNameNode(t);  /*.. HERE ambigname -- or qualifiedname? (ambigname currently singleton name)
-						-- or modulename just as identifiers? -- ANTLR uses every (leaf) token as singleton node
-								-- AntlrTokenTree? -- i.e. CommonTree (wrapper for Token)*/
 			case "MESSAGESIGNATURE": //return this.f.Me
 				return new MessageSigNameNode(t);
 			case "PAYLOAD":
 				return new MyCommonTree(t);  // FIXME: placeholder for deleg, qualified or ambig
+			//case "QUALIFIEDNAME": //return this.f.Q
 			/*case tmp
 			case Test
 			case Proto1

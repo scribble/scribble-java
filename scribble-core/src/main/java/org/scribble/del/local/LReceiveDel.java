@@ -13,6 +13,7 @@
  */
 package org.scribble.del.local;
 
+import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LReceive;
@@ -28,32 +29,38 @@ import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 public class LReceiveDel extends LMessageTransferDel
 {
 	@Override
-	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LReceive lr = (LReceive) visited;
-		Role peer = lr.src.toName();
-		MessageId<?> mid = lr.msg.toMessage().getId();
-		Payload payload = (lr.msg.isMessageSigNode())  // Hacky?
-				? ((MessageSigNode) lr.msg).payloads.toPayload()
+		Role peer = lr.getSourceChild().toName();
+		MessageNode msg = lr.getMessageNodeChild();
+		MessageId<?> mid = msg.toMessage().getId();
+		Payload payload = (msg.isMessageSigNode())  // CHECKME: Hacky?
+				? ((MessageSigNode) msg).payloads.toPayload()
 				: Payload.EMPTY_PAYLOAD;
-		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newEReceive(peer, mid, payload), builder.util.getExit());
+		builder.util.addEdge(builder.util.getEntry(),
+				builder.job.ef.newEReceive(peer, mid, payload), builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Receive.get(peer, mid, payload), builder.builder.getExit());
 		return (LReceive) super.leaveEGraphBuilding(parent, child, builder, lr);
 	}
 
 	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(((LReceive) child).src.toName());
+		fixer.setChoiceSubject(((LReceive) child).getSourceChild().toName());
 	}
 	
 	@Override
-	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker) throws ScribbleException
+	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent,
+			ScribNode child, UnguardedChoiceDoProjectionChecker checker)
+			throws ScribbleException
 	{
 		super.enterUnguardedChoiceDoProjectionCheck(parent, child, checker);
 		LReceive lr = (LReceive) child;
 		UnguardedChoiceDoEnv env = checker.popEnv();
-		env = env.setChoiceSubject(lr.src.toName());
+		env = env.setChoiceSubject(lr.getSourceChild().toName());
 		checker.pushEnv(env);
 	}
 }

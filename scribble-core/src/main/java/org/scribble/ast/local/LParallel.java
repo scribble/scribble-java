@@ -67,7 +67,7 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
-		return getBlocks().get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);
+		return getBlocks().get(0).getInteractSeqChild().getInteractNodeChildren().get(0).inferLocalChoiceSubject(fixer);
 	}
 	
 	private static List<LProtocolBlock> castBlocks(List<? extends ProtocolBlock<Local>> blocks)

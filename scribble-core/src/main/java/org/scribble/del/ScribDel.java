@@ -41,6 +41,7 @@ import org.scribble.visit.wf.WFChoiceChecker;
 // Parameterise by AstNode type?  Would inhibit del sharing between types (but that's not currently needed)
 public interface ScribDel
 {
+	// "Transient"
 	Env<?> env();
 	void setEnv(Env<?> env);  // Non defensive
 

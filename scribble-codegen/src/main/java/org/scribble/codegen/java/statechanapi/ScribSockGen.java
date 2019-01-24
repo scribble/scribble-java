@@ -153,8 +153,8 @@ public abstract class ScribSockGen extends StateChanTypeGen
 		mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
 
-		GProtocolDecl gpd = (GProtocolDecl) this.apigen.getJob().getContext().getModule(this.apigen.gpn.getPrefix()).getProtocolDecl(this.apigen.gpn.getSimpleName());
-		String epClass = gpd.isExplicitModifier() ? EXPLICITENDPOINT_CLASS : MPSTENDPOINT_CLASS;
+		GProtocolDecl gpd = (GProtocolDecl) this.apigen.getJob().getContext().getModule(this.apigen.gpn.getPrefix()).getProtocolDeclChild(this.apigen.gpn.getSimpleName());
+		String epClass = gpd.isExplicit() ? EXPLICITENDPOINT_CLASS : MPSTENDPOINT_CLASS;
 		ConstructorBuilder ctor2 = cb.newConstructor(epClass + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
 
 		ctor2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);

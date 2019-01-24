@@ -14,6 +14,7 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.tree.Tree;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.AstVisitor;
@@ -23,12 +24,15 @@ import org.scribble.visit.Substitutor;
  * This is the generic object from which all Scribble model objects
  * are derived.
  */
-public interface ScribNode
+public interface ScribNode extends Tree
 {
+	//void setChildren(List<ScribNode> children);  // protected
+
   // Returns a deep clone but with fresh dels (i.e. dels not copied) -- use the af to build with fresh dels
 	// i.e. recursively using AstFactory to rebuild the whole subtree
 	// Cf. node specific reconstructs, retain (i.e. share) the existing del -- so dels must be immutable (except for Envs)
-	ScribNode clone(AstFactory af);
+	//ScribNode clone(AstFactory af);
+	ScribNode clone();
 
 	ScribDel del();
 	ScribNode del(ScribDel del);

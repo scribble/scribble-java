@@ -222,7 +222,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	
 	private void pushNameMaps(ProtocolName<?> fullname, Do<?> doo)
 	{
-		ProtocolDecl<?> pd = this.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+		ProtocolDecl<?> pd = this.job.getContext().getModule(fullname.getPrefix()).getProtocolDeclChild(fullname.getSimpleName());
 		this.rolemaps.push(makeRoleSubsMap(this.rolemaps.get(0), doo.roles, pd.header.roledecls));
 		this.argmaps.push(makeNonRoleSubsMap(this.argmaps.get(0), doo.args, pd.header.paramdecls));
 	}

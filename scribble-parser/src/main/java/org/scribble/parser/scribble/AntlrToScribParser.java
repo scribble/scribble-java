@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.tree.CommonErrorNode;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
+import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
 import org.scribble.parser.scribble.ScribbleAntlrConstants.AntlrNodeType;
 import org.scribble.parser.scribble.ast.AntlrDataTypeDecl;
@@ -68,7 +69,8 @@ public class AntlrToScribParser
 		{
 			case PAYLOAD:                   return AntlrPayloadElemList.parsePayloadElemList(this, ct, af);
 
-			case MODULE:                    return AntlrModule.parseModule(this, ct, af);
+			case MODULE:                    //return AntlrModule.parseModule(this, ct, af);
+				return (Module) ct;
 			case MODULEDECL:                return AntlrModuleDecl.parseModuleDecl(this, ct, af);
 			case MESSAGESIGNATUREDECL:      return AntlrMessageSigDecl.parseMessageSigDecl(this, ct, af);
 			case PAYLOADTYPEDECL:           return AntlrDataTypeDecl.parseDataTypeDecl(this, ct, af);

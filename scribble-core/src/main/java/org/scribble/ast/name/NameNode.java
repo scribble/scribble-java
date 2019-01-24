@@ -17,16 +17,16 @@ import java.util.Arrays;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.type.kind.Kind;
 import org.scribble.type.name.Named;
 
-// Kind parameter used for typing help, but NameNodes don't record kind as state (not part of the syntax) -- so kind doesn't affect e.g. equals (i.e. names nodes of different kinds are still only compared syntactically)
+// Kind parameter used for typing help, but NameNodes don't record kind as state (not part of the syntax) -- so kind doesn't affect e.g. equals (i.e. name nodes of different kinds are still only compared syntactically)
 public abstract class NameNode<K extends Kind> extends ScribNodeBase implements Named<K>
 {
 	protected final String[] elems;
 
+	// ScribTreeAdaptor#create constructor
 	public NameNode(Token t)
 	{
 		super(t);
@@ -38,13 +38,10 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 		super(source);
 		if (source == null)
 		{
-			throw new RuntimeException("ccf");
+			throw new RuntimeException("CHECKME");
 		}
 		this.elems = elems;
 	}
-	
-	@Override
-	public abstract NameNode<K> clone(AstFactory af);
 	
 	public String[] getElements()
 	{
@@ -106,4 +103,13 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 	{
 		return toName().toString();
 	}
+	
+	
+	
+	
+	
+	
+	
+	/*@Override
+	public abstract NameNode<K> clone(AstFactory af);*/
 }

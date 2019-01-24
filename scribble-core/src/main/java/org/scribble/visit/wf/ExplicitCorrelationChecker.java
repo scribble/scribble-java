@@ -40,7 +40,7 @@ public class ExplicitCorrelationChecker extends SubprotocolVisitor<ExplicitCorre
 		if (child instanceof GProtocolDecl)
 		{
 			GProtocolDecl gpd = (GProtocolDecl) child;
-			if (!gpd.isAuxModifier() && gpd.isExplicitModifier())
+			if (!gpd.isAux() && gpd.isExplicit())
 			{
 				Module mod = (Module) parent;
 				GProtocolName gpn = gpd.getFullMemberName(mod);

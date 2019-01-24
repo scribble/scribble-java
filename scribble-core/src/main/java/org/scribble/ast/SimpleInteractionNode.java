@@ -21,11 +21,27 @@ import org.scribble.type.kind.ProtocolKind;
 public abstract class SimpleInteractionNode<K extends ProtocolKind>
 		extends ScribNodeBase implements InteractionNode<K>
 {
+	// ScribTreeAdaptor#create constructor
 	public SimpleInteractionNode(Token t)
 	{
 		super(t);
 	}
 
+	// Tree#dupNode constructor
+	public SimpleInteractionNode(SimpleInteractionNode<K> node)
+	{
+		super(node);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	protected SimpleInteractionNode(CommonTree source)
 	{
 		super(source);

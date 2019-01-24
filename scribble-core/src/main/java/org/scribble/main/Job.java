@@ -199,7 +199,7 @@ public class Job
 	{
 		Module root = this.jcontext.getProjection(fullname, role);
 		Map<LProtocolName, Set<Role>> dependencies =
-				((LProtocolDeclDel) root.getLocalProtocolDecls().get(0).del())
+				((LProtocolDeclDel) root.getLProtoDeclChildren().get(0).del())
 						.getProtocolDeclContext().getDependencyMap().getDependencies().get(role);
 		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
 		return dependencies.keySet().stream().collect(

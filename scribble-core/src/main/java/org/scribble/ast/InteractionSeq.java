@@ -13,58 +13,68 @@
  */
 package org.scribble.ast;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBase implements ProtocolKindNode<K>
+public abstract class InteractionSeq<K extends ProtocolKind>
+		extends ScribNodeBase implements ProtocolKindNode<K>
 {
-	private final List<? extends InteractionNode<K>> inters;
-	
-	/*@SuppressWarnings("unchecked")
-	private final Function<ScribNode, InteractionNode<K>> cast = (n) -> (InteractionNode<K>) n;*/
-
+	// ScribTreeAdaptor#create constructor
 	public InteractionSeq(Token t)
 	{
 		super(t);
 		this.inters = null;
 	}
 
-	protected InteractionSeq(CommonTree source, List<? extends InteractionNode<K>> inters)
+	// Tree#dupNode constructor
+	public InteractionSeq(InteractionSeq<K> node)
 	{
-		super(source);
-		this.inters = inters;
+		super(node);
+		this.inters = null;
 	}
 	
-	public abstract InteractionSeq<K> reconstruct(List<? extends InteractionNode<K>> ins);
+	@Override
+	public abstract InteractionSeq<K> dupNode();
 	
-	/*@SuppressWarnings("unchecked")
-	private final Function<ScribNode, ProtocolKindNode<K>> KIND_CAST = (n) -> (ProtocolKindNode<K>) n;*/
+	public abstract List<? extends InteractionNode<K>> getInteractNodeChildren();
+	
+	public boolean isEmpty()
+	{
+		return getChildCount() == 0; //this.inters.isEmpty();
+	}
+
+	public InteractionSeq<K> reconstruct(List<? extends InteractionNode<K>> ins)
+	{
+		InteractionSeq<K> pd = dupNode();
+		ScribDel del = del();
+		ins.forEach(x -> pd.addChild(x));
+		pd.setDel(del);  // No copy
+		return pd;
+	}
 	
 	@Override
 	public ScribNode visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		//List<? extends InteractionNode<K>> actions = visitChildListWithStrictClassCheck(this, this.actions, nv);
-		//List<InteractionNode<K>> actions = visitChildListWithCastCheck(this, this.inters, nv, InteractionNode.class, getKind(), this.cast);  // Maybe too strict (e.g. rec unfolding maybe shouldn't return the rec)
 		List<InteractionNode<K>> actions = new LinkedList<>();
-		for (InteractionNode<K> in : this.inters)
+		for (InteractionNode<K> in : getInteractNodeChildren())
 		{
 			//ProtocolKindNode<K> visited = visitProtocolKindChildWithCastCheck(this, in, nv, ProtocolKindNode.class, in.getKind(), KIND_CAST);  
 					// No: ProjectedChoiceDoPruning (and others?) needs to return null; CastCheck doesn't allow that  // CHECKME
-					// FIXME: make a unit test for this
+					// TODO: make a unit test for this
 			ScribNode visited = visitChild(in, nv);
 			if (visited instanceof InteractionSeq<?>)
 			{
 				@SuppressWarnings("unchecked")
 				InteractionSeq<K> tmp = (InteractionSeq<K>) visited;
-				actions.addAll(tmp.inters);
+				actions.addAll(tmp.getInteractNodeChildren());
 			}
 			else
 			{
@@ -76,19 +86,33 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 		return reconstruct(actions);
 	}
 	
-	public List<? extends InteractionNode<K>> getInteractions()
-	{
-		return Collections.unmodifiableList(this.inters);
-	}
-	
-	public boolean isEmpty()
-	{
-		return this.inters.isEmpty();
-	}
-	
 	@Override
 	public String toString()
 	{
-		return this.inters.stream().map((i) -> i.toString()).collect(Collectors.joining("\n"));
+		return getInteractNodeChildren().stream().map(i -> i.toString())
+				.collect(Collectors.joining("\n"));
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	private final List<? extends InteractionNode<K>> inters;
+
+	protected InteractionSeq(CommonTree source, List<? extends InteractionNode<K>> inters)
+	{
+		super(source);
+		this.inters = inters;
+	}
+	
 }

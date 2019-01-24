@@ -54,8 +54,8 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 		List<RoleDecl> rds = lpd.header.roledecls.getDecls().stream().filter((rd) -> 
 				occs.contains(rd.getDeclName())).collect(Collectors.toList());
 		RoleDeclList rdl = fixer.job.af.RoleDeclList(lpd.header.roledecls.getSource(), rds);
-		LProtocolHeader tmp = lpd.getHeader();
-		LProtocolHeader hdr = tmp.reconstruct(tmp.getNameNode(), rdl, tmp.paramdecls);
+		LProtocolHeader tmp = lpd.getHeaderChild();
+		LProtocolHeader hdr = tmp.reconstruct(tmp.getNameNodeChild(), rdl, tmp.paramdecls);
 		LProtocolDecl fixed = lpd.reconstruct(hdr, lpd.def);
 		
 		fixer.job.debugPrintln("\n[DEBUG] Projected " + getSourceProtocol() + " for " + getSelfRole() + ":\n" + fixed);

@@ -15,38 +15,95 @@ package org.scribble.ast.local;
 
 import java.util.List;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.ProtocolDef;
-import org.scribble.ast.ProtocolHeader;
-import org.scribble.ast.ScribNodeBase;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
 
-// Maybe make abstract with concrete parsed (LParsedDecl) and projected (LProjectionDecl) subclasses
+// CHECKME: maybe make abstract with concrete parsed (LParsedDecl) and projected (LProjectionDecl) subclasses
 public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 {
+	// ScribTreeAdaptor#create constructor
+	public LProtocolDecl(Token t)
+	{
+		super(t);
+	}
+	
+	// Tree#dupNode constructor
+	protected LProtocolDecl(LProtocolDecl node)
+	{
+		super(node);
+	}
+
+	// Cf. CommonTree#dupNode
+	@Override
+	public LProtocolDecl dupNode()
+	{
+		return new LProtocolDecl(this);
+	}
+
+	@Override
+	public LProtocolHeader getHeaderChild()
+	{
+		return (LProtocolHeader) getChild(0);
+	}
+
+	@Override
+	public LProtocolDef getDefChild()
+	{
+		return (LProtocolDef) getChild(1);
+	}
+
+	@Override
+	public LProtocolName getFullMemberName(Module mod)
+	{
+		ModuleName fullmodname = mod.getFullModuleName();
+		return new LProtocolName(fullmodname, getHeaderChild().getDeclName());
+	}
+	
+	public Role getSelfRole()
+	{
+		return getHeaderChild().getSelfRole();
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public LProtocolDecl(CommonTree source, List<Modifiers> modifiers, LProtocolHeader header, LProtocolDef def)
 	{
 		super(source, modifiers, header, def);
 	}
 
-	@Override
+	/*@Override
 	protected ScribNodeBase copy()
 	{
-		return new LProtocolDecl(this.source, this.modifiers, getHeader(), getDef());
+		return new LProtocolDecl(this.source, this.modifiers, getHeaderChild(), getDefChild());
 	}
 	
 	@Override
 	public LProtocolDecl clone(AstFactory af)
 	{
-		LProtocolHeader header = getHeader().clone(af);
-		LProtocolDef def = getDef().clone(af);
+		LProtocolHeader header = getHeaderChild().clone(af);
+		LProtocolDef def = getDefChild().clone(af);
 		return af.LProtocolDecl(this.source, this.modifiers, header, def);
 	}
 	
@@ -57,29 +114,5 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 		LProtocolDecl lpd = new LProtocolDecl(this.source, this.modifiers, (LProtocolHeader) header, (LProtocolDef) def);
 		lpd = (LProtocolDecl) lpd.del(del);
 		return lpd;
-	}
-
-	@Override
-	public LProtocolHeader getHeader()
-	{
-		return (LProtocolHeader) this.header;
-	}
-
-	@Override
-	public LProtocolDef getDef()
-	{
-		return (LProtocolDef) this.def;
-	}
-
-	@Override
-	public LProtocolName getFullMemberName(Module mod)
-	{
-		ModuleName fullmodname = mod.getFullModuleName();
-		return new LProtocolName(fullmodname, this.header.getDeclName());
-	}
-	
-	public Role getSelfRole()
-	{
-		return getHeader().getSelfRole();
-	}
+	}*/
 }

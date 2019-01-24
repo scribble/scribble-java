@@ -43,7 +43,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	public ScribNode leaveProjectedChoiceDoPruning(ScribNode parent, ScribNode child, ProjectedChoiceDoPruner pruner, ScribNode visited) throws ScribbleException
 	{
 		LInteractionSeq lc = (LInteractionSeq) visited;
-		List<LInteractionNode> actions = lc.getInteractions().stream().filter((li) -> li != null).collect(Collectors.toList());
+		List<LInteractionNode> actions = lc.getInteractNodeChildren().stream().filter((li) -> li != null).collect(Collectors.toList());
 		return lc.reconstruct(actions);
 	}
 
@@ -53,12 +53,12 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	{
 		LInteractionSeq lis = (LInteractionSeq) visited;
 		List<LInteractionNode> lins = new LinkedList<LInteractionNode>();
-		for (LInteractionNode li : lis.getInteractions())
+		for (LInteractionNode li : lis.getInteractNodeChildren())
 		{
 			ScribNode inlined = ((InlineProtocolEnv) li.del().env()).getTranslation();
 			if (inlined instanceof LInteractionSeq)
 			{
-				lins.addAll(((LInteractionSeq) inlined).getInteractions());
+				lins.addAll(((LInteractionSeq) inlined).getInteractNodeChildren());
 			}
 			else
 			{
@@ -74,7 +74,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	public LInteractionSeq visitForReachabilityChecking(ReachabilityChecker checker, LInteractionSeq child) throws ScribbleException
 	{
 		List<LInteractionNode> visited = new LinkedList<>();
-		for (InteractionNode<Local> li : child.getInteractions())
+		for (InteractionNode<Local> li : child.getInteractNodeChildren())
 		{
 			ReachabilityEnv re = checker.peekEnv();
 			if (!re.isSequenceable())
@@ -107,19 +107,19 @@ public class LInteractionSeqDel extends InteractionSeqDel
 					child.getInteractions().get(i).accept(conv);
 				}
 			}*/
-			for (int i = 0; i < child.getInteractions().size(); i++)
+			for (int i = 0; i < child.getInteractNodeChildren().size(); i++)
 			{
-				if (i == child.getInteractions().size() - 1)
+				if (i == child.getInteractNodeChildren().size() - 1)
 				{
 					conv.util.setExit(exit);
-					child.getInteractions().get(i).accept(conv);
+					child.getInteractNodeChildren().get(i).accept(conv);
 				}
 				else
 				{
 					EState tmp = //conv.util.newState(Collections.emptySet());
 							conv.util.ef.newEState(Collections.emptySet());
 					conv.util.setExit(tmp);
-					child.getInteractions().get(i).accept(conv);
+					child.getInteractNodeChildren().get(i).accept(conv);
 					conv.util.setEntry(conv.util.getExit());  // exit may not be tmp, entry/exit can be modified, e.g. continue
 				}
 			}
@@ -139,9 +139,9 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			throws ScribbleException
 	{
 		LInteractionSeq lis = (LInteractionSeq) visited;
-		List<LInteractionNode> lins = lis.getInteractions().stream().flatMap((li) -> 
+		List<LInteractionNode> lins = lis.getInteractNodeChildren().stream().flatMap((li) -> 
 					(li instanceof LRecursion && rem.toRemove(((LRecursion) li).recvar.toName()))
-						? ((LRecursion) li).getBlock().getInteractionSeq().getInteractions().stream()
+						? ((LRecursion) li).getBlock().getInteractSeqChild().getInteractNodeChildren().stream()
 						: Stream.of(li)
 				).collect(Collectors.toList());
 		return rem.job.af.LInteractionSeq(lis.getSource(), lins);

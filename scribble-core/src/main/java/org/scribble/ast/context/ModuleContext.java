@@ -58,7 +58,7 @@ public class ModuleContext
 	public ModuleContext(JobContext jcontext, Module root) throws ScribbleException
 	{
 		ModuleName fullname = root.getFullModuleName(); 
-		ModuleName simpname = root.moddecl.getDeclName();
+		ModuleName simpname = root.getModuleDeclChild().getDeclName();
 
 		this.root = fullname;
 		
@@ -82,7 +82,7 @@ public class ModuleContext
 	private static void addModule(ScribNames names, Module mod, ModuleName modname) throws ScribbleException
 	{
 		names.modules.put(modname, mod.getFullModuleName());
-		for (NonProtocolDecl<?> npd : mod.getNonProtocolDecls())
+		for (NonProtocolDecl<?> npd : mod.getNonProtoDeclChildren())
 		{
 			if (npd.isDataTypeDecl())
 			{
@@ -97,14 +97,14 @@ public class ModuleContext
 				names.sigs.put(qualif, msnd.getFullMemberName(mod));
 			}
 		}
-		for (GProtocolDecl gpd : mod.getGlobalProtocolDecls())
+		for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
 		{
-			GProtocolName qualif = new GProtocolName(modname, gpd.getHeader().getDeclName());
+			GProtocolName qualif = new GProtocolName(modname, gpd.getHeaderChild().getDeclName());
 			names.globals.put(qualif, gpd.getFullMemberName(mod));
 		}
-		for (LProtocolDecl lpd : mod.getLocalProtocolDecls())
+		for (LProtocolDecl lpd : mod.getLProtoDeclChildren())
 		{
-			LProtocolName qualif = new LProtocolName(modname, lpd.getHeader().getDeclName());
+			LProtocolName qualif = new LProtocolName(modname, lpd.getHeaderChild().getDeclName());
 			names.locals.put(qualif, lpd.getFullMemberName(mod));
 		}
 	}
@@ -112,7 +112,7 @@ public class ModuleContext
 	// Could move to ImportModule but would need a defensive copy setter, or cache info in builder and create on leave
 	private void addImportDependencies(JobContext jcontext, Module mod) throws ScribbleException
 	{
-		for (ImportDecl<?> id : mod.getImportDecls())
+		for (ImportDecl<?> id : mod.getImportDeclChildren())
 		{
 			if (id.isImportModule())
 			{
@@ -137,7 +137,7 @@ public class ModuleContext
 	private void addVisible(JobContext jcontext, Module root) throws ScribbleException
 	{
 		// Unlike for deps, visible is not done transitively
-		for (ImportDecl<?> id : root.getImportDecls())
+		for (ImportDecl<?> id : root.getImportDeclChildren())
 		{
 			if (id.isImportModule())
 			{
@@ -157,7 +157,7 @@ public class ModuleContext
 			}
 		}
 		
-		for (NonProtocolDecl<?> npd : root.getNonProtocolDecls())
+		for (NonProtocolDecl<?> npd : root.getNonProtoDeclChildren())
 		{
 			if (npd.isDataTypeDecl())
 			{
@@ -172,14 +172,14 @@ public class ModuleContext
 				this.visible.sigs.put(visname, msnd.getFullMemberName(root));
 			}
 		}
-		for (GProtocolDecl gpd : root.getGlobalProtocolDecls())
+		for (GProtocolDecl gpd : root.getGProtoDeclChildren())
 		{
-			GProtocolName visname = new GProtocolName(gpd.getHeader().getDeclName().toString());
+			GProtocolName visname = new GProtocolName(gpd.getHeaderChild().getDeclName().toString());
 			this.visible.globals.put(visname, gpd.getFullMemberName(root));
 		}
-		for (LProtocolDecl lpd : root.getLocalProtocolDecls())
+		for (LProtocolDecl lpd : root.getLProtoDeclChildren())
 		{
-			LProtocolName visname = new LProtocolName(lpd.getHeader().getDeclName().toString());
+			LProtocolName visname = new LProtocolName(lpd.getHeaderChild().getDeclName().toString());
 			this.visible.locals.put(visname, lpd.getFullMemberName(root));
 		}
 	}

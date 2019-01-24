@@ -13,6 +13,7 @@
  */
 package org.scribble.ast.name.simple;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
@@ -31,9 +32,22 @@ import org.scribble.type.name.PayloadElemType;
 //public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode<PayloadTypeKind>
 public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode<DataTypeKind>  // Currently hardcoded to DataTypeKind for payload elems
 {
-	public AmbigNameNode(CommonTree source, String identifier)
+	// ScribTreeAdaptor#create constructor
+	public AmbigNameNode(Token t)
 	{
-		super(source, identifier);
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected AmbigNameNode(AmbigNameNode node, String id)
+	{
+		super(node, id);
+	}
+	
+	@Override
+	public AmbigNameNode dupNode()
+	{
+		return new AmbigNameNode(this, getIdentifier());
 	}
 	
 	@Override
@@ -41,29 +55,19 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageN
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}
-
-	@Override
-	protected AmbigNameNode copy()
-	{
-		return new AmbigNameNode(this.source, getIdentifier());
-	}
-	
-	@Override
-	public AmbigNameNode clone(AstFactory af)
-	{
-		return (AmbigNameNode) af.AmbiguousNameNode(this.source, getIdentifier());
-	}
 	
 	@Override
 	public Arg<? extends NonRoleArgKind> toArg()
 	{
-		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
+		throw new RuntimeException(
+				"Ambiguous name node not disambiguated: " + this);
 	}
 
 	@Override
 	public Message toMessage()
 	{
-		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
+		throw new RuntimeException(
+				"Ambiguous name node not disambiguated: " + this);
 	}
 
 	@Override
@@ -71,7 +75,8 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageN
 	public PayloadElemType<DataTypeKind> toPayloadType()  // As a payload elem, currently hardcoded to expect only DataTypeKind (protocol payloads not supported)
 	//public PayloadType<PayloadTypeKind> toPayloadType()
 	{
-		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
+		throw new RuntimeException(
+				"Ambiguous name node not disambiguated: " + this);
 	}
 
 	@Override
@@ -107,4 +112,28 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageN
 		hash = 31 * super.hashCode();
 		return hash;
 	}
+	
+	
+	
+	
+	
+	
+	
+
+	public AmbigNameNode(CommonTree source, String id)
+	{
+		super(source, id);
+	}
+
+	/*@Override
+	protected AmbigNameNode copy()
+	{
+		return new AmbigNameNode(this.source, getIdentifier());
+	}
+	
+	@Override
+	public AmbigNameNode clone(AstFactory af)
+	{
+		return (AmbigNameNode) af.AmbiguousNameNode(this.source, getIdentifier());
+	}*/
 }

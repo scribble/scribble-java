@@ -202,12 +202,12 @@ public class CBEndpointApiGenerator3
 				for (EAction a : s.getAllActions())
 				{
 					// FIXME: factor out
-					boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
+					boolean isSig = jc.getMainModule().getNonProtoDeclChildren().stream()
 						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
 					MessageSigNameDecl msnd = null;
 					if (isSig)
 					{
-						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtocolDecls().stream()
+						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtoDeclChildren().stream()
 								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 					}
 					
@@ -550,12 +550,12 @@ public class CBEndpointApiGenerator3
 					int[] i = { 0 };
 					
 					// FIXME: factor out
-					boolean isSig = main.getNonProtocolDecls().stream()
+					boolean isSig = main.getNonProtoDeclChildren().stream()
 						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
 					MessageSigNameDecl msnd = null;
 					if (isSig)
 					{
-						msnd = (MessageSigNameDecl) main.getNonProtocolDecls().stream()
+						msnd = (MessageSigNameDecl) main.getNonProtoDeclChildren().stream()
 								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 						FieldBuilder m = opClass.newField("m");
 						m.addModifiers("private", "final");
@@ -571,7 +571,7 @@ public class CBEndpointApiGenerator3
 					else 
 					{
 						opCons = opClass.newConstructor(a.payload.elems.stream().map(e ->
-									main.getDataTypeDecl((DataType) e).extName + " arg" + i[0]++
+									main.getDataTypeDeclChild((DataType) e).extName + " arg" + i[0]++
 							).collect(Collectors.joining(", ")));
 					}
 					opCons.addModifiers("public");
@@ -658,12 +658,12 @@ public class CBEndpointApiGenerator3
 		for (EAction a : s.getAllActions())
 		{
 			// FIXME: factor out
-			boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
+			boolean isSig = jc.getMainModule().getNonProtoDeclChildren().stream()
 				.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
 			MessageSigNameDecl msnd = null;
 			if (isSig)
 			{
-				msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtocolDecls().stream()
+				msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtoDeclChildren().stream()
 						.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 			}
 
@@ -679,7 +679,7 @@ public class CBEndpointApiGenerator3
 			int i = 0;
 			for (PayloadElemType<?> pet : a.payload.elems)
 			{
-				DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+				DataTypeDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
 				branchAbstract += ", (" + dtd.extName + ") m.payload[" + i++ + "]";
 			}
 			branchAbstract += "); break;\n";
@@ -711,7 +711,7 @@ public class CBEndpointApiGenerator3
 			int i = 1;
 			for (PayloadElemType<?> pet : a.payload.elems)
 			{
-				DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+				DataTypeDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
 				receiveInterface += ", " + dtd.extName + " arg" + i++;
 			}
 		}
@@ -956,7 +956,7 @@ public class CBEndpointApiGenerator3
 	protected MessageSigNameDecl getMessageSigNameDecl(MessageSigName mid)
 	{
 		return (MessageSigNameDecl)
-				this.job.getContext().getMainModule().getNonProtocolDecls().stream()  // FIXME: main module?
+				this.job.getContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
 					.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(mid.toString()))
 					.iterator().next();
 	}
@@ -964,7 +964,7 @@ public class CBEndpointApiGenerator3
 	//protected final Function<PayloadElemType<?>, String> getExtName = e ->
 	protected String getExtName(PayloadElemType<?> e)
 	{
-		String extName = this.job.getContext().getMainModule().getDataTypeDecl((DataType) e).extName;
+		String extName = this.job.getContext().getMainModule().getDataTypeDeclChild((DataType) e).extName;
 		return (extName.indexOf(".") != -1)
 				? extName.substring(extName.lastIndexOf(".")+1, extName.length())
 				: extName;

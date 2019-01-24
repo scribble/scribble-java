@@ -172,7 +172,7 @@ public class JobContext
 
 	private void addProjection(Module mod)
 	{
-		LProtocolName lpn = (LProtocolName) mod.getProtocolDecls().get(0).getFullMemberName(mod);
+		LProtocolName lpn = (LProtocolName) mod.getProtoDeclChildren().get(0).getFullMemberName(mod);
 		this.projected.put(lpn, mod);
 	}
 	
@@ -236,7 +236,7 @@ public class JobContext
 		SGraph graph = this.fairSGraphs.get(fullname);
 		if (graph == null)
 		{
-			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix()).getProtocolDeclChild(fullname.getSimpleName());
 			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, gpd, true);
 			boolean explicit = gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT);
 			//graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
@@ -266,7 +266,7 @@ public class JobContext
 		SGraph graph = this.unfairSGraphs.get(fullname);
 		if (graph == null)
 		{
-			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix()).getProtocolDeclChild(fullname.getSimpleName());
 			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, gpd, false);
 			boolean explicit = gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT);
 			//graph = SGraph.buildSGraph(this.job, fullname, this.job.createInitialSConfig(job, egraphs, explicit));

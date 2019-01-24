@@ -31,71 +31,69 @@ import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
-import org.scribble.util.ScribUtil;
 
-public class GMessageTransfer extends MessageTransfer<Global> implements GSimpleInteractionNode
+public class GMessageTransfer extends MessageTransfer<Global>
+		implements GSimpleInteractionNode
 {
+	// ScribTreeAdaptor#create constructor
 	public GMessageTransfer(Token t)
 	{
 		super(t);
 	}
 
-	public GMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
+	// Tree#dupNode constructor
+	public GMessageTransfer(GMessageTransfer node)
 	{
-		super(source, src, msg, dests);
+		super(node);
+	}
+	
+	public GMessageTransfer dupNode()
+	{
+		return new GMessageTransfer(this);
 	}
 
 	public LNode project(AstFactory af, Role self)
 	{
-		Role srcrole = this.src.toName();
-		List<Role> destroles = this.getDestinationRoles();
-		LNode projection = null;
-		if (srcrole.equals(self) || destroles.contains(self))
+		RoleNode srcNode = getSourceChild();
+		Role src = srcNode.toName();
+		List<Role> dests = this.getDestinationRoles();
+		LNode proj = null;
+		if (src.equals(self) || dests.contains(self))
 		{
-			RoleNode src = (RoleNode) af.SimpleNameNode(this.src.getSource(), RoleKind.KIND, this.src.toName().toString());  // clone?
-			MessageNode msg = (MessageNode) this.msg.project(af);  // FIXME: need namespace prefix update?
-			List<RoleNode> dests =
-					this.getDestinations().stream().map((rn) ->
-							(RoleNode) af.SimpleNameNode(rn.getSource(), RoleKind.KIND, rn.toName().toString())).collect(Collectors.toList());
-			if (srcrole.equals(self))
+			RoleNode srcNode1 = (RoleNode) af.SimpleNameNode(srcNode.getSource(),
+					RoleKind.KIND, src.toString()); // clone?
+			MessageNode msg = (MessageNode) 
+					getMessageNodeChild().project(af);  // CHECKME: need namespace prefix update?
+			List<RoleNode> destNodes =
+					getDestinationChildren().stream()
+							.map(x -> (RoleNode) af.SimpleNameNode(x.getSource(),
+									RoleKind.KIND, x.toName().toString()))
+							.collect(Collectors.toList());
+			if (src.equals(self))
 			{
-				projection = af.LSend(this.source, src, msg, dests);
+				proj = af.LSend(this.source, srcNode1, msg, destNodes);
 			}
-			if (destroles.contains(self))
+			if (dests.contains(self))
 			{
-				if (projection == null)
+				if (proj == null)
 				{
-					projection = af.LReceive(this.source, src, msg, dests);
+					proj = af.LReceive(this.source, srcNode1, msg, destNodes);
 				}
 				else
 				{
-					LReceive lr = af.LReceive(this.source, src, msg, dests);
-					List<LInteractionNode> lis = Arrays.asList(new LInteractionNode[]{(LInteractionNode) projection, lr});
-					projection = af.LInteractionSeq(this.source, lis);
+					LReceive lr = af.LReceive(this.source, srcNode1, msg, destNodes);
+					List<LInteractionNode> lis = Arrays.asList(
+							new LInteractionNode[]{(LInteractionNode) proj, lr});
+					proj = af.LInteractionSeq(this.source, lis);
 				}
 			}
 		}
-		return projection;
-	}
-
-
-	@Override
-	protected GMessageTransfer copy()
-	{
-		return new GMessageTransfer(this.source, this.src, this.msg, getDestinations());
-	}
-	
-	@Override
-	public GMessageTransfer clone(AstFactory af)
-	{
-		RoleNode src = this.src.clone(af);
-		MessageNode msg = this.msg.clone(af);
-		List<RoleNode> dests = ScribUtil.cloneList(af, getDestinations());
-		return af.GMessageTransfer(this.source, src, msg, dests);
+		return proj;
 	}
 
 	@Override
-	public GMessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public GMessageTransfer reconstruct(RoleNode src, MessageNode msg,
+			List<RoleNode> dests)
 	{
 		ScribDel del = del();
 		GMessageTransfer gmt = new GMessageTransfer(this.source, src, msg, dests);
@@ -106,14 +104,46 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 	@Override
 	public String toString()
 	{
-		return this.msg + " " + Constants.FROM_KW + " " + this.src + " " + Constants.TO_KW + " "
-					+ getDestinations().stream().map(dest -> dest.toString()).collect(Collectors.joining(", ")) + ";";
+		return getMessageNodeChild() + " " + Constants.FROM_KW
+				+ " " + getSourceChild() + " " + Constants.TO_KW
+				+ " "
+				+ getDestinationChildren().stream().map(x -> x.toString())
+						.collect(Collectors.joining(", "))
+				+ ";";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public GMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
+	{
+		super(source, src, msg, dests);
 	}
 
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
+	/*@Override
+	protected GMessageTransfer copy()
 	{
-		return GSimpleInteractionNode.super.getKind();
+		return new GMessageTransfer(this.source, this.src, this.msg, getDestinationChildren());
+	}
+	
+	@Override
+	public GMessageTransfer clone(AstFactory af)
+	{
+		RoleNode src = this.src.clone(af);
+		MessageNode msg = this.msg.clone(af);
+		List<RoleNode> dests = ScribUtil.cloneList(af, getDestinationChildren());
+		return af.GMessageTransfer(this.source, src, msg, dests);
 	}*/
+
 }

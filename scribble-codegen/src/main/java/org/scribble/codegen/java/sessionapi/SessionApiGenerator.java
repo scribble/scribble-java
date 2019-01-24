@@ -183,7 +183,7 @@ public class SessionApiGenerator extends ApiGen
 	{
 		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
-		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
+		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDeclChild(simpname);
 		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
 		for (MessageId<?> mid : coll.getNames())
@@ -199,7 +199,7 @@ public class SessionApiGenerator extends ApiGen
 	{
 		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
-		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
+		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDeclChild(simpname);
 		for (Role r : gpd.header.roledecls.getRoles())
 		{
 			//constructRoleClass(this.cb.newClass(), r);

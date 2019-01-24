@@ -21,22 +21,76 @@ import org.scribble.type.name.Name;
 
 public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase
 { 
-	public final NameNode<K> name;
-
+	// ScribTreeAdaptor#create constructor
 	public NameDeclNode(Token t)
 	{
 		super(t);
 		this.name = null;
 	}
+
+	// Tree#dupNode constructor
+	public NameDeclNode(NameDeclNode<K> node)
+	{
+		super(node);
+		this.name = null;
+	}	
+
+	protected final NameNode<?> getChild()
+	{
+		if (getChildCount() != 1)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this);
+		}
+		NameNode<?> name = (NameNode<?>) getChild(0);
+		return name;
+	}
+
+	// Concrete subclasses should use getNameNodeChild() and cast 
+	// (Avoids needing to explicitly record the kind, cf. NonRoleParamDecl)
+	// (Gets overridden anyway for return type)
+	public abstract NameNode<K> getNameNodeChild();
+	/*{
+		if (getChildCount() != 1)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this);
+		}
+		NameNode<?> name = (NameNode<?>) getChild(0);
+		if (name.getK)
+		return name;
+	}*/
+
+	/*// Return: simple name (cf. ModuleDecl)
+	protected Name<?> getName()
+	{
+	}*/
+
+	// Return: *simple* name (cf. ModuleDecl)
+	// Concrete subclasses should use getNameNode, toName (simple name) and cast
+	// (Gets overridden anyway for return type)
+	public abstract Name<K> getDeclName();
+	/*{
+		//return this.name.toName();
+		if (getChildCount() != 1)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this);
+		}
+		Name<?> name = (Name<?>) getChild(0);
+		return name;
+	}*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private final NameNode<K> name;
 	
 	protected NameDeclNode(CommonTree source, NameNode<K> name)
 	{
 		super(source);
 		this.name = name;
-	}
-
-	public Name<K> getDeclName()
-	{
-		return this.name.toName();
 	}
 }

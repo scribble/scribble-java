@@ -219,12 +219,12 @@ public class CBEndpointApiGenerator
 					messageInterface += "}\n";
 					res.put(mprefix + "interfaces/" + messageIfName + ".java", messageInterface);*/
 					
-					boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
+					boolean isSig = jc.getMainModule().getNonProtoDeclChildren().stream()
 						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
 					MessageSigNameDecl msnd = null;
 					if (isSig)
 					{
-						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtocolDecls().stream()
+						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtoDeclChildren().stream()
 								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 					}
 
@@ -264,7 +264,7 @@ public class CBEndpointApiGenerator
 						int i = 1;
 						for (PayloadElemType<?> pet : a.payload.elems)
 						{
-							DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+							DataTypeDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
 							messageClass += ", " + dtd.extName + " arg" + i++;
 						}
 					}
@@ -363,12 +363,12 @@ public class CBEndpointApiGenerator
 					receiveInterface += "\n";
 					receiveInterface += "public interface " + receiveIfName + "<D> {\n";
 					// FIXME: factor out
-					boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
+					boolean isSig = jc.getMainModule().getNonProtoDeclChildren().stream()
 						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
 					MessageSigNameDecl msnd = null;
 					if (isSig)
 					{
-						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtocolDecls().stream()
+						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtoDeclChildren().stream()
 								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 					}
 
@@ -383,7 +383,7 @@ public class CBEndpointApiGenerator
 						int i = 1;
 						for (PayloadElemType<?> pet : a.payload.elems)
 						{
-							DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+							DataTypeDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
 							receiveInterface += ", " + dtd.extName + " arg" + i++;
 						}
 					}
@@ -413,7 +413,7 @@ public class CBEndpointApiGenerator
 					int i = 0;
 					for (PayloadElemType<?> pet : a.payload.elems)
 					{
-						DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
+						DataTypeDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
 						branchAbstract += ", (" + dtd.extName + ") m.payload[" + i++ + "]";
 					}
 					branchAbstract += "); break;\n";

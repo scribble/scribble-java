@@ -15,33 +15,61 @@ package org.scribble.ast.local;
 
 import java.util.List;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
-import org.scribble.ast.ProtocolDef;
-import org.scribble.ast.ProtocolHeader;
-import org.scribble.ast.ScribNodeBase;
-import org.scribble.del.ScribDel;
-import org.scribble.del.local.LProjectionDeclDel;
-import org.scribble.type.kind.Local;
 
+// A projected local proto -- cf. parsed
 public class LProjectionDecl extends LProtocolDecl
 {
+	// ScribTreeAdaptor#create constructor
+	public LProjectionDecl(Token t)
+	{
+		super(t);
+	}
+	
+	// Tree#dupNode constructor
+	protected LProjectionDecl(LProjectionDecl node)
+	{
+		super(node);
+	}
+
+	// Cf. CommonTree#dupNode
+	@Override
+	public LProjectionDecl dupNode()
+	{
+		return new LProjectionDecl(this);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public LProjectionDecl(CommonTree source, List<Modifiers> modifiers, LProtocolHeader header, LProtocolDef def)
 	{
 		super(source, modifiers, header, def);
 	}
 
-	@Override
+	/*@Override
 	protected ScribNodeBase copy()
 	{
-		return new LProjectionDecl(this.source, this.modifiers, getHeader(), getDef());
+		return new LProjectionDecl(this.source, this.modifiers, getHeaderChild(), getDefChild());
 	}
 	
 	@Override
 	public LProjectionDecl clone(AstFactory af)
 	{
-		LProtocolHeader header = getHeader().clone(af);
-		LProtocolDef def = getDef().clone(af);
+		LProtocolHeader header = getHeaderChild().clone(af);
+		LProtocolDef def = getDefChild().clone(af);
 		LProjectionDeclDel del = (LProjectionDeclDel) del();
 		return af.LProjectionDecl(this.source, this.modifiers, del.getSourceProtocol(), del.getSelfRole(), header, def);
 	}
@@ -53,5 +81,5 @@ public class LProjectionDecl extends LProtocolDecl
 		LProjectionDecl lpd = new LProjectionDecl(this.source, this.modifiers, (LProtocolHeader) header, (LProtocolDef) def);
 		lpd = (LProjectionDecl) lpd.del(del);
 		return lpd;
-	}
+	}*/
 }

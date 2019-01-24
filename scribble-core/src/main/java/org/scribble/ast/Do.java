@@ -68,7 +68,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 	public ProtocolDecl<K> getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
 	{
 		ProtocolName<K> fullname = getTargetProtocolDeclFullName(mcontext);
-		return jcontext.getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+		return jcontext.getModule(fullname.getPrefix()).getProtocolDeclChild(fullname.getSimpleName());
 	}
 	
 	public Role getTargetRoleParameter(JobContext jcontext, ModuleContext mcontext, Role role)

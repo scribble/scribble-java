@@ -15,6 +15,7 @@ package org.scribble.ast.local;
 
 import java.util.List;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
@@ -23,6 +24,26 @@ import org.scribble.type.kind.Local;
 
 public abstract class LMessageTransfer extends MessageTransfer<Local> implements LSimpleInteractionNode
 {
+	// ScribTreeAdaptor#create constructor
+	public LMessageTransfer(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public LMessageTransfer(LMessageTransfer node)
+	{
+		super(node);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public LMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		super(source, src, msg, dests);

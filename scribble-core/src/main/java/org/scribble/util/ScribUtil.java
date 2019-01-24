@@ -37,7 +37,8 @@ public class ScribUtil
 	{
 		if (!c.getClass().equals(n.getClass()))
 		{
-			throw new RuntimeException("Node class not equal: " + c.getClass() + ", " + n.getClass());
+			throw new RuntimeException(
+					"Node class not equal: " + c.getClass() + ", " + n.getClass());
 		}
 		@SuppressWarnings("unchecked")
 		C tmp = (C) n;
@@ -49,16 +50,19 @@ public class ScribUtil
 	{
 		if (!cast.getClass().isAssignableFrom(n.getClass()))
 		{
-			throw new RuntimeException("Node class cast error: " + cast.getClass() + ", " + n.getClass());
+			throw new RuntimeException(
+					"Node class cast error: " + cast.getClass() + ", " + n.getClass());
 		}
 		@SuppressWarnings("unchecked")
 		C tmp = (C) n;
 		return tmp;
 	}
 	
-	public static <N extends ScribNode> List<N> cloneList(AstFactory af, List<N> ns)
+	public static <N extends ScribNode> List<N> cloneList(AstFactory af,
+			List<N> ns)
 	{
-		return ns.stream().map(n -> checkNodeClassEquality(n, n.clone(af))).collect(Collectors.toList());
+		return ns.stream().map(n -> checkNodeClassEquality(n, // n.clone(af)))
+				n.clone())).collect(Collectors.toList());
 	}
 	
 	public static <T> T handleLambdaScribbleException(Callable<T> c)
@@ -74,17 +78,20 @@ public class ScribUtil
 	}
 
 	// Returns [ stdout, stderr ]
-	public static String[] runProcess(String... cmdAndArgs) throws ScribbleException
+	public static String[] runProcess(String... cmdAndArgs)
+			throws ScribbleException
 	{
-			try
-			{
+		try
+		{
 			ProcessBuilder pb = new ProcessBuilder(cmdAndArgs);
 			Process p = pb.start();
 			p.waitFor();
 	
 			InputStream is = p.getInputStream(), eis = p.getErrorStream();
-			InputStreamReader isr = new InputStreamReader(is), eisr = new InputStreamReader(eis);
-			BufferedReader br = new BufferedReader(isr), ebr = new BufferedReader(eisr);
+			InputStreamReader isr = new InputStreamReader(is);
+			InputStreamReader eisr = new InputStreamReader(eis);
+			BufferedReader br = new BufferedReader(isr);
+			BufferedReader ebr = new BufferedReader(eisr);
 			String stdout = "", stderr = "", line;
 			while ((line = br.readLine()) != null)
 			{
@@ -103,7 +110,8 @@ public class ScribUtil
 	}
 
 	// Warning: doesn't check if file exists
-	public static void writeToFile(String path, String text) throws ScribbleException
+	public static void writeToFile(String path, String text)
+			throws ScribbleException
 	{
 		File file = new File(path);
 		File parent = file.getParentFile();

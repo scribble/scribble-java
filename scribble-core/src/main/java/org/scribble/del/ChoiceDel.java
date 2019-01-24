@@ -44,7 +44,7 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 	{
 		Choice<?> cho = (Choice<?>) visited;
 		List<UnfoldingEnv> benvs =
-				cho.getBlocks().stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlockChildren().stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
 		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
 		unf.pushEnv(merged);
 		return (Choice<?>) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);  // Done merge of children here, super does merge into parent	
@@ -62,7 +62,7 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 	{
 		Choice<?> cho = (Choice<?>) visited;
 		List<ExplicitCorrelationEnv> benvs =
-				cho.getBlocks().stream().map((b) -> (ExplicitCorrelationEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlockChildren().stream().map((b) -> (ExplicitCorrelationEnv) b.del().env()).collect(Collectors.toList());
 		ExplicitCorrelationEnv merged = checker.popEnv().mergeContexts(benvs); 
 		checker.pushEnv(merged);
 		return (Choice<?>) super.leaveExplicitCorrelationCheck(parent, child, checker, visited);  // Done merge of children here, super does merge into parent	

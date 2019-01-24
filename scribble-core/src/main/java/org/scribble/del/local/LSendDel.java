@@ -35,7 +35,7 @@ public class LSendDel extends LMessageTransferDel
 	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LSend ls = (LSend) visited;
-		List<RoleNode> dests = ls.getDestinations();
+		List<RoleNode> dests = ls.getDestinationChildren();
 		if (dests.size() > 1)
 		{
 			throw new ScribbleException("[TODO] EFSM building for multicast not supported: " + ls);

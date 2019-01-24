@@ -43,7 +43,7 @@ public class LSend extends LMessageTransfer
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LSend(this.source, this.src, this.msg, getDestinations());
+		return new LSend(this.source, this.src, this.msg, getDestinationChildren());
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public class LSend extends LMessageTransfer
 	{
 		RoleNode src = this.src.clone(af);
 		MessageNode msg = this.msg.clone(af);
-		List<RoleNode> dests = ScribUtil.cloneList(af, getDestinations());
+		List<RoleNode> dests = ScribUtil.cloneList(af, getDestinationChildren());
 		return af.LSend(this.source, src, msg, dests);
 	}
 
@@ -75,7 +75,7 @@ public class LSend extends LMessageTransfer
 	public String toString()
 	{
 		return this.msg + " " + Constants.TO_KW + " "
-					+ getDestinations().stream().map((dest) -> dest.toString()).collect(Collectors.joining(", ")) + ";";
+					+ getDestinationChildren().stream().map((dest) -> dest.toString()).collect(Collectors.joining(", ")) + ";";
 	}
 
 	@Override

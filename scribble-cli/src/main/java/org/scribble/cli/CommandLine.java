@@ -320,7 +320,7 @@ public class CommandLine
 			throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
+		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDeclChild(fullname.getSimpleName());
 		if (gpd == null || !gpd.header.roledecls.getRoles().contains(role))
 		{
 			throw new CommandLineException("Bad FSM construction args: " + Arrays.toString(this.args.get(CLArgFlag.DOT)));
@@ -510,12 +510,12 @@ public class CommandLine
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
 		}
-		ProtocolDecl<?> pd = main.getProtocolDecl(simpgpn);
+		ProtocolDecl<?> pd = main.getProtocolDeclChild(simpgpn);
 		if (pd == null || !pd.isGlobal())
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
 		}
-		if (pd.isAuxModifier())  // CHECKME: maybe don't check for all, e.g. -project
+		if (pd.isAux())  // CHECKME: maybe don't check for all, e.g. -project
 		{
 			throw new CommandLineException("Invalid aux protocol specified as root: " + simpname);
 		}
@@ -524,7 +524,7 @@ public class CommandLine
 
 	protected static Role checkRoleArg(JobContext jcontext, GProtocolName fullname, String rolename) throws CommandLineException
 	{
-		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
+		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDeclChild(fullname.getSimpleName());
 		Role role = new Role(rolename);
 		if (!pd.header.roledecls.getRoles().contains(role))
 		{

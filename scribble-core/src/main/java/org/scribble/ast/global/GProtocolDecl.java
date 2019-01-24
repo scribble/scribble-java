@@ -20,12 +20,9 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.ProtocolDef;
-import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
@@ -34,17 +31,26 @@ import org.scribble.type.name.Role;
 
 public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 {
+	// ScribTreeAdaptor#create constructor
 	public GProtocolDecl(Token t)
 	{
 		super(t);
 	}
-
-	public GProtocolDecl(CommonTree source, List<Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)
+	
+	// Tree#dupNode constructor
+	protected GProtocolDecl(GProtocolDecl node)
 	{
-		super(source, modifiers, header, def);
+		super(node);
+	}
+
+	// Cf. CommonTree#dupNode
+	@Override
+	public GProtocolDecl dupNode()
+	{
+		return new GProtocolDecl(this);
 	}
 	
-	// FIXME: project modifiers?
+	// CHECKME: project modifiers?
 	public LProjectionDecl project(AstFactory af, Module mod, Role self, LProtocolHeader hdr, LProtocolDef def) throws ScribbleException  // mod is just the parent?
 	{
 		/*//Role self = proj.peekSelf();
@@ -55,52 +61,30 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 		RoleDeclList roledecls = this.header.roledecls.project(af, self);
 		NonRoleParamDeclList paramdecls = this.header.paramdecls.project(af, self);
 		LProtocolHeader lph = af.LProtocolHeader(this.header.getSource(), pn, roledecls, paramdecls);*/
+
 		GProtocolName gpn = this.getFullMemberName(mod);
-		LProjectionDecl proj = af.LProjectionDecl(this.source, this.modifiers, gpn, self, hdr, def);
+		LProjectionDecl proj = 
+				af.LProjectionDecl(this.source, this.modifiers, gpn, self, hdr, def);
 		return proj;
 	}
 
 	@Override
-	protected GProtocolDecl copy()
+	public GProtocolHeader getHeaderChild()
 	{
-		return new GProtocolDecl(this.source, this.modifiers, getHeader(), getDef());
-	}
-	
-	@Override
-	public GProtocolDecl clone(AstFactory af)
-	{
-		GProtocolHeader header = getHeader().clone(af);
-		GProtocolDef def = getDef().clone(af);
-		return af.GProtocolDecl(this.source, this.modifiers, header, def);
+		return (GProtocolHeader) getChild(0);
 	}
 
 	@Override
-	public GProtocolDecl reconstruct(ProtocolHeader<Global> header, ProtocolDef<Global> def)
+	public GProtocolDef getDefChild()
 	{
-		
-		ScribDel del = del();
-		GProtocolDecl gpd = new GProtocolDecl(this.source, this.modifiers, (GProtocolHeader) header, (GProtocolDef) def);
-		gpd = (GProtocolDecl) gpd.del(del);  // FIXME: does another shallow copy
-		return gpd;
-	}
-
-	@Override
-	public GProtocolHeader getHeader()
-	{
-		return (GProtocolHeader) this.header;
-	}
-
-	@Override
-	public GProtocolDef getDef()
-	{
-		return (GProtocolDef) this.def;
+		return (GProtocolDef) getChild(1);
 	}
 
 	@Override
 	public GProtocolName getFullMemberName(Module mod)
 	{
 		ModuleName fullmodname = mod.getFullModuleName();
-		return new GProtocolName(fullmodname, this.header.getDeclName());
+		return new GProtocolName(fullmodname, getHeaderChild().getDeclName());
 	}
 
 	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
@@ -115,5 +99,50 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	public Global getKind()
 	{
 		return GNode.super.getKind();
+	}*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public GProtocolDecl(CommonTree source, List<Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)
+	{
+		super(source, modifiers, header, def);
+	}
+
+	/*@Override
+	protected GProtocolDecl copy()
+	{
+		return new GProtocolDecl(this.source, this.modifiers, getHeaderChild(), getDefChild());
+	}
+	
+	@Override
+	public GProtocolDecl clone(AstFactory af)
+	{
+		GProtocolHeader header = getHeaderChild().clone(af);
+		GProtocolDef def = getDefChild().clone(af);
+		return af.GProtocolDecl(this.source, this.modifiers, header, def);
+	}*/
+
+	/*@Override
+	public GProtocolDecl reconstruct(ProtocolHeader<Global> header,
+			ProtocolDef<Global> def)
+	{
+		
+		ScribDel del = del();
+		GProtocolDecl gpd = new GProtocolDecl(this.source, this.modifiers, (GProtocolHeader) header, (GProtocolDef) def);
+		gpd = (GProtocolDecl) gpd.del(del);  // FIXME: does another shallow copy
+		return gpd;
 	}*/
 }

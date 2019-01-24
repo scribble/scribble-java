@@ -41,7 +41,7 @@ public class LReceive extends LMessageTransfer implements LSimpleInteractionNode
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LReceive(this.source, this.src, this.msg, getDestinations());
+		return new LReceive(this.source, this.src, this.msg, getDestinationChildren());
 	}
 	
 	@Override
@@ -49,7 +49,7 @@ public class LReceive extends LMessageTransfer implements LSimpleInteractionNode
 	{
 		RoleNode src = this.src.clone(af);
 		MessageNode msg = this.msg.clone(af);
-		List<RoleNode> dests = ScribUtil.cloneList(af, getDestinations());
+		List<RoleNode> dests = ScribUtil.cloneList(af, getDestinationChildren());
 		return af.LReceive(this.source, src, msg, dests);
 	}
 

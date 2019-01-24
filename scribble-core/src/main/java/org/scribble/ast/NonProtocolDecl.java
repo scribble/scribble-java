@@ -13,38 +13,43 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.name.qualified.MemberNameNode;
+import org.scribble.ast.name.NameNode;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.NonProtocolKind;
-import org.scribble.type.name.MemberName;
 import org.scribble.visit.AstVisitor;
 
 // Rename to something better
-public abstract class NonProtocolDecl<K extends NonProtocolKind> extends NameDeclNode<K> implements ModuleMember
+public abstract class NonProtocolDecl<K extends NonProtocolKind>
+		extends NameDeclNode<K> implements ModuleMember
 {
 	public final String schema;
 	public final String extName;
 	public final String extSource;
 
-	public NonProtocolDecl(CommonTree source, String schema, String extName, String extSource, MemberNameNode<K> name)
+	// ScribTreeAdaptor#create constructor
+	public NonProtocolDecl(Token payload, String schema, String extName,
+			String extSource)
 	{
-		super(source, name);
+		super(payload);
+		this.schema = schema;
+		this.extName = extName;
+		this.extSource = extSource;
+	}
+
+	// Tree#dupNode constructor
+	protected NonProtocolDecl(NonProtocolDecl<K> node, String schema,
+			String extName, String extSource)
+	{
+		super(node);
 		this.schema = schema;
 		this.extName = extName;
 		this.extSource = extSource;
 	}
 	
-	public abstract NonProtocolDecl<K> reconstruct(String schema, String extName, String source, MemberNameNode<K> name);
-
-	@Override
-	public NonProtocolDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
-	{
-		MemberNameNode<K> name = (MemberNameNode<K>) visitChildWithClassEqualityCheck(this, this.name, nv);
-		return reconstruct(this.schema, this.extName, this.extSource, name);
-	}
-	
-	// Maybe should be moved to ModuleMember
+	// CHECKME: maybe move to ModuleMember
 	public boolean isDataTypeDecl()
 	{
 		return false;
@@ -55,14 +60,48 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind> extends NameDec
 		return false;
 	}
 	
-	public MemberNameNode<K> getNameNode()
+	public abstract NonProtocolDecl<K> dupNode();
+	
+	public NonProtocolDecl<K> reconstruct(String schema, String extName,
+			String source, // MemberNameNode<K> name);
+			NameNode<K> name)
 	{
-		return (MemberNameNode<K>) this.name;
+		NonProtocolDecl<K> dtd = dupNode();
+		ScribDel del = del();
+		dtd.addChild(getNameNodeChild());
+		dtd.setDel(del);
+		return dtd;
 	}
 
 	@Override
-	public MemberName<K> getDeclName()
+	public NonProtocolDecl<K> visitChildren(AstVisitor nv)
+			throws ScribbleException
 	{
-		return (MemberName<K>) super.getDeclName();  // Simple name -- not consistent with ModuleDecl
+		//MemberNameNode<K> name = (MemberNameNode<K>) visitChildWithClassEqualityCheck(this, this.name, nv);
+		NameNode<K> name = (NameNode<K>) visitChildWithClassEqualityCheck(this,
+				getNameNodeChild(), nv);
+		return reconstruct(this.schema, this.extName, this.extSource, name);
 	}
+
+	
+
+
+
+
+
+
+
+
+
+
+	public NonProtocolDecl(CommonTree source, String schema, String extName,
+			String extSource, // MemberNameNode<K> name);
+			NameNode<K> name)  // Directly parsed decl names are simple names, but decl constructors take general name nodes which are member names, so base NameNode here -- cf. ProtocolHeader and G/LProtocolHeader
+	{
+		super(source, name);
+		this.schema = schema;
+		this.extName = extName;
+		this.extSource = extSource;
+	}
+
 }

@@ -120,7 +120,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 
 		Module root = proj.job.getContext().getModule(proj.getModuleContext().root);
 		GProtocolDecl gpd = (GProtocolDecl) visited;
-		GProtocolHeader gph = gpd.getHeader();
+		GProtocolHeader gph = gpd.getHeaderChild();
 		Role self = proj.peekSelf();
 
 		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(af, gph.getSource(), gph.getDeclName(), self);
@@ -147,7 +147,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	public void enterValidation(ScribNode parent, ScribNode child, GProtocolValidator checker) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) child;
-		if (gpd.isAuxModifier())
+		if (gpd.isAux())
 		{
 			return;
 		}
@@ -184,7 +184,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	{
 		JobContext jc = job.getContext();
 		Module mod = jc.getModule(fullname.getPrefix());
-		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(fullname.getSimpleName());
+		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDeclChild(fullname.getSimpleName());
 		
 		List<Role> rs = gpd.header.roledecls.getRoles().stream()
 				.sorted(Comparator.comparing(Role::toString)).collect(Collectors.toList());

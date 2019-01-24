@@ -15,19 +15,71 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInteraction implements ProtocolKindNode<K>
+public abstract class ProtocolBlock<K extends ProtocolKind>
+		extends CompoundInteraction implements ProtocolKindNode<K>
 {
-	public final InteractionSeq<K> seq;
-
+	// ScribTreeAdaptor#create constructor
 	public ProtocolBlock(Token t)
 	{
 		super(t);
 		this.seq = null;
 	}
+
+	// Tree#dupNode constructor
+	protected ProtocolBlock(ProtocolBlock<K> node)
+	{
+		super(node);
+		this.seq = null;
+	}
+	
+	@Override
+	public abstract ProtocolBlock<K> dupNode();
+
+	public abstract InteractionSeq<K> getInteractSeqChild();
+	
+	public boolean isEmpty()
+	{
+		return getInteractSeqChild().isEmpty();
+	}
+
+	public ProtocolBlock<K> reconstruct(InteractionSeq<K> seq)
+	{
+		ProtocolBlock<K> pd = dupNode();
+		ScribDel del = del();
+		pd.addChild(seq);
+		pd.setDel(del);  // No copy
+		return pd;
+	}
+
+	@Override
+	public ProtocolBlock<K> visitChildren(AstVisitor nv) throws ScribbleException
+	{
+		InteractionSeq<K> seq = 
+				visitChildWithClassEqualityCheck(this, getInteractSeqChild(), nv);
+		return reconstruct(seq);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "{\n" + getInteractSeqChild() + "\n}";  // Empty block will contain an blank line
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private final InteractionSeq<K> seq;
 
 	public ProtocolBlock(CommonTree source, InteractionSeq<K> seq)
 	{
@@ -35,28 +87,6 @@ public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInte
 		this.seq = seq;
 	}
 	
-	@Override
-	public abstract ProtocolBlock<K> clone(AstFactory af);
-
-	public abstract ProtocolBlock<K> reconstruct(InteractionSeq<K> seq);
-
-	public abstract InteractionSeq<K> getInteractionSeq();
-
-	@Override
-	public ProtocolBlock<K> visitChildren(AstVisitor nv) throws ScribbleException
-	{
-		InteractionSeq<K> seq = visitChildWithClassEqualityCheck(this, this.seq, nv);
-		return reconstruct(seq);
-	}
-	
-	public boolean isEmpty()
-	{
-		return this.seq.isEmpty();
-	}
-
-	@Override
-	public String toString()
-	{
-		return "{\n" + this.seq + "\n}";  // Empty block will contain an blank line
-	}
+	/*@Override
+	public abstract ProtocolBlock<K> clone(AstFactory af);*/
 }

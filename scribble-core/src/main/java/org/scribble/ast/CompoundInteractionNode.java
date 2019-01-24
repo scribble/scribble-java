@@ -13,13 +13,36 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 
 // Name should be read (Compound ( InteractionNode ))
 public abstract class CompoundInteractionNode<K extends ProtocolKind>
-		extends CompoundInteraction implements InteractionNode<K>
+		extends CompoundInteraction<K> implements InteractionNode<K>
 {
+	// ScribTreeAdaptor#create constructor
+	public CompoundInteractionNode(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected CompoundInteractionNode(CompoundInteractionNode<K> node)
+	{
+		super(node);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	protected CompoundInteractionNode(CommonTree source)
 	{
 		super(source);

@@ -13,31 +13,33 @@
  */
 package org.scribble.ast.name.qualified;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.type.Arg;
 import org.scribble.type.kind.DataTypeKind;
 import org.scribble.type.name.DataType;
 
 //public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
-public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode<DataTypeKind>
+public class DataTypeNode extends MemberNameNode<DataTypeKind>
+		implements PayloadElemNameNode<DataTypeKind>
 {
-	public DataTypeNode(CommonTree source, String... elems)
+	// ScribTreeAdaptor#create constructor
+	public DataTypeNode(Token t)
 	{
-		super(source, elems);
+		super(t);
 	}
 
-	@Override
-	protected DataTypeNode copy()
+	// Tree#dupNode constructor
+	protected DataTypeNode(DataTypeNode node, String... ns)
 	{
-		return new DataTypeNode(this.source, this.elems);
+		super(node, ns);
 	}
 	
 	@Override
-	public DataTypeNode clone(AstFactory af)
+	public DataTypeNode dupNode()
 	{
-		return (DataTypeNode) af.QualifiedNameNode(this.source, DataTypeKind.KIND, this.elems);
+		return new DataTypeNode(this, getElements());
 	}
 
 	@Override
@@ -94,4 +96,32 @@ public class DataTypeNode extends MemberNameNode<DataTypeKind> implements Payloa
 		hash = 31 * hash + this.elems.hashCode();
 		return hash;
 	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public DataTypeNode(CommonTree source, String... elems)
+	{
+		super(source, elems);
+	}
+	
+	/*@Override
+	protected DataTypeNode copy()
+	{
+		return new DataTypeNode(this.source, this.elems);
+	}
+	
+	@Override
+	public DataTypeNode clone(AstFactory af)
+	{
+		return (DataTypeNode) af.QualifiedNameNode(this.source, DataTypeKind.KIND, this.elems);
+	}*/
 }
