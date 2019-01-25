@@ -21,20 +21,24 @@ import org.scribble.type.name.Role;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LDisconnectDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
+public class LDisconnectDel extends ConnectionActionDel
+		implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LDisconnect leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public LDisconnect leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LDisconnect ld = (LDisconnect) visited;
-		Role peer = ld.peer.toName();
-		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newEDisconnect(peer), builder.util.getExit());
+		Role peer = ld.getPeerChild().toName();
+		builder.util.addEdge(builder.util.getEntry(),
+				builder.job.ef.newEDisconnect(peer), builder.util.getExit());
 		return (LDisconnect) super.leaveEGraphBuilding(parent, child, builder, ld);
 	}
 
 	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(((LDisconnect) child).src.toName());
+		fixer.setChoiceSubject(((LDisconnect) child).getSelfChild().toName());
 	}
 }

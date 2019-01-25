@@ -13,16 +13,82 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RecVarNode;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-public abstract class Recursion<K extends ProtocolKind> extends CompoundInteractionNode<K>
+public abstract class Recursion<K extends ProtocolKind>
+		extends CompoundInteractionNode<K>
 {
-	public final RecVarNode recvar;
-	public final ProtocolBlock<K> block;
+	// ScribTreeAdaptor#create constructor
+	public Recursion(Token t)
+	{
+		super(t);
+		this.recvar = null;
+		this.block = null;
+	}
+
+	// Tree#dupNode constructor
+	protected Recursion(Recursion<K> node)
+	{
+		super(node);
+		this.recvar = null;
+		this.block = null;
+	}
+	
+	public abstract Recursion<K> dupNode();
+	
+	public RecVarNode getRecVarChild()
+	{
+		return (RecVarNode) getChild(0);
+	}
+	
+	public abstract ProtocolBlock<K> getBlockChild();
+
+	public Recursion<K> reconstruct(RecVarNode recvar, ProtocolBlock<K> block)
+	{
+		Recursion<K> r = dupNode();
+		ScribDel del = del();
+		r.addChild(recvar);
+		r.addChild(block);
+		r.setDel(del);  // No copy
+		return r;
+	}
+
+	@Override
+	public Recursion<K> visitChildren(AstVisitor nv) throws ScribbleException
+	{
+		RecVarNode recvar = (RecVarNode) visitChild(getRecVarChild(), nv);
+		ProtocolBlock<K> block = visitChildWithClassEqualityCheck(this,
+				getBlockChild(), nv);
+		return reconstruct(recvar, block);
+	}
+
+	@Override
+	public String toString()
+	{
+		return Constants.REC_KW + " " + getRecVarChild() + " " + getBlockChild();
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private final RecVarNode recvar;
+	private final ProtocolBlock<K> block;
 
 	protected Recursion(CommonTree source, RecVarNode recvar, ProtocolBlock<K> block)
 	{
@@ -30,25 +96,8 @@ public abstract class Recursion<K extends ProtocolKind> extends CompoundInteract
 		this.recvar = recvar;
 		this.block = block;
 	}
-
-	public abstract Recursion<K> reconstruct(RecVarNode recvar, ProtocolBlock<K> block);
 	
-	@Override
-	public abstract Recursion<K> clone(AstFactory af);
+	/*@Override
+	public abstract Recursion<K> clone(AstFactory af);*/
 
-	@Override
-	public Recursion<K> visitChildren(AstVisitor nv) throws ScribbleException
-	{
-		RecVarNode recvar = (RecVarNode) visitChild(this.recvar, nv);
-		ProtocolBlock<K> block = visitChildWithClassEqualityCheck(this, this.block, nv);
-		return reconstruct(recvar, block);
-	}
-	
-	public abstract ProtocolBlock<K> getBlock();
-
-	@Override
-	public String toString()
-	{
-		return Constants.REC_KW + " " + this.recvar + " " + this.block;
-	}
 }

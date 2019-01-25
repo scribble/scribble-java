@@ -2,7 +2,6 @@ package org.scribble.parser.scribble.ast.tree;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.ScribNodeBase;
 
 @Deprecated
@@ -24,7 +23,7 @@ public class MyCommonTree extends ScribNodeBase
 		return new MyCommonTree(this);
 	}
 
-	@Override
+	/*@Override
 	protected ScribNodeBase copy()
 	{
 		return (ScribNodeBase) dupNode();
@@ -34,5 +33,5 @@ public class MyCommonTree extends ScribNodeBase
 	public ScribNodeBase clone(AstFactory af)
 	{
 		return (ScribNodeBase) dupNode();
-	}
+	}*/
 }

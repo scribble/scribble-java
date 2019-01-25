@@ -13,16 +13,40 @@
  */
 package org.scribble.ast.name.qualified;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.ProtocolName;
 
 public abstract class ProtocolNameNode<K extends ProtocolKind> extends MemberNameNode<K>
 {
+	// ScribTreeAdaptor#create constructor
+	public ProtocolNameNode(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected ProtocolNameNode(ProtocolNameNode<K> node, String...elems)
+	{
+		super(node, elems);
+	}
+
+	public abstract ProtocolName<K> toName();
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public ProtocolNameNode(CommonTree source, String... ns)
 	{
 		super(source, ns);
 	}
 
-	public abstract ProtocolName<K> toName();
 }

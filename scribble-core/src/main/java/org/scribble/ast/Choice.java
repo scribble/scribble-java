@@ -55,12 +55,12 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 	
 	public Choice<K> reconstruct(RoleNode subj, List<? extends ProtocolBlock<K>> blocks)
 	{
-		Choice<K> pd = dupNode();
+		Choice<K> c = dupNode();
 		ScribDel del = del();
-		pd.addChild(subj);
-		pd.addChildren(blocks);
-		pd.setDel(del);  // No copy
-		return pd;
+		c.addChild(subj);
+		c.addChildren(blocks);
+		c.setDel(del);  // No copy
+		return c;
 	}
 	
 	@Override

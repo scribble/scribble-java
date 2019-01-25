@@ -13,31 +13,60 @@
  */
 package org.scribble.ast.global;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Continue;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.Role;
 
 public class GContinue extends Continue<Global> implements GSimpleInteractionNode
 {
+	// ScribTreeAdaptor#create constructor
+	public GContinue(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected GContinue(GContinue node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public GContinue dupNode()
+	{
+		return new GContinue(this);
+	}
+
+	public LContinue project(AstFactory af, Role self)
+	{
+		RecVarNode recvar = getRecVarChild();
+		RecVarNode recvar1 = (RecVarNode) af.SimpleNameNode(recvar.getSource(),
+				RecVarKind.KIND, recvar.toName().toString()); // clone?
+		LContinue projection = af.LContinue(this.source, recvar1);
+		return projection;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 	public GContinue(CommonTree source, RecVarNode recvar)
 	{
 		super(source, recvar);
 	}
 
-	public LContinue project(AstFactory af, Role self)
-	{
-		RecVarNode recvar = (RecVarNode) af.SimpleNameNode(this.recvar.getSource(), RecVarKind.KIND, this.recvar.toName().toString());  // clone?
-		LContinue projection = af.LContinue(this.source, recvar);
-		return projection;
-	}
-
-	@Override
+	/*@Override
 	protected GContinue copy()
 	{
 		return new GContinue(this.source, this.recvar);
@@ -57,5 +86,5 @@ public class GContinue extends Continue<Global> implements GSimpleInteractionNod
 		GContinue gc = new GContinue(this.source, recvar);
 		gc = (GContinue) gc.del(del);
 		return gc;
-	}
+	}*/
 }

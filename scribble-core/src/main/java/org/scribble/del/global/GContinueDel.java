@@ -26,10 +26,12 @@ import org.scribble.visit.env.InlineProtocolEnv;
 public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeDel
 {
 	@Override
-	public GContinue leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public GContinue leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GContinue gc = (GContinue) visited;
-		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) gc.recvar.del().env()).getTranslation();	
+		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) gc.getRecVarChild()
+				.del().env()).getTranslation();
 		GContinue inlined = inl.job.af.GContinue(gc.getSource(), recvar);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GContinue) super.leaveProtocolInlining(parent, child, inl, gc);
@@ -43,12 +45,14 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 	}*/
 
 	@Override
-	public GContinue leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	public GContinue leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GContinue gc = (GContinue) visited;
 		//LContinue projection = project(proj.job.af, gc, proj.peekSelf());
 		LContinue projection = gc.project(proj.job.af, proj.peekSelf());
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GContinue) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
+		return (GContinue) GSimpleInteractionNodeDel.super.leaveProjection(parent,
+				child, proj, gc);
 	}
 }

@@ -30,7 +30,9 @@ import org.scribble.type.name.PayloadElemType;
 // No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
 //public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode
 //public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode<PayloadTypeKind>
-public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode<DataTypeKind>  // Currently hardcoded to DataTypeKind for payload elems
+public class AmbigNameNode extends SimpleNameNode<AmbigKind>
+		implements MessageNode, PayloadElemNameNode<DataTypeKind>
+		// Currently hardcoded to DataTypeKind for payload elems
 {
 	// ScribTreeAdaptor#create constructor
 	public AmbigNameNode(Token t)

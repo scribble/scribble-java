@@ -64,7 +64,7 @@ public class GConnect extends ConnectAction<Global>
 					RoleKind.KIND, destNode.toName().toString());
 			if (src.equals(self))
 			{
-				proj = af.LConnect(this.source, srcNode1, msgNode1, destNode1);
+				proj = af.LRequest(this.source, srcNode1, msgNode1, destNode1);
 				//projection = AstFactoryImpl.FACTORY.LConnect(src, dest);  // src and dest (not self and peer)
 			}
 			if (dest.equals(self))

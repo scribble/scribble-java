@@ -16,11 +16,11 @@ package org.scribble.ast.local;
 import java.util.Collections;
 import java.util.Set;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Continue;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
@@ -29,12 +29,83 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 {
+	// ScribTreeAdaptor#create constructor
+	public LContinue(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected LContinue(LContinue node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public LContinue dupNode()
+	{
+		return new LContinue(this);
+	}
+
+	@Override
+	public LContinue clone()
+	{
+		return (LContinue) super.clone();
+	}
+
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		//return new DummyProjectionRoleNode().toName();  // For e.g. rec X { 1() from A to B; choice at A { continue X; } or { 2() from A to B; } }
+		return fixer.createRecVarRole(getRecVarChild().toName());  // Never used?
+		//return null;
+	}
+
+	@Override
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+			throws ScribbleException
+	{
+		if (!(ln instanceof LContinue) || !this.canMerge(ln))
+		{
+			throw new ScribbleException("Cannot merge " + this.getClass() + " and "
+					+ ln.getClass() + ": " + this + ", " + ln);
+		}
+		LContinue them = ((LContinue) ln);
+		if (!getRecVarChild().equals(them.getRecVarChild()))
+		{
+			throw new ScribbleException("Cannot merge choices for " + getRecVarChild()
+					+ " and " + them.getRecVarChild() + ": " + this + ", " + ln);
+		}
+		return clone();
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		return ln instanceof LContinue;
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		return Collections.emptySet();
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public LContinue(CommonTree source, RecVarNode recvar)
 	{
 		super(source, recvar);
 	}
 
-	@Override
+	/*@Override
 	protected LContinue copy()
 	{
 		return new LContinue(this.source, this.recvar);
@@ -54,40 +125,5 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 		LContinue lc = new LContinue(this.source, recvar);
 		lc = (LContinue) lc.del(del);
 		return lc;
-	}
-
-	@Override
-	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
-	{
-		//return new DummyProjectionRoleNode().toName();  // For e.g. rec X { 1() from A to B; choice at A { continue X; } or { 2() from A to B; } }
-		return fixer.createRecVarRole(this.recvar.toName());  // Never used?
-		//return null;
-	}
-
-	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
-	{
-		if (!(ln instanceof LContinue) || !this.canMerge(ln))
-		{
-			throw new ScribbleException("Cannot merge " + this.getClass() + " and " + ln.getClass() + ": " + this + ", " + ln);
-		}
-		LContinue them = ((LContinue) ln);
-		if (!this.recvar.equals(them.recvar))
-		{
-			throw new ScribbleException("Cannot merge choices for " + this.recvar + " and " + them.recvar + ": " + this + ", " + ln);
-		}
-		return clone(af);
-	}
-
-	@Override
-	public boolean canMerge(LInteractionNode ln)
-	{
-		return ln instanceof LContinue;
-	}
-
-	@Override
-	public Set<Message> getEnabling()
-	{
-		return Collections.emptySet();
-	}
+	}*/
 }

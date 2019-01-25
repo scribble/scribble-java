@@ -38,10 +38,12 @@ public abstract class ContinueDel extends SimpleInteractionNodeDel
 	}*/
 
 	@Override
-	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent,
+			ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited)
+			throws ScribbleException
 	{
 		Continue<?> cont = (Continue<?>) visited;
-		RecVar rv = cont.recvar.toName();
+		RecVar rv = cont.getRecVarChild().toName();
 		if (unf.isContinueUnguarded(rv))  // Without this, graph building becomes sensitive to the order of choice blocks (specifically, the relative position were the side effect (re-set entry to rec state) of an unguarded continue is performed)
 		{
 			Recursion<?> tmp = unf.getRecVar(rv);
@@ -49,20 +51,20 @@ public abstract class ContinueDel extends SimpleInteractionNodeDel
 			{
 				return cont;
 			}
-			return unf.getRecVar(rv).clone(unf.job.af);
+			return unf.getRecVar(rv).clone();//unf.job.af);
 		}
 		else if (unf.shouldUnfoldForUnguardedRec(rv))
 		{
-			return unf.getRecVar(rv).clone(unf.job.af);
+			return unf.getRecVar(rv).clone();//unf.job.af);
 		}
 		return cont;
 	}
 
 	@Override
-	public ScribNode leaveRecVarCollection(ScribNode parent, ScribNode child, RecVarCollector coll, ScribNode visited)
-			throws ScribbleException
+	public ScribNode leaveRecVarCollection(ScribNode parent, ScribNode child,
+			RecVarCollector coll, ScribNode visited) throws ScribbleException
 	{
-		coll.removeName(((Continue<?>) visited).recvar.toName());
+		coll.removeName(((Continue<?>) visited).getRecVarChild().toName());
 		return visited;
 	}
 }

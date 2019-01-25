@@ -129,7 +129,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<GInteractionNode> gins = gis.getInteractNodeChildren().stream().flatMap((gi) -> 
 					(gi instanceof GRecursion && rem.toRemove(((GRecursion) gi).recvar.toName()))
-						? ((GRecursion) gi).getBlock().getInteractSeqChild().getInteractNodeChildren().stream()
+						? ((GRecursion) gi).getBlockChild().getInteractSeqChild().getInteractNodeChildren().stream()
 						: Stream.of(gi)
 				).collect(Collectors.toList());
 		return rem.job.af.GInteractionSeq(gis.getSource(), gins);

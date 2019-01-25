@@ -20,10 +20,25 @@ import org.scribble.type.kind.Kind;
 
 public abstract class QualifiedNameNode<K extends Kind> extends NameNode<K>
 {
+	// ScribTreeAdaptor#create constructor
 	public QualifiedNameNode(Token t)
 	{
 		super(t);
 	}
+
+	// Tree#dupNode constructor
+	protected QualifiedNameNode(QualifiedNameNode<K> node, String...elems)
+	{
+		super(node, elems);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public QualifiedNameNode(CommonTree source, String... ns)
 	{

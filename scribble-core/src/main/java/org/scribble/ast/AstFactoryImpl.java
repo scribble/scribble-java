@@ -344,7 +344,8 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest)
 	{
-		GDisconnect gc = new GDisconnect(source, UnitMessageSigNode(), src, dest);
+		GDisconnect gc = new GDisconnect(source, //UnitMessageSigNode(), 
+				src, dest);
 		gc = del(gc, new GDisconnectDel());
 		return gc;
 	}
@@ -600,7 +601,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	public LRequest LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
+	public LRequest LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//public LConnect LConnect(RoleNode src, RoleNode dest)
 	{
 		LRequest lc = new LRequest(source, src, msg, dest);

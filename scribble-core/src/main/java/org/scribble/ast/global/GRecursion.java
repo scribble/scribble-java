@@ -20,35 +20,55 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ConnectAction;
 import org.scribble.ast.Do;
 import org.scribble.ast.MessageTransfer;
-import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 
-public class GRecursion extends Recursion<Global> implements GCompoundInteractionNode
+public class GRecursion extends Recursion<Global>
+		implements GCompoundInteractionNode
 {
-	public GRecursion(CommonTree source, RecVarNode recvar, GProtocolBlock block)
+	// ScribTreeAdaptor#create constructor
+	public GRecursion(Token t)
 	{
-		super(source, recvar, block);
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected GRecursion(GRecursion node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public GRecursion dupNode()
+	{
+		return new GRecursion(this);
+	}
+
+	@Override
+	public GProtocolBlock getBlockChild()
+	{
+		return (GProtocolBlock) getChild(1);
 	}
 
 	public LRecursion project(AstFactory af, Role self, LProtocolBlock block)
 	{
-		RecVarNode recvar = this.recvar.clone(af);
+		RecVarNode recvar = getRecVarChild().clone(af);
 		LRecursion projection = null;
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(recvar.toName());
@@ -62,14 +82,17 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 
 	// Pruning must be considered here (at Recursion) due to unguarded recvars
 	// Set should be unnecessary (singleton OK) -- *nested* irrelevant continues should already have been pruned
-	// FIXME? refactor and separate into dels? -- maybe not: since pruning is a bit too much of a "centralised algorithm" -- currently relying on TODO exception for unhandled cases
-	protected static LProtocolBlock prune(AstFactory af, LProtocolBlock block, Set<RecVar> rvs)  // FIXME: Set unnecessary
+	// CHECKME? refactor and separate into dels? -- maybe not: since pruning is a bit too much of a "centralised algorithm" -- currently relying on TODO exception for unhandled cases
+	protected static LProtocolBlock prune(AstFactory af, LProtocolBlock block,
+			Set<RecVar> rvs) // FIXME: Set unnecessary
 	{
+		LInteractionSeq seq = block.getInteractSeqChild();
 		if (block.isEmpty())
 		{
 			return block;
 		}
-		List<? extends LInteractionNode> lis = block.getInteractSeqChild().getInteractNodeChildren();
+		List<? extends LInteractionNode> lis = block.getInteractSeqChild()
+				.getInteractNodeChildren();
 		if (lis.size() > 1)
 		{
 			return block;
@@ -80,18 +103,19 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 			LInteractionNode lin = lis.get(0);
 			if (lin instanceof LContinue)
 			{
-				if (rvs.contains(((LContinue) lin).recvar.toName()))
+				if (rvs.contains(((LContinue) lin).getRecVarChild().toName()))
 				{
 					// FIXME: need equivalent for projection-irrelevant recursive-do in a protocoldecl
 					return af.LProtocolBlock(block.getSource(),
-							af.LInteractionSeq(block.seq.getSource(), Collections.emptyList()));
+							af.LInteractionSeq(seq.getSource(), Collections.emptyList()));
 				}
 				else
 				{
 					return block;
 				}
 			}
-			else if (lin instanceof MessageTransfer<?> || lin instanceof Do<?> || lin instanceof ConnectAction<?>)
+			else if (lin instanceof MessageTransfer<?> || lin instanceof Do<?>
+					|| lin instanceof ConnectAction<?>)
 			{
 				return block;
 			}
@@ -110,20 +134,22 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 					if (pruned.isEmpty())
 					{
 						return af.LProtocolBlock(block.getSource(),
-								af.LInteractionSeq(block.seq.getSource(), Collections.emptyList()));
+								af.LInteractionSeq(seq.getSource(), Collections.emptyList()));
 					}	
 					else
 					{
 						return af.LProtocolBlock(block.getSource(),
-								af.LInteractionSeq(block.seq.getSource(), Arrays.asList(
-										af.LChoice(lin.getSource(), ((LChoice) lin).subj, pruned))));
+								af.LInteractionSeq(seq.getSource(),
+										Arrays.asList(af.LChoice(lin.getSource(),
+												((LChoice) lin).getSubjectChild(), pruned))));
 					}	
 				}
 				else if (lin instanceof LRecursion)
 				{
 					rvs = new HashSet<>(rvs);
 					//rvs.add(((LRecursion) lin).recvar.toName());  // Set unnecessary
-					LProtocolBlock pruned = prune(af, ((LRecursion) lin).getBlock(), rvs);  // Need to check if the current rec has any cases to prune in the nested rec (already pruned, but for the nested recvars only)
+					LProtocolBlock pruned = prune(af, ((LRecursion) lin).getBlockChild(),
+							rvs);  // Need to check if the current rec has any cases to prune in the nested rec (already pruned, but for the nested recvars only)
 					if (pruned.isEmpty())
 					{
 						return pruned;
@@ -131,8 +157,9 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 					else
 					{
 						return af.LProtocolBlock(block.getSource(),
-								af.LInteractionSeq(block.seq.getSource(), Arrays.asList(
-										af.LRecursion(lin.getSource(), ((LRecursion) lin).recvar, pruned))));
+								af.LInteractionSeq(seq.getSource(),
+										Arrays.asList(af.LRecursion(lin.getSource(),
+												((LRecursion) lin).getRecVarChild(), pruned))));
 					}
 					/*if (((LRecursion) lin).block.isEmpty())
 					{
@@ -150,18 +177,39 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 			}
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public GRecursion(CommonTree source, RecVarNode recvar, GProtocolBlock block)
+	{
+		super(source, recvar, block);
+	}
 
-	@Override
+	/*@Override
 	protected GRecursion copy()
 	{
-		return new GRecursion(this.source, this.recvar, getBlock());
+		return new GRecursion(this.source, this.recvar, getBlockChild());
 	}
 	
 	@Override
 	public GRecursion clone(AstFactory af)
 	{
 		RecVarNode recvar = this.recvar.clone(af);
-		GProtocolBlock block = getBlock().clone(af);
+		GProtocolBlock block = getBlockChild().clone(af);
 		return af.GRecursion(this.source, recvar, block);
 	}
 
@@ -172,11 +220,5 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 		GRecursion gr = new GRecursion(this.source, recvar, (GProtocolBlock) block);
 		gr = (GRecursion) gr.del(del);
 		return gr;
-	}
-	
-	@Override
-	public GProtocolBlock getBlock()
-	{
-		return (GProtocolBlock) this.block;
-	}
+	}*/
 }

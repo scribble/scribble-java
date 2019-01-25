@@ -13,38 +13,29 @@
  */
 package org.scribble.ast.name.simple;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.RecVar;
 
 public class RecVarNode extends SimpleNameNode<RecVarKind>
 {
-	public RecVarNode(CommonTree source, String identifier)
+	// ScribTreeAdaptor#create constructor
+	public RecVarNode(Token t)
 	{
-		super(source, identifier);
-	}
-	
-	// Factor up to SimpleNameNode?
-	public RecVarNode reconstruct(String id)
-	{
-		ScribDel del = del();
-		RecVarNode rv = new RecVarNode(this.source, id);
-		rv = (RecVarNode) rv.del(del);
-		return rv;
+		super(t);
 	}
 
-	@Override
-	protected RecVarNode copy()
+	// Tree#dupNode constructor
+	protected RecVarNode(RecVarNode node, String id)
 	{
-		return new RecVarNode(this.source, getIdentifier());
+		super(node, id);
 	}
 	
 	@Override
-	public RecVarNode clone(AstFactory af)
+	public RecVarNode dupNode()
 	{
-		return (RecVarNode) af.SimpleNameNode(this.source, RecVarKind.KIND, getIdentifier());
+		return new RecVarNode(this, getIdentifier());
 	}
 
 	@Override
@@ -80,4 +71,40 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 		hash = 31 * super.hashCode();
 		return hash;
 	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public RecVarNode(CommonTree source, String identifier)
+	{
+		super(source, identifier);
+	}
+	
+	/*// Factor up to SimpleNameNode?
+	public RecVarNode reconstruct(String id)
+	{
+		ScribDel del = del();
+		RecVarNode rv = new RecVarNode(this.source, id);
+		rv = (RecVarNode) rv.del(del);
+		return rv;
+	}
+
+	@Override
+	protected RecVarNode copy()
+	{
+		return new RecVarNode(this.source, getIdentifier());
+	}
+	
+	@Override
+	public RecVarNode clone(AstFactory af)
+	{
+		return (RecVarNode) af.SimpleNameNode(this.source, RecVarKind.KIND, getIdentifier());
+	}*/
 }

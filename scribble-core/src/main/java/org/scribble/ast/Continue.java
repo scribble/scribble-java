@@ -13,34 +13,74 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RecVarNode;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-public abstract class Continue<K extends ProtocolKind> extends SimpleInteractionNode<K>
+public abstract class Continue<K extends ProtocolKind>
+		extends SimpleInteractionNode<K>
 {
-	public final RecVarNode recvar;
-
-	protected Continue(CommonTree source, RecVarNode recvar)
+	// ScribTreeAdaptor#create constructor
+	public Continue(Token t)
 	{
-		super(source);
-		this.recvar = recvar;
+		super(t);
+		this.recvar = null;
 	}
 
-	public abstract Continue<K> reconstruct(RecVarNode recvar);
+	// Tree#dupNode constructor
+	protected Continue(Continue<K> node)
+	{
+		super(node);
+		this.recvar = null;
+	}
+	
+	public abstract Continue<K> dupNode();
+
+	public RecVarNode getRecVarChild()
+	{
+		return (RecVarNode) getChild(0);
+	}
+
+	public Continue<K> reconstruct(RecVarNode recvar)
+	{
+		Continue<K> r = dupNode();
+		ScribDel del = del();
+		r.addChild(recvar);
+		r.setDel(del);  // No copy
+		return r;
+	}
 
 	@Override
 	public Continue<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		RecVarNode recvar = (RecVarNode) visitChild(this.recvar, nv);
+		RecVarNode recvar = (RecVarNode) visitChild(getRecVarChild(), nv);
 		return reconstruct(recvar);
 	}
 
 	@Override
 	public String toString()
 	{
-		return Constants.CONTINUE_KW + " " + this.recvar + ";";
+		return Constants.CONTINUE_KW + " " + getRecVarChild() + ";";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private final RecVarNode recvar;
+
+	protected Continue(CommonTree source, RecVarNode recvar)
+	{
+		super(source);
+		this.recvar = recvar;
 	}
 }

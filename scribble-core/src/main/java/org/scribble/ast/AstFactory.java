@@ -140,7 +140,7 @@ public interface AstFactory
 
 	LSend LSend(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LRequest LConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
+	LRequest LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
 	LAccept LAccept(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
 	/*LConnect LConnect(CommonTree source, RoleNode src, RoleNode dest);
 	LAccept LAccept(CommonTree source, RoleNode src, RoleNode dest);*/

@@ -23,33 +23,28 @@ import org.scribble.type.name.MessageSigName;
 public class MessageSigNameNode extends MemberNameNode<SigKind>
 		implements MessageNode
 {
+	// ScribTreeAdaptor#create constructor
 	public MessageSigNameNode(Token t)
 	{
 		super(t);
 	}
 
-	public MessageSigNameNode(CommonTree source, String... elems)
+	// Tree#dupNode constructor
+	protected MessageSigNameNode(MessageSigNameNode node, String...elems)
 	{
-		super(source, elems);
+		super(node);
+	}
+	
+	@Override
+	public MessageSigNameNode dupNode()
+	{
+		return new MessageSigNameNode(this, this.elems);
 	}
 
 	@Override
 	public MessageNode project(AstFactory af)
 	{
 		return this;
-	}
-
-	@Override
-	protected MessageSigNameNode copy()
-	{
-		return new MessageSigNameNode(this.source, this.elems);
-	}
-
-	@Override
-	public MessageSigNameNode clone(AstFactory af)
-	{
-		return (MessageSigNameNode) af.QualifiedNameNode(this.source, SigKind.KIND,
-				this.elems);
 	}
 
 	@Override
@@ -106,4 +101,30 @@ public class MessageSigNameNode extends MemberNameNode<SigKind>
 		hash = 31 * hash + this.elems.hashCode();
 		return hash;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public MessageSigNameNode(CommonTree source, String... elems)
+	{
+		super(source, elems);
+	}
+
+	/*@Override
+	protected MessageSigNameNode copy()
+	{
+		return new MessageSigNameNode(this.source, this.elems);
+	}
+
+	@Override
+	public MessageSigNameNode clone(AstFactory af)
+	{
+		return (MessageSigNameNode) af.QualifiedNameNode(this.source, SigKind.KIND,
+				this.elems);
+	}*/
 }

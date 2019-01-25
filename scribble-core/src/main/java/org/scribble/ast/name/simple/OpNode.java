@@ -13,8 +13,8 @@
  */
 package org.scribble.ast.name.simple;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.type.kind.OpKind;
 import org.scribble.type.name.Op;
 
@@ -22,22 +22,23 @@ import org.scribble.type.name.Op;
 public class OpNode extends SimpleNameNode<OpKind>
 {
 	public static final String EMPTY_OPERATOR_IDENTIFIER = "";
-	
-	public OpNode(CommonTree source, String identifier)
+
+	// ScribTreeAdaptor#create constructor
+	public OpNode(Token t)
 	{
-		super(source, identifier);
+		super(t);
 	}
 
-	@Override
-	protected OpNode copy()
+	// Tree#dupNode constructor
+	protected OpNode(OpNode node, String id)
 	{
-		return new OpNode(this.source, getIdentifier());
+		super(node, id);
 	}
 	
 	@Override
-	public OpNode clone(AstFactory af)
+	public OpNode dupNode()
 	{
-		return (OpNode) af.SimpleNameNode(this.source, OpKind.KIND, getIdentifier());
+		return new OpNode(this, getIdentifier());
 	}
 	
 	@Override
@@ -78,4 +79,29 @@ public class OpNode extends SimpleNameNode<OpKind>
 		hash = 31 * super.hashCode();
 		return hash;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public OpNode(CommonTree source, String identifier)
+	{
+		super(source, identifier);
+	}
+
+	/*@Override
+	protected OpNode copy()
+	{
+		return new OpNode(this.source, getIdentifier());
+	}
+	
+	@Override
+	public OpNode clone(AstFactory af)
+	{
+		return (OpNode) af.SimpleNameNode(this.source, OpKind.KIND, getIdentifier());
+	}*/
 }

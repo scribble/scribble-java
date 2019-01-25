@@ -39,40 +39,48 @@ import org.scribble.visit.wf.env.WFChoiceEnv;
 public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 {
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GChoice gc = (GChoice) visited;
 		List<GProtocolBlock> blocks = gc.getBlockChildren().stream()
-				.map(b -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
-		RoleNode subj = gc.subj.clone(inl.job.af);
+				.map(b -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env())
+						.getTranslation())
+				.collect(Collectors.toList());
+		RoleNode subj = gc.getSubjectChild().clone(inl.job.af);
 		GChoice inlined = inl.job.af.GChoice(gc.getSource(), subj, blocks);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GChoice) super.leaveProtocolInlining(parent, child, inl, gc);
 	}
 
 	@Override
-	public void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
+	public void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child,
+			WFChoiceChecker checker) throws ScribbleException
 	{
 		// No super call -- replacing base routine with this one
 		WFChoiceEnv env = checker.peekEnv().enterContext();
 		env = env.clear();
-		env = env.enableChoiceSubject(((GChoice) child).subj.toName());
+		env = env.enableChoiceSubject(((GChoice) child).getSubjectChild().toName());
 		checker.pushEnv(env);
 	}
 
 	@Override
-	public GChoice leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GChoice leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child,
+			WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GChoice cho = (GChoice) visited;
-		Role subj = cho.subj.toName();
+		RoleNode subjNode = cho.getSubjectChild();
+		Role subj = subjNode.toName();
 		if (!checker.peekParentEnv().isEnabled(subj))
 		{
-			throw new ScribbleException(cho.subj.getSource(), "Subject not enabled: " + subj);
+			throw new ScribbleException(subjNode.getSource(),
+					"Subject not enabled: " + subj);
 		}
 		
 		// Enabled senders checked in GMessageTransferDel
 		List<WFChoiceEnv> all =
-				cho.getBlockChildren().stream().map(b -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlockChildren().stream().map(b -> (WFChoiceEnv) b.del().env())
+						.collect(Collectors.toList());
 		if (checker.job.useOldWf)  // ****
 		{
 			if (all.size() > 1)
@@ -84,37 +92,45 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 
 					Set<Role> dests = benv0.getEnabled().getDestinations();
 					// Same roles enabled in every block
-					benvs.stream().map(e -> e.getEnabled().getDestinations()).forEach((rs) ->
-							{
-								if (!dests.equals(rs))
+					benvs.stream().map(e -> e.getEnabled().getDestinations())
+							.forEach(rs ->
 								{
-									throw new RuntimeScribbleException("Mismatched enabled roles: " + dests + ", " + rs);
-								}
-							});
+									if (!dests.equals(rs))
+									{
+										throw new RuntimeScribbleException(
+												"Mismatched enabled roles: " + dests + ", " + rs);
+									}
+								});
 					
 					dests.remove(subj);
 					for (Role dest : dests)
 					{
 						// Same enabler(s) for each enabled role
 						Set<Role> srcs = benv0.getEnabled().getSources(dest);  // Always singleton?
-						benvs.stream().map(e -> e.getEnabled().getSources(dest)).forEach((rs) ->
-								{
-									if (!srcs.equals(rs))
+						benvs.stream().map(e -> e.getEnabled().getSources(dest))
+								.forEach(rs ->
 									{
-										throw new RuntimeScribbleException("Mismatched enabler roles for " + dest + ": " + srcs + ", " + rs);
-									}
-								});
+										if (!srcs.equals(rs))
+										{
+											throw new RuntimeScribbleException(
+													"Mismatched enabler roles for " + dest + ": " + srcs
+															+ ", " + rs);
+										}
+									});
 					
 						// Distinct enabling messages
 						Set<MessageId<?>> mids = benv0.getEnabled().getMessages(dest);
-						benvs.stream().map(e -> e.getEnabled().getMessages(dest)).forEach((ms) ->
-								{
-									if (!Collections.disjoint(mids, ms))
+						benvs.stream().map(e -> e.getEnabled().getMessages(dest))
+								.forEach(ms ->
 									{
-										throw new RuntimeScribbleException("Non disjoint enabling messages for " + dest + ": " + mids + ", " + ms);
-									}
-									mids.addAll(ms);
-								});
+										if (!Collections.disjoint(mids, ms))
+										{
+											throw new RuntimeScribbleException(
+													"Non disjoint enabling messages for " + dest + ": "
+															+ mids + ", " + ms);
+										}
+										mids.addAll(ms);
+									});
 					}
 				}
 				catch (RuntimeScribbleException rse)  // Lambda hack
@@ -141,19 +157,26 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		// In principle, for the envLeave we should only be doing the latter (as countpart to enterEnv), but it is much more convenient for the compound-node (choice) to collect all the child block envs and merge here, rather than each individual block env trying to (partially) merge into the parent-choice as they are visited
 		WFChoiceEnv merged = checker.popEnv().mergeContexts(all); 
 		checker.pushEnv(merged);  // Merges the child block envs into the current choice env; super call below merges this choice env into the parent env of the choice
-		return (GChoice) super.leaveInlinedWFChoiceCheck(parent, child, checker, visited);  // Replaces base popAndSet to do pop, merge and set
+		return (GChoice) super.leaveInlinedWFChoiceCheck(parent, child, checker,
+				visited);
+				// Replaces base popAndSet to do pop, merge and set
 				// super call, unlike enter -- only leave is overridden in CompoundInteractionNodeDel, to do the "single" merge (cf. the "multiple" merge done above here)
 	}
 	
 	@Override
-	public GChoice leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	public GChoice leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GChoice gc = (GChoice) visited;
 		List<LProtocolBlock> blocks =
-				gc.getBlockChildren().stream().map(b -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());
+				gc.getBlockChildren().stream()
+						.map(b -> (LProtocolBlock) ((ProjectionEnv) b.del().env())
+								.getProjection())
+						.collect(Collectors.toList());
 				//gc.getBlocks().stream().map(b -> ((GProtocolBlockDel) b.del()).project(b, self)).collect(Collectors.toList());
 		LChoice projection = gc.project(proj.job.af, proj.peekSelf(), blocks);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
+		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent,
+				child, proj, gc);
 	}
 }

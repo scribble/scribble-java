@@ -13,28 +13,29 @@
  */
 package org.scribble.ast.name.qualified;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 
 public class GProtocolNameNode extends ProtocolNameNode<Global>
 {
-	public GProtocolNameNode(CommonTree source, String... ns)
+	// ScribTreeAdaptor#create constructor
+	public GProtocolNameNode(Token t)
 	{
-		super(source, ns);
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected GProtocolNameNode(GProtocolNameNode node, String...elems)
+	{
+		super(node);
 	}
 
 	@Override
-	protected GProtocolNameNode copy()
+	public GProtocolNameNode dupNode()
 	{
-		return new GProtocolNameNode(this.source, this.elems);
-	}
-	
-	@Override
-	public GProtocolNameNode clone(AstFactory af)
-	{
-		return (GProtocolNameNode) af.QualifiedNameNode(this.source, Global.KIND, this.elems);
+		return new GProtocolNameNode(this, this.elems);
 	}
 	
 	@Override
@@ -73,4 +74,28 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 		hash = 31 * hash + this.elems.hashCode();
 		return hash;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	public GProtocolNameNode(CommonTree source, String... ns)
+	{
+		super(source, ns);
+	}
+
+	/*@Override
+	protected GProtocolNameNode copy()
+	{
+		return new GProtocolNameNode(this.source, this.elems);
+	}
+	
+	@Override
+	public GProtocolNameNode clone(AstFactory af)
+	{
+		return (GProtocolNameNode) af.QualifiedNameNode(this.source, Global.KIND, this.elems);
+	}*/
 }

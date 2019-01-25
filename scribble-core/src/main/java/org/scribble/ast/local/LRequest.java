@@ -17,8 +17,11 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.antlr.runtime.Token;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
+import org.scribble.ast.MessageNode;
+import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.Message;
@@ -93,14 +96,14 @@ public class LRequest extends LConnectionAction implements LSimpleInteractionNod
 	
 	
 	
-	/*public LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
+	public LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//public LConnect(RoleNode src, RoleNode dest)
 	{
 		super(source, src, msg, dest);
 		//super(src, dest);
 	}
 
-	@Override
+	/*@Override
 	protected ScribNodeBase copy()
 	{
 		return new LRequest(this.source, this.src, this.msg, this.dest);

@@ -39,7 +39,6 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 		super(job);
 	}
 	
-	
 	/*@Override
 	protected ProjectedSubprotocolPruningEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
 	{
@@ -47,7 +46,8 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 	}*/
 
 	@Override
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		if (child instanceof LProtocolBlock && parent instanceof LChoice)
 		{
@@ -60,20 +60,25 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 				JobContext jc = this.job.getContext();
 				LDo ld = (LDo) ins.get(0);
 				LProtocolDecl lpd = ld.getTargetProtocolDecl(jc, getModuleContext());
-				
+
 				UnguardedChoiceDoProjectionChecker checker = new UnguardedChoiceDoProjectionChecker(
 						this.job,
-						((ModuleDel) jc.getModule(ld.proto.toName().getPrefix()).del()).getModuleContext(), 
+						((ModuleDel) jc.getModule(ld.proto.toName().getPrefix()).del())
+								.getModuleContext(),
 						lc);
 				lpd.accept(checker);
 				
-				if ((lc.subj instanceof DummyProjectionRoleNode) && checker.shouldCheckPrune())
+				if ((lc.getSubjectChild() instanceof DummyProjectionRoleNode)
+						&& checker.shouldCheckPrune())
 				{
-					UnguardedChoiceDoEnv env = (UnguardedChoiceDoEnv) lpd.def.block.del().env();  // Although AST is cloned, del is the same (HACKY?)
+					UnguardedChoiceDoEnv env = (UnguardedChoiceDoEnv) lpd.getDefChild()
+							.getBlockChild().del().env();
+							// Although AST is cloned, del is the same (HACKY?)
 					if (env.subjs.isEmpty())  // Prune check
 					{
-						return this.job.af.LProtocolBlock(lb.getSource(),
-								this.job.af.LInteractionSeq(lis.getSource(), ins.subList(1, ins.size())));  // Supports singleton case
+						// Supports singleton case
+						return this.job.af.LProtocolBlock(lb.getSource(), this.job.af
+								.LInteractionSeq(lis.getSource(), ins.subList(1, ins.size())));
 					}
 				}
 			}
@@ -92,9 +97,11 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 	
 	@Override
 	//protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
-	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited)
+			throws ScribbleException
 	{
-		visited = visited.del().leaveProjectedChoiceDoPruning(parent, child, this, visited);
+		visited = visited.del().leaveProjectedChoiceDoPruning(parent, child, this,
+				visited);
 		//return super.subprotocolLeave(parent, child, visited);
 		return super.leave(parent, child, visited);
 	}

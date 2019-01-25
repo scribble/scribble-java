@@ -141,7 +141,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		LInteractionSeq lis = (LInteractionSeq) visited;
 		List<LInteractionNode> lins = lis.getInteractNodeChildren().stream().flatMap((li) -> 
 					(li instanceof LRecursion && rem.toRemove(((LRecursion) li).recvar.toName()))
-						? ((LRecursion) li).getBlock().getInteractSeqChild().getInteractNodeChildren().stream()
+						? ((LRecursion) li).getBlockChild().getInteractSeqChild().getInteractNodeChildren().stream()
 						: Stream.of(li)
 				).collect(Collectors.toList());
 		return rem.job.af.LInteractionSeq(lis.getSource(), lins);

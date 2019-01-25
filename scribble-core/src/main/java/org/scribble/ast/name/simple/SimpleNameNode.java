@@ -18,7 +18,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.type.kind.Kind;
 
-// Parser Identifier
+// "Identifier" in parser grammar
 public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 {
 	// ScribTreeAdaptor#create constructor

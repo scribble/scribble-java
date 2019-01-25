@@ -22,6 +22,7 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
 // (G)Disconnect is symmetric (send/receive asymmetric/async; request/accept asymmetric/sync; (g)disconnect symmetric/async)
+// However, LDisconnect is "symmetric" but self-oriented -- "left" used for self
 public abstract class DisconnectAction<K extends ProtocolKind>
 		extends SimpleInteractionNode<K>
 {
@@ -53,11 +54,11 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 		return (RoleNode) getChild(1);
 	}
 
-	public DisconnectAction<K> reconstruct(RoleNode self, RoleNode peer)
+	public DisconnectAction<K> reconstruct(RoleNode left, RoleNode right)
 	{
 		DisconnectAction<K> da = dupNode();
-		da.addChild(self);
-		da.addChild(peer);
+		da.addChild(left);
+		da.addChild(right);
 		ScribDel del = del();
 		da.setDel(del);  // No copy
 		return da;

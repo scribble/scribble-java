@@ -30,7 +30,9 @@ import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LDisconnect extends DisconnectAction<Local> implements LSimpleInteractionNode
+// "left" of LDisconnect is used for self
+public class LDisconnect extends DisconnectAction<Local>
+		implements LSimpleInteractionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LDisconnect(Token t)
@@ -48,12 +50,20 @@ public class LDisconnect extends DisconnectAction<Local> implements LSimpleInter
 		this.peer = null;
 	}
 	
-	HERE do self/peer getters (left self, right peer)
+	public RoleNode getSelfChild()
+	{
+		return getLeftChild();
+	}
+
+	public RoleNode getPeerChild()
+	{
+		return getRightChild();
+	}
 
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
-		RoleNode src = getLeftChild();
+		RoleNode src = getSelfChild();
 		fixer.setChoiceSubject(src.toName());
 		return src.toName();
 	}
@@ -88,7 +98,7 @@ public class LDisconnect extends DisconnectAction<Local> implements LSimpleInter
 	@Override
 	public String toString()
 	{
-		return Constants.DISCONNECT_KW + " " + getRightChild() + ";";
+		return Constants.DISCONNECT_KW + " " + getPeerChild() + ";";
 	}
 	
 	

@@ -24,14 +24,16 @@ import org.scribble.type.name.PackageName;
 public abstract class MemberNameNode<K extends Kind>
 		extends QualifiedNameNode<K>
 {
+	// ScribTreeAdaptor#create constructor
 	public MemberNameNode(Token t)
 	{
 		super(t);
 	}
 
-	public MemberNameNode(CommonTree source, String... ns)
+	// Tree#dupNode constructor
+	protected MemberNameNode(MemberNameNode<K> node, String...elems)
 	{
-		super(source, ns);
+		super(node);
 	}
 
 	protected ModuleName getModuleNamePrefix()
@@ -44,5 +46,21 @@ public abstract class MemberNameNode<K extends Kind>
 		}
 		return new ModuleName(
 				new PackageName(Arrays.copyOf(prefix, prefix.length - 1)), mn);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public MemberNameNode(CommonTree source, String... ns)
+	{
+		super(source, ns);
 	}
 }

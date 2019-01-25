@@ -13,8 +13,8 @@
  */
 package org.scribble.ast.name.qualified;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.type.Arg;
 import org.scribble.type.kind.Local;
@@ -22,21 +22,22 @@ import org.scribble.type.name.LProtocolName;
 
 public class LProtocolNameNode extends ProtocolNameNode<Local> implements PayloadElemNameNode<Local>
 {
-	public LProtocolNameNode(CommonTree source, String... ns)
+	// ScribTreeAdaptor#create constructor
+	public LProtocolNameNode(Token t)
 	{
-		super(source, ns);
+		super(t);
 	}
 
-	@Override
-	protected LProtocolNameNode copy()
+	// Tree#dupNode constructor
+	protected LProtocolNameNode(LProtocolNameNode node, String...elems)
 	{
-		return new LProtocolNameNode(this.source, this.elems);
+		super(node);
 	}
 	
 	@Override
-	public LProtocolNameNode clone(AstFactory af)
+	public LProtocolNameNode dupNode()
 	{
-		return (LProtocolNameNode) af.QualifiedNameNode(this.source, Local.KIND, this.elems);
+		return new LProtocolNameNode(this, this.elems);
 	}
 	
 	@Override
@@ -46,6 +47,18 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 		return isPrefixed()
 				? new LProtocolName(getModuleNamePrefix(), membname)
 				: membname;
+	}
+
+	@Override
+	public LProtocolName toPayloadType()
+	{
+		return toName();
+	}
+
+	@Override
+	public Arg<Local> toArg()
+	{
+		return toPayloadType();
 	}
 		
 	@Override
@@ -75,16 +88,29 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 		hash = 31 * hash + this.elems.hashCode();
 		return hash;
 	}
-
-	@Override
-	public Arg<Local> toArg()
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public LProtocolNameNode(CommonTree source, String... ns)
 	{
-		return toPayloadType();
+		super(source, ns);
 	}
 
-	@Override
-	public LProtocolName toPayloadType()
+	/*@Override
+	protected LProtocolNameNode copy()
 	{
-		return toName();
+		return new LProtocolNameNode(this.source, this.elems);
 	}
+	
+	@Override
+	public LProtocolNameNode clone(AstFactory af)
+	{
+		return (LProtocolNameNode) af.QualifiedNameNode(this.source, Local.KIND, this.elems);
+	}*/
 }

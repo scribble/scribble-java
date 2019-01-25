@@ -57,11 +57,12 @@ public class GDisconnect extends DisconnectAction<Global> implements GSimpleInte
 					RoleKind.KIND, leftNode.toName().toString()); // clone?
 			RoleNode rightNode1 = (RoleNode) af.SimpleNameNode(rightNode.getSource(),
 					RoleKind.KIND, rightNode.toName().toString());
+			// "left" of LDisconnect is used for self
 			if (left.equals(self))
 			{
 				proj = af.LDisconnect(this.source, leftNode1, rightNode1);
 			}
-			if (right.equals(self))
+			else if (right.equals(self))  // CHECKME: self-comm via self-connections?  so self-disconn?
 			{
 				proj = af.LDisconnect(this.source, rightNode1, leftNode1);
 			}

@@ -13,7 +13,7 @@
  */
 package org.scribble.ast.name.simple;
 
-import org.scribble.ast.AstFactory;
+import org.antlr.runtime.Token;
 import org.scribble.del.ScribDel;
 import org.scribble.type.name.Role;
 import org.scribble.visit.Substitutor;
@@ -23,21 +23,16 @@ public class DummyProjectionRoleNode extends RoleNode
 {
 	public static final String DUMMY_PROJECTION_ROLE = "__DUMMY_ROLE";
 
-	public DummyProjectionRoleNode()
+	// ScribTreeAdaptor#create constructor
+	public DummyProjectionRoleNode(Token t)
 	{
-		super(null, DUMMY_PROJECTION_ROLE);
+		super(t);
 	}
 
-	@Override
-	protected DummyProjectionRoleNode copy()
+	// Tree#dupNode constructor
+	protected DummyProjectionRoleNode(DummyProjectionRoleNode node, String id)
 	{
-		return new DummyProjectionRoleNode();
-	}
-	
-	@Override
-	public DummyProjectionRoleNode clone(AstFactory af)
-	{
-		return af.DummyProjectionRoleNode();
+		super(node, id);
 	}
 	
 	@Override
@@ -89,4 +84,30 @@ public class DummyProjectionRoleNode extends RoleNode
 		hash = 31 * super.hashCode();
 		return hash;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public DummyProjectionRoleNode()
+	{
+		super(null, DUMMY_PROJECTION_ROLE);
+	}
+
+	/*@Override
+	protected DummyProjectionRoleNode copy()
+	{
+		return new DummyProjectionRoleNode();
+	}
+	
+	@Override
+	public DummyProjectionRoleNode clone(AstFactory af)
+	{
+		return af.DummyProjectionRoleNode();
+	}*/
 }

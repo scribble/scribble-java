@@ -15,12 +15,11 @@ package org.scribble.ast.local;
 
 import java.util.Set;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
-import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
@@ -29,15 +28,94 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LRecursion extends Recursion<Local> implements LCompoundInteractionNode
 {
+	// ScribTreeAdaptor#create constructor
+	public LRecursion(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected LRecursion(LRecursion node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public LRecursion dupNode()
+	{
+		return new LRecursion(this);
+	}
+
+	@Override
+	public LProtocolBlock getBlockChild()
+	{
+		return (LProtocolBlock) getChild(1);
+	}
+	
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		//fixer.pushRec(this.recvar.toName());
+		return getBlockChild().getInteractSeqChild().getInteractNodeChildren()
+				.get(0).inferLocalChoiceSubject(fixer);
+	}
+
+	@Override
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+			throws ScribbleException
+	{
+		if (!(ln instanceof LRecursion) || !this.canMerge(ln))
+		{
+			throw new ScribbleException("Cannot merge " + getClass() + " and "
+					+ ln.getClass() + ": " + this + ", " + ln);
+		}
+		LRecursion them = ((LRecursion) ln);
+		if (!getRecVarChild().toName()
+				.equals(them.getRecVarChild().toName()))
+		{
+			throw new ScribbleException(
+					"Cannot merge recursions for " + getRecVarChild() + " and "
+							+ them.getRecVarChild() + ": " + this + ", " + ln);
+		}
+		return af.LRecursion(this.source, getRecVarChild().clone(af),
+				getBlockChild().merge(them.getBlockChild()));
+				// Not reconstruct: leave context building to post-projection passes
+				// HACK: this source
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		return ln instanceof LRecursion;
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		return getBlockChild().getEnabling();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 	public LRecursion(CommonTree source, RecVarNode recvar, LProtocolBlock block)
 	{
 		super(source, recvar, block);
 	}
 
-	@Override
+	/*@Override
 	protected LRecursion copy()
 	{
-		return new LRecursion(this.source, this.recvar, getBlock());
+		return new LRecursion(this.source, this.recvar, getBlockChild());
 	}
 
 	@Override
@@ -53,48 +131,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	public LRecursion clone(AstFactory af)
 	{
 		RecVarNode recvar = this.recvar.clone(af);
-		LProtocolBlock block = getBlock().clone(af);
+		LProtocolBlock block = getBlockChild().clone(af);
 		return af.LRecursion(this.source, recvar, block);
-	}
-	
-	@Override
-	public LProtocolBlock getBlock()
-	{
-		return (LProtocolBlock) this.block;
-	}
-
-	@Override
-	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
-	{
-		//fixer.pushRec(this.recvar.toName());
-		return getBlock().getInteractSeqChild().getInteractNodeChildren().get(0).inferLocalChoiceSubject(fixer);
-	}
-
-	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
-	{
-		if (!(ln instanceof LRecursion) || !this.canMerge(ln))
-		{
-			throw new ScribbleException("Cannot merge " + this.getClass() + " and " + ln.getClass() + ": " + this + ", " + ln);
-		}
-		LRecursion them = ((LRecursion) ln);
-		if (!this.recvar.equals(them.recvar))
-		{
-			throw new ScribbleException("Cannot merge recursions for " + this.recvar + " and " + them.recvar + ": " + this + ", " + ln);
-		}
-		return af.LRecursion(this.source, this.recvar.clone(af), getBlock().merge(them.getBlock()));  // Not reconstruct: leave context building to post-projection passes
-				// HACK: this source
-	}
-
-	@Override
-	public boolean canMerge(LInteractionNode ln)
-	{
-		return ln instanceof LRecursion;
-	}
-
-	@Override
-	public Set<Message> getEnabling()
-	{
-		return getBlock().getEnabling();
-	}
+	}*/
 }

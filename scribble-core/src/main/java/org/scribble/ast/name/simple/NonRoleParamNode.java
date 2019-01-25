@@ -13,6 +13,7 @@
  */
 package org.scribble.ast.name.simple;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
@@ -33,32 +34,36 @@ import org.scribble.visit.Substitutor;
 // An unambiguous kinded parameter (ambiguous parameters handled by disambiguation) that isn't a role -- e.g. DataType/MessageSigName param
 //public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode
 //public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode<PayloadTypeKind>
-public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode<DataTypeKind>  // As a payload, can only be a DataType (so hardcode)
+public class NonRoleParamNode<K extends NonRoleParamKind> extends
+		SimpleNameNode<K> implements MessageNode, PayloadElemNameNode<DataTypeKind>
+		// As a payload, can only be a DataType (so hardcode)
 {
 	public final K kind;
-	
-	public NonRoleParamNode(CommonTree source, K kind, String identifier)
+
+	// ScribTreeAdaptor#create constructor
+	public NonRoleParamNode(Token t)
 	{
-		super(source, identifier);
+		super(t);
+		this.kind = null;  // FIXME: how to set? (disamb?) -- probably do concrete data/sig subclasses?
+	}
+
+	// Tree#dupNode constructor
+	protected NonRoleParamNode(NonRoleParamNode<K> node, K kind, String id)
+	{
+		super(node, id);
 		this.kind = kind;
+	}
+	
+	@Override
+	public NonRoleParamNode<K> dupNode()
+	{
+		return new NonRoleParamNode<>(this, this.kind, getIdentifier());
 	}
 	
 	@Override
 	public MessageNode project(AstFactory af)  // MessageSigName params
 	{
 		return this;
-	}
-
-	@Override
-	protected NonRoleParamNode<K> copy()
-	{
-		return new NonRoleParamNode<>(this.source, this.kind, getIdentifier());
-	}
-	
-	@Override
-	public NonRoleParamNode<K> clone(AstFactory af)
-	{
-		return af.NonRoleParamNode(this.source, this.kind, getIdentifier());
 	}
 	
 	@Override
@@ -179,4 +184,33 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 		hash = 31 * super.hashCode();
 		return hash;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public NonRoleParamNode(CommonTree source, K kind, String identifier)
+	{
+		super(source, identifier);
+		this.kind = kind;
+	}
+
+	/*@Override
+	protected NonRoleParamNode<K> copy()
+	{
+		return new NonRoleParamNode<>(this.source, this.kind, getIdentifier());
+	}
+	
+	@Override
+	public NonRoleParamNode<K> clone(AstFactory af)
+	{
+		return af.NonRoleParamNode(this.source, this.kind, getIdentifier());
+	}*/
 }
