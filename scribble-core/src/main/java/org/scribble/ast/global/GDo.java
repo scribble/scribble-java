@@ -13,18 +13,16 @@
  */
 package org.scribble.ast.global;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.del.ScribDel;
 import org.scribble.main.JobContext;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
@@ -32,20 +30,73 @@ import org.scribble.type.name.Role;
 
 public class GDo extends Do<Global> implements GSimpleInteractionNode
 {
+	// ScribTreeAdaptor#create constructor
+	public GDo(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public GDo(GDo node)
+	{
+		super(node);
+	}
+
+	@Override
+	public GProtocolNameNode getProtocolNameNode()
+	{
+		return (GProtocolNameNode) getChild(2);
+	}
+	
+	@Override
+	public GDo dupNode()
+	{
+		return new GDo(this);
+	}
+
+	public LDo project(AstFactory af, Role self, LProtocolNameNode fullname)
+	{
+		RoleArgList roles = this.getRoleListChild().project(af, self);
+		NonRoleArgList args = this.getArgListChild().project(af, self);
+		LDo projection = af.LDo(this.source, roles, args, fullname);
+		return projection;
+	}
+
+	@Override
+	public GProtocolName getTargetProtocolDeclFullName(ModuleContext mcontext)
+	{
+		return (GProtocolName) super.getTargetProtocolDeclFullName(mcontext);
+	}
+
+	@Override
+	public GProtocolDecl getTargetProtocolDecl(JobContext jcontext,
+			ModuleContext mcontext)
+	{
+		return (GProtocolDecl) super.getTargetProtocolDecl(jcontext, mcontext);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public GDo(CommonTree source, RoleArgList roles, NonRoleArgList args, GProtocolNameNode proto)
 	{
 		super(source, roles, args, proto);
 	}
 
-	public LDo project(AstFactory af, Role self, LProtocolNameNode fullname)
-	{
-		RoleArgList roleinstans = this.roles.project(af, self);
-		NonRoleArgList arginstans = this.args.project(af, self);
-		LDo projection = af.LDo(this.source, roleinstans, arginstans, fullname);
-		return projection;
-	}
-
-	@Override
+	/*@Override
 	protected ScribNodeBase copy()
 	{
 		return new GDo(this.source, this.roles, this.args, getProtocolNameNode());
@@ -67,23 +118,5 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 		GDo gd = new GDo(this.source, roles, args, (GProtocolNameNode) proto);
 		gd = (GDo) gd.del(del);
 		return gd;
-	}
-
-	@Override
-	public GProtocolNameNode getProtocolNameNode()
-	{
-		return (GProtocolNameNode) this.proto;
-	}
-
-	@Override
-	public GProtocolName getTargetProtocolDeclFullName(ModuleContext mcontext)
-	{
-		return (GProtocolName) super.getTargetProtocolDeclFullName(mcontext);
-	}
-
-	@Override
-	public GProtocolDecl getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
-	{
-		return (GProtocolDecl) super.getTargetProtocolDecl(jcontext, mcontext);
-	}
+	}*/
 }

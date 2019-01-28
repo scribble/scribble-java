@@ -13,29 +13,51 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
+// TODO: rename better? DoArg, DoArgNode, ...
+// CHECKME: make DoArg into an interface and have DoArgNode as direct children of Do?
 // Cf. NameDeclNode/HeaderParameterDecl, i.e. wrappers for param names/arg values
 // Simpler than NameDeclNode, doesn't constrain node-type correspondence for names
 public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 {
-	public final T val;
-
-	protected DoArg(CommonTree source, T arg)
+	// ScribTreeAdaptor#create constructor
+	public DoArg(Token t)
 	{
-		super(source);
-		this.val = arg;
+		super(t);
+		this.val = null;
 	}
 
-	public abstract DoArg<T> reconstruct(T arg);
+	// Tree#dupNode constructor
+	public DoArg(DoArg<T> node)
+	{
+		super(node);
+		this.val = null;
+	}
+	
+	public abstract T getValChild();
+	
+	public abstract DoArg<T> dupNode();
+
+	public DoArg<T> reconstruct(T arg)
+	{
+		DoArg<T> sig = dupNode();
+		sig.addChild(arg);
+		ScribDel del = del();
+		sig.setDel(del);  // No copy
+		return sig;
+	}
 	
 	@Override
 	public DoArg<T> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		ScribNode visited = visitChild(this.val, nv);  // Disambiguation will replace AmbiguousNameNodes*/
+		ScribNode visited = visitChild(getValChild(), nv);  // Disambiguation will replace AmbiguousNameNodes
+				// CHECKME: use visitChildWithClassEqualityCheck?
 		if (!(visited instanceof DoArgNode))
 		{
 			throw new RuntimeException("Shouldn't get in here: " + visited);
@@ -43,11 +65,6 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 		@SuppressWarnings("unchecked")
 		T arg = (T) visited;
 		return reconstruct(arg);
-	}
-	
-	public T getVal()
-	{
-		return this.val;
 	}
 
 	public abstract DoArg<T> project(AstFactory af, Role self);
@@ -57,4 +74,23 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 	{
 		return this.val.toString();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private final T val;
+
+	protected DoArg(CommonTree source, T arg)
+	{
+		super(source);
+		this.val = arg;
+	}
+
 }

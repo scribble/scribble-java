@@ -14,7 +14,6 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
-import org.scribble.del.ScribDel;
 import org.scribble.type.name.Role;
 import org.scribble.visit.Substitutor;
 
@@ -36,19 +35,22 @@ public class DummyProjectionRoleNode extends RoleNode
 	}
 	
 	@Override
+	public RoleNode dupNode()
+	{
+		return new RoleNode(this, getIdentifier());
+	}
+
+	@Override
+	protected DummyProjectionRoleNode reconstruct(String id)
+	{
+		return (DummyProjectionRoleNode) super.reconstruct(id);
+	}
+	
+	@Override
 	public DummyProjectionRoleNode substituteNames(Substitutor subs)
 	{
 		//throw new RuntimeException("Shouldn't get in here: " + this);
 		return reconstruct(null);  // HACK: for ProjectedSubprotocolPruner, but maybe useful for others
-	}
-
-	@Override
-	protected DummyProjectionRoleNode reconstruct(String identifier)
-	{
-		ScribDel del = del();
-		DummyProjectionRoleNode rn = new DummyProjectionRoleNode();
-		rn = (DummyProjectionRoleNode) rn.del(del);
-		return rn;
 	}
 	
 	@Override
@@ -109,5 +111,14 @@ public class DummyProjectionRoleNode extends RoleNode
 	public DummyProjectionRoleNode clone(AstFactory af)
 	{
 		return af.DummyProjectionRoleNode();
+	}*/
+
+	/*@Override
+	protected DummyProjectionRoleNode reconstruct(String id)
+	{
+		ScribDel del = del();
+		DummyProjectionRoleNode rn = new DummyProjectionRoleNode();
+		rn = (DummyProjectionRoleNode) rn.del(del);
+		return rn;
 	}*/
 }

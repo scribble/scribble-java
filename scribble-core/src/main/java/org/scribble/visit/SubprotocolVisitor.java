@@ -27,6 +27,7 @@ import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScopedNode;
@@ -65,22 +66,30 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	// Pushes a subprotocol signature (i.e. on root entry)
 	protected void enterRootProtocolDecl(ProtocolDecl<?> pd)
 	{
-		Map<Role, RoleNode> rolemap = makeRootRoleSubsMap(pd.header.roledecls);
-		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap = makeRootNonRoleSubsMap(pd.header.paramdecls);
+		ProtocolHeader<?> hdr = pd.getHeaderChild();
+		RoleDeclList rds = hdr.getRoleDeclListChild();
+		NonRoleParamDeclList pds = hdr.getParamDeclListChild();
+		
+		Map<Role, RoleNode> rolemap = makeRootRoleSubsMap(rds);
+		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap = makeRootNonRoleSubsMap(
+				pds);
 		this.rolemaps.push(rolemap);
 		this.argmaps.push(argmap);
 		
 		ModuleContext mcontext = getModuleContext();
-		ProtocolName<?> fullname = mcontext.getVisibleProtocolDeclFullName(pd.header.getDeclName());
-		List<Role> roleargs = pd.header.roledecls.getRoles();
+		ProtocolName<?> fullname = mcontext
+				.getVisibleProtocolDeclFullName(hdr.getDeclName());
+		List<Role> roleargs = rds.getRoles();
 		List<Arg<? extends NonRoleArgKind>> nonroleargs =
-				pd.header.paramdecls.getDecls().stream().map((param) -> paramDeclToArg(param)).collect(Collectors.toList());
+				pds.getDecls().stream().map(param -> paramDeclToArg(param))
+						.collect(Collectors.toList());
 		pushSubprotocolSig(fullname, roleargs, nonroleargs);
 	}
 
 	// Most subclasses will override visitForSubprotocols (e.g. ReachabilityChecker, FsmConstructor), but sometimes still want to change whole visit pattern (e.g. Projector)
 	@Override
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		enter(parent, child);
 		ScribNode visited = visitForSubprotocols(parent, child);
@@ -88,7 +97,8 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	}
 
 	// Subclasses can override this to disable subprotocol visiting
-	protected ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	protected ScribNode visitForSubprotocols(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		if (child instanceof Do)
 		{
@@ -102,15 +112,19 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	}
 	
 	// The Do node itself is no longer visited -- FIXME: projection needs to visit it -- no: that's in enter/leave, visited means "visit children"
-	protected Do<?> visitOverrideForDo(ScribNode parent, Do<?> doo) throws ScribbleException
+	protected Do<?> visitOverrideForDo(ScribNode parent, Do<?> doo)
+			throws ScribbleException
 	{
 		if (!isCycle())
 		{
 			JobContext jc = this.job.getContext();
 			ModuleContext mc = getModuleContext();
-			ProtocolDecl<? extends ProtocolKind> pd = doo.getTargetProtocolDecl(jc, mc);
+			ProtocolDecl<? extends ProtocolKind> pd = 
+					doo.getTargetProtocolDecl(jc, mc);
 			// Target is cloned: fresh dels and envs, which will be discarded
-			ScribNode seq = applySubstitutions(pd.def.block.seq.clone(this.job.af));  // Visit the seq? -- or visit the interactions in the seq directly?
+			ScribNode seq = applySubstitutions(pd.getDefChild().getBlockChild()
+					.getInteractSeqChild().clone()); //this.job.af));
+					// Visit the seq? -- or visit the interactions in the seq directly?
 					// Visit seq/interactions under current environment
 			seq.accept(this);  // Result from visiting subprotocol body is discarded
 		}
@@ -130,7 +144,8 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		}
 		try
 		{
-			return n.accept(new Substitutor(this.job, this.rolemaps.peek(), this.argmaps.peek()));
+			return n.accept(
+					new Substitutor(this.job, this.rolemaps.peek(), this.argmaps.peek()));
 		}
 		catch (ScribbleException e)
 		{
@@ -139,7 +154,8 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	}
 
 	@Override
-	protected final void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void envEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		super.envEnter(parent, child);
 
@@ -164,7 +180,8 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	}
 
 	@Override
-	protected final ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected final ScribNode envLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
 		ScribNode n = subprotocolLeave(parent, child, visited);
 		if (child instanceof ProtocolDecl)
@@ -183,26 +200,32 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	}
 	
 	// Hack for OffsetSubprotocolVisitor
-	protected void envLeaveProtocolDeclOverride(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected void envLeaveProtocolDeclOverride(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
 		leaveSubprotocol();
 	}
 
-	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void subprotocolEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 
 	}
 
-	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
 	private void enterSubprotocol(Do<?> doo)
 	{
-		ProtocolName<?> fullname = getModuleContext().checkProtocolDeclDependencyFullName(doo.proto.toName());
+		ProtocolName<?> fullname = 
+				getModuleContext().checkProtocolDeclDependencyFullName(
+						doo.getProtocolNameNode().toName());
 			// namedisamb should already have converted proto to the fullname -- in order for inlining to work
-		pushSubprotocolSig(fullname, doo.roles.getRoles(), doo.args.getArguments());
+		pushSubprotocolSig(fullname, doo.getRoleListChild().getRoles(),
+				doo.getArgListChild().getArguments());
 		pushNameMaps(fullname, doo);
 	}
 
@@ -214,7 +237,8 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		this.argmaps.pop();
 	}
 	
-	private void pushSubprotocolSig(ProtocolName<?> fullname, List<Role> roleargs, List<Arg<? extends NonRoleArgKind>> nonroleargs)
+	private void pushSubprotocolSig(ProtocolName<?> fullname, List<Role> roleargs,
+			List<Arg<? extends NonRoleArgKind>> nonroleargs)
 	{
 		SubprotocolSig subsig = new SubprotocolSig(fullname, roleargs, nonroleargs);
 		this.stack.add(subsig);
@@ -222,14 +246,19 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	
 	private void pushNameMaps(ProtocolName<?> fullname, Do<?> doo)
 	{
-		ProtocolDecl<?> pd = this.job.getContext().getModule(fullname.getPrefix()).getProtocolDeclChild(fullname.getSimpleName());
-		this.rolemaps.push(makeRoleSubsMap(this.rolemaps.get(0), doo.roles, pd.header.roledecls));
-		this.argmaps.push(makeNonRoleSubsMap(this.argmaps.get(0), doo.args, pd.header.paramdecls));
+		ProtocolDecl<?> pd = this.job.getContext().getModule(fullname.getPrefix())
+				.getProtocolDeclChild(fullname.getSimpleName());
+		ProtocolHeader<?> hdr = pd.getHeaderChild();
+		this.rolemaps.push(makeRoleSubsMap(this.rolemaps.get(0),
+				doo.getRoleListChild(), hdr.getRoleDeclListChild()));
+		this.argmaps.push(makeNonRoleSubsMap(this.argmaps.get(0),
+				doo.getArgListChild(), hdr.getParamDeclListChild()));
 	}
 	
 	public boolean isRootedCycle()
 	{
-		return this.stack.size() > 1 && this.stack.get(0).equals(this.stack.get(this.stack.size() - 1));
+		return this.stack.size() > 1
+				&& this.stack.get(0).equals(this.stack.get(this.stack.size() - 1));
 	}
 
 	public boolean isCycle()
@@ -245,7 +274,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 			SubprotocolSig last = this.stack.get(size - 1);
 			for (int i = size - 2; i >= 0; i--)
 			{
-				if (this.stack.get(i).equals(last))  // FIXME: doesn't support recursive scoped subprotocols, i.e. cycle detection not general enough?
+				if (this.stack.get(i).equals(last))  // TODO CHECKME: doesn't support recursive scoped subprotocols, i.e. cycle detection not general enough?
 				{
 					return i;
 				}
@@ -278,33 +307,40 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	{
 		this.scope = scope;
 	}
-	
+
 	protected static Map<Role, RoleNode> makeRootRoleSubsMap(RoleDeclList rdl)
 	{
-		return rdl.getDecls().stream()
-				.collect(Collectors.toMap((r) -> r.getDeclName(), (r) -> (RoleNode) r.name));
+		return rdl.getDecls().stream().collect(Collectors
+				.toMap(r -> r.getDeclName(), r -> (RoleNode) r.getNameNodeChild()));
 	}
 	
-	protected static Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> makeRootNonRoleSubsMap(NonRoleParamDeclList pdl)
+	protected static Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> makeRootNonRoleSubsMap(
+			NonRoleParamDeclList pdl)
 	{
 		return pdl.getDecls().stream()
-						.collect(Collectors.toMap((p) -> (Arg<?>) p.getDeclName(), (p) -> (NonRoleArgNode) p.name));
+				.collect(Collectors.toMap(p -> (Arg<?>) p.getDeclName(),
+						p -> (NonRoleArgNode) p.getNameNodeChild()));
 	}
 
-	protected static Map<Role, RoleNode> makeRoleSubsMap(Map<Role, RoleNode> root, RoleArgList ral, RoleDeclList rdl)
+	protected static Map<Role, RoleNode> makeRoleSubsMap(Map<Role, RoleNode> root,
+			RoleArgList ral, RoleDeclList rdl)
 	{
 		Iterator<Role> roleargs = ral.getRoles().iterator();
-		return rdl.getRoles().stream().collect(Collectors.toMap((r) -> r, (r) -> root.get(roleargs.next())));
+		return rdl.getRoles().stream()
+				.collect(Collectors.toMap(r -> r, r -> root.get(roleargs.next())));
 	}
 
-	protected static Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode>
-			makeNonRoleSubsMap(Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> root, NonRoleArgList nral, NonRoleParamDeclList nrpdl)
+	protected static Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> makeNonRoleSubsMap(
+			Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> root,
+			NonRoleArgList nral, NonRoleParamDeclList nrpdl)
 	{
 		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> newmap = new HashMap<>();
 
 		// Using arg and argnode views of the arglist
-		Iterator<Arg<? extends NonRoleArgKind>> nonroleargs = nral.getArguments().iterator();
-		Iterator<NonRoleArgNode> nonroleargnodes = nral.getArgumentNodes().iterator();
+		Iterator<Arg<? extends NonRoleArgKind>> nonroleargs = nral.getArguments()
+				.iterator();
+		Iterator<NonRoleArgNode> nonroleargnodes = nral.getArgumentNodes()
+				.iterator();
 		for (Name<NonRoleParamKind> param : nrpdl.getParameters())
 		{
 			Arg<?> arg = nonroleargs.next();
@@ -324,7 +360,8 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		return newmap;
 	}
 	
-	private static Arg<? extends NonRoleArgKind> paramDeclToArg(NonRoleParamDecl<NonRoleParamKind> pd)
+	private static Arg<? extends NonRoleArgKind> paramDeclToArg(
+			NonRoleParamDecl<NonRoleParamKind> pd)
 	{
 		Name<NonRoleParamKind> n = pd.getDeclName();
 		if (!(n instanceof Arg))

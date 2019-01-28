@@ -13,27 +13,65 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.del.ScribDel;
 import org.scribble.type.name.Role;
 
 public class NonRoleArg extends DoArg<NonRoleArgNode>
 {
+	// ScribTreeAdaptor#create constructor
+	public NonRoleArg(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public NonRoleArg(NonRoleArg node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public NonRoleArgNode getValChild()
+	{
+		return (NonRoleArgNode) getChild(0);
+	}
+	
+	@Override
+	public NonRoleArg dupNode()
+	{
+		return new NonRoleArg(this);
+	}
+	
+	@Override
+	public NonRoleArg project(AstFactory af, Role self)
+	{
+		return af.NonRoleArg(this.source, getValChild());  // arg needs projection?
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public NonRoleArg(CommonTree source, NonRoleArgNode arg)
 	{
 		super(source, arg);
 	}
 
-	@Override
+	/*@Override
 	protected ScribNodeBase copy()
 	{
-		return new NonRoleArg(this.source, getVal());
+		return new NonRoleArg(this.source, getValChild());
 	}
 	
 	@Override
 	public NonRoleArg clone(AstFactory af)
 	{
-		NonRoleArgNode arg = (NonRoleArgNode) getVal().clone(af);
+		NonRoleArgNode arg = (NonRoleArgNode) getValChild().clone(af);
 		return af.NonRoleArg(this.source, arg);
 	}
 
@@ -44,17 +82,5 @@ public class NonRoleArg extends DoArg<NonRoleArgNode>
 		NonRoleArg ai = new NonRoleArg(this.source, arg);
 		ai = (NonRoleArg) ai.del(del);
 		return ai;
-	}
-	
-	@Override
-	public NonRoleArgNode getVal()
-	{
-		return (NonRoleArgNode) super.getVal();
-	}
-	
-	@Override
-	public NonRoleArg project(AstFactory af, Role self)
-	{
-		return af.NonRoleArg(this.source, getVal());  // arg needs projection?
-	}
+	}*/
 }

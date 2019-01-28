@@ -46,8 +46,6 @@ public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInte
 		this.dests = null;
 	}
 	
-	public abstract MessageTransfer<K> dupNode();
-	
 	public MessageNode getMessageNodeChild()
 	{
 		return (MessageNode) getChild(0);
@@ -71,6 +69,8 @@ public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInte
 		return getDestinationChildren().stream().map(rn -> rn.toName())
 				.collect(Collectors.toList());
 	}
+	
+	public abstract MessageTransfer<K> dupNode();
 
 	public MessageTransfer<K> reconstruct(RoleNode src, MessageNode msg,
 			List<RoleNode> dests)

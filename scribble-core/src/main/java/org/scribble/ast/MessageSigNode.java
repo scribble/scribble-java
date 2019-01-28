@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.del.ScribDel;
@@ -22,52 +23,63 @@ import org.scribble.visit.AstVisitor;
 
 public class MessageSigNode extends ScribNodeBase implements MessageNode
 {
-	public final OpNode op;
-	public final PayloadElemList payloads;
-
-	public MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload)
+	// ScribTreeAdaptor#create constructor
+	public MessageSigNode(Token t)
 	{
-		super(source);
-		this.op = op;
-		this.payloads = payload;
+		super(t);
+		this.op = null;
+		this.payloads = null;
+	}
+
+	// Tree#dupNode constructor
+	public MessageSigNode(MessageSigNode node)
+	{
+		super(node);
+		this.op = null;
+		this.payloads = null;
 	}
 	
-	@Override
-	public MessageNode project(AstFactory af)  // Currently outside of visitor/env pattern
+	public OpNode getOpChild()
 	{
-		return af.MessageSigNode(this.source, this.op, this.payloads.project(af));  // Original del not retained by projection
-	}
-
-	@Override
-	protected MessageSigNode copy()
-	{
-		return new MessageSigNode(this.source, this.op, this.payloads);
-	}	
-
-	@Override
-	public MessageSigNode clone(AstFactory af)
-	{
-		OpNode op = this.op.clone(af);
-		PayloadElemList payload = this.payloads.clone(af);
-		return af.MessageSigNode(this.source, op, payload);
+		return (OpNode) getChild(0);
 	}
 	
+	public PayloadElemList getPayloadListChild()
+	{
+		return (PayloadElemList) getChild(1);
+	}
+	
+	public MessageSigNode dupNode()
+	{
+		return new MessageSigNode(this);
+	}
+
 	public MessageSigNode reconstruct(OpNode op, PayloadElemList payload)
 	{
-		ScribDel del = del();	
-		MessageSigNode msn = new MessageSigNode(this.source, op, payload);
-		msn = (MessageSigNode) msn.del(del);
-		return msn;
+		MessageSigNode sig = dupNode();
+		sig.addChild(op);
+		sig.addChild(payload);
+		ScribDel del = del();
+		sig.setDel(del);  // No copy
+		return sig;
 	}
 	
 	@Override
 	public MessageSigNode visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		OpNode op = (OpNode) visitChild(this.op, nv);
-		PayloadElemList payload = (PayloadElemList) visitChild(this.payloads, nv);
-		return reconstruct(op, payload);
+		OpNode op = (OpNode) visitChild(getOpChild(), nv);
+		PayloadElemList pay = (PayloadElemList) 
+				visitChild(getPayloadListChild(), nv);
+		return reconstruct(op, pay);
 	}
 	
+	@Override
+	public MessageNode project(AstFactory af)  // Currently outside of visitor/env pattern
+	{
+		return af.MessageSigNode(this.source, getOpChild(),
+				getPayloadListChild().project(af));
+				// Original del not retained by projection
+	}
 
 	@Override
 	public boolean isMessageSigNode()
@@ -79,7 +91,8 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	@Override
 	public MessageSig toArg()
 	{
-		return new MessageSig(this.op.toName(), this.payloads.toPayload());
+		return new MessageSig(getOpChild().toName(),
+				getPayloadListChild().toPayload());
 	}
 
 	@Override
@@ -91,6 +104,42 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	@Override
 	public String toString()
 	{
-		return this.op.toString() + this.payloads.toString();
+		return getOpChild().toString() + getPayloadListChild().toString();
 	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private final OpNode op;
+	private final PayloadElemList payloads;
+
+	public MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload)
+	{
+		super(source);
+		this.op = op;
+		this.payloads = payload;
+	}
+
+	/*@Override
+	protected MessageSigNode copy()
+	{
+		return new MessageSigNode(this.source, this.op, this.payloads);
+	}	
+
+	@Override
+	public MessageSigNode clone(AstFactory af)
+	{
+		OpNode op = this.op.clone(af);
+		PayloadElemList payload = this.payloads.clone(af);
+		return af.MessageSigNode(this.source, op, payload);
+	}*/
+	
+	
 }

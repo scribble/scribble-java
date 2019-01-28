@@ -27,7 +27,6 @@ import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LNode;
 import org.scribble.ast.local.LReceive;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
@@ -47,6 +46,7 @@ public class GMessageTransfer extends MessageTransfer<Global>
 		super(node);
 	}
 	
+	@Override
 	public GMessageTransfer dupNode()
 	{
 		return new GMessageTransfer(this);
@@ -89,16 +89,6 @@ public class GMessageTransfer extends MessageTransfer<Global>
 			}
 		}
 		return proj;
-	}
-
-	@Override
-	public GMessageTransfer reconstruct(RoleNode src, MessageNode msg,
-			List<RoleNode> dests)
-	{
-		ScribDel del = del();
-		GMessageTransfer gmt = new GMessageTransfer(this.source, src, msg, dests);
-		gmt = (GMessageTransfer) gmt.del(del);
-		return gmt;
 	}
 
 	@Override
@@ -146,4 +136,13 @@ public class GMessageTransfer extends MessageTransfer<Global>
 		return af.GMessageTransfer(this.source, src, msg, dests);
 	}*/
 
+	/*@Override
+	public GMessageTransfer reconstruct(RoleNode src, MessageNode msg,
+			List<RoleNode> dests)
+	{
+		ScribDel del = del();
+		GMessageTransfer gmt = new GMessageTransfer(this.source, src, msg, dests);
+		gmt = (GMessageTransfer) gmt.del(del);
+		return gmt;
+	}*/
 }

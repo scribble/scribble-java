@@ -68,18 +68,20 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	
 	public List<NonRoleArgNode> getArgumentNodes()
 	{
-		return getDoArgs().stream().map((ai) -> ai.val).collect(Collectors.toList());
+		return getDoArgs().stream().map(ai -> ai.getValChild())
+				.collect(Collectors.toList());
 	}
 
 	public List<Arg<? extends NonRoleArgKind>> getArguments()
 	{
-		return getDoArgs().stream().map((ai) -> ai.val.toArg()).collect(Collectors.toList());
+		return getDoArgs().stream().map((ai) -> ai.getValChild().toArg())
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public String toString()
 	{
-		return (getDoArgs().isEmpty())
+		return getDoArgs().isEmpty()
 				? ""
 				: "<" + super.toString() + ">";
 	}

@@ -15,9 +15,11 @@ package org.scribble.ast;
 
 import java.util.Iterator;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
+import org.scribble.del.ScribDel;
 import org.scribble.main.JobContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
@@ -25,33 +27,60 @@ import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
-public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K> //implements ScopedNode
+public abstract class Do<K extends ProtocolKind>
+		extends SimpleInteractionNode<K> // implements ScopedNode
 {
-	//public final ScopeNode scope;
-	public final RoleArgList roles;
-	public final NonRoleArgList args;
-	public final ProtocolNameNode<K> proto;  // Maybe use an "Ambiguous" version until names resolved -- is a visible protocol, but not necessarily a simple or full member name
-
-	protected Do(CommonTree source, RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<K> proto)
+	// ScribTreeAdaptor#create constructor
+	public Do(Token t)
 	{
-		super(source);
-		//this.scope = scope;
-		this.roles = roleinstans;
-		this.args = arginstans;
-		this.proto = proto;
+		super(t);
+		this.roles = null;
+		this.args = null;
+		this.proto = null;
 	}
 
-	public abstract Do<K> reconstruct(RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<K> proto);
+	// Tree#dupNode constructor
+	public Do(Do<K> node)
+	{
+		super(node);
+		this.roles = null;
+		this.args = null;
+		this.proto = null;
+	}
+	
+	// CHECKME: maybe wrap up role args and non-role args within the same container?
+	public RoleArgList getRoleListChild()
+	{
+		return (RoleArgList) getChild(0);
+	}
+
+	public NonRoleArgList getArgListChild()
+	{
+		return (NonRoleArgList) getChild(1);
+	}
 	
 	public abstract ProtocolNameNode<K> getProtocolNameNode();
+	
+	public abstract Do<K> dupNode();
+
+	public Do<K> reconstruct(RoleArgList roles, NonRoleArgList args, ProtocolNameNode<K> proto)
+	{
+		Do<K> sig = dupNode();
+		sig.addChild(roles);
+		sig.addChild(args);
+		sig.addChild(proto);
+		ScribDel del = del();
+		sig.setDel(del);  // No copy
+		return sig;
+	}
 
 	@Override
 	public Do<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		//ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
-		RoleArgList ril = (RoleArgList) visitChild(this.roles, nv);
-		NonRoleArgList al = (NonRoleArgList) visitChild(this.args, nv);
-		ProtocolNameNode<K> proto = visitChildWithClassEqualityCheck(this, this.proto, nv);
+		RoleArgList ril = (RoleArgList) visitChild(getRoleListChild(), nv);
+		NonRoleArgList al = (NonRoleArgList) visitChild(getArgListChild(), nv);
+		ProtocolNameNode<K> proto = visitChildWithClassEqualityCheck(this,
+				getProtocolNameNode(), nv);
 		return reconstruct(ril, al, proto);
 	}
 
@@ -61,20 +90,24 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 	public ProtocolName<K> getTargetProtocolDeclFullName(ModuleContext mcontext)
 	{
 		//return mcontext.checkProtocolDeclDependencyFullName(this.proto.toName());
-		return this.proto.toName();  // Pre: use after name disambiguation (maybe drop FullName suffix)
+		return getProtocolNameNode().toName();  // Pre: use after name disambiguation (maybe drop FullName suffix)
 	}
 	
 	// mcontext redundant because redundant for getTargetProtocolDeclFullName
-	public ProtocolDecl<K> getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
+	public ProtocolDecl<K> getTargetProtocolDecl(JobContext jcontext,
+			ModuleContext mcontext)
 	{
 		ProtocolName<K> fullname = getTargetProtocolDeclFullName(mcontext);
-		return jcontext.getModule(fullname.getPrefix()).getProtocolDeclChild(fullname.getSimpleName());
+		return jcontext.getModule(fullname.getPrefix())
+				.getProtocolDeclChild(fullname.getSimpleName());
 	}
 	
-	public Role getTargetRoleParameter(JobContext jcontext, ModuleContext mcontext, Role role)
+	public Role getTargetRoleParameter(JobContext jcontext,
+			ModuleContext mcontext, Role role)
 	{
-		Iterator<Role> args = this.roles.getRoles().iterator();
-		Iterator<Role> params = getTargetProtocolDecl(jcontext, mcontext).header.roledecls.getRoles().iterator();
+		Iterator<Role> args = getRoleListChild().getRoles().iterator();
+		Iterator<Role> params = getTargetProtocolDecl(jcontext, mcontext)
+				.getHeaderChild().getRoleDeclListChild().getRoles().iterator();
 		while (args.hasNext())
 		{
 			Role arg = args.next();
@@ -86,34 +119,36 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 		}
 		throw new RuntimeException("Not an argument role: " + role);
 	}
-	
-	/*@Override
-	public boolean isEmptyScope()
-	{
-		return this.scope == null;
-	}
-
-	@Override
-	//public Scope getScope()
-	public SimpleName getScopeElement()
-	{
-		return this.scope.toName();
-	}
-	
-	public boolean isScoped()
-	{
-		return this.scope != null;
-	}*/
 
 	@Override
 	public String toString()
 	{
 		String s = Constants.DO_KW + " ";
-		//if (!hasEmptyScopeNode())
-		/*if (isScoped())
-		{
-			s += this.scope + ":";
-		}*/
-		return s + this.proto + this.args + this.roles + ";";
+		return s + getProtocolNameNode() + getArgListChild() + getRoleListChild()
+				+ ";";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private final RoleArgList roles;
+	private final NonRoleArgList args;
+	private final ProtocolNameNode<K> proto;  // Maybe use an "Ambiguous" version until names resolved -- is a visible protocol, but not necessarily a simple or full member name
+
+	protected Do(CommonTree source, RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<K> proto)
+	{
+		super(source);
+		this.roles = roleinstans;
+		this.args = arginstans;
+		this.proto = proto;
 	}
 }

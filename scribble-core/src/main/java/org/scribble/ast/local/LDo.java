@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Do;
@@ -24,8 +25,6 @@ import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.del.ScribDel;
 import org.scribble.main.JobContext;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
@@ -37,12 +36,102 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LDo extends Do<Local> implements LSimpleInteractionNode
 {
+	// ScribTreeAdaptor#create constructor
+	public LDo(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public LDo(LDo node)
+	{
+		super(node);
+	}
+
+	@Override
+	public LProtocolNameNode getProtocolNameNode()
+	{
+		return (LProtocolNameNode) getChild(2);
+	}
+	
+	@Override
+	public LDo dupNode()
+	{
+		return new LDo(this);
+	}
+
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		ModuleContext mc = fixer.getModuleContext();
+		JobContext jc = fixer.job.getContext();
+		Role subj = getTargetProtocolDecl(jc, mc).getDefChild().getBlockChild()
+				.getInteractSeqChild().getInteractNodeChildren().get(0)
+				.inferLocalChoiceSubject(fixer);
+		// FIXME: need equivalent of (e.g) rec X { continue X; } pruning (cf GRecursion.prune) for irrelevant recursive-do (e.g. proto(A, B, C) { choice at A {A->B.do Proto(A,B,C)} or {A->B.B->C} }))
+		Iterator<Role> roleargs = getRoleListChild().getRoles().iterator();
+		for (Role decl : getTargetProtocolDecl(jc, mc).getHeaderChild()
+				.getRoleDeclListChild().getRoles())
+		{
+			Role arg = roleargs.next();
+			if (decl.equals(subj))
+			{
+				return arg;
+			}
+		}
+		throw new RuntimeException("Shouldn't get here: " + this);
+	}
+
+	@Override
+	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+			throws ScribbleException
+	{
+		throw new RuntimeScribbleException("Invalid merge on LDo: " + this);
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		return false;
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		return Collections.emptySet();
+	}
+
+	@Override
+	public LProtocolName getTargetProtocolDeclFullName(ModuleContext mcontext)
+	{
+		return (LProtocolName) super.getTargetProtocolDeclFullName(mcontext);
+	}
+
+	@Override
+	public LProtocolDecl getTargetProtocolDecl(JobContext jcontext,
+			ModuleContext mcontext)
+	{
+		return (LProtocolDecl) super.getTargetProtocolDecl(jcontext, mcontext);
+	}
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
 	public LDo(CommonTree source, RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto)
 	{
 		super(source, roleinstans, arginstans, proto);
 	}
 
-	@Override
+	/*@Override
 	protected LDo copy()
 	{
 		return new LDo(this.source, this.roles, this.args, getProtocolNameNode());
@@ -64,61 +153,5 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 		LDo ld = new LDo(this.source, roles, args, (LProtocolNameNode) proto);
 		ld = (LDo) ld.del(del);
 		return ld;
-	}
-
-	@Override
-	public LProtocolNameNode getProtocolNameNode()
-	{
-		return (LProtocolNameNode) this.proto;
-	}
-
-	@Override
-	public LProtocolName getTargetProtocolDeclFullName(ModuleContext mcontext)
-	{
-		return (LProtocolName) super.getTargetProtocolDeclFullName(mcontext);
-	}
-
-	@Override
-	public LProtocolDecl getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
-	{
-		return (LProtocolDecl) super.getTargetProtocolDecl(jcontext, mcontext);
-	}
-
-	@Override
-	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
-	{
-		ModuleContext mc = fixer.getModuleContext();
-		JobContext jc = fixer.job.getContext();
-		Role subj = getTargetProtocolDecl(jc, mc).getDefChild().getBlockChild()
-				.getInteractSeqChild().getInteractNodeChildren().get(0).inferLocalChoiceSubject(fixer);
-		// FIXME: need equivalent of (e.g) rec X { continue X; } pruning (cf GRecursion.prune) for irrelevant recursive-do (e.g. proto(A, B, C) { choice at A {A->B.do Proto(A,B,C)} or {A->B.B->C} }))
-		Iterator<Role> roleargs = this.roles.getRoles().iterator();
-		for (Role decl : getTargetProtocolDecl(jc, mc).header.roledecls.getRoles())
-		{
-			Role arg = roleargs.next();
-			if (decl.equals(subj))
-			{
-				return arg;
-			}
-		}
-		throw new RuntimeException("Shouldn't get here: " + this);
-	}
-
-	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException
-	{
-		throw new RuntimeScribbleException("Invalid merge on LDo: " + this);
-	}
-
-	@Override
-	public boolean canMerge(LInteractionNode ln)
-	{
-		return false;
-	}
-
-	@Override
-	public Set<Message> getEnabling()
-	{
-		return Collections.emptySet();
-	}
+	}*/
 }

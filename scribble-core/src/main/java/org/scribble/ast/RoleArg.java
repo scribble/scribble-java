@@ -13,15 +13,57 @@
  */
 package org.scribble.ast;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
 
 public class RoleArg extends DoArg<RoleNode>
 {
-	public RoleArg(CommonTree source, RoleNode arg)
+	// ScribTreeAdaptor#create constructor
+	public RoleArg(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public RoleArg(RoleArg node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public RoleNode getValChild()
+	{
+		return (RoleNode) getChild(0);
+	}
+	
+	@Override
+	public RoleArg dupNode()
+	{
+		return new RoleArg(this);
+	}
+	
+	// CHECKME: move to delegate?
+	@Override
+	public RoleArg project(AstFactory af, Role self)
+	{
+		RoleNode r = getValChild();
+		RoleNode rn = (RoleNode) af.SimpleNameNode(r.source, RoleKind.KIND,
+				r.toName().toString());
+		return af.RoleArg(this.source, rn);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*public RoleArg(CommonTree source, RoleNode arg)
 	{
 		super(source, arg);
 	}
@@ -29,13 +71,13 @@ public class RoleArg extends DoArg<RoleNode>
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new RoleArg(this.source, getVal());
+		return new RoleArg(this.source, getValChild());
 	}	
 	
 	@Override
 	public RoleArg clone(AstFactory af)
 	{
-		RoleNode role = getVal().clone(af);
+		RoleNode role = getValChild().clone(af);
 		return af.RoleArg(this.source, role);
 	}
 
@@ -49,16 +91,8 @@ public class RoleArg extends DoArg<RoleNode>
 	}
 	
 	@Override
-	public RoleNode getVal()
+	public RoleNode getValChild()
 	{
-		return (RoleNode) super.getVal();
-	}
-	
-	// FIXME: move to delegate?
-	@Override
-	public RoleArg project(AstFactory af, Role self)
-	{
-		RoleNode rn = (RoleNode) af.SimpleNameNode(this.val.source, RoleKind.KIND, this.val.toName().toString());
-		return af.RoleArg(this.source, rn);
-	}
+		return (RoleNode) super.getValChild();
+	}*/
 }
