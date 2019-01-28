@@ -13,6 +13,7 @@
  */
 package org.scribble.ast.global;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.PayloadElem;
@@ -33,42 +34,50 @@ import org.scribble.visit.context.Projector;
 //public class DelegationElem extends PayloadElem<Local>
 public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 {
-  // Currently no potential for ambiguity, cf. UnaryPayloadElem (DataTypeNameNode or ParameterNode)
-	public final GProtocolNameNode proto;  // Becomes full name after disambiguation
-	public final RoleNode role;
-	
-	public GDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
+	// ScribTreeAdaptor#create constructor
+	public GDelegationElem(Token t)
 	{
-		//super(proto);
-		super(source);
-		this.proto = proto;
-		this.role = role;
+		super(t);
+		this.proto = null;
+		this.role = null;
+	}
+
+	// Tree#dupNode constructor
+	public GDelegationElem(GDelegationElem node)
+	{
+		super(node);
+		this.proto = null;
+		this.role = null;
+	}
+
+  // Becomes full name after disambiguation
+	public GProtocolNameNode getProtocolChild()
+	{
+		return (GProtocolNameNode) getChild(0);
+	}
+	
+	public RoleNode getRoleChild()
+	{
+		return (RoleNode) getChild(1);
+	}
+	
+	@Override
+	public GDelegationElem dupNode()
+	{
+		return new GDelegationElem(this);
 	}
 	
 	@Override
 	public LDelegationElem project(AstFactory af)
 	{
-		return af.LDelegationElem(this.source, Projector.makeProjectedFullNameNode(af, this.source, this.proto.toName(), this.role.toName()));
+		return af.LDelegationElem(this.source, Projector.makeProjectedFullNameNode(
+				af, this.source, getProtocolChild().toName(), getRoleChild().toName()));
 	}
 
 	@Override
 	public boolean isGlobalDelegationElem()
 	{
 		return true;
-	}
-
-	@Override
-	protected GDelegationElem copy()
-	{
-		return new GDelegationElem(this.source, this.proto, this.role);
-	}
-	
-	@Override
-	public GDelegationElem clone(AstFactory af)
-	{
-		GProtocolNameNode name = (GProtocolNameNode) this.proto.clone(af);
-		RoleNode role = (RoleNode) this.role.clone(af);
-		return af.GDelegationElem(this.source, name, role);
 	}
 
 	public GDelegationElem reconstruct(GProtocolNameNode proto, RoleNode role)
@@ -82,20 +91,63 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	@Override
 	public GDelegationElem visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		GProtocolNameNode name = (GProtocolNameNode) visitChild(this.proto, nv);
-		RoleNode role = (RoleNode) visitChild(this.role, nv);
+		GProtocolNameNode name = (GProtocolNameNode) 
+				visitChild(getProtocolChild(), nv);
+		RoleNode role = (RoleNode) visitChild(getRoleChild(), nv);
 		return reconstruct(name, role);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return this.proto + "@" + this.role;
 	}
 
 	@Override
 	public PayloadElemType<Local> toPayloadType()
 	{
-		return new GDelegationType(this.proto.toName(), this.role.toName());
+		return new GDelegationType(getProtocolChild().toName(),
+				getRoleChild().toName());
 	}
+	
+	@Override
+	public String toString()
+	{
+		return getProtocolChild() + "@" + getRoleChild();
+	}
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Currently no potential for ambiguity, cf. UnaryPayloadElem (DataTypeNameNode or ParameterNode)
+	private final GProtocolNameNode proto;  // Becomes full name after disambiguation
+	private final RoleNode role;
+	
+	public GDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
+	{
+		//super(proto);
+		super(source);
+		this.proto = proto;
+		this.role = role;
+	}
+
+	/*@Override
+	protected GDelegationElem copy()
+	{
+		return new GDelegationElem(this.source, this.proto, this.role);
+	}
+	
+	@Override
+	public GDelegationElem clone(AstFactory af)
+	{
+		GProtocolNameNode name = (GProtocolNameNode) this.proto.clone(af);
+		RoleNode role = (RoleNode) this.role.clone(af);
+		return af.GDelegationElem(this.source, name, role);
+	}*/
 }

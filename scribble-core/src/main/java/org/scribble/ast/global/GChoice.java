@@ -76,9 +76,9 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 		if (!blocks.isEmpty())
 		{
 			RoleNode subj = getSubjectChild();
-			// FIXME? initially keep global subject, and later overwrite as necessary in projections? (algorithm currently checks for DUMMY)
+			// CHECKME: initially keep global subject, and later overwrite as necessary in projections? (algorithm currently checks for DUMMY)
 			RoleNode subj1 = self.equals(subj.toName()) 
-					? subj.clone(af)
+					? subj.clone()//af)
 					: af.DummyProjectionRoleNode();
 			List<LChoice> cs = blocks.stream()
 					.map(b -> af.LChoice(this.source, subj1, Arrays.asList(b)))

@@ -38,7 +38,7 @@ public abstract class DoArgListDel extends ScribDelBase
 	public DoArgList<?> leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		DoArgList<?> dal = (DoArgList<?>) visited;
-		List<?> args = dal.getDoArgs();
+		List<?> args = dal.getArgChildren();
 		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
 		if (args.size() != getParamDeclList(pd).getDecls().size())
 		{

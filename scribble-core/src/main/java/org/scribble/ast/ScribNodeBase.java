@@ -34,7 +34,7 @@ import org.scribble.visit.Substitutor;
  * This is the generic object from which all Scribble model objects
  * are derived.
  */
-public abstract class ScribNodeBase extends CommonTree implements ScribNode 
+public abstract class ScribNodeBase extends CommonTree implements ScribNode
 {
 	protected final CommonTree source;  // Consequently, core depends on Antlr
 			// Used to be for parsed entities; null if not parsed
@@ -172,27 +172,29 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	// FIXME: remove parent parameter, to make uniform with visitChild
 	// Used when a generic cast would otherwise be needed (non-generic children casts don't need this) -- doesn't check any generic parameters, relies on concrete values being instances of non-parameterised types
 	// Subtype constraint on visited could still be too restrictive, e.g. AmbigNameNodeDel (although it doesn't matter there), e.g. unfolding continue's into recursion's
-	protected final static <T extends ScribNode>
-			T visitChildWithClassEqualityCheck(ScribNode parent, T child, AstVisitor nv) throws ScribbleException
+	protected final static <T extends ScribNode> T visitChildWithClassEqualityCheck(
+			ScribNode parent, T child, AstVisitor nv) throws ScribbleException
 	{
 		ScribNode visited = ((ScribNodeBase) parent).visitChild(child, nv);
 		// Same subtyping flexibility as standard cast
 		return ScribUtil.checkNodeClassEquality(child, visited);
 	}
 
-	protected final static <T extends ScribNode>
-			List<T> visitChildListWithClassEqualityCheck(ScribNode parent, List<T> children, AstVisitor nv)
+	protected final static <T extends ScribNode> List<T> 
+			visitChildListWithClassEqualityCheck(
+					ScribNode parent, List<T> children, AstVisitor nv)
 					throws ScribbleException
 	{
 		return visitChildListWith(parent, children, nv,
 				(T t) -> ScribUtil.handleLambdaScribbleException(
-						() -> ScribNodeBase.visitChildWithClassEqualityCheck(parent, t, nv)));  // -> T
+					() -> ScribNodeBase
+						.visitChildWithClassEqualityCheck(parent, t, nv))); // -> T
 	}
 
 	// Just a list-map with handling for promoted exceptions (via handleLambdaScribbleException) -- could move to Util (where handleLambdaScribbleException is)
-	private final static <T extends ScribNode, R extends ScribNode>
-			List<R> visitChildListWith(ScribNode parent, List<T> children, AstVisitor nv, Function<T, R> c)
-					throws ScribbleException
+	private final static <T extends ScribNode, R extends ScribNode> List<R> visitChildListWith(
+			ScribNode parent, List<T> children, AstVisitor nv, Function<T, R> c)
+			throws ScribbleException
 	{
 		/*List<T> visited = new LinkedList<>();
 		for (T n : children)
@@ -203,7 +205,8 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 		// Maybe this exception hack is not worth it?  Better to throw directly as ScribbleException
 		try
 		{
-			return children.stream().map(n -> c.apply(n)).collect(Collectors.toList());
+			return children.stream().map(n -> c.apply(n))
+					.collect(Collectors.toList());
 		}
 		catch (RuntimeScribbleException rse)
 		{
@@ -221,32 +224,38 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 
 	// Takes clazz+kind to handle generic ProtocolKindNodes -- cf. ScribUtil.castNodeByClass, for casting to ground class types
 	// R is expected to be N<K>, i.e. the generic (ProtocolKindNode) class N parameterised by K
-	protected final static <N extends ProtocolKindNode<?>, K extends ProtocolKind, R extends ProtocolKindNode<K>>
+	protected final static <N extends ProtocolKindNode<?>, K extends ProtocolKind, 
+			R extends ProtocolKindNode<K>>
 			R visitProtocolKindChildWithCastCheck(
-					ScribNode parent, ScribNode child, AstVisitor nv, Class<N> clazz, K kind, Function<ScribNode, R> cast)
-							throws ScribbleException
+					ScribNode parent, ScribNode child, AstVisitor nv, Class<N> clazz, K kind,
+					Function<ScribNode, R> cast) throws ScribbleException
 	{
 		ScribNode visited = ((ScribNodeBase) parent).visitChild(child, nv);
 		if (!clazz.isAssignableFrom(visited.getClass()))
 		{
-			throw new RuntimeException(nv.getClass() + " generic visit error: " + clazz + ", " + visited.getClass());
+			throw new RuntimeException(nv.getClass() + " generic visit error: "
+					+ clazz + ", " + visited.getClass());
 		}
 		ProtocolKindNode<?> pkn = (ProtocolKindNode<?>) visited;
-		if ((pkn.isGlobal() && !kind.equals(Global.KIND)) || (pkn.isLocal() && !kind.equals(Local.KIND)))
+		if ((pkn.isGlobal() && !kind.equals(Global.KIND))
+				|| (pkn.isLocal() && !kind.equals(Local.KIND)))
 		{
-			throw new RuntimeException(nv.getClass() + " generic visit error: " + pkn.getClass() + ", " + kind);
+			throw new RuntimeException(nv.getClass() + " generic visit error: "
+					+ pkn.getClass() + ", " + kind);
 		}
 		return cast.apply(pkn);
 	}
 
-	protected final static
-			<T extends ScribNode, N extends ProtocolKindNode<?>, K extends ProtocolKind, R extends ProtocolKindNode<K>>
-					List<R> visitProtocolKindChildListWithCastCheck(
-							ScribNode parent, List<T> children, AstVisitor nv, Class<N> c, K k, Function<ScribNode, R> f)
-									throws ScribbleException
+	protected final static <T extends ScribNode, N extends ProtocolKindNode<?>, 
+			K extends ProtocolKind, R extends ProtocolKindNode<K>> 
+			List<R> visitProtocolKindChildListWithCastCheck(
+					ScribNode parent, List<T> children, AstVisitor nv, Class<N> c, K k,
+					Function<ScribNode, R> f) throws ScribbleException
 	{
 		return visitChildListWith(parent, children, nv,
 				(T t) -> ScribUtil.handleLambdaScribbleException(
-						() -> ScribNodeBase.visitProtocolKindChildWithCastCheck(parent, t, nv, c, k, f)));  // -> R
+					() -> ScribNodeBase
+						.visitProtocolKindChildWithCastCheck(parent, t, nv, c, k, f)));
+		// -> R
 	}
 }

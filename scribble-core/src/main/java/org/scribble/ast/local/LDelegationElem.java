@@ -13,23 +13,31 @@
  */
 package org.scribble.ast.local;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.UnaryPayloadElem;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.del.ScribDel;
-import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Local;
-import org.scribble.type.name.PayloadElemType;
-import org.scribble.visit.AstVisitor;
 
 // N.B. extends UnaryPayloadElem, not DelegationElem
 public class LDelegationElem extends UnaryPayloadElem<Local>
 {
-  // Currently no potential for ambiguity because only generated, not parsed
-	public LDelegationElem(CommonTree source, LProtocolNameNode proto)
+	// ScribTreeAdaptor#create constructor
+	public LDelegationElem(Token t)
 	{
-		super(source, proto);
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public LDelegationElem(LDelegationElem node)
+	{
+		super(node);
+	}
+	
+	@Override 
+	public LDelegationElem dupNode()
+	{
+		return new LDelegationElem(this);
 	}
 
 	@Override
@@ -38,7 +46,35 @@ public class LDelegationElem extends UnaryPayloadElem<Local>
 		return true;
 	}
 
-	@Override
+	/*@Override
+	public LDelegationElem visitChildren(AstVisitor nv) throws ScribbleException
+	{
+		LProtocolNameNode name = (LProtocolNameNode) visitChild(this.name, nv);
+		return reconstruct(name);
+	}*/
+
+	/*@Override
+	public PayloadElemType<Local> toPayloadType()
+	{
+		return getNameChild().toPayloadType();
+	}*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+  // Currently no potential for ambiguity because only generated, not parsed
+	public LDelegationElem(CommonTree source, LProtocolNameNode proto)
+	{
+		super(source, proto);
+	}
+
+	/*@Override
 	protected LDelegationElem copy()
 	{
 		return new LDelegationElem(this.source, (LProtocolNameNode) this.name);
@@ -57,25 +93,5 @@ public class LDelegationElem extends UnaryPayloadElem<Local>
 		LDelegationElem elem = new LDelegationElem(this.source, proto);
 		elem = (LDelegationElem) elem.del(del);
 		return elem;
-	}
-
-	@Override
-	public LDelegationElem visitChildren(AstVisitor nv) throws ScribbleException
-	{
-		LProtocolNameNode name = (LProtocolNameNode) visitChild(this.name, nv);
-		return reconstruct(name);
-	}
-	
-	/*@Override
-	public String toString()
-	{
-		return this.proto + "@" + this.role;
 	}*/
-
-	@Override
-	//public PayloadType<? extends PayloadTypeKind> toPayloadType()
-	public PayloadElemType<Local> toPayloadType()
-	{
-		return this.name.toPayloadType();
-	}
 }

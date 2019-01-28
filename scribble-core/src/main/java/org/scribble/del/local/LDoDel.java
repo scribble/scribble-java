@@ -98,13 +98,13 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		// Could possibly factor out rolemap making with SubprotocolVisitor a bit, but there it maps to RoleNode and works off a root map
 		GProtocolName source = ((LProjectionDeclDel) lpd.del()).getSourceProtocol();
 		GProtocolDecl gpd = (GProtocolDecl) jc.getModule(source.getPrefix()).getProtocolDeclChild(source.getSimpleName());
-		Iterator<RoleArg> roleargs = ld.roles.getDoArgs().iterator();
+		Iterator<RoleArg> roleargs = ld.roles.getArgChildren().iterator();
 		Map<Role, Role> rolemap = gpd.header.roledecls.getRoles().stream().collect(
 				Collectors.toMap(r -> r, r -> roleargs.next().val.toName()));
 		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences().stream().map(r ->
 				rolemap.get(r)).collect(Collectors.toSet());
 
-		List<RoleArg> ras = ld.roles.getDoArgs().stream().filter(ra -> occs.contains(ra.val.toName())).collect(Collectors.toList());
+		List<RoleArg> ras = ld.roles.getArgChildren().stream().filter(ra -> occs.contains(ra.val.toName())).collect(Collectors.toList());
 		RoleArgList roles = ld.roles.reconstruct(ras);
 		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, ld.reconstruct(roles, ld.args, ld.getProtocolNameNode()));
 	}

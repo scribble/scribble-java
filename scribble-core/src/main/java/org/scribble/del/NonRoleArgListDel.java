@@ -44,7 +44,7 @@ public class NonRoleArgListDel extends DoArgListDel
 				// Checks matching arity
 
 		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
-		Iterator<NonRoleArg> args = nral.getDoArgs().iterator();
+		Iterator<NonRoleArg> args = nral.getArgChildren().iterator();
 		for (NonRoleParamDecl<?> param : pd.header.paramdecls.getDecls())
 		{
 			NonRoleParamKind kind = param.kind;

@@ -13,27 +13,104 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.PayloadTypeKind;
 import org.scribble.type.name.PayloadElemType;
-import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
 
-// FIXME: make abstract, and make a DataTypeElem subclass with DataTypeKind parameter instance (alongside LDelegationElem)
+// TODO: make abstract, and make a DataTypeElem subclass with DataTypeKind parameter instance (alongside LDelegationElem)
 
 // Cf. DoArg, wrapper for a (unary) name node of potentially unknown kind (needs disamb)
 // PayloadTypeKind is DataType or Local, but Local has its own special subclass (and protocol params not allowed), so this should implicitly be for DataType only
 // AST hierarchy requires unary and delegation (binary pair) payloads to be structurally distinguished
 //public class DataTypeElem extends PayloadElem<DataTypeKind>
-public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase implements PayloadElem<K>//extends PayloadElem
+public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase
+		implements PayloadElem<K>// extends PayloadElem
 {
-	//public final PayloadElemNameNode<DataTypeKind> name;
-	//public final DataTypeNode data; 
-	public final PayloadElemNameNode<K> name;   // (Ambig.) DataTypeNode or parameter
+	// ScribTreeAdaptor#create constructor
+	public UnaryPayloadElem(Token t)
+	{
+		super(t);
+		this.name = null;
+	}
+
+	// Tree#dupNode constructor
+	public UnaryPayloadElem(UnaryPayloadElem<K> node)
+	{
+		super(node);
+		this.name = null;
+	}
+	
+	public PayloadElemNameNode<K> getNameChild()
+	{
+		@SuppressWarnings("unchecked")
+		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) getChild(0);  
+				// CHECKME: probably need to record an explicit kind token, for "cast checking"
+				// Cannot use ScribNodeBase.visitChildWithCastCheck because this is not a ProtocolKindNode
+		return name;
+	}
+	
+	@Override
+	public UnaryPayloadElem<K> dupNode()
+	{
+		return new UnaryPayloadElem<>(this);
+	}
+
+	public UnaryPayloadElem<K> reconstruct(PayloadElemNameNode<K> name)
+	{
+		UnaryPayloadElem<K> elem = dupNode();
+		elem.addChild(name);
+		ScribDel del = del();
+		elem.setDel(del);  // No copy
+		return elem;
+	}
+
+	@Override
+	public UnaryPayloadElem<K> visitChildren(AstVisitor nv) throws ScribbleException
+	{
+		@SuppressWarnings("unchecked")
+		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChild(getNameChild(), nv);  
+				// CHECKME: probably need to record an explicit kind token, for "cast checking"
+				// Cannot use ScribNodeBase.visitChildWithCastCheck because this is not a ProtocolKindNode
+		return reconstruct(name);
+	}
+
+	@Override
+	public UnaryPayloadElem<K> project(AstFactory af)
+	{
+		return this;
+	}
+
+	@Override
+	public PayloadElemType<K> toPayloadType()
+	{
+		return getNameChild().toPayloadType();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getNameChild().toString();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private final PayloadElemNameNode<K> name;   // (Ambig.) DataTypeNode or parameter
 
 	//public DataTypeElem(PayloadElemNameNode<DataTypeKind> name)
 	//public UnaryPayloadlem(DataTypeNode data)
@@ -45,14 +122,8 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase i
 		super(source);
 		this.name = name;
 	}
-	
-	@Override
-	public UnaryPayloadElem<K> project(AstFactory af)
-	{
-		return this;
-	}
 
-	@Override
+	/*@Override
 	protected UnaryPayloadElem<K> copy()
 	{
 		//return new UnaryPayloadElem(this.data);
@@ -76,34 +147,5 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase i
 		UnaryPayloadElem<K> elem = new UnaryPayloadElem<>(this.source, name);
 		elem = ScribNodeBase.del(elem, del);
 		return elem;
-	}
-
-	@Override
-	public UnaryPayloadElem<K> visitChildren(AstVisitor nv) throws ScribbleException
-	{
-		//PayloadElemNameNode<DataTypeKind> name = (PayloadElemNameNode<DataTypeKind>) visitChild(this.data, nv);
-		//DataTypeNode name = (PayloadElemNameNode<DataTypeKind>) visitChild(this.data, nv);
-		@SuppressWarnings("unchecked")
-		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChild(this.name, nv);  
-				// FIXME: probably need to record an explicit kind token, for "cast checking"
-				// Cannot use ScribNodeBase.visitChildWithCastCheck because this is not a ProtocolKindNode
-		//PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChildWithClassEqualityCheck(this, this.name, nv);  // No: can be initially Ambig
-		return reconstruct(name);
-	}
-	
-	@Override
-	public String toString()
-	{
-		//return this.data.toString();
-		return this.name.toString();
-	}
-
-	@Override
-	//public PayloadType<DataTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
-	//public PayloadType<? extends PayloadTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
-	public PayloadElemType<K> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
-	{
-		//return this.data.toPayloadType();
-		return this.name.toPayloadType();
-	}
+	}*/
 }

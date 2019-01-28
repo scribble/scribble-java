@@ -16,28 +16,90 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.del.ScribDel;
 import org.scribble.type.name.Role;
-import org.scribble.util.ScribUtil;
 
 public class RoleArgList extends DoArgList<RoleArg>
 {
+	// ScribTreeAdaptor#create constructor
+	public RoleArgList(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public RoleArgList(RoleArgList node)
+	{
+		super(node);
+	}
+
+	@Override
+	public List<RoleArg> getArgChildren()
+	{
+		return getRawArgChildren().stream().map(x -> (RoleArg) x)
+				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public RoleArgList dupNode()
+	{
+		return new RoleArgList(this);
+	}
+
+	// Move to delegate?
+	@Override
+	public RoleArgList project(AstFactory af, Role self)
+	{
+		List<RoleArg> args =
+				getArgChildren().stream().map(ri -> ri.project(af, self))
+						.collect(Collectors.toList());
+		return af.RoleArgList(this.source, args);
+	}
+
+	// The role arguments
+	public List<Role> getRoles()
+	{
+		return getArgChildren().stream().map(ri -> ri.getValChild().toName())
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public String toString()
+	{
+		return "(" + super.toString() + ")";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public RoleArgList(CommonTree source, List<RoleArg> roles)
 	{
 		super(source, roles);
 	}
 
-	@Override
+	/*@Override
 	protected RoleArgList copy()
 	{
-		return new RoleArgList(this.source, getDoArgs());
+		return new RoleArgList(this.source, getArgChildren());
 	}
 	
 	@Override
 	public RoleArgList clone(AstFactory af)
 	{
-		List<RoleArg> roles = ScribUtil.cloneList(af, getDoArgs());
+		List<RoleArg> roles = ScribUtil.cloneList(af, getArgChildren());
 		return af.RoleArgList(this.source, roles);
 	}
 
@@ -48,26 +110,5 @@ public class RoleArgList extends DoArgList<RoleArg>
 		RoleArgList rl = new RoleArgList(this.source, roles);
 		rl = (RoleArgList) rl.del(del);
 		return rl;
-	}
-
-	// Move to delegate?
-	@Override
-	public RoleArgList project(AstFactory af, Role self)
-	{
-		List<RoleArg> instans =
-				getDoArgs().stream().map(ri -> ri.project(af, self)).collect(Collectors.toList());	
-		return af.RoleArgList(this.source, instans);
-	}
-
-	// The role arguments
-	public List<Role> getRoles()
-	{
-		return getDoArgs().stream().map((ri) -> ri.val.toName()).collect(Collectors.toList());
-	}
-
-	@Override
-	public String toString()
-	{
-		return "(" + super.toString() + ")";
-	}
+	}*/
 }

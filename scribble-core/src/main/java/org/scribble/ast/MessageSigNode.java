@@ -49,6 +49,7 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 		return (PayloadElemList) getChild(1);
 	}
 	
+	@Override
 	public MessageSigNode dupNode()
 	{
 		return new MessageSigNode(this);
