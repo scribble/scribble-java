@@ -33,42 +33,54 @@ import org.scribble.visit.wf.env.ReachabilityEnv;
 public class LRecursionDel extends RecursionDel implements LCompoundInteractionNodeDel
 {
 	@Override
-	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
+			ScribNode child, UnguardedChoiceDoProjectionChecker checker,
+			ScribNode visited) throws ScribbleException
 	{
 		Recursion<?> rec = (Recursion<?>) visited;
-		UnguardedChoiceDoEnv merged = checker.popEnv().mergeContext((UnguardedChoiceDoEnv) rec.block.del().env());
+		UnguardedChoiceDoEnv merged = checker.popEnv()
+				.mergeContext((UnguardedChoiceDoEnv) rec.getBlockChild().del().env());
 		checker.pushEnv(merged);
-		return (Recursion<?>) super.leaveUnguardedChoiceDoProjectionCheck(parent, child, checker, rec);
+		return (Recursion<?>) super.leaveUnguardedChoiceDoProjectionCheck(parent,
+				child, checker, rec);
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		LRecursion lr = (LRecursion) visited;
 		//RecVarNode recvar = lr.recvar.clone();
-		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) lr.recvar.del().env()).getTranslation();	
-		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) lr.block.del().env()).getTranslation();	
+		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) lr.getRecVarChild()
+				.del().env()).getTranslation();
+		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) lr
+				.getBlockChild().del().env()).getTranslation();
 		LRecursion inlined = inl.job.af.LRecursion(lr.getSource(), recvar, block);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LRecursion) super.leaveProtocolInlining(parent, child, inl, lr);
 	}
 
 	@Override
-	public LRecursion leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+	public LRecursion leaveReachabilityCheck(ScribNode parent, ScribNode child,
+			ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		LRecursion lr = (LRecursion) visited;
-		ReachabilityEnv env = checker.popEnv().mergeContext((ReachabilityEnv) lr.block.del().env());
-		env = env.removeContinueLabel(lr.recvar.toName());
+		ReachabilityEnv env = checker.popEnv()
+				.mergeContext((ReachabilityEnv) lr.getBlockChild().del().env());
+		env = env.removeContinueLabel(lr.getRecVarChild().toName());
 		checker.pushEnv(env);
-		return (LRecursion) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		return (LRecursion) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(
+				parent, child, checker, visited);
+				// records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 	
 	@Override
-	public void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
+	public void enterEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder graph)
 	{
 		super.enterEGraphBuilding(parent, child, graph);
 		LRecursion lr = (LRecursion) child;
-		RecVar rv = lr.recvar.toName();
+		RecVar rv = lr.getRecVarChild().toName();
 		// Update existing state, not replace it -- cf. LDoDel
 		/*if (graph.builder.isUnguardedInChoice())  // Actually, not needed since unfoldings are enough to make graph building work (and this makes combined unguarded choice-rec and continue protocols work)
 		{
@@ -83,24 +95,27 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	}
 
 	@Override
-	public LRecursion leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
+	public LRecursion leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		LRecursion lr = (LRecursion) visited;
-		RecVar rv = lr.recvar.toName();
+		RecVar rv = lr.getRecVarChild().toName();
 		graph.util.popRecursionEntry(rv);
 		return (LRecursion) super.leaveEGraphBuilding(parent, child, graph, lr);
 	}
 
 	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.pushRec(((LRecursion) child).recvar.toName());
+		fixer.pushRec(((LRecursion) child).getRecVarChild().toName());
 	}
 	
 	@Override
-	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
+	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
 	{
-		fixer.popRec(((LRecursion) child).recvar.toName());
+		fixer.popRec(((LRecursion) child).getRecVarChild().toName());
 		return visited;
 	}
 }

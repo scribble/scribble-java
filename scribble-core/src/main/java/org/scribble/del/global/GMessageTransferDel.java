@@ -27,7 +27,8 @@ import org.scribble.visit.wf.NameDisambiguator;
 import org.scribble.visit.wf.WFChoiceChecker;
 import org.scribble.visit.wf.env.WFChoiceEnv;
 
-public class GMessageTransferDel extends MessageTransferDel implements GSimpleInteractionNodeDel
+public class GMessageTransferDel extends MessageTransferDel
+		implements GSimpleInteractionNodeDel
 {
 	public GMessageTransferDel()
 	{
@@ -35,36 +36,43 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	}
 
 	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
-		Role src = gmt.src.toName();
+		Role src = gmt.getSourceChild().toName();
 		List<Role> dests = gmt.getDestinationRoles();
 		if (dests.contains(src))
 		{
-			throw new ScribbleException(gmt.getSource(), "[TODO] Self connections not supported: " + gmt);  // Would currently be subsumed by unconnected check
+			throw new ScribbleException(gmt.getSource(),
+					"[TODO] Self connections not supported: " + gmt);
+					// Would currently be subsumed by unconnected check
 		}
 		return gmt;
 	}
 
 	@Override
-	public GMessageTransfer leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GMessageTransfer leaveInlinedWFChoiceCheck(ScribNode parent,
+			ScribNode child, WFChoiceChecker checker, ScribNode visited)
+			throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		
-		Role src = gmt.src.toName();
+		Role src = gmt.getSourceChild().toName();
 		if (!checker.peekEnv().isEnabled(src))
 		{
-			throw new ScribbleException(gmt.src.getSource(), "Role not enabled: " + src);
+			throw new ScribbleException(gmt.getSourceChild().getSource(),
+					"Role not enabled: " + src);
 		}
-		Message msg = gmt.msg.toMessage();
+		Message msg = gmt.getMessageNodeChild().toMessage();
 		WFChoiceEnv env = checker.popEnv();
 		for (Role dest : gmt.getDestinationRoles())
 		{
 			// FIXME: better to check as global model error (role stuck on uncomnected send)
 			if (!env.isConnected(src, dest))
 			{
-				throw new ScribbleException(gmt.getSource(), "Roles not (necessarily) connected: " + src + ", " + dest);
+				throw new ScribbleException(gmt.getSource(),
+						"Roles not (necessarily) connected: " + src + ", " + dest);
 			}
 
 			env = env.addMessage(src, dest, msg);
@@ -77,13 +85,16 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 
 	@Override
 	//public GMessageTransfer leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
-	public ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
+	public ScribNode leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited) throws ScribbleException
+			//throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		Role self = proj.peekSelf();
 		LNode projection = gmt.project(proj.job.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gmt);
+		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(
+				parent, child, proj, gmt);
 	}
 
 	/*@Override

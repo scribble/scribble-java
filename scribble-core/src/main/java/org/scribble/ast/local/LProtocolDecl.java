@@ -19,6 +19,8 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.ProtocolDef;
+import org.scribble.ast.ProtocolHeader;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
@@ -39,13 +41,6 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 		super(node);
 	}
 
-	// Cf. CommonTree#dupNode
-	@Override
-	public LProtocolDecl dupNode()
-	{
-		return new LProtocolDecl(this);
-	}
-
 	@Override
 	public LProtocolHeader getHeaderChild()
 	{
@@ -56,6 +51,20 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 	public LProtocolDef getDefChild()
 	{
 		return (LProtocolDef) getChild(1);
+	}
+
+	// Cf. CommonTree#dupNode
+	@Override
+	public LProtocolDecl dupNode()
+	{
+		return new LProtocolDecl(this);
+	}
+	
+	@Override
+	public LProtocolDecl reconstruct(ProtocolHeader<Local> header,
+			ProtocolDef<Local> def)
+	{
+		return (LProtocolDecl) super.reconstruct(header, def);
 	}
 
 	@Override

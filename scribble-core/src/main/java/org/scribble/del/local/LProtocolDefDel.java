@@ -49,20 +49,24 @@ public class LProtocolDefDel extends ProtocolDefDel
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
-		CommonTree blame = ((LProtocolDecl) parent).header.getSource();  // Cf., GProtocolDefDel
+		CommonTree blame = ((LProtocolDecl) parent).getHeaderChild().getSource();  // Cf., GProtocolDefDel
 		SubprotocolSig subsig = inl.peekStack();
 		LProtocolDef def = (LProtocolDef) visited;
-		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) def.block.del().env()).getTranslation();	
+		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) def
+				.getBlockChild().del().env()).getTranslation();
 		RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame,  // The parent do would probably be the better source for blame
 				RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 		LRecursion rec = inl.job.af.LRecursion(blame, recvar, block);
 		LInteractionSeq lis = inl.job.af.LInteractionSeq(blame, Arrays.asList(rec));
-		LProtocolDef inlined = inl.job.af.LProtocolDef(def.getSource(), inl.job.af.LProtocolBlock(blame, lis));
+		LProtocolDef inlined = inl.job.af.LProtocolDef(def.getSource(),
+				inl.job.af.LProtocolBlock(blame, lis));
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		LProtocolDefDel copy = setInlinedProtocolDef(inlined);
-		return (LProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, inl, (LProtocolDef) def.del(copy));
+		return (LProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, inl,
+				(LProtocolDef) def.del(copy));
 	}
 	
 	@Override
@@ -72,7 +76,8 @@ public class LProtocolDefDel extends ProtocolDefDel
 	}
 
 	@Override
-	public LProtocolDefDel setInlinedProtocolDef(ProtocolDef<? extends ProtocolKind> inlined)
+	public LProtocolDefDel setInlinedProtocolDef(
+			ProtocolDef<? extends ProtocolKind> inlined)
 	{
 		return (LProtocolDefDel) super.setInlinedProtocolDef(inlined);
 	}

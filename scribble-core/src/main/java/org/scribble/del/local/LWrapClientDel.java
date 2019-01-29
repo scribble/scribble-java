@@ -22,21 +22,26 @@ import org.scribble.type.name.Role;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LWrapClientDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
+public class LWrapClientDel extends ConnectionActionDel
+		implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LWrapClient leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public LWrapClient leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LWrapClient lc = (LWrapClient) visited;
-		RoleNode dest = lc.dest;
+		RoleNode dest = lc.getDestinationChild();
 		Role peer = dest.toName();
-		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newEWrapClient(peer), builder.util.getExit());
+		builder.util.addEdge(builder.util.getEntry(),
+				builder.job.ef.newEWrapClient(peer), builder.util.getExit());
 		return (LWrapClient) super.leaveEGraphBuilding(parent, child, builder, lc);
 	}
 
 	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(((LWrapClient) child).src.toName());
+		fixer
+				.setChoiceSubject(((LWrapClient) child).getDestinationChild().toName());
 	}
 }

@@ -46,19 +46,27 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 	}
 
 	@Override
-	public ScribNode leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProjectedRoleDeclFixing(ScribNode parent,
+			ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited)
+			throws ScribbleException
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
-		// FIXME: ensure all role params are used, to avoid empty roledecllist
-		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences();
-		List<RoleDecl> rds = lpd.header.roledecls.getParamDeclChildren().stream().filter((rd) -> 
-				occs.contains(rd.getDeclName())).collect(Collectors.toList());
-		RoleDeclList rdl = fixer.job.af.RoleDeclList(lpd.header.roledecls.getSource(), rds);
+		// TODO: ensure all role params are used, to avoid empty roledecllist
+		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext()
+				.getRoleOccurrences();
+		List<RoleDecl> rds = lpd.getHeaderChild().getRoleDeclListChild()
+				.getParamDeclChildren().stream()
+				.filter(rd -> occs.contains(rd.getDeclName()))
+				.collect(Collectors.toList());
 		LProtocolHeader tmp = lpd.getHeaderChild();
-		LProtocolHeader hdr = tmp.reconstruct(tmp.getNameNodeChild(), rdl, tmp.paramdecls);
-		LProtocolDecl fixed = lpd.reconstruct(hdr, lpd.def);
+		RoleDeclList rdl = fixer.job.af
+				.RoleDeclList(tmp.getRoleDeclListChild().getSource(), rds);
+		LProtocolHeader hdr = tmp.reconstruct(tmp.getNameNodeChild(), rdl,
+				tmp.getParamDeclListChild());
+		LProtocolDecl fixed = lpd.reconstruct(hdr, lpd.getDefChild());
 		
-		fixer.job.debugPrintln("\n[DEBUG] Projected " + getSourceProtocol() + " for " + getSelfRole() + ":\n" + fixed);
+		fixer.job.debugPrintln("\n[DEBUG] Projected " + getSourceProtocol()
+				+ " for " + getSelfRole() + ":\n" + fixed);
 		
 		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, fixed);
 	}

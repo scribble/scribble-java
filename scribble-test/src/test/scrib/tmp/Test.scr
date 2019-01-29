@@ -30,7 +30,7 @@ module tmp.Test;
 // Add a unit test for validation to bypass aux
 
 
-// FIXME TODO: port forwarding version of P2 -- funny case of "session" persisting over full disconnect, should/how to correlate?
+// TODO: port forwarding version of P2 -- funny case of "session" persisting over full disconnect, should/how to correlate?
 
 
 

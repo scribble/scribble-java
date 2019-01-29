@@ -38,7 +38,8 @@ public class GInteractionSeqDel extends InteractionSeqDel
 {
 	// enter in super
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<GInteractionNode> gins = new LinkedList<GInteractionNode>();
@@ -60,13 +61,15 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	}
 
 	@Override
-	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ScribNode parent, ScribNode child, Projector proj)
+			throws ScribbleException
 	{
 		ScribDelBase.pushVisitorEnv(this, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
 	}
 	
 	@Override
-	public GInteractionSeq leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	public GInteractionSeq leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<LInteractionNode> lis = new LinkedList<>();
@@ -74,7 +77,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		{
 			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			//LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
-			// FIXME: move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
+			// TODO: move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
 				lis.addAll(((LInteractionSeq) ln).getInteractNodeChildren());
@@ -123,15 +126,17 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	}*/
 	
 	@Override
-	public GInteractionSeq leaveRecRemoval(ScribNode parent, ScribNode child, RecRemover rem, ScribNode visited)
-			throws ScribbleException
+	public GInteractionSeq leaveRecRemoval(ScribNode parent, ScribNode child,
+			RecRemover rem, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
-		List<GInteractionNode> gins = gis.getInteractNodeChildren().stream().flatMap((gi) -> 
-					(gi instanceof GRecursion && rem.toRemove(((GRecursion) gi).recvar.toName()))
-						? ((GRecursion) gi).getBlockChild().getInteractSeqChild().getInteractNodeChildren().stream()
-						: Stream.of(gi)
-				).collect(Collectors.toList());
+		List<GInteractionNode> gins = gis.getInteractNodeChildren().stream()
+				.flatMap((gi) -> (gi instanceof GRecursion
+						&& rem.toRemove(((GRecursion) gi).getRecVarChild().toName()))
+								? ((GRecursion) gi).getBlockChild().getInteractSeqChild()
+										.getInteractNodeChildren().stream()
+								: Stream.of(gi))
+				.collect(Collectors.toList());
 		return rem.job.af.GInteractionSeq(gis.getSource(), gins);
 	}
 }

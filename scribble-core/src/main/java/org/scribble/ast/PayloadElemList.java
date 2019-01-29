@@ -23,7 +23,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.Payload;
 import org.scribble.type.name.PayloadElemType;
-import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
 // Cf. DoArgList, but here we don't need as much abstraction (cf. RoleArgList, NonRoleArgList)

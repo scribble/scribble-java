@@ -31,37 +31,59 @@ import org.scribble.visit.wf.env.WFChoiceEnv;
 public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
 {
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GRecursion gr = (GRecursion) visited;
 		//RecVarNode recvar = gr.recvar.clone();
-		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) gr.recvar.del().env()).getTranslation();	
-		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
+		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) gr.getRecVarChild()
+				.del().env()).getTranslation();
+		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr
+				.getBlockChild().del().env()).getTranslation();
 		GRecursion inlined = inl.job.af.GRecursion(gr.getSource(), recvar, block);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GRecursion) super.leaveProtocolInlining(parent, child, inl, gr);
 	}
 
 	@Override
-	public GRecursion leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GRecursion leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child,
+			WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GRecursion rec = (GRecursion) visited;
-		WFChoiceEnv merged = checker.popEnv().mergeContext((WFChoiceEnv) rec.block.del().env());  // Merge block child env into current rec env
+		WFChoiceEnv merged = checker.popEnv()
+				.mergeContext((WFChoiceEnv) rec.getBlockChild().del().env());
+				// Merge block child env into current rec env
 		checker.pushEnv(merged);
-		return (GRecursion) super.leaveInlinedWFChoiceCheck(parent, child, checker, rec);  // Will merge current rec env into parent (and set env on del)
+		return (GRecursion) super.leaveInlinedWFChoiceCheck(parent, child, checker,
+				rec);
+				// Will merge current rec env into parent (and set env on del)
 	}
 
 	@Override
-	public GRecursion leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	public GRecursion leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GRecursion gr = (GRecursion) visited;
 		LProtocolBlock block =
-				(LProtocolBlock) ((ProjectionEnv) gr.block.del().env()).getProjection();
+				(LProtocolBlock) ((ProjectionEnv) gr.getBlockChild().del().env())
+						.getProjection();
 				//((GProtocolBlockDel) gr.block.del()).project(gr.getBlock(), self);
 		LRecursion projection = gr.project(proj.job.af, proj.peekSelf(), block);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
+		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(
+				parent, child, proj, gr);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/*@Override
 	public void enterAnnotCheck(ScribNode parent, ScribNode child, AnnotationChecker checker) throws ScribbleException

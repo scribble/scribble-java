@@ -23,30 +23,36 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
-public class LWrapServerDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
+public class LWrapServerDel extends ConnectionActionDel
+		implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LWrapServer leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public LWrapServer leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LWrapServer la = (LWrapServer) visited;
-		Role peer = la.src.toName();
-		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newEWrapServer(peer), builder.util.getExit());
+		Role peer = la.getSourceChild().toName();
+		builder.util.addEdge(builder.util.getEntry(),
+				builder.job.ef.newEWrapServer(peer), builder.util.getExit());
 		return (LWrapServer) super.leaveEGraphBuilding(parent, child, builder, la);
 	}
 
 	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(((LWrapServer) child).src.toName());
+		fixer.setChoiceSubject(((LWrapServer) child).getSourceChild().toName());
 	}
 
 	@Override
-	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker) throws ScribbleException
+	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent,
+			ScribNode child, UnguardedChoiceDoProjectionChecker checker)
+			throws ScribbleException
 	{
 		super.enterUnguardedChoiceDoProjectionCheck(parent, child, checker);
 		LWrapServer la = (LWrapServer) child;
 		UnguardedChoiceDoEnv env = checker.popEnv();
-		env = env.setChoiceSubject(la.src.toName());
+		env = env.setChoiceSubject(la.getSourceChild().toName());
 		checker.pushEnv(env);
 	}
 }

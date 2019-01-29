@@ -14,6 +14,7 @@
 package org.scribble.del;
 
 
+import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.PayloadElem;
@@ -37,10 +38,12 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
-	public MessageTransfer<?> leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public MessageTransfer<?> leaveProtocolInlining(ScribNode parent,
+			ScribNode child, ProtocolDefInliner inl, ScribNode visited)
+			throws ScribbleException
 	{
 		MessageTransfer<?> lr = (MessageTransfer<?>) visited;
-		MessageTransfer<?> inlined = (MessageTransfer<?>) lr.clone(inl.job.af);
+		MessageTransfer<?> inlined = (MessageTransfer<?>) lr.clone();//inl.job.af);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (MessageTransfer<?>) super.leaveProtocolInlining(parent, child, inl, lr);
 	}
@@ -54,7 +57,8 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 	}*/
 
 	@Override
-	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child,
+			InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		UnfoldingEnv env = unf.popEnv();
 		env = env.disableUnfold();
@@ -62,46 +66,66 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
-	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited)
+	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child,
+			RoleCollector coll, ScribNode visited)
 	{
 		MessageTransfer<?> mt = (MessageTransfer<?>) visited;
-		coll.addName(mt.src.toName());
-		mt.getDestinationRoles().stream().forEach((rd) -> coll.addName(rd));
+		coll.addName(mt.getSourceChild().toName());
+		mt.getDestinationRoles().stream().forEach(rd -> coll.addName(rd));
 		return visited;
 	}
 
 	@Override
-	public ScribNode leaveMessageIdCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
+	public ScribNode leaveMessageIdCollection(ScribNode parent, ScribNode child,
+			MessageIdCollector coll, ScribNode visited)
 	{
 		MessageTransfer<?> mt = (MessageTransfer<?>) visited;
-		if (mt.msg.isMessageSigNode() || mt.msg.isMessageSigNameNode())
+		MessageNode msg = mt.getMessageNodeChild();
+		if (msg.isMessageSigNode() || msg.isMessageSigNameNode())
 		{
-			coll.addName((MessageId<?>) mt.msg.toMessage().getId());
+			coll.addName((MessageId<?>) msg.toMessage().getId());
 		}
 		else
 		{
-			throw new RuntimeException("Shouldn't get in here: " + mt.msg);
+			throw new RuntimeException("Shouldn't get in here: " + msg);
 		}
 		return visited;
 	}
 
 	@Override
-	public MessageTransfer<?> leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
+	public MessageTransfer<?> leaveProtocolDeclContextBuilding(ScribNode parent,
+			ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited)
+			throws ScribbleException
 	{
 		MessageTransfer<?> mt = (MessageTransfer<?>) visited;
-		if (mt.msg.isMessageSigNode())
+		MessageNode msg = mt.getMessageNodeChild();
+		if (msg.isMessageSigNode())
 		{
-			for (PayloadElem<?> pe : ((MessageSigNode) mt.msg).payloads.getElementChildren())
+			for (PayloadElem<?> pe : ((MessageSigNode) msg).getPayloadListChild()
+					.getElementChildren())
 			{
-				if (pe.isGlobalDelegationElem())  // FIXME: should always be GMessageTransfer
+				if (pe.isGlobalDelegationElem())  // TODO: should always be GMessageTransfer
 				{
-					((GDelegationElemDel) pe.del()).leaveMessageTransferInProtocolDeclContextBuilding(mt, (GDelegationElem) pe, builder);
+					((GDelegationElemDel) pe.del())
+							.leaveMessageTransferInProtocolDeclContextBuilding(mt,
+									(GDelegationElem) pe, builder);
 				}
 			}
 		}
 		return mt;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/*@Override
 	public ScribNode leaveEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll, ScribNode visited)
 	{

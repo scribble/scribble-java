@@ -15,8 +15,12 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.ProtocolDef;
+import org.scribble.ast.local.LProtocolBlock;
+import org.scribble.ast.local.LProtocolDef;
 import org.scribble.type.kind.Global;
+import org.scribble.type.name.Role;
 
 public class GProtocolDef extends ProtocolDef<Global> implements GNode
 {
@@ -31,6 +35,12 @@ public class GProtocolDef extends ProtocolDef<Global> implements GNode
 	{
 		super(node);
 	}
+
+	@Override
+	public GProtocolBlock getBlockChild()
+	{
+		return (GProtocolBlock) getChild(0);
+	}
 	
 	@Override
 	public GProtocolDef dupNode()
@@ -38,10 +48,10 @@ public class GProtocolDef extends ProtocolDef<Global> implements GNode
 		return new GProtocolDef(this);
 	}
 
-	@Override
-	public GProtocolBlock getBlockChild()
+	public LProtocolDef project(AstFactory af, Role self, LProtocolBlock block)
 	{
-		return (GProtocolBlock) getChild(0);
+		LProtocolDef projection = af.LProtocolDef(this.source, block);
+		return projection;
 	}
 
 
@@ -64,12 +74,6 @@ public class GProtocolDef extends ProtocolDef<Global> implements GNode
 	protected GProtocolDef copy()
 	{
 		return new GProtocolDef(this.source, getBlock());
-	}
-
-	public LProtocolDef project(AstFactory af, Role self, LProtocolBlock block)
-	{
-		LProtocolDef projection = af.LProtocolDef(this.source, block);
-		return projection;
 	}
 	
 	@Override

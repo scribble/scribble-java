@@ -1,5 +1,7 @@
-/**
- * Copyright 2008 The Scribble Authors
+/**block
+ 
+ * blockC
+opyright 2008 The Scribble Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -26,7 +28,6 @@ import org.scribble.parser.scribble.ast.AntlrDataTypeDecl;
 import org.scribble.parser.scribble.ast.AntlrImportModule;
 import org.scribble.parser.scribble.ast.AntlrMessageSig;
 import org.scribble.parser.scribble.ast.AntlrMessageSigDecl;
-import org.scribble.parser.scribble.ast.AntlrModule;
 import org.scribble.parser.scribble.ast.AntlrModuleDecl;
 import org.scribble.parser.scribble.ast.AntlrNonRoleArgList;
 import org.scribble.parser.scribble.ast.AntlrNonRoleParamDecl;

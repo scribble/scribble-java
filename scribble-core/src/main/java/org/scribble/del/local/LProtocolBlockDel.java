@@ -26,24 +26,31 @@ import org.scribble.visit.wf.ReachabilityChecker;
 public class LProtocolBlockDel extends ProtocolBlockDel
 {
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		LProtocolBlock lpb = (LProtocolBlock) visited;
-		LInteractionSeq seq = (LInteractionSeq) ((InlineProtocolEnv) lpb.seq.del().env()).getTranslation();	
+		LInteractionSeq seq = (LInteractionSeq) ((InlineProtocolEnv) lpb
+				.getInteractSeqChild().del().env()).getTranslation();
 		LProtocolBlock inlined = inl.job.af.LProtocolBlock(lpb.getSource(), seq);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, inl, lpb);
 	}
 
 	@Override
-	public void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
+	public void enterReachabilityCheck(ScribNode parent, ScribNode child,
+			ReachabilityChecker checker) throws ScribbleException
 	{
 		ScribDelBase.pushVisitorEnv(this, checker);
 	}
 
 	@Override
-	public LProtocolBlock leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+	public LProtocolBlock leaveReachabilityCheck(ScribNode parent,
+			ScribNode child, ReachabilityChecker checker, ScribNode visited)
+			throws ScribbleException
 	{
-		return (LProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		return (LProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, checker,
+				visited);
+				// records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

@@ -53,33 +53,41 @@ public class GProtocolDefDel extends ProtocolDefDel
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
-		CommonTree blame = ((GProtocolDecl) parent).header.getSource();
+		CommonTree blame = ((GProtocolDecl) parent).getHeaderChild().getSource();
 		SubprotocolSig subsig = inl.peekStack();
 		GProtocolDef def = (GProtocolDef) visited;
-		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) def.block.del().env()).getTranslation();	
-		RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame, RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
+		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) def
+				.getBlockChild().del().env()).getTranslation();
+		RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame,
+				RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 		GRecursion rec = inl.job.af.GRecursion(blame, recvar, block);
 		GInteractionSeq gis = inl.job.af.GInteractionSeq(blame, Arrays.asList(rec));
-		GProtocolDef inlined = inl.job.af.GProtocolDef(def.getSource(), inl.job.af.GProtocolBlock(blame, gis));
+		GProtocolDef inlined = inl.job.af.GProtocolDef(def.getSource(),
+				inl.job.af.GProtocolBlock(blame, gis));
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		GProtocolDefDel copy = setInlinedProtocolDef(inlined);
-		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, inl, (GProtocolDef) def.del(copy));
+		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, inl,
+				(GProtocolDef) def.del(copy));
 	}
 
 	@Override
-	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ScribNode parent, ScribNode child, Projector proj)
+			throws ScribbleException
 	{
 		//pushVisitorEnv(parent, child, proj);
 		ScribDelBase.pushVisitorEnv(this, proj);
 	}
 
 	@Override
-	public GProtocolDef leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	public GProtocolDef leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDef gpd = (GProtocolDef) visited;
-		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gpd.block.del().env()).getProjection();	
+		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gpd.getBlockChild()
+				.del().env()).getProjection();
 		LProtocolDef projection = gpd.project(proj.job.af, proj.peekSelf(), block);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, proj, gpd);

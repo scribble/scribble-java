@@ -59,7 +59,8 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 		return (NonRoleParamDeclList) getChild(2);
 	}
 	
-	public ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
+	public ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name,
+			RoleDeclList rdl, NonRoleParamDeclList pdl)
 	{
 		ProtocolHeader<K> pd = dupNode();
 		ScribDel del = del();

@@ -30,27 +30,32 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 {
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GProtocolBlock gpb = (GProtocolBlock) visited;
-		GInteractionSeq seq = (GInteractionSeq) ((InlineProtocolEnv) gpb.seq.del().env()).getTranslation();	
+		GInteractionSeq seq = (GInteractionSeq) ((InlineProtocolEnv) gpb
+				.getInteractSeqChild().del().env()).getTranslation();
 		GProtocolBlock inlined = inl.job.af.GProtocolBlock(gpb.getSource(), seq);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, inl, gpb);
 	}
 	
 	@Override
-	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ScribNode parent, ScribNode child, Projector proj)
+			throws ScribbleException
 	{
 		ScribDelBase.pushVisitorEnv(this, proj);
 	}
 	
 	@Override
-	public GProtocolBlock leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	public GProtocolBlock leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GProtocolBlock gpb = (GProtocolBlock) visited;
 		LInteractionSeq seq =
-				(LInteractionSeq) ((ProjectionEnv) gpb.seq.del().env()).getProjection();	
+				(LInteractionSeq) ((ProjectionEnv) gpb.getInteractSeqChild().del()
+						.env()).getProjection();
 				//((GInteractionSeqDel) gpb.seq.del()).project(gpb.getInteractionSeq(), self);	
 		LProtocolBlock projection = gpb.project(proj.job.af, proj.peekSelf(), seq);
 		proj.pushEnv(proj.popEnv().setProjection(projection));

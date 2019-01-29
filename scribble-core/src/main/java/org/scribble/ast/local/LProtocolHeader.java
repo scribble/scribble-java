@@ -22,6 +22,7 @@ import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
+import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.type.kind.Local;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.LProtocolName;
@@ -40,10 +41,24 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 	{
 		super(node);
 	}
+		
+	@Override
+	public LProtocolNameNode getNameNodeChild()
+	{
+		return (LProtocolNameNode) getNameNodeChild();
+	}
 	
+	@Override
 	public LProtocolHeader dupNode()
 	{
 		return new LProtocolHeader(this);
+	}
+
+	@Override
+	public LProtocolHeader reconstruct(ProtocolNameNode<Local> name,
+			RoleDeclList rdl, NonRoleParamDeclList pdl)
+	{
+		return (LProtocolHeader) super.reconstruct(name, rdl, pdl);
 	}
 
 	public Role getSelfRole()
@@ -58,12 +73,6 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 			}
 		}
 		throw new RuntimeException("Shouldn't get here: " + rdl);
-	}
-		
-	@Override
-	public LProtocolNameNode getNameNodeChild()
-	{
-		return (LProtocolNameNode) getNameNodeChild();
 	}
 
 	@Override

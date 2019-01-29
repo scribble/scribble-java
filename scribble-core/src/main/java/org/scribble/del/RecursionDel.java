@@ -31,10 +31,11 @@ public abstract class RecursionDel extends CompoundInteractionNodeDel
 	}
 
 	@Override
-	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
+	public void enterDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb) throws ScribbleException
 	{
 		Recursion<?> rec = (Recursion<?>) child;
-		RecVar rv = rec.recvar.toName();
+		RecVar rv = rec.getRecVarChild().toName();
 		/*if (disamb.isBoundRecVar(rv))
 		{
 			throw new ScribbleException("Rec variable shadowing not currently allowed: " + rv); 
@@ -45,49 +46,55 @@ public abstract class RecursionDel extends CompoundInteractionNodeDel
 	}
 
 	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		Recursion<?> rec = (Recursion<?>) visited;
 		/*RecVar rv = rec.recvar.toName();
 		disamb.popRecVar(rv);*/
-		RecVar rv = ((Recursion<?>) child).recvar.toName();  // visited may be already name mangled  // Not any more (refactored to inlining)
+		RecVar rv = ((Recursion<?>) child).getRecVarChild().toName();  // visited may be already name mangled  // Not any more (refactored to inlining)
 		disamb.popRecVar(rv);
 		return rec;
 	}
 
 	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inliner) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inliner) throws ScribbleException
 	{
 		super.enterProtocolInlining(parent, child, inliner);
 		Recursion<?> rec = (Recursion<?>) child;
-		inliner.pushRecVar(rec.recvar.toName());
+		inliner.pushRecVar(rec.getRecVarChild().toName());
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inliner, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inliner, ScribNode visited) throws ScribbleException
 	{
 		//Recursion<?> rec = (Recursion<?>) visited;
-		RecVar origRV = ((Recursion<?>) child).recvar.toName();  // visited may be already name mangled
+		RecVar origRV = ((Recursion<?>) child).getRecVarChild().toName();  // visited may be already name mangled
 		inliner.popRecVar(origRV);
 		return super.leaveProtocolInlining(parent, child, inliner, visited);
 	}
 
 	@Override
-	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child,
+			InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		super.enterInlinedProtocolUnfolding(parent, child, unf);
 		Recursion<?> lr = (Recursion<?>) child;
-		RecVar recvar = lr.recvar.toName();
+		RecVar recvar = lr.getRecVarChild().toName();
 		unf.setRecVar(unf.job.af, recvar, lr);  // Cloned on use (on continue)
 	}
 
 	@Override
-	public Recursion<?> leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	public Recursion<?> leaveInlinedProtocolUnfolding(ScribNode parent,
+			ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited)
+			throws ScribbleException
 	{
 		Recursion<?> rec = (Recursion<?>) visited;
-		RecVar recvar = rec.recvar.toName();
+		RecVar recvar = rec.getRecVarChild().toName();
 		unf.removeRecVar(recvar);
-		UnfoldingEnv merged = unf.popEnv().mergeContext((UnfoldingEnv) rec.block.del().env());
+		UnfoldingEnv merged = unf.popEnv().mergeContext((UnfoldingEnv) rec.getBlockChild().del().env());
 		unf.pushEnv(merged);
 		return (Recursion<?>) super.leaveInlinedProtocolUnfolding(parent, child, unf, rec);
 	}
@@ -99,8 +106,9 @@ public abstract class RecursionDel extends CompoundInteractionNodeDel
 	}*/
 
 	@Override
-	public void enterRecVarCollection(ScribNode parent, ScribNode child, RecVarCollector coll)
+	public void enterRecVarCollection(ScribNode parent, ScribNode child,
+			RecVarCollector coll)
 	{
-		coll.addName(((Recursion<?>) child).recvar.toName());
+		coll.addName(((Recursion<?>) child).getRecVarChild().toName());
 	}
 }

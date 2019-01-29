@@ -32,8 +32,8 @@ public class AntlrModuleDecl
 	{
 		//return af.ModuleDecl(ct, AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct), af));
 
-		System.out.println("bbb: " + ct.getChildren().stream().map(x -> x.getClass().toString()).collect(Collectors.joining("")));
-		System.out.println("ccc: " + ((CommonTree) ct.getChild(0)).getChildren().stream().map(x -> x.getClass().toString()).collect(Collectors.joining("")));
+		System.out.println("bbb: " + ((List<?>) ct.getChildren()).stream().map(x -> x.getClass().toString()).collect(Collectors.joining("")));
+		System.out.println("ccc: " + ((List<?>) ((CommonTree) ct.getChild(0)).getChildren()).stream().map(x -> x.getClass().toString()).collect(Collectors.joining("")));
 
 		// HACK FIXME
 		//List<String> collect = ((Stream<?>) ct.getChildren().stream()).map(x -> ((CommonTree) x).getText()).collect(Collectors.toList());

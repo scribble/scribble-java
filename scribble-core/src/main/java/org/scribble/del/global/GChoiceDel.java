@@ -47,7 +47,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 				.map(b -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env())
 						.getTranslation())
 				.collect(Collectors.toList());
-		RoleNode subj = gc.getSubjectChild().clone(inl.job.af);
+		RoleNode subj = gc.getSubjectChild().clone();//inl.job.af);
 		GChoice inlined = inl.job.af.GChoice(gc.getSource(), subj, blocks);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GChoice) super.leaveProtocolInlining(parent, child, inl, gc);
