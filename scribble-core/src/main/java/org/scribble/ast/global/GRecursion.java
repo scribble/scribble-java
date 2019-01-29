@@ -68,7 +68,7 @@ public class GRecursion extends Recursion<Global>
 
 	public LRecursion project(AstFactory af, Role self, LProtocolBlock block)
 	{
-		RecVarNode recvar = getRecVarChild().clone(af);
+		RecVarNode recvar = getRecVarChild().clone();//af);
 		LRecursion projection = null;
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(recvar.toName());

@@ -42,16 +42,6 @@ public abstract class ConnectAction<K extends ProtocolKind> extends SimpleIntera
 		this.dest = null;
 	}
 	
-	protected boolean isUnitMessage()
-	{
-		if (!this.msg.isMessageSigNode())
-		{
-			return false;
-		}
-		MessageSigNode msn = (MessageSigNode) this.msg;
-		return msn.op.isEmpty() && msn.payloads.isEmpty();
-	}
-	
 	public abstract ConnectAction<K> dupNode();
 	
 	public MessageNode getMessageNodeChild()
@@ -88,6 +78,16 @@ public abstract class ConnectAction<K extends ProtocolKind> extends SimpleIntera
 		MessageNode msg = (MessageNode) visitChild(getMessageNodeChild(), nv);
 		RoleNode dest = (RoleNode) visitChild(getDestinationChild(), nv);
 		return reconstruct(src, msg, dest);
+	}
+	
+	protected boolean isUnitMessage()
+	{
+		if (!this.msg.isMessageSigNode())
+		{
+			return false;
+		}
+		MessageSigNode msn = (MessageSigNode) this.msg;
+		return msn.getOpChild().isEmpty() && msn.getPayloadListChild().isEmpty();
 	}
 	
 	@Override

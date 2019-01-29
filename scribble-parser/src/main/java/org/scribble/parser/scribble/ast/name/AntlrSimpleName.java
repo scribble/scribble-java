@@ -24,7 +24,6 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.parser.scribble.ScribbleAntlrConstants;
 import org.scribble.type.kind.DataTypeKind;
 import org.scribble.type.kind.Global;
@@ -79,16 +78,6 @@ public class AntlrSimpleName
 		return op.equals(ScribbleAntlrConstants.ANTLR_EMPTY_OPERATOR)
 				? (OpNode) af.SimpleNameNode(ct, OpKind.KIND, OpNode.EMPTY_OPERATOR_IDENTIFIER)
 				: (OpNode) af.SimpleNameNode(ct, OpKind.KIND, getName(ct));
-	}
-	
-	public static ScopeNode toScopeNode(CommonTree ct)
-	{
-		/*String scope = getName(ct);
-		if (scope.equals(ANTLR_NO_SCOPE))
-		{
-			return null;
-		}*/
-		throw new RuntimeException("TODO: " + ct);
 	}
 	
 	public static RecVarNode toRecVarNode(CommonTree ct, AstFactory af)

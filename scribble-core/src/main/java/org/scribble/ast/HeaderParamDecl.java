@@ -13,9 +13,13 @@
  */
 package org.scribble.ast;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.SimpleNameNode;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ParamKind;
 import org.scribble.type.name.Role;
@@ -23,34 +27,68 @@ import org.scribble.visit.AstVisitor;
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
 // RoleKind or (NonRole)ParamKind
-public abstract class HeaderParamDecl<K extends ParamKind> extends NameDeclNode<K>
+public abstract class HeaderParamDecl<K extends ParamKind>
+		extends NameDeclNode<K>
 {
+	// ScribTreeAdaptor#create constructor
 	public HeaderParamDecl(Token t)
 	{
 		super(t);
 	}
 
-	protected HeaderParamDecl(CommonTree source, SimpleNameNode<K> name)
+	// Tree#dupNode constructor
+	public HeaderParamDecl(HeaderParamDecl<K> node)
 	{
-		super(source, name);
+		super(node);
 	}
-
-	public abstract HeaderParamDecl<K> reconstruct(SimpleNameNode<K> name);
 	
 	@Override
-	public HeaderParamDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
+	public abstract SimpleNameNode<K> getNameNodeChild();
+
+	public abstract HeaderParamDecl<K> dupNode();
+
+	public HeaderParamDecl<K> reconstruct(SimpleNameNode<K> name)
 	{
-		SimpleNameNode<K> name = visitChildWithClassEqualityCheck(this, (SimpleNameNode<K>) this.name, nv);
-		return reconstruct(name);
+		HeaderParamDecl<K> pd = dupNode();
+		ScribDel del = del();
+		List<ScribNode> children = new LinkedList<>();
+		children.add(name);
+		pd.setDel(del);  // No copy
+		return pd;
 	}
 	
-	public abstract HeaderParamDecl<K> project(AstFactory af, Role self);  // Move to delegate?
+	@Override
+	public HeaderParamDecl<K> visitChildren(AstVisitor nv)
+			throws ScribbleException
+	{
+		SimpleNameNode<K> name = 
+				visitChildWithClassEqualityCheck(this, getNameNodeChild(), nv);
+		return reconstruct(name);
+	}
 
 	public abstract String getKeyword();
+	
+	public abstract HeaderParamDecl<K> project(AstFactory af, Role self);  // Move to delegate?
 	
 	@Override
 	public String toString()
 	{
 		return getKeyword() + " " + getDeclName().toString();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	protected HeaderParamDecl(CommonTree source, SimpleNameNode<K> name)
+	{
+		super(source, name);
 	}
 }

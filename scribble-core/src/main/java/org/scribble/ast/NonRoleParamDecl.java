@@ -13,50 +13,65 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
-import org.scribble.ast.name.qualified.DataTypeNode;
-import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
-import org.scribble.ast.name.simple.SimpleNameNode;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.DataTypeKind;
 import org.scribble.type.kind.Local;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.SigKind;
-import org.scribble.type.name.DataType;
-import org.scribble.type.name.LProtocolName;
-import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.Name;
 import org.scribble.type.name.Role;
 
-public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDecl<K>
+// TODO: make concrete subclasses to "eliminate" generic parameter (e.g., for better child casting, etc.)
+public class NonRoleParamDecl<K extends NonRoleParamKind>
+		extends HeaderParamDecl<K>
 {
 	public final K kind;  // CHECKME: factor up to super?
 
-	public NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> name)
+	// ScribTreeAdaptor#create constructor
+	public NonRoleParamDecl(Token t, K kind)
 	{
-		super(source, name);
+		super(t);
 		this.kind = kind;
 	}
 
-	@Override
-	public NameNode<K> getNameNodeChild()
+	// Tree#dupNode constructor
+	public NonRoleParamDecl(NonRoleParamDecl<K> node, K kind)
 	{
-		NameNode<?> name = getNameNodeChild();
-		if (this.kind.equals(SigKind.KIND) && name instanceof MessageSigNameNode
-				|| this.kind.equals(DataTypeKind.KIND) && name instanceof DataTypeNode
-				|| this.kind.equals(Local.KIND) && name instanceof LProtocolNameNode)
+		super(node);
+		this.kind = kind;
+	}
+	
+	@Override
+	public NonRoleParamDecl<K> dupNode()
+	{
+		return new NonRoleParamDecl<>(this, this.kind);
+	}
+	
+	@Override
+	public NonRoleParamNode<K> getNameNodeChild()
+	{
+		NameNode<?> raw = getRawNameNodeChild();
+		if (this.kind.equals(SigKind.KIND) || this.kind.equals(DataTypeKind.KIND)
+				|| this.kind.equals(Local.KIND))
 		{
+			// Unchecked cast because this class not further subclassed for kind, nor the NameNodes -- unlike the Kind objects themselves
 			@SuppressWarnings("unchecked")
-			NameNode<K> cast = (NameNode<K>) name;
+			NonRoleParamNode<K> cast = (NonRoleParamNode<K>) raw;
 			return cast;
 		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get here: " + this);
-		}
+		throw new RuntimeException("Shouldn't get in here: " + this.kind);
+	}
+
+	@Override
+	public NonRoleParamDecl<K> project(AstFactory af, Role self)
+	{
+		NonRoleParamNode<K> child = getNameNodeChild();
+		NonRoleParamNode<K> pn = af.NonRoleParamNode(child.source, this.kind,
+				child.toString());
+		return af.NonRoleParamDecl(this.source, this.kind, pn);
 	}
 
 	@Override
@@ -66,6 +81,38 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 	}
 	
 	@Override
+	public String getKeyword()
+	{
+		if (this.kind.equals(SigKind.KIND))
+		{
+			return Constants.SIG_KW;
+		}
+		else if (this.kind.equals(DataTypeKind.KIND))
+		{
+			return Constants.TYPE_KW;
+		}
+		else  // CHECKME: Local?
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this.kind);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> name)
+	{
+		super(source, name);
+		this.kind = kind;
+	}
+	
+	/*@Override
 	public NonRoleParamDecl<K> clone(AstFactory af)
 	{
 		NonRoleParamNode<K> param = (NonRoleParamNode<K>) this.name.clone(af);
@@ -86,29 +133,5 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 	protected NonRoleParamDecl<K> copy()
 	{
 		return new NonRoleParamDecl<>(this.source, this.kind, (NonRoleParamNode<K>) this.name);
-	}
-
-	@Override
-	public NonRoleParamDecl<K> project(AstFactory af, Role self)
-	{
-		NonRoleParamNode<K> pn = af.NonRoleParamNode(this.name.source, this.kind, this.name.toString());
-		return af.NonRoleParamDecl(this.source, this.kind, pn);
-	}
-	
-	@Override
-	public String getKeyword()
-	{
-		if (this.kind.equals(SigKind.KIND))
-		{
-			return Constants.SIG_KW;
-		}
-		else if (this.kind.equals(DataTypeKind.KIND))
-		{
-			return Constants.TYPE_KW;
-		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get in here: " + this.kind);
-		}
-	}
+	}*/
 }

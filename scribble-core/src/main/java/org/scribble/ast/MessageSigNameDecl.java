@@ -63,7 +63,7 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	@Override
 	public MessageSigNameNode getNameNodeChild()
 	{
-		return (MessageSigNameNode) getChild();
+		return (MessageSigNameNode) getRawNameNodeChild();
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.Arg;
 import org.scribble.type.kind.NonRoleArgKind;
 import org.scribble.type.name.Role;
@@ -93,12 +94,12 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	
 	
 	
-	/*public NonRoleArgList(CommonTree source, List<NonRoleArg> args)
+	public NonRoleArgList(CommonTree source, List<NonRoleArg> args)
 	{
 		super(source, args);
 	}
 
-	@Override
+	/*@Override
 	protected ScribNodeBase copy()
 	{
 		return new NonRoleArgList(this.source, getArgChildren());

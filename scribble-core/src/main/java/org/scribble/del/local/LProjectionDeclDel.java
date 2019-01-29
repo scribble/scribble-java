@@ -51,7 +51,7 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 		LProtocolDecl lpd = (LProtocolDecl) visited;
 		// FIXME: ensure all role params are used, to avoid empty roledecllist
 		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences();
-		List<RoleDecl> rds = lpd.header.roledecls.getDecls().stream().filter((rd) -> 
+		List<RoleDecl> rds = lpd.header.roledecls.getParamDeclChildren().stream().filter((rd) -> 
 				occs.contains(rd.getDeclName())).collect(Collectors.toList());
 		RoleDeclList rdl = fixer.job.af.RoleDeclList(lpd.header.roledecls.getSource(), rds);
 		LProtocolHeader tmp = lpd.getHeaderChild();

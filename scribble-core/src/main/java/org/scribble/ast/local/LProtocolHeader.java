@@ -49,7 +49,7 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 	public Role getSelfRole()
 	{
 		RoleDeclList rdl = getRoleDeclListChild();
-		for (NameDeclNode<RoleKind> rd : rdl.getDecls())
+		for (NameDeclNode<RoleKind> rd : rdl.getParamDeclChildren())
 		{
 			RoleDecl tmp = (RoleDecl) rd;
 			if (tmp.isSelfRoleDecl())

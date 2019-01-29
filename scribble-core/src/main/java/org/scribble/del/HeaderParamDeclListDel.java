@@ -33,7 +33,7 @@ public abstract class HeaderParamDeclListDel extends ScribDelBase
 	public HeaderParamDeclList<?> leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		HeaderParamDeclList<?> pdl = (HeaderParamDeclList<?>) visited;
-		List<? extends HeaderParamDecl<?>> decls = pdl.getDecls();  // grammar enforces RoleDeclList size > 0
+		List<? extends HeaderParamDecl<?>> decls = pdl.getParamDeclChildren();  // grammar enforces RoleDeclList size > 0
 		if (decls.size() != decls.stream().map((d) -> d.getDeclName()).distinct().count())
 		{
 			throw new ScribbleException(pdl.getSource(), "Duplicate header decls: " + pdl);

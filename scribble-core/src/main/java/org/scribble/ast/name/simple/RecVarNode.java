@@ -39,6 +39,12 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 	}
 
 	@Override
+	public RecVarNode clone()
+	{
+		return (RecVarNode) super.clone();
+	}
+
+	@Override
 	public RecVar toName()
 	{
 		return new RecVar(getIdentifier());

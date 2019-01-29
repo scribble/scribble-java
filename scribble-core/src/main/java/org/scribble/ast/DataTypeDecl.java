@@ -63,7 +63,7 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	@Override
 	public DataTypeNode getNameNodeChild()
 	{
-		return (DataTypeNode) getChild();
+		return (DataTypeNode) getRawNameNodeChild();
 	}
 
   // Simple name (ModuleDecl is the only NameDeclNode that uses qualified names)

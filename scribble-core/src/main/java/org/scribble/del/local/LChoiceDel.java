@@ -48,36 +48,47 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	}*/
 
 	@Override
-	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
+			ScribNode child, UnguardedChoiceDoProjectionChecker checker,
+			ScribNode visited) throws ScribbleException
 	{
 		Choice<?> cho = (Choice<?>) visited;
-		List<UnguardedChoiceDoEnv> benvs =
-				cho.getBlockChildren().stream().map((b) -> (UnguardedChoiceDoEnv) b.del().env()).collect(Collectors.toList());
+		List<UnguardedChoiceDoEnv> benvs = cho.getBlockChildren().stream()
+				.map(b -> (UnguardedChoiceDoEnv) b.del().env())
+				.collect(Collectors.toList());
 		UnguardedChoiceDoEnv merged = checker.popEnv().mergeContexts(benvs); 
 		checker.pushEnv(merged);
-		return (Choice<?>) super.leaveUnguardedChoiceDoProjectionCheck(parent, child, checker, cho);  // Done merge of children here, super does merge into parent
+		return (Choice<?>) super.leaveUnguardedChoiceDoProjectionCheck(parent,
+				child, checker, cho);
+				// Done merge of children here, super does merge into parent
 	}
 
 	@Override
-	public ScribNode leaveProjectedChoiceDoPruning(ScribNode parent, ScribNode child, ProjectedChoiceDoPruner pruner, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProjectedChoiceDoPruning(ScribNode parent,
+			ScribNode child, ProjectedChoiceDoPruner pruner, ScribNode visited)
+			throws ScribbleException
 	{
 		LChoice lc = (LChoice) visited;
-		List<LProtocolBlock> blocks = lc.getBlockChildren().stream().filter((b) -> !b.isEmpty()).collect(Collectors.toList());
+		List<LProtocolBlock> blocks = lc.getBlockChildren().stream()
+				.filter(b -> !b.isEmpty()).collect(Collectors.toList());
 		if (blocks.isEmpty())
 		{
 			return null;
 		}
-		return lc.reconstruct(lc.subj, blocks);
+		return lc.reconstruct(lc.getSubjectChild(), blocks);
 	}
 	
 	@Override
-	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
+			throws ScribbleException
 	{
 		LChoice lc = (LChoice) visited;
 		List<LProtocolBlock> blocks = lc.getBlockChildren();
 		
 		Set<Role> subjs = blocks.stream()
-				.map((b) -> b.getInteractSeqChild().getInteractNodeChildren().get(0).inferLocalChoiceSubject(fixer))
+				.map(b -> b.getInteractSeqChild().getInteractNodeChildren().get(0)
+						.inferLocalChoiceSubject(fixer))
 				//.filter((r) -> !r.toString().equals(DummyProjectionRoleNode.DUMMY_PROJECTION_ROLE))
 				.collect(Collectors.toSet());
 		if (subjs.size() == 0)
@@ -88,7 +99,10 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		else
 		{
 			subjs = subjs.stream()
-					.map((r) -> fixer.isRecVarRole(r) ? fixer.getChoiceSubject(new RecVar(r.toString())) : r)  // Never needed?
+					.map(r -> fixer.isRecVarRole(r)
+							? fixer.getChoiceSubject(new RecVar(r.toString())) 
+							: r)
+							// Never needed?
 					.collect(Collectors.toSet());
 		}
 		
@@ -98,11 +112,13 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		if (subjs.size() > 1)  // Unnecessary: due to WF check in GChoiceDel.leaveInlinedPathCollection -- would be better as a check on locals than in projection anyway
 		{
 			String self = fixer.getModuleContext().root.getSimpleName().toString();  // HACK
-			self = self.substring(self.lastIndexOf('_')+1, self.length());  // FIXME: not sound (if role names include "_")
-			throw new ScribbleException(lc.getSource(), "Cannot project onto " + self + " due to inconsistent local choice subjects: " + subjs);  // self not recorded -- can derive from LProtocolDecl RoleDeclList
+			self = self.substring(self.lastIndexOf('_')+1, self.length());  // FIXME: not comaptible with role names that include "_"
+			throw new ScribbleException(lc.getSource(), "Cannot project onto " + self
+					+ " due to inconsistent local choice subjects: " + subjs);
+					// self not recorded -- can derive from LProtocolDecl RoleDeclList
 			//throw new RuntimeException("Shouldn't get in here: " + subjs);
 		}
-		RoleNode subj = (RoleNode) fixer.job.af.SimpleNameNode(null, RoleKind.KIND,  // FIXME? null source OK?
+		RoleNode subj = (RoleNode) fixer.job.af.SimpleNameNode(null, RoleKind.KIND,  // CHECKME? null source OK?
 				//blocks.get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer).toString());
 				subjs.iterator().next().toString());
 		fixer.setChoiceSubject(subj.toName());
@@ -111,30 +127,40 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		LChoice lc = (LChoice) visited;
 		List<LProtocolBlock> blocks = 
-				lc.getBlockChildren().stream().map((b) -> (LProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
-		RoleNode subj = lc.subj.clone(inl.job.af);
+				lc.getBlockChildren().stream()
+						.map(b -> (LProtocolBlock) ((InlineProtocolEnv) b.del().env())
+								.getTranslation())
+						.collect(Collectors.toList());
+		RoleNode subj = lc.getSubjectChild().clone();//inl.job.af);
 		LChoice inlined = inl.job.af.LChoice(lc.getSource(), subj, blocks);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LChoice) super.leaveProtocolInlining(parent, child, inl, lc);
 	}
 
 	@Override
-	public LChoice leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+	public LChoice leaveReachabilityCheck(ScribNode parent, ScribNode child,
+			ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		LChoice cho = (LChoice) visited;
 		List<ReachabilityEnv> benvs =
-				cho.getBlockChildren().stream().map((b) -> (ReachabilityEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlockChildren().stream()
+						.map(b -> (ReachabilityEnv) b.del().env())
+						.collect(Collectors.toList());
 		ReachabilityEnv merged = checker.popEnv().mergeForChoice(benvs);
 		checker.pushEnv(merged);
-		return (LChoice) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		return (LChoice) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(
+				parent, child, checker, visited);
+				// records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 
 	@Override
-	public void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
+	public void enterEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder graph)
 	{
 		super.enterEGraphBuilding(parent, child, graph);
 		graph.util.enterChoice();
@@ -159,7 +185,8 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	}
 
 	@Override
-	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
+	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		graph.util.leaveChoice();
 		return super.leaveEGraphBuilding(parent, child, graph, visited);

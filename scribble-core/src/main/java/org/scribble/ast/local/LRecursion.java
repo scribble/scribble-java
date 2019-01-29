@@ -77,7 +77,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 					"Cannot merge recursions for " + getRecVarChild() + " and "
 							+ them.getRecVarChild() + ": " + this + ", " + ln);
 		}
-		return af.LRecursion(this.source, getRecVarChild().clone(af),
+		return af.LRecursion(this.source, getRecVarChild().clone(),//af),
 				getBlockChild().merge(them.getBlockChild()));
 				// Not reconstruct: leave context building to post-projection passes
 				// HACK: this source

@@ -22,60 +22,62 @@ import org.scribble.del.ScribDel;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.Name;
 import org.scribble.type.name.Role;
-import org.scribble.util.ScribUtil;
 
 // Typing a bit awkward that this list has to use NonRoleParamKind as the "concrete" kind, while the NonRoleParamDecl elements use the actual concrete kind
 // But OK because the NonRoleParamDecl nodes are immutable (the generic kind value is never rewritten after instantiation, only read)
 public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 {
+	// ScribTreeAdaptor#create constructor
 	public NonRoleParamDeclList(Token t)
 	{
 		super(t);
 	}
 
-	public NonRoleParamDeclList(CommonTree source, List<NonRoleParamDecl<NonRoleParamKind>> decls)
+	// Tree#dupNode constructor
+	public NonRoleParamDeclList(NonRoleParamDeclList node)
 	{
-		super(source, decls);
+		super(node);
 	}
 
 	@Override
-	protected NonRoleParamDeclList copy()
+	public List<NonRoleParamDecl<NonRoleParamKind>> getParamDeclChildren()
 	{
-		return new NonRoleParamDeclList(this.source, getDecls());
-	}
-	
-	@Override
-	public NonRoleParamDeclList clone(AstFactory af)
-	{
-		List<NonRoleParamDecl<NonRoleParamKind>> decls = ScribUtil.cloneList(af, getDecls());
-		return af.NonRoleParamDeclList(this.source, decls);
+		@SuppressWarnings("unchecked")
+		List<NonRoleParamDecl<NonRoleParamKind>> cast =
+				((List<?>) getChildren()).stream()
+						.map(x -> (NonRoleParamDecl<NonRoleParamKind>) x)
+						.collect(Collectors.toList());
+		return cast;
 	}
 
 	@Override
-	public NonRoleParamDeclList reconstruct(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
+	public NonRoleParamDeclList dupNode()
 	{
+		return new NonRoleParamDeclList(this);
+	}
+
+	@Override
+	public NonRoleParamDeclList reconstruct(
+			List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
+	{
+		NonRoleParamDeclList sig = dupNode();
+		sig.addChildren(decls);
 		ScribDel del = del();
-		NonRoleParamDeclList rdl = new NonRoleParamDeclList(this.source, castParamDecls(decls));
-		rdl = (NonRoleParamDeclList) rdl.del(del);
-		return rdl;
+		sig.setDel(del);  // No copy
+		return sig;
 	}
-
+		
+	// CHECKME: move to delegate?
 	@Override
-	public List<NonRoleParamDecl<NonRoleParamKind>> getDecls()
+	public NonRoleParamDeclList project(AstFactory af, Role self)
 	{
-		return castParamDecls(super.getDecls());
+		return af.NonRoleParamDeclList(this.source, getParamDeclChildren());
 	}
 
 	public List<Name<NonRoleParamKind>> getParameters()
 	{
-		return getDecls().stream().map((decl) -> decl.getDeclName()).collect(Collectors.toList());
-	}
-		
-	// FIXME: move to delegate?
-	@Override
-	public NonRoleParamDeclList project(AstFactory af, Role self)
-	{
-		return af.NonRoleParamDeclList(this.source, getDecls());
+		return getParamDeclChildren().stream().map(decl -> decl.getDeclName())
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -86,9 +88,33 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 				: "<" + super.toString() + ">";
 	}
 	
-	private static List<NonRoleParamDecl<NonRoleParamKind>>
-			castParamDecls(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public NonRoleParamDeclList(CommonTree source, List<NonRoleParamDecl<NonRoleParamKind>> decls)
 	{
-		return decls.stream().map((d) -> (NonRoleParamDecl<NonRoleParamKind>) d).collect(Collectors.toList());
+		super(source, decls);
 	}
+
+	/*@Override
+	protected NonRoleParamDeclList copy()
+	{
+		return new NonRoleParamDeclList(this.source, getParamDeclChildren());
+	}
+	
+	@Override
+	public NonRoleParamDeclList clone(AstFactory af)
+	{
+		List<NonRoleParamDecl<NonRoleParamKind>> decls = ScribUtil.cloneList(af, getParamDeclChildren());
+		return af.NonRoleParamDeclList(this.source, decls);
+	}*/
 }

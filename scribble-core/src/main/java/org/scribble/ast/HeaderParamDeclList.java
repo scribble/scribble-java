@@ -13,13 +13,13 @@
  */
 package org.scribble.ast;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ParamKind;
 import org.scribble.type.name.Role;
@@ -29,35 +29,45 @@ import org.scribble.visit.AstVisitor;
 // RoleKind or (NonRole)ParamKind
 public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNodeBase 
 {
-	private final List<? extends HeaderParamDecl<K>> decls;
-	
+	// ScribTreeAdaptor#create constructor
 	public HeaderParamDeclList(Token t)
 	{
 		super(t);
 		this.decls = null;
 	}
 
-	protected HeaderParamDeclList(CommonTree source, List<? extends HeaderParamDecl<K>> decls)
+	// Tree#dupNode constructor
+	public HeaderParamDeclList(HeaderParamDeclList<K> node)
 	{
-		super(source);
-		this.decls = new LinkedList<>(decls);
+		super(node);
+		this.decls = null;
 	}
 	
-	public abstract HeaderParamDeclList<K> reconstruct(List<? extends HeaderParamDecl<K>> decls);
+	public abstract List<? extends HeaderParamDecl<K>> getParamDeclChildren();
 	
 	@Override
-	public HeaderParamDeclList<? extends K> visitChildren(AstVisitor nv) throws ScribbleException
+	public abstract HeaderParamDeclList<K> dupNode();
+	
+	public HeaderParamDeclList<K> reconstruct(
+			List<? extends HeaderParamDecl<K>> decls)
 	{
-		List<? extends HeaderParamDecl<K>> nds = visitChildListWithClassEqualityCheck(this, this.decls, nv);
+		HeaderParamDeclList<K> sig = dupNode();
+		sig.addChildren(decls);
+		ScribDel del = del();
+		sig.setDel(del);  // No copy
+		return sig;
+	}
+	
+	@Override
+	public HeaderParamDeclList<? extends K> visitChildren(AstVisitor nv)
+			throws ScribbleException
+	{
+		List<? extends HeaderParamDecl<K>> nds = 
+				visitChildListWithClassEqualityCheck(this, getParamDeclChildren(), nv);
 		return reconstruct(nds);
 	}
 	
-	public List<? extends HeaderParamDecl<K>> getDecls()
-	{
-		return Collections.unmodifiableList(this.decls);
-	}
-	
-	public abstract HeaderParamDeclList<K> project(AstFactory af, Role self);  // FIXME: move to delegate
+	public abstract HeaderParamDeclList<K> project(AstFactory af, Role self);  // CHECKME: move to delegate?
 	
 	public int length()
 	{
@@ -73,6 +83,21 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 	@Override
 	public String toString()
 	{
-		return this.decls.stream().map((nd) -> nd.toString()).collect(Collectors.joining(", "));
+		return this.decls.stream().map(nd -> nd.toString()).collect(Collectors.joining(", "));
+	}
+	
+	
+	
+	
+	
+	
+	
+
+	private final List<? extends HeaderParamDecl<K>> decls;
+
+	protected HeaderParamDeclList(CommonTree source, List<? extends HeaderParamDecl<K>> decls)
+	{
+		super(source);
+		this.decls = new LinkedList<>(decls);
 	}
 }

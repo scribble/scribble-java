@@ -14,6 +14,7 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
@@ -63,12 +64,12 @@ public class RoleArg extends DoArg<RoleNode>
 	
 	
 	
-	/*public RoleArg(CommonTree source, RoleNode arg)
+	public RoleArg(CommonTree source, RoleNode arg)
 	{
 		super(source, arg);
 	}
 
-	@Override
+	/*@Override
 	protected ScribNodeBase copy()
 	{
 		return new RoleArg(this.source, getValChild());

@@ -13,11 +13,11 @@
  */
 package org.scribble.ast;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
@@ -29,6 +29,87 @@ import org.scribble.visit.AstVisitor;
 // Cf. DoArgList, but here we don't need as much abstraction (cf. RoleArgList, NonRoleArgList)
 public class PayloadElemList extends ScribNodeBase
 {
+	// ScribTreeAdaptor#create constructor
+	public PayloadElemList(Token t)
+	{
+		super(t);
+		this.elems = null;
+	}
+
+	// Tree#dupNode constructor
+	public PayloadElemList(PayloadElemList node)
+	{
+		super(node);
+		this.elems = null;
+	}
+	
+	public PayloadElemList dupNode()
+	{
+		return new PayloadElemList(this);
+	}
+	
+	public List<PayloadElem<?>> getElementChildren()
+	{
+		return ((List<?>) getChildren()).stream().map(x -> (PayloadElem<?>) x)
+				.collect(Collectors.toList());
+	}
+
+	protected PayloadElemList reconstruct(List<PayloadElem<?>> elems)
+	{
+		PayloadElemList pay = dupNode();
+		pay.addChildren(elems);
+		ScribDel del = del();
+		pay.setDel(del);  // No copy
+		return pay;
+	}
+	
+	@Override
+	public PayloadElemList visitChildren(AstVisitor nv) throws ScribbleException
+	{
+		List<PayloadElem<?>> elems = 
+				visitChildListWithClassEqualityCheck(this, getElementChildren(), nv);
+		return reconstruct(elems);
+	}
+	
+	protected PayloadElemList project(AstFactory af)
+	{
+		return af.PayloadElemList(this.source, getElementChildren().stream()
+				.map(pe -> pe.project(af)).collect(Collectors.toList()));
+	}
+
+	public Payload toPayload()
+	{
+		List<PayloadElemType<?>> pts = getElementChildren().stream()
+				.map(pe -> pe.toPayloadType()).collect(Collectors.toList());
+		return new Payload(pts);
+	}
+
+	public boolean isEmpty()
+	{
+		return getChildCount() == 0;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "(" + getElementChildren().stream().map(pe -> pe.toString())
+				.collect(Collectors.joining(", ")) + ")";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//private final List<PayloadElem> elems;  // FIXME: parameterise on Kind (cf. sesstypes)
 	private final List<PayloadElem<?>> elems;
 
@@ -39,12 +120,7 @@ public class PayloadElemList extends ScribNodeBase
 		this.elems = new LinkedList<>(elems);
 	}
 	
-	protected PayloadElemList project(AstFactory af)
-	{
-		return af.PayloadElemList(this.source, this.elems.stream().map(pe -> pe.project(af)).collect(Collectors.toList()));
-	}
-	
-	@Override
+	/*@Override
 	protected PayloadElemList copy()
 	{
 		return new PayloadElemList(this.source, this.elems);
@@ -56,46 +132,5 @@ public class PayloadElemList extends ScribNodeBase
 		//List<PayloadElem> elems = ScribUtil.cloneList(this.elems);
 		List<PayloadElem<?>> elems = ScribUtil.cloneList(af, this.elems);
 		return af.PayloadElemList(this.source, elems);
-	}
-
-	//protected PayloadElemList reconstruct(List<PayloadElem> elems)
-	protected PayloadElemList reconstruct(List<PayloadElem<?>> elems)
-	{
-		ScribDel del = del();
-		PayloadElemList pel = new PayloadElemList(this.source, elems);
-		pel = (PayloadElemList) pel.del(del);
-		return pel;
-	}
-	
-	@Override
-	public PayloadElemList visitChildren(AstVisitor nv) throws ScribbleException
-	{
-		//List<PayloadElem> elems = visitChildListWithClassEqualityCheck(this, this.elems, nv);
-		List<PayloadElem<?>> elems = visitChildListWithClassEqualityCheck(this, this.elems, nv);
-		return reconstruct(elems);
-	}
-	
-	//public List<PayloadElem> getElements()
-	public List<PayloadElem<?>> getElements()
-	{
-		return Collections.unmodifiableList(this.elems);
-	}
-
-	public Payload toPayload()
-	{
-		//List<PayloadType<?>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadType()).collect(Collectors.toList());
-		List<PayloadElemType<?>> pts = this.elems.stream().map((pe) -> pe.toPayloadType()).collect(Collectors.toList());
-		return new Payload(pts);
-	}
-
-	public boolean isEmpty()
-	{
-		return this.elems.isEmpty();
-	}
-
-	@Override
-	public String toString()
-	{
-		return "(" + this.elems.stream().map((pe) -> pe.toString()).collect(Collectors.joining(", " )) + ")";
-	}
+	}*/
 }

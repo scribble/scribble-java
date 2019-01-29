@@ -81,7 +81,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 				.getVisibleProtocolDeclFullName(hdr.getDeclName());
 		List<Role> roleargs = rds.getRoles();
 		List<Arg<? extends NonRoleArgKind>> nonroleargs =
-				pds.getDecls().stream().map(param -> paramDeclToArg(param))
+				pds.getParamDeclChildren().stream().map(param -> paramDeclToArg(param))
 						.collect(Collectors.toList());
 		pushSubprotocolSig(fullname, roleargs, nonroleargs);
 	}
@@ -310,14 +310,14 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 
 	protected static Map<Role, RoleNode> makeRootRoleSubsMap(RoleDeclList rdl)
 	{
-		return rdl.getDecls().stream().collect(Collectors
+		return rdl.getParamDeclChildren().stream().collect(Collectors
 				.toMap(r -> r.getDeclName(), r -> (RoleNode) r.getNameNodeChild()));
 	}
 	
 	protected static Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> makeRootNonRoleSubsMap(
 			NonRoleParamDeclList pdl)
 	{
-		return pdl.getDecls().stream()
+		return pdl.getParamDeclChildren().stream()
 				.collect(Collectors.toMap(p -> (Arg<?>) p.getDeclName(),
 						p -> (NonRoleArgNode) p.getNameNodeChild()));
 	}

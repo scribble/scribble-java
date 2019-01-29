@@ -13,23 +13,65 @@
  */
 package org.scribble.ast.local;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.ast.name.simple.SimpleNameNode;
-import org.scribble.del.ScribDel;
-import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
 
 public class SelfRoleDecl extends RoleDecl
 {
+	// ScribTreeAdaptor#create constructor
+	public SelfRoleDecl(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public SelfRoleDecl(SelfRoleDecl node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public SelfRoleDecl dupNode()
+	{
+		return new SelfRoleDecl(this);
+	}
+
+	@Override
+	public SelfRoleDecl project(AstFactory af, Role self)
+	{
+		throw new RuntimeException("Shouldn't get in here: " + this);
+	}
+	
+	@Override
+	public boolean isSelfRoleDecl()
+	{
+		return true;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public SelfRoleDecl(CommonTree source, RoleNode rn)
 	{
 		super(source, rn);
 	}
 
-	@Override
+	/*@Override
 	protected SelfRoleDecl copy()
 	{
 		return new SelfRoleDecl(this.source, (RoleNode) this.name);
@@ -42,17 +84,5 @@ public class SelfRoleDecl extends RoleDecl
 		SelfRoleDecl rd = new SelfRoleDecl(this.source, (RoleNode) name);
 		rd = (SelfRoleDecl) rd.del(del);
 		return rd;
-	}
-	
-	@Override
-	public SelfRoleDecl project(AstFactory af, Role self)
-	{
-		throw new RuntimeException("Shouldn't get in here: " + this);
-	}
-	
-	@Override
-	public boolean isSelfRoleDecl()
-	{
-		return true;
-	}
+	}*/
 }

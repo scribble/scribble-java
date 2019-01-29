@@ -73,7 +73,7 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	@Override
 	public ModuleNameNode getNameNodeChild()
 	{
-		return (ModuleNameNode) getChild();
+		return (ModuleNameNode) getRawNameNodeChild();
 	}
 
 	@Override

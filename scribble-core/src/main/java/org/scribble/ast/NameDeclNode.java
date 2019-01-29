@@ -35,7 +35,7 @@ public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase
 		this.name = null;
 	}	
 
-	protected final NameNode<?> getChild()
+	protected final NameNode<?> getRawNameNodeChild()
 	{
 		if (getChildCount() != 1)
 		{
@@ -45,40 +45,18 @@ public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase
 		return name;
 	}
 
-	// Concrete subclasses should use getNameNodeChild() and cast 
+	// Concrete subclasses should use getRawNameNodeChild() and cast 
 	// (Avoids needing to explicitly record the kind, cf. NonRoleParamDecl)
 	// (Gets overridden anyway for return type)
 	public abstract NameNode<K> getNameNodeChild();
-	/*{
-		if (getChildCount() != 1)
-		{
-			throw new RuntimeException("Shouldn't get in here: " + this);
-		}
-		NameNode<?> name = (NameNode<?>) getChild(0);
-		if (name.getK)
-		return name;
-	}*/
-
-	/*// Return: simple name (cf. ModuleDecl)
-	protected Name<?> getName()
-	{
-	}*/
 
 	// Return: *simple* name (cf. ModuleDecl)
 	// Concrete subclasses should use getNameNode, toName (simple name) and cast
 	// (Gets overridden anyway for return type)
 	public abstract Name<K> getDeclName();
-	/*{
-		//return this.name.toName();
-		if (getChildCount() != 1)
-		{
-			throw new RuntimeException("Shouldn't get in here: " + this);
-		}
-		Name<?> name = (Name<?>) getChild(0);
-		return name;
-	}*/
 	
-	
+	// reconstruct left to subclass-specific, extra fields
+	//protected abstract NameDeclNode<K> reconstruct(NameNode<K> name);
 	
 	
 	

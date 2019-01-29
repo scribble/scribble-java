@@ -45,7 +45,7 @@ public class NonRoleArgListDel extends DoArgListDel
 
 		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
 		Iterator<NonRoleArg> args = nral.getArgChildren().iterator();
-		for (NonRoleParamDecl<?> param : pd.header.paramdecls.getDecls())
+		for (NonRoleParamDecl<?> param : pd.header.paramdecls.getParamDeclChildren())
 		{
 			NonRoleParamKind kind = param.kind;
 			NonRoleArg arg = args.next();
