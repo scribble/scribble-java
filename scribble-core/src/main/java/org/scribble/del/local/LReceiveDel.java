@@ -37,7 +37,7 @@ public class LReceiveDel extends LMessageTransferDel
 		MessageNode msg = lr.getMessageNodeChild();
 		MessageId<?> mid = msg.toMessage().getId();
 		Payload payload = (msg.isMessageSigNode())  // CHECKME: Hacky?
-				? ((MessageSigNode) msg).payloads.toPayload()
+				? ((MessageSigNode) msg).getPayloadListChild().toPayload()
 				: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(),
 				builder.job.ef.newEReceive(peer, mid, payload), builder.util.getExit());

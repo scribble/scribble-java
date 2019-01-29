@@ -47,6 +47,12 @@ public class RoleArgList extends DoArgList<RoleArg>
 		return new RoleArgList(this);
 	}
 
+	@Override
+	public RoleArgList reconstruct(List<RoleArg> args)
+	{
+		return (RoleArgList) super.reconstruct(args);
+	}
+
 	// Move to delegate?
 	@Override
 	public RoleArgList project(AstFactory af, Role self)

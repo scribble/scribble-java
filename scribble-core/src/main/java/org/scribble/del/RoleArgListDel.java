@@ -31,7 +31,8 @@ public class RoleArgListDel extends DoArgListDel
 	}
 
 	@Override
-	public RoleArgList leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public RoleArgList leaveDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		visited = super.leaveDisambiguation(parent, child, disamb, visited);
 
@@ -41,7 +42,8 @@ public class RoleArgListDel extends DoArgListDel
 		//if (roles.size() != new HashSet<>(roles).size())
 		if (roles.size() != roles.stream().distinct().count())
 		{
-			throw new ScribbleException(ral.getSource(), "Duplicate role args: " + roles);
+			throw new ScribbleException(ral.getSource(),
+					"Duplicate role args: " + roles);
 		}
 		return ral;
 	}
@@ -49,6 +51,6 @@ public class RoleArgListDel extends DoArgListDel
 	@Override
 	protected RoleDeclList getParamDeclList(ProtocolDecl<?> pd)
 	{
-		return pd.header.roledecls;
+		return pd.getHeaderChild().getRoleDeclListChild();
 	}
 }

@@ -39,7 +39,8 @@ import org.scribble.visit.env.UnfoldingEnv;
 
 // Statically unfolds unguarded recursions and continues "directly under" choices
 // N.B. cf. UnfoldingVisitor "lazily" unfolds every rec once on demand
-public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv>
+public class InlinedProtocolUnfolder
+		extends InlinedProtocolVisitor<UnfoldingEnv>
 {
 	public static final String DUMMY_REC_LABEL = "__";
 	
@@ -93,18 +94,21 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 			{
 				ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
 				this.job.debugPrintln("\n[DEBUG] Unfolded inlined protocol "
-							+ pd.getFullMemberName(this.job.getContext().getModule(getModuleContext().root)) + ":\n"
-							+ ((ProtocolDefDel) pd.def.del()).getInlinedProtocolDef());
+						+ pd.getFullMemberName(
+								this.job.getContext().getModule(getModuleContext().root))
+						+ ":\n" + ((ProtocolDefDel) pd.getDefChild().del())
+								.getInlinedProtocolDef());
 			}
 			return visited;
 		}
 	}
 
 	// Not doing the actual unfolding here: replace the rec with a dummy (i.e. alpha the original rec to another unused lab) and will do any actual unfolding inside the recursive child accept (upon Continue)
-	private <K extends ProtocolKind> ScribNode unfold(Recursion<K> rec) throws ScribbleException
+	private <K extends ProtocolKind> ScribNode unfold(Recursion<K> rec)
+			throws ScribbleException
 	{
-		RecVar rv = rec.recvar.toName();
-		ProtocolBlock<K> pb = rec.block;
+		RecVar rv = rec.getRecVarChild().toName();
+		ProtocolBlock<K> pb = rec.getBlockChild();
 				// Clone unnecessary: can visit the original block, apart from any continues to substitute (done in InteractionSeqDel)
 		this.recsToUnfold.add(rv);
 		/*RecVarNode dummy = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, DUMMY_REC_LABEL);
@@ -118,16 +122,19 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 	}
 	
 	@Override
-	protected void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void inlinedEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		super.inlinedEnter(parent, child);
 		child.del().enterInlinedProtocolUnfolding(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveInlinedProtocolUnfolding(parent, child, this, visited);
+		visited = visited.del().leaveInlinedProtocolUnfolding(parent, child, this,
+				visited);
 		return super.inlinedLeave(parent, child, visited);
 	}
 	
@@ -137,10 +144,12 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 	}
 
 	// Maybe possible to revise this algorithm to handle shadowed recs, but currently requires unique recvar names
-	public void setRecVar(AstFactory af, RecVar recvar, Recursion<?> rec) throws ScribbleException
+	public void setRecVar(AstFactory af, RecVar recvar, Recursion<?> rec)
+			throws ScribbleException
 	{
-		ProtocolBlock<?> block = (ProtocolBlock<?>) rec.getBlockChild().accept(this);
-		RecVarNode rv = rec.recvar.clone(af);
+		ProtocolBlock<?> block = (ProtocolBlock<?>) rec.getBlockChild()
+				.accept(this);
+		RecVarNode rv = rec.getRecVarChild().clone();//af);
 		Recursion<?> unfolded;
 		if (rec.getKind() == Global.KIND)
 		{

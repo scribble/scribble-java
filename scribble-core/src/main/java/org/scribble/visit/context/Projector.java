@@ -51,19 +51,22 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	}
 
 	@Override
-	protected ProjectionEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	protected ProjectionEnv makeRootProtocolDeclEnv(
+			ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		return new ProjectionEnv();
 	}
 
 	@Override
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		// "Override" SubprotocolVisitor visitChildrenInSubprotocols pattern, avoids adding visitForProjection to every ModelNode
 		// Or else need to build in a "visit override" mechanism into the parent visitors
 		if (child instanceof GProtocolDecl)
 		{
-			return visitOverrideForGProtocolDecl((Module) parent, (GProtocolDecl) child);
+			return visitOverrideForGProtocolDecl((Module) parent,
+					(GProtocolDecl) child);
 		}
 		else
 		{
@@ -73,9 +76,10 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 
 	// Projector uses this to "override" the base SubprotocolVisitor visitChildrenInSubprotocols pattern
 	// Better to be in the visitor than in the del for visibility of visitor enter/leave -- also localises special visiting pattern inside the visitor, while keeping the del enter/leave methods uniform (e.g. GlobalProtocolDeclDelegate enter/leave relies on the same peekSelf API as for other nodes)
-	protected GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
+	protected GProtocolDecl visitOverrideForGProtocolDecl(Module parent,
+			GProtocolDecl child) throws ScribbleException
 	{
-		for (Role self : child.header.roledecls.getRoles())
+		for (Role self : child.getRoles())
 		{
 			pushSelf(self);
 			enter(parent, child);
@@ -87,14 +91,16 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	}
 	
 	@Override
-	protected final void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void envEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		super.envEnter(parent, child);
 		child.del().enterProjection(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode envLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveProjection(parent, child, this, visited);
 		return super.envLeave(parent, child, visited);
@@ -132,41 +138,69 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		return this.projections;
 	}
 	
-	public static LProtocolName projectSimpleProtocolName(GProtocolName simpname, Role role)
+	public static LProtocolName projectSimpleProtocolName(GProtocolName simpname,
+			Role role)
 	{
 		return new LProtocolName(simpname.toString() + "_" + role.toString());
 	}
 
 	// Role is the target subprotocol parameter (not the current projector self -- actually the self just popped)
-	public static LProtocolName projectFullProtocolName(GProtocolName fullname, Role role)
+	public static LProtocolName projectFullProtocolName(GProtocolName fullname,
+			Role role)
 	{
-		LProtocolName simplename = projectSimpleProtocolName(fullname.getSimpleName(), role);
+		LProtocolName simplename = projectSimpleProtocolName(
+				fullname.getSimpleName(), role);
 		ModuleName modname = projectModuleName(fullname.getPrefix(), simplename);
 		return new LProtocolName(modname, simplename);
 	}
 
 	// fullname is the un-projected name; localname is the already projected simple name
-	public static ModuleName projectModuleName(ModuleName fullname, LProtocolName localname)
+	public static ModuleName projectModuleName(ModuleName fullname,
+			LProtocolName localname)
 	{
-		ModuleName simpname = new ModuleName(fullname.getSimpleName().toString() + "_" + localname.toString());
-		return new ModuleName(fullname.getPrefix(), simpname);  // Supports unary fullname
+		ModuleName simpname = new ModuleName(
+				fullname.getSimpleName().toString() + "_" + localname.toString());
+		return new ModuleName(fullname.getPrefix(), simpname); // Supports unary
+																														// fullname
 	}
 	
-	public static LProtocolNameNode makeProjectedSimpleNameNode(AstFactory af, CommonTree source, GProtocolName simpname, Role role)
+	public static LProtocolNameNode makeProjectedSimpleNameNode(AstFactory af,
+			CommonTree source, GProtocolName simpname, Role role)
 	{
-		return (LProtocolNameNode) af.QualifiedNameNode(source, Local.KIND, projectSimpleProtocolName(simpname, role).toString());
+		return (LProtocolNameNode) af.QualifiedNameNode(source, Local.KIND,
+				projectSimpleProtocolName(simpname, role).toString());
 	}
 
-	public static LProtocolNameNode makeProjectedFullNameNode(AstFactory af, CommonTree source, GProtocolName fullname, Role role)
+	public static LProtocolNameNode makeProjectedFullNameNode(AstFactory af,
+			CommonTree source, GProtocolName fullname, Role role)
 	{
-		return (LProtocolNameNode) af.QualifiedNameNode(source, Local.KIND, projectFullProtocolName(fullname, role).getElements());
+		return (LProtocolNameNode) af.QualifiedNameNode(source, Local.KIND,
+				projectFullProtocolName(fullname, role).getElements());
 	}
 
 	// fullname is the un-projected name; localname is the already projected simple name
-	public static ModuleNameNode makeProjectedModuleNameNode(AstFactory af, CommonTree source, ModuleName fullname, LProtocolName localname)
+	public static ModuleNameNode makeProjectedModuleNameNode(AstFactory af,
+			CommonTree source, ModuleName fullname, LProtocolName localname)
 	{
-		return (ModuleNameNode) af.QualifiedNameNode(source, ModuleKind.KIND, projectModuleName(fullname, localname).getElements());
+		return (ModuleNameNode) af.QualifiedNameNode(source, ModuleKind.KIND,
+				projectModuleName(fullname, localname).getElements());
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// Returns true if should ignore for projection
 	/*public static boolean prune(LProtocolBlock block)

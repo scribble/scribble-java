@@ -13,6 +13,7 @@
  */
 package org.scribble.del.local;
 
+import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LRequest;
@@ -27,24 +28,28 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 public class LRequestDel extends LConnectionActionDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LRequest leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public LRequest leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LRequest lc = (LRequest) visited;
-		RoleNode dest = lc.dest;
+		MessageNode msg = lc.getMessageNodeChild();
+		RoleNode dest = lc.getDestinationChild();
 		Role peer = dest.toName();
-		MessageId<?> mid = lc.msg.toMessage().getId();
-		Payload payload = lc.msg.isMessageSigNode()  // Hacky?
-					? ((MessageSigNode) lc.msg).payloads.toPayload()
+		MessageId<?> mid = msg.toMessage().getId();
+		Payload payload = msg.isMessageSigNode()  // Hacky?
+					? ((MessageSigNode) msg).getPayloadListChild().toPayload()
 					: Payload.EMPTY_PAYLOAD;
-		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newERequest(peer, mid, payload), builder.util.getExit());
+		builder.util.addEdge(builder.util.getEntry(),
+				builder.job.ef.newERequest(peer, mid, payload), builder.util.getExit());
 		//graph.builder.addEdge(graph.builder.getEntry(), new Connect(peer), graph.builder.getExit());
 		////builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());
 		return (LRequest) super.leaveEGraphBuilding(parent, child, builder, lc);
 	}
 
 	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(((LRequest) child).src.toName());
+		fixer.setChoiceSubject(((LRequest) child).getSourceChild().toName());
 	}
 }

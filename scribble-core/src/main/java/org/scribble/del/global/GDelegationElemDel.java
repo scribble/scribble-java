@@ -25,6 +25,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.Global;
@@ -44,36 +45,129 @@ public class GDelegationElemDel extends ScribDelBase
 
 	// Duplicated from DoDel
 	@Override
-	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
+	public void enterDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb) throws ScribbleException
 	{
 		ModuleContext mc = disamb.getModuleContext();
 		GDelegationElem de = (GDelegationElem) child;
-		GProtocolName gpn = de.proto.toName();
+		GProtocolNameNode proto = de.getProtocolChild();
+		GProtocolName gpn = proto.toName();
 		if (!mc.isVisibleProtocolDeclName(gpn))
 		{
-			throw new ScribbleException(de.proto.getSource(), "Protocol decl not visible: " + gpn);
+			throw new ScribbleException(proto.getSource(),
+					"Protocol decl not visible: " + gpn);
 		}
 	}
 
 	// Duplicated from DoDel
 	//@Override
-	//public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
-	public GDelegationElem visitForNameDisambiguation(NameDisambiguator disamb, GDelegationElem de) throws ScribbleException
+	public GDelegationElem visitForNameDisambiguation(NameDisambiguator disamb,
+			GDelegationElem de) throws ScribbleException
 	{
-		//DelegationElem de = (DelegationElem) visited;
 		ModuleContext mc = disamb.getModuleContext();
-		GProtocolName fullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(de.proto.toName());
+		GProtocolName fullname = (GProtocolName) mc
+				.getVisibleProtocolDeclFullName(de.getProtocolChild().toName());
+		RoleNode r = de.getRoleChild();
 
-		Role rn = de.role.toName();
-		ProtocolDecl<Global> gpd = disamb.job.getContext().getModule(fullname.getPrefix()).getProtocolDeclChild(fullname.getSimpleName());
-		if (!gpd.header.roledecls.getRoles().contains(rn))
+		Role rn = r.toName();
+		ProtocolDecl<Global> gpd = disamb.job.getContext()
+				.getModule(fullname.getPrefix())
+				.getProtocolDeclChild(fullname.getSimpleName());
+		if (!gpd.getHeaderChild().getRoleDeclListChild().getRoles().contains(rn))
 		{
-			throw new ScribbleException(de.role.getSource(), "Invalid delegation role: " + de);
+			throw new ScribbleException(r.getSource(), "Invalid delegation role: " + de);
 		}
 
-		GProtocolNameNode pnn = (GProtocolNameNode) disamb.job.af.QualifiedNameNode(de.proto.getSource(), fullname.getKind(), fullname.getElements());  // Not keeping original namenode del
-		return de.reconstruct(pnn, de.role);
+		GProtocolNameNode pnn = (GProtocolNameNode) disamb.job.af.QualifiedNameNode(
+				de.getProtocolChild().getSource(), fullname.getKind(), fullname.getElements());
+				// Not keeping original namenode del
+		return de.reconstruct(pnn, r);
 	}
+
+	//@Override
+	//public DelegationElem leaveProtocolDeclContextBuilding(ScribNodeScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException  // FIXME: cannot access MessageTransfer roles from here
+	// TODO: apply this pattern (delegate from parent back to child class) to all other existing instances
+  // TODO: should always be GMessageTransfer
+	public void leaveMessageTransferInProtocolDeclContextBuilding(
+			MessageTransfer<?> mt, GDelegationElem de,
+			ProtocolDeclContextBuilder builder) throws ScribbleException
+	{
+		RoleNode role = de.getRoleChild();
+		GProtocolName gpn = de.getProtocolChild().toName();  // leaveDisambiguation has fully qualified the target name
+		builder.addGlobalProtocolDependency(mt.getSourceChild().toName(), gpn,
+				role.toName());
+				// CHECKME: does it make sense to use projection role as dependency target role? (seems to be used for Job.getProjections)
+		mt.getDestinationRoles().forEach(
+				r -> builder.addGlobalProtocolDependency(r, gpn, role.toName()));
+	}
+
+	@Override
+	public void enterDelegationProtocolRefCheck(ScribNode parent, ScribNode child,
+			DelegationProtocolRefChecker checker) throws ScribbleException
+	{
+		GDelegationElem de = (GDelegationElem) child;
+		ModuleContext mc = checker.getModuleContext();
+		GProtocolName targetfullname = (GProtocolName) 
+				mc.getVisibleProtocolDeclFullName(de.getProtocolChild().toName());
+		GProtocolName rootfullname = (GProtocolName) 
+				mc.getVisibleProtocolDeclFullName(
+						checker.getProtocolDeclOnEntry().getHeaderChild().getDeclName());
+		if (targetfullname.equals(rootfullname))  
+				// Explicit check here because ProtocolDeclContextBuilder dependencies explicitly include self protocoldecl dependencies (cf. GProtocolDeclDel.addSelfDependency)
+		{
+			throw new ScribbleException(de.getSource(),
+					"Recursive protocol dependencies not supported for delegation types: "
+							+ de);
+		}
+		
+		Set<GProtocolName> todo = new LinkedHashSet<GProtocolName>();
+		ProtocolDecl<Global> targetgpd = checker.job.getContext()
+				.getModule(targetfullname.getPrefix())
+				.getProtocolDeclChild(targetfullname.getSimpleName()); // target
+		// CHECKME: does this already contain transitive do-dependencies?  But doesn't contain transitive delegation-dependencies..?
+		Set<GProtocolName> init = ((GProtocolDeclDel) targetgpd.del())
+				.getProtocolDeclContext().getDependencyMap().getDependencies().values()
+				.stream().flatMap(v -> v.keySet().stream())
+				.collect(Collectors.toSet());
+		todo.addAll(init);
+
+		Set<GProtocolName> seen = new HashSet<>();
+		while (!todo.isEmpty())
+		{
+			Iterator<GProtocolName> it = todo.iterator();
+			GProtocolName next = it.next();
+			it.remove();
+			seen.add(next);
+
+			ProtocolName<Global> nextfullname = 
+					mc.getVisibleProtocolDeclFullName(next);
+			if (rootfullname.equals(nextfullname))
+			{
+				throw new ScribbleException(de.getSource(),
+						"Recursive protocol dependencies not supported for delegation types: "
+								+ de);
+			}
+			ProtocolDecl<Global> nextgpd = checker.job.getContext()
+					.getModule(targetfullname.getPrefix())
+					.getProtocolDeclChild(nextfullname.getSimpleName());
+			Set<GProtocolName> tmp = ((GProtocolDeclDel) nextgpd.del())
+					.getProtocolDeclContext().getDependencyMap().getDependencies()
+					.values().stream().flatMap(v -> v.keySet().stream())
+					.filter(n -> !seen.contains(n)).collect(Collectors.toSet());
+			todo.addAll(tmp);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/*// Is this needed?  Or DataTypeNodes always created from AmbigNameNode? (in this same pass)
 	@Override
@@ -86,58 +180,4 @@ public class GDelegationElemDel extends ScribDelBase
 		return (DataTypeNode)
 				AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, fullname.getElements());  // Didn't keep original del
 	}*/
-
-	//@Override
-	//public DelegationElem leaveProtocolDeclContextBuilding(ScribNodeScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException  // FIXME: cannot access MessageTransfer roles from here
-	// FIXME: apply this pattern (delegate from parent back to child class) to all other existing instances
-  // FIXME: should always be GMessageTransfer
-	public void leaveMessageTransferInProtocolDeclContextBuilding(MessageTransfer<?> mt, GDelegationElem de, ProtocolDeclContextBuilder builder) throws ScribbleException
-	{
-		GProtocolName gpn = de.proto.toName();  // leaveDisambiguation has fully qualified the target name
-		builder.addGlobalProtocolDependency(mt.src.toName(), gpn, de.role.toName());  // FIXME: does it make sense to use projection role as dependency target role? (seems to be used for Job.getProjections)
-		mt.getDestinationRoles().forEach((r) -> builder.addGlobalProtocolDependency(r, gpn, de.role.toName()));
-	}
-
-	@Override
-	public void enterDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker) throws ScribbleException
-	{
-		GDelegationElem de = (GDelegationElem) child;
-		ModuleContext mc = checker.getModuleContext();
-		GProtocolName targetfullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(de.proto.toName());
-		GProtocolName rootfullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(checker.getProtocolDeclOnEntry().header.getDeclName());
-		if (targetfullname.equals(rootfullname))  // Explicit check here because ProtocolDeclContextBuilder dependencies explicitly include self protocoldecl dependencies (cf. GProtocolDeclDel.addSelfDependency)
-		{
-			throw new ScribbleException(de.getSource(), "Recursive protocol dependencies not supported for delegation types: " + de);
-		}
-		
-		Set<GProtocolName> todo = new LinkedHashSet<GProtocolName>();
-		ProtocolDecl<Global> targetgpd = checker.job.getContext().getModule(targetfullname.getPrefix()).getProtocolDeclChild(targetfullname.getSimpleName());  // target
-		// FIXME: does this already contain transitive do-dependencies?  But doesn't contain transitive delegation-dependencies..?
-		Set<GProtocolName> init = 
-				((GProtocolDeclDel) targetgpd.del()).getProtocolDeclContext().getDependencyMap().getDependencies()
-				.values().stream().flatMap((v) -> v.keySet().stream()).collect(Collectors.toSet());
-		todo.addAll(init);
-
-		Set<GProtocolName> seen = new HashSet<>();
-		while (!todo.isEmpty())
-		{
-			Iterator<GProtocolName> it = todo.iterator();
-			GProtocolName next = it.next();
-			it.remove();
-			seen.add(next);
-
-			ProtocolName<Global> nextfullname = mc.getVisibleProtocolDeclFullName(next);
-			if (rootfullname.equals(nextfullname))
-			{
-				throw new ScribbleException(de.getSource(), "Recursive protocol dependencies not supported for delegation types: " + de);
-			}
-			ProtocolDecl<Global> nextgpd = checker.job.getContext().getModule(targetfullname.getPrefix()).getProtocolDeclChild(nextfullname.getSimpleName());
-			Set<GProtocolName> tmp = 
-					((GProtocolDeclDel) nextgpd.del()).getProtocolDeclContext().getDependencyMap().getDependencies()
-					.values().stream().flatMap((v) -> v.keySet().stream())
-					.filter((n) -> !seen.contains(n))
-					.collect(Collectors.toSet());
-			todo.addAll(tmp);
-		}
-	}
 }

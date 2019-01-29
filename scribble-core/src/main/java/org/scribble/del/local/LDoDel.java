@@ -50,7 +50,8 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 {
 	// Part of context building
 	@Override
-	protected void addProtocolDependency(ProtocolDeclContextBuilder builder, Role self, ProtocolName<?> proto, Role target)
+	protected void addProtocolDependency(ProtocolDeclContextBuilder builder,
+			Role self, ProtocolName<?> proto, Role target)
 	{
 		builder.addLocalProtocolDependency(self, (LProtocolName) proto, target);
 	}
@@ -68,14 +69,17 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public LDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner dinlr, ScribNode visited) throws ScribbleException
+	public LDo leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner dinlr, ScribNode visited) throws ScribbleException
 	{
 		if (!dinlr.isCycle())
 		{
 			CommonTree blame = visited.getSource();  // Cf., GDoDel
 			SubprotocolSig subsig = dinlr.peekStack();
-			RecVarNode recvar = (RecVarNode) dinlr.job.af.SimpleNameNode(blame, RecVarKind.KIND, dinlr.getSubprotocolRecVar(subsig).toString());
-			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) dinlr.peekEnv()).getTranslation());
+			RecVarNode recvar = (RecVarNode) dinlr.job.af.SimpleNameNode(blame,
+					RecVarKind.KIND, dinlr.getSubprotocolRecVar(subsig).toString());
+			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) dinlr
+					.peekEnv()).getTranslation());
 			LProtocolBlock gb = dinlr.job.af.LProtocolBlock(blame, gis);
 			LRecursion inlined = dinlr.job.af.LRecursion(blame, recvar, gb);
 			dinlr.pushEnv(dinlr.popEnv().setTranslation(inlined));
@@ -87,30 +91,41 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	// Pre: this pass is only run on projections (LProjectionDeclDel has source global protocol info)
 	@Override
 	public ScribNode
-			leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited) throws ScribbleException
+			leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child,
+					ProjectedRoleDeclFixer fixer, ScribNode visited)
+					throws ScribbleException
+			// CHECKME: similar needed for non-role args?  Or all params always known? (not ideal for distributed?)
 	{
 		JobContext jc = fixer.job.getContext();
 		LDo ld = (LDo) visited;
+		RoleArgList roleList = ld.getRoleListChild();
 		LProtocolDecl lpd = ld.getTargetProtocolDecl(jc, fixer.getModuleContext());
 		
 		// do role args are currently as inherited from the global type -- so need to derive role map against the global protocol header
 		// Doing it off the global roledecls allows this to be done in one pass, but would probably be easier to split into two (e.g. 1st cache the proposed changes, 2nd write all changes -- the problem with a single pass is e.g. looking up the localdecl info while localdecls are being rewritten during the pass)
 		// Could possibly factor out rolemap making with SubprotocolVisitor a bit, but there it maps to RoleNode and works off a root map
 		GProtocolName source = ((LProjectionDeclDel) lpd.del()).getSourceProtocol();
-		GProtocolDecl gpd = (GProtocolDecl) jc.getModule(source.getPrefix()).getProtocolDeclChild(source.getSimpleName());
-		Iterator<RoleArg> roleargs = ld.roles.getArgChildren().iterator();
-		Map<Role, Role> rolemap = gpd.header.roledecls.getRoles().stream().collect(
-				Collectors.toMap(r -> r, r -> roleargs.next().val.toName()));
-		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences().stream().map(r ->
-				rolemap.get(r)).collect(Collectors.toSet());
+		GProtocolDecl gpd = (GProtocolDecl) jc.getModule(source.getPrefix())
+				.getProtocolDeclChild(source.getSimpleName());
+		Iterator<RoleArg> i = roleList.getArgChildren().iterator();
+		Map<Role, Role> rolemap = gpd.getHeaderChild().getRoleDeclListChild().getRoles().stream().collect(
+				Collectors.toMap(r -> r, r -> i.next().getValChild().toName()));
+		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext()
+				.getRoleOccurrences().stream().map(r -> rolemap.get(r))
+				.collect(Collectors.toSet());
 
-		List<RoleArg> ras = ld.roles.getArgChildren().stream().filter(ra -> occs.contains(ra.val.toName())).collect(Collectors.toList());
-		RoleArgList roles = ld.roles.reconstruct(ras);
-		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, ld.reconstruct(roles, ld.args, ld.getProtocolNameNode()));
+		List<RoleArg> roleArgs = roleList.getArgChildren().stream()
+				.filter(ra -> occs.contains(ra.getValChild().toName()))
+				.collect(Collectors.toList());
+		RoleArgList roleList1 = roleList.reconstruct(roleArgs);
+		return super.leaveProjectedRoleDeclFixing(parent, child, fixer,
+				ld.reconstruct(roleList1, ld.getNonRoleListChild(), ld.getProtocolNameNode()));
 	}
 	
 	@Override
-	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
+			ScribNode child, UnguardedChoiceDoProjectionChecker checker,
+			ScribNode visited) throws ScribbleException
 	{
 		/*//if (checker.isCycle())
 		if (checker.isRootedCycle())  // ChoiceUnguardedSubprotocolChecker is a (regular) SubprotocolVisitor which pushes a subprotosig on root decl entry (ProjectedSubprotocolPruner.visit)
@@ -131,13 +146,13 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 				//checker.enablePrune();
 			}
 		}*/
-		return super.leaveUnguardedChoiceDoProjectionCheck(parent, child, checker, visited);
-
+		return super.leaveUnguardedChoiceDoProjectionCheck(parent, child, checker,
+				visited);
 
 		// for each do: check shouldPrune condition by following the control flow: if terminates or cycles with no actions then prune
 		// Let the main pruning visitor be a regular visitor, and use the subprotocol visitor to follow the calls for pruning analysis
 		
-		//FIXME: maybe similar to project roledecl fixing?  use role occurrences saved in protocoldecl?
+		//CHECKME: maybe similar to project roledecl fixing?  use role occurrences saved in protocoldecl?
 		//		role occurrences collected by RoleCollector which is indeed subprotocol visitor
 		//		problem is RoleCollector currently comes after subject fixing... but maybe it doesn't need to collect subject roles in the end?  due to WF enabling checks?
 		

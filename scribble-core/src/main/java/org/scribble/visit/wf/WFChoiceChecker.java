@@ -42,14 +42,18 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 	}
 
 	@Override
-	protected WFChoiceEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	protected WFChoiceEnv makeRootProtocolDeclEnv(
+			ProtocolDecl<? extends ProtocolKind> pd)
 	{
-		return new WFChoiceEnv(new HashSet<>(pd.header.roledecls.getRoles()),
-				!(pd.isGlobal() && ((GProtocolDecl) pd).modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT)));  // FIXME: consider locals; also, explicit modifier should be carried over to local projections
+		return new WFChoiceEnv(new HashSet<>(pd.getRoles()),
+				!(pd.isGlobal() && ((GProtocolDecl) pd).modifiers
+						.contains(GProtocolDecl.Modifiers.EXPLICIT)));
+				// FIXME: consider locals; also, explicit modifier should be carried over to local projections
 	}
 
 	@Override
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		if (child instanceof GProtocolDecl)
 		{
@@ -64,13 +68,15 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 		{
 			if (child instanceof Choice<?>)  // Only needed for old WF (for distinct enabling message checking)  // FIXME: maybe move connectedness checking to a separate pass, i.e. vanilla UnfoldingVisitor (if retained as syntactic check)
 			{
-				return visitOverrideForChoice((InteractionSeq<?>) parent, (Choice<?>) child);
+				return visitOverrideForChoice((InteractionSeq<?>) parent,
+						(Choice<?>) child);
 			}
 		}
 		return super.visit(parent, child);
 	}
 
-	private ScribNode visitOverrideForChoice(InteractionSeq<?> parent, Choice<?> child) throws ScribbleException
+	private ScribNode visitOverrideForChoice(InteractionSeq<?> parent,
+			Choice<?> child) throws ScribbleException
 	{
 		if (child instanceof Choice<?>)
 		{
@@ -95,16 +101,19 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 	}
 	
 	@Override
-	protected void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void unfoldingEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		super.unfoldingEnter(parent, child);
 		child.del().enterInlinedWFChoiceCheck(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveInlinedWFChoiceCheck(parent, child, this, visited);
+		visited = visited.del().leaveInlinedWFChoiceCheck(parent, child, this,
+				visited);
 		return super.unfoldingLeave(parent, child, visited);
 	}
 }

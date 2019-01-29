@@ -41,13 +41,13 @@ public class GWrap extends ConnectAction<Global> implements GSimpleInteractionNo
 
 	public LNode project(AstFactory af, Role self)
 	{
-		Role srcrole = this.src.toName();
-		Role destrole = this.dest.toName();
+		RoleNode srcNode = getSourceChild();
+		RoleNode destNode = getDestinationChild();
+		Role srcrole = srcNode.toName();
+		Role destrole = destNode.toName();
 		LNode projection = null;
 		if (srcrole.equals(self) || destrole.equals(self))
 		{
-			RoleNode srcNode = this.src;
-			RoleNode destNode = this.dest;
 			RoleNode srcNode1 = (RoleNode) af.SimpleNameNode(srcNode.getSource(),
 					RoleKind.KIND, srcNode.toName().toString()); // clone?
 			RoleNode destNode1 = (RoleNode) af.SimpleNameNode(destNode.getSource(),

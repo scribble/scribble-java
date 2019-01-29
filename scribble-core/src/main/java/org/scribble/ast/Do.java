@@ -54,7 +54,7 @@ public abstract class Do<K extends ProtocolKind>
 		return (RoleArgList) getChild(0);
 	}
 
-	public NonRoleArgList getArgListChild()
+	public NonRoleArgList getNonRoleListChild()
 	{
 		return (NonRoleArgList) getChild(1);
 	}
@@ -78,7 +78,7 @@ public abstract class Do<K extends ProtocolKind>
 	public Do<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		RoleArgList ril = (RoleArgList) visitChild(getRoleListChild(), nv);
-		NonRoleArgList al = (NonRoleArgList) visitChild(getArgListChild(), nv);
+		NonRoleArgList al = (NonRoleArgList) visitChild(getNonRoleListChild(), nv);
 		ProtocolNameNode<K> proto = visitChildWithClassEqualityCheck(this,
 				getProtocolNameNode(), nv);
 		return reconstruct(ril, al, proto);
@@ -124,7 +124,7 @@ public abstract class Do<K extends ProtocolKind>
 	public String toString()
 	{
 		String s = Constants.DO_KW + " ";
-		return s + getProtocolNameNode() + getArgListChild() + getRoleListChild()
+		return s + getProtocolNameNode() + getNonRoleListChild() + getRoleListChild()
 				+ ";";
 	}
 	

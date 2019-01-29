@@ -77,7 +77,8 @@ public class LWrapServer extends LConnectionAction implements LSimpleInteraction
 	@Override
 	public String toString()
 	{
-		return Constants.WRAP_KW + " " + Constants.FROM_KW + " " + this.src + ";";
+		return Constants.WRAP_KW + " " + Constants.FROM_KW + " "
+				+ this.getSourceChild() + ";";
 	}
 	
 	

@@ -35,33 +35,38 @@ public abstract class DoArgListDel extends ScribDelBase
 
 	// Doing in leave allows the arguments to be individually checked first
 	@Override
-	public DoArgList<?> leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public DoArgList<?> leaveDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		DoArgList<?> dal = (DoArgList<?>) visited;
 		List<?> args = dal.getArgChildren();
 		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
 		if (args.size() != getParamDeclList(pd).getParamDeclChildren().size())
 		{
-			throw new ScribbleException(visited.getSource(), "Do arity mismatch for " + pd.header + ": " + args);
+			throw new ScribbleException(visited.getSource(),
+					"Do arity mismatch for " + pd.getHeaderChild() + ": " + args);
 		}
 
 		return dal;
 	}
 
 	// Not using Do#getTargetProtocolDecl, because that currently relies on namedisamb pass to convert targets to fullnames (because it just gets the full name dependency, it doesn't do visible name resolution)
-	protected ProtocolDecl<?> getTargetProtocolDecl(Do<?> parent, NameDisambiguator disamb) throws ScribbleException
+	protected ProtocolDecl<?> getTargetProtocolDecl(Do<?> parent,
+			NameDisambiguator disamb) throws ScribbleException
 	{
 		ModuleContext mc = disamb.getModuleContext();
 		JobContext jc = disamb.job.getContext();
 		Do<?> doo = (Do<?>) parent;
-		ProtocolName<?> pn = doo.proto.toName();
+		ProtocolName<?> pn = doo.getProtocolNameNode().toName();
 		/*if (!mc.isVisibleProtocolDeclName(simpname))  // FIXME: should be checked somewhere else?  earlier (do-entry?) -- done
 		{
 			throw new ScribbleException("Protocol decl not visible: " + simpname);
 		}*/
 		ProtocolName<?> fullname = mc.getVisibleProtocolDeclFullName(pn);  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
-		return jc.getModule(fullname.getPrefix()).getProtocolDeclChild(pn.getSimpleName());
+		return jc.getModule(fullname.getPrefix())
+				.getProtocolDeclChild(pn.getSimpleName());
 	}
 	
-	protected abstract HeaderParamDeclList<?> getParamDeclList(ProtocolDecl<?> pd);
+	protected abstract HeaderParamDeclList<?> getParamDeclList(
+			ProtocolDecl<?> pd);
 }

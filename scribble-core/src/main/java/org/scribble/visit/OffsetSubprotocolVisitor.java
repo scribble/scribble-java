@@ -29,7 +29,8 @@ import org.scribble.visit.env.Env;
 
 // Can probably be fully replaced by SubprotocolVisitor
 // Projector, ReachabilityChecker, etc don't need to be offset visitors
-public abstract class OffsetSubprotocolVisitor<T extends Env<?>> extends SubprotocolVisitor<T>
+public abstract class OffsetSubprotocolVisitor<T extends Env<?>>
+		extends SubprotocolVisitor<T>
 {
 	public OffsetSubprotocolVisitor(Job job)
 	{
@@ -40,50 +41,59 @@ public abstract class OffsetSubprotocolVisitor<T extends Env<?>> extends Subprot
 	@Override
 	protected void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolKind> pd)
 	{
-		Map<Role, RoleNode> rolemap = makeRootRoleSubsMap(pd.header.roledecls);
-		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap = makeRootNonRoleSubsMap(pd.header.paramdecls);
+		Map<Role, RoleNode> rolemap = makeRootRoleSubsMap(
+				pd.getHeaderChild().getRoleDeclListChild());
+		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap = 
+				makeRootNonRoleSubsMap(pd.getHeaderChild().getParamDeclListChild());
 		this.rolemaps.push(rolemap);
 		this.argmaps.push(argmap);
 	}
 	
 	@Override
-	protected final ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final ScribNode visitForSubprotocols(ScribNode parent,
+			ScribNode child) throws ScribbleException
 	{
 		return visitForOffsetSubprotocols(parent, child);
 	}
 	
-	protected ScribNode visitForOffsetSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	protected ScribNode visitForOffsetSubprotocols(ScribNode parent,
+			ScribNode child) throws ScribbleException
 	{
 		return super.visitForSubprotocols(parent, child);
 	}
 
 	@Override
-	protected final void envLeaveProtocolDeclOverride(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected final void envLeaveProtocolDeclOverride(ScribNode parent,
+			ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		this.rolemaps.pop();
 		this.argmaps.pop();
 	}
 
 	@Override
-	protected final void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void subprotocolEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		super.subprotocolEnter(parent, child);
 		offsetSubprotocolEnter(parent, child);
 	}
 
 	@Override
-	protected final ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected final ScribNode subprotocolLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
 		ScribNode n = offsetSubprotocolLeave(parent, child, visited);
 		return super.subprotocolLeave(parent, child, n);
 	}
 
-	protected void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void offsetSubprotocolEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 
 	}
 
-	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

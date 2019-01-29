@@ -43,205 +43,260 @@ public interface ScribDel
 {
 	// "Transient"
 	Env<?> env();
-	void setEnv(Env<?> env);  // Non defensive
 
-	default void enterModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder) throws ScribbleException
+	void setEnv(Env<?> env); // Non defensive
+
+	default void enterModuleContextBuilding(ScribNode parent, ScribNode child,
+			ModuleContextBuilder builder) throws ScribbleException
 	{
 
 	}
 
-	default ScribNode leaveModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}
-
-	default void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
-	{
-
-	}
-
-	default ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	default ScribNode leaveModuleContextBuilding(ScribNode parent,
+			ScribNode child, ModuleContextBuilder builder, ScribNode visited)
+			throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker) throws ScribbleException
+	default void enterDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb) throws ScribbleException
 	{
 
 	}
 
-	default ScribNode leaveDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker, ScribNode visited) throws ScribbleException
+	default ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder) throws ScribbleException
+	default void enterDelegationProtocolRefCheck(ScribNode parent,
+			ScribNode child, DelegationProtocolRefChecker checker)
+			throws ScribbleException
 	{
 
 	}
 
-	default ScribNode leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
+	default ScribNode leaveDelegationProtocolRefCheck(ScribNode parent,
+			ScribNode child, DelegationProtocolRefChecker checker, ScribNode visited)
+			throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll)
+	default void enterProtocolDeclContextBuilding(ScribNode parent,
+			ScribNode child, ProtocolDeclContextBuilder builder)
+			throws ScribbleException
 	{
-		
+
 	}
 
-	default ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited) throws ScribbleException
+	default ScribNode leaveProtocolDeclContextBuilding(ScribNode parent,
+			ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited)
+			throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
+	default void enterRoleCollection(ScribNode parent, ScribNode child,
+			RoleCollector coll)
 	{
-		
+
 	}
 
-	default ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	default ScribNode leaveRoleCollection(ScribNode parent, ScribNode child,
+			RoleCollector coll, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	default void enterProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl) throws ScribbleException
 	{
-		
+
 	}
 
-	// These are for "choice-rec" unfolding, i.e. InlinedProtocolUnfolder -- cf. UnfoldingVisitor, which does continue unfolding by revisiting a clone of the rec body
-	default ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	default ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
+	default void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child,
+			InlinedProtocolUnfolder unf) throws ScribbleException
 	{
-		
+
 	}
 
-	default ScribNode leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	// These are for "choice-rec" unfolding, i.e. InlinedProtocolUnfolder -- cf.
+	// UnfoldingVisitor, which does continue unfolding by revisiting a clone of
+	// the rec body
+	default ScribNode leaveInlinedProtocolUnfolding(ScribNode parent,
+			ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited)
+			throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
+	default void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child,
+			WFChoiceChecker checker) throws ScribbleException
 	{
 
 	}
-	
-	default ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+
+	default ScribNode leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child,
+			WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	default void enterProjection(ScribNode parent, ScribNode child,
+			Projector proj) throws ScribbleException
 	{
-		
+
 	}
 
-	default ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited) throws ScribbleException
+	default ScribNode leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer)
+	default void enterProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		
+
 	}
 
-	default ScribNode leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited) throws ScribbleException
+	default ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
+			throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
+	default void enterProjectedRoleDeclFixing(ScribNode parent, ScribNode child,
+			ProjectedRoleDeclFixer fixer)
 	{
 
 	}
-	
-	default ScribNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+
+	default ScribNode leaveProjectedRoleDeclFixing(ScribNode parent,
+			ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited)
+			throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph)
+	default void enterReachabilityCheck(ScribNode parent, ScribNode child,
+			ReachabilityChecker checker) throws ScribbleException
 	{
-		
+
 	}
 
-	default ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited) throws ScribbleException
+	default ScribNode leaveReachabilityCheck(ScribNode parent, ScribNode child,
+			ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterMessageIdCollection(ScribNode parent, ScribNode child, MessageIdCollector coll)
+	default void enterEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder graph)
 	{
-		
+
 	}
 
-	default ScribNode leaveMessageIdCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
-	{
-		return visited;
-	}
-	
-	default void enterValidation(ScribNode parent, ScribNode child, GProtocolValidator coll) throws ScribbleException
-	{
-		
-	}
-
-	default ScribNode leaveValidation(ScribNode parent, ScribNode child, GProtocolValidator coll, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}
-	
-	default void enterProjectedChoiceDoPruning(ScribNode parent, ScribNode child, ProjectedChoiceDoPruner pruner) throws ScribbleException
-	{
-		
-	}
-
-	default ScribNode leaveProjectedChoiceDoPruning(ScribNode parent, ScribNode child, ProjectedChoiceDoPruner proj, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}
-	
-	default void enterUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker) throws ScribbleException
-	{
-		
-	}
-
-	default ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
+	default ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
-	default void enterExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker) throws ScribbleException
+	default void enterMessageIdCollection(ScribNode parent, ScribNode child,
+			MessageIdCollector coll)
 	{
-		
+
 	}
 
-	default ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}
-
-	default void enterRecVarCollection(ScribNode parent, ScribNode child, RecVarCollector coll)
-	{
-		
-	}
-
-	default ScribNode leaveRecVarCollection(ScribNode parent, ScribNode child, RecVarCollector coll, ScribNode visited) throws ScribbleException
+	default ScribNode leaveMessageIdCollection(ScribNode parent, ScribNode child,
+			MessageIdCollector coll, ScribNode visited)
 	{
 		return visited;
 	}
 
-	default void enterRecRemoval(ScribNode parent, ScribNode child, RecRemover rem)
+	default void enterValidation(ScribNode parent, ScribNode child,
+			GProtocolValidator coll) throws ScribbleException
 	{
-		
+
 	}
 
-	default ScribNode leaveRecRemoval(ScribNode parent, ScribNode child, RecRemover rem, ScribNode visited) throws ScribbleException
+	default ScribNode leaveValidation(ScribNode parent, ScribNode child,
+			GProtocolValidator coll, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterProjectedChoiceDoPruning(ScribNode parent, ScribNode child,
+			ProjectedChoiceDoPruner pruner) throws ScribbleException
+	{
+
+	}
+
+	default ScribNode leaveProjectedChoiceDoPruning(ScribNode parent,
+			ScribNode child, ProjectedChoiceDoPruner proj, ScribNode visited)
+			throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterUnguardedChoiceDoProjectionCheck(ScribNode parent,
+			ScribNode child, UnguardedChoiceDoProjectionChecker checker)
+			throws ScribbleException
+	{
+
+	}
+
+	default ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
+			ScribNode child, UnguardedChoiceDoProjectionChecker checker,
+			ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterExplicitCorrelationCheck(ScribNode parent, ScribNode child,
+			ExplicitCorrelationChecker checker) throws ScribbleException
+	{
+
+	}
+
+	default ScribNode leaveExplicitCorrelationCheck(ScribNode parent,
+			ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited)
+			throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterRecVarCollection(ScribNode parent, ScribNode child,
+			RecVarCollector coll)
+	{
+
+	}
+
+	default ScribNode leaveRecVarCollection(ScribNode parent, ScribNode child,
+			RecVarCollector coll, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterRecRemoval(ScribNode parent, ScribNode child,
+			RecRemover rem)
+	{
+
+	}
+
+	default ScribNode leaveRecRemoval(ScribNode parent, ScribNode child,
+			RecRemover rem, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

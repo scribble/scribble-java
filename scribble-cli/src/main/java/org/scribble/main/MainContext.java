@@ -78,10 +78,12 @@ public class MainContext
 	// Resource recorded for source path
 	private final Map<ModuleName, Pair<Resource, Module>> parsed = new HashMap<>();
 	
-	// FIXME: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
-	private MainContext(boolean debug, ResourceLocator locator, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
-					throws ScribParserException, ScribbleException
+	// TODO: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
+	private MainContext(boolean debug, ResourceLocator locator, boolean useOldWF,
+			boolean noLiveness, boolean minEfsm, boolean fair,
+			boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck,
+			boolean noValidation, boolean spin)
+			throws ScribParserException, ScribbleException
 	{
 		//this.jUnit = jUnit;
 		this.debug = debug;
@@ -95,35 +97,42 @@ public class MainContext
 		this.spin = spin;
 
 		this.locator = locator; 
-		this.loader = new ScribModuleLoader(this.locator, this.antlrParser, this.scribParser);
+		this.loader = new ScribModuleLoader(this.locator, this.antlrParser,
+				this.scribParser);
 	}
 
 	// Load main module from file system
-	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
-					throws ScribParserException, ScribbleException
+	public MainContext(boolean debug, ResourceLocator locator, Path mainpath,
+			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair,
+			boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck,
+			boolean noValidation, boolean spin)
+			throws ScribParserException, ScribbleException
 	{
-		this(debug, locator, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, spin);
+		this(debug, locator, useOldWF, noLiveness, minEfsm, fair,
+				noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation,
+				spin);
 
-		// FIXME: checking main module resource exists at specific location should be factored out to front-end (e.g. CommandLine) -- main module resource is specified at local front end level of abstraction, while MainContext uses abstract resource loading
+		// TODO: checking main module resource exists at specific location should be factored out to front-end (e.g. CommandLine) -- main module resource is specified at local front end level of abstraction, while MainContext uses abstract resource loading
 		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
-		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);  // FIXME: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
+		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);  
+				// TODO: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
 		CommonTree atree = this.antlrParser.parseAntlrTree(res);
-
-		System.out.println("111: " + atree.getClass());
-
-		Module mod = (Module) this.scribParser.parse(atree, this.af);  // FIXME: rename exceptions
+		Module mod = (Module) this.scribParser.parse(atree, this.af);  // TODO: rename exceptions
 		checkMainModuleName(mainpath, mod);
 		
 		init(res, mod);
 	}
 
 	// For inline module arg
-	public MainContext(boolean debug, ResourceLocator locator, String inline, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
-					throws ScribParserException, ScribbleException
+	public MainContext(boolean debug, ResourceLocator locator, String inline,
+			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair,
+			boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck,
+			boolean noValidation, boolean spin)
+			throws ScribParserException, ScribbleException
 	{
-		this(debug, locator, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, spin);
+		this(debug, locator, useOldWF, noLiveness, minEfsm, fair,
+				noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation,
+				spin);
 
 		Resource res = new InlineResource(inline);
 		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res), this.af);
@@ -131,19 +140,22 @@ public class MainContext
 		init(res, mod);
 	}
 
-	private void init(Resource res, Module mainmod) throws ScribParserException, ScribbleException
+	private void init(Resource res, Module mainmod)
+			throws ScribParserException, ScribbleException
 	{
 		Pair<Resource, Module> p = new Pair<>(res, mainmod);
-		this.main = p.right.getFullModuleName();  // FIXME: main modname comes from the inlined moddecl -- check for issues if this clashes with an existing file system resource
+		this.main = p.right.getFullModuleName();  
+				// TODO CHECKME: main modname comes from the inlined moddecl -- check for issues if this clashes with an existing file system resource
 		loadAllModules(p);
 	}
 	
 	// A Scribble extension should override these "new" methods as appropriate.
 	public Job newJob()
 	{
-		return new Job(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
-				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck, this.noValidation, this.spin,
-				this.af, this.ef, this.sf);
+		return new Job(this.debug, this.getParsedModules(), this.main,
+				this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
+				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck,
+				this.noValidation, this.spin, this.af, this.ef, this.sf);
 	}
 	
 	protected ScribbleAntlrWrapper newAntlrParser()
@@ -171,14 +183,16 @@ public class MainContext
 		return new SModelFactoryImpl();
 	}
 
-	private void loadAllModules(Pair<Resource, Module> module) throws ScribParserException, ScribbleException
+	private void loadAllModules(Pair<Resource, Module> module)
+			throws ScribParserException, ScribbleException
 	{
 		this.parsed.put(module.right.getFullModuleName(), module);
 		for (ImportDecl<?> id : module.right.getImportDeclChildren())
 		{
 			if (id.isImportModule())
 			{
-				ModuleName modname = ((ImportModule) id).modname.toName();
+				ModuleName modname = 
+						((ImportModule) id).getModuleNameNodeChild().toName();
 				if (!this.parsed.containsKey(modname))
 				{
 					loadAllModules(this.loader.loadModule(modname, af));
@@ -189,20 +203,26 @@ public class MainContext
 	
 	public Map<ModuleName, Module> getParsedModules()
 	{
-		return this.parsed.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().right));
+		return this.parsed.entrySet().stream()
+				.collect(Collectors.toMap(Entry::getKey, e -> e.getValue().right));
 	}
 	
 	// Hacky? But not Scribble tool's job to check nested directory location of module fully corresponds to the fullname of module? Cf. Java classes
-	private void checkMainModuleName(Path mainpath, Module main) throws ScribbleException
+	private void checkMainModuleName(Path mainpath, Module main)
+			throws ScribbleException
 	{
 		String path = mainpath.toString();  // FIXME: hack
 		// FileSystems.getDefault().getSeparator() ?
-		String tmp = path.substring((path.lastIndexOf(File.separator) == -1) ? 0 : path.lastIndexOf(File.separator) + 1, path.lastIndexOf('.'));
+		String tmp = path.substring((path.lastIndexOf(File.separator) == -1) 
+				? 0
+				: path.lastIndexOf(File.separator) + 1, path.lastIndexOf('.'));
 		if (!this.noValidation)
 		{
-			if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))  // ModuleName.toString hack?
+			if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))
+					// ModuleName.toString hack?
 			{
-				CommonTree source = main.getModuleDeclChild().name.getSource();
+				CommonTree source = main.getModuleDeclChild().getNameNodeChild()
+						.getSource();
 				throw new ScribbleException(source, "Simple module name at path " + path
 						+ " mismatch: " + main.getFullModuleName());
 			}

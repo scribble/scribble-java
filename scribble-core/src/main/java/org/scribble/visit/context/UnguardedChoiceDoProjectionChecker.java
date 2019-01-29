@@ -28,15 +28,17 @@ import org.scribble.type.name.ProtocolName;
 import org.scribble.visit.SubprotocolVisitor;
 import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
-// FIXME: refactor as a choice subject candidate collector (i.e. NameCollector -- thought that is an OffsetSubprotocolCollector, does that make a difference?)
-public class UnguardedChoiceDoProjectionChecker extends SubprotocolVisitor<UnguardedChoiceDoEnv>
+// TODO: refactor as a choice subject candidate collector (i.e. NameCollector -- thought that is an OffsetSubprotocolCollector, does that make a difference?)
+public class UnguardedChoiceDoProjectionChecker
+		extends SubprotocolVisitor<UnguardedChoiceDoEnv>
 //public class ChoiceUnguardedSubprotocolChecker extends NoEnvSubprotocolVisitor
 {
 	//private final LChoice cho;  // Useless: subprotocovisitor visits a role-substituted clone
 	
 	private boolean shouldPrune = false;  // OK here, or reinstant in env?
 
-	public UnguardedChoiceDoProjectionChecker(Job job, ModuleContext mcontext, LChoice cho)
+	public UnguardedChoiceDoProjectionChecker(Job job, ModuleContext mcontext,
+			LChoice cho)
 	{
 		super(job);
 		setModuleContext(mcontext);
@@ -53,13 +55,15 @@ public class UnguardedChoiceDoProjectionChecker extends SubprotocolVisitor<Ungua
 	}
 	
 	@Override
-	protected UnguardedChoiceDoEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	protected UnguardedChoiceDoEnv makeRootProtocolDeclEnv(
+			ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		return new UnguardedChoiceDoEnv();
 	}
 
 	@Override
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		if (child instanceof LChoice)
 		{
@@ -69,16 +73,22 @@ public class UnguardedChoiceDoProjectionChecker extends SubprotocolVisitor<Ungua
 		return super.visit(parent, child);
 	}
 
-	private ScribNode visitOverrideForLDoPruning(ScribNode parent, LChoice lc) throws ScribbleException
+	private ScribNode visitOverrideForLDoPruning(ScribNode parent, LChoice lc)
+			throws ScribbleException
 	{
 		for (LProtocolBlock b : lc.getBlockChildren())
 		{
-			LInteractionNode in = b.getInteractSeqChild().getInteractNodeChildren().get(0);
+			LInteractionNode in = 
+					b.getInteractSeqChild().getInteractNodeChildren().get(0);
 			if (in instanceof LDo)
 			{
 				LDo ld = (LDo) in;
-				ProtocolName<?> fullname = getModuleContext().checkProtocolDeclDependencyFullName(ld.proto.toName());
-				SubprotocolSig sig = new SubprotocolSig(fullname, ld.roles.getRoles(), ld.args.getArguments());
+				ProtocolName<?> fullname = getModuleContext()
+						.checkProtocolDeclDependencyFullName(
+								ld.getProtocolNameNode().toName());
+				SubprotocolSig sig = new SubprotocolSig(fullname,
+						ld.getRoleListChild().getRoles(),
+						ld.getNonRoleListChild().getArguments());
 				
 				if (sig.equals(getStack().get(0)))  // Cf. SubprotocolVisitor.isRootedCycle
 				{
@@ -101,16 +111,19 @@ public class UnguardedChoiceDoProjectionChecker extends SubprotocolVisitor<Ungua
 	}
 
 	@Override
-	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void subprotocolEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		super.subprotocolEnter(parent, child);
 		child.del().enterUnguardedChoiceDoProjectionCheck(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveUnguardedChoiceDoProjectionCheck(parent, child, this, visited);
+		visited = visited.del().leaveUnguardedChoiceDoProjectionCheck(parent, child,
+				this, visited);
 		return super.subprotocolLeave(parent, child, visited);
 	}
 }

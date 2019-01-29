@@ -31,7 +31,7 @@ import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
 // Basically infers all local choice subject candidates: if *none* are found for a given "choice-unguarded" do-call then the call is pruned (along with parent block and choice as necessary)
 // i.e. prune if no choice subject candidates, because that means (passive) role is never enabled and thus not involved
-// FIXME: ambiguous choice subject (i.e. > 1 candidate) is checked subsequently by ProjectedChoiceSubjectFixer -- should be better integrated (e.g. reuse ChoiceUnguardedSubprotocolChecker, rather than adhoc LInteractionNode.inferLocalChoiceSubject) -- NOTE: but cannot do all pruning and fixing in one pass, as fixing the subject roles here will interfere with the pruning algorithm (currently it looks for dummy role choices)
+// TODO: ambiguous choice subject (i.e. > 1 candidate) is checked subsequently by ProjectedChoiceSubjectFixer -- should be better integrated (e.g. reuse ChoiceUnguardedSubprotocolChecker, rather than adhoc LInteractionNode.inferLocalChoiceSubject) -- NOTE: but cannot do all pruning and fixing in one pass, as fixing the subject roles here will interfere with the pruning algorithm (currently it looks for dummy role choices)
 public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 {
 	public ProjectedChoiceDoPruner(Job job)
@@ -63,8 +63,9 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 
 				UnguardedChoiceDoProjectionChecker checker = new UnguardedChoiceDoProjectionChecker(
 						this.job,
-						((ModuleDel) jc.getModule(ld.proto.toName().getPrefix()).del())
-								.getModuleContext(),
+						((ModuleDel) jc
+								.getModule(ld.getProtocolNameNode().toName().getPrefix()).del())
+										.getModuleContext(),
 						lc);
 				lpd.accept(checker);
 				

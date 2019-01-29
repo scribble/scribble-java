@@ -62,7 +62,7 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	
 	private String newSubprotocoolRecVarId(SubprotocolSig sig)
 	{
-		// Hacky
+		// TODO: Hacky, reconsider
 		return sig.toString()
 				.replace('.', '_')
 				.replace('<', '_')
@@ -89,7 +89,7 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 			ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
 			this.job.debugPrintln("\n[DEBUG] Inlined root protocol "
 						+ pd.getFullMemberName(this.job.getContext().getModule(getModuleContext().root)) + ":\n"
-						+ ((ProtocolDefDel) pd.def.del()).getInlinedProtocolDef());
+						+ ((ProtocolDefDel) pd.getDefChild().del()).getInlinedProtocolDef());
 		}
 		return leave(parent, child, visited);
 	}
@@ -120,8 +120,11 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 			// Duplicated from SubprotocolVisitor#visitOverrideFoDo and modified to access discarded env -- FIXME: factor out this facility better
 			JobContext jc = this.job.getContext();
 			ModuleContext mc = getModuleContext();
-			ProtocolDecl<? extends ProtocolKind> pd = child.getTargetProtocolDecl(jc, mc);
-			ScribNode seq = applySubstitutions(pd.def.block.seq.clone(this.job.af));
+			ProtocolDecl<? extends ProtocolKind> pd = 
+					child.getTargetProtocolDecl(jc, mc);
+			ScribNode seq = applySubstitutions(
+					pd.getDefChild().getBlockChild().getInteractSeqChild().clone());
+			//this.job.af));
 			seq = seq.accept(this);
 			pushEnv(popEnv().setTranslation(((InlineProtocolEnv) seq.del().env()).getTranslation()));
 			return child;
@@ -134,14 +137,16 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	}
 	
 	@Override
-	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void subprotocolEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		super.subprotocolEnter(parent, child);
 		child.del().enterProtocolInlining(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveProtocolInlining(parent, child, this, visited);
 		return super.subprotocolLeave(parent, child, visited);

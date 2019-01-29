@@ -31,7 +31,8 @@ public class Substitutor extends AstVisitor
 	private final Map<Role, RoleNode> rolemap;
 	private final Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap;
 
-	public Substitutor(Job job, Map<Role, RoleNode> rolemap, Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap)
+	public Substitutor(Job job, Map<Role, RoleNode> rolemap,
+			Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap)
 	{
 		super(job);
 		this.rolemap = rolemap;
@@ -39,18 +40,21 @@ public class Substitutor extends AstVisitor
 	}
 	
 	@Override
-	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited)
+			throws ScribbleException
 	{
 		return visited.substituteNames(this);
 	}
 
 	public RoleNode getRoleSubstitution(Role role)
 	{
-		return this.rolemap.get(role).clone(this.job.af);
+		return this.rolemap.get(role).clone();//this.job.af);
 	}
 
-	public NonRoleArgNode getArgumentSubstitution(Arg<? extends NonRoleArgKind> arg)
+	public NonRoleArgNode getArgumentSubstitution(
+			Arg<? extends NonRoleArgKind> arg)
 	{
-		return (NonRoleArgNode) this.argmap.get(arg).clone(this.job.af);  // Makes new dels that will be discarded in NonRoleParamNode (just as calling the factory manually would)
+		return (NonRoleArgNode) this.argmap.get(arg).clone();//this.job.af);  
+				// Makes new dels that will be discarded in NonRoleParamNode (just as calling the factory manually would)
 	}
 }

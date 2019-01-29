@@ -225,7 +225,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 						doo.getProtocolNameNode().toName());
 			// namedisamb should already have converted proto to the fullname -- in order for inlining to work
 		pushSubprotocolSig(fullname, doo.getRoleListChild().getRoles(),
-				doo.getArgListChild().getArguments());
+				doo.getNonRoleListChild().getArguments());
 		pushNameMaps(fullname, doo);
 	}
 
@@ -252,7 +252,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		this.rolemaps.push(makeRoleSubsMap(this.rolemaps.get(0),
 				doo.getRoleListChild(), hdr.getRoleDeclListChild()));
 		this.argmaps.push(makeNonRoleSubsMap(this.argmaps.get(0),
-				doo.getArgListChild(), hdr.getParamDeclListChild()));
+				doo.getNonRoleListChild(), hdr.getParamDeclListChild()));
 	}
 	
 	public boolean isRootedCycle()

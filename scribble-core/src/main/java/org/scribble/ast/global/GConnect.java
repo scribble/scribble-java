@@ -44,8 +44,9 @@ public class GConnect extends ConnectAction<Global>
 
 	public LNode project(AstFactory af, Role self)
 	{
-		Role src = this.src.toName();
-		Role dest = this.dest.toName();
+		Role src = this.getSourceChild().toName();
+		MessageNode msgNode = this.getMessageNodeChild();
+		Role dest = this.getDestinationChild().toName();
 		LNode proj = null;
 		if (src.equals(self) || dest.equals(self))
 		{
@@ -59,7 +60,7 @@ public class GConnect extends ConnectAction<Global>
 			RoleNode destNode = getDestinationChild();
 			RoleNode srcNode1 = (RoleNode) af.SimpleNameNode(srcNode.getSource(),
 					RoleKind.KIND, srcNode.toName().toString()); // clone?
-			MessageNode msgNode1 = (MessageNode) this.msg;  // FIXME: need namespace prefix update?
+			MessageNode msgNode1 = (MessageNode) msgNode;  // CHECKME: need namespace prefix update?
 			RoleNode destNode1 = (RoleNode) af.SimpleNameNode(destNode.getSource(),
 					RoleKind.KIND, destNode.toName().toString());
 			if (src.equals(self))
@@ -95,8 +96,9 @@ public class GConnect extends ConnectAction<Global>
 	@Override
 	public String toString()
 	{
-		return (isUnitMessage() ? "" : this.msg + " ") + Constants.CONNECT_KW + " "
-				+ this.src + " " + Constants.TO_KW + " " + this.dest + ";";
+		return (isUnitMessage() ? "" : getMessageNodeChild() + " ")
+				+ Constants.CONNECT_KW + " " + getSourceChild() + " " + Constants.TO_KW
+				+ " " + getDestinationChild() + ";";
 		//return Constants.CONNECT_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
 	}
 

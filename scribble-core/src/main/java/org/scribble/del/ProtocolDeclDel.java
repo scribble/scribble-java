@@ -30,7 +30,8 @@ import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.util.RoleCollector;
 import org.scribble.visit.wf.NameDisambiguator;
 
-public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBase
+public abstract class ProtocolDeclDel<K extends ProtocolKind>
+		extends ScribDelBase
 {
 	private ProtocolDeclContext<K> pdcontext;
 
@@ -42,14 +43,17 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 	protected abstract ProtocolDeclDel<K> copy();
 		
 	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		disamb.clear();
 		return visited;
 	}
 
 	@Override
-	public void enterProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder) throws ScribbleException
+	public void enterProtocolDeclContextBuilding(ScribNode parent,
+			ScribNode child, ProtocolDeclContextBuilder builder)
+			throws ScribbleException
 	{
 		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
 
@@ -57,31 +61,37 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 		ProtocolDecl<?> pd = (ProtocolDecl<?>) child;
 		MemberName<?> pn = pd.getFullMemberName(main);
 		// Is it really needed to add self protocoldecl dependencies?
-		pd.header.roledecls.getRoles().stream().forEach(r -> addSelfDependency(builder, (ProtocolName<?>) pn, r));
+		pd.getHeaderChild().getRoleDeclListChild().getRoles().stream()
+				.forEach(r -> addSelfDependency(builder, (ProtocolName<?>) pn, r));
 	}
 	
-	protected abstract void addSelfDependency(ProtocolDeclContextBuilder builder, ProtocolName<?> proto, Role role);
+	protected abstract void addSelfDependency(ProtocolDeclContextBuilder builder,
+			ProtocolName<?> proto, Role role);
 
 	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl) throws ScribbleException
 	{
 		SubprotocolSig subsig = inl.peekStack();  // SubprotocolVisitor has already entered subprotocol
 		inl.setSubprotocolRecVar(subsig);
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
+			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
 	@Override
-	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited) throws ScribbleException
+	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child,
+			RoleCollector coll, ScribNode visited) throws ScribbleException
 	{
 		ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
 		Set<Role> occs = coll.getNames();
 		// Needs ProtocolDeclContextBuilder to have built the context already
-		ProtocolDeclDel<K> del = setProtocolDeclContext(getProtocolDeclContext().setRoleOccurrences(occs));
+		ProtocolDeclDel<K> del = setProtocolDeclContext(
+				getProtocolDeclContext().setRoleOccurrences(occs));
 		return pd.del(del);
 	}
 	
@@ -90,9 +100,11 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 		return this.pdcontext;
 	}
 	
-	protected ProtocolDeclDel<K> setProtocolDeclContext(ProtocolDeclContext<K> pdcontext)
+	protected ProtocolDeclDel<K> setProtocolDeclContext(
+			ProtocolDeclContext<K> pdcontext)
 	{
-		ProtocolDeclDel<K> copy = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
+		ProtocolDeclDel<K> copy = copy();  
+				// TODO: should be a deep clone in principle -- but if any other children are immutable, they can be shared
 		copy.pdcontext = pdcontext;
 		return copy;
 	}

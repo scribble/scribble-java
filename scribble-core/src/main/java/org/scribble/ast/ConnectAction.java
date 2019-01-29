@@ -103,9 +103,9 @@ public abstract class ConnectAction<K extends ProtocolKind> extends SimpleIntera
 	
 	
 	
-	public final RoleNode src;
-	public final MessageNode msg;
-	public final RoleNode dest;
+	private final RoleNode src;
+	private final MessageNode msg;
+	private final RoleNode dest;
 
 	protected ConnectAction(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//protected ConnectionAction(RoleNode src, RoleNode dest)

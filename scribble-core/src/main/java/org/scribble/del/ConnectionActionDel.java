@@ -21,7 +21,7 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.util.RoleCollector;
 
-// FIXME: factor with MessageTransferDel
+// TODO: factor with MessageTransferDel
 public abstract class ConnectionActionDel extends SimpleInteractionNodeDel
 {
 	public ConnectionActionDel()
@@ -30,24 +30,19 @@ public abstract class ConnectionActionDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
-	public ConnectAction<?> leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ConnectAction<?> leaveProtocolInlining(ScribNode parent,
+			ScribNode child, ProtocolDefInliner inl, ScribNode visited)
+			throws ScribbleException
 	{
 		ConnectAction<?> c = (ConnectAction<?>) visited;
-		ConnectAction<?> inlined = (ConnectAction<?>) c.clone(inl.job.af);
+		ConnectAction<?> inlined = (ConnectAction<?>) c.clone();//inl.job.af);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (ConnectAction<?>) super.leaveProtocolInlining(parent, child, inl, c);
 	}
 
-	/*@Override
-	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
-	{
-		ChoiceUnguardedSubprotocolEnv env = checker.popEnv();
-		env = env.disablePrune();
-		checker.pushEnv(env);
-	}*/
-
 	@Override
-	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child,
+			InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		UnfoldingEnv env = unf.popEnv();
 		env = env.disableUnfold();
@@ -55,14 +50,32 @@ public abstract class ConnectionActionDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
-	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited)
+	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child,
+			RoleCollector coll, ScribNode visited)
 	{
 		ConnectAction<?> c = (ConnectAction<?>) visited;
-		coll.addName(c.src.toName());
-		coll.addName(c.dest.toName());
+		coll.addName(c.getSourceChild().toName());
+		coll.addName(c.getDestinationChild().toName());
 		return visited;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/*@Override
 	public ScribNode leaveMessageIdCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
 	{
@@ -84,5 +97,13 @@ public abstract class ConnectionActionDel extends SimpleInteractionNodeDel
 		Connect<?> mt = (Connect<?>) visited;
 		coll.addEnabling(mt.src.toName(), mt.getDestinations().get(0).toName(), mt.msg.toMessage().getId());  // FIXME: multicast
 		return visited;
+	}*/
+
+	/*@Override
+	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	{
+		ChoiceUnguardedSubprotocolEnv env = checker.popEnv();
+		env = env.disablePrune();
+		checker.pushEnv(env);
 	}*/
 }

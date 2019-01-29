@@ -78,43 +78,51 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 
 	@Override
-	protected void addSelfDependency(ProtocolDeclContextBuilder builder, ProtocolName<?> proto, Role role)
+	protected void addSelfDependency(ProtocolDeclContextBuilder builder,
+			ProtocolName<?> proto, Role role)
 	{
 		builder.addGlobalProtocolDependency(role, (GProtocolName) proto, role);
 	}
 	
 	@Override
 	public GProtocolDecl
-			leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
+			leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child,
+					ProtocolDeclContextBuilder builder, ScribNode visited)
+					throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
-		GProtocolDeclContext gcontext = new GProtocolDeclContext(builder.getGlobalProtocolDependencyMap());
+		GProtocolDeclContext gcontext = new GProtocolDeclContext(
+				builder.getGlobalProtocolDependencyMap());
 		GProtocolDeclDel del = (GProtocolDeclDel) setProtocolDeclContext(gcontext);
 		return (GProtocolDecl) gpd.del(del);
 	}
 
 	@Override
-	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited) throws ScribbleException
+	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child,
+			RoleCollector coll, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 
 		// Need to do here (e.g. RoleDeclList too early, def not visited yet)
 		// Currently only done for global, local does roledecl fixing after role collection -- should separate this check to a later pass after context building
 		// Maybe relax to check only occs.size() > 1
-		List<Role> decls = gpd.header.roledecls.getRoles();
+		List<Role> decls = gpd.getHeaderChild().getRoleDeclListChild().getRoles();
 		Set<Role> occs = coll.getNames();
 		if (occs.size() != decls.size()) 
 		{
 			decls.removeAll(occs);
-			throw new ScribbleException(gpd.header.roledecls.getSource(), "Unused role decl(s) in " + gpd.header.name + ": " + decls);
+			throw new ScribbleException(
+					gpd.getHeaderChild().getRoleDeclListChild().getSource(),
+					"Unused role decl(s) in " + gpd.getHeaderChild().getDeclName() + ": "
+							+ decls);
 		}
 
 		return super.leaveRoleCollection(parent, child, coll, gpd);
 	}
 
 	@Override
-	public GProtocolDecl
-			leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	public GProtocolDecl leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		AstFactory af = proj.job.af;
 
@@ -123,16 +131,21 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		GProtocolHeader gph = gpd.getHeaderChild();
 		Role self = proj.peekSelf();
 
-		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(af, gph.getSource(), gph.getDeclName(), self);
-		RoleDeclList roledecls = gph.roledecls.project(af, self);
-		NonRoleParamDeclList paramdecls = gph.paramdecls.project(af, self);
+		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(af,
+				gph.getSource(), gph.getDeclName(), self);
+		RoleDeclList roledecls = gph.getRoleDeclListChild().project(af, self);
+		NonRoleParamDeclList paramdecls = gph.getParamDeclListChild().project(af,
+				self);
 		//LProtocolHeader hdr = af.LProtocolHeader(gpd.header.getSource(), pn, roledecls, paramdecls);  // FIXME: make a header del and move there?
 		LProtocolHeader hdr = gph.project(af, self, pn, roledecls, paramdecls);
-		LProtocolDef def = (LProtocolDef) ((ProjectionEnv) gpd.def.del().env()).getProjection();
-		LProtocolDecl lpd = gpd.project(af, root, self, hdr, def);  // FIXME: is root (always) the correct module? (wrt. LProjectionDeclDel?)
+		LProtocolDef def = (LProtocolDef) ((ProjectionEnv) gpd.getDefChild().del()
+				.env()).getProjection();
+		LProtocolDecl lpd = gpd.project(af, root, self, hdr, def);  // CHECKME: is root (always) the correct module? (wrt. LProjectionDeclDel?)
 		
-		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
-		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, gpd, lpd, deps);
+		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del())
+				.getGlobalProtocolDependencies(self);
+		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj,
+				root, gpd, lpd, deps);
 		proj.addProjection(gpd.getFullMemberName(root), self, projected);
 		return gpd;
 	}
@@ -144,7 +157,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 	
 	@Override
-	public void enterValidation(ScribNode parent, ScribNode child, GProtocolValidator checker) throws ScribbleException
+	public void enterValidation(ScribNode parent, ScribNode child,
+			GProtocolValidator checker) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) child;
 		if (gpd.isAux())
@@ -157,7 +171,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		{
 			if (checker.job.fair)
 			{
-				throw new RuntimeException("[TODO]: -spin currently does not support fair ouput choices.");
+				throw new RuntimeException(
+						"[TODO]: -spin currently does not support fair ouput choices.");
 			}
 			validateBySpin(checker.job, fullname);
 		}
@@ -166,35 +181,44 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 			validateByScribble(checker.job, fullname, true);
 			if (!checker.job.fair)
 			{
-				checker.job.debugPrintln("(" + fullname + ") Validating with \"unfair\" output choices.. ");
-				validateByScribble(checker.job, fullname, false);  // FIXME: only need to check progress, not full validation
+				checker.job.debugPrintln(
+						"(" + fullname + ") Validating with \"unfair\" output choices.. ");
+				validateByScribble(checker.job, fullname, false);  // TODO: only need to check progress, not full validation
 			}
 		}
 	}
 
-	private static void validateByScribble(Job job, GProtocolName fullname, boolean fair) throws ScribbleException
+	private static void validateByScribble(Job job, GProtocolName fullname,
+			boolean fair) throws ScribbleException
 	{
 		JobContext jc = job.getContext();
-		SGraph graph = (fair) ? jc.getSGraph(fullname) : jc.getUnfairSGraph(fullname);
+		SGraph graph = (fair) 
+				? jc.getSGraph(fullname)
+				: jc.getUnfairSGraph(fullname);
 		//graph.toModel().validate(job);
 		job.sf.newSModel(graph).validate(job);
 	}
 		
-	private static void validateBySpin(Job job, GProtocolName fullname) throws ScribbleException
+	private static void validateBySpin(Job job, GProtocolName fullname)
+			throws ScribbleException
 	{
 		JobContext jc = job.getContext();
 		Module mod = jc.getModule(fullname.getPrefix());
-		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDeclChild(fullname.getSimpleName());
+		GProtocolDecl gpd = (GProtocolDecl) mod
+				.getProtocolDeclChild(fullname.getSimpleName());
 		
-		List<Role> rs = gpd.header.roledecls.getRoles().stream()
-				.sorted(Comparator.comparing(Role::toString)).collect(Collectors.toList());
+		List<Role> rs = gpd.getHeaderChild().getRoleDeclListChild().getRoles()
+				.stream().sorted(Comparator.comparing(Role::toString))
+				.collect(Collectors.toList());
 
-		MessageIdCollector coll = new MessageIdCollector(job, ((ModuleDel) mod.del()).getModuleContext());
+		MessageIdCollector coll = new MessageIdCollector(job,
+				((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
 		Set<MessageId<?>> mids = coll.getNames();
 		
 		String pml = "";
-		pml += "mtype {" + mids.stream().map(mid -> mid.toString()).collect(Collectors.joining(", ")) + "};\n";
+		pml += "mtype {" + mids.stream().map(mid -> mid.toString())
+				.collect(Collectors.joining(", ")) + "};\n";
 
 		// FIXME: explicit
 
@@ -214,17 +238,19 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		for (Role[] p : pairs)
 		{
 			pml += "chan s_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
-					 + "chan r_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
-					 + "bool empty_" + p[0] + "_" + p[1] + " = true;\n"
-					 + "active proctype chan_" + p[0] + "_" + p[1] + "() {\n"
-					 + "mtype m;\n"
-					 + "end_chan_" + p[0] + "_" + p[1] + ":\n"
-					 + "do\n"
-					 + "::\n"
-					 + "atomic { s_" + p[0] + "_" + p[1] + "?m; empty_" + p[0] + "_" + p[1] + " = false }\n"
-					 + "atomic { r_" + p[0] + "_" + p[1] + "!m; empty_" + p[0] + "_" + p[1] + " = true }\n"
-					 + "od\n"
-					 + "}\n";
+					+ "chan r_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
+					+ "bool empty_" + p[0] + "_" + p[1] + " = true;\n"
+					+ "active proctype chan_" + p[0] + "_" + p[1] + "() {\n"
+					+ "mtype m;\n"
+					+ "end_chan_" + p[0] + "_" + p[1] + ":\n"
+					+ "do\n"
+					+ "::\n"
+					+ "atomic { s_" + p[0] + "_" + p[1] + "?m; empty_" + p[0] + "_" + p[1]
+							+ " = false }\n"
+					+ "atomic { r_" + p[0] + "_" + p[1] + "!m; empty_" + p[0] + "_" + p[1]
+							+ " = true }\n"
+					+ "od\n"
+					+ "}\n";
 		}
 		
 		for (Role r : rs)
@@ -314,8 +340,12 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				ScribUtil.writeToFile(tmpName, pml);
 				String[] res = ScribUtil.runProcess("spin", "-a", tmpName);
 				res[0] = res[0].replaceAll("(?m)^ltl.*$", "");
-				res[1] = res[1].replace("'gcc-4' is not recognized as an internal or external command,\noperable program or batch file.", "");
-				res[1] = res[1].replace("'gcc-3' is not recognized as an internal or external command,\noperable program or batch file.", "");
+				res[1] = res[1].replace(
+						"'gcc-4' is not recognized as an internal or external command,\noperable program or batch file.",
+						"");
+				res[1] = res[1].replace(
+						"'gcc-3' is not recognized as an internal or external command,\noperable program or batch file.",
+						"");
 				res[0] = res[0].trim();
 				res[1] = res[1].trim();
 				if (!res[0].trim().isEmpty() || !res[1].trim().isEmpty())

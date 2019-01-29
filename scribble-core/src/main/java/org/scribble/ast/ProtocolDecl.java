@@ -21,6 +21,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
 // FIXME: visitChildren for modifiers
@@ -85,6 +86,12 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 				visitChildWithClassEqualityCheck(this, getHeaderChild(), nv);
 		ProtocolDef<K> def = visitChildWithClassEqualityCheck(this, getDefChild(), nv);
 		return reconstruct(header, def);
+	}
+	
+	public List<Role> getRoles()
+	{
+		// WF disallows unused role declarations
+		return getHeaderChild().getRoleDeclListChild().getRoles();
 	}
 	
 	@Override

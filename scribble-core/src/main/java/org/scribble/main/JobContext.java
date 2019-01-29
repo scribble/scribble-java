@@ -236,9 +236,12 @@ public class JobContext
 		SGraph graph = this.fairSGraphs.get(fullname);
 		if (graph == null)
 		{
-			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix()).getProtocolDeclChild(fullname.getSimpleName());
-			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, gpd, true);
-			boolean explicit = gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT);
+			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
+					.getProtocolDeclChild(fullname.getSimpleName());
+			Map<Role, EGraph> egraphs = 
+					getEGraphsForSGraphBuilding(fullname, gpd, true);
+			boolean explicit = 
+					gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT);
 			//graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
 			graph = this.job.buildSGraph(fullname, egraphs, explicit);
 			addSGraph(fullname, graph);
@@ -246,12 +249,15 @@ public class JobContext
 		return graph;
 	}
 
-	private Map<Role, EGraph> getEGraphsForSGraphBuilding(GProtocolName fullname, GProtocolDecl gpd, boolean fair) throws ScribbleException
+	private Map<Role, EGraph> getEGraphsForSGraphBuilding(GProtocolName fullname,
+			GProtocolDecl gpd, boolean fair) throws ScribbleException
 	{
 		Map<Role, EGraph> egraphs = new HashMap<>();
-		for (Role self : gpd.header.roledecls.getRoles())
+		for (Role self : gpd.getHeaderChild().getRoleDeclListChild().getRoles())
 		{
-			egraphs.put(self, fair ? getEGraph(fullname, self) : getUnfairEGraph(fullname, self));
+			egraphs.put(self, fair 
+					? getEGraph(fullname, self) 
+					: getUnfairEGraph(fullname, self));
 		}
 		return egraphs;
 	}
@@ -266,7 +272,8 @@ public class JobContext
 		SGraph graph = this.unfairSGraphs.get(fullname);
 		if (graph == null)
 		{
-			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix()).getProtocolDeclChild(fullname.getSimpleName());
+			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
+					.getProtocolDeclChild(fullname.getSimpleName());
 			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, gpd, false);
 			boolean explicit = gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT);
 			//graph = SGraph.buildSGraph(this.job, fullname, this.job.createInitialSConfig(job, egraphs, explicit));
@@ -281,14 +288,16 @@ public class JobContext
 		this.minimisedEGraphs.put(fullname, graph);
 	}
 	
-	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role) throws ScribbleException
+	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role)
+			throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 
 		EGraph minimised = this.minimisedEGraphs.get(fulllpn);
 		if (minimised == null)
 		{
-			String aut = runAut(getEGraph(fullname, role).init.toAut(), fulllpn + ".aut");
+			String aut = runAut(getEGraph(fullname, role).init.toAut(),
+					fulllpn + ".aut");
 			minimised = new AutParser(this.job).parse(aut);
 			addMinimisedEGraph(fulllpn, minimised);
 		}
@@ -309,7 +318,8 @@ public class JobContext
 		try
 		{
 			ScribUtil.writeToFile(tmpName, fsm);
-			String[] res = ScribUtil.runProcess("ltsconvert", "-ebisim", "-iaut", "-oaut", tmpName);
+			String[] res = ScribUtil.runProcess("ltsconvert", "-ebisim", "-iaut",
+					"-oaut", tmpName);
 			if (!res[1].isEmpty())
 			{
 				throw new RuntimeException(res[1]);
