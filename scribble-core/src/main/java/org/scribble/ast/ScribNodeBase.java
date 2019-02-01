@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -69,9 +70,15 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 		return (ScribNode) super.getChild(i);
 	}
 	
+	// N.B. "overriding" base ANTLR behaviour of (sometimes?) returning null when
+	// getChildCount() == 0 by returning an empty list instead
 	@Override
 	public List<ScribNode> getChildren()
 	{
+		if (getChildCount() == 0)
+		{
+			return Collections.emptyList();
+		}
 		return ((Stream<?>) super.getChildren().stream()).map(x -> (ScribNode) x)
 				.collect(Collectors.toList());
 	}
@@ -158,7 +165,8 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 
 	public static final <T extends ScribNode> T del(T n, ScribDel del)
 	{
-		ScribNodeBase copy = ((ScribNodeBase) n).copy();
+		//ScribNodeBase copy = ((ScribNodeBase) n).copy();
+		ScribNodeBase copy = ((ScribNodeBase) n).clone();  // Need deep clone, since children have parent field
 		copy.del = del;
 		return ScribUtil.castNodeByClass(n, copy);
 	}

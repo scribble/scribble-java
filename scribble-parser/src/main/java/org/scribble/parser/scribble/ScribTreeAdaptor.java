@@ -22,7 +22,7 @@ import org.scribble.parser.scribble.ast.tree.MyCommonTree;
 // get/setType don't seem to be really used
 public class ScribTreeAdaptor extends CommonTreeAdaptor
 {
-	private final AstFactory f = new AstFactoryImpl();
+	//private final AstFactory f = new AstFactoryImpl();
 	
 	@Override
 	public Object create(Token t)
@@ -74,6 +74,9 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case "MESSAGESIGNATURE": //return this.f.Me
 				return new MessageSigNameNode(t);
 			case "PAYLOAD":
+				
+				HERE:  check MyCommonTree instantiation
+				
 				return new MyCommonTree(t);  // FIXME: placeholder for deleg, qualified or ambig
 			//case "QUALIFIEDNAME": //return this.f.Q
 			/*case tmp

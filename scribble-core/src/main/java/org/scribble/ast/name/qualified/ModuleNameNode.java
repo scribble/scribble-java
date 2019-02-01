@@ -36,7 +36,7 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 	@Override
 	public ModuleNameNode dupNode()
 	{
-		return new ModuleNameNode(this, this.elems);
+		return new ModuleNameNode(this, getElements());
 	}
 	
 	@Override
@@ -72,7 +72,7 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 	public int hashCode()
 	{
 		int hash = 409;
-		hash = 31 * hash + this.elems.hashCode();
+		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 	

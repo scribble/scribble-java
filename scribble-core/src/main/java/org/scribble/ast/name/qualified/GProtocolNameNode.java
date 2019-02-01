@@ -35,7 +35,7 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 	@Override
 	public GProtocolNameNode dupNode()
 	{
-		return new GProtocolNameNode(this, this.elems);
+		return new GProtocolNameNode(this, getElements());
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 	public int hashCode()
 	{
 		int hash = 419;
-		hash = 31 * hash + this.elems.hashCode();
+		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 	

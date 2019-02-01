@@ -39,7 +39,7 @@ public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase
 	{
 		if (getChildCount() != 1)
 		{
-			throw new RuntimeException("Shouldn't get in here: " + this);
+			throw new RuntimeException("Shouldn't get in here: " + getChildren());
 		}
 		NameNode<?> name = (NameNode<?>) getChild(0);
 		return name;

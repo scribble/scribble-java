@@ -93,7 +93,7 @@ public class DataTypeNode extends MemberNameNode<DataTypeKind>
 	public int hashCode()
 	{
 		int hash = 409;
-		hash = 31 * hash + this.elems.hashCode();
+		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 

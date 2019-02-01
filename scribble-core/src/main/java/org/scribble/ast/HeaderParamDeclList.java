@@ -71,19 +71,20 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 	
 	public int length()
 	{
-		return this.decls.size();
+		return getParamDeclChildren().size();
 	}
 
 	public boolean isEmpty()
 	{
-		return this.decls.isEmpty();
+		return length() == 0;
 	}
 
 	// Without enclosing braces -- added by subclasses
 	@Override
 	public String toString()
 	{
-		return this.decls.stream().map(nd -> nd.toString()).collect(Collectors.joining(", "));
+		return getParamDeclChildren().stream().map(nd -> nd.toString())
+				.collect(Collectors.joining(", "));
 	}
 	
 	

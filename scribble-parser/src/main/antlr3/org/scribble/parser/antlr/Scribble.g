@@ -22,7 +22,7 @@ options
 }
 
 
-// FIXME: match tokens to keywords?
+// CHECKME: match tokens to keywords?
 
 tokens
 {

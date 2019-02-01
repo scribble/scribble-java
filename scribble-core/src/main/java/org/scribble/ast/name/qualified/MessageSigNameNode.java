@@ -38,7 +38,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind>
 	@Override
 	public MessageSigNameNode dupNode()
 	{
-		return new MessageSigNameNode(this, this.elems);
+		return new MessageSigNameNode(this, getElements());
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind>
 	public int hashCode()
 	{
 		int hash = 421;
-		hash = 31 * hash + this.elems.hashCode();
+		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 	

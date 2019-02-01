@@ -117,6 +117,10 @@ public class MainContext
 		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);  
 				// TODO: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
 		CommonTree atree = this.antlrParser.parseAntlrTree(res);
+		
+		System.out.println("bbb: " + atree.getClass() + " ,, " + atree.getChildren());
+		// HERE: deprecate scribParser
+		
 		Module mod = (Module) this.scribParser.parse(atree, this.af);  // TODO: rename exceptions
 		checkMainModuleName(mainpath, mod);
 		
@@ -135,7 +139,8 @@ public class MainContext
 				spin);
 
 		Resource res = new InlineResource(inline);
-		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res), this.af);
+		Module mod = (Module) this.scribParser
+				.parse(this.antlrParser.parseAntlrTree(res), this.af);
 
 		init(res, mod);
 	}

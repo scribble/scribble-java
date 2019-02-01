@@ -37,7 +37,7 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 	@Override
 	public LProtocolNameNode dupNode()
 	{
-		return new LProtocolNameNode(this, this.elems);
+		return new LProtocolNameNode(this, getElements());
 	}
 	
 	@Override
@@ -85,7 +85,7 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 	public int hashCode()
 	{
 		int hash = 421;
-		hash = 31 * hash + this.elems.hashCode();
+		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 	

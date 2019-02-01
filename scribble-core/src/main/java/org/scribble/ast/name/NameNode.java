@@ -14,6 +14,8 @@
 package org.scribble.ast.name;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
@@ -25,8 +27,6 @@ import org.scribble.type.name.Named;
 public abstract class NameNode<K extends Kind> extends ScribNodeBase
 		implements Named<K>
 {
-	protected final String[] elems;
-
 	// ScribTreeAdaptor#create constructor
 	public NameNode(Token t)
 	{
@@ -35,42 +35,59 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 	}
 
 	// Tree#dupNode constructor
-	protected NameNode(NameNode<K> node, String...elems)
+	protected NameNode(NameNode<K> node)//, String...elems)
 	{
 		super(node);
-		this.elems = elems;
+		this.elems = null;//elems;
 	}
 	
 	public abstract NameNode<K> dupNode();
 	
 	public String[] getElements()
 	{
-		return Arrays.copyOf(this.elems, this.elems.length);
+		//return Arrays.copyOf(this.elems, this.elems.length);
+		return getSimpleNameList().toArray(new String[0]);
+	}
+	
+	protected List<String> getSimpleNameList()
+	{
+		return ((List<?>) getChildren()).stream()
+				.map(x -> ((CommonTree) x).getText()).collect(Collectors.toList());
+				// CHECKME: factor out getText?
 	}
 
 	public int getElementCount()
 	{
-		return this.elems.length;
+		//return this.elems.length;
+		return getChildCount();
 	}
 	
 	public boolean isEmpty()
 	{
-		return this.elems.length == 0;
+		return getElementCount() == 0;
 	}
 	
 	protected boolean isPrefixed()
 	{
-		return this.elems.length > 1;
+		return getElementCount() > 1;
 	}
 	
 	protected String[] getPrefixElements()
 	{
-		return Arrays.copyOfRange(this.elems, 0, this.elems.length - 1);
+		//return Arrays.copyOfRange(this.elems, 0, this.elems.length - 1);
+		if (getElementCount() <= 1)
+		{
+			return new String[0];
+		}
+		List<String> names = getSimpleNameList();
+		return names.subList(1, names.size()).toArray(new String[0]);
 	}
 	
 	protected String getLastElement()
 	{
-		return this.elems[this.elems.length - 1];
+		//return getElements()[getElementCount() - 1];
+		List<String> names = getSimpleNameList();
+		return names.get(names.size() - 1);
 	}
 	
 	@Override
@@ -94,7 +111,8 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 	public int hashCode()
 	{
 		int hash = 317;
-		hash = 31 * hash + this.elems.hashCode();
+		hash = 31 * hash + Arrays.hashCode(getElements());  
+				// Hash the String values, not the actual Tree nodes
 		return hash;
 	}
 
@@ -112,6 +130,7 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 
 	
 	
+	private final String[] elems;
 	
 	public NameNode(CommonTree source, String... elems)
 	{

@@ -49,7 +49,7 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 	@Override
 	public GProtocolNameNode getNameNodeChild()
 	{
-		return (GProtocolNameNode) getNameNodeChild();
+		return (GProtocolNameNode) getRawNameNodeChild();
 	}
 
 	@Override
