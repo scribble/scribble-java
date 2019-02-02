@@ -51,12 +51,12 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 	
 	public RoleDeclList getRoleDeclListChild()
 	{
-		return (RoleDeclList) getChild(1);
+		return (RoleDeclList) getChild(2);  // TODO: swap order with paramdecllist (in grammar)
 	}
 	
 	public NonRoleParamDeclList getParamDeclListChild()
 	{
-		return (NonRoleParamDeclList) getChild(2);
+		return (NonRoleParamDeclList) getChild(1);
 	}
 	
 	public ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name,
@@ -82,7 +82,7 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 
 	public boolean isParameterDeclListEmpty()
 	{
-		return this.paramdecls.isEmpty();
+		return getParamDeclListChild().isEmpty();
 	}
 
 	@Override

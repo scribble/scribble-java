@@ -32,7 +32,7 @@ public class ModuleContextBuilder extends AstVisitor
 	@Override
 	protected void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		System.out.println("aaa: " + child.getClass() + " ,, " + child.del());
+		System.out.println("aaa: " + child.getClass() + " ,, " + child.del());  // FIXME: del decorator
 		
 		
 		child.del().enterModuleContextBuilding(parent, child, this);

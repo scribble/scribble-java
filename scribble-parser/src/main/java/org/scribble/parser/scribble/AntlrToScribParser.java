@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.tree.CommonErrorNode;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
+import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
 import org.scribble.parser.scribble.ScribbleAntlrConstants.AntlrNodeType;
 import org.scribble.parser.scribble.ast.AntlrDataTypeDecl;
 import org.scribble.parser.scribble.ast.AntlrImportModule;
 import org.scribble.parser.scribble.ast.AntlrMessageSig;
 import org.scribble.parser.scribble.ast.AntlrMessageSigDecl;
-import org.scribble.parser.scribble.ast.AntlrModule;
 import org.scribble.parser.scribble.ast.AntlrModuleDecl;
 import org.scribble.parser.scribble.ast.AntlrNonRoleArgList;
 import org.scribble.parser.scribble.ast.AntlrNonRoleParamDecl;
@@ -72,11 +72,11 @@ public class AntlrToScribParser
 
 			case MODULE:                    
 			
-				// HERE
+				// HERE  deprecating Antlr->Scrib parsing
 				System.out.println("CCC1");
 				
-				return AntlrModule.parseModule(this, ct, af);
-				//return (Module) ct;
+				//return AntlrModule.parseModule(this, ct, af);
+				return (Module) ct;
 
 			case MODULEDECL:                return AntlrModuleDecl.parseModuleDecl(this, ct, af);
 			case MESSAGESIGNATUREDECL:      return AntlrMessageSigDecl.parseMessageSigDecl(this, ct, af);

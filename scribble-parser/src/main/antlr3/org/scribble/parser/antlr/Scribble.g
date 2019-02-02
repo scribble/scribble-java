@@ -149,9 +149,6 @@ tokens
 	GLOBALCHOICE = 'GLOBALCHOICE';
 	GLOBALRECURSION = 'GLOBALRECURSION';
 	GLOBALCONTINUE = 'GLOBALCONTINUE';
-	/*GLOBALPARALLEL = 'GLOBALPARALLEL';
-	GLOBALINTERRUPTIBLE = 'GLOBALINTERRUPTIBLE';
-	GLOBALINTERRUPT = 'GLOBALINTERRUPT';*/
 	GLOBALDO = 'GLOBALDO';
 
 	/*LOCALPROTOCOLDECL = 'local-protocol-decl';
@@ -174,6 +171,11 @@ tokens
 	LOCALCATCHES = 'local-catches';
 	LOCALSEND = 'local-send';
 	LOCALRECEIVE = 'local-receive';*/
+	
+	
+	GPROTOCOLNAME = 'GPROTOCOLNAME';
+	ROLENAME = 'ROLENAME';
+	ID = 'ID';
 }
 
 
@@ -380,6 +382,9 @@ simplemessagesignaturename: simplename;
 simpleprotocolname:         simplename;
 simplemembername:           simplename;  // Only for member declarations
 
+gprotocolname: simplename;
+
+
 qualifiedname:
 	IDENTIFIER ('.' IDENTIFIER)*
 ->
@@ -395,6 +400,7 @@ modulename:
 ->
 	^(MODULENAME IDENTIFIER+)
 ;
+//	^(MODULENAME ^(ID IDENTIFIER)+)
 
 
 protocolname:         membername;
@@ -558,15 +564,17 @@ globalprotocoldeclmodifiers:
 	^(GLOBALPROTOCOLDECLMODS AUX_KW)
 ;
 
+//	GLOBAL_KW PROTOCOL_KW simpleprotocolname roledecllist
 globalprotocolheader:
-	GLOBAL_KW PROTOCOL_KW simpleprotocolname roledecllist
+	GLOBAL_KW PROTOCOL_KW gprotocolname roledecllist
 ->
-	^(GLOBALPROTOCOLHEADER simpleprotocolname ^(PARAMETERDECLLIST) roledecllist)
+	^(GLOBALPROTOCOLHEADER ^(GPROTOCOLNAME gprotocolname) ^(PARAMETERDECLLIST) roledecllist)
 |
-	GLOBAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist roledecllist
+	GLOBAL_KW PROTOCOL_KW gprotocolname parameterdecllist roledecllist
 ->
-	^(GLOBALPROTOCOLHEADER simpleprotocolname parameterdecllist roledecllist)
+	^(GLOBALPROTOCOLHEADER ^(GPROTOCOLNAME gprotocolname) parameterdecllist roledecllist)
 ;
+//	GLOBAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist roledecllist
 
 roledecllist:
 	'(' roledecl (',' roledecl)* ')'
@@ -577,7 +585,7 @@ roledecllist:
 roledecl:
 	ROLE_KW rolename
 ->
-	^(ROLEDECL rolename)
+	^(ROLEDECL ^(ROLENAME rolename))
 ;
 
 parameterdecllist:
@@ -653,9 +661,15 @@ globalinteraction:
  * Section 3.7.4 Global Message Transfer
  */
 globalmessagetransfer:
-	message FROM_KW rolename TO_KW rolename (',' rolename )* ';'
+	message FROM_KW rolename TO_KW rolenamenode (',' rolenamenode )* ';'
 ->
-	^(GLOBALMESSAGETRANSFER message rolename rolename+)
+	^(GLOBALMESSAGETRANSFER message rolenamenode+)
+;
+
+rolenamenode:
+	rolename
+->
+	^(ROLENAME rolename)
 ;
 
 message:
