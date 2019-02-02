@@ -119,9 +119,12 @@ public class MainContext
 		CommonTree atree = this.antlrParser.parseAntlrTree(res);
 		
 		System.out.println("bbb: " + atree.getClass() + " ,, " + atree.getChildren());
-		// HERE: deprecate scribParser
+		// FIXME HERE: deprecate scribParser -- move ANTLR error checking out
 		
 		Module mod = (Module) this.scribParser.parse(atree, this.af);  // TODO: rename exceptions
+		
+		del decorator
+		
 		checkMainModuleName(mainpath, mod);
 		
 		init(res, mod);

@@ -128,6 +128,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 		return this.del;
 	}
 	
+	// Defensive
 	@Override
 	public final ScribNodeBase del(ScribDel del)
 	{
@@ -145,6 +146,16 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	{
 		this.del = del;
 	}
+
+	// Defensive helper with cast check
+	public static final <T extends ScribNode> T del(T n, ScribDel del)
+	{
+		//ScribNodeBase copy = ((ScribNodeBase) n).copy();
+		ScribNodeBase copy = ((ScribNodeBase) n).clone();  // Need deep clone, since children have parent field
+		//copy.del = del;
+		copy.setDel(del);
+		return ScribUtil.castNodeByClass(n, copy);
+	}
 	
 	@Override
 	public ScribNode accept(AstVisitor nv) throws ScribbleException
@@ -161,14 +172,6 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	protected ScribNode visitChild(ScribNode child, AstVisitor nv) throws ScribbleException
 	{
 		return nv.visit(this, child);
-	}
-
-	public static final <T extends ScribNode> T del(T n, ScribDel del)
-	{
-		//ScribNodeBase copy = ((ScribNodeBase) n).copy();
-		ScribNodeBase copy = ((ScribNodeBase) n).clone();  // Need deep clone, since children have parent field
-		copy.del = del;
-		return ScribUtil.castNodeByClass(n, copy);
 	}
 
 	@Override

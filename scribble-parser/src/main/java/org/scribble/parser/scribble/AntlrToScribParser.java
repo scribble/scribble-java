@@ -68,7 +68,7 @@ public class AntlrToScribParser
 		AntlrNodeType type = AntlrToScribParserUtil.getAntlrNodeType(ct);
 		switch (type)
 		{
-			case PAYLOAD:                   return AntlrPayloadElemList.parsePayloadElemList(this, ct, af);
+			//case PAYLOAD:                   return AntlrPayloadElemList.parsePayloadElemList(this, ct, af);
 
 			case MODULE:                    
 			
@@ -78,7 +78,7 @@ public class AntlrToScribParser
 				//return AntlrModule.parseModule(this, ct, af);
 				return (Module) ct;
 
-			case MODULEDECL:                return AntlrModuleDecl.parseModuleDecl(this, ct, af);
+			/*case MODULEDECL:                return AntlrModuleDecl.parseModuleDecl(this, ct, af);
 			case MESSAGESIGNATUREDECL:      return AntlrMessageSigDecl.parseMessageSigDecl(this, ct, af);
 			case PAYLOADTYPEDECL:           return AntlrDataTypeDecl.parseDataTypeDecl(this, ct, af);
 			case IMPORTMODULE:              return AntlrImportModule.parseImportModule(this, ct, af);
@@ -105,11 +105,8 @@ public class AntlrToScribParser
 			case GLOBALCHOICE:              return AntlrGChoice.parseGChoice(this, ct, af);
 			case GLOBALRECURSION:           return AntlrGRecursion.parseGRecursion(this, ct, af);
 			case GLOBALCONTINUE:            return AntlrGContinue.parseGContinue(this, ct, af);
-			/*case GLOBALPARALLEL:            return AntlrGParallel.parseGParallel(this, ct, af);
-			case GLOBALINTERRUPTIBLE:       return AntlrGInterruptible.parseGInterruptible(this, ct, af);
-			case GLOBALINTERRUPT:           return AntlrGInterrupt.parseGInterrupt(this, ct, af);*/
 			case GLOBALDO:                  return AntlrGDo.parseGDo(this, ct, af);
-			case GLOBALWRAP:                return AntlrGWrap.parseGWrap(this, ct, af);
+			case GLOBALWRAP:                return AntlrGWrap.parseGWrap(this, ct, af);*/
 			default:                        throw new RuntimeException("Unknown ANTLR node type: " + type);
 		}
 	}
