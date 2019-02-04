@@ -37,7 +37,7 @@ public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase
 
 	protected final NameNode<?> getRawNameNodeChild()
 	{
-		if (getChildCount() < 1)  // E.g., ProtocolHeader two more children
+		if (getChildCount() < 1)  // E.g., ProtocolHeader three children
 		{
 			throw new RuntimeException("Shouldn't get in here: " + getClass());
 		}

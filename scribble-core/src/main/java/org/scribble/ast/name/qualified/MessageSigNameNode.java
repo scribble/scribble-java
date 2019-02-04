@@ -30,7 +30,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind>
 	}
 
 	// Tree#dupNode constructor
-	protected MessageSigNameNode(MessageSigNameNode node, String...elems)
+	protected MessageSigNameNode(MessageSigNameNode node)//, String...elems)
 	{
 		super(node);
 	}
@@ -38,7 +38,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind>
 	@Override
 	public MessageSigNameNode dupNode()
 	{
-		return new MessageSigNameNode(this, getElements());
+		return new MessageSigNameNode(this);//, getElements());
 	}
 
 	@Override

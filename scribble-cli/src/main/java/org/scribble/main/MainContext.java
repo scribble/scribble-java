@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.DelDecoratorImpl;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
@@ -123,7 +124,10 @@ public class MainContext
 		
 		Module mod = (Module) this.scribParser.parse(atree, this.af);  // TODO: rename exceptions
 		
-		del decorator
+		/*HERE del decorator
+		move ast to parser?  and make core/lang*/
+		
+		new DelDecoratorImpl().decorate(mod);
 		
 		checkMainModuleName(mainpath, mod);
 		

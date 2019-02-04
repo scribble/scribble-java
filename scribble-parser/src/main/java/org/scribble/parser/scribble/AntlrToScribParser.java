@@ -68,7 +68,7 @@ public class AntlrToScribParser
 		AntlrNodeType type = AntlrToScribParserUtil.getAntlrNodeType(ct);
 		switch (type)
 		{
-			//case PAYLOAD:                   return AntlrPayloadElemList.parsePayloadElemList(this, ct, af);
+			case PAYLOAD:                   return AntlrPayloadElemList.parsePayloadElemList(this, ct, af);
 
 			case MODULE:                    
 			

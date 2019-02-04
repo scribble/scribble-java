@@ -29,15 +29,15 @@ public class DummyProjectionRoleNode extends RoleNode
 	}
 
 	// Tree#dupNode constructor
-	protected DummyProjectionRoleNode(DummyProjectionRoleNode node, String id)
+	protected DummyProjectionRoleNode(DummyProjectionRoleNode node)//, String id)
 	{
-		super(node, id);
+		super(node);
 	}
 	
 	@Override
 	public RoleNode dupNode()
 	{
-		return new RoleNode(this, getIdentifier());
+		return new RoleNode(this);//, getIdentifier());
 	}
 
 	@Override

@@ -27,9 +27,9 @@ public abstract class ProtocolNameNode<K extends ProtocolKind> extends MemberNam
 	}
 
 	// Tree#dupNode constructor
-	protected ProtocolNameNode(ProtocolNameNode<K> node, String...elems)
+	protected ProtocolNameNode(ProtocolNameNode<K> node)//, String...elems)
 	{
-		super(node, elems);
+		super(node);
 	}
 
 	public abstract ProtocolName<K> toName();

@@ -27,7 +27,7 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 	}
 
 	// Tree#dupNode constructor
-	protected GProtocolNameNode(GProtocolNameNode node, String...elems)
+	protected GProtocolNameNode(GProtocolNameNode node)//, String...elems)
 	{
 		super(node);
 	}
@@ -35,7 +35,7 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 	@Override
 	public GProtocolNameNode dupNode()
 	{
-		return new GProtocolNameNode(this, getElements());
+		return new GProtocolNameNode(this);//, getElements());
 	}
 	
 	@Override

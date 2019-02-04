@@ -48,16 +48,16 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends
 	}
 
 	// Tree#dupNode constructor
-	protected NonRoleParamNode(NonRoleParamNode<K> node, K kind, String id)
+	protected NonRoleParamNode(NonRoleParamNode<K> node, K kind)//, String id)
 	{
-		super(node, id);
+		super(node);
 		this.kind = kind;
 	}
 	
 	@Override
 	public NonRoleParamNode<K> dupNode()
 	{
-		return new NonRoleParamNode<>(this, this.kind, getIdentifier());
+		return new NonRoleParamNode<>(this, this.kind);//, getIdentifier());
 	}
 	
 	@Override

@@ -16,6 +16,7 @@ package org.scribble.ast.name.simple;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.DoArgNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.del.ScribDel;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
@@ -30,21 +31,23 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 	}
 
 	// Tree#dupNode constructor
-	protected RoleNode(RoleNode node, String id)
+	protected RoleNode(RoleNode node)//, String id)
 	{
-		super(node, id);
+		super(node);
 	}
 	
 	@Override
 	public RoleNode dupNode()
 	{
-		return new RoleNode(this, getIdentifier());
+		return new RoleNode(this);//, getIdentifier());
 	}
 
 	// RoleNode is the only NameNode with a reconstruct (so not factored up)
 	protected RoleNode reconstruct(String id)
 	{
+		ScribNode n = getChild(0);  // TODO: factor out (ID -- currently ambignamenode?)
 		RoleNode r = dupNode();
+		r.addChild(n);
 		ScribDel del = del(); // Default delegate assigned in ModelFactoryImpl for all simple names
 		r.setDel(del);  // No copy
 		return r;
@@ -53,7 +56,7 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 	@Override
 	public RoleNode clone()
 	{
-		return (RoleNode) clone();
+		return (RoleNode) super.clone();
 	}
 	
 	@Override

@@ -29,7 +29,7 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 	}
 
 	// Tree#dupNode constructor
-	protected LProtocolNameNode(LProtocolNameNode node, String...elems)
+	protected LProtocolNameNode(LProtocolNameNode node)//, String...elems)
 	{
 		super(node);
 	}
@@ -37,7 +37,7 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 	@Override
 	public LProtocolNameNode dupNode()
 	{
-		return new LProtocolNameNode(this, getElements());
+		return new LProtocolNameNode(this);//, getElements());
 	}
 	
 	@Override

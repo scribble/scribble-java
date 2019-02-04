@@ -23,7 +23,7 @@ public class AntlrToScribParserUtil
 {
 	public static List<CommonTree> toCommonTreeList(List<?> list)
 	{
-		return list.stream().map((x) -> (CommonTree) x).collect(Collectors.toList());
+		return list.stream().map(x -> (CommonTree) x).collect(Collectors.toList());
 	}
 	
 	// Cf. Scribble.g output "node types" -- mapping to the AntlrNodeType enum

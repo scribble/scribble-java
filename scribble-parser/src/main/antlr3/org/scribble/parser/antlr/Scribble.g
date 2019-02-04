@@ -176,6 +176,7 @@ tokens
 	GPROTOCOLNAME = 'GPROTOCOLNAME';
 	ROLENAME = 'ROLENAME';
 	ID = 'ID';
+	OPNAME = 'OPNAME';
 }
 
 
@@ -493,20 +494,20 @@ messagesignaturedecl:
 messagesignature:
 	'(' payload ')'
 ->
-	^(MESSAGESIGNATURE EMPTY_OPERATOR payload)
+	^(MESSAGESIGNATURE ^(OPNAME EMPTY_OPERATOR) payload)
 |
 	//messageoperator '(' payload ')'  // Doesn't work (conflict with IDENTIFIER?)
 	IDENTIFIER '(' payload ')'
 ->
-	^(MESSAGESIGNATURE IDENTIFIER payload)
+	^(MESSAGESIGNATURE ^(OPNAME IDENTIFIER) payload)
 |
 	'(' ')'
 ->
-	^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD))
+	^(MESSAGESIGNATURE ^(OPNAME EMPTY_OPERATOR) ^(PAYLOAD))
 |
 	IDENTIFIER '(' ')'
 ->
-	^(MESSAGESIGNATURE IDENTIFIER ^(PAYLOAD))
+	^(MESSAGESIGNATURE ^(OPNAME IDENTIFIER) ^(PAYLOAD))
 ;
 
 payload:
@@ -661,7 +662,7 @@ globalinteraction:
  * Section 3.7.4 Global Message Transfer
  */
 globalmessagetransfer:
-	message FROM_KW rolename TO_KW rolenamenode (',' rolenamenode )* ';'
+	message FROM_KW rolenamenode TO_KW rolenamenode (',' rolenamenode )* ';'
 ->
 	^(GLOBALMESSAGETRANSFER message rolenamenode+)
 ;

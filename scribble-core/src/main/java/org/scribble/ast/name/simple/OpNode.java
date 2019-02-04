@@ -30,15 +30,15 @@ public class OpNode extends SimpleNameNode<OpKind>
 	}
 
 	// Tree#dupNode constructor
-	protected OpNode(OpNode node, String id)
+	protected OpNode(OpNode node)//, String id)
 	{
-		super(node, id);
+		super(node);
 	}
 	
 	@Override
 	public OpNode dupNode()
 	{
-		return new OpNode(this, getIdentifier());
+		return new OpNode(this);//, getIdentifier());
 	}
 	
 	@Override

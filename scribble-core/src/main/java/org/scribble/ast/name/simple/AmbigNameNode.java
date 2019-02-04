@@ -41,15 +41,21 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	}
 
 	// Tree#dupNode constructor
-	protected AmbigNameNode(AmbigNameNode node, String id)
+	protected AmbigNameNode(AmbigNameNode node)//, String id)
 	{
-		super(node, id);
+		super(node);
 	}
 	
 	@Override
 	public AmbigNameNode dupNode()
 	{
-		return new AmbigNameNode(this, getIdentifier());
+		return new AmbigNameNode(this);//, getIdentifier());
+	}
+	
+	@Override
+	public String getIdentifier()
+	{
+		return getToken().getText();  // CHECKME: ambig nodes are now leafs
 	}
 	
 	@Override

@@ -31,15 +31,15 @@ public class DataTypeNode extends MemberNameNode<DataTypeKind>
 	}
 
 	// Tree#dupNode constructor
-	protected DataTypeNode(DataTypeNode node, String... ns)
+	protected DataTypeNode(DataTypeNode node)//, String... ns)
 	{
-		super(node, ns);
+		super(node);
 	}
 	
 	@Override
 	public DataTypeNode dupNode()
 	{
-		return new DataTypeNode(this, getElements());
+		return new DataTypeNode(this);//, getElements());
 	}
 
 	@Override

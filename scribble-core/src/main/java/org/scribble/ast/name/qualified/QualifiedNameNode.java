@@ -27,9 +27,9 @@ public abstract class QualifiedNameNode<K extends Kind> extends NameNode<K>
 	}
 
 	// Tree#dupNode constructor
-	protected QualifiedNameNode(QualifiedNameNode<K> node, String...elems)
+	protected QualifiedNameNode(QualifiedNameNode<K> node)//, String...elems)
 	{
-		super(node, elems);
+		super(node);
 	}
 	
 	

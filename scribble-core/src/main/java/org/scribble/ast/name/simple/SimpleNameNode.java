@@ -28,9 +28,9 @@ public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 	}
 
 	// Tree#dupNode constructor
-	protected SimpleNameNode(SimpleNameNode<K> node, String id)
+	protected SimpleNameNode(SimpleNameNode<K> node)//, String id)
 	{
-		super(node, id);
+		super(node);
 	}
 	
 	public String getIdentifier()

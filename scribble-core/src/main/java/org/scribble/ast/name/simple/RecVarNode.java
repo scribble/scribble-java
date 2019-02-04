@@ -27,15 +27,15 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 	}
 
 	// Tree#dupNode constructor
-	protected RecVarNode(RecVarNode node, String id)
+	protected RecVarNode(RecVarNode node)//, String id)
 	{
-		super(node, id);
+		super(node);
 	}
 	
 	@Override
 	public RecVarNode dupNode()
 	{
-		return new RecVarNode(this, getIdentifier());
+		return new RecVarNode(this);//, getIdentifier());
 	}
 
 	@Override

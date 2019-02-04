@@ -31,7 +31,7 @@ public abstract class MemberNameNode<K extends Kind>
 	}
 
 	// Tree#dupNode constructor
-	protected MemberNameNode(MemberNameNode<K> node, String...elems)
+	protected MemberNameNode(MemberNameNode<K> node)//, String...elems)
 	{
 		super(node);
 	}

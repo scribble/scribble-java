@@ -2,6 +2,7 @@ package org.scribble.parser.scribble;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
+import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonRoleParamDeclList;
@@ -16,9 +17,9 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RoleNode;
 
 // get/setType don't seem to be really used
@@ -93,7 +94,9 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case "GLOBALMESSAGETRANSFER": //return this.f.GMessageTransfer(empty, null, null, Collections.emptyList());
 				return new GMessageTransfer(t);
 			case "MESSAGESIGNATURE": //return this.f.Me
-				return new MessageSigNameNode(t);
+				return new MessageSigNode(t);
+			case "OPNAME":
+				return new OpNode(t);
 			case "PAYLOAD":
 				return new PayloadElemList(t);
 

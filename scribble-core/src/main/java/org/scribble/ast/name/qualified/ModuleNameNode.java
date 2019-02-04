@@ -28,7 +28,7 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 	}
 
 	// Tree#dupNode constructor
-	protected ModuleNameNode(ModuleNameNode node, String...elems)
+	protected ModuleNameNode(ModuleNameNode node)//, String...elems)
 	{
 		super(node);
 	}
@@ -36,7 +36,7 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 	@Override
 	public ModuleNameNode dupNode()
 	{
-		return new ModuleNameNode(this, getElements());
+		return new ModuleNameNode(this);//, getElements());
 	}
 	
 	@Override
