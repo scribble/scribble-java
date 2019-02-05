@@ -41,6 +41,12 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 	{
 		return new RoleNode(this);//, getIdentifier());
 	}
+	
+	@Override
+	public RoleNode clone()
+	{
+		return (RoleNode) super.clone();
+	}
 
 	// RoleNode is the only NameNode with a reconstruct (so not factored up)
 	protected RoleNode reconstruct(String id)
@@ -51,12 +57,6 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 		ScribDel del = del(); // Default delegate assigned in ModelFactoryImpl for all simple names
 		r.setDel(del);  // No copy
 		return r;
-	}
-	
-	@Override
-	public RoleNode clone()
-	{
-		return (RoleNode) super.clone();
 	}
 	
 	@Override

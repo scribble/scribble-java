@@ -128,6 +128,10 @@ public class MainContext
 		move ast to parser?  and make core/lang*/
 		
 		new DelDecoratorImpl().decorate(mod);
+
+		System.out.println("bbb2: " + mod);
+		
+		//HERE: debug context building or name disamb (role node child lost)
 		
 		checkMainModuleName(mainpath, mod);
 		

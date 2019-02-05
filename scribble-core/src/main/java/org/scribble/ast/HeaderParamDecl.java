@@ -13,9 +13,6 @@
  */
 package org.scribble.ast;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.SimpleNameNode;
@@ -51,8 +48,7 @@ public abstract class HeaderParamDecl<K extends ParamKind>
 	{
 		HeaderParamDecl<K> pd = dupNode();
 		ScribDel del = del();
-		List<ScribNode> children = new LinkedList<>();
-		children.add(name);
+		pd.addChild(name);
 		pd.setDel(del);  // No copy
 		return pd;
 	}

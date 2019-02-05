@@ -127,7 +127,11 @@ public class Job
 	
 	public void runContextBuildingPasses() throws ScribbleException
 	{
+		System.out.println("fff1: " + this.jcontext.getMainModule());
 		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
+		
+		System.out.println("fff2: " + this.jcontext.getMainModule());
+		
 		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
 		runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
 		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder

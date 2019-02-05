@@ -139,19 +139,19 @@ public class DelDecoratorImpl implements DelDecorator
 				break;
 			case "MODULENAME":
 				
-				System.out.println("5555b: " + n.getClass() + " ,, " + type + " ,, " + n);
-				System.out.println("4444:" + n + " ,, " + n.getChildren());
+				//System.out.println("5555b: " + n.getClass() + " ,, " + type + " ,, " + n);
+				//System.out.println("4444:" + n + " ,, " + n.getChildren());
 				
 				ModuleNameNode((ModuleNameNode) n);
 				break;
 
 			default:  // Leaf "ID" nodes
 				//throw new RuntimeException("Unknown ANTLR node type: " + type);
-				System.out.println("9999:" + n + " ,, " + n.getChildren());
+				//System.out.println("9999:" + n + " ,, " + n.getChildren());
 				break;
 		}
 
-				System.out.println("8888:" + n + " ,, " + n.getChildren());
+				//System.out.println("8888:" + n + " ,, " + n.getChildren());
 		((List<?>) n.getChildren()).stream().map(x -> (CommonTree) x)
 				.forEach(x -> decorate(x));
 	}

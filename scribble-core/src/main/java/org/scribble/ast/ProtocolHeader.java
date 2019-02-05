@@ -51,8 +51,6 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 	
 	public RoleDeclList getRoleDeclListChild()
 	{
-		System.out.println("7777: " + getChildren());
-		
 		return (RoleDeclList) getChild(2);  // TODO: swap order with paramdecllist (in grammar)
 	}
 	
@@ -67,8 +65,8 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 		ProtocolHeader<K> pd = dupNode();
 		ScribDel del = del();
 		pd.addChild(name);
+		pd.addChild(pdl);  // Cf. above TODO (rdl/pdl child order)
 		pd.addChild(rdl);
-		pd.addChild(pdl);
 		pd.setDel(del);  // No copy
 		return pd;
 	}

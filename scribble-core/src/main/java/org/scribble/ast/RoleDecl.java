@@ -35,15 +35,15 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	}
 	
 	@Override
-	public RoleDecl dupNode()
-	{
-		return new RoleDecl(this);
-	}
-	
-	@Override
 	public RoleNode getNameNodeChild()
 	{
 		return (RoleNode) getRawNameNodeChild();
+	}
+	
+	@Override
+	public RoleDecl dupNode()
+	{
+		return new RoleDecl(this);
 	}
 
 	@Override
@@ -51,7 +51,8 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	{
 		RoleNode name = getNameNodeChild();
 		Name<RoleKind> role = name.toName();
-		RoleNode rn = (RoleNode) af.SimpleNameNode(name.source, RoleKind.KIND, role.toString());
+		RoleNode rn = (RoleNode) 
+				af.SimpleNameNode(name.source, RoleKind.KIND, role.toString());
 		if (role.equals(self))
 		{
 			return af.SelfRoleDecl(name.source, rn);
