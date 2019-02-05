@@ -29,19 +29,23 @@ public abstract class AstVisitor
 		this.job = job;
 	}
 
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	// Used by ScribNodeBase::accept
+	public ScribNode visit(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		enter(parent, child);
 		ScribNode visited = child.visitChildren(this);   // visited means "children visited so far"; we're about to visit "this" now via "leave"
 		return leave(parent, child, visited);
 	}
 	
-	protected void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void enter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 
 	}
 	
-	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode leave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

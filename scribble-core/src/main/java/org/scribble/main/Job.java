@@ -53,6 +53,7 @@ import org.scribble.visit.wf.WFChoiceChecker;
 public class Job
 {
 	// FIXME: verbose/debug printing parameter: should be in MainContext, but currently cannot access that class directly from here
+	// TODO: simply keep a reference to MainContext instead?
 	//public final boolean jUnit;
 	public final boolean debug;
 	public final boolean useOldWf;
@@ -127,16 +128,18 @@ public class Job
 	
 	public void runContextBuildingPasses() throws ScribbleException
 	{
-		System.out.println("fff1: " + this.jcontext.getMainModule());
 		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
-		
-		System.out.println("fff2: " + this.jcontext.getMainModule());
-		
 		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
 		runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
 		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
+
+		System.out.println("fff1: " + this.jcontext.getMainModule());
+
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
+		
+		System.out.println("fff2: " + this.jcontext.getMainModule());
+		
 		//runUnfoldingPass();
 	}
 		
@@ -284,7 +287,8 @@ public class Job
 		}
 	}
 
-	private void runVisitorOnModule(ModuleName modname, AstVisitor nv) throws ScribbleException
+	private void runVisitorOnModule(ModuleName modname, AstVisitor nv)
+			throws ScribbleException
 	{
 		Module visited = (Module) this.jcontext.getModule(modname).accept(nv);
 		this.jcontext.replaceModule(visited);

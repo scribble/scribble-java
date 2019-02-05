@@ -11,12 +11,23 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del;
+package org.scribble.del.global;
 
-public abstract class ParallelDel extends CompoundInteractionNodeDel
+import org.scribble.ast.ScribNode;
+import org.scribble.lang.SessTypeTranslator;
+import org.scribble.main.ScribbleException;
+
+public interface GDel
 {
-	public ParallelDel()
+	default void enterSessTypeTranslation(ScribNode parent, ScribNode child,
+			SessTypeTranslator t)
 	{
 
+	}
+
+	default ScribNode leaveSessTypeTranslation(ScribNode parent, ScribNode child,
+			SessTypeTranslator t, ScribNode visited) throws ScribbleException
+	{
+		return visited;
 	}
 }

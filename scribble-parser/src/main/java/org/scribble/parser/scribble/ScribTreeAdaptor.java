@@ -117,7 +117,6 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return x;*/
 				//return nil();  // CHECKME
 			default:
-				System.out.println("333: " + t);
 				//throw new RuntimeException("Shouldn't get here: " + lab + " ,, " + lab.length());
 				//return new MyCommonTree(t);
 				return 

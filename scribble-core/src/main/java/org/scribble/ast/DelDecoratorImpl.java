@@ -60,15 +60,9 @@ public class DelDecoratorImpl implements DelDecorator
 	// Visitor enter/leave framework uses dels -- DelDecorator is a proto visitor (akin to parsing)
 	public void decorate(CommonTree n)
 	{
-		
-		
 		String type = n.getToken().getText();  // CHECKME: do by Antlr Token, or at this point by Scib AST type?
-
-		System.out.println("5555: " + n.getClass() + " ,, " + type + " ,, " + n);
-
 		switch (type)
 		{
-
 			case "MODULE":
 				Module((Module) n);
 				break;
@@ -174,21 +168,21 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 	
 	@Override
-	public Module Module(Module m)
+	public void Module(Module m)
 	{
-		return setDel(m, new ModuleDel());
+		setDel(m, new ModuleDel());
 	}
 
 	@Override
-	public ModuleDecl ModuleDecl(ModuleDecl md)
+	public void ModuleDecl(ModuleDecl md)
 	{
-		return setDel(md, createDefaultDelegate());
+		setDel(md, createDefaultDelegate());
 	}
 
 	@Override
-	public ImportModule ImportModule(ImportModule im)
+	public void ImportModule(ImportModule im)
 	{
-		return setDel(im, new ImportModuleDel());
+		setDel(im, new ImportModuleDel());
 	}
 	
 	/*@Override
@@ -208,33 +202,33 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public GProtocolDecl GProtocolDecl(GProtocolDecl gpd)
+	public void GProtocolDecl(GProtocolDecl gpd)
 	{
-		return setDel(gpd, new GProtocolDeclDel());
+		setDel(gpd, new GProtocolDeclDel());
 	}
 
 	@Override
-	public GProtocolHeader GProtocolHeader(GProtocolHeader gph)
+	public void GProtocolHeader(GProtocolHeader gph)
 	{
-		return setDel(gph, createDefaultDelegate());
+		setDel(gph, createDefaultDelegate());
 	}
 
 	@Override
-	public RoleDeclList RoleDeclList(RoleDeclList rds)
+	public void RoleDeclList(RoleDeclList rds)
 	{
-		return setDel(rds, new RoleDeclListDel());
+		setDel(rds, new RoleDeclListDel());
 	}
 
 	@Override
-	public RoleDecl RoleDecl(RoleDecl rd)
+	public void RoleDecl(RoleDecl rd)
 	{
-		return setDel(rd, new RoleDeclDel());
+		setDel(rd, new RoleDeclDel());
 	}
 
 	@Override
-	public NonRoleParamDeclList NonRoleParamDeclList(NonRoleParamDeclList pds)
+	public void NonRoleParamDeclList(NonRoleParamDeclList pds)
 	{
-		return setDel(pds, new NonRoleParamDeclListDel());
+		setDel(pds, new NonRoleParamDeclListDel());
 	}
 
 	/*@Override
@@ -246,27 +240,27 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public GProtocolDef GProtocolDef(GProtocolDef gpd)
+	public void GProtocolDef(GProtocolDef gpd)
 	{
-		return setDel(gpd, new GProtocolDefDel());
+		setDel(gpd, new GProtocolDefDel());
 	}
 
 	@Override
-	public GProtocolBlock GProtocolBlock(GProtocolBlock gpb)
+	public void GProtocolBlock(GProtocolBlock gpb)
 	{
-		return setDel(gpb, new GProtocolBlockDel());
+		setDel(gpb, new GProtocolBlockDel());
 	}
 
 	@Override
-	public GInteractionSeq GInteractionSeq(GInteractionSeq gis)
+	public void GInteractionSeq(GInteractionSeq gis)
 	{
-		return setDel(gis, new GInteractionSeqDel());
+		setDel(gis, new GInteractionSeqDel());
 	}
 
 	@Override
-	public GMessageTransfer GMessageTransfer(GMessageTransfer gmt)
+	public void GMessageTransfer(GMessageTransfer gmt)
 	{
-		return setDel(gmt, new GMessageTransferDel());
+		setDel(gmt, new GMessageTransferDel());
 	}
 
 	/*@Override
@@ -327,15 +321,15 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public MessageSigNode MessageSigNode(MessageSigNode mn)
+	public void MessageSigNode(MessageSigNode mn)
 	{
-		return setDel(mn, createDefaultDelegate());
+		setDel(mn, createDefaultDelegate());
 	}
 
 	@Override
-	public PayloadElemList PayloadElemList(PayloadElemList pay)
+	public void PayloadElemList(PayloadElemList pay)
 	{
-		return setDel(pay, createDefaultDelegate());
+		setDel(pay, createDefaultDelegate());
 	}
 
 	/*@Override
@@ -412,51 +406,51 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public RecVarNode RecVarNode(RecVarNode rv)
+	public void RecVarNode(RecVarNode rv)
 	{
-		return setDel(rv, new RecVarNodeDel());
+		setDel(rv, new RecVarNodeDel());
 	}
 
 	@Override
-	public RoleNode RoleNode(RoleNode r)
+	public void RoleNode(RoleNode r)
 	{
-		return setDel(r, new RoleNodeDel());
+		setDel(r, new RoleNodeDel());
 	}
 
 	@Override
-	public OpNode OpNode(OpNode op)
+	public void OpNode(OpNode op)
 	{
-		return setDel(op, createDefaultDelegate());
+		setDel(op, createDefaultDelegate());
 	}
 
 	@Override
-	public MessageSigNameNode MessageSigNameNode(MessageSigNameNode mn)
+	public void MessageSigNameNode(MessageSigNameNode mn)
 	{
-		return setDel(mn, new MessageSigNameNodeDel());
+		setDel(mn, new MessageSigNameNodeDel());
 	}
 
 	@Override
-	public DataTypeNode DataTypeNode(DataTypeNode dn)
+	public void DataTypeNode(DataTypeNode dn)
 	{
-		return setDel(dn, new DataTypeNodeDel());
+		setDel(dn, new DataTypeNodeDel());
 	}
 
 	@Override
-	public ModuleNameNode ModuleNameNode(ModuleNameNode mn)
+	public void ModuleNameNode(ModuleNameNode mn)
 	{
-		return setDel(mn, createDefaultDelegate());
+		setDel(mn, createDefaultDelegate());
 	}
 
 	@Override
-	public GProtocolNameNode GProtocolNameNode(GProtocolNameNode gpn)
+	public void GProtocolNameNode(GProtocolNameNode gpn)
 	{
-		return setDel(gpn, createDefaultDelegate());
+		setDel(gpn, createDefaultDelegate());
 	}
 
 	@Override
-	public LProtocolNameNode LProtocolNameNode(LProtocolNameNode lpn)
+	public void LProtocolNameNode(LProtocolNameNode lpn)
 	{
-		return setDel(lpn, createDefaultDelegate());
+		setDel(lpn, createDefaultDelegate());
 	}
 
 	/*@Override
@@ -686,10 +680,11 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 	
 	// Non-defensive
-	protected static <T extends ScribNodeBase> T setDel(T n, ScribDel del)
+	//protected static <T extends ScribNodeBase> T setDel(T n, ScribDel del)
+	protected static void setDel(ScribNodeBase n, ScribDel del)
 	{
 		n.setDel(del);
-		return n;
+		//return n;
 		/*// Defensive helper with cast check
 		ScribNodeBase copy = ((ScribNodeBase) n).clone();  // Need deep clone, since children have parent field
 		//copy.del = del;

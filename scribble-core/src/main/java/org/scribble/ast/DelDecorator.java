@@ -36,27 +36,27 @@ public interface DelDecorator
 	void decorate(CommonTree n);
 	
 	// TODO: make void return types to be more clear about non-defensiveness
-	Module Module(Module m);
+	void Module(Module m);
 
-	ModuleDecl ModuleDecl(ModuleDecl md);
-	ImportModule ImportModule(ImportModule im);
+	void ModuleDecl(ModuleDecl md);
+	void ImportModule(ImportModule im);
 	
 	/*MessageSigNameDecl MessageSigNameDecl(MessageSigNameDecl md);
 	DataTypeDecl DataTypeDecl(DataTypeDecl dd);*/
 
-	GProtocolDecl GProtocolDecl(GProtocolDecl gpd);
-	GProtocolHeader GProtocolHeader(GProtocolHeader gph);
+	void GProtocolDecl(GProtocolDecl gpd);
+	void GProtocolHeader(GProtocolHeader gph);
 
-	RoleDeclList RoleDeclList(RoleDeclList rds);
-	RoleDecl RoleDecl(RoleDecl rd);
-	NonRoleParamDeclList NonRoleParamDeclList(NonRoleParamDeclList pds);
+	void RoleDeclList(RoleDeclList rds);
+	void RoleDecl(RoleDecl rd);
+	void NonRoleParamDeclList(NonRoleParamDeclList pds);
 	//<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> name);
 	
-	GProtocolDef GProtocolDef(GProtocolDef gpd);
-	GProtocolBlock GProtocolBlock(GProtocolBlock gpb);
-	GInteractionSeq GInteractionSeq(GInteractionSeq gis);
+	void GProtocolDef(GProtocolDef gpd);
+	void GProtocolBlock(GProtocolBlock gpb);
+	void GInteractionSeq(GInteractionSeq gis);
 
-	GMessageTransfer GMessageTransfer(GMessageTransfer gmt);
+	void GMessageTransfer(GMessageTransfer gmt);
 	/*GConnect GConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
 	GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest);
 	GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);
@@ -65,8 +65,8 @@ public interface DelDecorator
 	GContinue GContinue(CommonTree source, RecVarNode recvar);
 	GDo GDo(CommonTree source, RoleArgList roles, NonRoleArgList args, GProtocolNameNode proto);*/
 	
-	MessageSigNode MessageSigNode(MessageSigNode n);
-	PayloadElemList PayloadElemList(PayloadElemList pay);
+	void MessageSigNode(MessageSigNode n);
+	void PayloadElemList(PayloadElemList pay);
 	//<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(UnaryPayloadElem<K> e);
 
 	/*GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
@@ -80,14 +80,14 @@ public interface DelDecorator
 	/*<K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier);
 	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source, K kind, String... elems);*/
 
-	RecVarNode RecVarNode(RecVarNode rv);
-	RoleNode RoleNode(RoleNode r);
-	OpNode OpNode(OpNode op);
-	MessageSigNameNode MessageSigNameNode(MessageSigNameNode mn);
-	DataTypeNode DataTypeNode(DataTypeNode dn);
-	ModuleNameNode ModuleNameNode(ModuleNameNode mn);
-	GProtocolNameNode GProtocolNameNode(GProtocolNameNode gpn);
-	LProtocolNameNode LProtocolNameNode(LProtocolNameNode lpn);
+	void RecVarNode(RecVarNode rv);
+	void RoleNode(RoleNode r);
+	void OpNode(OpNode op);
+	void MessageSigNameNode(MessageSigNameNode mn);
+	void DataTypeNode(DataTypeNode dn);
+	void ModuleNameNode(ModuleNameNode mn);
+	void GProtocolNameNode(GProtocolNameNode gpn);
+	void LProtocolNameNode(LProtocolNameNode lpn);
 	
 	/*AmbigNameNode AmbiguousNameNode(CommonTree source, String identifier);
 	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier);

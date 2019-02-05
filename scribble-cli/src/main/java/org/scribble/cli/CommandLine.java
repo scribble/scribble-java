@@ -146,12 +146,12 @@ public class CommandLine
 	protected void runBody()
 			throws ScribParserException, AntlrSourceException, CommandLineException
 	{
-		MainContext mc = newMainContext();
-		Job job = mc.newJob();
+		MainContext mc = newMainContext();  // Represents current instance of tooling for given CL args
+		Job job = mc.newJob();  // A Job is some series of passes performed on each Module in the MainContext (e.g., cf. Job::runVisitorPass)
 		ScribbleException fail = null;
 		try
 		{
-			doValidationTasks(job);
+			doValidationTasks(job);  // FIXME: refactor into job
 		}
 		catch (ScribbleException x)
 		{
@@ -161,7 +161,7 @@ public class CommandLine
 		// Attempt certain "output tasks" even if above failed, in case can still do some useful output (hacky)
 		try
 		{
-			tryOutputTasks(job);
+			tryOutputTasks(job);  // FIXME: refactor into job
 		}
 		catch (ScribbleException x)
 		{

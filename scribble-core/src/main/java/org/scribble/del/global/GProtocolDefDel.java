@@ -61,6 +61,11 @@ public class GProtocolDefDel extends ProtocolDefDel
 		GProtocolDef def = (GProtocolDef) visited;
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) def
 				.getBlockChild().del().env()).getTranslation();
+		
+		System.out.println("ccc1: " + child);
+		System.out.println("ccc2: " + visited);
+		//...HERE: update AF to ANTLR nodes
+		
 		RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame,
 				RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 		GRecursion rec = inl.job.af.GRecursion(blame, recvar, block);

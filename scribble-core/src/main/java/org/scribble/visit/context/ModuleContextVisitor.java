@@ -23,7 +23,7 @@ import org.scribble.visit.AstVisitor;
 
 public abstract class ModuleContextVisitor extends AstVisitor
 {
-	private ModuleContext mcontext;  // The "root" module context (different than the front-end "main" module)  // Factor up to ModelVisitor? (will be null before context building)
+	private ModuleContext mcontext;  // The "root" module context (different than the front-end "main" module)  // Factor up to ModelVisitor? (would be null before context building)
 
 	public ModuleContextVisitor(Job job)
 	{
@@ -31,12 +31,14 @@ public abstract class ModuleContextVisitor extends AstVisitor
 	}
 
 	@Override
-	protected void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void enter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		super.enter(parent, child);
 		if (child instanceof Module)  // Factor out?
 		{
-			setModuleContext(((ModuleDel) ((Module) child).del()).getModuleContext());
+			ModuleDel del = (ModuleDel) ((Module) child).del();
+			setModuleContext(del.getModuleContext());
 		}
 	}
 

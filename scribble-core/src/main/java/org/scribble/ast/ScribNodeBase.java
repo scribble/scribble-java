@@ -171,7 +171,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	
 	protected ScribNode visitChild(ScribNode child, AstVisitor nv) throws ScribbleException
 	{
-		return nv.visit(this, child);
+		return nv.visit(this, child);  // cf. child.accept(nv) ?
 	}
 
 	@Override

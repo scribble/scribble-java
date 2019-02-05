@@ -122,7 +122,7 @@ public class MainContext
 		System.out.println("bbb: " + atree.getClass() + " ,, " + atree.getChildren());
 		// FIXME HERE: deprecate scribParser -- move ANTLR error checking out
 		
-		Module mod = (Module) this.scribParser.parse(atree, this.af);  // TODO: rename exceptions
+		Module mod = (Module) atree;//this.scribParser.parse(atree, this.af);  // TODO: rename exceptions
 		
 		/*HERE del decorator
 		move ast to parser?  and make core/lang*/
