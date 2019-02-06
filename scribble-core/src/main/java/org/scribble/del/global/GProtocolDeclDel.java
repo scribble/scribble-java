@@ -73,10 +73,13 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 			throws ScribbleException
 	{
 		GProtocolDecl source = (GProtocolDecl) n;
+		Module mod = (Module) n.getParent();
+		GProtocolName fullname = new GProtocolName(mod.getFullModuleName(),
+				source.getHeaderChild().getDeclName());
 		List<Role> roles = source.getRoles();
 		GSeq body = (GSeq) source.getDefChild().getBlockChild()
 				.getInteractSeqChild().visitWith(t);
-		return new GProtocol(source, roles, body);
+		return new GProtocol(source, fullname, roles, body);
 	}
 	
 	@Override

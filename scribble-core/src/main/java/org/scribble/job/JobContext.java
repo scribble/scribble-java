@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.lang.global.GType;
 import org.scribble.model.endpoint.AutParser;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.global.SGraph;
@@ -49,6 +50,9 @@ public class JobContext
 	// Projected (i.e., created) modules
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
+	
+	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
+	private final Map<GProtocolName, GType> core = new HashMap<>();  // Keys are full names
 
 	private final Map<LProtocolName, EGraph> fairEGraphs = new HashMap<>();
 	private final Map<GProtocolName, SGraph> fairSGraphs = new HashMap<>();
@@ -91,7 +95,8 @@ public class JobContext
 
 	public Set<ModuleName> getProjectedFullModuleNames()
 	{
-		return this.projected.keySet().stream().map(lpn -> lpn.getPrefix()).collect(Collectors.toSet());
+		return this.projected.keySet().stream().map(lpn -> lpn.getPrefix())
+				.collect(Collectors.toSet());
 	}
 
 	/*public boolean hasModule(ModuleName fullname)
@@ -118,8 +123,9 @@ public class JobContext
 		}
 		else if (isProjectedModule(fullname))
 		{
-			return this.projected.get(
-					this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullname)).collect(Collectors.toList()).get(0));
+			return this.projected.get(this.projected.keySet().stream()
+					.filter(lpn -> lpn.getPrefix().equals(fullname))
+					.collect(Collectors.toList()).get(0));
 		}
 		else
 		{
@@ -142,6 +148,16 @@ public class JobContext
 		{
 			throw new RuntimeException("Unknown module: " + fullname);
 		}
+	}
+	
+	public void addTranslation(GProtocolName fullname, GType g)
+	{
+		this.core.put(fullname, g);
+	}
+	
+	public GType getTranslation(GProtocolName fullname)
+	{
+		return this.core.get(fullname);
 	}
 	
 	// Make context immutable? (will need to assign updated context back to Job) -- will also need to do for Module replacing
@@ -175,17 +191,22 @@ public class JobContext
 
 	private void addProjection(Module mod)
 	{
-		LProtocolName lpn = (LProtocolName) mod.getProtoDeclChildren().get(0).getFullMemberName(mod);
+		LProtocolName lpn = (LProtocolName) mod.getProtoDeclChildren().get(0)
+				.getFullMemberName(mod);
 		this.projected.put(lpn, mod);
 	}
 	
-	public Module getProjection(GProtocolName fullname, Role role) throws ScribbleException
+	public Module getProjection(GProtocolName fullname, Role role)
+			throws ScribbleException
 	{
-		Module proj = this.projected.get(Projector.projectFullProtocolName(fullname, role));
+		Module proj = this.projected
+				.get(Projector.projectFullProtocolName(fullname, role));
 		if (proj == null)
 		{
-			throw new ScribbleException("Projection not found: " + fullname + ", " + role);  // E.g. disamb/enabling error before projection passes (e.g. CommandLine -fsm arg)
-				// FIXME: should not occur any more
+			throw new ScribbleException(
+					"Projection not found: " + fullname + ", " + role);
+					// E.g. disamb/enabling error before projection passes (e.g. CommandLine -fsm arg)
+					// CHECKME: should not occur any more
 		}
 		return proj;
 	}
@@ -195,7 +216,8 @@ public class JobContext
 		this.fairEGraphs.put(fullname, graph);
 	}
 	
-	public EGraph getEGraph(GProtocolName fullname, Role role) throws ScribbleException
+	public EGraph getEGraph(GProtocolName fullname, Role role)
+			throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 		// Moved form LProtocolDecl

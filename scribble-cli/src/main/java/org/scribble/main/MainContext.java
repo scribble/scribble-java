@@ -12,7 +12,6 @@
  * the License.
  */
 package org.scribble.main;  // N.B. the same package is declared in core
-		// FIXME? should be in core org.scribble.main, but currently here due to Maven dependency restrictions
 
 import java.io.File;
 import java.nio.file.Path;
@@ -51,6 +50,10 @@ import org.scribble.util.ScribParserException;
 // Resource and ResourceLocator should be made abstract from (file)paths (cf. use of toPath in ScribbleModuleLoader)
 public class MainContext
 {
+	
+	// HERE FIXME: refactor constructors/init
+	
+	
 	// Only "manually" used here for loading main module (which should be factored out to front end) -- otherwise, only used within loader
 	protected final ScribbleAntlrWrapper antlrParser = newAntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
 	protected final AntlrToScribParser scribParser = newScribParser();
@@ -167,13 +170,12 @@ public class MainContext
 		
 		this.config = new JobConfig(debug, main, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, spin, this.af, this.ef, this.sf);
 		
-		Map<ModuleName, Module> tmp = this.parsed.entrySet().stream()
-				.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().right));
+		Map<ModuleName, Module> parsed = getParsedModules();
 		Map<ModuleName, ModuleContext> map = new HashMap<>();
 		for (ModuleName fullname : this.parsed.keySet())
 		{
 			Pair<Resource, Module> e = this.parsed.get(fullname);
-			map.put(fullname, new ModuleContext(tmp, e.right));
+			map.put(fullname, new ModuleContext(parsed, e.right));
 		}
 		this.mctxts = Collections.unmodifiableMap(map);
 	}
@@ -181,7 +183,7 @@ public class MainContext
 	// A Scribble extension should override these "new" methods as appropriate.
 	public Job newJob()
 	{
-		return new Job(this.getParsedModules(), this.config);
+		return new Job(this.getParsedModules(), this.mctxts, this.config);
 	}
 	
 	protected ScribbleAntlrWrapper newAntlrParser()
@@ -228,12 +230,6 @@ public class MainContext
 		}
 	}
 	
-	public Map<ModuleName, Module> getParsedModules()
-	{
-		return this.parsed.entrySet().stream()
-				.collect(Collectors.toMap(Entry::getKey, e -> e.getValue().right));
-	}
-	
 	// Hacky? But not Scribble tool's job to check nested directory location of module fully corresponds to the fullname of module? Cf. Java classes
 	private void checkMainModuleName(Path mainpath, Module main, boolean noValidation)
 			throws ScribbleException
@@ -254,5 +250,11 @@ public class MainContext
 						+ " mismatch: " + main.getFullModuleName());
 			}
 		}
+	}
+	
+	private Map<ModuleName, Module> getParsedModules()
+	{
+		return this.parsed.entrySet().stream()
+				.collect(Collectors.toMap(Entry::getKey, e -> e.getValue().right));
 	}
 }

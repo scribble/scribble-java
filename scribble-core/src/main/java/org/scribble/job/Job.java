@@ -15,12 +15,17 @@ package org.scribble.job;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
+import org.scribble.ast.context.ModuleContext;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.del.local.LProtocolDeclDel;
+import org.scribble.lang.global.GType;
+import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
 import org.scribble.model.global.SGraph;
@@ -49,6 +54,8 @@ import org.scribble.visit.wf.WFChoiceChecker;
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job
 {
+	private final Map<ModuleName, ModuleContext> mctxts;  // CHECKME: constant?  move to JobConfig?
+
 	public final JobConfig config;  // Immutable
 
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
@@ -56,27 +63,31 @@ public class Job
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Job(Map<ModuleName, Module> parsed, JobConfig config)
+	public Job(Map<ModuleName, Module> parsed,
+			Map<ModuleName, ModuleContext> mctxts, JobConfig config)
 	{
+		this.mctxts = Collections.unmodifiableMap(mctxts);
 		this.config = config;
 		this.sgbu = config.sf.newSGraphBuilderUtil();
 		this.jcontext = new JobContext(this, parsed);  // Single instance per Job and should never be shared
 	}
 	
 	// Scribble extensions should override these "new" methods
-	// FIXME: move to MainContext::newJob?
+	// CHECKME: move to MainContext::newJob?
 	public EGraphBuilderUtil newEGraphBuilderUtil()
 	{
 		return new EGraphBuilderUtil(this.config.ef);
 	}
 	
 	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util
-	public SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribbleException
+	public SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs,
+			boolean explicit) throws ScribbleException
 	{
 		for (Role r : egraphs.keySet())
 		{
 			// FIXME: refactor
-			debugPrintln("(" + fullname + ") Building global model using EFSM for " + r + ":\n" + egraphs.get(r).init.toDot());
+			debugPrintln("(" + fullname + ") Building global model using EFSM for "
+					+ r + ":\n" + egraphs.get(r).init.toDot());
 		}
 		//return SGraph.buildSGraph(this, fullname, createInitialSConfig(this, egraphs, explicit));
 		return this.sgbu.buildSGraph(this, fullname, egraphs, explicit);  // FIXME: factor out util
@@ -96,6 +107,17 @@ public class Job
 		runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
 		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
+		
+		GTypeTranslator t = new GTypeTranslator(this);
+		for (ModuleName name : this.jcontext.getFullModuleNames())
+		{
+			Module mod = this.jcontext.getModule(name);
+			for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
+			{
+				GType g = gpd.visitWith(t);
+				System.out.println("\n" + gpd + "\n" + g);  HERE toString
+			}
+		}
 
 		System.out.println("fff1: " + this.jcontext.getMainModule());
 
@@ -165,15 +187,17 @@ public class Job
 
 	// Pre: checkWellFormedness 
 	// Returns: full proto name -> Module
-	public Map<LProtocolName, Module> getProjections(GProtocolName fullname, Role role) throws ScribbleException
+	public Map<LProtocolName, Module> getProjections(GProtocolName fullname,
+			Role role) throws ScribbleException
 	{
 		Module root = this.jcontext.getProjection(fullname, role);
-		Map<LProtocolName, Set<Role>> dependencies =
-				((LProtocolDeclDel) root.getLProtoDeclChildren().get(0).del())
-						.getProtocolDeclContext().getDependencyMap().getDependencies().get(role);
+		Map<LProtocolName, Set<Role>> dependencies = ((LProtocolDeclDel) root
+				.getLProtoDeclChildren().get(0).del()).getProtocolDeclContext()
+						.getDependencyMap().getDependencies().get(role);
 		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
 		return dependencies.keySet().stream().collect(
-				Collectors.toMap((lpn) -> lpn, (lpn) -> this.jcontext.getModule(lpn.getPrefix())));
+				Collectors.toMap(lpn -> lpn,
+						(lpn) -> this.jcontext.getModule(lpn.getPrefix())));
 	}
 
 	/*public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
@@ -212,26 +236,30 @@ public class Job
 		}
 		return api;
 	}*/
-	
-	public void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException
+
+	public void runVisitorPassOnAllModules(Class<? extends AstVisitor> c)
+			throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on all modules:");
 		runVisitorPass(this.jcontext.getFullModuleNames(), c);
 	}
 
-	public void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c) throws ScribbleException
+	public void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c)
+			throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on parsed modules:");
 		runVisitorPass(this.jcontext.getParsedFullModuleNames(), c);
 	}
 
-	public void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c) throws ScribbleException
+	public void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c)
+			throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on projected modules:");
 		runVisitorPass(this.jcontext.getProjectedFullModuleNames(), c);
 	}
 
-	private void runVisitorPass(Set<ModuleName> modnames, Class<? extends AstVisitor> c) throws ScribbleException
+	private void runVisitorPass(Set<ModuleName> modnames,
+			Class<? extends AstVisitor> c) throws ScribbleException
 	{
 		try
 		{
