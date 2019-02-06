@@ -16,10 +16,10 @@ package org.scribble.del.global;
 import org.scribble.ast.ScribNode;
 import org.scribble.del.InteractionNodeDel;
 import org.scribble.del.ScribDelBase;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.context.Projector;
 
-public interface GInteractionNodeDel extends InteractionNodeDel
+public interface GInteractionNodeDel extends InteractionNodeDel, GDel
 {
 	//public abstract LNode project(GNode n, Role self);  // Generalised return, e.g. returning a seq
 	

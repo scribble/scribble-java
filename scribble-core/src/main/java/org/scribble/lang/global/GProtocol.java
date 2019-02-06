@@ -2,16 +2,17 @@ package org.scribble.lang.global;
 
 import java.util.List;
 
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.lang.Protocol;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
 public class GProtocol extends Protocol<Global> implements GType
 {
-	public GProtocol(List<Role> roles, //List<?> params, 
+	public GProtocol(GProtocolDecl source, List<Role> roles, //List<?> params, 
 			GSeq body)
 	{
-		super(roles, body);
+		super(source, roles, body);
 	}
 
 	@Override

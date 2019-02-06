@@ -6,14 +6,17 @@ import java.util.List;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 
-public abstract class Choice<K extends ProtocolKind> implements SessType<K>
+public abstract class Choice<K extends ProtocolKind> extends SessTypeBase<K>
+		implements SessType<K>
 {
 	public final Role subj;
 	public final List<? extends Seq<K>> blocks;  // Pre: size > 0
 			// CHECKME: rename?
 
-	public Choice(Role subj, List<? extends Seq<K>> blocks)
+	public Choice(org.scribble.ast.Choice<K> source, Role subj,
+			List<? extends Seq<K>> blocks)
 	{
+		super(source);
 		this.subj = subj;
 		this.blocks = Collections.unmodifiableList(blocks);
 	}
@@ -22,6 +25,7 @@ public abstract class Choice<K extends ProtocolKind> implements SessType<K>
 	public int hashCode()
 	{
 		int hash = 1487;
+		hash = 31 * hash + super.hashCode();
 		hash = 31 * hash + this.subj.hashCode();
 		hash = 31 * hash + this.blocks.hashCode();
 		return hash;
@@ -39,7 +43,7 @@ public abstract class Choice<K extends ProtocolKind> implements SessType<K>
 			return false;
 		}
 		Choice<?> them = (Choice<?>) o;
-		return them.canEquals(this) && this.subj.equals(them.subj)
-				&& this.blocks.equals(them.blocks);
+		return super.equals(this)  // Does canEquals
+				&& this.subj.equals(them.subj) && this.blocks.equals(them.blocks);
 	}
 }

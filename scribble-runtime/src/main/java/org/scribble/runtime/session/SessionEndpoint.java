@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.main.RuntimeScribbleException;
+import org.scribble.job.RuntimeScribbleException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.message.ScribMessageFormatter;
 import org.scribble.runtime.net.BinaryChannelEndpoint;

@@ -22,7 +22,7 @@ import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.PayloadElemType;

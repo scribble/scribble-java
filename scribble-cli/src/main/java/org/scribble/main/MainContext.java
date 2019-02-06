@@ -16,6 +16,7 @@ package org.scribble.main;  // N.B. the same package is declared in core
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,6 +29,9 @@ import org.scribble.ast.DelDecoratorImpl;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
+import org.scribble.ast.context.ModuleContext;
+import org.scribble.job.Job;
+import org.scribble.job.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.InlineResource;
 import org.scribble.main.resource.Resource;
@@ -36,8 +40,6 @@ import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.endpoint.EModelFactoryImpl;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.SModelFactoryImpl;
-import org.scribble.parser.scribble.ScribbleAntlrWrapper;
-import org.scribble.parser.scribble.ScribModuleLoader;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.type.name.ModuleName;
 import org.scribble.util.Pair;
@@ -48,7 +50,6 @@ import org.scribble.util.ScribParserException;
 // Resource and ResourceLocator should be made abstract from (file)paths (cf. use of toPath in ScribbleModuleLoader)
 public class MainContext
 {
-
 	// Only "manually" used here for loading main module (which should be factored out to front end) -- otherwise, only used within loader
 	protected final ScribbleAntlrWrapper antlrParser = newAntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
 	protected final AntlrToScribParser scribParser = newScribParser();
@@ -73,7 +74,9 @@ public class MainContext
 	private final ResourceLocator locator;  // Path -> Resource
 	private final ScribModuleLoader loader;  // sesstype.ModuleName -> Pair<Resource, Module>
 
-	protected ModuleName main;
+	protected ModuleName main;  // Full name
+
+	protected Map<ModuleName, ModuleContext> mctxts;  // Full names (like this.parsed)
 
 	// ModuleName keys are full module names -- parsed are the modules read from file, distinguished from the generated projection modules
 	// Resource recorded for source path
@@ -162,7 +165,17 @@ public class MainContext
 		Pair<Resource, Module> p = new Pair<>(res, mainmod);
 		this.main = p.right.getFullModuleName();  
 				// TODO CHECKME: main modname comes from the inlined moddecl -- check for issues if this clashes with an existing file system resource
-		loadAllModules(p);
+		loadAllModules(p);  // Populates this.parsed
+		
+		Map<ModuleName, Module> tmp = this.parsed.entrySet().stream()
+				.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().right));
+		Map<ModuleName, ModuleContext> map = new HashMap<>();
+		for (ModuleName fullname : this.parsed.keySet())
+		{
+			Pair<Resource, Module> e = this.parsed.get(fullname);
+			map.put(fullname, new ModuleContext(tmp, e.right));
+		}
+		this.mctxts = Collections.unmodifiableMap(map);
 	}
 	
 	// A Scribble extension should override these "new" methods as appropriate.
@@ -199,6 +212,7 @@ public class MainContext
 		return new SModelFactoryImpl();
 	}
 
+	// Populates this.parsed
 	private void loadAllModules(Pair<Resource, Module> module)
 			throws ScribParserException, ScribbleException
 	{

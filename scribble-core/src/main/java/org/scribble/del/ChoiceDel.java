@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;

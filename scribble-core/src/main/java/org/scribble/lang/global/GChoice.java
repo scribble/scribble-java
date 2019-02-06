@@ -8,9 +8,10 @@ import org.scribble.type.name.Role;
 
 public class GChoice extends Choice<Global> implements GType
 {
-	public GChoice(Role subj, List<GSeq> blocks)
+	public GChoice(org.scribble.ast.global.GChoice source, Role subj,
+			List<GSeq> blocks)
 	{
-		super(subj, blocks);
+		super(source, subj, blocks);
 	}
 
 	@Override

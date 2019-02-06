@@ -14,8 +14,8 @@
 package org.scribble.visit.validation;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.main.Job;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.Job;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.context.ModuleContextVisitor;
 
 public class GProtocolValidator extends ModuleContextVisitor

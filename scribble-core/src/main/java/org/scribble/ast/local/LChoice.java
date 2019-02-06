@@ -24,7 +24,7 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;

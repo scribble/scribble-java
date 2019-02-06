@@ -17,10 +17,11 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.del.ModuleDel;
-import org.scribble.main.Job;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.Job;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.AstVisitor;
 
+// A visitor that caches the ModuleContext from an entered Module, for later access
 public abstract class ModuleContextVisitor extends AstVisitor
 {
 	private ModuleContext mcontext;  // The "root" module context (different than the front-end "main" module)  // Factor up to ModelVisitor? (would be null before context building)

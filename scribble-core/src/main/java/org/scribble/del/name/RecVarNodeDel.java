@@ -16,7 +16,7 @@ package org.scribble.del.name;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDelBase;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.RecVar;
 import org.scribble.visit.ProtocolDefInliner;

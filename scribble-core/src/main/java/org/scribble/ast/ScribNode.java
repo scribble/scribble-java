@@ -16,8 +16,9 @@ package org.scribble.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
 import org.scribble.del.ScribDel;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.AstVisitor;
+import org.scribble.visit.SimpleVisitor;
 import org.scribble.visit.Substitutor;
 
 /**
@@ -36,9 +37,11 @@ public interface ScribNode extends Tree
 
 	ScribDel del();
 	ScribNode del(ScribDel del);
-
-	ScribNode accept(AstVisitor nv) throws ScribbleException;  // The "top-level" method, e.g., module.accept(v)  (cf. Job::runVisitorOnModule)
-	ScribNode visitChildren(AstVisitor nv) throws ScribbleException;
+	
+	default <T> T visitWith(SimpleVisitor<T> v) throws ScribbleException  // "Top-level" visitor entry method
+	{
+		return v.visit(this);  // N.B. ScribNode has getParent
+	}
 	
 	// Simple operations, not worth doing del enter/leave pattern for
 	// Rely on visitChildren reconstruction pattern to do recursive reconstruction
@@ -48,4 +51,7 @@ public interface ScribNode extends Tree
 	CommonTree getSource();  
 			// Previously: for parsed entities, null if not parsed
 			// Now: for the original parsed entity for error blaming; should not be null unless a "purely generated" entity
+
+	ScribNode accept(AstVisitor nv) throws ScribbleException;  // The "top-level" method, e.g., module.accept(v)  (cf. Job::runVisitorOnModule)
+	ScribNode visitChildren(AstVisitor nv) throws ScribbleException;
 }

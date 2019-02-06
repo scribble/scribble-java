@@ -15,7 +15,7 @@ package org.scribble.codegen.java;
 
 import java.util.Map;
 
-import org.scribble.main.Job;
+import org.scribble.job.Job;
 import org.scribble.type.name.GProtocolName;
 
 // Basic pattern: use TypeGenerators to create all necessary TypeBuilders and cache them, and generateApi should call build on all as a final step

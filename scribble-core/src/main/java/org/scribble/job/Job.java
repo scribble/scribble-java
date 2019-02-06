@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.main;
+package org.scribble.job;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -52,8 +52,8 @@ import org.scribble.visit.wf.WFChoiceChecker;
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job
 {
-	// FIXME: verbose/debug printing parameter: should be in MainContext, but currently cannot access that class directly from here
-	// TODO: simply keep a reference to MainContext instead?
+	// FIXME: verbose/debug printing parameter
+	// These are duplicated from MainContext, because cannot access that class directly from here
 	//public final boolean jUnit;
 	public final boolean debug;
 	public final boolean useOldWf;

@@ -24,8 +24,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.main.JobContext;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.Kind;
 import org.scribble.type.kind.ProtocolKind;
@@ -39,9 +38,10 @@ import org.scribble.type.name.Name;
 import org.scribble.type.name.ProtocolName;
 
 // Context information specific to each module as a root (wrt. to visitor passes)
+// CHECKME: move to main package?
 public class ModuleContext
 {
-	public final ModuleName root;  // full name
+	public final ModuleName root;  // full name  // The root Module for this ModuleContext (cf. the "main" root module from CLI)
 
   // All transitive name dependencies of this module: all names fully qualified
 	// The ScribNames maps are basically just used as sets (identity map)
@@ -55,7 +55,9 @@ public class ModuleContext
 
 	// Made by ModuleContextBuilder
 	// ModuleContext is the root context
-	public ModuleContext(JobContext jcontext, Module root) throws ScribbleException
+	public ModuleContext(//JobContext jcontext, 
+			Map<ModuleName, Module> parsed,  // From MainContext (N.B., in a different non-visible package)
+			Module root) throws ScribbleException
 	{
 		ModuleName fullname = root.getFullModuleName(); 
 		ModuleName simpname = root.getModuleDeclChild().getDeclName();
@@ -64,7 +66,7 @@ public class ModuleContext
 		
 		// All transitive dependencies (for inlined and subprotocol visiting)
 		addModule(this.deps, root, fullname);
-		addImportDependencies(jcontext, root);
+		addImportDependencies(parsed, root);
 
 		// Names directly visible from this module
 		addModule(this.visible, root, fullname);
@@ -73,7 +75,7 @@ public class ModuleContext
 			addModule(this.visible, root, simpname);  
 					// Adds simple name of root as visible, and members qualified by simple name
 		}
-		addVisible(jcontext, root);  
+		addVisible(parsed, root);  
 				// Adds imports and members by their "direct" names (unqualified, except for no-alias imports)
 	}
 
@@ -113,7 +115,7 @@ public class ModuleContext
 	}
 	
 	// Could move to ImportModule but would need a defensive copy setter, or cache info in builder and create on leave
-	private void addImportDependencies(JobContext jcontext, Module mod)
+	private void addImportDependencies(Map<ModuleName, Module> parsed, Module mod)
 			throws ScribbleException
 	{
 		for (ImportDecl<?> id : mod.getImportDeclChildren())
@@ -124,9 +126,9 @@ public class ModuleContext
 				ModuleName fullmodname = im.getModuleNameNodeChild().toName();
 				if (!this.deps.modules.containsKey(fullmodname))
 				{
-					Module imported = jcontext.getModule(fullmodname);
+					Module imported = parsed.get(fullmodname);  // TODO: Can get from MainContext instead of JobContext?
 					addModule(this.deps, imported, fullmodname);  // Unlike for visible, only doing full names here
-					addImportDependencies(jcontext, imported);
+					addImportDependencies(parsed, imported);
 				}
 			}
 			else
@@ -138,7 +140,7 @@ public class ModuleContext
 
 	// Adds "local" imports by alias or full name
 	// Adds "local" members by simple names
-	private void addVisible(JobContext jcontext, Module root)
+	private void addVisible(Map<ModuleName, Module> parsed, Module root)
 			throws ScribbleException
 	{
 		// Unlike for deps, visible is not done transitively
@@ -155,7 +157,7 @@ public class ModuleContext
 					throw new ScribbleException(id.getSource(),
 							"Duplicate visible module name: " + visname);
 				}
-				Module imported = jcontext.getModule(fullname);
+				Module imported = parsed.get(fullname);  // TODO: Can get from MainContext instead of JobContext?
 				addModule(this.visible, imported, visname);  
 			}
 			else

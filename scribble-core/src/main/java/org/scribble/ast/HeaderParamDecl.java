@@ -17,7 +17,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.del.ScribDel;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.ParamKind;
 import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.main.RuntimeScribbleException;
+import org.scribble.job.RuntimeScribbleException;
 
 public class EnumBuilder extends TypeBuilder
 {

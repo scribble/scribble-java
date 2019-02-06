@@ -26,7 +26,7 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.type.kind.Local;
 import org.scribble.visit.ProtocolDefInliner;

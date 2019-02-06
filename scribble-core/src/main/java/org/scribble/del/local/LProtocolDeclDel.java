@@ -19,7 +19,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.local.LProtocolDeclContext;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.del.ProtocolDeclDel;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ProtocolName;

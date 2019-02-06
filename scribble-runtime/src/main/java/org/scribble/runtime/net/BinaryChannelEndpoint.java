@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import org.scribble.main.RuntimeScribbleException;
+import org.scribble.job.RuntimeScribbleException;
 import org.scribble.runtime.message.ScribInterrupt;
 import org.scribble.runtime.message.ScribMessage;
 import org.scribble.runtime.session.SessionEndpoint;

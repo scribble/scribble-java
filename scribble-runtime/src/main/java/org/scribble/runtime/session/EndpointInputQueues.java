@@ -20,8 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-
-import org.scribble.main.RuntimeScribbleException;
+import org.scribble.job.RuntimeScribbleException;
 import org.scribble.runtime.message.ScribInterrupt;
 import org.scribble.runtime.message.ScribMessage;
 import org.scribble.type.name.Role;

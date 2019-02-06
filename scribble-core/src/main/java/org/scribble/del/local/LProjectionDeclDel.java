@@ -22,7 +22,7 @@ import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedRoleDeclFixer;

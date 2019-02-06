@@ -22,8 +22,8 @@ import java.util.stream.Stream;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
-import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.RuntimeScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.Local;
 import org.scribble.type.kind.ProtocolKind;
@@ -34,6 +34,8 @@ import org.scribble.visit.Substitutor;
 /**
  * This is the generic object from which all Scribble model objects
  * are derived.
+ * 
+ * ScribNodeBase is to ScribNode, as ANTLR CommonTree is to Tree.
  */
 public abstract class ScribNodeBase extends CommonTree implements ScribNode
 {

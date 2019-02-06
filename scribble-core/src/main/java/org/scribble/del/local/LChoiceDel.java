@@ -23,7 +23,7 @@ import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ChoiceDel;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;

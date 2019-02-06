@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;

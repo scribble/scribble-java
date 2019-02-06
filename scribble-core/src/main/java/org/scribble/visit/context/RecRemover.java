@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.main.Job;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.Job;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.name.RecVar;
 import org.scribble.visit.NoEnvInlinedProtocolVisitor;
 

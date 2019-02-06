@@ -25,8 +25,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.RuntimeScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 
 public abstract class MState<

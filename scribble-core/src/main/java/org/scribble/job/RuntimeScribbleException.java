@@ -11,46 +11,39 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.main;
+package org.scribble.job;
 
-import org.antlr.runtime.tree.CommonTree;
-
-public class ScribbleException extends AntlrSourceException
+public class RuntimeScribbleException extends RuntimeException
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ScribbleException()
+	public RuntimeScribbleException()
 	{
 		// TODO Auto-generated constructor stub
 	}
 
-	public ScribbleException(CommonTree blame, String arg0)
-	{
-		super(blame, arg0);
-	}
-
-	public ScribbleException(String arg0)
+	public RuntimeScribbleException(String arg0)
 	{
 		super(arg0);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ScribbleException(Throwable arg0)
+	public RuntimeScribbleException(Throwable arg0)
 	{
 		super(arg0);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ScribbleException(String arg0, Throwable arg1)
+	public RuntimeScribbleException(String arg0, Throwable arg1)
 	{
 		super(arg0, arg1);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ScribbleException(String arg0, Throwable arg1, boolean arg2,
+	public RuntimeScribbleException(String arg0, Throwable arg1, boolean arg2,
 			boolean arg3)
 	{
 		super(arg0, arg1, arg2, arg3);

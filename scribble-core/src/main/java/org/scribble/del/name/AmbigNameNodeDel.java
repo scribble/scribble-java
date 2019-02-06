@@ -19,7 +19,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.del.ScribDelBase;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.DataTypeKind;
 import org.scribble.type.kind.SigKind;
 import org.scribble.type.name.AmbigName;

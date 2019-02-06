@@ -21,7 +21,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LMessageTransfer;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.Payload;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;

@@ -17,6 +17,8 @@ import java.io.InputStream;
 
 /**
  * This class represents the resource.
+ * 
+ * CHECKME: maybe refactor core Resource classes out of cli package (generalise)
  *
  */
 public interface Resource

@@ -27,7 +27,7 @@ import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDelBase;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.ProtocolName;

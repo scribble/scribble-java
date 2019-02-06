@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ScribNode;
-import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.RuntimeScribbleException;
+import org.scribble.job.ScribbleException;
 
 public class ScribUtil
 {

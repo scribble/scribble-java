@@ -19,7 +19,7 @@ import org.scribble.ast.global.GConnect;
 import org.scribble.ast.local.LNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ConnectionActionDel;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.Message;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.Projector;

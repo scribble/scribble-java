@@ -19,7 +19,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ProtocolDeclContext;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.SubprotocolSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;

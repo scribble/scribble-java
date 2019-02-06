@@ -24,7 +24,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.del.ScribDel;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.Kind;
 import org.scribble.type.kind.ProtocolKind;

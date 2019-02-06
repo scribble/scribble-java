@@ -19,9 +19,9 @@ import java.util.Map;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.statechanapi.ioifaces.IOInterfacesGenerator;
-import org.scribble.main.Job;
-import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.Job;
+import org.scribble.job.RuntimeScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 

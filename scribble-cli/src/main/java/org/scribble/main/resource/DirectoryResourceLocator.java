@@ -19,7 +19,7 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 
 /**
  * This class provides a directory based resource locator.

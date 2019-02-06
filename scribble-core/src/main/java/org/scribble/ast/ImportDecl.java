@@ -17,7 +17,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.del.ScribDel;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.ImportKind;
 import org.scribble.type.name.Name;
 import org.scribble.visit.AstVisitor;

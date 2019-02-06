@@ -23,7 +23,7 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.main.JobContext;
+import org.scribble.job.JobContext;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;

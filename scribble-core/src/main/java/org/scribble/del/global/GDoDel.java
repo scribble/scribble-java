@@ -25,7 +25,7 @@ import org.scribble.ast.local.LDo;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.SubprotocolSig;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.GProtocolName;

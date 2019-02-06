@@ -11,14 +11,15 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.parser.scribble;
+package org.scribble.main;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
+import org.scribble.job.ScribbleException;
 import org.scribble.main.DefaultModuleLoader;
-import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.ResourceLocator;
+import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.type.name.ModuleName;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;

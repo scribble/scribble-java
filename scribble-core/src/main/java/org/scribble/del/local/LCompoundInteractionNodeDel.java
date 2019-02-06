@@ -15,7 +15,7 @@ package org.scribble.del.local;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LCompoundInteractionNode;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.wf.ReachabilityChecker;
 import org.scribble.visit.wf.env.ReachabilityEnv;
 

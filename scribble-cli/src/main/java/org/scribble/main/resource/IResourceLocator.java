@@ -15,7 +15,7 @@ package org.scribble.main.resource;
 
 import java.nio.file.Path;
 
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 
 
 /**

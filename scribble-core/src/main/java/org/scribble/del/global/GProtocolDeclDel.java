@@ -38,9 +38,12 @@ import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
-import org.scribble.main.Job;
-import org.scribble.main.JobContext;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.Job;
+import org.scribble.job.JobContext;
+import org.scribble.job.ScribbleException;
+import org.scribble.lang.global.GProtocol;
+import org.scribble.lang.global.GSeq;
+import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
@@ -58,11 +61,22 @@ import org.scribble.visit.util.MessageIdCollector;
 import org.scribble.visit.util.RoleCollector;
 import org.scribble.visit.validation.GProtocolValidator;
 
-public class GProtocolDeclDel extends ProtocolDeclDel<Global>
+public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 {
 	public GProtocolDeclDel()
 	{
 
+	}
+	
+	@Override
+	public GProtocol translate(ScribNode n, GTypeTranslator t)
+			throws ScribbleException
+	{
+		GProtocolDecl source = (GProtocolDecl) n;
+		List<Role> roles = source.getRoles();
+		GSeq body = (GSeq) source.getDefChild().getBlockChild()
+				.getInteractSeqChild().visitWith(t);
+		return new GProtocol(source, roles, body);
 	}
 	
 	@Override

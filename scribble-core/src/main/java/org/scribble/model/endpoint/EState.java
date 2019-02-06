@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.model.MPrettyState;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.actions.EAction;

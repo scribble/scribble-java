@@ -9,9 +9,10 @@ public class GMessageTransfer extends MessageTransfer<Global>
 		implements GType
 {
 
-	public GMessageTransfer(Role src, Message msg, Role dst)
+	public GMessageTransfer(org.scribble.ast.global.GMessageTransfer source,
+			Role src, Message msg, Role dst)
 	{
-		super(src, msg, dst);
+		super(source, src, msg, dst);
 	}
 	
 	@Override

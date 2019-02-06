@@ -19,8 +19,8 @@ import java.util.concurrent.ExecutionException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.scribble.main.AntlrSourceException;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.AntlrSourceException;
+import org.scribble.job.ScribbleException;
 
 /*
  * Packaging following pattern of putting tests into same package but different directory as classes being tested:

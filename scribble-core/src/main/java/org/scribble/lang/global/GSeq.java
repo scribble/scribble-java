@@ -2,14 +2,16 @@ package org.scribble.lang.global;
 
 import java.util.List;
 
+import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.lang.Seq;
 import org.scribble.type.kind.Global;
 
 public class GSeq extends Seq<Global> implements GType
 {
-	public GSeq(List<GType> elems)
+	// GInteractionSeq or GBlock better as source?
+	public GSeq(GInteractionSeq source, List<GType> elems)
 	{
-		super(elems);
+		super(source, elems);
 	}
 	
 	@Override

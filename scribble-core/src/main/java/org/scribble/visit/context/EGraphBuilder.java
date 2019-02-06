@@ -19,8 +19,8 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.local.LChoiceDel;
 import org.scribble.del.local.LInteractionSeqDel;
-import org.scribble.main.Job;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.Job;
+import org.scribble.job.ScribbleException;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
 import org.scribble.visit.NoEnvInlinedProtocolVisitor;
 

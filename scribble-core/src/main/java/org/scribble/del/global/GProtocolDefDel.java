@@ -28,7 +28,7 @@ import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ProtocolDefDel;
 import org.scribble.del.ScribDelBase;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.SubprotocolSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.kind.RecVarKind;

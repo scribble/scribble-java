@@ -18,7 +18,7 @@ import java.util.List;
 import org.scribble.ast.HeaderParamDecl;
 import org.scribble.ast.HeaderParamDeclList;
 import org.scribble.ast.ScribNode;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public abstract class HeaderParamDeclListDel extends ScribDelBase

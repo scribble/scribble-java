@@ -11,9 +11,10 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.main;
+package org.scribble.job;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,11 +40,13 @@ public class JobContext
 {
 	private final Job job;
 
-	public final ModuleName main;
+	public final ModuleName main;  // The "main" root module from MainContext
 	
+	// Modules that were originally parsed (obtained from MainContext), but may be modified during the Job
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
 	private final Map<ModuleName, Module> parsed;// = new HashMap<>();
 	
+	// Projected (i.e., created) modules
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
 
@@ -88,7 +91,7 @@ public class JobContext
 
 	public Set<ModuleName> getProjectedFullModuleNames()
 	{
-		return this.projected.keySet().stream().map((lpn) -> lpn.getPrefix()).collect(Collectors.toSet());
+		return this.projected.keySet().stream().map(lpn -> lpn.getPrefix()).collect(Collectors.toSet());
 	}
 
 	/*public boolean hasModule(ModuleName fullname)
@@ -330,5 +333,11 @@ public class JobContext
 		{
 			tmp.delete();
 		}
+	}
+	
+	// HACK
+	public Map<ModuleName, Module> getParsed()
+	{
+		return Collections.unmodifiableMap(this.parsed);
 	}
 }

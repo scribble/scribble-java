@@ -8,9 +8,9 @@ import org.scribble.type.name.Role;
 
 public class GDo extends Do<Global> implements GType
 {
-	public GDo(List<Role> roles)
+	public GDo(org.scribble.ast.global.GDo source, List<Role> roles)
 	{
-		super(roles);
+		super(source, roles);
 	}
 
 	@Override

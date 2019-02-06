@@ -15,6 +15,7 @@ package org.scribble.main;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
+import org.scribble.job.ScribbleException;
 import org.scribble.main.resource.Resource;
 import org.scribble.type.name.ModuleName;
 import org.scribble.util.Pair;

@@ -14,7 +14,7 @@
 package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;

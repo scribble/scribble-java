@@ -19,7 +19,7 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.name.Role;
 import org.scribble.visit.wf.NameDisambiguator;
 

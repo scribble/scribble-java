@@ -16,8 +16,8 @@ package org.scribble.visit;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ScribNode;
 import org.scribble.del.ProtocolDefDel;
-import org.scribble.main.Job;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.Job;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.env.Env;
 
 public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisitor<T>

@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.main.Job;
+import org.scribble.job.Job;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.Payload;
 import org.scribble.type.name.DataType;

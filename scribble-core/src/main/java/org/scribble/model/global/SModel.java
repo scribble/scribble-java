@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.main.Job;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.Job;
+import org.scribble.job.ScribbleException;
 import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.global.actions.SAction;

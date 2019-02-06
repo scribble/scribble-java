@@ -11,20 +11,24 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del.global;
+package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.del.ScribDel;
+import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.global.GType;
-import org.scribble.lang.global.GTypeTranslator;
 
-public interface GDel extends ScribDel
+// Apart from delegating to del-specific visiting methods, SimpleVisitors are mainly for holding data and collecting common operations 
+// TODO CHECKME: refactor AstVisitor as a SimpleVisitor?  i.e., T=ScribNode ?
+public abstract class SimpleVisitor<T>
 {
-	// FIXME: remove default
-	default GType translate(ScribNode n, GTypeTranslator t)
-			throws ScribbleException
+	public final Job job;
+
+	public SimpleVisitor(Job job)
 	{
-		throw new RuntimeException("TODO: " + n);
+		this.job = job;
 	}
+	
+	// Override to delegate to del-specific method, e.g., n.del().visit(n, this)
+  // N.B. ScribNode has getParent
+	public abstract T visit(ScribNode n) throws ScribbleException;
 }

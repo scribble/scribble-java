@@ -17,7 +17,7 @@ import java.util.Set;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.InteractionNode;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;

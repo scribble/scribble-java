@@ -5,14 +5,16 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 
 public abstract class MessageTransfer<K extends ProtocolKind>
-		implements SessType<K>
+		extends SessTypeBase<K> implements SessType<K>
 {
 	public final Role src;
 	public final Message msg;
 	public final Role dst;
 
-	public MessageTransfer(Role src, Message msg, Role dst)
+	public MessageTransfer(org.scribble.ast.MessageTransfer<K> source, Role src,
+			Message msg, Role dst)
 	{
+		super(source);
 		this.src = src;
 		this.msg = msg;
 		this.dst = dst;
@@ -22,6 +24,7 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 	public int hashCode()
 	{
 		int hash = 17;
+		hash = 31 * hash + super.hashCode();
 		hash = 31 * hash + this.src.hashCode();
 		hash = 31 * hash + this.msg.hashCode();
 		hash = 31 * hash + this.dst.hashCode();
@@ -40,7 +43,8 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 			return false;
 		}
 		MessageTransfer<?> them = (MessageTransfer<?>) o;
-		return them.canEquals(this) && this.src.equals(them.src)
-				&& this.msg.equals(them.msg) && this.dst.equals(them.dst);
+		return super.equals(this)  // Does canEquals
+				&& this.src.equals(them.src) && this.msg.equals(them.msg)
+				&& this.dst.equals(them.dst);
 	}
 }

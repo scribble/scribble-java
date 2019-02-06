@@ -14,9 +14,10 @@
 package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.SimpleVisitor;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ModuleContextBuilder;
 import org.scribble.visit.context.ProjectedChoiceDoPruner;

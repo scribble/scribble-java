@@ -24,9 +24,9 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.del.ModuleDel;
-import org.scribble.main.Job;
-import org.scribble.main.JobContext;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.Job;
+import org.scribble.job.JobContext;
+import org.scribble.job.ScribbleException;
 import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
 // Basically infers all local choice subject candidates: if *none* are found for a given "choice-unguarded" do-call then the call is pruned (along with parent block and choice as necessary)

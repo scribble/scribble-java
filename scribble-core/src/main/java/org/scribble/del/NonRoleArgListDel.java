@@ -24,7 +24,7 @@ import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.DataTypeKind;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.SigKind;

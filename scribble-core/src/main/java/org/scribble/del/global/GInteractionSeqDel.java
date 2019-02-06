@@ -27,15 +27,32 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
-import org.scribble.main.ScribbleException;
+import org.scribble.job.ScribbleException;
+import org.scribble.lang.global.GSeq;
+import org.scribble.lang.global.GType;
+import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.RecRemover;
 import org.scribble.visit.context.env.ProjectionEnv;
 import org.scribble.visit.env.InlineProtocolEnv;
 
-public class GInteractionSeqDel extends InteractionSeqDel
+public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 {
+	
+	@Override
+	public GSeq translate(ScribNode n, GTypeTranslator t)
+			throws ScribbleException
+	{
+		GInteractionSeq source = (GInteractionSeq) n;
+		List<GType> elems = new LinkedList<>();
+		for (GInteractionNode c : source.getInteractNodeChildren())
+		{
+			elems.add(c.visitWith(t));  // throws ScribbleException
+		}
+		return new GSeq(source, elems);
+	}
+
 	// enter in super
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
