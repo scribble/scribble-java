@@ -73,9 +73,9 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 		SBuffers b0 = new SBuffers(job.ef, efsms.keySet(), !explicit);*/
 
 		//SConfig c0 = job.sf.newSConfig(efsms, b0);
-		SConfig c0 = createInitialSConfig(job.ef, egraphs, explicit);
+		SConfig c0 = createInitialSConfig(job.config.ef, egraphs, explicit);
 
-		SState init = job.sf.newSState(c0);
+		SState init = job.config.sf.newSState(c0);
 
 		Map<Integer, SState> seen = new HashMap<>();
 		LinkedHashSet<SState> todo = new LinkedHashSet<>();
@@ -90,7 +90,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 			i.remove();
 			seen.put(curr.id, curr);
 
-			if (job.debug)
+			if (job.config.debug)
 			{
 				count++;
 				if (count % 50 == 0)
@@ -143,7 +143,8 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 				{
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
-						getNextStates(job.sf, todo, seen, curr, a.toGlobal(job.sf, r), curr.fire(r, a));
+						getNextStates(job.config.sf, todo, seen, curr,
+								a.toGlobal(job.config.sf, r), curr.fire(r, a));
 					}
 					else if (a.isAccept() || a.isRequest())
 					{	
@@ -153,8 +154,12 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 						{
 							as.remove(d);  // Removes one occurrence
 							//getNextStates(seen, todo, curr.sync(r, a, a.peer, d));
-							SAction g = (a.isRequest()) ? a.toGlobal(job.sf, r) : d.toGlobal(job.sf, a.peer);  // Edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label)
-							getNextStates(job.sf, todo, seen, curr, g, curr.sync(r, a, a.peer, d));
+							SAction g = (a.isRequest()) 
+									? a.toGlobal(job.config.sf, r)
+									: d.toGlobal(job.config.sf, a.peer);
+									// Edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label)
+							getNextStates(job.config.sf, todo, seen, curr, g,
+									curr.sync(r, a, a.peer, d));
 						}
 					}
 					else if (a.isWrapClient() || a.isWrapServer())
@@ -164,8 +169,10 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 						if (as != null && as.contains(w))
 						{
 							as.remove(w);  // Removes one occurrence
-							SAction g = (a.isRequest()) ? a.toGlobal(job.sf, r) : w.toGlobal(job.sf, a.peer);
-							getNextStates(job.sf, todo, seen, curr, g, curr.sync(r, a, a.peer, w));
+							SAction g = (a.isRequest()) 
+									? a.toGlobal(job.config.sf, r)
+									: w.toGlobal(job.config.sf, a.peer);
+							getNextStates(job.config.sf, todo, seen, curr, g, curr.sync(r, a, a.peer, w));
 						}
 					}
 					else
@@ -176,9 +183,11 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 			}
 		}
 
-		SGraph graph = job.sf.newSGraph(fullname, seen, init);
+		SGraph graph = job.config.sf.newSGraph(fullname, seen, init);
 
-		job.debugPrintln("(" + fullname + ") Built global model..\n" + graph.init.toDot() + "\n(" + fullname + ") .." + graph.states.size() + " states");
+		job.debugPrintln(
+				"(" + fullname + ") Built global model..\n" + graph.init.toDot() + "\n("
+						+ fullname + ") .." + graph.states.size() + " states");
 
 		return graph;
 	}

@@ -146,11 +146,11 @@ public class ModuleDel extends ScribDelBase
 			GProtocolDecl gpd, LProtocolDecl lpd, Map<GProtocolName, Set<Role>> deps)
 	{
 		ModuleDecl rootModDecl = root.getModuleDeclChild();
-		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(proj.job.af,
-				rootModDecl.getNameNodeChild().getSource(),
+		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(
+				proj.job.config.af, rootModDecl.getNameNodeChild().getSource(),
 						// Or ignore blame source for purely generated?
 				rootModDecl.getFullModuleName(), lpd.getHeaderChild().getDeclName());
-		ModuleDecl modDecl = proj.job.af
+		ModuleDecl modDecl = proj.job.config.af
 				.ModuleDecl(root.getModuleDeclChild().getSource(), modname);
 		List<ImportDecl<?>> imports = new LinkedList<>();
 		for (GProtocolName gpn : deps.keySet())
@@ -159,21 +159,25 @@ public class ModuleDel extends ScribDelBase
 			{
 				LProtocolName targetsimpname = Projector
 						.projectSimpleProtocolName(gpn.getSimpleName(), role);
-				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(proj.job.af, //null,  // FIXME? projected import sources?
+				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(proj.job.config.af, //null,  // CHECKME? projected import sources?
 
 						new CommonTree(),  // FIXME -- 
 
 							gpn.getPrefix(), targetsimpname);
 				if (!targetmodname.toName().equals(modname.toName()))  // Self dependency -- each projected local is in its own module now, so can compare module names
 				{
-					imports.add(proj.job.af.ImportModule(null, targetmodname, null));  // FIXME? projected import sources?
+					imports
+							.add(proj.job.config.af.ImportModule(null, targetmodname, null));
+							// CHECKME? projected import sources?
 				}
 			}
 		}
 		
-		List<NonProtocolDecl<?>> data = new LinkedList<>(root.getNonProtoDeclChildren());  // FIXME: copy?  // FIXME: only project the dependencies
+		List<NonProtocolDecl<?>> data = 
+				new LinkedList<>(root.getNonProtoDeclChildren());  
+				// CHECKME: copy?  // FIXME: only project the dependencies
 		List<ProtocolDecl<?>> protos = Arrays.asList(lpd);
-		return proj.job.af.Module(gpd.getHeaderChild().getSource(), modDecl,
+		return proj.job.config.af.Module(gpd.getHeaderChild().getSource(), modDecl,
 				imports, data, protos);
 	}
 	

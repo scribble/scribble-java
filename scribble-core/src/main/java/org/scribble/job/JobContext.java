@@ -38,9 +38,9 @@ import org.scribble.visit.context.Projector;
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
 public class JobContext
 {
-	private final Job job;
+	public final Job job;
 
-	public final ModuleName main;  // The "main" root module from MainContext
+	//public final ModuleName main;  // The "main" root module from MainContext
 	
 	// Modules that were originally parsed (obtained from MainContext), but may be modified during the Job
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
@@ -59,17 +59,17 @@ public class JobContext
 	private final Map<LProtocolName, EGraph> minimisedEGraphs = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
 			// FIXME: currently only minimising "fair" graph, need to consider minimisation orthogonally to fairness -- NO: minimising (of fair) is for API gen only, unfair-transform does not use minimisation (regardless of user flag) for WF
 	
-	protected JobContext(Job job, Map<ModuleName, Module> parsed, ModuleName main)
+	protected JobContext(Job job, Map<ModuleName, Module> parsed)//, ModuleName main)
 	{
 		this.job = job;
 
 		this.parsed = new HashMap<ModuleName, Module>(parsed);
-		this.main = main;
+		//this.main = main;
 	}
 
 	public Module getMainModule()
 	{
-		return getModule(this.main);
+		return getModule(this.job.config.main);
 	}
 	
 	// Used by Job for pass running, includes projections (e.g. for reachability checking)
@@ -223,7 +223,7 @@ public class JobContext
 		EGraph unfair = this.unfairEGraphs.get(fulllpn);
 		if (unfair == null)
 		{
-			unfair = getEGraph(fullname, role).init.unfairTransform(this.job.ef).toGraph();
+			unfair = getEGraph(fullname, role).init.unfairTransform(this.job.config.ef).toGraph();
 			addUnfairEGraph(fulllpn, unfair);
 		}
 		return unfair;

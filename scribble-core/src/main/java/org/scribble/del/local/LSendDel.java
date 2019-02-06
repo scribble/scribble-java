@@ -33,13 +33,15 @@ public class LSendDel extends LMessageTransferDel
 {
 	
 	@Override
-	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LSend ls = (LSend) visited;
 		List<RoleNode> dests = ls.getDestinationChildren();
 		if (dests.size() > 1)
 		{
-			throw new ScribbleException("[TODO] EFSM building for multicast not supported: " + ls);
+			throw new ScribbleException(
+					"[TODO] EFSM building for multicast not supported: " + ls);
 		}
 		Role peer = dests.get(0).toName();
 		MessageNode msg = ls.getMessageNodeChild();
@@ -48,7 +50,8 @@ public class LSendDel extends LMessageTransferDel
 					? ((MessageSigNode) msg).getPayloadListChild().toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(),
-				builder.job.ef.newESend(peer, mid, payload), builder.util.getExit());
+				builder.job.config.ef.newESend(peer, mid, payload),
+				builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());
 		return (LSend) super.leaveEGraphBuilding(parent, child, builder, ls);
 	}

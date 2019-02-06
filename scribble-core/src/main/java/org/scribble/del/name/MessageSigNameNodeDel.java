@@ -32,7 +32,8 @@ public class MessageSigNameNodeDel extends ScribDelBase
 
 	// Is this needed?  Or DataTypeNodes always created from AmbigNameNode? (in this same pass)
 	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		if (parent instanceof MessageSigNameDecl)  // Hacky? don't want to do for decl simplenames (generally, don't do if parent is namedeclnode)
 		{
@@ -40,7 +41,10 @@ public class MessageSigNameNodeDel extends ScribDelBase
 		}
 		ModuleContext mc = disamb.getModuleContext();
 		MessageSigNameNode msnn = (MessageSigNameNode) visited;
-		MessageSigName fullname = mc.getVisibleMessageSigNameFullName(msnn.toName());
-		return (MessageSigNameNode) disamb.job.af.QualifiedNameNode(msnn.getSource(), SigKind.KIND, fullname.getElements());  // Didn't keep original del
+		MessageSigName fullname = 
+				mc.getVisibleMessageSigNameFullName(msnn.toName());
+		return (MessageSigNameNode) disamb.job.config.af.QualifiedNameNode(
+				msnn.getSource(), SigKind.KIND, fullname.getElements());
+		// Didn't keep original del
 	}
 }

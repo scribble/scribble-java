@@ -80,7 +80,9 @@ public class IOInterfacesGenerator extends ApiGen
 		Role self = getSelf();
 		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
 		JobContext jc = this.job.getContext();
-		EState init = this.job.minEfsm ? jc.getMinimisedEGraph(fullname, self).init : jc.getEGraph(fullname, self).init;
+		EState init = this.job.config.minEfsm
+				? jc.getMinimisedEGraph(fullname, self).init
+				: jc.getEGraph(fullname, self).init;
 		
 		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{

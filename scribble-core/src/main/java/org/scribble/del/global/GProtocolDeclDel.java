@@ -138,7 +138,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 	public GProtocolDecl leaveProjection(ScribNode parent, ScribNode child,
 			Projector proj, ScribNode visited) throws ScribbleException
 	{
-		AstFactory af = proj.job.af;
+		AstFactory af = proj.job.config.af;
 
 		Module root = proj.job.getContext().getModule(proj.getModuleContext().root);
 		GProtocolDecl gpd = (GProtocolDecl) visited;
@@ -181,9 +181,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		}
 
 		GProtocolName fullname = gpd.getFullMemberName((Module) parent);
-		if (checker.job.spin)
+		if (checker.job.config.spin)
 		{
-			if (checker.job.fair)
+			if (checker.job.config.fair)
 			{
 				throw new RuntimeException(
 						"[TODO]: -spin currently does not support fair ouput choices.");
@@ -193,7 +193,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		else
 		{
 			validateByScribble(checker.job, fullname, true);
-			if (!checker.job.fair)
+			if (!checker.job.config.fair)
 			{
 				checker.job.debugPrintln(
 						"(" + fullname + ") Validating with \"unfair\" output choices.. ");
@@ -210,7 +210,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 				? jc.getSGraph(fullname)
 				: jc.getUnfairSGraph(fullname);
 		//graph.toModel().validate(job);
-		job.sf.newSModel(graph).validate(job);
+		job.config.sf.newSModel(graph).validate(job);
 	}
 		
 	private static void validateBySpin(Job job, GProtocolName fullname)
@@ -271,7 +271,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		{
 			pml += "\n\n" + jc.getEGraph(fullname, r).toPml(r);
 		}
-		if (job.debug)
+		if (job.config.debug)
 		{
 			System.out.println("[-spin]: Promela processes\n" + pml + "\n");
 		}
@@ -329,7 +329,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 			int j = (i+batchSize < clauses.size()) ? i+batchSize : clauses.size();
 			String batch = clauses.subList(i, j).stream().collect(Collectors.joining(" && "));
 			String ltl = "ltl {\n" + batch + "\n" + "}";
-			if (job.debug)
+			if (job.config.debug)
 			{
 				System.out.println("[-spin] Batched ltl:\n" + ltl + "\n");
 			}

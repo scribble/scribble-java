@@ -59,7 +59,7 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 				.filter(rd -> occs.contains(rd.getDeclName()))
 				.collect(Collectors.toList());
 		LProtocolHeader tmp = lpd.getHeaderChild();
-		RoleDeclList rdl = fixer.job.af
+		RoleDeclList rdl = fixer.job.config.af
 				.RoleDeclList(tmp.getRoleDeclListChild().getSource(), rds);
 		LProtocolHeader hdr = tmp.reconstruct(tmp.getNameNodeChild(), rdl,
 				tmp.getParamDeclListChild());

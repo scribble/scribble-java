@@ -61,9 +61,9 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	{
 		CommonTree blame = child.getSource();  // Cf., GDoDel
 		SubprotocolSig subsig = builder.peekStack();
-		RecVarNode recvar = (RecVarNode) builder.job.af.SimpleNameNode(blame,
+		RecVarNode recvar = (RecVarNode) builder.job.config.af.SimpleNameNode(blame,
 				RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
-		LContinue inlined = builder.job.af.LContinue(blame, recvar);
+		LContinue inlined = builder.job.config.af.LContinue(blame, recvar);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return child;
 	}
@@ -76,12 +76,12 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		{
 			CommonTree blame = visited.getSource();  // Cf., GDoDel
 			SubprotocolSig subsig = dinlr.peekStack();
-			RecVarNode recvar = (RecVarNode) dinlr.job.af.SimpleNameNode(blame,
+			RecVarNode recvar = (RecVarNode) dinlr.job.config.af.SimpleNameNode(blame,
 					RecVarKind.KIND, dinlr.getSubprotocolRecVar(subsig).toString());
 			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) dinlr
 					.peekEnv()).getTranslation());
-			LProtocolBlock gb = dinlr.job.af.LProtocolBlock(blame, gis);
-			LRecursion inlined = dinlr.job.af.LRecursion(blame, recvar, gb);
+			LProtocolBlock gb = dinlr.job.config.af.LProtocolBlock(blame, gis);
+			LRecursion inlined = dinlr.job.config.af.LRecursion(blame, recvar, gb);
 			dinlr.pushEnv(dinlr.popEnv().setTranslation(inlined));
 			dinlr.removeSubprotocolRecVar(subsig);
 		}	

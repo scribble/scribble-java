@@ -69,11 +69,12 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		ProtocolNameNode<K> proto = doo.getProtocolNameNode();
 		ProtocolName<K> fullname = mc
 				.getVisibleProtocolDeclFullName(proto.toName());
-		ProtocolNameNode<K> pnn = (ProtocolNameNode<K>) disamb.job.af
+		ProtocolNameNode<K> pnn = (ProtocolNameNode<K>) disamb.job.config.af
 				.QualifiedNameNode(proto.getSource(), fullname.getKind(),
 						fullname.getElements());
 						// Didn't keep original namenode del
-		return doo.reconstruct(doo.getRoleListChild(), doo.getNonRoleListChild(), pnn);
+		return doo.reconstruct(doo.getRoleListChild(), doo.getNonRoleListChild(),
+				pnn);
 	}
 
 	@Override

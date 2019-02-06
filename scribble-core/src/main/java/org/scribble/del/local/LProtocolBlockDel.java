@@ -32,7 +32,7 @@ public class LProtocolBlockDel extends ProtocolBlockDel
 		LProtocolBlock lpb = (LProtocolBlock) visited;
 		LInteractionSeq seq = (LInteractionSeq) ((InlineProtocolEnv) lpb
 				.getInteractSeqChild().del().env()).getTranslation();
-		LProtocolBlock inlined = inl.job.af.LProtocolBlock(lpb.getSource(), seq);
+		LProtocolBlock inlined = inl.job.config.af.LProtocolBlock(lpb.getSource(), seq);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, inl, lpb);
 	}

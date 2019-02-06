@@ -25,7 +25,8 @@ import org.scribble.type.name.Role;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LRequestDel extends LConnectionActionDel implements LSimpleInteractionNodeDel
+public class LRequestDel extends LConnectionActionDel
+		implements LSimpleInteractionNodeDel
 {
 	@Override
 	public LRequest leaveEGraphBuilding(ScribNode parent, ScribNode child,
@@ -40,7 +41,8 @@ public class LRequestDel extends LConnectionActionDel implements LSimpleInteract
 					? ((MessageSigNode) msg).getPayloadListChild().toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(),
-				builder.job.ef.newERequest(peer, mid, payload), builder.util.getExit());
+				builder.job.config.ef.newERequest(peer, mid, payload),
+				builder.util.getExit());
 		//graph.builder.addEdge(graph.builder.getEntry(), new Connect(peer), graph.builder.getExit());
 		////builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());
 		return (LRequest) super.leaveEGraphBuilding(parent, child, builder, lc);

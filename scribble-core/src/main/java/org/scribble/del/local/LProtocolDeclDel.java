@@ -41,34 +41,43 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	protected void addSelfDependency(ProtocolDeclContextBuilder builder, ProtocolName<?> proto, Role role)
+	protected void addSelfDependency(ProtocolDeclContextBuilder builder,
+			ProtocolName<?> proto, Role role)
 	{
 		builder.addLocalProtocolDependency(role, (LProtocolName) proto, role);
 	}
 	
 	@Override
-	public void enterProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder) throws ScribbleException
+	public void enterProtocolDeclContextBuilding(ScribNode parent,
+			ScribNode child, ProtocolDeclContextBuilder builder)
+			throws ScribbleException
 	{
 		super.enterProtocolDeclContextBuilding(parent, child, builder);
 	}
 
 	@Override
-	public LProtocolDecl leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
+	public LProtocolDecl leaveProtocolDeclContextBuilding(ScribNode parent,
+			ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited)
+			throws ScribbleException
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
-		LProtocolDeclContext lcontext = new LProtocolDeclContext(builder.getLocalProtocolDependencyMap());
+		LProtocolDeclContext lcontext = new LProtocolDeclContext(
+				builder.getLocalProtocolDependencyMap());
 		LProtocolDeclDel del = (LProtocolDeclDel) setProtocolDeclContext(lcontext);
 		return (LProtocolDecl) lpd.del(del);
 	}
 
 	@Override
-	public void enterEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder)
+	public void enterEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder builder)
 	{
-		builder.util.init(builder.job.ef.newEState(Collections.emptySet()));  // Same util is used for multiple protos, need to (re-)init each time
+		builder.util.init(builder.job.config.ef.newEState(Collections.emptySet()));
+				// Same util is used for multiple protos, need to (re-)init each time
 	}
 
 	@Override
-	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder graph, ScribNode visited)
+	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder graph, ScribNode visited)
 	{
 		/*LProtocolDecl lpd = (LProtocolDecl) visited;  // Refactored into JobContext
 		

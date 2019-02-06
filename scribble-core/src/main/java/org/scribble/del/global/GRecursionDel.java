@@ -40,7 +40,8 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 				.del().env()).getTranslation();
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr
 				.getBlockChild().del().env()).getTranslation();
-		GRecursion inlined = inl.job.af.GRecursion(gr.getSource(), recvar, block);
+		GRecursion inlined = 
+				inl.job.config.af.GRecursion(gr.getSource(), recvar, block);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GRecursion) super.leaveProtocolInlining(parent, child, inl, gr);
 	}
@@ -68,7 +69,8 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 				(LProtocolBlock) ((ProjectionEnv) gr.getBlockChild().del().env())
 						.getProjection();
 				//((GProtocolBlockDel) gr.block.del()).project(gr.getBlock(), self);
-		LRecursion projection = gr.project(proj.job.af, proj.peekSelf(), block);
+		LRecursion projection = 
+				gr.project(proj.job.config.af, proj.peekSelf(), block);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(
 				parent, child, proj, gr);

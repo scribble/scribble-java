@@ -57,12 +57,13 @@ public class LProtocolDefDel extends ProtocolDefDel
 		LProtocolDef def = (LProtocolDef) visited;
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) def
 				.getBlockChild().del().env()).getTranslation();
-		RecVarNode recvar = (RecVarNode) inl.job.af.SimpleNameNode(blame,  // The parent do would probably be the better source for blame
+		RecVarNode recvar = (RecVarNode) inl.job.config.af.SimpleNameNode(blame,  // The parent do would probably be the better source for blame
 				RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
-		LRecursion rec = inl.job.af.LRecursion(blame, recvar, block);
-		LInteractionSeq lis = inl.job.af.LInteractionSeq(blame, Arrays.asList(rec));
-		LProtocolDef inlined = inl.job.af.LProtocolDef(def.getSource(),
-				inl.job.af.LProtocolBlock(blame, lis));
+		LRecursion rec = inl.job.config.af.LRecursion(blame, recvar, block);
+		LInteractionSeq lis = 
+				inl.job.config.af.LInteractionSeq(blame, Arrays.asList(rec));
+		LProtocolDef inlined = inl.job.config.af.LProtocolDef(def.getSource(),
+				inl.job.config.af.LProtocolBlock(blame, lis));
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		LProtocolDefDel copy = setInlinedProtocolDef(inlined);
 		return (LProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, inl,

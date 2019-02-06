@@ -78,8 +78,9 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 					if (env.subjs.isEmpty())  // Prune check
 					{
 						// Supports singleton case
-						return this.job.af.LProtocolBlock(lb.getSource(), this.job.af
-								.LInteractionSeq(lis.getSource(), ins.subList(1, ins.size())));
+						return this.job.config.af.LProtocolBlock(lb.getSource(),
+								this.job.config.af.LInteractionSeq(lis.getSource(),
+										ins.subList(1, ins.size())));
 					}
 				}
 			}

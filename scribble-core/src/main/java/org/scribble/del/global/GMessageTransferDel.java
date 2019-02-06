@@ -109,7 +109,7 @@ public class GMessageTransferDel extends MessageTransferDel
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gmt.project(proj.job.af, self);
+		LNode projection = gmt.project(proj.job.config.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(
 				parent, child, proj, gmt);

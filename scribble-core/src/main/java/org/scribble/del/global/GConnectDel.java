@@ -91,7 +91,7 @@ public class GConnectDel extends ConnectionActionDel
 	{
 		GConnect gc = (GConnect) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gc.project(proj.job.af, self);
+		LNode projection = gc.project(proj.job.config.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GConnect) GSimpleInteractionNodeDel.super.leaveProjection(parent,
 				child, proj, gc);

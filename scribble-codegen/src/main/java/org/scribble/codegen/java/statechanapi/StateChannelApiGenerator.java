@@ -56,7 +56,8 @@ public class StateChannelApiGenerator extends ApiGen
 
 	private Map<String, TypeBuilder> types = new HashMap<>();  // class/iface name key
 
-	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self) throws ScribbleException  // FIXME: APIGenerationException?
+	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self)
+			throws ScribbleException // CHECKME: APIGenerationException?
 	{
 		super(job, fullname);
 
@@ -64,7 +65,9 @@ public class StateChannelApiGenerator extends ApiGen
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
 		JobContext jc = job.getContext();
-		this.init = job.minEfsm ? jc.getMinimisedEGraph(fullname, self).init : jc.getEGraph(fullname, self).init;
+		this.init = job.config.minEfsm 
+				? jc.getMinimisedEGraph(fullname, self).init
+				: jc.getEGraph(fullname, self).init;
 		
 		this.skipIOInterfacesGeneration = skipIOInterfacesGeneration(this.init);
 			
@@ -98,7 +101,8 @@ public class StateChannelApiGenerator extends ApiGen
 	{
 		Map<String, String> map = new HashMap<String, String>();
 		// FIXME: factor out with ScribSocketBuilder.getPackageName
-		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.gpn).replace('.', '/') + "/statechans/" + this.self + "/" ;
+		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.gpn)
+				.replace('.', '/') + "/statechans/" + this.self + "/";
 		for (String s : this.types.keySet())
 		{
 			String path = prefix + s + ".java";
@@ -181,7 +185,9 @@ public class StateChannelApiGenerator extends ApiGen
 			}
 			default:
 			{
-				throw new RuntimeException("[TODO] State Channel API generation not supported for: " + curr.getStateKind() + ", " + curr.toLongString());
+				throw new RuntimeException(
+						"[TODO] State Channel API generation not supported for: "
+								+ curr.getStateKind() + ", " + curr.toLongString());
 			}
 		}
 	}

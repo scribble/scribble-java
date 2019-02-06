@@ -25,8 +25,9 @@ import org.scribble.visit.wf.NameDisambiguator;
 import org.scribble.visit.wf.WFChoiceChecker;
 import org.scribble.visit.wf.env.WFChoiceEnv;
 
-// FIXME: make DisconnectDel (cf., G/LMessageTransferDel)
-public class GDisconnectDel extends ConnectionActionDel implements GSimpleInteractionNodeDel
+// TODO: make DisconnectDel (cf., G/LMessageTransferDel)
+public class GDisconnectDel extends ConnectionActionDel
+		implements GSimpleInteractionNodeDel
 {
 	public GDisconnectDel()
 	{
@@ -34,7 +35,8 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 	}
 
 	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		GDisconnect gc = (GDisconnect) visited;
 		/*Role src = gc.src.toName();
@@ -43,7 +45,9 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 	}
 
 	@Override
-	public GDisconnect leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GDisconnect leaveInlinedWFChoiceCheck(ScribNode parent,
+			ScribNode child, WFChoiceChecker checker, ScribNode visited)
+			throws ScribbleException
 	{
 		GDisconnect gd = (GDisconnect) visited;
 		RoleNode leftNode = gd.getLeftChild();
@@ -52,7 +56,8 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 		Role left = leftNode.toName();
 		if (!checker.peekEnv().isEnabled(left))
 		{
-			throw new ScribbleException(leftNode.getSource(), "Role not enabled: " + left);
+			throw new ScribbleException(leftNode.getSource(),
+					"Role not enabled: " + left);
 		}
 		//Message msg = gd.msg.toMessage();  //  Unit message 
 		WFChoiceEnv env = checker.popEnv();
@@ -60,16 +65,21 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 		Role right = rightNode.toName();
 		if (!env.isEnabled(right))
 		{
-			throw new ScribbleException(rightNode.getSource(), "Role not enabled: " + right);
+			throw new ScribbleException(rightNode.getSource(),
+					"Role not enabled: " + right);
 		}
 		{
 			if (left.equals(right))
 			{
-				throw new ScribbleException(gd.getSource(), "[TODO] Self connections not supported: " + gd);  // Would currently be subsumed by the below
+				throw new ScribbleException(gd.getSource(),
+						"[TODO] Self connections not supported: " + gd); // Would currently
+																															// be subsumed by
+																															// the below
 			}
 			if (!env.isConnected(left, right))
 			{
-				throw new ScribbleException(gd.getSource(), "Roles not (necessarily) connected: " + left + ", " + right);
+				throw new ScribbleException(gd.getSource(),
+						"Roles not (necessarily) connected: " + left + ", " + right);
 			}
 
 			env = env.disconnect(left, right);//.removeMessage(src, dest, ...);  // Is remove really needed?
@@ -86,8 +96,9 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 	{
 		GDisconnect gd = (GDisconnect) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gd.project(proj.job.af, self);
+		LNode projection = gd.project(proj.job.config.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GDisconnect) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
+		return (GDisconnect) GSimpleInteractionNodeDel.super.leaveProjection(parent,
+				child, proj, gd);
 	}
 }

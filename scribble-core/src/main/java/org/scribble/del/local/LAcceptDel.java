@@ -29,10 +29,12 @@ import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;
 import org.scribble.visit.wf.env.ExplicitCorrelationEnv;
 
-public class LAcceptDel extends LConnectionActionDel implements LSimpleInteractionNodeDel
+public class LAcceptDel extends LConnectionActionDel
+		implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LAccept leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
+	public LAccept leaveEGraphBuilding(ScribNode parent, ScribNode child,
+			EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LAccept la = (LAccept) visited;
 		RoleNode src = la.getSourceChild();
@@ -44,7 +46,8 @@ public class LAcceptDel extends LConnectionActionDel implements LSimpleInteracti
 					? ((MessageSigNode) msg).getPayloadListChild().toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(),
-				builder.job.ef.newEAccept(peer, mid, payload), builder.util.getExit());
+				builder.job.config.ef.newEAccept(peer, mid, payload),
+				builder.util.getExit());
 		return (LAccept) super.leaveEGraphBuilding(parent, child, builder, la);
 	}
 

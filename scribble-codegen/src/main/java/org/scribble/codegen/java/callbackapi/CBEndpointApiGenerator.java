@@ -67,7 +67,11 @@ public class CBEndpointApiGenerator
 	public Map<String, String> buildEndpointClass() throws ScribbleException
 	{
 		JobContext jc = this.job.getContext();
-		EState init = (this.job.minEfsm ? jc.getMinimisedEGraph(this.proto, this.self) : jc.getEGraph(this.proto, this.self)).init;  // FIXME: factor out with StateChannelApiGenerator constructor
+		EState init = (this.job.config.minEfsm
+				? jc.getMinimisedEGraph(this.proto, this.self)
+				: jc.getEGraph(this.proto, this.self)
+				).init;
+				// TODO: factor out with StateChannelApiGenerator constructor
 		Set<EState> states = new HashSet<>();
 		states.add(init);
 		states.addAll(MState.getReachableStates(init));

@@ -43,7 +43,7 @@ public class LContinueDel extends ContinueDel
 		LContinue lc = (LContinue) visited;
 		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) lc.getRecVarChild()
 				.del().env()).getTranslation();
-		LContinue inlined = inl.job.af.LContinue(lc.getSource(), recvar);
+		LContinue inlined = inl.job.config.af.LContinue(lc.getSource(), recvar);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LContinue) super.leaveProtocolInlining(parent, child, inl, lc);
 	}

@@ -78,8 +78,9 @@ public class GDelegationElemDel extends ScribDelBase
 			throw new ScribbleException(r.getSource(), "Invalid delegation role: " + de);
 		}
 
-		GProtocolNameNode pnn = (GProtocolNameNode) disamb.job.af.QualifiedNameNode(
-				de.getProtocolChild().getSource(), fullname.getKind(), fullname.getElements());
+		GProtocolNameNode pnn = (GProtocolNameNode) disamb.job.config.af
+				.QualifiedNameNode(de.getProtocolChild().getSource(),
+						fullname.getKind(), fullname.getElements());
 				// Not keeping original namenode del
 		return de.reconstruct(pnn, r);
 	}

@@ -36,7 +36,8 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		GProtocolBlock gpb = (GProtocolBlock) visited;
 		GInteractionSeq seq = (GInteractionSeq) ((InlineProtocolEnv) gpb
 				.getInteractSeqChild().del().env()).getTranslation();
-		GProtocolBlock inlined = inl.job.af.GProtocolBlock(gpb.getSource(), seq);
+		GProtocolBlock inlined = 
+				inl.job.config.af.GProtocolBlock(gpb.getSource(), seq);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, inl, gpb);
 	}
@@ -57,7 +58,8 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 				(LInteractionSeq) ((ProjectionEnv) gpb.getInteractSeqChild().del()
 						.env()).getProjection();
 				//((GInteractionSeqDel) gpb.seq.del()).project(gpb.getInteractionSeq(), self);	
-		LProtocolBlock projection = gpb.project(proj.job.af, proj.peekSelf(), seq);
+		LProtocolBlock projection = 
+				gpb.project(proj.job.config.af, proj.peekSelf(), seq);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, proj, gpb);
 	}

@@ -236,7 +236,7 @@ public class CommandLine
 				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH)
 				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
 		{
-			if (job.useOldWf)
+			if (job.config.useOldWf)
 			{
 				throw new CommandLineException(
 						"Global model flag(s) incompatible with: "
@@ -578,7 +578,7 @@ public class CommandLine
 			throw new CommandLineException(
 					"Invalid aux protocol specified as root: " + simpname);
 		}
-		return new GProtocolName(jcontext.main, simpgpn);
+		return new GProtocolName(jcontext.job.config.main, simpgpn);  // TODO: take Job param instead of Jobcontext
 	}
 
 	protected static Role checkRoleArg(JobContext jcontext,

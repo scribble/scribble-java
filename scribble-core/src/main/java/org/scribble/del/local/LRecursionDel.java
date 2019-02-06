@@ -30,7 +30,8 @@ import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.wf.ReachabilityChecker;
 import org.scribble.visit.wf.env.ReachabilityEnv;
 
-public class LRecursionDel extends RecursionDel implements LCompoundInteractionNodeDel
+public class LRecursionDel extends RecursionDel
+		implements LCompoundInteractionNodeDel
 {
 	@Override
 	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
@@ -55,7 +56,8 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 				.del().env()).getTranslation();
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) lr
 				.getBlockChild().del().env()).getTranslation();
-		LRecursion inlined = inl.job.af.LRecursion(lr.getSource(), recvar, block);
+		LRecursion inlined = 
+				inl.job.config.af.LRecursion(lr.getSource(), recvar, block);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LRecursion) super.leaveProtocolInlining(parent, child, inl, lr);
 	}

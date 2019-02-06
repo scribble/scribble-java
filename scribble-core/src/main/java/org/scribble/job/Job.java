@@ -19,15 +19,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
-import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.global.SGraph;
 import org.scribble.model.global.SGraphBuilderUtil;
-import org.scribble.model.global.SModelFactory;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
@@ -52,59 +49,25 @@ import org.scribble.visit.wf.WFChoiceChecker;
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job
 {
-	// FIXME: verbose/debug printing parameter
-	// These are duplicated from MainContext, because cannot access that class directly from here
-	//public final boolean jUnit;
-	public final boolean debug;
-	public final boolean useOldWf;
-	public final boolean noProgress;  // FIXME: deprecate
-	public final boolean minEfsm;  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
-	public final boolean fair;
-	public final boolean noLocalChoiceSubjectCheck;
-	public final boolean noAcceptCorrelationCheck;
-	public final boolean noValidation;
-	public final boolean spin;
-	
+	public final JobConfig config;  // Immutable
+
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
-
-	public final AstFactory af;
-	public final EModelFactory ef;
-	public final SModelFactory sf;
-
 	private final SGraphBuilderUtil sgbu;
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main,
-			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
-			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin,
-			AstFactory af, EModelFactory ef, SModelFactory sf)
+	public Job(Map<ModuleName, Module> parsed, JobConfig config)
 	{
-		//this.jUnit = jUnit;
-		this.debug = debug;
-		this.useOldWf = useOldWF;
-		this.noProgress = noLiveness;
-		this.minEfsm = minEfsm;
-		this.fair = fair;
-		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
-		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
-		this.noValidation = noValidation;
-		this.spin = spin;
-		
-		this.af = af;
-		this.ef = ef;
-		this.sf = sf;
-
-		this.sgbu = sf.newSGraphBuilderUtil();
-
-		this.jcontext = new JobContext(this, parsed, main);  // Single instance per Job and should never be shared
+		this.config = config;
+		this.sgbu = config.sf.newSGraphBuilderUtil();
+		this.jcontext = new JobContext(this, parsed);  // Single instance per Job and should never be shared
 	}
 	
 	// Scribble extensions should override these "new" methods
 	// FIXME: move to MainContext::newJob?
 	public EGraphBuilderUtil newEGraphBuilderUtil()
 	{
-		return new EGraphBuilderUtil(this.ef);
+		return new EGraphBuilderUtil(this.config.ef);
 	}
 	
 	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util
@@ -151,12 +114,12 @@ public class Job
 
 	public void runWellFormednessPasses() throws ScribbleException
 	{
-		if (!this.noValidation)
+		if (!this.config.noValidation)
 		{
 			runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
 			runProjectionPasses();
 			runVisitorPassOnAllModules(ReachabilityChecker.class);  // Moved before GlobalModelChecker.class, OK?
-			if (!this.useOldWf)
+			if (!this.config.useOldWf)
 			{
 				runVisitorPassOnAllModules(GProtocolValidator.class);
 			}
@@ -171,7 +134,7 @@ public class Job
 		runVisitorPassOnAllModules(Projector.class);
 		runProjectionContextBuildingPasses();
 		runProjectionUnfoldingPass();
-		if (!noAcceptCorrelationCheck)
+		if (!this.config.noAcceptCorrelationCheck)
 		{
 			runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
 		}
@@ -185,7 +148,7 @@ public class Job
 		runVisitorPassOnProjectedModules(ProtocolDeclContextBuilder.class);
 		runVisitorPassOnProjectedModules(RoleCollector.class);  // NOTE: doesn't collect from choice subjects (may be invalid until projected choice subjs fixed)
 		runVisitorPassOnProjectedModules(ProjectedChoiceDoPruner.class);
-		if (!this.noLocalChoiceSubjectCheck)
+		if (!this.config.noLocalChoiceSubjectCheck)
 		{
 			// Disabling ProjectedChoiceSubjectFixer (local choice subject inference) goes towards a general global WF, but is currently unsound
 			runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes that need DUMMY role occurrences to be fixed
@@ -301,7 +264,7 @@ public class Job
 	
 	public boolean isDebug()
 	{
-		return this.debug;
+		return this.config.debug;
 	}
 	
 	public void warningPrintln(String s)
@@ -311,7 +274,7 @@ public class Job
 	
 	public void debugPrintln(String s)
 	{
-		if (this.debug)
+		if (this.config.debug)
 		{
 			System.out.println(s);
 		}

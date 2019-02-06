@@ -72,7 +72,8 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 				gins.add((GInteractionNode) inlined);
 			}
 		}
-		GInteractionSeq inlined = inl.job.af.GInteractionSeq(gis.getSource(), gins);
+		GInteractionSeq inlined = inl.job.config.af.GInteractionSeq(gis.getSource(),
+				gins);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, inl, gis);
 	}
@@ -111,7 +112,8 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 				lis.clear();
 			}
 		}*/
-		LInteractionSeq projection = gis.project(proj.job.af, proj.peekSelf(), lis);
+		LInteractionSeq projection = gis.project(proj.job.config.af,
+				proj.peekSelf(), lis);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
 	}
@@ -154,6 +156,6 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 										.getInteractNodeChildren().stream()
 								: Stream.of(gi))
 				.collect(Collectors.toList());
-		return rem.job.af.GInteractionSeq(gis.getSource(), gins);
+		return rem.job.config.af.GInteractionSeq(gis.getSource(), gins);
 	}
 }

@@ -32,7 +32,7 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 		GContinue gc = (GContinue) visited;
 		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) gc.getRecVarChild()
 				.del().env()).getTranslation();
-		GContinue inlined = inl.job.af.GContinue(gc.getSource(), recvar);
+		GContinue inlined = inl.job.config.af.GContinue(gc.getSource(), recvar);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GContinue) super.leaveProtocolInlining(parent, child, inl, gc);
 	}
@@ -50,7 +50,7 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 	{
 		GContinue gc = (GContinue) visited;
 		//LContinue projection = project(proj.job.af, gc, proj.peekSelf());
-		LContinue projection = gc.project(proj.job.af, proj.peekSelf());
+		LContinue projection = gc.project(proj.job.config.af, proj.peekSelf());
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GContinue) GSimpleInteractionNodeDel.super.leaveProjection(parent,
 				child, proj, gc);

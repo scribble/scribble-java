@@ -46,7 +46,7 @@ public class AutParser
 	
 	public EGraph parse(String aut)
 	{
-		EModelFactory ef = job.ef; 
+		EModelFactory ef = job.config.ef; 
 
 		//Map<Integer, Map<String, Integer>> edges = new HashMap<>();
 		Map<Integer, List<String>> as = new HashMap<>();

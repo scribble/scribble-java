@@ -31,6 +31,7 @@ import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.job.Job;
+import org.scribble.job.JobConfig;
 import org.scribble.job.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.InlineResource;
@@ -61,20 +62,10 @@ public class MainContext
 	//protected final JScribbleApiGen jgen;  // No: API gen depends on the Job
 
 	//public final boolean jUnit;
-	public final boolean debug;  // TODO: factor out with Job -- (cf. CommandLine.newMainContext)
-	public final boolean useOldWF;
-	public final boolean noLiveness;
-	public final boolean minEfsm;
-	public final boolean fair;
-	public final boolean noLocalChoiceSubjectCheck;
-	public final boolean noAcceptCorrelationCheck;
-	public final boolean noValidation;
-	public final boolean spin;
+	private JobConfig config;
 
 	private final ResourceLocator locator;  // Path -> Resource
 	private final ScribModuleLoader loader;  // sesstype.ModuleName -> Pair<Resource, Module>
-
-	protected ModuleName main;  // Full name
 
 	protected Map<ModuleName, ModuleContext> mctxts;  // Full names (like this.parsed)
 
@@ -89,17 +80,6 @@ public class MainContext
 			boolean noValidation, boolean spin)
 			throws ScribParserException, ScribbleException
 	{
-		//this.jUnit = jUnit;
-		this.debug = debug;
-		this.useOldWF = useOldWF;
-		this.noLiveness = noLiveness;
-		this.minEfsm = minEfsm;
-		this.fair = fair;
-		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
-		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
-		this.noValidation = noValidation;
-		this.spin = spin;
-
 		this.locator = locator; 
 		this.loader = new ScribModuleLoader(this.locator, this.antlrParser,
 				this.scribParser);
@@ -136,9 +116,14 @@ public class MainContext
 		
 		//HERE: debug context building or name disamb (role node child lost)
 		
-		checkMainModuleName(mainpath, mod);
+		checkMainModuleName(mainpath, mod, noValidation);
 		
-		init(res, mod);
+		init(
+				 debug, locator,  useOldWF,
+			 noLiveness,  minEfsm,  fair,
+			 noLocalChoiceSubjectCheck,  noAcceptCorrelationCheck,
+			 noValidation,  spin,
+				res, mod);
 	}
 
 	// For inline module arg
@@ -156,16 +141,31 @@ public class MainContext
 		Module mod = (Module) this.scribParser
 				.parse(this.antlrParser.parseAntlrTree(res), this.af);
 
-		init(res, mod);
+		init(
+				 debug, locator,  useOldWF,
+			 noLiveness,  minEfsm,  fair,
+			 noLocalChoiceSubjectCheck,  noAcceptCorrelationCheck,
+			 noValidation,  spin,
+				res, mod);
 	}
 
-	private void init(Resource res, Module mainmod)
+	private void init(
+			boolean debug, ResourceLocator locator,
+			boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair,
+			boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck,
+			boolean noValidation, boolean spin,
+			
+			Resource res, Module mainmod)
 			throws ScribParserException, ScribbleException
 	{
+
 		Pair<Resource, Module> p = new Pair<>(res, mainmod);
-		this.main = p.right.getFullModuleName();  
+		ModuleName main = p.right.getFullModuleName();  
 				// TODO CHECKME: main modname comes from the inlined moddecl -- check for issues if this clashes with an existing file system resource
 		loadAllModules(p);  // Populates this.parsed
+
+		
+		this.config = new JobConfig(debug, main, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, spin, this.af, this.ef, this.sf);
 		
 		Map<ModuleName, Module> tmp = this.parsed.entrySet().stream()
 				.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().right));
@@ -181,10 +181,7 @@ public class MainContext
 	// A Scribble extension should override these "new" methods as appropriate.
 	public Job newJob()
 	{
-		return new Job(this.debug, this.getParsedModules(), this.main,
-				this.useOldWF, this.noLiveness, this.minEfsm, this.fair,
-				this.noLocalChoiceSubjectCheck, this.noAcceptCorrelationCheck,
-				this.noValidation, this.spin, this.af, this.ef, this.sf);
+		return new Job(this.getParsedModules(), this.config);
 	}
 	
 	protected ScribbleAntlrWrapper newAntlrParser()
@@ -238,7 +235,7 @@ public class MainContext
 	}
 	
 	// Hacky? But not Scribble tool's job to check nested directory location of module fully corresponds to the fullname of module? Cf. Java classes
-	private void checkMainModuleName(Path mainpath, Module main)
+	private void checkMainModuleName(Path mainpath, Module main, boolean noValidation)
 			throws ScribbleException
 	{
 		String path = mainpath.toString();  // FIXME: hack
@@ -246,7 +243,7 @@ public class MainContext
 		String tmp = path.substring((path.lastIndexOf(File.separator) == -1) 
 				? 0
 				: path.lastIndexOf(File.separator) + 1, path.lastIndexOf('.'));
-		if (!this.noValidation)
+		if (!noValidation)  // this.config not made yet
 		{
 			if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))
 					// ModuleName.toString hack?
