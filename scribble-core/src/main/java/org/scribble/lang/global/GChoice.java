@@ -27,8 +27,7 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	public GChoice getInlined(Job job)
 	{
 		org.scribble.ast.global.GChoice source =
-				(org.scribble.ast.global.GChoice) getSource();
-				// CHECKME: or empty source?
+				(org.scribble.ast.global.GChoice) getSource();  // CHECKME: or empty source?
 		List<GSeq> collect = this.blocks.stream().map(x -> x.getInlined(job))
 				.collect(Collectors.toList());
 		return new GChoice(source, this.subj, collect);

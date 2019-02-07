@@ -14,12 +14,16 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
+import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
@@ -59,11 +63,11 @@ public interface DelDecorator
 	void GMessageTransfer(GMessageTransfer gmt);
 	/*GConnect GConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
 	GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest);
-	GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);
-	GChoice GChoice(CommonTree source, RoleNode subj, List<GProtocolBlock> blocks);
-	GRecursion GRecursion(CommonTree source, RecVarNode recvar, GProtocolBlock block);
-	GContinue GContinue(CommonTree source, RecVarNode recvar);
-	GDo GDo(CommonTree source, RoleArgList roles, NonRoleArgList args, GProtocolNameNode proto);*/
+	GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);*/
+	void GChoice(GChoice gc);
+	void GRecursion(GRecursion gr);
+	void GContinue(GContinue gc);
+	void GDo(GDo gd);
 	
 	void MessageSigNode(MessageSigNode n);
 	void PayloadElemList(PayloadElemList pay);

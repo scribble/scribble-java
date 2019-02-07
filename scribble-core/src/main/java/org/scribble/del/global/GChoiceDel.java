@@ -14,6 +14,7 @@
 package org.scribble.del.global;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,6 +28,8 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ChoiceDel;
 import org.scribble.job.RuntimeScribbleException;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.global.GSeq;
+import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
 import org.scribble.visit.ProtocolDefInliner;
@@ -38,6 +41,21 @@ import org.scribble.visit.wf.env.WFChoiceEnv;
 
 public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 {
+	
+	@Override
+	public org.scribble.lang.global.GChoice translate(ScribNode n,
+			GTypeTranslator t) throws ScribbleException
+	{
+		GChoice source = (GChoice) n;
+		Role subj = source.getSubjectChild().toName();
+		List<GSeq> blocks = new LinkedList<>();
+		for (GProtocolBlock b : source.getBlockChildren())
+		{
+			blocks.add((GSeq) b.visitWith(t));
+		}
+		return new org.scribble.lang.global.GChoice(source, subj, blocks);
+	}
+
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
 			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException

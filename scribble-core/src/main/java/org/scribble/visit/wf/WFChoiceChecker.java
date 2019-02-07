@@ -28,12 +28,12 @@ import org.scribble.visit.UnfoldingVisitor;
 import org.scribble.visit.wf.env.WFChoiceEnv;
 
 // Note: now only used for choice subject and enabled checking 
-// FIXME: refactor as distinct enabling messages checker (cf. GChoiceDel, WFChoicePathChecker)
+// TODO: refactor as distinct enabling messages checker (cf. GChoiceDel, WFChoicePathChecker)
 public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 {
 	// N.B. using pointer equality for checking if choice previously visited
 	// So UnfoldingVisitor cannot visit a clone
-	// equals method identity not suitable unless Ast nodes record additional info like syntactic position
+	// equals method identity not suitable unless AST nodes record additional info like syntactic position
 	private Set<Choice<?>> visited = new HashSet<>();	
 	
 	public WFChoiceChecker(Job job)
@@ -60,7 +60,7 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 			GProtocolDecl gpd = (GProtocolDecl) child;
 			if (gpd.isAux())
 			{
-				return child;  // bypass aux protocols  // FIXME: integrate bypass functionality into made enter/visit/leave pattern
+				return child;  // bypass aux protocols  // TODO: integrate bypass functionality into made enter/visit/leave pattern
 			}
 		}
 

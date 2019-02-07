@@ -177,6 +177,7 @@ tokens
 	ROLENAME = 'ROLENAME';
 	ID = 'ID';
 	OPNAME = 'OPNAME';
+	RECURSIONVAR = 'RECURSIONVAR';
 }
 
 
@@ -724,9 +725,9 @@ globalwrap:
  * Section 3.7.5 Global Choice
  */
 globalchoice:
-	CHOICE_KW AT_KW rolename globalprotocolblock (OR_KW globalprotocolblock)*
+	CHOICE_KW AT_KW rolenamenode globalprotocolblock (OR_KW globalprotocolblock)*
 ->
-	^(GLOBALCHOICE rolename globalprotocolblock+)
+	^(GLOBALCHOICE rolenamenode globalprotocolblock+)
 ;
 
 
@@ -734,15 +735,21 @@ globalchoice:
  * Section 3.7.6 Global Recursion
  */
 globalrecursion:
-	REC_KW recursionvarname globalprotocolblock
+	REC_KW recursionvarnamenode globalprotocolblock
 ->
-	^(GLOBALRECURSION recursionvarname globalprotocolblock)
+	^(GLOBALRECURSION recursionvarnamenode globalprotocolblock)
+;
+
+recursionvarnamenode:
+	recursionvarname
+->
+	^(RECURSIONVAR recursionvarname)
 ;
 
 globalcontinue:
-	CONTINUE_KW recursionvarname ';'
+	CONTINUE_KW recursionvarnamenode ';'
 ->
-	^(GLOBALCONTINUE recursionvarname)
+	^(GLOBALCONTINUE recursionvarnamenode)
 ;
 
 

@@ -21,13 +21,22 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.ProtocolBlockDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.global.GSeq;
+import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.env.ProjectionEnv;
 import org.scribble.visit.env.InlineProtocolEnv;
 
-public class GProtocolBlockDel extends ProtocolBlockDel
+public class GProtocolBlockDel extends ProtocolBlockDel implements GDel
 {
+	
+	@Override
+	public GSeq translate(ScribNode n, GTypeTranslator t)
+			throws ScribbleException
+	{
+		return (GSeq) ((GProtocolBlock) n).getInteractSeqChild().visitWith(t);
+	}
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,

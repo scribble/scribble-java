@@ -77,8 +77,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		GProtocolName fullname = new GProtocolName(mod.getFullModuleName(),
 				source.getHeaderChild().getDeclName());
 		List<Role> roles = source.getRoles();
-		GSeq body = (GSeq) source.getDefChild().getBlockChild()
-				.getInteractSeqChild().visitWith(t);
+		GSeq body = (GSeq) source.getDefChild().getBlockChild().visitWith(t);
 		return new GProtocol(source, fullname, roles, body);
 	}
 	

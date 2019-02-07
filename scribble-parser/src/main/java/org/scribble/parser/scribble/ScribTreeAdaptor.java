@@ -10,16 +10,21 @@ import org.scribble.ast.PayloadElemList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNil;
+import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
+import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.OpNode;
+import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 
 // get/setType don't seem to be really used
@@ -88,11 +93,22 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new GProtocolDef(t);
 			case "GLOBALPROTOCOLBLOCK": //return this.f.GProtocolBlock(empty, null);
 				return new GProtocolBlock(t);
-
 			case "GLOBALINTERACTIONSEQUENCE": //return this.f.GInteractionSeq(empty, Collections.emptyList());
 				return new GInteractionSeq(t);
+
 			case "GLOBALMESSAGETRANSFER": //return this.f.GMessageTransfer(empty, null, null, Collections.emptyList());
 				return new GMessageTransfer(t);
+			case "GLOBALCHOICE":
+				return new GChoice(t);
+			case "GLOBALRECURSION":
+				return new GRecursion(t);
+			case "GLOBALCONTINUE":
+				return new GContinue(t);
+			case "GLOBALDO":
+				return new GDo(t);
+			case "RECURSIONVAR":
+				return new RecVarNode(t);
+
 			case "MESSAGESIGNATURE": //return this.f.Me
 				return new MessageSigNode(t);
 			case "OPNAME":

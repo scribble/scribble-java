@@ -16,12 +16,16 @@ package org.scribble.ast;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
+import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
@@ -37,11 +41,15 @@ import org.scribble.del.NonRoleParamDeclListDel;
 import org.scribble.del.RoleDeclDel;
 import org.scribble.del.RoleDeclListDel;
 import org.scribble.del.ScribDel;
+import org.scribble.del.global.GChoiceDel;
+import org.scribble.del.global.GContinueDel;
+import org.scribble.del.global.GDoDel;
 import org.scribble.del.global.GInteractionSeqDel;
 import org.scribble.del.global.GMessageTransferDel;
 import org.scribble.del.global.GProtocolBlockDel;
 import org.scribble.del.global.GProtocolDeclDel;
 import org.scribble.del.global.GProtocolDefDel;
+import org.scribble.del.global.GRecursionDel;
 import org.scribble.del.name.DataTypeNodeDel;
 import org.scribble.del.name.MessageSigNameNodeDel;
 import org.scribble.del.name.RecVarNodeDel;
@@ -119,11 +127,19 @@ public class DelDecoratorImpl implements DelDecorator
 				break;
 			/*case GLOBALCONNECT:             return AntlrGConnect.parseGConnect(this, ct, af);
 			case GLOBALDISCONNECT:          return AntlrGDisconnect.parseGDisconnect(this, ct, af);
-			case GLOBALCHOICE:              return AntlrGChoice.parseGChoice(this, ct, af);
-			case GLOBALRECURSION:           return AntlrGRecursion.parseGRecursion(this, ct, af);
-			case GLOBALCONTINUE:            return AntlrGContinue.parseGContinue(this, ct, af);
-			case GLOBALDO:                  return AntlrGDo.parseGDo(this, ct, af);
 			case GLOBALWRAP:                return AntlrGWrap.parseGWrap(this, ct, af);*/
+			case "GLOBALCHOICE":              
+				GChoice((GChoice) n);
+				break;
+			case "GLOBALRECURSION":
+				GRecursion((GRecursion) n);
+				break;
+			case "GLOBALCONTINUE":
+				GContinue((GContinue) n);
+				break;
+			case "GLOBALDO":
+				GDo((GDo) n);
+				break;
 				
 			case "ROLENAME":
 				RoleNode((RoleNode) n);
@@ -286,39 +302,31 @@ public class DelDecoratorImpl implements DelDecorator
 		GWrap gw = new GWrap(source, UnitMessageSigNode(), src, dest);
 		gw = setDel(gw, new GWrapDel());
 		return gw;
-	}
-
-	@Override
-	public GChoice GChoice(CommonTree source, RoleNode subj, List<GProtocolBlock> blocks)
-	{
-		GChoice gc = new GChoice(source, subj, blocks);
-		gc = setDel(gc, new GChoiceDel());
-		return gc;
-	}
-
-	@Override
-	public GRecursion GRecursion(CommonTree source, RecVarNode recvar, GProtocolBlock block)
-	{
-		GRecursion gr = new GRecursion(source, recvar, block);
-		gr = setDel(gr, new GRecursionDel());
-		return gr;
-	}
-
-	@Override
-	public GContinue GContinue(CommonTree source, RecVarNode recvar)
-	{
-		GContinue gc = new GContinue(source, recvar);
-		gc = setDel(gc, new GContinueDel());
-		return gc;
-	}
-
-	@Override
-	public GDo GDo(CommonTree source, RoleArgList roleinstans, NonRoleArgList arginstans, GProtocolNameNode proto)
-	{
-		GDo gd = new GDo(source, roleinstans, arginstans, proto);
-		gd = setDel(gd, new GDoDel());
-		return gd;
 	}*/
+
+	@Override
+	public void GChoice(GChoice gc)
+	{
+		setDel(gc, new GChoiceDel());
+	}
+
+	@Override
+	public void GRecursion(GRecursion gr)
+	{
+		setDel(gr, new GRecursionDel());
+	}
+
+	@Override
+	public void GContinue(GContinue gc)
+	{
+		setDel(gc, new GContinueDel());
+	}
+
+	@Override
+	public void GDo(GDo gd)
+	{
+		setDel(gd, new GDoDel());
+	}
 
 	@Override
 	public void MessageSigNode(MessageSigNode mn)
