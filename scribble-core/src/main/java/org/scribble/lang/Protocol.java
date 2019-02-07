@@ -2,28 +2,45 @@ package org.scribble.lang;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
-public abstract class Protocol<K extends ProtocolKind> extends SessTypeBase<K>
-		implements SessType<K>
+public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>, B extends Seq<K>>
+		extends SessTypeBase<K> 
 {
-	public final ProtocolName<K> name;
+	public final N name;
 	public final List<Role> roles;  // Ordered role params; pre: size >= 2
 	//public final List<NonRoleParamNode<?>> params;  // TODO
-	public final Seq<K> body;  // CHECKME: take "? extends Seq<K>" as generic param?
+	public final B body;  // CHECKME: take "? extends Seq<K>" as generic param?
 
-	public Protocol(ProtocolDecl<K> source, ProtocolName<K> fullname,
+	public Protocol(ProtocolDecl<K> source, N fullname,
 			List<Role> roles, // List<?> params,
-			Seq<K> body)
+			B body)
 	{
 		super(source);
 		this.name = fullname;
 		this.roles = Collections.unmodifiableList(roles);
 		this.body = body;
+	}
+	
+	public abstract Protocol<K, N, B> reconstruct(ProtocolDecl<K> source,
+			N fullname, List<Role> roles, B body);
+	
+	public N getFullName()
+	{
+		return this.name;
+	}
+
+	@Override
+	public String toString()
+	{
+		return " protocol " + this.name + "(" + this.roles.stream()
+					.map(x -> x.toString()).collect(Collectors.joining(", ")) + ")"
+				+ " {\n" + this.body + "\n}";
 	}
 	
 	@Override
@@ -48,7 +65,7 @@ public abstract class Protocol<K extends ProtocolKind> extends SessTypeBase<K>
 		{
 			return false;
 		}
-		Protocol<?> them = (Protocol<?>) o;
+		Protocol<?, ?, ?> them = (Protocol<?, ?, ?>) o;
 		return super.equals(this)  // Does canEquals
 				&& this.name.equals(them.name) && this.roles.equals(them.roles)
 				&& this.body.equals(them.body);

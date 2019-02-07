@@ -1,6 +1,7 @@
 package org.scribble.lang;
 
-import org.scribble.ast.ScribNodeBase;
+import org.scribble.ast.ProtocolKindNode;
+import org.scribble.job.Job;
 import org.scribble.type.kind.ProtocolKind;
 
 // CHECKME: move to type.sess?
@@ -8,7 +9,9 @@ import org.scribble.type.kind.ProtocolKind;
 public interface SessType<K extends ProtocolKind>
 {
 	boolean hasSource();  // i.e., was parsed
-	ScribNodeBase getSource();  // Pre: hasSource
+	ProtocolKindNode<K> getSource();  // Pre: hasSource
+
+	SessType<K> getInlined(Job job);
 	
 	// Call this using: them.canEquals(this) 
 	boolean canEquals(Object o);

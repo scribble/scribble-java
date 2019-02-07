@@ -2,19 +2,30 @@ package org.scribble.lang;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.type.kind.ProtocolKind;
 
-public abstract class Seq<K extends ProtocolKind> extends SessTypeBase<K>
-		implements SessType<K>
+public abstract class Seq<K extends ProtocolKind>
+		extends SessTypeBase<K>
 {
-	public final List<? extends SessType<K>> elems;
+	public final List<? extends SessType<K>> elems;  // GType or LType
 
 	public Seq(InteractionSeq<K> source, List<? extends SessType<K>> elems)
 	{
 		super(source);
 		this.elems = Collections.unmodifiableList(elems);
+	}
+	
+	public abstract Seq<K> reconstruct(InteractionSeq<K> source,
+			List<? extends SessType<K>> elems);
+	
+	@Override
+	public String toString()
+	{
+		return this.elems.stream().map(x -> x.toString())
+				.collect(Collectors.joining("\n"));
 	}
 
 	@Override

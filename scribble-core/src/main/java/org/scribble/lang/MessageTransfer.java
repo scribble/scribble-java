@@ -20,6 +20,16 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 		this.dst = dst;
 	}
 	
+	public abstract MessageTransfer<K> reconstruct(
+			org.scribble.ast.MessageTransfer<K> source, Role src, Message msg,
+			Role dst);
+	
+	@Override
+	public String toString()
+	{
+		return this.msg + " from " + this.src + " to " + this.dst + ";";
+	}
+	
 	@Override
 	public int hashCode()
 	{

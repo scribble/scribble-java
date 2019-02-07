@@ -2,19 +2,49 @@ package org.scribble.lang.global;
 
 import java.util.List;
 
+import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.job.Job;
 import org.scribble.lang.Protocol;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
-public class GProtocol extends Protocol<Global> implements GType
+public class GProtocol extends
+		Protocol<Global, GProtocolName, GSeq> implements GType
 {
-	public GProtocol(GProtocolDecl source, GProtocolName fullname,
+	public GProtocol(ProtocolDecl<Global> source, GProtocolName fullname,
 			List<Role> roles, // List<?> params,
 			GSeq body)
 	{
 		super(source, fullname, roles, body);
+	}
+
+	@Override
+	public GProtocol reconstruct(ProtocolDecl<Global> source,
+			GProtocolName fullname, List<Role> roles, GSeq body)
+	{
+		return new GProtocol(source, fullname, roles, body);
+	}
+	
+	@Override
+	public GProtocol getInlined(Job job)
+	{
+		GProtocolDecl source = getSource();  // CHECKME: or empty source?
+		GSeq body = (GSeq) this.body.getInlined(job);
+		return reconstruct(source, getFullName(), this.roles, body);
+	}
+	
+	@Override
+	public GProtocolDecl getSource()
+	{
+		return (GProtocolDecl) super.getSource();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "global" + super.toString();
 	}
 
 	@Override

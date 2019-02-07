@@ -1,5 +1,6 @@
 package org.scribble.lang.global;
 
+import org.scribble.job.Job;
 import org.scribble.lang.MessageTransfer;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Global;
@@ -9,10 +10,24 @@ public class GMessageTransfer extends MessageTransfer<Global>
 		implements GType
 {
 
-	public GMessageTransfer(org.scribble.ast.global.GMessageTransfer source,
+	public GMessageTransfer(org.scribble.ast.MessageTransfer<Global> source,
 			Role src, Message msg, Role dst)
 	{
 		super(source, src, msg, dst);
+	}
+
+	@Override
+	public GMessageTransfer reconstruct(
+			org.scribble.ast.MessageTransfer<Global> source, Role src, Message msg,
+			Role dst)
+	{
+		return new GMessageTransfer(source, src, msg, dst);
+	}
+
+	@Override
+	public GType getInlined(Job job)
+	{
+		return this;
 	}
 	
 	@Override

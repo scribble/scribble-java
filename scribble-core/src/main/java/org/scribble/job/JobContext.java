@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.lang.global.GType;
+import org.scribble.lang.global.GProtocol;
 import org.scribble.model.endpoint.AutParser;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.global.SGraph;
@@ -52,7 +52,8 @@ public class JobContext
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
 	
 	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
-	private final Map<GProtocolName, GType> core = new HashMap<>();  // Keys are full names
+	private final Map<GProtocolName, GProtocol> intermed = new HashMap<>();  // Keys are full names (though GProtocol already includes full name)
+	private final Map<GProtocolName, GProtocol> inlined = new HashMap<>();   // Keys are full names (though GProtocol already includes full name)
 
 	private final Map<LProtocolName, EGraph> fairEGraphs = new HashMap<>();
 	private final Map<GProtocolName, SGraph> fairSGraphs = new HashMap<>();
@@ -150,14 +151,25 @@ public class JobContext
 		}
 	}
 	
-	public void addTranslation(GProtocolName fullname, GType g)
+	// TODO rename better
+	public void addIntermediate(GProtocolName fullname, GProtocol g)
 	{
-		this.core.put(fullname, g);
+		this.intermed.put(fullname, g);
 	}
 	
-	public GType getTranslation(GProtocolName fullname)
+	public GProtocol getIntermediate(GProtocolName fullname)
 	{
-		return this.core.get(fullname);
+		return this.intermed.get(fullname);
+	}
+	
+	public void addInlined(GProtocolName fullname, GProtocol g)
+	{
+		this.inlined.put(fullname, g);
+	}
+	
+	public GProtocol getInlined(GProtocolName fullname)
+	{
+		return this.inlined.get(fullname);
 	}
 	
 	// Make context immutable? (will need to assign updated context back to Job) -- will also need to do for Module replacing

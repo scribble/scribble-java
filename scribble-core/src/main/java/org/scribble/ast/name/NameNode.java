@@ -80,7 +80,7 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 			return new String[0];
 		}
 		List<String> names = getSimpleNameList();
-		return names.subList(1, names.size()).toArray(new String[0]);
+		return names.subList(0, names.size()-1).toArray(new String[0]);
 	}
 	
 	protected String getLastElement()

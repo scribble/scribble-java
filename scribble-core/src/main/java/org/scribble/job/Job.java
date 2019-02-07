@@ -24,7 +24,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.del.local.LProtocolDeclDel;
-import org.scribble.lang.global.GType;
+import org.scribble.lang.global.GProtocol;
 import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
@@ -96,7 +96,7 @@ public class Job
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
-		runUnfoldingPass();
+		//runUnfoldingPass();
 		runWellFormednessPasses();
 	}
 	
@@ -108,20 +108,26 @@ public class Job
 		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
 		
+		// FIXME TODO: refactor into a runVisitorPassOnAllModules for SimpleVisitor (and add operation to ModuleDel)
 		GTypeTranslator t = new GTypeTranslator(this);
-		for (ModuleName name : this.jcontext.getFullModuleNames())
+		for (ModuleName fullname : this.jcontext.getFullModuleNames())
 		{
-			Module mod = this.jcontext.getModule(name);
+			Module mod = this.jcontext.getModule(fullname);
 			for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
 			{
-				GType g = gpd.visitWith(t);
-				System.out.println("\n" + gpd + "\n" + g);  HERE toString
+				GProtocol g = (GProtocol) gpd.visitWith(t);
+				this.jcontext.addIntermediate(g.getFullName(), g);
+				System.out.println("\nparsed:\n" + gpd + "\nintermed:\n" + g);
+				
+				GProtocol inlined = g.getInlined(this);
+				System.out.println("inlined:\n" + inlined);
+				this.jcontext.addInlined(inlined.getFullName(), inlined);
 			}
 		}
 
 		System.out.println("fff1: " + this.jcontext.getMainModule());
 
-		runVisitorPassOnAllModules(ProtocolDefInliner.class);
+		//runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		
 		System.out.println("fff2: " + this.jcontext.getMainModule());
 		
@@ -136,7 +142,7 @@ public class Job
 
 	public void runWellFormednessPasses() throws ScribbleException
 	{
-		if (!this.config.noValidation)
+		/*if (!this.config.noValidation)
 		{
 			runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
 			runProjectionPasses();
@@ -145,7 +151,7 @@ public class Job
 			{
 				runVisitorPassOnAllModules(GProtocolValidator.class);
 			}
-		}
+		}*/
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module

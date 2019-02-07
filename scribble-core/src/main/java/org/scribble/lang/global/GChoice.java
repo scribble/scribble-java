@@ -1,17 +1,43 @@
 package org.scribble.lang.global;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.scribble.job.Job;
 import org.scribble.lang.Choice;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
-public class GChoice extends Choice<Global> implements GType
+public class GChoice extends Choice<Global, GSeq> implements GType
 {
-	public GChoice(org.scribble.ast.global.GChoice source, Role subj,
+	public GChoice(org.scribble.ast.Choice<Global> source, Role subj,
 			List<GSeq> blocks)
 	{
 		super(source, subj, blocks);
+	}
+	
+	@Override
+	public GChoice reconstruct(org.scribble.ast.Choice<Global> source, Role subj,
+			List<GSeq> blocks)
+	{
+		return new GChoice(source, subj, blocks);
+	}
+
+	@Override
+	public GChoice getInlined(Job job)
+	{
+		org.scribble.ast.global.GChoice source =
+				(org.scribble.ast.global.GChoice) getSource();
+				// CHECKME: or empty source?
+		List<GSeq> collect = this.blocks.stream().map(x -> x.getInlined(job))
+				.collect(Collectors.toList());
+		return new GChoice(source, this.subj, collect);
+	}
+	
+	@Override
+	public org.scribble.ast.global.GChoice getSource()
+	{
+		return (org.scribble.ast.global.GChoice) super.getSource();
 	}
 
 	@Override

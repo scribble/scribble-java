@@ -1,14 +1,15 @@
 package org.scribble.lang;
 
-import org.scribble.ast.ScribNodeBase;
+import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
 
 // SessTypeBase is to SessType as ScribNodeBase is to ScribNode
-public abstract class SessTypeBase<K extends ProtocolKind> implements SessType<K>
+public abstract class SessTypeBase<K extends ProtocolKind>
+		implements SessType<K>
 {
-	private final ScribNodeBase source;
+	private final ProtocolKindNode<K> source;
 
-	public SessTypeBase(ScribNodeBase source)
+	public SessTypeBase(ProtocolKindNode<K> source)
 	{
 		this.source = source;
 	}
@@ -21,7 +22,7 @@ public abstract class SessTypeBase<K extends ProtocolKind> implements SessType<K
 	
 	// Pre: hasSource
 	@Override
-	public ScribNodeBase getSource()
+	public ProtocolKindNode<K> getSource()
 	{
 		return this.source;
 	}
