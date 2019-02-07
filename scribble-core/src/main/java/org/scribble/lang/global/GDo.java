@@ -38,8 +38,8 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 	@Override
 	public int hashCode()
 	{
-		int hash = 193;
-		hash = 31 * hash + this.roles.hashCode();
+		int hash = 1303;
+		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 

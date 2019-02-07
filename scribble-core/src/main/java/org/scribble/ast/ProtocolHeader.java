@@ -74,6 +74,8 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 	@Override
 	public ProtocolHeader<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
+		/*ProtocolNameNode<K> nameNodeChild = (ProtocolNameNode<K>) visitChild(
+				getNameNodeChild(), nv);*/  // Don't really need to visit, and can avoid generic cast
 		RoleDeclList rdl = (RoleDeclList) visitChild(getRoleDeclListChild(), nv);
 		NonRoleParamDeclList pdl = (NonRoleParamDeclList) 
 				visitChild(getParamDeclListChild(), nv);

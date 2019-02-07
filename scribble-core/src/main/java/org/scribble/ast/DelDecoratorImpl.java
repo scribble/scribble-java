@@ -101,6 +101,9 @@ public class DelDecoratorImpl implements DelDecorator
 			case "GLOBALPROTOCOLHEADER":
 				GProtocolHeader((GProtocolHeader) n);
 				break;
+			case "GPROTOCOLNAME":
+				GProtocolNameNode((GProtocolNameNode) n);
+				break;
 			case "GLOBALPROTOCOLDEF":
 				GProtocolDef((GProtocolDef) n);
 				break;
@@ -143,6 +146,9 @@ public class DelDecoratorImpl implements DelDecorator
 				
 			case "ROLENAME":
 				RoleNode((RoleNode) n);
+				break;
+			case "RECURSIONVAR":
+				RecVarNode((RecVarNode) n);
 				break;
 			case "OPNAME":
 				OpNode((OpNode) n);
@@ -414,15 +420,15 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public void RecVarNode(RecVarNode rv)
-	{
-		setDel(rv, new RecVarNodeDel());
-	}
-
-	@Override
 	public void RoleNode(RoleNode r)
 	{
 		setDel(r, new RoleNodeDel());
+	}
+
+	@Override
+	public void RecVarNode(RecVarNode rv)
+	{
+		setDel(rv, new RecVarNodeDel());
 	}
 
 	@Override

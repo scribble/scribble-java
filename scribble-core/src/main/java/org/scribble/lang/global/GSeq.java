@@ -45,7 +45,7 @@ public class GSeq extends Seq<Global>
 	public int hashCode()
 	{
 		int hash = 29;
-		hash = 31 * hash + this.elems.hashCode();
+		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 

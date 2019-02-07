@@ -21,7 +21,6 @@ import org.scribble.lang.global.GTypeTranslator;
 
 public interface GDel extends ScribDel
 {
-	// FIXME: remove default
 	default GType translate(ScribNode n, GTypeTranslator t)
 			throws ScribbleException
 	{

@@ -15,6 +15,7 @@ package org.scribble.type.name;
 
 import org.scribble.type.kind.RecVarKind;
 
+// CHECKME: RecVar inconsistent with, e.g., G/LProtocolName?
 public class RecVar extends AbstractName<RecVarKind> //implements PathElement
 {
 	private static final long serialVersionUID = 1L;

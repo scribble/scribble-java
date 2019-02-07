@@ -42,9 +42,8 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	@Override
 	public int hashCode()
 	{
-		int hash = 1487;
-		hash = 31 * hash + this.subj.hashCode();
-		hash = 31 * hash + this.blocks.hashCode();
+		int hash = 3067;
+		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 

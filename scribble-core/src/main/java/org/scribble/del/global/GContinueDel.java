@@ -19,12 +19,24 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ContinueDel;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.global.GTypeTranslator;
+import org.scribble.type.name.RecVar;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.env.InlineProtocolEnv;
 
 public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeDel
 {
+	
+	@Override
+	public org.scribble.lang.global.GContinue translate(ScribNode n,
+			GTypeTranslator t) throws ScribbleException
+	{
+		GContinue source = (GContinue) n;
+		RecVar recvar = source.getRecVarChild().toName();
+		return new org.scribble.lang.global.GContinue(source, recvar);
+	}
+
 	@Override
 	public GContinue leaveProtocolInlining(ScribNode parent, ScribNode child,
 			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
