@@ -14,21 +14,31 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.context.ModuleContext;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
+import org.scribble.type.name.ModuleName;
 
+// A SimpleVisitor visits a Module (or some part of one) for a given Job
 // Apart from delegating to del-specific visiting methods, SimpleVisitors are mainly for holding data and collecting common operations 
 // TODO CHECKME: refactor AstVisitor as a SimpleVisitor?  i.e., T=ScribNode ?
 public abstract class SimpleVisitor<T>
 {
 	public final Job job;
+	public final ModuleName mod;  // fullname
 
-	public SimpleVisitor(Job job)
+	public SimpleVisitor(Job job, ModuleName fullname)
 	{
 		this.job = job;
+		this.mod = fullname;
 	}
 	
 	// Override to delegate to del-specific method, e.g., n.del().visit(n, this)
   // N.B. ScribNode has getParent
 	public abstract T visit(ScribNode n) throws ScribbleException;
+	
+	public ModuleContext getModuleContext()
+	{
+		return this.job.getModuleContext(this.mod);
+	}
 }

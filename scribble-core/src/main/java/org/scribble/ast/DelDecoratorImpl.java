@@ -37,7 +37,9 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
+import org.scribble.del.NonRoleArgListDel;
 import org.scribble.del.NonRoleParamDeclListDel;
+import org.scribble.del.RoleArgListDel;
 import org.scribble.del.RoleDeclDel;
 import org.scribble.del.RoleDeclListDel;
 import org.scribble.del.ScribDel;
@@ -121,9 +123,18 @@ public class DelDecoratorImpl implements DelDecorator
 				PayloadElemList((PayloadElemList) n);
 				break;
 
-			/*case ROLEINSTANTIATIONLIST:     return AntlrRoleArgList.parseRoleArgList(this, ct, af);
-			case ROLEINSTANTIATION:         return AntlrRoleArg.parseRoleArg(this, ct, af);
-			case ARGUMENTINSTANTIATIONLIST: return AntlrNonRoleArgList.parseNonRoleArgList(this, ct, af);*/
+			case "ROLEINSTANTIATIONLIST":     
+				RoleArgList((RoleArgList) n);
+				break;
+			case "ROLEINSTANTIATION":         
+				RoleArg((RoleArg) n);
+				break;
+			case "ARGUMENTINSTANTIATIONLIST": 
+				NonRoleArgList((NonRoleArgList) n);
+				break;
+			case "ARGUMENTINSTANTIATION": 
+				NonRoleArg((NonRoleArg) n);
+				break;
 
 			case "GLOBALMESSAGETRANSFER":
 				GMessageTransfer((GMessageTransfer) n);
@@ -354,37 +365,29 @@ public class DelDecoratorImpl implements DelDecorator
 		return de;
 	}*/
 
-	/*@Override
-	public RoleArgList RoleArgList(CommonTree source, List<RoleArg> ris)
+	@Override
+	public void RoleArgList(RoleArgList rs)
 	{
-		RoleArgList rdl = new RoleArgList(source, ris);
-		rdl = setDel(rdl, new RoleArgListDel());
-		return rdl;
+		setDel(rs, new RoleArgListDel());
 	}
 
 	@Override
-	public RoleArg RoleArg(CommonTree source, RoleNode role)
+	public void RoleArg(RoleArg r)
 	{
-		RoleArg ri = new RoleArg(source, role);
-		ri = setDel(ri, createDefaultDelegate());
-		return ri;
+		setDel(r, createDefaultDelegate());
 	}
 
 	@Override
-	public NonRoleArgList NonRoleArgList(CommonTree source, List<NonRoleArg> ais)
+	public void NonRoleArgList(NonRoleArgList as)
 	{
-		NonRoleArgList rdl = new NonRoleArgList(source, ais);
-		rdl = setDel(rdl, new NonRoleArgListDel());
-		return rdl;
+		setDel(as, new NonRoleArgListDel());
 	}
 
 	@Override
-	public NonRoleArg NonRoleArg(CommonTree source, NonRoleArgNode arg)
+	public void NonRoleArg(NonRoleArg a)
 	{
-		NonRoleArg ri = new NonRoleArg(source, arg);
-		ri = setDel(ri, createDefaultDelegate());
-		return ri;
-	}*/
+		setDel(a, createDefaultDelegate());
+	}
 	
 	/*@Override
 	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier)

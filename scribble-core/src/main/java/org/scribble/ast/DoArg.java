@@ -72,7 +72,7 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 	@Override
 	public String toString()
 	{
-		return this.val.toString();
+		return getValChild().toString();
 	}
 	
 	

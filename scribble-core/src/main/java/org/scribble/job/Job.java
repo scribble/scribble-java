@@ -44,21 +44,18 @@ import org.scribble.visit.context.ProjectedRoleDeclFixer;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.util.RoleCollector;
-import org.scribble.visit.validation.GProtocolValidator;
-import org.scribble.visit.wf.DelegationProtocolRefChecker;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;
 import org.scribble.visit.wf.NameDisambiguator;
-import org.scribble.visit.wf.ReachabilityChecker;
-import org.scribble.visit.wf.WFChoiceChecker;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job
 {
+	// Keys are full names
 	private final Map<ModuleName, ModuleContext> mctxts;  // CHECKME: constant?  move to JobConfig?
 
 	public final JobConfig config;  // Immutable
 
-	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
+	private final JobContext jctxt;  // Mutable (Visitor passes replace modules)
 	private final SGraphBuilderUtil sgbu;
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
@@ -69,7 +66,7 @@ public class Job
 		this.mctxts = Collections.unmodifiableMap(mctxts);
 		this.config = config;
 		this.sgbu = config.sf.newSGraphBuilderUtil();
-		this.jcontext = new JobContext(this, parsed);  // Single instance per Job and should never be shared
+		this.jctxt = new JobContext(this, parsed);  // Single instance per Job and should never be shared
 	}
 	
 	// Scribble extensions should override these "new" methods
@@ -104,32 +101,33 @@ public class Job
 	{
 		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
 		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
-		runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
+
+		/*runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
 		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
-		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
+		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building*/
 		
 		// FIXME TODO: refactor into a runVisitorPassOnAllModules for SimpleVisitor (and add operation to ModuleDel)
-		GTypeTranslator t = new GTypeTranslator(this);
-		for (ModuleName fullname : this.jcontext.getFullModuleNames())
+		for (ModuleName fullname : this.jctxt.getFullModuleNames())
 		{
-			Module mod = this.jcontext.getModule(fullname);
+			Module mod = this.jctxt.getModule(fullname);
+			GTypeTranslator t = new GTypeTranslator(this, fullname);
 			for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
 			{
 				GProtocol g = (GProtocol) gpd.visitWith(t);
-				this.jcontext.addIntermediate(g.getFullName(), g);
+				this.jctxt.addIntermediate(g.getFullName(), g);
 				System.out.println("\nparsed:\n" + gpd + "\nintermed:\n" + g);
 				
 				GProtocol inlined = g.getInlined(this);
 				System.out.println("inlined:\n" + inlined);
-				this.jcontext.addInlined(inlined.getFullName(), inlined);
+				this.jctxt.addInlined(inlined.getFullName(), inlined);
 			}
 		}
 
-		System.out.println("fff1: " + this.jcontext.getMainModule());
+		System.out.println("fff1: " + this.jctxt.getMainModule());
 
 		//runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		
-		System.out.println("fff2: " + this.jcontext.getMainModule());
+		System.out.println("fff2: " + this.jctxt.getMainModule());
 		
 		//runUnfoldingPass();
 	}
@@ -196,14 +194,14 @@ public class Job
 	public Map<LProtocolName, Module> getProjections(GProtocolName fullname,
 			Role role) throws ScribbleException
 	{
-		Module root = this.jcontext.getProjection(fullname, role);
+		Module root = this.jctxt.getProjection(fullname, role);
 		Map<LProtocolName, Set<Role>> dependencies = ((LProtocolDeclDel) root
 				.getLProtoDeclChildren().get(0).del()).getProtocolDeclContext()
 						.getDependencyMap().getDependencies().get(role);
 		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
 		return dependencies.keySet().stream().collect(
 				Collectors.toMap(lpn -> lpn,
-						(lpn) -> this.jcontext.getModule(lpn.getPrefix())));
+						(lpn) -> this.jctxt.getModule(lpn.getPrefix())));
 	}
 
 	/*public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
@@ -247,21 +245,21 @@ public class Job
 			throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on all modules:");
-		runVisitorPass(this.jcontext.getFullModuleNames(), c);
+		runVisitorPass(this.jctxt.getFullModuleNames(), c);
 	}
 
 	public void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c)
 			throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on parsed modules:");
-		runVisitorPass(this.jcontext.getParsedFullModuleNames(), c);
+		runVisitorPass(this.jctxt.getParsedFullModuleNames(), c);
 	}
 
 	public void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c)
 			throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on projected modules:");
-		runVisitorPass(this.jcontext.getProjectedFullModuleNames(), c);
+		runVisitorPass(this.jctxt.getProjectedFullModuleNames(), c);
 	}
 
 	private void runVisitorPass(Set<ModuleName> modnames,
@@ -287,13 +285,18 @@ public class Job
 	private void runVisitorOnModule(ModuleName modname, AstVisitor nv)
 			throws ScribbleException
 	{
-		Module visited = (Module) this.jcontext.getModule(modname).accept(nv);
-		this.jcontext.replaceModule(visited);
+		Module visited = (Module) this.jctxt.getModule(modname).accept(nv);
+		this.jctxt.replaceModule(visited);
 	}
 	
-	public JobContext getContext()
+	public JobContext getJobContext()
 	{
-		return this.jcontext;
+		return this.jctxt;
+	}
+	
+	public ModuleContext getModuleContext(ModuleName fullname)
+	{
+		return this.mctxts.get(fullname);
 	}
 	
 	public boolean isDebug()

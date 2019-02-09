@@ -36,8 +36,6 @@ module tmp.Test;
 
 global protocol Proto1(role A, role B)
 {
-	rec X
-	{
 		choice at A
 		{
 			1() from A to B;
@@ -46,9 +44,8 @@ global protocol Proto1(role A, role B)
 		{
 			2() from A to B;
 			3() from B to A;
-			continue X;
+			do Proto1(A, B);
 		}
-	}
 }
 
 

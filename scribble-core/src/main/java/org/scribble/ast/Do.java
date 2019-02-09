@@ -51,7 +51,7 @@ public abstract class Do<K extends ProtocolKind>
 	// CHECKME: maybe wrap up role args and non-role args within the same container?
 	public RoleArgList getRoleListChild()
 	{
-		return (RoleArgList) getChild(0);
+		return (RoleArgList) getChild(2);
 	}
 
 	public NonRoleArgList getNonRoleListChild()
@@ -59,6 +59,7 @@ public abstract class Do<K extends ProtocolKind>
 		return (NonRoleArgList) getChild(1);
 	}
 	
+	// getChild(0)
 	public abstract ProtocolNameNode<K> getProtocolNameNode();
 	
 	public abstract Do<K> dupNode();
@@ -66,9 +67,9 @@ public abstract class Do<K extends ProtocolKind>
 	public Do<K> reconstruct(RoleArgList roles, NonRoleArgList args, ProtocolNameNode<K> proto)
 	{
 		Do<K> sig = dupNode();
-		sig.addChild(roles);
+		sig.addChild(proto);  // Order re. getter indices
 		sig.addChild(args);
-		sig.addChild(proto);
+		sig.addChild(roles);
 		ScribDel del = del();
 		sig.setDel(del);  // No copy
 		return sig;

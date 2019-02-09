@@ -96,7 +96,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 					throws ScribbleException
 			// CHECKME: similar needed for non-role args?  Or all params always known? (not ideal for distributed?)
 	{
-		JobContext jc = fixer.job.getContext();
+		JobContext jc = fixer.job.getJobContext();
 		LDo ld = (LDo) visited;
 		RoleArgList roleList = ld.getRoleListChild();
 		LProtocolDecl lpd = ld.getTargetProtocolDecl(jc, fixer.getModuleContext());

@@ -5,8 +5,11 @@ import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
+import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.PayloadElemList;
+import org.scribble.ast.RoleArg;
+import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNil;
@@ -115,6 +118,15 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new OpNode(t);
 			case "PAYLOAD":
 				return new PayloadElemList(t);
+				
+			case "ROLEINSTANTIATIONLIST":
+				return new RoleArgList(t);
+			case "ROLEINSTANTIATION":
+				return new RoleArg(t);
+			case "ARGUMENTINSTANTIATIONLIST":
+				return new NonRoleArgList(t);
+			case "ARGUMENTINSTANTIATION":
+				throw new RuntimeException("TODO: " + t);
 
 				//return new MyCommonTree(t);  // FIXME: placeholder for deleg, qualified or ambig
 			//case "QUALIFIEDNAME": //return this.f.Q

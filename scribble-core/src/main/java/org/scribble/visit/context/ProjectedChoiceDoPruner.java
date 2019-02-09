@@ -57,7 +57,7 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 			List<LInteractionNode> ins = lis.getInteractNodeChildren();
 			if (ins.get(0) instanceof LDo)  // Unlike GRecursion.prune, to-prune "do" could be followed by a continuation?
 			{
-				JobContext jc = this.job.getContext();
+				JobContext jc = this.job.getJobContext();
 				LDo ld = (LDo) ins.get(0);
 				LProtocolDecl lpd = ld.getTargetProtocolDecl(jc, getModuleContext());
 

@@ -60,7 +60,7 @@ public class ModuleDel extends ScribDelBase
 			ModuleContextBuilder builder) throws ScribbleException
 	{
 		builder.setModuleContext(new ModuleContext(
-				builder.job.getContext().getParsed(), (Module) child));
+				builder.job.getJobContext().getParsed(), (Module) child));
 				// ModuleContext building is done solely by "new ModuleContext" (no deeper visiting needed)
 				// The only thing ModuleContextBuilder really does is to set the ModuleContext in ModuleDel
 				// FIXME: obtain from MainContext instead of creating on entry by this visitor
@@ -137,7 +137,7 @@ public class ModuleDel extends ScribDelBase
 	@Override
 	public Module leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited)
 	{
-		proj.job.getContext().addProjections(proj.getProjections());
+		proj.job.getJobContext().addProjections(proj.getProjections());
 		return (Module) visited;
 	}
 

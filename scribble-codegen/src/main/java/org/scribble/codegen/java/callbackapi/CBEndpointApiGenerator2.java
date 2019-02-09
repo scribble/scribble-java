@@ -92,7 +92,7 @@ public class CBEndpointApiGenerator2
 	{
 		Map<String, String> res = new HashMap<>();
 
-		JobContext jc = this.job.getContext();
+		JobContext jc = this.job.getJobContext();
 		EState init = (this.job.config.minEfsm
 				? jc.getMinimisedEGraph(this.proto, this.self)
 				: jc.getEGraph(this.proto, this.self)
@@ -208,7 +208,7 @@ public class CBEndpointApiGenerator2
 				messageAbstract.addInterfaces("org.scribble.runtime.handlers.ScribOutputEvent");
 				res.put(mprefix + messageAbstractName + ".java", messageAbstract.build());
 
-				Module main = this.job.getContext().getMainModule();
+				Module main = this.job.getJobContext().getMainModule();
 				Map<Payload, ClassBuilder> messageClasses = new HashMap<>();  // A class per Payload for this state
 				for (EAction a : s.getAllActions())
 				{
@@ -447,7 +447,7 @@ public class CBEndpointApiGenerator2
 	MessageSigNameDecl getMessageSigNameDecl(MessageSigName mid)
 	{
 		return (MessageSigNameDecl)
-				this.job.getContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
+				this.job.getJobContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
 					.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(mid.toString()))
 					.iterator().next();
 	}
@@ -490,7 +490,7 @@ public class CBEndpointApiGenerator2
 		else
 		{
 			int i = 1;
-			Module main = this.job.getContext().getMainModule();
+			Module main = this.job.getJobContext().getMainModule();
 			for (PayloadElemType<?> pet : a.payload.elems)
 			{
 				DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pet);

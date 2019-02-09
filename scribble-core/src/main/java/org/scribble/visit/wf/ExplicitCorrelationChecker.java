@@ -48,7 +48,7 @@ public class ExplicitCorrelationChecker
 				GProtocolName gpn = gpd.getFullMemberName(mod);
 				for (Role r : gpd.getHeaderChild().getRoleDeclListChild().getRoles())
 				{
-					Module proj = this.job.getContext().getProjection(gpn, r);
+					Module proj = this.job.getJobContext().getProjection(gpn, r);
 					proj.accept(this);
 				}
 			}

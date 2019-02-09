@@ -13,10 +13,13 @@
  */
 package org.scribble.del;
 
+import java.util.Arrays;
+
 import org.scribble.ast.Do;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
+import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.SubprotocolSig;
@@ -26,6 +29,8 @@ import org.scribble.type.name.Role;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.wf.NameDisambiguator;
+
+import antlr.Token;
 
 public abstract class DoDel extends SimpleInteractionNodeDel
 {
@@ -59,6 +64,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 	
 	// Convert all visible names to full names for protocol inlining: otherwise could get clashes if directly inlining external visible names under the root modulecontext
 	// Not done in G/LProtocolNameNodeDel because it's only for do-targets that this is needed (cf. ProtocolHeader)
+	// TODO: refactor into G/LDoDel to bypass generic cast issues
 	private <K extends ProtocolKind> ScribNode leaveDisambiguationAux(
 			ScribNode parent, ScribNode child, NameDisambiguator disamb,
 			ScribNode visited) throws ScribbleException
@@ -69,9 +75,26 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		ProtocolNameNode<K> proto = doo.getProtocolNameNode();
 		ProtocolName<K> fullname = mc
 				.getVisibleProtocolDeclFullName(proto.toName());
-		ProtocolNameNode<K> pnn = (ProtocolNameNode<K>) disamb.job.config.af
+
+		ProtocolNameNode<K> pnn;/* = (ProtocolNameNode<K>) disamb.job.config.af
 				.QualifiedNameNode(proto.getSource(), fullname.getKind(),
-						fullname.getElements());
+						fullname.getElements());*/
+		
+		// FIXME: refactor, make an AST node and set its children -- rework AstFactory?
+		// FIXME: issue is to make an AST node, need a Token (but those are mainly obtained by parsing only)
+		/*pnn = (ProtocolNameNode<K>) new GProtocolNameNode(proto.token);
+		pnn.addChildren(proto.getChildren());*/
+		/*pnn = (ProtocolNameNode<K>) proto.dupNode();  // Token and start/stopIndex
+		pnn.addChildren(Arrays.asList(fullname.getElements()).stream().map(x -> new AmbigNameNode(new Token(arg0, arg1))));*/
+		pnn = proto;
+		/*(fullname.getKind().equals(Global.KIND) ?
+			new GProtocolNameNode(proto.getSource(), fullname.getElements()) :
+					new LProtocolNameNode(proto.getSource(), fullname.getElements())
+		);*/
+		
+		//HERE either hack Token to make new AST node, or redo proto context building on intermed -- consideration is projection output a la parsed AST subprotos, or from (inlined?) intermed
+		// probably hack Token for now -- or just skip protocol context building (do inlning and WF/valid first)
+		
 						// Didn't keep original namenode del
 		return doo.reconstruct(doo.getRoleListChild(), doo.getNonRoleListChild(),
 				pnn);
@@ -82,7 +105,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 			ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited)
 			throws ScribbleException
 	{
-		JobContext jcontext = builder.job.getContext();
+		JobContext jcontext = builder.job.getJobContext();
 		ModuleContext mcontext = builder.getModuleContext();
 		Do<?> doo = (Do<?>) visited;
 		ProtocolName<?> pn = doo.getProtocolNameNode().toName();  // leaveDisambiguation has fully qualified the target name

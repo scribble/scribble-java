@@ -13,6 +13,8 @@
  */
 package org.scribble.del.global;
 
+import java.util.List;
+
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
@@ -26,6 +28,7 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.type.SubprotocolSig;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.GProtocolName;
@@ -38,6 +41,26 @@ import org.scribble.visit.env.InlineProtocolEnv;
 
 public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 {
+	@Override
+	public org.scribble.lang.global.GDo translate(ScribNode n,
+			GTypeTranslator t) throws ScribbleException
+	{
+		GDo source = (GDo) n;
+
+		// Resolve full name -- CHECKME: factor out? cf., NameDisambiguator, DoDel::enter/leaveDisambiguation
+		GProtocolName proto = source.getProtocolNameNode().toName();
+		ModuleContext modc = t.getModuleContext();
+		if (!modc.isVisibleProtocolDeclName(proto))
+		{
+			throw new ScribbleException(source,
+					"Protocol decl not visible: " + proto);
+		}
+		GProtocolName fullname = (GProtocolName) modc
+				.getVisibleProtocolDeclFullName(proto);
+		List<Role> roles = source.getRoleListChild().getRoles();
+		return new org.scribble.lang.global.GDo(source, fullname, roles);
+	}
+
 	// Part of context building
 	@Override
 	protected void addProtocolDependency(ProtocolDeclContextBuilder builder,
@@ -90,7 +113,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		{
 			// For correct name mangling, need to use the parameter corresponding to the self argument
 			// N.B. -- this depends on Projector not following the Subprotocol pattern, otherwise self is wrong
-			Role param = gd.getTargetRoleParameter(proj.job.getContext(),
+			Role param = gd.getTargetRoleParameter(proj.job.getJobContext(),
 					proj.getModuleContext(), self);
 			proj.pushSelf(param);
 		}

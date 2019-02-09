@@ -81,7 +81,8 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 	@Override
 	public String toString()
 	{
-		return this.args.stream().map(a -> a.toString()).collect(Collectors.joining(", "));
+		return getArgChildren().stream().map(a -> a.toString())
+				.collect(Collectors.joining(", "));
 	}
 	
 	

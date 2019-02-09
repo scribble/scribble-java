@@ -45,7 +45,7 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	@Override
 	public GProtocolNameNode getProtocolNameNode()
 	{
-		return (GProtocolNameNode) getChild(2);
+		return (GProtocolNameNode) getChild(0);
 	}
 	
 	@Override

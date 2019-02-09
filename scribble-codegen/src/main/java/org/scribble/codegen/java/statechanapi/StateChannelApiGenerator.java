@@ -64,7 +64,7 @@ public class StateChannelApiGenerator extends ApiGen
 		this.self = self;
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext jc = job.getContext();
+		JobContext jc = job.getJobContext();
 		this.init = job.config.minEfsm 
 				? jc.getMinimisedEGraph(fullname, self).init
 				: jc.getEGraph(fullname, self).init;
@@ -209,7 +209,7 @@ public class StateChannelApiGenerator extends ApiGen
 	
 	protected Module getMainModule()
 	{
-		return this.job.getContext().getMainModule();
+		return this.job.getJobContext().getMainModule();
 	}
 	
 	protected void addTypeDecl(TypeBuilder tb)

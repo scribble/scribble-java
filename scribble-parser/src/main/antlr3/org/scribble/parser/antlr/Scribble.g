@@ -568,15 +568,21 @@ globalprotocoldeclmodifiers:
 
 //	GLOBAL_KW PROTOCOL_KW simpleprotocolname roledecllist
 globalprotocolheader:
-	GLOBAL_KW PROTOCOL_KW gprotocolname roledecllist
+	GLOBAL_KW PROTOCOL_KW gprotocolnamenode roledecllist
 ->
-	^(GLOBALPROTOCOLHEADER ^(GPROTOCOLNAME gprotocolname) ^(PARAMETERDECLLIST) roledecllist)
+	^(GLOBALPROTOCOLHEADER gprotocolnamenode ^(PARAMETERDECLLIST) roledecllist)
 |
-	GLOBAL_KW PROTOCOL_KW gprotocolname parameterdecllist roledecllist
+	GLOBAL_KW PROTOCOL_KW gprotocolnamenode parameterdecllist roledecllist
 ->
-	^(GLOBALPROTOCOLHEADER ^(GPROTOCOLNAME gprotocolname) parameterdecllist roledecllist)
+	^(GLOBALPROTOCOLHEADER gprotocolnamenode parameterdecllist roledecllist)
 ;
 //	GLOBAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist roledecllist
+
+gprotocolnamenode:
+	gprotocolname
+->
+	^(GPROTOCOLNAME gprotocolname) 
+;
 
 roledecllist:
 	'(' roledecl (',' roledecl)* ')'
@@ -787,13 +793,13 @@ globalinterrupt:
  * Section 3.7.9 Global Do
  */
 globaldo:
-	DO_KW protocolname roleinstantiationlist ';'
+	DO_KW gprotocolnamenode roleinstantiationlist ';'
 ->
-	^(GLOBALDO protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
+	^(GLOBALDO gprotocolnamenode ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
-	DO_KW protocolname argumentinstantiationlist roleinstantiationlist ';'
+	DO_KW gprotocolnamenode argumentinstantiationlist roleinstantiationlist ';'
 ->
-	^(GLOBALDO protocolname argumentinstantiationlist roleinstantiationlist)
+	^(GLOBALDO gprotocolnamenode argumentinstantiationlist roleinstantiationlist)
 ;
 
 roleinstantiationlist:
@@ -803,9 +809,9 @@ roleinstantiationlist:
 ;
 
 roleinstantiation:
-	rolename
+	rolenamenode
 ->
-	^(ROLEINSTANTIATION rolename)  // FIXME: not consistent with arginstas/payloadeles
+	^(ROLEINSTANTIATION rolenamenode)  // TODO: inconsistent with arginstas/payloadeles
 ;
 
 argumentinstantiationlist:

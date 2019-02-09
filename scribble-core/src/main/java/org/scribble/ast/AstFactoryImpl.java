@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -423,7 +424,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier)
+	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind,
+			String identifier)
 	{
 		NameNode<? extends Kind> snn = null;
 		
@@ -456,7 +458,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source, K kind, String... elems)
+	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(
+			CommonTree source, K kind, String... elems)
 	{
 		QualifiedNameNode<? extends Kind> qnn = null;
 		if (kind.equals(SigKind.KIND))
@@ -490,10 +493,12 @@ public class AstFactoryImpl implements AstFactory
 		{
 			throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
+		System.out.println("rrrr: " + kind + " ,, " + Arrays.toString(elems));
 		return castNameNode(kind, del(qnn, createDefaultDelegate()));
 	}
 	
-	protected static <T extends NameNode<K>, K extends Kind> T castNameNode(K kind, NameNode<? extends Kind> n)
+	protected static <T extends NameNode<K>, K extends Kind> T castNameNode(
+			K kind, NameNode<? extends Kind> n)
 	{
 		if (!n.toName().getKind().equals(kind))
 		{

@@ -95,7 +95,7 @@ public class InlinedProtocolUnfolder
 				ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
 				this.job.debugPrintln("\n[DEBUG] Unfolded inlined protocol "
 						+ pd.getFullMemberName(
-								this.job.getContext().getModule(getModuleContext().root))
+								this.job.getJobContext().getModule(getModuleContext().root))
 						+ ":\n" + ((ProtocolDefDel) pd.getDefChild().del())
 								.getInlinedProtocolDef());
 			}

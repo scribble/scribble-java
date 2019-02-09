@@ -142,7 +142,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 	{
 		AstFactory af = proj.job.config.af;
 
-		Module root = proj.job.getContext().getModule(proj.getModuleContext().root);
+		Module root = proj.job.getJobContext().getModule(proj.getModuleContext().root);
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		GProtocolHeader gph = gpd.getHeaderChild();
 		Role self = proj.peekSelf();
@@ -207,7 +207,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 	private static void validateByScribble(Job job, GProtocolName fullname,
 			boolean fair) throws ScribbleException
 	{
-		JobContext jc = job.getContext();
+		JobContext jc = job.getJobContext();
 		SGraph graph = (fair) 
 				? jc.getSGraph(fullname)
 				: jc.getUnfairSGraph(fullname);
@@ -218,7 +218,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 	private static void validateBySpin(Job job, GProtocolName fullname)
 			throws ScribbleException
 	{
-		JobContext jc = job.getContext();
+		JobContext jc = job.getJobContext();
 		Module mod = jc.getModule(fullname.getPrefix());
 		GProtocolDecl gpd = (GProtocolDecl) mod
 				.getProtocolDeclChild(fullname.getSimpleName());

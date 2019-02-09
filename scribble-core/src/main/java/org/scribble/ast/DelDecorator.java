@@ -74,12 +74,12 @@ public interface DelDecorator
 	//<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(UnaryPayloadElem<K> e);
 
 	/*GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
-	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);
+	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);*/
 	
-	RoleArgList RoleArgList(CommonTree source, List<RoleArg> roles);
-	RoleArg RoleArg(CommonTree source, RoleNode role);
-	NonRoleArgList NonRoleArgList(CommonTree source, List<NonRoleArg> args);
-	NonRoleArg NonRoleArg(CommonTree source, NonRoleArgNode arg);*/
+	void RoleArgList(RoleArgList rs);
+	void RoleArg(RoleArg r);
+	void NonRoleArgList(NonRoleArgList as);
+	void NonRoleArg(NonRoleArg a);
 
 	/*<K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier);
 	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source, K kind, String... elems);*/

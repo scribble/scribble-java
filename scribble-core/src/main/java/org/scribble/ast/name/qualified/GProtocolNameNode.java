@@ -27,7 +27,7 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 	}
 
 	// Tree#dupNode constructor
-	protected GProtocolNameNode(GProtocolNameNode node)//, String...elems)
+	public GProtocolNameNode(GProtocolNameNode node)//, String...elems)
 	{
 		super(node);
 	}
@@ -82,6 +82,7 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 	
 	
 	
+	@Deprecated
 	public GProtocolNameNode(CommonTree source, String... ns)
 	{
 		super(source, ns);
