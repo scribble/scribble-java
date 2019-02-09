@@ -89,7 +89,6 @@ public abstract class InteractionSeq<K extends ProtocolKind>
 	@Override
 	public String toString()
 	{
-		System.out.println("ttt: " + getChildren());
 		return getInteractNodeChildren().stream().map(i -> i.toString())
 				.collect(Collectors.joining("\n"));
 	}

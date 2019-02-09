@@ -13,37 +13,37 @@
  */
 package org.scribble.type;
 
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
-import org.scribble.type.kind.Kind;
-import org.scribble.type.kind.NonRoleArgKind;
-import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
-public class SubprotocolSig
+// Immutable
+public class SubprotoSig
 {
-	public ProtocolName<? extends ProtocolKind> fmn;
-	//public Scope scope;
-	public List<Role> roles;
-	public List<Arg<? extends Kind>> args;
+	public final ProtocolName<?> fullname;
+	// public Scope scope;
+	public final List<Role> roles;  // i.e., roles (and args) are ordered
+	public final List<Arg<?>> args;
 
-	//public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role> roles, List<Argument<? extends Kind>> args)
-	public SubprotocolSig(ProtocolName<? extends ProtocolKind> fmn, List<Role> roles, List<Arg<? extends NonRoleArgKind>> args)
+	// public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role>
+	// roles, List<Argument<? extends Kind>> args)
+	public SubprotoSig(ProtocolName<?> fullname,
+			List<Role> roles, List<Arg<?>> args)
 	{
-		this.fmn = fmn;
-		//this.scope = scope;
-		this.roles = new LinkedList<>(roles);
-		this.args = new LinkedList<>(args);
+		this.fullname = fullname;
+		// this.scope = scope;
+		this.roles = Collections.unmodifiableList(roles);
+		this.args = Collections.unmodifiableList(args);
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
 		int hash = 1093;
-		hash = 31 * hash + this.fmn.hashCode();
-		//hash = 31 * hash + this.scope.hashCode();
+		hash = 31 * hash + this.fullname.hashCode();
+		// hash = 31 * hash + this.scope.hashCode();
 		hash = 31 * hash + this.roles.hashCode();
 		hash = 31 * hash + this.args.hashCode();
 		return hash;
@@ -56,22 +56,23 @@ public class SubprotocolSig
 		{
 			return true;
 		}
-		//if (o == null || this.getClass() != o.getClass())
-		if (!(o instanceof SubprotocolSig))
+		if (!(o instanceof SubprotoSig))
 		{
 			return false;
 		}
-		SubprotocolSig subsig = (SubprotocolSig) o;
-		return this.fmn.equals(subsig.fmn) //&& this.scope.equals(subsig.scope)
+		SubprotoSig subsig = (SubprotoSig) o;
+		return this.fullname.equals(subsig.fullname) // &&
+																									// this.scope.equals(subsig.scope)
 				&& this.roles.equals(subsig.roles) && this.args.equals(subsig.args);
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		String args = this.args.toString();
 		String roles = this.roles.toString();
-		return //this.scope + ":" + 
-				this.fmn + "<" + args.substring(1, args.length() - 1) + ">(" + roles.substring(1, roles.length() - 1) + ")";
+		return // this.scope + ":" +
+				this.fullname + "<" + args.substring(1, args.length() - 1) + ">("
+						+ roles.substring(1, roles.length() - 1) + ")";
 	}
 }

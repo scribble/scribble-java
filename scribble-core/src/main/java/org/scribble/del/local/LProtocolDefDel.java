@@ -27,7 +27,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ProtocolDefDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotocolSig;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.visit.ProtocolDefInliner;
@@ -53,7 +53,7 @@ public class LProtocolDefDel extends ProtocolDefDel
 			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		CommonTree blame = ((LProtocolDecl) parent).getHeaderChild().getSource();  // Cf., GProtocolDefDel
-		SubprotocolSig subsig = inl.peekStack();
+		SubprotoSig subsig = inl.peekStack();
 		LProtocolDef def = (LProtocolDef) visited;
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) def
 				.getBlockChild().del().env()).getTranslation();

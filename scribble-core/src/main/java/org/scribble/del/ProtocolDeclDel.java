@@ -20,7 +20,7 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ProtocolDeclContext;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotocolSig;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.ProtocolName;
@@ -72,7 +72,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind>
 	public void enterProtocolInlining(ScribNode parent, ScribNode child,
 			ProtocolDefInliner inl) throws ScribbleException
 	{
-		SubprotocolSig subsig = inl.peekStack();  // SubprotocolVisitor has already entered subprotocol
+		SubprotoSig subsig = inl.peekStack();  // SubprotocolVisitor has already entered subprotocol
 		inl.setSubprotocolRecVar(subsig);
 	}
 

@@ -22,7 +22,7 @@ import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotocolSig;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.visit.SubprotocolVisitor;
@@ -86,7 +86,7 @@ public class UnguardedChoiceDoProjectionChecker
 				ProtocolName<?> fullname = getModuleContext()
 						.checkProtocolDeclDependencyFullName(
 								ld.getProtocolNameNode().toName());
-				SubprotocolSig sig = new SubprotocolSig(fullname,
+				SubprotoSig sig = new SubprotoSig(fullname,
 						ld.getRoleListChild().getRoles(),
 						ld.getNonRoleListChild().getArguments());
 				

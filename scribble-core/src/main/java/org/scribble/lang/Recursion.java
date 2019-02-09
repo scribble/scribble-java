@@ -22,7 +22,7 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 	@Override
 	public String toString()
 	{
-		return "rec " + this.recvar + " {" + this.body + "}";
+		return "rec " + this.recvar + " {\n" + this.body + "\n}";
 	}
 
 	@Override

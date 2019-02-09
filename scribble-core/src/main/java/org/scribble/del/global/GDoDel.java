@@ -29,7 +29,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.global.GTypeTranslator;
-import org.scribble.type.SubprotocolSig;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.ProtocolName;
@@ -73,7 +73,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 	public GDo visitForSubprotocolInlining(ProtocolDefInliner builder, GDo child)
 	{
 		CommonTree blame = child.getSource();
-		SubprotocolSig subsig = builder.peekStack();
+		SubprotoSig subsig = builder.peekStack();
 		RecVarNode recvar = (RecVarNode) builder.job.config.af.SimpleNameNode(blame,
 				RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
 		GContinue inlined = builder.job.config.af.GContinue(blame, recvar);
@@ -88,7 +88,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		if (!inl.isCycle())
 		{
 			CommonTree blame = visited.getSource();
-			SubprotocolSig subsig = inl.peekStack();
+			SubprotoSig subsig = inl.peekStack();
 			RecVarNode recvar = (RecVarNode) inl.job.config.af.SimpleNameNode(blame,
 					RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 			GInteractionSeq gis = (GInteractionSeq) (((InlineProtocolEnv) inl

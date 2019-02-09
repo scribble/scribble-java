@@ -29,14 +29,14 @@ import org.scribble.del.local.LDoDel;
 import org.scribble.job.Job;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotocolSig;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.RecVar;
 import org.scribble.visit.env.InlineProtocolEnv;
 
 public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 {
-	private Map<SubprotocolSig, RecVar> subprotoRecVars = new HashMap<>();  // RecVars translation for subprotocol inlining
+	private Map<SubprotoSig, RecVar> subprotoRecVars = new HashMap<>();  // RecVars translation for subprotocol inlining
 
 	private Map<RecVar, Integer> recvars = new HashMap<>();  // Original RecVars, nesting count
 	
@@ -45,22 +45,22 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 		super(job);
 	}
 	
-	public RecVar getSubprotocolRecVar(SubprotocolSig subsig)
+	public RecVar getSubprotocolRecVar(SubprotoSig subsig)
 	{
 		return this.subprotoRecVars.get(subsig);
 	}
 
-	public void setSubprotocolRecVar(SubprotocolSig subsig)
+	public void setSubprotocolRecVar(SubprotoSig subsig)
 	{
 		this.subprotoRecVars.put(subsig, new RecVar(newSubprotocoolRecVarId(subsig)));
 	}
 
-	public void removeSubprotocolRecVar(SubprotocolSig subsig)
+	public void removeSubprotocolRecVar(SubprotoSig subsig)
 	{
 		this.subprotoRecVars.remove(subsig);
 	}
 	
-	private String newSubprotocoolRecVarId(SubprotocolSig sig)
+	private String newSubprotocoolRecVarId(SubprotoSig sig)
 	{
 		// TODO: Hacky, reconsider
 		return sig.toString()

@@ -34,7 +34,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotocolSig;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
@@ -60,7 +60,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	public LDo visitForSubprotocolInlining(ProtocolDefInliner builder, LDo child)
 	{
 		CommonTree blame = child.getSource();  // Cf., GDoDel
-		SubprotocolSig subsig = builder.peekStack();
+		SubprotoSig subsig = builder.peekStack();
 		RecVarNode recvar = (RecVarNode) builder.job.config.af.SimpleNameNode(blame,
 				RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
 		LContinue inlined = builder.job.config.af.LContinue(blame, recvar);
@@ -75,7 +75,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		if (!dinlr.isCycle())
 		{
 			CommonTree blame = visited.getSource();  // Cf., GDoDel
-			SubprotocolSig subsig = dinlr.peekStack();
+			SubprotoSig subsig = dinlr.peekStack();
 			RecVarNode recvar = (RecVarNode) dinlr.job.config.af.SimpleNameNode(blame,
 					RecVarKind.KIND, dinlr.getSubprotocolRecVar(subsig).toString());
 			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) dinlr

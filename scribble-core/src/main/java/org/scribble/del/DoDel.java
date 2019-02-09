@@ -22,7 +22,7 @@ import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotocolSig;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
@@ -126,7 +126,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		super.enterProtocolInlining(parent, child, inl);
 		if (!inl.isCycle())
 		{
-			SubprotocolSig subsig = inl.peekStack();  // SubprotocolVisitor has already entered subprotocol
+			SubprotoSig subsig = inl.peekStack();  // SubprotocolVisitor has already entered subprotocol
 			inl.setSubprotocolRecVar(subsig);
 		}
 	}

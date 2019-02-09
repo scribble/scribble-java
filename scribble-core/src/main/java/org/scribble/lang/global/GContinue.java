@@ -1,7 +1,10 @@
 package org.scribble.lang.global;
 
+import java.util.Deque;
+
 import org.scribble.job.Job;
 import org.scribble.lang.Continue;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 
@@ -20,7 +23,7 @@ public class GContinue extends Continue<Global> implements GType
 	}
 
 	@Override
-	public GContinue getInlined(Job job)
+	public GContinue getInlined(Job job, Deque<SubprotoSig> stack)
 	{
 		org.scribble.ast.global.GContinue source =
 				(org.scribble.ast.global.GContinue) getSource();  // CHECKME: or empty source?

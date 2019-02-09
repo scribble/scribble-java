@@ -1,13 +1,15 @@
 package org.scribble.lang.global;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.job.Job;
 import org.scribble.lang.Seq;
 import org.scribble.lang.SessType;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 
 public class GSeq extends Seq<Global>
@@ -27,11 +29,22 @@ public class GSeq extends Seq<Global>
 	}
 
 	@Override
-	public GSeq getInlined(Job job)
+	public GSeq getInlined(Job job, Deque<SubprotoSig> stack)
 	{
 		GInteractionSeq source = getSource();  // CHECKME: or empty source?
-		List<SessType<Global>> elems = this.elems.stream()
-				.map(x -> x.getInlined(job)).collect(Collectors.toList());
+		List<SessType<Global>> elems = new LinkedList<>();
+		for (SessType<Global> e : this.elems)
+		{
+			SessType<Global> e1 = e.getInlined(job, stack);
+			if (e1 instanceof GSeq)
+			{
+				elems.addAll(((GSeq) e1).elems);  // Inline GSeq's returned by GDo::getInlined
+			}
+			else
+			{
+				elems.add(e1);
+			}
+		}
 		return reconstruct(source, elems);
 	}
 

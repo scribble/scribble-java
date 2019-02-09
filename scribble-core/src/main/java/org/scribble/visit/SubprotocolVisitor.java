@@ -38,7 +38,7 @@ import org.scribble.job.Job;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.Arg;
-import org.scribble.type.SubprotocolSig;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.NonRoleArgKind;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
@@ -50,7 +50,7 @@ import org.scribble.visit.env.Env;
 
 public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 {
-	protected List<SubprotocolSig> stack = new LinkedList<>();
+	protected List<SubprotoSig> stack = new LinkedList<>();
 	
 	// name in the current protocoldecl scope -> the original name node in the root protocol decl
 	protected Stack<Map<Role, RoleNode>> rolemaps = new Stack<>();
@@ -240,7 +240,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	private void pushSubprotocolSig(ProtocolName<?> fullname, List<Role> roleargs,
 			List<Arg<? extends NonRoleArgKind>> nonroleargs)
 	{
-		SubprotocolSig subsig = new SubprotocolSig(fullname, roleargs, nonroleargs);
+		SubprotoSig subsig = new SubprotoSig(fullname, roleargs, nonroleargs);
 		this.stack.add(subsig);
 	}
 	
@@ -271,7 +271,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		int size = this.stack.size();
 		if (size > 1)
 		{
-			SubprotocolSig last = this.stack.get(size - 1);
+			SubprotoSig last = this.stack.get(size - 1);
 			for (int i = size - 2; i >= 0; i--)
 			{
 				if (this.stack.get(i).equals(last))  // TODO CHECKME: doesn't support recursive scoped subprotocols, i.e. cycle detection not general enough?
@@ -283,7 +283,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		return -1;
 	}
 	
-	public List<SubprotocolSig> getStack()
+	public List<SubprotoSig> getStack()
 	{
 		return this.stack;
 	}
@@ -293,7 +293,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		return this.stack.isEmpty();
 	}
 
-	public SubprotocolSig peekStack()
+	public SubprotoSig peekStack()
 	{
 		return this.stack.get(this.stack.size() - 1);
 	}

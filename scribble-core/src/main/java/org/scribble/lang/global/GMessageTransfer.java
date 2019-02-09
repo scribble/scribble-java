@@ -1,8 +1,11 @@
 package org.scribble.lang.global;
 
+import java.util.Deque;
+
 import org.scribble.job.Job;
 import org.scribble.lang.MessageTransfer;
 import org.scribble.type.Message;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
@@ -25,7 +28,7 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	}
 
 	@Override
-	public GType getInlined(Job job)
+	public GType getInlined(Job job, Deque<SubprotoSig> stack)
 	{
 		return this;
 	}
