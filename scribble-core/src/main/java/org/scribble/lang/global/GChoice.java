@@ -4,8 +4,8 @@ import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.job.Job;
 import org.scribble.lang.Choice;
+import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
@@ -26,11 +26,19 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	}
 
 	@Override
-	public GChoice getInlined(Job job, Deque<SubprotoSig> stack)
+	public GChoice substitute(Substitutions<Role> subs)
+	{
+		List<GSeq> blocks = this.blocks.stream().map(x -> x.substitute(subs))
+				.collect(Collectors.toList());
+		return reconstruct(getSource(), subs.apply(this.subj), blocks);
+	}
+
+	@Override
+	public GChoice getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
 		org.scribble.ast.global.GChoice source =
 				(org.scribble.ast.global.GChoice) getSource();  // CHECKME: or empty source?
-		List<GSeq> collect = this.blocks.stream().map(x -> x.getInlined(job, stack))
+		List<GSeq> collect = this.blocks.stream().map(x -> x.getInlined(t, stack))
 				.collect(Collectors.toList());
 		return new GChoice(source, this.subj, collect);
 	}

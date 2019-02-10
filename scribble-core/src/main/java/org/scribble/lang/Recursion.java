@@ -1,5 +1,6 @@
 package org.scribble.lang;
 
+import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.RecVar;
 
@@ -9,7 +10,9 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 	public final RecVar recvar;
 	public final B body;
 
-	public Recursion(org.scribble.ast.Recursion<K> source, RecVar recvar, B body)
+	public Recursion(//org.scribble.ast.Recursion<K> source, 
+			ProtocolKindNode<K> source,  // Due to inlining, protodecl -> rec
+			RecVar recvar, B body)
 	{
 		super(source);
 		this.recvar = recvar;
@@ -17,7 +20,7 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 	}
 
 	public abstract Recursion<K, B> reconstruct(
-			org.scribble.ast.Recursion<K> source, RecVar recvar, B body);
+			org.scribble.ast.ProtocolKindNode<K> source, RecVar recvar, B body);
 	
 	@Override
 	public String toString()

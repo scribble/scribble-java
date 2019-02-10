@@ -16,6 +16,7 @@ package org.scribble.job;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
@@ -26,11 +27,13 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.lang.global.GProtocol;
+import org.scribble.lang.global.GRecursion;
 import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
 import org.scribble.model.global.SGraph;
 import org.scribble.model.global.SGraphBuilderUtil;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
@@ -106,6 +109,10 @@ public class Job
 		/*runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
 		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building*/
+
+		System.out.println("\nfff1: " + this.jctxt.getMainModule());
+
+		//runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		
 		// FIXME TODO: refactor into a runVisitorPassOnAllModules for SimpleVisitor (and add operation to ModuleDel)
 		for (ModuleName fullname : this.jctxt.getFullModuleNames())
@@ -118,17 +125,19 @@ public class Job
 				this.jctxt.addIntermediate(g.fullname, g);
 				System.out.println("\nparsed:\n" + gpd + "\nintermed:\n" + g);
 				
-				GProtocol inlined = g.getInlined(this, new LinkedList<>());
+				SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, 
+						Collections.emptyList());  // FIXME
+				Deque<SubprotoSig> stack = new LinkedList<>();
+				stack.push(sig);
+				GRecursion inlined = g.getInlined(t, stack);
 				System.out.println("inlined:\n" + inlined);
-				this.jctxt.addInlined(inlined.fullname, inlined);
+				this.jctxt.addInlined(g.fullname, inlined);
+				
+				//HERE: convert proto/do to rec/continue, and dismab rec var names (use sig stack for ctxt)
 			}
 		}
-
-		System.out.println("fff1: " + this.jctxt.getMainModule());
-
-		//runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		
-		System.out.println("fff2: " + this.jctxt.getMainModule());
+		System.out.println("\nfff2: " + this.jctxt.getMainModule());
 		
 		//runUnfoldingPass();
 	}

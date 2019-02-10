@@ -29,10 +29,11 @@ public interface ScribNode extends Tree
 {
 	//void setChildren(List<ScribNode> children);  // protected
 
-  // Returns a deep clone but with fresh dels (i.e. dels not copied) -- use the af to build with fresh dels
+  // Returns a deep clone but with fresh dels (i.e. dels not copied) -- use the af to build with fresh dels -- XXX
 	// i.e. recursively using AstFactory to rebuild the whole subtree
 	// Cf. node specific reconstructs, retain (i.e. share) the existing del -- so dels must be immutable (except for Envs)
 	//ScribNode clone(AstFactory af);
+
 	ScribNode clone();
 
 	ScribDel del();

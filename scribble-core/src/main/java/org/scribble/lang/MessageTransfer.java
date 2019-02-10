@@ -1,6 +1,10 @@
 package org.scribble.lang;
 
+import java.util.Deque;
+
+import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.type.Message;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 
@@ -23,6 +27,25 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 	public abstract MessageTransfer<K> reconstruct(
 			org.scribble.ast.MessageTransfer<K> source, Role src, Message msg,
 			Role dst);
+
+	@Override
+	public MessageTransfer<K> substitute(Substitutions<Role> subs)
+	{
+		return reconstruct(getSource(), subs.apply(this.src), this.msg,
+				subs.apply(this.dst));
+	}
+
+	@Override
+	public MessageTransfer<K> getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	{
+		return this;
+	}
+	
+	@Override
+	public org.scribble.ast.MessageTransfer<K> getSource()
+	{
+		return (org.scribble.ast.MessageTransfer<K>) super.getSource();
+	}
 	
 	@Override
 	public String toString()

@@ -6,11 +6,12 @@ import java.util.List;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.job.Job;
 import org.scribble.lang.Seq;
 import org.scribble.lang.SessType;
+import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
+import org.scribble.type.name.Role;
 
 public class GSeq extends Seq<Global>
 		implements GType
@@ -29,13 +30,19 @@ public class GSeq extends Seq<Global>
 	}
 
 	@Override
-	public GSeq getInlined(Job job, Deque<SubprotoSig> stack)
+	public GSeq substitute(Substitutions<Role> subs)
+	{
+		return (GSeq) super.substitute(subs);
+	}
+
+	@Override
+	public GSeq getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
 		GInteractionSeq source = getSource();  // CHECKME: or empty source?
 		List<SessType<Global>> elems = new LinkedList<>();
 		for (SessType<Global> e : this.elems)
 		{
-			SessType<Global> e1 = e.getInlined(job, stack);
+			SessType<Global> e1 = e.getInlined(t, stack);
 			if (e1 instanceof GSeq)
 			{
 				elems.addAll(((GSeq) e1).elems);  // Inline GSeq's returned by GDo::getInlined

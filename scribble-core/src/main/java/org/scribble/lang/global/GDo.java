@@ -4,11 +4,12 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 
-import org.scribble.job.Job;
 import org.scribble.lang.Do;
+import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 public class GDo extends Do<Global, GProtocolName> implements GType
@@ -27,18 +28,25 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 	}
 
 	@Override
-	public GType getInlined(Job job, Deque<SubprotoSig> stack)
+	public GDo substitute(Substitutions<Role> subs)
+	{
+		return (GDo) super.substitute(subs);
+	}
+
+	@Override
+	public GType getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
 		GProtocolName fullname = this.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, this.roles, 
 				Collections.emptyList());  // FIXME
 		if (stack.contains(sig))
 		{
-			return this;
+			RecVar rv = t.makeRecVar(sig);
+			return new GContinue(getSource(), rv);
 		}
 		stack.push(sig);
-		return job.getJobContext().getIntermediate(fullname).body.getInlined(job,
-				stack);  // i.e. returning a GSeq -- rely on parent GSeq to inline
+		return t.job.getJobContext().getIntermediate(fullname).body
+				.getInlined(t, stack);  // i.e. returning a GSeq -- rely on parent GSeq to inline
 	}
 
 	@Override

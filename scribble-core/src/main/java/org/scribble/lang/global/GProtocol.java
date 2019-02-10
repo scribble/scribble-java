@@ -1,23 +1,25 @@
 package org.scribble.lang.global;
 
-import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.job.Job;
 import org.scribble.lang.Protocol;
+import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 public class GProtocol extends
 		Protocol<Global, GProtocolName, GSeq> implements GType
 {
 	public GProtocol(ProtocolDecl<Global> source, GProtocolName fullname,
-			List<Role> roles, // List<?> params,
+			List<Role> roles, 
+			// List<?> params,  // TODO
 			GSeq body)
 	{
 		super(source, fullname, roles, body);
@@ -29,17 +31,27 @@ public class GProtocol extends
 	{
 		return new GProtocol(source, fullname, roles, body);
 	}
-	
-	// Top-level call should give an empty stack
-	// But stack is non-empty for recursive calls with, e.g., permuted role args
+
 	@Override
-	public GProtocol getInlined(Job job, Deque<SubprotoSig> stack)
+	public GType substitute(Substitutions<Role> subs)
 	{
-		stack.push(new SubprotoSig(this.fullname, this.roles, 
-				Collections.emptyList()));  // FIXME
+		List<Role> roles = this.roles.stream().map(x -> subs.apply(x))
+				.collect(Collectors.toList());
+		return reconstruct(getSource(), this.fullname, roles,
+				this.body.substitute(subs));
+	}
+	
+	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
+	// i.e., it gives the roles/args at the call-site
+	@Override
+	public GRecursion getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	{
+		SubprotoSig sig = stack.peek();
+		Substitutions<Role> subs = new Substitutions<>(this.roles, sig.roles);
+		GSeq body = this.body.substitute(subs).getInlined(t, stack);
 		GProtocolDecl source = getSource();  // CHECKME: or empty source?
-		GSeq body = (GSeq) this.body.getInlined(job, stack);
-		return reconstruct(source, this.fullname, this.roles, body);
+		RecVar rv = t.makeRecVar(sig);
+		return new GRecursion(source, rv, body);
 	}
 	
 	@Override

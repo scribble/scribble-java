@@ -1,22 +1,49 @@
 package org.scribble.lang;
 
+import java.util.Deque;
+
+import org.scribble.ast.ProtocolKindNode;
+import org.scribble.lang.global.GTypeTranslator;
+import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Role;
 
 public abstract class Continue<K extends ProtocolKind>
 		extends SessTypeBase<K> implements SessType<K>
 {
 	public final RecVar recvar;
 
-	public Continue(org.scribble.ast.Continue<K> source, RecVar recvar)
+	public Continue(//org.scribble.ast.Continue<K> source,
+			ProtocolKindNode<K> source,  // Due to inlining, do -> continue
+			RecVar recvar)
 	{
 		super(source);
 		this.recvar = recvar;
 	}
 
 	public abstract Continue<K> reconstruct(
-			org.scribble.ast.Continue<K> source, RecVar recvar);
+			org.scribble.ast.ProtocolKindNode<K> source, RecVar recvar);
+
+	@Override
+	public Continue<K> substitute(Substitutions<Role> subs)
+	{
+		return reconstruct(getSource(), this.recvar);
+	}
+
+	@Override
+	public Continue<K> getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	{
+		RecVar rv = t.makeRecVar(stack.peek(), this.recvar);
+		return reconstruct(getSource(), rv);
+	}
 	
+	@Override
+	public org.scribble.ast.ProtocolKindNode<K> getSource()
+	{
+		return (org.scribble.ast.ProtocolKindNode<K>) super.getSource();
+	}
+
 	@Override
 	public String toString()
 	{

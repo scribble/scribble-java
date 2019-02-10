@@ -7,11 +7,13 @@ import org.scribble.type.kind.ProtocolKind;
 public abstract class SessTypeBase<K extends ProtocolKind>
 		implements SessType<K>
 {
-	private final ProtocolKindNode<K> source;
+	private final ProtocolKindNode<K> source;  // Currently null for "generated" terms (cf. hasSource)
 
 	public SessTypeBase(ProtocolKindNode<K> source)
 	{
-		this.source = source;
+		@SuppressWarnings("unchecked")  // FIXME:
+		ProtocolKindNode<K> clone = (ProtocolKindNode<K>) source.clone();  // ScribNodes are mutable
+		this.source = clone;
 	}
 
 	@Override

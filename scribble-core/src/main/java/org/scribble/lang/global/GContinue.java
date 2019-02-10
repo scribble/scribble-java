@@ -2,38 +2,40 @@ package org.scribble.lang.global;
 
 import java.util.Deque;
 
-import org.scribble.job.Job;
+import org.scribble.ast.ProtocolKindNode;
 import org.scribble.lang.Continue;
+import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Role;
 
 public class GContinue extends Continue<Global> implements GType
 {
-	public GContinue(org.scribble.ast.Continue<Global> source, RecVar recvar)
+	public GContinue(//org.scribble.ast.Continue<Global> source, 
+			ProtocolKindNode<Global> source,  // Due to inlining, do -> continue
+			RecVar recvar)
 	{
 		super(source, recvar);
 	}
 	
 	@Override
-	public GContinue reconstruct(org.scribble.ast.Continue<Global> source,
+	public GContinue reconstruct(org.scribble.ast.ProtocolKindNode<Global> source,
 			RecVar recvar)
 	{
 		return new GContinue(source, recvar);
 	}
 
 	@Override
-	public GContinue getInlined(Job job, Deque<SubprotoSig> stack)
+	public GContinue substitute(Substitutions<Role> subs)
 	{
-		org.scribble.ast.global.GContinue source =
-				(org.scribble.ast.global.GContinue) getSource();  // CHECKME: or empty source?
-		return new GContinue(source, this.recvar);
+		return (GContinue) super.substitute(subs);
 	}
-	
+
 	@Override
-	public org.scribble.ast.global.GContinue getSource()
+	public GContinue getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
-		return (org.scribble.ast.global.GContinue) super.getSource();
+		return (GContinue) super.getInlined(t, stack);
 	}
 
 	@Override

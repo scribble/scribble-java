@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.Role;
 
 public abstract class Seq<K extends ProtocolKind>
 		extends SessTypeBase<K>
@@ -20,6 +21,20 @@ public abstract class Seq<K extends ProtocolKind>
 	
 	public abstract Seq<K> reconstruct(InteractionSeq<K> source,
 			List<? extends SessType<K>> elems);
+
+	@Override
+	public Seq<K> substitute(Substitutions<Role> subs)
+	{
+		List<? extends SessType<K>> elems = this.elems.stream()
+				.map(x -> x.substitute(subs)).collect(Collectors.toList());
+		return reconstruct(getSource(), elems);
+	}
+
+	@Override
+	public InteractionSeq<K> getSource() 
+	{
+		return (InteractionSeq<K>) super.getSource();
+	}
 	
 	@Override
 	public String toString()
