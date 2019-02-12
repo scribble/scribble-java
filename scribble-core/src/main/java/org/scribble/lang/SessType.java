@@ -1,10 +1,6 @@
 package org.scribble.lang;
 
-import java.util.Deque;
-
 import org.scribble.ast.ProtocolKindNode;
-import org.scribble.lang.global.GTypeTranslator;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 
@@ -24,7 +20,8 @@ public interface SessType<K extends ProtocolKind>
 	// Pre: stack.peek gives call-site sig, i.e., call-site roles/args
 	// CHECKME: OK to (re-)use GTypeTranslator for inlining?
 	// Stack not "internalised", must be "manually" managed -- cf., SubprotocolVisitor
-	SessType<K> getInlined(GTypeTranslator t, Deque<SubprotoSig> stack);  // FIXME: generalise for locals
+	//SessType<K> getInlined(GTypeTranslator t, Deque<SubprotoSig> stack);  // FIXME: generalise for locals
+	SessType<K> getInlined(SessTypeInliner i);
 	
 	// FIXME: repeat recvar names, including non-shadowing (e.g., choice cases)
 	SessType<K> unfoldAllOnce(SessTypeUnfolder<K, ? extends Seq<K>> u);

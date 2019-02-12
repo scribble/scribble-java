@@ -1,10 +1,6 @@
 package org.scribble.lang;
 
-import java.util.Deque;
-
 import org.scribble.ast.ProtocolKindNode;
-import org.scribble.lang.global.GTypeTranslator;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -32,9 +28,10 @@ public abstract class Continue<K extends ProtocolKind>
 	}
 
 	@Override
-	public Continue<K> getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	public Continue<K> getInlined(SessTypeInliner i)
 	{
-		RecVar rv = t.makeRecVar(stack.peek(), this.recvar);
+		RecVar rv = i.makeRecVar(//stack.peek(), 
+				this.recvar);
 		return reconstruct(getSource(), rv);
 	}
 	

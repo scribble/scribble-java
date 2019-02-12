@@ -1,14 +1,13 @@
 package org.scribble.lang.global;
 
-import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.lang.Choice;
 import org.scribble.lang.Seq;
+import org.scribble.lang.SessTypeInliner;
 import org.scribble.lang.SessTypeUnfolder;
 import org.scribble.lang.Substitutions;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
@@ -36,10 +35,10 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	}
 
 	@Override
-	public GChoice getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	public GChoice getInlined(SessTypeInliner i )//GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
 		org.scribble.ast.global.GChoice source = getSource();  // CHECKME: or empty source?
-		List<GSeq> blocks = this.blocks.stream().map(x -> x.getInlined(t, stack))
+		List<GSeq> blocks = this.blocks.stream().map(x -> x.getInlined(i))
 				.collect(Collectors.toList());
 		return reconstruct(source, this.subj, blocks);
 	}

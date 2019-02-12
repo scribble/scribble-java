@@ -1,13 +1,11 @@
 package org.scribble.lang.global;
 
-import java.util.Deque;
-
 import org.scribble.lang.MessageTransfer;
 import org.scribble.lang.Seq;
+import org.scribble.lang.SessTypeInliner;
 import org.scribble.lang.SessTypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.Message;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
@@ -36,9 +34,9 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	}
 
 	@Override
-	public GMessageTransfer getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	public GMessageTransfer getInlined(SessTypeInliner i)//, Deque<SubprotoSig> stack)
 	{
-		return (GMessageTransfer) super.getInlined(t, stack);
+		return (GMessageTransfer) super.getInlined(i);
 	}
 
 	@Override

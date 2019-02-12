@@ -1,10 +1,10 @@
 package org.scribble.lang.global;
 
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
 
 import org.scribble.lang.Do;
+import org.scribble.lang.SessTypeInliner;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
@@ -34,22 +34,22 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 	}
 
 	@Override
-	public GType getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	public GType getInlined(SessTypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		Substitutions<Role> subs = 
-				new Substitutions<>(this.roles, stack.peek().roles);  // FIXME: args
+				new Substitutions<>(this.roles, i.peek().roles);  // FIXME: args
 		GProtocolName fullname = this.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, this.roles, 
 				Collections.emptyList());  // FIXME
-		if (stack.contains(sig))
+		if (i.hasSig(sig))
 		{
-			RecVar rv = t.makeRecVar(sig);
+			RecVar rv = i.makeRecVar(sig);
 			return new GContinue(getSource(), rv);
 		}
-		stack.push(sig);
-		GSeq inlined = t.job.getJobContext().getIntermediate(fullname).body.substitute(subs)
-				.getInlined(t, stack);  // i.e. returning a GSeq -- rely on parent GSeq to inline
-		stack.pop();
+		i.pushSig(sig);
+		GSeq inlined = i.job.getJobContext().getIntermediate(fullname).body.substitute(subs)
+				.getInlined(i);//, stack);  // i.e. returning a GSeq -- rely on parent GSeq to inline
+		i.popSig();
 		return inlined;
 	}
 

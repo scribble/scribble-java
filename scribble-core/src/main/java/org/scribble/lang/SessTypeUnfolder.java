@@ -6,7 +6,7 @@ import java.util.Map;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.RecVar;
 
-public class SessTypeUnfolder<K extends ProtocolKind, B extends Seq<K>>
+public abstract class SessTypeUnfolder<K extends ProtocolKind, B extends Seq<K>>
 {
 	private final Map<RecVar, B> recs = new HashMap<>(); 
 

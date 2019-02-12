@@ -1,10 +1,6 @@
 package org.scribble.lang;
 
-import java.util.Deque;
-
-import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.type.Message;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 
@@ -36,7 +32,7 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 	}
 
 	@Override
-	public MessageTransfer<K> getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	public MessageTransfer<K> getInlined(SessTypeInliner i)
 	{
 		return this;
 	}

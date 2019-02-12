@@ -1,14 +1,10 @@
 package org.scribble.lang;
 
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.lang.global.GTypeTranslator;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
-import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 

@@ -16,8 +16,6 @@ package org.scribble.job;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +24,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.del.local.LProtocolDeclDel;
+import org.scribble.lang.SessTypeInliner;
 import org.scribble.lang.global.GProtocol;
 import org.scribble.lang.global.GRecursion;
 import org.scribble.lang.global.GType;
@@ -129,9 +128,10 @@ public class Job
 				
 				SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, 
 						Collections.emptyList());  // FIXME
-				Deque<SubprotoSig> stack = new LinkedList<>();
-				stack.push(sig);
-				GRecursion inlined = g.getInlined(t, stack);
+				//Deque<SubprotoSig> stack = new LinkedList<>();
+				SessTypeInliner i = new SessTypeInliner(this);
+				i.pushSig(sig);  // TODO: factor into constructor
+				GRecursion inlined = g.getInlined(i);
 				System.out.println("\ninlined:\n" + inlined);
 				this.jctxt.addInlined(g.fullname, inlined);
 				
@@ -167,7 +167,7 @@ public class Job
 			}
 		}*/
 		
-		//HERE  WF (unfolding? unguarded-unfolder -- and lazy-unfolder-with-choice-pruning, e.g., bad.wfchoice.enabling.threeparty.Test02), projection, validation
+		//HERE WF (unfolding? unguarded-unfolder -- and lazy-unfolder-with-choice-pruning, e.g., bad.wfchoice.enabling.threeparty.Test02), projection, validation
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module

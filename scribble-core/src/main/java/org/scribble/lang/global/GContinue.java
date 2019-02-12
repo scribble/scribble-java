@@ -1,13 +1,11 @@
 package org.scribble.lang.global;
 
-import java.util.Deque;
-
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.lang.Continue;
 import org.scribble.lang.Seq;
+import org.scribble.lang.SessTypeInliner;
 import org.scribble.lang.SessTypeUnfolder;
 import org.scribble.lang.Substitutions;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -35,9 +33,9 @@ public class GContinue extends Continue<Global> implements GType
 	}
 
 	@Override
-	public GContinue getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	public GContinue getInlined(SessTypeInliner i)//, Deque<SubprotoSig> stack)
 	{
-		return (GContinue) super.getInlined(t, stack);
+		return (GContinue) super.getInlined(i);
 	} 
 
 	@Override

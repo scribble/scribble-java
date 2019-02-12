@@ -1,12 +1,12 @@
 package org.scribble.lang.global;
 
-import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.lang.Protocol;
+import org.scribble.lang.SessTypeInliner;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
@@ -44,13 +44,13 @@ public class GProtocol extends
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
-	public GRecursion getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	public GRecursion getInlined(SessTypeInliner i)//, Deque<SubprotoSig> stack)
 	{
-		SubprotoSig sig = stack.peek();
+		SubprotoSig sig = i.peek();
 		Substitutions<Role> subs = new Substitutions<>(this.roles, sig.roles);  // FIXME: args
-		GSeq body = this.body.substitute(subs).getInlined(t, stack);
+		GSeq body = this.body.substitute(subs).getInlined(i);//, stack);
 		GProtocolDecl source = getSource();  // CHECKME: or empty source?
-		RecVar rv = t.makeRecVar(sig);
+		RecVar rv = i.makeRecVar(sig);
 		return new GRecursion(source, rv, body);
 	}
 	

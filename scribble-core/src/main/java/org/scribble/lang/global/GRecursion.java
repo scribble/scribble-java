@@ -1,13 +1,11 @@
 package org.scribble.lang.global;
 
-import java.util.Deque;
-
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.lang.Recursion;
 import org.scribble.lang.Seq;
+import org.scribble.lang.SessTypeInliner;
 import org.scribble.lang.SessTypeUnfolder;
 import org.scribble.lang.Substitutions;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -35,11 +33,12 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 
 	@Override
-	public GRecursion getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
+	public GRecursion getInlined(SessTypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		org.scribble.ast.ProtocolKindNode<Global> source = getSource();  // CHECKME: or empty source?
-		GSeq body = this.body.getInlined(t, stack);
-		RecVar rv = t.makeRecVar(stack.peek(), this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
+		GSeq body = this.body.getInlined(i);//, stack);
+		RecVar rv = i.makeRecVar(//stack.peek(), 
+				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
 		return reconstruct(source, rv, body);
 	}
 
