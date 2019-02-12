@@ -8,6 +8,7 @@ import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.lang.Seq;
 import org.scribble.lang.SessType;
+import org.scribble.lang.SessTypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
@@ -46,6 +47,26 @@ public class GSeq extends Seq<Global>
 			if (e1 instanceof GSeq)
 			{
 				elems.addAll(((GSeq) e1).elems);  // Inline GSeq's returned by GDo::getInlined
+			}
+			else
+			{
+				elems.add(e1);
+			}
+		}
+		return reconstruct(source, elems);
+	}
+
+	@Override
+	public GSeq unfoldAllOnce(SessTypeUnfolder<Global, ? extends Seq<Global>> u)
+	{
+		GInteractionSeq source = getSource();
+		List<SessType<Global>> elems = new LinkedList<>();
+		for (SessType<Global> e : this.elems)
+		{
+			SessType<Global> e1 = e.unfoldAllOnce(u);
+			if (e1 instanceof Seq<?>)
+			{
+				elems.addAll(((Seq<Global>) e1).elems);
 			}
 			else
 			{

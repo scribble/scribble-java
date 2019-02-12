@@ -47,7 +47,7 @@ public class GProtocol extends
 	public GRecursion getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
 		SubprotoSig sig = stack.peek();
-		Substitutions<Role> subs = new Substitutions<>(this.roles, sig.roles);
+		Substitutions<Role> subs = new Substitutions<>(this.roles, sig.roles);  // FIXME: args
 		GSeq body = this.body.substitute(subs).getInlined(t, stack);
 		GProtocolDecl source = getSource();  // CHECKME: or empty source?
 		RecVar rv = t.makeRecVar(sig);

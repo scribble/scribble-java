@@ -4,6 +4,8 @@ import java.util.Deque;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.lang.Continue;
+import org.scribble.lang.Seq;
+import org.scribble.lang.SessTypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
@@ -36,8 +38,15 @@ public class GContinue extends Continue<Global> implements GType
 	public GContinue getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
 		return (GContinue) super.getInlined(t, stack);
-	}
+	} 
 
+	@Override
+	public GRecursion unfoldAllOnce(SessTypeUnfolder<Global, ? extends Seq<Global>> u)
+	{
+		GTypeUnfolder gu = (GTypeUnfolder) u;
+		return new GRecursion(getSource(), this.recvar, gu.getRec(this.recvar));  // CHECKME: Continue (not Recursion) as the source of the unfolding
+	}
+ 
 	@Override
 	public int hashCode()
 	{

@@ -36,6 +36,8 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 	@Override
 	public GType getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
+		Substitutions<Role> subs = 
+				new Substitutions<>(this.roles, stack.peek().roles);  // FIXME: args
 		GProtocolName fullname = this.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, this.roles, 
 				Collections.emptyList());  // FIXME
@@ -45,8 +47,10 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 			return new GContinue(getSource(), rv);
 		}
 		stack.push(sig);
-		return t.job.getJobContext().getIntermediate(fullname).body
+		GSeq inlined = t.job.getJobContext().getIntermediate(fullname).body.substitute(subs)
 				.getInlined(t, stack);  // i.e. returning a GSeq -- rely on parent GSeq to inline
+		stack.pop();
+		return inlined;
 	}
 
 	@Override

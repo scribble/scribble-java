@@ -69,6 +69,7 @@ public class UnfoldingEnv extends Env<UnfoldingEnv>
 		return copy;
 	}
 	
+	// Disable unfold upon encountering a guarding action for current choice context
 	public UnfoldingEnv disableUnfold()
 	{	
 		UnfoldingEnv copy = copy();

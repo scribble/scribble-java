@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.lang.Choice;
+import org.scribble.lang.Seq;
+import org.scribble.lang.SessTypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
@@ -36,11 +38,19 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	@Override
 	public GChoice getInlined(GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
-		org.scribble.ast.global.GChoice source =
-				(org.scribble.ast.global.GChoice) getSource();  // CHECKME: or empty source?
-		List<GSeq> collect = this.blocks.stream().map(x -> x.getInlined(t, stack))
+		org.scribble.ast.global.GChoice source = getSource();  // CHECKME: or empty source?
+		List<GSeq> blocks = this.blocks.stream().map(x -> x.getInlined(t, stack))
 				.collect(Collectors.toList());
-		return new GChoice(source, this.subj, collect);
+		return reconstruct(source, this.subj, blocks);
+	}
+
+	@Override
+	public GChoice unfoldAllOnce(SessTypeUnfolder<Global, ? extends Seq<Global>> u)
+	{
+		org.scribble.ast.global.GChoice source = getSource();  // CHECKME: or empty source?
+		List<GSeq> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
+				.collect(Collectors.toList());
+		return reconstruct(source, this.subj, blocks);
 	}
 	
 	@Override

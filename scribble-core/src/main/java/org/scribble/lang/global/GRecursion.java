@@ -4,6 +4,8 @@ import java.util.Deque;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.lang.Recursion;
+import org.scribble.lang.Seq;
+import org.scribble.lang.SessTypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
@@ -37,8 +39,21 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	{
 		org.scribble.ast.ProtocolKindNode<Global> source = getSource();  // CHECKME: or empty source?
 		GSeq body = this.body.getInlined(t, stack);
-		RecVar rv = t.makeRecVar(stack.peek(), this.recvar);
+		RecVar rv = t.makeRecVar(stack.peek(), this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
 		return reconstruct(source, rv, body);
+	}
+
+	@Override
+	public GType unfoldAllOnce(SessTypeUnfolder<Global, ? extends Seq<Global>> u)
+	{
+		if (!u.hasRec(this.recvar))
+		{
+			GTypeUnfolder gu = (GTypeUnfolder) u;
+			gu.pushRec(this.recvar, this.body);  // Never "popped", relying on recvar disamb by inliner -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
+			GType unf = (GType) this.body.unfoldAllOnce(gu);
+			return unf;
+		}
+		return this;
 	}
 
 	@Override

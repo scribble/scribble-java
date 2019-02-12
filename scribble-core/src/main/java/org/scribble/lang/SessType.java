@@ -23,7 +23,11 @@ public interface SessType<K extends ProtocolKind>
 	//
 	// Pre: stack.peek gives call-site sig, i.e., call-site roles/args
 	// CHECKME: OK to (re-)use GTypeTranslator for inlining?
+	// Stack not "internalised", must be "manually" managed -- cf., SubprotocolVisitor
 	SessType<K> getInlined(GTypeTranslator t, Deque<SubprotoSig> stack);  // FIXME: generalise for locals
+	
+	// FIXME: repeat recvar names, including non-shadowing (e.g., choice cases)
+	SessType<K> unfoldAllOnce(SessTypeUnfolder<K, ? extends Seq<K>> u);
 	
 	// Call this using: them.canEquals(this) 
 	boolean canEquals(Object o);

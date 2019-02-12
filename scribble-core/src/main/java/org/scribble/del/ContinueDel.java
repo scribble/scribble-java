@@ -44,7 +44,7 @@ public abstract class ContinueDel extends SimpleInteractionNodeDel
 	{
 		Continue<?> cont = (Continue<?>) visited;
 		RecVar rv = cont.getRecVarChild().toName();
-		if (unf.isContinueUnguarded(rv))  // Without this, graph building becomes sensitive to the order of choice blocks (specifically, the relative position were the side effect (re-set entry to rec state) of an unguarded continue is performed)
+		if (unf.isContinueUnguarded(rv))  // Without this, graph building becomes sensitive to the order of choice blocks (specifically, the relative position where the side effect (re-set entry to rec state) of an unguarded continue is performed)
 		{
 			Recursion<?> tmp = unf.getRecVar(rv);
 			if (tmp == null)  // Hacky?  for recursive unfolding of cached blocks

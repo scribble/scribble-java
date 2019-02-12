@@ -28,7 +28,9 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.lang.global.GProtocol;
 import org.scribble.lang.global.GRecursion;
+import org.scribble.lang.global.GType;
 import org.scribble.lang.global.GTypeTranslator;
+import org.scribble.lang.global.GTypeUnfolder;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
 import org.scribble.model.global.SGraph;
@@ -130,10 +132,14 @@ public class Job
 				Deque<SubprotoSig> stack = new LinkedList<>();
 				stack.push(sig);
 				GRecursion inlined = g.getInlined(t, stack);
-				System.out.println("inlined:\n" + inlined);
+				System.out.println("\ninlined:\n" + inlined);
 				this.jctxt.addInlined(g.fullname, inlined);
 				
-				//HERE: convert proto/do to rec/continue, and dismab rec var names (use sig stack for ctxt)
+				GTypeUnfolder u1 = new GTypeUnfolder();
+				//GTypeUnfolder u2 = new GTypeUnfolder();
+				GType unf = (GType) inlined.unfoldAllOnce(u1);//.unfoldAllOnce(u2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
+				System.out.println("\nunfolded:\n" + unf);
+				
 			}
 		}
 		
@@ -160,6 +166,8 @@ public class Job
 				runVisitorPassOnAllModules(GProtocolValidator.class);
 			}
 		}*/
+		
+		//HERE  WF (unfolding? unguarded-unfolder -- and lazy-unfolder-with-choice-pruning, e.g., bad.wfchoice.enabling.threeparty.Test02), projection, validation
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
