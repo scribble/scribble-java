@@ -9,7 +9,7 @@ import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
 public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
-		extends SessTypeBase<K> implements SessType<K>
+		extends STypeBase<K> implements SType<K>
 {
 	public final N proto;  // Currently disamb'd to fullname by GTypeTranslator (see GDoDel::translate)
 	public final List<Role> roles;  // Ordered role args; pre: size > 1

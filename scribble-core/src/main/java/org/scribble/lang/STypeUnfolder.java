@@ -6,16 +6,16 @@ import java.util.Map;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.RecVar;
 
-public abstract class SessTypeUnfolder<K extends ProtocolKind, B extends Seq<K>>
+public class STypeUnfolder<K extends ProtocolKind>
 {
-	private final Map<RecVar, B> recs = new HashMap<>(); 
+	private final Map<RecVar, Seq<K>> recs = new HashMap<>(); 
 
-	public SessTypeUnfolder()
+	public STypeUnfolder()
 	{
 
 	}
 
-	public void pushRec(RecVar rv, B body)
+	public void pushRec(RecVar rv, Seq<K> body)
 	{
 		if (this.recs.containsKey(rv))
 		{
@@ -29,7 +29,7 @@ public abstract class SessTypeUnfolder<K extends ProtocolKind, B extends Seq<K>>
 		return this.recs.containsKey(rv);
 	}
 	
-	public B getRec(RecVar rv)
+	public Seq<K> getRec(RecVar rv)
 	{
 		return this.recs.get(rv);
 	}

@@ -6,7 +6,7 @@ import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 public abstract class Continue<K extends ProtocolKind>
-		extends SessTypeBase<K> implements SessType<K>
+		extends STypeBase<K> implements SType<K>
 {
 	public final RecVar recvar;
 
@@ -28,7 +28,7 @@ public abstract class Continue<K extends ProtocolKind>
 	}
 
 	@Override
-	public Continue<K> getInlined(SessTypeInliner i)
+	public Continue<K> getInlined(STypeInliner i)
 	{
 		RecVar rv = i.makeRecVar(//stack.peek(), 
 				this.recvar);

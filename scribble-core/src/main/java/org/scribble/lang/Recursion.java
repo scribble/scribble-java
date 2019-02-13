@@ -5,7 +5,7 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.RecVar;
 
 public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
-		extends SessTypeBase<K> implements SessType<K>
+		extends STypeBase<K> implements SType<K>
 {
 	public final RecVar recvar;
 	public final B body;

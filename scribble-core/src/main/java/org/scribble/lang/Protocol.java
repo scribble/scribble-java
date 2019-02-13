@@ -10,7 +10,7 @@ import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
 public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>, B extends Seq<K>>
-		extends SessTypeBase<K> 
+		extends STypeBase<K> 
 {
 	public final N fullname;
 	public final List<Role> roles;  // Ordered role params; pre: size >= 2

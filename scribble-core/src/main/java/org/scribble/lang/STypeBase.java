@@ -4,12 +4,12 @@ import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
 
 // SessTypeBase is to SessType as ScribNodeBase is to ScribNode
-public abstract class SessTypeBase<K extends ProtocolKind>
-		implements SessType<K>
+public abstract class STypeBase<K extends ProtocolKind>
+		implements SType<K>
 {
 	private final ProtocolKindNode<K> source;  // Currently null for "generated" terms (cf. hasSource)
 
-	public SessTypeBase(ProtocolKindNode<K> source)
+	public STypeBase(ProtocolKindNode<K> source)
 	{
 		@SuppressWarnings("unchecked")  // FIXME:
 		ProtocolKindNode<K> clone = (ProtocolKindNode<K>) source.clone();  // ScribNodes are mutable
@@ -45,11 +45,11 @@ public abstract class SessTypeBase<K extends ProtocolKind>
 		{
 			return true;
 		}
-		if (!(o instanceof SessTypeBase))
+		if (!(o instanceof STypeBase))
 		{
 			return false;
 		}
-		SessTypeBase<?> them = (SessTypeBase<?>) o;
+		STypeBase<?> them = (STypeBase<?>) o;
 		return them.canEquals(this);
 	}
 }

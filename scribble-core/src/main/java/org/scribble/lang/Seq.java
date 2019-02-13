@@ -9,23 +9,23 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 
 public abstract class Seq<K extends ProtocolKind>
-		extends SessTypeBase<K>
+		extends STypeBase<K>
 {
-	public final List<? extends SessType<K>> elems;  // GType or LType
+	public final List<? extends SType<K>> elems;  // GType or LType
 
-	public Seq(InteractionSeq<K> source, List<? extends SessType<K>> elems)
+	public Seq(InteractionSeq<K> source, List<? extends SType<K>> elems)
 	{
 		super(source);
 		this.elems = Collections.unmodifiableList(elems);
 	}
 	
 	public abstract Seq<K> reconstruct(InteractionSeq<K> source,
-			List<? extends SessType<K>> elems);
+			List<? extends SType<K>> elems);
 
 	@Override
 	public Seq<K> substitute(Substitutions<Role> subs)
 	{
-		List<? extends SessType<K>> elems = this.elems.stream()
+		List<? extends SType<K>> elems = this.elems.stream()
 				.map(x -> x.substitute(subs)).collect(Collectors.toList());
 		return reconstruct(getSource(), elems);
 	}

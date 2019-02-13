@@ -8,7 +8,7 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 
 public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
-		extends SessTypeBase<K> implements SessType<K>
+		extends STypeBase<K> implements SType<K>
 {
 	public final Role subj;
 	public final List<B> blocks;  // Pre: size > 0

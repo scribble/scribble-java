@@ -19,6 +19,7 @@ import org.scribble.type.kind.RoleKind;
 public class Role extends AbstractName<RoleKind>
 {
 	public static final Role EMPTY_ROLE = new Role();
+	public static final Role SELF = new Role("self");  // TODO Factor out constant
 
 	private static final long serialVersionUID = 1L;
 

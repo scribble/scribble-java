@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.scribble.lang.Do;
-import org.scribble.lang.SessTypeInliner;
+import org.scribble.lang.STypeInliner;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
@@ -34,7 +34,7 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 	}
 
 	@Override
-	public GType getInlined(SessTypeInliner i)//, Deque<SubprotoSig> stack)
+	public GType getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		Substitutions<Role> subs = 
 				new Substitutions<>(this.roles, i.peek().roles);  // FIXME: args

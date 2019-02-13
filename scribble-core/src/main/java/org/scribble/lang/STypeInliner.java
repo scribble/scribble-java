@@ -8,13 +8,13 @@ import org.scribble.job.Job;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.name.RecVar;
 
-public class SessTypeInliner
+public class STypeInliner
 {
 	public final Job job;
 	
 	private final Deque<SubprotoSig> stack = new LinkedList<>();
 
-	public SessTypeInliner(Job job)
+	public STypeInliner(Job job)
 	{
 		this.job = job;
 	}

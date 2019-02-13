@@ -5,7 +5,7 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 
 public abstract class MessageTransfer<K extends ProtocolKind>
-		extends SessTypeBase<K> implements SessType<K>
+		extends STypeBase<K> implements SType<K>
 {
 	public final Role src;
 	public final Message msg;
@@ -32,7 +32,7 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 	}
 
 	@Override
-	public MessageTransfer<K> getInlined(SessTypeInliner i)
+	public MessageTransfer<K> getInlined(STypeInliner i)
 	{
 		return this;
 	}

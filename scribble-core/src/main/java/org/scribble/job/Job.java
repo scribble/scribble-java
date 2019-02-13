@@ -24,17 +24,18 @@ import org.scribble.ast.Module;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.del.local.LProtocolDeclDel;
-import org.scribble.lang.SessTypeInliner;
+import org.scribble.lang.STypeInliner;
+import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.global.GProtocol;
 import org.scribble.lang.global.GRecursion;
 import org.scribble.lang.global.GType;
 import org.scribble.lang.global.GTypeTranslator;
-import org.scribble.lang.global.GTypeUnfolder;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
 import org.scribble.model.global.SGraph;
 import org.scribble.model.global.SGraphBuilderUtil;
 import org.scribble.type.SubprotoSig;
+import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
@@ -129,13 +130,13 @@ public class Job
 				SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, 
 						Collections.emptyList());  // FIXME
 				//Deque<SubprotoSig> stack = new LinkedList<>();
-				SessTypeInliner i = new SessTypeInliner(this);
+				STypeInliner i = new STypeInliner(this);
 				i.pushSig(sig);  // TODO: factor into constructor
 				GRecursion inlined = g.getInlined(i);
 				System.out.println("\ninlined:\n" + inlined);
 				this.jctxt.addInlined(g.fullname, inlined);
 				
-				GTypeUnfolder u1 = new GTypeUnfolder();
+				STypeUnfolder<Global> u1 = new STypeUnfolder<>();
 				//GTypeUnfolder u2 = new GTypeUnfolder();
 				GType unf = (GType) inlined.unfoldAllOnce(u1);//.unfoldAllOnce(u2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 				System.out.println("\nunfolded:\n" + unf);

@@ -6,9 +6,9 @@ import java.util.List;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.lang.Seq;
-import org.scribble.lang.SessType;
-import org.scribble.lang.SessTypeInliner;
-import org.scribble.lang.SessTypeUnfolder;
+import org.scribble.lang.SType;
+import org.scribble.lang.STypeInliner;
+import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
@@ -17,14 +17,14 @@ public class GSeq extends Seq<Global>
 		implements GType
 {
 	// GInteractionSeq or GBlock better as source?
-	public GSeq(InteractionSeq<Global> source, List<? extends SessType<Global>> elems)
+	public GSeq(InteractionSeq<Global> source, List<? extends SType<Global>> elems)
 	{
 		super(source, elems);
 	}
 
 	@Override
 	public GSeq reconstruct(InteractionSeq<Global> source,
-			List<? extends SessType<Global>> elems)
+			List<? extends SType<Global>> elems)
 	{
 		return new GSeq(source, elems);
 	}
@@ -36,13 +36,13 @@ public class GSeq extends Seq<Global>
 	}
 
 	@Override
-	public GSeq getInlined(SessTypeInliner i)//, Deque<SubprotoSig> stack)
+	public GSeq getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		GInteractionSeq source = getSource();  // CHECKME: or empty source?
-		List<SessType<Global>> elems = new LinkedList<>();
-		for (SessType<Global> e : this.elems)
+		List<SType<Global>> elems = new LinkedList<>();
+		for (SType<Global> e : this.elems)
 		{
-			SessType<Global> e1 = e.getInlined(i);//, stack);
+			SType<Global> e1 = e.getInlined(i);//, stack);
 			if (e1 instanceof GSeq)
 			{
 				elems.addAll(((GSeq) e1).elems);  // Inline GSeq's returned by GDo::getInlined
@@ -56,13 +56,13 @@ public class GSeq extends Seq<Global>
 	}
 
 	@Override
-	public GSeq unfoldAllOnce(SessTypeUnfolder<Global, ? extends Seq<Global>> u)
+	public GSeq unfoldAllOnce(STypeUnfolder<Global> u)
 	{
 		GInteractionSeq source = getSource();
-		List<SessType<Global>> elems = new LinkedList<>();
-		for (SessType<Global> e : this.elems)
+		List<SType<Global>> elems = new LinkedList<>();
+		for (SType<Global> e : this.elems)
 		{
-			SessType<Global> e1 = e.unfoldAllOnce(u);
+			SType<Global> e1 = e.unfoldAllOnce(u);
 			if (e1 instanceof Seq<?>)
 			{
 				elems.addAll(((Seq<Global>) e1).elems);

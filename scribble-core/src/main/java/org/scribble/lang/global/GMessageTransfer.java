@@ -1,9 +1,8 @@
 package org.scribble.lang.global;
 
 import org.scribble.lang.MessageTransfer;
-import org.scribble.lang.Seq;
-import org.scribble.lang.SessTypeInliner;
-import org.scribble.lang.SessTypeUnfolder;
+import org.scribble.lang.STypeInliner;
+import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Global;
@@ -34,13 +33,13 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	}
 
 	@Override
-	public GMessageTransfer getInlined(SessTypeInliner i)//, Deque<SubprotoSig> stack)
+	public GMessageTransfer getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		return (GMessageTransfer) super.getInlined(i);
 	}
 
 	@Override
-	public GMessageTransfer unfoldAllOnce(SessTypeUnfolder<Global, ? extends Seq<Global>> u)
+	public GMessageTransfer unfoldAllOnce(STypeUnfolder<Global> u)
 	{
 		return this;
 	}

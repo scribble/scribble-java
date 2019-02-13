@@ -2,9 +2,8 @@ package org.scribble.lang.global;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.lang.Recursion;
-import org.scribble.lang.Seq;
-import org.scribble.lang.SessTypeInliner;
-import org.scribble.lang.SessTypeUnfolder;
+import org.scribble.lang.STypeInliner;
+import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
@@ -33,7 +32,7 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 
 	@Override
-	public GRecursion getInlined(SessTypeInliner i)//, Deque<SubprotoSig> stack)
+	public GRecursion getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		org.scribble.ast.ProtocolKindNode<Global> source = getSource();  // CHECKME: or empty source?
 		GSeq body = this.body.getInlined(i);//, stack);
@@ -43,13 +42,12 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 
 	@Override
-	public GType unfoldAllOnce(SessTypeUnfolder<Global, ? extends Seq<Global>> u)
+	public GType unfoldAllOnce(STypeUnfolder<Global> u)
 	{
 		if (!u.hasRec(this.recvar))
 		{
-			GTypeUnfolder gu = (GTypeUnfolder) u;
-			gu.pushRec(this.recvar, this.body);  // Never "popped", relying on recvar disamb by inliner -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
-			GType unf = (GType) this.body.unfoldAllOnce(gu);
+			u.pushRec(this.recvar, this.body);  // Never "popped", relying on recvar disamb by inliner -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
+			GType unf = (GType) this.body.unfoldAllOnce(u);
 			return unf;
 		}
 		return this;

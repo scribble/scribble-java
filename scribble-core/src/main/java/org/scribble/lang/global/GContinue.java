@@ -2,9 +2,8 @@ package org.scribble.lang.global;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.lang.Continue;
-import org.scribble.lang.Seq;
-import org.scribble.lang.SessTypeInliner;
-import org.scribble.lang.SessTypeUnfolder;
+import org.scribble.lang.STypeInliner;
+import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
@@ -33,16 +32,18 @@ public class GContinue extends Continue<Global> implements GType
 	}
 
 	@Override
-	public GContinue getInlined(SessTypeInliner i)//, Deque<SubprotoSig> stack)
+	public GContinue getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		return (GContinue) super.getInlined(i);
 	} 
 
 	@Override
-	public GRecursion unfoldAllOnce(SessTypeUnfolder<Global, ? extends Seq<Global>> u)
+	public GRecursion unfoldAllOnce(
+			STypeUnfolder<Global> u)
 	{
-		GTypeUnfolder gu = (GTypeUnfolder) u;
-		return new GRecursion(getSource(), this.recvar, gu.getRec(this.recvar));  // CHECKME: Continue (not Recursion) as the source of the unfolding
+		return new GRecursion(getSource(), this.recvar,
+				(GSeq) u.getRec(this.recvar));
+				// CHECKME: Continue (not Recursion) as the source of the unfolding
 	}
  
 	@Override
