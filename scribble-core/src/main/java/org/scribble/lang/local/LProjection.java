@@ -5,32 +5,36 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.lang.Protocol;
 import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Local;
+import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
-public class LProtocol extends
-		Protocol<Local, LProtocolName, LSeq> implements LType
+public class LProjection extends
+		LProtocol
 {
-	public LProtocol(ProtocolDecl<Local> source, LProtocolName fullname,
+	public final GProtocolName parent;
+	public final Role self;
+	
+	public LProjection(GProtocolName parent, Role self, LProtocolName fullname,
 			List<Role> roles, 
 			// List<?> params,  // TODO
-			LSeq def)
+			LSeq body)
 	{
-		super(source, fullname, roles, def);
+		super(null, fullname, roles, body);
+		this.parent = parent;
+		this.self = self;
 	}
 
 	@Override
-	public LProtocol reconstruct(ProtocolDecl<Local> source,
-			LProtocolName fullname, List<Role> roles, LSeq def)
+	public LProjection reconstruct(ProtocolDecl<Local> source,
+			LProtocolName fullname, List<Role> roles, LSeq body)
 	{
-		return new LProtocol(source, fullname, roles, def);
+		return new LProjection(this.parent, this.self, fullname, roles, body);
 	}
 
 	@Override
@@ -56,13 +60,6 @@ public class LProtocol extends
 	}
 	
 	@Override
-	public LProtocol unfoldAllOnce(STypeUnfolder<Local> u)
-	{
-		LSeq unf = (LSeq) this.def.unfoldAllOnce(u);
-		return reconstruct(getSource(), this.fullname, this.roles, unf);
-	}
-	
-	@Override
 	public LProtocolDecl getSource()
 	{
 		return (LProtocolDecl) super.getSource();
@@ -71,13 +68,16 @@ public class LProtocol extends
 	@Override
 	public String toString()
 	{
-		return "local" + super.toString();
+		return "local protocol " + this.fullname + " projects " + this.parent
+				+ "@" + this.self + "(" + this.roles.stream().map(x -> x.toString())
+						.collect(Collectors.joining(", "))
+				+ ")" + " {\n" + this.def + "\n}";
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int hash = 11;
+		int hash = 3167;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -89,7 +89,7 @@ public class LProtocol extends
 		{
 			return true;
 		}
-		if (!(o instanceof LProtocol))
+		if (!(o instanceof LProjection))
 		{
 			return false;
 		}
@@ -99,6 +99,6 @@ public class LProtocol extends
 	@Override
 	public boolean canEquals(Object o)
 	{
-		return o instanceof LProtocol;
+		return o instanceof LProjection;
 	}
 }

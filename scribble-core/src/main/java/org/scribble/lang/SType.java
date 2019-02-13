@@ -1,5 +1,7 @@
 package org.scribble.lang;
 
+import java.util.Set;
+
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
@@ -10,6 +12,11 @@ public interface SType<K extends ProtocolKind>
 {
 	boolean hasSource();  // i.e., was parsed
 	ProtocolKindNode<K> getSource();  // Pre: hasSource
+	
+	default Set<Role> getRoles()
+	{
+		throw new RuntimeException("Unsupported for: " + this);
+	} 
 
 	SType<K> substitute(Substitutions<Role> role);
 	

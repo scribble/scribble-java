@@ -15,32 +15,33 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	public final N fullname;
 	public final List<Role> roles;  // Ordered role params; pre: size >= 2
 	//public final List<NonRoleParamNode<?>> params;  // TODO
-	public final B body;  // CHECKME: take "? extends Seq<K>" as generic param?
+	public final B def;  // CHECKME: take "? extends Seq<K>" as generic param?
 
 	public Protocol(ProtocolDecl<K> source, N fullname,
 			List<Role> roles, // List<?> params,
-			B body)
+			B def)
 	{
 		super(source);
 		this.fullname = fullname;
 		this.roles = Collections.unmodifiableList(roles);
-		this.body = body;
+		this.def = def;
 	}
 	
 	public abstract Protocol<K, N, B> reconstruct(ProtocolDecl<K> source,
-			N fullname, List<Role> roles, B body);
+			N fullname, List<Role> roles, B def);
 	
-	/*public N getFullName()
+	@Override
+	public ProtocolDecl<K> getSource()
 	{
-		return this.fullname;
-	}*/
+		return (ProtocolDecl<K>) super.getSource();
+	}
 
 	@Override
 	public String toString()
 	{
 		return " protocol " + this.fullname + "(" + this.roles.stream()
 					.map(x -> x.toString()).collect(Collectors.joining(", ")) + ")"
-				+ " {\n" + this.body + "\n}";
+				+ " {\n" + this.def + "\n}";
 	}
 	
 	@Override
@@ -50,7 +51,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 		hash = 31 * hash + super.hashCode();
 		hash = 31 * hash + this.fullname.hashCode();
 		hash = 31 * hash + this.roles.hashCode();
-		hash = 31 * hash + this.body.hashCode();
+		hash = 31 * hash + this.def.hashCode();
 		return hash;
 	}
 
@@ -68,7 +69,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 		Protocol<?, ?, ?> them = (Protocol<?, ?, ?>) o;
 		return super.equals(this)  // Does canEquals
 				&& this.fullname.equals(them.fullname) && this.roles.equals(them.roles)
-				&& this.body.equals(them.body);
+				&& this.def.equals(them.def);
 	}
 
 }

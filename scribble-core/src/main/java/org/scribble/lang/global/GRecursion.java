@@ -5,6 +5,10 @@ import org.scribble.lang.Recursion;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
+import org.scribble.lang.local.LRecursion;
+import org.scribble.lang.local.LSeq;
+import org.scribble.lang.local.LSkip;
+import org.scribble.lang.local.LType;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -51,6 +55,18 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 			return unf;
 		}
 		return this;
+	}
+
+	@Override
+	public LType project(Role self)
+	{
+		LSeq body = this.body.project(self);
+		if (body.isEmpty()
+				|| (body.elems.size() == 1 && (body.elems.get(0) instanceof RecVar)))
+		{
+			return LSkip.SKIP;
+		}
+		return new LRecursion(null, this.recvar, body);
 	}
 
 	@Override

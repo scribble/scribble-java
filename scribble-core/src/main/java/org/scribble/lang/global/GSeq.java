@@ -2,22 +2,26 @@ package org.scribble.lang.global;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.lang.Seq;
 import org.scribble.lang.SType;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
+import org.scribble.lang.Seq;
 import org.scribble.lang.Substitutions;
+import org.scribble.lang.local.LSeq;
+import org.scribble.lang.local.LSkip;
+import org.scribble.lang.local.LType;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
-public class GSeq extends Seq<Global>
-		implements GType
+public class GSeq extends Seq<Global> implements GType
 {
 	// GInteractionSeq or GBlock better as source?
-	public GSeq(InteractionSeq<Global> source, List<? extends SType<Global>> elems)
+	public GSeq(InteractionSeq<Global> source,
+			List<? extends SType<Global>> elems)
 	{
 		super(source, elems);
 	}
@@ -36,16 +40,17 @@ public class GSeq extends Seq<Global>
 	}
 
 	@Override
-	public GSeq getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public GSeq getInlined(STypeInliner i)// , Deque<SubprotoSig> stack)
 	{
-		GInteractionSeq source = getSource();  // CHECKME: or empty source?
+		GInteractionSeq source = getSource(); // CHECKME: or empty source?
 		List<SType<Global>> elems = new LinkedList<>();
 		for (SType<Global> e : this.elems)
 		{
-			SType<Global> e1 = e.getInlined(i);//, stack);
+			SType<Global> e1 = e.getInlined(i);// , stack);
 			if (e1 instanceof GSeq)
 			{
-				elems.addAll(((GSeq) e1).elems);  // Inline GSeq's returned by GDo::getInlined
+				elems.addAll(((GSeq) e1).elems); // Inline GSeq's returned by
+																					// GDo::getInlined
 			}
 			else
 			{
@@ -76,11 +81,20 @@ public class GSeq extends Seq<Global>
 	}
 
 	@Override
+	public LSeq project(Role self)
+	{
+		List<LType> elems = this.elems.stream().map(x -> ((GType) x).project(self))
+				.filter(x -> !x.equals(LSkip.SKIP))
+				.collect(Collectors.toList());
+		return new LSeq(null, elems);
+	}
+
+	@Override
 	public GInteractionSeq getSource()
 	{
 		return (GInteractionSeq) super.getSource();
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
@@ -100,7 +114,7 @@ public class GSeq extends Seq<Global>
 		{
 			return false;
 		}
-		return super.equals(o);  // Does canEquals
+		return super.equals(o); // Does canEquals
 	}
 
 	@Override

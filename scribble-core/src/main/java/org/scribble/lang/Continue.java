@@ -1,5 +1,8 @@
 package org.scribble.lang;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.RecVar;
@@ -20,6 +23,12 @@ public abstract class Continue<K extends ProtocolKind>
 
 	public abstract Continue<K> reconstruct(
 			org.scribble.ast.ProtocolKindNode<K> source, RecVar recvar);
+	
+	@Override
+	public Set<Role> getRoles()
+	{
+		return Collections.emptySet();
+	}
 
 	@Override
 	public Continue<K> substitute(Substitutions<Role> subs)

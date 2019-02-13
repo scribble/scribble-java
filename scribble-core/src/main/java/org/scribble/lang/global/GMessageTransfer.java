@@ -4,6 +4,10 @@ import org.scribble.lang.MessageTransfer;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
+import org.scribble.lang.local.LRcv;
+import org.scribble.lang.local.LSend;
+import org.scribble.lang.local.LSkip;
+import org.scribble.lang.local.LType;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
@@ -44,6 +48,27 @@ public class GMessageTransfer extends MessageTransfer<Global>
 		return this;
 	}
 	
+	@Override
+	public LType project(Role self)
+	{
+		if (this.src.equals(self))
+		{
+			/*if (this.dst.equals(self))
+			{
+				// Already checked?
+			}*/
+			return new LSend(null, this.msg, this.dst);
+		}
+		else if (this.dst.equals(self))
+		{
+			return new LRcv(null, this.src, this.msg);
+		}
+		else
+		{
+			return LSkip.SKIP;
+		}
+	}
+
 	@Override
 	public int hashCode()
 	{

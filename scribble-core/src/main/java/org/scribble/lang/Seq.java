@@ -2,6 +2,7 @@ package org.scribble.lang;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionSeq;
@@ -23,11 +24,23 @@ public abstract class Seq<K extends ProtocolKind>
 			List<? extends SType<K>> elems);
 
 	@Override
+	public Set<Role> getRoles()
+	{
+		return this.elems.stream().flatMap(x -> x.getRoles().stream())
+				.collect(Collectors.toSet());
+	}
+
+	@Override
 	public Seq<K> substitute(Substitutions<Role> subs)
 	{
 		List<? extends SType<K>> elems = this.elems.stream()
 				.map(x -> x.substitute(subs)).collect(Collectors.toList());
 		return reconstruct(getSource(), elems);
+	}
+	
+	public boolean isEmpty()
+	{
+		return this.elems.isEmpty();
 	}
 
 	@Override

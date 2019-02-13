@@ -2,7 +2,9 @@ package org.scribble.lang;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
@@ -24,6 +26,14 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 
 	public abstract Choice<K, B> reconstruct(org.scribble.ast.Choice<K> source, Role subj,
 			List<B> blocks);
+	
+	@Override
+	public Set<Role> getRoles()
+	{
+		Set<Role> res = Stream.of(this.subj).collect(Collectors.toSet());
+		this.blocks.forEach(x -> res.addAll(x.getRoles()));
+		return res;
+	}
 	
 	@Override
 	public String toString()

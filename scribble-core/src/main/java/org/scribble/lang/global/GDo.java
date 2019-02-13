@@ -6,6 +6,7 @@ import java.util.List;
 import org.scribble.lang.Do;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.Substitutions;
+import org.scribble.lang.local.LType;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
@@ -47,10 +48,17 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 			return new GContinue(getSource(), rv);
 		}
 		i.pushSig(sig);
-		GSeq inlined = i.job.getJobContext().getIntermediate(fullname).body.substitute(subs)
+		GSeq inlined = i.job.getJobContext().getIntermediate(fullname).def.substitute(subs)
 				.getInlined(i);//, stack);  // i.e. returning a GSeq -- rely on parent GSeq to inline
 		i.popSig();
 		return inlined;
+	}
+
+	@Override
+	public LType project(Role self)
+	{
+		// TODO: consider role fixing and do pruning
+		throw new RuntimeException("TODO: " + this);
 	}
 
 	@Override

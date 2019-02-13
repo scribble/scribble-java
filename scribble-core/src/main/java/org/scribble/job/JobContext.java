@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.lang.global.GProtocol;
-import org.scribble.lang.global.GRecursion;
 import org.scribble.model.endpoint.AutParser;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.global.SGraph;
@@ -55,7 +54,7 @@ public class JobContext
 	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
 	private final Map<GProtocolName, GProtocol> intermed = new HashMap<>();  // Keys are full names (though GProtocol already includes full name)
 
-	private final Map<GProtocolName, GRecursion> inlined = new HashMap<>();   // Keys are full names
+	private final Map<GProtocolName, GProtocol> inlined = new HashMap<>();   // Keys are full names
 
 	private final Map<LProtocolName, EGraph> fairEGraphs = new HashMap<>();
 	private final Map<GProtocolName, SGraph> fairSGraphs = new HashMap<>();
@@ -164,12 +163,12 @@ public class JobContext
 		return this.intermed.get(fullname);
 	}
 	
-	public void addInlined(GProtocolName fullname, GRecursion g)
+	public void addInlined(GProtocolName fullname, GProtocol g)
 	{
 		this.inlined.put(fullname, g);
 	}
 	
-	public GRecursion getInlined(GProtocolName fullname)
+	public GProtocol getInlined(GProtocolName fullname)
 	{
 		return this.inlined.get(fullname);
 	}

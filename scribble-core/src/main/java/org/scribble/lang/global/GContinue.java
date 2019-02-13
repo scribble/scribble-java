@@ -1,6 +1,7 @@
 package org.scribble.lang.global;
 
 import org.scribble.ast.ProtocolKindNode;
+import org.scribble.lang.local.LContinue;
 import org.scribble.lang.Continue;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -44,6 +45,12 @@ public class GContinue extends Continue<Global> implements GType
 		return new GRecursion(getSource(), this.recvar,
 				(GSeq) u.getRec(this.recvar));
 				// CHECKME: Continue (not Recursion) as the source of the unfolding
+	}
+
+	@Override
+	public LContinue project(Role self)
+	{
+		return new LContinue(null, this.recvar);
 	}
  
 	@Override

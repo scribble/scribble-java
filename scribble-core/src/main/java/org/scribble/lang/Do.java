@@ -25,6 +25,12 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 
 	public abstract Do<K, N> reconstruct(org.scribble.ast.Do<K> source,
 			N proto, List<Role> roles);
+	
+	/*@Override
+	public List<Role> getRoles()
+	{
+		return this.roles;  // Depends: maybe need to do actual subproto visiting, e.g., for projection
+	}*/
 
 	@Override
 	public Do<K, N> substitute(Substitutions<Role> subs)

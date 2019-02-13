@@ -27,9 +27,9 @@ import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.global.GProtocol;
-import org.scribble.lang.global.GRecursion;
 import org.scribble.lang.global.GType;
 import org.scribble.lang.global.GTypeTranslator;
+import org.scribble.lang.local.LProtocol;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
 import org.scribble.model.global.SGraph;
@@ -132,7 +132,7 @@ public class Job
 				//Deque<SubprotoSig> stack = new LinkedList<>();
 				STypeInliner i = new STypeInliner(this);
 				i.pushSig(sig);  // TODO: factor into constructor
-				GRecursion inlined = g.getInlined(i);
+				GProtocol inlined = g.getInlined(i);
 				System.out.println("\ninlined:\n" + inlined);
 				this.jctxt.addInlined(g.fullname, inlined);
 				
@@ -141,6 +141,14 @@ public class Job
 				GType unf = (GType) inlined.unfoldAllOnce(u1);//.unfoldAllOnce(u2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 				System.out.println("\nunfolded:\n" + unf);
 				
+				for (Role self : g.roles)
+				{
+					LProtocol proj = inlined.project(self);
+					System.out.println("\nprojected onto " + self + ":\n" + proj);
+					
+					Set<Role> roles = proj.def.getRoles();
+					System.out.println("\nRoles " + roles);
+				}
 			}
 		}
 		

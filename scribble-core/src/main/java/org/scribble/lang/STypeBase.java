@@ -12,7 +12,10 @@ public abstract class STypeBase<K extends ProtocolKind>
 	public STypeBase(ProtocolKindNode<K> source)
 	{
 		@SuppressWarnings("unchecked")  // FIXME:
-		ProtocolKindNode<K> clone = (ProtocolKindNode<K>) source.clone();  // ScribNodes are mutable
+		ProtocolKindNode<K> clone = (source == null)
+				? null
+				: (ProtocolKindNode<K>) source.clone();
+				// ScribNodes are mutable
 		this.source = clone;
 	}
 

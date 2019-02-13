@@ -4,6 +4,7 @@ import org.scribble.lang.SType;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
+import org.scribble.lang.local.LType;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
@@ -21,4 +22,6 @@ public interface GType extends SType<Global>
 	{
 		throw new RuntimeException("Not supported for: " + this);
 	}
+	
+	LType project(Role self);
 }

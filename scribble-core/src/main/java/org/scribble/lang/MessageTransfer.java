@@ -1,5 +1,9 @@
 package org.scribble.lang;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.scribble.type.Message;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
@@ -24,6 +28,13 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 			org.scribble.ast.MessageTransfer<K> source, Role src, Message msg,
 			Role dst);
 
+	@Override
+	public Set<Role> getRoles()
+	{
+		// Inlcudes self
+		return Stream.of(this.src, this.dst).collect(Collectors.toSet());
+	}
+	
 	@Override
 	public MessageTransfer<K> substitute(Substitutions<Role> subs)
 	{

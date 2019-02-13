@@ -7,6 +7,10 @@ import org.scribble.lang.Choice;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
+import org.scribble.lang.local.LChoice;
+import org.scribble.lang.local.LSeq;
+import org.scribble.lang.local.LSkip;
+import org.scribble.lang.local.LType;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
@@ -51,6 +55,20 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 		return reconstruct(source, this.subj, blocks);
 	}
 	
+	@Override
+	public LType project(Role self)
+	{
+		Role subj = this.subj.equals(self) ? Role.SELF : this.subj;
+		List<LSeq> blocks = this.blocks.stream().map(x -> x.project(self))
+				.filter(x -> !x.isEmpty())
+				.collect(Collectors.toList());
+		if (blocks.isEmpty())
+		{
+			return LSkip.SKIP;  // CHECKME: OK, or "empty" choice at subj still important?
+		}
+		return new LChoice(null, subj, blocks);
+	}
+
 	@Override
 	public org.scribble.ast.global.GChoice getSource()
 	{

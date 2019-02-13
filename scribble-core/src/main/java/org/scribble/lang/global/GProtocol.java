@@ -1,16 +1,22 @@
 package org.scribble.lang.global;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.lang.Protocol;
 import org.scribble.lang.STypeInliner;
+import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
+import org.scribble.lang.local.LProjection;
+import org.scribble.lang.local.LSeq;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
@@ -20,16 +26,16 @@ public class GProtocol extends
 	public GProtocol(ProtocolDecl<Global> source, GProtocolName fullname,
 			List<Role> roles, 
 			// List<?> params,  // TODO
-			GSeq body)
+			GSeq def)
 	{
-		super(source, fullname, roles, body);
+		super(source, fullname, roles, def);
 	}
 
 	@Override
 	public GProtocol reconstruct(ProtocolDecl<Global> source,
-			GProtocolName fullname, List<Role> roles, GSeq body)
+			GProtocolName fullname, List<Role> roles, GSeq def)
 	{
-		return new GProtocol(source, fullname, roles, body);
+		return new GProtocol(source, fullname, roles, def);
 	}
 
 	@Override
@@ -38,20 +44,42 @@ public class GProtocol extends
 		List<Role> roles = this.roles.stream().map(x -> subs.apply(x))
 				.collect(Collectors.toList());
 		return reconstruct(getSource(), this.fullname, roles,
-				this.body.substitute(subs));
+				this.def.substitute(subs));
 	}
 	
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
-	public GRecursion getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public GProtocol getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		SubprotoSig sig = i.peek();
 		Substitutions<Role> subs = new Substitutions<>(this.roles, sig.roles);  // FIXME: args
-		GSeq body = this.body.substitute(subs).getInlined(i);//, stack);
-		GProtocolDecl source = getSource();  // CHECKME: or empty source?
+		GSeq body = this.def.substitute(subs).getInlined(i);//, stack);
 		RecVar rv = i.makeRecVar(sig);
-		return new GRecursion(source, rv, body);
+		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
+		GProtocolDecl source = getSource();
+		GSeq def = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));
+		return new GProtocol(source, fullname, this.roles, def);
+	}
+	
+	@Override
+	public GProtocol unfoldAllOnce(STypeUnfolder<Global> u)
+	{
+		GSeq unf = (GSeq) this.def.unfoldAllOnce(u);
+		return reconstruct(getSource(), this.fullname, this.roles, unf);
+	}
+	
+	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
+	@Override
+	public LProjection project(Role self)
+	{
+		LProtocolName fullname = new LProtocolName(this.fullname + "_" + self);
+		LSeq body = (LSeq) this.def.project(self);
+		Set<Role> tmp = body.getRoles();
+		List<Role> roles = this.roles.stream()
+				.map(x -> x.equals(self) ? Role.SELF : x).filter(x -> tmp.contains(x))
+				.collect(Collectors.toList());
+		return new LProjection(this.fullname, self, fullname, roles, body);
 	}
 	
 	@Override
