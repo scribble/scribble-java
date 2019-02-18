@@ -5,6 +5,7 @@ import org.scribble.lang.Recursion;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
+import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -51,6 +52,15 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 			return unf;
 		}
 		return this;
+	}
+	
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		b.addEntryLabel(this.recvar);
+		b.pushRecursionEntry(this.recvar, b.getEntry());
+		this.body.buildGraph(b);
+		b.popRecursionEntry(this.recvar);
 	}
 
 	@Override

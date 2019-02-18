@@ -80,6 +80,25 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 		String labs = this.config.toString();
 		return "label=\"" + this.id + ":" + labs.substring(1, labs.length() - 1) + "\"";
 	}
+
+	@Override
+	public SState getTerminal()
+	{
+		return MState.getTerminal(this);
+	}
+
+	@Override
+	public Set<SState> getReachableStates()
+	{
+		
+		return MState.getReachableStates(this);
+	}
+
+	@Override
+	public Set<SAction> getReachableActions()
+	{
+		return MState.getReachableActions(this);
+	}
 	
 	// FIXME? doesn't use super.hashCode (cf., equals)
 	@Override

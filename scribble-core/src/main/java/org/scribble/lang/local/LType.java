@@ -4,6 +4,7 @@ import org.scribble.lang.SType;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
+import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
 
@@ -22,4 +23,10 @@ public interface LType extends SType<Local>
 	{
 		throw new RuntimeException("Not supported for: " + this);
 	}
+	
+	// Uses b to builds graph "progressively" (working graph is mutable)
+	// Use EGraphBuilderUtil2::finalise for final result
+	void buildGraph(EGraphBuilderUtil2 b);
+
+	//List<EAction> getEnabling();
 }

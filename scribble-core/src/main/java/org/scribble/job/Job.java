@@ -17,6 +17,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -144,10 +145,20 @@ public class Job
 				for (Role self : g.roles)
 				{
 					LProtocol proj = inlined.project(self);
+					this.jctxt.addProjected(proj.fullname, proj);
 					System.out.println("\nprojected onto " + self + ":\n" + proj);
 					
 					Set<Role> roles = proj.def.getRoles();
 					System.out.println("\nRoles " + roles);
+				}
+				
+				for (Entry<LProtocolName, LProtocol> e : 
+						this.jctxt.getProjections().entrySet())
+				{
+					//LProtocolName lname = e.getKey();
+					LProtocol proj = e.getValue();
+					EGraph graph = proj.toEGraph(this);
+					System.out.println("\ngraph:\n" + graph.toDot());
 				}
 			}
 		}
@@ -228,7 +239,7 @@ public class Job
 		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
 		return dependencies.keySet().stream().collect(
 				Collectors.toMap(lpn -> lpn,
-						(lpn) -> this.jctxt.getModule(lpn.getPrefix())));
+						lpn -> this.jctxt.getModule(lpn.getPrefix())));
 	}
 
 	/*public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException

@@ -86,7 +86,16 @@ public class GSeq extends Seq<Global> implements GType
 		List<LType> elems = this.elems.stream().map(x -> ((GType) x).project(self))
 				.filter(x -> !x.equals(LSkip.SKIP))
 				.collect(Collectors.toList());
-		return new LSeq(null, elems);
+		return new LSeq(null, elems);  
+				// Empty seqs converted to LSkip by GChoice/Recursion projection
+				// And a WF top-level protocol cannot produce empty LSeq
+				// So a projection never contains an empty LSeq
+	}
+
+	@Override
+	public List<? extends SType<Global>> getElements()
+	{
+		return this.elems.stream().map(x -> (GType) x).collect(Collectors.toList());
 	}
 
 	@Override

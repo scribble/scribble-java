@@ -32,12 +32,14 @@ import org.scribble.type.name.RecVar;
 
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
 // Tailored to support graph building from syntactic local protocol choice and recursion
-public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState, Local>
+public class EGraphBuilderUtil2 extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
 	public final EModelFactory ef;
 
-	private final Map<RecVar, Deque<EState>> recvars = new HashMap<>();
-	//private final Map<RecVar, Deque<Set<EAction>>> enacting = new HashMap<>();  // First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
+	private final Map<RecVar, Deque<EState>> recvars = new HashMap<>();  // CHECKME: Deque is for shadowing?
+
+	// First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
+	//private final Map<RecVar, Deque<Set<EAction>>> enacting = new HashMap<>();  
 	private final Map<RecVar, Deque<List<EAction>>> enacting = new HashMap<>();
 		// CHECKME: Set sufficient? or List? (consider non-determinism -- does it matter?)
 
@@ -47,11 +49,21 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 	private final Deque<List<EState>> pred = new LinkedList<>();
 	private final Deque<List<EAction>> prev = new LinkedList<>();
 
-	public EGraphBuilderUtil(EModelFactory ef)
+	public EGraphBuilderUtil2(EModelFactory ef)
 	{
 		this.ef = ef;
 		////clear();
 		//reset();
+	}
+
+	// FIXME: cannot be reused for different protos, because of recvars and clear/reset
+	// CHECKME: refactor as factory method?  (e.g., push?)
+	public EGraphBuilderUtil2(EGraphBuilderUtil2 b)
+	{
+		this.ef = b.ef;
+		init(ef.newEState(Collections.emptySet()));
+		b.recvars.entrySet().forEach(x ->
+				this.recvars.put(x.getKey(), new LinkedList<>(x.getValue())));
 	}
 	
 	// N.B. must be called before every "new visit", including first
@@ -441,3 +453,5 @@ public class EGraphBuilderUtil extends GraphBuilderUtil<RecVar, EAction, EState,
 		return next;
 	}
 }
+
+

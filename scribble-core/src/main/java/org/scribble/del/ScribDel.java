@@ -209,7 +209,7 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child,
-			EGraphBuilder graph, ScribNode visited) throws ScribbleException
+			EGraphBuilder gb, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

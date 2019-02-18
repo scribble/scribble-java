@@ -9,6 +9,7 @@ import org.scribble.ast.InteractionSeq;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 
+// Could add B extends STTypeBase, K>, but it inflates type params quite a bit (e.g., Protocol)
 public abstract class Seq<K extends ProtocolKind>
 		extends STypeBase<K>
 {
@@ -37,6 +38,8 @@ public abstract class Seq<K extends ProtocolKind>
 				.map(x -> x.substitute(subs)).collect(Collectors.toList());
 		return reconstruct(getSource(), elems);
 	}
+
+	public abstract List<? extends SType<K>> getElements();
 	
 	public boolean isEmpty()
 	{

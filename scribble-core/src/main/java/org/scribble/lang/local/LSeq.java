@@ -1,15 +1,21 @@
 package org.scribble.lang.local;
 
+import java.util.Collections;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.local.LInteractionSeq;
-import org.scribble.lang.Seq;
 import org.scribble.lang.SType;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
+import org.scribble.lang.Seq;
 import org.scribble.lang.Substitutions;
+import org.scribble.model.endpoint.EGraphBuilderUtil2;
+import org.scribble.model.endpoint.EState;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
 
@@ -73,6 +79,48 @@ public class LSeq extends Seq<Local>
 			}
 		}
 		return reconstruct(source, elems);
+	}
+
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		EState entry = b.getEntry();
+		EState exit = b.getExit();
+		List<LType> elems = getElements();
+		if (elems.isEmpty())
+		{
+			throw new RuntimeException("Shouldn't get here: " + this);
+		}
+		//int size = elems.size();
+		//for (int i = 0; i < size; i++)
+		for (Iterator<LType> i = ((Deque<LType>) new LinkedList<>(elems))  // To avoid generic cast...
+				.descendingIterator(); i.hasNext(); )
+		{
+			LType next = i.next();
+			//if (i == size - 1)
+			if (!i.hasNext())
+			{
+				b.setExit(exit);
+				//elems.get(i).toGraph(b);
+				next.buildGraph(b);
+			}
+			else
+			{
+				EState tmp = b.ef.newEState(Collections.emptySet());
+				b.setExit(tmp);
+				//elems.get(i).toGraph(b);
+				next.buildGraph(b);
+				b.setEntry(b.getExit());
+						// CHECKME: exit may not be tmp, entry/exit can be modified, e.g. continue
+			}
+		}
+		b.setEntry(entry);
+	}
+
+	@Override
+	public List<LType> getElements()
+	{
+		return this.elems.stream().map(x -> (LType) x).collect(Collectors.toList());
 	}
 
 	@Override

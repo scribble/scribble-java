@@ -378,6 +378,25 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	}
 
 	@Override
+	public EState getTerminal()
+	{
+		return MState.getTerminal(this);
+	}
+
+	@Override
+	public Set<EState> getReachableStates()
+	{
+		
+		return MState.getReachableStates(this);
+	}
+
+	@Override
+	public Set<EAction> getReachableActions()
+	{
+		return MState.getReachableActions(this);
+	}
+
+	@Override
 	public int hashCode()
 	{
 		int hash = 83;

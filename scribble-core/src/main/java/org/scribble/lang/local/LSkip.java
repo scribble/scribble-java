@@ -3,9 +3,11 @@ package org.scribble.lang.local;
 import org.scribble.lang.STypeBase;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.Substitutions;
+import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
 
+// Used during projection -- filtered out by GSeq::projection
 public class LSkip extends STypeBase<Local> implements LType
 {
 	public static final LSkip SKIP = new LSkip();
@@ -31,6 +33,18 @@ public class LSkip extends STypeBase<Local> implements LType
 	public org.scribble.ast.local.LNode getSource()
 	{
 		return null;
+	}
+
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		throw new RuntimeException("Unsupported for: " + this);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "[skip];";
 	}
 
 	@Override

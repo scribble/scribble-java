@@ -23,4 +23,14 @@ import org.scribble.type.name.MessageId;
 public interface Message extends Arg<SigKind>
 {
 	MessageId<? extends MessageIdKind> getId();
+	
+	default boolean isMessageSig()
+	{
+		return false;
+	}
+
+	default boolean isMessageSigName()
+	{
+		return false;
+	}
 }

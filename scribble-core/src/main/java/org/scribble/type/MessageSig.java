@@ -30,6 +30,12 @@ public class MessageSig implements Message
 	}
 
 	@Override
+	public boolean isMessageSig()
+	{
+		return true;
+	}
+
+	@Override
 	public SigKind getKind()
 	{
 		return SigKind.KIND;

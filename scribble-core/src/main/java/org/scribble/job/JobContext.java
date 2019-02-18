@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.lang.global.GProtocol;
+import org.scribble.lang.local.LProtocol;
 import org.scribble.model.endpoint.AutParser;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.global.SGraph;
@@ -32,7 +33,6 @@ import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribUtil;
-import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.Projector;
 
 // Global "static" context information for a Job -- single instance per Job, should not be shared between Jobs
@@ -53,8 +53,10 @@ public class JobContext
 	
 	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
 	private final Map<GProtocolName, GProtocol> intermed = new HashMap<>();  // Keys are full names (though GProtocol already includes full name)
+	private final Map<LProtocolName, LProtocol> iprojected = new HashMap<>();  // From intermediates; keys are full names
 
-	private final Map<GProtocolName, GProtocol> inlined = new HashMap<>();   // Keys are full names
+	// CHECKME: "global WF" only?
+	private final Map<GProtocolName, GProtocol> inlined = new HashMap<>();   // Keys are full names (though GProtocol already includes full name)
 
 	private final Map<LProtocolName, EGraph> fairEGraphs = new HashMap<>();
 	private final Map<GProtocolName, SGraph> fairSGraphs = new HashMap<>();
@@ -173,6 +175,21 @@ public class JobContext
 		return this.inlined.get(fullname);
 	}
 	
+	public void addProjected(LProtocolName fullname, LProtocol l)
+	{
+		this.iprojected.put(fullname, l);
+	}
+	
+	public LProtocol getProjected(LProtocolName fullname)
+	{
+		return this.iprojected.get(fullname);
+	}
+	
+	public Map<LProtocolName, LProtocol> getProjections()
+	{
+		return Collections.unmodifiableMap(this.iprojected);
+	}
+	
 	// Make context immutable? (will need to assign updated context back to Job) -- will also need to do for Module replacing
 	public void addProjections(Map<GProtocolName, Map<Role, Module>> projections)
 	{
@@ -229,6 +246,7 @@ public class JobContext
 		this.fairEGraphs.put(fullname, graph);
 	}
 	
+	// N.B. graphs built from inlined (not unfolded)
 	public EGraph getEGraph(GProtocolName fullname, Role role)
 			throws ScribbleException
 	{
@@ -237,11 +255,12 @@ public class JobContext
 		EGraph graph = this.fairEGraphs.get(fulllpn);
 		if (graph == null)
 		{
-			Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
+			/*Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
 			EGraphBuilder builder = new EGraphBuilder(this.job);  // Obtains an EGraphBuilderUtil from Job
 			proj.accept(builder);
 			graph = builder.util.finalise();
-			addEGraph(fulllpn, graph);
+			addEGraph(fulllpn, graph);*/
+			throw new RuntimeException("Shouldn't get in here: ");
 		}
 		return graph;
 	}

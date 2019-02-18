@@ -101,7 +101,9 @@ public abstract class MState<
 			}
 		}
 		//throw new RuntimeException("No such transition to remove: " + a + "->" + s);
-		throw new ScribbleException("No such transition to remove: " + a + "->" + s);  // Hack? EFSM building on bad-reachability protocols now done before actual reachability check
+		throw new ScribbleException(
+				"No such transition to remove: " + a + "->" + s);
+				// Hack? EFSM building on bad-reachability protocols now done before actual reachability check
 	}
 	
 	// The "deterministic" variant, cf., getAllActions
@@ -110,7 +112,9 @@ public abstract class MState<
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeScribbleException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minlts if available)");  // This getter checks for determinism -- affects e.g. API generation  
+			throw new RuntimeScribbleException("[TODO] Non-deterministic state: "
+					+ this.actions + "  (Try -minlts if available)");
+					// This getter checks for determinism -- affects e.g. API generation  
 		}
 		//return as;
 		return getAllActions();
@@ -141,7 +145,9 @@ public abstract class MState<
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeScribbleException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minlts if available)");  // This getter checks for determinism -- affects e.g. API generation  
+			throw new RuntimeScribbleException("[TODO] Non-deterministic state: "
+					+ this.actions + "  (Try -minlts if available)");
+					// This getter checks for determinism -- affects e.g. API generation  
 		}
 		return getAllSuccessors();
 	}
@@ -150,8 +156,8 @@ public abstract class MState<
 	public final List<S> getSuccessors(A a)
 	{
 		return IntStream.range(0, this.actions.size())
-			.filter((i) -> this.actions.get(i).equals(a))
-			.mapToObj((i) -> this.succs.get(i))
+			.filter(i -> this.actions.get(i).equals(a))
+			.mapToObj(i -> this.succs.get(i))
 			.collect(Collectors.toList());
 	}
 
@@ -164,7 +170,50 @@ public abstract class MState<
 	{
 		return this.actions.isEmpty();
 	}
+	
+	public boolean canReach(MState<L, A, S, K> s)
+	{
+		return MState.getReachableStates(this).contains(s);
+	}
 
+	@Override
+	public String toString()
+	{
+		return Integer.toString(this.id);  // CHECKME: ?
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 73;
+		hash = 31 * hash + this.id;  // N.B. using state ID only
+		return hash;
+	}
+
+	// N.B. Based only on state ID
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof MState))
+		{
+			return false;
+		}
+		return ((MState<?, ?, ?, ?>) o).canEquals(this)
+				&& this.id == ((MState<?, ?, ?, ?>) o).id;
+				// Good to use id, due to edge mutability
+	}
+	
+	protected abstract boolean canEquals(MState<?, ?, ?, ?> s);
+
+	public abstract S getTerminal();
+	public abstract Set<S> getReachableStates();
+	public abstract Set<A> getReachableActions();
+
+	// TODO: make protected
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
 			S getTerminal(S start)
 	{
@@ -172,23 +221,20 @@ public abstract class MState<
 		{
 			return start;
 		}
-		Set<S> terms = MState.getReachableStates(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
+		Set<S> terms = MState.getReachableStates(start).stream()
+				.filter(s -> s.isTerminal()).collect(Collectors.toSet());
 		if (terms.size() > 1)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + terms);
 		}
 		return (terms.isEmpty()) ? null : terms.iterator().next();  // FIXME: return empty Set instead of null?
 	}
-	
-	public boolean canReach(MState<L, A, S, K> s)
-	{
-		return MState.getReachableStates(this).contains(s);
-	}
 
 	// Note: doesn't implicitly include start (only if start is explicitly reachable from start, of course)
 	/*public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			Set<S> getAllReachable(S start)*/
-	// FIXME: cache
+	// TODO: make protected
+	// CHECKME: cache results?
 	@SuppressWarnings("unchecked")
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
 			Set<S> getReachableStates(MState<L, A, S, K> start)
@@ -226,7 +272,8 @@ public abstract class MState<
 	}
 
 	@SuppressWarnings("unchecked")
-	// FIXME: cache
+	// TODO: make protected
+	// CHECKME: cache results?
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
 			//Set<A> getAllReachableActions(S start)
 			Set<A> getReachableActions(MState<L, A, S, K> start)
@@ -240,36 +287,5 @@ public abstract class MState<
 			as.addAll(s.getAllActions());
 		}
 		return as;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hash = 73;
-		hash = 31 * hash + this.id;  // N.B. using state ID only
-		return hash;
-	}
-
-	// N.B. Based only on state ID
-	@Override
-	public boolean equals(Object o)
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (!(o instanceof MState))
-		{
-			return false;
-		}
-		return ((MState<?, ?, ?, ?>) o).canEquals(this) && this.id == ((MState<?, ?, ?, ?>) o).id;  // Good to use id, due to edge mutability
-	}
-	
-	protected abstract boolean canEquals(MState<?, ?, ?, ?> s);
-
-	@Override
-	public String toString()
-	{
-		return Integer.toString(this.id);  // FIXME -- ?
 	}
 }

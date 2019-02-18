@@ -34,6 +34,8 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 		this.blocks.forEach(x -> res.addAll(x.getRoles()));
 		return res;
 	}
+
+	//public abstract List<B> getBlocks();
 	
 	@Override
 	public String toString()

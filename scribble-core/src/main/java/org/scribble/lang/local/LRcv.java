@@ -4,14 +4,19 @@ import org.scribble.lang.MessageTransfer;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
+import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.Message;
+import org.scribble.type.MessageSig;
+import org.scribble.type.Payload;
 import org.scribble.type.kind.Local;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
 
 public class LRcv extends MessageTransfer<Local>
 		implements LType
 {
 
+	// this.dst == Role.SELF
 	public LRcv(org.scribble.ast.MessageTransfer<Local> source,
 			Role src, Message msg)
 	{
@@ -43,6 +48,17 @@ public class LRcv extends MessageTransfer<Local>
 	public LRcv unfoldAllOnce(STypeUnfolder<Local> u)
 	{
 		return this;
+	}
+
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		Role peer = this.src;
+		MessageId<?> mid = this.msg.getId();
+		Payload payload = this.msg.isMessageSig()  // CHECKME: generalise? (e.g., hasPayload)
+				? ((MessageSig) msg).payload
+				: Payload.EMPTY_PAYLOAD;
+		b.addEdge(b.getEntry(), b.ef.newEReceive(peer, mid, payload), b.getExit());
 	}
 
 	@Override

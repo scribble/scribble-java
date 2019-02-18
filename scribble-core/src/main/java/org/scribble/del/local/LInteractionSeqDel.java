@@ -94,11 +94,11 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		return child;
 	}
 
-	public LInteractionSeq visitForFsmConversion(EGraphBuilder conv,
+	public LInteractionSeq visitForFsmConversion(EGraphBuilder gb,
 			LInteractionSeq child) throws ScribbleException
 	{
-		EState entry = conv.util.getEntry();
-		EState exit = conv.util.getExit();
+		EState entry = gb.util.getEntry();
+		EState exit = gb.util.getExit();
 		//try
 		{
 			/*for (int i = child.getInteractions().size() - 1; i >= 0; i--)  // Backwards for "tau-less" continue
@@ -120,16 +120,16 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			{
 				if (i == child.getInteractNodeChildren().size() - 1)
 				{
-					conv.util.setExit(exit);
-					child.getInteractNodeChildren().get(i).accept(conv);
+					gb.util.setExit(exit);
+					child.getInteractNodeChildren().get(i).accept(gb);
 				}
 				else
 				{
 					EState tmp = // conv.util.newState(Collections.emptySet());
-							conv.util.ef.newEState(Collections.emptySet());
-					conv.util.setExit(tmp);
-					child.getInteractNodeChildren().get(i).accept(conv);
-					conv.util.setEntry(conv.util.getExit());
+							gb.util.ef.newEState(Collections.emptySet());
+					gb.util.setExit(tmp);
+					child.getInteractNodeChildren().get(i).accept(gb);
+					gb.util.setEntry(gb.util.getExit());
 							// exit may not be tmp, entry/exit can be modified, e.g. continue
 				}
 			}
@@ -139,7 +139,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			throw new RuntimeException("Shouldn't get in here: " + e);
 		}*/
 		//conv.builder.setExit(exit);
-		conv.util.setEntry(entry);
+		gb.util.setEntry(entry);
 		return child;	
 	}
 	
