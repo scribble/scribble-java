@@ -32,7 +32,8 @@ import org.scribble.type.name.RecVar;
 
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
 // Tailored to support graph building from syntactic local protocol choice and recursion
-public class EGraphBuilderUtil2 extends GraphBuilderUtil<RecVar, EAction, EState, Local>
+public class EGraphBuilderUtil2
+		extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
 	public final EModelFactory ef;
 
@@ -71,7 +72,8 @@ public class EGraphBuilderUtil2 extends GraphBuilderUtil<RecVar, EAction, EState
 	public void init(EState init)
 	{
 		clear();
-		reset(this.ef.newEState(Collections.emptySet()), this.ef.newEState(Collections.emptySet()));
+		reset(this.ef.newEState(Collections.emptySet()),
+				this.ef.newEState(Collections.emptySet()));
 	}
 
 	protected void clear()
@@ -329,7 +331,9 @@ public class EGraphBuilderUtil2 extends GraphBuilderUtil<RecVar, EAction, EState
 	}
 	
 	// succ assumed to be this.getEntry()
-	public void removeEdgeFromPredecessor(EState s, EAction a) throws ScribbleException  // Removing prev edge, to be replaced by addRecursionEdge
+	public void removeEdgeFromPredecessor(EState s, EAction a)
+			throws ScribbleException
+			// Removing prev edge, to be replaced by addRecursionEdge
 	{
 		//s.removeEdge(a, this.getEntry());
 		removeEdgeAux(s, a, this.getEntry());
@@ -396,7 +400,8 @@ public class EGraphBuilderUtil2 extends GraphBuilderUtil<RecVar, EAction, EState
 	}
 	
 	// FIXME: incomplete -- won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
-	protected void fixContinueEdges(Set<EState> seen, Map<EState, EState> map, EState curr, EState res)
+	protected void fixContinueEdges(Set<EState> seen, Map<EState, EState> map,
+			EState curr, EState res)
 	{
 		if (seen.contains(curr))
 		{

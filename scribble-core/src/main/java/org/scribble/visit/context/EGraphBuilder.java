@@ -39,11 +39,13 @@ public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 
 	// Override visitInlinedProtocol -- not visit, or else enter/exit is lost
 	@Override
-	public ScribNode visitInlinedProtocol(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visitInlinedProtocol(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		if (child instanceof LInteractionSeq)
 		{
-			return visitOverrideForLInteractionSeq((LProtocolBlock) parent, (LInteractionSeq) child);
+			return visitOverrideForLInteractionSeq((LProtocolBlock) parent,
+					(LInteractionSeq) child);
 		}
 		else if (child instanceof LChoice)
 		{
@@ -55,18 +57,22 @@ public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 		}
 	}
 
-	protected LInteractionSeq visitOverrideForLInteractionSeq(LProtocolBlock parent, LInteractionSeq child) throws ScribbleException
+	protected LInteractionSeq visitOverrideForLInteractionSeq(
+			LProtocolBlock parent, LInteractionSeq child) throws ScribbleException
 	{
-		return ((LInteractionSeqDel) child.del()).visitForFsmConversion(this, child);
+		return ((LInteractionSeqDel) child.del()).visitForFsmConversion(this,
+				child);
 	}
 
-	protected LChoice visitOverrideForLChoice(LInteractionSeq parent, LChoice child)
+	protected LChoice visitOverrideForLChoice(LInteractionSeq parent,
+			LChoice child)
 	{
 		return ((LChoiceDel) child.del()).visitForFsmConversion(this, child);
 	}
 
 	@Override
-	protected final void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void inlinedEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	//protected final void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.inlinedEnter(parent, child);
@@ -75,7 +81,8 @@ public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 	}
 	
 	@Override
-	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	//protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveEGraphBuilding(parent, child, this, visited);

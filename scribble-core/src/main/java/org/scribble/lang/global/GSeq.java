@@ -89,7 +89,7 @@ public class GSeq extends Seq<Global> implements GType
 		return new LSeq(null, elems);  
 				// Empty seqs converted to LSkip by GChoice/Recursion projection
 				// And a WF top-level protocol cannot produce empty LSeq
-				// So a projection never contains an empty LSeq
+				// So a projection never contains an empty LSeq -- i.e., "empty choice/rec" pruning unnecessary
 	}
 
 	@Override
