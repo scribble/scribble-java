@@ -33,11 +33,18 @@ module tmp.Test;
 // TODO: port forwarding version of P2 -- funny case of "session" persisting over full disconnect, should/how to correlate?
 
 
-global protocol Proto1(role A, role B, role C)
+global protocol Proto1(role A, role B)
 {
-	1() from A to B;
-	2() from B to C;
-	3() from C to A;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+		3() from A to B;
+	}
+	4() from A to B;
 }
 
 

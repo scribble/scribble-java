@@ -1,7 +1,6 @@
 package org.scribble.lang.local;
 
 import java.util.Collections;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -91,24 +90,18 @@ public class LSeq extends Seq<Local>
 		{
 			throw new RuntimeException("Shouldn't get here: " + this);
 		}
-		//int size = elems.size();
-		//for (int i = 0; i < size; i++)
-		for (Iterator<LType> i = ((Deque<LType>) new LinkedList<>(elems))  // To avoid generic cast...
-				.descendingIterator(); i.hasNext(); )
+		for (Iterator<LType> i = getElements().iterator(); i.hasNext(); )
 		{
 			LType next = i.next();
-			//if (i == size - 1)
 			if (!i.hasNext())
 			{
 				b.setExit(exit);
-				//elems.get(i).toGraph(b);
 				next.buildGraph(b);
 			}
 			else
 			{
 				EState tmp = b.ef.newEState(Collections.emptySet());
 				b.setExit(tmp);
-				//elems.get(i).toGraph(b);
 				next.buildGraph(b);
 				b.setEntry(b.getExit());
 						// CHECKME: exit may not be tmp, entry/exit can be modified, e.g. continue
