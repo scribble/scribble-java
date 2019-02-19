@@ -158,6 +158,7 @@ public class Job
 					//LProtocolName lname = e.getKey();
 					LProtocol proj = e.getValue();
 					EGraph graph = proj.toEGraph(this);
+					this.jctxt.addEGraph(proj.fullname, graph);
 					System.out.println("\ngraph:\n" + graph.toDot());
 				}
 			}

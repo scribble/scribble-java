@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
+import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
@@ -32,11 +33,13 @@ public class AntlrGProtocolDecl
 	//public static final int EXPLICIT_CONNECTIONS_FLAG_INDEX = 2;
 	public static final int MODIFIERS_CHILD_INDEX = 2;
 
-	public static GProtocolDecl parseGPrototocolDecl(AntlrToScribParser parser, CommonTree ct, AstFactory af) throws ScribParserException
+	public static GProtocolDecl parseGPrototocolDecl(AntlrToScribParser parser,
+			CommonTree ct, AstFactory af) throws ScribParserException
 	{
-		GProtocolHeader header = (GProtocolHeader) parser.parse(getHeaderChild(ct), af);
+		GProtocolHeader header = (GProtocolHeader) 
+				parser.parse(getHeaderChild(ct), af);
 		GProtocolDef def = (GProtocolDef) parser.parse(getBodyChild(ct), af);
-		List<GProtocolDecl.Modifiers> modifiers = new LinkedList<>();
+		List<ProtocolMod> modifiers = new LinkedList<>();
 		/*if (isExplicitConnections(ct))
 		{
 			modifiers.add(GProtocolDecl.Modifiers.EXPLICIT);
@@ -47,8 +50,8 @@ public class AntlrGProtocolDecl
 			{
 				switch (mod.getText())
 				{
-					case "aux":      modifiers.add(GProtocolDecl.Modifiers.AUX); break;
-					case "explicit": modifiers.add(GProtocolDecl.Modifiers.EXPLICIT); break;
+					case "aux":      modifiers.add(ProtocolMod.AUX); break;
+					case "explicit": modifiers.add(ProtocolMod.EXPLICIT); break;
 					default: throw new RuntimeException("TODO: " + mod);
 				}
 			}
@@ -74,8 +77,9 @@ public class AntlrGProtocolDecl
 	public static List<CommonTree> getModifierChildren(CommonTree ct)
 	{
 		//return (CommonTree) ct.getChild(MODIFIERS_CHILD_INDEX);
-		return ((List<?>) ((CommonTree) ct.getChild(MODIFIERS_CHILD_INDEX)).getChildren()).stream()
-				.map((c) -> (CommonTree) c).collect(Collectors.toList());
+		return ((List<?>) ((CommonTree) ct.getChild(MODIFIERS_CHILD_INDEX))
+				.getChildren()).stream().map(c -> (CommonTree) c)
+						.collect(Collectors.toList());
 	}
 
 	/*public static boolean isExplicitConnections(CommonTree ct)

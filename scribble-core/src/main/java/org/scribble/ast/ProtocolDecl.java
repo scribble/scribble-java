@@ -24,13 +24,10 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
-// FIXME: visitChildren for modifiers
+// CHECKME: visitChildren for modifiers
 public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 		implements ModuleMember, ProtocolKindNode<K>
 {
-	public static enum Modifiers { EXPLICIT, AUX }  // CHECKME: factor out?  Move to Header?
-
-	public final List<Modifiers> modifiers;
 
 	// ScribTreeAdaptor#create constructor
 	protected ProtocolDecl(Token t)
@@ -54,25 +51,32 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 
 	public boolean isExplicit()
 	{
-		return this.modifiers.contains(Modifiers.EXPLICIT);
+		return getModifierListChild().getModList().contains(ProtocolMod.EXPLICIT);
 	}
 
 	public boolean isAux()
 	{
-		return this.modifiers.contains(Modifiers.AUX);
+		return getModifierListChild().getModList().contains(ProtocolMod.AUX);
 	}
 	
+	public ProtocolModList getModifierListChild()
+	{
+		return (ProtocolModList) getChild(0);
+	}
+
 	// Implement in subclasses to avoid generic cast
 	public abstract ProtocolHeader<K> getHeaderChild();
 	public abstract ProtocolDef<K> getDefChild();
 
 	//public abstract ProtocolName<? extends ProtocolKind> getFullProtocolName(Module mod);
 
-	public ProtocolDecl<K> reconstruct(ProtocolHeader<K> header,
-			ProtocolDef<K> def)  //, ProtocolDeclContext pdcontext, Env env);
+	public ProtocolDecl<K> reconstruct(ProtocolModList mods,
+			ProtocolHeader<K> header,	ProtocolDef<K> def)  
+			//, ProtocolDeclContext pdcontext, Env env);
 	{
 		ProtocolDecl<K> pd = dupNode();
 		ScribDel del = del();
+		pd.addChild(mods);
 		pd.addChild(header);
 		pd.addChild(def);
 		pd.setDel(del);  // No copy
@@ -82,10 +86,12 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	@Override
 	public ProtocolDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
+		ProtocolModList mods = visitChildWithClassEqualityCheck(this,
+				getModifierListChild(), nv);
 		ProtocolHeader<K> header = 
 				visitChildWithClassEqualityCheck(this, getHeaderChild(), nv);
 		ProtocolDef<K> def = visitChildWithClassEqualityCheck(this, getDefChild(), nv);
-		return reconstruct(header, def);
+		return reconstruct(mods, header, def);
 	}
 	
 	public List<Role> getRoles()
@@ -111,10 +117,11 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	
 
 	// Maybe just use standard pattern, make private with casting getters -- works better (e.g. to use overridden getName)
+	public final List<ProtocolMod> modifiers;
 	private final ProtocolHeader<K> header;
 	private final ProtocolDef<K> def;
 
-	protected ProtocolDecl(CommonTree source, List<Modifiers> modifiers,
+	protected ProtocolDecl(CommonTree source, List<ProtocolMod> modifiers,
 			ProtocolHeader<K> header, ProtocolDef<K> def)
 	{
 		super(source);

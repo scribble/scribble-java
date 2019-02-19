@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
+import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.lang.global.GProtocol;
 import org.scribble.lang.local.LProtocol;
@@ -298,7 +299,7 @@ public class JobContext
 			Map<Role, EGraph> egraphs = 
 					getEGraphsForSGraphBuilding(fullname, gpd, true);
 			boolean explicit = 
-					gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT);
+					gpd.modifiers.contains(ProtocolMod.EXPLICIT);
 			//graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
 			graph = this.job.buildSGraph(fullname, egraphs, explicit);
 			addSGraph(fullname, graph);
@@ -332,7 +333,7 @@ public class JobContext
 			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
 					.getProtocolDeclChild(fullname.getSimpleName());
 			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, gpd, false);
-			boolean explicit = gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT);
+			boolean explicit = gpd.modifiers.contains(ProtocolMod.EXPLICIT);
 			//graph = SGraph.buildSGraph(this.job, fullname, this.job.createInitialSConfig(job, egraphs, explicit));
 			graph = this.job.buildSGraph(fullname, egraphs, explicit);
 			addUnfairSGraph(fullname, graph);

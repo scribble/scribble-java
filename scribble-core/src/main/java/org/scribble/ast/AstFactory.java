@@ -33,7 +33,6 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
-import org.scribble.ast.local.LRequest;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.local.LDisconnect;
@@ -47,6 +46,7 @@ import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.local.LReceive;
 import org.scribble.ast.local.LRecursion;
+import org.scribble.ast.local.LRequest;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.local.LWrapClient;
 import org.scribble.ast.local.LWrapServer;
@@ -74,81 +74,155 @@ import org.scribble.type.name.Role;
 
 public interface AstFactory
 {
-	Module Module(CommonTree source, ModuleDecl moddecl, List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos);
-	
-	MessageSigNode MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload);
+	Module Module(CommonTree source, ModuleDecl moddecl,
+			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
+			List<ProtocolDecl<?>> protos);
 
-	GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
+	MessageSigNode MessageSigNode(CommonTree source, OpNode op,
+			PayloadElemList payload);
+
+	GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name,
+			RoleNode role);
+
 	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);
 
-	//PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems);
-	PayloadElemList PayloadElemList(CommonTree source, List<PayloadElem<?>> payloadelems);
-	//PayloadElem PayloadElem(PayloadElemNameNode name);
-	//UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name);
-	//UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name);
-	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(CommonTree source, PayloadElemNameNode<K> name);
+	// PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems);
+	PayloadElemList PayloadElemList(CommonTree source,
+			List<PayloadElem<?>> payloadelems);
+
+	// PayloadElem PayloadElem(PayloadElemNameNode name);
+	// UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name);
+	// UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name);
+	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(
+			CommonTree source, PayloadElemNameNode<K> name);
 
 	ModuleDecl ModuleDecl(CommonTree source, ModuleNameNode fullmodname);
-	ImportModule ImportModule(CommonTree source, ModuleNameNode modname, ModuleNameNode alias);
-	
-	MessageSigNameDecl MessageSigNameDecl(CommonTree source, String schema, String extName, String extSource, MessageSigNameNode name);
-	DataTypeDecl DataTypeDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode name);
 
-	GProtocolDecl GProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def);
-	GProtocolHeader GProtocolHeader(CommonTree source, GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
+	ImportModule ImportModule(CommonTree source, ModuleNameNode modname,
+			ModuleNameNode alias);
+
+	MessageSigNameDecl MessageSigNameDecl(CommonTree source, String schema,
+			String extName, String extSource, MessageSigNameNode name);
+
+	DataTypeDecl DataTypeDecl(CommonTree source, String schema, String extName,
+			String extSource, DataTypeNode name);
+
+	GProtocolDecl GProtocolDecl(CommonTree source, List<ProtocolMod> modifiers,
+			GProtocolHeader header, GProtocolDef def);
+
+	GProtocolHeader GProtocolHeader(CommonTree source, GProtocolNameNode name,
+			RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
 
 	RoleDeclList RoleDeclList(CommonTree source, List<RoleDecl> rds);
-	RoleDecl RoleDecl(CommonTree source, RoleNode role);
-	//ConnectDecl ConnectDecl(CommonTree source, RoleNode src, RoleNode role);
-	NonRoleParamDeclList NonRoleParamDeclList(CommonTree source, List<NonRoleParamDecl<NonRoleParamKind>> pds);
-	<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> name);
-	
-	GProtocolDef GProtocolDef(CommonTree source, GProtocolBlock block);
-	GProtocolBlock GProtocolBlock(CommonTree source, GInteractionSeq gis);
-	GInteractionSeq GInteractionSeq(CommonTree source, List<GInteractionNode> gis);
 
-	GMessageTransfer GMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
-	GConnect GConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
-	//GConnect GConnect(CommonTree source, RoleNode src, RoleNode dest);
+	RoleDecl RoleDecl(CommonTree source, RoleNode role);
+
+	// ConnectDecl ConnectDecl(CommonTree source, RoleNode src, RoleNode role);
+	NonRoleParamDeclList NonRoleParamDeclList(CommonTree source,
+			List<NonRoleParamDecl<NonRoleParamKind>> pds);
+
+	<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(
+			CommonTree source, K kind, NonRoleParamNode<K> name);
+
+	GProtocolDef GProtocolDef(CommonTree source, GProtocolBlock block);
+
+	GProtocolBlock GProtocolBlock(CommonTree source, GInteractionSeq gis);
+
+	GInteractionSeq GInteractionSeq(CommonTree source,
+			List<GInteractionNode> gis);
+
+	GMessageTransfer GMessageTransfer(CommonTree source, RoleNode src,
+			MessageNode msg, List<RoleNode> dests);
+
+	GConnect GConnect(CommonTree source, RoleNode src, MessageNode msg,
+			RoleNode dest);
+
+	// GConnect GConnect(CommonTree source, RoleNode src, RoleNode dest);
 	GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest);
+
 	GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);
-	GChoice GChoice(CommonTree source, RoleNode subj, List<GProtocolBlock> blocks);
-	GRecursion GRecursion(CommonTree source, RecVarNode recvar, GProtocolBlock block);
+
+	GChoice GChoice(CommonTree source, RoleNode subj,
+			List<GProtocolBlock> blocks);
+
+	GRecursion GRecursion(CommonTree source, RecVarNode recvar,
+			GProtocolBlock block);
+
 	GContinue GContinue(CommonTree source, RecVarNode recvar);
-	GDo GDo(CommonTree source, RoleArgList roles, NonRoleArgList args, GProtocolNameNode proto);
-	
+
+	GDo GDo(CommonTree source, RoleArgList roles, NonRoleArgList args,
+			GProtocolNameNode proto);
+
 	RoleArgList RoleArgList(CommonTree source, List<RoleArg> roles);
+
 	RoleArg RoleArg(CommonTree source, RoleNode role);
+
 	NonRoleArgList NonRoleArgList(CommonTree source, List<NonRoleArg> args);
+
 	NonRoleArg NonRoleArg(CommonTree source, NonRoleArgNode arg);
 
-	<K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier);
-	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source, K kind, String... elems);
-	
+	<K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind,
+			String identifier);
+
+	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source,
+			K kind, String... elems);
+
 	AmbigNameNode AmbiguousNameNode(CommonTree source, String identifier);
-	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier);
+
+	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(
+			CommonTree source, K kind, String identifier);
+
 	DummyProjectionRoleNode DummyProjectionRoleNode();
 
-	LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def);  // Not currently used -- local protos not parsed, only projected
-	LProjectionDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def);  // del extends that of LProtocolDecl 
+	LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolMod> modifiers,
+			LProtocolHeader header, LProtocolDef def); 
+			// Not currently used -- local protos not parsed, only projected
 
-	LProtocolHeader LProtocolHeader(CommonTree source, LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
+	LProjectionDecl LProjectionDecl(CommonTree source,
+			List<ProtocolMod> modifiers, GProtocolName fullname, Role self,
+			LProtocolHeader header, LProtocolDef def); 
+			// del extends that of LProtocolDecl
+
+	LProtocolHeader LProtocolHeader(CommonTree source, LProtocolNameNode name,
+			RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
+
 	SelfRoleDecl SelfRoleDecl(CommonTree source, RoleNode namenode);
-	LProtocolDef LProtocolDef(CommonTree source, LProtocolBlock block);
-	LProtocolBlock LProtocolBlock(CommonTree source, LInteractionSeq seq);
-	LInteractionSeq LInteractionSeq(CommonTree source, List<LInteractionNode> actions);
 
-	LSend LSend(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LRequest LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
-	LAccept LAccept(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
+	LProtocolDef LProtocolDef(CommonTree source, LProtocolBlock block);
+
+	LProtocolBlock LProtocolBlock(CommonTree source, LInteractionSeq seq);
+
+	LInteractionSeq LInteractionSeq(CommonTree source,
+			List<LInteractionNode> actions);
+
+	LSend LSend(CommonTree source, RoleNode src, MessageNode msg,
+			List<RoleNode> dests);
+
+	LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg,
+			List<RoleNode> dests);
+
+	LRequest LRequest(CommonTree source, RoleNode src, MessageNode msg,
+			RoleNode dest);
+
+	LAccept LAccept(CommonTree source, RoleNode src, MessageNode msg,
+			RoleNode dest);
+
 	/*LConnect LConnect(CommonTree source, RoleNode src, RoleNode dest);
 	LAccept LAccept(CommonTree source, RoleNode src, RoleNode dest);*/
 	LDisconnect LDisconnect(CommonTree source, RoleNode self, RoleNode peer);
+
 	LWrapClient LWrapClient(CommonTree source, RoleNode self, RoleNode peer);
+
 	LWrapServer LWrapServer(CommonTree source, RoleNode self, RoleNode peer);
-	LChoice LChoice(CommonTree source, RoleNode subj, List<LProtocolBlock> blocks);
-	LRecursion LRecursion(CommonTree source, RecVarNode recvar, LProtocolBlock block);
+
+	LChoice LChoice(CommonTree source, RoleNode subj,
+			List<LProtocolBlock> blocks);
+
+	LRecursion LRecursion(CommonTree source, RecVarNode recvar,
+			LProtocolBlock block);
+
 	LContinue LContinue(CommonTree source, RecVarNode recvar);
-	LDo LDo(CommonTree source, RoleArgList roles, NonRoleArgList args, LProtocolNameNode proto);
+
+	LDo LDo(CommonTree source, RoleArgList roles, NonRoleArgList args,
+			LProtocolNameNode proto);
 }

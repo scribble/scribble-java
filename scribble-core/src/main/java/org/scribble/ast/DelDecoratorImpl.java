@@ -58,7 +58,7 @@ import org.scribble.del.name.RecVarNodeDel;
 import org.scribble.del.name.RoleNodeDel;
 
 
-// ast package to access protected non-defensive del setter
+// In ast package to access protected non-defensive del setter
 public class DelDecoratorImpl implements DelDecorator
 {
 	public DelDecoratorImpl()
@@ -88,6 +88,16 @@ public class DelDecoratorImpl implements DelDecorator
 			case "GLOBALPROTOCOLDECL":
 				GProtocolDecl((GProtocolDecl) n);
 				break;
+			case "GLOBALPROTOCOLDECLMODS":
+				ProtocolModList((ProtocolModList) n);
+				break;
+
+			case "GLOBALPROTOCOLHEADER":
+				GProtocolHeader((GProtocolHeader) n);
+				break;
+			case "GPROTOCOLNAME":
+				GProtocolNameNode((GProtocolNameNode) n);
+				break;
 			case "ROLEDECLLIST":
 				RoleDeclList((RoleDeclList) n);
 				break;
@@ -100,12 +110,6 @@ public class DelDecoratorImpl implements DelDecorator
 				break;
 			//case PARAMETERDECL:             return AntlrNonRoleParamDecl.parseNonRoleParamDecl(this, ct, af);*/
 
-			case "GLOBALPROTOCOLHEADER":
-				GProtocolHeader((GProtocolHeader) n);
-				break;
-			case "GPROTOCOLNAME":
-				GProtocolNameNode((GProtocolNameNode) n);
-				break;
 			case "GLOBALPROTOCOLDEF":
 				GProtocolDef((GProtocolDef) n);
 				break;
@@ -238,6 +242,12 @@ public class DelDecoratorImpl implements DelDecorator
 	public void GProtocolDecl(GProtocolDecl gpd)
 	{
 		setDel(gpd, new GProtocolDeclDel());
+	}
+
+	@Override
+	public void ProtocolModList(ProtocolModList mods)
+	{
+		setDel(mods, createDefaultDelegate());
 	}
 
 	@Override

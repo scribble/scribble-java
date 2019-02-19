@@ -150,28 +150,6 @@ tokens
 	GLOBALRECURSION = 'GLOBALRECURSION';
 	GLOBALCONTINUE = 'GLOBALCONTINUE';
 	GLOBALDO = 'GLOBALDO';
-
-	/*LOCALPROTOCOLDECL = 'local-protocol-decl';
-	LOCALROLEDECLLIST = 'local-role-decl-list';
-	LOCALROLEDECL = 'local-role-decl';
-	SELFDECL = 'self-decl';
-	LOCALPROTOCOLDEF = 'local-protocol-def';
-	LOCALPROTOCOLINSTANCE = 'local-protocol-instance';
-	LOCALPROTOCOLBLOCK = 'local-protocol-block';
-	LOCALINTERACTIONSEQUENCE = 'local-interaction-sequence';
-	LOCALMESSAGETRANSFER = 'local-message-transfer';
-	LOCALCHOICE = 'local-choice';
-	LOCALRECURSION = 'local-recursion';
-	LOCALCONTINUE = 'local-continue';
-	LOCALPARALLEL = 'local-parallel';
-	LOCALINTERRUPTIBLE = 'local-interruptible';
-	LOCALINTERRUPT = 'local-interrupt';
-	LOCALDO = 'local-do';
-	LOCALTHROWS = 'local-throws';
-	LOCALCATCHES = 'local-catches';
-	LOCALSEND = 'local-send';
-	LOCALRECEIVE = 'local-receive';*/
-	
 	
 	GPROTOCOLNAME = 'GPROTOCOLNAME';
 	ROLENAME = 'ROLENAME';
@@ -534,8 +512,6 @@ payloadelement:
  */
 protocoldecl:
 	globalprotocoldecl
-/*|
-	localprotocoldecl*/
 ;
 
 
@@ -545,11 +521,11 @@ protocoldecl:
 globalprotocoldecl:
 	globalprotocolheader globalprotocoldefinition
 ->
-	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition)
+	^(GLOBALPROTOCOLDECL ^(GLOBALPROTOCOLDECLMODS) globalprotocolheader globalprotocoldefinition)
 |
-	globalprotocoldeclmodifiers globalprotocolheader globalprotocoldefinition  // HACK: backwards compat for "implicit" connections 
+	globalprotocoldeclmodifiers globalprotocolheader globalprotocoldefinition
 ->
-	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition globalprotocoldeclmodifiers)
+	^(GLOBALPROTOCOLDECL globalprotocoldeclmodifiers globalprotocolheader globalprotocoldefinition)
 ;
 	
 globalprotocoldeclmodifiers:
@@ -831,190 +807,3 @@ argumentinstantiation:
 	qualifiedname
 ;
 
-
-/*
- * Section 3.8 Local Protocol Declarations
- * /
-localprotocoldecl:
-	localprotocolheader localprotocoldefinition
-->
-	^(LOCALPROTOCOLDECL localprotocolheader localprotocoldefinition)
-;
-
-localprotocolheader:
-	LOCAL_KW PROTOCOL_KW simpleprotocolname localroledecllist
-->
-	//simpleprotocolname EMPTY_PARAMETERDECLLIST localroledecllist
-	simpleprotocolname ^(PARAMETERDECLLIST) localroledecllist
-|
-	LOCAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist localroledecllist
-->
-	simpleprotocolname parameterdecllist localroledecllist
-;
-
-localroledecllist:
-	'(' localroledecl (',' localroledecl)* ')'
-->
-	^(LOCALROLEDECLLIST localroledecl+)
-;
-
-localroledecl:
-	roledecl
-|
-	SELF_KW rolename
-->
-	^(SELFDECL rolename)
-;
-
-
-/**
- * Section 3.8.1 Local Protocol Definitions
- * /
-localprotocoldefinition:
-	localprotocolblock
-->
-	^(LOCALPROTOCOLDEF localprotocolblock)
-;
-
-
-/**
- * Section 3.8.3 Local Interaction Blocks and Sequences
- * /
-localprotocolblock:
-	'{' localinteractionsequence '}'
-->
-	^(LOCALPROTOCOLBLOCK localinteractionsequence)
-;
-
-localinteractionsequence:
-	(localinteraction)*
-->
-	^(LOCALINTERACTIONSEQUENCE localinteraction*)
-;
-
-localinteraction:
-	localsend
-|
-	localreceive
-|
-	localchoice
-|
-	localparallel
-|
-	localrecursion
-|
-	localcontinue
-|
-	localinterruptible
-|
-	localdo
-;
-
-
-/**
- * Section 3.8.4 Local Send and Receive
- * /
-localsend:
-	message TO_KW rolename (',' rolename)* ';'
-->
-	^(LOCALSEND message rolename+)
-;
-
-localreceive:
-	message FROM_KW IDENTIFIER ';'
-->
-	^(LOCALRECEIVE message IDENTIFIER)
-;
-
-
-/**
- * Section 3.8.5 Local Choice
- * /
-localchoice:
-	CHOICE_KW AT_KW rolename localprotocolblock (OR_KW localprotocolblock)*
-->
-	^(LOCALCHOICE rolename localprotocolblock+)
-;
-
-
-/**
- * Section 3.8.6 Local Recursion
- * /
-localrecursion:
-	REC_KW recursionvarname localprotocolblock
-->
-	^(LOCALRECURSION recursionvarname localprotocolblock)
-;
-
-localcontinue:
-	CONTINUE_KW recursionvarname ';'
-->
-	^(LOCALCONTINUE recursionvarname)
-;
-
-
-/**
- * Section 3.8.7 Local Parallel
- * /
-localparallel:
-	PAR_KW localprotocolblock (AND_KW localprotocolblock)*
-->
-	^(LOCALPARALLEL localprotocolblock+)
-;
-
-
-/**
- * Section 3.8.8 Local Interruptible
- * /
-localinterruptible:
-	INTERRUPTIBLE_KW scopename localprotocolblock WITH_KW '{' localcatches* '}'
-->
-	^(LOCALINTERRUPTIBLE scopename localprotocolblock EMPTY_LOCALTHROW localcatches*)
-|
-	INTERRUPTIBLE_KW scopename localprotocolblock WITH_KW '{' localthrows localcatches* '}'
-->
-	^(LOCALINTERRUPTIBLE scopename localprotocolblock localthrows localcatches*)
-;
-
-/*localthrowandorcatch:
-	localthrow (localcatch)*
-|
-	(localcatch)+
-;* /
-
-localthrows:
-	THROWS_KW message (',' message)* TO_KW rolename (',' rolename)* ';'
-->
-	^(LOCALTHROWS rolename+ TO_KW message+)
-;
-
-localcatches:
-	CATCHES_KW message (',' message)* FROM_KW rolename ';'
-->
-	^(LOCALCATCHES rolename message+)
-;
-
-
-/**
- * Section 3.8.9 Local Do
- * /
-localdo:
-	DO_KW protocolname roleinstantiationlist ';'
-->
-	//^(LOCALDO NO_SCOPE protocolname EMPTY_ARGUMENTINSTANTIATIONLIST roleinstantiationlist)
-	^(LOCALDO NO_SCOPE protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
-|
-	DO_KW protocolname argumentinstantiationlist roleinstantiationlist ';'
-->
-	^(LOCALDO NO_SCOPE protocolname argumentinstantiationlist roleinstantiationlist)
-|
-	DO_KW scopename ':' protocolname roleinstantiationlist ';'
-->
-	//^(LOCALDO scopename protocolname EMPTY_ARGUMENTINSTANTIATIONLIST roleinstantiationlist)
-	^(LOCALDO scopename protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
-|
-	DO_KW scopename ':' protocolname argumentinstantiationlist roleinstantiationlist ';'
-->
-	^(LOCALDO scopename protocolname argumentinstantiationlist roleinstantiationlist)
-;
-*/

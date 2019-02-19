@@ -21,6 +21,8 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ProtocolHeader;
+import org.scribble.ast.ProtocolMod;
+import org.scribble.ast.ProtocolModList;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
@@ -44,13 +46,13 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 	@Override
 	public LProtocolHeader getHeaderChild()
 	{
-		return (LProtocolHeader) getChild(0);
+		return (LProtocolHeader) getChild(1);
 	}
 
 	@Override
 	public LProtocolDef getDefChild()
 	{
-		return (LProtocolDef) getChild(1);
+		return (LProtocolDef) getChild(2);
 	}
 
 	// Cf. CommonTree#dupNode
@@ -61,10 +63,10 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 	}
 	
 	@Override
-	public LProtocolDecl reconstruct(ProtocolHeader<Local> header,
-			ProtocolDef<Local> def)
+	public LProtocolDecl reconstruct(ProtocolModList mods,
+			ProtocolHeader<Local> header, ProtocolDef<Local> def)
 	{
-		return (LProtocolDecl) super.reconstruct(header, def);
+		return (LProtocolDecl) super.reconstruct(mods, header, def);
 	}
 
 	@Override
@@ -97,7 +99,8 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 	
 	
 	
-	public LProtocolDecl(CommonTree source, List<Modifiers> modifiers, LProtocolHeader header, LProtocolDef def)
+	public LProtocolDecl(CommonTree source, List<ProtocolMod> modifiers,
+			LProtocolHeader header, LProtocolDef def)
 	{
 		super(source, modifiers, header, def);
 	}

@@ -8,6 +8,7 @@ import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.PayloadElemList;
+import org.scribble.ast.ProtocolModList;
 import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
@@ -80,6 +81,8 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 
 			case "GLOBALPROTOCOLDECL": //return this.f.GProtocolDecl(empty, Collections.emptyList(), null, null);
 				return new GProtocolDecl(t);
+			case "GLOBALPROTOCOLDECLMODS":
+				return new ProtocolModList(t);
 			case "GLOBALPROTOCOLHEADER": //return this.f.GProtocolHeader(empty, null, null, null);
 				return new GProtocolHeader(t);
 			case "GPROTOCOLNAME":

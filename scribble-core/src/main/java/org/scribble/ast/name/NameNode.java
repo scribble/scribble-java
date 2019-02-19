@@ -52,7 +52,8 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 	protected List<String> getSimpleNameList()
 	{
 		return ((List<?>) getChildren()).stream()
-				.map(x -> ((CommonTree) x).getText()).collect(Collectors.toList());
+				.map(x -> ((CommonTree) x).getText()).collect(Collectors.toList());  
+				// CHECKME: currently AmbigNameNode(?)
 				// CHECKME: factor out getText?
 	}
 

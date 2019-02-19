@@ -146,14 +146,18 @@ public class AstFactoryImpl implements AstFactory
 	{
 		if (UNIT_MESSAGE_SIG_NODE == null)
 		{
-			UNIT_MESSAGE_SIG_NODE = MessageSigNode(null, (OpNode) SimpleNameNode(null, OpKind.KIND, Op.EMPTY_OPERATOR.toString()),
-					PayloadElemList(null, Collections.emptyList()));  // Payload.EMPTY_PAYLOAD?
+			UNIT_MESSAGE_SIG_NODE = MessageSigNode(null,
+					(OpNode) SimpleNameNode(null, OpKind.KIND,
+							Op.EMPTY_OPERATOR.toString()),
+					PayloadElemList(null, Collections.emptyList()));
+					// Payload.EMPTY_PAYLOAD?
 		}
 		return UNIT_MESSAGE_SIG_NODE;
 	}
 	
 	@Override
-	public MessageSigNode MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload)
+	public MessageSigNode MessageSigNode(CommonTree source, OpNode op,
+			PayloadElemList payload)
 	{
 		MessageSigNode msn = new MessageSigNode(source, op, payload);
 		msn = del(msn, createDefaultDelegate());
@@ -162,7 +166,8 @@ public class AstFactoryImpl implements AstFactory
 
 	@Override
 	//public PayloadElemList PayloadElemList(List<PayloadElem> payloadelems)
-	public PayloadElemList PayloadElemList(CommonTree source, List<PayloadElem<?>> payloadelems)
+	public PayloadElemList PayloadElemList(CommonTree source,
+			List<PayloadElem<?>> payloadelems)
 	{
 		PayloadElemList p = new PayloadElemList(source, payloadelems);
 		p = del(p, createDefaultDelegate());
@@ -180,7 +185,8 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	//public UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name)
 	//public UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name)
-	public <K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(CommonTree source, PayloadElemNameNode<K> name)
+	public <K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(
+			CommonTree source, PayloadElemNameNode<K> name)
 	{
 		UnaryPayloadElem<K> de= new UnaryPayloadElem<>(source, name);
 		de = del(de, createDefaultDelegate());
@@ -188,7 +194,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
+	public GDelegationElem GDelegationElem(CommonTree source,
+			GProtocolNameNode proto, RoleNode role)
 	{
 		GDelegationElem de = new GDelegationElem(source, proto, role);
 		//de = del(de, createDefaultDelegate());
@@ -197,7 +204,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode proto)
+	public LDelegationElem LDelegationElem(CommonTree source,
+			LProtocolNameNode proto)
 	{
 		LDelegationElem de = new LDelegationElem(source, proto);
 		de = del(de, createDefaultDelegate());
@@ -205,7 +213,9 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	public Module Module(CommonTree source, ModuleDecl moddecl, List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos)
+	public Module Module(CommonTree source, ModuleDecl moddecl,
+			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
+			List<ProtocolDecl<?>> protos)
 	{
 		Module module = new Module(source, moddecl, imports, data, protos);
 		module = del(module, new ModuleDel());
@@ -221,31 +231,37 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public ImportModule ImportModule(CommonTree source, ModuleNameNode modname, ModuleNameNode alias)
+	public ImportModule ImportModule(CommonTree source, ModuleNameNode modname,
+			ModuleNameNode alias)
 	{
 		ImportModule im = new ImportModule(source, modname, alias);
 		im = del(im, new ImportModuleDel());
 		return im;
 	}
-	
+
 	@Override
-	public MessageSigNameDecl MessageSigNameDecl(CommonTree source, String schema, String extName, String extSource, MessageSigNameNode alias)
+	public MessageSigNameDecl MessageSigNameDecl(CommonTree source, String schema,
+			String extName, String extSource, MessageSigNameNode alias)
 	{
-		MessageSigNameDecl msd = new MessageSigNameDecl(source, schema, extName, extSource, alias);
+		MessageSigNameDecl msd = new MessageSigNameDecl(source, schema, extName,
+				extSource, alias);
 		msd = del(msd, createDefaultDelegate());
 		return msd;
 	}
 
 	@Override
-	public DataTypeDecl DataTypeDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode alias)
+	public DataTypeDecl DataTypeDecl(CommonTree source, String schema,
+			String extName, String extSource, DataTypeNode alias)
 	{
-		DataTypeDecl dtd = new DataTypeDecl(source, schema, extName, extSource, alias);
+		DataTypeDecl dtd = new DataTypeDecl(source, schema, extName, extSource,
+				alias);
 		dtd = del(dtd, createDefaultDelegate());
 		return dtd;
 	}
 
 	@Override
-	public GProtocolDecl GProtocolDecl(CommonTree source, List<GProtocolDecl.Modifiers> mods, GProtocolHeader header, GProtocolDef def)
+	public GProtocolDecl GProtocolDecl(CommonTree source, List<ProtocolMod> mods,
+			GProtocolHeader header, GProtocolDef def)
 	{
 		GProtocolDecl gpd = new GProtocolDecl(source, mods, header, def);
 		gpd = del(gpd, new GProtocolDeclDel());
@@ -253,9 +269,12 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GProtocolHeader GProtocolHeader(CommonTree source, GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	public GProtocolHeader GProtocolHeader(CommonTree source,
+			GProtocolNameNode name, RoleDeclList roledecls,
+			NonRoleParamDeclList paramdecls)
 	{
-		GProtocolHeader gph = new GProtocolHeader(source, name, roledecls, paramdecls);
+		GProtocolHeader gph = new GProtocolHeader(source, name, roledecls,
+				paramdecls);
 		gph = del(gph, createDefaultDelegate());
 		return gph;
 	}
@@ -285,7 +304,8 @@ public class AstFactoryImpl implements AstFactory
 	}*/
 
 	@Override
-	public NonRoleParamDeclList NonRoleParamDeclList(CommonTree source, List<NonRoleParamDecl<NonRoleParamKind>> pds)
+	public NonRoleParamDeclList NonRoleParamDeclList(CommonTree source,
+			List<NonRoleParamDecl<NonRoleParamKind>> pds)
 	{
 		NonRoleParamDeclList pdl = new NonRoleParamDeclList(source, pds);
 		pdl = del(pdl, new NonRoleParamDeclListDel());
@@ -293,7 +313,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public <K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> namenode)
+	public <K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(
+			CommonTree source, K kind, NonRoleParamNode<K> namenode)
 	{
 		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(source, kind, namenode);
 		pd = del(pd, new NonRoleParamDeclDel());
@@ -317,7 +338,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GInteractionSeq GInteractionSeq(CommonTree source, List<GInteractionNode> actions)
+	public GInteractionSeq GInteractionSeq(CommonTree source,
+			List<GInteractionNode> actions)
 	{
 		GInteractionSeq gis = new GInteractionSeq(source, actions);
 		gis = del(gis, new GInteractionSeqDel());
@@ -325,7 +347,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GMessageTransfer GMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public GMessageTransfer GMessageTransfer(CommonTree source, RoleNode src,
+			MessageNode msg, List<RoleNode> dests)
 	{
 		GMessageTransfer gmt = new GMessageTransfer(source, src, msg, dests);
 		gmt = del(gmt, new GMessageTransferDel());
@@ -360,7 +383,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GChoice GChoice(CommonTree source, RoleNode subj, List<GProtocolBlock> blocks)
+	public GChoice GChoice(CommonTree source, RoleNode subj,
+			List<GProtocolBlock> blocks)
 	{
 		GChoice gc = new GChoice(source, subj, blocks);
 		gc = del(gc, new GChoiceDel());
@@ -368,7 +392,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GRecursion GRecursion(CommonTree source, RecVarNode recvar, GProtocolBlock block)
+	public GRecursion GRecursion(CommonTree source, RecVarNode recvar,
+			GProtocolBlock block)
 	{
 		GRecursion gr = new GRecursion(source, recvar, block);
 		gr = del(gr, new GRecursionDel());
@@ -384,7 +409,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GDo GDo(CommonTree source, RoleArgList roleinstans, NonRoleArgList arginstans, GProtocolNameNode proto)
+	public GDo GDo(CommonTree source, RoleArgList roleinstans,
+			NonRoleArgList arginstans, GProtocolNameNode proto)
 	{
 		GDo gd = new GDo(source, roleinstans, arginstans, proto);
 		gd = del(gd, new GDoDel());
@@ -422,13 +448,13 @@ public class AstFactoryImpl implements AstFactory
 		ri = del(ri, createDefaultDelegate());
 		return ri;
 	}
-	
+
 	@Override
 	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind,
 			String identifier)
 	{
 		NameNode<? extends Kind> snn = null;
-		
+
 		// "Custom" del's
 		if (kind.equals(RecVarKind.KIND))
 		{
@@ -487,7 +513,7 @@ public class AstFactoryImpl implements AstFactory
 		}
 		else if (kind.equals(Local.KIND))
 		{
-			qnn = new LProtocolNameNode(source,elems);
+			qnn = new LProtocolNameNode(source, elems);
 		}
 		else
 		{
@@ -496,7 +522,7 @@ public class AstFactoryImpl implements AstFactory
 		System.out.println("rrrr: " + kind + " ,, " + Arrays.toString(elems));
 		return castNameNode(kind, del(qnn, createDefaultDelegate()));
 	}
-	
+
 	protected static <T extends NameNode<K>, K extends Kind> T castNameNode(
 			K kind, NameNode<? extends Kind> n)
 	{
@@ -512,13 +538,14 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public AmbigNameNode AmbiguousNameNode(CommonTree source, String identifier)
 	{
-		AmbigNameNode ann = new AmbigNameNode(source, identifier); 
+		AmbigNameNode ann = new AmbigNameNode(source, identifier);
 		ann = (AmbigNameNode) ann.del(new AmbigNameNodeDel());
 		return ann;
 	}
 
 	@Override
-	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier)
+	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(
+			CommonTree source, K kind, String identifier)
 	{
 		NonRoleParamNode<K> pn = new NonRoleParamNode<K>(source, kind, identifier);
 		pn = del(pn, new ParamNodeDel());
@@ -534,7 +561,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override  // Called from LProtocolDecl::clone, but currently never used  -- local proto decls only projected, not parsed
-	public LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> mods, LProtocolHeader header, LProtocolDef def)
+	public LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolMod> mods,
+			LProtocolHeader header, LProtocolDef def)
 	{
 		LProtocolDecl lpd = new LProtocolDecl(source, mods, header, def);
 		lpd = del(lpd, new LProtocolDeclDel());
@@ -542,7 +570,10 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LProjectionDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> mods, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def)  // del extends that of LProtocolDecl 
+	public LProjectionDecl LProjectionDecl(CommonTree source,
+			List<ProtocolMod> mods, GProtocolName fullname, Role self,
+			LProtocolHeader header, LProtocolDef def) 
+			// del extends that of LProtocolDecl
 	{
 		LProjectionDecl lpd = new LProjectionDecl(source, mods, header, def);
 		lpd = del(lpd, new LProjectionDeclDel(fullname, self));
@@ -550,9 +581,12 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LProtocolHeader LProtocolHeader(CommonTree source, LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	public LProtocolHeader LProtocolHeader(CommonTree source,
+			LProtocolNameNode name, RoleDeclList roledecls,
+			NonRoleParamDeclList paramdecls)
 	{
-		LProtocolHeader lph = new LProtocolHeader(source, name, roledecls, paramdecls);
+		LProtocolHeader lph = new LProtocolHeader(source, name, roledecls,
+				paramdecls);
 		lph = del(lph, createDefaultDelegate());
 		return lph;
 	}
@@ -582,7 +616,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LInteractionSeq LInteractionSeq(CommonTree source, List<LInteractionNode> actions)
+	public LInteractionSeq LInteractionSeq(CommonTree source,
+			List<LInteractionNode> actions)
 	{
 		LInteractionSeq lis = new LInteractionSeq(source, actions);
 		lis = del(lis, new LInteractionSeqDel());
@@ -590,7 +625,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LSend LSend(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public LSend LSend(CommonTree source, RoleNode src, MessageNode msg,
+			List<RoleNode> dests)
 	{
 		LSend ls = new LSend(source, src, msg, dests);
 		ls = del(ls, new LSendDel());
@@ -598,7 +634,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg,
+			List<RoleNode> dests)
 	{
 		LReceive ls = new LReceive(source, src, msg, dests);
 		ls = del(ls, new LReceiveDel());
@@ -606,7 +643,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	public LRequest LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
+	public LRequest LRequest(CommonTree source, RoleNode src, MessageNode msg,
+			RoleNode dest)
 	//public LConnect LConnect(RoleNode src, RoleNode dest)
 	{
 		LRequest lc = new LRequest(source, src, msg, dest);
@@ -616,7 +654,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LAccept LAccept(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
+	public LAccept LAccept(CommonTree source, RoleNode src, MessageNode msg,
+			RoleNode dest)
 	//public LAccept LAccept(RoleNode src, RoleNode dest)
 	{
 		LAccept la = new LAccept(source, src, msg, dest);
@@ -626,7 +665,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LDisconnect LDisconnect(CommonTree source, RoleNode self, RoleNode peer)
+	public LDisconnect LDisconnect(CommonTree source, RoleNode self,
+			RoleNode peer)
 	{
 		LDisconnect lc = new LDisconnect(source, UnitMessageSigNode(), self, peer);
 		lc = del(lc, new LDisconnectDel());
@@ -634,7 +674,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LWrapClient LWrapClient(CommonTree source, RoleNode self, RoleNode peer)
+	public LWrapClient LWrapClient(CommonTree source, RoleNode self,
+			RoleNode peer)
 	{
 		LWrapClient lwc = new LWrapClient(source, UnitMessageSigNode(), self, peer);
 		lwc = del(lwc, new LWrapClientDel());
@@ -642,7 +683,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LWrapServer LWrapServer(CommonTree source, RoleNode self, RoleNode peer)
+	public LWrapServer LWrapServer(CommonTree source, RoleNode self,
+			RoleNode peer)
 	{
 		LWrapServer lws = new LWrapServer(source, UnitMessageSigNode(), self, peer);
 		lws = del(lws, new LWrapServerDel());
@@ -650,7 +692,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LChoice LChoice(CommonTree source, RoleNode subj, List<LProtocolBlock> blocks)
+	public LChoice LChoice(CommonTree source, RoleNode subj,
+			List<LProtocolBlock> blocks)
 	{
 		LChoice lc = new LChoice(source, subj, blocks);
 		lc = del(lc, new LChoiceDel());
@@ -658,7 +701,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LRecursion LRecursion(CommonTree source, RecVarNode recvar, LProtocolBlock block)
+	public LRecursion LRecursion(CommonTree source, RecVarNode recvar,
+			LProtocolBlock block)
 	{
 		LRecursion lr = new LRecursion(source, recvar, block);
 		lr = del(lr, new LRecursionDel());
@@ -674,7 +718,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LDo LDo(CommonTree source, RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto)
+	public LDo LDo(CommonTree source, RoleArgList roleinstans,
+			NonRoleArgList arginstans, LProtocolNameNode proto)
 	{
 		LDo ld = new LDo(source, roleinstans, arginstans, proto);
 		ld = del(ld, new LDoDel());

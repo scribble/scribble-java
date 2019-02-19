@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.ProtocolMod;
 
 // A projected local proto -- cf. parsed
 public class LProjectionDecl extends LProtocolDecl
@@ -54,7 +55,7 @@ public class LProjectionDecl extends LProtocolDecl
 	
 	
 	
-	public LProjectionDecl(CommonTree source, List<Modifiers> modifiers, LProtocolHeader header, LProtocolDef def)
+	public LProjectionDecl(CommonTree source, List<ProtocolMod> modifiers, LProtocolHeader header, LProtocolDef def)
 	{
 		super(source, modifiers, header, def);
 	}

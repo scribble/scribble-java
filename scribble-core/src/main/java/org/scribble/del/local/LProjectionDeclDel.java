@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.ProtocolModList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
@@ -63,7 +64,8 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 				.RoleDeclList(tmp.getRoleDeclListChild().getSource(), rds);
 		LProtocolHeader hdr = tmp.reconstruct(tmp.getNameNodeChild(), rdl,
 				tmp.getParamDeclListChild());
-		LProtocolDecl fixed = lpd.reconstruct(hdr, lpd.getDefChild());
+		ProtocolModList mods = lpd.getModifierListChild();  // CHECKME: erase source?
+		LProtocolDecl fixed = lpd.reconstruct(mods, hdr, lpd.getDefChild());
 		
 		fixer.job.debugPrintln("\n[DEBUG] Projected " + getSourceProtocol()
 				+ " for " + getSelfRole() + ":\n" + fixed);

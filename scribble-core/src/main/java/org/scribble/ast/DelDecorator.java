@@ -34,7 +34,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 
 
-// ast package to access protected non-defensive del setter
+// In ast package to access protected non-defensive del setter
 public interface DelDecorator
 {
 	void decorate(CommonTree n);
@@ -49,8 +49,9 @@ public interface DelDecorator
 	DataTypeDecl DataTypeDecl(DataTypeDecl dd);*/
 
 	void GProtocolDecl(GProtocolDecl gpd);
-	void GProtocolHeader(GProtocolHeader gph);
+	void ProtocolModList(ProtocolModList mods);
 
+	void GProtocolHeader(GProtocolHeader gph);
 	void RoleDeclList(RoleDeclList rds);
 	void RoleDecl(RoleDecl rd);
 	void NonRoleParamDeclList(NonRoleParamDeclList pds);
