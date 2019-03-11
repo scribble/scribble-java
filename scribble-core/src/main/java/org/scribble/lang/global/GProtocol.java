@@ -1,12 +1,15 @@
 package org.scribble.lang.global;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.Protocol;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -80,6 +83,34 @@ public class GProtocol extends
 				.map(x -> x.equals(self) ? Role.SELF : x).filter(x -> tmp.contains(x))
 				.collect(Collectors.toList());
 		return new LProjection(this.fullname, self, fullname, roles, body);
+	}
+
+	@Override
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	{
+		throw new RuntimeException("Unsupported for Protocol: " + this);
+	}
+
+	// CHECKME: refactor Protocol out of SType?  Also Do -- but harder because Do needs to be in Seq
+	public Set<Role> checkRoleEnabling() throws ScribbleException
+	{
+		Set<Role> tmp = //Collections.unmodifiableSet(
+				new HashSet<>(this.roles);
+		return this.def.checkRoleEnabling(tmp);
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribbleException
+	{
+		throw new RuntimeException("Unsupported for Protocol: " + this);
+	}
+
+	public Map<Role, Role> checkExtChoiceConsistency() throws ScribbleException
+	{
+		Map<Role, Role> tmp = this.roles.stream()
+				.collect(Collectors.toMap(x -> x, x -> x));
+		return this.def.checkExtChoiceConsistency(tmp);
 	}
 	
 	@Override

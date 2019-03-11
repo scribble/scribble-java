@@ -1,5 +1,12 @@
 package org.scribble.lang.global;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.MessageTransfer;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -70,6 +77,35 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	}
 
 	@Override
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	{
+		if (!enabled.contains(this.src))
+		{
+			throw new ScribbleException("Source role not enabled: " + this.src);
+		}
+		if (enabled.contains(this.dst))
+		{
+			return enabled;
+		}
+		Set<Role> tmp = new HashSet<>(enabled); 
+		tmp.add(this.dst);
+		return Collections.unmodifiableSet(tmp);
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribbleException
+	{
+		if (enablers.containsKey(this.dst))
+		{
+			return enablers;
+		}
+		Map<Role, Role> tmp = new HashMap<>(enablers);
+		tmp.put(this.dst, this.src);
+		return Collections.unmodifiableMap(tmp);
+	}
+
+	@Override
 	public int hashCode()
 	{
 		int hash = 1481;
@@ -96,5 +132,4 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	{
 		return o instanceof GMessageTransfer;
 	}
-
 }

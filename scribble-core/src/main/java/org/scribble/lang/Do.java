@@ -2,6 +2,7 @@ package org.scribble.lang;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.type.kind.ProtocolKind;
@@ -25,12 +26,12 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 
 	public abstract Do<K, N> reconstruct(org.scribble.ast.Do<K> source,
 			N proto, List<Role> roles);
-	
-	/*@Override
-	public List<Role> getRoles()
+
+	@Override
+	public Set<Role> getRoles()
 	{
-		return this.roles;  // Depends: maybe need to do actual subproto visiting, e.g., for projection
-	}*/
+		throw new RuntimeException("Unsupported for Do: " + this);
+	}
 
 	@Override
 	public Do<K, N> substitute(Substitutions<Role> subs)
@@ -38,6 +39,12 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 		List<Role> roles = this.roles.stream().map(x -> subs.apply(x))
 				.collect(Collectors.toList());
 		return reconstruct((org.scribble.ast.Do<K>) getSource(), this.proto, roles);
+	}
+
+	@Override
+	public SType<K> unfoldAllOnce(STypeUnfolder<K> u)
+	{
+		throw new RuntimeException("Unsupported for Do: " + this);
 	}
 	
 	@Override

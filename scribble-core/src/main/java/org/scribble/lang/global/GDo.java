@@ -2,7 +2,10 @@ package org.scribble.lang.global;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.Do;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.Substitutions;
@@ -60,6 +63,19 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 	{
 		// TODO: consider role fixing and do pruning
 		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	{
+		throw new RuntimeException("Unsupported for Do: " + this);
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribbleException
+	{
+		throw new RuntimeException("Unsupported for Do: " + this);
 	}
 
 	@Override

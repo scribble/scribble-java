@@ -2,10 +2,13 @@ package org.scribble.lang.global;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.global.GInteractionSeq;
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.SType;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -93,7 +96,28 @@ public class GSeq extends Seq<Global> implements GType
 	}
 
 	@Override
-	public List<? extends SType<Global>> getElements()
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	{
+		for (GType elem : getElements())
+		{
+			enabled = elem.checkRoleEnabling(enabled);
+		}
+		return enabled;
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribbleException
+	{
+		for (GType elem : getElements())
+		{
+			enablers = elem.checkExtChoiceConsistency(enablers);
+		}
+		return enablers;
+	}
+
+	@Override
+	public List<GType> getElements()
 	{
 		return this.elems.stream().map(x -> (GType) x).collect(Collectors.toList());
 	}

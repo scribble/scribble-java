@@ -1,6 +1,10 @@
 package org.scribble.lang.global;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.scribble.ast.ProtocolKindNode;
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.Recursion;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -67,6 +71,19 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 			return LSkip.SKIP;
 		}
 		return new LRecursion(null, this.recvar, body);
+	}
+
+	@Override
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	{
+		return this.body.checkRoleEnabling(enabled);
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribbleException
+	{
+		return this.body.checkExtChoiceConsistency(enablers);
 	}
 
 	@Override

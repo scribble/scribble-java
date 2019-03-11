@@ -18,11 +18,7 @@ public interface LType extends SType<Local>
 	LType getInlined(STypeInliner i);//, Deque<SubprotoSig> stack);
 
 	@Override
-	default SType<Local> unfoldAllOnce(
-			STypeUnfolder<Local> u)
-	{
-		throw new RuntimeException("Not supported for: " + this);
-	}
+	SType<Local> unfoldAllOnce(STypeUnfolder<Local> u);
 	
 	// Uses b to builds graph "progressively" (working graph is mutable)
 	// Use EGraphBuilderUtil2::finalise for final result

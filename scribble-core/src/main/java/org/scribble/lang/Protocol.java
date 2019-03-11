@@ -2,6 +2,7 @@ package org.scribble.lang;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
@@ -30,6 +31,11 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	public abstract Protocol<K, N, B> reconstruct(ProtocolDecl<K> source,
 			N fullname, List<Role> roles, B def);
 	
+	public Set<Role> getRoles()
+	{
+		throw new RuntimeException("Unsupported for Protocol: " + this);
+	}
+
 	@Override
 	public ProtocolDecl<K> getSource()
 	{

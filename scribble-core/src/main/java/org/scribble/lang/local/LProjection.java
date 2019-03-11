@@ -14,8 +14,7 @@ import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
-public class LProjection extends
-		LProtocol
+public class LProjection extends LProtocol
 {
 	public final GProtocolName parent;
 	public final Role self;

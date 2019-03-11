@@ -1,7 +1,10 @@
 package org.scribble.lang.local;
 
+import java.util.Set;
+
 import org.scribble.lang.STypeBase;
 import org.scribble.lang.STypeInliner;
+import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
@@ -16,6 +19,11 @@ public class LSkip extends STypeBase<Local> implements LType
 	{
 		super(null);
 	}
+	
+	public Set<Role> getRoles()
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
 
 	@Override
 	public LSkip substitute(Substitutions<Role> subs)
@@ -27,6 +35,12 @@ public class LSkip extends STypeBase<Local> implements LType
 	public LSkip getInlined(STypeInliner i)
 	{
 		return this;
+	}
+
+	@Override
+	public LType unfoldAllOnce(STypeUnfolder<Local> u)
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
 	}
 
 	@Override

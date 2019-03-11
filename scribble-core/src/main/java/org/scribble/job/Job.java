@@ -191,6 +191,20 @@ public class Job
 		}*/
 		
 		//HERE WF (unfolding? unguarded-unfolder -- and lazy-unfolder-with-choice-pruning, e.g., bad.wfchoice.enabling.threeparty.Test02), projection, validation
+		
+		for (GProtocol inlined : this.jctxt.getInlined())
+		{
+			Set<Role> unused = inlined.roles.stream()
+					.filter(x -> !inlined.def.getRoles().contains(x))
+					.collect(Collectors.toSet());
+			if (!unused.isEmpty())
+			{
+				throw new ScribbleException(
+						"Unused roles in " + inlined.fullname + ": " + unused);
+			}
+			inlined.checkRoleEnabling();
+			inlined.checkExtChoiceConsistency();
+		}
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module

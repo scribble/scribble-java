@@ -13,10 +13,8 @@ public interface SType<K extends ProtocolKind>
 	boolean hasSource();  // i.e., was parsed
 	ProtocolKindNode<K> getSource();  // Pre: hasSource
 	
-	default Set<Role> getRoles()
-	{
-		throw new RuntimeException("Unsupported for: " + this);
-	} 
+	// Unsupported for Protocol/Do
+	Set<Role> getRoles();
 
 	SType<K> substitute(Substitutions<Role> role);
 	
@@ -30,6 +28,7 @@ public interface SType<K extends ProtocolKind>
 	//SessType<K> getInlined(GTypeTranslator t, Deque<SubprotoSig> stack);  // FIXME: generalise for locals
 	SType<K> getInlined(STypeInliner i);
 	
+	// Unsupported for Do
 	// FIXME: repeat recvar names, including non-shadowing (e.g., choice cases)
 	SType<K> unfoldAllOnce(STypeUnfolder<K> u);
 	
