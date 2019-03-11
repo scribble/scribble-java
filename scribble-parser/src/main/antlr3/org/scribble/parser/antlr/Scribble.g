@@ -86,15 +86,11 @@ tokens
 	// "Node type" constants -- but not parsed "directly" by AntlrToScribParser
 
 	EMPTY_ALIAS = 'EMTPY_ALIAS';
-	/*EMPTY_SCOPENAME = '__empty_scopename';
-	NO_SCOPE = '__no_scope';*/
 	//EMPTY_PACKAGENAME = '__empty_packagebame';
 	EMPTY_OPERATOR = 'EMPTY_OPERATOR';
 
 	//EMPTY_PARAMETERDECLLIST = '__empty_parameterdecllist';
 	//EMPTY_ARGUMENTINSTANTIATIONLIST = '__empty_argumentinstantiationlist';
-	/*EMPTY_LOCALTHROW = '__empty_localthrow';
-	EMPTY_LOCAL_CATCHES = '__empty_local_catch';*/
 	
 	//NAME = 'name';
 	AMBIGUOUSNAME = 'AMBIGUOUSNAME';
@@ -733,36 +729,6 @@ globalcontinue:
 ->
 	^(GLOBALCONTINUE recursionvarnamenode)
 ;
-
-
-/*
- * Section 3.7.7 Global Parallel
- * /
-globalparallel:
-	PAR_KW globalprotocolblock (AND_KW globalprotocolblock)*
-->
-	^(GLOBALPARALLEL globalprotocolblock+)
-;*/
-
-
-/*
- * Section 3.7.8 Global Interruptible
- * /
-globalinterruptible:
-	INTERRUPTIBLE_KW globalprotocolblock WITH_KW '{' globalinterrupt* '}'
-->
-	^(GLOBALINTERRUPTIBLE EMPTY_SCOPENAME globalprotocolblock globalinterrupt*)
-|
-	INTERRUPTIBLE_KW scopename globalprotocolblock WITH_KW '{' (globalinterrupt)* '}'
-->
-	^(GLOBALINTERRUPTIBLE scopename globalprotocolblock globalinterrupt*)
-;
-
-globalinterrupt:
-	message (',' message)* BY_KW rolename ';'
-->
-	^(GLOBALINTERRUPT rolename message+)
-;*/
 
 
 /**

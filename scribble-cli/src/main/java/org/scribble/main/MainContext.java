@@ -105,7 +105,6 @@ public class MainContext
 				// TODO: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
 		CommonTree atree = this.antlrParser.parseAntlrTree(res);
 		
-		System.out.println("bbb: " + atree.getClass() + " ,, " + atree.getChildren());
 		// FIXME HERE: deprecate scribParser -- move ANTLR error checking out
 		
 		Module mod = (Module) atree;//this.scribParser.parse(atree, this.af);  // TODO: rename exceptions
@@ -115,8 +114,6 @@ public class MainContext
 		
 		new DelDecoratorImpl().decorate(mod);
 
-		System.out.println("bbb2: " + mod);
-		
 		//HERE: debug context building or name disamb (role node child lost)
 		
 		checkMainModuleName(mainpath, mod, noValidation);

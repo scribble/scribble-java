@@ -14,6 +14,7 @@
 package org.scribble.job;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -165,6 +166,13 @@ public class JobContext
 	{
 		return this.intermed.get(fullname);
 	}
+
+	//public Map<GProtocolName, GProtocol> getIntermediates()
+	public Collection<GProtocol> getIntermediates()
+	{
+		//return Collections.unmodifiableMap(this.intermed);
+		return Collections.unmodifiableCollection(this.intermed.values());
+	}
 	
 	public void addInlined(GProtocolName fullname, GProtocol g)
 	{
@@ -174,6 +182,11 @@ public class JobContext
 	public GProtocol getInlined(GProtocolName fullname)
 	{
 		return this.inlined.get(fullname);
+	}
+
+	public Collection<GProtocol> getInlined()
+	{
+		return Collections.unmodifiableCollection(this.inlined.values());
 	}
 	
 	public void addProjected(LProtocolName fullname, LProtocol l)

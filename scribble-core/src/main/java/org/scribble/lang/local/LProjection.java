@@ -68,10 +68,11 @@ public class LProjection extends
 	@Override
 	public String toString()
 	{
-		return "local protocol " + this.fullname + " projects " + this.parent
-				+ "@" + this.self + "(" + this.roles.stream().map(x -> x.toString())
-						.collect(Collectors.joining(", "))
-				+ ")" + " {\n" + this.def + "\n}";
+		return "local protocol " + this.fullname 
+				 + "(" + this.roles.stream().map(x -> x.toString())
+						.collect(Collectors.joining(", ")) + ")"
+				+ " projects " + this.parent
+				+ "@" + this.self + " {\n" + this.def + "\n}";
 	}
 
 	@Override

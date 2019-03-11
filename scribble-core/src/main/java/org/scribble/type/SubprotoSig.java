@@ -69,8 +69,8 @@ public class SubprotoSig
 	@Override
 	public String toString()
 	{
-		String args = this.args.toString();
 		String roles = this.roles.toString();
+		String args = this.args.toString();
 		return // this.scope + ":" +
 				this.fullname + "<" + args.substring(1, args.length() - 1) + ">("
 						+ roles.substring(1, roles.length() - 1) + ")";

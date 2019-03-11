@@ -148,7 +148,7 @@ public class AstFactoryImpl implements AstFactory
 		{
 			UNIT_MESSAGE_SIG_NODE = MessageSigNode(null,
 					(OpNode) SimpleNameNode(null, OpKind.KIND,
-							Op.EMPTY_OPERATOR.toString()),
+							Op.EMPTY_OP.toString()),
 					PayloadElemList(null, Collections.emptyList()));
 					// Payload.EMPTY_PAYLOAD?
 		}

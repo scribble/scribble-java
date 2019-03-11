@@ -19,7 +19,7 @@ public class Op extends AbstractName<OpKind> implements MessageId<OpKind>
 {
 	private static final long serialVersionUID = 1L;
 	
-	public static final Op EMPTY_OPERATOR = new Op();
+	public static final Op EMPTY_OP = new Op();
 
 	protected Op()
 	{

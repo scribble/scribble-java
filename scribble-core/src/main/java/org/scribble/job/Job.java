@@ -112,61 +112,63 @@ public class Job
 		/*runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
 		runVisitorPassOnAllModules(DelegationProtocolRefChecker.class);  // Must come after ProtocolDeclContextBuilder
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building*/
-
-		System.out.println("\nfff1: " + this.jctxt.getMainModule());
-
 		//runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		
 		// FIXME TODO: refactor into a runVisitorPassOnAllModules for SimpleVisitor (and add operation to ModuleDel)
-		for (ModuleName fullname : this.jctxt.getFullModuleNames())
+		Set<ModuleName> fullmodnames = this.jctxt.getFullModuleNames();
+		for (ModuleName fullmodname : fullmodnames)
 		{
-			Module mod = this.jctxt.getModule(fullname);
-			GTypeTranslator t = new GTypeTranslator(this, fullname);
+			Module mod = this.jctxt.getModule(fullmodname);
+			GTypeTranslator t = new GTypeTranslator(this, fullmodname);
 			for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
 			{
 				GProtocol g = (GProtocol) gpd.visitWith(t);
 				this.jctxt.addIntermediate(g.fullname, g);
-				System.out.println("\nparsed:\n" + gpd + "\nintermed:\n" + g);
+				System.out.println("\nparsed:\n" + gpd + "\n\nintermed:\n" + g);
+			}
+		}
 				
-				SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, 
-						Collections.emptyList());  // FIXME
-				//Deque<SubprotoSig> stack = new LinkedList<>();
-				STypeInliner i = new STypeInliner(this);
-				i.pushSig(sig);  // TODO: factor into constructor
-				GProtocol inlined = g.getInlined(i);
-				System.out.println("\ninlined:\n" + inlined);
-				this.jctxt.addInlined(g.fullname, inlined);
+		for (GProtocol g : this.jctxt.getIntermediates())
+		{
+			SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, 
+					Collections.emptyList());  // FIXME
+			//Deque<SubprotoSig> stack = new LinkedList<>();
+			STypeInliner i = new STypeInliner(this);
+			i.pushSig(sig);  // TODO: factor into constructor
+			GProtocol inlined = g.getInlined(i);
+			System.out.println("\ninlined:\n" + inlined);
+			this.jctxt.addInlined(g.fullname, inlined);
+		}
 				
+		//runUnfoldingPass();
+		for (GProtocol inlined : this.jctxt.getInlined())
+		{
 				STypeUnfolder<Global> u1 = new STypeUnfolder<>();
 				//GTypeUnfolder u2 = new GTypeUnfolder();
 				GType unf = (GType) inlined.unfoldAllOnce(u1);//.unfoldAllOnce(u2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 				System.out.println("\nunfolded:\n" + unf);
+		}
 				
-				for (Role self : g.roles)
-				{
-					LProtocol proj = inlined.project(self);
-					this.jctxt.addProjected(proj.fullname, proj);
-					System.out.println("\nprojected onto " + self + ":\n" + proj);
-					
-					Set<Role> roles = proj.def.getRoles();
-					System.out.println("\nRoles " + roles);
-				}
-				
-				for (Entry<LProtocolName, LProtocol> e : 
-						this.jctxt.getProjections().entrySet())
-				{
-					//LProtocolName lname = e.getKey();
-					LProtocol proj = e.getValue();
-					EGraph graph = proj.toEGraph(this);
-					this.jctxt.addEGraph(proj.fullname, graph);
-					System.out.println("\ngraph:\n" + graph.toDot());
-				}
+		for (GProtocol g : this.jctxt.getIntermediates())
+		{
+			for (Role self : g.roles)
+			{
+				GProtocol inlined = this.jctxt.getInlined(g.fullname);
+				LProtocol proj = inlined.project(self);
+				this.jctxt.addProjected(proj.fullname, proj);
+				System.out.println("\nprojected onto " + self + ":\n" + proj);
 			}
 		}
-		
-		System.out.println("\nfff2: " + this.jctxt.getMainModule());
-		
-		//runUnfoldingPass();
+				
+		for (Entry<LProtocolName, LProtocol> e : 
+				this.jctxt.getProjections().entrySet())
+		{
+			//LProtocolName lname = e.getKey();
+			LProtocol proj = e.getValue();
+			EGraph graph = proj.toEGraph(this);
+			this.jctxt.addEGraph(proj.fullname, graph);
+			System.out.println("\ngraph for " + proj.fullname + ":\n" + graph.toDot());
+		}
 	}
 		
 	// "Second part" of context building (separated for extensions to work on non-unfolded protos -- e.g., Assrt/F17CommandLine)

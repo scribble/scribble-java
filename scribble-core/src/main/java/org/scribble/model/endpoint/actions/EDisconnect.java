@@ -24,7 +24,7 @@ public class EDisconnect extends EAction
 {
 	public EDisconnect(EModelFactory ef, Role peer)
 	{
-		super(ef, peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GDisconnect.UNIT_MESSAGE_SIG_NODE
+		super(ef, peer, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);  // Must correspond with GDisconnect.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override

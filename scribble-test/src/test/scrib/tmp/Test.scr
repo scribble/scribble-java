@@ -35,6 +35,17 @@ module tmp.Test;
 
 global protocol Proto1(role A, role B)
 {
+	do Proto1Aux(A, B);
+}
+
+global protocol Proto1Aux(role AA, role BB)
+{
+	() from AA to BB;
+}
+
+/*
+global protocol Proto1(role A, role B)
+{
 	0() from A to B;
 	choice at A
 	{
@@ -48,6 +59,7 @@ global protocol Proto1(role A, role B)
 	}
 	4() from A to B;
 }
+//*/
 
 
 /*

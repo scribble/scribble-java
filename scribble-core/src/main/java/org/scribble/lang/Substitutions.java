@@ -37,6 +37,12 @@ public class Substitutions<N extends Name<?>>  // CHECKME: too restricting?
 	}
 
 	@Override
+	public String toString()
+	{
+		return this.subs.toString();
+	}
+
+	@Override
 	public int hashCode()
 	{
 		int hash = 1889;

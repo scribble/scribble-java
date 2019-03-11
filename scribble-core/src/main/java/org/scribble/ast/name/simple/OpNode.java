@@ -21,7 +21,7 @@ import org.scribble.type.name.Op;
 
 public class OpNode extends SimpleNameNode<OpKind>
 {
-	public static final String EMPTY_OPERATOR_IDENTIFIER = "";
+	public static final String EMPTY_OP_IDENTIFIER = "EMPTY_OPERATOR";
 
 	// ScribTreeAdaptor#create constructor
 	public OpNode(Token t)
@@ -45,9 +45,9 @@ public class OpNode extends SimpleNameNode<OpKind>
 	public Op toName()
 	{
 		String id = getIdentifier();
-		if (id.equals(EMPTY_OPERATOR_IDENTIFIER))
+		if (id.equals(EMPTY_OP_IDENTIFIER))
 		{
-			return Op.EMPTY_OPERATOR;
+			return Op.EMPTY_OP;
 		}
 		return new Op(id);
 	}
