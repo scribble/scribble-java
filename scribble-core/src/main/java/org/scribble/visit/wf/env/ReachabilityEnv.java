@@ -24,9 +24,8 @@ import org.scribble.visit.env.Env;
 
 public class ReachabilityEnv extends Env<ReachabilityEnv>
 {
-	private boolean seqable; 
-			// For checking bad sequencing of unreachable code: false after a continue; true if choice has an exit (false inherited for all other constructs)
-	private final Set<RecVar> contlabs;  // For checking "reachable code" satisfies tail recursion (in the presence of sequencing)
+	private boolean seqable; // For checking bad sequencing of unreachable code: false after a continue; true if choice has an exit (false inherited for all other constructs)
+	private final Set<RecVar> contlabs;  // For checking "reachable code" satisfies tail recursion (in the presence of sequencing, e.g., after choice)
 	
 	public ReachabilityEnv()
 	{
@@ -71,14 +70,15 @@ public class ReachabilityEnv extends Env<ReachabilityEnv>
 	}
 
 	// Does merge depend on choice/par etc?
-	private ReachabilityEnv merge(boolean isChoice, List<ReachabilityEnv> children)
+	private ReachabilityEnv merge(boolean isChoice,
+			List<ReachabilityEnv> children)
 	{
 		ReachabilityEnv copy = copy();
 		copy.seqable =
-				(isChoice)
-					? children.stream().filter((e) -> e.seqable).count() > 0
-					: children.stream().filter((e) -> !e.seqable).count() == 0;
-		children.stream().forEach((e) -> copy.contlabs.addAll(e.contlabs));
+				isChoice
+					? children.stream().filter(e -> e.seqable).count() > 0
+					: children.stream().filter(e -> !e.seqable).count() == 0;
+		children.forEach(e -> copy.contlabs.addAll(e.contlabs));
 		return copy;
 	}
 	

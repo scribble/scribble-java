@@ -2,6 +2,7 @@ package org.scribble.lang.local;
 
 import java.util.Set;
 
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.STypeBase;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -10,7 +11,7 @@ import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
 
-// Used during projection -- filtered out by GSeq::projection
+// Used only *during* projection -- filtered out by GSeq::projection
 public class LSkip extends STypeBase<Local> implements LType
 {
 	public static final LSkip SKIP = new LSkip();
@@ -51,6 +52,13 @@ public class LSkip extends STypeBase<Local> implements LType
 
 	@Override
 	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		throw new RuntimeException("Unsupported for: " + this);
+	}
+	
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribbleException
 	{
 		throw new RuntimeException("Unsupported for: " + this);
 	}

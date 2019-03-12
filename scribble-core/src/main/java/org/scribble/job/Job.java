@@ -209,6 +209,11 @@ public class Job
 			inlined.checkRoleEnabling();
 			inlined.checkExtChoiceConsistency();
 		}
+		
+		for (LProtocol proj : this.jctxt.getProjections().values())
+		{
+			proj.checkReachability();
+		}
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module

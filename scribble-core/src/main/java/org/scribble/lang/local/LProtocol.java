@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.job.Job;
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.Protocol;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -88,6 +89,20 @@ public class LProtocol extends
 	public void buildGraph(EGraphBuilderUtil2 b)
 	{
 		this.def.buildGraph(b);
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribbleException
+	{
+		throw new RuntimeException("Unsupported for Protocol: " + this);
+	}
+
+	public ReachabilityEnv checkReachability()
+			throws ScribbleException
+	{
+		return this.def
+				.checkReachability(new ReachabilityEnv(false, Collections.emptySet()));
 	}
 	
 	@Override

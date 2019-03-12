@@ -13,13 +13,10 @@
  */
 package org.scribble.del;
 
-import java.util.Arrays;
-
 import org.scribble.ast.Do;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.SubprotoSig;
@@ -29,8 +26,6 @@ import org.scribble.type.name.Role;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.wf.NameDisambiguator;
-
-import antlr.Token;
 
 public abstract class DoDel extends SimpleInteractionNodeDel
 {

@@ -1,6 +1,10 @@
 package org.scribble.lang.local;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.scribble.ast.ProtocolKindNode;
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.Continue;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -80,6 +84,15 @@ public class LContinue extends Continue<Local> implements LType
 					b.getRecursionEntry(this.recvar));
 					// May be repeated for non-det, but OK  // Combine with removeEdgeFromPredecessor?
 		}*/
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribbleException
+	{
+		Set<RecVar> tmp = new HashSet<>(env.recvars);
+		tmp.add(this.recvar);
+		return new ReachabilityEnv(true, tmp);
 	}
  
 	@Override

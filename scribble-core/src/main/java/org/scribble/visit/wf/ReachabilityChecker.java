@@ -39,11 +39,13 @@ public class ReachabilityChecker extends UnfoldingVisitor<ReachabilityEnv>
 
 	// Following Projector visit pattern -- for overriding base enter/visit/leave pattern
 	@Override
-	protected ScribNode visitForUnfolding(ScribNode parent, ScribNode child) throws ScribbleException
+	protected ScribNode visitForUnfolding(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		if (child instanceof LInteractionSeq)
 		{
-			return visitOverrideForLInteractionSequence((LProtocolBlock) parent, (LInteractionSeq) child);
+			return visitOverrideForLInteractionSequence((LProtocolBlock) parent,
+					(LInteractionSeq) child);
 		}
 		else
 		{
@@ -51,22 +53,27 @@ public class ReachabilityChecker extends UnfoldingVisitor<ReachabilityEnv>
 		}
 	}
 
-	protected LInteractionSeq visitOverrideForLInteractionSequence(LProtocolBlock parent, LInteractionSeq child) throws ScribbleException
+	protected LInteractionSeq visitOverrideForLInteractionSequence(
+			LProtocolBlock parent, LInteractionSeq child) throws ScribbleException
 	{
-		return ((LInteractionSeqDel) child.del()).visitForReachabilityChecking(this, (LInteractionSeq) child);
+		return ((LInteractionSeqDel) child.del()).visitForReachabilityChecking(this,
+				(LInteractionSeq) child);
 	}
 
 	@Override
-	protected void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void unfoldingEnter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		super.unfoldingEnter(parent, child);
 		child.del().enterReachabilityCheck(parent, child, this);
 	}
-	
+
 	@Override
-	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveReachabilityCheck(parent, child, this, visited);
+		visited = visited.del().leaveReachabilityCheck(parent, child, this,
+				visited);
 		return super.unfoldingLeave(parent, child, visited);
 	}
 }

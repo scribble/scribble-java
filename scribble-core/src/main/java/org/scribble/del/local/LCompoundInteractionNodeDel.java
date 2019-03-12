@@ -22,7 +22,9 @@ import org.scribble.visit.wf.env.ReachabilityEnv;
 public interface LCompoundInteractionNodeDel extends LInteractionNodeDel
 {
 	@Override
-	default LCompoundInteractionNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+	default LCompoundInteractionNode leaveReachabilityCheck(ScribNode parent,
+			ScribNode child, ReachabilityChecker checker, ScribNode visited)
+			throws ScribbleException
 	{
 		// Following CompoundInteractionNodeDel#leaveInlinedProtocolUnfolding/leaveWFChoiceCheck
 		ReachabilityEnv visited_env = checker.popEnv();

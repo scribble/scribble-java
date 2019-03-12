@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.SType;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -107,6 +108,22 @@ public class LSeq extends Seq<Local> implements LType
 			}
 		}
 		b.setEntry(entry);
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribbleException
+	{
+		for (Iterator<LType> i = getElements().iterator(); i.hasNext(); )
+		{
+			LType next = i.next();
+			if (!env.isSeqable())
+			{
+				throw new ScribbleException("Illegal sequence to: " + next);
+			}
+			env = next.checkReachability(env);
+		}
+		return env;
 	}
 
 	@Override

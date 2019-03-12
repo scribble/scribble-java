@@ -1,5 +1,6 @@
 package org.scribble.lang.local;
 
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.SType;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -24,5 +25,6 @@ public interface LType extends SType<Local>
 	// Use EGraphBuilderUtil2::finalise for final result
 	void buildGraph(EGraphBuilderUtil2 b);
 
-	//List<EAction> getEnabling();
+	ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribbleException;
 }

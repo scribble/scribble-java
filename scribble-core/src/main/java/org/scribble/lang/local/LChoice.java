@@ -1,8 +1,11 @@
 package org.scribble.lang.local;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.Choice;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -12,6 +15,7 @@ import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.kind.Local;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 public class LChoice extends Choice<Local, LSeq> implements LType
@@ -101,6 +105,21 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 			}
 		}
 		b.leaveChoice();
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribbleException
+	{
+		List<ReachabilityEnv> blocks = new LinkedList<>();
+		for (LSeq block : this.blocks)
+		{
+			blocks.add(block.checkReachability(env));
+		}
+		boolean postcont = blocks.stream().allMatch(x -> x.postcont);  // i.e., no exits
+		Set<RecVar> recvars = blocks.stream().flatMap(x -> x.recvars.stream())
+				.collect(Collectors.toSet());
+		return new ReachabilityEnv(postcont, recvars);
 	}
 
 	/*@Override

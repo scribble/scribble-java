@@ -1,6 +1,10 @@
 package org.scribble.lang.local;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.scribble.ast.ProtocolKindNode;
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.Recursion;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -61,6 +65,20 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 		b.pushRecursionEntry(this.recvar, b.getEntry());
 		this.body.buildGraph(b);
 		b.popRecursionEntry(this.recvar);
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribbleException
+	{
+		env = this.body.checkReachability(env);
+		if (env.recvars.contains(this.recvar))
+		{
+			Set<RecVar> tmp = new HashSet<>(env.recvars);
+			tmp.remove(this.recvar);
+			env = new ReachabilityEnv(env.postcont, tmp);
+		}
+		return env;
 	}
 
 	@Override

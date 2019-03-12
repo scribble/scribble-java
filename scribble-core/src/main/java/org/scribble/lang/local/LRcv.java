@@ -1,5 +1,6 @@
 package org.scribble.lang.local;
 
+import org.scribble.job.ScribbleException;
 import org.scribble.lang.MessageTransfer;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -59,6 +60,13 @@ public class LRcv extends MessageTransfer<Local>
 				? ((MessageSig) msg).payload
 				: Payload.EMPTY_PAYLOAD;
 		b.addEdge(b.getEntry(), b.ef.newEReceive(peer, mid, payload), b.getExit());
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribbleException
+	{
+		return env;
 	}
 
 	@Override
