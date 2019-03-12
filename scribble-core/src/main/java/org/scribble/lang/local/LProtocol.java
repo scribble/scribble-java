@@ -13,6 +13,7 @@ import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
+import org.scribble.model.endpoint.EState;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.LProtocolName;
@@ -70,6 +71,11 @@ public class LProtocol extends
 	{
 		EGraphBuilderUtil2 b = new EGraphBuilderUtil2(job.config.ef);
 		b.init(job.config.ef.newEState(Collections.emptySet()));
+		if (this.def.isEmpty())  // Empty Seq special case for top-level -- in general, Seq must be non-empty, cf. LSeq::buildGraph entry/exit
+		{
+			EState s = b.getEntry();
+			return new EGraph(s, s);
+		}
 		this.def.buildGraph(b);
 		EGraph g = b.finalise();
 		return g;

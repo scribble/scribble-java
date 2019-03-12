@@ -18,8 +18,7 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
 
-public class LSeq extends Seq<Local>
-		implements LType
+public class LSeq extends Seq<Local> implements LType
 {
 	// GInteractionSeq or GBlock better as source?
 	public LSeq(InteractionSeq<Local> source, List<? extends SType<Local>> elems)

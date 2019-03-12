@@ -17,6 +17,7 @@ import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of S
+// N.B. must call init before every "new visit", including first
 public abstract class GraphBuilderUtil
 		<L,                             // Labels on states (cosmetic)
 		 A extends MAction<K>,          // Action type: labels on edges

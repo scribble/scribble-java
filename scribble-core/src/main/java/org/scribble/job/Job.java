@@ -194,14 +194,18 @@ public class Job
 		
 		for (GProtocol inlined : this.jctxt.getInlined())
 		{
+			/* TODO: relegate to "warning"
+			// Check unused roles
+			Set<Role> used = inlined.def.getRoles();
 			Set<Role> unused = inlined.roles.stream()
-					.filter(x -> !inlined.def.getRoles().contains(x))
+					.filter(x -> !used.contains(x))
 					.collect(Collectors.toSet());
 			if (!unused.isEmpty())
 			{
 				throw new ScribbleException(
 						"Unused roles in " + inlined.fullname + ": " + unused);
 			}
+			*/
 			inlined.checkRoleEnabling();
 			inlined.checkExtChoiceConsistency();
 		}

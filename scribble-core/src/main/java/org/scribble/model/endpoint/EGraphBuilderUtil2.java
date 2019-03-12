@@ -30,6 +30,7 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 
+// FIXME TODO replace EGraphBuilderUtil
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
 // Tailored to support graph building from syntactic local protocol choice and recursion
 public class EGraphBuilderUtil2
@@ -68,6 +69,7 @@ public class EGraphBuilderUtil2
 	}
 	
 	// N.B. must be called before every "new visit", including first
+	// FIXME: now cannot be reused for different protos, because of recvars and clear/reset
 	@Override
 	public void init(EState init)
 	{
@@ -379,24 +381,24 @@ public class EGraphBuilderUtil2
 	{
 		/*EState res = new EState(this.entry.getLabels());
 		EState resTerm = new EState(this.exit.getLabels());*/
-		EState res = this.entry.cloneNode(this.ef, this.entry.getLabels()); //this.ef.newEState(this.entry.getLabels());
-		EState resTerm = this.exit.cloneNode(this.ef, this.exit.getLabels()); //this.ef.newEState(this.exit.getLabels());
+		EState entry = this.entry.cloneNode(this.ef, this.entry.getLabels()); //this.ef.newEState(this.entry.getLabels());
+		EState exit = this.exit.cloneNode(this.ef, this.exit.getLabels()); //this.ef.newEState(this.exit.getLabels());
 
 		Map<EState, EState> map = new HashMap<>();
-		map.put(this.entry, res);
-		map.put(this.exit, resTerm);
+		map.put(this.entry, entry);
+		map.put(this.exit, exit);
 		Set<EState> seen = new HashSet<>();
-		fixContinueEdges(seen, map, this.entry, res);
+		fixContinueEdges(seen, map, this.entry, entry);
 		if (!seen.contains(this.exit))
 		{
-			resTerm = null;
+			exit = null;
 		}
 		
 		/*Map<Integer, EndpointState> all = getAllStates(res);
 		EndpointState dfa = determinise(all, res, resTerm);
 		System.out.println("111: " + dfa.toDot());*/
 		
-		return new EGraph(res, resTerm);
+		return new EGraph(entry, exit);
 	}
 	
 	// FIXME: incomplete -- won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?

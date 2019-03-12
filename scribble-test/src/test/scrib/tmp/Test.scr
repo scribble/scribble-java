@@ -36,9 +36,6 @@ module tmp.Test;
 //*
 global protocol Proto1(role A, role B, role C)
 {
-
-	FIXME B unused 
-
 	choice at A
 	{
 		//1() from A to B;
