@@ -1,5 +1,6 @@
 package org.scribble.lang.local;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -10,7 +11,6 @@ import org.scribble.lang.Choice;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
-import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
@@ -69,34 +69,51 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 			LType first = elems.get(0);
 			if (first instanceof LRecursion)  // CHECKME: do this here?  refactor into builderutil?
 			{
-				EGraphBuilderUtil2 b1 = new EGraphBuilderUtil2(b);  
+				//EGraphBuilderUtil2 b1 = new EGraphBuilderUtil2(b);  
 						// "Inherits" b.recvars, for continue edge building (to "outer" recs)
-				EGraph nested;
+				//EGraph nested;
+				EState entry = b.getEntry();
+				EState exit = b.getExit();
+
+				EState nestedEntry = b.newState(Collections.emptySet());
+				b.setEntry(nestedEntry);
 				if (elems.size() == 1)
 				{
-					b1.setExit(b.getExit());
+					/*b1.setExit(b.getExit());
 					first.buildGraph(b1);
-					nested = b1.finalise();
+					nested = b1.finalise();*/
+					first.buildGraph(b);
 				}	
 				else
 				{
-					first.buildGraph(b1);
-					nested = b1.finalise();
-					b.setEntry(nested.term);  // Must be non null
+					//.. HERE reuse existing b for nested (set entry/exit), and fix module imports and FQ names 
+
+					/*first.buildGraph(b1);
+					nested = b1.finalise();*/
+					EState nestedExit = b.newState(Collections.emptySet());
+					b.setExit(nestedExit);
+					first.buildGraph(b);
+
+					b.setEntry(nestedExit);  // Must be non null
+					b.setExit(exit);
 					LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
 					tail.buildGraph(b);
 				}
-				EState init = nested.init;
-				//for (EAction a : first.getEnabling())
+				//EState init = nested.init;
+				EState init = nestedEntry;
+				////for (EAction a : first.getEnabling())
 				for (EAction a : (Iterable<EAction>) 
 						init.getAllActions().stream().distinct()::iterator)
 						// Enabling actions
 				{
 					for (EState s : init.getSuccessors(a))
 					{
-						b.addEdge(b.getEntry(), a, s);
+						b.addEdge(entry, a, s);
 					}
 				}
+				
+				b.setEntry(entry);
+				b.setExit(exit);
 			}
 			else if (first instanceof LContinue)
 			{

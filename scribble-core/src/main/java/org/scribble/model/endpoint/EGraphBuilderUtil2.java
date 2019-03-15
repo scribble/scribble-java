@@ -61,7 +61,7 @@ public class EGraphBuilderUtil2
 		//reset();
 	}
 
-	// FIXME: cannot be reused for different protos, because of recvars and clear/reset
+	/*// FIXME: cannot be reused for different protos, because of recvars and clear/reset
 	// CHECKME: refactor as factory method?  (e.g., push?)
 	public EGraphBuilderUtil2(EGraphBuilderUtil2 b)
 	{
@@ -71,7 +71,7 @@ public class EGraphBuilderUtil2
 				this.outerRecvars.put(x.getKey(), x.getValue()));
 		b.recvars.entrySet().forEach(x ->
 				this.outerRecvars.put(x.getKey(), x.getValue().peek()));
-	}
+	}*/
 	
 	// N.B. must be called before every "new visit", including first
 	// FIXME: now cannot be reused for different protos, because of recvars and clear/reset
@@ -356,7 +356,7 @@ public class EGraphBuilderUtil2
 			EState entry = getRecursionEntry(rv);
 			addEdge(s, a, entry);
 		}
-		else
+		else  // FIXME: should now be obsolete
 		{
 			addEdgeAux(s, new IntermediateRecEdge(this.ef, a, rv),
 					newState(Stream.of(rv).collect(Collectors.toSet())));

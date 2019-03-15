@@ -9,6 +9,7 @@ import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 // FIXME rename better (it's an "external rec" continue edge)
+@Deprecated
 class IntermediateRecEdge extends EAction
 {
 	public final EAction action;
