@@ -38,7 +38,7 @@ module tmp.Test;
 
 
 
-//*
+/*
 global protocol Proto1(role A, role B)
 {
 	rec X 
@@ -83,14 +83,14 @@ global protocol Proto1(role A, role B)
 		do Proto1Aux(A, B);
 		//do Proto1(A, B);
 	}
-	//or
-	//{
-	//	do Proto1Aux2(A, B);
-	//}
-	//or
-	//{
-	//	2() from A to B;
-	//}
+	or
+	{
+		do Proto1Aux2(A, B);
+	}
+	or
+	{
+		2() from A to B;
+	}
 }
 
 aux global protocol Proto1Aux(role A, role B)
@@ -100,11 +100,11 @@ aux global protocol Proto1Aux(role A, role B)
 	//do Proto1Aux(A, B);
 }
 
-//global protocol Proto1Aux2(role A, role B)
-//{
-//	3() from A to B;
-//	do Proto1Aux2(A, B);
-//}
+global protocol Proto1Aux2(role A, role B)
+{
+	3() from A to B;
+	do Proto1Aux2(A, B);
+}
 //*/
 
 

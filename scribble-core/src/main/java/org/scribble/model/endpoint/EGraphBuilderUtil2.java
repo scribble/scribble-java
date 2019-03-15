@@ -470,6 +470,9 @@ public class EGraphBuilderUtil2
 			}
 			else if (a instanceof IntermediateRecEdge)
 			{
+				// TODO FIXME: won't handle deeper nesting of int-rev-edges -- need to keep int-rec-edge if succ is from futher out than parent level
+				// So need to record recvars as a stack of Maps
+				
 				addEdgeAux(clone, ((IntermediateRecEdge) a).action,
 						this.outerRecvars.get(origSucc.getLabels().iterator().next()));
 						// N.B. no recursive call, i.e., don't follow intermediate rec edge successors
