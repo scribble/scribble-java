@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.Protocol;
@@ -22,23 +23,24 @@ import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.visit.context.Projector;
 
 public class GProtocol extends
 		Protocol<Global, GProtocolName, GSeq> implements GType
 {
-	public GProtocol(ProtocolDecl<Global> source, GProtocolName fullname,
-			List<Role> roles, 
-			// List<?> params,  // TODO
+	public GProtocol(ProtocolDecl<Global> source, List<ProtocolMod> mods,
+			GProtocolName fullname, List<Role> roles, // List<?> params,  // TODO
 			GSeq def)
 	{
-		super(source, fullname, roles, def);
+		super(source, mods, fullname, roles, def);
 	}
 
 	@Override
 	public GProtocol reconstruct(ProtocolDecl<Global> source,
-			GProtocolName fullname, List<Role> roles, GSeq def)
+			List<ProtocolMod> mods, GProtocolName fullname, List<Role> roles,
+			GSeq def)
 	{
-		return new GProtocol(source, fullname, roles, def);
+		return new GProtocol(source, mods, fullname, roles, def);
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class GProtocol extends
 	{
 		List<Role> roles = this.roles.stream().map(x -> subs.apply(x))
 				.collect(Collectors.toList());
-		return reconstruct(getSource(), this.fullname, roles,
+		return reconstruct(getSource(), this.mods, this.fullname, roles,
 				this.def.substitute(subs));
 	}
 	
@@ -62,27 +64,28 @@ public class GProtocol extends
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		GProtocolDecl source = getSource();
 		GSeq def = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));
-		return new GProtocol(source, fullname, this.roles, def);
+		return new GProtocol(source, this.mods, this.fullname, this.roles, def);
 	}
 	
 	@Override
 	public GProtocol unfoldAllOnce(STypeUnfolder<Global> u)
 	{
 		GSeq unf = (GSeq) this.def.unfoldAllOnce(u);
-		return reconstruct(getSource(), this.fullname, this.roles, unf);
+		return reconstruct(getSource(), this.mods, this.fullname, this.roles, unf);
 	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
 	@Override
 	public LProjection project(Role self)
 	{
-		LProtocolName fullname = new LProtocolName(this.fullname + "_" + self);
+		LProtocolName fullname = Projector.projectFullProtocolName(this.fullname, self);
 		LSeq body = (LSeq) this.def.project(self);
 		Set<Role> tmp = body.getRoles();
 		List<Role> roles = this.roles.stream()
 				.map(x -> x.equals(self) ? Role.SELF : x).filter(x -> tmp.contains(x))
 				.collect(Collectors.toList());
-		return new LProjection(this.fullname, self, fullname, roles, body);
+		return new LProjection(this.mods, this.fullname, self, fullname, roles,
+				body);
 	}
 
 	@Override
@@ -91,6 +94,7 @@ public class GProtocol extends
 		throw new RuntimeException("Unsupported for Protocol: " + this);
 	}
 
+	// FIXME: top-level overriding pattern inconsistent with, e.g., getInlined -- though maybe should be fixing the latter
 	// CHECKME: refactor Protocol out of SType?  Also Do -- but harder because Do needs to be in Seq
 	public Set<Role> checkRoleEnabling() throws ScribbleException
 	{

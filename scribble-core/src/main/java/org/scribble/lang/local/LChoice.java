@@ -67,35 +67,45 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 		{
 			List<LType> elems = block.getElements();
 			LType first = elems.get(0);
-			if (first instanceof LRecursion)  // CHECKME
+			if (first instanceof LRecursion)  // CHECKME: do this here?  refactor into builderutil?
 			{
 				EGraphBuilderUtil2 b1 = new EGraphBuilderUtil2(b);  
-						// "Inherits" b.recvars, for continue edge building  (to "outer" recs)
+						// "Inherits" b.recvars, for continue edge building (to "outer" recs)
+				EGraph nested;
 				if (elems.size() == 1)
 				{
 					b1.setExit(b.getExit());
 					first.buildGraph(b1);
-					EGraph nested = b1.finalise();
-					EState init = nested.init;
-					//for (EAction a : first.getEnabling())
-					for (EAction a : (Iterable<EAction>) 
-							init.getAllActions().stream().distinct()::iterator)
-							// Enabling actions
-					{
-						for (EState s : init.getSuccessors(a))
-						{
-							b.addEdge(b.getEntry(), a, s);
-						}
-					}
+					nested = b1.finalise();
 				}	
 				else
 				{
+					//HERE.. and fix -dotpng
+					
 					first.buildGraph(b1);
-					EGraph nested = b1.finalise();
+					nested = b1.finalise();
 					b.setEntry(nested.term);  // Must be non null
 					LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
 					tail.buildGraph(b);
 				}
+				EState init = nested.init;
+				//for (EAction a : first.getEnabling())
+				for (EAction a : (Iterable<EAction>) 
+						init.getAllActions().stream().distinct()::iterator)
+						// Enabling actions
+				{
+					for (EState s : init.getSuccessors(a))
+					{
+						b.addEdge(b.getEntry(), a, s);
+					}
+				}
+			}
+			else if (first instanceof LContinue)
+			{
+				// Cannot treat choice-unguarded-continue in "a single pass" because may not have built all recursion enacting edges yet 
+				// (Single-pass building would be sensitive to order of choice block visiting)
+				LContinue cont = (LContinue) first;  // First and only element
+				b.addContinueEdge(b.getEntry(), cont.recvar); 
 			}
 			else
 			{

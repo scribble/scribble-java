@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.ast.NonRoleParamDeclList;
+import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.DependencyMap;
@@ -73,12 +74,13 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 			throws ScribbleException
 	{
 		GProtocolDecl source = (GProtocolDecl) n;
-		Module mod = (Module) n.getParent();
-		GProtocolName fullname = new GProtocolName(mod.getFullModuleName(),
+		Module m = (Module) n.getParent();
+		List<ProtocolMod> mods = source.getModifierListChild().getModList();
+		GProtocolName fullname = new GProtocolName(m.getFullModuleName(),
 				source.getHeaderChild().getDeclName());
 		List<Role> roles = source.getRoles();
 		GSeq body = (GSeq) source.getDefChild().getBlockChild().visitWith(t);
-		return new GProtocol(source, fullname, roles, body);
+		return new GProtocol(source, mods, fullname, roles, body);
 	}
 	
 	@Override

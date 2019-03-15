@@ -57,7 +57,7 @@ public class EGraphBuilderUtil
 	
 	// N.B. must be called before every "new visit", including first
 	@Override
-	public void init(EState init)
+	public void init(EState init)  // FIXME: init not used?
 	{
 		clear();
 		reset(this.ef.newEState(Collections.emptySet()),

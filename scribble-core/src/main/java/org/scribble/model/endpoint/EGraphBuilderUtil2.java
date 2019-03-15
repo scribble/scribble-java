@@ -23,6 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.job.ScribbleException;
 import org.scribble.model.GraphBuilderUtil;
@@ -36,8 +38,9 @@ import org.scribble.type.name.RecVar;
 public class EGraphBuilderUtil2
 		extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
-	public final EModelFactory ef;
+	public final EModelFactory ef;  // N.B. new states should be made by this.newState, not this.ef.newEState
 
+	private final Map<RecVar, EState> outerRecvars = new HashMap<>();
 	private final Map<RecVar, Deque<EState>> recvars = new HashMap<>();  // CHECKME: Deque is for shadowing?
 
 	// First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
@@ -63,19 +66,22 @@ public class EGraphBuilderUtil2
 	public EGraphBuilderUtil2(EGraphBuilderUtil2 b)
 	{
 		this.ef = b.ef;
-		init(ef.newEState(Collections.emptySet()));
+		init(null);  // FIXME: init param not used
+		b.outerRecvars.entrySet().forEach(x ->
+				this.outerRecvars.put(x.getKey(), x.getValue()));
 		b.recvars.entrySet().forEach(x ->
-				this.recvars.put(x.getKey(), new LinkedList<>(x.getValue())));
+				this.outerRecvars.put(x.getKey(), x.getValue().peek()));
 	}
 	
 	// N.B. must be called before every "new visit", including first
 	// FIXME: now cannot be reused for different protos, because of recvars and clear/reset
 	@Override
-	public void init(EState init)
+	public void init(EState init)  // FIXME: init not used (but inherited from super)
 	{
 		clear();
-		reset(this.ef.newEState(Collections.emptySet()),
-				this.ef.newEState(Collections.emptySet()));
+		/*reset(this.ef.newEState(Collections.emptySet()),
+				this.ef.newEState(Collections.emptySet()));*/
+		reset(newState(Collections.emptySet()), newState(Collections.emptySet()));
 	}
 
 	protected void clear()
@@ -90,13 +96,22 @@ public class EGraphBuilderUtil2
 		this.prev.push(new LinkedList<>());
 		
 		this.enactingMap.clear();
+		
+		this.states.clear();
 	}
 	
-	/*@Override
+	private final Set<EState> states = new HashSet<>();
+	
+	// For the util to additionally record states 
+	// CHECKME: make interface less messy w.r.t. this.ef.newEState
+	//@Override
 	public EState newState(Set<RecVar> labs)
 	{
-		return new EState(labs);
-	}*/
+		//return new EState(labs);
+		EState s = this.ef.newEState(labs);
+		this.states.add(s);
+		return s;
+	}
 
 	// Records 's' as predecessor state, and 'a' as previous action and the "enacting action" for "fresh" recursion scopes
 	@Override
@@ -231,18 +246,18 @@ public class EGraphBuilderUtil2
 	/*
 	 * Dealing with Recursion contexts
 	 */
-	public void pushRecursionEntry(RecVar recvar, EState entry)
+	public void pushRecursionEntry(RecVar rv, EState entry)
 	{
 		/*if (!isUnguardedInChoice())  // Don't record rec entry if it is an unguarded choice-rec
 		{
 			this.entry.addLabel(recvar);
 		}*/
 		//this.recvars.put(recvar, this.entry);
-		Deque<EState> tmp = this.recvars.get(recvar);
+		Deque<EState> tmp = this.recvars.get(rv);
 		if (tmp == null)
 		{
 			tmp = new LinkedList<>();
-			this.recvars.put(recvar, tmp);
+			this.recvars.put(rv, tmp);
 		}
 		/*if (isUnguardedInChoice())
 		{
@@ -255,25 +270,25 @@ public class EGraphBuilderUtil2
 		tmp.push(entry);
 		
 		//Deque<Set<EAction>> tmp2 = this.enacting.get(recvar);
-		Deque<List<EAction>> tmp2 = this.enacting.get(recvar);
+		Deque<List<EAction>> tmp2 = this.enacting.get(rv);
 		if (tmp2 == null)
 		{
 			tmp2 = new LinkedList<>();  // New Stack for this recvar
-			this.enacting.put(recvar, tmp2);
+			this.enacting.put(rv, tmp2);
 		}
 		//tmp2.push(new HashSet<>());  // Push new Set element onto stack
 		tmp2.push(new LinkedList<>());  // Push new Set element onto stack
 	}	
 	
-	public void popRecursionEntry(RecVar recvar)
+	public void popRecursionEntry(RecVar rv)
 	{
-		this.recvars.get(recvar).pop();  // Pop the entry of this rec
+		this.recvars.get(rv).pop();  // Pop the entry of this rec
 
 		//Set<EAction> pop = this.enacting.get(recvar).pop();
-		List<EAction> pop = this.enacting.get(recvar).pop();
-		if (this.enacting.get(recvar).isEmpty())  // All Sets popped from the stack of this recvar
+		List<EAction> pop = this.enacting.get(rv).pop();
+		if (this.enacting.get(rv).isEmpty())  // All Sets popped from the stack of this recvar
 		{
-			this.enacting.remove(recvar);
+			this.enacting.remove(rv);
 		}
 
 		EState curr = getEntry();
@@ -284,7 +299,7 @@ public class EGraphBuilderUtil2
 			tmp = new HashMap<>();
 			this.enactingMap.put(curr, tmp);
 		}
-		tmp.put(recvar, pop);
+		tmp.put(rv, pop);
 	}	
 	
 
@@ -301,6 +316,7 @@ public class EGraphBuilderUtil2
 	}
 	
 	// Choice-unguarded continues -- fixed in finalise pass
+	// Now currently used for all continues, cf. LContinue::buildGraph
 	public void addContinueEdge(EState s, RecVar rv)
 	{
 		/*this.contStates.add(s);
@@ -331,6 +347,21 @@ public class EGraphBuilderUtil2
 			}
 		}
 	}
+
+	// Cf. add ContinueEdge
+	public void addRecursionEdge(EState s, EAction a, RecVar rv)
+	{
+		if (this.recvars.containsKey(rv))
+		{
+			EState entry = getRecursionEntry(rv);
+			addEdge(s, a, entry);
+		}
+		else
+		{
+			addEdgeAux(s, new IntermediateRecEdge(this.ef, a, rv),
+					newState(Stream.of(rv).collect(Collectors.toSet())));
+		}
+	}
 	
 	// succ assumed to be this.getEntry()
 	public void removeEdgeFromPredecessor(EState s, EAction a)
@@ -355,6 +386,13 @@ public class EGraphBuilderUtil2
 		}
 		throw new RuntimeException("Shouldn't get in here: " + s + ", " + a);
 	}
+
+	// CHECKME handle preds/prevs like above (cf. this.addEdge)
+	public void removeEdge(EState s, EAction a, EState succ)
+			throws ScribbleException
+	{
+		removeEdgeAux(s, a, succ);
+	}
 	
 	public List<EState> getPredecessors()
 	{
@@ -372,6 +410,12 @@ public class EGraphBuilderUtil2
 	{
 		return this.recvars.get(recvar).peek();
 	}	
+	
+	public Set<EState> getPredecessors(EState s)
+	{
+		return this.states.stream().filter(x -> x.getAllSuccessors().contains(s))
+				.collect(Collectors.toSet());
+	}
 	
 
 	/*
@@ -402,62 +446,70 @@ public class EGraphBuilderUtil2
 	}
 	
 	// FIXME: incomplete -- won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
-	protected void fixContinueEdges(Set<EState> seen, Map<EState, EState> map,
-			EState curr, EState res)
+	protected void fixContinueEdges(Set<EState> seen, Map<EState, EState> clones,
+			EState orig, EState clone)
 	{
-		if (seen.contains(curr))
+		if (seen.contains(orig))
 		{
 			return;
 		}
-		seen.add(curr);
-		Iterator<EAction> as = curr.getAllActions().iterator();
-		Iterator<EState> ss = curr.getAllSuccessors().iterator();
+		seen.add(orig);
+		Iterator<EAction> as = orig.getAllActions().iterator();
+		Iterator<EState> ss = orig.getAllSuccessors().iterator();
 		while (as.hasNext())
 		{
 			EAction a = as.next();
-			EState succ = ss.next();
-			EState next;
-			next = getNext(map, succ);
+			EState origSucc = ss.next();
+			EState cloneSucc = getClone(clones, origSucc);
 			
-			if (!(a instanceof IntermediateContinueEdge))
+			if (!(a instanceof IntermediateContinueEdge) && !(a instanceof IntermediateRecEdge))
 			{
-				addEdgeAux(res, a, next);
+				addEdgeAux(clone, a, cloneSucc);
 			
-				fixContinueEdges(seen, map, succ, next);
+				fixContinueEdges(seen, clones, origSucc, cloneSucc);
+			}
+			else if (a instanceof IntermediateRecEdge)
+			{
+				addEdgeAux(clone, ((IntermediateRecEdge) a).action,
+						this.outerRecvars.get(origSucc.getLabels().iterator().next()));
+						// N.B. no recursive call, i.e., don't follow intermediate rec edge successors
 			}
 			else
 			{
 				IntermediateContinueEdge ice = (IntermediateContinueEdge) a;
 				//for (IOAction e : this.enactingMap.get(succ))
 				RecVar rv = new RecVar(ice.mid.toString());
-				for (EAction e : this.enactingMap.get(succ).get(rv))
+				
+				System.out.println("sss2: " + rv);
+				
+				for (EAction e : this.enactingMap.get(origSucc).get(rv))
 				{
-					for (EState n : succ.getSuccessors(e))
+					for (EState n : origSucc.getSuccessors(e))
 					{
-						next = getNext(map, n);
-						addEdgeAux(res, e, next);
+						cloneSucc = getClone(clones, n);
+						addEdgeAux(clone, e, cloneSucc);
 
-						fixContinueEdges(seen, map, succ, next);
+						fixContinueEdges(seen, clones, origSucc, cloneSucc);
 					}
 				}
 			}
 		}
 	}
 
-	private EState getNext(Map<EState, EState> map, EState succ)
+	private EState getClone(Map<EState, EState> clones, EState orig)
 	{
-		EState next;
-		if (map.containsKey(succ))
+		EState res;
+		if (clones.containsKey(orig))
 		{
-			 next = map.get(succ);
+			 res = clones.get(orig);
 		}
 		else
 		{
 			//next = this.ef.newEState(succ.getLabels());
-			next = succ.cloneNode(this.ef, succ.getLabels());
-			map.put(succ, next);
+			res = orig.cloneNode(this.ef, orig.getLabels());
+			clones.put(orig, res);
 		}
-		return next;
+		return res;
 	}
 }
 

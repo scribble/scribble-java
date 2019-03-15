@@ -33,6 +33,81 @@ module tmp.Test;
 // TODO: port forwarding version of P2 -- funny case of "session" persisting over full disconnect, should/how to correlate?
 
 
+
+// FIXME: good.liveness.Test02, reachability check (empty rec projection)
+
+
+
+//*
+global protocol Proto1(role A, role B)
+{
+	rec X 
+	{	
+		1() from A to B;
+		choice at A
+		{
+			rec Y
+			{
+				0() from A to B;
+				//do Proto1(A, B);
+				continue X;
+			}
+		}
+	}
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		rec X
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		do Proto1Aux(A, B);
+		//do Proto1(A, B);
+	}
+	//or
+	//{
+	//	do Proto1Aux2(A, B);
+	//}
+	//or
+	//{
+	//	2() from A to B;
+	//}
+}
+
+aux global protocol Proto1Aux(role A, role B)
+{
+	0() from A to B;
+	do Proto1(A, B);
+	//do Proto1Aux(A, B);
+}
+
+//global protocol Proto1Aux2(role A, role B)
+//{
+//	3() from A to B;
+//	do Proto1Aux2(A, B);
+//}
+//*/
+
+
 /*
 global protocol Proto1(role A, role B)
 {

@@ -60,7 +60,7 @@ public abstract class GraphBuilderUtil
 		s.addEdge(a, succ);
 	}
 	
-	protected final void removeEdgeAux(S s, A a, S succ) throws ScribbleException  // Exception necessary?
+	protected void removeEdgeAux(S s, A a, S succ) throws ScribbleException  // Exception necessary?
 	{
 		s.removeEdge(a, succ);
 	}

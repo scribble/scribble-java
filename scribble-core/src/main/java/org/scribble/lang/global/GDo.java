@@ -43,9 +43,9 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 		GProtocolName fullname = this.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, this.roles, 
 				Collections.emptyList());  // FIXME
+		RecVar rv = i.makeRecVar(sig);
 		if (i.hasSig(sig))
 		{
-			RecVar rv = i.makeRecVar(sig);
 			return new GContinue(getSource(), rv);
 		}
 		i.pushSig(sig);
@@ -55,7 +55,7 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 		GSeq inlined = g.def.substitute(subs).getInlined(i);//, stack);  
 				// i.e. returning a GSeq -- rely on parent GSeq to inline
 		i.popSig();
-		return inlined;
+		return new GRecursion(null, rv, inlined);
 	}
 
 	@Override

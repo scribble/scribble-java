@@ -37,6 +37,7 @@ import org.scribble.model.global.SGraph;
 import org.scribble.model.global.SGraphBuilderUtil;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
+import org.scribble.type.kind.Local;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
@@ -143,9 +144,9 @@ public class Job
 		//runUnfoldingPass();
 		for (GProtocol inlined : this.jctxt.getInlined())
 		{
-				STypeUnfolder<Global> u1 = new STypeUnfolder<>();
-				//GTypeUnfolder u2 = new GTypeUnfolder();
-				GType unf = (GType) inlined.unfoldAllOnce(u1);//.unfoldAllOnce(u2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
+				STypeUnfolder<Global> unf1 = new STypeUnfolder<>();
+				//GTypeUnfolder unf2 = new GTypeUnfolder();
+				GType unf = (GType) inlined.unfoldAllOnce(unf1);//.unfoldAllOnce(unf2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 				System.out.println("\nunfolded:\n" + unf);
 		}
 				
@@ -154,7 +155,9 @@ public class Job
 			for (Role self : g.roles)
 			{
 				GProtocol inlined = this.jctxt.getInlined(g.fullname);
-				LProtocol proj = inlined.project(self);
+				LProtocol proj = inlined.project(self);  // Projection and inling commutative?
+				STypeUnfolder<Local> unf = new STypeUnfolder<>();
+				//proj = proj.unfoldAllOnce(unf);
 				this.jctxt.addProjected(proj.fullname, proj);
 				System.out.println("\nprojected onto " + self + ":\n" + proj);
 			}
@@ -165,6 +168,9 @@ public class Job
 		{
 			//LProtocolName lname = e.getKey();
 			LProtocol proj = e.getValue();
+			
+			System.out.println("sss1: " + proj);
+			
 			EGraph graph = proj.toEGraph(this);
 			this.jctxt.addEGraph(proj.fullname, graph);
 			System.out.println("\ngraph for " + proj.fullname + ":\n" + graph.toDot());
@@ -206,12 +212,20 @@ public class Job
 						"Unused roles in " + inlined.fullname + ": " + unused);
 			}
 			*/
+			if (inlined.isAux())
+			{
+				continue;
+			}
 			inlined.checkRoleEnabling();
 			inlined.checkExtChoiceConsistency();
 		}
 		
 		for (LProtocol proj : this.jctxt.getProjections().values())
 		{
+			if (proj.isAux())  // CHECKME?
+			{
+				continue;
+			}
 			proj.checkReachability();
 		}
 	}

@@ -10,6 +10,8 @@ import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
+import org.scribble.model.endpoint.EState;
+import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -53,37 +55,25 @@ public class LContinue extends Continue<Local> implements LType
 	@Override
 	public void buildGraph(EGraphBuilderUtil2 b)
 	{
-		//if (b.isUnguardedInChoice())
+		// CHECKME: identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
+		// Choice-guarded continue -- choice-unguarded continue detected and handled in LChoice
+		EState curr = b.getEntry();
+		for (EState pred : b.getPredecessors(curr))  // Does getAllSuccessors
 		{
-			b.addContinueEdge(b.getEntry(), this.recvar);
-			return;
-		}
-
-		/*// ** "Overwrites" previous edge built by send/receive(s) leading to this continue
-		Iterator<EState> preds = b.getPredecessors().iterator();
-		Iterator<EAction> prevs = b.getPreviousActions().iterator();
-		EState entry = b.getEntry();
-
-		Set<List<Object>> removed = new HashSet<>();  
-				// HACK: for identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
-				// FIXME: do here, or refactor into GraphBuilder?
-				//
-				// Because duplicate edges preemptively pruned by ModelState.addEdge, but corresponding predecessors not pruned  
-				// FIXME: make uniform
-		while (preds.hasNext())
-		{
-			EState pred = preds.next();
-			EAction prev = prevs.next();
-			List<Object> tmp = Arrays.asList(pred, prev, entry);
-			if (!removed.contains(tmp))
+			for (EAction a : pred.getAllActions())
 			{
-				removed.add(tmp);
-				b.removeEdgeFromPredecessor(pred, prev);  // Assumes pred is a predecessor, and removes pred from current predecessors..
+				try
+				{
+					b.removeEdge(pred, a, curr);  //b.removeEdgeFromPredecessor(pred, prev);
+					//b.addEdge(pred, a, entry);   //b.addRecursionEdge(pred, prev, b.getRecursionEntry(this.recvar));
+					b.addRecursionEdge(pred, a, this.recvar);
+				}
+				catch (ScribbleException e)  // CHECKME
+				{
+					throw new RuntimeException(e);
+				}
 			}
-			b.addRecursionEdge(pred, prev,
-					b.getRecursionEntry(this.recvar));
-					// May be repeated for non-det, but OK  // Combine with removeEdgeFromPredecessor?
-		}*/
+		}
 	}
 
 	@Override

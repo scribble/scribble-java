@@ -100,7 +100,7 @@ public class LSeq extends Seq<Local> implements LType
 			}
 			else
 			{
-				EState tmp = b.ef.newEState(Collections.emptySet());
+				EState tmp = b.newState(Collections.emptySet());
 				b.setExit(tmp);
 				next.buildGraph(b);
 				b.setEntry(b.getExit());

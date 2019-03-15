@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
@@ -24,19 +25,19 @@ import org.scribble.type.name.Role;
 public class LProtocol extends
 		Protocol<Local, LProtocolName, LSeq> implements LType
 {
-	public LProtocol(ProtocolDecl<Local> source, LProtocolName fullname,
-			List<Role> roles, 
-			// List<?> params,  // TODO
+	public LProtocol(ProtocolDecl<Local> source, List<ProtocolMod> mods,
+			LProtocolName fullname, List<Role> roles, // List<?> params,  // TODO
 			LSeq def)
 	{
-		super(source, fullname, roles, def);
+		super(source, mods, fullname, roles, def);
 	}
 
 	@Override
 	public LProtocol reconstruct(ProtocolDecl<Local> source,
-			LProtocolName fullname, List<Role> roles, LSeq def)
+			List<ProtocolMod> mods, LProtocolName fullname, List<Role> roles,
+			LSeq def)
 	{
-		return new LProtocol(source, fullname, roles, def);
+		return new LProtocol(source, mods, fullname, roles, def);
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class LProtocol extends
 	{
 		List<Role> roles = this.roles.stream().map(x -> subs.apply(x))
 				.collect(Collectors.toList());
-		return reconstruct(getSource(), this.fullname, roles,
+		return reconstruct(getSource(), this.mods, this.fullname, roles,
 				this.def.substitute(subs));
 	}
 	
@@ -65,13 +66,13 @@ public class LProtocol extends
 	public LProtocol unfoldAllOnce(STypeUnfolder<Local> u)
 	{
 		LSeq unf = (LSeq) this.def.unfoldAllOnce(u);
-		return reconstruct(getSource(), this.fullname, this.roles, unf);
+		return reconstruct(getSource(), this.mods, this.fullname, this.roles, unf);
 	}
 
 	public EGraph toEGraph(Job job)
 	{
 		EGraphBuilderUtil2 b = new EGraphBuilderUtil2(job.config.ef);
-		b.init(job.config.ef.newEState(Collections.emptySet()));
+		b.init(null);  // FIXME: init param not used
 		if (this.def.isEmpty())  // Empty Seq special case for top-level -- in general, Seq must be non-empty, cf. LSeq::buildGraph entry/exit
 		{
 			EState s = b.getEntry();

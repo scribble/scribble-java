@@ -72,9 +72,8 @@ public class LContinueDel extends ContinueDel
 		{
 			graph.util.addContinueEdge(graph.util.getEntry(), rv);
 		}
-		else
+		else // ** "Overwrites" previous edge built by send/receive(s) leading to this continue
 		{
-			// ** "Overwrites" previous edge built by send/receive(s) leading to this continue
 			Iterator<EState> preds = graph.util.getPredecessors().iterator();
 			Iterator<EAction> prevs = graph.util.getPreviousActions().iterator();
 			EState entry = graph.util.getEntry();

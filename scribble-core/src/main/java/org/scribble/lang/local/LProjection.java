@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.Substitutions;
@@ -19,21 +20,21 @@ public class LProjection extends LProtocol
 	public final GProtocolName parent;
 	public final Role self;
 	
-	public LProjection(GProtocolName parent, Role self, LProtocolName fullname,
-			List<Role> roles, 
-			// List<?> params,  // TODO
+	public LProjection(List<ProtocolMod> mods, GProtocolName parent, Role self,
+			LProtocolName fullname, List<Role> roles, // List<?> params,  // TODO
 			LSeq body)
 	{
-		super(null, fullname, roles, body);
+		super(null, mods, fullname, roles, body);
 		this.parent = parent;
 		this.self = self;
 	}
 
 	@Override
 	public LProjection reconstruct(ProtocolDecl<Local> source,
-			LProtocolName fullname, List<Role> roles, LSeq body)
+			List<ProtocolMod> mods, LProtocolName fullname, List<Role> roles,
+			LSeq body)
 	{
-		return new LProjection(this.parent, this.self, fullname, roles, body);
+		return new LProjection(mods, this.parent, this.self, fullname, roles, body);
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class LProjection extends LProtocol
 	{
 		List<Role> roles = this.roles.stream().map(x -> subs.apply(x))
 				.collect(Collectors.toList());
-		return reconstruct(getSource(), this.fullname, roles,
+		return reconstruct(getSource(), this.mods, this.fullname, roles,
 				this.def.substitute(subs));
 	}
 	
