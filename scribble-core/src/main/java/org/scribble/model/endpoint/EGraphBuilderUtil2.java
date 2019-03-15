@@ -40,7 +40,7 @@ public class EGraphBuilderUtil2
 {
 	public final EModelFactory ef;  // N.B. new states should be made by this.newState, not this.ef.newEState
 
-	private final Map<RecVar, EState> outerRecvars = new HashMap<>();
+	private final Map<RecVar, EState> outerRecvars = new HashMap<>();  // FIXME: deprecate
 	private final Map<RecVar, Deque<EState>> recvars = new HashMap<>();  // CHECKME: Deque is for shadowing?
 
 	// First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)

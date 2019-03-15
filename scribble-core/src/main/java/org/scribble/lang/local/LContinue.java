@@ -63,15 +63,23 @@ public class LContinue extends Continue<Local> implements LType
 		{
 			for (EAction a : new LinkedList<>(pred.getAllActions()))
 			{
-				try
+				// Following is because pred.getSuccessor doesn't support non-det edges
+				// FIXME: refactor actions/successor Lists in MState to list of edges?
+				for (EState succ : pred.getSuccessors(a))
 				{
-					b.removeEdge(pred, a, curr);  //b.removeEdgeFromPredecessor(pred, prev);
-					//b.addEdge(pred, a, entry);   //b.addRecursionEdge(pred, prev, b.getRecursionEntry(this.recvar));
-					b.addRecursionEdge(pred, a, this.recvar);
-				}
-				catch (ScribbleException e)  // CHECKME: necessary for removeEdge to have throws?
-				{
-					throw new RuntimeException(e);
+					if (succ.equals(curr))
+					{
+						try
+						{
+							b.removeEdge(pred, a, curr);  //b.removeEdgeFromPredecessor(pred, prev);
+							//b.addEdge(pred, a, entry);   //b.addRecursionEdge(pred, prev, b.getRecursionEntry(this.recvar));
+							b.addRecursionEdge(pred, a, this.recvar);
+						}
+						catch (ScribbleException e)  // CHECKME: necessary for removeEdge to have throws?
+						{
+							throw new RuntimeException(e);
+						}
+					}
 				}
 			}
 		}
