@@ -1,6 +1,7 @@
 package org.scribble.lang.local;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import org.scribble.ast.ProtocolKindNode;
@@ -58,9 +59,9 @@ public class LContinue extends Continue<Local> implements LType
 		// CHECKME: identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
 		// Choice-guarded continue -- choice-unguarded continue detected and handled in LChoice
 		EState curr = b.getEntry();
-		for (EState pred : b.getPredecessors(curr))  // Does getAllSuccessors
+		for (EState pred : b.getAllPredecessors(curr))  // Does getAllSuccessors
 		{
-			for (EAction a : pred.getAllActions())
+			for (EAction a : new LinkedList<>(pred.getAllActions()))
 			{
 				try
 				{
@@ -68,7 +69,7 @@ public class LContinue extends Continue<Local> implements LType
 					//b.addEdge(pred, a, entry);   //b.addRecursionEdge(pred, prev, b.getRecursionEntry(this.recvar));
 					b.addRecursionEdge(pred, a, this.recvar);
 				}
-				catch (ScribbleException e)  // CHECKME
+				catch (ScribbleException e)  // CHECKME: necessary for removeEdge to have throws?
 				{
 					throw new RuntimeException(e);
 				}

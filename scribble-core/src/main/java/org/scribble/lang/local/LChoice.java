@@ -80,8 +80,6 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 				}	
 				else
 				{
-					//HERE.. and fix -dotpng
-					
 					first.buildGraph(b1);
 					nested = b1.finalise();
 					b.setEntry(nested.term);  // Must be non null

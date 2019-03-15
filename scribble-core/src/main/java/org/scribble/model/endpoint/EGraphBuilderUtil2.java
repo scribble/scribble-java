@@ -411,10 +411,11 @@ public class EGraphBuilderUtil2
 		return this.recvars.get(recvar).peek();
 	}	
 	
-	public Set<EState> getPredecessors(EState s)
+	// Returns List, cf. getAllSucessors/Actions
+	public List<EState> getAllPredecessors(EState s)
 	{
 		return this.states.stream().filter(x -> x.getAllSuccessors().contains(s))
-				.collect(Collectors.toSet());
+				.collect(Collectors.toList());
 	}
 	
 

@@ -114,12 +114,16 @@ public class LSeq extends Seq<Local> implements LType
 	public ReachabilityEnv checkReachability(ReachabilityEnv env)
 			throws ScribbleException
 	{
+		LType prev = null; 
+		LType next = null;
 		for (Iterator<LType> i = getElements().iterator(); i.hasNext(); )
 		{
-			LType next = i.next();
+			prev = next;
+			next = i.next();
 			if (!env.isSeqable())
 			{
-				throw new ScribbleException("Illegal sequence to: " + next);
+				throw new ScribbleException(
+						"Illegal sequence: " + (prev == null ? "" : prev + "\n") + next);
 			}
 			env = next.checkReachability(env);
 		}
