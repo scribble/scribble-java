@@ -358,7 +358,8 @@ simplemessagesignaturename: simplename;
 simpleprotocolname:         simplename;
 simplemembername:           simplename;  // Only for member declarations
 
-gprotocolname: simplename;
+// FIXME TODO: do for all other relevant names
+//gprotocolname: simplename;
 
 
 qualifiedname:
@@ -551,10 +552,13 @@ globalprotocolheader:
 //	GLOBAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist roledecllist
 
 gprotocolnamenode:
-	gprotocolname
-->
-	^(GPROTOCOLNAME gprotocolname) 
+		IDENTIFIER ('.' IDENTIFIER)*
+	->
+	^(GPROTOCOLNAME IDENTIFIER+)
 ;
+/*	gprotocolname
+->
+	^(GPROTOCOLNAME gprotocolname)*/
 
 roledecllist:
 	'(' roledecl (',' roledecl)* ')'
