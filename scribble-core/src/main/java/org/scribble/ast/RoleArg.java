@@ -19,6 +19,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
 
+// CHECKME: can this be simplified to an interface?  (also NonRoleArg)
 public class RoleArg extends DoArg<RoleNode>
 {
 	// ScribTreeAdaptor#create constructor

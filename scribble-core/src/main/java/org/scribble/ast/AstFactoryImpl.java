@@ -71,7 +71,6 @@ import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.NonRoleArgListDel;
-import org.scribble.del.NonRoleParamDeclDel;
 import org.scribble.del.NonRoleParamDeclListDel;
 import org.scribble.del.RoleArgListDel;
 import org.scribble.del.RoleDeclDel;
@@ -316,9 +315,10 @@ public class AstFactoryImpl implements AstFactory
 	public <K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(
 			CommonTree source, K kind, NonRoleParamNode<K> namenode)
 	{
-		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(source, kind, namenode);
+		/*NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(source, kind, namenode);
 		pd = del(pd, new NonRoleParamDeclDel());
-		return pd;
+		return pd;*/
+		throw new RuntimeException("Deprecated");
 	}
 
 	@Override

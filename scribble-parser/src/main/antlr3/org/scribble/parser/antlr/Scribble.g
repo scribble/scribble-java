@@ -125,11 +125,13 @@ tokens
 	ROLEDECLLIST = 'ROLEDECLLIST';
 	ROLEDECL = 'ROLEDECL';
 	PARAMETERDECLLIST = 'PARAMETERDECLLIST';
-	PARAMETERDECL = 'PARAMETERDECL';
+	//PARAMETERDECL = 'PARAMETERDECL';
+	TYPEDECL = 'TYPEDECL';
+	SIGDECL = 'SIGDECL';
 	ROLEINSTANTIATIONLIST = 'ROLEINSTANTIATIONLIST';
 	ROLEINSTANTIATION = 'ROLEINSTANTIATION';  // FIXME: not consistent with arginstas/payloadeles
 	ARGUMENTINSTANTIATIONLIST = 'ARGUMENTINSTANTIATIONLIST';
-	//ARGUMENTINSTANTIATION = 'argument-instantiation';
+	ARGUMENTINSTANTIATION = 'ARGUMENTINSTANTIATION';
 	//CONNECTDECL = 'connect-decl';
 
 	GLOBALPROTOCOLDECL = 'GLOBALPROTOCOLDECL';
@@ -149,9 +151,14 @@ tokens
 	
 	GPROTOCOLNAME = 'GPROTOCOLNAME';
 	ROLENAME = 'ROLENAME';
+	TYPENAME = 'TYPENAME';
+	SIGNAME = 'SIGNAME';
 	ID = 'ID';
 	OPNAME = 'OPNAME';
 	RECURSIONVAR = 'RECURSIONVAR';
+
+	TYPENAME = 'TYPENAME';
+	SIGNAME = 'SIGNAME';
 }
 
 
@@ -353,8 +360,8 @@ ambiguousname:
  */
 
 simplemodulename:           simplename;
-simplepayloadtypename:      simplename;
-simplemessagesignaturename: simplename;
+//simplepayloadtypename:      simplename;
+//simplemessagesignaturename: simplename;
 simpleprotocolname:         simplename;
 simplemembername:           simplename;  // Only for member declarations
 
@@ -382,7 +389,13 @@ modulename:
 
 protocolname:         membername;
 payloadtypename:      membername;
-messagesignaturename: membername;
+//messagesignaturename: membername;
+
+messagesignaturename:
+	IDENTIFIER ('.' IDENTIFIER)*
+->
+	^(SIGNAME IDENTIFIER+)
+;
 
 
 /**
@@ -450,13 +463,27 @@ datatypedecl:
 payloadtypedecl:
 	TYPE_KW '<' IDENTIFIER '>' EXTIDENTIFIER FROM_KW EXTIDENTIFIER AS_KW simplepayloadtypename ';'
 ->
-	^(PAYLOADTYPEDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplepayloadtypename)
+	^(PAYLOADTYPEDECL simplepayloadtypename IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER)
+;
+// alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
+
+simplepayloadtypename:
+	IDENTIFIER
+->
+	^(TYPENAME IDENTIFIER)  // TODO factor out with typedecl?
 ;
 
 messagesignaturedecl:
 	SIG_KW '<' IDENTIFIER '>' EXTIDENTIFIER FROM_KW EXTIDENTIFIER AS_KW simplemessagesignaturename ';'
 ->
-	^(MESSAGESIGNATUREDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplemessagesignaturename)
+	^(MESSAGESIGNATUREDECL simplemessagesignaturename IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER)
+;
+// alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
+
+simplemessagesignaturename:
+	IDENTIFIER
+->
+	^(SIGNAME IDENTIFIER)  // TODO factor out with sigdecl?
 ;
 
 
@@ -579,13 +606,23 @@ parameterdecllist:
 ;
 
 parameterdecl:
-	 TYPE_KW parametername
-->
-	^(PARAMETERDECL KIND_PAYLOADTYPE parametername)
+	typedecl
 |
-	 SIG_KW parametername
+	sigdecl
+;
+
+// cf. roledecl
+typedecl:
+	TYPE_KW parametername
 ->
-	^(PARAMETERDECL KIND_MESSAGESIGNATURE parametername)
+	^(TYPEDECL ^(TYPENAME parametername))
+;
+
+// cf. roledecl
+sigdecl:
+	SIG_KW parametername
+->
+	^(SIGDECL ^(SIGNAME parametername))
 ;
 
 
@@ -658,11 +695,11 @@ rolenamenode:
 
 message:
 	messagesignature
+/*
+	ambiguousname  // FIXME: qualified name*/
 |
-	ambiguousname  // FIXME: qualified name
-/*|
 	messagesignaturename  // qualified messagesignaturename subsumes parametername case
-|
+/*|
 	parametername*/
 ;	
 
@@ -771,9 +808,13 @@ argumentinstantiation:
 	//message
   // Grammatically same as message, but argument case can also be a payload type
 	messagesignature
+->
+	^(ARGUMENTINSTANTIATION messagesignature)
 /*|
 	ambiguousname  // As for payloadelement: parser doesn't distinguish simple from qualified properly, even with backtrack*/
 |
 	qualifiedname
+->
+	^(ARGUMENTINSTANTIATION qualifiedname)
 ;
 

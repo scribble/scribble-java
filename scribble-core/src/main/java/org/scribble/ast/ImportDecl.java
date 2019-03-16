@@ -42,11 +42,6 @@ public abstract class ImportDecl<K extends ImportKind> extends ScribNodeBase//, 
 	public abstract Name<K> getAlias();
 	//public abstract Name<K> getVisibleName();
 	
-	public boolean isImportModule()
-	{
-		return false;
-	}
-	
 	public ModuleNameNode getModuleNameNodeChild()
 	{
 		return (ModuleNameNode) getChild(0);
@@ -55,6 +50,11 @@ public abstract class ImportDecl<K extends ImportKind> extends ScribNodeBase//, 
 	public ModuleNameNode getAliasNameNodeChild()
 	{
 		return (ModuleNameNode) getChild(1);
+	}
+	
+	public boolean isImportModule()
+	{
+		return false;
 	}
 	
 	public boolean isAliased()

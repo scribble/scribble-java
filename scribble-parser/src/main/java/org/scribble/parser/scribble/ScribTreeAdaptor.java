@@ -2,9 +2,12 @@ package org.scribble.parser.scribble;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
+import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
+import org.scribble.ast.NonRoleArg;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.PayloadElemList;
@@ -14,6 +17,8 @@ import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNil;
+import org.scribble.ast.SigParamDecl;
+import org.scribble.ast.TypeParamDecl;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDo;
@@ -24,7 +29,9 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.OpNode;
@@ -78,6 +85,10 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new ModuleNameNode(t);  /*.. HERE ambigname -- or qualifiedname? (ambigname currently singleton name)
 						-- or modulename just as identifiers? -- ANTLR uses every (leaf) token as singleton node
 								-- AntlrTokenTree? -- i.e. CommonTree (wrapper for Token)*/
+			case "PAYLOADTYPEDECL":
+				return new DataTypeDecl(t);
+			case "MESSAGESIGNATUREDECL":
+				return new MessageSigNameDecl(t);
 
 			case "GLOBALPROTOCOLDECL": //return this.f.GProtocolDecl(empty, Collections.emptyList(), null, null);
 				return new GProtocolDecl(t);
@@ -95,6 +106,14 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new RoleNode(t);
 			case "PARAMETERDECLLIST": //return this.f.NonRoleParamDeclList(empty, Collections.emptyList());
 				return new NonRoleParamDeclList(t);
+			case "TYPEDECL":
+				return new TypeParamDecl(t);
+			case "TYPENAME":
+				return new DataTypeNode(t);
+			case "SIGDECL":
+				return new SigParamDecl(t);
+			case "SIGNAME":
+				return new MessageSigNameNode(t);
 			case "GLOBALPROTOCOLDEF": //return this.f.GProtocolDef(empty, null);
 				return new GProtocolDef(t);
 			case "GLOBALPROTOCOLBLOCK": //return this.f.GProtocolBlock(empty, null);
@@ -129,7 +148,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case "ARGUMENTINSTANTIATIONLIST":
 				return new NonRoleArgList(t);
 			case "ARGUMENTINSTANTIATION":
-				throw new RuntimeException("TODO: " + t);
+				return new NonRoleArg(t);
 
 				//return new MyCommonTree(t);  // FIXME: placeholder for deleg, qualified or ambig
 			//case "QUALIFIEDNAME": //return this.f.Q

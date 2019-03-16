@@ -26,6 +26,7 @@ import org.scribble.type.kind.NonRoleArgKind;
 import org.scribble.type.name.AmbigName;
 import org.scribble.type.name.PayloadElemType;
 
+// N.B. no del attached, so not currently visited
 // Primitive payload type, MessageSigName or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 // No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
 //public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode

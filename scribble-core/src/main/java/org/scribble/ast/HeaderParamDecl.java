@@ -15,6 +15,7 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.job.ScribbleException;
@@ -40,11 +41,11 @@ public abstract class HeaderParamDecl<K extends ParamKind>
 	}
 	
 	@Override
-	public abstract SimpleNameNode<K> getNameNodeChild();
+	public abstract NameNode<K> getNameNodeChild();  // Always a "simple" name (e.g., like Role), but Type/Sig names are not SimpleNames
 
 	public abstract HeaderParamDecl<K> dupNode();
 
-	public HeaderParamDecl<K> reconstruct(SimpleNameNode<K> name)
+	public HeaderParamDecl<K> reconstruct(NameNode<K> name)  // Always a "simple" name (e.g., like Role), but Type/Sig names are not SimpleNames
 	{
 		HeaderParamDecl<K> pd = dupNode();
 		ScribDel del = del();
@@ -57,7 +58,7 @@ public abstract class HeaderParamDecl<K extends ParamKind>
 	public HeaderParamDecl<K> visitChildren(AstVisitor nv)
 			throws ScribbleException
 	{
-		SimpleNameNode<K> name = 
+		NameNode<K> name = 
 				visitChildWithClassEqualityCheck(this, getNameNodeChild(), nv);
 		return reconstruct(name);
 	}

@@ -15,21 +15,18 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
-import org.scribble.type.kind.DataTypeKind;
-import org.scribble.type.kind.Local;
 import org.scribble.type.kind.NonRoleParamKind;
-import org.scribble.type.kind.SigKind;
 import org.scribble.type.name.Name;
-import org.scribble.type.name.Role;
 
 // TODO: make concrete subclasses to "eliminate" generic parameter (e.g., for better child casting, etc.)
-public class NonRoleParamDecl<K extends NonRoleParamKind>
+public abstract class NonRoleParamDecl<K extends NonRoleParamKind>
 		extends HeaderParamDecl<K>
 {
 	public final K kind;  // CHECKME: factor up to super?
 
+	//..HERE make this abstract with concrete type/sig subclasses -- and fix parser accordingly
+	
 	// ScribTreeAdaptor#create constructor
 	public NonRoleParamDecl(Token t, K kind)
 	{
@@ -38,19 +35,19 @@ public class NonRoleParamDecl<K extends NonRoleParamKind>
 	}
 
 	// Tree#dupNode constructor
-	public NonRoleParamDecl(NonRoleParamDecl<K> node, K kind)
+	public NonRoleParamDecl(NonRoleParamDecl<K> node)
 	{
 		super(node);
-		this.kind = kind;
+		this.kind = node.kind;
 	}
 	
-	@Override
+	/*@Override
 	public NonRoleParamDecl<K> dupNode()
 	{
 		return new NonRoleParamDecl<>(this, this.kind);
-	}
+	}*/
 	
-	@Override
+	/*@Override
 	public NonRoleParamNode<K> getNameNodeChild()
 	{
 		NameNode<?> raw = getRawNameNodeChild();
@@ -63,16 +60,16 @@ public class NonRoleParamDecl<K extends NonRoleParamKind>
 			return cast;
 		}
 		throw new RuntimeException("Shouldn't get in here: " + this.kind);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public NonRoleParamDecl<K> project(AstFactory af, Role self)
 	{
 		NonRoleParamNode<K> child = getNameNodeChild();
 		NonRoleParamNode<K> pn = af.NonRoleParamNode(child.source, this.kind,
 				child.toString());
 		return af.NonRoleParamDecl(this.source, this.kind, pn);
-	}
+	}*/
 
 	@Override
 	public Name<K> getDeclName()
@@ -80,7 +77,7 @@ public class NonRoleParamDecl<K extends NonRoleParamKind>
 		return getNameNodeChild().toName();
 	}
 	
-	@Override
+	/*@Override
 	public String getKeyword()
 	{
 		if (this.kind.equals(SigKind.KIND))
@@ -95,7 +92,7 @@ public class NonRoleParamDecl<K extends NonRoleParamKind>
 		{
 			throw new RuntimeException("Shouldn't get in here: " + this.kind);
 		}
-	}
+	}*/
 	
 	
 	

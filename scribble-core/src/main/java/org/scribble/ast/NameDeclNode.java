@@ -41,7 +41,7 @@ public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase
 		{
 			throw new RuntimeException("Shouldn't get in here: " + getClass());
 		}
-		NameNode<?> name = (NameNode<?>) getChild(0);
+		NameNode<?> name = (NameNode<?>) getChild(0);  // CHECKME: currently always AmbigNameNode?
 		return name;
 	}
 

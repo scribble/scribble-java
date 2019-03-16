@@ -16,6 +16,7 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
+import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.NonProtocolKind;
@@ -25,28 +26,39 @@ import org.scribble.visit.AstVisitor;
 public abstract class NonProtocolDecl<K extends NonProtocolKind>
 		extends NameDeclNode<K> implements ModuleMember
 {
-	public final String schema;
-	public final String extName;
-	public final String extSource;
-
 	// ScribTreeAdaptor#create constructor
-	public NonProtocolDecl(Token payload, String schema, String extName,
-			String extSource)
+	public NonProtocolDecl(Token payload)
 	{
 		super(payload);
-		this.schema = schema;
-		this.extName = extName;
-		this.extSource = extSource;
+		this.schema = null;
+		this.extName = null;
+		this.extSource = null;
 	}
 
 	// Tree#dupNode constructor
-	protected NonProtocolDecl(NonProtocolDecl<K> node, String schema,
-			String extName, String extSource)
+	protected NonProtocolDecl(NonProtocolDecl<K> node)
 	{
 		super(node);
-		this.schema = schema;
-		this.extName = extName;
-		this.extSource = extSource;
+		this.schema = null;
+		this.extName = null;
+		this.extSource = null;
+	}
+	
+	public abstract NonProtocolDecl<K> dupNode();
+
+	public AmbigNameNode getSchemaNodeChild()
+	{
+		return (AmbigNameNode) getChild(1);
+	}
+
+	public AmbigNameNode getExtNameNodeChild()
+	{
+		return (AmbigNameNode) getChild(2);
+	}
+
+	public AmbigNameNode getExtSourceNodeChild()
+	{
+		return (AmbigNameNode) getChild(3);
 	}
 	
 	// CHECKME: maybe move to ModuleMember
@@ -60,27 +72,34 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 		return false;
 	}
 	
-	public abstract NonProtocolDecl<K> dupNode();
-	
-	public NonProtocolDecl<K> reconstruct(String schema, String extName,
-			String source, // MemberNameNode<K> name);
-			NameNode<K> name)
+	public NonProtocolDecl<K> reconstruct(
+			NameNode<K> name, 
+			//String schema, String extName, String source,
+			AmbigNameNode schema, AmbigNameNode extName, AmbigNameNode extSource) // FIXME:
 	{
-		NonProtocolDecl<K> dtd = dupNode();
+		NonProtocolDecl<K> npd = dupNode();
 		ScribDel del = del();
-		dtd.addChild(getNameNodeChild());
-		dtd.setDel(del);
-		return dtd;
+		npd.addChild(name);
+		npd.addChild(schema);
+		npd.addChild(extName);
+		npd.addChild(extSource);
+		npd.setDel(del);  // No copy
+		return npd;
 	}
 
 	@Override
 	public NonProtocolDecl<K> visitChildren(AstVisitor nv)
 			throws ScribbleException
 	{
-		//MemberNameNode<K> name = (MemberNameNode<K>) visitChildWithClassEqualityCheck(this, this.name, nv);
 		NameNode<K> name = (NameNode<K>) visitChildWithClassEqualityCheck(this,
 				getNameNodeChild(), nv);
-		return reconstruct(this.schema, this.extName, this.extSource, name);
+		AmbigNameNode schema = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getSchemaNodeChild(), nv);
+				getSchemaNodeChild();  // AmbigNameNode currently have no del, so not visited
+		AmbigNameNode extName = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getExtNameNodeChild(), nv);
+				getExtNameNodeChild();
+		AmbigNameNode extSource = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getExtSourceNodeChild(), nv);
+				getExtNameNodeChild();
+		return reconstruct(name, schema, extName, extSource);
 	}
 
 	
@@ -91,8 +110,14 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 
 
 
+	
+	
+	
 
 
+	public final String schema;
+	public final String extName;
+	public final String extSource;
 
 	public NonProtocolDecl(CommonTree source, String schema, String extName,
 			String extSource, // MemberNameNode<K> name);

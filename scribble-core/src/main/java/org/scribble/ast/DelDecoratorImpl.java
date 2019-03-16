@@ -38,6 +38,7 @@ import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.NonRoleArgListDel;
+import org.scribble.del.NonRoleParamDeclDel;
 import org.scribble.del.NonRoleParamDeclListDel;
 import org.scribble.del.RoleArgListDel;
 import org.scribble.del.RoleDeclDel;
@@ -58,6 +59,7 @@ import org.scribble.del.name.RecVarNodeDel;
 import org.scribble.del.name.RoleNodeDel;
 
 
+//FIXME TODO: refactor decoration methods into AST interface, to ensure they are implemented and called
 // In ast package to access protected non-defensive del setter
 public class DelDecoratorImpl implements DelDecorator
 {
@@ -82,8 +84,12 @@ public class DelDecoratorImpl implements DelDecorator
 
 			//case IMPORTMODULE:
 
-			/*case MESSAGESIGNATUREDECL:      return AntlrMessageSigDecl.parseMessageSigDecl(this, ct, af);
-			case PAYLOADTYPEDECL:           return AntlrDataTypeDecl.parseDataTypeDecl(this, ct, af);*/
+			case "MESSAGESIGNATUREDECL":      //return AntlrMessageSigDecl.parseMessageSigDecl(this, ct, af);
+				MessageSigNameDecl((MessageSigNameDecl) n);
+				break;
+			case "PAYLOADTYPEDECL":           //return AntlrDataTypeDecl.parseDataTypeDecl(this, ct, af);*/
+				DataTypeDecl((DataTypeDecl) n);
+				break;
 
 			case "GLOBALPROTOCOLDECL":
 				GProtocolDecl((GProtocolDecl) n);
@@ -108,7 +114,12 @@ public class DelDecoratorImpl implements DelDecorator
 			//case EMPTY_PARAMETERDECLLST:
 				NonRoleParamDeclList((NonRoleParamDeclList) n);
 				break;
-			//case PARAMETERDECL:             return AntlrNonRoleParamDecl.parseNonRoleParamDecl(this, ct, af);*/
+			case "TYPEDECL":
+				TypeDecl((TypeParamDecl) n);
+				break;
+			case "SIGDECL":
+				SigDecl((SigParamDecl) n);
+				break;
 
 			case "GLOBALPROTOCOLDEF":
 				GProtocolDef((GProtocolDef) n);
@@ -161,6 +172,12 @@ public class DelDecoratorImpl implements DelDecorator
 				
 			case "ROLENAME":
 				RoleNode((RoleNode) n);
+				break;
+			case "TYPENAME":
+				DataTypeNode((DataTypeNode) n);
+				break;
+			case "SIGNAME":
+				MessageSigNameNode((MessageSigNameNode) n);
 				break;
 			case "RECURSIONVAR":
 				RecVarNode((RecVarNode) n);
@@ -222,21 +239,17 @@ public class DelDecoratorImpl implements DelDecorator
 		setDel(im, new ImportModuleDel());
 	}
 	
-	/*@Override
-	public MessageSigNameDecl MessageSigNameDecl(CommonTree source, String schema, String extName, String extSource, MessageSigNameNode alias)
+	@Override
+	public void MessageSigNameDecl(MessageSigNameDecl sd)
 	{
-		MessageSigNameDecl msd = new MessageSigNameDecl(source, schema, extName, extSource, alias);
-		msd = setDel(msd, createDefaultDelegate());
-		return msd;
+		setDel(sd, createDefaultDelegate());
 	}
 
 	@Override
-	public DataTypeDecl DataTypeDecl(CommonTree source, String schema, String extName, String extSource, DataTypeNode alias)
+	public void DataTypeDecl(DataTypeDecl td)
 	{
-		DataTypeDecl dtd = new DataTypeDecl(source, schema, extName, extSource, alias);
-		dtd = setDel(dtd, createDefaultDelegate());
-		return dtd;
-	}*/
+		setDel(td, createDefaultDelegate());
+	}
 
 	@Override
 	public void GProtocolDecl(GProtocolDecl gpd)
@@ -281,6 +294,18 @@ public class DelDecoratorImpl implements DelDecorator
 		pd = setDel(pd, new NonRoleParamDeclDel());
 		return pd;
 	}*/
+
+	@Override
+	public void TypeDecl(TypeParamDecl td)
+	{
+		setDel(td, new NonRoleParamDeclDel());
+	}
+
+	@Override
+	public void SigDecl(SigParamDecl sd)
+	{
+		setDel(sd, new NonRoleParamDeclDel());
+	}
 
 	@Override
 	public void GProtocolDef(GProtocolDef gpd)

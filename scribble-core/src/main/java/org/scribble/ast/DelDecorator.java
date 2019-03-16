@@ -45,8 +45,8 @@ public interface DelDecorator
 	void ModuleDecl(ModuleDecl md);
 	void ImportModule(ImportModule im);
 	
-	/*MessageSigNameDecl MessageSigNameDecl(MessageSigNameDecl md);
-	DataTypeDecl DataTypeDecl(DataTypeDecl dd);*/
+	void MessageSigNameDecl(MessageSigNameDecl sd);
+	void DataTypeDecl(DataTypeDecl td);
 
 	void GProtocolDecl(GProtocolDecl gpd);
 	void ProtocolModList(ProtocolModList mods);
@@ -56,6 +56,8 @@ public interface DelDecorator
 	void RoleDecl(RoleDecl rd);
 	void NonRoleParamDeclList(NonRoleParamDeclList pds);
 	//<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> name);
+	void TypeDecl(TypeParamDecl td);
+	void SigDecl(SigParamDecl sd);
 	
 	void GProtocolDef(GProtocolDef gpd);
 	void GProtocolBlock(GProtocolBlock gpb);

@@ -39,13 +39,14 @@ public class ProtocolModList extends ScribNodeBase
 	@Override
 	public ProtocolModList dupNode()
 	{
-		return new ProtocolModList(this);
+		//return new ProtocolModList(this);  // Doesn't include children?
+		return this;
 	}
 	
 	@Override
 	public ProtocolModList visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		// CHECKME:
+		// CHECKME: no child visiting, no reconstruct?
 		return this;
 	}
 

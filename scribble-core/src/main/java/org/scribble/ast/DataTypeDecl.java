@@ -23,47 +23,34 @@ import org.scribble.type.name.ModuleName;
 public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 {
 	// ScribTreeAdaptor#create constructor
-	public DataTypeDecl(Token payload, String schema, String extName,
-			String extSource)
+	public DataTypeDecl(Token payload)
 	{
-		super(payload, schema, extName, extSource);
+		super(payload);
 	}
 
 	// Tree#dupNode constructor
-	protected DataTypeDecl(DataTypeDecl node, String schema, String extName,
-			String extSource)
+	protected DataTypeDecl(DataTypeDecl node)
 	{
-		super(node, schema, extName, extSource);
+		super(node);
 	}
 
 	// Cf. CommonTree#dupNode
 	@Override
 	public DataTypeDecl dupNode()
 	{
-		return new DataTypeDecl(this, this.schema, this.extName, this.extSource);
-	}
-
-	/*@Override
-	public DataTypeDecl reconstruct(String schema, String extName, String extSource, //MemberNameNode<DataTypeKind> name)
-			NameNode<DataTypeKind> name)
-	{
-		DataTypeDecl dtd = dupNode();
-		ScribDel del = del();
-		dtd.addChild(getNameNode());
-		dtd.setDel(del);
-		return dtd;
-	}*/
-	
-	@Override
-	public boolean isDataTypeDecl()
-	{
-		return true;
+		return new DataTypeDecl(this);
 	}
 
 	@Override
 	public DataTypeNode getNameNodeChild()
 	{
 		return (DataTypeNode) getRawNameNodeChild();
+	}
+	
+	@Override
+	public boolean isDataTypeDecl()
+	{
+		return true;
 	}
 
   // Simple name (ModuleDecl is the only NameDeclNode that uses qualified names)
@@ -83,9 +70,11 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	@Override
 	public String toString()
 	{
-		return Constants.TYPE_KW + " <" + this.schema + "> " + this.extName
-				+ " " + Constants.FROM_KW + " " + this.extSource + " "
-				+ Constants.AS_KW + " " + getDeclName() + ";";
+		return Constants.TYPE_KW + " <" + getSchemaNodeChild() + "> "
+				+ getExtNameNodeChild() + " " 
+				+ Constants.FROM_KW + " " + getExtSourceNodeChild() + " " 
+				+ Constants.AS_KW + " " + getDeclName()
+				+ ";";
 	}
 
 	

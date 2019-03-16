@@ -23,47 +23,34 @@ import org.scribble.type.name.ModuleName;
 public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 {
 	// ScribTreeAdaptor#create constructor
-	public MessageSigNameDecl(Token payload, String schema, String extName,
-			String extSource)
+	public MessageSigNameDecl(Token payload)
 	{
-		super(payload, schema, extName, extSource);
+		super(payload);
 	}
 
 	// Tree#dupNode constructor
-	protected MessageSigNameDecl(MessageSigNameDecl node, String schema,
-			String extName, String extSource)
+	protected MessageSigNameDecl(MessageSigNameDecl node)
 	{
-		super(node, schema, extName, extSource);
+		super(node);
 	}
 
 	// Cf. CommonTree#dupNode
 	@Override
 	public MessageSigNameDecl dupNode()
 	{
-		return new MessageSigNameDecl(this, this.schema, this.extName,
-				this.extSource);
-	}
-
-	/*@Override
-	public MessageSigNameDecl reconstruct(String schema, String extName, String extSource, //MemberNameNode<SigKind> name)
-		NameNode<SigKind> name)
-	{
-		ScribDel del = del();
-		MessageSigNameDecl msnd = new MessageSigNameDecl(this.source, schema, extName, extSource, (MessageSigNameNode) name);
-		msnd = (MessageSigNameDecl) msnd.del(del);
-		return msnd;
-	}*/
-	
-	@Override
-	public boolean isMessageSigNameDecl()
-	{
-		return true;
+		return new MessageSigNameDecl(this);
 	}
 	
 	@Override
 	public MessageSigNameNode getNameNodeChild()
 	{
 		return (MessageSigNameNode) getRawNameNodeChild();
+	}
+	
+	@Override
+	public boolean isMessageSigNameDecl()
+	{
+		return true;
 	}
 
 	@Override
@@ -82,9 +69,11 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	@Override
 	public String toString()
 	{
-		return Constants.SIG_KW + " <" + this.schema + "> \"" + this.extName
-				+ "\" " + Constants.FROM_KW + " \"" + this.extSource + "\" "
-				+ Constants.AS_KW + " " + getDeclName() + ";";
+		return Constants.SIG_KW + " <" + getSchemaNodeChild() + "> "
+				+ getExtNameNodeChild() + " " 
+				+ Constants.FROM_KW + " " + getExtSourceNodeChild() + " " 
+				+ Constants.AS_KW + " " + getDeclName()
+				+ ";";
 	}
 	
 	
