@@ -69,7 +69,7 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 	@Override
 	public Role toName()
 	{
-		return new Role(getIdentifier());
+		return new Role(getText());
 	}
 
 	@Override

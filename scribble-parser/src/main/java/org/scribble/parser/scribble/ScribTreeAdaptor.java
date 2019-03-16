@@ -33,7 +33,7 @@ import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
@@ -170,7 +170,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				//throw new RuntimeException("Shouldn't get here: " + lab + " ,, " + lab.length());
 				//return new MyCommonTree(t);
 				return 
-						new AmbigNameNode(t);  // FIXME: currently all name "leaf" nodes are there, so not ambig, more like ID
+						new IdNode(t);  // FIXME: currently all name "leaf" nodes are there, so not ambig, more like ID
 				//return empty;
 		}
 	}

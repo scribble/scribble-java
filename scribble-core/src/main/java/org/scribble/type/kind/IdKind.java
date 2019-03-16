@@ -11,54 +11,35 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.type.name;
+package org.scribble.type.kind;
 
-import org.scribble.type.kind.AmbigKind;
 
-public class AmbigName extends AbstractName<AmbigKind>
+public class IdKind extends AbstractKind
 {
-	private static final long serialVersionUID = 1L;
+	public static final IdKind KIND = new IdKind();
 	
-	public AmbigName(String text)
+	protected IdKind()
 	{
-		super(AmbigKind.KIND, text);
-	}
-	
-	public MessageSigName toMessageSigName()
-	{
-		return new MessageSigName(getLastElement());
-	}
-
-	public DataType toDataType()
-	{
-		return new DataType(getLastElement());
+		super("Id");
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
-		if (this == o)
+		if (o == this)
 		{
 			return true;
 		}
-		if (!(o instanceof AmbigName))
+		if (!(o instanceof IdKind))
 		{
 			return false;
 		}
-		AmbigName n = (AmbigName) o;
-		return n.canEqual(this) && super.equals(o);
+		return ((IdKind) o).canEqual(this);
 	}
 	
+	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof AmbigName;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hash = 4073;
-		hash = 31 * super.hashCode();
-		return hash;
+		return o instanceof IdKind;
 	}
 }

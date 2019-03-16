@@ -44,7 +44,7 @@ public class OpNode extends SimpleNameNode<OpKind>
 	@Override
 	public Op toName()
 	{
-		String id = getIdentifier();
+		String id = getText();
 		if (id.equals(EMPTY_OP_IDENTIFIER))
 		{
 			return Op.EMPTY_OP;

@@ -26,7 +26,6 @@ import org.scribble.type.kind.NonRoleArgKind;
 import org.scribble.type.name.AmbigName;
 import org.scribble.type.name.PayloadElemType;
 
-// N.B. no del attached, so not currently visited
 // Primitive payload type, MessageSigName or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 // No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
 //public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode
@@ -54,7 +53,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	}
 	
 	@Override
-	public String getIdentifier()
+	public String getText()
 	{
 		return getToken().getText();  // CHECKME: ambig nodes are now leafs
 	}
@@ -91,7 +90,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	@Override
 	public AmbigName toName()
 	{
-		return new AmbigName(getIdentifier());
+		return new AmbigName(getText());
 	}
 
 	@Override
@@ -117,7 +116,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	@Override
 	public int hashCode()
 	{
-		int hash = 331;
+		int hash = 3659;
 		hash = 31 * super.hashCode();
 		return hash;
 	}

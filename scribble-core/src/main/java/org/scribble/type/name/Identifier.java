@@ -13,25 +13,15 @@
  */
 package org.scribble.type.name;
 
-import org.scribble.type.kind.AmbigKind;
+import org.scribble.type.kind.IdKind;
 
-public class AmbigName extends AbstractName<AmbigKind>
+public class Identifier extends AbstractName<IdKind>
 {
 	private static final long serialVersionUID = 1L;
 	
-	public AmbigName(String text)
+	public Identifier(String text)
 	{
-		super(AmbigKind.KIND, text);
-	}
-	
-	public MessageSigName toMessageSigName()
-	{
-		return new MessageSigName(getLastElement());
-	}
-
-	public DataType toDataType()
-	{
-		return new DataType(getLastElement());
+		super(IdKind.KIND, text);
 	}
 
 	@Override
@@ -41,23 +31,23 @@ public class AmbigName extends AbstractName<AmbigKind>
 		{
 			return true;
 		}
-		if (!(o instanceof AmbigName))
+		if (!(o instanceof Identifier))
 		{
 			return false;
 		}
-		AmbigName n = (AmbigName) o;
+		Identifier n = (Identifier) o;
 		return n.canEqual(this) && super.equals(o);
 	}
 	
 	public boolean canEqual(Object o)
 	{
-		return o instanceof AmbigName;
+		return o instanceof Identifier;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int hash = 4073;
+		int hash = 2753;
 		hash = 31 * super.hashCode();
 		return hash;
 	}

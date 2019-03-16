@@ -88,7 +88,7 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends
 	@Override
 	public Name<K> toName()
 	{
-		String id = getIdentifier();
+		String id = getText();
 		if (this.kind.equals(SigKind.KIND))
 		{
 			return Kind.castName(this.kind, new MessageSigName(id));

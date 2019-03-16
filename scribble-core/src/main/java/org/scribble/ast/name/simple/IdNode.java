@@ -15,39 +15,40 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.type.kind.RecVarKind;
-import org.scribble.type.name.RecVar;
+import org.scribble.type.kind.IdKind;
+import org.scribble.type.name.Identifier;
 
-public class RecVarNode extends SimpleNameNode<RecVarKind>
+// N.B. no del attached, so not currently visited
+public class IdNode extends SimpleNameNode<IdKind>
 {
 	// ScribTreeAdaptor#create constructor
-	public RecVarNode(Token t)
+	public IdNode(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	protected RecVarNode(RecVarNode node)//, String id)
+	protected IdNode(IdNode node)//, String id)
 	{
 		super(node);
 	}
 	
 	@Override
-	public RecVarNode dupNode()
+	public IdNode dupNode()
 	{
-		return new RecVarNode(this);//, getIdentifier());
+		return new IdNode(this);//, getIdentifier());
+	}
+	
+	@Override
+	public String getText()
+	{
+		return getToken().getText();  // CHECKME: ambig nodes are now leafs
 	}
 
 	@Override
-	public RecVarNode clone()
+	public Identifier toName()
 	{
-		return (RecVarNode) super.clone();
-	}
-
-	@Override
-	public RecVar toName()
-	{
-		return new RecVar(getText());
+		return new Identifier(getText());
 	}
 
 	@Override
@@ -57,60 +58,48 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 		{
 			return true;
 		}
-		if (!(o instanceof RecVarNode))
+		if (!(o instanceof IdNode))
 		{
 			return false;
 		}
-		return ((RecVarNode) o).canEqual(this) && super.equals(o);
+		return ((IdNode) o).canEqual(this) && super.equals(o);
 	}
 	
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof RecVarNode;
+		return o instanceof IdNode;
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 349;
+		int hash = 331;
 		hash = 31 * super.hashCode();
 		return hash;
 	}
+	
+	
+	
+	
+	
+	
+	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public RecVarNode(CommonTree source, String identifier)
+	public IdNode(CommonTree source, String id)
 	{
-		super(source, identifier);
-	}
-	
-	/*// Factor up to SimpleNameNode?
-	public RecVarNode reconstruct(String id)
-	{
-		ScribDel del = del();
-		RecVarNode rv = new RecVarNode(this.source, id);
-		rv = (RecVarNode) rv.del(del);
-		return rv;
+		super(source, id);
 	}
 
-	@Override
-	protected RecVarNode copy()
+	/*@Override
+	protected AmbigNameNode copy()
 	{
-		return new RecVarNode(this.source, getIdentifier());
+		return new AmbigNameNode(this.source, getIdentifier());
 	}
 	
 	@Override
-	public RecVarNode clone(AstFactory af)
+	public AmbigNameNode clone(AstFactory af)
 	{
-		return (RecVarNode) af.SimpleNameNode(this.source, RecVarKind.KIND, getIdentifier());
+		return (AmbigNameNode) af.AmbiguousNameNode(this.source, getIdentifier());
 	}*/
 }

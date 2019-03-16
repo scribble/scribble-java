@@ -56,7 +56,7 @@ public class DummyProjectionRoleNode extends RoleNode
 	@Override
 	public Role toName()
 	{
-		return new Role(getIdentifier());
+		return new Role(getText());
 	}
 
 	@Override

@@ -27,11 +27,6 @@ public abstract class AbstractKind implements Kind
 	{
 		this.kind = kind;
 	}
-	
-	@Override
-	public abstract boolean equals(Object o);
-
-	public abstract boolean canEqual(Object o);  // Not really needed due to singleton pattern
 
 	@Override
 	public int hashCode()
@@ -40,6 +35,11 @@ public abstract class AbstractKind implements Kind
 		hash = 31 * hash + this.kind.hashCode();
 		return hash;
 	}
+	
+	@Override
+	public abstract boolean equals(Object o);
+
+	public abstract boolean canEqual(Object o);  // Not really needed due to singleton pattern
 
 	@Override
 	public String toString()

@@ -16,7 +16,7 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
-import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.del.ScribDel;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.NonProtocolKind;
@@ -46,19 +46,19 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 	
 	public abstract NonProtocolDecl<K> dupNode();
 
-	public AmbigNameNode getSchemaNodeChild()
+	public IdNode getSchemaNodeChild()
 	{
-		return (AmbigNameNode) getChild(1);
+		return (IdNode) getChild(1);
 	}
 
-	public AmbigNameNode getExtNameNodeChild()
+	public IdNode getExtNameNodeChild()
 	{
-		return (AmbigNameNode) getChild(2);
+		return (IdNode) getChild(2);
 	}
 
-	public AmbigNameNode getExtSourceNodeChild()
+	public IdNode getExtSourceNodeChild()
 	{
-		return (AmbigNameNode) getChild(3);
+		return (IdNode) getChild(3);
 	}
 	
 	// CHECKME: maybe move to ModuleMember
@@ -75,7 +75,7 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 	public NonProtocolDecl<K> reconstruct(
 			NameNode<K> name, 
 			//String schema, String extName, String source,
-			AmbigNameNode schema, AmbigNameNode extName, AmbigNameNode extSource) // FIXME:
+			IdNode schema, IdNode extName, IdNode extSource) // FIXME:
 	{
 		NonProtocolDecl<K> npd = dupNode();
 		ScribDel del = del();
@@ -93,11 +93,11 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 	{
 		NameNode<K> name = (NameNode<K>) visitChildWithClassEqualityCheck(this,
 				getNameNodeChild(), nv);
-		AmbigNameNode schema = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getSchemaNodeChild(), nv);
+		IdNode schema = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getSchemaNodeChild(), nv);
 				getSchemaNodeChild();  // AmbigNameNode currently have no del, so not visited
-		AmbigNameNode extName = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getExtNameNodeChild(), nv);
+		IdNode extName = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getExtNameNodeChild(), nv);
 				getExtNameNodeChild();
-		AmbigNameNode extSource = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getExtSourceNodeChild(), nv);
+		IdNode extSource = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getExtSourceNodeChild(), nv);
 				getExtNameNodeChild();
 		return reconstruct(name, schema, extName, extSource);
 	}

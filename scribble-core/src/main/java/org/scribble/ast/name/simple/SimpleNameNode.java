@@ -33,7 +33,7 @@ public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 		super(node);
 	}
 	
-	public String getIdentifier()
+	public String getText()
 	{
 		return getLastElement();
 	}
