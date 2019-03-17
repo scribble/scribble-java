@@ -18,6 +18,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.type.kind.Kind;
 
+// Names that are necessaryily "simple", i.e., never compound qualified
 // "Identifier" in parser grammar
 public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 {

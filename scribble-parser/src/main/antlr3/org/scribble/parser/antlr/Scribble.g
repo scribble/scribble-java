@@ -153,12 +153,14 @@ tokens
 	ROLENAME = 'ROLENAME';
 	TYPEPARAMNAME = 'TYPEPARAMNAME';
 	SIGPARAMNAME = 'SIGPARAMNAME';
-	ID = 'ID';
+	//ID = 'ID';
 	OPNAME = 'OPNAME';
 	RECURSIONVAR = 'RECURSIONVAR';
 
 	TYPENAME = 'TYPENAME';
 	SIGNAME = 'SIGNAME';
+
+	UNARYPAYLOADELEM = 'UNARYPAYLOADELEM';
 }
 
 
@@ -170,6 +172,10 @@ tokens
 	//import org.scribble.main.RuntimeScribbleException;
 	//import org.scribble.parser.scribble.ast.tree.MyCommonTree;
 	import org.scribble.ast.ScribNodeBase;
+	import org.scribble.ast.UnaryPayloadElem;
+	import org.scribble.ast.name.qualified.DataTypeNode;
+	import org.scribble.ast.name.simple.IdNode;
+	import org.scribble.ast.name.simple.AmbigNameNode;
 }
 
 @lexer::header
@@ -228,6 +234,38 @@ tokens
   	System.err.println(hdr + ":" + msg);*/
 		super.displayRecognitionError(tokenNames, e);
   	System.exit(1);
+	}
+
+	// qn = qualifiedname
+	public static CommonTree parsePayloadElem(CommonTree qn) throws RecognitionException
+	{
+		System.out.println("ggg1: " + qn + " ,, " + qn.token + " ,, " + qn.getChildren());		
+		if (qn.getChildCount() > 1)
+		{
+			//DataTypeNode dt = AntlrQualifiedName.toDataTypeNameNode(ct, af);
+			//String text = qn.getChild(0).getText();
+			DataTypeNode dt = new DataTypeNode(new CommonToken(TYPENAME, "TYPENAME"));
+			((List<?>) qn.getChildren()).forEach(x -> dt.addChild(new IdNode(new CommonToken(IDENTIFIER, ((CommonTree) x).getText()))));
+			//UnaryPayloadElem pe = new UnaryPayloadElem(qn.token);
+			UnaryPayloadElem pe = new UnaryPayloadElem(new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));  // CHECKME: OK to use qn.token?
+			pe.addChild(dt);
+			return pe;
+		}
+		else
+		{
+			// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
+			//AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct, af);
+			//return af.UnaryPayloadElem(ct, an);
+			String text = qn.getChild(0).getText();
+			IdNode id = new IdNode(new CommonToken(IDENTIFIER, text));
+			AmbigNameNode an = new AmbigNameNode(new CommonToken(AMBIGUOUSNAME, "AMBIGUOUSNAME"));
+			an.addChild(id);
+			//UnaryPayloadElem pe = new UnaryPayloadElem(qn.token);  // CHECKME: OK to use qn.token?
+			UnaryPayloadElem pe = new UnaryPayloadElem(new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));  // CHECKME: OK to use qn.token?
+			pe.addChild(an);
+			System.out.println("ggg2: " + pe + " ,, " + pe.token + " ,, " + pe.getChildren());		
+			return pe;
+		}
 	}
 }
 
@@ -523,12 +561,15 @@ payload:
 payloadelement:
 /*	ambiguousname  // Parser doesn't distinguish simple from qualified properly, even with backtrack
 |*/
-	qualifiedname  // This case subsumes simple names  // FIXME: ambiguousqualifiedname (or ambiguousname should just be qualified)
+	qualifiedname  // This case subsumes simple names  // FIXME: make ambiguousqualifiedname (or ambiguousname should just be qualified)
+->
+	{ parsePayloadElem($qualifiedname.tree) }  // Use ".text" instead of ".tree" for token String 
 |
 	protocolname '@' rolename
 ->
 	^(DELEGATION rolename protocolname)
 ;
+
 
 
 /**

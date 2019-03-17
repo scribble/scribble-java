@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
@@ -81,7 +80,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 		{
 			return Collections.emptyList();
 		}
-		return ((Stream<?>) super.getChildren().stream()).map(x -> (ScribNode) x)
+		return ((List<?>) super.getChildren()).stream().map(x -> (ScribNode) x)
 				.collect(Collectors.toList());
 	}
 	

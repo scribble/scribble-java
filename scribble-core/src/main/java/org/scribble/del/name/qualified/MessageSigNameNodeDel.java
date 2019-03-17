@@ -11,15 +11,16 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del.name;
+package org.scribble.del.name.qualified;
 
+import org.antlr.runtime.CommonToken;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.del.ScribDelBase;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.kind.SigKind;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.visit.wf.NameDisambiguator;
 
@@ -43,8 +44,15 @@ public class MessageSigNameNodeDel extends ScribDelBase
 		MessageSigNameNode msnn = (MessageSigNameNode) visited;
 		MessageSigName fullname = 
 				mc.getVisibleMessageSigNameFullName(msnn.toName());
-		return (MessageSigNameNode) disamb.job.config.af.QualifiedNameNode(
-				msnn.getSource(), SigKind.KIND, fullname.getElements());
-		// Didn't keep original del
+		/*return (MessageSigNameNode) disamb.job.config.af.QualifiedNameNode(
+				msnn.getSource(), SigKind.KIND, fullname.getElements());*/
+		MessageSigNameNode res = new MessageSigNameNode(msnn.token);
+		for (String e : fullname.getElements())
+		{
+			IdNode n = new IdNode(new CommonToken(23, e));  // FIXME TODO: refactor ast into parser module to access token type constants
+			res.addChild(n);
+		}
+		return res;
+				// Don't keep original del (so not using clone)
 	}
 }

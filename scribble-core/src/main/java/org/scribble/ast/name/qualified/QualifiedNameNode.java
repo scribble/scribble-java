@@ -18,6 +18,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.type.kind.Kind;
 
+// Any name that could be compound/qualified (but could also be a singleton)
 public abstract class QualifiedNameNode<K extends Kind> extends NameNode<K>
 {
 	// ScribTreeAdaptor#create constructor

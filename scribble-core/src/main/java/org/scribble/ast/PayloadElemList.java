@@ -49,7 +49,7 @@ public class PayloadElemList extends ScribNodeBase
 	
 	public List<PayloadElem<?>> getElementChildren()
 	{
-		return ((List<?>) getChildren()).stream().map(x -> (PayloadElem<?>) x)
+		return getChildren().stream().map(x -> (PayloadElem<?>) x)
 				.collect(Collectors.toList());
 	}
 

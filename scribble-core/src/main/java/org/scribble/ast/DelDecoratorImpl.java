@@ -56,12 +56,12 @@ import org.scribble.del.global.GProtocolBlockDel;
 import org.scribble.del.global.GProtocolDeclDel;
 import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.del.global.GRecursionDel;
-import org.scribble.del.name.AmbigNameNodeDel;
-import org.scribble.del.name.DataTypeNodeDel;
-import org.scribble.del.name.MessageSigNameNodeDel;
-import org.scribble.del.name.ParamNodeDel;
-import org.scribble.del.name.RecVarNodeDel;
-import org.scribble.del.name.RoleNodeDel;
+import org.scribble.del.name.qualified.DataTypeNodeDel;
+import org.scribble.del.name.qualified.MessageSigNameNodeDel;
+import org.scribble.del.name.simple.AmbigNameNodeDel;
+import org.scribble.del.name.simple.ParamNodeDel;
+import org.scribble.del.name.simple.RecVarNodeDel;
+import org.scribble.del.name.simple.RoleNodeDel;
 
 
 //FIXME TODO: refactor decoration methods into AST interface, to ensure they are implemented and called
@@ -141,6 +141,9 @@ public class DelDecoratorImpl implements DelDecorator
 				break;
 			case "PAYLOAD":
 				PayloadElemList((PayloadElemList) n);
+				break;
+			case "UNARYPAYLOADELEM":
+				UnaryPayloadElem((UnaryPayloadElem<?>) n);
 				break;
 
 			case "ROLEINSTANTIATIONLIST":     
@@ -405,15 +408,14 @@ public class DelDecoratorImpl implements DelDecorator
 	public void PayloadElemList(PayloadElemList pay)
 	{
 		setDel(pay, createDefaultDelegate());
+		//setDel(pay, new PayloadElemListDel());
 	}
 
-	/*@Override
-	public <K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(CommonTree source, PayloadElemNameNode<K> name)
+	@Override
+	public void UnaryPayloadElem(UnaryPayloadElem<?> e)
 	{
-		UnaryPayloadElem<K> de= new UnaryPayloadElem<>(source, name);
-		de = del(de, createDefaultDelegate());
-		return de;
-	}*/
+		setDel(e, createDefaultDelegate());
+	}
 
 	@Override
 	public void RoleArgList(RoleArgList rs)

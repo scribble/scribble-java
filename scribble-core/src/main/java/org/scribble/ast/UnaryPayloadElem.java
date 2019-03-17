@@ -71,10 +71,12 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase
 	}
 
 	@Override
-	public UnaryPayloadElem<K> visitChildren(AstVisitor nv) throws ScribbleException
+	public UnaryPayloadElem<K> visitChildren(AstVisitor nv)
+			throws ScribbleException
 	{
 		@SuppressWarnings("unchecked")
-		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChild(getNameChild(), nv);  
+		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChild(
+				getNameChild(), nv);
 				// CHECKME: probably need to record an explicit kind token, for "cast checking"
 				// Cannot use ScribNodeBase.visitChildWithCastCheck because this is not a ProtocolKindNode
 		return reconstruct(name);

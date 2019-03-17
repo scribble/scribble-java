@@ -77,7 +77,7 @@ public interface DelDecorator
 	
 	void MessageSigNode(MessageSigNode n);
 	void PayloadElemList(PayloadElemList pay);
-	//<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(UnaryPayloadElem<K> e);
+	void UnaryPayloadElem(UnaryPayloadElem<?> e);
 
 	/*GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
 	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);*/
