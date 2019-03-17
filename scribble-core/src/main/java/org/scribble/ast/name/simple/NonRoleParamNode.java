@@ -15,52 +15,38 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
-import org.scribble.ast.MessageNode;
-import org.scribble.ast.NonRoleArgNode;
-import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.type.Arg;
-import org.scribble.type.Message;
-import org.scribble.type.kind.DataTypeKind;
-import org.scribble.type.kind.Kind;
 import org.scribble.type.kind.NonRoleParamKind;
-import org.scribble.type.kind.SigKind;
-import org.scribble.type.name.DataType;
-import org.scribble.type.name.MessageSigName;
-import org.scribble.type.name.Name;
-import org.scribble.type.name.PayloadElemType;
-import org.scribble.visit.Substitutor;
 
 // An unambiguous kinded parameter (ambiguous parameters handled by disambiguation) that isn't a role -- e.g. DataType/MessageSigName param
 //public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode
 //public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode<PayloadTypeKind>
-public class NonRoleParamNode<K extends NonRoleParamKind> extends
-		SimpleNameNode<K> implements MessageNode, PayloadElemNameNode<DataTypeKind>
+public abstract class NonRoleParamNode<K extends NonRoleParamKind> extends
+		SimpleNameNode<K>// implements MessageNode, PayloadElemNameNode<DataTypeKind>
 		// As a payload, can only be a DataType (so hardcode)
 {
 	public final K kind;
 
 	// ScribTreeAdaptor#create constructor
-	public NonRoleParamNode(Token t)
+	public NonRoleParamNode(Token t, K kind)
 	{
 		super(t);
 		this.kind = null;  // FIXME: how to set? (disamb?) -- probably do concrete data/sig subclasses?
 	}
 
 	// Tree#dupNode constructor
-	protected NonRoleParamNode(NonRoleParamNode<K> node, K kind)//, String id)
+	protected NonRoleParamNode(NonRoleParamNode<K> node)//, String id)
 	{
 		super(node);
-		this.kind = kind;
+		this.kind = node.kind;
 	}
 	
 	@Override
-	public NonRoleParamNode<K> dupNode()
-	{
+	public abstract NonRoleParamNode<K> dupNode();
+	/*{
 		return new NonRoleParamNode<>(this, this.kind);//, getIdentifier());
-	}
+	}*/
 	
-	@Override
+	/*@Override
 	public MessageNode project(AstFactory af)  // MessageSigName params
 	{
 		return this;
@@ -152,8 +138,16 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends
 		/*else if (this.kind.equals(Local.KIND))  // Protocol params not supported
 		{
 			return (Local) toName();
-		}*/
+		}* /
 		throw new RuntimeException("Not a payload kind parameter: " + this);
+	}*/
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 317;
+		hash = 31 * super.hashCode();
+		return hash;
 	}
 
 	@Override
@@ -175,14 +169,6 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends
 	public boolean canEqual(Object o)
 	{
 		return o instanceof NonRoleParamNode;
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		int hash = 317;
-		hash = 31 * super.hashCode();
-		return hash;
 	}
 	
 	

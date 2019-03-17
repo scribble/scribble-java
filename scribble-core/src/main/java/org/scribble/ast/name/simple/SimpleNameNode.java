@@ -35,7 +35,7 @@ public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 	
 	public String getText()
 	{
-		return getLastElement();
+		return getLastElement();  // i.e., second child element, after node type
 	}
 	
 	

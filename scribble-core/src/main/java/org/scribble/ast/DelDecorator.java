@@ -29,9 +29,12 @@ import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.ast.name.simple.SigParamNode;
+import org.scribble.ast.name.simple.TypeParamNode;
 
 
 // In ast package to access protected non-defensive del setter
@@ -56,8 +59,8 @@ public interface DelDecorator
 	void RoleDecl(RoleDecl rd);
 	void NonRoleParamDeclList(NonRoleParamDeclList pds);
 	//<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> name);
-	void TypeDecl(TypeParamDecl td);
-	void SigDecl(SigParamDecl sd);
+	void TypeParamDecl(TypeParamDecl td);
+	void SigParamDecl(SigParamDecl sd);
 	
 	void GProtocolDef(GProtocolDef gpd);
 	void GProtocolBlock(GProtocolBlock gpb);
@@ -96,9 +99,13 @@ public interface DelDecorator
 	void GProtocolNameNode(GProtocolNameNode gpn);
 	void LProtocolNameNode(LProtocolNameNode lpn);
 	
-	/*AmbigNameNode AmbiguousNameNode(CommonTree source, String identifier);
-	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier);
-	DummyProjectionRoleNode DummyProjectionRoleNode();
+	void AmbigNameNode(AmbigNameNode an);
+
+	//<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier);
+	void SigParamNode(SigParamNode sp);
+	void TypeParamNode(TypeParamNode tp);
+
+	/*DummyProjectionRoleNode DummyProjectionRoleNode();
 
 	LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def);  // Not currently used -- local protos not parsed, only projected
 	LProjectionDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def);  // del extends that of LProtocolDecl 

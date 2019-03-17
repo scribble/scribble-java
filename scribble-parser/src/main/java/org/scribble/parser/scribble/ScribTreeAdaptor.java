@@ -33,10 +33,13 @@ import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.ast.name.simple.SigParamNode;
+import org.scribble.ast.name.simple.TypeParamNode;
 
 // get/setType don't seem to be really used
 public class ScribTreeAdaptor extends CommonTreeAdaptor
@@ -89,6 +92,10 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new DataTypeDecl(t);
 			case "MESSAGESIGNATUREDECL":
 				return new MessageSigNameDecl(t);
+			case "TYPENAME":
+				return new DataTypeNode(t);
+			case "SIGNAME":
+				return new MessageSigNameNode(t);
 
 			case "GLOBALPROTOCOLDECL": //return this.f.GProtocolDecl(empty, Collections.emptyList(), null, null);
 				return new GProtocolDecl(t);
@@ -106,14 +113,14 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new RoleNode(t);
 			case "PARAMETERDECLLIST": //return this.f.NonRoleParamDeclList(empty, Collections.emptyList());
 				return new NonRoleParamDeclList(t);
-			case "TYPEDECL":
+			case "TYPEPARAMDECL":
 				return new TypeParamDecl(t);
-			case "TYPENAME":
-				return new DataTypeNode(t);
-			case "SIGDECL":
+			case "TYPEPARAMNAME":
+				return new TypeParamNode(t);
+			case "SIGPARAMDECL":
 				return new SigParamDecl(t);
-			case "SIGNAME":
-				return new MessageSigNameNode(t);
+			case "SIGPARAMNAME":
+				return new SigParamNode(t);
 			case "GLOBALPROTOCOLDEF": //return this.f.GProtocolDef(empty, null);
 				return new GProtocolDef(t);
 			case "GLOBALPROTOCOLBLOCK": //return this.f.GProtocolBlock(empty, null);
@@ -166,11 +173,12 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				System.out.println("222: " + t + " ,, " + x);
 				return x;*/
 				//return nil();  // CHECKME
+			case "AMBIGUOUSNAME":
+				return new AmbigNameNode(t);
 			default:
 				//throw new RuntimeException("Shouldn't get here: " + lab + " ,, " + lab.length());
 				//return new MyCommonTree(t);
-				return 
-						new IdNode(t);  // FIXME: currently all name "leaf" nodes are there, so not ambig, more like ID
+				return new IdNode(t);  // FIXME: currently all name "leaf" nodes are there, so not ambig, more like ID
 				//return empty;
 		}
 	}

@@ -52,12 +52,12 @@ public class NonRoleArgListDel extends DoArgListDel
 			NonRoleParamKind kind = param.kind;
 			NonRoleArg arg = args.next();
 			NonRoleArgNode val = arg.getValChild();
-			if (val.isParamNode())
+			if (val.isTypeParamNode() || val.isSigParamNode()) 
 			{
 				if (!((NonRoleParamNode<?>) val).kind.equals(kind))
 				{
 					throw new ScribbleException(arg.getSource(),
-							"Bad arg " + arg + " for param kind: " + kind);
+							"Invalid arg " + arg + " for param kind: " + kind);
 				}
 			}
 			else if (kind.equals(SigKind.KIND))
@@ -65,7 +65,7 @@ public class NonRoleArgListDel extends DoArgListDel
 				if (!val.isMessageSigNode() && !val.isMessageSigNameNode())
 				{
 					throw new ScribbleException(arg.getSource(),
-							"Bad arg " + arg + " for param kind: " + kind);
+							"Invalid arg " + arg + " for param kind: " + kind);
 				}
 			}
 			else if (kind.equals(DataTypeKind.KIND))
@@ -73,7 +73,7 @@ public class NonRoleArgListDel extends DoArgListDel
 				if (!val.isDataTypeNameNode())
 				{
 					throw new ScribbleException(arg.getSource(),
-							"Bad arg " + arg + " for param kind: " + kind);
+							"Invalid arg " + arg + " for param kind: " + kind);
 				}
 			}
 			else

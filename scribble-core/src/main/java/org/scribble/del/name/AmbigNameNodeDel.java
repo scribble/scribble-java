@@ -17,10 +17,15 @@ import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.ast.name.qualified.DataTypeNode;
+import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.SigParamNode;
+import org.scribble.ast.name.simple.TypeParamNode;
 import org.scribble.del.ScribDelBase;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.DataTypeKind;
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.SigKind;
 import org.scribble.type.name.AmbigName;
 import org.scribble.visit.wf.NameDisambiguator;
@@ -49,8 +54,11 @@ public class AmbigNameNodeDel extends ScribDelBase
 				throw new ScribbleException(ann.getSource(),
 						"Invalid occurrence of data type: " + parent);
 			}
-			return disamb.job.config.af.QualifiedNameNode(ann.getSource(),
-					DataTypeKind.KIND, name.getElements());
+			/*return disamb.job.config.af.QualifiedNameNode(ann.getSource(),
+					DataTypeKind.KIND, name.getElements());*/
+			DataTypeNode res = new DataTypeNode(ann.token);  // CHECKME: what should the Token be?
+			res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
+			return res;
 		}
 		else if (mcontext.isMessageSigNameVisible(name.toMessageSigName()))
 		{
@@ -59,13 +67,29 @@ public class AmbigNameNodeDel extends ScribDelBase
 				throw new ScribbleException(ann.getSource(),
 						"Invalid occurrence of message signature name: " + parent);
 			}
-			return disamb.job.config.af.QualifiedNameNode(ann.getSource(),
-					SigKind.KIND, name.getElements());
+			/*return disamb.job.config.af.QualifiedNameNode(ann.getSource(),
+					SigKind.KIND, name.getElements());*/
+			MessageSigNameNode res = new MessageSigNameNode(ann.token);  // CHECME: what should the Token be?
+			res.addChildren(ann.getChildren());
+			return res;
 		}
 		else if (disamb.isBoundParameter(name))
 		{
-			return disamb.job.config.af.NonRoleParamNode(ann.getSource(),
-					disamb.getParameterKind(name), name.toString());
+			/*return disamb.job.config.af.NonRoleParamNode(ann.getSource(),
+					disamb.getParameterKind(name), name.toString());*/
+			NonRoleParamKind kind = disamb.getParameterKind(name);
+			if (kind.equals(DataTypeKind.KIND))
+			{
+				TypeParamNode res = new TypeParamNode(ann.token);  // CHECKME: what should the Token be?
+				res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
+				return res;
+			}
+			else if (kind.equals(SigKind.KIND))
+			{
+				SigParamNode res = new SigParamNode(ann.token);  // CHECKME: what should the Token be?
+				res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
+				return res;
+			}
 		}
 		throw new ScribbleException(ann.getSource(),
 				"Cannot disambiguate name: " + name);

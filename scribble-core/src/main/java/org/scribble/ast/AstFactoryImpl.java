@@ -67,6 +67,8 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.ast.name.simple.SigParamNode;
+import org.scribble.ast.name.simple.TypeParamNode;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
@@ -543,11 +545,20 @@ public class AstFactoryImpl implements AstFactory
 		return ann;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(
 			CommonTree source, K kind, String identifier)
 	{
-		NonRoleParamNode<K> pn = new NonRoleParamNode<K>(source, kind, identifier);
+		NonRoleParamNode<K> pn; //= new NonRoleParamNode<K>(source, kind, identifier);
+		if (kind.equals(SigKind.KIND))
+		{
+			pn = (NonRoleParamNode<K>) new SigParamNode(source.getToken());
+		}
+		else
+		{
+			pn = (NonRoleParamNode<K>) new TypeParamNode(source.getToken());
+		}
 		pn = del(pn, new ParamNodeDel());
 		return pn;
 	}

@@ -126,8 +126,8 @@ tokens
 	ROLEDECL = 'ROLEDECL';
 	PARAMETERDECLLIST = 'PARAMETERDECLLIST';
 	//PARAMETERDECL = 'PARAMETERDECL';
-	TYPEDECL = 'TYPEDECL';
-	SIGDECL = 'SIGDECL';
+	TYPEPARAMDECL = 'TYPEPARAMDECL';
+	SIGPARAMDECL = 'SIGPARAMDECL';
 	ROLEINSTANTIATIONLIST = 'ROLEINSTANTIATIONLIST';
 	ROLEINSTANTIATION = 'ROLEINSTANTIATION';  // FIXME: not consistent with arginstas/payloadeles
 	ARGUMENTINSTANTIATIONLIST = 'ARGUMENTINSTANTIATIONLIST';
@@ -151,8 +151,8 @@ tokens
 	
 	GPROTOCOLNAME = 'GPROTOCOLNAME';
 	ROLENAME = 'ROLENAME';
-	TYPENAME = 'TYPENAME';
-	SIGNAME = 'SIGNAME';
+	TYPEPARAMNAME = 'TYPEPARAMNAME';
+	SIGPARAMNAME = 'SIGPARAMNAME';
 	ID = 'ID';
 	OPNAME = 'OPNAME';
 	RECURSIONVAR = 'RECURSIONVAR';
@@ -470,7 +470,7 @@ payloadtypedecl:
 simplepayloadtypename:
 	IDENTIFIER
 ->
-	^(TYPENAME IDENTIFIER)  // TODO factor out with typedecl?
+	^(TYPENAME IDENTIFIER)  // TODO factor out with typedecl?  NO: params distinct from "literals"
 ;
 
 messagesignaturedecl:
@@ -483,7 +483,7 @@ messagesignaturedecl:
 simplemessagesignaturename:
 	IDENTIFIER
 ->
-	^(SIGNAME IDENTIFIER)  // TODO factor out with sigdecl?
+	^(SIGNAME IDENTIFIER)  // TODO factor out with sigparamdecl?  NO: params distinct from "literals"
 ;
 
 
@@ -615,14 +615,15 @@ parameterdecl:
 typedecl:
 	TYPE_KW parametername
 ->
-	^(TYPEDECL ^(TYPENAME parametername))
+	^(TYPEPARAMDECL ^(TYPEPARAMNAME parametername))
 ;
+// FIXME: should be a nonroleparamnode
 
 // cf. roledecl
 sigdecl:
 	SIG_KW parametername
 ->
-	^(SIGDECL ^(SIGNAME parametername))
+	^(SIGPARAMDECL ^(SIGPARAMNAME parametername))
 ;
 
 
@@ -695,13 +696,14 @@ rolenamenode:
 
 message:
 	messagesignature
-/*
-	ambiguousname  // FIXME: qualified name*/
+|
+	ambiguousname  
+;	
+/*// FIXME TODO: qualified (messagesig) names
 |
 	messagesignaturename  // qualified messagesignaturename subsumes parametername case
-/*|
+|
 	parametername*/
-;	
 
 globalconnect:
 	//message CONNECT_KW rolename TO_KW rolename

@@ -19,7 +19,7 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.Name;
 
-// TODO: make concrete subclasses to "eliminate" generic parameter (e.g., for better child casting, etc.)
+// CHECKME: can drop generic parameter and kind?
 public abstract class NonRoleParamDecl<K extends NonRoleParamKind>
 		extends HeaderParamDecl<K>
 {

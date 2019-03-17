@@ -52,11 +52,12 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 		return new AmbigNameNode(this);//, getIdentifier());
 	}
 	
-	@Override
+	/*@Override
 	public String getText()
 	{
-		return getToken().getText();  // CHECKME: ambig nodes are now leafs
-	}
+		//return getToken().getText();  // CHECKME: ambig nodes are now leafs -- NO: now separated from ID
+		return super.getText();
+	}*/
 	
 	@Override
 	public MessageNode project(AstFactory af)

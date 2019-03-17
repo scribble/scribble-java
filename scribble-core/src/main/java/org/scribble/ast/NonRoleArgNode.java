@@ -38,7 +38,12 @@ public interface NonRoleArgNode extends DoArgNode
 		return false;
 	}
 
-	default boolean isParamNode()
+	default boolean isSigParamNode()
+	{
+		return false;
+	}
+
+	default boolean isTypeParamNode()
 	{
 		return false;
 	}

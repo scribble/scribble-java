@@ -30,7 +30,7 @@ public class RoleNodeDel extends ScribDelBase
 	public RoleNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		RoleNode rn = (RoleNode) visited;
-		if (!disamb.isBoundRole(rn.toName()))
+		if (!disamb.isBoundRole(rn.toName()))  // Added on RoleDecl entry
 		{
 			throw new ScribbleException(rn.getSource(), "Role not bound: " + rn);
 		}

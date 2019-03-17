@@ -31,9 +31,12 @@ import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.ast.name.simple.SigParamNode;
+import org.scribble.ast.name.simple.TypeParamNode;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
@@ -53,8 +56,10 @@ import org.scribble.del.global.GProtocolBlockDel;
 import org.scribble.del.global.GProtocolDeclDel;
 import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.del.global.GRecursionDel;
+import org.scribble.del.name.AmbigNameNodeDel;
 import org.scribble.del.name.DataTypeNodeDel;
 import org.scribble.del.name.MessageSigNameNodeDel;
+import org.scribble.del.name.ParamNodeDel;
 import org.scribble.del.name.RecVarNodeDel;
 import org.scribble.del.name.RoleNodeDel;
 
@@ -114,11 +119,11 @@ public class DelDecoratorImpl implements DelDecorator
 			//case EMPTY_PARAMETERDECLLST:
 				NonRoleParamDeclList((NonRoleParamDeclList) n);
 				break;
-			case "TYPEDECL":
-				TypeDecl((TypeParamDecl) n);
+			case "TYPEPARAMDECL":
+				TypeParamDecl((TypeParamDecl) n);
 				break;
-			case "SIGDECL":
-				SigDecl((SigParamDecl) n);
+			case "SIGPARAMDECL":
+				SigParamDecl((SigParamDecl) n);
 				break;
 
 			case "GLOBALPROTOCOLDEF":
@@ -185,12 +190,22 @@ public class DelDecoratorImpl implements DelDecorator
 			case "OPNAME":
 				OpNode((OpNode) n);
 				break;
+			case "SIGPARAMNAME":
+				SigParamNode((SigParamNode) n);
+				break;
+			case "TYPEPARAMNAME":
+				TypeParamNode((TypeParamNode) n);
+				break;
 			case "MODULENAME":
 				
 				//System.out.println("5555b: " + n.getClass() + " ,, " + type + " ,, " + n);
 				//System.out.println("4444:" + n + " ,, " + n.getChildren());
 				
 				ModuleNameNode((ModuleNameNode) n);
+				break;
+
+			case "AMBIGUOUSNAME":
+				AmbigNameNode((AmbigNameNode) n);
 				break;
 
 			default:  // Leaf "ID" nodes
@@ -296,13 +311,13 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public void TypeDecl(TypeParamDecl td)
+	public void TypeParamDecl(TypeParamDecl td)
 	{
 		setDel(td, new NonRoleParamDeclDel());
 	}
 
 	@Override
-	public void SigDecl(SigParamDecl sd)
+	public void SigParamDecl(SigParamDecl sd)
 	{
 		setDel(sd, new NonRoleParamDeclDel());
 	}
@@ -554,23 +569,33 @@ public class DelDecoratorImpl implements DelDecorator
 		return tmp;
 	}*/
 
-	/*@Override
-	public AmbigNameNode AmbiguousNameNode(CommonTree source, String identifier)
+	@Override
+	public void AmbigNameNode(AmbigNameNode an)
 	{
-		AmbigNameNode ann = new AmbigNameNode(source, identifier); 
-		ann = (AmbigNameNode) ann.del(new AmbigNameNodeDel());
-		return ann;
+		setDel(an, new AmbigNameNodeDel());
 	}
 
-	@Override
+	/*@Override
 	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier)
 	{
 		NonRoleParamNode<K> pn = new NonRoleParamNode<K>(source, kind, identifier);
 		pn = setDel(pn, new ParamNodeDel());
 		return pn;
+	}*/
+
+	@Override
+	public void SigParamNode(SigParamNode sp)
+	{
+		setDel(sp, new ParamNodeDel());
 	}
 
 	@Override
+	public void TypeParamNode(TypeParamNode tp)
+	{
+		setDel(tp, new ParamNodeDel());
+	}
+
+	/*@Override
 	public DummyProjectionRoleNode DummyProjectionRoleNode()
 	{
 		DummyProjectionRoleNode dprn = new DummyProjectionRoleNode();

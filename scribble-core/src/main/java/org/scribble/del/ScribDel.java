@@ -37,6 +37,7 @@ import org.scribble.visit.wf.NameDisambiguator;
 import org.scribble.visit.wf.ReachabilityChecker;
 import org.scribble.visit.wf.WFChoiceChecker;
 
+// TODO: parent params now redundant
 // FIXME: refactor as appropriate into G/LDel
 // Immutable except for pass-specific Envs (by visitors) only -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
 // Parameterise by AstNode type?  Would inhibit del sharing between types (but that's not currently needed)

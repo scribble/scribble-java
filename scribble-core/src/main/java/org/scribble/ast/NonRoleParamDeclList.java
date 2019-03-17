@@ -23,6 +23,7 @@ import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.Name;
 import org.scribble.type.name.Role;
 
+// Can contain "mixed" type/sig kinds
 // Typing a bit awkward that this list has to use NonRoleParamKind as the "concrete" kind, while the NonRoleParamDecl elements use the actual concrete kind
 // But OK because the NonRoleParamDecl nodes are immutable (the generic kind value is never rewritten after instantiation, only read)
 public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
@@ -44,8 +45,8 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 	{
 		@SuppressWarnings("unchecked")
 		List<NonRoleParamDecl<NonRoleParamKind>> cast =
-				((List<?>) getChildren()).stream()
-						.map(x -> (NonRoleParamDecl<NonRoleParamKind>) x)
+				getChildren().stream()
+						.map(x -> (NonRoleParamDecl<NonRoleParamKind>) x)  // Cast specifically to NonRoleParamKind (not "?") for hetero list
 						.collect(Collectors.toList());
 		return cast;
 	}

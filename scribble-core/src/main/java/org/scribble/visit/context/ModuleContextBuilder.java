@@ -32,7 +32,6 @@ public class ModuleContextBuilder extends AstVisitor
 	@Override
 	protected void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		System.out.println("sss4: " + ((parent != null) ? parent.getClass() : "") + " ,, " + child.getClass());
 		child.del().enterModuleContextBuilding(parent, child, this);
 	}
 
