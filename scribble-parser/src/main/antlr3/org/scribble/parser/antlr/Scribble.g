@@ -130,8 +130,8 @@ tokens
 	SIGPARAMDECL = 'SIGPARAMDECL';
 	ROLEINSTANTIATIONLIST = 'ROLEINSTANTIATIONLIST';
 	ROLEINSTANTIATION = 'ROLEINSTANTIATION';  // FIXME: not consistent with arginstas/payloadeles
-	ARGUMENTINSTANTIATIONLIST = 'ARGUMENTINSTANTIATIONLIST';
-	ARGUMENTINSTANTIATION = 'ARGUMENTINSTANTIATION';
+	ARGUMENTINSTANTIATIONLIST = 'ARGUMENTINSTANTIATIONLIST';  // FIXME: token name inconsistent with class name (NonRoleArgList)
+	//ARGUMENTINSTANTIATION = 'ARGUMENTINSTANTIATION';
 	//CONNECTDECL = 'connect-decl';
 
 	GLOBALPROTOCOLDECL = 'GLOBALPROTOCOLDECL';
@@ -161,6 +161,7 @@ tokens
 	SIGNAME = 'SIGNAME';
 
 	UNARYPAYLOADELEM = 'UNARYPAYLOADELEM';
+	NONROLEARG = 'NONROLEARG';
 }
 
 
@@ -173,6 +174,7 @@ tokens
 	//import org.scribble.parser.scribble.ast.tree.MyCommonTree;
 	import org.scribble.ast.ScribNodeBase;
 	import org.scribble.ast.UnaryPayloadElem;
+	import org.scribble.ast.NonRoleArg;
 	import org.scribble.ast.name.qualified.DataTypeNode;
 	import org.scribble.ast.name.simple.IdNode;
 	import org.scribble.ast.name.simple.AmbigNameNode;
@@ -239,32 +241,57 @@ tokens
 	// qn = qualifiedname
 	public static CommonTree parsePayloadElem(CommonTree qn) throws RecognitionException
 	{
-		System.out.println("ggg1: " + qn + " ,, " + qn.token + " ,, " + qn.getChildren());		
+		//System.out.println("ggg1: " + qn + " ,, " + qn.token + " ,, " + qn.getChildren());		
 		if (qn.getChildCount() > 1)
 		{
-			//DataTypeNode dt = AntlrQualifiedName.toDataTypeNameNode(ct, af);
-			//String text = qn.getChild(0).getText();
 			DataTypeNode dt = new DataTypeNode(new CommonToken(TYPENAME, "TYPENAME"));
-			((List<?>) qn.getChildren()).forEach(x -> dt.addChild(new IdNode(new CommonToken(IDENTIFIER, ((CommonTree) x).getText()))));
-			//UnaryPayloadElem pe = new UnaryPayloadElem(qn.token);
-			UnaryPayloadElem pe = new UnaryPayloadElem(new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));  // CHECKME: OK to use qn.token?
+			((List<?>) qn.getChildren()).forEach(x -> 
+					dt.addChild(new IdNode(new CommonToken(IDENTIFIER, ((CommonTree) x).getText()))));
+			UnaryPayloadElem pe = 
+					new UnaryPayloadElem(new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));
 			pe.addChild(dt);
 			return pe;
 		}
 		else
 		{
 			// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
-			//AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct, af);
-			//return af.UnaryPayloadElem(ct, an);
 			String text = qn.getChild(0).getText();
 			IdNode id = new IdNode(new CommonToken(IDENTIFIER, text));
-			AmbigNameNode an = new AmbigNameNode(new CommonToken(AMBIGUOUSNAME, "AMBIGUOUSNAME"));
+			AmbigNameNode an = 
+					new AmbigNameNode(new CommonToken(AMBIGUOUSNAME, "AMBIGUOUSNAME"));
 			an.addChild(id);
-			//UnaryPayloadElem pe = new UnaryPayloadElem(qn.token);  // CHECKME: OK to use qn.token?
-			UnaryPayloadElem pe = new UnaryPayloadElem(new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));  // CHECKME: OK to use qn.token?
-			pe.addChild(an);
-			System.out.println("ggg2: " + pe + " ,, " + pe.token + " ,, " + pe.getChildren());		
-			return pe;
+			UnaryPayloadElem e = new UnaryPayloadElem(
+					new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));
+			e.addChild(an);
+			//System.out.println("ggg2: " + e + " ,, " + e.token + " ,, " + e.getChildren());		
+			return e;
+		}
+	}
+
+	// Only for QualifiedName (DataTypeNode or AmbigNameNode), not messagesignature literal 
+	// qn = qualifiedname
+	public static CommonTree parseNonRoleArg(CommonTree qn) throws RecognitionException
+	{
+		if (qn.getChildCount() > 1)
+		{
+			DataTypeNode dt = new DataTypeNode(new CommonToken(TYPENAME, "TYPENAME"));
+			((List<?>) qn.getChildren()).forEach(x -> 
+					dt.addChild(new IdNode(new CommonToken(IDENTIFIER, ((CommonTree) x).getText()))));
+			NonRoleArg a = 
+					new NonRoleArg(new CommonToken(NONROLEARG, "NONROLEARG"));
+			a.addChild(dt);
+			return a;
+		}
+		else
+		{
+			String text = qn.getChild(0).getText();
+			IdNode id = new IdNode(new CommonToken(IDENTIFIER, text));
+			AmbigNameNode an = 
+					new AmbigNameNode(new CommonToken(AMBIGUOUSNAME, "AMBIGUOUSNAME"));
+			an.addChild(id);
+			NonRoleArg a = new NonRoleArg(new CommonToken(NONROLEARG, "NONROLEARG"));
+			a.addChild(an);
+			return a;
 		}
 	}
 }
@@ -852,12 +879,12 @@ argumentinstantiation:
   // Grammatically same as message, but argument case can also be a payload type
 	messagesignature
 ->
-	^(ARGUMENTINSTANTIATION messagesignature)
+	^(NONROLEARG messagesignature)
 /*|
 	ambiguousname  // As for payloadelement: parser doesn't distinguish simple from qualified properly, even with backtrack*/
 |
 	qualifiedname
 ->
-	^(ARGUMENTINSTANTIATION qualifiedname)
+	{ parseNonRoleArg($qualifiedname.tree) }  // Cf. parsePayloadElem
 ;
 

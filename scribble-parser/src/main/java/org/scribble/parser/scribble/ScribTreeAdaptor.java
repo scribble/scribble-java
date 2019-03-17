@@ -147,6 +147,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new OpNode(t);
 			case "PAYLOAD":
 				return new PayloadElemList(t);
+				// N.N. UnaryPayloadElem parsed "manually" in Scribble.g
 				
 			case "ROLEINSTANTIATIONLIST":
 				return new RoleArgList(t);
@@ -154,7 +155,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new RoleArg(t);
 			case "ARGUMENTINSTANTIATIONLIST":
 				return new NonRoleArgList(t);
-			case "ARGUMENTINSTANTIATION":
+			case "NONROLEARG":  // Only for messagesignature -- qualifiedname (datatypenode or ambignamenode) done "manually" in scribble.g (cf. UnaryPayloadElem)
 				return new NonRoleArg(t);
 
 				//return new MyCommonTree(t);  // FIXME: placeholder for deleg, qualified or ambig

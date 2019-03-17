@@ -30,7 +30,7 @@ public abstract class NonRoleParamNode<K extends NonRoleParamKind> extends
 	public NonRoleParamNode(Token t, K kind)
 	{
 		super(t);
-		this.kind = null;  // FIXME: how to set? (disamb?) -- probably do concrete data/sig subclasses?
+		this.kind = kind;  // FIXME: how to set? (disamb?) -- probably do concrete data/sig subclasses?
 	}
 
 	// Tree#dupNode constructor

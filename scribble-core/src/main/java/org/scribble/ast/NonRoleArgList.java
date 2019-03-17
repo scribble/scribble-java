@@ -40,6 +40,9 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	@Override
 	public List<NonRoleArg> getArgChildren()
 	{
+		System.out.println("nnn1: " + getChildren() + " ,, ");
+		getChildren().forEach(x -> System.out.println(x.getClass() + " ,, " + ((CommonTree) x).getChildren()));
+
 		return getRawArgChildren().stream().map(x -> (NonRoleArg) x)
 				.collect(Collectors.toList());
 	}

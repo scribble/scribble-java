@@ -155,7 +155,7 @@ public class DelDecoratorImpl implements DelDecorator
 			case "ARGUMENTINSTANTIATIONLIST": 
 				NonRoleArgList((NonRoleArgList) n);
 				break;
-			case "ARGUMENTINSTANTIATION": 
+			case "NONROLEARG": 
 				NonRoleArg((NonRoleArg) n);
 				break;
 
