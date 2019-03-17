@@ -250,7 +250,7 @@ tokens
 			UnaryPayloadElem pe = 
 					new UnaryPayloadElem(new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));
 			pe.addChild(dt);
-			return pe;
+			return pe;  // N.B. "re-parsed" by ScribTreeAdaptor?  Could return CommonTree here?
 		}
 		else
 		{

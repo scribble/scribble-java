@@ -177,6 +177,9 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case "AMBIGUOUSNAME":
 				return new AmbigNameNode(t);
 			default:
+				
+				//System.out.println("aaa1: " + lab);   // FIXME: QUALIFIEDNAME (e.g., good.misc.globals.gdo.Do06b)  // CHECKME: UNARYPAYLOADELEM?
+				
 				//throw new RuntimeException("Shouldn't get here: " + lab + " ,, " + lab.length());
 				//return new MyCommonTree(t);
 				return new IdNode(t);  // FIXME: currently all name "leaf" nodes are there, so not ambig, more like ID
