@@ -184,7 +184,7 @@ public class ModuleDel extends ScribDelBase
 	@Override 
 	public String toString()
 	{
-		return (this.mcontext == null) ? null : this.mcontext.toString();  // null before and during context building
+		return (this.mcontext == null) ? "[]" : this.mcontext.toString();  // null before and during context building
 	}
 	
 	public ModuleContext getModuleContext()

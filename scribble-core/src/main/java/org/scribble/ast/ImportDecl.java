@@ -15,14 +15,10 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.del.ScribDel;
-import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.ImportKind;
 import org.scribble.type.name.Name;
-import org.scribble.visit.AstVisitor;
 
-// TODO: factor out stuff from ImportModule and ImportMember into here, e.g. alias/name, reconstruct
+// CHECKME: factor out more stuff from ImportModule and ImportMember into here? e.g. alias/name, reconstruct (or else no need for common super?)
 public abstract class ImportDecl<K extends ImportKind> extends ScribNodeBase//, ModuleMember //implements NameDeclaration 
 {
 	// ScribTreeAdaptor#create constructor
@@ -39,55 +35,15 @@ public abstract class ImportDecl<K extends ImportKind> extends ScribNodeBase//, 
 	
 	public abstract ImportDecl<K> dupNode();
 	
-	public abstract Name<K> getAlias();
-	//public abstract Name<K> getVisibleName();
-	
-	public ModuleNameNode getModuleNameNodeChild()
-	{
-		return (ModuleNameNode) getChild(0);
-	}
-
-	public ModuleNameNode getAliasNameNodeChild()
-	{
-		return (ModuleNameNode) getChild(1);
-	}
-	
 	public boolean isImportModule()
 	{
 		return false;
 	}
-	
-	public boolean isAliased()
-	{
-		//return this.alias != null;
-		return getChildCount() > 1;
-	}
-	
-	// alias == null if no alias
-	public ImportDecl<K> reconstruct(ModuleNameNode modname, ModuleNameNode alias)
-	{
-		ImportDecl<K> im = dupNode();
-		ScribDel del = del();
-		im.addChild(modname);
-		if (alias != null)
-		{
-			im.addChild(alias);
-		}
-		im.setDel(del);  // No copy
-		return im;
-	}
 
-	@Override
-	public ImportDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
-	{
-		ModuleNameNode modname = (ModuleNameNode) 
-				visitChild(getModuleNameNodeChild(), nv);
-		ModuleNameNode alias = isAliased()
-				? (ModuleNameNode) visitChild(getAliasNameNodeChild(), nv) 
-				: null;
-		return reconstruct(modname, alias);
-	}
-
+	public abstract boolean hasAlias();
+	
+	public abstract Name<K> getAlias();
+	//public abstract Name<K> getVisibleName();
 	
 	
 	

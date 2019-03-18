@@ -16,7 +16,6 @@ package org.scribble.main;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.job.ScribbleException;
-import org.scribble.main.DefaultModuleLoader;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.parser.scribble.AntlrToScribParser;
@@ -32,8 +31,9 @@ public class ScribModuleLoader extends DefaultModuleLoader //implements ModuleLo
 	private ResourceLocator locator;
 	private ScribbleAntlrWrapper antlr;
 	private AntlrToScribParser parser;
-	
-	public ScribModuleLoader(ResourceLocator locator, ScribbleAntlrWrapper antlr, AntlrToScribParser parser)
+
+	public ScribModuleLoader(ResourceLocator locator, ScribbleAntlrWrapper antlr,
+			AntlrToScribParser parser)
 	{
 		this.locator = locator;
 		this.antlr = antlr;
@@ -41,15 +41,18 @@ public class ScribModuleLoader extends DefaultModuleLoader //implements ModuleLo
 	}
 
 	@Override
-	public Pair<Resource, Module> loadModule(ModuleName modname, AstFactory af) throws ScribParserException, ScribbleException
+	public Pair<Resource, Module> loadModule(ModuleName modname, AstFactory af)
+			throws ScribParserException, ScribbleException
 	{
 		Pair<Resource, Module> cached = super.loadModule(modname, af);
 		if (cached != null)
 		{
 			return cached;
-		}	
+		}
 		Resource res = this.locator.getResource(modname.toPath());
-		Module parsed = (Module) this.parser.parse(this.antlr.parseAntlrTree(res), af);
+		/*Module parsed = (Module) this.parser.parse(this.antlr.parseAntlrTree(res),
+				af);*/
+		Module parsed = this.antlr.parseAntlrTree(res);  // Does del decoration
 		checkModuleName(modname, res, parsed);
 		registerModule(res, parsed);
 		return new Pair<>(res, parsed);
@@ -59,7 +62,8 @@ public class ScribModuleLoader extends DefaultModuleLoader //implements ModuleLo
 	{
 		if (!mn.equals(mod.getFullModuleName()))
 		{
-			throw new RuntimeException("Invalid module name " + mod.getFullModuleName() + " at location: " + res.getLocation());
+			throw new RuntimeException("Invalid module name "
+					+ mod.getFullModuleName() + " at location: " + res.getLocation());
 		}
 	}
 }

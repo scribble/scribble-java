@@ -150,7 +150,7 @@ public class ModuleContext
 			{
 				ImportModule im = (ImportModule) id;
 				ModuleName fullname = im.getModuleNameNodeChild().toName();
-				ModuleName visname = (im.isAliased()) ? im.getAlias() : fullname;
+				ModuleName visname = (im.hasAlias()) ? im.getAlias() : fullname;
 						// getVisibleName doesn't use fullname
 				if (this.visible.modules.containsKey(visname))
 				{
@@ -248,6 +248,8 @@ public class ModuleContext
 	public <K extends ProtocolKind> boolean isVisibleProtocolDeclName(
 			ProtocolName<K> visname)
 	{
+		System.out.println("mc1: " + this.visible.globals.keySet() + " ,, " + visname);
+		
 		return this.visible.isVisibleProtocolDeclName(visname);
 	}
 

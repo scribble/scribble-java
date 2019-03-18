@@ -21,6 +21,9 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.DelDecorator;
+import org.scribble.ast.DelDecoratorImpl;
+import org.scribble.ast.Module;
 import org.scribble.main.resource.Resource;
 import org.scribble.parser.antlr.ScribbleLexer;
 import org.scribble.parser.antlr.ScribbleParser;
@@ -31,6 +34,8 @@ import org.scribble.parser.scribble.ScribTreeAdaptor;
 // Not encapsulated inside ScribParser, because ScribParser's main function is the higher-level operation of "parsing" CommonTrees into ScribNodes
 public class ScribbleAntlrWrapper
 {
+	private final DelDecorator df = new DelDecoratorImpl();
+	
 	public ScribbleAntlrWrapper()
 	{
 
@@ -55,7 +60,8 @@ public class ScribbleAntlrWrapper
 		return (CommonTree) p.module().getTree();
 	}
 
-	public CommonTree parseAntlrTree(Resource res)
+	// Parse Resource into Module
+	public Module parseAntlrTree(Resource res)
 	{
 		try
 		{
@@ -70,7 +76,9 @@ public class ScribbleAntlrWrapper
 				/*// FIXME: need an interface for Scribble top-level module method (ANTLR "grammar actions"?)
 				Method m = c.getMethod("module");
 				return (CommonTree) ((ParserRuleReturnScope) m.invoke(parser)).getTree();*/  // No: reflection doesn't work well with ANTLR error handling
-				return runScribbleParser(new CommonTokenStream(lex));
+				Module mod = (Module) runScribbleParser(new CommonTokenStream(lex));
+				this.df.decorate(mod);
+				return mod;
 			}
 			/*catch (NoSuchMethodException nsme)
 			{

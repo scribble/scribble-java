@@ -85,8 +85,8 @@ tokens
 	
 	// "Node type" constants -- but not parsed "directly" by AntlrToScribParser
 
-	EMPTY_ALIAS = 'EMTPY_ALIAS';
-	//EMPTY_PACKAGENAME = '__empty_packagebame';
+	//EMPTY_ALIAS = 'EMTPY_ALIAS';
+	////EMPTY_PACKAGENAME = '__empty_packagebame';
 	EMPTY_OPERATOR = 'EMPTY_OPERATOR';
 
 	//EMPTY_PARAMETERDECLLIST = '__empty_parameterdecllist';
@@ -490,21 +490,21 @@ moduledecl:
  */
 importdecl:
 	importmodule
-|
-	importmember
+/*|
+	importmember*/
 ;
 
 importmodule:
 	IMPORT_KW modulename ';'
 ->
-	^(IMPORTMODULE modulename EMPTY_ALIAS)
+	^(IMPORTMODULE modulename)
 |
 	IMPORT_KW modulename AS_KW simplemodulename ';'
 ->
 	^(IMPORTMODULE modulename simplemodulename)
 ;
 
-importmember:
+/*importmember:
 	FROM_KW modulename IMPORT_KW simplemembername ';'
 ->
 	^(IMPORTMEMBER modulename simplemembername EMPTY_ALIAS)
@@ -512,7 +512,7 @@ importmember:
 	FROM_KW modulename IMPORT_KW simplemembername AS_KW simplemembername ';'
 ->
 	^(IMPORTMEMBER modulename simplemembername simplemembername)
-;
+;*/
 
 
 /**

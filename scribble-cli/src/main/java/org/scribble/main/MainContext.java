@@ -103,18 +103,16 @@ public class MainContext
 		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
 		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);  
 				// TODO: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
-		CommonTree atree = this.antlrParser.parseAntlrTree(res);
+		Module mod = this.antlrParser.parseAntlrTree(res);  // Does del decoration
 		
 		// FIXME HERE: deprecate scribParser -- move ANTLR error checking out
 		
-		Module mod = (Module) atree;//this.scribParser.parse(atree, this.af);  // TODO: rename exceptions
+		/*Module mod = (Module) atree;//this.scribParser.parse(atree, this.af);  // TODO: rename exceptions
 		
 		/*HERE del decorator
 		move ast to parser?  and make core/lang*/
-		
-		new DelDecoratorImpl().decorate(mod);
 
-		//HERE: debug context building or name disamb (role node child lost)
+		//HERE: debug context building or name disamb (role node child lost)*/
 		
 		checkMainModuleName(mainpath, mod, noValidation);
 		
@@ -138,8 +136,9 @@ public class MainContext
 				spin);
 
 		Resource res = new InlineResource(inline);
-		Module mod = (Module) this.scribParser
-				.parse(this.antlrParser.parseAntlrTree(res), this.af);
+		/*Module mod = (Module) this.scribParser
+				.parse(this.antlrParser.parseAntlrTree(res), this.af);*/
+		Module mod = (Module) this.antlrParser.parseAntlrTree(res);  // Does del decoration
 
 		init(
 				 debug, locator,  useOldWF,
@@ -221,7 +220,7 @@ public class MainContext
 						((ImportModule) id).getModuleNameNodeChild().toName();
 				if (!this.parsed.containsKey(modname))
 				{
-					loadAllModules(this.loader.loadModule(modname, af));
+					loadAllModules(this.loader.loadModule(modname, this.af));
 				}
 			}
 		}

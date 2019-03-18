@@ -3,6 +3,7 @@ package org.scribble.parser.scribble;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.ImportModule;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.Module;
@@ -88,6 +89,10 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new ModuleNameNode(t);  /*.. HERE ambigname -- or qualifiedname? (ambigname currently singleton name)
 						-- or modulename just as identifiers? -- ANTLR uses every (leaf) token as singleton node
 								-- AntlrTokenTree? -- i.e. CommonTree (wrapper for Token)*/
+				
+			case "IMPORTMODULE":
+				return new ImportModule(t);
+				
 			case "PAYLOADTYPEDECL":
 				return new DataTypeDecl(t);
 			case "MESSAGESIGNATUREDECL":
@@ -179,6 +184,9 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			default:
 				
 				//System.out.println("aaa1: " + lab);   // FIXME: QUALIFIEDNAME (e.g., good.misc.globals.gdo.Do06b)  // CHECKME: UNARYPAYLOADELEM?
+				
+				//FIXME: add explicit check for unhandled parser categories (e.g., use __ prefixes) -- cf. actual IDs
+				
 				
 				//throw new RuntimeException("Shouldn't get here: " + lab + " ,, " + lab.length());
 				//return new MyCommonTree(t);

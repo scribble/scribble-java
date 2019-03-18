@@ -16,8 +16,11 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.del.ScribDel;
+import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.ModuleKind;
 import org.scribble.type.name.ModuleName;
+import org.scribble.visit.AstVisitor;
 
 public class ImportModule extends ImportDecl<ModuleKind>
 {
@@ -37,6 +40,17 @@ public class ImportModule extends ImportDecl<ModuleKind>
 		this.alias = null;
 	}
 
+	public ModuleNameNode getModuleNameNodeChild()
+	{
+		return (ModuleNameNode) getChild(0);
+	}
+
+	// No child if no alias (cf., this.hasAlias)
+	public ModuleNameNode getAliasNameNodeChild()
+	{
+		return (ModuleNameNode) getChild(1);
+	}
+
 	// Cf. CommonTree#dupNode
 	@Override
 	public ImportModule dupNode()
@@ -44,10 +58,48 @@ public class ImportModule extends ImportDecl<ModuleKind>
 		return new ImportModule(this);
 	}
 	
+	// alias == null if no alias
+	public ImportModule reconstruct(ModuleNameNode modname, ModuleNameNode alias)
+	{
+		ImportModule im = dupNode();
+		ScribDel del = del();
+		im.addChild(modname);
+		if (alias != null)
+		{
+			im.addChild(alias);
+		}
+		im.setDel(del);  // No copy
+		return im;
+	}
+
+	@Override
+	public ImportModule visitChildren(AstVisitor nv) throws ScribbleException
+	{
+		ModuleNameNode modname = (ModuleNameNode) 
+				visitChild(getModuleNameNodeChild(), nv);
+		ModuleNameNode alias = hasAlias()
+				? (ModuleNameNode) visitChild(getAliasNameNodeChild(), nv) 
+				: null;
+		return reconstruct(modname, alias);
+	}
+	
 	@Override
 	public boolean isImportModule()
 	{
 		return true;
+	}
+	
+	@Override
+	public boolean hasAlias()
+	{
+		//return this.alias != null;
+		return getChildCount() > 1;
+	}
+	
+	@Override
+	public ModuleName getAlias()
+	{
+		return getAliasNameNodeChild().toName();
 	}
 	
 	/*@Override
@@ -57,16 +109,10 @@ public class ImportModule extends ImportDecl<ModuleKind>
 	}*/
 	
 	@Override
-	public ModuleName getAlias()
-	{
-		return getAliasNameNodeChild().toName();
-	}
-	
-	@Override
 	public String toString()
 	{
 		String s = Constants.IMPORT_KW + " " + getModuleNameNodeChild();
-		if (isAliased())
+		if (hasAlias())
 		{
 			s += " " + Constants.AS_KW + " " + getAlias();
 		}

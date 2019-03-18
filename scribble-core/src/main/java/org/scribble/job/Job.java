@@ -349,6 +349,9 @@ public class Job
 			for (ModuleName modname : modnames)
 			{
 				AstVisitor nv = cons.newInstance(this);
+				
+				System.out.println("jjj1: " + modname);
+				
 				runVisitorOnModule(modname, nv);
 			}
 		}

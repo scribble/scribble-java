@@ -420,6 +420,7 @@ public class CLArgParser
 
 	private static boolean validatePaths(String paths)
 	{
+		System.out.println(System.getProperty("user.dir"));
 		for (String path : paths.split(File.pathSeparator))
 		{
 			if (!new File(path).isDirectory())

@@ -87,7 +87,9 @@ public class DelDecoratorImpl implements DelDecorator
 				ModuleDecl((ModuleDecl) n);
 				break;
 
-			//case IMPORTMODULE:
+			case "IMPORTMODULE":
+				ImportModule((ImportModule) n);
+				break;
 
 			case "MESSAGESIGNATUREDECL":      //return AntlrMessageSigDecl.parseMessageSigDecl(this, ct, af);
 				MessageSigNameDecl((MessageSigNameDecl) n);
