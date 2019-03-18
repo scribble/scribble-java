@@ -424,7 +424,7 @@ ambiguousname:
  * Section 3.2.1 Package, Module and Module Member Names
  */
 
-simplemodulename:           simplename;
+//simplemodulename:           simplename;
 //simplepayloadtypename:      simplename;
 //simplemessagesignaturename: simplename;
 simpleprotocolname:         simplename;
@@ -502,6 +502,12 @@ importmodule:
 	IMPORT_KW modulename AS_KW simplemodulename ';'
 ->
 	^(IMPORTMODULE modulename simplemodulename)
+;
+
+simplemodulename:
+	IDENTIFIER
+->
+	^(MODULENAME IDENTIFIER)
 ;
 
 /*importmember:
