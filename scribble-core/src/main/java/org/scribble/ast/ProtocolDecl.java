@@ -103,7 +103,9 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	@Override
 	public String toString()
 	{
-		return getHeaderChild() + " " + getDefChild();
+		ProtocolModList mods = getModifierListChild();
+		return (mods.isEmpty() ? "" : mods + " ") + getHeaderChild() + " "
+				+ getDefChild();
 	}
 	
 	

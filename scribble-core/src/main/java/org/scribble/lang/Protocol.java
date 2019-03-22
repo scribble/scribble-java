@@ -58,7 +58,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	@Override
 	public String toString()
 	{
-		return " protocol " + this.fullname + "(" + this.roles.stream()
+		return "protocol " + this.fullname + "(" + this.roles.stream()
 					.map(x -> x.toString()).collect(Collectors.joining(", ")) + ")"
 				+ " {\n" + this.def + "\n}";
 	}

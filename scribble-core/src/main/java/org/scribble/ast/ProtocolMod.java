@@ -1,3 +1,19 @@
 package org.scribble.ast;
 
-public enum ProtocolMod { AUX, EXPLICIT }  // CHECKME: move to Header?
+// CHECKME: move to Header?
+public enum ProtocolMod
+{
+	AUX, 
+	EXPLICIT;
+	
+	@Override
+	public String toString()
+	{
+		switch (this)
+		{
+			case AUX:      return "aux";
+			case EXPLICIT: return "explicit";
+			default:       throw new RuntimeException("Unknown modifier: " + this);
+		}
+	}
+}

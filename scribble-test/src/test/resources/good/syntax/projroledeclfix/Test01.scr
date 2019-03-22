@@ -11,6 +11,9 @@ global protocol Foo(role A, role B, role C)
 	do Bar(A, B, C);
 }
 
+..HERE CHECKME: aux aux
+
+aux
 global protocol Bar(role D, role E, role F)
 {
 	2() from D to F;

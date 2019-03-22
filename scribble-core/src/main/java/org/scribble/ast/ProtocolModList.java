@@ -88,7 +88,7 @@ public class ProtocolModList extends ScribNodeBase
 		{
 			case "aux":      return ProtocolMod.AUX;
 			case "explicit": return ProtocolMod.EXPLICIT;
-			default: throw new RuntimeException("Invalid modifier: " + mod);
+			default: throw new RuntimeException("Unknown modifier: " + mod);
 		}
 	}
 }

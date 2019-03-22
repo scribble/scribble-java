@@ -126,7 +126,8 @@ public class GProtocol extends
 	@Override
 	public String toString()
 	{
-		return "global" + super.toString();
+		return this.mods.stream().map(x -> x.toString() + " ")
+				.collect(Collectors.joining()) + "global " + super.toString();
 	}
 
 	@Override

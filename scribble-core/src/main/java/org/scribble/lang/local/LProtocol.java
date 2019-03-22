@@ -121,7 +121,8 @@ public class LProtocol extends
 	@Override
 	public String toString()
 	{
-		return "local" + super.toString();
+		return this.mods.stream().map(x -> x.toString() + " ") + "local "
+				+ super.toString();
 	}
 
 	@Override
