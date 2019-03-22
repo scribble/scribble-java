@@ -29,6 +29,12 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 	{
 		return new LRecursion(source, recvar, block);
 	}
+
+	@Override
+	public boolean isSingleCont()
+	{
+		return false;
+	}
 	
 	@Override
 	public LRecursion substitute(Substitutions<Role> subs)

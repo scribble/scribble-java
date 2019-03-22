@@ -9,7 +9,6 @@ import org.scribble.lang.Recursion;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
-import org.scribble.lang.local.LContinue;
 import org.scribble.lang.local.LRecursion;
 import org.scribble.lang.local.LSeq;
 import org.scribble.lang.local.LSkip;
@@ -66,8 +65,7 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	public LType project(Role self)
 	{
 		LSeq body = this.body.project(self);
-		if (body.isEmpty()
-				|| (body.elems.size() == 1 && (body.elems.get(0) instanceof LContinue)))
+		if (body.isEmpty() || body.isSingleCont())  // recvar doesn't matter for isSingleCont
 		{
 			return LSkip.SKIP;
 		}

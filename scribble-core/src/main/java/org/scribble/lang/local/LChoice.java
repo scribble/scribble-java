@@ -34,6 +34,12 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 	}
 
 	@Override
+	public boolean isSingleCont()
+	{
+		return this.blocks.stream().allMatch(x -> x.isSingleCont());
+	}
+
+	@Override
 	public LChoice substitute(Substitutions<Role> subs)
 	{
 		List<LSeq> blocks = this.blocks.stream().map(x -> x.substitute(subs))

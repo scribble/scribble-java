@@ -34,6 +34,12 @@ public class LSend extends MessageTransfer<Local>
 	}
 
 	@Override
+	public boolean isSingleCont()
+	{
+		return false;
+	}
+
+	@Override
 	public LSend substitute(Substitutions<Role> subs)
 	{
 		return (LSend) super.substitute(subs);

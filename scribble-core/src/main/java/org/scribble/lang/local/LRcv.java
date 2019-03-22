@@ -34,6 +34,12 @@ public class LRcv extends MessageTransfer<Local>
 	}
 
 	@Override
+	public boolean isSingleCont()
+	{
+		return false;
+	}
+
+	@Override
 	public LRcv substitute(Substitutions<Role> subs)
 	{
 		return (LRcv) super.substitute(subs);

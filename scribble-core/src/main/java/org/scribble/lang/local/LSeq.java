@@ -35,6 +35,12 @@ public class LSeq extends Seq<Local> implements LType
 	}
 
 	@Override
+	public boolean isSingleCont()
+	{
+		return this.elems.size() == 1 && ((LType) this.elems.get(0)).isSingleCont();
+	}
+
+	@Override
 	public LSeq substitute(Substitutions<Role> subs)
 	{
 		return (LSeq) super.substitute(subs);

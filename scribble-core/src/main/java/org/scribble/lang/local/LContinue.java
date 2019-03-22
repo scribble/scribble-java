@@ -32,6 +32,12 @@ public class LContinue extends Continue<Local> implements LType
 	{
 		return new LContinue(source, recvar);
 	}
+	
+	@Override
+	public boolean isSingleCont()
+	{
+		return true;
+	}
 
 	@Override
 	public LContinue substitute(Substitutions<Role> subs)

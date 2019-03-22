@@ -39,6 +39,12 @@ public class LProtocol extends
 	{
 		return new LProtocol(source, mods, fullname, roles, def);
 	}
+	
+	@Override
+	public boolean isSingleCont()
+	{
+		throw new RuntimeException("Unsupported for LProtocol:\n" + this);
+	}
 
 	@Override
 	public LType substitute(Substitutions<Role> subs)

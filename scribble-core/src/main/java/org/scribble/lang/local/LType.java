@@ -11,6 +11,7 @@ import org.scribble.type.name.Role;
 
 public interface LType extends SType<Local>
 {
+	boolean isSingleCont();
 
 	@Override
 	LType substitute(Substitutions<Role> subs);
@@ -24,7 +25,7 @@ public interface LType extends SType<Local>
 	// Uses b to builds graph "progressively" (working graph is mutable)
 	// Use EGraphBuilderUtil2::finalise for final result
 	void buildGraph(EGraphBuilderUtil2 b);
-
+	
 	ReachabilityEnv checkReachability(ReachabilityEnv env)
 			throws ScribbleException;
 }

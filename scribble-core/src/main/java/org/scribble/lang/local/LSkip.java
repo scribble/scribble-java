@@ -27,6 +27,12 @@ public class LSkip extends STypeBase<Local> implements LType
 	}
 
 	@Override
+	public boolean isSingleCont()
+	{
+		return false;
+	}
+
+	@Override
 	public LSkip substitute(Substitutions<Role> subs)
 	{
 		return this;
