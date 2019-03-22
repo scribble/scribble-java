@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.lang.global.GProtocol;
 import org.scribble.lang.local.LProtocol;
@@ -94,14 +93,12 @@ public class JobContext
 
 	public Set<ModuleName> getParsedFullModuleNames()
 	{
-		Set<ModuleName> modnames = new HashSet<>();
-		modnames.addAll(this.parsed.keySet());
-		return modnames;
+		return Collections.unmodifiableSet(this.parsed.keySet());
 	}
 
 	public Set<ModuleName> getProjectedFullModuleNames()
 	{
-		return this.projected.keySet().stream().map(lpn -> lpn.getPrefix())
+		return this.projected.keySet().stream().map(x -> x.getPrefix())
 				.collect(Collectors.toSet());
 	}
 
@@ -311,9 +308,8 @@ public class JobContext
 					.getProtocolDeclChild(fullname.getSimpleName());
 			Map<Role, EGraph> egraphs = 
 					getEGraphsForSGraphBuilding(fullname, gpd, true);
-			boolean explicit = 
-					gpd.modifiers.contains(ProtocolMod.EXPLICIT);
-			//graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
+			boolean explicit = gpd.isExplicit();
+					//graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
 			graph = this.job.buildSGraph(fullname, egraphs, explicit);
 			addSGraph(fullname, graph);
 		}
@@ -346,7 +342,7 @@ public class JobContext
 			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
 					.getProtocolDeclChild(fullname.getSimpleName());
 			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, gpd, false);
-			boolean explicit = gpd.modifiers.contains(ProtocolMod.EXPLICIT);
+			boolean explicit = gpd.isExplicit();
 			//graph = SGraph.buildSGraph(this.job, fullname, this.job.createInitialSConfig(job, egraphs, explicit));
 			graph = this.job.buildSGraph(fullname, egraphs, explicit);
 			addUnfairSGraph(fullname, graph);

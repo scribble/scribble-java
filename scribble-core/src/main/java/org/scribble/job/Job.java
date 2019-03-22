@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.del.global.GProtocolDeclDel;
 import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -52,6 +53,7 @@ import org.scribble.visit.context.ProjectedRoleDeclFixer;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.util.RoleCollector;
+import org.scribble.visit.validation.GProtocolValidator;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;
 import org.scribble.visit.wf.NameDisambiguator;
 
@@ -228,6 +230,47 @@ public class Job
 			}
 			proj.checkReachability();
 		}
+
+		GProtocolValidator checker = new GProtocolValidator(this);
+		//runVisitorPassOnAllModules(GProtocolValidator.class);
+		for (Module mod : this.jctxt.getParsed().values())
+		{
+			// FIXME: refactor validation into lang.GProtocol
+			for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
+			{
+				if (gpd.isAux())
+				{
+					return;
+				}
+
+				GProtocolName fullname = gpd.getFullMemberName(mod);
+
+				System.out.println("\nvalidating " + fullname + ":");
+
+				if (checker.job.config.spin)
+				{
+					if (checker.job.config.fair)
+					{
+						throw new RuntimeException(
+								"[TODO]: -spin currently does not support fair ouput choices.");
+					}
+					GProtocolDeclDel.validateBySpin(checker.job, fullname);
+				}
+				else
+				{
+					GProtocolDeclDel.validateByScribble(checker.job, fullname, true);
+					
+					System.out.println("ppp1: " + checker.job.config.fair);
+					
+					if (!checker.job.config.fair)
+					{
+						checker.job.debugPrintln(
+								"(" + fullname + ") Validating with \"unfair\" output choices.. ");
+						GProtocolDeclDel.validateByScribble(checker.job, fullname, false);  // TODO: only need to check progress, not full validation
+					}
+				}
+			}
+		}
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
@@ -349,9 +392,6 @@ public class Job
 			for (ModuleName modname : modnames)
 			{
 				AstVisitor nv = cons.newInstance(this);
-				
-				System.out.println("jjj1: " + modname);
-				
 				runVisitorOnModule(modname, nv);
 			}
 		}

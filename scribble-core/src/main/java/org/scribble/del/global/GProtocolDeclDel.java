@@ -197,6 +197,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		else
 		{
 			validateByScribble(checker.job, fullname, true);
+			
+			System.out.println("ppp1: " + checker.job.config.fair);
+			
 			if (!checker.job.config.fair)
 			{
 				checker.job.debugPrintln(
@@ -206,7 +209,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		}
 	}
 
-	private static void validateByScribble(Job job, GProtocolName fullname,
+	public static void validateByScribble(Job job, GProtocolName fullname,
 			boolean fair) throws ScribbleException
 	{
 		JobContext jc = job.getJobContext();
@@ -217,7 +220,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		job.config.sf.newSModel(graph).validate(job);
 	}
 		
-	private static void validateBySpin(Job job, GProtocolName fullname)
+	public static void validateBySpin(Job job, GProtocolName fullname)
 			throws ScribbleException
 	{
 		JobContext jc = job.getJobContext();

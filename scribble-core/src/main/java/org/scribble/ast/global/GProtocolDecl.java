@@ -27,7 +27,6 @@ import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
 
 public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
@@ -84,10 +83,13 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	}
 
 	@Override
-	public GProtocolName getFullMemberName(Module mod)
+	public GProtocolName getFullMemberName(Module mod)  // TODO: remove mod from meth sig
 	{
-		ModuleName fullmodname = mod.getFullModuleName();
-		return new GProtocolName(fullmodname, getHeaderChild().getDeclName());
+		/*ModuleName fullmodname = mod.getFullModuleName();
+		return new GProtocolName(fullmodname, getHeaderChild().getDeclName());*/
+		Module m = (Module) getParent();
+		return new GProtocolName(m.getFullModuleName(),
+				getHeaderChild().getDeclName());
 	}
 
 	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
