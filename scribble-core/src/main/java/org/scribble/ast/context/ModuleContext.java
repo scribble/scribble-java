@@ -248,8 +248,6 @@ public class ModuleContext
 	public <K extends ProtocolKind> boolean isVisibleProtocolDeclName(
 			ProtocolName<K> visname)
 	{
-		System.out.println("mc1: " + this.visible.globals.keySet() + " ,, " + visname);
-		
 		return this.visible.isVisibleProtocolDeclName(visname);
 	}
 
