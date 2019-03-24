@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.Protocol;
+import org.scribble.lang.ProtocolMod;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;

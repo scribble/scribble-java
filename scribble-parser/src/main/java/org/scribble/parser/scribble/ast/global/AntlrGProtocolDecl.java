@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
+import org.scribble.ast.AuxMod;
+import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
@@ -50,8 +52,8 @@ public class AntlrGProtocolDecl
 			{
 				switch (mod.getText())
 				{
-					case "aux":      modifiers.add(ProtocolMod.AUX); break;
-					case "explicit": modifiers.add(ProtocolMod.EXPLICIT); break;
+					case "aux":      modifiers.add(AuxMod.AUX); break;
+					case "explicit": modifiers.add(ExplicitMod.EXPLICIT); break;
 					default: throw new RuntimeException("TODO: " + mod);
 				}
 			}

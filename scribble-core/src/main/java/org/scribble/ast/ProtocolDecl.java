@@ -49,14 +49,16 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	
 	public abstract ProtocolDecl<K> dupNode();
 
-	public boolean isExplicit()
-	{
-		return getModifierListChild().getModList().contains(ProtocolMod.EXPLICIT);
-	}
-
 	public boolean isAux()
 	{
-		return getModifierListChild().getModList().contains(ProtocolMod.AUX);
+		//return getModifierListChild().getModList().contains(ProtocolMod.AUX);
+		return getModifierListChild().hasAux();
+	}
+
+	public boolean isExplicit()
+	{
+		//return getModifierListChild().getModList().contains(ProtocolMod.EXPLICIT);
+		return getModifierListChild().hasExplicit();
 	}
 	
 	public ProtocolModList getModifierListChild()

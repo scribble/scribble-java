@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.ast.NonRoleParamDeclList;
-import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.DependencyMap;
@@ -42,6 +41,7 @@ import org.scribble.del.ProtocolDeclDel;
 import org.scribble.job.Job;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.ProtocolMod;
 import org.scribble.lang.global.GProtocol;
 import org.scribble.lang.global.GSeq;
 import org.scribble.lang.global.GTypeTranslator;
@@ -75,7 +75,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 	{
 		GProtocolDecl source = (GProtocolDecl) n;
 		Module m = (Module) n.getParent();
-		List<ProtocolMod> mods = source.getModifierListChild().getModList();
+		List<ProtocolMod> mods = source.getModifierListChild().getModList().stream()
+				.map(x -> ProtocolMod.fromAst(x)).collect(Collectors.toList());
 		GProtocolName fullname = new GProtocolName(m.getFullModuleName(),
 				source.getHeaderChild().getDeclName());
 		List<Role> roles = source.getRoles();

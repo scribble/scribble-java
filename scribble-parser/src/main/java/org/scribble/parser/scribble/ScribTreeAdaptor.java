@@ -2,7 +2,9 @@ package org.scribble.parser.scribble;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
+import org.scribble.ast.AuxMod;
 import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.MessageSigNode;
@@ -106,6 +108,11 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				return new GProtocolDecl(t);
 			case "GLOBALPROTOCOLDECLMODS":
 				return new ProtocolModList(t);
+			case "aux":
+				return new AuxMod(t);
+			case "explicit":
+				return new ExplicitMod(t);
+			
 			case "GLOBALPROTOCOLHEADER": //return this.f.GProtocolHeader(empty, null, null, null);
 				return new GProtocolHeader(t);
 			case "GPROTOCOLNAME":

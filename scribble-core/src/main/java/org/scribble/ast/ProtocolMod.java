@@ -1,19 +1,36 @@
 package org.scribble.ast;
 
-// CHECKME: move to Header?
-public enum ProtocolMod
+import org.antlr.runtime.Token;
+import org.scribble.job.ScribbleException;
+import org.scribble.visit.AstVisitor;
+
+public abstract class ProtocolMod extends ScribNodeBase
 {
-	AUX, 
-	EXPLICIT;
+	// ScribTreeAdaptor#create constructor
+	public ProtocolMod(Token t)
+	{
+		super(t);
+	}
+	
+	// Tree#dupNode constructor
+	protected ProtocolMod(ProtocolMod node)
+	{
+		super(node);
+	}
+	
+	public boolean isAux()
+	{
+		return false;
+	}
+	
+	public boolean isExplicit()
+	{
+		return false;
+	}
 	
 	@Override
-	public String toString()
+	public ProtocolMod visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		switch (this)
-		{
-			case AUX:      return "aux";
-			case EXPLICIT: return "explicit";
-			default:       throw new RuntimeException("Unknown modifier: " + this);
-		}
+		return this;
 	}
 }

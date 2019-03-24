@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
 import org.scribble.visit.AstVisitor;
 
@@ -39,8 +38,7 @@ public class ProtocolModList extends ScribNodeBase
 	@Override
 	public ProtocolModList dupNode()
 	{
-		//return new ProtocolModList(this);  // Doesn't include children?
-		return this;
+		return new ProtocolModList(this);
 	}
 	
 	@Override
@@ -53,21 +51,25 @@ public class ProtocolModList extends ScribNodeBase
 	// Cf., NameNode::getSimpleNameList
 	public List<ProtocolMod> getModList()
 	{
-		return ((List<?>) getChildren()).stream()
+		/*return ((List<?>) getChildren()).stream()
 				.map(x -> parseModifier(((CommonTree) x).getText()))
 				.collect(Collectors.toList());
 					// CHECKME: currently AmbigNameNode(?)
-					// CHECKME: factor out getText?
+					// CHECKME: factor out getText?*/
+		return ((List<?>) getChildren()).stream().map(x -> (ProtocolMod) x)
+				.collect(Collectors.toList());
 	}
 	
-	public boolean isAux()
+	public boolean hasAux()
 	{
-		return getModList().contains(ProtocolMod.AUX);
+		//return getModList().contains(ProtocolMod.AUX);
+		return getModList().stream().anyMatch(x -> x.isAux());
 	}
 	
-	public boolean isExplicit()
+	public boolean hasExplicit()
 	{
-		return getModList().contains(ProtocolMod.EXPLICIT);
+		//return getModList().contains(ProtocolMod.EXPLICIT);
+		return getModList().stream().anyMatch(x -> x.isExplicit());
 	}
 
 	public boolean isEmpty()
@@ -82,7 +84,7 @@ public class ProtocolModList extends ScribNodeBase
 				.collect(Collectors.joining(" "));
 	}
 
-	private ProtocolMod parseModifier(String mod)
+	/*private ProtocolMod parseModifier(String mod)
 	{
 		switch (mod)
 		{
@@ -90,5 +92,5 @@ public class ProtocolModList extends ScribNodeBase
 			case "explicit": return ProtocolMod.EXPLICIT;
 			default: throw new RuntimeException("Unknown modifier: " + mod);
 		}
-	}
+	}*/
 }

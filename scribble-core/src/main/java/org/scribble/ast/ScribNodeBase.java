@@ -98,6 +98,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	// FIXME: rework as ANTLR node (deep) copy (maybe "clone") -- no: ANTLR dupNode is node only copy (actually, dupNode is node "shell" only, doesn't even keep children, let alone copy them)
 	// FIXME TODO: rework children using ANTLR children
 	// N.B. does not copy children nor del
+	// Should call Tree#dupNode constructor (i.e., children not dup'd) -- do not "return this" (unless childress), ends up with children duplicated (because node "dup'd" with children, then children added again)
 	@Override
 	public abstract ScribNodeBase dupNode();
 

@@ -19,7 +19,6 @@ import java.util.Set;
 import org.scribble.ast.Choice;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.job.Job;
@@ -47,8 +46,7 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 			ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		return new WFChoiceEnv(new HashSet<>(pd.getRoles()),
-				!(pd.isGlobal() && ((GProtocolDecl) pd).modifiers
-						.contains(ProtocolMod.EXPLICIT)));
+				!(pd.isGlobal() && pd.isExplicit()));
 				// FIXME: consider locals; also, explicit modifier should be carried over to local projections
 	}
 

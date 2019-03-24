@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.local.LProtocolDecl;
+import org.scribble.lang.ProtocolMod;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.SubprotoSig;
