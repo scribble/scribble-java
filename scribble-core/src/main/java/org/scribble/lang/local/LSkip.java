@@ -9,6 +9,7 @@ import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 // Used only *during* projection -- filtered out by GSeq::projection
@@ -27,13 +28,20 @@ public class LSkip extends STypeBase<Local> implements LType
 	}
 
 	@Override
-	public boolean isSingleCont()
+	public RecVar isSingleCont()
 	{
-		return false;
+		return null;
+		//CHECKME: throw new RuntimeException("Unsupported for LProtocol:\n" + this);
 	}
 
 	@Override
-	public LSkip substitute(Substitutions<Role> subs)
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		throw new RuntimeException("Unsupported for Skip:\n" + this);
+	}
+
+	@Override
+	public LSkip substitute(Substitutions subs)
 	{
 		return this;
 	}

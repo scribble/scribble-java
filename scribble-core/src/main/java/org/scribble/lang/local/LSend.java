@@ -1,5 +1,7 @@
 package org.scribble.lang.local;
 
+import java.util.Set;
+
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.MessageTransfer;
 import org.scribble.lang.STypeInliner;
@@ -11,6 +13,7 @@ import org.scribble.type.MessageSig;
 import org.scribble.type.Payload;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.MessageId;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 public class LSend extends MessageTransfer<Local>
@@ -34,13 +37,19 @@ public class LSend extends MessageTransfer<Local>
 	}
 
 	@Override
-	public boolean isSingleCont()
+	public RecVar isSingleCont()
+	{
+		return null;
+	}
+
+	@Override
+	public boolean isSingleConts(Set<RecVar> rvs)
 	{
 		return false;
 	}
 
 	@Override
-	public LSend substitute(Substitutions<Role> subs)
+	public LSend substitute(Substitutions subs)
 	{
 		return (LSend) super.substitute(subs);
 	}

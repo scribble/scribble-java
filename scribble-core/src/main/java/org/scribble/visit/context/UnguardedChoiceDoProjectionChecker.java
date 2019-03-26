@@ -88,7 +88,7 @@ public class UnguardedChoiceDoProjectionChecker
 								ld.getProtocolNameNode().toName());
 				SubprotoSig sig = new SubprotoSig(fullname,
 						ld.getRoleListChild().getRoles(),
-						ld.getNonRoleListChild().getArguments());
+						ld.getNonRoleListChild().getParamKindArgs());
 				
 				if (sig.equals(getStack().get(0)))  // Cf. SubprotocolVisitor.isRootedCycle
 				{

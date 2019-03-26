@@ -6,7 +6,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.MemberName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
@@ -16,22 +18,25 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	public final List<ProtocolMod> mods;
 	public final N fullname;
 	public final List<Role> roles;  // Ordered role params; pre: size >= 2
-	//public final List<NonRoleParamNode<?>> params;  // TODO
-	public final B def;  // CHECKME: take "? extends Seq<K>" as generic param?
+	public final List<MemberName<? extends NonRoleParamKind>> params;
+			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
+			// CHECKME: make a ParamName? or at least SimpleName?
+	public final B def;
 
 	public Protocol(ProtocolDecl<K> source, List<ProtocolMod> mods, N fullname,
-			List<Role> roles, // List<?> params,
-			B def)
+			List<Role> roles, List<MemberName<? extends NonRoleParamKind>> params, B def)
 	{
 		super(source);
 		this.mods = Collections.unmodifiableList(mods);
 		this.fullname = fullname;
 		this.roles = Collections.unmodifiableList(roles);
+		this.params = Collections.unmodifiableList(params);
 		this.def = def;
 	}
 	
 	public abstract Protocol<K, N, B> reconstruct(ProtocolDecl<K> source,
-			List<ProtocolMod> mods, N fullname, List<Role> roles, B def);
+			List<ProtocolMod> mods, N fullname, List<Role> roles,
+			List<MemberName<? extends NonRoleParamKind>> params, B def);
 	
 	public boolean isAux()
 	{
@@ -57,7 +62,10 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	@Override
 	public String toString()
 	{
-		return "protocol " + this.fullname + "(" + this.roles.stream()
+		return "protocol " + this.fullname
+				+ "<" + this.params.stream()
+					.map(x -> x.toString()).collect(Collectors.joining(", ")) + ">"
+				+ "(" + this.roles.stream()
 					.map(x -> x.toString()).collect(Collectors.joining(", ")) + ")"
 				+ " {\n" + this.def + "\n}";
 	}
@@ -71,6 +79,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 		hash = 31 * hash + this.mods.hashCode();
 		hash = 31 * hash + this.fullname.hashCode();
 		hash = 31 * hash + this.roles.hashCode();
+		hash = 31 * hash + this.params.hashCode();
 		hash = 31 * hash + this.def.hashCode();
 		return hash;
 	}
@@ -89,6 +98,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 		Protocol<?, ?, ?> them = (Protocol<?, ?, ?>) o;
 		return super.equals(this)  // Does canEquals
 				&& this.mods.equals(them.mods) && this.fullname.equals(them.fullname)
-				&& this.roles.equals(them.roles) && this.def.equals(them.def);
+				&& this.roles.equals(them.roles) && this.params.equals(them.params)
+				&& this.def.equals(them.def);
 	}
 }

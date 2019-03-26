@@ -16,7 +16,7 @@ public interface SType<K extends ProtocolKind>
 	// Unsupported for Protocol/Do
 	Set<Role> getRoles();
 
-	SType<K> substitute(Substitutions<Role> role);
+	SType<K> substitute(Substitutions subs);
 	
 	// Top-level call should be on a GProtocol with an empty stack -- XXX
 	// stack is treated mutably

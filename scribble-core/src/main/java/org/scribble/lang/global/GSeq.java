@@ -37,7 +37,7 @@ public class GSeq extends Seq<Global> implements GType
 	}
 
 	@Override
-	public GSeq substitute(Substitutions<Role> subs)
+	public GSeq substitute(Substitutions subs)
 	{
 		return (GSeq) super.substitute(subs);
 	}

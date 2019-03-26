@@ -16,7 +16,7 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.TypeParamNode;
 import org.scribble.type.kind.DataTypeKind;
-import org.scribble.type.name.Name;
+import org.scribble.type.name.DataType;
 import org.scribble.type.name.Role;
 
 public class TypeParamDecl extends NonRoleParamDecl<DataTypeKind>
@@ -52,9 +52,10 @@ public class TypeParamDecl extends NonRoleParamDecl<DataTypeKind>
 	}
 
 	@Override
-	public Name<DataTypeKind> getDeclName()
+	//public Name<DataTypeKind> getDeclName()
+	public DataType getDeclName()
 	{
-		return getNameNodeChild().toName();
+		return (DataType) getNameNodeChild().toName();
 	}
 	
 	@Override

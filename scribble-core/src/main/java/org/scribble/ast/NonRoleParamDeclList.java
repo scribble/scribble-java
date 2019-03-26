@@ -20,7 +20,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.del.ScribDel;
 import org.scribble.type.kind.NonRoleParamKind;
-import org.scribble.type.name.Name;
+import org.scribble.type.name.MemberName;
 import org.scribble.type.name.Role;
 
 // Can contain "mixed" type/sig kinds
@@ -75,7 +75,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 		return af.NonRoleParamDeclList(this.source, getParamDeclChildren());
 	}
 
-	public List<Name<NonRoleParamKind>> getParameters()
+	public List<MemberName<? extends NonRoleParamKind>> getParameters()
 	{
 		return getParamDeclChildren().stream().map(decl -> decl.getDeclName())
 				.collect(Collectors.toList());

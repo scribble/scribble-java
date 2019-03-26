@@ -13,13 +13,18 @@
  */
 package org.scribble.ast;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.Arg;
+import org.scribble.type.MessageSig;
 import org.scribble.type.kind.NonRoleArgKind;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.name.DataType;
+import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.Role;
 
 // Cf. NonRoleParamDeclList
@@ -69,10 +74,38 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 				.collect(Collectors.toList());
 	}
 
+	// Can return a mix of arg kinds
 	public List<Arg<? extends NonRoleArgKind>> getArguments()
 	{
-		return getArgChildren().stream().map(ai -> ai.getValChild().toArg())
+		return getArgChildren().stream()
+				.map(ai -> (Arg<?>) ai.getValChild().toArg())
 				.collect(Collectors.toList());
+	}
+	
+	// Cast all, assuming no Ambig
+	public List<Arg<? extends NonRoleParamKind>> getParamKindArgs()
+	{
+		List<Arg<? extends NonRoleParamKind>> cast = new LinkedList<>();
+		for (Arg<? extends NonRoleArgKind> a : getArguments())
+		{
+			if (a instanceof MessageSig)
+			{
+				cast.add((MessageSig) a);
+			}
+			else if (a instanceof DataType)
+			{
+				cast.add((DataType) a);
+			}
+			else if (a instanceof MessageSigName)
+			{
+				cast.add((MessageSigName) a);
+			}
+			else
+			{
+				throw new RuntimeException("TODO: " + a);
+			}
+		}
+		return cast;
 	}
 
 	@Override

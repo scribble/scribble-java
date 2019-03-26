@@ -32,7 +32,7 @@ public abstract class Seq<K extends ProtocolKind>
 	}
 
 	@Override
-	public Seq<K> substitute(Substitutions<Role> subs)
+	public Seq<K> substitute(Substitutions subs)
 	{
 		List<? extends SType<K>> elems = this.elems.stream()
 				.map(x -> x.substitute(subs)).collect(Collectors.toList());

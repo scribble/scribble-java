@@ -80,7 +80,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		ProtocolName<?> fullname = mcontext
 				.getVisibleProtocolDeclFullName(hdr.getDeclName());
 		List<Role> roleargs = rds.getRoles();
-		List<Arg<? extends NonRoleArgKind>> nonroleargs =
+		List<Arg<? extends NonRoleParamKind>> nonroleargs =
 				pds.getParamDeclChildren().stream().map(param -> paramDeclToArg(param))
 						.collect(Collectors.toList());
 		pushSubprotocolSig(fullname, roleargs, nonroleargs);
@@ -224,8 +224,10 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 				getModuleContext().checkProtocolDeclDependencyFullName(
 						doo.getProtocolNameNode().toName());
 			// namedisamb should already have converted proto to the fullname -- in order for inlining to work
-		pushSubprotocolSig(fullname, doo.getRoleListChild().getRoles(),
-				doo.getNonRoleListChild().getArguments());
+		List<Arg<? extends NonRoleParamKind>> cast = doo.getNonRoleListChild()
+				.getParamKindArgs();
+				// namedisamb should also ensure no ambigs in args
+		pushSubprotocolSig(fullname, doo.getRoleListChild().getRoles(), cast);
 		pushNameMaps(fullname, doo);
 	}
 
@@ -238,7 +240,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	}
 	
 	private void pushSubprotocolSig(ProtocolName<?> fullname, List<Role> roleargs,
-			List<Arg<? extends NonRoleArgKind>> nonroleargs)
+			List<Arg<? extends NonRoleParamKind>> nonroleargs)
 	{
 		SubprotoSig subsig = new SubprotoSig(fullname, roleargs, nonroleargs);
 		this.stack.add(subsig);
@@ -341,7 +343,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 				.iterator();
 		Iterator<NonRoleArgNode> nonroleargnodes = nral.getArgumentNodes()
 				.iterator();
-		for (Name<NonRoleParamKind> param : nrpdl.getParameters())
+		for (Name<? extends NonRoleParamKind> param : nrpdl.getParameters())
 		{
 			Arg<?> arg = nonroleargs.next();
 			NonRoleArgNode argnode;
@@ -360,7 +362,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		return newmap;
 	}
 	
-	private static Arg<? extends NonRoleArgKind> paramDeclToArg(
+	private static Arg<NonRoleParamKind> paramDeclToArg(
 			NonRoleParamDecl<NonRoleParamKind> pd)
 	{
 		Name<NonRoleParamKind> n = pd.getDeclName();
@@ -369,7 +371,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 			throw new RuntimeException("Shouldn't get in here: " + n);
 		}
 		@SuppressWarnings("unchecked")
-		Arg<? extends NonRoleArgKind> tmp = (Arg<? extends NonRoleArgKind>) n;
+		Arg<NonRoleParamKind> tmp = (Arg<NonRoleParamKind>) n;
 		return tmp;
 	}
 }

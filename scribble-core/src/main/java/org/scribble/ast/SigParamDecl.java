@@ -16,7 +16,7 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.type.kind.SigKind;
-import org.scribble.type.name.Name;
+import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.Role;
 
 public class SigParamDecl extends NonRoleParamDecl<SigKind>
@@ -52,9 +52,10 @@ public class SigParamDecl extends NonRoleParamDecl<SigKind>
 	}
 
 	@Override
-	public Name<SigKind> getDeclName()
+	//public MemberName<SigKind> getDeclName()
+	public MessageSigName getDeclName()
 	{
-		return getNameNodeChild().toName();
+		return (MessageSigName) getNameNodeChild().toName();
 	}
 	
 	@Override

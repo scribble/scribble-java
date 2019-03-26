@@ -15,9 +15,9 @@ package org.scribble.del.name.simple;
 
 import org.scribble.del.ScribDelBase;
 
-public class ParamNodeDel extends ScribDelBase
+public class NonRoleParamNodeDel extends ScribDelBase
 {
-	public ParamNodeDel()
+	public NonRoleParamNodeDel()
 	{
 
 	}

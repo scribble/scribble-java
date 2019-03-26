@@ -15,7 +15,7 @@ import org.scribble.type.name.Role;
 public interface GType extends SType<Global>
 {
 	@Override
-	GType substitute(Substitutions<Role> subs);
+	GType substitute(Substitutions subs);
 
 	@Override
 	GType getInlined(STypeInliner i);//, Deque<SubprotoSig> stack);

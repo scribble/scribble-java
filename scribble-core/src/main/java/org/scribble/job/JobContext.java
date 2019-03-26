@@ -191,9 +191,12 @@ public class JobContext
 		this.iprojected.put(fullname, l);
 	}
 	
-	public LProtocol getProjected(LProtocolName fullname)
+	// FIXME TODO: refactor getProjected and getProjection properly
+	//public LProtocol getProjected(LProtocolName fullname)
+	public LProtocol getProjected(GProtocolName fullname, Role self)
 	{
-		return this.iprojected.get(fullname);
+		LProtocolName p = Projector.projectFullProtocolName(fullname, self);
+		return this.iprojected.get(p);
 	}
 	
 	public Map<LProtocolName, LProtocol> getProjections()

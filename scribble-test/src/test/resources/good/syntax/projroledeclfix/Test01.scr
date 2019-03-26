@@ -11,9 +11,10 @@ global protocol Foo(role A, role B, role C)
 	do Bar(A, B, C);
 }
 
-//..HERE CHECKME: aux aux
+//..HERE FIXME: recursion missing for B/C projections -- because continue for outer rec being dropped
+// TODO drop "aux"
 
-aux
+aux 
 global protocol Bar(role D, role E, role F)
 {
 	2() from D to F;

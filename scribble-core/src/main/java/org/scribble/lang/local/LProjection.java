@@ -4,15 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.lang.ProtocolMod;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.Substitutions;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Local;
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
-import org.scribble.type.name.RecVar;
+import org.scribble.type.name.MemberName;
 import org.scribble.type.name.Role;
 
 public class LProjection extends LProtocol
@@ -21,10 +18,10 @@ public class LProjection extends LProtocol
 	public final Role self;
 	
 	public LProjection(List<ProtocolMod> mods, GProtocolName parent, Role self,
-			LProtocolName fullname, List<Role> roles, // List<?> params,  // TODO
-			LSeq body)
+			LProtocolName fullname, List<Role> roles,
+			List<MemberName<? extends NonRoleParamKind>> params, LSeq body)
 	{
-		super(null, mods, fullname, roles, body);
+		super(null, mods, fullname, roles, params, body);
 		this.parent = parent;
 		this.self = self;
 	}
@@ -32,38 +29,40 @@ public class LProjection extends LProtocol
 	@Override
 	public LProjection reconstruct(ProtocolDecl<Local> source,
 			List<ProtocolMod> mods, LProtocolName fullname, List<Role> roles,
-			LSeq body)
+			List<MemberName<? extends NonRoleParamKind>> params, LSeq body)
 	{
-		return new LProjection(mods, this.parent, this.self, fullname, roles, body);
+		return new LProjection(mods, this.parent, this.self, fullname, roles,
+				params, body);
 	}
 
-	@Override
-	public LType substitute(Substitutions<Role> subs)
+	/*@Override
+	public LType substitute(Substitutions subs)
 	{
-		List<Role> roles = this.roles.stream().map(x -> subs.apply(x))
+		*List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
 				.collect(Collectors.toList());
 		return reconstruct(getSource(), this.mods, this.fullname, roles,
 				this.def.substitute(subs));
-	}
+	}*/
 	
-	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
+	/*// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
 	public LRecursion getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		SubprotoSig sig = i.peek();
-		Substitutions<Role> subs = new Substitutions<>(this.roles, sig.roles);  // FIXME: args
+		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
+				sig.args);
 		LSeq body = this.def.substitute(subs).getInlined(i);//, stack);
 		LProtocolDecl source = getSource();  // CHECKME: or empty source?
 		RecVar rv = i.makeRecVar(sig);
 		return new LRecursion(source, rv, body);
-	}
+	}*/
 	
-	@Override
+	/*@Override
 	public LProtocolDecl getSource()
 	{
 		return (LProtocolDecl) super.getSource();
-	}
+	}*/
 	
 	@Override
 	public String toString()

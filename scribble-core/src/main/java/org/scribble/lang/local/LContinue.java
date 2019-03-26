@@ -15,7 +15,6 @@ import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
-import org.scribble.type.name.Role;
 
 public class LContinue extends Continue<Local> implements LType
 {
@@ -34,13 +33,19 @@ public class LContinue extends Continue<Local> implements LType
 	}
 	
 	@Override
-	public boolean isSingleCont()
+	public RecVar isSingleCont()
 	{
-		return true;
+		return this.recvar;
 	}
 
 	@Override
-	public LContinue substitute(Substitutions<Role> subs)
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		return rvs.contains(this.recvar);
+	}
+
+	@Override
+	public LContinue substitute(Substitutions subs)
 	{
 		return (LContinue) super.substitute(subs);
 	}

@@ -110,7 +110,7 @@ import org.scribble.del.local.LWrapServerDel;
 import org.scribble.del.name.qualified.DataTypeNodeDel;
 import org.scribble.del.name.qualified.MessageSigNameNodeDel;
 import org.scribble.del.name.simple.AmbigNameNodeDel;
-import org.scribble.del.name.simple.ParamNodeDel;
+import org.scribble.del.name.simple.NonRoleParamNodeDel;
 import org.scribble.del.name.simple.RecVarNodeDel;
 import org.scribble.del.name.simple.RoleNodeDel;
 import org.scribble.type.kind.DataTypeKind;
@@ -559,7 +559,7 @@ public class AstFactoryImpl implements AstFactory
 		{
 			pn = (NonRoleParamNode<K>) new TypeParamNode(source.getToken());
 		}
-		pn = del(pn, new ParamNodeDel());
+		pn = del(pn, new NonRoleParamNodeDel());
 		return pn;
 	}
 

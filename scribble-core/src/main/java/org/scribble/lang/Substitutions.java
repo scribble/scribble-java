@@ -5,25 +5,41 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.scribble.type.name.Name;
+import org.scribble.type.Arg;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.name.MemberName;
+import org.scribble.type.name.Role;
 
 // CHECKME: move to util?
-public class Substitutions<N extends Name<?>>  // CHECKME: too restricting?
+public class Substitutions
 {
 	// Old name -> new name
-	private final Map<N, N> subs = new HashMap<>();
+	private final Map<Role, Role> rsubs = new HashMap<>();
+	private final Map<MemberName<? extends NonRoleParamKind>, Arg<? extends NonRoleParamKind>>
+			asubs = new HashMap<>();
+			// Keys are actually simple names (params)
+			// args are MessageSigName or DataType (but not MessageSig) -- N.B. substitution may replace sig name with a sig
+			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
+			// Better (CHECKME: necessary?) to separate roles and args -- but MessageSigName and DataType need to be distinct (so can group up, cf. NonRoleArgList)
 
-	public Substitutions(List<N> old, List<N> neu)
+	public Substitutions(List<Role> rold, List<Role> rnew,
+			List<MemberName<? extends NonRoleParamKind>> aold,
+			List<Arg<? extends NonRoleParamKind>> anew)
 	{
-		if (old.size() != neu.size())
+		if (rold.size() != rnew.size())
 		{
-			throw new RuntimeException("Unqeual sizes: " + old + " ; " + neu);
+			throw new RuntimeException(
+					"Role lists don't match: " + rold + " ; " + rnew);
 		}
-		Iterator<N> i = neu.iterator();
-		for (N n : old)
+		if (aold.size() != anew.size())
 		{
-			this.subs.put(n, i.next());
+			throw new RuntimeException(
+					"Arg lists don't match: " + aold + " ; " + anew);
 		}
+		Iterator<Role> i = rnew.iterator();
+		rold.forEach(x -> this.rsubs.put(x, i.next()));
+		Iterator<Arg<? extends NonRoleParamKind>> j = anew.iterator();
+		aold.forEach(x -> this.asubs.put(x, j.next()));
 	}
 	
 	/*public void put(N old, N neu)
@@ -31,22 +47,36 @@ public class Substitutions<N extends Name<?>>  // CHECKME: too restricting?
 		this.subs.put(old, neu);
 	}*/
 	
-	public N apply(N old)
+	public Role subsRole(Role old)
 	{
-		return this.subs.get(old);
+		return this.rsubs.get(old);
+	}
+	
+	public //<K extends NonRoleParamKind>
+			Arg<? extends NonRoleParamKind> subsArg(MemberName<?> old)  
+			// ? param more convenient for accepting DataType/MessageSigName params
+	{
+		return this.asubs.get(old);
+	}
+	
+	public boolean hasArg(MemberName<?> old)
+			// ? param more convenient for accepting DataType/MessageSigName params
+	{
+		return this.asubs.containsKey(old);
 	}
 
 	@Override
 	public String toString()
 	{
-		return this.subs.toString();
+		return this.rsubs + "; " + this.asubs;
 	}
 
 	@Override
 	public int hashCode()
 	{
 		int hash = 1889;
-		hash = 31 * hash + this.subs.hashCode();
+		hash = 31 * hash + this.rsubs.hashCode();
+		hash = 31 * hash + this.asubs.hashCode();
 		return hash;
 	}
 	
@@ -61,6 +91,7 @@ public class Substitutions<N extends Name<?>>  // CHECKME: too restricting?
 		{
 			return false;
 		}
-		return this.subs.equals(((Substitutions<?>) o).subs);
+		Substitutions them = (Substitutions) o;
+		return this.rsubs.equals(them.rsubs) && this.asubs.equals(them.asubs);
 	}
 }

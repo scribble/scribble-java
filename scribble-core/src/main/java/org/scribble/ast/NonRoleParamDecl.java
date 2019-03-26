@@ -17,7 +17,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.type.kind.NonRoleParamKind;
-import org.scribble.type.name.Name;
+import org.scribble.type.name.MemberName;
 
 // CHECKME: can drop generic parameter and kind?
 public abstract class NonRoleParamDecl<K extends NonRoleParamKind>
@@ -72,10 +72,10 @@ public abstract class NonRoleParamDecl<K extends NonRoleParamKind>
 	}*/
 
 	@Override
-	public Name<K> getDeclName()
-	{
+	public abstract MemberName<K> getDeclName();  // DataType/MessageSigName are MemberNames
+	/*{
 		return getNameNodeChild().toName();
-	}
+	}*/
 	
 	/*@Override
 	public String getKeyword()

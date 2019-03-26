@@ -2,7 +2,7 @@ package org.scribble.lang.local;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
@@ -18,7 +18,9 @@ import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Local;
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.MemberName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
@@ -26,33 +28,42 @@ public class LProtocol extends
 		Protocol<Local, LProtocolName, LSeq> implements LType
 {
 	public LProtocol(ProtocolDecl<Local> source, List<ProtocolMod> mods,
-			LProtocolName fullname, List<Role> roles, // List<?> params,  // TODO
-			LSeq def)
+			LProtocolName fullname, List<Role> roles,
+			List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
-		super(source, mods, fullname, roles, def);
+		super(source, mods, fullname, roles, params, def);
 	}
 
 	@Override
 	public LProtocol reconstruct(ProtocolDecl<Local> source,
 			List<ProtocolMod> mods, LProtocolName fullname, List<Role> roles,
-			LSeq def)
+			List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
-		return new LProtocol(source, mods, fullname, roles, def);
+		return new LProtocol(source, mods, fullname, roles, params, def);
 	}
 	
 	@Override
-	public boolean isSingleCont()
+	public RecVar isSingleCont()
 	{
 		throw new RuntimeException("Unsupported for LProtocol:\n" + this);
 	}
 
 	@Override
-	public LType substitute(Substitutions<Role> subs)
+	public boolean isSingleConts(Set<RecVar> rvs)
 	{
-		List<Role> roles = this.roles.stream().map(x -> subs.apply(x))
+		throw new RuntimeException("Unsupported for LProtocol:\n" + this);
+	}
+
+	@Override
+	public LType substitute(Substitutions subs)
+	{
+		/*List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
 				.collect(Collectors.toList());
-		return reconstruct(getSource(), this.mods, this.fullname, roles,
-				this.def.substitute(subs));
+		List<Arg<NonRoleParamKind>> params = this.params.stream().map(x -> ...)
+				.collect(Collectors.toList());
+		return reconstruct(getSource(), this.mods, this.fullname, roles, params,
+				this.def.substitute(subs));*/
+		throw new RuntimeException("Unsupported for LProtocol:\n" + this);
 	}
 	
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
@@ -61,7 +72,8 @@ public class LProtocol extends
 	public LRecursion getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		SubprotoSig sig = i.peek();
-		Substitutions<Role> subs = new Substitutions<>(this.roles, sig.roles);  // FIXME: args
+		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
+				sig.args);
 		LSeq body = this.def.substitute(subs).getInlined(i);//, stack);
 		LProtocolDecl source = getSource();  // CHECKME: or empty source?
 		RecVar rv = i.makeRecVar(sig);
@@ -72,7 +84,8 @@ public class LProtocol extends
 	public LProtocol unfoldAllOnce(STypeUnfolder<Local> u)
 	{
 		LSeq unf = (LSeq) this.def.unfoldAllOnce(u);
-		return reconstruct(getSource(), this.mods, this.fullname, this.roles, unf);
+		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
+				this.params, unf);
 	}
 
 	public EGraph toEGraph(Job job)

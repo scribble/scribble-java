@@ -50,7 +50,9 @@ import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.global.SGraph;
 import org.scribble.type.kind.Global;
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
@@ -80,8 +82,10 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		GProtocolName fullname = new GProtocolName(m.getFullModuleName(),
 				source.getHeaderChild().getDeclName());
 		List<Role> roles = source.getRoles();
+		List<MemberName<? extends NonRoleParamKind>> params = source.getHeaderChild()
+				.getParamDeclListChild().getParameters();  // CHECKME: make more uniform with source::getRoles ?
 		GSeq body = (GSeq) source.getDefChild().getBlockChild().visitWith(t);
-		return new GProtocol(source, mods, fullname, roles, body);
+		return new GProtocol(source, mods, fullname, roles, params, body);
 	}
 	
 	@Override

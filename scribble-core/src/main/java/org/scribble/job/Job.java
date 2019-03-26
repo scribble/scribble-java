@@ -16,6 +16,9 @@ package org.scribble.job;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -25,7 +28,6 @@ import org.scribble.ast.Module;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.del.global.GProtocolDeclDel;
-import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.global.GProtocol;
@@ -36,11 +38,16 @@ import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil;
 import org.scribble.model.global.SGraph;
 import org.scribble.model.global.SGraphBuilderUtil;
+import org.scribble.type.Arg;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.Local;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
@@ -90,10 +97,11 @@ public class Job
 	public SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs,
 			boolean explicit) throws ScribbleException
 	{
+		debugPrintln("(" + fullname + ") Building global model using:");
 		for (Role r : egraphs.keySet())
 		{
 			// FIXME: refactor
-			debugPrintln("(" + fullname + ") Building global model using EFSM for "
+			debugPrintln("-- EFSM for "
 					+ r + ":\n" + egraphs.get(r).init.toDot());
 		}
 		//return SGraph.buildSGraph(this, fullname, createInitialSConfig(this, egraphs, explicit));
@@ -133,8 +141,25 @@ public class Job
 				
 		for (GProtocol g : this.jctxt.getIntermediates())
 		{
+			List<Arg<? extends NonRoleParamKind>> params = new LinkedList<>();
+			// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
+			for (MemberName<? extends NonRoleParamKind> n : g.params)
+			{
+				if (n instanceof DataType)
+				{
+					params.add((DataType) n);
+				}
+				else if (n instanceof MessageSigName)
+				{
+					params.add((MessageSigName) n);
+				}
+				else
+				{
+					throw new RuntimeException("TODO: " + n);
+				}
+			}
 			SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, 
-					Collections.emptyList());  // FIXME
+					params);  // FIXME
 			//Deque<SubprotoSig> stack = new LinkedList<>();
 			STypeInliner i = new STypeInliner(this);
 			i.pushSig(sig);  // TODO: factor into constructor
@@ -315,14 +340,22 @@ public class Job
 	public Map<LProtocolName, Module> getProjections(GProtocolName fullname,
 			Role role) throws ScribbleException
 	{
-		Module root = this.jctxt.getProjection(fullname, role);
-		Map<LProtocolName, Set<Role>> dependencies = ((LProtocolDeclDel) root
+			System.out.println("cccc2: ");
+			//Module root = this.jctxt.getProjection(fullname, role);
+			LProtocol proj = this.jctxt.getProjected(fullname, role);
+			System.out.println("cccc3: ");
+		
+		// FIXME: dependencies, -project -- FIXME: need to create Module (with dependency imports)
+		Map<LProtocolName, Set<Role>> dependencies = 
+				/*((LProtocolDeclDel) root
 				.getLProtoDeclChildren().get(0).del()).getProtocolDeclContext()
-						.getDependencyMap().getDependencies().get(role);
+						.getDependencyMap().getDependencies().get(role);*/
+				new HashMap<>();
+		System.out.println("cccc4: ");
+
 		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
 		return dependencies.keySet().stream().collect(
-				Collectors.toMap(lpn -> lpn,
-						lpn -> this.jctxt.getModule(lpn.getPrefix())));
+				Collectors.toMap(x -> x, x -> this.jctxt.getModule(x.getPrefix())));
 	}
 
 	/*public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException

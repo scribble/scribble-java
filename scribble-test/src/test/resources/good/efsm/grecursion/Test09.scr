@@ -1,3 +1,6 @@
+//$ bin/scribblec.sh scribble-test/src/test/resources/good/efsm/grecursion/Test09.scr -project Proto1 C
+
+
 module good.efsm.grecursion.Test09;
 
 

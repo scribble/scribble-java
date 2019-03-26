@@ -31,7 +31,7 @@ public class GContinue extends Continue<Global> implements GType
 	}
 
 	@Override
-	public GContinue substitute(Substitutions<Role> subs)
+	public GContinue substitute(Substitutions subs)
 	{
 		return (GContinue) super.substitute(subs);
 	}

@@ -48,19 +48,19 @@ public abstract class Do<K extends ProtocolKind>
 		this.proto = null;
 	}
 	
-	// CHECKME: maybe wrap up role args and non-role args within the same container?
-	public RoleArgList getRoleListChild()
-	{
-		return (RoleArgList) getChild(2);
-	}
+	// getChild(0)
+	public abstract ProtocolNameNode<K> getProtocolNameNode();
 
 	public NonRoleArgList getNonRoleListChild()
 	{
 		return (NonRoleArgList) getChild(1);
 	}
 	
-	// getChild(0)
-	public abstract ProtocolNameNode<K> getProtocolNameNode();
+	// CHECKME: maybe wrap up role args and non-role args within the same container?
+	public RoleArgList getRoleListChild()
+	{
+		return (RoleArgList) getChild(2);
+	}
 	
 	public abstract Do<K> dupNode();
 

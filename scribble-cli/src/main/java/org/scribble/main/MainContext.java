@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.DelDecoratorImpl;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
@@ -163,7 +162,6 @@ public class MainContext
 				// TODO CHECKME: main modname comes from the inlined moddecl -- check for issues if this clashes with an existing file system resource
 		loadAllModules(p);  // Populates this.parsed
 
-		
 		this.config = new JobConfig(debug, main, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, spin, this.af, this.ef, this.sf);
 		
 		Map<ModuleName, Module> parsed = getParsedModules();

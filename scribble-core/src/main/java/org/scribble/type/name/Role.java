@@ -16,7 +16,7 @@ package org.scribble.type.name;
 import org.scribble.type.kind.RoleKind;
 
 
-public class Role extends AbstractName<RoleKind>
+public class Role extends AbstractName<RoleKind>  // CHECKME: type.name package has no SimpleName
 {
 	public static final Role EMPTY_ROLE = new Role();
 	public static final Role SELF = new Role("self");  // TODO Factor out constant

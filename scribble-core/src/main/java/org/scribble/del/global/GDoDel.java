@@ -29,7 +29,9 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.global.GTypeTranslator;
+import org.scribble.type.Arg;
 import org.scribble.type.SubprotoSig;
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.ProtocolName;
@@ -58,7 +60,9 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		GProtocolName fullname = (GProtocolName) modc
 				.getVisibleProtocolDeclFullName(proto);
 		List<Role> roles = source.getRoleListChild().getRoles();
-		return new org.scribble.lang.global.GDo(source, fullname, roles);
+		List<Arg<? extends NonRoleParamKind>> params = source.getNonRoleListChild()
+				.getParamKindArgs();		
+		return new org.scribble.lang.global.GDo(source, fullname, roles, params);
 	}
 
 	// Part of context building

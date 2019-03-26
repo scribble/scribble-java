@@ -1,5 +1,6 @@
 package org.scribble.lang.global;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 	
 	@Override
-	public GRecursion substitute(Substitutions<Role> subs)
+	public GRecursion substitute(Substitutions subs)
 	{
 		return reconstruct(getSource(), this.recvar, this.body.substitute(subs));
 	}
@@ -65,7 +66,20 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	public LType project(Role self)
 	{
 		LSeq body = this.body.project(self);
-		if (body.isEmpty() || body.isSingleCont())  // recvar doesn't matter for isSingleCont
+		if (body.isEmpty())
+		{
+			return LSkip.SKIP;
+		}
+		/*RecVar rv = body.isSingleCont();  // CHECKME: should do more "compressing" of "single continue" (subset) choice cases?   or should not do "single continue" checking for choice at all?
+		if (rv != null)
+		{
+			return this.recvar.equals(rv) 
+					? LSkip.SKIP 
+					: new LContinue(null, rv);  // CHECKME: source
+		}*/
+		Set<RecVar> rvs = new HashSet<>();
+		rvs.add(this.recvar);
+		if (body.isSingleConts(rvs))
 		{
 			return LSkip.SKIP;
 		}

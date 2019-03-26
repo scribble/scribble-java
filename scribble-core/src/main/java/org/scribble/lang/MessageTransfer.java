@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import org.scribble.type.Message;
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.MemberName;
 import org.scribble.type.name.Role;
 
 public abstract class MessageTransfer<K extends ProtocolKind>
@@ -36,10 +37,11 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 	}
 	
 	@Override
-	public MessageTransfer<K> substitute(Substitutions<Role> subs)
+	public MessageTransfer<K> substitute(Substitutions subs)
 	{
-		return reconstruct(getSource(), subs.apply(this.src), this.msg,
-				subs.apply(this.dst));
+		//..HERE subs msg
+		return reconstruct(getSource(), subs.subsRole(this.src), this.msg,
+				subs.subsRole(this.dst));
 	}
 
 	@Override

@@ -15,7 +15,9 @@ package org.scribble.type;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
@@ -25,12 +27,13 @@ public class SubprotoSig
 	public final ProtocolName<?> fullname;
 	// public Scope scope;
 	public final List<Role> roles;  // i.e., roles (and args) are ordered
-	public final List<Arg<?>> args;
+	public final List<Arg<? extends NonRoleParamKind>> args;
+			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
 
 	// public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role>
 	// roles, List<Argument<? extends Kind>> args)
 	public SubprotoSig(ProtocolName<?> fullname,
-			List<Role> roles, List<Arg<?>> args)
+			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		this.fullname = fullname;
 		// this.scope = scope;
@@ -61,18 +64,22 @@ public class SubprotoSig
 			return false;
 		}
 		SubprotoSig subsig = (SubprotoSig) o;
-		return this.fullname.equals(subsig.fullname) // &&
-																									// this.scope.equals(subsig.scope)
+		return this.fullname.equals(subsig.fullname) // && this.scope.equals(subsig.scope)
 				&& this.roles.equals(subsig.roles) && this.args.equals(subsig.args);
 	}
 
 	@Override
 	public String toString()
 	{
-		String roles = this.roles.toString();
-		String args = this.args.toString();
 		return // this.scope + ":" +
-				this.fullname + "<" + args.substring(1, args.length() - 1) + ">("
-						+ roles.substring(1, roles.length() - 1) + ")";
+				this.fullname
+				+ "<"
+				+ this.args.stream().map(x -> x.toString())
+						.collect(Collectors.joining(", "))
+				+ ">"
+				+ "("
+				+ this.roles.stream().map(x -> x.toString())
+						.collect(Collectors.joining(", "))
+				+ ")";
 	}
 }

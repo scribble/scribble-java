@@ -1,6 +1,7 @@
 package org.scribble.lang.global;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,8 +20,10 @@ import org.scribble.lang.local.LProjection;
 import org.scribble.lang.local.LSeq;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.MemberName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.Projector;
@@ -29,27 +32,31 @@ public class GProtocol extends
 		Protocol<Global, GProtocolName, GSeq> implements GType
 {
 	public GProtocol(ProtocolDecl<Global> source, List<ProtocolMod> mods,
-			GProtocolName fullname, List<Role> roles, // List<?> params,  // TODO
-			GSeq def)
+			GProtocolName fullname, List<Role> roles,
+			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
 	{
-		super(source, mods, fullname, roles, def);
+		super(source, mods, fullname, roles, params, def);
 	}
 
 	@Override
 	public GProtocol reconstruct(ProtocolDecl<Global> source,
 			List<ProtocolMod> mods, GProtocolName fullname, List<Role> roles,
-			GSeq def)
+			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
 	{
-		return new GProtocol(source, mods, fullname, roles, def);
+		return new GProtocol(source, mods, fullname, roles, params, def);
 	}
 
 	@Override
-	public GType substitute(Substitutions<Role> subs)
+	public GType substitute(Substitutions subs)
 	{
-		List<Role> roles = this.roles.stream().map(x -> subs.apply(x))
+		// CHECKME: needed?
+		/*List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
+				.collect(Collectors.toList());
+		List<MemberName<NonRoleArgKind>> params = this.params.stream().map(x -> ...)
 				.collect(Collectors.toList());
 		return reconstruct(getSource(), this.mods, this.fullname, roles,
-				this.def.substitute(subs));
+				this.def.substitute(subs));*/
+		throw new RuntimeException("Unsupported for Protocol: " + this);
 	}
 	
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
@@ -58,33 +65,39 @@ public class GProtocol extends
 	public GProtocol getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		SubprotoSig sig = i.peek();
-		Substitutions<Role> subs = new Substitutions<>(this.roles, sig.roles);  // FIXME: args
+		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
+				sig.args);
 		GSeq body = this.def.substitute(subs).getInlined(i);//, stack);
 		RecVar rv = i.makeRecVar(sig);
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		GProtocolDecl source = getSource();
 		GSeq def = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));
-		return new GProtocol(source, this.mods, this.fullname, this.roles, def);
+		return new GProtocol(source, this.mods, this.fullname, this.roles,
+				this.params, def);
 	}
 	
 	@Override
 	public GProtocol unfoldAllOnce(STypeUnfolder<Global> u)
 	{
 		GSeq unf = (GSeq) this.def.unfoldAllOnce(u);
-		return reconstruct(getSource(), this.mods, this.fullname, this.roles, unf);
+		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
+				this.params, unf);
 	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
 	@Override
 	public LProjection project(Role self)
 	{
-		LProtocolName fullname = Projector.projectFullProtocolName(this.fullname, self);
+		LProtocolName fullname = Projector.projectFullProtocolName(this.fullname,
+				self);
 		LSeq body = (LSeq) this.def.project(self);
 		Set<Role> tmp = body.getRoles();
 		List<Role> roles = this.roles.stream()
 				.map(x -> x.equals(self) ? Role.SELF : x).filter(x -> tmp.contains(x))
 				.collect(Collectors.toList());
-		return new LProjection(this.mods, this.fullname, self, fullname, roles,
+		List<MemberName<? extends NonRoleParamKind>> params =
+				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
+		return new LProjection(this.mods, this.fullname, self, fullname, roles, params,
 				body);
 	}
 

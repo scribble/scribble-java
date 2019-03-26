@@ -38,7 +38,7 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	}
 
 	@Override
-	public GMessageTransfer substitute(Substitutions<Role> subs)
+	public GMessageTransfer substitute(Substitutions subs)
 	{
 		return (GMessageTransfer) super.substitute(subs);
 	}

@@ -31,7 +31,8 @@ public abstract class Continue<K extends ProtocolKind>
 	}
 
 	@Override
-	public Continue<K> substitute(Substitutions<Role> subs)
+	public Continue<K> substitute(Substitutions subs)
+
 	{
 		return reconstruct(getSource(), this.recvar);
 	}

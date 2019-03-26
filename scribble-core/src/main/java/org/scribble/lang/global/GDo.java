@@ -1,6 +1,5 @@
 package org.scribble.lang.global;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,8 +9,10 @@ import org.scribble.lang.Do;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.LType;
+import org.scribble.type.Arg;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -19,30 +20,30 @@ import org.scribble.type.name.Role;
 public class GDo extends Do<Global, GProtocolName> implements GType
 {
 	public GDo(org.scribble.ast.Do<Global> source, GProtocolName proto,
-			List<Role> roles)
+			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
-		super(source, proto, roles);
+		super(source, proto, roles, args);
 	}
 
 	@Override
 	public GDo reconstruct(org.scribble.ast.Do<Global> source,
-			GProtocolName proto, List<Role> roles)
+			GProtocolName proto, List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
-		return new GDo(source, proto, roles);
+		return new GDo(source, proto, roles, args);
 	}
 
 	@Override
-	public GDo substitute(Substitutions<Role> subs)
+	public GDo substitute(Substitutions subs)
 	{
 		return (GDo) super.substitute(subs);
 	}
 
+	// CHECKME: factor up to base?  (though currently there is no LDo)
 	@Override
 	public GType getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		GProtocolName fullname = this.proto;
-		SubprotoSig sig = new SubprotoSig(fullname, this.roles, 
-				Collections.emptyList());  // FIXME
+		SubprotoSig sig = new SubprotoSig(fullname, this.roles, this.args);
 		RecVar rv = i.makeRecVar(sig);
 		if (i.hasSig(sig))
 		{
@@ -50,8 +51,8 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 		}
 		i.pushSig(sig);
 		GProtocol g = i.job.getJobContext().getIntermediate(fullname);
-		Substitutions<Role> subs = 
-				new Substitutions<>(g.roles, i.peek().roles);  // FIXME: args
+		Substitutions subs = 
+				new Substitutions(g.roles, this.roles, g.params, this.args);
 		GSeq inlined = g.def.substitute(subs).getInlined(i);//, stack);  
 				// i.e. returning a GSeq -- rely on parent GSeq to inline
 		i.popSig();

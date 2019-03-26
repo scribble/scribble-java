@@ -157,7 +157,7 @@ public class CommandLine
 		{
 			fail = x;
 		}
-
+		
 		// Attempt certain "output tasks" even if above failed, in case can still do some useful output (hacky)
 		try
 		{
@@ -296,7 +296,7 @@ public class CommandLine
 			Map<LProtocolName, Module> projections = job.getProjections(fullname,
 					role);
 			System.out.println("\n" + projections.values().stream()
-					.map((p) -> p.toString()).collect(Collectors.joining("\n\n")));
+					.map(p -> p.toString()).collect(Collectors.joining("\n\n")));
 		}
 	}
 

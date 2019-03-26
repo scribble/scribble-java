@@ -12,7 +12,6 @@ import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
-import org.scribble.type.name.Role;
 
 public class LRecursion extends Recursion<Local, LSeq> implements LType
 {
@@ -31,13 +30,21 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 	}
 
 	@Override
-	public boolean isSingleCont()
+	public RecVar isSingleCont()
 	{
-		return false;
+		return null;
+	}
+
+	@Override
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		Set<RecVar> tmp = new HashSet<>(rvs);
+		tmp.add(this.recvar);
+		return this.body.isSingleConts(tmp);
 	}
 	
 	@Override
-	public LRecursion substitute(Substitutions<Role> subs)
+	public LRecursion substitute(Substitutions subs)
 	{
 		return reconstruct(getSource(), this.recvar, this.body.substitute(subs));
 	}

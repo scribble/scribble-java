@@ -484,7 +484,7 @@ public class EGraphBuilderUtil2
 				//for (IOAction e : this.enactingMap.get(succ))
 				RecVar rv = new RecVar(ice.mid.toString());
 				
-				System.out.println("sss2: " + rv);
+				System.out.println("bbbb2: " + rv);
 				
 				for (EAction e : this.enactingMap.get(origSucc).get(rv))
 				{

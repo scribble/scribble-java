@@ -39,11 +39,11 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	}
 
 	@Override
-	public GChoice substitute(Substitutions<Role> subs)
+	public GChoice substitute(Substitutions subs)
 	{
 		List<GSeq> blocks = this.blocks.stream().map(x -> x.substitute(subs))
 				.collect(Collectors.toList());
-		return reconstruct(getSource(), subs.apply(this.subj), blocks);
+		return reconstruct(getSource(), subs.subsRole(this.subj), blocks);
 	}
 
 	@Override

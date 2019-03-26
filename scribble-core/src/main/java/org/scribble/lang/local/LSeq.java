@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionSeq;
@@ -17,7 +18,7 @@ import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
 import org.scribble.type.kind.Local;
-import org.scribble.type.name.Role;
+import org.scribble.type.name.RecVar;
 
 public class LSeq extends Seq<Local> implements LType
 {
@@ -35,13 +36,21 @@ public class LSeq extends Seq<Local> implements LType
 	}
 
 	@Override
-	public boolean isSingleCont()
+	public RecVar isSingleCont()
 	{
-		return this.elems.size() == 1 && ((LType) this.elems.get(0)).isSingleCont();
+		RecVar rv = ((LType) this.elems.get(0)).isSingleCont();
+		return (this.elems.size() == 1) ? rv : null;
 	}
 
 	@Override
-	public LSeq substitute(Substitutions<Role> subs)
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		return this.elems.size() == 1
+				&& ((LType) this.elems.get(0)).isSingleConts(rvs);
+	}
+
+	@Override
+	public LSeq substitute(Substitutions subs)
 	{
 		return (LSeq) super.substitute(subs);
 	}

@@ -59,7 +59,7 @@ import org.scribble.del.global.GRecursionDel;
 import org.scribble.del.name.qualified.DataTypeNodeDel;
 import org.scribble.del.name.qualified.MessageSigNameNodeDel;
 import org.scribble.del.name.simple.AmbigNameNodeDel;
-import org.scribble.del.name.simple.ParamNodeDel;
+import org.scribble.del.name.simple.NonRoleParamNodeDel;
 import org.scribble.del.name.simple.RecVarNodeDel;
 import org.scribble.del.name.simple.RoleNodeDel;
 
@@ -584,13 +584,13 @@ public class DelDecoratorImpl implements DelDecorator
 	@Override
 	public void SigParamNode(SigParamNode sp)
 	{
-		setDel(sp, new ParamNodeDel());
+		setDel(sp, new NonRoleParamNodeDel());
 	}
 
 	@Override
 	public void TypeParamNode(TypeParamNode tp)
 	{
-		setDel(tp, new ParamNodeDel());
+		setDel(tp, new NonRoleParamNodeDel());
 	}
 
 	/*@Override
