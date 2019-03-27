@@ -41,7 +41,6 @@ import org.scribble.model.global.SGraphBuilderUtil;
 import org.scribble.type.Arg;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
-import org.scribble.type.kind.Local;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
@@ -182,8 +181,8 @@ public class Job
 			{
 				GProtocol inlined = this.jctxt.getInlined(g.fullname);
 				LProtocol proj = inlined.project(self);  // Projection and inling commutative?
-				STypeUnfolder<Local> unf = new STypeUnfolder<>();
-				//proj = proj.unfoldAllOnce(unf);
+				/*STypeUnfolder<Local> unf = new STypeUnfolder<>();
+				proj = proj.unfoldAllOnce(unf);*/
 				this.jctxt.addProjected(proj.fullname, proj);
 				System.out.println("\nprojected onto " + self + ":\n" + proj);
 			}
@@ -242,7 +241,9 @@ public class Job
 			{
 				continue;
 			}
-			inlined.checkRoleEnabling();
+			STypeUnfolder<Global> unf = new STypeUnfolder<>();  
+					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
+			inlined.unfoldAllOnce(unf).checkRoleEnabling();
 			inlined.checkExtChoiceConsistency();
 		}
 		

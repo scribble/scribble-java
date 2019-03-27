@@ -6,6 +6,7 @@ import java.util.Map;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.RecVar;
 
+// Currently once usage only, no popRec -- CHECKME: fix?
 public class STypeUnfolder<K extends ProtocolKind>
 {
 	private final Map<RecVar, Seq<K>> recs = new HashMap<>(); 
