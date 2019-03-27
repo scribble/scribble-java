@@ -202,9 +202,6 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		else
 		{
 			validateByScribble(checker.job, fullname, true);
-			
-			System.out.println("ppp1: " + checker.job.config.fair);
-			
 			if (!checker.job.config.fair)
 			{
 				checker.job.debugPrintln(

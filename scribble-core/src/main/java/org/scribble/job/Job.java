@@ -134,7 +134,7 @@ public class Job
 			{
 				GProtocol g = (GProtocol) gpd.visitWith(t);
 				this.jctxt.addIntermediate(g.fullname, g);
-				System.out.println("\nparsed:\n" + gpd + "\n\nintermed:\n" + g);
+				debugPrintln("\nParsed:\n" + gpd + "\n\nScribble intermediary:\n" + g);
 			}
 		}
 				
@@ -162,7 +162,7 @@ public class Job
 			STypeInliner i = new STypeInliner(this);
 			i.pushSig(sig);  // TODO: factor into constructor
 			GProtocol inlined = g.getInlined(i);
-			System.out.println("\ninlined:\n" + inlined);
+			debugPrintln("\nSubprotocols inlined:\n" + inlined);
 			this.jctxt.addInlined(g.fullname, inlined);
 		}
 				
@@ -172,7 +172,7 @@ public class Job
 				STypeUnfolder<Global> unf1 = new STypeUnfolder<>();
 				//GTypeUnfolder unf2 = new GTypeUnfolder();
 				GType unf = (GType) inlined.unfoldAllOnce(unf1);//.unfoldAllOnce(unf2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
-				System.out.println("\nunfolded:\n" + unf);
+				debugPrintln("\nAll recursions unfolded once:\n" + unf);
 		}
 				
 		for (GProtocol g : this.jctxt.getIntermediates())
@@ -184,7 +184,7 @@ public class Job
 				/*STypeUnfolder<Local> unf = new STypeUnfolder<>();
 				proj = proj.unfoldAllOnce(unf);*/
 				this.jctxt.addProjected(proj.fullname, proj);
-				System.out.println("\nprojected onto " + self + ":\n" + proj);
+				debugPrintln("\nProjected onto " + self + ":\n" + proj);
 			}
 		}
 				
@@ -193,12 +193,9 @@ public class Job
 		{
 			//LProtocolName lname = e.getKey();
 			LProtocol proj = e.getValue();
-			
-			System.out.println("sss1: " + proj);
-			
 			EGraph graph = proj.toEGraph(this);
 			this.jctxt.addEGraph(proj.fullname, graph);
-			System.out.println("\ngraph for " + proj.fullname + ":\n" + graph.toDot());
+			debugPrintln("\nEFSM for " + proj.fullname + ":\n" + graph.toDot());
 		}
 	}
 		
@@ -270,7 +267,7 @@ public class Job
 
 				GProtocolName fullname = gpd.getFullMemberName(mod);
 
-				System.out.println("\nvalidating " + fullname + ":");
+				debugPrintln("\nValidating " + fullname + ":");
 
 				if (checker.job.config.spin)
 				{
@@ -284,12 +281,9 @@ public class Job
 				else
 				{
 					GProtocolDeclDel.validateByScribble(checker.job, fullname, true);
-					
-					System.out.println("ppp1: " + checker.job.config.fair);
-					
 					if (!checker.job.config.fair)
 					{
-						checker.job.debugPrintln(
+						debugPrintln(
 								"(" + fullname + ") Validating with \"unfair\" output choices.. ");
 						GProtocolDeclDel.validateByScribble(checker.job, fullname, false);  // TODO: only need to check progress, not full validation
 					}
@@ -340,10 +334,8 @@ public class Job
 	public Map<LProtocolName, Module> getProjections(GProtocolName fullname,
 			Role role) throws ScribbleException
 	{
-			System.out.println("cccc2: ");
-			//Module root = this.jctxt.getProjection(fullname, role);
-			LProtocol proj = this.jctxt.getProjected(fullname, role);
-			System.out.println("cccc3: ");
+		//Module root = this.jctxt.getProjection(fullname, role);
+		LProtocol proj = this.jctxt.getProjected(fullname, role);
 		
 		// FIXME: dependencies, -project -- FIXME: need to create Module (with dependency imports)
 		Map<LProtocolName, Set<Role>> dependencies = 

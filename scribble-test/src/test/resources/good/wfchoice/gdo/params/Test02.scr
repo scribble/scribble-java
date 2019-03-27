@@ -18,8 +18,6 @@ global protocol Foo<sig M2>(role A, role B)
 	}
 }
 
-// FIXME: repeat rec sigs in inlining due to multilple do's -- breaks unfolding
-
 aux global protocol Bar<sig M>(role C, role D)
 {
 	M from C to D;

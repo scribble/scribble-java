@@ -37,8 +37,29 @@ module tmp.Test;
 // FIXME: good.liveness.Test02, reachability check (empty rec projection)
 
 
+global protocol Foo<sig M2>(role A, role B)
+{
+	choice at A
+	{
+		do Bar<1()>(A, B);
+		1() from B to A;
+	}
+	or
+	{
+		do Bar<2()>(A, B);
+		2() from B to A;
+	}
+}
 
-//*
+// FIXME: repeat rec sigs in inlining due to multilple do's -- breaks unfolding
+
+aux global protocol Bar<sig M>(role C, role D)
+{
+	M from C to D;
+}
+
+
+/*
 global protocol Proto1(role A, role B)
 {
 	rec X
