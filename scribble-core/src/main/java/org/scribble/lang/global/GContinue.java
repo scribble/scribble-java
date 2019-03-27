@@ -43,12 +43,11 @@ public class GContinue extends Continue<Global> implements GType
 	} 
 
 	@Override
-	public GRecursion unfoldAllOnce(
-			STypeUnfolder<Global> u)
+	public GRecursion unfoldAllOnce(STypeUnfolder<Global> u)
 	{
 		return new GRecursion(getSource(), this.recvar,
 				(GSeq) u.getRec(this.recvar));
-				// CHECKME: Continue (not Recursion) as the source of the unfolding
+				// CHECKME: Continue (not Recursion) as the source of the unfolding ?
 	}
 
 	@Override

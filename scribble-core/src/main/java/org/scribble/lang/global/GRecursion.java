@@ -53,10 +53,11 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	@Override
 	public GType unfoldAllOnce(STypeUnfolder<Global> u)
 	{
-		if (!u.hasRec(this.recvar))
+		if (!u.hasRec(this.recvar))  // N.B. doesn't work for shadowing
 		{
-			u.pushRec(this.recvar, this.body);  // Never "popped", relying on recvar disamb by inliner -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
+			u.pushRec(this.recvar, this.body);
 			GType unf = (GType) this.body.unfoldAllOnce(u);
+			u.popRec(this.recvar);  // Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
 			return unf;
 		}
 		return this;

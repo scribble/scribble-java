@@ -483,9 +483,6 @@ public class EGraphBuilderUtil2
 				IntermediateContinueEdge ice = (IntermediateContinueEdge) a;
 				//for (IOAction e : this.enactingMap.get(succ))
 				RecVar rv = new RecVar(ice.mid.toString());
-				
-				System.out.println("bbbb2: " + rv);
-				
 				for (EAction e : this.enactingMap.get(origSucc).get(rv))
 				{
 					for (EState n : origSucc.getSuccessors(e))

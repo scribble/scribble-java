@@ -64,8 +64,9 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 	{
 		if (!u.hasRec(this.recvar))
 		{
-			u.pushRec(this.recvar, this.body);  // Never "popped", relying on recvar disamb by inliner -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
+			u.pushRec(this.recvar, this.body);
 			LType unf = (LType) this.body.unfoldAllOnce(u);
+			u.popRec(this.recvar);  // Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
 			return unf;
 		}
 		return this;

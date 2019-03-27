@@ -35,8 +35,8 @@ public class STypeUnfolder<K extends ProtocolKind>
 		return this.recs.get(rv);
 	}
 	
-	/*public B popRec(RecVar rv)
+	public void popRec(RecVar rv)
 	{
-		return this.recs.remove(rv);
-	}*/
+		this.recs.remove(rv);
+	}
 }
