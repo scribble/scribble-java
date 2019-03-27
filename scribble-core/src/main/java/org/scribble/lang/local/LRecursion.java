@@ -53,20 +53,23 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 	public LRecursion getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		org.scribble.ast.ProtocolKindNode<Local> source = getSource();  // CHECKME: or empty source?
-		LSeq body = this.body.getInlined(i);//, stack);
-		RecVar rv = i.makeRecVar(//stack.peek(), 
+		RecVar rv = i.enterRec(//stack.peek(), 
 				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
-		return reconstruct(source, rv, body);
+		LSeq body = this.body.getInlined(i);//, stack);
+		LRecursion res = reconstruct(source, rv, body);
+		i.exitRec(this.recvar);
+		return res;
 	}
 
 	@Override
 	public LType unfoldAllOnce(STypeUnfolder<Local> u)
 	{
-		if (!u.hasRec(this.recvar))
+		if (!u.hasRec(this.recvar))  // N.B. doesn't work if recvars shadowed
 		{
 			u.pushRec(this.recvar, this.body);
 			LType unf = (LType) this.body.unfoldAllOnce(u);
-			u.popRec(this.recvar);  // Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
+			u.popRec(this.recvar);  
+					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
 			return unf;
 		}
 		return this;

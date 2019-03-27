@@ -44,20 +44,23 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	public GRecursion getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		org.scribble.ast.ProtocolKindNode<Global> source = getSource();  // CHECKME: or empty source?
-		GSeq body = this.body.getInlined(i);//, stack);
-		RecVar rv = i.makeRecVar(//stack.peek(), 
+		RecVar rv = i.enterRec(//stack.peek(), 
 				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
-		return reconstruct(source, rv, body);
+		GSeq body = this.body.getInlined(i);//, stack);
+		GRecursion res = reconstruct(source, rv, body);
+		i.exitRec(this.recvar);
+		return res;
 	}
 
 	@Override
 	public GType unfoldAllOnce(STypeUnfolder<Global> u)
 	{
-		if (!u.hasRec(this.recvar))  // N.B. doesn't work for shadowing
+		if (!u.hasRec(this.recvar))  // N.B. doesn't work if recvars shadowed
 		{
 			u.pushRec(this.recvar, this.body);
 			GType unf = (GType) this.body.unfoldAllOnce(u);
-			u.popRec(this.recvar);  // Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
+			u.popRec(this.recvar);  
+					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
 			return unf;
 		}
 		return this;

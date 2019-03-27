@@ -76,7 +76,7 @@ public class LProtocol extends
 				sig.args);
 		LSeq body = this.def.substitute(subs).getInlined(i);//, stack);
 		LProtocolDecl source = getSource();  // CHECKME: or empty source?
-		RecVar rv = i.makeRecVar(sig);
+		RecVar rv = i.getInlinedRecVar(sig);
 		return new LRecursion(source, rv, body);
 	}
 	

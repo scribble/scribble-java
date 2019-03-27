@@ -68,7 +68,7 @@ public class GProtocol extends
 		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
 				sig.args);
 		GSeq body = this.def.substitute(subs).getInlined(i);//, stack);
-		RecVar rv = i.makeRecVar(sig);
+		RecVar rv = i.getInlinedRecVar(sig);
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		GProtocolDecl source = getSource();
 		GSeq def = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));

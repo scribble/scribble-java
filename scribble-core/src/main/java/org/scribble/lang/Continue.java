@@ -40,8 +40,7 @@ public abstract class Continue<K extends ProtocolKind>
 	@Override
 	public Continue<K> getInlined(STypeInliner i)
 	{
-		RecVar rv = i.makeRecVar(//stack.peek(), 
-				this.recvar);
+		RecVar rv = i.getInlinedRecVar(this.recvar);
 		return reconstruct(getSource(), rv);
 	}
 	

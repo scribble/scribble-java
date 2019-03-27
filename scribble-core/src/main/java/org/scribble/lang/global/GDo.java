@@ -44,7 +44,7 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 	{
 		GProtocolName fullname = this.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, this.roles, this.args);
-		RecVar rv = i.makeRecVar(sig);
+		RecVar rv = i.getInlinedRecVar(sig);
 		if (i.hasSig(sig))
 		{
 			return new GContinue(getSource(), rv);
