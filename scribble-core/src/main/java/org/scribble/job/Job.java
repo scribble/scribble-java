@@ -226,7 +226,7 @@ public class Job
 		
 		for (GProtocol inlined : this.jctxt.getInlined())
 		{
-			/* TODO: relegate to "warning"
+			//TODO: relegate to "warning"
 			// Check unused roles
 			Set<Role> used = inlined.def.getRoles();
 			Set<Role> unused = inlined.roles.stream()
@@ -237,7 +237,7 @@ public class Job
 				throw new ScribbleException(
 						"Unused roles in " + inlined.fullname + ": " + unused);
 			}
-			*/
+			
 			if (inlined.isAux())
 			{
 				continue;
@@ -248,7 +248,7 @@ public class Job
 		
 		for (LProtocol proj : this.jctxt.getProjections().values())
 		{
-			if (proj.isAux())  // CHECKME?
+			if (proj.isAux())  // CHECKME? e.g., bad.reach.globals.gdo.Test01b 
 			{
 				continue;
 			}

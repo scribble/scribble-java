@@ -1,7 +1,8 @@
 module bad.reach.globals.gdo.Test01b;
 
 
-aux global protocol Proto1(role A, role B)
+//aux 
+global protocol Proto1(role A, role B)
 {
 	1() from A to B;
 	do Proto1(A, B);

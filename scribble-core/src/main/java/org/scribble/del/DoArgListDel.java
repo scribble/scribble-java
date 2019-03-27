@@ -14,10 +14,12 @@
 package org.scribble.del;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.Do;
 import org.scribble.ast.DoArgList;
 import org.scribble.ast.HeaderParamDeclList;
+import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
@@ -63,8 +65,17 @@ public abstract class DoArgListDel extends ScribDelBase
 			throw new ScribbleException("Protocol decl not visible: " + simpname);
 		}*/
 		ProtocolName<?> fullname = mc.getVisibleProtocolDeclFullName(pn);  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
-		return jc.getModule(fullname.getPrefix())
-				.getProtocolDeclChild(pn.getSimpleName());
+		Module mod = jc.getModule(fullname.getPrefix());
+		//return mod.getProtocolDeclChild(pn.getSimpleName());
+		List<ProtocolDecl<?>> pd = mod.getProtoDeclChildren().stream()
+				.filter(  // cf. Module::hasProtocolDecl
+						x -> x.getHeaderChild().getDeclName().equals(pn.getSimpleName()))
+				.collect(Collectors.toList());
+		if (pd.size() != 1)
+		{
+			throw new ScribbleException("[disamb] Target protocol ambiguous or not found: " + pn);
+		}
+		return pd.get(0);
 	}
 	
 	protected abstract HeaderParamDeclList<?> getParamDeclList(
