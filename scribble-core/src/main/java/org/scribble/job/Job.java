@@ -158,8 +158,7 @@ public class Job
 					throw new RuntimeException("TODO: " + n);
 				}
 			}
-			SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, 
-					params);  // FIXME
+			SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, params);
 			//Deque<SubprotoSig> stack = new LinkedList<>();
 			STypeInliner i = new STypeInliner(this);
 			i.pushSig(sig);  // TODO: factor into constructor

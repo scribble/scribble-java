@@ -29,6 +29,7 @@ public class SubprotoSig
 	public final List<Role> roles;  // i.e., roles (and args) are ordered
 	public final List<Arg<? extends NonRoleParamKind>> args;
 			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
+			// Arg, not MemberName, because need to include MessageSigs (sig literals)
 
 	// public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role>
 	// roles, List<Argument<? extends Kind>> args)

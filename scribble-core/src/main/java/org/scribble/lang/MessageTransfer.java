@@ -39,8 +39,16 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 	@Override
 	public MessageTransfer<K> substitute(Substitutions subs)
 	{
-		//..HERE subs msg
-		return reconstruct(getSource(), subs.subsRole(this.src), this.msg,
+		Message msg = this.msg;
+		if (msg instanceof MemberName)
+		{
+			MemberName<?> n = (MemberName<?>) msg;
+			if (subs.hasArg(n))
+			{
+				msg = (Message) subs.subsArg(n);
+			}
+		}
+		return reconstruct(getSource(), subs.subsRole(this.src), msg,
 				subs.subsRole(this.dst));
 	}
 
