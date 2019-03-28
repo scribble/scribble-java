@@ -343,11 +343,12 @@ public class Job
 				.getLProtoDeclChildren().get(0).del()).getProtocolDeclContext()
 						.getDependencyMap().getDependencies().get(role);*/
 				new HashMap<>();
-		System.out.println("cccc4: ");
 
 		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
-		return dependencies.keySet().stream().collect(
-				Collectors.toMap(x -> x, x -> this.jctxt.getModule(x.getPrefix())));
+		/*return dependencies.keySet().stream().collect(
+				Collectors.toMap(x -> x, x -> this.jctxt.getModule(x.getPrefix())));*/
+		throw new RuntimeException(
+				"[TODO] Projection modules and dependencies: " + fullname + "@" + role);
 	}
 
 	/*public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException

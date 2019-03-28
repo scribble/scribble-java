@@ -34,6 +34,17 @@ module tmp.Test;
 // FIXME: good.liveness.Test02, reachability check (empty rec projection)
 
 
+//-------------
+//- projection dependencies (projections as modules?)
+//- check projected role/choice/do pruning/fixing?
+//- drop unused recs -- partly done by inlining, but not done yet for subprotos
+//- refactor ast to parser, refactor lang to type? -- separate protocol classes?
+//- remove unused visitors and del code -- move new visitors there?
+//- shorten class names
+//- refactor model building
+//- refactor do param/arg ast classes
+//- refactor parsing and CL
+//- check demos
 
 
 /*// Add unit test -- testing: inlining of shadowed recvars

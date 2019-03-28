@@ -14,6 +14,7 @@ public class STypeInliner
 {
 	public final Job job;
 	
+	// Basically, "SubprotocolVisitor" -- factor out?
 	private final Deque<SubprotoSig> stack = new LinkedList<>();
 
   // To handle recvar shadowing in nested recs
