@@ -53,7 +53,7 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	}
 	
 	@Override
-	public List<GInteractionNode> getInteractNodeChildren()
+	public List<GInteractionNode> getInteractionChildren()
 	{
 		return getChildren().stream().map(n -> (GInteractionNode) n)
 				.collect(Collectors.toList());

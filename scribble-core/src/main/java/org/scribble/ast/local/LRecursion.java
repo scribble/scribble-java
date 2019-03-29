@@ -56,7 +56,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
 		//fixer.pushRec(this.recvar.toName());
-		return getBlockChild().getInteractSeqChild().getInteractNodeChildren()
+		return getBlockChild().getInteractSeqChild().getInteractionChildren()
 				.get(0).inferLocalChoiceSubject(fixer);
 	}
 

@@ -87,7 +87,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		List<LProtocolBlock> blocks = lc.getBlockChildren();
 		
 		Set<Role> subjs = blocks.stream()
-				.map(b -> b.getInteractSeqChild().getInteractNodeChildren().get(0)
+				.map(b -> b.getInteractSeqChild().getInteractionChildren().get(0)
 						.inferLocalChoiceSubject(fixer))
 				//.filter((r) -> !r.toString().equals(DummyProjectionRoleNode.DUMMY_PROJECTION_ROLE))
 				.collect(Collectors.toSet());

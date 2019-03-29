@@ -38,13 +38,33 @@ module tmp.Test;
 //- projection dependencies (projections as modules?)
 //- check projected role/choice/do pruning/fixing?
 //- drop unused recs -- partly done by inlining, but not done yet for subprotos
+//- connections
 //- refactor ast to parser, refactor lang to type? -- separate protocol classes?
 //- remove unused visitors and del code -- move new visitors there?
-//- shorten class names
+//- shorten class names, rename parser constants, fix scribtreeadaptor and deldecorator
 //- refactor model building
 //- refactor do param/arg ast classes
 //- refactor parsing and CL
 //- check demos
+
+
+
+explicit global protocol Foo(role A, role B, role C)
+{
+	0() connect A to B;
+	/*choice at A
+	{
+		1() from A to B;
+		do Foo(A, B, C);
+	}
+	or
+	{
+		2() from A to B;
+		foo() connect A to C;
+		3() from A to C;
+	}*/
+}
+
 
 
 /*// Add unit test -- testing: inlining of shadowed recvars

@@ -44,7 +44,7 @@ public abstract class InteractionSeq<K extends ProtocolKind>
 	@Override
 	public abstract InteractionSeq<K> dupNode();
 	
-	public abstract List<? extends InteractionNode<K>> getInteractNodeChildren();
+	public abstract List<? extends InteractionNode<K>> getInteractionChildren();
 	
 	public boolean isEmpty()
 	{
@@ -64,7 +64,7 @@ public abstract class InteractionSeq<K extends ProtocolKind>
 	public ScribNode visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		List<InteractionNode<K>> actions = new LinkedList<>();
-		for (InteractionNode<K> in : getInteractNodeChildren())
+		for (InteractionNode<K> in : getInteractionChildren())
 		{
 			//ProtocolKindNode<K> visited = visitProtocolKindChildWithCastCheck(this, in, nv, ProtocolKindNode.class, in.getKind(), KIND_CAST);  
 					// No: ProjectedChoiceDoPruning (and others?) needs to return null; CastCheck doesn't allow that  // CHECKME
@@ -74,7 +74,7 @@ public abstract class InteractionSeq<K extends ProtocolKind>
 			{
 				@SuppressWarnings("unchecked")
 				InteractionSeq<K> tmp = (InteractionSeq<K>) visited;
-				actions.addAll(tmp.getInteractNodeChildren());
+				actions.addAll(tmp.getInteractionChildren());
 			}
 			else
 			{
@@ -89,7 +89,7 @@ public abstract class InteractionSeq<K extends ProtocolKind>
 	@Override
 	public String toString()
 	{
-		return getInteractNodeChildren().stream().map(i -> i.toString())
+		return getInteractionChildren().stream().map(i -> i.toString())
 				.collect(Collectors.joining("\n"));
 	}
 	

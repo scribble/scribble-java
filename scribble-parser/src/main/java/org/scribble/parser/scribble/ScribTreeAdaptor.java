@@ -1,5 +1,8 @@
 package org.scribble.parser.scribble;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.scribble.ast.AuxMod;
@@ -43,11 +46,13 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.ast.name.simple.TypeParamNode;
+import org.scribble.parser.antlr.ScribbleParser;
 
 // get/setType don't seem to be really used
 public class ScribTreeAdaptor extends CommonTreeAdaptor
 {
-	//private final AstFactory f = new AstFactoryImpl();
+	public static final List<String> TOKEN_NAMES = 
+			Arrays.asList(ScribbleParser.tokenNames);
 	
 	// Generated parser seems to use nil to create "blank" nodes and then "fill them in"
 	@Override
@@ -59,146 +64,81 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 	@Override
 	public Object create(Token t)
 	{
-		/*if (payload == null)
-		{
-			//System.out.println("aaa: " + payload.getText());
-			return new MyCommonTree(payload);
-		}*/
+		String tname = t.getText();
 		
-		if (t == null)  // E.g. nil() -- CHECKME: what are the nils being made for?
+		/*  // Could try to use a naming convention between Token and AST class names for reflection
+		try
 		{
-			//return super.create(null);
-			//return nil();
-			throw new RuntimeException("Shouldn't get in here: ");  // null Token only for nil 
+			Constructor<? extends AstVisitor> cons = c.get Constructor(Job.class);
+			for (ModuleName modname : modnames)
+			{
+				AstVisitor nv = cons.newInstance(this);
+				runVisitorOnModule(modname, nv);
+			}
 		}
-		
-		/*String lab = "";
-		if (t != null)
+		catch (NoSuchMethodException | SecurityException | InstantiationException
+				| IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e)
 		{
-			//return new MyCommonTree(payload);
-			lab = t.getText();
+			throw new RuntimeException(e);
 		}*/
-		String lab = t.getText();
-		//CommonTree empty = new CommonTree(t);  // CommonTree constr sets this.token = payload.token
-		switch (lab)
+		
+		switch (tname)
 		{
-			case "MODULE": //return this.f.Module(empty, null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-				return new Module(t);
-			case "MODULEDECL": //return this.f.ModuleDecl(empty, null);
-				return new ModuleDecl(t);
-			case "MODULENAME": //return this.f.Q
-				//return new ModuleNameNode(t); 
-				return new ModuleNameNode(t);  /*.. HERE ambigname -- or qualifiedname? (ambigname currently singleton name)
-						-- or modulename just as identifiers? -- ANTLR uses every (leaf) token as singleton node
-								-- AntlrTokenTree? -- i.e. CommonTree (wrapper for Token)*/
+			case "MODULE": return new Module(t);
+			case "MODULEDECL": return new ModuleDecl(t);
+			case "MODULENAME": return new ModuleNameNode(t);
+			case "IMPORTMODULE": return new ImportModule(t);
+			case "PAYLOADTYPEDECL": return new DataTypeDecl(t);
+			case "MESSAGESIGNATUREDECL": return new MessageSigNameDecl(t);
+			case "TYPENAME": return new DataTypeNode(t);
+			case "SIGNAME": return new MessageSigNameNode(t);
+			case "GLOBALPROTOCOLDECL": return new GProtocolDecl(t);
+			case "GLOBALPROTOCOLDECLMODS": return new ProtocolModList(t);
+			case "aux": return new AuxMod(t);
+			case "explicit": return new ExplicitMod(t);
+
+			case "GLOBALPROTOCOLHEADER": return new GProtocolHeader(t);
+			case "GPROTOCOLNAME": return new GProtocolNameNode(t);
+			case "ROLEDECLLIST": return new RoleDeclList(t);
+			case "ROLEDECL": return new RoleDecl(t);
+			case "ROLENAME": return new RoleNode(t);
+			case "PARAMETERDECLLIST": return new NonRoleParamDeclList(t);
+			case "TYPEPARAMDECL": return new TypeParamDecl(t);
+			case "TYPEPARAMNAME": return new TypeParamNode(t);
+			case "SIGPARAMDECL": return new SigParamDecl(t);
+			case "SIGPARAMNAME": return new SigParamNode(t);
+			case "GLOBALPROTOCOLDEF": return new GProtocolDef(t);
+			case "GLOBALPROTOCOLBLOCK": return new GProtocolBlock(t);
+			case "GLOBALINTERACTIONSEQUENCE": return new GInteractionSeq(t);
+
+			case "GLOBALMESSAGETRANSFER": return new GMessageTransfer(t);
+			case "GLOBALCHOICE": return new GChoice(t);
+			case "GLOBALRECURSION": return new GRecursion(t);
+			case "GLOBALCONTINUE": return new GContinue(t);
+			case "GLOBALDO": return new GDo(t);
+			case "RECURSIONVAR": return new RecVarNode(t);
+
+			case "MESSAGESIGNATURE": return new MessageSigNode(t);
+			case "OPNAME": return new OpNode(t);
+			case "PAYLOAD": return new PayloadElemList(t);  // N.B. UnaryPayloadElem parsed "manually" in Scribble.g
 				
-			case "IMPORTMODULE":
-				return new ImportModule(t);
-				
-			case "PAYLOADTYPEDECL":
-				return new DataTypeDecl(t);
-			case "MESSAGESIGNATUREDECL":
-				return new MessageSigNameDecl(t);
-			case "TYPENAME":
-				return new DataTypeNode(t);
-			case "SIGNAME":
-				return new MessageSigNameNode(t);
+			case "ROLEINSTANTIATIONLIST": return new RoleArgList(t);
+			case "ROLEINSTANTIATION": return new RoleArg(t);
+			case "ARGUMENTINSTANTIATIONLIST": return new NonRoleArgList(t);
+			case "NONROLEARG": return new NonRoleArg(t);  // Only for messagesignature -- qualifiedname (datatypenode or ambignamenode) done "manually" in scribble.g (cf. UnaryPayloadElem)
+			case "AMBIGUOUSNAME": return new AmbigNameNode(t);
 
-			case "GLOBALPROTOCOLDECL": //return this.f.GProtocolDecl(empty, Collections.emptyList(), null, null);
-				return new GProtocolDecl(t);
-			case "GLOBALPROTOCOLDECLMODS":
-				return new ProtocolModList(t);
-			case "aux":
-				return new AuxMod(t);
-			case "explicit":
-				return new ExplicitMod(t);
-			
-			case "GLOBALPROTOCOLHEADER": //return this.f.GProtocolHeader(empty, null, null, null);
-				return new GProtocolHeader(t);
-			case "GPROTOCOLNAME":
-				return new GProtocolNameNode(t);
-			case "ROLEDECLLIST": //return this.f.RoleDeclList(empty, Collections.emptyList());
-				return new RoleDeclList(t);
-			case "ROLEDECL": //return this.f.RoleDecl(empty, null);
-				return new RoleDecl(t);
-			case "ROLENAME":
-				return new RoleNode(t);
-			case "PARAMETERDECLLIST": //return this.f.NonRoleParamDeclList(empty, Collections.emptyList());
-				return new NonRoleParamDeclList(t);
-			case "TYPEPARAMDECL":
-				return new TypeParamDecl(t);
-			case "TYPEPARAMNAME":
-				return new TypeParamNode(t);
-			case "SIGPARAMDECL":
-				return new SigParamDecl(t);
-			case "SIGPARAMNAME":
-				return new SigParamNode(t);
-			case "GLOBALPROTOCOLDEF": //return this.f.GProtocolDef(empty, null);
-				return new GProtocolDef(t);
-			case "GLOBALPROTOCOLBLOCK": //return this.f.GProtocolBlock(empty, null);
-				return new GProtocolBlock(t);
-			case "GLOBALINTERACTIONSEQUENCE": //return this.f.GInteractionSeq(empty, Collections.emptyList());
-				return new GInteractionSeq(t);
-
-			case "GLOBALMESSAGETRANSFER": //return this.f.GMessageTransfer(empty, null, null, Collections.emptyList());
-				return new GMessageTransfer(t);
-			case "GLOBALCHOICE":
-				return new GChoice(t);
-			case "GLOBALRECURSION":
-				return new GRecursion(t);
-			case "GLOBALCONTINUE":
-				return new GContinue(t);
-			case "GLOBALDO":
-				return new GDo(t);
-			case "RECURSIONVAR":
-				return new RecVarNode(t);
-
-			case "MESSAGESIGNATURE": //return this.f.Me
-				return new MessageSigNode(t);
-			case "OPNAME":
-				return new OpNode(t);
-			case "PAYLOAD":
-				return new PayloadElemList(t);
-				// N.N. UnaryPayloadElem parsed "manually" in Scribble.g
-				
-			case "ROLEINSTANTIATIONLIST":
-				return new RoleArgList(t);
-			case "ROLEINSTANTIATION":
-				return new RoleArg(t);
-			case "ARGUMENTINSTANTIATIONLIST":
-				return new NonRoleArgList(t);
-			case "NONROLEARG":  // Only for messagesignature -- qualifiedname (datatypenode or ambignamenode) done "manually" in scribble.g (cf. UnaryPayloadElem)
-				return new NonRoleArg(t);
-
-				//return new MyCommonTree(t);  // FIXME: placeholder for deleg, qualified or ambig
-			//case "QUALIFIEDNAME": //return this.f.Q
-			/*case tmp
-			case Test
-			case Proto1
-			case A
-			case B
-			case 1
-			case A
-			case B*/
-
-			//case "":  // CHECKME ?  nil? "If you want a flat tree (a list)"
-				/*MyCommonTree x = new MyCommonTree(t);
-				System.out.println("222: " + t + " ,, " + x);
-				return x;*/
-				//return nil();  // CHECKME
-			case "AMBIGUOUSNAME":
-				return new AmbigNameNode(t);
 			default:
-				
-				//System.out.println("aaa1: " + lab);   // FIXME: QUALIFIEDNAME (e.g., good.misc.globals.gdo.Do06b)  // CHECKME: UNARYPAYLOADELEM?
-				
-				//FIXME: add explicit check for unhandled parser categories (e.g., use __ prefixes) -- cf. actual IDs
-				
-				
-				//throw new RuntimeException("Shouldn't get here: " + lab + " ,, " + lab.length());
-				//return new MyCommonTree(t);
-				return new IdNode(t);  // FIXME: currently all name "leaf" nodes are there, so not ambig, more like ID
-				//return empty;
+			{
+				//CHECKME: QUALIFIEDNAME (e.g., good.misc.globals.gdo.Do06b)  
+				//CHECKME: UNARYPAYLOADELEM?
+				if (TOKEN_NAMES.contains(tname))
+				{
+					throw new RuntimeException("[TODO] Unhandled token type: " + tname);
+				}
+				return new IdNode(t);
+			}
 		}
 	}
 }

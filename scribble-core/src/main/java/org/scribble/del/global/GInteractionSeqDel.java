@@ -46,7 +46,7 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 	{
 		GInteractionSeq source = (GInteractionSeq) n;
 		List<GType> elems = new LinkedList<>();
-		for (GInteractionNode c : source.getInteractNodeChildren())
+		for (GInteractionNode c : source.getInteractionChildren())
 		{
 			elems.add(c.visitWith(t));  // throws ScribbleException
 		}
@@ -60,12 +60,12 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<GInteractionNode> gins = new LinkedList<GInteractionNode>();
-		for (GInteractionNode gi : gis.getInteractNodeChildren())
+		for (GInteractionNode gi : gis.getInteractionChildren())
 		{
 			ScribNode inlined = ((InlineProtocolEnv) gi.del().env()).getTranslation();
 			if (inlined instanceof GInteractionSeq)  // A do got inlined
 			{
-				gins.addAll(((GInteractionSeq) inlined).getInteractNodeChildren());
+				gins.addAll(((GInteractionSeq) inlined).getInteractionChildren());
 			}
 			else
 			{
@@ -91,14 +91,14 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<LInteractionNode> lis = new LinkedList<>();
-		for (GInteractionNode gi : gis.getInteractNodeChildren())  // FIXME: rewrite using flatMap
+		for (GInteractionNode gi : gis.getInteractionChildren())  // FIXME: rewrite using flatMap
 		{
 			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			//LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
 			// TODO: move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
-				lis.addAll(((LInteractionSeq) ln).getInteractNodeChildren());
+				lis.addAll(((LInteractionSeq) ln).getInteractionChildren());
 			}
 			else if (ln != null) // null is used for empty projection
 			{
@@ -149,11 +149,11 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 			RecRemover rem, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
-		List<GInteractionNode> gins = gis.getInteractNodeChildren().stream()
+		List<GInteractionNode> gins = gis.getInteractionChildren().stream()
 				.flatMap((gi) -> (gi instanceof GRecursion
 						&& rem.toRemove(((GRecursion) gi).getRecVarChild().toName()))
 								? ((GRecursion) gi).getBlockChild().getInteractSeqChild()
-										.getInteractNodeChildren().stream()
+										.getInteractionChildren().stream()
 								: Stream.of(gi))
 				.collect(Collectors.toList());
 		return rem.job.config.af.GInteractionSeq(gis.getSource(), gins);

@@ -45,7 +45,7 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	}
 	
 	@Override
-	public List<LInteractionNode> getInteractNodeChildren()
+	public List<LInteractionNode> getInteractionChildren()
 	{
 		return getChildren().stream().map(n -> (LInteractionNode) n)
 				.collect(Collectors.toList());
@@ -61,7 +61,7 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	{
 		if (!this.isEmpty())
 		{
-			for (LInteractionNode ln : getInteractNodeChildren())
+			for (LInteractionNode ln : getInteractionChildren())
 			{
 				Set<Message> enab = ln.getEnabling();
 				if (!enab.isEmpty())

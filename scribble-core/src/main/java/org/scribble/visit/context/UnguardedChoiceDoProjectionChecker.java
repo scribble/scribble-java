@@ -79,7 +79,7 @@ public class UnguardedChoiceDoProjectionChecker
 		for (LProtocolBlock b : lc.getBlockChildren())
 		{
 			LInteractionNode in = 
-					b.getInteractSeqChild().getInteractNodeChildren().get(0);
+					b.getInteractSeqChild().getInteractionChildren().get(0);
 			if (in instanceof LDo)
 			{
 				LDo ld = (LDo) in;

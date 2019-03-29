@@ -92,7 +92,7 @@ public class GRecursion extends Recursion<Global>
 			return block;
 		}
 		List<? extends LInteractionNode> lis = block.getInteractSeqChild()
-				.getInteractNodeChildren();
+				.getInteractionChildren();
 		if (lis.size() > 1)
 		{
 			return block;

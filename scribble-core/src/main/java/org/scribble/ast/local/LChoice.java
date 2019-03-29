@@ -63,7 +63,7 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
 		return getBlockChildren().get(0).getInteractSeqChild()
-				.getInteractNodeChildren().get(0).inferLocalChoiceSubject(fixer);
+				.getInteractionChildren().get(0).inferLocalChoiceSubject(fixer);
 	}
 	
 	@Override
