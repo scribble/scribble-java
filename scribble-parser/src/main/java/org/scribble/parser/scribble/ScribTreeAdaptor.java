@@ -135,7 +135,12 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				//CHECKME: UNARYPAYLOADELEM?
 				if (TOKEN_NAMES.contains(tname))
 				{
-					throw new RuntimeException("[TODO] Unhandled token type: " + tname);
+					if (!(tname.equals(OpNode.EMPTY_OP_ID)  // TODO: refactor empty op hack
+							|| tname.equals("QUALIFIEDNAME")))  
+									// Temporary QUALIFIEDNAME created, then internally parsed by ScribbleParser.parsePayloadElem/parseNonRoleArg
+					{
+						throw new RuntimeException("[TODO] Unhandled token type: " + tname);
+					}
 				}
 				return new IdNode(t);
 			}

@@ -11,11 +11,30 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast;
+package org.scribble.parser.scribble.del;
 
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.ImportModule;
+import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.MessageSigNode;
+import org.scribble.ast.Module;
+import org.scribble.ast.ModuleDecl;
+import org.scribble.ast.NonRoleArg;
+import org.scribble.ast.NonRoleArgList;
+import org.scribble.ast.NonRoleParamDeclList;
+import org.scribble.ast.PayloadElemList;
+import org.scribble.ast.ProtocolModList;
+import org.scribble.ast.RoleArg;
+import org.scribble.ast.RoleArgList;
+import org.scribble.ast.RoleDecl;
+import org.scribble.ast.RoleDeclList;
+import org.scribble.ast.ScribNodeBase;
+import org.scribble.ast.SigParamDecl;
+import org.scribble.ast.TypeParamDecl;
+import org.scribble.ast.UnaryPayloadElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDo;
@@ -62,6 +81,7 @@ import org.scribble.del.name.simple.AmbigNameNodeDel;
 import org.scribble.del.name.simple.NonRoleParamNodeDel;
 import org.scribble.del.name.simple.RecVarNodeDel;
 import org.scribble.del.name.simple.RoleNodeDel;
+import org.scribble.parser.scribble.ScribTreeAdaptor;
 
 
 //FIXME TODO: refactor decoration methods into AST interface, to ensure they are implemented and called
@@ -77,143 +97,164 @@ public class DelDecoratorImpl implements DelDecorator
 	// Visitor enter/leave framework uses dels -- DelDecorator is a proto visitor (akin to parsing)
 	public void decorate(CommonTree n)
 	{
-		String type = n.getToken().getText();  // CHECKME: do by Antlr Token, or at this point by Scib AST type?
-		switch (type)
+		decorateNode(n);
+		decorateChildren(n);
+	}
+
+	private void decorateNode(CommonTree n)
+	{
+		String tname = n.getToken().getText();  // CHECKME: cases on Token (as currently), or refactor by Scrib AST class?
+		
+		//...HERE: use reflection to dispatch by AST class name
+		
+		switch (tname)
 		{
 			case "MODULE":
 				Module((Module) n);
-				break;
+				return;
 			case "MODULEDECL":
 				ModuleDecl((ModuleDecl) n);
-				break;
+				return;
 
 			case "IMPORTMODULE":
 				ImportModule((ImportModule) n);
-				break;
+				return;
 
 			case "MESSAGESIGNATUREDECL":      //return AntlrMessageSigDecl.parseMessageSigDecl(this, ct, af);
 				MessageSigNameDecl((MessageSigNameDecl) n);
-				break;
+				return;
 			case "PAYLOADTYPEDECL":           //return AntlrDataTypeDecl.parseDataTypeDecl(this, ct, af);*/
 				DataTypeDecl((DataTypeDecl) n);
-				break;
+				return;
 
 			case "GLOBALPROTOCOLDECL":
 				GProtocolDecl((GProtocolDecl) n);
-				break;
+				return;
 			case "GLOBALPROTOCOLDECLMODS":
 				ProtocolModList((ProtocolModList) n);
-				break;
+				return;
 
 			case "GLOBALPROTOCOLHEADER":
 				GProtocolHeader((GProtocolHeader) n);
-				break;
+				return;
 			case "GPROTOCOLNAME":
 				GProtocolNameNode((GProtocolNameNode) n);
-				break;
+				return;
 			case "ROLEDECLLIST":
 				RoleDeclList((RoleDeclList) n);
-				break;
+				return;
 			case "ROLEDECL":
 				RoleDecl((RoleDecl) n);
-				break;
+				return;
 			case "PARAMETERDECLLIST":
 			//case EMPTY_PARAMETERDECLLST:
 				NonRoleParamDeclList((NonRoleParamDeclList) n);
-				break;
+				return;
 			case "TYPEPARAMDECL":
 				TypeParamDecl((TypeParamDecl) n);
-				break;
+				return;
 			case "SIGPARAMDECL":
 				SigParamDecl((SigParamDecl) n);
-				break;
+				return;
 
 			case "GLOBALPROTOCOLDEF":
 				GProtocolDef((GProtocolDef) n);
-				break;
+				return;
 			case "GLOBALPROTOCOLBLOCK":
 				GProtocolBlock((GProtocolBlock) n);
-				break;
+				return;
 			case "GLOBALINTERACTIONSEQUENCE":
 				GInteractionSeq((GInteractionSeq) n);
-				break;
+				return;
 
 			case "MESSAGESIGNATURE":
 				MessageSigNode((MessageSigNode) n);
-				break;
+				return;
 			case "PAYLOAD":
 				PayloadElemList((PayloadElemList) n);
-				break;
+				return;
 			case "UNARYPAYLOADELEM":
 				UnaryPayloadElem((UnaryPayloadElem<?>) n);
-				break;
+				return;
 
 			case "ROLEINSTANTIATIONLIST":     
 				RoleArgList((RoleArgList) n);
-				break;
+				return;
 			case "ROLEINSTANTIATION":         
 				RoleArg((RoleArg) n);
-				break;
+				return;
 			case "ARGUMENTINSTANTIATIONLIST": 
 				NonRoleArgList((NonRoleArgList) n);
-				break;
+				return;
 			case "NONROLEARG": 
 				NonRoleArg((NonRoleArg) n);
-				break;
+				return;
 
 			case "GLOBALMESSAGETRANSFER":
 				GMessageTransfer((GMessageTransfer) n);
-				break;
+				return;
 			/*case GLOBALCONNECT:             return AntlrGConnect.parseGConnect(this, ct, af);
 			case GLOBALDISCONNECT:          return AntlrGDisconnect.parseGDisconnect(this, ct, af);
 			case GLOBALWRAP:                return AntlrGWrap.parseGWrap(this, ct, af);*/
 			case "GLOBALCHOICE":              
 				GChoice((GChoice) n);
-				break;
+				return;
 			case "GLOBALRECURSION":
 				GRecursion((GRecursion) n);
-				break;
+				return;
 			case "GLOBALCONTINUE":
 				GContinue((GContinue) n);
-				break;
+				return;
 			case "GLOBALDO":
 				GDo((GDo) n);
-				break;
+				return;
 				
 			case "ROLENAME":
 				RoleNode((RoleNode) n);
-				break;
+				return;
 			case "TYPENAME":
 				DataTypeNode((DataTypeNode) n);
-				break;
+				return;
 			case "SIGNAME":
 				MessageSigNameNode((MessageSigNameNode) n);
-				break;
+				return;
 			case "RECURSIONVAR":
 				RecVarNode((RecVarNode) n);
-				break;
+				return;
 			case "OPNAME":
 				OpNode((OpNode) n);
-				break;
+				return;
 			case "SIGPARAMNAME":
 				SigParamNode((SigParamNode) n);
-				break;
+				return;
 			case "TYPEPARAMNAME":
 				TypeParamNode((TypeParamNode) n);
-				break;
+				return;
 			case "MODULENAME":
 				ModuleNameNode((ModuleNameNode) n);
-				break;
+				return;
 
 			case "AMBIGUOUSNAME":
 				AmbigNameNode((AmbigNameNode) n);
-				break;
+				return;
 
-			default:  // Leaf "ID" nodes
-				//throw new RuntimeException("Unknown ANTLR node type: " + type);
-				break;
+			default:
+			{
+				// Similar to ScribTreeAdaptor::create (but no need to allow QUALIFIEDNAME any more)
+				if (ScribTreeAdaptor.TOKEN_NAMES.contains(tname))
+				{
+					if (!tname.equals(OpNode.EMPTY_OP_ID))  // TODO: refactor empty op hack
+					{
+						throw new RuntimeException("[TODO] Unhandled token type: " + tname);
+					}
+				}
+				// Leaf "ID" nodes
+			}
 		}
+	}
 
+	private void decorateChildren(CommonTree n)
+	{
 		((List<?>) n.getChildren()).stream().map(x -> (CommonTree) x)
 				.forEach(x -> decorate(x));
 	}

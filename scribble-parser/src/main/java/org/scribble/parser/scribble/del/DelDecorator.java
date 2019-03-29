@@ -11,9 +11,27 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast;
+package org.scribble.parser.scribble.del;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.ImportModule;
+import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.MessageSigNode;
+import org.scribble.ast.Module;
+import org.scribble.ast.ModuleDecl;
+import org.scribble.ast.NonRoleArg;
+import org.scribble.ast.NonRoleArgList;
+import org.scribble.ast.NonRoleParamDeclList;
+import org.scribble.ast.PayloadElemList;
+import org.scribble.ast.ProtocolModList;
+import org.scribble.ast.RoleArg;
+import org.scribble.ast.RoleArgList;
+import org.scribble.ast.RoleDecl;
+import org.scribble.ast.RoleDeclList;
+import org.scribble.ast.SigParamDecl;
+import org.scribble.ast.TypeParamDecl;
+import org.scribble.ast.UnaryPayloadElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDo;

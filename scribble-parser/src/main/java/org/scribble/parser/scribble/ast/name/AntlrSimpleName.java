@@ -76,7 +76,7 @@ public class AntlrSimpleName
 	{
 		String op = getName(ct);
 		return op.equals(ScribbleAntlrConstants.ANTLR_EMPTY_OPERATOR)
-				? (OpNode) af.SimpleNameNode(ct, OpKind.KIND, OpNode.EMPTY_OP_IDENTIFIER)
+				? (OpNode) af.SimpleNameNode(ct, OpKind.KIND, OpNode.EMPTY_OP_ID)
 				: (OpNode) af.SimpleNameNode(ct, OpKind.KIND, getName(ct));
 	}
 	

@@ -41,7 +41,7 @@ module tmp.Test;
 //- connections
 //- refactor ast to parser, refactor lang to type? -- separate protocol classes?
 //- remove unused visitors and del code -- move new visitors there?
-//- shorten class names, rename parser constants, fix scribtreeadaptor and deldecorator
+//- shorten class names (e.g., Protocol->Proto), rename parser constants, revise ScribTreeAdaptor and DelDecorator
 //- refactor model building
 //- refactor do param/arg ast classes
 //- refactor parsing and CL
