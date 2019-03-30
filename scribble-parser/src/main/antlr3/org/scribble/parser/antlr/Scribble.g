@@ -94,7 +94,9 @@ tokens
 	
 	//NAME = 'name';
 	AMBIGUOUSNAME = 'AMBIGUOUSNAME';
-	QUALIFIEDNAME = 'QUALIFIEDNAME';
+	QUALIFIEDNAME = 'QUALIFIEDNAME';  
+			// N.B. an intermediate node type, not an actual ScribNode -- "re-parsed" internally by parsePayloadElem/NonRoleArg
+			// No relation to abstract AST class, QualifiedName
 
 	MODULENAME = 'MODULENAME';
 

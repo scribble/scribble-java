@@ -13,7 +13,9 @@
  */
 package org.scribble.parser.scribble.del;
 
+import org.scribble.ast.AuxMod;
 import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.MessageSigNode;
@@ -48,6 +50,7 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
@@ -55,74 +58,93 @@ import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.ast.name.simple.TypeParamNode;
 
 
-// In ast package to access protected non-defensive del setter
+// A dec method for each AST class
+// Wach method named after the class name -- currently dispatched by reflection
 public interface DelDecorator
 {
 	void decorate(ScribNode n);
 	
-	// TODO: make void return types to be more clear about non-defensiveness
 	void Module(Module m);
 
-	void ModuleDecl(ModuleDecl md);
-	void ImportModule(ImportModule im);
+	void ModuleDecl(ModuleDecl n);
+	void ImportModule(ImportModule n);
 	
-	void MessageSigNameDecl(MessageSigNameDecl sd);
-	void DataTypeDecl(DataTypeDecl td);
+	void MessageSigNameDecl(MessageSigNameDecl n);
+	void DataTypeDecl(DataTypeDecl n);
 
-	void GProtocolDecl(GProtocolDecl gpd);
-	void ProtocolModList(ProtocolModList mods);
+	void GProtocolDecl(GProtocolDecl n);
+	void ProtocolModList(ProtocolModList n);
+	void AuxMod(AuxMod n);
+	void ExplicitMod(ExplicitMod n);
 
-	void GProtocolHeader(GProtocolHeader gph);
-	void RoleDeclList(RoleDeclList rds);
-	void RoleDecl(RoleDecl rd);
-	void NonRoleParamDeclList(NonRoleParamDeclList pds);
+	void GProtocolHeader(GProtocolHeader n);
+	void RoleDeclList(RoleDeclList n);
+	void RoleDecl(RoleDecl n);
+	void NonRoleParamDeclList(NonRoleParamDeclList n);
 	//<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> name);
-	void TypeParamDecl(TypeParamDecl td);
-	void SigParamDecl(SigParamDecl sd);
+	void TypeParamDecl(TypeParamDecl n);
+	void SigParamDecl(SigParamDecl n);
 	
-	void GProtocolDef(GProtocolDef gpd);
-	void GProtocolBlock(GProtocolBlock gpb);
-	void GInteractionSeq(GInteractionSeq gis);
+	void GProtocolDef(GProtocolDef n);
+	void GProtocolBlock(GProtocolBlock n);
+	void GInteractionSeq(GInteractionSeq n);
 
-	void GMessageTransfer(GMessageTransfer gmt);
+	void GMessageTransfer(GMessageTransfer n);
 	/*GConnect GConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
 	GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest);
 	GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);*/
-	void GChoice(GChoice gc);
-	void GRecursion(GRecursion gr);
-	void GContinue(GContinue gc);
-	void GDo(GDo gd);
+	void GChoice(GChoice n);
+	void GRecursion(GRecursion n);
+	void GContinue(GContinue n);
+	void GDo(GDo n);
 	
 	void MessageSigNode(MessageSigNode n);
-	void PayloadElemList(PayloadElemList pay);
-	void UnaryPayloadElem(UnaryPayloadElem<?> e);
-
+	void PayloadElemList(PayloadElemList n);
+	void UnaryPayloadElem(UnaryPayloadElem<?> n);
 	/*GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
 	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);*/
 	
-	void RoleArgList(RoleArgList rs);
+	void RoleArgList(RoleArgList n);
 	void RoleArg(RoleArg r);
-	void NonRoleArgList(NonRoleArgList as);
-	void NonRoleArg(NonRoleArg a);
+	void NonRoleArgList(NonRoleArgList n);
+	void NonRoleArg(NonRoleArg n);
 
 	/*<K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier);
 	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source, K kind, String... elems);*/
 
-	void RecVarNode(RecVarNode rv);
-	void RoleNode(RoleNode r);
-	void OpNode(OpNode op);
-	void MessageSigNameNode(MessageSigNameNode mn);
-	void DataTypeNode(DataTypeNode dn);
-	void ModuleNameNode(ModuleNameNode mn);
-	void GProtocolNameNode(GProtocolNameNode gpn);
-	void LProtocolNameNode(LProtocolNameNode lpn);
+	void RecVarNode(RecVarNode n);
+	void RoleNode(RoleNode n);
+	void OpNode(OpNode n);
+	void MessageSigNameNode(MessageSigNameNode n);
+	void DataTypeNode(DataTypeNode n);
+	void ModuleNameNode(ModuleNameNode n);
+	void GProtocolNameNode(GProtocolNameNode n);
+	void LProtocolNameNode(LProtocolNameNode n);
 	
-	void AmbigNameNode(AmbigNameNode an);
+	void AmbigNameNode(AmbigNameNode n);
+	void IdNode(IdNode n);
 
 	//<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier);
-	void SigParamNode(SigParamNode sp);
-	void TypeParamNode(TypeParamNode tp);
+	void SigParamNode(SigParamNode n);
+	void TypeParamNode(TypeParamNode n);
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/*DummyProjectionRoleNode DummyProjectionRoleNode();
 
 	LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def);  // Not currently used -- local protos not parsed, only projected

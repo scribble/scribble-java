@@ -43,7 +43,7 @@ module tmp.Test;
 //- remove unused visitors and del code -- move new visitors there?
 //- shorten class names (e.g., Protocol->Proto), rename parser constants, revise ScribTreeAdaptor and DelDecorator
 //- refactor model building
-//- refactor do param/arg ast classes
+//- refactor do param/arg ast classes -- generally clean up AST class hierarchy
 //- refactor parsing and CL
 //- check demos
 

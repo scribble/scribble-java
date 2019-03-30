@@ -16,7 +16,9 @@ package org.scribble.parser.scribble.del;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.scribble.ast.AuxMod;
 import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.MessageSigNode;
@@ -52,6 +54,7 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
@@ -106,14 +109,10 @@ public class DelDecoratorImpl implements DelDecorator
 		try
 		{
 			String cname = n.getClass().getName();
-			if (!(cname.equals("org.scribble.ast.name.simple.IdNode")
-					|| cname.equals("org.scribble.ast.AuxMod")))  // FIXME: add del methods for these
-			{
-				String mname = cname.substring(cname.lastIndexOf('.')+1, cname.length());
-				Class<?> param = Class.forName(cname);
-				Method m = ddec.getMethod(mname, param);
-				m.invoke(this, n);
-			}
+			String mname = cname.substring(cname.lastIndexOf('.')+1, cname.length());
+			Class<?> param = Class.forName(cname);
+			Method m = ddec.getMethod(mname, param);
+			m.invoke(this, n);
 		}
 		catch (NoSuchMethodException | SecurityException | ClassNotFoundException
 				| IllegalAccessException | IllegalArgumentException
@@ -127,23 +126,6 @@ public class DelDecoratorImpl implements DelDecorator
 	{
 		n.getChildren().stream().forEach(x -> decorate(x));
 	}
-
-	/*@Override
-	public GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
-	{
-		GDelegationElem de = new GDelegationElem(source, proto, role);
-		//de = del(de, createDefaultDelegate());
-		de = setDel(de, new GDelegationElemDel());  // FIXME: GDelegationElemDel
-		return de;
-	}
-
-	@Override
-	public LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode proto)
-	{
-		LDelegationElem de = new LDelegationElem(source, proto);
-		de = setDel(de, createDefaultDelegate());
-		return de;
-	}*/
 	
 	@Override
 	public void Module(Module m)
@@ -185,6 +167,18 @@ public class DelDecoratorImpl implements DelDecorator
 	public void ProtocolModList(ProtocolModList mods)
 	{
 		setDel(mods, createDefaultDelegate());
+	}
+
+	@Override
+	public void AuxMod(AuxMod n)
+	{
+		setDel(n, createDefaultDelegate());
+	}
+
+	@Override
+	public void ExplicitMod(ExplicitMod n)
+	{
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
@@ -322,6 +316,23 @@ public class DelDecoratorImpl implements DelDecorator
 	{
 		setDel(e, createDefaultDelegate());
 	}
+
+	/*@Override
+	public GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
+	{
+		GDelegationElem de = new GDelegationElem(source, proto, role);
+		//de = del(de, createDefaultDelegate());
+		de = setDel(de, new GDelegationElemDel());  // FIXME: GDelegationElemDel
+		return de;
+	}
+
+	@Override
+	public LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode proto)
+	{
+		LDelegationElem de = new LDelegationElem(source, proto);
+		de = setDel(de, createDefaultDelegate());
+		return de;
+	}*/
 
 	@Override
 	public void RoleArgList(RoleArgList rs)
@@ -481,6 +492,12 @@ public class DelDecoratorImpl implements DelDecorator
 	public void AmbigNameNode(AmbigNameNode an)
 	{
 		setDel(an, new AmbigNameNodeDel());
+	}
+
+	@Override
+	public void IdNode(IdNode an)
+	{
+		setDel(an, createDefaultDelegate());
 	}
 
 	/*@Override
