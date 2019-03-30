@@ -29,7 +29,7 @@ public interface PayloadElemType<K extends PayloadTypeKind> extends Arg<K>
 		return false;
 	}
 	
-	/*public boolean isLDelegationType()
+	/*public boolean isLDelegationType()  // Not currently used
 	{
 		return true;
 	}*/

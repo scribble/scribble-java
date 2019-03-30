@@ -1,12 +1,21 @@
 package org.scribble.lang;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.type.Message;
+import org.scribble.type.MessageSig;
+import org.scribble.type.Payload;
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.DataType;
+import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageSigName;
+import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
 public abstract class MessageTransfer<K extends ProtocolKind>
@@ -34,6 +43,32 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 	{
 		// Inlcudes self
 		return Stream.of(this.src, this.dst).collect(Collectors.toSet());
+	}
+
+	@Override
+	public List<ModuleName> getDependencies()
+	{
+		List<ModuleName> res = new LinkedList<>();
+		if (this.msg.isMessageSigName())
+		{
+			res.add(((MessageSigName) this.msg).getPrefix());
+		}
+		else //if (this.msg.isMessageSig)
+		{
+			Payload pay = ((MessageSig) this.msg).payload;
+			for (PayloadElemType<?> p : pay.elems)
+			{
+				if (p.isDataType())
+				{
+					res.add(((DataType) p).getPrefix());
+				}
+				else //if (p.isGDelegationType())
+				{
+					res.add(((GDelegationType) p).getGlobalProtocol().getPrefix());
+				}
+			}
+		}
+		return res;
 	}
 	
 	@Override

@@ -15,20 +15,21 @@ package org.scribble.type;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.scribble.type.kind.Kind;
 import org.scribble.type.kind.PayloadTypeKind;
 import org.scribble.type.name.PayloadElemType;
 
 public class Payload
 {
-	public static final Payload EMPTY_PAYLOAD = new Payload(Collections.emptyList());
+	public static final Payload EMPTY_PAYLOAD = new Payload(
+			Collections.emptyList());
 	
 	public final List<PayloadElemType<? extends PayloadTypeKind>> elems;
-	
-	public Payload(List<PayloadElemType<? extends PayloadTypeKind>> payload)
+
+	public Payload(List<PayloadElemType<? extends PayloadTypeKind>> elems)
 	{
-		this.elems = payload;
+		this.elems = Collections.unmodifiableList(elems);
 	}
 	
 	public boolean isEmpty()
@@ -61,16 +62,8 @@ public class Payload
 	@Override
 	public String toString()
 	{
-		if (this.elems.isEmpty())
-		{
-			return "()";
-		}
-		String payload = "(" + this.elems.get(0);
-		for (PayloadElemType<? extends Kind> pt : this.elems.subList(1, this.elems.size()))
-		{
-			payload+= ", " + pt;
-		}
-		return payload + ")";
+		return "(" + this.elems.stream().map(x -> x.toString())
+				.collect(Collectors.joining(", ")) + ")";
 	}
 	
 	/*@Override

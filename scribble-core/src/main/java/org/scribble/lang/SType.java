@@ -1,9 +1,11 @@
 package org.scribble.lang;
 
+import java.util.List;
 import java.util.Set;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
 
 // CHECKME: move to type.sess?
@@ -31,6 +33,9 @@ public interface SType<K extends ProtocolKind>
 	// Unsupported for Do
 	// FIXME: repeat recvar names, including non-shadowing (e.g., choice cases)
 	SType<K> unfoldAllOnce(STypeUnfolder<K> u);
+	
+	// Returns *all* modules (SType has no notion of Module)
+	List<ModuleName> getDependencies();
 	
 	// Call this using: them.canEquals(this) 
 	boolean canEquals(Object o);

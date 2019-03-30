@@ -18,7 +18,8 @@ import org.scribble.type.kind.DataTypeKind;
 
 // Potentially qualified/canonical payload type name; not the AST primitive identifier
 // FIXME: record "external type name" from DataTypeDecl (for API gen)?  cf. OutputSockGen#addSendOpParams
-public class DataType extends MemberName<DataTypeKind> implements PayloadElemType<DataTypeKind>
+public class DataType extends MemberName<DataTypeKind>
+		implements PayloadElemType<DataTypeKind>
 {
 	private static final long serialVersionUID = 1L;
 

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.type.Arg;
 import org.scribble.type.kind.NonRoleParamKind;
@@ -12,6 +13,7 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageSigName;
+import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
@@ -39,6 +41,12 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 	public Set<Role> getRoles()
 	{
 		throw new RuntimeException("Unsupported for Do: " + this);
+	}
+
+	@Override
+	public List<ModuleName> getDependencies()
+	{
+		return Stream.of(this.proto.getPrefix()).collect(Collectors.toList());
 	}
 
 	@Override

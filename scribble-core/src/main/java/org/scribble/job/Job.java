@@ -183,13 +183,13 @@ public class Job
 				LProtocol proj = inlined.project(self);  // Projection and inling commutative?
 				/*STypeUnfolder<Local> unf = new STypeUnfolder<>();
 				proj = proj.unfoldAllOnce(unf);*/
-				this.jctxt.addProjected(proj.fullname, proj);
+				this.jctxt.addInlinedProjected(proj.fullname, proj);
 				debugPrintln("\nProjected onto " + self + ":\n" + proj);
 			}
 		}
 				
 		for (Entry<LProtocolName, LProtocol> e : 
-				this.jctxt.getProjections().entrySet())
+				this.jctxt.getInlinedProjections().entrySet())
 		{
 			//LProtocolName lname = e.getKey();
 			LProtocol proj = e.getValue();
@@ -244,7 +244,7 @@ public class Job
 			inlined.checkExtChoiceConsistency();
 		}
 		
-		for (LProtocol proj : this.jctxt.getProjections().values())
+		for (LProtocol proj : this.jctxt.getInlinedProjections().values())
 		{
 			if (proj.isAux())  // CHECKME? e.g., bad.reach.globals.gdo.Test01b 
 			{
@@ -335,7 +335,7 @@ public class Job
 			Role role) throws ScribbleException
 	{
 		//Module root = this.jctxt.getProjection(fullname, role);
-		LProtocol proj = this.jctxt.getProjected(fullname, role);
+		LProtocol proj = this.jctxt.getInlinedProjected(fullname, role);
 		
 		// FIXME: dependencies, -project -- FIXME: need to create Module (with dependency imports)
 		Map<LProtocolName, Set<Role>> dependencies = 
@@ -343,6 +343,13 @@ public class Job
 				.getLProtoDeclChildren().get(0).del()).getProtocolDeclContext()
 						.getDependencyMap().getDependencies().get(role);*/
 				new HashMap<>();
+		
+		// FIXME TODO make LDo and add projection for Do, and do getDeps on that
+		// TODO make test framework to check proj->inline matches inline->proj
+		// TODO make test framework to check global-"proj"-via-taus matches actual proj -- matches mean language acceptance?
+		
+		List<ModuleName> deps = proj.getDependencies();
+		System.out.println("jjj1: " + proj + "\n" + deps);
 
 		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
 		/*return dependencies.keySet().stream().collect(

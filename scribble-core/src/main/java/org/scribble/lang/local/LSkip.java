@@ -1,5 +1,6 @@
 package org.scribble.lang.local;
 
+import java.util.List;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
@@ -9,6 +10,7 @@ import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
+import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
@@ -23,6 +25,12 @@ public class LSkip extends STypeBase<Local> implements LType
 	}
 	
 	public Set<Role> getRoles()
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+		
+	@Override
+	public List<ModuleName> getDependencies()
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}

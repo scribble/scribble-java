@@ -186,20 +186,20 @@ public class JobContext
 		return Collections.unmodifiableCollection(this.inlined.values());
 	}
 	
-	public void addProjected(LProtocolName fullname, LProtocol l)
+	public void addInlinedProjected(LProtocolName fullname, LProtocol l)
 	{
 		this.iprojected.put(fullname, l);
 	}
 	
+  // "Projected from inlined"
 	// FIXME TODO: refactor getProjected and getProjection properly
-	//public LProtocol getProjected(LProtocolName fullname)
-	public LProtocol getProjected(GProtocolName fullname, Role self)
+	public LProtocol getInlinedProjected(GProtocolName fullname, Role self)
 	{
 		LProtocolName p = Projector.projectFullProtocolName(fullname, self);
 		return this.iprojected.get(p);
 	}
 	
-	public Map<LProtocolName, LProtocol> getProjections()
+	public Map<LProtocolName, LProtocol> getInlinedProjections()
 	{
 		return Collections.unmodifiableMap(this.iprojected);
 	}

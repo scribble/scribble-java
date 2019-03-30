@@ -538,6 +538,46 @@ public class DelDecoratorImpl implements DelDecorator
 		setDel(tp, new NonRoleParamNodeDel());
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/*@Override
 	public DummyProjectionRoleNode DummyProjectionRoleNode()
 	{

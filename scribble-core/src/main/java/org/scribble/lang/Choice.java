@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
 
 public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
@@ -33,6 +34,13 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 		Set<Role> res = Stream.of(this.subj).collect(Collectors.toSet());
 		this.blocks.forEach(x -> res.addAll(x.getRoles()));
 		return res;
+	}
+
+	@Override
+	public List<ModuleName> getDependencies()
+	{
+		return this.blocks.stream().flatMap(x -> x.getDependencies().stream())
+				.collect(Collectors.toList());
 	}
 
 	//public abstract List<B> getBlocks();

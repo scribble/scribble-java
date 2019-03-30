@@ -1,10 +1,12 @@
 package org.scribble.lang;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
@@ -28,6 +30,12 @@ public abstract class Continue<K extends ProtocolKind>
 	public Set<Role> getRoles()
 	{
 		return Collections.emptySet();
+	}
+
+	@Override
+	public List<ModuleName> getDependencies()
+	{
+		return Collections.emptyList();
 	}
 
 	@Override

@@ -1,9 +1,11 @@
 package org.scribble.lang;
 
+import java.util.List;
 import java.util.Set;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
@@ -29,6 +31,12 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 	public Set<Role> getRoles()
 	{
 		return this.body.getRoles();
+	}
+
+	@Override
+	public List<ModuleName> getDependencies()
+	{
+		return this.body.getDependencies();
 	}
 
 	@Override

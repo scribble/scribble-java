@@ -40,6 +40,7 @@ module tmp.Test;
 //- drop unused recs -- partly done by inlining, but not done yet for subprotos
 //- connections
 //- refactor ast to parser, refactor lang to type? -- separate protocol classes?
+//- or: ast/del to new lang -- core lang to type, except protocol
 //- remove unused visitors and del code -- move new visitors there?
 //- shorten class names (e.g., Protocol->Proto), rename parser constants, revise ScribTreeAdaptor and DelDecorator
 //- refactor model building

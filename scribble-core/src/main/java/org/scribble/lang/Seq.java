@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
 
 // Could add B extends STTypeBase, K>, but it inflates type params quite a bit (e.g., Protocol)
@@ -29,6 +30,13 @@ public abstract class Seq<K extends ProtocolKind>
 	{
 		return this.elems.stream().flatMap(x -> x.getRoles().stream())
 				.collect(Collectors.toSet());
+	}
+		
+	@Override
+	public List<ModuleName> getDependencies()
+	{
+		return this.elems.stream().flatMap(x -> x.getDependencies().stream())
+				.collect(Collectors.toList());
 	}
 
 	@Override

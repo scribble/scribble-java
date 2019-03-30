@@ -9,6 +9,7 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
@@ -51,6 +52,12 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	public Set<Role> getRoles()
 	{
 		throw new RuntimeException("Unsupported for Protocol: " + this);
+	}
+	
+	@Override
+	public List<ModuleName> getDependencies()
+	{
+		return this.def.getDependencies();
 	}
 
 	@Override

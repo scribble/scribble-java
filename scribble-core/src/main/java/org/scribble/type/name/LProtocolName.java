@@ -16,7 +16,8 @@ package org.scribble.type.name;
 import org.scribble.type.kind.Local;
 
 
-public class LProtocolName extends ProtocolName<Local> implements PayloadElemType<Local> //-- not needed, deleg elems currently have to be (Global@Role)
+public class LProtocolName extends ProtocolName<Local> 
+		implements PayloadElemType<Local> // @Deprecated -- not used, deleg elems currently have to be (Global@Role)
 {
 	private static final long serialVersionUID = 1L;
 
