@@ -125,7 +125,7 @@ public class DelDecoratorImpl implements DelDecorator
 
 	private void decorateChildren(ScribNode n)
 	{
-		n.getChildren().stream().map(x -> (ScribNode) x).forEach(x -> decorate(x));
+		n.getChildren().stream().forEach(x -> decorate(x));
 	}
 
 	/*@Override
