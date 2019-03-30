@@ -87,7 +87,7 @@ import org.scribble.del.name.simple.RecVarNodeDel;
 import org.scribble.del.name.simple.RoleNodeDel;
 
 
-//FIXME TODO: refactor decoration methods into AST interface, to ensure they are implemented and called
+//CHECKME: refactor decoration methods into AST interface, to ensure they are implemented and called?
 //CHECKME: to what extent are del's still needed?
 public class DelDecoratorImpl implements DelDecorator
 {
@@ -103,7 +103,7 @@ public class DelDecoratorImpl implements DelDecorator
 		decorateChildren(n);
 	}
 
-	private void decorateNode(ScribNode n)
+	protected void decorateNode(ScribNode n)
 	{
 		Class<DelDecorator> ddec = DelDecorator.class;
 		try
@@ -122,9 +122,27 @@ public class DelDecoratorImpl implements DelDecorator
 		}
 	}
 
-	private void decorateChildren(ScribNode n)
+	protected void decorateChildren(ScribNode n)
 	{
 		n.getChildren().stream().forEach(x -> decorate(x));
+	}
+
+	protected ScribDel createDefaultDelegate()
+	{
+		return new DefaultDel();
+	}
+	
+	// Non-defensive
+	//protected static <T extends ScribNodeBase> T setDel(T n, ScribDel del)
+	protected static void setDel(ScribNodeBase n, ScribDel del)
+	{
+		n.setDel(del);
+		//return n;
+		/*// Defensive helper with cast check
+		ScribNodeBase copy = ((ScribNodeBase) n).clone();  // Need deep clone, since children have parent field
+		//copy.del = del;
+		copy.setDel(del);
+		return ScribUtil.castNodeByClass(n, copy);*/
 	}
 	
 	@Override
@@ -675,22 +693,4 @@ public class DelDecoratorImpl implements DelDecorator
 		ld = setDel(ld, new LDoDel());
 		return ld;
 	}*/
-
-	protected ScribDel createDefaultDelegate()
-	{
-		return new DefaultDel();
-	}
-	
-	// Non-defensive
-	//protected static <T extends ScribNodeBase> T setDel(T n, ScribDel del)
-	protected static void setDel(ScribNodeBase n, ScribDel del)
-	{
-		n.setDel(del);
-		//return n;
-		/*// Defensive helper with cast check
-		ScribNodeBase copy = ((ScribNodeBase) n).clone();  // Need deep clone, since children have parent field
-		//copy.del = del;
-		copy.setDel(del);
-		return ScribUtil.castNodeByClass(n, copy);*/
-	}
 }
