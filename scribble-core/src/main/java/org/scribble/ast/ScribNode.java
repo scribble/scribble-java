@@ -13,6 +13,8 @@
  */
 package org.scribble.ast;
 
+import java.util.List;
+
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
 import org.scribble.del.ScribDel;
@@ -27,6 +29,8 @@ import org.scribble.visit.Substitutor;
  */
 public interface ScribNode extends Tree
 {
+	List<ScribNode> getChildren();
+
 	//void setChildren(List<ScribNode> children);  // protected
 
   // Returns a deep clone but with fresh dels (i.e. dels not copied) -- use the af to build with fresh dels -- XXX

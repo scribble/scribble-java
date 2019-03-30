@@ -13,7 +13,6 @@
  */
 package org.scribble.parser.scribble.del;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.MessageSigNameDecl;
@@ -29,6 +28,7 @@ import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.SigParamDecl;
 import org.scribble.ast.TypeParamDecl;
 import org.scribble.ast.UnaryPayloadElem;
@@ -58,7 +58,7 @@ import org.scribble.ast.name.simple.TypeParamNode;
 // In ast package to access protected non-defensive del setter
 public interface DelDecorator
 {
-	void decorate(CommonTree n);
+	void decorate(ScribNode n);
 	
 	// TODO: make void return types to be more clear about non-defensiveness
 	void Module(Module m);

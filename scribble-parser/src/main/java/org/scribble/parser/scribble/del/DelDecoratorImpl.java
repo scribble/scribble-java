@@ -13,9 +13,9 @@
  */
 package org.scribble.parser.scribble.del;
 
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.MessageSigNameDecl;
@@ -31,6 +31,7 @@ import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.SigParamDecl;
 import org.scribble.ast.TypeParamDecl;
@@ -81,11 +82,10 @@ import org.scribble.del.name.simple.AmbigNameNodeDel;
 import org.scribble.del.name.simple.NonRoleParamNodeDel;
 import org.scribble.del.name.simple.RecVarNodeDel;
 import org.scribble.del.name.simple.RoleNodeDel;
-import org.scribble.parser.scribble.ScribTreeAdaptor;
 
 
 //FIXME TODO: refactor decoration methods into AST interface, to ensure they are implemented and called
-// In ast package to access protected non-defensive del setter
+//CHECKME: to what extent are del's still needed?
 public class DelDecoratorImpl implements DelDecorator
 {
 	public DelDecoratorImpl()
@@ -93,170 +93,39 @@ public class DelDecoratorImpl implements DelDecorator
 		
 	}
 	
-	// TODO: refactor, cf. AntlrToScribParserUtil
-	// Visitor enter/leave framework uses dels -- DelDecorator is a proto visitor (akin to parsing)
-	public void decorate(CommonTree n)
+	// Visitor enter/leave framework uses dels -- DelDecorator is a "protovisitor" (akin to parsing)
+	public void decorate(ScribNode n)
 	{
 		decorateNode(n);
 		decorateChildren(n);
 	}
 
-	private void decorateNode(CommonTree n)
+	private void decorateNode(ScribNode n)
 	{
-		String tname = n.getToken().getText();  // CHECKME: cases on Token (as currently), or refactor by Scrib AST class?
-		
-		//...HERE: use reflection to dispatch by AST class name
-		
-		switch (tname)
+		Class<DelDecorator> ddec = DelDecorator.class;
+		try
 		{
-			case "MODULE":
-				Module((Module) n);
-				return;
-			case "MODULEDECL":
-				ModuleDecl((ModuleDecl) n);
-				return;
-
-			case "IMPORTMODULE":
-				ImportModule((ImportModule) n);
-				return;
-
-			case "MESSAGESIGNATUREDECL":      //return AntlrMessageSigDecl.parseMessageSigDecl(this, ct, af);
-				MessageSigNameDecl((MessageSigNameDecl) n);
-				return;
-			case "PAYLOADTYPEDECL":           //return AntlrDataTypeDecl.parseDataTypeDecl(this, ct, af);*/
-				DataTypeDecl((DataTypeDecl) n);
-				return;
-
-			case "GLOBALPROTOCOLDECL":
-				GProtocolDecl((GProtocolDecl) n);
-				return;
-			case "GLOBALPROTOCOLDECLMODS":
-				ProtocolModList((ProtocolModList) n);
-				return;
-
-			case "GLOBALPROTOCOLHEADER":
-				GProtocolHeader((GProtocolHeader) n);
-				return;
-			case "GPROTOCOLNAME":
-				GProtocolNameNode((GProtocolNameNode) n);
-				return;
-			case "ROLEDECLLIST":
-				RoleDeclList((RoleDeclList) n);
-				return;
-			case "ROLEDECL":
-				RoleDecl((RoleDecl) n);
-				return;
-			case "PARAMETERDECLLIST":
-			//case EMPTY_PARAMETERDECLLST:
-				NonRoleParamDeclList((NonRoleParamDeclList) n);
-				return;
-			case "TYPEPARAMDECL":
-				TypeParamDecl((TypeParamDecl) n);
-				return;
-			case "SIGPARAMDECL":
-				SigParamDecl((SigParamDecl) n);
-				return;
-
-			case "GLOBALPROTOCOLDEF":
-				GProtocolDef((GProtocolDef) n);
-				return;
-			case "GLOBALPROTOCOLBLOCK":
-				GProtocolBlock((GProtocolBlock) n);
-				return;
-			case "GLOBALINTERACTIONSEQUENCE":
-				GInteractionSeq((GInteractionSeq) n);
-				return;
-
-			case "MESSAGESIGNATURE":
-				MessageSigNode((MessageSigNode) n);
-				return;
-			case "PAYLOAD":
-				PayloadElemList((PayloadElemList) n);
-				return;
-			case "UNARYPAYLOADELEM":
-				UnaryPayloadElem((UnaryPayloadElem<?>) n);
-				return;
-
-			case "ROLEINSTANTIATIONLIST":     
-				RoleArgList((RoleArgList) n);
-				return;
-			case "ROLEINSTANTIATION":         
-				RoleArg((RoleArg) n);
-				return;
-			case "ARGUMENTINSTANTIATIONLIST": 
-				NonRoleArgList((NonRoleArgList) n);
-				return;
-			case "NONROLEARG": 
-				NonRoleArg((NonRoleArg) n);
-				return;
-
-			case "GLOBALMESSAGETRANSFER":
-				GMessageTransfer((GMessageTransfer) n);
-				return;
-			/*case GLOBALCONNECT:             return AntlrGConnect.parseGConnect(this, ct, af);
-			case GLOBALDISCONNECT:          return AntlrGDisconnect.parseGDisconnect(this, ct, af);
-			case GLOBALWRAP:                return AntlrGWrap.parseGWrap(this, ct, af);*/
-			case "GLOBALCHOICE":              
-				GChoice((GChoice) n);
-				return;
-			case "GLOBALRECURSION":
-				GRecursion((GRecursion) n);
-				return;
-			case "GLOBALCONTINUE":
-				GContinue((GContinue) n);
-				return;
-			case "GLOBALDO":
-				GDo((GDo) n);
-				return;
-				
-			case "ROLENAME":
-				RoleNode((RoleNode) n);
-				return;
-			case "TYPENAME":
-				DataTypeNode((DataTypeNode) n);
-				return;
-			case "SIGNAME":
-				MessageSigNameNode((MessageSigNameNode) n);
-				return;
-			case "RECURSIONVAR":
-				RecVarNode((RecVarNode) n);
-				return;
-			case "OPNAME":
-				OpNode((OpNode) n);
-				return;
-			case "SIGPARAMNAME":
-				SigParamNode((SigParamNode) n);
-				return;
-			case "TYPEPARAMNAME":
-				TypeParamNode((TypeParamNode) n);
-				return;
-			case "MODULENAME":
-				ModuleNameNode((ModuleNameNode) n);
-				return;
-
-			case "AMBIGUOUSNAME":
-				AmbigNameNode((AmbigNameNode) n);
-				return;
-
-			default:
+			String cname = n.getClass().getName();
+			if (!(cname.equals("org.scribble.ast.name.simple.IdNode")
+					|| cname.equals("org.scribble.ast.AuxMod")))  // FIXME: add del methods for these
 			{
-				// Similar to ScribTreeAdaptor::create (but no need to allow QUALIFIEDNAME any more)
-				if (ScribTreeAdaptor.TOKEN_NAMES.contains(tname))
-				{
-					if (!tname.equals(OpNode.EMPTY_OP_ID))  // TODO: refactor empty op hack
-					{
-						throw new RuntimeException("[TODO] Unhandled token type: " + tname);
-					}
-				}
-				// Leaf "ID" nodes
+				String mname = cname.substring(cname.lastIndexOf('.')+1, cname.length());
+				Class<?> param = Class.forName(cname);
+				Method m = ddec.getMethod(mname, param);
+				m.invoke(this, n);
 			}
+		}
+		catch (NoSuchMethodException | SecurityException | ClassNotFoundException
+				| IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e)
+		{
+			throw new RuntimeException(e);
 		}
 	}
 
-	private void decorateChildren(CommonTree n)
+	private void decorateChildren(ScribNode n)
 	{
-		((List<?>) n.getChildren()).stream().map(x -> (CommonTree) x)
-				.forEach(x -> decorate(x));
+		n.getChildren().stream().map(x -> (ScribNode) x).forEach(x -> decorate(x));
 	}
 
 	/*@Override

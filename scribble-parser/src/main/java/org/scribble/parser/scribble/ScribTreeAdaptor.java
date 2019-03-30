@@ -66,7 +66,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 	{
 		String tname = t.getText();
 		
-		/*  // Could try to use a naming convention between Token and AST class names for reflection
+		/*  // CHECKME: use a naming convention between Token and AST class names for reflection?
 		try
 		{
 			Constructor<? extends AstVisitor> cons = c.get Constructor(Job.class);

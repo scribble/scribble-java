@@ -48,11 +48,17 @@ module tmp.Test;
 //- check demos
 
 
+global protocol Foo(role A, role B)
+{
+	1() from A to B;	
+}
 
+
+/*
 explicit global protocol Foo(role A, role B, role C)
 {
 	0() connect A to B;
-	/*choice at A
+	choice at A
 	{
 		1() from A to B;
 		do Foo(A, B, C);
@@ -62,8 +68,9 @@ explicit global protocol Foo(role A, role B, role C)
 		2() from A to B;
 		foo() connect A to C;
 		3() from A to C;
-	}*/
+	}
 }
+//*/
 
 
 
