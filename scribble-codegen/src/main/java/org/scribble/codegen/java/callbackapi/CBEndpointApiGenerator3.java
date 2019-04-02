@@ -82,7 +82,7 @@ public class CBEndpointApiGenerator3
 	{
 		Map<String, String> res = new HashMap<>();
 
-		JobContext jc = this.job.getJobContext();
+		JobContext jc = this.job.getContext();
 		EState init = (this.job.config.minEfsm
 				? jc.getMinimisedEGraph(this.proto, this.self)
 				: jc.getEGraph(this.proto, this.self)
@@ -469,7 +469,7 @@ public class CBEndpointApiGenerator3
 	
 	protected String generateStateClass(EState s, String rootPack, EStateKind kind, String stateName, String endpointName)
 	{
-		Module main = this.job.getJobContext().getMainModule();
+		Module main = this.job.getContext().getMainModule();
 		
 		String stateKind;
 		switch (kind)
@@ -960,7 +960,7 @@ public class CBEndpointApiGenerator3
 	protected MessageSigNameDecl getMessageSigNameDecl(MessageSigName mid)
 	{
 		return (MessageSigNameDecl)
-				this.job.getJobContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
+				this.job.getContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
 					.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(mid.toString()))
 					.iterator().next();
 	}
@@ -968,7 +968,7 @@ public class CBEndpointApiGenerator3
 	//protected final Function<PayloadElemType<?>, String> getExtName = e ->
 	protected String getExtName(PayloadElemType<?> e)
 	{
-		String extName = this.job.getJobContext().getMainModule().getDataTypeDeclChild((DataType) e).extName;
+		String extName = this.job.getContext().getMainModule().getDataTypeDeclChild((DataType) e).extName;
 		return (extName.indexOf(".") != -1)
 				? extName.substring(extName.lastIndexOf(".")+1, extName.length())
 				: extName;

@@ -100,7 +100,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 			ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited)
 			throws ScribbleException
 	{
-		JobContext jcontext = builder.job.getJobContext();
+		JobContext jcontext = builder.job.getContext();
 		ModuleContext mcontext = builder.getModuleContext();
 		Do<?> doo = (Do<?>) visited;
 		ProtocolName<?> pn = doo.getProtocolNameNode().toName();  // leaveDisambiguation has fully qualified the target name

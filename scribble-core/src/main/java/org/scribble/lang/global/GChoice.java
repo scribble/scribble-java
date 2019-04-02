@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.Choice;
+import org.scribble.lang.Projector;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
@@ -65,17 +66,29 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	}
 	
 	@Override
-	public LType project(Role self)
+	public LType projectInlined(Role self)
+	{
+		return projectAux(self,
+				this.blocks.stream().map(x -> x.projectInlined(self)));
+	}
+	
+	private LType projectAux(Role self, Stream<LSeq> blocks)
 	{
 		Role subj = this.subj.equals(self) ? Role.SELF : this.subj;
-		List<LSeq> blocks = this.blocks.stream().map(x -> x.project(self))
+		List<LSeq> tmp = blocks
 				.filter(x -> !x.isEmpty())
 				.collect(Collectors.toList());
-		if (blocks.isEmpty())
+		if (tmp.isEmpty())
 		{
 			return LSkip.SKIP;  // CHECKME: OK, or "empty" choice at subj still important?
 		}
-		return new LChoice(null, subj, blocks);
+		return new LChoice(null, subj, tmp);
+	}
+	
+	@Override
+	public LType project(Projector v)
+	{
+		return projectAux(v.self, this.blocks.stream().map(x -> x.project(v)));
 	}
 
 	@Override

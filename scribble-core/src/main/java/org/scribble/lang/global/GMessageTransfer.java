@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.MessageTransfer;
+import org.scribble.lang.Projector;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
@@ -56,7 +57,7 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	}
 	
 	@Override
-	public LType project(Role self)
+	public LType projectInlined(Role self)
 	{
 		if (this.src.equals(self))
 		{
@@ -74,6 +75,12 @@ public class GMessageTransfer extends MessageTransfer<Global>
 		{
 			return LSkip.SKIP;
 		}
+	}
+
+	@Override
+	public LType project(Projector v)
+	{
+		return projectInlined(v.self);
 	}
 
 	@Override

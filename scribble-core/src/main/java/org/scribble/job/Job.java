@@ -16,7 +16,6 @@ package org.scribble.job;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.del.global.GProtocolDeclDel;
+import org.scribble.lang.Projector;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.global.GProtocol;
@@ -56,33 +56,31 @@ import org.scribble.visit.context.ModuleContextBuilder;
 import org.scribble.visit.context.ProjectedChoiceDoPruner;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.context.ProjectedRoleDeclFixer;
-import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.util.RoleCollector;
 import org.scribble.visit.validation.GProtocolValidator;
-import org.scribble.visit.wf.ExplicitCorrelationChecker;
 import org.scribble.visit.wf.NameDisambiguator;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job
 {
 	// Keys are full names
-	private final Map<ModuleName, ModuleContext> mctxts;  // CHECKME: constant?  move to JobConfig?
+	private final Map<ModuleName, ModuleContext> modcs;  // CHECKME: constant?  move to JobConfig?
 
 	public final JobConfig config;  // Immutable
 
-	private final JobContext jctxt;  // Mutable (Visitor passes replace modules)
+	private final JobContext context;  // Mutable (Visitor passes replace modules)
 	private final SGraphBuilderUtil sgbu;
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	public Job(Map<ModuleName, Module> parsed,
-			Map<ModuleName, ModuleContext> mctxts, JobConfig config)
+			Map<ModuleName, ModuleContext> modcs, JobConfig config)
 	{
-		this.mctxts = Collections.unmodifiableMap(mctxts);
+		this.modcs = Collections.unmodifiableMap(modcs);
 		this.config = config;
 		this.sgbu = config.sf.newSGraphBuilderUtil();
-		this.jctxt = new JobContext(this, parsed);  // Single instance per Job and should never be shared
+		this.context = new JobContext(this, parsed);  // Single instance per Job and should never be shared
 	}
 	
 	// Scribble extensions should override these "new" methods
@@ -125,20 +123,20 @@ public class Job
 		//runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		
 		// FIXME TODO: refactor into a runVisitorPassOnAllModules for SimpleVisitor (and add operation to ModuleDel)
-		Set<ModuleName> fullmodnames = this.jctxt.getFullModuleNames();
+		Set<ModuleName> fullmodnames = this.context.getFullModuleNames();
 		for (ModuleName fullmodname : fullmodnames)
 		{
-			Module mod = this.jctxt.getModule(fullmodname);
+			Module mod = this.context.getModule(fullmodname);
 			GTypeTranslator t = new GTypeTranslator(this, fullmodname);
 			for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
 			{
 				GProtocol g = (GProtocol) gpd.visitWith(t);
-				this.jctxt.addIntermediate(g.fullname, g);
-				debugPrintln("\nParsed:\n" + gpd + "\n\nScribble intermediary:\n" + g);
+				this.context.addIntermediate(g.fullname, g);
+				debugPrintln("\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
 			}
 		}
 				
-		for (GProtocol g : this.jctxt.getIntermediates())
+		for (GProtocol g : this.context.getIntermediates())
 		{
 			List<Arg<? extends NonRoleParamKind>> params = new LinkedList<>();
 			// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
@@ -163,38 +161,27 @@ public class Job
 			i.pushSig(sig);  // TODO: factor into constructor
 			GProtocol inlined = g.getInlined(i);
 			debugPrintln("\nSubprotocols inlined:\n" + inlined);
-			this.jctxt.addInlined(g.fullname, inlined);
+			this.context.addInlined(g.fullname, inlined);
 		}
 				
 		//runUnfoldingPass();
-		for (GProtocol inlined : this.jctxt.getInlined())
+		for (GProtocol inlined : this.context.getInlined())
 		{
 				STypeUnfolder<Global> unf1 = new STypeUnfolder<>();
 				//GTypeUnfolder unf2 = new GTypeUnfolder();
 				GType unf = (GType) inlined.unfoldAllOnce(unf1);//.unfoldAllOnce(unf2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 				debugPrintln("\nAll recursions unfolded once:\n" + unf);
 		}
-				
-		for (GProtocol g : this.jctxt.getIntermediates())
-		{
-			for (Role self : g.roles)
-			{
-				GProtocol inlined = this.jctxt.getInlined(g.fullname);
-				LProtocol proj = inlined.project(self);  // Projection and inling commutative?
-				/*STypeUnfolder<Local> unf = new STypeUnfolder<>();
-				proj = proj.unfoldAllOnce(unf);*/
-				this.jctxt.addInlinedProjected(proj.fullname, proj);
-				debugPrintln("\nProjected onto " + self + ":\n" + proj);
-			}
-		}
+		
+		runProjectionPasses();
 				
 		for (Entry<LProtocolName, LProtocol> e : 
-				this.jctxt.getInlinedProjections().entrySet())
+				this.context.getInlinedProjections().entrySet())
 		{
 			//LProtocolName lname = e.getKey();
 			LProtocol proj = e.getValue();
 			EGraph graph = proj.toEGraph(this);
-			this.jctxt.addEGraph(proj.fullname, graph);
+			this.context.addEGraph(proj.fullname, graph);
 			debugPrintln("\nEFSM for " + proj.fullname + ":\n" + graph.toDot());
 		}
 	}
@@ -217,10 +204,9 @@ public class Job
 				runVisitorPassOnAllModules(GProtocolValidator.class);
 			}
 		}*/
-		
+
 		//HERE WF (unfolding? unguarded-unfolder -- and lazy-unfolder-with-choice-pruning, e.g., bad.wfchoice.enabling.threeparty.Test02), projection, validation
-		
-		for (GProtocol inlined : this.jctxt.getInlined())
+		for (GProtocol inlined : this.context.getInlined())
 		{
 			//TODO: relegate to "warning"
 			// Check unused roles
@@ -244,7 +230,7 @@ public class Job
 			inlined.checkExtChoiceConsistency();
 		}
 		
-		for (LProtocol proj : this.jctxt.getInlinedProjections().values())
+		for (LProtocol proj : this.context.getInlinedProjections().values())
 		{
 			if (proj.isAux())  // CHECKME? e.g., bad.reach.globals.gdo.Test01b 
 			{
@@ -255,7 +241,7 @@ public class Job
 
 		GProtocolValidator checker = new GProtocolValidator(this);
 		//runVisitorPassOnAllModules(GProtocolValidator.class);
-		for (Module mod : this.jctxt.getParsed().values())
+		for (Module mod : this.context.getParsed().values())
 		{
 			// FIXME: refactor validation into lang.GProtocol
 			for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
@@ -297,12 +283,34 @@ public class Job
 	// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
 	protected void runProjectionPasses() throws ScribbleException
 	{
-		runVisitorPassOnAllModules(Projector.class);
+		/*runVisitorPassOnAllModules(Projector.class);
 		runProjectionContextBuildingPasses();
 		runProjectionUnfoldingPass();
 		if (!this.config.noAcceptCorrelationCheck)
 		{
 			runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
+		}*/
+				
+		for (GProtocol g : this.context.getIntermediates())
+		{
+			for (Role self : g.roles)
+			{
+				GProtocol inlined = this.context.getInlined(g.fullname);
+				LProtocol iproj = inlined.projectInlined(self);  // CHECKME: projection and inling commutative?
+				this.context.addInlinedProjection(iproj.fullname, iproj);
+				debugPrintln("\nProjected inlined onto " + self + ":\n" + iproj);
+			}
+		}
+
+		// Inlined already projected, used for do-projection
+		for (GProtocol g : this.context.getIntermediates())
+		{
+			for (Role self : g.roles)
+			{
+				LProtocol proj = g.project(new Projector(this, self));
+				this.context.addProjection(proj);
+				debugPrintln("\nProjected onto " + self + ":\n" + proj);
+			}
 		}
 	}
 
@@ -334,15 +342,17 @@ public class Job
 	public Map<LProtocolName, Module> getProjections(GProtocolName fullname,
 			Role role) throws ScribbleException
 	{
-		//Module root = this.jctxt.getProjection(fullname, role);
-		LProtocol proj = this.jctxt.getInlinedProjected(fullname, role);
+		//Module root = 
+		LProtocol proj =
+				this.context.getProjection(fullname, role);
+		//LProtocol proj = this.jctxt.getInlinedProjection(fullname, role);
 		
 		// FIXME: dependencies, -project -- FIXME: need to create Module (with dependency imports)
-		Map<LProtocolName, Set<Role>> dependencies = 
-				/*((LProtocolDeclDel) root
-				.getLProtoDeclChildren().get(0).del()).getProtocolDeclContext()
-						.getDependencyMap().getDependencies().get(role);*/
-				new HashMap<>();
+		/*Map<LProtocolName, Set<Role>> dependencies = 
+//				((LProtocolDeclDel) root
+//				.getLProtoDeclChildren().get(0).del()).getProtocolDeclContext()
+//						.getDependencyMap().getDependencies().get(role);
+				new HashMap<>();*/
 		
 		// FIXME TODO make LDo and add projection for Do, and do getDeps on that
 		// TODO make test framework to check proj->inline matches inline->proj
@@ -350,6 +360,8 @@ public class Job
 		
 		List<ModuleName> deps = proj.getDependencies();
 		System.out.println("jjj1: " + proj + "\n" + deps);
+		
+		//...HERE: build Modules for deps and return
 
 		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
 		/*return dependencies.keySet().stream().collect(
@@ -399,21 +411,21 @@ public class Job
 			throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on all modules:");
-		runVisitorPass(this.jctxt.getFullModuleNames(), c);
+		runVisitorPass(this.context.getFullModuleNames(), c);
 	}
 
 	public void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c)
 			throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on parsed modules:");
-		runVisitorPass(this.jctxt.getParsedFullModuleNames(), c);
+		runVisitorPass(this.context.getParsedFullModuleNames(), c);
 	}
 
 	public void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c)
 			throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on projected modules:");
-		runVisitorPass(this.jctxt.getProjectedFullModuleNames(), c);
+		runVisitorPass(this.context.getProjectedFullModuleNames(), c);
 	}
 
 	private void runVisitorPass(Set<ModuleName> modnames,
@@ -439,18 +451,18 @@ public class Job
 	private void runVisitorOnModule(ModuleName modname, AstVisitor nv)
 			throws ScribbleException
 	{
-		Module visited = (Module) this.jctxt.getModule(modname).accept(nv);
-		this.jctxt.replaceModule(visited);
+		Module visited = (Module) this.context.getModule(modname).accept(nv);
+		this.context.replaceModule(visited);
 	}
 	
-	public JobContext getJobContext()
+	public JobContext getContext()
 	{
-		return this.jctxt;
+		return this.context;
 	}
 	
 	public ModuleContext getModuleContext(ModuleName fullname)
 	{
-		return this.mctxts.get(fullname);
+		return this.modcs.get(fullname);
 	}
 	
 	public boolean isDebug()

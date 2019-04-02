@@ -64,7 +64,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
 		ModuleContext mc = fixer.getModuleContext();
-		JobContext jc = fixer.job.getJobContext();
+		JobContext jc = fixer.job.getContext();
 		Role subj = getTargetProtocolDecl(jc, mc).getDefChild().getBlockChild()
 				.getInteractSeqChild().getInteractionChildren().get(0)
 				.inferLocalChoiceSubject(fixer);

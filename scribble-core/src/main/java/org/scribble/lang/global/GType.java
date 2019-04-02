@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.Projector;
 import org.scribble.lang.SType;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -14,16 +15,8 @@ import org.scribble.type.name.Role;
 
 public interface GType extends SType<Global>
 {
-	@Override
-	GType substitute(Substitutions subs);
-
-	@Override
-	GType getInlined(STypeInliner i);//, Deque<SubprotoSig> stack);
-
-	@Override
-	SType<Global> unfoldAllOnce(STypeUnfolder<Global> u);  // Not GType return, o/w need to override again in GDo
-	
-	LType project(Role self);
+	LType projectInlined(Role self);
+	LType project(Projector v);
 	
 	// Pre: use on inlined or later (unsupported for Do, also Protocol)
 	// enabled treated immutably
@@ -36,5 +29,14 @@ public interface GType extends SType<Global>
 	// Returns enablers post visiting
 	Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
 			throws ScribbleException;
+
+	@Override
+	GType substitute(Substitutions subs);
+
+	@Override
+	GType getInlined(STypeInliner i);//, Deque<SubprotoSig> stack);
+
+	@Override
+	SType<Global> unfoldAllOnce(STypeUnfolder<Global> u);  // Not GType return, o/w need to override again in GDo
 }
 

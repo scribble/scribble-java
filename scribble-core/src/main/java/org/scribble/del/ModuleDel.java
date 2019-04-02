@@ -60,7 +60,7 @@ public class ModuleDel extends ScribDelBase
 			ModuleContextBuilder builder) throws ScribbleException
 	{
 		builder.setModuleContext(new ModuleContext(
-				builder.job.getJobContext().getParsed(), (Module) child));
+				builder.job.getContext().getParsed(), (Module) child));
 				// ModuleContext building is done solely by "new ModuleContext" (no deeper visiting needed)
 				// The only thing ModuleContextBuilder really does is to set the ModuleContext in ModuleDel
 				// FIXME: obtain from MainContext instead of creating on entry by this visitor
@@ -135,9 +135,19 @@ public class ModuleDel extends ScribDelBase
 	}
 
 	@Override
-	public Module leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited)
+	public Module leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited)
 	{
-		proj.job.getJobContext().addProjections(proj.getProjections());
+		//proj.job.getJobContext().addProjections(proj.getProjections());
+		/*Map<GProtocolName, Map<Role, LProtocol>> res = new HashMap<>();
+		for (Entry<GProtocolName, Map<Role, Module>> e : proj.getProjections()
+				.entrySet())
+		{
+			Map<Role, LProtocolDecl> tmp = e.getValue().entrySet().stream()
+					.collect(Collectors.toMap(Entry::getKey,
+							x -> x.getValue().getLProtoDeclChildren().get(0)));
+			res.put(e.getKey(), tmp);  // FIXME: need LTypeTranslator (local intermediate)
+		}*/
 		return (Module) visited;
 	}
 
@@ -159,12 +169,15 @@ public class ModuleDel extends ScribDelBase
 			{
 				LProtocolName targetsimpname = Projector
 						.projectSimpleProtocolName(gpn.getSimpleName(), role);
-				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(proj.job.config.af, //null,  // CHECKME? projected import sources?
+				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(
+						proj.job.config.af,
+						//null,  // CHECKME? projected import sources?
 
-						new CommonTree(),  // FIXME -- 
+						new CommonTree(),  // TODO FIXME -- 
 
 							gpn.getPrefix(), targetsimpname);
-				if (!targetmodname.toName().equals(modname.toName()))  // Self dependency -- each projected local is in its own module now, so can compare module names
+				if (!targetmodname.toName().equals(modname.toName()))  
+							// Self dependency -- each projected local is in its own module now, so can compare module names
 				{
 					imports
 							.add(proj.job.config.af.ImportModule(null, targetmodname, null));

@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.Projector;
 import org.scribble.lang.Protocol;
 import org.scribble.lang.ProtocolMod;
 import org.scribble.lang.STypeInliner;
@@ -26,7 +27,6 @@ import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
-import org.scribble.visit.context.Projector;
 
 public class GProtocol extends
 		Protocol<Global, GProtocolName, GSeq> implements GType
@@ -86,11 +86,16 @@ public class GProtocol extends
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
 	@Override
-	public LProjection project(Role self)
+	public LProjection projectInlined(Role self)
 	{
-		LProtocolName fullname = Projector.projectFullProtocolName(this.fullname,
-				self);
-		LSeq body = (LSeq) this.def.project(self);
+		LSeq body = (LSeq) this.def.projectInlined(self);
+		return projectAux(self, body);
+	}
+	
+	private LProjection projectAux(Role self, LSeq body)
+	{
+		LProtocolName fullname = org.scribble.visit.context.Projector
+				.projectFullProtocolName(this.fullname, self);
 		Set<Role> tmp = body.getRoles();
 		List<Role> roles = this.roles.stream()
 				.map(x -> x.equals(self) ? Role.SELF : x).filter(x -> tmp.contains(x))
@@ -99,6 +104,13 @@ public class GProtocol extends
 				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
 		return new LProjection(this.mods, this.fullname, self, fullname, roles, params,
 				body);
+	}
+
+	@Override
+	public LProjection project(Projector v)
+	{
+		LSeq body = (LSeq) this.def.project(v);
+		return projectAux(v.self, body);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.Projector;
 import org.scribble.lang.Recursion;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -67,10 +68,15 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 
 	@Override
-	public LType project(Role self)
+	public LType projectInlined(Role self)
 	{
-		LSeq body = this.body.project(self);
-		if (body.isEmpty())
+		LSeq body = this.body.projectInlined(self);
+		return projectAux(body);
+	}
+
+	private LType projectAux(LSeq body)
+	{
+		if (body.isEmpty())  // N.B. projection is doing empty-rec pruning
 		{
 			return LSkip.SKIP;
 		}
@@ -88,6 +94,13 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 			return LSkip.SKIP;
 		}
 		return new LRecursion(null, this.recvar, body);
+	}
+
+	@Override
+	public LType project(Projector v)
+	{
+		LSeq body = this.body.project(v);
+		return projectAux(body);
 	}
 
 	@Override

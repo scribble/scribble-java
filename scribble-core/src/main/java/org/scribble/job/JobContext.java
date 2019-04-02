@@ -46,11 +46,15 @@ public class JobContext
 	
 	// Modules that were originally parsed (obtained from MainContext), but may be modified during the Job
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
+	// CHECKME: separate original parsed from "working set"?
 	private final Map<ModuleName, Module> parsed;// = new HashMap<>();
 	
-	// Projected (i.e., created) modules
+	// Projected (i.e., created) modules -- no: LProtocol
 	// LProtocolName is the full local protocol name (module name is the prefix)
-	private final Map<LProtocolName, Module> projected = new HashMap<>();
+	// LProtocolName key is LProtocol value fullname (i.e., redundant)
+	private final //Map<LProtocolName, Module> 
+			Map<LProtocolName, LProtocol>
+			projected = new HashMap<>();
 	
 	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
 	private final Map<GProtocolName, GProtocol> intermed = new HashMap<>();  // Keys are full names (though GProtocol already includes full name)
@@ -124,12 +128,12 @@ public class JobContext
 		{
 			return this.parsed.get(fullname);
 		}
-		else if (isProjectedModule(fullname))
+		/*else if (isProjectedModule(fullname))
 		{
 			return this.projected.get(this.projected.keySet().stream()
 					.filter(lpn -> lpn.getPrefix().equals(fullname))
 					.collect(Collectors.toList()).get(0));
-		}
+		}*/
 		else
 		{
 			throw new RuntimeException("Unknown module: " + fullname);
@@ -143,10 +147,10 @@ public class JobContext
 		{
 			this.parsed.put(fullname, module);
 		}
-		else if (isProjectedModule(fullname))
+		/*else if (isProjectedModule(fullname))
 		{
 			addProjection(module);
-		}
+		}*/
 		else
 		{
 			throw new RuntimeException("Unknown module: " + fullname);
@@ -186,17 +190,25 @@ public class JobContext
 		return Collections.unmodifiableCollection(this.inlined.values());
 	}
 	
-	public void addInlinedProjected(LProtocolName fullname, LProtocol l)
+	public void addInlinedProjection(LProtocolName fullname, LProtocol l)
 	{
 		this.iprojected.put(fullname, l);
 	}
 	
   // "Projected from inlined"
 	// FIXME TODO: refactor getProjected and getProjection properly
-	public LProtocol getInlinedProjected(GProtocolName fullname, Role self)
+	public LProtocol getInlinedProjection(GProtocolName fullname, Role self)
 	{
 		LProtocolName p = Projector.projectFullProtocolName(fullname, self);
-		return this.iprojected.get(p);
+		
+		System.out.println("jjjj5: " + p + " ,, " + this.iprojected.keySet());
+		
+		return getInlinedProjection(p);
+	}
+
+	public LProtocol getInlinedProjection(LProtocolName fullname)
+	{
+		return this.iprojected.get(fullname);
 	}
 	
 	public Map<LProtocolName, LProtocol> getInlinedProjections()
@@ -205,11 +217,12 @@ public class JobContext
 	}
 	
 	// Make context immutable? (will need to assign updated context back to Job) -- will also need to do for Module replacing
-	public void addProjections(Map<GProtocolName, Map<Role, Module>> projections)
+	public void addProjections(Map<GProtocolName, //Map<Role, Module>> projections)
+				Map<Role, LProtocol>> projs)
 	{
-		for (GProtocolName gpn : projections.keySet())
+		for (GProtocolName g : projs.keySet())
 		{
-			Map<Role, Module> mods = projections.get(gpn);
+			Map<Role, LProtocol> mods = projs.get(g);
 			for (Role role : mods.keySet())
 			{
 				addProjection(mods.get(role));
@@ -233,26 +246,36 @@ public class JobContext
 		}*/
 	}
 
-	private void addProjection(Module mod)
+	//private void addProjection(Module mod)
+	public void addProjection(LProtocol p)
 	{
-		LProtocolName lpn = (LProtocolName) mod.getProtoDeclChildren().get(0)
+		/*LProtocolName lpn = (LProtocolName) mod.getProtoDeclChildren().get(0)
 				.getFullMemberName(mod);
-		this.projected.put(lpn, mod);
+		this.projected.put(lpn, mod);*/
+		this.projected.put(p.fullname, p);
 	}
 	
-	public Module getProjection(GProtocolName fullname, Role role)
+	public //Module 
+			LProtocol getProjection(GProtocolName fullname, Role role)
 			throws ScribbleException
 	{
-		Module proj = this.projected
-				.get(Projector.projectFullProtocolName(fullname, role));
-		if (proj == null)
+		return getProjection(Projector.projectFullProtocolName(fullname, role));
+	}
+
+	public //Module 
+			LProtocol getProjection(LProtocolName fullname)
+			//throws ScribbleException
+	{
+		/*Module proj = this.projected.get(fullname);
+		if (proj == null)*/
+		/*if (!this.projected.containsKey(fullname))
 		{
 			throw new ScribbleException(
-					"Projection not found: " + fullname + ", " + role);
+					"Projection not found: " + fullname);
 					// E.g. disamb/enabling error before projection passes (e.g. CommandLine -fsm arg)
-					// CHECKME: should not occur any more
-		}
-		return proj;
+					//CHECKME: should not occur any more?
+		}*/
+		return this.projected.get(fullname);
 	}
 	
 	protected void addEGraph(LProtocolName fullname, EGraph graph)

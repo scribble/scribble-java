@@ -13,7 +13,10 @@ import org.scribble.type.name.RecVar;
 
 public interface LType extends SType<Local>
 {
+	//Role getSelf();  // CHECKME
+	
 	// Return recvar of the "single continue", if so; return null, if not
+	@Deprecated
 	RecVar isSingleCont();
 
 	boolean isSingleConts(Set<RecVar> rvs);

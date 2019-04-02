@@ -181,7 +181,7 @@ public class SessionApiGenerator extends ApiGen
 	
 	private void constructOpClasses() throws ScribbleException
 	{
-		Module mod = this.job.getJobContext().getModule(this.gpn.getPrefix());
+		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDeclChild(simpname);
 		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
@@ -197,7 +197,7 @@ public class SessionApiGenerator extends ApiGen
 
 	private void constructRoleClasses() throws ScribbleException
 	{
-		Module mod = this.job.getJobContext().getModule(this.gpn.getPrefix());
+		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDeclChild(simpname);
 		for (Role r : gpd.getRoles())

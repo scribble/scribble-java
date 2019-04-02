@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.Projector;
 import org.scribble.lang.SType;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
@@ -84,15 +86,27 @@ public class GSeq extends Seq<Global> implements GType
 	}
 
 	@Override
-	public LSeq project(Role self)
+	public LSeq projectInlined(Role self)
 	{
-		List<LType> elems = this.elems.stream().map(x -> ((GType) x).project(self))
-				.filter(x -> !x.equals(LSkip.SKIP))
+		return projectAux(this.elems.stream()
+				.map(x -> ((GType) x).projectInlined(self)));  
+	}
+	
+	private LSeq projectAux(Stream<LType> elems)
+	{
+		List<LType> tmp = elems.filter(x -> !x.equals(LSkip.SKIP))
 				.collect(Collectors.toList());
-		return new LSeq(null, elems);  
+		return new LSeq(null, tmp);  
 				// Empty seqs converted to LSkip by GChoice/Recursion projection
 				// And a WF top-level protocol cannot produce empty LSeq
 				// So a projection never contains an empty LSeq -- i.e., "empty choice/rec" pruning unnecessary
+	}
+
+	@Override
+	public LSeq project(Projector v)
+	{
+		return projectAux(this.elems.stream()
+				.map(x -> ((GType) x).project(v)));  
 	}
 
 	@Override

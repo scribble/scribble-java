@@ -67,8 +67,10 @@ public class LProjection extends LProtocol
 	@Override
 	public String toString()
 	{
-		return this.mods.stream().map(x -> x.toString() + " ") + "local protocol "
-				+ this.fullname + "("
+		return this.mods.stream().map(x -> x.toString() + " ")
+				.collect(Collectors.joining())
+				+ "local protocol " + this.fullname
+				+ "("
 				+ this.roles.stream().map(x -> x.toString())
 						.collect(Collectors.joining(", "))
 				+ ")" + " projects " + this.parent + "@" + this.self + " {\n" + this.def

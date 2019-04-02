@@ -49,6 +49,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 		return this.mods.contains(ProtocolMod.EXPLICIT);
 	}
 	
+	// FIXME: confusing with this.roles List -- Protocol shouldn't be a SType
 	public Set<Role> getRoles()
 	{
 		throw new RuntimeException("Unsupported for Protocol: " + this);
@@ -70,7 +71,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	public String toString()
 	{
 		return "protocol " + this.fullname
-				+ "<" + this.params.stream()
+				+ "<" + this.params.stream()  // CHECKME: drop empty "<>" ?
 					.map(x -> x.toString()).collect(Collectors.joining(", ")) + ">"
 				+ "(" + this.roles.stream()
 					.map(x -> x.toString()).collect(Collectors.joining(", ")) + ")"

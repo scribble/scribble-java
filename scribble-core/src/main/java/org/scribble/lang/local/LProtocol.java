@@ -3,6 +3,7 @@ package org.scribble.lang.local;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
@@ -134,8 +135,8 @@ public class LProtocol extends
 	@Override
 	public String toString()
 	{
-		return this.mods.stream().map(x -> x.toString() + " ") + "local "
-				+ super.toString();
+		return this.mods.stream().map(x -> x.toString() + " ")
+				.collect(Collectors.joining(" ")) + "local " + super.toString();
 	}
 
 	@Override

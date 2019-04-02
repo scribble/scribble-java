@@ -287,7 +287,7 @@ public class CommandLine
 	private void printProjections(Job job)
 			throws CommandLineException, ScribbleException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.PROJECT);
 		for (int i = 0; i < args.length; i += 2)
 		{
@@ -306,7 +306,7 @@ public class CommandLine
 	private void printEGraph(Job job, boolean forUser, boolean fair)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		String[] args = forUser 
 				? this.args.get(CLArgFlag.EFSM)
 				: (fair 
@@ -327,7 +327,7 @@ public class CommandLine
 	private void drawEGraph(Job job, boolean forUser, boolean fair)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		String[] args = forUser 
 				? this.args.get(CLArgFlag.EFSM_PNG)
 				: (fair 
@@ -348,7 +348,7 @@ public class CommandLine
 			boolean forUser, boolean fair)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule()
 				.getProtocolDeclChild(fullname.getSimpleName());
 		if (gpd == null || !gpd.getHeaderChild().getRoleDeclListChild().getRoles()
@@ -382,7 +382,7 @@ public class CommandLine
 	private void printSGraph(Job job, boolean fair)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		String[] args = fair 
 				? this.args.get(CLArgFlag.SGRAPH)
 				: this.args.get(CLArgFlag.UNFAIR_SGRAPH);
@@ -400,7 +400,7 @@ public class CommandLine
 	private void drawSGraph(Job job, boolean fair)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		String[] args = fair 
 				? this.args.get(CLArgFlag.SGRAPH_PNG)
 				: this.args.get(CLArgFlag.UNFAIR_SGRAPH_PNG);
@@ -416,7 +416,7 @@ public class CommandLine
 	private static SGraph getSGraph(Job job, GProtocolName fullname, boolean fair)
 			throws ScribbleException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		SGraph model = fair 
 				? jcontext.getSGraph(fullname)
 				: jcontext.getUnfairSGraph(fullname);
@@ -431,7 +431,7 @@ public class CommandLine
 	private void outputEndpointApi(Job job)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.API_GEN);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
@@ -449,7 +449,7 @@ public class CommandLine
 	private void outputSessionApi(Job job)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.SESS_API_GEN);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // TODO: refactor (generalise -- use new API)
 		for (String fullname : args)
@@ -463,7 +463,7 @@ public class CommandLine
 	private void outputStateChannelApi(Job job)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.SCHAN_API_GEN);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // TODO: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
@@ -479,7 +479,7 @@ public class CommandLine
 	private void outputEventDrivenApi(Job job)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getJobContext();
+		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(CLArgFlag.ED_API_GEN);
 		/*JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)

@@ -40,7 +40,7 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 	@Override
 	public Set<Role> getRoles()
 	{
-		throw new RuntimeException("Unsupported for Do: " + this);
+		return this.roles.stream().collect(Collectors.toSet());
 	}
 
 	@Override

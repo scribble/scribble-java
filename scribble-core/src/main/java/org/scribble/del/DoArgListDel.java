@@ -57,7 +57,7 @@ public abstract class DoArgListDel extends ScribDelBase
 			NameDisambiguator disamb) throws ScribbleException
 	{
 		ModuleContext mc = disamb.getModuleContext();
-		JobContext jc = disamb.job.getJobContext();
+		JobContext jc = disamb.job.getContext();
 		Do<?> doo = (Do<?>) parent;
 		ProtocolName<?> pn = doo.getProtocolNameNode().toName();
 		/*if (!mc.isVisibleProtocolDeclName(simpname))  // FIXME: should be checked somewhere else?  earlier (do-entry?) -- done

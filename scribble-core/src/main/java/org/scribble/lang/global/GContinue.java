@@ -6,6 +6,7 @@ import java.util.Set;
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.Continue;
+import org.scribble.lang.Projector;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
@@ -51,9 +52,15 @@ public class GContinue extends Continue<Global> implements GType
 	}
 
 	@Override
-	public LContinue project(Role self)
+	public LContinue projectInlined(Role self)
 	{
 		return new LContinue(null, this.recvar);
+	}
+	
+	@Override
+	public LContinue project(Projector v)
+	{
+		return projectInlined(v.self);
 	}
 
 	@Override
