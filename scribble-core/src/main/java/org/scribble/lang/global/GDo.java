@@ -89,8 +89,7 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 		Role targSelf = gpd.getRoles().get(this.roles.indexOf(v.self));
 
 		GProtocol imed = jobc.getIntermediate(this.proto);
-		// CHECKME: because intermed decl already prunes roles?
-		if (!imed.roles.contains(targSelf))
+		if (!imed.roles.contains(targSelf))  // CHECKME: because roles already pruned for intermed decl?
 		{
 			return LSkip.SKIP;
 		}
@@ -100,7 +99,7 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 		List<Role> rs = this.roles.stream()
 				.map(x -> x.equals(v.self) ? Role.SELF : x)
 				.collect(Collectors.toList());
-		return new LDo(null, fullname, rs, this.args);  // CHECKME: prune args?
+		return new LDo(null, fullname, rs, this.args);  // TODO CHECKME: prune args?
 	}
 
 	@Override

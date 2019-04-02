@@ -302,7 +302,7 @@ public class Job
 			}
 		}
 
-		// Inlined already projected, used for do-projection
+		// Pre: inlined already projected -- used for Do projection
 		for (GProtocol g : this.context.getIntermediates())
 		{
 			for (Role self : g.roles)
