@@ -74,7 +74,8 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	
 	private LType projectAux(Role self, Stream<LSeq> blocks)
 	{
-		Role subj = this.subj.equals(self) ? Role.SELF : this.subj;
+		Role subj = this.subj.equals(self) ? Role.SELF : this.subj;  
+				// CHECKME: "self" also explcitily used for Do, but implicitly for MessageTransfer, inconsistent?
 		List<LSeq> tmp = blocks
 				.filter(x -> !x.isEmpty())
 				.collect(Collectors.toList());

@@ -95,6 +95,7 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 				.projectFullProtocolName(this.proto, targSelf);
 		List<Role> rs = this.roles.stream()
 				.map(x -> x.equals(v.self) ? Role.SELF : x)
+						// CHECKME: "self" also explcitily used for Choice, but implicitly for MessageTransfer, inconsistent?
 				.collect(Collectors.toList());
 		return new LDo(null, fullname, rs, this.args);  // TODO CHECKME: prune args?
 	}
