@@ -285,6 +285,7 @@
 						<exclude>bin/*.sh</exclude>
 						<exclude>scribblec.sh</exclude>
 						<exclude>**/*.swp</exclude>
+						<exclude>scribble-test/src/test/scrib/**/*</exclude>
 						<!-- FIXME: "extension" module excludes -->
 						<exclude>scribble-f17/**/*</exclude>
 					</excludes>

@@ -814,9 +814,9 @@ globaldisconnect:
 
 globalwrap:
 	//message CONNECT_KW rolename TO_KW rolename
-	WRAP_KW rolenamnode TO_KW rolenamnode ';'
+	WRAP_KW rolenamenode TO_KW rolenamenode ';'
 ->
-	^(GLOBALWRAP rolenamnode rolenamnode)
+	^(GLOBALWRAP rolenamenode rolenamenode)
 ;
 
 
