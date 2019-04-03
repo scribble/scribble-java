@@ -21,7 +21,7 @@ public class LRcv extends MessageTransfer<Local>
 {
 
 	// this.dst == Role.SELF
-	public LRcv(org.scribble.ast.MessageTransfer<Local> source,
+	public LRcv(org.scribble.ast.BaseInteractionNode<Local> source,
 			Role src, Message msg)
 	{
 		super(source, src, msg, Role.SELF);
@@ -30,7 +30,7 @@ public class LRcv extends MessageTransfer<Local>
 	// FIXME: unnecessary dst 
 	@Override
 	public LRcv reconstruct(
-			org.scribble.ast.MessageTransfer<Local> source, Role src, Message msg,
+			org.scribble.ast.BaseInteractionNode<Local> source, Role src, Message msg,
 			Role dst)
 	{
 		return new LRcv(source, src, msg);

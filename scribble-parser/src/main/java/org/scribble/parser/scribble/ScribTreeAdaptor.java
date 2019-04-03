@@ -26,7 +26,9 @@ import org.scribble.ast.ScribNil;
 import org.scribble.ast.SigParamDecl;
 import org.scribble.ast.TypeParamDecl;
 import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMessageTransfer;
@@ -113,6 +115,8 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case "GLOBALINTERACTIONSEQUENCE": return new GInteractionSeq(t);
 
 			case "GLOBALMESSAGETRANSFER": return new GMessageTransfer(t);
+			case "GLOBALCONNECT": return new GConnect(t);
+			case "GLOBALDISCONNECT": return new GDisconnect(t);
 			case "GLOBALCHOICE": return new GChoice(t);
 			case "GLOBALRECURSION": return new GRecursion(t);
 			case "GLOBALCONTINUE": return new GContinue(t);

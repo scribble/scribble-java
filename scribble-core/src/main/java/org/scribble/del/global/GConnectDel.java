@@ -13,6 +13,8 @@
  */
 package org.scribble.del.global;
 
+import java.util.List;
+
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GConnect;
@@ -20,6 +22,7 @@ import org.scribble.ast.local.LNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.type.Message;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.Projector;
@@ -43,6 +46,22 @@ public class GConnectDel extends ConnectionActionDel
 		/*Role src = gc.src.toName();
 		Role dest = gc.dest.toName();*/
 		return gc;
+	}
+	
+	@Override
+	public org.scribble.lang.global.GConnect translate(ScribNode n,
+			GTypeTranslator t) throws ScribbleException
+	{
+		GConnect source = (GConnect) n;
+		Role src = source.getSourceChild().toName();
+		List<RoleNode> ds = source.getDestinationChildren();
+		if (ds.size() > 1)
+		{
+			throw new RuntimeException("TODO: multiple destination roles: " + source);
+		}
+		Role dst = ds.get(0).toName();
+		Message msg = source.getMessageNodeChild().toMessage();
+		return new org.scribble.lang.global.GConnect(source, src, msg, dst);
 	}
 
 	@Override

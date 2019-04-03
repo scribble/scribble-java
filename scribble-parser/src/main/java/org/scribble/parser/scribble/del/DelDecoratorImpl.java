@@ -39,7 +39,9 @@ import org.scribble.ast.SigParamDecl;
 import org.scribble.ast.TypeParamDecl;
 import org.scribble.ast.UnaryPayloadElem;
 import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMessageTransfer;
@@ -71,7 +73,9 @@ import org.scribble.del.RoleDeclDel;
 import org.scribble.del.RoleDeclListDel;
 import org.scribble.del.ScribDel;
 import org.scribble.del.global.GChoiceDel;
+import org.scribble.del.global.GConnectDel;
 import org.scribble.del.global.GContinueDel;
+import org.scribble.del.global.GDisconnectDel;
 import org.scribble.del.global.GDoDel;
 import org.scribble.del.global.GInteractionSeqDel;
 import org.scribble.del.global.GMessageTransferDel;
@@ -267,24 +271,19 @@ public class DelDecoratorImpl implements DelDecorator
 		setDel(gmt, new GMessageTransferDel());
 	}
 
+	@Override
+	public void GConnect(GConnect n)
+	{
+		setDel(n, new GConnectDel());
+	}
+
+	@Override
+	public void GDisconnect(GDisconnect n)
+	{
+		setDel(n, new GDisconnectDel());
+	}
+
 	/*@Override
-	public GConnect GConnect(GConnect gc)
-	{
-		GConnect gc = new GConnect(source, src, msg, dest);
-		gc = setDel(gc, new GConnectDel());
-		return gc;
-	}
-
-	@Override
-	public GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest)
-	{
-		GDisconnect gc = new GDisconnect(source, //UnitMessageSigNode(), 
-				src, dest);
-		gc = setDel(gc, new GDisconnectDel());
-		return gc;
-	}
-
-	@Override
 	public GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest)
 	{
 		GWrap gw = new GWrap(source, UnitMessageSigNode(), src, dest);

@@ -35,7 +35,9 @@ import org.scribble.ast.SigParamDecl;
 import org.scribble.ast.TypeParamDecl;
 import org.scribble.ast.UnaryPayloadElem;
 import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMessageTransfer;
@@ -90,9 +92,9 @@ public interface DelDecorator
 	void GInteractionSeq(GInteractionSeq n);
 
 	void GMessageTransfer(GMessageTransfer n);
-	/*GConnect GConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
-	GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest);
-	GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);*/
+	void GConnect(GConnect n);
+	void GDisconnect(GDisconnect n);
+	/*GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);*/
 	void GChoice(GChoice n);
 	void GRecursion(GRecursion n);
 	void GContinue(GContinue n);

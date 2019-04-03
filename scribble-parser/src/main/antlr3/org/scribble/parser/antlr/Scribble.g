@@ -763,6 +763,7 @@ globalmessagetransfer:
 ->
 	^(GLOBALMESSAGETRANSFER message rolenamenode+)
 ;
+// TODO: multisend
 
 rolenamenode:
 	rolename
@@ -783,13 +784,14 @@ message:
 
 globalconnect:
 	//message CONNECT_KW rolename TO_KW rolename
-	CONNECT_KW rolename TO_KW rolename ';'
+	CONNECT_KW rolenamenode TO_KW rolenamenode ';'
 ->
-	^(GLOBALCONNECT rolename rolename ^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD)))  // Empty message sig duplicated from messagesignature
+	^(GLOBALCONNECT ^(MESSAGESIGNATURE ^(OPNAME EMPTY_OPERATOR) ^(PAYLOAD)) rolenamenode rolenamenode)  // cf. messagesignature "()" case
+			// CHECKME: require "()" as for message transfers?  i.e., simply delete this rule?
 |
-	message CONNECT_KW rolename TO_KW rolename ';'
+	message CONNECT_KW rolenamenode TO_KW rolenamenode ';'
 ->
-	^(GLOBALCONNECT rolename rolename message)
+	^(GLOBALCONNECT message rolenamenode rolenamenode)
 ;
 /*	'(' connectdecl (',' connectdecl)* ')'
 ->
@@ -805,16 +807,16 @@ globalconnect:
 ;*/
 
 globaldisconnect:
-	DISCONNECT_KW rolename AND_KW rolename ';'
+	DISCONNECT_KW rolenamenode AND_KW rolenamenode ';'
 ->
-	^(GLOBALDISCONNECT rolename rolename )
+	^(GLOBALDISCONNECT rolenamenode rolenamenode)
 ;
 
 globalwrap:
 	//message CONNECT_KW rolename TO_KW rolename
-	WRAP_KW rolename TO_KW rolename ';'
+	WRAP_KW rolenamnode TO_KW rolenamnode ';'
 ->
-	^(GLOBALWRAP rolename rolename)
+	^(GLOBALWRAP rolenamnode rolenamnode)
 ;
 
 

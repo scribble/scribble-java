@@ -21,7 +21,7 @@ public class LSend extends MessageTransfer<Local>
 {
 
 	// this.src == Role.SELF
-	public LSend(org.scribble.ast.MessageTransfer<Local> source,
+	public LSend(org.scribble.ast.BaseInteractionNode<Local> source,
 			Message msg, Role dst)
 	{
 		super(source, Role.SELF, msg, dst);
@@ -30,7 +30,7 @@ public class LSend extends MessageTransfer<Local>
 	// CHECKME: remove unnecessary src ?
 	@Override
 	public LSend reconstruct(
-			org.scribble.ast.MessageTransfer<Local> source, Role src, Message msg,
+			org.scribble.ast.BaseInteractionNode<Local> source, Role src, Message msg,
 			Role dst)
 	{
 		return new LSend(source, msg, dst);
@@ -74,6 +74,7 @@ public class LSend extends MessageTransfer<Local>
 		Payload payload = this.msg.isMessageSig()  // CHECKME: generalise? (e.g., hasPayload)
 				? ((MessageSig) msg).payload
 				: Payload.EMPTY_PAYLOAD;
+		// TODO: add toAction method to base Interaction
 		b.addEdge(b.getEntry(), b.ef.newESend(peer, mid, payload), b.getExit());
 	}
 

@@ -13,16 +13,18 @@
  */
 package org.scribble.ast;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ScribDel;
-import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
-import org.scribble.visit.AstVisitor;
 
-// TODO: factor with MessageTransfer
-public abstract class ConnectAction<K extends ProtocolKind> extends SimpleInteractionNode<K>
+// TODO CHECKME: factor with MessageTransfer?
+public abstract class ConnectAction<K extends ProtocolKind>
+		extends BaseInteractionNode<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public ConnectAction(Token t)
@@ -42,56 +44,28 @@ public abstract class ConnectAction<K extends ProtocolKind> extends SimpleIntera
 		this.dest = null;
 	}
 	
-	public abstract ConnectAction<K> dupNode();
-	
-	public MessageNode getMessageNodeChild()
-	{
-		return (MessageNode) getChild(0);
-	}
-	
-	public RoleNode getSourceChild()
-	{
-		return (RoleNode) getChild(1);
-	}
-
+	// TODO: refactor
 	public RoleNode getDestinationChild()
 	{
-		return (RoleNode) getChild(2);
-	}
-
-	public ConnectAction<K> reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
-	{
-		ConnectAction<K> ca = dupNode();
-		ca.addChild(msg);
-		ca.addChild(src);
-		ca.addChild(dest);
-		ScribDel del = del();
-		ca.setDel(del);  // No copy
-		return ca;
-	}
-
-	@Override
-	public ConnectAction<K> visitChildren(AstVisitor nv)
-			throws ScribbleException
-	{
-		RoleNode src = (RoleNode) visitChild(getSourceChild(), nv);
-		MessageNode msg = (MessageNode) visitChild(getMessageNodeChild(), nv);
-		RoleNode dest = (RoleNode) visitChild(getDestinationChild(), nv);
-		return reconstruct(src, msg, dest);
+		List<RoleNode> dests = getDestinationChildren();
+		if (dests.size() != 1)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this);
+		}
+		return dests.get(0);
 	}
 	
+	// Currently only used for toString, because current syntax allows "connect" with no explicit message
 	protected boolean isUnitMessage()
 	{
-		if (!this.msg.isMessageSigNode())
+		MessageNode n = getMessageNodeChild();
+		if (!n.isMessageSigNode())
 		{
 			return false;
 		}
-		MessageSigNode msn = (MessageSigNode) this.msg;
+		MessageSigNode msn = (MessageSigNode) n;
 		return msn.getOpChild().isEmpty() && msn.getPayloadListChild().isEmpty();
 	}
-	
-	@Override
-	public abstract String toString();
 	
 	
 	
@@ -110,7 +84,7 @@ public abstract class ConnectAction<K extends ProtocolKind> extends SimpleIntera
 	protected ConnectAction(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
 	//protected ConnectionAction(RoleNode src, RoleNode dest)
 	{
-		super(source);
+		super(source, src, msg, Stream.of(dest).collect(Collectors.toList()));
 		this.src = src;
 		this.msg = msg;
 		this.dest = dest;

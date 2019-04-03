@@ -21,7 +21,6 @@ import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.local.LNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ScribDel;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
@@ -40,6 +39,12 @@ public class GConnect extends ConnectAction<Global>
 	public GConnect(GConnect node)
 	{
 		super(node);
+	}
+	
+	@Override
+	public GConnect dupNode()
+	{
+		return new GConnect(this);
 	}
 
 	public LNode project(AstFactory af, Role self)
@@ -76,22 +81,6 @@ public class GConnect extends ConnectAction<Global>
 		}
 		return proj;
 	}
-	
-	public GConnect dupNode()
-	{
-		return new GConnect(this);
-	}
-
-	@Override
-	public GConnect reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
-	//public GConnect reconstruct(RoleNode src, RoleNode dest)
-	{
-		ScribDel del = del();
-		GConnect gc = new GConnect(this.source, src, msg, dest);
-		//GConnect gc = new GConnect(src, dest);
-		gc = (GConnect) gc.del(del);
-		return gc;
-	}
 
 	@Override
 	public String toString()
@@ -99,15 +88,7 @@ public class GConnect extends ConnectAction<Global>
 		return (isUnitMessage() ? "" : getMessageNodeChild() + " ")
 				+ Constants.CONNECT_KW + " " + getSourceChild() + " " + Constants.TO_KW
 				+ " " + getDestinationChild() + ";";
-		//return Constants.CONNECT_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
 	}
-
-	/*// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
-	@Override
-	public Global getKind()
-	{
-		return GSimpleInteractionNode.super.getKind();
-	}*/
 	
 	
 	
@@ -145,5 +126,16 @@ public class GConnect extends ConnectAction<Global>
 		RoleNode dest = this.dest.clone(af);
 		return af.GConnect(this.source, src, msg, dest);
 		//return AstFactoryImpl.FACTORY.GConnect(src, dest);
+	}*/
+
+	/*@Override
+	public GConnect reconstruct(MessageNode msg, RoleNode src, RoleNode dest)
+	//public GConnect reconstruct(RoleNode src, RoleNode dest)
+	{
+		ScribDel del = del();
+		GConnect gc = new GConnect(this.source, src, msg, dest);
+		//GConnect gc = new GConnect(src, dest);
+		gc = (GConnect) gc.del(del);
+		return gc;
 	}*/
 }

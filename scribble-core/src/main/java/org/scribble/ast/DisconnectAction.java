@@ -42,8 +42,6 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 		this.right = null;
 	}
 	
-	public abstract DisconnectAction<K> dupNode();
-	
 	public RoleNode getLeftChild()
 	{
 		return (RoleNode) getChild(0);
@@ -53,6 +51,8 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 	{
 		return (RoleNode) getChild(1);
 	}
+	
+	public abstract DisconnectAction<K> dupNode();
 
 	public DisconnectAction<K> reconstruct(RoleNode left, RoleNode right)
 	{

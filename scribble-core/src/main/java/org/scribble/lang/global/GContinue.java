@@ -66,7 +66,7 @@ public class GContinue extends Continue<Global> implements GType
 	@Override
 	public LContinue project(Projector v)
 	{
-		return projectInlined(v.self);
+		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}
 
 	@Override

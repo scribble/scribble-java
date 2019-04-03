@@ -18,6 +18,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 
 // Name should be read (Simple ( InteractionNode ))
+// FIXME: rename: Continue/Do aren't really interactions
 public abstract class SimpleInteractionNode<K extends ProtocolKind>
 		extends ScribNodeBase implements InteractionNode<K>
 {

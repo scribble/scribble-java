@@ -36,22 +36,6 @@ public class GMessageTransferDel extends MessageTransferDel
 	{
 		
 	}
-	
-	@Override
-	public org.scribble.lang.global.GMessageTransfer translate(ScribNode n,
-			GTypeTranslator t) throws ScribbleException
-	{
-		GMessageTransfer source = (GMessageTransfer) n;
-		Role src = source.getSourceChild().toName();
-		List<RoleNode> ds = source.getDestinationChildren();
-		if (ds.size() > 1)
-		{
-			throw new RuntimeException("TODO: multiple destination roles: " + source);
-		}
-		Role dst = ds.get(0).toName();
-		Message msg = source.getMessageNodeChild().toMessage();
-		return new org.scribble.lang.global.GMessageTransfer(source, src, msg, dst);
-	}
 
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
@@ -67,6 +51,22 @@ public class GMessageTransferDel extends MessageTransferDel
 					// Would currently be subsumed by unconnected check
 		}
 		return gmt;
+	}
+	
+	@Override
+	public org.scribble.lang.global.GMessageTransfer translate(ScribNode n,
+			GTypeTranslator t) throws ScribbleException
+	{
+		GMessageTransfer source = (GMessageTransfer) n;
+		Role src = source.getSourceChild().toName();
+		List<RoleNode> ds = source.getDestinationChildren();
+		if (ds.size() > 1)
+		{
+			throw new RuntimeException("TODO: multiple destination roles: " + source);
+		}
+		Role dst = ds.get(0).toName();
+		Message msg = source.getMessageNodeChild().toMessage();
+		return new org.scribble.lang.global.GMessageTransfer(source, src, msg, dst);
 	}
 
 	@Override

@@ -24,7 +24,7 @@ public class GMessageTransfer extends MessageTransfer<Global>
 		implements GType
 {
 
-	public GMessageTransfer(org.scribble.ast.MessageTransfer<Global> source,
+	public GMessageTransfer(org.scribble.ast.BaseInteractionNode<Global> source,
 			Role src, Message msg, Role dst)
 	{
 		super(source, src, msg, dst);
@@ -32,7 +32,7 @@ public class GMessageTransfer extends MessageTransfer<Global>
 
 	@Override
 	public GMessageTransfer reconstruct(
-			org.scribble.ast.MessageTransfer<Global> source, Role src, Message msg,
+			org.scribble.ast.BaseInteractionNode<Global> source, Role src, Message msg,
 			Role dst)
 	{
 		return new GMessageTransfer(source, src, msg, dst);
@@ -63,7 +63,7 @@ public class GMessageTransfer extends MessageTransfer<Global>
 		{
 			/*if (this.dst.equals(self))
 			{
-				// Already checked?
+				// CHECKME: already checked?
 			}*/
 			return new LSend(null, this.msg, this.dst);
 		}
@@ -80,7 +80,7 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	@Override
 	public LType project(Projector v)
 	{
-		return projectInlined(v.self);
+		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}
 
 	@Override

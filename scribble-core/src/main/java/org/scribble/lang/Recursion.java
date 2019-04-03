@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.scribble.ast.ProtocolKindNode;
-import org.scribble.lang.local.LSkip;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.ProtocolName;
@@ -44,7 +43,7 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 	@Override
 	public SType<K> pruneRecs()
 	{
-		// Assumes no shadowing (e.g., use after inlining recvar disamb)
+		// Assumes no shadowing (e.g., use after SType#getInlined recvar disamb)
 		return this.body.getRecVars().contains(this.recvar)
 				? this
 				: this.body;  // i.e., return a Seq, to be "inlined" by Seq.pruneRecs -- N.B. must handle empty Seq case

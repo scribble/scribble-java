@@ -40,9 +40,11 @@ module tmp.Test;
 
 
 //-------------
+//- drop unused recs -- partly done by inlining, but not done yet for subprotos
+
 //- projection dependencies (projections as modules?)
 //- check projected role/choice/do pruning/fixing? -- applies only to above proj? (i.e., proto decls) -- CHECKME: can do role fixing by getting roles from iproj? similarly do-pruning?
-//- drop unused recs -- partly done by inlining, but not done yet for subprotos
+
 //- connections
 //- refactor ast to parser, refactor lang to type? -- separate protocol classes?
 //- or: ast/del to new lang -- core lang to type, except protocol
@@ -57,9 +59,27 @@ module tmp.Test;
 		// TODO make test framework to check global-"proj"-via-taus matches actual proj -- matches mean language acceptance?
 
 
-explicit global protocol Foo(role A, role B)
+/*
+explicit global protocol Foo(role A, role B, role C)
 {
 	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+		connect A to C;
+		3() from A to C;
+	}		
+}
+//*/
+
+
+explicit global protocol Foo(role A, role B)
+{
+	1() from A to B;
 }
 
 
