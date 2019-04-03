@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.Constants;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.job.Job;
@@ -28,19 +29,21 @@ import org.scribble.type.name.Role;
 public class LProtocol extends
 		Protocol<Local, LProtocolName, LSeq> implements LType
 {
+	public final Role self;
+
 	public LProtocol(ProtocolDecl<Local> source, List<ProtocolMod> mods,
-			LProtocolName fullname, List<Role> roles,
+			LProtocolName fullname, List<Role> roles, Role self,
 			List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
 		super(source, mods, fullname, roles, params, def);
+		this.self = self;
 	}
 
-	@Override
 	public LProtocol reconstruct(ProtocolDecl<Local> source,
 			List<ProtocolMod> mods, LProtocolName fullname, List<Role> roles,
-			List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
+			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
-		return new LProtocol(source, mods, fullname, roles, params, def);
+		return new LProtocol(source, mods, fullname, roles, self, params, def);
 	}
 	
 	@Override
@@ -86,7 +89,7 @@ public class LProtocol extends
 	{
 		LSeq unf = (LSeq) this.def.unfoldAllOnce(u);
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
-				this.params, unf);
+				this.self, this.params, unf);
 	}
 
 	public EGraph toEGraph(Job job)
@@ -138,12 +141,25 @@ public class LProtocol extends
 		return this.mods.stream().map(x -> x.toString() + " ")
 				.collect(Collectors.joining(" ")) + "local " + super.toString();
 	}
+	
+	@Override
+	protected String rolesToString()
+	{
+		return "("
+				+ this.roles.stream()
+						.map(x -> x.equals(this.self)
+								? Constants.SELF_KW + " " + this.self
+								: Constants.ROLE_KW + " " + x)
+						.collect(Collectors.joining(", "))
+				+ ")";
+	}
 
 	@Override
 	public int hashCode()
 	{
 		int hash = 11;
 		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + this.self.hashCode();
 		return hash;
 	}
 

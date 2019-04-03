@@ -41,7 +41,7 @@ module tmp.Test;
 
 //-------------
 //- projection dependencies (projections as modules?)
-//- check projected role/choice/do pruning/fixing? -- applies only to above proj? (i.e., proto decls) -- CHECKME: can do role fixing by getting roles from iprohj? similarly do-pruning?
+//- check projected role/choice/do pruning/fixing? -- applies only to above proj? (i.e., proto decls) -- CHECKME: can do role fixing by getting roles from iproj? similarly do-pruning?
 //- drop unused recs -- partly done by inlining, but not done yet for subprotos
 //- connections
 //- refactor ast to parser, refactor lang to type? -- separate protocol classes?

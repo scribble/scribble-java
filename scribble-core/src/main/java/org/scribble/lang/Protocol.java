@@ -5,10 +5,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.Constants;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
+import org.scribble.type.name.DataType;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
@@ -34,9 +37,9 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 		this.def = def;
 	}
 	
-	public abstract Protocol<K, N, B> reconstruct(ProtocolDecl<K> source,
+	/*public abstract Protocol<K, N, B> reconstruct(ProtocolDecl<K> source,
 			List<ProtocolMod> mods, N fullname, List<Role> roles,
-			List<MemberName<? extends NonRoleParamKind>> params, B def);
+			List<MemberName<? extends NonRoleParamKind>> params, B def);*/
 	
 	public boolean isAux()
 	{
@@ -77,11 +80,41 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	public String toString()
 	{
 		return "protocol " + this.fullname.getSimpleName()
-				+ "<" + this.params.stream()  // CHECKME: drop empty "<>" ?
-					.map(x -> x.toString()).collect(Collectors.joining(", ")) + ">"
-				+ "(" + this.roles.stream()
-					.map(x -> x.toString()).collect(Collectors.joining(", ")) + ")"
+				+ paramsToString()
+				+ rolesToString()
 				+ " {\n" + this.def + "\n}";
+	}
+	
+	protected String rolesToString()
+	{
+		return "("
+				+ this.roles.stream().map(x -> Constants.ROLE_KW + " " + x.toString())
+						.collect(Collectors.joining(", "))
+				+ ")";
+	}
+
+	protected String paramsToString()
+	{
+		return "<" + this.params.stream() // CHECKME: drop empty "<>" ?
+				.map(x ->
+					{
+						String k;
+						if (x instanceof DataType) // CHECKME: refactor?
+						{
+							k = Constants.TYPE_KW;
+						}
+						else if (x instanceof MessageSigName)
+						{
+							k = Constants.SIG_KW;
+						}
+						else
+						{
+							throw new RuntimeException();
+						}
+						return k + x;
+					})
+				.collect(Collectors.joining(", "))
+			+ ">";
 	}
 	
 	// CHECKME: only should/need to use fullname?

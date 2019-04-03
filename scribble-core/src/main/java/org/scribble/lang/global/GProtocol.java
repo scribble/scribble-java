@@ -38,7 +38,6 @@ public class GProtocol extends
 		super(source, mods, fullname, roles, params, def);
 	}
 
-	@Override
 	public GProtocol reconstruct(ProtocolDecl<Global> source,
 			List<ProtocolMod> mods, GProtocolName fullname, List<Role> roles,
 			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
@@ -98,11 +97,11 @@ public class GProtocol extends
 				.projectFullProtocolName(this.fullname, self);
 		Set<Role> tmp = body.getRoles();
 		List<Role> roles = this.roles.stream()
-				.map(x -> x.equals(self) ? Role.SELF : x).filter(x -> tmp.contains(x))
+				.filter(x -> x.equals(self) || tmp.contains(x))  // Implicitly filters Role.SELF
 				.collect(Collectors.toList());
 		List<MemberName<? extends NonRoleParamKind>> params =
 				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
-		return new LProjection(this.mods, this.fullname, self, fullname, roles, params,
+		return new LProjection(this.mods, fullname, roles, self, params, this.fullname,
 				body);
 	}
 

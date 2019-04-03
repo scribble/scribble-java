@@ -20,6 +20,7 @@ import org.scribble.ast.RoleDecl;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.type.name.Role;
 
+// Child should be a "self" ID node
 public class SelfRoleDecl extends RoleDecl
 {
 	// ScribTreeAdaptor#create constructor

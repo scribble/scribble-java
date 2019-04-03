@@ -15,24 +15,23 @@ import org.scribble.type.name.Role;
 public class LProjection extends LProtocol
 {
 	public final GProtocolName parent;
-	public final Role self;
 	
-	public LProjection(List<ProtocolMod> mods, GProtocolName parent, Role self,
-			LProtocolName fullname, List<Role> roles,
-			List<MemberName<? extends NonRoleParamKind>> params, LSeq body)
+	public LProjection(List<ProtocolMod> mods, LProtocolName fullname,
+			List<Role> roles, Role self,
+			List<MemberName<? extends NonRoleParamKind>> params, GProtocolName parent,
+			LSeq body)
 	{
-		super(null, mods, fullname, roles, params, body);
+		super(null, mods, fullname, roles, self, params, body);
 		this.parent = parent;
-		this.self = self;
 	}
 
 	@Override
 	public LProjection reconstruct(ProtocolDecl<Local> source,
 			List<ProtocolMod> mods, LProtocolName fullname, List<Role> roles,
-			List<MemberName<? extends NonRoleParamKind>> params, LSeq body)
+			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq body)
 	{
-		return new LProjection(mods, this.parent, this.self, fullname, roles,
-				params, body);
+		return new LProjection(mods, fullname, roles, this.self, params,
+				this.parent, body);
 	}
 
 	/*@Override
@@ -70,11 +69,10 @@ public class LProjection extends LProtocol
 		return this.mods.stream().map(x -> x.toString() + " ")
 				.collect(Collectors.joining())
 				+ "local protocol " + this.fullname.getSimpleName()
-				+ "("
-				+ this.roles.stream().map(x -> x.toString())
-						.collect(Collectors.joining(", "))
-				+ ")" + " projects " + this.parent + "@" + this.self + " {\n" + this.def
-				+ "\n}";
+				+ paramsToString()
+				+ rolesToString()
+				+ " projects " + this.parent
+				+ " {\n" + this.def + "\n}";
 	}
 
 	@Override
@@ -82,6 +80,7 @@ public class LProjection extends LProtocol
 	{
 		int hash = 3167;
 		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + this.parent.hashCode();
 		return hash;
 	}
 
