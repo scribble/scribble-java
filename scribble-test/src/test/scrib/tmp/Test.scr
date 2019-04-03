@@ -57,6 +57,31 @@ module tmp.Test;
 		
 		// TODO make test framework to check proj->inline matches inline->proj
 		// TODO make test framework to check global-"proj"-via-taus matches actual proj -- matches mean language acceptance?
+		// could also test once-unfold-all against model
+
+
+/*
+explicit global protocol Foo(role A, role B, role C)
+{
+	connect A to B;
+	do FooAux(A, B, C);
+}
+
+aux explicit global protocol FooAux(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		do FooAux(A, B, C);
+	}
+	or
+	{
+		2() from A to B;
+		connect A to C;
+		3() from A to C;
+	}
+}
+//*/
 
 
 /*
@@ -77,6 +102,7 @@ explicit global protocol Foo(role A, role B, role C)
 //*/
 
 
+//*
 explicit global protocol Foo(role A, role B)
 {
 	//connect A to B;
@@ -85,6 +111,7 @@ explicit global protocol Foo(role A, role B)
 	connect A to B;
 	1() from A to B;
 }
+//*/
 
 
 /*

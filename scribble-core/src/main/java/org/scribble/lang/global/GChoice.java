@@ -133,18 +133,18 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 			blocks.add(block.checkExtChoiceConsistency(subj));
 		}
 		Map<Role, Role> res = new HashMap<>(enablers);
-		Set<Entry<Role, Role>> tmp = blocks.stream()
+		Set<Entry<Role, Role>> all = blocks.stream()
 				.flatMap(x -> x.entrySet().stream()).collect(Collectors.toSet());
-		for (Entry<Role, Role> e : tmp)
+		for (Entry<Role, Role> e : all)
 		{
 			Role enabled = e.getKey();
 			Role enabler = e.getValue();
-			if (tmp.stream().anyMatch(
+			if (all.stream().anyMatch(
 					x -> x.getKey().equals(enabled) && !x.getValue().equals(enabler)))
 			{
 				throw new ScribbleException(
 						"Inconsistent external choice subjects for " + enabled + ": "
-								+ tmp.stream().filter(x -> x.getKey().equals(enabled))
+								+ all.stream().filter(x -> x.getKey().equals(enabled))
 										.collect(Collectors.toList()));
 			}
 			if (!res.containsKey(enabled))
@@ -154,6 +154,21 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 		}
 		return Collections.unmodifiableMap(res);
 	}
+	
+	/*@Override
+	public Map<Role, Role> checkConnections(Map<Role, Role> conns)
+			throws ScribbleException
+	{
+		List<Map<Role, Role>> blocks = new LinkedList<>();
+		for (GSeq block : this.blocks)
+		{
+			blocks.add(block.checkConnections(conns));
+		}
+		return blocks.stream().flatMap(x -> x.entrySet().stream()).distinct()
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+			// "may" merge -- check for possible duplicate connections
+			// FIXME: but unconnected error needs "must" connections; also "duplicate" disconnect
+	}*/
 
 	@Override
 	public org.scribble.ast.global.GChoice getSource()

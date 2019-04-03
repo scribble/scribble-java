@@ -149,6 +149,17 @@ public class GSeq extends Seq<Global> implements GType
 		return enablers;
 	}
 
+	/*@Override
+	public Map<Role, Role> checkConnections(Map<Role, Role> conns)
+			throws ScribbleException
+	{
+		for (GType elem : getElements())
+		{
+			conns = elem.checkConnections(conns);
+		}
+		return conns;
+	}*/
+
 	@Override
 	public List<GType> getElements()
 	{

@@ -32,6 +32,7 @@ public interface GType extends SType<Global>
 	// Pre: conns is reflexive
 	// Also does correlation warnings
 	//Map<Role, Role> checkConnections(Map<Role, Role> conns) throws ScribbleException;
+			// Check on model instead: could possibly do syntactically on once-unfolding, but still need separate checks for dup-conn, unconnected and bad-dconn (may vs. must)
 
 	/*@Override
 	GType substitute(Substitutions subs);*/  // Otherwise causes return type inconsistency with base abstract classes
