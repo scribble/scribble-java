@@ -22,7 +22,7 @@ import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.util.RoleCollector;
 
 // TODO: factor with MessageTransferDel
-public abstract class ConnectionActionDel extends SimpleInteractionNodeDel
+public abstract class ConnectionActionDel extends SimpleSessionNodeDel
 {
 	public ConnectionActionDel()
 	{

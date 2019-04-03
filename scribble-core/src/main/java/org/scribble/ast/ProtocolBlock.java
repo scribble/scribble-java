@@ -21,7 +21,7 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
 public abstract class ProtocolBlock<K extends ProtocolKind>
-		extends CompoundInteraction<K> implements ProtocolKindNode<K>
+		extends CompoundNode<K> implements ProtocolKindNode<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public ProtocolBlock(Token t)

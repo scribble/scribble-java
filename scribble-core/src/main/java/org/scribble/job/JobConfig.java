@@ -30,7 +30,7 @@ public class JobConfig
 	public final boolean minEfsm;  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 	public final boolean fair;
 	public final boolean noLocalChoiceSubjectCheck;
-	public final boolean noAcceptCorrelationCheck;
+	public final boolean noAcceptCorrelationCheck;  // Currently unused
 	public final boolean noValidation;
 	public final boolean spin;
 

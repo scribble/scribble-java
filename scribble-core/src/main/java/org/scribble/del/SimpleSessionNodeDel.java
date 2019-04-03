@@ -17,7 +17,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.job.ScribbleException;
 import org.scribble.visit.ProtocolDefInliner;
 
-public abstract class SimpleInteractionNodeDel extends ScribDelBase implements InteractionNodeDel
+public abstract class SimpleSessionNodeDel extends ScribDelBase implements InteractionNodeDel
 {
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException

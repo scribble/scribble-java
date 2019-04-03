@@ -13,11 +13,38 @@
  */
 package org.scribble.ast;
 
+import org.antlr.runtime.Token;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 
-// Make a compound interaction subclass for choice/parallel etc?
-public interface InteractionNode<K extends ProtocolKind> extends ProtocolKindNode<K>
+// Name should be read (Simple ( InteractionNode ))
+// FIXME: rename: Continue/Do aren't really interactions
+public abstract class SimpleSessionNode<K extends ProtocolKind>
+		extends ScribNodeBase implements SessionNode<K>
 {
-	//Set<MessageId<?>> collectMessageIds();  // Not worth implementing this homomorphically for every case except MessageTransfer, better to use visitChildren pattern
-	//Map<Role, MessageId<?>> getEnablingMessages();
+	// ScribTreeAdaptor#create constructor
+	public SimpleSessionNode(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public SimpleSessionNode(SimpleSessionNode<K> node)
+	{
+		super(node);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	protected SimpleSessionNode(CommonTree source)
+	{
+		super(source);
+	}
 }

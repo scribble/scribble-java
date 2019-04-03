@@ -19,6 +19,7 @@ import org.scribble.ast.local.LNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.wf.NameDisambiguator;
@@ -42,6 +43,16 @@ public class GDisconnectDel extends ConnectionActionDel
 		/*Role src = gc.src.toName();
 		Role dest = gc.dest.toName();*/
 		return gc;
+	}
+	
+	@Override
+	public org.scribble.lang.global.GDisconnect translate(ScribNode n,
+			GTypeTranslator t) throws ScribbleException
+	{
+		GDisconnect source = (GDisconnect) n;
+		Role left = source.getLeftChild().toName();
+		Role right = source.getRightChild().toName();
+		return new org.scribble.lang.global.GDisconnect(source, left, right);
 	}
 
 	@Override
@@ -92,7 +103,8 @@ public class GDisconnectDel extends ConnectionActionDel
 	}
 
 	@Override
-	public ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
+	public ScribNode leaveProjection(ScribNode parent, ScribNode child,
+			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GDisconnect gd = (GDisconnect) visited;
 		Role self = proj.peekSelf();

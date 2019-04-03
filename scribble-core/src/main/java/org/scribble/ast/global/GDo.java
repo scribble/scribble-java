@@ -28,7 +28,7 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
-public class GDo extends Do<Global> implements GSimpleInteractionNode
+public class GDo extends Do<Global> implements GSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GDo(Token t)

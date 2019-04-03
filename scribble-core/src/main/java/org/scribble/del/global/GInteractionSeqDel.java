@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GInteractionNode;
+import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GRecursion;
-import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.InteractionSeqDel;
@@ -46,7 +46,7 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 	{
 		GInteractionSeq source = (GInteractionSeq) n;
 		List<GType> elems = new LinkedList<>();
-		for (GInteractionNode c : source.getInteractionChildren())
+		for (GSessionNode c : source.getInteractionChildren())
 		{
 			elems.add(c.visitWith(t));  // throws ScribbleException
 		}
@@ -59,8 +59,8 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
-		List<GInteractionNode> gins = new LinkedList<GInteractionNode>();
-		for (GInteractionNode gi : gis.getInteractionChildren())
+		List<GSessionNode> gins = new LinkedList<GSessionNode>();
+		for (GSessionNode gi : gis.getInteractionChildren())
 		{
 			ScribNode inlined = ((InlineProtocolEnv) gi.del().env()).getTranslation();
 			if (inlined instanceof GInteractionSeq)  // A do got inlined
@@ -69,7 +69,7 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 			}
 			else
 			{
-				gins.add((GInteractionNode) inlined);
+				gins.add((GSessionNode) inlined);
 			}
 		}
 		GInteractionSeq inlined = inl.job.config.af.GInteractionSeq(gis.getSource(),
@@ -90,8 +90,8 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
-		List<LInteractionNode> lis = new LinkedList<>();
-		for (GInteractionNode gi : gis.getInteractionChildren())  // FIXME: rewrite using flatMap
+		List<LSessionNode> lis = new LinkedList<>();
+		for (GSessionNode gi : gis.getInteractionChildren())  // FIXME: rewrite using flatMap
 		{
 			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			//LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
@@ -102,7 +102,7 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 			}
 			else if (ln != null) // null is used for empty projection
 			{
-				lis.add((LInteractionNode) ln);
+				lis.add((LSessionNode) ln);
 			}
 		}
 		/*if (lis.size() == 1)  // NO: needed for e.g. rec X { 1() from A to B; choice at A { continue X; } or { 2() from A to B; } } -- do instead in GRecursion
@@ -149,7 +149,7 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 			RecRemover rem, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
-		List<GInteractionNode> gins = gis.getInteractionChildren().stream()
+		List<GSessionNode> gins = gis.getInteractionChildren().stream()
 				.flatMap((gi) -> (gi instanceof GRecursion
 						&& rem.toRemove(((GRecursion) gi).getRecVarChild().toName()))
 								? ((GRecursion) gi).getBlockChild().getInteractSeqChild()

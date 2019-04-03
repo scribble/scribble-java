@@ -105,8 +105,7 @@ public class GConnectDel extends ConnectionActionDel
 
 	@Override
 	public ScribNode leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribbleException // throws
-																																	// ScribbleException
+			Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GConnect gc = (GConnect) visited;
 		Role self = proj.peekSelf();

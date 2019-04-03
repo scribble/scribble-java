@@ -18,7 +18,7 @@ import java.util.List;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LDo;
-import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
@@ -54,7 +54,7 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 			LChoice lc = (LChoice) parent;
 			LProtocolBlock lb = (LProtocolBlock) child;
 			LInteractionSeq lis = lb.getInteractSeqChild();
-			List<LInteractionNode> ins = lis.getInteractionChildren();
+			List<LSessionNode> ins = lis.getInteractionChildren();
 			if (ins.get(0) instanceof LDo)  // Unlike GRecursion.prune, to-prune "do" could be followed by a continuation?
 			{
 				JobContext jc = this.job.getContext();

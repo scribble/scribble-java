@@ -30,7 +30,7 @@ import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LChoice extends Choice<Local> implements LCompoundInteractionNode
+public class LChoice extends Choice<Local> implements LCompoundInteraction
 {
 	// ScribTreeAdaptor#create constructor
 	public LChoice(Token t)
@@ -67,7 +67,7 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	}
 	
 	@Override
-	public LChoice merge(AstFactory af, LInteractionNode ln) throws ScribbleException
+	public LChoice merge(AstFactory af, LSessionNode ln) throws ScribbleException
 	{
 		if (!(ln instanceof LChoice) || !this.canMerge(ln))
 		{
@@ -87,7 +87,7 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	}
 
 	@Override
-	public boolean canMerge(LInteractionNode ln)
+	public boolean canMerge(LSessionNode ln)
 	{
 		// Merge currently does "nothing"; validation takes direct non-deterministic interpretation -- purpose of syntactic merge is to convert non-det to "equivalent" safe det in certain sitations
 		return ln instanceof LChoice;

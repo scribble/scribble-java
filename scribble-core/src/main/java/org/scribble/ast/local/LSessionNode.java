@@ -16,7 +16,7 @@ package org.scribble.ast.local;
 import java.util.Set;
 
 import org.scribble.ast.AstFactory;
-import org.scribble.ast.InteractionNode;
+import org.scribble.ast.SessionNode;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
@@ -24,13 +24,13 @@ import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 // Alternatively to interface, use GlobalNode subclass with delegation to "super" base (e.g. Choice) classes
-public interface LInteractionNode extends InteractionNode<Local>, LNode
+public interface LSessionNode extends SessionNode<Local>, LNode
 {
 	Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer);
 
 	// "merge" currently does "nothing"; validation takes direct non-deterministic interpretation -- purpose of syntactic merge would be to convert non-det to "equivalent" safe det in certain sitations
-	LInteractionNode merge(AstFactory af, LInteractionNode ln) throws ScribbleException;
-	boolean canMerge(LInteractionNode ln);
+	LSessionNode merge(AstFactory af, LSessionNode ln) throws ScribbleException;
+	boolean canMerge(LSessionNode ln);
 
 	Set<Message> getEnabling();
 }

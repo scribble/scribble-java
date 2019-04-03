@@ -11,13 +11,9 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.global;
+package org.scribble.ast.local;
 
-import org.scribble.ast.InteractionNode;
-import org.scribble.type.kind.Global;
-
-// Alternatively to interface, use GlobalNode subclass with delegation to "super" base (e.g. Choice) classes
-public interface GInteractionNode extends InteractionNode<Global>, GNode
+public interface LSimpleSessionNode extends LSessionNode
 {
-	//public LInteractionSeq project(AstFactory af, Role self);  // TODO
+
 }

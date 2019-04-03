@@ -30,7 +30,7 @@ import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
-public class GChoice extends Choice<Global> implements GCompoundInteractionNode
+public class GChoice extends Choice<Global> implements GCompoundInteraction
 {
 	// ScribTreeAdaptor#create constructor
 	public GChoice(Token t)

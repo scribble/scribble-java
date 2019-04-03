@@ -14,7 +14,7 @@
 package org.scribble.del.local;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.del.InteractionNodeDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.job.ScribbleException;
@@ -30,8 +30,8 @@ public interface LInteractionNodeDel extends InteractionNodeDel
 	}
 
 	@Override
-	default LInteractionNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+	default LSessionNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
-		return (LInteractionNode) ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
+		return (LSessionNode) ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
 	}
 }

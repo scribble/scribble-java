@@ -26,7 +26,7 @@ import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LRecursion extends Recursion<Local> implements LCompoundInteractionNode
+public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 {
 	// ScribTreeAdaptor#create constructor
 	public LRecursion(Token t)
@@ -61,7 +61,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	}
 
 	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+	public LSessionNode merge(AstFactory af, LSessionNode ln)
 			throws ScribbleException
 	{
 		if (!(ln instanceof LRecursion) || !this.canMerge(ln))
@@ -84,7 +84,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	}
 
 	@Override
-	public boolean canMerge(LInteractionNode ln)
+	public boolean canMerge(LSessionNode ln)
 	{
 		return ln instanceof LRecursion;
 	}

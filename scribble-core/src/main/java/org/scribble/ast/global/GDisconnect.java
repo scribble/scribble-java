@@ -24,7 +24,8 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
 
-public class GDisconnect extends DisconnectAction<Global> implements GSimpleInteractionNode
+public class GDisconnect extends DisconnectAction<Global>
+		implements GSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GDisconnect(Token t)

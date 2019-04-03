@@ -22,7 +22,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.type.kind.ProtocolKind;
 
 public abstract class MessageTransfer<K extends ProtocolKind>
-		extends BaseInteractionNode<K>
+		extends DirectedInteraction<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public MessageTransfer(Token t)

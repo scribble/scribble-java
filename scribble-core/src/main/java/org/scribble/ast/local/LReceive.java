@@ -29,7 +29,7 @@ import org.scribble.type.Message;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LReceive extends LMessageTransfer implements LSimpleInteractionNode
+public class LReceive extends LMessageTransfer implements LSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LReceive(Token t)
@@ -58,14 +58,14 @@ public class LReceive extends LMessageTransfer implements LSimpleInteractionNode
 	}
 
 	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+	public LSessionNode merge(AstFactory af, LSessionNode ln)
 			throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LReceive: " + this);
 	}
 
 	@Override
-	public boolean canMerge(LInteractionNode ln)
+	public boolean canMerge(LSessionNode ln)
 	{
 		return false;
 	}

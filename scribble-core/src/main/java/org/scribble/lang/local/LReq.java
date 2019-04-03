@@ -3,7 +3,7 @@ package org.scribble.lang.local;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.MessageTransfer;
+import org.scribble.lang.ConnectAction;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
@@ -16,12 +16,12 @@ import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
-public class LSend extends MessageTransfer<Local>
+public class LReq extends ConnectAction<Local>
 		implements LType
 {
 
 	// this.src == Role.SELF
-	public LSend(org.scribble.ast.DirectedInteraction<Local> source,
+	public LReq(org.scribble.ast.DirectedInteraction<Local> source,
 			Message msg, Role dst)
 	{
 		super(source, Role.SELF, msg, dst);
@@ -29,11 +29,11 @@ public class LSend extends MessageTransfer<Local>
 
 	// CHECKME: remove unnecessary src ?
 	@Override
-	public LSend reconstruct(
+	public LReq reconstruct(
 			org.scribble.ast.DirectedInteraction<Local> source, Role src, Message msg,
 			Role dst)
 	{
-		return new LSend(source, msg, dst);
+		return new LReq(source, msg, dst);
 	}
 
 	@Override
@@ -49,19 +49,19 @@ public class LSend extends MessageTransfer<Local>
 	}
 
 	@Override
-	public LSend substitute(Substitutions subs)
+	public LReq substitute(Substitutions subs)
 	{
-		return (LSend) super.substitute(subs);
+		return (LReq) super.substitute(subs);
 	}
 
 	@Override
-	public LSend getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LReq getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
-		return (LSend) super.getInlined(i);
+		return (LReq) super.getInlined(i);
 	}
 
 	@Override
-	public LSend unfoldAllOnce(STypeUnfolder<Local> u)
+	public LReq unfoldAllOnce(STypeUnfolder<Local> u)
 	{
 		return this;
 	}
@@ -75,7 +75,7 @@ public class LSend extends MessageTransfer<Local>
 				? ((MessageSig) msg).payload
 				: Payload.EMPTY_PAYLOAD;
 		// TODO: add toAction method to base Interaction
-		b.addEdge(b.getEntry(), b.ef.newESend(peer, mid, payload), b.getExit());
+		b.addEdge(b.getEntry(), b.ef.newERequest(peer, mid, payload), b.getExit());
 	}
 
 	@Override
@@ -88,13 +88,13 @@ public class LSend extends MessageTransfer<Local>
 	@Override
 	public String toString()
 	{
-		return this.msg + " to " + this.dst + ";";
+		return this.msg + " request " + this.dst + ";";
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 1481;
+		int hash = 10597;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -106,7 +106,7 @@ public class LSend extends MessageTransfer<Local>
 		{
 			return true;
 		}
-		if (!(o instanceof LSend))
+		if (!(o instanceof LReq))
 		{
 			return false;
 		}
@@ -116,7 +116,7 @@ public class LSend extends MessageTransfer<Local>
 	@Override
 	public boolean canEquals(Object o)
 	{
-		return o instanceof LSend;
+		return o instanceof LReq;
 	}
 
 }

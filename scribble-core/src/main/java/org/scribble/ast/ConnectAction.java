@@ -24,7 +24,7 @@ import org.scribble.type.kind.ProtocolKind;
 
 // TODO CHECKME: factor with MessageTransfer?
 public abstract class ConnectAction<K extends ProtocolKind>
-		extends BaseInteractionNode<K>
+		extends DirectedInteraction<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public ConnectAction(Token t)

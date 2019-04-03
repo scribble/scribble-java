@@ -32,7 +32,7 @@ import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 // "left" of LDisconnect is used for self
 public class LDisconnect extends DisconnectAction<Local>
-		implements LSimpleInteractionNode
+		implements LSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LDisconnect(Token t)
@@ -75,14 +75,14 @@ public class LDisconnect extends DisconnectAction<Local>
 	}
 
 	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+	public LSessionNode merge(AstFactory af, LSessionNode ln)
 			throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LDisconnect: " + this);
 	}
 
 	@Override
-	public boolean canMerge(LInteractionNode ln)
+	public boolean canMerge(LSessionNode ln)
 	{
 		return false;
 	}

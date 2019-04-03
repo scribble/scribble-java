@@ -27,7 +27,7 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.wf.NameDisambiguator;
 
-public abstract class DoDel extends SimpleInteractionNodeDel
+public abstract class DoDel extends SimpleSessionNodeDel
 {
 	public DoDel()
 	{

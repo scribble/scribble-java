@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.ast.InteractionNode;
+import org.scribble.ast.SessionNode;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.del.InteractionSeqDel;
@@ -45,7 +45,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			throws ScribbleException
 	{
 		LInteractionSeq lc = (LInteractionSeq) visited;
-		List<LInteractionNode> actions = lc.getInteractionChildren().stream()
+		List<LSessionNode> actions = lc.getInteractionChildren().stream()
 				.filter(li -> li != null).collect(Collectors.toList());
 		return lc.reconstruct(actions);
 	}
@@ -56,8 +56,8 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		LInteractionSeq lis = (LInteractionSeq) visited;
-		List<LInteractionNode> lins = new LinkedList<LInteractionNode>();
-		for (LInteractionNode li : lis.getInteractionChildren())
+		List<LSessionNode> lins = new LinkedList<LSessionNode>();
+		for (LSessionNode li : lis.getInteractionChildren())
 		{
 			ScribNode inlined = ((InlineProtocolEnv) li.del().env()).getTranslation();
 			if (inlined instanceof LInteractionSeq)
@@ -66,7 +66,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			}
 			else
 			{
-				lins.add((LInteractionNode) inlined);
+				lins.add((LSessionNode) inlined);
 			}
 		}
 		LInteractionSeq inlined = 
@@ -80,8 +80,8 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			ReachabilityChecker checker, LInteractionSeq child)
 			throws ScribbleException
 	{
-		List<LInteractionNode> visited = new LinkedList<>();
-		for (InteractionNode<Local> li : child.getInteractionChildren())
+		List<LSessionNode> visited = new LinkedList<>();
+		for (SessionNode<Local> li : child.getInteractionChildren())
 		{
 			ReachabilityEnv re = checker.peekEnv();
 			if (!re.isSequenceable())
@@ -89,7 +89,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 				throw new ScribbleException(li.getSource(),
 						"Invalid/unreachable sequence to: " + li);
 			}
-			visited.add((LInteractionNode) li.accept(checker));
+			visited.add((LSessionNode) li.accept(checker));
 		}
 		return child;
 	}
@@ -149,7 +149,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			RecRemover rem, ScribNode visited) throws ScribbleException
 	{
 		LInteractionSeq lis = (LInteractionSeq) visited;
-		List<LInteractionNode> lins = lis.getInteractionChildren().stream()
+		List<LSessionNode> lins = lis.getInteractionChildren().stream()
 				.flatMap((li) -> (li instanceof LRecursion
 						&& rem.toRemove(((LRecursion) li).getRecVarChild().toName()))
 								? ((LRecursion) li).getBlockChild().getInteractSeqChild()

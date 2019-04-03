@@ -15,20 +15,18 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.type.kind.ProtocolKind;
 
-// Name should be read (Compound ( InteractionNode ))
-public abstract class CompoundInteractionNode<K extends ProtocolKind>
-		extends CompoundInteraction<K> implements InteractionNode<K>
+// ProtocolBlock or CompoundInteractionNode
+public abstract class CompoundNode<K> extends ScribNodeBase
 {
 	// ScribTreeAdaptor#create constructor
-	public CompoundInteractionNode(Token t)
+	public CompoundNode(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	protected CompoundInteractionNode(CompoundInteractionNode<K> node)
+	protected CompoundNode(CompoundNode<K> node)
 	{
 		super(node);
 	}
@@ -41,9 +39,7 @@ public abstract class CompoundInteractionNode<K extends ProtocolKind>
 	
 	
 	
-	
-	
-	protected CompoundInteractionNode(CommonTree source)
+	public CompoundNode(CommonTree source)
 	{
 		super(source);
 	}

@@ -18,7 +18,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LDo;
-import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
@@ -78,7 +78,7 @@ public class UnguardedChoiceDoProjectionChecker
 	{
 		for (LProtocolBlock b : lc.getBlockChildren())
 		{
-			LInteractionNode in = 
+			LSessionNode in = 
 					b.getInteractSeqChild().getInteractionChildren().get(0);
 			if (in instanceof LDo)
 			{

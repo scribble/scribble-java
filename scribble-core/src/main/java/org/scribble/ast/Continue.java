@@ -22,7 +22,7 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
 public abstract class Continue<K extends ProtocolKind>
-		extends SimpleInteractionNode<K>
+		extends SimpleSessionNode<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public Continue(Token t)

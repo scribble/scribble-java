@@ -21,7 +21,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.type.kind.Local;
 
 public abstract class LConnectionAction extends ConnectAction<Local>
-		implements LSimpleInteractionNode
+		implements LSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LConnectionAction(Token t)

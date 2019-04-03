@@ -8,16 +8,15 @@ import org.scribble.type.MessageSig;
 import org.scribble.type.Payload;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.DataType;
-import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
-public abstract class MessageTransfer<K extends ProtocolKind>
+public abstract class ConnectAction<K extends ProtocolKind>
 		extends DirectedInteraction<K>
 {
-	public MessageTransfer(org.scribble.ast.DirectedInteraction<K> source,  // DirectedInteraction not ideal (imprecise)
+	public ConnectAction(org.scribble.ast.DirectedInteraction<K> source,  // BaseInteractionNode not ideal
 			Role src, Message msg, Role dst)
 	{
 		super(source, src, msg, dst);
@@ -40,9 +39,9 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 				{
 					res.add((DataType) p);
 				}
-				else if (p.isGDelegationType())  // TODO FIXME: should be projected to local name
+				else if (p.isGDelegationType())
 				{
-					res.add(((GDelegationType) p).getGlobalProtocol());
+					throw new RuntimeException("Shouldn't get in here: " + this);
 				}
 				else
 				{

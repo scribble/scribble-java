@@ -23,7 +23,7 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.Role;
 
-public class GContinue extends Continue<Global> implements GSimpleInteractionNode
+public class GContinue extends Continue<Global> implements GSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GContinue(Token t)

@@ -17,23 +17,20 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 
-// Name should be read (Simple ( InteractionNode ))
-// FIXME: rename: Continue/Do aren't really interactions
-public abstract class SimpleInteractionNode<K extends ProtocolKind>
-		extends ScribNodeBase implements InteractionNode<K>
+public abstract class BasicInteraction<K extends ProtocolKind>
+		extends SimpleSessionNode<K>
 {
 	// ScribTreeAdaptor#create constructor
-	public SimpleInteractionNode(Token t)
+	public BasicInteraction(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public SimpleInteractionNode(SimpleInteractionNode<K> node)
+	public BasicInteraction(BasicInteraction<K> node)
 	{
 		super(node);
 	}
-
 	
 	
 	
@@ -43,8 +40,15 @@ public abstract class SimpleInteractionNode<K extends ProtocolKind>
 	
 	
 	
-	protected SimpleInteractionNode(CommonTree source)
+	
+	
+	
+	
+	
+	protected BasicInteraction(CommonTree source)
 	{
 		super(source);
 	}
+
 }
+

@@ -21,7 +21,7 @@ import org.scribble.type.name.RecVar;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.util.RecVarCollector;
 
-public abstract class ContinueDel extends SimpleInteractionNodeDel
+public abstract class ContinueDel extends SimpleSessionNodeDel
 {
 	public ContinueDel()
 	{

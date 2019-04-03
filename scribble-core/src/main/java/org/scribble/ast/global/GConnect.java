@@ -27,7 +27,7 @@ import org.scribble.type.name.Role;
 
 // TODO: make GConnectionAction and factor this class with GWrap (cf. LConnectionAction)
 public class GConnect extends ConnectAction<Global>
-		implements GSimpleInteractionNode
+		implements GSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GConnect(Token t)

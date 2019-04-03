@@ -11,17 +11,13 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del;
+package org.scribble.ast.global;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.job.ScribbleException;
-import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.ast.SessionNode;
+import org.scribble.type.kind.Global;
 
-public abstract class ProtocolBlockDel extends CompoundSessionNodeDel
+// Alternatively to interface, use GlobalNode subclass with delegation to "super" base (e.g. Choice) classes
+public interface GSessionNode extends SessionNode<Global>, GNode
 {
-	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
-	{
-		ScribDelBase.pushVisitorEnv(this, inl);
-	}
+	//public LInteractionSeq project(AstFactory af, Role self);  // TODO
 }

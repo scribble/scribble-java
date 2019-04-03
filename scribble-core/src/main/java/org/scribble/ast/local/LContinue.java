@@ -27,7 +27,7 @@ import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LContinue extends Continue<Local> implements LSimpleInteractionNode
+public class LContinue extends Continue<Local> implements LSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LContinue(Token t)
@@ -62,7 +62,7 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	}
 
 	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+	public LSessionNode merge(AstFactory af, LSessionNode ln)
 			throws ScribbleException
 	{
 		if (!(ln instanceof LContinue) || !this.canMerge(ln))
@@ -80,7 +80,7 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	}
 
 	@Override
-	public boolean canMerge(LInteractionNode ln)
+	public boolean canMerge(LSessionNode ln)
 	{
 		return ln instanceof LContinue;
 	}

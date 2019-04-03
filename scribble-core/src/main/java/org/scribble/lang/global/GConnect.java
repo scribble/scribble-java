@@ -7,51 +7,51 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.MessageTransfer;
+import org.scribble.lang.ConnectAction;
 import org.scribble.lang.Projector;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
-import org.scribble.lang.local.LRcv;
-import org.scribble.lang.local.LSend;
+import org.scribble.lang.local.LAcc;
+import org.scribble.lang.local.LReq;
 import org.scribble.lang.local.LSkip;
 import org.scribble.lang.local.LType;
 import org.scribble.type.Message;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
-public class GMessageTransfer extends MessageTransfer<Global>
+public class GConnect extends ConnectAction<Global>
 		implements GType
 {
 
-	public GMessageTransfer(org.scribble.ast.DirectedInteraction<Global> source,
+	public GConnect(org.scribble.ast.DirectedInteraction<Global> source,  // DirectedInteraction not ideal (imprecise)
 			Role src, Message msg, Role dst)
 	{
 		super(source, src, msg, dst);
 	}
 
 	@Override
-	public GMessageTransfer reconstruct(
+	public GConnect reconstruct(
 			org.scribble.ast.DirectedInteraction<Global> source, Role src, Message msg,
 			Role dst)
 	{
-		return new GMessageTransfer(source, src, msg, dst);
+		return new GConnect(source, src, msg, dst);
 	}
 
 	@Override
-	public GMessageTransfer substitute(Substitutions subs)
+	public GConnect substitute(Substitutions subs)
 	{
-		return (GMessageTransfer) super.substitute(subs);
+		return (GConnect) super.substitute(subs);
 	}
 
 	@Override
-	public GMessageTransfer getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public GConnect getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
-		return (GMessageTransfer) super.getInlined(i);
+		return (GConnect) super.getInlined(i);
 	}
 
 	@Override
-	public GMessageTransfer unfoldAllOnce(STypeUnfolder<Global> u)
+	public GConnect unfoldAllOnce(STypeUnfolder<Global> u)
 	{
 		return this;
 	}
@@ -65,11 +65,11 @@ public class GMessageTransfer extends MessageTransfer<Global>
 			{
 				// CHECKME: already checked?
 			}*/
-			return new LSend(null, this.msg, this.dst);
+			return new LReq(null, this.msg, this.dst);
 		}
 		else if (this.dst.equals(self))
 		{
-			return new LRcv(null, this.src, this.msg);
+			return new LAcc(null, this.src, this.msg);
 		}
 		else
 		{
@@ -115,7 +115,7 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	@Override
 	public int hashCode()
 	{
-		int hash = 1481;
+		int hash = 10639;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -127,7 +127,7 @@ public class GMessageTransfer extends MessageTransfer<Global>
 		{
 			return true;
 		}
-		if (!(o instanceof GMessageTransfer))
+		if (!(o instanceof GConnect))
 		{
 			return false;
 		}
@@ -137,6 +137,6 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	@Override
 	public boolean canEquals(Object o)
 	{
-		return o instanceof GMessageTransfer;
+		return o instanceof GConnect;
 	}
 }

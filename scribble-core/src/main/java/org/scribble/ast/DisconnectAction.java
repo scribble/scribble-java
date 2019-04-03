@@ -24,7 +24,7 @@ import org.scribble.visit.AstVisitor;
 // (G)Disconnect is symmetric (send/receive asymmetric/async; request/accept asymmetric/sync; (g)disconnect symmetric/async)
 // However, LDisconnect is "symmetric" but self-oriented -- "left" used for self
 public abstract class DisconnectAction<K extends ProtocolKind>
-		extends SimpleInteractionNode<K>
+		extends BasicInteraction<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public DisconnectAction(Token t)

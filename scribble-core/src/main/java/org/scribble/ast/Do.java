@@ -28,7 +28,7 @@ import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 
 public abstract class Do<K extends ProtocolKind>
-		extends SimpleInteractionNode<K> // implements ScopedNode
+		extends SimpleSessionNode<K> // implements ScopedNode
 {
 	// ScribTreeAdaptor#create constructor
 	public Do(Token t)

@@ -3,37 +3,37 @@ package org.scribble.lang.local;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.MessageTransfer;
+import org.scribble.lang.DisconnectAction;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
-import org.scribble.type.Message;
-import org.scribble.type.MessageSig;
-import org.scribble.type.Payload;
 import org.scribble.type.kind.Local;
-import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
-public class LSend extends MessageTransfer<Local>
+public class LDisconnect extends DisconnectAction<Local>
 		implements LType
 {
 
 	// this.src == Role.SELF
-	public LSend(org.scribble.ast.DirectedInteraction<Local> source,
-			Message msg, Role dst)
+	public LDisconnect(org.scribble.ast.DisconnectAction<Local> source,
+			Role peer)
 	{
-		super(source, Role.SELF, msg, dst);
+		super(source, Role.SELF, peer);
+	}
+	
+	public Role getPeer()
+	{
+		return this.right;
 	}
 
-	// CHECKME: remove unnecessary src ?
+	// CHECKME: remove unnecessary self ?
 	@Override
-	public LSend reconstruct(
-			org.scribble.ast.DirectedInteraction<Local> source, Role src, Message msg,
-			Role dst)
+	public LDisconnect reconstruct(
+			org.scribble.ast.DisconnectAction<Local> source, Role self, Role peer)
 	{
-		return new LSend(source, msg, dst);
+		return new LDisconnect(source, peer);
 	}
 
 	@Override
@@ -49,19 +49,19 @@ public class LSend extends MessageTransfer<Local>
 	}
 
 	@Override
-	public LSend substitute(Substitutions subs)
+	public LDisconnect substitute(Substitutions subs)
 	{
-		return (LSend) super.substitute(subs);
+		return (LDisconnect) super.substitute(subs);
 	}
 
 	@Override
-	public LSend getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LDisconnect getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
-		return (LSend) super.getInlined(i);
+		return (LDisconnect) super.getInlined(i);
 	}
 
 	@Override
-	public LSend unfoldAllOnce(STypeUnfolder<Local> u)
+	public LDisconnect unfoldAllOnce(STypeUnfolder<Local> u)
 	{
 		return this;
 	}
@@ -69,13 +69,9 @@ public class LSend extends MessageTransfer<Local>
 	@Override
 	public void buildGraph(EGraphBuilderUtil2 b)
 	{
-		Role peer = this.dst;
-		MessageId<?> mid = this.msg.getId();
-		Payload payload = this.msg.isMessageSig()  // CHECKME: generalise? (e.g., hasPayload)
-				? ((MessageSig) msg).payload
-				: Payload.EMPTY_PAYLOAD;
+		Role peer = getPeer();
 		// TODO: add toAction method to base Interaction
-		b.addEdge(b.getEntry(), b.ef.newESend(peer, mid, payload), b.getExit());
+		b.addEdge(b.getEntry(), b.ef.newEDisconnect(peer), b.getExit());
 	}
 
 	@Override
@@ -88,13 +84,13 @@ public class LSend extends MessageTransfer<Local>
 	@Override
 	public String toString()
 	{
-		return this.msg + " to " + this.dst + ";";
+		return "disconnect " + getPeer() + ";";
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 1481;
+		int hash = 8753;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -106,7 +102,7 @@ public class LSend extends MessageTransfer<Local>
 		{
 			return true;
 		}
-		if (!(o instanceof LSend))
+		if (!(o instanceof LDisconnect))
 		{
 			return false;
 		}
@@ -116,7 +112,6 @@ public class LSend extends MessageTransfer<Local>
 	@Override
 	public boolean canEquals(Object o)
 	{
-		return o instanceof LSend;
+		return o instanceof LDisconnect;
 	}
-
 }

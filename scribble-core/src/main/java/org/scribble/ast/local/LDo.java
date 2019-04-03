@@ -34,7 +34,7 @@ import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LDo extends Do<Local> implements LSimpleInteractionNode
+public class LDo extends Do<Local> implements LSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LDo(Token t)
@@ -83,14 +83,14 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	}
 
 	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+	public LSessionNode merge(AstFactory af, LSessionNode ln)
 			throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LDo: " + this);
 	}
 
 	@Override
-	public boolean canMerge(LInteractionNode ln)
+	public boolean canMerge(LSessionNode ln)
 	{
 		return false;
 	}

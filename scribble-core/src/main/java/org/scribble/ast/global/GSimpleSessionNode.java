@@ -13,7 +13,7 @@
  */
 package org.scribble.ast.global;
 
-public interface GSimpleInteractionNode extends GInteractionNode
+public interface GSimpleSessionNode extends GSessionNode
 {
 	
 }

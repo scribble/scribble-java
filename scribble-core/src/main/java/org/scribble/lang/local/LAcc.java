@@ -3,7 +3,7 @@ package org.scribble.lang.local;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.MessageTransfer;
+import org.scribble.lang.ConnectAction;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
@@ -16,24 +16,24 @@ import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
-public class LSend extends MessageTransfer<Local>
+public class LAcc extends ConnectAction<Local>
 		implements LType
 {
 
-	// this.src == Role.SELF
-	public LSend(org.scribble.ast.DirectedInteraction<Local> source,
-			Message msg, Role dst)
+	// this.dst == Role.SELF
+	public LAcc(org.scribble.ast.DirectedInteraction<Local> source,
+			Role src, Message msg)
 	{
-		super(source, Role.SELF, msg, dst);
+		super(source, src, msg, Role.SELF);
 	}
 
-	// CHECKME: remove unnecessary src ?
+	// FIXME: unnecessary dst 
 	@Override
-	public LSend reconstruct(
+	public LAcc reconstruct(
 			org.scribble.ast.DirectedInteraction<Local> source, Role src, Message msg,
 			Role dst)
 	{
-		return new LSend(source, msg, dst);
+		return new LAcc(source, src, msg);
 	}
 
 	@Override
@@ -49,19 +49,19 @@ public class LSend extends MessageTransfer<Local>
 	}
 
 	@Override
-	public LSend substitute(Substitutions subs)
+	public LAcc substitute(Substitutions subs)
 	{
-		return (LSend) super.substitute(subs);
+		return (LAcc) super.substitute(subs);
 	}
 
 	@Override
-	public LSend getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LAcc getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
-		return (LSend) super.getInlined(i);
+		return (LAcc) super.getInlined(i);
 	}
 
 	@Override
-	public LSend unfoldAllOnce(STypeUnfolder<Local> u)
+	public LAcc unfoldAllOnce(STypeUnfolder<Local> u)
 	{
 		return this;
 	}
@@ -69,13 +69,12 @@ public class LSend extends MessageTransfer<Local>
 	@Override
 	public void buildGraph(EGraphBuilderUtil2 b)
 	{
-		Role peer = this.dst;
+		Role peer = this.src;
 		MessageId<?> mid = this.msg.getId();
 		Payload payload = this.msg.isMessageSig()  // CHECKME: generalise? (e.g., hasPayload)
 				? ((MessageSig) msg).payload
 				: Payload.EMPTY_PAYLOAD;
-		// TODO: add toAction method to base Interaction
-		b.addEdge(b.getEntry(), b.ef.newESend(peer, mid, payload), b.getExit());
+		b.addEdge(b.getEntry(), b.ef.newEAccept(peer, mid, payload), b.getExit());
 	}
 
 	@Override
@@ -84,17 +83,17 @@ public class LSend extends MessageTransfer<Local>
 	{
 		return env;
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return this.msg + " to " + this.dst + ";";
+		return this.msg + " accept " + this.src + ";";
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 1481;
+		int hash = 10601;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -106,7 +105,7 @@ public class LSend extends MessageTransfer<Local>
 		{
 			return true;
 		}
-		if (!(o instanceof LSend))
+		if (!(o instanceof LAcc))
 		{
 			return false;
 		}
@@ -116,7 +115,7 @@ public class LSend extends MessageTransfer<Local>
 	@Override
 	public boolean canEquals(Object o)
 	{
-		return o instanceof LSend;
+		return o instanceof LAcc;
 	}
 
 }

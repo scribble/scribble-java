@@ -28,6 +28,10 @@ public interface GType extends SType<Global>
 	// Returns enablers post visiting
 	Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
 			throws ScribbleException;
+	
+	// Pre: conns is reflexive
+	// Also does correlation warnings
+	//Map<Role, Role> checkConnections(Map<Role, Role> conns) throws ScribbleException;
 
 	/*@Override
 	GType substitute(Substitutions subs);*/  // Otherwise causes return type inconsistency with base abstract classes

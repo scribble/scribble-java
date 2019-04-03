@@ -24,7 +24,7 @@ import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
-import org.scribble.ast.global.GInteractionNode;
+import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.global.GProtocolBlock;
@@ -39,7 +39,7 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
-import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtocolBlock;
@@ -341,7 +341,7 @@ public class AstFactoryImpl implements AstFactory
 
 	@Override
 	public GInteractionSeq GInteractionSeq(CommonTree source,
-			List<GInteractionNode> actions)
+			List<GSessionNode> actions)
 	{
 		GInteractionSeq gis = new GInteractionSeq(source, actions);
 		gis = del(gis, new GInteractionSeqDel());
@@ -628,7 +628,7 @@ public class AstFactoryImpl implements AstFactory
 
 	@Override
 	public LInteractionSeq LInteractionSeq(CommonTree source,
-			List<LInteractionNode> actions)
+			List<LSessionNode> actions)
 	{
 		LInteractionSeq lis = new LInteractionSeq(source, actions);
 		lis = del(lis, new LInteractionSeqDel());

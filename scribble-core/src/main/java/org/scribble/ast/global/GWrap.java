@@ -25,7 +25,7 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
 
-public class GWrap extends ConnectAction<Global> implements GSimpleInteractionNode
+public class GWrap extends ConnectAction<Global> implements GSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GWrap(Token t)

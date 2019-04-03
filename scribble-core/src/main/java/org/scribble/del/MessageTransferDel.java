@@ -30,7 +30,7 @@ import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.util.MessageIdCollector;
 import org.scribble.visit.util.RoleCollector;
 
-public abstract class MessageTransferDel extends SimpleInteractionNodeDel
+public abstract class MessageTransferDel extends SimpleSessionNodeDel
 {
 	public MessageTransferDel()
 	{

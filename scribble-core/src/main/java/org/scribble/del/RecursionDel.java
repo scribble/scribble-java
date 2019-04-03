@@ -23,7 +23,7 @@ import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.util.RecVarCollector;
 import org.scribble.visit.wf.NameDisambiguator;
 
-public abstract class RecursionDel extends CompoundInteractionNodeDel
+public abstract class RecursionDel extends CompoundInteractionDel
 {
 	public RecursionDel()
 	{

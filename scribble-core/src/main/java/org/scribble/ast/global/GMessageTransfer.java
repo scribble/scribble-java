@@ -23,7 +23,7 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
-import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LNode;
 import org.scribble.ast.local.LReceive;
 import org.scribble.ast.name.simple.RoleNode;
@@ -32,7 +32,7 @@ import org.scribble.type.kind.RoleKind;
 import org.scribble.type.name.Role;
 
 public class GMessageTransfer extends MessageTransfer<Global>
-		implements GSimpleInteractionNode
+		implements GSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GMessageTransfer(Token t)
@@ -82,8 +82,8 @@ public class GMessageTransfer extends MessageTransfer<Global>
 				else
 				{
 					LReceive lr = af.LReceive(this.source, srcNode1, msg, destNodes);
-					List<LInteractionNode> lis = Arrays.asList(
-							new LInteractionNode[]{(LInteractionNode) proj, lr});
+					List<LSessionNode> lis = Arrays.asList(
+							new LSessionNode[]{(LSessionNode) proj, lr});
 					proj = af.LInteractionSeq(this.source, lis);
 				}
 			}

@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
-import org.scribble.ast.global.GInteractionNode;
+import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.AntlrToScribParserUtil;
@@ -31,10 +31,10 @@ public class AntlrGInteractionSequence
 	{
 		/*List<GInteractionNode> gis =
 				getInteractionChildren(ct).stream().map((gi) -> (GInteractionNode) parser.parse(gi)).collect(Collectors.toList());*/
-		List<GInteractionNode> gis = new LinkedList<>();
+		List<GSessionNode> gis = new LinkedList<>();
 		for (CommonTree gi : getInteractionChildren(ct))
 		{
-			gis.add((GInteractionNode) parser.parse(gi, af));
+			gis.add((GSessionNode) parser.parse(gi, af));
 		}
 		return af.GInteractionSeq(ct, gis);
 	}

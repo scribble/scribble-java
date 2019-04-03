@@ -31,7 +31,7 @@ import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LSend extends LMessageTransfer
-		implements LSimpleInteractionNode  // Explicitly needed here for getKind
+		implements LSimpleSessionNode  // Explicitly needed here for getKind
 {
 	// ScribTreeAdaptor#create constructor
 	public LSend(Token t)
@@ -59,14 +59,14 @@ public class LSend extends LMessageTransfer
 	}
 
 	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+	public LSessionNode merge(AstFactory af, LSessionNode ln)
 			throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LSend: " + this);
 	}
 
 	@Override
-	public boolean canMerge(LInteractionNode ln)
+	public boolean canMerge(LSessionNode ln)
 	{
 		return false;
 	}

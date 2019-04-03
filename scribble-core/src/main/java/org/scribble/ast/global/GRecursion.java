@@ -29,7 +29,7 @@ import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LContinue;
-import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
@@ -40,7 +40,7 @@ import org.scribble.type.name.Role;
 
 
 public class GRecursion extends Recursion<Global>
-		implements GCompoundInteractionNode
+		implements GCompoundInteraction
 {
 	// ScribTreeAdaptor#create constructor
 	public GRecursion(Token t)
@@ -91,7 +91,7 @@ public class GRecursion extends Recursion<Global>
 		{
 			return block;
 		}
-		List<? extends LInteractionNode> lis = block.getInteractSeqChild()
+		List<? extends LSessionNode> lis = block.getInteractSeqChild()
 				.getInteractionChildren();
 		if (lis.size() > 1)
 		{
@@ -100,7 +100,7 @@ public class GRecursion extends Recursion<Global>
 		else //if (lis.size() == 1)
 		{
 			// Only pruning if single statement body: if more than 1, must be some (non-empty?) statement before a continue -- cannot (shouldn't?) be a continue followed by some other statement due to reachability
-			LInteractionNode lin = lis.get(0);
+			LSessionNode lin = lis.get(0);
 			if (lin instanceof LContinue)
 			{
 				if (rvs.contains(((LContinue) lin).getRecVarChild().toName()))

@@ -25,7 +25,7 @@ import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-public abstract class Choice<K extends ProtocolKind> extends CompoundInteractionNode<K>
+public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public Choice(Token t)

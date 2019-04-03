@@ -24,7 +24,7 @@ import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;
 import org.scribble.visit.wf.env.ExplicitCorrelationEnv;
 
-public abstract class ChoiceDel extends CompoundInteractionNodeDel
+public abstract class ChoiceDel extends CompoundInteractionDel
 {
 	public ChoiceDel()
 	{

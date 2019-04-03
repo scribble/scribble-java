@@ -28,7 +28,7 @@ import org.scribble.type.Message;
 import org.scribble.type.name.Role;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LWrapServer extends LConnectionAction implements LSimpleInteractionNode
+public class LWrapServer extends LConnectionAction implements LSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LWrapServer(Token t)
@@ -56,14 +56,14 @@ public class LWrapServer extends LConnectionAction implements LSimpleInteraction
 	}
 
 	@Override
-	public LInteractionNode merge(AstFactory af, LInteractionNode ln)
+	public LSessionNode merge(AstFactory af, LSessionNode ln)
 			throws ScribbleException
 	{
 		throw new RuntimeScribbleException("Invalid merge on LWrapServer: " + this);
 	}
 
 	@Override
-	public boolean canMerge(LInteractionNode ln)
+	public boolean canMerge(LSessionNode ln)
 	{
 		return false;
 	}

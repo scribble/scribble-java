@@ -20,7 +20,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.InteractionSeq;
-import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
@@ -46,16 +46,16 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	}
 
 	// Move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
-	public LInteractionSeq project(AstFactory af, Role self, List<LInteractionNode> lis)
+	public LInteractionSeq project(AstFactory af, Role self, List<LSessionNode> lis)
 	{
 		LInteractionSeq projection = af.LInteractionSeq(this.source, lis);
 		return projection;
 	}
 	
 	@Override
-	public List<GInteractionNode> getInteractionChildren()
+	public List<GSessionNode> getInteractionChildren()
 	{
-		return getChildren().stream().map(n -> (GInteractionNode) n)
+		return getChildren().stream().map(n -> (GSessionNode) n)
 				.collect(Collectors.toList());
 	}
 	
@@ -70,7 +70,7 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	
 	
 
-	public GInteractionSeq(CommonTree source, List<GInteractionNode> actions)
+	public GInteractionSeq(CommonTree source, List<GSessionNode> actions)
 	{
 		super(source, actions);
 	}

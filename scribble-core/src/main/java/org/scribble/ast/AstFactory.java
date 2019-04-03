@@ -22,7 +22,7 @@ import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
-import org.scribble.ast.global.GInteractionNode;
+import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.global.GProtocolBlock;
@@ -37,7 +37,7 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
-import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtocolBlock;
@@ -129,7 +129,7 @@ public interface AstFactory
 	GProtocolBlock GProtocolBlock(CommonTree source, GInteractionSeq gis);
 
 	GInteractionSeq GInteractionSeq(CommonTree source,
-			List<GInteractionNode> gis);
+			List<GSessionNode> gis);
 
 	GMessageTransfer GMessageTransfer(CommonTree source, RoleNode src,
 			MessageNode msg, List<RoleNode> dests);
@@ -193,7 +193,7 @@ public interface AstFactory
 	LProtocolBlock LProtocolBlock(CommonTree source, LInteractionSeq seq);
 
 	LInteractionSeq LInteractionSeq(CommonTree source,
-			List<LInteractionNode> actions);
+			List<LSessionNode> actions);
 
 	LSend LSend(CommonTree source, RoleNode src, MessageNode msg,
 			List<RoleNode> dests);

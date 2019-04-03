@@ -22,7 +22,7 @@ import org.scribble.type.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
 public abstract class Recursion<K extends ProtocolKind>
-		extends CompoundInteractionNode<K>
+		extends CompoundInteraction<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public Recursion(Token t)
