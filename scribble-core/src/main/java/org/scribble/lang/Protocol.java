@@ -13,6 +13,7 @@ import org.scribble.type.name.DataType;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>, B extends Seq<K>>
@@ -54,6 +55,31 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	// FIXME: confusing with this.roles List -- refactor: Protocol shouldn't be a SType
 	@Override
 	public Set<Role> getRoles()
+	{
+		throw new RuntimeException("Unsupported for Protocol: " + this);
+	}
+
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		throw new RuntimeException("Unsupported for Protocol: " + this);
+	}
+
+	@Override
+	public Protocol<K, N, B> substitute(Substitutions subs)
+	{
+		// CHECKME: needed?
+		/*List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
+				.collect(Collectors.toList());
+		List<MemberName<NonRoleArgKind>> params = this.params.stream().map(x -> ...)
+				.collect(Collectors.toList());
+		return reconstruct(getSource(), this.mods, this.fullname, roles,
+				this.def.substitute(subs));*/
+		throw new RuntimeException("Unsupported for Protocol: " + this);
+	}
+
+	@Override
+	public Protocol<K, N, B> pruneRecs()
 	{
 		throw new RuntimeException("Unsupported for Protocol: " + this);
 	}

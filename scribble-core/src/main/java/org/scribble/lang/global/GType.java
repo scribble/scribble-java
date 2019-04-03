@@ -8,7 +8,6 @@ import org.scribble.lang.Projector;
 import org.scribble.lang.SType;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.LType;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
@@ -30,8 +29,8 @@ public interface GType extends SType<Global>
 	Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
 			throws ScribbleException;
 
-	@Override
-	GType substitute(Substitutions subs);
+	/*@Override
+	GType substitute(Substitutions subs);*/  // Otherwise causes return type inconsistency with base abstract classes
 
 	@Override
 	GType getInlined(STypeInliner i);//, Deque<SubprotoSig> stack);

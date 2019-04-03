@@ -56,6 +56,25 @@ public class LSeq extends Seq<Local> implements LType
 	}
 
 	@Override
+	public LSeq pruneRecs()
+	{
+		List<LType> elems = new LinkedList<>();
+		for (SType<Local> e : this.elems)
+		{
+			LType e1 = (LType) e.pruneRecs();
+			if (e1 instanceof LSeq)  // cf. Recursion::pruneRecs
+			{
+				elems.addAll(((LSeq) e1).getElements());  // Handles empty Seq case
+			}
+			else
+			{
+				elems.add(e1);
+			}
+		}
+		return reconstruct(getSource(), elems);
+	}
+
+	@Override
 	public LSeq getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		LInteractionSeq source = getSource();  // CHECKME: or empty source?

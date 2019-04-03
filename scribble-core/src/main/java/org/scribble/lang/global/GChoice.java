@@ -48,6 +48,14 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	}
 
 	@Override
+	public GChoice pruneRecs()
+	{
+		List<GSeq> blocks = this.blocks.stream().map(x -> x.pruneRecs())
+				.collect(Collectors.toList());
+		return reconstruct(getSource(), this.subj, blocks);
+	}
+
+	@Override
 	public GChoice getInlined(STypeInliner i )//GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
 		org.scribble.ast.global.GChoice source = getSource();  // CHECKME: or empty source?

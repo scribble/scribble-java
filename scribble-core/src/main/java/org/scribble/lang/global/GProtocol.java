@@ -44,20 +44,8 @@ public class GProtocol extends
 	{
 		return new GProtocol(source, mods, fullname, roles, params, def);
 	}
-
-	@Override
-	public GType substitute(Substitutions subs)
-	{
-		// CHECKME: needed?
-		/*List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
-				.collect(Collectors.toList());
-		List<MemberName<NonRoleArgKind>> params = this.params.stream().map(x -> ...)
-				.collect(Collectors.toList());
-		return reconstruct(getSource(), this.mods, this.fullname, roles,
-				this.def.substitute(subs));*/
-		throw new RuntimeException("Unsupported for Protocol: " + this);
-	}
 	
+	// CHECKME: drop from Protocol (after removing Protocol from SType?)
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
@@ -66,7 +54,7 @@ public class GProtocol extends
 		SubprotoSig sig = i.peek();
 		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
 				sig.args);
-		GSeq body = this.def.substitute(subs).getInlined(i);//, stack);
+		GSeq body = this.def.substitute(subs).getInlined(i).pruneRecs();
 		RecVar rv = i.getInlinedRecVar(sig);
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		GProtocolDecl source = getSource();
@@ -108,7 +96,7 @@ public class GProtocol extends
 	@Override
 	public LProjection project(Projector v)
 	{
-		LSeq body = (LSeq) this.def.project(v);
+		LSeq body = (LSeq) this.def.project(v).pruneRecs();
 		return projectAux(v.self, body);
 	}
 

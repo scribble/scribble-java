@@ -1,6 +1,7 @@
 package org.scribble.lang;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import org.scribble.ast.InteractionSeq;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 // Could add B extends STTypeBase, K>, but it inflates type params quite a bit (e.g., Protocol)
@@ -32,6 +34,21 @@ public abstract class Seq<K extends ProtocolKind>
 		return this.elems.stream().flatMap(x -> x.getRoles().stream())
 				.collect(Collectors.toSet());
 	}
+	
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		return this.elems.stream().flatMap(x -> x.getRecVars().stream())
+				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public Seq<K> substitute(Substitutions subs)
+	{
+		List<? extends SType<K>> elems = this.elems.stream()
+				.map(x -> x.substitute(subs)).collect(Collectors.toList());
+		return reconstruct(getSource(), elems);
+	}
 		
 	@Override
 	public List<ProtocolName<K>> getProtoDependencies()
@@ -46,14 +63,6 @@ public abstract class Seq<K extends ProtocolKind>
 		return this.elems.stream()
 				.flatMap(x -> x.getNonProtoDependencies().stream()).distinct()
 				.collect(Collectors.toList());
-	}
-
-	@Override
-	public Seq<K> substitute(Substitutions subs)
-	{
-		List<? extends SType<K>> elems = this.elems.stream()
-				.map(x -> x.substitute(subs)).collect(Collectors.toList());
-		return reconstruct(getSource(), elems);
 	}
 
 	public abstract List<? extends SType<K>> getElements();

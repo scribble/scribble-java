@@ -7,11 +7,12 @@ import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 // CHECKME: move to type.sess?
 // Generic works to "specialise" G/L subclasses (and works with immutable pattern) -- cf. not supported by contravariant method parameter subtyping for getters/setters
-public interface SType<K extends ProtocolKind>
+public interface SType<K extends ProtocolKind>  // CHECKME: consider adding B extends Seq<K> here
 {
 	boolean hasSource();  // i.e., was parsed
 	ProtocolKindNode<K> getSource();  // Pre: hasSource
@@ -20,6 +21,9 @@ public interface SType<K extends ProtocolKind>
 	Set<Role> getRoles();
 
 	SType<K> substitute(Substitutions subs);
+	
+	Set<RecVar> getRecVars();
+	SType<K> pruneRecs();  // Assumes no shadowing (e.g., use after inlining recvar disamb)
 	
 	// Top-level call should be on a GProtocol with an empty stack -- XXX
 	// stack is treated mutably

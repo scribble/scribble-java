@@ -46,6 +46,12 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 		return (GDo) super.substitute(subs);
 	}
 
+	@Override
+	public GDo pruneRecs()
+	{
+		return (GDo) super.pruneRecs();
+	}
+
 	// CHECKME: factor up to base?
 	@Override
 	public GType getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)

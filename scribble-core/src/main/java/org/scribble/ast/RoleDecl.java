@@ -57,7 +57,7 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 		{
 			return af.SelfRoleDecl(name.source, rn);
 		}
-		return af.RoleDecl(source, rn);
+		return af.RoleDecl(this.source, rn);
 	}
 
 	@Override

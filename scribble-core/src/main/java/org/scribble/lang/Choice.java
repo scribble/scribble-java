@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
@@ -35,6 +36,13 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 		Set<Role> res = Stream.of(this.subj).collect(Collectors.toSet());
 		this.blocks.forEach(x -> res.addAll(x.getRoles()));
 		return res;
+	}
+	
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		return this.blocks.stream().flatMap(x -> x.getRecVars().stream())
+				.collect(Collectors.toSet());
 	}
 
 	@Override

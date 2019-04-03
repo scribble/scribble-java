@@ -3,6 +3,8 @@ package org.scribble.lang;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
@@ -32,6 +34,12 @@ public abstract class Continue<K extends ProtocolKind>
 	{
 		return Collections.emptySet();
 	}
+	
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		return Stream.of(this.recvar).collect(Collectors.toSet());
+	}
 
 	@Override
 	public List<ProtocolName<K>> getProtoDependencies()
@@ -47,9 +55,16 @@ public abstract class Continue<K extends ProtocolKind>
 
 	@Override
 	public Continue<K> substitute(Substitutions subs)
-
 	{
-		return reconstruct(getSource(), this.recvar);
+		//return reconstruct(getSource(), this.recvar);
+		return this;
+	}
+
+	@Override
+	public Continue<K> pruneRecs()
+	{
+		//return reconstruct(getSource(), this.recvar);
+		return this;
 	}
 
 	@Override

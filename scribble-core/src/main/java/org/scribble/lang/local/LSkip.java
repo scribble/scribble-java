@@ -29,6 +29,18 @@ public class LSkip extends STypeBase<Local> implements LType
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}
+
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+
+	@Override
+	public LSkip pruneRecs()
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
 		
 	@Override
 	public List<ProtocolName<Local>> getProtoDependencies()

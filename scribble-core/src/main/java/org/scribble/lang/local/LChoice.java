@@ -56,6 +56,14 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 	}
 
 	@Override
+	public LChoice pruneRecs()
+	{
+		List<LSeq> blocks = this.blocks.stream().map(x -> x.pruneRecs())
+				.collect(Collectors.toList());
+		return reconstruct(getSource(), this.subj, blocks);
+	}
+
+	@Override
 	public LChoice getInlined(STypeInliner i )//GTypeTranslator t, Deque<SubprotoSig> stack)
 	{
 		org.scribble.ast.local.LChoice source = getSource();  // CHECKME: or empty source?

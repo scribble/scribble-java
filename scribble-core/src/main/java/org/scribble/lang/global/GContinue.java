@@ -38,6 +38,12 @@ public class GContinue extends Continue<Global> implements GType
 	}
 
 	@Override
+	public GContinue pruneRecs()
+	{
+		return (GContinue) super.pruneRecs();
+	}
+
+	@Override
 	public GContinue getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		return (GContinue) super.getInlined(i);

@@ -17,6 +17,7 @@ import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 public abstract class MessageTransfer<K extends ProtocolKind>
@@ -44,6 +45,12 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 	{
 		// Inlcudes self
 		return Stream.of(this.src, this.dst).collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		return Collections.emptySet();
 	}
 
 	@Override
@@ -92,6 +99,12 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 		}
 		return reconstruct(getSource(), subs.subsRole(this.src), msg,
 				subs.subsRole(this.dst));
+	}
+	
+	@Override
+	public MessageTransfer<K> pruneRecs()
+	{
+		return this;
 	}
 
 	@Override

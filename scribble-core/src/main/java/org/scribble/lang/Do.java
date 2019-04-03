@@ -15,6 +15,7 @@ import org.scribble.type.name.DataType;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
 public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
@@ -41,6 +42,12 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 	public Set<Role> getRoles()
 	{
 		return this.roles.stream().collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		return Collections.emptySet();
 	}
 
 	@Override
@@ -80,6 +87,12 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 		}
 		return reconstruct((org.scribble.ast.Do<K>) getSource(), this.proto, roles,
 				args);
+	}
+
+	@Override
+	public Do<K, N> pruneRecs()
+	{
+		return this;
 	}
 
 	@Override

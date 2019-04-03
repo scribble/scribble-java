@@ -161,7 +161,7 @@ public class Job
 			//Deque<SubprotoSig> stack = new LinkedList<>();
 			STypeInliner i = new STypeInliner(this);
 			i.pushSig(sig);  // TODO: factor into constructor
-			GProtocol inlined = g.getInlined(i);
+			GProtocol inlined = g.getInlined(i);  // Protocol.getInlined does pruneRecs
 			debugPrintln("\nSubprotocols inlined:\n" + inlined);
 			this.context.addInlined(g.fullname, inlined);
 		}
@@ -297,7 +297,7 @@ public class Job
 		{
 			for (Role self : g.roles)
 			{
-				GProtocol inlined = this.context.getInlined(g.fullname);
+				GProtocol inlined = this.context.getInlined(g.fullname);  // pruneRecs already done for pruneRecs (cf. runContextBuildingPasses)
 				LProtocol iproj = inlined.projectInlined(self);  // CHECKME: projection and inling commutative?
 				this.context.addInlinedProjection(iproj.fullname, iproj);
 				debugPrintln("\nProjected inlined onto " + self + ":\n" + iproj);
@@ -309,7 +309,7 @@ public class Job
 		{
 			for (Role self : g.roles)
 			{
-				LProtocol proj = g.project(new Projector(this, self));
+				LProtocol proj = g.project(new Projector(this, self));  // Does pruneRecs
 				this.context.addProjection(proj);
 				debugPrintln("\nProjected onto " + self + ":\n" + proj);
 			}
@@ -357,7 +357,8 @@ public class Job
 
 		List<MemberName<?>> ns = proj.getNonProtoDependencies();
 
-		warningPrintln("\n[TODO] Full module projection and imports: "
+		warningPrintln("");
+		warningPrintln("[TODO] Full module projection and imports: "
 				+ fullname + "@" + role);
 		
 		return Collections.emptyMap();

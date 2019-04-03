@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.lang.ProtocolMod;
+import org.scribble.lang.STypeInliner;
 import org.scribble.type.kind.Local;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.GProtocolName;
@@ -43,19 +44,13 @@ public class LProjection extends LProtocol
 				this.def.substitute(subs));
 	}*/
 	
-	/*// Pre: stack.peek is the sig for the calling Do (or top-level entry)
+	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
-	public LRecursion getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LProjection getInlined(STypeInliner i)
 	{
-		SubprotoSig sig = i.peek();
-		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
-				sig.args);
-		LSeq body = this.def.substitute(subs).getInlined(i);//, stack);
-		LProtocolDecl source = getSource();  // CHECKME: or empty source?
-		RecVar rv = i.makeRecVar(sig);
-		return new LRecursion(source, rv, body);
-	}*/
+		throw new RuntimeException("[TODO]: " + this);
+	}
 	
 	/*@Override
 	public LProtocolDecl getSource()

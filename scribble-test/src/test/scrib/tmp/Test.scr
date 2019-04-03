@@ -57,6 +57,13 @@ module tmp.Test;
 		// TODO make test framework to check global-"proj"-via-taus matches actual proj -- matches mean language acceptance?
 
 
+explicit global protocol Foo(role A, role B)
+{
+	connect A to B;
+}
+
+
+/*
 global protocol Foo(role A, role B, role C)
 {
 	1() from A to B;	
@@ -67,6 +74,7 @@ aux global protocol Bar(role D, role E)
 {
 	2() from D to E;	
 }
+//*/
 
 
 /*

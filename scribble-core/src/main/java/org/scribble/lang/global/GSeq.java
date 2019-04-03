@@ -45,6 +45,25 @@ public class GSeq extends Seq<Global> implements GType
 	}
 
 	@Override
+	public GSeq pruneRecs()
+	{
+		List<GType> elems = new LinkedList<>();
+		for (SType<Global> e : this.elems)
+		{
+			GType e1 = (GType) e.pruneRecs();
+			if (e1 instanceof GSeq)  // cf. Recursion::pruneRecs
+			{
+				elems.addAll(((GSeq) e1).getElements());  // Handles empty Seq case
+			}
+			else
+			{
+				elems.add(e1);
+			}
+		}
+		return reconstruct(getSource(), elems);
+	}
+
+	@Override
 	public GSeq getInlined(STypeInliner i)// , Deque<SubprotoSig> stack)
 	{
 		GInteractionSeq source = getSource(); // CHECKME: or empty source?

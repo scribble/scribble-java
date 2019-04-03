@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.ast.Constants;
 import org.scribble.ast.ProtocolDecl;
@@ -57,31 +58,23 @@ public class LProtocol extends
 	{
 		throw new RuntimeException("Unsupported for LProtocol:\n" + this);
 	}
-
-	@Override
-	public LType substitute(Substitutions subs)
-	{
-		/*List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
-				.collect(Collectors.toList());
-		List<Arg<NonRoleParamKind>> params = this.params.stream().map(x -> ...)
-				.collect(Collectors.toList());
-		return reconstruct(getSource(), this.mods, this.fullname, roles, params,
-				this.def.substitute(subs));*/
-		throw new RuntimeException("Unsupported for LProtocol:\n" + this);
-	}
 	
+	// CHECKME: drop from Protocol (after removing Protocol from SType?)
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
-	public LRecursion getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LProtocol getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
 	{
 		SubprotoSig sig = i.peek();
 		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
 				sig.args);
-		LSeq body = this.def.substitute(subs).getInlined(i);//, stack);
-		LProtocolDecl source = getSource();  // CHECKME: or empty source?
+		LSeq body = this.def.substitute(subs).getInlined(i).pruneRecs();
 		RecVar rv = i.getInlinedRecVar(sig);
-		return new LRecursion(source, rv, body);
+		LRecursion rec = new LRecursion(null, rv, body);  // CHECKME: or protodecl source?
+		LProtocolDecl source = getSource();
+		LSeq def = new LSeq(null, Stream.of(rec).collect(Collectors.toList()));
+		return new LProtocol(source, this.mods, this.fullname, this.roles,
+				this.self, this.params, def);
 	}
 	
 	@Override
