@@ -112,6 +112,12 @@ public class GDisconnect extends DisconnectAction<Global>
 	}
 
 	@Override
+	public String toString()
+	{
+		return "disconnect " + this.left + " and " + this.right + ";";
+	}
+
+	@Override
 	public int hashCode()
 	{
 		int hash = 8747;

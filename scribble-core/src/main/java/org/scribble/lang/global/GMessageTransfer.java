@@ -126,6 +126,12 @@ public class GMessageTransfer extends MessageTransfer<Global>
 	}
 
 	@Override
+	public String toString()
+	{
+		return this.msg + " from " + this.src + " to " + this.dst + ";";
+	}
+
+	@Override
 	public int hashCode()
 	{
 		int hash = 1481;

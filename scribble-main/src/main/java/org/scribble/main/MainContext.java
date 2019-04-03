@@ -40,6 +40,7 @@ import org.scribble.model.endpoint.EModelFactoryImpl;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.SModelFactoryImpl;
 import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.ScribbleAntlrWrapper;
 import org.scribble.type.name.ModuleName;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
@@ -83,8 +84,7 @@ public class MainContext
 			throws ScribParserException, ScribbleException
 	{
 		this.locator = locator; 
-		this.loader = new ScribModuleLoader(this.locator, this.antlrParser,
-				this.scribParser);
+		this.loader = new ScribModuleLoader(this.locator, this.antlrParser);//, this.scribParser);
 	}
 
 	// Load main module from file system

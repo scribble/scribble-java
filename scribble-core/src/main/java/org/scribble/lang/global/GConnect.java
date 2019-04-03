@@ -126,6 +126,12 @@ public class GConnect extends ConnectAction<Global>
 	}
 
 	@Override
+	public String toString()
+	{
+		return this.msg + " connect " + this.src + " to " + this.dst + ";";
+	}
+
+	@Override
 	public int hashCode()
 	{
 		int hash = 10639;

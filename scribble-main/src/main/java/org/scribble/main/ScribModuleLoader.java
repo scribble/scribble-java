@@ -18,7 +18,7 @@ import org.scribble.ast.Module;
 import org.scribble.job.ScribbleException;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.ResourceLocator;
-import org.scribble.parser.scribble.AntlrToScribParser;
+import org.scribble.parser.scribble.ScribbleAntlrWrapper;
 import org.scribble.type.name.ModuleName;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
@@ -30,14 +30,13 @@ public class ScribModuleLoader extends DefaultModuleLoader //implements ModuleLo
 {
 	private ResourceLocator locator;
 	private ScribbleAntlrWrapper antlr;
-	private AntlrToScribParser parser;
+	//private AntlrToScribParser parser;
 
-	public ScribModuleLoader(ResourceLocator locator, ScribbleAntlrWrapper antlr,
-			AntlrToScribParser parser)
+	public ScribModuleLoader(ResourceLocator locator, ScribbleAntlrWrapper antlr)//, AntlrToScribParser parser)
 	{
 		this.locator = locator;
 		this.antlr = antlr;
-		this.parser = parser;
+		//this.parser = parser;
 	}
 
 	@Override
@@ -53,6 +52,9 @@ public class ScribModuleLoader extends DefaultModuleLoader //implements ModuleLo
 		/*Module parsed = (Module) this.parser.parse(this.antlr.parseAntlrTree(res),
 				af);*/
 		Module parsed = this.antlr.parseAntlrTree(res);  // Does del decoration
+		
+		//AntlrToScribParser.checkForAntlrErrors(ct);  // FIXME: do this somewhere
+		
 		checkModuleName(modname, res, parsed);
 		registerModule(res, parsed);
 		return new Pair<>(res, parsed);

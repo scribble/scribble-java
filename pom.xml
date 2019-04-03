@@ -71,14 +71,15 @@
 
 	<modules>
 		<module>scribble-core</module>
-		<module>scribble-parser</module>
-		<module>scribble-cli</module>
-		<module>scribble-codegen</module>
 		<module>scribble-runtime</module>
+		<module>scribble-parser</module>
+    <module>scribble-lang</module>
+		<module>scribble-codegen</module>
+    <module>scribble-main</module>
+		<module>scribble-cli</module>
 		<module>scribble-test</module>
 		<module>scribble-dist</module>
 		<module>scribble-demos</module>
-    <module>scribble-lang</module>
   </modules>
 
 	<dependencyManagement>
@@ -111,6 +112,11 @@
 			<dependency>
 				<groupId>org.scribble</groupId>
 				<artifactId>scribble-codegen</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scribble</groupId>
+				<artifactId>scribble-main</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
