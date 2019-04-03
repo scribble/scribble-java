@@ -9,7 +9,6 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
-import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
@@ -49,16 +48,23 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 		return this.mods.contains(ProtocolMod.EXPLICIT);
 	}
 	
-	// FIXME: confusing with this.roles List -- Protocol shouldn't be a SType
+	// FIXME: confusing with this.roles List -- refactor: Protocol shouldn't be a SType
+	@Override
 	public Set<Role> getRoles()
 	{
 		throw new RuntimeException("Unsupported for Protocol: " + this);
 	}
 	
 	@Override
-	public List<ModuleName> getDependencies()
+	public List<ProtocolName<K>> getProtoDependencies()
 	{
-		return this.def.getDependencies();
+		return this.def.getProtoDependencies();
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
+	{
+		return this.def.getNonProtoDependencies();
 	}
 
 	@Override
@@ -70,7 +76,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	@Override
 	public String toString()
 	{
-		return "protocol " + this.fullname
+		return "protocol " + this.fullname.getSimpleName()
 				+ "<" + this.params.stream()  // CHECKME: drop empty "<>" ?
 					.map(x -> x.toString()).collect(Collectors.joining(", ")) + ">"
 				+ "(" + this.roles.stream()

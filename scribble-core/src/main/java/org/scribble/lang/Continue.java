@@ -6,7 +6,8 @@ import java.util.Set;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
-import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.MemberName;
+import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
@@ -33,7 +34,13 @@ public abstract class Continue<K extends ProtocolKind>
 	}
 
 	@Override
-	public List<ModuleName> getDependencies()
+	public List<ProtocolName<K>> getProtoDependencies()
+	{
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		return Collections.emptyList();
 	}

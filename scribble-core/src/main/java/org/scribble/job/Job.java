@@ -41,6 +41,7 @@ import org.scribble.model.global.SGraphBuilderUtil;
 import org.scribble.type.Arg;
 import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
+import org.scribble.type.kind.Local;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
@@ -48,6 +49,7 @@ import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.InlinedProtocolUnfolder;
@@ -345,29 +347,22 @@ public class Job
 		//Module root = 
 		LProtocol proj =
 				this.context.getProjection(fullname, role);
-		//LProtocol proj = this.jctxt.getInlinedProjection(fullname, role);
 		
-		// FIXME: dependencies, -project -- FIXME: need to create Module (with dependency imports)
-		/*Map<LProtocolName, Set<Role>> dependencies = 
-//				((LProtocolDeclDel) root
-//				.getLProtoDeclChildren().get(0).del()).getProtocolDeclContext()
-//						.getDependencyMap().getDependencies().get(role);
-				new HashMap<>();*/
-		
-		// FIXME TODO make LDo and add projection for Do, and do getDeps on that
-		// TODO make test framework to check proj->inline matches inline->proj
-		// TODO make test framework to check global-"proj"-via-taus matches actual proj -- matches mean language acceptance?
-		
-		List<ModuleName> deps = proj.getDependencies();
-		System.out.println("jjj1: " + proj + "\n" + deps);
-		
-		//...HERE: build Modules for deps and return
+		System.out.println(proj);
+		List<ProtocolName<Local>> ps = proj.getProtoDependencies();
+		for (ProtocolName<Local> p : ps)
+		{
+			System.out.println("\n" + this.context.getProjection((LProtocolName) p));
+		}
 
-		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
-		/*return dependencies.keySet().stream().collect(
-				Collectors.toMap(x -> x, x -> this.jctxt.getModule(x.getPrefix())));*/
-		throw new RuntimeException(
-				"[TODO] Projection modules and dependencies: " + fullname + "@" + role);
+		List<MemberName<?>> ns = proj.getNonProtoDependencies();
+
+		debugPrintln("\n[TODO] Full module projection and imports: "
+				+ fullname + "@" + role);
+		
+		return Collections.emptyMap();
+				//FIXME: build output Modules
+				//FIXME: (interleaved) ordering between proto and nonproto (Module) imports -- order by original Global import order?
 	}
 
 	/*public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException

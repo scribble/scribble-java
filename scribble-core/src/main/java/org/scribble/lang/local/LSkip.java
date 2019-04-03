@@ -10,7 +10,8 @@ import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
-import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.MemberName;
+import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 
@@ -30,7 +31,13 @@ public class LSkip extends STypeBase<Local> implements LType
 	}
 		
 	@Override
-	public List<ModuleName> getDependencies()
+	public List<ProtocolName<Local>> getProtoDependencies()
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}

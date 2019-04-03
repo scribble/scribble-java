@@ -5,7 +5,8 @@ import java.util.Set;
 
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
-import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.MemberName;
+import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
 // CHECKME: move to type.sess?
@@ -34,8 +35,9 @@ public interface SType<K extends ProtocolKind>
 	// FIXME: repeat recvar names, including non-shadowing (e.g., choice cases)
 	SType<K> unfoldAllOnce(STypeUnfolder<K> u);
 	
-	// Returns *all* modules (SType has no notion of Module)
-	List<ModuleName> getDependencies();
+	// Resulting Lists should not contain duplicates (i.e., Choice/Seq)
+	List<ProtocolName<K>> getProtoDependencies();
+	List<MemberName<?>> getNonProtoDependencies();  // N.B. delegation payloads currently here, not getProtoDependencies (CHECKME: refactor?)
 	
 	// Call this using: them.canEquals(this) 
 	boolean canEquals(Object o);

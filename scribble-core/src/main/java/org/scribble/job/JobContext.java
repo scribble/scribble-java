@@ -425,9 +425,17 @@ public class JobContext
 		}
 	}
 	
-	// HACK
+	// HACK -- CHECKME: separate original parsed from "working set"?
 	public Map<ModuleName, Module> getParsed()
 	{
 		return Collections.unmodifiableMap(this.parsed);
+	}
+
+	public GProtocolDecl getParsed(GProtocolName fullname)
+	{
+		return this.parsed.get(fullname.getPrefix())
+				.getGProtoDeclChildren().stream().filter(x -> x.getHeaderChild()
+						.getDeclName().equals(fullname.getSimpleName()))
+				.findAny().get();
 	}
 }

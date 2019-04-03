@@ -82,10 +82,7 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 		}
 
 		JobContext jobc = v.job.getContext();
-		GProtocolDecl gpd = jobc.getParsed().get(this.proto.getPrefix())
-				.getGProtoDeclChildren().stream().filter(x -> x.getHeaderChild()
-						.getDeclName().equals(this.proto.getSimpleName()))
-				.findAny().get();
+		GProtocolDecl gpd = jobc.getParsed(this.proto);
 		Role targSelf = gpd.getRoles().get(this.roles.indexOf(v.self));
 
 		GProtocol imed = jobc.getIntermediate(this.proto);

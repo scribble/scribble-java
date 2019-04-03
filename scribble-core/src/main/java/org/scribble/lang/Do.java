@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.type.Arg;
+import org.scribble.type.MessageSig;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageSigName;
-import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
@@ -44,9 +44,17 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 	}
 
 	@Override
-	public List<ModuleName> getDependencies()
+	public List<ProtocolName<K>> getProtoDependencies()
 	{
-		return Stream.of(this.proto.getPrefix()).collect(Collectors.toList());
+		return Stream.of(this.proto).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
+	{
+		return this.args.stream()
+				.filter(x -> (x instanceof MessageSig) || (x instanceof DataType))  // CHECKME: refactor?
+				.map(x -> (MemberName<?>) x).collect(Collectors.toList());
 	}
 
 	@Override

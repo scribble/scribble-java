@@ -1,5 +1,6 @@
 package org.scribble.lang;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -14,8 +15,8 @@ import org.scribble.type.name.DataType;
 import org.scribble.type.name.GDelegationType;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageSigName;
-import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.PayloadElemType;
+import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 
 public abstract class MessageTransfer<K extends ProtocolKind>
@@ -46,12 +47,18 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 	}
 
 	@Override
-	public List<ModuleName> getDependencies()
+	public List<ProtocolName<K>> getProtoDependencies()
 	{
-		List<ModuleName> res = new LinkedList<>();
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
+	{
+		List<MemberName<?>> res = new LinkedList<>();
 		if (this.msg.isMessageSigName())
 		{
-			res.add(((MessageSigName) this.msg).getPrefix());
+			res.add((MessageSigName) this.msg);
 		}
 		else //if (this.msg.isMessageSig)
 		{
@@ -60,11 +67,11 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 			{
 				if (p.isDataType())
 				{
-					res.add(((DataType) p).getPrefix());
+					res.add((DataType) p);
 				}
-				else //if (p.isGDelegationType())
+				else if (p.isGDelegationType())  // TODO FIXME: should be projected to local name
 				{
-					res.add(((GDelegationType) p).getGlobalProtocol().getPrefix());
+					res.add(((GDelegationType) p).getGlobalProtocol());
 				}
 			}
 		}

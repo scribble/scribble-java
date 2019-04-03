@@ -69,7 +69,7 @@ public class LProjection extends LProtocol
 	{
 		return this.mods.stream().map(x -> x.toString() + " ")
 				.collect(Collectors.joining())
-				+ "local protocol " + this.fullname
+				+ "local protocol " + this.fullname.getSimpleName()
 				+ "("
 				+ this.roles.stream().map(x -> x.toString())
 						.collect(Collectors.joining(", "))

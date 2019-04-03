@@ -34,6 +34,11 @@ module tmp.Test;
 // FIXME: good.liveness.Test02, reachability check (empty rec projection)
 
 
+
+
+
+
+
 //-------------
 //- projection dependencies (projections as modules?)
 //- check projected role/choice/do pruning/fixing? -- applies only to above proj? (i.e., proto decls) -- CHECKME: can do role fixing by getting roles from iprohj? similarly do-pruning?
@@ -47,6 +52,9 @@ module tmp.Test;
 //- refactor do param/arg ast classes -- generally clean up AST class hierarchy
 //- refactor parsing and CL
 //- check demos
+		
+		// TODO make test framework to check proj->inline matches inline->proj
+		// TODO make test framework to check global-"proj"-via-taus matches actual proj -- matches mean language acceptance?
 
 
 global protocol Foo(role A, role B, role C)
