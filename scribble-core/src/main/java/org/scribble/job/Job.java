@@ -340,7 +340,7 @@ public class Job
 	}
 
 	// Pre: checkWellFormedness 
-	// Returns: full proto name -> Module
+	// Returns: fullname -> Module
 	public Map<LProtocolName, Module> getProjections(GProtocolName fullname,
 			Role role) throws ScribbleException
 	{
@@ -357,7 +357,7 @@ public class Job
 
 		List<MemberName<?>> ns = proj.getNonProtoDependencies();
 
-		debugPrintln("\n[TODO] Full module projection and imports: "
+		warningPrintln("\n[TODO] Full module projection and imports: "
 				+ fullname + "@" + role);
 		
 		return Collections.emptyMap();
