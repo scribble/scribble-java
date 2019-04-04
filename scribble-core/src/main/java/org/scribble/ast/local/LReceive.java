@@ -25,8 +25,8 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.job.RuntimeScribbleException;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.Message;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Message;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LReceive extends LMessageTransfer implements LSimpleSessionNode

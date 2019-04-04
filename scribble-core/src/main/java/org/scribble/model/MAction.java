@@ -13,10 +13,10 @@
  */
 package org.scribble.model;
 
-import org.scribble.type.Payload;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Payload;
 
 public abstract class MAction<K extends ProtocolKind>
 {

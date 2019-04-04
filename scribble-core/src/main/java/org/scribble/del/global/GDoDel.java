@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
@@ -28,14 +27,15 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.SubprotoSig;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.lang.global.GTypeTranslator;
-import org.scribble.type.Arg;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Arg;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
@@ -44,7 +44,7 @@ import org.scribble.visit.env.InlineProtocolEnv;
 public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 {
 	@Override
-	public org.scribble.lang.global.GDo translate(ScribNode n,
+	public org.scribble.type.session.global.GDo translate(ScribNode n,
 			GTypeTranslator t) throws ScribbleException
 	{
 		GDo source = (GDo) n;
@@ -62,7 +62,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		List<Role> roles = source.getRoleListChild().getRoles();
 		List<Arg<? extends NonRoleParamKind>> params = source.getNonRoleListChild()
 				.getParamKindArgs();		
-		return new org.scribble.lang.global.GDo(source, fullname, roles, params);
+		return new org.scribble.type.session.global.GDo(source, fullname, roles, params);
 	}
 
 	// Part of context building

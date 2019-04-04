@@ -17,11 +17,11 @@ import java.util.Iterator;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;

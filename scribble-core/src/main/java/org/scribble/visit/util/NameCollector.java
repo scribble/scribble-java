@@ -16,8 +16,8 @@ package org.scribble.visit.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.job.Job;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.type.name.Name;
 import org.scribble.visit.NoEnvOffsetSubprotocolVisitor;
 

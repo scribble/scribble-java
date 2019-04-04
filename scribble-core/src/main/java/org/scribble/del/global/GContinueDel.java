@@ -29,12 +29,12 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 {
 	
 	@Override
-	public org.scribble.lang.global.GContinue translate(ScribNode n,
+	public org.scribble.type.session.global.GContinue translate(ScribNode n,
 			GTypeTranslator t) throws ScribbleException
 	{
 		GContinue source = (GContinue) n;
 		RecVar recvar = source.getRecVarChild().toName();
-		return new org.scribble.lang.global.GContinue(source, recvar);
+		return new org.scribble.type.session.global.GContinue(source, recvar);
 	}
 
 	@Override

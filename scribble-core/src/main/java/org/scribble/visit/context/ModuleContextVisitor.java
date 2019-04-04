@@ -15,10 +15,10 @@ package org.scribble.visit.context;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.del.ModuleDel;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.visit.AstVisitor;
 
 // A visitor that caches the ModuleContext from an entered Module, for later access

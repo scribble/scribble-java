@@ -13,7 +13,7 @@
  */
 package org.scribble.ast;
 
-import org.scribble.type.Message;
+import org.scribble.type.session.Message;
 
 // A sig kind node: MessageSignatureNode, MessageSignatureNameNode or NonRoleParamNode
 public interface MessageNode extends NonRoleArgNode

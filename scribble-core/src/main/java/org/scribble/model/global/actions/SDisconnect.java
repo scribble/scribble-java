@@ -13,9 +13,9 @@
  */
 package org.scribble.model.global.actions;
 
-import org.scribble.type.Payload;
 import org.scribble.type.name.Op;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Payload;
 
 public class SDisconnect extends SAction
 {

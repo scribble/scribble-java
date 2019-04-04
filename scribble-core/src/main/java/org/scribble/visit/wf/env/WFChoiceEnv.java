@@ -18,12 +18,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.scribble.type.Message;
-import org.scribble.type.MessageSig;
-import org.scribble.type.Payload;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Op;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Message;
+import org.scribble.type.session.MessageSig;
+import org.scribble.type.session.Payload;
 import org.scribble.util.ConnectedMap;
 import org.scribble.util.MessageIdMap;
 import org.scribble.visit.env.Env;

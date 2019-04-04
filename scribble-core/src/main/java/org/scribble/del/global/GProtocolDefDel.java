@@ -29,7 +29,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ProtocolDefDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotoSig;
+import org.scribble.lang.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.visit.ProtocolDefInliner;

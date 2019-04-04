@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.type.Arg;
-import org.scribble.type.MessageSig;
 import org.scribble.type.kind.NonRoleArgKind;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Arg;
+import org.scribble.type.session.MessageSig;
 
 // Cf. NonRoleParamDeclList
 public class NonRoleArgList extends DoArgList<NonRoleArg>

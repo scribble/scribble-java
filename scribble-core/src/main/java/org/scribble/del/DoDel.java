@@ -15,11 +15,11 @@ package org.scribble.del;
 
 import org.scribble.ast.Do;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotoSig;
+import org.scribble.lang.SubprotoSig;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;

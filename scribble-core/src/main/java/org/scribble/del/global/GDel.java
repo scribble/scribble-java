@@ -16,8 +16,8 @@ package org.scribble.del.global;
 import org.scribble.ast.ScribNode;
 import org.scribble.del.ScribDel;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.global.GType;
 import org.scribble.lang.global.GTypeTranslator;
+import org.scribble.type.session.global.GType;
 
 public interface GDel extends ScribDel
 {

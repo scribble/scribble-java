@@ -21,9 +21,9 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Message;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LRecursion extends Recursion<Local> implements LCompoundInteraction

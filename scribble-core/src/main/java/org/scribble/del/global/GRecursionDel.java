@@ -21,9 +21,9 @@ import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.global.GSeq;
 import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.type.name.RecVar;
+import org.scribble.type.session.global.GSeq;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.env.ProjectionEnv;
@@ -35,13 +35,13 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 {
 	
 	@Override
-	public org.scribble.lang.global.GRecursion translate(ScribNode n,
+	public org.scribble.type.session.global.GRecursion translate(ScribNode n,
 			GTypeTranslator t) throws ScribbleException
 	{
 		GRecursion source = (GRecursion) n;
 		RecVar recvar = source.getRecVarChild().toName();
 		GSeq block = (GSeq) source.getBlockChild().visitWith(t);
-		return new org.scribble.lang.global.GRecursion(source, recvar, block);
+		return new org.scribble.type.session.global.GRecursion(source, recvar, block);
 	}
 
 	@Override

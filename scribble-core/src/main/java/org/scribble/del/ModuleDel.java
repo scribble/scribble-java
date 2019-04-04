@@ -29,11 +29,11 @@ import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.Role;
@@ -59,8 +59,10 @@ public class ModuleDel extends ScribDelBase
 	public void enterModuleContextBuilding(ScribNode parent, ScribNode child,
 			ModuleContextBuilder builder) throws ScribbleException
 	{
-		builder.setModuleContext(new ModuleContext(
-				builder.job.getContext().getParsed(), (Module) child));
+		builder.setModuleContext(
+				//new ModuleContext(builder.job.getContext().getParsed(), (Module) child)
+				builder.maker.make(builder.job.getContext().getParsed(), (Module) child)
+				);
 				// ModuleContext building is done solely by "new ModuleContext" (no deeper visiting needed)
 				// The only thing ModuleContextBuilder really does is to set the ModuleContext in ModuleDel
 				// FIXME: obtain from MainContext instead of creating on entry by this visitor

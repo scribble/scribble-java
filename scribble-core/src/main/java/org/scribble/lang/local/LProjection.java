@@ -25,6 +25,7 @@ import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.local.LSeq;
 
 public class LProjection extends LProtocol
 {

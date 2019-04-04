@@ -15,14 +15,14 @@ package org.scribble.visit.context;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotoSig;
+import org.scribble.lang.SubprotoSig;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.visit.SubprotocolVisitor;

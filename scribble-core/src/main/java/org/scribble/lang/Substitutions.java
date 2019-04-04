@@ -18,10 +18,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.scribble.type.Arg;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Arg;
 
 // CHECKME: move to util?
 public class Substitutions

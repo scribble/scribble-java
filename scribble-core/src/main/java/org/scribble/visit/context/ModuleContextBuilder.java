@@ -14,14 +14,17 @@
 package org.scribble.visit.context;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.context.ModuleContext;
+import org.scribble.lang.context.ModuleContextMaker;
 import org.scribble.visit.AstVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
 public class ModuleContextBuilder extends AstVisitor
 {
+	public final ModuleContextMaker maker = new ModuleContextMaker();  // TODO: HACK, refactor
+
 	private ModuleContext mcontext;  // The "root" Module context (not the "main" module)
 	
 	public ModuleContextBuilder(Job job)
@@ -30,16 +33,19 @@ public class ModuleContextBuilder extends AstVisitor
 	}
 
 	@Override
-	protected void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void enter(ScribNode parent, ScribNode child)
+			throws ScribbleException
 	{
 		//System.out.println("mmm1: " + child.getClass() + " ,, " + child.del());
 		child.del().enterModuleContextBuilding(parent, child, this);
 	}
 
 	@Override
-	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode leave(ScribNode parent, ScribNode child,
+			ScribNode visited) throws ScribbleException
 	{
-		return visited.del().leaveModuleContextBuilding(parent, child, this, visited);
+		return visited.del().leaveModuleContextBuilding(parent, child, this,
+				visited);
 	}
 	
 	public void setModuleContext(ModuleContext mcontext)

@@ -16,11 +16,11 @@ package org.scribble.del.name.qualified;
 import org.antlr.runtime.CommonToken;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.del.ScribDelBase;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.type.name.DataType;
 import org.scribble.visit.wf.NameDisambiguator;
 

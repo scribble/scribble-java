@@ -18,10 +18,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.scribble.model.MAction;
-import org.scribble.type.Payload;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Payload;
 
 public abstract class SAction extends MAction<Global>
 {

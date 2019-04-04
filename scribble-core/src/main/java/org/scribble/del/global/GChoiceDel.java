@@ -28,10 +28,10 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ChoiceDel;
 import org.scribble.job.RuntimeScribbleException;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.global.GSeq;
 import org.scribble.lang.global.GTypeTranslator;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.global.GSeq;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.env.ProjectionEnv;
@@ -43,7 +43,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 {
 	
 	@Override
-	public org.scribble.lang.global.GChoice translate(ScribNode n,
+	public org.scribble.type.session.global.GChoice translate(ScribNode n,
 			GTypeTranslator t) throws ScribbleException
 	{
 		GChoice source = (GChoice) n;
@@ -53,7 +53,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		{
 			blocks.add((GSeq) b.visitWith(t));
 		}
-		return new org.scribble.lang.global.GChoice(source, subj, blocks);
+		return new org.scribble.type.session.global.GChoice(source, subj, blocks);
 	}
 
 	@Override

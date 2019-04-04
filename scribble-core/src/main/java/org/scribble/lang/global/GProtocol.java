@@ -29,10 +29,9 @@ import org.scribble.lang.Protocol;
 import org.scribble.lang.ProtocolMod;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
+import org.scribble.lang.SubprotoSig;
 import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.LProjection;
-import org.scribble.lang.local.LSeq;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.GProtocolName;
@@ -40,6 +39,10 @@ import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.global.GRecursion;
+import org.scribble.type.session.global.GSeq;
+import org.scribble.type.session.global.GType;
+import org.scribble.type.session.local.LSeq;
 
 public class GProtocol extends
 		Protocol<Global, GProtocolName, GSeq> implements GType

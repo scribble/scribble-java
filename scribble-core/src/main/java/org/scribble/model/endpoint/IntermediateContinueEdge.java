@@ -16,10 +16,10 @@ package org.scribble.model.endpoint;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SAction;
-import org.scribble.type.Payload;
 import org.scribble.type.name.Op;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Payload;
 
 class IntermediateContinueEdge extends EAction
 {

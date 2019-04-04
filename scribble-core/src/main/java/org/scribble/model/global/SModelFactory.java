@@ -23,10 +23,10 @@ import org.scribble.model.global.actions.SReceive;
 import org.scribble.model.global.actions.SSend;
 import org.scribble.model.global.actions.SWrapClient;
 import org.scribble.model.global.actions.SWrapServer;
-import org.scribble.type.Payload;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Payload;
 
 public interface SModelFactory
 {

@@ -13,8 +13,8 @@
  */
 package org.scribble.type.name;
 
-import org.scribble.type.Arg;
 import org.scribble.type.kind.PayloadTypeKind;
+import org.scribble.type.session.Arg;
 
 
 public interface PayloadElemType<K extends PayloadTypeKind> extends Arg<K>

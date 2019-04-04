@@ -13,8 +13,8 @@
  */
 package org.scribble.type.name;
 
-import org.scribble.type.Message;
 import org.scribble.type.kind.SigKind;
+import org.scribble.type.session.Message;
 
 
 // The name of a declared (imported) message signature member

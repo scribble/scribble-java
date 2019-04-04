@@ -32,13 +32,12 @@ import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScopedNode;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.job.Job;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.Arg;
-import org.scribble.type.SubprotoSig;
+import org.scribble.lang.SubprotoSig;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.type.kind.NonRoleArgKind;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
@@ -46,6 +45,7 @@ import org.scribble.type.name.Name;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.type.name.Scope;
+import org.scribble.type.session.Arg;
 import org.scribble.visit.env.Env;
 
 public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>

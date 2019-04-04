@@ -34,7 +34,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotoSig;
+import org.scribble.lang.SubprotoSig;
 import org.scribble.type.kind.RecVarKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;

@@ -17,10 +17,10 @@ import org.scribble.model.MAction;
 import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SAction;
-import org.scribble.type.Payload;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Payload;
 
 public abstract class EAction extends MAction<Local>
 {

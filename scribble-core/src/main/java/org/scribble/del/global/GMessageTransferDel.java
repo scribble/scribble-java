@@ -22,8 +22,8 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.MessageTransferDel;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.global.GTypeTranslator;
-import org.scribble.type.Message;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Message;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.wf.NameDisambiguator;
 import org.scribble.visit.wf.WFChoiceChecker;
@@ -54,7 +54,7 @@ public class GMessageTransferDel extends MessageTransferDel
 	}
 	
 	@Override
-	public org.scribble.lang.global.GMessageTransfer translate(ScribNode n,
+	public org.scribble.type.session.global.GMessageTransfer translate(ScribNode n,
 			GTypeTranslator t) throws ScribbleException
 	{
 		GMessageTransfer source = (GMessageTransfer) n;
@@ -66,7 +66,7 @@ public class GMessageTransferDel extends MessageTransferDel
 		}
 		Role dst = ds.get(0).toName();
 		Message msg = source.getMessageNodeChild().toMessage();
-		return new org.scribble.lang.global.GMessageTransfer(source, src, msg, dst);
+		return new org.scribble.type.session.global.GMessageTransfer(source, src, msg, dst);
 	}
 
 	@Override

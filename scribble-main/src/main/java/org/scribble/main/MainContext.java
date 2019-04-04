@@ -27,10 +27,11 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.job.Job;
 import org.scribble.job.JobConfig;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.context.ModuleContext;
+import org.scribble.lang.context.ModuleContextMaker;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.InlineResource;
 import org.scribble.main.resource.Resource;
@@ -166,10 +167,13 @@ public class MainContext
 		
 		Map<ModuleName, Module> parsed = getParsedModules();
 		Map<ModuleName, ModuleContext> map = new HashMap<>();
+		ModuleContextMaker maker = new ModuleContextMaker();
 		for (ModuleName fullname : this.parsed.keySet())
 		{
 			Pair<Resource, Module> e = this.parsed.get(fullname);
-			map.put(fullname, new ModuleContext(parsed, e.right));
+			map.put(fullname, //new ModuleContext(parsed, e.right));  
+						maker.make(parsed, e.right));
+					// CHECKME: how does this relate to the ModuleContextBuilder pass ?
 		}
 		this.mctxts = Collections.unmodifiableMap(map);
 	}

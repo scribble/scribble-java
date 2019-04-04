@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.scribble.job.Job;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.name.RecVar;
 
 public class STypeInliner

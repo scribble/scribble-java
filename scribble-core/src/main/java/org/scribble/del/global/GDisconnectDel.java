@@ -46,13 +46,13 @@ public class GDisconnectDel extends ConnectionActionDel
 	}
 	
 	@Override
-	public org.scribble.lang.global.GDisconnect translate(ScribNode n,
+	public org.scribble.type.session.global.GDisconnect translate(ScribNode n,
 			GTypeTranslator t) throws ScribbleException
 	{
 		GDisconnect source = (GDisconnect) n;
 		Role left = source.getLeftChild().toName();
 		Role right = source.getRightChild().toName();
-		return new org.scribble.lang.global.GDisconnect(source, left, right);
+		return new org.scribble.type.session.global.GDisconnect(source, left, right);
 	}
 
 	@Override

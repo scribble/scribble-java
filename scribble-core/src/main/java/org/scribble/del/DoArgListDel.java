@@ -22,9 +22,9 @@ import org.scribble.ast.HeaderParamDeclList;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.visit.wf.NameDisambiguator;
 

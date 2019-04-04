@@ -16,9 +16,9 @@ package org.scribble.model.endpoint.actions;
 import org.scribble.model.endpoint.EModelFactory;
 import org.scribble.model.global.SModelFactory;
 import org.scribble.model.global.actions.SSend;
-import org.scribble.type.Payload;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Payload;
 
 public class ESend extends EAction
 {

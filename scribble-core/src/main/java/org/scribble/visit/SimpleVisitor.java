@@ -14,9 +14,9 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.type.name.ModuleName;
 
 // A SimpleVisitor visits a Module (or some part of one) for a given Job

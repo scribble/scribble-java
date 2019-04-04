@@ -28,6 +28,8 @@ import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.STypeBase;
+import org.scribble.type.session.Seq;
 
 public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>, B extends Seq<K>>
 		extends STypeBase<K> 

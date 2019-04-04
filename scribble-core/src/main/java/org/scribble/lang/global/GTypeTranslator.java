@@ -18,6 +18,7 @@ import org.scribble.del.global.GDel;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.name.ModuleName;
+import org.scribble.type.session.global.GType;
 import org.scribble.visit.SimpleVisitor;
 
 // CHECKME: move to visit package?

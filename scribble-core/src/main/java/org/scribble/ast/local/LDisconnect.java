@@ -25,9 +25,9 @@ import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.job.RuntimeScribbleException;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Message;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 // "left" of LDisconnect is used for self

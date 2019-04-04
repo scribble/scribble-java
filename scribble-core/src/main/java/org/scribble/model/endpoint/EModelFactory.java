@@ -22,10 +22,10 @@ import org.scribble.model.endpoint.actions.EReceive;
 import org.scribble.model.endpoint.actions.ESend;
 import org.scribble.model.endpoint.actions.EWrapClient;
 import org.scribble.model.endpoint.actions.EWrapServer;
-import org.scribble.type.Payload;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Payload;
 
 public interface EModelFactory
 {

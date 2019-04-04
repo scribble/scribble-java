@@ -18,8 +18,8 @@ import java.util.Set;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ProtocolBlock;
-import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
+import org.scribble.type.session.Message;
 
 public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 {

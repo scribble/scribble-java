@@ -28,17 +28,20 @@ import org.scribble.lang.Protocol;
 import org.scribble.lang.ProtocolMod;
 import org.scribble.lang.STypeInliner;
 import org.scribble.lang.STypeUnfolder;
+import org.scribble.lang.SubprotoSig;
 import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
-import org.scribble.type.SubprotoSig;
 import org.scribble.type.kind.Local;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.local.LRecursion;
+import org.scribble.type.session.local.LSeq;
+import org.scribble.type.session.local.LType;
 
 public class LProtocol extends
 		Protocol<Local, LProtocolName, LSeq> implements LType

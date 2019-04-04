@@ -21,10 +21,10 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.job.Job;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.Arg;
 import org.scribble.type.kind.NonRoleArgKind;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Arg;
 import org.scribble.visit.env.Env;
 
 // Can probably be fully replaced by SubprotocolVisitor

@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.InteractionSeq;
-import org.scribble.type.Message;
 import org.scribble.type.kind.Local;
+import org.scribble.type.session.Message;
 
 public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 {

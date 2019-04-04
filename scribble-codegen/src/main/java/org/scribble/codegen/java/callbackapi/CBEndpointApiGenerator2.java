@@ -38,12 +38,12 @@ import org.scribble.model.MState;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.EStateKind;
 import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.Payload;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Payload;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
 @Deprecated

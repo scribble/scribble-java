@@ -13,9 +13,9 @@
  */
 package org.scribble.model.global.actions;
 
-import org.scribble.type.Payload;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Payload;
 
 public class SConnect extends SAction
 {

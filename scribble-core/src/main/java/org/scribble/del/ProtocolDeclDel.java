@@ -20,7 +20,7 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ProtocolDeclContext;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.SubprotoSig;
+import org.scribble.lang.SubprotoSig;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.ProtocolName;

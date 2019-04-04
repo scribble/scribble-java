@@ -23,15 +23,15 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.job.JobContext;
 import org.scribble.job.RuntimeScribbleException;
 import org.scribble.job.ScribbleException;
-import org.scribble.type.Message;
+import org.scribble.lang.context.ModuleContext;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.Role;
+import org.scribble.type.session.Message;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LDo extends Do<Local> implements LSimpleSessionNode
