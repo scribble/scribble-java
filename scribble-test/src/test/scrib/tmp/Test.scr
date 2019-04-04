@@ -58,14 +58,16 @@ module tmp.Test;
 		// TODO make test framework to check proj->inline matches inline->proj
 		// TODO make test framework to check global-"proj"-via-taus matches actual proj -- matches mean language acceptance?
 		// could also test once-unfold-all against model
-		// refactor test to use main instead of cli
 
 
+//...
+// change parsed to in jobcontext to record original roledecls (for GDo::project) -- and change getInlined on proto to prune (via getRoles on def)
 // separate Job into core and lang parts (mainly parsed Module)
 // move ast/del, old visit and new frontend to lang
 // integrate new frontend with MainContext?
 // move lang types to type.sess, and move new visit
 // add exp conn checks to model validation
+// refactor test to use main instead of cli
 
 
 /*

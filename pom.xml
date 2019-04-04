@@ -291,7 +291,7 @@
 						<exclude>bin/*.sh</exclude>
 						<exclude>scribblec.sh</exclude>
 						<exclude>**/*.swp</exclude>
-						<exclude>scribble-test/**/*.*</exclude>  <!-- CHECKME: not working -->
+						<exclude>scribble-test/**/*.*</exclude>  <!-- CHECKME: not working; doing inside child module pom works though -->
 						<!-- FIXME: "extension" module excludes -->
 						<exclude>scribble-f17/**/*</exclude>
 					</excludes>
