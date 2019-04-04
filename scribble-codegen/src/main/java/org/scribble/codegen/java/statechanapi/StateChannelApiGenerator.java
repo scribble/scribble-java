@@ -23,7 +23,7 @@ import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.job.Job;
-import org.scribble.job.JobContext;
+import org.scribble.job.JobContext2;
 import org.scribble.job.ScribbleException;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
@@ -64,10 +64,10 @@ public class StateChannelApiGenerator extends ApiGen
 		this.self = self;
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext jc = job.getContext();
+		JobContext2 jobc2 = this.job2.getContext();
 		this.init = job.config.minEfsm 
-				? jc.getMinimisedEGraph(fullname, self).init
-				: jc.getEGraph(fullname, self).init;
+				? jobc2.getMinimisedEGraph(fullname, self).init
+				: jobc2.getEGraph(fullname, self).init;
 		
 		this.skipIOInterfacesGeneration = skipIOInterfacesGeneration(this.init);
 			

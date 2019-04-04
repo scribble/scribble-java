@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.scribble.job.Job;
+import org.scribble.job.Job2;
 import org.scribble.job.ScribbleException;
 import org.scribble.model.GraphBuilderUtil;
 import org.scribble.model.endpoint.EFSM;
@@ -66,7 +66,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 	// Also checks for non-deterministic payloads
 	// Maybe refactor into an SGraph builder util; cf., EGraphBuilderUtil -- but not Visitor-based building (cf. EndpointGraphBuilder), this isn't an AST algorithm
 	//public SGraph buildSGraph(Job job, GProtocolName fullname, SConfig c0) throws ScribbleException
-	public SGraph buildSGraph(Job job, GProtocolName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribbleException
+	public SGraph buildSGraph(Job2 job, GProtocolName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribbleException
 	{
 		/*Map<Role, EFSM> efsms = egraphs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toFsm()));
 

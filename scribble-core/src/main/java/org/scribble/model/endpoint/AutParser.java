@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.job.Job;
+import org.scribble.job.Job2;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.MessageId;
@@ -37,16 +37,16 @@ import org.scribble.type.session.Payload;
 
 public class AutParser
 {
-	private final Job job;
+	private final Job2 job2;
 
-	public AutParser(Job job)
+	public AutParser(Job2 job2)
 	{
-		this.job = job;
+		this.job2 = job2;
 	}
 	
 	public EGraph parse(String aut)
 	{
-		EModelFactory ef = job.config.ef; 
+		EModelFactory ef = this.job2.config.ef; 
 
 		//Map<Integer, Map<String, Integer>> edges = new HashMap<>();
 		Map<Integer, List<String>> as = new HashMap<>();
@@ -114,7 +114,7 @@ public class AutParser
 			term = terms.iterator().next();
 		}
 		//EGraphBuilderUtil util = new EGraphBuilderUtil(ef);
-		EGraphBuilderUtil util = job.newEGraphBuilderUtil();
+		EGraphBuilderUtil util = this.job2.newEGraphBuilderUtil();
 		Map<Integer, EState> map = new HashMap<>();
 		map.put(init, util.getEntry());
 		if (term != -1)

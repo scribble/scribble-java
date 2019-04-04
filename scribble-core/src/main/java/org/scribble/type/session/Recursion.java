@@ -19,6 +19,7 @@ import java.util.Set;
 import org.scribble.ast.ProtocolKindNode;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -45,6 +46,12 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 	public Set<Role> getRoles()
 	{
 		return this.body.getRoles();
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		return this.body.getMessageIds();
 	}
 
 	@Override

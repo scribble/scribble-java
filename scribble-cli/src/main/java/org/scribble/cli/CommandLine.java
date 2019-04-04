@@ -30,9 +30,12 @@ import org.scribble.codegen.java.JEndpointApiGenerator;
 import org.scribble.codegen.java.callbackapi.CBEndpointApiGenerator3;
 import org.scribble.job.AntlrSourceException;
 import org.scribble.job.Job;
+import org.scribble.job.Job2;
 import org.scribble.job.JobContext;
+import org.scribble.job.JobContext2;
 import org.scribble.job.RuntimeScribbleException;
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.local.LProtocol;
 import org.scribble.main.MainContext;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
@@ -195,7 +198,8 @@ public class CommandLine
 		// Base Scribble
 		else*/
 		{
-			job.checkWellFormedness();
+			job.runContextBuildingPasses();  // TODO: refactor, w.r.t. below
+			job.getJob2().checkWellFormedness();
 		}
 	}
 
@@ -287,14 +291,15 @@ public class CommandLine
 	private void printProjections(Job job)
 			throws CommandLineException, ScribbleException
 	{
-		JobContext jcontext = job.getContext();
+		JobContext jobc = job.getContext();
+		Job2 job2 = job.getJob2();
 		String[] args = this.args.get(CLArgFlag.PROJECT);
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			Map<LProtocolName, Module> projections = job.getProjections(fullname,
-					role);
+			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
+			Role role = checkRoleArg(jobc, fullname, args[i+1]);
+			Map<LProtocolName, LProtocol> projections = job2.getProjections(fullname,
+					role);  // FIXME: output Module
 			System.out.println("\n" + projections.values().stream()
 					.map(p -> p.toString()).collect(Collectors.joining("\n\n")));
 		}
@@ -306,7 +311,7 @@ public class CommandLine
 	private void printEGraph(Job job, boolean forUser, boolean fair)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
+		JobContext jobc = job.getContext();
 		String[] args = forUser 
 				? this.args.get(CLArgFlag.EFSM)
 				: (fair 
@@ -314,8 +319,8 @@ public class CommandLine
 						: this.args.get(CLArgFlag.UNFAIR_EFSM));
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
+			Role role = checkRoleArg(jobc, fullname, args[i+1]);
 			EGraph fsm = getEGraph(job, fullname, role, forUser, fair);
 			String out = this.args.containsKey(CLArgFlag.AUT) 
 					? fsm.toAut()
@@ -327,7 +332,7 @@ public class CommandLine
 	private void drawEGraph(Job job, boolean forUser, boolean fair)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
+		JobContext jobc = job.getContext();
 		String[] args = forUser 
 				? this.args.get(CLArgFlag.EFSM_PNG)
 				: (fair 
@@ -335,8 +340,8 @@ public class CommandLine
 						: this.args.get(CLArgFlag.UNFAIR_EFSM_PNG));
 		for (int i = 0; i < args.length; i += 3)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
+			Role role = checkRoleArg(jobc, fullname, args[i+1]);
 			String png = args[i+2];
 			EGraph fsm = getEGraph(job, fullname, role, forUser, fair);
 			runDot(fsm.toDot(), png);
@@ -348,8 +353,9 @@ public class CommandLine
 			boolean forUser, boolean fair)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
-		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule()
+		JobContext jobc = job.getContext();
+		JobContext2 jobc2 = job.getJob2().getContext();
+		GProtocolDecl gpd = (GProtocolDecl) jobc.getMainModule()
 				.getProtocolDeclChild(fullname.getSimpleName());
 		if (gpd == null || !gpd.getHeaderChild().getRoleDeclListChild().getRoles()
 				.contains(role))
@@ -361,15 +367,15 @@ public class CommandLine
 		if (forUser)  // The (possibly minimised) user-output EFSM for API gen
 		{
 			graph = this.args.containsKey(CLArgFlag.LTSCONVERT_MIN)
-					? jcontext.getMinimisedEGraph(fullname, role)
-					: jcontext.getEGraph(fullname, role);
+					? jobc2.getMinimisedEGraph(fullname, role)
+					: jobc2.getEGraph(fullname, role);
 		}
 		else  // The (possibly unfair-transformed) internal EFSM for validation
 		{
 			graph = //(!this.args.containsKey(ArgFlag.FAIR) && !this.args.containsKey(ArgFlag.NO_LIVENESS))  // Cf. GlobalModelChecker.getEndpointFSMs
 					!fair
-					? jcontext.getUnfairEGraph(fullname, role) 
-					: jcontext.getEGraph(fullname, role);
+					? jobc2.getUnfairEGraph(fullname, role) 
+					: jobc2.getEGraph(fullname, role);
 		}
 		if (graph == null)
 		{
@@ -382,13 +388,13 @@ public class CommandLine
 	private void printSGraph(Job job, boolean fair)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
+		JobContext jobc = job.getContext();
 		String[] args = fair 
 				? this.args.get(CLArgFlag.SGRAPH)
 				: this.args.get(CLArgFlag.UNFAIR_SGRAPH);
 		for (int i = 0; i < args.length; i += 1)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			SGraph model = getSGraph(job, fullname, fair);
 			String out = this.args.containsKey(CLArgFlag.AUT) 
 					? model.toAut()
@@ -400,13 +406,13 @@ public class CommandLine
 	private void drawSGraph(Job job, boolean fair)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
+		JobContext jobc = job.getContext();
 		String[] args = fair 
 				? this.args.get(CLArgFlag.SGRAPH_PNG)
 				: this.args.get(CLArgFlag.UNFAIR_SGRAPH_PNG);
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			String png = args[i+1];
 			SGraph model = getSGraph(job, fullname, fair);
 			runDot(model.toDot(), png);
@@ -416,10 +422,10 @@ public class CommandLine
 	private static SGraph getSGraph(Job job, GProtocolName fullname, boolean fair)
 			throws ScribbleException
 	{
-		JobContext jcontext = job.getContext();
+		JobContext2 jobc2 = job.getJob2().getContext();
 		SGraph model = fair 
-				? jcontext.getSGraph(fullname)
-				: jcontext.getUnfairSGraph(fullname);
+				? jobc2.getSGraph(fullname)
+				: jobc2.getUnfairSGraph(fullname);
 		if (model == null)
 		{
 			throw new RuntimeScribbleException("Shouldn't see this: " + fullname);
@@ -431,15 +437,15 @@ public class CommandLine
 	private void outputEndpointApi(Job job)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
+		JobContext jobc = job.getContext();
 		String[] args = this.args.get(CLArgFlag.API_GEN);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			Map<String, String> sessClasses = jgen.generateSessionApi(fullname);
 			outputClasses(sessClasses);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Role role = checkRoleArg(jobc, fullname, args[i+1]);
 			Map<String, String> scClasses = jgen.generateStateChannelApi(fullname,
 					role, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
 			outputClasses(scClasses);
@@ -449,12 +455,12 @@ public class CommandLine
 	private void outputSessionApi(Job job)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
+		JobContext jobc = job.getContext();
 		String[] args = this.args.get(CLArgFlag.SESS_API_GEN);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // TODO: refactor (generalise -- use new API)
 		for (String fullname : args)
 		{
-			GProtocolName gpn = checkGlobalProtocolArg(jcontext, fullname);
+			GProtocolName gpn = checkGlobalProtocolArg(jobc, fullname);
 			Map<String, String> classes = jgen.generateSessionApi(gpn);
 			outputClasses(classes);
 		}
@@ -463,13 +469,13 @@ public class CommandLine
 	private void outputStateChannelApi(Job job)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
+		JobContext jobc = job.getContext();
 		String[] args = this.args.get(CLArgFlag.SCHAN_API_GEN);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // TODO: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role self = checkRoleArg(jcontext, fullname, args[i+1]);
+			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
+			Role self = checkRoleArg(jobc, fullname, args[i+1]);
 			Map<String, String> classes = jgen.generateStateChannelApi(fullname, self,
 					this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
 			outputClasses(classes);
@@ -479,22 +485,22 @@ public class CommandLine
 	private void outputEventDrivenApi(Job job)
 			throws ScribbleException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
+		JobContext jobc = job.getContext();
 		String[] args = this.args.get(CLArgFlag.ED_API_GEN);
 		/*JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			Map<String, String> sessClasses = jgen.generateSessionApi(fullname);
 			outputClasses(sessClasses);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Role role = checkRoleArg(jobc, fullname, args[i+1]);
 			Map<String, String> scClasses = jgen.generateStateChannelApi(fullname, role, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
 			outputClasses(scClasses);
 		}*/
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role self = checkRoleArg(jcontext, fullname, args[i+1]);
+			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
+			Role self = checkRoleArg(jobc, fullname, args[i+1]);
 			CBEndpointApiGenerator3 edgen = new CBEndpointApiGenerator3(job, fullname,
 					self, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
 			Map<String, String> out = edgen.build();
@@ -559,11 +565,11 @@ public class CommandLine
 				.collect(Collectors.toList());
 	}
 
-	protected static GProtocolName checkGlobalProtocolArg(JobContext jcontext,
+	protected static GProtocolName checkGlobalProtocolArg(JobContext jobc,
 			String simpname) throws CommandLineException
 	{
 		GProtocolName simpgpn = new GProtocolName(simpname);
-		Module main = jcontext.getMainModule();
+		Module main = jobc.getMainModule();
 		if (!main.hasProtocolDecl(simpgpn))
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
@@ -578,13 +584,13 @@ public class CommandLine
 			throw new CommandLineException(
 					"Invalid aux protocol specified as root: " + simpname);
 		}
-		return new GProtocolName(jcontext.job.config.main, simpgpn);  // TODO: take Job param instead of Jobcontext
+		return new GProtocolName(jobc.job.config.main, simpgpn);  // TODO: take Job param instead of Jobcontext
 	}
 
-	protected static Role checkRoleArg(JobContext jcontext,
+	protected static Role checkRoleArg(JobContext jobc,
 			GProtocolName fullname, String rolename) throws CommandLineException
 	{
-		ProtocolDecl<?> pd = jcontext.getMainModule()
+		ProtocolDecl<?> pd = jobc.getMainModule()
 				.getProtocolDeclChild(fullname.getSimpleName());
 		Role role = new Role(rolename);
 		if (!pd.getHeaderChild().getRoleDeclListChild().getRoles().contains(role))

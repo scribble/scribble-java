@@ -27,8 +27,8 @@ import org.scribble.type.session.local.LType;
 
 public interface GType extends SType<Global>
 {
-	LType projectInlined(Role self);
-	LType project(Projector v);
+	LType projectInlined(Role self);  // Use on inlined (i.e., Do inlined, roles pruned)
+	LType project(Projector v);  // Use on parsed (intermed)
 	
 	// Pre: use on inlined or later (unsupported for Do, also Protocol)
 	// enabled treated immutably

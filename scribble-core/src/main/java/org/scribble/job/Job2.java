@@ -1,0 +1,385 @@
+/**
+ * Copyright 2008 The Scribble Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.scribble.job;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.scribble.lang.Projector;
+import org.scribble.lang.STypeInliner;
+import org.scribble.lang.STypeUnfolder;
+import org.scribble.lang.SubprotoSig;
+import org.scribble.lang.context.ModuleContext;
+import org.scribble.lang.global.GProtocol;
+import org.scribble.lang.local.LProtocol;
+import org.scribble.model.endpoint.EGraph;
+import org.scribble.model.endpoint.EGraphBuilderUtil;
+import org.scribble.model.global.SGraph;
+import org.scribble.model.global.SGraphBuilderUtil;
+import org.scribble.type.kind.Global;
+import org.scribble.type.kind.Local;
+import org.scribble.type.kind.NonRoleParamKind;
+import org.scribble.type.name.DataType;
+import org.scribble.type.name.GProtocolName;
+import org.scribble.type.name.LProtocolName;
+import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageSigName;
+import org.scribble.type.name.ModuleName;
+import org.scribble.type.name.ProtocolName;
+import org.scribble.type.name.Role;
+import org.scribble.type.session.Arg;
+import org.scribble.type.session.global.GType;
+import org.scribble.visit.validation.GProtocolValidator;
+
+// A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
+public class Job2
+{
+	// Keys are full names
+	private final Map<ModuleName, ModuleContext> modcs;  // CHECKME: constant?  move to JobConfig?
+
+	public final JobConfig config;  // Immutable
+
+	private final JobContext2 context;  // Mutable (Visitor passes replace modules)
+	private final SGraphBuilderUtil sgbu;
+	
+	// Just take MainContext as arg? -- would need to fix Maven dependencies
+	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
+	public Job2(Set<GProtocol> parsed,//Map<ModuleName, Module> parsed,
+			Map<ModuleName, ModuleContext> modcs, JobConfig config)
+	{
+		this.modcs = Collections.unmodifiableMap(modcs);
+		this.config = config;
+		this.sgbu = config.sf.newSGraphBuilderUtil();
+		this.context = new JobContext2(this, parsed);  // Single instance per Job and should never be shared
+	}
+	
+	// Scribble extensions should override these "new" methods
+	// CHECKME: move to MainContext::newJob?
+	public EGraphBuilderUtil newEGraphBuilderUtil()
+	{
+		return new EGraphBuilderUtil(this.config.ef);
+	}
+	
+	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util
+	public SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs,
+			boolean explicit) throws ScribbleException
+	{
+		debugPrintln("(" + fullname + ") Building global model using:");
+		for (Role r : egraphs.keySet())
+		{
+			// FIXME: refactor
+			debugPrintln("-- EFSM for "
+					+ r + ":\n" + egraphs.get(r).init.toDot());
+		}
+		//return SGraph.buildSGraph(this, fullname, createInitialSConfig(this, egraphs, explicit));
+		return this.sgbu.buildSGraph(this, fullname, egraphs, explicit);  // FIXME: factor out util
+	}
+
+	public void checkWellFormedness() throws ScribbleException
+	{
+		runContextBuildingPasses();
+		//runUnfoldingPass();
+		runWellFormednessPasses();
+	}
+	
+	public void runContextBuildingPasses() throws ScribbleException
+	{
+		/*// FIXME TODO: refactor into a runVisitorPassOnAllModules for SimpleVisitor (and add operation to ModuleDel)
+		Set<ModuleName> fullmodnames = this.context.getFullModuleNames();
+		for (ModuleName fullmodname : fullmodnames)
+		{
+			Module mod = this.context.getModule(fullmodname);
+			GTypeTranslator t = new GTypeTranslator(this, fullmodname);
+			for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
+			{
+				GProtocol g = (GProtocol) gpd.visitWith(t);
+				this.context.addIntermediate(g.fullname, g);
+				debugPrintln("\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
+			}
+		}*/
+				
+		for (GProtocol g : this.context.getIntermediates())
+		{
+			List<Arg<? extends NonRoleParamKind>> params = new LinkedList<>();
+			// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
+			for (MemberName<? extends NonRoleParamKind> n : g.params)
+			{
+				if (n instanceof DataType)
+				{
+					params.add((DataType) n);
+				}
+				else if (n instanceof MessageSigName)
+				{
+					params.add((MessageSigName) n);
+				}
+				else
+				{
+					throw new RuntimeException("TODO: " + n);
+				}
+			}
+			SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, params);
+			//Deque<SubprotoSig> stack = new LinkedList<>();
+			STypeInliner i = new STypeInliner(this);
+			i.pushSig(sig);  // TODO: factor into constructor
+			GProtocol inlined = g.getInlined(i);  // Protocol.getInlined does pruneRecs
+			debugPrintln("\nSubprotocols inlined:\n" + inlined);
+			this.context.addInlined(g.fullname, inlined);
+		}
+				
+		//runUnfoldingPass();
+		for (GProtocol inlined : this.context.getInlined())
+		{
+				STypeUnfolder<Global> unf1 = new STypeUnfolder<>();
+				//GTypeUnfolder unf2 = new GTypeUnfolder();
+				GType unf = (GType) inlined.unfoldAllOnce(unf1);//.unfoldAllOnce(unf2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
+				debugPrintln("\nAll recursions unfolded once:\n" + unf);
+		}
+		
+		runProjectionPasses();
+				
+		for (Entry<LProtocolName, LProtocol> e : 
+				this.context.getInlinedProjections().entrySet())
+		{
+			//LProtocolName lname = e.getKey();
+			LProtocol proj = e.getValue();
+			EGraph graph = proj.toEGraph(this);
+			this.context.addEGraph(proj.fullname, graph);
+			debugPrintln("\nEFSM for " + proj.fullname + ":\n" + graph.toDot());
+		}
+	}
+
+	public void runWellFormednessPasses() throws ScribbleException
+	{
+		/*if (!this.config.noValidation)
+		{
+			runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
+			runProjectionPasses();
+			runVisitorPassOnAllModules(ReachabilityChecker.class);  // Moved before GlobalModelChecker.class, OK?
+			if (!this.config.useOldWf)
+			{
+				runVisitorPassOnAllModules(GProtocolValidator.class);
+			}
+		}*/
+
+		//HERE WF (unfolding? unguarded-unfolder -- and lazy-unfolder-with-choice-pruning, e.g., bad.wfchoice.enabling.threeparty.Test02), projection, validation
+		for (GProtocol inlined : this.context.getInlined())
+		{
+			//TODO: relegate to "warning"
+			// Check unused roles
+			Set<Role> used = inlined.def.getRoles();
+			Set<Role> unused = this.context.getIntermediate(inlined.fullname).roles  // imeds have original role decls (inlined's are pruned)
+					.stream().filter(x -> !used.contains(x)).collect(Collectors.toSet());
+			if (!unused.isEmpty())
+			{
+				throw new ScribbleException(
+						"Unused roles in " + inlined.fullname + ": " + unused);
+			}
+
+			if (inlined.isAux())
+			{
+				continue;
+			}
+			STypeUnfolder<Global> unf = new STypeUnfolder<>();  
+					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
+			inlined.unfoldAllOnce(unf).checkRoleEnabling();
+			inlined.checkExtChoiceConsistency();
+		}
+		
+		for (LProtocol proj : this.context.getInlinedProjections().values())
+		{
+			if (proj.isAux())  // CHECKME? e.g., bad.reach.globals.gdo.Test01b 
+			{
+				continue;
+			}
+			proj.checkReachability();
+		}
+
+		GProtocolValidator checker = new GProtocolValidator(this);
+		//runVisitorPassOnAllModules(GProtocolValidator.class);
+		//for (Module mod : this.context.getParsed().values())
+		{
+			// FIXME: refactor validation into lang.GProtocol
+			//for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
+			for (GProtocol gpd : this.context.getInlined()) //mod.getGProtoDeclChildren())
+			{
+				if (gpd.isAux())
+				{
+					continue;
+				}
+
+				GProtocolName fullname = gpd.fullname;//.getFullMemberName(mod);
+
+				debugPrintln("\nValidating " + fullname + ":");
+
+				if (checker.job2.config.spin)
+				{
+					if (checker.job2.config.fair)
+					{
+						throw new RuntimeException(
+								"[TODO]: -spin currently does not support fair ouput choices.");
+					}
+					GProtocol.validateBySpin(checker.job2, fullname);
+				}
+				else
+				{
+					GProtocol.validateByScribble(checker.job2, fullname, true);
+					if (!checker.job2.config.fair)
+					{
+						debugPrintln(
+								"(" + fullname + ") Validating with \"unfair\" output choices.. ");
+						GProtocol.validateByScribble(checker.job2, fullname, false);  // TODO: only need to check progress, not full validation
+					}
+				}
+			}
+		}
+	}
+
+	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
+	// SubprotocolVisitor it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
+	// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
+	protected void runProjectionPasses() throws ScribbleException
+	{
+		/*runVisitorPassOnAllModules(Projector.class);
+		runProjectionContextBuildingPasses();
+		runProjectionUnfoldingPass();
+		if (!this.config.noAcceptCorrelationCheck)
+		{
+			runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
+		}*/
+				
+		for (GProtocol g : this.context.getInlined())
+		{
+			for (Role self : g.roles)
+			{
+				GProtocol inlined = this.context.getInlined(g.fullname);  // pruneRecs already done for pruneRecs (cf. runContextBuildingPasses)
+				LProtocol iproj = inlined.projectInlined(self);  // CHECKME: projection and inling commutative?
+				this.context.addInlinedProjection(iproj.fullname, iproj);
+				debugPrintln("\nProjected inlined onto " + self + ":\n" + iproj);
+			}
+		}
+
+		// Pre: inlined already projected -- used for Do projection
+		for (GProtocol g : this.context.getInlined())
+		{
+			for (Role self : g.roles)
+			{
+				LProtocol proj = g.project(new Projector(this, self));  // Does pruneRecs
+				this.context.addProjection(proj);
+				debugPrintln("\nProjected onto " + self + ":\n" + proj);
+			}
+		}
+	}
+
+	// Pre: checkWellFormedness 
+	// Returns: fullname -> Module
+	public Map<LProtocolName, LProtocol> getProjections(GProtocolName fullname,
+			Role role) throws ScribbleException
+	{
+		//Module root = 
+		LProtocol proj =
+				this.context.getProjection(fullname, role);
+		
+		System.out.println(proj);
+		List<ProtocolName<Local>> ps = proj.getProtoDependencies();
+		for (ProtocolName<Local> p : ps)
+		{
+			System.out.println("\n" + this.context.getProjection((LProtocolName) p));
+		}
+
+		List<MemberName<?>> ns = proj.getNonProtoDependencies();
+
+		warningPrintln("");
+		warningPrintln("[TODO] Full module projection and imports: "
+				+ fullname + "@" + role);
+		
+		return Collections.emptyMap();
+				//FIXME: build output Modules
+				//FIXME: (interleaved) ordering between proto and nonproto (Module) imports -- order by original Global import order?
+	}
+
+	/*public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
+	{
+		debugPrintPass("Running " + SessionApiGenerator.class + " for " + fullname);
+		SessionApiGenerator sg = new SessionApiGenerator(this, fullname);
+		Map<String, String> map = sg.generateApi();  // filepath -> class source
+		return map;
+	}
+	
+	// FIXME: refactor an EndpointApiGenerator -- ?
+	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribbleException
+	{
+		/*if (this.jcontext.getEndpointGraph(fullname, self) == null)
+		{
+			buildGraph(fullname, self);
+		}* /
+		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
+		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this, fullname, self);
+		IOInterfacesGenerator iogen = null;
+		try
+		{
+			iogen = new IOInterfacesGenerator(apigen, subtypes);
+		}
+		catch (RuntimeScribbleException e)  // FIXME: use IOInterfacesGenerator.skipIOInterfacesGeneration
+		{
+			//System.err.println("[Warning] Skipping I/O Interface generation for protocol featuring: " + fullname);
+			warningPrintln("Skipping I/O Interface generation for: " + fullname + "\n  Cause: " + e.getMessage());
+		}
+		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)
+		Map<String, String> api = new HashMap<>(); // filepath -> class source  // Store results?
+		api.putAll(apigen.generateApi());
+		if (iogen != null)
+		{
+			api.putAll(iogen.generateApi());
+		}
+		return api;
+	}*/
+	
+	public JobContext2 getContext()
+	{
+		return this.context;
+	}
+	
+	public ModuleContext getModuleContext(ModuleName fullname)
+	{
+		return this.modcs.get(fullname);
+	}
+	
+	public boolean isDebug()
+	{
+		return this.config.debug;
+	}
+	
+	public void warningPrintln(String s)
+	{
+		System.err.println("[Warning] " + s);
+	}
+	
+	public void debugPrintln(String s)
+	{
+		if (this.config.debug)
+		{
+			System.out.println(s);
+		}
+	}
+	
+	private void debugPrintPass(String s)
+	{
+		debugPrintln("\n[Job] " + s);
+	}
+}

@@ -13,11 +13,6 @@
  */
 package org.scribble.del.global;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,29 +33,20 @@ import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
-import org.scribble.job.Job;
-import org.scribble.job.JobContext;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.ProtocolMod;
 import org.scribble.lang.global.GProtocol;
 import org.scribble.lang.global.GTypeTranslator;
-import org.scribble.model.MState;
-import org.scribble.model.endpoint.EGraph;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.global.SGraph;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.MemberName;
-import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.type.session.global.GSeq;
-import org.scribble.util.ScribUtil;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.context.env.ProjectionEnv;
-import org.scribble.visit.util.MessageIdCollector;
 import org.scribble.visit.util.RoleCollector;
 import org.scribble.visit.validation.GProtocolValidator;
 
@@ -81,11 +67,11 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 				.map(x -> ProtocolMod.fromAst(x)).collect(Collectors.toList());
 		GProtocolName fullname = new GProtocolName(m.getFullModuleName(),
 				source.getHeaderChild().getDeclName());
-		List<Role> roles = source.getRoles();
-		List<MemberName<? extends NonRoleParamKind>> params = source.getHeaderChild()
+		List<Role> rs = source.getRoles();
+		List<MemberName<? extends NonRoleParamKind>> ps = source.getHeaderChild()
 				.getParamDeclListChild().getParameters();  // CHECKME: make more uniform with source::getRoles ?
 		GSeq body = (GSeq) source.getDefChild().getBlockChild().visitWith(t);
-		return new GProtocol(source, mods, fullname, roles, params, body);
+		return new GProtocol(source, mods, fullname, rs, ps, body);
 	}
 	
 	@Override
@@ -190,238 +176,24 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		}
 
 		GProtocolName fullname = gpd.getFullMemberName((Module) parent);
-		if (checker.job.config.spin)
+		if (checker.job2.config.spin)
 		{
-			if (checker.job.config.fair)
+			if (checker.job2.config.fair)
 			{
 				throw new RuntimeException(
 						"[TODO]: -spin currently does not support fair ouput choices.");
 			}
-			validateBySpin(checker.job, fullname);
+			GProtocol.validateBySpin(checker.job2, fullname);
 		}
 		else
 		{
-			validateByScribble(checker.job, fullname, true);
+			GProtocol.validateByScribble(checker.job2, fullname, true);
 			if (!checker.job.config.fair)
 			{
 				checker.job.debugPrintln(
 						"(" + fullname + ") Validating with \"unfair\" output choices.. ");
-				validateByScribble(checker.job, fullname, false);  // TODO: only need to check progress, not full validation
+				GProtocol.validateByScribble(checker.job2, fullname, false);  // TODO: only need to check progress, not full validation
 			}
-		}
-	}
-
-	public static void validateByScribble(Job job, GProtocolName fullname,
-			boolean fair) throws ScribbleException
-	{
-		JobContext jc = job.getContext();
-		SGraph graph = (fair) 
-				? jc.getSGraph(fullname)
-				: jc.getUnfairSGraph(fullname);
-		//graph.toModel().validate(job);
-		job.config.sf.newSModel(graph).validate(job);
-	}
-		
-	public static void validateBySpin(Job job, GProtocolName fullname)
-			throws ScribbleException
-	{
-		JobContext jc = job.getContext();
-		Module mod = jc.getModule(fullname.getPrefix());
-		GProtocolDecl gpd = (GProtocolDecl) mod
-				.getProtocolDeclChild(fullname.getSimpleName());
-		
-		List<Role> rs = gpd.getHeaderChild().getRoleDeclListChild().getRoles()
-				.stream().sorted(Comparator.comparing(Role::toString))
-				.collect(Collectors.toList());
-
-		MessageIdCollector coll = new MessageIdCollector(job,
-				((ModuleDel) mod.del()).getModuleContext());
-		gpd.accept(coll);
-		Set<MessageId<?>> mids = coll.getNames();
-		
-		String pml = "";
-		pml += "mtype {" + mids.stream().map(mid -> mid.toString())
-				.collect(Collectors.joining(", ")) + "};\n";
-
-		// FIXME: explicit
-
-		pml += "\n";
-		List<Role[]> pairs = new LinkedList<>();
-		for (Role r1 : rs)
-		{
-			for (Role r2 : rs)
-			{
-				if (!r1.equals(r2))
-				{
-					pairs.add(new Role[] {r1, r2});
-				}
-			}
-		}
-		//for (Role[] p : (Iterable<Role[]>) () -> pairs.stream().sorted().iterator())
-		for (Role[] p : pairs)
-		{
-			pml += "chan s_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
-					+ "chan r_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
-					+ "bool empty_" + p[0] + "_" + p[1] + " = true;\n"
-					+ "active proctype chan_" + p[0] + "_" + p[1] + "() {\n"
-					+ "mtype m;\n"
-					+ "end_chan_" + p[0] + "_" + p[1] + ":\n"
-					+ "do\n"
-					+ "::\n"
-					+ "atomic { s_" + p[0] + "_" + p[1] + "?m; empty_" + p[0] + "_" + p[1]
-							+ " = false }\n"
-					+ "atomic { r_" + p[0] + "_" + p[1] + "!m; empty_" + p[0] + "_" + p[1]
-							+ " = true }\n"
-					+ "od\n"
-					+ "}\n";
-		}
-		
-		for (Role r : rs)
-		{
-			pml += "\n\n" + jc.getEGraph(fullname, r).toPml(r);
-		}
-		if (job.config.debug)
-		{
-			System.out.println("[-spin]: Promela processes\n" + pml + "\n");
-		}
-		
-		List<String> clauses = new LinkedList<>();
-		for (Role r : rs)
-		{
-			Set<EState> tmp = new HashSet<>();
-			EGraph g = jc.getEGraph(fullname, r);
-			tmp.add(g.init);
-			tmp.addAll(MState.getReachableStates(g.init));
-			if (g.term != null)
-			{
-				tmp.remove(g.term);
-			}
-			tmp.forEach(  // Throws exception, cannot use flatMap
-					s -> clauses.add("!<>[]" + r + "@label" + r + s.id)  // FIXME: factor out
-			);
-		}
-		//*/
-		/*String roleProgress = "";  // This way is not faster
-		for (Role r : rs)
-		{
-			Set<EState> tmp = new HashSet<>();
-			EGraph g = jc.getEGraph(fullname, r);
-			tmp.add(g.init);
-			tmp.addAll(MState.getReachableStates(g.init));
-			if (g.term != null)
-			{
-				tmp.remove(g.term);
-			}
-			roleProgress += (((roleProgress.isEmpty()) ? "" : " || ")
-					+ tmp.stream().map(s -> r + "@label" + r + s.id).collect(Collectors.joining(" || ")));
-		}
-		roleProgress = "!<>[](" + roleProgress + ")";
-		clauses.add(roleProgress);*/
-		/*for (Role[] p : pairs)
-		{
-			clauses.add("[]<>(empty_" + p[0] + "_" + p[1] + ")");
-		}*/
-		String eventualStability = "";
-		for (Role[] p : pairs)
-		{
-			//eventualStability += (((eventualStability.isEmpty()) ? "" : " && ") + "empty_" + p[0] + "_" + p[1]);
-			eventualStability += (((eventualStability.isEmpty()) ? "" : " && ") + "<>empty_" + p[0] + "_" + p[1]);
-		}
-		//eventualStability = "[]<>(" + eventualStability + ")";
-		eventualStability = "[](" + eventualStability + ")";  // FIXME: current "eventual reception", not eventual stability
-		clauses.add(eventualStability);
-
-		//int batchSize = 10;  // FIXME: factor out
-		int batchSize = 6;  // FIXME: factor out  // FIXME: dynamic batch sizing based on previous batch duration?
-		for (int i = 0; i < clauses.size(); )
-		{
-			int j = (i+batchSize < clauses.size()) ? i+batchSize : clauses.size();
-			String batch = clauses.subList(i, j).stream().collect(Collectors.joining(" && "));
-			String ltl = "ltl {\n" + batch + "\n" + "}";
-			if (job.config.debug)
-			{
-				System.out.println("[-spin] Batched ltl:\n" + ltl + "\n");
-			}
-			if (!runSpin(fullname.toString(), pml + "\n\n" + ltl))
-			{
-				throw new ScribbleException("Protocol not valid:\n" + gpd);
-			}
-			i += batchSize;
-		}
-	}
-
-	// FIXME: move
-	private static boolean runSpin(String prefix, String pml) //throws ScribbleException
-	{
-		File tmp;
-		try
-		{
-			tmp = File.createTempFile(prefix, ".pml.tmp");
-			try
-			{
-				String tmpName = tmp.getAbsolutePath();				
-				ScribUtil.writeToFile(tmpName, pml);
-				String[] res = ScribUtil.runProcess("spin", "-a", tmpName);
-				res[0] = res[0].replaceAll("(?m)^ltl.*$", "");
-				res[1] = res[1].replace(
-						"'gcc-4' is not recognized as an internal or external command,\noperable program or batch file.",
-						"");
-				res[1] = res[1].replace(
-						"'gcc-3' is not recognized as an internal or external command,\noperable program or batch file.",
-						"");
-				res[0] = res[0].trim();
-				res[1] = res[1].trim();
-				if (!res[0].trim().isEmpty() || !res[1].trim().isEmpty())
-				{
-					//throw new RuntimeException("[scrib] : " + Arrays.toString(res[0].getBytes()) + "\n" + Arrays.toString(res[1].getBytes()));
-					throw new RuntimeException("[-spin] [spin]: " + res[0] + "\n" + res[1]);
-				}
-				int procs = 0;
-				for (int i = 0; i < pml.length(); procs++)
-				{
-					i = pml.indexOf("proctype", i);
-					if (i == -1)
-					{
-						break;
-					}
-					i++;
-				}
-				int dnfair = (procs <= 6) ? 2 : 3;  // FIXME
-				res = ScribUtil.runProcess("gcc", "-o", "pan", "pan.c", "-DNFAIR=" + dnfair);
-				res[0] = res[0].trim();
-				res[1] = res[1].trim();
-				if (!res[0].isEmpty() || !res[1].isEmpty())
-				{
-					throw new RuntimeException("[-spin] [gcc]: " + res[0] + "\n" + res[1]);
-				}
-				res = ScribUtil.runProcess("pan", "-a", "-f");
-				res[1] = res[1].replace("warning: no accept labels are defined, so option -a has no effect (ignored)", "");
-				res[0] = res[0].trim();
-				res[1] = res[1].trim();
-				if (res[0].contains("error,") || !res[1].isEmpty())
-				{
-					throw new RuntimeException("[-spin] [pan]: " + res[0] + "\n" + res[1]);
-				}
-				int err = res[0].indexOf("errors: ");
-				boolean valid = (res[0].charAt(err + 8) == '0');
-				if (!valid)
-				{
-					System.err.println("[-spin] [pan] " + res[0] + "\n" + res[1]);
-				}
-				return valid;
-			}
-			catch (ScribbleException e)
-			{
-				throw new RuntimeException(e);
-			}
-			finally
-			{
-				tmp.delete();
-			}
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException(e);
 		}
 	}
 }

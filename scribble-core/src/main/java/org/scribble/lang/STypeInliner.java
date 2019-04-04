@@ -19,12 +19,12 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.scribble.job.Job;
+import org.scribble.job.Job2;
 import org.scribble.type.name.RecVar;
 
 public class STypeInliner
 {
-	public final Job job;
+	public final Job2 job;
 	
 	// Basically, "SubprotocolVisitor" -- factor out?
 	private final Deque<SubprotoSig> stack = new LinkedList<>();
@@ -33,7 +33,7 @@ public class STypeInliner
 	private Map<RecVar, Deque<RecVar>> recvars = new HashMap<>();
 	private Map<RecVar, Integer> counter = new HashMap<>();
 
-	public STypeInliner(Job job)
+	public STypeInliner(Job2 job)
 	{
 		this.job = job;
 	}

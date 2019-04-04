@@ -13,13 +13,16 @@
  */
 package org.scribble.type.session;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.lang.Substitutions;
+import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
 
 // Besides directed-ness, also features a Message
@@ -48,6 +51,12 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 	{
 		// Includes self
 		return Stream.of(this.src, this.dst).collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		return Stream.of(this.msg.getId()).collect(Collectors.toSet());
 	}
 	
 	@Override

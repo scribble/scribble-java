@@ -14,6 +14,7 @@
 package org.scribble.type.session;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +27,7 @@ import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
@@ -55,6 +57,20 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 	public Set<Role> getRoles()
 	{
 		return this.roles.stream().collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		Set<MessageId<?>> mids = new HashSet<>();
+		for (Arg<? extends NonRoleParamKind> a : this.args)
+		{
+			if (a instanceof Message)
+			{
+				mids.add(((Message) a).getId());
+			}
+		}
+		return mids;
 	}
 
 	@Override

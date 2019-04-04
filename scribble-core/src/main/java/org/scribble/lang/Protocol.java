@@ -24,6 +24,7 @@ import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
@@ -70,6 +71,12 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	// FIXME: confusing with this.roles List -- refactor: Protocol shouldn't be a SType
 	@Override
 	public Set<Role> getRoles()
+	{
+		throw new RuntimeException("Unsupported for Protocol: " + this);
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
 	{
 		throw new RuntimeException("Unsupported for Protocol: " + this);
 	}

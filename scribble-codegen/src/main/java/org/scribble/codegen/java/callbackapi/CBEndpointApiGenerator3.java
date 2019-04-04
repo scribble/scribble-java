@@ -33,7 +33,9 @@ import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.job.Job;
+import org.scribble.job.Job2;
 import org.scribble.job.JobContext;
+import org.scribble.job.JobContext2;
 import org.scribble.job.ScribbleException;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EState;
@@ -52,6 +54,7 @@ import org.scribble.type.name.Role;
 public class CBEndpointApiGenerator3
 {
 	public final Job job;
+	public final Job2 job2;
 	public final GProtocolName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
@@ -62,6 +65,14 @@ public class CBEndpointApiGenerator3
 	public CBEndpointApiGenerator3(Job job, GProtocolName fullname, Role self, boolean subtypes)
 	{
 		this.job = job;
+		try
+		{
+			this.job2 = job.getJob2();
+		}
+		catch (ScribbleException e)  // TODO: refactor
+		{
+			throw new RuntimeException(e);
+		}
 		this.proto = fullname;
 		this.self = self;
 		
@@ -93,12 +104,13 @@ public class CBEndpointApiGenerator3
 	
 	public Map<String, String> buildEndpointClass() throws ScribbleException
 	{
+		Module main = this.job.getContext().getMainModule();
 		Map<String, String> res = new HashMap<>();
 
-		JobContext jc = this.job.getContext();
+		JobContext2 jobc2 = this.job2.getContext();
 		EState init = (this.job.config.minEfsm
-				? jc.getMinimisedEGraph(this.proto, this.self)
-				: jc.getEGraph(this.proto, this.self)
+				? jobc2.getMinimisedEGraph(this.proto, this.self)
+				: jobc2.getEGraph(this.proto, this.self)
 				).init;
 				// TODO: factor out with StateChannelApiGenerator constructor
 		Set<EState> states = new HashSet<>();
@@ -209,6 +221,7 @@ public class CBEndpointApiGenerator3
 		}*/
 			
 		// branches
+		JobContext jobc = this.job.getContext();
 		for (EState s : states)
 		{
 			if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
@@ -219,13 +232,18 @@ public class CBEndpointApiGenerator3
 				for (EAction a : s.getAllActions())
 				{
 					// FIXME: factor out
-					boolean isSig = jc.getMainModule().getNonProtoDeclChildren().stream()
-						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+					boolean isSig = main.getNonProtoDeclChildren().stream()
+							.anyMatch(npd -> (npd instanceof MessageSigNameDecl)
+									&& ((MessageSigNameDecl) npd).getDeclName().toString()
+											.equals(a.mid.toString()));
 					MessageSigNameDecl msnd = null;
 					if (isSig)
 					{
-						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtoDeclChildren().stream()
-								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+						msnd = (MessageSigNameDecl) main.getNonProtoDeclChildren().stream()
+								.filter(npd -> (npd instanceof MessageSigNameDecl)
+										&& ((MessageSigNameDecl) npd).getDeclName().toString()
+												.equals(a.mid.toString()))
+								.iterator().next();
 					}
 					
 					String receiveIfName =
@@ -233,11 +251,13 @@ public class CBEndpointApiGenerator3
 							  "ICallback__"  // CHECKME: confusing against "icallback"
 							+ a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
 							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining());  // FIXME: factor out
-					String receiveInterface = generateReceiveInterface(isSig, msnd, jc, a, rootPack, receiveIfName);
-					res.put((getHandlersSelfPackage() + ".inputs.").replace('.', '/') + receiveIfName + ".java", receiveInterface);
+					String receiveInterface = generateReceiveInterface(isSig, msnd, jobc, a, rootPack, receiveIfName);
+					res.put((getHandlersSelfPackage() + ".inputs.").replace('.', '/')
+							+ receiveIfName + ".java", receiveInterface);
 				}
 
-				String branchAbstract = generateBranch(bprefix, jc, s, endpointName, rootPack, branchName);
+				String branchAbstract = generateBranch(bprefix, jobc, s, endpointName,
+						rootPack, branchName);
 				res.put(bprefix + branchName + ".java", branchAbstract);
 			}
 		}
@@ -709,7 +729,9 @@ public class CBEndpointApiGenerator3
 		return branchAbstract;
 	}
 	
-	protected String generateReceiveInterface(boolean isSig, MessageSigNameDecl msnd, JobContext jc, EAction a, String rootPack, String receiveIfName)
+	protected String generateReceiveInterface(boolean isSig,
+			MessageSigNameDecl msnd, JobContext jc, EAction a, String rootPack,
+			String receiveIfName)
 	{
 		String receiveInterface = "";
 		receiveInterface += "package " + getHandlersSelfPackage() + ".inputs;\n";
@@ -717,14 +739,18 @@ public class CBEndpointApiGenerator3
 		receiveInterface += "public interface " + receiveIfName + "<D> {\n";  // Cf. original callback API, have extra <D> parameter (o/w same)
 
 		// Cf. output-callback i/f, only specifies peer and message (not self)
-		receiveInterface += "\nvoid receive(D data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer, ";
+		receiveInterface += "\nvoid receive(D data, "
+				+ SessionApiGenerator.getEndpointApiRootPackageName(this.proto)
+				+ ".roles." + a.peer + " peer, ";
 		if (isSig)
 		{
 			receiveInterface += msnd.extName + " m";
 		}
 		else
 		{
-			receiveInterface += SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + " op"; 
+			receiveInterface += SessionApiGenerator
+					.getEndpointApiRootPackageName(this.proto) + ".ops."
+					+ SessionApiGenerator.getOpClassName(a.mid) + " op";
 			int i = 1;
 			for (PayloadElemType<?> pet : a.payload.elems)
 			{

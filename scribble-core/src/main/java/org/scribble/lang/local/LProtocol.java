@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import org.scribble.ast.Constants;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.job.Job;
+import org.scribble.job.Job2;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.Protocol;
 import org.scribble.lang.ProtocolMod;
@@ -101,7 +101,7 @@ public class LProtocol extends
 				this.self, this.params, unf);
 	}
 
-	public EGraph toEGraph(Job job)
+	public EGraph toEGraph(Job2 job)
 	{
 		EGraphBuilderUtil2 b = new EGraphBuilderUtil2(job.config.ef);
 		b.init(null);  // FIXME: init param not used

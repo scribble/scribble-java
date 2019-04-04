@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.job.Job;
+import org.scribble.job.Job2;
 import org.scribble.job.ScribbleException;
 import org.scribble.model.endpoint.EFSM;
 import org.scribble.model.endpoint.actions.ESend;
@@ -37,7 +37,7 @@ public class SModel
 		this.graph = graph;
 	}
 
-	public void validate(Job job) throws ScribbleException
+	public void validate(Job2 job) throws ScribbleException
 	{
 		SState init = this.graph.init;
 		Map<Integer, SState> states = this.graph.states;
@@ -120,7 +120,7 @@ public class SModel
 	}
 
 	protected String appendProgressErrorMessages(String errorMsg,
-			Set<Role> starved, Map<Role, Set<ESend>> ignored, Job job,
+			Set<Role> starved, Map<Role, Set<ESend>> ignored, Job2 job,
 			Map<Integer, SState> states, Set<Integer> termset)
 	{
 		if (!starved.isEmpty())
@@ -138,7 +138,7 @@ public class SModel
 		return errorMsg;
 	}
 	
-	protected String termSetToString(Job job, Set<Integer> termset,
+	protected String termSetToString(Job2 job, Set<Integer> termset,
 			Map<Integer, SState> all)
 	{
 		return job.config.debug

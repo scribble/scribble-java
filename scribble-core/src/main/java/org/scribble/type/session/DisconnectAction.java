@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
 
 // Base class would be "SymmetricInteraction" (cf., DirectedInteraction)
@@ -47,6 +48,12 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 	{
 		// Includes self
 		return Stream.of(this.left, this.right).collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		return Collections.emptySet();
 	}
 	
 	@Override

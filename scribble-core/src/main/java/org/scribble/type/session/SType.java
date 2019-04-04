@@ -22,6 +22,7 @@ import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -33,8 +34,9 @@ public interface SType<K extends ProtocolKind>  // CHECKME: consider adding B ex
 	boolean hasSource();  // i.e., was parsed
 	ProtocolKindNode<K> getSource();  // Pre: hasSource
 	
-	// Unsupported for Protocol/Do
+	// Unsupported for Protocol (Protocol should not be an SType)
 	Set<Role> getRoles();
+	Set<MessageId<?>> getMessageIds();
 
 	SType<K> substitute(Substitutions subs);
 	

@@ -37,7 +37,7 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.job.JobContext;
+import org.scribble.job.JobContext2;
 import org.scribble.job.RuntimeScribbleException;
 import org.scribble.job.ScribbleException;
 import org.scribble.model.endpoint.EState;
@@ -79,10 +79,10 @@ public class IOInterfacesGenerator extends ApiGen
 		GProtocolName fullname = apigen.getGProtocolName();
 		Role self = getSelf();
 		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext jc = this.job.getContext();
+		JobContext2 jobc2 = this.job2.getContext();
 		EState init = this.job.config.minEfsm
-				? jc.getMinimisedEGraph(fullname, self).init
-				: jc.getEGraph(fullname, self).init;
+				? jobc2.getMinimisedEGraph(fullname, self).init
+				: jobc2.getEGraph(fullname, self).init;
 		
 		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{
@@ -90,7 +90,10 @@ public class IOInterfacesGenerator extends ApiGen
 			Set<EAction> as = EState.getReachableActions(init);
 			if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 			{
-				throw new RuntimeScribbleException("[TODO] I/O Interface generation not supported for: " + as.stream().filter((a) -> !a.isSend() && !a.isReceive()).collect(Collectors.toList()));
+				throw new RuntimeScribbleException(
+						"[TODO] I/O Interface generation not supported for: "
+								+ as.stream().filter(a -> !a.isSend() && !a.isReceive())
+										.collect(Collectors.toList()));
 			}
 		}
 

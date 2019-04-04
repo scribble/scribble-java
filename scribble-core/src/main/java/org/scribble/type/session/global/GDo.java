@@ -13,13 +13,13 @@
  */
 package org.scribble.type.session.global;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.job.JobContext;
+import org.scribble.job.JobContext2;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.Projector;
 import org.scribble.lang.STypeInliner;
@@ -101,9 +101,10 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 			return LSkip.SKIP;
 		}
 
-		JobContext jobc = v.job.getContext();
-		GProtocolDecl gpd = jobc.getParsed(this.proto);
-		Role targSelf = gpd.getRoles().get(this.roles.indexOf(v.self));
+		JobContext2 jobc = v.job.getContext();
+		//GProtocolDecl gpd = jobc.getParsed(this.proto);
+		GProtocol gpd = jobc.getIntermediate(this.proto);
+		Role targSelf = gpd.roles.get(this.roles.indexOf(v.self));
 
 		GProtocol imed = jobc.getIntermediate(this.proto);
 		if (!imed.roles.contains(targSelf))  // CHECKME: because roles already pruned for intermed decl?
@@ -113,7 +114,11 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 
 		LProtocolName fullname = org.scribble.visit.context.Projector
 				.projectFullProtocolName(this.proto, targSelf);
-		List<Role> rs = this.roles.stream()
+		Substitutions subs = new Substitutions(imed.roles, this.roles,
+				Collections.emptyList(), Collections.emptyList());
+		List<Role> used = jobc.getInlined(this.proto).roles.stream().map(x -> subs.subsRole(x))
+				.collect(Collectors.toList());
+		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))
 				.map(x -> x.equals(v.self) ? Role.SELF : x)
 						// CHECKME: "self" also explcitily used for Choice, but implicitly for MessageTransfer, inconsistent?
 				.collect(Collectors.toList());

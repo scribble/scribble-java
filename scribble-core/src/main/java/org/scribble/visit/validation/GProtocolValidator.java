@@ -15,14 +15,24 @@ package org.scribble.visit.validation;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.job.Job;
+import org.scribble.job.Job2;
 import org.scribble.job.ScribbleException;
 import org.scribble.visit.context.ModuleContextVisitor;
 
 public class GProtocolValidator extends ModuleContextVisitor
 {
+	public final Job2 job2;
+
 	public GProtocolValidator(Job job)
 	{
 		super(job);
+		this.job2 = null;
+	}
+
+	public GProtocolValidator(Job2 job2)
+	{
+		super(null);
+		this.job2 = job2;
 	}
 
 	@Override

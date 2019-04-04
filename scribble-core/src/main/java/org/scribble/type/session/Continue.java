@@ -24,6 +24,7 @@ import org.scribble.lang.STypeInliner;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -46,6 +47,12 @@ public abstract class Continue<K extends ProtocolKind>
 	
 	@Override
 	public Set<Role> getRoles()
+	{
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
 	{
 		return Collections.emptySet();
 	}

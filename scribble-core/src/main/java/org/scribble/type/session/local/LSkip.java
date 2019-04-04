@@ -24,6 +24,7 @@ import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -39,7 +40,14 @@ public class LSkip extends STypeBase<Local> implements LType
 		super(null);
 	}
 	
+	@Override
 	public Set<Role> getRoles()
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}

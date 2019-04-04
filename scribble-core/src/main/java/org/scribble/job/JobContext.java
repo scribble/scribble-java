@@ -13,28 +13,16 @@
  */
 package org.scribble.job;
 
-import java.io.File;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.lang.global.GProtocol;
-import org.scribble.lang.local.LProtocol;
-import org.scribble.model.endpoint.AutParser;
-import org.scribble.model.endpoint.EGraph;
-import org.scribble.model.global.SGraph;
 import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
-import org.scribble.type.name.Role;
-import org.scribble.util.ScribUtil;
-import org.scribble.visit.context.Projector;
 
 // Global "static" context information for a Job -- single instance per Job, should not be shared between Jobs
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
@@ -49,35 +37,11 @@ public class JobContext
 	// CHECKME: separate original parsed from "working set"?
 	private final Map<ModuleName, Module> parsed;// = new HashMap<>();
 	
-	// Projected (i.e., created) modules -- no: LProtocol
-	// LProtocolName is the full local protocol name (module name is the prefix)
-	// LProtocolName key is LProtocol value fullname (i.e., redundant)
-	private final //Map<LProtocolName, Module> 
-			Map<LProtocolName, LProtocol>
-			projected = new HashMap<>();
-	
-	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
-	private final Map<GProtocolName, GProtocol> intermed = new HashMap<>();  // Keys are full names (though GProtocol already includes full name)
-	private final Map<LProtocolName, LProtocol> iprojected = new HashMap<>();  // From intermediates; keys are full names
-
-	// CHECKME: "global WF" only?
-	private final Map<GProtocolName, GProtocol> inlined = new HashMap<>();   // Keys are full names (though GProtocol already includes full name)
-
-	private final Map<LProtocolName, EGraph> fairEGraphs = new HashMap<>();
-	private final Map<GProtocolName, SGraph> fairSGraphs = new HashMap<>();
-	
-	private final Map<LProtocolName, EGraph> unfairEGraphs = new HashMap<>();
-	private final Map<GProtocolName, SGraph> unfairSGraphs = new HashMap<>();
-	
-	private final Map<LProtocolName, EGraph> minimisedEGraphs = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
-			// FIXME: currently only minimising "fair" graph, need to consider minimisation orthogonally to fairness -- NO: minimising (of fair) is for API gen only, unfair-transform does not use minimisation (regardless of user flag) for WF
-	
 	protected JobContext(Job job, Map<ModuleName, Module> parsed)//, ModuleName main)
 	{
 		this.job = job;
 
 		this.parsed = new HashMap<ModuleName, Module>(parsed);
-		//this.main = main;
 	}
 
 	public Module getMainModule()
@@ -91,7 +55,7 @@ public class JobContext
 	{
 		Set<ModuleName> modnames = new HashSet<>();
 		modnames.addAll(getParsedFullModuleNames());
-		modnames.addAll(getProjectedFullModuleNames());
+		//modnames.addAll(getProjectedFullModuleNames());
 		return modnames;
 	}
 
@@ -100,26 +64,9 @@ public class JobContext
 		return Collections.unmodifiableSet(this.parsed.keySet());
 	}
 
-	public Set<ModuleName> getProjectedFullModuleNames()
-	{
-		return this.projected.keySet().stream().map(x -> x.getPrefix())
-				.collect(Collectors.toSet());
-	}
-
-	/*public boolean hasModule(ModuleName fullname)
-	{
-		return isParsedModule(fullname) || isProjectedModule(fullname);
-	}*/
-	
 	private boolean isParsedModule(ModuleName fullname)
 	{
 		return this.parsed.containsKey(fullname);
-	}
-	
-	private boolean isProjectedModule(ModuleName fullname)
-	{
-		//return this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullname)).count() > 0;
-		return getProjectedFullModuleNames().contains(fullname);
 	}
 
 	public Module getModule(ModuleName fullname)
@@ -154,274 +101,6 @@ public class JobContext
 		else
 		{
 			throw new RuntimeException("Unknown module: " + fullname);
-		}
-	}
-	
-	// TODO rename better
-	public void addIntermediate(GProtocolName fullname, GProtocol g)
-	{
-		this.intermed.put(fullname, g);
-	}
-	
-	public GProtocol getIntermediate(GProtocolName fullname)
-	{
-		return this.intermed.get(fullname);
-	}
-
-	//public Map<GProtocolName, GProtocol> getIntermediates()
-	public Collection<GProtocol> getIntermediates()
-	{
-		//return Collections.unmodifiableMap(this.intermed);
-		return Collections.unmodifiableCollection(this.intermed.values());
-	}
-	
-	public void addInlined(GProtocolName fullname, GProtocol g)
-	{
-		this.inlined.put(fullname, g);
-	}
-	
-	public GProtocol getInlined(GProtocolName fullname)
-	{
-		return this.inlined.get(fullname);
-	}
-
-	public Collection<GProtocol> getInlined()
-	{
-		return Collections.unmodifiableCollection(this.inlined.values());
-	}
-	
-	public void addInlinedProjection(LProtocolName fullname, LProtocol l)
-	{
-		this.iprojected.put(fullname, l);
-	}
-	
-  // "Projected from inlined"
-	// FIXME TODO: refactor getProjected and getProjection properly
-	public LProtocol getInlinedProjection(GProtocolName fullname, Role self)
-	{
-		LProtocolName p = Projector.projectFullProtocolName(fullname, self);
-		
-		System.out.println("jjjj5: " + p + " ,, " + this.iprojected.keySet());
-		
-		return getInlinedProjection(p);
-	}
-
-	public LProtocol getInlinedProjection(LProtocolName fullname)
-	{
-		return this.iprojected.get(fullname);
-	}
-	
-	public Map<LProtocolName, LProtocol> getInlinedProjections()
-	{
-		return Collections.unmodifiableMap(this.iprojected);
-	}
-	
-	// Make context immutable? (will need to assign updated context back to Job) -- will also need to do for Module replacing
-	public void addProjections(Map<GProtocolName, //Map<Role, Module>> projections)
-				Map<Role, LProtocol>> projs)
-	{
-		for (GProtocolName g : projs.keySet())
-		{
-			Map<Role, LProtocol> mods = projs.get(g);
-			for (Role role : mods.keySet())
-			{
-				addProjection(mods.get(role));
-			}
-		}
-
-		/*// Doesn't work for external subprotocols now that Projector doesn't record Module-specific dependencies itself
-		try
-		{
-			ContextBuilder builder = new ContextBuilder(this.job);
-			for (ProtocolName lpn : this.projections.keySet())
-			{
-				Module mod = this.projections.get(lpn);
-				mod = (Module) mod.accept(builder);
-				replaceModule(mod);
-			}
-		}
-		catch (ScribbleException e)
-		{
-			throw new RuntimeException("Shouldn't get in here: " + e);
-		}*/
-	}
-
-	//private void addProjection(Module mod)
-	public void addProjection(LProtocol p)
-	{
-		/*LProtocolName lpn = (LProtocolName) mod.getProtoDeclChildren().get(0)
-				.getFullMemberName(mod);
-		this.projected.put(lpn, mod);*/
-		this.projected.put(p.fullname, p);
-	}
-	
-	public //Module 
-			LProtocol getProjection(GProtocolName fullname, Role role)
-			throws ScribbleException
-	{
-		return getProjection(Projector.projectFullProtocolName(fullname, role));
-	}
-
-	public //Module 
-			LProtocol getProjection(LProtocolName fullname)
-			//throws ScribbleException
-	{
-		/*Module proj = this.projected.get(fullname);
-		if (proj == null)*/
-		/*if (!this.projected.containsKey(fullname))
-		{
-			throw new ScribbleException(
-					"Projection not found: " + fullname);
-					// E.g. disamb/enabling error before projection passes (e.g. CommandLine -fsm arg)
-					//CHECKME: should not occur any more?
-		}*/
-		return this.projected.get(fullname);
-	}
-	
-	protected void addEGraph(LProtocolName fullname, EGraph graph)
-	{
-		this.fairEGraphs.put(fullname, graph);
-	}
-	
-	// N.B. graphs built from inlined (not unfolded)
-	public EGraph getEGraph(GProtocolName fullname, Role role)
-			throws ScribbleException
-	{
-		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
-		// Moved form LProtocolDecl
-		EGraph graph = this.fairEGraphs.get(fulllpn);
-		if (graph == null)
-		{
-			/*Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
-			EGraphBuilder builder = new EGraphBuilder(this.job);  // Obtains an EGraphBuilderUtil from Job
-			proj.accept(builder);
-			graph = builder.util.finalise();
-			addEGraph(fulllpn, graph);*/
-			throw new RuntimeException("Shouldn't get in here: ");
-		}
-		return graph;
-	}
-	
-	protected void addUnfairEGraph(LProtocolName fullname, EGraph graph)
-	{
-		this.unfairEGraphs.put(fullname, graph);
-	}
-	
-	public EGraph getUnfairEGraph(GProtocolName fullname, Role role) throws ScribbleException
-	{
-		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
-
-		EGraph unfair = this.unfairEGraphs.get(fulllpn);
-		if (unfair == null)
-		{
-			unfair = getEGraph(fullname, role).init.unfairTransform(this.job.config.ef).toGraph();
-			addUnfairEGraph(fulllpn, unfair);
-		}
-		return unfair;
-	}
-
-	protected void addSGraph(GProtocolName fullname, SGraph graph)
-	{
-		this.fairSGraphs.put(fullname, graph);
-	}
-	
-	public SGraph getSGraph(GProtocolName fullname) throws ScribbleException
-	{
-		SGraph graph = this.fairSGraphs.get(fullname);
-		if (graph == null)
-		{
-			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
-					.getProtocolDeclChild(fullname.getSimpleName());
-			Map<Role, EGraph> egraphs = 
-					getEGraphsForSGraphBuilding(fullname, gpd, true);
-			boolean explicit = gpd.isExplicit();
-					//graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
-			graph = this.job.buildSGraph(fullname, egraphs, explicit);
-			addSGraph(fullname, graph);
-		}
-		return graph;
-	}
-
-	private Map<Role, EGraph> getEGraphsForSGraphBuilding(GProtocolName fullname,
-			GProtocolDecl gpd, boolean fair) throws ScribbleException
-	{
-		Map<Role, EGraph> egraphs = new HashMap<>();
-		for (Role self : gpd.getHeaderChild().getRoleDeclListChild().getRoles())
-		{
-			egraphs.put(self, fair 
-					? getEGraph(fullname, self) 
-					: getUnfairEGraph(fullname, self));
-		}
-		return egraphs;
-	}
-
-	protected void addUnfairSGraph(GProtocolName fullname, SGraph graph)
-	{
-		this.unfairSGraphs.put(fullname, graph);
-	}
-
-	public SGraph getUnfairSGraph(GProtocolName fullname) throws ScribbleException
-	{
-		SGraph graph = this.unfairSGraphs.get(fullname);
-		if (graph == null)
-		{
-			GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
-					.getProtocolDeclChild(fullname.getSimpleName());
-			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, gpd, false);
-			boolean explicit = gpd.isExplicit();
-			//graph = SGraph.buildSGraph(this.job, fullname, this.job.createInitialSConfig(job, egraphs, explicit));
-			graph = this.job.buildSGraph(fullname, egraphs, explicit);
-			addUnfairSGraph(fullname, graph);
-		}
-		return graph;
-	}
-	
-	protected void addMinimisedEGraph(LProtocolName fullname, EGraph graph)
-	{
-		this.minimisedEGraphs.put(fullname, graph);
-	}
-	
-	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role)
-			throws ScribbleException
-	{
-		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
-
-		EGraph minimised = this.minimisedEGraphs.get(fulllpn);
-		if (minimised == null)
-		{
-			String aut = runAut(getEGraph(fullname, role).init.toAut(),
-					fulllpn + ".aut");
-			minimised = new AutParser(this.job).parse(aut);
-			addMinimisedEGraph(fulllpn, minimised);
-		}
-		return minimised;
-	}
-
-	// Duplicated from CommandLine.runDot
-	// Minimises the FSM up to bisimulation
-	// N.B. ltsconvert will typically re-number the states
-	private static String runAut(String fsm, String aut) throws ScribbleException
-	{
-		String tmpName = aut + ".tmp";
-		File tmp = new File(tmpName);
-		if (tmp.exists())  // Factor out with CommandLine.runDot (file exists check)
-		{
-			throw new RuntimeException("Cannot overwrite: " + tmpName);
-		}
-		try
-		{
-			ScribUtil.writeToFile(tmpName, fsm);
-			String[] res = ScribUtil.runProcess("ltsconvert", "-ebisim", "-iaut",
-					"-oaut", tmpName);
-			if (!res[1].isEmpty())
-			{
-				throw new RuntimeException(res[1]);
-			}
-			return res[0];
-		}
-		finally
-		{
-			tmp.delete();
 		}
 	}
 	

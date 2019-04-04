@@ -34,7 +34,14 @@ public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 	public EGraphBuilder(Job job)
 	{
 		super(job);
-		this.util = job.newEGraphBuilderUtil();
+		try
+		{
+			this.util = job.getJob2().newEGraphBuilderUtil();
+		}
+		catch (ScribbleException e)  // TODO: refactor
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	// Override visitInlinedProtocol -- not visit, or else enter/exit is lost

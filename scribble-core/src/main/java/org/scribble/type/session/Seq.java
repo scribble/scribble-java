@@ -14,7 +14,6 @@
 package org.scribble.type.session;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,6 +22,7 @@ import org.scribble.ast.InteractionSeq;
 import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
+import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
@@ -46,6 +46,13 @@ public abstract class Seq<K extends ProtocolKind>
 	public Set<Role> getRoles()
 	{
 		return this.elems.stream().flatMap(x -> x.getRoles().stream())
+				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		return this.elems.stream().flatMap(x -> x.getMessageIds().stream())
 				.collect(Collectors.toSet());
 	}
 	
