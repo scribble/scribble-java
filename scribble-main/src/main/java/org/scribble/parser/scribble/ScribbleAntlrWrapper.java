@@ -15,11 +15,14 @@ package org.scribble.parser.scribble;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.tree.CommonErrorNode;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Module;
 import org.scribble.del.DelDecorator;
@@ -137,6 +140,24 @@ public class ScribbleAntlrWrapper
 		catch (IOException e)
 		{
 			throw new RuntimeException(e);
+		}
+	}
+
+	public static void checkForAntlrErrors(CommonTree ct)
+	{
+		if (ct.getChildCount() > 0)  // getChildren returns null instead of empty list 
+		{
+			List<CommonErrorNode> errors = ((List<?>) ct.getChildren()).stream()
+					.filter(c -> (c instanceof CommonErrorNode))
+					.map(c -> (CommonErrorNode) c)
+					.collect(Collectors.toList());
+			if (errors.size() > 0)  // Antlr prints errors to System.err by default, but then attempts to carry on
+						// Should never get here now, Antlr displayRecognitionError overridden to force exit: Antlr error recovery means not all errors produce CommonErrorNode
+			{
+				//throw new ScribParserException("Parsing errors: " + errors);  // FIXME: improve feedback message
+				System.err.println("[ScribParser] Aborting due to parsing errors: " + errors);
+				System.exit(1);
+			}
 		}
 	}
 }

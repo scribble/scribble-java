@@ -42,7 +42,6 @@ import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.loader.ScribModuleLoader;
 import org.scribble.main.resource.locator.DirectoryResourceLocator;
 import org.scribble.main.resource.locator.ResourceLocator;
-import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ScribbleAntlrWrapper;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
@@ -58,7 +57,7 @@ public class Main
 	
 	// Only "manually" used here for loading main module (which should be factored out to front end) -- otherwise, only used within loader
 	protected final ScribbleAntlrWrapper antlrParser = newAntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
-	protected final AntlrToScribParser scribParser = newScribParser();
+	//protected final AntlrToScribParser scribParser = newScribParser();
 
 	protected final AstFactory af = newAstFactory();
 	protected final EModelFactory ef = newEModelFactory();
@@ -190,11 +189,6 @@ public class Main
 	protected ScribbleAntlrWrapper newAntlrParser()
 	{
 		return new ScribbleAntlrWrapper();
-	}
-	
-	protected AntlrToScribParser newScribParser()
-	{
-		return new AntlrToScribParser();
 	}
 	
 	protected AstFactory newAstFactory()
