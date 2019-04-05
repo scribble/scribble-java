@@ -112,8 +112,12 @@ explicit global protocol Foo(role A, role B, role C)
 }
 //*/
 
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+}
 
-//*
+/*
 explicit global protocol Foo(role A, role B)
 {
 	//connect A to B;

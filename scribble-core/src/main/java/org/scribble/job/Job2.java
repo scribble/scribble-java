@@ -273,7 +273,7 @@ public class Job2
 		}
 
 		// Pre: inlined already projected -- used for Do projection
-		for (GProtocol g : this.context.getInlined())
+		for (GProtocol g : this.context.getIntermediates())
 		{
 			for (Role self : g.roles)
 			{
@@ -293,11 +293,14 @@ public class Job2
 		LProtocol proj =
 				this.context.getProjection(fullname, role);
 		
-		System.out.println(proj);
 		List<ProtocolName<Local>> ps = proj.getProtoDependencies();
 		for (ProtocolName<Local> p : ps)
 		{
 			System.out.println("\n" + this.context.getProjection((LProtocolName) p));
+		}
+		if (!ps.contains(proj.fullname))
+		{
+			System.out.println("\n" + proj);
 		}
 
 		List<MemberName<?>> ns = proj.getNonProtoDependencies();

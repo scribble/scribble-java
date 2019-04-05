@@ -58,6 +58,7 @@ public interface SType<K extends ProtocolKind>  // CHECKME: consider adding B ex
 	SType<K> unfoldAllOnce(STypeUnfolder<K> u);
 	
 	// Resulting Lists should not contain duplicates (i.e., Choice/Seq)
+	// Result does not necessarily contain root proto, but may do so via dependencies
 	List<ProtocolName<K>> getProtoDependencies();
 	List<MemberName<?>> getNonProtoDependencies();  // N.B. delegation payloads currently here, not getProtoDependencies (CHECKME: refactor?)
 	
