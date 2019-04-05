@@ -27,12 +27,12 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ModuleDel;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.util.MessageIdCollector;
 
 public class SessionApiGenerator extends ApiGen
@@ -53,7 +53,7 @@ public class SessionApiGenerator extends ApiGen
 	private final ClassBuilder cb = new ClassBuilder();
 	private final Map<String, ClassBuilder> classes = new HashMap<>();  // All classes in same package, for protected constructor access
 	
-	public SessionApiGenerator(Lang job, GProtocolName fullname) throws ScribbleException
+	public SessionApiGenerator(Lang job, GProtocolName fullname) throws ScribException
 	{
 		super(job, fullname);
 		constructRoleClasses();
@@ -179,7 +179,7 @@ public class SessionApiGenerator extends ApiGen
 		fb.setExpression(getEndpointApiRootPackageName(this.gpn) + "." + subpack + "." + type + "." + type);  // Currently requires source Scribble to be in a package that is not the root -- can fix by generating to a subpackage based on Module and/or protocol
 	}
 	
-	private void constructOpClasses() throws ScribbleException
+	private void constructOpClasses() throws ScribException
 	{
 		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
@@ -195,7 +195,7 @@ public class SessionApiGenerator extends ApiGen
 		}
 	}
 
-	private void constructRoleClasses() throws ScribbleException
+	private void constructRoleClasses() throws ScribException
 	{
 		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();

@@ -18,10 +18,10 @@ import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LRequest;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
@@ -30,7 +30,7 @@ public class LRequestDel extends LConnectionActionDel
 {
 	@Override
 	public LRequest leaveEGraphBuilding(ScribNode parent, ScribNode child,
-			EGraphBuilder builder, ScribNode visited) throws ScribbleException
+			EGraphBuilder builder, ScribNode visited) throws ScribException
 	{
 		LRequest lc = (LRequest) visited;
 		MessageNode msg = lc.getMessageNodeChild();

@@ -18,8 +18,8 @@ import java.util.LinkedList;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ModuleContextVisitor;
 
 // Checks for recursive protocoldecl dependencies in the presence of delegations (currently, both via the delegation, and in of the protocoldelcs themselves -- FIXME over restrictive)
@@ -34,7 +34,7 @@ public class DelegationProtocolRefChecker extends ModuleContextVisitor
 	}
 
 	@Override
-	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	public void enter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.enter(parent, child);
 		if (child instanceof ProtocolDecl<?>)
@@ -45,7 +45,7 @@ public class DelegationProtocolRefChecker extends ModuleContextVisitor
 	}
 	
 	@Override
-	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveDelegationProtocolRefCheck(parent, child, this, visited);
 		if (visited instanceof ProtocolDecl<?>)

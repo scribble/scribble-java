@@ -18,12 +18,12 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LSessionNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.visit.SubprotocolVisitor;
 import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
@@ -63,7 +63,7 @@ public class UnguardedChoiceDoProjectionChecker
 
 	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (child instanceof LChoice)
 		{
@@ -74,7 +74,7 @@ public class UnguardedChoiceDoProjectionChecker
 	}
 
 	private ScribNode visitOverrideForLDoPruning(ScribNode parent, LChoice lc)
-			throws ScribbleException
+			throws ScribException
 	{
 		for (LProtocolBlock b : lc.getBlockChildren())
 		{
@@ -112,7 +112,7 @@ public class UnguardedChoiceDoProjectionChecker
 
 	@Override
 	protected void subprotocolEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.subprotocolEnter(parent, child);
 		child.del().enterUnguardedChoiceDoProjectionCheck(parent, child, this);
@@ -120,7 +120,7 @@ public class UnguardedChoiceDoProjectionChecker
 	
 	@Override
 	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveUnguardedChoiceDoProjectionCheck(parent, child,
 				this, visited);

@@ -22,11 +22,11 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ChoiceDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceDoPruner;
@@ -50,7 +50,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	@Override
 	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
 			ScribNode child, UnguardedChoiceDoProjectionChecker checker,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		Choice<?> cho = (Choice<?>) visited;
 		List<UnguardedChoiceDoEnv> benvs = cho.getBlockChildren().stream()
@@ -66,7 +66,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	@Override
 	public ScribNode leaveProjectedChoiceDoPruning(ScribNode parent,
 			ScribNode child, ProjectedChoiceDoPruner pruner, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		LChoice lc = (LChoice) visited;
 		List<LProtocolBlock> blocks = lc.getBlockChildren().stream()
@@ -81,7 +81,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	@Override
 	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent,
 			ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		LChoice lc = (LChoice) visited;
 		List<LProtocolBlock> blocks = lc.getBlockChildren();
@@ -113,7 +113,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		{
 			String self = fixer.getModuleContext().root.getSimpleName().toString();  // HACK
 			self = self.substring(self.lastIndexOf('_')+1, self.length());  // FIXME: not comaptible with role names that include "_"
-			throw new ScribbleException(lc.getSource(), "Cannot project onto " + self
+			throw new ScribException(lc.getSource(), "Cannot project onto " + self
 					+ " due to inconsistent local choice subjects: " + subjs);
 					// self not recorded -- can derive from LProtocolDecl RoleDeclList
 			//throw new RuntimeException("Shouldn't get in here: " + subjs);
@@ -129,7 +129,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		LChoice lc = (LChoice) visited;
 		List<LProtocolBlock> blocks = 
@@ -145,7 +145,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 
 	@Override
 	public LChoice leaveReachabilityCheck(ScribNode parent, ScribNode child,
-			ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+			ReachabilityChecker checker, ScribNode visited) throws ScribException
 	{
 		LChoice cho = (LChoice) visited;
 		List<ReachabilityEnv> benvs =
@@ -178,7 +178,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 				graph.util.popChoiceBlock();
 			}
 		}
-		catch (ScribbleException e)
+		catch (ScribException e)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + e);
 		}
@@ -187,7 +187,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 
 	@Override
 	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child,
-			EGraphBuilder graph, ScribNode visited) throws ScribbleException
+			EGraphBuilder graph, ScribNode visited) throws ScribException
 	{
 		graph.util.leaveChoice();
 		return super.leaveEGraphBuilding(parent, child, graph, visited);

@@ -14,8 +14,8 @@
 package org.scribble.visit.context;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 
 public class ProjectedRoleDeclFixer extends ModuleContextVisitor
 {
@@ -25,14 +25,14 @@ public class ProjectedRoleDeclFixer extends ModuleContextVisitor
 	}
 
 	@Override
-	protected final void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void enter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.enter(parent, child);
 		child.del().enterProjectedRoleDeclFixing(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveProjectedRoleDeclFixing(parent, child, this, visited);
 		return super.leave(parent, child, visited);

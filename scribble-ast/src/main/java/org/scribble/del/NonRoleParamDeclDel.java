@@ -15,13 +15,13 @@ package org.scribble.del;
 
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class NonRoleParamDeclDel extends ScribDelBase
 {
 	@Override
-	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
+	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribException
 	{
 		NonRoleParamDecl<?> pd = (NonRoleParamDecl<?>) child;
 		disamb.addParameter(pd.getDeclName(), pd.kind);

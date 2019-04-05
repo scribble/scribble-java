@@ -17,11 +17,11 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.del.local.LChoiceDel;
 import org.scribble.del.local.LInteractionSeqDel;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.NoEnvInlinedProtocolVisitor;
 
 // Changed from offsetsubprot visitor to inlined visitor to reduce state label accumulation to rec only -- then, wfc-checking for "unguarded" recursive-do-as-continue in choice blocks handled by unfolding inlineds
@@ -38,7 +38,7 @@ public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 		{
 			this.util = job.toJob().newEGraphBuilderUtil();
 		}
-		catch (ScribbleException e)  // TODO: refactor
+		catch (ScribException e)  // TODO: refactor
 		{
 			throw new RuntimeException(e);
 		}
@@ -47,7 +47,7 @@ public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 	// Override visitInlinedProtocol -- not visit, or else enter/exit is lost
 	@Override
 	public ScribNode visitInlinedProtocol(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (child instanceof LInteractionSeq)
 		{
@@ -65,7 +65,7 @@ public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 	}
 
 	protected LInteractionSeq visitOverrideForLInteractionSeq(
-			LProtocolBlock parent, LInteractionSeq child) throws ScribbleException
+			LProtocolBlock parent, LInteractionSeq child) throws ScribException
 	{
 		return ((LInteractionSeqDel) child.del()).visitForFsmConversion(this,
 				child);
@@ -79,7 +79,7 @@ public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 
 	@Override
 	protected final void inlinedEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	//protected final void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.inlinedEnter(parent, child);
@@ -89,7 +89,7 @@ public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 	
 	@Override
 	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	//protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveEGraphBuilding(parent, child, this, visited);

@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDelegationElem;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.NonRoleArgKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.Name;
@@ -28,6 +27,7 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ModuleContextVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
@@ -57,7 +57,7 @@ public class NameDisambiguator extends ModuleContextVisitor
 
 	// Most subclasses will override visitForSubprotocols (e.g. ReachabilityChecker, FsmConstructor), but sometimes still want to change whole visit pattern (e.g. Projector)
 	@Override
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribException
 	{
 		/*if (child instanceof ProtocolDecl<?>)  // FIXME: factor out
 		{
@@ -68,7 +68,7 @@ public class NameDisambiguator extends ModuleContextVisitor
 		return leave(parent, child, visited);
 	}
 
-	protected ScribNode visitForDisamb(ScribNode parent, ScribNode child) throws ScribbleException
+	protected ScribNode visitForDisamb(ScribNode parent, ScribNode child) throws ScribException
 	{
 		if (child instanceof GDelegationElem)
 		{
@@ -83,14 +83,14 @@ public class NameDisambiguator extends ModuleContextVisitor
 
 	@Override
 	//public NameDisambiguator enter(ModelNode parent, ModelNode child) throws ScribbleException
-	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	public void enter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.enter(parent, child);
 		child.del().enterDisambiguation(parent, child, this);
 	}
 	
 	@Override
-	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveDisambiguation(parent, child, this, visited);
 		return super.leave(parent, child, visited);

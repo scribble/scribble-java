@@ -24,12 +24,12 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 public class CaseSockGen extends ScribSockGen
 {
@@ -78,7 +78,7 @@ public class CaseSockGen extends ScribSockGen
 
 	//private String constructCaseClass(EndpointState curr, Module main)
 	@Override
-	protected void addMethods() throws ScribbleException
+	protected void addMethods() throws ScribException
 	{
 		String branchName = this.apigen.getSocketClassName(curr);  // Name of "parent" branch class (curr state is the branch state)
 		String enumClassName = branchName + "." + BranchSockGen.getBranchEnumClassName(this.apigen, this.curr);
@@ -117,7 +117,7 @@ public class CaseSockGen extends ScribSockGen
 	}
 
 	// Same as in ReceiveSocketGenerator
-	private MethodBuilder makeReceiveHeader(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
+	private MethodBuilder makeReceiveHeader(ClassBuilder cb, EAction a, EState succ) throws ScribException
 	{
 		MethodBuilder mb = cb.newMethod();
 		ReceiveSockGen.setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -125,7 +125,7 @@ public class CaseSockGen extends ScribSockGen
 		return mb;
 	}
 
-	private void addReceiveMethod(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
+	private void addReceiveMethod(ClassBuilder cb, EAction a, EState succ) throws ScribException
 	{
 		Module main = this.apigen.getMainModule();
 
@@ -146,7 +146,7 @@ public class CaseSockGen extends ScribSockGen
 		addReturnNextSocket(mb, succ);
 	}
 
-	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
+	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, EAction a, EState succ) throws ScribException
 	{
 		MethodBuilder mb = cb.newMethod();
 		setCaseReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -154,7 +154,7 @@ public class CaseSockGen extends ScribSockGen
 		return mb;
 	}
 
-	private void addCaseReceiveMethod(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
+	private void addCaseReceiveMethod(ClassBuilder cb, EAction a, EState succ) throws ScribException
 	{
 		MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
 		String ln = JavaBuilder.RETURN + " " + "receive(" + getSessionApiRoleConstant(a.obj) + ", ";
@@ -212,7 +212,7 @@ public class CaseSockGen extends ScribSockGen
 	}
 
 	// As for ReceiveSocket, but without peer param
-	public static void setCaseReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribbleException
+	public static void setCaseReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribException
 	{
 		//final String ROLE_PARAM = "role";
 		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?

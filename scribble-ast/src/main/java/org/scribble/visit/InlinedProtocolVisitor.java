@@ -15,9 +15,9 @@ package org.scribble.visit;
 
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.del.ProtocolDefDel;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.env.Env;
 
 public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisitor<T>
@@ -28,14 +28,14 @@ public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisito
 	}
 
 	@Override
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribException
 	{
 		enter(parent, child);
 		ScribNode visited = visitInlinedProtocol(parent, child);
 		return leave(parent, child, visited);
 	}
 
-	protected ScribNode visitInlinedProtocol(ScribNode parent, ScribNode child) throws ScribbleException
+	protected ScribNode visitInlinedProtocol(ScribNode parent, ScribNode child) throws ScribException
 	{
 		if (child instanceof ProtocolDef)
 		{
@@ -49,12 +49,12 @@ public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisito
 	}
 	
 	// N.B. results of visiting inlined version are stored back to inlined field, but original AST is unaffected -- so any Env/Del or AST updates to inlined version do not reflect back onto original AST -- a motivation for the original SubprotocolVisitor approach
-	private ScribNode visitOverrideForProtocolDef(ScribNode parent, ProtocolDef<?> pd) throws ScribbleException
+	private ScribNode visitOverrideForProtocolDef(ScribNode parent, ProtocolDef<?> pd) throws ScribException
 	{
 		ProtocolDef<?> inlined = ((ProtocolDefDel) pd.del()).getInlinedProtocolDef();
 		if (inlined == null)
 		{
-			throw new ScribbleException("InlineProtocolVisitor error: " + pd);  // E.g. -fsm when inconsistent choice subjects
+			throw new ScribException("InlineProtocolVisitor error: " + pd);  // E.g. -fsm when inconsistent choice subjects
 				// FIXME: shouldn't occur any more?
 		}
 		
@@ -69,25 +69,25 @@ public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisito
 	}
 
 	@Override
-	protected final void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void envEnter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.envEnter(parent, child);
 		inlinedEnter(parent, child);
 	}
 
 	@Override
-	protected final ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected final ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		ScribNode n = inlinedLeave(parent, child, visited);
 		return super.envLeave(parent, child, n);
 	}
 
-	protected void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void inlinedEnter(ScribNode parent, ScribNode child) throws ScribException
 	{
 
 	}
 
-	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		return visited;
 	}

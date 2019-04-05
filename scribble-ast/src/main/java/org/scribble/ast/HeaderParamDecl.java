@@ -17,10 +17,10 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ParamKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
@@ -56,7 +56,7 @@ public abstract class HeaderParamDecl<K extends ParamKind>
 	
 	@Override
 	public HeaderParamDecl<K> visitChildren(AstVisitor nv)
-			throws ScribbleException
+			throws ScribException
 	{
 		NameNode<K> name = 
 				visitChildWithClassEqualityCheck(this, getNameNodeChild(), nv);

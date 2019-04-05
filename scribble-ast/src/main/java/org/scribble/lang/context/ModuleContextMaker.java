@@ -23,7 +23,6 @@ import org.scribble.ast.Module;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.context.ScribNames;
 import org.scribble.core.type.name.DataType;
@@ -31,6 +30,7 @@ import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.util.ScribException;
 
 // TODO: rename and refactor
 public class ModuleContextMaker
@@ -56,7 +56,7 @@ public class ModuleContextMaker
 	
 	public ModuleContext make(
 			Map<ModuleName, Module> parsed,  // From MainContext (N.B., in a different non-visible package)
-			Module root) throws ScribbleException
+			Module root) throws ScribException
 	{
 		this.root = root;
 		this.deps = new ScribNames();
@@ -86,7 +86,7 @@ public class ModuleContextMaker
 	// Register mod under name modname, modname could be the full module name or an import alias
 	// Adds member names qualified by mod
 	private static void addModule(ScribNames names, Module mod,
-			ModuleName modname) throws ScribbleException
+			ModuleName modname) throws ScribException
 	{
 		names.modules.put(modname, mod.getFullModuleName());
 		for (NonProtocolDecl<?> npd : mod.getNonProtoDeclChildren())
@@ -120,7 +120,7 @@ public class ModuleContextMaker
 	
 	// Could move to ImportModule but would need a defensive copy setter, or cache info in builder and create on leave
 	private void addImportDependencies(Map<ModuleName, Module> parsed, Module mod)
-			throws ScribbleException
+			throws ScribException
 	{
 		for (ImportDecl<?> id : mod.getImportDeclChildren())
 		{
@@ -145,7 +145,7 @@ public class ModuleContextMaker
 	// Adds "local" imports by alias or full name
 	// Adds "local" members by simple names
 	private void addVisible(Map<ModuleName, Module> parsed, Module root)
-			throws ScribbleException
+			throws ScribException
 	{
 		// Unlike for deps, visible is not done transitively
 		for (ImportDecl<?> id : root.getImportDeclChildren())
@@ -158,7 +158,7 @@ public class ModuleContextMaker
 						// getVisibleName doesn't use fullname
 				if (this.visible.modules.containsKey(visname))
 				{
-					throw new ScribbleException(id.getSource(),
+					throw new ScribException(id.getSource(),
 							"Duplicate visible module name: " + visname);
 				}
 				Module imported = parsed.get(fullname);  // TODO: Can get from MainContext instead of JobContext?

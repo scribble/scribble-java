@@ -14,8 +14,8 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 
 // Pattern: node accepts visitor and calls visitor back (standard visitor pattern -- adding a new operation doesn't affect the Ast classes), but then visitor delegates back to node delegate (so routines for handling each node type not centralised in visitor, but decentralised to delegates)
 public abstract class AstVisitor
@@ -31,7 +31,7 @@ public abstract class AstVisitor
 
 	// Used by ScribNodeBase::accept
 	public ScribNode visit(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		enter(parent, child);
 		ScribNode visited = child.visitChildren(this);   // visited means "children visited so far"; we're about to visit "this" now via "leave"
@@ -39,13 +39,13 @@ public abstract class AstVisitor
 	}
 	
 	protected void enter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 
 	}
 	
 	protected ScribNode leave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		return visited;
 	}

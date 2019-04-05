@@ -26,12 +26,12 @@ import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.core.job.RuntimeScribbleException;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 
 // Cf. ScribSocketGenerator
 // Partial I/O State I/f generator -- Successor Interfaces and cast methods added later
@@ -58,13 +58,13 @@ public abstract class IOStateIfaceGen extends IOIfaceGen
 	}
 	
 	@Override
-	public InterfaceBuilder generateType() throws ScribbleException
+	public InterfaceBuilder generateType() throws ScribException
 	{
 		constructInterface();
 		return this.ib;
 	}
 
-	protected void constructInterface() throws ScribbleException
+	protected void constructInterface() throws ScribException
 	{
 		addHeader();
 		addSuccessorParamsAndActionInterfaces();
@@ -134,7 +134,7 @@ public abstract class IOStateIfaceGen extends IOIfaceGen
 			case OUTPUT:      name = "Select";  break;
 			case UNARY_INPUT: name = "Receive"; break;
 			case POLY_INPUT:  name = "Branch";  break;
-			case TERMINAL:    throw new RuntimeScribbleException("Shouldn't get in here: " + s);
+			case TERMINAL:    throw new RuntimeScribException("Shouldn't get in here: " + s);
 			default:          throw new RuntimeException("(TODO) I/O interface generation: " + s.getStateKind());
 		}
 		name = name + "_" + self + "_" + s.getActions().stream().sorted(IOACTION_COMPARATOR)
@@ -144,11 +144,11 @@ public abstract class IOStateIfaceGen extends IOIfaceGen
 	}
 	
 	// 255 is Linux, Windows, etc max file name length (Java is 65535)
-	public static void checkIOStateInterfaceNameLength(String name) throws RuntimeScribbleException
+	public static void checkIOStateInterfaceNameLength(String name) throws RuntimeScribException
 	{
 		if (name.length() > 250)  // .java
 		{
-			throw new RuntimeScribbleException("I/O Interface name too long (max 255): " + name);
+			throw new RuntimeScribException("I/O Interface name too long (max 255): " + name);
 		}
 	}
 }

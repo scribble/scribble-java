@@ -18,10 +18,10 @@ import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.simple.IdNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class MessageSigNameNodeDel extends ScribDelBase
@@ -34,7 +34,7 @@ public class MessageSigNameNodeDel extends ScribDelBase
 	// Is this needed?  Or DataTypeNodes always created from AmbigNameNode? (in this same pass)
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		if (parent instanceof MessageSigNameDecl)  // Hacky? don't want to do for decl simplenames (generally, don't do if parent is namedeclnode)
 		{

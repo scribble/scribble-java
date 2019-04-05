@@ -24,14 +24,14 @@ import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.core.job.RuntimeScribbleException;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
 import org.scribble.lang.LangContext;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LDo extends Do<Local> implements LSimpleSessionNode
@@ -84,9 +84,9 @@ public class LDo extends Do<Local> implements LSimpleSessionNode
 
 	@Override
 	public LSessionNode merge(AstFactory af, LSessionNode ln)
-			throws ScribbleException
+			throws ScribException
 	{
-		throw new RuntimeScribbleException("Invalid merge on LDo: " + this);
+		throw new RuntimeScribException("Invalid merge on LDo: " + this);
 	}
 
 	@Override

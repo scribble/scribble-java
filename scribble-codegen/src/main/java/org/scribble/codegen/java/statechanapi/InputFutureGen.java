@@ -26,12 +26,12 @@ import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.util.ScribException;
 
 public class InputFutureGen extends AuxStateChanTypeGen
 {
@@ -47,7 +47,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 	}
 
 	@Override
-	public ClassBuilder generateType() throws ScribbleException
+	public ClassBuilder generateType() throws ScribException
 	{
 		final String FUTURE_PARAM = "fut";
 		Module main = this.apigen.getMainModule();
@@ -78,7 +78,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 				{
 					if (!pt.isDataType())
 					{
-						throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
+						throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 					}
 					DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);
 					ScribSockGen.checkJavaDataTypeDecl(dtd);

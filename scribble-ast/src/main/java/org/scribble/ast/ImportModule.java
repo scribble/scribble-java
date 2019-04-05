@@ -16,11 +16,11 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.del.ScribDel;
 import org.scribble.util.Constants;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public class ImportModule extends ImportDecl<ModuleKind>
@@ -41,12 +41,15 @@ public class ImportModule extends ImportDecl<ModuleKind>
 		this.alias = null;
 	}
 
+	// Full name ("import x.y.Z")
 	public ModuleNameNode getModuleNameNodeChild()
 	{
 		return (ModuleNameNode) getChild(0);
 	}
 
-	// No child if no alias (cf., this.hasAlias)
+	// Pre: hasAlias
+	// Simple name
+	// No child (null) if no alias
 	public ModuleNameNode getAliasNameNodeChild()
 	{
 		return (ModuleNameNode) getChild(1);
@@ -74,7 +77,7 @@ public class ImportModule extends ImportDecl<ModuleKind>
 	}
 
 	@Override
-	public ImportModule visitChildren(AstVisitor nv) throws ScribbleException
+	public ImportModule visitChildren(AstVisitor nv) throws ScribException
 	{
 		ModuleNameNode modname = (ModuleNameNode) 
 				visitChild(getModuleNameNodeChild(), nv);

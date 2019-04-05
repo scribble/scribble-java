@@ -25,9 +25,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.core.job.RuntimeScribbleException;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 
 public abstract class MState<
 		L,                             // Node label type (cosmetic)
@@ -85,7 +85,7 @@ public abstract class MState<
 		this.succs.add(s);
 	}
 	
-	protected final void removeEdge(A a, S s) throws ScribbleException
+	protected final void removeEdge(A a, S s) throws ScribException
 	{
 		Iterator<A> ia = this.actions.iterator();
 		Iterator<S> is = this.succs.iterator();
@@ -101,7 +101,7 @@ public abstract class MState<
 			}
 		}
 		//throw new RuntimeException("No such transition to remove: " + a + "->" + s);
-		throw new ScribbleException(
+		throw new ScribException(
 				"No such transition to remove: " + a + "->" + s);
 				// Hack? EFSM building on bad-reachability protocols now done before actual reachability check
 	}
@@ -112,7 +112,7 @@ public abstract class MState<
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeScribbleException("[TODO] Non-deterministic state: "
+			throw new RuntimeScribException("[TODO] Non-deterministic state: "
 					+ this.actions + "  (Try -minlts if available)");
 					// This getter checks for determinism -- affects e.g. API generation  
 		}
@@ -145,7 +145,7 @@ public abstract class MState<
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeScribbleException("[TODO] Non-deterministic state: "
+			throw new RuntimeScribException("[TODO] Non-deterministic state: "
 					+ this.actions + "  (Try -minlts if available)");
 					// This getter checks for determinism -- affects e.g. API generation  
 		}

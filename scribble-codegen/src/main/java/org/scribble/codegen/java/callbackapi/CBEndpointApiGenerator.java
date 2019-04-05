@@ -28,7 +28,6 @@ import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.core.job.Job;
 import org.scribble.core.job.JobContext;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
@@ -38,6 +37,7 @@ import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.PayloadElemType;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
 // From ParamCoreEndpointApiGenerator
@@ -58,7 +58,7 @@ public class CBEndpointApiGenerator
 		{
 			this.job2 = job.toJob();
 		}
-		catch (ScribbleException e)  // TODO: refactor
+		catch (ScribException e)  // TODO: refactor
 		{
 			throw new RuntimeException(e);
 		}
@@ -72,14 +72,14 @@ public class CBEndpointApiGenerator
 		}
 	}
 
-	public Map<String, String> build() throws ScribbleException
+	public Map<String, String> build() throws ScribException
 	{
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
 		res.putAll(buildSessionApi());
 		return res;
 	}
 
-	public Map<String, String> buildSessionApi() throws ScribbleException // FIXME: factor out -- integrate with JEndpointApiGenerator
+	public Map<String, String> buildSessionApi() throws ScribException // FIXME: factor out -- integrate with JEndpointApiGenerator
 	{
 		this.job.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator.class + " for " + this.proto + "@" + this.self);
 
@@ -89,7 +89,7 @@ public class CBEndpointApiGenerator
 		return res;
 	}
 	
-	public Map<String, String> buildEndpointClass() throws ScribbleException
+	public Map<String, String> buildEndpointClass() throws ScribException
 	{
 		Module main = this.job.getContext().getMainModule();
 		JobContext jobc2 = this.job2.getContext();

@@ -21,10 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.Callable;
 
-import org.scribble.core.job.RuntimeScribbleException;
-import org.scribble.core.job.ScribbleException;
-
-public class ScribUtil2
+public class ScribUtil
 {
 	public static <T> T handleLambdaScribbleException(Callable<T> c)
 	{
@@ -34,13 +31,14 @@ public class ScribUtil2
 		}
 		catch (Exception se)
 		{
-			throw new RuntimeScribbleException(se);  // Maybe this hack is not worth it?  Better to throw directly as ScribbleException from a regular foreach
+			throw new RuntimeScribException(se);  
+					// Maybe this hack is not worth it?  Better to throw directly as ScribbleException from a regular foreach
 		}
 	}
 
 	// Returns [ stdout, stderr ]
 	public static String[] runProcess(String... cmdAndArgs)
-			throws ScribbleException
+			throws ScribException
 	{
 		try
 		{
@@ -66,13 +64,13 @@ public class ScribUtil2
 		}
 		catch (IOException | InterruptedException e)
 		{
-			throw new ScribbleException(e);
+			throw new ScribException(e);
 		}
 	}
 
 	// Warning: doesn't check if file exists
 	public static void writeToFile(String path, String text)
-			throws ScribbleException
+			throws ScribException
 	{
 		File file = new File(path);
 		File parent = file.getParentFile();
@@ -87,7 +85,7 @@ public class ScribUtil2
 		}
 		catch (IOException e)
 		{
-			throw new ScribbleException(e);
+			throw new ScribException(e);
 		}
 	}
 }

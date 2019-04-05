@@ -16,11 +16,11 @@ package org.scribble.visit.context;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.global.GDependencyMap;
 import org.scribble.ast.context.local.LDependencyMap;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.NoEnvSubprotocolVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names -- no: old?
@@ -35,14 +35,14 @@ public class ProtocolDeclContextBuilder extends NoEnvSubprotocolVisitor  // For 
 	}
 
 	@Override
-	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.subprotocolEnter(parent, child);
 		child.del().enterProtocolDeclContextBuilding(parent, child, this);
 	}
 
 	@Override
-	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveProtocolDeclContextBuilding(parent, child, this, visited);
 		return super.subprotocolLeave(parent, child, visited);

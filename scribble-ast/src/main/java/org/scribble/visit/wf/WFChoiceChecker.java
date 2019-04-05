@@ -21,9 +21,9 @@ import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.UnfoldingVisitor;
 import org.scribble.visit.wf.env.WFChoiceEnv;
 
@@ -52,7 +52,7 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 
 	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (child instanceof GProtocolDecl)
 		{
@@ -75,7 +75,7 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 	}
 
 	private ScribNode visitOverrideForChoice(InteractionSeq<?> parent,
-			Choice<?> child) throws ScribbleException
+			Choice<?> child) throws ScribException
 	{
 		if (child instanceof Choice<?>)
 		{
@@ -101,7 +101,7 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 	
 	@Override
 	protected void unfoldingEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.unfoldingEnter(parent, child);
 		child.del().enterInlinedWFChoiceCheck(parent, child, this);
@@ -109,7 +109,7 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 	
 	@Override
 	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveInlinedWFChoiceCheck(parent, child, this,
 				visited);

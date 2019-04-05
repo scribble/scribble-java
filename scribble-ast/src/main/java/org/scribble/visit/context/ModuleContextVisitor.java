@@ -15,10 +15,10 @@ package org.scribble.visit.context;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.del.ModuleDel;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // A visitor that caches the ModuleContext from an entered Module, for later access
@@ -33,7 +33,7 @@ public abstract class ModuleContextVisitor extends AstVisitor
 
 	@Override
 	protected void enter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.enter(parent, child);
 		if (child instanceof Module)  // Factor out?

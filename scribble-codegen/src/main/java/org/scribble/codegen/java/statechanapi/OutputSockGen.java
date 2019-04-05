@@ -24,12 +24,12 @@ import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.util.ScribException;
 
 public class OutputSockGen extends ScribSockGen
 {
@@ -54,7 +54,7 @@ public class OutputSockGen extends ScribSockGen
 	// A method for each successor state
 	//private void addSendMethods(ClassBuilder cb, EndpointState curr)
 	@Override
-	protected void addMethods() throws ScribbleException
+	protected void addMethods() throws ScribException
 	{
 		final String ROLE_PARAM = "role";
 
@@ -155,7 +155,7 @@ public class OutputSockGen extends ScribSockGen
 		return IntStream.range(0, a.payload.elems.size()).mapToObj((i) -> ARG_PREFIX + i++).collect(Collectors.toList());  // FIXME: factor out with params
 	}
 
-	public static void setSendHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribbleException
+	public static void setSendHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribException
 	{
 		final String ROLE_PARAM = "role";
 		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?
@@ -209,7 +209,7 @@ public class OutputSockGen extends ScribSockGen
 		mb.addParameters("Callable<? extends BinaryChannelWrapper> wrapper");
 	}
 
-	protected static void addSendOpParams(StateChannelApiGenerator apigen, MethodBuilder mb, Module main, EAction a) throws ScribbleException
+	protected static void addSendOpParams(StateChannelApiGenerator apigen, MethodBuilder mb, Module main, EAction a) throws ScribException
 	{
 		List<String> args = getSendPayloadArgs(a);
 		mb.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " op");  // opClass -- op param not actually used in body
@@ -220,7 +220,7 @@ public class OutputSockGen extends ScribSockGen
 			{
 				if (!pt.isDataType())
 				{
-					throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
+					throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 				}
 				DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // FIXME: might not belong to main module  // TODO: if not DataType
 				ScribSockGen.checkJavaDataTypeDecl(dtd);
@@ -229,7 +229,7 @@ public class OutputSockGen extends ScribSockGen
 		}
 	}
 
-	protected static void addSendMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd) throws ScribbleException
+	protected static void addSendMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd) throws ScribException
 	{
 		final String MESSAGE_PARAM = "m";
 

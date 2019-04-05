@@ -15,22 +15,22 @@ package org.scribble.del;
 
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.NameDisambiguator;
 import org.scribble.visit.wf.WFChoiceChecker;
 
 public class RoleDeclDel extends ScribDelBase
 {
 	@Override
-	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
+	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribException
 	{
 		RoleDecl rd = (RoleDecl) child;
 		disamb.addRole(rd.getDeclName());  // Could check distinct here, but doing it uniformly in HeaderParamDeclListDel
 	}
 
 	@Override
-	public RoleDecl leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public RoleDecl leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribException
 	{
 		RoleDecl rd = (RoleDecl) visited;
 		Role role = rd.getDeclName();

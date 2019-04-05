@@ -22,10 +22,10 @@ import org.scribble.ast.HeaderParamDeclList;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.lang.LangContext;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public abstract class DoArgListDel extends ScribDelBase
@@ -38,14 +38,14 @@ public abstract class DoArgListDel extends ScribDelBase
 	// Doing in leave allows the arguments to be individually checked first
 	@Override
 	public DoArgList<?> leaveDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		DoArgList<?> dal = (DoArgList<?>) visited;
 		List<?> args = dal.getArgChildren();
 		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
 		if (args.size() != getParamDeclList(pd).getParamDeclChildren().size())
 		{
-			throw new ScribbleException(visited.getSource(),
+			throw new ScribException(visited.getSource(),
 					"Do arity mismatch for " + pd.getHeaderChild() + ": " + args);
 		}
 
@@ -54,7 +54,7 @@ public abstract class DoArgListDel extends ScribDelBase
 
 	// Not using Do#getTargetProtocolDecl, because that currently relies on namedisamb pass to convert targets to fullnames (because it just gets the full name dependency, it doesn't do visible name resolution)
 	protected ProtocolDecl<?> getTargetProtocolDecl(Do<?> parent,
-			NameDisambiguator disamb) throws ScribbleException
+			NameDisambiguator disamb) throws ScribException
 	{
 		ModuleContext mc = disamb.getModuleContext();
 		LangContext jc = disamb.job.getContext();
@@ -73,7 +73,7 @@ public abstract class DoArgListDel extends ScribDelBase
 				.collect(Collectors.toList());
 		if (pd.size() != 1)
 		{
-			throw new ScribbleException("[disamb] Target protocol ambiguous or not found: " + pn);
+			throw new ScribException("[disamb] Target protocol ambiguous or not found: " + pn);
 		}
 		return pd.get(0);
 	}

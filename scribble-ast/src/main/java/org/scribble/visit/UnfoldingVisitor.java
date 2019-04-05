@@ -24,9 +24,9 @@ import org.scribble.ast.Continue;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.env.Env;
 
 // FIXME: unfolding/unrolling algorithm would be easier if we would use an "affine rec var" normal form: a single rec can have multiple labels, each label used at most once in a continue
@@ -50,7 +50,7 @@ public abstract class UnfoldingVisitor<E extends Env<?>>
 
 	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		enter(parent, child);
 		ScribNode visited = visitForUnfolding(parent, child);
@@ -58,7 +58,7 @@ public abstract class UnfoldingVisitor<E extends Env<?>>
 	}
 
 	protected ScribNode visitForUnfolding(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (child instanceof Continue)
 		{
@@ -83,7 +83,7 @@ public abstract class UnfoldingVisitor<E extends Env<?>>
 	
 	@Override
 	protected final void inlinedEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.inlinedEnter(parent, child);
 		if (child instanceof Recursion)
@@ -102,7 +102,7 @@ public abstract class UnfoldingVisitor<E extends Env<?>>
 	
 	@Override
 	protected final ScribNode inlinedLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		ScribNode n = unfoldingLeave(parent, child, visited);
 		if (child instanceof Recursion)
@@ -120,13 +120,13 @@ public abstract class UnfoldingVisitor<E extends Env<?>>
 	}
 
 	protected void unfoldingEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		
 	}
 
 	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		return visited;
 	}

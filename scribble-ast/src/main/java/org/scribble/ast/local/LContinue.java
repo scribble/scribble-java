@@ -21,10 +21,10 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Continue;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LContinue extends Continue<Local> implements LSimpleSessionNode
@@ -63,17 +63,17 @@ public class LContinue extends Continue<Local> implements LSimpleSessionNode
 
 	@Override
 	public LSessionNode merge(AstFactory af, LSessionNode ln)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (!(ln instanceof LContinue) || !this.canMerge(ln))
 		{
-			throw new ScribbleException("Cannot merge " + this.getClass() + " and "
+			throw new ScribException("Cannot merge " + this.getClass() + " and "
 					+ ln.getClass() + ": " + this + ", " + ln);
 		}
 		LContinue them = ((LContinue) ln);
 		if (!getRecVarChild().equals(them.getRecVarChild()))
 		{
-			throw new ScribbleException("Cannot merge choices for " + getRecVarChild()
+			throw new ScribException("Cannot merge choices for " + getRecVarChild()
 					+ " and " + them.getRecVarChild() + ": " + this + ", " + ln);
 		}
 		return clone();

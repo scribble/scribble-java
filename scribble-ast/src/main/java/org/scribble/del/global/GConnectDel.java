@@ -20,10 +20,10 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
 import org.scribble.del.ConnectionActionDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.wf.NameDisambiguator;
@@ -40,7 +40,7 @@ public class GConnectDel extends ConnectionActionDel
 
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		GConnect gc = (GConnect) visited;
 		/*Role src = gc.src.toName();
@@ -50,7 +50,7 @@ public class GConnectDel extends ConnectionActionDel
 	
 	@Override
 	public org.scribble.core.type.session.global.GConnect translate(ScribNode n,
-			GTypeTranslator t) throws ScribbleException
+			GTypeTranslator t) throws ScribException
 	{
 		GConnect source = (GConnect) n;
 		Role src = source.getSourceChild().toName();
@@ -66,7 +66,7 @@ public class GConnectDel extends ConnectionActionDel
 
 	@Override
 	public GConnect leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child,
-			WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+			WFChoiceChecker checker, ScribNode visited) throws ScribException
 	{
 		GConnect gc = (GConnect) visited;
 		RoleNode srcNode = gc.getSourceChild();
@@ -76,7 +76,7 @@ public class GConnectDel extends ConnectionActionDel
 		Role src = srcNode.toName();
 		if (!checker.peekEnv().isEnabled(src))
 		{
-			throw new ScribbleException(srcNode.getSource(), "Role not enabled: " + src);
+			throw new ScribException(srcNode.getSource(), "Role not enabled: " + src);
 		}
 		Message msg = msgNode.toMessage();
 		WFChoiceEnv env = checker.popEnv();
@@ -85,12 +85,12 @@ public class GConnectDel extends ConnectionActionDel
 		{
 			if (src.equals(dest))
 			{
-				throw new ScribbleException(gc.getSource(),
+				throw new ScribException(gc.getSource(),
 						"[TODO] Self connections not supported: " + gc);
 			}
 			if (env.isConnected(src, dest))
 			{
-				throw new ScribbleException(gc.getSource(),
+				throw new ScribException(gc.getSource(),
 						"Roles (possibly) already connected: " + src + ", " + dest);
 			}
 
@@ -105,7 +105,7 @@ public class GConnectDel extends ConnectionActionDel
 
 	@Override
 	public ScribNode leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribbleException
+			Projector proj, ScribNode visited) throws ScribException
 	{
 		GConnect gc = (GConnect) visited;
 		Role self = proj.peekSelf();

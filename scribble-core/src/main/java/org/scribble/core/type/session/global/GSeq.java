@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.SType;
@@ -29,6 +28,7 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector2;
+import org.scribble.util.ScribException;
 
 public class GSeq extends Seq<Global, GSeq> implements GType
 {
@@ -70,7 +70,7 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
 	{
 		for (GType elem : getElements())
 		{
@@ -81,7 +81,7 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 
 	@Override
 	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribbleException
+			throws ScribException
 	{
 		for (GType elem : getElements())
 		{

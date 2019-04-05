@@ -17,9 +17,9 @@ import java.util.LinkedList;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ModuleContextVisitor;
 import org.scribble.visit.env.Env;
 
@@ -36,7 +36,7 @@ public abstract class EnvVisitor<T extends Env<?>> extends ModuleContextVisitor
 	}
 	
 	@Override
-	protected final void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void enter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.enter(parent, child);
 		if (child instanceof ProtocolDecl)  // Only the root ProtocolDecl is visited: subprotocols visit the body directly
@@ -48,7 +48,7 @@ public abstract class EnvVisitor<T extends Env<?>> extends ModuleContextVisitor
 	}
 	
 	@Override
-	protected final ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected final ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		ScribNode n = envLeave(parent, child, visited); 
 		if (n instanceof ProtocolDecl)  // Only the root ProtocolDecl is visited by SubprotocolVisitor (subprotocols visit the body directly)
@@ -60,7 +60,7 @@ public abstract class EnvVisitor<T extends Env<?>> extends ModuleContextVisitor
 	
 	protected abstract T makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd);
 
-	protected void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void envEnter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		//..could push copy of parent Env onto visitor stack for use by visitor pass (del env-leave routine should pop and push back the final result)
 		//..but only if want an env for every node (unless restrict to specific nodes types -- e.g. interaction nodes) -- as opposed to only e.g. compound nodes, as done via del
@@ -69,7 +69,7 @@ public abstract class EnvVisitor<T extends Env<?>> extends ModuleContextVisitor
 		//return this;
 	}
 	
-	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		return visited;
 	}

@@ -20,12 +20,12 @@ import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.util.ScribException;
 
 public class ReceiveSockGen extends ScribSockGen
 {
@@ -52,7 +52,7 @@ public class ReceiveSockGen extends ScribSockGen
 	// FIXME: most general async would also allow whole input-only compound statements (choice, recursion) to be bypassed
 	//private void addReceiveMethods(ClassBuilder cb, EndpointState curr)
 	@Override
-	protected void addMethods() throws ScribbleException
+	protected void addMethods() throws ScribException
 	{
 		EAction a = curr.getActions().iterator().next();
 		//String nextClass = this.apigen.getSocketClassName(curr.accept(a));
@@ -69,7 +69,7 @@ public class ReceiveSockGen extends ScribSockGen
 
   // [nextClass] receive([opClass] op, Buf<? super T> arg, ...)
 	//private void makeReceiveMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
-	private void makeReceiveMethod(EAction a, EState succ) throws ScribbleException
+	private void makeReceiveMethod(EAction a, EState succ) throws ScribException
 	{
 		Module main = this.apigen.getMainModule();  // FIXME: main not necessarily the right module?
 
@@ -94,7 +94,7 @@ public class ReceiveSockGen extends ScribSockGen
 	}
 
 	// Payload parameters added later
-	private MethodBuilder makeReceiveHeader(EAction a, EState succ) throws ScribbleException
+	private MethodBuilder makeReceiveHeader(EAction a, EState succ) throws ScribException
 	{
 		MethodBuilder mb = this.cb.newMethod();
 		setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -151,7 +151,7 @@ public class ReceiveSockGen extends ScribSockGen
 
 	// Doesn't include return type
 	//public static void makeReceiveHeader(StateChannelApiGenerator apigen, IOAction a, EndpointState succ, MethodBuilder mb)
-	public static void setReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribbleException
+	public static void setReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribException
 	{
 		final String ROLE_PARAM = "role";
 		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?
@@ -174,7 +174,7 @@ public class ReceiveSockGen extends ScribSockGen
 	}
 
 	// FIXME: main may not be the right module
-	protected static void addReceiveOpParams(MethodBuilder mb, Module main, EAction a, boolean superr) throws ScribbleException
+	protected static void addReceiveOpParams(MethodBuilder mb, Module main, EAction a, boolean superr) throws ScribException
 	{
 		if (!a.payload.isEmpty())
 		{
@@ -184,7 +184,7 @@ public class ReceiveSockGen extends ScribSockGen
 			{
 				if (!pt.isDataType())
 				{
-					throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
+					throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 				}
 				DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
 				ScribSockGen.checkJavaDataTypeDecl(dtd);
@@ -207,7 +207,7 @@ public class ReceiveSockGen extends ScribSockGen
 		}
 	}
 
-	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd, boolean superr) throws ScribbleException
+	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd, boolean superr) throws ScribException
 	{
 		ScribSockGen.checkMessageSigNameDecl(msd);
 		mb.addParameters(BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "") + msd.extName + "> " + RECEIVE_ARG_PREFIX);

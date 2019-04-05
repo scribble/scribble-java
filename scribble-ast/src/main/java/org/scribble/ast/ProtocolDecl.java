@@ -18,10 +18,10 @@ import java.util.List;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // CHECKME: visitChildren for modifiers
@@ -86,7 +86,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	}
 
 	@Override
-	public ProtocolDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
+	public ProtocolDecl<K> visitChildren(AstVisitor nv) throws ScribException
 	{
 		ProtocolModList mods = visitChildWithClassEqualityCheck(this,
 				getModifierListChild(), nv);

@@ -15,9 +15,9 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // TODO: rename better? DoArg, DoArgNode, ...
@@ -54,7 +54,7 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 	}
 	
 	@Override
-	public DoArg<T> visitChildren(AstVisitor nv) throws ScribbleException
+	public DoArg<T> visitChildren(AstVisitor nv) throws ScribException
 	{
 		ScribNode visited = visitChild(getValChild(), nv);  // Disambiguation will replace AmbiguousNameNodes
 				// CHECKME: use visitChildWithClassEqualityCheck?

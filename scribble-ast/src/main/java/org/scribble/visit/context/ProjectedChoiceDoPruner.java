@@ -23,10 +23,10 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.simple.DummyProjectionRoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.del.ModuleDel;
 import org.scribble.lang.Lang;
 import org.scribble.lang.LangContext;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
 // Basically infers all local choice subject candidates: if *none* are found for a given "choice-unguarded" do-call then the call is pruned (along with parent block and choice as necessary)
@@ -47,7 +47,7 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 
 	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (child instanceof LProtocolBlock && parent instanceof LChoice)
 		{
@@ -90,7 +90,7 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 
 	@Override
 	//protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
-	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	public void enter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		//super.subprotocolEnter(parent, child);
 		super.enter(parent, child);
@@ -100,7 +100,7 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 	@Override
 	//protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		visited = visited.del().leaveProjectedChoiceDoPruning(parent, child, this,
 				visited);

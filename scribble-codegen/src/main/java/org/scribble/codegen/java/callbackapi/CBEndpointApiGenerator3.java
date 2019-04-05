@@ -34,7 +34,6 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.job.Job;
 import org.scribble.core.job.JobContext;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
@@ -46,6 +45,7 @@ import org.scribble.core.type.name.PayloadElemType;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
 import org.scribble.lang.LangContext;
+import org.scribble.util.ScribException;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
 // FIXME: consider collecting up all interfaces as statics inside a container class -- also states?
@@ -69,7 +69,7 @@ public class CBEndpointApiGenerator3
 		{
 			this.job2 = job.toJob();
 		}
-		catch (ScribbleException e)  // TODO: refactor
+		catch (ScribException e)  // TODO: refactor
 		{
 			throw new RuntimeException(e);
 		}
@@ -83,7 +83,7 @@ public class CBEndpointApiGenerator3
 		}
 	}
 
-	public Map<String, String> build() throws ScribbleException
+	public Map<String, String> build() throws ScribException
 	{
 		this.stateNames.clear();
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
@@ -92,7 +92,7 @@ public class CBEndpointApiGenerator3
 	}
 
 	// FIXME: factor out -- integrate with JEndpointApiGenerator
-	public Map<String, String> buildSessionApi() throws ScribbleException
+	public Map<String, String> buildSessionApi() throws ScribException
 	{
 		this.job.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator3.class + " for " + this.proto + "@" + this.self);
 
@@ -102,7 +102,7 @@ public class CBEndpointApiGenerator3
 		return res;
 	}
 	
-	public Map<String, String> buildEndpointClass() throws ScribbleException
+	public Map<String, String> buildEndpointClass() throws ScribException
 	{
 		Module main = this.job.getContext().getMainModule();
 		Map<String, String> res = new HashMap<>();

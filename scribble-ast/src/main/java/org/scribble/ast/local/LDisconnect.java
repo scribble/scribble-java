@@ -22,12 +22,12 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.DisconnectAction;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.RuntimeScribbleException;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
 import org.scribble.util.Constants;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 // "left" of LDisconnect is used for self
@@ -76,9 +76,9 @@ public class LDisconnect extends DisconnectAction<Local>
 
 	@Override
 	public LSessionNode merge(AstFactory af, LSessionNode ln)
-			throws ScribbleException
+			throws ScribException
 	{
-		throw new RuntimeScribbleException("Invalid merge on LDisconnect: " + this);
+		throw new RuntimeScribException("Invalid merge on LDisconnect: " + this);
 	}
 
 	@Override

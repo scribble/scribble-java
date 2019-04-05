@@ -15,8 +15,8 @@ package org.scribble.del.name.simple;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class RoleNodeDel extends ScribDelBase
@@ -27,12 +27,12 @@ public class RoleNodeDel extends ScribDelBase
 	}
 
 	@Override
-	public RoleNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public RoleNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		RoleNode rn = (RoleNode) visited;
 		if (!disamb.isBoundRole(rn.toName()))  // Added on RoleDecl entry
 		{
-			throw new ScribbleException(rn.getSource(), "Role not bound: " + rn);
+			throw new ScribException(rn.getSource(), "Role not bound: " + rn);
 		}
 		return rn;
 	}

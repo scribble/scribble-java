@@ -15,10 +15,10 @@ package org.scribble.visit.util;
 
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 
 // Collects continues (not recs)
 public class RecVarCollector extends NameCollector<RecVar>
@@ -34,7 +34,7 @@ public class RecVarCollector extends NameCollector<RecVar>
 	}
 
 	@Override
-	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.offsetSubprotocolEnter(parent, child);
 		if (child instanceof ProtocolDecl<?>)
@@ -45,7 +45,7 @@ public class RecVarCollector extends NameCollector<RecVar>
 	}
 	
 	@Override
-	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveRecVarCollection(parent, child, this, visited);
 		return super.offsetSubprotocolLeave(parent, child, visited);

@@ -24,10 +24,10 @@ import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.SigKind;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class NonRoleArgListDel extends DoArgListDel
@@ -39,7 +39,7 @@ public class NonRoleArgListDel extends DoArgListDel
 
 	// Doing in leave allows the arguments to be individually checked first
 	@Override
-	public NonRoleArgList leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public NonRoleArgList leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		NonRoleArgList nral = (NonRoleArgList) super.leaveDisambiguation(parent, child, disamb, visited);
 				// Checks matching arity
@@ -56,7 +56,7 @@ public class NonRoleArgListDel extends DoArgListDel
 			{
 				if (!((NonRoleParamNode<?>) val).kind.equals(kind))
 				{
-					throw new ScribbleException(arg.getSource(),
+					throw new ScribException(arg.getSource(),
 							"Invalid arg " + arg + " for param kind: " + kind);
 				}
 			}
@@ -64,7 +64,7 @@ public class NonRoleArgListDel extends DoArgListDel
 			{
 				if (!val.isMessageSigNode() && !val.isMessageSigNameNode())
 				{
-					throw new ScribbleException(arg.getSource(),
+					throw new ScribException(arg.getSource(),
 							"Invalid arg " + arg + " for param kind: " + kind);
 				}
 			}
@@ -72,7 +72,7 @@ public class NonRoleArgListDel extends DoArgListDel
 			{
 				if (!val.isDataTypeNameNode())
 				{
-					throw new ScribbleException(arg.getSource(),
+					throw new ScribException(arg.getSource(),
 							"Invalid arg " + arg + " for param kind: " + kind);
 				}
 			}

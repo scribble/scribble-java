@@ -25,12 +25,12 @@ import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.RuntimeScribbleException;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.del.ChoiceDel;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
@@ -44,7 +44,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 	
 	@Override
 	public org.scribble.core.type.session.global.GChoice translate(ScribNode n,
-			GTypeTranslator t) throws ScribbleException
+			GTypeTranslator t) throws ScribException
 	{
 		GChoice source = (GChoice) n;
 		Role subj = source.getSubjectChild().toName();
@@ -58,7 +58,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		GChoice gc = (GChoice) visited;
 		List<GProtocolBlock> blocks = gc.getBlockChildren().stream()
@@ -73,7 +73,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 
 	@Override
 	public void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child,
-			WFChoiceChecker checker) throws ScribbleException
+			WFChoiceChecker checker) throws ScribException
 	{
 		// No super call -- replacing base routine with this one
 		WFChoiceEnv env = checker.peekEnv().enterContext();
@@ -84,14 +84,14 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 
 	@Override
 	public GChoice leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child,
-			WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+			WFChoiceChecker checker, ScribNode visited) throws ScribException
 	{
 		GChoice cho = (GChoice) visited;
 		RoleNode subjNode = cho.getSubjectChild();
 		Role subj = subjNode.toName();
 		if (!checker.peekParentEnv().isEnabled(subj))
 		{
-			throw new ScribbleException(subjNode.getSource(),
+			throw new ScribException(subjNode.getSource(),
 					"Subject not enabled: " + subj);
 		}
 		
@@ -115,7 +115,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 								{
 									if (!dests.equals(rs))
 									{
-										throw new RuntimeScribbleException(
+										throw new RuntimeScribException(
 												"Mismatched enabled roles: " + dests + ", " + rs);
 									}
 								});
@@ -130,7 +130,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 									{
 										if (!srcs.equals(rs))
 										{
-											throw new RuntimeScribbleException(
+											throw new RuntimeScribException(
 													"Mismatched enabler roles for " + dest + ": " + srcs
 															+ ", " + rs);
 										}
@@ -143,7 +143,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 									{
 										if (!Collections.disjoint(mids, ms))
 										{
-											throw new RuntimeScribbleException(
+											throw new RuntimeScribException(
 													"Non disjoint enabling messages for " + dest + ": "
 															+ mids + ", " + ms);
 										}
@@ -151,9 +151,9 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 									});
 					}
 				}
-				catch (RuntimeScribbleException rse)  // Lambda hack
+				catch (RuntimeScribException rse)  // Lambda hack
 				{
-					throw new ScribbleException(rse.getMessage(), rse.getCause());
+					throw new ScribException(rse.getMessage(), rse.getCause());
 				}
 			}
 		}
@@ -183,7 +183,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 	
 	@Override
 	public GChoice leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribbleException
+			Projector proj, ScribNode visited) throws ScribException
 	{
 		GChoice gc = (GChoice) visited;
 		List<LProtocolBlock> blocks =

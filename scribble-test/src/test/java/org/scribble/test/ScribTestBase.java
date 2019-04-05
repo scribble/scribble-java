@@ -22,8 +22,8 @@ import org.junit.Test;
 import org.scribble.cli.CLArgParser;
 import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineException;
-import org.scribble.core.job.AntlrSourceException;
-import org.scribble.core.job.ScribbleException;
+import org.scribble.util.AntlrSourceException;
+import org.scribble.util.ScribException;
 
 /*
  * Packaging following pattern of putting tests into same package but different directory as classes being tested:
@@ -106,7 +106,7 @@ public abstract class ScribTestBase
 			runTest(dir);
 			Assert.assertFalse("Expecting exception", this.isBadTest);
 		}
-		catch (ScribbleException e)
+		catch (ScribException e)
 		{
 			Assert.assertTrue("Unexpected exception '" + e.getMessage() + "'", this.isBadTest);
 		}

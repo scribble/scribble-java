@@ -16,9 +16,9 @@ package org.scribble.codegen.java;
 import java.util.Map;
 
 import org.scribble.core.job.Job;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 
 // Basic pattern: use TypeGenerators to create all necessary TypeBuilders and cache them, and generateApi should call build on all as a final step
 public abstract class ApiGen
@@ -34,7 +34,7 @@ public abstract class ApiGen
 		{
 			this.job2 = job.toJob();
 		}
-		catch (ScribbleException e)  // TODO: refactor
+		catch (ScribException e)  // TODO: refactor
 		{
 			throw new RuntimeException(e);
 		}

@@ -16,8 +16,8 @@ package org.scribble.del;
 import org.scribble.ast.Continue;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.RecVar;
+import org.scribble.util.ScribException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.util.RecVarCollector;
 
@@ -40,7 +40,7 @@ public abstract class ContinueDel extends SimpleSessionNodeDel
 	@Override
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent,
 			ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		Continue<?> cont = (Continue<?>) visited;
 		RecVar rv = cont.getRecVarChild().toName();
@@ -62,7 +62,7 @@ public abstract class ContinueDel extends SimpleSessionNodeDel
 
 	@Override
 	public ScribNode leaveRecVarCollection(ScribNode parent, ScribNode child,
-			RecVarCollector coll, ScribNode visited) throws ScribbleException
+			RecVarCollector coll, ScribNode visited) throws ScribException
 	{
 		coll.removeName(((Continue<?>) visited).getRecVarChild().toName());
 		return visited;

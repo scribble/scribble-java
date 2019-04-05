@@ -16,13 +16,13 @@ package org.scribble.del;
 import org.scribble.ast.Do;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.LangContext;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.wf.NameDisambiguator;
@@ -36,7 +36,7 @@ public abstract class DoDel extends SimpleSessionNodeDel
 
 	@Override
 	public void enterDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb) throws ScribbleException
+			NameDisambiguator disamb) throws ScribException
 	{
 		ModuleContext mc = disamb.getModuleContext();
 		Do<?> doo = (Do<?>) child;
@@ -44,14 +44,14 @@ public abstract class DoDel extends SimpleSessionNodeDel
 		ProtocolName<?> simpname = proto.toName();
 		if (!mc.isVisibleProtocolDeclName(simpname))  // CHECKME: do on entry here, before visiting DoArgListDel
 		{
-			throw new ScribbleException(proto.getSource(),
+			throw new ScribException(proto.getSource(),
 					"Protocol decl not visible: " + simpname);
 		}
 	}
 
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		return leaveDisambiguationAux(parent, child, disamb, visited);
 				// To introduce type parameter
@@ -62,7 +62,7 @@ public abstract class DoDel extends SimpleSessionNodeDel
 	// TODO: refactor into G/LDoDel to bypass generic cast issues
 	private <K extends ProtocolKind> ScribNode leaveDisambiguationAux(
 			ScribNode parent, ScribNode child, NameDisambiguator disamb,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		@SuppressWarnings("unchecked")  // Doesn't matter what K is, just need to propagate it down
 		Do<K> doo = (Do<K>) visited;
@@ -98,7 +98,7 @@ public abstract class DoDel extends SimpleSessionNodeDel
 	@Override
 	public Do<?> leaveProtocolDeclContextBuilding(ScribNode parent,
 			ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		LangContext jcontext = builder.job.getContext();
 		ModuleContext mcontext = builder.getModuleContext();
@@ -116,7 +116,7 @@ public abstract class DoDel extends SimpleSessionNodeDel
 
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl) throws ScribbleException
+			ProtocolDefInliner inl) throws ScribException
 	{
 		super.enterProtocolInlining(parent, child, inl);
 		if (!inl.isCycle())

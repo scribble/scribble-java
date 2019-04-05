@@ -23,10 +23,10 @@ import java.util.Set;
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.core.job.Job;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.context.ModuleContextBuilder;
@@ -56,7 +56,7 @@ public class Lang
 		this.context = new LangContext(this, parsed);  // Single instance per Job and should never be shared
 	}
 	
-	public Job toJob() throws ScribbleException
+	public Job toJob() throws ScribException
 	{
 		if (this.job2 == null)
 		{
@@ -74,7 +74,7 @@ public class Lang
 					debugPrintln("\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
 				}
 			}
-			this.job2 = new Job(imeds, this.modcs, this.config.toJobConfig2());
+			this.job2 = new Job(imeds, this.modcs, this.config.toJobConfig());
 		}
 		return this.job2;
 	}
@@ -108,28 +108,29 @@ public class Lang
 		runWellFormednessPasses();
 	}*/
 	
-	public void runContextBuildingPasses() throws ScribbleException
+	public void runContextBuildingPasses() throws ScribException
 	{
+		// CHECKME: in the end, should these also be refactored into core?  (instead of AST visiting)
 		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
 		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
 	}
 
 	public void runVisitorPassOnAllModules(Class<? extends AstVisitor> c)
-			throws ScribbleException
+			throws ScribException
 	{
 		debugPrintPass("Running " + c + " on all modules:");
 		runVisitorPass(this.context.getFullModuleNames(), c);
 	}
 
 	public void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c)
-			throws ScribbleException
+			throws ScribException
 	{
 		debugPrintPass("Running " + c + " on parsed modules:");
 		runVisitorPass(this.context.getParsedFullModuleNames(), c);
 	}
 
 	private void runVisitorPass(Set<ModuleName> modnames,
-			Class<? extends AstVisitor> c) throws ScribbleException
+			Class<? extends AstVisitor> c) throws ScribException
 	{
 		try
 		{
@@ -149,7 +150,7 @@ public class Lang
 	}
 
 	private void runVisitorOnModule(ModuleName modname, AstVisitor nv)
-			throws ScribbleException
+			throws ScribException
 	{
 		Module visited = (Module) this.context.getModule(modname).accept(nv);
 		this.context.replaceModule(visited);

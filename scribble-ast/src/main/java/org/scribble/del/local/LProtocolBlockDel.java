@@ -16,9 +16,9 @@ package org.scribble.del.local;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.del.ProtocolBlockDel;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.wf.ReachabilityChecker;
@@ -27,7 +27,7 @@ public class LProtocolBlockDel extends ProtocolBlockDel
 {
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		LProtocolBlock lpb = (LProtocolBlock) visited;
 		LInteractionSeq seq = (LInteractionSeq) ((InlineProtocolEnv) lpb
@@ -39,7 +39,7 @@ public class LProtocolBlockDel extends ProtocolBlockDel
 
 	@Override
 	public void enterReachabilityCheck(ScribNode parent, ScribNode child,
-			ReachabilityChecker checker) throws ScribbleException
+			ReachabilityChecker checker) throws ScribException
 	{
 		ScribDelBase.pushVisitorEnv(this, checker);
 	}
@@ -47,7 +47,7 @@ public class LProtocolBlockDel extends ProtocolBlockDel
 	@Override
 	public LProtocolBlock leaveReachabilityCheck(ScribNode parent,
 			ScribNode child, ReachabilityChecker checker, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		return (LProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, checker,
 				visited);

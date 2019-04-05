@@ -29,12 +29,12 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.del.ProtocolDefDel;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.env.UnfoldingEnv;
 
 // Statically unfolds unguarded recursions and continues "directly under" choices
@@ -72,7 +72,7 @@ public class InlinedProtocolUnfolder
 	}
 
 	@Override
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribException
 	{
 		if (child instanceof Recursion)
 		{
@@ -105,7 +105,7 @@ public class InlinedProtocolUnfolder
 
 	// Not doing the actual unfolding here: replace the rec with a dummy (i.e. alpha the original rec to another unused lab) and will do any actual unfolding inside the recursive child accept (upon Continue)
 	private <K extends ProtocolKind> ScribNode unfold(Recursion<K> rec)
-			throws ScribbleException
+			throws ScribException
 	{
 		RecVar rv = rec.getRecVarChild().toName();
 		ProtocolBlock<K> pb = rec.getBlockChild();
@@ -123,7 +123,7 @@ public class InlinedProtocolUnfolder
 	
 	@Override
 	protected void inlinedEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.inlinedEnter(parent, child);
 		child.del().enterInlinedProtocolUnfolding(parent, child, this);
@@ -131,7 +131,7 @@ public class InlinedProtocolUnfolder
 	
 	@Override
 	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveInlinedProtocolUnfolding(parent, child, this,
 				visited);
@@ -145,7 +145,7 @@ public class InlinedProtocolUnfolder
 
 	// Maybe possible to revise this algorithm to handle shadowed recs, but currently requires unique recvar names
 	public void setRecVar(AstFactory af, RecVar recvar, Recursion<?> rec)
-			throws ScribbleException
+			throws ScribException
 	{
 		ProtocolBlock<?> block = (ProtocolBlock<?>) rec.getBlockChild()
 				.accept(this);

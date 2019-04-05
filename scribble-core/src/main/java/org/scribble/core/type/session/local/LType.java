@@ -15,13 +15,13 @@ package org.scribble.core.type.session.local;
 
 import java.util.Set;
 
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.local.LNode;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.visit.local.ReachabilityEnv;
+import org.scribble.util.ScribException;
 
 public interface LType extends SType<Local, LSeq>, LNode
 {
@@ -37,7 +37,7 @@ public interface LType extends SType<Local, LSeq>, LNode
 	// Return: (new) env post visiting 
 	// cf. GType "visitor" methods: same pattern, just env as a bespoke data type wrapper
 	ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribbleException;
+			throws ScribException;
 
 	/*@Override
 	LType substitute(Substitutions subs);*/  // Otherwise causes return type inconsistency with base abstract classes

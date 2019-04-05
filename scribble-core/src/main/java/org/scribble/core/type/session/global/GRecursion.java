@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
@@ -28,6 +27,7 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector2;
+import org.scribble.util.ScribException;
 
 public class GRecursion extends Recursion<Global, GSeq> implements GType
 {
@@ -82,14 +82,14 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
 	{
 		return this.body.checkRoleEnabling(enabled);
 	}
 
 	@Override
 	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribbleException
+			throws ScribException
 	{
 		return this.body.checkExtChoiceConsistency(enablers);
 	}

@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
@@ -34,6 +33,7 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector2;
+import org.scribble.util.ScribException;
 
 public class GChoice extends Choice<Global, GSeq> implements GType
 {
@@ -79,11 +79,11 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
 	{
 		if (!enabled.contains(this.subj))
 		{
-			throw new ScribbleException("Subject not enabled: " + this.subj);
+			throw new ScribException("Subject not enabled: " + this.subj);
 		}
 		Set<Role> subj = Stream.of(this.subj).collect(Collectors.toSet());
 		List<Set<Role>> blocks = new LinkedList<>();
@@ -101,7 +101,7 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 
 	@Override
 	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribbleException
+			throws ScribException
 	{
 		Map<Role, Role> subj = Stream.of(this.subj)
 				.collect(Collectors.toMap(x -> x, x -> x));
@@ -120,7 +120,7 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 			if (all.stream().anyMatch(
 					x -> x.getKey().equals(enabled) && !x.getValue().equals(enabler)))
 			{
-				throw new ScribbleException(
+				throw new ScribException(
 						"Inconsistent external choice subjects for " + enabled + ": "
 								+ all.stream().filter(x -> x.getKey().equals(enabled))
 										.collect(Collectors.toList()));

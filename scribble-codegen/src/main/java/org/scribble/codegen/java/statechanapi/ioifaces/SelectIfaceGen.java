@@ -17,9 +17,9 @@ import java.util.Map;
 
 import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.util.ScribException;
 
 public class SelectIfaceGen extends IOStateIfaceGen
 {
@@ -29,7 +29,7 @@ public class SelectIfaceGen extends IOStateIfaceGen
 	}
 	
 	@Override
-	public InterfaceBuilder generateType() throws ScribbleException
+	public InterfaceBuilder generateType() throws ScribException
 	{
 		if (this.curr.getAllActions().stream().anyMatch((a) -> !a.isSend())) // TODO (connect/disconnect)
 		{

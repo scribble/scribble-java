@@ -19,10 +19,10 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 
 public class ProjectedChoiceSubjectFixer extends ModuleContextVisitor
 {
@@ -34,7 +34,7 @@ public class ProjectedChoiceSubjectFixer extends ModuleContextVisitor
 	}
 
 	@Override
-	protected final void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void enter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.enter(parent, child);
 		child.del().enterProjectedChoiceSubjectFixing(parent, child, this);
@@ -46,7 +46,7 @@ public class ProjectedChoiceSubjectFixer extends ModuleContextVisitor
 	}
 	
 	@Override
-	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveProjectedChoiceSubjectFixing(parent, child, this, visited);
 		return super.leave(parent, child, visited);

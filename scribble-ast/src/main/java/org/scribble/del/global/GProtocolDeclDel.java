@@ -31,7 +31,6 @@ import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
@@ -43,6 +42,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
@@ -59,7 +59,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 	
 	@Override
 	public GProtocol translate(ScribNode n, GTypeTranslator t)
-			throws ScribbleException
+			throws ScribException
 	{
 		GProtocolDecl source = (GProtocolDecl) n;
 		Module m = (Module) n.getParent();
@@ -97,7 +97,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 	public GProtocolDecl
 			leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child,
 					ProtocolDeclContextBuilder builder, ScribNode visited)
-					throws ScribbleException
+					throws ScribException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		GProtocolDeclContext gcontext = new GProtocolDeclContext(
@@ -108,7 +108,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 
 	@Override
 	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child,
-			RoleCollector coll, ScribNode visited) throws ScribbleException
+			RoleCollector coll, ScribNode visited) throws ScribException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 
@@ -120,7 +120,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		if (occs.size() != decls.size()) 
 		{
 			decls.removeAll(occs);
-			throw new ScribbleException(
+			throw new ScribException(
 					gpd.getHeaderChild().getRoleDeclListChild().getSource(),
 					"Unused role decl(s) in " + gpd.getHeaderChild().getDeclName() + ": "
 							+ decls);
@@ -131,7 +131,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 
 	@Override
 	public GProtocolDecl leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribbleException
+			Projector proj, ScribNode visited) throws ScribException
 	{
 		AstFactory af = proj.job.config.af;
 
@@ -167,7 +167,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 	
 	@Override
 	public void enterValidation(ScribNode parent, ScribNode child,
-			GProtocolValidator checker) throws ScribbleException
+			GProtocolValidator checker) throws ScribException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) child;
 		if (gpd.isAux())

@@ -18,9 +18,9 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.del.RecursionDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
@@ -36,7 +36,7 @@ public class LRecursionDel extends RecursionDel
 	@Override
 	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
 			ScribNode child, UnguardedChoiceDoProjectionChecker checker,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		Recursion<?> rec = (Recursion<?>) visited;
 		UnguardedChoiceDoEnv merged = checker.popEnv()
@@ -48,7 +48,7 @@ public class LRecursionDel extends RecursionDel
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		LRecursion lr = (LRecursion) visited;
 		//RecVarNode recvar = lr.recvar.clone();
@@ -64,7 +64,7 @@ public class LRecursionDel extends RecursionDel
 
 	@Override
 	public LRecursion leaveReachabilityCheck(ScribNode parent, ScribNode child,
-			ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+			ReachabilityChecker checker, ScribNode visited) throws ScribException
 	{
 		LRecursion lr = (LRecursion) visited;
 		ReachabilityEnv env = checker.popEnv()
@@ -98,7 +98,7 @@ public class LRecursionDel extends RecursionDel
 
 	@Override
 	public LRecursion leaveEGraphBuilding(ScribNode parent, ScribNode child,
-			EGraphBuilder graph, ScribNode visited) throws ScribbleException
+			EGraphBuilder graph, ScribNode visited) throws ScribException
 	{
 		LRecursion lr = (LRecursion) visited;
 		RecVar rv = lr.getRecVarChild().toName();

@@ -15,8 +15,8 @@ package org.scribble.visit.validation;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.core.job.Job;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ModuleContextVisitor;
 
 public class GProtocolValidator extends ModuleContextVisitor
@@ -36,14 +36,14 @@ public class GProtocolValidator extends ModuleContextVisitor
 	}
 
 	@Override
-	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	public void enter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.enter(parent, child);
 		child.del().enterValidation(parent, child, this);
 	}
 	
 	@Override
-	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveValidation(parent, child, this, visited);
 		return super.leave(parent, child, visited);

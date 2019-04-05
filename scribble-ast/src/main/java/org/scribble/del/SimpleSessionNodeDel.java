@@ -14,19 +14,19 @@
 package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 
 public abstract class SimpleSessionNodeDel extends ScribDelBase implements InteractionNodeDel
 {
 	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribException
 	{
 		ScribDelBase.pushVisitorEnv(this, inl);
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		return ScribDelBase.popAndSetVisitorEnv(this, inl, visited);
 	}

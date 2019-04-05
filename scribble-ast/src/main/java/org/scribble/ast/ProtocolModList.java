@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.scribble.core.job.ScribbleException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // (Currently) a list of mod leaf nodes as AmbigNameNodes (cf., NameNode "elements")
@@ -42,7 +42,7 @@ public class ProtocolModList extends ScribNodeBase
 	}
 	
 	@Override
-	public ProtocolModList visitChildren(AstVisitor nv) throws ScribbleException
+	public ProtocolModList visitChildren(AstVisitor nv) throws ScribException
 	{
 		// CHECKME: no child visiting, no reconstruct?
 		return this;

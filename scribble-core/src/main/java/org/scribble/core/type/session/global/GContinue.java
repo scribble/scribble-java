@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
@@ -25,6 +24,7 @@ import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.local.LContinue;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.global.Projector2;
+import org.scribble.util.ScribException;
 
 public class GContinue extends Continue<Global, GSeq> implements GType
 {
@@ -63,14 +63,14 @@ public class GContinue extends Continue<Global, GSeq> implements GType
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
 	{
 		return enabled;
 	}
 
 	@Override
 	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribbleException
+			throws ScribException
 	{
 		return enablers;
 	}

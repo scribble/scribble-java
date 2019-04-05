@@ -20,10 +20,10 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LRecursion extends Recursion<Local> implements LCompoundInteraction
@@ -62,18 +62,18 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 
 	@Override
 	public LSessionNode merge(AstFactory af, LSessionNode ln)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (!(ln instanceof LRecursion) || !this.canMerge(ln))
 		{
-			throw new ScribbleException("Cannot merge " + getClass() + " and "
+			throw new ScribException("Cannot merge " + getClass() + " and "
 					+ ln.getClass() + ": " + this + ", " + ln);
 		}
 		LRecursion them = ((LRecursion) ln);
 		if (!getRecVarChild().toName()
 				.equals(them.getRecVarChild().toName()))
 		{
-			throw new ScribbleException(
+			throw new ScribException(
 					"Cannot merge recursions for " + getRecVarChild() + " and "
 							+ them.getRecVarChild() + ": " + this + ", " + ln);
 		}

@@ -11,39 +11,39 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.job;
+package org.scribble.util;
 
-public class RuntimeScribbleException extends RuntimeException
+public class RuntimeScribException extends RuntimeException
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public RuntimeScribbleException()
+	public RuntimeScribException()
 	{
 		// TODO Auto-generated constructor stub
 	}
 
-	public RuntimeScribbleException(String arg0)
-	{
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
-
-	public RuntimeScribbleException(Throwable arg0)
+	public RuntimeScribException(String arg0)
 	{
 		super(arg0);
 		// TODO Auto-generated constructor stub
 	}
 
-	public RuntimeScribbleException(String arg0, Throwable arg1)
+	public RuntimeScribException(Throwable arg0)
+	{
+		super(arg0);
+		// TODO Auto-generated constructor stub
+	}
+
+	public RuntimeScribException(String arg0, Throwable arg1)
 	{
 		super(arg0, arg1);
 		// TODO Auto-generated constructor stub
 	}
 
-	public RuntimeScribbleException(String arg0, Throwable arg1, boolean arg2,
+	public RuntimeScribException(String arg0, Throwable arg1, boolean arg2,
 			boolean arg3)
 	{
 		super(arg0, arg1, arg2, arg3);

@@ -22,7 +22,6 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.local.LDo;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.ProtocolKind;
@@ -32,6 +31,7 @@ import org.scribble.del.global.GDoDel;
 import org.scribble.del.local.LDoDel;
 import org.scribble.lang.Lang;
 import org.scribble.lang.LangContext;
+import org.scribble.util.ScribException;
 import org.scribble.visit.env.InlineProtocolEnv;
 
 public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
@@ -80,7 +80,7 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	}
 
 	@Override
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribException
 	{
 		enter(parent, child);
 		ScribNode visited = visitForSubprotocols(parent, child);
@@ -95,7 +95,7 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	}
 
 	@Override
-	public ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribException
 	{
 		if (child instanceof Do)
 		{
@@ -112,7 +112,7 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 		return visited;
 	}
 
-	protected Do<?> visitOverrideForDo(InteractionSeq<?> parent, Do<?> child) throws ScribbleException
+	protected Do<?> visitOverrideForDo(InteractionSeq<?> parent, Do<?> child) throws ScribException
 	{
 		if (!isCycle())
 		{
@@ -138,7 +138,7 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	
 	@Override
 	protected void subprotocolEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.subprotocolEnter(parent, child);
 		child.del().enterProtocolInlining(parent, child, this);
@@ -146,7 +146,7 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	
 	@Override
 	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveProtocolInlining(parent, child, this, visited);
 		return super.subprotocolLeave(parent, child, visited);

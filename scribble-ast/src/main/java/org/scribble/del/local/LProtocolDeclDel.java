@@ -18,12 +18,12 @@ import java.util.Collections;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.local.LProtocolDeclContext;
 import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ProtocolDeclDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 
@@ -50,7 +50,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	@Override
 	public void enterProtocolDeclContextBuilding(ScribNode parent,
 			ScribNode child, ProtocolDeclContextBuilder builder)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.enterProtocolDeclContextBuilding(parent, child, builder);
 	}
@@ -58,7 +58,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	@Override
 	public LProtocolDecl leaveProtocolDeclContextBuilding(ScribNode parent,
 			ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
 		LProtocolDeclContext lcontext = new LProtocolDeclContext(

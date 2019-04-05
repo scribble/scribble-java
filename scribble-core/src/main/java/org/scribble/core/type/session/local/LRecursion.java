@@ -17,12 +17,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.visit.local.ReachabilityEnv;
+import org.scribble.util.ScribException;
 
 public class LRecursion extends Recursion<Local, LSeq> implements LType
 {
@@ -59,7 +59,7 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 
 	@Override
 	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribbleException
+			throws ScribException
 	{
 		env = this.body.checkReachability(env);
 		if (env.recvars.contains(this.recvar))

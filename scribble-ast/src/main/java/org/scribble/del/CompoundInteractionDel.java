@@ -15,7 +15,7 @@ package org.scribble.del;
 
 import org.scribble.ast.CompoundInteraction;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
@@ -34,13 +34,13 @@ public abstract class CompoundInteractionDel extends CompoundSessionNodeDel impl
 	}
 
 	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribException
 	{
 		ScribDelBase.pushVisitorEnv(this, inl);
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		return ScribDelBase.popAndSetVisitorEnv(this, inl, visited);
 	}
@@ -50,7 +50,7 @@ public abstract class CompoundInteractionDel extends CompoundSessionNodeDel impl
 	
 	// Should only do for projections, but OK here (visitor only run on projections)
 	@Override
-	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribException
 	{
 		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
 		UnguardedChoiceDoEnv visited_env = checker.popEnv();  // popAndSet current
@@ -62,7 +62,7 @@ public abstract class CompoundInteractionDel extends CompoundSessionNodeDel impl
 	}
 
 	@Override
-	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribException
 	{
 		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
 		// Need to further override for "compound" nodes with block children, e.g., Choice/RecursionDel, to merge children together and then into current (then call here via super to set and merge current into parent)
@@ -75,7 +75,7 @@ public abstract class CompoundInteractionDel extends CompoundSessionNodeDel impl
 	}
 
 	@Override
-	public CompoundInteraction<?> leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public CompoundInteraction<?> leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribException
 	{
 		WFChoiceEnv visited_env = checker.popEnv();  // popAndSet current
 		setEnv(visited_env);
@@ -86,7 +86,7 @@ public abstract class CompoundInteractionDel extends CompoundSessionNodeDel impl
 	}
 
 	@Override
-	public ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribException
 	{
 		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
 		// Need to further override for "multi-compound" nodes, e.g., ChoiceDel

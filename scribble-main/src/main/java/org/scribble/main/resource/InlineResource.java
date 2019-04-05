@@ -33,7 +33,8 @@ public class InlineResource extends AbstractResource
 	{
 		super(Resource.INLINE_LOCATION);
 		//this.res = res;
-		this._inputStream = new ByteArrayInputStream(res.getBytes(StandardCharsets.UTF_8));
+		this._inputStream = new ByteArrayInputStream(
+				res.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	@Override

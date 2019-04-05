@@ -24,10 +24,10 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LChoice extends Choice<Local> implements LCompoundInteraction
@@ -67,11 +67,11 @@ public class LChoice extends Choice<Local> implements LCompoundInteraction
 	}
 	
 	@Override
-	public LChoice merge(AstFactory af, LSessionNode ln) throws ScribbleException
+	public LChoice merge(AstFactory af, LSessionNode ln) throws ScribException
 	{
 		if (!(ln instanceof LChoice) || !this.canMerge(ln))
 		{
-			throw new ScribbleException("Cannot merge " + this.getClass() + " and "
+			throw new ScribException("Cannot merge " + this.getClass() + " and "
 					+ ln.getClass() + ": " + this + ", " + ln);
 		}
 		LChoice them = (LChoice) ln;

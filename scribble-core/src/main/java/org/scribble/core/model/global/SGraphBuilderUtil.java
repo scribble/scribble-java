@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.scribble.core.job.Job;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.GraphBuilderUtil;
 import org.scribble.core.model.endpoint.EFSM;
 import org.scribble.core.model.endpoint.EGraph;
@@ -33,6 +32,7 @@ import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, Global>
 {
@@ -66,7 +66,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 	// Also checks for non-deterministic payloads
 	// Maybe refactor into an SGraph builder util; cf., EGraphBuilderUtil -- but not Visitor-based building (cf. EndpointGraphBuilder), this isn't an AST algorithm
 	//public SGraph buildSGraph(Job job, GProtocolName fullname, SConfig c0) throws ScribbleException
-	public SGraph buildSGraph(Job job, GProtocolName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribbleException
+	public SGraph buildSGraph(Job job, GProtocolName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribException
 	{
 		/*Map<Role, EFSM> efsms = egraphs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toFsm()));
 
@@ -118,7 +118,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 						if (fireable_r.stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
 						{
-							throw new ScribbleException("Bad non-deterministic action payloads: " + fireable_r);
+							throw new ScribException("Bad non-deterministic action payloads: " + fireable_r);
 						}
 					}
 				}
@@ -129,7 +129,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 						if (currfsm.getAllFireable().stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
 						{
-							throw new ScribbleException("Bad non-deterministic action payloads: " + currfsm.getAllFireable());
+							throw new ScribException("Bad non-deterministic action payloads: " + currfsm.getAllFireable());
 						}
 					}
 				}

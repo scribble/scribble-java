@@ -22,11 +22,11 @@ import java.util.Set;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.del.ContinueDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -38,7 +38,7 @@ public class LContinueDel extends ContinueDel
 {
 	@Override
 	public LContinue leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		LContinue lc = (LContinue) visited;
 		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) lc.getRecVarChild()
@@ -50,7 +50,7 @@ public class LContinueDel extends ContinueDel
 
 	@Override
 	public LContinue leaveReachabilityCheck(ScribNode parent, ScribNode child,
-			ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+			ReachabilityChecker checker, ScribNode visited) throws ScribException
 	{
 		// "Entering" the continue here in leave, where we can merge the new state into the parent Env
 		// Generally: if side effecting Env state to be merged into the parent (not just popped and discarded), leave must be overridden to do so
@@ -64,7 +64,7 @@ public class LContinueDel extends ContinueDel
 
 	@Override
 	public LContinue leaveEGraphBuilding(ScribNode parent, ScribNode child,
-			EGraphBuilder graph, ScribNode visited) throws ScribbleException
+			EGraphBuilder graph, ScribNode visited) throws ScribException
 	{
 		LContinue lr = (LContinue) visited;
 		RecVar rv = lr.getRecVarChild().toName();

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
@@ -31,6 +30,7 @@ import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.local.ReachabilityEnv;
+import org.scribble.util.ScribException;
 
 public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 {
@@ -61,7 +61,7 @@ public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 
 	@Override
 	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribbleException
+			throws ScribException
 	{
 		throw new RuntimeException("Unsupported for LDo: " + this);
 	}

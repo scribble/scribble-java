@@ -28,11 +28,8 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.java.JEndpointApiGenerator;
 import org.scribble.codegen.java.callbackapi.CBEndpointApiGenerator3;
-import org.scribble.core.job.AntlrSourceException;
 import org.scribble.core.job.Job;
 import org.scribble.core.job.JobContext;
-import org.scribble.core.job.RuntimeScribbleException;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.global.SGraph;
@@ -44,8 +41,11 @@ import org.scribble.lang.LangContext;
 import org.scribble.main.Main;
 import org.scribble.main.resource.locator.DirectoryResourceLocator;
 import org.scribble.main.resource.locator.ResourceLocator;
+import org.scribble.util.AntlrSourceException;
+import org.scribble.util.RuntimeScribException;
 import org.scribble.util.ScribParserException;
-import org.scribble.util.ScribUtil2;
+import org.scribble.util.ScribUtil;
+import org.scribble.util.ScribException;
 
 public class CommandLine
 {
@@ -70,7 +70,7 @@ public class CommandLine
 
 	// A Scribble extension should override newMainContext as appropriate.
 	protected Main newMainContext()
-			throws ScribParserException, ScribbleException
+			throws ScribParserException, ScribException
 	{
 		//boolean jUnit = this.args.containsKey(ArgFlag.JUNIT);
 		boolean debug = this.args.containsKey(CLArgFlag.VERBOSE);  // TODO: factor out (cf. MainContext fields)
@@ -117,7 +117,7 @@ public class CommandLine
 			{
 				runBody();
 			}
-			catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
+			catch (ScribException e)  // Wouldn't need to do this if not Runnable (so maybe change)
 			{
 				if (this.args.containsKey(CLArgFlag.JUNIT)
 						|| this.args.containsKey(CLArgFlag.VERBOSE))
@@ -139,7 +139,7 @@ public class CommandLine
 			System.err.println(e.getMessage());  // No need to give full stack trace, even for debug, for command line errors
 			System.exit(1);
 		}
-		catch (RuntimeScribbleException e)
+		catch (RuntimeScribException e)
 		{
 			System.err.println(e.getMessage());
 			System.exit(1);
@@ -151,12 +151,12 @@ public class CommandLine
 	{
 		Main mc = newMainContext();  // Represents current instance of tooling for given CL args
 		Lang job = mc.newJob();  // A Job is some series of passes performed on each Module in the MainContext (e.g., cf. Job::runVisitorPass)
-		ScribbleException fail = null;
+		ScribException fail = null;
 		try
 		{
 			doValidationTasks(job);  // FIXME: refactor into job
 		}
-		catch (ScribbleException x)
+		catch (ScribException x)
 		{
 			fail = x;
 		}
@@ -166,7 +166,7 @@ public class CommandLine
 		{
 			tryOutputTasks(job);  // FIXME: refactor into job
 		}
-		catch (ScribbleException x)
+		catch (ScribException x)
 		{
 			if (fail == null)
 			{
@@ -204,7 +204,7 @@ public class CommandLine
 	}
 
 	protected void tryOutputTasks(Lang job)
-			throws CommandLineException, ScribbleException
+			throws CommandLineException, ScribException
 	{
 		// Following must be ordered appropriately -- ?
 		if (this.args.containsKey(CLArgFlag.PROJECT))
@@ -267,7 +267,7 @@ public class CommandLine
 
 	// TODO: rename
 	protected void doNonAttemptableOutputTasks(Lang job)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		if (this.args.containsKey(CLArgFlag.SESS_API_GEN))
 		{
@@ -289,7 +289,7 @@ public class CommandLine
 
 	// TODO: option to write to file, like classes
 	private void printProjections(Lang job)
-			throws CommandLineException, ScribbleException
+			throws CommandLineException, ScribException
 	{
 		LangContext jobc = job.getContext();
 		Job job2 = job.toJob();
@@ -309,7 +309,7 @@ public class CommandLine
 	// forUser: true means for API gen and general user info (may be minimised), false means for validation (non-minimised, fair or unfair)
 	// (forUser && !fair) should not hold, i.e. unfair doesn't make sense if forUser
 	private void printEGraph(Lang job, boolean forUser, boolean fair)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		LangContext jobc = job.getContext();
 		String[] args = forUser 
@@ -330,7 +330,7 @@ public class CommandLine
 	}
 
 	private void drawEGraph(Lang job, boolean forUser, boolean fair)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		LangContext jobc = job.getContext();
 		String[] args = forUser 
@@ -351,7 +351,7 @@ public class CommandLine
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
 	private EGraph getEGraph(Lang job, GProtocolName fullname, Role role,
 			boolean forUser, boolean fair)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		LangContext jobc = job.getContext();
 		JobContext jobc2 = job.toJob().getContext();
@@ -379,14 +379,14 @@ public class CommandLine
 		}
 		if (graph == null)
 		{
-			throw new RuntimeScribbleException("Shouldn't see this: " + fullname);
+			throw new RuntimeScribException("Shouldn't see this: " + fullname);
 					// Should be suppressed by an earlier failure
 		}
 		return graph;
 	}
 
 	private void printSGraph(Lang job, boolean fair)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		LangContext jobc = job.getContext();
 		String[] args = fair 
@@ -404,7 +404,7 @@ public class CommandLine
 	}
 
 	private void drawSGraph(Lang job, boolean fair)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		LangContext jobc = job.getContext();
 		String[] args = fair 
@@ -420,7 +420,7 @@ public class CommandLine
 	}
 
 	private static SGraph getSGraph(Lang job, GProtocolName fullname, boolean fair)
-			throws ScribbleException
+			throws ScribException
 	{
 		JobContext jobc2 = job.toJob().getContext();
 		SGraph model = fair 
@@ -428,14 +428,14 @@ public class CommandLine
 				: jobc2.getUnfairSGraph(fullname);
 		if (model == null)
 		{
-			throw new RuntimeScribbleException("Shouldn't see this: " + fullname);
+			throw new RuntimeScribException("Shouldn't see this: " + fullname);
 					// Should be suppressed by an earlier failure
 		}
 		return model;
 	}
 
 	private void outputEndpointApi(Lang job)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		LangContext jobc = job.getContext();
 		String[] args = this.args.get(CLArgFlag.API_GEN);
@@ -453,7 +453,7 @@ public class CommandLine
 	}
 
 	private void outputSessionApi(Lang job)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		LangContext jobc = job.getContext();
 		String[] args = this.args.get(CLArgFlag.SESS_API_GEN);
@@ -467,7 +467,7 @@ public class CommandLine
 	}
 
 	private void outputStateChannelApi(Lang job)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		LangContext jobc = job.getContext();
 		String[] args = this.args.get(CLArgFlag.SCHAN_API_GEN);
@@ -483,7 +483,7 @@ public class CommandLine
 	}
 
 	private void outputEventDrivenApi(Lang job)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		LangContext jobc = job.getContext();
 		String[] args = this.args.get(CLArgFlag.ED_API_GEN);
@@ -510,20 +510,20 @@ public class CommandLine
 
 	// filepath -> class source
 	protected void outputClasses(Map<String, String> classes)
-			throws ScribbleException
+			throws ScribException
 	{
 		Consumer<String> f;
 		if (this.args.containsKey(CLArgFlag.API_OUTPUT))
 		{
 			String dir = this.args.get(CLArgFlag.API_OUTPUT)[0];
-			f = path -> { ScribUtil2.handleLambdaScribbleException(() ->
+			f = path -> { ScribUtil.handleLambdaScribbleException(() ->
 							{
 								String tmp = dir + "/" + path;
 								if (this.args.containsKey(CLArgFlag.VERBOSE))
 								{
 									System.out.println("[DEBUG] Writing to: " + tmp);
 								}
-								ScribUtil2.writeToFile(tmp, classes.get(path)); return null;
+								ScribUtil.writeToFile(tmp, classes.get(path)); return null;
 							}); };
 		}
 		else
@@ -534,7 +534,7 @@ public class CommandLine
 	}
 
 	protected static void runDot(String dot, String png)
-			throws ScribbleException, CommandLineException
+			throws ScribException, CommandLineException
 	{
 		String tmpName = png + ".tmp";
 		File tmp = new File(tmpName);
@@ -544,8 +544,8 @@ public class CommandLine
 		}
 		try
 		{
-			ScribUtil2.writeToFile(tmpName, dot);
-			String[] res = ScribUtil2.runProcess("dot", "-Tpng", "-o" + png, tmpName);
+			ScribUtil.writeToFile(tmpName, dot);
+			String[] res = ScribUtil.runProcess("dot", "-Tpng", "-o" + png, tmpName);
 			System.out.print(!res[1].isEmpty() ? res[1] : res[0]);  // already "\n" terminated
 		}
 		finally

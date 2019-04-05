@@ -16,9 +16,9 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // (G)Disconnect is symmetric (send/receive asymmetric/async; request/accept asymmetric/sync; (g)disconnect symmetric/async)
@@ -66,7 +66,7 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 
 	@Override
 	public DisconnectAction<K> visitChildren(AstVisitor nv)
-			throws ScribbleException
+			throws ScribException
 	{
 		RoleNode src = (RoleNode) visitChild(getLeftChild(), nv);
 		RoleNode dest = (RoleNode) visitChild(getRightChild(), nv);

@@ -25,13 +25,13 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.wf.DelegationProtocolRefChecker;
 import org.scribble.visit.wf.NameDisambiguator;
@@ -46,7 +46,7 @@ public class GDelegationElemDel extends ScribDelBase
 	// Duplicated from DoDel
 	@Override
 	public void enterDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb) throws ScribbleException
+			NameDisambiguator disamb) throws ScribException
 	{
 		ModuleContext mc = disamb.getModuleContext();
 		GDelegationElem de = (GDelegationElem) child;
@@ -54,7 +54,7 @@ public class GDelegationElemDel extends ScribDelBase
 		GProtocolName gpn = proto.toName();
 		if (!mc.isVisibleProtocolDeclName(gpn))
 		{
-			throw new ScribbleException(proto.getSource(),
+			throw new ScribException(proto.getSource(),
 					"Protocol decl not visible: " + gpn);
 		}
 	}
@@ -62,7 +62,7 @@ public class GDelegationElemDel extends ScribDelBase
 	// Duplicated from DoDel
 	//@Override
 	public GDelegationElem visitForNameDisambiguation(NameDisambiguator disamb,
-			GDelegationElem de) throws ScribbleException
+			GDelegationElem de) throws ScribException
 	{
 		ModuleContext mc = disamb.getModuleContext();
 		GProtocolName fullname = (GProtocolName) mc
@@ -75,7 +75,7 @@ public class GDelegationElemDel extends ScribDelBase
 				.getProtocolDeclChild(fullname.getSimpleName());
 		if (!gpd.getHeaderChild().getRoleDeclListChild().getRoles().contains(rn))
 		{
-			throw new ScribbleException(r.getSource(), "Invalid delegation role: " + de);
+			throw new ScribException(r.getSource(), "Invalid delegation role: " + de);
 		}
 
 		GProtocolNameNode pnn = (GProtocolNameNode) disamb.job.config.af
@@ -91,7 +91,7 @@ public class GDelegationElemDel extends ScribDelBase
   // TODO: should always be GMessageTransfer
 	public void leaveMessageTransferInProtocolDeclContextBuilding(
 			MessageTransfer<?> mt, GDelegationElem de,
-			ProtocolDeclContextBuilder builder) throws ScribbleException
+			ProtocolDeclContextBuilder builder) throws ScribException
 	{
 		RoleNode role = de.getRoleChild();
 		GProtocolName gpn = de.getProtocolChild().toName();  // leaveDisambiguation has fully qualified the target name
@@ -104,7 +104,7 @@ public class GDelegationElemDel extends ScribDelBase
 
 	@Override
 	public void enterDelegationProtocolRefCheck(ScribNode parent, ScribNode child,
-			DelegationProtocolRefChecker checker) throws ScribbleException
+			DelegationProtocolRefChecker checker) throws ScribException
 	{
 		GDelegationElem de = (GDelegationElem) child;
 		ModuleContext mc = checker.getModuleContext();
@@ -116,7 +116,7 @@ public class GDelegationElemDel extends ScribDelBase
 		if (targetfullname.equals(rootfullname))  
 				// Explicit check here because ProtocolDeclContextBuilder dependencies explicitly include self protocoldecl dependencies (cf. GProtocolDeclDel.addSelfDependency)
 		{
-			throw new ScribbleException(de.getSource(),
+			throw new ScribException(de.getSource(),
 					"Recursive protocol dependencies not supported for delegation types: "
 							+ de);
 		}
@@ -144,7 +144,7 @@ public class GDelegationElemDel extends ScribDelBase
 					mc.getVisibleProtocolDeclFullName(next);
 			if (rootfullname.equals(nextfullname))
 			{
-				throw new ScribbleException(de.getSource(),
+				throw new ScribException(de.getSource(),
 						"Recursive protocol dependencies not supported for delegation types: "
 								+ de);
 			}

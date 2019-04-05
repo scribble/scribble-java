@@ -17,8 +17,8 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.SimpleVisitor;
 import org.scribble.visit.Substitutor;
@@ -44,7 +44,7 @@ public interface ScribNode extends Tree
 	ScribDel del();
 	ScribNode del(ScribDel del);
 	
-	default <T> T visitWith(SimpleVisitor<T> v) throws ScribbleException  // "Top-level" visitor entry method
+	default <T> T visitWith(SimpleVisitor<T> v) throws ScribException  // "Top-level" visitor entry method
 	{
 		return v.visit(this);  // N.B. ScribNode has getParent
 	}
@@ -58,6 +58,6 @@ public interface ScribNode extends Tree
 			// Previously: for parsed entities, null if not parsed
 			// Now: for the original parsed entity for error blaming; should not be null unless a "purely generated" entity
 
-	ScribNode accept(AstVisitor nv) throws ScribbleException;  // The "top-level" method, e.g., module.accept(v)  (cf. Job::runVisitorOnModule)
-	ScribNode visitChildren(AstVisitor nv) throws ScribbleException;
+	ScribNode accept(AstVisitor nv) throws ScribException;  // The "top-level" method, e.g., module.accept(v)  (cf. Job::runVisitorOnModule)
+	ScribNode visitChildren(AstVisitor nv) throws ScribException;
 }

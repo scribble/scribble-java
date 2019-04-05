@@ -20,9 +20,9 @@ import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDelegationElem;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.del.global.GDelegationElemDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
@@ -40,7 +40,7 @@ public abstract class MessageTransferDel extends SimpleSessionNodeDel
 	@Override
 	public MessageTransfer<?> leaveProtocolInlining(ScribNode parent,
 			ScribNode child, ProtocolDefInliner inl, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		MessageTransfer<?> lr = (MessageTransfer<?>) visited;
 		MessageTransfer<?> inlined = (MessageTransfer<?>) lr.clone();//inl.job.af);
@@ -58,7 +58,7 @@ public abstract class MessageTransferDel extends SimpleSessionNodeDel
 
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child,
-			InlinedProtocolUnfolder unf) throws ScribbleException
+			InlinedProtocolUnfolder unf) throws ScribException
 	{
 		UnfoldingEnv env = unf.popEnv();
 		env = env.disableUnfold();
@@ -95,7 +95,7 @@ public abstract class MessageTransferDel extends SimpleSessionNodeDel
 	@Override
 	public MessageTransfer<?> leaveProtocolDeclContextBuilding(ScribNode parent,
 			ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		MessageTransfer<?> mt = (MessageTransfer<?>) visited;
 		MessageNode msg = mt.getMessageNodeChild();

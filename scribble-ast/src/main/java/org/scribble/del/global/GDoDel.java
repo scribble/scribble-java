@@ -25,7 +25,6 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.NonRoleParamKind;
@@ -35,6 +34,7 @@ import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.del.DoDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
@@ -45,7 +45,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 {
 	@Override
 	public org.scribble.core.type.session.global.GDo translate(ScribNode n,
-			GTypeTranslator t) throws ScribbleException
+			GTypeTranslator t) throws ScribException
 	{
 		GDo source = (GDo) n;
 
@@ -54,7 +54,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		ModuleContext modc = t.getModuleContext();
 		if (!modc.isVisibleProtocolDeclName(proto))
 		{
-			throw new ScribbleException(source,
+			throw new ScribException(source,
 					"Protocol decl not visible: " + proto);
 		}
 		GProtocolName fullname = (GProtocolName) modc
@@ -87,7 +87,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 	
 	@Override
 	public GDo leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		if (!inl.isCycle())
 		{
@@ -107,7 +107,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 
 	@Override
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj)
-			throws ScribbleException
+			throws ScribException
 	{
 		GSimpleInteractionNodeDel.super.enterProjection(parent, child, proj);
 
@@ -129,7 +129,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 	
 	@Override
 	public GDo leaveProjection(ScribNode parent, ScribNode child, Projector proj,
-			ScribNode visited) throws ScribbleException // throws ScribbleException
+			ScribNode visited) throws ScribException // throws ScribbleException
 	{
 		GDo gd = (GDo) visited;
 		Role popped = proj.popSelf();

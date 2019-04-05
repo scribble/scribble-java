@@ -15,57 +15,52 @@ package org.scribble.main.resource.loader;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.main.ScribAntlrWrapper;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.locator.ResourceLocator;
-import org.scribble.parser.scribble.ScribbleAntlrWrapper;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribParserException;
+import org.scribble.util.ScribException;
 
-// loading = ModuleName -> Module
-//   ModuleName --> Path --ResourceLocator--> Resource --AntlrParser--> ANTLR --ScribParser--> ScribNode
-// FIXME: should be in core org.scribble.main -- here due to Maven dependency restrictions
-public class ScribModuleLoader extends DefaultModuleLoader //implements ModuleLoader
+// loading: ModuleName -> Module
+//   ModuleName --> Path --ResourceLocator--> Resource --ScribAntlrWrapper--> Module
+public class ScribModuleLoader extends DefaultModuleLoader
 {
 	private ResourceLocator locator;
-	private ScribbleAntlrWrapper antlr;
-	//private AntlrToScribParser parser;
+	private ScribAntlrWrapper antlr;
 
-	public ScribModuleLoader(ResourceLocator locator, ScribbleAntlrWrapper antlr)//, AntlrToScribParser parser)
+	public ScribModuleLoader(ResourceLocator locator, ScribAntlrWrapper antlr)
 	{
 		this.locator = locator;
 		this.antlr = antlr;
-		//this.parser = parser;
 	}
 
 	@Override
-	public Pair<Resource, Module> loadModule(ModuleName modname, AstFactory af)
-			throws ScribParserException, ScribbleException
+	public Pair<Resource, Module> loadModule(ModuleName fullname, AstFactory af)
+			throws ScribParserException, ScribException
 	{
-		Pair<Resource, Module> cached = super.loadModule(modname, af);
+		Pair<Resource, Module> cached = super.loadModule(fullname, af);
 		if (cached != null)
 		{
 			return cached;
 		}
-		Resource res = this.locator.getResource(modname.toPath());
-		/*Module parsed = (Module) this.parser.parse(this.antlr.parseAntlrTree(res),
-				af);*/
-		Module parsed = this.antlr.parseAntlrTree(res);  // Does del decoration
-		
-		//AntlrToScribParser.checkForAntlrErrors(ct);  // FIXME: do this somewhere
-		
-		checkModuleName(modname, res, parsed);
-		registerModule(res, parsed);
-		return new Pair<>(res, parsed);
+
+		Resource res = this.locator.getResource(fullname.toPath());
+		Module m = this.antlr.parse(res);  // Does del decoration
+		ScribModuleLoader.checkModuleName(fullname, res, m);
+		registerModule(res, m);
+		return new Pair<>(res, m);
 	}
 
-	private static void checkModuleName(ModuleName mn, Resource res, Module mod)
+	// Check module loaded from fullname.toPath has the expected mod decl
+	private static void checkModuleName(ModuleName fullname, Resource res,
+			Module m)
 	{
-		if (!mn.equals(mod.getFullModuleName()))
+		if (!fullname.equals(m.getFullModuleName()))
 		{
 			throw new RuntimeException("Invalid module name "
-					+ mod.getFullModuleName() + " at location: " + res.getLocation());
+					+ m.getFullModuleName() + " at location: " + res.getLocation());
 		}
 	}
 }

@@ -15,8 +15,8 @@ package org.scribble.main.resource.locator;
 
 import java.nio.file.Path;
 
-import org.scribble.core.job.ScribbleException;
 import org.scribble.main.resource.Resource;
+import org.scribble.util.ScribException;
 
 
 /**
@@ -33,5 +33,6 @@ public interface IResourceLocator
 	 * @return The resource, or null if not found
 	 */
 
-	Resource getResource(Path path) throws ScribbleException;  // Path should be made more abstract, e.g. some kind of URI (cf., Resource.getLocation)
+	Resource getResource(Path path) throws ScribException;  
+			// TODO: Path should be made more abstract, e.g. some kind of URI (cf., Resource.getLocation)
 }

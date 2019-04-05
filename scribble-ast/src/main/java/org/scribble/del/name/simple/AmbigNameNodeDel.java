@@ -21,13 +21,13 @@ import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.ast.name.simple.TypeParamNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.AmbigName;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class AmbigNameNodeDel extends ScribDelBase
@@ -40,7 +40,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 	// Currently only in "message positions (see Scribble.g ambiguousname)
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		ModuleContext mcontext = disamb.getModuleContext();
 		AmbigNameNode ann = (AmbigNameNode) visited;
@@ -51,7 +51,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 		{
 			if (parent instanceof MessageTransfer<?>)  // FIXME HACK: MessageTransfer assumes MessageNode (cast in visitChildren), so this needs to be caught here  // FIXME: other similar cases?
 			{
-				throw new ScribbleException(ann.getSource(),
+				throw new ScribException(ann.getSource(),
 						"Invalid occurrence of data type: " + parent);
 			}
 			/*return disamb.job.config.af.QualifiedNameNode(ann.getSource(),
@@ -64,7 +64,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 		{
 			if (parent instanceof PayloadElem) // FIXME HACK
 			{
-				throw new ScribbleException(ann.getSource(),
+				throw new ScribException(ann.getSource(),
 						"Invalid occurrence of message signature name: " + parent);
 			}
 			/*return disamb.job.config.af.QualifiedNameNode(ann.getSource(),
@@ -91,7 +91,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 				return res;
 			}
 		}
-		throw new ScribbleException(ann.getSource(),
+		throw new ScribException(ann.getSource(),
 				"Cannot disambiguate name: " + name);
 	}
 }

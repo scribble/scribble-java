@@ -15,14 +15,14 @@ package org.scribble.del.local;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LMessageTransfer;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.del.MessageTransferDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;
 
 public abstract class LMessageTransferDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribException
 	{
 		LMessageTransfer lmt = (LMessageTransfer) visited;
 		checker.pushEnv(checker.popEnv().disableAccept());

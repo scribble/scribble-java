@@ -18,7 +18,7 @@ import java.util.List;
 import org.scribble.ast.HeaderParamDecl;
 import org.scribble.ast.HeaderParamDeclList;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public abstract class HeaderParamDeclListDel extends ScribDelBase
@@ -30,13 +30,13 @@ public abstract class HeaderParamDeclListDel extends ScribDelBase
 
 	// Doing in leave allows the arguments to be individually checked first
 	@Override
-	public HeaderParamDeclList<?> leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public HeaderParamDeclList<?> leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		HeaderParamDeclList<?> pdl = (HeaderParamDeclList<?>) visited;
 		List<? extends HeaderParamDecl<?>> decls = pdl.getParamDeclChildren();  // grammar enforces RoleDeclList size > 0
 		if (decls.size() != decls.stream().map((d) -> d.getDeclName()).distinct().count())
 		{
-			throw new ScribbleException(pdl.getSource(), "Duplicate header decls: " + pdl);
+			throw new ScribException(pdl.getSource(), "Duplicate header decls: " + pdl);
 		}
 		return pdl;
 	}

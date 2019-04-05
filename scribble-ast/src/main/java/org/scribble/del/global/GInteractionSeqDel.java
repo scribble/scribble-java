@@ -25,11 +25,11 @@ import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.local.LSessionNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.global.GType;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
@@ -42,7 +42,7 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 	
 	@Override
 	public GSeq translate(ScribNode n, GTypeTranslator t)
-			throws ScribbleException
+			throws ScribException
 	{
 		GInteractionSeq source = (GInteractionSeq) n;
 		List<GType> elems = new LinkedList<>();
@@ -56,7 +56,7 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 	// enter in super
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<GSessionNode> gins = new LinkedList<GSessionNode>();
@@ -80,14 +80,14 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 
 	@Override
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj)
-			throws ScribbleException
+			throws ScribException
 	{
 		ScribDelBase.pushVisitorEnv(this, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
 	}
 	
 	@Override
 	public GInteractionSeq leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribbleException
+			Projector proj, ScribNode visited) throws ScribException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<LSessionNode> lis = new LinkedList<>();
@@ -146,7 +146,7 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 	
 	@Override
 	public GInteractionSeq leaveRecRemoval(ScribNode parent, ScribNode child,
-			RecRemover rem, ScribNode visited) throws ScribbleException
+			RecRemover rem, ScribNode visited) throws ScribException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<GSessionNode> gins = gis.getInteractionChildren().stream()

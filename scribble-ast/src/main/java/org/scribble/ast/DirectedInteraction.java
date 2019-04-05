@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // FIXME: rename (Simple)Interaction, after existing SimpleInteraction renamed
@@ -90,7 +90,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 
 	@Override
 	public DirectedInteraction<K> visitChildren(AstVisitor nv)
-			throws ScribbleException
+			throws ScribException
 	{
 		MessageNode msg = (MessageNode) visitChild(getMessageNodeChild(), nv);
 		RoleNode src = (RoleNode) visitChild(getSourceChild(), nv);

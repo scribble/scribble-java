@@ -17,9 +17,9 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.IdNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.NonProtocolKind;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // Rename to something better
@@ -89,7 +89,7 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 
 	@Override
 	public NonProtocolDecl<K> visitChildren(AstVisitor nv)
-			throws ScribbleException
+			throws ScribException
 	{
 		NameNode<K> name = (NameNode<K>) visitChildWithClassEqualityCheck(this,
 				getNameNodeChild(), nv);

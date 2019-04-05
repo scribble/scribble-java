@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.job.JobContext;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
@@ -38,6 +37,7 @@ import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.global.Projector2;
+import org.scribble.util.ScribException;
 
 public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 {
@@ -115,14 +115,14 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
 	{
 		throw new RuntimeException("Unsupported for Do: " + this);
 	}
 
 	@Override
 	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribbleException
+			throws ScribException
 	{
 		throw new RuntimeException("Unsupported for Do: " + this);
 	}

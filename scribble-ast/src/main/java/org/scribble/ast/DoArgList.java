@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // Cf. HeaderParameterDeclList -- but not kinded, because cannot determine Arg kind directly from node syntax itself (kinding for ModelNodes is to supplement syntactic information, not "typing" work)
@@ -65,7 +65,7 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 	public abstract DoArgList<T> project(AstFactory af, Role self);
 	
 	@Override
-	public DoArgList<T> visitChildren(AstVisitor nv) throws ScribbleException
+	public DoArgList<T> visitChildren(AstVisitor nv) throws ScribException
 	{
 		List<T> nds = 
 				visitChildListWithClassEqualityCheck(this, getArgChildren(), nv);

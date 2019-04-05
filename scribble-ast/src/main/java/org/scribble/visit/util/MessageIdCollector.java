@@ -14,10 +14,10 @@
 package org.scribble.visit.util;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 
 public class MessageIdCollector extends NameCollector<MessageId<?>>
 {
@@ -27,14 +27,14 @@ public class MessageIdCollector extends NameCollector<MessageId<?>>
 	}
 
 	@Override
-	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.offsetSubprotocolEnter(parent, child);
 		child.del().enterMessageIdCollection(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveMessageIdCollection(parent, child, this, visited);
 		return super.offsetSubprotocolLeave(parent, child, visited);

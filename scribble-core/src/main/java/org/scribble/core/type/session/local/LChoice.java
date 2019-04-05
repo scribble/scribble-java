@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
@@ -29,6 +28,7 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.visit.local.ReachabilityEnv;
+import org.scribble.util.ScribException;
 
 public class LChoice extends Choice<Local, LSeq> implements LType
 {
@@ -126,7 +126,7 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 
 	@Override
 	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribbleException
+			throws ScribException
 	{
 		List<ReachabilityEnv> blocks = new LinkedList<>();
 		for (LSeq block : this.blocks)

@@ -15,8 +15,8 @@ package org.scribble.del;
 
 import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.RecVar;
+import org.scribble.util.ScribException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.UnfoldingEnv;
@@ -32,7 +32,7 @@ public abstract class RecursionDel extends CompoundInteractionDel
 
 	@Override
 	public void enterDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb) throws ScribbleException
+			NameDisambiguator disamb) throws ScribException
 	{
 		Recursion<?> rec = (Recursion<?>) child;
 		RecVar rv = rec.getRecVarChild().toName();
@@ -47,7 +47,7 @@ public abstract class RecursionDel extends CompoundInteractionDel
 
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		Recursion<?> rec = (Recursion<?>) visited;
 		/*RecVar rv = rec.recvar.toName();
@@ -59,7 +59,7 @@ public abstract class RecursionDel extends CompoundInteractionDel
 
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inliner) throws ScribbleException
+			ProtocolDefInliner inliner) throws ScribException
 	{
 		super.enterProtocolInlining(parent, child, inliner);
 		Recursion<?> rec = (Recursion<?>) child;
@@ -68,7 +68,7 @@ public abstract class RecursionDel extends CompoundInteractionDel
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inliner, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inliner, ScribNode visited) throws ScribException
 	{
 		//Recursion<?> rec = (Recursion<?>) visited;
 		RecVar origRV = ((Recursion<?>) child).getRecVarChild().toName();  // visited may be already name mangled
@@ -78,7 +78,7 @@ public abstract class RecursionDel extends CompoundInteractionDel
 
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child,
-			InlinedProtocolUnfolder unf) throws ScribbleException
+			InlinedProtocolUnfolder unf) throws ScribException
 	{
 		super.enterInlinedProtocolUnfolding(parent, child, unf);
 		Recursion<?> lr = (Recursion<?>) child;
@@ -89,7 +89,7 @@ public abstract class RecursionDel extends CompoundInteractionDel
 	@Override
 	public Recursion<?> leaveInlinedProtocolUnfolding(ScribNode parent,
 			ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		Recursion<?> rec = (Recursion<?>) visited;
 		RecVar recvar = rec.getRecVarChild().toName();

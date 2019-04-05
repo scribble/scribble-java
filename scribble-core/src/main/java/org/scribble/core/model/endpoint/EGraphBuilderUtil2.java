@@ -26,11 +26,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.GraphBuilderUtil;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
+import org.scribble.util.ScribException;
 
 // FIXME TODO replace EGraphBuilderUtil
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
@@ -365,7 +365,7 @@ public class EGraphBuilderUtil2
 	
 	// succ assumed to be this.getEntry()
 	public void removeEdgeFromPredecessor(EState s, EAction a)
-			throws ScribbleException
+			throws ScribException
 			// Removing prev edge, to be replaced by addRecursionEdge
 	{
 		//s.removeEdge(a, this.getEntry());
@@ -389,7 +389,7 @@ public class EGraphBuilderUtil2
 
 	// CHECKME handle preds/prevs like above (cf. this.addEdge)
 	public void removeEdge(EState s, EAction a, EState succ)
-			throws ScribbleException
+			throws ScribException
 	{
 		removeEdgeAux(s, a, succ);
 	}

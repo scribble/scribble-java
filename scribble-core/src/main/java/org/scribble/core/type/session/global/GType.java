@@ -16,13 +16,13 @@ package org.scribble.core.type.session.global;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.global.GNode;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector2;
+import org.scribble.util.ScribException;
 
 public interface GType extends SType<Global, GSeq>, GNode
 {
@@ -33,14 +33,14 @@ public interface GType extends SType<Global, GSeq>, GNode
 	// enabled treated immutably
 	// Returns enabled post visiting
 	// Cf. SType visitors, here we only throw ScribbleException or return nothing, so can use return this way
-	Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException; 
+	Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException; 
 	
 	// Pre: use on inlined or later (unsupported for Do, also Protocol)
 	// Pre: checkRoleEnabling
 	// enablers: enabled -> enabler -- treated immutably
 	// Returns enablers post visiting
 	Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribbleException;
+			throws ScribException;
 	
 	// Pre: conns is reflexive
 	// Also does correlation warnings

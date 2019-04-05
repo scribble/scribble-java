@@ -19,10 +19,10 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.del.RecursionDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
@@ -36,7 +36,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 	
 	@Override
 	public org.scribble.core.type.session.global.GRecursion translate(ScribNode n,
-			GTypeTranslator t) throws ScribbleException
+			GTypeTranslator t) throws ScribException
 	{
 		GRecursion source = (GRecursion) n;
 		RecVar recvar = source.getRecVarChild().toName();
@@ -46,7 +46,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		GRecursion gr = (GRecursion) visited;
 		//RecVarNode recvar = gr.recvar.clone();
@@ -62,7 +62,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 
 	@Override
 	public GRecursion leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child,
-			WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+			WFChoiceChecker checker, ScribNode visited) throws ScribException
 	{
 		GRecursion rec = (GRecursion) visited;
 		WFChoiceEnv merged = checker.popEnv()
@@ -76,7 +76,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 
 	@Override
 	public GRecursion leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribbleException
+			Projector proj, ScribNode visited) throws ScribException
 	{
 		GRecursion gr = (GRecursion) visited;
 		LProtocolBlock block =

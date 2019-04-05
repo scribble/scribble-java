@@ -63,7 +63,7 @@ public class LangConfig
 		this.sf = sf;
 	}
 	
-	public JobConfig toJobConfig2()
+	public JobConfig toJobConfig()
 	{
 		return new JobConfig(debug, main, useOldWf, noProgress, minEfsm, fair,
 				noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, spin,

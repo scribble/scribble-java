@@ -19,12 +19,12 @@ import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.NonRoleArgKind;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.env.Env;
 
 // Can probably be fully replaced by SubprotocolVisitor
@@ -51,20 +51,20 @@ public abstract class OffsetSubprotocolVisitor<T extends Env<?>>
 	
 	@Override
 	protected final ScribNode visitForSubprotocols(ScribNode parent,
-			ScribNode child) throws ScribbleException
+			ScribNode child) throws ScribException
 	{
 		return visitForOffsetSubprotocols(parent, child);
 	}
 	
 	protected ScribNode visitForOffsetSubprotocols(ScribNode parent,
-			ScribNode child) throws ScribbleException
+			ScribNode child) throws ScribException
 	{
 		return super.visitForSubprotocols(parent, child);
 	}
 
 	@Override
 	protected final void envLeaveProtocolDeclOverride(ScribNode parent,
-			ScribNode child, ScribNode visited) throws ScribbleException
+			ScribNode child, ScribNode visited) throws ScribException
 	{
 		this.rolemaps.pop();
 		this.argmaps.pop();
@@ -72,7 +72,7 @@ public abstract class OffsetSubprotocolVisitor<T extends Env<?>>
 
 	@Override
 	protected final void subprotocolEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.subprotocolEnter(parent, child);
 		offsetSubprotocolEnter(parent, child);
@@ -80,20 +80,20 @@ public abstract class OffsetSubprotocolVisitor<T extends Env<?>>
 
 	@Override
 	protected final ScribNode subprotocolLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		ScribNode n = offsetSubprotocolLeave(parent, child, visited);
 		return super.subprotocolLeave(parent, child, n);
 	}
 
 	protected void offsetSubprotocolEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 
 	}
 
 	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		return visited;
 	}

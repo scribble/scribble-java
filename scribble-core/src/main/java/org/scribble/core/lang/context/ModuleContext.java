@@ -15,7 +15,6 @@ package org.scribble.core.lang.context;
 
 import java.util.Map;
 
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtocolKind;
@@ -27,6 +26,7 @@ import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.Name;
 import org.scribble.core.type.name.ProtocolName;
+import org.scribble.util.ScribException;
 
 // Context information specific to each module as a root (wrt. to visitor passes)
 // CHECKME: move to main package?
@@ -46,7 +46,7 @@ public class ModuleContext
 
 	// Made by ModuleContextBuilder
 	// ModuleContext is the root context
-	public ModuleContext(ModuleName root, ScribNames deps, ScribNames visible) throws ScribbleException
+	public ModuleContext(ModuleName root, ScribNames deps, ScribNames visible) throws ScribException
 	{
 		this.root = root;
 		this.deps = deps;

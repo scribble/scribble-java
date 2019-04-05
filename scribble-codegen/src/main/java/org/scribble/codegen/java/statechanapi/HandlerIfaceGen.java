@@ -21,11 +21,11 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.MessageSigName;
+import org.scribble.util.ScribException;
 
 // Factor out
 public class HandlerIfaceGen extends AuxStateChanTypeGen
@@ -40,7 +40,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 	}
 
 	@Override
-	public InterfaceBuilder generateType() throws ScribbleException
+	public InterfaceBuilder generateType() throws ScribException
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 
@@ -93,7 +93,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
 	}
 	
-	public static void addHandleMethodOpAndPayloadParams(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribbleException
+	public static void addHandleMethodOpAndPayloadParams(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribException
 	{
 		Module main = apigen.getMainModule();
 		String opClass = SessionApiGenerator.getOpClassName(a.mid);

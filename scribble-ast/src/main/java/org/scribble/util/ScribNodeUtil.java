@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ScribNode;
 
-public class ScribUtil
+public class ScribNodeUtil
 {
 	// Strict class equality, cf. ScribNodeBase#visitChildWithClassCheck
 	// C is expected to be of a ground class type

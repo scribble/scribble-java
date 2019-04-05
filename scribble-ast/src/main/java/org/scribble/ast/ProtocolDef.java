@@ -15,9 +15,9 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase
@@ -51,7 +51,7 @@ public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase
 	}
 	
 	@Override
-	public ProtocolDef<K> visitChildren(AstVisitor nv) throws ScribbleException
+	public ProtocolDef<K> visitChildren(AstVisitor nv) throws ScribException
 	{
 		ProtocolBlock<K> block = 
 				visitChildWithClassEqualityCheck(this, getBlockChild(), nv);

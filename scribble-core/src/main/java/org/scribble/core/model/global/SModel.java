@@ -22,11 +22,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.job.Job;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EFSM;
 import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 public class SModel
 {
@@ -37,7 +37,7 @@ public class SModel
 		this.graph = graph;
 	}
 
-	public void validate(Job job) throws ScribbleException
+	public void validate(Job job) throws ScribException
 	{
 		SState init = this.graph.init;
 		Map<Integer, SState> states = this.graph.states;
@@ -92,7 +92,7 @@ public class SModel
 		if (!errorMsg.equals(""))
 		{
 			//throw new ScribbleException("\n" + init.toDot() + errorMsg);
-			throw new ScribbleException(errorMsg);
+			throw new ScribException(errorMsg);
 		}
 		//job.debugPrintln("(" + this.graph.proto + ") Progress satisfied.");  // Also safety... current errorMsg approach
 	}
@@ -150,7 +150,7 @@ public class SModel
 
 	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but not a good approach)
 	protected static Set<Role> checkRoleProgress(Map<Integer, SState> states,
-			SState init, Set<Integer> termset) throws ScribbleException
+			SState init, Set<Integer> termset) throws ScribException
 	{
 		Set<Role> starved = new HashSet<>();
 		Iterator<Integer> i = termset.iterator();
@@ -214,7 +214,7 @@ public class SModel
 	// (eventual reception)
 	protected static Map<Role, Set<ESend>> checkEventualReception(
 			Map<Integer, SState> states, SState init, Set<Integer> termset)
-			throws ScribbleException
+			throws ScribException
 	{
 		Set<Role> roles = states.get(termset.iterator().next()).config.efsms
 				.keySet();

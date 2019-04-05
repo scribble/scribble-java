@@ -26,12 +26,12 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.kind.RecVarKind;
 import org.scribble.del.ProtocolDefDel;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.context.env.ProjectionEnv;
@@ -54,7 +54,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		CommonTree blame = ((GProtocolDecl) parent).getHeaderChild().getSource();
 		SubprotoSig subsig = inl.peekStack();
@@ -80,7 +80,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 
 	@Override
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj)
-			throws ScribbleException
+			throws ScribException
 	{
 		//pushVisitorEnv(parent, child, proj);
 		ScribDelBase.pushVisitorEnv(this, proj);
@@ -88,7 +88,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 
 	@Override
 	public GProtocolDef leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribbleException
+			Projector proj, ScribNode visited) throws ScribException
 	{
 		GProtocolDef gpd = (GProtocolDef) visited;
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gpd.getBlockChild()

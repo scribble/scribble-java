@@ -32,11 +32,11 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ModuleContextBuilder;
 import org.scribble.visit.context.Projector;
 import org.scribble.visit.wf.NameDisambiguator;
@@ -57,7 +57,7 @@ public class ModuleDel extends ScribDelBase
 
 	@Override
 	public void enterModuleContextBuilding(ScribNode parent, ScribNode child,
-			ModuleContextBuilder builder) throws ScribbleException
+			ModuleContextBuilder builder) throws ScribException
 	{
 		builder.setModuleContext(
 				//new ModuleContext(builder.job.getContext().getParsed(), (Module) child)
@@ -71,7 +71,7 @@ public class ModuleDel extends ScribDelBase
 	// Maybe better to create on enter, so can be used during the context build pass (Context would need to be "cached" in the visitor to be accessed)
 	@Override
 	public Module leaveModuleContextBuilding(ScribNode parent, ScribNode child,
-			ModuleContextBuilder builder, ScribNode visited) throws ScribbleException
+			ModuleContextBuilder builder, ScribNode visited) throws ScribException
 	{
 		ModuleDel del = setModuleContext(builder.getModuleContext());
 		return (Module) visited.del(del);
@@ -79,7 +79,7 @@ public class ModuleDel extends ScribDelBase
 		
 	@Override
 	public Module leaveDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		Module mod = (Module) visited;
 		// Imports checked in ModuleContext -- that is built before disamb is run
@@ -96,7 +96,7 @@ public class ModuleDel extends ScribDelBase
 					npds.stream()
 							.filter(x -> dups1.contains(x.getDeclName().toString()))
 							.collect(Collectors.toList()).get(0);
-			throw new ScribbleException(first.getSource(),
+			throw new ScribException(first.getSource(),
 					"Duplicate non-protocol decls: " + first.getDeclName());
 		}
 		List<ProtocolDecl<?>> pds = mod.getProtoDeclChildren();
@@ -113,7 +113,7 @@ public class ModuleDel extends ScribDelBase
 								.filter(x -> dups2
 										.contains(x.getHeaderChild().getDeclName().toString()))
 								.collect(Collectors.toList()).get(0);
-				throw new ScribbleException(first.getSource(),
+				throw new ScribException(first.getSource(),
 						"Duplicate protocol decls: "
 								+ first.getHeaderChild().getDeclName());
 						// Global and locals also required to be distinct

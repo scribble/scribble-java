@@ -17,11 +17,11 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.SubprotocolVisitor;
 import org.scribble.visit.wf.env.ExplicitCorrelationEnv;
 
@@ -37,7 +37,7 @@ public class ExplicitCorrelationChecker
 	
 	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (child instanceof GProtocolDecl)
 		{
@@ -60,7 +60,7 @@ public class ExplicitCorrelationChecker
 
 	@Override
 	public void subprotocolEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.subprotocolEnter(parent, child);
 		child.del().enterExplicitCorrelationCheck(parent, child, this);
@@ -68,7 +68,7 @@ public class ExplicitCorrelationChecker
 	
 	@Override
 	public ScribNode subprotocolLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveExplicitCorrelationCheck(parent, child, this, visited);
 		return super.subprotocolLeave(parent, child, visited);

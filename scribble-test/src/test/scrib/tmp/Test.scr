@@ -69,6 +69,13 @@ module tmp.Test;
 // move lang types to type.sess, and move new visit
 // add exp conn checks to model validation
 // refactor test to use main instead of cli
+// simplify cli and arg parsing
+
+
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+}
 
 
 /*
@@ -112,10 +119,6 @@ explicit global protocol Foo(role A, role B, role C)
 }
 //*/
 
-global protocol Proto1(role A, role B)
-{
-	1() from A to B;
-}
 
 /*
 explicit global protocol Foo(role A, role B)

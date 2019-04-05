@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.job.Job;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.Protocol;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.SubprotoSig;
@@ -40,6 +39,7 @@ import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.local.ReachabilityEnv;
 import org.scribble.util.Constants;
+import org.scribble.util.ScribException;
 
 public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 		implements LNode
@@ -105,7 +105,7 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 	}
 
 	public ReachabilityEnv checkReachability()
-			throws ScribbleException
+			throws ScribException
 	{
 		return this.def
 				.checkReachability(new ReachabilityEnv(false, Collections.emptySet()));

@@ -14,11 +14,11 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.global.GNode;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.del.global.GDel;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 
 // CHECKME: move to visit package?
 public class GTypeTranslator extends SimpleVisitor<GNode>
@@ -29,7 +29,7 @@ public class GTypeTranslator extends SimpleVisitor<GNode>
 	}
 
 	@Override
-	public GNode visit(ScribNode n) throws ScribbleException
+	public GNode visit(ScribNode n) throws ScribException
 	{
 		return ((GDel) n.del()).translate(n, this);
 	}

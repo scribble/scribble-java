@@ -32,7 +32,8 @@ import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.global.Projector2;
-import org.scribble.util.ScribUtil2;
+import org.scribble.util.ScribUtil;
+import org.scribble.util.ScribException;
 
 // Global "static" context information for a Job -- single instance per Job, should not be shared between Jobs
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
@@ -224,7 +225,7 @@ public class JobContext
 	
 	public //Module 
 			LProtocol getProjection(GProtocolName fullname, Role role)
-			throws ScribbleException
+			throws ScribException
 	{
 		return getProjection(Projector2.projectFullProtocolName(fullname, role));
 	}
@@ -252,7 +253,7 @@ public class JobContext
 	
 	// N.B. graphs built from inlined (not unfolded)
 	public EGraph getEGraph(GProtocolName fullname, Role role)
-			throws ScribbleException
+			throws ScribException
 	{
 		LProtocolName fulllpn = Projector2.projectFullProtocolName(fullname, role);
 		// Moved form LProtocolDecl
@@ -274,7 +275,7 @@ public class JobContext
 		this.unfairEGraphs.put(fullname, graph);
 	}
 	
-	public EGraph getUnfairEGraph(GProtocolName fullname, Role role) throws ScribbleException
+	public EGraph getUnfairEGraph(GProtocolName fullname, Role role) throws ScribException
 	{
 		LProtocolName fulllpn = Projector2.projectFullProtocolName(fullname, role);
 
@@ -292,7 +293,7 @@ public class JobContext
 		this.fairSGraphs.put(fullname, graph);
 	}
 	
-	public SGraph getSGraph(GProtocolName fullname) throws ScribbleException
+	public SGraph getSGraph(GProtocolName fullname) throws ScribException
 	{
 		SGraph graph = this.fairSGraphs.get(fullname);
 		if (graph == null)
@@ -313,7 +314,7 @@ public class JobContext
 
 	private Map<Role, EGraph> getEGraphsForSGraphBuilding(GProtocolName fullname,
 			//GProtocolDecl gpd, 
-			boolean fair) throws ScribbleException
+			boolean fair) throws ScribException
 	{
 		Map<Role, EGraph> egraphs = new HashMap<>();
 		//for (Role self : gpd.getHeaderChild().getRoleDeclListChild().getRoles())
@@ -331,7 +332,7 @@ public class JobContext
 		this.unfairSGraphs.put(fullname, graph);
 	}
 
-	public SGraph getUnfairSGraph(GProtocolName fullname) throws ScribbleException
+	public SGraph getUnfairSGraph(GProtocolName fullname) throws ScribException
 	{
 		SGraph graph = this.unfairSGraphs.get(fullname);
 		if (graph == null)
@@ -355,7 +356,7 @@ public class JobContext
 	}
 	
 	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role)
-			throws ScribbleException
+			throws ScribException
 	{
 		LProtocolName fulllpn = Projector2.projectFullProtocolName(fullname, role);
 
@@ -373,7 +374,7 @@ public class JobContext
 	// Duplicated from CommandLine.runDot
 	// Minimises the FSM up to bisimulation
 	// N.B. ltsconvert will typically re-number the states
-	private static String runAut(String fsm, String aut) throws ScribbleException
+	private static String runAut(String fsm, String aut) throws ScribException
 	{
 		String tmpName = aut + ".tmp";
 		File tmp = new File(tmpName);
@@ -383,8 +384,8 @@ public class JobContext
 		}
 		try
 		{
-			ScribUtil2.writeToFile(tmpName, fsm);
-			String[] res = ScribUtil2.runProcess("ltsconvert", "-ebisim", "-iaut",
+			ScribUtil.writeToFile(tmpName, fsm);
+			String[] res = ScribUtil.runProcess("ltsconvert", "-ebisim", "-iaut",
 					"-oaut", tmpName);
 			if (!res[1].isEmpty())
 			{

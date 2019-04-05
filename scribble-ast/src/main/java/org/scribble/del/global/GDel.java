@@ -14,15 +14,15 @@
 package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.global.GNode;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
 public interface GDel extends ScribDel
 {
 	default GNode translate(ScribNode n, GTypeTranslator t)
-			throws ScribbleException
+			throws ScribException
 	{
 		throw new RuntimeException("TODO: " + n);
 	}

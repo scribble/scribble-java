@@ -21,10 +21,10 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LMessageTransfer;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;
@@ -34,13 +34,13 @@ public class LSendDel extends LMessageTransferDel
 	
 	@Override
 	public ScribNode leaveEGraphBuilding(ScribNode parent, ScribNode child,
-			EGraphBuilder builder, ScribNode visited) throws ScribbleException
+			EGraphBuilder builder, ScribNode visited) throws ScribException
 	{
 		LSend ls = (LSend) visited;
 		List<RoleNode> dests = ls.getDestinationChildren();
 		if (dests.size() > 1)
 		{
-			throw new ScribbleException(
+			throw new ScribException(
 					"[TODO] EFSM building for multicast not supported: " + ls);
 		}
 		Role peer = dests.get(0).toName();
@@ -67,7 +67,7 @@ public class LSendDel extends LMessageTransferDel
 	@Override
 	public LMessageTransfer leaveExplicitCorrelationCheck(ScribNode parent,
 			ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		LMessageTransfer lmt = (LMessageTransfer) visited;
 		checker.pushEnv(checker.popEnv().disableAccept());

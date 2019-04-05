@@ -25,10 +25,10 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.RuntimeScribbleException;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 
 public class GChoice extends Choice<Global> implements GCompoundInteraction
 {
@@ -92,9 +92,9 @@ public class GChoice extends Choice<Global> implements GCompoundInteraction
 					merged = merged.merge(af, cs.get(i)); // Merge currently does "nothing"; validation takes direct non-deterministic interpretation -- purpose of syntactic merge is to convert non-det to "equivalent" safe det in certain sitations
 				}
 			}
-			catch (ScribbleException e)  // HACK
+			catch (ScribException e)  // HACK
 			{
-				throw new RuntimeScribbleException(e);
+				throw new RuntimeScribException(e);
 			}
 			projection = merged;
 		}

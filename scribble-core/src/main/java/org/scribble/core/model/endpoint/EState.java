@@ -24,13 +24,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.MPrettyState;
 import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 // Label types used to be both RecVar and SubprotocolSigs; now using inlined protocol for FSM building so just RecVar
 public class EState extends MPrettyState<RecVar, EAction, EState, Local>
@@ -228,7 +228,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 									curr.removeEdge(tmp, s);
 								}
 							}
-							catch (ScribbleException e) { throw new RuntimeException(e); }
+							catch (ScribException e) { throw new RuntimeException(e); }
 						}
 						//for (Entry<IOAction, EndpointState> e : clones.entrySet())
 						Iterator<EAction> icloneas = cloneas.iterator();

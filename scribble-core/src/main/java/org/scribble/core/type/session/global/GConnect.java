@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.ConnectAction;
@@ -30,6 +29,7 @@ import org.scribble.core.type.session.local.LReq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector2;
+import org.scribble.util.ScribException;
 
 public class GConnect extends ConnectAction<Global, GSeq>
 		implements GType
@@ -77,11 +77,11 @@ public class GConnect extends ConnectAction<Global, GSeq>
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
 	{
 		if (!enabled.contains(this.src))
 		{
-			throw new ScribbleException("Source role not enabled: " + this.src);
+			throw new ScribException("Source role not enabled: " + this.src);
 		}
 		if (enabled.contains(this.dst))
 		{
@@ -94,7 +94,7 @@ public class GConnect extends ConnectAction<Global, GSeq>
 
 	@Override
 	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (enablers.containsKey(this.dst))
 		{

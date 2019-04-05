@@ -23,9 +23,9 @@ import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ProjectedRoleDeclFixer;
 
 public class LProjectionDeclDel extends LProtocolDeclDel
@@ -49,7 +49,7 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 	@Override
 	public ScribNode leaveProjectedRoleDeclFixing(ScribNode parent,
 			ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
 		// TODO: ensure all role params are used, to avoid empty roledecllist

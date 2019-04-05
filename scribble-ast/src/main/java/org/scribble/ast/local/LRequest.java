@@ -21,11 +21,11 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.RuntimeScribbleException;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
 import org.scribble.util.Constants;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LRequest extends LConnectionAction implements LSimpleSessionNode
@@ -58,9 +58,9 @@ public class LRequest extends LConnectionAction implements LSimpleSessionNode
 
 	@Override
 	public LSessionNode merge(AstFactory af, LSessionNode ln)
-			throws ScribbleException
+			throws ScribException
 	{
-		throw new RuntimeScribbleException("Invalid merge on LRequest: " + this);
+		throw new RuntimeScribException("Invalid merge on LRequest: " + this);
 	}
 
 	@Override

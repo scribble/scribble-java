@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import org.scribble.core.job.RuntimeScribbleException;
 import org.scribble.runtime.message.ScribInterrupt;
 import org.scribble.runtime.message.ScribMessage;
 import org.scribble.runtime.session.SessionEndpoint;
+import org.scribble.util.RuntimeScribException;
 
 public abstract class BinaryChannelEndpoint
 {
@@ -110,13 +110,13 @@ public abstract class BinaryChannelEndpoint
 						ScribMessage m = read(ticket);
 						if (m instanceof ScribInterrupt)  // FIXME: hacked in
 						{
-							throw new RuntimeScribbleException((Throwable) ((ScribInterrupt) m).payload[0]);
+							throw new RuntimeScribException((Throwable) ((ScribInterrupt) m).payload[0]);
 						}
 						return m;
 					}
 					catch(IOException e)
 					{
-						throw new RuntimeScribbleException(e);
+						throw new RuntimeScribException(e);
 					}
 					finally
 					{

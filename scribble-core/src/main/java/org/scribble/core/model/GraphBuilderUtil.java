@@ -13,8 +13,8 @@
  */
 package org.scribble.core.model;
 
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.util.ScribException;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of S
 // N.B. must call init before every "new visit", including first
@@ -60,7 +60,7 @@ public abstract class GraphBuilderUtil
 		s.addEdge(a, succ);
 	}
 	
-	protected void removeEdgeAux(S s, A a, S succ) throws ScribbleException  // Exception necessary?
+	protected void removeEdgeAux(S s, A a, S succ) throws ScribException  // Exception necessary?
 	{
 		s.removeEdge(a, succ);
 	}

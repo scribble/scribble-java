@@ -15,10 +15,10 @@ package org.scribble.del.name.simple;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.RecVarKind;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.wf.NameDisambiguator;
 
@@ -31,14 +31,14 @@ public class RecVarNodeDel extends ScribDelBase
 
 	@Override
 	public RecVarNode leaveDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		// Consistent with bound RoleNode checking
 		RecVarNode rn = (RecVarNode) visited;
 		RecVar rv = rn.toName();
 		if (!disamb.isBoundRecVar(rv))
 		{
-			throw new ScribbleException(rn.getSource(),
+			throw new ScribException(rn.getSource(),
 					"Rec variable not bound: " + rn);
 		}
 		return (RecVarNode) super.leaveDisambiguation(parent, child, disamb, rn);
@@ -47,7 +47,7 @@ public class RecVarNodeDel extends ScribDelBase
 
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inliner) throws ScribbleException
+			ProtocolDefInliner inliner) throws ScribException
 	{
 		super.enterProtocolInlining(parent, child, inliner);
 		ScribDelBase.pushVisitorEnv(this, inliner);
@@ -55,7 +55,7 @@ public class RecVarNodeDel extends ScribDelBase
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inliner, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inliner, ScribNode visited) throws ScribException
 	{
 		RecVarNode rn = (RecVarNode) visited;
 		RecVar rv = rn.toName();

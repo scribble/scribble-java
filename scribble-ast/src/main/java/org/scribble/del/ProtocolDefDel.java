@@ -15,8 +15,8 @@ package org.scribble.del;
 
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.RecRemover;
 import org.scribble.visit.util.RecVarCollector;
@@ -28,7 +28,7 @@ public abstract class ProtocolDefDel extends ScribDelBase
 	protected abstract ProtocolDefDel copy();
 
 	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribException
 	{
 		ScribDelBase.pushVisitorEnv(this, inl);
 	}
@@ -54,7 +54,7 @@ public abstract class ProtocolDefDel extends ScribDelBase
 		{
 			this.inlined.accept(rvc);  // RecVarCollector not an InlinedProtocolVistor -- do simple visiting directly on inlined
 		}
-		catch (ScribbleException e)
+		catch (ScribException e)
 		{
 			throw new RuntimeException(e);
 		}

@@ -16,10 +16,10 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.PayloadTypeKind;
 import org.scribble.core.type.name.PayloadElemType;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 
@@ -72,7 +72,7 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase
 
 	@Override
 	public UnaryPayloadElem<K> visitChildren(AstVisitor nv)
-			throws ScribbleException
+			throws ScribException
 	{
 		@SuppressWarnings("unchecked")
 		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChild(

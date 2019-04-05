@@ -16,9 +16,9 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.OpNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.session.MessageSig;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public class MessageSigNode extends ScribNodeBase implements MessageNode
@@ -66,7 +66,7 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	}
 	
 	@Override
-	public MessageSigNode visitChildren(AstVisitor nv) throws ScribbleException
+	public MessageSigNode visitChildren(AstVisitor nv) throws ScribException
 	{
 		OpNode op = (OpNode) visitChild(getOpChild(), nv);
 		PayloadElemList pay = (PayloadElemList) 

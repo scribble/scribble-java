@@ -44,6 +44,7 @@ import org.scribble.core.type.session.Arg;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.global.Projector2;
+import org.scribble.util.ScribException;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job
@@ -76,7 +77,7 @@ public class Job
 	
 	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util
 	public SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs,
-			boolean explicit) throws ScribbleException
+			boolean explicit) throws ScribException
 	{
 		debugPrintln("(" + fullname + ") Building global model using:");
 		for (Role r : egraphs.keySet())
@@ -89,14 +90,14 @@ public class Job
 		return this.sgbu.buildSGraph(this, fullname, egraphs, explicit);  // FIXME: factor out util
 	}
 
-	public void checkWellFormedness() throws ScribbleException
+	public void checkWellFormedness() throws ScribException
 	{
 		runContextBuildingPasses();
 		//runUnfoldingPass();
 		runWellFormednessPasses();
 	}
 	
-	public void runContextBuildingPasses() throws ScribbleException
+	public void runContextBuildingPasses() throws ScribException
 	{
 		/*// FIXME TODO: refactor into a runVisitorPassOnAllModules for SimpleVisitor (and add operation to ModuleDel)
 		Set<ModuleName> fullmodnames = this.context.getFullModuleNames();
@@ -162,7 +163,7 @@ public class Job
 		}
 	}
 
-	public void runWellFormednessPasses() throws ScribbleException
+	public void runWellFormednessPasses() throws ScribException
 	{
 		/*if (!this.config.noValidation)
 		{
@@ -185,7 +186,7 @@ public class Job
 					.stream().filter(x -> !used.contains(x)).collect(Collectors.toSet());
 			if (!unused.isEmpty())
 			{
-				throw new ScribbleException(
+				throw new ScribException(
 						"Unused roles in " + inlined.fullname + ": " + unused);
 			}
 
@@ -250,7 +251,7 @@ public class Job
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
 	// SubprotocolVisitor it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
 	// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
-	protected void runProjectionPasses() throws ScribbleException
+	protected void runProjectionPasses() throws ScribException
 	{
 		/*runVisitorPassOnAllModules(Projector.class);
 		runProjectionContextBuildingPasses();
@@ -286,7 +287,7 @@ public class Job
 	// Pre: checkWellFormedness 
 	// Returns: fullname -> Module
 	public Map<LProtocolName, LProtocol> getProjections(GProtocolName fullname,
-			Role role) throws ScribbleException
+			Role role) throws ScribException
 	{
 		//Module root = 
 		LProtocol proj =

@@ -22,13 +22,13 @@ import java.util.stream.Stream;
 import org.scribble.ast.SessionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LSessionNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.type.kind.Local;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceDoPruner;
@@ -42,7 +42,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	@Override
 	public ScribNode leaveProjectedChoiceDoPruning(ScribNode parent,
 			ScribNode child, ProjectedChoiceDoPruner pruner, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		LInteractionSeq lc = (LInteractionSeq) visited;
 		List<LSessionNode> actions = lc.getInteractionChildren().stream()
@@ -53,7 +53,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	// enter in super
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		LInteractionSeq lis = (LInteractionSeq) visited;
 		List<LSessionNode> lins = new LinkedList<LSessionNode>();
@@ -78,7 +78,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	// Replaces visitChildrenInSubprotocols for LocalInteractionSequence 
 	public LInteractionSeq visitForReachabilityChecking(
 			ReachabilityChecker checker, LInteractionSeq child)
-			throws ScribbleException
+			throws ScribException
 	{
 		List<LSessionNode> visited = new LinkedList<>();
 		for (SessionNode<Local> li : child.getInteractionChildren())
@@ -86,7 +86,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			ReachabilityEnv re = checker.peekEnv();
 			if (!re.isSequenceable())
 			{
-				throw new ScribbleException(li.getSource(),
+				throw new ScribException(li.getSource(),
 						"Invalid/unreachable sequence to: " + li);
 			}
 			visited.add((LSessionNode) li.accept(checker));
@@ -95,7 +95,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	}
 
 	public LInteractionSeq visitForFsmConversion(EGraphBuilder gb,
-			LInteractionSeq child) throws ScribbleException
+			LInteractionSeq child) throws ScribException
 	{
 		EState entry = gb.util.getEntry();
 		EState exit = gb.util.getExit();
@@ -146,7 +146,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	// Duplicated from GInteractionSeq
 	@Override
 	public LInteractionSeq leaveRecRemoval(ScribNode parent, ScribNode child,
-			RecRemover rem, ScribNode visited) throws ScribbleException
+			RecRemover rem, ScribNode visited) throws ScribException
 	{
 		LInteractionSeq lis = (LInteractionSeq) visited;
 		List<LSessionNode> lins = lis.getInteractionChildren().stream()

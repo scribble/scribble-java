@@ -23,7 +23,6 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtocolKind;
@@ -32,6 +31,7 @@ import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public class Module extends ScribNodeBase
@@ -87,7 +87,7 @@ public class Module extends ScribNodeBase
 	}
 	
 	@Override
-	public Module visitChildren(AstVisitor nv) throws ScribbleException
+	public Module visitChildren(AstVisitor nv) throws ScribException
 	{
 		ModuleDecl moddecl = (ModuleDecl) visitChild(getModuleDeclChild(), nv);
 		// class equality check probably too restrictive -- FIXME: remove class checks

@@ -19,12 +19,12 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ProtocolDeclContext;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
 import org.scribble.visit.util.RoleCollector;
@@ -44,7 +44,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind>
 		
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		disamb.clear();
 		return visited;
@@ -53,7 +53,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind>
 	@Override
 	public void enterProtocolDeclContextBuilding(ScribNode parent,
 			ScribNode child, ProtocolDeclContextBuilder builder)
-			throws ScribbleException
+			throws ScribException
 	{
 		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
 
@@ -70,7 +70,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind>
 
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl) throws ScribbleException
+			ProtocolDefInliner inl) throws ScribException
 	{
 		SubprotoSig subsig = inl.peekStack();  // SubprotocolVisitor has already entered subprotocol
 		inl.setSubprotocolRecVar(subsig);
@@ -78,14 +78,14 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind>
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		return visited;
 	}
 
 	@Override
 	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child,
-			RoleCollector coll, ScribNode visited) throws ScribbleException
+			RoleCollector coll, ScribNode visited) throws ScribException
 	{
 		ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
 		Set<Role> occs = coll.getNames();

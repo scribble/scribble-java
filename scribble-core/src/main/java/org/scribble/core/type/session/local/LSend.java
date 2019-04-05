@@ -16,7 +16,6 @@ package org.scribble.core.type.session.local;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.MessageId;
@@ -27,6 +26,7 @@ import org.scribble.core.type.session.MessageSig;
 import org.scribble.core.type.session.MessageTransfer;
 import org.scribble.core.type.session.Payload;
 import org.scribble.core.visit.local.ReachabilityEnv;
+import org.scribble.util.ScribException;
 
 public class LSend extends MessageTransfer<Local, LSeq>
 		implements LType
@@ -68,7 +68,7 @@ public class LSend extends MessageTransfer<Local, LSeq>
 
 	@Override
 	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribbleException
+			throws ScribException
 	{
 		return env;
 	}

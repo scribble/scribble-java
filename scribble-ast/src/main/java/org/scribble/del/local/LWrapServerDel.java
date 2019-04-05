@@ -15,9 +15,9 @@ package org.scribble.del.local;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LWrapServer;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ConnectionActionDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.EGraphBuilder;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
@@ -28,7 +28,7 @@ public class LWrapServerDel extends ConnectionActionDel
 {
 	@Override
 	public LWrapServer leaveEGraphBuilding(ScribNode parent, ScribNode child,
-			EGraphBuilder builder, ScribNode visited) throws ScribbleException
+			EGraphBuilder builder, ScribNode visited) throws ScribException
 	{
 		LWrapServer la = (LWrapServer) visited;
 		Role peer = la.getSourceChild().toName();
@@ -47,7 +47,7 @@ public class LWrapServerDel extends ConnectionActionDel
 	@Override
 	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent,
 			ScribNode child, UnguardedChoiceDoProjectionChecker checker)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.enterUnguardedChoiceDoProjectionCheck(parent, child, checker);
 		LWrapServer la = (LWrapServer) child;

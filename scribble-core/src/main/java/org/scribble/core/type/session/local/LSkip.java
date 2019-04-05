@@ -16,7 +16,6 @@ package org.scribble.core.type.session.local;
 import java.util.List;
 import java.util.Set;
 
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.MemberName;
@@ -29,6 +28,7 @@ import org.scribble.core.type.session.STypeBase;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.local.ReachabilityEnv;
+import org.scribble.util.ScribException;
 
 // Used only *during* projection -- filtered out by GSeq::projection
 public class LSkip extends STypeBase<Local, LSeq> implements LType
@@ -108,7 +108,7 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	
 	@Override
 	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribbleException
+			throws ScribException
 	{
 		throw new RuntimeException("Unsupported for: " + this);
 	}

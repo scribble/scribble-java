@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.GraphBuilderUtil;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
+import org.scribble.util.ScribException;
 
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
 // Tailored to support graph building from syntactic local protocol choice and recursion
@@ -320,7 +320,7 @@ public class EGraphBuilderUtil
 	
 	// succ assumed to be this.getEntry()
 	public void removeEdgeFromPredecessor(EState s, EAction a)
-			throws ScribbleException
+			throws ScribException
 			// Removing prev edge, to be replaced by addRecursionEdge
 	{
 		//s.removeEdge(a, this.getEntry());

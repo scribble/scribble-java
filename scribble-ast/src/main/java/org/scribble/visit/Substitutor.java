@@ -18,11 +18,11 @@ import java.util.Map;
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.NonRoleArgKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 
 public class Substitutor extends AstVisitor
 {
@@ -41,7 +41,7 @@ public class Substitutor extends AstVisitor
 	
 	@Override
 	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		return visited.substituteNames(this);
 	}

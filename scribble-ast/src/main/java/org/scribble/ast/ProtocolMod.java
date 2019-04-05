@@ -14,7 +14,7 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.core.job.ScribbleException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public abstract class ProtocolMod extends ScribNodeBase
@@ -42,7 +42,7 @@ public abstract class ProtocolMod extends ScribNodeBase
 	}
 	
 	@Override
-	public ProtocolMod visitChildren(AstVisitor nv) throws ScribbleException
+	public ProtocolMod visitChildren(AstVisitor nv) throws ScribException
 	{
 		return this;
 	}

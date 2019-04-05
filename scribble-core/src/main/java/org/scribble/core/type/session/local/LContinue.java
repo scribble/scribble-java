@@ -18,7 +18,6 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
@@ -27,6 +26,7 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.local.ReachabilityEnv;
+import org.scribble.util.ScribException;
 
 public class LContinue extends Continue<Local, LSeq> implements LType
 {
@@ -79,7 +79,7 @@ public class LContinue extends Continue<Local, LSeq> implements LType
 							//b.addEdge(pred, a, entry);   //b.addRecursionEdge(pred, prev, b.getRecursionEntry(this.recvar));
 							b.addRecursionEdge(pred, a, this.recvar);
 						}
-						catch (ScribbleException e)  // CHECKME: necessary for removeEdge to have throws?
+						catch (ScribException e)  // CHECKME: necessary for removeEdge to have throws?
 						{
 							throw new RuntimeException(e);
 						}
@@ -91,7 +91,7 @@ public class LContinue extends Continue<Local, LSeq> implements LType
 
 	@Override
 	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribbleException
+			throws ScribException
 	{
 		Set<RecVar> tmp = new HashSet<>(env.recvars);
 		tmp.add(this.recvar);

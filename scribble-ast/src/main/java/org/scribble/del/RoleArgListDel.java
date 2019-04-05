@@ -19,8 +19,8 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class RoleArgListDel extends DoArgListDel
@@ -32,7 +32,7 @@ public class RoleArgListDel extends DoArgListDel
 
 	@Override
 	public RoleArgList leaveDisambiguation(ScribNode parent, ScribNode child,
-			NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		visited = super.leaveDisambiguation(parent, child, disamb, visited);
 
@@ -42,7 +42,7 @@ public class RoleArgListDel extends DoArgListDel
 		//if (roles.size() != new HashSet<>(roles).size())
 		if (roles.size() != roles.stream().distinct().count())
 		{
-			throw new ScribbleException(ral.getSource(),
+			throw new ScribException(ral.getSource(),
 					"Duplicate role args: " + roles);
 		}
 		return ral;

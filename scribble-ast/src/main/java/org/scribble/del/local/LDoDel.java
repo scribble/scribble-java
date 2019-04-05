@@ -31,7 +31,6 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.type.kind.RecVarKind;
 import org.scribble.core.type.name.GProtocolName;
@@ -40,6 +39,7 @@ import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.DoDel;
 import org.scribble.lang.LangContext;
+import org.scribble.util.ScribException;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.ProjectedRoleDeclFixer;
 import org.scribble.visit.context.ProtocolDeclContextBuilder;
@@ -70,7 +70,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	
 	@Override
 	public LDo leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner dinlr, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner dinlr, ScribNode visited) throws ScribException
 	{
 		if (!dinlr.isCycle())
 		{
@@ -93,7 +93,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	public ScribNode
 			leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child,
 					ProjectedRoleDeclFixer fixer, ScribNode visited)
-					throws ScribbleException
+					throws ScribException
 			// CHECKME: similar needed for non-role args?  Or all params always known? (not ideal for distributed?)
 	{
 		LangContext jc = fixer.job.getContext();
@@ -125,7 +125,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	@Override
 	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
 			ScribNode child, UnguardedChoiceDoProjectionChecker checker,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		/*//if (checker.isCycle())
 		if (checker.isRootedCycle())  // ChoiceUnguardedSubprotocolChecker is a (regular) SubprotocolVisitor which pushes a subprotosig on root decl entry (ProjectedSubprotocolPruner.visit)

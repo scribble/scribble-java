@@ -19,11 +19,11 @@ import java.util.Map;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.statechanapi.ioifaces.IOInterfacesGenerator;
-import org.scribble.core.job.RuntimeScribbleException;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 
 public class JEndpointApiGenerator
 {
@@ -34,7 +34,7 @@ public class JEndpointApiGenerator
 		this.job = job;
 	}
 
-	public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
+	public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribException
 	{
 		this.job.debugPrintln("\n[Java API gen] Running " + SessionApiGenerator.class + " for " + fullname);
 		SessionApiGenerator sg = new SessionApiGenerator(this.job, fullname);  // FIXME: reuse?
@@ -43,7 +43,7 @@ public class JEndpointApiGenerator
 	}
 	
 	// FIXME: refactor an EndpointApiGenerator -- ?
-	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribbleException
+	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribException
 	{
 		/*JobContext jc = this.job.getContext();
 		if (jc.getEndpointGraph(fullname, self) == null)
@@ -57,7 +57,7 @@ public class JEndpointApiGenerator
 		{
 			iogen = new IOInterfacesGenerator(apigen, subtypes);
 		}
-		catch (RuntimeScribbleException e)  // FIXME: use IOInterfacesGenerator.skipIOInterfacesGeneration
+		catch (RuntimeScribException e)  // FIXME: use IOInterfacesGenerator.skipIOInterfacesGeneration
 		{
 			//System.err.println("[Warning] Skipping I/O Interface generation for protocol featuring: " + fullname);
 			this.job.warningPrintln("Skipping I/O Interface generation for: " + fullname + "\n  Cause: " + e.getMessage());

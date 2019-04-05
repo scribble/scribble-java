@@ -18,7 +18,6 @@ import java.util.Iterator;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
@@ -26,6 +25,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
 import org.scribble.lang.LangContext;
 import org.scribble.util.Constants;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public abstract class Do<K extends ProtocolKind>
@@ -77,7 +77,7 @@ public abstract class Do<K extends ProtocolKind>
 	}
 
 	@Override
-	public Do<K> visitChildren(AstVisitor nv) throws ScribbleException
+	public Do<K> visitChildren(AstVisitor nv) throws ScribException
 	{
 		RoleArgList ril = (RoleArgList) visitChild(getRoleListChild(), nv);
 		NonRoleArgList al = (NonRoleArgList) visitChild(getNonRoleListChild(), nv);

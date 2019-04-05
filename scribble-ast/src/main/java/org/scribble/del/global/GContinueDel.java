@@ -17,9 +17,9 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.del.ContinueDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
@@ -30,7 +30,7 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 	
 	@Override
 	public org.scribble.core.type.session.global.GContinue translate(ScribNode n,
-			GTypeTranslator t) throws ScribbleException
+			GTypeTranslator t) throws ScribException
 	{
 		GContinue source = (GContinue) n;
 		RecVar recvar = source.getRecVarChild().toName();
@@ -39,7 +39,7 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 
 	@Override
 	public GContinue leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		GContinue gc = (GContinue) visited;
 		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) gc.getRecVarChild()
@@ -58,7 +58,7 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 
 	@Override
 	public GContinue leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribbleException
+			Projector proj, ScribNode visited) throws ScribException
 	{
 		GContinue gc = (GContinue) visited;
 		//LContinue projection = project(proj.job.af, gc, proj.peekSelf());

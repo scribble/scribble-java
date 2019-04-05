@@ -25,7 +25,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.kind.ProtocolKind;
@@ -34,6 +33,7 @@ import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.EnvVisitor;
 import org.scribble.visit.context.env.ProjectionEnv;
 
@@ -59,7 +59,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 
 	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		// "Override" SubprotocolVisitor visitChildrenInSubprotocols pattern, avoids adding visitForProjection to every ModelNode
 		// Or else need to build in a "visit override" mechanism into the parent visitors
@@ -77,7 +77,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	// Projector uses this to "override" the base SubprotocolVisitor visitChildrenInSubprotocols pattern
 	// Better to be in the visitor than in the del for visibility of visitor enter/leave -- also localises special visiting pattern inside the visitor, while keeping the del enter/leave methods uniform (e.g. GlobalProtocolDeclDelegate enter/leave relies on the same peekSelf API as for other nodes)
 	protected GProtocolDecl visitOverrideForGProtocolDecl(Module parent,
-			GProtocolDecl child) throws ScribbleException
+			GProtocolDecl child) throws ScribException
 	{
 		for (Role self : child.getRoles())
 		{
@@ -92,7 +92,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	
 	@Override
 	protected final void envEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.envEnter(parent, child);
 		child.del().enterProjection(parent, child, this);
@@ -100,7 +100,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	
 	@Override
 	protected ScribNode envLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveProjection(parent, child, this, visited);
 		return super.envLeave(parent, child, visited);

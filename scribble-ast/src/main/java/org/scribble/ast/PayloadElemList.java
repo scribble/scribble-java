@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.PayloadElemType;
 import org.scribble.core.type.session.Payload;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // Cf. DoArgList, but here we don't need as much abstraction (cf. RoleArgList, NonRoleArgList)
@@ -63,7 +63,7 @@ public class PayloadElemList extends ScribNodeBase
 	}
 	
 	@Override
-	public PayloadElemList visitChildren(AstVisitor nv) throws ScribbleException
+	public PayloadElemList visitChildren(AstVisitor nv) throws ScribException
 	{
 		List<PayloadElem<?>> elems = 
 				visitChildListWithClassEqualityCheck(this, getElementChildren(), nv);

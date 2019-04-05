@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ParamKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 
@@ -60,7 +60,7 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 	
 	@Override
 	public HeaderParamDeclList<? extends K> visitChildren(AstVisitor nv)
-			throws ScribbleException
+			throws ScribException
 	{
 		List<? extends HeaderParamDecl<K>> nds = 
 				visitChildListWithClassEqualityCheck(this, getParamDeclChildren(), nv);

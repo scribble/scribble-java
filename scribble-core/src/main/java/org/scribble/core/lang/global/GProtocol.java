@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.job.Job;
 import org.scribble.core.job.JobContext;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.Protocol;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.SubprotoSig;
@@ -51,7 +50,8 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.global.Projector2;
-import org.scribble.util.ScribUtil2;
+import org.scribble.util.ScribUtil;
+import org.scribble.util.ScribException;
 
 public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		implements GNode  // Mainly for GDel.translate return (to include GProtocol)
@@ -100,13 +100,13 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	}
 
 	// Following are some top-level entry to GType methods
-	public Set<Role> checkRoleEnabling() throws ScribbleException
+	public Set<Role> checkRoleEnabling() throws ScribException
 	{
 		Set<Role> tmp = this.roles.stream().collect(Collectors.toSet());
 		return this.def.checkRoleEnabling(tmp);
 	}
 
-	public Map<Role, Role> checkExtChoiceConsistency() throws ScribbleException
+	public Map<Role, Role> checkExtChoiceConsistency() throws ScribException
 	{
 		Map<Role, Role> tmp = this.roles.stream()
 				.collect(Collectors.toMap(x -> x, x -> x));
@@ -182,7 +182,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	// TODO FIXME: refactor following methods (e.g., make non-static?)
 	
 	public static void validateByScribble(Job job2, GProtocolName fullname,
-			boolean fair) throws ScribbleException
+			boolean fair) throws ScribException
 	{
 		JobContext jc = job2.getContext();
 		SGraph graph = (fair) 
@@ -193,7 +193,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	}
 
 	public static void validateBySpin(Job job2, GProtocolName fullname)
-			throws ScribbleException
+			throws ScribException
 	{
 		JobContext jobc2 = job2.getContext();
 		/*Module mod = jc.getModule(fullname.getPrefix());
@@ -319,7 +319,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 			}
 			if (!GProtocol.runSpin(fullname.toString(), pml + "\n\n" + ltl))
 			{
-				throw new ScribbleException("Protocol not valid:\n" + gpd);
+				throw new ScribException("Protocol not valid:\n" + gpd);
 			}
 			i += batchSize;
 		}
@@ -335,8 +335,8 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 			try
 			{
 				String tmpName = tmp.getAbsolutePath();				
-				ScribUtil2.writeToFile(tmpName, pml);
-				String[] res = ScribUtil2.runProcess("spin", "-a", tmpName);
+				ScribUtil.writeToFile(tmpName, pml);
+				String[] res = ScribUtil.runProcess("spin", "-a", tmpName);
 				res[0] = res[0].replaceAll("(?m)^ltl.*$", "");
 				res[1] = res[1].replace(
 						"'gcc-4' is not recognized as an internal or external command,\noperable program or batch file.",
@@ -362,14 +362,14 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 					i++;
 				}
 				int dnfair = (procs <= 6) ? 2 : 3;  // FIXME
-				res = ScribUtil2.runProcess("gcc", "-o", "pan", "pan.c", "-DNFAIR=" + dnfair);
+				res = ScribUtil.runProcess("gcc", "-o", "pan", "pan.c", "-DNFAIR=" + dnfair);
 				res[0] = res[0].trim();
 				res[1] = res[1].trim();
 				if (!res[0].isEmpty() || !res[1].isEmpty())
 				{
 					throw new RuntimeException("[-spin] [gcc]: " + res[0] + "\n" + res[1]);
 				}
-				res = ScribUtil2.runProcess("pan", "-a", "-f");
+				res = ScribUtil.runProcess("pan", "-a", "-f");
 				res[1] = res[1].replace("warning: no accept labels are defined, so option -a has no effect (ignored)", "");
 				res[0] = res[0].trim();
 				res[1] = res[1].trim();
@@ -385,7 +385,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 				}
 				return valid;
 			}
-			catch (ScribbleException e)
+			catch (ScribException e)
 			{
 				throw new RuntimeException(e);
 			}

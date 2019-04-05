@@ -33,7 +33,6 @@ import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScopedNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.NonRoleArgKind;
@@ -46,6 +45,7 @@ import org.scribble.core.type.name.Scope;
 import org.scribble.core.type.session.Arg;
 import org.scribble.lang.Lang;
 import org.scribble.lang.LangContext;
+import org.scribble.util.ScribException;
 import org.scribble.visit.env.Env;
 
 public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
@@ -89,7 +89,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	// Most subclasses will override visitForSubprotocols (e.g. ReachabilityChecker, FsmConstructor), but sometimes still want to change whole visit pattern (e.g. Projector)
 	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		enter(parent, child);
 		ScribNode visited = visitForSubprotocols(parent, child);
@@ -98,7 +98,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 
 	// Subclasses can override this to disable subprotocol visiting
 	protected ScribNode visitForSubprotocols(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (child instanceof Do)
 		{
@@ -113,7 +113,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	
 	// The Do node itself is no longer visited -- FIXME: projection needs to visit it -- no: that's in enter/leave, visited means "visit children"
 	protected Do<?> visitOverrideForDo(ScribNode parent, Do<?> doo)
-			throws ScribbleException
+			throws ScribException
 	{
 		if (!isCycle())
 		{
@@ -147,7 +147,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 			return n.accept(
 					new Substitutor(this.job, this.rolemaps.peek(), this.argmaps.peek()));
 		}
-		catch (ScribbleException e)
+		catch (ScribException e)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + n);
 		}
@@ -155,7 +155,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 
 	@Override
 	protected final void envEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		super.envEnter(parent, child);
 
@@ -181,7 +181,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 
 	@Override
 	protected final ScribNode envLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		ScribNode n = subprotocolLeave(parent, child, visited);
 		if (child instanceof ProtocolDecl)
@@ -201,19 +201,19 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	
 	// Hack for OffsetSubprotocolVisitor
 	protected void envLeaveProtocolDeclOverride(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		leaveSubprotocol();
 	}
 
 	protected void subprotocolEnter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 
 	}
 
 	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		return visited;
 	}

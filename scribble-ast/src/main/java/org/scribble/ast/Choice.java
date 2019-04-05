@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.del.ScribDel;
 import org.scribble.util.Constants;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction<K>
@@ -65,7 +65,7 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 	}
 	
 	@Override
-	public Choice<K> visitChildren(AstVisitor nv) throws ScribbleException
+	public Choice<K> visitChildren(AstVisitor nv) throws ScribException
 	{
 		RoleNode subj = (RoleNode) visitChild(getSubjectChild(), nv);
 		List<? extends ProtocolBlock<K>> blocks = 

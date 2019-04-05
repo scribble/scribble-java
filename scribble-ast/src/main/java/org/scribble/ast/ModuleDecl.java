@@ -19,11 +19,11 @@ import java.util.List;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.del.ScribDel;
 import org.scribble.util.Constants;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public class ModuleDecl extends NameDeclNode<ModuleKind>
@@ -64,7 +64,7 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	}
 
 	@Override
-	public ModuleDecl visitChildren(AstVisitor nv) throws ScribbleException
+	public ModuleDecl visitChildren(AstVisitor nv) throws ScribException
 	{
 		ModuleNameNode name = (ModuleNameNode) visitChild(getNameNodeChild(), nv);
 		//return nv.job.af.ModuleDecl(this.source, fullmodname);  // cf., reconstruct

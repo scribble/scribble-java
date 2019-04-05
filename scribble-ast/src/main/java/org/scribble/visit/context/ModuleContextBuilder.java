@@ -14,10 +14,10 @@
 package org.scribble.visit.context;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.lang.Lang;
 import org.scribble.lang.context.ModuleContextMaker;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
@@ -34,7 +34,7 @@ public class ModuleContextBuilder extends AstVisitor
 
 	@Override
 	protected void enter(ScribNode parent, ScribNode child)
-			throws ScribbleException
+			throws ScribException
 	{
 		//System.out.println("mmm1: " + child.getClass() + " ,, " + child.del());
 		child.del().enterModuleContextBuilding(parent, child, this);
@@ -42,7 +42,7 @@ public class ModuleContextBuilder extends AstVisitor
 
 	@Override
 	protected ScribNode leave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribbleException
+			ScribNode visited) throws ScribException
 	{
 		return visited.del().leaveModuleContextBuilding(parent, child, this,
 				visited);

@@ -18,10 +18,10 @@ import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.del.ProtocolBlockDel;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.context.Projector;
@@ -33,14 +33,14 @@ public class GProtocolBlockDel extends ProtocolBlockDel implements GDel
 	
 	@Override
 	public GSeq translate(ScribNode n, GTypeTranslator t)
-			throws ScribbleException
+			throws ScribException
 	{
 		return (GSeq) ((GProtocolBlock) n).getInteractSeqChild().visitWith(t);
 	}
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
+			ProtocolDefInliner inl, ScribNode visited) throws ScribException
 	{
 		GProtocolBlock gpb = (GProtocolBlock) visited;
 		GInteractionSeq seq = (GInteractionSeq) ((InlineProtocolEnv) gpb
@@ -53,14 +53,14 @@ public class GProtocolBlockDel extends ProtocolBlockDel implements GDel
 	
 	@Override
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj)
-			throws ScribbleException
+			throws ScribException
 	{
 		ScribDelBase.pushVisitorEnv(this, proj);
 	}
 	
 	@Override
 	public GProtocolBlock leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribbleException
+			Projector proj, ScribNode visited) throws ScribException
 	{
 		GProtocolBlock gpb = (GProtocolBlock) visited;
 		LInteractionSeq seq =

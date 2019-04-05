@@ -16,13 +16,13 @@ package org.scribble.core.type.session.local;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.visit.local.ReachabilityEnv;
+import org.scribble.util.ScribException;
 
 public class LDisconnect extends DisconnectAction<Local, LSeq>
 		implements LType
@@ -64,7 +64,7 @@ public class LDisconnect extends DisconnectAction<Local, LSeq>
 
 	@Override
 	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribbleException
+			throws ScribException
 	{
 		return env;
 	}

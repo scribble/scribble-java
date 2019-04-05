@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.wf.ExplicitCorrelationChecker;
@@ -32,7 +32,7 @@ public abstract class ChoiceDel extends CompoundInteractionDel
 	}
 
 	@Override
-	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribException
 	{
 		UnfoldingEnv env = unf.peekEnv().enterContext();
 		env = env.pushChoiceParent();  // Above is already a copy, but fine
@@ -40,7 +40,7 @@ public abstract class ChoiceDel extends CompoundInteractionDel
 	}
 
 	@Override
-	public Choice<?> leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	public Choice<?> leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribException
 	{
 		Choice<?> cho = (Choice<?>) visited;
 		List<UnfoldingEnv> benvs =
@@ -51,14 +51,14 @@ public abstract class ChoiceDel extends CompoundInteractionDel
 	}
 
 	@Override
-	public void enterExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker) throws ScribbleException
+	public void enterExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker) throws ScribException
 	{
 		ExplicitCorrelationEnv env = checker.peekEnv().enterContext();
 		checker.pushEnv(env);
 	}
 
 	@Override
-	public Choice<?> leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	public Choice<?> leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribException
 	{
 		Choice<?> cho = (Choice<?>) visited;
 		List<ExplicitCorrelationEnv> benvs =

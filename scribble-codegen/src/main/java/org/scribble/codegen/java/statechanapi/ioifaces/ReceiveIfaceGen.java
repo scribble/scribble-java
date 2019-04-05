@@ -22,10 +22,10 @@ import org.scribble.codegen.java.statechanapi.ScribSockGen;
 import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.GProtocolName;
+import org.scribble.util.ScribException;
 
 public class ReceiveIfaceGen extends IOStateIfaceGen
 {
@@ -35,7 +35,7 @@ public class ReceiveIfaceGen extends IOStateIfaceGen
 	}
 
 	@Override
-	public InterfaceBuilder generateType() throws ScribbleException
+	public InterfaceBuilder generateType() throws ScribException
 	{
 		if (this.curr.getAllActions().stream().anyMatch((a) -> !a.isReceive())) // TODO (connect/disconnect)
 		{
@@ -46,7 +46,7 @@ public class ReceiveIfaceGen extends IOStateIfaceGen
 	}
 
 	@Override
-	protected void constructInterface() throws ScribbleException
+	protected void constructInterface() throws ScribException
 	{
 		super.constructInterface();
 		addAsyncDiscardMethod();

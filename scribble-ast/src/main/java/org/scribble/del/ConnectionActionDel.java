@@ -15,7 +15,7 @@ package org.scribble.del;
 
 import org.scribble.ast.ConnectAction;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
+import org.scribble.util.ScribException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.UnfoldingEnv;
@@ -32,7 +32,7 @@ public abstract class ConnectionActionDel extends SimpleSessionNodeDel
 	@Override
 	public ConnectAction<?> leaveProtocolInlining(ScribNode parent,
 			ScribNode child, ProtocolDefInliner inl, ScribNode visited)
-			throws ScribbleException
+			throws ScribException
 	{
 		ConnectAction<?> c = (ConnectAction<?>) visited;
 		ConnectAction<?> inlined = (ConnectAction<?>) c.clone();//inl.job.af);
@@ -42,7 +42,7 @@ public abstract class ConnectionActionDel extends SimpleSessionNodeDel
 
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child,
-			InlinedProtocolUnfolder unf) throws ScribbleException
+			InlinedProtocolUnfolder unf) throws ScribException
 	{
 		UnfoldingEnv env = unf.popEnv();
 		env = env.disableUnfold();

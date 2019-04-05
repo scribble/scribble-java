@@ -24,10 +24,10 @@ import org.scribble.ast.ProtocolMod;
 import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 public class GProtocolDecl extends ProtocolDecl<Global> implements GScribNode
 {
@@ -52,7 +52,7 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GScribNode
 	
 	// CHECKME: project modifiers?
 	public LProjectionDecl project(AstFactory af, Module mod, Role self,
-			LProtocolHeader hdr, LProtocolDef def) throws ScribbleException
+			LProtocolHeader hdr, LProtocolDef def) throws ScribException
 			// mod is just the parent?
 	{
 		/*//Role self = proj.peekSelf();

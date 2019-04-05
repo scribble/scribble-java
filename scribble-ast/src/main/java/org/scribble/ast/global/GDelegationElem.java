@@ -21,11 +21,11 @@ import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GDelegationType;
 import org.scribble.core.type.name.PayloadElemType;
 import org.scribble.del.ScribDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.context.Projector;
 
@@ -89,7 +89,7 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	}
 
 	@Override
-	public GDelegationElem visitChildren(AstVisitor nv) throws ScribbleException
+	public GDelegationElem visitChildren(AstVisitor nv) throws ScribException
 	{
 		GProtocolNameNode name = (GProtocolNameNode) 
 				visitChild(getProtocolChild(), nv);

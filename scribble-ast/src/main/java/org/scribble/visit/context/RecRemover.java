@@ -17,9 +17,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.lang.Lang;
+import org.scribble.util.ScribException;
 import org.scribble.visit.NoEnvInlinedProtocolVisitor;
 
 // FIXME: shadowed recvars
@@ -49,14 +49,14 @@ public class RecRemover extends NoEnvInlinedProtocolVisitor
 	}
 
 	@Override
-	public void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	public void inlinedEnter(ScribNode parent, ScribNode child) throws ScribException
 	{
 		super.inlinedEnter(parent, child);
 		child.del().enterRecRemoval(parent, child, this);
 	}
 	
 	@Override
-	public ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	public ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
 	{
 		visited = visited.del().leaveRecRemoval(parent, child, this, visited);
 		return super.inlinedLeave(parent, child, visited);

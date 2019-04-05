@@ -15,22 +15,22 @@ package org.scribble.del.local;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LSessionNode;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.del.InteractionNodeDel;
 import org.scribble.del.ScribDelBase;
+import org.scribble.util.ScribException;
 import org.scribble.visit.wf.ReachabilityChecker;
 
 public interface LInteractionNodeDel extends InteractionNodeDel
 {
 	// Unlike WF-choice enter/leave for CompoundInteractionNodeDelegate (i.e. both global/local), reachability is limited to local only
 	@Override
-	default void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
+	default void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribException
 	{
 		ScribDelBase.pushVisitorEnv(this, checker);
 	}
 
 	@Override
-	default LSessionNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+	default LSessionNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribException
 	{
 		return (LSessionNode) ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
 	}

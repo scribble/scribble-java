@@ -23,11 +23,11 @@ import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.core.job.ScribbleException;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 // Parameterize on output class type
 public abstract class ScribSockGen extends StateChanTypeGen
@@ -85,13 +85,13 @@ public abstract class ScribSockGen extends StateChanTypeGen
 	}
 
 	@Override
-	public ClassBuilder generateType() throws ScribbleException
+	public ClassBuilder generateType() throws ScribException
 	{
 		constructClass();  // So className can be "overridden" in subclass constructor (CaseSocket)
 		return this.cb;
 	}
 
-	protected void constructClass() throws ScribbleException
+	protected void constructClass() throws ScribException
 	{
 		constructClassExceptMethods();
 		addMethods();
@@ -163,7 +163,7 @@ public abstract class ScribSockGen extends StateChanTypeGen
 		ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 	}
 	
-	protected abstract void addMethods() throws ScribbleException;
+	protected abstract void addMethods() throws ScribException;
 	
 	/*@Deprecated
 	protected void setNextSocketReturnType(MethodBuilder mb, EState succ)
@@ -259,21 +259,21 @@ public abstract class ScribSockGen extends StateChanTypeGen
 		mb.setReturn(ret);
 	}
 	
-	protected static void checkJavaDataTypeDecl(DataTypeDecl dtd) throws ScribbleException
+	protected static void checkJavaDataTypeDecl(DataTypeDecl dtd) throws ScribException
 	{
 		checkJavaSchema(dtd);
 	}
 
-	protected static void checkMessageSigNameDecl(MessageSigNameDecl msd) throws ScribbleException
+	protected static void checkMessageSigNameDecl(MessageSigNameDecl msd) throws ScribException
 	{
 		checkJavaSchema(msd);
 	}
 	
-	protected static void checkJavaSchema(NonProtocolDecl<?> npd) throws ScribbleException
+	protected static void checkJavaSchema(NonProtocolDecl<?> npd) throws ScribException
 	{
 		if (!npd.schema.equals(ScribSockGen.JAVA_SCHEMA))  // FIXME: factor out
 		{
-			throw new ScribbleException(npd.getSource(), "Unsupported data type schema: " + npd.schema);
+			throw new ScribException(npd.getSource(), "Unsupported data type schema: " + npd.schema);
 		}
 	}
 	
