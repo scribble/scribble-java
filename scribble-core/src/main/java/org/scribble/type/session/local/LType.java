@@ -16,13 +16,14 @@ package org.scribble.type.session.local;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.local.LNode;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.session.SType;
 import org.scribble.visit.local.ReachabilityEnv;
 
-public interface LType extends SType<Local, LSeq>
+public interface LType extends SType<Local, LSeq>, LNode
 {
 	//Role getSelf();  // CHECKME: useful?
 	

@@ -24,7 +24,7 @@ import org.scribble.ast.InteractionSeq;
 import org.scribble.type.kind.Local;
 import org.scribble.type.session.Message;
 
-public class LInteractionSeq extends InteractionSeq<Local> implements LNode
+public class LInteractionSeq extends InteractionSeq<Local> implements LScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LInteractionSeq(Token t)

@@ -27,7 +27,7 @@ import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.Constants;
 
-public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
+public class GProtocolHeader extends ProtocolHeader<Global> implements GScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GProtocolHeader(Token t)

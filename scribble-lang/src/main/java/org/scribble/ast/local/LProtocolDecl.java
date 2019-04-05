@@ -29,7 +29,7 @@ import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
 
 // CHECKME: maybe make abstract with concrete parsed (LParsedDecl) and projected (LProjectionDecl) subclasses
-public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
+public class LProtocolDecl extends ProtocolDecl<Local> implements LScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LProtocolDecl(Token t)

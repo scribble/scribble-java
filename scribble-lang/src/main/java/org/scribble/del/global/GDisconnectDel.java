@@ -15,7 +15,7 @@ package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDisconnect;
-import org.scribble.ast.local.LNode;
+import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.job.ScribbleException;
@@ -108,7 +108,7 @@ public class GDisconnectDel extends ConnectionActionDel
 	{
 		GDisconnect gd = (GDisconnect) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gd.project(proj.job.config.af, self);
+		LScribNode projection = gd.project(proj.job.config.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GDisconnect) GSimpleInteractionNodeDel.super.leaveProjection(parent,
 				child, proj, gd);

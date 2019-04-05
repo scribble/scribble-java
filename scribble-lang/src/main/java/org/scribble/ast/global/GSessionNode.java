@@ -17,7 +17,7 @@ import org.scribble.ast.SessionNode;
 import org.scribble.type.kind.Global;
 
 // Alternatively to interface, use GlobalNode subclass with delegation to "super" base (e.g. Choice) classes
-public interface GSessionNode extends SessionNode<Global>, GNode
+public interface GSessionNode extends SessionNode<Global>, GScribNode
 {
 	//public LInteractionSeq project(AstFactory af, Role self);  // TODO
 }

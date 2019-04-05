@@ -11,22 +11,22 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.local;
+package org.scribble.ast.global;
 
 import org.scribble.ast.ProtocolKindNode;
-import org.scribble.type.kind.Local;
+import org.scribble.type.kind.Global;
 
-public interface LNode extends ProtocolKindNode<Local>
+public interface GScribNode extends ProtocolKindNode<Global>
 {
 	@Override
-	default boolean isLocal()
+	default boolean isGlobal()
 	{
 		return true;
 	}
 	
 	@Override
-	default Local getKind()
+	default Global getKind()
 	{
-		return Local.KIND;
+		return Global.KIND;
 	}
 }

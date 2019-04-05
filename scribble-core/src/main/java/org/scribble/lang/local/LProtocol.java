@@ -15,7 +15,6 @@ package org.scribble.lang.local;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,14 +36,13 @@ import org.scribble.type.name.Role;
 import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.local.LRecursion;
 import org.scribble.type.session.local.LSeq;
-import org.scribble.type.session.local.LType;
 import org.scribble.util.Constants;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 import org.scribble.visit.local.ReachabilityEnv;
 
-public class LProtocol extends
-		Protocol<Local, LProtocolName, LSeq> implements LType
+public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
+		implements LNode
 {
 	public final Role self;
 
@@ -62,12 +60,6 @@ public class LProtocol extends
 	{
 		return new LProtocol(source, mods, fullname, roles, self, params, def);
 	}
-
-	@Override
-	public boolean isSingleConts(Set<RecVar> rvs)
-	{
-		throw new RuntimeException("Unsupported for LProtocol:\n" + this);
-	}
 	
 	// CHECKME: drop from Protocol (after removing Protocol from SType?)
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
@@ -81,7 +73,7 @@ public class LProtocol extends
 		LSeq body = this.def.substitute(subs).getInlined(v).pruneRecs();
 		RecVar rv = v.getInlinedRecVar(sig);
 		LRecursion rec = new LRecursion(null, rv, body);  // CHECKME: or protodecl source?
-		CommonTree source = getSource();
+		CommonTree source = getSource();  // CHECKME: or null source?
 		LSeq def = new LSeq(null, Stream.of(rec).collect(Collectors.toList()));
 		return new LProtocol(source, this.mods, this.fullname, this.roles,
 				this.self, this.params, def);
@@ -110,19 +102,6 @@ public class LProtocol extends
 		/*EState init = toGraph(b);
 		EState term = init.getTerminal();
 		return new EGraph(init, term);*/
-	}
-	
-	@Override
-	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		this.def.buildGraph(b);
-	}
-
-	@Override
-	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribbleException
-	{
-		throw new RuntimeException("Unsupported for Protocol: " + this);
 	}
 
 	public ReachabilityEnv checkReachability()

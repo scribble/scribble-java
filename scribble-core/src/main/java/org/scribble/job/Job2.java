@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.lang.SubprotoSig;
 import org.scribble.lang.context.ModuleContext;
+import org.scribble.lang.global.GNode;
 import org.scribble.lang.global.GProtocol;
 import org.scribble.lang.local.LProtocol;
 import org.scribble.model.endpoint.EGraph;
@@ -41,7 +42,6 @@ import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.type.session.Arg;
-import org.scribble.type.session.global.GType;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 import org.scribble.visit.global.Projector2;
@@ -146,7 +146,7 @@ public class Job2
 		{
 				STypeUnfolder<Global> unf1 = new STypeUnfolder<>();
 				//GTypeUnfolder unf2 = new GTypeUnfolder();
-				GType unf = (GType) inlined.unfoldAllOnce(unf1);//.unfoldAllOnce(unf2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
+				GProtocol unf = (GProtocol) inlined.unfoldAllOnce(unf1);//.unfoldAllOnce(unf2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 				debugPrintln("\nAll recursions unfolded once:\n" + unf);
 		}
 		
@@ -293,7 +293,7 @@ public class Job2
 		LProtocol proj =
 				this.context.getProjection(fullname, role);
 		
-		List<ProtocolName<Local>> ps = proj.getProtoDependencies();
+		List<ProtocolName<Local>> ps = proj.def.getProtoDependencies();
 		for (ProtocolName<Local> p : ps)
 		{
 			System.out.println("\n" + this.context.getProjection((LProtocolName) p));
@@ -303,7 +303,7 @@ public class Job2
 			System.out.println("\n" + proj);
 		}
 
-		List<MemberName<?>> ns = proj.getNonProtoDependencies();
+		List<MemberName<?>> ns = proj.def.getNonProtoDependencies();
 
 		warningPrintln("");
 		warningPrintln("[TODO] Full module projection and imports: "

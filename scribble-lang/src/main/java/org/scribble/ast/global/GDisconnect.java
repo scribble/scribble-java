@@ -17,7 +17,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.DisconnectAction;
-import org.scribble.ast.local.LNode;
+import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RoleKind;
@@ -45,13 +45,13 @@ public class GDisconnect extends DisconnectAction<Global>
 		return new GDisconnect(this);
 	}
 
-	public LNode project(AstFactory af, Role self)
+	public LScribNode project(AstFactory af, Role self)
 	{
 		RoleNode leftNode = this.getLeftChild();
 		RoleNode rightNode = this.getRightChild();
 		Role left = leftNode.toName();
 		Role right = rightNode.toName();
-		LNode proj = null;
+		LScribNode proj = null;
 		if (left.equals(self) || right.equals(self))
 		{
 			RoleNode leftNode1 = (RoleNode) af.SimpleNameNode(leftNode.getSource(),

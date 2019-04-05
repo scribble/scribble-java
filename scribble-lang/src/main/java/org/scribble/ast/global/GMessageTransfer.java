@@ -23,7 +23,7 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.local.LSessionNode;
-import org.scribble.ast.local.LNode;
+import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.local.LReceive;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.type.kind.Global;
@@ -52,12 +52,12 @@ public class GMessageTransfer extends MessageTransfer<Global>
 		return new GMessageTransfer(this);
 	}
 
-	public LNode project(AstFactory af, Role self)
+	public LScribNode project(AstFactory af, Role self)
 	{
 		RoleNode srcNode = getSourceChild();
 		Role src = srcNode.toName();
 		List<Role> dests = this.getDestinationRoles();
-		LNode proj = null;
+		LScribNode proj = null;
 		if (src.equals(self) || dests.contains(self))
 		{
 			RoleNode srcNode1 = (RoleNode) af.SimpleNameNode(srcNode.getSource(),

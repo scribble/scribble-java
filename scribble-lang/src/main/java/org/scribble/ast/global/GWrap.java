@@ -18,7 +18,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ConnectAction;
 import org.scribble.ast.MessageSigNode;
-import org.scribble.ast.local.LNode;
+import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RoleKind;
@@ -39,13 +39,13 @@ public class GWrap extends ConnectAction<Global> implements GSimpleSessionNode
 		super(node);
 	}
 
-	public LNode project(AstFactory af, Role self)
+	public LScribNode project(AstFactory af, Role self)
 	{
 		RoleNode srcNode = getSourceChild();
 		RoleNode destNode = getDestinationChild();
 		Role srcrole = srcNode.toName();
 		Role destrole = destNode.toName();
-		LNode projection = null;
+		LScribNode projection = null;
 		if (srcrole.equals(self) || destrole.equals(self))
 		{
 			RoleNode srcNode1 = (RoleNode) af.SimpleNameNode(srcNode.getSource(),

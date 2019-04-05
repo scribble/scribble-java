@@ -15,7 +15,6 @@ package org.scribble.lang;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
@@ -23,19 +22,19 @@ import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.MemberName;
-import org.scribble.type.name.MessageId;
 import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ProtocolName;
-import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
-import org.scribble.type.session.STypeBase;
 import org.scribble.type.session.Seq;
 import org.scribble.util.Constants;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>, B extends Seq<K, B>>
-		extends STypeBase<K, B>
+		implements SNode
 {
+	private final CommonTree source;  // CHECKME: factor out with SType(Base) ?
+	
 	public final List<ProtocolMod> mods;
 	public final N fullname;
 	public final List<Role> roles;  // Ordered role params; pre: size >= 2
@@ -47,7 +46,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	public Protocol(CommonTree source, List<ProtocolMod> mods, N fullname,
 			List<Role> roles, List<MemberName<? extends NonRoleParamKind>> params, B def)
 	{
-		super(source);
+		this.source = source;  // CHECKME: factor out with SType(Base) ?
 		this.mods = Collections.unmodifiableList(mods);
 		this.fullname = fullname;
 		this.roles = Collections.unmodifiableList(roles);
@@ -68,46 +67,8 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	{
 		return this.mods.contains(ProtocolMod.EXPLICIT);
 	}
-	
-	// FIXME: confusing with this.roles List -- refactor: Protocol shouldn't be a SType
-	@Override
-	public Set<Role> getRoles()
-	{
-		throw new RuntimeException("Unsupported for Protocol: " + this);
-	}
 
-	@Override
-	public Set<MessageId<?>> getMessageIds()
-	{
-		throw new RuntimeException("Unsupported for Protocol: " + this);
-	}
-
-	@Override
-	public Set<RecVar> getRecVars()
-	{
-		throw new RuntimeException("Unsupported for Protocol: " + this);
-	}
-
-	@Override
-	public Protocol<K, N, B> substitute(Substitutions subs)
-	{
-		// CHECKME: needed?
-		/*List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
-				.collect(Collectors.toList());
-		List<MemberName<NonRoleArgKind>> params = this.params.stream().map(x -> ...)
-				.collect(Collectors.toList());
-		return reconstruct(getSource(), this.mods, this.fullname, roles,
-				this.def.substitute(subs));*/
-		throw new RuntimeException("Unsupported for Protocol: " + this);
-	}
-
-	@Override
-	public Protocol<K, N, B> pruneRecs()
-	{
-		throw new RuntimeException("Unsupported for Protocol: " + this);
-	}
-	
-	@Override
+	/*@Override
 	public List<ProtocolName<K>> getProtoDependencies()
 	{
 		return this.def.getProtoDependencies();
@@ -117,6 +78,20 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		return this.def.getNonProtoDependencies();
+	}*/
+	
+	public abstract Protocol<K, N, B> getInlined(STypeInliner v);
+	public abstract Protocol<K, N, B> unfoldAllOnce(STypeUnfolder<K> u);
+
+	public boolean hasSource()  // i.e., was parsed
+	{
+		return this.source != null;
+	}
+
+  // CHECKME: factor out with SType(Base) ?
+	public CommonTree getSource()  // Pre: hasSource
+	{
+		return this.source;
 	}
 
 	@Override
@@ -186,9 +161,11 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 			return false;
 		}
 		Protocol<?, ?, ?> them = (Protocol<?, ?, ?>) o;
-		return super.equals(this)  // Does canEquals
+		return them.canEquals(this)
 				&& this.mods.equals(them.mods) && this.fullname.equals(them.fullname)
 				&& this.roles.equals(them.roles) && this.params.equals(them.params)
 				&& this.def.equals(them.def);
 	}
+
+	public abstract boolean canEquals(Object o);
 }

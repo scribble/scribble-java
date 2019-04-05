@@ -18,7 +18,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ConnectAction;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.local.LNode;
+import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.RoleKind;
@@ -47,12 +47,12 @@ public class GConnect extends ConnectAction<Global>
 		return new GConnect(this);
 	}
 
-	public LNode project(AstFactory af, Role self)
+	public LScribNode project(AstFactory af, Role self)
 	{
 		Role src = this.getSourceChild().toName();
 		MessageNode msgNode = this.getMessageNodeChild();
 		Role dest = this.getDestinationChild().toName();
-		LNode proj = null;
+		LScribNode proj = null;
 		if (src.equals(self) || dest.equals(self))
 		{
 			if (src.equals(dest))

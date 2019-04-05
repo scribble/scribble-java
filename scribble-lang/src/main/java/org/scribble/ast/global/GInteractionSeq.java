@@ -25,7 +25,7 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 
-public class GInteractionSeq extends InteractionSeq<Global> implements GNode
+public class GInteractionSeq extends InteractionSeq<Global> implements GScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GInteractionSeq(Token t)

@@ -28,7 +28,7 @@ import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.Constants;
 
-public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
+public class LProtocolHeader extends ProtocolHeader<Local> implements LScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LProtocolHeader(Token t)

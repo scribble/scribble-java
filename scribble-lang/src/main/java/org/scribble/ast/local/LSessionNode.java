@@ -24,7 +24,7 @@ import org.scribble.type.session.Message;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 // Alternatively to interface, use GlobalNode subclass with delegation to "super" base (e.g. Choice) classes
-public interface LSessionNode extends SessionNode<Local>, LNode
+public interface LSessionNode extends SessionNode<Local>, LScribNode
 {
 	Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer);
 

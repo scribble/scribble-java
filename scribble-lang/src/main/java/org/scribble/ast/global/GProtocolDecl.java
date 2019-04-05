@@ -29,7 +29,7 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.Role;
 
-public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
+public class GProtocolDecl extends ProtocolDecl<Global> implements GScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GProtocolDecl(Token t)

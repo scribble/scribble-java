@@ -18,7 +18,7 @@ import java.util.List;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GConnect;
-import org.scribble.ast.local.LNode;
+import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.job.ScribbleException;
@@ -109,7 +109,7 @@ public class GConnectDel extends ConnectionActionDel
 	{
 		GConnect gc = (GConnect) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gc.project(proj.job.config.af, self);
+		LScribNode projection = gc.project(proj.job.config.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GConnect) GSimpleInteractionNodeDel.super.leaveProjection(parent,
 				child, proj, gc);

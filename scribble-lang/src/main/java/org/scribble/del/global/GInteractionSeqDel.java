@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GRecursion;
-import org.scribble.ast.local.LSessionNode;
+import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.local.LInteractionSeq;
-import org.scribble.ast.local.LNode;
+import org.scribble.ast.local.LScribNode;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.job.ScribbleException;
@@ -48,7 +48,7 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 		List<GType> elems = new LinkedList<>();
 		for (GSessionNode c : source.getInteractionChildren())
 		{
-			elems.add(c.visitWith(t));  // throws ScribbleException
+			elems.add((GType) c.visitWith(t));  // throws ScribbleException
 		}
 		return new GSeq(source, elems);
 	}
@@ -93,7 +93,7 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 		List<LSessionNode> lis = new LinkedList<>();
 		for (GSessionNode gi : gis.getInteractionChildren())  // FIXME: rewrite using flatMap
 		{
-			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
+			LScribNode ln = (LScribNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			//LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
 			// TODO: move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
 			if (ln instanceof LInteractionSeq)  // Self comm sequence

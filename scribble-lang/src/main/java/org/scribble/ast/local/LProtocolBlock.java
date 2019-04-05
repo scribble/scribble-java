@@ -21,7 +21,7 @@ import org.scribble.ast.ProtocolBlock;
 import org.scribble.type.kind.Local;
 import org.scribble.type.session.Message;
 
-public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
+public class LProtocolBlock extends ProtocolBlock<Local> implements LScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LProtocolBlock(Token t)

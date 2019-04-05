@@ -15,7 +15,7 @@ package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GWrap;
-import org.scribble.ast.local.LNode;
+import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.job.ScribbleException;
@@ -90,7 +90,7 @@ public class GWrapDel extends ConnectionActionDel
 	{
 		GWrap gw = (GWrap) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gw.project(proj.job.config.af, self);
+		LScribNode projection = gw.project(proj.job.config.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GWrap) GSimpleInteractionNodeDel.super.leaveProjection(parent,
 				child, proj, gw);

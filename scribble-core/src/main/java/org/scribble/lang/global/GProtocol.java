@@ -47,15 +47,14 @@ import org.scribble.type.name.Role;
 import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.global.GRecursion;
 import org.scribble.type.session.global.GSeq;
-import org.scribble.type.session.global.GType;
 import org.scribble.type.session.local.LSeq;
 import org.scribble.util.ScribUtil2;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 import org.scribble.visit.global.Projector2;
 
-public class GProtocol extends
-		Protocol<Global, GProtocolName, GSeq> implements GType
+public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
+		implements GNode  // Mainly for GDel.translate return (to include GProtocol)
 {
 	public GProtocol(CommonTree source, List<ProtocolMod> mods,
 			GProtocolName fullname, List<Role> roles,
@@ -99,9 +98,22 @@ public class GProtocol extends
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.params, unf);
 	}
+
+	// Following are some top-level entry to GType methods
+	public Set<Role> checkRoleEnabling() throws ScribbleException
+	{
+		Set<Role> tmp = this.roles.stream().collect(Collectors.toSet());
+		return this.def.checkRoleEnabling(tmp);
+	}
+
+	public Map<Role, Role> checkExtChoiceConsistency() throws ScribbleException
+	{
+		Map<Role, Role> tmp = this.roles.stream()
+				.collect(Collectors.toMap(x -> x, x -> x));
+		return this.def.checkExtChoiceConsistency(tmp);
+	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
-	@Override
 	public LProjection projectInlined(Role self)
 	{
 		LSeq body = (LSeq) this.def.projectInlined(self);
@@ -122,42 +134,12 @@ public class GProtocol extends
 				body);
 	}
 
-	@Override
 	public LProjection project(Projector2 v)
 	{
 		LSeq body = (LSeq) this.def.project(v).pruneRecs();
 		return projectAux(v.self,
 				v.job.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
 				body);
-	}
-
-	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException
-	{
-		throw new RuntimeException("Unsupported for Protocol: " + this);
-	}
-
-	// FIXME: top-level overriding pattern inconsistent with, e.g., getInlined -- though maybe should be fixing the latter
-	// CHECKME: refactor Protocol out of SType?  Also Do -- but harder because Do needs to be in Seq
-	public Set<Role> checkRoleEnabling() throws ScribbleException
-	{
-		Set<Role> tmp = //Collections.unmodifiableSet(
-				new HashSet<>(this.roles);
-		return this.def.checkRoleEnabling(tmp);
-	}
-
-	@Override
-	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribbleException
-	{
-		throw new RuntimeException("Unsupported for Protocol: " + this);
-	}
-
-	public Map<Role, Role> checkExtChoiceConsistency() throws ScribbleException
-	{
-		Map<Role, Role> tmp = this.roles.stream()
-				.collect(Collectors.toMap(x -> x, x -> x));
-		return this.def.checkExtChoiceConsistency(tmp);
 	}
 	
 	@Override
@@ -195,6 +177,10 @@ public class GProtocol extends
 		return o instanceof GProtocol;
 	}
 
+	
+	
+	// TODO FIXME: refactor following methods (e.g., make non-static?)
+	
 	public static void validateByScribble(Job2 job2, GProtocolName fullname,
 			boolean fair) throws ScribbleException
 	{

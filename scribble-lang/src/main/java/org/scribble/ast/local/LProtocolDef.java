@@ -18,7 +18,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.type.kind.Local;
 
-public class LProtocolDef extends ProtocolDef<Local> implements LNode
+public class LProtocolDef extends ProtocolDef<Local> implements LScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LProtocolDef(Token t)

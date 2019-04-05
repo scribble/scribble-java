@@ -17,13 +17,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
+import org.scribble.lang.global.GNode;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 import org.scribble.type.session.SType;
 import org.scribble.type.session.local.LType;
 import org.scribble.visit.global.Projector2;
 
-public interface GType extends SType<Global, GSeq>
+public interface GType extends SType<Global, GSeq>, GNode
 {
 	LType projectInlined(Role self);  // Use on inlined (i.e., Do inlined, roles pruned)
 	LType project(Projector2 v);  // Use on parsed (intermed)

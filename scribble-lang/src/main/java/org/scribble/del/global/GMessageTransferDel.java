@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
-import org.scribble.ast.local.LNode;
+import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.MessageTransferDel;
 import org.scribble.job.ScribbleException;
@@ -109,7 +109,7 @@ public class GMessageTransferDel extends MessageTransferDel
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gmt.project(proj.job.config.af, self);
+		LScribNode projection = gmt.project(proj.job.config.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(
 				parent, child, proj, gmt);
