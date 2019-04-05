@@ -108,7 +108,7 @@ public class GDisconnectDel extends ConnectionActionDel
 	{
 		GDisconnect gd = (GDisconnect) visited;
 		Role self = proj.peekSelf();
-		LScribNode projection = gd.project(proj.job.config.af, self);
+		LScribNode projection = gd.project(proj.lang.config.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GDisconnect) GSimpleInteractionNodeDel.super.leaveProjection(parent,
 				child, proj, gd);

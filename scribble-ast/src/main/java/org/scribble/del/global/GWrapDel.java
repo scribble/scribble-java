@@ -90,7 +90,7 @@ public class GWrapDel extends ConnectionActionDel
 	{
 		GWrap gw = (GWrap) visited;
 		Role self = proj.peekSelf();
-		LScribNode projection = gw.project(proj.job.config.af, self);
+		LScribNode projection = gw.project(proj.lang.config.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GWrap) GSimpleInteractionNodeDel.super.leaveProjection(parent,
 				child, proj, gw);

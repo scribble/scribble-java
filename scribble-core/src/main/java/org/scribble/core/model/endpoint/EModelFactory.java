@@ -27,6 +27,8 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
+
+// Combine with SModelFactory?  No point to separate?
 public interface EModelFactory
 {
 	ESend newESend(Role peer, MessageId<?> mid, Payload payload);

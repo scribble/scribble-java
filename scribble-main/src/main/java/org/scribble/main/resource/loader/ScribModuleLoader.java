@@ -13,15 +13,20 @@
  */
 package org.scribble.main.resource.loader;
 
-import org.scribble.ast.AstFactory;
+import java.io.File;
+import java.nio.file.Path;
+
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Module;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.main.ScribAntlrWrapper;
+import org.scribble.main.resource.InlineResource;
 import org.scribble.main.resource.Resource;
+import org.scribble.main.resource.locator.DirectoryResourceLocator;
 import org.scribble.main.resource.locator.ResourceLocator;
 import org.scribble.util.Pair;
-import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribException;
+import org.scribble.util.ScribParserException;
 
 // loading: ModuleName -> Module
 //   ModuleName --> Path --ResourceLocator--> Resource --ScribAntlrWrapper--> Module
@@ -36,16 +41,44 @@ public class ScribModuleLoader extends DefaultModuleLoader
 		this.antlr = antlr;
 	}
 
-	@Override
-	public Pair<Resource, Module> loadModule(ModuleName fullname, AstFactory af)
-			throws ScribParserException, ScribException
+	// CHECKME: check only called once?  at start?
+	public Pair<Resource, Module> loadMainModule(Path mainpath)
+			throws ScribException, ScribParserException
 	{
-		Pair<Resource, Module> cached = super.loadModule(fullname, af);
+		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);
+				// Hardcoded to DirectoryResourceLocator
+		Module m = this.antlr.parse(res);  // Does del decoration
+		ScribModuleLoader.checkMainModuleName(mainpath, m);
+		ModuleName fullname = m.getFullModuleName();
+		Pair<Resource, Module> cached = super.loadModule(fullname);
+		if (cached != null)
+		{
+			return cached;  // CHECKME: compare loaded against cached?
+		}
+		registerModule(res, m);
+		return new Pair<>(res, m);
+	}
+
+	// CHECKME: check only called once?  at start?
+	public Pair<Resource, Module> loadMainModule(String inline)
+			throws ScribException, ScribParserException
+	{
+		Resource res = new InlineResource(inline);
+		Module m = (Module) this.antlr.parse(res);  // Does del decoration
+		registerModule(res, m);
+		return new Pair<>(res, m);
+	}
+
+	// Used to load import modules (not the main module)
+	@Override
+	public Pair<Resource, Module> loadModule(ModuleName fullname)
+			throws ScribException, ScribParserException
+	{
+		Pair<Resource, Module> cached = super.loadModule(fullname);
 		if (cached != null)
 		{
 			return cached;
 		}
-
 		Resource res = this.locator.getResource(fullname.toPath());
 		Module m = this.antlr.parse(res);  // Does del decoration
 		ScribModuleLoader.checkModuleName(fullname, res, m);
@@ -61,6 +94,27 @@ public class ScribModuleLoader extends DefaultModuleLoader
 		{
 			throw new RuntimeException("Invalid module name "
 					+ m.getFullModuleName() + " at location: " + res.getLocation());
+		}
+	}
+	
+	// For main module loaded from a path, check only the simple module name against the last path element
+	// Not Scribble's job to check nested directory location of module fully corresponds to the full name of module, cf. Java classes
+	private static void checkMainModuleName(Path mainpath, Module main)
+			throws ScribException
+	{
+		String path = mainpath.toString();  // FIXME: hack
+		// FileSystems.getDefault().getSeparator() ?
+		int last = path.lastIndexOf(File.separator);
+		String tmp = path.substring((last == -1) 
+				? 0
+				: last + 1, path.lastIndexOf('.'));
+		if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))
+				// ModuleName.toString hack?
+		{
+			CommonTree source = main.getModuleDeclChild().getNameNodeChild()
+					.getSource();
+			throw new ScribException(source, "Simple module name at path " + path
+					+ " mismatch: " + main.getFullModuleName());
 		}
 	}
 }

@@ -40,16 +40,16 @@ public class LangConfig
 	public final SModelFactory sf;
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
-	public LangConfig(boolean debug, ModuleName main, boolean useOldWF, boolean noLiveness, boolean minEfsm,
+	public LangConfig(ModuleName mainFullname, boolean debug, boolean useOldWf, boolean noLiveness, boolean minEfsm,
 			boolean fair, boolean noLocalChoiceSubjectCheck,
 			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin,
 			AstFactory af, EModelFactory ef, SModelFactory sf)
 	{
-		this.main = main;
+		this.main = mainFullname;
 
 		//this.jUnit = jUnit;
 		this.debug = debug;
-		this.useOldWf = useOldWF;
+		this.useOldWf = useOldWf;
 		this.noProgress = noLiveness;
 		this.minEfsm = minEfsm;
 		this.fair = fair;

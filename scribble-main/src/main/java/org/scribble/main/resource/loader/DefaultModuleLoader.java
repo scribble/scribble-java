@@ -13,13 +13,12 @@
  */
 package org.scribble.main.resource.loader;
 
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.main.resource.Resource;
 import org.scribble.util.Pair;
-import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribException;
+import org.scribble.util.ScribParserException;
 
 
 /**
@@ -28,19 +27,17 @@ import org.scribble.util.ScribException;
  */
 public abstract class DefaultModuleLoader implements ModuleLoader
 {
-  // A caching mechanism? -- not currently used for anything meaningful
-	// FIXME: redundant? Modules recorded (and updated) in MainContext
-	// ModuleName is full module name
+	// CHECKME: redundant? Modules recorded (and updated) in MainContext
 	private java.util.Map<ModuleName, Pair<Resource, Module>> _modules=new java.util.HashMap<>();
 
 	/**
 	 * This method registers the supplied module.
 	 * 
-	 * @param module The module
+	 * @param m The module
 	 */
-	public void registerModule(Resource res, Module module)
+	public void registerModule(Resource res, Module m)
 	{
-		_modules.put(module.getFullModuleName(), new Pair<>(res, module));
+		_modules.put(m.getFullModuleName(), new Pair<>(res, m));
 	}
 
 	/**
@@ -48,8 +45,9 @@ public abstract class DefaultModuleLoader implements ModuleLoader
 	 * @throws ScribParserException 
 	 */
 	@Override
-	public Pair<Resource, Module> loadModule(ModuleName modname, AstFactory af) throws ScribParserException, ScribException
+	public Pair<Resource, Module> loadModule(ModuleName fullname)
+			throws ScribParserException, ScribException
 	{
-		return (_modules.get(modname));
+		return (_modules.get(fullname));
 	}
 }

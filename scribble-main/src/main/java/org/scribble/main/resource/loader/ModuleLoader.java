@@ -13,13 +13,12 @@
  */
 package org.scribble.main.resource.loader;
 
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.main.resource.Resource;
 import org.scribble.util.Pair;
-import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribException;
+import org.scribble.util.ScribParserException;
 
 
 /**
@@ -39,6 +38,7 @@ public interface ModuleLoader
 	 * @return The module, or null if not found
 	 * @throws ScribParserException 
 	 */
-	public Pair<Resource, Module> loadModule(ModuleName modname, AstFactory af) throws ScribParserException, ScribException;
+	public Pair<Resource, Module> loadModule(ModuleName fullname)
+			throws ScribParserException, ScribException;
 }
 

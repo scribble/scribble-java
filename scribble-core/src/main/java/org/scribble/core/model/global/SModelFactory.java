@@ -28,6 +28,7 @@ import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
+// Combine with EModelFactory?  No point to separate?
 public interface SModelFactory
 {
 	SGraphBuilderUtil newSGraphBuilderUtil();  // Directly created and used by Job.buildSGraph -- cf. EGraphBuilderUtil, encapsulated by EGraphBuilder AST visitor

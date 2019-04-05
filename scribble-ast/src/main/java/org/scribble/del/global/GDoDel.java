@@ -78,9 +78,9 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 	{
 		CommonTree blame = child.getSource();
 		SubprotoSig subsig = builder.peekStack();
-		RecVarNode recvar = (RecVarNode) builder.job.config.af.SimpleNameNode(blame,
+		RecVarNode recvar = (RecVarNode) builder.lang.config.af.SimpleNameNode(blame,
 				RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
-		GContinue inlined = builder.job.config.af.GContinue(blame, recvar);
+		GContinue inlined = builder.lang.config.af.GContinue(blame, recvar);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return child;
 	}
@@ -93,12 +93,12 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		{
 			CommonTree blame = visited.getSource();
 			SubprotoSig subsig = inl.peekStack();
-			RecVarNode recvar = (RecVarNode) inl.job.config.af.SimpleNameNode(blame,
+			RecVarNode recvar = (RecVarNode) inl.lang.config.af.SimpleNameNode(blame,
 					RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 			GInteractionSeq gis = (GInteractionSeq) (((InlineProtocolEnv) inl
 					.peekEnv()).getTranslation());
-			GProtocolBlock gb = inl.job.config.af.GProtocolBlock(blame, gis);
-			GRecursion inlined = inl.job.config.af.GRecursion(blame, recvar, gb);
+			GProtocolBlock gb = inl.lang.config.af.GProtocolBlock(blame, gis);
+			GRecursion inlined = inl.lang.config.af.GRecursion(blame, recvar, gb);
 			inl.pushEnv(inl.popEnv().setTranslation(inlined));
 			inl.removeSubprotocolRecVar(subsig);
 		}
@@ -117,7 +117,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		{
 			// For correct name mangling, need to use the parameter corresponding to the self argument
 			// N.B. -- this depends on Projector not following the Subprotocol pattern, otherwise self is wrong
-			Role param = gd.getTargetRoleParameter(proj.job.getContext(),
+			Role param = gd.getTargetRoleParameter(proj.lang.getContext(),
 					proj.getModuleContext(), self);
 			proj.pushSelf(param);
 		}
@@ -139,9 +139,9 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		{
 			ModuleContext mc = proj.getModuleContext();
 			LProtocolNameNode target = Projector.makeProjectedFullNameNode(
-					proj.job.config.af, gd.getProtocolNameNode().getSource(),
+					proj.lang.config.af, gd.getProtocolNameNode().getSource(),
 					gd.getTargetProtocolDeclFullName(mc), popped);
-			projection = gd.project(proj.job.config.af, self, target);
+			projection = gd.project(proj.lang.config.af, self, target);
 			
 			// FIXME: do guarded recursive subprotocol checking (i.e. role is used during chain) in reachability checking? -- required role-usage makes local choice subject inference easier, but is restrictive (e.g. proto(A, B, C) { choice at A {A->B.do Proto(A,B,C)} or {A->B.B->C} }))
 		}

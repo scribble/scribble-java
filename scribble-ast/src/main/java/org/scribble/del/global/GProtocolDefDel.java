@@ -66,12 +66,12 @@ public class GProtocolDefDel extends ProtocolDefDel
 		System.out.println("ccc2: " + visited);
 		//...HERE: update AF to ANTLR nodes
 		
-		RecVarNode recvar = (RecVarNode) inl.job.config.af.SimpleNameNode(blame,
+		RecVarNode recvar = (RecVarNode) inl.lang.config.af.SimpleNameNode(blame,
 				RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
-		GRecursion rec = inl.job.config.af.GRecursion(blame, recvar, block);
-		GInteractionSeq gis = inl.job.config.af.GInteractionSeq(blame, Arrays.asList(rec));
-		GProtocolDef inlined = inl.job.config.af.GProtocolDef(def.getSource(),
-				inl.job.config.af.GProtocolBlock(blame, gis));
+		GRecursion rec = inl.lang.config.af.GRecursion(blame, recvar, block);
+		GInteractionSeq gis = inl.lang.config.af.GInteractionSeq(blame, Arrays.asList(rec));
+		GProtocolDef inlined = inl.lang.config.af.GProtocolDef(def.getSource(),
+				inl.lang.config.af.GProtocolBlock(blame, gis));
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		GProtocolDefDel copy = setInlinedProtocolDef(inlined);
 		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, inl,
@@ -94,7 +94,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gpd.getBlockChild()
 				.del().env()).getProjection();
 		LProtocolDef projection = 
-				gpd.project(proj.job.config.af, proj.peekSelf(), block);
+				gpd.project(proj.lang.config.af, proj.peekSelf(), block);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, proj, gpd);
 	}

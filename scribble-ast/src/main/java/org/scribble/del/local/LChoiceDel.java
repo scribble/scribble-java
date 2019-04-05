@@ -118,12 +118,12 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 					// self not recorded -- can derive from LProtocolDecl RoleDeclList
 			//throw new RuntimeException("Shouldn't get in here: " + subjs);
 		}
-		RoleNode subj = (RoleNode) fixer.job.config.af.SimpleNameNode(null, RoleKind.KIND,  // CHECKME? null source OK?
+		RoleNode subj = (RoleNode) fixer.lang.config.af.SimpleNameNode(null, RoleKind.KIND,  // CHECKME? null source OK?
 				//blocks.get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer).toString());
 				subjs.iterator().next().toString());
 		fixer.setChoiceSubject(subj.toName());
 		LChoice projection = 
-				fixer.job.config.af.LChoice(lc.getSource(), subj, blocks);
+				fixer.lang.config.af.LChoice(lc.getSource(), subj, blocks);
 		return projection;
 	}
 
@@ -138,7 +138,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 								.getTranslation())
 						.collect(Collectors.toList());
 		RoleNode subj = lc.getSubjectChild().clone();//inl.job.af);
-		LChoice inlined = inl.job.config.af.LChoice(lc.getSource(), subj, blocks);
+		LChoice inlined = inl.lang.config.af.LChoice(lc.getSource(), subj, blocks);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LChoice) super.leaveProtocolInlining(parent, child, inl, lc);
 	}

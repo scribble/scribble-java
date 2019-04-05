@@ -70,7 +70,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			}
 		}
 		LInteractionSeq inlined = 
-				inl.job.config.af.LInteractionSeq(lis.getSource(), lins);
+				inl.lang.config.af.LInteractionSeq(lis.getSource(), lins);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, inl, lis);
 	}
@@ -156,6 +156,6 @@ public class LInteractionSeqDel extends InteractionSeqDel
 										.getInteractionChildren().stream()
 								: Stream.of(li))
 				.collect(Collectors.toList());
-		return rem.job.config.af.LInteractionSeq(lis.getSource(), lins);
+		return rem.lang.config.af.LInteractionSeq(lis.getSource(), lins);
 	}
 }

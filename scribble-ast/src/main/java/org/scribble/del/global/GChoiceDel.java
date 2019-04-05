@@ -66,7 +66,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 						.getTranslation())
 				.collect(Collectors.toList());
 		RoleNode subj = gc.getSubjectChild().clone();//inl.job.af);
-		GChoice inlined = inl.job.config.af.GChoice(gc.getSource(), subj, blocks);
+		GChoice inlined = inl.lang.config.af.GChoice(gc.getSource(), subj, blocks);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GChoice) super.leaveProtocolInlining(parent, child, inl, gc);
 	}
@@ -99,7 +99,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		List<WFChoiceEnv> all =
 				cho.getBlockChildren().stream().map(b -> (WFChoiceEnv) b.del().env())
 						.collect(Collectors.toList());
-		if (checker.job.config.useOldWf)  // ****
+		if (checker.lang.config.useOldWf)  // ****
 		{
 			if (all.size() > 1)
 			{
@@ -192,7 +192,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 								.getProjection())
 						.collect(Collectors.toList());
 				//gc.getBlocks().stream().map(b -> ((GProtocolBlockDel) b.del()).project(b, self)).collect(Collectors.toList());
-		LChoice projection = gc.project(proj.job.config.af, proj.peekSelf(), blocks);
+		LChoice projection = gc.project(proj.lang.config.af, proj.peekSelf(), blocks);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent,
 				child, proj, gc);

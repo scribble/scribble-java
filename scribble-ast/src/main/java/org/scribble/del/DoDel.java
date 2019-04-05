@@ -100,7 +100,7 @@ public abstract class DoDel extends SimpleSessionNodeDel
 			ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited)
 			throws ScribException
 	{
-		LangContext jcontext = builder.job.getContext();
+		LangContext jcontext = builder.lang.getContext();
 		ModuleContext mcontext = builder.getModuleContext();
 		Do<?> doo = (Do<?>) visited;
 		ProtocolName<?> pn = doo.getProtocolNameNode().toName();  // leaveDisambiguation has fully qualified the target name

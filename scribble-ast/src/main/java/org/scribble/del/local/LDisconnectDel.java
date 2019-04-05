@@ -31,7 +31,7 @@ public class LDisconnectDel extends ConnectionActionDel
 		LDisconnect ld = (LDisconnect) visited;
 		Role peer = ld.getPeerChild().toName();
 		builder.util.addEdge(builder.util.getEntry(),
-				builder.job.config.ef.newEDisconnect(peer), builder.util.getExit());
+				builder.lang.config.ef.newEDisconnect(peer), builder.util.getExit());
 		return (LDisconnect) super.leaveEGraphBuilding(parent, child, builder, ld);
 	}
 

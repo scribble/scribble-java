@@ -57,7 +57,7 @@ public class LRecursionDel extends RecursionDel
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) lr
 				.getBlockChild().del().env()).getTranslation();
 		LRecursion inlined = 
-				inl.job.config.af.LRecursion(lr.getSource(), recvar, block);
+				inl.lang.config.af.LRecursion(lr.getSource(), recvar, block);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (LRecursion) super.leaveProtocolInlining(parent, child, inl, lr);
 	}

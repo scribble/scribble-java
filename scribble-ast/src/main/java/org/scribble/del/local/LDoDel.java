@@ -61,9 +61,9 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	{
 		CommonTree blame = child.getSource();  // Cf., GDoDel
 		SubprotoSig subsig = builder.peekStack();
-		RecVarNode recvar = (RecVarNode) builder.job.config.af.SimpleNameNode(blame,
+		RecVarNode recvar = (RecVarNode) builder.lang.config.af.SimpleNameNode(blame,
 				RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
-		LContinue inlined = builder.job.config.af.LContinue(blame, recvar);
+		LContinue inlined = builder.lang.config.af.LContinue(blame, recvar);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return child;
 	}
@@ -76,12 +76,12 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		{
 			CommonTree blame = visited.getSource();  // Cf., GDoDel
 			SubprotoSig subsig = dinlr.peekStack();
-			RecVarNode recvar = (RecVarNode) dinlr.job.config.af.SimpleNameNode(blame,
+			RecVarNode recvar = (RecVarNode) dinlr.lang.config.af.SimpleNameNode(blame,
 					RecVarKind.KIND, dinlr.getSubprotocolRecVar(subsig).toString());
 			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) dinlr
 					.peekEnv()).getTranslation());
-			LProtocolBlock gb = dinlr.job.config.af.LProtocolBlock(blame, gis);
-			LRecursion inlined = dinlr.job.config.af.LRecursion(blame, recvar, gb);
+			LProtocolBlock gb = dinlr.lang.config.af.LProtocolBlock(blame, gis);
+			LRecursion inlined = dinlr.lang.config.af.LRecursion(blame, recvar, gb);
 			dinlr.pushEnv(dinlr.popEnv().setTranslation(inlined));
 			dinlr.removeSubprotocolRecVar(subsig);
 		}	
@@ -96,7 +96,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 					throws ScribException
 			// CHECKME: similar needed for non-role args?  Or all params always known? (not ideal for distributed?)
 	{
-		LangContext jc = fixer.job.getContext();
+		LangContext jc = fixer.lang.getContext();
 		LDo ld = (LDo) visited;
 		RoleArgList roleList = ld.getRoleListChild();
 		LProtocolDecl lpd = ld.getTargetProtocolDecl(jc, fixer.getModuleContext());

@@ -87,8 +87,8 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 		if (visited instanceof ProtocolDecl<?>)
 		{
 			ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
-			this.job.debugPrintln("\n[DEBUG] Inlined root protocol "
-						+ pd.getFullMemberName(this.job.getContext().getModule(getModuleContext().root)) + ":\n"
+			this.lang.debugPrintln("\n[DEBUG] Inlined root protocol "
+						+ pd.getFullMemberName(this.lang.getContext().getModule(getModuleContext().root)) + ":\n"
 						+ ((ProtocolDefDel) pd.getDefChild().del()).getInlinedProtocolDef());
 		}
 		return leave(parent, child, visited);
@@ -118,7 +118,7 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 		{
 			//return (GDo) super.visitForSubprotocols(parent, child);
 			// Duplicated from SubprotocolVisitor#visitOverrideFoDo and modified to access discarded env -- FIXME: factor out this facility better
-			LangContext jc = this.job.getContext();
+			LangContext jc = this.lang.getContext();
 			ModuleContext mc = getModuleContext();
 			ProtocolDecl<? extends ProtocolKind> pd = 
 					child.getTargetProtocolDecl(jc, mc);

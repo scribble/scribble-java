@@ -64,7 +64,7 @@ public class LDo extends Do<Local> implements LSimpleSessionNode
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
 		ModuleContext mc = fixer.getModuleContext();
-		LangContext jc = fixer.job.getContext();
+		LangContext jc = fixer.lang.getContext();
 		Role subj = getTargetProtocolDecl(jc, mc).getDefChild().getBlockChild()
 				.getInteractSeqChild().getInteractionChildren().get(0)
 				.inferLocalChoiceSubject(fixer);

@@ -49,7 +49,7 @@ public abstract class ProtocolDefDel extends ScribDelBase
 	public void enterRecRemoval(ScribNode parent, ScribNode child, RecRemover rem)
 	{
 		super.enterRecRemoval(parent, child, rem);
-		RecVarCollector rvc = new RecVarCollector(rem.job);
+		RecVarCollector rvc = new RecVarCollector(rem.lang);
 		try
 		{
 			this.inlined.accept(rvc);  // RecVarCollector not an InlinedProtocolVistor -- do simple visiting directly on inlined

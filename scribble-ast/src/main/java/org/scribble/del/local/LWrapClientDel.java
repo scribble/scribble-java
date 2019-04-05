@@ -33,7 +33,7 @@ public class LWrapClientDel extends ConnectionActionDel
 		RoleNode dest = lc.getDestinationChild();
 		Role peer = dest.toName();
 		builder.util.addEdge(builder.util.getEntry(),
-				builder.job.config.ef.newEWrapClient(peer), builder.util.getExit());
+				builder.lang.config.ef.newEWrapClient(peer), builder.util.getExit());
 		return (LWrapClient) super.leaveEGraphBuilding(parent, child, builder, lc);
 	}
 

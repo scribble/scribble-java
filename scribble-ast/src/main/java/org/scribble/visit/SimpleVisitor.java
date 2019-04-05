@@ -24,12 +24,12 @@ import org.scribble.util.ScribException;
 // TODO CHECKME: refactor AstVisitor as a SimpleVisitor?  i.e., T=ScribNode ?
 public abstract class SimpleVisitor<T>
 {
-	public final Lang job;
+	public final Lang lang;
 	public final ModuleName mod;  // fullname
 
-	public SimpleVisitor(Lang job, ModuleName fullname)
+	public SimpleVisitor(Lang lang, ModuleName fullname)
 	{
-		this.job = job;
+		this.lang = lang;
 		this.mod = fullname;
 	}
 	
@@ -39,6 +39,6 @@ public abstract class SimpleVisitor<T>
 	
 	public ModuleContext getModuleContext()
 	{
-		return this.job.getModuleContext(this.mod);
+		return this.lang.getModuleContext(this.mod);
 	}
 }

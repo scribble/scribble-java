@@ -53,8 +53,8 @@ import org.scribble.util.ScribException;
 // FIXME: consider also "expanding" nested message constructors by op first? -- and consider "partial constructors" along expansions, can they be parameterised typed?
 public class CBEndpointApiGenerator3
 {
-	public final Lang job;
-	public final Job job2;
+	public final Lang lang;
+	public final Job job;
 	public final GProtocolName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
@@ -62,12 +62,12 @@ public class CBEndpointApiGenerator3
 	
 	//private final boolean subtypes;  // Generate full hierarchy (states -> states, not just indivdual state -> cases) -- cf. ioifaces
 
-	public CBEndpointApiGenerator3(Lang job, GProtocolName fullname, Role self, boolean subtypes)
+	public CBEndpointApiGenerator3(Lang lang, GProtocolName fullname, Role self, boolean subtypes)
 	{
-		this.job = job;
+		this.lang = lang;
 		try
 		{
-			this.job2 = job.toJob();
+			this.job = lang.toJob();
 		}
 		catch (ScribException e)  // TODO: refactor
 		{
@@ -94,21 +94,21 @@ public class CBEndpointApiGenerator3
 	// FIXME: factor out -- integrate with JEndpointApiGenerator
 	public Map<String, String> buildSessionApi() throws ScribException
 	{
-		this.job.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator3.class + " for " + this.proto + "@" + this.self);
+		this.lang.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator3.class + " for " + this.proto + "@" + this.self);
 
 		Map<String, String> res = new HashMap<>();
-		res.putAll(new SessionApiGenerator(this.job, this.proto).generateApi());
+		res.putAll(new SessionApiGenerator(this.lang, this.proto).generateApi());
 		res.putAll(buildEndpointClass());
 		return res;
 	}
 	
 	public Map<String, String> buildEndpointClass() throws ScribException
 	{
-		Module main = this.job.getContext().getMainModule();
+		Module main = this.lang.getContext().getMainModule();
 		Map<String, String> res = new HashMap<>();
 
-		JobContext jobc2 = this.job2.getContext();
-		EState init = (this.job.config.minEfsm
+		JobContext jobc2 = this.job.getContext();
+		EState init = (this.lang.config.minEfsm
 				? jobc2.getMinimisedEGraph(this.proto, this.self)
 				: jobc2.getEGraph(this.proto, this.self)
 				).init;
@@ -221,7 +221,7 @@ public class CBEndpointApiGenerator3
 		}*/
 			
 		// branches
-		LangContext jobc = this.job.getContext();
+		LangContext jobc = this.lang.getContext();
 		for (EState s : states)
 		{
 			if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
@@ -502,7 +502,7 @@ public class CBEndpointApiGenerator3
 	
 	protected String generateStateClass(EState s, String rootPack, EStateKind kind, String stateName, String endpointName)
 	{
-		Module main = this.job.getContext().getMainModule();
+		Module main = this.lang.getContext().getMainModule();
 		
 		String stateKind;
 		switch (kind)
@@ -999,7 +999,7 @@ public class CBEndpointApiGenerator3
 	protected MessageSigNameDecl getMessageSigNameDecl(MessageSigName mid)
 	{
 		return (MessageSigNameDecl)
-				this.job.getContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
+				this.lang.getContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
 					.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(mid.toString()))
 					.iterator().next();
 	}
@@ -1007,7 +1007,7 @@ public class CBEndpointApiGenerator3
 	//protected final Function<PayloadElemType<?>, String> getExtName = e ->
 	protected String getExtName(PayloadElemType<?> e)
 	{
-		String extName = this.job.getContext().getMainModule().getDataTypeDeclChild((DataType) e).extName;
+		String extName = this.lang.getContext().getMainModule().getDataTypeDeclChild((DataType) e).extName;
 		return (extName.indexOf(".") != -1)
 				? extName.substring(extName.lastIndexOf(".")+1, extName.length())
 				: extName;

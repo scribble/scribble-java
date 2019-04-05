@@ -71,7 +71,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	public void enterEGraphBuilding(ScribNode parent, ScribNode child,
 			EGraphBuilder builder)
 	{
-		builder.util.init(builder.job.config.ef.newEState(Collections.emptySet()));
+		builder.util.init(builder.lang.config.ef.newEState(Collections.emptySet()));
 				// Same util is used for multiple protos, need to (re-)init each time
 	}
 

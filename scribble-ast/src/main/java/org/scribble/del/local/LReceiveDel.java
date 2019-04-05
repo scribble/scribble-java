@@ -40,7 +40,7 @@ public class LReceiveDel extends LMessageTransferDel
 				? ((MessageSigNode) msg).getPayloadListChild().toPayload()
 				: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(),
-				builder.job.config.ef.newEReceive(peer, mid, payload),
+				builder.lang.config.ef.newEReceive(peer, mid, payload),
 				builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Receive.get(peer, mid, payload), builder.builder.getExit());
 		return (LReceive) super.leaveEGraphBuilding(parent, child, builder, lr);

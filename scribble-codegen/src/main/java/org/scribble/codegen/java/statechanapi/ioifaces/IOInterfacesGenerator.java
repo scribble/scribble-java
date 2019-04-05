@@ -79,8 +79,8 @@ public class IOInterfacesGenerator extends ApiGen
 		GProtocolName fullname = apigen.getGProtocolName();
 		Role self = getSelf();
 		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext jobc2 = this.job2.getContext();
-		EState init = this.job.config.minEfsm
+		JobContext jobc2 = this.job.getContext();
+		EState init = this.lang.config.minEfsm
 				? jobc2.getMinimisedEGraph(fullname, self).init
 				: jobc2.getEGraph(fullname, self).init;
 		

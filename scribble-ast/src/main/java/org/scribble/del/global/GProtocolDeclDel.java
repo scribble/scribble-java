@@ -133,9 +133,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 	public GProtocolDecl leaveProjection(ScribNode parent, ScribNode child,
 			Projector proj, ScribNode visited) throws ScribException
 	{
-		AstFactory af = proj.job.config.af;
+		AstFactory af = proj.lang.config.af;
 
-		Module root = proj.job.getContext().getModule(proj.getModuleContext().root);
+		Module root = proj.lang.getContext().getModule(proj.getModuleContext().root);
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		GProtocolHeader gph = gpd.getHeaderChild();
 		Role self = proj.peekSelf();
@@ -188,9 +188,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		else
 		{
 			GProtocol.validateByScribble(checker.job2, fullname, true);
-			if (!checker.job.config.fair)
+			if (!checker.lang.config.fair)
 			{
-				checker.job.debugPrintln(
+				checker.lang.debugPrintln(
 						"(" + fullname + ") Validating with \"unfair\" output choices.. ");
 				GProtocol.validateByScribble(checker.job2, fullname, false);  // TODO: only need to check progress, not full validation
 			}

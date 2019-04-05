@@ -117,7 +117,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	{
 		if (!isCycle())
 		{
-			LangContext jc = this.job.getContext();
+			LangContext jc = this.lang.getContext();
 			ModuleContext mc = getModuleContext();
 			ProtocolDecl<? extends ProtocolKind> pd = 
 					doo.getTargetProtocolDecl(jc, mc);
@@ -145,7 +145,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		try
 		{
 			return n.accept(
-					new Substitutor(this.job, this.rolemaps.peek(), this.argmaps.peek()));
+					new Substitutor(this.lang, this.rolemaps.peek(), this.argmaps.peek()));
 		}
 		catch (ScribException e)
 		{
@@ -248,7 +248,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	
 	private void pushNameMaps(ProtocolName<?> fullname, Do<?> doo)
 	{
-		ProtocolDecl<?> pd = this.job.getContext().getModule(fullname.getPrefix())
+		ProtocolDecl<?> pd = this.lang.getContext().getModule(fullname.getPrefix())
 				.getProtocolDeclChild(fullname.getSimpleName());
 		ProtocolHeader<?> hdr = pd.getHeaderChild();
 		this.rolemaps.push(makeRoleSubsMap(this.rolemaps.get(0),

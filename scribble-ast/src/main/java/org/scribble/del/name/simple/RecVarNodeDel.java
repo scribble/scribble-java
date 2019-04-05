@@ -61,7 +61,7 @@ public class RecVarNodeDel extends ScribDelBase
 		RecVar rv = rn.toName();
 		//return super.leaveProtocolInlining(parent, child, inliner, rn.reconstruct(inliner.getCanonicalRecVarName(rv)));  // No, affects the source AST
 		//RecVarNode inlined = rn.reconstruct(inliner.getCanonicalRecVarName(rv));
-		RecVarNode inlined = (RecVarNode) inliner.job.config.af.SimpleNameNode(
+		RecVarNode inlined = (RecVarNode) inliner.lang.config.af.SimpleNameNode(
 				rn.getSource(), RecVarKind.KIND, inliner.getCanonicalRecVarName(rv));
 		inliner.pushEnv(inliner.popEnv().setTranslation(inlined));
 		return ScribDelBase.popAndSetVisitorEnv(this, inliner, rn);  // Not done by any super

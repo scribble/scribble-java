@@ -23,16 +23,16 @@ import org.scribble.util.ScribException;
 // Basic pattern: use TypeGenerators to create all necessary TypeBuilders and cache them, and generateApi should call build on all as a final step
 public abstract class ApiGen
 {
-	public final Lang job;
-	public final Job job2;
+	public final Lang lang;
+	public final Job job;
 	public final GProtocolName gpn;  // full name
 
 	public ApiGen(Lang job, GProtocolName fullname)
 	{
-		this.job = job;
+		this.lang = job;
 		try
 		{
-			this.job2 = job.toJob();
+			this.job = job.toJob();
 		}
 		catch (ScribException e)  // TODO: refactor
 		{
@@ -47,6 +47,6 @@ public abstract class ApiGen
 	
 	public Lang getJob()
 	{
-		return this.job;
+		return this.lang;
 	}
 }

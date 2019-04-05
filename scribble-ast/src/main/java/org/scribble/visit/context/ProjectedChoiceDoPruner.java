@@ -57,12 +57,12 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 			List<LSessionNode> ins = lis.getInteractionChildren();
 			if (ins.get(0) instanceof LDo)  // Unlike GRecursion.prune, to-prune "do" could be followed by a continuation?
 			{
-				LangContext jc = this.job.getContext();
+				LangContext jc = this.lang.getContext();
 				LDo ld = (LDo) ins.get(0);
 				LProtocolDecl lpd = ld.getTargetProtocolDecl(jc, getModuleContext());
 
 				UnguardedChoiceDoProjectionChecker checker = new UnguardedChoiceDoProjectionChecker(
-						this.job,
+						this.lang,
 						((ModuleDel) jc
 								.getModule(ld.getProtocolNameNode().toName().getPrefix()).del())
 										.getModuleContext(),
@@ -78,8 +78,8 @@ public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 					if (env.subjs.isEmpty())  // Prune check
 					{
 						// Supports singleton case
-						return this.job.config.af.LProtocolBlock(lb.getSource(),
-								this.job.config.af.LInteractionSeq(lis.getSource(),
+						return this.lang.config.af.LProtocolBlock(lb.getSource(),
+								this.lang.config.af.LInteractionSeq(lis.getSource(),
 										ins.subList(1, ins.size())));
 					}
 				}

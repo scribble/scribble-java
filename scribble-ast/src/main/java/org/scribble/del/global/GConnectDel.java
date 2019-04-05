@@ -109,7 +109,7 @@ public class GConnectDel extends ConnectionActionDel
 	{
 		GConnect gc = (GConnect) visited;
 		Role self = proj.peekSelf();
-		LScribNode projection = gc.project(proj.job.config.af, self);
+		LScribNode projection = gc.project(proj.lang.config.af, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GConnect) GSimpleInteractionNodeDel.super.leaveProjection(parent,
 				child, proj, gc);

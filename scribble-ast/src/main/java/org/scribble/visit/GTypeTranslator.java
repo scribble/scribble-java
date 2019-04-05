@@ -23,9 +23,9 @@ import org.scribble.util.ScribException;
 // CHECKME: move to visit package?
 public class GTypeTranslator extends SimpleVisitor<GNode>
 {
-	public GTypeTranslator(Lang job, ModuleName mod)
+	public GTypeTranslator(Lang lang, ModuleName mod)
 	{
-		super(job, mod);
+		super(lang, mod);
 	}
 
 	@Override

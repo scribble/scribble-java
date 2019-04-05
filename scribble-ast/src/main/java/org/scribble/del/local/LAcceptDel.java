@@ -46,7 +46,7 @@ public class LAcceptDel extends LConnectionActionDel
 					? ((MessageSigNode) msg).getPayloadListChild().toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(),
-				builder.job.config.ef.newEAccept(peer, mid, payload),
+				builder.lang.config.ef.newEAccept(peer, mid, payload),
 				builder.util.getExit());
 		return (LAccept) super.leaveEGraphBuilding(parent, child, builder, la);
 	}
@@ -80,7 +80,7 @@ public class LAcceptDel extends LConnectionActionDel
 		if (!env.canAccept())
 		{
 			//throw new ScribbleException("Invalid accept action: " + la);
-			checker.job.warningPrintln("Session correlation warning for: " + la);
+			checker.lang.warningPrintln("Session correlation warning for: " + la);
 		}
 		checker.pushEnv(env.disableAccept());
 		return la;

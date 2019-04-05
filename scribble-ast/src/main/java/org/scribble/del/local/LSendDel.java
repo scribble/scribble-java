@@ -50,7 +50,7 @@ public class LSendDel extends LMessageTransferDel
 					? ((MessageSigNode) msg).getPayloadListChild().toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(),
-				builder.job.config.ef.newESend(peer, mid, payload),
+				builder.lang.config.ef.newESend(peer, mid, payload),
 				builder.util.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());
 		return (LSend) super.leaveEGraphBuilding(parent, child, builder, ls);

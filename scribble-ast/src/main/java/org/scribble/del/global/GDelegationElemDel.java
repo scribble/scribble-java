@@ -70,7 +70,7 @@ public class GDelegationElemDel extends ScribDelBase
 		RoleNode r = de.getRoleChild();
 
 		Role rn = r.toName();
-		ProtocolDecl<Global> gpd = disamb.job.getContext()
+		ProtocolDecl<Global> gpd = disamb.lang.getContext()
 				.getModule(fullname.getPrefix())
 				.getProtocolDeclChild(fullname.getSimpleName());
 		if (!gpd.getHeaderChild().getRoleDeclListChild().getRoles().contains(rn))
@@ -78,7 +78,7 @@ public class GDelegationElemDel extends ScribDelBase
 			throw new ScribException(r.getSource(), "Invalid delegation role: " + de);
 		}
 
-		GProtocolNameNode pnn = (GProtocolNameNode) disamb.job.config.af
+		GProtocolNameNode pnn = (GProtocolNameNode) disamb.lang.config.af
 				.QualifiedNameNode(de.getProtocolChild().getSource(),
 						fullname.getKind(), fullname.getElements());
 				// Not keeping original namenode del
@@ -122,7 +122,7 @@ public class GDelegationElemDel extends ScribDelBase
 		}
 		
 		Set<GProtocolName> todo = new LinkedHashSet<GProtocolName>();
-		ProtocolDecl<Global> targetgpd = checker.job.getContext()
+		ProtocolDecl<Global> targetgpd = checker.lang.getContext()
 				.getModule(targetfullname.getPrefix())
 				.getProtocolDeclChild(targetfullname.getSimpleName()); // target
 		// CHECKME: does this already contain transitive do-dependencies?  But doesn't contain transitive delegation-dependencies..?
@@ -148,7 +148,7 @@ public class GDelegationElemDel extends ScribDelBase
 						"Recursive protocol dependencies not supported for delegation types: "
 								+ de);
 			}
-			ProtocolDecl<Global> nextgpd = checker.job.getContext()
+			ProtocolDecl<Global> nextgpd = checker.lang.getContext()
 					.getModule(targetfullname.getPrefix())
 					.getProtocolDeclChild(nextfullname.getSimpleName());
 			Set<GProtocolName> tmp = ((GProtocolDeclDel) nextgpd.del())

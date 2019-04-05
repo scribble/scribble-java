@@ -43,7 +43,7 @@ public class Lang
 	private final LangContext context;  // Mutable (Visitor passes replace modules)
 	//private final SGraphBuilderUtil sgbu;
 	
-	private Job job2;
+	private Job job;
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
@@ -58,7 +58,7 @@ public class Lang
 	
 	public Job toJob() throws ScribException
 	{
-		if (this.job2 == null)
+		if (this.job == null)
 		{
 			Set<ModuleName> fullmodnames = this.context.getFullModuleNames();
 			Set<GProtocol> imeds = new HashSet<>();
@@ -74,9 +74,9 @@ public class Lang
 					debugPrintln("\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
 				}
 			}
-			this.job2 = new Job(imeds, this.modcs, this.config.toJobConfig());
+			this.job = new Job(imeds, this.modcs, this.config.toJobConfig());
 		}
-		return this.job2;
+		return this.job;
 	}
 	
 	/*// Scribble extensions should override these "new" methods

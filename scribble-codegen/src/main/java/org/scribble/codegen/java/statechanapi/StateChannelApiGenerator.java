@@ -56,16 +56,16 @@ public class StateChannelApiGenerator extends ApiGen
 
 	private Map<String, TypeBuilder> types = new HashMap<>();  // class/iface name key
 
-	public StateChannelApiGenerator(Lang job, GProtocolName fullname, Role self)
+	public StateChannelApiGenerator(Lang lang, GProtocolName fullname, Role self)
 			throws ScribException // CHECKME: APIGenerationException?
 	{
-		super(job, fullname);
+		super(lang, fullname);
 
 		this.self = self;
 		this.lpn = Projector2.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext jobc2 = this.job2.getContext();
-		this.init = job.config.minEfsm 
+		JobContext jobc2 = this.job.getContext();
+		this.init = lang.config.minEfsm 
 				? jobc2.getMinimisedEGraph(fullname, self).init
 				: jobc2.getEGraph(fullname, self).init;
 		
@@ -209,7 +209,7 @@ public class StateChannelApiGenerator extends ApiGen
 	
 	protected Module getMainModule()
 	{
-		return this.job.getContext().getMainModule();
+		return this.lang.getContext().getMainModule();
 	}
 	
 	protected void addTypeDecl(TypeBuilder tb)

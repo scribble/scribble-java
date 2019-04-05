@@ -17,7 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
 
-// Module supplied to tool directly as a String arg.
+// Module supplied directly as a String arg.
 public class InlineResource extends AbstractResource
 {
 	//private final String res;

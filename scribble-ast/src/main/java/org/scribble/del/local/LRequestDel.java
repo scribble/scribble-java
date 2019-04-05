@@ -41,7 +41,7 @@ public class LRequestDel extends LConnectionActionDel
 					? ((MessageSigNode) msg).getPayloadListChild().toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.util.addEdge(builder.util.getEntry(),
-				builder.job.config.ef.newERequest(peer, mid, payload),
+				builder.lang.config.ef.newERequest(peer, mid, payload),
 				builder.util.getExit());
 		//graph.builder.addEdge(graph.builder.getEntry(), new Connect(peer), graph.builder.getExit());
 		////builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());

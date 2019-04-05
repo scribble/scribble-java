@@ -28,7 +28,7 @@ import org.scribble.core.type.name.ModuleName;
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
 public class LangContext
 {
-	public final Lang job;
+	public final Lang lang;
 
 	//public final ModuleName main;  // The "main" root module from MainContext
 	
@@ -37,16 +37,16 @@ public class LangContext
 	// CHECKME: separate original parsed from "working set"?
 	private final Map<ModuleName, Module> parsed;// = new HashMap<>();
 	
-	protected LangContext(Lang job, Map<ModuleName, Module> parsed)//, ModuleName main)
+	protected LangContext(Lang lang, Map<ModuleName, Module> parsed)//, ModuleName main)
 	{
-		this.job = job;
+		this.lang = lang;
 
 		this.parsed = new HashMap<ModuleName, Module>(parsed);
 	}
 
 	public Module getMainModule()
 	{
-		return getModule(this.job.config.main);
+		return getModule(this.lang.config.main);
 	}
 	
 	// Used by Job for pass running, includes projections (e.g. for reachability checking)

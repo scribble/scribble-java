@@ -53,9 +53,9 @@ public class SessionApiGenerator extends ApiGen
 	private final ClassBuilder cb = new ClassBuilder();
 	private final Map<String, ClassBuilder> classes = new HashMap<>();  // All classes in same package, for protected constructor access
 	
-	public SessionApiGenerator(Lang job, GProtocolName fullname) throws ScribException
+	public SessionApiGenerator(Lang lang, GProtocolName fullname) throws ScribException
 	{
-		super(job, fullname);
+		super(lang, fullname);
 		constructRoleClasses();
 		constructOpClasses();
 		constructSessionClass();  // Depends on the above two being done first
@@ -181,10 +181,10 @@ public class SessionApiGenerator extends ApiGen
 	
 	private void constructOpClasses() throws ScribException
 	{
-		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
+		Module mod = this.lang.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDeclChild(simpname);
-		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
+		MessageIdCollector coll = new MessageIdCollector(this.lang, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
 		for (MessageId<?> mid : coll.getNames())
 		{
@@ -197,7 +197,7 @@ public class SessionApiGenerator extends ApiGen
 
 	private void constructRoleClasses() throws ScribException
 	{
-		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
+		Module mod = this.lang.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDeclChild(simpname);
 		for (Role r : gpd.getRoles())

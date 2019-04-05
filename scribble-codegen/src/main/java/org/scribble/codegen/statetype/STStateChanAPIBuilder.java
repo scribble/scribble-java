@@ -28,7 +28,7 @@ import org.scribble.lang.Lang;
 
 public abstract class STStateChanAPIBuilder
 {
-	public final Lang job;
+	public final Lang lang;
 	
 	public final GProtocolName gpn;
 	public final Role role;
@@ -42,10 +42,10 @@ public abstract class STStateChanAPIBuilder
 
 	private Map<Integer, String> names = new HashMap<>();
 	
-	protected STStateChanAPIBuilder(Lang job, GProtocolName gpn, Role role, EGraph graph,
+	protected STStateChanAPIBuilder(Lang lang, GProtocolName gpn, Role role, EGraph graph,
 			STOutputStateBuilder ob, STReceiveStateBuilder rb, STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
 	{
-		this.job = job;
+		this.lang = lang;
 
 		this.gpn = gpn;
 		this.role = role;

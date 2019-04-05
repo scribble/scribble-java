@@ -33,7 +33,7 @@ public class LWrapServerDel extends ConnectionActionDel
 		LWrapServer la = (LWrapServer) visited;
 		Role peer = la.getSourceChild().toName();
 		builder.util.addEdge(builder.util.getEntry(),
-				builder.job.config.ef.newEWrapServer(peer), builder.util.getExit());
+				builder.lang.config.ef.newEWrapServer(peer), builder.util.getExit());
 		return (LWrapServer) super.leaveEGraphBuilding(parent, child, builder, la);
 	}
 
