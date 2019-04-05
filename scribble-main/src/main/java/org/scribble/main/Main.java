@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.main;  // N.B. the same package is declared in core
+package org.scribble.main;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -41,9 +41,19 @@ import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribParserException;
 
-// Scribble tool context for main module
-// MainContext takes ResourceLocator abstractly (e.g. DirectoryResourceLocator), but because abstract Resource itself works off paths, it takes mainpath (rather than something more abstract, e.g. URI, to identify the "main" resource)
-// Resource and ResourceLocator should be made abstract from (file)paths (cf. use of toPath in ScribbleModuleLoader)
+/**
+ * Main loads the main module, and then all other (transitively) imported
+ * modules. Its main purpose is to offer the newLang factory method.
+ * 
+ * Main takes an abstract ResourceLocator, e.g. DirectoryResourceLocator -- (for
+ * non-inline main modules)...
+ * ...but because Resource is primarily based on file paths, it takes mainpath
+ * (rather than something more abstract, e.g., URI) to identify the "main"
+ * resource.
+ * 
+ * TODO: Resource and ResourceLocator should be made more abstract from (file)
+ * paths (cf. use of modname.toPath in ScribModuleLoader).
+ */
 public class Main
 {
 	//private final ResourceLocator locator;  // Path -> Resource
@@ -89,6 +99,7 @@ public class Main
 	}
 
 	// Load main module from file system
+	// Load other modules via locator -- CHECKME: a bit inconsistent with the main?
 	public Main(ResourceLocator locator, 
 			boolean debug, Path mainpath, boolean useOldWF, boolean noLiveness,
 			boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
@@ -102,7 +113,7 @@ public class Main
 				noAcceptCorrelationCheck, noValidation, spin);
 	}
 
-	// For inline module arg
+	// Load an inline module arg -- module imports not allowed (currently no ResourceLocator)
 	public Main(String inline,
 			boolean debug, boolean useOldWF, boolean noLiveness, boolean minEfsm,
 			boolean fair, boolean noLocalChoiceSubjectCheck,
@@ -145,9 +156,11 @@ public class Main
 				noAcceptCorrelationCheck, noValidation, spin,
 				newAstFactory(), newEModelFactory(), newSModelFactory());
 
+		//...
 		// CHECKME: how does this relate to the ModuleContextBuilder pass?
 		// Job.modcs seems unused?  Lang.modcs is used though, by old AST visitors -- basically old ModuleContextVisitor is redundant?
 		// Job.modcs could be used, but disamb already done by Lang
+		// Lang/Job modcs should be moved to config/context though
 
 		Map<ModuleName, Module> loaded = getLoadedModules();
 		ModuleContextMaker maker = new ModuleContextMaker();
@@ -155,7 +168,7 @@ public class Main
 		for (ModuleName fullname : this.loaded.keySet())
 		{
 			Pair<Resource, Module> e = this.loaded.get(fullname);
-			modcs.put(fullname, maker.make(loaded, e.right));  // throws ScribException
+			modcs.put(fullname, maker.make(loaded, e.right));  // Throws ScribException
 		}
 		this.modcs = Collections.unmodifiableMap(modcs);
 	}

@@ -35,13 +35,13 @@ import org.scribble.visit.wf.NameDisambiguator;
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Lang
 {
-	// Keys are full names
-	private final Map<ModuleName, ModuleContext> modcs;  // CHECKME: constant?  move to JobConfig?
-
 	public final LangConfig config;  // Immutable
 
 	private final LangContext context;  // Mutable (Visitor passes replace modules)
 	//private final SGraphBuilderUtil sgbu;
+
+	// Keys are full names
+	private final Map<ModuleName, ModuleContext> modcs;  // CHECKME: constant?  move to JobConfig?
 	
 	private Job job;
 	
