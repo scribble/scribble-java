@@ -27,7 +27,7 @@ import org.scribble.type.session.DisconnectAction;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-public class LDisconnect extends DisconnectAction<Local>
+public class LDisconnect extends DisconnectAction<Local, LSeq>
 		implements LType
 {
 

@@ -24,8 +24,8 @@ import org.scribble.type.name.RecVar;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-public abstract class BasicInteraction<K extends ProtocolKind>
-		extends STypeBase<K> implements SType<K>
+public abstract class BasicInteraction<K extends ProtocolKind, B extends Seq<K, B>>
+		extends STypeBase<K, B> implements SType<K, B>
 {
 	public BasicInteraction(CommonTree source)
 	{
@@ -39,19 +39,19 @@ public abstract class BasicInteraction<K extends ProtocolKind>
 	}
 	
 	@Override
-	public BasicInteraction<K> pruneRecs()
+	public BasicInteraction<K, B> pruneRecs()
 	{
 		return this;
 	}
 
 	@Override
-	public BasicInteraction<K> getInlined(STypeInliner v)
+	public BasicInteraction<K, B> getInlined(STypeInliner v)
 	{
 		return this;
 	}
 
 	@Override
-	public BasicInteraction<K> unfoldAllOnce(STypeUnfolder<K> u)
+	public BasicInteraction<K, B> unfoldAllOnce(STypeUnfolder<K> u)
 	{
 		return this;
 	}

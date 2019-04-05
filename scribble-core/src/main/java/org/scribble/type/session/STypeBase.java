@@ -17,8 +17,8 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 
 // SessTypeBase is to SessType as ScribNodeBase is to ScribNode
-public abstract class STypeBase<K extends ProtocolKind>
-		implements SType<K>
+public abstract class STypeBase<K extends ProtocolKind, B extends Seq<K, B>>
+		implements SType<K, B>
 {
 	private final CommonTree source;  // Currently null for "generated" terms (cf. hasSource)
 
@@ -27,8 +27,8 @@ public abstract class STypeBase<K extends ProtocolKind>
 		/*CommonTree clone = (source == null)
 				? null
 				: CommonTree.clone();  // clone not visibile*/
-		this.source = source;
 				// CHECKME: ScribNodes are technically mutable -- though should be treated immutable (defensive copies) post disamb, i.e., in core passes
+		this.source = source;
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public abstract class STypeBase<K extends ProtocolKind>
 		{
 			return false;
 		}
-		STypeBase<?> them = (STypeBase<?>) o;
+		STypeBase<?, ?> them = (STypeBase<?, ?>) o;
 		return them.canEquals(this);
 	}
 }

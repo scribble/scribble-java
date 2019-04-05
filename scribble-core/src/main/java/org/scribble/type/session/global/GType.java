@@ -22,10 +22,8 @@ import org.scribble.type.name.Role;
 import org.scribble.type.session.SType;
 import org.scribble.type.session.local.LType;
 import org.scribble.visit.Projector2;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
 
-public interface GType extends SType<Global>
+public interface GType extends SType<Global, GSeq>
 {
 	LType projectInlined(Role self);  // Use on inlined (i.e., Do inlined, roles pruned)
 	LType project(Projector2 v);  // Use on parsed (intermed)
@@ -50,10 +48,12 @@ public interface GType extends SType<Global>
 	/*@Override
 	GType substitute(Substitutions subs);*/  // Otherwise causes return type inconsistency with base abstract classes
 
+	/*// GType returns cause "conflicts" in implementing subclasses -- SType would need itself as another generic param, but not worth it
 	@Override
 	GType getInlined(STypeInliner i);//, Deque<SubprotoSig> stack);
 
 	@Override
 	SType<Global> unfoldAllOnce(STypeUnfolder<Global> u);  // Not GType return, o/w need to override again in GDo
+	*/
 }
 

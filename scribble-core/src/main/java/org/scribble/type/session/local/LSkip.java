@@ -31,7 +31,7 @@ import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
 // Used only *during* projection -- filtered out by GSeq::projection
-public class LSkip extends STypeBase<Local> implements LType
+public class LSkip extends STypeBase<Local, LSeq> implements LType
 {
 	public static final LSkip SKIP = new LSkip();
 	

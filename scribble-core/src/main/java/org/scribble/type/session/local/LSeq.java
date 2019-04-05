@@ -15,7 +15,6 @@ package org.scribble.type.session.local;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,19 +30,18 @@ import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.SType;
 import org.scribble.type.session.Seq;
 import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
 
-public class LSeq extends Seq<Local> implements LType
+public class LSeq extends Seq<Local, LSeq> implements LType
 {
 	// GInteractionSeq or GBlock better as source?
-	public LSeq(CommonTree source, List<? extends SType<Local>> elems)
+	public LSeq(CommonTree source, List<? extends SType<Local, LSeq>> elems)
 	{
 		super(source, elems);
 	}
 
 	@Override
 	public LSeq reconstruct(CommonTree source,
-			List<? extends SType<Local>> elems)
+			List<? extends SType<Local, LSeq>> elems)
 	{
 		return new LSeq(source, elems);
 	}
@@ -69,64 +67,9 @@ public class LSeq extends Seq<Local> implements LType
 	}
 
 	@Override
-	public LSeq pruneRecs()
-	{
-		List<LType> elems = new LinkedList<>();
-		for (SType<Local> e : this.elems)
-		{
-			LType e1 = (LType) e.pruneRecs();
-			if (e1 instanceof LSeq)  // cf. Recursion::pruneRecs
-			{
-				elems.addAll(((LSeq) e1).getElements());  // Handles empty Seq case
-			}
-			else
-			{
-				elems.add(e1);
-			}
-		}
-		return reconstruct(getSource(), elems);
-	}
-
-	@Override
 	public LSeq getInlined(STypeInliner v)
 	{
 		return (LSeq) super.getInlined(v);
-	}
-		/*CommonTree source = getSource();  // CHECKME: or empty source?
-		List<SType<Local>> elems = new LinkedList<>();
-		for (SType<Local> e : this.elems)
-		{
-			SType<Local> e1 = e.getInlined(i);//, stack);
-			if (e1 instanceof LSeq)
-			{
-				elems.addAll(((LSeq) e1).elems);  // Inline GSeq's returned by GDo::getInlined
-			}
-			else
-			{
-				elems.add(e1);
-			}
-		}
-		return reconstruct(source, elems);
-	}*/
-
-	@Override
-	public LSeq unfoldAllOnce(STypeUnfolder<Local> u)
-	{
-		CommonTree source = getSource();
-		List<SType<Local>> elems = new LinkedList<>();
-		for (SType<Local> e : this.elems)
-		{
-			SType<Local> e1 = e.unfoldAllOnce(u);
-			if (e1 instanceof Seq<?>)
-			{
-				elems.addAll(((Seq<Local>) e1).elems);
-			}
-			else
-			{
-				elems.add(e1);
-			}
-		}
-		return reconstruct(source, elems);
 	}
 
 	@Override

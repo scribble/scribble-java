@@ -34,8 +34,9 @@ import org.scribble.type.name.Role;
 import org.scribble.type.name.Substitutions;
 import org.scribble.visit.STypeUnfolder;
 
-public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
-		extends STypeBase<K> implements SType<K>
+public abstract class Do
+		<K extends ProtocolKind, B extends Seq<K, B>, N extends ProtocolName<K>>
+		extends STypeBase<K, B>
 {
 	public final N proto;  // Currently disamb'd to fullname by GTypeTranslator (see GDoDel::translate)
 	public final List<Role> roles;  // Ordered role args; pre: size > 2
@@ -51,7 +52,7 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 		this.args = Collections.unmodifiableList(args);
 	}
 
-	public abstract Do<K, N> reconstruct(CommonTree source,
+	public abstract Do<K, B, N> reconstruct(CommonTree source,
 			N proto, List<Role> roles, List<Arg<? extends NonRoleParamKind>> args);
 
 	@Override
@@ -95,7 +96,7 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 	}
 
 	@Override
-	public Do<K, N> substitute(Substitutions subs)
+	public Do<K, B, N> substitute(Substitutions subs)
 	{
 		List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
 				.collect(Collectors.toList());
@@ -119,13 +120,13 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 	}
 
 	@Override
-	public Do<K, N> pruneRecs()
+	public Do<K, B, N> pruneRecs()
 	{
 		return this;
 	}
 
 	@Override
-	public SType<K> unfoldAllOnce(STypeUnfolder<K> u)
+	public SType<K, B> unfoldAllOnce(STypeUnfolder<K> u)
 	{
 		throw new RuntimeException("Unsupported for Do: " + this);
 	}
@@ -165,7 +166,7 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 		{
 			return false;
 		}
-		Do<?, ?> them = (Do<?, ?>) o;
+		Do<?, ?, ?> them = (Do<?, ?, ?>) o;
 		return super.equals(this)  // Does canEquals
 				&& this.proto.equals(them.proto) && this.roles.equals(them.roles) 
 				&& this.args.equals(them.args);

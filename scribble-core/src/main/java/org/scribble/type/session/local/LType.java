@@ -21,10 +21,8 @@ import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.session.SType;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
 
-public interface LType extends SType<Local>
+public interface LType extends SType<Local, LSeq>
 {
 	//Role getSelf();  // CHECKME
 	
@@ -33,15 +31,6 @@ public interface LType extends SType<Local>
 	RecVar isSingleCont();
 
 	boolean isSingleConts(Set<RecVar> rvs);
-
-	/*@Override
-	LType substitute(Substitutions subs);*/  // Otherwise causes return type inconsistency with base abstract classes
-
-	@Override
-	LType getInlined(STypeInliner i);//, Deque<SubprotoSig> stack);
-
-	@Override
-	SType<Local> unfoldAllOnce(STypeUnfolder<Local> u);
 	
 	// Uses b to builds graph "progressively" (working graph is mutable)
 	// Use EGraphBuilderUtil2::finalise for final result
@@ -49,4 +38,15 @@ public interface LType extends SType<Local>
 	
 	ReachabilityEnv checkReachability(ReachabilityEnv env)
 			throws ScribbleException;
+
+	/*@Override
+	LType substitute(Substitutions subs);*/  // Otherwise causes return type inconsistency with base abstract classes
+
+	/*// LType returns cause "conflicts" in implementing subclasses -- SType would need itself as another generic param, but not worth it
+	@Override
+	SType<Local, LSeq> getInlined(STypeInliner v);
+
+	@Override
+	SType<Local, LSeq> unfoldAllOnce(STypeUnfolder<Local> u);
+	*/
 }

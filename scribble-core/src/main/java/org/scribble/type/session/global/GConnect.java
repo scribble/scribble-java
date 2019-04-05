@@ -34,7 +34,7 @@ import org.scribble.visit.Projector2;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-public class GConnect extends ConnectAction<Global>
+public class GConnect extends ConnectAction<Global, GSeq>
 		implements GType
 {
 

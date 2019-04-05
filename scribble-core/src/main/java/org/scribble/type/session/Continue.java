@@ -29,8 +29,8 @@ import org.scribble.type.name.Role;
 import org.scribble.type.name.Substitutions;
 import org.scribble.visit.STypeInliner;
 
-public abstract class Continue<K extends ProtocolKind>
-		extends STypeBase<K> implements SType<K>
+public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
+		extends STypeBase<K, B>
 {
 	public final RecVar recvar;
 
@@ -42,7 +42,7 @@ public abstract class Continue<K extends ProtocolKind>
 		this.recvar = recvar;
 	}
 
-	public abstract Continue<K> reconstruct(
+	public abstract Continue<K, B> reconstruct(
 			CommonTree source, RecVar recvar);
 	
 	@Override
@@ -76,21 +76,21 @@ public abstract class Continue<K extends ProtocolKind>
 	}
 
 	@Override
-	public Continue<K> substitute(Substitutions subs)
+	public Continue<K, B> substitute(Substitutions subs)
 	{
 		//return reconstruct(getSource(), this.recvar);
 		return this;
 	}
 
 	@Override
-	public Continue<K> pruneRecs()
+	public Continue<K, B> pruneRecs()
 	{
 		//return reconstruct(getSource(), this.recvar);
 		return this;
 	}
 
 	@Override
-	public Continue<K> getInlined(STypeInliner v)
+	public Continue<K, B> getInlined(STypeInliner v)
 	{
 		RecVar rv = v.getInlinedRecVar(this.recvar);
 		return reconstruct(getSource(), rv);
@@ -122,7 +122,7 @@ public abstract class Continue<K extends ProtocolKind>
 		{
 			return false;
 		}
-		Continue<?> them = (Continue<?>) o;
+		Continue<?, ?> them = (Continue<?, ?>) o;
 		return super.equals(this)  // Does canEquals
 				&& this.recvar.equals(them.recvar);
 	}

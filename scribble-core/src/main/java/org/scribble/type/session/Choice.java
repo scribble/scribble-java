@@ -26,9 +26,12 @@ import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
-public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
-		extends STypeBase<K> implements SType<K>
+public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
+		extends STypeBase<K, B> implements SType<K, B>
 {
 	public final Role subj;
 	public final List<B> blocks;  // Pre: size > 0
@@ -44,7 +47,7 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 
 	public abstract Choice<K, B> reconstruct(CommonTree source, Role subj,
 			List<B> blocks);
-			//List<? extends Seq<K>> blocks);
+			//List<? extends Seq<K, B>> blocks);
 	
 	@Override
 	public Set<Role> getRoles()
@@ -52,6 +55,22 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 		Set<Role> res = Stream.of(this.subj).collect(Collectors.toSet());
 		this.blocks.forEach(x -> res.addAll(x.getRoles()));
 		return res;
+	}
+
+	@Override
+	public Choice<K, B> substitute(Substitutions subs)
+	{
+		List<B> blocks = this.blocks.stream().map(x -> x.substitute(subs))
+				.collect(Collectors.toList());
+		return reconstruct(getSource(), subs.subsRole(this.subj), blocks);
+	}
+
+	@Override
+	public Choice<K, B> pruneRecs()
+	{
+		List<B> blocks = this.blocks.stream().map(x -> x.pruneRecs())
+				.collect(Collectors.toList());
+		return reconstruct(getSource(), this.subj, blocks);
 	}
 
 	@Override
@@ -68,11 +87,11 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 				.collect(Collectors.toSet());
 	}
 
-	/*@Override
+	@Override
 	public Choice<K, B> getInlined(STypeInliner v)
 	{
 		CommonTree source = getSource();  // CHECKME: or empty source?
-		List<Seq<K>> blocks = this.blocks.stream().map(x -> x.getInlined(v))
+		List<B> blocks = this.blocks.stream().map(x -> x.getInlined(v))
 				.collect(Collectors.toList());
 		return reconstruct(source, this.subj, blocks);
 	}
@@ -81,10 +100,10 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 	public Choice<K, B> unfoldAllOnce(STypeUnfolder<K> u)
 	{
 		CommonTree source = getSource();  // CHECKME: or empty source?
-		List<Seq<K>> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
+		List<B> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
 				.collect(Collectors.toList());
 		return reconstruct(source, this.subj, blocks);
-	}*/
+	}
 
 	@Override
 	public List<ProtocolName<K>> getProtoDependencies()

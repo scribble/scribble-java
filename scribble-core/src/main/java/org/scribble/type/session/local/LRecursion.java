@@ -22,10 +22,7 @@ import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Recursion;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
 
 public class LRecursion extends Recursion<Local, LSeq> implements LType
 {
@@ -55,38 +52,6 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 		Set<RecVar> tmp = new HashSet<>(rvs);
 		tmp.add(this.recvar);
 		return this.body.isSingleConts(tmp);
-	}
-	
-	@Override
-	public LRecursion substitute(Substitutions subs)
-	{
-		return reconstruct(getSource(), this.recvar, this.body.substitute(subs));
-	}
-
-	@Override
-	public LRecursion getInlined(STypeInliner v)
-	{
-		CommonTree source = getSource();  // CHECKME: or empty source?
-		RecVar rv = v.enterRec(//stack.peek(), 
-				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
-		LSeq body = this.body.getInlined(v);//, stack);
-		LRecursion res = reconstruct(source, rv, body);
-		v.exitRec(this.recvar);
-		return res;
-	}
-
-	@Override
-	public LType unfoldAllOnce(STypeUnfolder<Local> u)
-	{
-		if (!u.hasRec(this.recvar))  // N.B. doesn't work if recvars shadowed
-		{
-			u.pushRec(this.recvar, this.body);
-			LType unf = (LType) this.body.unfoldAllOnce(u);
-			u.popRec(this.recvar);  
-					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
-			return unf;
-		}
-		return this;
 	}
 	
 	@Override

@@ -32,7 +32,7 @@ import org.scribble.type.session.Arg;
 import org.scribble.type.session.Do;
 import org.scribble.visit.STypeInliner;
 
-public class LDo extends Do<Local, LProtocolName> implements LType
+public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 {
 	public LDo(CommonTree source, LProtocolName proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)

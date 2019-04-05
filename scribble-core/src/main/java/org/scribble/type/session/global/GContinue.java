@@ -28,7 +28,7 @@ import org.scribble.visit.Projector2;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-public class GContinue extends Continue<Global> implements GType
+public class GContinue extends Continue<Global, GSeq> implements GType
 {
 	public GContinue(//org.scribble.ast.Continue<Global> source, 
 			CommonTree source,  // Due to inlining, do -> continue

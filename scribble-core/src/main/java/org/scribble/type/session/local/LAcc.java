@@ -31,7 +31,7 @@ import org.scribble.type.session.Payload;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-public class LAcc extends ConnectAction<Local> implements LType
+public class LAcc extends ConnectAction<Local, LSeq> implements LType
 {
 
 	// this.dst == Role.SELF

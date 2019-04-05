@@ -33,8 +33,8 @@ import org.scribble.type.session.STypeBase;
 import org.scribble.type.session.Seq;
 import org.scribble.util.Constants;
 
-public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>, B extends Seq<K>>
-		extends STypeBase<K> 
+public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>, B extends Seq<K, B>>
+		extends STypeBase<K, B>
 {
 	public final List<ProtocolMod> mods;
 	public final N fullname;

@@ -34,7 +34,7 @@ import org.scribble.visit.Projector2;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-public class GMessageTransfer extends MessageTransfer<Global>
+public class GMessageTransfer extends MessageTransfer<Global, GSeq>
 		implements GType
 {
 

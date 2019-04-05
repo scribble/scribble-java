@@ -27,9 +27,9 @@ import org.scribble.type.name.Substitutions;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-// CHECKME: move to type.sess?
+// B needed(?) to factor up several methods from G/L compounds to bases, e.g., getInlined and unfoldAllOnce
 // Generic works to "specialise" G/L subclasses (and works with immutable pattern) -- cf. not supported by contravariant method parameter subtyping for getters/setters
-public interface SType<K extends ProtocolKind>  // CHECKME: consider adding B extends Seq<K> here
+public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 {
 	boolean hasSource();  // i.e., was parsed
 	CommonTree getSource();  // Pre: hasSource
@@ -38,10 +38,10 @@ public interface SType<K extends ProtocolKind>  // CHECKME: consider adding B ex
 	Set<Role> getRoles();
 	Set<MessageId<?>> getMessageIds();
 
-	SType<K> substitute(Substitutions subs);
+	SType<K, B> substitute(Substitutions subs);
 	
 	Set<RecVar> getRecVars();
-	SType<K> pruneRecs();  // Assumes no shadowing (e.g., use after inlining recvar disamb)
+	SType<K, B> pruneRecs();  // Assumes no shadowing (e.g., use after inlining recvar disamb)
 	
 	// Top-level call should be on a GProtocol with an empty stack -- XXX
 	// stack is treated mutably
@@ -50,12 +50,12 @@ public interface SType<K extends ProtocolKind>  // CHECKME: consider adding B ex
 	// Pre: stack.peek gives call-site sig, i.e., call-site roles/args
 	// CHECKME: OK to (re-)use GTypeTranslator for inlining?
 	// Stack not "internalised", must be "manually" managed -- cf., SubprotocolVisitor
-	//SessType<K> getInlined(GTypeTranslator t, Deque<SubprotoSig> stack);  // FIXME: generalise for locals
-	SType<K> getInlined(STypeInliner i);
+	//SessType<K, B> getInlined(GTypeTranslator t, Deque<SubprotoSig> stack);  // FIXME: generalise for locals
+	SType<K, B> getInlined(STypeInliner i);
 	
 	// Unsupported for Do
 	// FIXME: repeat recvar names, including non-shadowing (e.g., choice cases)
-	SType<K> unfoldAllOnce(STypeUnfolder<K> u);
+	SType<K, B> unfoldAllOnce(STypeUnfolder<K> u);
 	
 	// Resulting Lists should not contain duplicates (i.e., Choice/Seq)
 	// Result does not necessarily contain root proto, but may do so via dependencies

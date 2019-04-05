@@ -31,7 +31,7 @@ import org.scribble.type.session.Payload;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-public class LReq extends ConnectAction<Local>
+public class LReq extends ConnectAction<Local, LSeq>
 		implements LType
 {
 

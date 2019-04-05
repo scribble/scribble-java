@@ -27,8 +27,8 @@ import org.scribble.type.name.Role;
 import org.scribble.type.name.Substitutions;
 
 // Base class would be "SymmetricInteraction" (cf., DirectedInteraction)
-public abstract class DisconnectAction<K extends ProtocolKind>
-		extends BasicInteraction<K>
+public abstract class DisconnectAction<K extends ProtocolKind, B extends Seq<K, B>>
+		extends BasicInteraction<K, B>
 {
 	public final Role left;
 	public final Role right;
@@ -41,7 +41,7 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 		this.right = right;
 	}
 	
-	public abstract DisconnectAction<K> reconstruct(
+	public abstract DisconnectAction<K, B> reconstruct(
 			CommonTree source, Role src, Role dst);
 
 	@Override
@@ -58,7 +58,7 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 	}
 	
 	@Override
-	public DisconnectAction<K> substitute(Substitutions subs)
+	public DisconnectAction<K, B> substitute(Substitutions subs)
 	{
 		return reconstruct(getSource(), subs.subsRole(this.left), 
 				subs.subsRole(this.right));
@@ -91,7 +91,7 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 		{
 			return false;
 		}
-		DisconnectAction<?> them = (DisconnectAction<?>) o;
+		DisconnectAction<?, ?> them = (DisconnectAction<?, ?>) o;
 		return super.equals(this)  // Does canEquals
 				&& this.left.equals(them.left) && this.right.equals(them.right);
 	}

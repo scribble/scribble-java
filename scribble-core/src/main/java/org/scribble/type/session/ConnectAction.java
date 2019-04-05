@@ -24,8 +24,8 @@ import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
-public abstract class ConnectAction<K extends ProtocolKind>
-		extends DirectedInteraction<K>
+public abstract class ConnectAction<K extends ProtocolKind, B extends Seq<K, B>>
+		extends DirectedInteraction<K, B>
 {
 	public ConnectAction(CommonTree source,  // BaseInteractionNode not ideal
 			Role src, Message msg, Role dst)

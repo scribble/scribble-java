@@ -25,8 +25,8 @@ import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 
-public abstract class MessageTransfer<K extends ProtocolKind>
-		extends DirectedInteraction<K>
+public abstract class MessageTransfer<K extends ProtocolKind, B extends Seq<K, B>>
+		extends DirectedInteraction<K, B>
 {
 	public MessageTransfer(CommonTree source,
 			Role src, Message msg, Role dst)

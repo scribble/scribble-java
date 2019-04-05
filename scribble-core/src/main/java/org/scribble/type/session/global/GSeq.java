@@ -13,7 +13,6 @@
  */
 package org.scribble.type.session.global;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,21 +30,19 @@ import org.scribble.type.session.local.LSeq;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
 import org.scribble.visit.Projector2;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
 
-public class GSeq extends Seq<Global> implements GType
+public class GSeq extends Seq<Global, GSeq> implements GType
 {
 	// GInteractionSeq or GBlock better as source?
 	public GSeq(CommonTree source,
-			List<? extends SType<Global>> elems)
+			List<? extends SType<Global, GSeq>> elems)
 	{
 		super(source, elems);
 	}
 
 	@Override
 	public GSeq reconstruct(CommonTree source,
-			List<? extends SType<Global>> elems)
+			List<? extends SType<Global, GSeq>> elems)
 	{
 		return new GSeq(source, elems);
 	}
@@ -54,67 +51,6 @@ public class GSeq extends Seq<Global> implements GType
 	public GSeq substitute(Substitutions subs)
 	{
 		return (GSeq) super.substitute(subs);
-	}
-
-	@Override
-	public GSeq pruneRecs()
-	{
-		List<GType> elems = new LinkedList<>();
-		for (SType<Global> e : this.elems)
-		{
-			GType e1 = (GType) e.pruneRecs();
-			if (e1 instanceof GSeq)  // cf. Recursion::pruneRecs
-			{
-				elems.addAll(((GSeq) e1).getElements());  // Handles empty Seq case
-			}
-			else
-			{
-				elems.add(e1);
-			}
-		}
-		return reconstruct(getSource(), elems);
-	}
-
-	@Override
-	public GSeq getInlined(STypeInliner v)
-	{
-		return (GSeq) super.getInlined(v);
-	}
-	/*CommonTree source = getSource(); // CHECKME: or empty source?
-		List<SType<Global>> elems = new LinkedList<>();
-		for (SType<Global> e : this.elems)
-		{
-			SType<Global> e1 = e.getInlined(i);// , stack);
-			if (e1 instanceof GSeq)
-			{
-				elems.addAll(((GSeq) e1).elems); // Inline GSeq's returned by GDo::getInlined
-			}
-			else
-			{
-				elems.add(e1);
-			}
-		}
-		return reconstruct(source, elems);
-	}*/
-
-	@Override
-	public GSeq unfoldAllOnce(STypeUnfolder<Global> u)
-	{
-		CommonTree source = getSource();
-		List<SType<Global>> elems = new LinkedList<>();
-		for (SType<Global> e : this.elems)
-		{
-			SType<Global> e1 = e.unfoldAllOnce(u);
-			if (e1 instanceof Seq<?>)
-			{
-				elems.addAll(((Seq<Global>) e1).elems);
-			}
-			else
-			{
-				elems.add(e1);
-			}
-		}
-		return reconstruct(source, elems);
 	}
 
 	@Override

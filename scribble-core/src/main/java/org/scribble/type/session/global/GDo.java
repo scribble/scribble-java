@@ -39,7 +39,7 @@ import org.scribble.type.session.local.LType;
 import org.scribble.visit.Projector2;
 import org.scribble.visit.STypeInliner;
 
-public class GDo extends Do<Global, GProtocolName> implements GType
+public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 {
 	public GDo(CommonTree source, GProtocolName proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)

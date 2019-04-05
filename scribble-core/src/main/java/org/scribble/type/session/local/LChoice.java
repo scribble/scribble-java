@@ -28,10 +28,7 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Choice;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
 
 public class LChoice extends Choice<Local, LSeq> implements LType
 {
@@ -60,40 +57,6 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 	public boolean isSingleConts(Set<RecVar> rvs)
 	{
 		return this.blocks.stream().allMatch(x -> x.isSingleConts(rvs));
-	}
-
-	@Override
-	public LChoice substitute(Substitutions subs)
-	{
-		List<LSeq> blocks = this.blocks.stream().map(x -> x.substitute(subs))
-				.collect(Collectors.toList());
-		return reconstruct(getSource(), subs.subsRole(this.subj), blocks);
-	}
-
-	@Override
-	public LChoice pruneRecs()
-	{
-		List<LSeq> blocks = this.blocks.stream().map(x -> x.pruneRecs())
-				.collect(Collectors.toList());
-		return reconstruct(getSource(), this.subj, blocks);
-	}
-
-	@Override
-	public LChoice getInlined(STypeInliner v)
-	{
-		CommonTree source = getSource();  // CHECKME: or empty source?
-		List<LSeq> blocks = this.blocks.stream().map(x -> x.getInlined(v))
-				.collect(Collectors.toList());
-		return reconstruct(source, this.subj, blocks);
-	}
-
-	@Override
-	public LChoice unfoldAllOnce(STypeUnfolder<Local> u)
-	{
-		CommonTree source = getSource();  // CHECKME: or empty source?
-		List<LSeq> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
-				.collect(Collectors.toList());
-		return reconstruct(source, this.subj, blocks);
 	}
 	
 	@Override

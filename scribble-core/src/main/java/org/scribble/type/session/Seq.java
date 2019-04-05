@@ -30,20 +30,20 @@ import org.scribble.type.name.Substitutions;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-// Could add B extends STypeBase, but it inflates type params quite a bit (e.g., Protocol)
-public abstract class Seq<K extends ProtocolKind>
-		extends STypeBase<K>
+// CHECKME: could add B extends STypeBase, but it inflates type params quite a bit (e.g., Protocol) ?
+public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
+		extends STypeBase<K, B>
 {
-	public final List<? extends SType<K>> elems;  // GType or LType
+	public final List<? extends SType<K, B>> elems;  // GType or LType -- could make SType subclasses take themself as another param, but not worth it
 
-	public Seq(CommonTree source, List<? extends SType<K>> elems)
+	public Seq(CommonTree source, List<? extends SType<K, B>> elems)
 	{
 		super(source);
 		this.elems = Collections.unmodifiableList(elems);
 	}
 	
-	public abstract Seq<K> reconstruct(CommonTree source,
-			List<? extends SType<K>> elems);
+	public abstract B reconstruct(CommonTree source,
+			List<? extends SType<K, B>> elems);
 
 	@Override
 	public Set<Role> getRoles()
@@ -67,24 +67,43 @@ public abstract class Seq<K extends ProtocolKind>
 	}
 
 	@Override
-	public Seq<K> substitute(Substitutions subs)
+	public B pruneRecs()
 	{
-		List<? extends SType<K>> elems = this.elems.stream()
+		List<SType<K, B>> elems = new LinkedList<>();
+		for (SType<K, B> e : this.elems)
+		{
+			SType<K, B> e1 = (SType<K, B>) e.pruneRecs();
+			if (e1 instanceof Seq<?, ?>)  // cf. Recursion::pruneRecs
+			{
+				elems.addAll(((Seq<K, B>) e1).getElements());  // Handles empty Seq case
+			}
+			else
+			{
+				elems.add(e1);
+			}
+		}
+		return reconstruct(getSource(), elems);
+	}
+
+	@Override
+	public B substitute(Substitutions subs)
+	{
+		List<? extends SType<K, B>> elems = this.elems.stream()
 				.map(x -> x.substitute(subs)).collect(Collectors.toList());
 		return reconstruct(getSource(), elems);
 	}
 
 	@Override
-	public Seq<K> getInlined(STypeInliner v)
+	public B getInlined(STypeInliner v)
 	{
 		CommonTree source = getSource(); // CHECKME: or empty source?
-		List<SType<K>> elems = new LinkedList<>();
-		for (SType<K> e : this.elems)
+		List<SType<K, B>> elems = new LinkedList<>();
+		for (SType<K, B> e : this.elems)
 		{
-			SType<K> e1 = e.getInlined(v);
-			if (e1 instanceof Seq<?>)
+			SType<K, B> e1 = e.getInlined(v);
+			if (e1 instanceof Seq<?, ?>)
 			{
-				elems.addAll(((Seq<K>) e1).elems); // Inline Seq's returned by Do.getInlined
+				elems.addAll(((Seq<K, B>) e1).elems); // Inline Seq's returned by Do.getInlined
 			}
 			else
 			{
@@ -95,16 +114,16 @@ public abstract class Seq<K extends ProtocolKind>
 	}
 
 	@Override
-	public Seq<K> unfoldAllOnce(STypeUnfolder<K> u)
+	public B unfoldAllOnce(STypeUnfolder<K> u)
 	{
 		CommonTree source = getSource();
-		List<SType<K>> elems = new LinkedList<>();
-		for (SType<K> e : this.elems)
+		List<SType<K, B>> elems = new LinkedList<>();
+		for (SType<K, B> e : this.elems)
 		{
-			SType<K> e1 = e.unfoldAllOnce(u);
-			if (e1 instanceof Seq<?>)
+			SType<K, B> e1 = e.unfoldAllOnce(u);
+			if (e1 instanceof Seq<?, ?>)
 			{
-				elems.addAll(((Seq<K>) e1).elems);
+				elems.addAll(((Seq<K, B>) e1).elems);
 			}
 			else
 			{
@@ -129,7 +148,7 @@ public abstract class Seq<K extends ProtocolKind>
 				.collect(Collectors.toList());
 	}
 
-	public abstract List<? extends SType<K>> getElements();
+	public abstract List<? extends SType<K, B>> getElements();
 	
 	public boolean isEmpty()
 	{
@@ -163,7 +182,7 @@ public abstract class Seq<K extends ProtocolKind>
 		{
 			return false;
 		}
-		Seq<?> them = (Seq<?>) o;
+		Seq<?, ?> them = (Seq<?, ?>) o;
 		return super.equals(this)  // Does canEquals
 				&& this.elems.equals(them.elems);
 	}

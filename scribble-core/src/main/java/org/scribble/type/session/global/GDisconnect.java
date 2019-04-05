@@ -29,7 +29,7 @@ import org.scribble.visit.Projector2;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-public class GDisconnect extends DisconnectAction<Global>
+public class GDisconnect extends DisconnectAction<Global, GSeq>
 		implements GType
 {
 

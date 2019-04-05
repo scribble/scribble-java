@@ -21,16 +21,17 @@ import org.scribble.type.name.RecVar;
 import org.scribble.type.session.Seq;
 
 // Currently once usage only, no popRec -- CHECKME: fix?
+// FIXME: take B, and refactor getRec
 public class STypeUnfolder<K extends ProtocolKind>
 {
-	private final Map<RecVar, Seq<K>> recs = new HashMap<>(); 
+	private final Map<RecVar, Seq<K, ?>> recs = new HashMap<>(); 
 
 	public STypeUnfolder()
 	{
 
 	}
 
-	public void pushRec(RecVar rv, Seq<K> body)
+	public void pushRec(RecVar rv, Seq<K, ?> body)
 	{
 		if (this.recs.containsKey(rv))
 		{
@@ -44,7 +45,7 @@ public class STypeUnfolder<K extends ProtocolKind>
 		return this.recs.containsKey(rv);
 	}
 	
-	public Seq<K> getRec(RecVar rv)
+	public Seq<K, ?> getRec(RecVar rv)
 	{
 		return this.recs.get(rv);
 	}

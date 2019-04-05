@@ -23,9 +23,12 @@ import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
-public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
-		extends STypeBase<K> implements SType<K>
+public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
+		extends STypeBase<K, B>
 {
 	public final RecVar recvar;
 	public final B body;
@@ -53,6 +56,12 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 	{
 		return this.body.getMessageIds();
 	}
+	
+	@Override
+	public Recursion<K, B> substitute(Substitutions subs)
+	{
+		return reconstruct(getSource(), this.recvar, this.body.substitute(subs));
+	}
 
 	@Override
 	public Set<RecVar> getRecVars()
@@ -61,12 +70,38 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 	}
 
 	@Override
-	public SType<K> pruneRecs()
+	public SType<K, B> pruneRecs()
 	{
 		// Assumes no shadowing (e.g., use after SType#getInlined recvar disamb)
 		return this.body.getRecVars().contains(this.recvar)
 				? this
 				: this.body;  // i.e., return a Seq, to be "inlined" by Seq.pruneRecs -- N.B. must handle empty Seq case
+	}
+
+	@Override
+	public Recursion<K, B> getInlined(STypeInliner v)
+	{
+		CommonTree source = getSource();  // CHECKME: or empty source?
+		RecVar rv = v.enterRec(//stack.peek(), 
+				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
+		B body = this.body.getInlined(v);//, stack);
+		Recursion<K, B> res = reconstruct(source, rv, body);
+		v.exitRec(this.recvar);
+		return res;
+	}
+
+	@Override
+	public SType<K, B> unfoldAllOnce(STypeUnfolder<K> u)
+	{
+		if (!u.hasRec(this.recvar))  // N.B. doesn't work if recvars shadowed
+		{
+			u.pushRec(this.recvar, this.body);
+			SType<K, B> unf = this.body.unfoldAllOnce(u);
+			u.popRec(this.recvar);  
+					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
+			return unf;
+		}
+		return this;
 	}
 
 	/* // CHECKME: try adding B to Seq

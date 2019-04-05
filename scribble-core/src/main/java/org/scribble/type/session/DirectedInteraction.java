@@ -25,8 +25,8 @@ import org.scribble.type.name.Role;
 import org.scribble.type.name.Substitutions;
 
 // Besides directed-ness, also features a Message
-public abstract class DirectedInteraction<K extends ProtocolKind>
-		extends BasicInteraction<K>
+public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<K, B>>
+		extends BasicInteraction<K, B>
 {
 	public final Role src;
 	public final Message msg;
@@ -41,7 +41,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 		this.dst = dst;
 	}
 	
-	public abstract DirectedInteraction<K> reconstruct(
+	public abstract DirectedInteraction<K, B> reconstruct(
 			CommonTree source, Role src, Message msg,
 			Role dst);
 
@@ -59,7 +59,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 	}
 	
 	@Override
-	public DirectedInteraction<K> substitute(Substitutions subs)
+	public DirectedInteraction<K, B> substitute(Substitutions subs)
 	{
 		Message msg = this.msg;
 		if (msg instanceof MemberName)
@@ -102,7 +102,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 		{
 			return false;
 		}
-		DirectedInteraction<?> them = (DirectedInteraction<?>) o;
+		DirectedInteraction<?, ?> them = (DirectedInteraction<?, ?>) o;
 		return super.equals(this)  // Does canEquals
 				&& this.src.equals(them.src) && this.msg.equals(them.msg)
 				&& this.dst.equals(them.dst);

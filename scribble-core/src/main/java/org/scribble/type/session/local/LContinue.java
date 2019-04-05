@@ -30,7 +30,7 @@ import org.scribble.type.session.Continue;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-public class LContinue extends Continue<Local> implements LType
+public class LContinue extends Continue<Local, LSeq> implements LType
 {
 	public LContinue(//org.scribble.ast.Continue<Local> source, 
 			CommonTree source,  // Due to inlining, do -> continue

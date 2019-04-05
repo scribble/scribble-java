@@ -31,7 +31,7 @@ import org.scribble.type.session.Payload;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-public class LSend extends MessageTransfer<Local>
+public class LSend extends MessageTransfer<Local, LSeq>
 		implements LType
 {
 
