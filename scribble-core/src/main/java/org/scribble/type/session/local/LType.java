@@ -16,26 +16,25 @@ package org.scribble.type.session.local;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.session.SType;
+import org.scribble.visit.local.ReachabilityEnv;
 
 public interface LType extends SType<Local, LSeq>
 {
-	//Role getSelf();  // CHECKME
+	//Role getSelf();  // CHECKME: useful?
 	
-	// Return recvar of the "single continue", if so; return null, if not
-	@Deprecated
-	RecVar isSingleCont();
-
+	// Return true iff LType is "equivalent" to a single "continue X", where X in rvs
 	boolean isSingleConts(Set<RecVar> rvs);
 	
 	// Uses b to builds graph "progressively" (working graph is mutable)
 	// Use EGraphBuilderUtil2::finalise for final result
 	void buildGraph(EGraphBuilderUtil2 b);
 	
+	// Return: (new) env post visiting 
+	// cf. GType "visitor" methods: same pattern, just env as a bespoke data type wrapper
 	ReachabilityEnv checkReachability(ReachabilityEnv env)
 			throws ScribbleException;
 

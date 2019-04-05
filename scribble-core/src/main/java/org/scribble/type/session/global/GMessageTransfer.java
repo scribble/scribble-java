@@ -23,16 +23,13 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Message;
 import org.scribble.type.session.MessageTransfer;
 import org.scribble.type.session.local.LRcv;
 import org.scribble.type.session.local.LSend;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
-import org.scribble.visit.Projector2;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.global.Projector2;
 
 public class GMessageTransfer extends MessageTransfer<Global, GSeq>
 		implements GType
@@ -50,24 +47,6 @@ public class GMessageTransfer extends MessageTransfer<Global, GSeq>
 			Role dst)
 	{
 		return new GMessageTransfer(source, src, msg, dst);
-	}
-
-	@Override
-	public GMessageTransfer substitute(Substitutions subs)
-	{
-		return (GMessageTransfer) super.substitute(subs);
-	}
-
-	@Override
-	public GMessageTransfer getInlined(STypeInliner v)
-	{
-		return (GMessageTransfer) super.getInlined(v);
-	}
-
-	@Override
-	public GMessageTransfer unfoldAllOnce(STypeUnfolder<Global> u)
-	{
-		return (GMessageTransfer) super.unfoldAllOnce(u);
 	}
 	
 	@Override

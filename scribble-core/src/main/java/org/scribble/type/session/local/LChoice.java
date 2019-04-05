@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
@@ -29,6 +28,7 @@ import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
 import org.scribble.type.session.Choice;
+import org.scribble.visit.local.ReachabilityEnv;
 
 public class LChoice extends Choice<Local, LSeq> implements LType
 {
@@ -43,14 +43,6 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 			List<LSeq> blocks)
 	{
 		return new LChoice(source, subj, blocks);
-	}
-
-	@Override
-	public RecVar isSingleCont()
-	{
-		List<RecVar> tmp = this.blocks.stream().map(x -> x.isSingleCont())
-				.collect(Collectors.toList());
-		return (tmp.size() == 1) ? tmp.get(0) : null;
 	}
 
 	@Override

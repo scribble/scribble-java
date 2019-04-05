@@ -18,11 +18,11 @@ import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.session.Recursion;
+import org.scribble.visit.local.ReachabilityEnv;
 
 public class LRecursion extends Recursion<Local, LSeq> implements LType
 {
@@ -38,12 +38,6 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 			RecVar recvar, LSeq block)
 	{
 		return new LRecursion(source, recvar, block);
-	}
-
-	@Override
-	public RecVar isSingleCont()
-	{
-		return null;
 	}
 
 	@Override

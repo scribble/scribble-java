@@ -17,15 +17,12 @@ import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.DisconnectAction;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.local.ReachabilityEnv;
 
 public class LDisconnect extends DisconnectAction<Local, LSeq>
 		implements LType
@@ -52,33 +49,9 @@ public class LDisconnect extends DisconnectAction<Local, LSeq>
 	}
 
 	@Override
-	public RecVar isSingleCont()
-	{
-		return null;
-	}
-
-	@Override
 	public boolean isSingleConts(Set<RecVar> rvs)
 	{
 		return false;
-	}
-
-	@Override
-	public LDisconnect substitute(Substitutions subs)
-	{
-		return (LDisconnect) super.substitute(subs);
-	}
-
-	@Override
-	public LDisconnect getInlined(STypeInliner v)
-	{
-		return (LDisconnect) super.getInlined(v);
-	}
-
-	@Override
-	public LDisconnect unfoldAllOnce(STypeUnfolder<Local> u)
-	{
-		return (LDisconnect) super.unfoldAllOnce(u);
 	}
 
 	@Override

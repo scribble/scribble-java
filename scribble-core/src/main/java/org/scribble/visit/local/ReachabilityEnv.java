@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.lang.local;
+package org.scribble.visit.local;
 
 import java.util.Collections;
 import java.util.Set;

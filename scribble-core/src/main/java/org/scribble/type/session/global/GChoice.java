@@ -28,15 +28,12 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Choice;
 import org.scribble.type.session.local.LChoice;
 import org.scribble.type.session.local.LSeq;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
-import org.scribble.visit.Projector2;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.global.Projector2;
 
 public class GChoice extends Choice<Global, GSeq> implements GType
 {
@@ -52,40 +49,6 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 			//List<? extends Seq<Global>> blocks)
 	{
 		return new GChoice(source, subj, blocks);
-	}
-
-	@Override
-	public GChoice substitute(Substitutions subs)
-	{
-		List<GSeq> blocks = this.blocks.stream().map(x -> x.substitute(subs))
-				.collect(Collectors.toList());
-		return reconstruct(getSource(), subs.subsRole(this.subj), blocks);
-	}
-
-	@Override
-	public GChoice pruneRecs()
-	{
-		List<GSeq> blocks = this.blocks.stream().map(x -> x.pruneRecs())
-				.collect(Collectors.toList());
-		return reconstruct(getSource(), this.subj, blocks);
-	}
-
-	@Override
-	public GChoice getInlined(STypeInliner v)
-	{
-		CommonTree source = getSource();  // CHECKME: or empty source?
-		List<GSeq> blocks = this.blocks.stream().map(x -> x.getInlined(v))
-				.collect(Collectors.toList());
-		return reconstruct(source, this.subj, blocks);
-	}
-
-	@Override
-	public GChoice unfoldAllOnce(STypeUnfolder<Global> u)
-	{
-		CommonTree source = getSource();  // CHECKME: or empty source?
-		List<GSeq> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
-				.collect(Collectors.toList());
-		return reconstruct(source, this.subj, blocks);
 	}
 	
 	@Override

@@ -17,19 +17,16 @@ import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.ConnectAction;
 import org.scribble.type.session.Message;
 import org.scribble.type.session.MessageSig;
 import org.scribble.type.session.Payload;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.local.ReachabilityEnv;
 
 public class LReq extends ConnectAction<Local, LSeq>
 		implements LType
@@ -52,33 +49,9 @@ public class LReq extends ConnectAction<Local, LSeq>
 	}
 
 	@Override
-	public RecVar isSingleCont()
-	{
-		return null;
-	}
-
-	@Override
 	public boolean isSingleConts(Set<RecVar> rvs)
 	{
 		return false;
-	}
-
-	@Override
-	public LReq substitute(Substitutions subs)
-	{
-		return (LReq) super.substitute(subs);
-	}
-
-	@Override
-	public LReq getInlined(STypeInliner v)
-	{
-		return (LReq) super.getInlined(v);
-	}
-
-	@Override
-	public LReq unfoldAllOnce(STypeUnfolder<Local> u)
-	{
-		return (LReq) super.unfoldAllOnce(u);
 	}
 
 	@Override

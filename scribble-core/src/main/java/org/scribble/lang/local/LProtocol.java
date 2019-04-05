@@ -41,6 +41,7 @@ import org.scribble.type.session.local.LType;
 import org.scribble.util.Constants;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.local.ReachabilityEnv;
 
 public class LProtocol extends
 		Protocol<Local, LProtocolName, LSeq> implements LType
@@ -60,12 +61,6 @@ public class LProtocol extends
 			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
 		return new LProtocol(source, mods, fullname, roles, self, params, def);
-	}
-	
-	@Override
-	public RecVar isSingleCont()
-	{
-		throw new RuntimeException("Unsupported for LProtocol:\n" + this);
 	}
 
 	@Override

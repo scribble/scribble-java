@@ -20,14 +20,11 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.DisconnectAction;
 import org.scribble.type.session.local.LDisconnect;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
-import org.scribble.visit.Projector2;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.global.Projector2;
 
 public class GDisconnect extends DisconnectAction<Global, GSeq>
 		implements GType
@@ -44,24 +41,6 @@ public class GDisconnect extends DisconnectAction<Global, GSeq>
 			CommonTree source, Role left, Role right)
 	{
 		return new GDisconnect(source, left, right);
-	}
-
-	@Override
-	public GDisconnect substitute(Substitutions subs)
-	{
-		return (GDisconnect) super.substitute(subs);
-	}
-
-	@Override
-	public GDisconnect getInlined(STypeInliner v)
-	{
-		return (GDisconnect) super.getInlined(v);
-	}
-
-	@Override
-	public GDisconnect unfoldAllOnce(STypeUnfolder<Global> u)
-	{
-		return (GDisconnect) super.unfoldAllOnce(u);
 	}
 	
 	@Override

@@ -30,7 +30,7 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.Role;
-import org.scribble.visit.Projector2;
+import org.scribble.visit.global.Projector2;
 
 // TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
 // TODO: "functional state interfaces", e.g. for smtp ehlo and quit actions

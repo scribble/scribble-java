@@ -36,8 +36,8 @@ import org.scribble.type.session.Do;
 import org.scribble.type.session.local.LDo;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
-import org.scribble.visit.Projector2;
 import org.scribble.visit.STypeInliner;
+import org.scribble.visit.global.Projector2;
 
 public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 {
@@ -53,18 +53,6 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
 		return new GDo(source, proto, roles, args);
-	}
-
-	@Override
-	public GDo substitute(Substitutions subs)
-	{
-		return (GDo) super.substitute(subs);
-	}
-
-	@Override
-	public GDo pruneRecs()
-	{
-		return (GDo) super.pruneRecs();
 	}
 
 	// CHECKME: factor up to base?

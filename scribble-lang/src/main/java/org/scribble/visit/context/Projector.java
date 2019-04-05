@@ -142,14 +142,14 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			CommonTree source, GProtocolName simpname, Role role)
 	{
 		return (LProtocolNameNode) af.QualifiedNameNode(source, Local.KIND,
-				org.scribble.visit.Projector2.projectSimpleProtocolName(simpname, role).toString());
+				org.scribble.visit.global.Projector2.projectSimpleProtocolName(simpname, role).toString());
 	}
 
 	public static LProtocolNameNode makeProjectedFullNameNode(AstFactory af,
 			CommonTree source, GProtocolName fullname, Role role)
 	{
 		return (LProtocolNameNode) af.QualifiedNameNode(source, Local.KIND,
-				org.scribble.visit.Projector2.projectFullProtocolName(fullname, role).getElements());
+				org.scribble.visit.global.Projector2.projectFullProtocolName(fullname, role).getElements());
 	}
 
 	// fullname is the un-projected name; localname is the already projected simple name
@@ -157,7 +157,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			CommonTree source, ModuleName fullname, LProtocolName localname)
 	{
 		return (ModuleNameNode) af.QualifiedNameNode(source, ModuleKind.KIND,
-				org.scribble.visit.Projector2.projectModuleName(fullname, localname).getElements());
+				org.scribble.visit.global.Projector2.projectModuleName(fullname, localname).getElements());
 	}
 	
 	

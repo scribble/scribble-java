@@ -50,9 +50,9 @@ import org.scribble.type.session.global.GSeq;
 import org.scribble.type.session.global.GType;
 import org.scribble.type.session.local.LSeq;
 import org.scribble.util.ScribUtil2;
-import org.scribble.visit.Projector2;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.global.Projector2;
 
 public class GProtocol extends
 		Protocol<Global, GProtocolName, GSeq> implements GType

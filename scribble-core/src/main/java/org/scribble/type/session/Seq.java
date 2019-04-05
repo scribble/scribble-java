@@ -30,11 +30,11 @@ import org.scribble.type.name.Substitutions;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
 
-// CHECKME: could add B extends STypeBase, but it inflates type params quite a bit (e.g., Protocol) ?
 public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 		extends STypeBase<K, B>
 {
-	public final List<? extends SType<K, B>> elems;  // GType or LType -- could make SType subclasses take themself as another param, but not worth it
+	// GType or LType -- could make SType subclasses take themself as another param, but not worth it
+	public final List<? extends SType<K, B>> elems;
 
 	public Seq(CommonTree source, List<? extends SType<K, B>> elems)
 	{
@@ -148,6 +148,7 @@ public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 				.collect(Collectors.toList());
 	}
 
+	// Re. return type, could make SType subclasses take themself as another param, but not worth it
 	public abstract List<? extends SType<K, B>> getElements();
 	
 	public boolean isEmpty()

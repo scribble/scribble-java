@@ -169,7 +169,7 @@ public class ModuleDel extends ScribDelBase
 		{
 			for (Role role : deps.get(gpn))
 			{
-				LProtocolName targetsimpname = org.scribble.visit.Projector2
+				LProtocolName targetsimpname = org.scribble.visit.global.Projector2
 						.projectSimpleProtocolName(gpn.getSimpleName(), role);
 				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(
 						proj.job.config.af,

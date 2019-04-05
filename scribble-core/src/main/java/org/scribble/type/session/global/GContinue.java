@@ -21,12 +21,10 @@ import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Continue;
 import org.scribble.type.session.local.LContinue;
-import org.scribble.visit.Projector2;
-import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.global.Projector2;
 
 public class GContinue extends Continue<Global, GSeq> implements GType
 {
@@ -43,24 +41,6 @@ public class GContinue extends Continue<Global, GSeq> implements GType
 	{
 		return new GContinue(source, recvar);
 	}
-
-	@Override
-	public GContinue substitute(Substitutions subs)
-	{
-		return (GContinue) super.substitute(subs);
-	}
-
-	@Override
-	public GContinue pruneRecs()
-	{
-		return (GContinue) super.pruneRecs();
-	}
-
-	@Override
-	public GContinue getInlined(STypeInliner v)
-	{
-		return (GContinue) super.getInlined(v);
-	} 
 
 	@Override
 	public GRecursion unfoldAllOnce(STypeUnfolder<Global> u)

@@ -21,7 +21,7 @@ import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 import org.scribble.type.session.SType;
 import org.scribble.type.session.local.LType;
-import org.scribble.visit.Projector2;
+import org.scribble.visit.global.Projector2;
 
 public interface GType extends SType<Global, GSeq>
 {
@@ -31,6 +31,7 @@ public interface GType extends SType<Global, GSeq>
 	// Pre: use on inlined or later (unsupported for Do, also Protocol)
 	// enabled treated immutably
 	// Returns enabled post visiting
+	// Cf. SType visitors, here we only throw ScribbleException or return nothing, so can use return this way
 	Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribbleException; 
 	
 	// Pre: use on inlined or later (unsupported for Do, also Protocol)

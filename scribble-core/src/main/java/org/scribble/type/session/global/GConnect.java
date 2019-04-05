@@ -23,16 +23,13 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.ConnectAction;
 import org.scribble.type.session.Message;
 import org.scribble.type.session.local.LAcc;
 import org.scribble.type.session.local.LReq;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
-import org.scribble.visit.Projector2;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.global.Projector2;
 
 public class GConnect extends ConnectAction<Global, GSeq>
 		implements GType
@@ -50,24 +47,6 @@ public class GConnect extends ConnectAction<Global, GSeq>
 			Role dst)
 	{
 		return new GConnect(source, src, msg, dst);
-	}
-
-	@Override
-	public GConnect substitute(Substitutions subs)
-	{
-		return (GConnect) super.substitute(subs);
-	}
-
-	@Override
-	public GConnect getInlined(STypeInliner v)
-	{
-		return (GConnect) super.getInlined(v);
-	}
-
-	@Override
-	public GConnect unfoldAllOnce(STypeUnfolder<Global> u)
-	{
-		return (GConnect) super.unfoldAllOnce(u);
 	}
 	
 	@Override

@@ -17,19 +17,16 @@ import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Message;
 import org.scribble.type.session.MessageSig;
 import org.scribble.type.session.MessageTransfer;
 import org.scribble.type.session.Payload;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.local.ReachabilityEnv;
 
 public class LRcv extends MessageTransfer<Local, LSeq>
 		implements LType
@@ -52,33 +49,9 @@ public class LRcv extends MessageTransfer<Local, LSeq>
 	}
 
 	@Override
-	public RecVar isSingleCont()
-	{
-		return null;
-	}
-
-	@Override
 	public boolean isSingleConts(Set<RecVar> rvs)
 	{
 		return false;
-	}
-
-	@Override
-	public LRcv substitute(Substitutions subs)
-	{
-		return (LRcv) super.substitute(subs);
-	}
-
-	@Override
-	public LRcv getInlined(STypeInliner v)
-	{
-		return (LRcv) super.getInlined(v);
-	}
-
-	@Override
-	public LRcv unfoldAllOnce(STypeUnfolder<Local> u)
-	{
-		return (LRcv) super.unfoldAllOnce(u);
 	}
 
 	@Override

@@ -20,7 +20,6 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.SubprotoSig;
 import org.scribble.lang.local.LProtocol;
-import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.kind.NonRoleParamKind;
@@ -31,6 +30,7 @@ import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Arg;
 import org.scribble.type.session.Do;
 import org.scribble.visit.STypeInliner;
+import org.scribble.visit.local.ReachabilityEnv;
 
 public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 {
@@ -47,13 +47,6 @@ public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 	{
 		return new LDo(source, proto, roles, args);
 	}
-
-	@Override
-	public RecVar isSingleCont()
-	{
-		throw new RuntimeException("Unsupported for LDo: " + this);
-	}
-
 	@Override
 	public boolean isSingleConts(Set<RecVar> rvs)
 	{
@@ -71,12 +64,6 @@ public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 			throws ScribbleException
 	{
 		throw new RuntimeException("Unsupported for LDo: " + this);
-	}
-
-	@Override
-	public LDo substitute(Substitutions subs)
-	{
-		return (LDo) super.substitute(subs);
 	}
 
 	// CHECKME: factor up to base?

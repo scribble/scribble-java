@@ -42,9 +42,9 @@ import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.type.session.Arg;
 import org.scribble.type.session.global.GType;
-import org.scribble.visit.Projector2;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.global.Projector2;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job2
@@ -379,8 +379,8 @@ public class Job2
 		}
 	}
 	
-	private void debugPrintPass(String s)
+	/*private void debugPrintPass(String s)
 	{
 		debugPrintln("\n[Job] " + s);
-	}
+	}*/
 }

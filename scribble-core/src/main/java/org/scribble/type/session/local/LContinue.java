@@ -19,22 +19,19 @@ import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Continue;
-import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.local.ReachabilityEnv;
 
 public class LContinue extends Continue<Local, LSeq> implements LType
 {
-	public LContinue(//org.scribble.ast.Continue<Local> source, 
-			CommonTree source,  // Due to inlining, do -> continue
-			RecVar recvar)
+	// N.B. source changes from do to continue after inlining
+	public LContinue(CommonTree source, RecVar recvar)
 	{
 		super(source, recvar);
 	}
@@ -45,30 +42,12 @@ public class LContinue extends Continue<Local, LSeq> implements LType
 	{
 		return new LContinue(source, recvar);
 	}
-	
-	@Override
-	public RecVar isSingleCont()
-	{
-		return this.recvar;
-	}
 
 	@Override
 	public boolean isSingleConts(Set<RecVar> rvs)
 	{
 		return rvs.contains(this.recvar);
 	}
-
-	@Override
-	public LContinue substitute(Substitutions subs)
-	{
-		return (LContinue) super.substitute(subs);
-	}
-
-	@Override
-	public LContinue getInlined(STypeInliner v)
-	{
-		return (LContinue) super.getInlined(v);
-	} 
 
 	@Override
 	public LRecursion unfoldAllOnce(STypeUnfolder<Local> u)

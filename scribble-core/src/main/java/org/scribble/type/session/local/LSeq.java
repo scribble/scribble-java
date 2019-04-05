@@ -21,15 +21,13 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.SType;
 import org.scribble.type.session.Seq;
-import org.scribble.visit.STypeInliner;
+import org.scribble.visit.local.ReachabilityEnv;
 
 public class LSeq extends Seq<Local, LSeq> implements LType
 {
@@ -47,29 +45,10 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 	}
 
 	@Override
-	public RecVar isSingleCont()
-	{
-		RecVar rv = ((LType) this.elems.get(0)).isSingleCont();
-		return (this.elems.size() == 1) ? rv : null;
-	}
-
-	@Override
 	public boolean isSingleConts(Set<RecVar> rvs)
 	{
 		return this.elems.size() == 1
 				&& ((LType) this.elems.get(0)).isSingleConts(rvs);
-	}
-
-	@Override
-	public LSeq substitute(Substitutions subs)
-	{
-		return (LSeq) super.substitute(subs);
-	}
-
-	@Override
-	public LSeq getInlined(STypeInliner v)
-	{
-		return (LSeq) super.getInlined(v);
 	}
 
 	@Override

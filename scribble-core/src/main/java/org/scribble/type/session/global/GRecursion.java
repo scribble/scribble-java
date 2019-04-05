@@ -22,15 +22,12 @@ import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Recursion;
 import org.scribble.type.session.local.LRecursion;
 import org.scribble.type.session.local.LSeq;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
-import org.scribble.visit.Projector2;
-import org.scribble.visit.STypeInliner;
-import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.global.Projector2;
 
 public class GRecursion extends Recursion<Global, GSeq> implements GType
 {
@@ -46,38 +43,6 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 			RecVar recvar, GSeq block)
 	{
 		return new GRecursion(source, recvar, block);
-	}
-	
-	@Override
-	public GRecursion substitute(Substitutions subs)
-	{
-		return reconstruct(getSource(), this.recvar, this.body.substitute(subs));
-	}
-
-	@Override
-	public GRecursion getInlined(STypeInliner v)
-	{
-		CommonTree source = getSource();  // CHECKME: or empty source?
-		RecVar rv = v.enterRec(//stack.peek(), 
-				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
-		GSeq body = this.body.getInlined(v);//, stack);
-		GRecursion res = reconstruct(source, rv, body);
-		v.exitRec(this.recvar);
-		return res;
-	}
-
-	@Override
-	public GType unfoldAllOnce(STypeUnfolder<Global> u)
-	{
-		if (!u.hasRec(this.recvar))  // N.B. doesn't work if recvars shadowed
-		{
-			u.pushRec(this.recvar, this.body);
-			GType unf = (GType) this.body.unfoldAllOnce(u);
-			u.popRec(this.recvar);  
-					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
-			return unf;
-		}
-		return this;
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribUtil2;
-import org.scribble.visit.Projector2;
+import org.scribble.visit.global.Projector2;
 
 // Global "static" context information for a Job -- single instance per Job, should not be shared between Jobs
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
@@ -114,7 +114,7 @@ public class JobContext2
 		return isParsedModule(fullname) || isProjectedModule(fullname);
 	}*/
 	
-	private boolean isParsedModule(ModuleName fullname)
+	/*private boolean isParsedModule(ModuleName fullname)
 	{
 		//return this.parsed.containsKey(fullname);
 		return this.intermed.keySet().stream()
@@ -125,7 +125,7 @@ public class JobContext2
 	{
 		//return this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullname)).count() > 0;
 		return getProjectedFullModuleNames().contains(fullname);
-	}
+	}*/
 
 	// TODO rename better
 	/*public void addIntermediate(GProtocolName fullname, GProtocol g)

@@ -23,17 +23,15 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
-import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.SType;
 import org.scribble.type.session.Seq;
 import org.scribble.type.session.local.LSeq;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
-import org.scribble.visit.Projector2;
+import org.scribble.visit.global.Projector2;
 
 public class GSeq extends Seq<Global, GSeq> implements GType
 {
-	// GInteractionSeq or GBlock better as source?
 	public GSeq(CommonTree source,
 			List<? extends SType<Global, GSeq>> elems)
 	{
@@ -45,12 +43,6 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 			List<? extends SType<Global, GSeq>> elems)
 	{
 		return new GSeq(source, elems);
-	}
-
-	@Override
-	public GSeq substitute(Substitutions subs)
-	{
-		return (GSeq) super.substitute(subs);
 	}
 
 	@Override

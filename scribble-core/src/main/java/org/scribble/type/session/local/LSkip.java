@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.MemberName;
@@ -29,6 +28,7 @@ import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.STypeBase;
 import org.scribble.visit.STypeInliner;
 import org.scribble.visit.STypeUnfolder;
+import org.scribble.visit.local.ReachabilityEnv;
 
 // Used only *during* projection -- filtered out by GSeq::projection
 public class LSkip extends STypeBase<Local, LSeq> implements LType
@@ -74,13 +74,6 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
-	}
-
-	@Override
-	public RecVar isSingleCont()
-	{
-		return null;
-		//CHECKME: throw new RuntimeException("Unsupported for LProtocol:\n" + this);
 	}
 
 	@Override
