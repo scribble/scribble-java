@@ -63,21 +63,26 @@ public class Main
 		return new Lang(getLoadedModules(), this.modcs, this.config);
 	}
 	
+	// A Scribble extension should override newLang/Antlr/Ast/ModelFactory as appropriate
 	protected ScribAntlrWrapper newAntlr()
 	{
 		return new ScribAntlrWrapper();
 	}
 	
+	// A Scribble extension should override newLang/Antlr/Ast/ModelFactory as appropriate
 	protected AstFactory newAstFactory()
 	{
 		return new AstFactoryImpl();
 	}
 	
+	// A Scribble extension should override newLang/Antlr/Ast/ModelFactory as appropriate
 	protected EModelFactory newEModelFactory()
 	{
 		return new EModelFactoryImpl();
 	}
 	
+	// A Scribble extension should override newLang/Antlr/Ast/ModelFactory as appropriate
+	// CHECKME: combine with newEModelFactory ?
 	protected SModelFactory newSModelFactory()
 	{
 		return new SModelFactoryImpl();
@@ -104,7 +109,7 @@ public class Main
 			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
 			throws ScribException, ScribParserException
 	{
-		this(null);
+		this(null);  // CHECKME: null locator
 		Pair<Resource, Module> main = this.loader.loadMainModule(inline);
 		if (main.right.getImportDeclChildren().stream()
 				.anyMatch(x -> x.isImportModule()))
@@ -139,7 +144,6 @@ public class Main
 				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
 				noAcceptCorrelationCheck, noValidation, spin,
 				newAstFactory(), newEModelFactory(), newSModelFactory());
-		
 
 		// CHECKME: how does this relate to the ModuleContextBuilder pass?
 		// Job.modcs seems unused?  Lang.modcs is used though, by old AST visitors -- basically old ModuleContextVisitor is redundant?

@@ -90,16 +90,19 @@ public class CommandLine
 				: Collections.emptyList();
 		if (this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
 		{
-			return new Main(this.args.get(CLArgFlag.INLINE_MAIN_MOD)[0], debug, useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, spin);
+			String inline = this.args.get(CLArgFlag.INLINE_MAIN_MOD)[0];
+			return new Main(inline,
+					debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
+					noAcceptCorrelationCheck, noValidation, spin);
 		}
 		else
 		{
 			ResourceLocator locator = new DirectoryResourceLocator(impaths);
 			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
-			//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);
-			return new Main(locator, debug, mainpath, useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, spin);
+			return new Main(locator,
+					debug, mainpath, useOldWF, noLiveness, minEfsm, fair,
+					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation,
+					spin);
 		}
 	}
 
