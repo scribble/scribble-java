@@ -16,10 +16,9 @@ package org.scribble.type.session.local;
 import java.util.List;
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.STypeInliner;
 import org.scribble.lang.SubprotoSig;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.LProtocol;
 import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
@@ -28,19 +27,21 @@ import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Arg;
 import org.scribble.type.session.Do;
+import org.scribble.visit.STypeInliner;
 
 public class LDo extends Do<Local, LProtocolName> implements LType
 {
-	public LDo(org.scribble.ast.Do<Local> source, LProtocolName proto,
+	public LDo(CommonTree source, LProtocolName proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source, proto, roles, args);
 	}
 
 	@Override
-	public LDo reconstruct(org.scribble.ast.Do<Local> source,
+	public LDo reconstruct(CommonTree source,
 			LProtocolName proto, List<Role> roles,
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
@@ -80,29 +81,23 @@ public class LDo extends Do<Local, LProtocolName> implements LType
 
 	// CHECKME: factor up to base?
 	@Override
-	public LType getInlined(STypeInliner i)
+	public LType getInlined(STypeInliner v)
 	{
 		LProtocolName fullname = this.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, this.roles, this.args);
-		RecVar rv = i.getInlinedRecVar(sig);
-		if (i.hasSig(sig))
+		RecVar rv = v.getInlinedRecVar(sig);
+		if (v.hasSig(sig))
 		{
 			return new LContinue(getSource(), rv);
 		}
-		i.pushSig(sig);
-		LProtocol p = i.job.getContext().getProjection(fullname);  // This line differs from GDo version
+		v.pushSig(sig);
+		LProtocol p = v.job.getContext().getProjection(fullname);  // This line differs from GDo version
 		Substitutions subs = 
 				new Substitutions(p.roles, this.roles, p.params, this.args);
-		LSeq inlined = p.def.substitute(subs).getInlined(i);//, stack);  
+		LSeq inlined = p.def.substitute(subs).getInlined(v);//, stack);  
 				// i.e. returning a Seq -- rely on parent Seq to inline
-		i.popSig();
+		v.popSig();
 		return new LRecursion(null, rv, inlined);
-	}
-
-	@Override
-	public org.scribble.ast.local.LDo getSource()
-	{
-		return (org.scribble.ast.local.LDo) super.getSource();
 	}
 
 	@Override

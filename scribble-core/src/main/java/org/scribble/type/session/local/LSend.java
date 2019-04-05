@@ -15,27 +15,28 @@ package org.scribble.type.session.local;
 
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Message;
 import org.scribble.type.session.MessageSig;
 import org.scribble.type.session.MessageTransfer;
 import org.scribble.type.session.Payload;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class LSend extends MessageTransfer<Local>
 		implements LType
 {
 
 	// this.src == Role.SELF
-	public LSend(org.scribble.ast.DirectedInteraction<Local> source,
+	public LSend(CommonTree source,
 			Message msg, Role dst)
 	{
 		super(source, Role.SELF, msg, dst);
@@ -44,7 +45,7 @@ public class LSend extends MessageTransfer<Local>
 	// CHECKME: remove unnecessary src ?
 	@Override
 	public LSend reconstruct(
-			org.scribble.ast.DirectedInteraction<Local> source, Role src, Message msg,
+			CommonTree source, Role src, Message msg,
 			Role dst)
 	{
 		return new LSend(source, msg, dst);
@@ -69,15 +70,15 @@ public class LSend extends MessageTransfer<Local>
 	}
 
 	@Override
-	public LSend getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LSend getInlined(STypeInliner v)
 	{
-		return (LSend) super.getInlined(i);
+		return (LSend) super.getInlined(v);
 	}
 
 	@Override
 	public LSend unfoldAllOnce(STypeUnfolder<Local> u)
 	{
-		return this;
+		return (LSend) super.unfoldAllOnce(u);
 	}
 
 	@Override

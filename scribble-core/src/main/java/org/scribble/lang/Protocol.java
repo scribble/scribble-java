@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.Constants;
-import org.scribble.ast.ProtocolDecl;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.DataType;
@@ -29,8 +28,10 @@ import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.STypeBase;
 import org.scribble.type.session.Seq;
+import org.scribble.util.Constants;
 
 public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>, B extends Seq<K>>
 		extends STypeBase<K> 
@@ -43,7 +44,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 			// CHECKME: make a ParamName? or at least SimpleName?
 	public final B def;
 
-	public Protocol(ProtocolDecl<K> source, List<ProtocolMod> mods, N fullname,
+	public Protocol(CommonTree source, List<ProtocolMod> mods, N fullname,
 			List<Role> roles, List<MemberName<? extends NonRoleParamKind>> params, B def)
 	{
 		super(source);
@@ -116,12 +117,6 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		return this.def.getNonProtoDependencies();
-	}
-
-	@Override
-	public ProtocolDecl<K> getSource()
-	{
-		return (ProtocolDecl<K>) super.getSource();
 	}
 
 	@Override

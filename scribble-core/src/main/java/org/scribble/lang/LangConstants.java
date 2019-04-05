@@ -13,6 +13,7 @@
  */
 package org.scribble.lang;
 
+@Deprecated
 public class LangConstants
 {
 

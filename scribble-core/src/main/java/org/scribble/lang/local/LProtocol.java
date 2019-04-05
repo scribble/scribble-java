@@ -19,17 +19,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.ast.Constants;
-import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.local.LProtocolDecl;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.Job2;
 import org.scribble.job.ScribbleException;
 import org.scribble.lang.Protocol;
 import org.scribble.lang.ProtocolMod;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.SubprotoSig;
-import org.scribble.lang.Substitutions;
 import org.scribble.model.endpoint.EGraph;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
@@ -39,16 +34,20 @@ import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.local.LRecursion;
 import org.scribble.type.session.local.LSeq;
 import org.scribble.type.session.local.LType;
+import org.scribble.util.Constants;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class LProtocol extends
 		Protocol<Local, LProtocolName, LSeq> implements LType
 {
 	public final Role self;
 
-	public LProtocol(ProtocolDecl<Local> source, List<ProtocolMod> mods,
+	public LProtocol(CommonTree source, List<ProtocolMod> mods,
 			LProtocolName fullname, List<Role> roles, Role self,
 			List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
@@ -56,7 +55,7 @@ public class LProtocol extends
 		this.self = self;
 	}
 
-	public LProtocol reconstruct(ProtocolDecl<Local> source,
+	public LProtocol reconstruct(CommonTree source,
 			List<ProtocolMod> mods, LProtocolName fullname, List<Role> roles,
 			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
@@ -79,15 +78,15 @@ public class LProtocol extends
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
-	public LProtocol getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LProtocol getInlined(STypeInliner v)//, Deque<SubprotoSig> stack)
 	{
-		SubprotoSig sig = i.peek();
+		SubprotoSig sig = v.peek();
 		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
 				sig.args);
-		LSeq body = this.def.substitute(subs).getInlined(i).pruneRecs();
-		RecVar rv = i.getInlinedRecVar(sig);
+		LSeq body = this.def.substitute(subs).getInlined(v).pruneRecs();
+		RecVar rv = v.getInlinedRecVar(sig);
 		LRecursion rec = new LRecursion(null, rv, body);  // CHECKME: or protodecl source?
-		LProtocolDecl source = getSource();
+		CommonTree source = getSource();
 		LSeq def = new LSeq(null, Stream.of(rec).collect(Collectors.toList()));
 		return new LProtocol(source, this.mods, this.fullname, this.roles,
 				this.self, this.params, def);
@@ -136,12 +135,6 @@ public class LProtocol extends
 	{
 		return this.def
 				.checkReachability(new ReachabilityEnv(false, Collections.emptySet()));
-	}
-	
-	@Override
-	public LProtocolDecl getSource()
-	{
-		return (LProtocolDecl) super.getSource();
 	}
 	
 	@Override

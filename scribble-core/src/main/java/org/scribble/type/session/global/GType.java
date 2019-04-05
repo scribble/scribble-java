@@ -17,18 +17,18 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.Projector;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
 import org.scribble.type.session.SType;
 import org.scribble.type.session.local.LType;
+import org.scribble.visit.Projector2;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public interface GType extends SType<Global>
 {
 	LType projectInlined(Role self);  // Use on inlined (i.e., Do inlined, roles pruned)
-	LType project(Projector v);  // Use on parsed (intermed)
+	LType project(Projector2 v);  // Use on parsed (intermed)
 	
 	// Pre: use on inlined or later (unsupported for Do, also Protocol)
 	// enabled treated immutably

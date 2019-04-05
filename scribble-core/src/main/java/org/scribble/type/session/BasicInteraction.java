@@ -17,15 +17,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.scribble.lang.STypeInliner;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public abstract class BasicInteraction<K extends ProtocolKind>
 		extends STypeBase<K> implements SType<K>
 {
-	public BasicInteraction(org.scribble.ast.BasicInteraction<K> source)
+	public BasicInteraction(CommonTree source)
 	{
 		super(source);
 	}
@@ -43,7 +45,13 @@ public abstract class BasicInteraction<K extends ProtocolKind>
 	}
 
 	@Override
-	public BasicInteraction<K> getInlined(STypeInliner i)
+	public BasicInteraction<K> getInlined(STypeInliner v)
+	{
+		return this;
+	}
+
+	@Override
+	public BasicInteraction<K> unfoldAllOnce(STypeUnfolder<K> u)
 	{
 		return this;
 	}
@@ -55,8 +63,8 @@ public abstract class BasicInteraction<K extends ProtocolKind>
 	}
 	
 	@Override
-	public org.scribble.ast.BasicInteraction<K> getSource()
+	public CommonTree getSource()
 	{
-		return (org.scribble.ast.BasicInteraction<K>) super.getSource();
+		return (CommonTree) super.getSource();
 	}
 }

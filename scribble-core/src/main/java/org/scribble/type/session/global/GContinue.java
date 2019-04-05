@@ -16,29 +16,29 @@ package org.scribble.type.session.global;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.ast.ProtocolKindNode;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.Projector;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Continue;
 import org.scribble.type.session.local.LContinue;
+import org.scribble.visit.Projector2;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class GContinue extends Continue<Global> implements GType
 {
 	public GContinue(//org.scribble.ast.Continue<Global> source, 
-			ProtocolKindNode<Global> source,  // Due to inlining, do -> continue
+			CommonTree source,  // Due to inlining, do -> continue
 			RecVar recvar)
 	{
 		super(source, recvar);
 	}
 	
 	@Override
-	public GContinue reconstruct(org.scribble.ast.ProtocolKindNode<Global> source,
+	public GContinue reconstruct(CommonTree source,
 			RecVar recvar)
 	{
 		return new GContinue(source, recvar);
@@ -57,9 +57,9 @@ public class GContinue extends Continue<Global> implements GType
 	}
 
 	@Override
-	public GContinue getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public GContinue getInlined(STypeInliner v)
 	{
-		return (GContinue) super.getInlined(i);
+		return (GContinue) super.getInlined(v);
 	} 
 
 	@Override
@@ -77,7 +77,7 @@ public class GContinue extends Continue<Global> implements GType
 	}
 	
 	@Override
-	public LContinue project(Projector v)
+	public LContinue project(Projector2 v)
 	{
 		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}

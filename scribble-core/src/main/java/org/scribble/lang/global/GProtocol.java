@@ -24,20 +24,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.ast.Module;
-import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.del.ModuleDel;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.Job2;
 import org.scribble.job.JobContext2;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.Projector;
 import org.scribble.lang.Protocol;
 import org.scribble.lang.ProtocolMod;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.SubprotoSig;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.LProjection;
 import org.scribble.model.MState;
 import org.scribble.model.endpoint.EGraph;
@@ -51,24 +44,27 @@ import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.global.GRecursion;
 import org.scribble.type.session.global.GSeq;
 import org.scribble.type.session.global.GType;
 import org.scribble.type.session.local.LSeq;
-import org.scribble.util.ScribUtil;
-import org.scribble.visit.util.MessageIdCollector;
+import org.scribble.util.ScribUtil2;
+import org.scribble.visit.Projector2;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class GProtocol extends
 		Protocol<Global, GProtocolName, GSeq> implements GType
 {
-	public GProtocol(ProtocolDecl<Global> source, List<ProtocolMod> mods,
+	public GProtocol(CommonTree source, List<ProtocolMod> mods,
 			GProtocolName fullname, List<Role> roles,
 			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
 	{
 		super(source, mods, fullname, roles, params, def);
 	}
 
-	public GProtocol reconstruct(ProtocolDecl<Global> source,
+	public GProtocol reconstruct(CommonTree source,
 			List<ProtocolMod> mods, GProtocolName fullname, List<Role> roles,
 			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
 	{
@@ -79,15 +75,15 @@ public class GProtocol extends
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
-	public GProtocol getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public GProtocol getInlined(STypeInliner v)
 	{
-		SubprotoSig sig = i.peek();
+		SubprotoSig sig = v.peek();
 		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
 				sig.args);
-		GSeq body = this.def.substitute(subs).getInlined(i).pruneRecs();
-		RecVar rv = i.getInlinedRecVar(sig);
+		GSeq body = this.def.substitute(subs).getInlined(v).pruneRecs();
+		RecVar rv = v.getInlinedRecVar(sig);
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
-		GProtocolDecl source = getSource();
+		CommonTree source = getSource();
 		GSeq def = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));
 		Set<Role> used = def.getRoles();
 		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls
@@ -114,7 +110,7 @@ public class GProtocol extends
 	
 	private LProjection projectAux(Role self, List<Role> decls, LSeq body)
 	{
-		LProtocolName fullname = org.scribble.visit.context.Projector
+		LProtocolName fullname = Projector2
 				.projectFullProtocolName(this.fullname, self);
 		Set<Role> tmp = body.getRoles();
 		List<Role> roles = decls.stream()
@@ -127,7 +123,7 @@ public class GProtocol extends
 	}
 
 	@Override
-	public LProjection project(Projector v)
+	public LProjection project(Projector2 v)
 	{
 		LSeq body = (LSeq) this.def.project(v).pruneRecs();
 		return projectAux(v.self,
@@ -162,12 +158,6 @@ public class GProtocol extends
 		Map<Role, Role> tmp = this.roles.stream()
 				.collect(Collectors.toMap(x -> x, x -> x));
 		return this.def.checkExtChoiceConsistency(tmp);
-	}
-	
-	@Override
-	public GProtocolDecl getSource()
-	{
-		return (GProtocolDecl) super.getSource();
 	}
 	
 	@Override
@@ -359,8 +349,8 @@ public class GProtocol extends
 			try
 			{
 				String tmpName = tmp.getAbsolutePath();				
-				ScribUtil.writeToFile(tmpName, pml);
-				String[] res = ScribUtil.runProcess("spin", "-a", tmpName);
+				ScribUtil2.writeToFile(tmpName, pml);
+				String[] res = ScribUtil2.runProcess("spin", "-a", tmpName);
 				res[0] = res[0].replaceAll("(?m)^ltl.*$", "");
 				res[1] = res[1].replace(
 						"'gcc-4' is not recognized as an internal or external command,\noperable program or batch file.",
@@ -386,14 +376,14 @@ public class GProtocol extends
 					i++;
 				}
 				int dnfair = (procs <= 6) ? 2 : 3;  // FIXME
-				res = ScribUtil.runProcess("gcc", "-o", "pan", "pan.c", "-DNFAIR=" + dnfair);
+				res = ScribUtil2.runProcess("gcc", "-o", "pan", "pan.c", "-DNFAIR=" + dnfair);
 				res[0] = res[0].trim();
 				res[1] = res[1].trim();
 				if (!res[0].isEmpty() || !res[1].isEmpty())
 				{
 					throw new RuntimeException("[-spin] [gcc]: " + res[0] + "\n" + res[1]);
 				}
-				res = ScribUtil.runProcess("pan", "-a", "-f");
+				res = ScribUtil2.runProcess("pan", "-a", "-f");
 				res[1] = res[1].replace("warning: no accept labels are defined, so option -a has no effect (ignored)", "");
 				res[0] = res[0].trim();
 				res[1] = res[1].trim();

@@ -30,7 +30,7 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.Role;
-import org.scribble.visit.context.Projector;
+import org.scribble.visit.Projector2;
 
 // TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
 // TODO: "functional state interfaces", e.g. for smtp ehlo and quit actions
@@ -62,7 +62,7 @@ public class StateChannelApiGenerator extends ApiGen
 		super(job, fullname);
 
 		this.self = self;
-		this.lpn = Projector.projectFullProtocolName(fullname, self);
+		this.lpn = Projector2.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
 		JobContext2 jobc2 = this.job2.getContext();
 		this.init = job.config.minEfsm 

@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageId;
@@ -33,7 +34,7 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 	public final List<B> blocks;  // Pre: size > 0
 			// CHECKME: rename?
 
-	public Choice(org.scribble.ast.Choice<K> source, Role subj,
+	public Choice(CommonTree source, Role subj,
 			List<B> blocks)
 	{
 		super(source);
@@ -41,8 +42,9 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 		this.blocks = Collections.unmodifiableList(blocks);
 	}
 
-	public abstract Choice<K, B> reconstruct(org.scribble.ast.Choice<K> source, Role subj,
+	public abstract Choice<K, B> reconstruct(CommonTree source, Role subj,
 			List<B> blocks);
+			//List<? extends Seq<K>> blocks);
 	
 	@Override
 	public Set<Role> getRoles()
@@ -65,6 +67,24 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K>>
 		return this.blocks.stream().flatMap(x -> x.getRecVars().stream())
 				.collect(Collectors.toSet());
 	}
+
+	/*@Override
+	public Choice<K, B> getInlined(STypeInliner v)
+	{
+		CommonTree source = getSource();  // CHECKME: or empty source?
+		List<Seq<K>> blocks = this.blocks.stream().map(x -> x.getInlined(v))
+				.collect(Collectors.toList());
+		return reconstruct(source, this.subj, blocks);
+	}
+
+	@Override
+	public Choice<K, B> unfoldAllOnce(STypeUnfolder<K> u)
+	{
+		CommonTree source = getSource();  // CHECKME: or empty source?
+		List<Seq<K>> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
+				.collect(Collectors.toList());
+		return reconstruct(source, this.subj, blocks);
+	}*/
 
 	@Override
 	public List<ProtocolName<K>> getProtoDependencies()

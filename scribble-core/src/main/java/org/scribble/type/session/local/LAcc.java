@@ -15,27 +15,27 @@ package org.scribble.type.session.local;
 
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.ConnectAction;
 import org.scribble.type.session.Message;
 import org.scribble.type.session.MessageSig;
 import org.scribble.type.session.Payload;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
-public class LAcc extends ConnectAction<Local>
-		implements LType
+public class LAcc extends ConnectAction<Local> implements LType
 {
 
 	// this.dst == Role.SELF
-	public LAcc(org.scribble.ast.DirectedInteraction<Local> source,
+	public LAcc(CommonTree source,
 			Role src, Message msg)
 	{
 		super(source, src, msg, Role.SELF);
@@ -44,7 +44,7 @@ public class LAcc extends ConnectAction<Local>
 	// FIXME: unnecessary dst 
 	@Override
 	public LAcc reconstruct(
-			org.scribble.ast.DirectedInteraction<Local> source, Role src, Message msg,
+			CommonTree source, Role src, Message msg,
 			Role dst)
 	{
 		return new LAcc(source, src, msg);
@@ -69,15 +69,15 @@ public class LAcc extends ConnectAction<Local>
 	}
 
 	@Override
-	public LAcc getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LAcc getInlined(STypeInliner v)
 	{
-		return (LAcc) super.getInlined(i);
+		return (LAcc) super.getInlined(v);
 	}
 
 	@Override
 	public LAcc unfoldAllOnce(STypeUnfolder<Local> u)
 	{
-		return this;
+		return (LAcc) super.unfoldAllOnce(u);
 	}
 
 	@Override

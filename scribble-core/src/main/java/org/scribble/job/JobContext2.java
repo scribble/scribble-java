@@ -31,8 +31,8 @@ import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.ModuleName;
 import org.scribble.type.name.Role;
-import org.scribble.util.ScribUtil;
-import org.scribble.visit.context.Projector;
+import org.scribble.util.ScribUtil2;
+import org.scribble.visit.Projector2;
 
 // Global "static" context information for a Job -- single instance per Job, should not be shared between Jobs
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
@@ -169,7 +169,7 @@ public class JobContext2
 	// FIXME TODO: refactor getProjected and getProjection properly
 	public LProtocol getInlinedProjection(GProtocolName fullname, Role self)
 	{
-		LProtocolName p = Projector.projectFullProtocolName(fullname, self);
+		LProtocolName p = Projector2.projectFullProtocolName(fullname, self);
 		return getInlinedProjection(p);
 	}
 
@@ -226,7 +226,7 @@ public class JobContext2
 			LProtocol getProjection(GProtocolName fullname, Role role)
 			throws ScribbleException
 	{
-		return getProjection(Projector.projectFullProtocolName(fullname, role));
+		return getProjection(Projector2.projectFullProtocolName(fullname, role));
 	}
 
 	public //Module 
@@ -254,7 +254,7 @@ public class JobContext2
 	public EGraph getEGraph(GProtocolName fullname, Role role)
 			throws ScribbleException
 	{
-		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
+		LProtocolName fulllpn = Projector2.projectFullProtocolName(fullname, role);
 		// Moved form LProtocolDecl
 		EGraph graph = this.fairEGraphs.get(fulllpn);
 		if (graph == null)
@@ -276,7 +276,7 @@ public class JobContext2
 	
 	public EGraph getUnfairEGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
-		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
+		LProtocolName fulllpn = Projector2.projectFullProtocolName(fullname, role);
 
 		EGraph unfair = this.unfairEGraphs.get(fulllpn);
 		if (unfair == null)
@@ -357,7 +357,7 @@ public class JobContext2
 	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role)
 			throws ScribbleException
 	{
-		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
+		LProtocolName fulllpn = Projector2.projectFullProtocolName(fullname, role);
 
 		EGraph minimised = this.minimisedEGraphs.get(fulllpn);
 		if (minimised == null)
@@ -383,8 +383,8 @@ public class JobContext2
 		}
 		try
 		{
-			ScribUtil.writeToFile(tmpName, fsm);
-			String[] res = ScribUtil.runProcess("ltsconvert", "-ebisim", "-iaut",
+			ScribUtil2.writeToFile(tmpName, fsm);
+			String[] res = ScribUtil2.runProcess("ltsconvert", "-ebisim", "-iaut",
 					"-oaut", tmpName);
 			if (!res[1].isEmpty())
 			{

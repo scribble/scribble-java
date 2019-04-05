@@ -19,10 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
@@ -30,18 +28,21 @@ import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Choice;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class LChoice extends Choice<Local, LSeq> implements LType
 {
-	public LChoice(org.scribble.ast.Choice<Local> source, Role subj,
+	public LChoice(CommonTree source, Role subj,
 			List<LSeq> blocks)
 	{
 		super(source, subj, blocks);
 	}
 	
 	@Override
-	public LChoice reconstruct(org.scribble.ast.Choice<Local> source, Role subj,
+	public LChoice reconstruct(CommonTree source, Role subj,
 			List<LSeq> blocks)
 	{
 		return new LChoice(source, subj, blocks);
@@ -78,10 +79,10 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 	}
 
 	@Override
-	public LChoice getInlined(STypeInliner i )//GTypeTranslator t, Deque<SubprotoSig> stack)
+	public LChoice getInlined(STypeInliner v)
 	{
-		org.scribble.ast.local.LChoice source = getSource();  // CHECKME: or empty source?
-		List<LSeq> blocks = this.blocks.stream().map(x -> x.getInlined(i))
+		CommonTree source = getSource();  // CHECKME: or empty source?
+		List<LSeq> blocks = this.blocks.stream().map(x -> x.getInlined(v))
 				.collect(Collectors.toList());
 		return reconstruct(source, this.subj, blocks);
 	}
@@ -89,7 +90,7 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 	@Override
 	public LChoice unfoldAllOnce(STypeUnfolder<Local> u)
 	{
-		org.scribble.ast.local.LChoice source = getSource();  // CHECKME: or empty source?
+		CommonTree source = getSource();  // CHECKME: or empty source?
 		List<LSeq> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
 				.collect(Collectors.toList());
 		return reconstruct(source, this.subj, blocks);
@@ -188,12 +189,6 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 	{
 		return this.blocks;
 	}*/
-	
-	@Override
-	public org.scribble.ast.local.LChoice getSource()
-	{
-		return (org.scribble.ast.local.LChoice) super.getSource();
-	}
 
 	@Override
 	public int hashCode()

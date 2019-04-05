@@ -13,6 +13,7 @@
  */
 package org.scribble.lang;
 
+import org.antlr.runtime.tree.CommonTree;
 
 public enum ProtocolMod
 {
@@ -30,7 +31,8 @@ public enum ProtocolMod
 		}
 	}
 	
-	public static ProtocolMod fromAst(org.scribble.ast.ProtocolMod ast)
+	// TODO: refactor to scrib-lang -- param should be ProtocolMod, not CommonTree
+	public static ProtocolMod fromAst(CommonTree ast)//org.scribble.ast.ProtocolMod ast)
 	{
 		switch (ast.toString())
 		{

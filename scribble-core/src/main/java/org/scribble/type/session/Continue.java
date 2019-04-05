@@ -19,15 +19,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.ast.ProtocolKindNode;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.Substitutions;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
+import org.scribble.visit.STypeInliner;
 
 public abstract class Continue<K extends ProtocolKind>
 		extends STypeBase<K> implements SType<K>
@@ -35,7 +35,7 @@ public abstract class Continue<K extends ProtocolKind>
 	public final RecVar recvar;
 
 	public Continue(//org.scribble.ast.Continue<K> source,
-			ProtocolKindNode<K> source,  // Due to inlining, do -> continue
+			CommonTree source,  // Due to inlining, do -> continue
 			RecVar recvar)
 	{
 		super(source);
@@ -43,7 +43,7 @@ public abstract class Continue<K extends ProtocolKind>
 	}
 
 	public abstract Continue<K> reconstruct(
-			org.scribble.ast.ProtocolKindNode<K> source, RecVar recvar);
+			CommonTree source, RecVar recvar);
 	
 	@Override
 	public Set<Role> getRoles()
@@ -90,16 +90,10 @@ public abstract class Continue<K extends ProtocolKind>
 	}
 
 	@Override
-	public Continue<K> getInlined(STypeInliner i)
+	public Continue<K> getInlined(STypeInliner v)
 	{
-		RecVar rv = i.getInlinedRecVar(this.recvar);
+		RecVar rv = v.getInlinedRecVar(this.recvar);
 		return reconstruct(getSource(), rv);
-	}
-	
-	@Override
-	public org.scribble.ast.ProtocolKindNode<K> getSource()
-	{
-		return (org.scribble.ast.ProtocolKindNode<K>) super.getSource();
 	}
 
 	@Override

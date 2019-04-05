@@ -163,7 +163,9 @@ public class MainContext
 				// TODO CHECKME: main modname comes from the inlined moddecl -- check for issues if this clashes with an existing file system resource
 		loadAllModules(p);  // Populates this.parsed
 
-		this.config = new JobConfig(debug, main, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation, spin, this.af, this.ef, this.sf);
+		this.config = new JobConfig(debug, main, useOldWF, noLiveness, minEfsm,
+				fair, noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation,
+				spin, this.af, this.ef, this.sf);
 		
 		Map<ModuleName, Module> parsed = getParsedModules();
 		Map<ModuleName, ModuleContext> map = new HashMap<>();

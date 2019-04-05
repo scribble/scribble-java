@@ -16,23 +16,24 @@ package org.scribble.type.session.global;
 import java.util.Map;
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.Projector;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.DisconnectAction;
 import org.scribble.type.session.local.LDisconnect;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
+import org.scribble.visit.Projector2;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class GDisconnect extends DisconnectAction<Global>
 		implements GType
 {
 
-	public GDisconnect(org.scribble.ast.DisconnectAction<Global> source,
+	public GDisconnect(CommonTree source,
 			Role left, Role right)
 	{
 		super(source, left, right);
@@ -40,7 +41,7 @@ public class GDisconnect extends DisconnectAction<Global>
 
 	@Override
 	public GDisconnect reconstruct(
-			org.scribble.ast.DisconnectAction<Global> source, Role left, Role right)
+			CommonTree source, Role left, Role right)
 	{
 		return new GDisconnect(source, left, right);
 	}
@@ -52,15 +53,15 @@ public class GDisconnect extends DisconnectAction<Global>
 	}
 
 	@Override
-	public GDisconnect getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public GDisconnect getInlined(STypeInliner v)
 	{
-		return (GDisconnect) super.getInlined(i);
+		return (GDisconnect) super.getInlined(v);
 	}
 
 	@Override
 	public GDisconnect unfoldAllOnce(STypeUnfolder<Global> u)
 	{
-		return this;
+		return (GDisconnect) super.unfoldAllOnce(u);
 	}
 	
 	@Override
@@ -85,7 +86,7 @@ public class GDisconnect extends DisconnectAction<Global>
 	}
 
 	@Override
-	public LType project(Projector v)
+	public LType project(Projector2 v)
 	{
 		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}

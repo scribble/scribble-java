@@ -17,9 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
@@ -28,7 +25,10 @@ import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.STypeBase;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 // Used only *during* projection -- filtered out by GSeq::projection
 public class LSkip extends STypeBase<Local> implements LType
@@ -105,12 +105,6 @@ public class LSkip extends STypeBase<Local> implements LType
 	public LType unfoldAllOnce(STypeUnfolder<Local> u)
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
-	}
-
-	@Override
-	public org.scribble.ast.local.LNode getSource()
-	{
-		return null;
 	}
 
 	@Override

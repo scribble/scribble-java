@@ -19,25 +19,26 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.Projector;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.ConnectAction;
 import org.scribble.type.session.Message;
 import org.scribble.type.session.local.LAcc;
 import org.scribble.type.session.local.LReq;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
+import org.scribble.visit.Projector2;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class GConnect extends ConnectAction<Global>
 		implements GType
 {
 
-	public GConnect(org.scribble.ast.DirectedInteraction<Global> source,  // DirectedInteraction not ideal (imprecise)
+	public GConnect(CommonTree source,  // DirectedInteraction not ideal (imprecise)
 			Role src, Message msg, Role dst)
 	{
 		super(source, src, msg, dst);
@@ -45,7 +46,7 @@ public class GConnect extends ConnectAction<Global>
 
 	@Override
 	public GConnect reconstruct(
-			org.scribble.ast.DirectedInteraction<Global> source, Role src, Message msg,
+			CommonTree source, Role src, Message msg,
 			Role dst)
 	{
 		return new GConnect(source, src, msg, dst);
@@ -58,15 +59,15 @@ public class GConnect extends ConnectAction<Global>
 	}
 
 	@Override
-	public GConnect getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public GConnect getInlined(STypeInliner v)
 	{
-		return (GConnect) super.getInlined(i);
+		return (GConnect) super.getInlined(v);
 	}
 
 	@Override
 	public GConnect unfoldAllOnce(STypeUnfolder<Global> u)
 	{
-		return this;
+		return (GConnect) super.unfoldAllOnce(u);
 	}
 	
 	@Override
@@ -91,7 +92,7 @@ public class GConnect extends ConnectAction<Global>
 	}
 
 	@Override
-	public LType project(Projector v)
+	public LType project(Projector2 v)
 	{
 		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}

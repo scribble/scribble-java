@@ -13,17 +13,16 @@
  */
 package org.scribble.type.session;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.lang.Substitutions;
-import org.scribble.type.kind.NonRoleParamKind;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 
 // Besides directed-ness, also features a Message
 public abstract class DirectedInteraction<K extends ProtocolKind>
@@ -33,7 +32,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 	public final Message msg;
 	public final Role dst;
 
-	public DirectedInteraction(org.scribble.ast.DirectedInteraction<K> source,
+	public DirectedInteraction(CommonTree source,
 			Role src, Message msg, Role dst)
 	{
 		super(source);
@@ -43,7 +42,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 	}
 	
 	public abstract DirectedInteraction<K> reconstruct(
-			org.scribble.ast.DirectedInteraction<K> source, Role src, Message msg,
+			CommonTree source, Role src, Message msg,
 			Role dst);
 
 	@Override
@@ -76,9 +75,9 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 	}
 	
 	@Override
-	public org.scribble.ast.DirectedInteraction<K> getSource()
+	public CommonTree getSource()
 	{
-		return (org.scribble.ast.DirectedInteraction<K>) super.getSource();
+		return (CommonTree) super.getSource();
 	}
 	
 	@Override

@@ -16,6 +16,7 @@ package org.scribble.type.session;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.MemberName;
@@ -26,7 +27,7 @@ import org.scribble.type.name.Role;
 public abstract class ConnectAction<K extends ProtocolKind>
 		extends DirectedInteraction<K>
 {
-	public ConnectAction(org.scribble.ast.DirectedInteraction<K> source,  // BaseInteractionNode not ideal
+	public ConnectAction(CommonTree source,  // BaseInteractionNode not ideal
 			Role src, Message msg, Role dst)
 	{
 		super(source, src, msg, dst);

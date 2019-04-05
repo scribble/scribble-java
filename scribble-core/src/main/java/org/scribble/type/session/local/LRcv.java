@@ -15,27 +15,28 @@ package org.scribble.type.session.local;
 
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Message;
 import org.scribble.type.session.MessageSig;
 import org.scribble.type.session.MessageTransfer;
 import org.scribble.type.session.Payload;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class LRcv extends MessageTransfer<Local>
 		implements LType
 {
 
 	// this.dst == Role.SELF
-	public LRcv(org.scribble.ast.DirectedInteraction<Local> source,
+	public LRcv(CommonTree source,
 			Role src, Message msg)
 	{
 		super(source, src, msg, Role.SELF);
@@ -44,7 +45,7 @@ public class LRcv extends MessageTransfer<Local>
 	// FIXME: unnecessary dst 
 	@Override
 	public LRcv reconstruct(
-			org.scribble.ast.DirectedInteraction<Local> source, Role src, Message msg,
+			CommonTree source, Role src, Message msg,
 			Role dst)
 	{
 		return new LRcv(source, src, msg);
@@ -69,15 +70,15 @@ public class LRcv extends MessageTransfer<Local>
 	}
 
 	@Override
-	public LRcv getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LRcv getInlined(STypeInliner v)
 	{
-		return (LRcv) super.getInlined(i);
+		return (LRcv) super.getInlined(v);
 	}
 
 	@Override
 	public LRcv unfoldAllOnce(STypeUnfolder<Local> u)
 	{
-		return this;
+		return (LRcv) super.unfoldAllOnce(u);
 	}
 
 	@Override

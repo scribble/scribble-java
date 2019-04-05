@@ -13,23 +13,22 @@
  */
 package org.scribble.type.session;
 
-import org.scribble.ast.ProtocolKindNode;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 
 // SessTypeBase is to SessType as ScribNodeBase is to ScribNode
 public abstract class STypeBase<K extends ProtocolKind>
 		implements SType<K>
 {
-	private final ProtocolKindNode<K> source;  // Currently null for "generated" terms (cf. hasSource)
+	private final CommonTree source;  // Currently null for "generated" terms (cf. hasSource)
 
-	public STypeBase(ProtocolKindNode<K> source)
+	public STypeBase(CommonTree source)
 	{
-		@SuppressWarnings("unchecked")  // FIXME:
-		ProtocolKindNode<K> clone = (source == null)
+		/*CommonTree clone = (source == null)
 				? null
-				: (ProtocolKindNode<K>) source.clone();
-				// ScribNodes are mutable
-		this.source = clone;
+				: CommonTree.clone();  // clone not visibile*/
+		this.source = source;
+				// CHECKME: ScribNodes are technically mutable -- though should be treated immutable (defensive copies) post disamb, i.e., in core passes
 	}
 
 	@Override
@@ -40,7 +39,7 @@ public abstract class STypeBase<K extends ProtocolKind>
 	
 	// Pre: hasSource
 	@Override
-	public ProtocolKindNode<K> getSource()
+	public CommonTree getSource()
 	{
 		return this.source;
 	}

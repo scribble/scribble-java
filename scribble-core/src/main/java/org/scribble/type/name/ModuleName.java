@@ -16,8 +16,8 @@ package org.scribble.type.name;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.scribble.ast.Constants;
 import org.scribble.type.kind.ModuleKind;
+import org.scribble.util.Constants;
 
 // General name: simple or full (a central class for value comparison)
 public class ModuleName extends QualifiedName<ModuleKind>

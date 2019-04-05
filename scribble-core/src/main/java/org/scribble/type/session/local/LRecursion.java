@@ -16,28 +16,28 @@ package org.scribble.type.session.local;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble.ast.ProtocolKindNode;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Recursion;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class LRecursion extends Recursion<Local, LSeq> implements LType
 {
 	public LRecursion(//org.scribble.ast.Recursion<Local> source, 
-			ProtocolKindNode<Local> source,  // Due to inlining, protocoldecl -> rec
+			CommonTree source,  // Due to inlining, protocoldecl -> rec
 			RecVar recvar, LSeq body)
 	{
 		super(source, recvar, body);
 	}
 	
 	@Override
-	public LRecursion reconstruct(org.scribble.ast.ProtocolKindNode<Local> source,
+	public LRecursion reconstruct(CommonTree source,
 			RecVar recvar, LSeq block)
 	{
 		return new LRecursion(source, recvar, block);
@@ -64,14 +64,14 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 	}
 
 	@Override
-	public LRecursion getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LRecursion getInlined(STypeInliner v)
 	{
-		org.scribble.ast.ProtocolKindNode<Local> source = getSource();  // CHECKME: or empty source?
-		RecVar rv = i.enterRec(//stack.peek(), 
+		CommonTree source = getSource();  // CHECKME: or empty source?
+		RecVar rv = v.enterRec(//stack.peek(), 
 				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
-		LSeq body = this.body.getInlined(i);//, stack);
+		LSeq body = this.body.getInlined(v);//, stack);
 		LRecursion res = reconstruct(source, rv, body);
-		i.exitRec(this.recvar);
+		v.exitRec(this.recvar);
 		return res;
 	}
 

@@ -20,30 +20,29 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.InteractionSeq;
-import org.scribble.ast.local.LInteractionSeq;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.SType;
 import org.scribble.type.session.Seq;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class LSeq extends Seq<Local> implements LType
 {
 	// GInteractionSeq or GBlock better as source?
-	public LSeq(InteractionSeq<Local> source, List<? extends SType<Local>> elems)
+	public LSeq(CommonTree source, List<? extends SType<Local>> elems)
 	{
 		super(source, elems);
 	}
 
 	@Override
-	public LSeq reconstruct(InteractionSeq<Local> source,
+	public LSeq reconstruct(CommonTree source,
 			List<? extends SType<Local>> elems)
 	{
 		return new LSeq(source, elems);
@@ -89,9 +88,11 @@ public class LSeq extends Seq<Local> implements LType
 	}
 
 	@Override
-	public LSeq getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LSeq getInlined(STypeInliner v)
 	{
-		LInteractionSeq source = getSource();  // CHECKME: or empty source?
+		return (LSeq) super.getInlined(v);
+	}
+		/*CommonTree source = getSource();  // CHECKME: or empty source?
 		List<SType<Local>> elems = new LinkedList<>();
 		for (SType<Local> e : this.elems)
 		{
@@ -106,12 +107,12 @@ public class LSeq extends Seq<Local> implements LType
 			}
 		}
 		return reconstruct(source, elems);
-	}
+	}*/
 
 	@Override
 	public LSeq unfoldAllOnce(STypeUnfolder<Local> u)
 	{
-		LInteractionSeq source = getSource();
+		CommonTree source = getSource();
 		List<SType<Local>> elems = new LinkedList<>();
 		for (SType<Local> e : this.elems)
 		{
@@ -182,12 +183,6 @@ public class LSeq extends Seq<Local> implements LType
 	public List<LType> getElements()
 	{
 		return this.elems.stream().map(x -> (LType) x).collect(Collectors.toList());
-	}
-
-	@Override
-	public LInteractionSeq getSource()
-	{
-		return (LInteractionSeq) super.getSource();
 	}
 	
 	@Override

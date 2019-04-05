@@ -16,7 +16,7 @@ package org.scribble.type.session;
 import java.util.List;
 import java.util.Set;
 
-import org.scribble.ast.ProtocolKindNode;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageId;
@@ -31,7 +31,7 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 	public final B body;
 
 	public Recursion(//org.scribble.ast.Recursion<K> source, 
-			ProtocolKindNode<K> source,  // Due to inlining, protodecl -> rec
+			CommonTree source,  // Due to inlining, protodecl -> rec
 			RecVar recvar, B body)
 	{
 		super(source);
@@ -40,7 +40,7 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 	}
 
 	public abstract Recursion<K, B> reconstruct(
-			org.scribble.ast.ProtocolKindNode<K> source, RecVar recvar, B body);
+			CommonTree source, RecVar recvar, B body);
 	
 	@Override
 	public Set<Role> getRoles()
@@ -68,6 +68,33 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K>>
 				? this
 				: this.body;  // i.e., return a Seq, to be "inlined" by Seq.pruneRecs -- N.B. must handle empty Seq case
 	}
+
+	/* // CHECKME: try adding B to Seq
+	Override
+	public Recursion<K, B> getInlined(STypeInliner v)
+	{
+		CommonTree source = getSource();  // CHECKME: or empty source?
+		RecVar rv = i.enterRec(//stack.peek(), 
+				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
+		B body = this.body.getInlined(v);
+		Recursion<K, B> res = reconstruct(source, rv, body);
+		i.exitRec(this.recvar);
+		return res;
+	}
+
+	@Override
+	public GType unfoldAllOnce(STypeUnfolder<Global> u)
+	{
+		if (!u.hasRec(this.recvar))  // N.B. doesn't work if recvars shadowed
+		{
+			u.pushRec(this.recvar, this.body);
+			GType unf = (GType) this.body.unfoldAllOnce(u);
+			u.popRec(this.recvar);  
+					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
+			return unf;
+		}
+		return this;
+	}*/
 
 	@Override
 	public List<ProtocolName<K>> getProtoDependencies()

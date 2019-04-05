@@ -21,8 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.DataType;
@@ -32,6 +31,8 @@ import org.scribble.type.name.MessageSigName;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
+import org.scribble.visit.STypeUnfolder;
 
 public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 		extends STypeBase<K> implements SType<K>
@@ -41,7 +42,7 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 	public final List<Arg<? extends NonRoleParamKind>> args;
 			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
 
-	public Do(org.scribble.ast.Do<K> source, N proto,
+	public Do(CommonTree source, N proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source);
@@ -50,7 +51,7 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 		this.args = Collections.unmodifiableList(args);
 	}
 
-	public abstract Do<K, N> reconstruct(org.scribble.ast.Do<K> source,
+	public abstract Do<K, N> reconstruct(CommonTree source,
 			N proto, List<Role> roles, List<Arg<? extends NonRoleParamKind>> args);
 
 	@Override
@@ -114,8 +115,7 @@ public abstract class Do<K extends ProtocolKind, N extends ProtocolName<K>>
 			}
 			args.add(a);
 		}
-		return reconstruct((org.scribble.ast.Do<K>) getSource(), this.proto, roles,
-				args);
+		return reconstruct(getSource(), this.proto, roles, args);
 	}
 
 	@Override

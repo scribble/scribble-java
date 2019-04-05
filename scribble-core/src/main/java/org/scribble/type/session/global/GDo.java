@@ -19,12 +19,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.JobContext2;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.Projector;
-import org.scribble.lang.STypeInliner;
 import org.scribble.lang.SubprotoSig;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.global.GProtocol;
 import org.scribble.type.kind.Global;
 import org.scribble.type.kind.NonRoleParamKind;
@@ -32,22 +30,25 @@ import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Arg;
 import org.scribble.type.session.Do;
 import org.scribble.type.session.local.LDo;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
+import org.scribble.visit.Projector2;
+import org.scribble.visit.STypeInliner;
 
 public class GDo extends Do<Global, GProtocolName> implements GType
 {
-	public GDo(org.scribble.ast.Do<Global> source, GProtocolName proto,
+	public GDo(CommonTree source, GProtocolName proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source, proto, roles, args);
 	}
 
 	@Override
-	public GDo reconstruct(org.scribble.ast.Do<Global> source,
+	public GDo reconstruct(CommonTree source,
 			GProtocolName proto, List<Role> roles,
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
@@ -68,22 +69,22 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 
 	// CHECKME: factor up to base?
 	@Override
-	public GType getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public GType getInlined(STypeInliner v)
 	{
 		GProtocolName fullname = this.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, this.roles, this.args);
-		RecVar rv = i.getInlinedRecVar(sig);
-		if (i.hasSig(sig))
+		RecVar rv = v.getInlinedRecVar(sig);
+		if (v.hasSig(sig))
 		{
 			return new GContinue(getSource(), rv);
 		}
-		i.pushSig(sig);
-		GProtocol g = i.job.getContext().getIntermediate(fullname);
+		v.pushSig(sig);
+		GProtocol g = v.job.getContext().getIntermediate(fullname);
 		Substitutions subs = 
 				new Substitutions(g.roles, this.roles, g.params, this.args);
-		GSeq inlined = g.def.substitute(subs).getInlined(i);//, stack);  
+		GSeq inlined = g.def.substitute(subs).getInlined(v);//, stack);  
 				// i.e. returning a GSeq -- rely on parent GSeq to inline
-		i.popSig();
+		v.popSig();
 		return new GRecursion(null, rv, inlined);
 	}
 
@@ -94,7 +95,7 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 	}
 
 	@Override
-	public LType project(Projector v)
+	public LType project(Projector2 v)
 	{
 		if (!this.roles.contains(v.self))
 		{
@@ -112,12 +113,12 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 			return LSkip.SKIP;
 		}
 
-		LProtocolName fullname = org.scribble.visit.context.Projector
-				.projectFullProtocolName(this.proto, targSelf);
+		LProtocolName fullname = Projector2.projectFullProtocolName(this.proto,
+				targSelf);
 		Substitutions subs = new Substitutions(imed.roles, this.roles,
 				Collections.emptyList(), Collections.emptyList());
-		List<Role> used = jobc.getInlined(this.proto).roles.stream().map(x -> subs.subsRole(x))
-				.collect(Collectors.toList());
+		List<Role> used = jobc.getInlined(this.proto).roles.stream()
+				.map(x -> subs.subsRole(x)).collect(Collectors.toList());
 		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))
 				.map(x -> x.equals(v.self) ? Role.SELF : x)
 						// CHECKME: "self" also explcitily used for Choice, but implicitly for MessageTransfer, inconsistent?
@@ -136,12 +137,6 @@ public class GDo extends Do<Global, GProtocolName> implements GType
 			throws ScribbleException
 	{
 		throw new RuntimeException("Unsupported for Do: " + this);
-	}
-
-	@Override
-	public org.scribble.ast.global.GDo getSource()
-	{
-		return (org.scribble.ast.global.GDo) super.getSource();
 	}
 
 	@Override

@@ -15,23 +15,24 @@ package org.scribble.type.session.local;
 
 import java.util.Set;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.DisconnectAction;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class LDisconnect extends DisconnectAction<Local>
 		implements LType
 {
 
 	// this.src == Role.SELF
-	public LDisconnect(org.scribble.ast.DisconnectAction<Local> source,
+	public LDisconnect(CommonTree source,
 			Role peer)
 	{
 		super(source, Role.SELF, peer);
@@ -45,7 +46,7 @@ public class LDisconnect extends DisconnectAction<Local>
 	// CHECKME: remove unnecessary self ?
 	@Override
 	public LDisconnect reconstruct(
-			org.scribble.ast.DisconnectAction<Local> source, Role self, Role peer)
+			CommonTree source, Role self, Role peer)
 	{
 		return new LDisconnect(source, peer);
 	}
@@ -69,15 +70,15 @@ public class LDisconnect extends DisconnectAction<Local>
 	}
 
 	@Override
-	public LDisconnect getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LDisconnect getInlined(STypeInliner v)
 	{
-		return (LDisconnect) super.getInlined(i);
+		return (LDisconnect) super.getInlined(v);
 	}
 
 	@Override
 	public LDisconnect unfoldAllOnce(STypeUnfolder<Local> u)
 	{
-		return this;
+		return (LDisconnect) super.unfoldAllOnce(u);
 	}
 
 	@Override

@@ -24,30 +24,32 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.Projector;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Choice;
 import org.scribble.type.session.local.LChoice;
 import org.scribble.type.session.local.LSeq;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
+import org.scribble.visit.Projector2;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class GChoice extends Choice<Global, GSeq> implements GType
 {
-	public GChoice(org.scribble.ast.Choice<Global> source, Role subj,
+	public GChoice(CommonTree source, Role subj,
 			List<GSeq> blocks)
 	{
 		super(source, subj, blocks);
 	}
 	
 	@Override
-	public GChoice reconstruct(org.scribble.ast.Choice<Global> source, Role subj,
+	public GChoice reconstruct(CommonTree source, Role subj,
 			List<GSeq> blocks)
+			//List<? extends Seq<Global>> blocks)
 	{
 		return new GChoice(source, subj, blocks);
 	}
@@ -69,10 +71,10 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	}
 
 	@Override
-	public GChoice getInlined(STypeInliner i )//GTypeTranslator t, Deque<SubprotoSig> stack)
+	public GChoice getInlined(STypeInliner v)
 	{
-		org.scribble.ast.global.GChoice source = getSource();  // CHECKME: or empty source?
-		List<GSeq> blocks = this.blocks.stream().map(x -> x.getInlined(i))
+		CommonTree source = getSource();  // CHECKME: or empty source?
+		List<GSeq> blocks = this.blocks.stream().map(x -> x.getInlined(v))
 				.collect(Collectors.toList());
 		return reconstruct(source, this.subj, blocks);
 	}
@@ -80,7 +82,7 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	@Override
 	public GChoice unfoldAllOnce(STypeUnfolder<Global> u)
 	{
-		org.scribble.ast.global.GChoice source = getSource();  // CHECKME: or empty source?
+		CommonTree source = getSource();  // CHECKME: or empty source?
 		List<GSeq> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
 				.collect(Collectors.toList());
 		return reconstruct(source, this.subj, blocks);
@@ -108,7 +110,7 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	}
 	
 	@Override
-	public LType project(Projector v)
+	public LType project(Projector2 v)
 	{
 		return projectAux(v.self, this.blocks.stream().map(x -> x.project(v)));
 	}
@@ -182,12 +184,6 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 			// "may" merge -- check for possible duplicate connections
 			// FIXME: but unconnected error needs "must" connections; also "duplicate" disconnect
 	}*/
-
-	@Override
-	public org.scribble.ast.global.GChoice getSource()
-	{
-		return (org.scribble.ast.global.GChoice) super.getSource();
-	}
 
 	@Override
 	public int hashCode()

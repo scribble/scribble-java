@@ -17,30 +17,30 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import org.scribble.ast.ProtocolKindNode;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.lang.local.ReachabilityEnv;
 import org.scribble.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.model.endpoint.EState;
 import org.scribble.model.endpoint.actions.EAction;
 import org.scribble.type.kind.Local;
 import org.scribble.type.name.RecVar;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Continue;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class LContinue extends Continue<Local> implements LType
 {
 	public LContinue(//org.scribble.ast.Continue<Local> source, 
-			ProtocolKindNode<Local> source,  // Due to inlining, do -> continue
+			CommonTree source,  // Due to inlining, do -> continue
 			RecVar recvar)
 	{
 		super(source, recvar);
 	}
 	
 	@Override
-	public LContinue reconstruct(org.scribble.ast.ProtocolKindNode<Local> source,
+	public LContinue reconstruct(CommonTree source,
 			RecVar recvar)
 	{
 		return new LContinue(source, recvar);
@@ -65,9 +65,9 @@ public class LContinue extends Continue<Local> implements LType
 	}
 
 	@Override
-	public LContinue getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public LContinue getInlined(STypeInliner v)
 	{
-		return (LContinue) super.getInlined(i);
+		return (LContinue) super.getInlined(v);
 	} 
 
 	@Override

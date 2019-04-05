@@ -16,6 +16,7 @@ package org.scribble.type.session;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.DataType;
 import org.scribble.type.name.GDelegationType;
@@ -27,7 +28,7 @@ import org.scribble.type.name.Role;
 public abstract class MessageTransfer<K extends ProtocolKind>
 		extends DirectedInteraction<K>
 {
-	public MessageTransfer(org.scribble.ast.DirectedInteraction<K> source,  // DirectedInteraction not ideal (imprecise)
+	public MessageTransfer(CommonTree source,
 			Role src, Message msg, Role dst)
 	{
 		super(source, src, msg, dst);

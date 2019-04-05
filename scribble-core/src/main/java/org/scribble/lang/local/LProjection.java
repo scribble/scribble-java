@@ -16,16 +16,15 @@ package org.scribble.lang.local;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.ProtocolDecl;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.lang.ProtocolMod;
-import org.scribble.lang.STypeInliner;
-import org.scribble.type.kind.Local;
 import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.Role;
 import org.scribble.type.session.local.LSeq;
+import org.scribble.visit.STypeInliner;
 
 public class LProjection extends LProtocol
 {
@@ -41,7 +40,7 @@ public class LProjection extends LProtocol
 	}
 
 	@Override
-	public LProjection reconstruct(ProtocolDecl<Local> source,
+	public LProjection reconstruct(CommonTree source,
 			List<ProtocolMod> mods, LProtocolName fullname, List<Role> roles,
 			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq body)
 	{
@@ -61,7 +60,7 @@ public class LProjection extends LProtocol
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
-	public LProjection getInlined(STypeInliner i)
+	public LProjection getInlined(STypeInliner v)
 	{
 		throw new RuntimeException("[TODO]: " + this);
 	}

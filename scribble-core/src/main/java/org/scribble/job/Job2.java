@@ -21,9 +21,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.lang.Projector;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
 import org.scribble.lang.SubprotoSig;
 import org.scribble.lang.context.ModuleContext;
 import org.scribble.lang.global.GProtocol;
@@ -45,7 +42,9 @@ import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.type.session.Arg;
 import org.scribble.type.session.global.GType;
-import org.scribble.visit.validation.GProtocolValidator;
+import org.scribble.visit.Projector2;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job2
@@ -53,7 +52,7 @@ public class Job2
 	// Keys are full names
 	private final Map<ModuleName, ModuleContext> modcs;  // CHECKME: constant?  move to JobConfig?
 
-	public final JobConfig config;  // Immutable
+	public final JobConfig2 config;  // Immutable
 
 	private final JobContext2 context;  // Mutable (Visitor passes replace modules)
 	private final SGraphBuilderUtil sgbu;
@@ -61,7 +60,7 @@ public class Job2
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	public Job2(Set<GProtocol> parsed,//Map<ModuleName, Module> parsed,
-			Map<ModuleName, ModuleContext> modcs, JobConfig config)
+			Map<ModuleName, ModuleContext> modcs, JobConfig2 config)
 	{
 		this.modcs = Collections.unmodifiableMap(modcs);
 		this.config = config;
@@ -210,7 +209,6 @@ public class Job2
 			proj.checkReachability();
 		}
 
-		GProtocolValidator checker = new GProtocolValidator(this);
 		//runVisitorPassOnAllModules(GProtocolValidator.class);
 		//for (Module mod : this.context.getParsed().values())
 		{
@@ -227,23 +225,23 @@ public class Job2
 
 				debugPrintln("\nValidating " + fullname + ":");
 
-				if (checker.job2.config.spin)
+				if (this.config.spin)
 				{
-					if (checker.job2.config.fair)
+					if (this.config.fair)
 					{
 						throw new RuntimeException(
 								"[TODO]: -spin currently does not support fair ouput choices.");
 					}
-					GProtocol.validateBySpin(checker.job2, fullname);
+					GProtocol.validateBySpin(this, fullname);
 				}
 				else
 				{
-					GProtocol.validateByScribble(checker.job2, fullname, true);
-					if (!checker.job2.config.fair)
+					GProtocol.validateByScribble(this, fullname, true);
+					if (!this.config.fair)
 					{
 						debugPrintln(
 								"(" + fullname + ") Validating with \"unfair\" output choices.. ");
-						GProtocol.validateByScribble(checker.job2, fullname, false);  // TODO: only need to check progress, not full validation
+						GProtocol.validateByScribble(this, fullname, false);  // TODO: only need to check progress, not full validation
 					}
 				}
 			}
@@ -279,7 +277,7 @@ public class Job2
 		{
 			for (Role self : g.roles)
 			{
-				LProtocol proj = g.project(new Projector(this, self));  // Does pruneRecs
+				LProtocol proj = g.project(new Projector2(this, self));  // Does pruneRecs
 				this.context.addProjection(proj);
 				debugPrintln("\nProjected onto " + self + ":\n" + proj);
 			}

@@ -17,32 +17,32 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.ast.ProtocolKindNode;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.Projector;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.Recursion;
 import org.scribble.type.session.local.LRecursion;
 import org.scribble.type.session.local.LSeq;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
+import org.scribble.visit.Projector2;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class GRecursion extends Recursion<Global, GSeq> implements GType
 {
 	public GRecursion(//org.scribble.ast.Recursion<Global> source, 
-			ProtocolKindNode<Global> source,  // Due to inlining, protocoldecl -> rec
+			CommonTree source,  // Due to inlining, protocoldecl -> rec
 			RecVar recvar, GSeq body)
 	{
 		super(source, recvar, body);
 	}
 	
 	@Override
-	public GRecursion reconstruct(org.scribble.ast.ProtocolKindNode<Global> source,
+	public GRecursion reconstruct(CommonTree source,
 			RecVar recvar, GSeq block)
 	{
 		return new GRecursion(source, recvar, block);
@@ -55,14 +55,14 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 
 	@Override
-	public GRecursion getInlined(STypeInliner i)//, Deque<SubprotoSig> stack)
+	public GRecursion getInlined(STypeInliner v)
 	{
-		org.scribble.ast.ProtocolKindNode<Global> source = getSource();  // CHECKME: or empty source?
-		RecVar rv = i.enterRec(//stack.peek(), 
+		CommonTree source = getSource();  // CHECKME: or empty source?
+		RecVar rv = v.enterRec(//stack.peek(), 
 				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
-		GSeq body = this.body.getInlined(i);//, stack);
+		GSeq body = this.body.getInlined(v);//, stack);
 		GRecursion res = reconstruct(source, rv, body);
-		i.exitRec(this.recvar);
+		v.exitRec(this.recvar);
 		return res;
 	}
 
@@ -110,7 +110,7 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 
 	@Override
-	public LType project(Projector v)
+	public LType project(Projector2 v)
 	{
 		LSeq body = this.body.project(v);
 		return projectAux(body);

@@ -45,7 +45,7 @@ import org.scribble.type.name.GProtocolName;
 import org.scribble.type.name.LProtocolName;
 import org.scribble.type.name.Role;
 import org.scribble.util.ScribParserException;
-import org.scribble.util.ScribUtil;
+import org.scribble.util.ScribUtil2;
 
 public class CommandLine
 {
@@ -516,14 +516,14 @@ public class CommandLine
 		if (this.args.containsKey(CLArgFlag.API_OUTPUT))
 		{
 			String dir = this.args.get(CLArgFlag.API_OUTPUT)[0];
-			f = path -> { ScribUtil.handleLambdaScribbleException(() ->
+			f = path -> { ScribUtil2.handleLambdaScribbleException(() ->
 							{
 								String tmp = dir + "/" + path;
 								if (this.args.containsKey(CLArgFlag.VERBOSE))
 								{
 									System.out.println("[DEBUG] Writing to: " + tmp);
 								}
-								ScribUtil.writeToFile(tmp, classes.get(path)); return null;
+								ScribUtil2.writeToFile(tmp, classes.get(path)); return null;
 							}); };
 		}
 		else
@@ -544,8 +544,8 @@ public class CommandLine
 		}
 		try
 		{
-			ScribUtil.writeToFile(tmpName, dot);
-			String[] res = ScribUtil.runProcess("dot", "-Tpng", "-o" + png, tmpName);
+			ScribUtil2.writeToFile(tmpName, dot);
+			String[] res = ScribUtil2.runProcess("dot", "-Tpng", "-o" + png, tmpName);
 			System.out.print(!res[1].isEmpty() ? res[1] : res[0]);  // already "\n" terminated
 		}
 		finally

@@ -19,11 +19,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.lang.Substitutions;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 
 // Base class would be "SymmetricInteraction" (cf., DirectedInteraction)
 public abstract class DisconnectAction<K extends ProtocolKind>
@@ -32,7 +33,7 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 	public final Role left;
 	public final Role right;
 
-	public DisconnectAction(org.scribble.ast.DisconnectAction<K> source,
+	public DisconnectAction(CommonTree source,
 			Role left, Role right)
 	{
 		super(source);
@@ -41,7 +42,7 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 	}
 	
 	public abstract DisconnectAction<K> reconstruct(
-			org.scribble.ast.DisconnectAction<K> source, Role src, Role dst);
+			CommonTree source, Role src, Role dst);
 
 	@Override
 	public Set<Role> getRoles()
@@ -67,12 +68,6 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		return Collections.emptyList();
-	}
-	
-	@Override
-	public org.scribble.ast.DisconnectAction<K> getSource()
-	{
-		return (org.scribble.ast.DisconnectAction<K>) super.getSource();
 	}
 	
 	@Override

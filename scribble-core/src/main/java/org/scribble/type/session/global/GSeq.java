@@ -20,32 +20,31 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.ast.InteractionSeq;
-import org.scribble.ast.global.GInteractionSeq;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.job.ScribbleException;
-import org.scribble.lang.Projector;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
 import org.scribble.type.kind.Global;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
 import org.scribble.type.session.SType;
 import org.scribble.type.session.Seq;
 import org.scribble.type.session.local.LSeq;
 import org.scribble.type.session.local.LSkip;
 import org.scribble.type.session.local.LType;
+import org.scribble.visit.Projector2;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 public class GSeq extends Seq<Global> implements GType
 {
 	// GInteractionSeq or GBlock better as source?
-	public GSeq(InteractionSeq<Global> source,
+	public GSeq(CommonTree source,
 			List<? extends SType<Global>> elems)
 	{
 		super(source, elems);
 	}
 
 	@Override
-	public GSeq reconstruct(InteractionSeq<Global> source,
+	public GSeq reconstruct(CommonTree source,
 			List<? extends SType<Global>> elems)
 	{
 		return new GSeq(source, elems);
@@ -77,17 +76,18 @@ public class GSeq extends Seq<Global> implements GType
 	}
 
 	@Override
-	public GSeq getInlined(STypeInliner i)// , Deque<SubprotoSig> stack)
+	public GSeq getInlined(STypeInliner v)
 	{
-		GInteractionSeq source = getSource(); // CHECKME: or empty source?
+		return (GSeq) super.getInlined(v);
+	}
+	/*CommonTree source = getSource(); // CHECKME: or empty source?
 		List<SType<Global>> elems = new LinkedList<>();
 		for (SType<Global> e : this.elems)
 		{
 			SType<Global> e1 = e.getInlined(i);// , stack);
 			if (e1 instanceof GSeq)
 			{
-				elems.addAll(((GSeq) e1).elems); // Inline GSeq's returned by
-																					// GDo::getInlined
+				elems.addAll(((GSeq) e1).elems); // Inline GSeq's returned by GDo::getInlined
 			}
 			else
 			{
@@ -95,12 +95,12 @@ public class GSeq extends Seq<Global> implements GType
 			}
 		}
 		return reconstruct(source, elems);
-	}
+	}*/
 
 	@Override
 	public GSeq unfoldAllOnce(STypeUnfolder<Global> u)
 	{
-		GInteractionSeq source = getSource();
+		CommonTree source = getSource();
 		List<SType<Global>> elems = new LinkedList<>();
 		for (SType<Global> e : this.elems)
 		{
@@ -135,7 +135,7 @@ public class GSeq extends Seq<Global> implements GType
 	}
 
 	@Override
-	public LSeq project(Projector v)
+	public LSeq project(Projector2 v)
 	{
 		return projectAux(this.elems.stream()
 				.map(x -> ((GType) x).project(v)));  
@@ -177,12 +177,6 @@ public class GSeq extends Seq<Global> implements GType
 	public List<GType> getElements()
 	{
 		return this.elems.stream().map(x -> (GType) x).collect(Collectors.toList());
-	}
-
-	@Override
-	public GInteractionSeq getSource()
-	{
-		return (GInteractionSeq) super.getSource();
 	}
 
 	@Override

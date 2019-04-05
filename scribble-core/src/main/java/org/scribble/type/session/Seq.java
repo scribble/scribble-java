@@ -14,32 +14,35 @@
 package org.scribble.type.session;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.InteractionSeq;
-import org.scribble.lang.Substitutions;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
-// Could add B extends STTypeBase, K>, but it inflates type params quite a bit (e.g., Protocol)
+// Could add B extends STypeBase, but it inflates type params quite a bit (e.g., Protocol)
 public abstract class Seq<K extends ProtocolKind>
 		extends STypeBase<K>
 {
 	public final List<? extends SType<K>> elems;  // GType or LType
 
-	public Seq(InteractionSeq<K> source, List<? extends SType<K>> elems)
+	public Seq(CommonTree source, List<? extends SType<K>> elems)
 	{
 		super(source);
 		this.elems = Collections.unmodifiableList(elems);
 	}
 	
-	public abstract Seq<K> reconstruct(InteractionSeq<K> source,
+	public abstract Seq<K> reconstruct(CommonTree source,
 			List<? extends SType<K>> elems);
 
 	@Override
@@ -70,6 +73,46 @@ public abstract class Seq<K extends ProtocolKind>
 				.map(x -> x.substitute(subs)).collect(Collectors.toList());
 		return reconstruct(getSource(), elems);
 	}
+
+	@Override
+	public Seq<K> getInlined(STypeInliner v)
+	{
+		CommonTree source = getSource(); // CHECKME: or empty source?
+		List<SType<K>> elems = new LinkedList<>();
+		for (SType<K> e : this.elems)
+		{
+			SType<K> e1 = e.getInlined(v);
+			if (e1 instanceof Seq<?>)
+			{
+				elems.addAll(((Seq<K>) e1).elems); // Inline Seq's returned by Do.getInlined
+			}
+			else
+			{
+				elems.add(e1);
+			}
+		}
+		return reconstruct(source, elems);
+	}
+
+	@Override
+	public Seq<K> unfoldAllOnce(STypeUnfolder<K> u)
+	{
+		CommonTree source = getSource();
+		List<SType<K>> elems = new LinkedList<>();
+		for (SType<K> e : this.elems)
+		{
+			SType<K> e1 = e.unfoldAllOnce(u);
+			if (e1 instanceof Seq<?>)
+			{
+				elems.addAll(((Seq<K>) e1).elems);
+			}
+			else
+			{
+				elems.add(e1);
+			}
+		}
+		return reconstruct(source, elems);
+	}
 		
 	@Override
 	public List<ProtocolName<K>> getProtoDependencies()
@@ -91,12 +134,6 @@ public abstract class Seq<K extends ProtocolKind>
 	public boolean isEmpty()
 	{
 		return this.elems.isEmpty();
-	}
-
-	@Override
-	public InteractionSeq<K> getSource() 
-	{
-		return (InteractionSeq<K>) super.getSource();
 	}
 	
 	@Override

@@ -16,23 +16,23 @@ package org.scribble.type.session;
 import java.util.List;
 import java.util.Set;
 
-import org.scribble.ast.ProtocolKindNode;
-import org.scribble.lang.STypeInliner;
-import org.scribble.lang.STypeUnfolder;
-import org.scribble.lang.Substitutions;
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.type.kind.ProtocolKind;
 import org.scribble.type.name.MemberName;
 import org.scribble.type.name.MessageId;
 import org.scribble.type.name.ProtocolName;
 import org.scribble.type.name.RecVar;
 import org.scribble.type.name.Role;
+import org.scribble.type.name.Substitutions;
+import org.scribble.visit.STypeInliner;
+import org.scribble.visit.STypeUnfolder;
 
 // CHECKME: move to type.sess?
 // Generic works to "specialise" G/L subclasses (and works with immutable pattern) -- cf. not supported by contravariant method parameter subtyping for getters/setters
 public interface SType<K extends ProtocolKind>  // CHECKME: consider adding B extends Seq<K> here
 {
 	boolean hasSource();  // i.e., was parsed
-	ProtocolKindNode<K> getSource();  // Pre: hasSource
+	CommonTree getSource();  // Pre: hasSource
 	
 	// Unsupported for Protocol (Protocol should not be an SType)
 	Set<Role> getRoles();
