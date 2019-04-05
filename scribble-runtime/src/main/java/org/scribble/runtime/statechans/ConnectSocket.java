@@ -17,11 +17,11 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
+import org.scribble.core.type.name.Role;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.BinaryChannelEndpoint;
 import org.scribble.runtime.session.MPSTEndpoint;
 import org.scribble.runtime.session.Session;
-import org.scribble.type.name.Role;
 
 @Deprecated
 public abstract class ConnectSocket<S extends Session, R extends Role> extends LinearSocket<S, R>

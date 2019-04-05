@@ -19,17 +19,17 @@ import java.util.Map;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.statechanapi.ioifaces.IOInterfacesGenerator;
-import org.scribble.job.Job;
-import org.scribble.job.RuntimeScribbleException;
-import org.scribble.job.ScribbleException;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
+import org.scribble.core.job.RuntimeScribbleException;
+import org.scribble.core.job.ScribbleException;
+import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.Role;
+import org.scribble.lang.Lang;
 
 public class JEndpointApiGenerator
 {
-	public final Job job;
+	public final Lang job;
 	
-	public JEndpointApiGenerator(Job job)
+	public JEndpointApiGenerator(Lang job)
 	{
 		this.job = job;
 	}

@@ -19,8 +19,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.type.name.MessageId;
-import org.scribble.type.name.Role;
+import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.Role;
 
 // Mutable
 public class MessageIdMap

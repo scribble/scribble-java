@@ -16,9 +16,9 @@ package org.scribble.runtime.net;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import org.scribble.core.type.name.Role;
 import org.scribble.runtime.message.ScribMessage;
 import org.scribble.runtime.session.MPSTEndpoint;
-import org.scribble.type.name.Role;
 
 // Read/write Objects on the binary connection to an endpoint in the session
 @Deprecated

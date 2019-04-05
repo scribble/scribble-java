@@ -13,11 +13,11 @@
  */
 package org.scribble.codegen.statetype;
 
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.model.endpoint.actions.ERequest;
-import org.scribble.model.endpoint.actions.EDisconnect;
-import org.scribble.model.endpoint.actions.ESend;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.model.endpoint.actions.EDisconnect;
+import org.scribble.core.model.endpoint.actions.ERequest;
+import org.scribble.core.model.endpoint.actions.ESend;
 
 public abstract class STOutputStateBuilder extends STStateChanBuilder
 {

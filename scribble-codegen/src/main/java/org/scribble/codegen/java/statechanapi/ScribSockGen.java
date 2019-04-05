@@ -23,11 +23,11 @@ import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.job.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.MessageId;
-import org.scribble.type.name.Role;
+import org.scribble.core.job.ScribbleException;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.Role;
 
 // Parameterize on output class type
 public abstract class ScribSockGen extends StateChanTypeGen

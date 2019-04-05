@@ -37,14 +37,14 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.job.JobContext2;
-import org.scribble.job.RuntimeScribbleException;
-import org.scribble.job.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.EStateKind;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
+import org.scribble.core.job.JobContext;
+import org.scribble.core.job.RuntimeScribbleException;
+import org.scribble.core.job.ScribbleException;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.EStateKind;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.Role;
 
 // Cf. StateChannelApiGenerator
 // TODO: concrete state channel "to" casts for supertype i/f's (the info is there in the Java type hierachy though)
@@ -79,7 +79,7 @@ public class IOInterfacesGenerator extends ApiGen
 		GProtocolName fullname = apigen.getGProtocolName();
 		Role self = getSelf();
 		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext2 jobc2 = this.job2.getContext();
+		JobContext jobc2 = this.job2.getContext();
 		EState init = this.job.config.minEfsm
 				? jobc2.getMinimisedEGraph(fullname, self).init
 				: jobc2.getEGraph(fullname, self).init;

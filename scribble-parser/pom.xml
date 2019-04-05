@@ -20,7 +20,7 @@
 
 		<dependency>
 			<groupId>org.scribble</groupId>
-			<artifactId>scribble-lang</artifactId>
+			<artifactId>scribble-ast</artifactId>
 		</dependency>
 
 		<dependency>

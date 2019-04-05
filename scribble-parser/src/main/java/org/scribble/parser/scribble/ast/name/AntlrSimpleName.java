@@ -24,16 +24,16 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.kind.Local;
+import org.scribble.core.type.kind.ModuleKind;
+import org.scribble.core.type.kind.NonRoleParamKind;
+import org.scribble.core.type.kind.OpKind;
+import org.scribble.core.type.kind.RecVarKind;
+import org.scribble.core.type.kind.RoleKind;
+import org.scribble.core.type.kind.SigKind;
 import org.scribble.parser.scribble.ScribbleAntlrConstants;
-import org.scribble.type.kind.DataTypeKind;
-import org.scribble.type.kind.Global;
-import org.scribble.type.kind.Local;
-import org.scribble.type.kind.ModuleKind;
-import org.scribble.type.kind.NonRoleParamKind;
-import org.scribble.type.kind.OpKind;
-import org.scribble.type.kind.RecVarKind;
-import org.scribble.type.kind.RoleKind;
-import org.scribble.type.kind.SigKind;
 
 public class AntlrSimpleName
 {

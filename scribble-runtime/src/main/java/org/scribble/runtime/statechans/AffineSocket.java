@@ -13,9 +13,9 @@
  */
 package org.scribble.runtime.statechans;
 
+import org.scribble.core.type.name.Role;
 import org.scribble.runtime.session.MPSTEndpoint;
 import org.scribble.runtime.session.Session;
-import org.scribble.type.name.Role;
 
 @Deprecated
 public abstract class AffineSocket<S extends Session, R extends Role> extends LinearSocket<S, R>

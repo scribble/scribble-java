@@ -13,7 +13,7 @@
  */
 package org.scribble.codegen.java.util;
 
-import org.scribble.job.RuntimeScribbleException;
+import org.scribble.core.job.RuntimeScribbleException;
 
 public class ConstructorBuilder extends MethodBuilder
 {

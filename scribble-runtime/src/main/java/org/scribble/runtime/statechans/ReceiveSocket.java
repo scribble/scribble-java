@@ -17,11 +17,11 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.scribble.core.type.name.Role;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.message.ScribMessage;
 import org.scribble.runtime.session.Session;
 import org.scribble.runtime.session.SessionEndpoint;
-import org.scribble.type.name.Role;
 
 public abstract class ReceiveSocket<S extends Session, R extends Role> extends LinearSocket<S, R>
 {

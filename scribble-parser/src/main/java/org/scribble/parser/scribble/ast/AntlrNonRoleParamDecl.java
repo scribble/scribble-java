@@ -17,13 +17,13 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.name.simple.NonRoleParamNode;
+import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.Kind;
+import org.scribble.core.type.kind.NonRoleParamKind;
+import org.scribble.core.type.kind.SigKind;
 import org.scribble.parser.scribble.ScribbleAntlrConstants;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.ast.name.AntlrSimpleName;
-import org.scribble.type.kind.DataTypeKind;
-import org.scribble.type.kind.Kind;
-import org.scribble.type.kind.NonRoleParamKind;
-import org.scribble.type.kind.SigKind;
 
 public class AntlrNonRoleParamDecl
 {

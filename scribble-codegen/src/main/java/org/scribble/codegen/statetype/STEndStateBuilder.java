@@ -13,7 +13,7 @@
  */
 package org.scribble.codegen.statetype;
 
-import org.scribble.model.endpoint.EState;
+import org.scribble.core.model.endpoint.EState;
 
 public abstract class STEndStateBuilder extends STStateChanBuilder
 {

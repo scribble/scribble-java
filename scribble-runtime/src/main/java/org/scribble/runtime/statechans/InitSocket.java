@@ -17,12 +17,12 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
+import org.scribble.core.type.name.Role;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.BinaryChannelEndpoint;
 import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.session.MPSTEndpoint;
 import org.scribble.runtime.session.Session;
-import org.scribble.type.name.Role;
 
 // Establishing transport connections handled in here and wrapped up in SocketWrapper
 @Deprecated

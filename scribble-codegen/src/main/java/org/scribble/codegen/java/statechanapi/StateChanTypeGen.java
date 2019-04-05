@@ -14,7 +14,7 @@
 package org.scribble.codegen.java.statechanapi;
 
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.job.ScribbleException;
+import org.scribble.core.job.ScribbleException;
 
 // Build a (top-level) type declaration for the API generation output
 public abstract class StateChanTypeGen

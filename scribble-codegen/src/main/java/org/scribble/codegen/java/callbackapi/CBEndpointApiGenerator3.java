@@ -32,20 +32,20 @@ import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.job.Job;
-import org.scribble.job.Job2;
-import org.scribble.job.JobContext;
-import org.scribble.job.JobContext2;
-import org.scribble.job.ScribbleException;
-import org.scribble.model.MState;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.EStateKind;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.MessageSigName;
-import org.scribble.type.name.PayloadElemType;
-import org.scribble.type.name.Role;
+import org.scribble.core.job.Job;
+import org.scribble.core.job.JobContext;
+import org.scribble.core.job.ScribbleException;
+import org.scribble.core.model.MState;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.EStateKind;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.Role;
+import org.scribble.lang.Lang;
+import org.scribble.lang.LangContext;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
 // FIXME: consider collecting up all interfaces as statics inside a container class -- also states?
@@ -53,8 +53,8 @@ import org.scribble.type.name.Role;
 // FIXME: consider also "expanding" nested message constructors by op first? -- and consider "partial constructors" along expansions, can they be parameterised typed?
 public class CBEndpointApiGenerator3
 {
-	public final Job job;
-	public final Job2 job2;
+	public final Lang job;
+	public final Job job2;
 	public final GProtocolName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
@@ -62,12 +62,12 @@ public class CBEndpointApiGenerator3
 	
 	//private final boolean subtypes;  // Generate full hierarchy (states -> states, not just indivdual state -> cases) -- cf. ioifaces
 
-	public CBEndpointApiGenerator3(Job job, GProtocolName fullname, Role self, boolean subtypes)
+	public CBEndpointApiGenerator3(Lang job, GProtocolName fullname, Role self, boolean subtypes)
 	{
 		this.job = job;
 		try
 		{
-			this.job2 = job.getJob2();
+			this.job2 = job.toJob();
 		}
 		catch (ScribbleException e)  // TODO: refactor
 		{
@@ -107,7 +107,7 @@ public class CBEndpointApiGenerator3
 		Module main = this.job.getContext().getMainModule();
 		Map<String, String> res = new HashMap<>();
 
-		JobContext2 jobc2 = this.job2.getContext();
+		JobContext jobc2 = this.job2.getContext();
 		EState init = (this.job.config.minEfsm
 				? jobc2.getMinimisedEGraph(this.proto, this.self)
 				: jobc2.getEGraph(this.proto, this.self)
@@ -221,7 +221,7 @@ public class CBEndpointApiGenerator3
 		}*/
 			
 		// branches
-		JobContext jobc = this.job.getContext();
+		LangContext jobc = this.job.getContext();
 		for (EState s : states)
 		{
 			if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
@@ -673,7 +673,7 @@ public class CBEndpointApiGenerator3
 	}
 
 	// FIXME: refactor using TypeBuilder API
-	protected String generateBranch(String bprefix, JobContext jc, EState s, String endpointName, String rootPack, String branchName)
+	protected String generateBranch(String bprefix, LangContext jc, EState s, String endpointName, String rootPack, String branchName)
 	{
 		String branchAbstract = "";
 		branchAbstract += "package " + getHandlersSelfPackage() + ";\n";
@@ -730,7 +730,7 @@ public class CBEndpointApiGenerator3
 	}
 	
 	protected String generateReceiveInterface(boolean isSig,
-			MessageSigNameDecl msnd, JobContext jc, EAction a, String rootPack,
+			MessageSigNameDecl msnd, LangContext jc, EAction a, String rootPack,
 			String receiveIfName)
 	{
 		String receiveInterface = "";

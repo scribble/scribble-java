@@ -13,7 +13,7 @@
  */
 package org.scribble.runtime.handlers.states;
 
-import org.scribble.type.name.Role;
+import org.scribble.core.type.name.Role;
 
 abstract public class ScribInputState extends ScribState
 {

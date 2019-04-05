@@ -22,15 +22,15 @@ import org.scribble.codegen.java.ApiGen;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.job.Job;
-import org.scribble.job.JobContext2;
-import org.scribble.job.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.LProtocolName;
-import org.scribble.type.name.Role;
-import org.scribble.visit.global.Projector2;
+import org.scribble.core.job.JobContext;
+import org.scribble.core.job.ScribbleException;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.Role;
+import org.scribble.core.visit.global.Projector2;
+import org.scribble.lang.Lang;
 
 // TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
 // TODO: "functional state interfaces", e.g. for smtp ehlo and quit actions
@@ -56,7 +56,7 @@ public class StateChannelApiGenerator extends ApiGen
 
 	private Map<String, TypeBuilder> types = new HashMap<>();  // class/iface name key
 
-	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self)
+	public StateChannelApiGenerator(Lang job, GProtocolName fullname, Role self)
 			throws ScribbleException // CHECKME: APIGenerationException?
 	{
 		super(job, fullname);
@@ -64,7 +64,7 @@ public class StateChannelApiGenerator extends ApiGen
 		this.self = self;
 		this.lpn = Projector2.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext2 jobc2 = this.job2.getContext();
+		JobContext jobc2 = this.job2.getContext();
 		this.init = job.config.minEfsm 
 				? jobc2.getMinimisedEGraph(fullname, self).init
 				: jobc2.getEGraph(fullname, self).init;

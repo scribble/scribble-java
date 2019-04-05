@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.scribble.job.ScribbleException;
+import org.scribble.core.job.ScribbleException;
+import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.Role;
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
 
 public abstract class Session
 {

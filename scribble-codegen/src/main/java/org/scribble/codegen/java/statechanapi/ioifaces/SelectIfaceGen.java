@@ -17,9 +17,9 @@ import java.util.Map;
 
 import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
-import org.scribble.job.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.core.job.ScribbleException;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
 
 public class SelectIfaceGen extends IOStateIfaceGen
 {

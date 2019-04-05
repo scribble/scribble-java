@@ -21,9 +21,9 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
+import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.parser.scribble.AntlrToScribParser;
 import org.scribble.parser.scribble.AntlrToScribParserUtil;
-import org.scribble.type.kind.NonRoleParamKind;
 import org.scribble.util.ScribParserException;
 
 public class AntlrNonRoleParamDeclList

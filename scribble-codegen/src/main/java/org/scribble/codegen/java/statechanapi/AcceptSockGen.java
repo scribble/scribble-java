@@ -18,8 +18,8 @@ import java.util.List;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
 
 public class AcceptSockGen extends ScribSockGen
 {

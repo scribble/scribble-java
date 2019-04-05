@@ -16,7 +16,7 @@ package org.scribble.runtime.handlers.states;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.scribble.type.name.Op;
+import org.scribble.core.type.name.Op;
 
 abstract public class ScribState
 {

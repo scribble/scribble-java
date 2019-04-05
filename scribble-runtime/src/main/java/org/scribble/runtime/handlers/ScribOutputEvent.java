@@ -13,8 +13,8 @@
  */
 package org.scribble.runtime.handlers;
 
-import org.scribble.type.name.Op;
-import org.scribble.type.name.Role;
+import org.scribble.core.type.name.Op;
+import org.scribble.core.type.name.Role;
 
 // FIXME: make interface and add to bounds of output icallback -- cf. CBEndpointApiGenerator
 // FIXME: not serializable due to RoleKind (in Role)

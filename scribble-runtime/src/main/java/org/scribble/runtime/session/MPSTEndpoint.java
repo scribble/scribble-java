@@ -17,11 +17,11 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
+import org.scribble.core.type.name.Role;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.message.ScribMessageFormatter;
 import org.scribble.runtime.net.BinaryChannelEndpoint;
 import org.scribble.runtime.net.ScribServerSocket;
-import org.scribble.type.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 //.. initiator and joiner endpoints

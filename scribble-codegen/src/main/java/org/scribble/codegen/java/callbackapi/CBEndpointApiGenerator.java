@@ -26,37 +26,37 @@ import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
-import org.scribble.job.Job;
-import org.scribble.job.Job2;
-import org.scribble.job.JobContext2;
-import org.scribble.job.ScribbleException;
-import org.scribble.model.MState;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.EStateKind;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.PayloadElemType;
-import org.scribble.type.name.Role;
+import org.scribble.core.job.Job;
+import org.scribble.core.job.JobContext;
+import org.scribble.core.job.ScribbleException;
+import org.scribble.core.model.MState;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.EStateKind;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.Role;
+import org.scribble.lang.Lang;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
 // From ParamCoreEndpointApiGenerator
 @Deprecated
 public class CBEndpointApiGenerator
 {
-	public final Job job;
-	public final Job2 job2;
+	public final Lang job;
+	public final Job job2;
 	public final GProtocolName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
 	private final boolean subtypes;
 
-	public CBEndpointApiGenerator(Job job, GProtocolName fullname, Role self, boolean subtypes)
+	public CBEndpointApiGenerator(Lang job, GProtocolName fullname, Role self, boolean subtypes)
 	{
 		this.job = job;
 		try
 		{
-			this.job2 = job.getJob2();
+			this.job2 = job.toJob();
 		}
 		catch (ScribbleException e)  // TODO: refactor
 		{
@@ -92,7 +92,7 @@ public class CBEndpointApiGenerator
 	public Map<String, String> buildEndpointClass() throws ScribbleException
 	{
 		Module main = this.job.getContext().getMainModule();
-		JobContext2 jobc2 = this.job2.getContext();
+		JobContext jobc2 = this.job2.getContext();
 		EState init = (this.job.config.minEfsm
 				? jobc2.getMinimisedEGraph(this.proto, this.self)
 				: jobc2.getEGraph(this.proto, this.self)

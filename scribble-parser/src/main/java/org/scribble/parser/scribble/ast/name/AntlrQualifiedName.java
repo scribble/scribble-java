@@ -20,11 +20,11 @@ import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.type.kind.DataTypeKind;
-import org.scribble.type.kind.Global;
-import org.scribble.type.kind.Local;
-import org.scribble.type.kind.ModuleKind;
-import org.scribble.type.kind.SigKind;
+import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.kind.Local;
+import org.scribble.core.type.kind.ModuleKind;
+import org.scribble.core.type.kind.SigKind;
 
 public class AntlrQualifiedName
 {

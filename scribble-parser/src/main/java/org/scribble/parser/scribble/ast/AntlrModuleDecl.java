@@ -21,8 +21,8 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.parser.scribble.AntlrToScribParser;
-import org.scribble.type.kind.ModuleKind;
 
 public class AntlrModuleDecl
 {

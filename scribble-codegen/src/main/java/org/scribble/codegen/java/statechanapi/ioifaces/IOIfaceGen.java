@@ -15,7 +15,7 @@ package org.scribble.codegen.java.statechanapi.ioifaces;
 
 import org.scribble.codegen.java.statechanapi.StateChanTypeGen;
 import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
-import org.scribble.model.endpoint.EState;
+import org.scribble.core.model.endpoint.EState;
 
 public abstract class IOIfaceGen extends StateChanTypeGen
 {
