@@ -49,35 +49,35 @@ public class JobContext
 	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
 	// Protos retain original decl role list (and args)
   // Keys are full names (though GProtocol already includes full name)
-	private final Map<GProtocolName, GProtocol> intermed;
+	private final Map<GProtocolName, GProtocol> imeds;
 
 	// Protos have pruned role decls -- CHECKME: prune args?
   // Keys are full names (though GProtocol already includes full name)
 	private final Map<GProtocolName, GProtocol> inlined = new HashMap<>();
 
   // Projected from inlined; keys are full names
-	private final Map<LProtocolName, LProtocol> iprojected = new HashMap<>();
+	private final Map<LProtocolName, LProtocol> iprojs = new HashMap<>();
 	
 	// Projected from intermediates
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	// LProtocolName key is LProtocol value fullname (i.e., redundant)
-	private final Map<LProtocolName, LProtocol> projected = new HashMap<>();
+	private final Map<LProtocolName, LProtocol> projs = new HashMap<>();
 
-	private final Map<LProtocolName, EGraph> fairEGraphs = new HashMap<>();
-	private final Map<LProtocolName, EGraph> unfairEGraphs = new HashMap<>();
-	private final Map<LProtocolName, EGraph> minimisedEGraphs = new HashMap<>();  
+	private final Map<LProtocolName, EGraph> fEGraphs = new HashMap<>();
+	private final Map<LProtocolName, EGraph> uEGraphs = new HashMap<>();
+	private final Map<LProtocolName, EGraph> mEGraphs = new HashMap<>();  
 			// Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
 			// FIXME: currently only minimising "fair" graph, need to consider minimisation orthogonally to fairness -- NO: minimising (of fair) is for API gen only, unfair-transform does not use minimisation (regardless of user flag) for WF
 
-	private final Map<GProtocolName, SGraph> fairSGraphs = new HashMap<>();
-	private final Map<GProtocolName, SGraph> unfairSGraphs = new HashMap<>();
+	private final Map<GProtocolName, SGraph> fSGraphs = new HashMap<>();
+	private final Map<GProtocolName, SGraph> uSGraphs = new HashMap<>();
 	
 	protected JobContext(Job job, Map<ModuleName, ModuleContext> modcs,
 			Set<GProtocol> imeds)
 	{
 		this.job = job;
 		this.modcs = Collections.unmodifiableMap(modcs);
-		this.intermed = imeds.stream()
+		this.imeds = imeds.stream()
 				.collect(Collectors.toMap(x -> x.fullname, x -> x));
 	}
 	
@@ -94,50 +94,24 @@ public class JobContext
 	public Set<ModuleName> getParsedFullModuleNames()
 	{
 		//return Collections.unmodifiableSet(this.parsed.keySet());
-		return this.intermed.keySet().stream().map(x -> x.getPrefix())
+		return this.imeds.keySet().stream().map(x -> x.getPrefix())
 				.collect(Collectors.toSet());
 	}
 
 	public Set<ModuleName> getProjectedFullModuleNames()
 	{
-		return this.projected.keySet().stream().map(x -> x.getPrefix())
+		return this.projs.keySet().stream().map(x -> x.getPrefix())
 				.collect(Collectors.toSet());
 	}
-
-	/*public boolean hasModule(ModuleName fullname)
-	{
-		return isParsedModule(fullname) || isProjectedModule(fullname);
-	}*/
-	
-	/*private boolean isParsedModule(ModuleName fullname)
-	{
-		//return this.parsed.containsKey(fullname);
-		return this.intermed.keySet().stream()
-				.anyMatch(x -> x.getPrefix().equals(fullname));
-	}
-	
-	private boolean isProjectedModule(ModuleName fullname)
-	{
-		//return this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullname)).count() > 0;
-		return getProjectedFullModuleNames().contains(fullname);
-	}*/
-
-	// TODO rename better
-	/*public void addIntermediate(GProtocolName fullname, GProtocol g)
-	{
-		this.intermed.put(fullname, g);
-	}*/
 	
 	public GProtocol getIntermediate(GProtocolName fullname)
 	{
-		return this.intermed.get(fullname);
+		return this.imeds.get(fullname);
 	}
 
-	//public Map<GProtocolName, GProtocol> getIntermediates()
 	public Collection<GProtocol> getIntermediates()
 	{
-		//return Collections.unmodifiableMap(this.intermed);
-		return this.intermed.values().stream().collect(Collectors.toSet());
+		return this.imeds.values().stream().collect(Collectors.toSet());
 	}
 	
 	public void addInlined(GProtocolName fullname, GProtocol g)
@@ -157,11 +131,10 @@ public class JobContext
 	
 	public void addInlinedProjection(LProtocolName fullname, LProtocol l)
 	{
-		this.iprojected.put(fullname, l);
+		this.iprojs.put(fullname, l);
 	}
 	
-  // "Projected from inlined"
-	// FIXME TODO: refactor getProjected and getProjection properly
+  // Projected from inlined
 	public LProtocol getInlinedProjection(GProtocolName fullname, Role self)
 	{
 		LProtocolName p = Projector2.projectFullProtocolName(fullname, self);
@@ -170,51 +143,21 @@ public class JobContext
 
 	public LProtocol getInlinedProjection(LProtocolName fullname)
 	{
-		return this.iprojected.get(fullname);
+		return this.iprojs.get(fullname);
 	}
 	
 	public Map<LProtocolName, LProtocol> getInlinedProjections()
 	{
-		return Collections.unmodifiableMap(this.iprojected);
+		return Collections.unmodifiableMap(this.iprojs);
 	}
 	
-	// Make context immutable? (will need to assign updated context back to Job) -- will also need to do for Module replacing
-	public void addProjections(Map<GProtocolName, //Map<Role, Module>> projections)
-				Map<Role, LProtocol>> projs)
-	{
-		for (GProtocolName g : projs.keySet())
-		{
-			Map<Role, LProtocol> mods = projs.get(g);
-			for (Role role : mods.keySet())
-			{
-				addProjection(mods.get(role));
-			}
-		}
-
-		/*// Doesn't work for external subprotocols now that Projector doesn't record Module-specific dependencies itself
-		try
-		{
-			ContextBuilder builder = new ContextBuilder(this.job);
-			for (ProtocolName lpn : this.projections.keySet())
-			{
-				Module mod = this.projections.get(lpn);
-				mod = (Module) mod.accept(builder);
-				replaceModule(mod);
-			}
-		}
-		catch (ScribbleException e)
-		{
-			throw new RuntimeException("Shouldn't get in here: " + e);
-		}*/
-	}
-
-	//private void addProjection(Module mod)
+	// Projected from intermediate
 	public void addProjection(LProtocol p)
 	{
 		/*LProtocolName lpn = (LProtocolName) mod.getProtoDeclChildren().get(0)
 				.getFullMemberName(mod);
 		this.projected.put(lpn, mod);*/
-		this.projected.put(p.fullname, p);
+		this.projs.put(p.fullname, p);
 	}
 	
 	public //Module 
@@ -237,12 +180,12 @@ public class JobContext
 					// E.g. disamb/enabling error before projection passes (e.g. CommandLine -fsm arg)
 					//CHECKME: should not occur any more?
 		}*/
-		return this.projected.get(fullname);
+		return this.projs.get(fullname);
 	}
 	
 	protected void addEGraph(LProtocolName fullname, EGraph graph)
 	{
-		this.fairEGraphs.put(fullname, graph);
+		this.fEGraphs.put(fullname, graph);
 	}
 	
 	// N.B. graphs built from inlined (not unfolded)
@@ -251,7 +194,7 @@ public class JobContext
 	{
 		LProtocolName fulllpn = Projector2.projectFullProtocolName(fullname, role);
 		// Moved form LProtocolDecl
-		EGraph graph = this.fairEGraphs.get(fulllpn);
+		EGraph graph = this.fEGraphs.get(fulllpn);
 		if (graph == null)
 		{
 			/*Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
@@ -266,14 +209,14 @@ public class JobContext
 	
 	protected void addUnfairEGraph(LProtocolName fullname, EGraph graph)
 	{
-		this.unfairEGraphs.put(fullname, graph);
+		this.uEGraphs.put(fullname, graph);
 	}
 	
 	public EGraph getUnfairEGraph(GProtocolName fullname, Role role) throws ScribException
 	{
 		LProtocolName fulllpn = Projector2.projectFullProtocolName(fullname, role);
 
-		EGraph unfair = this.unfairEGraphs.get(fulllpn);
+		EGraph unfair = this.uEGraphs.get(fulllpn);
 		if (unfair == null)
 		{
 			unfair = getEGraph(fullname, role).init.unfairTransform(this.job.config.ef).toGraph();
@@ -284,12 +227,12 @@ public class JobContext
 
 	protected void addSGraph(GProtocolName fullname, SGraph graph)
 	{
-		this.fairSGraphs.put(fullname, graph);
+		this.fSGraphs.put(fullname, graph);
 	}
 	
 	public SGraph getSGraph(GProtocolName fullname) throws ScribException
 	{
-		SGraph graph = this.fairSGraphs.get(fullname);
+		SGraph graph = this.fSGraphs.get(fullname);
 		if (graph == null)
 		{
 			/*GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
@@ -298,7 +241,7 @@ public class JobContext
 					getEGraphsForSGraphBuilding(fullname, //gpd,
 							true);
 			boolean explicit = //gpd.isExplicit();
-					this.intermed.get(fullname).isExplicit();
+					this.imeds.get(fullname).isExplicit();
 					//graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
 			graph = this.job.buildSGraph(fullname, egraphs, explicit);
 			addSGraph(fullname, graph);
@@ -312,7 +255,7 @@ public class JobContext
 	{
 		Map<Role, EGraph> egraphs = new HashMap<>();
 		//for (Role self : gpd.getHeaderChild().getRoleDeclListChild().getRoles())
-		for (Role self : this.intermed.get(fullname).roles)
+		for (Role self : this.imeds.get(fullname).roles)
 		{
 			egraphs.put(self, fair 
 					? getEGraph(fullname, self) 
@@ -323,12 +266,12 @@ public class JobContext
 
 	protected void addUnfairSGraph(GProtocolName fullname, SGraph graph)
 	{
-		this.unfairSGraphs.put(fullname, graph);
+		this.uSGraphs.put(fullname, graph);
 	}
 
 	public SGraph getUnfairSGraph(GProtocolName fullname) throws ScribException
 	{
-		SGraph graph = this.unfairSGraphs.get(fullname);
+		SGraph graph = this.uSGraphs.get(fullname);
 		if (graph == null)
 		{
 			/*GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
@@ -336,7 +279,7 @@ public class JobContext
 			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, //gpd, 
 					false);
 			boolean explicit = //gpd.isExplicit();
-					this.intermed.get(fullname).isExplicit();
+					this.imeds.get(fullname).isExplicit();
 			//graph = SGraph.buildSGraph(this.job, fullname, this.job.createInitialSConfig(job, egraphs, explicit));
 			graph = this.job.buildSGraph(fullname, egraphs, explicit);
 			addUnfairSGraph(fullname, graph);
@@ -346,7 +289,7 @@ public class JobContext
 	
 	protected void addMinimisedEGraph(LProtocolName fullname, EGraph graph)
 	{
-		this.minimisedEGraphs.put(fullname, graph);
+		this.mEGraphs.put(fullname, graph);
 	}
 	
 	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role)
@@ -354,7 +297,7 @@ public class JobContext
 	{
 		LProtocolName fulllpn = Projector2.projectFullProtocolName(fullname, role);
 
-		EGraph minimised = this.minimisedEGraphs.get(fulllpn);
+		EGraph minimised = this.mEGraphs.get(fulllpn);
 		if (minimised == null)
 		{
 			String aut = runAut(getEGraph(fullname, role).init.toAut(),
