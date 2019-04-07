@@ -15,24 +15,19 @@ package org.scribble.lang;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.core.job.Job;
-import org.scribble.core.job.JobConfig;
 import org.scribble.core.job.JobArgs;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.global.GProtocol;
-import org.scribble.core.model.endpoint.EModelFactoryImpl;
-import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.lang.context.ModuleContextCollector;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.GTypeTranslator;
@@ -45,57 +40,31 @@ public class Lang
 	public final LangConfig config;  // Immutable
 
 	private final LangContext context;  // Mutable: Visitor passes update modules
-
-	// Used by, e.g., SimpleAstVisitor (cf. getModuleContext)
-	// Keys are full names
-	// Currently assuming ModuleContexts are constant, and considering parsed Modules only (i.e., not generated) -- CHECKME
-	private final Map<ModuleName, ModuleContext> modcs;  
-			// CHECKME: constant?  depends on adding projections?
-			// CHECKME: move to Config/Context?
 	
 	private Job job;
 
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Lang(Map<ModuleName, Module> parsed, Map<JobArgs, Boolean> args,
-			ModuleName mainFullname) throws ScribException
+	public Lang(ModuleName mainFullname, Map<JobArgs, Boolean> args,
+			Map<ModuleName, Module> parsed) throws ScribException
 	{
 		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
 		// FIXME: wrap flags in Map and move Config construction to Lang
 		this.config = newLangConfig(mainFullname, args);
 		this.context = newLangContext(this, parsed);  // Single instance per Lang, should not be shared between Langs
-		this.modcs = Collections.unmodifiableMap(buildModuleContexts(parsed));
-	}
-
-	// Currently assuming ModuleContexts are constant, and considering parsed Modules only (i.e., not generated) -- CHECKME
-	protected Map<ModuleName, ModuleContext> buildModuleContexts(
-			Map<ModuleName, Module> parsed) throws ScribException
-	{
-		// CHECKME: how does this relate to the ModuleContextBuilder pass?
-		// Job.modcs seems unused?  Lang.modcs is used though, by old AST visitors -- basically old ModuleContextVisitor is redundant?
-		// Job.modcs could be used, but disamb already done by Lang
-		// Lang/Job modcs should be moved to config/context though
-		ModuleContextCollector b = new ModuleContextCollector();  // FIXME: rename Builder
-		Map<ModuleName, ModuleContext> modcs = new HashMap<>();
-		for (ModuleName fullname : parsed.keySet())
-		{
-			modcs.put(fullname, b.build(parsed, parsed.get(fullname)));  
-					// Throws ScribException
-		}
-		return modcs;
 	}
 
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
 	protected LangConfig newLangConfig(ModuleName mainFullname,
 			Map<JobArgs, Boolean> args)
 	{
-		return new LangConfig(mainFullname, args, new AstFactoryImpl(),
-				new EModelFactoryImpl(), new SModelFactoryImpl());
-				// CHECKME: combine E/SModelFactory?
+		AstFactory af = new AstFactoryImpl();
+		return new LangConfig(mainFullname, args, af);
 	}
 
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
-	protected LangContext newLangContext(Lang lang, Map<ModuleName, Module> parsed)
+	protected LangContext newLangContext(Lang lang,
+			Map<ModuleName, Module> parsed) throws ScribException
 	{
 		return new LangContext(this, parsed);
 	}
@@ -107,19 +76,15 @@ public class Lang
 	}
 	
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
-	protected Job newJob(Map<ModuleName, ModuleContext> modcs,
-			Set<GProtocol> imeds, JobConfig config)
-	
-	//...FIXME: move JobConfig construction inside Job (cf. LangConfig construction inside Lang)
-	//.. move (currently constant) modcs to config
-	
+	protected Job newJob(ModuleName mainFullname, Map<JobArgs, Boolean> args,
+			Map<ModuleName, ModuleContext> modcs, Set<GProtocol> imeds)
 	{
-		return new Job(imeds, modcs, config);
+		return new Job(mainFullname, args, modcs, imeds);
 	}
 	
 	// First run Visitor passes, then call toJob
 	// Base implementation: name disamb pass only
-	public void runVisitors() throws ScribException
+	public void runPasses() throws ScribException
 	{
 		// CHECKME: in the end, should these also be refactored into core?  (instead of AST visiting)
 		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
@@ -146,7 +111,8 @@ public class Lang
 							"\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
 				}
 			}
-			this.job = newJob(this.modcs, imeds, this.config.toJobConfig());
+			this.job = newJob(this.config.main, this.config.args,
+					this.context.getModuleContexts(), imeds);
 		}
 		return this.job;
 	}
@@ -154,11 +120,6 @@ public class Lang
 	public LangContext getContext()
 	{
 		return this.context;
-	}
-	
-	public ModuleContext getModuleContext(ModuleName fullname)
-	{
-		return this.modcs.get(fullname);
 	}
 
 	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c)

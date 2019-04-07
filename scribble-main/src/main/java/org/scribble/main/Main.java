@@ -118,7 +118,7 @@ public class Main
 	protected Lang newLang(Map<ModuleName, Module> parsed,
 			Map<JobArgs, Boolean> args, ModuleName mainFullname) throws ScribException
 	{
-		return new Lang(parsed, args, mainFullname);
+		return new Lang(mainFullname, args, parsed);
 	}
 	
 	// Pre: main Module loaded by this.loader

@@ -27,8 +27,11 @@ import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil;
+import org.scribble.core.model.endpoint.EModelFactory;
+import org.scribble.core.model.endpoint.EModelFactoryImpl;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.model.global.SGraphBuilderUtil;
+import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
@@ -49,25 +52,44 @@ import org.scribble.util.ScribException;
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job
 {
-	// Keys are full names
-	private final Map<ModuleName, ModuleContext> modcs;  // CHECKME: constant?  move to JobConfig?
-
 	public final JobConfig config;  // Immutable
 
 	private final JobContext context;  // Mutable (Visitor passes replace modules)
-	private final SGraphBuilderUtil sgbu;
+	private final SGraphBuilderUtil sgraphb;
 	
-	// Just take MainContext as arg? -- would need to fix Maven dependencies
-	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Job(Set<GProtocol> imeds,//Map<ModuleName, Module> parsed,
-			Map<ModuleName, ModuleContext> modcs, JobConfig config)
+	public Job(ModuleName mainFullname, Map<JobArgs, Boolean> args,
+			Map<ModuleName, ModuleContext> modcs, Set<GProtocol> imeds)
 	{
-		this.modcs = Collections.unmodifiableMap(modcs);
-		this.config = config;
-		this.sgbu = config.sf.newSGraphBuilderUtil();
-		this.context = new JobContext(this, imeds);  // Single instance per Job and should never be shared
+		this.config = newJobConfig(mainFullname, args);
+		this.context = newJobContext(modcs, imeds);  // Single instance per Job and should never be shared
+		this.sgraphb = newSGraphBuilderUtil();
+	}
+
+	// A Scribble extension should override newJobConfig/Context/etc as appropriate
+	protected JobConfig newJobConfig(ModuleName mainFullname,
+			Map<JobArgs, Boolean> args)
+	{
+		EModelFactory ef = new EModelFactoryImpl();
+		SModelFactoryImpl sf = new SModelFactoryImpl();
+		return new JobConfig(mainFullname, args, ef, sf); 
+				// CHECKME: combine E/SModelFactory?
+	}
+
+	// A Scribble extension should override newJobConfig/Context/etc as appropriate
+	protected JobContext newJobContext(Map<ModuleName, ModuleContext> modcs,
+			Set<GProtocol> imeds)
+	{
+		return new JobContext(this, modcs, imeds);
 	}
 	
+	// A Scribble extension should override newJobConfig/Context/etc as appropriate
+	public SGraphBuilderUtil newSGraphBuilderUtil()
+	{
+		return this.config.sf.newSGraphBuilderUtil();
+	}
+
+	// A Scribble extension should override newJobConfig/Context/etc as appropriate
+	// CHECKME: not reusable?  fix?
 	// Scribble extensions should override these "new" methods
 	// CHECKME: move to MainContext::newJob?
 	public EGraphBuilderUtil newEGraphBuilderUtil()
@@ -87,7 +109,7 @@ public class Job
 					+ r + ":\n" + egraphs.get(r).init.toDot());
 		}
 		//return SGraph.buildSGraph(this, fullname, createInitialSConfig(this, egraphs, explicit));
-		return this.sgbu.buildSGraph(this, fullname, egraphs, explicit);  // FIXME: factor out util
+		return this.sgraphb.buildSGraph(this, fullname, egraphs, explicit);  // FIXME: factor out util
 	}
 
 	public void checkWellFormedness() throws ScribException
@@ -354,11 +376,6 @@ public class Job
 	public JobContext getContext()
 	{
 		return this.context;
-	}
-	
-	public ModuleContext getModuleContext(ModuleName fullname)
-	{
-		return this.modcs.get(fullname);
 	}
 	
 	public boolean isDebug()

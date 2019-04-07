@@ -39,6 +39,6 @@ public abstract class SimpleAstVisitor<T>
 	
 	public ModuleContext getModuleContext()
 	{
-		return this.lang.getModuleContext(this.root);
+		return this.lang.getContext().getModuleContext(this.root);
 	}
 }

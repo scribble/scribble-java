@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.AutParser;
@@ -32,8 +33,8 @@ import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.global.Projector2;
-import org.scribble.util.ScribUtil;
 import org.scribble.util.ScribException;
+import org.scribble.util.ScribUtil;
 
 // Global "static" context information for a Job -- single instance per Job, should not be shared between Jobs
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
@@ -41,48 +42,41 @@ public class JobContext
 {
 	public final Job job;
 
-	//public final ModuleName main;  // The "main" root module from MainContext
+	// Keys are full names
+	// CHECKME: not currently used by core? -- core fully independent of modules, etc., because full disamb already done?
+	private final Map<ModuleName, ModuleContext> modcs;
+
+	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
+	// Protos retain original decl role list (and args)
+  // Keys are full names (though GProtocol already includes full name)
+	private final Map<GProtocolName, GProtocol> intermed;
+
+	// Protos have pruned role decls -- CHECKME: prune args?
+  // Keys are full names (though GProtocol already includes full name)
+	private final Map<GProtocolName, GProtocol> inlined = new HashMap<>();
+
+  // Projected from inlined; keys are full names
+	private final Map<LProtocolName, LProtocol> iprojected = new HashMap<>();
 	
-	// Modules that were originally parsed (obtained from MainContext), but may be modified during the Job
-	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
-	// CHECKME: separate original parsed from "working set"?
-	//private final Map<ModuleName, Module> parsed;// = new HashMap<>();
-	
-	//...HERE: delete parsed, take intermeds in constructor
-	
-	// Projected (i.e., created) modules -- no: LProtocol
+	// Projected from intermediates
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	// LProtocolName key is LProtocol value fullname (i.e., redundant)
-	private final //Map<LProtocolName, Module> 
-			Map<LProtocolName, LProtocol>
-			projected = new HashMap<>();
-	
-	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
-	// Has original decl role list (and args)
-	private final Map<GProtocolName, GProtocol> intermed;// = new HashMap<>();  // Keys are full names (though GProtocol already includes full name)
-
-	private final Map<LProtocolName, LProtocol> iprojected = new HashMap<>();  // From intermediates; keys are full names
-
-	// Has pruned role decls -- CHECKME: prune args?
-	// CHECKME: "global WF" only?
-	private final Map<GProtocolName, GProtocol> inlined = new HashMap<>();   // Keys are full names (though GProtocol already includes full name)
+	private final Map<LProtocolName, LProtocol> projected = new HashMap<>();
 
 	private final Map<LProtocolName, EGraph> fairEGraphs = new HashMap<>();
-	private final Map<GProtocolName, SGraph> fairSGraphs = new HashMap<>();
-	
 	private final Map<LProtocolName, EGraph> unfairEGraphs = new HashMap<>();
+	private final Map<LProtocolName, EGraph> minimisedEGraphs = new HashMap<>();  
+			// Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
+			// FIXME: currently only minimising "fair" graph, need to consider minimisation orthogonally to fairness -- NO: minimising (of fair) is for API gen only, unfair-transform does not use minimisation (regardless of user flag) for WF
+
+	private final Map<GProtocolName, SGraph> fairSGraphs = new HashMap<>();
 	private final Map<GProtocolName, SGraph> unfairSGraphs = new HashMap<>();
 	
-	private final Map<LProtocolName, EGraph> minimisedEGraphs = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
-			// FIXME: currently only minimising "fair" graph, need to consider minimisation orthogonally to fairness -- NO: minimising (of fair) is for API gen only, unfair-transform does not use minimisation (regardless of user flag) for WF
-	
-	protected JobContext(Job job, //Map<ModuleName, Module> parsed)//, ModuleName main)
+	protected JobContext(Job job, Map<ModuleName, ModuleContext> modcs,
 			Set<GProtocol> imeds)
 	{
 		this.job = job;
-
-		//this.parsed = new HashMap<ModuleName, Module>(parsed);
-		//this.main = main;
+		this.modcs = Collections.unmodifiableMap(modcs);
 		this.intermed = imeds.stream()
 				.collect(Collectors.toMap(x -> x.fullname, x -> x));
 	}
@@ -370,7 +364,13 @@ public class JobContext
 		}
 		return minimised;
 	}
+	
+	public ModuleContext getModuleContext(ModuleName fullname)
+	{
+		return this.modcs.get(fullname);
+	}
 
+	// TODO: relocate
 	// Duplicated from CommandLine.runDot
 	// Minimises the FSM up to bisimulation
 	// N.B. ltsconvert will typically re-number the states

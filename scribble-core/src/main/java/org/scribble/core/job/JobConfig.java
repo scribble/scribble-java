@@ -13,6 +13,7 @@
  */
 package org.scribble.core.job;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.scribble.core.model.endpoint.EModelFactory;
@@ -35,9 +36,7 @@ public class JobConfig
 			EModelFactory ef, SModelFactory sf)
 	{
 		this.main = main;
-
-		this.args = args;
-		
+		this.args = Collections.unmodifiableMap(args);
 		this.ef = ef;
 		this.sf = sf;
 	}

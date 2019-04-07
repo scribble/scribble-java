@@ -17,10 +17,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.scribble.ast.AstFactory;
-import org.scribble.core.job.JobConfig;
 import org.scribble.core.job.JobArgs;
 import org.scribble.core.model.endpoint.EModelFactory;
-import org.scribble.core.model.global.SModelFactory;
 import org.scribble.core.type.name.ModuleName;
 
 // The "static" (constant) info for Lang -- cf. LangContext "dynamic" state
@@ -32,23 +30,15 @@ public class LangConfig
 			// CHECKME: verbose/debug printing parameter?
 
 	public final AstFactory af;
-	public final EModelFactory ef;
-	public final SModelFactory sf;
+	
+	public final EModelFactory ef = null;  // FIXME: remove -- still referred to by old AST dels
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
-	public LangConfig(ModuleName mainFullname, 
-			Map<JobArgs, Boolean> args,
-			AstFactory af, EModelFactory ef, SModelFactory sf)
+	public LangConfig(ModuleName mainFullname, Map<JobArgs, Boolean> args,
+			AstFactory af)
 	{
 		this.main = mainFullname;
 		this.args = Collections.unmodifiableMap(args);
 		this.af = af;
-		this.ef = ef;
-		this.sf = sf;
-	}
-	
-	public JobConfig toJobConfig()
-	{
-		return new JobConfig(this.main, this.args, this.ef, this.sf);
 	}
 }
