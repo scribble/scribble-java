@@ -61,7 +61,7 @@ public class ModuleDel extends ScribDelBase
 	{
 		builder.setModuleContext(
 				//new ModuleContext(builder.job.getContext().getParsed(), (Module) child)
-				builder.maker.make(builder.lang.getContext().getParsed(), (Module) child)
+				builder.maker.build(builder.lang.getContext().getParsed(), (Module) child)
 				);
 				// ModuleContext building is done solely by "new ModuleContext" (no deeper visiting needed)
 				// The only thing ModuleContextBuilder really does is to set the ModuleContext in ModuleDel

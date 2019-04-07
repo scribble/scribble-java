@@ -25,11 +25,11 @@ import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.del.ChoiceDel;
-import org.scribble.lang.LangArgs;
 import org.scribble.util.RuntimeScribException;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
@@ -100,7 +100,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		List<WFChoiceEnv> all =
 				cho.getBlockChildren().stream().map(b -> (WFChoiceEnv) b.del().env())
 						.collect(Collectors.toList());
-		if (checker.lang.config.args.get(LangArgs.useOldWf))  // ****
+		if (checker.lang.config.args.get(JobArgs.useOldWf))  // ****
 		{
 			if (all.size() > 1)
 			{

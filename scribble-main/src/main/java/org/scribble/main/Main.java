@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.lang.Lang;
-import org.scribble.lang.LangArgs;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.loader.ScribModuleLoader;
 import org.scribble.main.resource.locator.ResourceLocator;
@@ -50,7 +50,7 @@ import org.scribble.util.ScribParserException;
 public class Main
 {
 	public final ModuleName main;
-	public final Map<LangArgs, Boolean> args;
+	public final Map<JobArgs, Boolean> args;
 
 	//private final ResourceLocator locator;  // Path -> Resource
 	private final ScribModuleLoader loader;  // ModuleName -> Pair<Resource, Module>
@@ -64,13 +64,13 @@ public class Main
 	// Load other modules via locator -- CHECKME: a bit inconsistent w.r.t. main?
 	// TODO: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
 	public Main(ResourceLocator locator, Path mainpath,
-			Map<LangArgs, Boolean> args) throws ScribException, ScribParserException
+			Map<JobArgs, Boolean> args) throws ScribException, ScribParserException
 	{
 		this(new Pair<>(locator, null), mainpath, args);
 	}
 
 	// Load an inline module arg -- module imports not allowed (currently no ResourceLocator)
-	public Main(String inline, Map<LangArgs, Boolean> args)
+	public Main(String inline, Map<JobArgs, Boolean> args)
 			throws ScribException, ScribParserException
 	{
 		this(new Pair<>(null, inline), null, args);
@@ -79,7 +79,7 @@ public class Main
 	// Pre: hack.left == null xor hack.right == null
 	// Hack to "unify" the constructors (to satisfy final field init more conveniently)
 	private Main(Pair<ResourceLocator, String> hack, Path mainpath,
-			Map<LangArgs, Boolean> args) throws ScribException, ScribParserException
+			Map<JobArgs, Boolean> args) throws ScribException, ScribParserException
 	{
 		// Set this.loader and load main
 		Pair<Resource, Module> main;
@@ -116,7 +116,7 @@ public class Main
 
 	// A Scribble extension should override newAntlr/Lang as appropriate
 	protected Lang newLang(Map<ModuleName, Module> parsed,
-			Map<LangArgs, Boolean> args, ModuleName mainFullname) throws ScribException
+			Map<JobArgs, Boolean> args, ModuleName mainFullname) throws ScribException
 	{
 		return new Lang(parsed, args, mainFullname);
 	}

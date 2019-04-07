@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.scribble.core.job.Job;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.model.GraphBuilderUtil;
 import org.scribble.core.model.endpoint.EFSM;
 import org.scribble.core.model.endpoint.EGraph;
@@ -90,7 +91,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 			i.remove();
 			seen.put(curr.id, curr);
 
-			if (job.config.debug)
+			if (job.config.args.get(JobArgs.debug))
 			{
 				count++;
 				if (count % 50 == 0)

@@ -21,9 +21,9 @@ import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.lang.Lang;
-import org.scribble.lang.LangArgs;
 import org.scribble.util.ScribException;
 import org.scribble.visit.UnfoldingVisitor;
 import org.scribble.visit.wf.env.WFChoiceEnv;
@@ -64,7 +64,7 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 			}
 		}
 
-		if (this.lang.config.args.get(LangArgs.useOldWf))
+		if (this.lang.config.args.get(JobArgs.useOldWf))
 		{
 			if (child instanceof Choice<?>)  // Only needed for old WF (for distinct enabling message checking)  // FIXME: maybe move connectedness checking to a separate pass, i.e. vanilla UnfoldingVisitor (if retained as syntactic check)
 			{

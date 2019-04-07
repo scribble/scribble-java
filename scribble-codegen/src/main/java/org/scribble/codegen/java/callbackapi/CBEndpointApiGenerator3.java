@@ -33,6 +33,7 @@ import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.job.Job;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.job.JobContext;
 import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EState;
@@ -108,7 +109,7 @@ public class CBEndpointApiGenerator3
 		Map<String, String> res = new HashMap<>();
 
 		JobContext jobc2 = this.job.getContext();
-		EState init = (this.job.config.minEfsm
+		EState init = (this.job.config.args.get(JobArgs.minEfsm)
 				? jobc2.getMinimisedEGraph(this.proto, this.self)
 				: jobc2.getEGraph(this.proto, this.self)
 				).init;

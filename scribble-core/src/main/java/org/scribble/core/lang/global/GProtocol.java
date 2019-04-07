@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.job.Job;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.job.JobContext;
 import org.scribble.core.lang.Protocol;
 import org.scribble.core.lang.ProtocolMod;
@@ -50,8 +51,8 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.global.Projector2;
-import org.scribble.util.ScribUtil;
 import org.scribble.util.ScribException;
+import org.scribble.util.ScribUtil;
 
 public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		implements GNode  // Mainly for GDel.translate return (to include GProtocol)
@@ -255,7 +256,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		{
 			pml += "\n\n" + jobc2.getEGraph(fullname, r).toPml(r);
 		}
-		if (job2.config.debug)
+		if (job2.config.args.get(JobArgs.debug))
 		{
 			System.out.println("[-spin]: Promela processes\n" + pml + "\n");
 		}
@@ -313,7 +314,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 			int j = (i+batchSize < clauses.size()) ? i+batchSize : clauses.size();
 			String batch = clauses.subList(i, j).stream().collect(Collectors.joining(" && "));
 			String ltl = "ltl {\n" + batch + "\n" + "}";
-			if (job2.config.debug)
+			if (job2.config.args.get(JobArgs.debug))
 			{
 				System.out.println("[-spin] Batched ltl:\n" + ltl + "\n");
 			}

@@ -13,6 +13,8 @@
  */
 package org.scribble.core.job;
 
+import java.util.Map;
+
 import org.scribble.core.model.endpoint.EModelFactory;
 import org.scribble.core.model.global.SModelFactory;
 import org.scribble.core.type.name.ModuleName;
@@ -23,37 +25,18 @@ public class JobConfig
 	public final ModuleName main;  // Full name
 	// CHECKME: verbose/debug printing parameter?
 
-	public final boolean debug;
-	public final boolean useOldWf;
-	public final boolean noProgress;  // TODO: deprecate
-	public final boolean minEfsm;  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
-	public final boolean fair;
-	public final boolean noLocalChoiceSubjectCheck;
-	public final boolean noAcceptCorrelationCheck;  // Currently unused
-	public final boolean noValidation;
-	public final boolean spin;
+	public final Map<JobArgs, Boolean> args;
 
 	public final EModelFactory ef;
 	public final SModelFactory sf;
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
-	public JobConfig(ModuleName main, boolean debug, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck,
-			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin,
+	public JobConfig(ModuleName main, Map<JobArgs, Boolean> args,
 			EModelFactory ef, SModelFactory sf)
 	{
 		this.main = main;
 
-		//this.jUnit = jUnit;
-		this.debug = debug;
-		this.useOldWf = useOldWF;
-		this.noProgress = noLiveness;
-		this.minEfsm = minEfsm;
-		this.fair = fair;
-		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
-		this.noAcceptCorrelationCheck = noAcceptCorrelationCheck;
-		this.noValidation = noValidation;
-		this.spin = spin;
+		this.args = args;
 		
 		this.ef = ef;
 		this.sf = sf;

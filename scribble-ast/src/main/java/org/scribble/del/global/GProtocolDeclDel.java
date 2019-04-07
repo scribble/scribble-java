@@ -31,6 +31,7 @@ import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
@@ -176,9 +177,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		}
 
 		GProtocolName fullname = gpd.getFullMemberName((Module) parent);
-		if (checker.job.config.spin)
+		if (checker.job.config.args.get(JobArgs.spin))
 		{
-			if (checker.job.config.fair)
+			if (checker.job.config.args.get(JobArgs.fair))
 			{
 				throw new RuntimeException(
 						"[TODO]: -spin currently does not support fair ouput choices.");
@@ -188,7 +189,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		else
 		{
 			GProtocol.validateByScribble(checker.job, fullname, true);
-			if (!checker.job.config.fair)
+			if (!checker.job.config.args.get(JobArgs.fair))
 			{
 				checker.lang.debugPrintln(
 						"(" + fullname + ") Validating with \"unfair\" output choices.. ");

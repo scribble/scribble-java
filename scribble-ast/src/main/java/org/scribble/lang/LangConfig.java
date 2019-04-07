@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.core.job.JobConfig;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.model.endpoint.EModelFactory;
 import org.scribble.core.model.global.SModelFactory;
 import org.scribble.core.type.name.ModuleName;
@@ -27,7 +28,7 @@ public class LangConfig
 {
 	public final ModuleName main;  // Full name
 
-	public final Map<LangArgs, Boolean> args;
+	public final Map<JobArgs, Boolean> args;
 			// CHECKME: verbose/debug printing parameter?
 
 	public final AstFactory af;
@@ -36,7 +37,7 @@ public class LangConfig
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
 	public LangConfig(ModuleName mainFullname, 
-			Map<LangArgs, Boolean> args,
+			Map<JobArgs, Boolean> args,
 			AstFactory af, EModelFactory ef, SModelFactory sf)
 	{
 		this.main = mainFullname;
@@ -48,12 +49,6 @@ public class LangConfig
 	
 	public JobConfig toJobConfig()
 	{
-		return new JobConfig(this.main,
-				args.get(LangArgs.debug), args.get(LangArgs.useOldWf),
-				args.get(LangArgs.noProgress), args.get(LangArgs.minEfsm),
-				args.get(LangArgs.fair), args.get(LangArgs.noLocalChoiceSubjectCheck),
-				args.get(LangArgs.noAcceptCorrelationCheck),
-				args.get(LangArgs.noValidation), args.get(LangArgs.spin),
-				this.ef, this.sf);
+		return new JobConfig(this.main, this.args, this.ef, this.sf);
 	}
 }

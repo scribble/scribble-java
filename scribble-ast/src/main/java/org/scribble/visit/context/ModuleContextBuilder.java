@@ -16,14 +16,14 @@ package org.scribble.visit.context;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.lang.Lang;
-import org.scribble.lang.context.ModuleContextMaker;
+import org.scribble.lang.context.ModuleContextCollector;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
 public class ModuleContextBuilder extends AstVisitor
 {
-	public final ModuleContextMaker maker = new ModuleContextMaker();  // TODO: HACK, refactor
+	public final ModuleContextCollector maker = new ModuleContextCollector();  // TODO: HACK, refactor
 
 	private ModuleContext mcontext;  // The "root" Module context (not the "main" module)
 	

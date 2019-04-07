@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.job.Job;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.model.endpoint.EFSM;
 import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.model.global.actions.SAction;
@@ -47,7 +48,7 @@ public class SModel
 		int count = 0;
 		for (SState s : states.values())
 		{
-			if (job.config.debug)
+			if (job.config.args.get(JobArgs.debug))
 			{
 				count++;
 				if (count % 50 == 0)
@@ -71,7 +72,7 @@ public class SModel
 		job.debugPrintln("(" + this.graph.proto + ") Checked all states: " + count);  // May include unsafe states
 		//*/
 		
-		if (!job.config.noProgress)
+		if (!job.config.args.get(JobArgs.noProgress))
 		{
 			//job.debugPrintln("(" + this.graph.proto + ") Checking progress: ");  // Incompatible with current errorMsg approach*/
 
@@ -141,7 +142,7 @@ public class SModel
 	protected String termSetToString(Job job, Set<Integer> termset,
 			Map<Integer, SState> all)
 	{
-		return job.config.debug
+		return job.config.args.get(JobArgs.debug)
 				? termset.stream().map((i) -> all.get(i).toString())
 						.collect(Collectors.joining(","))
 				: termset.stream().map((i) -> new Integer(all.get(i).id).toString())

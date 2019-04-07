@@ -31,6 +31,7 @@ import org.scribble.codegen.java.JEndpointApiGenerator;
 import org.scribble.codegen.java.callbackapi.CBEndpointApiGenerator3;
 import org.scribble.core.job.Job;
 import org.scribble.core.job.JobContext;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.global.SGraph;
@@ -38,7 +39,6 @@ import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
-import org.scribble.lang.LangArgs;
 import org.scribble.lang.LangContext;
 import org.scribble.main.Main;
 import org.scribble.main.resource.locator.DirectoryResourceLocator;
@@ -88,16 +88,16 @@ public class CommandLine
 		boolean spin = this.args.containsKey(CLArgFlag.SPIN);
 		
 		// FIXME: refactor into arg parsing
-		Map<LangArgs, Boolean> args = new HashMap<>();
-		args.put(LangArgs.debug, debug);
-		args.put(LangArgs.useOldWf, useOldWf);
-		args.put(LangArgs.noProgress, noProgress);
-		args.put(LangArgs.minEfsm, minEfsm);
-		args.put(LangArgs.fair, fair);
-		args.put(LangArgs.noLocalChoiceSubjectCheck, noLocalChoiceSubjectCheck);
-		args.put(LangArgs.noAcceptCorrelationCheck, noAcceptCorrelationCheck);
-		args.put(LangArgs.noValidation, noValidation);
-		args.put(LangArgs.spin, spin);
+		Map<JobArgs, Boolean> args = new HashMap<>();
+		args.put(JobArgs.debug, debug);
+		args.put(JobArgs.useOldWf, useOldWf);
+		args.put(JobArgs.noProgress, noProgress);
+		args.put(JobArgs.minEfsm, minEfsm);
+		args.put(JobArgs.fair, fair);
+		args.put(JobArgs.noLocalChoiceSubjectCheck, noLocalChoiceSubjectCheck);
+		args.put(JobArgs.noAcceptCorrelationCheck, noAcceptCorrelationCheck);
+		args.put(JobArgs.noValidation, noValidation);
+		args.put(JobArgs.spin, spin);
 		args = Collections.unmodifiableMap(args);
 
 		List<Path> impaths = this.args.containsKey(CLArgFlag.IMPORT_PATH)
@@ -211,7 +211,7 @@ public class CommandLine
 		// Base Scribble
 		else*/
 		{
-			lang.runDisambPasses();  // TODO: refactor, w.r.t. below
+			lang.runVisitors();  // TODO: refactor, w.r.t. below
 			lang.toJob().checkWellFormedness();
 		}
 	
@@ -254,7 +254,7 @@ public class CommandLine
 				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH)
 				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
 		{
-			if (lang.config.args.get(LangArgs.useOldWf))
+			if (lang.config.args.get(JobArgs.useOldWf))
 			{
 				throw new CommandLineException(
 						"Global model flag(s) incompatible with: "

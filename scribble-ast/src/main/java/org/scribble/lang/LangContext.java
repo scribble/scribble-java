@@ -34,7 +34,7 @@ public class LangContext
 	
 	// Modules that were originally parsed (obtained from MainContext), but may be modified during the Job
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
-	// CHECKME: separate original parsed from "working set"?
+	// CHECKME: separate original parsed from "working set"? -- store parsed constants in config?
 	private final Map<ModuleName, Module> parsed;// = new HashMap<>();
 	
 	protected LangContext(Lang lang, Map<ModuleName, Module> parsed)//, ModuleName main)

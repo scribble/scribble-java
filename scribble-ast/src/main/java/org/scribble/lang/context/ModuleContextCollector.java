@@ -33,7 +33,7 @@ import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.ScribException;
 
 // TODO: rename and refactor
-public class ModuleContextMaker
+public class ModuleContextCollector
 {
 	private Module root;  // full name  // The root Module for this ModuleContext (cf. the "main" root module from CLI)
 
@@ -49,12 +49,12 @@ public class ModuleContextMaker
 
 	// Made by ModuleContextBuilder
 	// ModuleContext is the root context
-	public ModuleContextMaker() //JobContext jcontext, 
+	public ModuleContextCollector() //JobContext jcontext, 
 	{
 
 	}
 	
-	public ModuleContext make(
+	public ModuleContext build(
 			Map<ModuleName, Module> parsed,  // From MainContext (N.B., in a different non-visible package)
 			Module root) throws ScribException
 	{

@@ -1,6 +1,6 @@
-package org.scribble.lang;
+package org.scribble.core.job;
 
-public enum LangArgs
+public enum JobArgs
 {
 	debug,
 	useOldWf,

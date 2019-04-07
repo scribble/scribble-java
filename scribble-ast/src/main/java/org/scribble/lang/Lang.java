@@ -26,12 +26,13 @@ import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.core.job.Job;
 import org.scribble.core.job.JobConfig;
+import org.scribble.core.job.JobArgs;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.model.endpoint.EModelFactoryImpl;
 import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.lang.context.ModuleContextMaker;
+import org.scribble.lang.context.ModuleContextCollector;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.GTypeTranslator;
@@ -45,7 +46,9 @@ public class Lang
 
 	private final LangContext context;  // Mutable: Visitor passes update modules
 
+	// Used by, e.g., SimpleAstVisitor (cf. getModuleContext)
 	// Keys are full names
+	// Currently assuming ModuleContexts are constant, and considering parsed Modules only (i.e., not generated) -- CHECKME
 	private final Map<ModuleName, ModuleContext> modcs;  
 			// CHECKME: constant?  depends on adding projections?
 			// CHECKME: move to Config/Context?
@@ -54,31 +57,37 @@ public class Lang
 
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Lang(Map<ModuleName, Module> parsed, Map<LangArgs, Boolean> args,
+	public Lang(Map<ModuleName, Module> parsed, Map<JobArgs, Boolean> args,
 			ModuleName mainFullname) throws ScribException
 	{
 		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
 		// FIXME: wrap flags in Map and move Config construction to Lang
 		this.config = newLangConfig(mainFullname, args);
 		this.context = newLangContext(this, parsed);  // Single instance per Lang, should not be shared between Langs
+		this.modcs = Collections.unmodifiableMap(buildModuleContexts(parsed));
+	}
 
+	// Currently assuming ModuleContexts are constant, and considering parsed Modules only (i.e., not generated) -- CHECKME
+	protected Map<ModuleName, ModuleContext> buildModuleContexts(
+			Map<ModuleName, Module> parsed) throws ScribException
+	{
 		// CHECKME: how does this relate to the ModuleContextBuilder pass?
 		// Job.modcs seems unused?  Lang.modcs is used though, by old AST visitors -- basically old ModuleContextVisitor is redundant?
 		// Job.modcs could be used, but disamb already done by Lang
 		// Lang/Job modcs should be moved to config/context though
-		ModuleContextMaker maker = new ModuleContextMaker();
+		ModuleContextCollector b = new ModuleContextCollector();  // FIXME: rename Builder
 		Map<ModuleName, ModuleContext> modcs = new HashMap<>();
 		for (ModuleName fullname : parsed.keySet())
 		{
-			modcs.put(fullname, maker.make(parsed, parsed.get(fullname)));  
+			modcs.put(fullname, b.build(parsed, parsed.get(fullname)));  
 					// Throws ScribException
 		}
-		this.modcs = Collections.unmodifiableMap(modcs);
+		return modcs;
 	}
 
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
 	protected LangConfig newLangConfig(ModuleName mainFullname,
-			Map<LangArgs, Boolean> args)
+			Map<JobArgs, Boolean> args)
 	{
 		return new LangConfig(mainFullname, args, new AstFactoryImpl(),
 				new EModelFactoryImpl(), new SModelFactoryImpl());
@@ -98,12 +107,27 @@ public class Lang
 	}
 	
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
-	protected Job newJob(Map<ModuleName, ModuleContext> modcs, Set<GProtocol> imeds, JobConfig config)
+	protected Job newJob(Map<ModuleName, ModuleContext> modcs,
+			Set<GProtocol> imeds, JobConfig config)
+	
+	//...FIXME: move JobConfig construction inside Job (cf. LangConfig construction inside Lang)
+	//.. move (currently constant) modcs to config
+	
 	{
 		return new Job(imeds, modcs, config);
 	}
 	
+	// First run Visitor passes, then call toJob
+	// Base implementation: name disamb pass only
+	public void runVisitors() throws ScribException
+	{
+		// CHECKME: in the end, should these also be refactored into core?  (instead of AST visiting)
+		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
+		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
+	}
+	
 	// "Finalises" this Lang -- caches the Job at this point, and cannot run futher Visitor passes
+	// So, typically, passes already run
 	// CHECKME: revise this pattern?
 	public final Job toJob() throws ScribException
 	{
@@ -127,14 +151,17 @@ public class Lang
 		return this.job;
 	}
 	
-	public void runDisambPasses() throws ScribException
+	public LangContext getContext()
 	{
-		// CHECKME: in the end, should these also be refactored into core?  (instead of AST visiting)
-		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
-		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
+		return this.context;
+	}
+	
+	public ModuleContext getModuleContext(ModuleName fullname)
+	{
+		return this.modcs.get(fullname);
 	}
 
-	public void runVisitorPassOnAllModules(Class<? extends AstVisitor> c)
+	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c)
 			throws ScribException
 	{
 		debugPrintPass("Running " + c + " on all modules:");
@@ -172,16 +199,6 @@ public class Lang
 		this.context.replaceModule(visited);
 	}
 	
-	public LangContext getContext()
-	{
-		return this.context;
-	}
-	
-	public ModuleContext getModuleContext(ModuleName fullname)
-	{
-		return this.modcs.get(fullname);
-	}
-	
 	public void warningPrintln(String s)
 	{
 		System.err.println("[Warning] " + s);
@@ -189,7 +206,7 @@ public class Lang
 	
 	public void debugPrintln(String s)
 	{
-		if (this.config.args.get(LangArgs.debug))
+		if (this.config.args.get(JobArgs.debug))
 		{
 			System.out.println(s);
 		}
