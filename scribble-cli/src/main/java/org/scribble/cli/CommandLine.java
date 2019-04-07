@@ -201,7 +201,7 @@ public class CommandLine
 		// Base Scribble
 		else*/
 		{
-			lang.runContextBuildingPasses();  // TODO: refactor, w.r.t. below
+			lang.runDisambPasses();  // TODO: refactor, w.r.t. below
 			lang.toJob().checkWellFormedness();
 		}
 	

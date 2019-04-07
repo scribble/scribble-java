@@ -15,6 +15,7 @@ package org.scribble.lang;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class Lang
 	public final LangConfig config;  // Immutable
 
 	// Keys are full names
-	private final Map<ModuleName, ModuleContext> modcs = new HashMap<>();  // CHECKME: constant?  move to JobConfig?
+	private final Map<ModuleName, ModuleContext> modcs;  // CHECKME: constant?  move to JobConfig?
 
 	private final LangContext context;  // Mutable: Visitor passes update modules
 	
@@ -58,11 +59,13 @@ public class Lang
 		// Job.modcs could be used, but disamb already done by Lang
 		// Lang/Job modcs should be moved to config/context though
 		ModuleContextMaker maker = new ModuleContextMaker();
+		Map<ModuleName, ModuleContext> modcs = new HashMap<>();
 		for (ModuleName fullname : parsed.keySet())
 		{
-			this.modcs.put(fullname, maker.make(parsed, parsed.get(fullname)));  
+			modcs.put(fullname, maker.make(parsed, parsed.get(fullname)));  
 					// Throws ScribException
 		}
+		this.modcs = Collections.unmodifiableMap(modcs);
 	}
 	
 	// "Finalises" this Lang -- caches the Job at this point, and cannot run futher Visitor passes
@@ -81,7 +84,8 @@ public class Lang
 				{
 					GProtocol g = (GProtocol) gpd.visitWith(t);
 					imeds.add(g);
-					debugPrintln("\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
+					debugPrintln(
+							"\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
 				}
 			}
 			this.job = new Job(imeds, this.modcs, this.config.toJobConfig());
@@ -89,36 +93,7 @@ public class Lang
 		return this.job;
 	}
 	
-	/*// Scribble extensions should override these "new" methods
-	// CHECKME: move to MainContext::newJob?
-	public EGraphBuilderUtil newEGraphBuilderUtil()
-	{
-		return new EGraphBuilderUtil(this.config.ef);
-	}
-	
-	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util
-	public SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs,
-			boolean explicit) throws ScribbleException
-	{
-		debugPrintln("(" + fullname + ") Building global model using:");
-		for (Role r : egraphs.keySet())
-		{
-			// FIXME: refactor
-			debugPrintln("-- EFSM for "
-					+ r + ":\n" + egraphs.get(r).init.toDot());
-		}
-		//return SGraph.buildSGraph(this, fullname, createInitialSConfig(this, egraphs, explicit));
-		return this.sgbu.buildSGraph(this, fullname, egraphs, explicit);  // FIXME: factor out util
-	}*/
-
-	/*public void checkWellFormedness() throws ScribbleException
-	{
-		runContextBuildingPasses();
-		//runUnfoldingPass();
-		runWellFormednessPasses();
-	}*/
-	
-	public void runContextBuildingPasses() throws ScribException
+	public void runDisambPasses() throws ScribException
 	{
 		// CHECKME: in the end, should these also be refactored into core?  (instead of AST visiting)
 		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
@@ -129,26 +104,19 @@ public class Lang
 			throws ScribException
 	{
 		debugPrintPass("Running " + c + " on all modules:");
-		runVisitorPass(this.context.getFullModuleNames(), c);
+		runVisitorPass(c, this.context.getFullModuleNames());
 	}
 
-	public void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c)
-			throws ScribException
-	{
-		debugPrintPass("Running " + c + " on parsed modules:");
-		runVisitorPass(this.context.getParsedFullModuleNames(), c);
-	}
-
-	private void runVisitorPass(Set<ModuleName> modnames,
-			Class<? extends AstVisitor> c) throws ScribException
+	private void runVisitorPass(Class<? extends AstVisitor> c,
+			Set<ModuleName> fullnames) throws ScribException
 	{
 		try
 		{
 			Constructor<? extends AstVisitor> cons = c.getConstructor(Lang.class);
-			for (ModuleName modname : modnames)
+			for (ModuleName fullname : fullnames)
 			{
 				AstVisitor nv = cons.newInstance(this);
-				runVisitorOnModule(modname, nv);
+				runVisitorOnModule(fullname, nv);
 			}
 		}
 		catch (NoSuchMethodException | SecurityException | InstantiationException
@@ -180,11 +148,6 @@ public class Lang
 		return this.modcs.get(fullname);
 	}
 	
-	public boolean isDebug()
-	{
-		return this.config.debug;
-	}
-	
 	public void warningPrintln(String s)
 	{
 		System.err.println("[Warning] " + s);
@@ -200,6 +163,6 @@ public class Lang
 	
 	private void debugPrintPass(String s)
 	{
-		debugPrintln("\n[Job] " + s);
+		debugPrintln("\n[Lang] " + s);
 	}
 }
