@@ -22,9 +22,9 @@ import org.scribble.visit.env.Env;
 
 public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 {
-	public InlinedProtocolVisitor(Lang job)
+	public InlinedProtocolVisitor(Lang lang)
 	{
-		super(job);
+		super(lang);
 	}
 
 	@Override

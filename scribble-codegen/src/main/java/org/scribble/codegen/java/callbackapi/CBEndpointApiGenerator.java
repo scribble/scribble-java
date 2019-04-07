@@ -44,8 +44,8 @@ import org.scribble.util.ScribException;
 @Deprecated
 public class CBEndpointApiGenerator
 {
-	public final Lang job;
-	public final Job job2;
+	public final Lang lang;
+	public final Job job;
 	public final GProtocolName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
@@ -53,10 +53,10 @@ public class CBEndpointApiGenerator
 
 	public CBEndpointApiGenerator(Lang job, GProtocolName fullname, Role self, boolean subtypes)
 	{
-		this.job = job;
+		this.lang = job;
 		try
 		{
-			this.job2 = job.toJob();
+			this.job = job.toJob();
 		}
 		catch (ScribException e)  // TODO: refactor
 		{
@@ -81,18 +81,18 @@ public class CBEndpointApiGenerator
 
 	public Map<String, String> buildSessionApi() throws ScribException // FIXME: factor out -- integrate with JEndpointApiGenerator
 	{
-		this.job.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator.class + " for " + this.proto + "@" + this.self);
+		this.lang.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator.class + " for " + this.proto + "@" + this.self);
 
 		Map<String, String> res = new HashMap<>();
-		res.putAll(new SessionApiGenerator(this.job, this.proto).generateApi());
+		res.putAll(new SessionApiGenerator(this.lang, this.proto).generateApi());
 		res.putAll(buildEndpointClass());
 		return res;
 	}
 	
 	public Map<String, String> buildEndpointClass() throws ScribException
 	{
-		Module main = this.job.getContext().getMainModule();
-		JobContext jobc2 = this.job2.getContext();
+		Module main = this.lang.getContext().getMainModule();
+		JobContext jobc2 = this.job.getContext();
 		EState init = (this.job.config.minEfsm
 				? jobc2.getMinimisedEGraph(this.proto, this.self)
 				: jobc2.getEGraph(this.proto, this.self)

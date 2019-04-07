@@ -176,23 +176,23 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		}
 
 		GProtocolName fullname = gpd.getFullMemberName((Module) parent);
-		if (checker.job2.config.spin)
+		if (checker.job.config.spin)
 		{
-			if (checker.job2.config.fair)
+			if (checker.job.config.fair)
 			{
 				throw new RuntimeException(
 						"[TODO]: -spin currently does not support fair ouput choices.");
 			}
-			GProtocol.validateBySpin(checker.job2, fullname);
+			GProtocol.validateBySpin(checker.job, fullname);
 		}
 		else
 		{
-			GProtocol.validateByScribble(checker.job2, fullname, true);
-			if (!checker.lang.config.fair)
+			GProtocol.validateByScribble(checker.job, fullname, true);
+			if (!checker.job.config.fair)
 			{
 				checker.lang.debugPrintln(
 						"(" + fullname + ") Validating with \"unfair\" output choices.. ");
-				GProtocol.validateByScribble(checker.job2, fullname, false);  // TODO: only need to check progress, not full validation
+				GProtocol.validateByScribble(checker.job, fullname, false);  // TODO: only need to check progress, not full validation
 			}
 		}
 	}

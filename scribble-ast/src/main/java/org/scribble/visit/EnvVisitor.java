@@ -30,9 +30,9 @@ public abstract class EnvVisitor<T extends Env<?>> extends ModuleContextVisitor
 {
 	private LinkedList<T> envs = new LinkedList<T>();  // Deque
 	
-	public EnvVisitor(Lang job)
+	public EnvVisitor(Lang lang)
 	{
-		super(job);
+		super(lang);
 	}
 	
 	@Override

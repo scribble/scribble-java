@@ -37,7 +37,7 @@ public class JobConfig
 	public final SModelFactory sf;
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
-	public JobConfig(boolean debug, ModuleName main, boolean useOldWF, boolean noLiveness, boolean minEfsm,
+	public JobConfig(ModuleName main, boolean debug, boolean useOldWF, boolean noLiveness, boolean minEfsm,
 			boolean fair, boolean noLocalChoiceSubjectCheck,
 			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin,
 			EModelFactory ef, SModelFactory sf)

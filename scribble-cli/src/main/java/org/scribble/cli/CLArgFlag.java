@@ -22,7 +22,7 @@ public enum CLArgFlag
 	VERBOSE,
 	SCHAN_API_SUBTYPES,
 	OLD_WF,
-	NO_LIVENESS,
+	NO_PROGRESS,
 	LTSCONVERT_MIN,  // Currently only affects EFSM output (i.e. -fsm..) and API gen -- doesn't affect validation
 	FAIR,
 	NO_LOCAL_CHOICE_SUBJECT_CHECK,

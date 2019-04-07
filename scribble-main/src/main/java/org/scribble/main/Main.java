@@ -14,20 +14,18 @@
 package org.scribble.main;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
-import org.scribble.core.model.endpoint.EModelFactoryImpl;
-import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.lang.Lang;
-import org.scribble.lang.LangConfig;
+import org.scribble.lang.LangArgs;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.loader.ScribModuleLoader;
 import org.scribble.main.resource.locator.ResourceLocator;
@@ -51,10 +49,11 @@ import org.scribble.util.ScribParserException;
  */
 public class Main
 {
+	public final ModuleName main;
+	public final Map<LangArgs, Boolean> args;
+
 	//private final ResourceLocator locator;  // Path -> Resource
 	private final ScribModuleLoader loader;  // ModuleName -> Pair<Resource, Module>
-	
-	public final LangConfig config;
 
 	// Keys are full names -- parsed are the modules read from file, distinguished from the generated projection modules
 	// Resource recorded for source path
@@ -70,40 +69,34 @@ public class Main
 	// A Scribble extension should override newAntlr/Lang as appropriate
 	public Lang newLang() throws ScribException
 	{
-		return new Lang(getParsedModules(), this.config);
+		return newLang(getParsedModules(), this.args, this.main);
+	}
+
+	// A Scribble extension should override newAntlr/Lang as appropriate
+	protected Lang newLang(Map<ModuleName, Module> parsed,
+			Map<LangArgs, Boolean> args, ModuleName mainFullname) throws ScribException
+	{
+		return new Lang(parsed, args, mainFullname);
 	}
 
 	// Load main module from file system
 	// Load other modules via locator -- CHECKME: a bit inconsistent w.r.t. main?
 	// TODO: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
-	public Main(ResourceLocator locator, Path mainpath, 
-			boolean debug, boolean useOldWF, boolean noLiveness,
-			boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
-			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
-			throws ScribException, ScribParserException
+	public Main(ResourceLocator locator, Path mainpath,
+			Map<LangArgs, Boolean> args) throws ScribException, ScribParserException
 	{
-		this(new Pair<>(locator, null), mainpath, 
-				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
-				noAcceptCorrelationCheck, noValidation, spin);
+		this(new Pair<>(locator, null), mainpath, args);
 	}
 
 	// Load an inline module arg -- module imports not allowed (currently no ResourceLocator)
-	public Main(String inline,
-			boolean debug, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck,
-			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
+	public Main(String inline, Map<LangArgs, Boolean> args)
 			throws ScribException, ScribParserException
 	{
-		this(new Pair<>(null, inline), null, 
-				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
-				noAcceptCorrelationCheck, noValidation, spin);
+		this(new Pair<>(null, inline), null, args);
 	}
 
-	private Main(Pair<ResourceLocator, String> hack, Path mainpath, 
-			boolean debug, boolean useOldWF, boolean noLiveness, boolean minEfsm,
-			boolean fair, boolean noLocalChoiceSubjectCheck,
-			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
-			throws ScribException, ScribParserException
+	private Main(Pair<ResourceLocator, String> hack, Path mainpath,
+			Map<LangArgs, Boolean> args) throws ScribException, ScribParserException
 	{
 		Pair<Resource, Module> main;
 		if (hack.right == null)
@@ -125,37 +118,15 @@ public class Main
 			}
 		}
 
-		loadAllModuleImports(main, 
-				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
-				noAcceptCorrelationCheck, noValidation, spin);
-
-		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
-		// FIXME: wrap flags in Map and move Config construction to Lang
-		this.config = newLangConfig(main.right.getFullModuleName(),
-				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
-				noAcceptCorrelationCheck, noValidation, spin);
-	}
-	
-	//...FIXME: replace bools by a Map -- needed for subclassing -- pass Map to Lang instead of making config here?
-	public LangConfig newLangConfig(ModuleName mainFullname,
-			boolean debug, boolean useOldWF, boolean noLiveness,
-			boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
-			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
-	{
-		return new LangConfig(mainFullname,
-				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
-				noAcceptCorrelationCheck, noValidation, spin,
-				new AstFactoryImpl(), new EModelFactoryImpl(), new SModelFactoryImpl());
-				// CHECKME: combine E/SModelFactory?
+		this.main = main.right.getFullModuleName();
+		this.args = Collections.unmodifiableMap(args);
+		loadAllModuleImports(main);
 	}
 	
 	// Pre: main Module loaded by this.loader
 	// Given the already loaded main, populates this.parsed and this.modcs
 	// Does so by transitively loading all module imports
-	private void loadAllModuleImports(Pair<Resource, Module> main, 
-			boolean debug, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair,
-			boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck,
-			boolean noValidation, boolean spin)
+	private void loadAllModuleImports(Pair<Resource, Module> main)
 			throws ScribParserException, ScribException
 	{
 		loadAllAux(main);  // Populates this.parsed

@@ -108,7 +108,7 @@ public class CBEndpointApiGenerator3
 		Map<String, String> res = new HashMap<>();
 
 		JobContext jobc2 = this.job.getContext();
-		EState init = (this.lang.config.minEfsm
+		EState init = (this.job.config.minEfsm
 				? jobc2.getMinimisedEGraph(this.proto, this.self)
 				: jobc2.getEGraph(this.proto, this.self)
 				).init;

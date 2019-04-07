@@ -43,9 +43,9 @@ public abstract class UnfoldingVisitor<E extends Env<?>>
 			// Also FIXME: recvar shadowing: though this stack should be enough
 	private Set<RecVar> unfolded = new HashSet<>();
 	
-	public UnfoldingVisitor(Lang job)
+	public UnfoldingVisitor(Lang lang)
 	{
-		super(job);
+		super(lang);
 	}
 
 	@Override

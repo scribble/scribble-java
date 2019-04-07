@@ -21,11 +21,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.core.job.Job;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.global.GProtocol;
+import org.scribble.core.model.endpoint.EModelFactoryImpl;
+import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.lang.context.ModuleContextMaker;
 import org.scribble.util.ScribException;
@@ -48,10 +51,13 @@ public class Lang
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Lang(Map<ModuleName, Module> parsed, LangConfig config)
+	public Lang(Map<ModuleName, Module> parsed, Map<LangArgs, Boolean> args, ModuleName mainFullname)
 			throws ScribException
 	{
-		this.config = config;
+		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
+		// FIXME: wrap flags in Map and move Config construction to Lang
+		this.config = newLangConfig(mainFullname, args);
+
 		this.context = new LangContext(this, parsed);  // Single instance per Lang, should not be shared between Langs
 
 		// CHECKME: how does this relate to the ModuleContextBuilder pass?
@@ -66,6 +72,14 @@ public class Lang
 					// Throws ScribException
 		}
 		this.modcs = Collections.unmodifiableMap(modcs);
+	}
+
+	public LangConfig newLangConfig(ModuleName mainFullname,
+			Map<LangArgs, Boolean> args)
+	{
+		return new LangConfig(mainFullname, args, new AstFactoryImpl(),
+				new EModelFactoryImpl(), new SModelFactoryImpl());
+				// CHECKME: combine E/SModelFactory?
 	}
 	
 	// "Finalises" this Lang -- caches the Job at this point, and cannot run futher Visitor passes
@@ -155,7 +169,7 @@ public class Lang
 	
 	public void debugPrintln(String s)
 	{
-		if (this.config.debug)
+		if (this.config.args.get(LangArgs.debug))
 		{
 			System.out.println(s);
 		}

@@ -21,18 +21,18 @@ import org.scribble.visit.context.ModuleContextVisitor;
 
 public class GProtocolValidator extends ModuleContextVisitor
 {
-	public final Job job2;
+	public final Job job;
 
 	public GProtocolValidator(Lang job)
 	{
 		super(job);
-		this.job2 = null;
+		this.job = null;
 	}
 
 	public GProtocolValidator(Job job2)
 	{
 		super(null);
-		this.job2 = job2;
+		this.job = job2;
 	}
 
 	@Override

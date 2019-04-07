@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -37,6 +38,7 @@ import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
+import org.scribble.lang.LangArgs;
 import org.scribble.lang.LangContext;
 import org.scribble.main.Main;
 import org.scribble.main.resource.locator.DirectoryResourceLocator;
@@ -72,10 +74,10 @@ public class CommandLine
 	protected Main newMainContext()
 			throws ScribParserException, ScribException
 	{
-		//boolean jUnit = this.args.containsKey(ArgFlag.JUNIT);
+		// FIXME: refactor into arg parsing
 		boolean debug = this.args.containsKey(CLArgFlag.VERBOSE);  // TODO: factor out (cf. MainContext fields)
-		boolean useOldWF = this.args.containsKey(CLArgFlag.OLD_WF);
-		boolean noLiveness = this.args.containsKey(CLArgFlag.NO_LIVENESS);
+		boolean useOldWf = this.args.containsKey(CLArgFlag.OLD_WF);
+		boolean noProgress = this.args.containsKey(CLArgFlag.NO_PROGRESS);
 		boolean minEfsm = this.args.containsKey(CLArgFlag.LTSCONVERT_MIN);
 		boolean fair = this.args.containsKey(CLArgFlag.FAIR);
 		boolean noLocalChoiceSubjectCheck = 
@@ -84,6 +86,19 @@ public class CommandLine
 				this.args.containsKey(CLArgFlag.NO_ACCEPT_CORRELATION_CHECK);
 		boolean noValidation = this.args.containsKey(CLArgFlag.NO_VALIDATION);
 		boolean spin = this.args.containsKey(CLArgFlag.SPIN);
+		
+		// FIXME: refactor into arg parsing
+		Map<LangArgs, Boolean> args = new HashMap<>();
+		args.put(LangArgs.debug, debug);
+		args.put(LangArgs.useOldWf, useOldWf);
+		args.put(LangArgs.noProgress, noProgress);
+		args.put(LangArgs.minEfsm, minEfsm);
+		args.put(LangArgs.fair, fair);
+		args.put(LangArgs.noLocalChoiceSubjectCheck, noLocalChoiceSubjectCheck);
+		args.put(LangArgs.noAcceptCorrelationCheck, noAcceptCorrelationCheck);
+		args.put(LangArgs.noValidation, noValidation);
+		args.put(LangArgs.spin, spin);
+		args = Collections.unmodifiableMap(args);
 
 		List<Path> impaths = this.args.containsKey(CLArgFlag.IMPORT_PATH)
 				? CommandLine.parseImportPaths(this.args.get(CLArgFlag.IMPORT_PATH)[0])
@@ -91,18 +106,13 @@ public class CommandLine
 		if (this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
 		{
 			String inline = this.args.get(CLArgFlag.INLINE_MAIN_MOD)[0];
-			return new Main(inline,
-					debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
-					noAcceptCorrelationCheck, noValidation, spin);
+			return new Main(inline, args);
 		}
 		else
 		{
 			ResourceLocator locator = new DirectoryResourceLocator(impaths);
 			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
-			return new Main(locator,
-					mainpath, debug, useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation,
-					spin);
+			return new Main(locator, mainpath, args);
 		}
 	}
 
@@ -244,7 +254,7 @@ public class CommandLine
 				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH)
 				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
 		{
-			if (lang.config.useOldWf)
+			if (lang.config.args.get(LangArgs.useOldWf))
 			{
 				throw new CommandLineException(
 						"Global model flag(s) incompatible with: "
