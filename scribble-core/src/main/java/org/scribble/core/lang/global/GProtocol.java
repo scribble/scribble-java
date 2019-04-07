@@ -256,7 +256,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		{
 			pml += "\n\n" + jobc2.getEGraph(fullname, r).toPml(r);
 		}
-		if (job2.config.args.get(JobArgs.debug))
+		if (job2.config.args.get(JobArgs.DEBUG))
 		{
 			System.out.println("[-spin]: Promela processes\n" + pml + "\n");
 		}
@@ -314,7 +314,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 			int j = (i+batchSize < clauses.size()) ? i+batchSize : clauses.size();
 			String batch = clauses.subList(i, j).stream().collect(Collectors.joining(" && "));
 			String ltl = "ltl {\n" + batch + "\n" + "}";
-			if (job2.config.args.get(JobArgs.debug))
+			if (job2.config.args.get(JobArgs.DEBUG))
 			{
 				System.out.println("[-spin] Batched ltl:\n" + ltl + "\n");
 			}

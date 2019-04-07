@@ -89,15 +89,15 @@ public class CommandLine
 		
 		// FIXME: refactor into arg parsing
 		Map<JobArgs, Boolean> args = new HashMap<>();
-		args.put(JobArgs.debug, debug);
-		args.put(JobArgs.useOldWf, useOldWf);
-		args.put(JobArgs.noProgress, noProgress);
-		args.put(JobArgs.minEfsm, minEfsm);
-		args.put(JobArgs.fair, fair);
-		args.put(JobArgs.noLocalChoiceSubjectCheck, noLocalChoiceSubjectCheck);
-		args.put(JobArgs.noAcceptCorrelationCheck, noAcceptCorrelationCheck);
-		args.put(JobArgs.noValidation, noValidation);
-		args.put(JobArgs.spin, spin);
+		args.put(JobArgs.DEBUG, debug);
+		args.put(JobArgs.OLD_WF, useOldWf);
+		args.put(JobArgs.NO_PROGRESS, noProgress);
+		args.put(JobArgs.MIN_EFSM, minEfsm);
+		args.put(JobArgs.FAIR, fair);
+		args.put(JobArgs.NO_LCHOICE_SUBJ_CHECK, noLocalChoiceSubjectCheck);
+		args.put(JobArgs.NO_ACC_CORRELATION_CHECK, noAcceptCorrelationCheck);
+		args.put(JobArgs.NO_VALIDATION, noValidation);
+		args.put(JobArgs.SPIN, spin);
 		args = Collections.unmodifiableMap(args);
 
 		List<Path> impaths = this.args.containsKey(CLArgFlag.IMPORT_PATH)
@@ -254,7 +254,7 @@ public class CommandLine
 				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH)
 				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
 		{
-			if (lang.config.args.get(JobArgs.useOldWf))
+			if (lang.config.args.get(JobArgs.OLD_WF))
 			{
 				throw new CommandLineException(
 						"Global model flag(s) incompatible with: "

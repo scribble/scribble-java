@@ -247,9 +247,9 @@ public class Job
 
 				debugPrintln("\nValidating " + fullname + ":");
 
-				if (this.config.args.get(JobArgs.spin))
+				if (this.config.args.get(JobArgs.SPIN))
 				{
-					if (this.config.args.get(JobArgs.fair))
+					if (this.config.args.get(JobArgs.FAIR))
 					{
 						throw new RuntimeException(
 								"[TODO]: -spin currently does not support fair ouput choices.");
@@ -259,7 +259,7 @@ public class Job
 				else
 				{
 					GProtocol.validateByScribble(this, fullname, true);
-					if (!this.config.args.get(JobArgs.fair))
+					if (!this.config.args.get(JobArgs.FAIR))
 					{
 						debugPrintln(
 								"(" + fullname + ") Validating with \"unfair\" output choices.. ");
@@ -380,7 +380,7 @@ public class Job
 	
 	public boolean isDebug()
 	{
-		return this.config.args.get(JobArgs.debug);
+		return this.config.args.get(JobArgs.DEBUG);
 	}
 	
 	public void warningPrintln(String s)
@@ -390,7 +390,7 @@ public class Job
 	
 	public void debugPrintln(String s)
 	{
-		if (this.config.args.get(JobArgs.debug))
+		if (this.config.args.get(JobArgs.DEBUG))
 		{
 			System.out.println(s);
 		}

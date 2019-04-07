@@ -94,7 +94,7 @@ public class CBEndpointApiGenerator
 	{
 		Module main = this.lang.getContext().getMainModule();
 		JobContext jobc2 = this.job.getContext();
-		EState init = (this.job.config.args.get(JobArgs.minEfsm)
+		EState init = (this.job.config.args.get(JobArgs.MIN_EFSM)
 				? jobc2.getMinimisedEGraph(this.proto, this.self)
 				: jobc2.getEGraph(this.proto, this.self)
 				).init;

@@ -91,7 +91,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 			i.remove();
 			seen.put(curr.id, curr);
 
-			if (job.config.args.get(JobArgs.debug))
+			if (job.config.args.get(JobArgs.DEBUG))
 			{
 				count++;
 				if (count % 50 == 0)

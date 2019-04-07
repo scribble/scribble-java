@@ -167,7 +167,7 @@ public class Lang
 	
 	public void debugPrintln(String s)
 	{
-		if (this.config.args.get(JobArgs.debug))
+		if (this.config.args.get(JobArgs.DEBUG))
 		{
 			System.out.println(s);
 		}

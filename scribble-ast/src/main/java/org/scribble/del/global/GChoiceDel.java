@@ -100,7 +100,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		List<WFChoiceEnv> all =
 				cho.getBlockChildren().stream().map(b -> (WFChoiceEnv) b.del().env())
 						.collect(Collectors.toList());
-		if (checker.lang.config.args.get(JobArgs.useOldWf))  // ****
+		if (checker.lang.config.args.get(JobArgs.OLD_WF))  // ****
 		{
 			if (all.size() > 1)
 			{

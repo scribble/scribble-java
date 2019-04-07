@@ -177,9 +177,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		}
 
 		GProtocolName fullname = gpd.getFullMemberName((Module) parent);
-		if (checker.job.config.args.get(JobArgs.spin))
+		if (checker.job.config.args.get(JobArgs.SPIN))
 		{
-			if (checker.job.config.args.get(JobArgs.fair))
+			if (checker.job.config.args.get(JobArgs.FAIR))
 			{
 				throw new RuntimeException(
 						"[TODO]: -spin currently does not support fair ouput choices.");
@@ -189,7 +189,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		else
 		{
 			GProtocol.validateByScribble(checker.job, fullname, true);
-			if (!checker.job.config.args.get(JobArgs.fair))
+			if (!checker.job.config.args.get(JobArgs.FAIR))
 			{
 				checker.lang.debugPrintln(
 						"(" + fullname + ") Validating with \"unfair\" output choices.. ");

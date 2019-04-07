@@ -15,15 +15,17 @@ package org.scribble.core.job;
 
 public enum JobArgs
 {
-	debug,
-	useOldWf,
-	noProgress,
-	minEfsm,
-	fair,
-	noLocalChoiceSubjectCheck,
-	noAcceptCorrelationCheck,
-	noValidation,
-	spin;
+	DEBUG,
+	FAIR,
+	SPIN,
+	NO_VALIDATION,
+	NO_PROGRESS,  // TODO: deprecate
+	MIN_EFSM,  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
+
+	OLD_WF,
+	NO_LCHOICE_SUBJ_CHECK,  // For debugging only?
+	NO_ACC_CORRELATION_CHECK,  // Currently unused
+	;
 	
 	/*public final boolean debug;
 	public final boolean useOldWf;
