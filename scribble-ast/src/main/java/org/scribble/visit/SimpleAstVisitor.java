@@ -25,12 +25,12 @@ import org.scribble.util.ScribException;
 public abstract class SimpleAstVisitor<T>
 {
 	public final Lang lang;
-	public final ModuleName fullname;  // Root module -- used to get ModuleContext
+	public final ModuleName root;  // Root module, full name -- used to get ModuleContext
 
-	public SimpleAstVisitor(Lang lang, ModuleName fullname)
+	public SimpleAstVisitor(Lang lang, ModuleName rootFullname)
 	{
 		this.lang = lang;
-		this.fullname = fullname;
+		this.root = rootFullname;
 	}
 	
 	// Override to delegate to del-specific method, e.g., n.del().visit(n, this)
@@ -39,6 +39,6 @@ public abstract class SimpleAstVisitor<T>
 	
 	public ModuleContext getModuleContext()
 	{
-		return this.lang.getModuleContext(this.fullname);
+		return this.lang.getModuleContext(this.root);
 	}
 }

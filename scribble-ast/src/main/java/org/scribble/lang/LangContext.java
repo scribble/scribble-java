@@ -48,6 +48,20 @@ public class LangContext
 		return getModule(this.lang.config.main);
 	}
 	
+	// HACK -- CHECKME: separate original parsed from "working set"?
+	public Map<ModuleName, Module> getParsed()
+	{
+		return Collections.unmodifiableMap(this.parsed);
+	}
+
+	public GProtocolDecl getParsed(GProtocolName fullname)
+	{
+		return this.parsed.get(fullname.getPrefix())
+				.getGProtoDeclChildren().stream().filter(x -> x.getHeaderChild()
+						.getDeclName().equals(fullname.getSimpleName()))
+				.findAny().get();
+	}
+	
 	// Used by Job for pass running, includes projections (e.g. for reachability checking)
 	// Safer to get module names and require user to re-fetch the module by the getter each time (after replacing), to make sure the latest is used
 	public Set<ModuleName> getFullModuleNames()
@@ -101,19 +115,5 @@ public class LangContext
 		{
 			throw new RuntimeException("Unknown module: " + fullname);
 		}
-	}
-	
-	// HACK -- CHECKME: separate original parsed from "working set"?
-	public Map<ModuleName, Module> getParsed()
-	{
-		return Collections.unmodifiableMap(this.parsed);
-	}
-
-	public GProtocolDecl getParsed(GProtocolName fullname)
-	{
-		return this.parsed.get(fullname.getPrefix())
-				.getGProtoDeclChildren().stream().filter(x -> x.getHeaderChild()
-						.getDeclName().equals(fullname.getSimpleName()))
-				.findAny().get();
 	}
 }

@@ -25,6 +25,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.core.job.Job;
+import org.scribble.core.job.JobConfig;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.model.endpoint.EModelFactoryImpl;
@@ -42,23 +43,24 @@ public class Lang
 {
 	public final LangConfig config;  // Immutable
 
-	// Keys are full names
-	private final Map<ModuleName, ModuleContext> modcs;  // CHECKME: constant?  move to JobConfig?
-
 	private final LangContext context;  // Mutable: Visitor passes update modules
+
+	// Keys are full names
+	private final Map<ModuleName, ModuleContext> modcs;  
+			// CHECKME: constant?  depends on adding projections?
+			// CHECKME: move to Config/Context?
 	
 	private Job job;
-	
+
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Lang(Map<ModuleName, Module> parsed, Map<LangArgs, Boolean> args, ModuleName mainFullname)
-			throws ScribException
+	public Lang(Map<ModuleName, Module> parsed, Map<LangArgs, Boolean> args,
+			ModuleName mainFullname) throws ScribException
 	{
 		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
 		// FIXME: wrap flags in Map and move Config construction to Lang
 		this.config = newLangConfig(mainFullname, args);
-
-		this.context = new LangContext(this, parsed);  // Single instance per Lang, should not be shared between Langs
+		this.context = newLangContext(this, parsed);  // Single instance per Lang, should not be shared between Langs
 
 		// CHECKME: how does this relate to the ModuleContextBuilder pass?
 		// Job.modcs seems unused?  Lang.modcs is used though, by old AST visitors -- basically old ModuleContextVisitor is redundant?
@@ -74,27 +76,45 @@ public class Lang
 		this.modcs = Collections.unmodifiableMap(modcs);
 	}
 
-	public LangConfig newLangConfig(ModuleName mainFullname,
+	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
+	protected LangConfig newLangConfig(ModuleName mainFullname,
 			Map<LangArgs, Boolean> args)
 	{
 		return new LangConfig(mainFullname, args, new AstFactoryImpl(),
 				new EModelFactoryImpl(), new SModelFactoryImpl());
 				// CHECKME: combine E/SModelFactory?
 	}
+
+	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
+	protected LangContext newLangContext(Lang lang, Map<ModuleName, Module> parsed)
+	{
+		return new LangContext(this, parsed);
+	}
+
+	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
+	protected GTypeTranslator newTranslator(ModuleName rootFullname)
+	{
+		return new GTypeTranslator(this, rootFullname);
+	}
+	
+	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
+	protected Job newJob(Map<ModuleName, ModuleContext> modcs, Set<GProtocol> imeds, JobConfig config)
+	{
+		return new Job(imeds, modcs, config);
+	}
 	
 	// "Finalises" this Lang -- caches the Job at this point, and cannot run futher Visitor passes
 	// CHECKME: revise this pattern?
-	public Job toJob() throws ScribException
+	public final Job toJob() throws ScribException
 	{
 		if (this.job == null)
 		{
-			Set<ModuleName> fullnames = this.context.getFullModuleNames();
+			Map<ModuleName, Module> parsed = this.context.getParsed();
 			Set<GProtocol> imeds = new HashSet<>();
-			for (ModuleName fullname : fullnames)
+			for (ModuleName fullname : parsed.keySet())
 			{
-				Module m = this.context.getModule(fullname);
-				GTypeTranslator t = new GTypeTranslator(this, fullname);
-				for (GProtocolDecl gpd : m.getGProtoDeclChildren())
+				GTypeTranslator t = newTranslator(fullname);
+				for (GProtocolDecl gpd : parsed.get(fullname).getGProtoDeclChildren())
 				{
 					GProtocol g = (GProtocol) gpd.visitWith(t);
 					imeds.add(g);
@@ -102,7 +122,7 @@ public class Lang
 							"\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
 				}
 			}
-			this.job = new Job(imeds, this.modcs, this.config.toJobConfig());
+			this.job = newJob(this.modcs, imeds, this.config.toJobConfig());
 		}
 		return this.job;
 	}

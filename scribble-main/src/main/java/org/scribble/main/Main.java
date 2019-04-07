@@ -59,25 +59,6 @@ public class Main
 	// Resource recorded for source path
 	private final Map<ModuleName, Pair<Resource, Module>> parsed 
 			= new HashMap<>();
-	
-	// A Scribble extension should override newAntlr/Lang as appropriate
-	protected ScribAntlrWrapper newAntlr()
-	{
-		return new ScribAntlrWrapper();
-	}
-	
-	// A Scribble extension should override newAntlr/Lang as appropriate
-	public Lang newLang() throws ScribException
-	{
-		return newLang(getParsedModules(), this.args, this.main);
-	}
-
-	// A Scribble extension should override newAntlr/Lang as appropriate
-	protected Lang newLang(Map<ModuleName, Module> parsed,
-			Map<LangArgs, Boolean> args, ModuleName mainFullname) throws ScribException
-	{
-		return new Lang(parsed, args, mainFullname);
-	}
 
 	// Load main module from file system
 	// Load other modules via locator -- CHECKME: a bit inconsistent w.r.t. main?
@@ -95,12 +76,16 @@ public class Main
 		this(new Pair<>(null, inline), null, args);
 	}
 
+	// Pre: hack.left == null xor hack.right == null
+	// Hack to "unify" the constructors (to satisfy final field init more conveniently)
 	private Main(Pair<ResourceLocator, String> hack, Path mainpath,
 			Map<LangArgs, Boolean> args) throws ScribException, ScribParserException
 	{
+		// Set this.loader and load main
 		Pair<Resource, Module> main;
 		if (hack.right == null)
 		{
+			//this.locator = hack.left;
 			this.loader = new ScribModuleLoader(hack.left, newAntlr());
 			main = this.loader.loadMainModule(mainpath);
 		}
@@ -121,6 +106,19 @@ public class Main
 		this.main = main.right.getFullModuleName();
 		this.args = Collections.unmodifiableMap(args);
 		loadAllModuleImports(main);
+	}
+	
+	// A Scribble extension should override newAntlr/Lang as appropriate
+	protected ScribAntlrWrapper newAntlr()
+	{
+		return new ScribAntlrWrapper();
+	}
+
+	// A Scribble extension should override newAntlr/Lang as appropriate
+	protected Lang newLang(Map<ModuleName, Module> parsed,
+			Map<LangArgs, Boolean> args, ModuleName mainFullname) throws ScribException
+	{
+		return new Lang(parsed, args, mainFullname);
 	}
 	
 	// Pre: main Module loaded by this.loader
@@ -149,6 +147,12 @@ public class Main
 				}
 			}
 		}
+	}
+	
+	// For a Scribble extension, override newLang(parsed, args, mainFullname)
+	public final Lang newLang() throws ScribException
+	{
+		return newLang(getParsedModules(), this.args, this.main);
 	}
 	
 	public Map<ModuleName, Module> getParsedModules()
