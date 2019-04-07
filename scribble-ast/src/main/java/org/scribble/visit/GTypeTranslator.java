@@ -21,11 +21,11 @@ import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
 
 // CHECKME: move to visit package?
-public class GTypeTranslator extends SimpleVisitor<GNode>
+public class GTypeTranslator extends SimpleAstVisitor<GNode>
 {
-	public GTypeTranslator(Lang lang, ModuleName mod)
+	public GTypeTranslator(Lang lang, ModuleName fullname)
 	{
-		super(lang, mod);
+		super(lang, fullname);
 	}
 
 	@Override
@@ -33,20 +33,4 @@ public class GTypeTranslator extends SimpleVisitor<GNode>
 	{
 		return ((GDel) n.del()).translate(n, this);
 	}
-	
-	/*// sig is the for the current innermost proto
-	public RecVar makeRecVar(SubprotoSig sig)
-	{
-		String lab = "__" + sig.fullname + "__"
-				+ sig.roles.stream().map(x -> x.toString())
-						.collect(Collectors.joining("_"))
-				+ "__" + sig.args.stream().map(x -> x.toString())
-						.collect(Collectors.joining("_"));
-		return new RecVar(lab);
-	}
-
-	public RecVar makeRecVar(SubprotoSig sig, RecVar rv)
-	{
-		return new RecVar(makeRecVar(sig).toString() + "__" + rv);
-	}*/
 }

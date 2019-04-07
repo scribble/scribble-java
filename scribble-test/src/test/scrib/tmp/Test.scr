@@ -67,8 +67,9 @@ module tmp.Test;
 // move ast/del, old visit and new frontend to lang
 // integrate new frontend with MainContext?
 // move lang types to type.sess, and move new visit
-// add exp conn checks to model validation
 
+// try disamb without modulecontextvisitor, try move antlrwrapper to parser again
+// add exp conn checks to model validation
 // use stypefactory in core
 // refactor test to use main instead of cli
 // simplify cli and arg parsing

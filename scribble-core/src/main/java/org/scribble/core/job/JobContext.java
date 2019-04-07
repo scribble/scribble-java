@@ -77,13 +77,13 @@ public class JobContext
 			// FIXME: currently only minimising "fair" graph, need to consider minimisation orthogonally to fairness -- NO: minimising (of fair) is for API gen only, unfair-transform does not use minimisation (regardless of user flag) for WF
 	
 	protected JobContext(Job job, //Map<ModuleName, Module> parsed)//, ModuleName main)
-			Set<GProtocol> intermed)
+			Set<GProtocol> imeds)
 	{
 		this.job = job;
 
 		//this.parsed = new HashMap<ModuleName, Module>(parsed);
 		//this.main = main;
-		this.intermed = intermed.stream()
+		this.intermed = imeds.stream()
 				.collect(Collectors.toMap(x -> x.fullname, x -> x));
 	}
 	

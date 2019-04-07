@@ -19,11 +19,11 @@ import java.nio.file.Path;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Module;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.main.ScribAntlrWrapper;
 import org.scribble.main.resource.InlineResource;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.locator.DirectoryResourceLocator;
 import org.scribble.main.resource.locator.ResourceLocator;
+import org.scribble.parser.scribble.ScribAntlrWrapper;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribParserException;
@@ -47,7 +47,7 @@ public class ScribModuleLoader extends DefaultModuleLoader
 	{
 		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);
 				// Hardcoded to DirectoryResourceLocator
-		Module m = this.antlr.parse(res);  // Does del decoration
+		Module m = this.antlr.parse(res.getInputStream());  // Does del decoration
 		ScribModuleLoader.checkMainModuleName(mainpath, m);
 		ModuleName fullname = m.getFullModuleName();
 		Pair<Resource, Module> cached = super.loadModule(fullname);
@@ -64,7 +64,7 @@ public class ScribModuleLoader extends DefaultModuleLoader
 			throws ScribException, ScribParserException
 	{
 		Resource res = new InlineResource(inline);
-		Module m = (Module) this.antlr.parse(res);  // Does del decoration
+		Module m = (Module) this.antlr.parse(res.getInputStream());  // Does del decoration
 		registerModule(res, m);
 		return new Pair<>(res, m);
 	}
@@ -80,7 +80,7 @@ public class ScribModuleLoader extends DefaultModuleLoader
 			return cached;
 		}
 		Resource res = this.locator.getResource(fullname.toPath());
-		Module m = this.antlr.parse(res);  // Does del decoration
+		Module m = this.antlr.parse(res.getInputStream());  // Does del decoration
 		ScribModuleLoader.checkModuleName(fullname, res, m);
 		registerModule(res, m);
 		return new Pair<>(res, m);

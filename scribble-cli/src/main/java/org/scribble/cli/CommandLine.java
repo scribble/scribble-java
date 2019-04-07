@@ -150,7 +150,7 @@ public class CommandLine
 	}
 
 	protected void runBody()
-			throws ScribParserException, AntlrSourceException, CommandLineException
+			throws ScribException, ScribParserException, AntlrSourceException, CommandLineException
 	{
 		Main mc = newMainContext();  // Represents current instance of tooling for given CL args
 		Lang lang = mc.newLang();  // A Job is some series of passes performed on each Module in the MainContext (e.g., cf. Job::runVisitorPass)

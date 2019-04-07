@@ -40,7 +40,6 @@ public class LangContext
 	protected LangContext(Lang lang, Map<ModuleName, Module> parsed)//, ModuleName main)
 	{
 		this.lang = lang;
-
 		this.parsed = new HashMap<ModuleName, Module>(parsed);
 	}
 

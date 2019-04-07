@@ -14,29 +14,24 @@
 package org.scribble.main;
 
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
-import org.scribble.core.lang.context.ModuleContext;
-import org.scribble.core.model.endpoint.EModelFactory;
 import org.scribble.core.model.endpoint.EModelFactoryImpl;
-import org.scribble.core.model.global.SModelFactory;
 import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.lang.Lang;
 import org.scribble.lang.LangConfig;
-import org.scribble.lang.context.ModuleContextMaker;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.loader.ScribModuleLoader;
 import org.scribble.main.resource.locator.ResourceLocator;
+import org.scribble.parser.scribble.ScribAntlrWrapper;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribParserException;
@@ -59,56 +54,61 @@ public class Main
 	//private final ResourceLocator locator;  // Path -> Resource
 	private final ScribModuleLoader loader;  // ModuleName -> Pair<Resource, Module>
 	
-	private LangConfig config;
-	protected Map<ModuleName, ModuleContext> modcs;  // Full names (like this.loaded)
+	public final LangConfig config;
 
 	// Keys are full names -- loaded are the modules read from file, distinguished from the generated projection modules
 	// Resource recorded for source path
 	private final Map<ModuleName, Pair<Resource, Module>> loaded 
 			= new HashMap<>();
 	
-	// A Scribble extension should override newLang/Antlr/Ast/ModelFactory as appropriate
-	public Lang newLang()
-	{
-		return new Lang(getLoadedModules(), this.modcs, this.config);
-	}
-	
-	// A Scribble extension should override newLang/Antlr/Ast/ModelFactory as appropriate
+	// A Scribble extension should override newAntlr/Lang/LangConfig as appropriate
 	protected ScribAntlrWrapper newAntlr()
 	{
 		return new ScribAntlrWrapper();
 	}
 	
-	// A Scribble extension should override newLang/Antlr/Ast/ModelFactory as appropriate
-	protected AstFactory newAstFactory()
+	// A Scribble extension should override newAntlr/Lang/LangConfig as appropriate
+	public Lang newLang() throws ScribException
 	{
-		return new AstFactoryImpl();
+		return new Lang(getLoadedModules(), this.config);
 	}
 	
-	// A Scribble extension should override newLang/Antlr/Ast/ModelFactory as appropriate
-	protected EModelFactory newEModelFactory()
-	{
-		return new EModelFactoryImpl();
-	}
+	// A Scribble extension should override newAntlr/Lang/LangConfig as appropriate
 	
-	// A Scribble extension should override newLang/Antlr/Ast/ModelFactory as appropriate
-	// CHECKME: combine with newEModelFactory ?
-	protected SModelFactory newSModelFactory()
+	//...FIXME: replace bools by a Map -- needed for subclassing -- pass Map to Lang instead of making config here?
+	//...use Pair to hack a unified constructor 
+	
+	public LangConfig newLangConfig(ModuleName mainFullname,
+			boolean debug, boolean useOldWF, boolean noLiveness,
+			boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
+			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
 	{
-		return new SModelFactoryImpl();
+		return new LangConfig(mainFullname,
+				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
+				noAcceptCorrelationCheck, noValidation, spin,
+				new AstFactoryImpl(), new EModelFactoryImpl(), new SModelFactoryImpl());
+				// CHECKME: combine E/SModelFactory?
 	}
 
 	// Load main module from file system
-	// Load other modules via locator -- CHECKME: a bit inconsistent with the main?
+	// Load other modules via locator -- CHECKME: a bit inconsistent w.r.t. main?
+	// TODO: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
 	public Main(ResourceLocator locator, 
 			boolean debug, Path mainpath, boolean useOldWF, boolean noLiveness,
 			boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck,
 			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
 			throws ScribException, ScribParserException
 	{
-		this(locator);
+		//this.locator = locator;
+		this.loader = new ScribModuleLoader(locator, newAntlr());
+
 		Pair<Resource, Module> main = this.loader.loadMainModule(mainpath);
-		init(main, 
+		loadAllModuleImports(main, 
+				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
+				noAcceptCorrelationCheck, noValidation, spin);
+
+		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
+		this.config = newLangConfig(main.right.getFullModuleName(),
 				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
 				noAcceptCorrelationCheck, noValidation, spin);
 	}
@@ -120,7 +120,9 @@ public class Main
 			boolean noAcceptCorrelationCheck, boolean noValidation, boolean spin)
 			throws ScribException, ScribParserException
 	{
-		this(null);  // CHECKME: null locator
+		//this.locator = null;
+		this.loader = new ScribModuleLoader(null, newAntlr());  // CHECKME: null locator OK?
+
 		Pair<Resource, Module> main = this.loader.loadMainModule(inline);
 		if (main.right.getImportDeclChildren().stream()
 				.anyMatch(x -> x.isImportModule()))
@@ -129,52 +131,29 @@ public class Main
 					"Module imports not permitted in inline main modules.");
 					// Because (currently) null locator
 		}
-		init(main, 
+		loadAllModuleImports(main, 
+				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
+				noAcceptCorrelationCheck, noValidation, spin);
+
+		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
+		this.config = newLangConfig(main.right.getFullModuleName(),
 				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
 				noAcceptCorrelationCheck, noValidation, spin);
 	}
 	
-	// TODO: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
-	private Main(ResourceLocator locator)
-			throws ScribParserException, ScribException
-	{
-		//this.locator = locator; 
-		this.loader = new ScribModuleLoader(locator, newAntlr());
-	}
-
-	private void init(Pair<Resource, Module> main, 
+	// Given the loaded main Module, populates this.loaded and this.modcs
+	// Does so by transitively loading all module imports
+	private void loadAllModuleImports(Pair<Resource, Module> main, 
 			boolean debug, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair,
 			boolean noLocalChoiceSubjectCheck, boolean noAcceptCorrelationCheck,
 			boolean noValidation, boolean spin)
 			throws ScribParserException, ScribException
 	{
-		loadAllModuleImports(main);  // Populates this.loaded
-
-		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
-		this.config = new LangConfig(main.right.getFullModuleName(),
-				debug, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck,
-				noAcceptCorrelationCheck, noValidation, spin,
-				newAstFactory(), newEModelFactory(), newSModelFactory());
-
-		//...
-		// CHECKME: how does this relate to the ModuleContextBuilder pass?
-		// Job.modcs seems unused?  Lang.modcs is used though, by old AST visitors -- basically old ModuleContextVisitor is redundant?
-		// Job.modcs could be used, but disamb already done by Lang
-		// Lang/Job modcs should be moved to config/context though
-
-		Map<ModuleName, Module> loaded = getLoadedModules();
-		ModuleContextMaker maker = new ModuleContextMaker();
-		Map<ModuleName, ModuleContext> modcs = new HashMap<>();
-		for (ModuleName fullname : this.loaded.keySet())
-		{
-			Pair<Resource, Module> e = this.loaded.get(fullname);
-			modcs.put(fullname, maker.make(loaded, e.right));  // Throws ScribException
-		}
-		this.modcs = Collections.unmodifiableMap(modcs);
+		loadAllAux(main);  // Populates this.loaded
 	}
 
-	// Populates this.loaded
-	private void loadAllModuleImports(Pair<Resource, Module> m)
+	// Recursively records m in this.loaded and loads all module imports of m
+	private void loadAllAux(Pair<Resource, Module> m)
 			throws ScribParserException, ScribException
 	{
 		this.loaded.put(m.right.getFullModuleName(), m);
@@ -186,13 +165,13 @@ public class Main
 						((ImportModule) id).getModuleNameNodeChild().toName();
 				if (!this.loaded.containsKey(fullname))
 				{
-					loadAllModuleImports(this.loader.loadModule(fullname));
+					loadAllAux(this.loader.loadModule(fullname));
 				}
 			}
 		}
 	}
 	
-	private Map<ModuleName, Module> getLoadedModules()
+	public Map<ModuleName, Module> getLoadedModules()
 	{
 		return this.loaded.entrySet().stream()
 				.collect(Collectors.toMap(Entry::getKey, e -> e.getValue().right));

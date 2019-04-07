@@ -15,7 +15,7 @@ package org.scribble.lang;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +26,7 @@ import org.scribble.core.job.Job;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.lang.context.ModuleContextMaker;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.GTypeTranslator;
@@ -37,39 +38,48 @@ public class Lang
 {
 	public final LangConfig config;  // Immutable
 
-	private final LangContext context;  // Mutable (Visitor passes replace modules)
-	//private final SGraphBuilderUtil sgbu;
-
 	// Keys are full names
-	private final Map<ModuleName, ModuleContext> modcs;  // CHECKME: constant?  move to JobConfig?
+	private final Map<ModuleName, ModuleContext> modcs = new HashMap<>();  // CHECKME: constant?  move to JobConfig?
+
+	private final LangContext context;  // Mutable: Visitor passes update modules
 	
 	private Job job;
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Lang(Map<ModuleName, Module> parsed,
-			Map<ModuleName, ModuleContext> modcs, LangConfig config)
+	public Lang(Map<ModuleName, Module> parsed, LangConfig config)
+			throws ScribException
 	{
-		this.modcs = Collections.unmodifiableMap(modcs);
 		this.config = config;
-		//this.sgbu = config.sf.newSGraphBuilderUtil();
-		this.context = new LangContext(this, parsed);  // Single instance per Job and should never be shared
+		this.context = new LangContext(this, parsed);  // Single instance per Lang, should not be shared between Langs
+
+		// CHECKME: how does this relate to the ModuleContextBuilder pass?
+		// Job.modcs seems unused?  Lang.modcs is used though, by old AST visitors -- basically old ModuleContextVisitor is redundant?
+		// Job.modcs could be used, but disamb already done by Lang
+		// Lang/Job modcs should be moved to config/context though
+		ModuleContextMaker maker = new ModuleContextMaker();
+		for (ModuleName fullname : parsed.keySet())
+		{
+			this.modcs.put(fullname, maker.make(parsed, parsed.get(fullname)));  
+					// Throws ScribException
+		}
 	}
 	
+	// "Finalises" this Lang -- caches the Job at this point, and cannot run futher Visitor passes
+	// CHECKME: revise this pattern?
 	public Job toJob() throws ScribException
 	{
 		if (this.job == null)
 		{
-			Set<ModuleName> fullmodnames = this.context.getFullModuleNames();
+			Set<ModuleName> fullnames = this.context.getFullModuleNames();
 			Set<GProtocol> imeds = new HashSet<>();
-			for (ModuleName fullmodname : fullmodnames)
+			for (ModuleName fullname : fullnames)
 			{
-				Module mod = this.context.getModule(fullmodname);
-				GTypeTranslator t = new GTypeTranslator(this, fullmodname);
-				for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
+				Module m = this.context.getModule(fullname);
+				GTypeTranslator t = new GTypeTranslator(this, fullname);
+				for (GProtocolDecl gpd : m.getGProtoDeclChildren())
 				{
 					GProtocol g = (GProtocol) gpd.visitWith(t);
-					//this.context.addIntermediate(g.fullname, g);
 					imeds.add(g);
 					debugPrintln("\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
 				}
@@ -152,6 +162,10 @@ public class Lang
 	private void runVisitorOnModule(ModuleName modname, AstVisitor nv)
 			throws ScribException
 	{
+		if (this.job != null)
+		{
+			throw new RuntimeException("toJob already finalised: ");
+		}
 		Module visited = (Module) this.context.getModule(modname).accept(nv);
 		this.context.replaceModule(visited);
 	}

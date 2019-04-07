@@ -59,13 +59,13 @@ public class Job
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Job(Set<GProtocol> parsed,//Map<ModuleName, Module> parsed,
+	public Job(Set<GProtocol> imeds,//Map<ModuleName, Module> parsed,
 			Map<ModuleName, ModuleContext> modcs, JobConfig config)
 	{
 		this.modcs = Collections.unmodifiableMap(modcs);
 		this.config = config;
 		this.sgbu = config.sf.newSGraphBuilderUtil();
-		this.context = new JobContext(this, parsed);  // Single instance per Job and should never be shared
+		this.context = new JobContext(this, imeds);  // Single instance per Job and should never be shared
 	}
 	
 	// Scribble extensions should override these "new" methods

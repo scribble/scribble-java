@@ -20,7 +20,7 @@ import org.antlr.runtime.tree.Tree;
 import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
-import org.scribble.visit.SimpleVisitor;
+import org.scribble.visit.SimpleAstVisitor;
 import org.scribble.visit.Substitutor;
 
 /**
@@ -44,7 +44,7 @@ public interface ScribNode extends Tree
 	ScribDel del();
 	ScribNode del(ScribDel del);
 	
-	default <T> T visitWith(SimpleVisitor<T> v) throws ScribException  // "Top-level" visitor entry method
+	default <T> T visitWith(SimpleAstVisitor<T> v) throws ScribException  // "Top-level" visitor entry method
 	{
 		return v.visit(this);  // N.B. ScribNode has getParent
 	}

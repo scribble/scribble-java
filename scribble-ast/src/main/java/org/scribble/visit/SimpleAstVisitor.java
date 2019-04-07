@@ -22,15 +22,15 @@ import org.scribble.util.ScribException;
 // A SimpleVisitor visits a Module (or some part of one) for a given Job
 // Apart from delegating to del-specific visiting methods, SimpleVisitors are mainly for holding data and collecting common operations 
 // TODO CHECKME: refactor AstVisitor as a SimpleVisitor?  i.e., T=ScribNode ?
-public abstract class SimpleVisitor<T>
+public abstract class SimpleAstVisitor<T>
 {
 	public final Lang lang;
-	public final ModuleName mod;  // fullname
+	public final ModuleName fullname;  // Root module -- used to get ModuleContext
 
-	public SimpleVisitor(Lang lang, ModuleName fullname)
+	public SimpleAstVisitor(Lang lang, ModuleName fullname)
 	{
 		this.lang = lang;
-		this.mod = fullname;
+		this.fullname = fullname;
 	}
 	
 	// Override to delegate to del-specific method, e.g., n.del().visit(n, this)
@@ -39,6 +39,6 @@ public abstract class SimpleVisitor<T>
 	
 	public ModuleContext getModuleContext()
 	{
-		return this.lang.getModuleContext(this.mod);
+		return this.lang.getModuleContext(this.fullname);
 	}
 }
