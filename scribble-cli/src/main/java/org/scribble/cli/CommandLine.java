@@ -100,7 +100,7 @@ public class CommandLine
 			ResourceLocator locator = new DirectoryResourceLocator(impaths);
 			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
 			return new Main(locator,
-					debug, mainpath, useOldWF, noLiveness, minEfsm, fair,
+					mainpath, debug, useOldWF, noLiveness, minEfsm, fair,
 					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation,
 					spin);
 		}
