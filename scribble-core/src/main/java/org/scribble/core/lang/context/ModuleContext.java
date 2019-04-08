@@ -29,7 +29,7 @@ import org.scribble.core.type.name.ProtocolName;
 import org.scribble.util.ScribException;
 
 // Context information specific to each module as a root (wrt. to visitor passes)
-// CHECKME: move to main package?
+// CHECKME: currently unused within core -- refactor out to lang package?
 public class ModuleContext
 {
 	public final ModuleName root;  // full name  // The root Module for this ModuleContext (cf. the "main" root module from CLI)

@@ -15,10 +15,13 @@ package org.scribble.cli;
 
 public enum CLArgFlag
 {
+	// Implicit (and unique)
+	MAIN_MOD,
+
 	// Unique flags
 	JUNIT,  // For internal use (JUnit test harness)
-	MAIN_MOD,
 	IMPORT_PATH,
+	API_OUTPUT,
 	VERBOSE,
 	SCHAN_API_SUBTYPES,
 	OLD_WF,
@@ -35,7 +38,6 @@ public enum CLArgFlag
 
 	// Non-unique flags
 	PROJECT,
-	API_OUTPUT,
 	EFSM,
 	VALIDATION_EFSM,
 	UNFAIR_EFSM,

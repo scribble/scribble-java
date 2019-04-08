@@ -51,23 +51,29 @@ import org.scribble.util.ScribUtil;
 
 public class CommandLine
 {
-	protected final Map<CLArgFlag, String[]> args;  // Maps each flag to list of associated argument values
+	//public final Map<CLFlags, String[]> args;  // Maps each flag to list of associated argument values
+	public final Map<String, String[]> args;  // Maps each flag to list of associated argument values
 
-	protected CommandLine(CLArgParser p) throws CommandLineException
+	protected CommandLine(CLArgParser2 p) throws CommandLineException
 	{
-		p.parse();
-		this.args = p.getArgs();
+		this.args = p.getParsed();
 	}
 
 	public CommandLine(String... args) throws CommandLineException
 	{
 		//this.args = new CLArgParser(args).getArgs();
-		this(new CLArgParser(args));
-		if (!this.args.containsKey(CLArgFlag.MAIN_MOD)
-				&& !this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
+		this(new CLArgParser2(args));
+		if (!(this.args.containsKey(CLFlags.MAIN_MOD_FLAG)
+				|| this.args.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG)))
 		{
 			throw new CommandLineException("No main module has been specified\r\n");
 		}
+	}
+
+	public static void main(String[] args)
+			throws CommandLineException, AntlrSourceException
+	{
+		new CommandLine(args).run();
 	}
 
 	// A Scribble extension should override newMainContext as appropriate.
@@ -75,17 +81,17 @@ public class CommandLine
 			throws ScribParserException, ScribException
 	{
 		// FIXME: refactor into arg parsing
-		boolean debug = this.args.containsKey(CLArgFlag.VERBOSE);  // TODO: factor out (cf. MainContext fields)
-		boolean useOldWf = this.args.containsKey(CLArgFlag.OLD_WF);
-		boolean noProgress = this.args.containsKey(CLArgFlag.NO_PROGRESS);
-		boolean minEfsm = this.args.containsKey(CLArgFlag.LTSCONVERT_MIN);
-		boolean fair = this.args.containsKey(CLArgFlag.FAIR);
+		boolean debug = this.args.containsKey(CLFlags.VERBOSE_FLAG);  // TODO: factor out (cf. MainContext fields)
+		boolean useOldWf = this.args.containsKey(CLFlags.OLD_WF_FLAG);
+		boolean noProgress = this.args.containsKey(CLFlags.NO_LIVENESS_FLAG);
+		boolean minEfsm = this.args.containsKey(CLFlags.LTSCONVERT_MIN_FLAG);
+		boolean fair = this.args.containsKey(CLFlags.FAIR_FLAG);
 		boolean noLocalChoiceSubjectCheck = 
-				this.args.containsKey(CLArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK);
+				this.args.containsKey(CLFlags.NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG);
 		boolean noAcceptCorrelationCheck = 
-				this.args.containsKey(CLArgFlag.NO_ACCEPT_CORRELATION_CHECK);
-		boolean noValidation = this.args.containsKey(CLArgFlag.NO_VALIDATION);
-		boolean spin = this.args.containsKey(CLArgFlag.SPIN);
+				this.args.containsKey(CLFlags.NO_ACCEPT_CORRELATION_CHECK_FLAG);
+		boolean noValidation = this.args.containsKey(CLFlags.NO_VALIDATION_FLAG);
+		boolean spin = this.args.containsKey(CLFlags.SPIN_FLAG);
 		
 		// FIXME: refactor into arg parsing
 		Map<JobArgs, Boolean> args = new HashMap<>();
@@ -100,26 +106,20 @@ public class CommandLine
 		args.put(JobArgs.SPIN, spin);
 		args = Collections.unmodifiableMap(args);
 
-		List<Path> impaths = this.args.containsKey(CLArgFlag.IMPORT_PATH)
-				? CommandLine.parseImportPaths(this.args.get(CLArgFlag.IMPORT_PATH)[0])
+		List<Path> impaths = this.args.containsKey(CLFlags.IMPORT_PATH_FLAG)
+				? CommandLine.parseImportPaths(this.args.get(CLFlags.IMPORT_PATH_FLAG)[0])
 				: Collections.emptyList();
-		if (this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
+		if (this.args.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG))
 		{
-			String inline = this.args.get(CLArgFlag.INLINE_MAIN_MOD)[0];
+			String inline = this.args.get(CLFlags.INLINE_MAIN_MOD_FLAG)[0];
 			return new Main(inline, args);
 		}
 		else
 		{
 			ResourceLocator locator = new DirectoryResourceLocator(impaths);
-			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
+			Path mainpath = CommandLine.parseMainPath(this.args.get(CLFlags.MAIN_MOD_FLAG)[0]);
 			return new Main(locator, mainpath, args);
 		}
-	}
-
-	public static void main(String[] args)
-			throws CommandLineException, AntlrSourceException
-	{
-		new CommandLine(args).run();
 	}
 
 	public void run() throws CommandLineException, AntlrSourceException  // ScribbleException is for JUnit testing
@@ -132,8 +132,8 @@ public class CommandLine
 			}
 			catch (ScribException e)  // Wouldn't need to do this if not Runnable (so maybe change)
 			{
-				if (this.args.containsKey(CLArgFlag.JUNIT)
-						|| this.args.containsKey(CLArgFlag.VERBOSE))
+				if (this.args.containsKey(CLFlags.JUNIT_FLAG)
+						|| this.args.containsKey(CLFlags.VERBOSE_FLAG))
 				{
 					/*RuntimeScribbleException ee = new RuntimeScribbleException(e.getMessage());
 					ee.setStackTrace(e.getStackTrace());
@@ -221,38 +221,38 @@ public class CommandLine
 			throws CommandLineException, ScribException
 	{
 		// Following must be ordered appropriately -- ?
-		if (this.args.containsKey(CLArgFlag.PROJECT))
+		if (this.args.containsKey(CLFlags.PROJECT_FLAG))
 		{
 			printProjections(lang);
 		}
-		if (this.args.containsKey(CLArgFlag.EFSM))
+		if (this.args.containsKey(CLFlags.EFSM_FLAG))
 		{
 			printEGraph(lang, true, true);
 		}
-		if (this.args.containsKey(CLArgFlag.VALIDATION_EFSM))
+		if (this.args.containsKey(CLFlags.VALIDATION_EFSM_FLAG))
 		{
 			printEGraph(lang, false, true);
 		}
-		if (this.args.containsKey(CLArgFlag.UNFAIR_EFSM))
+		if (this.args.containsKey(CLFlags.UNFAIR_EFSM_FLAG))
 		{
 			printEGraph(lang, false, false);
 		}
-		if (this.args.containsKey(CLArgFlag.EFSM_PNG))
+		if (this.args.containsKey(CLFlags.EFSM_PNG_FLAG))
 		{
 			drawEGraph(lang, true, true);
 		}
-		if (this.args.containsKey(CLArgFlag.VALIDATION_EFSM_PNG))
+		if (this.args.containsKey(CLFlags.VALIDATION_EFSM_PNG_FLAG))
 		{
 			drawEGraph(lang, false, true);
 		}
-		if (this.args.containsKey(CLArgFlag.UNFAIR_EFSM_PNG))
+		if (this.args.containsKey(CLFlags.UNFAIR_EFSM_PNG_FLAG))
 		{
 			drawEGraph(lang, false, false);
 		}
-		if (this.args.containsKey(CLArgFlag.SGRAPH)
-				|| this.args.containsKey(CLArgFlag.SGRAPH_PNG)
-				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH)
-				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
+		if (this.args.containsKey(CLFlags.SGRAPH_FLAG)
+				|| this.args.containsKey(CLFlags.SGRAPH_PNG_FLAG)
+				|| this.args.containsKey(CLFlags.UNFAIR_SGRAPH_FLAG)
+				|| this.args.containsKey(CLFlags.UNFAIR_SGRAPH_PNG_FLAG))
 		{
 			if (lang.config.args.get(JobArgs.OLD_WF))
 			{
@@ -260,19 +260,19 @@ public class CommandLine
 						"Global model flag(s) incompatible with: "
 								+ CLArgParser.OLD_WF_FLAG);
 			}
-			if (this.args.containsKey(CLArgFlag.SGRAPH))
+			if (this.args.containsKey(CLFlags.SGRAPH_FLAG))
 			{
 				printSGraph(lang, true);
 			}
-			if (this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH))
+			if (this.args.containsKey(CLFlags.UNFAIR_SGRAPH_FLAG))
 			{
 				printSGraph(lang, false);
 			}
-			if (this.args.containsKey(CLArgFlag.SGRAPH_PNG))
+			if (this.args.containsKey(CLFlags.SGRAPH_PNG_FLAG))
 			{
 				drawSGraph(lang, true);
 			}
-			if (this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
+			if (this.args.containsKey(CLFlags.UNFAIR_SGRAPH_PNG_FLAG))
 			{
 				drawSGraph(lang, false);
 			}
@@ -283,19 +283,19 @@ public class CommandLine
 	protected void doNonAttemptableOutputTasks(Lang lang)
 			throws ScribException, CommandLineException
 	{
-		if (this.args.containsKey(CLArgFlag.SESS_API_GEN))
+		if (this.args.containsKey(CLFlags.SESSION_API_GEN_FLAG))
 		{
 			outputSessionApi(lang);
 		}
-		if (this.args.containsKey(CLArgFlag.SCHAN_API_GEN))
+		if (this.args.containsKey(CLFlags.STATECHAN_API_GEN_FLAG))
 		{
 			outputStateChannelApi(lang);
 		}
-		if (this.args.containsKey(CLArgFlag.API_GEN))
+		if (this.args.containsKey(CLFlags.API_GEN_FLAG))
 		{
 			outputEndpointApi(lang);
 		}
-		if (this.args.containsKey(CLArgFlag.ED_API_GEN))
+		if (this.args.containsKey(CLFlags.EVENTDRIVEN_API_GEN_FLAG))
 		{
 			outputEventDrivenApi(lang);
 		}
@@ -307,7 +307,7 @@ public class CommandLine
 	{
 		LangContext jobc = lang.getContext();
 		Job job = lang.toJob();
-		String[] args = this.args.get(CLArgFlag.PROJECT);
+		String[] args = this.args.get(CLFlags.PROJECT_FLAG);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
@@ -327,16 +327,16 @@ public class CommandLine
 	{
 		LangContext jobc = lang.getContext();
 		String[] args = forUser 
-				? this.args.get(CLArgFlag.EFSM)
+				? this.args.get(CLFlags.EFSM_FLAG)
 				: (fair 
-						? this.args.get(CLArgFlag.VALIDATION_EFSM)
-						: this.args.get(CLArgFlag.UNFAIR_EFSM));
+						? this.args.get(CLFlags.VALIDATION_EFSM_FLAG)
+						: this.args.get(CLFlags.UNFAIR_EFSM_FLAG));
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			Role role = checkRoleArg(jobc, fullname, args[i+1]);
 			EGraph fsm = getEGraph(lang, fullname, role, forUser, fair);
-			String out = this.args.containsKey(CLArgFlag.AUT) 
+			String out = this.args.containsKey(CLFlags.AUT_FLAG) 
 					? fsm.toAut()
 					: fsm.toDot();
 			System.out.println("\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
@@ -348,10 +348,10 @@ public class CommandLine
 	{
 		LangContext jobc = lang.getContext();
 		String[] args = forUser 
-				? this.args.get(CLArgFlag.EFSM_PNG)
+				? this.args.get(CLFlags.EFSM_PNG_FLAG)
 				: (fair 
-						? this.args.get(CLArgFlag.VALIDATION_EFSM_PNG)
-						: this.args.get(CLArgFlag.UNFAIR_EFSM_PNG));
+						? this.args.get(CLFlags.VALIDATION_EFSM_PNG_FLAG)
+						: this.args.get(CLFlags.UNFAIR_EFSM_PNG_FLAG));
 		for (int i = 0; i < args.length; i += 3)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
@@ -375,12 +375,12 @@ public class CommandLine
 				.contains(role))
 		{
 			throw new CommandLineException("Bad FSM construction args: "
-					+ Arrays.toString(this.args.get(CLArgFlag.DOT)));
+					+ Arrays.toString(this.args.get(CLFlags.DOT_FLAG)));
 		}
 		EGraph graph;
 		if (forUser)  // The (possibly minimised) user-output EFSM for API gen
 		{
-			graph = this.args.containsKey(CLArgFlag.LTSCONVERT_MIN)
+			graph = this.args.containsKey(CLFlags.LTSCONVERT_MIN_FLAG)
 					? jobc2.getMinimisedEGraph(fullname, role)
 					: jobc2.getEGraph(fullname, role);
 		}
@@ -404,13 +404,13 @@ public class CommandLine
 	{
 		LangContext jobc = lang.getContext();
 		String[] args = fair 
-				? this.args.get(CLArgFlag.SGRAPH)
-				: this.args.get(CLArgFlag.UNFAIR_SGRAPH);
+				? this.args.get(CLFlags.SGRAPH_FLAG)
+				: this.args.get(CLFlags.UNFAIR_SGRAPH_FLAG);
 		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			SGraph model = getSGraph(lang, fullname, fair);
-			String out = this.args.containsKey(CLArgFlag.AUT) 
+			String out = this.args.containsKey(CLFlags.AUT_FLAG) 
 					? model.toAut()
 					: model.toDot();
 			System.out.println("\n" + out);
@@ -422,8 +422,8 @@ public class CommandLine
 	{
 		LangContext jobc = lang.getContext();
 		String[] args = fair 
-				? this.args.get(CLArgFlag.SGRAPH_PNG)
-				: this.args.get(CLArgFlag.UNFAIR_SGRAPH_PNG);
+				? this.args.get(CLFlags.SGRAPH_PNG_FLAG)
+				: this.args.get(CLFlags.UNFAIR_SGRAPH_PNG_FLAG);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
@@ -452,7 +452,7 @@ public class CommandLine
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		String[] args = this.args.get(CLArgFlag.API_GEN);
+		String[] args = this.args.get(CLFlags.API_GEN_FLAG);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(lang);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
@@ -461,7 +461,7 @@ public class CommandLine
 			outputClasses(sessClasses);
 			Role role = checkRoleArg(jobc, fullname, args[i+1]);
 			Map<String, String> scClasses = jgen.generateStateChannelApi(fullname,
-					role, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
+					role, this.args.containsKey(CLFlags.STATECHAN_API_GEN_FLAG));
 			outputClasses(scClasses);
 		}
 	}
@@ -470,7 +470,7 @@ public class CommandLine
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		String[] args = this.args.get(CLArgFlag.SESS_API_GEN);
+		String[] args = this.args.get(CLFlags.SESSION_API_GEN_FLAG);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(lang);  // TODO: refactor (generalise -- use new API)
 		for (String fullname : args)
 		{
@@ -484,14 +484,14 @@ public class CommandLine
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		String[] args = this.args.get(CLArgFlag.SCHAN_API_GEN);
+		String[] args = this.args.get(CLFlags.STATECHAN_API_GEN_FLAG);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(lang);  // TODO: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			Role self = checkRoleArg(jobc, fullname, args[i+1]);
 			Map<String, String> classes = jgen.generateStateChannelApi(fullname, self,
-					this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
+					this.args.containsKey(CLFlags.STATECHAN_API_GEN_FLAG));
 			outputClasses(classes);
 		}
 	}
@@ -500,7 +500,7 @@ public class CommandLine
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		String[] args = this.args.get(CLArgFlag.ED_API_GEN);
+		String[] args = this.args.get(CLFlags.EVENTDRIVEN_API_GEN_FLAG);
 		/*JEndpointApiGenerator jgen = new JEndpointApiGenerator(lang);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
@@ -508,7 +508,7 @@ public class CommandLine
 			Map<String, String> sessClasses = jgen.generateSessionApi(fullname);
 			outputClasses(sessClasses);
 			Role role = checkRoleArg(jobc, fullname, args[i+1]);
-			Map<String, String> scClasses = jgen.generateStateChannelApi(fullname, role, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
+			Map<String, String> scClasses = jgen.generateStateChannelApi(fullname, role, this.args.containsKey(CLFlags.SCHAN_API_SUBTYPES));
 			outputClasses(scClasses);
 		}*/
 		for (int i = 0; i < args.length; i += 2)
@@ -516,7 +516,7 @@ public class CommandLine
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			Role self = checkRoleArg(jobc, fullname, args[i+1]);
 			CBEndpointApiGenerator3 edgen = new CBEndpointApiGenerator3(lang, fullname,
-					self, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
+					self, this.args.containsKey(CLFlags.STATECHAN_API_GEN_FLAG));
 			Map<String, String> out = edgen.build();
 			outputClasses(out);
 		}
@@ -527,13 +527,13 @@ public class CommandLine
 			throws ScribException
 	{
 		Consumer<String> f;
-		if (this.args.containsKey(CLArgFlag.API_OUTPUT))
+		if (this.args.containsKey(CLFlags.API_GEN_FLAG))
 		{
-			String dir = this.args.get(CLArgFlag.API_OUTPUT)[0];
+			String dir = this.args.get(CLFlags.API_GEN_FLAG)[0];
 			f = path -> { ScribUtil.handleLambdaScribbleException(() ->
 							{
 								String tmp = dir + "/" + path;
-								if (this.args.containsKey(CLArgFlag.VERBOSE))
+								if (this.args.containsKey(CLFlags.VERBOSE_FLAG))
 								{
 									System.out.println("[DEBUG] Writing to: " + tmp);
 								}

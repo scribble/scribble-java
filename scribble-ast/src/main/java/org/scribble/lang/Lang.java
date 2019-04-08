@@ -91,8 +91,9 @@ public class Lang
 		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
 	}
 	
-	// "Finalises" this Lang -- caches the Job at this point, and cannot run futher Visitor passes
-	// So, typically, passes already run
+	// "Finalises" this Lang -- initialises the Job at this point, and cannot run futher Visitor passes on Lang
+	// So, typically, Lang passes should be finished before calling this
+	// Job passes may subsequently mutate Job(Context) though
 	// CHECKME: revise this pattern?
 	public final Job toJob() throws ScribException
 	{
@@ -122,7 +123,7 @@ public class Lang
 		return this.context;
 	}
 
-	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c)
+	public void runVisitorPassOnAllModules(Class<? extends AstVisitor> c)
 			throws ScribException
 	{
 		debugPrintPass("Running " + c + " on all modules:");

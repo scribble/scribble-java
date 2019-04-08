@@ -31,13 +31,13 @@ public class CLArgParser
 	public static final String NO_LIVENESS_FLAG = "-nolive";
 	public static final String LTSCONVERT_MIN_FLAG = "-minlts";
 	public static final String FAIR_FLAG = "-fair";
-	public static final String NO_LOCAL_CHOICE_SUBJECT_CHECK = "-nolocalchoicecheck";
-	public static final String NO_ACCEPT_CORRELATION_CHECK = "-nocorrelation";
+	public static final String NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG = "-nolocalchoicecheck";
+	public static final String NO_ACCEPT_CORRELATION_CHECK_FLAG = "-nocorrelation";
 	public static final String DOT_FLAG = "-dot";
 	public static final String AUT_FLAG = "-aut";
 	public static final String NO_VALIDATION_FLAG = "-novalid";
 	public static final String INLINE_MAIN_MOD_FLAG = "-inline";
-	public static final String SPIN = "-spin";
+	public static final String SPIN_FLAG = "-spin";
 	
 	// Non-unique flags
 	public static final String PROJECT_FLAG = "-project";
@@ -54,7 +54,6 @@ public class CLArgParser
 	public static final String API_GEN_FLAG = "-api";
 	public static final String SESSION_API_GEN_FLAG = "-sessapi";
 	public static final String STATECHAN_API_GEN_FLAG = "-chanapi";
-
 	public static final String EVENTDRIVEN_API_GEN_FLAG = "-cbapi";
 	
 	private static final Map<String, CLArgFlag> UNIQUE_FLAGS = new HashMap<>();
@@ -67,13 +66,13 @@ public class CLArgParser
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.OLD_WF_FLAG, CLArgFlag.OLD_WF);
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.LTSCONVERT_MIN_FLAG, CLArgFlag.LTSCONVERT_MIN);
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.FAIR_FLAG, CLArgFlag.FAIR);
-		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK, CLArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK);
-		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.NO_ACCEPT_CORRELATION_CHECK, CLArgFlag.NO_ACCEPT_CORRELATION_CHECK);
+		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG, CLArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK);
+		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.NO_ACCEPT_CORRELATION_CHECK_FLAG, CLArgFlag.NO_ACCEPT_CORRELATION_CHECK);
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.DOT_FLAG, CLArgFlag.DOT);
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.AUT_FLAG, CLArgFlag.AUT);
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.NO_VALIDATION_FLAG, CLArgFlag.NO_VALIDATION);
 		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.INLINE_MAIN_MOD_FLAG, CLArgFlag.INLINE_MAIN_MOD);
-		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.SPIN, CLArgFlag.SPIN);
+		CLArgParser.UNIQUE_FLAGS.put(CLArgParser.SPIN_FLAG, CLArgFlag.SPIN);
 	}
 
 	private static final Map<String, CLArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -188,10 +187,10 @@ public class CLArgParser
 			case CLArgParser.NO_LIVENESS_FLAG:
 			case CLArgParser.LTSCONVERT_MIN_FLAG:
 			case CLArgParser.FAIR_FLAG:
-			case CLArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK:
-			case CLArgParser.NO_ACCEPT_CORRELATION_CHECK:
+			case CLArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG:
+			case CLArgParser.NO_ACCEPT_CORRELATION_CHECK_FLAG:
 			case CLArgParser.NO_VALIDATION_FLAG:
-			case CLArgParser.SPIN:
+			case CLArgParser.SPIN_FLAG:
 			{
 				checkAndAddNoArgUniqueFlag(flag);
 				return i;

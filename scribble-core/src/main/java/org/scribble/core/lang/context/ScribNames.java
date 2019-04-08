@@ -16,7 +16,6 @@ package org.scribble.core.lang.context;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
@@ -24,7 +23,7 @@ import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtocolName;
 
-// TODO: fix mutable public collection fields
+// TODO: fix mutable public collection fields -- currently hacked for ModuleContext(Collector) internal use
 // TODO: rename better
 public class ScribNames
 {
@@ -38,15 +37,18 @@ public class ScribNames
 	@Override
 	public String toString()
 	{
-		return "(modules=" + this.modules + ", types=" + this.data + ", sigs=" + this.sigs
-				+ ", globals=" + this.globals + ", locals=" + this.locals + ")";
+		return "(modules="
+				+ this.modules + ", types=" + this.data + ", sigs=" + this.sigs
+				+ ", globals=" + this.globals + ", locals=" + this.locals
+				+ ")";
 	}
-	
-	public <K extends ProtocolKind> boolean isVisibleProtocolDeclName(ProtocolName<K> visname)
+
+	public boolean isVisibleProtocolDeclName(ProtocolName<?> visname)
 	{
-		return this.globals.containsKey(visname) || this.locals.containsKey(visname);
+		return this.globals.containsKey(visname)
+				|| this.locals.containsKey(visname);
 	}
-	
+
 	public boolean isVisibleDataType(DataType visname)
 	{
 		return this.data.containsKey(visname);
