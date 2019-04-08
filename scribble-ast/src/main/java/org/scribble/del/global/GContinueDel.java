@@ -21,7 +21,7 @@ import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
 public class GContinueDel extends ContinueDel
-		implements GSimpleInteractionNodeDel
+		implements GSimpleSessionNodeDel
 {
 	
 	@Override

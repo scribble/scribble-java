@@ -23,7 +23,7 @@ import org.scribble.visit.wf.NameDisambiguator;
 
 // TODO: make DisconnectDel (cf., G/LMessageTransferDel)
 public class GDisconnectDel extends ConnectionActionDel
-		implements GSimpleInteractionNodeDel
+		implements GSimpleSessionNodeDel
 {
 	public GDisconnectDel()
 	{

@@ -15,7 +15,7 @@ package org.scribble.del.local;
 
 import org.scribble.del.ConnectionActionDel;
 
-public abstract class LConnectionActionDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
+public abstract class LConnectionActionDel extends ConnectionActionDel implements LSimpleSessionNodeDel
 {
 
 }

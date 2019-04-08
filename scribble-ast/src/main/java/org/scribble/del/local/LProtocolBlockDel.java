@@ -16,6 +16,7 @@ package org.scribble.del.local;
 import org.scribble.del.ProtocolBlockDel;
 
 public class LProtocolBlockDel extends ProtocolBlockDel
+		implements LCompoundSessionNodeDel
 {
 
 }

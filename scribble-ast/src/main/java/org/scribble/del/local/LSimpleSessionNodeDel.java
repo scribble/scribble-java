@@ -13,7 +13,7 @@
  */
 package org.scribble.del.local;
 
-public interface LCompoundInteractionNodeDel extends LInteractionNodeDel
+public interface LSimpleSessionNodeDel extends LSessionNodeDel
 {
-	
+
 }

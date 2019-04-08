@@ -15,7 +15,7 @@ package org.scribble.del.local;
 
 import org.scribble.del.DoDel;
 
-public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
+public class LDoDel extends DoDel implements LSimpleSessionNodeDel
 {
 
 }

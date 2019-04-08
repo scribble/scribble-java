@@ -14,7 +14,7 @@
 package org.scribble.del.local;
 
 public class LAcceptDel extends LConnectionActionDel
-		implements LSimpleInteractionNodeDel
+		implements LSimpleSessionNodeDel
 {
 	
 }

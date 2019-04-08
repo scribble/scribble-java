@@ -15,7 +15,7 @@ package org.scribble.del.local;
 
 import org.scribble.del.MessageTransferDel;
 
-public abstract class LMessageTransferDel extends MessageTransferDel implements LSimpleInteractionNodeDel
+public abstract class LMessageTransferDel extends MessageTransferDel implements LSimpleSessionNodeDel
 {
 
 }

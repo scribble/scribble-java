@@ -15,7 +15,7 @@ package org.scribble.del.local;
 
 import org.scribble.del.ChoiceDel;
 
-public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
+public class LChoiceDel extends ChoiceDel implements LCompoundSessionNodeDel
 {
 	
 }

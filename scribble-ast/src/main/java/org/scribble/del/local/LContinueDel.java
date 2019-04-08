@@ -16,7 +16,7 @@ package org.scribble.del.local;
 import org.scribble.del.ContinueDel;
 
 public class LContinueDel extends ContinueDel
-		implements LSimpleInteractionNodeDel
+		implements LSimpleSessionNodeDel
 {
 
 }

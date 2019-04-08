@@ -25,7 +25,7 @@ import org.scribble.del.ChoiceDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
-public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
+public class GChoiceDel extends ChoiceDel implements GCompoundSessionNodeDel
 {
 	
 	@Override

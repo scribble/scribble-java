@@ -23,7 +23,7 @@ import org.scribble.visit.wf.NameDisambiguator;
 
 // TODO: make WrapDel (cf., G/LMessageTransferDel)
 public class GWrapDel extends ConnectionActionDel
-		implements GSimpleInteractionNodeDel
+		implements GSimpleSessionNodeDel
 {
 	public GWrapDel()
 	{

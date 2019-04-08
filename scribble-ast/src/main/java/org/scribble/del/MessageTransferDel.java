@@ -13,6 +13,7 @@
  */
 package org.scribble.del;
 
+// TODO: refactor according to ast hierarchy, i.e., basic->directed->connect/message, basic->disconnect
 public abstract class MessageTransferDel extends SimpleSessionNodeDel
 {
 	public MessageTransferDel()

@@ -22,7 +22,7 @@ import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
 public class GRecursionDel extends RecursionDel
-		implements GCompoundInteractionNodeDel
+		implements GCompoundSessionNodeDel
 {
 	
 	@Override

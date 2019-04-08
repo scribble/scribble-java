@@ -13,7 +13,7 @@
  */
 package org.scribble.del.global;
 
-public interface GCompoundInteractionNodeDel extends GInteractionNodeDel
+public interface GSimpleSessionNodeDel extends GSessionNodeDel
 {
 
 }

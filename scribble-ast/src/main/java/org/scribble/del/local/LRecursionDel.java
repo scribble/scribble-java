@@ -16,7 +16,7 @@ package org.scribble.del.local;
 import org.scribble.del.RecursionDel;
 
 public class LRecursionDel extends RecursionDel
-		implements LCompoundInteractionNodeDel
+		implements LCompoundSessionNodeDel
 {
 
 }

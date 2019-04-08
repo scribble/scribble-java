@@ -16,7 +16,7 @@ package org.scribble.del.local;
 import org.scribble.del.ConnectionActionDel;
 
 public class LWrapServerDel extends ConnectionActionDel
-		implements LSimpleInteractionNodeDel
+		implements LSimpleSessionNodeDel
 {
 
 }

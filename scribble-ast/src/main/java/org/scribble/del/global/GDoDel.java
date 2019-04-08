@@ -26,7 +26,7 @@ import org.scribble.del.DoDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
-public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
+public class GDoDel extends DoDel implements GSimpleSessionNodeDel
 {
 	@Override
 	public org.scribble.core.type.session.global.GDo translate(ScribNode n,

@@ -26,7 +26,7 @@ import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class GConnectDel extends ConnectionActionDel
-		implements GSimpleInteractionNodeDel
+		implements GSimpleSessionNodeDel
 {
 	public GConnectDel()
 	{

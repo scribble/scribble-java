@@ -11,9 +11,11 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del.global;
+package org.scribble.del.local;
 
-public interface GSimpleInteractionNodeDel extends GInteractionNodeDel
+import org.scribble.del.SessionNodeDel;
+
+public interface LSessionNodeDel extends SessionNodeDel
 {
 
 }
