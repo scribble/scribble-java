@@ -299,7 +299,7 @@ public class CommandLine
 		}
 	}
 
-	// TODO: option to write to file, like classes
+	// TODO: option to write to file, like API classes
 	private void printProjection(Lang lang, String[] args)
 			throws CommandLineException, ScribException
 	{
@@ -326,7 +326,7 @@ public class CommandLine
 		
 			GProtocolName fullname = checkGlobalProtocolArg(langc, args[0]);
 			Role role = checkRoleArg(langc, fullname, args[1]);
-			EGraph fsm = getEGraph(lang, fullname, role, forUser, fair, args);  // CHECKME: factor fullname/role inside?
+			EGraph fsm = getEGraph(lang, fullname, role, forUser, fair);
 			if (draw)
 			{
 				String png = args[2];
@@ -397,37 +397,37 @@ public class CommandLine
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
 	private EGraph getEGraph(Lang lang, GProtocolName fullname, Role role,
-			boolean forUser, boolean fair, String[] args)  // args only error message
+			boolean forUser, boolean fair)
 			throws ScribException, CommandLineException
 	{
-		LangContext jobc = lang.getContext();
-		JobContext jobc2 = lang.getJob().getContext();
-		GProtocolDecl gpd = (GProtocolDecl) jobc.getMainModule()
+		LangContext langc = lang.getContext();
+		JobContext jobc = lang.getJob().getContext();
+		GProtocolDecl gpd = (GProtocolDecl) langc.getMainModule()
 				.getProtocolDeclChild(fullname.getSimpleName());
 		if (gpd == null || !gpd.getHeaderChild().getRoleDeclListChild().getRoles()
 				.contains(role))
 		{
 			throw new CommandLineException("Bad FSM construction args: "
-					+ Arrays.toString(args));
+					+ gpd + ", " + role);
 		}
 		EGraph graph;
 		if (forUser)  // The (possibly minimised) user-output EFSM for API gen
 		{
 			graph = hasFlag(CLFlags.LTSCONVERT_MIN_FLAG)
-					? jobc2.getMinimisedEGraph(fullname, role)
-					: jobc2.getEGraph(fullname, role);
+					? jobc.getMinimisedEGraph(fullname, role)
+					: jobc.getEGraph(fullname, role);
 		}
 		else  // The (possibly unfair-transformed) internal EFSM for validation
 		{
 			graph = //(!this.args.containsKey(ArgFlag.FAIR) && !this.args.containsKey(ArgFlag.NO_LIVENESS))  // Cf. GlobalModelChecker.getEndpointFSMs
 					!fair
-					? jobc2.getUnfairEGraph(fullname, role) 
-					: jobc2.getEGraph(fullname, role);
+					? jobc.getUnfairEGraph(fullname, role) 
+					: jobc.getEGraph(fullname, role);
 		}
 		if (graph == null)
 		{
 			throw new RuntimeScribException("Shouldn't see this: " + fullname);
-					// Should be suppressed by an earlier failure
+					// Should be caught by some earlier failure
 		}
 		return graph;
 	}
@@ -442,7 +442,7 @@ public class CommandLine
 		if (model == null)
 		{
 			throw new RuntimeScribException("Shouldn't see this: " + fullname);
-					// Should be suppressed by an earlier failure
+					// Should be caught by some earlier failure
 		}
 		return model;
 	}
