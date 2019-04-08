@@ -77,7 +77,11 @@ module tmp.Test;
 
 global protocol Proto1(role A, role B)
 {
-	1() from A to B;
+	//1() from A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
 }
 
 

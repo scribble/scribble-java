@@ -19,8 +19,10 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -30,8 +32,8 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.codegen.java.JEndpointApiGenerator;
 import org.scribble.codegen.java.callbackapi.CBEndpointApiGenerator3;
 import org.scribble.core.job.Job;
-import org.scribble.core.job.JobContext;
 import org.scribble.core.job.JobArgs;
+import org.scribble.core.job.JobContext;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.global.SGraph;
@@ -52,11 +54,15 @@ import org.scribble.util.ScribUtil;
 // A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
 public class CommandLine
 {
-	protected final Map<String, String[]> args;  // Maps each flag to list of associated argument values
+	protected final CLFlags _flags;
+	protected final Map<String, CLFlag> flags;
+	protected final LinkedHashMap<String, String[]> args;  // Maps each flag to its arg values, ordered by parsing order
 
 	public CommandLine(String... args) throws CommandLineException
 	{
-		this.args = newCLArgParser(newCLFlags(), args).getParsed();
+		this._flags = newCLFlags();
+		this.flags = this._flags.flags;
+		this.args = newCLArgParser(this._flags, args).getParsed();
 	}
 	
 	// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
@@ -157,12 +163,40 @@ public class CommandLine
 	}
 
 	protected void runBody()
-			throws ScribException, ScribParserException, AntlrSourceException, CommandLineException
+			throws AntlrSourceException, ScribParserException, CommandLineException
 	{
 		Main mc = newMain();  // Represents current instance of tooling for given CL args
 		Lang lang = mc.newLang();  // A Job is some series of passes performed on each Module in the MainContext (e.g., cf. Job::runVisitorPass)
-		ScribException fail = null;
-		try
+		ScribException err = null;
+		try { doValidationTasks(lang); } catch (ScribException x) { err = x; }
+		for (Entry<String, String[]> e : this.args.entrySet())
+		{
+			String flag = e.getKey();
+			if (flag.equals(CLFlags.MAIN_MOD_FLAG)
+					|| flag.equals(CLFlags.INLINE_MAIN_MOD_FLAG))
+			{
+				continue;
+			}
+			if (!this.flags.get(flag).barrier)
+			{
+				try { tryOutputTasks(lang); }
+				catch (ScribException x) { if (err == null) { err = x; } }
+			}
+			else
+			{
+				if (err == null)
+				{
+					try { doNonAttemptableOutputTasks(lang); }
+					catch (ScribException x) { err = x; }
+				}
+			}
+		}
+		if (err != null)
+		{
+			throw err;
+		}
+		
+		/*try
 		{
 			doValidationTasks(lang);  // FIXME: refactor into job
 		}
@@ -190,7 +224,7 @@ public class CommandLine
 		}
 
 		// "Non-attemptable" output tasks: should not attempt these if any previous failure
-		doNonAttemptableOutputTasks(lang);
+		doNonAttemptableOutputTasks(lang);*/
 	}
 
 	// AntlrSourceException super of ScribbleException -- needed for, e.g., AssrtCoreSyntaxException

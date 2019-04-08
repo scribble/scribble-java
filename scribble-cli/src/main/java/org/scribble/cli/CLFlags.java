@@ -34,7 +34,7 @@ public class CLFlags
 	public static final String VERBOSE_FLAG = "-V";
 	public static final String STATECHAN_SUBTYPES_FLAG = "-subtypes";
 	public static final String OLD_WF_FLAG = "-oldwf";
-	public static final String NO_PROGRESS_FLAG = "-nolive";
+	public static final String NO_PROGRESS_FLAG = "-noprogress";
 	public static final String LTSCONVERT_MIN_FLAG = "-minlts";  // Currently only affects EFSM output (i.e. -fsm..) and API gen -- doesn't affect validation
 	public static final String FAIR_FLAG = "-fair";
 	public static final String NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG = "-nolocalchoicecheck";

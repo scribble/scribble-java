@@ -14,8 +14,7 @@
 package org.scribble.cli;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +27,7 @@ public class CLArgParser
 	private final String[] raw;  // Raw args from main method
 
 	// Flag String constants from CLFlags -> flag arguments (possibly none)
-	private final Map<String, String[]> parsed = new HashMap<>();
+	private final LinkedHashMap<String, String[]> parsed = new LinkedHashMap<>();
 	
 	public CLArgParser(CLFlags _flags, String[] raw)
 	{
@@ -36,7 +35,7 @@ public class CLArgParser
 		this.raw = raw;
 	}		
 	
-	public Map<String, String[]> getParsed() throws CommandLineException
+	public LinkedHashMap<String, String[]> getParsed() throws CommandLineException
 	{
 		parseArgs();
 		if (!(this.parsed.containsKey(CLFlags.MAIN_MOD_FLAG)
@@ -56,12 +55,12 @@ public class CLArgParser
 		{
 			validatePaths(this.parsed.get(CLFlags.IMPORT_PATH_FLAG)[0]);
 		}
-		return Collections.unmodifiableMap(this.parsed);
+		return this.parsed;
 	}
 	
 	private void parseArgs() throws CommandLineException
 	{
-		for (int i = 0; i < this.raw.length; )
+		for (int i = 0; i < this.raw.length; )  // Parse args in order
 		{
 			String arg = this.raw[i];
 			if (this.flags.containsKey(arg))
@@ -92,6 +91,7 @@ public class CLArgParser
 	}
 	
 	// Pre: i = (the index of the current flag to parse)
+	// Puts into this.parsed
 	// Post: i = 1 + (the index of the last argument parsed)
 	// N.B. currently allows repeat flag decls: last overwrites previous
 	protected int parseFlag(int i) throws CommandLineException
@@ -118,6 +118,7 @@ public class CLArgParser
 		return i+1 + num;
 	}
 
+	// Puts into this.parsed
 	protected int parseMain(int i) throws CommandLineException
 	{
 		String main = this.raw[i];
