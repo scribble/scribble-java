@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.scribble.cli.CLArgParser;
+import org.scribble.cli.CLFlags;
 import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineException;
 import org.scribble.util.AntlrSourceException;
@@ -76,7 +76,7 @@ public abstract class ScribTestBase
 	
 	protected void runTest(String dir) throws CommandLineException, AntlrSourceException
 	{
-		new CommandLine(this.example, CLArgParser.JUNIT_FLAG, CLArgParser.IMPORT_PATH_FLAG, dir).run();
+		new CommandLine(this.example, CLFlags.JUNIT_FLAG, CLFlags.IMPORT_PATH_FLAG, dir).run();
 					// Added JUNIT flag -- but for some reason only bad DoArgList01.scr was breaking without it...
 	}
 

@@ -3,9 +3,8 @@ package org.scribble.cli;
 import java.util.Arrays;
 import java.util.List;
 
-//... FIXME: integrate CLAux with CLFlags, and refactor unique as a boolean field
-//..also refactor non/attemptable as a boolean field
-public class CLAux
+
+public class CLFlag
 {
 	final String flag;  // ID field
 	final int numArgs;
@@ -14,7 +13,7 @@ public class CLAux
 	final String err;
 	final List<String> clashes;
 
-	public CLAux(String flag, int numArgs, boolean unique, boolean barrier,
+	public CLFlag(String flag, int numArgs, boolean unique, boolean barrier,
 			String err, String... clashes)
 	{
 		this.flag = flag;
@@ -32,11 +31,11 @@ public class CLAux
 		{
 			return true;
 		}
-		if (!(o instanceof CLAux))
+		if (!(o instanceof CLFlag))
 		{
 			return false;
 		}
-		CLAux them = (CLAux) o;
+		CLFlag them = (CLFlag) o;
 		return this.flag.equals(them.flag);
 	}
 

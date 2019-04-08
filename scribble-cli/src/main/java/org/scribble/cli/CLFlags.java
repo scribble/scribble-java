@@ -22,7 +22,7 @@ import java.util.Map;
 // A Scribble extension should override getFlags
 public class CLFlags
 {
-	public final Map<String, CLAux> flags;
+	public final Map<String, CLFlag> flags;
 	
 	// Implicit (and unique)
 	public static final String MAIN_MOD_FLAG = "__main";
@@ -34,7 +34,7 @@ public class CLFlags
 	public static final String VERBOSE_FLAG = "-V";
 	public static final String STATECHAN_SUBTYPES_FLAG = "-subtypes";
 	public static final String OLD_WF_FLAG = "-oldwf";
-	public static final String NO_LIVENESS_FLAG = "-nolive";
+	public static final String NO_PROGRESS_FLAG = "-nolive";
 	public static final String LTSCONVERT_MIN_FLAG = "-minlts";  // Currently only affects EFSM output (i.e. -fsm..) and API gen -- doesn't affect validation
 	public static final String FAIR_FLAG = "-fair";
 	public static final String NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG = "-nolocalchoicecheck";
@@ -69,101 +69,101 @@ public class CLFlags
 		
 	// Return a map of flag Strings to flag objects
 	// A Scribble extension should override getFlags
-	protected Map<String, CLAux> getFlags()
+	protected Map<String, CLFlag> getFlags()
 	{
-		Map<String, CLAux> flags = new HashMap<>();
+		Map<String, CLFlag> flags = new HashMap<>();
 
 		// Unique; barrier irrelevant
 		flags.put(IMPORT_PATH_FLAG, 
-				new CLAux(IMPORT_PATH_FLAG, 1, true, false, "Missing path argument: "));
+				new CLFlag(IMPORT_PATH_FLAG, 1, true, false, "Missing path argument: "));
 		flags.put(API_OUTPUT_DIR_FLAG, 
-				new CLAux(API_OUTPUT_DIR_FLAG, 1, true, false,
+				new CLFlag(API_OUTPUT_DIR_FLAG, 1, true, false,
 						"Missing directory argument: "));
 		flags.put(INLINE_MAIN_MOD_FLAG, 
-				new CLAux(INLINE_MAIN_MOD_FLAG, 1, true, false, "Missing inline module: "));
+				new CLFlag(INLINE_MAIN_MOD_FLAG, 1, true, false, "Missing inline module: "));
 
 		flags.put(JUNIT_FLAG, 
-				new CLAux(JUNIT_FLAG, 0, true, false, "Duplicate flag: "));
+				new CLFlag(JUNIT_FLAG, 0, true, false, "Duplicate flag: "));
 		flags.put(VERBOSE_FLAG, 
-				new CLAux(VERBOSE_FLAG, 0, true, false, "Duplicate flag: "));
+				new CLFlag(VERBOSE_FLAG, 0, true, false, "Duplicate flag: "));
 		flags.put(STATECHAN_SUBTYPES_FLAG, 
-				new CLAux(STATECHAN_SUBTYPES_FLAG, 0, true, false, "Duplicate flag: "));
+				new CLFlag(STATECHAN_SUBTYPES_FLAG, 0, true, false, "Duplicate flag: "));
 		flags.put(OLD_WF_FLAG, 
-				new CLAux(OLD_WF_FLAG, 0, true, false, "Duplicate flag: "));
-		flags.put(NO_LIVENESS_FLAG, 
-				new CLAux(NO_LIVENESS_FLAG, 0, true, false, "Duplicate flag: "));
+				new CLFlag(OLD_WF_FLAG, 0, true, false, "Duplicate flag: "));
+		flags.put(NO_PROGRESS_FLAG, 
+				new CLFlag(NO_PROGRESS_FLAG, 0, true, false, "Duplicate flag: "));
 		flags.put(LTSCONVERT_MIN_FLAG, 
-				new CLAux(LTSCONVERT_MIN_FLAG, 0, true, false, "Duplicate flag: "));
+				new CLFlag(LTSCONVERT_MIN_FLAG, 0, true, false, "Duplicate flag: "));
 		flags.put(FAIR_FLAG, 
-				new CLAux(FAIR_FLAG, 0, true, false, "Duplicate flag: "));
+				new CLFlag(FAIR_FLAG, 0, true, false, "Duplicate flag: "));
 		flags.put(NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG, 
-				new CLAux(NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG, 0, true, false,
+				new CLFlag(NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG, 0, true, false,
 						"Duplicate flag: "));
 		flags.put(NO_ACCEPT_CORRELATION_CHECK_FLAG, 
-				new CLAux(NO_ACCEPT_CORRELATION_CHECK_FLAG, 0, true, false,
+				new CLFlag(NO_ACCEPT_CORRELATION_CHECK_FLAG, 0, true, false,
 						"Duplicate flag: "));
 		flags.put(NO_VALIDATION_FLAG, 
-				new CLAux(NO_VALIDATION_FLAG, 0, true, false, "Duplicate flag: "));
+				new CLFlag(NO_VALIDATION_FLAG, 0, true, false, "Duplicate flag: "));
 		flags.put(SPIN_FLAG, 
-				new CLAux(SPIN_FLAG, 0, true, false, "Duplicate flag: "));
+				new CLFlag(SPIN_FLAG, 0, true, false, "Duplicate flag: "));
 
 		// These two are mutually exclusive
 		flags.put(DOT_FLAG, 
-				new CLAux(DOT_FLAG, 0, true, false, "Duplicate flag: ",
+				new CLFlag(DOT_FLAG, 0, true, false, "Duplicate flag: ",
 						CLFlags.AUT_FLAG));
 		flags.put(AUT_FLAG, 
-				new CLAux(AUT_FLAG, 0, true, false, "Duplicate flag: ",
+				new CLFlag(AUT_FLAG, 0, true, false, "Duplicate flag: ",
 						CLFlags.DOT_FLAG));
 
 		// Non-unique, no barrier
 		flags.put(PROJECT_FLAG, 
-				new CLAux(PROJECT_FLAG, 2, false, false,
+				new CLFlag(PROJECT_FLAG, 2, false, false,
 						"Missing protocol/role arguments: "));
 		flags.put(EFSM_FLAG, 
-				new CLAux(EFSM_FLAG, 2, false, false,
+				new CLFlag(EFSM_FLAG, 2, false, false,
 						"Missing protocol/role arguments: "));
 		flags.put(VALIDATION_EFSM_FLAG, 
-				new CLAux(VALIDATION_EFSM_FLAG, 2, false, false,
+				new CLFlag(VALIDATION_EFSM_FLAG, 2, false, false,
 						"Missing protocol/role arguments: "));
 		flags.put(UNFAIR_EFSM_FLAG, 
-				new CLAux(UNFAIR_EFSM_FLAG, 2, false, false,
+				new CLFlag(UNFAIR_EFSM_FLAG, 2, false, false,
 						"Missing protocol/role arguments: "));
 
 		flags.put(EFSM_PNG_FLAG, 
-				new CLAux(EFSM_PNG_FLAG, 3, false, false,
+				new CLFlag(EFSM_PNG_FLAG, 3, false, false,
 						"Missing protocol/role/file arguments: "));
 		flags.put(VALIDATION_EFSM_PNG_FLAG, 
-				new CLAux(VALIDATION_EFSM_PNG_FLAG, 3, false, false,
+				new CLFlag(VALIDATION_EFSM_PNG_FLAG, 3, false, false,
 						"Missing protocol/role/file arguments: "));
 		flags.put(UNFAIR_EFSM_PNG_FLAG, 
-				new CLAux(UNFAIR_EFSM_PNG_FLAG, 3, false, false,
+				new CLFlag(UNFAIR_EFSM_PNG_FLAG, 3, false, false,
 						"Missing protocol/role/file arguments: "));
 
 		flags.put(SGRAPH_FLAG, 
-				new CLAux(SGRAPH_FLAG, 2, false, false, "Missing protocol argument: "));
+				new CLFlag(SGRAPH_FLAG, 2, false, false, "Missing protocol argument: "));
 		flags.put(UNFAIR_SGRAPH_FLAG, 
-				new CLAux(UNFAIR_SGRAPH_FLAG, 2, false, false,
+				new CLFlag(UNFAIR_SGRAPH_FLAG, 2, false, false,
 						"Missing protocol argument: "));
 		
 		flags.put(SGRAPH_PNG_FLAG, 
-				new CLAux(SGRAPH_PNG_FLAG, 1, false, false,
+				new CLFlag(SGRAPH_PNG_FLAG, 1, false, false,
 						"Missing protocol/file arguments: "));
 		flags.put(UNFAIR_SGRAPH_PNG_FLAG, 
-				new CLAux(UNFAIR_SGRAPH_PNG_FLAG, 1, false, false,
+				new CLFlag(UNFAIR_SGRAPH_PNG_FLAG, 1, false, false,
 						"Missing protocol/file arguments: "));
 
 		// // Non-unique, barrier
 		flags.put(SESSION_API_GEN_FLAG, 
-				new CLAux(SESSION_API_GEN_FLAG, 1, false, true,
+				new CLFlag(SESSION_API_GEN_FLAG, 1, false, true,
 						"Missing protocol argument: "));
 		flags.put(API_GEN_FLAG, 
-				new CLAux(API_GEN_FLAG, 2, false, true,
+				new CLFlag(API_GEN_FLAG, 2, false, true,
 						"Missing protocol/role arguments: "));
 		flags.put(STATECHAN_API_GEN_FLAG, 
-				new CLAux(STATECHAN_API_GEN_FLAG, 2, false, true,
+				new CLFlag(STATECHAN_API_GEN_FLAG, 2, false, true,
 						"Missing protocol/role arguments: "));
 		flags.put(EVENTDRIVEN_API_GEN_FLAG, 
-				new CLAux(EVENTDRIVEN_API_GEN_FLAG, 2, false, true,
+				new CLFlag(EVENTDRIVEN_API_GEN_FLAG, 2, false, true,
 						"Missing protocol/role arguments: "));
 		
 		return Collections.unmodifiableMap(flags);

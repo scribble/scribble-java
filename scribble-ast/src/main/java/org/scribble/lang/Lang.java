@@ -168,7 +168,7 @@ public class Lang
 	
 	public void debugPrintln(String s)
 	{
-		if (this.config.args.get(JobArgs.DEBUG))
+		if (this.config.args.get(JobArgs.VERBOSE))
 		{
 			System.out.println(s);
 		}

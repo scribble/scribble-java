@@ -15,7 +15,7 @@ package org.scribble.core.job;
 
 public enum JobArgs
 {
-	DEBUG,
+	VERBOSE,
 	FAIR,
 	SPIN,
 	NO_VALIDATION,

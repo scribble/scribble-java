@@ -49,57 +49,32 @@ import org.scribble.util.ScribException;
 import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribUtil;
 
-// A Scribble extension should override newCLArgParser
+// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
 public class CommandLine
 {
 	protected final Map<String, String[]> args;  // Maps each flag to list of associated argument values
 
 	public CommandLine(String... args) throws CommandLineException
 	{
-		this.args = newCLArgParser(args).getParsed();
+		this.args = newCLArgParser(newCLFlags(), args).getParsed();
 	}
 	
-	// A Scribble extension should override newCLArgParser
-	protected CLArgParser2 newCLArgParser(String[] args)
+	// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
+	protected CLFlags newCLFlags()
 	{
-		return new CLArgParser2(args);
+		return new CLFlags();
 	}
 
-	public static void main(String[] args)
-			throws CommandLineException, AntlrSourceException
+	// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
+	protected CLArgParser newCLArgParser(CLFlags flags, String[] args)
 	{
-		new CommandLine(args).run();
+		return new CLArgParser(flags, args);
 	}
 
-	// A Scribble extension should override newMainContext as appropriate.
-	protected Main newMainContext()
-			throws ScribParserException, ScribException
+	// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
+	protected Main newMain() throws ScribParserException, ScribException
 	{
-		boolean debug = this.args.containsKey(CLFlags.VERBOSE_FLAG);  // TODO: factor out (cf. MainContext fields)
-		boolean useOldWf = this.args.containsKey(CLFlags.OLD_WF_FLAG);
-		boolean noProgress = this.args.containsKey(CLFlags.NO_LIVENESS_FLAG);
-		boolean minEfsm = this.args.containsKey(CLFlags.LTSCONVERT_MIN_FLAG);
-		boolean fair = this.args.containsKey(CLFlags.FAIR_FLAG);
-		boolean noLocalChoiceSubjectCheck = 
-				this.args.containsKey(CLFlags.NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG);
-		boolean noAcceptCorrelationCheck = 
-				this.args.containsKey(CLFlags.NO_ACCEPT_CORRELATION_CHECK_FLAG);
-		boolean noValidation = this.args.containsKey(CLFlags.NO_VALIDATION_FLAG);
-		boolean spin = this.args.containsKey(CLFlags.SPIN_FLAG);
-		
-		// FIXME: refactor into arg parsing
-		Map<JobArgs, Boolean> args = new HashMap<>();
-		args.put(JobArgs.DEBUG, debug);
-		args.put(JobArgs.OLD_WF, useOldWf);
-		args.put(JobArgs.NO_PROGRESS, noProgress);
-		args.put(JobArgs.MIN_EFSM, minEfsm);
-		args.put(JobArgs.FAIR, fair);
-		args.put(JobArgs.NO_LCHOICE_SUBJ_CHECK, noLocalChoiceSubjectCheck);
-		args.put(JobArgs.NO_ACC_CORRELATION_CHECK, noAcceptCorrelationCheck);
-		args.put(JobArgs.NO_VALIDATION, noValidation);
-		args.put(JobArgs.SPIN, spin);
-		args = Collections.unmodifiableMap(args);
-
+		Map<JobArgs, Boolean> args = Collections.unmodifiableMap(parseJobArgs());
 		if (this.args.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG))
 		{
 			String inline = this.args.get(CLFlags.INLINE_MAIN_MOD_FLAG)[0];
@@ -108,12 +83,40 @@ public class CommandLine
 		else
 		{
 			List<Path> impaths = this.args.containsKey(CLFlags.IMPORT_PATH_FLAG)
-					? CommandLine.parseImportPaths(this.args.get(CLFlags.IMPORT_PATH_FLAG)[0])
+					? CommandLine
+							.parseImportPaths(this.args.get(CLFlags.IMPORT_PATH_FLAG)[0])
 					: Collections.emptyList();
 			ResourceLocator locator = new DirectoryResourceLocator(impaths);
-			Path mainpath = CommandLine.parseMainPath(this.args.get(CLFlags.MAIN_MOD_FLAG)[0]);
+			Path mainpath = CommandLine
+					.parseMainPath(this.args.get(CLFlags.MAIN_MOD_FLAG)[0]);
 			return new Main(locator, mainpath, args);
 		}
+	}
+	
+	protected Map<JobArgs, Boolean> parseJobArgs()
+	{
+		Map<JobArgs, Boolean> args = new HashMap<>();
+		args.put(JobArgs.VERBOSE, this.args.containsKey(CLFlags.VERBOSE_FLAG));
+		args.put(JobArgs.OLD_WF, this.args.containsKey(CLFlags.OLD_WF_FLAG));
+		args.put(JobArgs.NO_PROGRESS,
+				this.args.containsKey(CLFlags.NO_PROGRESS_FLAG));
+		args.put(JobArgs.MIN_EFSM,
+				this.args.containsKey(CLFlags.LTSCONVERT_MIN_FLAG));
+		args.put(JobArgs.FAIR, this.args.containsKey(CLFlags.FAIR_FLAG));
+		args.put(JobArgs.NO_LCHOICE_SUBJ_CHECK,
+				this.args.containsKey(CLFlags.NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG));
+		args.put(JobArgs.NO_ACC_CORRELATION_CHECK,
+				this.args.containsKey(CLFlags.NO_ACCEPT_CORRELATION_CHECK_FLAG));
+		args.put(JobArgs.NO_VALIDATION,
+				this.args.containsKey(CLFlags.NO_VALIDATION_FLAG));
+		args.put(JobArgs.SPIN, this.args.containsKey(CLFlags.SPIN_FLAG));
+		return args;
+	}
+
+	public static void main(String[] args)
+			throws CommandLineException, AntlrSourceException
+	{
+		new CommandLine(args).run();
 	}
 
 	public void run() throws CommandLineException, AntlrSourceException  // ScribbleException is for JUnit testing
@@ -156,7 +159,7 @@ public class CommandLine
 	protected void runBody()
 			throws ScribException, ScribParserException, AntlrSourceException, CommandLineException
 	{
-		Main mc = newMainContext();  // Represents current instance of tooling for given CL args
+		Main mc = newMain();  // Represents current instance of tooling for given CL args
 		Lang lang = mc.newLang();  // A Job is some series of passes performed on each Module in the MainContext (e.g., cf. Job::runVisitorPass)
 		ScribException fail = null;
 		try
@@ -252,7 +255,7 @@ public class CommandLine
 			{
 				throw new CommandLineException(
 						"Global model flag(s) incompatible with: "
-								+ CLArgParser.OLD_WF_FLAG);
+								+ CLFlags.OLD_WF_FLAG);
 			}
 			if (this.args.containsKey(CLFlags.SGRAPH_FLAG))
 			{

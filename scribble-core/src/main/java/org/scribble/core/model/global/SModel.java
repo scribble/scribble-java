@@ -48,13 +48,13 @@ public class SModel
 		int count = 0;
 		for (SState s : states.values())
 		{
-			if (job.config.args.get(JobArgs.DEBUG))
+			if (job.config.args.get(JobArgs.VERBOSE))
 			{
 				count++;
 				if (count % 50 == 0)
 				{
 					//job.debugPrintln("(" + this.graph.proto + ") Checking safety: " + count + " states");
-					job.debugPrintln(
+					job.verbosePrintln(
 							"(" + this.graph.proto + ") Checking states: " + count);
 				}
 			}
@@ -69,7 +69,7 @@ public class SModel
 			}
 			errorMsg = appendSafetyErrorMessages(errorMsg, errors);
 		}
-		job.debugPrintln("(" + this.graph.proto + ") Checked all states: " + count);  // May include unsafe states
+		job.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + count);  // May include unsafe states
 		//*/
 		
 		if (!job.config.args.get(JobArgs.NO_PROGRESS))
@@ -142,7 +142,7 @@ public class SModel
 	protected String termSetToString(Job job, Set<Integer> termset,
 			Map<Integer, SState> all)
 	{
-		return job.config.args.get(JobArgs.DEBUG)
+		return job.config.args.get(JobArgs.VERBOSE)
 				? termset.stream().map((i) -> all.get(i).toString())
 						.collect(Collectors.joining(","))
 				: termset.stream().map((i) -> new Integer(all.get(i).id).toString())

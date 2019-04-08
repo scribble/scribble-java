@@ -91,12 +91,12 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 			i.remove();
 			seen.put(curr.id, curr);
 
-			if (job.config.args.get(JobArgs.DEBUG))
+			if (job.config.args.get(JobArgs.VERBOSE))
 			{
 				count++;
 				if (count % 50 == 0)
 				{
-					job.debugPrintln("(" + fullname + ") Building global states: " + count);
+					job.verbosePrintln("(" + fullname + ") Building global states: " + count);
 				}
 			}
 			
@@ -186,7 +186,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 
 		SGraph graph = job.config.sf.newSGraph(fullname, seen, init);
 
-		job.debugPrintln(
+		job.verbosePrintln(
 				"(" + fullname + ") Built global model..\n" + graph.init.toDot() + "\n("
 						+ fullname + ") .." + graph.states.size() + " states");
 

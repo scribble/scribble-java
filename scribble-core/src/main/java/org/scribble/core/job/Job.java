@@ -101,11 +101,11 @@ public class Job
 	public SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs,
 			boolean explicit) throws ScribException
 	{
-		debugPrintln("(" + fullname + ") Building global model using:");
+		verbosePrintln("(" + fullname + ") Building global model using:");
 		for (Role r : egraphs.keySet())
 		{
 			// FIXME: refactor
-			debugPrintln("-- EFSM for "
+			verbosePrintln("-- EFSM for "
 					+ r + ":\n" + egraphs.get(r).init.toDot());
 		}
 		//return SGraph.buildSGraph(this, fullname, createInitialSConfig(this, egraphs, explicit));
@@ -159,7 +159,7 @@ public class Job
 			STypeInliner i = new STypeInliner(this);
 			i.pushSig(sig);  // TODO: factor into constructor
 			GProtocol inlined = g.getInlined(i);  // Protocol.getInlined does pruneRecs
-			debugPrintln("\nSubprotocols inlined:\n" + inlined);
+			verbosePrintln("\nSubprotocols inlined:\n" + inlined);
 			this.context.addInlined(g.fullname, inlined);
 		}
 				
@@ -169,7 +169,7 @@ public class Job
 				STypeUnfolder<Global> unf1 = new STypeUnfolder<>();
 				//GTypeUnfolder unf2 = new GTypeUnfolder();
 				GProtocol unf = (GProtocol) inlined.unfoldAllOnce(unf1);//.unfoldAllOnce(unf2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
-				debugPrintln("\nAll recursions unfolded once:\n" + unf);
+				verbosePrintln("\nAll recursions unfolded once:\n" + unf);
 		}
 		
 		runProjectionPasses();
@@ -181,7 +181,7 @@ public class Job
 			LProtocol proj = e.getValue();
 			EGraph graph = proj.toEGraph(this);
 			this.context.addEGraph(proj.fullname, graph);
-			debugPrintln("\nEFSM for " + proj.fullname + ":\n" + graph.toDot());
+			verbosePrintln("\nEFSM for " + proj.fullname + ":\n" + graph.toDot());
 		}
 	}
 
@@ -245,7 +245,7 @@ public class Job
 
 				GProtocolName fullname = gpd.fullname;//.getFullMemberName(mod);
 
-				debugPrintln("\nValidating " + fullname + ":");
+				verbosePrintln("\nValidating " + fullname + ":");
 
 				if (this.config.args.get(JobArgs.SPIN))
 				{
@@ -261,7 +261,7 @@ public class Job
 					GProtocol.validateByScribble(this, fullname, true);
 					if (!this.config.args.get(JobArgs.FAIR))
 					{
-						debugPrintln(
+						verbosePrintln(
 								"(" + fullname + ") Validating with \"unfair\" output choices.. ");
 						GProtocol.validateByScribble(this, fullname, false);  // TODO: only need to check progress, not full validation
 					}
@@ -290,7 +290,7 @@ public class Job
 				GProtocol inlined = this.context.getInlined(g.fullname);  // pruneRecs already done for pruneRecs (cf. runContextBuildingPasses)
 				LProtocol iproj = inlined.projectInlined(self);  // CHECKME: projection and inling commutative?
 				this.context.addInlinedProjection(iproj.fullname, iproj);
-				debugPrintln("\nProjected inlined onto " + self + ":\n" + iproj);
+				verbosePrintln("\nProjected inlined onto " + self + ":\n" + iproj);
 			}
 		}
 
@@ -301,7 +301,7 @@ public class Job
 			{
 				LProtocol proj = g.project(new Projector2(this, self));  // Does pruneRecs
 				this.context.addProjection(proj);
-				debugPrintln("\nProjected onto " + self + ":\n" + proj);
+				verbosePrintln("\nProjected onto " + self + ":\n" + proj);
 			}
 		}
 	}
@@ -378,9 +378,9 @@ public class Job
 		return this.context;
 	}
 	
-	public boolean isDebug()
+	public boolean isVerbose()
 	{
-		return this.config.args.get(JobArgs.DEBUG);
+		return this.config.args.get(JobArgs.VERBOSE);
 	}
 	
 	public void warningPrintln(String s)
@@ -388,9 +388,9 @@ public class Job
 		System.err.println("[Warning] " + s);
 	}
 	
-	public void debugPrintln(String s)
+	public void verbosePrintln(String s)
 	{
-		if (this.config.args.get(JobArgs.DEBUG))
+		if (this.config.args.get(JobArgs.VERBOSE))
 		{
 			System.out.println(s);
 		}
