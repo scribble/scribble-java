@@ -66,10 +66,10 @@ public abstract class DoDel extends SimpleSessionNodeDel
 	{
 		@SuppressWarnings("unchecked")  // Doesn't matter what K is, just need to propagate it down
 		Do<K> doo = (Do<K>) visited;
-		ModuleContext mc = disamb.getModuleContext();
 		ProtocolNameNode<K> proto = doo.getProtocolNameNode();
+		/*ModuleContext mc = disamb.lang.getMainModuleContext();
 		ProtocolName<K> fullname = mc
-				.getVisibleProtocolDeclFullName(proto.toName());
+				.getVisibleProtocolDeclFullName(proto.toName());*/
 
 		ProtocolNameNode<K> pnn;/* = (ProtocolNameNode<K>) disamb.job.config.af
 				.QualifiedNameNode(proto.getSource(), fullname.getKind(),

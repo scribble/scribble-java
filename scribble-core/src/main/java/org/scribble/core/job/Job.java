@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.lang.SubprotoSig;
-import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
@@ -58,10 +57,12 @@ public class Job
 	private final SGraphBuilderUtil sgraphb;
 	
 	public Job(ModuleName mainFullname, Map<JobArgs, Boolean> args,
-			Map<ModuleName, ModuleContext> modcs, Set<GProtocol> imeds)
+			//Map<ModuleName, ModuleContext> modcs, 
+			Set<GProtocol> imeds)
 	{
 		this.config = newJobConfig(mainFullname, args);
-		this.context = newJobContext(modcs, imeds);  // Single instance per Job and should never be shared
+		this.context = newJobContext(//modcs, 
+				imeds);  // Single instance per Job and should never be shared
 		this.sgraphb = newSGraphBuilderUtil();
 	}
 
@@ -76,10 +77,11 @@ public class Job
 	}
 
 	// A Scribble extension should override newJobConfig/Context/etc as appropriate
-	protected JobContext newJobContext(Map<ModuleName, ModuleContext> modcs,
+	protected JobContext newJobContext(//Map<ModuleName, ModuleContext> modcs,
 			Set<GProtocol> imeds)
 	{
-		return new JobContext(this, modcs, imeds);
+		return new JobContext(this, //modcs, 
+				imeds);
 	}
 	
 	// A Scribble extension should override newJobConfig/Context/etc as appropriate

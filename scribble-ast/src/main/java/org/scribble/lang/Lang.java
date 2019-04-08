@@ -77,9 +77,11 @@ public class Lang
 	
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
 	protected Job newJob(ModuleName mainFullname, Map<JobArgs, Boolean> args,
-			Map<ModuleName, ModuleContext> modcs, Set<GProtocol> imeds)
+			//Map<ModuleName, ModuleContext> modcs, 
+			Set<GProtocol> imeds)
 	{
-		return new Job(mainFullname, args, modcs, imeds);
+		return new Job(mainFullname, args, //modcs, 
+				imeds);
 	}
 	
 	// First run Visitor passes, then call toJob
@@ -113,7 +115,8 @@ public class Lang
 				}
 			}
 			this.job = newJob(this.config.main, this.config.args,
-					this.context.getModuleContexts(), imeds);
+					//this.context.getModuleContexts(), 
+					imeds);
 		}
 		return this.job;
 	}
@@ -122,6 +125,12 @@ public class Lang
 	{
 		return this.context;
 	}
+	
+	// For convenience
+	/*public ModuleContext getMainModuleContext()
+	{
+		return this.context.getModuleContext(this.config.main);
+	}*/
 
 	public void runVisitorPassOnAllModules(Class<? extends AstVisitor> c)
 			throws ScribException

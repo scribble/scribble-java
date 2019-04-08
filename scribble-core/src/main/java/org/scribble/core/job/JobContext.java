@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.AutParser;
@@ -44,7 +43,7 @@ public class JobContext
 
 	// Keys are full names
 	// CHECKME: not currently used by core? -- core fully independent of modules, etc., because full disamb already done?
-	private final Map<ModuleName, ModuleContext> modcs;
+	//private final Map<ModuleName, ModuleContext> modcs;
 
 	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
 	// Protos retain original decl role list (and args)
@@ -73,11 +72,11 @@ public class JobContext
 	private final Map<GProtocolName, SGraph> fSGraphs = new HashMap<>();
 	private final Map<GProtocolName, SGraph> uSGraphs = new HashMap<>();
 	
-	protected JobContext(Job job, Map<ModuleName, ModuleContext> modcs,
+	protected JobContext(Job job, //Map<ModuleName, ModuleContext> modcs,
 			Set<GProtocol> imeds)
 	{
 		this.job = job;
-		this.modcs = Collections.unmodifiableMap(modcs);
+		//this.modcs = Collections.unmodifiableMap(modcs);
 		this.imeds = imeds.stream()
 				.collect(Collectors.toMap(x -> x.fullname, x -> x));
 	}
@@ -309,10 +308,10 @@ public class JobContext
 		return minimised;
 	}
 	
-	public ModuleContext getModuleContext(ModuleName fullname)
+	/*public ModuleContext getModuleContext(ModuleName fullname)
 	{
 		return this.modcs.get(fullname);
-	}
+	}*/
 
 	// TODO: relocate
 	// Duplicated from CommandLine.runDot
