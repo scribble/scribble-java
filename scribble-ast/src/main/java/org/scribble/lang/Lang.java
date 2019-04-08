@@ -25,7 +25,6 @@ import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.core.job.Job;
 import org.scribble.core.job.JobArgs;
-import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.ScribException;
