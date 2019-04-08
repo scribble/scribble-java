@@ -58,11 +58,20 @@ public class CommandLine
 	protected final Map<String, CLFlag> flags;
 	protected final LinkedHashMap<String, String[]> args;  // Maps each flag to its arg values, ordered by parsing order
 
-	public CommandLine(String... args) throws CommandLineException
+	public CommandLine(String... args)
 	{
 		this._flags = newCLFlags();
 		this.flags = this._flags.flags;
-		this.args = newCLArgParser(this._flags, args).getParsed();
+		try
+		{
+			this.args = newCLArgParser(this._flags, args).getParsed();
+		}
+		catch (CommandLineException e)
+		{
+			System.err.println(e.getMessage());
+			System.exit(1);
+			throw new RuntimeException("Dummy");  // Already exited above
+		}
 	}
 	
 	// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
@@ -125,7 +134,8 @@ public class CommandLine
 		new CommandLine(args).run();
 	}
 
-	public void run() throws CommandLineException, AntlrSourceException  // ScribbleException is for JUnit testing
+	public void run() throws CommandLineException, 
+			AntlrSourceException  // AntlrSourceException (ScribbleException) is for JUnit harness
 	{
 		try
 		{
@@ -135,17 +145,14 @@ public class CommandLine
 			}
 			catch (ScribException e)  // Wouldn't need to do this if not Runnable (so maybe change)
 			{
-				if (this.args.containsKey(CLFlags.JUNIT_FLAG)
-						|| this.args.containsKey(CLFlags.VERBOSE_FLAG))
+				if (this.args.containsKey(CLFlags.JUNIT_FLAG)  // JUnit harness looks for an exception
+						|| this.args.containsKey(CLFlags.VERBOSE_FLAG))  // Also print full trace for -V
 				{
-					/*RuntimeScribbleException ee = new RuntimeScribbleException(e.getMessage());
-					ee.setStackTrace(e.getStackTrace());
-					throw ee;*/
 					throw e;
 				}
 				else
 				{
-					System.err.println(e.getMessage());  // JUnit harness looks for an exception
+					System.err.println(e.getMessage());
 					System.exit(1);
 				}
 			}
@@ -195,36 +202,6 @@ public class CommandLine
 		{
 			throw err;
 		}
-		
-		/*try
-		{
-			doValidationTasks(lang);  // FIXME: refactor into job
-		}
-		catch (ScribException x)
-		{
-			fail = x;
-		}
-		
-		// Attempt certain "output tasks" even if above failed, in case can still do some useful output (hacky)
-		try
-		{
-			tryOutputTasks(lang);  // FIXME: refactor into job
-		}
-		catch (ScribException x)
-		{
-			if (fail == null)
-			{
-				fail = x;
-			}
-		}
-
-		if (fail != null)  // Well-formedness check and/or an "attemptable output task" failed
-		{
-			throw fail;
-		}
-
-		// "Non-attemptable" output tasks: should not attempt these if any previous failure
-		doNonAttemptableOutputTasks(lang);*/
 	}
 
 	// AntlrSourceException super of ScribbleException -- needed for, e.g., AssrtCoreSyntaxException
