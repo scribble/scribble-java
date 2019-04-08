@@ -60,18 +60,16 @@ import org.scribble.util.ScribUtil;
  */
 public class CommandLine
 {
-	protected final CLFlags _flags;
-	protected final Map<String, CLFlag> flags;  // this._flags.flags -- directly cache this Map for convenience
+	protected final CLFlags flags;
 	protected final List<Pair<String, String[]>> args; 
 			// left = CLFlags String constant, right = flag args (if any) -- ordered by parsing order
 
 	public CommandLine(String... args)
 	{
-		this._flags = newCLFlags();
-		this.flags = this._flags.explicit;
+		this.flags = newCLFlags();
 		try
 		{
-			this.args = newCLArgParser(this._flags, args).getParsed();
+			this.args = newCLArgParser(this.flags, args).getParsed();
 		}
 		catch (CommandLineException e)
 		{
@@ -274,7 +272,7 @@ public class CommandLine
 		try { doValidationTasks(lang); } catch (ScribException x) { err = x; }
 		for (Pair<String, String[]> a : this.args)
 		{
-			CLFlag flag = this.flags.get(a.left);  // null for CLFlags.MAIN_MOD_FLAG
+			CLFlag flag = this.flags.explicit.get(a.left);  // null for CLFlags.MAIN_MOD_FLAG
 			if (a.left.equals(CLFlags.MAIN_MOD_FLAG) || !flag.enact)
 			{
 				continue;

@@ -219,7 +219,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		pml += "mtype {" + mids.stream().map(mid -> mid.toString())
 				.collect(Collectors.joining(", ")) + "};\n";
 	
-		// FIXME: explicit
+		// TODO CHECKME: explicit ?
 	
 		pml += "\n";
 		List<Role[]> pairs = new LinkedList<>();

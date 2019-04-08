@@ -89,7 +89,8 @@ public class CLArgParser
 								"Unknown flag or bad main module arg: " + arg);
 					}
 					// Could actually be the second "bad argument" -- we didn't validate the value of the (supposed) "main arg"
-					throw new CommandLineException("Bad/multiple main module arg: " + arg);
+					throw new CommandLineException(
+							"Bad/multiple main module arg: " + arg);
 				}
 				i = parseMain(i);
 			}
@@ -172,39 +173,5 @@ public class CLArgParser
 				.filter(x -> x.left.equals(flag)).findAny();
 		return res.isPresent() ? res.get().right : null;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	/*private int parseImportPath(int i) throws CommandLineException
-	{
-		if ((i + 1) >= this.raw.length)
-		{
-			throw new CommandLineException("Missing path argument");
-		}
-		String path = this.raw[++i];
-		if (!validatePaths(path))
-		{
-			// FIXME: move validation to CL
-			throw new CommandLineException("Scribble module import path '"+ path +"' is not valid\r\n");
-		}
-		checkAndAddUniqueFlag(CLArgParser.IMPORT_PATH_FLAG, new String[] { path });
-		return i;
-	}
-
-	private void checkAndAddUniqueFlag(String flag, String[] args) throws CommandLineException
-	{
-		//CLArgFlag argFlag = CLArgParser.UNIQUE_FLAGS.get(flag);
-		if (this.parsed.containsKey(flag))
-		{
-			throw new CommandLineException("Duplicate flag: " + flag);
-		}
-		this.parsed.put(flag, args);
-	}*/
 }
+

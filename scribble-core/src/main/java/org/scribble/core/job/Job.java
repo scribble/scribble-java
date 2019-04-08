@@ -116,7 +116,7 @@ public class Job
 	{
 		runContextBuildingPasses();
 		//runUnfoldingPass();
-		runWellFormednessPasses();
+		runValidationPasses();
 	}
 	
 	public void runContextBuildingPasses() throws ScribException
@@ -185,26 +185,15 @@ public class Job
 		}
 	}
 
-	public void runWellFormednessPasses() throws ScribException
+	public void runValidationPasses() throws ScribException
 	{
-		/*if (!this.config.noValidation)
-		{
-			runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages -- includes connectedness checks
-			runProjectionPasses();
-			runVisitorPassOnAllModules(ReachabilityChecker.class);  // Moved before GlobalModelChecker.class, OK?
-			if (!this.config.useOldWf)
-			{
-				runVisitorPassOnAllModules(GProtocolValidator.class);
-			}
-		}*/
-
-		//HERE WF (unfolding? unguarded-unfolder -- and lazy-unfolder-with-choice-pruning, e.g., bad.wfchoice.enabling.threeparty.Test02), projection, validation
 		for (GProtocol inlined : this.context.getInlined())
 		{
-			//TODO: relegate to "warning"
+			//TODO: relegate to "warning" ?
 			// Check unused roles
 			Set<Role> used = inlined.def.getRoles();
-			Set<Role> unused = this.context.getIntermediate(inlined.fullname).roles  // imeds have original role decls (inlined's are pruned)
+			Set<Role> unused = this.context.getIntermediate(inlined.fullname).roles
+							// imeds have original role decls (inlined's are pruned)
 					.stream().filter(x -> !used.contains(x)).collect(Collectors.toSet());
 			if (!unused.isEmpty())
 			{
@@ -216,9 +205,9 @@ public class Job
 			{
 				continue;
 			}
-			STypeUnfolder<Global> unf = new STypeUnfolder<>();  
+			STypeUnfolder<Global> u = new STypeUnfolder<>();  
 					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
-			inlined.unfoldAllOnce(unf).checkRoleEnabling();
+			inlined.unfoldAllOnce(u).checkRoleEnabling();
 			inlined.checkExtChoiceConsistency();
 		}
 		
