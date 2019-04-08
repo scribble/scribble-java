@@ -44,7 +44,7 @@ public class JEndpointApiGenerator
 		return map;
 	}
 	
-	// FIXME: refactor an EndpointApiGenerator -- ?
+	// CHECKME: refactor an EndpointApiGenerator -- ?
 	public Map<String, String> generateStateChannelApi(GProtocolName fullname,
 			Role self, boolean subtypes) throws ScribException
 	{

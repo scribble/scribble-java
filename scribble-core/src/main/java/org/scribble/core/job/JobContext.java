@@ -63,6 +63,7 @@ public class JobContext
 	// LProtocolName key is LProtocol value fullname (i.e., redundant)
 	private final Map<LProtocolName, LProtocol> projs = new HashMap<>();
 
+	// Built from inlined
 	private final Map<LProtocolName, EGraph> fEGraphs = new HashMap<>();
 	private final Map<LProtocolName, EGraph> uEGraphs = new HashMap<>();
 	private final Map<LProtocolName, EGraph> mEGraphs = new HashMap<>();  
