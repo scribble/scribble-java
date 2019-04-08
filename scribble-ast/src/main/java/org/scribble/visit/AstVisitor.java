@@ -30,22 +30,21 @@ public abstract class AstVisitor
 	}
 
 	// Used by ScribNodeBase::accept
-	public ScribNode visit(ScribNode parent, ScribNode child)
-			throws ScribException
+	public ScribNode visit(ScribNode child) throws ScribException
 	{
-		enter(parent, child);
+		enter(child);
 		ScribNode visited = child.visitChildren(this);   // visited means "children visited so far"; we're about to visit "this" now via "leave"
-		return leave(parent, child, visited);
+		return leave(child, visited);
 	}
 	
-	protected void enter(ScribNode parent, ScribNode child)
+	protected void enter(ScribNode child)
 			throws ScribException
 	{
 
 	}
 	
-	protected ScribNode leave(ScribNode parent, ScribNode child,
-			ScribNode visited) throws ScribException
+	protected ScribNode leave(ScribNode child, ScribNode visited)
+			throws ScribException
 	{
 		return visited;
 	}

@@ -13,22 +13,13 @@
  */
 package org.scribble.ast.local;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.DisconnectAction;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.Role;
-import org.scribble.core.type.session.Message;
 import org.scribble.util.Constants;
-import org.scribble.util.RuntimeScribException;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 // "left" of LDisconnect is used for self
 public class LDisconnect extends DisconnectAction<Local>
@@ -61,38 +52,9 @@ public class LDisconnect extends DisconnectAction<Local>
 	}
 
 	@Override
-	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
-	{
-		RoleNode src = getSelfChild();
-		fixer.setChoiceSubject(src.toName());
-		return src.toName();
-	}
-	
-	@Override
 	public LDisconnect dupNode()
 	{
 		return new LDisconnect(this);
-	}
-
-	@Override
-	public LSessionNode merge(AstFactory af, LSessionNode ln)
-			throws ScribException
-	{
-		throw new RuntimeScribException("Invalid merge on LDisconnect: " + this);
-	}
-
-	@Override
-	public boolean canMerge(LSessionNode ln)
-	{
-		return false;
-	}
-
-	@Override
-	public Set<Message> getEnabling()
-	{
-		Set<Message> enab = new HashSet<>();
-		//enab.add(this.msg.toMessage());  // Return empty to skip over this in LInteractionSeq
-		return enab;
 	}
 
 	@Override

@@ -33,9 +33,10 @@ public class DataTypeNodeDel extends ScribDelBase
 
 	// Is this needed?  Or DataTypeNodes always created from AmbigNameNode? (in this same pass)
 	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
+	public ScribNode leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
+		ScribNode parent = child.getParent();
 		if (parent instanceof DataTypeDecl)  // Hacky? don't want to do for decl simplenames (generally, don't do if parent is namedeclnode)
 		{
 			return visited;

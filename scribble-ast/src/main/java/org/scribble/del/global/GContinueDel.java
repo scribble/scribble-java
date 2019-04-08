@@ -15,17 +15,13 @@ package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GContinue;
-import org.scribble.ast.local.LContinue;
-import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.del.ContinueDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
-import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.context.Projector;
-import org.scribble.visit.env.InlineProtocolEnv;
 
-public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeDel
+public class GContinueDel extends ContinueDel
+		implements GSimpleInteractionNodeDel
 {
 	
 	@Override
@@ -35,36 +31,5 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 		GContinue source = (GContinue) n;
 		RecVar recvar = source.getRecVarChild().toName();
 		return new org.scribble.core.type.session.global.GContinue(source, recvar);
-	}
-
-	@Override
-	public GContinue leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribException
-	{
-		GContinue gc = (GContinue) visited;
-		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) gc.getRecVarChild()
-				.del().env()).getTranslation();
-		GContinue inlined = inl.lang.config.af.GContinue(gc.getSource(), recvar);
-		inl.pushEnv(inl.popEnv().setTranslation(inlined));
-		return (GContinue) super.leaveProtocolInlining(parent, child, inl, gc);
-	}
-
-	/*public LContinue project(AstFactory af, GNode n, Role self)
-	{
-		GContinue gc = (GContinue) n;
-		LContinue projection = gc.project(af, self);
-		return projection;
-	}*/
-
-	@Override
-	public GContinue leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribException
-	{
-		GContinue gc = (GContinue) visited;
-		//LContinue projection = project(proj.job.af, gc, proj.peekSelf());
-		LContinue projection = gc.project(proj.lang.config.af, proj.peekSelf());
-		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GContinue) GSimpleInteractionNodeDel.super.leaveProjection(parent,
-				child, proj, gc);
 	}
 }

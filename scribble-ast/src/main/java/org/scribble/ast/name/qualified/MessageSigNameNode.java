@@ -15,7 +15,6 @@ package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.MessageSigName;
@@ -39,12 +38,6 @@ public class MessageSigNameNode extends MemberNameNode<SigKind>
 	public MessageSigNameNode dupNode()
 	{
 		return new MessageSigNameNode(this);//, getElements());
-	}
-
-	@Override
-	public MessageNode project(AstFactory af)
-	{
-		return this;
 	}
 
 	@Override

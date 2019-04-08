@@ -14,7 +14,6 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.core.type.kind.SigKind;
@@ -44,12 +43,6 @@ public class SigParamNode extends NonRoleParamNode<SigKind>
 			throw new RuntimeException();
 		}
 		return new SigParamNode(this);//, getIdentifier());
-	}
-	
-	@Override
-	public SigParamNode project(AstFactory af)  // MessageSigName params
-	{
-		return this;
 	}
 	
 	@Override

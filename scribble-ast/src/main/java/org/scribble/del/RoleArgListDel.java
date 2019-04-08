@@ -31,15 +31,14 @@ public class RoleArgListDel extends DoArgListDel
 	}
 
 	@Override
-	public RoleArgList leaveDisambiguation(ScribNode parent, ScribNode child,
+	public RoleArgList leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
-		visited = super.leaveDisambiguation(parent, child, disamb, visited);
+		visited = super.leaveDisambiguation(child, disamb, visited);
 
 		// Duplicate check not needed for NonRoleArgList
 		RoleArgList ral = (RoleArgList) visited;
 		List<Role> roles = ral.getRoles();
-		//if (roles.size() != new HashSet<>(roles).size())
 		if (roles.size() != roles.stream().distinct().count())
 		{
 			throw new ScribException(ral.getSource(),

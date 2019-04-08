@@ -40,7 +40,7 @@ public class Substitutor extends AstVisitor
 	}
 	
 	@Override
-	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited)
+	public ScribNode leave(ScribNode child, ScribNode visited)
 			throws ScribException
 	{
 		return visited.substituteNames(this);

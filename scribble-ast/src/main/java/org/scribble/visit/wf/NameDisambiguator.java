@@ -57,23 +57,24 @@ public class NameDisambiguator extends ModuleContextVisitor
 
 	// Most subclasses will override visitForSubprotocols (e.g. ReachabilityChecker, FsmConstructor), but sometimes still want to change whole visit pattern (e.g. Projector)
 	@Override
-	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribException
+	public ScribNode visit(ScribNode child) throws ScribException
 	{
 		/*if (child instanceof ProtocolDecl<?>)  // FIXME: factor out
 		{
 			this.root = (ProtocolDecl<?>) child;
 		}*/
-		enter(parent, child);
-		ScribNode visited = visitForDisamb(parent, child);
-		return leave(parent, child, visited);
+		enter(child);
+		ScribNode visited = visitForDisamb(child);
+		return leave(child, visited);
 	}
 
-	protected ScribNode visitForDisamb(ScribNode parent, ScribNode child) throws ScribException
+  // CHECKME: why "visitFor" pattern?
+	protected ScribNode visitForDisamb(ScribNode child) throws ScribException
 	{
 		if (child instanceof GDelegationElem)
 		{
-			//return visitOverrideForDelegationElem(parent, (Do<?>) child);
-			return ((GDelegationElemDel) child.del()).visitForNameDisambiguation(this, (GDelegationElem) child);
+			return ((GDelegationElemDel) child.del()).visitForNameDisambiguation(this,
+					(GDelegationElem) child);
 		}
 		else
 		{
@@ -83,17 +84,18 @@ public class NameDisambiguator extends ModuleContextVisitor
 
 	@Override
 	//public NameDisambiguator enter(ModelNode parent, ModelNode child) throws ScribbleException
-	public void enter(ScribNode parent, ScribNode child) throws ScribException
+	public void enter(ScribNode child) throws ScribException
 	{
-		super.enter(parent, child);
-		child.del().enterDisambiguation(parent, child, this);
+		super.enter(child);
+		child.del().enterDisambiguation(child, this);
 	}
 	
 	@Override
-	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribException
+	public ScribNode leave(ScribNode child, ScribNode visited)
+			throws ScribException
 	{
-		visited = visited.del().leaveDisambiguation(parent, child, this, visited);
-		return super.leave(parent, child, visited);
+		visited = visited.del().leaveDisambiguation(child, this, visited);
+		return super.leave(child, visited);
 	}
 	
 	public void clear()
@@ -116,7 +118,8 @@ public class NameDisambiguator extends ModuleContextVisitor
 		return this.roles.contains(role);
 	}
 
-	public void addParameter(Name<? extends NonRoleParamKind> param, NonRoleParamKind kind)
+	public void addParameter(Name<? extends NonRoleParamKind> param,
+			NonRoleParamKind kind)
 	{
 		this.params.put(param.toString(), kind);
 	}

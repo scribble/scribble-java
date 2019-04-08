@@ -21,9 +21,5 @@ import org.scribble.visit.GTypeTranslator;
 
 public interface GDel extends ScribDel
 {
-	default GNode translate(ScribNode n, GTypeTranslator t)
-			throws ScribException
-	{
-		throw new RuntimeException("TODO: " + n);
-	}
+	GNode translate(ScribNode n, GTypeTranslator t) throws ScribException;
 }

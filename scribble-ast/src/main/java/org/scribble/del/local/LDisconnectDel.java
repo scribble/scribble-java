@@ -13,32 +13,10 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LDisconnect;
-import org.scribble.core.type.name.Role;
 import org.scribble.del.ConnectionActionDel;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.EGraphBuilder;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LDisconnectDel extends ConnectionActionDel
 		implements LSimpleInteractionNodeDel
 {
-	@Override
-	public LDisconnect leaveEGraphBuilding(ScribNode parent, ScribNode child,
-			EGraphBuilder builder, ScribNode visited) throws ScribException
-	{
-		LDisconnect ld = (LDisconnect) visited;
-		Role peer = ld.getPeerChild().toName();
-		builder.util.addEdge(builder.util.getEntry(),
-				builder.lang.config.ef.newEDisconnect(peer), builder.util.getExit());
-		return (LDisconnect) super.leaveEGraphBuilding(parent, child, builder, ld);
-	}
-
-	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
-			ScribNode child, ProjectedChoiceSubjectFixer fixer)
-	{
-		fixer.setChoiceSubject(((LDisconnect) child).getSelfChild().toName());
-	}
+	
 }

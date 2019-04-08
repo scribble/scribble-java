@@ -13,73 +13,12 @@
  */
 package org.scribble.del.local;
 
-import java.util.Arrays;
-
-import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ProtocolDef;
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LInteractionSeq;
-import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.ast.local.LProtocolDef;
-import org.scribble.ast.local.LRecursion;
-import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.lang.SubprotoSig;
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.kind.RecVarKind;
 import org.scribble.del.ProtocolDefDel;
-import org.scribble.del.ScribDelBase;
-import org.scribble.util.ScribException;
-import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.env.InlineProtocolEnv;
 
 public class LProtocolDefDel extends ProtocolDefDel
 {
 	public LProtocolDefDel()
 	{
 
-	}
-
-	@Override
-	protected LProtocolDefDel copy()
-	{
-		LProtocolDefDel copy = new LProtocolDefDel();
-		copy.inlined = this.inlined;
-		return copy;
-	}
-
-	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribException
-	{
-		CommonTree blame = ((LProtocolDecl) parent).getHeaderChild().getSource();  // Cf., GProtocolDefDel
-		SubprotoSig subsig = inl.peekStack();
-		LProtocolDef def = (LProtocolDef) visited;
-		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) def
-				.getBlockChild().del().env()).getTranslation();
-		RecVarNode recvar = (RecVarNode) inl.lang.config.af.SimpleNameNode(blame,  // The parent do would probably be the better source for blame
-				RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
-		LRecursion rec = inl.lang.config.af.LRecursion(blame, recvar, block);
-		LInteractionSeq lis = 
-				inl.lang.config.af.LInteractionSeq(blame, Arrays.asList(rec));
-		LProtocolDef inlined = inl.lang.config.af.LProtocolDef(def.getSource(),
-				inl.lang.config.af.LProtocolBlock(blame, lis));
-		inl.pushEnv(inl.popEnv().setTranslation(inlined));
-		LProtocolDefDel copy = setInlinedProtocolDef(inlined);
-		return (LProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, inl,
-				(LProtocolDef) def.del(copy));
-	}
-	
-	@Override
-	public LProtocolDef getInlinedProtocolDef()
-	{
-		return (LProtocolDef) super.getInlinedProtocolDef();
-	}
-
-	@Override
-	public LProtocolDefDel setInlinedProtocolDef(
-			ProtocolDef<? extends ProtocolKind> inlined)
-	{
-		return (LProtocolDefDel) super.setInlinedProtocolDef(inlined);
 	}
 }

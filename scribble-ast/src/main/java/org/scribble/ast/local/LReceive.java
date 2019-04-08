@@ -13,21 +13,13 @@
  */
 package org.scribble.ast.local;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.name.Role;
-import org.scribble.core.type.session.Message;
 import org.scribble.util.Constants;
-import org.scribble.util.RuntimeScribException;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LReceive extends LMessageTransfer implements LSimpleSessionNode
 {
@@ -47,35 +39,6 @@ public class LReceive extends LMessageTransfer implements LSimpleSessionNode
 	public LReceive dupNode()
 	{
 		return new LReceive(this);
-	}
-
-	@Override
-	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
-	{
-		RoleNode src = this.getSourceChild();
-		fixer.setChoiceSubject(src.toName());
-		return src.toName();
-	}
-
-	@Override
-	public LSessionNode merge(AstFactory af, LSessionNode ln)
-			throws ScribException
-	{
-		throw new RuntimeScribException("Invalid merge on LReceive: " + this);
-	}
-
-	@Override
-	public boolean canMerge(LSessionNode ln)
-	{
-		return false;
-	}
-
-	@Override
-	public Set<Message> getEnabling()
-	{
-		Set<Message> enab = new HashSet<>();
-		enab.add(getMessageNodeChild().toMessage());
-		return enab;
 	}
 
 	@Override

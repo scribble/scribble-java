@@ -13,25 +13,7 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LCompoundInteraction;
-import org.scribble.util.ScribException;
-import org.scribble.visit.wf.ReachabilityChecker;
-import org.scribble.visit.wf.env.ReachabilityEnv;
-
 public interface LCompoundInteractionNodeDel extends LInteractionNodeDel
 {
-	@Override
-	default LCompoundInteraction leaveReachabilityCheck(ScribNode parent,
-			ScribNode child, ReachabilityChecker checker, ScribNode visited)
-			throws ScribException
-	{
-		// Following CompoundInteractionNodeDel#leaveInlinedProtocolUnfolding/leaveWFChoiceCheck
-		ReachabilityEnv visited_env = checker.popEnv();
-		setEnv(visited_env);
-		ReachabilityEnv parent_env = checker.popEnv();
-		parent_env = parent_env.mergeContext(visited_env);
-		checker.pushEnv(parent_env);
-		return (LCompoundInteraction) visited;
-	}
+	
 }

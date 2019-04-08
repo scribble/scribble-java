@@ -30,7 +30,6 @@ import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.GTypeTranslator;
-import org.scribble.visit.context.ModuleContextBuilder;
 import org.scribble.visit.wf.NameDisambiguator;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
@@ -88,7 +87,6 @@ public class Lang
 	public void runPasses() throws ScribException
 	{
 		// CHECKME: in the end, should these also be refactored into core?  (instead of AST visiting)
-		runVisitorPassOnAllModules(ModuleContextBuilder.class);  // Always done first (even if other contexts are built later) so that following passes can use ModuleContextVisitor
 		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
 	}
 	

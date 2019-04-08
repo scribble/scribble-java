@@ -24,7 +24,6 @@ import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
-import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.global.GProtocolBlock;
@@ -32,6 +31,7 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
@@ -39,7 +39,6 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
-import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtocolBlock;
@@ -50,6 +49,7 @@ import org.scribble.ast.local.LReceive;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.local.LRequest;
 import org.scribble.ast.local.LSend;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.local.LWrapClient;
 import org.scribble.ast.local.LWrapServer;
 import org.scribble.ast.local.SelfRoleDecl;
@@ -587,7 +587,7 @@ public class AstFactoryImpl implements AstFactory
 			// del extends that of LProtocolDecl
 	{
 		LProjectionDecl lpd = new LProjectionDecl(source, mods, header, def);
-		lpd = del(lpd, new LProjectionDeclDel(fullname, self));
+		lpd = del(lpd, new LProjectionDeclDel());//fullname, self));
 		return lpd;
 	}
 

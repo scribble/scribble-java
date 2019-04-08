@@ -39,11 +39,13 @@ public class NonRoleArgListDel extends DoArgListDel
 
 	// Doing in leave allows the arguments to be individually checked first
 	@Override
-	public NonRoleArgList leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribException
+	public NonRoleArgList leaveDisambiguation(ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
-		NonRoleArgList nral = (NonRoleArgList) super.leaveDisambiguation(parent, child, disamb, visited);
+		NonRoleArgList nral = (NonRoleArgList) super.leaveDisambiguation(child, disamb, visited);
 				// Checks matching arity
 
+		Do<?> parent = (Do<?>) child.getParent();
 		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
 		Iterator<NonRoleArg> args = nral.getArgChildren().iterator();
 		for (NonRoleParamDecl<?> param : pd.getHeaderChild().getParamDeclListChild()

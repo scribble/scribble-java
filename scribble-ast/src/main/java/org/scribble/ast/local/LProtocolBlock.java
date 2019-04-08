@@ -13,13 +13,10 @@
  */
 package org.scribble.ast.local;
 
-import java.util.Set;
-
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.session.Message;
 
 public class LProtocolBlock extends ProtocolBlock<Local> implements LScribNode
 {
@@ -51,16 +48,6 @@ public class LProtocolBlock extends ProtocolBlock<Local> implements LScribNode
 	public LInteractionSeq getInteractSeqChild()
 	{
 		return (LInteractionSeq) getChild(0);
-	}
-	
-	public Set<Message> getEnabling()
-	{
-		return getInteractSeqChild().getEnabling();
-	}
-	
-	public LProtocolBlock merge(LProtocolBlock lpb)
-	{
-		throw new RuntimeException("TODO: " + this + ", " + lpb);
 	}
 	
 	

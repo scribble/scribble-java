@@ -83,12 +83,6 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase
 	}
 
 	@Override
-	public UnaryPayloadElem<K> project(AstFactory af)
-	{
-		return this;
-	}
-
-	@Override
 	public PayloadElemType<K> toPayloadType()
 	{
 		return getNameChild().toPayloadType();

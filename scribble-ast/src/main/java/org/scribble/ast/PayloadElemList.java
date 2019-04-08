@@ -69,12 +69,6 @@ public class PayloadElemList extends ScribNodeBase
 				visitChildListWithClassEqualityCheck(this, getElementChildren(), nv);
 		return reconstruct(elems);
 	}
-	
-	protected PayloadElemList project(AstFactory af)
-	{
-		return af.PayloadElemList(this.source, getElementChildren().stream()
-				.map(pe -> pe.project(af)).collect(Collectors.toList()));
-	}
 
 	public Payload toPayload()
 	{

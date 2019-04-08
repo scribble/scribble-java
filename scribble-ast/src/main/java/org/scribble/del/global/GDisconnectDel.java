@@ -15,16 +15,11 @@ package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDisconnect;
-import org.scribble.ast.local.LScribNode;
-import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
-import org.scribble.visit.context.Projector;
 import org.scribble.visit.wf.NameDisambiguator;
-import org.scribble.visit.wf.WFChoiceChecker;
-import org.scribble.visit.wf.env.WFChoiceEnv;
 
 // TODO: make DisconnectDel (cf., G/LMessageTransferDel)
 public class GDisconnectDel extends ConnectionActionDel
@@ -36,12 +31,10 @@ public class GDisconnectDel extends ConnectionActionDel
 	}
 
 	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
+	public ScribNode leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		GDisconnect gc = (GDisconnect) visited;
-		/*Role src = gc.src.toName();
-		Role dest = gc.dest.toName();*/
 		return gc;
 	}
 	
@@ -53,64 +46,5 @@ public class GDisconnectDel extends ConnectionActionDel
 		Role left = source.getLeftChild().toName();
 		Role right = source.getRightChild().toName();
 		return new org.scribble.core.type.session.global.GDisconnect(source, left, right);
-	}
-
-	@Override
-	public GDisconnect leaveInlinedWFChoiceCheck(ScribNode parent,
-			ScribNode child, WFChoiceChecker checker, ScribNode visited)
-			throws ScribException
-	{
-		GDisconnect gd = (GDisconnect) visited;
-		RoleNode leftNode = gd.getLeftChild();
-		RoleNode rightNode = gd.getRightChild();
-		
-		Role left = leftNode.toName();
-		if (!checker.peekEnv().isEnabled(left))
-		{
-			throw new ScribException(leftNode.getSource(),
-					"Role not enabled: " + left);
-		}
-		//Message msg = gd.msg.toMessage();  //  Unit message 
-		WFChoiceEnv env = checker.popEnv();
-		//for (Role dest : gc.getDestinationRoles())
-		Role right = rightNode.toName();
-		if (!env.isEnabled(right))
-		{
-			throw new ScribException(rightNode.getSource(),
-					"Role not enabled: " + right);
-		}
-		{
-			if (left.equals(right))
-			{
-				throw new ScribException(gd.getSource(),
-						"[TODO] Self connections not supported: " + gd); // Would currently
-																															// be subsumed by
-																															// the below
-			}
-			if (!env.isConnected(left, right))
-			{
-				throw new ScribException(gd.getSource(),
-						"Roles not (necessarily) connected: " + left + ", " + right);
-			}
-
-			env = env.disconnect(left, right);//.removeMessage(src, dest, ...);  // Is remove really needed?
-			/*env = env
-					.disconnect(src, dest)
-					.removeMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));  // FIXME: factor out dummy connection message with GConnect etc.*/
-		}
-		checker.pushEnv(env);
-		return gd;
-	}
-
-	@Override
-	public ScribNode leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribException
-	{
-		GDisconnect gd = (GDisconnect) visited;
-		Role self = proj.peekSelf();
-		LScribNode projection = gd.project(proj.lang.config.af, self);
-		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GDisconnect) GSimpleInteractionNodeDel.super.leaveProjection(parent,
-				child, proj, gd);
 	}
 }

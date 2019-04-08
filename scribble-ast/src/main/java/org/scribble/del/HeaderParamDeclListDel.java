@@ -30,13 +30,17 @@ public abstract class HeaderParamDeclListDel extends ScribDelBase
 
 	// Doing in leave allows the arguments to be individually checked first
 	@Override
-	public HeaderParamDeclList<?> leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribException
+	public HeaderParamDeclList<?> leaveDisambiguation(ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		HeaderParamDeclList<?> pdl = (HeaderParamDeclList<?>) visited;
-		List<? extends HeaderParamDecl<?>> decls = pdl.getParamDeclChildren();  // grammar enforces RoleDeclList size > 0
-		if (decls.size() != decls.stream().map((d) -> d.getDeclName()).distinct().count())
+		List<? extends HeaderParamDecl<?>> decls = pdl.getParamDeclChildren();
+			// grammar enforces RoleDeclList size > 0
+		if (decls.size() != decls.stream().map((d) -> d.getDeclName()).distinct()
+				.count())
 		{
-			throw new ScribException(pdl.getSource(), "Duplicate header decls: " + pdl);
+			throw new ScribException(pdl.getSource(),
+					"Duplicate header decls: " + pdl);
 		}
 		return pdl;
 	}

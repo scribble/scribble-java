@@ -23,6 +23,4 @@ public interface MessageNode extends NonRoleArgNode
 	//MessageNode clone(AstFactory af);
 
 	//Arg<? extends SigKind> toArg();  // Not possible due to "diamond" with PayloadElemNameNode at AmbigNameNode
-	
-	MessageNode project(AstFactory af);  // Not role sensitive  // Factor into visitor/env pattern?  Currently not
 }

@@ -37,11 +37,12 @@ public class AmbigNameNodeDel extends ScribDelBase
 
 	}
 
-	// Currently only in "message positions (see Scribble.g ambiguousname)
+	// Currently only in "message positions (see Scribble.g, ambiguousname)
 	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
+	public ScribNode leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
+		ScribNode parent = child.getParent();
 		ModuleContext mcontext = disamb.getModuleContext();
 		AmbigNameNode ann = (AmbigNameNode) visited;
 		AmbigName name = ann.toName();

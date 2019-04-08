@@ -21,7 +21,8 @@ import org.scribble.visit.wf.NameDisambiguator;
 public class NonRoleParamDeclDel extends ScribDelBase
 {
 	@Override
-	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribException
+	public void enterDisambiguation(ScribNode child, NameDisambiguator disamb)
+			throws ScribException
 	{
 		NonRoleParamDecl<?> pd = (NonRoleParamDecl<?>) child;
 		disamb.addParameter(pd.getDeclName(), pd.kind);

@@ -37,9 +37,10 @@ public abstract class DoArgListDel extends ScribDelBase
 
 	// Doing in leave allows the arguments to be individually checked first
 	@Override
-	public DoArgList<?> leaveDisambiguation(ScribNode parent, ScribNode child,
+	public DoArgList<?> leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
+		ScribNode parent = child.getParent();
 		DoArgList<?> dal = (DoArgList<?>) visited;
 		List<?> args = dal.getArgChildren();
 		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);

@@ -67,6 +67,12 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	}
 
 	@Override
+	public ScribNode getParent()
+	{
+		return (ScribNode) super.getParent();
+	}
+
+	@Override
 	public ScribNode getChild(int i)
 	{
 		return (ScribNode) super.getChild(i);
@@ -96,8 +102,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 			});
 	}
 
-	// FIXME: rework as ANTLR node (deep) copy (maybe "clone") -- no: ANTLR dupNode is node only copy (actually, dupNode is node "shell" only, doesn't even keep children, let alone copy them)
-	// FIXME TODO: rework children using ANTLR children
+	// CHECKME: rework as ANTLR node (deep) copy (maybe "clone") -- no: ANTLR dupNode is node only copy (actually, dupNode is node "shell" only, doesn't even keep children, let alone copy them)
 	// N.B. does not copy children nor del
 	// Should call Tree#dupNode constructor (i.e., children not dup'd) -- do not "return this" (unless childress), ends up with children duplicated (because node "dup'd" with children, then children added again)
 	@Override
@@ -135,11 +140,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	@Override
 	public final ScribNodeBase del(ScribDel del)
 	{
-		/*ScribNodeBase copy = copy();
-		copy.del = del;
-		return copy;*/
 		ScribNodeBase clone = clone();  // Need full clone because parent field prevents immutable construction
-		//clone.del = del;
 		clone.setDel(del);
 		return clone;
 	}
@@ -154,9 +155,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	// Defensive helper with cast check
 	public static final <T extends ScribNode> T del(T n, ScribDel del)
 	{
-		//ScribNodeBase copy = ((ScribNodeBase) n).copy();
 		ScribNodeBase copy = ((ScribNodeBase) n).clone();  // Need deep clone, since children have parent field
-		//copy.del = del;
 		copy.setDel(del);
 		return ScribNodeUtil.castNodeByClass(n, copy);
 	}
@@ -164,7 +163,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	@Override
 	public ScribNode accept(AstVisitor nv) throws ScribException
 	{
-		return nv.visit(null, this);
+		return nv.visit(this);
 	}
 
 	@Override
@@ -175,7 +174,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	
 	protected ScribNode visitChild(ScribNode child, AstVisitor nv) throws ScribException
 	{
-		return nv.visit(this, child);  // cf. child.accept(nv) ?
+		return nv.visit(child);  // cf. child.accept(nv) ?
 	}
 
 	@Override

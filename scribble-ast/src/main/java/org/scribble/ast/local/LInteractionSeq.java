@@ -13,16 +13,13 @@
  */
 package org.scribble.ast.local;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.session.Message;
 
 public class LInteractionSeq extends InteractionSeq<Local> implements LScribNode
 {
@@ -55,22 +52,6 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LScribNode
 	public boolean isLocal()
 	{
 		return true;
-	}
-
-	public Set<Message> getEnabling()
-	{
-		if (!this.isEmpty())
-		{
-			for (LSessionNode ln : getInteractionChildren())
-			{
-				Set<Message> enab = ln.getEnabling();
-				if (!enab.isEmpty())
-				{
-					return enab;
-				}
-			}
-		}
-		return Collections.emptySet();
 	}
 	
 	

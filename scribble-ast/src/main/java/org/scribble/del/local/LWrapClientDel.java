@@ -13,35 +13,10 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LWrapClient;
-import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.name.Role;
 import org.scribble.del.ConnectionActionDel;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.EGraphBuilder;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LWrapClientDel extends ConnectionActionDel
 		implements LSimpleInteractionNodeDel
 {
-	@Override
-	public LWrapClient leaveEGraphBuilding(ScribNode parent, ScribNode child,
-			EGraphBuilder builder, ScribNode visited) throws ScribException
-	{
-		LWrapClient lc = (LWrapClient) visited;
-		RoleNode dest = lc.getDestinationChild();
-		Role peer = dest.toName();
-		builder.util.addEdge(builder.util.getEntry(),
-				builder.lang.config.ef.newEWrapClient(peer), builder.util.getExit());
-		return (LWrapClient) super.leaveEGraphBuilding(parent, child, builder, lc);
-	}
-
-	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
-			ScribNode child, ProjectedChoiceSubjectFixer fixer)
-	{
-		fixer
-				.setChoiceSubject(((LWrapClient) child).getDestinationChild().toName());
-	}
+	
 }

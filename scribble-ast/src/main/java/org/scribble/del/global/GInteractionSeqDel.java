@@ -15,27 +15,15 @@ package org.scribble.del.global;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GSessionNode;
-import org.scribble.ast.local.LInteractionSeq;
-import org.scribble.ast.local.LScribNode;
-import org.scribble.ast.local.LSessionNode;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.global.GType;
 import org.scribble.del.InteractionSeqDel;
-import org.scribble.del.ScribDelBase;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
-import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.context.Projector;
-import org.scribble.visit.context.RecRemover;
-import org.scribble.visit.context.env.ProjectionEnv;
-import org.scribble.visit.env.InlineProtocolEnv;
 
 public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 {
@@ -51,111 +39,5 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 			elems.add((GType) c.visitWith(t));  // throws ScribbleException
 		}
 		return new GSeq(source, elems);
-	}
-
-	// enter in super
-	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribException
-	{
-		GInteractionSeq gis = (GInteractionSeq) visited;
-		List<GSessionNode> gins = new LinkedList<GSessionNode>();
-		for (GSessionNode gi : gis.getInteractionChildren())
-		{
-			ScribNode inlined = ((InlineProtocolEnv) gi.del().env()).getTranslation();
-			if (inlined instanceof GInteractionSeq)  // A do got inlined
-			{
-				gins.addAll(((GInteractionSeq) inlined).getInteractionChildren());
-			}
-			else
-			{
-				gins.add((GSessionNode) inlined);
-			}
-		}
-		GInteractionSeq inlined = inl.lang.config.af.GInteractionSeq(gis.getSource(),
-				gins);
-		inl.pushEnv(inl.popEnv().setTranslation(inlined));
-		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, inl, gis);
-	}
-
-	@Override
-	public void enterProjection(ScribNode parent, ScribNode child, Projector proj)
-			throws ScribException
-	{
-		ScribDelBase.pushVisitorEnv(this, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
-	}
-	
-	@Override
-	public GInteractionSeq leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribException
-	{
-		GInteractionSeq gis = (GInteractionSeq) visited;
-		List<LSessionNode> lis = new LinkedList<>();
-		for (GSessionNode gi : gis.getInteractionChildren())  // FIXME: rewrite using flatMap
-		{
-			LScribNode ln = (LScribNode) ((ProjectionEnv) gi.del().env()).getProjection();
-			//LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
-			// TODO: move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
-			if (ln instanceof LInteractionSeq)  // Self comm sequence
-			{
-				lis.addAll(((LInteractionSeq) ln).getInteractionChildren());
-			}
-			else if (ln != null) // null is used for empty projection
-			{
-				lis.add((LSessionNode) ln);
-			}
-		}
-		/*if (lis.size() == 1)  // NO: needed for e.g. rec X { 1() from A to B; choice at A { continue X; } or { 2() from A to B; } } -- do instead in GRecursion
-		{
-			if (lis.get(0) instanceof Continue)
-			{
-				lis.clear();
-			}
-		}*/
-		LInteractionSeq projection = gis.project(proj.lang.config.af,
-				proj.peekSelf(), lis);
-		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
-	}
-	
-	/*@Override
-	public GInteractionSeq leaveF17Parsing(ScribNode parent, ScribNode child, F17Parser parser, ScribNode visited) throws ScribbleException
-	{
-		GInteractionSeq gis = (GInteractionSeq) visited;
-		List<GInteractionNode> gins = gis.getInteractions();
-		Iterator<GInteractionNode> i = gins.iterator();
-		while (i.hasNext())
-		{
-			GInteractionNode gin = i.next();
-			if (!i.hasNext())
-			{
-				break;
-			}
-			/*F17ParserEnv env = (F17ParserEnv) gin.del().env();
-			if (env.isUnguarded())
-			{
-				throw new ScribbleException("[FASE17] unguarded choice case: " + gin);
-			}* /
-			if (!(gin instanceof GMessageTransfer || gin instanceof GConnect || gin instanceof GDisconnect))
-			{
-				throw new ScribbleException("[FASE17] Bad sequence composition following:\n" + gin);
-			}
-		}
-		return gis;
-	}*/
-	
-	@Override
-	public GInteractionSeq leaveRecRemoval(ScribNode parent, ScribNode child,
-			RecRemover rem, ScribNode visited) throws ScribException
-	{
-		GInteractionSeq gis = (GInteractionSeq) visited;
-		List<GSessionNode> gins = gis.getInteractionChildren().stream()
-				.flatMap((gi) -> (gi instanceof GRecursion
-						&& rem.toRemove(((GRecursion) gi).getRecVarChild().toName()))
-								? ((GRecursion) gi).getBlockChild().getInteractSeqChild()
-										.getInteractionChildren().stream()
-								: Stream.of(gi))
-				.collect(Collectors.toList());
-		return rem.lang.config.af.GInteractionSeq(gis.getSource(), gins);
 	}
 }

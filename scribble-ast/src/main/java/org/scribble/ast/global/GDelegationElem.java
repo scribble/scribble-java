@@ -15,10 +15,8 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNodeBase;
-import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Local;
@@ -27,7 +25,6 @@ import org.scribble.core.type.name.PayloadElemType;
 import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
-import org.scribble.visit.context.Projector;
 
 // A "name pair" payload elem (current AST hierarchy induces this pattern), cf. UnaryPayloadElem (also differs in no parsing ambig against parameters)
 // The this.name will be global kind, but overall this node is local kind
@@ -65,13 +62,6 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	public GDelegationElem dupNode()
 	{
 		return new GDelegationElem(this);
-	}
-	
-	@Override
-	public LDelegationElem project(AstFactory af)
-	{
-		return af.LDelegationElem(this.source, Projector.makeProjectedFullNameNode(
-				af, this.source, getProtocolChild().toName(), getRoleChild().toName()));
 	}
 
 	@Override

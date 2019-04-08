@@ -13,18 +13,11 @@
  */
 package org.scribble.ast.local;
 
-import java.util.Set;
-
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.Role;
-import org.scribble.core.type.session.Message;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 {
@@ -50,49 +43,6 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	public LProtocolBlock getBlockChild()
 	{
 		return (LProtocolBlock) getChild(1);
-	}
-	
-	@Override
-	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
-	{
-		//fixer.pushRec(this.recvar.toName());
-		return getBlockChild().getInteractSeqChild().getInteractionChildren()
-				.get(0).inferLocalChoiceSubject(fixer);
-	}
-
-	@Override
-	public LSessionNode merge(AstFactory af, LSessionNode ln)
-			throws ScribException
-	{
-		if (!(ln instanceof LRecursion) || !this.canMerge(ln))
-		{
-			throw new ScribException("Cannot merge " + getClass() + " and "
-					+ ln.getClass() + ": " + this + ", " + ln);
-		}
-		LRecursion them = ((LRecursion) ln);
-		if (!getRecVarChild().toName()
-				.equals(them.getRecVarChild().toName()))
-		{
-			throw new ScribException(
-					"Cannot merge recursions for " + getRecVarChild() + " and "
-							+ them.getRecVarChild() + ": " + this + ", " + ln);
-		}
-		return af.LRecursion(this.source, getRecVarChild().clone(),//af),
-				getBlockChild().merge(them.getBlockChild()));
-				// Not reconstruct: leave context building to post-projection passes
-				// HACK: this source
-	}
-
-	@Override
-	public boolean canMerge(LSessionNode ln)
-	{
-		return ln instanceof LRecursion;
-	}
-
-	@Override
-	public Set<Message> getEnabling()
-	{
-		return getBlockChild().getEnabling();
 	}
 	
 	

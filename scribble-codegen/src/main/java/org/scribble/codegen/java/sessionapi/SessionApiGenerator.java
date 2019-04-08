@@ -21,19 +21,18 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.ApiGen;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
+import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
+import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
-import org.scribble.del.ModuleDel;
 import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
-import org.scribble.visit.util.MessageIdCollector;
 
 public class SessionApiGenerator extends ApiGen
 {
@@ -181,12 +180,14 @@ public class SessionApiGenerator extends ApiGen
 	
 	private void constructOpClasses() throws ScribException
 	{
-		Module mod = this.lang.getContext().getModule(this.gpn.getPrefix());
+		/*Module mod = this.lang.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDeclChild(simpname);
 		MessageIdCollector coll = new MessageIdCollector(this.lang, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
-		for (MessageId<?> mid : coll.getNames())
+		for (MessageId<?> mid : coll.getNames())*/
+		GProtocol inlined = this.job.getContext().getInlined(this.gpn);
+		for (MessageId<?> mid : inlined.def.getMessageIds())
 		{
 			//constructOpClass(this.cb.newClass(), mid);
 			//constructOpClass(new ClassBuilder(), getEndpointApiRootPackageName(this.gpn), mid);

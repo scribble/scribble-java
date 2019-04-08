@@ -15,7 +15,6 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.core.type.kind.AmbigKind;
@@ -58,12 +57,6 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 		//return getToken().getText();  // CHECKME: ambig nodes are now leafs -- NO: now separated from ID
 		return super.getText();
 	}*/
-	
-	@Override
-	public MessageNode project(AstFactory af)
-	{
-		throw new RuntimeException("Shouldn't get in here: " + this);
-	}
 	
 	@Override
 	public Arg<? extends NonRoleArgKind> toArg()

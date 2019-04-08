@@ -13,13 +13,8 @@
  */
 package org.scribble.ast.local;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
@@ -27,12 +22,7 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.LProtocolName;
-import org.scribble.core.type.name.Role;
-import org.scribble.core.type.session.Message;
 import org.scribble.lang.LangContext;
-import org.scribble.util.RuntimeScribException;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
 public class LDo extends Do<Local> implements LSimpleSessionNode
 {
@@ -58,47 +48,6 @@ public class LDo extends Do<Local> implements LSimpleSessionNode
 	public LDo dupNode()
 	{
 		return new LDo(this);
-	}
-
-	@Override
-	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
-	{
-		ModuleContext mc = fixer.getModuleContext();
-		LangContext jc = fixer.lang.getContext();
-		Role subj = getTargetProtocolDecl(jc, mc).getDefChild().getBlockChild()
-				.getInteractSeqChild().getInteractionChildren().get(0)
-				.inferLocalChoiceSubject(fixer);
-		// FIXME: need equivalent of (e.g) rec X { continue X; } pruning (cf GRecursion.prune) for irrelevant recursive-do (e.g. proto(A, B, C) { choice at A {A->B.do Proto(A,B,C)} or {A->B.B->C} }))
-		Iterator<Role> roleargs = getRoleListChild().getRoles().iterator();
-		for (Role decl : getTargetProtocolDecl(jc, mc).getHeaderChild()
-				.getRoleDeclListChild().getRoles())
-		{
-			Role arg = roleargs.next();
-			if (decl.equals(subj))
-			{
-				return arg;
-			}
-		}
-		throw new RuntimeException("Shouldn't get here: " + this);
-	}
-
-	@Override
-	public LSessionNode merge(AstFactory af, LSessionNode ln)
-			throws ScribException
-	{
-		throw new RuntimeScribException("Invalid merge on LDo: " + this);
-	}
-
-	@Override
-	public boolean canMerge(LSessionNode ln)
-	{
-		return false;
-	}
-
-	@Override
-	public Set<Message> getEnabling()
-	{
-		return Collections.emptySet();
 	}
 
 	@Override

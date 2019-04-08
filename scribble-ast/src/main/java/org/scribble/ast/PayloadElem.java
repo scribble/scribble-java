@@ -23,8 +23,6 @@ import org.scribble.core.type.name.PayloadElemType;
 //public interface PayloadElem extends ScribNode
 public interface PayloadElem<K extends PayloadTypeKind> extends ScribNode
 {
-	PayloadElem<K> project(AstFactory af);  // Currently outside of visitor/env pattern (cf. MessageNode)
-	
 	default boolean isGlobalDelegationElem()
 	{
 		return false;

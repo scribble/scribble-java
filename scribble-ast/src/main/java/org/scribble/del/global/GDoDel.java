@@ -15,31 +15,16 @@ package org.scribble.del.global;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDo;
-import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.ast.global.GRecursion;
-import org.scribble.ast.local.LDo;
-import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.kind.RecVarKind;
 import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.del.DoDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
-import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.context.Projector;
-import org.scribble.visit.context.ProtocolDeclContextBuilder;
-import org.scribble.visit.env.InlineProtocolEnv;
 
 public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 {
@@ -62,91 +47,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		List<Role> roles = source.getRoleListChild().getRoles();
 		List<Arg<? extends NonRoleParamKind>> params = source.getNonRoleListChild()
 				.getParamKindArgs();		
-		return new org.scribble.core.type.session.global.GDo(source, fullname, roles, params);
-	}
-
-	// Part of context building
-	@Override
-	protected void addProtocolDependency(ProtocolDeclContextBuilder builder,
-			Role self, ProtocolName<?> proto, Role target)
-	{
-		builder.addGlobalProtocolDependency(self, (GProtocolName) proto, target);
-	}
-
-	// Only called if cycle
-	public GDo visitForSubprotocolInlining(ProtocolDefInliner builder, GDo child)
-	{
-		CommonTree blame = child.getSource();
-		SubprotoSig subsig = builder.peekStack();
-		RecVarNode recvar = (RecVarNode) builder.lang.config.af.SimpleNameNode(blame,
-				RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
-		GContinue inlined = builder.lang.config.af.GContinue(blame, recvar);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return child;
-	}
-	
-	@Override
-	public GDo leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inl, ScribNode visited) throws ScribException
-	{
-		if (!inl.isCycle())
-		{
-			CommonTree blame = visited.getSource();
-			SubprotoSig subsig = inl.peekStack();
-			RecVarNode recvar = (RecVarNode) inl.lang.config.af.SimpleNameNode(blame,
-					RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
-			GInteractionSeq gis = (GInteractionSeq) (((InlineProtocolEnv) inl
-					.peekEnv()).getTranslation());
-			GProtocolBlock gb = inl.lang.config.af.GProtocolBlock(blame, gis);
-			GRecursion inlined = inl.lang.config.af.GRecursion(blame, recvar, gb);
-			inl.pushEnv(inl.popEnv().setTranslation(inlined));
-			inl.removeSubprotocolRecVar(subsig);
-		}
-		return (GDo) super.leaveProtocolInlining(parent, child, inl, visited);
-	}
-
-	@Override
-	public void enterProjection(ScribNode parent, ScribNode child, Projector proj)
-			throws ScribException
-	{
-		GSimpleInteractionNodeDel.super.enterProjection(parent, child, proj);
-
-		GDo gd = (GDo) child;
-		Role self = proj.peekSelf();
-		if (gd.getRoleListChild().getRoles().contains(self))
-		{
-			// For correct name mangling, need to use the parameter corresponding to the self argument
-			// N.B. -- this depends on Projector not following the Subprotocol pattern, otherwise self is wrong
-			Role param = gd.getTargetRoleParameter(proj.lang.getContext(),
-					proj.getModuleContext(), self);
-			proj.pushSelf(param);
-		}
-		else
-		{
-			proj.pushSelf(self);  // Dummy: just to make pop in leave work
-		}
-	}
-	
-	@Override
-	public GDo leaveProjection(ScribNode parent, ScribNode child, Projector proj,
-			ScribNode visited) throws ScribException // throws ScribbleException
-	{
-		GDo gd = (GDo) visited;
-		Role popped = proj.popSelf();
-		Role self = proj.peekSelf();
-		LDo projection = null;
-		if (gd.getRoleListChild().getRoles().contains(self))
-		{
-			ModuleContext mc = proj.getModuleContext();
-			LProtocolNameNode target = Projector.makeProjectedFullNameNode(
-					proj.lang.config.af, gd.getProtocolNameNode().getSource(),
-					gd.getTargetProtocolDeclFullName(mc), popped);
-			projection = gd.project(proj.lang.config.af, self, target);
-			
-			// FIXME: do guarded recursive subprotocol checking (i.e. role is used during chain) in reachability checking? -- required role-usage makes local choice subject inference easier, but is restrictive (e.g. proto(A, B, C) { choice at A {A->B.do Proto(A,B,C)} or {A->B.B->C} }))
-		}
-		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GDo) GSimpleInteractionNodeDel.super
-				.leaveProjection(parent, child, proj, gd);
+		return new org.scribble.core.type.session.global.GDo(source, fullname,
+				roles, params);
 	}
 }

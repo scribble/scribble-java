@@ -15,15 +15,11 @@ package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GWrap;
-import org.scribble.ast.local.LScribNode;
-import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.name.Role;
+import org.scribble.core.lang.global.GNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.util.ScribException;
-import org.scribble.visit.context.Projector;
+import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.wf.NameDisambiguator;
-import org.scribble.visit.wf.WFChoiceChecker;
-import org.scribble.visit.wf.env.WFChoiceEnv;
 
 // TODO: make WrapDel (cf., G/LMessageTransferDel)
 public class GWrapDel extends ConnectionActionDel
@@ -35,7 +31,7 @@ public class GWrapDel extends ConnectionActionDel
 	}
 
 	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child,
+	public ScribNode leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		GWrap gw = (GWrap) visited;
@@ -43,56 +39,8 @@ public class GWrapDel extends ConnectionActionDel
 	}
 
 	@Override
-	public GWrap leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child,
-			WFChoiceChecker checker, ScribNode visited) throws ScribException
+	public GNode translate(ScribNode n, GTypeTranslator t) throws ScribException
 	{
-		GWrap gw = (GWrap) visited;
-		
-		RoleNode srcNode = gw.getSourceChild();
-		RoleNode destNode = gw.getDestinationChild();
-		Role src = srcNode.toName();
-		Role dest = destNode.toName();
-		if (!checker.peekEnv().isEnabled(src))
-		{
-			throw new ScribException(srcNode.getSource(),
-					"Role not enabled: " + src);
-		}
-		if (!checker.peekEnv().isEnabled(dest))
-		{
-			throw new ScribException(destNode.getSource(),
-					"Role not enabled: " + dest);
-		}
-		//Message msg = gw.msg.toMessage();  //  Unit message 
-		if (src.equals(dest))
-		{
-			throw new ScribException(gw.getSource(),
-					"[TODO] Self connections not supported: " + gw);
-		}
-		WFChoiceEnv env = checker.popEnv();
-		if (!env.isConnected(src, dest))
-		{
-			throw new ScribException(gw.getSource(),
-					"Roles not (necessarily) connected: " + src + ", " + dest);
-		}
-
-		//env = env.addMessage(src, dest, msg);
-		/*env = env
-				.connect(src, dest)
-				.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));*/
-		checker.pushEnv(env);
-		return gw;
-	}
-
-	@Override
-	public ScribNode leaveProjection(ScribNode parent, ScribNode child,
-			Projector proj, ScribNode visited) throws ScribException 
-			// throwsScribbleException
-	{
-		GWrap gw = (GWrap) visited;
-		Role self = proj.peekSelf();
-		LScribNode projection = gw.project(proj.lang.config.af, self);
-		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GWrap) GSimpleInteractionNodeDel.super.leaveProjection(parent,
-				child, proj, gw);
+		throw new RuntimeException("[TODO] :" + n);
 	}
 }

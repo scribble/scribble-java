@@ -27,9 +27,12 @@ import org.scribble.visit.Substitutor;
  * This is the generic object from which all Scribble model objects
  * are derived.
  */
-// Part of core (not lang) -- core is coupled via source to ScribNode/CommonTree
 public interface ScribNode extends Tree
 {
+	@Override
+	ScribNode getParent();
+
+	//@Override -- super return isn't generic
 	List<ScribNode> getChildren();
 
 	//void setChildren(List<ScribNode> children);  // protected

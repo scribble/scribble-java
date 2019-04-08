@@ -34,10 +34,10 @@ public abstract class ModuleContextVisitor extends AstVisitor
 	}
 
 	@Override
-	protected void enter(ScribNode parent, ScribNode child)
+	protected void enter(ScribNode child)
 			throws ScribException
 	{
-		super.enter(parent, child);
+		super.enter(child);
 		if (child instanceof Module)  // Factor out?
 		{
 			/*ModuleDel del = (ModuleDel) ((Module) child).del();

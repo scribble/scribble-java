@@ -15,11 +15,9 @@ package org.scribble.del.name.simple;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.type.kind.RecVarKind;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.del.ScribDelBase;
 import org.scribble.util.ScribException;
-import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.wf.NameDisambiguator;
 
 public class RecVarNodeDel extends ScribDelBase
@@ -30,7 +28,7 @@ public class RecVarNodeDel extends ScribDelBase
 	}
 
 	@Override
-	public RecVarNode leaveDisambiguation(ScribNode parent, ScribNode child,
+	public RecVarNode leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		// Consistent with bound RoleNode checking
@@ -41,29 +39,6 @@ public class RecVarNodeDel extends ScribDelBase
 			throw new ScribException(rn.getSource(),
 					"Rec variable not bound: " + rn);
 		}
-		return (RecVarNode) super.leaveDisambiguation(parent, child, disamb, rn);
-		//return super.leaveDisambiguation(parent, child, disamb, rn.reconstruct(disamb.getCanonicalRecVarName(rv)));
-	}
-
-	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inliner) throws ScribException
-	{
-		super.enterProtocolInlining(parent, child, inliner);
-		ScribDelBase.pushVisitorEnv(this, inliner);
-	}
-
-	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child,
-			ProtocolDefInliner inliner, ScribNode visited) throws ScribException
-	{
-		RecVarNode rn = (RecVarNode) visited;
-		RecVar rv = rn.toName();
-		//return super.leaveProtocolInlining(parent, child, inliner, rn.reconstruct(inliner.getCanonicalRecVarName(rv)));  // No, affects the source AST
-		//RecVarNode inlined = rn.reconstruct(inliner.getCanonicalRecVarName(rv));
-		RecVarNode inlined = (RecVarNode) inliner.lang.config.af.SimpleNameNode(
-				rn.getSource(), RecVarKind.KIND, inliner.getCanonicalRecVarName(rv));
-		inliner.pushEnv(inliner.popEnv().setTranslation(inlined));
-		return ScribDelBase.popAndSetVisitorEnv(this, inliner, rn);  // Not done by any super
+		return (RecVarNode) super.leaveDisambiguation(child, disamb, rn);
 	}
 }

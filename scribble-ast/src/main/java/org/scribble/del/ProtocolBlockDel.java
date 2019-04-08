@@ -13,15 +13,7 @@
  */
 package org.scribble.del;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.util.ScribException;
-import org.scribble.visit.ProtocolDefInliner;
-
 public abstract class ProtocolBlockDel extends CompoundSessionNodeDel
 {
-	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribException
-	{
-		ScribDelBase.pushVisitorEnv(this, inl);
-	}
+	
 }

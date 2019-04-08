@@ -73,14 +73,6 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 				visitChild(getPayloadListChild(), nv);
 		return reconstruct(op, pay);
 	}
-	
-	@Override
-	public MessageNode project(AstFactory af)  // Currently outside of visitor/env pattern
-	{
-		return af.MessageSigNode(this.source, getOpChild(),
-				getPayloadListChild().project(af));
-				// Original del not retained by projection
-	}
 
 	@Override
 	public boolean isMessageSigNode()
