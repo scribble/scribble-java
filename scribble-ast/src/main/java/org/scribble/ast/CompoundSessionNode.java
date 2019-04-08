@@ -15,18 +15,20 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.core.type.kind.ProtocolKind;
 
 // ProtocolBlock or CompoundInteractionNode
-public abstract class CompoundNode<K> extends ScribNodeBase
+public abstract class CompoundSessionNode<K extends ProtocolKind>
+		extends ScribNodeBase implements SessionNode<K>
 {
 	// ScribTreeAdaptor#create constructor
-	public CompoundNode(Token t)
+	public CompoundSessionNode(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	protected CompoundNode(CompoundNode<K> node)
+	protected CompoundSessionNode(CompoundSessionNode<K> node)
 	{
 		super(node);
 	}
@@ -39,7 +41,7 @@ public abstract class CompoundNode<K> extends ScribNodeBase
 	
 	
 	
-	public CompoundNode(CommonTree source)
+	public CompoundSessionNode(CommonTree source)
 	{
 		super(source);
 	}

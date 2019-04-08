@@ -40,7 +40,7 @@ import org.scribble.core.type.name.Role;
 
 
 public class GRecursion extends Recursion<Global>
-		implements GCompoundInteraction
+		implements GCompoundSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GRecursion(Token t)

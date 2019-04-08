@@ -11,9 +11,9 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.global;
+package org.scribble.del;
 
-public interface GCompoundInteraction extends GSessionNode
+public interface SessionNodeDel extends ScribDel
 {
-	
+
 }

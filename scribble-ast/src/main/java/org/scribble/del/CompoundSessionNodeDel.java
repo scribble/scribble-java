@@ -15,6 +15,7 @@ package org.scribble.del;
 
 // For CompoundInteractionNode and ProtocolBlock
 public abstract class CompoundSessionNodeDel extends ScribDelBase
+		implements SessionNodeDel
 {
 	public CompoundSessionNodeDel()
 	{

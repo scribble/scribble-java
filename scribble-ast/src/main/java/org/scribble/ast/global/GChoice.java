@@ -23,7 +23,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
 
-public class GChoice extends Choice<Global> implements GCompoundInteraction
+public class GChoice extends Choice<Global> implements GCompoundSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GChoice(Token t)

@@ -24,7 +24,7 @@ import org.scribble.visit.SimpleAstVisitor;
 import org.scribble.visit.Substitutor;
 
 /**
- * This is the generic object from which all Scribble model objects
+ * This is the generic object from which all Scribble AST objects
  * are derived.
  */
 public interface ScribNode extends Tree

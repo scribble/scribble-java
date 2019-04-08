@@ -14,7 +14,7 @@
 package org.scribble.del;
 
 public abstract class SimpleSessionNodeDel extends ScribDelBase
-		implements InteractionNodeDel
+		implements SessionNodeDel
 {
 
 }

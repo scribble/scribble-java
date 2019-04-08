@@ -23,7 +23,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Local;
 
-public class LChoice extends Choice<Local> implements LCompoundInteraction
+public class LChoice extends Choice<Local> implements LCompoundSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LChoice(Token t)

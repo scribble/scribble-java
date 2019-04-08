@@ -19,7 +19,7 @@ import org.scribble.core.type.kind.ProtocolKind;
 
 // Name should be read (Compound ( InteractionNode ))
 public abstract class CompoundInteraction<K extends ProtocolKind>
-		extends CompoundNode<K> implements SessionNode<K>
+		extends CompoundSessionNode<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public CompoundInteraction(Token t)

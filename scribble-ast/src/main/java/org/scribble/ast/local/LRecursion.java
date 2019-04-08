@@ -19,7 +19,7 @@ import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.core.type.kind.Local;
 
-public class LRecursion extends Recursion<Local> implements LCompoundInteraction
+public class LRecursion extends Recursion<Local> implements LCompoundSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LRecursion(Token t)

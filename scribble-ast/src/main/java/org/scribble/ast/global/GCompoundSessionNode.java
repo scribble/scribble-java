@@ -11,9 +11,9 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.local;
+package org.scribble.ast.global;
 
-public interface LCompoundInteraction extends LSessionNode
+public interface GCompoundSessionNode extends GSessionNode
 {
 	
 }

@@ -17,8 +17,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 
-// Name should be read (Simple ( InteractionNode ))
-// FIXME: rename: Continue/Do aren't really interactions
+// Name should be read (Simple ( SessionNode ))
 public abstract class SimpleSessionNode<K extends ProtocolKind>
 		extends ScribNodeBase implements SessionNode<K>
 {

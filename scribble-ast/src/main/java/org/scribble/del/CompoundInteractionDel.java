@@ -13,7 +13,7 @@
  */
 package org.scribble.del;
 
-public abstract class CompoundInteractionDel extends CompoundSessionNodeDel implements InteractionNodeDel
+public abstract class CompoundInteractionDel extends CompoundSessionNodeDel
 {
 	public CompoundInteractionDel()
 	{

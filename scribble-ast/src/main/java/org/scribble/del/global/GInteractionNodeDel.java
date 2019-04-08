@@ -13,9 +13,9 @@
  */
 package org.scribble.del.global;
 
-import org.scribble.del.InteractionNodeDel;
+import org.scribble.del.SessionNodeDel;
 
-public interface GInteractionNodeDel extends InteractionNodeDel, GDel
+public interface GInteractionNodeDel extends SessionNodeDel, GDel
 {
 
 }
