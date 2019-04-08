@@ -14,46 +14,50 @@
 package org.scribble.cli;
 
 import java.io.File;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.scribble.util.Pair;
 
 // A Scribble extension should call the super constructor, then add any additional flags to this.info -- FIXME: do in CLFlags, not here
 // String[] -> Map<CommandLine.Arg, String[]> -- Map array values are the arguments associated to each CommandLine.Arg
 public class CLArgParser
 {
-	private final Map<String, CLFlag> flags;
+	private final CLFlags flags;
 	private final String[] raw;  // Raw args from main method
 
 	// Flag String constants from CLFlags -> flag arguments (possibly none)
-	private final LinkedHashMap<String, String[]> parsed = new LinkedHashMap<>();
+	private final List<Pair<String, String[]>> parsed = new LinkedList<>();
 	
-	public CLArgParser(CLFlags _flags, String[] raw)
+	public CLArgParser(CLFlags flags, String[] raw)
 	{
-		this.flags = _flags.flags;
+		this.flags = flags;
 		this.raw = raw;
 	}		
 	
-	public LinkedHashMap<String, String[]> getParsed() throws CommandLineException
+	// Return: left = CLFlags String constant, right = flag args (if any)
+	public List<Pair<String, String[]>> getParsed() throws CommandLineException
 	{
 		parseArgs();
-		if (!(this.parsed.containsKey(CLFlags.MAIN_MOD_FLAG)
-				^ this.parsed.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG)))
+		List<String> labs = getParsedKeys();
+		if (!(labs.contains(CLFlags.MAIN_MOD_FLAG)
+				^ labs.contains(CLFlags.INLINE_MAIN_MOD_FLAG)))
 		{
 			throw new CommandLineException("No/multiple main module specified\n");
 		}
-		if (this.parsed.containsKey(CLFlags.MAIN_MOD_FLAG))
+		if (labs.contains(CLFlags.MAIN_MOD_FLAG))
 		{
-			String main = this.parsed.get(CLFlags.MAIN_MOD_FLAG)[0];
+			String main = getParsedUnique(CLFlags.MAIN_MOD_FLAG)[0];
 			if (!validateModuleArg(main))
 			{
 				throw new CommandLineException("Bad module arg: " + main);
 			}
 		}
-		if (this.parsed.containsKey(CLFlags.IMPORT_PATH_FLAG))
+		if (labs.contains(CLFlags.IMPORT_PATH_FLAG))
 		{
-			validatePaths(this.parsed.get(CLFlags.IMPORT_PATH_FLAG)[0]);
+			validatePaths(getParsedUnique(CLFlags.IMPORT_PATH_FLAG)[0]);
 		}
 		return this.parsed;
 	}
@@ -63,13 +67,15 @@ public class CLArgParser
 		for (int i = 0; i < this.raw.length; )  // Parse args in order
 		{
 			String arg = this.raw[i];
-			if (this.flags.containsKey(arg))
+			if (this.flags.explicit.containsKey(arg))
 			{
-				List<String> clashes = this.flags.get(arg).clashes.stream()
-						.filter(x -> this.parsed.containsKey(x)).collect(Collectors.toList());
+				List<String> labs = getParsedKeys();
+				List<String> clashes = this.flags.explicit.get(arg).clashes.stream()
+						.filter(x -> labs.contains(x)).collect(Collectors.toList());
 				if (!clashes.isEmpty())
 				{
-					throw new CommandLineException("Flag clash for " + arg + ": "+ clashes);
+					throw new CommandLineException(
+							"Flag clash for " + arg + ": " + clashes);
 				}
 				i = this.parseFlag(i);  // Returns index of next arg to parse
 			}
@@ -96,25 +102,25 @@ public class CLArgParser
 	// N.B. currently allows repeat flag decls: last overwrites previous
 	protected int parseFlag(int i) throws CommandLineException
 	{
-		String flag = this.raw[i];
-		if (this.flags.get(flag).unique)
+		String lab = this.raw[i];
+		if (this.flags.explicit.get(lab).unique)
 		{
-			if (this.parsed.containsKey(flag))
+			if (getParsedKeys().contains(lab))
 			{
-				throw new CommandLineException("duplicate: " + flag);
+				throw new CommandLineException("duplicate: " + lab);
 			}
 		}
-		int num = this.flags.get(flag).numArgs;
+		int num = this.flags.explicit.get(lab).numArgs;
 		if ((i + num) >= this.raw.length)
 		{
-			throw new CommandLineException(this.flags.get(flag).err);
+			throw new CommandLineException(this.flags.explicit.get(lab).err);
 		}
 		String[] flagArgs = new String[num];
 		if (num > 0)
 		{
 			System.arraycopy(this.raw, i+1, flagArgs, 0, num);
 		}
-		this.parsed.put(flag, flagArgs);
+		this.parsed.add(new Pair<>(lab, flagArgs));
 		return i+1 + num;
 	}
 
@@ -122,14 +128,15 @@ public class CLArgParser
 	protected int parseMain(int i) throws CommandLineException
 	{
 		String main = this.raw[i];
-		this.parsed.put(CLFlags.MAIN_MOD_FLAG, new String[]{main});
+		this.parsed.add(new Pair<>(CLFlags.MAIN_MOD_FLAG, new String[]{main}));
 		return i+1;
 	}
 	
 	private boolean isMainModuleParsed()
 	{
-		return this.parsed.containsKey(CLFlags.MAIN_MOD_FLAG)
-				|| this.parsed.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG);
+		List<String> labs = getParsedKeys();
+		return labs.contains(CLFlags.MAIN_MOD_FLAG)
+				|| labs.contains(CLFlags.INLINE_MAIN_MOD_FLAG);
 	}
 
 	// This check guards the subsequent file open attempt?
@@ -151,6 +158,19 @@ public class CLArgParser
 			}
 		}
 		return true;
+	}
+
+	private List<String> getParsedKeys()
+	{
+		return this.parsed.stream().map(x -> x.left).collect(Collectors.toList());
+	}
+	
+	// Hardcoded to find any one, so applies to uniques only
+	private String[] getParsedUnique(String flag)
+	{
+		Optional<Pair<String, String[]>> res = this.parsed.stream()
+				.filter(x -> x.left.equals(flag)).findAny();
+		return res.isPresent() ? res.get().right : null;
 	}
 	
 	

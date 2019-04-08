@@ -19,10 +19,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -46,6 +44,7 @@ import org.scribble.main.Main;
 import org.scribble.main.resource.locator.DirectoryResourceLocator;
 import org.scribble.main.resource.locator.ResourceLocator;
 import org.scribble.util.AntlrSourceException;
+import org.scribble.util.Pair;
 import org.scribble.util.RuntimeScribException;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribParserException;
@@ -55,13 +54,14 @@ import org.scribble.util.ScribUtil;
 public class CommandLine
 {
 	protected final CLFlags _flags;
-	protected final Map<String, CLFlag> flags;
-	protected final LinkedHashMap<String, String[]> args;  // Maps each flag to its arg values, ordered by parsing order
+	protected final Map<String, CLFlag> flags;  // this._flags.flags -- directly cache this Map for convenience
+	protected final List<Pair<String, String[]>> args; 
+			// left = CLFlags String constant, right = flag args (if any) -- ordered by parsing order
 
 	public CommandLine(String... args)
 	{
 		this._flags = newCLFlags();
-		this.flags = this._flags.flags;
+		this.flags = this._flags.explicit;
 		try
 		{
 			this.args = newCLArgParser(this._flags, args).getParsed();
@@ -72,6 +72,17 @@ public class CommandLine
 			System.exit(1);
 			throw new RuntimeException("Dummy");  // Already exited above
 		}
+	}
+	
+	private boolean hasFlag(String flag)
+	{
+		return this.args.stream().anyMatch(x -> x.left.equals(flag));
+	}
+
+	private String[] getUniqueFlagArgs(String flag)
+	{
+		return this.args.stream().filter(x -> x.left.equals(flag)).findAny()
+				.get().right;
 	}
 	
 	// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
@@ -90,20 +101,20 @@ public class CommandLine
 	protected Main newMain() throws ScribParserException, ScribException
 	{
 		Map<JobArgs, Boolean> args = Collections.unmodifiableMap(parseJobArgs());
-		if (this.args.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG))
+		if (hasFlag(CLFlags.INLINE_MAIN_MOD_FLAG))
 		{
-			String inline = this.args.get(CLFlags.INLINE_MAIN_MOD_FLAG)[0];
+			String inline = getUniqueFlagArgs(CLFlags.INLINE_MAIN_MOD_FLAG)[0];
 			return new Main(inline, args);
 		}
 		else
 		{
-			List<Path> impaths = this.args.containsKey(CLFlags.IMPORT_PATH_FLAG)
+			List<Path> impaths = hasFlag(CLFlags.IMPORT_PATH_FLAG)
 					? CommandLine
-							.parseImportPaths(this.args.get(CLFlags.IMPORT_PATH_FLAG)[0])
+							.parseImportPaths(getUniqueFlagArgs(CLFlags.IMPORT_PATH_FLAG)[0])
 					: Collections.emptyList();
 			ResourceLocator locator = new DirectoryResourceLocator(impaths);
 			Path mainpath = CommandLine
-					.parseMainPath(this.args.get(CLFlags.MAIN_MOD_FLAG)[0]);
+					.parseMainPath(getUniqueFlagArgs(CLFlags.MAIN_MOD_FLAG)[0]);
 			return new Main(locator, mainpath, args);
 		}
 	}
@@ -111,97 +122,18 @@ public class CommandLine
 	protected Map<JobArgs, Boolean> parseJobArgs()
 	{
 		Map<JobArgs, Boolean> args = new HashMap<>();
-		args.put(JobArgs.VERBOSE, this.args.containsKey(CLFlags.VERBOSE_FLAG));
-		args.put(JobArgs.OLD_WF, this.args.containsKey(CLFlags.OLD_WF_FLAG));
-		args.put(JobArgs.NO_PROGRESS,
-				this.args.containsKey(CLFlags.NO_PROGRESS_FLAG));
-		args.put(JobArgs.MIN_EFSM,
-				this.args.containsKey(CLFlags.LTSCONVERT_MIN_FLAG));
-		args.put(JobArgs.FAIR, this.args.containsKey(CLFlags.FAIR_FLAG));
+		args.put(JobArgs.VERBOSE, hasFlag(CLFlags.VERBOSE_FLAG));
+		args.put(JobArgs.OLD_WF, hasFlag(CLFlags.OLD_WF_FLAG));
+		args.put(JobArgs.NO_PROGRESS, hasFlag(CLFlags.NO_PROGRESS_FLAG));
+		args.put(JobArgs.MIN_EFSM, hasFlag(CLFlags.LTSCONVERT_MIN_FLAG));
+		args.put(JobArgs.FAIR, hasFlag(CLFlags.FAIR_FLAG));
 		args.put(JobArgs.NO_LCHOICE_SUBJ_CHECK,
-				this.args.containsKey(CLFlags.NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG));
+				hasFlag(CLFlags.NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG));
 		args.put(JobArgs.NO_ACC_CORRELATION_CHECK,
-				this.args.containsKey(CLFlags.NO_ACCEPT_CORRELATION_CHECK_FLAG));
-		args.put(JobArgs.NO_VALIDATION,
-				this.args.containsKey(CLFlags.NO_VALIDATION_FLAG));
-		args.put(JobArgs.SPIN, this.args.containsKey(CLFlags.SPIN_FLAG));
+				hasFlag(CLFlags.NO_ACCEPT_CORRELATION_CHECK_FLAG));
+		args.put(JobArgs.NO_VALIDATION, hasFlag(CLFlags.NO_VALIDATION_FLAG));
+		args.put(JobArgs.SPIN, hasFlag(CLFlags.SPIN_FLAG));
 		return args;
-	}
-
-	public static void main(String[] args)
-			throws CommandLineException, AntlrSourceException
-	{
-		new CommandLine(args).run();
-	}
-
-	public void run() throws CommandLineException, 
-			AntlrSourceException  // AntlrSourceException (ScribbleException) is for JUnit harness
-	{
-		try
-		{
-			try
-			{
-				runBody();
-			}
-			catch (ScribException e)  // Wouldn't need to do this if not Runnable (so maybe change)
-			{
-				if (this.args.containsKey(CLFlags.JUNIT_FLAG)  // JUnit harness looks for an exception
-						|| this.args.containsKey(CLFlags.VERBOSE_FLAG))  // Also print full trace for -V
-				{
-					throw e;
-				}
-				else
-				{
-					System.err.println(e.getMessage());
-					System.exit(1);
-				}
-			}
-		}
-		catch (ScribParserException | CommandLineException e)
-		{
-			System.err.println(e.getMessage());  // No need to give full stack trace, even for debug, for command line errors
-			System.exit(1);
-		}
-		catch (RuntimeScribException e)
-		{
-			System.err.println(e.getMessage());
-			System.exit(1);
-		}
-	}
-
-	protected void runBody()
-			throws AntlrSourceException, ScribParserException, CommandLineException
-	{
-		Main mc = newMain();  // Represents current instance of tooling for given CL args
-		Lang lang = mc.newLang();  // A Job is some series of passes performed on each Module in the MainContext (e.g., cf. Job::runVisitorPass)
-		ScribException err = null;
-		try { doValidationTasks(lang); } catch (ScribException x) { err = x; }
-		for (Entry<String, String[]> e : this.args.entrySet())
-		{
-			String flag = e.getKey();
-			if (flag.equals(CLFlags.MAIN_MOD_FLAG)
-					|| flag.equals(CLFlags.INLINE_MAIN_MOD_FLAG))
-			{
-				continue;
-			}
-			if (!this.flags.get(flag).barrier)
-			{
-				try { tryOutputTasks(lang); }
-				catch (ScribException x) { if (err == null) { err = x; } }
-			}
-			else
-			{
-				if (err == null)
-				{
-					try { doNonAttemptableOutputTasks(lang); }
-					catch (ScribException x) { err = x; }
-				}
-			}
-		}
-		if (err != null)
-		{
-			throw err;
-		}
 	}
 
 	// AntlrSourceException super of ScribbleException -- needed for, e.g., AssrtCoreSyntaxException
@@ -225,103 +157,162 @@ public class CommandLine
 	
 	}
 
-	protected void tryOutputTasks(Lang lang)
+	// TODO: rename, barrier misleading (sounds like a sync)
+	protected void tryNonBarrierTask(Lang lang, Pair<String, String[]> task)
 			throws CommandLineException, ScribException
 	{
-		// Following must be ordered appropriately -- ?
-		if (this.args.containsKey(CLFlags.PROJECT_FLAG))
+		switch (task.left)  // Flag lab (CLFlags String constants)
 		{
-			printProjections(lang);
-		}
-		if (this.args.containsKey(CLFlags.EFSM_FLAG))
-		{
-			printEGraph(lang, true, true);
-		}
-		if (this.args.containsKey(CLFlags.VALIDATION_EFSM_FLAG))
-		{
-			printEGraph(lang, false, true);
-		}
-		if (this.args.containsKey(CLFlags.UNFAIR_EFSM_FLAG))
-		{
-			printEGraph(lang, false, false);
-		}
-		if (this.args.containsKey(CLFlags.EFSM_PNG_FLAG))
-		{
-			drawEGraph(lang, true, true);
-		}
-		if (this.args.containsKey(CLFlags.VALIDATION_EFSM_PNG_FLAG))
-		{
-			drawEGraph(lang, false, true);
-		}
-		if (this.args.containsKey(CLFlags.UNFAIR_EFSM_PNG_FLAG))
-		{
-			drawEGraph(lang, false, false);
-		}
-		if (this.args.containsKey(CLFlags.SGRAPH_FLAG)
-				|| this.args.containsKey(CLFlags.SGRAPH_PNG_FLAG)
-				|| this.args.containsKey(CLFlags.UNFAIR_SGRAPH_FLAG)
-				|| this.args.containsKey(CLFlags.UNFAIR_SGRAPH_PNG_FLAG))
-		{
-			if (lang.config.args.get(JobArgs.OLD_WF))
-			{
-				throw new CommandLineException(
-						"Global model flag(s) incompatible with: "
-								+ CLFlags.OLD_WF_FLAG);
-			}
-			if (this.args.containsKey(CLFlags.SGRAPH_FLAG))
-			{
-				printSGraph(lang, true);
-			}
-			if (this.args.containsKey(CLFlags.UNFAIR_SGRAPH_FLAG))
-			{
-				printSGraph(lang, false);
-			}
-			if (this.args.containsKey(CLFlags.SGRAPH_PNG_FLAG))
-			{
-				drawSGraph(lang, true);
-			}
-			if (this.args.containsKey(CLFlags.UNFAIR_SGRAPH_PNG_FLAG))
-			{
-				drawSGraph(lang, false);
-			}
+			case CLFlags.PROJECT_FLAG:
+				printProjection(lang, task.right);
+				break;
+			case CLFlags.EFSM_FLAG:
+				printEGraph(lang, task.right, true, true);  // TODO: factor print/draw
+				break;
+			case CLFlags.VALIDATION_EFSM_FLAG:
+				printEGraph(lang, task.right, false, true);
+				break;
+			case CLFlags.UNFAIR_EFSM_FLAG:
+				printEGraph(lang, task.right, false, false);
+				break;
+			case CLFlags.EFSM_PNG_FLAG:
+				drawEGraph(lang, task.right, true, true);
+				break;
+			case CLFlags.VALIDATION_EFSM_PNG_FLAG:
+				drawEGraph(lang, task.right, false, true);
+				break;
+			case CLFlags.UNFAIR_EFSM_PNG_FLAG:
+				drawEGraph(lang, task.right, false, false);
+				break;
+			case CLFlags.SGRAPH_FLAG:
+				printSGraph(lang, task.right, true);
+				break;
+			case CLFlags.UNFAIR_SGRAPH_FLAG:
+				printSGraph(lang, task.right, false);
+				break;
+			case CLFlags.SGRAPH_PNG_FLAG:
+				drawSGraph(lang, task.right, true);
+				break;
+			case CLFlags.UNFAIR_SGRAPH_PNG_FLAG:
+				drawSGraph(lang, task.right, false);
+				break;
+			default:
+				throw new RuntimeException("Shouldn't get here: " + task.left);
+				// Bad flag should be caught by CLArgParser
 		}
 	}
 
-	// TODO: rename
-	protected void doNonAttemptableOutputTasks(Lang lang)
-			throws ScribException, CommandLineException
+	// TODO: rename, barrier misleading (sounds like a sync)
+	protected void tryBarrierTask(Lang lang,
+			Pair<String, String[]> task) throws ScribException, CommandLineException
 	{
-		if (this.args.containsKey(CLFlags.SESSION_API_GEN_FLAG))
+		switch (task.left)
 		{
-			outputSessionApi(lang);
+			case CLFlags.SESSION_API_GEN_FLAG:
+				outputSessionApi(lang, task.right);
+				break;
+			case CLFlags.STATECHAN_API_GEN_FLAG:
+				outputStateChannelApi(lang, task.right);
+				break;
+			case CLFlags.API_GEN_FLAG:
+				outputEndpointApi(lang, task.right);
+				break;
+			case CLFlags.EVENTDRIVEN_API_GEN_FLAG:
+				outputEventDrivenApi(lang, task.right);
+				break;
+			default:
+				throw new RuntimeException("Shouldn't get here: " + task.left);
+				// Bad flag should be caught by CLArgParser
 		}
-		if (this.args.containsKey(CLFlags.STATECHAN_API_GEN_FLAG))
+	}
+
+	public static void main(String[] args)
+			throws CommandLineException, AntlrSourceException
+	{
+		new CommandLine(args).run();
+	}
+
+	public void run() throws CommandLineException, 
+			AntlrSourceException  // For JUnit harness (ScribException)
+	{
+		try
 		{
-			outputStateChannelApi(lang);
+			try
+			{
+				runTasks();
+			}
+			catch (ScribException e)  // Wouldn't need to do this if not Runnable (so maybe change)
+			{
+				if (hasFlag(CLFlags.JUNIT_FLAG)  // JUnit harness looks for an exception
+						|| hasFlag(CLFlags.VERBOSE_FLAG))  // Also print full trace for -V
+				{
+					throw e;
+				}
+				else
+				{
+					System.err.println(e.getMessage());
+					System.exit(1);
+				}
+			}
 		}
-		if (this.args.containsKey(CLFlags.API_GEN_FLAG))
+		catch (ScribParserException | CommandLineException e)
 		{
-			outputEndpointApi(lang);
+			System.err.println(e.getMessage());  // No need to give full stack trace, even for debug, for command line errors
+			System.exit(1);
 		}
-		if (this.args.containsKey(CLFlags.EVENTDRIVEN_API_GEN_FLAG))
+		catch (RuntimeScribException e)
 		{
-			outputEventDrivenApi(lang);
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	protected void runTasks()
+			throws AntlrSourceException, ScribParserException, CommandLineException
+	{
+		Main mc = newMain();  // Represents current instance of tooling for given CL args
+		Lang lang = mc.newLang();  // A Job is some series of passes performed on each Module in the MainContext (e.g., cf. Job::runVisitorPass)
+		ScribException err = null;
+		try { doValidationTasks(lang); } catch (ScribException x) { err = x; }
+		for (Pair<String, String[]> a : this.args)
+		{
+			CLFlag flag = this.flags.get(a.left);  // null for CLFlags.MAIN_MOD_FLAG
+			if (a.left.equals(CLFlags.MAIN_MOD_FLAG) || !flag.enact)
+			{
+				continue;
+			}
+			if (!flag.barrier)
+			{
+				try { tryNonBarrierTask(lang, a); }
+				catch (ScribException x) { if (err == null) { err = x; } }
+			}
+			else
+			{
+				if (err == null)
+				{
+					try { tryBarrierTask(lang, a); }
+					catch (ScribException x) { err = x; }
+				}
+			}
+		}
+		if (err != null)
+		{
+			throw err;
 		}
 	}
 
 	// TODO: option to write to file, like classes
-	private void printProjections(Lang lang)
+	private void printProjection(Lang lang, String[] args)
 			throws CommandLineException, ScribException
 	{
-		LangContext jobc = lang.getContext();
+		LangContext langc = lang.getContext();
 		Job job = lang.toJob();
-		String[] args = this.args.get(CLFlags.PROJECT_FLAG);
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
-			Role role = checkRoleArg(jobc, fullname, args[i+1]);
+			GProtocolName fullname = checkGlobalProtocolArg(langc, args[i]);
+			Role role = checkRoleArg(langc, fullname, args[i+1]);
 			Map<LProtocolName, LProtocol> projections = job.getProjections(fullname,
-					role);  // FIXME: output Module
+					role);  // FIXME: generate and output Module container -- should be done via Lang?
 			System.out.println("\n" + projections.values().stream()
 					.map(p -> p.toString()).collect(Collectors.joining("\n\n")));
 		}
@@ -330,49 +321,49 @@ public class CommandLine
 	// dot/aut text output
 	// forUser: true means for API gen and general user info (may be minimised), false means for validation (non-minimised, fair or unfair)
 	// (forUser && !fair) should not hold, i.e. unfair doesn't make sense if forUser
-	private void printEGraph(Lang lang, boolean forUser, boolean fair)
+	private void printEGraph(Lang lang, String[] args, boolean forUser, boolean fair)
 			throws ScribException, CommandLineException
 	{
-		LangContext jobc = lang.getContext();
-		String[] args = forUser 
+		LangContext langc = lang.getContext();
+		/*String[] args = forUser 
 				? this.args.get(CLFlags.EFSM_FLAG)
 				: (fair 
 						? this.args.get(CLFlags.VALIDATION_EFSM_FLAG)
-						: this.args.get(CLFlags.UNFAIR_EFSM_FLAG));
+						: this.args.get(CLFlags.UNFAIR_EFSM_FLAG));*/
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
-			Role role = checkRoleArg(jobc, fullname, args[i+1]);
-			EGraph fsm = getEGraph(lang, fullname, role, forUser, fair);
-			String out = this.args.containsKey(CLFlags.AUT_FLAG) 
+			GProtocolName fullname = checkGlobalProtocolArg(langc, args[i]);
+			Role role = checkRoleArg(langc, fullname, args[i+1]);
+			EGraph fsm = getEGraph(lang, fullname, role, forUser, fair, args);
+			String out = hasFlag(CLFlags.AUT_FLAG) 
 					? fsm.toAut()
 					: fsm.toDot();
 			System.out.println("\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
 		}
 	}
 
-	private void drawEGraph(Lang lang, boolean forUser, boolean fair)
+	private void drawEGraph(Lang lang, String[] args, boolean forUser, boolean fair)
 			throws ScribException, CommandLineException
 	{
-		LangContext jobc = lang.getContext();
-		String[] args = forUser 
+		LangContext langc = lang.getContext();
+		/*String[] args = forUser 
 				? this.args.get(CLFlags.EFSM_PNG_FLAG)
 				: (fair 
 						? this.args.get(CLFlags.VALIDATION_EFSM_PNG_FLAG)
-						: this.args.get(CLFlags.UNFAIR_EFSM_PNG_FLAG));
+						: this.args.get(CLFlags.UNFAIR_EFSM_PNG_FLAG));*/
 		for (int i = 0; i < args.length; i += 3)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
-			Role role = checkRoleArg(jobc, fullname, args[i+1]);
+			GProtocolName fullname = checkGlobalProtocolArg(langc, args[i]);
+			Role role = checkRoleArg(langc, fullname, args[i+1]);
 			String png = args[i+2];
-			EGraph fsm = getEGraph(lang, fullname, role, forUser, fair);
+			EGraph fsm = getEGraph(lang, fullname, role, forUser, fair, args);  // CHECKME: factor fullname/role inside?
 			runDot(fsm.toDot(), png);
 		}
 	}
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
 	private EGraph getEGraph(Lang lang, GProtocolName fullname, Role role,
-			boolean forUser, boolean fair)
+			boolean forUser, boolean fair, String[] args)  // args only error message
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
@@ -383,12 +374,12 @@ public class CommandLine
 				.contains(role))
 		{
 			throw new CommandLineException("Bad FSM construction args: "
-					+ Arrays.toString(this.args.get(CLFlags.DOT_FLAG)));
+					+ Arrays.toString(args));
 		}
 		EGraph graph;
 		if (forUser)  // The (possibly minimised) user-output EFSM for API gen
 		{
-			graph = this.args.containsKey(CLFlags.LTSCONVERT_MIN_FLAG)
+			graph = hasFlag(CLFlags.LTSCONVERT_MIN_FLAG)
 					? jobc2.getMinimisedEGraph(fullname, role)
 					: jobc2.getEGraph(fullname, role);
 		}
@@ -407,31 +398,31 @@ public class CommandLine
 		return graph;
 	}
 
-	private void printSGraph(Lang lang, boolean fair)
+	private void printSGraph(Lang lang, String[] args, boolean fair)
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		String[] args = fair 
+		/*String[] args = fair 
 				? this.args.get(CLFlags.SGRAPH_FLAG)
-				: this.args.get(CLFlags.UNFAIR_SGRAPH_FLAG);
+				: this.args.get(CLFlags.UNFAIR_SGRAPH_FLAG);*/
 		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			SGraph model = getSGraph(lang, fullname, fair);
-			String out = this.args.containsKey(CLFlags.AUT_FLAG) 
+			String out = hasFlag(CLFlags.AUT_FLAG) 
 					? model.toAut()
 					: model.toDot();
 			System.out.println("\n" + out);
 		}
 	}
 
-	private void drawSGraph(Lang lang, boolean fair)
+	private void drawSGraph(Lang lang, String[] args, boolean fair)
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		String[] args = fair 
+		/*String[] args = fair 
 				? this.args.get(CLFlags.SGRAPH_PNG_FLAG)
-				: this.args.get(CLFlags.UNFAIR_SGRAPH_PNG_FLAG);
+				: this.args.get(CLFlags.UNFAIR_SGRAPH_PNG_FLAG);*/
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
@@ -456,11 +447,11 @@ public class CommandLine
 		return model;
 	}
 
-	private void outputEndpointApi(Lang lang)
+	private void outputEndpointApi(Lang lang, String[] args)
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		String[] args = this.args.get(CLFlags.API_GEN_FLAG);
+		//String[] args = this.args.get(CLFlags.API_GEN_FLAG);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(lang);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
@@ -469,16 +460,16 @@ public class CommandLine
 			outputClasses(sessClasses);
 			Role role = checkRoleArg(jobc, fullname, args[i+1]);
 			Map<String, String> scClasses = jgen.generateStateChannelApi(fullname,
-					role, this.args.containsKey(CLFlags.STATECHAN_API_GEN_FLAG));
+					role, hasFlag(CLFlags.STATECHAN_SUBTYPES_FLAG));
 			outputClasses(scClasses);
 		}
 	}
 
-	private void outputSessionApi(Lang lang)
+	private void outputSessionApi(Lang lang, String[] args)
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		String[] args = this.args.get(CLFlags.SESSION_API_GEN_FLAG);
+		//String[] args = this.args.get(CLFlags.SESSION_API_GEN_FLAG);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(lang);  // TODO: refactor (generalise -- use new API)
 		for (String fullname : args)
 		{
@@ -488,27 +479,27 @@ public class CommandLine
 		}
 	}
 
-	private void outputStateChannelApi(Lang lang)
+	private void outputStateChannelApi(Lang lang, String[] args)
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		String[] args = this.args.get(CLFlags.STATECHAN_API_GEN_FLAG);
+		//String[] args = this.args.get(CLFlags.STATECHAN_API_GEN_FLAG);
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(lang);  // TODO: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			Role self = checkRoleArg(jobc, fullname, args[i+1]);
 			Map<String, String> classes = jgen.generateStateChannelApi(fullname, self,
-					this.args.containsKey(CLFlags.STATECHAN_API_GEN_FLAG));
+					hasFlag(CLFlags.STATECHAN_SUBTYPES_FLAG));
 			outputClasses(classes);
 		}
 	}
 
-	private void outputEventDrivenApi(Lang lang)
+	private void outputEventDrivenApi(Lang lang, String[] args)
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		String[] args = this.args.get(CLFlags.EVENTDRIVEN_API_GEN_FLAG);
+		//String[] args = this.args.get(CLFlags.EVENTDRIVEN_API_GEN_FLAG);
 		/*JEndpointApiGenerator jgen = new JEndpointApiGenerator(lang);  // FIXME: refactor (generalise -- use new API)
 		for (int i = 0; i < args.length; i += 2)
 		{
@@ -524,7 +515,7 @@ public class CommandLine
 			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			Role self = checkRoleArg(jobc, fullname, args[i+1]);
 			CBEndpointApiGenerator3 edgen = new CBEndpointApiGenerator3(lang, fullname,
-					self, this.args.containsKey(CLFlags.STATECHAN_API_GEN_FLAG));
+					self, hasFlag(CLFlags.STATECHAN_SUBTYPES_FLAG));
 			Map<String, String> out = edgen.build();
 			outputClasses(out);
 		}
@@ -535,18 +526,20 @@ public class CommandLine
 			throws ScribException
 	{
 		Consumer<String> f;
-		if (this.args.containsKey(CLFlags.API_GEN_FLAG))
+		if (hasFlag(CLFlags.API_OUTPUT_DIR_FLAG))
 		{
-			String dir = this.args.get(CLFlags.API_GEN_FLAG)[0];
+			String dir = getUniqueFlagArgs(CLFlags.API_OUTPUT_DIR_FLAG)[0];
 			f = path -> { ScribUtil.handleLambdaScribbleException(() ->
-							{
-								String tmp = dir + "/" + path;
-								if (this.args.containsKey(CLFlags.VERBOSE_FLAG))
-								{
-									System.out.println("[DEBUG] Writing to: " + tmp);
-								}
-								ScribUtil.writeToFile(tmp, classes.get(path)); return null;
-							}); };
+					{
+						String tmp = dir + "/" + path;
+						if (hasFlag(CLFlags.VERBOSE_FLAG))
+						{
+							System.out.println("[DEBUG] Writing to: " + tmp);
+						}
+						ScribUtil.writeToFile(tmp, classes.get(path));
+						return null;
+					});
+			};
 		}
 		else
 		{

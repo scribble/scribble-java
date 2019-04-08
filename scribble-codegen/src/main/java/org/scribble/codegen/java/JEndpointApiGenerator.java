@@ -34,24 +34,29 @@ public class JEndpointApiGenerator
 		this.lang = lang;
 	}
 
-	public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribException
+	public Map<String, String> generateSessionApi(GProtocolName fullname)
+			throws ScribException
 	{
-		this.lang.debugPrintln("\n[Java API gen] Running " + SessionApiGenerator.class + " for " + fullname);
+		this.lang.debugPrintln("\n[Java API gen] Running "
+				+ SessionApiGenerator.class + " for " + fullname);
 		SessionApiGenerator sg = new SessionApiGenerator(this.lang, fullname);  // FIXME: reuse?
 		Map<String, String> map = sg.generateApi();  // filepath -> class source
 		return map;
 	}
 	
 	// FIXME: refactor an EndpointApiGenerator -- ?
-	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribException
+	public Map<String, String> generateStateChannelApi(GProtocolName fullname,
+			Role self, boolean subtypes) throws ScribException
 	{
 		/*JobContext jc = this.job.getContext();
 		if (jc.getEndpointGraph(fullname, self) == null)
 		{
 			buildGraph(fullname, self);
 		}*/
-		lang.debugPrintln("\n[Java API gen] Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
-		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this.lang, fullname, self);
+		lang.debugPrintln("\n[Java API gen] Running "
+				+ StateChannelApiGenerator.class + " for " + fullname + "@" + self);
+		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this.lang,
+				fullname, self);
 		IOInterfacesGenerator iogen = null;
 		try
 		{
@@ -60,7 +65,8 @@ public class JEndpointApiGenerator
 		catch (RuntimeScribException e)  // FIXME: use IOInterfacesGenerator.skipIOInterfacesGeneration
 		{
 			//System.err.println("[Warning] Skipping I/O Interface generation for protocol featuring: " + fullname);
-			this.lang.warningPrintln("Skipping I/O Interface generation for: " + fullname + "\n  Cause: " + e.getMessage());
+			this.lang.warningPrintln("Skipping I/O Interface generation for: "
+					+ fullname + "\n  Cause: " + e.getMessage());
 		}
 		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)
 		Map<String, String> api = new HashMap<>(); // filepath -> class source  // Store results?

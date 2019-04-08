@@ -307,7 +307,7 @@ public class Job
 	}
 
 	// Pre: checkWellFormedness 
-	// Returns: fullname -> Module
+	// Returns: fullname -> Module -- CHECKME TODO: refactor local Module creation to Lang?
 	public Map<LProtocolName, LProtocol> getProjections(GProtocolName fullname,
 			Role role) throws ScribException
 	{

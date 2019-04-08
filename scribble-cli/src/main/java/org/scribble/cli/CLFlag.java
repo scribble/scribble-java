@@ -6,19 +6,21 @@ import java.util.List;
 
 public class CLFlag
 {
-	final String flag;  // ID field
+	final String lab;  // ID field: CLFlags String constant -- N.B. includes "-" prefix
 	final int numArgs;
 	final boolean unique;
-	final boolean barrier;
+	final boolean enact;
+	final boolean barrier;  // TODO: rename, barrier misleading (sounds like a sync)
 	final String err;
 	final List<String> clashes;
 
-	public CLFlag(String flag, int numArgs, boolean unique, boolean barrier,
-			String err, String... clashes)
+	public CLFlag(String lab, int numArgs, boolean unique, boolean enact,
+			boolean barrier, String err, String... clashes)
 	{
-		this.flag = flag;
+		this.lab = lab;
 		this.numArgs = numArgs;
 		this.unique = unique;
+		this.enact = enact;
 		this.barrier = barrier;
 		this.err = err;
 		this.clashes = Arrays.asList(clashes);
@@ -36,14 +38,14 @@ public class CLFlag
 			return false;
 		}
 		CLFlag them = (CLFlag) o;
-		return this.flag.equals(them.flag);
+		return this.lab.equals(them.lab);
 	}
 
 	@Override
 	public int hashCode()
 	{
 		int hash = 14411;
-		hash = 31 * this.flag.hashCode();
+		hash = 31 * this.lab.hashCode();
 		return hash;
 	}
 }

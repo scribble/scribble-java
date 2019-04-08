@@ -63,7 +63,8 @@ public class CBEndpointApiGenerator3
 	
 	//private final boolean subtypes;  // Generate full hierarchy (states -> states, not just indivdual state -> cases) -- cf. ioifaces
 
-	public CBEndpointApiGenerator3(Lang lang, GProtocolName fullname, Role self, boolean subtypes)
+	public CBEndpointApiGenerator3(Lang lang, GProtocolName fullname, Role self,
+			boolean subtypes)
 	{
 		this.lang = lang;
 		try
