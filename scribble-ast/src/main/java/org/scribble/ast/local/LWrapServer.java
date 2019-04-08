@@ -19,7 +19,7 @@ import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.util.Constants;
 
-public class LWrapServer extends LConnectionAction implements LSimpleSessionNode
+public class LWrapServer extends LConnectionAction
 {
 	// ScribTreeAdaptor#create constructor
 	public LWrapServer(Token t)

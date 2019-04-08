@@ -23,7 +23,6 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.util.Constants;
 
 public class LSend extends LMessageTransfer
-		implements LSimpleSessionNode  // Explicitly needed here for getKind
 {
 	// ScribTreeAdaptor#create constructor
 	public LSend(Token t)

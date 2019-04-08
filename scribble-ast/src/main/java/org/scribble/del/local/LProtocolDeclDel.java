@@ -16,7 +16,7 @@ package org.scribble.del.local;
 import org.scribble.core.type.kind.Local;
 import org.scribble.del.ProtocolDeclDel;
 
-public class LProtocolDeclDel extends ProtocolDeclDel<Local>
+public class LProtocolDeclDel extends ProtocolDeclDel<Local> implements LDel
 {
 	public LProtocolDeclDel()
 	{

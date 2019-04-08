@@ -44,7 +44,7 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.ast.local.LReceive;
+import org.scribble.ast.local.LRecv;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.local.LRequest;
 import org.scribble.ast.local.LSend;
@@ -198,7 +198,7 @@ public interface AstFactory
 	LSend LSend(CommonTree source, RoleNode src, MessageNode msg,
 			List<RoleNode> dests);
 
-	LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg,
+	LRecv LReceive(CommonTree source, RoleNode src, MessageNode msg,
 			List<RoleNode> dests);
 
 	LRequest LRequest(CommonTree source, RoleNode src, MessageNode msg,

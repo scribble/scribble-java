@@ -21,24 +21,24 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.util.Constants;
 
-public class LReceive extends LMessageTransfer implements LSimpleSessionNode
+public class LRecv extends LMessageTransfer
 {
 	// ScribTreeAdaptor#create constructor
-	public LReceive(Token t)
+	public LRecv(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public LReceive(LReceive node)
+	public LRecv(LRecv node)
 	{
 		super(node);
 	}
 	
 	@Override
-	public LReceive dupNode()
+	public LRecv dupNode()
 	{
-		return new LReceive(this);
+		return new LRecv(this);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class LReceive extends LMessageTransfer implements LSimpleSessionNode
 	
 	
 	
-	public LReceive(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public LRecv(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		super(source, src, msg, dests);
 	}

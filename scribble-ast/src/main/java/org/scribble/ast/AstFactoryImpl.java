@@ -45,7 +45,7 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.ast.local.LReceive;
+import org.scribble.ast.local.LRecv;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.local.LRequest;
 import org.scribble.ast.local.LSend;
@@ -645,10 +645,10 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg,
+	public LRecv LReceive(CommonTree source, RoleNode src, MessageNode msg,
 			List<RoleNode> dests)
 	{
-		LReceive ls = new LReceive(source, src, msg, dests);
+		LRecv ls = new LRecv(source, src, msg, dests);
 		ls = del(ls, new LReceiveDel());
 		return ls;
 	}

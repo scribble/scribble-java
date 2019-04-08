@@ -17,7 +17,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 
-// ProtocolBlock or CompoundInteractionNode
+// Redundant?  Is always a CompoundInteraction
 public abstract class CompoundSessionNode<K extends ProtocolKind>
 		extends ScribNodeBase implements SessionNode<K>
 {

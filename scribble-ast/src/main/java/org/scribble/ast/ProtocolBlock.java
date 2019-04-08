@@ -21,7 +21,7 @@ import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public abstract class ProtocolBlock<K extends ProtocolKind>
-		extends CompoundSessionNode<K>
+		extends ScribNodeBase
 {
 	// ScribTreeAdaptor#create constructor
 	public ProtocolBlock(Token t)

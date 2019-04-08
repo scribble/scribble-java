@@ -20,10 +20,8 @@ import org.scribble.del.ProtocolBlockDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
-public class GProtocolBlockDel extends ProtocolBlockDel
-		implements GCompoundSessionNodeDel
+public class GProtocolBlockDel extends ProtocolBlockDel implements GDel
 {
-	
 	@Override
 	public GSeq translate(ScribNode n, GTypeTranslator t)
 			throws ScribException

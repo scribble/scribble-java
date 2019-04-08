@@ -20,7 +20,6 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.util.Constants;
 
 public class LWrapClient extends LConnectionAction
-		implements LSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LWrapClient(Token t)

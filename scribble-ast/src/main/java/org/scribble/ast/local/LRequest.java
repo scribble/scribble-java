@@ -19,7 +19,7 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.util.Constants;
 
-public class LRequest extends LConnectionAction implements LSimpleSessionNode
+public class LRequest extends LConnectionAction
 {
 	// ScribTreeAdaptor#create constructor
 	public LRequest(Token t)

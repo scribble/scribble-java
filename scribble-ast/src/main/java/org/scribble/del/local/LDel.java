@@ -11,39 +11,11 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast;
+package org.scribble.del.local;
 
-import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.del.ScribDel;
 
-public abstract class CompoundInteraction<K extends ProtocolKind>
-		extends CompoundSessionNode<K>
+public interface LDel extends ScribDel
 {
-	// ScribTreeAdaptor#create constructor
-	public CompoundInteraction(Token t)
-	{
-		super(t);
-	}
 
-	// Tree#dupNode constructor
-	protected CompoundInteraction(CompoundInteraction<K> node)
-	{
-		super(node);
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	protected CompoundInteraction(CommonTree source)
-	{
-		super(source);
-	}
 }

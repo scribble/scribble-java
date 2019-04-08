@@ -13,9 +13,9 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.del.ConnectionActionDel;
+import org.scribble.del.DisconnectDel;
 
-public class LDisconnectDel extends ConnectionActionDel
+public class LDisconnectDel extends DisconnectDel
 		implements LSimpleSessionNodeDel
 {
 	

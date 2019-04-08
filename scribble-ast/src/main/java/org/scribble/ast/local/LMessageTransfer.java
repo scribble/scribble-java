@@ -22,7 +22,8 @@ import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Local;
 
-public abstract class LMessageTransfer extends MessageTransfer<Local> implements LSimpleSessionNode
+public abstract class LMessageTransfer extends MessageTransfer<Local>
+		implements LSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LMessageTransfer(Token t)

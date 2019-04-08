@@ -15,7 +15,7 @@ package org.scribble.del.local;
 
 import org.scribble.del.SessionNodeDel;
 
-public interface LSessionNodeDel extends SessionNodeDel
+public interface LSessionNodeDel extends SessionNodeDel, LDel
 {
 
 }

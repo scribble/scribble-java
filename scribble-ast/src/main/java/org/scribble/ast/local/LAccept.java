@@ -19,7 +19,7 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.util.Constants;
 
-public class LAccept extends LConnectionAction implements LSimpleSessionNode
+public class LAccept extends LConnectionAction
 {
 	// ScribTreeAdaptor#create constructor
 	public LAccept(Token t)

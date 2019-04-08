@@ -13,10 +13,7 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.del.ConnectionActionDel;
-
-public class LWrapServerDel extends ConnectionActionDel
-		implements LSimpleSessionNodeDel
+public class LWrapServerDel extends LConnectionActionDel
 {
 
 }

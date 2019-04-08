@@ -18,8 +18,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.core.type.kind.Local;
 
-public class LProtocolBlock extends ProtocolBlock<Local>
-		implements LCompoundSessionNode
+public class LProtocolBlock extends ProtocolBlock<Local> implements LScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public LProtocolBlock(Token t)

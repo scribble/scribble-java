@@ -22,8 +22,7 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 
-public class GProtocolBlock extends ProtocolBlock<Global>
-		implements GCompoundSessionNode
+public class GProtocolBlock extends ProtocolBlock<Global> implements GScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GProtocolBlock(Token t)

@@ -13,7 +13,7 @@
  */
 package org.scribble.del;
 
-public abstract class ProtocolBlockDel extends CompoundSessionNodeDel
+public abstract class ProtocolBlockDel extends ScribDelBase
 {
 	
 }

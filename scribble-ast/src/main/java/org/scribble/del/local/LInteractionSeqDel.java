@@ -15,7 +15,7 @@ package org.scribble.del.local;
 
 import org.scribble.del.InteractionSeqDel;
 
-public class LInteractionSeqDel extends InteractionSeqDel
+public class LInteractionSeqDel extends InteractionSeqDel implements LDel
 {
 
 }
