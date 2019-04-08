@@ -49,25 +49,20 @@ import org.scribble.util.ScribException;
 import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribUtil;
 
+// A Scribble extension should override newCLArgParser
 public class CommandLine
 {
-	//public final Map<CLFlags, String[]> args;  // Maps each flag to list of associated argument values
-	public final Map<String, String[]> args;  // Maps each flag to list of associated argument values
-
-	protected CommandLine(CLArgParser2 p) throws CommandLineException
-	{
-		this.args = p.getParsed();
-	}
+	protected final Map<String, String[]> args;  // Maps each flag to list of associated argument values
 
 	public CommandLine(String... args) throws CommandLineException
 	{
-		//this.args = new CLArgParser(args).getArgs();
-		this(new CLArgParser2(args));
-		if (!(this.args.containsKey(CLFlags.MAIN_MOD_FLAG)
-				|| this.args.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG)))
-		{
-			throw new CommandLineException("No main module has been specified\r\n");
-		}
+		this.args = newCLArgParser(args).getParsed();
+	}
+	
+	// A Scribble extension should override newCLArgParser
+	protected CLArgParser2 newCLArgParser(String[] args)
+	{
+		return new CLArgParser2(args);
 	}
 
 	public static void main(String[] args)
@@ -80,7 +75,6 @@ public class CommandLine
 	protected Main newMainContext()
 			throws ScribParserException, ScribException
 	{
-		// FIXME: refactor into arg parsing
 		boolean debug = this.args.containsKey(CLFlags.VERBOSE_FLAG);  // TODO: factor out (cf. MainContext fields)
 		boolean useOldWf = this.args.containsKey(CLFlags.OLD_WF_FLAG);
 		boolean noProgress = this.args.containsKey(CLFlags.NO_LIVENESS_FLAG);
@@ -106,9 +100,6 @@ public class CommandLine
 		args.put(JobArgs.SPIN, spin);
 		args = Collections.unmodifiableMap(args);
 
-		List<Path> impaths = this.args.containsKey(CLFlags.IMPORT_PATH_FLAG)
-				? CommandLine.parseImportPaths(this.args.get(CLFlags.IMPORT_PATH_FLAG)[0])
-				: Collections.emptyList();
 		if (this.args.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG))
 		{
 			String inline = this.args.get(CLFlags.INLINE_MAIN_MOD_FLAG)[0];
@@ -116,6 +107,9 @@ public class CommandLine
 		}
 		else
 		{
+			List<Path> impaths = this.args.containsKey(CLFlags.IMPORT_PATH_FLAG)
+					? CommandLine.parseImportPaths(this.args.get(CLFlags.IMPORT_PATH_FLAG)[0])
+					: Collections.emptyList();
 			ResourceLocator locator = new DirectoryResourceLocator(impaths);
 			Path mainpath = CommandLine.parseMainPath(this.args.get(CLFlags.MAIN_MOD_FLAG)[0]);
 			return new Main(locator, mainpath, args);

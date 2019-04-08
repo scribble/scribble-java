@@ -19,23 +19,15 @@ import java.util.Map;
 
 
 // Flag Strings must start with "-", e.g., "-project"
-// A Scribble extension should override getUniqueFlags and getNonUniqueFlags
-// E.g., ... new HashMap<>(super.getUniqueFlags()).putAll(myExtraFlags) ...
+// A Scribble extension should override getFlags
 public class CLFlags
 {
-	//public final Map<Integer, String> uflags = getUniqueFlags();
-	//public final Map<Integer, String> nflags = getNonUniqueFlags();
+	public final Map<String, CLAux> flags;
 	
-	
-	/**
-	 *  Implicit (and unique)
-	 */
+	// Implicit (and unique)
 	public static final String MAIN_MOD_FLAG = "__main";
 
-
-	/**
-	 *  Unique flags
-	 */
+	// Unique flags
 	public static final String JUNIT_FLAG = "-junit";  // For internal use (JUnit test harness)
 	public static final String IMPORT_PATH_FLAG = "-ip";
 	public static final String API_OUTPUT_DIR_FLAG = "-d";
@@ -53,10 +45,7 @@ public class CLFlags
 	public static final String INLINE_MAIN_MOD_FLAG = "-inline";
 	public static final String SPIN_FLAG = "-spin";
 
-
-	/**
-	 *  Non-unique flags
-	 */
+	// Non-unique flags
 	public static final String PROJECT_FLAG = "-project";
 	public static final String EFSM_FLAG = "-fsm";
 	public static final String VALIDATION_EFSM_FLAG = "-vfsm";
@@ -72,14 +61,18 @@ public class CLFlags
 	public static final String SESSION_API_GEN_FLAG = "-sessapi";
 	public static final String STATECHAN_API_GEN_FLAG = "-chanapi";
 	public static final String EVENTDRIVEN_API_GEN_FLAG = "-cbapi";
-	//*/
-	
-	public final Map<String, CLAux> flags;
 
 	public CLFlags()
 	{
-		Map<String, CLAux> flags = new HashMap<>();
+		this.flags = Collections.unmodifiableMap(getFlags());
+	}
 		
+	// Return a map of flag Strings to flag objects
+	// A Scribble extension should override getFlags
+	protected Map<String, CLAux> getFlags()
+	{
+		Map<String, CLAux> flags = new HashMap<>();
+
 		// Unique; barrier irrelevant
 		flags.put(IMPORT_PATH_FLAG, 
 				new CLAux(IMPORT_PATH_FLAG, 1, true, false, "Missing path argument: "));
@@ -114,7 +107,7 @@ public class CLFlags
 		flags.put(SPIN_FLAG, 
 				new CLAux(SPIN_FLAG, 0, true, false, "Duplicate flag: "));
 
-		// These two clash
+		// These two are mutually exclusive
 		flags.put(DOT_FLAG, 
 				new CLAux(DOT_FLAG, 0, true, false, "Duplicate flag: ",
 						CLFlags.AUT_FLAG));
@@ -173,88 +166,6 @@ public class CLFlags
 				new CLAux(EVENTDRIVEN_API_GEN_FLAG, 2, false, true,
 						"Missing protocol/role arguments: "));
 		
-		this.flags = Collections.unmodifiableMap(flags);
+		return Collections.unmodifiableMap(flags);
 	}
-
-		/*this.info.put(CLFlags.JUNIT_FLAG, new CLAux(0, "Duplicate flag: "));
-		this.info.put(CLFlags.VERBOSE_FLAG, new CLAux(0, "Duplicate flag: "));
-		this.info.put(CLFlags.STATECHAN_SUBTYPES_FLAG, new CLAux(0, "Duplicate flag: "));
-		this.info.put(CLFlags.OLD_WF_FLAG, new CLAux(0, "Duplicate flag: "));
-		this.info.put(CLFlags.NO_LIVENESS_FLAG, new CLAux(0, "Duplicate flag: "));
-		this.info.put(CLFlags.LTSCONVERT_MIN_FLAG, new CLAux(0, "Duplicate flag: "));
-		this.info.put(CLFlags.FAIR_FLAG, new CLAux(0, "Duplicate flag: "));
-		this.info.put(CLFlags.NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG, new CLAux(0, "Duplicate flag: "));
-		this.info.put(CLFlags.NO_ACCEPT_CORRELATION_CHECK_FLAG, new CLAux(0, "Duplicate flag: "));
-		this.info.put(CLFlags.NO_VALIDATION_FLAG, new CLAux(0, "Duplicate flag: "));
-		this.info.put(CLFlags.SPIN_FLAG, new CLAux(0, "Duplicate flag: "));
-
-		this.info.put(CLFlags.DOT_FLAG, new CLAux(0, "Duplicate flag: ", CLFlags.AUT_FLAG));
-		this.info.put(CLFlags.AUT_FLAG, new CLAux(0, "Duplicate flag: ", CLFlags.DOT_FLAG));
-
-		this.info.put(CLFlags.API_OUTPUT_DIR_FLAG, new CLAux(1, "Missing directory argument: "));
-		this.info.put(CLFlags.IMPORT_PATH_FLAG, new CLAux(1, "Missing path argument: "));
-
-		this.info.put(CLFlags.PROJECT_FLAG, new CLAux(2, "Missing protocol/role arguments: "));
-		this.info.put(CLFlags.EFSM_FLAG, new CLAux(2, "Missing protocol/role arguments: "));
-		this.info.put(CLFlags.VALIDATION_EFSM_FLAG, new CLAux(2, "Missing protocol/role arguments: "));
-		this.info.put(CLFlags.UNFAIR_EFSM_FLAG, new CLAux(2, "Missing protocol/role arguments: "));
-		this.info.put(CLFlags.API_GEN_FLAG, new CLAux(2, "Missing protocol/role arguments: "));
-		this.info.put(CLFlags.STATECHAN_API_GEN_FLAG, new CLAux(2, "Missing protocol/role arguments: "));
-		this.info.put(CLFlags.EVENTDRIVEN_API_GEN_FLAG, new CLAux(2, "Missing protocol/role arguments: "));
-
-		this.info.put(CLFlags.EFSM_PNG_FLAG, new CLAux(3, "Missing protocol/role/file arguments: "));
-		this.info.put(CLFlags.VALIDATION_EFSM_PNG_FLAG, new CLAux(3, "Missing protocol/role/file arguments: "));
-		this.info.put(CLFlags.UNFAIR_EFSM_PNG_FLAG, new CLAux(3, "Missing protocol/role/file arguments: "));
-
-		this.info.put(CLFlags.SGRAPH_FLAG, new CLAux(1, "Missing protocol argument: "));
-		this.info.put(CLFlags.UNFAIR_SGRAPH_FLAG, new CLAux(1, "Missing protocol argument: "));
-		this.info.put(CLFlags.SESSION_API_GEN_FLAG, new CLAux(1, "Missing protocol argument: "));
-		
-		this.info.put(CLFlags.SGRAPH_PNG_FLAG, new CLAux(2, "Missing protocol/file arguments: "));
-		this.info.put(CLFlags.UNFAIR_SGRAPH_PNG_FLAG, new CLAux(2, "Missing protocol/file arguments: "));*/
-
-	/*
-	public Map<Integer, String > getUniqueFlags()
-	{
-		Map<Integer, String> utmp = new HashMap<>();
-		utmp.put(JUNIT, "-junit");
-		utmp.put(IMPORT_PATH, IMPORT_PATH_FLAG);
-		utmp.put(API_OUTPUT, API_OUTPUT_DIR_FLAG);
-		utmp.put(VERBOSE, VERBOSE_FLAG);
-		utmp.put(SCHAN_API_SUBTYPES, STATECHAN_SUBTYPES_FLAG);
-		utmp.put(OLD_WF, OLD_WF_FLAG);
-		utmp.put(NO_PROGRESS, NO_LIVENESS_FLAG);
-		utmp.put(LTSCONVERT_MIN, LTSCONVERT_MIN_FLAG);
-		utmp.put(FAIR, FAIR_FLAG);
-		utmp.put(NO_LOCAL_CHOICE_SUBJECT_CHECK, NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG);
-		utmp.put(NO_ACCEPT_CORRELATION_CHECK, NO_ACCEPT_CORRELATION_CHECK_FLAG);
-		utmp.put(DOT, DOT_FLAG);
-		utmp.put(AUT, AUT_FLAG);
-		utmp.put(NO_VALIDATION, NO_VALIDATION_FLAG);
-		utmp.put(INLINE_MAIN_MOD, INLINE_MAIN_MOD_FLAG);
-		utmp.put(SPIN, SPIN_FLAG);
-		return Collections.unmodifiableMap(utmp);
-	}
-
-	public Map<Integer, String > getNonUniqueFlags()
-	{
-		Map<Integer, String> ntmp = new HashMap<>();
-		ntmp.put(PROJECT, PROJECT_FLAG);
-		ntmp.put(EFSM, EFSM_FLAG);
-		ntmp.put(VALIDATION_EFSM, VALIDATION_EFSM_FLAG);
-		ntmp.put(UNFAIR_EFSM, UNFAIR_EFSM_FLAG);
-		ntmp.put(UNFAIR_EFSM_PNG, UNFAIR_EFSM_PNG_FLAG);
-		ntmp.put(EFSM_PNG, EFSM_PNG_FLAG);
-		ntmp.put(VALIDATION_EFSM_PNG, VALIDATION_EFSM_PNG_FLAG);
-		ntmp.put(SGRAPH, SGRAPH_FLAG);
-		ntmp.put(UNFAIR_SGRAPH, UNFAIR_SGRAPH_FLAG);
-		ntmp.put(SGRAPH_PNG, SGRAPH_PNG_FLAG);
-		ntmp.put(UNFAIR_SGRAPH_PNG, UNFAIR_SGRAPH_PNG_FLAG);
-		ntmp.put(API_GEN, API_GEN_FLAG);
-		ntmp.put(SESS_API_GEN, SESSION_API_GEN_FLAG);
-		ntmp.put(SCHAN_API_GEN, STATECHAN_API_GEN_FLAG);
-		ntmp.put(ED_API_GEN, EVENTDRIVEN_API_GEN_FLAG);
-		return Collections.unmodifiableMap(ntmp);
-	}
-	//*/
 }

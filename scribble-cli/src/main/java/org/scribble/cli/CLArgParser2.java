@@ -22,13 +22,12 @@ import java.util.Map;
 // String[] -> Map<CommandLine.Arg, String[]> -- Map array values are the arguments associated to each CommandLine.Arg
 public class CLArgParser2
 {
-	
 	public final CLFlags flags = new CLFlags();
+
+	private final String[] raw;  // Raw args from main method
 
 	// Flag String constants from CLFlags -> flag arguments (possibly none)
 	private final Map<String, String[]> parsed = new HashMap<>();
-	
-	private final String[] raw;  // main method args
 	
 	public CLArgParser2(String[] raw)
 	{
@@ -38,6 +37,23 @@ public class CLArgParser2
 	public Map<String, String[]> getParsed() throws CommandLineException
 	{
 		parseArgs();
+		if (!(this.parsed.containsKey(CLFlags.MAIN_MOD_FLAG)
+				^ this.parsed.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG)))
+		{
+			throw new CommandLineException("No/multiple main module specified\n");
+		}
+		if (this.parsed.containsKey(CLFlags.MAIN_MOD_FLAG))
+		{
+			String main = this.parsed.get(CLFlags.MAIN_MOD_FLAG)[0];
+			if (!validateModuleArg(main))
+			{
+				throw new CommandLineException("Bad module arg: " + main);
+			}
+		}
+		if (this.parsed.containsKey(CLFlags.IMPORT_PATH_FLAG))
+		{
+			validatePaths(this.parsed.get(CLFlags.IMPORT_PATH_FLAG)[0]);
+		}
 		return Collections.unmodifiableMap(this.parsed);
 	}
 	
@@ -56,20 +72,15 @@ public class CLArgParser2
 				{
 					if (a.startsWith("-"))
 					{
-						throw new CommandLineException("Unknown flag or bad main module arg: " + a);
+						throw new CommandLineException(
+								"Unknown flag or bad main module arg: " + a);
 					}
 					// Could actually be the second "bad argument" -- we didn't validate the value of the (supposed) "main arg"
 					throw new CommandLineException("Bad/multiple main module arg: " + a);
 				}
-				parseMain(i++);
+				i = parseMain(i);
 			}
 		}
-	}
-	
-	private boolean isMainModuleParsed()
-	{
-		return this.parsed.containsKey(CLFlags.MAIN_MOD_FLAG)
-				|| this.parsed.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG);
 	}
 	
 	// Pre: i = (the index of the current flag to parse)
@@ -78,7 +89,6 @@ public class CLArgParser2
 	protected int parseFlag(int i) throws CommandLineException
 	{
 		String flag = this.raw[i];
-
 		if (this.flags.flags.get(flag).unique)
 		{
 			if (this.parsed.containsKey(flag))
@@ -86,7 +96,6 @@ public class CLArgParser2
 				throw new CommandLineException("duplicate: " + flag);
 			}
 		}
-
 		int num = this.flags.flags.get(flag).numArgs;
 		if ((i + num) >= this.raw.length)
 		{
@@ -95,24 +104,27 @@ public class CLArgParser2
 		String[] flagArgs = new String[num];
 		if (num > 0)
 		{
-			System.arraycopy(this.raw, i + 1, flagArgs, 0, num);
+			System.arraycopy(this.raw, i+1, flagArgs, 0, num);
 		}
 		this.parsed.put(flag, flagArgs);
-		return i + 1 + num;
+		return i+1 + num;
 	}
 
-	private void parseMain(int i) throws CommandLineException
+	protected int parseMain(int i) throws CommandLineException
 	{
 		String main = this.raw[i];
-		if (!CLArgParser2.validateModuleArg(main))
-		{
-			throw new CommandLineException("Bad module arg: " + main);
-		}
-		this.parsed.put(CLFlags.MAIN_MOD_FLAG, new String[] { main } );
+		this.parsed.put(CLFlags.MAIN_MOD_FLAG, new String[]{main});
+		return i+1;
+	}
+	
+	private boolean isMainModuleParsed()
+	{
+		return this.parsed.containsKey(CLFlags.MAIN_MOD_FLAG)
+				|| this.parsed.containsKey(CLFlags.INLINE_MAIN_MOD_FLAG);
 	}
 
 	// This check guards the subsequent file open attempt?
-	private static boolean validateModuleArg(String arg)
+	private boolean validateModuleArg(String arg)
 	{
 		return arg.chars()
 				.noneMatch(i -> !Character.isLetterOrDigit(i) && i != '.'
@@ -120,7 +132,7 @@ public class CLArgParser2
 						&& i != '/'); // Hack? (cygwin)
 	}
 
-	private static boolean validatePaths(String paths)
+	private boolean validatePaths(String paths)
 	{
 		for (String path : paths.split(File.pathSeparator))
 		{
