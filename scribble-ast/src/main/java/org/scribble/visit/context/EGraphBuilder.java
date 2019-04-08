@@ -36,7 +36,7 @@ public class EGraphBuilder extends NoEnvInlinedProtocolVisitor
 		super(job);
 		try
 		{
-			this.util = job.toJob().newEGraphBuilderUtil();
+			this.util = job.getJob().newEGraphBuilderUtil();
 		}
 		catch (ScribException e)  // TODO: refactor
 		{

@@ -50,7 +50,13 @@ import org.scribble.util.ScribException;
 import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribUtil;
 
-// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
+/**
+ * A Scribble extension should override newCLFlags, newCLArgParser, newMain,
+ * parseJobArgs, doValidationTasks, tryNonBarrierTask and tryBarrierTask as
+ * appropriate
+ * 
+ * @author rhu1
+ */
 public class CommandLine
 {
 	protected final CLFlags _flags;
@@ -85,19 +91,18 @@ public class CommandLine
 				.get().right;
 	}
 	
-	// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
 	protected CLFlags newCLFlags()
 	{
 		return new CLFlags();
 	}
 
-	// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
+	// A Scribble extension should override as appropriate
 	protected CLArgParser newCLArgParser(CLFlags flags, String[] args)
 	{
 		return new CLArgParser(flags, args);
 	}
 
-	// A Scribble extension should override newCLFlags, newCLArgParser and newMain as appropriate
+	// A Scribble extension should override as appropriate
 	protected Main newMain() throws ScribParserException, ScribException
 	{
 		Map<JobArgs, Boolean> args = Collections.unmodifiableMap(parseJobArgs());
@@ -119,6 +124,7 @@ public class CommandLine
 		}
 	}
 	
+	// A Scribble extension should override as appropriate
 	protected Map<JobArgs, Boolean> parseJobArgs()
 	{
 		Map<JobArgs, Boolean> args = new HashMap<>();
@@ -137,26 +143,16 @@ public class CommandLine
 	}
 
 	// AntlrSourceException super of ScribbleException -- needed for, e.g., AssrtCoreSyntaxException
+	// A Scribble extension should override as appropriate
 	protected void doValidationTasks(Lang lang) 
 			throws AntlrSourceException, ScribParserException,  // Latter in case needed by subclasses
 				CommandLineException
 	{
-		/*// Scribble extensions (custom Job passes)
-		if (this.args.containsKey(F17CLArgFlag.F17))
-		{
-			GProtocolName simpname = new GProtocolName(this.args.get(ArgFlag.F17)[0]);
-			F17Main.parseAndCheckWF(lang, simpname);  // Includes base passes
-		}
-
-		// Base Scribble
-		else*/
-		{
-			lang.runPasses();  // TODO: refactor, w.r.t. below
-			lang.toJob().checkWellFormedness();
-		}
-	
+		lang.runPasses();
+		lang.getJob().runPasses();
 	}
 
+	// A Scribble extension should override as appropriate
 	// TODO: rename, barrier misleading (sounds like a sync)
 	protected void tryNonBarrierTask(Lang lang, Pair<String, String[]> task)
 			throws CommandLineException, ScribException
@@ -202,6 +198,7 @@ public class CommandLine
 		}
 	}
 
+	// A Scribble extension should override as appropriate
 	// TODO: rename, barrier misleading (sounds like a sync)
 	protected void tryBarrierTask(Lang lang,
 			Pair<String, String[]> task) throws ScribException, CommandLineException
@@ -306,7 +303,7 @@ public class CommandLine
 			throws CommandLineException, ScribException
 	{
 		LangContext langc = lang.getContext();
-		Job job = lang.toJob();
+		Job job = lang.getJob();
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(langc, args[i]);
@@ -367,7 +364,7 @@ public class CommandLine
 			throws ScribException, CommandLineException
 	{
 		LangContext jobc = lang.getContext();
-		JobContext jobc2 = lang.toJob().getContext();
+		JobContext jobc2 = lang.getJob().getContext();
 		GProtocolDecl gpd = (GProtocolDecl) jobc.getMainModule()
 				.getProtocolDeclChild(fullname.getSimpleName());
 		if (gpd == null || !gpd.getHeaderChild().getRoleDeclListChild().getRoles()
@@ -435,7 +432,7 @@ public class CommandLine
 	private static SGraph getSGraph(Lang lang, GProtocolName fullname, boolean fair)
 			throws ScribException
 	{
-		JobContext jobc2 = lang.toJob().getContext();
+		JobContext jobc2 = lang.getJob().getContext();
 		SGraph model = fair 
 				? jobc2.getSGraph(fullname)
 				: jobc2.getUnfairSGraph(fullname);

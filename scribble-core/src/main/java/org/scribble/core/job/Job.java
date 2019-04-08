@@ -112,7 +112,7 @@ public class Job
 		return this.sgraphb.buildSGraph(this, fullname, egraphs, explicit);  // FIXME: factor out util
 	}
 
-	public void checkWellFormedness() throws ScribException
+	public void runPasses() throws ScribException
 	{
 		runContextBuildingPasses();
 		//runUnfoldingPass();

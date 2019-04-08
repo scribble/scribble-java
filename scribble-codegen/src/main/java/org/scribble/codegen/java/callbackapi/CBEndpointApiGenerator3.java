@@ -69,7 +69,7 @@ public class CBEndpointApiGenerator3
 		this.lang = lang;
 		try
 		{
-			this.job = lang.toJob();
+			this.job = lang.getJob();
 		}
 		catch (ScribException e)  // TODO: refactor
 		{

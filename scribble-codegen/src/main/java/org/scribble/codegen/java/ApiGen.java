@@ -32,7 +32,7 @@ public abstract class ApiGen
 		this.lang = job;
 		try
 		{
-			this.job = job.toJob();
+			this.job = job.getJob();
 		}
 		catch (ScribException e)  // TODO: refactor
 		{

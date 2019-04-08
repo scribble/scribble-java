@@ -94,8 +94,8 @@ public class Lang
 	// "Finalises" this Lang -- initialises the Job at this point, and cannot run futher Visitor passes on Lang
 	// So, typically, Lang passes should be finished before calling this
 	// Job passes may subsequently mutate Job(Context) though
-	// CHECKME: revise this pattern?
-	public final Job toJob() throws ScribException
+	// CHECKME: revise this pattern? -- maybe fork Job for a snapshot of current Lang(Context) -- and, possibly, convert Job back to Lang
+	public final Job getJob() throws ScribException
 	{
 		if (this.job == null)
 		{
