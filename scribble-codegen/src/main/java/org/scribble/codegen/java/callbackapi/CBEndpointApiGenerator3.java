@@ -96,7 +96,7 @@ public class CBEndpointApiGenerator3
 	// FIXME: factor out -- integrate with JEndpointApiGenerator
 	public Map<String, String> buildSessionApi() throws ScribException
 	{
-		this.lang.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator3.class + " for " + this.proto + "@" + this.self);
+		this.lang.verbosePrintln("\n[param-core] Running " + CBEndpointApiGenerator3.class + " for " + this.proto + "@" + this.self);
 
 		Map<String, String> res = new HashMap<>();
 		res.putAll(new SessionApiGenerator(this.lang, this.proto).generateApi());

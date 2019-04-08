@@ -37,7 +37,7 @@ public class JEndpointApiGenerator
 	public Map<String, String> generateSessionApi(GProtocolName fullname)
 			throws ScribException
 	{
-		this.lang.debugPrintln("\n[Java API gen] Running "
+		this.lang.verbosePrintln("\n[Java API gen] Running "
 				+ SessionApiGenerator.class + " for " + fullname);
 		SessionApiGenerator sg = new SessionApiGenerator(this.lang, fullname);  // FIXME: reuse?
 		Map<String, String> map = sg.generateApi();  // filepath -> class source
@@ -53,7 +53,7 @@ public class JEndpointApiGenerator
 		{
 			buildGraph(fullname, self);
 		}*/
-		lang.debugPrintln("\n[Java API gen] Running "
+		lang.verbosePrintln("\n[Java API gen] Running "
 				+ StateChannelApiGenerator.class + " for " + fullname + "@" + self);
 		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this.lang,
 				fullname, self);

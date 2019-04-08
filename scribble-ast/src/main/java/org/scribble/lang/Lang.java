@@ -83,10 +83,12 @@ public class Lang
 	}
 	
 	// First run Visitor passes, then call toJob
-	// Base implementation: name disamb pass only
+	// Base implementation: ambigname disamb pass only
 	public void runPasses() throws ScribException
 	{
-		// CHECKME: in the end, should these also be refactored into core?  (instead of AST visiting)
+		// Disamb is a "leftover" aspect of parsing -- so not in core
+		// N.B. disamb is mainly w.r.t. ambignames -- e.g., doesn't fully qualify names (currently mainly done by imed translation)
+		// CHECKME: disamb also currently does checks like do-arg kind and arity -- refactor into core? -- also does, e.g., distinct roledecls, protodecls, etc.
 		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
 	}
 	
@@ -107,7 +109,7 @@ public class Lang
 				{
 					GProtocol g = (GProtocol) gpd.visitWith(t);
 					imeds.add(g);
-					debugPrintln(
+					verbosePrintln(
 							"\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
 				}
 			}
@@ -172,7 +174,7 @@ public class Lang
 		System.err.println("[Warning] " + s);
 	}
 	
-	public void debugPrintln(String s)
+	public void verbosePrintln(String s)
 	{
 		if (this.config.args.get(JobArgs.VERBOSE))
 		{
@@ -182,6 +184,6 @@ public class Lang
 	
 	private void debugPrintPass(String s)
 	{
-		debugPrintln("\n[Lang] " + s);
+		verbosePrintln("\n[Lang] " + s);
 	}
 }

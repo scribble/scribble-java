@@ -17,7 +17,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.util.ScribException;
 import org.scribble.visit.wf.NameDisambiguator;
 
-// TODO: parent params now redundant
 // Parameterise by AstNode type?  Would inhibit del sharing between types (but that's not currently needed)
 public interface ScribDel
 {

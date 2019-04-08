@@ -78,7 +78,8 @@ public abstract class DoDel extends SimpleSessionNodeDel
 		pnn.addChildren(Arrays.asList(fullname.getElements()).stream().map(x -> new AmbigNameNode(new Token(arg0, arg1))));*/
 		pnn = proto;
 		
-		//HERE either hack Token to make new AST node, or redo proto context building on intermed -- consideration is projection output a la parsed AST subprotos, or from (inlined?) intermed
+		// CHECKME: do full name expansion in disamb?  or leave to imed translation?
+		// either hack Token to make new AST node, or redo proto context building on intermed -- consideration is projection output a la parsed AST subprotos, or from (inlined?) intermed
 		// probably hack Token for now -- or just skip protocol context building (do inlning and WF/valid first)
 		
 		// Didn't keep original namenode del -- ?

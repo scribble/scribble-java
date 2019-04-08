@@ -67,12 +67,16 @@ module tmp.Test;
 // move ast/del, old visit and new frontend to lang
 // integrate new frontend with MainContext?
 // move lang types to type.sess, and move new visit
+// try modulecontextvisitor by "static lookup"
+// try move antlrwrapper to parser again
 
-// try disamb without modulecontextvisitor, try move antlrwrapper to parser again
+// re-check disamb pass -- e.g., do-target disamb done by translation -- check, e.g., message transfer message disamb (signames, payloads)
+// refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
+// refactor scribble.g, simplify ast/del/etc class names
+
 // add exp conn checks to model validation
 // use stypefactory in core
 // refactor test to use main instead of cli
-// simplify cli and arg parsing
 
 
 global protocol Proto1(role A, role B)
@@ -81,6 +85,7 @@ global protocol Proto1(role A, role B)
 	choice at A
 	{
 		1() from A to B;
+		do Proto1(A, B);
 	}
 }
 

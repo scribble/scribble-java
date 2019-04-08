@@ -42,7 +42,7 @@ public class JobContext
 	public final Job job;
 
 	// Keys are full names
-	// CHECKME: not currently used by core? -- core fully independent of modules, etc., because full disamb already done?
+	// CHECKME: not currently used by core? -- core fully independent of modules, etc., because full disamb already done? (by imed translation)
 	//private final Map<ModuleName, ModuleContext> modcs;
 
 	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
