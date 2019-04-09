@@ -13,23 +13,38 @@
  */
 package org.scribble.core.type.session.global;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.scribble.core.lang.global.GNode;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector;
-import org.scribble.util.ScribException;
 
 public interface GType extends SType<Global, GSeq>, GNode
 {
 	LType projectInlined(Role self);  // Use on inlined (i.e., Do inlined, roles pruned)
 	LType project(Projector v);  // Use on parsed (intermed)
 	
-	// Pre: use on inlined or later (unsupported for Do, also Protocol)
+	
+}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+	
+	
+	
+	
+	/*// Pre: use on inlined or later (unsupported for Do, also Protocol)
 	// enabled treated immutably
 	// Returns enabled post visiting
 	// Cf. SType visitors, here we only throw ScribbleException or return nothing, so can use return this way
@@ -46,6 +61,7 @@ public interface GType extends SType<Global, GSeq>, GNode
 	// Also does correlation warnings
 	//Map<Role, Role> checkConnections(Map<Role, Role> conns) throws ScribbleException;
 			// Check on model instead: could possibly do syntactically on once-unfolding, but still need separate checks for dup-conn, unconnected and bad-dconn (may vs. must)
+	*/
 
 	/*@Override
 	GType substitute(Substitutions subs);*/  // Otherwise causes return type inconsistency with base abstract classes
@@ -57,5 +73,4 @@ public interface GType extends SType<Global, GSeq>, GNode
 	@Override
 	SType<Global> unfoldAllOnce(STypeUnfolder<Global> u);  // Not GType return, o/w need to override again in GDo
 	*/
-}
 

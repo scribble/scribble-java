@@ -14,7 +14,6 @@
 package org.scribble.core.type.session.global;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
@@ -27,7 +26,6 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector;
-import org.scribble.util.ScribException;
 
 public class GRecursion extends Recursion<Global, GSeq> implements GType
 {
@@ -82,19 +80,6 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
-	{
-		return this.body.checkRoleEnabling(enabled);
-	}
-
-	@Override
-	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribException
-	{
-		return this.body.checkExtChoiceConsistency(enablers);
-	}
-
-	@Override
 	public int hashCode()
 	{
 		int hash = 2309;
@@ -122,3 +107,33 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 		return o instanceof GRecursion;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	@Override
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
+	{
+		return this.body.checkRoleEnabling(enabled);
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribException
+	{
+		return this.body.checkExtChoiceConsistency(enablers);
+	}
+*/

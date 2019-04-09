@@ -13,14 +13,7 @@
  */
 package org.scribble.core.type.session.global;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,7 +26,6 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector;
-import org.scribble.util.ScribException;
 
 public class GChoice extends Choice<Global, GSeq> implements GType
 {
@@ -93,6 +85,51 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	}
 
 	@Override
+	public int hashCode()
+	{
+		int hash = 3067;
+		hash = 31 * hash + super.hashCode();
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof GChoice))
+		{
+			return false;
+		}
+		return super.equals(o);
+	}
+
+	@Override
+	public boolean canEquals(Object o)
+	{
+		return o instanceof GChoice;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	@Override
 	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
 	{
 		if (!enabled.contains(this.subj))
@@ -146,47 +183,4 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 		}
 		return Collections.unmodifiableMap(res);
 	}
-	
-	/*@Override
-	public Map<Role, Role> checkConnections(Map<Role, Role> conns)
-			throws ScribbleException
-	{
-		List<Map<Role, Role>> blocks = new LinkedList<>();
-		for (GSeq block : this.blocks)
-		{
-			blocks.add(block.checkConnections(conns));
-		}
-		return blocks.stream().flatMap(x -> x.entrySet().stream()).distinct()
-				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-			// "may" merge -- check for possible duplicate connections
-			// FIXME: but unconnected error needs "must" connections; also "duplicate" disconnect
 	}*/
-
-	@Override
-	public int hashCode()
-	{
-		int hash = 3067;
-		hash = 31 * hash + super.hashCode();
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (!(o instanceof GChoice))
-		{
-			return false;
-		}
-		return super.equals(o);
-	}
-
-	@Override
-	public boolean canEquals(Object o)
-	{
-		return o instanceof GChoice;
-	}
-}

@@ -13,9 +13,6 @@
  */
 package org.scribble.core.type.session.global;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.RecVar;
@@ -23,7 +20,6 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.local.LContinue;
 import org.scribble.core.visit.global.Projector;
-import org.scribble.util.ScribException;
 
 public class GContinue extends Continue<Global, GSeq> implements GType
 {
@@ -54,19 +50,6 @@ public class GContinue extends Continue<Global, GSeq> implements GType
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
-	{
-		return enabled;
-	}
-
-	@Override
-	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribException
-	{
-		return enablers;
-	}
- 
-	@Override
 	public int hashCode()
 	{
 		int hash = 3457;
@@ -94,6 +77,7 @@ public class GContinue extends Continue<Global, GSeq> implements GType
 		return o instanceof GContinue;
 	}
 	
+}
 	
 	
 	
@@ -111,5 +95,28 @@ public class GContinue extends Continue<Global, GSeq> implements GType
 		return new GRecursion(getSource(), this.recvar,
 				(GSeq) u.getRec(this.recvar));
 				// CHECKME: Continue (not Recursion) as the source of the unfolding ?
-	}*/
-}
+	}
+	
+	@Override
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
+	{
+		return enabled;
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribException
+	{
+		return enablers;
+	}
+ 
+	*/
+
+
+
+
+
+
+
+
+

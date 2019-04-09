@@ -13,9 +13,6 @@
  */
 package org.scribble.core.type.session.global;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
@@ -24,7 +21,6 @@ import org.scribble.core.type.session.local.LDisconnect;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector;
-import org.scribble.util.ScribException;
 
 public class GDisconnect extends DisconnectAction<Global, GSeq>
 		implements GType
@@ -71,27 +67,6 @@ public class GDisconnect extends DisconnectAction<Global, GSeq>
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
-	{
-		if (!enabled.contains(this.left))
-		{
-			throw new ScribException("Role not enabled: " + this.left);
-		}
-		if (!enabled.contains(this.right))
-		{
-			throw new ScribException("Role not enabled: " + this.right);
-		}
-		return enabled;
-	}
-
-	@Override
-	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribException
-	{
-		return enablers;
-	}
-
-	@Override
 	public String toString()
 	{
 		return "disconnect " + this.left + " and " + this.right + ";";
@@ -125,3 +100,41 @@ public class GDisconnect extends DisconnectAction<Global, GSeq>
 		return o instanceof GDisconnect;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	@Override
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
+	{
+		if (!enabled.contains(this.left))
+		{
+			throw new ScribException("Role not enabled: " + this.left);
+		}
+		if (!enabled.contains(this.right))
+		{
+			throw new ScribException("Role not enabled: " + this.right);
+		}
+		return enabled;
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribException
+	{
+		return enablers;
+	}
+*/

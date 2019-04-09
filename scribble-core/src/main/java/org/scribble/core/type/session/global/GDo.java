@@ -15,8 +15,6 @@ package org.scribble.core.type.session.global;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
@@ -34,7 +32,6 @@ import org.scribble.core.type.session.local.LDo;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector;
-import org.scribble.util.ScribException;
 
 public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 {
@@ -91,19 +88,6 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
-	{
-		throw new RuntimeException("Unsupported for Do: " + this);
-	}
-
-	@Override
-	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribException
-	{
-		throw new RuntimeException("Unsupported for Do: " + this);
-	}
-
-	@Override
 	public int hashCode()
 	{
 		int hash = 1303;
@@ -131,6 +115,14 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 		return o instanceof GDo;
 	}
 	
+}
+
+
+
+
+
+
+
 	
 	
 	
@@ -161,6 +153,28 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 				// i.e. returning a GSeq -- rely on parent GSeq to inline
 		v.popSig();
 		return new GRecursion(null, rv, inlined);
-	}*/
-}
+	}
+	
+	@Override
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
+	{
+		throw new RuntimeException("Unsupported for Do: " + this);
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribException
+	{
+		throw new RuntimeException("Unsupported for Do: " + this);
+	}
+	*/
+
+
+
+
+
+
+
+
+
 

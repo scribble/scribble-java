@@ -16,7 +16,7 @@ import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.util.ScribException;
 
-// Not supported for Do
+// Pre: use on inlined or later (unsupported for Do, also Protocol)
 public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 {
 	private Set<Role> enabled;  // Invariant: unmodifiable

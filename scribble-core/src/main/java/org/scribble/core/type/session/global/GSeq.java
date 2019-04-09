@@ -14,8 +14,6 @@
 package org.scribble.core.type.session.global;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,7 +26,6 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector;
-import org.scribble.util.ScribException;
 
 public class GSeq extends Seq<Global, GSeq> implements GType
 {
@@ -70,38 +67,6 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
-	{
-		for (GType elem : getElements())
-		{
-			enabled = elem.checkRoleEnabling(enabled);
-		}
-		return enabled;
-	}
-
-	@Override
-	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribException
-	{
-		for (GType elem : getElements())
-		{
-			enablers = elem.checkExtChoiceConsistency(enablers);
-		}
-		return enablers;
-	}
-
-	/*@Override
-	public Map<Role, Role> checkConnections(Map<Role, Role> conns)
-			throws ScribbleException
-	{
-		for (GType elem : getElements())
-		{
-			conns = elem.checkConnections(conns);
-		}
-		return conns;
-	}*/
-
-	@Override
 	public List<GType> getElements()
 	{
 		return this.elems.stream().map(x -> (GType) x).collect(Collectors.toList());
@@ -135,3 +100,43 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 		return o instanceof GSeq;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*	@Override
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
+	{
+		for (GType elem : getElements())
+		{
+			enabled = elem.checkRoleEnabling(enabled);
+		}
+		return enabled;
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribException
+	{
+		for (GType elem : getElements())
+		{
+			enablers = elem.checkExtChoiceConsistency(enablers);
+		}
+		return enablers;
+	}
+*/

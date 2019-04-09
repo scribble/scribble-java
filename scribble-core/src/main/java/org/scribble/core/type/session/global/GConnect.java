@@ -13,12 +13,6 @@
  */
 package org.scribble.core.type.session.global;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
@@ -29,7 +23,6 @@ import org.scribble.core.type.session.local.LReq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector;
-import org.scribble.util.ScribException;
 
 public class GConnect extends ConnectAction<Global, GSeq>
 		implements GType
@@ -77,35 +70,6 @@ public class GConnect extends ConnectAction<Global, GSeq>
 	}
 
 	@Override
-	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
-	{
-		if (!enabled.contains(this.src))
-		{
-			throw new ScribException("Source role not enabled: " + this.src);
-		}
-		if (enabled.contains(this.dst))
-		{
-			return enabled;
-		}
-		Set<Role> tmp = new HashSet<>(enabled); 
-		tmp.add(this.dst);
-		return Collections.unmodifiableSet(tmp);
-	}
-
-	@Override
-	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
-			throws ScribException
-	{
-		if (enablers.containsKey(this.dst))
-		{
-			return enablers;
-		}
-		Map<Role, Role> tmp = new HashMap<>(enablers);
-		tmp.put(this.dst, this.src);
-		return Collections.unmodifiableMap(tmp);
-	}
-
-	@Override
 	public String toString()
 	{
 		return this.msg + " connect " + this.src + " to " + this.dst + ";";
@@ -139,3 +103,46 @@ public class GConnect extends ConnectAction<Global, GSeq>
 		return o instanceof GConnect;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	@Override
+	public Set<Role> checkRoleEnabling(Set<Role> enabled) throws ScribException
+	{
+		if (!enabled.contains(this.src))
+		{
+			throw new ScribException("Source role not enabled: " + this.src);
+		}
+		if (enabled.contains(this.dst))
+		{
+			return enabled;
+		}
+		Set<Role> tmp = new HashSet<>(enabled); 
+		tmp.add(this.dst);
+		return Collections.unmodifiableSet(tmp);
+	}
+
+	@Override
+	public Map<Role, Role> checkExtChoiceConsistency(Map<Role, Role> enablers)
+			throws ScribException
+	{
+		if (enablers.containsKey(this.dst))
+		{
+			return enablers;
+		}
+		Map<Role, Role> tmp = new HashMap<>(enablers);
+		tmp.put(this.dst, this.src);
+		return Collections.unmodifiableMap(tmp);
+	*/

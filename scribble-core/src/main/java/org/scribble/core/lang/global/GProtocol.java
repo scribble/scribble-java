@@ -51,6 +51,7 @@ import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
+import org.scribble.core.visit.ExtChoiceConsistencyChecker;
 import org.scribble.core.visit.MessageIdGatherer;
 import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.RoleEnablingChecker;
@@ -131,19 +132,21 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	}
 
 	// Following are some top-level entry to GType methods
-	public Set<Role> checkRoleEnabling() throws ScribException
+	public void checkRoleEnabling() throws ScribException
 	{
 		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
 		RoleEnablingChecker v = new RoleEnablingChecker(rs);
 		this.def.visitWith(v);
-		return v.getEnabled();
+		//return v.getEnabled();
 	}
 
-	public Map<Role, Role> checkExtChoiceConsistency() throws ScribException
+	public void checkExtChoiceConsistency() throws ScribException
 	{
 		Map<Role, Role> tmp = this.roles.stream()
 				.collect(Collectors.toMap(x -> x, x -> x));
-		return this.def.checkExtChoiceConsistency(tmp);
+		ExtChoiceConsistencyChecker v = new ExtChoiceConsistencyChecker(tmp);
+		this.def.visitWith(v);
+		//return v.getEnablers();
 	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
