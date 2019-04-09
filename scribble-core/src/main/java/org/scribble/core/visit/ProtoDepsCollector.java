@@ -27,7 +27,8 @@ public class ProtoDepsCollector<K extends ProtocolKind, B extends Seq<K, B>>
 	}
 
 	@Override
-	public Stream<ProtocolName<K>> visitDo(Do<K, B, ? extends ProtocolName<K>> n)
+	public <N extends ProtocolName<K>> Stream<ProtocolName<K>> visitDo(
+			Do<K, B, N> n)
 	{
 		return Stream.of(n.proto);
 	}

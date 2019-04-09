@@ -32,6 +32,7 @@ import org.scribble.util.ScribException;
 
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
 // Tailored to support graph building from syntactic local protocol choice and recursion
+@Deprecated
 public class EGraphBuilderUtil
 		extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {

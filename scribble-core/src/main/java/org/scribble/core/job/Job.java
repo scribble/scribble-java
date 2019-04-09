@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil;
+import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.model.endpoint.EModelFactory;
 import org.scribble.core.model.endpoint.EModelFactoryImpl;
 import org.scribble.core.model.global.SGraph;
@@ -89,13 +89,14 @@ public class Job
 		return this.config.sf.newSGraphBuilderUtil();
 	}
 
+	// FIXME: not currently used
 	// A Scribble extension should override newJobConfig/Context/etc as appropriate
 	// CHECKME: not reusable?  fix?
 	// Scribble extensions should override these "new" methods
 	// CHECKME: move to MainContext::newJob?
-	public EGraphBuilderUtil newEGraphBuilderUtil()
+	public EGraphBuilderUtil2 newEGraphBuilderUtil()
 	{
-		return new EGraphBuilderUtil(this.config.ef);
+		return new EGraphBuilderUtil2(this.config.ef);
 	}
 	
 	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util

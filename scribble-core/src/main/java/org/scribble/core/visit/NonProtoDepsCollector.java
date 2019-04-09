@@ -75,7 +75,8 @@ public class NonProtoDepsCollector<K extends ProtocolKind, B extends Seq<K, B>>
 	}
 
 	@Override
-	public Stream<MemberName<?>> visitDo(Do<K, B, ? extends ProtocolName<K>> n)
+	public <N extends ProtocolName<K>> Stream<MemberName<?>> visitDo(
+			Do<K, B, N> n)
 	{
 		return n.args.stream()
 				.filter(x -> (x instanceof MessageSig) || (x instanceof DataType))  // CHECKME: refactor?

@@ -37,7 +37,7 @@ public abstract class STypeGather<K extends ProtocolKind, B extends Seq<K, B>, T
 			: (n instanceof Recursion<?, ?>) 
 					? Optional.of(visitRecursion((Recursion<K, B>) n))
 			: (n instanceof Do<?, ?, ?>)     
-					? Optional.of(visitDo((Do<K, B, ?>) n))  // FIXME:
+					? Optional.of(this.visitDo((Do<K, B, ?>) n))  // FIXME:
 			: Optional.empty();  // Better for extensibility than "manually" throwing Exception (e.g., for overriding)
 	}
 
@@ -64,7 +64,7 @@ public abstract class STypeGather<K extends ProtocolKind, B extends Seq<K, B>, T
 		return Stream.of();
 	}
 
-	public Stream<T> visitDo(Do<K, B, ? extends ProtocolName<K>> n)
+	public <N extends ProtocolName<K>> Stream<T> visitDo(Do<K, B, N> n)
 	{
 		return Stream.of();
 	}

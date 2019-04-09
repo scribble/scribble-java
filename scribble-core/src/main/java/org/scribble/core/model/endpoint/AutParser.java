@@ -114,9 +114,12 @@ public class AutParser
 			term = terms.iterator().next();
 		}
 		//EGraphBuilderUtil util = new EGraphBuilderUtil(ef);
-		EGraphBuilderUtil util = this.job2.newEGraphBuilderUtil();
+		//EGraphBuilderUtil util = this.job2.newEGraphBuilderUtil2();
+		EGraphBuilderUtil2 util = new EGraphBuilderUtil2(this.job2.config.ef);
+		util.init(null);  // FIXME: arg is deprecated
 		Map<Integer, EState> map = new HashMap<>();
 		map.put(init, util.getEntry());
+		System.out.println("bbb: " + init +  " ,, " + util.getEntry());
 		if (term != -1)
 		{
 			map.put(term, util.getExit());
@@ -141,6 +144,8 @@ public class AutParser
 		//for (int i : edges.keySet())
 		for (int i : as.keySet())
 		{
+			System.out.println("aaa: " + i + " ,, " + map);
+			
 			EState s = map.get(i);
 			//Map<String, Integer> tmp = edges.get(i);
 			List<String> tmp1 = as.get(i);

@@ -59,11 +59,6 @@ public abstract class Do
 		return v.visitDo(this);
 	}
 	
-	public N getProtocolName()
-	{
-		return this.proto;
-	}
-	
 	@Override
 	public String toString()
 	{

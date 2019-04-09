@@ -32,6 +32,7 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.util.ScribException;
 
+	// N.B. init must be called before every "new visit", including first
 // FIXME TODO replace EGraphBuilderUtil
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
 // Tailored to support graph building from syntactic local protocol choice and recursion

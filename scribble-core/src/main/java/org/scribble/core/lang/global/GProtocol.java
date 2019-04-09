@@ -105,10 +105,10 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		SubprotoSig sig = new SubprotoSig(this.fullname, this.roles, params);
 		v.pushSig(sig);
 
-		GSeq body = this.def
-				.visitWith(
-						new Substitutor<>(this.roles, sig.roles, this.params, sig.args))
-				.visitWith(v).visitWith(new RecPruner<>());
+		Substitutor<Global, GSeq> subs = new Substitutor<>(this.roles, sig.roles,
+				this.params, sig.args);
+		GSeq body = this.def.visitWith(subs).visitWith(v)
+				.visitWith(new RecPruner<>());
 		RecVar rv = v.getInlinedRecVar(sig);
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();
