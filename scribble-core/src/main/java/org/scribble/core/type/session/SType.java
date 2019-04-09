@@ -30,11 +30,6 @@ import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.STypeVisitor;
 
-@FunctionalInterface
-interface STypeVisitorFunction<K extends ProtocolKind, B extends Seq<K, B>, N extends ProtocolName<K>, R extends Stream<?>>
-{
-	R f(SType<K, B> n, STypeVisitor<K, B, N> v);
-}
 
 // B needed(?) to factor up several methods from G/L compounds to bases, e.g., getInlined and unfoldAllOnce
 // Generic works to "specialise" G/L subclasses (and works with immutable pattern) -- cf. not supported by contravariant method parameter subtyping for getters/setters
@@ -46,7 +41,7 @@ public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
   // T = children, not always SType, e.g., Role -- CHECKME: shouldn't "visit" non STypes?
 	//SType<K, B> visit(Function<SType<K, B>, Stream<?>> f);
 	//SType<K, B> visit(STypeVisitorFunction<K, B, ProtocolName<K>, Stream<?>> f);
-	SType<K, B> visitWith(STypeVisitor<K, B, ProtocolName<K>> v);
+	SType<K, B> visitWith(STypeVisitor<K, B> v);
 
 	Set<Role> getRoles();
 	Set<MessageId<?>> getMessageIds();

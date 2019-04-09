@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -14,8 +13,7 @@ import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
-public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>,
-		N extends ProtocolName<K>>
+public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
 {
 	// SType return for extensibility/flexibility
 	public SType<K, B> visitContinue(Continue<K, B> n)
@@ -27,7 +25,7 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>,
 	public SType<K, B> visitChoice(Choice<K, B> n)
 	{
 		List<B> blocks = n.blocks.stream()
-				.map(x -> x.visitWith((STypeVisitor<K, B, ProtocolName<K>>) this))  // FIXME
+				.map(x -> x.visitWith((STypeVisitor<K, B>) this))  // FIXME
 				.collect(Collectors.toList());
 		return n.reconstruct(n.getSource(), n.subj, blocks);
 	}
@@ -52,7 +50,7 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>,
 
 	public SType<K, B> visitRecursion(Recursion<K, B> n)
 	{
-		B body = n.body.visitWith((STypeVisitor<K, B, ProtocolName<K>>) this);  // FIXME
+		B body = n.body.visitWith((STypeVisitor<K, B>) this);  // FIXME
 		return n.reconstruct(n.getSource(), n.recvar, body);
 	}
 
@@ -62,8 +60,33 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>,
 	public B visitSeq(B n)
 	{
 		List<SType<K, B>> elems = n.elems.stream()
-				.map(x -> x.visitWith((STypeVisitor<K, B, ProtocolName<K>>) this))  // FIXME
+				.map(x -> x.visitWith((STypeVisitor<K, B>) this))  // FIXME
 				.collect(Collectors.toList());
 		return n.reconstruct(n.getSource(), elems);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*@FunctionalInterface
+interface STypeVisitorFunction<K extends ProtocolKind, B extends Seq<K, B>, R extends Stream<?>>
+{
+	R f(SType<K, B> n, STypeVisitor<K, B> v);
+}*/

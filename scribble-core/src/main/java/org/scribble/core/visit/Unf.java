@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 public abstract class Unf<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeVisitor<K, B, ProtocolName<K>>
+		extends STypeVisitor<K, B>
 {
 	private final Map<RecVar, Seq<K, ?>> recs = new HashMap<>(); 
 

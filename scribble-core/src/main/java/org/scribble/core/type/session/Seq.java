@@ -55,7 +55,7 @@ public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 	}
 
 	@Override
-	public B visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	public B visitWith(STypeVisitor<K, B> v)
 	{
 		@SuppressWarnings("unchecked")
 		B cast = (B) this;  // CHECKME: OK as long as G/LSeq specify themselves as B param

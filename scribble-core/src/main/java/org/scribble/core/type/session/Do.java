@@ -64,7 +64,7 @@ public abstract class Do
 	}
 
 	@Override
-	public SType<K, B> visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitDo(this);
 	}

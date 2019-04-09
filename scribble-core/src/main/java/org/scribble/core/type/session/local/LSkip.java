@@ -51,7 +51,7 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	}
 
 	@Override
-	public LSkip visitWith(STypeVisitor<Local, LSeq, ProtocolName<Local>> v)
+	public LSkip visitWith(STypeVisitor<Local, LSeq> v)
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}

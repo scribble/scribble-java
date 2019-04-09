@@ -52,7 +52,7 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 	}
 
 	@Override
-	public SType<K, B> visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitRecursion(this);
 	}

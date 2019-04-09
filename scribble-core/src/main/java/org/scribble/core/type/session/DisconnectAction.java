@@ -24,7 +24,6 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.MessageId;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
@@ -54,7 +53,7 @@ public abstract class DisconnectAction<K extends ProtocolKind, B extends Seq<K, 
 	}
 
 	@Override
-	public SType<K, B> visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitDisconnect(this);
 	}

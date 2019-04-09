@@ -9,7 +9,6 @@ import org.scribble.core.visit.Unf;
 
 public class GUnf extends Unf<Global, GSeq>
 {
-
 	@Override
 	public GType visitContinue(Continue<Global, GSeq> n)
 	{
