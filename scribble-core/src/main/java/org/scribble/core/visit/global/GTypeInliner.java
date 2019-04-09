@@ -7,13 +7,13 @@ import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.global.GContinue;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.global.GType;
 import org.scribble.core.visit.STypeInliner;
+import org.scribble.core.visit.Substitutor;
 
 public class GTypeInliner extends STypeInliner<Global, GSeq>
 {
@@ -34,9 +34,9 @@ public class GTypeInliner extends STypeInliner<Global, GSeq>
 		}
 		pushSig(sig);
 		GProtocol g = this.job.getContext().getIntermediate(fullname);
-		Substitutions subs = 
-				new Substitutions(g.roles, n.roles, g.params, n.args);
-		GSeq inlined = g.def.substitute(subs).visitWith(this);
+		GSeq inlined = g.def
+				.visitWith(new Substitutor<>(g.roles, n.roles, g.params, n.args))
+				.visitWith(this);
 				// i.e. returning a GSeq -- rely on parent GSeq to inline
 		popSig();
 		return new GRecursion(null, rv, inlined);

@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import org.scribble.core.lang.SNode;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
 
 
@@ -30,10 +29,6 @@ public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 	<T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f);
 
 	SType<K, B> visitWith(STypeVisitor<K, B> v);
-
-	SType<K, B> substitute(Substitutions subs);
-	
-	SType<K, B> pruneRecs();  // Assumes no shadowing (e.g., use after inlining recvar disamb)
 
 	// subclass equals should call this by: them.canEquals(this) 
 	boolean canEquals(Object o);
@@ -67,5 +62,9 @@ public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 	// Result does not necessarily contain root proto (protodecl is not an SType), but may do so via dependencies
 	List<ProtocolName<K>> getProtoDependencies();
 	List<MemberName<?>> getNonProtoDependencies();  // N.B. delegation payloads currently here, not getProtoDependencies (CHECKME: refactor?)
+
+	SType<K, B> substitute(Substitutions subs);
+	
+	SType<K, B> pruneRecs();  // Assumes no shadowing (e.g., use after inlining recvar disamb)
 	*/
 }

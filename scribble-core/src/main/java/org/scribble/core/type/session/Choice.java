@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
@@ -55,22 +54,6 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
 	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitChoice(this);
-	}
-
-	@Override
-	public Choice<K, B> substitute(Substitutions subs)
-	{
-		List<B> blocks = this.blocks.stream().map(x -> x.substitute(subs))
-				.collect(Collectors.toList());
-		return reconstruct(getSource(), subs.subsRole(this.subj), blocks);
-	}
-
-	@Override
-	public Choice<K, B> pruneRecs()
-	{
-		List<B> blocks = this.blocks.stream().map(x -> x.pruneRecs())
-				.collect(Collectors.toList());
-		return reconstruct(getSource(), this.subj, blocks);
 	}
 	
 	@Override
@@ -172,6 +155,22 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
 		return this.blocks.stream()
 				.flatMap(x -> x.getNonProtoDependencies().stream()).distinct()
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Choice<K, B> substitute(Substitutions subs)
+	{
+		List<B> blocks = this.blocks.stream().map(x -> x.substitute(subs))
+				.collect(Collectors.toList());
+		return reconstruct(getSource(), subs.subsRole(this.subj), blocks);
+	}
+
+	@Override
+	public Choice<K, B> pruneRecs()
+	{
+		List<B> blocks = this.blocks.stream().map(x -> x.pruneRecs())
+				.collect(Collectors.toList());
+		return reconstruct(getSource(), this.subj, blocks);
 	}
 	*/
 }

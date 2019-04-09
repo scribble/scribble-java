@@ -127,6 +127,17 @@ public class Substitutor<K extends ProtocolKind, B extends Seq<K, B>>
 	{
 		return this.asubs.containsKey(old);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/*@Override
 	public String toString()

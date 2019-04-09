@@ -7,13 +7,13 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.local.LContinue;
 import org.scribble.core.type.session.local.LRecursion;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeInliner;
+import org.scribble.core.visit.Substitutor;
 
 public class LTypeInliner extends STypeInliner<Local, LSeq>
 {
@@ -34,9 +34,9 @@ public class LTypeInliner extends STypeInliner<Local, LSeq>
 		}
 		pushSig(sig);
 		LProtocol p = this.job.getContext().getProjection(fullname);  // This line differs from GDo version
-		Substitutions subs = 
-				new Substitutions(p.roles, n.roles, p.params, n.args);
-		LSeq inlined = p.def.substitute(subs).visitWith(this);
+		Substitutor<Local, LSeq> subs = 
+				new Substitutor<>(p.roles, n.roles, p.params, n.args);
+		LSeq inlined = p.def.visitWith(subs).visitWith(this);
 				// i.e. returning a Seq -- rely on parent Seq to inline
 		popSig();
 		return new LRecursion(null, rv, inlined);

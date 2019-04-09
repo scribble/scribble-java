@@ -25,12 +25,6 @@ public abstract class BasicInteraction<K extends ProtocolKind, B extends Seq<K, 
 	}
 	
 	@Override
-	public BasicInteraction<K, B> pruneRecs()
-	{
-		return this;
-	}
-	
-	@Override
 	public CommonTree getSource()
 	{
 		return (CommonTree) super.getSource();
@@ -69,6 +63,12 @@ public abstract class BasicInteraction<K extends ProtocolKind, B extends Seq<K, 
 	public List<ProtocolName<K>> getProtoDependencies()
 	{
 		return Collections.emptyList();
+	}
+	
+	@Override
+	public BasicInteraction<K, B> pruneRecs()
+	{
+		return this;
 	}
 	*/
 }

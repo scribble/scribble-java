@@ -19,7 +19,6 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
@@ -48,20 +47,6 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitContinue(this);
-	}
-
-	@Override
-	public Continue<K, B> substitute(Substitutions subs)
-	{
-		//return reconstruct(getSource(), this.recvar);
-		return this;
-	}
-
-	@Override
-	public Continue<K, B> pruneRecs()
-	{
-		//return reconstruct(getSource(), this.recvar);
-		return this;
 	}
 
 	@Override
@@ -139,6 +124,20 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		return Collections.emptyList();
+	}
+
+	@Override
+	public Continue<K, B> substitute(Substitutions subs)
+	{
+		//return reconstruct(getSource(), this.recvar);
+		return this;
+	}
+
+	@Override
+	public Continue<K, B> pruneRecs()
+	{
+		//return reconstruct(getSource(), this.recvar);
+		return this;
 	}
 	*/
 }

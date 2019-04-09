@@ -19,7 +19,6 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
 
 // Base class would be "SymmetricInteraction" (cf., DirectedInteraction)
@@ -50,13 +49,6 @@ public abstract class DisconnectAction<K extends ProtocolKind, B extends Seq<K, 
 	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitDisconnect(this);
-	}
-
-	@Override
-	public DisconnectAction<K, B> substitute(Substitutions subs)
-	{
-		return reconstruct(getSource(), subs.subsRole(this.left), 
-				subs.subsRole(this.right));
 	}
 	
 	@Override
@@ -119,6 +111,13 @@ public abstract class DisconnectAction<K extends ProtocolKind, B extends Seq<K, 
 	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		return Collections.emptyList();
+	}
+
+	@Override
+	public DisconnectAction<K, B> substitute(Substitutions subs)
+	{
+		return reconstruct(getSource(), subs.subsRole(this.left), 
+				subs.subsRole(this.right));
 	}
 	*/
 }

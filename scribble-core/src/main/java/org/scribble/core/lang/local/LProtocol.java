@@ -35,12 +35,13 @@ import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.local.LRecursion;
 import org.scribble.core.type.session.local.LSeq;
+import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
+import org.scribble.core.visit.Substitutor;
 import org.scribble.core.visit.local.LTypeInliner;
 import org.scribble.core.visit.local.ReachabilityEnv;
 import org.scribble.util.Constants;
@@ -93,10 +94,11 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 		SubprotoSig sig = new SubprotoSig(this.fullname, this.roles, params);
 		v.pushSig(sig);
 
-		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
-				sig.args);
+		Substitutor<Local, LSeq> subs = new Substitutor<>(this.roles, sig.roles,
+				this.params, sig.args);
 		LTypeInliner linl = new LTypeInliner(v.job);
-		LSeq body = this.def.substitute(subs).visitWith(linl).pruneRecs();
+		LSeq body = this.def.visitWith(subs).visitWith(linl)
+				.visitWith(new RecPruner<>());
 		RecVar rv = v.getInlinedRecVar(sig);
 		LRecursion rec = new LRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();  // CHECKME: or null source?

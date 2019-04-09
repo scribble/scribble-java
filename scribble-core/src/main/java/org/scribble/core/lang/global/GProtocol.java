@@ -52,6 +52,7 @@ import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.MessageIdCollector;
+import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.RoleCollector;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
@@ -107,7 +108,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		GSeq body = this.def
 				.visitWith(
 						new Substitutor<>(this.roles, sig.roles, this.params, sig.args))
-				.visitWith(v).pruneRecs();
+				.visitWith(v).visitWith(new RecPruner<>());
 		RecVar rv = v.getInlinedRecVar(sig);
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();
@@ -167,7 +168,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 
 	public LProjection project(Projector v)
 	{
-		LSeq body = (LSeq) this.def.project(v).pruneRecs();
+		LSeq body = (LSeq) this.def.project(v).visitWith(new RecPruner<>());
 		return projectAux(v.self,
 				v.job.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
 				body);

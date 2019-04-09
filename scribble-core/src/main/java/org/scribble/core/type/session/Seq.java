@@ -14,7 +14,6 @@
 package org.scribble.core.type.session;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -22,7 +21,6 @@ import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
@@ -52,33 +50,6 @@ public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 		@SuppressWarnings("unchecked")
 		B cast = (B) this;  // CHECKME: OK as long as G/LSeq specify themselves as B param
 		return v.visitSeq(cast);
-	}
-
-	@Override
-	public B pruneRecs()
-	{
-		List<SType<K, B>> elems = new LinkedList<>();
-		for (SType<K, B> e : this.elems)
-		{
-			SType<K, B> e1 = (SType<K, B>) e.pruneRecs();
-			if (e1 instanceof Seq<?, ?>)  // cf. Recursion::pruneRecs
-			{
-				elems.addAll(((Seq<K, B>) e1).getElements());  // Handles empty Seq case
-			}
-			else
-			{
-				elems.add(e1);
-			}
-		}
-		return reconstruct(getSource(), elems);
-	}
-
-	@Override
-	public B substitute(Substitutions subs)
-	{
-		List<? extends SType<K, B>> elems = this.elems.stream()
-				.map(x -> x.substitute(subs)).collect(Collectors.toList());
-		return reconstruct(getSource(), elems);
 	}
 
 	// Re. return type, could make SType subclasses take themself as another param, but not worth it
@@ -208,6 +179,33 @@ public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 		return this.elems.stream()
 				.flatMap(x -> x.getNonProtoDependencies().stream()).distinct()
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public B substitute(Substitutions subs)
+	{
+		List<? extends SType<K, B>> elems = this.elems.stream()
+				.map(x -> x.substitute(subs)).collect(Collectors.toList());
+		return reconstruct(getSource(), elems);
+	}
+
+	@Override
+	public B pruneRecs()
+	{
+		List<SType<K, B>> elems = new LinkedList<>();
+		for (SType<K, B> e : this.elems)
+		{
+			SType<K, B> e1 = (SType<K, B>) e.pruneRecs();
+			if (e1 instanceof Seq<?, ?>)  // cf. Recursion::pruneRecs
+			{
+				elems.addAll(((Seq<K, B>) e1).getElements());  // Handles empty Seq case
+			}
+			else
+			{
+				elems.add(e1);
+			}
+		}
+		return reconstruct(getSource(), elems);
 	}
 	*/
 }

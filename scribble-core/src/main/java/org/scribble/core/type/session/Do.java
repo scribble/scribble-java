@@ -14,7 +14,6 @@
 package org.scribble.core.type.session;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,12 +22,8 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Do
@@ -62,36 +57,6 @@ public abstract class Do
 	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitDo(this);
-	}
-
-	@Override
-	public Do<K, B, N> substitute(Substitutions subs)
-	{
-		List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
-				.collect(Collectors.toList());
-		List<Arg<? extends NonRoleParamKind>> args = new LinkedList<>();
-		for (Arg<? extends NonRoleParamKind> a : this.args) 
-		{
-			if (a instanceof MemberName<?> && subs.hasArg((MemberName<?>) a))
-			{
-				if (a instanceof DataType)
-				{
-					a = subs.subsArg((DataType) a);
-				}
-				else if (a instanceof MessageSigName)
-				{
-					a = subs.subsArg((MessageSigName) a);
-				}
-			}
-			args.add(a);
-		}
-		return reconstruct(getSource(), this.proto, roles, args);
-	}
-
-	@Override
-	public Do<K, B, N> pruneRecs()
-	{
-		return this;
 	}
 	
 	public N getProtocolName()
@@ -197,6 +162,36 @@ public abstract class Do
 		return this.args.stream()
 				.filter(x -> (x instanceof MessageSig) || (x instanceof DataType))  // CHECKME: refactor?
 				.map(x -> (MemberName<?>) x).collect(Collectors.toList());
+	}
+
+	@Override
+	public Do<K, B, N> pruneRecs()
+	{
+		return this;
+	}
+
+	@Override
+	public Do<K, B, N> substitute(Substitutions subs)
+	{
+		List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
+				.collect(Collectors.toList());
+		List<Arg<? extends NonRoleParamKind>> args = new LinkedList<>();
+		for (Arg<? extends NonRoleParamKind> a : this.args) 
+		{
+			if (a instanceof MemberName<?> && subs.hasArg((MemberName<?>) a))
+			{
+				if (a instanceof DataType)
+				{
+					a = subs.subsArg((DataType) a);
+				}
+				else if (a instanceof MessageSigName)
+				{
+					a = subs.subsArg((MessageSigName) a);
+				}
+			}
+			args.add(a);
+		}
+		return reconstruct(getSource(), this.proto, roles, args);
 	}
 	*/
 }

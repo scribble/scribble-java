@@ -13,16 +13,12 @@
  */
 package org.scribble.core.type.session;
 
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Substitutions;
-import org.scribble.core.visit.RecVarCollector;
 import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
@@ -54,23 +50,6 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 
 	public abstract Recursion<K, B> reconstruct(
 			CommonTree source, RecVar recvar, B body);
-	
-	@Override
-	public Recursion<K, B> substitute(Substitutions subs)
-	{
-		return reconstruct(getSource(), this.recvar, this.body.substitute(subs));
-	}
-
-	@Override
-	public SType<K, B> pruneRecs()
-	{
-		// Assumes no shadowing (e.g., use after SType#getInlined recvar disamb)
-		Set<RecVar> rvs = this.body.gather(new RecVarCollector<K, B>()::visit)
-				.collect(Collectors.toSet());
-		return rvs.contains(this.recvar)
-				? this
-				: this.body;  // i.e., return a Seq, to be "inlined" by Seq.pruneRecs -- N.B. must handle empty Seq case
-	}
 
 	@Override
 	public String toString()
@@ -157,6 +136,23 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		return this.body.getNonProtoDependencies();
+	}
+	
+	@Override
+	public Recursion<K, B> substitute(Substitutions subs)
+	{
+		return reconstruct(getSource(), this.recvar, this.body.substitute(subs));
+	}
+
+	@Override
+	public SType<K, B> pruneRecs()
+	{
+		// Assumes no shadowing (e.g., use after SType#getInlined recvar disamb)
+		Set<RecVar> rvs = this.body.gather(new RecVarCollector<K, B>()::visit)
+				.collect(Collectors.toSet());
+		return rvs.contains(this.recvar)
+				? this
+				: this.body;  // i.e., return a Seq, to be "inlined" by Seq.pruneRecs -- N.B. must handle empty Seq case
 	}
 	*/
 }

@@ -18,9 +18,7 @@ import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
 
 // Besides directed-ness, also features a Message
@@ -55,22 +53,6 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitDirectedInteraction(this);
-	}
-	
-	@Override
-	public DirectedInteraction<K, B> substitute(Substitutions subs)
-	{
-		Message msg = this.msg;
-		if (msg instanceof MemberName)
-		{
-			MemberName<?> n = (MemberName<?>) msg;
-			if (subs.hasArg(n))
-			{
-				msg = (Message) subs.subsArg(n);
-			}
-		}
-		return reconstruct(getSource(), msg, subs.subsRole(this.src),
-				subs.subsRole(this.dst));
 	}
 	
 	@Override
@@ -130,5 +112,22 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 	public Set<MessageId<?>> getMessageIds()
 	{
 		return Stream.of(this.msg.getId()).collect(Collectors.toSet());
-	}*/
+	}
+	
+	@Override
+	public DirectedInteraction<K, B> substitute(Substitutions subs)
+	{
+		Message msg = this.msg;
+		if (msg instanceof MemberName)
+		{
+			MemberName<?> n = (MemberName<?>) msg;
+			if (subs.hasArg(n))
+			{
+				msg = (Message) subs.subsArg(n);
+			}
+		}
+		return reconstruct(getSource(), msg, subs.subsRole(this.src),
+				subs.subsRole(this.dst));
+	}
+	*/
 }
