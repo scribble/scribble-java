@@ -13,15 +13,11 @@
  */
 package org.scribble.core.type.session;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
@@ -52,18 +48,6 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitContinue(this);
-	}
-
-	@Override
-	public List<ProtocolName<K>> getProtoDependencies()
-	{
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<MemberName<?>> getNonProtoDependencies()
-	{
-		return Collections.emptyList();
 	}
 
 	@Override
@@ -143,5 +127,18 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 	{
 		RecVar rv = v.getInlinedRecVar(this.recvar);
 		return reconstruct(getSource(), rv);
-	}*/
+	}
+	
+	@Override
+	public List<ProtocolName<K>> getProtoDependencies()
+	{
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
+	{
+		return Collections.emptyList();
+	}
+	*/
 }

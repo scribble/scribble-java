@@ -13,15 +13,12 @@
  */
 package org.scribble.core.type.session.local;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.SType;
@@ -54,18 +51,6 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 
 	@Override
 	public LSkip pruneRecs()
-	{
-		throw new RuntimeException("Unsupported for Skip: " + this);
-	}
-		
-	@Override
-	public List<ProtocolName<Local>> getProtoDependencies()
-	{
-		throw new RuntimeException("Unsupported for Skip: " + this);
-	}
-
-	@Override
-	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}
@@ -166,6 +151,18 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 
 	@Override
 	public LType unfoldAllOnce(STypeUnfolder<Local> u)
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+		
+	@Override
+	public List<ProtocolName<Local>> getProtoDependencies()
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}

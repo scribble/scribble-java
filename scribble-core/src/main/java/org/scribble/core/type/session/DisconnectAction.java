@@ -13,14 +13,11 @@
  */
 package org.scribble.core.type.session;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
@@ -60,12 +57,6 @@ public abstract class DisconnectAction<K extends ProtocolKind, B extends Seq<K, 
 	{
 		return reconstruct(getSource(), subs.subsRole(this.left), 
 				subs.subsRole(this.right));
-	}
-
-	@Override
-	public List<MemberName<?>> getNonProtoDependencies()
-	{
-		return Collections.emptyList();
 	}
 	
 	@Override
@@ -122,6 +113,12 @@ public abstract class DisconnectAction<K extends ProtocolKind, B extends Seq<K, 
 	public Set<MessageId<?>> getMessageIds()
 	{
 		return Collections.emptySet();
-	}*/
+	}
 	
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
+	{
+		return Collections.emptyList();
+	}
+	*/
 }

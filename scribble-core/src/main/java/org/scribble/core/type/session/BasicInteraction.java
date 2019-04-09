@@ -13,12 +13,8 @@
  */
 package org.scribble.core.type.session;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
 
 public abstract class BasicInteraction<K extends ProtocolKind, B extends Seq<K, B>>
 		extends STypeBase<K, B> implements SType<K, B>
@@ -32,12 +28,6 @@ public abstract class BasicInteraction<K extends ProtocolKind, B extends Seq<K, 
 	public BasicInteraction<K, B> pruneRecs()
 	{
 		return this;
-	}
-
-	@Override
-	public List<ProtocolName<K>> getProtoDependencies()
-	{
-		return Collections.emptyList();
 	}
 	
 	@Override
@@ -73,5 +63,12 @@ public abstract class BasicInteraction<K extends ProtocolKind, B extends Seq<K, 
 	public BasicInteraction<K, B> unfoldAllOnce(STypeUnfolder<K> u)
 	{
 		return this;
-	}*/
+	}
+	
+	@Override
+	public List<ProtocolName<K>> getProtoDependencies()
+	{
+		return Collections.emptyList();
+	}
+	*/
 }

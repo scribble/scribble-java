@@ -13,14 +13,11 @@
  */
 package org.scribble.core.type.session;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.scribble.core.lang.SNode;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
 
@@ -38,11 +35,6 @@ public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 	
 	SType<K, B> pruneRecs();  // Assumes no shadowing (e.g., use after inlining recvar disamb)
 
-	// Resulting Lists should not contain duplicates (i.e., Choice/Seq)
-	// Result does not necessarily contain root proto (protodecl is not an SType), but may do so via dependencies
-	List<ProtocolName<K>> getProtoDependencies();
-	List<MemberName<?>> getNonProtoDependencies();  // N.B. delegation payloads currently here, not getProtoDependencies (CHECKME: refactor?)
-	
 	// subclass equals should call this by: them.canEquals(this) 
 	boolean canEquals(Object o);
 	
@@ -65,10 +57,15 @@ public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 	Set<RecVar> getRecVars();  // Gets Continue RecVars (not Recursion)
 	
 	// CHECKME: OK to (re-)use GTypeTranslator for inlining?
-	SType<K, B> 
-	getInlined(STypeInliner i);
+	SType<K, B> getInlined(STypeInliner i);
 	
 	// Unsupported for Do
 	// CHECKME: repeat recvar names OK? including non-shadowing (e.g., choice cases)
-	SType<K, B> unfoldAllOnce(STypeUnfolder<K> u);*/
+	SType<K, B> unfoldAllOnce(STypeUnfolder<K> u);
+	
+	// Resulting Lists should not contain duplicates (i.e., Choice/Seq use distinct)
+	// Result does not necessarily contain root proto (protodecl is not an SType), but may do so via dependencies
+	List<ProtocolName<K>> getProtoDependencies();
+	List<MemberName<?>> getNonProtoDependencies();  // N.B. delegation payloads currently here, not getProtoDependencies (CHECKME: refactor?)
+	*/
 }

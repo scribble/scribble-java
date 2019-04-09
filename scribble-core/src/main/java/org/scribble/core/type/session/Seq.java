@@ -22,8 +22,6 @@ import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
 
@@ -81,21 +79,6 @@ public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 		List<? extends SType<K, B>> elems = this.elems.stream()
 				.map(x -> x.substitute(subs)).collect(Collectors.toList());
 		return reconstruct(getSource(), elems);
-	}
-		
-	@Override
-	public List<ProtocolName<K>> getProtoDependencies()
-	{
-		return this.elems.stream().flatMap(x -> x.getProtoDependencies().stream())
-				.distinct().collect(Collectors.toList());
-	}
-
-	@Override
-	public List<MemberName<?>> getNonProtoDependencies()
-	{
-		return this.elems.stream()
-				.flatMap(x -> x.getNonProtoDependencies().stream()).distinct()
-				.collect(Collectors.toList());
 	}
 
 	// Re. return type, could make SType subclasses take themself as another param, but not worth it
@@ -210,6 +193,21 @@ public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 			}
 		}
 		return reconstruct(source, elems);
+	}
+		
+	@Override
+	public List<ProtocolName<K>> getProtoDependencies()
+	{
+		return this.elems.stream().flatMap(x -> x.getProtoDependencies().stream())
+				.distinct().collect(Collectors.toList());
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
+	{
+		return this.elems.stream()
+				.flatMap(x -> x.getNonProtoDependencies().stream()).distinct()
+				.collect(Collectors.toList());
 	}
 	*/
 }

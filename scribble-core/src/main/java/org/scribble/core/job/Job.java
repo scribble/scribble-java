@@ -38,6 +38,9 @@ import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
+import org.scribble.core.type.session.local.LSeq;
+import org.scribble.core.visit.NonProtoDepsCollector;
+import org.scribble.core.visit.ProtoDepsCollector;
 import org.scribble.core.visit.RoleCollector;
 import org.scribble.core.visit.global.GTypeInliner;
 import org.scribble.core.visit.global.GTypeUnfolder;
@@ -291,7 +294,9 @@ public class Job
 		LProtocol proj =
 				this.context.getProjection(fullname, role);
 		
-		List<ProtocolName<Local>> ps = proj.def.getProtoDependencies();
+		List<ProtocolName<Local>> ps = proj.def
+				.gather(new ProtoDepsCollector<Local, LSeq>()::visit)
+				.collect(Collectors.toList());
 		for (ProtocolName<Local> p : ps)
 		{
 			System.out.println("\n" + this.context.getProjection((LProtocolName) p));
@@ -301,7 +306,9 @@ public class Job
 			System.out.println("\n" + proj);
 		}
 
-		List<MemberName<?>> ns = proj.def.getNonProtoDependencies();
+		List<MemberName<?>> ns = proj.def
+				.gather(new NonProtoDepsCollector<Local, LSeq>()::visit)
+				.collect(Collectors.toList());
 
 		warningPrintln("");
 		warningPrintln("[TODO] Full module projection and imports: "

@@ -21,8 +21,6 @@ import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
@@ -74,23 +72,6 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
 				.collect(Collectors.toList());
 		return reconstruct(getSource(), this.subj, blocks);
 	}
-
-	@Override
-	public List<ProtocolName<K>> getProtoDependencies()
-	{
-		return this.blocks.stream().flatMap(x -> x.getProtoDependencies().stream())
-				.distinct().collect(Collectors.toList());
-	}
-
-	@Override
-	public List<MemberName<?>> getNonProtoDependencies()
-	{
-		return this.blocks.stream()
-				.flatMap(x -> x.getNonProtoDependencies().stream()).distinct()
-				.collect(Collectors.toList());
-	}
-
-	//public abstract List<B> getBlocks();
 	
 	@Override
 	public String toString()
@@ -176,5 +157,21 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
 		List<B> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
 				.collect(Collectors.toList());
 		return reconstruct(source, this.subj, blocks);
-	}*/
+	}
+	
+	@Override
+	public List<ProtocolName<K>> getProtoDependencies()
+	{
+		return this.blocks.stream().flatMap(x -> x.getProtoDependencies().stream())
+				.distinct().collect(Collectors.toList());
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
+	{
+		return this.blocks.stream()
+				.flatMap(x -> x.getNonProtoDependencies().stream()).distinct()
+				.collect(Collectors.toList());
+	}
+	*/
 }

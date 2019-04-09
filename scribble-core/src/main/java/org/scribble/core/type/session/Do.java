@@ -65,20 +65,6 @@ public abstract class Do
 	}
 
 	@Override
-	public List<ProtocolName<K>> getProtoDependencies()
-	{
-		return Stream.of(this.proto).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<MemberName<?>> getNonProtoDependencies()
-	{
-		return this.args.stream()
-				.filter(x -> (x instanceof MessageSig) || (x instanceof DataType))  // CHECKME: refactor?
-				.map(x -> (MemberName<?>) x).collect(Collectors.toList());
-	}
-
-	@Override
 	public Do<K, B, N> substitute(Substitutions subs)
 	{
 		List<Role> roles = this.roles.stream().map(x -> subs.subsRole(x))
@@ -192,6 +178,20 @@ public abstract class Do
 	public SType<K, B> unfoldAllOnce(STypeUnfolder<K> u)
 	{
 		throw new RuntimeException("Unsupported for Do: " + this);
+	}
+
+	@Override
+	public List<ProtocolName<K>> getProtoDependencies()
+	{
+		return Stream.of(this.proto).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
+	{
+		return this.args.stream()
+				.filter(x -> (x instanceof MessageSig) || (x instanceof DataType))  // CHECKME: refactor?
+				.map(x -> (MemberName<?>) x).collect(Collectors.toList());
 	}
 	*/
 }

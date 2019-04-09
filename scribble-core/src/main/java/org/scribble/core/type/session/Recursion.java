@@ -13,7 +13,6 @@
  */
 package org.scribble.core.type.session;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -21,8 +20,6 @@ import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.RecVarCollector;
@@ -73,18 +70,6 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 		return rvs.contains(this.recvar)
 				? this
 				: this.body;  // i.e., return a Seq, to be "inlined" by Seq.pruneRecs -- N.B. must handle empty Seq case
-	}
-
-	@Override
-	public List<ProtocolName<K>> getProtoDependencies()
-	{
-		return this.body.getProtoDependencies();
-	}
-
-	@Override
-	public List<MemberName<?>> getNonProtoDependencies()
-	{
-		return this.body.getNonProtoDependencies();
 	}
 
 	@Override
@@ -160,5 +145,18 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 			return unf;
 		}
 		return this;
-	}*/
+	}
+
+	@Override
+	public List<ProtocolName<K>> getProtoDependencies()
+	{
+		return this.body.getProtoDependencies();
+	}
+
+	@Override
+	public List<MemberName<?>> getNonProtoDependencies()
+	{
+		return this.body.getNonProtoDependencies();
+	}
+	*/
 }

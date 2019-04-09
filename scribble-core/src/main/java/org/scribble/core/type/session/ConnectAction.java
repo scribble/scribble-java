@@ -13,15 +13,8 @@
  */
 package org.scribble.core.type.session;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageSigName;
-import org.scribble.core.type.name.PayloadElemType;
 import org.scribble.core.type.name.Role;
 
 public abstract class ConnectAction<K extends ProtocolKind, B extends Seq<K, B>>
@@ -33,7 +26,26 @@ public abstract class ConnectAction<K extends ProtocolKind, B extends Seq<K, B>>
 		super(source, msg, src, dst);
 	}
 
-	@Override
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*@Override
 	public List<MemberName<?>> getNonProtoDependencies()
 	{
 		List<MemberName<?>> res = new LinkedList<>();
@@ -61,5 +73,5 @@ public abstract class ConnectAction<K extends ProtocolKind, B extends Seq<K, B>>
 			}
 		}
 		return res;
-	}
+	}*/
 }

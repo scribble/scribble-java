@@ -45,6 +45,8 @@ public abstract class STypeGather<K extends ProtocolKind, B extends Seq<K, B>, T
 
 	public Stream<T> visitChoice(Choice<K, B> n) { return Stream.of(); }
 
+	// CHECKME: split into ConnectionAction and MessageTransfer? cf. NonProtoDepsCollector -- and how about locals?
+	// Or offer all, with ConnectionAction and MessageTransfer delegating to DirectedInteraction by default?  (must order correctly in typeSwitch)
 	public Stream<T> visitDirectedInteraction(DirectedInteraction<K, B> n) { return Stream.of(); }
 
 	public Stream<T> visitDisconnect(DisconnectAction<K, B> n) { return Stream.of(); }
