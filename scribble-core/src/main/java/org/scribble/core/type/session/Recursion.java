@@ -15,6 +15,8 @@ package org.scribble.core.type.session;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
@@ -26,6 +28,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
+import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 		extends STypeBase<K, B>
@@ -40,6 +43,18 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 		super(source);
 		this.recvar = recvar;
 		this.body = body;
+	}
+	
+	@Override
+	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	{
+		return Stream.concat(f.apply(this), this.body.collect(f));
+	}
+
+	@Override
+	public SType<K, B> visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	{
+		return v.visitRecursion(this);
 	}
 
 	public abstract Recursion<K, B> reconstruct(

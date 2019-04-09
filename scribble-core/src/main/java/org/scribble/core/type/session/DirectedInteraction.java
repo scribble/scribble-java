@@ -14,6 +14,7 @@
 package org.scribble.core.type.session;
 
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,29 +22,44 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
+import org.scribble.core.visit.STypeVisitor;
 
 // Besides directed-ness, also features a Message
 public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<K, B>>
 		extends BasicInteraction<K, B>
 {
-	public final Role src;
+	// Following ast children order
 	public final Message msg;
+	public final Role src;
 	public final Role dst;
 
 	public DirectedInteraction(CommonTree source,
-			Role src, Message msg, Role dst)
+			Message msg, Role src, Role dst)
 	{
 		super(source);
-		this.src = src;
 		this.msg = msg;
+		this.src = src;
 		this.dst = dst;
 	}
 	
 	public abstract DirectedInteraction<K, B> reconstruct(
-			CommonTree source, Role src, Message msg,
+			CommonTree source, Message msg, Role src,
 			Role dst);
+	
+	@Override
+	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	{
+		return f.apply(this);
+	}
+
+	@Override
+	public SType<K, B> visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	{
+		return v.visitDirectedInteraction(this);
+	}
 
 	@Override
 	public Set<Role> getRoles()
@@ -70,7 +86,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 				msg = (Message) subs.subsArg(n);
 			}
 		}
-		return reconstruct(getSource(), subs.subsRole(this.src), msg,
+		return reconstruct(getSource(), msg, subs.subsRole(this.src),
 				subs.subsRole(this.dst));
 	}
 	
@@ -85,8 +101,8 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 	{
 		int hash = 10631;
 		hash = 31 * hash + super.hashCode();
-		hash = 31 * hash + this.src.hashCode();
 		hash = 31 * hash + this.msg.hashCode();
+		hash = 31 * hash + this.src.hashCode();
 		hash = 31 * hash + this.dst.hashCode();
 		return hash;
 	}
@@ -104,7 +120,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 		}
 		DirectedInteraction<?, ?> them = (DirectedInteraction<?, ?>) o;
 		return super.equals(this)  // Does canEquals
-				&& this.src.equals(them.src) && this.msg.equals(them.msg)
+				&& this.msg.equals(them.msg) && this.src.equals(them.src) 
 				&& this.dst.equals(them.dst);
 	}
 }

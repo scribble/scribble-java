@@ -50,6 +50,20 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	{
 		return new GChoice(source, subj, blocks);
 	}
+
+	/*@Override
+	public <T> GChoice visit(Function<SType<Global, GSeq>, Stream<T>> f)
+	{
+		Stream<T> tmp = f.apply(this);
+		if (tmp.count() != 1)
+		{
+			throw new RuntimeException(": " + tmp.collect(Collectors.toList()));
+		}
+		Role subj = (Role) tmp.findFirst().get();
+		List<GSeq> blocks = this.blocks.stream()
+				.map(x -> (GSeq) x.visit(f)).collect(Collectors.toList());
+		return reconstruct(getSource(), subj, blocks);
+	}*/
 	
 	@Override
 	public LType projectInlined(Role self)

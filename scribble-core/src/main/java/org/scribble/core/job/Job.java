@@ -43,6 +43,8 @@ import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
+import org.scribble.core.type.session.global.GSeq;
+import org.scribble.core.visit.RoleCollector;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.global.Projector2;
@@ -186,14 +188,16 @@ public class Job
 			verbosePrintln("\nEFSM for " + proj.fullname + ":\n" + graph.toDot());
 		}
 	}
-
+	
 	public void runValidationPasses() throws ScribException
 	{
 		for (GProtocol inlined : this.context.getInlined())
 		{
-			//TODO: relegate to "warning" ?
+			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
 			// Check unused roles
-			Set<Role> used = inlined.def.getRoles();
+			Set<Role> used = inlined.def
+					.collect(new RoleCollector<Global, GSeq>()::visit)
+					.collect(Collectors.toSet());
 			Set<Role> unused = this.context.getIntermediate(inlined.fullname).roles
 							// imeds have original role decls (inlined's are pruned)
 					.stream().filter(x -> !used.contains(x)).collect(Collectors.toSet());

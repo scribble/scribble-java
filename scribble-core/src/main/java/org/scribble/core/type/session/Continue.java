@@ -16,6 +16,7 @@ package org.scribble.core.type.session;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,6 +29,7 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeInliner;
+import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 		extends STypeBase<K, B>
@@ -44,6 +46,18 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 
 	public abstract Continue<K, B> reconstruct(
 			CommonTree source, RecVar recvar);
+	
+	@Override
+	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	{
+		return f.apply(this);
+	}
+
+	@Override
+	public SType<K, B> visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	{
+		return v.visitContinue(this);
+	}
 	
 	@Override
 	public Set<Role> getRoles()

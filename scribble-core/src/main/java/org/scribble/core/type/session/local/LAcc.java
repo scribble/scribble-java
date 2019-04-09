@@ -35,13 +35,13 @@ public class LAcc extends ConnectAction<Local, LSeq> implements LType
 	public LAcc(CommonTree source,
 			Role src, Message msg)
 	{
-		super(source, src, msg, Role.SELF);
+		super(source, msg, src, Role.SELF);
 	}
 
 	// FIXME: unnecessary dst 
 	@Override
 	public LAcc reconstruct(
-			CommonTree source, Role src, Message msg,
+			CommonTree source, Message msg, Role src,
 			Role dst)
 	{
 		return new LAcc(source, src, msg);

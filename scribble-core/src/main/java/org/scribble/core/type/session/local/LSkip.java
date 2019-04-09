@@ -15,6 +15,8 @@ package org.scribble.core.type.session.local;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
@@ -24,9 +26,11 @@ import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
+import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.STypeBase;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
+import org.scribble.core.visit.STypeVisitor;
 import org.scribble.core.visit.local.ReachabilityEnv;
 import org.scribble.util.ScribException;
 
@@ -38,6 +42,18 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	private LSkip()
 	{
 		super(null);
+	}
+
+	@Override
+	public <T> Stream<T> collect(Function<SType<Local, LSeq>, Stream<T>> f)
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+
+	@Override
+	public LSkip visitWith(STypeVisitor<Local, LSeq, ProtocolName<Local>> v)
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
 	}
 	
 	@Override

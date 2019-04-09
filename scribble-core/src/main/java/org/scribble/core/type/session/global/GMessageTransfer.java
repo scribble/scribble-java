@@ -38,12 +38,12 @@ public class GMessageTransfer extends MessageTransfer<Global, GSeq>
 	public GMessageTransfer(CommonTree source,
 			Role src, Message msg, Role dst)
 	{
-		super(source, src, msg, dst);
+		super(source, msg, src, dst);
 	}
 
 	@Override
 	public GMessageTransfer reconstruct(
-			CommonTree source, Role src, Message msg,
+			CommonTree source, Message msg, Role src,
 			Role dst)
 	{
 		return new GMessageTransfer(source, src, msg, dst);

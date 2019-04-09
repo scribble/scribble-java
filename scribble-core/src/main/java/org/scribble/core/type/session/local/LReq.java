@@ -36,13 +36,13 @@ public class LReq extends ConnectAction<Local, LSeq>
 	public LReq(CommonTree source,
 			Message msg, Role dst)
 	{
-		super(source, Role.SELF, msg, dst);
+		super(source, msg, Role.SELF, dst);
 	}
 
 	// CHECKME: remove unnecessary src ?
 	@Override
 	public LReq reconstruct(
-			CommonTree source, Role src, Message msg,
+			CommonTree source, Message msg, Role src,
 			Role dst)
 	{
 		return new LReq(source, msg, dst);

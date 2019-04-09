@@ -37,6 +37,7 @@ import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
@@ -48,8 +49,11 @@ import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
+import org.scribble.core.visit.MessageIdCollector;
+import org.scribble.core.visit.RoleCollector;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
+import org.scribble.core.visit.global.GUnf;
 import org.scribble.core.visit.global.Projector2;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribUtil;
@@ -85,7 +89,9 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();
 		GSeq def = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));
-		Set<Role> used = def.getRoles();
+		Set<Role> used = //def.getRoles();
+				def.collect(new RoleCollector<Global, GSeq>()::visit)
+						.collect(Collectors.toSet());
 		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls
 				.collect(Collectors.toList());
 		return new GProtocol(source, this.mods, this.fullname, rs,
@@ -95,7 +101,8 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	@Override
 	public GProtocol unfoldAllOnce(STypeUnfolder<Global> u)
 	{
-		GSeq unf = (GSeq) this.def.unfoldAllOnce(u);
+		GSeq unf = (GSeq) //this.def.unfoldAllOnce(u);
+				this.def.visitWith(new GUnf());
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.params, unf);
 	}
@@ -125,7 +132,9 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	{
 		LProtocolName fullname = Projector2
 				.projectFullProtocolName(this.fullname, self);
-		Set<Role> tmp = body.getRoles();
+		Set<Role> tmp = //body.getRoles();
+				body.collect(new RoleCollector<Local, LSeq>()::visit)
+						.collect(Collectors.toSet());
 		List<Role> roles = decls.stream()
 				.filter(x -> x.equals(self) || tmp.contains(x))  // Implicitly filters Role.SELF
 				.collect(Collectors.toList());
@@ -211,7 +220,9 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 				((ModuleDel) mod.del()).getModuleContext());  // TODO: get ModuleContext from Job(Context)
 		gpd.accept(coll);
 		Set<MessageId<?>> mids = coll.getNames();*/
-		Set<MessageId<?>> mids = gpd.def.getMessageIds();
+		Set<MessageId<?>> mids = gpd.def.//getMessageIds();
+				collect(new MessageIdCollector<Global, GSeq>()::visit)
+				.collect(Collectors.toSet());
 		
 		//..........FIXME: get mids from SType, instead of old AST Collector
 		

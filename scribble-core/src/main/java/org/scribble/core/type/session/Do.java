@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,6 +34,7 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeUnfolder;
+import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Do
 		<K extends ProtocolKind, B extends Seq<K, B>, N extends ProtocolName<K>>
@@ -54,6 +56,18 @@ public abstract class Do
 
 	public abstract Do<K, B, N> reconstruct(CommonTree source,
 			N proto, List<Role> roles, List<Arg<? extends NonRoleParamKind>> args);
+	
+	@Override
+	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	{
+		return f.apply(this);
+	}
+
+	@Override
+	public SType<K, B> visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	{
+		return v.visitDo(this);
+	}
 
 	@Override
 	public Set<Role> getRoles()

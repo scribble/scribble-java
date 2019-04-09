@@ -29,9 +29,9 @@ public abstract class MessageTransfer<K extends ProtocolKind, B extends Seq<K, B
 		extends DirectedInteraction<K, B>
 {
 	public MessageTransfer(CommonTree source,
-			Role src, Message msg, Role dst)
+			Message msg, Role src, Role dst)
 	{
-		super(source, src, msg, dst);
+		super(source, msg, src, dst);
 	}
 
 	@Override

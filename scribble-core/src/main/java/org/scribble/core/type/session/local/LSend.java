@@ -36,13 +36,13 @@ public class LSend extends MessageTransfer<Local, LSeq>
 	public LSend(CommonTree source,
 			Message msg, Role dst)
 	{
-		super(source, Role.SELF, msg, dst);
+		super(source, msg, Role.SELF, dst);
 	}
 
 	// CHECKME: remove unnecessary src ?
 	@Override
 	public LSend reconstruct(
-			CommonTree source, Role src, Message msg,
+			CommonTree source, Message msg, Role src,
 			Role dst)
 	{
 		return new LSend(source, msg, dst);

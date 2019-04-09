@@ -38,12 +38,12 @@ public class GConnect extends ConnectAction<Global, GSeq>
 	public GConnect(CommonTree source,  // DirectedInteraction not ideal (imprecise)
 			Role src, Message msg, Role dst)
 	{
-		super(source, src, msg, dst);
+		super(source, msg, src, dst);
 	}
 
 	@Override
 	public GConnect reconstruct(
-			CommonTree source, Role src, Message msg,
+			CommonTree source, Message msg, Role src,
 			Role dst)
 	{
 		return new GConnect(source, src, msg, dst);

@@ -16,6 +16,7 @@ package org.scribble.core.type.session;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,6 +30,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
+import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
 		extends STypeBase<K, B> implements SType<K, B>
@@ -48,6 +50,19 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
 	public abstract Choice<K, B> reconstruct(CommonTree source, Role subj,
 			List<B> blocks);
 			//List<? extends Seq<K, B>> blocks);
+	
+	@Override
+	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	{
+		return Stream.concat(f.apply(this),
+				this.blocks.stream().flatMap(x -> x.collect(f)));
+	}
+
+	@Override
+	public SType<K, B> visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	{
+		return v.visitChoice(this);
+	}
 	
 	@Override
 	public Set<Role> getRoles()

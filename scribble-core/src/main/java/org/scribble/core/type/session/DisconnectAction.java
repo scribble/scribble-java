@@ -16,6 +16,7 @@ package org.scribble.core.type.session;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,8 +24,10 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
+import org.scribble.core.visit.STypeVisitor;
 
 // Base class would be "SymmetricInteraction" (cf., DirectedInteraction)
 public abstract class DisconnectAction<K extends ProtocolKind, B extends Seq<K, B>>
@@ -43,6 +46,18 @@ public abstract class DisconnectAction<K extends ProtocolKind, B extends Seq<K, 
 	
 	public abstract DisconnectAction<K, B> reconstruct(
 			CommonTree source, Role src, Role dst);
+	
+	@Override
+	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	{
+		return f.apply(this);
+	}
+
+	@Override
+	public SType<K, B> visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	{
+		return v.visitDisconnect(this);
+	}
 
 	@Override
 	public Set<Role> getRoles()

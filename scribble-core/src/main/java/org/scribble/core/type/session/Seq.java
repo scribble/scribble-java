@@ -17,7 +17,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
@@ -29,6 +31,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
+import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 		extends STypeBase<K, B>
@@ -44,6 +47,20 @@ public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 	
 	public abstract B reconstruct(CommonTree source,
 			List<? extends SType<K, B>> elems);
+	
+	@Override
+	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	{
+		return this.elems.stream().flatMap(x -> x.collect(f));
+	}
+
+	@Override
+	public B visitWith(STypeVisitor<K, B, ProtocolName<K>> v)
+	{
+		@SuppressWarnings("unchecked")
+		B cast = (B) this;  // CHECKME: OK as long as G/LSeq specify themselves as B param
+		return v.visitSeq(cast);
+	}
 
 	@Override
 	public Set<Role> getRoles()
