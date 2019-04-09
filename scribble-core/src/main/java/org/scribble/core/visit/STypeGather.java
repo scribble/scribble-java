@@ -14,7 +14,7 @@ import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
-public abstract class STypeCollector<K extends ProtocolKind, B extends Seq<K, B>,
+public abstract class STypeGather<K extends ProtocolKind, B extends Seq<K, B>,
 		N extends ProtocolName<K>, T>
 {
 	public Stream<T> visit(SType<K, B> n)

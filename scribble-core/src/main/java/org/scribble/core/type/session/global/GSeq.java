@@ -27,7 +27,7 @@ import org.scribble.core.type.session.Seq;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.Projector2;
+import org.scribble.core.visit.global.Projector;
 import org.scribble.util.ScribException;
 
 public class GSeq extends Seq<Global, GSeq> implements GType
@@ -63,7 +63,7 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 	}
 
 	@Override
-	public LSeq project(Projector2 v)
+	public LSeq project(Projector v)
 	{
 		return projectAux(this.elems.stream()
 				.map(x -> ((GType) x).project(v)));  

@@ -14,6 +14,7 @@
 package org.scribble.core.lang.local;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,15 +29,19 @@ import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
+import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.MemberName;
+import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
+import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.local.LRecursion;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
+import org.scribble.core.visit.local.LTypeInliner;
 import org.scribble.core.visit.local.ReachabilityEnv;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
@@ -65,12 +70,33 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
-	public LProtocol getInlined(STypeInliner v)//, Deque<SubprotoSig> stack)
+	public LProtocol getInlined(STypeInliner<Local, LSeq> v)
 	{
-		SubprotoSig sig = v.peek();
+		// TODO: factor out with GProtocol
+		List<Arg<? extends NonRoleParamKind>> params = new LinkedList<>();
+		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
+		for (MemberName<? extends NonRoleParamKind> n : this.params)
+		{
+			if (n instanceof DataType)
+			{
+				params.add((DataType) n);
+			}
+			else if (n instanceof MessageSigName)
+			{
+				params.add((MessageSigName) n);
+			}
+			else
+			{
+				throw new RuntimeException("TODO: " + n);
+			}
+		}
+		SubprotoSig sig = new SubprotoSig(this.fullname, this.roles, params);
+		v.pushSig(sig);
+
 		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
 				sig.args);
-		LSeq body = this.def.substitute(subs).getInlined(v).pruneRecs();
+		LTypeInliner linl = new LTypeInliner(v.job);
+		LSeq body = this.def.substitute(subs).visitWith(linl).pruneRecs();
 		RecVar rv = v.getInlinedRecVar(sig);
 		LRecursion rec = new LRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();  // CHECKME: or null source?
@@ -80,9 +106,9 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 	}
 	
 	@Override
-	public LProtocol unfoldAllOnce(STypeUnfolder<Local> u)
+	public LProtocol unfoldAllOnce(STypeUnfolder<Local, LSeq> v)
 	{
-		LSeq unf = (LSeq) this.def.unfoldAllOnce(u);
+		LSeq unf = (LSeq) this.def.visitWith(v);
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.self, this.params, unf);
 	}

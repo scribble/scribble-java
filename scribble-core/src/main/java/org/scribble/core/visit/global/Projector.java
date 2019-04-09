@@ -19,12 +19,12 @@ import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.Role;
 
-public class Projector2
+public class Projector
 {
 	public final Job job;
 	public final Role self;
 
-	public Projector2(Job job, Role self)
+	public Projector(Job job, Role self)
 	{
 		this.job = job;
 		this.self = self;

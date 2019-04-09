@@ -5,9 +5,9 @@ import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.global.GType;
-import org.scribble.core.visit.Unf;
+import org.scribble.core.visit.STypeUnfolder;
 
-public class GUnf extends Unf<Global, GSeq>
+public class GTypeUnfolder extends STypeUnfolder<Global, GSeq>
 {
 	@Override
 	public GType visitContinue(Continue<Global, GSeq> n)

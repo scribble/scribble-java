@@ -13,15 +13,12 @@
  */
 package org.scribble.core.type.session;
 
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.visit.STypeVisitor;
@@ -49,7 +46,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 			Role dst);
 	
 	@Override
-	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
 	{
 		return f.apply(this);
 	}
@@ -58,19 +55,6 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitDirectedInteraction(this);
-	}
-
-	@Override
-	public Set<Role> getRoles()
-	{
-		// Includes self
-		return Stream.of(this.src, this.dst).collect(Collectors.toSet());
-	}
-
-	@Override
-	public Set<MessageId<?>> getMessageIds()
-	{
-		return Stream.of(this.msg.getId()).collect(Collectors.toSet());
 	}
 	
 	@Override
@@ -122,4 +106,29 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 				&& this.msg.equals(them.msg) && this.src.equals(them.src) 
 				&& this.dst.equals(them.dst);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/*@Override
+	public Set<Role> getRoles()
+	{
+		// Includes self
+		return Stream.of(this.src, this.dst).collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		return Stream.of(this.msg.getId()).collect(Collectors.toSet());
+	}*/
 }

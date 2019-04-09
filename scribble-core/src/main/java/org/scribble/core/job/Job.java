@@ -14,14 +14,12 @@
 package org.scribble.core.job;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
@@ -33,21 +31,17 @@ import org.scribble.core.model.global.SGraphBuilderUtil;
 import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.visit.RoleCollector;
-import org.scribble.core.visit.STypeInliner;
-import org.scribble.core.visit.STypeUnfolder;
-import org.scribble.core.visit.global.Projector2;
+import org.scribble.core.visit.global.GTypeInliner;
+import org.scribble.core.visit.global.GTypeUnfolder;
+import org.scribble.core.visit.global.Projector;
 import org.scribble.util.ScribException;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
@@ -141,28 +135,12 @@ public class Job
 				
 		for (GProtocol g : this.context.getIntermediates())
 		{
-			List<Arg<? extends NonRoleParamKind>> params = new LinkedList<>();
-			// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
-			for (MemberName<? extends NonRoleParamKind> n : g.params)
-			{
-				if (n instanceof DataType)
-				{
-					params.add((DataType) n);
-				}
-				else if (n instanceof MessageSigName)
-				{
-					params.add((MessageSigName) n);
-				}
-				else
-				{
-					throw new RuntimeException("TODO: " + n);
-				}
-			}
-			SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, params);
+			/*SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, params);
 			//Deque<SubprotoSig> stack = new LinkedList<>();
 			STypeInliner i = new STypeInliner(this);
-			i.pushSig(sig);  // TODO: factor into constructor
-			GProtocol inlined = g.getInlined(i);  // Protocol.getInlined does pruneRecs
+			i.pushSig(sig);  // TODO: factor into constructor*/
+			GTypeInliner v = new GTypeInliner(this);
+			GProtocol inlined = g.getInlined(v);  // Protocol.getInlined does pruneRecs
 			verbosePrintln("\nSubprotocols inlined:\n" + inlined);
 			this.context.addInlined(g.fullname, inlined);
 		}
@@ -170,9 +148,10 @@ public class Job
 		//runUnfoldingPass();
 		for (GProtocol inlined : this.context.getInlined())
 		{
-				STypeUnfolder<Global> unf1 = new STypeUnfolder<>();
-				//GTypeUnfolder unf2 = new GTypeUnfolder();
-				GProtocol unf = (GProtocol) inlined.unfoldAllOnce(unf1);//.unfoldAllOnce(unf2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
+				//STypeUnfolder<Global> unf1 = new STypeUnfolder<>();
+				////GTypeUnfolder unf2 = new GTypeUnfolder();
+				GTypeUnfolder v = new GTypeUnfolder();
+				GProtocol unf = (GProtocol) inlined.unfoldAllOnce(v);//.unfoldAllOnce(unf2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 				verbosePrintln("\nAll recursions unfolded once:\n" + unf);
 		}
 		
@@ -196,7 +175,7 @@ public class Job
 			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
 			// Check unused roles
 			Set<Role> used = inlined.def
-					.collect(new RoleCollector<Global, GSeq>()::visit)
+					.gather(new RoleCollector<Global, GSeq>()::visit)
 					.collect(Collectors.toSet());
 			Set<Role> unused = this.context.getIntermediate(inlined.fullname).roles
 							// imeds have original role decls (inlined's are pruned)
@@ -211,9 +190,10 @@ public class Job
 			{
 				continue;
 			}
-			STypeUnfolder<Global> u = new STypeUnfolder<>();  
+			//STypeUnfolder<Global> u = new STypeUnfolder<>();  
+			GTypeUnfolder v = new GTypeUnfolder();
 					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
-			inlined.unfoldAllOnce(u).checkRoleEnabling();
+			inlined.unfoldAllOnce(v).checkRoleEnabling();
 			inlined.checkExtChoiceConsistency();
 		}
 		
@@ -294,7 +274,7 @@ public class Job
 		{
 			for (Role self : g.roles)
 			{
-				LProtocol proj = g.project(new Projector2(this, self));  // Does pruneRecs
+				LProtocol proj = g.project(new Projector(this, self));  // Does pruneRecs
 				this.context.addProjection(proj);
 				verbosePrintln("\nProjected onto " + self + ":\n" + proj);
 			}

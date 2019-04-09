@@ -15,7 +15,6 @@ package org.scribble.core.type.session;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,13 +22,9 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.ProtocolName;
-import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
-import org.scribble.core.visit.STypeInliner;
-import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
@@ -52,24 +47,16 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
 			//List<? extends Seq<K, B>> blocks);
 	
 	@Override
-	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
 	{
 		return Stream.concat(f.apply(this),
-				this.blocks.stream().flatMap(x -> x.collect(f)));
+				this.blocks.stream().flatMap(x -> x.gather(f)));
 	}
 
 	@Override
 	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitChoice(this);
-	}
-	
-	@Override
-	public Set<Role> getRoles()
-	{
-		Set<Role> res = Stream.of(this.subj).collect(Collectors.toSet());
-		this.blocks.forEach(x -> res.addAll(x.getRoles()));
-		return res;
 	}
 
 	@Override
@@ -86,38 +73,6 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
 		List<B> blocks = this.blocks.stream().map(x -> x.pruneRecs())
 				.collect(Collectors.toList());
 		return reconstruct(getSource(), this.subj, blocks);
-	}
-
-	@Override
-	public Set<MessageId<?>> getMessageIds()
-	{
-		return this.blocks.stream().flatMap(x -> x.getMessageIds().stream())
-				.collect(Collectors.toSet());
-	}
-	
-	@Override
-	public Set<RecVar> getRecVars()
-	{
-		return this.blocks.stream().flatMap(x -> x.getRecVars().stream())
-				.collect(Collectors.toSet());
-	}
-
-	@Override
-	public Choice<K, B> getInlined(STypeInliner v)
-	{
-		CommonTree source = getSource();  // CHECKME: or empty source?
-		List<B> blocks = this.blocks.stream().map(x -> x.getInlined(v))
-				.collect(Collectors.toList());
-		return reconstruct(source, this.subj, blocks);
-	}
-
-	@Override
-	public Choice<K, B> unfoldAllOnce(STypeUnfolder<K> u)
-	{
-		CommonTree source = getSource();  // CHECKME: or empty source?
-		List<B> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
-				.collect(Collectors.toList());
-		return reconstruct(source, this.subj, blocks);
 	}
 
 	@Override
@@ -170,4 +125,56 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
 		return super.equals(this)  // Does canEquals
 				&& this.subj.equals(them.subj) && this.blocks.equals(them.blocks);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*@Override
+	public Set<Role> getRoles()
+	{
+		Set<Role> res = Stream.of(this.subj).collect(Collectors.toSet());
+		this.blocks.forEach(x -> res.addAll(x.getRoles()));
+		return res;
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		return this.blocks.stream().flatMap(x -> x.getMessageIds().stream())
+				.collect(Collectors.toSet());
+	}
+	
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		return this.blocks.stream().flatMap(x -> x.getRecVars().stream())
+				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public Choice<K, B> getInlined(STypeInliner v)
+	{
+		CommonTree source = getSource();  // CHECKME: or empty source?
+		List<B> blocks = this.blocks.stream().map(x -> x.getInlined(v))
+				.collect(Collectors.toList());
+		return reconstruct(source, this.subj, blocks);
+	}
+
+	@Override
+	public Choice<K, B> unfoldAllOnce(STypeUnfolder<K> u)
+	{
+		CommonTree source = getSource();  // CHECKME: or empty source?
+		List<B> blocks = this.blocks.stream().map(x -> x.unfoldAllOnce(u))
+				.collect(Collectors.toList());
+		return reconstruct(source, this.subj, blocks);
+	}*/
 }

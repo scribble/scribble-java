@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -42,7 +43,7 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
 		return n;
 	}
 
-	public SType<K, B> visitDo(Do<K, B, ?> n)
+	public SType<K, B> visitDo(Do<K, B, ? extends ProtocolName<K>> n)
 	{
 		//return n.reconstruct(n.getSource(), n.proto, n.roles, n.args);
 		return n;
@@ -55,7 +56,8 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
 	}
 
 	// "Hardcoded" to B (cf. Seq, or SType return) -- this visitor pattern depends on B for Choice/Recursion/etc reconstruction
-	// This means a Visitor that needs to restructure a Seq should handle this within visitSeq (e.g., Seq "injection")
+	// This means a Visitor that needs to restructure a Seq should handle this within visitSeq
+	// E.g., Seq "injection" by inlining and unfolding
 	// For this purpose, visited children passed "directly" instead of via a reconstruction (cf. above methods)
 	public B visitSeq(B n)
 	{

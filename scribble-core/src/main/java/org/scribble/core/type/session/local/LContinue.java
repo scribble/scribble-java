@@ -24,7 +24,6 @@ import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Continue;
-import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.local.ReachabilityEnv;
 import org.scribble.util.ScribException;
 
@@ -47,14 +46,6 @@ public class LContinue extends Continue<Local, LSeq> implements LType
 	public boolean isSingleConts(Set<RecVar> rvs)
 	{
 		return rvs.contains(this.recvar);
-	}
-
-	@Override
-	public LRecursion unfoldAllOnce(STypeUnfolder<Local> u)
-	{
-		return new LRecursion(getSource(), this.recvar,  // CHECKME: Continue (not Recursion) as the source of the unfolding
-				(LSeq) u.getRec(this.recvar));  
-			
 	}
 	
 	@Override
@@ -125,4 +116,23 @@ public class LContinue extends Continue<Local, LSeq> implements LType
 	{
 		return o instanceof LContinue;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/*@Override
+	public LRecursion unfoldAllOnce(STypeUnfolder<Local> u)
+	{
+		return new LRecursion(getSource(), this.recvar,  // CHECKME: Continue (not Recursion) as the source of the unfolding
+				(LSeq) u.getRec(this.recvar));  
+	}*/
 }

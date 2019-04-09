@@ -14,20 +14,14 @@
 package org.scribble.core.type.session;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.scribble.core.lang.SNode;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.ProtocolName;
-import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
-import org.scribble.core.visit.STypeInliner;
-import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.STypeVisitor;
 
 
@@ -36,28 +30,14 @@ import org.scribble.core.visit.STypeVisitor;
 public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 		extends SNode
 {
-	<T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f);
+	<T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f);
 
-  // T = children, not always SType, e.g., Role -- CHECKME: shouldn't "visit" non STypes?
-	//SType<K, B> visit(Function<SType<K, B>, Stream<?>> f);
-	//SType<K, B> visit(STypeVisitorFunction<K, B, ProtocolName<K>, Stream<?>> f);
 	SType<K, B> visitWith(STypeVisitor<K, B> v);
-
-	Set<Role> getRoles();
-	Set<MessageId<?>> getMessageIds();
 
 	SType<K, B> substitute(Substitutions subs);
 	
-	Set<RecVar> getRecVars();  // Gets Continue RecVars (not Recursion)
 	SType<K, B> pruneRecs();  // Assumes no shadowing (e.g., use after inlining recvar disamb)
-	
-	// CHECKME: OK to (re-)use GTypeTranslator for inlining?
-	SType<K, B> getInlined(STypeInliner i);
-	
-	// Unsupported for Do
-	// CHECKME: repeat recvar names OK? including non-shadowing (e.g., choice cases)
-	SType<K, B> unfoldAllOnce(STypeUnfolder<K> u);
-	
+
 	// Resulting Lists should not contain duplicates (i.e., Choice/Seq)
 	// Result does not necessarily contain root proto (protodecl is not an SType), but may do so via dependencies
 	List<ProtocolName<K>> getProtoDependencies();
@@ -65,4 +45,30 @@ public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 	
 	// subclass equals should call this by: them.canEquals(this) 
 	boolean canEquals(Object o);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/*Set<Role> getRoles();
+	Set<MessageId<?>> getMessageIds();
+	Set<RecVar> getRecVars();  // Gets Continue RecVars (not Recursion)
+	
+	// CHECKME: OK to (re-)use GTypeTranslator for inlining?
+	SType<K, B> 
+	getInlined(STypeInliner i);
+	
+	// Unsupported for Do
+	// CHECKME: repeat recvar names OK? including non-shadowing (e.g., choice cases)
+	SType<K, B> unfoldAllOnce(STypeUnfolder<K> u);*/
 }

@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.lang.ProtocolMod;
+import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
@@ -60,7 +61,7 @@ public class LProjection extends LProtocol
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
-	public LProjection getInlined(STypeInliner v)
+	public LProjection getInlined(STypeInliner<Local, LSeq> v)
 	{
 		throw new RuntimeException("[TODO]: " + this);
 	}

@@ -28,9 +28,12 @@ import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.lang.global.GProtocol;
+import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.session.global.GSeq;
+import org.scribble.core.visit.MessageIdCollector;
 import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
 
@@ -187,7 +190,9 @@ public class SessionApiGenerator extends ApiGen
 		gpd.accept(coll);
 		for (MessageId<?> mid : coll.getNames())*/
 		GProtocol inlined = this.job.getContext().getInlined(this.gpn);
-		for (MessageId<?> mid : inlined.def.getMessageIds())
+		for (MessageId<?> mid : inlined.def
+				.gather(new MessageIdCollector<Global, GSeq>()::visit)
+				.collect(Collectors.toList()))
 		{
 			//constructOpClass(this.cb.newClass(), mid);
 			//constructOpClass(new ClassBuilder(), getEndpointApiRootPackageName(this.gpn), mid);

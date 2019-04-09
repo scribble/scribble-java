@@ -15,14 +15,10 @@ package org.scribble.core.type.session;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
-import org.scribble.core.type.name.RecVar;
-import org.scribble.core.visit.STypeInliner;
-import org.scribble.core.visit.STypeUnfolder;
 
 public abstract class BasicInteraction<K extends ProtocolKind, B extends Seq<K, B>>
 		extends STypeBase<K, B> implements SType<K, B>
@@ -31,27 +27,9 @@ public abstract class BasicInteraction<K extends ProtocolKind, B extends Seq<K, 
 	{
 		super(source);
 	}
-
-	@Override
-	public Set<RecVar> getRecVars()
-	{
-		return Collections.emptySet();
-	}
 	
 	@Override
 	public BasicInteraction<K, B> pruneRecs()
-	{
-		return this;
-	}
-
-	@Override
-	public BasicInteraction<K, B> getInlined(STypeInliner v)
-	{
-		return this;
-	}
-
-	@Override
-	public BasicInteraction<K, B> unfoldAllOnce(STypeUnfolder<K> u)
 	{
 		return this;
 	}
@@ -67,4 +45,33 @@ public abstract class BasicInteraction<K extends ProtocolKind, B extends Seq<K, 
 	{
 		return (CommonTree) super.getSource();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/*@Override
+	public Set<RecVar> getRecVars()
+	{
+		return Collections.emptySet();
+	}
+
+	@Override
+	public BasicInteraction<K, B> getInlined(STypeInliner v)
+	{
+		return this;
+	}
+
+	@Override
+	public BasicInteraction<K, B> unfoldAllOnce(STypeUnfolder<K> u)
+	{
+		return this;
+	}*/
 }

@@ -11,7 +11,7 @@ import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.Seq;
 
 public class RoleCollector<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeCollector<K, B, ProtocolName<K>, Role>
+		extends STypeGather<K, B, ProtocolName<K>, Role>
 {
 
 	@Override

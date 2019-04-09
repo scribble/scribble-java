@@ -9,7 +9,7 @@ import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.Seq;
 
 public class MessageIdCollector<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeCollector<K, B, ProtocolName<K>, MessageId<?>>
+		extends STypeGather<K, B, ProtocolName<K>, MessageId<?>>
 {
 
 	@Override

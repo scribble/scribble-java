@@ -16,18 +16,16 @@ package org.scribble.core.type.session;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
-import org.scribble.core.visit.STypeInliner;
-import org.scribble.core.visit.STypeUnfolder;
+import org.scribble.core.visit.RecVarCollector;
 import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
@@ -46,9 +44,9 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 	}
 	
 	@Override
-	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
 	{
-		return Stream.concat(f.apply(this), this.body.collect(f));
+		return Stream.concat(f.apply(this), this.body.gather(f));
 	}
 
 	@Override
@@ -61,90 +59,21 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 			CommonTree source, RecVar recvar, B body);
 	
 	@Override
-	public Set<Role> getRoles()
-	{
-		return this.body.getRoles();
-	}
-
-	@Override
-	public Set<MessageId<?>> getMessageIds()
-	{
-		return this.body.getMessageIds();
-	}
-	
-	@Override
 	public Recursion<K, B> substitute(Substitutions subs)
 	{
 		return reconstruct(getSource(), this.recvar, this.body.substitute(subs));
 	}
 
 	@Override
-	public Set<RecVar> getRecVars()
-	{
-		return this.body.getRecVars();
-	}
-
-	@Override
 	public SType<K, B> pruneRecs()
 	{
 		// Assumes no shadowing (e.g., use after SType#getInlined recvar disamb)
-		return this.body.getRecVars().contains(this.recvar)
+		Set<RecVar> rvs = this.body.gather(new RecVarCollector<K, B>()::visit)
+				.collect(Collectors.toSet());
+		return rvs.contains(this.recvar)
 				? this
 				: this.body;  // i.e., return a Seq, to be "inlined" by Seq.pruneRecs -- N.B. must handle empty Seq case
 	}
-
-	@Override
-	public Recursion<K, B> getInlined(STypeInliner v)
-	{
-		CommonTree source = getSource();  // CHECKME: or empty source?
-		RecVar rv = v.enterRec(//stack.peek(), 
-				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
-		B body = this.body.getInlined(v);//, stack);
-		Recursion<K, B> res = reconstruct(source, rv, body);
-		v.exitRec(this.recvar);
-		return res;
-	}
-
-	@Override
-	public SType<K, B> unfoldAllOnce(STypeUnfolder<K> u)
-	{
-		if (!u.hasRec(this.recvar))  // N.B. doesn't work if recvars shadowed
-		{
-			u.pushRec(this.recvar, this.body);
-			SType<K, B> unf = this.body.unfoldAllOnce(u);
-			u.popRec(this.recvar);  
-					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
-			return unf;
-		}
-		return this;
-	}
-
-	/* // CHECKME: try adding B to Seq
-	Override
-	public Recursion<K, B> getInlined(STypeInliner v)
-	{
-		CommonTree source = getSource();  // CHECKME: or empty source?
-		RecVar rv = i.enterRec(//stack.peek(), 
-				this.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
-		B body = this.body.getInlined(v);
-		Recursion<K, B> res = reconstruct(source, rv, body);
-		i.exitRec(this.recvar);
-		return res;
-	}
-
-	@Override
-	public GType unfoldAllOnce(STypeUnfolder<Global> u)
-	{
-		if (!u.hasRec(this.recvar))  // N.B. doesn't work if recvars shadowed
-		{
-			u.pushRec(this.recvar, this.body);
-			GType unf = (GType) this.body.unfoldAllOnce(u);
-			u.popRec(this.recvar);  
-					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
-			return unf;
-		}
-		return this;
-	}*/
 
 	@Override
 	public List<ProtocolName<K>> getProtoDependencies()
@@ -189,4 +118,47 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 		return super.equals(this)  // Does canEquals
 				&& this.recvar.equals(them.recvar) && this.body.equals(them.body);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*@Override
+	public Set<Role> getRoles()
+	{
+		return this.body.getRoles();
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		return this.body.getMessageIds();
+	}
+
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		return this.body.getRecVars();
+	}
+	
+
+	@Override
+	public SType<K, B> unfoldAllOnce(STypeUnfolder<K> u)
+	{
+		if (!u.hasRec(this.recvar))  // N.B. doesn't work if recvars shadowed
+		{
+			u.pushRec(this.recvar, this.body);
+			SType<K, B> unf = this.body.unfoldAllOnce(u);
+			u.popRec(this.recvar);  
+					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
+			return unf;
+		}
+		return this;
+	}*/
 }

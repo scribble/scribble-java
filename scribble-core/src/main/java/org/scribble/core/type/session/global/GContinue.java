@@ -22,8 +22,7 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.local.LContinue;
-import org.scribble.core.visit.STypeUnfolder;
-import org.scribble.core.visit.global.Projector2;
+import org.scribble.core.visit.global.Projector;
 import org.scribble.util.ScribException;
 
 public class GContinue extends Continue<Global, GSeq> implements GType
@@ -43,21 +42,13 @@ public class GContinue extends Continue<Global, GSeq> implements GType
 	}
 
 	@Override
-	public GRecursion unfoldAllOnce(STypeUnfolder<Global> u)
-	{
-		return new GRecursion(getSource(), this.recvar,
-				(GSeq) u.getRec(this.recvar));
-				// CHECKME: Continue (not Recursion) as the source of the unfolding ?
-	}
-
-	@Override
 	public LContinue projectInlined(Role self)
 	{
 		return new LContinue(null, this.recvar);
 	}
 	
 	@Override
-	public LContinue project(Projector2 v)
+	public LContinue project(Projector v)
 	{
 		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}
@@ -102,4 +93,23 @@ public class GContinue extends Continue<Global, GSeq> implements GType
 	{
 		return o instanceof GContinue;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/*@Override
+	public GRecursion unfoldAllOnce(STypeUnfolder<Global> u)
+	{
+		return new GRecursion(getSource(), this.recvar,
+				(GSeq) u.getRec(this.recvar));
+				// CHECKME: Continue (not Recursion) as the source of the unfolding ?
+	}*/
 }

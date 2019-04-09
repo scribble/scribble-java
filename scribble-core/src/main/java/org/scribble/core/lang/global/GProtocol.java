@@ -39,22 +39,24 @@ import org.scribble.core.model.global.SGraph;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
+import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
+import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
+import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.MessageIdCollector;
 import org.scribble.core.visit.RoleCollector;
-import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
-import org.scribble.core.visit.global.GUnf;
-import org.scribble.core.visit.global.Projector2;
+import org.scribble.core.visit.global.Projector;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribUtil;
 
@@ -79,19 +81,38 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
 	// i.e., it gives the roles/args at the call-site
 	@Override
-	public GProtocol getInlined(STypeInliner v)
+	public GProtocol getInlined(STypeInliner<Global, GSeq> v)
 	{
-		SubprotoSig sig = v.peek();
+		// TODO: factor out with LProtocol
+		List<Arg<? extends NonRoleParamKind>> params = new LinkedList<>();
+		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
+		for (MemberName<? extends NonRoleParamKind> n : this.params)
+		{
+			if (n instanceof DataType)
+			{
+				params.add((DataType) n);
+			}
+			else if (n instanceof MessageSigName)
+			{
+				params.add((MessageSigName) n);
+			}
+			else
+			{
+				throw new RuntimeException("TODO: " + n);
+			}
+		}
+		SubprotoSig sig = new SubprotoSig(this.fullname, this.roles, params);
+		v.pushSig(sig);
+
 		Substitutions subs = new Substitutions(this.roles, sig.roles, this.params,
 				sig.args);
-		GSeq body = this.def.substitute(subs).getInlined(v).pruneRecs();
+		GSeq body = this.def.substitute(subs).visitWith(v).pruneRecs();
 		RecVar rv = v.getInlinedRecVar(sig);
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();
 		GSeq def = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));
-		Set<Role> used = //def.getRoles();
-				def.collect(new RoleCollector<Global, GSeq>()::visit)
-						.collect(Collectors.toSet());
+		Set<Role> used = def.gather(new RoleCollector<Global, GSeq>()::visit)
+				.collect(Collectors.toSet());
 		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls
 				.collect(Collectors.toList());
 		return new GProtocol(source, this.mods, this.fullname, rs,
@@ -99,10 +120,9 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	}
 	
 	@Override
-	public GProtocol unfoldAllOnce(STypeUnfolder<Global> u)
+	public GProtocol unfoldAllOnce(STypeUnfolder<Global, GSeq> v)
 	{
-		GSeq unf = (GSeq) //this.def.unfoldAllOnce(u);
-				this.def.visitWith(new GUnf());
+		GSeq unf = (GSeq) this.def.visitWith(v);
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.params, unf);
 	}
@@ -130,10 +150,10 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	
 	private LProjection projectAux(Role self, List<Role> decls, LSeq body)
 	{
-		LProtocolName fullname = Projector2
+		LProtocolName fullname = Projector
 				.projectFullProtocolName(this.fullname, self);
 		Set<Role> tmp = //body.getRoles();
-				body.collect(new RoleCollector<Local, LSeq>()::visit)
+				body.gather(new RoleCollector<Local, LSeq>()::visit)
 						.collect(Collectors.toSet());
 		List<Role> roles = decls.stream()
 				.filter(x -> x.equals(self) || tmp.contains(x))  // Implicitly filters Role.SELF
@@ -144,7 +164,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 				body);
 	}
 
-	public LProjection project(Projector2 v)
+	public LProjection project(Projector v)
 	{
 		LSeq body = (LSeq) this.def.project(v).pruneRecs();
 		return projectAux(v.self,
@@ -221,7 +241,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		gpd.accept(coll);
 		Set<MessageId<?>> mids = coll.getNames();*/
 		Set<MessageId<?>> mids = gpd.def.//getMessageIds();
-				collect(new MessageIdCollector<Global, GSeq>()::visit)
+				gather(new MessageIdCollector<Global, GSeq>()::visit)
 				.collect(Collectors.toSet());
 		
 		//..........FIXME: get mids from SType, instead of old AST Collector

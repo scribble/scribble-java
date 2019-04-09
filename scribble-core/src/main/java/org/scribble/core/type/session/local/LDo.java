@@ -17,18 +17,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.lang.SubprotoSig;
-import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.local.ReachabilityEnv;
 import org.scribble.util.ScribException;
 
@@ -66,27 +62,6 @@ public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 		throw new RuntimeException("Unsupported for LDo: " + this);
 	}
 
-	// CHECKME: factor up to base?
-	@Override
-	public LType getInlined(STypeInliner v)
-	{
-		LProtocolName fullname = this.proto;
-		SubprotoSig sig = new SubprotoSig(fullname, this.roles, this.args);
-		RecVar rv = v.getInlinedRecVar(sig);
-		if (v.hasSig(sig))
-		{
-			return new LContinue(getSource(), rv);
-		}
-		v.pushSig(sig);
-		LProtocol p = v.job.getContext().getProjection(fullname);  // This line differs from GDo version
-		Substitutions subs = 
-				new Substitutions(p.roles, this.roles, p.params, this.args);
-		LSeq inlined = p.def.substitute(subs).getInlined(v);//, stack);  
-				// i.e. returning a Seq -- rely on parent Seq to inline
-		v.popSig();
-		return new LRecursion(null, rv, inlined);
-	}
-
 	@Override
 	public int hashCode()
 	{
@@ -114,5 +89,37 @@ public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 	{
 		return o instanceof LDo;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/*// CHECKME: factor up to base?
+	@Override
+	public LType getInlined(STypeInliner v)
+	{
+		LProtocolName fullname = this.proto;
+		SubprotoSig sig = new SubprotoSig(fullname, this.roles, this.args);
+		RecVar rv = v.getInlinedRecVar(sig);
+		if (v.hasSig(sig))
+		{
+			return new LContinue(getSource(), rv);
+		}
+		v.pushSig(sig);
+		LProtocol p = v.job.getContext().getProjection(fullname);  // This line differs from GDo version
+		Substitutions subs = 
+				new Substitutions(p.roles, this.roles, p.params, this.args);
+		LSeq inlined = p.def.substitute(subs).getInlined(v);//, stack);  
+				// i.e. returning a Seq -- rely on parent Seq to inline
+		v.popSig();
+		return new LRecursion(null, rv, inlined);
+	}*/
 }
+
 

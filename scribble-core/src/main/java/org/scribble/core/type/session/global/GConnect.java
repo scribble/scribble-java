@@ -28,7 +28,7 @@ import org.scribble.core.type.session.local.LAcc;
 import org.scribble.core.type.session.local.LReq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.Projector2;
+import org.scribble.core.visit.global.Projector;
 import org.scribble.util.ScribException;
 
 public class GConnect extends ConnectAction<Global, GSeq>
@@ -71,7 +71,7 @@ public class GConnect extends ConnectAction<Global, GSeq>
 	}
 
 	@Override
-	public LType project(Projector2 v)
+	public LType project(Projector v)
 	{
 		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}

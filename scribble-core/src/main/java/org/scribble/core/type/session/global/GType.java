@@ -21,13 +21,13 @@ import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.Projector2;
+import org.scribble.core.visit.global.Projector;
 import org.scribble.util.ScribException;
 
 public interface GType extends SType<Global, GSeq>, GNode
 {
 	LType projectInlined(Role self);  // Use on inlined (i.e., Do inlined, roles pruned)
-	LType project(Projector2 v);  // Use on parsed (intermed)
+	LType project(Projector v);  // Use on parsed (intermed)
 	
 	// Pre: use on inlined or later (unsupported for Do, also Protocol)
 	// enabled treated immutably

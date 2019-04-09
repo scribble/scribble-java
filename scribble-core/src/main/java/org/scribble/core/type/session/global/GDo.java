@@ -21,13 +21,11 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.job.JobContext;
-import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
-import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.Arg;
@@ -35,8 +33,7 @@ import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.local.LDo;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.STypeInliner;
-import org.scribble.core.visit.global.Projector2;
+import org.scribble.core.visit.global.Projector;
 import org.scribble.util.ScribException;
 
 public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
@@ -55,27 +52,6 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 		return new GDo(source, proto, roles, args);
 	}
 
-	// CHECKME: factor up to base?
-	@Override
-	public GType getInlined(STypeInliner v)
-	{
-		GProtocolName fullname = this.proto;
-		SubprotoSig sig = new SubprotoSig(fullname, this.roles, this.args);
-		RecVar rv = v.getInlinedRecVar(sig);
-		if (v.hasSig(sig))
-		{
-			return new GContinue(getSource(), rv);
-		}
-		v.pushSig(sig);
-		GProtocol g = v.job.getContext().getIntermediate(fullname);
-		Substitutions subs = 
-				new Substitutions(g.roles, this.roles, g.params, this.args);
-		GSeq inlined = g.def.substitute(subs).getInlined(v);//, stack);  
-				// i.e. returning a GSeq -- rely on parent GSeq to inline
-		v.popSig();
-		return new GRecursion(null, rv, inlined);
-	}
-
 	@Override
 	public LType projectInlined(Role self)
 	{
@@ -83,7 +59,7 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 	}
 
 	@Override
-	public LType project(Projector2 v)
+	public LType project(Projector v)
 	{
 		if (!this.roles.contains(v.self))
 		{
@@ -101,7 +77,7 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 			return LSkip.SKIP;
 		}
 
-		LProtocolName fullname = Projector2.projectFullProtocolName(this.proto,
+		LProtocolName fullname = Projector.projectFullProtocolName(this.proto,
 				targSelf);
 		Substitutions subs = new Substitutions(imed.roles, this.roles,
 				Collections.emptyList(), Collections.emptyList());
@@ -154,5 +130,37 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 	{
 		return o instanceof GDo;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/*// CHECKME: factor up to base?
+	@Override
+	public GType getInlined(STypeInliner v)
+	{
+		GProtocolName fullname = this.proto;
+		SubprotoSig sig = new SubprotoSig(fullname, this.roles, this.args);
+		RecVar rv = v.getInlinedRecVar(sig);
+		if (v.hasSig(sig))
+		{
+			return new GContinue(getSource(), rv);
+		}
+		v.pushSig(sig);
+		GProtocol g = v.job.getContext().getIntermediate(fullname);
+		Substitutions subs = 
+				new Substitutions(g.roles, this.roles, g.params, this.args);
+		GSeq inlined = g.def.substitute(subs).getInlined(v);
+				// i.e. returning a GSeq -- rely on parent GSeq to inline
+		v.popSig();
+		return new GRecursion(null, rv, inlined);
+	}*/
 }
 

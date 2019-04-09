@@ -68,20 +68,10 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 		return this.mods.contains(ProtocolMod.EXPLICIT);
 	}
 
-	/*@Override
-	public List<ProtocolName<K>> getProtoDependencies()
-	{
-		return this.def.getProtoDependencies();
-	}
-
-	@Override
-	public List<MemberName<?>> getNonProtoDependencies()
-	{
-		return this.def.getNonProtoDependencies();
-	}*/
-	
-	public abstract Protocol<K, N, B> getInlined(STypeInliner v);
-	public abstract Protocol<K, N, B> unfoldAllOnce(STypeUnfolder<K> u);
+	//public abstract Protocol<K, N, B> getInlined(STypeInliner v);
+	//public abstract Protocol<K, N, B> unfoldAllOnce(STypeUnfolder<K> u);
+	public abstract Protocol<K, N, B> getInlined(STypeInliner<K, B> v);
+	public abstract Protocol<K, N, B> unfoldAllOnce(STypeUnfolder<K, B> v);
 
 	public boolean hasSource()  // i.e., was parsed
 	{

@@ -14,10 +14,8 @@
 package org.scribble.core.type.session;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,13 +25,10 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ProtocolName;
-import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
-import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Do
@@ -58,7 +53,7 @@ public abstract class Do
 			N proto, List<Role> roles, List<Arg<? extends NonRoleParamKind>> args);
 	
 	@Override
-	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
 	{
 		return f.apply(this);
 	}
@@ -67,32 +62,6 @@ public abstract class Do
 	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitDo(this);
-	}
-
-	@Override
-	public Set<Role> getRoles()
-	{
-		return this.roles.stream().collect(Collectors.toSet());
-	}
-
-	@Override
-	public Set<MessageId<?>> getMessageIds()
-	{
-		Set<MessageId<?>> mids = new HashSet<>();
-		for (Arg<? extends NonRoleParamKind> a : this.args)
-		{
-			if (a instanceof Message)
-			{
-				mids.add(((Message) a).getId());
-			}
-		}
-		return mids;
-	}
-
-	@Override
-	public Set<RecVar> getRecVars()
-	{
-		return Collections.emptySet();
 	}
 
 	@Override
@@ -138,12 +107,6 @@ public abstract class Do
 	{
 		return this;
 	}
-
-	@Override
-	public SType<K, B> unfoldAllOnce(STypeUnfolder<K> u)
-	{
-		throw new RuntimeException("Unsupported for Do: " + this);
-	}
 	
 	@Override
 	public String toString()
@@ -185,4 +148,50 @@ public abstract class Do
 				&& this.proto.equals(them.proto) && this.roles.equals(them.roles) 
 				&& this.args.equals(them.args);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/*@Override
+	public Set<Role> getRoles()
+	{
+		return this.roles.stream().collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		Set<MessageId<?>> mids = new HashSet<>();
+		for (Arg<? extends NonRoleParamKind> a : this.args)
+		{
+			if (a instanceof Message)
+			{
+				mids.add(((Message) a).getId());
+			}
+		}
+		return mids;
+	}
+
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		return Collections.emptySet();
+	}
+	
+	@Override
+	public SType<K, B> unfoldAllOnce(STypeUnfolder<K> u)
+	{
+		throw new RuntimeException("Unsupported for Do: " + this);
+	}
+	*/
 }

@@ -15,20 +15,15 @@ package org.scribble.core.type.session;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
-import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeVisitor;
 
 public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
@@ -48,7 +43,7 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 			CommonTree source, RecVar recvar);
 	
 	@Override
-	public <T> Stream<T> collect(Function<SType<K, B>, Stream<T>> f)
+	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
 	{
 		return f.apply(this);
 	}
@@ -57,24 +52,6 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 	public SType<K, B> visitWith(STypeVisitor<K, B> v)
 	{
 		return v.visitContinue(this);
-	}
-	
-	@Override
-	public Set<Role> getRoles()
-	{
-		return Collections.emptySet();
-	}
-
-	@Override
-	public Set<MessageId<?>> getMessageIds()
-	{
-		return Collections.emptySet();
-	}
-	
-	@Override
-	public Set<RecVar> getRecVars()
-	{
-		return Stream.of(this.recvar).collect(Collectors.toSet());
 	}
 
 	@Override
@@ -101,13 +78,6 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 	{
 		//return reconstruct(getSource(), this.recvar);
 		return this;
-	}
-
-	@Override
-	public Continue<K, B> getInlined(STypeInliner v)
-	{
-		RecVar rv = v.getInlinedRecVar(this.recvar);
-		return reconstruct(getSource(), rv);
 	}
 
 	@Override
@@ -140,4 +110,38 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 		return super.equals(this)  // Does canEquals
 				&& this.recvar.equals(them.recvar);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*@Override
+	public Set<Role> getRoles()
+	{
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		return Collections.emptySet();
+	}
+	
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		return Stream.of(this.recvar).collect(Collectors.toSet());
+	}
+
+	@Override
+	public Continue<K, B> getInlined(STypeInliner v)
+	{
+		RecVar rv = v.getInlinedRecVar(this.recvar);
+		return reconstruct(getSource(), rv);
+	}*/
 }

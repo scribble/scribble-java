@@ -1,29 +1,24 @@
-/**
- * Copyright 2008 The Scribble Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- */
 package org.scribble.core.visit;
 
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.job.Job;
 import org.scribble.core.lang.SubprotoSig;
+import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.RecVar;
+import org.scribble.core.type.session.Continue;
+import org.scribble.core.type.session.Recursion;
+import org.scribble.core.type.session.SType;
+import org.scribble.core.type.session.Seq;
 
-public class STypeInliner
+public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
+		extends STypeVisitor<K, B>
 {
 	public final Job job;
 	
@@ -34,9 +29,72 @@ public class STypeInliner
 	private Map<RecVar, Deque<RecVar>> recvars = new HashMap<>();
 	private Map<RecVar, Integer> counter = new HashMap<>();
 
+	private final Map<RecVar, Seq<K, ?>> recs = new HashMap<>(); 
+
 	public STypeInliner(Job job)
 	{
 		this.job = job;
+	}
+
+	@Override
+	public SType<K, B> visitContinue(Continue<K, B> n)
+	{
+		RecVar rv = getInlinedRecVar(n.recvar);
+		return n.reconstruct(n.getSource(), rv);
+	}
+
+	@Override
+	public SType<K, B> visitRecursion(Recursion<K, B> n)
+	{
+		CommonTree source = n.getSource();  // CHECKME: or empty source?
+		RecVar rv = enterRec(n.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
+		B body = n.body.visitWith(this);//, stack);
+		Recursion<K, B> res = n.reconstruct(source, rv, body);
+		exitRec(n.recvar);
+		return res;
+	}
+
+	@Override
+	public B visitSeq(B n)
+	{
+		List<SType<K, B>> elems = new LinkedList<>();
+		for (SType<K, B> e : n.elems)
+		{
+			SType<K, B> e1 = e.visitWith(this);
+			if (e1 instanceof Seq<?, ?>)
+			{
+				elems.addAll(((Seq<K, B>) e1).elems);
+			}
+			else
+			{
+				elems.add(e1);
+			}
+		}
+		return n.reconstruct(n.getSource(), elems);
+	}
+
+	public void pushRec(RecVar rv, Seq<K, ?> body)
+	{
+		if (this.recs.containsKey(rv))
+		{
+			throw new RuntimeException("Shouldn't get here: " + rv);
+		}
+		this.recs.put(rv, body);
+	}
+
+	public boolean hasRec(RecVar rv)
+	{
+		return this.recs.containsKey(rv);
+	}
+	
+	public Seq<K, ?> getRec(RecVar rv)
+	{
+		return this.recs.get(rv);
+	}
+	
+	public void popRec(RecVar rv)
+	{
+		this.recs.remove(rv);
 	}
 
 	public void pushSig(SubprotoSig sig)

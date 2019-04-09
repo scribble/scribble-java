@@ -21,15 +21,11 @@ import java.util.stream.Stream;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.STypeBase;
-import org.scribble.core.visit.STypeInliner;
-import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.STypeVisitor;
 import org.scribble.core.visit.local.ReachabilityEnv;
 import org.scribble.util.ScribException;
@@ -45,31 +41,13 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	}
 
 	@Override
-	public <T> Stream<T> collect(Function<SType<Local, LSeq>, Stream<T>> f)
+	public <T> Stream<T> gather(Function<SType<Local, LSeq>, Stream<T>> f)
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}
 
 	@Override
 	public LSkip visitWith(STypeVisitor<Local, LSeq> v)
-	{
-		throw new RuntimeException("Unsupported for Skip: " + this);
-	}
-	
-	@Override
-	public Set<Role> getRoles()
-	{
-		throw new RuntimeException("Unsupported for Skip: " + this);
-	}
-
-	@Override
-	public Set<MessageId<?>> getMessageIds()
-	{
-		throw new RuntimeException("Unsupported for Skip: " + this);
-	}
-
-	@Override
-	public Set<RecVar> getRecVars()
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}
@@ -102,18 +80,6 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	public LSkip substitute(Substitutions subs)
 	{
 		return this;
-	}
-
-	@Override
-	public LSkip getInlined(STypeInliner i)
-	{
-		return this;
-	}
-
-	@Override
-	public LType unfoldAllOnce(STypeUnfolder<Local> u)
-	{
-		throw new RuntimeException("Unsupported for Skip: " + this);
 	}
 
 	@Override
@@ -162,5 +128,48 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	{
 		return o instanceof LSkip;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*@Override
+	public Set<Role> getRoles()
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+
+	@Override
+	public Set<MessageId<?>> getMessageIds()
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+
+	@Override
+	public Set<RecVar> getRecVars()
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+	
+	@Override
+	public LSkip getInlined(STypeInliner i)
+	{
+		return this;
+	}
+
+	@Override
+	public LType unfoldAllOnce(STypeUnfolder<Local> u)
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+	*/
 }
+
 
