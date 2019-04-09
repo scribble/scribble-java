@@ -51,9 +51,9 @@ import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.visit.MessageIdCollector;
+import org.scribble.core.visit.MessageIdGatherer;
 import org.scribble.core.visit.RecPruner;
-import org.scribble.core.visit.RoleCollector;
+import org.scribble.core.visit.RoleGatherer;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
@@ -113,7 +113,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();
 		GSeq def = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));
-		Set<Role> used = def.gather(new RoleCollector<Global, GSeq>()::visit)
+		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)
 				.collect(Collectors.toSet());
 		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls
 				.collect(Collectors.toList());
@@ -155,7 +155,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		LProtocolName fullname = Projector
 				.projectFullProtocolName(this.fullname, self);
 		Set<Role> tmp = //body.getRoles();
-				body.gather(new RoleCollector<Local, LSeq>()::visit)
+				body.gather(new RoleGatherer<Local, LSeq>()::visit)
 						.collect(Collectors.toSet());
 		List<Role> roles = decls.stream()
 				.filter(x -> x.equals(self) || tmp.contains(x))  // Implicitly filters Role.SELF
@@ -243,7 +243,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		gpd.accept(coll);
 		Set<MessageId<?>> mids = coll.getNames();*/
 		Set<MessageId<?>> mids = gpd.def.//getMessageIds();
-				gather(new MessageIdCollector<Global, GSeq>()::visit)
+				gather(new MessageIdGatherer<Global, GSeq>()::visit)
 				.collect(Collectors.toSet());
 		
 		//..........FIXME: get mids from SType, instead of old AST Collector

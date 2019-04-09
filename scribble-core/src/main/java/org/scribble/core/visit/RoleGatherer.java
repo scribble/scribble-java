@@ -9,7 +9,7 @@ import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.Seq;
 
-public class RoleCollector<K extends ProtocolKind, B extends Seq<K, B>>
+public class RoleGatherer<K extends ProtocolKind, B extends Seq<K, B>>
 		extends STypeGather<K, B, Role>
 {
 

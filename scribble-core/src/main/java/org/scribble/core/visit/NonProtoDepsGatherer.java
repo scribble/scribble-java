@@ -23,7 +23,7 @@ import org.scribble.core.type.session.Seq;
 // Result should not contain duplicates (i.e., due to Choice/Seq)
 // Result does not necessarily contain root proto (protodecl is not an SType), but may do so via dependencies
 // N.B. delegation payloads currently gathered here, not by getProtoDependencies -- CHECKME: refactor?
-public class NonProtoDepsCollector<K extends ProtocolKind, B extends Seq<K, B>>
+public class NonProtoDepsGatherer<K extends ProtocolKind, B extends Seq<K, B>>
 		extends STypeGather<K, B, MemberName<?>>
 {
 	@Override

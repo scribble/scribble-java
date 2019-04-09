@@ -19,7 +19,7 @@ public class RecPruner<K extends ProtocolKind, B extends Seq<K, B>>
 	public SType<K, B> visitRecursion(Recursion<K, B> n)
 	{
 		// Assumes no shadowing (e.g., use after SType#getInlined recvar disamb)
-		Set<RecVar> rvs = n.body.gather(new RecVarCollector<K, B>()::visit)
+		Set<RecVar> rvs = n.body.gather(new RecVarGatherer<K, B>()::visit)
 				.collect(Collectors.toSet());
 		return rvs.contains(n.recvar)
 				? n

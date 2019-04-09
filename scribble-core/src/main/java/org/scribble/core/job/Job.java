@@ -39,9 +39,9 @@ import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.visit.NonProtoDepsCollector;
+import org.scribble.core.visit.NonProtoDepsGatherer;
 import org.scribble.core.visit.ProtoDepsCollector;
-import org.scribble.core.visit.RoleCollector;
+import org.scribble.core.visit.RoleGatherer;
 import org.scribble.core.visit.global.GTypeInliner;
 import org.scribble.core.visit.global.GTypeUnfolder;
 import org.scribble.core.visit.global.Projector;
@@ -179,7 +179,7 @@ public class Job
 			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
 			// Check unused roles
 			Set<Role> used = inlined.def
-					.gather(new RoleCollector<Global, GSeq>()::visit)
+					.gather(new RoleGatherer<Global, GSeq>()::visit)
 					.collect(Collectors.toSet());
 			Set<Role> unused = this.context.getIntermediate(inlined.fullname).roles
 							// imeds have original role decls (inlined's are pruned)
@@ -308,7 +308,7 @@ public class Job
 		}
 
 		List<MemberName<?>> ns = proj.def
-				.gather(new NonProtoDepsCollector<Local, LSeq>()::visit)
+				.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)
 				.collect(Collectors.toList());
 
 		warningPrintln("");
