@@ -53,6 +53,7 @@ import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.MessageIdGatherer;
 import org.scribble.core.visit.RecPruner;
+import org.scribble.core.visit.RoleEnablingChecker;
 import org.scribble.core.visit.RoleGatherer;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
@@ -132,8 +133,10 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	// Following are some top-level entry to GType methods
 	public Set<Role> checkRoleEnabling() throws ScribException
 	{
-		Set<Role> tmp = this.roles.stream().collect(Collectors.toSet());
-		return this.def.checkRoleEnabling(tmp);
+		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
+		RoleEnablingChecker v = new RoleEnablingChecker(rs);
+		this.def.visitWith(v);
+		return v.getEnabled();
 	}
 
 	public Map<Role, Role> checkExtChoiceConsistency() throws ScribException

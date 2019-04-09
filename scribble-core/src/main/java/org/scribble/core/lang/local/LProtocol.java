@@ -97,8 +97,8 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 		Substitutor<Local, LSeq> subs = new Substitutor<>(this.roles, sig.roles,
 				this.params, sig.args);
 		LTypeInliner linl = new LTypeInliner(v.job);
-		LSeq body = this.def.visitWith(subs).visitWith(linl)
-				.visitWith(new RecPruner<>());
+		LSeq body = this.def.visitWithNoEx(subs).visitWithNoEx(linl)
+				.visitWithNoEx(new RecPruner<>());
 		RecVar rv = v.getInlinedRecVar(sig);
 		LRecursion rec = new LRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();  // CHECKME: or null source?
@@ -110,7 +110,7 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 	@Override
 	public LProtocol unfoldAllOnce(STypeUnfolder<Local, LSeq> v)
 	{
-		LSeq unf = (LSeq) this.def.visitWith(v);
+		LSeq unf = (LSeq) this.def.visitWithNoEx(v);
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.self, this.params, unf);
 	}
