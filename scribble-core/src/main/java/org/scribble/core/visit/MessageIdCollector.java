@@ -4,12 +4,11 @@ import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.MessageId;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.Seq;
 
 public class MessageIdCollector<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeGather<K, B, ProtocolName<K>, MessageId<?>>
+		extends STypeGather<K, B, MessageId<?>>
 {
 
 	@Override

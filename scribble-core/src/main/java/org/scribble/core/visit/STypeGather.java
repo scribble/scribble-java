@@ -14,8 +14,7 @@ import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
-public abstract class STypeGather<K extends ProtocolKind, B extends Seq<K, B>,
-		N extends ProtocolName<K>, T>
+public abstract class STypeGather<K extends ProtocolKind, B extends Seq<K, B>, T>
 {
 	public Stream<T> visit(SType<K, B> n)
 	{
@@ -38,20 +37,8 @@ public abstract class STypeGather<K extends ProtocolKind, B extends Seq<K, B>,
 			: (n instanceof Recursion<?, ?>) 
 					? Optional.of(visitRecursion((Recursion<K, B>) n))
 			: (n instanceof Do<?, ?, ?>)     
-					? Optional.of(visitDo((Do<K, B, N>) n))  // FIXME:
-			: Optional.empty();  // Better for extensibility than "manually" throwing Exception
-		
-		/*if (n instanceof DirectedInteraction<?, ?>) 
-			return directedinter((DirectedInteraction<K, B>) n);
-		else if (n instanceof DisconnectAction<?, ?>) 
-			return disconnect((DisconnectAction<K, B>) n);
-		else if (n instanceof Choice<?, ?>) return choice((Choice<K, B>) n);
-		else if (n instanceof Seq<?, ?>) return seq((Seq<K, B>) n);
-		else if (n instanceof Continue<?, ?>) return continu((Continue<K, B>) n);
-		else if (n instanceof Recursion<?, ?>) 
-			return recursion((Recursion<K, B>) n);
-		else if (n instanceof Do<?, ?, ?>) return doo((Do<K, B, N>) n);
-		else throw new RuntimeException("Unknown node type: " + n.getClass());*/ 
+					? Optional.of(visitDo((Do<K, B, ?>) n))  // FIXME:
+			: Optional.empty();  // Better for extensibility than "manually" throwing Exception (e.g., for overriding)
 	}
 
 	public Stream<T> visitContinue(Continue<K, B> n) { return Stream.of(); }
@@ -62,7 +49,7 @@ public abstract class STypeGather<K extends ProtocolKind, B extends Seq<K, B>,
 
 	public Stream<T> visitDisconnect(DisconnectAction<K, B> n) { return Stream.of(); }
 
-	public Stream<T> visitDo(Do<K, B, N> n) { return Stream.of(); }
+	public Stream<T> visitDo(Do<K, B, ? extends ProtocolName<K>> n) { return Stream.of(); }
 
 	public Stream<T> visitRecursion(Recursion<K, B> n) { return Stream.of(); }
 

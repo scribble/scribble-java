@@ -3,7 +3,6 @@ package org.scribble.core.visit;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -11,7 +10,7 @@ import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.Seq;
 
 public class RoleCollector<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeGather<K, B, ProtocolName<K>, Role>
+		extends STypeGather<K, B, Role>
 {
 
 	@Override
