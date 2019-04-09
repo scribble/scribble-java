@@ -6,24 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 // Not supported for Do
 public abstract class STypeUnfolder<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeVisitor<K, B>
+		extends InlinedVisitor<K, B>
 {
 	private final Map<RecVar, Seq<K, ?>> recs = new HashMap<>(); 
-
-	@Override
-	public <N extends ProtocolName<K>> SType<K, B> visitDo(Do<K, B, N> n)
-	{
-		throw new RuntimeException("Unsupported for Do: " + n);
-	}
 
 	@Override
 	public SType<K, B> visitRecursion(Recursion<K, B> n)
