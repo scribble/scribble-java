@@ -11,7 +11,7 @@ import org.scribble.core.type.session.Seq;
 // Result should not contain duplicates (i.e., due to Choice/Seq)
 // Result does not necessarily contain root proto (protodecl is not an SType), but may do so via dependencies
 public class ProtoDepsCollector<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeGather<K, B, ProtocolName<K>>
+		extends STypeGatherer<K, B, ProtocolName<K>>
 {
 
 	@Override

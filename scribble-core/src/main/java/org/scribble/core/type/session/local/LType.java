@@ -27,7 +27,7 @@ public interface LType extends SType<Local, LSeq>, LNode
 {
 	//Role getSelf();  // CHECKME: useful?
 	
-	// Return true iff LType is "equivalent" to a single "continue X", where X in rvs
+	// Return true iff this LType is "equivalent" to a single "continue X", where X is in rvs
 	boolean isSingleConts(Set<RecVar> rvs);
 	
 	// Uses b to builds graph "progressively" (working graph is mutable)
@@ -38,6 +38,27 @@ public interface LType extends SType<Local, LSeq>, LNode
 	// cf. GType "visitor" methods: same pattern, just env as a bespoke data type wrapper
 	ReachabilityEnv checkReachability(ReachabilityEnv env)
 			throws ScribException;
+	
+	//HERE refactor out remainining operations as visitors
+	//make a visitor factory
+	//for isSingleConts (and project, buildGraph), make T visitWith(STypeReducer<K, B> v) ? -- roleenabling and extchoicecons are more like reducers?
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/*@Override
 	LType substitute(Substitutions subs);*/  // Otherwise causes return type inconsistency with base abstract classes
@@ -49,4 +70,3 @@ public interface LType extends SType<Local, LSeq>, LNode
 	@Override
 	SType<Local, LSeq> unfoldAllOnce(STypeUnfolder<Local> u);
 	*/
-}

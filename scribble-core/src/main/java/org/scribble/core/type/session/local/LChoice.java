@@ -78,10 +78,9 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 				}	
 				else
 				{
-					//.. HERE reuse existing b for nested (set entry/exit), and fix module imports and FQ names 
-
 					/*first.buildGraph(b1);
 					nested = b1.finalise();*/
+					// Reuse existing b, to directly add continue-edges back to the "outer" graph
 					EState nestedExit = b.newState(Collections.emptySet());
 					b.setExit(nestedExit);
 					first.buildGraph(b);

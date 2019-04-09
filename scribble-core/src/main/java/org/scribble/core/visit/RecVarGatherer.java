@@ -8,7 +8,7 @@ import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.Seq;
 
 public class RecVarGatherer<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeGather<K, B, RecVar>
+		extends STypeGatherer<K, B, RecVar>
 {
 	@Override
 	public Stream<RecVar> visitContinue(Continue<K, B> n)

@@ -24,7 +24,7 @@ import org.scribble.core.type.session.Seq;
 // Result does not necessarily contain root proto (protodecl is not an SType), but may do so via dependencies
 // N.B. delegation payloads currently gathered here, not by getProtoDependencies -- CHECKME: refactor?
 public class NonProtoDepsGatherer<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeGather<K, B, MemberName<?>>
+		extends STypeGatherer<K, B, MemberName<?>>
 {
 	@Override
 	public Stream<MemberName<?>> visitChoice(Choice<K, B> n)

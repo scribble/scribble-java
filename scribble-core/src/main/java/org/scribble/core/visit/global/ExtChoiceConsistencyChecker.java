@@ -1,4 +1,4 @@
-package org.scribble.core.visit;
+package org.scribble.core.visit.global;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,17 +15,13 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.global.GSeq;
+import org.scribble.core.visit.InlinedVisitor;
 import org.scribble.util.ScribException;
 
 // Pre: use on inlined or later (unsupported for Do, also Protocol)
 public class ExtChoiceConsistencyChecker extends InlinedVisitor<Global, GSeq>
 {
 	private Map<Role, Role> enablers;  // Invariant: unmodifiable
-
-	public ExtChoiceConsistencyChecker()
-	{
-		this.enablers = Collections.emptyMap();  // Already immutable
-	}
 
 	public ExtChoiceConsistencyChecker(Map<Role, Role> enabled)
 	{
@@ -38,7 +34,8 @@ public class ExtChoiceConsistencyChecker extends InlinedVisitor<Global, GSeq>
 		Map<Role, Role> subj = Stream.of(n.subj)
 				.collect(Collectors.toMap(x -> x, x -> x));
 		List<Map<Role, Role>> blocks = new LinkedList<>();
-		ExtChoiceConsistencyChecker nested = new ExtChoiceConsistencyChecker();
+		ExtChoiceConsistencyChecker nested = new ExtChoiceConsistencyChecker(subj);  
+				// Arg redundant, but better to keep a single constructor, for factory pattern
 		for (GSeq block : n.blocks)
 		{
 			nested.setEnablers(subj);

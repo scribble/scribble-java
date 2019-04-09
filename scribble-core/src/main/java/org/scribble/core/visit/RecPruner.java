@@ -33,7 +33,7 @@ public class RecPruner<K extends ProtocolKind, B extends Seq<K, B>>
 		for (SType<K, B> e : n.elems)
 		{
 			SType<K, B> e1 = (SType<K, B>) e.visitWithNoEx(this);
-			if (e1 instanceof Seq<?, ?>)  // cf. Recursion::pruneRecs
+			if (e1 instanceof Seq<?, ?>)  // cf. visitRecursion
 			{
 				elems.addAll(((Seq<K, B>) e1).getElements());  // Handles empty Seq case
 			}

@@ -75,7 +75,7 @@ module tmp.Test;
 // refactor scribble.g, simplify ast/del/etc class names
 
 // add exp conn checks to model validation
-// use stypefactory in core
+// use stypefactory in core -- also make a visitorfactory
 // refactor test to use main instead of cli
 
 

@@ -10,7 +10,7 @@ import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.Seq;
 
 public class RoleGatherer<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeGather<K, B, Role>
+		extends STypeGatherer<K, B, Role>
 {
 
 	@Override

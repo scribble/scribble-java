@@ -8,7 +8,7 @@ import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.Seq;
 
 public class MessageIdGatherer<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeGather<K, B, MessageId<?>>
+		extends STypeGatherer<K, B, MessageId<?>>
 {
 
 	@Override

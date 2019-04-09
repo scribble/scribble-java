@@ -28,11 +28,12 @@ import org.scribble.util.ScribException;
 public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 		extends SNode
 {
-	<T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f);
-
 	SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException;
 	
 	SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v);
+
+	// Pass in an STypeGatherer::visit, e.g., n.(new RoleGatherer<Global, GSeq>()::visit)
+	<T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f);
 
 	// subclass equals should call this by: them.canEquals(this) 
 	boolean canEquals(Object o);

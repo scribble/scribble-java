@@ -1,4 +1,4 @@
-package org.scribble.core.visit;
+package org.scribble.core.visit.global;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,17 +14,13 @@ import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.global.GSeq;
+import org.scribble.core.visit.InlinedVisitor;
 import org.scribble.util.ScribException;
 
 // Pre: use on inlined or later (unsupported for Do, also Protocol)
 public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 {
 	private Set<Role> enabled;  // Invariant: unmodifiable
-
-	public RoleEnablingChecker()
-	{
-		this.enabled = Collections.emptySet();  // Already immutable
-	}
 
 	public RoleEnablingChecker(Set<Role> enabled)
 	{
@@ -40,7 +36,8 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 			throw new ScribException("Subject not enabled: " + n.subj);
 		}
 		Set<Role> subj = Stream.of(n.subj).collect(Collectors.toSet());
-		RoleEnablingChecker nested = new RoleEnablingChecker();
+		RoleEnablingChecker nested = new RoleEnablingChecker(subj);
+				// Arg redundant, but better to keep a single constructor, for factory pattern
 		List<Set<Role>> blocks = new LinkedList<>();
 		for (GSeq block : n.blocks)
 		{

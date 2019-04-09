@@ -14,8 +14,9 @@ import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
-public abstract class STypeGather<K extends ProtocolKind, B extends Seq<K, B>, T>
+public abstract class STypeGatherer<K extends ProtocolKind, B extends Seq<K, B>, T>
 {
+	// Pass this to SType.gather, e.g., n.gather(new RoleGatherer<Global, GSeq>()::visit)
 	public Stream<T> visit(SType<K, B> n)
 	{
 		return typeSwitch(n).get();

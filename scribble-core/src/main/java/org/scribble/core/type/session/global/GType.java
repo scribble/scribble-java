@@ -22,9 +22,10 @@ import org.scribble.core.visit.global.Projector;
 
 public interface GType extends SType<Global, GSeq>, GNode
 {
+
 	LType projectInlined(Role self);  // Use on inlined (i.e., Do inlined, roles pruned)
+
 	LType project(Projector v);  // Use on parsed (intermed)
-	
 	
 }	
 	
