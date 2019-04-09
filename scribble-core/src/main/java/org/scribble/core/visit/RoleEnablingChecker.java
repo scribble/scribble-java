@@ -19,11 +19,11 @@ import org.scribble.util.ScribException;
 // Not supported for Do
 public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 {
-	private Set<Role> enabled;
+	private Set<Role> enabled;  // Invariant: unmodifiable
 
 	public RoleEnablingChecker()
 	{
-		this(Collections.emptySet());
+		this.enabled = Collections.emptySet();  // Already immutable
 	}
 
 	public RoleEnablingChecker(Set<Role> enabled)
@@ -34,7 +34,7 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 	public Choice<Global, GSeq> visitChoice(Choice<Global, GSeq> n)
 			throws ScribException
 	{
-		Set<Role> enabled = new HashSet<>(getEnabled());
+		Set<Role> enabled = getEnabled();
 		if (!enabled.contains(n.subj))
 		{
 			throw new ScribException("Subject not enabled: " + n.subj);
@@ -61,7 +61,7 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 	public DirectedInteraction<Global, GSeq> visitDirectedInteraction(
 			DirectedInteraction<Global, GSeq> n) throws ScribException
 	{
-		Set<Role> enabled = new HashSet<>(getEnabled());
+		Set<Role> enabled = getEnabled();
 		if (!enabled.contains(n.src))
 		{
 			throw new ScribException("Source role not enabled: " + n.src);
@@ -70,8 +70,9 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 		{
 			return n;
 		}
-		enabled.add(n.dst);
-		setEnabled(enabled);
+		Set<Role> res = new HashSet<>(enabled);
+		res.add(n.dst);
+		setEnabled(res);
 		return n;
 	}
 
@@ -96,7 +97,7 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 		return this.enabled;
 	}
 	
-	public void setEnabled(Set<Role> enabled)
+	protected void setEnabled(Set<Role> enabled)
 	{
 		this.enabled = Collections.unmodifiableSet(enabled);
 	}
