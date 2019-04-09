@@ -15,7 +15,6 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
 import org.scribble.core.type.name.Role;
-import org.scribble.visit.Substitutor;
 
 // For local choice subjects
 public class DummyProjectionRoleNode extends RoleNode
@@ -44,13 +43,6 @@ public class DummyProjectionRoleNode extends RoleNode
 	protected DummyProjectionRoleNode reconstruct(String id)
 	{
 		return (DummyProjectionRoleNode) super.reconstruct(id);
-	}
-	
-	@Override
-	public DummyProjectionRoleNode substituteNames(Substitutor subs)
-	{
-		//throw new RuntimeException("Shouldn't get in here: " + this);
-		return reconstruct(null);  // HACK: for ProjectedSubprotocolPruner, but maybe useful for others
 	}
 	
 	@Override

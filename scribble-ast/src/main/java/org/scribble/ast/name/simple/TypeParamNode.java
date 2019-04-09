@@ -15,10 +15,8 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.name.DataType;
-import org.scribble.visit.Substitutor;
 
 public class TypeParamNode extends NonRoleParamNode<DataTypeKind>
 		implements PayloadElemNameNode<DataTypeKind>
@@ -40,16 +38,6 @@ public class TypeParamNode extends NonRoleParamNode<DataTypeKind>
 	public TypeParamNode dupNode()
 	{
 		return new TypeParamNode(this);
-	}
-	
-	@Override
-	public DataTypeNode substituteNames(Substitutor subs)
-	{
-		DataType arg = toArg();
-		DataTypeNode an;
-		an = (DataTypeNode) subs.getArgumentSubstitution(arg);  // getArgumentSubstitution returns a clone
-		an = (DataTypeNode) an.del(del());
-		return an;
 	}
 	
 	@Override

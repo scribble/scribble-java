@@ -28,7 +28,7 @@ import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.util.ScribException;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 public class NonRoleArgListDel extends DoArgListDel
 {

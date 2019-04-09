@@ -21,7 +21,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.SimpleAstVisitor;
-import org.scribble.visit.Substitutor;
 
 /**
  * This is the generic object from which all Scribble AST objects
@@ -51,11 +50,6 @@ public interface ScribNode extends Tree
 	{
 		return v.visit(this);  // N.B. ScribNode has getParent
 	}
-	
-	// Simple operations, not worth doing del enter/leave pattern for
-	// Rely on visitChildren reconstruction pattern to do recursive reconstruction
-	ScribNode substituteNames(Substitutor subs);
-	// Cf. LInteractionNode.inferLocalChoiceSubject
 
 	CommonTree getSource();  
 			// Previously: for parsed entities, null if not parsed

@@ -15,10 +15,8 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.MessageSigNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.MessageSigName;
-import org.scribble.visit.Substitutor;
 
 public class SigParamNode extends NonRoleParamNode<SigKind>
 		implements MessageNode
@@ -43,16 +41,6 @@ public class SigParamNode extends NonRoleParamNode<SigKind>
 			throw new RuntimeException();
 		}
 		return new SigParamNode(this);//, getIdentifier());
-	}
-	
-	@Override
-	public MessageSigNode substituteNames(Substitutor subs)
-	{
-		MessageSigName arg = toArg();
-		MessageSigNode an;
-		an = (MessageSigNode) subs.getArgumentSubstitution(arg);  // getArgumentSubstitution returns a clone
-		an = (MessageSigNode) an.del(del());
-		return an;
 	}
 	
 	@Override

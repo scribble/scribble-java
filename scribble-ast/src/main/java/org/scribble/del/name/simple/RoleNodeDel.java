@@ -17,7 +17,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDelBase;
 import org.scribble.util.ScribException;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 public class RoleNodeDel extends ScribDelBase
 {

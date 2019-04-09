@@ -23,7 +23,7 @@ import org.scribble.core.type.session.Message;
 import org.scribble.del.MessageTransferDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 public class GMessageTransferDel extends MessageTransferDel
 		implements GSimpleSessionNodeDel

@@ -16,7 +16,7 @@ package org.scribble.del;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.util.ScribException;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 public class NonRoleParamDeclDel extends ScribDelBase
 {

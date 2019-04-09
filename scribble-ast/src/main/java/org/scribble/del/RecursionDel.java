@@ -17,7 +17,7 @@ import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.util.ScribException;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 public abstract class RecursionDel extends CompoundInteractionDel
 {

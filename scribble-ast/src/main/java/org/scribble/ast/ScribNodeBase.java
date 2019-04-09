@@ -25,11 +25,10 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.del.ScribDel;
 import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 import org.scribble.util.ScribNodeUtil;
 import org.scribble.util.ScribUtil;
-import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
-import org.scribble.visit.Substitutor;
 
 /**
  * This is the generic object from which all Scribble model objects
@@ -172,15 +171,10 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 		return this;
 	}
 	
+	// Used to be more relevant, previously there was an explicit parent parameter
 	protected ScribNode visitChild(ScribNode child, AstVisitor nv) throws ScribException
 	{
 		return nv.visit(child);  // cf. child.accept(nv) ?
-	}
-
-	@Override
-	public ScribNode substituteNames(Substitutor subs)
-	{
-		return this;
 	}
 		
 	// FIXME: remove parent parameter, to make uniform with visitChild

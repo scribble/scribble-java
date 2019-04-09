@@ -20,7 +20,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
-import org.scribble.visit.Substitutor;
 
 public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //RoleDecl, RoleInstantiation
 {
@@ -57,13 +56,6 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 		ScribDel del = del(); // Default delegate assigned in ModelFactoryImpl for all simple names
 		r.setDel(del);  // No copy
 		return r;
-	}
-	
-	@Override
-	public RoleNode substituteNames(Substitutor subs)
-	{
-		// Reconstruct: subprotocolvisitor uses a fullycloned body (and getRoleSubstitution also returns a clone) -- here rename the clone but keep the fresh dels/envs
-		return reconstruct(subs.getRoleSubstitution(toName()).toName().toString());
 	}
 	
 	@Override

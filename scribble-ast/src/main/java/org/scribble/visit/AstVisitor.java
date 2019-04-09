@@ -18,11 +18,10 @@ import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
 
 // Pattern: node accepts visitor and calls visitor back (standard visitor pattern -- adding a new operation doesn't affect the Ast classes), but then visitor delegates back to node delegate (so routines for handling each node type not centralised in visitor, but decentralised to delegates)
+// More general than SimpleAstVisitor, retrieves ModuleContext on entry and offers enter/leave around visitChildren
 public abstract class AstVisitor
 {
 	public final Lang lang;  // Immutable except for JobContext internals
-
-	//private ModuleContext mcontext;  // Factor up to ModelVisitor? (will be null before context building) -- maybe make a ModuleVisitor
 	
 	protected AstVisitor(Lang lang)
 	{

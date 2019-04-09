@@ -26,7 +26,7 @@ import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.lang.LangContext;
 import org.scribble.util.ScribException;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 public abstract class DoArgListDel extends ScribDelBase
 {

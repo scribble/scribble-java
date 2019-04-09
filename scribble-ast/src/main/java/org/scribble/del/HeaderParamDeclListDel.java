@@ -19,7 +19,7 @@ import org.scribble.ast.HeaderParamDecl;
 import org.scribble.ast.HeaderParamDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.util.ScribException;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 public abstract class HeaderParamDeclListDel extends ScribDelBase
 {

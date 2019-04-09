@@ -18,7 +18,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.del.ScribDelBase;
 import org.scribble.util.ScribException;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 public class RecVarNodeDel extends ScribDelBase
 {

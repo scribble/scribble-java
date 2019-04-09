@@ -21,6 +21,7 @@ import org.scribble.util.ScribException;
 
 // A SimpleVisitor visits a Module (or some part of one) for a given Job
 // Apart from delegating to del-specific visiting methods, SimpleVisitors are mainly for holding data and collecting common operations 
+// A SimpleVisitor must be given the root ModuleContext, cf. ModuleContextVisitor that retrieves the "current" ModuleContext on entry
 // TODO CHECKME: refactor AstVisitor as a SimpleVisitor?  i.e., T=ScribNode ?
 public abstract class SimpleAstVisitor<T>
 {

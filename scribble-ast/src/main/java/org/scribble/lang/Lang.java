@@ -13,8 +13,6 @@
  */
 package org.scribble.lang;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +28,7 @@ import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.GTypeTranslator;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Lang
@@ -89,7 +87,7 @@ public class Lang
 		// Disamb is a "leftover" aspect of parsing -- so not in core
 		// N.B. disamb is mainly w.r.t. ambignames -- e.g., doesn't fully qualify names (currently mainly done by imed translation)
 		// CHECKME: disamb also currently does checks like do-arg kind and arity -- refactor into core? -- also does, e.g., distinct roledecls, protodecls, etc.
-		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
+		runVisitorPassOnAllModules(new NameDisambiguator(this));  // Includes validating names used in subprotocol calls..
 	}
 	
 	// "Finalises" this Lang -- initialises the Job at this point, and cannot run futher Visitor passes on Lang
@@ -131,31 +129,19 @@ public class Lang
 		return this.context.getModuleContext(this.config.main);
 	}*/
 
-	public void runVisitorPassOnAllModules(Class<? extends AstVisitor> c)
-			throws ScribException
+	public void runVisitorPassOnAllModules(AstVisitor v) throws ScribException
 	{
-		debugPrintPass("Running " + c + " on all modules:");
-		runVisitorPass(c, this.context.getFullModuleNames());
+		debugPrintPass("Running " + v.getClass() + " on all modules:");
+		runVisitorPass(v, this.context.getFullModuleNames());
 	}
 
-	private void runVisitorPass(Class<? extends AstVisitor> c,
+	private void runVisitorPass(AstVisitor v,
 			Set<ModuleName> fullnames) throws ScribException
 	{
-		try
-		{
-			Constructor<? extends AstVisitor> cons = c.getConstructor(Lang.class);
 			for (ModuleName fullname : fullnames)
 			{
-				AstVisitor nv = cons.newInstance(this);
-				runVisitorOnModule(fullname, nv);
+				runVisitorOnModule(fullname, v);
 			}
-		}
-		catch (NoSuchMethodException | SecurityException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e)
-		{
-			throw new RuntimeException(e);
-		}
 	}
 
 	private void runVisitorOnModule(ModuleName modname, AstVisitor nv)

@@ -19,7 +19,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 // TODO: make DisconnectDel (cf., G/LMessageTransferDel)
 public class GDisconnectDel extends ConnectionActionDel

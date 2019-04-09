@@ -32,7 +32,7 @@ import org.scribble.util.ScribException;
 // CHECKME: currently unused within core -- refactor out to lang package?
 public class ModuleContext
 {
-	public final ModuleName root;  // full name  // The root Module for this ModuleContext (cf. the "main" root module from CLI)
+	public final ModuleName root;  // full name  // The root Module for this ModuleContext -- cf. separate to the "main" module
 
   // All transitive name dependencies of this module: all names fully qualified
 	// The ScribNames maps are basically just used as sets (identity map)
@@ -46,7 +46,8 @@ public class ModuleContext
 
 	// Made by ModuleContextBuilder
 	// ModuleContext is the root context
-	public ModuleContext(ModuleName root, ScribNames deps, ScribNames visible) throws ScribException
+	public ModuleContext(ModuleName root, ScribNames deps, ScribNames visible)
+			throws ScribException
 	{
 		this.root = root;
 		this.deps = deps;

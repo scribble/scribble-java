@@ -19,7 +19,7 @@ import org.scribble.core.lang.global.GNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 // TODO: make WrapDel (cf., G/LMessageTransferDel)
 public class GWrapDel extends ConnectionActionDel

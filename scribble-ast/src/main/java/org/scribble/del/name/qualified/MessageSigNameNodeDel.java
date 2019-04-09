@@ -22,7 +22,7 @@ import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.del.ScribDelBase;
 import org.scribble.util.ScribException;
-import org.scribble.visit.wf.NameDisambiguator;
+import org.scribble.visit.NameDisambiguator;
 
 public class MessageSigNameNodeDel extends ScribDelBase
 {

@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.visit.wf;
+package org.scribble.visit;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +28,6 @@ import org.scribble.core.type.name.Role;
 import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
-import org.scribble.visit.context.ModuleContextVisitor;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
 // Also canonicalises recvars
