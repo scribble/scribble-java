@@ -13,7 +13,7 @@ import org.scribble.core.type.session.Seq;
 
 // Not supported for Do
 public abstract class STypeUnfolder<K extends ProtocolKind, B extends Seq<K, B>>
-		extends InlinedVisitor<K, B>
+		extends InlinedVisitorNoEx<K, B>
 {
 	private final Map<RecVar, Seq<K, ?>> recs = new HashMap<>(); 
 
@@ -23,7 +23,7 @@ public abstract class STypeUnfolder<K extends ProtocolKind, B extends Seq<K, B>>
 		if (!hasRec(n.recvar))  // N.B. doesn't work if recvars shadowed
 		{
 			pushRec(n.recvar, n.body);
-			SType<K, B> unf = n.body.visitWith(this);
+			SType<K, B> unf = n.body.visitWithNoEx(this);
 			popRec(n.recvar);  
 					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
 			return unf;
@@ -37,7 +37,7 @@ public abstract class STypeUnfolder<K extends ProtocolKind, B extends Seq<K, B>>
 		List<SType<K, B>> elems = new LinkedList<>();
 		for (SType<K, B> e : n.elems)
 		{
-			SType<K, B> e1 = e.visitWith(this);
+			SType<K, B> e1 = e.visitWithNoEx(this);
 			if (e1 instanceof Seq<?, ?>)
 			{
 				elems.addAll(((Seq<K, B>) e1).elems);
@@ -50,7 +50,7 @@ public abstract class STypeUnfolder<K extends ProtocolKind, B extends Seq<K, B>>
 		return n.reconstruct(n.getSource(), elems);
 	}
 
-	public void pushRec(RecVar rv, Seq<K, ?> body)
+	protected void pushRec(RecVar rv, Seq<K, ?> body)
 	{
 		if (this.recs.containsKey(rv))
 		{
@@ -59,17 +59,17 @@ public abstract class STypeUnfolder<K extends ProtocolKind, B extends Seq<K, B>>
 		this.recs.put(rv, body);
 	}
 
-	public boolean hasRec(RecVar rv)
+	protected boolean hasRec(RecVar rv)
 	{
 		return this.recs.containsKey(rv);
 	}
 	
-	public Seq<K, ?> getRec(RecVar rv)
+	protected Seq<K, ?> getRec(RecVar rv)
 	{
 		return this.recs.get(rv);
 	}
 	
-	public void popRec(RecVar rv)
+	protected void popRec(RecVar rv)
 	{
 		this.recs.remove(rv);
 	}

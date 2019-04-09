@@ -6,8 +6,8 @@ import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
-public abstract class InlinedVisitor<K extends ProtocolKind, B extends Seq<K, B>>
-	extends STypeVisitor<K, B>
+public abstract class InlinedVisitorNoEx<K extends ProtocolKind, B extends Seq<K, B>>
+	extends STypeVisitorNoEx<K, B>
 {
 	@Override
 	public final <N extends ProtocolName<K>> SType<K, B> visitDo(Do<K, B, N> n)

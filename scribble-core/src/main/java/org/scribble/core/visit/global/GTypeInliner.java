@@ -36,7 +36,7 @@ public class GTypeInliner extends STypeInliner<Global, GSeq>
 		GProtocol g = this.job.getContext().getIntermediate(fullname);
 		Substitutor<Global, GSeq> subs = new Substitutor<>(g.roles, n.roles,
 				g.params, n.args);
-		GSeq inlined = g.def.visitWith(subs).visitWith(this);
+		GSeq inlined = g.def.visitWithNoEx(subs).visitWithNoEx(this);
 				// i.e. returning a GSeq -- rely on parent GSeq to inline
 		popSig();
 		return new GRecursion(null, rv, inlined);

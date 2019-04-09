@@ -1,7 +1,7 @@
 package org.scribble.core.visit;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
@@ -13,51 +13,44 @@ import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
-import org.scribble.util.ScribException;
 
-public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, B>>
+	//extends STypeVisitor<K, B>  // Not useful, and causes mixups ?
 {
 	// SType return for extensibility/flexibility
-	public SType<K, B> visitContinue(Continue<K, B> n) throws ScribException
+	public SType<K, B> visitContinue(Continue<K, B> n)
 	{
-		//return n.reconstruct(n.getSource(), n.recvar);
 		return n;
 	}
 
-	public SType<K, B> visitChoice(Choice<K, B> n) throws ScribException
+	public SType<K, B> visitChoice(Choice<K, B> n)
 	{
-		List<B> blocks = new LinkedList<>();
-		for (B b : n.blocks)
-		{
-			blocks.add(b.visitWith(this));
-		}
+		List<B> blocks = n.blocks.stream().map(x -> x.visitWithNoEx(this))
+				.collect(Collectors.toList());
 		return n.reconstruct(n.getSource(), n.subj, blocks);
 	}
 
 	public SType<K, B> visitDirectedInteraction(DirectedInteraction<K, B> n)
-			throws ScribException
 	{
 		//return n.reconstruct(n.getSource(), n.msg, n.src, n.dst);
 		return n;
 	}
 
 	public SType<K, B> visitDisconnect(DisconnectAction<K, B> n)
-			throws ScribException
 	{
 		//return n.reconstruct(n.getSource(), n.left, n.right);
 		return n;
 	}
 
 	public <N extends ProtocolName<K>> SType<K, B> visitDo(Do<K, B, N> n)
-			throws ScribException
 	{
 		//return n.reconstruct(n.getSource(), n.proto, n.roles, n.args);
 		return n;
 	}
 
-	public SType<K, B> visitRecursion(Recursion<K, B> n) throws ScribException
+	public SType<K, B> visitRecursion(Recursion<K, B> n)
 	{
-		B body = n.body.visitWith(this);
+		B body = n.body.visitWithNoEx(this);
 		return n.reconstruct(n.getSource(), n.recvar, body);
 	}
 
@@ -65,13 +58,10 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
 	// This means a Visitor that needs to restructure a Seq should handle this within visitSeq
 	// E.g., Seq "injection" by inlining and unfolding
 	// For this purpose, visited children passed "directly" instead of via a reconstruction (cf. above methods)
-	public B visitSeq(B n) throws ScribException
+	public B visitSeq(B n)
 	{
-		List<SType<K, B>> elems = new LinkedList<>();
-		for (SType<K, B> e : n.elems)
-		{
-			elems.add(e.visitWith(this));
-		}
+		List<SType<K, B>> elems = n.elems.stream().map(x -> x.visitWithNoEx(this))
+				.collect(Collectors.toList());
 		return n.reconstruct(n.getSource(), elems);
 	}
 }

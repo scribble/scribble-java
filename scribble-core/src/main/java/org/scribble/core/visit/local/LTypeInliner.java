@@ -36,7 +36,7 @@ public class LTypeInliner extends STypeInliner<Local, LSeq>
 		LProtocol p = this.job.getContext().getProjection(fullname);  // This line differs from GDo version
 		Substitutor<Local, LSeq> subs = 
 				new Substitutor<>(p.roles, n.roles, p.params, n.args);
-		LSeq inlined = p.def.visitWith(subs).visitWith(this);
+		LSeq inlined = p.def.visitWithNoEx(subs).visitWithNoEx(this);
 				// i.e. returning a Seq -- rely on parent Seq to inline
 		popSig();
 		return new LRecursion(null, rv, inlined);

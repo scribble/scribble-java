@@ -107,8 +107,8 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 
 		Substitutor<Global, GSeq> subs = new Substitutor<>(this.roles, sig.roles,
 				this.params, sig.args);
-		GSeq body = this.def.visitWith(subs).visitWith(v)
-				.visitWith(new RecPruner<>());
+		GSeq body = this.def.visitWithNoEx(subs).visitWithNoEx(v)
+				.visitWithNoEx(new RecPruner<>());
 		RecVar rv = v.getInlinedRecVar(sig);
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();
@@ -124,7 +124,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	@Override
 	public GProtocol unfoldAllOnce(STypeUnfolder<Global, GSeq> v)
 	{
-		GSeq unf = (GSeq) this.def.visitWith(v);
+		GSeq unf = (GSeq) this.def.visitWithNoEx(v);
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.params, unf);
 	}
@@ -168,7 +168,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 
 	public LProjection project(Projector v)
 	{
-		LSeq body = (LSeq) this.def.project(v).visitWith(new RecPruner<>());
+		LSeq body = (LSeq) this.def.project(v).visitWithNoEx(new RecPruner<>());
 		return projectAux(v.self,
 				v.job.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
 				body);

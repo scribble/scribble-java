@@ -22,6 +22,8 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.visit.STypeVisitor;
+import org.scribble.core.visit.STypeVisitorNoEx;
+import org.scribble.util.ScribException;
 
 public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 		extends STypeBase<K, B>
@@ -45,7 +47,15 @@ public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 	}
 
 	@Override
-	public B visitWith(STypeVisitor<K, B> v)
+	public B visitWith(STypeVisitor<K, B> v) throws ScribException
+	{
+		@SuppressWarnings("unchecked")
+		B cast = (B) this;  // CHECKME: OK as long as G/LSeq specify themselves as B param
+		return v.visitSeq(cast);
+	}
+
+	@Override
+	public B visitWithNoEx(STypeVisitorNoEx<K, B> v)
 	{
 		@SuppressWarnings("unchecked")
 		B cast = (B) this;  // CHECKME: OK as long as G/LSeq specify themselves as B param

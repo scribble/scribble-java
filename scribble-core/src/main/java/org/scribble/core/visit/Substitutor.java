@@ -22,7 +22,7 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 public class Substitutor<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeVisitor<K, B>
+		extends STypeVisitorNoEx<K, B>
 {
 	private Substitutions subs;
 
@@ -36,8 +36,7 @@ public class Substitutor<K extends ProtocolKind, B extends Seq<K, B>>
 	@Override
 	public SType<K, B> visitChoice(Choice<K, B> n)
 	{
-		List<B> blocks = n.blocks.stream()
-				.map(x -> x.visitWith((STypeVisitor<K, B>) this))  // FIXME
+		List<B> blocks = n.blocks.stream().map(x -> x.visitWithNoEx(this))
 				.collect(Collectors.toList());
 		return n.reconstruct(n.getSource(), this.subs.subsRole(n.subj), blocks);
 	}

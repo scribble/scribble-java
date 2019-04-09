@@ -19,6 +19,8 @@ import java.util.stream.Stream;
 import org.scribble.core.lang.SNode;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.visit.STypeVisitor;
+import org.scribble.core.visit.STypeVisitorNoEx;
+import org.scribble.util.ScribException;
 
 
 // B needed(?) to factor up several methods from G/L compounds to bases, e.g., getInlined and unfoldAllOnce
@@ -28,7 +30,9 @@ public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 {
 	<T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f);
 
-	SType<K, B> visitWith(STypeVisitor<K, B> v);
+	SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException;
+	
+	SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v);
 
 	// subclass equals should call this by: them.canEquals(this) 
 	boolean canEquals(Object o);

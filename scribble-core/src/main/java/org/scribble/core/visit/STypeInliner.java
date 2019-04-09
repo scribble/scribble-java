@@ -18,7 +18,7 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeVisitor<K, B>
+		extends STypeVisitorNoEx<K, B>
 {
 	public final Job job;
 	
@@ -48,7 +48,7 @@ public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
 	{
 		CommonTree source = n.getSource();  // CHECKME: or empty source?
 		RecVar rv = enterRec(n.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
-		B body = n.body.visitWith(this);//, stack);
+		B body = n.body.visitWithNoEx(this);
 		Recursion<K, B> res = n.reconstruct(source, rv, body);
 		exitRec(n.recvar);
 		return res;
@@ -60,7 +60,7 @@ public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
 		List<SType<K, B>> elems = new LinkedList<>();
 		for (SType<K, B> e : n.elems)
 		{
-			SType<K, B> e1 = e.visitWith(this);
+			SType<K, B> e1 = e.visitWithNoEx(this);
 			if (e1 instanceof Seq<?, ?>)
 			{
 				elems.addAll(((Seq<K, B>) e1).elems);
@@ -73,7 +73,7 @@ public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
 		return n.reconstruct(n.getSource(), elems);
 	}
 
-	public void pushRec(RecVar rv, Seq<K, ?> body)
+	protected void pushRec(RecVar rv, Seq<K, ?> body)
 	{
 		if (this.recs.containsKey(rv))
 		{
@@ -82,17 +82,17 @@ public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
 		this.recs.put(rv, body);
 	}
 
-	public boolean hasRec(RecVar rv)
+	protected boolean hasRec(RecVar rv)
 	{
 		return this.recs.containsKey(rv);
 	}
 	
-	public Seq<K, ?> getRec(RecVar rv)
+	protected Seq<K, ?> getRec(RecVar rv)
 	{
 		return this.recs.get(rv);
 	}
 	
-	public void popRec(RecVar rv)
+	protected void popRec(RecVar rv)
 	{
 		this.recs.remove(rv);
 	}
@@ -106,17 +106,17 @@ public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
 		this.stack.push(sig);
 	}
 
-	public SubprotoSig peek()
+	protected SubprotoSig peek()
 	{
 		return this.stack.peek();
 	}
 
-	public boolean hasSig(SubprotoSig sig)
+	protected boolean hasSig(SubprotoSig sig)
 	{
 		return this.stack.contains(sig);
 	}
 	
-	public void popSig()
+	protected void popSig()
 	{
 		this.stack.pop();
 	}
@@ -132,8 +132,7 @@ public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
 		return new RecVar(lab);
 	}
 	
-	public RecVar enterRec(//SubprotoSig sig, 
-			RecVar rv)
+	protected RecVar enterRec(RecVar rv)
 	{
 		String text = getInlinedRecVar(this.stack.peek()) + "__" + rv;
 		if (this.counter.containsKey(rv))
@@ -158,12 +157,12 @@ public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
 	}
 	
 	// For Continue
-	public RecVar getInlinedRecVar(RecVar rv)
+	protected RecVar getInlinedRecVar(RecVar rv)
 	{
 		return this.recvars.get(rv).peek();
 	}
 	
-	public void exitRec(RecVar rv)
+	protected void exitRec(RecVar rv)
 	{
 		this.recvars.get(rv).pop();
 	}

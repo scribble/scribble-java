@@ -13,7 +13,7 @@ import org.scribble.core.type.session.Seq;
 
 // Assumes no shadowing (e.g., use after inlining recvar disamb)
 public class RecPruner<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeVisitor<K, B>
+		extends STypeVisitorNoEx<K, B>
 {
 	@Override
 	public SType<K, B> visitRecursion(Recursion<K, B> n)
@@ -32,7 +32,7 @@ public class RecPruner<K extends ProtocolKind, B extends Seq<K, B>>
 		List<SType<K, B>> elems = new LinkedList<>();
 		for (SType<K, B> e : n.elems)
 		{
-			SType<K, B> e1 = (SType<K, B>) e.visitWith(this);
+			SType<K, B> e1 = (SType<K, B>) e.visitWithNoEx(this);
 			if (e1 instanceof Seq<?, ?>)  // cf. Recursion::pruneRecs
 			{
 				elems.addAll(((Seq<K, B>) e1).getElements());  // Handles empty Seq case

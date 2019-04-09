@@ -25,6 +25,8 @@ import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.STypeVisitor;
+import org.scribble.core.visit.STypeVisitorNoEx;
+import org.scribble.util.ScribException;
 
 public abstract class Do
 		<K extends ProtocolKind, B extends Seq<K, B>, N extends ProtocolName<K>>
@@ -54,7 +56,13 @@ public abstract class Do
 	}
 
 	@Override
-	public SType<K, B> visitWith(STypeVisitor<K, B> v)
+	public SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException
+	{
+		return v.visitDo(this);
+	}
+
+	@Override
+	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
 	{
 		return v.visitDo(this);
 	}
