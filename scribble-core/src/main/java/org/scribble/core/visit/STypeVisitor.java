@@ -43,7 +43,7 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
 		return n;
 	}
 
-	public SType<K, B> visitDo(Do<K, B, ? extends ProtocolName<K>> n)
+	public <N extends ProtocolName<K>> SType<K, B> visitDo(Do<K, B, N> n)
 	{
 		//return n.reconstruct(n.getSource(), n.proto, n.roles, n.args);
 		return n;

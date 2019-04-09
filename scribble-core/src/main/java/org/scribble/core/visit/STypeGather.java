@@ -41,19 +41,41 @@ public abstract class STypeGather<K extends ProtocolKind, B extends Seq<K, B>, T
 			: Optional.empty();  // Better for extensibility than "manually" throwing Exception (e.g., for overriding)
 	}
 
-	public Stream<T> visitContinue(Continue<K, B> n) { return Stream.of(); }
+	public Stream<T> visitContinue(Continue<K, B> n)
+	{
+		return Stream.of();
+	}
 
-	public Stream<T> visitChoice(Choice<K, B> n) { return Stream.of(); }
+	public Stream<T> visitChoice(Choice<K, B> n)
+	{
+		return Stream.of();
+	}
 
 	// CHECKME: split into ConnectionAction and MessageTransfer? cf. NonProtoDepsCollector -- and how about locals?
+	// This is the "level" of reconstruct, though
 	// Or offer all, with ConnectionAction and MessageTransfer delegating to DirectedInteraction by default?  (must order correctly in typeSwitch)
-	public Stream<T> visitDirectedInteraction(DirectedInteraction<K, B> n) { return Stream.of(); }
+	public Stream<T> visitDirectedInteraction(DirectedInteraction<K, B> n)
+	{
+		return Stream.of();
+	}
 
-	public Stream<T> visitDisconnect(DisconnectAction<K, B> n) { return Stream.of(); }
+	public Stream<T> visitDisconnect(DisconnectAction<K, B> n)
+	{
+		return Stream.of();
+	}
 
-	public Stream<T> visitDo(Do<K, B, ? extends ProtocolName<K>> n) { return Stream.of(); }
+	public Stream<T> visitDo(Do<K, B, ? extends ProtocolName<K>> n)
+	{
+		return Stream.of();
+	}
 
-	public Stream<T> visitRecursion(Recursion<K, B> n) { return Stream.of(); }
+	public Stream<T> visitRecursion(Recursion<K, B> n)
+	{
+		return Stream.of();
+	}
 
-	public Stream<T> visitSeq(Seq<K, B> n) { return Stream.of(); }
+	public Stream<T> visitSeq(Seq<K, B> n)
+	{
+		return Stream.of();
+	}
 }

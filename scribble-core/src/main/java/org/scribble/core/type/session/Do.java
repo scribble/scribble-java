@@ -94,6 +94,11 @@ public abstract class Do
 		return this;
 	}
 	
+	public N getProtocolName()
+	{
+		return this.proto;
+	}
+	
 	@Override
 	public String toString()
 	{

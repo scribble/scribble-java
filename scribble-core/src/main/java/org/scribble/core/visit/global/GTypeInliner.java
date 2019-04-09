@@ -23,7 +23,7 @@ public class GTypeInliner extends STypeInliner<Global, GSeq>
 	}
 
 	@Override
-	public GType visitDo(Do<Global, GSeq, ? extends ProtocolName<Global>> n)
+	public <N extends ProtocolName<Global>> GType visitDo(Do<Global, GSeq, N> n)
 	{
 		GProtocolName fullname = (GProtocolName) n.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, n.roles, n.args);

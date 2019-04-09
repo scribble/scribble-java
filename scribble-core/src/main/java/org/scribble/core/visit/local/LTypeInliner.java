@@ -23,7 +23,7 @@ public class LTypeInliner extends STypeInliner<Local, LSeq>
 	}
 
 	@Override
-	public LType visitDo(Do<Local, LSeq, ? extends ProtocolName<Local>> n)
+	public <N extends ProtocolName<Local>> LType visitDo(Do<Local, LSeq, N> n)
 	{
 		LProtocolName fullname = (LProtocolName) n.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, n.roles, n.args);

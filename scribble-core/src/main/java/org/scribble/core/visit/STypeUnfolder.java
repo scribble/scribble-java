@@ -20,7 +20,7 @@ public abstract class STypeUnfolder<K extends ProtocolKind, B extends Seq<K, B>>
 	private final Map<RecVar, Seq<K, ?>> recs = new HashMap<>(); 
 
 	@Override
-	public SType<K, B> visitDo(Do<K, B, ? extends ProtocolName<K>> n)
+	public <N extends ProtocolName<K>> SType<K, B> visitDo(Do<K, B, N> n)
 	{
 		throw new RuntimeException("Unsupported for Do: " + n);
 	}
