@@ -65,6 +65,6 @@ public class SingleContinueChecker extends STypeAggNoEx<Local, LSeq, Boolean>
 	@Override
 	public Boolean visitSeq(LSeq n)
 	{
-		return n.elems.size() == 1 && ((LType) n.elems.get(0)).aggregateNoEx(this);
+		return n.elems.size() == 1 && ((LType) n.elems.get(0)).visitNoThrow(this);
 	}
 }

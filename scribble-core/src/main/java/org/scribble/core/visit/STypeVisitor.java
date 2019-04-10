@@ -86,7 +86,7 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
 		List<SType<K, B>> elems = new LinkedList<>();
 		for (SType<K, B> e : n.elems)
 		{
-			elems.add(e.visitWith(this));
+			elems.add(e.visit(this));
 		}
 		return n.reconstruct(n.getSource(), elems);  // N.B. skipping agg (reconstruction done here)
 	}

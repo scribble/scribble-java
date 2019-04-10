@@ -33,13 +33,13 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	}
 
 	@Override
-	public <T> T aggregate(STypeAgg<Local, LSeq, T> v)
+	public <T> T visit(STypeAgg<Local, LSeq, T> v)
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}
 
 	@Override
-	public <T> T aggregateNoEx(STypeAggNoEx<Local, LSeq, T> v)
+	public <T> T visitNoThrow(STypeAggNoEx<Local, LSeq, T> v)
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}

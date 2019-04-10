@@ -9,18 +9,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.type.kind.Local;
+import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
+import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.InlinedVisitor;
+import org.scribble.core.visit.STypeVisitor;
 import org.scribble.util.ScribException;
 
 // Pre: use on inlined or later (unsupported for Do, also Protocol)
-public class ReachabilityChecker extends InlinedVisitor<Local, LSeq>
+public class ReachabilityChecker extends STypeVisitor<Local, LSeq>
 {
 	private ReachabilityEnv env;  // Immutable
 
@@ -59,10 +61,17 @@ public class ReachabilityChecker extends InlinedVisitor<Local, LSeq>
 	}
 
 	@Override
+	public final <N extends ProtocolName<Local>> SType<Local, LSeq> visitDo(
+			Do<Local, LSeq, N> n) throws ScribException
+	{
+		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
+	}
+
+	@Override
 	public SType<Local, LSeq> visitRecursion(Recursion<Local, LSeq> n)
 			throws ScribException
 	{
-		n.body.visitWith(this);
+		n.body.visit(this);
 		ReachabilityEnv env = getEnv();
 		if (env.recvars.contains(n.recvar))
 		{
@@ -89,7 +98,7 @@ public class ReachabilityChecker extends InlinedVisitor<Local, LSeq>
 				throw new ScribException(
 						"Illegal sequence: " + (prev == null ? "" : prev + "\n") + next);
 			}
-			next.visitWith(this);
+			next.visit(this);
 		}
 		return n;
 	}

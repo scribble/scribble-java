@@ -18,7 +18,7 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeVisitorNoEx<K, B>
+		extends STypeVisitorNoThrow<K, B>
 {
 	public final Job job;
 	
@@ -61,7 +61,7 @@ public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
 		List<SType<K, B>> elems = new LinkedList<>();
 		for (SType<K, B> e : n.elems)
 		{
-			SType<K, B> e1 = e.visitWithNoEx(this);
+			SType<K, B> e1 = e.visitNoThrow(this);
 			if (e1 instanceof Seq<?, ?>)
 			{
 				elems.addAll(((Seq<K, B>) e1).elems);

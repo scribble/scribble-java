@@ -11,16 +11,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.DirectedInteraction;
+import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.global.GSeq;
-import org.scribble.core.visit.InlinedVisitor;
+import org.scribble.core.visit.STypeVisitor;
 import org.scribble.util.ScribException;
 
 // Pre: use on inlined or later (unsupported for Do, also Protocol)
-public class ExtChoiceConsistencyChecker extends InlinedVisitor<Global, GSeq>
+public class ExtChoiceConsistencyChecker extends STypeVisitor<Global, GSeq>
 {
 	private Map<Role, Role> enablers;  // Invariant: unmodifiable
 
@@ -81,6 +83,13 @@ public class ExtChoiceConsistencyChecker extends InlinedVisitor<Global, GSeq>
 		res.put(n.dst, n.src);
 		setEnablers(res);
 		return n;
+	}
+
+	@Override
+	public final <N extends ProtocolName<Global>> SType<Global, GSeq> visitDo(
+			Do<Global, GSeq, N> n) throws ScribException
+	{
+		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
 	}
 	
 	protected Map<Role, Role> getEnablers()

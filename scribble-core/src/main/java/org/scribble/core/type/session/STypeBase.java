@@ -16,7 +16,7 @@ package org.scribble.core.type.session;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.visit.STypeVisitor;
-import org.scribble.core.visit.STypeVisitorNoEx;
+import org.scribble.core.visit.STypeVisitorNoThrow;
 import org.scribble.util.ScribException;
 
 // SessTypeBase is to SessType as ScribNodeBase is to ScribNode
@@ -34,7 +34,7 @@ public abstract class STypeBase<K extends ProtocolKind, B extends Seq<K, B>>
 		this.source = source;
 	}
 
-	@Override
+	/*@Override
 	public SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException
 	{
 		return aggregate(v);
@@ -44,7 +44,7 @@ public abstract class STypeBase<K extends ProtocolKind, B extends Seq<K, B>>
 	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
 	{
 		return aggregateNoEx(v);
-	}
+	}*/
 
 	@Override
 	public boolean hasSource()

@@ -71,7 +71,7 @@ public abstract class STypeAgg<K extends ProtocolKind, B extends Seq<K, B>, T>
 		List<T> elems = new LinkedList<>();
 		for (SType<K, B> e : n.elems)
 		{
-			elems.add(e.aggregate(this));
+			elems.add(e.visit(this));
 		}
 		return agg(n, elems.stream());
 	}

@@ -9,17 +9,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
+import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.global.GSeq;
-import org.scribble.core.visit.InlinedVisitor;
+import org.scribble.core.visit.STypeVisitor;
 import org.scribble.util.ScribException;
 
 // Pre: use on inlined or later (unsupported for Do, also Protocol)
-public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
+public class RoleEnablingChecker extends STypeVisitor<Global, GSeq>
 {
 	private Set<Role> enabled;  // Invariant: unmodifiable
 
@@ -72,6 +74,13 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 		res.add(n.dst);
 		setEnabled(res);
 		return n;
+	}
+
+	@Override
+	public final <N extends ProtocolName<Global>> SType<Global, GSeq> visitDo(
+			Do<Global, GSeq, N> n) throws ScribException
+	{
+		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
 	}
 
 	@Override

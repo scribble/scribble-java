@@ -40,13 +40,13 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 			CommonTree source, RecVar recvar);
 
 	@Override
-	public <T> T aggregate(STypeAgg<K, B, T> v) throws ScribException
+	public <T> T visit(STypeAgg<K, B, T> v) throws ScribException
 	{
 		return v.visitContinue(this);
 	}
 	
 	@Override
-	public <T> T aggregateNoEx(STypeAggNoEx<K, B, T> v)
+	public <T> T visitNoThrow(STypeAggNoEx<K, B, T> v)
 	{
 		return v.visitContinue(this);
 	}

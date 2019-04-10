@@ -40,13 +40,13 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 	}
 	
 	@Override
-	public <T> T aggregate(STypeAgg<Local, LSeq, T> v) throws ScribException
+	public <T> T visit(STypeAgg<Local, LSeq, T> v) throws ScribException
 	{
 		return v.visitSeq(this);
 	}
 	
 	@Override
-	public <T> T aggregateNoEx(STypeAggNoEx<Local, LSeq, T> v)
+	public <T> T visitNoThrow(STypeAggNoEx<Local, LSeq, T> v)
 	{
 		return v.visitSeq(this);
 	}

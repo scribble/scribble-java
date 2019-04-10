@@ -46,13 +46,13 @@ public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
 			//List<? extends Seq<K, B>> blocks);
 	
 	@Override
-	public <T> T aggregate(STypeAgg<K, B, T> v) throws ScribException
+	public <T> T visit(STypeAgg<K, B, T> v) throws ScribException
 	{
 		return v.visitChoice(this);
 	}
 	
 	@Override
-	public <T> T aggregateNoEx(STypeAggNoEx<K, B, T> v)
+	public <T> T visitNoThrow(STypeAggNoEx<K, B, T> v)
 	{
 		return v.visitChoice(this);
 	}

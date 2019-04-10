@@ -59,7 +59,7 @@ public abstract class STypeAggNoEx<K extends ProtocolKind, B extends Seq<K, B>, 
 	// Param "hardcoded" to B (cf. Seq, or SType return) -- this visitor pattern depends on B for Choice/Recursion/etc reconstruction
 	public T visitSeq(B n)
 	{
-		return agg(n, n.elems.stream().map(x -> x.aggregateNoEx(this)));
+		return agg(n, n.elems.stream().map(x -> x.visitNoThrow(this)));
 	}
 }
 

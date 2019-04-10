@@ -40,13 +40,13 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 	}
 	
 	@Override
-	public <T> T aggregate(STypeAgg<Global, GSeq, T> v) throws ScribException
+	public <T> T visit(STypeAgg<Global, GSeq, T> v) throws ScribException
 	{
 		return v.visitSeq(this);
 	}
 	
 	@Override
-	public <T> T aggregateNoEx(STypeAggNoEx<Global, GSeq, T> v)
+	public <T> T visitNoThrow(STypeAggNoEx<Global, GSeq, T> v)
 	{
 		return v.visitSeq(this);
 	}

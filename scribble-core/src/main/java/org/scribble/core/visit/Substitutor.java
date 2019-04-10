@@ -22,7 +22,7 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 public class Substitutor<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeVisitorNoEx<K, B>
+		extends STypeVisitorNoThrow<K, B>
 {
 	private Substitutions subs;
 

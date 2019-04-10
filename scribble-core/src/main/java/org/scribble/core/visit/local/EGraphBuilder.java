@@ -12,11 +12,13 @@ import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
+import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.MessageSig;
 import org.scribble.core.type.session.Payload;
 import org.scribble.core.type.session.Recursion;
@@ -30,13 +32,13 @@ import org.scribble.core.type.session.local.LReq;
 import org.scribble.core.type.session.local.LSend;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.InlinedVisitorNoEx;
+import org.scribble.core.visit.STypeVisitorNoThrow;
 import org.scribble.util.ScribException;
 
 // Pre: use on inlined or later (unsupported for Do, also Protocol)
 // Uses EGraphBuilderUtil2 to build graph "progressively" (working graph is mutable)
 // Must use build as top-level call (does EGraphBuilderUtil2.finalise -- "resets" the util)
-public class EGraphBuilder extends InlinedVisitorNoEx<Local, LSeq>
+public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 {
 	public final Job job;
 
@@ -73,7 +75,7 @@ public class EGraphBuilder extends InlinedVisitorNoEx<Local, LSeq>
 				if (elems.size() == 1)
 				{
 					//first.buildGraph(util);
-					first.visitWithNoEx(this);
+					first.visitNoThrow(this);
 				}	
 				else
 				{
@@ -81,13 +83,13 @@ public class EGraphBuilder extends InlinedVisitorNoEx<Local, LSeq>
 					EState nestedExit = util.newState(Collections.emptySet());
 					util.setExit(nestedExit);
 					//first.buildGraph(util);
-					first.visitWithNoEx(this);
+					first.visitNoThrow(this);
 
 					util.setEntry(nestedExit);  // Must be non null
 					util.setExit(exit);
 					LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
 					//tail.buildGraph(util);
-					tail.visitWithNoEx(this);
+					tail.visitNoThrow(this);
 				}
 				EState init = nestedEntry;
 				for (EAction a : (Iterable<EAction>) 
@@ -114,7 +116,7 @@ public class EGraphBuilder extends InlinedVisitorNoEx<Local, LSeq>
 			{
 				util.pushChoiceBlock();  // CHECKME: still needed?  LContinue doesn't check isUnguardedInChoice any more
 				//block.buildGraph(util);
-				block.visitWithNoEx(this);
+				block.visitNoThrow(this);
 				util.popChoiceBlock();
 			}
 		}
@@ -189,12 +191,18 @@ public class EGraphBuilder extends InlinedVisitorNoEx<Local, LSeq>
 	}
 
 	@Override
+	public final <N extends ProtocolName<Local>> SType<Local, LSeq> visitDo(Do<Local, LSeq, N> n)
+	{
+		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
+	}
+
+	@Override
 	public SType<Local, LSeq> visitRecursion(Recursion<Local, LSeq> n)
 	{
 		this.util.addEntryLabel(n.recvar);
 		this.util.pushRecursionEntry(n.recvar, this.util.getEntry());
 		//n.body.buildGraph(this.util);
-		n.body.visitWithNoEx(this);
+		n.body.visitNoThrow(this);
 		this.util.popRecursionEntry(n.recvar);
 		return n;
 	}
@@ -217,14 +225,14 @@ public class EGraphBuilder extends InlinedVisitorNoEx<Local, LSeq>
 			{
 				util.setExit(exit);
 				//next.buildGraph(util);
-				next.visitWithNoEx(this);
+				next.visitNoThrow(this);
 			}
 			else
 			{
 				EState tmp = util.newState(Collections.emptySet());
 				util.setExit(tmp);
 				//next.buildGraph(util);
-				next.visitWithNoEx(this);
+				next.visitNoThrow(this);
 				util.setEntry(util.getExit());
 						// CHECKME: exit may not be tmp, entry/exit can be modified, e.g. continue
 			}

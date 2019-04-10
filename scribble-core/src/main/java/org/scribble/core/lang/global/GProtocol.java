@@ -130,7 +130,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	@Override
 	public GProtocol unfoldAllOnce(STypeUnfolder<Global, GSeq> v)
 	{
-		GSeq unf = (GSeq) this.def.visitWithNoEx(v);
+		GSeq unf = (GSeq) this.def.visitNoThrow(v);
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.params, unf);
 	}
@@ -139,7 +139,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	{
 		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
 		RoleEnablingChecker v = new RoleEnablingChecker(rs);
-		this.def.visitWith(v);
+		this.def.visit(v);
 	}
 
 	public void checkExtChoiceConsistency() throws ScribException
@@ -147,13 +147,13 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		Map<Role, Role> rs = this.roles.stream()
 				.collect(Collectors.toMap(x -> x, x -> x));
 		ExtChoiceConsistencyChecker v = new ExtChoiceConsistencyChecker(rs);
-		this.def.visitWith(v);
+		this.def.visit(v);
 	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
 	public LProjection projectInlined(Job job, Role self)
 	{
-		LSeq body = (LSeq) this.def.aggregateNoEx(new InlinedProjector(job, self));
+		LSeq body = (LSeq) this.def.visitNoThrow(new InlinedProjector(job, self));
 		return projectAux(self, this.roles, body);
 	}
 	
@@ -175,8 +175,8 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 
 	public LProjection project(ProjEnv v)
 	{
-		LSeq body = (LSeq) this.def.aggregateNoEx(new Projector(v.job, v.self))
-				.visitWithNoEx(new RecPruner<>());
+		LSeq body = (LSeq) this.def.visitNoThrow(new Projector(v.job, v.self))
+				.visitNoThrow(new RecPruner<>());
 		return projectAux(v.self,
 				v.job.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
 				body);

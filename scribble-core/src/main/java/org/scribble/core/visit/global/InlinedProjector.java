@@ -127,7 +127,7 @@ public class InlinedProjector extends STypeAggNoEx<Global, GSeq, LType>
 		}
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(n.recvar);
-		if (body.aggregateNoEx(new SingleContinueChecker(rvs)))
+		if (body.visitNoThrow(new SingleContinueChecker(rvs)))
 		{
 			return LSkip.SKIP;
 		}
@@ -138,7 +138,7 @@ public class InlinedProjector extends STypeAggNoEx<Global, GSeq, LType>
 	@Override
 	public LSeq visitSeq(GSeq n)
 	{
-		List<LType> elems = n.elems.stream().map(x -> x.aggregateNoEx(this))
+		List<LType> elems = n.elems.stream().map(x -> x.visitNoThrow(this))
 				.filter(x -> !x.equals(LSkip.SKIP)).collect(Collectors.toList());
 		return new LSeq(null, elems);  
 				// Empty seqs converted to LSkip by GChoice/Recursion projection
