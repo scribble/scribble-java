@@ -22,6 +22,7 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.STypeBase;
+import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeVisitor;
 import org.scribble.core.visit.STypeVisitorNoEx;
 import org.scribble.core.visit.local.ReachabilityEnv;
@@ -38,12 +39,6 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	}
 
 	@Override
-	public <T> Stream<T> gather(Function<SType<Local, LSeq>, Stream<T>> f)
-	{
-		throw new RuntimeException("Unsupported for Skip: " + this);
-	}
-
-	@Override
 	public LSkip visitWith(STypeVisitor<Local, LSeq> v)
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
@@ -51,6 +46,18 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 
 	@Override
 	public LSkip visitWithNoEx(STypeVisitorNoEx<Local, LSeq> v)
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+
+	@Override
+	public <T> T aggregate(STypeAgg<Local, LSeq, T> v)
+	{
+		throw new RuntimeException("Unsupported for Skip: " + this);
+	}
+
+	@Override
+	public <T> Stream<T> gather(Function<SType<Local, LSeq>, Stream<T>> f)
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}

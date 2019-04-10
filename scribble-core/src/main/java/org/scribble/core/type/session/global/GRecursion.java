@@ -26,6 +26,7 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.local.SingleContinueChecker;
 
 public class GRecursion extends Recursion<Global, GSeq> implements GType
 {
@@ -65,7 +66,7 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 		}*/
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(this.recvar);
-		if (body.isSingleConts(rvs))
+		if (body.aggregate(new SingleContinueChecker(rvs)))
 		{
 			return LSkip.SKIP;
 		}

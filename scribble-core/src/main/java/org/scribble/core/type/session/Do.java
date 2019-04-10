@@ -24,6 +24,7 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeVisitor;
 import org.scribble.core.visit.STypeVisitorNoEx;
 import org.scribble.util.ScribException;
@@ -48,12 +49,6 @@ public abstract class Do
 
 	public abstract Do<K, B, N> reconstruct(CommonTree source,
 			N proto, List<Role> roles, List<Arg<? extends NonRoleParamKind>> args);
-	
-	@Override
-	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
-	{
-		return f.apply(this);
-	}
 
 	@Override
 	public SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException
@@ -65,6 +60,18 @@ public abstract class Do
 	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
 	{
 		return v.visitDo(this);
+	}
+	
+	@Override
+	public <T> T aggregate(STypeAgg<K, B, T> v)
+	{
+		return v.visitDo(this);
+	}
+	
+	@Override
+	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
+	{
+		return f.apply(this);
 	}
 	
 	@Override

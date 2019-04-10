@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.RecVar;
+import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeVisitor;
 import org.scribble.core.visit.STypeVisitorNoEx;
 import org.scribble.util.ScribException;
@@ -37,12 +38,9 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 		this.recvar = recvar;
 		this.body = body;
 	}
-	
-	@Override
-	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
-	{
-		return Stream.concat(f.apply(this), this.body.gather(f));
-	}
+
+	public abstract Recursion<K, B> reconstruct(
+			CommonTree source, RecVar recvar, B body);
 
 	@Override
 	public SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException
@@ -55,9 +53,18 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 	{
 		return v.visitRecursion(this);
 	}
-
-	public abstract Recursion<K, B> reconstruct(
-			CommonTree source, RecVar recvar, B body);
+	
+	@Override
+	public <T> T aggregate(STypeAgg<K, B, T> v)
+	{
+		return v.visitRecursion(this);
+	}
+	
+	@Override
+	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
+	{
+		return Stream.concat(f.apply(this), this.body.gather(f));
+	}
 
 	@Override
 	public String toString()

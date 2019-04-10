@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeVisitor;
 import org.scribble.core.visit.STypeVisitorNoEx;
 import org.scribble.util.ScribException;
@@ -44,12 +45,6 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 	public abstract DirectedInteraction<K, B> reconstruct(
 			CommonTree source, Message msg, Role src,
 			Role dst);
-	
-	@Override
-	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
-	{
-		return f.apply(this);
-	}
 
 	@Override
 	public SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException
@@ -61,6 +56,18 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
 	{
 		return v.visitDirectedInteraction(this);
+	}
+	
+	@Override
+	public <T> T aggregate(STypeAgg<K, B, T> v)
+	{
+		return v.visitDirectedInteraction(this);
+	}
+	
+	@Override
+	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
+	{
+		return f.apply(this);
 	}
 	
 	@Override
