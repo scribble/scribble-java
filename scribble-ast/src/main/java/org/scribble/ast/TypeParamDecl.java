@@ -17,7 +17,6 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.TypeParamNode;
 import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.Role;
 import org.scribble.util.Constants;
 
 public class TypeParamDecl extends NonRoleParamDecl<DataTypeKind>
@@ -35,21 +34,15 @@ public class TypeParamDecl extends NonRoleParamDecl<DataTypeKind>
 	}
 	
 	@Override
-	public TypeParamDecl dupNode()
-	{
-		return new TypeParamDecl(this);
-	}
-	
-	@Override
 	public TypeParamNode getNameNodeChild()
 	{
 		return (TypeParamNode) getRawNameNodeChild();  // CHECKME: make Type/SigParamNode?
 	}
-
+	
 	@Override
-	public TypeParamDecl project(AstFactory af, Role self)
+	public TypeParamDecl dupNode()
 	{
-		return dupNode();
+		return new TypeParamDecl(this);
 	}
 
 	@Override

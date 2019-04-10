@@ -33,26 +33,6 @@ import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
-import org.scribble.ast.local.LAccept;
-import org.scribble.ast.local.LChoice;
-import org.scribble.ast.local.LContinue;
-import org.scribble.ast.local.LDelegationElem;
-import org.scribble.ast.local.LDisconnect;
-import org.scribble.ast.local.LDo;
-import org.scribble.ast.local.LInteractionSeq;
-import org.scribble.ast.local.LProjectionDecl;
-import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.ast.local.LProtocolDef;
-import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.ast.local.LRecv;
-import org.scribble.ast.local.LRecursion;
-import org.scribble.ast.local.LRequest;
-import org.scribble.ast.local.LSend;
-import org.scribble.ast.local.LSessionNode;
-import org.scribble.ast.local.LWrapClient;
-import org.scribble.ast.local.LWrapServer;
-import org.scribble.ast.local.SelfRoleDecl;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.ast.name.qualified.DataTypeNode;
@@ -62,7 +42,6 @@ import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
-import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -80,9 +59,7 @@ import org.scribble.core.type.kind.PayloadTypeKind;
 import org.scribble.core.type.kind.RecVarKind;
 import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.kind.SigKind;
-import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.Op;
-import org.scribble.core.type.name.Role;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
@@ -105,22 +82,6 @@ import org.scribble.del.global.GProtocolDeclDel;
 import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.del.global.GRecursionDel;
 import org.scribble.del.global.GWrapDel;
-import org.scribble.del.local.LAcceptDel;
-import org.scribble.del.local.LChoiceDel;
-import org.scribble.del.local.LContinueDel;
-import org.scribble.del.local.LDisconnectDel;
-import org.scribble.del.local.LDoDel;
-import org.scribble.del.local.LInteractionSeqDel;
-import org.scribble.del.local.LProjectionDeclDel;
-import org.scribble.del.local.LProtocolBlockDel;
-import org.scribble.del.local.LProtocolDeclDel;
-import org.scribble.del.local.LProtocolDefDel;
-import org.scribble.del.local.LReceiveDel;
-import org.scribble.del.local.LRecursionDel;
-import org.scribble.del.local.LRequestDel;
-import org.scribble.del.local.LSendDel;
-import org.scribble.del.local.LWrapClientDel;
-import org.scribble.del.local.LWrapServerDel;
 import org.scribble.del.name.qualified.DataTypeNodeDel;
 import org.scribble.del.name.qualified.MessageSigNameNodeDel;
 import org.scribble.del.name.simple.AmbigNameNodeDel;
@@ -138,6 +99,24 @@ public class AstFactoryImpl implements AstFactory
 	public AstFactoryImpl()
 	{
 		
+	}
+
+	protected ScribDel createDefaultDelegate()
+	{
+		return new DefaultDel();
+	}
+	
+	// FIXME: factor out
+	//@SuppressWarnings("unchecked")
+	protected static <T extends ScribNodeBase> T del(T n, ScribDel del)
+	{
+		/*ScribNodeBase ret = n.del(del);  // FIXME: del makes another shallow copy of n
+		if (ret.getClass() != n.getClass())
+		{
+			throw new RuntimeException("Shouldn't get in here: " + ret.getClass() + ", " + n.getClass());
+		}
+		return (T) ret;*/
+		return ScribNodeBase.del(n, del);
 	}
 	
   // FIXME: inconsistent wrt. this.source -- it is essentially parsed (in the sense of *omitted* syntax), but not recorded
@@ -201,15 +180,6 @@ public class AstFactoryImpl implements AstFactory
 		GDelegationElem de = new GDelegationElem(source, proto, role);
 		//de = del(de, createDefaultDelegate());
 		de = del(de, new GDelegationElemDel());  // FIXME: GDelegationElemDel
-		return de;
-	}
-
-	@Override
-	public LDelegationElem LDelegationElem(CommonTree source,
-			LProtocolNameNode proto)
-	{
-		LDelegationElem de = new LDelegationElem(source, proto);
-		de = del(de, createDefaultDelegate());
 		return de;
 	}
 	
@@ -562,13 +532,32 @@ public class AstFactoryImpl implements AstFactory
 		pn = del(pn, new NonRoleParamNodeDel());
 		return pn;
 	}
+}
 
+
+
+
+
+
+
+
+
+/*
 	@Override
 	public DummyProjectionRoleNode DummyProjectionRoleNode()
 	{
 		DummyProjectionRoleNode dprn = new DummyProjectionRoleNode();
 		dprn = (DummyProjectionRoleNode) dprn.del(createDefaultDelegate());
 		return dprn;
+	}
+
+	@Override
+	public LDelegationElem LDelegationElem(CommonTree source,
+			LProtocolNameNode proto)
+	{
+		LDelegationElem de = new LDelegationElem(source, proto);
+		de = del(de, createDefaultDelegate());
+		return de;
 	}
 
 	@Override  // Called from LProtocolDecl::clone, but currently never used  -- local proto decls only projected, not parsed
@@ -736,22 +725,4 @@ public class AstFactoryImpl implements AstFactory
 		ld = del(ld, new LDoDel());
 		return ld;
 	}
-
-	protected ScribDel createDefaultDelegate()
-	{
-		return new DefaultDel();
-	}
-	
-	// FIXME: factor out
-	//@SuppressWarnings("unchecked")
-	protected static <T extends ScribNodeBase> T del(T n, ScribDel del)
-	{
-		/*ScribNodeBase ret = n.del(del);  // FIXME: del makes another shallow copy of n
-		if (ret.getClass() != n.getClass())
-		{
-			throw new RuntimeException("Shouldn't get in here: " + ret.getClass() + ", " + n.getClass());
-		}
-		return (T) ret;*/
-		return ScribNodeBase.del(n, del);
-	}
-}
+*/

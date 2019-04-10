@@ -17,7 +17,6 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.RoleKind;
-import org.scribble.core.type.name.Name;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.Constants;
 
@@ -45,20 +44,6 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	public RoleDecl dupNode()
 	{
 		return new RoleDecl(this);
-	}
-
-	@Override
-	public RoleDecl project(AstFactory af, Role self)
-	{
-		RoleNode name = getNameNodeChild();
-		Name<RoleKind> role = name.toName();
-		RoleNode rn = (RoleNode) 
-				af.SimpleNameNode(name.source, RoleKind.KIND, role.toString());
-		if (role.equals(self))
-		{
-			return af.SelfRoleDecl(name.source, rn);
-		}
-		return af.RoleDecl(this.source, rn);
 	}
 
 	@Override

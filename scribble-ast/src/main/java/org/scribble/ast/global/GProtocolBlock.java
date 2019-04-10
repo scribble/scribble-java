@@ -15,12 +15,8 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.ProtocolBlock;
-import org.scribble.ast.local.LInteractionSeq;
-import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.Role;
 
 public class GProtocolBlock extends ProtocolBlock<Global> implements GScribNode
 {
@@ -46,12 +42,6 @@ public class GProtocolBlock extends ProtocolBlock<Global> implements GScribNode
 	public GInteractionSeq getInteractSeqChild()
 	{
 		return (GInteractionSeq) getChild(0);
-	}
-
-	public LProtocolBlock project(AstFactory af, Role self, LInteractionSeq seq)
-	{
-		LProtocolBlock projection = af.LProtocolBlock(this.source, seq);
-		return projection;
 	}
 	
 	

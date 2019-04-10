@@ -17,17 +17,11 @@ import java.util.List;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ProtocolMod;
-import org.scribble.ast.local.LProjectionDecl;
-import org.scribble.ast.local.LProtocolDef;
-import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.Role;
-import org.scribble.util.ScribException;
 
 public class GProtocolDecl extends ProtocolDecl<Global> implements GScribNode
 {
@@ -48,26 +42,6 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GScribNode
 	public GProtocolDecl dupNode()
 	{
 		return new GProtocolDecl(this);
-	}
-	
-	// CHECKME: project modifiers?
-	public LProjectionDecl project(AstFactory af, Module mod, Role self,
-			LProtocolHeader hdr, LProtocolDef def) throws ScribException
-			// mod is just the parent?
-	{
-		/*//Role self = proj.peekSelf();
-		GProtocolHeader gph = getHeader();
-		LProtocolNameNode pn = Projector.makeProjectedSimpleNameNode(af, gph.getSource(), gph.getDeclName(), self);
-		
-		// Move to delegates? -- maybe fully integrate into projection pass
-		RoleDeclList roledecls = this.header.roledecls.project(af, self);
-		NonRoleParamDeclList paramdecls = this.header.paramdecls.project(af, self);
-		LProtocolHeader lph = af.LProtocolHeader(this.header.getSource(), pn, roledecls, paramdecls);*/
-
-		GProtocolName gpn = this.getFullMemberName(mod);
-		LProjectionDecl proj = 
-				af.LProjectionDecl(this.source, this.modifiers, gpn, self, hdr, def);
-		return proj;
 	}
 
 	@Override

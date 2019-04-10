@@ -22,7 +22,6 @@ import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
-import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.global.GProtocolBlock;
@@ -30,37 +29,16 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
-import org.scribble.ast.local.LAccept;
-import org.scribble.ast.local.LChoice;
-import org.scribble.ast.local.LContinue;
-import org.scribble.ast.local.LDelegationElem;
-import org.scribble.ast.local.LDisconnect;
-import org.scribble.ast.local.LDo;
-import org.scribble.ast.local.LSessionNode;
-import org.scribble.ast.local.LInteractionSeq;
-import org.scribble.ast.local.LProjectionDecl;
-import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.ast.local.LProtocolDef;
-import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.ast.local.LRecv;
-import org.scribble.ast.local.LRecursion;
-import org.scribble.ast.local.LRequest;
-import org.scribble.ast.local.LSend;
-import org.scribble.ast.local.LWrapClient;
-import org.scribble.ast.local.LWrapServer;
-import org.scribble.ast.local.SelfRoleDecl;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
-import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -68,10 +46,9 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.PayloadTypeKind;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.Role;
 
 
+// Currently, used only in relatively niche places (since ANTLR now constructs all parsed nodes "directly")
 public interface AstFactory
 {
 	Module Module(CommonTree source, ModuleDecl moddecl,
@@ -83,8 +60,6 @@ public interface AstFactory
 
 	GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name,
 			RoleNode role);
-
-	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);
 
 	// PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems);
 	PayloadElemList PayloadElemList(CommonTree source,
@@ -171,8 +146,24 @@ public interface AstFactory
 
 	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(
 			CommonTree source, K kind, String identifier);
+}
 
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 	DummyProjectionRoleNode DummyProjectionRoleNode();
+
+	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);
 
 	LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolMod> modifiers,
 			LProtocolHeader header, LProtocolDef def); 
@@ -208,7 +199,8 @@ public interface AstFactory
 			RoleNode dest);
 
 	/*LConnect LConnect(CommonTree source, RoleNode src, RoleNode dest);
-	LAccept LAccept(CommonTree source, RoleNode src, RoleNode dest);*/
+	LAccept LAccept(CommonTree source, RoleNode src, RoleNode dest);* /
+
 	LDisconnect LDisconnect(CommonTree source, RoleNode self, RoleNode peer);
 
 	LWrapClient LWrapClient(CommonTree source, RoleNode self, RoleNode peer);
@@ -225,4 +217,4 @@ public interface AstFactory
 
 	LDo LDo(CommonTree source, RoleArgList roles, NonRoleArgList args,
 			LProtocolNameNode proto);
-}
+*/

@@ -18,7 +18,6 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.core.type.kind.ParamKind;
-import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -64,8 +63,6 @@ public abstract class HeaderParamDecl<K extends ParamKind>
 	}
 
 	public abstract String getKeyword();
-	
-	public abstract HeaderParamDecl<K> project(AstFactory af, Role self);  // Move to delegate?
 	
 	@Override
 	public String toString()

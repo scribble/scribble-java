@@ -70,7 +70,7 @@ module tmp.Test;
 // try modulecontextvisitor by "static lookup"
 // try move antlrwrapper to parser again
 
-// re-check disamb pass -- e.g., do-target disamb done by translation -- check, e.g., message transfer message disamb (signames, payloads)
+// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 // refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
 // refactor scribble.g, simplify ast/del/etc class names and deprecated class code
 	//make a visitor factory

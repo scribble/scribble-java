@@ -15,14 +15,10 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.ConnectAction;
 import org.scribble.ast.MessageSigNode;
-import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.kind.RoleKind;
-import org.scribble.core.type.name.Role;
 import org.scribble.util.Constants;
 
 public class GWrap extends ConnectAction<Global> implements GSimpleSessionNode
@@ -38,32 +34,8 @@ public class GWrap extends ConnectAction<Global> implements GSimpleSessionNode
 	{
 		super(node);
 	}
-
-	public LScribNode project(AstFactory af, Role self)
-	{
-		RoleNode srcNode = getSourceChild();
-		RoleNode destNode = getDestinationChild();
-		Role srcrole = srcNode.toName();
-		Role destrole = destNode.toName();
-		LScribNode projection = null;
-		if (srcrole.equals(self) || destrole.equals(self))
-		{
-			RoleNode srcNode1 = (RoleNode) af.SimpleNameNode(srcNode.getSource(),
-					RoleKind.KIND, srcNode.toName().toString()); // clone?
-			RoleNode destNode1 = (RoleNode) af.SimpleNameNode(destNode.getSource(),
-					RoleKind.KIND, destNode.toName().toString());
-			if (srcrole.equals(self))
-			{
-				projection = af.LWrapClient(this.source, srcNode1, destNode1);  // src and dest (not self and peer)
-			}
-			if (destrole.equals(self))
-			{
-				projection = af.LWrapServer(this.source, srcNode1, destNode1);
-			}
-		}
-		return projection;
-	}
 	
+	@Override
 	public GWrap dupNode()
 	{
 		return new GWrap(this);

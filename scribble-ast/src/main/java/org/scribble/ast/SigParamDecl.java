@@ -17,7 +17,6 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.MessageSigName;
-import org.scribble.core.type.name.Role;
 import org.scribble.util.Constants;
 
 public class SigParamDecl extends NonRoleParamDecl<SigKind>
@@ -35,21 +34,15 @@ public class SigParamDecl extends NonRoleParamDecl<SigKind>
 	}
 	
 	@Override
-	public SigParamDecl dupNode()
-	{
-		return new SigParamDecl(this);
-	}
-	
-	@Override
 	public SigParamNode getNameNodeChild()
 	{
 		return (SigParamNode) getRawNameNodeChild();  // CHECKME: make Type/Sig(Param)Node?
 	}
-
+	
 	@Override
-	public SigParamDecl project(AstFactory af, Role self)
+	public SigParamDecl dupNode()
 	{
-		return dupNode();
+		return new SigParamDecl(this);
 	}
 
 	@Override

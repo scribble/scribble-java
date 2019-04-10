@@ -15,14 +15,10 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.ConnectAction;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.kind.RoleKind;
-import org.scribble.core.type.name.Role;
 import org.scribble.util.Constants;
 
 // TODO: make GConnectionAction and factor this class with GWrap (cf. LConnectionAction)
@@ -45,41 +41,6 @@ public class GConnect extends ConnectAction<Global>
 	public GConnect dupNode()
 	{
 		return new GConnect(this);
-	}
-
-	public LScribNode project(AstFactory af, Role self)
-	{
-		Role src = this.getSourceChild().toName();
-		MessageNode msgNode = this.getMessageNodeChild();
-		Role dest = this.getDestinationChild().toName();
-		LScribNode proj = null;
-		if (src.equals(self) || dest.equals(self))
-		{
-			if (src.equals(dest))
-			{
-				throw new RuntimeException(
-						"Shouldn't get in here (self-connection): " + this);
-			}
-			
-			RoleNode srcNode = getSourceChild();
-			RoleNode destNode = getDestinationChild();
-			RoleNode srcNode1 = (RoleNode) af.SimpleNameNode(srcNode.getSource(),
-					RoleKind.KIND, srcNode.toName().toString()); // clone?
-			MessageNode msgNode1 = (MessageNode) msgNode;  // CHECKME: need namespace prefix update?
-			RoleNode destNode1 = (RoleNode) af.SimpleNameNode(destNode.getSource(),
-					RoleKind.KIND, destNode.toName().toString());
-			if (src.equals(self))
-			{
-				proj = af.LRequest(this.source, srcNode1, msgNode1, destNode1);
-				//projection = AstFactoryImpl.FACTORY.LConnect(src, dest);  // src and dest (not self and peer)
-			}
-			if (dest.equals(self))
-			{
-				proj = af.LAccept(this.source, srcNode1, msgNode1, destNode1);
-				//projection = AstFactoryImpl.FACTORY.LAccept(src, dest);
-			}
-		}
-		return proj;
 	}
 
 	@Override

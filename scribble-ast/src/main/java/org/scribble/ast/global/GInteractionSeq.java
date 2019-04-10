@@ -18,12 +18,8 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.InteractionSeq;
-import org.scribble.ast.local.LSessionNode;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.Role;
-import org.scribble.ast.local.LInteractionSeq;
 
 public class GInteractionSeq extends InteractionSeq<Global> implements GScribNode
 {
@@ -43,13 +39,6 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GScribNod
 	public GInteractionSeq dupNode()
 	{
 		return new GInteractionSeq(this);
-	}
-
-	// Move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
-	public LInteractionSeq project(AstFactory af, Role self, List<LSessionNode> lis)
-	{
-		LInteractionSeq projection = af.LInteractionSeq(this.source, lis);
-		return projection;
 	}
 	
 	@Override

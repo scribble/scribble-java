@@ -15,13 +15,9 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.Continue;
-import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.kind.RecVarKind;
-import org.scribble.core.type.name.Role;
 
 public class GContinue extends Continue<Global> implements GSimpleSessionNode
 {
@@ -41,15 +37,6 @@ public class GContinue extends Continue<Global> implements GSimpleSessionNode
 	public GContinue dupNode()
 	{
 		return new GContinue(this);
-	}
-
-	public LContinue project(AstFactory af, Role self)
-	{
-		RecVarNode recvar = getRecVarChild();
-		RecVarNode recvar1 = (RecVarNode) af.SimpleNameNode(recvar.getSource(),
-				RecVarKind.KIND, recvar.toName().toString()); // clone?
-		LContinue projection = af.LContinue(this.source, recvar1);
-		return projection;
 	}
 	
 	

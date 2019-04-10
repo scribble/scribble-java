@@ -22,12 +22,10 @@ import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.context.ScribNames;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.ScribException;
@@ -110,12 +108,6 @@ public class ModuleContextCollector
 					gpd.getHeaderChild().getDeclName());
 			names.globals.put(qualif, gpd.getFullMemberName(mod));
 		}
-		for (LProtocolDecl lpd : mod.getLProtoDeclChildren())
-		{
-			LProtocolName qualif = new LProtocolName(modname,
-					lpd.getHeaderChild().getDeclName());
-			names.locals.put(qualif, lpd.getFullMemberName(mod));
-		}
 	}
 	
 	// Could move to ImportModule but would need a defensive copy setter, or cache info in builder and create on leave
@@ -191,12 +183,6 @@ public class ModuleContextCollector
 			GProtocolName visname = new GProtocolName(
 					gpd.getHeaderChild().getDeclName().toString());
 			this.visible.globals.put(visname, gpd.getFullMemberName(root));
-		}
-		for (LProtocolDecl lpd : root.getLProtoDeclChildren())
-		{
-			LProtocolName visname = new LProtocolName(
-					lpd.getHeaderChild().getDeclName().toString());
-			this.visible.locals.put(visname, lpd.getFullMemberName(root));
 		}
 	}
 

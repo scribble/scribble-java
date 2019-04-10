@@ -15,12 +15,8 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.ProtocolDef;
-import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.ast.local.LProtocolDef;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.Role;
 
 public class GProtocolDef extends ProtocolDef<Global> implements GScribNode
 {
@@ -48,12 +44,7 @@ public class GProtocolDef extends ProtocolDef<Global> implements GScribNode
 		return new GProtocolDef(this);
 	}
 
-	public LProtocolDef project(AstFactory af, Role self, LProtocolBlock block)
-	{
-		LProtocolDef projection = af.LProtocolDef(this.source, block);
-		return projection;
-	}
-
+	
 
 	
 	

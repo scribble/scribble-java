@@ -15,13 +15,9 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.DisconnectAction;
-import org.scribble.ast.local.LScribNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.kind.RoleKind;
-import org.scribble.core.type.name.Role;
 import org.scribble.util.Constants;
 
 public class GDisconnect extends DisconnectAction<Global>
@@ -43,32 +39,6 @@ public class GDisconnect extends DisconnectAction<Global>
 	public GDisconnect dupNode()
 	{
 		return new GDisconnect(this);
-	}
-
-	public LScribNode project(AstFactory af, Role self)
-	{
-		RoleNode leftNode = this.getLeftChild();
-		RoleNode rightNode = this.getRightChild();
-		Role left = leftNode.toName();
-		Role right = rightNode.toName();
-		LScribNode proj = null;
-		if (left.equals(self) || right.equals(self))
-		{
-			RoleNode leftNode1 = (RoleNode) af.SimpleNameNode(leftNode.getSource(),
-					RoleKind.KIND, leftNode.toName().toString()); // clone?
-			RoleNode rightNode1 = (RoleNode) af.SimpleNameNode(rightNode.getSource(),
-					RoleKind.KIND, rightNode.toName().toString());
-			// "left" of LDisconnect is used for self
-			if (left.equals(self))
-			{
-				proj = af.LDisconnect(this.source, leftNode1, rightNode1);
-			}
-			else if (right.equals(self))  // CHECKME: self-comm via self-connections?  so self-disconn?
-			{
-				proj = af.LDisconnect(this.source, rightNode1, leftNode1);
-			}
-		}
-		return proj;
 	}
 
 	@Override

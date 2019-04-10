@@ -15,17 +15,13 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
-import org.scribble.ast.local.LDo;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.Role;
 import org.scribble.lang.LangContext;
 
 public class GDo extends Do<Global> implements GSimpleSessionNode
@@ -52,14 +48,6 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	public GDo dupNode()
 	{
 		return new GDo(this);
-	}
-
-	public LDo project(AstFactory af, Role self, LProtocolNameNode fullname)
-	{
-		RoleArgList roles = this.getRoleListChild().project(af, self);
-		NonRoleArgList args = this.getNonRoleListChild().project(af, self);
-		LDo projection = af.LDo(this.source, roles, args, fullname);
-		return projection;
 	}
 
 	@Override

@@ -15,16 +15,12 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactory;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.RoleDeclList;
-import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.Role;
 import org.scribble.util.Constants;
 
 public class GProtocolHeader extends ProtocolHeader<Global> implements GScribNode
@@ -56,14 +52,6 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GScribNod
 	public GProtocolName getDeclName()
 	{
 		return getNameNodeChild().toName();
-	}
-
-	// CHECKME: make a delegate and move there?
-	public LProtocolHeader project(AstFactory af, Role self,
-			LProtocolNameNode name, RoleDeclList roledecls,
-			NonRoleParamDeclList paramdecls)
-	{
-		return af.LProtocolHeader(this.source, name, roledecls, paramdecls);
 	}
 	
 	@Override

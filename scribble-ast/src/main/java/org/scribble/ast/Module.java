@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtocolKind;
@@ -167,7 +166,7 @@ public class Module extends ScribNodeBase
 		List<? extends ProtocolDecl<?>> pds = 
 				simpname.getKind().equals(Global.KIND) 
 						? getGProtoDeclChildren()
-						: getLProtoDeclChildren();
+						: null;  // FIXME
 		return pds.stream().anyMatch(x -> x.getHeaderChild().getDeclName().equals(simpname));
 	}
 	
@@ -180,7 +179,7 @@ public class Module extends ScribNodeBase
 		List<? extends ProtocolDecl<?>> pds = 
 				simpname.getKind().equals(Global.KIND) 
 						? getGProtoDeclChildren()
-						: getLProtoDeclChildren();
+						: null;  // FIXME
 		List<? extends ProtocolDecl<?>> filt = pds.stream()
 				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
 				.collect(Collectors.toList());
@@ -199,12 +198,6 @@ public class Module extends ScribNodeBase
 				.collect(Collectors.toList());
 	}
 
-	public List<LProtocolDecl> getLProtoDeclChildren()
-	{
-		return getChildren().stream().filter(IS_LPROTOCOLDECL).map(TO_LPROTOCOLDECL)
-				.collect(Collectors.toList());
-	}
-
 	private static final Predicate<ScribNode> IS_GPROTOCOLDECL =
 			pd -> (pd instanceof ProtocolDecl<?>) && ((ProtocolDecl<?>) pd).isGlobal();
 
@@ -213,9 +206,6 @@ public class Module extends ScribNodeBase
 
 	private static final Function <ScribNode, GProtocolDecl> TO_GPROTOCOLDECL = 
 			pd -> (GProtocolDecl) pd;
-
-	private static final Function <ScribNode, LProtocolDecl> TO_LPROTOCOLDECL = 
-			pd -> (LProtocolDecl) pd;
 
 	@Override
 	public String toString()
