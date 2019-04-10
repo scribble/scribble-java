@@ -15,6 +15,7 @@ package org.scribble.ast;
 
 import java.util.List;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
@@ -66,10 +67,8 @@ public interface AstFactory
 			List<PayloadElem<?>> payloadelems);
 
 	// PayloadElem PayloadElem(PayloadElemNameNode name);
-	// UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name);
-	// UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name);
-	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(
-			CommonTree source, PayloadElemNameNode<K> name);
+	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(Token t,
+			PayloadElemNameNode<K> name);
 
 	ModuleDecl ModuleDecl(CommonTree source, ModuleNameNode fullmodname);
 
@@ -82,18 +81,19 @@ public interface AstFactory
 	DataTypeDecl DataTypeDecl(CommonTree source, String schema, String extName,
 			String extSource, DataTypeNode name);
 
-	GProtocolDecl GProtocolDecl(CommonTree source, List<ProtocolMod> modifiers,
+	GProtocolDecl GProtocolDecl(Token t, ProtocolModList modifiers,
 			GProtocolHeader header, GProtocolDef def);
 
-	GProtocolHeader GProtocolHeader(CommonTree source, GProtocolNameNode name,
+	GProtocolHeader GProtocolHeader(Token t, GProtocolNameNode name,
 			RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
 
-	RoleDeclList RoleDeclList(CommonTree source, List<RoleDecl> rds);
+	RoleDeclList RoleDeclList(Token t, List<RoleDecl> rds);
 
-	RoleDecl RoleDecl(CommonTree source, RoleNode role);
+	RoleDecl RoleDecl(Token t, RoleNode role);
 
 	// ConnectDecl ConnectDecl(CommonTree source, RoleNode src, RoleNode role);
-	NonRoleParamDeclList NonRoleParamDeclList(CommonTree source,
+
+	NonRoleParamDeclList NonRoleParamDeclList(Token t,
 			List<NonRoleParamDecl<NonRoleParamKind>> pds);
 
 	<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(
@@ -106,35 +106,33 @@ public interface AstFactory
 	GInteractionSeq GInteractionSeq(CommonTree source,
 			List<GSessionNode> gis);
 
-	GMessageTransfer GMessageTransfer(CommonTree source, RoleNode src,
-			MessageNode msg, List<RoleNode> dests);
+	GMessageTransfer GMessageTransfer(Token t, RoleNode src,
+			MessageNode msg, List<RoleNode> dsts);
 
-	GConnect GConnect(CommonTree source, RoleNode src, MessageNode msg,
+	GConnect GConnect(Token t, RoleNode src, MessageNode msg,
 			RoleNode dest);
 
-	// GConnect GConnect(CommonTree source, RoleNode src, RoleNode dest);
-	GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest);
+	GDisconnect GDisconnect(Token t, RoleNode src, RoleNode dst);
 
-	GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);
+	GWrap GWrap(Token t, RoleNode src, RoleNode dst);
 
 	GChoice GChoice(CommonTree source, RoleNode subj,
 			List<GProtocolBlock> blocks);
 
-	GRecursion GRecursion(CommonTree source, RecVarNode recvar,
-			GProtocolBlock block);
+	GRecursion GRecursion(Token t, RecVarNode recvar, GProtocolBlock block);
 
-	GContinue GContinue(CommonTree source, RecVarNode recvar);
+	GContinue GContinue(Token t, RecVarNode recvar);
 
-	GDo GDo(CommonTree source, RoleArgList roles, NonRoleArgList args,
+	GDo GDo(Token t, RoleArgList roles, NonRoleArgList args,
 			GProtocolNameNode proto);
 
-	RoleArgList RoleArgList(CommonTree source, List<RoleArg> roles);
+	RoleArgList RoleArgList(Token t, List<RoleArg> roles);
 
-	RoleArg RoleArg(CommonTree source, RoleNode role);
+	RoleArg RoleArg(Token t, RoleNode role);
 
-	NonRoleArgList NonRoleArgList(CommonTree source, List<NonRoleArg> args);
+	NonRoleArgList NonRoleArgList(Token t, List<NonRoleArg> args);
 
-	NonRoleArg NonRoleArg(CommonTree source, NonRoleArgNode arg);
+	NonRoleArg NonRoleArg(Token t, NonRoleArgNode arg);
 
 	<K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind,
 			String identifier);

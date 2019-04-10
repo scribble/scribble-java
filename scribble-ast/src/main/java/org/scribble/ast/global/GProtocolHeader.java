@@ -14,10 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolHeader;
-import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
@@ -37,6 +34,7 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GScribNod
 		super(node);
 	}
 
+	@Override
 	public GProtocolHeader dupNode()
 	{
 		return new GProtocolHeader(this);
@@ -51,7 +49,7 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GScribNod
 	@Override
 	public GProtocolName getDeclName()
 	{
-		return getNameNodeChild().toName();
+		return (GProtocolName) super.getDeclName();
 	}
 	
 	@Override
@@ -59,51 +57,4 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GScribNod
 	{
 		return Constants.GLOBAL_KW + " " + super.toString();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public GProtocolHeader(CommonTree source, GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
-	{
-		super(source, name, roledecls, paramdecls);
-	}
-
-	/*@Override
-	protected ScribNodeBase copy()
-	{
-		return new GProtocolHeader(this.source, getNameNodeChild(), this.roledecls, this.paramdecls);
-	}
-	
-	@Override
-	public GProtocolHeader clone(AstFactory af)
-	{
-		GProtocolNameNode name = getNameNodeChild().clone(af);
-		RoleDeclList roledecls = this.roledecls.clone(af);
-		NonRoleParamDeclList paramdecls = this.paramdecls.clone(af);
-		return af.GProtocolHeader(this.source, name, roledecls, paramdecls);
-	}*/
-
-	/*@Override
-	public GProtocolHeader reconstruct(ProtocolNameNode<Global> name,
-			RoleDeclList rdl, NonRoleParamDeclList pdl)
-	{
-		ScribDel del = del();
-		GProtocolHeader gph = new GProtocolHeader(this.source, (GProtocolNameNode) name, rdl, pdl);
-		gph = (GProtocolHeader) gph.del(del);
-		return gph;
-	}*/
 }

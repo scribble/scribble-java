@@ -14,8 +14,6 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -30,17 +28,15 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 	public DoArg(Token t)
 	{
 		super(t);
-		this.val = null;
 	}
 
 	// Tree#dupNode constructor
 	public DoArg(DoArg<T> node)
 	{
 		super(node);
-		this.val = null;
 	}
 	
-	public abstract T getValChild();
+	public abstract T getArgNodeChild();
 	
 	public abstract DoArg<T> dupNode();
 
@@ -56,7 +52,7 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 	@Override
 	public DoArg<T> visitChildren(AstVisitor nv) throws ScribException
 	{
-		ScribNode visited = visitChild(getValChild(), nv);  // Disambiguation will replace AmbiguousNameNodes
+		ScribNode visited = visitChild(getArgNodeChild(), nv);  // Disambiguation will replace AmbiguousNameNodes
 				// CHECKME: use visitChildWithClassEqualityCheck?
 		if (!(visited instanceof DoArgNode))
 		{
@@ -66,31 +62,10 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 		T arg = (T) visited;
 		return reconstruct(arg);
 	}
-
-	public abstract DoArg<T> project(AstFactory af, Role self);
 	
 	@Override
 	public String toString()
 	{
-		return getValChild().toString();
+		return getArgNodeChild().toString();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private final T val;
-
-	protected DoArg(CommonTree source, T arg)
-	{
-		super(source);
-		this.val = arg;
-	}
-
 }

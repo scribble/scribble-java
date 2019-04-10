@@ -14,8 +14,6 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
@@ -28,37 +26,42 @@ import org.scribble.visit.AstVisitor;
 public abstract class ProtocolHeader<K extends ProtocolKind>
 		extends NameDeclNode<K> implements ProtocolKindNode<K>
 {
+	public static final int NAMENODE_CHILD = 0;
+	public static final int PARAMDECLLIST_CHILD = 1;
+	public static final int ROLEDECLLIST_CHILD = 2;
+	
 	// ScribTreeAdaptor#create constructor
 	public ProtocolHeader(Token t)
 	{
 		super(t);
-		this.roledecls = null;
-		this.paramdecls = null;
 	}
 	
 	// Tree#dupNode constructor
 	protected ProtocolHeader(ProtocolHeader<K> node)
 	{
 		super(node);
-		this.roledecls = null;
-		this.paramdecls = null;
 	}
-	
-	public abstract ProtocolHeader<K> dupNode();
 	
 	// Simple name
 	@Override
 	public abstract ProtocolNameNode<K> getNameNodeChild();
 	
-	public RoleDeclList getRoleDeclListChild()
-	{
-		return (RoleDeclList) getChild(2);  // TODO: swap order with paramdecllist (in grammar)
-	}
-	
 	public NonRoleParamDeclList getParamDeclListChild()
 	{
-		return (NonRoleParamDeclList) getChild(1);
+		return (NonRoleParamDeclList) getChild(PARAMDECLLIST_CHILD);
 	}
+	
+	public RoleDeclList getRoleDeclListChild()
+	{
+		return (RoleDeclList) getChild(ROLEDECLLIST_CHILD);  // TODO: swap order with paramdecllist (in grammar)
+	}
+
+	public boolean isParamDeclListEmpty()
+	{
+		return getParamDeclListChild().isEmpty();
+	}
+	
+	public abstract ProtocolHeader<K> dupNode();
 	
 	public ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name,
 			RoleDeclList rdl, NonRoleParamDeclList pdl)
@@ -83,11 +86,6 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 		return reconstruct(getNameNodeChild(), rdl, pdl);
 	}
 
-	public boolean isParameterDeclListEmpty()
-	{
-		return getParamDeclListChild().isEmpty();
-	}
-
 	@Override
 	public ProtocolName<K> getDeclName()
 	{
@@ -98,27 +96,10 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 	public String toString()
 	{
 		String s = Constants.PROTOCOL_KW + " " + getNameNodeChild();
-		if (!isParameterDeclListEmpty())
+		if (!isParamDeclListEmpty())
 		{
 			s += getParamDeclListChild();
 		}
 		return s + getRoleDeclListChild();
-	}
-
-	
-	
-	
-	
-	
-	
-	private final RoleDeclList roledecls;
-	private final NonRoleParamDeclList paramdecls;
-
-	// name = simple name
-	protected ProtocolHeader(CommonTree source, NameNode<K> name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
-	{
-		super(source, name);
-		this.roledecls = roledecls;
-		this.paramdecls = paramdecls;
 	}
 }

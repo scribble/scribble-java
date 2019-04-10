@@ -13,14 +13,11 @@
  */
 package org.scribble.ast;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ParamKind;
-import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -33,17 +30,25 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 	public HeaderParamDeclList(Token t)
 	{
 		super(t);
-		this.decls = null;
 	}
 
 	// Tree#dupNode constructor
 	public HeaderParamDeclList(HeaderParamDeclList<K> node)
 	{
 		super(node);
-		this.decls = null;
 	}
 	
 	public abstract List<? extends HeaderParamDecl<K>> getParamDeclChildren();
+	
+	public final int length()
+	{
+		return getParamDeclChildren().size();
+	}
+
+	public final boolean isEmpty()
+	{
+		return length() == 0;
+	}
 	
 	@Override
 	public abstract HeaderParamDeclList<K> dupNode();
@@ -59,46 +64,19 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 	}
 	
 	@Override
-	public HeaderParamDeclList<? extends K> visitChildren(AstVisitor nv)
+	public HeaderParamDeclList<? extends K> visitChildren(AstVisitor v)
 			throws ScribException
 	{
-		List<? extends HeaderParamDecl<K>> nds = 
-				visitChildListWithClassEqualityCheck(this, getParamDeclChildren(), nv);
-		return reconstruct(nds);
-	}
-	
-	public abstract HeaderParamDeclList<K> project(AstFactory af, Role self);  // CHECKME: move to delegate?
-	
-	public int length()
-	{
-		return getParamDeclChildren().size();
-	}
-
-	public boolean isEmpty()
-	{
-		return length() == 0;
+		List<? extends HeaderParamDecl<K>> ps = 
+				visitChildListWithClassEqualityCheck(this, getParamDeclChildren(), v);
+		return reconstruct(ps);
 	}
 
 	// Without enclosing braces -- added by subclasses
 	@Override
 	public String toString()
 	{
-		return getParamDeclChildren().stream().map(nd -> nd.toString())
+		return getParamDeclChildren().stream().map(x -> x.toString())
 				.collect(Collectors.joining(", "));
-	}
-	
-	
-	
-	
-	
-	
-	
-
-	private final List<? extends HeaderParamDecl<K>> decls;
-
-	protected HeaderParamDeclList(CommonTree source, List<? extends HeaderParamDecl<K>> decls)
-	{
-		super(source);
-		this.decls = new LinkedList<>(decls);
 	}
 }

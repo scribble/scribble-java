@@ -14,10 +14,8 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.del.ScribDel;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -25,33 +23,32 @@ import org.scribble.visit.AstVisitor;
 public abstract class Continue<K extends ProtocolKind>
 		extends SimpleSessionNode<K>
 {
+	public static final int RECVAR_CHILD_INDEX = 0;
+	
 	// ScribTreeAdaptor#create constructor
 	public Continue(Token t)
 	{
 		super(t);
-		this.recvar = null;
 	}
 
 	// Tree#dupNode constructor
 	protected Continue(Continue<K> node)
 	{
 		super(node);
-		this.recvar = null;
 	}
 	
 	public abstract Continue<K> dupNode();
 
 	public RecVarNode getRecVarChild()
 	{
-		return (RecVarNode) getChild(0);
+		return (RecVarNode) getChild(RECVAR_CHILD_INDEX);
 	}
 
 	public Continue<K> reconstruct(RecVarNode recvar)
 	{
 		Continue<K> r = dupNode();
-		ScribDel del = del();
 		r.addChild(recvar);
-		r.setDel(del);  // No copy
+		r.setDel(del());  // No copy
 		return r;
 	}
 
@@ -66,22 +63,5 @@ public abstract class Continue<K extends ProtocolKind>
 	public String toString()
 	{
 		return Constants.CONTINUE_KW + " " + getRecVarChild() + ";";
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private final RecVarNode recvar;
-
-	protected Continue(CommonTree source, RecVarNode recvar)
-	{
-		super(source);
-		this.recvar = recvar;
 	}
 }

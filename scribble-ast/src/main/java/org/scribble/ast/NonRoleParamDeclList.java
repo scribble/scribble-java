@@ -17,10 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
 
 // Can contain "mixed" type/sig kinds
@@ -51,6 +49,12 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 		return cast;
 	}
 
+	public List<MemberName<? extends NonRoleParamKind>> getParameters()
+	{
+		return getParamDeclChildren().stream().map(decl -> decl.getDeclName())
+				.collect(Collectors.toList());
+	}
+
 	@Override
 	public NonRoleParamDeclList dupNode()
 	{
@@ -67,19 +71,6 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 		sig.setDel(del);  // No copy
 		return sig;
 	}
-		
-	// CHECKME: move to delegate?
-	@Override
-	public NonRoleParamDeclList project(AstFactory af, Role self)
-	{
-		return af.NonRoleParamDeclList(this.source, getParamDeclChildren());
-	}
-
-	public List<MemberName<? extends NonRoleParamKind>> getParameters()
-	{
-		return getParamDeclChildren().stream().map(decl -> decl.getDeclName())
-				.collect(Collectors.toList());
-	}
 
 	@Override
 	public String toString()
@@ -88,34 +79,4 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 				? ""
 				: "<" + super.toString() + ">";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public NonRoleParamDeclList(CommonTree source, List<NonRoleParamDecl<NonRoleParamKind>> decls)
-	{
-		super(source, decls);
-	}
-
-	/*@Override
-	protected NonRoleParamDeclList copy()
-	{
-		return new NonRoleParamDeclList(this.source, getParamDeclChildren());
-	}
-	
-	@Override
-	public NonRoleParamDeclList clone(AstFactory af)
-	{
-		List<NonRoleParamDecl<NonRoleParamKind>> decls = ScribUtil.cloneList(af, getParamDeclChildren());
-		return af.NonRoleParamDeclList(this.source, decls);
-	}*/
 }

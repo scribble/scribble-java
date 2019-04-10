@@ -30,41 +30,37 @@ import org.scribble.visit.AstVisitor;
 public abstract class DirectedInteraction<K extends ProtocolKind>
 		extends BasicInteraction<K>
 {
+	public static final int MSG_CHILD_INDEX = 0;
+	public static final int SRC_CHILD_INDEX = 1;
+	public static final int DST_CHILDREN_START_INDEX = 2;
+
 	// ScribTreeAdaptor#create constructor
 	public DirectedInteraction(Token t)
 	{
 		super(t);
-		this.src = null;
-		this.msg = null;
-		this.dests = null;
 	}
 
 	// Tree#dupNode constructor
 	public DirectedInteraction(DirectedInteraction<K> node)
 	{
 		super(node);
-		this.src = null;
-		this.msg = null;
-		this.dests = null;
 	}
 	
 	public MessageNode getMessageNodeChild()
 	{
-		return (MessageNode) getChild(0);
+		return (MessageNode) getChild(MSG_CHILD_INDEX);
 	}
 	
 	public RoleNode getSourceChild()
 	{
-		return (RoleNode) getChild(1);
+		return (RoleNode) getChild(SRC_CHILD_INDEX);
 	}
 
-	// CHECKME:  OK for (future) connect?
 	public List<RoleNode> getDestinationChildren()
 	{
-		//return Collections.unmodifiableList(this.dests);
 		List<ScribNode> cs = getChildren();
-		return cs.subList(2, cs.size()).stream().map(x -> (RoleNode) x)
-				.collect(Collectors.toList());
+		return cs.subList(DST_CHILDREN_START_INDEX, cs.size()).stream()
+				.map(x -> (RoleNode) x).collect(Collectors.toList());
 	}
 	
 	public final List<Role> getDestinationRoles()
@@ -83,8 +79,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 		mt.addChild(msg);
 		mt.addChild(src);
 		mt.addChildren(dests);
-		ScribDel del = del();
-		mt.setDel(del);  // No copy
+		mt.setDel(del());  // No copy
 		return mt;
 	}
 
@@ -98,34 +93,5 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 				getDestinationChildren(), nv);
 		return reconstruct(msg, src, dests);
 	}
-	
-	@Override
-	public abstract String toString();
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private final RoleNode src;
-	private final MessageNode msg;  // CHECKME: ambig may get resolved to an unexpected kind, e.g. DataTypeNode (cf. DoArg, PayloadElem wrappers)
-	private final List<RoleNode> dests;
-
-	protected DirectedInteraction(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
-	{
-		super(source);
-		this.src = src;
-		this.msg = msg;
-		this.dests = new LinkedList<>(dests);  // CHECKME: Collections.unmodifiable?
-	}
-
 }
 

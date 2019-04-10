@@ -53,7 +53,7 @@ public class NonRoleArgListDel extends DoArgListDel
 		{
 			NonRoleParamKind kind = param.kind;
 			NonRoleArg arg = args.next();
-			NonRoleArgNode val = arg.getValChild();
+			NonRoleArgNode val = arg.getArgNodeChild();
 			if (val.isTypeParamNode() || val.isSigParamNode()) 
 			{
 				if (!((NonRoleParamNode<?>) val).kind.equals(kind))

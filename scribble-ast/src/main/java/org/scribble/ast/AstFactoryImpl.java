@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
@@ -163,14 +164,15 @@ public class AstFactoryImpl implements AstFactory
 	}*/
 
 	@Override
-	//public UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name)
-	//public UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name)
 	public <K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(
-			CommonTree source, PayloadElemNameNode<K> name)
+			Token t, PayloadElemNameNode<K> name)
 	{
-		UnaryPayloadElem<K> de= new UnaryPayloadElem<>(source, name);
+		UnaryPayloadElem<K> de = new UnaryPayloadElem<>(t);
+		// Cf. Scribble.g children order
+		de.addChild(name);
 		de = del(de, createDefaultDelegate());
 		return de;
+		//throw new RuntimeException("[TODO] : " + name);  // Currently parsed "directly" by ANTLR -- do we still need to construct manually?
 	}
 
 	@Override
@@ -231,39 +233,47 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GProtocolDecl GProtocolDecl(CommonTree source, List<ProtocolMod> mods,
+	public GProtocolDecl GProtocolDecl(Token t, ProtocolModList mods,
 			GProtocolHeader header, GProtocolDef def)
 	{
-		GProtocolDecl gpd = new GProtocolDecl(source, mods, header, def);
+		GProtocolDecl gpd = new GProtocolDecl(t);
+		gpd.addChild(mods);
+		gpd.addChild(header);
+		gpd.addChild(def);
 		gpd = del(gpd, new GProtocolDeclDel());
 		return gpd;
 	}
 
 	@Override
-	public GProtocolHeader GProtocolHeader(CommonTree source,
+	public GProtocolHeader GProtocolHeader(Token t,
 			GProtocolNameNode name, RoleDeclList roledecls,
 			NonRoleParamDeclList paramdecls)
 	{
-		GProtocolHeader gph = new GProtocolHeader(source, name, roledecls,
-				paramdecls);
-		gph = del(gph, createDefaultDelegate());
-		return gph;
+		GProtocolHeader n = new GProtocolHeader(t);
+		n.addChild(name);
+		n.addChild(paramdecls);
+		n.addChild(roledecls);
+		n = del(n, createDefaultDelegate());
+		return n;
 	}
 
 	@Override
-	public RoleDeclList RoleDeclList(CommonTree source, List<RoleDecl> rds)
+	public RoleDeclList RoleDeclList(Token t, List<RoleDecl> rds)
 	{
-		RoleDeclList rdl = new RoleDeclList(source, rds);
+		RoleDeclList rdl = new RoleDeclList(t);
+		// Cf. Scribble.g children order
+		rdl.addChildren(rds);
 		rdl = del(rdl, new RoleDeclListDel());
 		return rdl;
 	}
 
 	@Override
-	public RoleDecl RoleDecl(CommonTree source, RoleNode namenode)
+	public RoleDecl RoleDecl(Token t, RoleNode namenode)
 	{
-		RoleDecl rd = new RoleDecl(source, namenode);
-		rd = del(rd, new RoleDeclDel());
-		return rd;
+		RoleDecl n = new RoleDecl(t);
+		n.addChild(namenode);
+		n = del(n, new RoleDeclDel());
+		return n;
 	}
 
 	/*@Override
@@ -275,10 +285,12 @@ public class AstFactoryImpl implements AstFactory
 	}*/
 
 	@Override
-	public NonRoleParamDeclList NonRoleParamDeclList(CommonTree source,
+	public NonRoleParamDeclList NonRoleParamDeclList(Token t,
 			List<NonRoleParamDecl<NonRoleParamKind>> pds)
 	{
-		NonRoleParamDeclList pdl = new NonRoleParamDeclList(source, pds);
+		NonRoleParamDeclList pdl = new NonRoleParamDeclList(t);
+		// Cf. Scribble.g children order
+		pdl.addChildren(pds);
 		pdl = del(pdl, new NonRoleParamDeclListDel());
 		return pdl;
 	}
@@ -319,39 +331,46 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GMessageTransfer GMessageTransfer(CommonTree source, RoleNode src,
-			MessageNode msg, List<RoleNode> dests)
+	public GMessageTransfer GMessageTransfer(Token t, RoleNode src,
+			MessageNode msg, List<RoleNode> dsts)
 	{
-		GMessageTransfer gmt = new GMessageTransfer(source, src, msg, dests);
-		gmt = del(gmt, new GMessageTransferDel());
-		return gmt;
+		GMessageTransfer n = new GMessageTransfer(t);
+		n.addChild(msg);
+		n.addChild(src);
+		n.addChildren(dsts);
+		n = del(n, new GMessageTransferDel());
+		return n;
 	}
 
 	@Override
-	public GConnect GConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
-	//public GConnect GConnect(RoleNode src, RoleNode dest)
+	public GConnect GConnect(Token t, RoleNode src, MessageNode msg, RoleNode dst)
 	{
-		GConnect gc = new GConnect(source, src, msg, dest);
-		//GConnect gc = new GConnect(src, dest);
-		gc = del(gc, new GConnectDel());
-		return gc;
+		GConnect n = new GConnect(t);
+		n.addChild(msg);
+		n.addChild(src);
+		n.addChild(dst);
+		n = del(n, new GConnectDel());
+		return n;
 	}
 
 	@Override
-	public GDisconnect GDisconnect(CommonTree source, RoleNode src, RoleNode dest)
+	public GDisconnect GDisconnect(Token t, RoleNode left, RoleNode right)
 	{
-		GDisconnect gc = new GDisconnect(source, //UnitMessageSigNode(), 
-				src, dest);
-		gc = del(gc, new GDisconnectDel());
-		return gc;
+		GDisconnect n = new GDisconnect(t);
+		n.addChild(left);
+		n.addChild(right);
+		n = del(n, new GDisconnectDel());
+		return n;
 	}
 
 	@Override
-	public GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest)
+	public GWrap GWrap(Token t, RoleNode src, RoleNode dst)
 	{
-		GWrap gw = new GWrap(source, UnitMessageSigNode(), src, dest);
-		gw = del(gw, new GWrapDel());
-		return gw;
+		GWrap n = new GWrap(t);
+		n.addChild(src);
+		n.addChild(dst);
+		n = del(n, new GWrapDel());
+		return n;
 	}
 
 	@Override
@@ -364,61 +383,71 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GRecursion GRecursion(CommonTree source, RecVarNode recvar,
+	public GRecursion GRecursion(Token t, RecVarNode recvar,
 			GProtocolBlock block)
 	{
-		GRecursion gr = new GRecursion(source, recvar, block);
-		gr = del(gr, new GRecursionDel());
-		return gr;
+		GRecursion n = new GRecursion(t);
+		n.addChild(recvar);
+		n.addChild(block);
+		n = del(n, new GRecursionDel());
+		return n;
 	}
 
 	@Override
-	public GContinue GContinue(CommonTree source, RecVarNode recvar)
+	public GContinue GContinue(Token t, RecVarNode recvar)
 	{
-		GContinue gc = new GContinue(source, recvar);
-		gc = del(gc, new GContinueDel());
-		return gc;
+		GContinue n = new GContinue(t);
+		n.addChild(recvar);
+		n = del(n, new GContinueDel());
+		return n;
 	}
 
 	@Override
-	public GDo GDo(CommonTree source, RoleArgList roleinstans,
+	public GDo GDo(Token t, RoleArgList roleinstans,
 			NonRoleArgList arginstans, GProtocolNameNode proto)
 	{
-		GDo gd = new GDo(source, roleinstans, arginstans, proto);
-		gd = del(gd, new GDoDel());
-		return gd;
+		GDo n = new GDo(t);
+		n.addChild(proto);
+		n.addChild(roleinstans);
+		n.addChild(arginstans);
+		n = del(n, new GDoDel());
+		return n;
 	}
 
 	@Override
-	public RoleArgList RoleArgList(CommonTree source, List<RoleArg> ris)
+	public RoleArgList RoleArgList(Token t, List<RoleArg> ris)
 	{
-		RoleArgList rdl = new RoleArgList(source, ris);
-		rdl = del(rdl, new RoleArgListDel());
-		return rdl;
+		RoleArgList n = new RoleArgList(t);
+		n.addChildren(ris);
+		n = del(n, new RoleArgListDel());
+		return n;
 	}
 
 	@Override
-	public RoleArg RoleArg(CommonTree source, RoleNode role)
+	public RoleArg RoleArg(Token t, RoleNode role)
 	{
-		RoleArg ri = new RoleArg(source, role);
-		ri = del(ri, createDefaultDelegate());
-		return ri;
+		RoleArg n = new RoleArg(t);
+		n.addChild(role);
+		n = del(n, createDefaultDelegate());
+		return n;
 	}
 
 	@Override
-	public NonRoleArgList NonRoleArgList(CommonTree source, List<NonRoleArg> ais)
+	public NonRoleArgList NonRoleArgList(Token t, List<NonRoleArg> ais)
 	{
-		NonRoleArgList rdl = new NonRoleArgList(source, ais);
-		rdl = del(rdl, new NonRoleArgListDel());
-		return rdl;
+		NonRoleArgList n = new NonRoleArgList(t);
+		n.addChildren(ais);
+		n = del(n, new NonRoleArgListDel());
+		return n;
 	}
 
 	@Override
-	public NonRoleArg NonRoleArg(CommonTree source, NonRoleArgNode arg)
+	public NonRoleArg NonRoleArg(Token t, NonRoleArgNode arg)
 	{
-		NonRoleArg ri = new NonRoleArg(source, arg);
-		ri = del(ri, createDefaultDelegate());
-		return ri;
+		NonRoleArg n = new NonRoleArg(t);
+		n.addChild(arg);
+		n = del(n, createDefaultDelegate());
+		return n;
 	}
 
 	@Override

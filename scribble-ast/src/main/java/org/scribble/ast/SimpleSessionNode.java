@@ -14,7 +14,6 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 
 // Name should be read (Simple ( SessionNode ))
@@ -31,19 +30,5 @@ public abstract class SimpleSessionNode<K extends ProtocolKind>
 	public SimpleSessionNode(SimpleSessionNode<K> node)
 	{
 		super(node);
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	protected SimpleSessionNode(CommonTree source)
-	{
-		super(source);
 	}
 }

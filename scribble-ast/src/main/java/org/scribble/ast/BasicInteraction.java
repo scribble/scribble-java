@@ -14,7 +14,6 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 
 public abstract class BasicInteraction<K extends ProtocolKind>
@@ -31,24 +30,5 @@ public abstract class BasicInteraction<K extends ProtocolKind>
 	{
 		super(node);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	protected BasicInteraction(CommonTree source)
-	{
-		super(source);
-	}
-
 }
 

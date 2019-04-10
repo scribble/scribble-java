@@ -18,12 +18,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.NonRoleArgKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.MessageSigName;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.MessageSig;
 
@@ -49,36 +47,22 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 				.collect(Collectors.toList());
 	}
 	
-	@Override
-	public NonRoleArgList dupNode()
+	public List<NonRoleArgNode> getArgNodes()
 	{
-		return new NonRoleArgList(this);
-	}
-
-	@Override
-	public NonRoleArgList project(AstFactory af, Role self)
-	{
-		List<NonRoleArg> args = getArgChildren().stream()
-				.map(ai -> ai.project(af, self)).collect(Collectors.toList());
-		return af.NonRoleArgList(this.source, args);
+		return getArgChildren().stream().map(ai -> ai.getArgNodeChild())
+				.collect(Collectors.toList());
 	}
 	
 	public boolean isEmpty()
 	{
 		return getArgChildren().isEmpty();
 	}
-	
-	public List<NonRoleArgNode> getArgumentNodes()
-	{
-		return getArgChildren().stream().map(ai -> ai.getValChild())
-				.collect(Collectors.toList());
-	}
 
 	// Can return a mix of arg kinds
 	public List<Arg<? extends NonRoleArgKind>> getArguments()
 	{
 		return getArgChildren().stream()
-				.map(ai -> (Arg<?>) ai.getValChild().toArg())
+				.map(ai -> (Arg<?>) ai.getArgNodeChild().toArg())
 				.collect(Collectors.toList());
 	}
 	
@@ -107,6 +91,12 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 		}
 		return cast;
 	}
+	
+	@Override
+	public NonRoleArgList dupNode()
+	{
+		return new NonRoleArgList(this);
+	}
 
 	@Override
 	public String toString()
@@ -115,42 +105,4 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 				? ""
 				: "<" + super.toString() + ">";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public NonRoleArgList(CommonTree source, List<NonRoleArg> args)
-	{
-		super(source, args);
-	}
-
-	/*@Override
-	protected ScribNodeBase copy()
-	{
-		return new NonRoleArgList(this.source, getArgChildren());
-	}
-	
-	@Override
-	public NonRoleArgList clone(AstFactory af)
-	{
-		List<NonRoleArg> args = ScribUtil.cloneList(af, getArgChildren());
-		return af.NonRoleArgList(this.source, args);
-	}
-
-	@Override
-	public DoArgList<NonRoleArg> reconstruct(List<NonRoleArg> instans)
-	{
-		ScribDel del = del();
-		NonRoleArgList ail = new NonRoleArgList(this.source, instans);
-		ail = (NonRoleArgList) ail.del(del);
-		return ail;
-	}*/
 }

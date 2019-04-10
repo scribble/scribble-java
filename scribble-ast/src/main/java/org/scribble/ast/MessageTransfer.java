@@ -13,12 +13,7 @@
  */
 package org.scribble.ast;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.ProtocolKind;
 
 public abstract class MessageTransfer<K extends ProtocolKind>
@@ -28,46 +23,13 @@ public abstract class MessageTransfer<K extends ProtocolKind>
 	public MessageTransfer(Token t)
 	{
 		super(t);
-		this.src = null;
-		this.msg = null;
-		this.dests = null;
 	}
 
 	// Tree#dupNode constructor
 	public MessageTransfer(MessageTransfer<K> node)
 	{
 		super(node);
-		this.src = null;
-		this.msg = null;
-		this.dests = null;
 	}
-
-	public abstract MessageTransfer<K> dupNode();
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private final RoleNode src;
-	private final MessageNode msg;  // CHECKME: ambig may get resolved to an unexpected kind, e.g. DataTypeNode (cf. DoArg, PayloadElem wrappers)
-	private final List<RoleNode> dests;
-
-	protected MessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
-	{
-		super(source, src, msg, dests);
-		this.src = src;
-		this.msg = msg;
-		this.dests = new LinkedList<>(dests);  // CHECKME: Collections.unmodifiable?
-	}
-
 }
+
 

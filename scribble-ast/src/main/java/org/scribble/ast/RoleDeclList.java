@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.name.Role;
 
@@ -41,6 +40,12 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 		return ((List<?>) getChildren()).stream().map(x -> (RoleDecl) x)
 				.collect(Collectors.toList());
 	}
+
+	public List<Role> getRoles()
+	{
+		return getParamDeclChildren().stream().map(decl -> decl.getDeclName())
+				.collect(Collectors.toList());
+	}
 	
 	@Override
 	public RoleDeclList dupNode()
@@ -48,60 +53,9 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 		return new RoleDeclList(this);
 	}
 
-	// CHECKME: Move to del?
-	@Override
-	public RoleDeclList project(AstFactory af, Role self)
-	{
-		return af.RoleDeclList(this.source, getParamDeclChildren());
-	}
-
-	public List<Role> getRoles()
-	{
-		return getParamDeclChildren().stream().map(decl -> decl.getDeclName())
-				.collect(Collectors.toList());
-	}
-
 	@Override
 	public String toString()
 	{
 		return "(" + super.toString() + ")";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public RoleDeclList(CommonTree source, List<RoleDecl> decls)
-	{
-		super(source, decls);
-	}
-
-	/*@Override
-	protected RoleDeclList copy()
-	{
-		return new RoleDeclList(this.source, getParamDeclChildren());
-	}
-	
-	@Override
-	public RoleDeclList clone(AstFactory af)
-	{
-		List<RoleDecl> decls = ScribUtil.cloneList(af, getParamDeclChildren());
-		return af.RoleDeclList(this.source, decls);
-	}
-
-	@Override
-	public HeaderParamDeclList<RoleKind> reconstruct(List<? extends HeaderParamDecl<RoleKind>> decls)
-	{
-		ScribDel del = del();
-		RoleDeclList rdl = new RoleDeclList(this.source, castRoleDecls(decls));
-		rdl = (RoleDeclList) rdl.del(del);
-		return rdl;
-	}*/
 }

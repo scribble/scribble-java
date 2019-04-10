@@ -25,6 +25,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind>
 	{
 
 	}
+
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException

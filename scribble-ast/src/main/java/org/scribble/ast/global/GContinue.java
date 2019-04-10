@@ -14,9 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Continue;
-import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.core.type.kind.Global;
 
 public class GContinue extends Continue<Global> implements GSimpleSessionNode
@@ -38,40 +36,4 @@ public class GContinue extends Continue<Global> implements GSimpleSessionNode
 	{
 		return new GContinue(this);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public GContinue(CommonTree source, RecVarNode recvar)
-	{
-		super(source, recvar);
-	}
-
-	/*@Override
-	protected GContinue copy()
-	{
-		return new GContinue(this.source, this.recvar);
-	}
-	
-	@Override
-	public GContinue clone(AstFactory af)
-	{
-		RecVarNode rv = this.recvar.clone(af);
-		return af.GContinue(this.source, rv);
-	}
-
-	@Override
-	public GContinue reconstruct(RecVarNode recvar)
-	{
-		ScribDel del = del();
-		GContinue gc = new GContinue(this.source, recvar);
-		gc = (GContinue) gc.del(del);
-		return gc;
-	}*/
 }

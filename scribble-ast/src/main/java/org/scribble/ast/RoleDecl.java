@@ -14,7 +14,6 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.name.Role;
@@ -51,54 +50,10 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	{
 		return getNameNodeChild().toName();
 	}
-	
-	public boolean isSelfRoleDecl()
-	{
-		return false;
-	}
 
 	@Override
 	public String getKeyword()
 	{
 		return Constants.ROLE_KW;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public RoleDecl(CommonTree source, RoleNode name)
-	{
-		super(source, name);
-	}
-
-	/*@Override
-	protected RoleDecl copy()
-	{
-		return new RoleDecl(this.source, (RoleNode) this.name);
-	}
-	
-	@Override
-	public RoleDecl clone(AstFactory af)
-	{
-		RoleNode role = (RoleNode) this.name.clone(af);
-		return af.RoleDecl(this.source, role);
-	}
-
-	@Override
-	public RoleDecl reconstruct(SimpleNameNode<RoleKind> name)
-	{
-		ScribDel del = del();
-		RoleDecl rd = new RoleDecl(this.source, (RoleNode) name);
-		rd = (RoleDecl) rd.del(del);
-		return rd;
-	}*/
-
 }

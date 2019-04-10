@@ -14,10 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Do;
-import org.scribble.ast.NonRoleArgList;
-import org.scribble.ast.RoleArgList;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Global;
@@ -41,7 +38,7 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	@Override
 	public GProtocolNameNode getProtocolNameNode()
 	{
-		return (GProtocolNameNode) getChild(0);
+		return (GProtocolNameNode) getChild(Do.NAME_CHILD_INDEX);
 	}
 	
 	@Override
@@ -62,49 +59,4 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	{
 		return (GProtocolDecl) super.getTargetProtocolDecl(jcontext, mcontext);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public GDo(CommonTree source, RoleArgList roles, NonRoleArgList args, GProtocolNameNode proto)
-	{
-		super(source, roles, args, proto);
-	}
-
-	/*@Override
-	protected ScribNodeBase copy()
-	{
-		return new GDo(this.source, this.roles, this.args, getProtocolNameNode());
-	}
-	
-	@Override
-	public GDo clone(AstFactory af)
-	{
-		RoleArgList roles = this.roles.clone(af);
-		NonRoleArgList args = this.args.clone(af);
-		GProtocolNameNode proto = this.getProtocolNameNode().clone(af);
-		return af.GDo(this.source, roles, args, proto);
-	}
-
-	@Override
-	public GDo reconstruct(RoleArgList roles, NonRoleArgList args, ProtocolNameNode<Global> proto)
-	{
-		ScribDel del = del();
-		GDo gd = new GDo(this.source, roles, args, (GProtocolNameNode) proto);
-		gd = (GDo) gd.del(del);
-		return gd;
-	}*/
 }

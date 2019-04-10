@@ -79,7 +79,6 @@ public class ModuleContextCollector
 		
 		return new ModuleContext(root.getFullModuleName(), deps, visible);
 	}
-	
 
 	// Register mod under name modname, modname could be the full module name or an import alias
 	// Adds member names qualified by mod

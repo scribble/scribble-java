@@ -28,33 +28,27 @@ import org.scribble.visit.SimpleAstVisitor;
  */
 public interface ScribNode extends Tree
 {
+	CommonTree getSource();  
+			// Previously: for parsed entities, null if not parsed
+			// Now: for the original parsed entity for error blaming; should not be null unless a "purely generated" entity
+
 	@Override
 	ScribNode getParent();
 
 	//@Override -- super return isn't generic
 	List<ScribNode> getChildren();
 
-	//void setChildren(List<ScribNode> children);  // protected
-
-  // Returns a deep clone but with fresh dels (i.e. dels not copied) -- use the af to build with fresh dels -- XXX
-	// i.e. recursively using AstFactory to rebuild the whole subtree
-	// Cf. node specific reconstructs, retain (i.e. share) the existing del -- so dels must be immutable (except for Envs)
-	//ScribNode clone(AstFactory af);
-
 	ScribNode clone();
 
 	ScribDel del();
 	ScribNode del(ScribDel del);
+
+	ScribNode accept(AstVisitor nv) throws ScribException;  // The "top-level" method, e.g., module.accept(v)  (cf. Job::runVisitorOnModule)
+	ScribNode visitChildren(AstVisitor nv) throws ScribException;
 	
+	// "Simpler" version than above
 	default <T> T visitWith(SimpleAstVisitor<T> v) throws ScribException  // "Top-level" visitor entry method
 	{
 		return v.visit(this);  // N.B. ScribNode has getParent
 	}
-
-	CommonTree getSource();  
-			// Previously: for parsed entities, null if not parsed
-			// Now: for the original parsed entity for error blaming; should not be null unless a "purely generated" entity
-
-	ScribNode accept(AstVisitor nv) throws ScribException;  // The "top-level" method, e.g., module.accept(v)  (cf. Job::runVisitorOnModule)
-	ScribNode visitChildren(AstVisitor nv) throws ScribException;
 }

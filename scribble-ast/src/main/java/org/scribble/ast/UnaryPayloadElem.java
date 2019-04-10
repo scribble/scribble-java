@@ -14,7 +14,6 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.core.type.kind.PayloadTypeKind;
 import org.scribble.core.type.name.PayloadElemType;
@@ -25,6 +24,7 @@ import org.scribble.visit.AstVisitor;
 
 // TODO: make abstract, and make a DataTypeElem subclass with DataTypeKind parameter instance (alongside LDelegationElem)
 
+// FIXME: refactor: generic typing issues, no concrete name<K> field any more
 // Cf. DoArg, wrapper for a (unary) name node of potentially unknown kind (needs disamb)
 // PayloadTypeKind is DataType or Local, but Local has its own special subclass (and protocol params not allowed), so this should implicitly be for DataType only
 // AST hierarchy requires unary and delegation (binary pair) payloads to be structurally distinguished
@@ -32,24 +32,25 @@ import org.scribble.visit.AstVisitor;
 public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase
 		implements PayloadElem<K>// extends PayloadElem
 {
+	// cf. Scribble.g
+	public static final int NAME_CHILD_INDEX = 0;
+	
 	// ScribTreeAdaptor#create constructor
 	public UnaryPayloadElem(Token t)
 	{
 		super(t);
-		this.name = null;
 	}
 
 	// Tree#dupNode constructor
 	public UnaryPayloadElem(UnaryPayloadElem<K> node)
 	{
 		super(node);
-		this.name = null;
 	}
 	
 	public PayloadElemNameNode<K> getNameChild()
 	{
 		@SuppressWarnings("unchecked")
-		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) getChild(0);  
+		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) getChild(NAME_CHILD_INDEX);  
 				// CHECKME: probably need to record an explicit kind token, for "cast checking"
 				// Cannot use ScribNodeBase.visitChildWithCastCheck because this is not a ProtocolKindNode
 		return name;
@@ -93,55 +94,5 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase
 	{
 		return getNameChild().toString();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private final PayloadElemNameNode<K> name;   // (Ambig.) DataTypeNode or parameter
-
-	//public DataTypeElem(PayloadElemNameNode<DataTypeKind> name)
-	//public UnaryPayloadlem(DataTypeNode data)
-	//public UnaryPayloadElem(PayloadElemNameNode name)
-	public UnaryPayloadElem(CommonTree source, PayloadElemNameNode<K> name)
-	{
-		//super(name);
-		//this.data = data;
-		super(source);
-		this.name = name;
-	}
-
-	/*@Override
-	protected UnaryPayloadElem<K> copy()
-	{
-		//return new UnaryPayloadElem(this.data);
-		return new UnaryPayloadElem<>(this.source, this.name);
-	}
-	
-	@Override
-	public UnaryPayloadElem<K> clone(AstFactory af)
-	{
-		//PayloadElemNameNode<DataTypeKind> name = (PayloadElemNameNode<DataTypeKind>) this.data.clone();  // FIXME: make a DataTypeNameNode
-		//PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) this.name.clone();
-		PayloadElemNameNode<K> name = ScribUtil.checkNodeClassEquality(this.name, this.name.clone(af));
-		return af.UnaryPayloadElem(this.source, name);
-	}
-
-	//public DataTypeElem reconstruct(PayloadElemNameNode<DataTypeKind> name)
-	//public UnaryPayloadElem reconstruct(DataTypeNode name)
-	public UnaryPayloadElem<K> reconstruct(PayloadElemNameNode<K> name)
-	{
-		ScribDel del = del();
-		UnaryPayloadElem<K> elem = new UnaryPayloadElem<>(this.source, name);
-		elem = ScribNodeBase.del(elem, del);
-		return elem;
-	}*/
 }
+

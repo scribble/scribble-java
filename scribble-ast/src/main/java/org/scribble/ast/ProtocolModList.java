@@ -34,6 +34,28 @@ public class ProtocolModList extends ScribNodeBase
 	{
 		super(node);
 	}
+
+	// Cf., NameNode::getSimpleNameList
+	public List<ProtocolMod> getModList()
+	{
+		return ((List<?>) getChildren()).stream().map(x -> (ProtocolMod) x)
+				.collect(Collectors.toList());
+	}
+	
+	public boolean hasAux()
+	{
+		return getModList().stream().anyMatch(x -> x.isAux());
+	}
+	
+	public boolean hasExplicit()
+	{
+		return getModList().stream().anyMatch(x -> x.isExplicit());
+	}
+
+	public boolean isEmpty()
+	{
+		return getChildCount() == 0;
+	}
 	
 	@Override
 	public ProtocolModList dupNode()
@@ -48,49 +70,10 @@ public class ProtocolModList extends ScribNodeBase
 		return this;
 	}
 
-	// Cf., NameNode::getSimpleNameList
-	public List<ProtocolMod> getModList()
-	{
-		/*return ((List<?>) getChildren()).stream()
-				.map(x -> parseModifier(((CommonTree) x).getText()))
-				.collect(Collectors.toList());
-					// CHECKME: currently AmbigNameNode(?)
-					// CHECKME: factor out getText?*/
-		return ((List<?>) getChildren()).stream().map(x -> (ProtocolMod) x)
-				.collect(Collectors.toList());
-	}
-	
-	public boolean hasAux()
-	{
-		//return getModList().contains(ProtocolMod.AUX);
-		return getModList().stream().anyMatch(x -> x.isAux());
-	}
-	
-	public boolean hasExplicit()
-	{
-		//return getModList().contains(ProtocolMod.EXPLICIT);
-		return getModList().stream().anyMatch(x -> x.isExplicit());
-	}
-
-	public boolean isEmpty()
-	{
-		return getChildCount() == 0;
-	}
-
 	@Override
 	public String toString()
 	{
 		return getModList().stream().map(x -> x.toString())
 				.collect(Collectors.joining(" "));
 	}
-
-	/*private ProtocolMod parseModifier(String mod)
-	{
-		switch (mod)
-		{
-			case "aux":      return ProtocolMod.AUX;
-			case "explicit": return ProtocolMod.EXPLICIT;
-			default: throw new RuntimeException("Unknown modifier: " + mod);
-		}
-	}*/
 }

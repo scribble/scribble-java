@@ -69,12 +69,14 @@ module tmp.Test;
 // move lang types to type.sess, and move new visit
 // try modulecontextvisitor by "static lookup"
 // try move antlrwrapper to parser again
+//for isSingleConts (and project, buildGraph), make T visitWith(STypeReducer<K, B> v) ? -- roleenabling and extchoicecons are more like reducers?
+
+// refactor scribble.g, simplify ast/del/etc class names and deprecated class code
+		// CHECKME: duplicte proto mods
 
 // re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 // refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
-// refactor scribble.g, simplify ast/del/etc class names and deprecated class code
 	//make a visitor factory
-	//for isSingleConts (and project, buildGraph), make T visitWith(STypeReducer<K, B> v) ? -- roleenabling and extchoicecons are more like reducers?
 
 // add exp conn checks to model validation
 // use stypefactory in core -- also make a visitorfactory

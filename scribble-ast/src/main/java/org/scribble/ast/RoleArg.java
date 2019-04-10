@@ -14,10 +14,7 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.kind.RoleKind;
-import org.scribble.core.type.name.Role;
 
 // CHECKME: can this be simplified to an interface?  (also NonRoleArg)
 public class RoleArg extends DoArg<RoleNode>
@@ -35,7 +32,7 @@ public class RoleArg extends DoArg<RoleNode>
 	}
 	
 	@Override
-	public RoleNode getValChild()
+	public RoleNode getArgNodeChild()
 	{
 		return (RoleNode) getChild(0);
 	}
@@ -45,56 +42,4 @@ public class RoleArg extends DoArg<RoleNode>
 	{
 		return new RoleArg(this);
 	}
-	
-	// CHECKME: move to delegate?
-	@Override
-	public RoleArg project(AstFactory af, Role self)
-	{
-		RoleNode r = getValChild();
-		RoleNode rn = (RoleNode) af.SimpleNameNode(r.source, RoleKind.KIND,
-				r.toName().toString());
-		return af.RoleArg(this.source, rn);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public RoleArg(CommonTree source, RoleNode arg)
-	{
-		super(source, arg);
-	}
-
-	/*@Override
-	protected ScribNodeBase copy()
-	{
-		return new RoleArg(this.source, getValChild());
-	}	
-	
-	@Override
-	public RoleArg clone(AstFactory af)
-	{
-		RoleNode role = getValChild().clone(af);
-		return af.RoleArg(this.source, role);
-	}
-
-	@Override
-	public RoleArg reconstruct(RoleNode arg)
-	{
-		ScribDel del = del();
-		RoleArg ri = new RoleArg(this.source, arg);
-		ri = (RoleArg) ri.del(del);
-		return ri;
-	}
-	
-	@Override
-	public RoleNode getValChild()
-	{
-		return (RoleNode) super.getValChild();
-	}*/
 }

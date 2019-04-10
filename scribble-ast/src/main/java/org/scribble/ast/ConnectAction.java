@@ -14,11 +14,8 @@
 package org.scribble.ast;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.ProtocolKind;
 
@@ -30,18 +27,12 @@ public abstract class ConnectAction<K extends ProtocolKind>
 	public ConnectAction(Token t)
 	{
 		super(t);
-		this.src = null;
-		this.msg = null;
-		this.dest = null;
 	}
 
 	// Tree#dupNode constructor
 	public ConnectAction(ConnectAction<K> node)
 	{
 		super(node);
-		this.src = null;
-		this.msg = null;
-		this.dest = null;
 	}
 	
 	// TODO: refactor
@@ -55,7 +46,7 @@ public abstract class ConnectAction<K extends ProtocolKind>
 		return dests.get(0);
 	}
 	
-	// Currently only used for toString, because current syntax allows "connect" with no explicit message
+	// CHECKME: currently only used for toString, because current syntax allows "connect" with no explicit message ?
 	protected boolean isUnitMessage()
 	{
 		MessageNode n = getMessageNodeChild();
@@ -65,28 +56,5 @@ public abstract class ConnectAction<K extends ProtocolKind>
 		}
 		MessageSigNode msn = (MessageSigNode) n;
 		return msn.getOpChild().isEmpty() && msn.getPayloadListChild().isEmpty();
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private final RoleNode src;
-	private final MessageNode msg;
-	private final RoleNode dest;
-
-	protected ConnectAction(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
-	//protected ConnectionAction(RoleNode src, RoleNode dest)
-	{
-		super(source, src, msg, Stream.of(dest).collect(Collectors.toList()));
-		this.src = src;
-		this.msg = msg;
-		this.dest = dest;
 	}
 }

@@ -14,10 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ConnectAction;
-import org.scribble.ast.MessageNode;
-import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
 import org.scribble.util.Constants;
 
@@ -50,53 +47,4 @@ public class GConnect extends ConnectAction<Global>
 				+ Constants.CONNECT_KW + " " + getSourceChild() + " " + Constants.TO_KW
 				+ " " + getDestinationChild() + ";";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public GConnect(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
-	//public GConnect(RoleNode src, RoleNode dest)
-	{
-		super(source, src, msg, dest);
-		//super(src, dest);
-	}
-
-	/*@Override
-	protected GConnect copy()
-	{
-		return new GConnect(this.source, this.src, this.msg, this.dest);
-		//return new GConnect(this.src, this.dest);
-	}
-	
-	@Override
-	public GConnect clone(AstFactory af)
-	{
-		RoleNode src = this.src.clone(af);
-		MessageNode msg = this.msg.clone(af);
-		RoleNode dest = this.dest.clone(af);
-		return af.GConnect(this.source, src, msg, dest);
-		//return AstFactoryImpl.FACTORY.GConnect(src, dest);
-	}*/
-
-	/*@Override
-	public GConnect reconstruct(MessageNode msg, RoleNode src, RoleNode dest)
-	//public GConnect reconstruct(RoleNode src, RoleNode dest)
-	{
-		ScribDel del = del();
-		GConnect gc = new GConnect(this.source, src, msg, dest);
-		//GConnect gc = new GConnect(src, dest);
-		gc = (GConnect) gc.del(del);
-		return gc;
-	}*/
 }

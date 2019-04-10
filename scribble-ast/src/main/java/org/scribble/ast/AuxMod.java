@@ -28,17 +28,17 @@ public class AuxMod extends ProtocolMod
 	{
 		super(node);
 	}
-
-	@Override
-	public boolean isAux()
-	{
-		return true;
-	}
 	
 	@Override
 	public AuxMod dupNode()
 	{
 		return new AuxMod(this);  // return this also OK, since no children
+	}
+
+	@Override
+	public boolean isAux()
+	{
+		return true;
 	}
 	
 	@Override

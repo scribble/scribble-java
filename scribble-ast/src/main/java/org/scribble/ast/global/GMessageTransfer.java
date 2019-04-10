@@ -13,14 +13,10 @@
  */
 package org.scribble.ast.global;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
-import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
 import org.scribble.util.Constants;
 
@@ -55,48 +51,4 @@ public class GMessageTransfer extends MessageTransfer<Global>
 						.collect(Collectors.joining(", "))
 				+ ";";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public GMessageTransfer(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
-	{
-		super(source, src, msg, dests);
-	}
-
-	/*@Override
-	protected GMessageTransfer copy()
-	{
-		return new GMessageTransfer(this.source, this.src, this.msg, getDestinationChildren());
-	}
-	
-	@Override
-	public GMessageTransfer clone(AstFactory af)
-	{
-		RoleNode src = this.src.clone(af);
-		MessageNode msg = this.msg.clone(af);
-		List<RoleNode> dests = ScribUtil.cloneList(af, getDestinationChildren());
-		return af.GMessageTransfer(this.source, src, msg, dests);
-	}*/
-
-	/*@Override
-	public GMessageTransfer reconstruct(RoleNode src, MessageNode msg,
-			List<RoleNode> dests)
-	{
-		ScribDel del = del();
-		GMessageTransfer gmt = new GMessageTransfer(this.source, src, msg, dests);
-		gmt = (GMessageTransfer) gmt.del(del);
-		return gmt;
-	}*/
 }

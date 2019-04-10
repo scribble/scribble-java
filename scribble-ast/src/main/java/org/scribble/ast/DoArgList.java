@@ -13,13 +13,10 @@
  */
 package org.scribble.ast;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -27,20 +24,18 @@ import org.scribble.visit.AstVisitor;
 // Cf. HeaderParameterDeclList -- but not kinded, because cannot determine Arg kind directly from node syntax itself (kinding for ModelNodes is to supplement syntactic information, not "typing" work)
 // DoArgList (NonRoleArgList) can be of mixed kinds, so DoArg (NonRoleArg) used as "wildcard" wrapper
 // "? extends InstantiationNode" not enforced here (e.g. can put "? extends ModelNode"), because ultimately any instantiation of this class needs an actual instance of "Instantiation" which has to have a parameter that extends "InstantiationNode"
-public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase  
+public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 {
 	// ScribTreeAdaptor#create constructor
 	public DoArgList(Token t)
 	{
 		super(t);
-		this.args = null;
 	}
 
 	// Tree#dupNode constructor
 	public DoArgList(DoArgList<T> node)
 	{
 		super(node);
-		this.args = null;
 	}
 	
 	protected List<ScribNode> getRawArgChildren()
@@ -49,6 +44,11 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 	}
 	
 	public abstract List<T> getArgChildren();
+
+	public int length()
+	{
+		return getChildCount();
+	}
 	
 	@Override
 	public abstract DoArgList<T> dupNode();
@@ -62,19 +62,12 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 		return argList;
 	}
 	
-	public abstract DoArgList<T> project(AstFactory af, Role self);
-	
 	@Override
 	public DoArgList<T> visitChildren(AstVisitor nv) throws ScribException
 	{
 		List<T> nds = 
 				visitChildListWithClassEqualityCheck(this, getArgChildren(), nv);
 		return reconstruct(nds);
-	}
-
-	public int length()
-	{
-		return getChildCount();
 	}
 	
 	// Like HeaderParamDeclList, without enclosing braces -- added by subclasses
@@ -84,22 +77,4 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 		return getArgChildren().stream().map(a -> a.toString())
 				.collect(Collectors.joining(", "));
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	private final List<T> args;
-
-	public DoArgList(CommonTree source, List<T> is)
-	{
-		super(source);
-		this.args = new LinkedList<>(is);
-	}
-	
 }

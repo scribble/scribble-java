@@ -13,11 +13,9 @@
  */
 package org.scribble.ast;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
@@ -28,49 +26,48 @@ import org.scribble.visit.AstVisitor;
 public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 		implements ModuleMember, ProtocolKindNode<K>
 {
+	public static final int MODLIST_CHILD = 0;
+	public static final int HEADER_CHILD = 1;
+	public static final int DEF_CHILD = 2;
 
 	// ScribTreeAdaptor#create constructor
 	protected ProtocolDecl(Token t)
 	{
 		super(t);
-		this.modifiers = null;
-		this.header = null;
-		this.def = null;
 	}
 	
 	// Tree#dupNode constructor
 	protected ProtocolDecl(ProtocolDecl<K> node)
 	{
 		super(node);
-		this.modifiers = null;
-		this.header = null;
-		this.def = null;
 	}
 	
 	public abstract ProtocolDecl<K> dupNode();
 
 	public boolean isAux()
 	{
-		//return getModifierListChild().getModList().contains(ProtocolMod.AUX);
 		return getModifierListChild().hasAux();
 	}
 
 	public boolean isExplicit()
 	{
-		//return getModifierListChild().getModList().contains(ProtocolMod.EXPLICIT);
 		return getModifierListChild().hasExplicit();
 	}
 	
 	public ProtocolModList getModifierListChild()
 	{
-		return (ProtocolModList) getChild(0);
+		return (ProtocolModList) getChild(MODLIST_CHILD);
 	}
 
 	// Implement in subclasses to avoid generic cast
 	public abstract ProtocolHeader<K> getHeaderChild();
 	public abstract ProtocolDef<K> getDefChild();
-
-	//public abstract ProtocolName<? extends ProtocolKind> getFullProtocolName(Module mod);
+	
+	public List<Role> getRoles()
+	{
+		// WF disallows unused role declarations
+		return getHeaderChild().getRoleDeclListChild().getRoles();
+	}
 
 	public ProtocolDecl<K> reconstruct(ProtocolModList mods,
 			ProtocolHeader<K> header,	ProtocolDef<K> def)  
@@ -96,41 +93,11 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 		return reconstruct(mods, header, def);
 	}
 	
-	public List<Role> getRoles()
-	{
-		// WF disallows unused role declarations
-		return getHeaderChild().getRoleDeclListChild().getRoles();
-	}
-	
 	@Override
 	public String toString()
 	{
 		ProtocolModList mods = getModifierListChild();
 		return (mods.isEmpty() ? "" : mods + " ") + getHeaderChild() + " "
 				+ getDefChild();
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	// Maybe just use standard pattern, make private with casting getters -- works better (e.g. to use overridden getName)
-	public final List<ProtocolMod> modifiers;
-	private final ProtocolHeader<K> header;
-	private final ProtocolDef<K> def;
-
-	protected ProtocolDecl(CommonTree source, List<ProtocolMod> modifiers,
-			ProtocolHeader<K> header, ProtocolDef<K> def)
-	{
-		super(source);
-		this.modifiers = Collections.unmodifiableList(modifiers);
-		this.header = header;
-		this.def = def;
 	}
 }

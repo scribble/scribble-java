@@ -14,10 +14,8 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -26,30 +24,29 @@ import org.scribble.visit.AstVisitor;
 public abstract class DisconnectAction<K extends ProtocolKind>
 		extends BasicInteraction<K>
 {
+	public static final int LEFT_CHILD_INDEX = 0;
+	public static final int RIGHT_CHILD_INDEX = 1;
+
 	// ScribTreeAdaptor#create constructor
 	public DisconnectAction(Token t)
 	{
 		super(t);
-		this.left = null;
-		this.right = null;
 	}
 
 	// Tree#dupNode constructor
 	public DisconnectAction(DisconnectAction<K> node)
 	{
 		super(node);
-		this.left = null;
-		this.right = null;
 	}
 	
 	public RoleNode getLeftChild()
 	{
-		return (RoleNode) getChild(0);
+		return (RoleNode) getChild(LEFT_CHILD_INDEX);
 	}
 
 	public RoleNode getRightChild()
 	{
-		return (RoleNode) getChild(1);
+		return (RoleNode) getChild(RIGHT_CHILD_INDEX);
 	}
 	
 	public abstract DisconnectAction<K> dupNode();
@@ -59,8 +56,7 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 		DisconnectAction<K> da = dupNode();
 		da.addChild(left);
 		da.addChild(right);
-		ScribDel del = del();
-		da.setDel(del);  // No copy
+		da.setDel(del());  // No copy
 		return da;
 	}
 
@@ -71,30 +67,5 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 		RoleNode src = (RoleNode) visitChild(getLeftChild(), nv);
 		RoleNode dest = (RoleNode) visitChild(getRightChild(), nv);
 		return reconstruct(src, dest);
-	}
-	
-	@Override
-	public abstract String toString();
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public final RoleNode left;
-	public final RoleNode right;
-
-	protected DisconnectAction(CommonTree source, RoleNode src, RoleNode dest)
-	{
-		super(source);
-		this.left = src;
-		this.right = dest;
 	}
 }
