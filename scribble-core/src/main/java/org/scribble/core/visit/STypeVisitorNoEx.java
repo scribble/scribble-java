@@ -2,6 +2,7 @@ package org.scribble.core.visit;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
@@ -15,8 +16,15 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, B>>
+	//extends STypeAgg<K, B, SType<K, B>>
 	//extends STypeVisitor<K, B>  // Not useful, and causes mixups ?
 {
+//	@Override
+//	protected SType<K, B> unit()
+//	{
+//		return null;
+//	}
+	
 	// SType return for extensibility/flexibility
 	public SType<K, B> visitContinue(Continue<K, B> n)
 	{

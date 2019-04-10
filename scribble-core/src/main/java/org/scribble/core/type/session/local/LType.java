@@ -43,6 +43,10 @@ public interface LType extends SType<Local, LSeq>, LNode
 
 
 
+
+
+
+
 	/*@Override
 	LType substitute(Substitutions subs);*/  // Otherwise causes return type inconsistency with base abstract classes
 

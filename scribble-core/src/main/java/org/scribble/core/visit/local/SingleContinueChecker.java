@@ -12,6 +12,7 @@ import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
+import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeAgg;
@@ -28,13 +29,13 @@ public class SingleContinueChecker extends STypeAgg<Local, LSeq, Boolean>
 	}
 
 	@Override
-	public Boolean unit()
+	public Boolean unit(SType<Local, LSeq> n)
 	{
 		return false;
 	}
 
 	@Override
-	public Boolean agg(Stream<Boolean> bs)
+	public Boolean agg(SType<Local, LSeq> n, Stream<Boolean> bs)
 	{
 		return bs.allMatch(x -> x);
 	}
@@ -48,7 +49,7 @@ public class SingleContinueChecker extends STypeAgg<Local, LSeq, Boolean>
 	@Override
 	public Boolean visitChoice(Choice<Local, LSeq> n)
 	{
-		return agg(n.blocks.stream().map(x -> x.aggregate(this)));
+		return agg(n, n.blocks.stream().map(x -> x.aggregate(this)));
 	}
 
 	@Override
