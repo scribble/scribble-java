@@ -19,9 +19,8 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.visit.STypeAgg;
+import org.scribble.core.visit.STypeAggNoEx;
 import org.scribble.core.visit.STypeVisitor;
-import org.scribble.core.visit.STypeVisitorNoEx;
 import org.scribble.util.ScribException;
 
 public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
@@ -47,15 +46,9 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 	{
 		return v.visitRecursion(this);
 	}
-
-	@Override
-	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
-	{
-		return v.visitRecursion(this);
-	}
 	
 	@Override
-	public <T> T aggregate(STypeAgg<K, B, T> v)
+	public <T> T aggregate(STypeAggNoEx<K, B, T> v)
 	{
 		return v.visitRecursion(this);
 	}
@@ -108,7 +101,15 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 	
 	
 	
-	/*@Override
+	/*
+	@Override
+	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
+	{
+		return v.visitRecursion(this);
+	}
+
+
+	@Override
 	public Set<Role> getRoles()
 	{
 		return this.body.getRoles();

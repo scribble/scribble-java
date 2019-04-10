@@ -20,9 +20,8 @@ import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.STypeBase;
-import org.scribble.core.visit.STypeAgg;
+import org.scribble.core.visit.STypeAggNoEx;
 import org.scribble.core.visit.STypeVisitor;
-import org.scribble.core.visit.STypeVisitorNoEx;
 
 // Used only *during* projection -- filtered out by GSeq::projection
 public class LSkip extends STypeBase<Local, LSeq> implements LType
@@ -41,13 +40,7 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	}
 
 	@Override
-	public LSkip visitWithNoEx(STypeVisitorNoEx<Local, LSeq> v)
-	{
-		throw new RuntimeException("Unsupported for Skip: " + this);
-	}
-
-	@Override
-	public <T> T aggregate(STypeAgg<Local, LSeq, T> v)
+	public <T> T aggregate(STypeAggNoEx<Local, LSeq, T> v)
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
 	}

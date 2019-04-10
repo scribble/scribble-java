@@ -15,8 +15,7 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, B>>
-	extends STypeAgg<K, B, SType<K, B>>  // T = SType, for extensibility/flexibility
-	//extends STypeVisitor<K, B>  // Not useful, and causes mixups ?
+	extends STypeAggNoEx<K, B, SType<K, B>>  // T = SType gives reconstruction flexibility/extensibility
 {
 	@Override
 	protected final SType<K, B> unit(SType<K, B> n)

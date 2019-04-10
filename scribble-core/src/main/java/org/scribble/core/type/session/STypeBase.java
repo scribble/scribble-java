@@ -15,6 +15,7 @@ package org.scribble.core.type.session;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.visit.STypeVisitorNoEx;
 
 // SessTypeBase is to SessType as ScribNodeBase is to ScribNode
 public abstract class STypeBase<K extends ProtocolKind, B extends Seq<K, B>>
@@ -29,6 +30,12 @@ public abstract class STypeBase<K extends ProtocolKind, B extends Seq<K, B>>
 				: CommonTree.clone();  // clone not visibile*/
 				// CHECKME: ScribNodes are technically mutable -- though should be treated immutable (defensive copies) post disamb, i.e., in core passes
 		this.source = source;
+	}
+
+	@Override
+	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
+	{
+		return aggregate(v);
 	}
 
 	@Override

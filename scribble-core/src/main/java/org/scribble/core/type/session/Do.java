@@ -24,9 +24,8 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.visit.STypeAgg;
+import org.scribble.core.visit.STypeAggNoEx;
 import org.scribble.core.visit.STypeVisitor;
-import org.scribble.core.visit.STypeVisitorNoEx;
 import org.scribble.util.ScribException;
 
 public abstract class Do
@@ -55,15 +54,9 @@ public abstract class Do
 	{
 		return v.visitDo(this);
 	}
-
-	@Override
-	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
-	{
-		return v.visitDo(this);
-	}
 	
 	@Override
-	public <T> T aggregate(STypeAgg<K, B, T> v)
+	public <T> T aggregate(STypeAggNoEx<K, B, T> v)
 	{
 		return v.visitDo(this);
 	}
@@ -128,7 +121,14 @@ public abstract class Do
 	
 	
 
-	/*@Override
+	/*
+	@Override
+	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
+	{
+		return v.visitDo(this);
+	}
+
+	@Override
 	public Set<Role> getRoles()
 	{
 		return this.roles.stream().collect(Collectors.toSet());

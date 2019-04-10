@@ -13,11 +13,10 @@ import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
-// Visitor could be refactored as an Agg, but not worth it?  (T = List<SType>, unit = n.getChildren(), agg = reconstruct)
-// (Could also do T = SType, unit = n and if agg method extended to take n as a param, for n-sensitive agg, e.g., Choice)
-// (Or T = B ... ?  cf. Stream<T>, for Choice reconstruct)
-// Another factor is about throws ScribException
-public abstract class STypeAgg<K extends ProtocolKind, B extends Seq<K, B>, T>
+// Alternative characterisations of STypeVisitor as STypeAgg?
+// T = List<SType>, unit = n.getChildren(), agg = reconstruct
+// T = B ... ?  cf. Stream<T>, for Choice reconstruct
+public abstract class STypeAggNoEx<K extends ProtocolKind, B extends Seq<K, B>, T>
 {
 	// Internal use
 	protected abstract T unit(SType<K, B> n);

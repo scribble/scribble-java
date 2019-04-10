@@ -19,9 +19,8 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.visit.STypeAgg;
+import org.scribble.core.visit.STypeAggNoEx;
 import org.scribble.core.visit.STypeVisitor;
-import org.scribble.core.visit.STypeVisitorNoEx;
 import org.scribble.util.ScribException;
 
 // Besides directed-ness, also features a Message
@@ -51,15 +50,9 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 	{
 		return v.visitDirectedInteraction(this);
 	}
-
-	@Override
-	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
-	{
-		return v.visitDirectedInteraction(this);
-	}
 	
 	@Override
-	public <T> T aggregate(STypeAgg<K, B, T> v)
+	public <T> T aggregate(STypeAggNoEx<K, B, T> v)
 	{
 		return v.visitDirectedInteraction(this);
 	}
@@ -116,7 +109,14 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 	
 	
 
-	/*@Override
+	/*
+	@Override
+	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
+	{
+		return v.visitDirectedInteraction(this);
+	}
+
+	@Override
 	public Set<Role> getRoles()
 	{
 		// Includes self
