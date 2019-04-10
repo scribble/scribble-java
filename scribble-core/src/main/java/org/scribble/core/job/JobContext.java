@@ -31,7 +31,7 @@ import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.visit.global.ProjEnv;
+import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribUtil;
 
@@ -137,7 +137,7 @@ public class JobContext
   // Projected from inlined
 	public LProtocol getInlinedProjection(GProtocolName fullname, Role self)
 	{
-		LProtocolName p = ProjEnv.projectFullProtocolName(fullname, self);
+		LProtocolName p = InlinedProjector.getFullProjectionName(fullname, self);
 		return getInlinedProjection(p);
 	}
 
@@ -164,7 +164,7 @@ public class JobContext
 			LProtocol getProjection(GProtocolName fullname, Role role)
 			throws ScribException
 	{
-		return getProjection(ProjEnv.projectFullProtocolName(fullname, role));
+		return getProjection(InlinedProjector.getFullProjectionName(fullname, role));
 	}
 
 	public //Module 
@@ -192,7 +192,8 @@ public class JobContext
 	public EGraph getEGraph(GProtocolName fullname, Role role)
 			throws ScribException
 	{
-		LProtocolName fulllpn = ProjEnv.projectFullProtocolName(fullname, role);
+		LProtocolName fulllpn = InlinedProjector.getFullProjectionName(fullname,
+				role);
 		// Moved form LProtocolDecl
 		EGraph graph = this.fEGraphs.get(fulllpn);
 		if (graph == null)
@@ -212,14 +213,17 @@ public class JobContext
 		this.uEGraphs.put(fullname, graph);
 	}
 	
-	public EGraph getUnfairEGraph(GProtocolName fullname, Role role) throws ScribException
+	public EGraph getUnfairEGraph(GProtocolName fullname, Role role)
+			throws ScribException
 	{
-		LProtocolName fulllpn = ProjEnv.projectFullProtocolName(fullname, role);
+		LProtocolName fulllpn = InlinedProjector.getFullProjectionName(fullname,
+				role);
 
 		EGraph unfair = this.uEGraphs.get(fulllpn);
 		if (unfair == null)
 		{
-			unfair = getEGraph(fullname, role).init.unfairTransform(this.job.config.ef).toGraph();
+			unfair = getEGraph(fullname, role).init
+					.unfairTransform(this.job.config.ef).toGraph();
 			addUnfairEGraph(fulllpn, unfair);
 		}
 		return unfair;
@@ -295,7 +299,8 @@ public class JobContext
 	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role)
 			throws ScribException
 	{
-		LProtocolName fulllpn = ProjEnv.projectFullProtocolName(fullname, role);
+		LProtocolName fulllpn = InlinedProjector.getFullProjectionName(fullname,
+				role);
 
 		EGraph minimised = this.mEGraphs.get(fulllpn);
 		if (minimised == null)

@@ -8,6 +8,9 @@ import java.util.stream.Stream;
 
 import org.scribble.core.job.Job;
 import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
@@ -144,5 +147,30 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 				// Empty seqs converted to LSkip by GChoice/Recursion projection
 				// And a WF top-level protocol cannot produce empty LSeq
 				// So a projection never contains an empty LSeq -- i.e., "empty choice/rec" pruning unnecessary
+	}
+
+	public static LProtocolName getSimpledProjectionName(GProtocolName simpname,
+			Role role)
+	{
+		return new LProtocolName(simpname.toString() + "_" + role.toString());
+	}
+
+	// Role is the target subprotocol parameter (not the current projector self -- actually the self just popped) -- ?
+	public static LProtocolName getFullProjectionName(GProtocolName fullname,
+			Role role)
+	{
+		LProtocolName simplename = InlinedProjector.getSimpledProjectionName(
+				fullname.getSimpleName(), role);
+		ModuleName modname = getProjectionModuleName(fullname.getPrefix(), simplename);
+		return new LProtocolName(modname, simplename);
+	}
+
+	// fullname is the un-projected name; localname is the already projected simple name
+	public static ModuleName getProjectionModuleName(ModuleName fullname,
+			LProtocolName localname)
+	{
+		ModuleName simpname = new ModuleName(
+				fullname.getSimpleName().toString() + "_" + localname.toString());
+		return new ModuleName(fullname.getPrefix(), simpname); // Supports unary fullname
 	}
 }

@@ -19,13 +19,14 @@ import org.scribble.core.type.session.local.LDo;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 
-// Pre: Use on parsed (intermed)
+// Supports Do -- can use on parsed (intermed)
 public class Projector extends InlinedProjector  // This way or the other way round?
 {
 	public Projector(Job job, Role self)
 	{
 		super(job, self);
 	}
+
 	@Override
 	public <N extends ProtocolName<Global>> LType visitDo(Do<Global, GSeq, N> n)
 	{
@@ -45,7 +46,7 @@ public class Projector extends InlinedProjector  // This way or the other way ro
 			return LSkip.SKIP;
 		}
 
-		LProtocolName fullname = ProjEnv.projectFullProtocolName(proto,
+		LProtocolName fullname = InlinedProjector.getFullProjectionName(proto,
 				targSelf);
 		Substitutions subs = new Substitutions(imed.roles, n.roles,
 				Collections.emptyList(), Collections.emptyList());

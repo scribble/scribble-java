@@ -59,7 +59,6 @@ import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
 import org.scribble.core.visit.global.ExtChoiceConsistencyChecker;
 import org.scribble.core.visit.global.InlinedProjector;
-import org.scribble.core.visit.global.ProjEnv;
 import org.scribble.core.visit.global.Projector;
 import org.scribble.core.visit.global.RoleEnablingChecker;
 import org.scribble.util.ScribException;
@@ -80,6 +79,53 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
 	{
 		return new GProtocol(source, mods, fullname, roles, params, def);
+	}
+
+	public void checkRoleEnabling() throws ScribException
+	{
+		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
+		RoleEnablingChecker v = new RoleEnablingChecker(rs);
+		this.def.visitWith(v);
+	}
+
+	public void checkExtChoiceConsistency() throws ScribException
+	{
+		Map<Role, Role> rs = this.roles.stream()
+				.collect(Collectors.toMap(x -> x, x -> x));
+		ExtChoiceConsistencyChecker v = new ExtChoiceConsistencyChecker(rs);
+		this.def.visitWith(v);
+	}
+	
+	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
+	public LProjection projectInlined(Job job, Role self)
+	{
+		LSeq body = (LSeq) this.def
+				.visitWithNoThrow(new InlinedProjector(job, self));
+		return projectAux(self, this.roles, body);
+	}
+
+	public LProjection project(Job job, Role self)
+	{
+		LSeq body = (LSeq) this.def.visitWithNoThrow(new Projector(job, self))
+				.visitWithNoThrow(new RecPruner<>());
+		return projectAux(self,
+				job.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
+				body);
+	}
+	
+	private LProjection projectAux(Role self, List<Role> decls, LSeq body)
+	{
+		LProtocolName fullname = InlinedProjector
+				.getFullProjectionName(this.fullname, self);
+		Set<Role> tmp = body.gather(new RoleGatherer<Local, LSeq>()::visit)
+				.collect(Collectors.toSet());
+		List<Role> roles = decls.stream()
+				.filter(x -> x.equals(self) || tmp.contains(x))  // Implicitly filters Role.SELF
+				.collect(Collectors.toList());
+		List<MemberName<? extends NonRoleParamKind>> params =
+				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
+		return new LProjection(this.mods, fullname, roles, self, params,
+				this.fullname, body);
 	}
 	
 	// CHECKME: drop from Protocol (after removing Protocol from SType?)
@@ -133,53 +179,6 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		GSeq unf = (GSeq) this.def.visitWithNoThrow(v);
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.params, unf);
-	}
-
-	public void checkRoleEnabling() throws ScribException
-	{
-		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
-		RoleEnablingChecker v = new RoleEnablingChecker(rs);
-		this.def.visitWith(v);
-	}
-
-	public void checkExtChoiceConsistency() throws ScribException
-	{
-		Map<Role, Role> rs = this.roles.stream()
-				.collect(Collectors.toMap(x -> x, x -> x));
-		ExtChoiceConsistencyChecker v = new ExtChoiceConsistencyChecker(rs);
-		this.def.visitWith(v);
-	}
-	
-	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
-	public LProjection projectInlined(Job job, Role self)
-	{
-		LSeq body = (LSeq) this.def.visitWithNoThrow(new InlinedProjector(job, self));
-		return projectAux(self, this.roles, body);
-	}
-	
-	private LProjection projectAux(Role self, List<Role> decls, LSeq body)
-	{
-		LProtocolName fullname = ProjEnv
-				.projectFullProtocolName(this.fullname, self);
-		Set<Role> tmp = //body.getRoles();
-				body.gather(new RoleGatherer<Local, LSeq>()::visit)
-						.collect(Collectors.toSet());
-		List<Role> roles = decls.stream()
-				.filter(x -> x.equals(self) || tmp.contains(x))  // Implicitly filters Role.SELF
-				.collect(Collectors.toList());
-		List<MemberName<? extends NonRoleParamKind>> params =
-				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
-		return new LProjection(this.mods, fullname, roles, self, params, this.fullname,
-				body);
-	}
-
-	public LProjection project(ProjEnv v)
-	{
-		LSeq body = (LSeq) this.def.visitWithNoThrow(new Projector(v.job, v.self))
-				.visitWithNoThrow(new RecPruner<>());
-		return projectAux(v.self,
-				v.job.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
-				body);
 	}
 	
 	@Override

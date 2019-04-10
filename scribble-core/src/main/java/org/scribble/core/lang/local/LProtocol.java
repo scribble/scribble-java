@@ -65,6 +65,11 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 	{
 		return new LProtocol(source, mods, fullname, roles, self, params, def);
 	}
+
+	public void checkReachability() throws ScribException
+	{
+		this.def.visitWith(new ReachabilityChecker());
+	}
 	
 	// CHECKME: drop from Protocol (after removing Protocol from SType?)
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
@@ -128,11 +133,6 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 		EGraphBuilder b = new EGraphBuilder(job);
 		this.def.visitWithNoThrow(b);
 		return b.finalise();
-	}
-
-	public void checkReachability() throws ScribException
-	{
-		this.def.visitWith(new ReachabilityChecker());
 	}
 	
 	@Override
