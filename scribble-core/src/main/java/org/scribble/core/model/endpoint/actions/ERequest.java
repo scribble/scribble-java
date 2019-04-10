@@ -13,8 +13,7 @@
  */
 package org.scribble.core.model.endpoint.actions;
 
-import org.scribble.core.model.endpoint.EModelFactory;
-import org.scribble.core.model.global.SModelFactory;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.global.actions.SRequest;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
@@ -22,7 +21,7 @@ import org.scribble.core.type.session.Payload;
 
 public class ERequest extends EAction
 {
-	public ERequest(EModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
+	public ERequest(ModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
 	//public Connect(Role peer)
 	{
 		super(ef, peer, mid, payload);
@@ -37,7 +36,7 @@ public class ERequest extends EAction
 	}
 
 	@Override
-	public SRequest toGlobal(SModelFactory sf, Role self)
+	public SRequest toGlobal(ModelFactory sf, Role self)
 	{
 		//return new GConnect(self, this.peer);
 		return sf.newSConnect(self, this.peer, this.mid, this.payload);

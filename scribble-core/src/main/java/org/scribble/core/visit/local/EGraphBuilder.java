@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.scribble.core.job.Job;
 import org.scribble.core.model.endpoint.EGraph;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
+import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
@@ -42,12 +42,12 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 {
 	public final Job job;
 
-	private EGraphBuilderUtil2 util;
+	private EGraphBuilderUtil util;
 
 	public EGraphBuilder(Job job)
 	{
 		this.job = job;
-		this.util = job.newEGraphBuilderUtil2();
+		this.util = job.newEGraphBuilderUtil();
 		this.util.init(null);
 	}
 	
@@ -59,7 +59,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	@Override
 	public SType<Local, LSeq> visitChoice(Choice<Local, LSeq> n)
 	{
-		EGraphBuilderUtil2 util = this.util;
+		EGraphBuilderUtil util = this.util;
 		util.enterChoice();
 		for (LSeq block : n.blocks)
 		{
@@ -205,7 +205,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	@Override
 	public LSeq visitSeq(LSeq n)
 	{
-		EGraphBuilderUtil2 util = this.util;
+		EGraphBuilderUtil util = this.util;
 		EState entry = util.getEntry();
 		EState exit = util.getExit();
 		List<LType> elems = n.getElements();

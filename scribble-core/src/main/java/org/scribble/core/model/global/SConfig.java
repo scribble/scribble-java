@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.EFSM;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
@@ -39,7 +40,7 @@ import org.scribble.core.type.name.Role;
 
 public class SConfig
 {
-	protected final SModelFactory sf;
+	protected final ModelFactory sf;
 	
 	//public final Map<Role, EndpointState> states;
 	public final Map<Role, EFSM> efsms;
@@ -47,7 +48,7 @@ public class SConfig
 	
 	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> buff)
 	//public WFConfig(Map<Role, EndpointState> state, WFBuffers buffs)
-	protected SConfig(SModelFactory sf, Map<Role, EFSM> state, SBuffers buffs)
+	public SConfig(ModelFactory sf, Map<Role, EFSM> state, SBuffers buffs)
 	{
 		this.sf = sf;
 		

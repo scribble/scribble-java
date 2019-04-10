@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.model.MPrettyState;
 import org.scribble.core.model.MState;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
@@ -35,7 +36,7 @@ import org.scribble.util.ScribException;
 // Label types used to be both RecVar and SubprotocolSigs; now using inlined protocol for FSM building so just RecVar
 public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 {
-	protected EState(Set<RecVar> labs)
+	public EState(Set<RecVar> labs)
 	{
 		super(labs);
 	}
@@ -122,7 +123,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	
 	// To be overridden by subclasses, to obtain the subclass nodes
   // FIXME: remove labs arg, and modify the underlying Set if needed?
-	protected EState cloneNode(EModelFactory ef, Set<RecVar> labs)
+	protected EState cloneNode(ModelFactory ef, Set<RecVar> labs)
 	{
 		//return ef.newEState(this.labs);
 		return ef.newEState(labs);
@@ -143,7 +144,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	.. easier to implement as a direct check on the standard global model, rather than model hacking -- i.e. liveness is not just about terminal sets, but about "branching condition", c.f. julien?
 	.. the issue is connect/accept -- makes direct check a bit more complicated, maybe value in doing it by model hacking to rely on standard liveness checking?
 	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles*/
-	public EState unfairTransform(EModelFactory ef)
+	public EState unfairTransform(ModelFactory ef)
 	{
 		EState init = clone(ef);
 		
@@ -260,7 +261,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	}
 
 	// Fully clones the reachable graph (i.e. the "general" graph -- cf., EGraph, the specific Scribble concept of an endpoint protocol graph)
-	protected EState clone(EModelFactory ef)
+	protected EState clone(ModelFactory ef)
 	{
 		Set<EState> all = new HashSet<>();
 		all.add(this);
@@ -289,7 +290,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	// i.e., this -a-> succ (maybe non-det)
 	// Returns the clone of the subgraph rooted at succ, with all non- "this-a->succ" actions pruned from the clone of "this" state
 	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
-	protected EState unfairClone(EModelFactory ef, EState term, EAction a, EState succ) // Need succ param for non-det
+	protected EState unfairClone(ModelFactory ef, EState term, EAction a, EState succ) // Need succ param for non-det
 	{
 		//EndpointState succ = take(a);
 		Set<EState> all = new HashSet<>();

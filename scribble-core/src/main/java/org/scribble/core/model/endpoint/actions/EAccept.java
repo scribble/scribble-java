@@ -13,8 +13,7 @@
  */
 package org.scribble.core.model.endpoint.actions;
 
-import org.scribble.core.model.endpoint.EModelFactory;
-import org.scribble.core.model.global.SModelFactory;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.global.actions.SAccept;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
@@ -22,7 +21,7 @@ import org.scribble.core.type.session.Payload;
 
 public class EAccept extends EAction
 {
-	public EAccept(EModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
+	public EAccept(ModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
 	//public Accept(Role peer)
 	{
 		super(ef, peer, mid, payload);
@@ -37,7 +36,7 @@ public class EAccept extends EAction
 	}
 
 	@Override
-	public SAccept toGlobal(SModelFactory sf, Role self)
+	public SAccept toGlobal(ModelFactory sf, Role self)
 	{
 		return sf.newSAccept(self, this.peer, this.mid, this.payload);
 		//return new GAccept(self, this.peer);

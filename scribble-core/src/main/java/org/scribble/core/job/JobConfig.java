@@ -16,8 +16,7 @@ package org.scribble.core.job;
 import java.util.Collections;
 import java.util.Map;
 
-import org.scribble.core.model.endpoint.EModelFactory;
-import org.scribble.core.model.global.SModelFactory;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.type.name.ModuleName;
 
 // The "static" (constant) info for Jobs -- cf. JobContext "dynamic" state
@@ -28,12 +27,12 @@ public class JobConfig
 
 	public final Map<JobArgs, Boolean> args;
 
-	public final EModelFactory ef;
-	public final SModelFactory sf;
+	public final ModelFactory ef;
+	public final ModelFactory sf;
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
 	public JobConfig(ModuleName main, Map<JobArgs, Boolean> args,
-			EModelFactory ef, SModelFactory sf)
+			ModelFactory ef, ModelFactory sf)
 	{
 		this.main = main;
 		this.args = Collections.unmodifiableMap(args);

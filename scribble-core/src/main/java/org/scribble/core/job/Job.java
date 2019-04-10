@@ -22,13 +22,12 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProtocol;
+import org.scribble.core.model.ModelFactory;
+import org.scribble.core.model.ModelFactoryImpl;
 import org.scribble.core.model.endpoint.EGraph;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
-import org.scribble.core.model.endpoint.EModelFactory;
-import org.scribble.core.model.endpoint.EModelFactoryImpl;
+import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.model.global.SGraphBuilderUtil;
-import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GProtocolName;
@@ -68,8 +67,8 @@ public class Job
 	protected JobConfig newJobConfig(ModuleName mainFullname,
 			Map<JobArgs, Boolean> args)
 	{
-		EModelFactory ef = new EModelFactoryImpl();
-		SModelFactoryImpl sf = new SModelFactoryImpl();
+		ModelFactory ef = new ModelFactoryImpl();
+		ModelFactoryImpl sf = new ModelFactoryImpl();
 		return new JobConfig(mainFullname, args, ef, sf); 
 				// CHECKME: combine E/SModelFactory?
 	}
@@ -91,9 +90,9 @@ public class Job
 
 	// TODO: deprecate, caller should go through config
 	// A Scribble extension should override newJobConfig/Context/etc as appropriate
-	public EGraphBuilderUtil2 newEGraphBuilderUtil2()
+	public EGraphBuilderUtil newEGraphBuilderUtil()
 	{
-		return new EGraphBuilderUtil2(this.config.ef);
+		return new EGraphBuilderUtil(this.config.ef);
 	}
 	
 	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util

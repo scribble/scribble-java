@@ -33,7 +33,7 @@ public class SModel
 {
 	public final SGraph graph;
 
-	protected SModel(SGraph graph)
+	public SModel(SGraph graph)
 	{
 		this.graph = graph;
 	}

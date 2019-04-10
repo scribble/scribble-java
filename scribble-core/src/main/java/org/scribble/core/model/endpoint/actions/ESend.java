@@ -13,8 +13,7 @@
  */
 package org.scribble.core.model.endpoint.actions;
 
-import org.scribble.core.model.endpoint.EModelFactory;
-import org.scribble.core.model.global.SModelFactory;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.global.actions.SSend;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
@@ -43,7 +42,7 @@ public class ESend extends EAction
 		super(peer, mid, payload);
 	}*/
 
-	public ESend(EModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
+	public ESend(ModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
 	{
 		super(ef, peer, mid, payload);
 		//Send.SENDS.add(this);
@@ -58,7 +57,7 @@ public class ESend extends EAction
 
 	@Override
 	//public GModelAction toGlobal(Role self)
-	public SSend toGlobal(SModelFactory sf, Role self)
+	public SSend toGlobal(ModelFactory sf, Role self)
 	{
 		//return new GModelAction(self, this.peer, this.mid, this.payload);
 		////return GModelAction.get(self, this.peer, this.mid, this.payload);

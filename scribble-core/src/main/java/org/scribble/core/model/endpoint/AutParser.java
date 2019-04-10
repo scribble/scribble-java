@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.job.Job;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.MessageId;
@@ -46,7 +47,7 @@ public class AutParser
 	
 	public EGraph parse(String aut)
 	{
-		EModelFactory ef = this.job.config.ef; 
+		ModelFactory ef = this.job.config.ef; 
 
 		//Map<Integer, Map<String, Integer>> edges = new HashMap<>();
 		Map<Integer, List<String>> as = new HashMap<>();
@@ -115,7 +116,7 @@ public class AutParser
 		}
 		//EGraphBuilderUtil util = new EGraphBuilderUtil(ef);
 		//EGraphBuilderUtil util = this.job2.newEGraphBuilderUtil2();
-		EGraphBuilderUtil2 util = this.job.newEGraphBuilderUtil2();
+		EGraphBuilderUtil util = this.job.newEGraphBuilderUtil();
 		//util.init(null);  // FIXME: arg is deprecated
 		Map<Integer, EState> map = new HashMap<>();
 		map.put(init, util.getEntry());
@@ -166,7 +167,7 @@ public class AutParser
 	
 	// Cf. getCommSymbol of IOActions
 	// FIXME: simply do a match for getCommSymbol?
-	private static EAction parseIOAction(EModelFactory ef, String a)
+	private static EAction parseIOAction(ModelFactory ef, String a)
 	{
 		String peer;
 		String action;

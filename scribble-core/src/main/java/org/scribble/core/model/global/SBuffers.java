@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.core.model.endpoint.EModelFactory;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAccept;
 import org.scribble.core.model.endpoint.actions.EAction;
@@ -36,12 +36,12 @@ import org.scribble.core.type.name.Role;
 
 public class SBuffers
 {
-	private final EModelFactory ef;  // FIXME: only used by wrapable -- refactor?
+	private final ModelFactory ef;  // FIXME: only used by wrapable -- refactor?
 	
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();
 	private final Map<Role, Map<Role, ESend>> buffs = new HashMap<>();  // dest -> src -> msg
 
-	public SBuffers(EModelFactory ef, Set<Role> roles, boolean implicit)
+	public SBuffers(ModelFactory ef, Set<Role> roles, boolean implicit)
 	{
 		this(ef, roles);
 		
@@ -62,7 +62,7 @@ public class SBuffers
 		}
 	}
 
-	public SBuffers(EModelFactory ef, Set<Role> roles)
+	public SBuffers(ModelFactory ef, Set<Role> roles)
 	{
 		this.ef = ef;
 

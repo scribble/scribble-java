@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 import org.scribble.core.job.Job;
 import org.scribble.core.job.JobArgs;
 import org.scribble.core.model.GraphBuilderUtil;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.EFSM;
 import org.scribble.core.model.endpoint.EGraph;
-import org.scribble.core.model.endpoint.EModelFactory;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.model.global.actions.SAction;
@@ -37,9 +37,9 @@ import org.scribble.util.ScribException;
 
 public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, Global>
 {
-	public final SModelFactory sf;
+	public final ModelFactory sf;
 
-	protected SGraphBuilderUtil(SModelFactory sf)
+	public SGraphBuilderUtil(ModelFactory sf)
 	{
 		this.sf = sf;
 		//reset();
@@ -55,7 +55,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 	}
 
 	// Do as an initial state rather than config?
-	protected SConfig createInitialSConfig(EModelFactory ef, Map<Role, EGraph> egraphs, boolean explicit)  // FIXME: ef
+	protected SConfig createInitialSConfig(ModelFactory ef, Map<Role, EGraph> egraphs, boolean explicit)  // FIXME: ef
 	{
 		Map<Role, EFSM> efsms = egraphs.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().toFsm()));
 		SBuffers b0 = new SBuffers(ef, efsms.keySet(), !explicit);
@@ -193,7 +193,7 @@ public class SGraphBuilderUtil extends GraphBuilderUtil<Void, SAction, SState, G
 		return graph;
 	}
 
-	private void getNextStates(SModelFactory sf, LinkedHashSet<SState> todo,
+	private void getNextStates(ModelFactory sf, LinkedHashSet<SState> todo,
 			Map<Integer, SState> seen, SState curr, SAction a, List<SConfig> nexts)
 	{
 		for (SConfig next : nexts)

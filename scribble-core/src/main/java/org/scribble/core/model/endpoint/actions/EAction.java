@@ -14,8 +14,7 @@
 package org.scribble.core.model.endpoint.actions;
 
 import org.scribble.core.model.MAction;
-import org.scribble.core.model.endpoint.EModelFactory;
-import org.scribble.core.model.global.SModelFactory;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.MessageId;
@@ -28,9 +27,9 @@ public abstract class EAction extends MAction<Local>
 	/*public final MessageId<?> mid;
 	public final Payload payload;  // Empty for MessageSigNames*/
 
-	protected EModelFactory ef;
+	protected ModelFactory ef;
 
-	protected EAction(EModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
+	protected EAction(ModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
 	{
 		/*this.mid = mid;
 		this.payload = payload;*/
@@ -40,7 +39,7 @@ public abstract class EAction extends MAction<Local>
 		this.ef = ef;
 	}
 	
-	public EModelFactory getEModelFactory()
+	public ModelFactory getEModelFactory()
 	{
 		return this.ef;
 	}
@@ -48,7 +47,7 @@ public abstract class EAction extends MAction<Local>
 	public abstract EAction toDual(Role self);
 
 	//public abstract GModelAction toGlobal(Role self);
-	public abstract SAction toGlobal(SModelFactory sf, Role self);
+	public abstract SAction toGlobal(ModelFactory sf, Role self);
 
 	public boolean isSend()
 	{

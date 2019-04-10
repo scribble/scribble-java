@@ -13,8 +13,8 @@
  */
 package org.scribble.core.model.endpoint;
 
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.model.global.SModelFactory;
 import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.RecVar;
@@ -23,7 +23,7 @@ import org.scribble.core.type.session.Payload;
 
 class IntermediateContinueEdge extends EAction
 {
-	public IntermediateContinueEdge(EModelFactory ef, RecVar rv)
+	public IntermediateContinueEdge(ModelFactory ef, RecVar rv)
 	{
 		super(ef, Role.EMPTY_ROLE, new Op(rv.toString()), Payload.EMPTY_PAYLOAD);  // HACK
 	}
@@ -35,7 +35,7 @@ class IntermediateContinueEdge extends EAction
 	}
 
 	@Override
-	public SAction toGlobal(SModelFactory sf, Role self)
+	public SAction toGlobal(ModelFactory sf, Role self)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}

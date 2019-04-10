@@ -13,8 +13,7 @@
  */
 package org.scribble.core.model.endpoint.actions;
 
-import org.scribble.core.model.endpoint.EModelFactory;
-import org.scribble.core.model.global.SModelFactory;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.global.actions.SReceive;
 import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
@@ -43,7 +42,7 @@ public class EReceive extends EAction
 		super(peer, mid, payload);
 	}*/
 
-	public EReceive(EModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
+	public EReceive(ModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
 	{
 		super(ef, peer, mid, payload);
 		//Receive.RECEIVES.add(this);
@@ -58,7 +57,7 @@ public class EReceive extends EAction
 
 	@Override
 	//public GModelAction toGlobal(Role self)
-	public SReceive toGlobal(SModelFactory sf, Role self)
+	public SReceive toGlobal(ModelFactory sf, Role self)
 	{
 		//return new GModelAction(this.peer, self, this.mid, this.payload);
 		////return GModelAction.get(this.peer, self, this.mid, this.payload);
