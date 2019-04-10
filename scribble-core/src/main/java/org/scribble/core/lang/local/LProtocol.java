@@ -117,7 +117,7 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 	public EGraph toEGraph(Job job)
 	{
 		EGraphBuilderUtil2 b = new EGraphBuilderUtil2(job.config.ef);
-		b.init(null);  // FIXME: init param not used
+		//b.init(null);  // FIXME: init param not used
 		if (this.def.isEmpty())  // Empty Seq special case for top-level -- in general, Seq must be non-empty, cf. LSeq::buildGraph entry/exit
 		{
 			EState s = b.getEntry();

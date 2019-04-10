@@ -32,7 +32,7 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.util.ScribException;
 
-	// N.B. init must be called before every "new visit", including first
+	// N.B. init must be called before every "new visit", including first -- no: now init implicit on construction, and finalise also does init
 // FIXME TODO replace EGraphBuilderUtil
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
 // Tailored to support graph building from syntactic local protocol choice and recursion
@@ -60,6 +60,7 @@ public class EGraphBuilderUtil2
 		this.ef = ef;
 		////clear();
 		//reset();
+		init(null);
 	}
 
 	/*// FIXME: cannot be reused for different protos, because of recvars and clear/reset
@@ -443,6 +444,8 @@ public class EGraphBuilderUtil2
 		/*Map<Integer, EndpointState> all = getAllStates(res);
 		EndpointState dfa = determinise(all, res, resTerm);
 		System.out.println("111: " + dfa.toDot());*/
+		
+		init(null);
 		
 		return new EGraph(entry, exit);
 	}

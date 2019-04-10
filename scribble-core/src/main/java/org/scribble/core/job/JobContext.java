@@ -302,9 +302,6 @@ public class JobContext
 		{
 			String aut = runAut(getEGraph(fullname, role).init.toAut(),
 					fulllpn + ".aut");
-			
-			System.out.println("jjj1: " + getEGraph(fullname, role).toAut() + " \n" + aut);
-			
 			minimised = new AutParser(this.job).parse(aut);
 			addMinimisedEGraph(fulllpn, minimised);
 		}
