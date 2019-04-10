@@ -15,7 +15,7 @@ import org.scribble.util.ScribException;
 // Alternative characterisations of STypeVisitor as STypeAgg?
 // T = SType, unit = empty, agg = reconstruct, ns = "structural" (i.e, B) children -- issues with generic cast to B inside agg
 // T = SType, unit = n.getChildren(), agg = reconstruct, ns = all children -- all children require dynamic casts
-// T = B ... ?  cf. Stream<T>, for Choice reconstruct
+// T = B ... ? Considering Stream like a Seq, and elems as singleton Seqs -- cf. Stream<B>, for Choice/etc reconstruct
 public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
 	extends STypeAgg<K, B, SType<K, B>>  // T = SType gives reconstruction flexibility/extensibility
 {
