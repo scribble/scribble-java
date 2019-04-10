@@ -61,7 +61,7 @@ public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
 		List<SType<K, B>> elems = new LinkedList<>();
 		for (SType<K, B> e : n.elems)
 		{
-			SType<K, B> e1 = e.visitNoThrow(this);
+			SType<K, B> e1 = e.visitWithNoThrow(this);
 			if (e1 instanceof Seq<?, ?>)
 			{
 				elems.addAll(((Seq<K, B>) e1).elems);

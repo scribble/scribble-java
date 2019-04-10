@@ -32,7 +32,7 @@ public class RecPruner<K extends ProtocolKind, B extends Seq<K, B>>
 		List<SType<K, B>> elems = new LinkedList<>();
 		for (SType<K, B> e : n.elems)
 		{
-			SType<K, B> e1 = (SType<K, B>) e.visitNoThrow(this);
+			SType<K, B> e1 = (SType<K, B>) e.visitWithNoThrow(this);
 			if (e1 instanceof Seq<?, ?>)  // cf. visitRecursion
 			{
 				elems.addAll(((Seq<K, B>) e1).getElements());  // Handles empty Seq case

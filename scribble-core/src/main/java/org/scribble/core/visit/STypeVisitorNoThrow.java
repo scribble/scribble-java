@@ -12,7 +12,7 @@ import org.scribble.core.type.session.Seq;
 
 // For comments, see STypeVisitor
 public abstract class STypeVisitorNoThrow<K extends ProtocolKind, B extends Seq<K, B>>
-	extends STypeAggNoEx<K, B, SType<K, B>>
+	extends STypeAggNoThrow<K, B, SType<K, B>>
 {
 	@Override
 	protected final SType<K, B> unit(SType<K, B> n)
@@ -45,7 +45,7 @@ public abstract class STypeVisitorNoThrow<K extends ProtocolKind, B extends Seq<
 	@Override
 	public B visitSeq(B n)
 	{
-		List<SType<K, B>> elems = n.elems.stream().map(x -> x.visitNoThrow(this))
+		List<SType<K, B>> elems = n.elems.stream().map(x -> x.visitWithNoThrow(this))
 				.collect(Collectors.toList());
 		return n.reconstruct(n.getSource(), elems);  // N.B. skipping agg (reconstruction done here)
 	}

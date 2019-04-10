@@ -21,7 +21,7 @@ import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 import org.scribble.core.visit.STypeAgg;
-import org.scribble.core.visit.STypeAggNoEx;
+import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
 
 public class GSeq extends Seq<Global, GSeq> implements GType
@@ -40,13 +40,13 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 	}
 	
 	@Override
-	public <T> T visit(STypeAgg<Global, GSeq, T> v) throws ScribException
+	public <T> T visitWith(STypeAgg<Global, GSeq, T> v) throws ScribException
 	{
 		return v.visitSeq(this);
 	}
 	
 	@Override
-	public <T> T visitNoThrow(STypeAggNoEx<Global, GSeq, T> v)
+	public <T> T visitWithNoThrow(STypeAggNoThrow<Global, GSeq, T> v)
 	{
 		return v.visitSeq(this);
 	}

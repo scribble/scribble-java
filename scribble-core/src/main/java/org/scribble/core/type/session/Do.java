@@ -25,7 +25,7 @@ import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.STypeAgg;
-import org.scribble.core.visit.STypeAggNoEx;
+import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
 
 public abstract class Do
@@ -50,13 +50,13 @@ public abstract class Do
 			N proto, List<Role> roles, List<Arg<? extends NonRoleParamKind>> args);
 	
 	@Override
-	public <T> T visit(STypeAgg<K, B, T> v) throws ScribException
+	public <T> T visitWith(STypeAgg<K, B, T> v) throws ScribException
 	{
 		return v.visitDo(this);
 	}
 	
 	@Override
-	public <T> T visitNoThrow(STypeAggNoEx<K, B, T> v)
+	public <T> T visitWithNoThrow(STypeAggNoThrow<K, B, T> v)
 	{
 		return v.visitDo(this);
 	}

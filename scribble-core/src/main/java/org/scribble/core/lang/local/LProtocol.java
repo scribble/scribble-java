@@ -110,7 +110,7 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 	@Override
 	public LProtocol unfoldAllOnce(STypeUnfolder<Local, LSeq> v)
 	{
-		LSeq unf = (LSeq) this.def.visitNoThrow(v);
+		LSeq unf = (LSeq) this.def.visitWithNoThrow(v);
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.self, this.params, unf);
 	}
@@ -126,13 +126,13 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 			return new EGraph(s, s);
 		}
 		EGraphBuilder b = new EGraphBuilder(job);
-		this.def.visitNoThrow(b);
+		this.def.visitWithNoThrow(b);
 		return b.finalise();
 	}
 
 	public void checkReachability() throws ScribException
 	{
-		this.def.visit(new ReachabilityChecker());
+		this.def.visitWith(new ReachabilityChecker());
 	}
 	
 	@Override

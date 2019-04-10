@@ -31,11 +31,11 @@ import org.scribble.core.type.session.local.LSend;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.STypeAggNoEx;
+import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.core.visit.local.SingleContinueChecker;
 
 // Pre: use on inlined (i.e., Do inlined, roles pruned)
-public class InlinedProjector extends STypeAggNoEx<Global, GSeq, LType>
+public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 {
 	public final Job job;
 	public final Role self;
@@ -127,7 +127,7 @@ public class InlinedProjector extends STypeAggNoEx<Global, GSeq, LType>
 		}
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(n.recvar);
-		if (body.visitNoThrow(new SingleContinueChecker(rvs)))
+		if (body.visitWithNoThrow(new SingleContinueChecker(rvs)))
 		{
 			return LSkip.SKIP;
 		}
@@ -138,7 +138,7 @@ public class InlinedProjector extends STypeAggNoEx<Global, GSeq, LType>
 	@Override
 	public LSeq visitSeq(GSeq n)
 	{
-		List<LType> elems = n.elems.stream().map(x -> x.visitNoThrow(this))
+		List<LType> elems = n.elems.stream().map(x -> x.visitWithNoThrow(this))
 				.filter(x -> !x.equals(LSkip.SKIP)).collect(Collectors.toList());
 		return new LSeq(null, elems);  
 				// Empty seqs converted to LSkip by GChoice/Recursion projection

@@ -75,7 +75,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 				if (elems.size() == 1)
 				{
 					//first.buildGraph(util);
-					first.visitNoThrow(this);
+					first.visitWithNoThrow(this);
 				}	
 				else
 				{
@@ -83,13 +83,13 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 					EState nestedExit = util.newState(Collections.emptySet());
 					util.setExit(nestedExit);
 					//first.buildGraph(util);
-					first.visitNoThrow(this);
+					first.visitWithNoThrow(this);
 
 					util.setEntry(nestedExit);  // Must be non null
 					util.setExit(exit);
 					LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
 					//tail.buildGraph(util);
-					tail.visitNoThrow(this);
+					tail.visitWithNoThrow(this);
 				}
 				EState init = nestedEntry;
 				for (EAction a : (Iterable<EAction>) 
@@ -116,7 +116,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 			{
 				util.pushChoiceBlock();  // CHECKME: still needed?  LContinue doesn't check isUnguardedInChoice any more
 				//block.buildGraph(util);
-				block.visitNoThrow(this);
+				block.visitWithNoThrow(this);
 				util.popChoiceBlock();
 			}
 		}
@@ -202,7 +202,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 		this.util.addEntryLabel(n.recvar);
 		this.util.pushRecursionEntry(n.recvar, this.util.getEntry());
 		//n.body.buildGraph(this.util);
-		n.body.visitNoThrow(this);
+		n.body.visitWithNoThrow(this);
 		this.util.popRecursionEntry(n.recvar);
 		return n;
 	}
@@ -225,14 +225,14 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 			{
 				util.setExit(exit);
 				//next.buildGraph(util);
-				next.visitNoThrow(this);
+				next.visitWithNoThrow(this);
 			}
 			else
 			{
 				EState tmp = util.newState(Collections.emptySet());
 				util.setExit(tmp);
 				//next.buildGraph(util);
-				next.visitNoThrow(this);
+				next.visitWithNoThrow(this);
 				util.setEntry(util.getExit());
 						// CHECKME: exit may not be tmp, entry/exit can be modified, e.g. continue
 			}

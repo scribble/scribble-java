@@ -20,7 +20,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.STypeAgg;
-import org.scribble.core.visit.STypeAggNoEx;
+import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
 
 // Besides directed-ness, also features a Message
@@ -46,13 +46,13 @@ public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<
 			Role dst);
 	
 	@Override
-	public <T> T visit(STypeAgg<K, B, T> v) throws ScribException
+	public <T> T visitWith(STypeAgg<K, B, T> v) throws ScribException
 	{
 		return v.visitDirectedInteraction(this);
 	}
 	
 	@Override
-	public <T> T visitNoThrow(STypeAggNoEx<K, B, T> v)
+	public <T> T visitWithNoThrow(STypeAggNoThrow<K, B, T> v)
 	{
 		return v.visitDirectedInteraction(this);
 	}

@@ -21,7 +21,7 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 import org.scribble.core.visit.STypeAgg;
-import org.scribble.core.visit.STypeAggNoEx;
+import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
 
 public class LSeq extends Seq<Local, LSeq> implements LType
@@ -40,13 +40,13 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 	}
 	
 	@Override
-	public <T> T visit(STypeAgg<Local, LSeq, T> v) throws ScribException
+	public <T> T visitWith(STypeAgg<Local, LSeq, T> v) throws ScribException
 	{
 		return v.visitSeq(this);
 	}
 	
 	@Override
-	public <T> T visitNoThrow(STypeAggNoEx<Local, LSeq, T> v)
+	public <T> T visitWithNoThrow(STypeAggNoThrow<Local, LSeq, T> v)
 	{
 		return v.visitSeq(this);
 	}

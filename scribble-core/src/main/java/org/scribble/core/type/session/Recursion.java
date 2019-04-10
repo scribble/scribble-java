@@ -20,7 +20,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.visit.STypeAgg;
-import org.scribble.core.visit.STypeAggNoEx;
+import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
 
 public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
@@ -42,13 +42,13 @@ public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
 			CommonTree source, RecVar recvar, B body);
 	
 	@Override
-	public <T> T visit(STypeAgg<K, B, T> v) throws ScribException
+	public <T> T visitWith(STypeAgg<K, B, T> v) throws ScribException
 	{
 		return v.visitRecursion(this);
 	}
 	
 	@Override
-	public <T> T visitNoThrow(STypeAggNoEx<K, B, T> v)
+	public <T> T visitWithNoThrow(STypeAggNoThrow<K, B, T> v)
 	{
 		return v.visitRecursion(this);
 	}

@@ -14,11 +14,11 @@ import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.STypeAggNoEx;
+import org.scribble.core.visit.STypeAggNoThrow;
 
 // Return true iff this LType is "equivalent" to a single "continue X", where X is in rvs
 // Would be an "InlinedAgg"
-public class SingleContinueChecker extends STypeAggNoEx<Local, LSeq, Boolean>
+public class SingleContinueChecker extends STypeAggNoThrow<Local, LSeq, Boolean>
 {
 	private Set<RecVar> rvs;
 
@@ -65,6 +65,6 @@ public class SingleContinueChecker extends STypeAggNoEx<Local, LSeq, Boolean>
 	@Override
 	public Boolean visitSeq(LSeq n)
 	{
-		return n.elems.size() == 1 && ((LType) n.elems.get(0)).visitNoThrow(this);
+		return n.elems.size() == 1 && ((LType) n.elems.get(0)).visitWithNoThrow(this);
 	}
 }

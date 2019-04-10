@@ -31,7 +31,7 @@ public abstract class STypeAgg<K extends ProtocolKind, B extends Seq<K, B>, T>
 		List<T> blocks = new LinkedList<>();
 		for (B b : n.blocks)
 		{
-			//blocks.add(b.aggregate(this));
+			//blocks.add(b.visitWith(this));
 			blocks.add(visitSeq(b));
 		}
 		return agg(n, blocks.stream());
@@ -61,7 +61,7 @@ public abstract class STypeAgg<K extends ProtocolKind, B extends Seq<K, B>, T>
 
 	public T visitRecursion(Recursion<K, B> n) throws ScribException
 	{
-		//return agg(n, Stream.of(n.body.aggregate(this)));
+		//return agg(n, Stream.of(n.body.visitWith(this)));
 		return agg(n, Stream.of(visitSeq(n.body)));
 	}
 
@@ -71,7 +71,7 @@ public abstract class STypeAgg<K extends ProtocolKind, B extends Seq<K, B>, T>
 		List<T> elems = new LinkedList<>();
 		for (SType<K, B> e : n.elems)
 		{
-			elems.add(e.visit(this));
+			elems.add(e.visitWith(this));
 		}
 		return agg(n, elems.stream());
 	}
