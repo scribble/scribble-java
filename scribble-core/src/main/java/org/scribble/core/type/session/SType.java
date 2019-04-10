@@ -28,6 +28,9 @@ import org.scribble.util.ScribException;
 public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 		extends SNode
 {
+	// N.B. visitWith should be considered a "top-level" entry point only
+	// i.e., do not assume visitWith is called (or not) again during the recursive traversal
+	// (Typically, visitWith is called enroute to each visitNode, except for Seq, which is "entered directly" via visitSeq due to a generic typing issue)
 	<T> T visitWith(STypeAgg<K, B, T> v) throws ScribException;
 	<T> T visitWithNoThrow(STypeAggNoThrow<K, B, T> v);
 
