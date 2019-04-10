@@ -83,18 +83,16 @@ public class Job
 				imeds);
 	}
 	
+	// TODO: deprecate, caller should go through config
 	// A Scribble extension should override newJobConfig/Context/etc as appropriate
 	public SGraphBuilderUtil newSGraphBuilderUtil()
 	{
 		return this.config.sf.newSGraphBuilderUtil();
 	}
 
-	// FIXME: not currently used
+	// TODO: deprecate, caller should go through config
 	// A Scribble extension should override newJobConfig/Context/etc as appropriate
-	// CHECKME: not reusable?  fix?
-	// Scribble extensions should override these "new" methods
-	// CHECKME: move to MainContext::newJob?
-	public EGraphBuilderUtil2 newEGraphBuilderUtil()
+	public EGraphBuilderUtil2 newEGraphBuilderUtil2()
 	{
 		return new EGraphBuilderUtil2(this.config.ef);
 	}

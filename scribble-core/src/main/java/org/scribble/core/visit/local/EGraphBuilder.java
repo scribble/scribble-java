@@ -47,7 +47,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	public EGraphBuilder(Job job)
 	{
 		this.job = job;
-		this.util = new EGraphBuilderUtil2(job.config.ef);
+		this.util = job.newEGraphBuilderUtil2();
 		this.util.init(null);
 	}
 	
