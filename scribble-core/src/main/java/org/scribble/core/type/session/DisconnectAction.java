@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoEx;
-import org.scribble.core.visit.STypeVisitor;
 import org.scribble.util.ScribException;
 
 // Base class would be "SymmetricInteraction" (cf., DirectedInteraction)
@@ -40,15 +40,15 @@ public abstract class DisconnectAction<K extends ProtocolKind, B extends Seq<K, 
 	
 	public abstract DisconnectAction<K, B> reconstruct(
 			CommonTree source, Role src, Role dst);
-
+	
 	@Override
-	public SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException
+	public <T> T aggregate(STypeAgg<K, B, T> v) throws ScribException
 	{
 		return v.visitDisconnect(this);
 	}
 	
 	@Override
-	public <T> T aggregate(STypeAggNoEx<K, B, T> v)
+	public <T> T aggregateNoEx(STypeAggNoEx<K, B, T> v)
 	{
 		return v.visitDisconnect(this);
 	}
@@ -103,6 +103,13 @@ public abstract class DisconnectAction<K extends ProtocolKind, B extends Seq<K, 
 	
 
 	/*
+
+	@Override
+	public SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException
+	{
+		return v.visitDisconnect(this);
+	}
+
 	@Override
 	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)
 	{

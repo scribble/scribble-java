@@ -66,7 +66,7 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 		}*/
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(this.recvar);
-		if (body.aggregate(new SingleContinueChecker(rvs)))
+		if (body.aggregateNoEx(new SingleContinueChecker(rvs)))
 		{
 			return LSkip.SKIP;
 		}

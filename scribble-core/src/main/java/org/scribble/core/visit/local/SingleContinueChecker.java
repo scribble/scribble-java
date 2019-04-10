@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.ProtocolName;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
@@ -47,12 +46,6 @@ public class SingleContinueChecker extends STypeAggNoEx<Local, LSeq, Boolean>
 	}
 
 	@Override
-	public Boolean visitChoice(Choice<Local, LSeq> n)
-	{
-		return agg(n, n.blocks.stream().map(x -> x.aggregate(this)));
-	}
-
-	@Override
 	public <N extends ProtocolName<Local>> Boolean visitDo(Do<Local, LSeq, N> n)
 	{
 		//return (Boolean) InlinedVisitor1.super.visitDo(n);
@@ -65,12 +58,12 @@ public class SingleContinueChecker extends STypeAggNoEx<Local, LSeq, Boolean>
 	{
 		Set<RecVar> tmp = new HashSet<>(this.rvs);
 		tmp.add(n.recvar);
-		return n.body.aggregate(new SingleContinueChecker(tmp));
+		return n.body.aggregateNoEx(new SingleContinueChecker(tmp));
 	}
 
 	@Override
 	public Boolean visitSeq(LSeq n)
 	{
-		return n.elems.size() == 1 && ((LType) n.elems.get(0)).aggregate(this);
+		return n.elems.size() == 1 && ((LType) n.elems.get(0)).aggregateNoEx(this);
 	}
 }

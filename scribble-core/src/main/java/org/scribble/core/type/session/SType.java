@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import org.scribble.core.lang.SNode;
 import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoEx;
 import org.scribble.core.visit.STypeVisitor;
 import org.scribble.core.visit.STypeVisitorNoEx;
@@ -29,11 +30,12 @@ import org.scribble.util.ScribException;
 public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 		extends SNode
 {
-	SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException;
+	<T> T aggregate(STypeAgg<K, B, T> v) throws ScribException;
+	<T> T aggregateNoEx(STypeAggNoEx<K, B, T> v);
 
-	<T> T aggregate(STypeAggNoEx<K, B, T> v);
-	
-	SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v);  // Gives B return for visitSeq, cf. Agg
+  // Wrappers for STypeVisitor around aggregate -- give B return for visitSeq, cf. STypeAgg
+	SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException;
+	SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v);
 
 	// Pass in an STypeGatherer::visit, e.g., n.(new RoleGatherer<Global, GSeq>()::visit)
 	<T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f);

@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.RecVar;
+import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoEx;
-import org.scribble.core.visit.STypeVisitor;
 import org.scribble.util.ScribException;
 
 public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
@@ -40,13 +40,13 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 			CommonTree source, RecVar recvar);
 
 	@Override
-	public SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException
+	public <T> T aggregate(STypeAgg<K, B, T> v) throws ScribException
 	{
 		return v.visitContinue(this);
 	}
 	
 	@Override
-	public <T> T aggregate(STypeAggNoEx<K, B, T> v)
+	public <T> T aggregateNoEx(STypeAggNoEx<K, B, T> v)
 	{
 		return v.visitContinue(this);
 	}
@@ -98,6 +98,12 @@ public abstract class Continue<K extends ProtocolKind, B extends Seq<K, B>>
 	
 	
 	/*
+
+	@Override
+	public SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException
+	{
+		return v.visitContinue(this);
+	}
 
 	@Override
 	public SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v)

@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoEx;
 import org.scribble.core.visit.STypeVisitor;
 import org.scribble.core.visit.STypeVisitorNoEx;
@@ -40,7 +41,24 @@ public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 	
 	public abstract B reconstruct(CommonTree source,
 			List<? extends SType<K, B>> elems);
+	
+	@Override
+	public <T> T aggregate(STypeAgg<K, B, T> v) throws ScribException
+	{
+		@SuppressWarnings("unchecked")
+		B cast = (B) this;
+		return v.visitSeq(cast);
+	}
+	
+	@Override
+	public <T> T aggregateNoEx(STypeAggNoEx<K, B, T> v)
+	{
+		@SuppressWarnings("unchecked")
+		B cast = (B) this;
+		return v.visitSeq(cast);
+	}
 
+	// Override STypeBase.visitWith for B return
 	@Override
 	public B visitWith(STypeVisitor<K, B> v) throws ScribException
 	{
@@ -52,14 +70,6 @@ public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
 	// Override STypeBase.visitWithNoEx for B return
 	@Override
 	public B visitWithNoEx(STypeVisitorNoEx<K, B> v)
-	{
-		@SuppressWarnings("unchecked")
-		B cast = (B) this;
-		return v.visitSeq(cast);
-	}
-	
-	@Override
-	public <T> T aggregate(STypeAggNoEx<K, B, T> v)
 	{
 		@SuppressWarnings("unchecked")
 		B cast = (B) this;

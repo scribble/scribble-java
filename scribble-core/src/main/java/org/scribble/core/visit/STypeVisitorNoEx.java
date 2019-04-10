@@ -6,14 +6,15 @@ import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.session.Choice;
-import org.scribble.core.type.session.Continue;
-import org.scribble.core.type.session.DirectedInteraction;
-import org.scribble.core.type.session.DisconnectAction;
-import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
+// "Instantiates" Agg by implicitly treating Stream<T> as always a singleton Stream of the *reconstructed* node
+// Alternative characterisations of STypeVisitor as STypeAgg?
+// T = SType, unit = empty, agg = reconstruct, ns = "structural" (i.e, B) children -- issues with generic cast to B inside agg
+// T = SType, unit = n.getChildren(), agg = reconstruct, ns = all children -- all children require dynamic casts
+// T = B ... ?  cf. Stream<T>, for Choice reconstruct
 public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, B>>
 	extends STypeAggNoEx<K, B, SType<K, B>>  // T = SType gives reconstruction flexibility/extensibility
 {
@@ -23,11 +24,13 @@ public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, 
 		return n;
 	}
 
-	// agg = reconstruct, ns = "structural" (i.e, B) children
-	@SuppressWarnings("unchecked")  // FIXME
+	// Should generally disregard agg for STypeVisitors -- pattern is now to manually do reconstruct within visit dispatches
 	@Override
 	protected final SType<K, B> agg(SType<K, B> n, Stream<SType<K, B>> ns)
 	{
+		return ns.iterator().next();
+
+		/*// agg = reconstruct, ns = "structural" (i.e, B) children -- problem with generic casts
 		if (n instanceof Continue<?, ?> || n instanceof DirectedInteraction<?, ?>
 				|| n instanceof DisconnectAction<?, ?> || n instanceof Do<?, ?, ?>)
 		{
@@ -48,7 +51,22 @@ public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, 
 		{
 			throw new RuntimeException("Shouldn't get in here: " + n + " ,, " + ns);
 					// agg should only be called from internal visit dispatch methods, so n's type has already been cased
-		}
+		}*/
+	}
+
+	@Override
+	public SType<K, B> visitChoice(Choice<K, B> n)
+	{
+		List<B> blocks = n.blocks.stream().map(x -> x.visitWithNoEx(this))
+				.collect(Collectors.toList());
+		return n.reconstruct(n.getSource(), n.subj, blocks);  // Skipping agg (reconstruction done here)
+	}
+
+	@Override
+	public SType<K, B> visitRecursion(Recursion<K, B> n)
+	{
+		B body = n.body.visitWithNoEx(this);
+		return n.reconstruct(n.getSource(), n.recvar, body);  // Skipping agg (reconstruction done here)
 	}
 	
   // Distinguished from main agg-reconstruct pattern to return B (cf. T) -- for Seq.visitWith
@@ -61,7 +79,7 @@ public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, 
 	{
 		List<SType<K, B>> elems = n.elems.stream().map(x -> x.visitWithNoEx(this))
 				.collect(Collectors.toList());
-		return n.reconstruct(n.getSource(), elems);
+		return n.reconstruct(n.getSource(), elems);  // N.B. skipping agg (reconstruction done here)
 	}
 
 }
