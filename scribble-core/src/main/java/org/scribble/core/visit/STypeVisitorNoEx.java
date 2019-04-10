@@ -19,14 +19,15 @@ public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, 
 	//extends STypeVisitor<K, B>  // Not useful, and causes mixups ?
 {
 	@Override
-	protected SType<K, B> unit(SType<K, B> n)
+	protected final SType<K, B> unit(SType<K, B> n)
 	{
 		return n;
 	}
 
 	// agg = reconstruct, ns = "structural" (i.e, B) children
+	@SuppressWarnings("unchecked")  // FIXME
 	@Override
-	protected SType<K, B> agg(SType<K, B> n, Stream<SType<K, B>> ns)
+	protected final SType<K, B> agg(SType<K, B> n, Stream<SType<K, B>> ns)
 	{
 		if (n instanceof Continue<?, ?> || n instanceof DirectedInteraction<?, ?>
 				|| n instanceof DisconnectAction<?, ?> || n instanceof Do<?, ?, ?>)
@@ -51,7 +52,7 @@ public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, 
 		}
 	}
 	
-  // Distinguished from main agg pattern to return B (cf. T) -- for Seq.visitWith
+  // Distinguished from main agg-reconstruct pattern to return B (cf. T) -- for Seq.visitWith
 	// "Hardcoded" to B (cf. Seq, or SType return) -- this visitor pattern depends on B for Choice/Recursion/etc reconstruction
 	// This means a Visitor that needs to restructure a Seq should handle this within visitSeq
 	// E.g., Seq "injection" by inlining and unfolding
@@ -63,6 +64,25 @@ public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, 
 				.collect(Collectors.toList());
 		return n.reconstruct(n.getSource(), elems);
 	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/*
 	public SType<K, B> visitContinue(Continue<K, B> n)
@@ -111,25 +131,6 @@ public abstract class STypeVisitorNoEx<K extends ProtocolKind, B extends Seq<K, 
 				.collect(Collectors.toList());
 		return n.reconstruct(n.getSource(), elems);
 	}*/
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*@FunctionalInterface
