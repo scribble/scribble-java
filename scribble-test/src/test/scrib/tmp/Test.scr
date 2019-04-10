@@ -73,6 +73,8 @@ module tmp.Test;
 // re-check disamb pass -- e.g., do-target disamb done by translation -- check, e.g., message transfer message disamb (signames, payloads)
 // refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
 // refactor scribble.g, simplify ast/del/etc class names
+	//make a visitor factory
+	//for isSingleConts (and project, buildGraph), make T visitWith(STypeReducer<K, B> v) ? -- roleenabling and extchoicecons are more like reducers?
 
 // add exp conn checks to model validation
 // use stypefactory in core -- also make a visitorfactory

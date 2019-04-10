@@ -13,6 +13,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
+import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.visit.InlinedVisitor;
 import org.scribble.util.ScribException;
@@ -27,7 +28,7 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 		setEnabled(enabled);
 	}
 	
-	public Choice<Global, GSeq> visitChoice(Choice<Global, GSeq> n)
+	public SType<Global, GSeq> visitChoice(Choice<Global, GSeq> n)
 			throws ScribException
 	{
 		Set<Role> enabled = getEnabled();
@@ -55,7 +56,7 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 	}
 
 	@Override
-	public DirectedInteraction<Global, GSeq> visitDirectedInteraction(
+	public SType<Global, GSeq> visitDirectedInteraction(
 			DirectedInteraction<Global, GSeq> n) throws ScribException
 	{
 		Set<Role> enabled = getEnabled();
@@ -74,7 +75,7 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 	}
 
 	@Override
-	public DisconnectAction<Global, GSeq> visitDisconnect(
+	public SType<Global, GSeq> visitDisconnect(
 			DisconnectAction<Global, GSeq> n) throws ScribException
 	{
 		Set<Role> enabled = getEnabled();
@@ -94,6 +95,7 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 		return this.enabled;
 	}
 	
+	// Guards this.enabled unmodifiable
 	protected void setEnabled(Set<Role> enabled)
 	{
 		this.enabled = Collections.unmodifiableSet(enabled);

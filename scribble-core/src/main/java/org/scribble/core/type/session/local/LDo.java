@@ -14,19 +14,15 @@
 package org.scribble.core.type.session.local;
 
 import java.util.List;
-import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.LProtocolName;
-import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.visit.local.ReachabilityEnv;
-import org.scribble.util.ScribException;
 
 public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 {
@@ -43,21 +39,9 @@ public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 	{
 		return new LDo(source, proto, roles, args);
 	}
-	@Override
-	public boolean isSingleConts(Set<RecVar> rvs)
-	{
-		throw new RuntimeException("Unsupported for LDo: " + this);
-	}
 
 	@Override
 	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		throw new RuntimeException("Unsupported for LDo: " + this);
-	}
-
-	@Override
-	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribException
 	{
 		throw new RuntimeException("Unsupported for LDo: " + this);
 	}
@@ -119,7 +103,21 @@ public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 				// i.e. returning a Seq -- rely on parent Seq to inline
 		v.popSig();
 		return new LRecursion(null, rv, inlined);
-	}*/
+	}
+	
+	@Override
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		throw new RuntimeException("Unsupported for LDo: " + this);
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribException
+	{
+		throw new RuntimeException("Unsupported for LDo: " + this);
+	}
+	*/
 }
 
 

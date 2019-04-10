@@ -131,22 +131,19 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 				this.params, unf);
 	}
 
-	// Following are some top-level entry to GType methods
 	public void checkRoleEnabling() throws ScribException
 	{
 		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
 		RoleEnablingChecker v = new RoleEnablingChecker(rs);
 		this.def.visitWith(v);
-		//return v.getEnabled();
 	}
 
 	public void checkExtChoiceConsistency() throws ScribException
 	{
-		Map<Role, Role> tmp = this.roles.stream()
+		Map<Role, Role> rs = this.roles.stream()
 				.collect(Collectors.toMap(x -> x, x -> x));
-		ExtChoiceConsistencyChecker v = new ExtChoiceConsistencyChecker(tmp);
+		ExtChoiceConsistencyChecker v = new ExtChoiceConsistencyChecker(rs);
 		this.def.visitWith(v);
-		//return v.getEnablers();
 	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)

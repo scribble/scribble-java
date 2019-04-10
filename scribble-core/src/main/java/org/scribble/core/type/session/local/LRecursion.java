@@ -13,16 +13,11 @@
  */
 package org.scribble.core.type.session.local;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Recursion;
-import org.scribble.core.visit.local.ReachabilityEnv;
-import org.scribble.util.ScribException;
 
 public class LRecursion extends Recursion<Local, LSeq> implements LType
 {
@@ -39,14 +34,6 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 	{
 		return new LRecursion(source, recvar, block);
 	}
-
-	@Override
-	public boolean isSingleConts(Set<RecVar> rvs)
-	{
-		Set<RecVar> tmp = new HashSet<>(rvs);
-		tmp.add(this.recvar);
-		return this.body.isSingleConts(tmp);
-	}
 	
 	@Override
 	public void buildGraph(EGraphBuilderUtil2 b)
@@ -55,20 +42,6 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 		b.pushRecursionEntry(this.recvar, b.getEntry());
 		this.body.buildGraph(b);
 		b.popRecursionEntry(this.recvar);
-	}
-
-	@Override
-	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribException
-	{
-		env = this.body.checkReachability(env);
-		if (env.recvars.contains(this.recvar))
-		{
-			Set<RecVar> tmp = new HashSet<>(env.recvars);
-			tmp.remove(this.recvar);
-			env = new ReachabilityEnv(env.postcont, tmp);
-		}
-		return env;
 	}
 
 	@Override
@@ -99,3 +72,42 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 		return o instanceof LRecursion;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	@Override
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		Set<RecVar> tmp = new HashSet<>(rvs);
+		tmp.add(this.recvar);
+		return this.body.isSingleConts(tmp);
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribException
+	{
+		env = this.body.checkReachability(env);
+		if (env.recvars.contains(this.recvar))
+		{
+			Set<RecVar> tmp = new HashSet<>(env.recvars);
+			tmp.remove(this.recvar);
+			env = new ReachabilityEnv(env.postcont, tmp);
+		}
+		return env;
+	}
+	*/

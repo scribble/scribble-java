@@ -13,20 +13,16 @@
  */
 package org.scribble.core.type.session.local;
 
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.STypeBase;
 import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeVisitor;
 import org.scribble.core.visit.STypeVisitorNoEx;
-import org.scribble.core.visit.local.ReachabilityEnv;
-import org.scribble.util.ScribException;
 
 // Used only *during* projection -- filtered out by GSeq::projection
 public class LSkip extends STypeBase<Local, LSeq> implements LType
@@ -63,20 +59,7 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	}
 
 	@Override
-	public boolean isSingleConts(Set<RecVar> rvs)
-	{
-		throw new RuntimeException("Unsupported for Skip:\n" + this);
-	}
-
-	@Override
 	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		throw new RuntimeException("Unsupported for: " + this);
-	}
-	
-	@Override
-	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribException
 	{
 		throw new RuntimeException("Unsupported for: " + this);
 	}
@@ -178,6 +161,19 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	public LSkip substitute(Substitutions subs)
 	{
 		return this;
+	}
+
+	@Override
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		throw new RuntimeException("Unsupported for Skip:\n" + this);
+	}
+	
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribException
+	{
+		throw new RuntimeException("Unsupported for: " + this);
 	}
 	*/
 }

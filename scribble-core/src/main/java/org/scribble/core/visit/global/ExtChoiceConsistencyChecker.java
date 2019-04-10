@@ -14,6 +14,7 @@ import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.DirectedInteraction;
+import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.visit.InlinedVisitor;
 import org.scribble.util.ScribException;
@@ -28,7 +29,7 @@ public class ExtChoiceConsistencyChecker extends InlinedVisitor<Global, GSeq>
 		setEnablers(enabled);
 	}
 	
-	public Choice<Global, GSeq> visitChoice(Choice<Global, GSeq> n)
+	public SType<Global, GSeq> visitChoice(Choice<Global, GSeq> n)
 			throws ScribException
 	{
 		Map<Role, Role> subj = Stream.of(n.subj)
@@ -67,7 +68,7 @@ public class ExtChoiceConsistencyChecker extends InlinedVisitor<Global, GSeq>
 	}
 
 	@Override
-	public DirectedInteraction<Global, GSeq> visitDirectedInteraction(
+	public SType<Global, GSeq> visitDirectedInteraction(
 			DirectedInteraction<Global, GSeq> n) throws ScribException
 	{
 		Map<Role, Role> enablers = getEnablers();
@@ -82,11 +83,12 @@ public class ExtChoiceConsistencyChecker extends InlinedVisitor<Global, GSeq>
 		return n;
 	}
 	
-	public Map<Role, Role> getEnablers()
+	protected Map<Role, Role> getEnablers()
 	{
 		return this.enablers;
 	}
 	
+	// Guards this.enablers unmodifiable
 	protected void setEnablers(Map<Role, Role> enabled)
 	{
 		this.enablers = Collections.unmodifiableMap(enabled);

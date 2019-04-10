@@ -16,18 +16,14 @@ package org.scribble.core.type.session.local;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
-import org.scribble.core.visit.local.ReachabilityEnv;
-import org.scribble.util.ScribException;
 
 public class LSeq extends Seq<Local, LSeq> implements LType
 {
@@ -42,13 +38,6 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 			List<? extends SType<Local, LSeq>> elems)
 	{
 		return new LSeq(source, elems);
-	}
-
-	@Override
-	public boolean isSingleConts(Set<RecVar> rvs)
-	{
-		return this.elems.size() == 1
-				&& ((LType) this.elems.get(0)).isSingleConts(rvs);
 	}
 
 	@Override
@@ -79,26 +68,6 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 			}
 		}
 		b.setEntry(entry);
-	}
-
-	@Override
-	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribException
-	{
-		LType prev = null; 
-		LType next = null;
-		for (Iterator<LType> i = getElements().iterator(); i.hasNext(); )
-		{
-			prev = next;
-			next = i.next();
-			if (!env.isSeqable())
-			{
-				throw new ScribException(
-						"Illegal sequence: " + (prev == null ? "" : prev + "\n") + next);
-			}
-			env = next.checkReachability(env);
-		}
-		return env;
 	}
 
 	@Override
@@ -135,3 +104,53 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 		return o instanceof LSeq;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	@Override
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		return this.elems.size() == 1
+				&& ((LType) this.elems.get(0)).isSingleConts(rvs);
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribException
+	{
+		LType prev = null; 
+		LType next = null;
+		for (Iterator<LType> i = getElements().iterator(); i.hasNext(); )
+		{
+			prev = next;
+			next = i.next();
+			if (!env.isSeqable())
+			{
+				throw new ScribException(
+						"Illegal sequence: " + (prev == null ? "" : prev + "\n") + next);
+			}
+			env = next.checkReachability(env);
+		}
+		return env;
+	}
+*/

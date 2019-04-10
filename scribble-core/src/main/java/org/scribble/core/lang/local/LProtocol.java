@@ -13,7 +13,6 @@
  */
 package org.scribble.core.lang.local;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +42,7 @@ import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
 import org.scribble.core.visit.local.LTypeInliner;
-import org.scribble.core.visit.local.ReachabilityEnv;
+import org.scribble.core.visit.local.ReachabilityChecker;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 
@@ -132,11 +131,9 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 		return new EGraph(init, term);*/
 	}
 
-	public ReachabilityEnv checkReachability()
-			throws ScribException
+	public void checkReachability() throws ScribException
 	{
-		return this.def
-				.checkReachability(new ReachabilityEnv(false, Collections.emptySet()));
+		this.def.visitWith(new ReachabilityChecker());
 	}
 	
 	@Override

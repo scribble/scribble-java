@@ -13,9 +13,7 @@
  */
 package org.scribble.core.type.session.local;
 
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
@@ -24,7 +22,6 @@ import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Continue;
-import org.scribble.core.visit.local.ReachabilityEnv;
 import org.scribble.util.ScribException;
 
 public class LContinue extends Continue<Local, LSeq> implements LType
@@ -40,12 +37,6 @@ public class LContinue extends Continue<Local, LSeq> implements LType
 			RecVar recvar)
 	{
 		return new LContinue(source, recvar);
-	}
-
-	@Override
-	public boolean isSingleConts(Set<RecVar> rvs)
-	{
-		return rvs.contains(this.recvar);
 	}
 	
 	@Override
@@ -78,15 +69,6 @@ public class LContinue extends Continue<Local, LSeq> implements LType
 				}
 			}
 		}
-	}
-
-	@Override
-	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribException
-	{
-		Set<RecVar> tmp = new HashSet<>(env.recvars);
-		tmp.add(this.recvar);
-		return new ReachabilityEnv(true, tmp);
 	}
  
 	@Override
@@ -134,5 +116,22 @@ public class LContinue extends Continue<Local, LSeq> implements LType
 	{
 		return new LRecursion(getSource(), this.recvar,  // CHECKME: Continue (not Recursion) as the source of the unfolding
 				(LSeq) u.getRec(this.recvar));  
-	}*/
+	}
+
+	@Override
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		return rvs.contains(this.recvar);
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribException
+	{
+		Set<RecVar> tmp = new HashSet<>(env.recvars);
+		tmp.add(this.recvar);
+		return new ReachabilityEnv(true, tmp);
+	}
+	*/
 }
+

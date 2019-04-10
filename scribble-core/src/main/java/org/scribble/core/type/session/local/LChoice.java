@@ -14,21 +14,15 @@
 package org.scribble.core.type.session.local;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
-import org.scribble.core.visit.local.ReachabilityEnv;
-import org.scribble.util.ScribException;
 
 public class LChoice extends Choice<Local, LSeq> implements LType
 {
@@ -43,12 +37,6 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 			List<LSeq> blocks)
 	{
 		return new LChoice(source, subj, blocks);
-	}
-
-	@Override
-	public boolean isSingleConts(Set<RecVar> rvs)
-	{
-		return this.blocks.stream().allMatch(x -> x.isSingleConts(rvs));
 	}
 	
 	@Override
@@ -123,21 +111,6 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 		b.leaveChoice();
 	}
 
-	@Override
-	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribException
-	{
-		List<ReachabilityEnv> blocks = new LinkedList<>();
-		for (LSeq block : this.blocks)
-		{
-			blocks.add(block.checkReachability(env));
-		}
-		boolean postcont = blocks.stream().allMatch(x -> x.postcont);  // i.e., no exits
-		Set<RecVar> recvars = blocks.stream().flatMap(x -> x.recvars.stream())
-				.collect(Collectors.toSet());
-		return new ReachabilityEnv(postcont, recvars);
-	}
-
 	/*@Override
 	public List<LSeq> getBlocks()
 	{
@@ -172,3 +145,43 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 		return o instanceof LChoice;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+	@Override
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		return this.blocks.stream().allMatch(x -> x.isSingleConts(rvs));
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribException
+	{
+		List<ReachabilityEnv> blocks = new LinkedList<>();
+		for (LSeq block : this.blocks)
+		{
+			blocks.add(block.checkReachability(env));
+		}
+		boolean postcont = blocks.stream().allMatch(x -> x.postcont);  // i.e., no exits
+		Set<RecVar> recvars = blocks.stream().flatMap(x -> x.recvars.stream())
+				.collect(Collectors.toSet());
+		return new ReachabilityEnv(postcont, recvars);
+	}
+	*/

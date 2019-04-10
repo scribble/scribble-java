@@ -13,20 +13,15 @@
  */
 package org.scribble.core.type.session.local;
 
-import java.util.Set;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.MessageId;
-import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
 import org.scribble.core.type.session.MessageSig;
 import org.scribble.core.type.session.MessageTransfer;
 import org.scribble.core.type.session.Payload;
-import org.scribble.core.visit.local.ReachabilityEnv;
-import org.scribble.util.ScribException;
 
 public class LRcv extends MessageTransfer<Local, LSeq>
 		implements LType
@@ -49,12 +44,6 @@ public class LRcv extends MessageTransfer<Local, LSeq>
 	}
 
 	@Override
-	public boolean isSingleConts(Set<RecVar> rvs)
-	{
-		return false;
-	}
-
-	@Override
 	public void buildGraph(EGraphBuilderUtil2 b)
 	{
 		Role peer = this.src;
@@ -63,13 +52,6 @@ public class LRcv extends MessageTransfer<Local, LSeq>
 				? ((MessageSig) msg).payload
 				: Payload.EMPTY_PAYLOAD;
 		b.addEdge(b.getEntry(), b.ef.newEReceive(peer, mid, payload), b.getExit());
-	}
-
-	@Override
-	public ReachabilityEnv checkReachability(ReachabilityEnv env)
-			throws ScribException
-	{
-		return env;
 	}
 
 	@Override
@@ -107,3 +89,35 @@ public class LRcv extends MessageTransfer<Local, LSeq>
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	@Override
+	public boolean isSingleConts(Set<RecVar> rvs)
+	{
+		return false;
+	}
+
+	@Override
+	public ReachabilityEnv checkReachability(ReachabilityEnv env)
+			throws ScribException
+	{
+		return env;
+	}
+	*/
