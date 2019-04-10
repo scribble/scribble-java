@@ -16,7 +16,6 @@ package org.scribble.core.type.session.local;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.LProtocolName;
@@ -38,12 +37,6 @@ public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
 		return new LDo(source, proto, roles, args);
-	}
-
-	@Override
-	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		throw new RuntimeException("Unsupported for LDo: " + this);
 	}
 
 	@Override
@@ -114,6 +107,12 @@ public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 	@Override
 	public ReachabilityEnv checkReachability(ReachabilityEnv env)
 			throws ScribException
+	{
+		throw new RuntimeException("Unsupported for LDo: " + this);
+	}
+
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
 	{
 		throw new RuntimeException("Unsupported for LDo: " + this);
 	}

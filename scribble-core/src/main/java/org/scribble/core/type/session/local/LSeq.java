@@ -13,14 +13,10 @@
  */
 package org.scribble.core.type.session.local;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
-import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
@@ -53,36 +49,6 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 	public <T> T aggregateNoEx(STypeAggNoEx<Local, LSeq, T> v)
 	{
 		return v.visitSeq(this);
-	}
-
-	@Override
-	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		EState entry = b.getEntry();
-		EState exit = b.getExit();
-		List<LType> elems = getElements();
-		if (elems.isEmpty())
-		{
-			throw new RuntimeException("Shouldn't get here: " + this);
-		}
-		for (Iterator<LType> i = getElements().iterator(); i.hasNext(); )
-		{
-			LType next = i.next();
-			if (!i.hasNext())
-			{
-				b.setExit(exit);
-				next.buildGraph(b);
-			}
-			else
-			{
-				EState tmp = b.newState(Collections.emptySet());
-				b.setExit(tmp);
-				next.buildGraph(b);
-				b.setEntry(b.getExit());
-						// CHECKME: exit may not be tmp, entry/exit can be modified, e.g. continue
-			}
-		}
-		b.setEntry(entry);
 	}
 
 	@Override
@@ -167,5 +133,35 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 			env = next.checkReachability(env);
 		}
 		return env;
+	}
+
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		EState entry = b.getEntry();
+		EState exit = b.getExit();
+		List<LType> elems = getElements();
+		if (elems.isEmpty())
+		{
+			throw new RuntimeException("Shouldn't get here: " + this);
+		}
+		for (Iterator<LType> i = getElements().iterator(); i.hasNext(); )
+		{
+			LType next = i.next();
+			if (!i.hasNext())
+			{
+				b.setExit(exit);
+				next.buildGraph(b);
+			}
+			else
+			{
+				EState tmp = b.newState(Collections.emptySet());
+				b.setExit(tmp);
+				next.buildGraph(b);
+				b.setEntry(b.getExit());
+						// CHECKME: exit may not be tmp, entry/exit can be modified, e.g. continue
+			}
+		}
+		b.setEntry(entry);
 	}
 */

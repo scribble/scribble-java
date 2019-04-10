@@ -14,7 +14,6 @@
 package org.scribble.core.type.session.local;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Recursion;
@@ -33,15 +32,6 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 			RecVar recvar, LSeq block)
 	{
 		return new LRecursion(source, recvar, block);
-	}
-	
-	@Override
-	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		b.addEntryLabel(this.recvar);
-		b.pushRecursionEntry(this.recvar, b.getEntry());
-		this.body.buildGraph(b);
-		b.popRecursionEntry(this.recvar);
 	}
 
 	@Override
@@ -109,5 +99,14 @@ public class LRecursion extends Recursion<Local, LSeq> implements LType
 			env = new ReachabilityEnv(env.postcont, tmp);
 		}
 		return env;
+	}
+	
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		b.addEntryLabel(this.recvar);
+		b.pushRecursionEntry(this.recvar, b.getEntry());
+		this.body.buildGraph(b);
+		b.popRecursionEntry(this.recvar);
 	}
 	*/

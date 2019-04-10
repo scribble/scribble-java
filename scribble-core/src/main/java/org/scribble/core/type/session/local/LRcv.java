@@ -14,14 +14,10 @@
 package org.scribble.core.type.session.local;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
-import org.scribble.core.type.session.MessageSig;
 import org.scribble.core.type.session.MessageTransfer;
-import org.scribble.core.type.session.Payload;
 
 public class LRcv extends MessageTransfer<Local, LSeq>
 		implements LType
@@ -41,17 +37,6 @@ public class LRcv extends MessageTransfer<Local, LSeq>
 			Role dst)
 	{
 		return new LRcv(source, src, msg);
-	}
-
-	@Override
-	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		Role peer = this.src;
-		MessageId<?> mid = this.msg.getId();
-		Payload payload = this.msg.isMessageSig()  // CHECKME: generalise? (e.g., hasPayload)
-				? ((MessageSig) msg).payload
-				: Payload.EMPTY_PAYLOAD;
-		b.addEdge(b.getEntry(), b.ef.newEReceive(peer, mid, payload), b.getExit());
 	}
 
 	@Override
@@ -119,5 +104,16 @@ public class LRcv extends MessageTransfer<Local, LSeq>
 			throws ScribException
 	{
 		return env;
+	}
+
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		Role peer = this.src;
+		MessageId<?> mid = this.msg.getId();
+		Payload payload = this.msg.isMessageSig()  // CHECKME: generalise? (e.g., hasPayload)
+				? ((MessageSig) msg).payload
+				: Payload.EMPTY_PAYLOAD;
+		b.addEdge(b.getEntry(), b.ef.newEReceive(peer, mid, payload), b.getExit());
 	}
 	*/

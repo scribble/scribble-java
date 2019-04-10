@@ -13,13 +13,9 @@
  */
 package org.scribble.core.type.session.local;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
-import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
@@ -37,78 +33,6 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 			List<LSeq> blocks)
 	{
 		return new LChoice(source, subj, blocks);
-	}
-	
-	@Override
-	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		b.enterChoice();
-		for (LSeq block : this.blocks)
-		{
-			List<LType> elems = block.getElements();
-			LType first = elems.get(0);
-			if (first instanceof LRecursion)  // CHECKME: do this here?  refactor into builderutil?
-			{
-				//EGraphBuilderUtil2 b1 = new EGraphBuilderUtil2(b);  
-						// "Inherits" b.recvars, for continue edge building (to "outer" recs)
-				//EGraph nested;
-				EState entry = b.getEntry();
-				EState exit = b.getExit();
-
-				EState nestedEntry = b.newState(Collections.emptySet());
-				b.setEntry(nestedEntry);
-				if (elems.size() == 1)
-				{
-					/*b1.setExit(b.getExit());
-					first.buildGraph(b1);
-					nested = b1.finalise();*/
-					first.buildGraph(b);
-				}	
-				else
-				{
-					/*first.buildGraph(b1);
-					nested = b1.finalise();*/
-					// Reuse existing b, to directly add continue-edges back to the "outer" graph
-					EState nestedExit = b.newState(Collections.emptySet());
-					b.setExit(nestedExit);
-					first.buildGraph(b);
-
-					b.setEntry(nestedExit);  // Must be non null
-					b.setExit(exit);
-					LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
-					tail.buildGraph(b);
-				}
-				//EState init = nested.init;
-				EState init = nestedEntry;
-				////for (EAction a : first.getEnabling())
-				for (EAction a : (Iterable<EAction>) 
-						init.getAllActions().stream().distinct()::iterator)
-						// Enabling actions
-				{
-					for (EState s : init.getSuccessors(a))
-					{
-						b.addEdge(entry, a, s);
-					}
-				}
-				
-				b.setEntry(entry);
-				b.setExit(exit);
-			}
-			else if (first instanceof LContinue)
-			{
-				// Cannot treat choice-unguarded-continue in "a single pass" because may not have built all recursion enacting edges yet 
-				// (Single-pass building would be sensitive to order of choice block visiting)
-				LContinue cont = (LContinue) first;  // First and only element
-				b.addContinueEdge(b.getEntry(), cont.recvar); 
-			}
-			else
-			{
-				b.pushChoiceBlock();  // CHECKME: still needed?  LContinue doesn't check isUnguardedInChoice any more
-				block.buildGraph(b);
-				b.popChoiceBlock();
-			}
-		}
-		b.leaveChoice();
 	}
 
 	/*@Override
@@ -183,5 +107,77 @@ public class LChoice extends Choice<Local, LSeq> implements LType
 		Set<RecVar> recvars = blocks.stream().flatMap(x -> x.recvars.stream())
 				.collect(Collectors.toSet());
 		return new ReachabilityEnv(postcont, recvars);
+	}
+	
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		b.enterChoice();
+		for (LSeq block : this.blocks)
+		{
+			List<LType> elems = block.getElements();
+			LType first = elems.get(0);
+			if (first instanceof LRecursion)  // CHECKME: do this here?  refactor into builderutil?
+			{
+				//EGraphBuilderUtil2 b1 = new EGraphBuilderUtil2(b);  
+						// "Inherits" b.recvars, for continue edge building (to "outer" recs)
+				//EGraph nested;
+				EState entry = b.getEntry();
+				EState exit = b.getExit();
+
+				EState nestedEntry = b.newState(Collections.emptySet());
+				b.setEntry(nestedEntry);
+				if (elems.size() == 1)
+				{
+					/*b1.setExit(b.getExit());
+					first.buildGraph(b1);
+					nested = b1.finalise();* /
+					first.buildGraph(b);
+				}	
+				else
+				{
+					/*first.buildGraph(b1);
+					nested = b1.finalise();* /
+					// Reuse existing b, to directly add continue-edges back to the "outer" graph
+					EState nestedExit = b.newState(Collections.emptySet());
+					b.setExit(nestedExit);
+					first.buildGraph(b);
+
+					b.setEntry(nestedExit);  // Must be non null
+					b.setExit(exit);
+					LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
+					tail.buildGraph(b);
+				}
+				//EState init = nested.init;
+				EState init = nestedEntry;
+				////for (EAction a : first.getEnabling())
+				for (EAction a : (Iterable<EAction>) 
+						init.getAllActions().stream().distinct()::iterator)
+						// Enabling actions
+				{
+					for (EState s : init.getSuccessors(a))
+					{
+						b.addEdge(entry, a, s);
+					}
+				}
+				
+				b.setEntry(entry);
+				b.setExit(exit);
+			}
+			else if (first instanceof LContinue)
+			{
+				// Cannot treat choice-unguarded-continue in "a single pass" because may not have built all recursion enacting edges yet 
+				// (Single-pass building would be sensitive to order of choice block visiting)
+				LContinue cont = (LContinue) first;  // First and only element
+				b.addContinueEdge(b.getEntry(), cont.recvar); 
+			}
+			else
+			{
+				b.pushChoiceBlock();  // CHECKME: still needed?  LContinue doesn't check isUnguardedInChoice any more
+				block.buildGraph(b);
+				b.popChoiceBlock();
+			}
+		}
+		b.leaveChoice();
 	}
 	*/

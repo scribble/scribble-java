@@ -14,7 +14,6 @@
 package org.scribble.core.type.session.local;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.DisconnectAction;
@@ -41,14 +40,6 @@ public class LDisconnect extends DisconnectAction<Local, LSeq>
 			CommonTree source, Role self, Role peer)
 	{
 		return new LDisconnect(source, peer);
-	}
-
-	@Override
-	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		Role peer = getPeer();
-		// TODO: add toAction method to base Interaction
-		b.addEdge(b.getEntry(), b.ef.newEDisconnect(peer), b.getExit());
 	}
 	
 	@Override
@@ -110,5 +101,13 @@ public class LDisconnect extends DisconnectAction<Local, LSeq>
 			throws ScribException
 	{
 		return env;
+	}
+
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		Role peer = getPeer();
+		// TODO: add toAction method to base Interaction
+		b.addEdge(b.getEntry(), b.ef.newEDisconnect(peer), b.getExit());
 	}
 	*/

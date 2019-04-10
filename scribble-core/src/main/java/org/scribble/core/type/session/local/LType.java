@@ -14,7 +14,6 @@
 package org.scribble.core.type.session.local;
 
 import org.scribble.core.lang.local.LNode;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.session.SType;
 
@@ -22,9 +21,7 @@ public interface LType extends SType<Local, LSeq>, LNode
 {
 	//Role getSelf();  // CHECKME: useful?
 	
-	// Uses b to builds graph "progressively" (working graph is mutable)
-	// Use EGraphBuilderUtil2::finalise for final result
-	void buildGraph(EGraphBuilderUtil2 b);
+	//void buildGraph(EGraphBuilderUtil2 b);
 }
 
 

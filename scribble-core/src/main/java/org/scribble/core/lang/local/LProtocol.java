@@ -13,6 +13,7 @@
  */
 package org.scribble.core.lang.local;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,6 @@ import org.scribble.core.lang.Protocol;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.model.endpoint.EGraph;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
@@ -41,6 +41,7 @@ import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
+import org.scribble.core.visit.local.EGraphBuilder;
 import org.scribble.core.visit.local.ReachabilityChecker;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
@@ -116,19 +117,17 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 
 	public EGraph toEGraph(Job job)
 	{
-		EGraphBuilderUtil2 b = new EGraphBuilderUtil2(job.config.ef);
-		//b.init(null);  // FIXME: init param not used
+		//EGraphBuilderUtil2 b = job.newEGraphBuilderUtil();
+		////b.init(null);  // FIXME: init param not used
 		if (this.def.isEmpty())  // Empty Seq special case for top-level -- in general, Seq must be non-empty, cf. LSeq::buildGraph entry/exit
 		{
-			EState s = b.getEntry();
+			//EState s = b.getEntry();
+			EState s = job.config.ef.newEState(Collections.emptySet());
 			return new EGraph(s, s);
 		}
-		this.def.buildGraph(b);
-		EGraph g = b.finalise();
-		return g;
-		/*EState init = toGraph(b);
-		EState term = init.getTerminal();
-		return new EGraph(init, term);*/
+		EGraphBuilder b = new EGraphBuilder(job);
+		this.def.visitWithNoEx(b);
+		return b.finalise();
 	}
 
 	public void checkReachability() throws ScribException

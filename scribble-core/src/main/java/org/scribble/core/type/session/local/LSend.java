@@ -14,14 +14,10 @@
 package org.scribble.core.type.session.local;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.MessageId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
-import org.scribble.core.type.session.MessageSig;
 import org.scribble.core.type.session.MessageTransfer;
-import org.scribble.core.type.session.Payload;
 
 public class LSend extends MessageTransfer<Local, LSeq>
 		implements LType
@@ -41,18 +37,6 @@ public class LSend extends MessageTransfer<Local, LSeq>
 			Role dst)
 	{
 		return new LSend(source, msg, dst);
-	}
-
-	@Override
-	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		Role peer = this.dst;
-		MessageId<?> mid = this.msg.getId();
-		Payload payload = this.msg.isMessageSig()  // CHECKME: generalise? (e.g., hasPayload)
-				? ((MessageSig) msg).payload
-				: Payload.EMPTY_PAYLOAD;
-		// TODO: add toAction method to base Interaction
-		b.addEdge(b.getEntry(), b.ef.newESend(peer, mid, payload), b.getExit());
 	}
 	
 	@Override
@@ -122,5 +106,17 @@ public class LSend extends MessageTransfer<Local, LSeq>
 			throws ScribException
 	{
 		return env;
+	}
+
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		Role peer = this.dst;
+		MessageId<?> mid = this.msg.getId();
+		Payload payload = this.msg.isMessageSig()  // CHECKME: generalise? (e.g., hasPayload)
+				? ((MessageSig) msg).payload
+				: Payload.EMPTY_PAYLOAD;
+		// TODO: add toAction method to base Interaction
+		b.addEdge(b.getEntry(), b.ef.newESend(peer, mid, payload), b.getExit());
 	}
 */

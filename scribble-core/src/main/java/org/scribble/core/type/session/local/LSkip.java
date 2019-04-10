@@ -16,7 +16,6 @@ package org.scribble.core.type.session.local;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.STypeBase;
@@ -49,12 +48,6 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	public <T> Stream<T> gather(Function<SType<Local, LSeq>, Stream<T>> f)
 	{
 		throw new RuntimeException("Unsupported for Skip: " + this);
-	}
-
-	@Override
-	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		throw new RuntimeException("Unsupported for: " + this);
 	}
 
 	@Override
@@ -165,6 +158,12 @@ public class LSkip extends STypeBase<Local, LSeq> implements LType
 	@Override
 	public ReachabilityEnv checkReachability(ReachabilityEnv env)
 			throws ScribException
+	{
+		throw new RuntimeException("Unsupported for: " + this);
+	}
+
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
 	{
 		throw new RuntimeException("Unsupported for: " + this);
 	}

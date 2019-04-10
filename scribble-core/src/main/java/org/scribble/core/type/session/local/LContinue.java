@@ -13,16 +13,10 @@
  */
 package org.scribble.core.type.session.local;
 
-import java.util.LinkedList;
-
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil2;
-import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Continue;
-import org.scribble.util.ScribException;
 
 public class LContinue extends Continue<Local, LSeq> implements LType
 {
@@ -37,38 +31,6 @@ public class LContinue extends Continue<Local, LSeq> implements LType
 			RecVar recvar)
 	{
 		return new LContinue(source, recvar);
-	}
-	
-	@Override
-	public void buildGraph(EGraphBuilderUtil2 b)
-	{
-		// CHECKME: identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
-		// Choice-guarded continue -- choice-unguarded continue detected and handled in LChoice
-		EState curr = b.getEntry();
-		for (EState pred : b.getAllPredecessors(curr))  // Does getAllSuccessors
-		{
-			for (EAction a : new LinkedList<>(pred.getAllActions()))
-			{
-				// Following is because pred.getSuccessor doesn't support non-det edges
-				// FIXME: refactor actions/successor Lists in MState to list of edges?
-				for (EState succ : pred.getSuccessors(a))
-				{
-					if (succ.equals(curr))
-					{
-						try
-						{
-							b.removeEdge(pred, a, curr);  //b.removeEdgeFromPredecessor(pred, prev);
-							//b.addEdge(pred, a, entry);   //b.addRecursionEdge(pred, prev, b.getRecursionEntry(this.recvar));
-							b.addRecursionEdge(pred, a, this.recvar);
-						}
-						catch (ScribException e)  // CHECKME: necessary for removeEdge to have throws?
-						{
-							throw new RuntimeException(e);
-						}
-					}
-				}
-			}
-		}
 	}
  
 	@Override
@@ -131,6 +93,38 @@ public class LContinue extends Continue<Local, LSeq> implements LType
 		Set<RecVar> tmp = new HashSet<>(env.recvars);
 		tmp.add(this.recvar);
 		return new ReachabilityEnv(true, tmp);
+	}
+	
+	@Override
+	public void buildGraph(EGraphBuilderUtil2 b)
+	{
+		// CHECKME: identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
+		// Choice-guarded continue -- choice-unguarded continue detected and handled in LChoice
+		EState curr = b.getEntry();
+		for (EState pred : b.getAllPredecessors(curr))  // Does getAllSuccessors
+		{
+			for (EAction a : new LinkedList<>(pred.getAllActions()))
+			{
+				// Following is because pred.getSuccessor doesn't support non-det edges
+				// FIXME: refactor actions/successor Lists in MState to list of edges?
+				for (EState succ : pred.getSuccessors(a))
+				{
+					if (succ.equals(curr))
+					{
+						try
+						{
+							b.removeEdge(pred, a, curr);  //b.removeEdgeFromPredecessor(pred, prev);
+							//b.addEdge(pred, a, entry);   //b.addRecursionEdge(pred, prev, b.getRecursionEntry(this.recvar));
+							b.addRecursionEdge(pred, a, this.recvar);
+						}
+						catch (ScribException e)  // CHECKME: necessary for removeEdge to have throws?
+						{
+							throw new RuntimeException(e);
+						}
+					}
+				}
+			}
+		}
 	}
 	*/
 }

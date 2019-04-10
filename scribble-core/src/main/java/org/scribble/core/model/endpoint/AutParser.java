@@ -37,16 +37,16 @@ import org.scribble.core.type.session.Payload;
 
 public class AutParser
 {
-	private final Job job2;
+	private final Job job;
 
-	public AutParser(Job job2)
+	public AutParser(Job job)
 	{
-		this.job2 = job2;
+		this.job = job;
 	}
 	
 	public EGraph parse(String aut)
 	{
-		EModelFactory ef = this.job2.config.ef; 
+		EModelFactory ef = this.job.config.ef; 
 
 		//Map<Integer, Map<String, Integer>> edges = new HashMap<>();
 		Map<Integer, List<String>> as = new HashMap<>();
@@ -115,7 +115,7 @@ public class AutParser
 		}
 		//EGraphBuilderUtil util = new EGraphBuilderUtil(ef);
 		//EGraphBuilderUtil util = this.job2.newEGraphBuilderUtil2();
-		EGraphBuilderUtil2 util = new EGraphBuilderUtil2(this.job2.config.ef);
+		EGraphBuilderUtil2 util = new EGraphBuilderUtil2(this.job.config.ef);
 		//util.init(null);  // FIXME: arg is deprecated
 		Map<Integer, EState> map = new HashMap<>();
 		map.put(init, util.getEntry());
@@ -160,9 +160,8 @@ public class AutParser
 				}
 			}
 		}
-		util.finalise();  // redundant
-		//return builder.finalise();
-		return new EGraph(util.getEntry(), util.getExit());
+		return util.finalise();  // Redundant, except that it creates the EGraph
+		//return new EGraph(util.getEntry(), util.getExit());
 	}
 	
 	// Cf. getCommSymbol of IOActions
