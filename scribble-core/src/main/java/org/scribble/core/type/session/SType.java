@@ -25,6 +25,9 @@ import org.scribble.util.ScribException;
 
 // B needed(?) to factor up several methods from G/L compounds to bases, e.g., getInlined and unfoldAllOnce
 // Generic works to "specialise" G/L subclasses (and works with immutable pattern) -- cf. not supported by contravariant method parameter subtyping for getters/setters
+// N.B. Taking G/LSeq as the B param "limits" the "cast-freeness" of this hierarchy at this point -- i.e., potential G/LSeq subclasses would be beyond that point
+// However, the framework is mainly intended to be extended "horizontally" w.r.t. node types (additional types), and "vertically" (subclasses) for behaviour only via Visitors
+// In case of "vertical" extension of node types (e.g., additional node fields), still considering extension of Seq necessary less often
 public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 		extends SNode
 {
