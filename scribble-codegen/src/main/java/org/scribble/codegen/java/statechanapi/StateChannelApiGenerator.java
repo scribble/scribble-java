@@ -29,7 +29,7 @@ import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.global.ProjEnv;
 import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
 
@@ -63,7 +63,7 @@ public class StateChannelApiGenerator extends ApiGen
 		super(lang, fullname);
 
 		this.self = self;
-		this.lpn = Projector.projectFullProtocolName(fullname, self);
+		this.lpn = ProjEnv.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
 		JobContext jobc2 = this.job.getContext();
 		this.init = this.job.config.args.get(JobArgs.MIN_EFSM)

@@ -58,7 +58,8 @@ public class SingleContinueChecker extends STypeAggNoEx<Local, LSeq, Boolean>
 	{
 		Set<RecVar> tmp = new HashSet<>(this.rvs);
 		tmp.add(n.recvar);
-		return n.body.aggregateNoEx(new SingleContinueChecker(tmp));
+		//return n.body.aggregateNoEx(new SingleContinueChecker(tmp));
+		return new SingleContinueChecker(tmp).visitSeq(n.body);
 	}
 
 	@Override

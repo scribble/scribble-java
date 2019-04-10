@@ -41,7 +41,6 @@ import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
-import org.scribble.core.visit.local.LTypeInliner;
 import org.scribble.core.visit.local.ReachabilityChecker;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
@@ -95,9 +94,10 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 
 		Substitutor<Local, LSeq> subs = new Substitutor<>(this.roles, sig.roles,
 				this.params, sig.args);
-		LTypeInliner linl = new LTypeInliner(v.job);
-		LSeq body = this.def.visitWithNoEx(subs).visitWithNoEx(linl)
-				.visitWithNoEx(new RecPruner<>());
+		/*LSeq body = (LSeq) this.def.visitWithNoEx(subs).visitWithNoEx(v)
+				.visitWithNoEx(new RecPruner<>());*/
+		LSeq body = new RecPruner<Local, LSeq>()
+				.visitSeq(v.visitSeq(subs.visitSeq(this.def)));
 		RecVar rv = v.getInlinedRecVar(sig);
 		LRecursion rec = new LRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();  // CHECKME: or null source?

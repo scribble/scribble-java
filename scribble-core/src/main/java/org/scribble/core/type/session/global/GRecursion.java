@@ -25,7 +25,7 @@ import org.scribble.core.type.session.local.LRecursion;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.global.ProjEnv;
 import org.scribble.core.visit.local.SingleContinueChecker;
 
 public class GRecursion extends Recursion<Global, GSeq> implements GType
@@ -74,7 +74,7 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 
 	@Override
-	public LType project(Projector v)
+	public LType project(ProjEnv v)
 	{
 		LSeq body = this.body.project(v);
 		return projectAux(body);

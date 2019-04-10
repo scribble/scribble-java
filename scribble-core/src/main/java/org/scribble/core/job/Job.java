@@ -44,7 +44,7 @@ import org.scribble.core.visit.ProtoDepsCollector;
 import org.scribble.core.visit.RoleGatherer;
 import org.scribble.core.visit.global.GTypeInliner;
 import org.scribble.core.visit.global.GTypeUnfolder;
-import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.global.ProjEnv;
 import org.scribble.util.ScribException;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
@@ -267,7 +267,7 @@ public class Job
 			for (Role self : g.roles)
 			{
 				GProtocol inlined = this.context.getInlined(g.fullname);  // pruneRecs already done for pruneRecs (cf. runContextBuildingPasses)
-				LProtocol iproj = inlined.projectInlined(self);  // CHECKME: projection and inling commutative?
+				LProtocol iproj = inlined.projectInlined(this, self);  // CHECKME: projection and inling commutative?
 				this.context.addInlinedProjection(iproj.fullname, iproj);
 				verbosePrintln("\nProjected inlined onto " + self + ":\n" + iproj);
 			}
@@ -278,7 +278,7 @@ public class Job
 		{
 			for (Role self : g.roles)
 			{
-				LProtocol proj = g.project(new Projector(this, self));  // Does pruneRecs
+				LProtocol proj = g.project(new ProjEnv(this, self));  // Does pruneRecs
 				this.context.addProjection(proj);
 				verbosePrintln("\nProjected onto " + self + ":\n" + proj);
 			}

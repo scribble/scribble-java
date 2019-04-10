@@ -40,7 +40,7 @@ public class ExtChoiceConsistencyChecker extends InlinedVisitor<Global, GSeq>
 		for (GSeq block : n.blocks)
 		{
 			nested.setEnablers(subj);
-			block.visitWith(nested);
+			nested.visitSeq(block);
 			blocks.add(nested.getEnablers());
 		}
 		Map<Role, Role> res = new HashMap<>(getEnablers());

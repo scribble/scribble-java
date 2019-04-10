@@ -31,7 +31,7 @@ import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.local.LDo;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.global.ProjEnv;
 
 public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 {
@@ -56,7 +56,7 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 	}
 
 	@Override
-	public LType project(Projector v)
+	public LType project(ProjEnv v)
 	{
 		if (!this.roles.contains(v.self))
 		{
@@ -74,7 +74,7 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 			return LSkip.SKIP;
 		}
 
-		LProtocolName fullname = Projector.projectFullProtocolName(this.proto,
+		LProtocolName fullname = ProjEnv.projectFullProtocolName(this.proto,
 				targSelf);
 		Substitutions subs = new Substitutions(imed.roles, this.roles,
 				Collections.emptyList(), Collections.emptyList());

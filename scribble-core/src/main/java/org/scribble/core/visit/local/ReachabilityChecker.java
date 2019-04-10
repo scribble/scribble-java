@@ -39,7 +39,7 @@ public class ReachabilityChecker extends InlinedVisitor<Local, LSeq>
 		for (LSeq block : n.blocks)
 		{
 			nested.setEnv(entry);
-			block.visitWith(nested);
+			nested.visitSeq(block);//block.visitWith(nested);
 			blocks.add(nested.getEnv());
 		}
 		boolean postcont = blocks.stream().allMatch(x -> x.postcont);  // i.e., no exits

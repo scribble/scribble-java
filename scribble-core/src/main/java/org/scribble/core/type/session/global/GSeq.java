@@ -25,7 +25,10 @@ import org.scribble.core.type.session.Seq;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.STypeAgg;
+import org.scribble.core.visit.STypeAggNoEx;
+import org.scribble.core.visit.global.ProjEnv;
+import org.scribble.util.ScribException;
 
 public class GSeq extends Seq<Global, GSeq> implements GType
 {
@@ -40,6 +43,18 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 			List<? extends SType<Global, GSeq>> elems)
 	{
 		return new GSeq(source, elems);
+	}
+	
+	@Override
+	public <T> T aggregate(STypeAgg<Global, GSeq, T> v) throws ScribException
+	{
+		return v.visitSeq(this);
+	}
+	
+	@Override
+	public <T> T aggregateNoEx(STypeAggNoEx<Global, GSeq, T> v)
+	{
+		return v.visitSeq(this);
 	}
 
 	@Override
@@ -60,7 +75,7 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 	}
 
 	@Override
-	public LSeq project(Projector v)
+	public LSeq project(ProjEnv v)
 	{
 		return projectAux(this.elems.stream()
 				.map(x -> ((GType) x).project(v)));  

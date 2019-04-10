@@ -19,7 +19,7 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.local.LContinue;
-import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.global.ProjEnv;
 
 public class GContinue extends Continue<Global, GSeq> implements GType
 {
@@ -44,7 +44,7 @@ public class GContinue extends Continue<Global, GSeq> implements GType
 	}
 	
 	@Override
-	public LContinue project(Projector v)
+	public LContinue project(ProjEnv v)
 	{
 		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}

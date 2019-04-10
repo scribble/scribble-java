@@ -20,7 +20,7 @@ import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.local.LDisconnect;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.global.ProjEnv;
 
 public class GDisconnect extends DisconnectAction<Global, GSeq>
 		implements GType
@@ -61,7 +61,7 @@ public class GDisconnect extends DisconnectAction<Global, GSeq>
 	}
 
 	@Override
-	public LType project(Projector v)
+	public LType project(ProjEnv v)
 	{
 		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}

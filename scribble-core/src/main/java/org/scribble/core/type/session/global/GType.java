@@ -18,14 +18,14 @@ import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.global.ProjEnv;
 
 public interface GType extends SType<Global, GSeq>, GNode
 {
 
 	LType projectInlined(Role self);  // Use on inlined (i.e., Do inlined, roles pruned)
 
-	LType project(Projector v);  // Use on parsed (intermed)
+	LType project(ProjEnv v);  // Use on parsed (intermed)
 	
 }	
 	

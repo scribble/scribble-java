@@ -13,8 +13,9 @@ import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
+// Worth it to maintain alongside STypeAgg? -- does touch a lot of places 
 public abstract class STypeAggNoEx<K extends ProtocolKind, B extends Seq<K, B>, T>
-		//extends STypeAgg<K, B, T>  // Not worth it, ex and noex method variants easily confused
+		//extends STypeAgg<K, B, T>  // Not worth it, ex/no-ex method variants easily confused
 {
 	// Internal use
 	// Pre: agg(Stream.of(unit())) = unit()
@@ -32,7 +33,7 @@ public abstract class STypeAggNoEx<K extends ProtocolKind, B extends Seq<K, B>, 
 
 	public T visitChoice(Choice<K, B> n)
 	{
-		return agg(n, n.blocks.stream().map(x -> x.aggregateNoEx(this)));
+		return agg(n, n.blocks.stream().map(x -> visitSeq(x)));
 	}
 
 	public T visitDirectedInteraction(DirectedInteraction<K, B> n)
@@ -52,7 +53,7 @@ public abstract class STypeAggNoEx<K extends ProtocolKind, B extends Seq<K, B>, 
 
 	public T visitRecursion(Recursion<K, B> n)
 	{
-		return agg(n, Stream.of(n.body.aggregateNoEx(this)));
+		return agg(n, Stream.of(visitSeq(n.body)));
 	}
 
 	// Param "hardcoded" to B (cf. Seq, or SType return) -- this visitor pattern depends on B for Choice/Recursion/etc reconstruction

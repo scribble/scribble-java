@@ -23,7 +23,7 @@ public abstract class STypeUnfolder<K extends ProtocolKind, B extends Seq<K, B>>
 		if (!hasRec(n.recvar))  // N.B. doesn't work if recvars shadowed
 		{
 			pushRec(n.recvar, n.body);
-			SType<K, B> unf = n.body.visitWithNoEx(this);
+			SType<K, B> unf = visitSeq(n.body);//n.body.visitWithNoEx(this);
 			popRec(n.recvar);  
 					// Needed for, e.g., repeat do's in separate choice cases -- cf. stack.pop in GDo::getInlined, must pop sig there for Seqs
 			return unf;

@@ -63,7 +63,8 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
 		List<B> blocks = new LinkedList<>();
 		for (B b : n.blocks)
 		{
-			blocks.add(b.visitWith(this));
+			blocks.add(visitSeq(b));
+			
 		}
 		return n.reconstruct(n.getSource(), n.subj, blocks);  // Skipping agg (reconstruction done here)
 	}
@@ -71,7 +72,7 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
 	@Override
 	public SType<K, B> visitRecursion(Recursion<K, B> n) throws ScribException
 	{
-		B body = n.body.visitWith(this);
+		B body = visitSeq(n.body);
 		return n.reconstruct(n.getSource(), n.recvar, body);  // Skipping agg (reconstruction done here)
 	}
 

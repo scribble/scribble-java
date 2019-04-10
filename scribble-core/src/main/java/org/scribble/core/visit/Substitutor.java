@@ -36,7 +36,7 @@ public class Substitutor<K extends ProtocolKind, B extends Seq<K, B>>
 	@Override
 	public SType<K, B> visitChoice(Choice<K, B> n)
 	{
-		List<B> blocks = n.blocks.stream().map(x -> x.visitWithNoEx(this))
+		List<B> blocks = n.blocks.stream().map(x -> visitSeq(x))
 				.collect(Collectors.toList());
 		return n.reconstruct(n.getSource(), this.subs.subsRole(n.subj), blocks);
 	}

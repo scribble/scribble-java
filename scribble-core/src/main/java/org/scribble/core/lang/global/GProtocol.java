@@ -58,6 +58,8 @@ import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
 import org.scribble.core.visit.global.ExtChoiceConsistencyChecker;
+import org.scribble.core.visit.global.InlinedProjector;
+import org.scribble.core.visit.global.ProjEnv;
 import org.scribble.core.visit.global.Projector;
 import org.scribble.core.visit.global.RoleEnablingChecker;
 import org.scribble.util.ScribException;
@@ -109,8 +111,10 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 
 		Substitutor<Global, GSeq> subs = new Substitutor<>(this.roles, sig.roles,
 				this.params, sig.args);
-		GSeq body = this.def.visitWithNoEx(subs).visitWithNoEx(v)
-				.visitWithNoEx(new RecPruner<>());
+		/*GSeq body = (GSeq) this.def.visitWithNoEx(subs).visitWithNoEx(v)
+				.visitWithNoEx(new RecPruner<>());*/
+		GSeq body = new RecPruner<Global, GSeq>()
+				.visitSeq(v.visitSeq(subs.visitSeq(this.def)));
 		RecVar rv = v.getInlinedRecVar(sig);
 		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
 		CommonTree source = getSource();
@@ -147,15 +151,15 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
-	public LProjection projectInlined(Role self)
+	public LProjection projectInlined(Job job, Role self)
 	{
-		LSeq body = (LSeq) this.def.projectInlined(self);
+		LSeq body = (LSeq) this.def.aggregateNoEx(new InlinedProjector(job, self));
 		return projectAux(self, this.roles, body);
 	}
 	
 	private LProjection projectAux(Role self, List<Role> decls, LSeq body)
 	{
-		LProtocolName fullname = Projector
+		LProtocolName fullname = ProjEnv
 				.projectFullProtocolName(this.fullname, self);
 		Set<Role> tmp = //body.getRoles();
 				body.gather(new RoleGatherer<Local, LSeq>()::visit)
@@ -169,9 +173,10 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 				body);
 	}
 
-	public LProjection project(Projector v)
+	public LProjection project(ProjEnv v)
 	{
-		LSeq body = (LSeq) this.def.project(v).visitWithNoEx(new RecPruner<>());
+		LSeq body = (LSeq) this.def.aggregateNoEx(new Projector(v.job, v.self))
+				.visitWithNoEx(new RecPruner<>());
 		return projectAux(v.self,
 				v.job.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
 				body);

@@ -25,21 +25,21 @@ public abstract class STypeAgg<K extends ProtocolKind, B extends Seq<K, B>, T>
 	// Internal use -- by default, agg applied to all cases (including unit)
 	// Pre: agg(Stream.of(unit())) = unit()
 	protected abstract T agg(SType<K, B> n, Stream<T> ts) throws ScribException;  // Cf. generic varargs, heap pollution issue
-	
-	// SType return for extensibility/flexibility
-	public T visitContinue(Continue<K, B> n) throws ScribException
-	{
-		return unit(n);
-	}
 
 	public T visitChoice(Choice<K, B> n) throws ScribException
 	{
 		List<T> blocks = new LinkedList<>();
-		for (SType<K, B> e : n.blocks)
+		for (B b : n.blocks)
 		{
-			blocks.add(e.aggregate(this));
+			//blocks.add(b.aggregate(this));
+			blocks.add(visitSeq(b));
 		}
 		return agg(n, blocks.stream());
+	}
+	
+	public T visitContinue(Continue<K, B> n) throws ScribException
+	{
+		return unit(n);
 	}
 
 	public T visitDirectedInteraction(DirectedInteraction<K, B> n)
@@ -61,7 +61,8 @@ public abstract class STypeAgg<K extends ProtocolKind, B extends Seq<K, B>, T>
 
 	public T visitRecursion(Recursion<K, B> n) throws ScribException
 	{
-		return agg(n, Stream.of(n.body.aggregate(this)));
+		//return agg(n, Stream.of(n.body.aggregate(this)));
+		return agg(n, Stream.of(visitSeq(n.body)));
 	}
 
 	// Param "hardcoded" to B (cf. Seq, or SType return) -- this visitor pattern depends on B for Choice/Recursion/etc reconstruction

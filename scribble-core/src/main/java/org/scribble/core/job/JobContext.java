@@ -31,7 +31,7 @@ import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.global.ProjEnv;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribUtil;
 
@@ -137,7 +137,7 @@ public class JobContext
   // Projected from inlined
 	public LProtocol getInlinedProjection(GProtocolName fullname, Role self)
 	{
-		LProtocolName p = Projector.projectFullProtocolName(fullname, self);
+		LProtocolName p = ProjEnv.projectFullProtocolName(fullname, self);
 		return getInlinedProjection(p);
 	}
 
@@ -164,7 +164,7 @@ public class JobContext
 			LProtocol getProjection(GProtocolName fullname, Role role)
 			throws ScribException
 	{
-		return getProjection(Projector.projectFullProtocolName(fullname, role));
+		return getProjection(ProjEnv.projectFullProtocolName(fullname, role));
 	}
 
 	public //Module 
@@ -192,7 +192,7 @@ public class JobContext
 	public EGraph getEGraph(GProtocolName fullname, Role role)
 			throws ScribException
 	{
-		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
+		LProtocolName fulllpn = ProjEnv.projectFullProtocolName(fullname, role);
 		// Moved form LProtocolDecl
 		EGraph graph = this.fEGraphs.get(fulllpn);
 		if (graph == null)
@@ -214,7 +214,7 @@ public class JobContext
 	
 	public EGraph getUnfairEGraph(GProtocolName fullname, Role role) throws ScribException
 	{
-		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
+		LProtocolName fulllpn = ProjEnv.projectFullProtocolName(fullname, role);
 
 		EGraph unfair = this.uEGraphs.get(fulllpn);
 		if (unfair == null)
@@ -295,7 +295,7 @@ public class JobContext
 	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role)
 			throws ScribException
 	{
-		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
+		LProtocolName fulllpn = ProjEnv.projectFullProtocolName(fullname, role);
 
 		EGraph minimised = this.mEGraphs.get(fulllpn);
 		if (minimised == null)

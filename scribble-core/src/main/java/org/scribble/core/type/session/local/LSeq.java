@@ -24,6 +24,9 @@ import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
+import org.scribble.core.visit.STypeAgg;
+import org.scribble.core.visit.STypeAggNoEx;
+import org.scribble.util.ScribException;
 
 public class LSeq extends Seq<Local, LSeq> implements LType
 {
@@ -38,6 +41,18 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 			List<? extends SType<Local, LSeq>> elems)
 	{
 		return new LSeq(source, elems);
+	}
+	
+	@Override
+	public <T> T aggregate(STypeAgg<Local, LSeq, T> v) throws ScribException
+	{
+		return v.visitSeq(this);
+	}
+	
+	@Override
+	public <T> T aggregateNoEx(STypeAggNoEx<Local, LSeq, T> v)
+	{
+		return v.visitSeq(this);
 	}
 
 	@Override

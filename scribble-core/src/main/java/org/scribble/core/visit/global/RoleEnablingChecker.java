@@ -43,7 +43,7 @@ public class RoleEnablingChecker extends InlinedVisitor<Global, GSeq>
 		for (GSeq block : n.blocks)
 		{
 			nested.setEnabled(subj);  // Copies defensively
-			block.visitWith(nested);
+			nested.visitSeq(block);
 			blocks.add(nested.getEnabled());
 		}
 		Set<Role> res = new HashSet<>(enabled);

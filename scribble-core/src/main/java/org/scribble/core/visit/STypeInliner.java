@@ -48,7 +48,8 @@ public abstract class STypeInliner<K extends ProtocolKind, B extends Seq<K, B>>
 	{
 		CommonTree source = n.getSource();  // CHECKME: or empty source?
 		RecVar rv = enterRec(n.recvar);  // FIXME: make GTypeInliner, and record recvars to check freshness (e.g., rec X in two choice cases)
-		B body = n.body.visitWithNoEx(this);
+		//B body = n.body.visitWithNoEx(this);
+		B body = visitSeq(n.body);//.visitWithNoEx(this);
 		Recursion<K, B> res = n.reconstruct(source, rv, body);
 		exitRec(n.recvar);
 		return res;

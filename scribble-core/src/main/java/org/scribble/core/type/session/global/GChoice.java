@@ -25,7 +25,7 @@ import org.scribble.core.type.session.local.LChoice;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.Projector;
+import org.scribble.core.visit.global.ProjEnv;
 
 public class GChoice extends Choice<Global, GSeq> implements GType
 {
@@ -42,20 +42,6 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	{
 		return new GChoice(source, subj, blocks);
 	}
-
-	/*@Override
-	public <T> GChoice visit(Function<SType<Global, GSeq>, Stream<T>> f)
-	{
-		Stream<T> tmp = f.apply(this);
-		if (tmp.count() != 1)
-		{
-			throw new RuntimeException(": " + tmp.collect(Collectors.toList()));
-		}
-		Role subj = (Role) tmp.findFirst().get();
-		List<GSeq> blocks = this.blocks.stream()
-				.map(x -> (GSeq) x.visit(f)).collect(Collectors.toList());
-		return reconstruct(getSource(), subj, blocks);
-	}*/
 	
 	@Override
 	public LType projectInlined(Role self)
@@ -79,7 +65,7 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 	}
 	
 	@Override
-	public LType project(Projector v)
+	public LType project(ProjEnv v)
 	{
 		return projectAux(v.self, this.blocks.stream().map(x -> x.project(v)));
 	}
