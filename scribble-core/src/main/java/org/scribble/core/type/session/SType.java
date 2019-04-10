@@ -31,7 +31,7 @@ public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
 {
 	SType<K, B> visitWith(STypeVisitor<K, B> v) throws ScribException;
 	
-	SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v);
+	SType<K, B> visitWithNoEx(STypeVisitorNoEx<K, B> v);  // Gives B return for visitSeq, cf. Agg
 
 	<T> T aggregate(STypeAgg<K, B, T> v);
 
