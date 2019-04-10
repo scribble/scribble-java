@@ -14,18 +14,11 @@
 package org.scribble.core.type.session.global;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
-import org.scribble.core.type.session.local.LChoice;
-import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.type.session.local.LSkip;
-import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.ProjEnv;
 
 public class GChoice extends Choice<Global, GSeq> implements GType
 {
@@ -41,33 +34,6 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 			//List<? extends Seq<Global>> blocks)
 	{
 		return new GChoice(source, subj, blocks);
-	}
-	
-	@Override
-	public LType projectInlined(Role self)
-	{
-		return projectAux(self,
-				this.blocks.stream().map(x -> x.projectInlined(self)));
-	}
-	
-	private LType projectAux(Role self, Stream<LSeq> blocks)
-	{
-		Role subj = this.subj.equals(self) ? Role.SELF : this.subj;  
-				// CHECKME: "self" also explcitily used for Do, but implicitly for MessageTransfer, inconsistent?
-		List<LSeq> tmp = blocks
-				.filter(x -> !x.isEmpty())
-				.collect(Collectors.toList());
-		if (tmp.isEmpty())
-		{
-			return LSkip.SKIP;  // CHECKME: OK, or "empty" choice at subj still important?
-		}
-		return new LChoice(null, subj, tmp);
-	}
-	
-	@Override
-	public LType project(ProjEnv v)
-	{
-		return projectAux(v.self, this.blocks.stream().map(x -> x.project(v)));
 	}
 
 	@Override
@@ -169,4 +135,31 @@ public class GChoice extends Choice<Global, GSeq> implements GType
 		}
 		return Collections.unmodifiableMap(res);
 	}
-	}*/
+	
+	@Override
+	public LType projectInlined(Role self)
+	{
+		return projectAux(self,
+				this.blocks.stream().map(x -> x.projectInlined(self)));
+	}
+	
+	private LType projectAux(Role self, Stream<LSeq> blocks)
+	{
+		Role subj = this.subj.equals(self) ? Role.SELF : this.subj;  
+				// CHECKME: "self" also explcitily used for Do, but implicitly for MessageTransfer, inconsistent?
+		List<LSeq> tmp = blocks
+				.filter(x -> !x.isEmpty())
+				.collect(Collectors.toList());
+		if (tmp.isEmpty())
+		{
+			return LSkip.SKIP;  // CHECKME: OK, or "empty" choice at subj still important?
+		}
+		return new LChoice(null, subj, tmp);
+	}
+	
+	@Override
+	public LType project(ProjEnv v)
+	{
+		return projectAux(v.self, this.blocks.stream().map(x -> x.project(v)));
+	}
+*/

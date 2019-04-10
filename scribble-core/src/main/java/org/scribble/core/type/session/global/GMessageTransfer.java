@@ -18,11 +18,6 @@ import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
 import org.scribble.core.type.session.MessageTransfer;
-import org.scribble.core.type.session.local.LRcv;
-import org.scribble.core.type.session.local.LSend;
-import org.scribble.core.type.session.local.LSkip;
-import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.ProjEnv;
 
 public class GMessageTransfer extends MessageTransfer<Global, GSeq>
 		implements GType
@@ -40,33 +35,6 @@ public class GMessageTransfer extends MessageTransfer<Global, GSeq>
 			Role dst)
 	{
 		return new GMessageTransfer(source, src, msg, dst);
-	}
-	
-	@Override
-	public LType projectInlined(Role self)
-	{
-		if (this.src.equals(self))
-		{
-			/*if (this.dst.equals(self))
-			{
-				// CHECKME: already checked?
-			}*/
-			return new LSend(null, this.msg, this.dst);
-		}
-		else if (this.dst.equals(self))
-		{
-			return new LRcv(null, this.src, this.msg);
-		}
-		else
-		{
-			return LSkip.SKIP;
-		}
-	}
-
-	@Override
-	public LType project(ProjEnv v)
-	{
-		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}
 
 	@Override
@@ -146,5 +114,32 @@ public class GMessageTransfer extends MessageTransfer<Global, GSeq>
 		Map<Role, Role> tmp = new HashMap<>(enablers);
 		tmp.put(this.dst, this.src);
 		return Collections.unmodifiableMap(tmp);
+	}
+	
+	@Override
+	public LType projectInlined(Role self)
+	{
+		if (this.src.equals(self))
+		{
+			/*if (this.dst.equals(self))
+			{
+				// CHECKME: already checked?
+			}* /
+			return new LSend(null, this.msg, this.dst);
+		}
+		else if (this.dst.equals(self))
+		{
+			return new LRcv(null, this.src, this.msg);
+		}
+		else
+		{
+			return LSkip.SKIP;
+		}
+	}
+
+	@Override
+	public LType project(ProjEnv v)
+	{
+		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}
 */

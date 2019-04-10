@@ -16,10 +16,7 @@ package org.scribble.core.type.session.global;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Continue;
-import org.scribble.core.type.session.local.LContinue;
-import org.scribble.core.visit.global.ProjEnv;
 
 public class GContinue extends Continue<Global, GSeq> implements GType
 {
@@ -35,18 +32,6 @@ public class GContinue extends Continue<Global, GSeq> implements GType
 			RecVar recvar)
 	{
 		return new GContinue(source, recvar);
-	}
-
-	@Override
-	public LContinue projectInlined(Role self)
-	{
-		return new LContinue(null, this.recvar);
-	}
-	
-	@Override
-	public LContinue project(ProjEnv v)
-	{
-		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}
 
 	@Override
@@ -108,6 +93,18 @@ public class GContinue extends Continue<Global, GSeq> implements GType
 			throws ScribException
 	{
 		return enablers;
+	}
+
+	@Override
+	public LContinue projectInlined(Role self)
+	{
+		return new LContinue(null, this.recvar);
+	}
+	
+	@Override
+	public LContinue project(ProjEnv v)
+	{
+		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}
  
 	*/

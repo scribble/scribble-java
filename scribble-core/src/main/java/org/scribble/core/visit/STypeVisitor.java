@@ -17,7 +17,7 @@ import org.scribble.util.ScribException;
 // T = SType, unit = n.getChildren(), agg = reconstruct, ns = all children -- all children require dynamic casts
 // T = B ... ? Considering Stream like a Seq, and elems as singleton Seqs -- cf. Stream<B>, for Choice/etc reconstruct
 public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
-	extends STypeAgg<K, B, SType<K, B>>  // T = SType gives reconstruction flexibility/extensibility
+		extends STypeAgg<K, B, SType<K, B>>  // T = SType gives reconstruction flexibility/extensibility
 {
 	@Override
 	protected final SType<K, B> unit(SType<K, B> n) throws ScribException

@@ -13,25 +13,15 @@
  */
 package org.scribble.core.type.session.global;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.JobContext;
-import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.type.session.local.LDo;
-import org.scribble.core.type.session.local.LSkip;
-import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.ProjEnv;
 
 public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 {
@@ -47,44 +37,6 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
 		return new GDo(source, proto, roles, args);
-	}
-
-	@Override
-	public LType projectInlined(Role self)
-	{
-		throw new RuntimeException("Unsupported for Do: " + this);
-	}
-
-	@Override
-	public LType project(ProjEnv v)
-	{
-		if (!this.roles.contains(v.self))
-		{
-			return LSkip.SKIP;
-		}
-
-		JobContext jobc = v.job.getContext();
-		//GProtocolDecl gpd = jobc.getParsed(this.proto);
-		GProtocol gpd = jobc.getIntermediate(this.proto);
-		Role targSelf = gpd.roles.get(this.roles.indexOf(v.self));
-
-		GProtocol imed = jobc.getIntermediate(this.proto);
-		if (!imed.roles.contains(targSelf))  // CHECKME: because roles already pruned for intermed decl?
-		{
-			return LSkip.SKIP;
-		}
-
-		LProtocolName fullname = ProjEnv.projectFullProtocolName(this.proto,
-				targSelf);
-		Substitutions subs = new Substitutions(imed.roles, this.roles,
-				Collections.emptyList(), Collections.emptyList());
-		List<Role> used = jobc.getInlined(this.proto).roles.stream()
-				.map(x -> subs.subsRole(x)).collect(Collectors.toList());
-		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))
-				.map(x -> x.equals(v.self) ? Role.SELF : x)
-						// CHECKME: "self" also explcitily used for Choice, but implicitly for MessageTransfer, inconsistent?
-				.collect(Collectors.toList());
-		return new LDo(null, fullname, rs, this.args);  // TODO CHECKME: prune args?
 	}
 
 	@Override
@@ -166,6 +118,44 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 			throws ScribException
 	{
 		throw new RuntimeException("Unsupported for Do: " + this);
+	}
+
+	@Override
+	public LType projectInlined(Role self)
+	{
+		throw new RuntimeException("Unsupported for Do: " + this);
+	}
+
+	@Override
+	public LType project(ProjEnv v)
+	{
+		if (!this.roles.contains(v.self))
+		{
+			return LSkip.SKIP;
+		}
+
+		JobContext jobc = v.job.getContext();
+		//GProtocolDecl gpd = jobc.getParsed(this.proto);
+		GProtocol gpd = jobc.getIntermediate(this.proto);
+		Role targSelf = gpd.roles.get(this.roles.indexOf(v.self));
+
+		GProtocol imed = jobc.getIntermediate(this.proto);
+		if (!imed.roles.contains(targSelf))  // CHECKME: because roles already pruned for intermed decl?
+		{
+			return LSkip.SKIP;
+		}
+
+		LProtocolName fullname = ProjEnv.projectFullProtocolName(this.proto,
+				targSelf);
+		Substitutions subs = new Substitutions(imed.roles, this.roles,
+				Collections.emptyList(), Collections.emptyList());
+		List<Role> used = jobc.getInlined(this.proto).roles.stream()
+				.map(x -> subs.subsRole(x)).collect(Collectors.toList());
+		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))
+				.map(x -> x.equals(v.self) ? Role.SELF : x)
+						// CHECKME: "self" also explcitily used for Choice, but implicitly for MessageTransfer, inconsistent?
+				.collect(Collectors.toList());
+		return new LDo(null, fullname, rs, this.args);  // TODO CHECKME: prune args?
 	}
 	*/
 

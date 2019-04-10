@@ -15,17 +15,10 @@ package org.scribble.core.type.session.global;
 
 import org.scribble.core.lang.global.GNode;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.SType;
-import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.ProjEnv;
 
 public interface GType extends SType<Global, GSeq>, GNode
 {
-
-	LType projectInlined(Role self);  // Use on inlined (i.e., Do inlined, roles pruned)
-
-	LType project(ProjEnv v);  // Use on parsed (intermed)
 	
 }	
 	
@@ -73,5 +66,10 @@ public interface GType extends SType<Global, GSeq>, GNode
 
 	@Override
 	SType<Global> unfoldAllOnce(STypeUnfolder<Global> u);  // Not GType return, o/w need to override again in GDo
+
+	LType 
+	projectInlined(Role self);  // Use on inlined (i.e., Do inlined, roles pruned)
+
+	LType project(ProjEnv v);  // Use on parsed (intermed)
 	*/
 

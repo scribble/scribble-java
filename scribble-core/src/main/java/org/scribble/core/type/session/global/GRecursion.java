@@ -13,20 +13,10 @@
  */
 package org.scribble.core.type.session.global;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Recursion;
-import org.scribble.core.type.session.local.LRecursion;
-import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.type.session.local.LSkip;
-import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.ProjEnv;
-import org.scribble.core.visit.local.SingleContinueChecker;
 
 public class GRecursion extends Recursion<Global, GSeq> implements GType
 {
@@ -42,42 +32,6 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 			RecVar recvar, GSeq block)
 	{
 		return new GRecursion(source, recvar, block);
-	}
-
-	@Override
-	public LType projectInlined(Role self)
-	{
-		LSeq body = this.body.projectInlined(self);
-		return projectAux(body);
-	}
-
-	private LType projectAux(LSeq body)
-	{
-		if (body.isEmpty())  // N.B. projection is doing empty-rec pruning
-		{
-			return LSkip.SKIP;
-		}
-		/*RecVar rv = body.isSingleCont();  // CHECKME: should do more "compressing" of "single continue" (subset) choice cases?   or should not do "single continue" checking for choice at all?
-		if (rv != null)
-		{
-			return this.recvar.equals(rv) 
-					? LSkip.SKIP 
-					: new LContinue(null, rv);  // CHECKME: source
-		}*/
-		Set<RecVar> rvs = new HashSet<>();
-		rvs.add(this.recvar);
-		if (body.aggregateNoEx(new SingleContinueChecker(rvs)))
-		{
-			return LSkip.SKIP;
-		}
-		return new LRecursion(null, this.recvar, body);
-	}
-
-	@Override
-	public LType project(ProjEnv v)
-	{
-		LSeq body = this.body.project(v);
-		return projectAux(body);
 	}
 
 	@Override
@@ -136,5 +90,41 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 			throws ScribException
 	{
 		return this.body.checkExtChoiceConsistency(enablers);
+	}
+
+	@Override
+	public LType projectInlined(Role self)
+	{
+		LSeq body = this.body.projectInlined(self);
+		return projectAux(body);
+	}
+
+	private LType projectAux(LSeq body)
+	{
+		if (body.isEmpty())  // N.B. projection is doing empty-rec pruning
+		{
+			return LSkip.SKIP;
+		}
+		/*RecVar rv = body.isSingleCont();  // CHECKME: should do more "compressing" of "single continue" (subset) choice cases?   or should not do "single continue" checking for choice at all?
+		if (rv != null)
+		{
+			return this.recvar.equals(rv) 
+					? LSkip.SKIP 
+					: new LContinue(null, rv);  // CHECKME: source
+		}* /
+		Set<RecVar> rvs = new HashSet<>();
+		rvs.add(this.recvar);
+		if (body.aggregateNoEx(new SingleContinueChecker(rvs)))
+		{
+			return LSkip.SKIP;
+		}
+		return new LRecursion(null, this.recvar, body);
+	}
+
+	@Override
+	public LType project(ProjEnv v)
+	{
+		LSeq body = this.body.project(v);
+		return projectAux(body);
 	}
 */

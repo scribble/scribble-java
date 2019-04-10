@@ -17,10 +17,6 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.DisconnectAction;
-import org.scribble.core.type.session.local.LDisconnect;
-import org.scribble.core.type.session.local.LSkip;
-import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.global.ProjEnv;
 
 public class GDisconnect extends DisconnectAction<Global, GSeq>
 		implements GType
@@ -37,33 +33,6 @@ public class GDisconnect extends DisconnectAction<Global, GSeq>
 			CommonTree source, Role left, Role right)
 	{
 		return new GDisconnect(source, left, right);
-	}
-	
-	@Override
-	public LType projectInlined(Role self)
-	{
-		if (this.left.equals(self))
-		{
-			/*if (this.dst.equals(self))
-			{
-				// CHECKME: already checked?
-			}*/
-			return new LDisconnect(null, this.right);
-		}
-		else if (this.right.equals(self))
-		{
-			return new LDisconnect(null, this.left);
-		}
-		else
-		{
-			return LSkip.SKIP;
-		}
-	}
-
-	@Override
-	public LType project(ProjEnv v)
-	{
-		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}
 
 	@Override
@@ -136,5 +105,32 @@ public class GDisconnect extends DisconnectAction<Global, GSeq>
 			throws ScribException
 	{
 		return enablers;
+	}
+	
+	@Override
+	public LType projectInlined(Role self)
+	{
+		if (this.left.equals(self))
+		{
+			/*if (this.dst.equals(self))
+			{
+				// CHECKME: already checked?
+			}* /
+			return new LDisconnect(null, this.right);
+		}
+		else if (this.right.equals(self))
+		{
+			return new LDisconnect(null, this.left);
+		}
+		else
+		{
+			return LSkip.SKIP;
+		}
+	}
+
+	@Override
+	public LType project(ProjEnv v)
+	{
+		return projectInlined(v.self);  // No need for "aux", no recursive call
 	}
 */

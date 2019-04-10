@@ -15,19 +15,13 @@ package org.scribble.core.type.session.global;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
-import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.type.session.local.LSkip;
-import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoEx;
-import org.scribble.core.visit.global.ProjEnv;
 import org.scribble.util.ScribException;
 
 public class GSeq extends Seq<Global, GSeq> implements GType
@@ -55,30 +49,6 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 	public <T> T aggregateNoEx(STypeAggNoEx<Global, GSeq, T> v)
 	{
 		return v.visitSeq(this);
-	}
-
-	@Override
-	public LSeq projectInlined(Role self)
-	{
-		return projectAux(this.elems.stream()
-				.map(x -> ((GType) x).projectInlined(self)));  
-	}
-	
-	private LSeq projectAux(Stream<LType> elems)
-	{
-		List<LType> tmp = elems.filter(x -> !x.equals(LSkip.SKIP))
-				.collect(Collectors.toList());
-		return new LSeq(null, tmp);  
-				// Empty seqs converted to LSkip by GChoice/Recursion projection
-				// And a WF top-level protocol cannot produce empty LSeq
-				// So a projection never contains an empty LSeq -- i.e., "empty choice/rec" pruning unnecessary
-	}
-
-	@Override
-	public LSeq project(ProjEnv v)
-	{
-		return projectAux(this.elems.stream()
-				.map(x -> ((GType) x).project(v)));  
 	}
 
 	@Override
@@ -153,5 +123,29 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 			enablers = elem.checkExtChoiceConsistency(enablers);
 		}
 		return enablers;
+
+	@Override
+	public LSeq projectInlined(Role self)
+	{
+		return projectAux(this.elems.stream()
+				.map(x -> ((GType) x).projectInlined(self)));  
+	}
+	
+	private LSeq projectAux(Stream<LType> elems)
+	{
+		List<LType> tmp = elems.filter(x -> !x.equals(LSkip.SKIP))
+				.collect(Collectors.toList());
+		return new LSeq(null, tmp);  
+				// Empty seqs converted to LSkip by GChoice/Recursion projection
+				// And a WF top-level protocol cannot produce empty LSeq
+				// So a projection never contains an empty LSeq -- i.e., "empty choice/rec" pruning unnecessary
+	}
+
+	@Override
+	public LSeq project(ProjEnv v)
+	{
+		return projectAux(this.elems.stream()
+				.map(x -> ((GType) x).project(v)));  
+	}
 	}
 */
