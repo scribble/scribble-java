@@ -30,7 +30,8 @@ public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
 	protected final SType<K, B> agg(SType<K, B> n, Stream<SType<K, B>> ns)
 			throws ScribException
 	{
-		return ns.iterator().next();
+		//return ns.iterator().next();
+		throw new RuntimeException("Disregarded for STypeVisitor: " + n + " ,, " + ns);
 		
 		/*// agg = reconstruct, ns = "structural" (i.e, B) children -- problem with generic casts
 		if (n instanceof Continue<?, ?> || n instanceof DirectedInteraction<?, ?>
