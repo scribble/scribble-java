@@ -36,18 +36,18 @@ import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class AutParser
+public class AutGraphParser
 {
 	private final Job job;
 
-	public AutParser(Job job)
+	public AutGraphParser(Job job)
 	{
 		this.job = job;
 	}
 	
 	public EGraph parse(String aut)
 	{
-		ModelFactory ef = this.job.config.ef; 
+		ModelFactory ef = this.job.config.mf; 
 
 		//Map<Integer, Map<String, Integer>> edges = new HashMap<>();
 		Map<Integer, List<String>> as = new HashMap<>();

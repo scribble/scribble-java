@@ -22,21 +22,16 @@ import org.scribble.core.type.name.ModuleName;
 // The "static" (constant) info for Jobs -- cf. JobContext "dynamic" state
 public class JobConfig
 {
-	public final ModuleName main;  // Full name
-	// CHECKME: verbose/debug printing parameter?
-
-	public final Map<JobArgs, Boolean> args;
-
-	public final ModelFactory ef;
-	public final ModelFactory sf;
+	public final ModuleName main;  // Full name 
+	public final Map<JobArgs, Boolean> args;  // CHECKME: verbose/debug printing parameter ?
+	public final ModelFactory mf;
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
 	public JobConfig(ModuleName main, Map<JobArgs, Boolean> args,
-			ModelFactory ef, ModelFactory sf)
+			ModelFactory ef)
 	{
 		this.main = main;
 		this.args = Collections.unmodifiableMap(args);
-		this.ef = ef;
-		this.sf = sf;
+		this.mf = ef;
 	}
 }

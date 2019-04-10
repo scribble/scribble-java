@@ -220,25 +220,25 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	
 	// TODO FIXME: refactor following methods (e.g., make non-static?)
 	
-	public static void validateByScribble(Job job2, GProtocolName fullname,
+	public static void validateByScribble(Job job, GProtocolName fullname,
 			boolean fair) throws ScribException
 	{
-		JobContext jc = job2.getContext();
+		JobContext jc = job.getContext();
 		SGraph graph = (fair) 
 				? jc.getSGraph(fullname)
 				: jc.getUnfairSGraph(fullname);
 		//graph.toModel().validate(job);
-		job2.config.sf.newSModel(graph).validate(job2);
+		job.config.mf.newSModel(graph).validate(job);
 	}
 
-	public static void validateBySpin(Job job2, GProtocolName fullname)
+	public static void validateBySpin(Job job, GProtocolName fullname)
 			throws ScribException
 	{
-		JobContext jobc2 = job2.getContext();
+		JobContext jobc = job.getContext();
 		/*Module mod = jc.getModule(fullname.getPrefix());
 		GProtocolDecl gpd = (GProtocolDecl) mod
 				.getProtocolDeclChild(fullname.getSimpleName());*/
-		GProtocol gpd = jobc2.getInlined(fullname);
+		GProtocol gpd = jobc.getInlined(fullname);
 		
 		List<Role> rs = //gpd.getHeaderChild().getRoleDeclListChild().getRoles()
 				gpd.roles
@@ -294,9 +294,9 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		
 		for (Role r : rs)
 		{
-			pml += "\n\n" + jobc2.getEGraph(fullname, r).toPml(r);
+			pml += "\n\n" + jobc.getEGraph(fullname, r).toPml(r);
 		}
-		if (job2.config.args.get(JobArgs.VERBOSE))
+		if (job.config.args.get(JobArgs.VERBOSE))
 		{
 			System.out.println("[-spin]: Promela processes\n" + pml + "\n");
 		}
@@ -305,7 +305,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		for (Role r : rs)
 		{
 			Set<EState> tmp = new HashSet<>();
-			EGraph g = jobc2.getEGraph(fullname, r);
+			EGraph g = jobc.getEGraph(fullname, r);
 			tmp.add(g.init);
 			tmp.addAll(MState.getReachableStates(g.init));
 			if (g.term != null)
@@ -354,7 +354,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 			int j = (i+batchSize < clauses.size()) ? i+batchSize : clauses.size();
 			String batch = clauses.subList(i, j).stream().collect(Collectors.joining(" && "));
 			String ltl = "ltl {\n" + batch + "\n" + "}";
-			if (job2.config.args.get(JobArgs.VERBOSE))
+			if (job.config.args.get(JobArgs.VERBOSE))
 			{
 				System.out.println("[-spin] Batched ltl:\n" + ltl + "\n");
 			}

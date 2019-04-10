@@ -67,9 +67,8 @@ public class Job
 	protected JobConfig newJobConfig(ModuleName mainFullname,
 			Map<JobArgs, Boolean> args)
 	{
-		ModelFactory ef = new ModelFactoryImpl();
-		ModelFactoryImpl sf = new ModelFactoryImpl();
-		return new JobConfig(mainFullname, args, ef, sf); 
+		ModelFactory mf = new ModelFactoryImpl();
+		return new JobConfig(mainFullname, args, mf); 
 				// CHECKME: combine E/SModelFactory?
 	}
 
@@ -85,14 +84,14 @@ public class Job
 	// A Scribble extension should override newJobConfig/Context/etc as appropriate
 	public SGraphBuilderUtil newSGraphBuilderUtil()
 	{
-		return this.config.sf.newSGraphBuilderUtil();
+		return this.config.mf.newSGraphBuilderUtil();
 	}
 
 	// TODO: deprecate, caller should go through config
 	// A Scribble extension should override newJobConfig/Context/etc as appropriate
 	public EGraphBuilderUtil newEGraphBuilderUtil()
 	{
-		return new EGraphBuilderUtil(this.config.ef);
+		return new EGraphBuilderUtil(this.config.mf);
 	}
 	
 	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProtocol;
-import org.scribble.core.model.endpoint.AutParser;
+import org.scribble.core.model.endpoint.AutGraphParser;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.type.name.GProtocolName;
@@ -223,7 +223,7 @@ public class JobContext
 		if (unfair == null)
 		{
 			unfair = getEGraph(fullname, role).init
-					.unfairTransform(this.job.config.ef).toGraph();
+					.unfairTransform(this.job.config.mf).toGraph();
 			addUnfairEGraph(fulllpn, unfair);
 		}
 		return unfair;
@@ -307,7 +307,7 @@ public class JobContext
 		{
 			String aut = runAut(getEGraph(fullname, role).init.toAut(),
 					fulllpn + ".aut");
-			minimised = new AutParser(this.job).parse(aut);
+			minimised = new AutGraphParser(this.job).parse(aut);
 			addMinimisedEGraph(fulllpn, minimised);
 		}
 		return minimised;
