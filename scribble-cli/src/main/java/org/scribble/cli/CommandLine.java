@@ -400,8 +400,8 @@ public class CommandLine
 	{
 		LangContext langc = lang.getContext();
 		JobContext jobc = lang.getJob().getContext();
-		GProtocolDecl gpd = (GProtocolDecl) langc.getMainModule()
-				.getProtocolDeclChild(fullname.getSimpleName());
+		GProtocolDecl gpd = langc.getMainModule()
+				.getGProtocolDeclChild(fullname.getSimpleName());
 		if (gpd == null || !gpd.getHeaderChild().getRoleDeclListChild().getRoles()
 				.contains(role))
 		{
@@ -513,11 +513,11 @@ public class CommandLine
 	{
 		GProtocolName simpgpn = new GProtocolName(simpname);
 		Module main = langc.getMainModule();
-		if (!main.hasProtocolDecl(simpgpn))
+		if (!main.hasGProtocolDecl(simpgpn))
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
 		}
-		ProtocolDecl<?> pd = main.getProtocolDeclChild(simpgpn);
+		ProtocolDecl<?> pd = main.getGProtocolDeclChild(simpgpn);
 		if (pd == null || !pd.isGlobal())
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
@@ -534,7 +534,7 @@ public class CommandLine
 			GProtocolName fullname, String rolename) throws CommandLineException
 	{
 		ProtocolDecl<?> pd = langc.getMainModule()
-				.getProtocolDeclChild(fullname.getSimpleName());
+				.getGProtocolDeclChild(fullname.getSimpleName());
 		Role role = new Role(rolename);
 		if (!pd.getHeaderChild().getRoleDeclListChild().getRoles().contains(role))
 		{

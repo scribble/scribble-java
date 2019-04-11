@@ -15,49 +15,86 @@ package org.scribble.ast;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtocolName;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public class Module extends ScribNodeBase
 {
+	public static final int MODDECL_CHILD_INDEX = 0;
+	
 	// ScribTreeAdaptor#create constructor
 	public Module(Token payload)
 	{
 		super(payload);
-		this.moddecl = null;
-		this.imports = null;
-		this.data = null;
-		this.protos = null;
 	}
 
 	// Tree#dupNode constructor
 	protected Module(Module node)
 	{
 		super(node);
-		this.moddecl = null;
-		this.imports = null;
-		this.data = null;
-		this.protos = null;
+	}
+
+	public ModuleDecl getModuleDeclChild()
+	{
+		return (ModuleDecl) getChild(0);
+	}
+	
+	public List<ImportDecl<?>> getImportDeclChildren()
+	{
+		return getMemberChildren(x -> x instanceof ImportDecl,
+				x -> (ImportDecl<?>) x);
+	}
+
+	public List<NonProtocolDecl<?>> getNonProtoDeclChildren()
+	{
+		return getMemberChildren(x -> x instanceof NonProtocolDecl,
+				x -> (NonProtocolDecl<?>) x);
+	}
+	
+	public List<ProtocolDecl<?>> getProtoDeclChildren()
+	{
+		return getMemberChildren(x -> x instanceof ProtocolDecl,
+				x -> (ProtocolDecl<?>) x);
+	}
+
+	/*public <K extends ProtocolKind> List<ProtocolDecl<K>> getProtoDeclChildren(Kind k)
+	{
+		return getMemberChildren(x -> x instanceof ProtocolDecl,
+				x -> (ProtocolDecl<?>) x);
+	}*/
+
+	// Not requiring T extends ModuleMember, ImportDecl is not a ModuleMember
+	private <T> List<T> getMemberChildren(
+			Predicate<ScribNode> instanceOf, Function<ScribNode, T> cast)
+	{
+		List<T> res = new LinkedList<>();
+		boolean b = false;
+		for (ScribNode c : getChildren())
+		{
+			if (!b && instanceOf.test(c)) b = true;
+			else if (b && !instanceOf.test(c)) break;
+			if (b) res.add(cast.apply(c));
+		}
+		return res;
 	}
 
 	public ModuleName getFullModuleName()
 	{
-		//return this.moddecl.getFullModuleName();
 		return getModuleDeclChild().getFullModuleName();
 	}
 
@@ -72,17 +109,13 @@ public class Module extends ScribNodeBase
 	protected Module reconstruct(ModuleDecl moddecl, List<ImportDecl<?>> imports,
 			List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos)
 	{
-		//Module m = new Module(this.source, moddecl, imports, data, protos);
-		Module m = dupNode();
-		ScribDel del = del();
-		List<ScribNode> children = new LinkedList<>();
-		children.add(moddecl);
-		children.addAll(imports);
-		children.addAll(data);
-		children.addAll(protos);
-		m.setChildren(children);
-		m.setDel(del);  // No copy
-		return m;
+		Module dup = dupNode();
+		dup.addChild(moddecl);
+		dup.addChildren(imports);
+		dup.addChildren(data);
+		dup.addChildren(protos);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override
@@ -99,113 +132,71 @@ public class Module extends ScribNodeBase
 		return reconstruct(moddecl, imports, data, protos);
 	}
 	
-	public ModuleDecl getModuleDeclChild()
-	{
-		List<ModuleDecl> tmp = getChildren().stream()
-				.filter(x -> x instanceof ModuleDecl).map(x -> (ModuleDecl) x)
-				.collect(Collectors.toList());
-		if (tmp.size() != 1)
-		{
-			throw new RuntimeException("Shouldn't get in here: " + tmp);
-		}
-		return tmp.get(0);
-	}
-	
-	public List<ImportDecl<?>> getImportDeclChildren()
-	{
-		return getChildren().stream().filter(x -> x instanceof ImportDecl<?>)
-				.map(x -> (ImportDecl<?>) x).collect(Collectors.toList());
-	}
-
-	public List<NonProtocolDecl<?>> getNonProtoDeclChildren()
-	{
-		return getChildren().stream().filter(x -> x instanceof NonProtocolDecl<?>)
-				.map(x -> (NonProtocolDecl<?>) x).collect(Collectors.toList());
-	}
-
-	// Arg is alias simple name
 	public DataTypeDecl getDataTypeDeclChild(DataType simpname)  // Simple name (as for getProtocolDecl)
 	{
-		List<NonProtocolDecl<?>> filt = getNonProtoDeclChildren().stream()
-				.filter(x -> ((NonProtocolDecl<?>) x).isDataTypeDecl()
+		Optional<DataTypeDecl> res = getNonProtoDeclChildren().stream()
+				.filter(x -> (x instanceof DataTypeDecl)
 						&& x.getDeclName().equals(simpname))
-				.collect(Collectors.toList());
-		if (filt.size() != 1)
+				.map(x -> (DataTypeDecl) x).findFirst();  // No duplication check, rely on WF
+		if (res.isPresent())
 		{
-			throw new RuntimeException(
-					"Data type decl not found (or duplicate name): " + simpname);
+			throw new RuntimeException("Type decl not found: " + simpname);
 		}
-		return (DataTypeDecl) filt.get(0);
+		return res.get();
 	}
 
-	// Arg is alias simple name
+	// CHECKME: allow sig and type decls with same decl name in same module?
 	public MessageSigNameDecl getMessageSigDeclChild(MessageSigName simpname)
 	{
-		List<NonProtocolDecl<?>> filt = getNonProtoDeclChildren().stream()
-				.filter(x -> ((NonProtocolDecl<?>) x).isMessageSigNameDecl()
+		Optional<MessageSigNameDecl> res = getNonProtoDeclChildren().stream()
+				.filter(x -> (x instanceof MessageSigNameDecl)
 						&& x.getDeclName().equals(simpname))
-				.collect(Collectors.toList());
-		if (filt.size() != 1)
+				.map(x -> (MessageSigNameDecl) x).findFirst();  // No duplication check, rely on WF
+		if (res.isPresent())
 		{
-			throw new RuntimeException(
-					"Message sig name not found (or duplicate name): " + simpname);
+			throw new RuntimeException("Sig decl not found: " + simpname);
 		}
-		return (MessageSigNameDecl) filt.get(0);
-	}
-	
-	public List<ProtocolDecl<?>> getProtoDeclChildren()
-	{
-		//return Collections.unmodifiableList(this.protos);
-		return getChildren().stream().filter(x -> x instanceof ProtocolDecl<?>)
-				.map(x -> (ProtocolDecl<?>) x).collect(Collectors.toList());
-	}
-	
-	public <K extends ProtocolKind> boolean hasProtocolDecl(
-			ProtocolName<K> simpname)
-	{
-		List<? extends ProtocolDecl<?>> pds = 
-				simpname.getKind().equals(Global.KIND) 
-						? getGProtoDeclChildren()
-						: null;  // FIXME
-		return pds.stream().anyMatch(x -> x.getHeaderChild().getDeclName().equals(simpname));
-	}
-	
-	// pn is simple name
-	// Pre: hasProtocolDecl(simpname)
-  // CHECKME: separate global/local?
-	public <K extends ProtocolKind> ProtocolDecl<K> getProtocolDeclChild(
-			ProtocolName<K> simpname)
-	{
-		List<? extends ProtocolDecl<?>> pds = 
-				simpname.getKind().equals(Global.KIND) 
-						? getGProtoDeclChildren()
-						: null;  // FIXME
-		List<? extends ProtocolDecl<?>> filt = pds.stream()
-				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
-				.collect(Collectors.toList());
-		if (filt.size() != 1)
-		{
-			throw new RuntimeException("Protocol not found (or duplicate name): " + simpname);
-		}
-		@SuppressWarnings("unchecked")
-		ProtocolDecl<K> res = (ProtocolDecl<K>) filt.get(0);
-		return res;
+		return res.get();
 	}
 	
 	public List<GProtocolDecl> getGProtoDeclChildren()
 	{
-		return getChildren().stream().filter(IS_GPROTOCOLDECL).map(TO_GPROTOCOLDECL)
-				.collect(Collectors.toList());
+		/*return getChildren().stream().filter(IS_GPROTOCOLDECL).map(TO_GPROTOCOLDECL)
+				.collect(Collectors.toList());*/
+		return getProtoDeclChildren().stream().filter(x -> x.isGlobal())
+				.map(x -> (GProtocolDecl) x).collect(Collectors.toList());
+						// Less efficient, but less code
 	}
-
-	private static final Predicate<ScribNode> IS_GPROTOCOLDECL =
-			pd -> (pd instanceof ProtocolDecl<?>) && ((ProtocolDecl<?>) pd).isGlobal();
-
-	private static final Predicate<ScribNode> IS_LPROTOCOLDECL =
-			pd -> (pd instanceof ProtocolDecl<?>) && ((ProtocolDecl<?>) pd).isLocal();
-
-	private static final Function <ScribNode, GProtocolDecl> TO_GPROTOCOLDECL = 
-			pd -> (GProtocolDecl) pd;
+	
+	// CHECKME: allow global and local protocols with same simpname in same module? -- currently, no?
+	public boolean hasGProtocolDecl(GProtocolName simpname)
+	{
+		return getGProtoDeclChildren().stream()
+				.anyMatch(x -> x.getHeaderChild().getDeclName().equals(simpname));
+	}
+	
+	// Pre: hasProtocolDecl(simpname)
+	public GProtocolDecl getGProtocolDeclChild(
+			GProtocolName simpname)
+	{
+		Optional<GProtocolDecl> res = getGProtoDeclChildren().stream()
+				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
+				.findFirst();  // No duplication check, rely on WF
+		if (res.isPresent())
+		{
+			throw new RuntimeException("Proto decl not found: " + simpname);
+		}
+		return res.get();
+	}
+	
+	// Useful for, e.g., Do<K>
+	public <K extends ProtocolKind> ProtocolDecl<K> getProtocolDeclChild(
+			ProtocolName<K> simpname)
+	{
+		return (simpname.getKind().equals(Global.KIND))
+				? (ProtocolDecl<K>) getGProtocolDeclChild((GProtocolName) simpname)  // FIXME -- make Kind take itself as param
+				: null;  // TODO
+	}
 
 	@Override
 	public String toString()
@@ -225,60 +216,28 @@ public class Module extends ScribNodeBase
 		}
 		return s;
 	}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-	// Deprecate
-			
-	private final ModuleDecl moddecl;
-
-	// Using (implicitly bounded) nested wildcards for mixed element lists (better practice to use separate lists?)
-	private final List<ImportDecl<?>> imports;
-	private final List<NonProtocolDecl<?>> data;
-	private final List<ProtocolDecl<?>> protos;
-
-	public Module(CommonTree source, ModuleDecl moddecl,
-			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
-			List<ProtocolDecl<?>> protos)
-	{
-		super(source);
-		this.moddecl = moddecl;
-		this.imports = new LinkedList<>(imports);
-		this.data = new LinkedList<>(data);
-		this.protos = new LinkedList<>(protos);
-	}
-
-	/*@Override
-	protected Module copy()
-	{
-		//return new Module(this.source, this.moddecl, this.imports, this.data, this.protos);
-		/*ModuleDecl md = getModuleDecl();
-		List<ImportDecl<?>> ids = getImportDecls();
-		List<NonProtocolDecl<?>> npds = getNonProtocolDecls();
-		List<ProtocolDecl<?>> pds = getProtocolDecls();* /
-		//return new Module(this.source, md, ids, npds, pds);
-		Module copy = dupNode();
-		copy.setChildren(getChildren());
-		return copy;
-	}
-	
-	@Override
-	public Module clone(AstFactory af)
-	{
-		ModuleDecl moddecl = (ModuleDecl) this.moddecl.clone(af);
-		List<ImportDecl<?>> imports = ScribUtil.cloneList(af, this.imports);
-		List<NonProtocolDecl<?>> data = ScribUtil.cloneList(af, this.data);
-		List<ProtocolDecl<?>> protos = ScribUtil.cloneList(af, this.protos);
-		return af.Module(this.source, moddecl, imports, data, protos);
-		throw new RuntimeException("Deprecated");
-	}*/
 }
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*private static final Predicate<ScribNode> IS_GPROTOCOLDECL =
+			x -> (x instanceof ProtocolDecl<?>) && ((ProtocolDecl<?>) x).isGlobal();
+
+	private static final Function <ScribNode, GProtocolDecl> TO_GPROTOCOLDECL = 
+			x -> (GProtocolDecl) x;*/

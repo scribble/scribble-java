@@ -53,7 +53,7 @@ import org.scribble.core.type.kind.PayloadTypeKind;
 // Currently, used only in relatively niche places (since ANTLR now constructs all parsed nodes "directly")
 public interface AstFactory
 {
-	Module Module(CommonTree source, ModuleDecl moddecl,
+	Module Module(Token t, ModuleDecl moddecl,
 			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
 			List<ProtocolDecl<?>> protos);
 

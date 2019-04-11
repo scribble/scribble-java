@@ -62,7 +62,7 @@ public class GDelegationElemDel extends ScribDelBase
 		Role rn = r.toName();
 		ProtocolDecl<Global> gpd = disamb.lang.getContext()
 				.getModule(fullname.getPrefix())
-				.getProtocolDeclChild(fullname.getSimpleName());
+				.getGProtocolDeclChild(fullname.getSimpleName());
 		if (!gpd.getHeaderChild().getRoleDeclListChild().getRoles().contains(rn))
 		{
 			throw new ScribException(r.getSource(), "Invalid delegation role: " + de);
