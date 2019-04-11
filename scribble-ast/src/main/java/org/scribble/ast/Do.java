@@ -90,14 +90,9 @@ public abstract class Do<K extends ProtocolKind>
 		return getProtocolNameNode().toName();  // Pre: use after name disambiguation (maybe drop FullName suffix)
 	}
 	
-	// mcontext redundant because redundant for getTargetProtocolDeclFullName
-	public ProtocolDecl<K> getTargetProtocolDecl(LangContext jcontext,
-			ModuleContext mcontext)
-	{
-		ProtocolName<K> fullname = getTargetProtocolDeclFullName(mcontext);
-		return jcontext.getModule(fullname.getPrefix())
-				.getProtocolDeclChild(fullname.getSimpleName());
-	}
+	// CHECKME: mcontext redundant, because redundant for getTargetProtocolDeclFullName
+	public abstract ProtocolDecl<K> getTargetProtocolDecl(LangContext jcontext,
+			ModuleContext mcontext);
 	
 	public Role getTargetRoleParameter(LangContext jcontext,
 			ModuleContext mcontext, Role role)

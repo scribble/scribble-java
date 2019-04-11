@@ -22,14 +22,12 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.core.type.name.ProtocolName;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -72,18 +70,13 @@ public class Module extends ScribNodeBase
 				x -> (ProtocolDecl<?>) x);
 	}
 
-	/*public <K extends ProtocolKind> List<ProtocolDecl<K>> getProtoDeclChildren(Kind k)
-	{
-		return getMemberChildren(x -> x instanceof ProtocolDecl,
-				x -> (ProtocolDecl<?>) x);
-	}*/
-
 	// Not requiring T extends ModuleMember, ImportDecl is not a ModuleMember
 	private <T> List<T> getMemberChildren(
 			Predicate<ScribNode> instanceOf, Function<ScribNode, T> cast)
 	{
 		List<T> res = new LinkedList<>();
 		boolean b = false;
+		// Start collecting from first instance, and stop on first non-instance or end
 		for (ScribNode c : getChildren())
 		{
 			if (!b && instanceOf.test(c)) b = true;
@@ -138,7 +131,7 @@ public class Module extends ScribNodeBase
 				.filter(x -> (x instanceof DataTypeDecl)
 						&& x.getDeclName().equals(simpname))
 				.map(x -> (DataTypeDecl) x).findFirst();  // No duplication check, rely on WF
-		if (res.isPresent())
+		if (!res.isPresent())
 		{
 			throw new RuntimeException("Type decl not found: " + simpname);
 		}
@@ -152,7 +145,7 @@ public class Module extends ScribNodeBase
 				.filter(x -> (x instanceof MessageSigNameDecl)
 						&& x.getDeclName().equals(simpname))
 				.map(x -> (MessageSigNameDecl) x).findFirst();  // No duplication check, rely on WF
-		if (res.isPresent())
+		if (!res.isPresent())
 		{
 			throw new RuntimeException("Sig decl not found: " + simpname);
 		}
@@ -165,7 +158,7 @@ public class Module extends ScribNodeBase
 				.collect(Collectors.toList());*/
 		return getProtoDeclChildren().stream().filter(x -> x.isGlobal())
 				.map(x -> (GProtocolDecl) x).collect(Collectors.toList());
-						// Less efficient, but less code
+						// Less efficient, but smaller code
 	}
 	
 	// CHECKME: allow global and local protocols with same simpname in same module? -- currently, no?
@@ -182,20 +175,11 @@ public class Module extends ScribNodeBase
 		Optional<GProtocolDecl> res = getGProtoDeclChildren().stream()
 				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
 				.findFirst();  // No duplication check, rely on WF
-		if (res.isPresent())
+		if (!res.isPresent())
 		{
 			throw new RuntimeException("Proto decl not found: " + simpname);
 		}
 		return res.get();
-	}
-	
-	// Useful for, e.g., Do<K>
-	public <K extends ProtocolKind> ProtocolDecl<K> getProtocolDeclChild(
-			ProtocolName<K> simpname)
-	{
-		return (simpname.getKind().equals(Global.KIND))
-				? (ProtocolDecl<K>) getGProtocolDeclChild((GProtocolName) simpname)  // FIXME -- make Kind take itself as param
-				: null;  // TODO
 	}
 
 	@Override

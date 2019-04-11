@@ -40,6 +40,15 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	{
 		return (GProtocolNameNode) getChild(Do.NAME_CHILD_INDEX);
 	}
+
+	@Override
+	public GProtocolDecl getTargetProtocolDecl(LangContext jcontext,
+			ModuleContext mcontext)
+	{
+		GProtocolName fullname = getTargetProtocolDeclFullName(mcontext);
+		return jcontext.getModule(fullname.getPrefix())
+				.getGProtocolDeclChild(fullname.getSimpleName());
+	}
 	
 	@Override
 	public GDo dupNode()
@@ -51,12 +60,5 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	public GProtocolName getTargetProtocolDeclFullName(ModuleContext mcontext)
 	{
 		return (GProtocolName) super.getTargetProtocolDeclFullName(mcontext);
-	}
-
-	@Override
-	public GProtocolDecl getTargetProtocolDecl(LangContext jcontext,
-			ModuleContext mcontext)
-	{
-		return (GProtocolDecl) super.getTargetProtocolDecl(jcontext, mcontext);
 	}
 }
