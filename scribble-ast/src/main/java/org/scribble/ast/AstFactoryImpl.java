@@ -94,8 +94,6 @@ import org.scribble.del.name.simple.RoleNodeDel;
 
 public class AstFactoryImpl implements AstFactory
 {
-	//public static final AstFactory FACTORY = new AstFactoryImpl();
-
 	private static MessageSigNode UNIT_MESSAGE_SIG_NODE;  // A "constant"
 	
 	public AstFactoryImpl()
@@ -121,6 +119,7 @@ public class AstFactoryImpl implements AstFactory
 		return ScribNodeBase.del(n, del);
 	}
 	
+	// CHECKME: deprecated ?
   // FIXME: inconsistent wrt. this.source -- it is essentially parsed (in the sense of *omitted* syntax), but not recorded
 	// FIXME: this pattern is not ideal ("exposed" public constructor arg in GWrap/GDisconnect)
 	//     An alternative would be to make subclasses, e.g., UnitMessageSigNode, UnitOp, EmptyPayloadElemList -- but a lot of extra classes
@@ -170,10 +169,12 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GDelegationElem GDelegationElem(CommonTree source,
+	public GDelegationElem GDelegationElem(Token t,
 			GProtocolNameNode proto, RoleNode role)
 	{
-		GDelegationElem de = new GDelegationElem(source, proto, role);
+		GDelegationElem de = new GDelegationElem(t);
+		de.addChild(proto);
+		de.addChild(role);
 		//de = del(de, createDefaultDelegate());
 		de = del(de, new GDelegationElemDel());  // FIXME: GDelegationElemDel
 		return de;
@@ -305,9 +306,10 @@ public class AstFactoryImpl implements AstFactory
 		return pdl;
 	}
 
+	@Deprecated
 	@Override
 	public <K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(
-			CommonTree source, K kind, NonRoleParamNode<K> namenode)
+			Token t, K kind, NonRoleParamNode<K> namenode)
 	{
 		/*NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(source, kind, namenode);
 		pd = del(pd, new NonRoleParamDeclDel());
@@ -464,20 +466,20 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind,
-			String identifier)
+	public <K extends Kind> NameNode<K> SimpleNameNode(Token t, K kind,
+			IdNode id)
 	{
 		NameNode<? extends Kind> snn = null;
 
 		// "Custom" del's
 		if (kind.equals(RecVarKind.KIND))
 		{
-			snn = new RecVarNode(source, identifier);
+			snn = new RecVarNode(t, id);
 			snn = del(snn, new RecVarNodeDel());
 		}
 		else if (kind.equals(RoleKind.KIND))
 		{
-			snn = new RoleNode(source, identifier);
+			snn = new RoleNode(t, id);
 			snn = del(snn, new RoleNodeDel());
 		}
 		if (snn != null)
@@ -488,7 +490,7 @@ public class AstFactoryImpl implements AstFactory
 		// Default del's
 		if (kind.equals(OpKind.KIND))
 		{
-			snn = new OpNode(source, identifier);
+			snn = new OpNode(t, id);
 		}
 		else
 		{
@@ -499,17 +501,17 @@ public class AstFactoryImpl implements AstFactory
 
 	@Override
 	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(
-			CommonTree source, K kind, String... elems)
+			Token t, K kind, IdNode... elems)
 	{
 		QualifiedNameNode<? extends Kind> qnn = null;
 		if (kind.equals(SigKind.KIND))
 		{
-			qnn = new MessageSigNameNode(source, elems);
+			qnn = new MessageSigNameNode(t, elems);
 			qnn = del(qnn, new MessageSigNameNodeDel());
 		}
 		else if (kind.equals(DataTypeKind.KIND))
 		{
-			qnn = new DataTypeNode(source, elems);
+			qnn = new DataTypeNode(t, elems);
 			qnn = del(qnn, new DataTypeNodeDel());
 		}
 		if (qnn != null)
@@ -519,15 +521,15 @@ public class AstFactoryImpl implements AstFactory
 
 		if (kind.equals(ModuleKind.KIND))
 		{
-			qnn = new ModuleNameNode(source, elems);
+			qnn = new ModuleNameNode(t, elems);
 		}
 		else if (kind.equals(Global.KIND))
 		{
-			qnn = new GProtocolNameNode(source, elems);
+			qnn = new GProtocolNameNode(t, elems);
 		}
 		else if (kind.equals(Local.KIND))
 		{
-			qnn = new LProtocolNameNode(source, elems);
+			qnn = new LProtocolNameNode(t, elems);
 		}
 		else
 		{
@@ -549,27 +551,29 @@ public class AstFactoryImpl implements AstFactory
 		return tmp;
 	}
 
+	// Deprecate?  Never need to make ambigname via af?
 	@Override
-	public AmbigNameNode AmbiguousNameNode(CommonTree source, String identifier)
+	public AmbigNameNode AmbiguousNameNode(Token t, IdNode id)
 	{
-		AmbigNameNode ann = new AmbigNameNode(source, identifier);
-		ann = (AmbigNameNode) ann.del(new AmbigNameNodeDel());
-		return ann;
+		AmbigNameNode n = new AmbigNameNode(t);
+		n.addChild(id);
+		n = (AmbigNameNode) n.del(new AmbigNameNodeDel());
+		return n;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")  // FIXME
 	@Override
 	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(
-			CommonTree source, K kind, String identifier)
+			Token t, K kind, String identifier)
 	{
-		NonRoleParamNode<K> pn; //= new NonRoleParamNode<K>(source, kind, identifier);
+		NonRoleParamNode<K> pn;
 		if (kind.equals(SigKind.KIND))
 		{
-			pn = (NonRoleParamNode<K>) new SigParamNode(source.getToken());
+			pn = (NonRoleParamNode<K>) new SigParamNode(t);
 		}
 		else
 		{
-			pn = (NonRoleParamNode<K>) new TypeParamNode(source.getToken());
+			pn = (NonRoleParamNode<K>) new TypeParamNode(t);
 		}
 		pn = del(pn, new NonRoleParamNodeDel());
 		return pn;

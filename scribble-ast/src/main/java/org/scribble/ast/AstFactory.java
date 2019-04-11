@@ -16,7 +16,6 @@ package org.scribble.ast;
 import java.util.List;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
@@ -53,16 +52,16 @@ import org.scribble.core.type.kind.PayloadTypeKind;
 // Currently, used only in relatively niche places (since ANTLR now constructs all parsed nodes "directly")
 public interface AstFactory
 {
-	Module Module(Token t, ModuleDecl moddecl,
+	Module Module(Token t, ModuleDecl mdecl,
 			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
 			List<ProtocolDecl<?>> protos);
 
 	MessageSigNode MessageSigNode(Token t, OpNode op, PayloadElemList pay);
 
-	GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name,
-			RoleNode role);
+	GDelegationElem GDelegationElem(Token t, GProtocolNameNode name,
+			RoleNode r);
 
-	PayloadElemList PayloadElemList(Token t, List<PayloadElem<?>> payloadelems);
+	PayloadElemList PayloadElemList(Token t, List<PayloadElem<?>> elems);
 
 	// PayloadElem PayloadElem(PayloadElemNameNode name);
 	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(Token t,
@@ -83,30 +82,31 @@ public interface AstFactory
 			GProtocolHeader header, GProtocolDef def);
 
 	GProtocolHeader GProtocolHeader(Token t, GProtocolNameNode name,
-			RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
+			RoleDeclList rdecls, NonRoleParamDeclList paramdecls);
 
-	RoleDeclList RoleDeclList(Token t, List<RoleDecl> rds);
+	RoleDeclList RoleDeclList(Token t, List<RoleDecl> ds);
 
-	RoleDecl RoleDecl(Token t, RoleNode role);
+	RoleDecl RoleDecl(Token t, RoleNode r);
 
-	// ConnectDecl ConnectDecl(CommonTree source, RoleNode src, RoleNode role);
+	// ConnectDecl ConnectDecl(Token t, RoleNode src, RoleNode r);
 
 	NonRoleParamDeclList NonRoleParamDeclList(Token t,
-			List<NonRoleParamDecl<NonRoleParamKind>> pds);
+			List<NonRoleParamDecl<NonRoleParamKind>> ds);
 
+	@Deprecated
 	<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(
-			CommonTree source, K kind, NonRoleParamNode<K> name);
+			Token t, K kind, NonRoleParamNode<K> name);
 
 	GProtocolDef GProtocolDef(Token t, GProtocolBlock block);
 
-	GProtocolBlock GProtocolBlock(Token t, GInteractionSeq gis);
+	GProtocolBlock GProtocolBlock(Token t, GInteractionSeq seq);
 
 	GInteractionSeq GInteractionSeq(Token t, List<GSessionNode> elems);
 
 	GMessageTransfer GMessageTransfer(Token t, RoleNode src, MessageNode msg,
 			List<RoleNode> dsts);
 
-	GConnect GConnect(Token t, RoleNode src, MessageNode msg, RoleNode dest);
+	GConnect GConnect(Token t, RoleNode src, MessageNode msg, RoleNode dst);
 
 	GDisconnect GDisconnect(Token t, RoleNode src, RoleNode dst);
 
@@ -114,31 +114,30 @@ public interface AstFactory
 
 	GChoice GChoice(Token t, RoleNode subj, List<GProtocolBlock> blocks);
 
-	GRecursion GRecursion(Token t, RecVarNode recvar, GProtocolBlock block);
+	GRecursion GRecursion(Token t, RecVarNode rv, GProtocolBlock block);
 
-	GContinue GContinue(Token t, RecVarNode recvar);
+	GContinue GContinue(Token t, RecVarNode rv);
 
-	GDo GDo(Token t, RoleArgList roles, NonRoleArgList args,
+	GDo GDo(Token t, RoleArgList rs, NonRoleArgList args,
 			GProtocolNameNode proto);
 
-	RoleArgList RoleArgList(Token t, List<RoleArg> roles);
+	RoleArgList RoleArgList(Token t, List<RoleArg> rs);
 
-	RoleArg RoleArg(Token t, RoleNode role);
+	RoleArg RoleArg(Token t, RoleNode r);
 
 	NonRoleArgList NonRoleArgList(Token t, List<NonRoleArg> args);
 
 	NonRoleArg NonRoleArg(Token t, NonRoleArgNode arg);
 
-	<K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind,
-			String identifier);
+	<K extends Kind> NameNode<K> SimpleNameNode(Token t, K kind, IdNode id);
 
-	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source,
-			K kind, String... elems);
+	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(Token t, K kind,
+			IdNode... elems);
 
-	AmbigNameNode AmbiguousNameNode(CommonTree source, String identifier);
+	AmbigNameNode AmbiguousNameNode(Token t, IdNode id);
 
 	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(
-			CommonTree source, K kind, String identifier);
+			Token t, K kind, String id);
 }
 
 

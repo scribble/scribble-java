@@ -91,9 +91,10 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 		return names.get(names.size() - 1);
 	}
 	
+  // CHECKME: is equals/hashCode actually needed for these ScribNodes? (cf. Name)
+	// CHECKME: should NameNodes ever be used in an equality checking context? (cf. other AST nodes) -- this work should be done using sesstype.Name instead?
 	@Override
 	public boolean equals(Object o)  
-			// CHECKME: should NameNodes ever be used in an equality checking context? (cf. other AST nodes) -- this work should be done using sesstype.Name instead?
 	{
 		if (this == o)
 		{

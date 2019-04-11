@@ -16,7 +16,6 @@ package org.scribble.ast.name.qualified;
 import java.util.Arrays;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.PackageName;
@@ -31,7 +30,7 @@ public abstract class MemberNameNode<K extends Kind>
 	}
 
 	// Tree#dupNode constructor
-	protected MemberNameNode(MemberNameNode<K> node)//, String...elems)
+	protected MemberNameNode(MemberNameNode<K> node)
 	{
 		super(node);
 	}
@@ -46,21 +45,5 @@ public abstract class MemberNameNode<K extends Kind>
 		}
 		return new ModuleName(
 				new PackageName(Arrays.copyOf(prefix, prefix.length - 1)), mn);
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public MemberNameNode(CommonTree source, String... ns)
-	{
-		super(source, ns);
 	}
 }

@@ -14,7 +14,6 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
@@ -22,7 +21,6 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GDelegationType;
 import org.scribble.core.type.name.PayloadElemType;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -31,31 +29,30 @@ import org.scribble.visit.AstVisitor;
 //public class DelegationElem extends PayloadElem<Local>
 public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 {
+	public static final int PROTO_CHILD_INDEX = 0;
+	public static final int ROLE_CHILD_INDEX = 1;
+
 	// ScribTreeAdaptor#create constructor
 	public GDelegationElem(Token t)
 	{
 		super(t);
-		this.proto = null;
-		this.role = null;
 	}
 
 	// Tree#dupNode constructor
 	public GDelegationElem(GDelegationElem node)
 	{
 		super(node);
-		this.proto = null;
-		this.role = null;
 	}
 
   // Becomes full name after disambiguation
 	public GProtocolNameNode getProtocolChild()
 	{
-		return (GProtocolNameNode) getChild(0);
+		return (GProtocolNameNode) getChild(PROTO_CHILD_INDEX);
 	}
 	
 	public RoleNode getRoleChild()
 	{
-		return (RoleNode) getChild(1);
+		return (RoleNode) getChild(ROLE_CHILD_INDEX);
 	}
 	
 	@Override
@@ -64,18 +61,13 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 		return new GDelegationElem(this);
 	}
 
-	@Override
-	public boolean isGlobalDelegationElem()
-	{
-		return true;
-	}
-
 	public GDelegationElem reconstruct(GProtocolNameNode proto, RoleNode role)
 	{
-		ScribDel del = del();
-		GDelegationElem elem = new GDelegationElem(this.source, proto, role);
-		elem = (GDelegationElem) elem.del(del);
-		return elem;
+		GDelegationElem dup = dupNode();
+		dup.addChild(proto);
+		dup.addChild(role);
+		dup = (GDelegationElem) dup.del(del());
+		return dup;
 	}
 
 	@Override
@@ -85,6 +77,12 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 				visitChild(getProtocolChild(), nv);
 		RoleNode role = (RoleNode) visitChild(getRoleChild(), nv);
 		return reconstruct(name, role);
+	}
+
+	@Override
+	public boolean isGlobalDelegationElem()
+	{
+		return true;
 	}
 
 	@Override
@@ -99,45 +97,4 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	{
 		return getProtocolChild() + "@" + getRoleChild();
 	}
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Currently no potential for ambiguity, cf. UnaryPayloadElem (DataTypeNameNode or ParameterNode)
-	private final GProtocolNameNode proto;  // Becomes full name after disambiguation
-	private final RoleNode role;
-	
-	public GDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
-	{
-		//super(proto);
-		super(source);
-		this.proto = proto;
-		this.role = role;
-	}
-
-	/*@Override
-	protected GDelegationElem copy()
-	{
-		return new GDelegationElem(this.source, this.proto, this.role);
-	}
-	
-	@Override
-	public GDelegationElem clone(AstFactory af)
-	{
-		GProtocolNameNode name = (GProtocolNameNode) this.proto.clone(af);
-		RoleNode role = (RoleNode) this.role.clone(af);
-		return af.GDelegationElem(this.source, name, role);
-	}*/
 }

@@ -14,7 +14,6 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.name.DataType;
@@ -31,7 +30,7 @@ public class DataTypeNode extends MemberNameNode<DataTypeKind>
 	}
 
 	// Tree#dupNode constructor
-	protected DataTypeNode(DataTypeNode node)//, String... ns)
+	protected DataTypeNode(DataTypeNode node)
 	{
 		super(node);
 	}
@@ -39,7 +38,7 @@ public class DataTypeNode extends MemberNameNode<DataTypeKind>
 	@Override
 	public DataTypeNode dupNode()
 	{
-		return new DataTypeNode(this);//, getElements());
+		return new DataTypeNode(this);
 	}
 
 	@Override
@@ -68,9 +67,10 @@ public class DataTypeNode extends MemberNameNode<DataTypeKind>
 	{
 		return toName();
 	}
-	
+
+  // CHECKME: is equals/hashCode actually needed for these ScribNodes? (cf. Name)
 	@Override
-	public boolean equals(Object o)  // FIXME: is equals/hashCode needed for these Nodes?
+	public boolean equals(Object o)
 	{
 		if (this == o)
 		{
@@ -96,32 +96,4 @@ public class DataTypeNode extends MemberNameNode<DataTypeKind>
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public DataTypeNode(CommonTree source, String... elems)
-	{
-		super(source, elems);
-	}
-	
-	/*@Override
-	protected DataTypeNode copy()
-	{
-		return new DataTypeNode(this.source, this.elems);
-	}
-	
-	@Override
-	public DataTypeNode clone(AstFactory af)
-	{
-		return (DataTypeNode) af.QualifiedNameNode(this.source, DataTypeKind.KIND, this.elems);
-	}*/
 }

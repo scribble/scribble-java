@@ -14,7 +14,6 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.PackageName;
@@ -28,7 +27,7 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 	}
 
 	// Tree#dupNode constructor
-	protected ModuleNameNode(ModuleNameNode node)//, String...elems)
+	protected ModuleNameNode(ModuleNameNode node)
 	{
 		super(node);
 	}
@@ -36,7 +35,7 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 	@Override
 	public ModuleNameNode dupNode()
 	{
-		return new ModuleNameNode(this);//, getElements());
+		return new ModuleNameNode(this);
 	}
 	
 	@Override
@@ -75,31 +74,4 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public ModuleNameNode(CommonTree source, String... ns)
-	{
-		super(source, ns);
-	}
-
-	/*@Override
-	protected ModuleNameNode copy()
-	{
-		return new ModuleNameNode(this.source, this.elems);
-	}
-	
-	@Override
-	public ModuleNameNode clone(AstFactory af)
-	{
-		return (ModuleNameNode) af.QualifiedNameNode(this.source, ModuleKind.KIND, this.elems);
-	}*/
 }

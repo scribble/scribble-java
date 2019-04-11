@@ -14,7 +14,6 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.MessageNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.MessageSigName;
@@ -29,7 +28,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind>
 	}
 
 	// Tree#dupNode constructor
-	protected MessageSigNameNode(MessageSigNameNode node)//, String...elems)
+	protected MessageSigNameNode(MessageSigNameNode node)
 	{
 		super(node);
 	}
@@ -37,7 +36,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind>
 	@Override
 	public MessageSigNameNode dupNode()
 	{
-		return new MessageSigNameNode(this);//, getElements());
+		return new MessageSigNameNode(this);
 	}
 
 	@Override
@@ -94,30 +93,4 @@ public class MessageSigNameNode extends MemberNameNode<SigKind>
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public MessageSigNameNode(CommonTree source, String... elems)
-	{
-		super(source, elems);
-	}
-
-	/*@Override
-	protected MessageSigNameNode copy()
-	{
-		return new MessageSigNameNode(this.source, this.elems);
-	}
-
-	@Override
-	public MessageSigNameNode clone(AstFactory af)
-	{
-		return (MessageSigNameNode) af.QualifiedNameNode(this.source, SigKind.KIND,
-				this.elems);
-	}*/
 }

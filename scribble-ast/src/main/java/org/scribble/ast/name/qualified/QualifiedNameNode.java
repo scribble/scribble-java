@@ -14,7 +14,6 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.core.type.kind.Kind;
 
@@ -28,21 +27,8 @@ public abstract class QualifiedNameNode<K extends Kind> extends NameNode<K>
 	}
 
 	// Tree#dupNode constructor
-	protected QualifiedNameNode(QualifiedNameNode<K> node)//, String...elems)
+	protected QualifiedNameNode(QualifiedNameNode<K> node)
 	{
 		super(node);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public QualifiedNameNode(CommonTree source, String... ns)
-	{
-		super(source, ns);
 	}
 }
