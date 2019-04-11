@@ -90,6 +90,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 				.collect(Collectors.toList());
 	}
 	
+	// CHECKME: redundant?  given this.addChildren
 	// Non-defenseive
 	// CHECKME: "generic" visitChildren and reconstruct via get/setChildren? -- maybe too implicit, cannot easily see child visiting order
 	protected void setChildren(List<ScribNode> children)

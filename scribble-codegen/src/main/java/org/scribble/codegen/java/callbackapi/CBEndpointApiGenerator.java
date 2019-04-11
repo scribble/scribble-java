@@ -287,13 +287,13 @@ public class CBEndpointApiGenerator
 					messageClass += "private static final long serialVersionUID = 1L;\n";
 					if (isSig)
 					{
-						messageClass += "private final " + msnd.extName + " m;\n";
+						messageClass += "private final " + msnd.getExtName() + " m;\n";
 					}
 					messageClass += "\n";
 					messageClass += "public " + messageName + "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer";
 					if (isSig)
 					{
-						messageClass += ", " + msnd.extName + " m"; 
+						messageClass += ", " + msnd.getExtName() + " m"; 
 					}
 					else
 					{
@@ -301,7 +301,7 @@ public class CBEndpointApiGenerator
 						for (PayloadElemType<?> pet : a.payload.elems)
 						{
 							DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pet);
-							messageClass += ", " + dtd.extName + " arg" + i++;
+							messageClass += ", " + dtd.getExtName() + " arg" + i++;
 						}
 					}
 					messageClass += ") {\n";
@@ -434,7 +434,7 @@ public class CBEndpointApiGenerator
 							+ ".roles." + a.peer + " peer, ";
 					if (isSig)
 					{
-						receiveInterface += msnd.extName + " m";
+						receiveInterface += msnd.getExtName() + " m";
 					}
 					else
 					{
@@ -445,7 +445,8 @@ public class CBEndpointApiGenerator
 						for (PayloadElemType<?> pet : a.payload.elems)
 						{
 							DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pet);
-							receiveInterface += ", " + dtd.extName + " arg" + i++;
+							receiveInterface += ", " + dtd.getExtName() 
+							+ " arg" + i++;
 						}
 					}
 					receiveInterface += ");\n";
@@ -468,7 +469,7 @@ public class CBEndpointApiGenerator
 							+ ".roles." + a.peer + "." + a.peer + ", ";
 					if (isSig)
 					{
-						branchAbstract += "(" + msnd.extName + ") m";
+						branchAbstract += "(" + msnd.getExtName() + ") m";
 					}
 					else
 					{
@@ -481,7 +482,7 @@ public class CBEndpointApiGenerator
 					for (PayloadElemType<?> pet : a.payload.elems)
 					{
 						DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pet);
-						branchAbstract += ", (" + dtd.extName + ") m.payload[" + i++ + "]";
+						branchAbstract += ", (" + dtd.getExtName() + ") m.payload[" + i++ + "]";
 					}
 					branchAbstract += "); break;\n";
 				}

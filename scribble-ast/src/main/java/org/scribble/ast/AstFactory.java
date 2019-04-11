@@ -40,6 +40,7 @@ import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -62,24 +63,22 @@ public interface AstFactory
 	GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name,
 			RoleNode role);
 
-	// PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems);
-	PayloadElemList PayloadElemList(CommonTree source,
-			List<PayloadElem<?>> payloadelems);
+	PayloadElemList PayloadElemList(Token t, List<PayloadElem<?>> payloadelems);
 
 	// PayloadElem PayloadElem(PayloadElemNameNode name);
 	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(Token t,
 			PayloadElemNameNode<K> name);
 
-	ModuleDecl ModuleDecl(CommonTree source, ModuleNameNode fullmodname);
+	ModuleDecl ModuleDecl(Token t, ModuleNameNode fullmodname);
 
 	ImportModule ImportModule(CommonTree source, ModuleNameNode modname,
 			ModuleNameNode alias);
 
-	MessageSigNameDecl MessageSigNameDecl(CommonTree source, String schema,
-			String extName, String extSource, MessageSigNameNode name);
+	MessageSigNameDecl MessageSigNameDecl(Token t, IdNode schema, IdNode extName,
+			IdNode extSource, MessageSigNameNode name);
 
-	DataTypeDecl DataTypeDecl(CommonTree source, String schema, String extName,
-			String extSource, DataTypeNode name);
+	DataTypeDecl DataTypeDecl(Token t, IdNode schema, IdNode extName,
+			IdNode extSource, DataTypeNode name);
 
 	GProtocolDecl GProtocolDecl(Token t, ProtocolModList modifiers,
 			GProtocolHeader header, GProtocolDef def);
@@ -99,9 +98,9 @@ public interface AstFactory
 	<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(
 			CommonTree source, K kind, NonRoleParamNode<K> name);
 
-	GProtocolDef GProtocolDef(CommonTree source, GProtocolBlock block);
+	GProtocolDef GProtocolDef(Token t, GProtocolBlock block);
 
-	GProtocolBlock GProtocolBlock(CommonTree source, GInteractionSeq gis);
+	GProtocolBlock GProtocolBlock(Token t, GInteractionSeq gis);
 
 	GInteractionSeq GInteractionSeq(CommonTree source,
 			List<GSessionNode> gis);

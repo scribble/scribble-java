@@ -14,34 +14,34 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.name.Name;
 
 public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase
 { 
+	public static final int NAMENODE_CHILD_INDEX = 0;
+
 	// ScribTreeAdaptor#create constructor
 	public NameDeclNode(Token t)
 	{
 		super(t);
-		this.name = null;
 	}
 
 	// Tree#dupNode constructor
 	public NameDeclNode(NameDeclNode<K> node)
 	{
 		super(node);
-		this.name = null;
 	}	
 
+	// CHECKME: always AmbigNameNode?
 	protected final NameNode<?> getRawNameNodeChild()
 	{
 		if (getChildCount() < 1)  // E.g., ProtocolHeader three children
 		{
 			throw new RuntimeException("Shouldn't get in here: " + getClass());
 		}
-		NameNode<?> name = (NameNode<?>) getChild(0);  // CHECKME: currently always AmbigNameNode?
+		NameNode<?> name = (NameNode<?>) getChild(NAMENODE_CHILD_INDEX);  
 		return name;
 	}
 
@@ -54,21 +54,4 @@ public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase
 	// Concrete subclasses should use getNameNode, toName (simple name) and cast
 	// (Gets overridden anyway for return type)
 	public abstract Name<K> getDeclName();
-	
-	// reconstruct left to subclass-specific, extra fields
-	//protected abstract NameDeclNode<K> reconstruct(NameNode<K> name);
-	
-	
-	
-	
-	
-	
-	
-	private final NameNode<K> name;
-	
-	protected NameDeclNode(CommonTree source, NameNode<K> name)
-	{
-		super(source);
-		this.name = name;
-	}
 }

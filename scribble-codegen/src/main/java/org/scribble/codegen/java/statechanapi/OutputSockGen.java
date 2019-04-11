@@ -224,7 +224,7 @@ public class OutputSockGen extends ScribSockGen
 				}
 				DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // FIXME: might not belong to main module  // TODO: if not DataType
 				ScribSockGen.checkJavaDataTypeDecl(dtd);
-				mb.addParameters(dtd.extName + " " + as.next());
+				mb.addParameters(dtd.getExtName() + " " + as.next());
 			}
 		}
 	}
@@ -234,6 +234,6 @@ public class OutputSockGen extends ScribSockGen
 		final String MESSAGE_PARAM = "m";
 
 		ScribSockGen.checkMessageSigNameDecl(msd);
-		mb.addParameters(msd.extName + " " + MESSAGE_PARAM);
+		mb.addParameters(msd.getExtName() + " " + MESSAGE_PARAM);
 	}
 }

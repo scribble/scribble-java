@@ -14,7 +14,6 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.MessageSigName;
@@ -34,18 +33,18 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	{
 		super(node);
 	}
+	
+	@Override
+	public MessageSigNameNode getNameNodeChild()
+	{
+		return (MessageSigNameNode) getRawNameNodeChild();
+	}
 
 	// Cf. CommonTree#dupNode
 	@Override
 	public MessageSigNameDecl dupNode()
 	{
 		return new MessageSigNameDecl(this);
-	}
-	
-	@Override
-	public MessageSigNameNode getNameNodeChild()
-	{
-		return (MessageSigNameNode) getRawNameNodeChild();
 	}
 	
 	@Override
@@ -70,42 +69,10 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	@Override
 	public String toString()
 	{
-		return Constants.SIG_KW + " <" + getSchemaNodeChild() + "> "
-				+ getExtNameNodeChild() + " " 
-				+ Constants.FROM_KW + " " + getExtSourceNodeChild() + " " 
+		return Constants.SIG_KW + " <" + getSchemaChild() + "> "
+				+ getExtNameChild() + " " 
+				+ Constants.FROM_KW + " " + getExtSourceChild() + " " 
 				+ Constants.AS_KW + " " + getDeclName()
 				+ ";";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public MessageSigNameDecl(CommonTree source, String schema, String extName, String extSource, MessageSigNameNode name)
-	{
-		super(source, schema, extName, extSource, name);
-	}
-
-	/*@Override
-	protected MessageSigNameDecl copy()
-	{
-		return new MessageSigNameDecl(this.source, this.schema, this.extName, this.extSource, getNameNode());
-	}
-	
-	@Override
-	public MessageSigNameDecl clone(AstFactory af)
-	{
-		MessageSigNameNode name = (MessageSigNameNode) this.name.clone(af);
-		return af.MessageSigNameDecl(this.source, this.schema, this.extName, this.extSource, name);
-	}*/
 }

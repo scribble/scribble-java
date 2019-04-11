@@ -14,7 +14,6 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.core.type.kind.Global;
 
@@ -33,53 +32,14 @@ public class GProtocolBlock extends ProtocolBlock<Global> implements GScribNode
 	}
 
 	@Override
+	public GInteractionSeq getInteractSeqChild()
+	{
+		return (GInteractionSeq) getChild(ProtocolBlock.SEQ_CHILD_INDEX);
+	}
+
+	@Override
 	public GProtocolBlock dupNode()
 	{
 		return new GProtocolBlock(this);
 	}
-
-	@Override
-	public GInteractionSeq getInteractSeqChild()
-	{
-		return (GInteractionSeq) getChild(0);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public GProtocolBlock(CommonTree source, GInteractionSeq seq)
-	{
-		super(source, seq);
-	}
-
-	/*@Override
-	protected GProtocolBlock copy()
-	{
-		return new GProtocolBlock(this.source, getInteractSeqChild());
-	}
-	
-	@Override
-	public GProtocolBlock clone(AstFactory af)
-	{
-		GInteractionSeq gis = getInteractSeqChild().clone(af);
-		return af.GProtocolBlock(this.source, gis);
-	}*/
-
-	/*@Override
-	public GProtocolBlock reconstruct(InteractionSeq<Global> seq)
-	{
-		ScribDel del = del();
-		GProtocolBlock gpb = new GProtocolBlock(this.source, (GInteractionSeq) seq);
-		gpb = (GProtocolBlock) gpb.del(del);
-		return gpb;
-	}*/
 }

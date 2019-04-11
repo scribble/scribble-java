@@ -598,19 +598,19 @@ public class CBEndpointApiGenerator3
 								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 						FieldBuilder m = opClass.newField("m");
 						m.addModifiers("private", "final");
-						m.setType(msnd.extName);
+						m.setType(msnd.getExtName());
 					}
 					
 					ConstructorBuilder opCons; 
 					if (isSig)
 					{
-						opCons = opClass.newConstructor(msnd.extName + " m");
+						opCons = opClass.newConstructor(msnd.getExtName() + " m");
 						opClass.addInterfaces("org.scribble.runtime.handlers.ScribSigMessage");
 					}
 					else 
 					{
 						opCons = opClass.newConstructor(a.payload.elems.stream().map(e ->
-									main.getDataTypeDeclChild((DataType) e).extName + " arg" + i[0]++
+									main.getDataTypeDeclChild((DataType) e).getExtName() + " arg" + i[0]++
 							).collect(Collectors.joining(", ")));
 					}
 					opCons.addModifiers("public");
@@ -709,7 +709,7 @@ public class CBEndpointApiGenerator3
 			branchAbstract += "case \"" + SessionApiGenerator.getOpClassName(a.mid) + "\": receive(data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + "." + a.peer + ", ";
 			if (isSig)
 			{
-				branchAbstract += "(" + msnd.extName + ") m";
+				branchAbstract += "(" + msnd.getExtName() + ") m";
 			}
 			else
 			{
@@ -719,7 +719,7 @@ public class CBEndpointApiGenerator3
 			for (PayloadElemType<?> pet : a.payload.elems)
 			{
 				DataTypeDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
-				branchAbstract += ", (" + dtd.extName + ") m.payload[" + i++ + "]";
+				branchAbstract += ", (" + dtd.getExtName() + ") m.payload[" + i++ + "]";
 			}
 			branchAbstract += "); break;\n";
 		}
@@ -746,7 +746,7 @@ public class CBEndpointApiGenerator3
 				+ ".roles." + a.peer + " peer, ";
 		if (isSig)
 		{
-			receiveInterface += msnd.extName + " m";
+			receiveInterface += msnd.getExtName() + " m";
 		}
 		else
 		{
@@ -757,7 +757,7 @@ public class CBEndpointApiGenerator3
 			for (PayloadElemType<?> pet : a.payload.elems)
 			{
 				DataTypeDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
-				receiveInterface += ", " + dtd.extName + " arg" + i++;
+				receiveInterface += ", " + dtd.getExtName() + " arg" + i++;
 			}
 		}
 		receiveInterface += ");\n";
@@ -822,7 +822,7 @@ public class CBEndpointApiGenerator3
 			String[] args = new String[a.payload.elems.size() + 2];
 			args[0] = getRolesPackage() + "." + a.peer + " peer";
 			args[1] = getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + " op";
-			a.payload.elems.forEach(e -> args[i[0]++] = main.getDataTypeDecl((DataType) e).extName + " arg" + (i[0]-3));
+			a.payload.elems.forEach(e -> args[i[0]++] = main.getDataTypeDecl((DataType) e).getExtName() + " arg" + (i[0]-3));
 			ConstructorBuilder ob = messageClass.newConstructor(args);
 			ob.addModifiers("public");
 			ob.addBodyLine("super(op" + IntStream.range(0, a.payload.elems.size()).mapToObj(j -> ", arg" + j).collect(Collectors.joining()) + ");");
@@ -854,7 +854,7 @@ public class CBEndpointApiGenerator3
 						? "Unit"
 						: a.payload.elems.stream().map(e ->
 								{
-									String extName = main.getDataTypeDecl((DataType) e).extName;
+									String extName = main.getDataTypeDecl((DataType) e).getExtName();
 									return (extName.indexOf(".") != -1)
 											? extName.substring(extName.lastIndexOf(".")+1, extName.length())
 											: extName;
@@ -907,13 +907,13 @@ public class CBEndpointApiGenerator3
 		messageClass += "private static final long serialVersionUID = 1L;\n";
 		if (isSig)
 		{
-			messageClass += "private final " + msnd.extName + " m;\n";
+			messageClass += "private final " + msnd.getExtName() + " m;\n";
 		}
 		messageClass += "\n";
 		messageClass += "public " + messageName + "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer";
 		if (isSig)
 		{
-			messageClass += ", " + msnd.extName + " m"; 
+			messageClass += ", " + msnd.getExtName() + " m"; 
 		}
 		else
 		{
@@ -922,7 +922,7 @@ public class CBEndpointApiGenerator3
 			for (PayloadElemType<?> pet : a.payload.elems)
 			{
 				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pet);
-				messageClass += ", " + dtd.extName + " arg" + i++;
+				messageClass += ", " + dtd.getExtName() + " arg" + i++;
 			}
 		}
 		messageClass += ") {\n";
@@ -1009,7 +1009,7 @@ public class CBEndpointApiGenerator3
 	//protected final Function<PayloadElemType<?>, String> getExtName = e ->
 	protected String getExtName(PayloadElemType<?> e)
 	{
-		String extName = this.lang.getContext().getMainModule().getDataTypeDeclChild((DataType) e).extName;
+		String extName = this.lang.getContext().getMainModule().getDataTypeDeclChild((DataType) e).getExtName();
 		return (extName.indexOf(".") != -1)
 				? extName.substring(extName.lastIndexOf(".")+1, extName.length())
 				: extName;

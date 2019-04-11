@@ -88,7 +88,7 @@ public class ReceiveSockGen extends ScribSockGen
 			//addReceiveMessageSigNameParams(mb, a, msd);*/
 			mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = "
 						+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.obj) + ");");
-			mb.addBodyLine(RECEIVE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + RECEIVE_MESSAGE_PARAM + ";");
+			mb.addBodyLine(RECEIVE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + ";");
 		}
 		addReturnNextSocket(mb, succ);
 	}
@@ -188,7 +188,7 @@ public class ReceiveSockGen extends ScribSockGen
 				}
 				DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
 				ScribSockGen.checkJavaDataTypeDecl(dtd);
-				mb.addParameters(buffSuper + dtd.extName + "> " + RECEIVE_ARG_PREFIX + i++);
+				mb.addParameters(buffSuper + dtd.getExtName() + "> " + RECEIVE_ARG_PREFIX + i++);
 			}
 		}
 	}
@@ -201,7 +201,7 @@ public class ReceiveSockGen extends ScribSockGen
 			for (PayloadElemType<?> pt : a.payload.elems)  // Could factor out this loop (arg names) with addReceiveOpParams (as for send)
 			{
 				DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
-				mb.addBodyLine(RECEIVE_ARG_PREFIX + i + "." + BUFF_VAL_FIELD + " = (" + dtd.extName + ") "
+				mb.addBodyLine(RECEIVE_ARG_PREFIX + i + "." + BUFF_VAL_FIELD + " = (" + dtd.getExtName() + ") "
 							+ RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + (i++ - 1) +"];");
 			}
 		}
@@ -210,7 +210,7 @@ public class ReceiveSockGen extends ScribSockGen
 	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd, boolean superr) throws ScribException
 	{
 		ScribSockGen.checkMessageSigNameDecl(msd);
-		mb.addParameters(BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "") + msd.extName + "> " + RECEIVE_ARG_PREFIX);
+		mb.addParameters(BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "") + msd.getExtName() + "> " + RECEIVE_ARG_PREFIX);
 	}
 
 	// Similar to setReceiveHeader

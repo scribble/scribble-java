@@ -21,6 +21,8 @@ import org.scribble.core.type.session.Arg;
 // N.B. not the actual argument node itself (that is NonRoleArg, element of NonRoleArgList, which wraps these nodes)
 public interface NonRoleArgNode extends DoArgNode
 {
+	Arg<? extends NonRoleArgKind> toArg();
+
 	// Not kinded: point of this interface is don't know which kind the node is -- so use the "is" methods -- cf. AmbigNameNode inherits both sig and data kind
 	// And not all values are names, e.g. message sigs
 	default boolean isMessageSigNode()
@@ -47,6 +49,4 @@ public interface NonRoleArgNode extends DoArgNode
 	{
 		return false;
 	}
-	
-	Arg<? extends NonRoleArgKind> toArg();
 }

@@ -141,7 +141,7 @@ public class CaseSockGen extends ScribSockGen
 			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			mb.addBodyLine(JavaBuilder.SUPER + ".use();");
 			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
-			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + CASE_MESSAGE_FIELD + ";");
+			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.getExtName() + ") " + CASE_MESSAGE_FIELD + ";");
 		}
 		addReturnNextSocket(mb, succ);
 	}
@@ -193,12 +193,12 @@ public class CaseSockGen extends ScribSockGen
 		if (a.mid.isOp())
 		{
 			ln += a.payload.elems.stream()
-						 .map((pt) -> getGarbageBuf(main.getDataTypeDeclChild(((DataType) pt)).extName)).collect(Collectors.joining(", ")) + ");";
+						 .map((pt) -> getGarbageBuf(main.getDataTypeDeclChild(((DataType) pt)).getExtName())).collect(Collectors.joining(", ")) + ");";
 		}
 		else
 		{
 			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // Factor out? (send/receive/branchreceive/...)
-			ln += getGarbageBuf(msd.extName) + ");";
+			ln += getGarbageBuf(msd.getExtName()) + ");";
 		}
 		mb.addBodyLine(ln);
 	}

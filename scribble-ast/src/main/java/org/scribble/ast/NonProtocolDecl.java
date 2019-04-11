@@ -14,11 +14,9 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.type.kind.NonProtocolKind;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -26,39 +24,54 @@ import org.scribble.visit.AstVisitor;
 public abstract class NonProtocolDecl<K extends NonProtocolKind>
 		extends NameDeclNode<K> implements ModuleMember
 {
+	public static final int SCHEMA_NODE_CHILD_INDEX = 1;
+	public static final int EXTNAME_NODE_CHILD_INDEX = 2;
+	public static final int EXTSOURCE_NODE_CHILD_INDEX = 3;
+
 	// ScribTreeAdaptor#create constructor
 	public NonProtocolDecl(Token payload)
 	{
 		super(payload);
-		this.schema = null;
-		this.extName = null;
-		this.extSource = null;
 	}
 
 	// Tree#dupNode constructor
 	protected NonProtocolDecl(NonProtocolDecl<K> node)
 	{
 		super(node);
-		this.schema = null;
-		this.extName = null;
-		this.extSource = null;
-	}
-	
-	public abstract NonProtocolDecl<K> dupNode();
-
-	public IdNode getSchemaNodeChild()
-	{
-		return (IdNode) getChild(1);
 	}
 
-	public IdNode getExtNameNodeChild()
+	// Redundant override, just for documentation
+	@Override
+	public abstract NameNode<K> getNameNodeChild();
+
+	public IdNode getSchemaChild()
 	{
-		return (IdNode) getChild(2);
+		return (IdNode) getChild(SCHEMA_NODE_CHILD_INDEX);
 	}
 
-	public IdNode getExtSourceNodeChild()
+	public IdNode getExtNameChild()
 	{
-		return (IdNode) getChild(3);
+		return (IdNode) getChild(EXTSOURCE_NODE_CHILD_INDEX);
+	}
+
+	public IdNode getExtSourceChild()
+	{
+		return (IdNode) getChild(EXTSOURCE_NODE_CHILD_INDEX);
+	}
+
+	public String getSchema()
+	{
+		return getSchemaChild().getText();
+	}
+
+	public String getExtName()
+	{
+		return getExtNameChild().getText();
+	}
+
+	public String getExtSource()
+	{
+		return getExtSourceChild().getText();
 	}
 	
 	// CHECKME: maybe move to ModuleMember
@@ -72,19 +85,19 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 		return false;
 	}
 	
-	public NonProtocolDecl<K> reconstruct(
-			NameNode<K> name, 
-			//String schema, String extName, String source,
-			IdNode schema, IdNode extName, IdNode extSource) // FIXME:
+	@Override
+	public abstract NonProtocolDecl<K> dupNode();
+	
+	public NonProtocolDecl<K> reconstruct(NameNode<K> name, IdNode schema,
+			IdNode extName, IdNode extSource)
 	{
-		NonProtocolDecl<K> npd = dupNode();
-		ScribDel del = del();
-		npd.addChild(name);
-		npd.addChild(schema);
-		npd.addChild(extName);
-		npd.addChild(extSource);
-		npd.setDel(del);  // No copy
-		return npd;
+		NonProtocolDecl<K> n = dupNode();
+		n.addChild(name);
+		n.addChild(schema);
+		n.addChild(extName);
+		n.addChild(extSource);
+		n.setDel(del());  // No copy
+		return n;
 	}
 
 	@Override
@@ -94,39 +107,11 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 		NameNode<K> name = (NameNode<K>) visitChildWithClassEqualityCheck(this,
 				getNameNodeChild(), nv);
 		IdNode schema = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getSchemaNodeChild(), nv);
-				getSchemaNodeChild();  // AmbigNameNode currently have no del, so not visited
+				getSchemaChild();  // AmbigNameNode currently have no del, so not visited -- CHECKME: now IdNode?
 		IdNode extName = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getExtNameNodeChild(), nv);
-				getExtNameNodeChild();
+				getExtNameChild();
 		IdNode extSource = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getExtSourceNodeChild(), nv);
-				getExtNameNodeChild();
+				getExtNameChild();
 		return reconstruct(name, schema, extName, extSource);
 	}
-
-	
-
-
-
-
-
-
-
-	
-	
-	
-
-
-	public final String schema;
-	public final String extName;
-	public final String extSource;
-
-	public NonProtocolDecl(CommonTree source, String schema, String extName,
-			String extSource, // MemberNameNode<K> name);
-			NameNode<K> name)  // Directly parsed decl names are simple names, but decl constructors take general name nodes which are member names, so base NameNode here -- cf. ProtocolHeader and G/LProtocolHeader
-	{
-		super(source, name);
-		this.schema = schema;
-		this.extName = extName;
-		this.extSource = extSource;
-	}
-
 }

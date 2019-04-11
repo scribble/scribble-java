@@ -14,39 +14,35 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase
 		implements ProtocolKindNode<K>
 {
+	public static final int BLOCK_CHILD_INDEX = 0;
+
 	// ScribTreeAdaptor#create constructor
 	public ProtocolDef(Token t)
 	{
 		super(t);
-		this.block = null;
 	}
 
 	// Tree#dupNode constructor
 	protected ProtocolDef(ProtocolDef<K> node)
 	{
 		super(node);
-		this.block = null;
 	}
+	public abstract ProtocolBlock<K> getBlockChild();
 	
 	public abstract ProtocolDef<K> dupNode();
-
-	public abstract ProtocolBlock<K> getBlockChild();
 	
 	public ProtocolDef<K> reconstruct(ProtocolBlock<K> block)
 	{
 		ProtocolDef<K> pd = dupNode();
-		ScribDel del = del();
 		pd.addChild(block);
-		pd.setDel(del);  // No copy
+		pd.setDel(del());  // No copy
 		return pd;
 	}
 	
@@ -62,22 +58,5 @@ public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase
 	public String toString()
 	{
 		return getBlockChild().toString();
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private final ProtocolBlock<K> block;
-
-	protected ProtocolDef(CommonTree source, ProtocolBlock<K> block)
-	{
-		super(source);
-		this.block = block;
 	}
 }

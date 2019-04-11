@@ -271,9 +271,9 @@ public abstract class ScribSockGen extends StateChanTypeGen
 	
 	protected static void checkJavaSchema(NonProtocolDecl<?> npd) throws ScribException
 	{
-		if (!npd.schema.equals(ScribSockGen.JAVA_SCHEMA))  // FIXME: factor out
+		if (!npd.getSchema().equals(ScribSockGen.JAVA_SCHEMA))  // FIXME: factor out
 		{
-			throw new ScribException(npd.getSource(), "Unsupported data type schema: " + npd.schema);
+			throw new ScribException(npd.getSource(), "Unsupported data type schema: " + npd.getSchema());
 		}
 	}
 	

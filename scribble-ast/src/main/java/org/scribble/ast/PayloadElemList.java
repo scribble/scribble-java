@@ -13,15 +13,12 @@
  */
 package org.scribble.ast;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.name.PayloadElemType;
 import org.scribble.core.type.session.Payload;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -32,42 +29,18 @@ public class PayloadElemList extends ScribNodeBase
 	public PayloadElemList(Token t)
 	{
 		super(t);
-		this.elems = null;
 	}
 
 	// Tree#dupNode constructor
 	public PayloadElemList(PayloadElemList node)
 	{
 		super(node);
-		this.elems = null;
 	}
 	
-	public PayloadElemList dupNode()
-	{
-		return new PayloadElemList(this);
-	}
-	
-	public List<PayloadElem<?>> getElementChildren()
+	List<PayloadElem<?>> getElementChildren()
 	{
 		return getChildren().stream().map(x -> (PayloadElem<?>) x)
 				.collect(Collectors.toList());
-	}
-
-	protected PayloadElemList reconstruct(List<PayloadElem<?>> elems)
-	{
-		PayloadElemList pay = dupNode();
-		pay.addChildren(elems);
-		ScribDel del = del();
-		pay.setDel(del);  // No copy
-		return pay;
-	}
-	
-	@Override
-	public PayloadElemList visitChildren(AstVisitor nv) throws ScribException
-	{
-		List<PayloadElem<?>> elems = 
-				visitChildListWithClassEqualityCheck(this, getElementChildren(), nv);
-		return reconstruct(elems);
 	}
 
 	public Payload toPayload()
@@ -81,6 +54,28 @@ public class PayloadElemList extends ScribNodeBase
 	{
 		return getChildCount() == 0;
 	}
+		
+	@Override
+	public PayloadElemList dupNode()
+	{
+		return new PayloadElemList(this);
+	}
+
+	protected PayloadElemList reconstruct(List<PayloadElem<?>> elems)
+	{
+		PayloadElemList pay = dupNode();
+		pay.addChildren(elems);
+		pay.setDel(del());  // No copy
+		return pay;
+	}
+	
+	@Override
+	public PayloadElemList visitChildren(AstVisitor nv) throws ScribException
+	{
+		List<PayloadElem<?>> elems = 
+				visitChildListWithClassEqualityCheck(this, getElementChildren(), nv);
+		return reconstruct(elems);
+	}
 
 	@Override
 	public String toString()
@@ -88,42 +83,4 @@ public class PayloadElemList extends ScribNodeBase
 		return "(" + getElementChildren().stream().map(pe -> pe.toString())
 				.collect(Collectors.joining(", ")) + ")";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//private final List<PayloadElem> elems;  // FIXME: parameterise on Kind (cf. sesstypes)
-	private final List<PayloadElem<?>> elems;
-
-	//public PayloadElemList(List<PayloadElem> elems)
-	public PayloadElemList(CommonTree source, List<PayloadElem<?>> elems)
-	{
-		super(source);
-		this.elems = new LinkedList<>(elems);
-	}
-	
-	/*@Override
-	protected PayloadElemList copy()
-	{
-		return new PayloadElemList(this.source, this.elems);
-	}
-	
-	@Override
-	public PayloadElemList clone(AstFactory af)
-	{
-		//List<PayloadElem> elems = ScribUtil.cloneList(this.elems);
-		List<PayloadElem<?>> elems = ScribUtil.cloneList(af, this.elems);
-		return af.PayloadElemList(this.source, elems);
-	}*/
 }

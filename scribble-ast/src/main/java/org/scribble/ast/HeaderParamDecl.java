@@ -14,11 +14,8 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
-import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.core.type.kind.ParamKind;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -42,15 +39,16 @@ public abstract class HeaderParamDecl<K extends ParamKind>
 	@Override
 	public abstract NameNode<K> getNameNodeChild();  // Always a "simple" name (e.g., like Role), but Type/Sig names are not SimpleNames
 
+	public abstract String getKeyword();
+
 	public abstract HeaderParamDecl<K> dupNode();
 
 	public HeaderParamDecl<K> reconstruct(NameNode<K> name)  // Always a "simple" name (e.g., like Role), but Type/Sig names are not SimpleNames
 	{
-		HeaderParamDecl<K> pd = dupNode();
-		ScribDel del = del();
-		pd.addChild(name);
-		pd.setDel(del);  // No copy
-		return pd;
+		HeaderParamDecl<K> dup = dupNode();
+		dup.addChild(name);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override
@@ -61,28 +59,10 @@ public abstract class HeaderParamDecl<K extends ParamKind>
 				visitChildWithClassEqualityCheck(this, getNameNodeChild(), nv);
 		return reconstruct(name);
 	}
-
-	public abstract String getKeyword();
 	
 	@Override
 	public String toString()
 	{
 		return getKeyword() + " " + getDeclName().toString();
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	protected HeaderParamDecl(CommonTree source, SimpleNameNode<K> name)
-	{
-		super(source, name);
 	}
 }

@@ -43,6 +43,7 @@ import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -107,7 +108,7 @@ public class AstFactoryImpl implements AstFactory
 		return new DefaultDel();
 	}
 	
-	// FIXME: factor out
+	// FIXME: factor out -- change return to void (ScribNodeBase.del is a mutating setter)
 	//@SuppressWarnings("unchecked")
 	protected static <T extends ScribNodeBase> T del(T n, ScribDel del)
 	{
@@ -147,10 +148,11 @@ public class AstFactoryImpl implements AstFactory
 
 	@Override
 	//public PayloadElemList PayloadElemList(List<PayloadElem> payloadelems)
-	public PayloadElemList PayloadElemList(CommonTree source,
+	public PayloadElemList PayloadElemList(Token t,
 			List<PayloadElem<?>> payloadelems)
 	{
-		PayloadElemList p = new PayloadElemList(source, payloadelems);
+		PayloadElemList p = new PayloadElemList(t);
+		p.addChildren(payloadelems);
 		p = del(p, createDefaultDelegate());
 		return p;
 	}
@@ -196,11 +198,12 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public ModuleDecl ModuleDecl(CommonTree source, ModuleNameNode fullmodname)
+	public ModuleDecl ModuleDecl(Token t, ModuleNameNode fullmodname)
 	{
-		ModuleDecl md = new ModuleDecl(source, fullmodname);
-		md = del(md, createDefaultDelegate());
-		return md;
+		ModuleDecl n = new ModuleDecl(t);
+		n.addChild(fullmodname);
+		n = del(n, createDefaultDelegate());
+		return n;
 	}
 
 	@Override
@@ -213,23 +216,29 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public MessageSigNameDecl MessageSigNameDecl(CommonTree source, String schema,
-			String extName, String extSource, MessageSigNameNode alias)
+	public MessageSigNameDecl MessageSigNameDecl(Token t, IdNode schema,
+			IdNode extName, IdNode extSource, MessageSigNameNode alias)
 	{
-		MessageSigNameDecl msd = new MessageSigNameDecl(source, schema, extName,
-				extSource, alias);
-		msd = del(msd, createDefaultDelegate());
-		return msd;
+		MessageSigNameDecl n = new MessageSigNameDecl(t);
+		n.addChild(schema);
+		n.addChild(extName);
+		n.addChild(extSource);
+		n.addChild(alias);
+		n = del(n, createDefaultDelegate());
+		return n;
 	}
 
 	@Override
-	public DataTypeDecl DataTypeDecl(CommonTree source, String schema,
-			String extName, String extSource, DataTypeNode alias)
+	public DataTypeDecl DataTypeDecl(Token t, IdNode schema,
+			IdNode extName, IdNode extSource, DataTypeNode alias)
 	{
-		DataTypeDecl dtd = new DataTypeDecl(source, schema, extName, extSource,
-				alias);
-		dtd = del(dtd, createDefaultDelegate());
-		return dtd;
+		DataTypeDecl n = new DataTypeDecl(t);
+		n.addChild(schema);
+		n.addChild(extName);
+		n.addChild(extSource);
+		n.addChild(alias);
+		n = del(n, createDefaultDelegate());
+		return n;
 	}
 
 	@Override
@@ -306,19 +315,21 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GProtocolDef GProtocolDef(CommonTree source, GProtocolBlock block)
+	public GProtocolDef GProtocolDef(Token t, GProtocolBlock block)
 	{
-		GProtocolDef gpd = new GProtocolDef(source, block);
-		gpd = del(gpd, new GProtocolDefDel());
-		return gpd;
+		GProtocolDef n = new GProtocolDef(t);
+		n.addChild(block);
+		n = del(n, new GProtocolDefDel());
+		return n;
 	}
 
 	@Override
-	public GProtocolBlock GProtocolBlock(CommonTree source, GInteractionSeq seq)
+	public GProtocolBlock GProtocolBlock(Token t, GInteractionSeq seq)
 	{
-		GProtocolBlock gpb = new GProtocolBlock(source, seq);
-		gpb = del(gpb, new GProtocolBlockDel());
-		return gpb;
+		GProtocolBlock n = new GProtocolBlock(t);
+		n.addChild(seq);
+		n = del(n, new GProtocolBlockDel());
+		return n;
 	}
 
 	@Override

@@ -82,7 +82,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 					}
 					DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);
 					ScribSockGen.checkJavaDataTypeDecl(dtd);
-					String type = dtd.extName;
+					String type = dtd.getExtName();
 					types.add(type);
 					FieldBuilder f = future.newField("pay" + i++);
 					f.setType(type);
@@ -94,7 +94,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 		{
 			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());
 			ScribSockGen.checkMessageSigNameDecl(msd);
-			String type = msd.extName;
+			String type = msd.getExtName();
 			types.add(type);
 			FieldBuilder f = future.newField("msg");
 			f.setType(type);

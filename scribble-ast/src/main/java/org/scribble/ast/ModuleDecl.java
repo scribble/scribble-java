@@ -13,15 +13,10 @@
  */
 package org.scribble.ast;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.del.ScribDel;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -45,30 +40,12 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 		return (ModuleName) getNameNodeChild().toName();
 	}
 
-	// Cf. CommonTree#dupNode
-	@Override
-	public ModuleDecl dupNode()
-	{
-		return new ModuleDecl(this);
-	}
-
 	protected ModuleDecl reconstruct(ModuleNameNode name)
 	{
-		ModuleDecl md = dupNode();
-		ScribDel del = del();
-		List<ScribNode> children = new LinkedList<>();
-		children.add(name);
-		md.setChildren(children);
-		md.setDel(del);  // No copy
-		return md;
-	}
-
-	@Override
-	public ModuleDecl visitChildren(AstVisitor nv) throws ScribException
-	{
-		ModuleNameNode name = (ModuleNameNode) visitChild(getNameNodeChild(), nv);
-		//return nv.job.af.ModuleDecl(this.source, fullmodname);  // cf., reconstruct
-		return reconstruct(name);
+		ModuleDecl dup = dupNode();
+		dup.addChild(name);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override
@@ -77,11 +54,23 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 		return (ModuleNameNode) getRawNameNodeChild();
 	}
 
+	// Cf. CommonTree#dupNode
+	@Override
+	public ModuleDecl dupNode()
+	{
+		return new ModuleDecl(this);
+	}
+
+	@Override
+	public ModuleDecl visitChildren(AstVisitor nv) throws ScribException
+	{
+		ModuleNameNode name = (ModuleNameNode) visitChild(getNameNodeChild(), nv);
+		return reconstruct(name);
+	}
+
 	@Override
 	public ModuleName getDeclName()
 	{
-		//return (ModuleName) super.getDeclName();  // Would return full name
-		//return ((ModuleName) super.getDeclName()).getSimpleName();  // Uniform with other NameDeclNodes wrt. returning simple name
 		return getNameNodeChild().toName().getSimpleName();  // Uniform with other NameDeclNodes wrt. returning simple name
 	}
 
@@ -90,31 +79,4 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	{
 		return Constants.MODULE_KW + " " + getFullModuleName() + ";";
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	// Deprecate
-
-	public ModuleDecl(CommonTree source, ModuleNameNode fullmodname)
-	{
-		super(source, fullmodname);
-	}
-
-	/*@Override
-	protected ModuleDecl copy()
-	{
-		return new ModuleDecl(this.source, (ModuleNameNode) this.name);
-	}*/
-	
-	/*@Override
-	public ModuleDecl clone(AstFactory af)
-	{
-		ModuleNameNode modname = (ModuleNameNode) this.name.clone(af);
-		return af.ModuleDecl(this.source, modname);
-	}*/
 }

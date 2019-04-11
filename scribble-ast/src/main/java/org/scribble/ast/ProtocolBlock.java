@@ -14,31 +14,26 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public abstract class ProtocolBlock<K extends ProtocolKind>
 		extends ScribNodeBase
 {
+	public static final int SEQ_CHILD_INDEX = 0;
+
 	// ScribTreeAdaptor#create constructor
 	public ProtocolBlock(Token t)
 	{
 		super(t);
-		this.seq = null;
 	}
 
 	// Tree#dupNode constructor
 	protected ProtocolBlock(ProtocolBlock<K> node)
 	{
 		super(node);
-		this.seq = null;
 	}
-	
-	@Override
-	public abstract ProtocolBlock<K> dupNode();
 
 	public abstract InteractionSeq<K> getInteractSeqChild();
 	
@@ -46,13 +41,15 @@ public abstract class ProtocolBlock<K extends ProtocolKind>
 	{
 		return getInteractSeqChild().isEmpty();
 	}
+	
+	@Override
+	public abstract ProtocolBlock<K> dupNode();
 
 	public ProtocolBlock<K> reconstruct(InteractionSeq<K> seq)
 	{
 		ProtocolBlock<K> pd = dupNode();
-		ScribDel del = del();
 		pd.addChild(seq);
-		pd.setDel(del);  // No copy
+		pd.setDel(del());  // No copy
 		return pd;
 	}
 
@@ -69,24 +66,4 @@ public abstract class ProtocolBlock<K extends ProtocolKind>
 	{
 		return "{\n" + getInteractSeqChild() + "\n}";  // Empty block will contain an blank line
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private final InteractionSeq<K> seq;
-
-	public ProtocolBlock(CommonTree source, InteractionSeq<K> seq)
-	{
-		super(source);
-		this.seq = seq;
-	}
-	
-	/*@Override
-	public abstract ProtocolBlock<K> clone(AstFactory af);*/
 }
