@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.core.type.kind.Global;
 
-public class GInteractionSeq extends InteractionSeq<Global> implements GScribNode
+public class GInteractionSeq extends InteractionSeq<Global>
+		implements GScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GInteractionSeq(Token t)
@@ -36,53 +36,15 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GScribNod
 	}
 	
 	@Override
-	public GInteractionSeq dupNode()
-	{
-		return new GInteractionSeq(this);
-	}
-	
-	@Override
 	public List<GSessionNode> getInteractionChildren()
 	{
 		return getChildren().stream().map(n -> (GSessionNode) n)
 				.collect(Collectors.toList());
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public GInteractionSeq(CommonTree source, List<GSessionNode> actions)
-	{
-		super(source, actions);
-	}
-
-	/*@Override
-	protected GInteractionSeq copy()
-	{
-		return new GInteractionSeq(this.source, getInteractNodeChildren());
-	}
-	
 	@Override
-	public GInteractionSeq clone(AstFactory af)
+	public GInteractionSeq dupNode()
 	{
-		List<GInteractionNode> gis = ScribUtil.cloneList(af, getInteractNodeChildren());
-		return af.GInteractionSeq(this.source, gis);
+		return new GInteractionSeq(this);
 	}
-
-	@Override
-	public GInteractionSeq reconstruct(List<? extends InteractionNode<Global>> ins)
-	{
-		ScribDel del = del();
-		GInteractionSeq gis = new GInteractionSeq(this.source, castNodes(ins));
-		gis = (GInteractionSeq) gis.del(del);
-		return gis;
-	}*/
 }

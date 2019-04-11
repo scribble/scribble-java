@@ -14,7 +14,6 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 
 // Redundant?  Is always a CompoundInteraction -- cf. SimpleSessionNode
@@ -31,18 +30,5 @@ public abstract class CompoundSessionNode<K extends ProtocolKind>
 	protected CompoundSessionNode(CompoundSessionNode<K> node)
 	{
 		super(node);
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	public CompoundSessionNode(CommonTree source)
-	{
-		super(source);
 	}
 }

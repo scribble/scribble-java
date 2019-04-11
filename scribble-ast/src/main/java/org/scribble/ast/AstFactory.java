@@ -57,8 +57,7 @@ public interface AstFactory
 			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
 			List<ProtocolDecl<?>> protos);
 
-	MessageSigNode MessageSigNode(CommonTree source, OpNode op,
-			PayloadElemList payload);
+	MessageSigNode MessageSigNode(Token t, OpNode op, PayloadElemList pay);
 
 	GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name,
 			RoleNode role);
@@ -71,7 +70,7 @@ public interface AstFactory
 
 	ModuleDecl ModuleDecl(Token t, ModuleNameNode fullmodname);
 
-	ImportModule ImportModule(CommonTree source, ModuleNameNode modname,
+	ImportModule ImportModule(Token t, ModuleNameNode modname,
 			ModuleNameNode alias);
 
 	MessageSigNameDecl MessageSigNameDecl(Token t, IdNode schema, IdNode extName,
@@ -102,21 +101,18 @@ public interface AstFactory
 
 	GProtocolBlock GProtocolBlock(Token t, GInteractionSeq gis);
 
-	GInteractionSeq GInteractionSeq(CommonTree source,
-			List<GSessionNode> gis);
+	GInteractionSeq GInteractionSeq(Token t, List<GSessionNode> elems);
 
-	GMessageTransfer GMessageTransfer(Token t, RoleNode src,
-			MessageNode msg, List<RoleNode> dsts);
+	GMessageTransfer GMessageTransfer(Token t, RoleNode src, MessageNode msg,
+			List<RoleNode> dsts);
 
-	GConnect GConnect(Token t, RoleNode src, MessageNode msg,
-			RoleNode dest);
+	GConnect GConnect(Token t, RoleNode src, MessageNode msg, RoleNode dest);
 
 	GDisconnect GDisconnect(Token t, RoleNode src, RoleNode dst);
 
 	GWrap GWrap(Token t, RoleNode src, RoleNode dst);
 
-	GChoice GChoice(CommonTree source, RoleNode subj,
-			List<GProtocolBlock> blocks);
+	GChoice GChoice(Token t, RoleNode subj, List<GProtocolBlock> blocks);
 
 	GRecursion GRecursion(Token t, RecVarNode recvar, GProtocolBlock block);
 

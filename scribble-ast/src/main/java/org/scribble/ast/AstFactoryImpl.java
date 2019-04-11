@@ -138,32 +138,23 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	public MessageSigNode MessageSigNode(CommonTree source, OpNode op,
-			PayloadElemList payload)
+	public MessageSigNode MessageSigNode(Token t, OpNode op, PayloadElemList pay)
 	{
-		MessageSigNode msn = new MessageSigNode(source, op, payload);
+		MessageSigNode msn = new MessageSigNode(t);
+		msn.addChild(op);
+		msn.addChild(pay);
 		msn = del(msn, createDefaultDelegate());
 		return msn;
 	}
 
 	@Override
-	//public PayloadElemList PayloadElemList(List<PayloadElem> payloadelems)
-	public PayloadElemList PayloadElemList(Token t,
-			List<PayloadElem<?>> payloadelems)
+	public PayloadElemList PayloadElemList(Token t, List<PayloadElem<?>> elems)
 	{
 		PayloadElemList p = new PayloadElemList(t);
-		p.addChildren(payloadelems);
+		p.addChildren(elems);
 		p = del(p, createDefaultDelegate());
 		return p;
 	}
-
-	/*@Override
-	public PayloadElem PayloadElem(PayloadElemNameNode name)
-	{
-		PayloadElem pe = new PayloadElem(name);
-		pe = del(pe, createDefaultDelegate());
-		return pe;
-	}*/
 
 	@Override
 	public <K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(
@@ -174,7 +165,8 @@ public class AstFactoryImpl implements AstFactory
 		de.addChild(name);
 		de = del(de, createDefaultDelegate());
 		return de;
-		//throw new RuntimeException("[TODO] : " + name);  // Currently parsed "directly" by ANTLR -- do we still need to construct manually?
+		//throw new RuntimeException("[TODO] : " + name);  
+				// Currently parsed "directly" by ANTLR -- do we still need to construct manually?
 	}
 
 	@Override
@@ -211,10 +203,15 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public ImportModule ImportModule(CommonTree source, ModuleNameNode modname,
+	public ImportModule ImportModule(Token t, ModuleNameNode modname,
 			ModuleNameNode alias)
 	{
-		ImportModule im = new ImportModule(source, modname, alias);
+		ImportModule im = new ImportModule(t);
+		im.addChild(modname);
+		if (alias != null)
+		{
+			im.addChild(alias);
+		}
 		im = del(im, new ImportModuleDel());
 		return im;
 	}
@@ -337,12 +334,12 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GInteractionSeq GInteractionSeq(CommonTree source,
-			List<GSessionNode> actions)
+	public GInteractionSeq GInteractionSeq(Token t, List<GSessionNode> elems)
 	{
-		GInteractionSeq gis = new GInteractionSeq(source, actions);
-		gis = del(gis, new GInteractionSeqDel());
-		return gis;
+		GInteractionSeq n = new GInteractionSeq(t);
+		n.addChildren(elems);
+		n = del(n, new GInteractionSeqDel());
+		return n;
 	}
 
 	@Override
@@ -389,12 +386,13 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GChoice GChoice(CommonTree source, RoleNode subj,
-			List<GProtocolBlock> blocks)
+	public GChoice GChoice(Token t, RoleNode subj, List<GProtocolBlock> blocks)
 	{
-		GChoice gc = new GChoice(source, subj, blocks);
-		gc = del(gc, new GChoiceDel());
-		return gc;
+		GChoice n = new GChoice(t);
+		n.addChild(subj);
+		n.addChildren(blocks);
+		n = del(n, new GChoiceDel());
+		return n;
 	}
 
 	@Override

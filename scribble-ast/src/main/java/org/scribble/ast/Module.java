@@ -49,7 +49,7 @@ public class Module extends ScribNodeBase
 
 	public ModuleDecl getModuleDeclChild()
 	{
-		return (ModuleDecl) getChild(0);
+		return (ModuleDecl) getChild(MODDECL_CHILD_INDEX);
 	}
 	
 	public List<ImportDecl<?>> getImportDeclChildren()

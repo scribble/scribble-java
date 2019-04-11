@@ -17,6 +17,8 @@ import org.scribble.core.type.kind.ProtocolKind;
 
 public interface ProtocolKindNode<K extends ProtocolKind> extends ScribNode
 {
+	K getKind(); 
+
 	default boolean isGlobal()
 	{
 		return false;
@@ -26,6 +28,4 @@ public interface ProtocolKindNode<K extends ProtocolKind> extends ScribNode
 	{
 		return false;
 	}
-	
-	K getKind(); 
 }

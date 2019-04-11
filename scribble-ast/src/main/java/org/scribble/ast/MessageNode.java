@@ -19,8 +19,6 @@ import org.scribble.core.type.session.Message;
 public interface MessageNode extends NonRoleArgNode
 {
 	Message toMessage();
-	
-	//MessageNode clone(AstFactory af);
 
 	//Arg<? extends SigKind> toArg();  // Not possible due to "diamond" with PayloadElemNameNode at AmbigNameNode
 }

@@ -14,39 +14,36 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.core.type.session.MessageSig;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 public class MessageSigNode extends ScribNodeBase implements MessageNode
 {
+	public static final int OP_CHILD_INDEX = 0;
+	public static final int PAYLOAD_CHILD_INDEX = 1;
+
 	// ScribTreeAdaptor#create constructor
 	public MessageSigNode(Token t)
 	{
 		super(t);
-		this.op = null;
-		this.payloads = null;
 	}
 
 	// Tree#dupNode constructor
 	public MessageSigNode(MessageSigNode node)
 	{
 		super(node);
-		this.op = null;
-		this.payloads = null;
 	}
 	
 	public OpNode getOpChild()
 	{
-		return (OpNode) getChild(0);
+		return (OpNode) getChild(OP_CHILD_INDEX);
 	}
 	
 	public PayloadElemList getPayloadListChild()
 	{
-		return (PayloadElemList) getChild(1);
+		return (PayloadElemList) getChild(PAYLOAD_CHILD_INDEX);
 	}
 	
 	@Override
@@ -60,8 +57,7 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 		MessageSigNode sig = dupNode();
 		sig.addChild(op);
 		sig.addChild(payload);
-		ScribDel del = del();
-		sig.setDel(del);  // No copy
+		sig.setDel(del());  // No copy
 		return sig;
 	}
 	
@@ -99,40 +95,4 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	{
 		return getOpChild().toString() + getPayloadListChild().toString();
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private final OpNode op;
-	private final PayloadElemList payloads;
-
-	public MessageSigNode(CommonTree source, OpNode op, PayloadElemList payload)
-	{
-		super(source);
-		this.op = op;
-		this.payloads = payload;
-	}
-
-	/*@Override
-	protected MessageSigNode copy()
-	{
-		return new MessageSigNode(this.source, this.op, this.payloads);
-	}	
-
-	@Override
-	public MessageSigNode clone(AstFactory af)
-	{
-		OpNode op = this.op.clone(af);
-		PayloadElemList payload = this.payloads.clone(af);
-		return af.MessageSigNode(this.source, op, payload);
-	}*/
-	
-	
 }

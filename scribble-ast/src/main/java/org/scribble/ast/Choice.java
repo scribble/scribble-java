@@ -13,55 +13,53 @@
  */
 package org.scribble.ast;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.del.ScribDel;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
-public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction<K>
+public abstract class Choice<K extends ProtocolKind>
+		extends CompoundInteraction<K>
 {
+	public static final int SUBJ_CHILD_INDEX = 0;
+	public static final int BLOCK_CHILDREN_START_INDEX = 1;
+
 	// ScribTreeAdaptor#create constructor
 	public Choice(Token t)
 	{
 		super(t);
-		this.subj = null;
-		this.blocks = null;
 	}
 
 	// Tree#dupNode constructor
 	protected Choice(Choice<K> node)
 	{
 		super(node);
-		this.subj = null;
-		this.blocks = null;
 	}
-	
-	public abstract Choice<K> dupNode();
 	
 	public RoleNode getSubjectChild()
 	{
-		return (RoleNode) getChild(0);
+		return (RoleNode) getChild(SUBJ_CHILD_INDEX);
 	}
 
 	// Override in concrete sub for cast
 	public abstract List<? extends ProtocolBlock<K>> getBlockChildren();
 	
-	public Choice<K> reconstruct(RoleNode subj, List<? extends ProtocolBlock<K>> blocks)
+	@Override
+	public abstract Choice<K> dupNode();
+	
+	public Choice<K> reconstruct(RoleNode subj,
+			List<? extends ProtocolBlock<K>> blocks)
 	{
-		Choice<K> c = dupNode();
-		ScribDel del = del();
-		c.addChild(subj);
-		c.addChildren(blocks);
-		c.setDel(del);  // No copy
-		return c;
+		Choice<K> dup = dupNode();
+		dup.addChild(subj);
+		dup.addChildren(blocks);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override
@@ -81,30 +79,5 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 				+ Constants.AT_KW + " " + getSubjectChild() + " "
 				+ getBlockChildren().stream().map(b -> b.toString())
 						.collect(Collectors.joining(sep));
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	private final RoleNode subj;
-	private final List<? extends ProtocolBlock<K>> blocks;  
-			// Factor up? And specialise to singleton for Recursion/Interruptible? Maybe too artificial -- could separate unaryblocked and multiblocked compound ops?
-
-	protected Choice(CommonTree source, RoleNode subj, List<? extends ProtocolBlock<K>> blocks)
-	{
-		super(source);
-		this.subj = subj;
-		this.blocks = new LinkedList<>(blocks);
 	}
 }

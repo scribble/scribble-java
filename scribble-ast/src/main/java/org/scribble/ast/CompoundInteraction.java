@@ -14,7 +14,6 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
 
 public abstract class CompoundInteraction<K extends ProtocolKind>
@@ -30,20 +29,5 @@ public abstract class CompoundInteraction<K extends ProtocolKind>
 	protected CompoundInteraction(CompoundInteraction<K> node)
 	{
 		super(node);
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	protected CompoundInteraction(CommonTree source)
-	{
-		super(source);
 	}
 }

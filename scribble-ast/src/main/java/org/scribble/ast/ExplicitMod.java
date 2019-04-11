@@ -46,18 +46,4 @@ public class ExplicitMod extends ProtocolMod
 	{
 		return "explicit";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public static final ExplicitMod EXPLICIT = new ExplicitMod((Token) null);
 }

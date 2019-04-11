@@ -18,9 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -31,18 +29,13 @@ public abstract class InteractionSeq<K extends ProtocolKind>
 	public InteractionSeq(Token t)
 	{
 		super(t);
-		this.inters = null;
 	}
 
 	// Tree#dupNode constructor
 	public InteractionSeq(InteractionSeq<K> node)
 	{
 		super(node);
-		this.inters = null;
 	}
-	
-	@Override
-	public abstract InteractionSeq<K> dupNode();
 	
 	public abstract List<? extends SessionNode<K>> getInteractionChildren();
 	
@@ -50,14 +43,16 @@ public abstract class InteractionSeq<K extends ProtocolKind>
 	{
 		return getChildCount() == 0; //this.inters.isEmpty();
 	}
+	
+	@Override
+	public abstract InteractionSeq<K> dupNode();
 
 	public InteractionSeq<K> reconstruct(List<? extends SessionNode<K>> ins)
 	{
-		InteractionSeq<K> pd = dupNode();
-		ScribDel del = del();
-		ins.forEach(x -> pd.addChild(x));
-		pd.setDel(del);  // No copy
-		return pd;
+		InteractionSeq<K> dup = dupNode();
+		ins.forEach(x -> dup.addChild(x));
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override
@@ -92,27 +87,4 @@ public abstract class InteractionSeq<K extends ProtocolKind>
 		return getInteractionChildren().stream().map(i -> i.toString())
 				.collect(Collectors.joining("\n"));
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	private final List<? extends SessionNode<K>> inters;
-
-	protected InteractionSeq(CommonTree source, List<? extends SessionNode<K>> inters)
-	{
-		super(source);
-		this.inters = inters;
-	}
-	
 }

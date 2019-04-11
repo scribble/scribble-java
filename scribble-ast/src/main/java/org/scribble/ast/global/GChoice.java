@@ -17,10 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
 
 public class GChoice extends Choice<Global> implements GCompoundSessionNode
@@ -38,55 +36,16 @@ public class GChoice extends Choice<Global> implements GCompoundSessionNode
 	}
 	
 	@Override
+	public List<GProtocolBlock> getBlockChildren()
+	{
+		List<ScribNode> cs = getChildren();
+		return cs.subList(GChoice.BLOCK_CHILDREN_START_INDEX, cs.size()).stream()
+				.map(x -> (GProtocolBlock) x).collect(Collectors.toList());
+	}
+	
+	@Override
 	public GChoice dupNode()
 	{
 		return new GChoice(this);
 	}
-	
-	@Override
-	public List<GProtocolBlock> getBlockChildren()
-	{
-		List<ScribNode> cs = getChildren();
-		return cs.subList(1, cs.size()).stream().map(x -> (GProtocolBlock) x)
-				.collect(Collectors.toList());
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	public GChoice(CommonTree source, RoleNode subj, List<GProtocolBlock> blocks)
-	{
-		super(source, subj, blocks);
-	}
-
-	/*@Override
-	protected ScribNodeBase copy()
-	{
-		return new GChoice(this.source, this.subj, getBlocks());
-	}
-	
-	@Override
-	public GChoice clone(AstFactory af)
-	{
-		RoleNode subj = this.subj.clone(af);
-		List<GProtocolBlock> blocks = ScribUtil.cloneList(af, getBlocks());
-		return af.GChoice(this.source, subj, blocks);
-	}*/
-
-	/*@Override
-	public GChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<Global>> blocks)
-	{
-		ScribDel del = del();
-		GChoice gc = new GChoice(this.source, subj, castBlocks(blocks));
-		gc = (GChoice) gc.del(del);
-		return gc;
-	}*/
 }
