@@ -76,7 +76,7 @@ public class ModuleContextCollector
 		}
 		addVisible(parsed, root);  
 				// Adds imports and members by their "direct" names (unqualified, except for no-alias imports)
-		
+
 		return new ModuleContext(root.getFullModuleName(), deps, visible);
 	}
 
@@ -124,6 +124,13 @@ public class ModuleContextCollector
 					Module imported = parsed.get(fullmodname);  // TODO: Can get from MainContext instead of JobContext?
 					addModule(this.deps, imported, fullmodname);  // Unlike for visible, only doing full names here
 					addImportDependencies(parsed, imported);
+
+					// FIXME: also do for npds -- factor out with below
+					for (GProtocolDecl gpd : imported.getGProtoDeclChildren())
+					{
+						GProtocolName fullname = gpd.getFullMemberName(root);
+						this.visible.globals.put(fullname, fullname);
+					}
 				}
 			}
 			else
@@ -154,6 +161,7 @@ public class ModuleContextCollector
 				}
 				Module imported = parsed.get(fullname);  // TODO: Can get from MainContext instead of JobContext?
 				addModule(this.visible, imported, visname);  
+				
 			}
 			else
 			{
@@ -167,21 +175,28 @@ public class ModuleContextCollector
 			{
 				DataTypeDecl dtd = (DataTypeDecl) npd;
 				DataType visname = new DataType(dtd.getDeclName().toString());
-				this.visible.data.put(visname, dtd.getFullMemberName(root));
+				DataType fullname = dtd.getFullMemberName(root);
+				this.visible.data.put(fullname, fullname);
+				this.visible.data.put(visname, fullname);
 			}
 			else // if (npd.isMessageSigNameDecl())
 			{
 				MessageSigNameDecl msnd = (MessageSigNameDecl) npd;
+				MessageSigName fullname = msnd.getFullMemberName(root);
 				MessageSigName visname = new MessageSigName(
 						msnd.getDeclName().toString());
-				this.visible.sigs.put(visname, msnd.getFullMemberName(root));
+				this.visible.sigs.put(fullname, fullname);
+				this.visible.sigs.put(visname, fullname);
 			}
 		}
+
 		for (GProtocolDecl gpd : root.getGProtoDeclChildren())
 		{
 			GProtocolName visname = new GProtocolName(
 					gpd.getHeaderChild().getDeclName().toString());
-			this.visible.globals.put(visname, gpd.getFullMemberName(root));
+			GProtocolName fullname = gpd.getFullMemberName(root);
+			this.visible.globals.put(fullname, fullname);
+			this.visible.globals.put(visname, fullname);
 		}
 	}
 

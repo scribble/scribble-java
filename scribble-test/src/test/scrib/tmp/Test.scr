@@ -75,6 +75,7 @@ module tmp.Test;
 		// CHECKME: duplicte proto mods
 
 // re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
+		// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
 // refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
 	//make a visitor factory
 
@@ -82,11 +83,12 @@ module tmp.Test;
 // use stypefactory in core -- also make a visitorfactory
 // refactor test to use main instead of cli
 
+type <java> "..." from "..." as T;
 
 global protocol Proto1(role A, role B)
 {
 	//1() from A to B;
-		1() from A to B;
+		1(T) from A to B;
 		//do Proto1(A, B);
 }
 

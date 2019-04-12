@@ -13,10 +13,15 @@
  */
 package org.scribble.del.global;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Global;
@@ -67,10 +72,10 @@ public class GDelegationElemDel extends ScribDelBase
 		{
 			throw new ScribException(r.getSource(), "Invalid delegation role: " + de);
 		}
-
+		List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
+				.map(x -> disamb.lang.config.af.IdNode(x)).collect(Collectors.toList());
 		GProtocolNameNode pnn = (GProtocolNameNode) disamb.lang.config.af
-				.QualifiedNameNode(de.getProtocolChild().getSource(),
-						fullname.getKind(), fullname.getElements());
+				.QualifiedNameNode(fullname.getKind(), elems);
 				// Not keeping original namenode del
 		return de.reconstruct(pnn, r);
 	}

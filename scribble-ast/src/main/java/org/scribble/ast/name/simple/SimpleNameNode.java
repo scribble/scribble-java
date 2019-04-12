@@ -14,7 +14,6 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.NameNode;
 import org.scribble.core.type.kind.Kind;
 
@@ -37,20 +36,5 @@ public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 	public String getText()
 	{
 		return getLastElement();  // i.e., second child element, after node type
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public SimpleNameNode(CommonTree source, String id)
-	{
-		super(source, new String[]{id});
 	}
 }

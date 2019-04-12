@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del;
+package org.scribble.parser.scribble;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -63,6 +63,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.ast.name.simple.TypeParamNode;
 import org.scribble.del.DefaultDel;
+import org.scribble.del.DelDecorator;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.NonRoleArgListDel;

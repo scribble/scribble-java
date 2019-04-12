@@ -61,7 +61,8 @@ import org.scribble.ast.name.simple.TypeParamNode;
 
 
 // A dec method for each AST class
-// Wach method named after the class name -- currently dispatched by reflection
+// Implementations in scribble-parser, can depend on parser implementation
+// E.g., DelDecoratorImpl: each method named after the class name -- currently dispatched by reflection
 public interface DelDecorator
 {
 	void decorate(ScribNode n);

@@ -26,7 +26,6 @@ import org.antlr.runtime.tree.CommonErrorNode;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.Module;
 import org.scribble.del.DelDecorator;
-import org.scribble.del.DelDecoratorImpl;
 import org.scribble.parser.antlr.ScribbleLexer;
 import org.scribble.parser.antlr.ScribbleParser;
 import org.scribble.util.ScribParserException;

@@ -3,10 +3,16 @@
  * $ java -cp scribble-parser/lib/antlr-3.5.2-complete.jar org.antlr.Tool -o scribble-parser/target/generated-sources/antlr3 scribble-parser/src/main/antlr3/org/scribble/parser/antlr/Scribble.g
  * 
  * Cygwin/Windows
+ * > scribble-java
  * $ java -cp scribble-parser/lib/antlr-3.5.2-complete.jar org.antlr.Tool -o scribble-parser/target/generated-sources/antlr3/org/scribble/parser/antlr scribble-parser/src/main/antlr3/org/scribble/parser/antlr/Scribble.g
  * $ mv scribble-parser/target/generated-sources/antlr3/org/scribble/parser/antlr/Scribble.tokens scribble-parser/target/generated-sources/antlr3/
  */
 
+/**
+ * Pattern: each node type must give its "node type constant" as its text, e.g., module: ... -> ^(MODULE ...) -- all info in its children
+ * i.e. Each Token will be equivalent to, e.g., new CommonToken(ScribbleParser.MODULE, "MODULE")
+ * Except for IDENTIFIER/IdNode: text is the IDENTIFIER value, i.e., new CommonToken(ScribbleParser.IDENTIFIER, "...")
+ */
 
 grammar Scribble;
 
@@ -109,7 +115,8 @@ tokens
 	DELEGATION = 'DELEGATION';
 	
 
-	// Parsed "directly" by AntlrToScribParser
+	// "Node type" constants -- parsed "directly" by AntlrToScribParser
+	// TODO: split naming of type int constant from String label
 
 	PAYLOAD = 'PAYLOAD';
 	//PAYLOADELEMENT = 'payloadelement';
@@ -240,7 +247,7 @@ tokens
   	System.exit(1);
 	}
 
-	// qn = qualifiedname
+	// qn = qualifiedname -- CHECKME: do these bypass ScribTreeAdaptor?
 	public static CommonTree parsePayloadElem(CommonTree qn) throws RecognitionException
 	{
 		//System.out.println("ggg1: " + qn + " ,, " + qn.token + " ,, " + qn.getChildren());		

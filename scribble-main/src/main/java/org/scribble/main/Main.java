@@ -29,6 +29,7 @@ import org.scribble.lang.Lang;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.loader.ScribModuleLoader;
 import org.scribble.main.resource.locator.ResourceLocator;
+import org.scribble.parser.scribble.AstFactoryImpl;
 import org.scribble.parser.scribble.ScribAntlrWrapper;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
@@ -118,7 +119,9 @@ public class Main
 	protected Lang newLang(Map<ModuleName, Module> parsed,
 			Map<JobArgs, Boolean> args, ModuleName mainFullname) throws ScribException
 	{
-		return new Lang(mainFullname, args, parsed);
+		AstFactoryImpl af = new AstFactoryImpl();  
+				// Was previously made inside Lang, but AstFactoryImpl now lives in scribble-parser, to access ScribbleParser constants
+		return new Lang(mainFullname, args, parsed, af);
 	}
 	
 	// Pre: main Module loaded by this.loader

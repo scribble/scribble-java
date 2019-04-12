@@ -14,14 +14,14 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.DoArgNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
 
-public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //RoleDecl, RoleInstantiation
+public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode 
+		// RoleDecl, RoleInstantiation
 {
 	// ScribTreeAdaptor#create constructor
 	public RoleNode(Token t)
@@ -41,11 +41,11 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 		return new RoleNode(this);//, getIdentifier());
 	}
 	
-	@Override
+	/*@Override
 	public RoleNode clone()
 	{
 		return (RoleNode) super.clone();
-	}
+	}*/
 
 	// RoleNode is the only NameNode with a reconstruct (so not factored up)
 	protected RoleNode reconstruct(String id)
@@ -91,32 +91,4 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 		hash = 31 * super.hashCode();
 		return hash;
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public RoleNode(CommonTree source, String identifier)
-	{
-		super(source, identifier);
-	}
-
-	/*@Override
-	protected RoleNode copy()
-	{
-		return new RoleNode(this.source, getIdentifier());
-	}
-	
-	@Override
-	public RoleNode clone(AstFactory af)
-	{
-		return (RoleNode) af.SimpleNameNode(this.source, RoleKind.KIND, getIdentifier());
-	}*/
 }

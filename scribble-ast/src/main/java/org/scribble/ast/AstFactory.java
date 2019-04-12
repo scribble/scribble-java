@@ -15,7 +15,6 @@ package org.scribble.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.Token;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
@@ -49,95 +48,98 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.PayloadTypeKind;
 
 
+// Implementations located in scribble-parser, use ScribbleParser for Token construction
 // Currently, used only in relatively niche places (since ANTLR now constructs all parsed nodes "directly")
 public interface AstFactory
 {
-	Module Module(Token t, ModuleDecl mdecl,
+	IdNode IdNode(String id);
+	
+	Module Module(ModuleDecl mdecl,
 			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
 			List<ProtocolDecl<?>> protos);
 
-	MessageSigNode MessageSigNode(Token t, OpNode op, PayloadElemList pay);
+	MessageSigNode MessageSigNode(OpNode op, PayloadElemList pay);
 
-	GDelegationElem GDelegationElem(Token t, GProtocolNameNode name,
+	GDelegationElem GDelegationElem(GProtocolNameNode name,
 			RoleNode r);
 
-	PayloadElemList PayloadElemList(Token t, List<PayloadElem<?>> elems);
+	PayloadElemList PayloadElemList(List<PayloadElem<?>> elems);
 
 	// PayloadElem PayloadElem(PayloadElemNameNode name);
-	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(Token t,
+	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(
 			PayloadElemNameNode<K> name);
 
-	ModuleDecl ModuleDecl(Token t, ModuleNameNode fullmodname);
+	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
 
-	ImportModule ImportModule(Token t, ModuleNameNode modname,
+	ImportModule ImportModule(ModuleNameNode modname,
 			ModuleNameNode alias);
 
-	MessageSigNameDecl MessageSigNameDecl(Token t, IdNode schema, IdNode extName,
+	MessageSigNameDecl MessageSigNameDecl(IdNode schema, IdNode extName,
 			IdNode extSource, MessageSigNameNode name);
 
-	DataTypeDecl DataTypeDecl(Token t, IdNode schema, IdNode extName,
+	DataTypeDecl DataTypeDecl(IdNode schema, IdNode extName,
 			IdNode extSource, DataTypeNode name);
 
-	GProtocolDecl GProtocolDecl(Token t, ProtocolModList modifiers,
+	GProtocolDecl GProtocolDecl(ProtocolModList modifiers,
 			GProtocolHeader header, GProtocolDef def);
 
-	GProtocolHeader GProtocolHeader(Token t, GProtocolNameNode name,
+	GProtocolHeader GProtocolHeader(GProtocolNameNode name,
 			RoleDeclList rdecls, NonRoleParamDeclList paramdecls);
 
-	RoleDeclList RoleDeclList(Token t, List<RoleDecl> ds);
+	RoleDeclList RoleDeclList(List<RoleDecl> ds);
 
-	RoleDecl RoleDecl(Token t, RoleNode r);
+	RoleDecl RoleDecl(RoleNode r);
 
-	// ConnectDecl ConnectDecl(Token t, RoleNode src, RoleNode r);
+	// ConnectDecl ConnectDecl(RoleNode src, RoleNode r);
 
-	NonRoleParamDeclList NonRoleParamDeclList(Token t,
+	NonRoleParamDeclList NonRoleParamDeclList(
 			List<NonRoleParamDecl<NonRoleParamKind>> ds);
 
 	@Deprecated
 	<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(
-			Token t, K kind, NonRoleParamNode<K> name);
+			K kind, NonRoleParamNode<K> name);
 
-	GProtocolDef GProtocolDef(Token t, GProtocolBlock block);
+	GProtocolDef GProtocolDef(GProtocolBlock block);
 
-	GProtocolBlock GProtocolBlock(Token t, GInteractionSeq seq);
+	GProtocolBlock GProtocolBlock(GInteractionSeq seq);
 
-	GInteractionSeq GInteractionSeq(Token t, List<GSessionNode> elems);
+	GInteractionSeq GInteractionSeq(List<GSessionNode> elems);
 
-	GMessageTransfer GMessageTransfer(Token t, RoleNode src, MessageNode msg,
+	GMessageTransfer GMessageTransfer(RoleNode src, MessageNode msg,
 			List<RoleNode> dsts);
 
-	GConnect GConnect(Token t, RoleNode src, MessageNode msg, RoleNode dst);
+	GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dst);
 
-	GDisconnect GDisconnect(Token t, RoleNode src, RoleNode dst);
+	GDisconnect GDisconnect(RoleNode src, RoleNode dst);
 
-	GWrap GWrap(Token t, RoleNode src, RoleNode dst);
+	GWrap GWrap(RoleNode src, RoleNode dst);
 
-	GChoice GChoice(Token t, RoleNode subj, List<GProtocolBlock> blocks);
+	GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks);
 
-	GRecursion GRecursion(Token t, RecVarNode rv, GProtocolBlock block);
+	GRecursion GRecursion(RecVarNode rv, GProtocolBlock block);
 
-	GContinue GContinue(Token t, RecVarNode rv);
+	GContinue GContinue(RecVarNode rv);
 
-	GDo GDo(Token t, RoleArgList rs, NonRoleArgList args,
+	GDo GDo(RoleArgList rs, NonRoleArgList args,
 			GProtocolNameNode proto);
 
-	RoleArgList RoleArgList(Token t, List<RoleArg> rs);
+	RoleArgList RoleArgList(List<RoleArg> rs);
 
-	RoleArg RoleArg(Token t, RoleNode r);
+	RoleArg RoleArg(RoleNode r);
 
-	NonRoleArgList NonRoleArgList(Token t, List<NonRoleArg> args);
+	NonRoleArgList NonRoleArgList(List<NonRoleArg> args);
 
-	NonRoleArg NonRoleArg(Token t, NonRoleArgNode arg);
+	NonRoleArg NonRoleArg(NonRoleArgNode arg);
 
-	<K extends Kind> NameNode<K> SimpleNameNode(Token t, K kind, IdNode id);
+	<K extends Kind> NameNode<K> SimpleNameNode(K kind, IdNode id);
 
-	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(Token t, K kind,
-			IdNode... elems);
+	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind,
+			List<IdNode> elems);
 
-	AmbigNameNode AmbiguousNameNode(Token t, IdNode id);
+	AmbigNameNode AmbiguousNameNode(IdNode id);
 
 	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(
-			Token t, K kind, String id);
+			K kind, String id);
 }
 
 

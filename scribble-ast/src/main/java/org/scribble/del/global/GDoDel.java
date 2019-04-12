@@ -42,7 +42,7 @@ public class GDoDel extends DoDel implements GSimpleSessionNodeDel
 			throw new ScribException(source,
 					"Protocol decl not visible: " + proto);
 		}
-		GProtocolName fullname = (GProtocolName) modc
+		GProtocolName fullname = (GProtocolName) modc  // FIXME: sort out full name expansion between here and DoDel.leaveDisambiguation
 				.getVisibleProtocolDeclFullName(proto);
 		List<Role> roles = source.getRoleListChild().getRoles();
 		List<Arg<? extends NonRoleParamKind>> params = source.getNonRoleListChild()

@@ -20,7 +20,8 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.session.Arg;
 
-public class LProtocolNameNode extends ProtocolNameNode<Local> implements PayloadElemNameNode<Local>
+public class LProtocolNameNode extends ProtocolNameNode<Local>
+		implements PayloadElemNameNode<Local>
 {
 	// ScribTreeAdaptor#create constructor
 	public LProtocolNameNode(Token t)
@@ -29,7 +30,7 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 	}
 
 	// Tree#dupNode constructor
-	protected LProtocolNameNode(LProtocolNameNode node)//, String...elems)
+	protected LProtocolNameNode(LProtocolNameNode node)
 	{
 		super(node);
 	}
@@ -37,7 +38,7 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 	@Override
 	public LProtocolNameNode dupNode()
 	{
-		return new LProtocolNameNode(this);//, getElements());
+		return new LProtocolNameNode(this);
 	}
 	
 	@Override
@@ -72,7 +73,7 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 		{
 			return false;
 		}
-		return ((LProtocolNameNode) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEqual
 	}
 	
 	@Override
@@ -88,29 +89,4 @@ public class LProtocolNameNode extends ProtocolNameNode<Local> implements Payloa
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public LProtocolNameNode(CommonTree source, String... ns)
-	{
-		super(source, ns);
-	}
-
-	/*@Override
-	protected LProtocolNameNode copy()
-	{
-		return new LProtocolNameNode(this.source, this.elems);
-	}
-	
-	@Override
-	public LProtocolNameNode clone(AstFactory af)
-	{
-		return (LProtocolNameNode) af.QualifiedNameNode(this.source, Local.KIND, this.elems);
-	}*/
 }

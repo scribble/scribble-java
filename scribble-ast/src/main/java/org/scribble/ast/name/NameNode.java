@@ -13,7 +13,6 @@
  */
 package org.scribble.ast.name;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,22 +30,12 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 	public NameNode(Token t)
 	{
 		super(t);
-		this.elems = null;
 	}
 
 	// Tree#dupNode constructor
 	protected NameNode(NameNode<K> node)//, String...elems)
 	{
 		super(node);
-		this.elems = null;//elems;
-	}
-	
-	public abstract NameNode<K> dupNode();
-	
-	public String[] getElements()
-	{
-		//return Arrays.copyOf(this.elems, this.elems.length);
-		return getSimpleNameList().toArray(new String[0]);
 	}
 	
 	protected List<String> getSimpleNameList()
@@ -56,21 +45,13 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 				// CHECKME: currently AmbigNameNode(?)
 				// CHECKME: factor out getText?
 	}
-
-	public int getElementCount()
-	{
-		//return this.elems.length;
-		return getChildCount();
-	}
 	
-	public boolean isEmpty()
-	{
-		return getElementCount() == 0;
-	}
+	public abstract NameNode<K> dupNode();
 	
-	protected boolean isPrefixed()
+	public String[] getElements()
 	{
-		return getElementCount() > 1;
+		//return Arrays.copyOf(this.elems, this.elems.length);
+		return getSimpleNameList().toArray(new String[0]);
 	}
 	
 	protected String[] getPrefixElements()
@@ -90,6 +71,28 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 		List<String> names = getSimpleNameList();
 		return names.get(names.size() - 1);
 	}
+
+	public int getElementCount()
+	{
+		//return this.elems.length;
+		return getChildCount();
+	}
+	
+	public boolean isEmpty()
+	{
+		return getElementCount() == 0;
+	}
+	
+	protected boolean isPrefixed()
+	{
+		return getElementCount() > 1;
+	}
+
+	@Override
+	public String toString()
+	{
+		return toName().toString();
+	}
 	
   // CHECKME: is equals/hashCode actually needed for these ScribNodes? (cf. Name)
 	// CHECKME: should NameNodes ever be used in an equality checking context? (cf. other AST nodes) -- this work should be done using sesstype.Name instead?
@@ -104,8 +107,9 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 		{
 			return false;
 		}
-		NameNode<?> nn = (NameNode<?>) o;
-		return nn.canEqual(this) && Arrays.equals(this.elems, nn.elems);
+		NameNode<?> them = (NameNode<?>) o;
+		return them.canEqual(this)
+				&& getSimpleNameList().equals(them.getSimpleNameList());
 	}
 	
 	public abstract boolean canEqual(Object o);
@@ -114,37 +118,8 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 	public int hashCode()
 	{
 		int hash = 317;
-		hash = 31 * hash + Arrays.hashCode(getElements());  
+		hash = 31 * hash + getSimpleNameList().hashCode();  
 				// Hash the String values, not the actual Tree nodes
 		return hash;
 	}
-
-	@Override
-	public String toString()
-	{
-		return toName().toString();
-	}
-	
-	
-	
-	
-	
-	
-
-	
-	
-	private final String[] elems;
-	
-	public NameNode(CommonTree source, String... elems)
-	{
-		super(source);
-		if (source == null)
-		{
-			throw new RuntimeException("CHECKME");
-		}
-		this.elems = elems;
-	}
-	
-	/*@Override
-	public abstract NameNode<K> clone(AstFactory af);*/
 }

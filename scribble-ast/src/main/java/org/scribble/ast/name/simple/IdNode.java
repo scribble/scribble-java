@@ -14,7 +14,6 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.IdKind;
 import org.scribble.core.type.name.Id;
 
@@ -28,7 +27,7 @@ public class IdNode extends SimpleNameNode<IdKind>
 	}
 
 	// Tree#dupNode constructor
-	protected IdNode(IdNode node)//, String id)
+	protected IdNode(IdNode node)
 	{
 		super(node);
 	}
@@ -36,7 +35,7 @@ public class IdNode extends SimpleNameNode<IdKind>
 	@Override
 	public IdNode dupNode()
 	{
-		return new IdNode(this);//, getIdentifier());
+		return new IdNode(this);
 	}
 	
 	@Override
@@ -78,28 +77,4 @@ public class IdNode extends SimpleNameNode<IdKind>
 		hash = 31 * super.hashCode();
 		return hash;
 	}
-	
-	
-	
-	
-	
-	
-	
-
-	public IdNode(CommonTree source, String id)
-	{
-		super(source, id);
-	}
-
-	/*@Override
-	protected AmbigNameNode copy()
-	{
-		return new AmbigNameNode(this.source, getIdentifier());
-	}
-	
-	@Override
-	public AmbigNameNode clone(AstFactory af)
-	{
-		return (AmbigNameNode) af.AmbiguousNameNode(this.source, getIdentifier());
-	}*/
 }

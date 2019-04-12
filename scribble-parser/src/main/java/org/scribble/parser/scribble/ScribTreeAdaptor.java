@@ -36,6 +36,7 @@ import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNil;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.SigParamDecl;
 import org.scribble.ast.TypeParamDecl;
 import org.scribble.ast.global.GChoice;
@@ -76,8 +77,9 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 		return new ScribNil();
 	}
 
+	// Create a Tree (ScribNode) from a Token
 	@Override
-	public Object create(Token t)
+	public ScribNode create(Token t)
 	{
 		String tname = t.getText();
 		
@@ -98,6 +100,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			throw new RuntimeException(e);
 		}*/
 		
+		// CHECKME: switch on scribbleparser int type constants instead
 		switch (tname)
 		{
 			case "MODULE": return new Module(t);
@@ -144,7 +147,8 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case "ROLEINSTANTIATION": return new RoleArg(t);
 			case "ARGUMENTINSTANTIATIONLIST": return new NonRoleArgList(t);
 			case "NONROLEARG": return new NonRoleArg(t);  // Only for messagesignature -- qualifiedname (datatypenode or ambignamenode) done "manually" in scribble.g (cf. UnaryPayloadElem)
-			case "AMBIGUOUSNAME": return new AmbigNameNode(t);
+			case "AMBIGUOUSNAME": 
+				return new AmbigNameNode(t);
 
 			default:
 			{

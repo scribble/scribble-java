@@ -13,9 +13,14 @@
  */
 package org.scribble.del;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.scribble.ast.Do;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.ProtocolName;
@@ -48,42 +53,29 @@ public abstract class DoDel extends SimpleSessionNodeDel
 	public ScribNode leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
-		return leaveDisambiguationAux(child, disamb, visited);
+		return leaveDisambiguationAux((Do<?>) visited, disamb);
 				// To introduce type parameter
 	}
 	
 	// Convert all visible names to full names for protocol inlining: otherwise could get clashes if directly inlining external visible names under the root modulecontext
 	// Not done in G/LProtocolNameNodeDel because it's only for do-targets that this is needed (cf. ProtocolHeader)
-	// TODO: refactor into G/LDoDel to bypass generic cast issues
 	private <K extends ProtocolKind> ScribNode leaveDisambiguationAux(
-			ScribNode child, NameDisambiguator disamb,
-			ScribNode visited) throws ScribException
+			Do<K> visited, NameDisambiguator disamb) throws ScribException
 	{
-		@SuppressWarnings("unchecked")  // Doesn't matter what K is, just need to propagate it down
-		Do<K> doo = (Do<K>) visited;
-		ProtocolNameNode<K> proto = doo.getProtocolNameNode();
-		/*ModuleContext mc = disamb.lang.getMainModuleContext();
-		ProtocolName<K> fullname = mc
-				.getVisibleProtocolDeclFullName(proto.toName());*/
+		ProtocolNameNode<K> proto = visited.getProtocolNameNode();
+		ModuleContext modc = disamb.getModuleContext();
+		ProtocolName<K> fullname = modc
+				.getVisibleProtocolDeclFullName(proto.toName());
 
-		ProtocolNameNode<K> pnn;/* = (ProtocolNameNode<K>) disamb.job.config.af
-				.QualifiedNameNode(proto.getSource(), fullname.getKind(),
-						fullname.getElements());*/
-		
-		// CHECKME: refactor, make an AST node and set its children -- rework AstFactory?
-		// CHECKME: issue is to make an AST node, need a Token (but those are mainly obtained by parsing only)
-		/*pnn = (ProtocolNameNode<K>) new GProtocolNameNode(proto.token);
-		pnn.addChildren(proto.getChildren());*/
-		/*pnn = (ProtocolNameNode<K>) proto.dupNode();  // Token and start/stopIndex
-		pnn.addChildren(Arrays.asList(fullname.getElements()).stream().map(x -> new AmbigNameNode(new Token(arg0, arg1))));*/
-		pnn = proto;
-		
 		// CHECKME: do full name expansion in disamb?  or leave to imed translation?
-		// either hack Token to make new AST node, or redo proto context building on intermed -- consideration is projection output a la parsed AST subprotos, or from (inlined?) intermed
-		// probably hack Token for now -- or just skip protocol context building (do inlning and WF/valid first)
+		// FIXME: sort out full name expansion between here and GDoDel.translate
+		List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
+				.map(x -> disamb.lang.config.af.IdNode(x)).collect(Collectors.toList());
+		ProtocolNameNode<K> n = (ProtocolNameNode<K>) disamb.lang.config.af
+				.QualifiedNameNode(fullname.getKind(), elems);
 		
 		// Didn't keep original namenode del -- ?
-		return doo.reconstruct(doo.getRoleListChild(), doo.getNonRoleListChild(),
-				pnn);
+		return visited.reconstruct(visited.getRoleListChild(),
+				visited.getNonRoleListChild(), n);
 	}
 }

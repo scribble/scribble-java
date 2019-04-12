@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.AstFactory;
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.core.job.Job;
@@ -42,19 +41,18 @@ public class Lang
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	public Lang(ModuleName mainFullname, Map<JobArgs, Boolean> args,
-			Map<ModuleName, Module> parsed) throws ScribException
+			Map<ModuleName, Module> parsed, AstFactory af) throws ScribException
 	{
 		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
 		// FIXME: wrap flags in Map and move Config construction to Lang
-		this.config = newLangConfig(mainFullname, args);
+		this.config = newLangConfig(mainFullname, args, af);
 		this.context = newLangContext(this, parsed);  // Single instance per Lang, should not be shared between Langs
 	}
 
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
 	protected LangConfig newLangConfig(ModuleName mainFullname,
-			Map<JobArgs, Boolean> args)
+			Map<JobArgs, Boolean> args, AstFactory af)
 	{
-		AstFactory af = new AstFactoryImpl();
 		return new LangConfig(mainFullname, args, af);
 	}
 

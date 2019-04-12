@@ -14,7 +14,6 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.NonRoleParamKind;
 
 // An unambiguous kinded parameter (ambiguous parameters handled by disambiguation) that isn't a role -- e.g. DataType/MessageSigName param
@@ -161,8 +160,9 @@ public abstract class NonRoleParamNode<K extends NonRoleParamKind> extends
 		{
 			return false;
 		}
-		NonRoleParamNode<? extends NonRoleParamKind> n = (NonRoleParamNode<?>) o;
-		return n.canEqual(this) && this.kind.equals(n.kind) && super.equals(o);
+		NonRoleParamNode<? extends NonRoleParamKind> them = (NonRoleParamNode<?>) o;
+		return super.equals(o)  // Does canEqual
+				&& this.kind.equals(them.kind);
 	}
 	
 	@Override
@@ -170,33 +170,4 @@ public abstract class NonRoleParamNode<K extends NonRoleParamKind> extends
 	{
 		return o instanceof NonRoleParamNode;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public NonRoleParamNode(CommonTree source, K kind, String identifier)
-	{
-		super(source, identifier);
-		this.kind = kind;
-	}
-
-	/*@Override
-	protected NonRoleParamNode<K> copy()
-	{
-		return new NonRoleParamNode<>(this.source, this.kind, getIdentifier());
-	}
-	
-	@Override
-	public NonRoleParamNode<K> clone(AstFactory af)
-	{
-		return af.NonRoleParamNode(this.source, this.kind, getIdentifier());
-	}*/
 }

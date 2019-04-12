@@ -14,7 +14,6 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.core.type.kind.AmbigKind;
@@ -114,28 +113,4 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 		hash = 31 * super.hashCode();
 		return hash;
 	}
-	
-	
-	
-	
-	
-	
-	
-
-	public AmbigNameNode(CommonTree source, String id)
-	{
-		super(source, id);
-	}
-
-	/*@Override
-	protected AmbigNameNode copy()
-	{
-		return new AmbigNameNode(this.source, getIdentifier());
-	}
-	
-	@Override
-	public AmbigNameNode clone(AstFactory af)
-	{
-		return (AmbigNameNode) af.AmbiguousNameNode(this.source, getIdentifier());
-	}*/
 }
