@@ -115,8 +115,6 @@ import org.scribble.parser.antlr.ScribbleParser;
 
 public class AstFactoryImpl implements AstFactory
 {
-	private static MessageSigNode UNIT_MESSAGE_SIG_NODE;  // A "constant"
-	
 	public AstFactoryImpl()
 	{
 		
@@ -128,15 +126,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	// FIXME: factor out -- change return to void (ScribNodeBase.del is a mutating setter)
-	//@SuppressWarnings("unchecked")
 	protected static <T extends ScribNodeBase> T del(T n, ScribDel del)
 	{
-		/*ScribNodeBase ret = n.del(del);  // FIXME: del makes another shallow copy of n
-		if (ret.getClass() != n.getClass())
-		{
-			throw new RuntimeException("Shouldn't get in here: " + ret.getClass() + ", " + n.getClass());
-		}
-		return (T) ret;*/
 		return ScribNodeBase.del(n, del);
 	}
 	

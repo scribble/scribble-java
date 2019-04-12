@@ -81,24 +81,8 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 	@Override
 	public ScribNode create(Token t)
 	{
-		/*  // CHECKME: use a naming convention between Token and AST class names for reflection?
-		try
-		{
-			Constructor<? extends AstVisitor> cons = c.get Constructor(Job.class);
-			for (ModuleName modname : modnames)
-			{
-				AstVisitor nv = cons.newInstance(this);
-				runVisitorOnModule(modname, nv);
-			}
-		}
-		catch (NoSuchMethodException | SecurityException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e)
-		{
-			throw new RuntimeException(e);
-		}*/
-		
 		// Switching on ScribbleParser int type constants -- generated from Scribble.g tokens
+		// Previously: String tname = t.getText(); -- by convention of Scribble.g, type constant name given as node text, e.g., module: ... -> ^(MODULE ...)
 		switch (t.getType())
 		{
 			case ScribbleParser.MODULE: return new Module(t);
@@ -148,34 +132,21 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.AMBIGUOUSNAME: return new AmbigNameNode(t);
 				
 			case ScribbleParser.IDENTIFIER: return new IdNode(t);
-			case ScribbleParser.EXTIDENTIFIER: return new IdNode(t);  // CHECKME: OK to 
+			case ScribbleParser.EXTIDENTIFIER: return new IdNode(t);  // CHECKME: OK?
 
 			// Special cases
-			case ScribbleParser.EMPTY_OPERATOR: return new IdNode(t);  //  OpNode.toName checks IdNode child text for OpNode.EMPTY_OP_ID
+			case ScribbleParser.EMPTY_OPERATOR: return new IdNode(t);  // OpNode.toName checks IdNode child text for OpNode.EMPTY_OP_ID  // CHECKME refactor?  
 			case ScribbleParser.QUALIFIEDNAME: return new IdNode(t);  
 					// Returns an IdNode whose token is "QUALIFIEDNAME", and whose children are the IdNode elements of the qualified name
 					// (Using IdNode as a "shell", but "token type" determined by t -- a bit misleading, IdNode here not an actual IDENTIFIER -- CHECKME: make a proper QUALIFIEDNAME?)
 					// It is a "temporary" QUALIFIEDNAME, "internally" parsed by ScribbleParser.parsePayloadElem/parseNonRoleArg
 					// This temporary IdNode is passed by $qualifiedname.tree to, e.g., parsePayloadElem(CommonTree ct)
 					// The parser method takes CommonTree, that can accept IdNode
+					// (E.g., good.misc.globals.gdo.Do06b)  
 
 			default:
 			{
-				/*//CHECKME: QUALIFIEDNAME (e.g., good.misc.globals.gdo.Do06b)  
-				//CHECKME: UNARYPAYLOADELEM?
-				String tname = t.getText();  // By convention of Scribble.g putting type constant name into each node first, e.g., module: ... -> ^(MODULE ...)
-				if (TOKEN_NAMES.contains(tname))
-				{
-					System.out.println("aaaa1: " + t);
-					if (!(tname.equals(OpNode.EMPTY_OP_ID)  // TODO: refactor empty op hack
-							|| tname.equals("QUALIFIEDNAME")))  
-									// Temporary QUALIFIEDNAME created, then internally parsed by ScribbleParser.parsePayloadElem/parseNonRoleArg
-					{
-						throw new RuntimeException("[TODO] Unhandled token type: " + tname);
-					}
-				}
-				return new IdNode(t);*/
-				throw new RuntimeException("[TODO] Unhandled token type: " + t);
+				throw new RuntimeException("[TODO] Unknown token type (cf. ScribbleParser): " + t);
 			}
 		}
 	}
