@@ -247,11 +247,11 @@ tokens
   	System.exit(1);
 	}
 
-	// qn = qualifiedname -- CHECKME: do these bypass ScribTreeAdaptor?
+	// qn is an IdNode "holder" for a qualifiedname 
+	// CHECKME: do the returns of these "bypass" ScribTreeAdaptor?  specifically AmbigNode
 	public static CommonTree parsePayloadElem(CommonTree qn) throws RecognitionException
 	{
-		//System.out.println("ggg1: " + qn + " ,, " + qn.token + " ,, " + qn.getChildren());		
-		if (qn.getChildCount() > 1)
+		if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
 		{
 			DataTypeNode dt = new DataTypeNode(new CommonToken(TYPENAME, "TYPENAME"));
 			((List<?>) qn.getChildren()).forEach(x -> 
@@ -272,16 +272,15 @@ tokens
 			UnaryPayloadElem e = new UnaryPayloadElem(
 					new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));
 			e.addChild(an);
-			//System.out.println("ggg2: " + e + " ,, " + e.token + " ,, " + e.getChildren());		
 			return e;
 		}
 	}
 
 	// Only for QualifiedName (DataTypeNode or AmbigNameNode), not messagesignature literal 
-	// qn = qualifiedname
+	// qn is an IdNode "holder" for a qualifiedname 
 	public static CommonTree parseNonRoleArg(CommonTree qn) throws RecognitionException
 	{
-		if (qn.getChildCount() > 1)
+		if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
 		{
 			DataTypeNode dt = new DataTypeNode(new CommonToken(TYPENAME, "TYPENAME"));
 			((List<?>) qn.getChildren()).forEach(x -> 

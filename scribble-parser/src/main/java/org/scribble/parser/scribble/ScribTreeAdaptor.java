@@ -145,23 +145,19 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.ROLEINSTANTIATION: return new RoleArg(t);
 			case ScribbleParser.ARGUMENTINSTANTIATIONLIST: return new NonRoleArgList(t);
 			case ScribbleParser.NONROLEARG: return new NonRoleArg(t);  // Only for messagesignature -- qualifiedname (datatypenode or ambignamenode) done "manually" in scribble.g (cf. UnaryPayloadElem)
-			case ScribbleParser.AMBIGUOUSNAME: 
-				return new AmbigNameNode(t);
+			case ScribbleParser.AMBIGUOUSNAME: return new AmbigNameNode(t);
 				
 			case ScribbleParser.IDENTIFIER: return new IdNode(t);
 			case ScribbleParser.EXTIDENTIFIER: return new IdNode(t);  // CHECKME: OK to 
 
 			// Special cases
 			case ScribbleParser.EMPTY_OPERATOR: return new IdNode(t);  //  OpNode.toName checks IdNode child text for OpNode.EMPTY_OP_ID
-
-			// N.B. Temporary QUALIFIEDNAME created, then internally parsed by ScribbleParser.parsePayloadElem/parseNonRoleArg
-			case ScribbleParser.QUALIFIEDNAME:  
-					return new IdNode(t);  
-							// Using IdNode as a "shell", but "token type" determined by t
-							// This "QUALIFIEDNAME" IdNode is passed by $qualifiedname.tree to, e.g., parsePayloadElem(CommonTree ct)
-							// N.B. the parser method takes CommonTree, that can accept IdNode
-					
-					//HERE CHECKME: parsePayloadElem ct class type and token type
+			case ScribbleParser.QUALIFIEDNAME: return new IdNode(t);  
+					// Returns an IdNode whose token is "QUALIFIEDNAME", and whose children are the IdNode elements of the qualified name
+					// (Using IdNode as a "shell", but "token type" determined by t -- a bit misleading, IdNode here not an actual IDENTIFIER -- CHECKME: make a proper QUALIFIEDNAME?)
+					// It is a "temporary" QUALIFIEDNAME, "internally" parsed by ScribbleParser.parsePayloadElem/parseNonRoleArg
+					// This temporary IdNode is passed by $qualifiedname.tree to, e.g., parsePayloadElem(CommonTree ct)
+					// The parser method takes CommonTree, that can accept IdNode
 
 			default:
 			{

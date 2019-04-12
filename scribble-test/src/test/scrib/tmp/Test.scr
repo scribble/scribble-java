@@ -88,6 +88,7 @@ type <java> "..." from "..." as T;
 global protocol Proto1(role A, role B)
 {
 	//1() from A to B;
+		//1(Test.T) from A to B;
 		1(T) from A to B;
 		//do Proto1(A, B);
 }
