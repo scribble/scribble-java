@@ -384,25 +384,9 @@ fragment UNDERSCORE:
 
 simplename: IDENTIFIER;
 
-//parametername:    simplename;
-
-//simplename;
-recursionvarname: IDENTIFIER ;
-//  IDENTIFIER<RecVarNode>^
-
-
+recursionvarname: simplename ;
 rolename:         simplename;
-simpleprotocolname:         simplename;
 simplemembername:           simplename;  // Only for member declarations
-
-//rolenamenode: rolename -> ^(ROLENAME rolename) ;
-//recursionvarnamenode: recursionvarname -> ^(RECURSIONVAR recursionvarname) ;
-//ambiguousnamenode: simplename -> ^(AMBIGUOUSNAME simplename);
-//opnamenode: IDENTIFIER -> ^(OPNAME IDENTIFIER) ;
-//typeparamnamenode: parametername -> ^(typeparamnamenode parametername) ; 
-//sigparamnamenode: parametername -> ^(sigparamnamenode parametername) ;
-
-//emptyopnamenode: ^(EMPTY_OPERATOR);  // simp name nodes use token text for id value  // FIXME: can't seem to use this "out of nowhere" in rewrite rules
 
 // "The TreeAdaptor is not called; instead for constructors are invoked directly."
 // "Note that parameters are not allowed on token references to the left of ->:"
@@ -429,7 +413,7 @@ simplepayloadtypename: IDENTIFIER -> ^(TYPENAME IDENTIFIER) ;
     // TODO factor out with typedecl?  NO: params distinct from "literals"
 simplemessagesignaturename: IDENTIFIER -> ^(SIGNAME IDENTIFIER) ;
     // TODO factor out with sigparamdecl?  NO: params distinct from "literals"
-
+simpleprotocolname: IDENTIFIER -> ^(GPROTOCOLNAME IDENTIFIER) ;
 
 qualifiedname:
   IDENTIFIER ('.' IDENTIFIER)*
@@ -467,7 +451,7 @@ gprotocolnamenode:
  * Section 3.2.3 Module Declarations
  */
 // "References to tokens with rewrite not found on left of -> are imaginary tokens."
-// Inlined moduledecl to make token info ref work
+// Inlined moduledecl to make token label work
 module:
   t=MODULE_KW modulename ';' importmodule* datatypedecl* protocoldecl* EOF
 ->
@@ -532,8 +516,8 @@ payloadelement:
   // Also subsumes simple names, could be a data *param*
   qualifiedname
 -> { parsePayloadElem($qualifiedname.tree) }  // Use ".text" instead of ".tree" for token String 
- | protocolname '@' rolename
--> ^(DELEGATION rolename protocolname)
+ | gprotocolnamenode '@' rolenamenode
+-> ^(DELEGATION rolenamenode gprotocolnamenode)
 ;
 
 
@@ -550,7 +534,8 @@ protocoldecl: globalprotocoldecl ;
 globalprotocoldecl:
   globalprotocoldeclmodifiers globalprotocolheader globalprotocoldefinition
 ->
-  ^(GLOBALPROTOCOLDECL globalprotocoldeclmodifiers globalprotocolheader globalprotocoldefinition)
+  ^(GLOBALPROTOCOLDECL globalprotocoldeclmodifiers globalprotocolheader
+  globalprotocoldefinition)
 ;
   
 // "aux" must come before "explicit"
@@ -562,13 +547,14 @@ globalprotocoldeclmodifiers:
 ;
 
 globalprotocolheader:
-  GLOBAL_KW PROTOCOL_KW gprotocolnamenode parameterdecllist roledecllist
+  t=GLOBAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist roledecllist
 ->
-  ^(GLOBALPROTOCOLHEADER gprotocolnamenode parameterdecllist roledecllist)
+  ^(GLOBALPROTOCOLHEADER[$t] simpleprotocolname parameterdecllist roledecllist)
 ;
 
 roledecllist: 
   t='(' roledecl (',' roledecl)* ')' -> ^(ROLEDECLLIST[$t] roledecl+) ;
+
 roledecl:     t=ROLE_KW rolenamenode -> ^(ROLEDECL[$t] rolenamenode) ;
 
 parameterdecllist:
@@ -672,7 +658,6 @@ globalrecursion:
 -> ^(GLOBALRECURSION[$t] recursionvarnamenode globalprotocolblock)
 ;
 
-
 globalcontinue:
    t=CONTINUE_KW recursionvarnamenode ';'
 -> ^(GLOBALCONTINUE recursionvarnamenode)
@@ -691,6 +676,7 @@ roleinstantiationlist:
    t='(' roleinstantiation (',' roleinstantiation)* ')'
 -> ^(ROLEINSTANTIATIONLIST[$t] roleinstantiation+)
 ;
+
 roleinstantiation: rolenamenode -> ^(ROLEINSTANTIATION rolenamenode) ;
     // CHECKME: inconsistent with arginstas/payloadeles
 
