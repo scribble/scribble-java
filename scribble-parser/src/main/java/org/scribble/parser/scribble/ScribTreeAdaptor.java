@@ -138,10 +138,10 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.GLOBALRECURSION: return new GRecursion(t);
 
 			// Special cases
-			case ScribbleParser.EMPTY_OPERATOR: return new OpNode(t);
+			case ScribbleParser.EMPTY_OPERATOR: return new OpNode(t);  // From Scribble.g, token (t) text is OpNode.EMPTY_OP_TOKEN_TEXT
 
 			case ScribbleParser.QUALIFIEDNAME: return new IdNode(t);  
-					// Returns an IdNode whose token is "QUALIFIEDNAME", and whose children are the IdNode elements of the qualified name
+					// Hacky?  Repurposing IdNode as a "temporary QUALIFIEDNAME" -- token is QUALIFIEDNAME (not ID), and children are the IdNode elements of the qualified name
 					// (Using IdNode as a "shell", but "token type" determined by t -- a bit misleading, IdNode here not an actual IDENTIFIER -- CHECKME: make a proper QUALIFIEDNAME?)
 					// It is a "temporary" QUALIFIEDNAME, "internally" parsed by ScribbleParser.parsePayloadElem/parseNonRoleArg
 					// This temporary IdNode is passed by $qualifiedname.tree to, e.g., parsePayloadElem(CommonTree ct)

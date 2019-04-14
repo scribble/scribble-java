@@ -80,6 +80,7 @@ module tmp.Test;
 // re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 		// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
 // refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
+	// -- otoh, ast errors give source feedback -- maybe implement both
 	//make a visitor factory
 
 // add exp conn checks to model validation
@@ -89,8 +90,9 @@ module tmp.Test;
 type <java> "..." from "..." as T;
 
 
-global protocol Proto1(role A, role B)
+explicit global protocol Proto1(role A, role B)
 {
+	() connect A to B;
 	rec X
 	{
 		() from A to B;

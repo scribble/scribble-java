@@ -24,6 +24,7 @@ import org.scribble.visit.AstVisitor;
 public abstract class NonProtocolDecl<K extends NonProtocolKind>
 		extends NameDeclNode<K> implements ModuleMember
 {
+	// NameDeclNode.NAMENODE_CHILD_INDEX = 0;
 	public static final int SCHEMA_NODE_CHILD_INDEX = 1;
 	public static final int EXTNAME_NODE_CHILD_INDEX = 2;
 	public static final int EXTSOURCE_NODE_CHILD_INDEX = 3;
