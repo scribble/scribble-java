@@ -28,6 +28,13 @@ public class OpNode extends SimpleNameNode<OpKind>
 		super(t);
 	}
 
+	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
+	public OpNode(int ttype, Token t)
+	{
+		this(t);
+		System.out.println("OOOOO: " + ttype + " ,, "+ t + " ,, " + t.getType() + " ,, " + toName());
+	}
+
 	// Tree#dupNode constructor
 	protected OpNode(OpNode node)
 	{

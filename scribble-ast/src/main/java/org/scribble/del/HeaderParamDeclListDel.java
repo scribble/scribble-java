@@ -36,7 +36,7 @@ public abstract class HeaderParamDeclListDel extends ScribDelBase
 		HeaderParamDeclList<?> pdl = (HeaderParamDeclList<?>) visited;
 		List<? extends HeaderParamDecl<?>> decls = pdl.getParamDeclChildren();
 			// grammar enforces RoleDeclList size > 0
-		if (decls.size() != decls.stream().map((d) -> d.getDeclName()).distinct()
+		if (decls.size() != decls.stream().map(d -> d.getDeclName()).distinct()
 				.count())
 		{
 			throw new ScribException(pdl.getSource(),

@@ -27,6 +27,13 @@ public class SigParamNode extends NonRoleParamNode<SigKind>
 		super(t, SigKind.KIND);
 	}
 
+	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
+	public SigParamNode(int ttype, Token t)
+	{
+		this(t);
+		System.out.println("SSSS: " + ttype + " ,, "+ t + " ,, " + t.getType() + " ,, " + toName());
+	}
+
 	// Tree#dupNode constructor
 	protected SigParamNode(SigParamNode node)//, String id)
 	{

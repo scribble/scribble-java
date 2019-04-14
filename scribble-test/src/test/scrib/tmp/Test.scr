@@ -85,14 +85,28 @@ module tmp.Test;
 
 type <java> "..." from "..." as T;
 
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1(T) from A to B;
+		continue X;
+	}
+}
+/*
 global protocol Proto1<sig M>(role A, role B)
 {
+	rec X {
 	//1() from A to B;
 		//1(Test.T) from A to B;
 		1(T) from A to B;
 		M from B to A;
 		//do Proto1(A, B);
+		continue X;
+		}
 }
+//*/
 
 
 /*

@@ -38,6 +38,13 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 		super(t);
 	}
 
+	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
+	public AmbigNameNode(int ttype, Token t)
+	{
+		this(t);
+		System.out.println("AAAAAA: " + ttype + " ,, "+ t + " ,, " + t.getType() + " ,, " + toName());
+	}
+
 	// Tree#dupNode constructor
 	protected AmbigNameNode(AmbigNameNode node)//, String id)
 	{
@@ -47,7 +54,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	@Override
 	public AmbigNameNode dupNode()
 	{
-		return new AmbigNameNode(this);//, getIdentifier());
+		return new AmbigNameNode(this);
 	}
 	
 	/*@Override

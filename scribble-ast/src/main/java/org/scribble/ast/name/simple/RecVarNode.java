@@ -25,6 +25,13 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 		super(t);
 	}
 
+	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
+	public RecVarNode(int ttype, Token t)
+	{
+		this(t);
+		System.out.println("VVVV: " + ttype + " ,, "+ t + " ,, " + t.getType());
+	}
+
 	// Tree#dupNode constructor
 	protected RecVarNode(RecVarNode node)
 	{
@@ -36,12 +43,6 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 	{
 		return new RecVarNode(this);
 	}
-
-	/*@Override
-	public RecVarNode clone()
-	{
-		return (RecVarNode) super.clone();
-	}*/
 
 	@Override
 	public RecVar toName()

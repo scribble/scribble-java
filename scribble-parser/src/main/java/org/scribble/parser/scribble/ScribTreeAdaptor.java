@@ -85,29 +85,37 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 		// Previously: String tname = t.getText(); -- by convention of Scribble.g, type constant name given as node text, e.g., module: ... -> ^(MODULE ...)
 		switch (t.getType())
 		{
+			case ScribbleParser.IDENTIFIER: return new IdNode(t);
+			case ScribbleParser.EXTIDENTIFIER: return new IdNode(t);  // CHECKME: OK?
+
+			/*case ScribbleParser.ROLENAME: return new RoleNode(t);
+			case ScribbleParser.TYPEPARAMNAME: return new TypeParamNode(t);
+			case ScribbleParser.SIGPARAMNAME: return new SigParamNode(t);
+			case ScribbleParser.AMBIGUOUSNAME: return new AmbigNameNode(t);*/
+
+			case ScribbleParser.OPNAME: return new OpNode(t);  // FIXME: empty special case
+
+			case ScribbleParser.TYPENAME: return new DataTypeNode(t);
+			case ScribbleParser.SIGNAME: return new MessageSigNameNode(t);
+			case ScribbleParser.MODULENAME: return new ModuleNameNode(t);
+			case ScribbleParser.GPROTOCOLNAME: return new GProtocolNameNode(t);
+
 			case ScribbleParser.MODULE: return new Module(t);
 			case ScribbleParser.MODULEDECL: return new ModuleDecl(t);
-			case ScribbleParser.MODULENAME: return new ModuleNameNode(t);
 			case ScribbleParser.IMPORTMODULE: return new ImportModule(t);
 			case ScribbleParser.PAYLOADTYPEDECL: return new DataTypeDecl(t);
 			case ScribbleParser.MESSAGESIGNATUREDECL: return new MessageSigNameDecl(t);
-			case ScribbleParser.TYPENAME: return new DataTypeNode(t);
-			case ScribbleParser.SIGNAME: return new MessageSigNameNode(t);
 			case ScribbleParser.GLOBALPROTOCOLDECL: return new GProtocolDecl(t);
 			case ScribbleParser.GLOBALPROTOCOLDECLMODS: return new ProtocolModList(t);
 			case ScribbleParser.AUX_KW: return new AuxMod(t);  // FIXME: KW being used directly
 			case ScribbleParser.EXPLICIT_KW: return new ExplicitMod(t);
 
 			case ScribbleParser.GLOBALPROTOCOLHEADER: return new GProtocolHeader(t);
-			case ScribbleParser.GPROTOCOLNAME: return new GProtocolNameNode(t);
 			case ScribbleParser.ROLEDECLLIST: return new RoleDeclList(t);
 			case ScribbleParser.ROLEDECL: return new RoleDecl(t);
-			case ScribbleParser.ROLENAME: return new RoleNode(t);
 			case ScribbleParser.PARAMETERDECLLIST: return new NonRoleParamDeclList(t);
 			case ScribbleParser.TYPEPARAMDECL: return new TypeParamDecl(t);
-			case ScribbleParser.TYPEPARAMNAME: return new TypeParamNode(t);
 			case ScribbleParser.SIGPARAMDECL: return new SigParamDecl(t);
-			case ScribbleParser.SIGPARAMNAME: return new SigParamNode(t);
 			case ScribbleParser.GLOBALPROTOCOLDEF: return new GProtocolDef(t);
 			case ScribbleParser.GLOBALPROTOCOLBLOCK: return new GProtocolBlock(t);
 			case ScribbleParser.GLOBALINTERACTIONSEQUENCE: return new GInteractionSeq(t);
@@ -122,17 +130,12 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.RECURSIONVAR: return new RecVarNode(t);
 
 			case ScribbleParser.MESSAGESIGNATURE: return new MessageSigNode(t);
-			case ScribbleParser.OPNAME: return new OpNode(t);
 			case ScribbleParser.PAYLOAD: return new PayloadElemList(t);  // N.B. UnaryPayloadElem parsed "manually" in Scribble.g
 				
 			case ScribbleParser.ROLEINSTANTIATIONLIST: return new RoleArgList(t);
 			case ScribbleParser.ROLEINSTANTIATION: return new RoleArg(t);
 			case ScribbleParser.ARGUMENTINSTANTIATIONLIST: return new NonRoleArgList(t);
 			case ScribbleParser.NONROLEARG: return new NonRoleArg(t);  // Only for messagesignature -- qualifiedname (datatypenode or ambignamenode) done "manually" in scribble.g (cf. UnaryPayloadElem)
-			case ScribbleParser.AMBIGUOUSNAME: return new AmbigNameNode(t);
-				
-			case ScribbleParser.IDENTIFIER: return new IdNode(t);
-			case ScribbleParser.EXTIDENTIFIER: return new IdNode(t);  // CHECKME: OK?
 
 			// Special cases
 			case ScribbleParser.EMPTY_OPERATOR: return new IdNode(t);  // OpNode.toName checks IdNode child text for OpNode.EMPTY_OP_ID  // CHECKME refactor?  

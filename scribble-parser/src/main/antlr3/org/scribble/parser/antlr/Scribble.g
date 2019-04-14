@@ -94,6 +94,7 @@ tokens
 
 	// "Node type" constants -- parsed "directly" by AntlrToScribParser
 	// TODO: split naming of type int constant from String label ?
+	// TODO: split imaginary node types
 
 	MODULE = 'MODULE';
 	MODULEDECL = 'MODULEDECL';
@@ -151,6 +152,9 @@ tokens
 	import org.scribble.ast.name.qualified.DataTypeNode;
 	import org.scribble.ast.name.simple.IdNode;
 	import org.scribble.ast.name.simple.AmbigNameNode;
+	import org.scribble.ast.name.simple.RecVarNode;
+	import org.scribble.ast.name.simple.*;
+	import org.scribble.ast.*;
 }
 
 @lexer::header
@@ -230,9 +234,11 @@ tokens
 			// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
 			String text = qn.getChild(0).getText();
 			IdNode id = new IdNode(new CommonToken(IDENTIFIER, text));
-			AmbigNameNode an = 
+			/*AmbigNameNode an = 
 					new AmbigNameNode(new CommonToken(AMBIGUOUSNAME, "AMBIGUOUSNAME"));
-			an.addChild(id);
+			an.addChild(id);*/
+			AmbigNameNode an = 
+					new AmbigNameNode(AMBIGUOUSNAME, new CommonToken(IDENTIFIER, text));
 			UnaryPayloadElem e = new UnaryPayloadElem(
 					new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));
 			e.addChild(an);
@@ -258,9 +264,11 @@ tokens
 		{
 			String text = qn.getChild(0).getText();
 			IdNode id = new IdNode(new CommonToken(IDENTIFIER, text));
-			AmbigNameNode an = 
+			/*AmbigNameNode an = 
 					new AmbigNameNode(new CommonToken(AMBIGUOUSNAME, "AMBIGUOUSNAME"));
-			an.addChild(id);
+			an.addChild(id);*/
+			AmbigNameNode an = 
+					new AmbigNameNode(AMBIGUOUSNAME, new CommonToken(IDENTIFIER, text));
 			NonRoleArg a = new NonRoleArg(new CommonToken(NONROLEARG, "NONROLEARG"));
 			a.addChild(an);
 			return a;
@@ -377,32 +385,47 @@ fragment UNDERSCORE:
 simplename: IDENTIFIER;
 
 parametername:    simplename;
-recursionvarname: simplename;
+
+//simplename;
+recursionvarname:
+	IDENTIFIER
+;
+//	IDENTIFIER<RecVarNode>^
+
+
 rolename:         simplename;
 scopename:        simplename;
-
 simpleprotocolname:         simplename;
 simplemembername:           simplename;  // Only for member declarations
 
-ambiguousname: simplename -> ^(AMBIGUOUSNAME simplename);
+//rolenamenode: rolename -> ^(ROLENAME rolename) ;
+//recursionvarnamenode: recursionvarname -> ^(RECURSIONVAR recursionvarname) ;
+//ambiguousnamenode: simplename -> ^(AMBIGUOUSNAME simplename);
+//opnamenode: IDENTIFIER -> ^(OPNAME IDENTIFIER) ;
+//typeparamname: parametername -> ^(TYPEPARAMNAME parametername) ; 
+//sigparamname: parametername -> ^(SIGPARAMNAME parametername) ;
 
+//emptyopnamenode: ^(OPNAME EMPTY_OPERATOR);  // FIXME: can't seem to use this "out of nowhere" in rewrite rules
+
+// "The TreeAdaptor is not called; instead for constructors are invoked directly."
+// "Note that parameters are not allowed on token references to the left of ->:"
+// "Use imaginary nodes as you normally would, but with the addition of the node type:"  // Pointless?  token itself unchanged and ttype int ends up unused
+rolenamenode: IDENTIFIER -> IDENTIFIER<RoleNode>[$IDENTIFIER] ;
+recursionvarnamenode: IDENTIFIER -> IDENTIFIER<RecVarNode>[$IDENTIFIER];
+ambiguousnamenode: IDENTIFIER -> IDENTIFIER<AmbigNameNode>[$IDENTIFIER];
+opnamenode: IDENTIFIER -> IDENTIFIER<OpNode>[$IDENTIFIER];
+//emptyopnamenode: IDENTIFIER<OpNode>[EMPTY_OPERATOR];  // empty "left" of rewrite not allowed
+typeparamname: IDENTIFIER -> IDENTIFIER<TypeParamNode>[$IDENTIFIER]; 
+sigparamname: IDENTIFIER -> IDENTIFIER<SigParamNode>[$IDENTIFIER];
+
+
+// Using qualified to rep simple
 simplemodulename: IDENTIFIER -> ^(MODULENAME IDENTIFIER) ;
-
-simplepayloadtypename: IDENTIFIER -> ^(TYPENAME IDENTIFIER) ; // TODO factor out with typedecl?  NO: params distinct from "literals"
+simplepayloadtypename: IDENTIFIER -> ^(TYPENAME IDENTIFIER) ; 
+		// TODO factor out with typedecl?  NO: params distinct from "literals"
 simplemessagesignaturename: IDENTIFIER -> ^(SIGNAME IDENTIFIER) ;
 		// TODO factor out with sigparamdecl?  NO: params distinct from "literals"
 
-rolenamenode: rolename -> ^(ROLENAME rolename) ;
-recursionvarnamenode: recursionvarname -> ^(RECURSIONVAR recursionvarname) ;
-
-typeparamname:
-	parametername
-->
-	^(TYPEPARAMNAME parametername) ; 
-sigparamname:
-	parametername
-->
-	^(SIGPARAMNAME parametername) ;
 
 
 /**
@@ -433,10 +456,17 @@ messagesignaturename:
 	^(SIGNAME IDENTIFIER+)
 ;
 
+gprotocolnamenode:
+		IDENTIFIER ('.' IDENTIFIER)*
+	->
+	^(GPROTOCOLNAME IDENTIFIER+)
+;
+
 
 /**
  * Section 3.2.2 Top-level Module Structure
  */
+// "References to tokens with rewrite not found on left of -> are imaginary tokens."
 module:
 	moduledecl importdecl* datatypedecl* protocoldecl* EOF
 ->
@@ -448,10 +478,17 @@ module:
  * Section 3.2.3 Module Declarations
  */
 moduledecl:
+	t=MODULE_KW modulename ';'
+->
+	^(MODULEDECL[$t] modulename)    // TODO: add token arg to other imag nodes 
+;
+/*
+moduledecl:
 	MODULE_KW modulename ';'
 ->
-	^(MODULEDECL modulename)
+	MODULE_KW<ModuleDecl>^ modulename  // FIXME CHECKME: why not working?
 ;
+*/
 
 
 /**
@@ -511,17 +548,17 @@ messagesignature:
 	^(MESSAGESIGNATURE ^(OPNAME EMPTY_OPERATOR) payload)
 |
 	//messageoperator '(' payload ')'  // Doesn't work (conflict with IDENTIFIER?)
-	IDENTIFIER '(' payload ')'
+	opnamenode '(' payload ')'
 ->
-	^(MESSAGESIGNATURE ^(OPNAME IDENTIFIER) payload)
+	^(MESSAGESIGNATURE opnamenode payload)
 |
 	'(' ')'
 ->
 	^(MESSAGESIGNATURE ^(OPNAME EMPTY_OPERATOR) ^(PAYLOAD))
 |
-	IDENTIFIER '(' ')'
+	opnamenode '(' ')'
 ->
-	^(MESSAGESIGNATURE ^(OPNAME IDENTIFIER) ^(PAYLOAD))
+	^(MESSAGESIGNATURE opnamenode ^(PAYLOAD))
 ;
 
 payload:
@@ -532,9 +569,7 @@ payload:
 
 // Payload type names need disambiguation pass (also do args)
 payloadelement:
-/*	ambiguousname  // Parser doesn't distinguish simple from qualified properly, even with backtrack
-|*/
-	qualifiedname  // This case subsumes simple names  // FIXME: make ambiguousqualifiedname (or ambiguousname should just be qualified)
+	qualifiedname  // This case subsumes simple names  // FIXME: make ambiguousqualifiedname (or ambiguousnamenode should just be qualified)
 ->
 	{ parsePayloadElem($qualifiedname.tree) }  // Use ".text" instead of ".tree" for token String 
 |
@@ -592,11 +627,6 @@ globalprotocolheader:
 ;
 //	GLOBAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist roledecllist
 
-gprotocolnamenode:
-		IDENTIFIER ('.' IDENTIFIER)*
-	->
-	^(GPROTOCOLNAME IDENTIFIER+)
-;
 /*	gprotocolname
 ->
 	^(GPROTOCOLNAME gprotocolname)*/
@@ -608,10 +638,11 @@ roledecllist:
 ;
 
 roledecl:
-	ROLE_KW rolename
+	ROLE_KW rolenamenode
 ->
-	^(ROLEDECL ^(ROLENAME rolename))
+	^(ROLEDECL rolenamenode)
 ;
+//	^(ROLEDECL ^(ROLENAME rolename))
 
 parameterdecllist:
 	'<' parameterdecl (',' parameterdecl)* '>'
@@ -706,13 +737,9 @@ globalmessagetransfer:
 message:
 	messagesignature
 |
-	ambiguousname  
+	ambiguousnamenode  
 ;	
-/*// FIXME TODO: qualified (messagesig) names
-|
-	messagesignaturename  // qualified messagesignaturename subsumes parametername case
-|
-	parametername*/
+// FIXME TODO: qualified (messagesig) names // although qualified messagesignaturename subsumes parametername case
 
 globalconnect:
 	//message CONNECT_KW rolename TO_KW rolename
@@ -725,18 +752,7 @@ globalconnect:
 ->
 	^(GLOBALCONNECT message rolenamenode rolenamenode)
 ;
-/*	'(' connectdecl (',' connectdecl)* ')'
-->
-	^(CONNECTDECLLIST connectdecl+)
-;* /
-	'(' connectdecl ')' 
-*/	
 
-/*connectdecl:
-	CONNECT_KW rolename '->>' rolename
-->
-	^(CONNECTDECL rolename rolename)
-;*/
 
 globaldisconnect:
 	DISCONNECT_KW rolenamenode AND_KW rolenamenode ';'
@@ -817,8 +833,6 @@ argumentinstantiation:
 	messagesignature
 ->
 	^(NONROLEARG messagesignature)
-/*|
-	ambiguousname  // As for payloadelement: parser doesn't distinguish simple from qualified properly, even with backtrack*/
 |
 	qualifiedname
 ->

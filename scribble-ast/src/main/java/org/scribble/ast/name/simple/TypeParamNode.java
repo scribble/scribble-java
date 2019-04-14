@@ -28,6 +28,13 @@ public class TypeParamNode extends NonRoleParamNode<DataTypeKind>
 		super(t, DataTypeKind.KIND);
 	}
 
+	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
+	public TypeParamNode(int ttype, Token t)
+	{
+		this(t);
+		System.out.println("TTTT: " + ttype + " ,, "+ t + " ,, " + t.getType() + " ,, " + toName());
+	}
+
 	// Tree#dupNode constructor
 	protected TypeParamNode(TypeParamNode node)//, String id)
 	{

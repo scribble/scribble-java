@@ -13,6 +13,10 @@
  */
 package org.scribble.ast.name.simple;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.NameNode;
 import org.scribble.core.type.kind.Kind;
@@ -33,8 +37,33 @@ public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 		super(node);
 	}
 	
+	@Override
+	protected String getLastElement()
+	{
+		return this.token.getText();
+	}
+	
+	@Override
 	public String getText()
 	{
 		return getLastElement();  // i.e., second child element, after node type
+	}
+	
+	@Override
+	protected List<String> getSimpleNameList()
+	{
+		return Stream.of(getText()).collect(Collectors.toList());
+	}
+	
+	@Override
+	public String[] getElements()
+	{
+		return getSimpleNameList().toArray(new String[0]);
+	}
+	
+	@Override
+	protected String[] getPrefixElements()
+	{
+		return new String[0];
 	}
 }

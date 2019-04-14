@@ -13,12 +13,14 @@
  */
 package org.scribble.del.name.simple;
 
+import org.antlr.runtime.CommonToken;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.ast.name.simple.TypeParamNode;
 import org.scribble.core.lang.context.ModuleContext;
@@ -57,8 +59,13 @@ public class AmbigNameNodeDel extends ScribDelBase
 			}
 			/*return disamb.job.config.af.QualifiedNameNode(ann.getSource(),
 					DataTypeKind.KIND, name.getElements());*/
-			DataTypeNode res = new DataTypeNode(ann.token);  // CHECKME: what should the Token be?
-			res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
+
+			//DataTypeNode res = new DataTypeNode(ann.token);  // CHECKME: what should the Token be?
+			DataTypeNode res = new DataTypeNode(new CommonToken(73, "TYPENAME"));  // FIXME: use af
+
+			//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
+			res.addChild(new IdNode(ann.token));
+
 			return res;
 		}
 		else if (mcontext.isMessageSigNameVisible(name.toMessageSigName()))
@@ -70,8 +77,13 @@ public class AmbigNameNodeDel extends ScribDelBase
 			}
 			/*return disamb.job.config.af.QualifiedNameNode(ann.getSource(),
 					SigKind.KIND, name.getElements());*/
-			MessageSigNameNode res = new MessageSigNameNode(ann.token);  // CHECME: what should the Token be?
-			res.addChildren(ann.getChildren());
+
+			//MessageSigNameNode res = new MessageSigNameNode(ann.token);  // CHECME: what should the Token be?
+			MessageSigNameNode res = new MessageSigNameNode(new CommonToken(67, "SIGNAME"));  // FIXME: use af
+
+			//res.addChildren(ann.getChildren());
+			res.addChild(new IdNode(ann.token));
+
 			return res;
 		}
 		else if (disamb.isBoundParameter(name))
@@ -82,13 +94,17 @@ public class AmbigNameNodeDel extends ScribDelBase
 			if (kind.equals(DataTypeKind.KIND))
 			{
 				TypeParamNode res = new TypeParamNode(ann.token);  // CHECKME: what should the Token be?
-				res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
+
+				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
+
 				return res;
 			}
 			else if (kind.equals(SigKind.KIND))
 			{
 				SigParamNode res = new SigParamNode(ann.token);  // CHECKME: what should the Token be?
-				res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
+
+				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
+
 				return res;
 			}
 		}
