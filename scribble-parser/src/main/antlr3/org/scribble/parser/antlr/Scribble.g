@@ -21,156 +21,120 @@ options
 {
 	language = Java;
 	output = AST;
-	//ASTLabelType = MyCommonTree;
 	ASTLabelType = ScribNodeBase;
-	//backtrack = true;  // backtracking disabled by default? Is it bad to require this option?
-	//memoize = true;
 }
 
 
-// CHECKME: match tokens to keywords?
+// CHECKME: match tokens to keywords?  // Use KW as token types? But many more types than keywords
 
 tokens
 {
 	/*
-	 * Parser input constants (lexer output; keywords, Section 2.4)
+	 * Parser "input" constants (lexer output; keywords, Section 2.4)
 	 */
 
 	MODULE_KW = 'module';
 	IMPORT_KW = 'import';
+	SIG_KW = 'sig';
 	TYPE_KW = 'type';
 	PROTOCOL_KW = 'protocol';
+	AS_KW = 'as';
+
 	GLOBAL_KW = 'global';
 	LOCAL_KW = 'local';
 	EXPLICIT_KW = 'explicit';
 	AUX_KW = 'aux';
-	ROLE_KW = 'role';
-	ACCEPT_KW = 'accept';
-	SELF_KW = 'self';
-	SIG_KW = 'sig';
-	//INSTANTIATES_KW = 'instantiates';
-	AS_KW = 'as';
 
-	CONNECT_KW = 'connect';
-	DISCONNECT_KW = 'disconnect';
-	WRAP_KW = 'wrap';
+	ROLE_KW = 'role';
+	SELF_KW = 'self';
+
 	FROM_KW = 'from';
 	TO_KW = 'to';
+	CONNECT_KW = 'connect';
+	WRAP_KW = 'wrap';
+
+	DISCONNECT_KW = 'disconnect';
+	AND_KW = 'and';
+
 	CHOICE_KW = 'choice';
 	AT_KW = 'at';
 	OR_KW = 'or';
+
 	REC_KW = 'rec';
 	CONTINUE_KW = 'continue';
-	//PAR_KW = 'par';
-	AND_KW = 'and';  // Needed for disconnect
-	/*INTERRUPTIBLE_KW = 'interruptible';
-	WITH_KW = 'with';
-	BY_KW = 'by';  /* from for interrupts is more expected, but from is
-	                 not good for multiple roles (generally, the comma
-	                 in interrupt message list and role list looks like
-	                 "and" rather than "or") * /
-	THROWS_KW = 'throws';
-	CATCHES_KW = 'catches';*/
 	DO_KW = 'do';
-	//SPAWN_KW = 'spawn';
 	
 
 	/*
-	 * Parser output "node types" (corresponding to the various syntactic
-	 * categories) i.e. the labels used to distinguish resulting AST nodes.
-	 * The value of these token variables doesn't matter, only the token
-	 * (i.e. variable) names themselves are used (for AST node root text
-	 * field)
+	 * Parser "output" node types (corresponding to the various syntactic
+	 * categories), i.e. the labels used to distinguish resulting AST nodes. The
+	 * specific value of these tokens doesn't matter (because not parsed
+	 * themselves).
 	 */
 	
-	// Purely util constants -- not parsed as node types -- N.B. but are still "tokens" (FIXME: match with keywords)
-
-	KIND_MESSAGESIGNATURE = 'KIND_MESSAGESIGNATURE';
-	KIND_PAYLOADTYPE = 'KIND_PAYLOADTYPE';
-	
-	
-	// "Node type" constants -- but not parsed "directly" by AntlrToScribParser
-
-	//EMPTY_ALIAS = 'EMTPY_ALIAS';
-	////EMPTY_PACKAGENAME = '__empty_packagebame';
+	// Special cases
 	EMPTY_OPERATOR = 'EMPTY_OPERATOR';
-
-	//EMPTY_PARAMETERDECLLIST = '__empty_parameterdecllist';
-	//EMPTY_ARGUMENTINSTANTIATIONLIST = '__empty_argumentinstantiationlist';
-	
-	//NAME = 'name';
-	AMBIGUOUSNAME = 'AMBIGUOUSNAME';
 	QUALIFIEDNAME = 'QUALIFIEDNAME';  
 			// N.B. an intermediate node type, not an actual ScribNode -- "re-parsed" internally by parsePayloadElem/NonRoleArg
 			// No relation to abstract AST class, QualifiedName
 
+
+	// Names
+	AMBIGUOUSNAME = 'AMBIGUOUSNAME';
 	MODULENAME = 'MODULENAME';
+	GPROTOCOLNAME = 'GPROTOCOLNAME';
+	OPNAME = 'OPNAME';
+	RECURSIONVAR = 'RECURSIONVAR';
+	ROLENAME = 'ROLENAME';
+	SIGNAME = 'SIGNAME';
+	SIGPARAMNAME = 'SIGPARAMNAME';  // N.B. distinct from SIGNAME
+	TYPENAME = 'TYPENAME';
+	TYPEPARAMNAME = 'TYPEPARAMNAME';  // N.B. distinct from TYPENAME
 
-	//PACKAGENAME = 'package-name';
-	//FULLMODULENAME = 'full-module-name';
-	//SIMPLEMEMBERNAME = 'simple-member-name';
-	//QUALIFIEDMEMBERNAME = 'qualified-member-name';
-
-	MESSAGESIGNATURE = 'MESSAGESIGNATURE';
-	DELEGATION = 'DELEGATION';
-	
 
 	// "Node type" constants -- parsed "directly" by AntlrToScribParser
-	// TODO: split naming of type int constant from String label
+	// TODO: split naming of type int constant from String label ?
 
-	PAYLOAD = 'PAYLOAD';
-	//PAYLOADELEMENT = 'payloadelement';
-
-	//MODULE = 'module';  // Probably a keyword clash
 	MODULE = 'MODULE';
-	//PACKAGEDECL = 'package-decl';
 	MODULEDECL = 'MODULEDECL';
-	//IMPORTDECL = 'import-decl';
-	//FROMIMPORTDECL = 'from-import-decl';
 	IMPORTMODULE = 'IMPORTMODULE';
-	IMPORTMEMBER = 'IMPORTMEMBER';
+
 	PAYLOADTYPEDECL = 'PAYLOADTYPEDECL';
 	MESSAGESIGNATUREDECL = 'MESSAGESIGNATUREDECL';
-	ROLEDECLLIST = 'ROLEDECLLIST';
-	ROLEDECL = 'ROLEDECL';
-	PARAMETERDECLLIST = 'PARAMETERDECLLIST';
-	//PARAMETERDECL = 'PARAMETERDECL';
-	TYPEPARAMDECL = 'TYPEPARAMDECL';
-	SIGPARAMDECL = 'SIGPARAMDECL';
-	ROLEINSTANTIATIONLIST = 'ROLEINSTANTIATIONLIST';
-	ROLEINSTANTIATION = 'ROLEINSTANTIATION';  // FIXME: not consistent with arginstas/payloadeles
-	ARGUMENTINSTANTIATIONLIST = 'ARGUMENTINSTANTIATIONLIST';  // FIXME: token name inconsistent with class name (NonRoleArgList)
-	//ARGUMENTINSTANTIATION = 'ARGUMENTINSTANTIATION';
-	//CONNECTDECL = 'connect-decl';
 
 	GLOBALPROTOCOLDECL = 'GLOBALPROTOCOLDECL';
 	GLOBALPROTOCOLDECLMODS = 'GLOBALPROTOCOLDECLMODS';
 	GLOBALPROTOCOLHEADER = 'GLOBALPROTOCOLHEADER';
+
+	ROLEDECLLIST = 'ROLEDECLLIST';
+	ROLEDECL = 'ROLEDECL';
+	PARAMETERDECLLIST = 'PARAMETERDECLLIST';
+	TYPEPARAMDECL = 'TYPEPARAMDECL';
+	SIGPARAMDECL = 'SIGPARAMDECL';
+	
 	GLOBALPROTOCOLDEF = 'GLOBALPROTOCOLDEF';
 	GLOBALPROTOCOLBLOCK = 'GLOBALPROTOCOLBLOCK';
 	GLOBALINTERACTIONSEQUENCE = 'GLOBALINTERACTIONSEQUENCE';
+
+	MESSAGESIGNATURE = 'MESSAGESIGNATURE';
+	PAYLOAD = 'PAYLOAD';
+	UNARYPAYLOADELEM = 'UNARYPAYLOADELEM';
+	DELEGATION = 'DELEGATION';
+
 	GLOBALMESSAGETRANSFER = 'GLOBALMESSAGETRANSFER';
 	GLOBALCONNECT = 'GLOBALCONNECT';
-	GLOBALDISCONNECT = 'GLOBALDISCONNECT';
 	GLOBALWRAP = 'GLOBALWRAP';
-	GLOBALCHOICE = 'GLOBALCHOICE';
-	GLOBALRECURSION = 'GLOBALRECURSION';
+	GLOBALDISCONNECT = 'GLOBALDISCONNECT';
 	GLOBALCONTINUE = 'GLOBALCONTINUE';
 	GLOBALDO = 'GLOBALDO';
-	
-	GPROTOCOLNAME = 'GPROTOCOLNAME';
-	ROLENAME = 'ROLENAME';
-	TYPEPARAMNAME = 'TYPEPARAMNAME';
-	SIGPARAMNAME = 'SIGPARAMNAME';
-	//ID = 'ID';
-	OPNAME = 'OPNAME';
-	RECURSIONVAR = 'RECURSIONVAR';
 
-	TYPENAME = 'TYPENAME';
-	SIGNAME = 'SIGNAME';
-
-	UNARYPAYLOADELEM = 'UNARYPAYLOADELEM';
+	ROLEINSTANTIATIONLIST = 'ROLEINSTANTIATIONLIST';
+	ROLEINSTANTIATION = 'ROLEINSTANTIATION';  // FIXME: not consistent with arginstas/payloadeles
+	ARGUMENTINSTANTIATIONLIST = 'ARGUMENTINSTANTIATIONLIST';  // FIXME: token name inconsistent with class name (NonRoleArgList)
 	NONROLEARG = 'NONROLEARG';
+
+	GLOBALCHOICE = 'GLOBALCHOICE';
+	GLOBALRECURSION = 'GLOBALRECURSION';
 }
 
 
@@ -366,12 +330,11 @@ LINE_COMMENT:
  */
 IDENTIFIER:
 	(LETTER | DIGIT | UNDERSCORE)*  
-			/* Underscore currently can cause ambiguities in the API generation naming scheme
-			 * But maybe only consecutive underscores are the problem
-			 * -- cannot completely disallow underscores as needed for projection naming scheme
+			/* Underscore currently can cause ambiguities in the API generation naming
+			 * scheme But maybe only consecutive underscores are the problem -- cannot
+			 * completely disallow underscores as needed for projection naming scheme
 			 * Or disallow underscores only for role/op/messagesig names
 			 */
-//	(LETTER | DIGIT)*
 ;
 
 fragment SYMBOL:
@@ -409,38 +372,42 @@ fragment UNDERSCORE:
  * Section 3.1 Primitive Names
  */
 
-simplename:
-	IDENTIFIER
-/*->
-	^(SIMPLENAME IDENTIFIER)*/
-;
 
-//annotationname:   simplename;
+
+simplename: IDENTIFIER;
+
 parametername:    simplename;
 recursionvarname: simplename;
 rolename:         simplename;
 scopename:        simplename;
 
-ambiguousname:
-	simplename
+simpleprotocolname:         simplename;
+simplemembername:           simplename;  // Only for member declarations
+
+ambiguousname: simplename -> ^(AMBIGUOUSNAME simplename);
+
+simplemodulename: IDENTIFIER -> ^(MODULENAME IDENTIFIER) ;
+
+simplepayloadtypename: IDENTIFIER -> ^(TYPENAME IDENTIFIER) ; // TODO factor out with typedecl?  NO: params distinct from "literals"
+simplemessagesignaturename: IDENTIFIER -> ^(SIGNAME IDENTIFIER) ;
+		// TODO factor out with sigparamdecl?  NO: params distinct from "literals"
+
+rolenamenode: rolename -> ^(ROLENAME rolename) ;
+recursionvarnamenode: recursionvarname -> ^(RECURSIONVAR recursionvarname) ;
+
+typeparamname:
+	parametername
 ->
-	^(AMBIGUOUSNAME simplename)
-;
+	^(TYPEPARAMNAME parametername) ; 
+sigparamname:
+	parametername
+->
+	^(SIGPARAMNAME parametername) ;
 
 
 /**
  * Section 3.2.1 Package, Module and Module Member Names
  */
-
-//simplemodulename:           simplename;
-//simplepayloadtypename:      simplename;
-//simplemessagesignaturename: simplename;
-simpleprotocolname:         simplename;
-simplemembername:           simplename;  // Only for member declarations
-
-// FIXME TODO: do for all other relevant names
-//gprotocolname: simplename;
-
 
 qualifiedname:
 	IDENTIFIER ('.' IDENTIFIER)*
@@ -449,7 +416,6 @@ qualifiedname:
 ;
 
 packagename:          qualifiedname;
-//modulename:           qualifiedname;
 membername:           qualifiedname;
 
 modulename:
@@ -457,12 +423,9 @@ modulename:
 ->
 	^(MODULENAME IDENTIFIER+)
 ;
-//	^(MODULENAME ^(ID IDENTIFIER)+)
-
 
 protocolname:         membername;
 payloadtypename:      membername;
-//messagesignaturename: membername;
 
 messagesignaturename:
 	IDENTIFIER ('.' IDENTIFIER)*
@@ -484,8 +447,6 @@ module:
 /**
  * Section 3.2.3 Module Declarations
  */
-//	MODULE_KW IDENTIFIER ('.' IDENTIFIER)* ';'
-//	^(MODULEDECL IDENTIFIER+)
 moduledecl:
 	MODULE_KW modulename ';'
 ->
@@ -498,8 +459,6 @@ moduledecl:
  */
 importdecl:
 	importmodule
-/*|
-	importmember*/
 ;
 
 importmodule:
@@ -511,22 +470,6 @@ importmodule:
 ->
 	^(IMPORTMODULE modulename simplemodulename)
 ;
-
-simplemodulename:
-	IDENTIFIER
-->
-	^(MODULENAME IDENTIFIER)
-;
-
-/*importmember:
-	FROM_KW modulename IMPORT_KW simplemembername ';'
-->
-	^(IMPORTMEMBER modulename simplemembername EMPTY_ALIAS)
-|
-	FROM_KW modulename IMPORT_KW simplemembername AS_KW simplemembername ';'
-->
-	^(IMPORTMEMBER modulename simplemembername simplemembername)
-;*/
 
 
 /**
@@ -546,12 +489,6 @@ payloadtypedecl:
 ;
 // alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
 
-simplepayloadtypename:
-	IDENTIFIER
-->
-	^(TYPENAME IDENTIFIER)  // TODO factor out with typedecl?  NO: params distinct from "literals"
-;
-
 messagesignaturedecl:
 	SIG_KW '<' IDENTIFIER '>' EXTIDENTIFIER FROM_KW EXTIDENTIFIER AS_KW simplemessagesignaturename ';'
 ->
@@ -559,11 +496,6 @@ messagesignaturedecl:
 ;
 // alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
 
-simplemessagesignaturename:
-	IDENTIFIER
-->
-	^(SIGNAME IDENTIFIER)  // TODO factor out with sigparamdecl?  NO: params distinct from "literals"
-;
 
 
 /**
@@ -695,17 +627,17 @@ parameterdecl:
 
 // cf. roledecl
 typedecl:
-	TYPE_KW parametername
+	TYPE_KW typeparamname
 ->
-	^(TYPEPARAMDECL ^(TYPEPARAMNAME parametername))
+	^(TYPEPARAMDECL typeparamname)
 ;
 // FIXME: should be a nonroleparamnode
 
 // cf. roledecl
 sigdecl:
-	SIG_KW parametername
+	SIG_KW sigparamname
 ->
-	^(SIGPARAMDECL ^(SIGPARAMNAME parametername))
+	^(SIGPARAMDECL sigparamname)
 ;
 
 
@@ -770,12 +702,6 @@ globalmessagetransfer:
 	^(GLOBALMESSAGETRANSFER message rolenamenode+)
 ;
 // TODO: multisend
-
-rolenamenode:
-	rolename
-->
-	^(ROLENAME rolename)
-;
 
 message:
 	messagesignature
@@ -845,11 +771,6 @@ globalrecursion:
 	^(GLOBALRECURSION recursionvarnamenode globalprotocolblock)
 ;
 
-recursionvarnamenode:
-	recursionvarname
-->
-	^(RECURSIONVAR recursionvarname)
-;
 
 globalcontinue:
 	CONTINUE_KW recursionvarnamenode ';'
