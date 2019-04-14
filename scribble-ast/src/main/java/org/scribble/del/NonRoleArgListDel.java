@@ -42,7 +42,8 @@ public class NonRoleArgListDel extends DoArgListDel
 	public NonRoleArgList leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
-		NonRoleArgList nral = (NonRoleArgList) super.leaveDisambiguation(child, disamb, visited);
+		NonRoleArgList nral = (NonRoleArgList) super.leaveDisambiguation(child,
+				disamb, visited);
 				// Checks matching arity
 
 		Do<?> parent = (Do<?>) child.getParent();
@@ -88,7 +89,7 @@ public class NonRoleArgListDel extends DoArgListDel
 	}
 
 	@Override
-	protected NonRoleParamDeclList getParamDeclList(ProtocolDecl<?> pd)
+	protected NonRoleParamDeclList getDeclList(ProtocolDecl<?> pd)
 	{
 		return pd.getHeaderChild().getParamDeclListChild();
 	}

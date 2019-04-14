@@ -73,7 +73,7 @@ tokens
 	 */
 	
 	// Special cases
-	EMPTY_OPERATOR = 'EMPTY_OPERATOR';
+	EMPTY_OPERATOR = '__EMPTY_OPERATOR';
 	QUALIFIEDNAME = 'QUALIFIEDNAME';  
 			// N.B. an intermediate node type, not an actual ScribNode -- "re-parsed" internally by parsePayloadElem/NonRoleArg
 			// No relation to abstract AST class, QualifiedName

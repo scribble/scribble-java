@@ -34,7 +34,7 @@ public class RoleArgListDel extends DoArgListDel
 	public RoleArgList leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
-		visited = super.leaveDisambiguation(child, disamb, visited);
+		visited = super.leaveDisambiguation(child, disamb, visited);  // Checks matching arity
 
 		// Duplicate check not needed for NonRoleArgList
 		RoleArgList ral = (RoleArgList) visited;
@@ -48,7 +48,7 @@ public class RoleArgListDel extends DoArgListDel
 	}
 
 	@Override
-	protected RoleDeclList getParamDeclList(ProtocolDecl<?> pd)
+	protected RoleDeclList getDeclList(ProtocolDecl<?> pd)
 	{
 		return pd.getHeaderChild().getRoleDeclListChild();
 	}

@@ -92,10 +92,10 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.TYPEPARAMNAME: return new TypeParamNode(t);
 			*/
 
-			case ScribbleParser.TYPENAME: return new DataTypeNode(t);
-			case ScribbleParser.SIGNAME: return new MessageSigNameNode(t);
-			case ScribbleParser.MODULENAME: return new ModuleNameNode(t);
 			case ScribbleParser.GPROTOCOLNAME: return new GProtocolNameNode(t);
+			case ScribbleParser.MODULENAME: return new ModuleNameNode(t);
+			case ScribbleParser.SIGNAME: return new MessageSigNameNode(t);
+			case ScribbleParser.TYPENAME: return new DataTypeNode(t);
 
 			case ScribbleParser.MODULE: return new Module(t);
 			case ScribbleParser.MODULEDECL: return new ModuleDecl(t);
@@ -138,9 +138,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.GLOBALRECURSION: return new GRecursion(t);
 
 			// Special cases
-			case ScribbleParser.EMPTY_OPERATOR: 
-				//return new IdNode(t);  // OpNode.toName checks IdNode child text for OpNode.EMPTY_OP_ID  // CHECKME refactor?  
-				return new OpNode(t);
+			case ScribbleParser.EMPTY_OPERATOR: return new OpNode(t);
 
 			case ScribbleParser.QUALIFIEDNAME: return new IdNode(t);  
 					// Returns an IdNode whose token is "QUALIFIEDNAME", and whose children are the IdNode elements of the qualified name

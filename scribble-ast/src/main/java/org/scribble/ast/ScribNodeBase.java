@@ -54,7 +54,8 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	{
 		super(node);
 		this.source = node.getSource();  // Keep ref to original as source (cf., this)
-			// A (partially) reconstructed/generated node may have no parent (i.e., null) if a AntlrSourceExcetpion occurs during construction?  e.g., bad.syntax.disamb.doarglist.DoArgList06
+			// A (partially) reconstructed/generated node may still have no parent (i.e., null) at the moment an error is raised during visit pass 
+			// Can always use AntlrSourceException to blame the "child" (the original node) during visit rather than "visited", E.g., bad.syntax.disamb.doarglist.DoArgList06
 	}
 
 	@Override

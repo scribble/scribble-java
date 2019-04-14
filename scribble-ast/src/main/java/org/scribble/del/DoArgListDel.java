@@ -44,9 +44,9 @@ public abstract class DoArgListDel extends ScribDelBase
 		DoArgList<?> dal = (DoArgList<?>) visited;
 		List<?> args = dal.getArgChildren();
 		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
-		if (args.size() != getParamDeclList(pd).getParamDeclChildren().size())
+		if (args.size() != getDeclList(pd).getParamDeclChildren().size())
 		{
-			throw new ScribException(visited.getSource(),
+			throw new ScribException(child.getSource(),
 					"Do arity mismatch for " + pd.getHeaderChild() + ": " + args);
 		}
 
@@ -79,6 +79,6 @@ public abstract class DoArgListDel extends ScribDelBase
 		return pd.get(0);
 	}
 	
-	protected abstract HeaderParamDeclList<?> getParamDeclList(
+	protected abstract HeaderParamDeclList<?> getDeclList(
 			ProtocolDecl<?> pd);
 }

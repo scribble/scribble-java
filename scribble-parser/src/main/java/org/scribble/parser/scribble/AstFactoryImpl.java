@@ -163,7 +163,7 @@ public class AstFactoryImpl implements AstFactory
 	public RecVarNode RecVarNode(String text)
 	{
 		int ttype = ScribbleParser.RECURSIONVAR;
-		CommonToken t = newToken(ScribbleParser.RECURSIONVAR, "RECURSIONVAR");
+		CommonToken t = newToken(ttype, "RECURSIONVAR");
 		RecVarNode n = new RecVarNode(ScribbleParser.RECURSIONVAR, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 		del(n, new RecVarNodeDel());
 		return n;
@@ -203,41 +203,41 @@ public class AstFactoryImpl implements AstFactory
 	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(
 			K kind, List<IdNode> elems)
 	{
-		QualifiedNameNode<? extends Kind> qnn = null;
+		QualifiedNameNode<? extends Kind> n = null;
 		if (kind.equals(SigKind.KIND))
 		{
 			CommonToken t = newToken(ScribbleParser.SIGNAME, "SIGNAME");
-			qnn = new MessageSigNameNode(t);
-			qnn = del(qnn, new MessageSigNameNodeDel());
+			n = new MessageSigNameNode(t);
+			del(n, new MessageSigNameNodeDel());
 		}
 		else if (kind.equals(DataTypeKind.KIND))
 		{
 			CommonToken t = newToken(ScribbleParser.TYPENAME, "TYPENAME");
-			qnn = new DataTypeNode(t);
-			qnn = del(qnn, new DataTypeNodeDel());
+			n = new DataTypeNode(t);
+			del(n, new DataTypeNodeDel());
 		}
-		if (qnn != null)
+		if (n != null)
 		{
-			qnn.addChildren(elems);
-			return castNameNode(kind, qnn);
+			n.addChildren(elems);
+			return castNameNode(kind, n);
 		}
 
 		if (kind.equals(ModuleKind.KIND))
 		{
 			CommonToken t = newToken(ScribbleParser.MODULENAME, "MODULENAME");
-			qnn = new ModuleNameNode(t);
+			n = new ModuleNameNode(t);
 		}
 		else if (kind.equals(Global.KIND))
 		{
 			CommonToken t = newToken(ScribbleParser.GPROTOCOLNAME, "GPROTOCOLNAME");
-			qnn = new GProtocolNameNode(t);
+			n = new GProtocolNameNode(t);
 		}
 		else
 		{
 			throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
-		qnn.addChildren(elems);
-		return castNameNode(kind, del(qnn, createDefaultDelegate()));
+		n.addChildren(elems);
+		return castNameNode(kind, del(n, createDefaultDelegate()));
 	}
 
 	protected static <T extends NameNode<K>, K extends Kind> T castNameNode(
@@ -269,21 +269,21 @@ public class AstFactoryImpl implements AstFactory
 	public MessageSigNode MessageSigNode(OpNode op, PayloadElemList pay)
 	{
 		CommonToken t = newToken(ScribbleParser.MESSAGESIGNATURE, "MESSAGESIGNATURE");  
-		MessageSigNode msn = new MessageSigNode(t);
-		msn.addChild(op);
-		msn.addChild(pay);
-		msn = del(msn, createDefaultDelegate());
-		return msn;
+		MessageSigNode n = new MessageSigNode(t);
+		n.addChild(op);
+		n.addChild(pay);
+		del(n, createDefaultDelegate());
+		return n;
 	}
 
 	@Override
 	public PayloadElemList PayloadElemList(List<PayloadElem<?>> elems)
 	{
 		CommonToken t = newToken(ScribbleParser.PAYLOAD, "PAYLOAD");  
-		PayloadElemList p = new PayloadElemList(t);
-		p.addChildren(elems);
-		p = del(p, createDefaultDelegate());
-		return p;
+		PayloadElemList n = new PayloadElemList(t);
+		n.addChildren(elems);
+		del(n, createDefaultDelegate());
+		return n;
 	}
 
 	// Not used by ScribbleParser -- parsed "directly" within Scribble.g
@@ -292,23 +292,23 @@ public class AstFactoryImpl implements AstFactory
 			PayloadElemNameNode<K> name)
 	{
 		CommonToken t = newToken(ScribbleParser.UNARYPAYLOADELEM, "UNARYPAYLOADELEM");  
-		UnaryPayloadElem<K> de = new UnaryPayloadElem<>(t);
+		UnaryPayloadElem<K> n = new UnaryPayloadElem<>(t);
 		// Cf. Scribble.g children order
-		de.addChild(name);
-		de = del(de, createDefaultDelegate());
-		return de;
+		n.addChild(name);
+		del(n, createDefaultDelegate());
+		return n;
 	}
 
 	@Override
 	public GDelegationElem GDelegationElem(GProtocolNameNode proto, RoleNode role)
 	{
 		CommonToken t = newToken(ScribbleParser.DELEGATION, "DELEGATION");  
-		GDelegationElem de = new GDelegationElem(t);
-		de.addChild(proto);
-		de.addChild(role);
-		//de = del(de, createDefaultDelegate());
-		de = del(de, new GDelegationElemDel());  // FIXME: GDelegationElemDel
-		return de;
+		GDelegationElem n = new GDelegationElem(t);
+		n.addChild(proto);
+		n.addChild(role);
+		//del(n, createDefaultDelegate());
+		del(n, new GDelegationElemDel());  // FIXME: GDelegationElemDel
+		return n;
 	}
 	
 	@Override
@@ -322,7 +322,7 @@ public class AstFactoryImpl implements AstFactory
 		n.addChildren(imports);
 		n.addChildren(data);
 		n.addChildren(protos);
-		n = del(n, new ModuleDel());
+		del(n, new ModuleDel());
 		return n;
 	}
 
@@ -332,7 +332,7 @@ public class AstFactoryImpl implements AstFactory
 		CommonToken t = newToken(ScribbleParser.MODULEDECL, "MODULEDECL");  
 		ModuleDecl n = new ModuleDecl(t);
 		n.addChild(fullmodname);
-		n = del(n, createDefaultDelegate());
+		del(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -341,14 +341,14 @@ public class AstFactoryImpl implements AstFactory
 			ModuleNameNode alias)
 	{
 		CommonToken t = newToken(ScribbleParser.IMPORTMODULE, "IMPORTMODULE");  
-		ImportModule im = new ImportModule(t);
-		im.addChild(modname);
+		ImportModule n = new ImportModule(t);
+		n.addChild(modname);
 		if (alias != null)
 		{
-			im.addChild(alias);
+			n.addChild(alias);
 		}
-		im = del(im, new ImportModuleDel());
-		return im;
+		del(n, new ImportModuleDel());
+		return n;
 	}
 
 	@Override
@@ -362,7 +362,7 @@ public class AstFactoryImpl implements AstFactory
 		n.addChild(extName);
 		n.addChild(extSource);
 		n.addChild(alias);
-		n = del(n, createDefaultDelegate());
+		del(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -377,7 +377,7 @@ public class AstFactoryImpl implements AstFactory
 		n.addChild(extName);
 		n.addChild(extSource);
 		n.addChild(alias);
-		n = del(n, createDefaultDelegate());
+		del(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -387,12 +387,12 @@ public class AstFactoryImpl implements AstFactory
 	{
 		CommonToken t = newToken(ScribbleParser.GLOBALPROTOCOLDECL,
 				"GLOBALPROTOCOLDECL");
-		GProtocolDecl gpd = new GProtocolDecl(t);
-		gpd.addChild(mods);
-		gpd.addChild(header);
-		gpd.addChild(def);
-		gpd = del(gpd, new GProtocolDeclDel());
-		return gpd;
+		GProtocolDecl n = new GProtocolDecl(t);
+		n.addChild(mods);
+		n.addChild(header);
+		n.addChild(def);
+		del(n, new GProtocolDeclDel());
+		return n;
 	}
 
 	@Override
@@ -405,7 +405,7 @@ public class AstFactoryImpl implements AstFactory
 		n.addChild(name);
 		n.addChild(ps);
 		n.addChild(rs);
-		n = del(n, createDefaultDelegate());
+		del(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -414,11 +414,11 @@ public class AstFactoryImpl implements AstFactory
 	{
 		CommonToken t = newToken(ScribbleParser.ROLEDECLLIST,
 				"ROLEDECLLIST");
-		RoleDeclList rdl = new RoleDeclList(t);
+		RoleDeclList n = new RoleDeclList(t);
 		// Cf. Scribble.g children order
-		rdl.addChildren(ds);
-		rdl = del(rdl, new RoleDeclListDel());
-		return rdl;
+		n.addChildren(ds);
+		del(n, new RoleDeclListDel());
+		return n;
 	}
 
 	@Override
@@ -428,7 +428,7 @@ public class AstFactoryImpl implements AstFactory
 				"ROLEDECL");
 		RoleDecl n = new RoleDecl(t);
 		n.addChild(r);
-		n = del(n, new RoleDeclDel());
+		del(n, new RoleDeclDel());
 		return n;
 	}
 
@@ -438,11 +438,11 @@ public class AstFactoryImpl implements AstFactory
 	{
 		CommonToken t = newToken(ScribbleParser.ROLEDECL,
 				"ROLEDECL");
-		NonRoleParamDeclList pdl = new NonRoleParamDeclList(t);
+		NonRoleParamDeclList n = new NonRoleParamDeclList(t);
 		// Cf. Scribble.g children order
-		pdl.addChildren(ds);
-		pdl = del(pdl, new NonRoleParamDeclListDel());
-		return pdl;
+		n.addChildren(ds);
+		del(n, new NonRoleParamDeclListDel());
+		return n;
 	}
 
 	@Deprecated
@@ -451,7 +451,7 @@ public class AstFactoryImpl implements AstFactory
 			K kind, NonRoleParamNode<K> namenode)
 	{
 		/*NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(source, kind, namenode);
-		pd = del(pd, new NonRoleParamDeclDel());
+		del(pd, new NonRoleParamDeclDel());
 		return pd;*/
 		throw new RuntimeException("Deprecated");
 	}
@@ -463,7 +463,7 @@ public class AstFactoryImpl implements AstFactory
 				"GLOBALPROTOCOLDEF");
 		GProtocolDef n = new GProtocolDef(t);
 		n.addChild(block);
-		n = del(n, new GProtocolDefDel());
+		del(n, new GProtocolDefDel());
 		return n;
 	}
 
@@ -474,7 +474,7 @@ public class AstFactoryImpl implements AstFactory
 				"GLOBALPROTOCOLBLOCK");
 		GProtocolBlock n = new GProtocolBlock(t);
 		n.addChild(seq);
-		n = del(n, new GProtocolBlockDel());
+		del(n, new GProtocolBlockDel());
 		return n;
 	}
 
@@ -485,7 +485,7 @@ public class AstFactoryImpl implements AstFactory
 				"GLOBALINTERACTIONSEQUENCE");
 		GInteractionSeq n = new GInteractionSeq(t);
 		n.addChildren(elems);
-		n = del(n, new GInteractionSeqDel());
+		del(n, new GInteractionSeqDel());
 		return n;
 	}
 
@@ -499,7 +499,7 @@ public class AstFactoryImpl implements AstFactory
 		n.addChild(msg);
 		n.addChild(src);
 		n.addChildren(dsts);
-		n = del(n, new GMessageTransferDel());
+		del(n, new GMessageTransferDel());
 		return n;
 	}
 
@@ -512,7 +512,7 @@ public class AstFactoryImpl implements AstFactory
 		n.addChild(msg);
 		n.addChild(src);
 		n.addChild(dst);
-		n = del(n, new GConnectDel());
+		del(n, new GConnectDel());
 		return n;
 	}
 
@@ -524,7 +524,7 @@ public class AstFactoryImpl implements AstFactory
 		GDisconnect n = new GDisconnect(t);
 		n.addChild(left);
 		n.addChild(right);
-		n = del(n, new GDisconnectDel());
+		del(n, new GDisconnectDel());
 		return n;
 	}
 
@@ -536,7 +536,7 @@ public class AstFactoryImpl implements AstFactory
 		GWrap n = new GWrap(t);
 		n.addChild(src);
 		n.addChild(dst);
-		n = del(n, new GWrapDel());
+		del(n, new GWrapDel());
 		return n;
 	}
 
@@ -548,7 +548,7 @@ public class AstFactoryImpl implements AstFactory
 		GChoice n = new GChoice(t);
 		n.addChild(subj);
 		n.addChildren(blocks);
-		n = del(n, new GChoiceDel());
+		del(n, new GChoiceDel());
 		return n;
 	}
 
@@ -561,7 +561,7 @@ public class AstFactoryImpl implements AstFactory
 		GRecursion n = new GRecursion(t);
 		n.addChild(rv);
 		n.addChild(block);
-		n = del(n, new GRecursionDel());
+		del(n, new GRecursionDel());
 		return n;
 	}
 
@@ -572,7 +572,7 @@ public class AstFactoryImpl implements AstFactory
 				"GLOBALCONTINUE");
 		GContinue n = new GContinue(t);
 		n.addChild(rv);
-		n = del(n, new GContinueDel());
+		del(n, new GContinueDel());
 		return n;
 	}
 
@@ -585,7 +585,7 @@ public class AstFactoryImpl implements AstFactory
 		n.addChild(proto);
 		n.addChild(rs);
 		n.addChild(as);
-		n = del(n, new GDoDel());
+		del(n, new GDoDel());
 		return n;
 	}
 
@@ -596,7 +596,7 @@ public class AstFactoryImpl implements AstFactory
 				"GLOBALDO");
 		RoleArgList n = new RoleArgList(t);
 		n.addChildren(rs);
-		n = del(n, new RoleArgListDel());
+		del(n, new RoleArgListDel());
 		return n;
 	}
 
@@ -607,7 +607,7 @@ public class AstFactoryImpl implements AstFactory
 				"GLOBALDO");
 		RoleArg n = new RoleArg(t);
 		n.addChild(r);
-		n = del(n, createDefaultDelegate());
+		del(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -618,7 +618,7 @@ public class AstFactoryImpl implements AstFactory
 				"ARGUMENTINSTANTIATIONLIST");
 		NonRoleArgList n = new NonRoleArgList(t);
 		n.addChildren(as);
-		n = del(n, new NonRoleArgListDel());
+		del(n, new NonRoleArgListDel());
 		return n;
 	}
 
@@ -629,7 +629,7 @@ public class AstFactoryImpl implements AstFactory
 				"ARGUMENTINSTANTIATIONLIST");
 		NonRoleArg n = new NonRoleArg(t);
 		n.addChild(arg);
-		n = del(n, createDefaultDelegate());
+		del(n, createDefaultDelegate());
 		return n;
 	}
 }

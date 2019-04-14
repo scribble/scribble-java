@@ -49,12 +49,13 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.PayloadTypeKind;
 
 
+// CHECKME: add Token params back (for better transformation, cf. ScribNodeBase.source), and use null for "fresh"?
 // AstFactory is for making "fresh" nodes ("fresh" Tokens) -- cf. reconstruct (for Token preservation)
 // Implementations located in scribble-parser, use ScribbleParser for Token construction
 // Currently, used only in relatively niche places (since ANTLR now constructs all parsed nodes "directly")
 public interface AstFactory
 {
-	IdNode IdNode(String id);
+	IdNode IdNode(String text);
 
 	// Deprecate?  Never need to make ambigname "manually" via af?  (only constructed by ScribbleParser)
 	AmbigNameNode AmbiguousNameNode(String text);
