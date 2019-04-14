@@ -20,19 +20,19 @@ import org.scribble.core.type.name.Op;
 
 public class OpNode extends SimpleNameNode<OpKind>
 {
-	public static final String EMPTY_OP_ID = "EMPTY_OPERATOR";
+	// Determine by token text -- cannot use token type int in core, value is a ScribbleParser constant
+	public static final String EMPTY_OP_TOKEN_TEXT = "EMPTY_OPERATOR";
 
-	// ScribTreeAdaptor#create constructor
 	public OpNode(Token t)
 	{
 		super(t);
 	}
 
-	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
+	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
 	public OpNode(int ttype, Token t)
 	{
 		this(t);
-		System.out.println("OOOOO: " + ttype + " ,, "+ t + " ,, " + t.getType() + " ,, " + toName());
 	}
 
 	// Tree#dupNode constructor
@@ -51,7 +51,7 @@ public class OpNode extends SimpleNameNode<OpKind>
 	public Op toName()
 	{
 		String id = getText();
-		if (id.equals(EMPTY_OP_ID))
+		if (id.equals(EMPTY_OP_TOKEN_TEXT))
 		{
 			return Op.EMPTY_OP;
 		}

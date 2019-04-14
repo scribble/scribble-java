@@ -21,11 +21,12 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.NameNode;
 import org.scribble.core.type.kind.Kind;
 
+// "ID" in Scribble.g, token type is ScribbleParser.ID, token text is the string value
 // Names that are necessarily "simple", i.e., never compound qualified (cf. qualified, that may be simple or compound)
-// "Identifier" in parser grammar
+// CHECKME: refactor NameNode elem structure down the QualifiedNameNode side? -- e.g., NameNode.getChildren is misleading for SimpleNameNode (should use getElements instead)
 public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 {
-	// ScribTreeAdaptor#create constructor
+	// token type is ScribbleParser.ID, token text is the string value
 	public SimpleNameNode(Token t)
 	{
 		super(t);
@@ -38,32 +39,14 @@ public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 	}
 	
 	@Override
-	protected String getLastElement()
+	public String getText()
 	{
 		return this.token.getText();
 	}
 	
 	@Override
-	public String getText()
-	{
-		return getLastElement();
-	}
-	
-	@Override
-	protected List<String> getSimpleNameList()
+	public List<String> getElements()
 	{
 		return Stream.of(getText()).collect(Collectors.toList());
-	}
-	
-	@Override
-	public String[] getElements()
-	{
-		return getSimpleNameList().toArray(new String[0]);
-	}
-	
-	@Override
-	protected String[] getPrefixElements()
-	{
-		return new String[0];
 	}
 }

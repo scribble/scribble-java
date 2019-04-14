@@ -74,6 +74,9 @@ module tmp.Test;
 // refactor scribble.g, simplify ast/del/etc class names and deprecated class code
 		// CHECKME: duplicte proto mods
 
+			//...HERE fix simp node constructors and af (no IdNode child) --- fix ambignodel to use af -- fix ambignodel to use af -- fix ambignodel to use af -- fix ambignodel to use af - separate af methods
+			//...remove Token args from af constructors -- refactor reconstructs to use af?  
+
 // re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 		// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
 // refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.

@@ -21,21 +21,15 @@ import org.scribble.core.type.name.MessageSigName;
 public class SigParamNode extends NonRoleParamNode<SigKind>
 		implements MessageNode
 {
-	// ScribTreeAdaptor#create constructor
-	public SigParamNode(Token t)
+	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
+	public SigParamNode(int ttype, Token t)
 	{
 		super(t, SigKind.KIND);
 	}
 
-	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
-	public SigParamNode(int ttype, Token t)
-	{
-		this(t);
-		System.out.println("SSSS: " + ttype + " ,, "+ t + " ,, " + t.getType() + " ,, " + toName());
-	}
-
 	// Tree#dupNode constructor
-	protected SigParamNode(SigParamNode node)//, String id)
+	protected SigParamNode(SigParamNode node)
 	{
 		super(node);
 	}
@@ -43,11 +37,7 @@ public class SigParamNode extends NonRoleParamNode<SigKind>
 	@Override
 	public SigParamNode dupNode()
 	{
-		if (getChildren().isEmpty())
-		{
-			throw new RuntimeException();
-		}
-		return new SigParamNode(this);//, getIdentifier());
+		return new SigParamNode(this);
 	}
 	
 	@Override
@@ -69,7 +59,7 @@ public class SigParamNode extends NonRoleParamNode<SigKind>
 	}
 
 	@Override
-	public boolean isTypeParamNode()
+	public boolean isSigParamNode()
 	{
 		return true;
 	}

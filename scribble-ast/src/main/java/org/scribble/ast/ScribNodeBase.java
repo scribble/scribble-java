@@ -38,10 +38,7 @@ import org.scribble.visit.AstVisitor;
  */
 public abstract class ScribNodeBase extends CommonTree implements ScribNode
 {
-	protected final CommonTree source;  // Consequently, core depends on Antlr
-			// Used to be for parsed entities; null if not parsed
-			// Now: for the original parsed entity for error blaming; should not be null unless a purely generated entity
-			// CHECKME: not needed any more?
+	private final CommonTree source;  // Track "original" source where applicable
 
 	protected ScribDel del;
 	
@@ -49,14 +46,15 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	public ScribNodeBase(Token payload)
 	{
 		super(payload);
-		this.source = this;  // TODO: redundant
+		this.source = this;  // Record parser construction as source
 	}
 
 	// Copy constructor
-	protected ScribNodeBase(CommonTree node)
+	protected ScribNodeBase(ScribNodeBase node)
 	{
 		super(node);
-		this.source = node;  // TODO: redundant
+		this.source = node.getSource();  // Keep ref to original as source (cf., this)
+			// A (partially) reconstructed/generated node may have no parent (i.e., null) if a AntlrSourceExcetpion occurs during construction?  e.g., bad.syntax.disamb.doarglist.DoArgList06
 	}
 
 	@Override
@@ -80,7 +78,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	// N.B. "overriding" base ANTLR behaviour of (sometimes?) returning null when
 	// getChildCount() == 0 by returning an empty list instead
 	@Override
-	public List<ScribNode> getChildren()
+	public List<? extends ScribNode> getChildren()
 	{
 		if (getChildCount() == 0)
 		{

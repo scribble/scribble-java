@@ -48,7 +48,7 @@ public class AntlrSourceException extends Exception
 		}
 		CommonTree moddecl = (CommonTree) root.getChild(0).getChild(0);
 		int count = moddecl.getChildCount();
-		return IntStream.range(0, count).mapToObj((i) -> moddecl.getChild(i).getText()).collect(Collectors.joining("."));
+		return IntStream.range(0, count).mapToObj(i -> moddecl.getChild(i).getText()).collect(Collectors.joining("."));
 	}
 
 	public AntlrSourceException(String arg0)

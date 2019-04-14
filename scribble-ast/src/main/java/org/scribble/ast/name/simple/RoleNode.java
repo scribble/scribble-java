@@ -15,28 +15,20 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.DoArgNode;
-import org.scribble.ast.ScribNode;
 import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.name.Role;
 
 public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode 
-		// RoleDecl, RoleInstantiation
 {
-	// ScribTreeAdaptor#create constructor
-	public RoleNode(Token t)
+	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
+	public RoleNode(int ttype, Token t)
 	{
 		super(t);
 	}
 
-	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
-	public RoleNode(int ttype, Token t)
-	{
-		this(t);
-		System.out.println("RRRRR: " + ttype + " ,, "+ t + " ,, " + t.getType() + " ,, " + toName());
-	}
-
 	// Tree#dupNode constructor
-	protected RoleNode(RoleNode node)//, String id)
+	protected RoleNode(RoleNode node)
 	{
 		super(node);
 	}
@@ -45,16 +37,6 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode
 	public RoleNode dupNode()
 	{
 		return new RoleNode(this);
-	}
-
-	// RoleNode is the only NameNode with a reconstruct (so not factored up)
-	protected RoleNode reconstruct(String id)
-	{
-		ScribNode n = getChild(0);  // TODO: factor out (ID -- currently ambignamenode?)
-		RoleNode r = dupNode();
-		r.addChild(n);
-		r.setDel(del());  // No copy  // Default delegate assigned in ModelFactoryImpl for all simple names
-		return r;
 	}
 	
 	@Override

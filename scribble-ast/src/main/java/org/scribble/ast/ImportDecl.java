@@ -14,12 +14,11 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.ImportKind;
 import org.scribble.core.type.name.Name;
 
 // CHECKME: factor out more stuff from ImportModule and ImportMember into here? e.g. alias/name, reconstruct (or else no need for common super?)
-public abstract class ImportDecl<K extends ImportKind> extends ScribNodeBase//, ModuleMember //implements NameDeclaration 
+public abstract class ImportDecl<K extends ImportKind> extends ScribNodeBase
 {
 	// ScribTreeAdaptor#create constructor
 	public ImportDecl(Token payload)
@@ -43,17 +42,4 @@ public abstract class ImportDecl<K extends ImportKind> extends ScribNodeBase//, 
 	public abstract boolean hasAlias();
 	
 	public abstract Name<K> getAlias();
-	//public abstract Name<K> getVisibleName();
-	
-	
-	
-	
-	
-	
-	
-	
-	protected ImportDecl(CommonTree source)
-	{
-		super(source);
-	}
 }

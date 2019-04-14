@@ -19,17 +19,11 @@ import org.scribble.core.type.name.RecVar;
 
 public class RecVarNode extends SimpleNameNode<RecVarKind>
 {
-	// ScribTreeAdaptor#create constructor
-	public RecVarNode(Token t)
-	{
-		super(t);
-	}
-
-	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
+	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
 	public RecVarNode(int ttype, Token t)
 	{
-		this(t);
-		System.out.println("VVVV: " + ttype + " ,, "+ t + " ,, " + t.getType());
+		super(t);
 	}
 
 	// Tree#dupNode constructor

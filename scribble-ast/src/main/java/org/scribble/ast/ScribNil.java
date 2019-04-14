@@ -21,18 +21,18 @@ public class ScribNil extends ScribNodeBase
 	// Used by (Scrib)TreeAdapator
 	public ScribNil()
 	{
-		super((Token) null);
+		super((Token) null);  // CHECKME: null Token
 	}
 
 	// Copy constructor
 	protected ScribNil(CommonTree node)
 	{
-		super(node);
+		super((ScribNodeBase) node);
 	}
 
 	@Override
 	public ScribNodeBase dupNode()
 	{
-		return new ScribNil(this);  // nil can have children(?), so may need to actually copy
+		return new ScribNil(this);  // CHECKME: nil can have children(?), so may need to actually copy
 	}
 }

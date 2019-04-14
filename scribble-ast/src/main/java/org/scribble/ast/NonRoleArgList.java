@@ -49,7 +49,7 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	
 	public List<NonRoleArgNode> getArgNodes()
 	{
-		return getArgChildren().stream().map(ai -> ai.getArgNodeChild())
+		return getArgChildren().stream().map(x -> x.getArgNodeChild())
 				.collect(Collectors.toList());
 	}
 	
@@ -62,7 +62,7 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	public List<Arg<? extends NonRoleArgKind>> getArguments()
 	{
 		return getArgChildren().stream()
-				.map(ai -> (Arg<?>) ai.getArgNodeChild().toArg())
+				.map(x -> (Arg<?>) x.getArgNodeChild().toArg())
 				.collect(Collectors.toList());
 	}
 	

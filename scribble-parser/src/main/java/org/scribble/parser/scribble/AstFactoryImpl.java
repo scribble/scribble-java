@@ -76,10 +76,7 @@ import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.kind.OpKind;
 import org.scribble.core.type.kind.PayloadTypeKind;
-import org.scribble.core.type.kind.RecVarKind;
-import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
@@ -126,18 +123,133 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	// FIXME: factor out -- change return to void (ScribNodeBase.del is a mutating setter)
+//	protected static <T extends ScribNodeBase> T del(T n, ScribDel del)
 	protected static <T extends ScribNodeBase> T del(T n, ScribDel del)
 	{
 		return ScribNodeBase.del(n, del);
 	}
 	
 	@Override
-	public IdNode IdNode(String id)
+	public IdNode IdNode(String text)
 	{
-		CommonToken t = new CommonToken(ScribbleParser.IDENTIFIER, id);  
+		CommonToken t = new CommonToken(ScribbleParser.IDENTIFIER, text);  
 				// IdNode is the only token with a "different" text to its node type -- info stored directly as its the text, no children
 		IdNode n = new IdNode(t);
 		return n;
+	}
+	
+	// Deprecate?  Never need to make ambigname "manually" via af?  (only constructed by ScribbleParser)
+	@Override
+	public AmbigNameNode AmbiguousNameNode(String text)
+	{
+		int ttype = ScribbleParser.AMBIGUOUSNAME;
+		CommonToken t = newToken(ttype, text);
+		AmbigNameNode n = new AmbigNameNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		n.del(new AmbigNameNodeDel());
+		return n;
+	}
+
+	@Override
+	public OpNode OpNode(String text)
+	{
+		int ttype = ScribbleParser.OPNAME;
+		CommonToken t = newToken(ttype, "OPNAME");
+		OpNode n = new OpNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		del(n, createDefaultDelegate());
+		return n;
+	}
+
+	@Override
+	public RecVarNode RecVarNode(String text)
+	{
+		int ttype = ScribbleParser.RECURSIONVAR;
+		CommonToken t = newToken(ScribbleParser.RECURSIONVAR, "RECURSIONVAR");
+		RecVarNode n = new RecVarNode(ScribbleParser.RECURSIONVAR, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		del(n, new RecVarNodeDel());
+		return n;
+	}
+
+	@Override
+	public RoleNode RoleNode(String text)
+	{
+		int ttype = ScribbleParser.ROLENAME;
+		CommonToken t = newToken(ttype, "ROLENAME");
+		RoleNode n = new RoleNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		del(n, new RoleNodeDel());
+		return n;
+	}
+
+	@Override
+	public SigParamNode SigParamNode(String text)
+	{
+		int ttype = ScribbleParser.SIGPARAMNAME;  // N.B. cf. ScribbleParser.SIGNAME
+		CommonToken t = newToken(ttype, text);
+		SigParamNode n = new SigParamNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		n.del(new NonRoleParamNodeDel());
+		return n;
+	}
+
+	@Override
+	public TypeParamNode TypeParamNode(String text)
+	{
+		int ttype = ScribbleParser.TYPEPARAMNAME;  // N.B. cf. ScribbleParser.TYPENAME
+		CommonToken t = newToken(ttype, text);
+		TypeParamNode n = new TypeParamNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		n.del(new NonRoleParamNodeDel());
+		return n;
+	}
+
+	@Override
+	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(
+			K kind, List<IdNode> elems)
+	{
+		QualifiedNameNode<? extends Kind> qnn = null;
+		if (kind.equals(SigKind.KIND))
+		{
+			CommonToken t = newToken(ScribbleParser.SIGNAME, "SIGNAME");
+			qnn = new MessageSigNameNode(t);
+			qnn = del(qnn, new MessageSigNameNodeDel());
+		}
+		else if (kind.equals(DataTypeKind.KIND))
+		{
+			CommonToken t = newToken(ScribbleParser.TYPENAME, "TYPENAME");
+			qnn = new DataTypeNode(t);
+			qnn = del(qnn, new DataTypeNodeDel());
+		}
+		if (qnn != null)
+		{
+			qnn.addChildren(elems);
+			return castNameNode(kind, qnn);
+		}
+
+		if (kind.equals(ModuleKind.KIND))
+		{
+			CommonToken t = newToken(ScribbleParser.MODULENAME, "MODULENAME");
+			qnn = new ModuleNameNode(t);
+		}
+		else if (kind.equals(Global.KIND))
+		{
+			CommonToken t = newToken(ScribbleParser.GPROTOCOLNAME, "GPROTOCOLNAME");
+			qnn = new GProtocolNameNode(t);
+		}
+		else
+		{
+			throw new RuntimeException("Shouldn't get in here: " + kind);
+		}
+		qnn.addChildren(elems);
+		return castNameNode(kind, del(qnn, createDefaultDelegate()));
+	}
+
+	protected static <T extends NameNode<K>, K extends Kind> T castNameNode(
+			K kind, NameNode<? extends Kind> n)
+	{
+		if (!n.toName().getKind().equals(kind))
+		{
+			throw new RuntimeException("Shouldn't get in here: " + kind + ", " + n);
+		}
+		@SuppressWarnings("unchecked")
+		T tmp = (T) n;
+		return tmp;
 	}
 	
 	// type comes from the int constants in ScribbleParser, which come from the tokens in Scribble.g
@@ -319,14 +431,6 @@ public class AstFactoryImpl implements AstFactory
 		n = del(n, new RoleDeclDel());
 		return n;
 	}
-
-	/*@Override
-	public ConnectDecl ConnectDecl(RoleNode src, RoleNode role)
-	{
-		ConnectDecl cd = new ConnectDecl(src, role);
-		cd = del(cd, new ConnectDeclDel());
-		return cd;
-	}*/
 
 	@Override
 	public NonRoleParamDeclList NonRoleParamDeclList(
@@ -527,131 +631,6 @@ public class AstFactoryImpl implements AstFactory
 		n.addChild(arg);
 		n = del(n, createDefaultDelegate());
 		return n;
-	}
-
-	// FIXME: split up this method
-	// CHECKME: organise explicit Scribble Tokens
-	@Override
-	public <K extends Kind> NameNode<K> SimpleNameNode(K kind,
-			IdNode id)
-	{
-		NameNode<? extends Kind> snn = null;
-
-		// "Custom" del's
-		if (kind.equals(RecVarKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.RECURSIONVAR, "RECURSIONVAR");
-			snn = new RecVarNode(t);
-			snn = del(snn, new RecVarNodeDel());
-		}
-		else if (kind.equals(RoleKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.ROLENAME, "ROLENAME");
-			snn = new RoleNode(t);
-			snn = del(snn, new RoleNodeDel());
-		}
-		if (snn != null)
-		{
-			snn.addChild(id);
-			return castNameNode(kind, snn);
-		}
-
-		// Default del's
-		if (kind.equals(OpKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.OPNAME, "OPNAME");
-			snn = new OpNode(t);
-			snn.addChild(id);
-		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get in here: " + kind);
-		}
-		return castNameNode(kind, del(snn, createDefaultDelegate()));
-	}
-
-	@Override
-	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(
-			K kind, List<IdNode> elems)
-	{
-		QualifiedNameNode<? extends Kind> qnn = null;
-		if (kind.equals(SigKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.SIGNAME, "SIGNAME");
-			qnn = new MessageSigNameNode(t);
-			qnn = del(qnn, new MessageSigNameNodeDel());
-		}
-		else if (kind.equals(DataTypeKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.TYPENAME, "TYPENAME");
-			qnn = new DataTypeNode(t);
-			qnn = del(qnn, new DataTypeNodeDel());
-		}
-		if (qnn != null)
-		{
-			qnn.addChildren(elems);
-			return castNameNode(kind, qnn);
-		}
-
-		if (kind.equals(ModuleKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.MODULENAME, "MODULENAME");
-			qnn = new ModuleNameNode(t);
-		}
-		else if (kind.equals(Global.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.GPROTOCOLNAME, "GPROTOCOLNAME");
-			qnn = new GProtocolNameNode(t);
-		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get in here: " + kind);
-		}
-		qnn.addChildren(elems);
-		return castNameNode(kind, del(qnn, createDefaultDelegate()));
-	}
-
-	protected static <T extends NameNode<K>, K extends Kind> T castNameNode(
-			K kind, NameNode<? extends Kind> n)
-	{
-		if (!n.toName().getKind().equals(kind))
-		{
-			throw new RuntimeException("Shouldn't get in here: " + kind + ", " + n);
-		}
-		@SuppressWarnings("unchecked")
-		T tmp = (T) n;
-		return tmp;
-	}
-
-	// Deprecate?  Never need to make ambigname "manually" via af?  (only constructed by ScribbleParser)
-	@Override
-	public AmbigNameNode AmbiguousNameNode(IdNode id)
-	{
-		CommonToken t = newToken(ScribbleParser.AMBIGUOUSNAME, "AMBIGUOUSNAME");
-		AmbigNameNode n = new AmbigNameNode(t);
-		n.addChild(id);
-		n = (AmbigNameNode) n.del(new AmbigNameNodeDel());
-		return n;
-	}
-
-	@SuppressWarnings("unchecked")  // FIXME
-	@Override
-	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(
-			K kind, String identifier)
-	{
-		NonRoleParamNode<K> pn;
-		if (kind.equals(SigKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.SIGPARAMNAME, "SIGPARAMNAME");  // N.B. cf. ScribbleParser.SIGNAME
-			pn = (NonRoleParamNode<K>) new SigParamNode(t);
-		}
-		else
-		{
-			CommonToken t = newToken(ScribbleParser.TYPEPARAMNAME, "TYPEPARAMNAME");  // N.B. cf. ScribbleParser.TYPENAME
-			pn = (NonRoleParamNode<K>) new TypeParamNode(t);
-		}
-		pn = del(pn, new NonRoleParamNodeDel());
-		return pn;
 	}
 }
 

@@ -14,6 +14,7 @@
 package org.scribble.ast.name.qualified;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.Kind;
@@ -37,13 +38,15 @@ public abstract class MemberNameNode<K extends Kind>
 
 	protected ModuleName getModuleNamePrefix()
 	{
-		String[] prefix = getPrefixElements();
-		ModuleName mn = new ModuleName(prefix[prefix.length - 1]);
-		if (prefix.length == 1)
+		List<String> prefix = getPrefixElements();
+		ModuleName mn = new ModuleName(prefix.get(prefix.size()-1));
+		if (prefix.size() == 1)
 		{
 			return mn;
 		}
 		return new ModuleName(
-				new PackageName(Arrays.copyOf(prefix, prefix.length - 1)), mn);
+				new PackageName(
+						Arrays.copyOf(prefix.toArray(new String[0]), prefix.size() - 1)),
+				mn);
 	}
 }

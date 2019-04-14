@@ -51,36 +51,36 @@ public class NonRoleArgListDel extends DoArgListDel
 		for (NonRoleParamDecl<?> param : pd.getHeaderChild().getParamDeclListChild()
 				.getParamDeclChildren())
 		{
-			NonRoleParamKind kind = param.kind;
+			NonRoleParamKind pkind = param.kind;
 			NonRoleArg arg = args.next();
 			NonRoleArgNode val = arg.getArgNodeChild();
 			if (val.isTypeParamNode() || val.isSigParamNode()) 
 			{
-				if (!((NonRoleParamNode<?>) val).kind.equals(kind))
+				if (!((NonRoleParamNode<?>) val).kind.equals(pkind))
 				{
 					throw new ScribException(arg.getSource(),
-							"Invalid arg " + arg + " for param kind: " + kind);
+							"Invalid arg " + arg + " for param kind: " + pkind);
 				}
 			}
-			else if (kind.equals(SigKind.KIND))
+			else if (pkind.equals(SigKind.KIND))
 			{
 				if (!val.isMessageSigNode() && !val.isMessageSigNameNode())
 				{
 					throw new ScribException(arg.getSource(),
-							"Invalid arg " + arg + " for param kind: " + kind);
+							"Invalid arg " + arg + " for param kind: " + pkind);
 				}
 			}
-			else if (kind.equals(DataTypeKind.KIND))
+			else if (pkind.equals(DataTypeKind.KIND))
 			{
 				if (!val.isDataTypeNameNode())
 				{
 					throw new ScribException(arg.getSource(),
-							"Invalid arg " + arg + " for param kind: " + kind);
+							"Invalid arg " + arg + " for param kind: " + pkind);
 				}
 			}
 			else
 			{
-				throw new RuntimeException("Shouldn't get in here: " + kind);
+				throw new RuntimeException("Shouldn't get in here: " + pkind);
 			}
 		}
 

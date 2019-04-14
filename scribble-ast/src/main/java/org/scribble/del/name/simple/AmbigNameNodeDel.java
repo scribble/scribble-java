@@ -13,7 +13,8 @@
  */
 package org.scribble.del.name.simple;
 
-import org.antlr.runtime.CommonToken;
+import java.util.stream.Collectors;
+
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNode;
@@ -61,7 +62,12 @@ public class AmbigNameNodeDel extends ScribDelBase
 					DataTypeKind.KIND, name.getElements());*/
 
 			//DataTypeNode res = new DataTypeNode(ann.token);  // CHECKME: what should the Token be?
-			DataTypeNode res = new DataTypeNode(new CommonToken(73, "TYPENAME"));  // FIXME: use af
+			//DataTypeNode res = new DataTypeNode(new CommonToken(73, "TYPENAME"));  // FIXME: use af
+			DataTypeNode res = (DataTypeNode) disamb.lang.config.af
+					.QualifiedNameNode(DataTypeKind.KIND,
+							ann.getElements().stream()
+									.map(x -> disamb.lang.config.af.IdNode(x))
+									.collect(Collectors.toList()));
 
 			//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
 			res.addChild(new IdNode(ann.token));
@@ -79,7 +85,12 @@ public class AmbigNameNodeDel extends ScribDelBase
 					SigKind.KIND, name.getElements());*/
 
 			//MessageSigNameNode res = new MessageSigNameNode(ann.token);  // CHECME: what should the Token be?
-			MessageSigNameNode res = new MessageSigNameNode(new CommonToken(67, "SIGNAME"));  // FIXME: use af
+			//MessageSigNameNode res = new MessageSigNameNode(new CommonToken(67, "SIGNAME"));  // FIXME: use af
+			MessageSigNameNode res = (MessageSigNameNode) disamb.lang.config.af
+					.QualifiedNameNode(SigKind.KIND,
+							ann.getElements().stream()
+									.map(x -> disamb.lang.config.af.IdNode(x))
+									.collect(Collectors.toList()));
 
 			//res.addChildren(ann.getChildren());
 			res.addChild(new IdNode(ann.token));
@@ -93,7 +104,9 @@ public class AmbigNameNodeDel extends ScribDelBase
 			NonRoleParamKind kind = disamb.getParameterKind(name);
 			if (kind.equals(DataTypeKind.KIND))
 			{
-				TypeParamNode res = new TypeParamNode(ann.token);  // CHECKME: what should the Token be?
+				//TypeParamNode res = new TypeParamNode(ann.token);  // CHECKME: what should the Token be?
+				//TypeParamNode res = new TypeParamNode(75, ann.token);  // CHECKME: what should the Token be?
+				TypeParamNode res = disamb.lang.config.af.TypeParamNode(ann.getText());  // CHECKME: what should the Token be?
 
 				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
 
@@ -101,7 +114,8 @@ public class AmbigNameNodeDel extends ScribDelBase
 			}
 			else if (kind.equals(SigKind.KIND))
 			{
-				SigParamNode res = new SigParamNode(ann.token);  // CHECKME: what should the Token be?
+				//SigParamNode res = new SigParamNode(69, ann.token);  // CHECKME: what should the Token be?
+				SigParamNode res = disamb.lang.config.af.SigParamNode(ann.getText());  // CHECKME: what should the Token be?
 
 				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
 

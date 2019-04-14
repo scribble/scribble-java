@@ -384,17 +384,14 @@ fragment UNDERSCORE:
 
 simplename: IDENTIFIER;
 
-parametername:    simplename;
+//parametername:    simplename;
 
 //simplename;
-recursionvarname:
-	IDENTIFIER
-;
+recursionvarname: IDENTIFIER ;
 //	IDENTIFIER<RecVarNode>^
 
 
 rolename:         simplename;
-scopename:        simplename;
 simpleprotocolname:         simplename;
 simplemembername:           simplename;  // Only for member declarations
 
@@ -419,6 +416,11 @@ typeparamname: IDENTIFIER -> IDENTIFIER<TypeParamNode>[$IDENTIFIER];
 sigparamname: IDENTIFIER -> IDENTIFIER<SigParamNode>[$IDENTIFIER];
 
 
+
+/**
+ * Section 3.2.1 Package, Module and Module Member Names
+ */
+
 // Using qualified to rep simple
 simplemodulename: IDENTIFIER -> ^(MODULENAME IDENTIFIER) ;
 simplepayloadtypename: IDENTIFIER -> ^(TYPENAME IDENTIFIER) ; 
@@ -426,11 +428,6 @@ simplepayloadtypename: IDENTIFIER -> ^(TYPENAME IDENTIFIER) ;
 simplemessagesignaturename: IDENTIFIER -> ^(SIGNAME IDENTIFIER) ;
 		// TODO factor out with sigparamdecl?  NO: params distinct from "literals"
 
-
-
-/**
- * Section 3.2.1 Package, Module and Module Member Names
- */
 
 qualifiedname:
 	IDENTIFIER ('.' IDENTIFIER)*
@@ -689,10 +686,6 @@ globalprotocolblock:
 	'{' globalinteractionsequence '}'
 ->
 	^(GLOBALPROTOCOLBLOCK globalinteractionsequence)
-/*|
-	'(' connectdecl ')' '{' globalinteractionsequence '}'
-->
-	^(GLOBALPROTOCOLBLOCK globalinteractionsequence connectdecl)*/
 ;
 
 globalinteractionsequence:

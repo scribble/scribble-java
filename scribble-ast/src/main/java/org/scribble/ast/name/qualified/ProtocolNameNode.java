@@ -27,7 +27,7 @@ public abstract class ProtocolNameNode<K extends ProtocolKind>
 	}
 
 	// Tree#dupNode constructor
-	protected ProtocolNameNode(ProtocolNameNode<K> node)//, String...elems)
+	protected ProtocolNameNode(ProtocolNameNode<K> node)
 	{
 		super(node);
 	}

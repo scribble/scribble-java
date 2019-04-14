@@ -30,7 +30,6 @@ import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
-import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
@@ -43,16 +42,30 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.ast.name.simple.SigParamNode;
+import org.scribble.ast.name.simple.TypeParamNode;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.PayloadTypeKind;
 
 
+// AstFactory is for making "fresh" nodes ("fresh" Tokens) -- cf. reconstruct (for Token preservation)
 // Implementations located in scribble-parser, use ScribbleParser for Token construction
 // Currently, used only in relatively niche places (since ANTLR now constructs all parsed nodes "directly")
 public interface AstFactory
 {
 	IdNode IdNode(String id);
+
+	// Deprecate?  Never need to make ambigname "manually" via af?  (only constructed by ScribbleParser)
+	AmbigNameNode AmbiguousNameNode(String text);
+	OpNode OpNode(String text);
+	RecVarNode RecVarNode(String text);
+	RoleNode RoleNode(String text);
+	SigParamNode SigParamNode(String text);
+	TypeParamNode TypeParamNode(String text);
+
+	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind,
+			List<IdNode> elems);
 	
 	Module Module(ModuleDecl mdecl,
 			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
@@ -130,16 +143,6 @@ public interface AstFactory
 	NonRoleArgList NonRoleArgList(List<NonRoleArg> args);
 
 	NonRoleArg NonRoleArg(NonRoleArgNode arg);
-
-	<K extends Kind> NameNode<K> SimpleNameNode(K kind, IdNode id);
-
-	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind,
-			List<IdNode> elems);
-
-	AmbigNameNode AmbiguousNameNode(IdNode id);
-
-	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(
-			K kind, String id);
 }
 
 

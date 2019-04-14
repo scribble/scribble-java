@@ -55,7 +55,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 
 	public List<RoleNode> getDestinationChildren()
 	{
-		List<ScribNode> cs = getChildren();
+		List<? extends ScribNode> cs = getChildren();
 		return cs.subList(DST_CHILDREN_START_INDEX, cs.size()).stream()
 				.map(x -> (RoleNode) x).collect(Collectors.toList());
 	}

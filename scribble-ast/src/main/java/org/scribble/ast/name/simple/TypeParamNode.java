@@ -19,24 +19,17 @@ import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.name.DataType;
 
 public class TypeParamNode extends NonRoleParamNode<DataTypeKind>
-		implements PayloadElemNameNode<DataTypeKind>
-		// As a payload, can only be a DataType (so hardcode)
+		implements PayloadElemNameNode<DataTypeKind>  // As a payload, can only be a DataType (so hardcode)
 {
-	// ScribTreeAdaptor#create constructor
-	public TypeParamNode(Token t)
+	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
+	public TypeParamNode(int ttype, Token t)
 	{
 		super(t, DataTypeKind.KIND);
 	}
 
-	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
-	public TypeParamNode(int ttype, Token t)
-	{
-		this(t);
-		System.out.println("TTTT: " + ttype + " ,, "+ t + " ,, " + t.getType() + " ,, " + toName());
-	}
-
 	// Tree#dupNode constructor
-	protected TypeParamNode(TypeParamNode node)//, String id)
+	protected TypeParamNode(TypeParamNode node)
 	{
 		super(node);
 	}
@@ -56,7 +49,7 @@ public class TypeParamNode extends NonRoleParamNode<DataTypeKind>
 	@Override
 	public DataType toArg()
 	{
-		// FIXME: as a payload kind, currently hardcorded to data type kinds (protocol payloads not supported)
+		// As a payload kind, currently hardcorded to data type kinds (protocol payloads not supported)
 		return toPayloadType();
 	}
 

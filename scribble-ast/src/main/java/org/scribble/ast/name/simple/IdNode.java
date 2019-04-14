@@ -41,7 +41,7 @@ public class IdNode extends SimpleNameNode<IdKind>
 	@Override
 	public String getText()
 	{
-		return getToken().getText();  // CHECKME: ambig nodes are now leafs
+		return getToken().getText();
 	}
 
 	@Override

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -38,7 +37,7 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 		super(node);
 	}
 	
-	protected List<ScribNode> getRawArgChildren()
+	protected List<? extends ScribNode> getRawArgChildren()
 	{
 		return getChildren();
 	}
@@ -57,8 +56,7 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 	{
 		DoArgList<T> argList = dupNode();
 		argList.addChildren(args);
-		ScribDel del = del();
-		argList.setDel(del);  // No copy
+		argList.setDel(del());  // No copy
 		return argList;
 	}
 	

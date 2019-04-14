@@ -25,28 +25,18 @@ import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Message;
 
 // Primitive payload type, MessageSigName or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
-// No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
-//public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode
-//public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode<PayloadTypeKind>
 public class AmbigNameNode extends SimpleNameNode<AmbigKind>
-		implements MessageNode, PayloadElemNameNode<DataTypeKind>
-		// Currently hardcoded to DataTypeKind for payload elems
+		implements MessageNode, PayloadElemNameNode<DataTypeKind>  // FIXME: currently hardcoded to DataTypeKind for payload elems ?
 {
-	// ScribTreeAdaptor#create constructor
-	public AmbigNameNode(Token t)
+	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
+	public AmbigNameNode(int ttype, Token t)
 	{
 		super(t);
 	}
 
-	// Scribble.g, IDENTIFIER<RecVarNode>[$IDENTIFIER]
-	public AmbigNameNode(int ttype, Token t)
-	{
-		this(t);
-		System.out.println("AAAAAA: " + ttype + " ,, "+ t + " ,, " + t.getType() + " ,, " + toName());
-	}
-
 	// Tree#dupNode constructor
-	protected AmbigNameNode(AmbigNameNode node)//, String id)
+	protected AmbigNameNode(AmbigNameNode node)
 	{
 		super(node);
 	}
@@ -56,13 +46,6 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	{
 		return new AmbigNameNode(this);
 	}
-	
-	/*@Override
-	public String getText()
-	{
-		//return getToken().getText();  // CHECKME: ambig nodes are now leafs -- NO: now separated from ID
-		return super.getText();
-	}*/
 	
 	@Override
 	public Arg<? extends NonRoleArgKind> toArg()
@@ -79,9 +62,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	}
 
 	@Override
-	//public PayloadType<AmbigKind> toPayloadType()
 	public PayloadElemType<DataTypeKind> toPayloadType()  // As a payload elem, currently hardcoded to expect only DataTypeKind (protocol payloads not supported)
-	//public PayloadType<PayloadTypeKind> toPayloadType()
 	{
 		throw new RuntimeException(
 				"Ambiguous name node not disambiguated: " + this);

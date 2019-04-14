@@ -28,15 +28,13 @@ import org.scribble.visit.SimpleAstVisitor;
  */
 public interface ScribNode extends Tree
 {
-	CommonTree getSource();  
-			// Previously: for parsed entities, null if not parsed
-			// Now: for the original parsed entity for error blaming; should not be null unless a "purely generated" entity
+	CommonTree getSource();   // TODO: deprecate
 
 	@Override
 	ScribNode getParent();
 
-	//@Override -- super return isn't generic
-	List<ScribNode> getChildren();
+	//@Override -- no: super return not generic
+	List<? extends ScribNode> getChildren();
 
 	ScribNode clone();
 

@@ -43,7 +43,9 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 	{
 		ModuleName modname = new ModuleName(getLastElement());
 		return isPrefixed()
-				? new ModuleName(new PackageName(getPrefixElements()), modname)
+				? new ModuleName(
+						new PackageName(getPrefixElements().toArray(new String[0])),
+						modname)
 				: modname;
 	}
 	
