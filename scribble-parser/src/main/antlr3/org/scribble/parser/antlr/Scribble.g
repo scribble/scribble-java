@@ -405,7 +405,7 @@ simplemembername:           simplename;  // Only for member declarations
 //typeparamname: parametername -> ^(TYPEPARAMNAME parametername) ; 
 //sigparamname: parametername -> ^(SIGPARAMNAME parametername) ;
 
-//emptyopnamenode: ^(OPNAME EMPTY_OPERATOR);  // FIXME: can't seem to use this "out of nowhere" in rewrite rules
+//emptyopnamenode: ^(EMPTY_OPERATOR);  // simp name nodes use token text for id value  // FIXME: can't seem to use this "out of nowhere" in rewrite rules
 
 // "The TreeAdaptor is not called; instead for constructors are invoked directly."
 // "Note that parameters are not allowed on token references to the left of ->:"
@@ -545,7 +545,7 @@ messagesignaturedecl:
 messagesignature:
 	'(' payload ')'
 ->
-	^(MESSAGESIGNATURE ^(OPNAME EMPTY_OPERATOR) payload)
+	^(MESSAGESIGNATURE ^(EMPTY_OPERATOR) payload)
 |
 	//messageoperator '(' payload ')'  // Doesn't work (conflict with IDENTIFIER?)
 	opnamenode '(' payload ')'
@@ -554,7 +554,7 @@ messagesignature:
 |
 	'(' ')'
 ->
-	^(MESSAGESIGNATURE ^(OPNAME EMPTY_OPERATOR) ^(PAYLOAD))
+	^(MESSAGESIGNATURE ^(EMPTY_OPERATOR) ^(PAYLOAD))
 |
 	opnamenode '(' ')'
 ->
@@ -745,7 +745,7 @@ globalconnect:
 	//message CONNECT_KW rolename TO_KW rolename
 	CONNECT_KW rolenamenode TO_KW rolenamenode ';'
 ->
-	^(GLOBALCONNECT ^(MESSAGESIGNATURE ^(OPNAME EMPTY_OPERATOR) ^(PAYLOAD)) rolenamenode rolenamenode)  // cf. messagesignature "()" case
+	^(GLOBALCONNECT ^(MESSAGESIGNATURE ^(EMPTY_OPERATOR) ^(PAYLOAD)) rolenamenode rolenamenode)  // cf. messagesignature "()" case
 			// CHECKME: require "()" as for message transfers?  i.e., simply delete this rule?
 |
 	message CONNECT_KW rolenamenode TO_KW rolenamenode ';'

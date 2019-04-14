@@ -32,7 +32,7 @@ public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 	}
 
 	// Tree#dupNode constructor
-	protected SimpleNameNode(SimpleNameNode<K> node)//, String id)
+	protected SimpleNameNode(SimpleNameNode<K> node)
 	{
 		super(node);
 	}
@@ -46,7 +46,7 @@ public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 	@Override
 	public String getText()
 	{
-		return getLastElement();  // i.e., second child element, after node type
+		return getLastElement();
 	}
 	
 	@Override

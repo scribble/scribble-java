@@ -90,7 +90,7 @@ global protocol Proto1(role A, role B)
 {
 	rec X
 	{
-		1(T) from A to B;
+		() from A to B;
 		continue X;
 	}
 }

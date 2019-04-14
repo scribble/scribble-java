@@ -92,8 +92,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.TYPEPARAMNAME: return new TypeParamNode(t);
 			case ScribbleParser.SIGPARAMNAME: return new SigParamNode(t);
 			case ScribbleParser.AMBIGUOUSNAME: return new AmbigNameNode(t);*/
-
-			case ScribbleParser.OPNAME: return new OpNode(t);  // FIXME: empty special case
+			//case ScribbleParser.OPNAME: return new OpNode(t);  // FIXME: empty special case
 
 			case ScribbleParser.TYPENAME: return new DataTypeNode(t);
 			case ScribbleParser.SIGNAME: return new MessageSigNameNode(t);
@@ -138,7 +137,10 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.NONROLEARG: return new NonRoleArg(t);  // Only for messagesignature -- qualifiedname (datatypenode or ambignamenode) done "manually" in scribble.g (cf. UnaryPayloadElem)
 
 			// Special cases
-			case ScribbleParser.EMPTY_OPERATOR: return new IdNode(t);  // OpNode.toName checks IdNode child text for OpNode.EMPTY_OP_ID  // CHECKME refactor?  
+			case ScribbleParser.EMPTY_OPERATOR: 
+				//return new IdNode(t);  // OpNode.toName checks IdNode child text for OpNode.EMPTY_OP_ID  // CHECKME refactor?  
+				return new OpNode(t);
+
 			case ScribbleParser.QUALIFIEDNAME: return new IdNode(t);  
 					// Returns an IdNode whose token is "QUALIFIEDNAME", and whose children are the IdNode elements of the qualified name
 					// (Using IdNode as a "shell", but "token type" determined by t -- a bit misleading, IdNode here not an actual IDENTIFIER -- CHECKME: make a proper QUALIFIEDNAME?)
