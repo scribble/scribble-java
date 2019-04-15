@@ -274,6 +274,16 @@ tokens
       return a;
     }
   }
+
+  public static CommonTree checkId(CommonTree id)
+  {
+  	if (id.getText().contains("__"))
+  	{
+			System.err.println("Double underscores are reserved: " + id);
+			System.exit(1);
+  	}
+  	return id;
+  }
 }
 
 @lexer::members
@@ -382,16 +392,19 @@ fragment UNDERSCORE:
 
 
 
-simplename: IDENTIFIER;
+/*simplename: id=IDENTIFIER
+->
+{ checkId($id.tree) }
+;
 
 recursionvarname: simplename ;
 rolename:         simplename;
-simplemembername:           simplename;  // Only for member declarations
+simplemembername:           simplename;  // Only for member declarations*/
 
-// "The TreeAdaptor is not called; instead for constructors are invoked directly."
+// "The TreeAdaptor is not called; instead [the] constructors are invoked directly."
 // "Note that parameters are not allowed on token references to the left of ->:"
 // "Use imaginary nodes as you normally would, but with the addition of the node type:"  // Pointless?  token itself unchanged and ttype int ends up unused
-rolenamenode: IDENTIFIER -> IDENTIFIER<RoleNode>[$IDENTIFIER] ;
+rolenamenode: IDENTIFIER -> IDENTIFIER<RoleNode>[$IDENTIFIER];
 recursionvarnamenode: IDENTIFIER -> IDENTIFIER<RecVarNode>[$IDENTIFIER];
 ambiguousnamenode: IDENTIFIER -> IDENTIFIER<AmbigNameNode>[$IDENTIFIER];
 opnamenode:

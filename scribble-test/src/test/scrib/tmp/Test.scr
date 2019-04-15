@@ -76,6 +76,7 @@ module tmp.Test;
 
 			//...HERE fix simp node constructors and af (no IdNode child) --- fix ambignodel to use af -- fix ambignodel to use af -- fix ambignodel to use af -- fix ambignodel to use af - separate af methods
 			//...remove Token args from af constructors -- refactor reconstructs to use af?  
+			//...disallow/check for reserved __
 
 // re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 		// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
@@ -92,7 +93,7 @@ type <java> "..." from "..." as T;
 
 explicit global protocol Proto1(role A, role B)
 {
-	() connect A to B;
+	() connect A__ to B;
 	rec X
 	{
 		() from A to B;
