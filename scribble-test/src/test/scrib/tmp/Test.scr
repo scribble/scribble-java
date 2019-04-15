@@ -100,9 +100,19 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
-global protocol Proto1<>(role A, role B)
+global protocol Proto1(role A, role B)
 {
-	(T) from A to B;
+	do Proto1Aux(A, B);
+}
+
+aux global protocol Proto1Aux(role A, role B)
+{
+	do Proto2(A, B);
+}
+
+aux global protocol Proto2(role A, role B)
+{
+	() from B to A;
 }
 
 

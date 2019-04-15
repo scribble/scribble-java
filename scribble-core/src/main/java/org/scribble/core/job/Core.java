@@ -158,7 +158,6 @@ public class Core
 		for (GProtocol inlined : this.context.getInlineds())
 		{
 			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
-			// TODO: refactor as Visitor
 			Set<Role> used = inlined.def
 					.gather(new RoleGatherer<Global, GSeq>()::visit)
 					.collect(Collectors.toSet());
