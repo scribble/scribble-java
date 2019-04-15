@@ -141,71 +141,32 @@ tokens
 {
   package org.scribble.parser.antlr;
   
+  import org.scribble.ast.NonRoleArg;
   import org.scribble.ast.ScribNodeBase;
   import org.scribble.ast.UnaryPayloadElem;
-  import org.scribble.ast.NonRoleArg;
-  import org.scribble.ast.name.qualified.DataTypeNode;
-  import org.scribble.ast.name.simple.IdNode;
   import org.scribble.ast.name.simple.AmbigNameNode;
+  import org.scribble.ast.name.simple.IdNode;
+  import org.scribble.ast.name.simple.OpNode;
   import org.scribble.ast.name.simple.RecVarNode;
-  import org.scribble.ast.name.simple.*;
-  import org.scribble.ast.*;
+  import org.scribble.ast.name.simple.RoleNode;
+  import org.scribble.ast.name.simple.SigParamNode;
+  import org.scribble.ast.name.simple.TypeParamNode;
+  import org.scribble.ast.name.qualified.DataTypeNode;
 }
+
 
 @lexer::header
 {
   package org.scribble.parser.antlr;
-  
-  //import org.scribble.main.RuntimeScribbleException;
 }
 
-/*// Was swallowing parser error messages
-@members {
-  //private org.scribble.logging.IssueLogger _logger=null;
-  private String _document=null;
-  private boolean _errorOccurred=false;
-  
-    /*public void setLogger(org.scribble.logging.IssueLogger logger) {
-      _logger = logger;
-    }* /
-    
-    public void setDocument(String doc) {
-      _document = doc;
-    }
-    
-    public void emitErrorMessage(String mesg) {
-      /*if (_logger == null) {
-        super.emitErrorMessage(mesg);
-      } else {
-        _logger.error(org.scribble.parser.antlr.ANTLRMessageUtil.getMessageText(mesg),
-              org.scribble.parser.antlr.ANTLRMessageUtil.getProperties(mesg, _document));
-      }* /
-      _errorOccurred = true;
-    }
-    
-    public boolean isErrorOccurred() {
-      return(_errorOccurred);
-    }
-}*/
 
 @parser::members
 {
-  /*@Override
-  public void reportError(RecognitionException e)
-  {
-    super.reportError(e);
-    //throw new RuntimeScribbleException(e.getMessage()); 
-    //System.exit(1);
-  }*/
-
   // Abort tool run on parsing errors (and display user-friendly message) -- obsoletes CommonErrorNode check?
   @Override    
   public void displayRecognitionError(String[] tokenNames, RecognitionException e)
   {
-    /*String hdr = getErrorHeader(e);
-    String msg = getErrorMessage(e, tokenNames);
-    //throw new RuntimeException(hdr + ":" + msg);
-    System.err.println(hdr + ":" + msg);*/
     super.displayRecognitionError(tokenNames, e);
     System.exit(1);
   }
@@ -449,22 +410,29 @@ importmodule:
 nonprotodecl:
 	datadecl | sigdecl ;
 
-	// Deprecate TYPE_KW ?
 datadecl:
-	t=(TYPE_KW | DATA_KW) '<' schema=ID '>' extName=EXTID FROM_KW
+	// Deprecate TYPE_KW ?
+	t=TYPE_KW '<' schema=ID '>' extName=EXTID FROM_KW
 	extSource=EXTID AS_KW alias=simpledataname ';'
 ->
+	// alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
+	^(DATADECL[$t] $alias $schema $extName $extSource)
+|
+	// CHECKME: duplicated above, because t=(TYPE_KW | DATA_KW) *sometimes* causes null token NPEs... 
+	t=DATA_KW '<' schema=ID '>' extName=EXTID FROM_KW
+	extSource=EXTID AS_KW alias=simpledataname ';'
+->
+	// alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
 	^(DATADECL[$t] $alias $schema $extName $extSource)
 ;
-	// alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
 
 sigdecl:
 	t=SIG_KW '<' schema=ID '>' extName=EXTID FROM_KW extSource=EXTID AS_KW
 	alias=simplesigname ';'
 ->
+	// alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
 	^(SIGDECL[$t] $alias $schema $extName $extSource)
 ;
-	// alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
 
 
 
@@ -575,11 +543,18 @@ gseq:
 ;
 
 ginteraction:
-	gconnect | gmsgtransfer | gwrap | gdisconnect | gcontinue | gdo | gchoice | grecursion ; 
-	// Simple session node: directed interaction
-	// Simple session node: basic interaction
-	// Simple session node (other)
-	// Compound session node
+// Simple session node: directed interaction
+  gconnect | gmsgtransfer
+
+// Simple session node: basic interaction
+| gwrap | gdisconnect 
+
+// Simple session node (other)
+| gcontinue | gdo 
+
+// Compound session node
+| gchoice | grecursion
+; 
 
 
 /**

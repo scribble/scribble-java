@@ -88,7 +88,7 @@ module tmp.Test;
 // use stypefactory in core -- also make a visitorfactory
 // refactor test to use main instead of cli
 
-type <java> "..." from "..." as T;
+data <java> "..." from "..." as T;
 
 
 explicit global protocol Proto1(role A__, role B)
