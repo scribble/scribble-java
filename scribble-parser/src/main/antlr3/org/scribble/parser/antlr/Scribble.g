@@ -363,7 +363,6 @@ sigdecl:
 ;
 
 
-
 /**
  * Section 3.5 Message Signatures
  */

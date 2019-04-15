@@ -35,7 +35,6 @@ import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
@@ -45,7 +44,6 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.ast.name.simple.TypeParamNode;
-import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.PayloadTypeKind;
 
@@ -59,16 +57,17 @@ public interface AstFactory
 	IdNode IdNode(String text);
 	ExtIdNode ExtIdNode(String text);
 
-	// Deprecate?  Never need to make ambigname "manually" via af?  (only constructed by ScribbleParser)
-	AmbigNameNode AmbiguousNameNode(String text);
+	AmbigNameNode AmbigNameNode(String text);	 // Deprecate?  Never need to make ambigname "manually" via af?  (constructed only by ScribbleParser)
 	OpNode OpNode(String text);
 	RecVarNode RecVarNode(String text);
 	RoleNode RoleNode(String text);
 	SigParamNode SigParamNode(String text);
 	TypeParamNode TypeParamNode(String text);
 
-	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind,
-			List<IdNode> elems);
+	DataTypeNode DataTypeNode(List<IdNode> elems);
+	GProtocolNameNode GProtocolNameNode(List<IdNode> elems);
+	ModuleNameNode ModuleNameNode(List<IdNode> elems);
+	MessageSigNameNode MessageSigNameNode(List<IdNode> elems);
 	
 	Module Module(ModuleDecl mdecl,
 			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,

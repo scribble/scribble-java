@@ -49,7 +49,7 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase
 	
 	public PayloadElemNameNode<K> getNameChild()
 	{
-		@SuppressWarnings("unchecked")
+		// FIXME
 		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) getChild(NAME_CHILD_INDEX);  
 				// CHECKME: probably need to record an explicit kind token, for "cast checking"
 				// Cannot use ScribNodeBase.visitChildWithCastCheck because this is not a ProtocolKindNode

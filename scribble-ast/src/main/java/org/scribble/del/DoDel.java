@@ -23,7 +23,9 @@ import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.ProtocolName;
+import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
 
@@ -67,15 +69,26 @@ public abstract class DoDel extends SimpleSessionNodeDel
 		ProtocolName<K> fullname = modc
 				.getVisibleProtocolDeclFullName(proto.toName());
 
-		// CHECKME: do full name expansion in disamb?  or leave to imed translation?
-		// FIXME: sort out full name expansion between here and GDoDel.translate
-		List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
-				.map(x -> disamb.lang.config.af.IdNode(x)).collect(Collectors.toList());
-		ProtocolNameNode<K> n = (ProtocolNameNode<K>) disamb.lang.config.af
-				.QualifiedNameNode(fullname.getKind(), elems);
+		// CHECKME: do full name expansion in disamb?  or leave to imed translation? -- FIXME: sort out full name expansion between here and GDoDel.translate
+		ProtocolNameNode<K> n = foo(disamb.lang, fullname);
 		
 		// Didn't keep original namenode del -- ?
 		return visited.reconstruct(visited.getRoleListChild(),
 				visited.getNonRoleListChild(), n);
+	}
+	
+	private <K extends ProtocolKind> ProtocolNameNode<K> foo(Lang lang,
+			ProtocolName<K> fullname)
+	{
+		if (fullname instanceof GProtocolName)
+		{
+			List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
+					.map(x -> lang.config.af.IdNode(x)).collect(Collectors.toList());
+			@SuppressWarnings("unchecked") // FIXME
+			ProtocolNameNode<K> cast = (ProtocolNameNode<K>) lang.config.af
+					.GProtocolNameNode(elems);
+			return cast;
+		}
+		throw new RuntimeException("[TODO] " + fullname.getKind() + ": " + fullname);
 	}
 }

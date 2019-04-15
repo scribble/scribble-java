@@ -75,7 +75,7 @@ public class GDelegationElemDel extends ScribDelBase
 		List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
 				.map(x -> disamb.lang.config.af.IdNode(x)).collect(Collectors.toList());
 		GProtocolNameNode pnn = (GProtocolNameNode) disamb.lang.config.af
-				.QualifiedNameNode(fullname.getKind(), elems);
+				.GProtocolNameNode(elems);
 				// Not keeping original namenode del
 		return de.reconstruct(pnn, r);
 	}

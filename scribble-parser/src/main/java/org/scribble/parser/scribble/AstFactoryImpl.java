@@ -59,13 +59,11 @@ import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
-import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
@@ -75,13 +73,8 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.ast.name.simple.TypeParamNode;
-import org.scribble.core.type.kind.DataTypeKind;
-import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.kind.Kind;
-import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.PayloadTypeKind;
-import org.scribble.core.type.kind.SigKind;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
@@ -191,7 +184,7 @@ public class AstFactoryImpl implements AstFactory
 	
 	// Deprecate?  Never need to make ambigname "manually" via af?  (only constructed by ScribbleParser)
 	@Override
-	public AmbigNameNode AmbiguousNameNode(String text)
+	public AmbigNameNode AmbigNameNode(String text)
 	{
 		int ttype = ScribbleParser.ID;
 		CommonToken t = newIdToken(text);
@@ -251,56 +244,43 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(
-			K kind, List<IdNode> elems)
+	public DataTypeNode DataTypeNode(List<IdNode> elems)
 	{
-		QualifiedNameNode<? extends Kind> n = null;
-		if (kind.equals(DataTypeKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.DATA_NAME);
-			n = new DataTypeNode(t);
-			del(n, new DataTypeNodeDel());
-		}
-		else if (kind.equals(SigKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.SIG_NAME);
-			n = new MessageSigNameNode(t);
-			del(n, new MessageSigNameNodeDel());
-		}
-		if (n != null)
-		{
-			n.addChildren(elems);
-			return castNameNode(kind, n);
-		}
-
-		if (kind.equals(ModuleKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.MODULE_NAME);
-			n = new ModuleNameNode(t);
-		}
-		else if (kind.equals(Global.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.GPROTO_NAME);
-			n = new GProtocolNameNode(t);
-		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get in here: " + kind);
-		}
+		CommonToken t = newToken(ScribbleParser.DATA_NAME);
+		DataTypeNode n = new DataTypeNode(t);
 		n.addChildren(elems);
-		return castNameNode(kind, del(n, createDefaultDelegate()));
+		del(n, new DataTypeNodeDel());
+		return n;
 	}
 
-	protected static <T extends NameNode<K>, K extends Kind> T castNameNode(
-			K kind, NameNode<? extends Kind> n)
+	@Override
+	public GProtocolNameNode GProtocolNameNode(List<IdNode> elems)
 	{
-		if (!n.toName().getKind().equals(kind))
-		{
-			throw new RuntimeException("Shouldn't get in here: " + kind + ", " + n);
-		}
-		@SuppressWarnings("unchecked")
-		T tmp = (T) n;
-		return tmp;
+		CommonToken t = newToken(ScribbleParser.GPROTO_NAME);
+		GProtocolNameNode n = new GProtocolNameNode(t);
+		n.addChildren(elems);
+		del(n, createDefaultDelegate());
+		return n;
+	}
+
+	@Override
+	public ModuleNameNode ModuleNameNode(List<IdNode> elems)
+	{
+		CommonToken t = newToken(ScribbleParser.MODULE_NAME);
+		ModuleNameNode n = new ModuleNameNode(t);
+		n.addChildren(elems);
+		del(n, createDefaultDelegate());
+		return n;
+	}
+
+	@Override
+	public MessageSigNameNode MessageSigNameNode(List<IdNode> elems)
+	{
+		CommonToken t = newToken(ScribbleParser.SIG_NAME);
+		MessageSigNameNode n = new MessageSigNameNode(t);
+		n.addChildren(elems);
+		del(n, new MessageSigNameNodeDel());
+		return n;
 	}
 
 	@Override

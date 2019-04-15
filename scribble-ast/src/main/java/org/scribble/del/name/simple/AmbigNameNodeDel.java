@@ -64,10 +64,9 @@ public class AmbigNameNodeDel extends ScribDelBase
 			//DataTypeNode res = new DataTypeNode(ann.token);  // CHECKME: what should the Token be?
 			//DataTypeNode res = new DataTypeNode(new CommonToken(73, "TYPENAME"));  // FIXME: use af
 			DataTypeNode res = (DataTypeNode) disamb.lang.config.af
-					.QualifiedNameNode(DataTypeKind.KIND,
-							ann.getElements().stream()
-									.map(x -> disamb.lang.config.af.IdNode(x))
-									.collect(Collectors.toList()));
+					.DataTypeNode(ann.getElements().stream()
+							.map(x -> disamb.lang.config.af.IdNode(x))
+							.collect(Collectors.toList()));
 
 			//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
 			res.addChild(new IdNode(ann.token));
@@ -87,10 +86,9 @@ public class AmbigNameNodeDel extends ScribDelBase
 			//MessageSigNameNode res = new MessageSigNameNode(ann.token);  // CHECME: what should the Token be?
 			//MessageSigNameNode res = new MessageSigNameNode(new CommonToken(67, "SIGNAME"));  // FIXME: use af
 			MessageSigNameNode res = (MessageSigNameNode) disamb.lang.config.af
-					.QualifiedNameNode(SigKind.KIND,
-							ann.getElements().stream()
-									.map(x -> disamb.lang.config.af.IdNode(x))
-									.collect(Collectors.toList()));
+					.MessageSigNameNode(ann.getElements().stream()
+							.map(x -> disamb.lang.config.af.IdNode(x))
+							.collect(Collectors.toList()));
 
 			//res.addChildren(ann.getChildren());
 			res.addChild(new IdNode(ann.token));
