@@ -16,7 +16,6 @@ package org.scribble.ast.global;
 import org.antlr.runtime.Token;
 import org.scribble.ast.DisconnectAction;
 import org.scribble.core.type.kind.Global;
-import org.scribble.util.Constants;
 
 public class GDisconnect extends DisconnectAction<Global>
 		implements GSimpleSessionNode
@@ -37,12 +36,5 @@ public class GDisconnect extends DisconnectAction<Global>
 	public GDisconnect dupNode()
 	{
 		return new GDisconnect(this);
-	}
-
-	@Override
-	public String toString()
-	{
-		return Constants.DISCONNECT_KW + " " + getLeftChild()
-				+ " " + Constants.TO_KW + " " + getRightChild() + ";";
 	}
 }

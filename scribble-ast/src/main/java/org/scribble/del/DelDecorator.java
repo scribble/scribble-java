@@ -126,6 +126,7 @@ public interface DelDecorator
 	
 	void AmbigNameNode(AmbigNameNode n);
 	void IdNode(IdNode n);
+	//void ExtIdNode(ExtIdNode n);
 
 	//<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier);
 	void SigParamNode(SigParamNode n);

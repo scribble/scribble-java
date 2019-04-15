@@ -145,7 +145,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	// type comes from the int constants in ScribbleParser, which come from the tokens in Scribble.g
-	// Pre: type is an "imaginary token" type from ScribbleParser -- (not IDENTIFIER)
+	// Pre: type is an "imaginary token" type from ScribbleParser -- (not ID)
 	protected CommonToken newToken(int type)
 	{
 		// As a default, token text is set to the textual name of the token type int field (also the Scribble.g default)
@@ -155,7 +155,7 @@ public class AstFactoryImpl implements AstFactory
 
 	protected CommonToken newIdToken(String text)
 	{
-		return new CommonToken(ScribbleParser.IDENTIFIER, text);
+		return new CommonToken(ScribbleParser.ID, text);
 	}
 
 	protected ScribDel createDefaultDelegate()
@@ -174,18 +174,27 @@ public class AstFactoryImpl implements AstFactory
 	public IdNode IdNode(String text)
 	{
 		CommonToken t = newIdToken(text);  
-				// IdNode is the only token with a "different" text to its node type -- info stored directly as its the text, no children
+				// (Ext)IdNode is the only token with a "different" text to its node type -- info stored directly as its the text, no children
 		IdNode n = new IdNode(t);
 		return n;
 	}
+
+	/*@Override
+	public ExtIdNode ExtIdNode(String text)
+	{
+		CommonToken t = newIdToken(text);  
+				// (Ext)IdNode is the only token with a "different" text to its node type -- info stored directly as its the text, no children
+		ExtIdNode n = new ExtIdNode(t);
+		return n;
+	}*/
 	
 	// Deprecate?  Never need to make ambigname "manually" via af?  (only constructed by ScribbleParser)
 	@Override
 	public AmbigNameNode AmbiguousNameNode(String text)
 	{
-		int ttype = ScribbleParser.IDENTIFIER;
+		int ttype = ScribbleParser.ID;
 		CommonToken t = newIdToken(text);
-		AmbigNameNode n = new AmbigNameNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		AmbigNameNode n = new AmbigNameNode(ttype, t);  // Cf. Scribble.g, ID<...Node>[$ID]
 		n.del(new AmbigNameNodeDel());
 		return n;
 	}
@@ -193,9 +202,9 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public OpNode OpNode(String text)
 	{
-		int ttype = ScribbleParser.IDENTIFIER;
+		int ttype = ScribbleParser.ID;
 		CommonToken t = newIdToken(text);
-		OpNode n = new OpNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		OpNode n = new OpNode(ttype, t);  // Cf. Scribble.g, ID<...Node>[$ID]
 		del(n, createDefaultDelegate());
 		return n;
 	}
@@ -203,9 +212,9 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public RecVarNode RecVarNode(String text)
 	{
-		int ttype = ScribbleParser.IDENTIFIER;
+		int ttype = ScribbleParser.ID;
 		CommonToken t = newIdToken(text);
-		RecVarNode n = new RecVarNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		RecVarNode n = new RecVarNode(ttype, t);  // Cf. Scribble.g, ID<...Node>[$ID]
 		del(n, new RecVarNodeDel());
 		return n;
 	}
@@ -213,9 +222,9 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public RoleNode RoleNode(String text)
 	{
-		int ttype = ScribbleParser.IDENTIFIER;
+		int ttype = ScribbleParser.ID;
 		CommonToken t = newIdToken(text);
-		RoleNode n = new RoleNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		RoleNode n = new RoleNode(ttype, t);  // Cf. Scribble.g, ID<...Node>[$ID]
 		del(n, new RoleNodeDel());
 		return n;
 	}
@@ -223,9 +232,9 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public SigParamNode SigParamNode(String text)
 	{
-		int ttype = ScribbleParser.IDENTIFIER;  // N.B. cf. ScribbleParser.SIGNAME
+		int ttype = ScribbleParser.ID;  // N.B. cf. ScribbleParser.SIGNAME
 		CommonToken t = newIdToken(text);
-		SigParamNode n = new SigParamNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		SigParamNode n = new SigParamNode(ttype, t);  // Cf. Scribble.g, ID<...Node>[$ID]
 		n.del(new NonRoleParamNodeDel());
 		return n;
 	}
@@ -233,9 +242,9 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public TypeParamNode TypeParamNode(String text)
 	{
-		int ttype = ScribbleParser.IDENTIFIER;  // N.B. cf. ScribbleParser.TYPENAME
+		int ttype = ScribbleParser.ID;  // N.B. cf. ScribbleParser.TYPENAME
 		CommonToken t = newIdToken(text);
-		TypeParamNode n = new TypeParamNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
+		TypeParamNode n = new TypeParamNode(ttype, t);  // Cf. Scribble.g, ID<...Node>[$ID]
 		n.del(new NonRoleParamNodeDel());
 		return n;
 	}
@@ -245,17 +254,17 @@ public class AstFactoryImpl implements AstFactory
 			K kind, List<IdNode> elems)
 	{
 		QualifiedNameNode<? extends Kind> n = null;
-		if (kind.equals(SigKind.KIND))
+		if (kind.equals(DataTypeKind.KIND))
+		{
+			CommonToken t = newToken(ScribbleParser.DATA_NAME);
+			n = new DataTypeNode(t);
+			del(n, new DataTypeNodeDel());
+		}
+		else if (kind.equals(SigKind.KIND))
 		{
 			CommonToken t = newToken(ScribbleParser.SIG_NAME);
 			n = new MessageSigNameNode(t);
 			del(n, new MessageSigNameNodeDel());
-		}
-		else if (kind.equals(DataTypeKind.KIND))
-		{
-			CommonToken t = newToken(ScribbleParser.TYPE_NAME);
-			n = new DataTypeNode(t);
-			del(n, new DataTypeNodeDel());
 		}
 		if (n != null)
 		{
@@ -500,7 +509,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GInteractionSeq GInteractionSeq(List<GSessionNode> elems)
 	{
-		CommonToken t = newToken(ScribbleParser.GACTIONSEQ);
+		CommonToken t = newToken(ScribbleParser.GINTERSEQ);
 		GInteractionSeq n = new GInteractionSeq(t);
 		n.addChildren(elems);
 		del(n, new GInteractionSeqDel());

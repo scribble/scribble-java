@@ -14,12 +14,20 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.ConnectAction;
+import org.scribble.ast.BasicInteraction;
+import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
 import org.scribble.util.Constants;
+import org.scribble.util.ScribException;
+import org.scribble.visit.AstVisitor;
 
-public class GWrap extends ConnectAction<Global> implements GSimpleSessionNode
+// TODO: factor out base Wrap (cf. Disconnect)
+public class GWrap extends BasicInteraction<Global>
+		implements GSimpleSessionNode
 {
+	public static final int CLIENT_CHILD_INDEX = 0;
+	public static final int SERVER_CHILD_INDEX = 1;
+
 	// ScribTreeAdaptor#create constructor
 	public GWrap(Token t)
 	{
@@ -32,16 +40,43 @@ public class GWrap extends ConnectAction<Global> implements GSimpleSessionNode
 		super(node);
 	}
 	
+	public RoleNode getClientChild()
+	{
+		return (RoleNode) getChild(CLIENT_CHILD_INDEX);
+	}
+
+	public RoleNode getServerChild()
+	{
+		return (RoleNode) getChild(SERVER_CHILD_INDEX);
+	}
+	
 	@Override
 	public GWrap dupNode()
 	{
 		return new GWrap(this);
 	}
 
+	public GWrap reconstruct(RoleNode client, RoleNode server)
+	{
+		GWrap n = dupNode();
+		n.addChild(client);
+		n.addChild(server);
+		n.setDel(del());  // No copy
+		return n;
+	}
+
+	@Override
+	public GWrap visitChildren(AstVisitor nv) throws ScribException
+	{
+		RoleNode src = (RoleNode) visitChild(getClientChild(), nv);
+		RoleNode dest = (RoleNode) visitChild(getServerChild(), nv);
+		return reconstruct(src, dest);
+	}
+
 	@Override
 	public String toString()
 	{
-		return Constants.WRAP_KW + " " + getSourceChild() + " " + Constants.TO_KW
-				+ " " + getDestinationChild() + ";";
+		return Constants.WRAP_KW + " " + getClientChild()
+				+ " " + Constants.TO_KW + " " + getServerChild() + ";";
 	}
 }

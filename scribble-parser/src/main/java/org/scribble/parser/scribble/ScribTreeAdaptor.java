@@ -80,15 +80,15 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 		// Previously: String tname = t.getText(); -- by convention of Scribble.g, type constant name given as node text, e.g., module: ... -> ^(MODULE ...)
 		switch (t.getType())
 		{
-			case ScribbleParser.IDENTIFIER: return new IdNode(t);
-			case ScribbleParser.EXTIDENTIFIER: return new IdNode(t);  // CHECKME: Reuse IdNode OK?
+			case ScribbleParser.ID: return new IdNode(t);
+			case ScribbleParser.EXTID: return new IdNode(t);
 			
-			// Simple names "constructed directly" by parser, e.g., t=IDENTIFIER -> IDENTIFIER<...Node>[$t] 
+			// Simple names "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
 
 			case ScribbleParser.GPROTO_NAME: return new GProtocolNameNode(t);
 			case ScribbleParser.MODULE_NAME: return new ModuleNameNode(t);
+			case ScribbleParser.DATA_NAME: return new DataTypeNode(t);
 			case ScribbleParser.SIG_NAME: return new MessageSigNameNode(t);
-			case ScribbleParser.TYPE_NAME: return new DataTypeNode(t);
 
 			case ScribbleParser.MODULE: return new Module(t);
 			case ScribbleParser.MODULEDECL: return new ModuleDecl(t);
@@ -107,12 +107,12 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.ROLEDECL_LIST: return new RoleDeclList(t);
 			case ScribbleParser.ROLEDECL: return new RoleDecl(t);
 			case ScribbleParser.PARAMDECL_LIST: return new NonRoleParamDeclList(t);
+			case ScribbleParser.DATAPARAMDECL: return new TypeParamDecl(t);
 			case ScribbleParser.SIGPARAMDECL: return new SigParamDecl(t);
-			case ScribbleParser.TYPEPARAMDECL: return new TypeParamDecl(t);
 
 			case ScribbleParser.GPROTODEF: return new GProtocolDef(t);
 			case ScribbleParser.GPROTOBLOCK: return new GProtocolBlock(t);
-			case ScribbleParser.GACTIONSEQ: return new GInteractionSeq(t);
+			case ScribbleParser.GINTERSEQ: return new GInteractionSeq(t);
 
 			case ScribbleParser.SIG_LIT: return new MessageSigNode(t);
 			case ScribbleParser.PAYELEM_LIST: return new PayloadElemList(t);  // N.B. UnaryPayloadElem parsed "manually" in Scribble.g
@@ -137,7 +137,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 
 			case ScribbleParser.COMPOUND_NAME: return new IdNode(t);  
 					// Hacky?  Repurposing IdNode as a "temporary QUALIFIEDNAME" -- token is QUALIFIEDNAME (not ID), and children are the IdNode elements of the qualified name
-					// (Using IdNode as a "shell", but "token type" determined by t -- a bit misleading, IdNode here not an actual IDENTIFIER -- CHECKME: make a proper QUALIFIEDNAME?)
+					// (Using IdNode as a "shell", but "token type" determined by t -- a bit misleading, IdNode here not an actual ID -- CHECKME: make a proper QUALIFIEDNAME?)
 					// It is a "temporary" QUALIFIEDNAME, "internally" parsed by ScribbleParser.parsePayloadElem/parseNonRoleArg
 					// This temporary IdNode is passed by $qualifiedname.tree to, e.g., parsePayloadElem(CommonTree ct)
 					// The parser method takes CommonTree, that can accept IdNode

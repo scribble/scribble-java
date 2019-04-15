@@ -151,45 +151,45 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 	
 	@Override
-	public void Module(Module m)
+	public void Module(Module n)
 	{
-		setDel(m, new ModuleDel());
+		setDel(n, new ModuleDel());
 	}
 
 	@Override
-	public void ModuleDecl(ModuleDecl md)
+	public void ModuleDecl(ModuleDecl n)
 	{
-		setDel(md, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void ImportModule(ImportModule im)
+	public void ImportModule(ImportModule n)
 	{
-		setDel(im, new ImportModuleDel());
+		setDel(n, new ImportModuleDel());
 	}
 	
 	@Override
-	public void MessageSigNameDecl(MessageSigNameDecl sd)
+	public void MessageSigNameDecl(MessageSigNameDecl n)
 	{
-		setDel(sd, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void DataTypeDecl(DataTypeDecl td)
+	public void DataTypeDecl(DataTypeDecl n)
 	{
-		setDel(td, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void GProtocolDecl(GProtocolDecl gpd)
+	public void GProtocolDecl(GProtocolDecl n)
 	{
-		setDel(gpd, new GProtocolDeclDel());
+		setDel(n, new GProtocolDeclDel());
 	}
 
 	@Override
-	public void ProtocolModList(ProtocolModList mods)
+	public void ProtocolModList(ProtocolModList n)
 	{
-		setDel(mods, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
@@ -205,27 +205,27 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 
 	@Override
-	public void GProtocolHeader(GProtocolHeader gph)
+	public void GProtocolHeader(GProtocolHeader n)
 	{
-		setDel(gph, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void RoleDeclList(RoleDeclList rds)
+	public void RoleDeclList(RoleDeclList n)
 	{
-		setDel(rds, new RoleDeclListDel());
+		setDel(n, new RoleDeclListDel());
 	}
 
 	@Override
-	public void RoleDecl(RoleDecl rd)
+	public void RoleDecl(RoleDecl n)
 	{
-		setDel(rd, new RoleDeclDel());
+		setDel(n, new RoleDeclDel());
 	}
 
 	@Override
-	public void NonRoleParamDeclList(NonRoleParamDeclList pds)
+	public void NonRoleParamDeclList(NonRoleParamDeclList n)
 	{
-		setDel(pds, new NonRoleParamDeclListDel());
+		setDel(n, new NonRoleParamDeclListDel());
 	}
 
 	/*@Override
@@ -237,9 +237,9 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public void TypeParamDecl(TypeParamDecl td)
+	public void TypeParamDecl(TypeParamDecl n)
 	{
-		setDel(td, new NonRoleParamDeclDel());
+		setDel(n, new NonRoleParamDeclDel());
 	}
 
 	@Override
@@ -249,27 +249,27 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 
 	@Override
-	public void GProtocolDef(GProtocolDef gpd)
+	public void GProtocolDef(GProtocolDef n)
 	{
-		setDel(gpd, new GProtocolDefDel());
+		setDel(n, new GProtocolDefDel());
 	}
 
 	@Override
-	public void GProtocolBlock(GProtocolBlock gpb)
+	public void GProtocolBlock(GProtocolBlock n)
 	{
-		setDel(gpb, new GProtocolBlockDel());
+		setDel(n, new GProtocolBlockDel());
 	}
 
 	@Override
-	public void GInteractionSeq(GInteractionSeq gis)
+	public void GInteractionSeq(GInteractionSeq n)
 	{
-		setDel(gis, new GInteractionSeqDel());
+		setDel(n, new GInteractionSeqDel());
 	}
 
 	@Override
-	public void GMessageTransfer(GMessageTransfer gmt)
+	public void GMessageTransfer(GMessageTransfer n)
 	{
-		setDel(gmt, new GMessageTransferDel());
+		setDel(n, new GMessageTransferDel());
 	}
 
 	@Override
@@ -293,46 +293,46 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public void GChoice(GChoice gc)
+	public void GChoice(GChoice n)
 	{
-		setDel(gc, new GChoiceDel());
+		setDel(n, new GChoiceDel());
 	}
 
 	@Override
-	public void GRecursion(GRecursion gr)
+	public void GRecursion(GRecursion n)
 	{
-		setDel(gr, new GRecursionDel());
+		setDel(n, new GRecursionDel());
 	}
 
 	@Override
-	public void GContinue(GContinue gc)
+	public void GContinue(GContinue n)
 	{
-		setDel(gc, new GContinueDel());
+		setDel(n, new GContinueDel());
 	}
 
 	@Override
-	public void GDo(GDo gd)
+	public void GDo(GDo n)
 	{
-		setDel(gd, new GDoDel());
+		setDel(n, new GDoDel());
 	}
 
 	@Override
-	public void MessageSigNode(MessageSigNode mn)
+	public void MessageSigNode(MessageSigNode n)
 	{
-		setDel(mn, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void PayloadElemList(PayloadElemList pay)
+	public void PayloadElemList(PayloadElemList n)
 	{
-		setDel(pay, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 		//setDel(pay, new PayloadElemListDel());
 	}
 
 	@Override
-	public void UnaryPayloadElem(UnaryPayloadElem<?> e)
+	public void UnaryPayloadElem(UnaryPayloadElem<?> n)
 	{
-		setDel(e, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	/*@Override
@@ -353,27 +353,27 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public void RoleArgList(RoleArgList rs)
+	public void RoleArgList(RoleArgList n)
 	{
-		setDel(rs, new RoleArgListDel());
+		setDel(n, new RoleArgListDel());
 	}
 
 	@Override
-	public void RoleArg(RoleArg r)
+	public void RoleArg(RoleArg n)
 	{
-		setDel(r, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void NonRoleArgList(NonRoleArgList as)
+	public void NonRoleArgList(NonRoleArgList n)
 	{
-		setDel(as, new NonRoleArgListDel());
+		setDel(n, new NonRoleArgListDel());
 	}
 
 	@Override
-	public void NonRoleArg(NonRoleArg a)
+	public void NonRoleArg(NonRoleArg n)
 	{
-		setDel(a, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 	
 	/*@Override
@@ -416,45 +416,45 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 
 	@Override
-	public void RecVarNode(RecVarNode rv)
+	public void RecVarNode(RecVarNode n)
 	{
-		setDel(rv, new RecVarNodeDel());
+		setDel(n, new RecVarNodeDel());
 	}
 
 	@Override
-	public void OpNode(OpNode op)
+	public void OpNode(OpNode n)
 	{
-		setDel(op, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void MessageSigNameNode(MessageSigNameNode mn)
+	public void MessageSigNameNode(MessageSigNameNode n)
 	{
-		setDel(mn, new MessageSigNameNodeDel());
+		setDel(n, new MessageSigNameNodeDel());
 	}
 
 	@Override
-	public void DataTypeNode(DataTypeNode dn)
+	public void DataTypeNode(DataTypeNode n)
 	{
-		setDel(dn, new DataTypeNodeDel());
+		setDel(n, new DataTypeNodeDel());
 	}
 
 	@Override
-	public void ModuleNameNode(ModuleNameNode mn)
+	public void ModuleNameNode(ModuleNameNode n)
 	{
-		setDel(mn, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void GProtocolNameNode(GProtocolNameNode gpn)
+	public void GProtocolNameNode(GProtocolNameNode n)
 	{
-		setDel(gpn, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void LProtocolNameNode(LProtocolNameNode lpn)
+	public void LProtocolNameNode(LProtocolNameNode n)
 	{
-		setDel(lpn, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
 
 	/*@Override
@@ -507,16 +507,22 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public void AmbigNameNode(AmbigNameNode an)
+	public void AmbigNameNode(AmbigNameNode n)
 	{
-		setDel(an, new AmbigNameNodeDel());
+		setDel(n, new AmbigNameNodeDel());
 	}
 
 	@Override
-	public void IdNode(IdNode an)
+	public void IdNode(IdNode n)
 	{
-		setDel(an, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 	}
+
+	/*@Override
+	public void ExtIdNode(ExtIdNode n)
+	{
+		setDel(n, createDefaultDelegate());
+	}*/
 
 	/*@Override
 	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier)
@@ -527,15 +533,15 @@ public class DelDecoratorImpl implements DelDecorator
 	}*/
 
 	@Override
-	public void SigParamNode(SigParamNode sp)
+	public void SigParamNode(SigParamNode n)
 	{
-		setDel(sp, new NonRoleParamNodeDel());
+		setDel(n, new NonRoleParamNodeDel());
 	}
 
 	@Override
-	public void TypeParamNode(TypeParamNode tp)
+	public void TypeParamNode(TypeParamNode n)
 	{
-		setDel(tp, new NonRoleParamNodeDel());
+		setDel(n, new NonRoleParamNodeDel());
 	}
 
 	

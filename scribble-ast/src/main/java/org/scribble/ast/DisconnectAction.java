@@ -16,6 +16,7 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -53,11 +54,11 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 
 	public DisconnectAction<K> reconstruct(RoleNode left, RoleNode right)
 	{
-		DisconnectAction<K> da = dupNode();
-		da.addChild(left);
-		da.addChild(right);
-		da.setDel(del());  // No copy
-		return da;
+		DisconnectAction<K> n = dupNode();
+		n.addChild(left);
+		n.addChild(right);
+		n.setDel(del());  // No copy
+		return n;
 	}
 
 	@Override
@@ -67,5 +68,12 @@ public abstract class DisconnectAction<K extends ProtocolKind>
 		RoleNode src = (RoleNode) visitChild(getLeftChild(), nv);
 		RoleNode dest = (RoleNode) visitChild(getRightChild(), nv);
 		return reconstruct(src, dest);
+	}
+
+	@Override
+	public String toString()
+	{
+		return Constants.DISCONNECT_KW + " " + getLeftChild()
+				+ " " + Constants.TO_KW + " " + getRightChild() + ";";
 	}
 }

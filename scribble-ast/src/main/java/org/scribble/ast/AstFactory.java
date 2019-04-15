@@ -56,6 +56,7 @@ import org.scribble.core.type.kind.PayloadTypeKind;
 public interface AstFactory
 {
 	IdNode IdNode(String text);
+	//ExtIdNode ExtIdNode(String text);
 
 	// Deprecate?  Never need to make ambigname "manually" via af?  (only constructed by ScribbleParser)
 	AmbigNameNode AmbiguousNameNode(String text);
