@@ -25,28 +25,25 @@ options
 }
 
 
-// CHECKME: match tokens to keywords?  // Use KW as token types? But many more types than keywords
-
 tokens
 {
-  /*
-   * Parser "input" constants (lexer output; keywords, Section 2.4)
+  /* Parser "input" constants (lexer output; keywords, Section 2.4)
    */
-
   MODULE_KW = 'module';
   IMPORT_KW = 'import';
+	DATA_KW = 'data';
   SIG_KW = 'sig';
   TYPE_KW = 'type';
   PROTOCOL_KW = 'protocol';
   AS_KW = 'as';
 
   GLOBAL_KW = 'global';
-  LOCAL_KW = 'local';
+  LOCAL_KW = 'local';  // Currently not parsed, but may be generated
   EXPLICIT_KW = 'explicit';
   AUX_KW = 'aux';
 
   ROLE_KW = 'role';
-  SELF_KW = 'self';
+  SELF_KW = 'self';  // Currently not parsed, but may be generated
 
   FROM_KW = 'from';
   TO_KW = 'to';
@@ -65,77 +62,71 @@ tokens
   DO_KW = 'do';
   
 
-  /*
-   * Parser "output" node types (corresponding to the various syntactic
-   * categories), i.e. the labels used to distinguish resulting AST nodes. The
-   * specific value of these tokens doesn't matter (because not parsed
-   * themselves).
+  /* Parser "output" Token types (corresponding to the Scribble BNF), i.e., the
+   * values used to distinguish resulting AST nodes.  
+   * They are used by ScribTreeAdaptor to create the output using the org.scribble.ast classes. 
+   * The specific value of these tokens aren't important (constants accessed via
+   * fields of ScribbleParser).
+	 * These Token types denote ANTLR "imaginary nodes".
    */
-  
+  // CHECKME: split naming of type int constant from String label ?
+  // CHECKME: split imaginary node types ?
+
   // Special cases
-  EMPTY_OPERATOR = '__EMPTY_OPERATOR';
-  QUALIFIEDNAME = '__QUALIFIEDNAME';  
-      // N.B. an intermediate node type, not an actual ScribNode -- "re-parsed" internally by parsePayloadElem/NonRoleArg
-      // No relation to abstract AST class, QualifiedName
+  EMPTY_OP = '__EMPTY_OP';
+  COMPOUND_NAME = '__COMPOUND_NAME';  
+      // N.B. an intermediate node type, not a concrete ScribNode -- "re-parsed" internally by parsePayloadElem/NonRoleArg
 
+  // Simple names
+  AMBIG_NAME = 'AMBIG_NAME';
+  // Other simple names are 
 
-  // Names
-  AMBIGUOUSNAME = 'AMBIGUOUSNAME';
-  MODULENAME = 'MODULENAME';
-  GPROTOCOLNAME = 'GPROTOCOLNAME';
-  OPNAME = 'OPNAME';
-  RECURSIONVAR = 'RECURSIONVAR';
-  ROLENAME = 'ROLENAME';
-  SIGNAME = 'SIGNAME';
-  SIGPARAMNAME = 'sigparamnamenode';  // N.B. distinct from SIGNAME
-  TYPENAME = 'TYPENAME';
-  TYPEPARAMNAME = 'typeparamnamenode';  // N.B. distinct from TYPENAME
+	// Compound names
+  GPROTO_NAME = 'GPROTO_NAME';
+  MODULE_NAME = 'MODULE_NAME';
+  SIG_NAME = 'SIG_NAME';   // N.B. distinct from SIGPARAM_NAME
+  TYPE_NAME = 'TYPE_NAME';   // N.B. distinct from TYPEPARAM_NAME
 
-
-  // "Node type" constants -- parsed "directly" by AntlrToScribParser
-  // TODO: split naming of type int constant from String label ?
-  // TODO: split imaginary node types
+	// Sig literals
+  SIG_LIT = 'SIG_LIT';
+  PAYELEM_LIST = 'PAYELEM_LIST';
+  UNARY_PAYELEM = 'UNARY_PAYELEM';
+  DELEG_PAYELEM = 'DELEG_PAYELEM';
 
   MODULE = 'MODULE';
   MODULEDECL = 'MODULEDECL';
   IMPORTMODULE = 'IMPORTMODULE';
 
-  PAYLOADTYPEDECL = 'PAYLOADTYPEDECL';
-  MESSAGESIGNATUREDECL = 'MESSAGESIGNATUREDECL';
+  DATADECL = 'DATADECL';
+  SIGDECL = 'SIGDECL';
+  GPROTODECL = 'GPROTODECL';
+  PROTOMOD_LIST = 'PROTOMOD_LIST';
 
-  GLOBALPROTOCOLDECL = 'GLOBALPROTOCOLDECL';
-  GLOBALPROTOCOLDECLMODS = 'GLOBALPROTOCOLDECLMODS';
-  GLOBALPROTOCOLHEADER = 'GLOBALPROTOCOLHEADER';
-
-  ROLEDECLLIST = 'ROLEDECLLIST';
+  GPROTOHEADER = 'GPROTOHEADER';
+  ROLEDECL_LIST = 'ROLEDECL_LIST';
   ROLEDECL = 'ROLEDECL';
-  PARAMETERDECLLIST = 'PARAMETERDECLLIST';
-  TYPEPARAMDECL = 'TYPEPARAMDECL';
-  SIGPARAMDECL = 'SIGPARAMDECL';
+  PARAMDECL_LIST = 'PARAMDECL_LIST';
+  TYPEPARAMDECL = 'TYPE_PARAMDECL';
+  SIGPARAMDECL = 'SIG_PARAMDECL';
   
-  GLOBALPROTOCOLDEF = 'GLOBALPROTOCOLDEF';
-  GLOBALPROTOCOLBLOCK = 'GLOBALPROTOCOLBLOCK';
-  GLOBALINTERACTIONSEQUENCE = 'GLOBALINTERACTIONSEQUENCE';
+  GPROTODEF = 'GPROTODEF';
+  GPROTOBLOCK = 'GPROTOBLOCK';
+  GACTIONSEQ = 'GACTIONSEQ';
 
-  MESSAGESIGNATURE = 'MESSAGESIGNATURE';
-  PAYLOAD = 'PAYLOAD';
-  UNARYPAYLOADELEM = 'UNARYPAYLOADELEM';
-  DELEGATION = 'DELEGATION';
+  GMSGTRANSFER = 'GMSGTRANSFER';
+  GCONNECT = 'GCONNECT';
+  GWRAP = 'GWRAP';
+  GDCONN = 'GDCONN';
+  GCONTINUE = 'GCONTINUE';
+  GDO = 'GDO';
 
-  GLOBALMESSAGETRANSFER = 'GLOBALMESSAGETRANSFER';
-  GLOBALCONNECT = 'GLOBALCONNECT';
-  GLOBALWRAP = 'GLOBALWRAP';
-  GLOBALDISCONNECT = 'GLOBALDISCONNECT';
-  GLOBALCONTINUE = 'GLOBALCONTINUE';
-  GLOBALDO = 'GLOBALDO';
+  ROLEARG_LIST = 'ROLEARG_LIST';
+  ROLEARG = 'ROLEARG_LIST';
+  ARG_LIST = 'ARG_LIST';
+  ARG = 'ARG';
 
-  ROLEINSTANTIATIONLIST = 'ROLEINSTANTIATIONLIST';
-  ROLEINSTANTIATION = 'ROLEINSTANTIATION';  // FIXME: not consistent with arginstas/payloadeles
-  ARGUMENTINSTANTIATIONLIST = 'ARGUMENTINSTANTIATIONLIST';  // FIXME: token name inconsistent with class name (NonRoleArgList)
-  NONROLEARG = 'NONROLEARG';
-
-  GLOBALCHOICE = 'GLOBALCHOICE';
-  GLOBALRECURSION = 'GLOBALRECURSION';
+  GCHOICE = 'GCHOICE';
+  GRECURSION = 'GRECURSION';
 }
 
 
@@ -144,8 +135,6 @@ tokens
 {
   package org.scribble.parser.antlr;
   
-  //import org.scribble.main.RuntimeScribbleException;
-  //import org.scribble.parser.scribble.ast.tree.MyCommonTree;
   import org.scribble.ast.ScribNodeBase;
   import org.scribble.ast.UnaryPayloadElem;
   import org.scribble.ast.NonRoleArg;
@@ -221,11 +210,11 @@ tokens
   {
     if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
     {
-      DataTypeNode dt = new DataTypeNode(new CommonToken(TYPENAME, "TYPENAME"));
+      DataTypeNode dt = new DataTypeNode(new CommonToken(TYPE_NAME, "TYPE_NAME"));
       ((List<?>) qn.getChildren()).forEach(x -> 
           dt.addChild(new IdNode(new CommonToken(IDENTIFIER, ((CommonTree) x).getText()))));
       UnaryPayloadElem pe = 
-          new UnaryPayloadElem(new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));
+          new UnaryPayloadElem(new CommonToken(UNARY_PAYELEM, "UNARYPAYLOADELEM"));
       pe.addChild(dt);
       return pe;  // N.B. "re-parsed" by ScribTreeAdaptor?  Could return CommonTree here?
     }
@@ -235,12 +224,12 @@ tokens
       String text = qn.getChild(0).getText();
       IdNode id = new IdNode(new CommonToken(IDENTIFIER, text));
       /*AmbigNameNode an = 
-          new AmbigNameNode(new CommonToken(AMBIGUOUSNAME, "AMBIGUOUSNAME"));
+          new AmbigNameNode(new CommonToken(AMBIG_NAME, "AMBIG_NAME"));
       an.addChild(id);*/
       AmbigNameNode an = 
-          new AmbigNameNode(AMBIGUOUSNAME, new CommonToken(IDENTIFIER, text));
+          new AmbigNameNode(AMBIG_NAME, new CommonToken(IDENTIFIER, text));
       UnaryPayloadElem e = new UnaryPayloadElem(
-          new CommonToken(UNARYPAYLOADELEM, "UNARYPAYLOADELEM"));
+          new CommonToken(UNARY_PAYELEM, "UNARYPAYLOADELEM"));
       e.addChild(an);
       return e;
     }
@@ -252,11 +241,11 @@ tokens
   {
     if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
     {
-      DataTypeNode dt = new DataTypeNode(new CommonToken(TYPENAME, "TYPENAME"));
+      DataTypeNode dt = new DataTypeNode(new CommonToken(TYPE_NAME, "TYPE_NAME"));
       ((List<?>) qn.getChildren()).forEach(x -> 
           dt.addChild(new IdNode(new CommonToken(IDENTIFIER, ((CommonTree) x).getText()))));
       NonRoleArg a = 
-          new NonRoleArg(new CommonToken(NONROLEARG, "NONROLEARG"));
+          new NonRoleArg(new CommonToken(ARG, "ARG"));
       a.addChild(dt);
       return a;
     }
@@ -265,11 +254,11 @@ tokens
       String text = qn.getChild(0).getText();
       IdNode id = new IdNode(new CommonToken(IDENTIFIER, text));
       /*AmbigNameNode an = 
-          new AmbigNameNode(new CommonToken(AMBIGUOUSNAME, "AMBIGUOUSNAME"));
+          new AmbigNameNode(new CommonToken(AMBIG_NAME, "AMBIG_NAME"));
       an.addChild(id);*/
       AmbigNameNode an = 
-          new AmbigNameNode(AMBIGUOUSNAME, new CommonToken(IDENTIFIER, text));
-      NonRoleArg a = new NonRoleArg(new CommonToken(NONROLEARG, "NONROLEARG"));
+          new AmbigNameNode(AMBIG_NAME, new CommonToken(IDENTIFIER, text));
+      NonRoleArg a = new NonRoleArg(new CommonToken(ARG, "ARG"));
       a.addChild(an);
       return a;
     }
@@ -389,48 +378,38 @@ fragment UNDERSCORE:
 /*
  * Section 3.1 Primitive Names
  */
-
-
-
-/*simplename: id=IDENTIFIER
-->
-{ checkId($id.tree) }
-;
-
-recursionvarname: simplename ;
-rolename:         simplename;
-simplemembername:           simplename;  // Only for member declarations*/
+//simplename: id=IDENTIFIER -> { checkId($id.tree) } ;  // How to integrate with IDENTIFIER<RoleNode>[$t] ?
 
 // "The TreeAdaptor is not called; instead [the] constructors are invoked directly."
 // "Note that parameters are not allowed on token references to the left of ->:"
-// "Use imaginary nodes as you normally would, but with the addition of the node type:"  // Pointless?  token itself unchanged and ttype int ends up unused
-rolenamenode: t=IDENTIFIER -> IDENTIFIER<RoleNode>[$t];
-recursionvarnamenode: t=IDENTIFIER -> IDENTIFIER<RecVarNode>[$t];
+// "Use imaginary nodes as you normally would, but with the addition of the node type:"  // But currently, ID token itself unchanged and ttype int ends up discarded
 ambiguousnamenode: t=IDENTIFIER -> IDENTIFIER<AmbigNameNode>[$t];
-opnamenode:
-t=IDENTIFIER -> IDENTIFIER<OpNode>[$t]
-| -> ^(EMPTY_OPERATOR);
-typeparamnamenode: t=IDENTIFIER -> IDENTIFIER<TypeParamNode>[$t]; 
+recursionvarnamenode: t=IDENTIFIER -> IDENTIFIER<RecVarNode>[$t];
+rolenamenode: t=IDENTIFIER -> IDENTIFIER<RoleNode>[$t];
 sigparamnamenode: t=IDENTIFIER -> IDENTIFIER<SigParamNode>[$t];
-
-
+typeparamnamenode: t=IDENTIFIER -> IDENTIFIER<TypeParamNode>[$t]; 
+opnamenode:
+	-> ^(EMPTY_OP)
+|
+	t=IDENTIFIER -> IDENTIFIER<OpNode>[$t]
+;
 
 /**
  * Section 3.2.1 Package, Module and Module Member Names
  */
 
 // Using qualified to rep simple
-simplemodulename: t=IDENTIFIER -> ^(MODULENAME[$t] IDENTIFIER) ;
-simplepayloadtypename: t=IDENTIFIER -> ^(TYPENAME[$t] IDENTIFIER) ; 
+simplemodulename: t=IDENTIFIER -> ^(MODULE_NAME[$t] IDENTIFIER) ;
+simplepayloadtypename: t=IDENTIFIER -> ^(TYPE_NAME[$t] IDENTIFIER) ; 
     // TODO factor out with typedecl?  NO: params distinct from "literals"
-simplemessagesignaturename: t=IDENTIFIER -> ^(SIGNAME[$t] IDENTIFIER) ;
+simplemessagesignaturename: t=IDENTIFIER -> ^(SIG_NAME[$t] IDENTIFIER) ;
     // TODO factor out with sigparamdecl?  NO: params distinct from "literals"
-simpleprotocolname: t=IDENTIFIER -> ^(GPROTOCOLNAME[$t] IDENTIFIER) ;
+simpleprotocolname: t=IDENTIFIER -> ^(GPROTO_NAME[$t] IDENTIFIER) ;
 
 qualifiedname:
   t=IDENTIFIER ('.' IDENTIFIER)*
 ->
-  ^(QUALIFIEDNAME[$t] IDENTIFIER+)
+  ^(COMPOUND_NAME[$t] IDENTIFIER+)
 ;
 
 packagename:          qualifiedname;
@@ -439,7 +418,7 @@ membername:           qualifiedname;
 modulename:
   t=IDENTIFIER ('.' IDENTIFIER)*
 ->
-  ^(MODULENAME[$t] IDENTIFIER+)
+  ^(MODULE_NAME[$t] IDENTIFIER+)
 ;
 
 protocolname:         membername;
@@ -448,13 +427,13 @@ payloadtypename:      membername;
 messagesignaturename:
   t=IDENTIFIER ('.' IDENTIFIER)*
 ->
-  ^(SIGNAME[$t] IDENTIFIER+)
+  ^(SIG_NAME[$t] IDENTIFIER+)
 ;
 
 gprotocolnamenode:
     t=IDENTIFIER ('.' IDENTIFIER)*
   ->
-  ^(GPROTOCOLNAME[$t] IDENTIFIER+)
+  ^(GPROTO_NAME[$t] IDENTIFIER+)
 ;
 
 
@@ -494,7 +473,7 @@ payloadtypedecl:
   extSource=EXTIDENTIFIER AS_KW alias=simplepayloadtypename ';'
 ->
   // alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
-  ^(PAYLOADTYPEDECL[$t] $alias $schema $extName $extSource)
+  ^(DATADECL[$t] $alias $schema $extName $extSource)
 ;
 
 messagesignaturedecl:
@@ -502,7 +481,7 @@ messagesignaturedecl:
   extSource=EXTIDENTIFIER AS_KW alias=simplemessagesignaturename ';'
 ->
   // alias first to be uniform with other NameDeclNode (getRawNameNodeChild)
-  ^(MESSAGESIGNATUREDECL[$t] $alias $schema $extName $extSource)
+  ^(SIGDECL[$t] $alias $schema $extName $extSource)
 ;
 
 
@@ -512,14 +491,14 @@ messagesignaturedecl:
  */
 messagesignature:
    opnamenode '(' payload ')'
--> ^(MESSAGESIGNATURE opnamenode payload)
+-> ^(SIG_LIT opnamenode payload)
 ;
 // CHECKME: how to apply [$t] in these situations?
 
 payload:
--> ^(PAYLOAD)
+-> ^(PAYELEM_LIST)
  | payloadelement (',' payloadelement)*
--> ^(PAYLOAD payloadelement+)
+-> ^(PAYELEM_LIST payloadelement+)
 ;
 
 payloadelement:
@@ -529,7 +508,7 @@ payloadelement:
   qualifiedname
 -> { parsePayloadElem($qualifiedname.tree) }  // Use ".text" instead of ".tree" for token String 
  | gprotocolnamenode '@' rolenamenode
--> ^(DELEGATION rolenamenode gprotocolnamenode)
+-> ^(DELEG_PAYELEM rolenamenode gprotocolnamenode)
 ;
 
 
@@ -546,33 +525,33 @@ protocoldecl: globalprotocoldecl ;
 globalprotocoldecl:
   globalprotocoldeclmodifiers globalprotocolheader globalprotocoldefinition
 ->
-  ^(GLOBALPROTOCOLDECL globalprotocoldeclmodifiers globalprotocolheader
+  ^(GPROTODECL globalprotocoldeclmodifiers globalprotocolheader
   globalprotocoldefinition)
 ;
   
 // "aux" must come before "explicit"
 globalprotocoldeclmodifiers:
-                        -> ^(GLOBALPROTOCOLDECLMODS)
- | t=AUX_KW             -> ^(GLOBALPROTOCOLDECLMODS[$t] AUX_KW)
- | t=AUX_KW EXPLICIT_KW -> ^(GLOBALPROTOCOLDECLMODS[$t] AUX_KW EXPLICIT_KW)
- | t=EXPLICIT_KW        -> ^(GLOBALPROTOCOLDECLMODS[$t] EXPLICIT_KW)
+                        -> ^(PROTOMOD_LIST)
+ | t=AUX_KW             -> ^(PROTOMOD_LIST[$t] AUX_KW)
+ | t=AUX_KW EXPLICIT_KW -> ^(PROTOMOD_LIST[$t] AUX_KW EXPLICIT_KW)
+ | t=EXPLICIT_KW        -> ^(PROTOMOD_LIST[$t] EXPLICIT_KW)
 ;
 
 globalprotocolheader:
   t=GLOBAL_KW PROTOCOL_KW simpleprotocolname parameterdecllist roledecllist
 ->
-  ^(GLOBALPROTOCOLHEADER[$t] simpleprotocolname parameterdecllist roledecllist)
+  ^(GPROTOHEADER[$t] simpleprotocolname parameterdecllist roledecllist)
 ;
 
 roledecllist: 
-  t='(' roledecl (',' roledecl)* ')' -> ^(ROLEDECLLIST[$t] roledecl+) ;
+  t='(' roledecl (',' roledecl)* ')' -> ^(ROLEDECL_LIST[$t] roledecl+) ;
 
 roledecl:     t=ROLE_KW rolenamenode -> ^(ROLEDECL[$t] rolenamenode) ;
 
 parameterdecllist:
--> ^(PARAMETERDECLLIST)
+-> ^(PARAMDECL_LIST)
  | t='<' parameterdecl (',' parameterdecl)* '>'
--> ^(PARAMETERDECLLIST[$t] parameterdecl+)
+-> ^(PARAMDECL_LIST[$t] parameterdecl+)
 ;
 
 parameterdecl: typedecl | sigdecl ;
@@ -586,7 +565,7 @@ sigdecl:
  * Section 3.7.1 Global Protocol Definitions
  */
 globalprotocoldefinition:
-  globalprotocolblock -> ^(GLOBALPROTOCOLDEF globalprotocolblock) ;
+  globalprotocolblock -> ^(GPROTODEF globalprotocolblock) ;
 
 
 /**
@@ -595,13 +574,13 @@ globalprotocoldefinition:
 globalprotocolblock:
   t='{' globalinteractionsequence '}'
 ->
-  ^(GLOBALPROTOCOLBLOCK[$t] globalinteractionsequence)
+  ^(GPROTOBLOCK[$t] globalinteractionsequence)
 ;
 
 globalinteractionsequence:
   globalinteraction*
 ->
-  ^(GLOBALINTERACTIONSEQUENCE globalinteraction*)
+  ^(GACTIONSEQ globalinteraction*)
 ;
 
 globalinteraction:
@@ -621,7 +600,7 @@ globalinteraction:
  */
 globalmessagetransfer:
    message FROM_KW rolenamenode TO_KW rolenamenode (',' rolenamenode )* ';'
--> ^(GLOBALMESSAGETRANSFER message rolenamenode+)
+-> ^(GMSGTRANSFER message rolenamenode+)
 ;
 // TODO: multisend
 
@@ -633,9 +612,9 @@ message:
 
 globalconnect:
    message CONNECT_KW rolenamenode TO_KW rolenamenode ';'
--> ^(GLOBALCONNECT message rolenamenode rolenamenode)
+-> ^(GCONNECT message rolenamenode rolenamenode)
  | t=CONNECT_KW rolenamenode TO_KW rolenamenode ';'
--> ^(GLOBALCONNECT[$t] ^(MESSAGESIGNATURE ^(EMPTY_OPERATOR) ^(PAYLOAD))
+-> ^(GCONNECT[$t] ^(SIG_LIT ^(EMPTY_OP) ^(PAYELEM_LIST))
    rolenamenode rolenamenode)
       // CHECKME: deprecate? i.e., require "()" as for message transfers?  i.e., simply delete this rule?
 ;
@@ -643,12 +622,12 @@ globalconnect:
 
 globaldisconnect:
    t=DISCONNECT_KW rolenamenode AND_KW rolenamenode ';'
--> ^(GLOBALDISCONNECT[$t] rolenamenode rolenamenode)
+-> ^(GDCONN[$t] rolenamenode rolenamenode)
 ;
 
 globalwrap:
    t=WRAP_KW rolenamenode TO_KW rolenamenode ';'
--> ^(GLOBALWRAP[$t] rolenamenode rolenamenode)
+-> ^(GWRAP[$t] rolenamenode rolenamenode)
 ;
 
 
@@ -658,7 +637,7 @@ globalwrap:
 globalchoice:
    t=CHOICE_KW AT_KW rolenamenode globalprotocolblock (OR_KW
    globalprotocolblock)*
--> ^(GLOBALCHOICE[$t] rolenamenode globalprotocolblock+)
+-> ^(GCHOICE[$t] rolenamenode globalprotocolblock+)
 ;
 
 
@@ -667,12 +646,12 @@ globalchoice:
  */
 globalrecursion:
    t=REC_KW recursionvarnamenode globalprotocolblock
--> ^(GLOBALRECURSION[$t] recursionvarnamenode globalprotocolblock)
+-> ^(GRECURSION[$t] recursionvarnamenode globalprotocolblock)
 ;
 
 globalcontinue:
    t=CONTINUE_KW recursionvarnamenode ';'
--> ^(GLOBALCONTINUE recursionvarnamenode)
+-> ^(GCONTINUE recursionvarnamenode)
 ;
 
 
@@ -681,27 +660,27 @@ globalcontinue:
  */
 globaldo:
    DO_KW gprotocolnamenode argumentinstantiationlist roleinstantiationlist ';'
--> ^(GLOBALDO gprotocolnamenode argumentinstantiationlist roleinstantiationlist)
+-> ^(GDO gprotocolnamenode argumentinstantiationlist roleinstantiationlist)
 ;
 
 roleinstantiationlist:
    t='(' roleinstantiation (',' roleinstantiation)* ')'
--> ^(ROLEINSTANTIATIONLIST[$t] roleinstantiation+)
+-> ^(ROLEARG_LIST[$t] roleinstantiation+)
 ;
 
-roleinstantiation: rolenamenode -> ^(ROLEINSTANTIATION rolenamenode) ;
+roleinstantiation: rolenamenode -> ^(ROLEARG rolenamenode) ;
     // CHECKME: inconsistent with arginstas/payloadeles
 
 argumentinstantiationlist:
--> ^(ARGUMENTINSTANTIATIONLIST)
+-> ^(ARG_LIST)
 |  t='<' argumentinstantiation (',' argumentinstantiation)* '>'
--> ^(ARGUMENTINSTANTIATIONLIST[$t] argumentinstantiation+)
+-> ^(ARG_LIST[$t] argumentinstantiation+)
 ;
 
 // Grammatically same as message, but qualifiedname case may also be a payload type
 argumentinstantiation:
    messagesignature
--> ^(NONROLEARG messagesignature)
+-> ^(ARG messagesignature)
 |  qualifiedname
 -> { parseNonRoleArg($qualifiedname.tree) }  // Like PayloadElement, simple names need disambiguation
 ;

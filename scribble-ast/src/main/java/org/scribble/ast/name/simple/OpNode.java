@@ -21,7 +21,7 @@ import org.scribble.core.type.name.Op;
 public class OpNode extends SimpleNameNode<OpKind>
 {
 	// Determine by token text -- cannot use token type int in core, value is a ScribbleParser constant
-	public static final String EMPTY_OP_TOKEN_TEXT = "__EMPTY_OPERATOR";  // Cf. Scribble.g
+	public static final String EMPTY_OP_TOKEN_TEXT = "__EMPTY_OP";  // Cf. Scribble.g
 
 	public OpNode(Token t)
 	{
