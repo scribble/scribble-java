@@ -1,5 +1,4 @@
-/*
- * > scribble-java
+/* > scribble-java
  * $ java -cp scribble-parser/lib/antlr-3.5.2-complete.jar org.antlr.Tool -o scribble-parser/target/generated-sources/antlr3 scribble-parser/src/main/antlr3/org/scribble/parser/antlr/Scribble.g
  * 
  * Cygwin/Windows
@@ -9,9 +8,11 @@
  */
 
 /**
- * Pattern: each node type must give its "node type constant" as its text, e.g., module: ... -> ^(MODULE ...) -- all info in its children
- * i.e. Each token will be equivalent to, e.g., new CommonToken(ScribbleParser.MODULE, "MODULE")
- * Except for ID/IdNode: text is the ID value, i.e., new CommonToken(ScribbleParser.ID, "...")
+ * Pattern: most nodes have "imaginary token types".  
+ * Where token attributes are not "inherited" from a concrete token, the default is to use textual name of the token type field as its text
+ * e.g., gprotodecl: ... -> ^(GPROTODECL ...).  I.e., each token will be equivalent to, e.g., new CommonToken(ScribbleParser.GPROTODECL, "GPROTODECL").
+ * The actual info of every imaginary node is in its children (i.e., its token text can be disregarded).
+ * The exceptions are for ID/EXTID, where the text is the ID value, i.e., new CommonToken(ScribbleParser.ID, "...").
  */
 
 grammar Scribble;
@@ -136,6 +137,24 @@ tokens
 }
 
 
+@lexer::header
+{
+  package org.scribble.parser.antlr;
+}
+
+
+@lexer::members
+{
+  @Override    
+  public void displayRecognitionError(String[] tokenNames, 
+  		RecognitionException e)
+  {
+    super.displayRecognitionError(tokenNames, e);
+    System.exit(1);
+  }
+}
+
+
 // Must come after tokens?
 @parser::header
 {
@@ -155,12 +174,6 @@ tokens
 }
 
 
-@lexer::header
-{
-  package org.scribble.parser.antlr;
-}
-
-
 @parser::members
 {
   // Abort tool run on parsing errors (and display user-friendly message) -- obsoletes CommonErrorNode check?
@@ -171,28 +184,26 @@ tokens
     System.exit(1);
   }
 
-  // qn is an IdNode "holder" for a qualifiedname 
+  // qn is an IdNode "holder" for a "qualifiedname" COMPOUND_NAME -- see ScribTreeAdaptor
   // CHECKME: do the returns of these "bypass" ScribTreeAdaptor?  specifically AmbigNode
   public static CommonTree parsePayloadElem(CommonTree qn) throws RecognitionException
   {
     if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
     {
+			// Cf. AstFactoryImpl, token creation
       DataTypeNode dt = new DataTypeNode(new CommonToken(DATA_NAME, "DATA_NAME"));
       ((List<?>) qn.getChildren()).forEach(x -> 
           dt.addChild(new IdNode(new CommonToken(ID, ((CommonTree) x).getText()))));
       UnaryPayloadElem pe = 
           new UnaryPayloadElem(new CommonToken(UNARY_PAYELEM, "UNARYPAYLOADELEM"));
       pe.addChild(dt);
-      return pe;  // N.B. "re-parsed" by ScribTreeAdaptor?  Could return CommonTree here?
+      return pe;
     }
-    else
+    else //if (qn.getChildCount() == 1)
     {
-      // Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
+      // Similar to NonRoleArg: cannot syntactically distinguish right now between a simple data name and a param name
+			// Cf. AstFactoryImpl, token creation
       String text = qn.getChild(0).getText();
-      IdNode id = new IdNode(new CommonToken(ID, text));
-      /*AmbigNameNode an = 
-          new AmbigNameNode(new CommonToken(AMBIG_NAME, "AMBIG_NAME"));
-      an.addChild(id);*/
       AmbigNameNode an = 
           new AmbigNameNode(AMBIG_NAME, new CommonToken(ID, text));
       UnaryPayloadElem e = new UnaryPayloadElem(
@@ -202,13 +213,15 @@ tokens
     }
   }
 
-  // Only for QualifiedName (DataTypeNode or AmbigNameNode), not siglit literal 
-  // qn is an IdNode "holder" for a qualifiedname 
+  // qn is an IdNode "holder" for a "qualifiedname" COMPOUND_NAME -- see ScribTreeAdaptor
+  // Only for "qualifiedName" (DataTypeNode or AmbigNameNode), not sig literals
   public static CommonTree parseNonRoleArg(CommonTree qn) throws RecognitionException
   {
     if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
     {
-      DataTypeNode dt = new DataTypeNode(new CommonToken(DATA_NAME, "DATA_NAME"));
+			// Cf. AstFactoryImpl, token creation
+      DataTypeNode dt =
+      		new DataTypeNode(new CommonToken(DATA_NAME, "DATA_NAME"));
       ((List<?>) qn.getChildren()).forEach(x -> 
           dt.addChild(new IdNode(new CommonToken(ID, ((CommonTree) x).getText()))));
       NonRoleArg a = 
@@ -216,13 +229,10 @@ tokens
       a.addChild(dt);
       return a;
     }
-    else
+    else //if (qn.getChildCount() == 1)
     {
+			// Cf. AstFactoryImpl, token creation
       String text = qn.getChild(0).getText();
-      IdNode id = new IdNode(new CommonToken(ID, text));
-      /*AmbigNameNode an = 
-          new AmbigNameNode(new CommonToken(AMBIG_NAME, "AMBIG_NAME"));
-      an.addChild(id);*/
       AmbigNameNode an = 
           new AmbigNameNode(AMBIG_NAME, new CommonToken(ID, text));
       NonRoleArg a = new NonRoleArg(new CommonToken(ARG, "ARG"));
@@ -231,6 +241,7 @@ tokens
     }
   }
 
+	// Currently unused -- checking later in intermed translation instead of parsing
   public static CommonTree checkId(CommonTree id)
   {
   	if (id.getText().contains("__"))
@@ -239,28 +250,6 @@ tokens
 			System.exit(1);
   	}
   	return id;
-  }
-}
-
-@lexer::members
-{
-  /*@Override
-  public void reportError(RecognitionException e)
-  {
-    super.reportError(e);
-    //throw new RuntimeScribbleException(e.getMessage()); 
-    //System.exit(1);
-  }*/
-
-  @Override    
-  public void displayRecognitionError(String[] tokenNames, RecognitionException e)
-  {
-    /*String hdr = getErrorHeader(e);
-    String msg = getErrorMessage(e, tokenNames);
-    //throw new RuntimeException(hdr + ":" + msg);
-    System.err.println(hdr + ":" + msg);*/
-    super.displayRecognitionError(tokenNames, e);
-    System.exit(1);
   }
 }
 
