@@ -440,7 +440,11 @@ paramdecls:
 paramdecl: dataparamdecl | sigparamdecl ;
 
 dataparamdecl: 
-	t=TYPE_KW dataparamname -> ^(DATAPARAMDECL[$t] dataparamname) ;
+	t=TYPE_KW dataparamname -> ^(DATAPARAMDECL[$t] dataparamname)
+|
+	t=DATA_KW dataparamname -> ^(DATAPARAMDECL[$t] dataparamname)
+			// TODO: refactor -- cf. datadecl
+;
 
 sigparamdecl:  
 	t=SIG_KW sigparamname -> ^(SIGPARAMDECL[$t] sigparamname) ;

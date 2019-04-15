@@ -97,28 +97,39 @@ module tmp.Test;
 	// refactor test to use main instead of cli
 
 
-sig <java> "..." from "..." as T;
+data <java> "..." from "..." as T;
+
+
+global protocol Proto1(role A, role B)
+{
+	(T) from A to B;
+}
 
 
 /*
-global protocol Proto1<sig M>(role A, role B)
+sig <java> "..." from "..." as M;
+
+global protocol Proto1<sig MM>(role A, role B)
 {
-	M from A to B;
-	do Proto1<Test.T>(A, B);  // TODO: add unit test, testing qualified sig name as nonrole arg
+	MM from A to B;
+	do Proto1<Test.M>(A, B);  // TODO: add unit test, testing qualified sig name as nonrole arg
 }
 //*/
 
-//*
+
+/*
 explicit global protocol Proto1(role A__, role B)
 {
 	() connect A__ to B;
 	rec X
 	{
-		() from A__ to B;
+		() from A__ to B;  // TODO: add double underscore check (e.g., translation)
 		continue X;
 	}
 }
 //*/
+
+
 /*
 global protocol Proto1<sig M>(role A, role B)
 {

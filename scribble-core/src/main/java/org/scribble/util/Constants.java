@@ -22,7 +22,8 @@ public class Constants
 	// Duplicated from AntlrConstants due to Maven dependency restrictions
 	public static final String MODULE_KW = "module";
 	public static final String IMPORT_KW = "import";
-	public static final String TYPE_KW = "type";
+	public static final String DATA_KW = "data";
+	public static final String TYPE_KW = "type";  // CHECKME: deprecate ?
 	public static final String PROTOCOL_KW = "protocol";
 	public static final String GLOBAL_KW = "global";
 	public static final String LOCAL_KW = "local";

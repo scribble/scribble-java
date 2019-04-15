@@ -70,7 +70,7 @@ public class DataDecl extends NonProtoDecl<DataKind>
 	@Override
 	public String toString()
 	{
-		return Constants.TYPE_KW + " <" + getSchemaChild() + "> "
+		return Constants.DATA_KW + " <" + getSchemaChild() + "> "
 				+ getExtNameChild() + " " 
 				+ Constants.FROM_KW + " " + getExtSourceChild() + " " 
 				+ Constants.AS_KW + " " + getDeclName()
