@@ -46,10 +46,10 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
-import org.scribble.ast.name.qualified.DataTypeNode;
-import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.ast.name.qualified.MessageSigNameNode;
+import org.scribble.ast.name.qualified.DataNameNode;
+import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.ast.name.qualified.LProtoNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.ExtIdNode;
@@ -58,7 +58,7 @@ import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.ast.name.simple.TypeParamNode;
+import org.scribble.ast.name.simple.DataParamNode;
 
 
 // A dec method for each AST class -- method name must be the same as target class name
@@ -68,21 +68,21 @@ public interface DelDecorator
 {
 	void decorate(ScribNode n);
 
-	void AmbigNameNode(AmbigNameNode n);
-	void TypeParamNode(TypeParamNode n);
-	void ExtIdNode(ExtIdNode n);
 	void IdNode(IdNode n);
-	void SigParamNode(SigParamNode n);
+	void ExtIdNode(ExtIdNode n);
 
+	void AmbigNameNode(AmbigNameNode n);
+	void DataParamNode(DataParamNode n);
 	void OpNode(OpNode n);
 	void RecVarNode(RecVarNode n);
 	void RoleNode(RoleNode n);
+	void SigParamNode(SigParamNode n);
 
-	void MessageSigNameNode(MessageSigNameNode n);
-	void DataTypeNode(DataTypeNode n);
+	void DataNameNode(DataNameNode n);
 	void ModuleNameNode(ModuleNameNode n);
-	void GProtocolNameNode(GProtocolNameNode n);
-	void LProtocolNameNode(LProtocolNameNode n);
+	void GProtoNameNode(GProtoNameNode n);
+	void LProtoNameNode(LProtoNameNode n);
+	void SigNameNode(SigNameNode n);
 	
 	void Module(Module m);
 

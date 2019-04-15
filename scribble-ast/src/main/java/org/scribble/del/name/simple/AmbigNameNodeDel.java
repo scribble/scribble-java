@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.name.qualified.DataTypeNode;
-import org.scribble.ast.name.qualified.MessageSigNameNode;
+import org.scribble.ast.name.qualified.DataNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.ast.name.simple.TypeParamNode;
+import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
@@ -63,8 +63,8 @@ public class AmbigNameNodeDel extends ScribDelBase
 
 			//DataTypeNode res = new DataTypeNode(ann.token);  // CHECKME: what should the Token be?
 			//DataTypeNode res = new DataTypeNode(new CommonToken(73, "TYPENAME"));  // FIXME: use af
-			DataTypeNode res = (DataTypeNode) disamb.lang.config.af
-					.DataTypeNode(ann.getElements().stream()
+			DataNameNode res = (DataNameNode) disamb.lang.config.af
+					.DataNameNode(ann.getElements().stream()
 							.map(x -> disamb.lang.config.af.IdNode(x))
 							.collect(Collectors.toList()));
 
@@ -85,8 +85,8 @@ public class AmbigNameNodeDel extends ScribDelBase
 
 			//MessageSigNameNode res = new MessageSigNameNode(ann.token);  // CHECME: what should the Token be?
 			//MessageSigNameNode res = new MessageSigNameNode(new CommonToken(67, "SIGNAME"));  // FIXME: use af
-			MessageSigNameNode res = (MessageSigNameNode) disamb.lang.config.af
-					.MessageSigNameNode(ann.getElements().stream()
+			SigNameNode res = (SigNameNode) disamb.lang.config.af
+					.SigNameNode(ann.getElements().stream()
 							.map(x -> disamb.lang.config.af.IdNode(x))
 							.collect(Collectors.toList()));
 
@@ -104,7 +104,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 			{
 				//TypeParamNode res = new TypeParamNode(ann.token);  // CHECKME: what should the Token be?
 				//TypeParamNode res = new TypeParamNode(75, ann.token);  // CHECKME: what should the Token be?
-				TypeParamNode res = disamb.lang.config.af.TypeParamNode(ann.getText());  // CHECKME: what should the Token be?
+				DataParamNode res = disamb.lang.config.af.DataParamNode(ann.getText());  // CHECKME: what should the Token be?
 
 				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
 

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDelegationElem;
-import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.lang.context.ModuleContext;
@@ -45,7 +45,7 @@ public class GDelegationElemDel extends ScribDelBase
 	{
 		ModuleContext mc = disamb.getModuleContext();
 		GDelegationElem de = (GDelegationElem) child;
-		GProtocolNameNode proto = de.getProtocolChild();
+		GProtoNameNode proto = de.getProtocolChild();
 		GProtocolName gpn = proto.toName();
 		if (!mc.isVisibleProtocolDeclName(gpn))
 		{
@@ -74,8 +74,8 @@ public class GDelegationElemDel extends ScribDelBase
 		}
 		List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
 				.map(x -> disamb.lang.config.af.IdNode(x)).collect(Collectors.toList());
-		GProtocolNameNode pnn = (GProtocolNameNode) disamb.lang.config.af
-				.GProtocolNameNode(elems);
+		GProtoNameNode pnn = (GProtoNameNode) disamb.lang.config.af
+				.GProtoNameNode(elems);
 				// Not keeping original namenode del
 		return de.reconstruct(pnn, r);
 	}

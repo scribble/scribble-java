@@ -16,7 +16,7 @@ package org.scribble.del.name.qualified;
 import org.antlr.runtime.CommonToken;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.name.qualified.DataTypeNode;
+import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.DataType;
@@ -42,7 +42,7 @@ public class DataTypeNodeDel extends ScribDelBase
 			return visited;
 		}
 		ModuleContext mc = disamb.getModuleContext();
-		DataTypeNode dtn = (DataTypeNode) visited;
+		DataNameNode dtn = (DataNameNode) visited;
 		DataType dt = dtn.toName();
 		if (!mc.isVisibleDataType(dt))
 		{
@@ -52,7 +52,7 @@ public class DataTypeNodeDel extends ScribDelBase
 		DataType fullname = mc.getVisibleDataTypeFullName(dt);
 		/*return (DataTypeNode) disamb.job.config.af.QualifiedNameNode(
 				dtn.getSource(), DataTypeKind.KIND, fullname.getElements());*/
-		DataTypeNode res = new DataTypeNode(dtn.token);
+		DataNameNode res = new DataNameNode(dtn.token);
 		for (String e : fullname.getElements())
 		{
 			IdNode n = new IdNode(new CommonToken(23, e));  // FIXME TODO: refactor ast into parser module to access token type constants

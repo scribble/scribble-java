@@ -50,10 +50,10 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
-import org.scribble.ast.name.qualified.DataTypeNode;
-import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.ast.name.qualified.MessageSigNameNode;
+import org.scribble.ast.name.qualified.DataNameNode;
+import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.ast.name.qualified.LProtoNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.ExtIdNode;
@@ -62,7 +62,7 @@ import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.ast.name.simple.TypeParamNode;
+import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.DelDecorator;
 import org.scribble.del.ImportModuleDel;
@@ -429,13 +429,13 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 
 	@Override
-	public void MessageSigNameNode(MessageSigNameNode n)
+	public void SigNameNode(SigNameNode n)
 	{
 		setDel(n, new MessageSigNameNodeDel());
 	}
 
 	@Override
-	public void DataTypeNode(DataTypeNode n)
+	public void DataNameNode(DataNameNode n)
 	{
 		setDel(n, new DataTypeNodeDel());
 	}
@@ -447,13 +447,13 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 
 	@Override
-	public void GProtocolNameNode(GProtocolNameNode n)
+	public void GProtoNameNode(GProtoNameNode n)
 	{
 		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void LProtocolNameNode(LProtocolNameNode n)
+	public void LProtoNameNode(LProtoNameNode n)
 	{
 		setDel(n, createDefaultDelegate());
 	}
@@ -540,7 +540,7 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 
 	@Override
-	public void TypeParamNode(TypeParamNode n)
+	public void DataParamNode(DataParamNode n)
 	{
 		setDel(n, new NonRoleParamNodeDel());
 	}

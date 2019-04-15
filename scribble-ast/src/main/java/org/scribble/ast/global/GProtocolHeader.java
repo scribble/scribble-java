@@ -15,7 +15,7 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.ProtocolHeader;
-import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.util.Constants;
@@ -41,9 +41,9 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GScribNod
 	}
 	
 	@Override
-	public GProtocolNameNode getNameNodeChild()
+	public GProtoNameNode getNameNodeChild()
 	{
-		return (GProtocolNameNode) getRawNameNodeChild();
+		return (GProtoNameNode) getRawNameNodeChild();
 	}
 
 	@Override

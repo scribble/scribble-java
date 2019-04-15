@@ -18,25 +18,25 @@ import org.scribble.ast.MessageNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.MessageSigName;
 
-public class MessageSigNameNode extends MemberNameNode<SigKind>
+public class SigNameNode extends MemberNameNode<SigKind>
 		implements MessageNode
 {
 	// ScribTreeAdaptor#create constructor
-	public MessageSigNameNode(Token t)
+	public SigNameNode(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	protected MessageSigNameNode(MessageSigNameNode node)
+	protected SigNameNode(SigNameNode node)
 	{
 		super(node);
 	}
 	
 	@Override
-	public MessageSigNameNode dupNode()
+	public SigNameNode dupNode()
 	{
-		return new MessageSigNameNode(this);
+		return new SigNameNode(this);
 	}
 
 	@Override
@@ -73,17 +73,17 @@ public class MessageSigNameNode extends MemberNameNode<SigKind>
 		{
 			return true;
 		}
-		if (!(o instanceof MessageSigNameNode))
+		if (!(o instanceof SigNameNode))
 		{
 			return false;
 		}
-		return ((MessageSigNameNode) o).canEqual(this) && super.equals(o);
+		return ((SigNameNode) o).canEqual(this) && super.equals(o);
 	}
 
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof MessageSigNameNode;
+		return o instanceof SigNameNode;
 	}
 
 	@Override

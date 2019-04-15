@@ -14,7 +14,7 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.name.qualified.MessageSigNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.MessageSigName;
 import org.scribble.core.type.name.ModuleName;
@@ -35,9 +35,9 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	}
 	
 	@Override
-	public MessageSigNameNode getNameNodeChild()
+	public SigNameNode getNameNodeChild()
 	{
-		return (MessageSigNameNode) getRawNameNodeChild();
+		return (SigNameNode) getRawNameNodeChild();
 	}
 
 	// Cf. CommonTree#dupNode

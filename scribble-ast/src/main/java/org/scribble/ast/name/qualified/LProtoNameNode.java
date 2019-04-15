@@ -20,25 +20,25 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.session.Arg;
 
-public class LProtocolNameNode extends ProtocolNameNode<Local>
+public class LProtoNameNode extends ProtocolNameNode<Local>
 		implements PayloadElemNameNode<Local>
 {
 	// ScribTreeAdaptor#create constructor
-	public LProtocolNameNode(Token t)
+	public LProtoNameNode(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	protected LProtocolNameNode(LProtocolNameNode node)
+	protected LProtoNameNode(LProtoNameNode node)
 	{
 		super(node);
 	}
 	
 	@Override
-	public LProtocolNameNode dupNode()
+	public LProtoNameNode dupNode()
 	{
-		return new LProtocolNameNode(this);
+		return new LProtoNameNode(this);
 	}
 	
 	@Override
@@ -69,7 +69,7 @@ public class LProtocolNameNode extends ProtocolNameNode<Local>
 		{
 			return true;
 		}
-		if (!(o instanceof LProtocolNameNode))
+		if (!(o instanceof LProtoNameNode))
 		{
 			return false;
 		}
@@ -79,7 +79,7 @@ public class LProtocolNameNode extends ProtocolNameNode<Local>
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof LProtocolNameNode;
+		return o instanceof LProtoNameNode;
 	}
 	
 	@Override

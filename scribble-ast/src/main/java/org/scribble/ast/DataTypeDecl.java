@@ -14,7 +14,7 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.name.qualified.DataTypeNode;
+import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.ModuleName;
@@ -35,9 +35,9 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	}
 
 	@Override
-	public DataTypeNode getNameNodeChild()
+	public DataNameNode getNameNodeChild()
 	{
-		return (DataTypeNode) getRawNameNodeChild();
+		return (DataNameNode) getRawNameNodeChild();
 	}
 
 	// Cf. CommonTree#dupNode

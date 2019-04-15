@@ -31,9 +31,9 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.ast.name.qualified.DataTypeNode;
-import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.ast.name.qualified.MessageSigNameNode;
+import org.scribble.ast.name.qualified.DataNameNode;
+import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.ExtIdNode;
@@ -43,7 +43,7 @@ import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.ast.name.simple.TypeParamNode;
+import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.PayloadTypeKind;
 
@@ -58,16 +58,16 @@ public interface AstFactory
 	ExtIdNode ExtIdNode(String text);
 
 	AmbigNameNode AmbigNameNode(String text);	 // Deprecate?  Never need to make ambigname "manually" via af?  (constructed only by ScribbleParser)
+	DataParamNode DataParamNode(String text);
 	OpNode OpNode(String text);
 	RecVarNode RecVarNode(String text);
 	RoleNode RoleNode(String text);
 	SigParamNode SigParamNode(String text);
-	TypeParamNode TypeParamNode(String text);
 
-	DataTypeNode DataTypeNode(List<IdNode> elems);
-	GProtocolNameNode GProtocolNameNode(List<IdNode> elems);
+	DataNameNode DataNameNode(List<IdNode> elems);
+	GProtoNameNode GProtoNameNode(List<IdNode> elems);
 	ModuleNameNode ModuleNameNode(List<IdNode> elems);
-	MessageSigNameNode MessageSigNameNode(List<IdNode> elems);
+	SigNameNode SigNameNode(List<IdNode> elems);
 	
 	Module Module(ModuleDecl mdecl,
 			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
@@ -75,7 +75,7 @@ public interface AstFactory
 
 	MessageSigNode MessageSigNode(OpNode op, PayloadElemList pay);
 
-	GDelegationElem GDelegationElem(GProtocolNameNode name,
+	GDelegationElem GDelegationElem(GProtoNameNode name,
 			RoleNode r);
 
 	PayloadElemList PayloadElemList(List<PayloadElem<?>> elems);
@@ -90,15 +90,15 @@ public interface AstFactory
 			ModuleNameNode alias);
 
 	MessageSigNameDecl MessageSigNameDecl(IdNode schema, IdNode extName,
-			IdNode extSource, MessageSigNameNode name);
+			IdNode extSource, SigNameNode name);
 
 	DataTypeDecl DataTypeDecl(IdNode schema, IdNode extName,
-			IdNode extSource, DataTypeNode name);
+			IdNode extSource, DataNameNode name);
 
 	GProtocolDecl GProtocolDecl(ProtocolModList modifiers,
 			GProtocolHeader header, GProtocolDef def);
 
-	GProtocolHeader GProtocolHeader(GProtocolNameNode name,
+	GProtocolHeader GProtocolHeader(GProtoNameNode name,
 			RoleDeclList rdecls, NonRoleParamDeclList paramdecls);
 
 	RoleDeclList RoleDeclList(List<RoleDecl> ds);
@@ -136,7 +136,7 @@ public interface AstFactory
 	GContinue GContinue(RecVarNode rv);
 
 	GDo GDo(RoleArgList rs, NonRoleArgList args,
-			GProtocolNameNode proto);
+			GProtoNameNode proto);
 
 	RoleArgList RoleArgList(List<RoleArg> rs);
 

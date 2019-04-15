@@ -16,7 +16,7 @@ package org.scribble.ast.global;
 import org.antlr.runtime.Token;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNodeBase;
-import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GDelegationType;
@@ -45,9 +45,9 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	}
 
   // Becomes full name after disambiguation
-	public GProtocolNameNode getProtocolChild()
+	public GProtoNameNode getProtocolChild()
 	{
-		return (GProtocolNameNode) getChild(PROTO_CHILD_INDEX);
+		return (GProtoNameNode) getChild(PROTO_CHILD_INDEX);
 	}
 	
 	public RoleNode getRoleChild()
@@ -61,7 +61,7 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 		return new GDelegationElem(this);
 	}
 
-	public GDelegationElem reconstruct(GProtocolNameNode proto, RoleNode role)
+	public GDelegationElem reconstruct(GProtoNameNode proto, RoleNode role)
 	{
 		GDelegationElem dup = dupNode();
 		dup.addChild(proto);
@@ -73,7 +73,7 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	@Override
 	public GDelegationElem visitChildren(AstVisitor nv) throws ScribException
 	{
-		GProtocolNameNode name = (GProtocolNameNode) 
+		GProtoNameNode name = (GProtoNameNode) 
 				visitChild(getProtocolChild(), nv);
 		RoleNode role = (RoleNode) visitChild(getRoleChild(), nv);
 		return reconstruct(name, role);

@@ -15,7 +15,7 @@ package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.Do;
-import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
@@ -36,9 +36,9 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	}
 
 	@Override
-	public GProtocolNameNode getProtocolNameNode()
+	public GProtoNameNode getProtocolNameNode()
 	{
-		return (GProtocolNameNode) getChild(Do.NAME_CHILD_INDEX);
+		return (GProtoNameNode) getChild(Do.NAME_CHILD_INDEX);
 	}
 
 	@Override

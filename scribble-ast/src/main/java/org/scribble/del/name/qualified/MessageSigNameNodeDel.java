@@ -16,7 +16,7 @@ package org.scribble.del.name.qualified;
 import org.antlr.runtime.CommonToken;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.name.qualified.MessageSigNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.MessageSigName;
@@ -42,12 +42,12 @@ public class MessageSigNameNodeDel extends ScribDelBase
 			return visited;
 		}
 		ModuleContext mc = disamb.getModuleContext();
-		MessageSigNameNode msnn = (MessageSigNameNode) visited;
+		SigNameNode msnn = (SigNameNode) visited;
 		MessageSigName fullname = 
 				mc.getVisibleMessageSigNameFullName(msnn.toName());
 		/*return (MessageSigNameNode) disamb.job.config.af.QualifiedNameNode(
 				msnn.getSource(), SigKind.KIND, fullname.getElements());*/
-		MessageSigNameNode res = new MessageSigNameNode(msnn.token);
+		SigNameNode res = new SigNameNode(msnn.token);
 		for (String e : fullname.getElements())
 		{
 			IdNode n = new IdNode(new CommonToken(23, e));  // FIXME TODO: refactor ast into parser module to access token type constants

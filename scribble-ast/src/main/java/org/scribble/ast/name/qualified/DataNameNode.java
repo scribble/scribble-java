@@ -11,68 +11,64 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.name.simple;
+package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.session.Arg;
 
-public class TypeParamNode extends NonRoleParamNode<DataTypeKind>
-		implements PayloadElemNameNode<DataTypeKind>  // As a payload, can only be a DataType (so hardcode)
+//public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
+public class DataNameNode extends MemberNameNode<DataTypeKind>
+		implements PayloadElemNameNode<DataTypeKind>
 {
-	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
-	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
-	public TypeParamNode(int ttype, Token t)
+	// ScribTreeAdaptor#create constructor
+	public DataNameNode(Token t)
 	{
-		super(t, DataTypeKind.KIND);
+		super(t);
 	}
 
 	// Tree#dupNode constructor
-	protected TypeParamNode(TypeParamNode node)
+	protected DataNameNode(DataNameNode node)
 	{
 		super(node);
 	}
 	
 	@Override
-	public TypeParamNode dupNode()
+	public DataNameNode dupNode()
 	{
-		return new TypeParamNode(this);
-	}
-	
-	@Override
-	public DataType toName()
-	{
-		return new DataType(getText());
+		return new DataNameNode(this);
 	}
 
 	@Override
-	public DataType toArg()
+	public DataType toName()
 	{
-		// As a payload kind, currently hardcorded to data type kinds (protocol payloads not supported)
+		DataType membname = new DataType(getLastElement());
+		return isPrefixed()
+				? new DataType(getModuleNamePrefix(), membname)
+		    : membname;
+	}
+
+	@Override
+	public boolean isDataTypeNameNode()
+	{
+		return true;
+	}
+
+	@Override
+	public Arg<DataTypeKind> toArg()
+	{
 		return toPayloadType();
 	}
 
 	@Override
-	public DataType toPayloadType()  // Currently can assume the only possible kind for NonRoleParamNode is DataTypeKind
+	public DataType toPayloadType()
 	{
 		return toName();
 	}
 
-	@Override
-	public boolean isTypeParamNode()
-	{
-		return true;
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		int hash = 8599;
-		hash = 31 * super.hashCode();
-		return hash;
-	}
-
+  // CHECKME: is equals/hashCode actually needed for these ScribNodes? (cf. Name)
 	@Override
 	public boolean equals(Object o)
 	{
@@ -80,16 +76,24 @@ public class TypeParamNode extends NonRoleParamNode<DataTypeKind>
 		{
 			return true;
 		}
-		if (!(o instanceof TypeParamNode))
+		if (!(o instanceof DataNameNode))
 		{
 			return false;
 		}
-		return super.equals(o);
+		return ((DataNameNode) o).canEqual(this) && super.equals(o);
 	}
 	
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof TypeParamNode;
+		return o instanceof DataNameNode;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 409;
+		hash = 31 * hash + super.hashCode();
+		return hash;
 	}
 }

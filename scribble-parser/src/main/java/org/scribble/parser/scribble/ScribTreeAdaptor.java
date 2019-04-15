@@ -53,9 +53,9 @@ import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
-import org.scribble.ast.name.qualified.DataTypeNode;
-import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.ast.name.qualified.MessageSigNameNode;
+import org.scribble.ast.name.qualified.DataNameNode;
+import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
@@ -88,10 +88,10 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			
 			// Simple names "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
 
-			case ScribbleParser.GPROTO_NAME: return new GProtocolNameNode(t);
+			case ScribbleParser.GPROTO_NAME: return new GProtoNameNode(t);
 			case ScribbleParser.MODULE_NAME: return new ModuleNameNode(t);
-			case ScribbleParser.DATA_NAME: return new DataTypeNode(t);
-			case ScribbleParser.SIG_NAME: return new MessageSigNameNode(t);
+			case ScribbleParser.DATA_NAME: return new DataNameNode(t);
+			case ScribbleParser.SIG_NAME: return new SigNameNode(t);
 
 			case ScribbleParser.MODULE: return new Module(t);
 			case ScribbleParser.MODULEDECL: return new ModuleDecl(t);

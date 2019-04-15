@@ -17,24 +17,24 @@ import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtocolName;
 
-public class GProtocolNameNode extends ProtocolNameNode<Global>
+public class GProtoNameNode extends ProtocolNameNode<Global>
 {
 	// ScribTreeAdaptor#create constructor
-	public GProtocolNameNode(Token t)
+	public GProtoNameNode(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public GProtocolNameNode(GProtocolNameNode node)
+	public GProtoNameNode(GProtoNameNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public GProtocolNameNode dupNode()
+	public GProtoNameNode dupNode()
 	{
-		return new GProtocolNameNode(this);
+		return new GProtoNameNode(this);
 	}
 	
 	@Override
@@ -53,17 +53,17 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 		{
 			return true;
 		}
-		if (!(o instanceof GProtocolNameNode))
+		if (!(o instanceof GProtoNameNode))
 		{
 			return false;
 		}
-		return ((GProtocolNameNode) o).canEqual(this) && super.equals(o);
+		return ((GProtoNameNode) o).canEqual(this) && super.equals(o);
 	}
 	
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GProtocolNameNode;
+		return o instanceof GProtoNameNode;
 	}
 	
 	@Override

@@ -86,7 +86,7 @@ public abstract class DoDel extends SimpleSessionNodeDel
 					.map(x -> lang.config.af.IdNode(x)).collect(Collectors.toList());
 			@SuppressWarnings("unchecked") // FIXME
 			ProtocolNameNode<K> cast = (ProtocolNameNode<K>) lang.config.af
-					.GProtocolNameNode(elems);
+					.GProtoNameNode(elems);
 			return cast;
 		}
 		throw new RuntimeException("[TODO] " + fullname.getKind() + ": " + fullname);
