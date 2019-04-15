@@ -15,6 +15,7 @@ package org.scribble.ast;
 
 import java.util.List;
 
+import org.antlr.runtime.Token;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
@@ -23,10 +24,10 @@ import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GMsgTransfer;
-import org.scribble.ast.global.GProtoDecl;
-import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GProtoBlock;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.ast.global.GProtoDef;
+import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
@@ -47,76 +48,78 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.PayElemKind;
 
 
-// CHECKME: add Token params back (for better transformation, cf. ScribNodeBase.source), and use null for "fresh"?
+// Pass null as Token t to create a fresh Token
 // AstFactory is for making "fresh" nodes ("fresh" Tokens) with new dels -- cf. ScribNode reconstruct pattern (for Token and del preservation)
 // Implementations located in scribble-parser, use ScribbleParser for Token construction
 // Currently, used only in relatively niche places (since ANTLR now constructs all parsed nodes "directly")
 public interface AstFactory
 {
-	IdNode IdNode(String text);
-	ExtIdNode ExtIdNode(String text);
+	IdNode IdNode(Token t, String text);
+	ExtIdNode ExtIdNode(Token t, String text);
 
-	AmbigNameNode AmbigNameNode(String text);	 // Deprecate?  Never need to make ambigname "manually" via af?  (constructed only by ScribbleParser)
-	DataParamNode DataParamNode(String text);
-	OpNode OpNode(String text);
-	RecVarNode RecVarNode(String text);
-	RoleNode RoleNode(String text);
-	SigParamNode SigParamNode(String text);
+	AmbigNameNode AmbigNameNode(Token t, String text);	 // Deprecate?  Never need to make ambigname "manually" via af?  (constructed only by ScribbleParser)
+	DataParamNode DataParamNode(Token t, String text);
+	OpNode OpNode(Token t, String text);
+	RecVarNode RecVarNode(Token t, String text);
+	RoleNode RoleNode(Token t, String text);
+	SigParamNode SigParamNode(Token t, String text);
 
-	DataNameNode DataNameNode(List<IdNode> elems);
-	GProtoNameNode GProtoNameNode(List<IdNode> elems);
-	ModuleNameNode ModuleNameNode(List<IdNode> elems);
-	SigNameNode SigNameNode(List<IdNode> elems);
+	DataNameNode DataNameNode(Token t, List<IdNode> elems);
+	GProtoNameNode GProtoNameNode(Token t, List<IdNode> elems);
+	ModuleNameNode ModuleNameNode(Token t, List<IdNode> elems);
+	SigNameNode SigNameNode(Token t, List<IdNode> elems);
 	
-	Module Module(ModuleDecl mdecl, List<ImportDecl<?>> imports,
+	Module Module(Token t, ModuleDecl mdecl, List<ImportDecl<?>> imports,
 			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos);
-	ModuleDecl ModuleDecl(ModuleNameNode fullname);
-	ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias);
+	ModuleDecl ModuleDecl(Token t, ModuleNameNode fullname);
+	ImportModule ImportModule(Token t, ModuleNameNode modname,
+			ModuleNameNode alias);
 
-	DataDecl DataDecl(IdNode schema, IdNode extName, IdNode extSource,
+	DataDecl DataDecl(Token t, IdNode schema, IdNode extName, IdNode extSource,
 			DataNameNode name);
-	SigDecl SigDecl(IdNode schema, IdNode extName, IdNode extSource,
+	SigDecl SigDecl(Token t, IdNode schema, IdNode extName, IdNode extSource,
 			SigNameNode name);
-	GProtoDecl GProtoDecl(ProtoModList mods, GProtoHeader header,
+	GProtoDecl GProtoDecl(Token t, ProtoModList mods, GProtoHeader header,
 			GProtoDef def);
 
 	// TODO: add ProtoModList, etc.
 
-	GProtoHeader GProtocolHeader(GProtoNameNode name, RoleDeclList rs,
+	GProtoHeader GProtocolHeader(Token t, GProtoNameNode name, RoleDeclList rs,
 			NonRoleParamDeclList ps);
-	RoleDeclList RoleDeclList(List<RoleDecl> ds);
-	RoleDecl RoleDecl(RoleNode r);
-	NonRoleParamDeclList NonRoleParamDeclList(
+	RoleDeclList RoleDeclList(Token t, List<RoleDecl> ds);
+	RoleDecl RoleDecl(Token t, RoleNode r);
+	NonRoleParamDeclList NonRoleParamDeclList(Token t, 
 			List<NonRoleParamDecl<NonRoleParamKind>> ds);
-	DataParamDecl DataParamDecl(DataParamNode p);
-	SigParamDecl SigParamDecl(SigParamNode p);
+	DataParamDecl DataParamDecl(Token t, DataParamNode p);
+	SigParamDecl SigParamDecl(Token t, SigParamNode p);
 
-	GProtoDef GProtoDef(GProtoBlock block);
-	GProtoBlock GProtoBlock(GInteractionSeq seq);
-	GInteractionSeq GInteractionSeq(List<GSessionNode> elems);
+	GProtoDef GProtoDef(Token t, GProtoBlock block);
+	GProtoBlock GProtoBlock(Token t, GInteractionSeq seq);
+	GInteractionSeq GInteractionSeq(Token t, List<GSessionNode> elems);
 
-	SigLitNode SigLitNode(OpNode op, PayElemList pay);
-	PayElemList PayElemList(List<PayElem<?>> elems);
-	<K extends PayElemKind> UnaryPayElem<K> UnaryPayElem(
+	SigLitNode SigLitNode(Token t, OpNode op, PayElemList pay);
+	PayElemList PayElemList(Token t, List<PayElem<?>> elems);
+	<K extends PayElemKind> UnaryPayElem<K> UnaryPayElem(Token t, 
 			PayElemNameNode<K> name);
-	GDelegPayElem GDelegPayElem(GProtoNameNode name, RoleNode r);
+	GDelegPayElem GDelegPayElem(Token t, GProtoNameNode name, RoleNode r);
 
-	GConnect GConnect(RoleNode src, MsgNode msg, RoleNode dst);
-	GDisconnect GDisconnect(RoleNode src, RoleNode dst);
-	GMsgTransfer GMsgTransfer(RoleNode src, MsgNode msg, List<RoleNode> dsts);
-	GWrap GWrap(RoleNode src, RoleNode dst);
+	GConnect GConnect(Token t, RoleNode src, MsgNode msg, RoleNode dst);
+	GDisconnect GDisconnect(Token t, RoleNode src, RoleNode dst);
+	GMsgTransfer GMsgTransfer(Token t, RoleNode src, MsgNode msg,
+			List<RoleNode> dsts);
+	GWrap GWrap(Token t, RoleNode src, RoleNode dst);
 
-	GContinue GContinue(RecVarNode rv);
-	GDo GDo(RoleArgList rs, NonRoleArgList args,
+	GContinue GContinue(Token t, RecVarNode rv);
+	GDo GDo(Token t, RoleArgList rs, NonRoleArgList args,
 			GProtoNameNode proto);
 
-	GChoice GChoice(RoleNode subj, List<GProtoBlock> blocks);
-	GRecursion GRecursion(RecVarNode rv, GProtoBlock block);
+	GChoice GChoice(Token t, RoleNode subj, List<GProtoBlock> blocks);
+	GRecursion GRecursion(Token t, RecVarNode rv, GProtoBlock block);
 
-	RoleArgList RoleArgList(List<RoleArg> rs);
-	RoleArg RoleArg(RoleNode r);
-	NonRoleArgList NonRoleArgList(List<NonRoleArg> args);
-	NonRoleArg NonRoleArg(NonRoleArgNode arg);
+	RoleArgList RoleArgList(Token t, List<RoleArg> rs);
+	RoleArg RoleArg(Token t, RoleNode r);
+	NonRoleArgList NonRoleArgList(Token t, List<NonRoleArg> args);
+	NonRoleArg NonRoleArg(Token t, NonRoleArgNode arg);
 }
 
 

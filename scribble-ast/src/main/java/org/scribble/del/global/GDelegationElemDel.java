@@ -57,12 +57,13 @@ public class GDelegationElemDel extends ScribDelBase
 	// Duplicated from DoDel
 	//@Override
 	public GDelegPayElem visitForNameDisambiguation(NameDisambiguator disamb,  // CHECKME: why "visitFor" pattern?
-			GDelegPayElem de) throws ScribException
+			GDelegPayElem deleg) throws ScribException
 	{
 		ModuleContext mc = disamb.getModuleContext();
+		GProtoNameNode proto = deleg.getProtocolChild();
 		GProtoName fullname = (GProtoName) mc
-				.getVisibleProtocolDeclFullName(de.getProtocolChild().toName());
-		RoleNode r = de.getRoleChild();
+				.getVisibleProtocolDeclFullName(proto.toName());
+		RoleNode r = deleg.getRoleChild();
 
 		Role rn = r.toName();
 		ProtoDecl<Global> gpd = disamb.lang.getContext()
@@ -70,13 +71,13 @@ public class GDelegationElemDel extends ScribDelBase
 				.getGProtocolDeclChild(fullname.getSimpleName());
 		if (!gpd.getHeaderChild().getRoleDeclListChild().getRoles().contains(rn))
 		{
-			throw new ScribException(r.getSource(), "Invalid delegation role: " + de);
+			throw new ScribException(r.getSource(), "Invalid delegation role: " + deleg);
 		}
 		List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
-				.map(x -> disamb.lang.config.af.IdNode(x)).collect(Collectors.toList());
+				.map(x -> disamb.lang.config.af.IdNode(null, x)).collect(Collectors.toList());
 		GProtoNameNode pnn = (GProtoNameNode) disamb.lang.config.af
-				.GProtoNameNode(elems);
+				.GProtoNameNode(proto.token, elems);
 				// Not keeping original namenode del
-		return de.reconstruct(pnn, r);
+		return deleg.reconstruct(pnn, r);
 	}
 }

@@ -64,8 +64,8 @@ public class AmbigNameNodeDel extends ScribDelBase
 			//DataTypeNode res = new DataTypeNode(ann.token);  // CHECKME: what should the Token be?
 			//DataTypeNode res = new DataTypeNode(new CommonToken(73, "TYPENAME"));  // FIXME: use af
 			DataNameNode res = (DataNameNode) disamb.lang.config.af
-					.DataNameNode(ann.getElements().stream()
-							.map(x -> disamb.lang.config.af.IdNode(x))
+					.DataNameNode(ann.token, ann.getElements().stream()
+							.map(x -> disamb.lang.config.af.IdNode(null, x))
 							.collect(Collectors.toList()));
 
 			//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
@@ -86,8 +86,8 @@ public class AmbigNameNodeDel extends ScribDelBase
 			//MessageSigNameNode res = new MessageSigNameNode(ann.token);  // CHECME: what should the Token be?
 			//MessageSigNameNode res = new MessageSigNameNode(new CommonToken(67, "SIGNAME"));  // FIXME: use af
 			SigNameNode res = (SigNameNode) disamb.lang.config.af
-					.SigNameNode(ann.getElements().stream()
-							.map(x -> disamb.lang.config.af.IdNode(x))
+					.SigNameNode(ann.token, ann.getElements().stream()
+							.map(x -> disamb.lang.config.af.IdNode(null, x))
 							.collect(Collectors.toList()));
 
 			//res.addChildren(ann.getChildren());
@@ -104,7 +104,8 @@ public class AmbigNameNodeDel extends ScribDelBase
 			{
 				//TypeParamNode res = new TypeParamNode(ann.token);  // CHECKME: what should the Token be?
 				//TypeParamNode res = new TypeParamNode(75, ann.token);  // CHECKME: what should the Token be?
-				DataParamNode res = disamb.lang.config.af.DataParamNode(ann.getText());  // CHECKME: what should the Token be?
+				DataParamNode res = disamb.lang.config.af.DataParamNode(ann.token,
+						ann.getText());
 
 				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
 
@@ -113,7 +114,8 @@ public class AmbigNameNodeDel extends ScribDelBase
 			else if (kind.equals(SigKind.KIND))
 			{
 				//SigParamNode res = new SigParamNode(69, ann.token);  // CHECKME: what should the Token be?
-				SigParamNode res = disamb.lang.config.af.SigParamNode(ann.getText());  // CHECKME: what should the Token be?
+				SigParamNode res = disamb.lang.config.af.SigParamNode(ann.token,
+						ann.getText());
 
 				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
 

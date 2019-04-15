@@ -25,7 +25,6 @@ import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.ProtoName;
-import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
 
@@ -65,28 +64,29 @@ public abstract class DoDel extends SimpleSessionNodeDel
 			Do<K> visited, NameDisambiguator disamb) throws ScribException
 	{
 		ProtoNameNode<K> proto = visited.getProtocolNameNode();
-		ModuleContext modc = disamb.getModuleContext();
-		ProtoName<K> fullname = modc
-				.getVisibleProtocolDeclFullName(proto.toName());
 
 		// CHECKME: do full name expansion in disamb?  or leave to imed translation? -- FIXME: sort out full name expansion between here and GDoDel.translate
-		ProtoNameNode<K> n = foo(disamb.lang, fullname);
+		ProtoNameNode<K> n = makeProtoNameNode(disamb, proto);
 		
 		// Didn't keep original namenode del -- ?
 		return visited.reconstruct(visited.getRoleListChild(),
 				visited.getNonRoleListChild(), n);
 	}
 	
-	private <K extends ProtoKind> ProtoNameNode<K> foo(Lang lang,
-			ProtoName<K> fullname)
+	private <K extends ProtoKind> ProtoNameNode<K> makeProtoNameNode(
+			NameDisambiguator disamb, ProtoNameNode<K> proto)
 	{
+		ModuleContext modc = disamb.getModuleContext();
+		ProtoName<K> fullname = modc
+				.getVisibleProtocolDeclFullName(proto.toName());
 		if (fullname instanceof GProtoName)
 		{
 			List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
-					.map(x -> lang.config.af.IdNode(x)).collect(Collectors.toList());
+					.map(x -> disamb.lang.config.af.IdNode(null, x))
+					.collect(Collectors.toList());
 			@SuppressWarnings("unchecked") // FIXME
-			ProtoNameNode<K> cast = (ProtoNameNode<K>) lang.config.af
-					.GProtoNameNode(elems);
+			ProtoNameNode<K> cast = (ProtoNameNode<K>) disamb.lang.config.af
+					.GProtoNameNode(proto.token, elems);
 			return cast;
 		}
 		throw new RuntimeException("[TODO] " + fullname.getKind() + ": " + fullname);
