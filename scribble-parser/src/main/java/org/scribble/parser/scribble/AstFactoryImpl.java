@@ -658,6 +658,24 @@ public class AstFactoryImpl implements AstFactory
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 	@Override
 	public DummyProjectionRoleNode DummyProjectionRoleNode()

@@ -160,6 +160,16 @@ public interface AstFactory
 
 
 
+
+
+
+
+
+
+
+
+
+
 /*
 	DummyProjectionRoleNode DummyProjectionRoleNode();
 

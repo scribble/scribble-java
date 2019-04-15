@@ -178,7 +178,8 @@ tokens
 {
   // Abort tool run on parsing errors (and display user-friendly message) -- obsoletes CommonErrorNode check?
   @Override    
-  public void displayRecognitionError(String[] tokenNames, RecognitionException e)
+  public void displayRecognitionError(String[] tokenNames, 
+  		RecognitionException e)
   {
     super.displayRecognitionError(tokenNames, e);
     System.exit(1);
@@ -532,17 +533,17 @@ gseq:
 ;
 
 ginteraction:
-// Simple session node: directed interaction
+	// Simple session node: directed interaction
   gconnect | gmsgtransfer
 
-// Simple session node: basic interaction
-| gwrap | gdisconnect 
+	// Simple session node: basic interaction
+	| gwrap | gdisconnect 
 
-// Simple session node (other)
-| gcontinue | gdo 
+	// Simple session node (other)
+	| gcontinue | gdo 
 
-// Compound session node
-| gchoice | grecursion
+	// Compound session node
+	| gchoice | grecursion
 ; 
 
 
@@ -579,8 +580,9 @@ gdisconnect:
 ;
 
 gwrap:
-   t=WRAP_KW rolename TO_KW rolename ';'
--> ^(GWRAP[$t] rolename rolename)
+	t=WRAP_KW rolename TO_KW rolename ';'
+->
+	^(GWRAP[$t] rolename rolename)
 ;
 
 

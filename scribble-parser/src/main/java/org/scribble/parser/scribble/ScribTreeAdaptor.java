@@ -51,6 +51,7 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
@@ -123,7 +124,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.GDCONN: return new GDisconnect(t);
 			case ScribbleParser.GDO: return new GDo(t);
 			case ScribbleParser.GMSGTRANSFER: return new GMessageTransfer(t);
-			case ScribbleParser.GWRAP: throw new RuntimeException("[TODO] GWrap: " + t);
+			case ScribbleParser.GWRAP: return new GWrap(t);
 				
 			case ScribbleParser.ROLEARG_LIST: return new RoleArgList(t);
 			case ScribbleParser.ROLEARG: return new RoleArg(t);

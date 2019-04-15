@@ -150,6 +150,11 @@ public interface DelDecorator
 	
 	
 	
+	
+	
+	
+	
+	
 	/*DummyProjectionRoleNode DummyProjectionRoleNode();
 
 	LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def);  // Not currently used -- local protos not parsed, only projected
