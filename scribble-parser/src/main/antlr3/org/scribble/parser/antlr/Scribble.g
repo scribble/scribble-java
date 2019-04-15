@@ -78,8 +78,6 @@ tokens
 
   // Special cases
   EMPTY_OP = '__EMPTY_OP';
-  COMPOUND_NAME = '__COMPOUND_NAME';  
-      // N.B. an intermediate node type, not a concrete ScribNode -- "re-parsed" internally by parsePayloadElem/NonRoleArg
 
   // Simple names
   AMBIG_NAME = 'AMBIG_NAME';
@@ -183,63 +181,6 @@ tokens
   {
     super.displayRecognitionError(tokenNames, e);
     System.exit(1);
-  }
-
-  // qn is an IdNode "holder" for a "qualifiedname" COMPOUND_NAME -- see ScribTreeAdaptor
-  // CHECKME: do the returns of these "bypass" ScribTreeAdaptor?  specifically AmbigNode
-  public static CommonTree parsePayloadElem(CommonTree qn) throws RecognitionException
-  {
-    if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
-    {
-			// Cf. AstFactoryImpl, token creation
-      DataTypeNode dt = new DataTypeNode(new CommonToken(DATA_NAME, "DATA_NAME"));
-      ((List<?>) qn.getChildren()).forEach(x -> 
-          dt.addChild(new IdNode(new CommonToken(ID, ((CommonTree) x).getText()))));
-      UnaryPayloadElem pe = 
-          new UnaryPayloadElem(new CommonToken(UNARY_PAYELEM, "UNARYPAYLOADELEM"));
-      pe.addChild(dt);
-      return pe;
-    }
-    else //if (qn.getChildCount() == 1)
-    {
-      // Similar to NonRoleArg: cannot syntactically distinguish right now between a simple data name and a param name
-			// Cf. AstFactoryImpl, token creation
-      String text = qn.getChild(0).getText();
-      AmbigNameNode an = 
-          new AmbigNameNode(AMBIG_NAME, new CommonToken(ID, text));
-      UnaryPayloadElem e = new UnaryPayloadElem(
-          new CommonToken(UNARY_PAYELEM, "UNARYPAYLOADELEM"));
-      e.addChild(an);
-      return e;
-    }
-  }
-
-  // qn is an IdNode "holder" for a "qualifiedname" COMPOUND_NAME -- see ScribTreeAdaptor
-  // Only for "qualifiedName" (DataTypeNode or AmbigNameNode), not sig literals
-  public static CommonTree parseNonRoleArg(CommonTree qn) throws RecognitionException
-  {
-    if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
-    {
-			// Cf. AstFactoryImpl, token creation
-      DataTypeNode dt =
-      		new DataTypeNode(new CommonToken(DATA_NAME, "DATA_NAME"));
-      ((List<?>) qn.getChildren()).forEach(x -> 
-          dt.addChild(new IdNode(new CommonToken(ID, ((CommonTree) x).getText()))));
-      NonRoleArg a = 
-          new NonRoleArg(new CommonToken(ARG, "ARG"));
-      a.addChild(dt);
-      return a;
-    }
-    else //if (qn.getChildCount() == 1)
-    {
-			// Cf. AstFactoryImpl, token creation
-      String text = qn.getChild(0).getText();
-      AmbigNameNode an = 
-          new AmbigNameNode(AMBIG_NAME, new CommonToken(ID, text));
-      NonRoleArg a = new NonRoleArg(new CommonToken(ARG, "ARG"));
-      a.addChild(an);
-      return a;
-    }
   }
 
 	// Currently unused -- checking later in intermed translation instead of parsing
@@ -350,21 +291,18 @@ sigparamname: t=ID -> ID<SigParamNode>[$t];
 /**
  * Section 3.2.1 Package, Module and Module Member Names
  */
+// May be compound or simple
 gprotoname: t=ID ('.' ID)* -> ^(GPROTO_NAME[$t] ID+) ;
 modulename: t=ID ('.' ID)* -> ^(MODULE_NAME[$t] ID+) ;
-qualifiedname: t=ID ('.' ID)* -> ^(COMPOUND_NAME[$t] ID+) ;
-signame: t=ID ('.' ID)* -> ^(SIG_NAME[$t] ID+) ;
 
-/*// Not parsed as direct categories
-packagename: qualifiedname;
-membername: qualifiedname;
-protocolname: membername;
-payloadtypename: membername;  // data?  or also, e.g., deleg? */
+// Compound only
+qualifieddataname: t=ID '.' ID ('.' ID)* -> ^(DATA_NAME[$t] ID+) ;
+
 
 // Cf. primitive names, above
+simpledataname: t=ID -> ^(DATA_NAME[$t] ID) ;
 simplegprotoname: t=ID -> ^(GPROTO_NAME[$t] ID) ;
 simplemodulename: t=ID -> ^(MODULE_NAME[$t] ID) ;
-simpledataname: t=ID -> ^(DATA_NAME[$t] ID) ;
 simplesigname: t=ID -> ^(SIG_NAME[$t] ID) ;
 
 
@@ -430,33 +368,29 @@ sigdecl:
  * Section 3.5 Message Signatures
  */
 siglit:
-	opname '(' payelems ')'
-->
-	^(SIG_LIT opname payelems)
+	opname '(' payelems ')' -> ^(SIG_LIT opname payelems)
 ;
 // CHECKME: how to apply [$t] in such situations?
 
 payelems:
-->
-	^(PAYELEM_LIST)
+	-> ^(PAYELEM_LIST)
 |
-	payelem (',' payelem)*
-->
-	^(PAYELEM_LIST payelem+)
+	payelem (',' payelem)* -> ^(PAYELEM_LIST payelem+)
 ;
+	
 
 payelem:
 	// Payload element must be a data kind, cannot be a sig name
 	// Qualified name must be a data type name
 	// Also subsumes simple names, could be a data *param*
-	qualifiedname
-->
-	{ parsePayloadElem($qualifiedname.tree) }  // Use ".text" instead of ".tree" for token String 
+	gprotoname '@' rolename -> ^(DELEG_PAYELEM rolename gprotoname)
 |
-	gprotoname '@' rolename
-->
-	^(DELEG_PAYELEM rolename gprotoname)
+	ambigname -> ^(UNARY_PAYELEM ambigname)
+|
+	qualifieddataname -> ^(UNARY_PAYELEM qualifieddataname)	
 ;
+//	{ parsePayloadElem($qualifiedname.tree) }  // Use ".text" instead of ".tree" for token String 
+	
 
 
 
@@ -489,6 +423,7 @@ gprotoheader:
 ->
 	^(GPROTOHEADER[$t] simplegprotoname paramdecls roledecls)
 ;
+// N.B. intermed translation uses full proto name
 
 roledecls: 
 	t='(' roledecl (',' roledecl)* ')' -> ^(ROLEDECL_LIST[$t] roledecl+) ;
@@ -497,12 +432,9 @@ roledecl:
 	t=ROLE_KW rolename -> ^(ROLEDECL[$t] rolename) ;
 
 paramdecls:
-->
-	^(PARAMDECL_LIST)
+	-> ^(PARAMDECL_LIST)
 |
-	t='<' paramdecl (',' paramdecl)* '>'
-->
-	^(PARAMDECL_LIST[$t] paramdecl+)
+	t='<' paramdecl (',' paramdecl)* '>' -> ^(PARAMDECL_LIST[$t] paramdecl+)
 ;
 
 paramdecl: dataparamdecl | sigparamdecl ;
@@ -638,7 +570,94 @@ nonroleargs:
 nonrolearg:
 	siglit -> ^(ARG siglit)
 |
-	qualifiedname -> { parseNonRoleArg($qualifiedname.tree) }  // Like payelem, simple names need disambiguation
+	ambigname -> ^(ARG ambigname)
+|
+	qualifieddataname -> ^(ARG qualifieddataname)  // FIXME: sig name -- need an ambig qualified name
 ;
+//	{ parseNonRoleArg($qualifiedname.tree) }  // Like payelem, simple names need disambiguation
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+@parser::members
+{
+  // qn is an IdNode "holder" for a "qualifiedname" COMPOUND_NAME -- see ScribTreeAdaptor
+  // CHECKME: do the returns of these "bypass" ScribTreeAdaptor?  specifically AmbigNode
+	//	{ parsePayloadElem($qualifiedname.tree) }  // Use ".text" instead of ".tree" for token String 
+  public static CommonTree parsePayloadElem(CommonTree qn) throws RecognitionException
+  {
+    if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
+    {
+			// Cf. AstFactoryImpl, token creation
+      DataTypeNode dt = new DataTypeNode(new CommonToken(DATA_NAME, "DATA_NAME"));
+      ((List<?>) qn.getChildren()).forEach(x -> 
+          dt.addChild(new IdNode(new CommonToken(ID, ((CommonTree) x).getText()))));
+      UnaryPayloadElem pe = 
+          new UnaryPayloadElem(new CommonToken(UNARY_PAYELEM, "UNARYPAYLOADELEM"));
+      pe.addChild(dt);
+      return pe;
+    }
+    else //if (qn.getChildCount() == 1)
+    {
+      // Similar to NonRoleArg: cannot syntactically distinguish right now between a simple data name and a param name
+			// Cf. AstFactoryImpl, token creation
+      String text = qn.getChild(0).getText();
+      AmbigNameNode an = 
+          new AmbigNameNode(AMBIG_NAME, new CommonToken(ID, text));
+      UnaryPayloadElem e = new UnaryPayloadElem(
+          new CommonToken(UNARY_PAYELEM, "UNARYPAYLOADELEM"));
+      e.addChild(an);
+      return e;
+    }
+  }
+
+  // qn is an IdNode "holder" for a "qualifiedname" COMPOUND_NAME -- see ScribTreeAdaptor
+  // Only for "qualifiedName" (DataTypeNode or AmbigNameNode), not sig literals
+	// Use by: { parseNonRoleArg($qualifiedname.tree) }
+  public static CommonTree parseNonRoleArg(CommonTree qn) throws RecognitionException
+  {
+    if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
+    {
+			// Cf. AstFactoryImpl, token creation
+      DataTypeNode dt =
+      		new DataTypeNode(new CommonToken(DATA_NAME, "DATA_NAME"));  // FIXME: could be a sig name arg...
+      ((List<?>) qn.getChildren()).forEach(x -> 
+          dt.addChild(new IdNode(new CommonToken(ID, ((CommonTree) x).getText()))));
+      NonRoleArg a = 
+          new NonRoleArg(new CommonToken(ARG, "ARG"));
+      a.addChild(dt);
+      return a;
+    }
+    else //if (qn.getChildCount() == 1)
+    {
+			// Cf. AstFactoryImpl, token creation
+      String text = qn.getChild(0).getText();
+      AmbigNameNode an = 
+          new AmbigNameNode(AMBIG_NAME, new CommonToken(ID, text));
+      NonRoleArg a = new NonRoleArg(new CommonToken(ARG, "ARG"));
+      a.addChild(an);
+      return a;
+    }
+  }
+}
+//*/

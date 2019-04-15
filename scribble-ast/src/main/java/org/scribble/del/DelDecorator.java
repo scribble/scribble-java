@@ -61,12 +61,28 @@ import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.ast.name.simple.TypeParamNode;
 
 
-// A dec method for each AST class
-// Implementations in scribble-parser, can depend on parser implementation
+// A dec method for each AST class -- method name must be the same as target class name
+// Implementations (DelDecoratorImpl) in scribble-parser, can depend on parser implementation
 // E.g., DelDecoratorImpl: each method named after the class name -- currently dispatched by reflection
 public interface DelDecorator
 {
 	void decorate(ScribNode n);
+
+	void AmbigNameNode(AmbigNameNode n);
+	void TypeParamNode(TypeParamNode n);
+	void ExtIdNode(ExtIdNode n);
+	void IdNode(IdNode n);
+	void SigParamNode(SigParamNode n);
+
+	void OpNode(OpNode n);
+	void RecVarNode(RecVarNode n);
+	void RoleNode(RoleNode n);
+
+	void MessageSigNameNode(MessageSigNameNode n);
+	void DataTypeNode(DataTypeNode n);
+	void ModuleNameNode(ModuleNameNode n);
+	void GProtocolNameNode(GProtocolNameNode n);
+	void LProtocolNameNode(LProtocolNameNode n);
 	
 	void Module(Module m);
 
@@ -115,23 +131,6 @@ public interface DelDecorator
 
 	/*<K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier);
 	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source, K kind, String... elems);*/
-
-	void RecVarNode(RecVarNode n);
-	void RoleNode(RoleNode n);
-	void OpNode(OpNode n);
-	void MessageSigNameNode(MessageSigNameNode n);
-	void DataTypeNode(DataTypeNode n);
-	void ModuleNameNode(ModuleNameNode n);
-	void GProtocolNameNode(GProtocolNameNode n);
-	void LProtocolNameNode(LProtocolNameNode n);
-	
-	void AmbigNameNode(AmbigNameNode n);
-	void IdNode(IdNode n);
-	void ExtIdNode(ExtIdNode n);
-
-	//<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier);
-	void SigParamNode(SigParamNode n);
-	void TypeParamNode(TypeParamNode n);
 
 	
 	

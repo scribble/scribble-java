@@ -39,6 +39,7 @@ import org.scribble.ast.ScribNil;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.SigParamDecl;
 import org.scribble.ast.TypeParamDecl;
+import org.scribble.ast.UnaryPayloadElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
@@ -117,7 +118,8 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.GINTERSEQ: return new GInteractionSeq(t);
 
 			case ScribbleParser.SIG_LIT: return new MessageSigNode(t);
-			case ScribbleParser.PAYELEM_LIST: return new PayloadElemList(t);  // N.B. UnaryPayloadElem parsed "manually" in Scribble.g
+			case ScribbleParser.PAYELEM_LIST: return new PayloadElemList(t);
+			case ScribbleParser.UNARY_PAYELEM: return new UnaryPayloadElem<>(t);
 
 			case ScribbleParser.GCONNECT: return new GConnect(t);
 			case ScribbleParser.GCONTINUE: return new GContinue(t);
@@ -129,21 +131,13 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.ROLEARG_LIST: return new RoleArgList(t);
 			case ScribbleParser.ROLEARG: return new RoleArg(t);
 			case ScribbleParser.ARG_LIST: return new NonRoleArgList(t);
-			case ScribbleParser.ARG: return new NonRoleArg(t);  // Only for messagesignature -- qualifiedname (datatypenode or ambignamenode) done "manually" in scribble.g (cf. UnaryPayloadElem)
+			case ScribbleParser.ARG: return new NonRoleArg(t);
 
 			case ScribbleParser.GCHOICE: return new GChoice(t);
 			case ScribbleParser.GRECURSION: return new GRecursion(t);
 
 			// Special cases
 			case ScribbleParser.EMPTY_OP: return new OpNode(t);  // From Scribble.g, token (t) text is OpNode.EMPTY_OP_TOKEN_TEXT
-
-			case ScribbleParser.COMPOUND_NAME: return new IdNode(t);  
-					// Hacky?  Repurposing IdNode as a "temporary QUALIFIEDNAME" -- token is QUALIFIEDNAME (not ID), and children are the IdNode elements of the qualified name
-					// (Using IdNode as a "shell", but "token type" determined by t -- a bit misleading, IdNode here not an actual ID -- CHECKME: make a proper QUALIFIEDNAME?)
-					// It is a "temporary" QUALIFIEDNAME, "internally" parsed by ScribbleParser.parsePayloadElem/parseNonRoleArg
-					// This temporary IdNode is passed by $qualifiedname.tree to, e.g., parsePayloadElem(CommonTree ct)
-					// The parser method takes CommonTree, that can accept IdNode
-					// (E.g., good.misc.globals.gdo.Do06b)  
 
 			default:
 			{
