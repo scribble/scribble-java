@@ -54,12 +54,6 @@ public class RoleArgList extends DoArgList<RoleArg>
 	}
 
 	@Override
-	public RoleArgList reconstruct(List<RoleArg> args)
-	{
-		return (RoleArgList) super.reconstruct(args);
-	}
-
-	@Override
 	public String toString()
 	{
 		return "(" + super.toString() + ")";

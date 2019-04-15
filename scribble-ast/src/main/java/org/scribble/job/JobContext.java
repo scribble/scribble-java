@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.lang;
+package org.scribble.job;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,14 +24,13 @@ import org.scribble.ast.global.GProtoDecl;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.lang.context.ModuleContextCollector;
 import org.scribble.util.ScribException;
 
 // Global "static" context information for a Job -- single instance per Job, should not be shared between Jobs
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
-public class LangContext
+public class JobContext
 {
-	public final Lang lang;
+	public final Job job;
 
 	//public final ModuleName main;  // The "main" root module from MainContext
 	
@@ -46,10 +45,10 @@ public class LangContext
 	private final Map<ModuleName, ModuleContext> modcs;  
 			// CHECKME: constant?  depends on adding projections?
 	
-	protected LangContext(Lang lang, Map<ModuleName, Module> parsed)
+	protected JobContext(Job job, Map<ModuleName, Module> parsed)
 			throws ScribException
 	{
-		this.lang = lang;
+		this.job = job;
 		this.parsed = new HashMap<ModuleName, Module>(parsed);
 		this.modcs = Collections.unmodifiableMap(buildModuleContexts(parsed));
 	}
@@ -62,7 +61,7 @@ public class LangContext
 		// Job.modcs seems unused?  Lang.modcs is used though, by old AST visitors -- basically old ModuleContextVisitor is redundant?
 		// Job.modcs could be used, but disamb already done by Lang
 		// Lang/Job modcs should be moved to config/context though
-		ModuleContextCollector b = new ModuleContextCollector();  // FIXME: rename Builder
+		ModuleContextBuilder b = new ModuleContextBuilder();  // TODO: factor out newModuleContextBuilder
 		Map<ModuleName, ModuleContext> modcs = new HashMap<>();
 		for (ModuleName fullname : parsed.keySet())
 		{
@@ -74,7 +73,7 @@ public class LangContext
 
 	public Module getMainModule()
 	{
-		return getModule(this.lang.config.main);
+		return getModule(this.job.config.main);
 	}
 	
 	// HACK -- CHECKME: separate original parsed from "working set"?

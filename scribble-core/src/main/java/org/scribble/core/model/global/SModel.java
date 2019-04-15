@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.core.job.Job;
-import org.scribble.core.job.JobArgs;
+import org.scribble.core.job.Core;
+import org.scribble.core.job.CoreArgs;
 import org.scribble.core.model.endpoint.EFSM;
 import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.model.global.actions.SAction;
@@ -38,7 +38,7 @@ public class SModel
 		this.graph = graph;
 	}
 
-	public void validate(Job job) throws ScribException
+	public void validate(Core core) throws ScribException
 	{
 		SState init = this.graph.init;
 		Map<Integer, SState> states = this.graph.states;
@@ -48,13 +48,13 @@ public class SModel
 		int count = 0;
 		for (SState s : states.values())
 		{
-			if (job.config.args.get(JobArgs.VERBOSE))
+			if (core.config.args.get(CoreArgs.VERBOSE))
 			{
 				count++;
 				if (count % 50 == 0)
 				{
 					//job.debugPrintln("(" + this.graph.proto + ") Checking safety: " + count + " states");
-					job.verbosePrintln(
+					core.verbosePrintln(
 							"(" + this.graph.proto + ") Checking states: " + count);
 				}
 			}
@@ -69,10 +69,10 @@ public class SModel
 			}
 			errorMsg = appendSafetyErrorMessages(errorMsg, errors);
 		}
-		job.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + count);  // May include unsafe states
+		core.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + count);  // May include unsafe states
 		//*/
 		
-		if (!job.config.args.get(JobArgs.NO_PROGRESS))
+		if (!core.config.args.get(CoreArgs.NO_PROGRESS))
 		{
 			//job.debugPrintln("(" + this.graph.proto + ") Checking progress: ");  // Incompatible with current errorMsg approach*/
 
@@ -85,7 +85,7 @@ public class SModel
 				Set<Role> starved = checkRoleProgress(states, init, termset);
 				Map<Role, Set<ESend>> ignored = 
 						checkEventualReception(states, init, termset);
-				errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored, job,
+				errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored, core,
 						states, termset);
 			}
 		}
@@ -121,28 +121,28 @@ public class SModel
 	}
 
 	protected String appendProgressErrorMessages(String errorMsg,
-			Set<Role> starved, Map<Role, Set<ESend>> ignored, Job job,
+			Set<Role> starved, Map<Role, Set<ESend>> ignored, Core core,
 			Map<Integer, SState> states, Set<Integer> termset)
 	{
 		if (!starved.isEmpty())
 		{
 			errorMsg += "\nRole progress violation for " + starved
 					+ " in session state terminal set:\n    "
-					+ termSetToString(job, termset, states);
+					+ termSetToString(core, termset, states);
 		}
 		if (!ignored.isEmpty())
 		{
 			errorMsg += "\nEventual reception violation for " + ignored
 					+ " in session state terminal set:\n    "
-					+ termSetToString(job, termset, states);
+					+ termSetToString(core, termset, states);
 		}
 		return errorMsg;
 	}
 	
-	protected String termSetToString(Job job, Set<Integer> termset,
+	protected String termSetToString(Core core, Set<Integer> termset,
 			Map<Integer, SState> all)
 	{
-		return job.config.args.get(JobArgs.VERBOSE)
+		return core.config.args.get(CoreArgs.VERBOSE)
 				? termset.stream().map((i) -> all.get(i).toString())
 						.collect(Collectors.joining(","))
 				: termset.stream().map((i) -> new Integer(all.get(i).id).toString())

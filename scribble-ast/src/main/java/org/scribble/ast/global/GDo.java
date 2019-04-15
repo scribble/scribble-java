@@ -19,7 +19,7 @@ import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtoName;
-import org.scribble.lang.LangContext;
+import org.scribble.job.JobContext;
 
 public class GDo extends Do<Global> implements GSimpleSessionNode
 {
@@ -42,7 +42,7 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	}
 
 	@Override
-	public GProtoDecl getTargetProtocolDecl(LangContext jcontext,
+	public GProtoDecl getTargetProtocolDecl(JobContext jcontext,
 			ModuleContext mcontext)
 	{
 		GProtoName fullname = getTargetProtocolDeclFullName(mcontext);

@@ -66,7 +66,7 @@ public class GDelegationElemDel extends ScribDelBase
 		RoleNode r = deleg.getRoleChild();
 
 		Role rn = r.toName();
-		ProtoDecl<Global> gpd = disamb.lang.getContext()
+		ProtoDecl<Global> gpd = disamb.job.getContext()
 				.getModule(fullname.getPrefix())
 				.getGProtocolDeclChild(fullname.getSimpleName());
 		if (!gpd.getHeaderChild().getRoleDeclListChild().getRoles().contains(rn))
@@ -74,8 +74,8 @@ public class GDelegationElemDel extends ScribDelBase
 			throw new ScribException(r.getSource(), "Invalid delegation role: " + deleg);
 		}
 		List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
-				.map(x -> disamb.lang.config.af.IdNode(null, x)).collect(Collectors.toList());
-		GProtoNameNode pnn = (GProtoNameNode) disamb.lang.config.af
+				.map(x -> disamb.job.config.af.IdNode(null, x)).collect(Collectors.toList());
+		GProtoNameNode pnn = (GProtoNameNode) disamb.job.config.af
 				.GProtoNameNode(proto.token, elems);
 				// Not keeping original namenode del
 		return deleg.reconstruct(pnn, r);

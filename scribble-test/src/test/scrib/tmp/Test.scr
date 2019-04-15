@@ -78,6 +78,8 @@ module tmp.Test;
 			//...remove Token args from af constructors -- refactor reconstructs to use af?  
 			//...disallow/check for reserved __ -- do in gtype translation?
 			// FIXME: qualifed sig name as non role arg
+			
+			// TODO: rename addChildren1
 
 // re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 		// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
@@ -89,16 +91,19 @@ module tmp.Test;
 // use stypefactory in core -- also make a visitorfactory
 // refactor test to use main instead of cli
 
+
 sig <java> "..." from "..." as T;
 
 
+/*
 global protocol Proto1<sig M>(role A, role B)
 {
 	M from A to B;
 	do Proto1<Test.T>(A, B);  // TODO: add unit test, testing qualified sig name as nonrole arg
 }
+//*/
 
-/*
+//*
 explicit global protocol Proto1(role A__, role B)
 {
 	() connect A__ to B;

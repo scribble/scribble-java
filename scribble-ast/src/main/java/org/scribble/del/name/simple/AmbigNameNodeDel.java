@@ -15,7 +15,7 @@ package org.scribble.del.name.simple;
 
 import java.util.stream.Collectors;
 
-import org.scribble.ast.MessageTransfer;
+import org.scribble.ast.MsgTransfer;
 import org.scribble.ast.PayElem;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.DataNameNode;
@@ -53,7 +53,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 		// FIXME: are conflicts checked elsewhere?
 		if (mcontext.isDataTypeVisible(name.toDataName()))
 		{
-			if (parent instanceof MessageTransfer<?>)  // FIXME HACK: MessageTransfer assumes MessageNode (cast in visitChildren), so this needs to be caught here  // FIXME: other similar cases?
+			if (parent instanceof MsgTransfer<?>)  // FIXME HACK: MessageTransfer assumes MessageNode (cast in visitChildren), so this needs to be caught here  // FIXME: other similar cases?
 			{
 				throw new ScribException(ann.getSource(),
 						"Invalid occurrence of data type: " + parent);
@@ -63,9 +63,9 @@ public class AmbigNameNodeDel extends ScribDelBase
 
 			//DataTypeNode res = new DataTypeNode(ann.token);  // CHECKME: what should the Token be?
 			//DataTypeNode res = new DataTypeNode(new CommonToken(73, "TYPENAME"));  // FIXME: use af
-			DataNameNode res = (DataNameNode) disamb.lang.config.af
+			DataNameNode res = (DataNameNode) disamb.job.config.af
 					.DataNameNode(ann.token, ann.getElements().stream()
-							.map(x -> disamb.lang.config.af.IdNode(null, x))
+							.map(x -> disamb.job.config.af.IdNode(null, x))
 							.collect(Collectors.toList()));
 
 			//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
@@ -85,9 +85,9 @@ public class AmbigNameNodeDel extends ScribDelBase
 
 			//MessageSigNameNode res = new MessageSigNameNode(ann.token);  // CHECME: what should the Token be?
 			//MessageSigNameNode res = new MessageSigNameNode(new CommonToken(67, "SIGNAME"));  // FIXME: use af
-			SigNameNode res = (SigNameNode) disamb.lang.config.af
+			SigNameNode res = (SigNameNode) disamb.job.config.af
 					.SigNameNode(ann.token, ann.getElements().stream()
-							.map(x -> disamb.lang.config.af.IdNode(null, x))
+							.map(x -> disamb.job.config.af.IdNode(null, x))
 							.collect(Collectors.toList()));
 
 			//res.addChildren(ann.getChildren());
@@ -104,7 +104,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 			{
 				//TypeParamNode res = new TypeParamNode(ann.token);  // CHECKME: what should the Token be?
 				//TypeParamNode res = new TypeParamNode(75, ann.token);  // CHECKME: what should the Token be?
-				DataParamNode res = disamb.lang.config.af.DataParamNode(ann.token,
+				DataParamNode res = disamb.job.config.af.DataParamNode(ann.token,
 						ann.getText());
 
 				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
@@ -114,7 +114,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 			else if (kind.equals(SigKind.KIND))
 			{
 				//SigParamNode res = new SigParamNode(69, ann.token);  // CHECKME: what should the Token be?
-				SigParamNode res = disamb.lang.config.af.SigParamNode(ann.token,
+				SigParamNode res = disamb.job.config.af.SigParamNode(ann.token,
 						ann.getText());
 
 				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?

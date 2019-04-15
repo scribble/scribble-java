@@ -16,17 +16,17 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.ProtoKind;
 
-public abstract class MessageTransfer<K extends ProtoKind>
+public abstract class MsgTransfer<K extends ProtoKind>
 		extends DirectedInteraction<K>
 {
 	// ScribTreeAdaptor#create constructor
-	public MessageTransfer(Token t)
+	public MsgTransfer(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public MessageTransfer(MessageTransfer<K> node)
+	public MsgTransfer(MsgTransfer<K> node)
 	{
 		super(node);
 	}

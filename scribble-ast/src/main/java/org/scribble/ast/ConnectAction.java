@@ -50,7 +50,7 @@ public abstract class ConnectAction<K extends ProtoKind>
 	protected boolean isUnitMessage()
 	{
 		MsgNode n = getMessageNodeChild();
-		if (!n.isMessageSigNode())
+		if (!n.isSigLitNode())
 		{
 			return false;
 		}

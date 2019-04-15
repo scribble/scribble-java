@@ -37,9 +37,9 @@ import org.scribble.util.ScribUtil;
 
 // Global "static" context information for a Job -- single instance per Job, should not be shared between Jobs
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
-public class JobContext
+public class CoreContext
 {
-	public final Job job;
+	public final Core core;
 
 	// Keys are full names
 	// CHECKME: not currently used by core? -- core fully independent of modules, etc., because full disamb already done? (by imed translation)
@@ -72,10 +72,10 @@ public class JobContext
 	private final Map<GProtoName, SGraph> fSGraphs = new HashMap<>();
 	private final Map<GProtoName, SGraph> uSGraphs = new HashMap<>();
 	
-	protected JobContext(Job job, //Map<ModuleName, ModuleContext> modcs,
+	protected CoreContext(Core core, //Map<ModuleName, ModuleContext> modcs,
 			Set<GProtocol> imeds)
 	{
-		this.job = job;
+		this.core = core;
 		//this.modcs = Collections.unmodifiableMap(modcs);
 		this.imeds = imeds.stream()
 				.collect(Collectors.toMap(x -> x.fullname, x -> x));
@@ -223,7 +223,7 @@ public class JobContext
 		if (unfair == null)
 		{
 			unfair = getEGraph(fullname, role).init
-					.unfairTransform(this.job.config.mf).toGraph();
+					.unfairTransform(this.core.config.mf).toGraph();
 			addUnfairEGraph(fulllpn, unfair);
 		}
 		return unfair;
@@ -247,7 +247,7 @@ public class JobContext
 			boolean explicit = //gpd.isExplicit();
 					this.imeds.get(fullname).isExplicit();
 					//graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
-			graph = this.job.buildSGraph(fullname, egraphs, explicit);
+			graph = this.core.buildSGraph(fullname, egraphs, explicit);
 			addSGraph(fullname, graph);
 		}
 		return graph;
@@ -285,7 +285,7 @@ public class JobContext
 			boolean explicit = //gpd.isExplicit();
 					this.imeds.get(fullname).isExplicit();
 			//graph = SGraph.buildSGraph(this.job, fullname, this.job.createInitialSConfig(job, egraphs, explicit));
-			graph = this.job.buildSGraph(fullname, egraphs, explicit);
+			graph = this.core.buildSGraph(fullname, egraphs, explicit);
 			addUnfairSGraph(fullname, graph);
 		}
 		return graph;
@@ -307,7 +307,7 @@ public class JobContext
 		{
 			String aut = runAut(getEGraph(fullname, role).init.toAut(),
 					fulllpn + ".aut");
-			minimised = new AutGraphParser(this.job).parse(aut);
+			minimised = new AutGraphParser(this.core).parse(aut);
 			addMinimisedEGraph(fulllpn, minimised);
 		}
 		return minimised;

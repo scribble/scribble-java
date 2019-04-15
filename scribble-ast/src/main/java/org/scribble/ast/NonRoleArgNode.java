@@ -25,17 +25,17 @@ public interface NonRoleArgNode extends DoArgNode
 
 	// Not kinded: point of this interface is don't know which kind the node is -- so use the "is" methods -- cf. AmbigNameNode inherits both sig and data kind
 	// And not all values are names, e.g. message sigs
-	default boolean isMessageSigNode()
+	default boolean isSigLitNode()
 	{
 		return false;
 	}
 
-	default boolean isMessageSigNameNode()
+	default boolean isSigNameNode()
 	{
 		return false;
 	}
 
-	default boolean isDataTypeNameNode()
+	default boolean isDataNameNode()
 	{
 		return false;
 	}
@@ -45,7 +45,7 @@ public interface NonRoleArgNode extends DoArgNode
 		return false;
 	}
 
-	default boolean isTypeParamNode()
+	default boolean isDataParamNode()
 	{
 		return false;
 	}

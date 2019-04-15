@@ -43,16 +43,11 @@ public class PayElemList extends ScribNodeBase
 				.collect(Collectors.toList());
 	}
 
-	public Payload toPayload()
+	// "add", not "set"
+	public void addChildren1(List<PayElem<?>> elems)
 	{
-		List<PayElemType<?>> pts = getElementChildren().stream()
-				.map(pe -> pe.toPayloadType()).collect(Collectors.toList());
-		return new Payload(pts);
-	}
-
-	public boolean isEmpty()
-	{
-		return getChildCount() == 0;
+		// Cf. above getters and Scribble.g children order
+		super.addChildren(elems);
 	}
 		
 	@Override
@@ -63,10 +58,10 @@ public class PayElemList extends ScribNodeBase
 
 	protected PayElemList reconstruct(List<PayElem<?>> elems)
 	{
-		PayElemList pay = dupNode();
-		pay.addChildren(elems);
-		pay.setDel(del());  // No copy
-		return pay;
+		PayElemList dup = dupNode();
+		dup.addChildren1(elems);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override
@@ -77,10 +72,22 @@ public class PayElemList extends ScribNodeBase
 		return reconstruct(elems);
 	}
 
+	public Payload toPayload()
+	{
+		List<PayElemType<?>> elems = getElementChildren().stream()
+				.map(x -> x.toPayloadType()).collect(Collectors.toList());
+		return new Payload(elems);
+	}
+
+	public boolean isEmpty()
+	{
+		return getChildCount() == 0;
+	}
+
 	@Override
 	public String toString()
 	{
-		return "(" + getElementChildren().stream().map(pe -> pe.toString())
+		return "(" + getElementChildren().stream().map(x -> x.toString())
 				.collect(Collectors.joining(", ")) + ")";
 	}
 }

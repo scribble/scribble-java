@@ -41,16 +41,23 @@ public abstract class ProtoBlock<K extends ProtoKind>
 	{
 		return getInteractSeqChild().isEmpty();
 	}
+
+	// "add", not "set"
+	public void addChildren1(InteractionSeq<K> seq)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(seq);
+	}
 	
 	@Override
 	public abstract ProtoBlock<K> dupNode();
 
 	public ProtoBlock<K> reconstruct(InteractionSeq<K> seq)
 	{
-		ProtoBlock<K> pd = dupNode();
-		pd.addChild(seq);
-		pd.setDel(del());  // No copy
-		return pd;
+		ProtoBlock<K> dup = dupNode();
+		dup.addChildren1(seq);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 
 	@Override

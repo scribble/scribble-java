@@ -86,9 +86,15 @@ public class Module extends ScribNodeBase
 		return res;
 	}
 
-	public ModuleName getFullModuleName()
+	// "add", not "set"
+	public void addChildren1(ModuleDecl moddecl, List<ImportDecl<?>> imports,
+			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos)
 	{
-		return getModuleDeclChild().getFullModuleName();
+		// Cf. above getters and Scribble.g children order
+		addChild(moddecl);
+		addChildren(imports);
+		addChildren(data);
+		addChildren(protos);
 	}
 
 	// Cf. CommonTree#dupNode
@@ -103,10 +109,7 @@ public class Module extends ScribNodeBase
 			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos)
 	{
 		Module dup = dupNode();
-		dup.addChild(moddecl);
-		dup.addChildren(imports);
-		dup.addChildren(data);
-		dup.addChildren(protos);
+		dup.addChildren1(moddecl, imports, data, protos);
 		dup.setDel(del());  // No copy
 		return dup;
 	}
@@ -180,6 +183,11 @@ public class Module extends ScribNodeBase
 			throw new RuntimeException("Proto decl not found: " + simpname);
 		}
 		return res.get();
+	}
+
+	public ModuleName getFullModuleName()
+	{
+		return getModuleDeclChild().getFullModuleName();
 	}
 
 	@Override

@@ -26,7 +26,7 @@ import org.scribble.core.type.name.Name;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.global.GDelegationElemDel;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
@@ -44,7 +44,7 @@ public class NameDisambiguator extends ModuleContextVisitor
 	
 	//private ProtocolDecl<?> root;  // FIXME: factor out  // Now unused (recvar renaming refactored to inlining -- don't want to mangle source AST)
 	
-	public NameDisambiguator(Lang job)
+	public NameDisambiguator(Job job)
 	{
 		super(job);
 	}

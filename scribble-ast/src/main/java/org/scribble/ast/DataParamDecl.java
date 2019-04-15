@@ -38,7 +38,7 @@ public class DataParamDecl extends NonRoleParamDecl<DataKind>
 	{
 		return (DataParamNode) getRawNameNodeChild();
 	}
-	
+
 	@Override
 	public DataParamDecl dupNode()
 	{
@@ -46,7 +46,6 @@ public class DataParamDecl extends NonRoleParamDecl<DataKind>
 	}
 
 	@Override
-	//public Name<DataTypeKind> getDeclName()
 	public DataName getDeclName()
 	{
 		return (DataName) getNameNodeChild().toName();

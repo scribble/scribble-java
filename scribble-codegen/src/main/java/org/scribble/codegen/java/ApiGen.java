@@ -15,24 +15,24 @@ package org.scribble.codegen.java;
 
 import java.util.Map;
 
-import org.scribble.core.job.Job;
+import org.scribble.core.job.Core;
 import org.scribble.core.type.name.GProtoName;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 
 // Basic pattern: use TypeGenerators to create all necessary TypeBuilders and cache them, and generateApi should call build on all as a final step
 public abstract class ApiGen
 {
-	public final Lang lang;
 	public final Job job;
+	public final Core core;
 	public final GProtoName gpn;  // full name
 
-	public ApiGen(Lang job, GProtoName fullname)
+	public ApiGen(Job job, GProtoName fullname)
 	{
-		this.lang = job;
+		this.job = job;
 		try
 		{
-			this.job = job.getJob();
+			this.core = job.getCore();
 		}
 		catch (ScribException e)  // TODO: refactor
 		{
@@ -45,8 +45,8 @@ public abstract class ApiGen
 	// FIXME: Path instead of String key?
 	public abstract Map<String, String> generateApi();
 	
-	public Lang getJob()
+	public Job getJob()
 	{
-		return this.lang;
+		return this.job;
 	}
 }

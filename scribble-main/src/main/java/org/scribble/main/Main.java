@@ -20,24 +20,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
-import org.scribble.core.job.JobArgs;
+import org.scribble.core.job.CoreArgs;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.loader.ScribModuleLoader;
 import org.scribble.main.resource.locator.ResourceLocator;
-import org.scribble.parser.scribble.AstFactoryImpl;
-import org.scribble.parser.scribble.ScribAntlrWrapper;
+import org.scribble.parser.ScribAntlrWrapper;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribParserException;
 
 /**
  * Main loads the main module, and then all other (transitively) imported
- * modules. Its main purpose is to offer the newLang factory method.
+ * modules. Its main purpose is to offer the newJob factory method.
  * 
  * Main takes an abstract ResourceLocator, e.g. DirectoryResourceLocator -- (for
  * non-inline main modules)...
@@ -51,7 +51,7 @@ import org.scribble.util.ScribParserException;
 public class Main
 {
 	public final ModuleName main;
-	public final Map<JobArgs, Boolean> args;
+	public final Map<CoreArgs, Boolean> args;
 
 	private final ScribAntlrWrapper antlr;
 	//private final ResourceLocator locator;  // Path -> Resource
@@ -66,13 +66,13 @@ public class Main
 	// Load other modules via locator -- CHECKME: a bit inconsistent w.r.t. main?
 	// TODO: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
 	public Main(ResourceLocator locator, Path mainpath,
-			Map<JobArgs, Boolean> args) throws ScribException, ScribParserException
+			Map<CoreArgs, Boolean> args) throws ScribException, ScribParserException
 	{
 		this(new Pair<>(locator, null), mainpath, args);
 	}
 
 	// Load an inline module arg -- module imports not allowed (currently no ResourceLocator)
-	public Main(String inline, Map<JobArgs, Boolean> args)
+	public Main(String inline, Map<CoreArgs, Boolean> args)
 			throws ScribException, ScribParserException
 	{
 		this(new Pair<>(null, inline), null, args);
@@ -81,7 +81,7 @@ public class Main
 	// Pre: hack.left == null xor hack.right == null
 	// Hack to "unify" the constructors (to satisfy final field init more conveniently)
 	private Main(Pair<ResourceLocator, String> hack, Path mainpath,
-			Map<JobArgs, Boolean> args) throws ScribException, ScribParserException
+			Map<CoreArgs, Boolean> args) throws ScribException, ScribParserException
 	{
 		this.antlr = new ScribAntlrWrapper();
 
@@ -112,19 +112,19 @@ public class Main
 		loadAllModuleImports(main);
 	}
 	
-	// A Scribble extension should override newAntlr/Lang as appropriate
+	// A Scribble extension should override newAntlr/Job as appropriate
 	protected ScribAntlrWrapper newAntlr()
 	{
 		return new ScribAntlrWrapper();
 	}
 
-	// A Scribble extension should override newAntlr/Lang as appropriate
-	protected Lang newLang(Map<ModuleName, Module> parsed,
-			Map<JobArgs, Boolean> args, ModuleName mainFullname) throws ScribException
+	// A Scribble extension should override newAntlr/Job as appropriate
+	protected Job newJob(Map<ModuleName, Module> parsed,
+			Map<CoreArgs, Boolean> args, ModuleName mainFullname) throws ScribException
 	{
 		AstFactoryImpl af = new AstFactoryImpl(this.antlr);  
-				// Was previously made inside Lang, but AstFactoryImpl now lives in scribble-parser, to access ScribbleParser constants
-		return new Lang(mainFullname, args, parsed, af);
+				// Was previously made inside Job, but AstFactoryImpl now lives in scribble-parser, to access ScribbleParser constants
+		return new Job(mainFullname, args, parsed, af);
 	}
 	
 	// Pre: main Module loaded by this.loader
@@ -155,10 +155,10 @@ public class Main
 		}
 	}
 	
-	// For a Scribble extension, override newLang(parsed, args, mainFullname)
-	public final Lang newLang() throws ScribException
+	// For a Scribble extension, override newJob(parsed, args, mainFullname)
+	public final Job newJob() throws ScribException
 	{
-		return newLang(getParsedModules(), this.args, this.main);
+		return newJob(getParsedModules(), this.args, this.main);
 	}
 	
 	public Map<ModuleName, Module> getParsedModules()

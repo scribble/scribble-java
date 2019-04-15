@@ -34,24 +34,18 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	{
 		super(node);
 	}
-
-	public ModuleName getFullModuleName()
-	{
-		return (ModuleName) getNameNodeChild().toName();
-	}
-
-	protected ModuleDecl reconstruct(ModuleNameNode name)
-	{
-		ModuleDecl dup = dupNode();
-		dup.addChild(name);
-		dup.setDel(del());  // No copy
-		return dup;
-	}
 	
 	@Override
 	public ModuleNameNode getNameNodeChild()
 	{
 		return (ModuleNameNode) getRawNameNodeChild();
+	}
+
+	// "add", not "set"
+	public void addChildren1(ModuleNameNode name)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(name);
 	}
 
 	// Cf. CommonTree#dupNode
@@ -61,11 +55,24 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 		return new ModuleDecl(this);
 	}
 
+	protected ModuleDecl reconstruct(ModuleNameNode name)
+	{
+		ModuleDecl dup = dupNode();
+		dup.addChildren1(name);
+		dup.setDel(del());  // No copy
+		return dup;
+	}
+
 	@Override
 	public ModuleDecl visitChildren(AstVisitor nv) throws ScribException
 	{
 		ModuleNameNode name = (ModuleNameNode) visitChild(getNameNodeChild(), nv);
 		return reconstruct(name);
+	}
+
+	public ModuleName getFullModuleName()
+	{
+		return (ModuleName) getNameNodeChild().toName();
 	}
 
 	@Override

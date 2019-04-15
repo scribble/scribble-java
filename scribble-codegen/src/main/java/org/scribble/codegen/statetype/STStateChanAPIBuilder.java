@@ -24,11 +24,11 @@ import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 
 public abstract class STStateChanAPIBuilder
 {
-	public final Lang lang;
+	public final Job job;
 	
 	public final GProtoName gpn;
 	public final Role role;
@@ -42,10 +42,11 @@ public abstract class STStateChanAPIBuilder
 
 	private Map<Integer, String> names = new HashMap<>();
 	
-	protected STStateChanAPIBuilder(Lang lang, GProtoName gpn, Role role, EGraph graph,
-			STOutputStateBuilder ob, STReceiveStateBuilder rb, STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
+	protected STStateChanAPIBuilder(Job job, GProtoName gpn, Role role,
+			EGraph graph, STOutputStateBuilder ob, STReceiveStateBuilder rb,
+			STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
 	{
-		this.lang = lang;
+		this.job = job;
 
 		this.gpn = gpn;
 		this.role = role;

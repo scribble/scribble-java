@@ -13,7 +13,7 @@
  */
 package org.scribble.core.visit.local;
 
-import org.scribble.core.job.Job;
+import org.scribble.core.job.Core;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.type.kind.Local;
@@ -30,9 +30,9 @@ import org.scribble.core.visit.Substitutor;
 
 public class LTypeInliner extends STypeInliner<Local, LSeq>
 {
-	public LTypeInliner(Job job)
+	public LTypeInliner(Core core)
 	{
-		super(job);
+		super(core);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class LTypeInliner extends STypeInliner<Local, LSeq>
 			return new LContinue(n.getSource(), rv);
 		}
 		pushSig(sig);
-		LProtocol p = this.job.getContext().getProjection(fullname);  // This line differs from GDo version
+		LProtocol p = this.core.getContext().getProjection(fullname);  // This line differs from GDo version
 		Substitutor<Local, LSeq> subs = 
 				new Substitutor<>(p.roles, n.roles, p.params, n.args);
 		//LSeq inlined = (LSeq) p.def.visitWithNoEx(subs).visitWithNoEx(this);

@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.lang.context;
+package org.scribble.job;
 
 import java.util.Map;
 
@@ -29,9 +29,8 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.ScribException;
-
-// TODO: rename and refactor
-public class ModuleContextCollector
+// TODO: rename and refactor -- also factor out newModuleContextBuilder in Lang
+public class ModuleContextBuilder
 {
 	private Module root;  // full name  // The root Module for this ModuleContext (cf. the "main" root module from CLI)
 
@@ -47,7 +46,7 @@ public class ModuleContextCollector
 
 	// Made by ModuleContextBuilder
 	// ModuleContext is the root context
-	public ModuleContextCollector() //JobContext jcontext, 
+	public ModuleContextBuilder() //JobContext jcontext, 
 	{
 
 	}

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.Job;
+import org.scribble.core.job.Core;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.RecVar;
@@ -33,7 +33,7 @@ import org.scribble.core.type.session.Seq;
 public abstract class STypeInliner<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeVisitorNoThrow<K, B>
 {
-	public final Job job;
+	public final Core core;
 	
 	// Basically, "SubprotocolVisitor" -- factor out?
 	private final Deque<SubprotoSig> stack = new LinkedList<>();
@@ -44,9 +44,9 @@ public abstract class STypeInliner<K extends ProtoKind, B extends Seq<K, B>>
 
 	private final Map<RecVar, Seq<K, ?>> recs = new HashMap<>(); 
 
-	public STypeInliner(Job job)
+	public STypeInliner(Core core)
 	{
-		this.job = job;
+		this.core = core;
 	}
 
 	@Override

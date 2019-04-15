@@ -146,12 +146,12 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	
 	// Non-defensive
 	//protected  // CHECKME: make protected again after refactoring ast to parser ?
-	public final void setDel(ScribDel del)
+	protected final void setDel(ScribDel del)
 	{
 		this.del = del;
 	}
 
-	// Defensive helper with cast check
+	// Defensive helper with cast check -- currently unused
 	public static final <T extends ScribNode> T del(T n, ScribDel del)
 	{
 		ScribNodeBase copy = ((ScribNodeBase) n).clone();  // Need deep clone, since children have parent field
@@ -160,43 +160,43 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	}
 	
 	@Override
-	public ScribNode accept(AstVisitor nv) throws ScribException
+	public ScribNode accept(AstVisitor v) throws ScribException
 	{
-		return nv.visit(this);
+		return v.visit(this);
 	}
 
 	@Override
-	public ScribNode visitChildren(AstVisitor nv) throws ScribException
+	public ScribNode visitChildren(AstVisitor v) throws ScribException
 	{
 		return this;
 	}
 	
 	// Used to be more relevant, previously there was an explicit parent parameter
-	protected ScribNode visitChild(ScribNode child, AstVisitor nv) throws ScribException
+	protected ScribNode visitChild(ScribNode child, AstVisitor v) throws ScribException
 	{
-		return nv.visit(child);  // cf. child.accept(nv) ?
+		return v.visit(child);  // cf. child.accept(v) ?
 	}
 		
 	// FIXME: remove parent parameter, to make uniform with visitChild
 	// Used when a generic cast would otherwise be needed (non-generic children casts don't need this) -- doesn't check any generic parameters, relies on concrete values being instances of non-parameterised types
 	// Subtype constraint on visited could still be too restrictive, e.g. AmbigNameNodeDel (although it doesn't matter there), e.g. unfolding continue's into recursion's
 	protected final static <T extends ScribNode> T visitChildWithClassEqualityCheck(
-			ScribNode parent, T child, AstVisitor nv) throws ScribException
+			ScribNode parent, T child, AstVisitor v) throws ScribException
 	{
-		ScribNode visited = ((ScribNodeBase) parent).visitChild(child, nv);
+		ScribNode visited = ((ScribNodeBase) parent).visitChild(child, v);
 		// Same subtyping flexibility as standard cast
 		return ScribNodeUtil.checkNodeClassEquality(child, visited);
 	}
 
 	protected final static <T extends ScribNode> List<T> 
 			visitChildListWithClassEqualityCheck(
-					ScribNode parent, List<T> children, AstVisitor nv)
+					ScribNode parent, List<T> children, AstVisitor v)
 					throws ScribException
 	{
-		return visitChildListWith(parent, children, nv,
+		return visitChildListWith(parent, children, v,
 				(T t) -> ScribUtil.handleLambdaScribbleException(
 					() -> ScribNodeBase
-						.visitChildWithClassEqualityCheck(parent, t, nv))); // -> T
+						.visitChildWithClassEqualityCheck(parent, t, v))); // -> T
 	}
 
 	// Just a list-map with handling for promoted exceptions (via handleLambdaScribbleException) -- could move to Util (where handleLambdaScribbleException is)
@@ -210,10 +210,10 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 			visited.add(c.call());
 		}
 		return visited;*/
-		// Maybe this exception hack is not worth it?  Better to throw directly as ScribbleException
+		// Maybe the below exception hack is not worth it?  Simpler to throw directly as ScribbleException, as above 
 		try
 		{
-			return children.stream().map(n -> c.apply(n))
+			return children.stream().map(x -> c.apply(x))
 					.collect(Collectors.toList());
 		}
 		catch (RuntimeScribException rse)

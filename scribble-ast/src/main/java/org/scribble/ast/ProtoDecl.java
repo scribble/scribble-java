@@ -18,7 +18,6 @@ import java.util.List;
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.Role;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -42,7 +41,14 @@ public abstract class ProtoDecl<K extends ProtoKind> extends ScribNodeBase
 		super(node);
 	}
 	
-	public abstract ProtoDecl<K> dupNode();
+	public ProtoModList getModifierListChild()
+	{
+		return (ProtoModList) getChild(MODLIST_CHILD);
+	}
+
+	// Implement in subclasses to avoid generic cast
+	public abstract ProtoHeader<K> getHeaderChild();
+	public abstract ProtoDef<K> getDefChild();
 
 	public boolean isAux()
 	{
@@ -53,44 +59,43 @@ public abstract class ProtoDecl<K extends ProtoKind> extends ScribNodeBase
 	{
 		return getModifierListChild().hasExplicit();
 	}
-	
-	public ProtoModList getModifierListChild()
+
+	// "add", not "set"
+	public void addChildren1(ProtoModList mods, ProtoHeader<K> header,
+			ProtoDef<K> def)
 	{
-		return (ProtoModList) getChild(MODLIST_CHILD);
+		// Cf. above getters and Scribble.g children order
+		addChild(mods);
+		addChild(header);
+		addChild(def);
+	}
+	
+	public abstract ProtoDecl<K> dupNode();
+
+	public ProtoDecl<K> reconstruct(ProtoModList mods, ProtoHeader<K> header,
+			ProtoDef<K> def)
+	{
+		ProtoDecl<K> dup = dupNode();
+		dup.addChildren1(mods, header, def);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 
-	// Implement in subclasses to avoid generic cast
-	public abstract ProtoHeader<K> getHeaderChild();
-	public abstract ProtoDef<K> getDefChild();
+	@Override
+	public ProtoDecl<K> visitChildren(AstVisitor v) throws ScribException
+	{
+		ProtoModList mods = visitChildWithClassEqualityCheck(this,
+				getModifierListChild(), v);
+		ProtoHeader<K> header = 
+				visitChildWithClassEqualityCheck(this, getHeaderChild(), v);
+		ProtoDef<K> def = visitChildWithClassEqualityCheck(this, getDefChild(), v);
+		return reconstruct(mods, header, def);
+	}
 	
 	public List<Role> getRoles()
 	{
 		// WF disallows unused role declarations
 		return getHeaderChild().getRoleDeclListChild().getRoles();
-	}
-
-	public ProtoDecl<K> reconstruct(ProtoModList mods,
-			ProtoHeader<K> header,	ProtoDef<K> def)  
-			//, ProtocolDeclContext pdcontext, Env env);
-	{
-		ProtoDecl<K> pd = dupNode();
-		ScribDel del = del();
-		pd.addChild(mods);
-		pd.addChild(header);
-		pd.addChild(def);
-		pd.setDel(del);  // No copy
-		return pd;
-	}
-
-	@Override
-	public ProtoDecl<K> visitChildren(AstVisitor nv) throws ScribException
-	{
-		ProtoModList mods = visitChildWithClassEqualityCheck(this,
-				getModifierListChild(), nv);
-		ProtoHeader<K> header = 
-				visitChildWithClassEqualityCheck(this, getHeaderChild(), nv);
-		ProtoDef<K> def = visitChildWithClassEqualityCheck(this, getDefChild(), nv);
-		return reconstruct(mods, header, def);
 	}
 	
 	@Override

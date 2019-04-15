@@ -69,8 +69,8 @@ public abstract class DoDel extends SimpleSessionNodeDel
 		ProtoNameNode<K> n = makeProtoNameNode(disamb, proto);
 		
 		// Didn't keep original namenode del -- ?
-		return visited.reconstruct(visited.getRoleListChild(),
-				visited.getNonRoleListChild(), n);
+		return visited.reconstruct(n,
+				visited.getNonRoleListChild(), visited.getRoleListChild());
 	}
 	
 	private <K extends ProtoKind> ProtoNameNode<K> makeProtoNameNode(
@@ -82,10 +82,10 @@ public abstract class DoDel extends SimpleSessionNodeDel
 		if (fullname instanceof GProtoName)
 		{
 			List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
-					.map(x -> disamb.lang.config.af.IdNode(null, x))
+					.map(x -> disamb.job.config.af.IdNode(null, x))
 					.collect(Collectors.toList());
 			@SuppressWarnings("unchecked") // FIXME
-			ProtoNameNode<K> cast = (ProtoNameNode<K>) disamb.lang.config.af
+			ProtoNameNode<K> cast = (ProtoNameNode<K>) disamb.job.config.af
 					.GProtoNameNode(proto.token, elems);
 			return cast;
 		}

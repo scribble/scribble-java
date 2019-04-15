@@ -13,7 +13,7 @@
  */
 package org.scribble.core.job;
 
-public enum JobArgs
+public enum CoreArgs
 {
 	VERBOSE,
 	FAIR,

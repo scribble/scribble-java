@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.core.job.Job;
+import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
@@ -53,12 +53,12 @@ import org.scribble.core.visit.local.SingleContinueChecker;
 // Pre: use on inlined (i.e., Do inlined, roles pruned)
 public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 {
-	public final Job job;
+	public final Core core;
 	public final Role self;
 
-	public InlinedProjector(Job job, Role self)
+	public InlinedProjector(Core core, Role self)
 	{
-		this.job = job;
+		this.core = core;
 		this.self = self;
 	}
 

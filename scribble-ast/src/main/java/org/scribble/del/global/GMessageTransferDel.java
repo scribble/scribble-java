@@ -61,7 +61,7 @@ public class GMessageTransferDel extends MessageTransferDel
 			throw new RuntimeException("[TODO] multiple destination roles: " + source);
 		}
 		Role dst = ds.get(0).toName();
-		Msg msg = source.getMessageNodeChild().toMessage();
+		Msg msg = source.getMessageNodeChild().toMsg();
 		return new org.scribble.core.type.session.global.GMessageTransfer(source,
 				src, msg, dst);
 	}

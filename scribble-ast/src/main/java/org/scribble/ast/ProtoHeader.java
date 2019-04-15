@@ -17,7 +17,6 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.qualified.ProtoNameNode;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.ProtoName;
-import org.scribble.del.ScribDel;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -56,23 +55,25 @@ public abstract class ProtoHeader<K extends ProtoKind>
 		return (RoleDeclList) getChild(ROLEDECLLIST_CHILD);  // TODO: swap order with paramdecllist (in grammar)
 	}
 
-	public boolean isParamDeclListEmpty()
+	// "add", not "set"
+	public void addChildren1(ProtoNameNode<K> name, NonRoleParamDeclList ps,
+			RoleDeclList rs)
 	{
-		return getParamDeclListChild().isEmpty();
+		// Cf. above getters and Scribble.g children order
+		addChild(name);
+		addChild(ps);
+		addChild(rs);
 	}
 	
 	public abstract ProtoHeader<K> dupNode();
 	
-	public ProtoHeader<K> reconstruct(ProtoNameNode<K> name,
-			RoleDeclList rdl, NonRoleParamDeclList pdl)
+	public ProtoHeader<K> reconstruct(ProtoNameNode<K> name, NonRoleParamDeclList ps,
+			RoleDeclList rs)
 	{
-		ProtoHeader<K> pd = dupNode();
-		ScribDel del = del();
-		pd.addChild(name);
-		pd.addChild(pdl);  // Cf. above TODO (rdl/pdl child order)
-		pd.addChild(rdl);
-		pd.setDel(del);  // No copy
-		return pd;
+		ProtoHeader<K> dup = dupNode();
+		dup.addChildren1(name, ps, rs);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override
@@ -83,7 +84,12 @@ public abstract class ProtoHeader<K extends ProtoKind>
 		RoleDeclList rdl = (RoleDeclList) visitChild(getRoleDeclListChild(), nv);
 		NonRoleParamDeclList pdl = (NonRoleParamDeclList) 
 				visitChild(getParamDeclListChild(), nv);
-		return reconstruct(getNameNodeChild(), rdl, pdl);
+		return reconstruct(getNameNodeChild(), pdl, rdl);
+	}
+
+	public boolean isParamDeclListEmpty()
+	{
+		return getParamDeclListChild().isEmpty();
 	}
 
 	@Override

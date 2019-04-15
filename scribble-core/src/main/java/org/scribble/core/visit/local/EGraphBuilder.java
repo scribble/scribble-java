@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble.core.job.Job;
+import org.scribble.core.job.Core;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.endpoint.EState;
@@ -53,14 +53,14 @@ import org.scribble.util.ScribException;
 // Must use build as top-level call (does EGraphBuilderUtil2.finalise -- "resets" the util)
 public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 {
-	public final Job job;
+	public final Core core;
 
 	private EGraphBuilderUtil util;
 
-	public EGraphBuilder(Job job)
+	public EGraphBuilder(Core core)
 	{
-		this.job = job;
-		this.util = job.newEGraphBuilderUtil();
+		this.core = core;
+		this.util = core.newEGraphBuilderUtil();
 		this.util.init(null);
 	}
 	

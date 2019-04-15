@@ -17,15 +17,15 @@ import org.scribble.ast.ScribNode;
 import org.scribble.core.lang.global.GNode;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.del.global.GDel;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 
 // CHECKME: move to visit package?
 public class GTypeTranslator extends SimpleAstVisitor<GNode>
 {
-	public GTypeTranslator(Lang lang, ModuleName rootFullname)
+	public GTypeTranslator(Job job, ModuleName rootFullname)
 	{
-		super(lang, rootFullname);
+		super(job, rootFullname);
 	}
 
 	@Override

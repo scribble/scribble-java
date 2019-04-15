@@ -21,7 +21,7 @@ import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
-import org.scribble.lang.LangContext;
+import org.scribble.job.JobContext;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -57,18 +57,26 @@ public abstract class Do<K extends ProtoKind>
 	{
 		return (RoleArgList) getChild(ROLE_LIST_CHILD_INDEX);
 	}
+
+	// "add", not "set"
+	public void addChildren1(ProtoNameNode<K> proto, NonRoleArgList as,
+			RoleArgList rs)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(proto);  // Order re. getter indices
+		addChild(as);
+		addChild(rs);
+	}
 	
 	public abstract Do<K> dupNode();
 
-	public Do<K> reconstruct(RoleArgList roles, NonRoleArgList args,
-			ProtoNameNode<K> proto)
+	public Do<K> reconstruct(ProtoNameNode<K> proto, NonRoleArgList as,
+			RoleArgList rs)
 	{
-		Do<K> sig = dupNode();
-		sig.addChild(proto);  // Order re. getter indices
-		sig.addChild(args);
-		sig.addChild(roles);
-		sig.setDel(del());  // No copy
-		return sig;
+		Do<K> dup = dupNode();
+		dup.addChildren1(proto, as, rs);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 
 	@Override
@@ -78,7 +86,7 @@ public abstract class Do<K extends ProtoKind>
 		NonRoleArgList al = (NonRoleArgList) visitChild(getNonRoleListChild(), nv);
 		ProtoNameNode<K> proto = visitChildWithClassEqualityCheck(this,
 				getProtocolNameNode(), nv);
-		return reconstruct(ril, al, proto);
+		return reconstruct(proto, al, ril);
 	}
 
 	// FIXME: mcontext now redundant because NameDisambiguator converts all targets to full names -- NO: currently disamb doesn't
@@ -91,10 +99,10 @@ public abstract class Do<K extends ProtoKind>
 	}
 	
 	// CHECKME: mcontext redundant, because redundant for getTargetProtocolDeclFullName
-	public abstract ProtoDecl<K> getTargetProtocolDecl(LangContext jcontext,
+	public abstract ProtoDecl<K> getTargetProtocolDecl(JobContext jcontext,
 			ModuleContext mcontext);
 	
-	public Role getTargetRoleParameter(LangContext jcontext,
+	public Role getTargetRoleParameter(JobContext jcontext,
 			ModuleContext mcontext, Role role)
 	{
 		Iterator<Role> args = getRoleListChild().getRoles().iterator();

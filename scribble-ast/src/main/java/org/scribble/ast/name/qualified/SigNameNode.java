@@ -48,14 +48,14 @@ public class SigNameNode extends MemberNameNode<SigKind>
 	}
 
 	@Override
-	public boolean isMessageSigNameNode()
+	public boolean isSigNameNode()
 	{
 		return true;
 	}
 
 	// Difference between toName and toMessage is scope? does that make sense?
 	@Override
-	public SigName toMessage() 
+	public SigName toMsg() 
 	{
 		return toName();
 	}
@@ -63,7 +63,7 @@ public class SigNameNode extends MemberNameNode<SigKind>
 	@Override
 	public SigName toArg()
 	{
-		return toMessage();
+		return toMsg();
 	}
 
 	@Override

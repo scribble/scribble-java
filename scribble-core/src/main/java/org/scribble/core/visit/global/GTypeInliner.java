@@ -13,7 +13,7 @@
  */
 package org.scribble.core.visit.global;
 
-import org.scribble.core.job.Job;
+import org.scribble.core.job.Core;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
@@ -30,9 +30,9 @@ import org.scribble.core.visit.Substitutor;
 
 public class GTypeInliner extends STypeInliner<Global, GSeq>
 {
-	public GTypeInliner(Job job)
+	public GTypeInliner(Core core)
 	{
-		super(job);
+		super(core);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class GTypeInliner extends STypeInliner<Global, GSeq>
 			return new GContinue(n.getSource(), rv);
 		}
 		pushSig(sig);
-		GProtocol g = this.job.getContext().getIntermediate(fullname);
+		GProtocol g = this.core.getContext().getIntermediate(fullname);
 		Substitutor<Global, GSeq> subs = new Substitutor<>(g.roles, n.roles,
 				g.params, n.args);
 		//GSeq inlined = (GSeq) g.def.visitWithNoEx(subs).visitWithNoEx(this);

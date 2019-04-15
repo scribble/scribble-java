@@ -17,8 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.core.job.Job;
-import org.scribble.core.job.JobContext;
+import org.scribble.core.job.Core;
+import org.scribble.core.job.CoreContext;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtoName;
@@ -35,9 +35,9 @@ import org.scribble.core.type.session.local.LType;
 // Supports Do -- can use on parsed (intermed)
 public class Projector extends InlinedProjector  // This way or the other way round?
 {
-	public Projector(Job job, Role self)
+	public Projector(Core core, Role self)
 	{
-		super(job, self);
+		super(core, self);
 	}
 
 	@Override
@@ -48,12 +48,12 @@ public class Projector extends InlinedProjector  // This way or the other way ro
 			return LSkip.SKIP;
 		}
 
-		JobContext jobc = this.job.getContext();
+		CoreContext corec = this.core.getContext();
 		GProtoName proto = (GProtoName) n.proto;
-		GProtocol gpd = jobc.getIntermediate(proto);
+		GProtocol gpd = corec.getIntermediate(proto);
 		Role targSelf = gpd.roles.get(n.roles.indexOf(this.self));
 
-		GProtocol imed = jobc.getIntermediate(proto);
+		GProtocol imed = corec.getIntermediate(proto);
 		if (!imed.roles.contains(targSelf))  // CHECKME: because roles already pruned for intermed decl?
 		{
 			return LSkip.SKIP;
@@ -63,7 +63,7 @@ public class Projector extends InlinedProjector  // This way or the other way ro
 				targSelf);
 		Substitutions subs = new Substitutions(imed.roles, n.roles,
 				Collections.emptyList(), Collections.emptyList());
-		List<Role> used = jobc.getInlined(proto).roles.stream()
+		List<Role> used = corec.getInlined(proto).roles.stream()
 				.map(x -> subs.subsRole(x)).collect(Collectors.toList());
 		List<Role> rs = n.roles.stream().filter(x -> used.contains(x))
 				.map(x -> x.equals(this.self) ? Role.SELF : x)

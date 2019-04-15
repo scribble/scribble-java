@@ -49,6 +49,14 @@ public class GWrap extends BasicInteraction<Global>
 	{
 		return (RoleNode) getChild(SERVER_CHILD_INDEX);
 	}
+
+	// "add", not "set"
+	public void addChildren1(RoleNode client, RoleNode server)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(client);
+		addChild(server);
+	}
 	
 	@Override
 	public GWrap dupNode()
@@ -59,8 +67,7 @@ public class GWrap extends BasicInteraction<Global>
 	public GWrap reconstruct(RoleNode client, RoleNode server)
 	{
 		GWrap n = dupNode();
-		n.addChild(client);
-		n.addChild(server);
+		n.addChildren1(client, server);
 		n.setDel(del());  // No copy
 		return n;
 	}

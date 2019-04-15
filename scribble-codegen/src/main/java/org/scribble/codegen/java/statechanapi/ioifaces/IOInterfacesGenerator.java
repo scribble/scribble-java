@@ -37,8 +37,8 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.core.job.JobArgs;
-import org.scribble.core.job.JobContext;
+import org.scribble.core.job.CoreArgs;
+import org.scribble.core.job.CoreContext;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
@@ -80,10 +80,10 @@ public class IOInterfacesGenerator extends ApiGen
 		GProtoName fullname = apigen.getGProtocolName();
 		Role self = getSelf();
 		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext jobc2 = this.job.getContext();
-		EState init = this.job.config.args.get(JobArgs.MIN_EFSM)
-				? jobc2.getMinimisedEGraph(fullname, self).init
-				: jobc2.getEGraph(fullname, self).init;
+		CoreContext corec = this.core.getContext();
+		EState init = this.job.config.args.get(CoreArgs.MIN_EFSM)
+				? corec.getMinimisedEGraph(fullname, self).init
+				: corec.getEGraph(fullname, self).init;
 		
 		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{

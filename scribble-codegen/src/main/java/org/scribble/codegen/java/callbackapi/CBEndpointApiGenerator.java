@@ -26,9 +26,9 @@ import org.scribble.ast.DataDecl;
 import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
-import org.scribble.core.job.Job;
-import org.scribble.core.job.JobArgs;
-import org.scribble.core.job.JobContext;
+import org.scribble.core.job.Core;
+import org.scribble.core.job.CoreArgs;
+import org.scribble.core.job.CoreContext;
 import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
@@ -37,7 +37,7 @@ import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.name.Role;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
@@ -45,19 +45,19 @@ import org.scribble.util.ScribException;
 @Deprecated
 public class CBEndpointApiGenerator
 {
-	public final Lang lang;
 	public final Job job;
+	public final Core core;
 	public final GProtoName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
 	private final boolean subtypes;
 
-	public CBEndpointApiGenerator(Lang job, GProtoName fullname, Role self, boolean subtypes)
+	public CBEndpointApiGenerator(Job job, GProtoName fullname, Role self, boolean subtypes)
 	{
-		this.lang = job;
+		this.job = job;
 		try
 		{
-			this.job = job.getJob();
+			this.core = job.getCore();
 		}
 		catch (ScribException e)  // TODO: refactor
 		{
@@ -82,19 +82,19 @@ public class CBEndpointApiGenerator
 
 	public Map<String, String> buildSessionApi() throws ScribException // FIXME: factor out -- integrate with JEndpointApiGenerator
 	{
-		this.lang.verbosePrintln("\n[param-core] Running " + CBEndpointApiGenerator.class + " for " + this.proto + "@" + this.self);
+		this.job.verbosePrintln("\n[param-core] Running " + CBEndpointApiGenerator.class + " for " + this.proto + "@" + this.self);
 
 		Map<String, String> res = new HashMap<>();
-		res.putAll(new SessionApiGenerator(this.lang, this.proto).generateApi());
+		res.putAll(new SessionApiGenerator(this.job, this.proto).generateApi());
 		res.putAll(buildEndpointClass());
 		return res;
 	}
 	
 	public Map<String, String> buildEndpointClass() throws ScribException
 	{
-		Module main = this.lang.getContext().getMainModule();
-		JobContext jobc2 = this.job.getContext();
-		EState init = (this.job.config.args.get(JobArgs.MIN_EFSM)
+		Module main = this.job.getContext().getMainModule();
+		CoreContext jobc2 = this.core.getContext();
+		EState init = (this.core.config.args.get(CoreArgs.MIN_EFSM)
 				? jobc2.getMinimisedEGraph(this.proto, this.self)
 				: jobc2.getEGraph(this.proto, this.self)
 				).init;

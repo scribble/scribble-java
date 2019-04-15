@@ -49,11 +49,11 @@ public class SigParamNode extends NonRoleParamNode<SigKind>
 	@Override
 	public SigName toArg()
 	{
-		return toMessage();
+		return toMsg();
 	}
 
 	@Override
-	public SigName toMessage()
+	public SigName toMsg()
 	{
 		return toName();
 	}

@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.lang;
+package org.scribble.job;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -20,8 +20,8 @@ import java.util.Set;
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtoDecl;
-import org.scribble.core.job.Job;
-import org.scribble.core.job.JobArgs;
+import org.scribble.core.job.Core;
+import org.scribble.core.job.CoreArgs;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.ScribException;
@@ -30,37 +30,37 @@ import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.NameDisambiguator;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
-public class Lang
+public class Job
 {
-	public final LangConfig config;  // Immutable
+	public final JobConfig config;  // Immutable
 
-	private final LangContext context;  // Mutable: Visitor passes update modules
+	private final JobContext context;  // Mutable: Visitor passes update modules
 	
-	private Job job;
+	private Core core;
 
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Lang(ModuleName mainFullname, Map<JobArgs, Boolean> args,
+	public Job(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
 			Map<ModuleName, Module> parsed, AstFactory af) throws ScribException
 	{
 		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
 		// FIXME: wrap flags in Map and move Config construction to Lang
-		this.config = newLangConfig(mainFullname, args, af);
-		this.context = newLangContext(this, parsed);  // Single instance per Lang, should not be shared between Langs
+		this.config = newJobConfig(mainFullname, args, af);
+		this.context = newJobContext(this, parsed);  // Single instance per Lang, should not be shared between Langs
 	}
 
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
-	protected LangConfig newLangConfig(ModuleName mainFullname,
-			Map<JobArgs, Boolean> args, AstFactory af)
+	protected JobConfig newJobConfig(ModuleName mainFullname,
+			Map<CoreArgs, Boolean> args, AstFactory af)
 	{
-		return new LangConfig(mainFullname, args, af);
+		return new JobConfig(mainFullname, args, af);
 	}
 
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
-	protected LangContext newLangContext(Lang lang,
+	protected JobContext newJobContext(Job job,
 			Map<ModuleName, Module> parsed) throws ScribException
 	{
-		return new LangContext(this, parsed);
+		return new JobContext(this, parsed);
 	}
 
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
@@ -70,11 +70,11 @@ public class Lang
 	}
 	
 	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
-	protected Job newJob(ModuleName mainFullname, Map<JobArgs, Boolean> args,
+	protected Core newJob(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
 			//Map<ModuleName, ModuleContext> modcs, 
 			Set<GProtocol> imeds)
 	{
-		return new Job(mainFullname, args, //modcs, 
+		return new Core(mainFullname, args, //modcs, 
 				imeds);
 	}
 	
@@ -92,9 +92,9 @@ public class Lang
 	// So, typically, Lang passes should be finished before calling this
 	// Job passes may subsequently mutate Job(Context) though
 	// CHECKME: revise this pattern? -- maybe fork Job for a snapshot of current Lang(Context) -- and, possibly, convert Job back to Lang
-	public final Job getJob() throws ScribException
+	public final Core getCore() throws ScribException
 	{
-		if (this.job == null)
+		if (this.core == null)
 		{
 			Map<ModuleName, Module> parsed = this.context.getParsed();
 			Set<GProtocol> imeds = new HashSet<>();
@@ -109,27 +109,21 @@ public class Lang
 							"\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
 				}
 			}
-			this.job = newJob(this.config.main, this.config.args,
+			this.core = newJob(this.config.main, this.config.args,
 					//this.context.getModuleContexts(), 
 					imeds);
 		}
-		return this.job;
+		return this.core;
 	}
 	
-	public LangContext getContext()
+	public JobContext getContext()
 	{
 		return this.context;
 	}
-	
-	// For convenience
-	/*public ModuleContext getMainModuleContext()
-	{
-		return this.context.getModuleContext(this.config.main);
-	}*/
 
 	public void runVisitorPassOnAllModules(AstVisitor v) throws ScribException
 	{
-		debugPrintPass("Running " + v.getClass() + " on all modules:");
+		verbosePrintPass("Running " + v.getClass() + " on all modules:");
 		runVisitorPass(v, this.context.getFullModuleNames());
 	}
 
@@ -142,14 +136,15 @@ public class Lang
 			}
 	}
 
-	private void runVisitorOnModule(ModuleName modname, AstVisitor nv)
+	private void runVisitorOnModule(ModuleName modname, AstVisitor v)
 			throws ScribException
 	{
-		if (this.job != null)
+		if (this.core != null)
 		{
 			throw new RuntimeException("toJob already finalised: ");
 		}
-		Module visited = (Module) this.context.getModule(modname).accept(nv);
+		verbosePrintPass("- Running " + v.getClass() + " on:\n" + modname);
+		Module visited = (Module) this.context.getModule(modname).accept(v);
 		this.context.replaceModule(visited);
 	}
 	
@@ -160,13 +155,13 @@ public class Lang
 	
 	public void verbosePrintln(String s)
 	{
-		if (this.config.args.get(JobArgs.VERBOSE))
+		if (this.config.args.get(CoreArgs.VERBOSE))
 		{
 			System.out.println(s);
 		}
 	}
 	
-	private void debugPrintPass(String s)
+	private void verbosePrintPass(String s)
 	{
 		verbosePrintln("\n[Lang] " + s);
 	}

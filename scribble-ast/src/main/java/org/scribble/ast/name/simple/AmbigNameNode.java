@@ -55,7 +55,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	}
 
 	@Override
-	public Msg toMessage()
+	public Msg toMsg()
 	{
 		throw new RuntimeException(
 				"Ambiguous name node not disambiguated: " + this);

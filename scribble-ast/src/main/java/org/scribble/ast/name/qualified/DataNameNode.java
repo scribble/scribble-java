@@ -51,7 +51,7 @@ public class DataNameNode extends MemberNameNode<DataKind>
 	}
 
 	@Override
-	public boolean isDataTypeNameNode()
+	public boolean isDataNameNode()
 	{
 		return true;
 	}

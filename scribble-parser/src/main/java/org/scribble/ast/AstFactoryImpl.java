@@ -11,42 +11,17 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.parser.scribble;
+package org.scribble.ast;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
-import org.scribble.ast.AstFactory;
-import org.scribble.ast.DataDecl;
-import org.scribble.ast.DataParamDecl;
-import org.scribble.ast.ImportDecl;
-import org.scribble.ast.ImportModule;
-import org.scribble.ast.Module;
-import org.scribble.ast.ModuleDecl;
-import org.scribble.ast.MsgNode;
-import org.scribble.ast.NonProtoDecl;
-import org.scribble.ast.NonRoleArg;
-import org.scribble.ast.NonRoleArgList;
-import org.scribble.ast.NonRoleArgNode;
-import org.scribble.ast.NonRoleParamDecl;
-import org.scribble.ast.NonRoleParamDeclList;
-import org.scribble.ast.PayElem;
-import org.scribble.ast.PayElemList;
-import org.scribble.ast.ProtoDecl;
-import org.scribble.ast.ProtoModList;
-import org.scribble.ast.RoleArg;
-import org.scribble.ast.RoleArgList;
-import org.scribble.ast.RoleDecl;
-import org.scribble.ast.RoleDeclList;
-import org.scribble.ast.ScribNodeBase;
-import org.scribble.ast.SigDecl;
-import org.scribble.ast.SigLitNode;
-import org.scribble.ast.SigParamDecl;
-import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
@@ -106,13 +81,14 @@ import org.scribble.del.name.simple.AmbigNameNodeDel;
 import org.scribble.del.name.simple.NonRoleParamNodeDel;
 import org.scribble.del.name.simple.RecVarNodeDel;
 import org.scribble.del.name.simple.RoleNodeDel;
+import org.scribble.parser.ScribAntlrWrapper;
 import org.scribble.parser.antlr.ScribbleParser;
 
 
 
 public class AstFactoryImpl implements AstFactory
 {
-	// Purely for the convenience of newToken(type)
+	// Purely for the convenience of newToken(Token, type)
 	protected final ScribbleParser parser;
 	protected final Map<Integer, String> tokens;
 	
@@ -174,11 +150,10 @@ public class AstFactoryImpl implements AstFactory
 		return new DefaultDel();
 	}
 	
-	// FIXME: factor out -- change return to void (ScribNodeBase.del is a mutating setter)
-//	protected static <T extends ScribNodeBase> T del(T n, ScribDel del)
-	protected static <T extends ScribNodeBase> T del(T n, ScribDel del)
+	protected static void setDel(ScribNodeBase n, ScribDel del)
 	{
-		return ScribNodeBase.del(n, del);
+		//ScribNodeBase.del(n, del);  // Defensive setter -- unnecessary ?
+		n.setDel(del);  // Mutating setter
 	}
 	
 	@Override
@@ -216,7 +191,7 @@ public class AstFactoryImpl implements AstFactory
 		int ttype = ScribbleParser.ID;
 		t = newIdToken(t, text);
 		OpNode n = new OpNode(ttype, t);  // Cf. Scribble.g, ID<...Node>[$ID]
-		del(n, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -226,7 +201,7 @@ public class AstFactoryImpl implements AstFactory
 		int ttype = ScribbleParser.ID;
 		t = newIdToken(t, text);
 		RecVarNode n = new RecVarNode(ttype, t);  // Cf. Scribble.g, ID<...Node>[$ID]
-		del(n, new RecVarNodeDel());
+		setDel(n, new RecVarNodeDel());
 		return n;
 	}
 
@@ -236,7 +211,7 @@ public class AstFactoryImpl implements AstFactory
 		int ttype = ScribbleParser.ID;
 		t = newIdToken(t, text);
 		RoleNode n = new RoleNode(ttype, t);  // Cf. Scribble.g, ID<...Node>[$ID]
-		del(n, new RoleNodeDel());
+		setDel(n, new RoleNodeDel());
 		return n;
 	}
 
@@ -266,7 +241,7 @@ public class AstFactoryImpl implements AstFactory
 		t = newToken(t, ScribbleParser.DATA_NAME);
 		DataNameNode n = new DataNameNode(t);
 		n.addChildren(elems);
-		del(n, new DataTypeNodeDel());
+		setDel(n, new DataTypeNodeDel());
 		return n;
 	}
 
@@ -276,7 +251,7 @@ public class AstFactoryImpl implements AstFactory
 		t = newToken(t, ScribbleParser.GPROTO_NAME);
 		GProtoNameNode n = new GProtoNameNode(t);
 		n.addChildren(elems);
-		del(n, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -286,7 +261,7 @@ public class AstFactoryImpl implements AstFactory
 		t = newToken(t, ScribbleParser.MODULE_NAME);
 		ModuleNameNode n = new ModuleNameNode(t);
 		n.addChildren(elems);
-		del(n, createDefaultDelegate());
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -296,7 +271,7 @@ public class AstFactoryImpl implements AstFactory
 		t = newToken(t, ScribbleParser.SIG_NAME);
 		SigNameNode n = new SigNameNode(t);
 		n.addChildren(elems);
-		del(n, new MessageSigNameNodeDel());
+		setDel(n, new MessageSigNameNodeDel());
 		return n;
 	}
 	
@@ -306,21 +281,18 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.MODULE);  
 		Module n = new Module(t);
-		n.addChild(moddecl);
-		n.addChildren(imports);
-		n.addChildren(data);
-		n.addChildren(protos);
-		del(n, new ModuleDel());
+		n.addChildren1(moddecl, imports, data, protos);
+		setDel(n, new ModuleDel());
 		return n;
 	}
 
 	@Override
-	public ModuleDecl ModuleDecl(Token t, ModuleNameNode fullmodname)
+	public ModuleDecl ModuleDecl(Token t, ModuleNameNode fullname)
 	{
 		t = newToken(t, ScribbleParser.MODULEDECL);  
 		ModuleDecl n = new ModuleDecl(t);
-		n.addChild(fullmodname);
-		del(n, createDefaultDelegate());
+		n.addChildren1(fullname);
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -330,40 +302,30 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.IMPORTMODULE);  
 		ImportModule n = new ImportModule(t);
-		n.addChild(modname);
-		if (alias != null)
-		{
-			n.addChild(alias);
-		}
-		del(n, new ImportModuleDel());
+		n.addChildren1(modname, alias);
+		setDel(n, new ImportModuleDel());
 		return n;
 	}
 
 	@Override
-	public DataDecl DataDecl(Token t, IdNode schema, IdNode extName, IdNode extSource,
-			DataNameNode alias)
+	public DataDecl DataDecl(Token t, IdNode schema, ExtIdNode extName,
+			ExtIdNode extSource, DataNameNode alias)
 	{
 		t = newToken(t, ScribbleParser.DATADECL);
 		DataDecl n = new DataDecl(t);
-		n.addChild(schema);
-		n.addChild(extName);
-		n.addChild(extSource);
-		n.addChild(alias);
-		del(n, createDefaultDelegate());
+		n.addChildren1(alias, schema, extName, extSource);
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
 	@Override
-	public SigDecl SigDecl(Token t, IdNode schema, IdNode extName,
-			IdNode extSource, SigNameNode alias)
+	public SigDecl SigDecl(Token t, IdNode schema, ExtIdNode extName,
+			ExtIdNode extSource, SigNameNode alias)
 	{
 		t = newToken(t, ScribbleParser.SIGDECL);
 		SigDecl n = new SigDecl(t);
-		n.addChild(schema);
-		n.addChild(extName);
-		n.addChild(extSource);
-		n.addChild(alias);
-		del(n, createDefaultDelegate());
+		n.addChildren1(alias, schema, extName, extSource);
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -373,10 +335,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GPROTODECL);
 		GProtoDecl n = new GProtoDecl(t);
-		n.addChild(mods);
-		n.addChild(header);
-		n.addChild(def);
-		del(n, new GProtocolDeclDel());
+		n.addChildren1(mods, header, def);
+		setDel(n, new GProtocolDeclDel());
 		return n;
 	}
 
@@ -386,10 +346,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GPROTOHEADER);
 		GProtoHeader n = new GProtoHeader(t);
-		n.addChild(name);
-		n.addChild(ps);
-		n.addChild(rs);
-		del(n, createDefaultDelegate());
+		n.addChildren1(name, ps, rs);
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -399,8 +357,8 @@ public class AstFactoryImpl implements AstFactory
 		t = newToken(t, ScribbleParser.ROLEDECL_LIST);
 		RoleDeclList n = new RoleDeclList(t);
 		// Cf. Scribble.g children order
-		n.addChildren(ds);
-		del(n, new RoleDeclListDel());
+		n.addChildren1(ds);
+		setDel(n, new RoleDeclListDel());
 		return n;
 	}
 
@@ -409,8 +367,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.ROLEDECL);
 		RoleDecl n = new RoleDecl(t);
-		n.addChild(r);
-		del(n, new RoleDeclDel());
+		n.addChildren1(r);
+		setDel(n, new RoleDeclDel());
 		return n;
 	}
 
@@ -421,8 +379,8 @@ public class AstFactoryImpl implements AstFactory
 		t =newToken(t, ScribbleParser.PARAMDECL_LIST);
 		NonRoleParamDeclList n = new NonRoleParamDeclList(t);
 		// Cf. Scribble.g children order
-		n.addChildren(ds);
-		del(n, new NonRoleParamDeclListDel());
+		n.addChildren1(ds);
+		setDel(n, new NonRoleParamDeclListDel());
 		return n;
 	}
 
@@ -432,8 +390,8 @@ public class AstFactoryImpl implements AstFactory
 		t = newToken(t, ScribbleParser.DATAPARAMDECL);
 		DataParamDecl n = new DataParamDecl(t);
 		// Cf. Scribble.g children order
-		n.addChild(p);
-		del(n, new NonRoleParamDeclDel());
+		n.addChildren1(p);
+		setDel(n, new NonRoleParamDeclDel());
 		return n;
 	}
 
@@ -443,8 +401,8 @@ public class AstFactoryImpl implements AstFactory
 		t = newToken(t, ScribbleParser.SIGPARAMDECL);
 		SigParamDecl n = new SigParamDecl(t);
 		// Cf. Scribble.g children order
-		n.addChild(p);
-		del(n, new NonRoleParamDeclDel());
+		n.addChildren1(p);
+		setDel(n, new NonRoleParamDeclDel());
 		return n;
 	}
 
@@ -453,8 +411,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GPROTODEF);
 		GProtoDef n = new GProtoDef(t);
-		n.addChild(block);
-		del(n, new GProtocolDefDel());
+		n.addChildren1(block);
+		setDel(n, new GProtocolDefDel());
 		return n;
 	}
 
@@ -463,8 +421,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GPROTOBLOCK);
 		GProtoBlock n = new GProtoBlock(t);
-		n.addChild(seq);
-		del(n, new GProtocolBlockDel());
+		n.addChildren1(seq);
+		setDel(n, new GProtocolBlockDel());
 		return n;
 	}
 
@@ -473,8 +431,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GINTERSEQ);
 		GInteractionSeq n = new GInteractionSeq(t);
-		n.addChildren(elems);
-		del(n, new GInteractionSeqDel());
+		n.addChildren1(elems);
+		setDel(n, new GInteractionSeqDel());
 		return n;
 	}
 
@@ -483,9 +441,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.SIG_LIT);  
 		SigLitNode n = new SigLitNode(t);
-		n.addChild(op);
-		n.addChild(pay);
-		del(n, createDefaultDelegate());
+		n.addChildren1(op, pay);
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -494,8 +451,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.PAYELEM_LIST);  
 		PayElemList n = new PayElemList(t);
-		n.addChildren(elems);
-		del(n, createDefaultDelegate());
+		n.addChildren1(elems);
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -505,9 +462,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.UNARY_PAYELEM);  
 		UnaryPayElem<K> n = new UnaryPayElem<>(t);
-		// Cf. Scribble.g children order
-		n.addChild(name);
-		del(n, createDefaultDelegate());
+		n.addChildren1(name);
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -517,10 +473,9 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.DELEG_PAYELEM);  
 		GDelegPayElem n = new GDelegPayElem(t);
-		n.addChild(proto);
-		n.addChild(role);
+		n.addChildren1(proto, role);
 		//del(n, createDefaultDelegate());
-		del(n, new GDelegationElemDel());  // FIXME: GDelegationElemDel
+		setDel(n, new GDelegationElemDel());  // FIXME: GDelegationElemDel
 		return n;
 	}
 
@@ -529,10 +484,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GCONNECT);
 		GConnect n = new GConnect(t);
-		n.addChild(msg);
-		n.addChild(src);
-		n.addChild(dst);
-		del(n, new GConnectDel());
+		n.addChildren1(msg, src, Stream.of(dst).collect(Collectors.toList()));
+		setDel(n, new GConnectDel());
 		return n;
 	}
 
@@ -541,22 +494,19 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GDCONN);
 		GDisconnect n = new GDisconnect(t);
-		n.addChild(left);
-		n.addChild(right);
-		del(n, new GDisconnectDel());
+		n.addChildren1(left, right);
+		setDel(n, new GDisconnectDel());
 		return n;
 	}
 
 	@Override
-	public GMsgTransfer GMsgTransfer(Token t, RoleNode src,
-			MsgNode msg, List<RoleNode> dsts)
+	public GMsgTransfer GMsgTransfer(Token t, RoleNode src, MsgNode msg,
+			List<RoleNode> dsts)
 	{
 		t = newToken(t, ScribbleParser.GMSGTRANSFER);
 		GMsgTransfer n = new GMsgTransfer(t);
-		n.addChild(msg);
-		n.addChild(src);
-		n.addChildren(dsts);
-		del(n, new GMessageTransferDel());
+		n.addChildren1(msg, src, dsts);
+		setDel(n, new GMessageTransferDel());
 		return n;
 	}
 
@@ -565,9 +515,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GWRAP);
 		GWrap n = new GWrap(t);
-		n.addChild(src);
-		n.addChild(dst);
-		del(n, new GWrapDel());
+		n.addChildren1(src, dst);
+		setDel(n, new GWrapDel());
 		return n;
 	}
 
@@ -576,8 +525,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GCONTINUE);
 		GContinue n = new GContinue(t);
-		n.addChild(rv);
-		del(n, new GContinueDel());
+		n.addChildren1(rv);
+		setDel(n, new GContinueDel());
 		return n;
 	}
 
@@ -587,10 +536,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GDO);
 		GDo n = new GDo(t);
-		n.addChild(proto);
-		n.addChild(rs);
-		n.addChild(as);
-		del(n, new GDoDel());
+		n.addChildren1(proto, as, rs);
+		setDel(n, new GDoDel());
 		return n;
 	}
 
@@ -599,8 +546,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.ROLEARG_LIST);
 		RoleArgList n = new RoleArgList(t);
-		n.addChildren(rs);
-		del(n, new RoleArgListDel());
+		n.addChildren1(rs);
+		setDel(n, new RoleArgListDel());
 		return n;
 	}
 
@@ -609,8 +556,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.ROLEARG);
 		RoleArg n = new RoleArg(t);
-		n.addChild(r);
-		del(n, createDefaultDelegate());
+		n.addChildren1(r);
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -619,8 +566,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.NONROLEARG_LIST);
 		NonRoleArgList n = new NonRoleArgList(t);
-		n.addChildren(as);
-		del(n, new NonRoleArgListDel());
+		n.addChildren1(as);
+		setDel(n, new NonRoleArgListDel());
 		return n;
 	}
 
@@ -629,8 +576,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.NONROLEARG);
 		NonRoleArg n = new NonRoleArg(t);
-		n.addChild(arg);
-		del(n, createDefaultDelegate());
+		n.addChildren1(arg);
+		setDel(n, createDefaultDelegate());
 		return n;
 	}
 
@@ -639,9 +586,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GCHOICE);
 		GChoice n = new GChoice(t);
-		n.addChild(subj);
-		n.addChildren(blocks);
-		del(n, new GChoiceDel());
+		n.addChildren1(subj, blocks);
+		setDel(n, new GChoiceDel());
 		return n;
 	}
 
@@ -650,9 +596,8 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GRECURSION);
 		GRecursion n = new GRecursion(t);
-		n.addChild(rv);
-		n.addChild(block);
-		del(n, new GRecursionDel());
+		n.addChildren1(rv, block);
+		setDel(n, new GRecursionDel());
 		return n;
 	}
 }

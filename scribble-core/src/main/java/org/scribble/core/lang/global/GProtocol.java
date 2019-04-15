@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.Job;
-import org.scribble.core.job.JobArgs;
-import org.scribble.core.job.JobContext;
+import org.scribble.core.job.Core;
+import org.scribble.core.job.CoreArgs;
+import org.scribble.core.job.CoreContext;
 import org.scribble.core.lang.Protocol;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.SubprotoSig;
@@ -97,19 +97,19 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
-	public LProjection projectInlined(Job job, Role self)
+	public LProjection projectInlined(Core core, Role self)
 	{
 		LSeq body = (LSeq) this.def
-				.visitWithNoThrow(new InlinedProjector(job, self));
+				.visitWithNoThrow(new InlinedProjector(core, self));
 		return projectAux(self, this.roles, body);
 	}
 
-	public LProjection project(Job job, Role self)
+	public LProjection project(Core core, Role self)
 	{
-		LSeq body = (LSeq) this.def.visitWithNoThrow(new Projector(job, self))
+		LSeq body = (LSeq) this.def.visitWithNoThrow(new Projector(core, self))
 				.visitWithNoThrow(new RecPruner<>());
 		return projectAux(self,
-				job.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
+				core.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
 				body);
 	}
 	
@@ -220,25 +220,25 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	
 	// TODO FIXME: refactor following methods (e.g., make non-static?)
 	
-	public static void validateByScribble(Job job, GProtoName fullname,
+	public static void validateByScribble(Core core, GProtoName fullname,
 			boolean fair) throws ScribException
 	{
-		JobContext jc = job.getContext();
+		CoreContext corec = core.getContext();
 		SGraph graph = (fair) 
-				? jc.getSGraph(fullname)
-				: jc.getUnfairSGraph(fullname);
+				? corec.getSGraph(fullname)
+				: corec.getUnfairSGraph(fullname);
 		//graph.toModel().validate(job);
-		job.config.mf.newSModel(graph).validate(job);
+		core.config.mf.newSModel(graph).validate(core);
 	}
 
-	public static void validateBySpin(Job job, GProtoName fullname)
+	public static void validateBySpin(Core core, GProtoName fullname)
 			throws ScribException
 	{
-		JobContext jobc = job.getContext();
+		CoreContext corec = core.getContext();
 		/*Module mod = jc.getModule(fullname.getPrefix());
 		GProtocolDecl gpd = (GProtocolDecl) mod
 				.getProtocolDeclChild(fullname.getSimpleName());*/
-		GProtocol gpd = jobc.getInlined(fullname);
+		GProtocol gpd = corec.getInlined(fullname);
 		
 		List<Role> rs = //gpd.getHeaderChild().getRoleDeclListChild().getRoles()
 				gpd.roles
@@ -294,9 +294,9 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		
 		for (Role r : rs)
 		{
-			pml += "\n\n" + jobc.getEGraph(fullname, r).toPml(r);
+			pml += "\n\n" + corec.getEGraph(fullname, r).toPml(r);
 		}
-		if (job.config.args.get(JobArgs.VERBOSE))
+		if (core.config.args.get(CoreArgs.VERBOSE))
 		{
 			System.out.println("[-spin]: Promela processes\n" + pml + "\n");
 		}
@@ -305,7 +305,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		for (Role r : rs)
 		{
 			Set<EState> tmp = new HashSet<>();
-			EGraph g = jobc.getEGraph(fullname, r);
+			EGraph g = corec.getEGraph(fullname, r);
 			tmp.add(g.init);
 			tmp.addAll(MState.getReachableStates(g.init));
 			if (g.term != null)
@@ -354,7 +354,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 			int j = (i+batchSize < clauses.size()) ? i+batchSize : clauses.size();
 			String batch = clauses.subList(i, j).stream().collect(Collectors.joining(" && "));
 			String ltl = "ltl {\n" + batch + "\n" + "}";
-			if (job.config.args.get(JobArgs.VERBOSE))
+			if (core.config.args.get(CoreArgs.VERBOSE))
 			{
 				System.out.println("[-spin] Batched ltl:\n" + ltl + "\n");
 			}

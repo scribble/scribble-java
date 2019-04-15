@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.ParamKind;
-import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -39,28 +38,24 @@ public abstract class ParamDeclList<K extends ParamKind> extends ScribNodeBase
 	}
 	
 	public abstract List<? extends ParamDecl<K>> getDeclChildren();
-	
-	public final int length()
-	{
-		return getDeclChildren().size();
-	}
 
-	public final boolean isEmpty()
+	// "add", not "set"
+	public void addChildren1(List<? extends ParamDecl<K>> ds)
 	{
-		return length() == 0;
+		// Cf. above getters and Scribble.g children order
+		super.addChildren(ds);
 	}
 	
 	@Override
 	public abstract ParamDeclList<K> dupNode();
 	
 	public ParamDeclList<K> reconstruct(
-			List<? extends ParamDecl<K>> decls)
+			List<? extends ParamDecl<K>> ds)
 	{
-		ParamDeclList<K> n = dupNode();
-		n.addChildren(decls);
-		ScribDel del = del();
-		n.setDel(del);  // No copy
-		return n;
+		ParamDeclList<K> dup = dupNode();
+		dup.addChildren1(ds);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override
@@ -70,6 +65,16 @@ public abstract class ParamDeclList<K extends ParamKind> extends ScribNodeBase
 		List<? extends ParamDecl<K>> ps = 
 				visitChildListWithClassEqualityCheck(this, getDeclChildren(), v);
 		return reconstruct(ps);
+	}
+		
+	public final int length()
+	{
+		return getDeclChildren().size();
+	}
+
+	public final boolean isEmpty()
+	{
+		return length() == 0;
 	}
 
 	// Without enclosing braces -- added by subclasses

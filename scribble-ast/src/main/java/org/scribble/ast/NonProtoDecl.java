@@ -60,6 +60,52 @@ public abstract class NonProtoDecl<K extends NonProtoKind>
 	{
 		return (ExtIdNode) getChild(EXTSOURCE_NODE_CHILD_INDEX);
 	}
+	
+	// CHECKME: maybe move to ModuleMember
+	public boolean isDataTypeDecl()
+	{
+		return false;
+	}
+
+	public boolean isMessageSigNameDecl()
+	{
+		return false;
+	}
+
+	// "add", not "set"
+	public void addChildren1(NameNode<K> name, IdNode schema,
+			ExtIdNode extName, ExtIdNode extSource)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(name);
+		addChild(schema);
+		addChild(extName);
+		addChild(extSource);
+	}
+	
+	@Override
+	public abstract NonProtoDecl<K> dupNode();
+	
+	public NonProtoDecl<K> reconstruct(NameNode<K> name, IdNode schema,
+			ExtIdNode extName, ExtIdNode extSource)
+	{
+		NonProtoDecl<K> dup = dupNode();
+		dup.addChildren1(name, schema, extName, extSource);
+		dup.setDel(del());  // No copy
+		return dup;
+	}
+
+	@Override
+	public NonProtoDecl<K> visitChildren(AstVisitor nv)
+			throws ScribException
+	{
+		NameNode<K> name = (NameNode<K>) visitChildWithClassEqualityCheck(this,
+				getNameNodeChild(), nv);
+		IdNode schema = getSchemaChild();
+		ExtIdNode extName = getExtNameChild();
+		ExtIdNode extSource = getExtNameChild();
+		return reconstruct(name, schema, extName, extSource);
+	}
 
 	public String getSchema()
 	{
@@ -74,46 +120,5 @@ public abstract class NonProtoDecl<K extends NonProtoKind>
 	public String getExtSource()
 	{
 		return getExtSourceChild().getText();
-	}
-	
-	// CHECKME: maybe move to ModuleMember
-	public boolean isDataTypeDecl()
-	{
-		return false;
-	}
-
-	public boolean isMessageSigNameDecl()
-	{
-		return false;
-	}
-	
-	@Override
-	public abstract NonProtoDecl<K> dupNode();
-	
-	public NonProtoDecl<K> reconstruct(NameNode<K> name, IdNode schema,
-			IdNode extName, IdNode extSource)
-	{
-		NonProtoDecl<K> n = dupNode();
-		n.addChild(name);
-		n.addChild(schema);
-		n.addChild(extName);
-		n.addChild(extSource);
-		n.setDel(del());  // No copy
-		return n;
-	}
-
-	@Override
-	public NonProtoDecl<K> visitChildren(AstVisitor nv)
-			throws ScribException
-	{
-		NameNode<K> name = (NameNode<K>) visitChildWithClassEqualityCheck(this,
-				getNameNodeChild(), nv);
-		IdNode schema = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getSchemaNodeChild(), nv);
-				getSchemaChild();  // AmbigNameNode currently have no del, so not visited -- CHECKME: now IdNode?
-		IdNode extName = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getExtNameNodeChild(), nv);
-				getExtNameChild();
-		IdNode extSource = //(AmbigNameNode) visitChildWithClassEqualityCheck(this, getExtSourceNodeChild(), nv);
-				getExtNameChild();
-		return reconstruct(name, schema, extName, extSource);
 	}
 }

@@ -75,10 +75,10 @@ public interface AstFactory
 	ImportModule ImportModule(Token t, ModuleNameNode modname,
 			ModuleNameNode alias);
 
-	DataDecl DataDecl(Token t, IdNode schema, IdNode extName, IdNode extSource,
-			DataNameNode name);
-	SigDecl SigDecl(Token t, IdNode schema, IdNode extName, IdNode extSource,
-			SigNameNode name);
+	DataDecl DataDecl(Token t, IdNode schema, ExtIdNode extName,
+			ExtIdNode extSource, DataNameNode name);
+	SigDecl SigDecl(Token t, IdNode schema, ExtIdNode extName,
+			ExtIdNode extSource, SigNameNode name);
 	GProtoDecl GProtoDecl(Token t, ProtoModList mods, GProtoHeader header,
 			GProtoDef def);
 

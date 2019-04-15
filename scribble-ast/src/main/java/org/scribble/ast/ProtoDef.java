@@ -35,15 +35,22 @@ public abstract class ProtoDef<K extends ProtoKind> extends ScribNodeBase
 		super(node);
 	}
 	public abstract ProtoBlock<K> getBlockChild();
+
+	// "add", not "set"
+	public void addChildren1(ProtoBlock<K> block)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(block);
+	}
 	
 	public abstract ProtoDef<K> dupNode();
 	
 	public ProtoDef<K> reconstruct(ProtoBlock<K> block)
 	{
-		ProtoDef<K> pd = dupNode();
-		pd.addChild(block);
-		pd.setDel(del());  // No copy
-		return pd;
+		ProtoDef<K> dup = dupNode();
+		dup.addChildren1(block);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override

@@ -34,7 +34,7 @@ import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.visit.MessageIdGatherer;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 
 public class SessionApiGenerator extends ApiGen
@@ -55,9 +55,9 @@ public class SessionApiGenerator extends ApiGen
 	private final ClassBuilder cb = new ClassBuilder();
 	private final Map<String, ClassBuilder> classes = new HashMap<>();  // All classes in same package, for protected constructor access
 	
-	public SessionApiGenerator(Lang lang, GProtoName fullname) throws ScribException
+	public SessionApiGenerator(Job job, GProtoName fullname) throws ScribException
 	{
-		super(lang, fullname);
+		super(job, fullname);
 		constructRoleClasses();
 		constructOpClasses();
 		constructSessionClass();  // Depends on the above two being done first
@@ -189,7 +189,7 @@ public class SessionApiGenerator extends ApiGen
 		MessageIdCollector coll = new MessageIdCollector(this.lang, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
 		for (MessageId<?> mid : coll.getNames())*/
-		GProtocol inlined = this.job.getContext().getInlined(this.gpn);
+		GProtocol inlined = this.core.getContext().getInlined(this.gpn);
 		for (MsgId<?> mid : inlined.def
 				.gather(new MessageIdGatherer<Global, GSeq>()::visit)
 				.collect(Collectors.toList()))
@@ -203,7 +203,7 @@ public class SessionApiGenerator extends ApiGen
 
 	private void constructRoleClasses() throws ScribException
 	{
-		Module mod = this.lang.getContext().getModule(this.gpn.getPrefix());
+		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
 		GProtoName simpname = this.gpn.getSimpleName();
 		GProtoDecl gpd = (GProtoDecl) mod.getGProtocolDeclChild(simpname);
 		for (Role r : gpd.getRoles())

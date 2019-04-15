@@ -11,31 +11,27 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.lang;
+package org.scribble.core.job;
 
 import java.util.Collections;
 import java.util.Map;
 
-import org.scribble.ast.AstFactory;
-import org.scribble.core.job.JobArgs;
+import org.scribble.core.model.ModelFactory;
 import org.scribble.core.type.name.ModuleName;
 
-// The "static" (constant) info for Lang -- cf. LangContext "dynamic" state
-public class LangConfig
+// The "static" (constant) info for Jobs -- cf. JobContext "dynamic" state
+public class CoreConfig
 {
-	public final ModuleName main;  // Full name
-
-	public final Map<JobArgs, Boolean> args;
-			// CHECKME: verbose/debug printing parameter?
-
-	public final AstFactory af;
+	public final ModuleName main;  // Full name 
+	public final Map<CoreArgs, Boolean> args;  // CHECKME: verbose/debug printing parameter ?
+	public final ModelFactory mf;
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
-	public LangConfig(ModuleName mainFullname, Map<JobArgs, Boolean> args,
-			AstFactory af)
+	public CoreConfig(ModuleName main, Map<CoreArgs, Boolean> args,
+			ModelFactory ef)
 	{
-		this.main = mainFullname;
+		this.main = main;
 		this.args = Collections.unmodifiableMap(args);
-		this.af = af;
+		this.mf = ef;
 	}
 }

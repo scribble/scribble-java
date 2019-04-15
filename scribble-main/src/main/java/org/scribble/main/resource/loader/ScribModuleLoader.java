@@ -23,7 +23,7 @@ import org.scribble.main.resource.InlineResource;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.locator.DirectoryResourceLocator;
 import org.scribble.main.resource.locator.ResourceLocator;
-import org.scribble.parser.scribble.ScribAntlrWrapper;
+import org.scribble.parser.ScribAntlrWrapper;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribParserException;

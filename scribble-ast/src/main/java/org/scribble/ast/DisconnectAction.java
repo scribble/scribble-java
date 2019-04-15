@@ -49,16 +49,23 @@ public abstract class DisconnectAction<K extends ProtoKind>
 	{
 		return (RoleNode) getChild(RIGHT_CHILD_INDEX);
 	}
+
+	// "add", not "set"
+	public void addChildren1(RoleNode left, RoleNode right)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(left);
+		addChild(right);
+	}
 	
 	public abstract DisconnectAction<K> dupNode();
 
 	public DisconnectAction<K> reconstruct(RoleNode left, RoleNode right)
 	{
-		DisconnectAction<K> n = dupNode();
-		n.addChild(left);
-		n.addChild(right);
-		n.setDel(del());  // No copy
-		return n;
+		DisconnectAction<K> dup = dupNode();
+		dup.addChildren1(left, right);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 
 	@Override

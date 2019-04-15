@@ -65,19 +65,26 @@ public abstract class DirectedInteraction<K extends ProtoKind>
 		return getDestinationChildren().stream().map(rn -> rn.toName())
 				.collect(Collectors.toList());
 	}
+
+	// "add", not "set"
+	public void addChildren1(MsgNode msg, RoleNode src, List<RoleNode> dsts)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(msg);
+		addChild(src);
+		addChildren(dsts);
+	}
 	
 	public abstract DirectedInteraction<K> dupNode();
 
 	public DirectedInteraction<K> reconstruct(MsgNode msg, RoleNode src,
-			List<RoleNode> dests)
+			List<RoleNode> dsts)
 	{
-		DirectedInteraction<K> mt = dupNode();
+		DirectedInteraction<K> dup = dupNode();
 		// Same order as getter indices
-		mt.addChild(msg);
-		mt.addChild(src);
-		mt.addChildren(dests);
-		mt.setDel(del());  // No copy
-		return mt;
+		dup.addChildren1(msg, src, dsts);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 
 	@Override

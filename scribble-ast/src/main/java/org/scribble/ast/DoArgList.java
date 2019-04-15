@@ -44,9 +44,11 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 	
 	public abstract List<T> getArgChildren();
 
-	public int length()
+	// "add", not "set"
+	public void addChildren1(List<T> args)
 	{
-		return getChildCount();
+		// Cf. above getters and Scribble.g children order
+		addChildren(args);
 	}
 	
 	@Override
@@ -54,10 +56,10 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 
 	public DoArgList<T> reconstruct(List<T> args)
 	{
-		DoArgList<T> n = dupNode();
-		n.addChildren(args);
-		n.setDel(del());  // No copy
-		return n;
+		DoArgList<T> dup = dupNode();
+		dup.addChildren1(args);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override
@@ -66,6 +68,11 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 		List<T> nds = 
 				visitChildListWithClassEqualityCheck(this, getArgChildren(), nv);
 		return reconstruct(nds);
+	}
+
+	public int length()
+	{
+		return getChildCount();
 	}
 	
 	// Like HeaderParamDeclList, without enclosing braces -- added by subclasses

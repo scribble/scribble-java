@@ -21,25 +21,25 @@ import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.statechanapi.ioifaces.IOInterfacesGenerator;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.util.RuntimeScribException;
 import org.scribble.util.ScribException;
 
 public class JEndpointApiGenerator
 {
-	public final Lang lang;
+	public final Job job;
 	
-	public JEndpointApiGenerator(Lang lang)
+	public JEndpointApiGenerator(Job job)
 	{
-		this.lang = lang;
+		this.job = job;
 	}
 
 	public Map<String, String> generateSessionApi(GProtoName fullname)
 			throws ScribException
 	{
-		this.lang.verbosePrintln("\n[Java API gen] Running "
+		this.job.verbosePrintln("\n[Java API gen] Running "
 				+ SessionApiGenerator.class + " for " + fullname);
-		SessionApiGenerator sg = new SessionApiGenerator(this.lang, fullname);  // FIXME: reuse?
+		SessionApiGenerator sg = new SessionApiGenerator(this.job, fullname);  // FIXME: reuse?
 		Map<String, String> map = sg.generateApi();  // filepath -> class source
 		return map;
 	}
@@ -53,9 +53,9 @@ public class JEndpointApiGenerator
 		{
 			buildGraph(fullname, self);
 		}*/
-		lang.verbosePrintln("\n[Java API gen] Running "
+		job.verbosePrintln("\n[Java API gen] Running "
 				+ StateChannelApiGenerator.class + " for " + fullname + "@" + self);
-		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this.lang,
+		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this.job,
 				fullname, self);
 		IOInterfacesGenerator iogen = null;
 		try
@@ -65,7 +65,7 @@ public class JEndpointApiGenerator
 		catch (RuntimeScribException e)  // FIXME: use IOInterfacesGenerator.skipIOInterfacesGeneration
 		{
 			//System.err.println("[Warning] Skipping I/O Interface generation for protocol featuring: " + fullname);
-			this.lang.warningPrintln("Skipping I/O Interface generation for: "
+			this.job.warningPrintln("Skipping I/O Interface generation for: "
 					+ fullname + "\n  Cause: " + e.getMessage());
 		}
 		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)

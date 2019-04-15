@@ -16,7 +16,7 @@ package org.scribble.visit;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 
 // A SimpleVisitor visits a Module (or some part of one) for a given Job
@@ -25,12 +25,12 @@ import org.scribble.util.ScribException;
 // TODO CHECKME: refactor AstVisitor as a SimpleVisitor?  i.e., T=ScribNode ?
 public abstract class SimpleAstVisitor<T>
 {
-	public final Lang lang;
+	public final Job job;
 	public final ModuleName root;  // Root module, full name -- used to get ModuleContext
 
-	public SimpleAstVisitor(Lang lang, ModuleName rootFullname)
+	public SimpleAstVisitor(Job job, ModuleName rootFullname)
 	{
-		this.lang = lang;
+		this.job = job;
 		this.root = rootFullname;
 	}
 	
@@ -40,6 +40,6 @@ public abstract class SimpleAstVisitor<T>
 	
 	public ModuleContext getModuleContext()
 	{
-		return this.lang.getContext().getModuleContext(this.root);
+		return this.job.getContext().getModuleContext(this.root);
 	}
 }

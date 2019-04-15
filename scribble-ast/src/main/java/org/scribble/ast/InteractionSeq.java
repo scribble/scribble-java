@@ -38,19 +38,21 @@ public abstract class InteractionSeq<K extends ProtoKind>
 	}
 	
 	public abstract List<? extends SessionNode<K>> getInteractionChildren();
-	
-	public boolean isEmpty()
+
+	// "add", not "set"
+	public void addChildren1(List<? extends SessionNode<K>> elems)
 	{
-		return getChildCount() == 0; //this.inters.isEmpty();
+		// Cf. above getters and Scribble.g children order
+		addChildren(elems);
 	}
 	
 	@Override
 	public abstract InteractionSeq<K> dupNode();
 
-	public InteractionSeq<K> reconstruct(List<? extends SessionNode<K>> ins)
+	public InteractionSeq<K> reconstruct(List<? extends SessionNode<K>> elems)
 	{
 		InteractionSeq<K> dup = dupNode();
-		ins.forEach(x -> dup.addChild(x));
+		dup.addChildren1(elems);
 		dup.setDel(del());  // No copy
 		return dup;
 	}
@@ -79,6 +81,11 @@ public abstract class InteractionSeq<K extends ProtoKind>
 			}
 		}
 		return reconstruct(actions);
+	}
+	
+	public boolean isEmpty()
+	{
+		return getChildCount() == 0; //this.inters.isEmpty();
 	}
 	
 	@Override

@@ -16,11 +16,11 @@ package org.scribble.ast.global;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.MessageTransfer;
+import org.scribble.ast.MsgTransfer;
 import org.scribble.core.type.kind.Global;
 import org.scribble.util.Constants;
 
-public class GMsgTransfer extends MessageTransfer<Global>
+public class GMsgTransfer extends MsgTransfer<Global>
 		implements GSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor

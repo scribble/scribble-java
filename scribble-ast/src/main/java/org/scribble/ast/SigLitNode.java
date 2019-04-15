@@ -45,6 +45,13 @@ public class SigLitNode extends ScribNodeBase implements MsgNode
 	{
 		return (PayElemList) getChild(PAYLOAD_CHILD_INDEX);
 	}
+
+	// "add", not "set"
+	public void addChildren1(OpNode op, PayElemList pay)
+	{
+		addChild(op);
+		addChild(pay);
+	}
 	
 	@Override
 	public SigLitNode dupNode()
@@ -52,13 +59,12 @@ public class SigLitNode extends ScribNodeBase implements MsgNode
 		return new SigLitNode(this);
 	}
 
-	public SigLitNode reconstruct(OpNode op, PayElemList payload)
+	public SigLitNode reconstruct(OpNode op, PayElemList pay)
 	{
-		SigLitNode sig = dupNode();
-		sig.addChild(op);
-		sig.addChild(payload);
-		sig.setDel(del());  // No copy
-		return sig;
+		SigLitNode dup = dupNode();
+		dup.addChildren1(op, pay);
+		dup.setDel(del());  // No copy
+		return dup;
 	}
 	
 	@Override
@@ -71,7 +77,7 @@ public class SigLitNode extends ScribNodeBase implements MsgNode
 	}
 
 	@Override
-	public boolean isMessageSigNode()
+	public boolean isSigLitNode()
 	{
 		return true;
 	}
@@ -85,7 +91,7 @@ public class SigLitNode extends ScribNodeBase implements MsgNode
 	}
 
 	@Override
-	public SigLit toMessage()
+	public SigLit toMsg()
 	{
 		return toArg();
 	}

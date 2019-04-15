@@ -30,17 +30,17 @@ import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.global.GProtoDecl;
 import org.scribble.codegen.java.JEndpointApiGenerator;
 import org.scribble.codegen.java.callbackapi.CBEndpointApiGenerator3;
-import org.scribble.core.job.Job;
-import org.scribble.core.job.JobArgs;
-import org.scribble.core.job.JobContext;
+import org.scribble.core.job.Core;
+import org.scribble.core.job.CoreArgs;
+import org.scribble.core.job.CoreContext;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.Role;
-import org.scribble.lang.Lang;
-import org.scribble.lang.LangContext;
+import org.scribble.job.Job;
+import org.scribble.job.JobContext;
 import org.scribble.main.Main;
 import org.scribble.main.resource.locator.DirectoryResourceLocator;
 import org.scribble.main.resource.locator.ResourceLocator;
@@ -104,7 +104,7 @@ public class CommandLine
 	// A Scribble extension should override as appropriate
 	protected Main newMain() throws ScribParserException, ScribException
 	{
-		Map<JobArgs, Boolean> args = Collections.unmodifiableMap(parseJobArgs());
+		Map<CoreArgs, Boolean> args = Collections.unmodifiableMap(parseJobArgs());
 		if (hasFlag(CLFlags.INLINE_MAIN_MOD_FLAG))
 		{
 			String inline = getUniqueFlagArgs(CLFlags.INLINE_MAIN_MOD_FLAG)[0];
@@ -124,72 +124,72 @@ public class CommandLine
 	}
 	
 	// A Scribble extension should override as appropriate
-	protected Map<JobArgs, Boolean> parseJobArgs()
+	protected Map<CoreArgs, Boolean> parseJobArgs()
 	{
-		Map<JobArgs, Boolean> args = new HashMap<>();
-		args.put(JobArgs.VERBOSE, hasFlag(CLFlags.VERBOSE_FLAG));
-		args.put(JobArgs.OLD_WF, hasFlag(CLFlags.OLD_WF_FLAG));
-		args.put(JobArgs.NO_PROGRESS, hasFlag(CLFlags.NO_PROGRESS_FLAG));
-		args.put(JobArgs.MIN_EFSM, hasFlag(CLFlags.LTSCONVERT_MIN_FLAG));
-		args.put(JobArgs.FAIR, hasFlag(CLFlags.FAIR_FLAG));
-		args.put(JobArgs.NO_LCHOICE_SUBJ_CHECK,
+		Map<CoreArgs, Boolean> args = new HashMap<>();
+		args.put(CoreArgs.VERBOSE, hasFlag(CLFlags.VERBOSE_FLAG));
+		args.put(CoreArgs.OLD_WF, hasFlag(CLFlags.OLD_WF_FLAG));
+		args.put(CoreArgs.NO_PROGRESS, hasFlag(CLFlags.NO_PROGRESS_FLAG));
+		args.put(CoreArgs.MIN_EFSM, hasFlag(CLFlags.LTSCONVERT_MIN_FLAG));
+		args.put(CoreArgs.FAIR, hasFlag(CLFlags.FAIR_FLAG));
+		args.put(CoreArgs.NO_LCHOICE_SUBJ_CHECK,
 				hasFlag(CLFlags.NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG));
-		args.put(JobArgs.NO_ACC_CORRELATION_CHECK,
+		args.put(CoreArgs.NO_ACC_CORRELATION_CHECK,
 				hasFlag(CLFlags.NO_ACCEPT_CORRELATION_CHECK_FLAG));
-		args.put(JobArgs.NO_VALIDATION, hasFlag(CLFlags.NO_VALIDATION_FLAG));
-		args.put(JobArgs.SPIN, hasFlag(CLFlags.SPIN_FLAG));
+		args.put(CoreArgs.NO_VALIDATION, hasFlag(CLFlags.NO_VALIDATION_FLAG));
+		args.put(CoreArgs.SPIN, hasFlag(CLFlags.SPIN_FLAG));
 		return args;
 	}
 
 	// AntlrSourceException super of ScribbleException -- needed for, e.g., AssrtCoreSyntaxException
 	// A Scribble extension should override as appropriate
-	protected void doValidationTasks(Lang lang) 
+	protected void doValidationTasks(Job job) 
 			throws AntlrSourceException, ScribParserException,  // Latter in case needed by subclasses
 				CommandLineException
 	{
-		lang.runPasses();
-		lang.getJob().runPasses();
+		job.runPasses();
+		job.getCore().runPasses();
 	}
 
 	// A Scribble extension should override as appropriate
 	// TODO: rename, barrier misleading (sounds like a sync)
-	protected void tryNonBarrierTask(Lang lang, Pair<String, String[]> task)
+	protected void tryNonBarrierTask(Job job, Pair<String, String[]> task)
 			throws CommandLineException, ScribException
 	{
 		switch (task.left)  // Flag lab (CLFlags String constants)
 		{
 			case CLFlags.PROJECT_FLAG:
-				printProjection(lang, task.right);
+				printProjection(job, task.right);
 				break;
 			case CLFlags.EFSM_FLAG:
-				outputEGraph(lang, task.right, true, true, false);
+				outputEGraph(job, task.right, true, true, false);
 				break;
 			case CLFlags.VALIDATION_EFSM_FLAG:
-				outputEGraph(lang, task.right, false, true, false);
+				outputEGraph(job, task.right, false, true, false);
 				break;
 			case CLFlags.UNFAIR_EFSM_FLAG:
-				outputEGraph(lang, task.right, false, false, false);
+				outputEGraph(job, task.right, false, false, false);
 				break;
 			case CLFlags.EFSM_PNG_FLAG:
-				outputEGraph(lang, task.right, true, true, true);
+				outputEGraph(job, task.right, true, true, true);
 				break;
 			case CLFlags.VALIDATION_EFSM_PNG_FLAG:
-				outputEGraph(lang, task.right, false, true, true);
+				outputEGraph(job, task.right, false, true, true);
 				break;
 			case CLFlags.UNFAIR_EFSM_PNG_FLAG:
-				outputEGraph(lang, task.right, false, false, true);
+				outputEGraph(job, task.right, false, false, true);
 				break;
 			case CLFlags.SGRAPH_FLAG:
-				outputSGraph(lang, task.right, true, false);
+				outputSGraph(job, task.right, true, false);
 				break;
 			case CLFlags.UNFAIR_SGRAPH_FLAG:
-				outputSGraph(lang, task.right, false, false);
+				outputSGraph(job, task.right, false, false);
 				break;
 			case CLFlags.SGRAPH_PNG_FLAG:
-				outputSGraph(lang, task.right, true, true);
+				outputSGraph(job, task.right, true, true);
 				break;
 			case CLFlags.UNFAIR_SGRAPH_PNG_FLAG:
-				outputSGraph(lang, task.right, false, true);
+				outputSGraph(job, task.right, false, true);
 				break;
 			default:
 				throw new RuntimeException("Shouldn't get here: " + task.left);
@@ -199,22 +199,22 @@ public class CommandLine
 
 	// A Scribble extension should override as appropriate
 	// TODO: rename, barrier misleading (sounds like a sync)
-	protected void tryBarrierTask(Lang lang,
+	protected void tryBarrierTask(Job job,
 			Pair<String, String[]> task) throws ScribException, CommandLineException
 	{
 		switch (task.left)
 		{
 			case CLFlags.SESSION_API_GEN_FLAG:
-				outputEndpointApi(lang, task.right, true, false, false);
+				outputEndpointApi(job, task.right, true, false, false);
 				break;
 			case CLFlags.STATECHAN_API_GEN_FLAG:
-				outputEndpointApi(lang, task.right, false, true, false);
+				outputEndpointApi(job, task.right, false, true, false);
 				break;
 			case CLFlags.API_GEN_FLAG:
-				outputEndpointApi(lang, task.right, true, true, false);
+				outputEndpointApi(job, task.right, true, true, false);
 				break;
 			case CLFlags.EVENTDRIVEN_API_GEN_FLAG:
-				outputEndpointApi(lang, task.right, false, true, true);  // FIXME: currently need to gen sess API separately?
+				outputEndpointApi(job, task.right, false, true, true);  // FIXME: currently need to gen sess API separately?
 				break;
 			default:
 				throw new RuntimeException("Shouldn't get here: " + task.left);
@@ -267,9 +267,9 @@ public class CommandLine
 			throws AntlrSourceException, ScribParserException, CommandLineException
 	{
 		Main mc = newMain();  // Represents current instance of tooling for given CL args
-		Lang lang = mc.newLang();  // A Job is some series of passes performed on each Module in the MainContext (e.g., cf. Job::runVisitorPass)
+		Job job = mc.newJob();  // A Job is some series of passes performed on each Module in the MainContext (e.g., cf. Job::runVisitorPass)
 		ScribException err = null;
-		try { doValidationTasks(lang); } catch (ScribException x) { err = x; }
+		try { doValidationTasks(job); } catch (ScribException x) { err = x; }
 		for (Pair<String, String[]> a : this.args)
 		{
 			CLFlag flag = this.flags.explicit.get(a.left);  // null for CLFlags.MAIN_MOD_FLAG
@@ -279,14 +279,14 @@ public class CommandLine
 			}
 			if (!flag.barrier)
 			{
-				try { tryNonBarrierTask(lang, a); }
+				try { tryNonBarrierTask(job, a); }
 				catch (ScribException x) { if (err == null) { err = x; } }
 			}
 			else
 			{
 				if (err == null)
 				{
-					try { tryBarrierTask(lang, a); }
+					try { tryBarrierTask(job, a); }
 					catch (ScribException x) { err = x; }
 				}
 			}
@@ -298,16 +298,16 @@ public class CommandLine
 	}
 
 	// TODO: option to write to file, like API classes
-	private void printProjection(Lang lang, String[] args)
+	private void printProjection(Job job, String[] args)
 			throws CommandLineException, ScribException
 	{
-		LangContext langc = lang.getContext();
-		Job job = lang.getJob();
+		JobContext jobc = job.getContext();
+		Core core = job.getCore();
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtoName fullname = checkGlobalProtocolArg(langc, args[i]);
-			Role role = checkRoleArg(langc, fullname, args[i+1]);
-			Map<LProtoName, LProtocol> projections = job.getProjections(fullname,
+			GProtoName fullname = checkGlobalProtocolArg(jobc, args[i]);
+			Role role = checkRoleArg(jobc, fullname, args[i+1]);
+			Map<LProtoName, LProtocol> projections = core.getProjections(fullname,
 					role);  // FIXME: generate and output Module container -- should be done via Lang?
 			System.out.println("\n" + projections.values().stream()
 					.map(p -> p.toString()).collect(Collectors.joining("\n\n")));
@@ -317,14 +317,14 @@ public class CommandLine
 	// dot/aut text output
 	// forUser: true means for API gen and general user info (may be minimised), false means for validation (non-minimised, fair or unfair)
 	// (forUser && !fair) should not hold, i.e. unfair doesn't make sense if forUser
-	private void outputEGraph(Lang lang, String[] args, boolean forUser,
+	private void outputEGraph(Job job, String[] args, boolean forUser,
 			boolean fair, boolean draw) throws ScribException, CommandLineException
 	{
-		LangContext langc = lang.getContext();
+		JobContext jobc = job.getContext();
 		
-			GProtoName fullname = checkGlobalProtocolArg(langc, args[0]);
-			Role role = checkRoleArg(langc, fullname, args[1]);
-			EGraph fsm = getEGraph(lang, fullname, role, forUser, fair);
+			GProtoName fullname = checkGlobalProtocolArg(jobc, args[0]);
+			Role role = checkRoleArg(jobc, fullname, args[1]);
+			EGraph fsm = getEGraph(job, fullname, role, forUser, fair);
 			if (draw)
 			{
 				String png = args[2];
@@ -339,13 +339,13 @@ public class CommandLine
 			}
 	}
 
-	private void outputSGraph(Lang lang, String[] args, boolean fair,
+	private void outputSGraph(Job job, String[] args, boolean fair,
 			boolean draw) throws ScribException, CommandLineException
 	{
-		LangContext jobc = lang.getContext();
+		JobContext jobc = job.getContext();
 		{
 			GProtoName fullname = checkGlobalProtocolArg(jobc, args[0]);
-			SGraph model = getSGraph(lang, fullname, fair);
+			SGraph model = getSGraph(job, fullname, fair);
 			if (draw)
 			{
 				String png = args[1];
@@ -361,13 +361,13 @@ public class CommandLine
 		}
 	}
 
-	private void outputEndpointApi(Lang lang, String[] args, boolean sess,
+	private void outputEndpointApi(Job job, String[] args, boolean sess,
 			boolean schan, boolean cb) throws ScribException, CommandLineException
 	{
-		LangContext langc = lang.getContext();
-		JEndpointApiGenerator jgen = new JEndpointApiGenerator(lang);  // FIXME: refactor (generalise -- use new API)
+		JobContext jobc = job.getContext();
+		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		{
-			GProtoName fullname = checkGlobalProtocolArg(langc, args[0]);
+			GProtoName fullname = checkGlobalProtocolArg(jobc, args[0]);
 			if (sess)
 			{
 				Map<String, String> out = jgen.generateSessionApi(fullname);
@@ -375,10 +375,10 @@ public class CommandLine
 			}
 			if (schan)  // CHECKME: does not implicitly generate sess API?
 			{
-				Role self = checkRoleArg(langc, fullname, args[1]);
+				Role self = checkRoleArg(jobc, fullname, args[1]);
 				if (cb)
 				{
-					CBEndpointApiGenerator3 cbgen = new CBEndpointApiGenerator3(lang,
+					CBEndpointApiGenerator3 cbgen = new CBEndpointApiGenerator3(job,
 							fullname, self, hasFlag(CLFlags.STATECHAN_SUBTYPES_FLAG));
 					Map<String, String> out = cbgen.build();
 					outputClasses(out);
@@ -394,13 +394,13 @@ public class CommandLine
 	}
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
-	private EGraph getEGraph(Lang lang, GProtoName fullname, Role role,
+	private EGraph getEGraph(Job job, GProtoName fullname, Role role,
 			boolean forUser, boolean fair)
 			throws ScribException, CommandLineException
 	{
-		LangContext langc = lang.getContext();
-		JobContext jobc = lang.getJob().getContext();
-		GProtoDecl gpd = langc.getMainModule()
+		JobContext jobc = job.getContext();
+		CoreContext corec = job.getCore().getContext();
+		GProtoDecl gpd = jobc.getMainModule()
 				.getGProtocolDeclChild(fullname.getSimpleName());
 		if (gpd == null || !gpd.getHeaderChild().getRoleDeclListChild().getRoles()
 				.contains(role))
@@ -412,15 +412,15 @@ public class CommandLine
 		if (forUser)  // The (possibly minimised) user-output EFSM for API gen
 		{
 			graph = hasFlag(CLFlags.LTSCONVERT_MIN_FLAG)
-					? jobc.getMinimisedEGraph(fullname, role)
-					: jobc.getEGraph(fullname, role);
+					? corec.getMinimisedEGraph(fullname, role)
+					: corec.getEGraph(fullname, role);
 		}
 		else  // The (possibly unfair-transformed) internal EFSM for validation
 		{
 			graph = //(!this.args.containsKey(ArgFlag.FAIR) && !this.args.containsKey(ArgFlag.NO_LIVENESS))  // Cf. GlobalModelChecker.getEndpointFSMs
 					!fair
-					? jobc.getUnfairEGraph(fullname, role) 
-					: jobc.getEGraph(fullname, role);
+					? corec.getUnfairEGraph(fullname, role) 
+					: corec.getEGraph(fullname, role);
 		}
 		if (graph == null)
 		{
@@ -430,10 +430,10 @@ public class CommandLine
 		return graph;
 	}
 
-	private SGraph getSGraph(Lang lang, GProtoName fullname, boolean fair)
+	private SGraph getSGraph(Job job, GProtoName fullname, boolean fair)
 			throws ScribException
 	{
-		JobContext jobc2 = lang.getJob().getContext();
+		CoreContext jobc2 = job.getCore().getContext();
 		SGraph model = fair 
 				? jobc2.getSGraph(fullname)
 				: jobc2.getUnfairSGraph(fullname);
@@ -508,11 +508,11 @@ public class CommandLine
 				.collect(Collectors.toList());
 	}
 
-	protected static GProtoName checkGlobalProtocolArg(LangContext langc,
+	protected static GProtoName checkGlobalProtocolArg(JobContext jobc,
 			String simpname) throws CommandLineException
 	{
 		GProtoName simpgpn = new GProtoName(simpname);
-		Module main = langc.getMainModule();
+		Module main = jobc.getMainModule();
 		if (!main.hasGProtocolDecl(simpgpn))
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
@@ -527,13 +527,13 @@ public class CommandLine
 			throw new CommandLineException(
 					"Invalid aux protocol specified as root: " + simpname);
 		}
-		return new GProtoName(langc.lang.config.main, simpgpn);  // TODO: take Job param instead of Jobcontext
+		return new GProtoName(jobc.job.config.main, simpgpn);  // TODO: take Job param instead of Jobcontext
 	}
 
-	protected static Role checkRoleArg(LangContext langc,
+	protected static Role checkRoleArg(JobContext jobc,
 			GProtoName fullname, String rolename) throws CommandLineException
 	{
-		ProtoDecl<?> pd = langc.getMainModule()
+		ProtoDecl<?> pd = jobc.getMainModule()
 				.getGProtocolDeclChild(fullname.getSimpleName());
 		Role role = new Role(rolename);
 		if (!pd.getHeaderChild().getRoleDeclListChild().getRoles().contains(role))

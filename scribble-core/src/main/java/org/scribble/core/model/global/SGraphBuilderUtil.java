@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.scribble.core.job.Job;
-import org.scribble.core.job.JobArgs;
+import org.scribble.core.job.Core;
+import org.scribble.core.job.CoreArgs;
 import org.scribble.core.model.GraphBuilderUtil;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.EFSM;
@@ -68,16 +68,16 @@ public class SGraphBuilderUtil
 	// Also checks for non-deterministic payloads
 	// Maybe refactor into an SGraph builder util; cf., EGraphBuilderUtil -- but not Visitor-based building (cf. EndpointGraphBuilder), this isn't an AST algorithm
 	//public SGraph buildSGraph(Job job, GProtocolName fullname, SConfig c0) throws ScribbleException
-	public SGraph buildSGraph(Job job, GProtoName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribException
+	public SGraph buildSGraph(Core core, GProtoName fullname, Map<Role, EGraph> egraphs, boolean explicit) throws ScribException
 	{
 		/*Map<Role, EFSM> efsms = egraphs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toFsm()));
 
 		SBuffers b0 = new SBuffers(job.ef, efsms.keySet(), !explicit);*/
 
 		//SConfig c0 = job.sf.newSConfig(efsms, b0);
-		SConfig c0 = createInitialSConfig(job.config.mf, egraphs, explicit);
+		SConfig c0 = createInitialSConfig(core.config.mf, egraphs, explicit);
 
-		SState init = job.config.mf.newSState(c0);
+		SState init = core.config.mf.newSState(c0);
 
 		Map<Integer, SState> seen = new HashMap<>();
 		LinkedHashSet<SState> todo = new LinkedHashSet<>();
@@ -92,12 +92,12 @@ public class SGraphBuilderUtil
 			i.remove();
 			seen.put(curr.id, curr);
 
-			if (job.config.args.get(JobArgs.VERBOSE))
+			if (core.config.args.get(CoreArgs.VERBOSE))
 			{
 				count++;
 				if (count % 50 == 0)
 				{
-					job.verbosePrintln("(" + fullname + ") Building global states: " + count);
+					core.verbosePrintln("(" + fullname + ") Building global states: " + count);
 				}
 			}
 			
@@ -145,8 +145,8 @@ public class SGraphBuilderUtil
 				{
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
-						getNextStates(job.config.mf, todo, seen, curr,
-								a.toGlobal(job.config.mf, r), curr.fire(r, a));
+						getNextStates(core.config.mf, todo, seen, curr,
+								a.toGlobal(core.config.mf, r), curr.fire(r, a));
 					}
 					else if (a.isAccept() || a.isRequest())
 					{	
@@ -157,10 +157,10 @@ public class SGraphBuilderUtil
 							as.remove(d);  // Removes one occurrence
 							//getNextStates(seen, todo, curr.sync(r, a, a.peer, d));
 							SAction g = (a.isRequest()) 
-									? a.toGlobal(job.config.mf, r)
-									: d.toGlobal(job.config.mf, a.peer);
+									? a.toGlobal(core.config.mf, r)
+									: d.toGlobal(core.config.mf, a.peer);
 									// Edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label)
-							getNextStates(job.config.mf, todo, seen, curr, g,
+							getNextStates(core.config.mf, todo, seen, curr, g,
 									curr.sync(r, a, a.peer, d));
 						}
 					}
@@ -172,9 +172,9 @@ public class SGraphBuilderUtil
 						{
 							as.remove(w);  // Removes one occurrence
 							SAction g = (a.isRequest()) 
-									? a.toGlobal(job.config.mf, r)
-									: w.toGlobal(job.config.mf, a.peer);
-							getNextStates(job.config.mf, todo, seen, curr, g, curr.sync(r, a, a.peer, w));
+									? a.toGlobal(core.config.mf, r)
+									: w.toGlobal(core.config.mf, a.peer);
+							getNextStates(core.config.mf, todo, seen, curr, g, curr.sync(r, a, a.peer, w));
 						}
 					}
 					else
@@ -185,9 +185,9 @@ public class SGraphBuilderUtil
 			}
 		}
 
-		SGraph graph = job.config.mf.newSGraph(fullname, seen, init);
+		SGraph graph = core.config.mf.newSGraph(fullname, seen, init);
 
-		job.verbosePrintln(
+		core.verbosePrintln(
 				"(" + fullname + ") Built global model..\n" + graph.init.toDot() + "\n("
 						+ fullname + ") .." + graph.states.size() + " states");
 

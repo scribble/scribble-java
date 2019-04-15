@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.core.job.Job;
+import org.scribble.core.job.Core;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataName;
@@ -38,16 +38,16 @@ import org.scribble.core.type.session.Payload;
 
 public class AutGraphParser
 {
-	private final Job job;
+	private final Core core;
 
-	public AutGraphParser(Job job)
+	public AutGraphParser(Core core)
 	{
-		this.job = job;
+		this.core = core;
 	}
 	
 	public EGraph parse(String aut)
 	{
-		ModelFactory ef = this.job.config.mf; 
+		ModelFactory ef = this.core.config.mf; 
 
 		//Map<Integer, Map<String, Integer>> edges = new HashMap<>();
 		Map<Integer, List<String>> as = new HashMap<>();
@@ -116,7 +116,7 @@ public class AutGraphParser
 		}
 		//EGraphBuilderUtil util = new EGraphBuilderUtil(ef);
 		//EGraphBuilderUtil util = this.job2.newEGraphBuilderUtil2();
-		EGraphBuilderUtil util = this.job.newEGraphBuilderUtil();
+		EGraphBuilderUtil util = this.core.newEGraphBuilderUtil();
 		//util.init(null);  // FIXME: arg is deprecated
 		Map<Integer, EState> map = new HashMap<>();
 		map.put(init, util.getEntry());

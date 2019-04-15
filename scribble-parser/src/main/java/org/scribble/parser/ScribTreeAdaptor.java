@@ -11,19 +11,15 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.parser.scribble;
-
-import java.util.Arrays;
-import java.util.List;
+package org.scribble.parser;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.scribble.ast.AuxMod;
 import org.scribble.ast.DataDecl;
+import org.scribble.ast.DataParamDecl;
 import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ImportModule;
-import org.scribble.ast.SigDecl;
-import org.scribble.ast.SigLitNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonRoleArg;
@@ -37,8 +33,9 @@ import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNil;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.SigDecl;
+import org.scribble.ast.SigLitNode;
 import org.scribble.ast.SigParamDecl;
-import org.scribble.ast.DataParamDecl;
 import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
@@ -55,8 +52,8 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
-import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
@@ -65,8 +62,6 @@ import org.scribble.parser.antlr.ScribbleParser;
 // get/setType don't seem to be really used
 public class ScribTreeAdaptor extends CommonTreeAdaptor
 {
-	public static final List<String> TOKEN_NAMES = 
-			Arrays.asList(ScribbleParser.tokenNames);
 	
 	// Generated parser seems to use nil to create "blank" nodes and then "fill them in"
 	@Override

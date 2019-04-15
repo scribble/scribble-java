@@ -14,10 +14,10 @@
 package org.scribble.core.lang;
 
 @Deprecated
-public class LangConstants
+public class Constants
 {
 
-	public LangConstants()
+	public Constants()
 	{
 		// TODO Auto-generated constructor stub
 	}

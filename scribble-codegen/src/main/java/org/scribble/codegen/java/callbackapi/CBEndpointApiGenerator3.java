@@ -32,9 +32,9 @@ import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.core.job.Job;
-import org.scribble.core.job.JobArgs;
-import org.scribble.core.job.JobContext;
+import org.scribble.core.job.Core;
+import org.scribble.core.job.CoreArgs;
+import org.scribble.core.job.CoreContext;
 import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
@@ -42,10 +42,10 @@ import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.SigName;
+import org.scribble.job.Job;
+import org.scribble.job.JobContext;
 import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.name.Role;
-import org.scribble.lang.Lang;
-import org.scribble.lang.LangContext;
 import org.scribble.util.ScribException;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
@@ -54,8 +54,8 @@ import org.scribble.util.ScribException;
 // FIXME: consider also "expanding" nested message constructors by op first? -- and consider "partial constructors" along expansions, can they be parameterised typed?
 public class CBEndpointApiGenerator3
 {
-	public final Lang lang;
 	public final Job job;
+	public final Core core;
 	public final GProtoName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
@@ -63,13 +63,13 @@ public class CBEndpointApiGenerator3
 	
 	//private final boolean subtypes;  // Generate full hierarchy (states -> states, not just indivdual state -> cases) -- cf. ioifaces
 
-	public CBEndpointApiGenerator3(Lang lang, GProtoName fullname, Role self,
+	public CBEndpointApiGenerator3(Job job, GProtoName fullname, Role self,
 			boolean subtypes)
 	{
-		this.lang = lang;
+		this.job = job;
 		try
 		{
-			this.job = lang.getJob();
+			this.core = job.getCore();
 		}
 		catch (ScribException e)  // TODO: refactor
 		{
@@ -96,21 +96,21 @@ public class CBEndpointApiGenerator3
 	// FIXME: factor out -- integrate with JEndpointApiGenerator
 	public Map<String, String> buildSessionApi() throws ScribException
 	{
-		this.lang.verbosePrintln("\n[param-core] Running " + CBEndpointApiGenerator3.class + " for " + this.proto + "@" + this.self);
+		this.job.verbosePrintln("\n[param-core] Running " + CBEndpointApiGenerator3.class + " for " + this.proto + "@" + this.self);
 
 		Map<String, String> res = new HashMap<>();
-		res.putAll(new SessionApiGenerator(this.lang, this.proto).generateApi());
+		res.putAll(new SessionApiGenerator(this.job, this.proto).generateApi());
 		res.putAll(buildEndpointClass());
 		return res;
 	}
 	
 	public Map<String, String> buildEndpointClass() throws ScribException
 	{
-		Module main = this.lang.getContext().getMainModule();
+		Module main = this.job.getContext().getMainModule();
 		Map<String, String> res = new HashMap<>();
 
-		JobContext jobc2 = this.job.getContext();
-		EState init = (this.job.config.args.get(JobArgs.MIN_EFSM)
+		CoreContext jobc2 = this.core.getContext();
+		EState init = (this.core.config.args.get(CoreArgs.MIN_EFSM)
 				? jobc2.getMinimisedEGraph(this.proto, this.self)
 				: jobc2.getEGraph(this.proto, this.self)
 				).init;
@@ -223,7 +223,7 @@ public class CBEndpointApiGenerator3
 		}*/
 			
 		// branches
-		LangContext jobc = this.lang.getContext();
+		JobContext jobc = this.job.getContext();
 		for (EState s : states)
 		{
 			if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
@@ -504,7 +504,7 @@ public class CBEndpointApiGenerator3
 	
 	protected String generateStateClass(EState s, String rootPack, EStateKind kind, String stateName, String endpointName)
 	{
-		Module main = this.lang.getContext().getMainModule();
+		Module main = this.job.getContext().getMainModule();
 		
 		String stateKind;
 		switch (kind)
@@ -675,7 +675,7 @@ public class CBEndpointApiGenerator3
 	}
 
 	// FIXME: refactor using TypeBuilder API
-	protected String generateBranch(String bprefix, LangContext jc, EState s, String endpointName, String rootPack, String branchName)
+	protected String generateBranch(String bprefix, JobContext jc, EState s, String endpointName, String rootPack, String branchName)
 	{
 		String branchAbstract = "";
 		branchAbstract += "package " + getHandlersSelfPackage() + ";\n";
@@ -732,7 +732,7 @@ public class CBEndpointApiGenerator3
 	}
 	
 	protected String generateReceiveInterface(boolean isSig,
-			SigDecl msnd, LangContext jc, EAction a, String rootPack,
+			SigDecl msnd, JobContext jc, EAction a, String rootPack,
 			String receiveIfName)
 	{
 		String receiveInterface = "";
@@ -1001,7 +1001,7 @@ public class CBEndpointApiGenerator3
 	protected SigDecl getMessageSigNameDecl(SigName mid)
 	{
 		return (SigDecl)
-				this.lang.getContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
+				this.job.getContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
 					.filter(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(mid.toString()))
 					.iterator().next();
 	}
@@ -1009,7 +1009,7 @@ public class CBEndpointApiGenerator3
 	//protected final Function<PayloadElemType<?>, String> getExtName = e ->
 	protected String getExtName(PayElemType<?> e)
 	{
-		String extName = this.lang.getContext().getMainModule().getDataTypeDeclChild((DataName) e).getExtName();
+		String extName = this.job.getContext().getMainModule().getDataTypeDeclChild((DataName) e).getExtName();
 		return (extName.indexOf(".") != -1)
 				? extName.substring(extName.lastIndexOf(".")+1, extName.length())
 				: extName;

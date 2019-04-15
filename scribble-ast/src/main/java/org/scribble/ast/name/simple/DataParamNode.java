@@ -60,7 +60,7 @@ public class DataParamNode extends NonRoleParamNode<DataKind>
 	}
 
 	@Override
-	public boolean isTypeParamNode()
+	public boolean isDataParamNode()
 	{
 		return true;
 	}

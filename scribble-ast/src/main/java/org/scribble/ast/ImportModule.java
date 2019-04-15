@@ -52,6 +52,17 @@ public class ImportModule extends ImportDecl<ModuleKind>
 		return (ModuleNameNode) getChild(ALIAS_CHILD);
 	}
 
+	// "add", not "set"
+	public void addChildren1(ModuleNameNode modname, ModuleNameNode alias)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(modname);
+		if (alias != null)
+		{
+			addChild(alias);
+		}
+	}
+
 	// Cf. CommonTree#dupNode
 	@Override
 	public ImportModule dupNode()
@@ -63,11 +74,7 @@ public class ImportModule extends ImportDecl<ModuleKind>
 	public ImportModule reconstruct(ModuleNameNode modname, ModuleNameNode alias)
 	{
 		ImportModule dup = dupNode();
-		dup.addChild(modname);
-		if (alias != null)
-		{
-			dup.addChild(alias);
-		}
+		dup.addChildren1(modname, alias);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

@@ -17,7 +17,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 
 // A visitor that caches the ModuleContext from the *entered* Module, for later access
@@ -27,9 +27,9 @@ public abstract class ModuleContextVisitor extends AstVisitor
 {
 	private ModuleContext mcon;  // The "current" module context, gathered on entry -- different than the front-end "main" module 
 
-	public ModuleContextVisitor(Lang lang)
+	public ModuleContextVisitor(Job job)
 	{
-		super(lang);
+		super(job);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public abstract class ModuleContextVisitor extends AstVisitor
 			/*ModuleDel del = (ModuleDel) ((Module) child).del();
 			setModuleContext(del.getModuleContext());*/
 			ModuleName fullname = ((Module) child).getFullModuleName();
-			setModuleContext(this.lang.getContext().getModuleContext(fullname));
+			setModuleContext(this.job.getContext().getModuleContext(fullname));
 		}
 	}
 

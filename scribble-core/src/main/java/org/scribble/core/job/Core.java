@@ -46,37 +46,37 @@ import org.scribble.core.visit.global.GTypeUnfolder;
 import org.scribble.util.ScribException;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
-public class Job
+public class Core
 {
-	public final JobConfig config;  // Immutable
+	public final CoreConfig config;  // Immutable
 
-	private final JobContext context;  // Mutable (Visitor passes replace modules)
+	private final CoreContext context;  // Mutable (Visitor passes replace modules)
 	private final SGraphBuilderUtil sgraphb;
 	
-	public Job(ModuleName mainFullname, Map<JobArgs, Boolean> args,
+	public Core(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
 			//Map<ModuleName, ModuleContext> modcs, 
 			Set<GProtocol> imeds)
 	{
-		this.config = newJobConfig(mainFullname, args);
-		this.context = newJobContext(//modcs, 
+		this.config = newCoreConfig(mainFullname, args);
+		this.context = newCoreContext(//modcs, 
 				imeds);  // Single instance per Job and should never be shared
 		this.sgraphb = newSGraphBuilderUtil();
 	}
 
 	// A Scribble extension should override newJobConfig/Context/etc as appropriate
-	protected JobConfig newJobConfig(ModuleName mainFullname,
-			Map<JobArgs, Boolean> args)
+	protected CoreConfig newCoreConfig(ModuleName mainFullname,
+			Map<CoreArgs, Boolean> args)
 	{
 		ModelFactory mf = new ModelFactoryImpl();
-		return new JobConfig(mainFullname, args, mf); 
+		return new CoreConfig(mainFullname, args, mf); 
 				// CHECKME: combine E/SModelFactory?
 	}
 
 	// A Scribble extension should override newJobConfig/Context/etc as appropriate
-	protected JobContext newJobContext(//Map<ModuleName, ModuleContext> modcs,
+	protected CoreContext newCoreContext(//Map<ModuleName, ModuleContext> modcs,
 			Set<GProtocol> imeds)
 	{
-		return new JobContext(this, //modcs, 
+		return new CoreContext(this, //modcs, 
 				imeds);
 	}
 	
@@ -221,9 +221,9 @@ public class Job
 
 				verbosePrintln("\nValidating " + fullname + ":");
 
-				if (this.config.args.get(JobArgs.SPIN))
+				if (this.config.args.get(CoreArgs.SPIN))
 				{
-					if (this.config.args.get(JobArgs.FAIR))
+					if (this.config.args.get(CoreArgs.FAIR))
 					{
 						throw new RuntimeException(
 								"[TODO]: -spin currently does not support fair ouput choices.");
@@ -233,7 +233,7 @@ public class Job
 				else
 				{
 					GProtocol.validateByScribble(this, fullname, true);
-					if (!this.config.args.get(JobArgs.FAIR))
+					if (!this.config.args.get(CoreArgs.FAIR))
 					{
 						verbosePrintln(
 								"(" + fullname + ") Validating with \"unfair\" output choices.. ");
@@ -352,14 +352,14 @@ public class Job
 		return api;
 	}*/
 	
-	public JobContext getContext()
+	public CoreContext getContext()
 	{
 		return this.context;
 	}
 	
 	public boolean isVerbose()
 	{
-		return this.config.args.get(JobArgs.VERBOSE);
+		return this.config.args.get(CoreArgs.VERBOSE);
 	}
 	
 	public void warningPrintln(String s)
@@ -369,7 +369,7 @@ public class Job
 	
 	public void verbosePrintln(String s)
 	{
-		if (this.config.args.get(JobArgs.VERBOSE))
+		if (this.config.args.get(CoreArgs.VERBOSE))
 		{
 			System.out.println(s);
 		}

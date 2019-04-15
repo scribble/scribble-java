@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.job.Job;
+import org.scribble.core.job.Core;
 import org.scribble.core.lang.Protocol;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.SubprotoSig;
@@ -120,17 +120,17 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 				this.self, this.params, unf);
 	}
 
-	public EGraph toEGraph(Job job)
+	public EGraph toEGraph(Core core)
 	{
 		//EGraphBuilderUtil2 b = job.newEGraphBuilderUtil();
 		////b.init(null);  // FIXME: init param not used
 		if (this.def.isEmpty())  // Empty Seq special case for top-level -- in general, Seq must be non-empty, cf. LSeq::buildGraph entry/exit
 		{
 			//EState s = b.getEntry();
-			EState s = job.config.mf.newEState(Collections.emptySet());
+			EState s = core.config.mf.newEState(Collections.emptySet());
 			return new EGraph(s, s);
 		}
-		EGraphBuilder b = new EGraphBuilder(job);
+		EGraphBuilder b = new EGraphBuilder(core);
 		this.def.visitWithNoThrow(b);
 		return b.finalise();
 	}

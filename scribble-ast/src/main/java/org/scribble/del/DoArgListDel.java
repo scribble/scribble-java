@@ -24,7 +24,7 @@ import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.ProtoName;
-import org.scribble.lang.LangContext;
+import org.scribble.job.JobContext;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
 
@@ -58,7 +58,7 @@ public abstract class DoArgListDel extends ScribDelBase
 			NameDisambiguator disamb) throws ScribException
 	{
 		ModuleContext mc = disamb.getModuleContext();
-		LangContext jc = disamb.lang.getContext();
+		JobContext jc = disamb.job.getContext();
 		Do<?> doo = (Do<?>) parent;
 		ProtoName<?> pn = doo.getProtocolNameNode().toName();
 		/*if (!mc.isVisibleProtocolDeclName(simpname))  // FIXME: should be checked somewhere else?  earlier (do-entry?) -- done

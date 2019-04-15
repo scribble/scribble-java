@@ -22,15 +22,15 @@ import org.scribble.codegen.java.ApiGen;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.core.job.JobArgs;
-import org.scribble.core.job.JobContext;
+import org.scribble.core.job.CoreArgs;
+import org.scribble.core.job.CoreContext;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.global.InlinedProjector;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 
 // TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
@@ -57,18 +57,18 @@ public class StateChannelApiGenerator extends ApiGen
 
 	private Map<String, TypeBuilder> types = new HashMap<>();  // class/iface name key
 
-	public StateChannelApiGenerator(Lang lang, GProtoName fullname, Role self)
+	public StateChannelApiGenerator(Job job, GProtoName fullname, Role self)
 			throws ScribException // CHECKME: APIGenerationException?
 	{
-		super(lang, fullname);
+		super(job, fullname);
 
 		this.self = self;
 		this.lpn = InlinedProjector.getFullProjectionName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext jobc2 = this.job.getContext();
-		this.init = this.job.config.args.get(JobArgs.MIN_EFSM)
-				? jobc2.getMinimisedEGraph(fullname, self).init
-				: jobc2.getEGraph(fullname, self).init;
+		CoreContext corec = this.core.getContext();
+		this.init = this.job.config.args.get(CoreArgs.MIN_EFSM)
+				? corec.getMinimisedEGraph(fullname, self).init
+				: corec.getEGraph(fullname, self).init;
 		
 		this.skipIOInterfacesGeneration = skipIOInterfacesGeneration(this.init);
 			
@@ -210,7 +210,7 @@ public class StateChannelApiGenerator extends ApiGen
 	
 	protected Module getMainModule()
 	{
-		return this.lang.getContext().getMainModule();
+		return this.job.getContext().getMainModule();
 	}
 	
 	protected void addTypeDecl(TypeBuilder tb)

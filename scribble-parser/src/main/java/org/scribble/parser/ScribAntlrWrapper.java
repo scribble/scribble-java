@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.parser.scribble;
+package org.scribble.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +24,7 @@ import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonErrorNode;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.DelDecoratorImpl;
 import org.scribble.ast.Module;
 import org.scribble.del.DelDecorator;
 import org.scribble.parser.antlr.ScribbleLexer;
@@ -43,7 +44,7 @@ public class ScribAntlrWrapper
 	
 	// Scribble extensions should override newScribbleLexer/Parser as appropriate
 	// A fresh Lexer/Parser is needed by each call to parse 
-	protected Lexer newScribbleLexer(ANTLRStringStream ss)
+	public Lexer newScribbleLexer(ANTLRStringStream ss)
 	{
 		return new ScribbleLexer(ss);
 	}
@@ -51,7 +52,7 @@ public class ScribAntlrWrapper
 	// Scribble extensions should override newScribbleLexer/Parser as appropriate
 	// ScribbleParser: a Parser that has a top-level "module" method
 	// (And has "setTreeAdaptor")
-	protected ScribbleParser newScribbleParser(CommonTokenStream ts)
+	public ScribbleParser newScribbleParser(CommonTokenStream ts)
 	{
 		return new ScribbleParser(ts);
 	}

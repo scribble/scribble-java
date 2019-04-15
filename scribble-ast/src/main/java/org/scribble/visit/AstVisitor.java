@@ -14,18 +14,18 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.lang.Lang;
+import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 
 // Pattern: node accepts visitor and calls visitor back (standard visitor pattern -- adding a new operation doesn't affect the Ast classes), but then visitor delegates back to node delegate (so routines for handling each node type not centralised in visitor, but decentralised to delegates)
 // More general than SimpleAstVisitor, retrieves ModuleContext on entry and offers enter/leave around visitChildren
 public abstract class AstVisitor
 {
-	public final Lang lang;  // Immutable except for JobContext internals
+	public final Job job;  // Immutable except for JobContext internals
 	
-	protected AstVisitor(Lang lang)
+	protected AstVisitor(Job job)
 	{
-		this.lang = lang;
+		this.job = job;
 	}
 
 	// Used by ScribNodeBase::accept

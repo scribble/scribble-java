@@ -49,6 +49,14 @@ public abstract class Choice<K extends ProtoKind>
 	// Override in concrete sub for cast
 	public abstract List<? extends ProtoBlock<K>> getBlockChildren();
 	
+	// "add", not "set"
+	public void addChildren1(RoleNode subj, List<? extends ProtoBlock<K>> blocks)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(subj);
+		addChildren(blocks);
+	}
+	
 	@Override
 	public abstract Choice<K> dupNode();
 	
@@ -56,8 +64,7 @@ public abstract class Choice<K extends ProtoKind>
 			List<? extends ProtoBlock<K>> blocks)
 	{
 		Choice<K> dup = dupNode();
-		dup.addChild(subj);
-		dup.addChildren(blocks);
+		dup.addChildren1(subj, blocks);
 		dup.setDel(del());  // No copy
 		return dup;
 	}
