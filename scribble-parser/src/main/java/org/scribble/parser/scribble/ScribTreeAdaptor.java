@@ -55,6 +55,7 @@ import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.parser.antlr.ScribbleParser;
@@ -81,7 +82,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 		switch (t.getType())
 		{
 			case ScribbleParser.ID: return new IdNode(t);
-			case ScribbleParser.EXTID: return new IdNode(t);
+			case ScribbleParser.EXTID: return new ExtIdNode(t);
 			
 			// Simple names "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
 

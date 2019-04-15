@@ -56,6 +56,7 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -518,11 +519,11 @@ public class DelDecoratorImpl implements DelDecorator
 		setDel(n, createDefaultDelegate());
 	}
 
-	/*@Override
+	@Override
 	public void ExtIdNode(ExtIdNode n)
 	{
 		setDel(n, createDefaultDelegate());
-	}*/
+	}
 
 	/*@Override
 	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier)

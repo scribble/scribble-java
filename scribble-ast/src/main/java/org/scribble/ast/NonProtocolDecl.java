@@ -15,6 +15,7 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.NameNode;
+import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.type.kind.NonProtocolKind;
 import org.scribble.util.ScribException;
@@ -50,14 +51,14 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 		return (IdNode) getChild(SCHEMA_NODE_CHILD_INDEX);
 	}
 
-	public IdNode getExtNameChild()
+	public ExtIdNode getExtNameChild()
 	{
-		return (IdNode) getChild(EXTSOURCE_NODE_CHILD_INDEX);
+		return (ExtIdNode) getChild(EXTSOURCE_NODE_CHILD_INDEX);
 	}
 
-	public IdNode getExtSourceChild()
+	public ExtIdNode getExtSourceChild()
 	{
-		return (IdNode) getChild(EXTSOURCE_NODE_CHILD_INDEX);
+		return (ExtIdNode) getChild(EXTSOURCE_NODE_CHILD_INDEX);
 	}
 
 	public String getSchema()

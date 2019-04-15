@@ -52,6 +52,7 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -126,7 +127,7 @@ public interface DelDecorator
 	
 	void AmbigNameNode(AmbigNameNode n);
 	void IdNode(IdNode n);
-	//void ExtIdNode(ExtIdNode n);
+	void ExtIdNode(ExtIdNode n);
 
 	//<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier);
 	void SigParamNode(SigParamNode n);

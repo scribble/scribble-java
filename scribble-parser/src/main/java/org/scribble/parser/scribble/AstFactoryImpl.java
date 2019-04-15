@@ -67,6 +67,7 @@ import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
@@ -179,14 +180,14 @@ public class AstFactoryImpl implements AstFactory
 		return n;
 	}
 
-	/*@Override
+	@Override
 	public ExtIdNode ExtIdNode(String text)
 	{
 		CommonToken t = newIdToken(text);  
 				// (Ext)IdNode is the only token with a "different" text to its node type -- info stored directly as its the text, no children
 		ExtIdNode n = new ExtIdNode(t);
 		return n;
-	}*/
+	}
 	
 	// Deprecate?  Never need to make ambigname "manually" via af?  (only constructed by ScribbleParser)
 	@Override

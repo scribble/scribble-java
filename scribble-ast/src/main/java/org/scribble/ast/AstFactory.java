@@ -37,6 +37,7 @@ import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
@@ -56,7 +57,7 @@ import org.scribble.core.type.kind.PayloadTypeKind;
 public interface AstFactory
 {
 	IdNode IdNode(String text);
-	//ExtIdNode ExtIdNode(String text);
+	ExtIdNode ExtIdNode(String text);
 
 	// Deprecate?  Never need to make ambigname "manually" via af?  (only constructed by ScribbleParser)
 	AmbigNameNode AmbiguousNameNode(String text);
