@@ -79,9 +79,7 @@ tokens
   // Special cases
   EMPTY_OP = '__EMPTY_OP';
 
-  // Simple names
-  AMBIG_NAME = 'AMBIG_NAME';
-  // Other simple names are 
+	// Simple names "constructed directly", e.g., t=ID -> ID<...Node>[$t] 
 
 	// Compound names
   GPROTO_NAME = 'GPROTO_NAME';  // Parse specifically as GProto, for ScribTreeAdaptor.create
@@ -184,7 +182,7 @@ tokens
     System.exit(1);
   }
 
-	// Currently unused -- checking later in intermed translation instead of parsing
+	// Currently unused -- TODO: check later in intermed translation, instead of parsing
   public static CommonTree checkId(CommonTree id)
   {
   	if (id.getText().contains("__"))
@@ -201,40 +199,40 @@ tokens
  * Chapter 2 Lexical Structure (Lexer rules)
  ***************************************************************************/
 
-/*
+/* *  // Double star here not accepted by ANTLR...
  * Section 2.1 White space (Section 2.1)
  */
-
 // Not referred to explicitly, deals with whitespace implicitly (don't delete this)
 WHITESPACE:
-  ('\t' | ' ' | '\r' | '\n'| '\u000C')+
-  {
-    $channel = HIDDEN;
-  }
+	('\t' | ' ' | '\r' | '\n'| '\u000C')+
+	{
+		$channel = HIDDEN;
+	}
 ;
 
 /**
  * Section 2.2 Comments
  */
 COMMENT:
-  '/*' .* '*/'
-  {
-    $channel=HIDDEN;
-  }
+	'/*' .* '*/'
+	{
+		$channel=HIDDEN;
+	}
 ;
 
 LINE_COMMENT:
-  '//' ~('\n'|'\r')* '\r'? '\n'
+	'//' ~('\n'|'\r')* '\r'? '\n'
   {
-    $channel=HIDDEN;
-  }
+		$channel=HIDDEN;
+	}
 ;
+
 
 /**
  * Section 2.3 Identifiers
  */
 ID:
-  (LETTER | DIGIT | UNDERSCORE)*  
+	(LETTER | DIGIT | UNDERSCORE)*  
       /* Underscore currently can cause ambiguities in the API generation naming
        * scheme But maybe only consecutive underscores are the problem -- cannot
        * completely disallow underscores as needed for projection naming scheme
@@ -243,29 +241,29 @@ ID:
 ;
 
 fragment SYMBOL:
-  '{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '\#'
+	'{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '\#'
 |
-  '&' | '?' | '!'  | UNDERSCORE
+	'&' | '?' | '!'  | UNDERSCORE
 ;
 
 // Comes after SYMBOL due to an ANTLR syntax highlighting issue involving
 // quotes.
 // Parser doesn't work without quotes here (e.g. if inlined into parser rules)
 EXTID:
-  '\"' (LETTER | DIGIT | SYMBOL)* '\"'
+	'\"' (LETTER | DIGIT | SYMBOL)* '\"'
 ;
  //(LETTER | DIGIT | SYMBOL)*  // Not working
 
 fragment LETTER:
-  'a'..'z' | 'A'..'Z'
+	'a'..'z' | 'A'..'Z'
 ;
 
 fragment DIGIT:
-  '0'..'9'
+	'0'..'9'
 ;
 
 fragment UNDERSCORE:
-  '_'
+	'_'
 ;
 
 
@@ -273,7 +271,7 @@ fragment UNDERSCORE:
  * Chapter 3 Syntax (Parser rules)
  ***************************************************************************/
 
-/*
+/*  // Double star here not accepted by ANTLR...
  * Section 3.1 Primitive Names
  */
 //simplename: id=ID -> { checkId($id.tree) } ;  // How to integrate with ID<RoleNode>[$t] ?
@@ -378,7 +376,6 @@ payelems:
 	payelem (',' payelem)* -> ^(PAYELEM_LIST payelem+)
 ;
 	
-
 payelem:
 	// Payload element must be a data kind, cannot be a sig name
 	// Qualified name must be a data type name
