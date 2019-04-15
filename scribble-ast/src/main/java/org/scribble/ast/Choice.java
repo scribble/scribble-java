@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
-public abstract class Choice<K extends ProtocolKind>
+public abstract class Choice<K extends ProtoKind>
 		extends CompoundInteraction<K>
 {
 	public static final int SUBJ_CHILD_INDEX = 0;
@@ -47,13 +47,13 @@ public abstract class Choice<K extends ProtocolKind>
 	}
 
 	// Override in concrete sub for cast
-	public abstract List<? extends ProtocolBlock<K>> getBlockChildren();
+	public abstract List<? extends ProtoBlock<K>> getBlockChildren();
 	
 	@Override
 	public abstract Choice<K> dupNode();
 	
 	public Choice<K> reconstruct(RoleNode subj,
-			List<? extends ProtocolBlock<K>> blocks)
+			List<? extends ProtoBlock<K>> blocks)
 	{
 		Choice<K> dup = dupNode();
 		dup.addChild(subj);
@@ -66,7 +66,7 @@ public abstract class Choice<K extends ProtocolKind>
 	public Choice<K> visitChildren(AstVisitor nv) throws ScribException
 	{
 		RoleNode subj = (RoleNode) visitChild(getSubjectChild(), nv);
-		List<? extends ProtocolBlock<K>> blocks = 
+		List<? extends ProtoBlock<K>> blocks = 
 				visitChildListWithClassEqualityCheck(this, getBlockChildren(), nv);
 		return reconstruct(subj, blocks);
 	}

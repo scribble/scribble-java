@@ -26,11 +26,11 @@ import java.util.TreeMap;
 
 import org.scribble.core.model.MPrettyPrint;
 import org.scribble.core.model.global.actions.SAction;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 
 public class SGraph implements MPrettyPrint
 {
-	public final GProtocolName proto;
+	public final GProtoName proto;
 	//private final Map<Role, EGraph> efsms;
 	//private final boolean fair;
 	
@@ -41,7 +41,7 @@ public class SGraph implements MPrettyPrint
 	private Set<Set<Integer>> termSets;
 
 	// Unlike EState, SGraph is not just a "simple wrapper" for an existing graph of nodes -- it is a "semantic structure" that needs to be fully built properly (so no arbitrary "toGraph" method; cf., EState)
-	public SGraph(GProtocolName proto, Map<Integer, SState> states, SState init)
+	public SGraph(GProtoName proto, Map<Integer, SState> states, SState init)
 	{
 		this.proto = proto;
 		this.init = init;

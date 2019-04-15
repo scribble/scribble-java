@@ -13,37 +13,19 @@
  */
 package org.scribble.ast;
 
-import org.antlr.runtime.Token;
-import org.scribble.util.ScribException;
-import org.scribble.visit.AstVisitor;
+import org.scribble.core.type.kind.ProtoKind;
 
-public abstract class ProtocolMod extends ScribNodeBase
+public interface ProtoKindNode<K extends ProtoKind> extends ScribNode
 {
-	// ScribTreeAdaptor#create constructor
-	public ProtocolMod(Token t)
-	{
-		super(t);
-	}
-	
-	// Tree#dupNode constructor
-	protected ProtocolMod(ProtocolMod node)
-	{
-		super(node);
-	}
-	
-	public boolean isAux()
+	K getKind(); 
+
+	default boolean isGlobal()
 	{
 		return false;
 	}
-	
-	public boolean isExplicit()
+
+	default boolean isLocal()
 	{
 		return false;
-	}
-	
-	@Override
-	public ProtocolMod visitChildren(AstVisitor nv) throws ScribException
-	{
-		return this;
 	}
 }

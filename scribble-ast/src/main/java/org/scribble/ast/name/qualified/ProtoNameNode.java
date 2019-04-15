@@ -11,9 +11,26 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.type.kind;
+package org.scribble.ast.name.qualified;
 
-public interface ProtocolKind extends ModuleMemberKind
+import org.antlr.runtime.Token;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.ProtoName;
+
+public abstract class ProtoNameNode<K extends ProtoKind>
+		extends MemberNameNode<K>
 {
+	// ScribTreeAdaptor#create constructor
+	public ProtoNameNode(Token t)
+	{
+		super(t);
+	}
 
+	// Tree#dupNode constructor
+	protected ProtoNameNode(ProtoNameNode<K> node)
+	{
+		super(node);
+	}
+
+	public abstract ProtoName<K> toName();
 }

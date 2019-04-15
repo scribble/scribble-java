@@ -18,7 +18,7 @@ import org.scribble.ast.Do;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.lang.LangContext;
 
 public class GDo extends Do<Global> implements GSimpleSessionNode
@@ -45,7 +45,7 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	public GProtoDecl getTargetProtocolDecl(LangContext jcontext,
 			ModuleContext mcontext)
 	{
-		GProtocolName fullname = getTargetProtocolDeclFullName(mcontext);
+		GProtoName fullname = getTargetProtocolDeclFullName(mcontext);
 		return jcontext.getModule(fullname.getPrefix())
 				.getGProtocolDeclChild(fullname.getSimpleName());
 	}
@@ -57,8 +57,8 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	}
 
 	@Override
-	public GProtocolName getTargetProtocolDeclFullName(ModuleContext mcontext)
+	public GProtoName getTargetProtocolDeclFullName(ModuleContext mcontext)
 	{
-		return (GProtocolName) super.getTargetProtocolDeclFullName(mcontext);
+		return (GProtoName) super.getTargetProtocolDeclFullName(mcontext);
 	}
 }

@@ -14,9 +14,9 @@
 package org.scribble.core.type.session;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 
-public abstract class BasicInteraction<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class BasicInteraction<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeBase<K, B> implements SType<K, B>
 {
 	public BasicInteraction(CommonTree source)

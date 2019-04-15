@@ -15,7 +15,7 @@ package org.scribble.core.model.endpoint.actions;
 
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.global.actions.SSend;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
@@ -42,7 +42,7 @@ public class ESend extends EAction
 		super(peer, mid, payload);
 	}*/
 
-	public ESend(ModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
+	public ESend(ModelFactory ef, Role peer, MsgId<?> mid, Payload payload)
 	{
 		super(ef, peer, mid, payload);
 		//Send.SENDS.add(this);

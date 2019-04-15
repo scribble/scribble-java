@@ -19,7 +19,7 @@ import java.util.Map;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.statechanapi.ioifaces.IOInterfacesGenerator;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
 import org.scribble.util.RuntimeScribException;
@@ -34,7 +34,7 @@ public class JEndpointApiGenerator
 		this.lang = lang;
 	}
 
-	public Map<String, String> generateSessionApi(GProtocolName fullname)
+	public Map<String, String> generateSessionApi(GProtoName fullname)
 			throws ScribException
 	{
 		this.lang.verbosePrintln("\n[Java API gen] Running "
@@ -45,7 +45,7 @@ public class JEndpointApiGenerator
 	}
 	
 	// CHECKME: refactor an EndpointApiGenerator -- ?
-	public Map<String, String> generateStateChannelApi(GProtocolName fullname,
+	public Map<String, String> generateStateChannelApi(GProtoName fullname,
 			Role self, boolean subtypes) throws ScribException
 	{
 		/*JobContext jc = this.job.getContext();

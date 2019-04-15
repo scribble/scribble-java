@@ -23,8 +23,8 @@ import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.MessageSigName;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.util.ScribException;
 
 public class ReceiveSockGen extends ScribSockGen
@@ -84,7 +84,7 @@ public class ReceiveSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			//addReceiveMessageSigNameParams(mb, a, msd);*/
 			mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = "
 						+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.obj) + ");");
@@ -168,7 +168,7 @@ public class ReceiveSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			addReceiveMessageSigNameParams(mb, msd, true);
 		}
 	}
@@ -180,7 +180,7 @@ public class ReceiveSockGen extends ScribSockGen
 		{
 			String buffSuper = BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "");
 			int i = 1;
-			for (PayloadElemType<?> pt : a.payload.elems)
+			for (PayElemType<?> pt : a.payload.elems)
 			{
 				if (!pt.isDataType())
 				{
@@ -198,7 +198,7 @@ public class ReceiveSockGen extends ScribSockGen
 		if (!a.payload.isEmpty())
 		{
 			int i = 1;
-			for (PayloadElemType<?> pt : a.payload.elems)  // Could factor out this loop (arg names) with addReceiveOpParams (as for send)
+			for (PayElemType<?> pt : a.payload.elems)  // Could factor out this loop (arg names) with addReceiveOpParams (as for send)
 			{
 				DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
 				mb.addBodyLine(RECEIVE_ARG_PREFIX + i + "." + BUFF_VAL_FIELD + " = (" + dtd.getExtName() + ") "

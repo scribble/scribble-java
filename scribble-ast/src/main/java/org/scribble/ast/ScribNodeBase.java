@@ -22,7 +22,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.del.ScribDel;
 import org.scribble.util.RuntimeScribException;
 import org.scribble.util.ScribException;
@@ -232,8 +232,8 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 
 	// Takes clazz+kind to handle generic ProtocolKindNodes -- cf. ScribUtil.castNodeByClass, for casting to ground class types
 	// R is expected to be N<K>, i.e. the generic (ProtocolKindNode) class N parameterised by K
-	protected final static <N extends ProtocolKindNode<?>, K extends ProtocolKind, 
-			R extends ProtocolKindNode<K>>
+	protected final static <N extends ProtoKindNode<?>, K extends ProtoKind, 
+			R extends ProtoKindNode<K>>
 			R visitProtocolKindChildWithCastCheck(
 					ScribNode parent, ScribNode child, AstVisitor nv, Class<N> clazz, K kind,
 					Function<ScribNode, R> cast) throws ScribException
@@ -244,7 +244,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 			throw new RuntimeException(nv.getClass() + " generic visit error: "
 					+ clazz + ", " + visited.getClass());
 		}
-		ProtocolKindNode<?> pkn = (ProtocolKindNode<?>) visited;
+		ProtoKindNode<?> pkn = (ProtoKindNode<?>) visited;
 		if ((pkn.isGlobal() && !kind.equals(Global.KIND))
 				|| (pkn.isLocal() && !kind.equals(Local.KIND)))
 		{
@@ -254,8 +254,8 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 		return cast.apply(pkn);
 	}
 
-	protected final static <T extends ScribNode, N extends ProtocolKindNode<?>, 
-			K extends ProtocolKind, R extends ProtocolKindNode<K>> 
+	protected final static <T extends ScribNode, N extends ProtoKindNode<?>, 
+			K extends ProtoKind, R extends ProtoKindNode<K>> 
 			List<R> visitProtocolKindChildListWithCastCheck(
 					ScribNode parent, List<T> children, AstVisitor nv, Class<N> c, K k,
 					Function<ScribNode, R> f) throws ScribException

@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // FIXME: rename (Simple)Interaction, after existing SimpleInteraction renamed
-public abstract class DirectedInteraction<K extends ProtocolKind>
+public abstract class DirectedInteraction<K extends ProtoKind>
 		extends BasicInteraction<K>
 {
 	public static final int MSG_CHILD_INDEX = 0;

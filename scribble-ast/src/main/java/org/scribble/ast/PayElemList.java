@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.session.Payload;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -45,7 +45,7 @@ public class PayElemList extends ScribNodeBase
 
 	public Payload toPayload()
 	{
-		List<PayloadElemType<?>> pts = getElementChildren().stream()
+		List<PayElemType<?>> pts = getElementChildren().stream()
 				.map(pe -> pe.toPayloadType()).collect(Collectors.toList());
 		return new Payload(pts);
 	}

@@ -15,7 +15,7 @@ package org.scribble.core.type.name;
 
 import org.scribble.core.type.kind.PackageKind;
 
-public class PackageName extends QualifiedName<PackageKind>
+public class PackageName extends QualName<PackageKind>
 {
 	private static final long serialVersionUID = 1L;
 	

@@ -11,34 +11,56 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.type.kind;
+package org.scribble.core.type.name;
 
-public class DataTypeKind extends AbstractKind implements PayloadTypeKind, ImportKind, ModuleMemberKind
+import org.scribble.core.type.kind.Global;
+
+
+public class GProtoName extends ProtoName<Global>
 {
-	public static final DataTypeKind KIND = new DataTypeKind();
-	
-	protected DataTypeKind()
+	private static final long serialVersionUID = 1L;
+
+	public GProtoName(ModuleName modname, ProtoName<Global> membname)
 	{
-		super("DataType");
+		super(Global.KIND, modname, membname);
+	}
+	
+	public GProtoName(String simpname)
+	{
+		super(Global.KIND, simpname);
+	}
+
+	@Override
+	public GProtoName getSimpleName()
+	{
+		return new GProtoName(getLastElement());
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o == this)
+		if (this == o)
 		{
 			return true;
 		}
-		if (!(o instanceof DataTypeKind))
+		if (!(o instanceof GProtoName))
 		{
 			return false;
 		}
-		return ((DataTypeKind) o).canEqual(this);
+		GProtoName n = (GProtoName) o;
+		return n.canEqual(this) && super.equals(o);
 	}
 	
-	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof DataTypeKind;
+		return o instanceof GProtoName;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 2777;
+		hash = 31 * super.hashCode();
+		return hash;
 	}
 }

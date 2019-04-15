@@ -15,7 +15,7 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.OpNode;
-import org.scribble.core.type.session.MessageSig;
+import org.scribble.core.type.session.SigLit;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -78,14 +78,14 @@ public class SigLitNode extends ScribNodeBase implements MsgNode
 
 	// Make a direct scoped version? (taking scope as argument)
 	@Override
-	public MessageSig toArg()
+	public SigLit toArg()
 	{
-		return new MessageSig(getOpChild().toName(),
+		return new SigLit(getOpChild().toName(),
 				getPayloadListChild().toPayload());
 	}
 
 	@Override
-	public MessageSig toMessage()
+	public SigLit toMessage()
 	{
 		return toArg();
 	}

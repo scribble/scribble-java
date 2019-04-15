@@ -28,7 +28,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.RuntimeScribException;
 import org.scribble.util.ScribException;
@@ -74,7 +74,7 @@ public abstract class IOStateIfaceGen extends IOIfaceGen
 
 	protected void addHeader()
 	{
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 		Role self = this.apigen.getSelf();
 		String packname = IOInterfacesGenerator.getIOInterfacePackageName(gpn, self);
 		String ifname = getIOStateInterfaceName(self, this.curr);

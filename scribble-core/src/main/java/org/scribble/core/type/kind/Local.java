@@ -13,7 +13,7 @@
  */
 package org.scribble.core.type.kind;
 
-public class Local extends AbstractKind implements ProtocolKind, PayloadTypeKind
+public class Local extends AbstractKind implements ProtoKind, PayElemKind
 {
 	public static final Local KIND = new Local();
 	

@@ -13,13 +13,13 @@
  */
 package org.scribble.ast;
 
-import org.scribble.core.type.kind.PayloadTypeKind;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.kind.PayElemKind;
+import org.scribble.core.type.name.PayElemType;
 
 // Not in grammar file -- but cf. DoArg (and PayloadElemList cf. DoArgList) -- i.e. need a wrapper for mixed and initially ambiguous name kinds
-public interface PayElem<K extends PayloadTypeKind> extends ScribNode
+public interface PayElem<K extends PayElemKind> extends ScribNode
 {
-	PayloadElemType<? extends PayloadTypeKind> toPayloadType();  // Mainly a wrapper method for the wrapped NameNode
+	PayElemType<? extends PayElemKind> toPayloadType();  // Mainly a wrapper method for the wrapped NameNode
 
 	default boolean isGlobalDelegationElem()
 	{

@@ -16,7 +16,7 @@ package org.scribble.ast.name.simple;
 import org.antlr.runtime.Token;
 import org.scribble.ast.MsgNode;
 import org.scribble.core.type.kind.SigKind;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.SigName;
 
 public class SigParamNode extends NonRoleParamNode<SigKind>
 		implements MsgNode
@@ -41,19 +41,19 @@ public class SigParamNode extends NonRoleParamNode<SigKind>
 	}
 	
 	@Override
-	public MessageSigName toName()
+	public SigName toName()
 	{
-		return new MessageSigName(getText());
+		return new SigName(getText());
 	}
 
 	@Override
-	public MessageSigName toArg()
+	public SigName toArg()
 	{
 		return toMessage();
 	}
 
 	@Override
-	public MessageSigName toMessage()
+	public SigName toMessage()
 	{
 		return toName();
 	}

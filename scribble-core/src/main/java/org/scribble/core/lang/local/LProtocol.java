@@ -29,9 +29,9 @@ import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
@@ -46,13 +46,13 @@ import org.scribble.core.visit.local.ReachabilityChecker;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 
-public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
+public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 		implements LNode
 {
 	public final Role self;
 
 	public LProtocol(CommonTree source, List<ProtocolMod> mods,
-			LProtocolName fullname, List<Role> roles, Role self,
+			LProtoName fullname, List<Role> roles, Role self,
 			List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
 		super(source, mods, fullname, roles, params, def);
@@ -60,7 +60,7 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 	}
 
 	public LProtocol reconstruct(CommonTree source,
-			List<ProtocolMod> mods, LProtocolName fullname, List<Role> roles,
+			List<ProtocolMod> mods, LProtoName fullname, List<Role> roles,
 			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
 		return new LProtocol(source, mods, fullname, roles, self, params, def);
@@ -86,9 +86,9 @@ public class LProtocol extends Protocol<Local, LProtocolName, LSeq>
 			{
 				params.add((DataType) n);
 			}
-			else if (n instanceof MessageSigName)
+			else if (n instanceof SigName)
 			{
-				params.add((MessageSigName) n);
+				params.add((SigName) n);
 			}
 			else
 			{

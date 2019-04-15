@@ -17,10 +17,10 @@ import java.util.List;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 
 // TODO CHECKME: factor with MessageTransfer?
-public abstract class ConnectAction<K extends ProtocolKind>
+public abstract class ConnectAction<K extends ProtoKind>
 		extends DirectedInteraction<K>
 {
 	// ScribTreeAdaptor#create constructor

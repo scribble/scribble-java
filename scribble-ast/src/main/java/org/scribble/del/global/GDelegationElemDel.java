@@ -25,7 +25,7 @@ import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDelBase;
 import org.scribble.util.ScribException;
@@ -46,7 +46,7 @@ public class GDelegationElemDel extends ScribDelBase
 		ModuleContext mc = disamb.getModuleContext();
 		GDelegPayElem de = (GDelegPayElem) child;
 		GProtoNameNode proto = de.getProtocolChild();
-		GProtocolName gpn = proto.toName();
+		GProtoName gpn = proto.toName();
 		if (!mc.isVisibleProtocolDeclName(gpn))
 		{
 			throw new ScribException(proto.getSource(),
@@ -60,7 +60,7 @@ public class GDelegationElemDel extends ScribDelBase
 			GDelegPayElem de) throws ScribException
 	{
 		ModuleContext mc = disamb.getModuleContext();
-		GProtocolName fullname = (GProtocolName) mc
+		GProtoName fullname = (GProtoName) mc
 				.getVisibleProtocolDeclFullName(de.getProtocolChild().toName());
 		RoleNode r = de.getRoleChild();
 

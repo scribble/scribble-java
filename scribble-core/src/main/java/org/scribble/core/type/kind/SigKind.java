@@ -15,7 +15,7 @@ package org.scribble.core.type.kind;
 
 
 // Following sesstype.Arg hierarchy
-public class SigKind extends AbstractKind implements NonRoleParamKind, MessageIdKind, //ArgKind
+public class SigKind extends AbstractKind implements NonRoleParamKind, MsgIdKind, //ArgKind
 		ModuleMemberKind
 {
 	public static final SigKind KIND = new SigKind();

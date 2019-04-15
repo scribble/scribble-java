@@ -15,15 +15,15 @@ package org.scribble.core.type.session;
 
 import org.scribble.core.type.kind.OpKind;
 import org.scribble.core.type.kind.SigKind;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Op;
 
-public class MessageSig implements Message
+public class SigLit implements Message
 {
 	public final Op op;
 	public final Payload payload;
 	
-	public MessageSig(Op op, Payload payload)
+	public SigLit(Op op, Payload payload)
 	{
 		this.op = op;
 		this.payload = payload;
@@ -42,7 +42,7 @@ public class MessageSig implements Message
 	}
 
 	@Override
-	public MessageId<OpKind> getId()
+	public MsgId<OpKind> getId()
 	{
 		return this.op;
 	}
@@ -54,11 +54,11 @@ public class MessageSig implements Message
 		{
 			return true;
 		}
-		if (!(o instanceof MessageSig))
+		if (!(o instanceof SigLit))
 		{
 			return false;
 		}
-		MessageSig sig = (MessageSig) o;
+		SigLit sig = (SigLit) o;
 		return this.op.equals(sig.op) && this.payload.equals(sig.payload);
 	}
 

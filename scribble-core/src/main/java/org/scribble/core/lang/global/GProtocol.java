@@ -40,11 +40,11 @@ import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageId;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
@@ -64,18 +64,18 @@ import org.scribble.core.visit.global.RoleEnablingChecker;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribUtil;
 
-public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
+public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		implements GNode  // Mainly for GDel.translate return (to include GProtocol)
 {
 	public GProtocol(CommonTree source, List<ProtocolMod> mods,
-			GProtocolName fullname, List<Role> roles,
+			GProtoName fullname, List<Role> roles,
 			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
 	{
 		super(source, mods, fullname, roles, params, def);
 	}
 
 	public GProtocol reconstruct(CommonTree source,
-			List<ProtocolMod> mods, GProtocolName fullname, List<Role> roles,
+			List<ProtocolMod> mods, GProtoName fullname, List<Role> roles,
 			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
 	{
 		return new GProtocol(source, mods, fullname, roles, params, def);
@@ -115,7 +115,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	
 	private LProjection projectAux(Role self, List<Role> decls, LSeq body)
 	{
-		LProtocolName fullname = InlinedProjector
+		LProtoName fullname = InlinedProjector
 				.getFullProjectionName(this.fullname, self);
 		Set<Role> tmp = body.gather(new RoleGatherer<Local, LSeq>()::visit)
 				.collect(Collectors.toSet());
@@ -143,9 +143,9 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 			{
 				params.add((DataType) n);
 			}
-			else if (n instanceof MessageSigName)
+			else if (n instanceof SigName)
 			{
-				params.add((MessageSigName) n);
+				params.add((SigName) n);
 			}
 			else
 			{
@@ -220,7 +220,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 	
 	// TODO FIXME: refactor following methods (e.g., make non-static?)
 	
-	public static void validateByScribble(Job job, GProtocolName fullname,
+	public static void validateByScribble(Job job, GProtoName fullname,
 			boolean fair) throws ScribException
 	{
 		JobContext jc = job.getContext();
@@ -231,7 +231,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 		job.config.mf.newSModel(graph).validate(job);
 	}
 
-	public static void validateBySpin(Job job, GProtocolName fullname)
+	public static void validateBySpin(Job job, GProtoName fullname)
 			throws ScribException
 	{
 		JobContext jobc = job.getContext();
@@ -249,7 +249,7 @@ public class GProtocol extends Protocol<Global, GProtocolName, GSeq>
 				((ModuleDel) mod.del()).getModuleContext());  // TODO: get ModuleContext from Job(Context)
 		gpd.accept(coll);
 		Set<MessageId<?>> mids = coll.getNames();*/
-		Set<MessageId<?>> mids = gpd.def.//getMessageIds();
+		Set<MsgId<?>> mids = gpd.def.//getMessageIds();
 				gather(new MessageIdGatherer<Global, GSeq>()::visit)
 				.collect(Collectors.toSet());
 		

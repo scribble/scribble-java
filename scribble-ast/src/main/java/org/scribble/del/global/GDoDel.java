@@ -19,7 +19,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDo;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.del.DoDel;
@@ -35,14 +35,14 @@ public class GDoDel extends DoDel implements GSimpleSessionNodeDel
 		GDo source = (GDo) n;
 
 		// Resolve full name -- CHECKME: factor out? cf., NameDisambiguator, DoDel::enter/leaveDisambiguation
-		GProtocolName proto = source.getProtocolNameNode().toName();
+		GProtoName proto = source.getProtocolNameNode().toName();
 		ModuleContext modc = t.getModuleContext();
 		if (!modc.isVisibleProtocolDeclName(proto))
 		{
 			throw new ScribException(source,
 					"Protocol decl not visible: " + proto);
 		}
-		GProtocolName fullname = (GProtocolName) modc  // FIXME: sort out full name expansion between here and DoDel.leaveDisambiguation
+		GProtoName fullname = (GProtoName) modc  // FIXME: sort out full name expansion between here and DoDel.leaveDisambiguation
 				.getVisibleProtocolDeclFullName(proto);
 		List<Role> roles = source.getRoleListChild().getRoles();
 		List<Arg<? extends NonRoleParamKind>> params = source.getNonRoleListChild()

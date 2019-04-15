@@ -24,15 +24,15 @@ import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.MessageId;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.type.session.MessageSig;
+import org.scribble.core.type.session.SigLit;
 import org.scribble.core.type.session.Payload;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
@@ -176,9 +176,9 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 		{
 			throw new RuntimeException("Unknown action type: " + n);
 		}
-		MessageId<?> mid = n.msg.getId();
+		MsgId<?> mid = n.msg.getId();
 		Payload payload = n.msg.isMessageSig()  // CHECKME: generalise? (e.g., hasPayload)
-				? ((MessageSig) n.msg).payload
+				? ((SigLit) n.msg).payload
 				: Payload.EMPTY_PAYLOAD;
 		// TODO: add toAction method to base Interaction
 		EAction a = (n instanceof LSend) ? this.util.ef.newESend(peer, mid, payload)
@@ -200,7 +200,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	}
 
 	@Override
-	public final <N extends ProtocolName<Local>> SType<Local, LSeq> visitDo(Do<Local, LSeq, N> n)
+	public final <N extends ProtoName<Local>> SType<Local, LSeq> visitDo(Do<Local, LSeq, N> n)
 	{
 		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
 	}

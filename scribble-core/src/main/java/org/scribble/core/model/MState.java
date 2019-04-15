@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.RuntimeScribException;
 import org.scribble.util.ScribException;
 
@@ -33,7 +33,7 @@ public abstract class MState<
 		L,                             // Node label type (cosmetic)
 		A extends MAction<K>,          // Edge type
 		S extends MState<L, A, S, K>,  // State type
-		K extends ProtocolKind         // Global/Local
+		K extends ProtoKind         // Global/Local
 >
 {
 	private static int count = 0;  // FIXME: factor out with ModelAction
@@ -214,7 +214,7 @@ public abstract class MState<
 	public abstract Set<A> getReachableActions();
 
 	// TODO: make protected
-	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
+	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtoKind>
 			S getTerminal(S start)
 	{
 		if (start.isTerminal())
@@ -236,7 +236,7 @@ public abstract class MState<
 	// TODO: make protected
 	// CHECKME: cache results?
 	@SuppressWarnings("unchecked")
-	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
+	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtoKind>
 			Set<S> getReachableStates(MState<L, A, S, K> start)
 	{
 		Map<Integer, S> all = new HashMap<>();
@@ -274,7 +274,7 @@ public abstract class MState<
 	@SuppressWarnings("unchecked")
 	// TODO: make protected
 	// CHECKME: cache results?
-	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtocolKind>
+	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtoKind>
 			//Set<A> getAllReachableActions(S start)
 			Set<A> getReachableActions(MState<L, A, S, K> start)
 	{

@@ -36,9 +36,9 @@ public class ProtoModList extends ScribNodeBase
 	}
 
 	// Cf., NameNode::getSimpleNameList
-	public List<ProtocolMod> getModList()
+	public List<ProtoMod> getModList()
 	{
-		return ((List<?>) getChildren()).stream().map(x -> (ProtocolMod) x)
+		return ((List<?>) getChildren()).stream().map(x -> (ProtoMod) x)
 				.collect(Collectors.toList());
 	}
 	

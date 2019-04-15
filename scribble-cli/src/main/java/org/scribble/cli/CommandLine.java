@@ -36,8 +36,8 @@ import org.scribble.core.job.JobContext;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.global.SGraph;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
 import org.scribble.lang.LangContext;
@@ -305,9 +305,9 @@ public class CommandLine
 		Job job = lang.getJob();
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(langc, args[i]);
+			GProtoName fullname = checkGlobalProtocolArg(langc, args[i]);
 			Role role = checkRoleArg(langc, fullname, args[i+1]);
-			Map<LProtocolName, LProtocol> projections = job.getProjections(fullname,
+			Map<LProtoName, LProtocol> projections = job.getProjections(fullname,
 					role);  // FIXME: generate and output Module container -- should be done via Lang?
 			System.out.println("\n" + projections.values().stream()
 					.map(p -> p.toString()).collect(Collectors.joining("\n\n")));
@@ -322,7 +322,7 @@ public class CommandLine
 	{
 		LangContext langc = lang.getContext();
 		
-			GProtocolName fullname = checkGlobalProtocolArg(langc, args[0]);
+			GProtoName fullname = checkGlobalProtocolArg(langc, args[0]);
 			Role role = checkRoleArg(langc, fullname, args[1]);
 			EGraph fsm = getEGraph(lang, fullname, role, forUser, fair);
 			if (draw)
@@ -344,7 +344,7 @@ public class CommandLine
 	{
 		LangContext jobc = lang.getContext();
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jobc, args[0]);
+			GProtoName fullname = checkGlobalProtocolArg(jobc, args[0]);
 			SGraph model = getSGraph(lang, fullname, fair);
 			if (draw)
 			{
@@ -367,7 +367,7 @@ public class CommandLine
 		LangContext langc = lang.getContext();
 		JEndpointApiGenerator jgen = new JEndpointApiGenerator(lang);  // FIXME: refactor (generalise -- use new API)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(langc, args[0]);
+			GProtoName fullname = checkGlobalProtocolArg(langc, args[0]);
 			if (sess)
 			{
 				Map<String, String> out = jgen.generateSessionApi(fullname);
@@ -394,7 +394,7 @@ public class CommandLine
 	}
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
-	private EGraph getEGraph(Lang lang, GProtocolName fullname, Role role,
+	private EGraph getEGraph(Lang lang, GProtoName fullname, Role role,
 			boolean forUser, boolean fair)
 			throws ScribException, CommandLineException
 	{
@@ -430,7 +430,7 @@ public class CommandLine
 		return graph;
 	}
 
-	private SGraph getSGraph(Lang lang, GProtocolName fullname, boolean fair)
+	private SGraph getSGraph(Lang lang, GProtoName fullname, boolean fair)
 			throws ScribException
 	{
 		JobContext jobc2 = lang.getJob().getContext();
@@ -508,10 +508,10 @@ public class CommandLine
 				.collect(Collectors.toList());
 	}
 
-	protected static GProtocolName checkGlobalProtocolArg(LangContext langc,
+	protected static GProtoName checkGlobalProtocolArg(LangContext langc,
 			String simpname) throws CommandLineException
 	{
-		GProtocolName simpgpn = new GProtocolName(simpname);
+		GProtoName simpgpn = new GProtoName(simpname);
 		Module main = langc.getMainModule();
 		if (!main.hasGProtocolDecl(simpgpn))
 		{
@@ -527,11 +527,11 @@ public class CommandLine
 			throw new CommandLineException(
 					"Invalid aux protocol specified as root: " + simpname);
 		}
-		return new GProtocolName(langc.lang.config.main, simpgpn);  // TODO: take Job param instead of Jobcontext
+		return new GProtoName(langc.lang.config.main, simpgpn);  // TODO: take Job param instead of Jobcontext
 	}
 
 	protected static Role checkRoleArg(LangContext langc,
-			GProtocolName fullname, String rolename) throws CommandLineException
+			GProtoName fullname, String rolename) throws CommandLineException
 	{
 		ProtoDecl<?> pd = langc.getMainModule()
 				.getGProtocolDeclChild(fullname.getSimpleName());

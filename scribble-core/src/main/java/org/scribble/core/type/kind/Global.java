@@ -13,7 +13,7 @@
  */
 package org.scribble.core.type.kind;
 
-public class Global extends AbstractKind implements ProtocolKind
+public class Global extends AbstractKind implements ProtoKind
 {
 	public static final Global KIND = new Global();
 	

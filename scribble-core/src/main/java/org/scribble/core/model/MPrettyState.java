@@ -18,10 +18,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 
 public abstract class MPrettyState
-		<L, A extends MAction<K>, S extends MPrettyState<L, A, S, K>, K extends ProtocolKind>
+		<L, A extends MAction<K>, S extends MPrettyState<L, A, S, K>, K extends ProtoKind>
 		extends MState<L, A, S, K>
 		implements MPrettyPrint
 {

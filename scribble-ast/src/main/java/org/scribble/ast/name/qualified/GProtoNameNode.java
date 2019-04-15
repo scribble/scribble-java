@@ -15,9 +15,9 @@ package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 
-public class GProtoNameNode extends ProtocolNameNode<Global>
+public class GProtoNameNode extends ProtoNameNode<Global>
 {
 	// ScribTreeAdaptor#create constructor
 	public GProtoNameNode(Token t)
@@ -38,11 +38,11 @@ public class GProtoNameNode extends ProtocolNameNode<Global>
 	}
 	
 	@Override
-	public GProtocolName toName()
+	public GProtoName toName()
 	{
-		GProtocolName membname = new GProtocolName(getLastElement());
+		GProtoName membname = new GProtoName(getLastElement());
 		return isPrefixed()
-				? new GProtocolName(getModuleNamePrefix(), membname)
+				? new GProtoName(getModuleNamePrefix(), membname)
 				: membname;
 	}
 

@@ -13,16 +13,16 @@
  */
 package org.scribble.core.type.session;
 
-import org.scribble.core.type.kind.MessageIdKind;
+import org.scribble.core.type.kind.MsgIdKind;
 import org.scribble.core.type.kind.SigKind;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.MsgId;
 
 
 
 // A sig kind name: MessageSignature value (or parameter)
 public interface Message extends Arg<SigKind>
 {
-	MessageId<? extends MessageIdKind> getId();
+	MsgId<? extends MsgIdKind> getId();
 	
 	default boolean isMessageSig()
 	{

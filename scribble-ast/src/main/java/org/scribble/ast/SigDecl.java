@@ -16,7 +16,7 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.core.type.kind.SigKind;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.Constants;
 
@@ -54,16 +54,16 @@ public class SigDecl extends NonProtoDecl<SigKind>
 	}
 
 	@Override
-	public MessageSigName getDeclName()
+	public SigName getDeclName()
 	{
 		return getNameNodeChild().toName();
 	}
 
 	@Override
-	public MessageSigName getFullMemberName(Module mod)
+	public SigName getFullMemberName(Module mod)
 	{
 		ModuleName fullmodname = mod.getFullModuleName();
-		return new MessageSigName(fullmodname, getDeclName());
+		return new SigName(fullmodname, getDeclName());
 	}
 
 	@Override

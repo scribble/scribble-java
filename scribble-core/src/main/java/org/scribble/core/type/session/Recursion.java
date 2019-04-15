@@ -17,13 +17,13 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
 
-public abstract class Recursion<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class Recursion<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeBase<K, B>
 {
 	public final RecVar recvar;

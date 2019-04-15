@@ -14,13 +14,13 @@
 package org.scribble.core.type.session;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.Role;
 
-public abstract class MessageTransfer<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class MsgTransfer<K extends ProtoKind, B extends Seq<K, B>>
 		extends DirectedInteraction<K, B>
 {
-	public MessageTransfer(CommonTree source,
+	public MsgTransfer(CommonTree source,
 			Message msg, Role src, Role dst)
 	{
 		super(source, msg, src, dst);

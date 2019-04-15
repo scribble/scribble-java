@@ -17,15 +17,15 @@ import java.util.Map;
 
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Kind;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.Name;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.util.ScribException;
 
 // Context information specific to each module as a root (wrt. to visitor passes)
@@ -66,8 +66,8 @@ public class ModuleContext
 
 	// TODO: deprecate -- now redundant: proto should already be full name by namedisamb (and this.deps only stores full names)
 	// Refactored as a "check" for now (although still redundant, not actually checking anything)
-	public <K extends ProtocolKind> ProtocolName<K> checkProtocolDeclDependencyFullName(
-			ProtocolName<K> proto)
+	public <K extends ProtoKind> ProtoName<K> checkProtocolDeclDependencyFullName(
+			ProtoName<K> proto)
 	{
 		return getProtocolDeclFullName(this.deps, proto);
 	}
@@ -92,32 +92,32 @@ public class ModuleContext
 		return this.visible.isVisibleDataType(visname);
 	}
 
-	public MessageSigName getVisibleMessageSigNameFullName(MessageSigName visname)
+	public SigName getVisibleMessageSigNameFullName(SigName visname)
 	{
 		return getFullName(this.visible.sigs, visname);
 	}
 	
-	public <K extends ProtocolKind> ProtocolName<K> getVisibleProtocolDeclFullName(
-			ProtocolName<K> visname)
+	public <K extends ProtoKind> ProtoName<K> getVisibleProtocolDeclFullName(
+			ProtoName<K> visname)
 	{
 		return getProtocolDeclFullName(this.visible, visname);
 	}
 	
-	public <K extends ProtocolKind> boolean isVisibleProtocolDeclName(
-			ProtocolName<K> visname)
+	public <K extends ProtoKind> boolean isVisibleProtocolDeclName(
+			ProtoName<K> visname)
 	{
 		return this.visible.isVisibleProtocolDeclName(visname);
 	}
 
-	public static <K extends ProtocolKind> ProtocolName<K> getProtocolDeclFullName(
-			ScribNames names, ProtocolName<K> proto)
+	public static <K extends ProtoKind> ProtoName<K> getProtocolDeclFullName(
+			ScribNames names, ProtoName<K> proto)
 	{
-		ProtocolName<? extends ProtocolKind> pn = (proto.getKind()
+		ProtoName<? extends ProtoKind> pn = (proto.getKind()
 				.equals(Global.KIND))
-						? getFullName(names.globals, (GProtocolName) proto)
-						: getFullName(names.locals, (LProtocolName) proto);
+						? getFullName(names.globals, (GProtoName) proto)
+						: getFullName(names.locals, (LProtoName) proto);
 		@SuppressWarnings("unchecked")
-		ProtocolName<K> tmp = (ProtocolName<K>) pn;
+		ProtoName<K> tmp = (ProtoName<K>) pn;
 		return tmp;
 	}
 

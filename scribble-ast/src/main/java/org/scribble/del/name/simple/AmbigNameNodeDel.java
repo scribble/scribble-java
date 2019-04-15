@@ -25,7 +25,7 @@ import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.core.lang.context.ModuleContext;
-import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.AmbigName;
@@ -100,7 +100,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 			/*return disamb.job.config.af.NonRoleParamNode(ann.getSource(),
 					disamb.getParameterKind(name), name.toString());*/
 			NonRoleParamKind kind = disamb.getParameterKind(name);
-			if (kind.equals(DataTypeKind.KIND))
+			if (kind.equals(DataKind.KIND))
 			{
 				//TypeParamNode res = new TypeParamNode(ann.token);  // CHECKME: what should the Token be?
 				//TypeParamNode res = new TypeParamNode(75, ann.token);  // CHECKME: what should the Token be?

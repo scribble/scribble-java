@@ -13,22 +13,22 @@
  */
 package org.scribble.core.model;
 
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public abstract class MAction<K extends ProtocolKind>
+public abstract class MAction<K extends ProtoKind>
 {
 	/*private static int count = 0;
 	
 	public final int id;  // Was using for trace enumeration, but breaks isAcceptable -- but need for non-det models*/
 	
 	public final Role obj;
-	public final MessageId<?> mid;
+	public final MsgId<?> mid;
 	public final Payload payload;  // EMPTY_PAYLOAD for MessageSigNames
 	
-	protected MAction(Role obj, MessageId<?> mid, Payload payload)
+	protected MAction(Role obj, MsgId<?> mid, Payload payload)
 	{
 		//this.id = ModelAction.count++;
 

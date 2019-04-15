@@ -13,29 +13,36 @@
  */
 package org.scribble.core.type.name;
 
-import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.kind.Local;
 
 
-public class GProtocolName extends ProtocolName<Global>
+public class LProtoName extends ProtoName<Local> 
+		implements PayElemType<Local> // @Deprecated -- not used, deleg elems currently have to be (Global@Role)
 {
 	private static final long serialVersionUID = 1L;
 
-	public GProtocolName(ModuleName modname, ProtocolName<Global> membname)
+	public LProtoName(ModuleName modname, ProtoName<Local> membname)
 	{
-		super(Global.KIND, modname, membname);
+		super(Local.KIND, modname, membname);
 	}
 	
-	public GProtocolName(String simpname)
+	public LProtoName(String simpname)
 	{
-		super(Global.KIND, simpname);
+		super(Local.KIND, simpname);
 	}
+	
+	/*@Override
+	public boolean isLDelegationType()
+	{
+		return true;
+	}*/
 
 	@Override
-	public GProtocolName getSimpleName()
+	public LProtoName getSimpleName()
 	{
-		return new GProtocolName(getLastElement());
+		return new LProtoName(getLastElement());
 	}
-
+	
 	@Override
 	public boolean equals(Object o)
 	{
@@ -43,23 +50,23 @@ public class GProtocolName extends ProtocolName<Global>
 		{
 			return true;
 		}
-		if (!(o instanceof GProtocolName))
+		if (!(o instanceof LProtoName))
 		{
 			return false;
 		}
-		GProtocolName n = (GProtocolName) o;
+		LProtoName n = (LProtoName) o;
 		return n.canEqual(this) && super.equals(o);
 	}
 	
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GProtocolName;
+		return o instanceof LProtoName;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int hash = 2777;
+		int hash = 2789;
 		hash = 31 * super.hashCode();
 		return hash;
 	}

@@ -17,14 +17,14 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
 
 // Besides directed-ness, also features a Message
-public abstract class DirectedInteraction<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class DirectedInteraction<K extends ProtoKind, B extends Seq<K, B>>
 		extends BasicInteraction<K, B>
 {
 	// Following ast children order

@@ -15,17 +15,17 @@ package org.scribble.core.visit;
 
 import java.util.stream.Stream;
 
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.Seq;
 
-public class MessageIdGatherer<K extends ProtocolKind, B extends Seq<K, B>>
-		extends STypeGatherer<K, B, MessageId<?>>
+public class MessageIdGatherer<K extends ProtoKind, B extends Seq<K, B>>
+		extends STypeGatherer<K, B, MsgId<?>>
 {
 
 	@Override
-	public Stream<MessageId<?>> visitDirectedInteraction(
+	public Stream<MsgId<?>> visitDirectedInteraction(
 			DirectedInteraction<K, B> n)
 	{
 		return Stream.of(n.msg.getId());

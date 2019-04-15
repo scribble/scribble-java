@@ -17,12 +17,12 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
-import org.scribble.core.type.kind.NonProtocolKind;
+import org.scribble.core.type.kind.NonProtoKind;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // Rename to something better
-public abstract class NonProtoDecl<K extends NonProtocolKind>
+public abstract class NonProtoDecl<K extends NonProtoKind>
 		extends NameDeclNode<K> implements ModuleMember
 {
 	// NameDeclNode.NAMENODE_CHILD_INDEX = 0;

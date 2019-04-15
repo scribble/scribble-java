@@ -13,13 +13,13 @@
  */
 package org.scribble.core.model.global.actions;
 
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
 public class SSend extends SAction
 {
-	public SSend(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SSend(Role subj, Role obj, MsgId<?> mid, Payload payload)
 	{
 		super(subj, obj, mid, payload);
 	}

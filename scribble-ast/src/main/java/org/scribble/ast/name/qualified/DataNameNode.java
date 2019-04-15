@@ -15,13 +15,13 @@ package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.PayElemNameNode;
-import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.session.Arg;
 
 //public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
-public class DataNameNode extends MemberNameNode<DataTypeKind>
-		implements PayElemNameNode<DataTypeKind>
+public class DataNameNode extends MemberNameNode<DataKind>
+		implements PayElemNameNode<DataKind>
 {
 	// ScribTreeAdaptor#create constructor
 	public DataNameNode(Token t)
@@ -57,7 +57,7 @@ public class DataNameNode extends MemberNameNode<DataTypeKind>
 	}
 
 	@Override
-	public Arg<DataTypeKind> toArg()
+	public Arg<DataKind> toArg()
 	{
 		return toPayloadType();
 	}

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -99,7 +99,7 @@ public class ExtChoiceConsistencyChecker extends STypeVisitor<Global, GSeq>
 	}
 
 	@Override
-	public final <N extends ProtocolName<Global>> SType<Global, GSeq> visitDo(
+	public final <N extends ProtoName<Global>> SType<Global, GSeq> visitDo(
 			Do<Global, GSeq, N> n) throws ScribException
 	{
 		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);

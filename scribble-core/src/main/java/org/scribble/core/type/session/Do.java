@@ -21,15 +21,15 @@ import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
 
 public abstract class Do
-		<K extends ProtocolKind, B extends Seq<K, B>, N extends ProtocolName<K>>
+		<K extends ProtoKind, B extends Seq<K, B>, N extends ProtoName<K>>
 		extends STypeBase<K, B>
 {
 	public final N proto;  // Currently disamb'd to fullname by GTypeTranslator (see GDoDel::translate)

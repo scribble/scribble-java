@@ -15,12 +15,12 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
-public abstract class Continue<K extends ProtocolKind>
+public abstract class Continue<K extends ProtoKind>
 		extends SimpleSessionNode<K>
 {
 	public static final int RECVAR_CHILD_INDEX = 0;

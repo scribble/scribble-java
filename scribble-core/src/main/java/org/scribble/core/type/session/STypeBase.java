@@ -14,10 +14,10 @@
 package org.scribble.core.type.session;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 
 // SessTypeBase is to SessType as ScribNodeBase is to ScribNode
-public abstract class STypeBase<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class STypeBase<K extends ProtoKind, B extends Seq<K, B>>
 		implements SType<K, B>
 {
 	private final CommonTree source;  // Currently null for "generated" terms (cf. hasSource)

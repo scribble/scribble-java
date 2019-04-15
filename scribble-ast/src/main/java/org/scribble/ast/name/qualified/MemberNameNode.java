@@ -22,7 +22,7 @@ import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.PackageName;
 
 public abstract class MemberNameNode<K extends Kind>
-		extends QualifiedNameNode<K>
+		extends QualNameNode<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public MemberNameNode(Token t)

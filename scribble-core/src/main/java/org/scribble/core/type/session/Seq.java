@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 
-public abstract class Seq<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class Seq<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeBase<K, B>
 {
 	// GType or LType -- could make SType subclasses take themself as another param, but not worth it

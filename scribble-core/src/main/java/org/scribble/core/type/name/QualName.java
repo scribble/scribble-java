@@ -11,24 +11,33 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.name.qualified;
+package org.scribble.core.type.name;
 
-import org.antlr.runtime.Token;
-import org.scribble.ast.name.NameNode;
 import org.scribble.core.type.kind.Kind;
 
-// Any name that could be compound/qualified (but could also be a singleton)
-public abstract class QualifiedNameNode<K extends Kind> extends NameNode<K>
+
+public abstract class QualName<K extends Kind> extends AbstractName<K>
 {
-	// ScribTreeAdaptor#create constructor
-	public QualifiedNameNode(Token t)
+	private static final long serialVersionUID = 1L;
+
+	public QualName(K kind, String... elems)
 	{
-		super(t);
+		super(kind, elems);
 	}
 
-	// Tree#dupNode constructor
-	protected QualifiedNameNode(QualifiedNameNode<K> node)
+	@Override
+	public boolean isEmpty()
 	{
-		super(node);
+		return super.isEmpty();
 	}
+
+	@Override
+	public boolean isPrefixed()
+	{
+		return super.isPrefixed();
+	}
+	
+	// Also done by Scope
+	public abstract Name<? extends Kind> getPrefix();
+	public abstract Name<K> getSimpleName();
 }

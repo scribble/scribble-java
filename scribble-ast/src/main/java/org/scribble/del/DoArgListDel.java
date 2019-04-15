@@ -23,7 +23,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.lang.context.ModuleContext;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.lang.LangContext;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
@@ -60,12 +60,12 @@ public abstract class DoArgListDel extends ScribDelBase
 		ModuleContext mc = disamb.getModuleContext();
 		LangContext jc = disamb.lang.getContext();
 		Do<?> doo = (Do<?>) parent;
-		ProtocolName<?> pn = doo.getProtocolNameNode().toName();
+		ProtoName<?> pn = doo.getProtocolNameNode().toName();
 		/*if (!mc.isVisibleProtocolDeclName(simpname))  // FIXME: should be checked somewhere else?  earlier (do-entry?) -- done
 		{
 			throw new ScribbleException("Protocol decl not visible: " + simpname);
 		}*/
-		ProtocolName<?> fullname = mc.getVisibleProtocolDeclFullName(pn);  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
+		ProtoName<?> fullname = mc.getVisibleProtocolDeclFullName(pn);  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
 		Module mod = jc.getModule(fullname.getPrefix());
 		//return mod.getProtocolDeclChild(pn.getSimpleName());
 		List<ProtoDecl<?>> pd = mod.getProtoDeclChildren().stream()

@@ -23,8 +23,8 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.SigName;
 import org.scribble.util.ScribException;
 
 // Factor out
@@ -42,7 +42,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 	@Override
 	public InterfaceBuilder generateType() throws ScribException
 	{
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 
 		// Handler interface
 		InterfaceBuilder ib = new InterfaceBuilder();
@@ -106,7 +106,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			ReceiveSockGen.addReceiveMessageSigNameParams(mb, msd, false);
 		}
 	}

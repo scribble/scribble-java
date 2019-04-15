@@ -20,8 +20,8 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.local.LSeq;
@@ -29,11 +29,11 @@ import org.scribble.core.visit.STypeInliner;
 
 public class LProjection extends LProtocol
 {
-	public final GProtocolName parent;
+	public final GProtoName parent;
 	
-	public LProjection(List<ProtocolMod> mods, LProtocolName fullname,
+	public LProjection(List<ProtocolMod> mods, LProtoName fullname,
 			List<Role> roles, Role self,
-			List<MemberName<? extends NonRoleParamKind>> params, GProtocolName parent,
+			List<MemberName<? extends NonRoleParamKind>> params, GProtoName parent,
 			LSeq body)
 	{
 		super(null, mods, fullname, roles, self, params, body);
@@ -42,7 +42,7 @@ public class LProjection extends LProtocol
 
 	@Override
 	public LProjection reconstruct(CommonTree source,
-			List<ProtocolMod> mods, LProtocolName fullname, List<Role> roles,
+			List<ProtocolMod> mods, LProtoName fullname, List<Role> roles,
 			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq body)
 	{
 		return new LProjection(mods, fullname, roles, this.self, params,

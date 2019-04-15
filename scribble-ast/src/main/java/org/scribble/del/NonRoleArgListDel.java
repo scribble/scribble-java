@@ -24,7 +24,7 @@ import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
-import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.util.ScribException;
@@ -71,7 +71,7 @@ public class NonRoleArgListDel extends DoArgListDel
 							"Invalid arg " + arg + " for param kind: " + pkind);
 				}
 			}
-			else if (pkind.equals(DataTypeKind.KIND))
+			else if (pkind.equals(DataKind.KIND))
 			{
 				if (!val.isDataTypeNameNode())
 				{

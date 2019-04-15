@@ -23,7 +23,7 @@ import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
@@ -46,7 +46,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 		Module m = (Module) n.getParent();
 		List<ProtocolMod> mods = source.getModifierListChild().getModList().stream()
 				.map(x -> ProtocolMod.fromAst(x)).collect(Collectors.toList());
-		GProtocolName fullname = new GProtocolName(m.getFullModuleName(),
+		GProtoName fullname = new GProtoName(m.getFullModuleName(),
 				source.getHeaderChild().getDeclName());
 		List<Role> rs = source.getRoles();
 		List<MemberName<? extends NonRoleParamKind>> ps = source.getHeaderChild()

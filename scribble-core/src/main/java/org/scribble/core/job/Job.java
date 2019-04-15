@@ -30,11 +30,11 @@ import org.scribble.core.model.global.SGraph;
 import org.scribble.core.model.global.SGraphBuilderUtil;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
@@ -95,7 +95,7 @@ public class Job
 	}
 	
 	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util
-	public SGraph buildSGraph(GProtocolName fullname, Map<Role, EGraph> egraphs,
+	public SGraph buildSGraph(GProtoName fullname, Map<Role, EGraph> egraphs,
 			boolean explicit) throws ScribException
 	{
 		verbosePrintln("(" + fullname + ") Building global model using:");
@@ -156,7 +156,7 @@ public class Job
 		
 		runProjectionPasses();
 				
-		for (Entry<LProtocolName, LProtocol> e : 
+		for (Entry<LProtoName, LProtocol> e : 
 				this.context.getInlinedProjections().entrySet())
 		{
 			//LProtocolName lname = e.getKey();
@@ -217,7 +217,7 @@ public class Job
 					continue;
 				}
 
-				GProtocolName fullname = gpd.fullname;//.getFullMemberName(mod);
+				GProtoName fullname = gpd.fullname;//.getFullMemberName(mod);
 
 				verbosePrintln("\nValidating " + fullname + ":");
 
@@ -283,19 +283,19 @@ public class Job
 	// Pre: checkWellFormedness 
 	// Returns: fullname -> Module -- CHECKME TODO: refactor local Module creation to Lang?
 	// CHECKME: generate projection Modules for an inline main?
-	public Map<LProtocolName, LProtocol> getProjections(GProtocolName fullname,
+	public Map<LProtoName, LProtocol> getProjections(GProtoName fullname,
 			Role role) throws ScribException
 	{
 		//Module root = 
 		LProtocol proj =
 				this.context.getProjection(fullname, role);
 		
-		List<ProtocolName<Local>> ps = proj.def
+		List<ProtoName<Local>> ps = proj.def
 				.gather(new ProtoDepsCollector<Local, LSeq>()::visit)
 				.collect(Collectors.toList());
-		for (ProtocolName<Local> p : ps)
+		for (ProtoName<Local> p : ps)
 		{
-			System.out.println("\n" + this.context.getProjection((LProtocolName) p));
+			System.out.println("\n" + this.context.getProjection((LProtoName) p));
 		}
 		if (!ps.contains(proj.fullname))
 		{

@@ -13,32 +13,8 @@
  */
 package org.scribble.core.type.kind;
 
-public class ScopeKind extends AbstractKind
-{
-	public static final ScopeKind KIND = new ScopeKind();
-	
-	protected ScopeKind()
-	{
-		super("Scope");
-	}
 
-	@Override
-	public boolean equals(Object o)
-	{
-		if (o == this)
-		{
-			return true;
-		}
-		if (!(o instanceof ScopeKind))
-		{
-			return false;
-		}
-		return ((ScopeKind) o).canEqual(this);
-	}
-	
-	@Override
-	public boolean canEqual(Object o)
-	{
-		return o instanceof ScopeKind;
-	}
+public interface NonProtoKind extends Kind
+{
+
 }

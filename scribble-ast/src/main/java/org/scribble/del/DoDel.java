@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Do;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.name.qualified.ProtocolNameNode;
+import org.scribble.ast.name.qualified.ProtoNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.lang.context.ModuleContext;
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
@@ -42,8 +42,8 @@ public abstract class DoDel extends SimpleSessionNodeDel
 	{
 		ModuleContext mc = disamb.getModuleContext();
 		Do<?> doo = (Do<?>) child;
-		ProtocolNameNode<?> proto = doo.getProtocolNameNode();
-		ProtocolName<?> simpname = proto.toName();
+		ProtoNameNode<?> proto = doo.getProtocolNameNode();
+		ProtoName<?> simpname = proto.toName();
 		if (!mc.isVisibleProtocolDeclName(simpname))  // CHECKME: do on entry here, before visiting DoArgListDel
 		{
 			throw new ScribException(proto.getSource(),
@@ -61,31 +61,31 @@ public abstract class DoDel extends SimpleSessionNodeDel
 	
 	// Convert all visible names to full names for protocol inlining: otherwise could get clashes if directly inlining external visible names under the root modulecontext
 	// Not done in G/LProtocolNameNodeDel because it's only for do-targets that this is needed (cf. ProtocolHeader)
-	private <K extends ProtocolKind> ScribNode leaveDisambiguationAux(
+	private <K extends ProtoKind> ScribNode leaveDisambiguationAux(
 			Do<K> visited, NameDisambiguator disamb) throws ScribException
 	{
-		ProtocolNameNode<K> proto = visited.getProtocolNameNode();
+		ProtoNameNode<K> proto = visited.getProtocolNameNode();
 		ModuleContext modc = disamb.getModuleContext();
-		ProtocolName<K> fullname = modc
+		ProtoName<K> fullname = modc
 				.getVisibleProtocolDeclFullName(proto.toName());
 
 		// CHECKME: do full name expansion in disamb?  or leave to imed translation? -- FIXME: sort out full name expansion between here and GDoDel.translate
-		ProtocolNameNode<K> n = foo(disamb.lang, fullname);
+		ProtoNameNode<K> n = foo(disamb.lang, fullname);
 		
 		// Didn't keep original namenode del -- ?
 		return visited.reconstruct(visited.getRoleListChild(),
 				visited.getNonRoleListChild(), n);
 	}
 	
-	private <K extends ProtocolKind> ProtocolNameNode<K> foo(Lang lang,
-			ProtocolName<K> fullname)
+	private <K extends ProtoKind> ProtoNameNode<K> foo(Lang lang,
+			ProtoName<K> fullname)
 	{
-		if (fullname instanceof GProtocolName)
+		if (fullname instanceof GProtoName)
 		{
 			List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
 					.map(x -> lang.config.af.IdNode(x)).collect(Collectors.toList());
 			@SuppressWarnings("unchecked") // FIXME
-			ProtocolNameNode<K> cast = (ProtocolNameNode<K>) lang.config.af
+			ProtoNameNode<K> cast = (ProtoNameNode<K>) lang.config.af
 					.GProtoNameNode(elems);
 			return cast;
 		}

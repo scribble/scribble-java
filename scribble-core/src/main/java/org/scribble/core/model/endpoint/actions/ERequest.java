@@ -15,13 +15,13 @@ package org.scribble.core.model.endpoint.actions;
 
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.global.actions.SRequest;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
 public class ERequest extends EAction
 {
-	public ERequest(ModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
+	public ERequest(ModelFactory ef, Role peer, MsgId<?> mid, Payload payload)
 	//public Connect(Role peer)
 	{
 		super(ef, peer, mid, payload);

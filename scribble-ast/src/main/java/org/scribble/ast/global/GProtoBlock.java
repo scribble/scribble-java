@@ -14,10 +14,10 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.ProtocolBlock;
+import org.scribble.ast.ProtoBlock;
 import org.scribble.core.type.kind.Global;
 
-public class GProtoBlock extends ProtocolBlock<Global> implements GScribNode
+public class GProtoBlock extends ProtoBlock<Global> implements GScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GProtoBlock(Token t)
@@ -34,7 +34,7 @@ public class GProtoBlock extends ProtocolBlock<Global> implements GScribNode
 	@Override
 	public GInteractionSeq getInteractSeqChild()
 	{
-		return (GInteractionSeq) getChild(ProtocolBlock.SEQ_CHILD_INDEX);
+		return (GInteractionSeq) getChild(ProtoBlock.SEQ_CHILD_INDEX);
 	}
 
 	@Override

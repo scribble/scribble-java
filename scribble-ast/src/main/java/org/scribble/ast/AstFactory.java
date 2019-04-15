@@ -44,7 +44,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.kind.PayloadTypeKind;
+import org.scribble.core.type.kind.PayElemKind;
 
 
 // CHECKME: add Token params back (for better transformation, cf. ScribNodeBase.source), and use null for "fresh"?
@@ -97,7 +97,7 @@ public interface AstFactory
 
 	SigLitNode SigLitNode(OpNode op, PayElemList pay);
 	PayElemList PayElemList(List<PayElem<?>> elems);
-	<K extends PayloadTypeKind> UnaryPayElem<K> UnaryPayElem(
+	<K extends PayElemKind> UnaryPayElem<K> UnaryPayElem(
 			PayElemNameNode<K> name);
 	GDelegPayElem GDelegPayElem(GProtoNameNode name, RoleNode r);
 

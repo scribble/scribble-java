@@ -24,7 +24,7 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.util.ScribException;
 
 public class ReceiveIfaceGen extends IOStateIfaceGen
@@ -54,7 +54,7 @@ public class ReceiveIfaceGen extends IOStateIfaceGen
 
 	protected void addAsyncDiscardMethod()
 	{
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 		EAction first = this.curr.getActions().iterator().next();
 
 		MethodBuilder mb = this.ib.newAbstractMethod();

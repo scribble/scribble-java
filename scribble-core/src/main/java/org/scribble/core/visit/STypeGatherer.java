@@ -16,8 +16,8 @@ package org.scribble.core.visit;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -28,7 +28,7 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 // Refactor as special case of Agg?
-public abstract class STypeGatherer<K extends ProtocolKind, B extends Seq<K, B>, T>
+public abstract class STypeGatherer<K extends ProtoKind, B extends Seq<K, B>, T>
 {
 	// Pass this to SType.gather, e.g., n.gather(new RoleGatherer<Global, GSeq>()::visit)
 	public Stream<T> visit(SType<K, B> n)
@@ -79,7 +79,7 @@ public abstract class STypeGatherer<K extends ProtocolKind, B extends Seq<K, B>,
 		return Stream.of();
 	}
 
-	public <N extends ProtocolName<K>> Stream<T> visitDo(Do<K, B, N> n)
+	public <N extends ProtoName<K>> Stream<T> visitDo(Do<K, B, N> n)
 	{
 		return Stream.of();
 	}

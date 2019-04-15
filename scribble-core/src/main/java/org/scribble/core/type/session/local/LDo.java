@@ -18,14 +18,14 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Do;
 
-public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
+public class LDo extends Do<Local, LSeq, LProtoName> implements LType
 {
-	public LDo(CommonTree source, LProtocolName proto,
+	public LDo(CommonTree source, LProtoName proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source, proto, roles, args);
@@ -33,7 +33,7 @@ public class LDo extends Do<Local, LSeq, LProtocolName> implements LType
 
 	@Override
 	public LDo reconstruct(CommonTree source,
-			LProtocolName proto, List<Role> roles,
+			LProtoName proto, List<Role> roles,
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
 		return new LDo(source, proto, roles, args);

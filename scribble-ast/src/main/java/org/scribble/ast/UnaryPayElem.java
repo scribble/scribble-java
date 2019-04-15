@@ -15,8 +15,8 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.PayElemNameNode;
-import org.scribble.core.type.kind.PayloadTypeKind;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.kind.PayElemKind;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -29,7 +29,7 @@ import org.scribble.visit.AstVisitor;
 // PayloadTypeKind is DataType or Local, but Local has its own special subclass (and protocol params not allowed), so this should implicitly be for DataType only
 // AST hierarchy requires unary and delegation (binary pair) payloads to be structurally distinguished
 //public class DataTypeElem extends PayloadElem<DataTypeKind>
-public class UnaryPayElem<K extends PayloadTypeKind> extends ScribNodeBase
+public class UnaryPayElem<K extends PayElemKind> extends ScribNodeBase
 		implements PayElem<K>// extends PayloadElem
 {
 	// cf. Scribble.g
@@ -84,7 +84,7 @@ public class UnaryPayElem<K extends PayloadTypeKind> extends ScribNodeBase
 	}
 
 	@Override
-	public PayloadElemType<K> toPayloadType()
+	public PayElemType<K> toPayloadType()
 	{
 		return getNameChild().toPayloadType();
 	}

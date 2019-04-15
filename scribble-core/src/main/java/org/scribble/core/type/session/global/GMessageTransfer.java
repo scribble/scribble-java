@@ -17,9 +17,9 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
-import org.scribble.core.type.session.MessageTransfer;
+import org.scribble.core.type.session.MsgTransfer;
 
-public class GMessageTransfer extends MessageTransfer<Global, GSeq>
+public class GMessageTransfer extends MsgTransfer<Global, GSeq>
 		implements GType
 {
 

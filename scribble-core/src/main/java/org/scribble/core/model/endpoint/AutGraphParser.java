@@ -30,8 +30,8 @@ import org.scribble.core.job.Job;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.MessageId;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
@@ -285,8 +285,8 @@ public class AutGraphParser
 	}
 	
 	// Cf. ModelState.toAut, ModelAction.toStringWithMessageIdHack
-	private static MessageId<?> getMessageIdHack(String msg)
+	private static MsgId<?> getMessageIdHack(String msg)
 	{
-		return (msg.startsWith("^")) ? new MessageSigName(msg.substring(1)) : new Op(msg);
+		return (msg.startsWith("^")) ? new SigName(msg.substring(1)) : new Op(msg);
 	}
 }

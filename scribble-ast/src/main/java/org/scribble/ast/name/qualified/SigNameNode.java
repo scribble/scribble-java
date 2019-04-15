@@ -16,7 +16,7 @@ package org.scribble.ast.name.qualified;
 import org.antlr.runtime.Token;
 import org.scribble.ast.MsgNode;
 import org.scribble.core.type.kind.SigKind;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.SigName;
 
 public class SigNameNode extends MemberNameNode<SigKind>
 		implements MsgNode
@@ -40,10 +40,10 @@ public class SigNameNode extends MemberNameNode<SigKind>
 	}
 
 	@Override
-	public MessageSigName toName()
+	public SigName toName()
 	{
-		MessageSigName membname = new MessageSigName(getLastElement());
-		return isPrefixed() ? new MessageSigName(getModuleNamePrefix(), membname)
+		SigName membname = new SigName(getLastElement());
+		return isPrefixed() ? new SigName(getModuleNamePrefix(), membname)
 				: membname;
 	}
 
@@ -55,13 +55,13 @@ public class SigNameNode extends MemberNameNode<SigKind>
 
 	// Difference between toName and toMessage is scope? does that make sense?
 	@Override
-	public MessageSigName toMessage() 
+	public SigName toMessage() 
 	{
 		return toName();
 	}
 
 	@Override
-	public MessageSigName toArg()
+	public SigName toArg()
 	{
 		return toMessage();
 	}

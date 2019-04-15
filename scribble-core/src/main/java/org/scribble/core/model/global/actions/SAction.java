@@ -19,7 +19,7 @@ import java.util.Set;
 
 import org.scribble.core.model.MAction;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
@@ -27,7 +27,7 @@ public abstract class SAction extends MAction<Global>
 {
 	public final Role subj;
 
-	public SAction(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SAction(Role subj, Role obj, MsgId<?> mid, Payload payload)
 	{
 		super(obj, mid, payload);
 		this.subj = subj; 

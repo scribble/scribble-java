@@ -13,11 +13,11 @@
  */
 package org.scribble.core.type.name;
 
-import org.scribble.core.type.kind.PayloadTypeKind;
+import org.scribble.core.type.kind.PayElemKind;
 import org.scribble.core.type.session.Arg;
 
 
-public interface PayloadElemType<K extends PayloadTypeKind> extends Arg<K>
+public interface PayElemType<K extends PayElemKind> extends Arg<K>
 {
 	default boolean isDataType()
 	{

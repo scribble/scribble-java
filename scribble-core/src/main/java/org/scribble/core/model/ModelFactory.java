@@ -38,18 +38,18 @@ import org.scribble.core.model.global.actions.SRequest;
 import org.scribble.core.model.global.actions.SSend;
 import org.scribble.core.model.global.actions.SWrapClient;
 import org.scribble.core.model.global.actions.SWrapServer;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
 public interface ModelFactory
 {
-	ESend newESend(Role peer, MessageId<?> mid, Payload payload);
-	EReceive newEReceive(Role peer, MessageId<?> mid, Payload payload);
-	ERequest newERequest(Role peer, MessageId<?> mid, Payload payload);
-	EAccept newEAccept(Role peer, MessageId<?> mid, Payload payload);
+	ESend newESend(Role peer, MsgId<?> mid, Payload payload);
+	EReceive newEReceive(Role peer, MsgId<?> mid, Payload payload);
+	ERequest newERequest(Role peer, MsgId<?> mid, Payload payload);
+	EAccept newEAccept(Role peer, MsgId<?> mid, Payload payload);
 	EDisconnect newEDisconnect(Role peer);
 	EWrapClient newEWrapClient(Role peer);
 	EWrapServer newEWrapServer(Role peer);
@@ -58,16 +58,16 @@ public interface ModelFactory
 
 	SGraphBuilderUtil newSGraphBuilderUtil();  // Directly created and used by Job.buildSGraph -- cf. EGraphBuilderUtil, encapsulated by EGraphBuilder AST visitor
 	
-	SSend newSSend(Role subj, Role obj, MessageId<?> mid, Payload payload);
-	SReceive newSReceive(Role subj, Role obj, MessageId<?> mid, Payload payload);
-	SRequest newSConnect(Role subj, Role obj, MessageId<?> mid, Payload payload);
-	SAccept newSAccept(Role subj, Role obj, MessageId<?> mid, Payload payload);
+	SSend newSSend(Role subj, Role obj, MsgId<?> mid, Payload payload);
+	SReceive newSReceive(Role subj, Role obj, MsgId<?> mid, Payload payload);
+	SRequest newSConnect(Role subj, Role obj, MsgId<?> mid, Payload payload);
+	SAccept newSAccept(Role subj, Role obj, MsgId<?> mid, Payload payload);
 	SDisconnect newSDisconnect(Role subj, Role obj);
 	SWrapClient newSWrapClient(Role subj, Role obj);
 	SWrapServer newSWrapServer(Role subj, Role obj);
 
 	SState newSState(SConfig config);
-	SGraph newSGraph(GProtocolName proto, Map<Integer, SState> states, SState init);
+	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);
 	SConfig newSConfig(Map<Role, EFSM> state, SBuffers buffs);
 	SModel newSModel(SGraph g);
 }

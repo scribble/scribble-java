@@ -13,7 +13,7 @@
  */
 package org.scribble.core.model;
 
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.ScribException;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of S
@@ -22,7 +22,7 @@ public abstract class GraphBuilderUtil
 		<L,                             // Labels on states (cosmetic)
 		 A extends MAction<K>,          // Action type: labels on edges
 		 S extends MState<L, A, S, K>,  // State type
-		 K extends ProtocolKind>        // Global/local actions/states -- Need to quantify K explicitly
+		 K extends ProtoKind>        // Global/local actions/states -- Need to quantify K explicitly
 {
 	protected S entry;
 	protected S exit;   // Tracking exit is convenient for merges (otherwise have to generate dummy merge nodes)

@@ -17,7 +17,7 @@ import org.scribble.core.type.kind.Kind;
 
 
 // Simple name or qualified name
-public abstract class MemberName<K extends Kind> extends QualifiedName<K>
+public abstract class MemberName<K extends Kind> extends QualName<K>
 {
 	private static final long serialVersionUID = 1L;
 	

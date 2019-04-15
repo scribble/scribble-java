@@ -21,9 +21,9 @@ import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.NonRoleArgKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Arg;
-import org.scribble.core.type.session.MessageSig;
+import org.scribble.core.type.session.SigLit;
 
 // Cf. NonRoleParamDeclList
 public class NonRoleArgList extends DoArgList<NonRoleArg>
@@ -72,17 +72,17 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 		List<Arg<? extends NonRoleParamKind>> cast = new LinkedList<>();
 		for (Arg<? extends NonRoleArgKind> a : getArguments())
 		{
-			if (a instanceof MessageSig)
+			if (a instanceof SigLit)
 			{
-				cast.add((MessageSig) a);
+				cast.add((SigLit) a);
 			}
 			else if (a instanceof DataType)
 			{
 				cast.add((DataType) a);
 			}
-			else if (a instanceof MessageSigName)
+			else if (a instanceof SigName)
 			{
-				cast.add((MessageSigName) a);
+				cast.add((SigName) a);
 			}
 			else
 			{

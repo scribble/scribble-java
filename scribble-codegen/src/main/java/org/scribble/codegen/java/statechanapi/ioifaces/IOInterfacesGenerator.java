@@ -42,7 +42,7 @@ import org.scribble.core.job.JobContext;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.RuntimeScribException;
 import org.scribble.util.ScribException;
@@ -77,7 +77,7 @@ public class IOInterfacesGenerator extends ApiGen
 		this.apigen = apigen;
 		this.SUBTYPES = subtypes;
 
-		GProtocolName fullname = apigen.getGProtocolName();
+		GProtoName fullname = apigen.getGProtocolName();
 		Role self = getSelf();
 		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
 		JobContext jobc2 = this.job.getContext();
@@ -1041,7 +1041,7 @@ public class IOInterfacesGenerator extends ApiGen
 		return this.apigen.getSelf();
 	}
 
-	protected static String getIOInterfacePackageName(GProtocolName gpn, Role self)
+	protected static String getIOInterfacePackageName(GProtoName gpn, Role self)
 	{
 		return SessionApiGenerator.getStateChannelPackageName(gpn, self) + ".ioifaces";
 	}

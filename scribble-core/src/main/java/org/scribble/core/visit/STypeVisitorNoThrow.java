@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 // For comments, see STypeVisitor
-public abstract class STypeVisitorNoThrow<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class STypeVisitorNoThrow<K extends ProtoKind, B extends Seq<K, B>>
 	extends STypeAggNoThrow<K, B, SType<K, B>>
 {
 	@Override

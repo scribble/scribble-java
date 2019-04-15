@@ -15,17 +15,17 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.PayElemNameNode;
-import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.name.DataType;
 
-public class DataParamNode extends NonRoleParamNode<DataTypeKind>
-		implements PayElemNameNode<DataTypeKind>  // As a payload, can only be a DataType (so hardcode)
+public class DataParamNode extends NonRoleParamNode<DataKind>
+		implements PayElemNameNode<DataKind>  // As a payload, can only be a DataType (so hardcode)
 {
 	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
 	public DataParamNode(int ttype, Token t)
 	{
-		super(t, DataTypeKind.KIND);
+		super(t, DataKind.KIND);
 	}
 
 	// Tree#dupNode constructor

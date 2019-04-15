@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 
@@ -26,7 +26,7 @@ import org.scribble.core.type.session.Arg;
 // Immutable
 public class SubprotoSig
 {
-	public final ProtocolName<?> fullname;
+	public final ProtoName<?> fullname;
 	// public Scope scope;
 	public final List<Role> roles;  // i.e., roles (and args) are ordered
 	public final List<Arg<? extends NonRoleParamKind>> args;
@@ -35,7 +35,7 @@ public class SubprotoSig
 
 	// public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role>
 	// roles, List<Argument<? extends Kind>> args)
-	public SubprotoSig(ProtocolName<?> fullname,
+	public SubprotoSig(ProtoName<?> fullname,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		this.fullname = fullname;

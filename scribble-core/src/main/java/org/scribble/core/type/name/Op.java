@@ -15,7 +15,7 @@ package org.scribble.core.type.name;
 
 import org.scribble.core.type.kind.OpKind;
 
-public class Op extends AbstractName<OpKind> implements MessageId<OpKind>
+public class Op extends AbstractName<OpKind> implements MsgId<OpKind>
 {
 	private static final long serialVersionUID = 1L;
 	

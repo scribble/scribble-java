@@ -18,14 +18,14 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Do;
 
-public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
+public class GDo extends Do<Global, GSeq, GProtoName> implements GType
 {
-	public GDo(CommonTree source, GProtocolName proto,
+	public GDo(CommonTree source, GProtoName proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source, proto, roles, args);
@@ -33,7 +33,7 @@ public class GDo extends Do<Global, GSeq, GProtocolName> implements GType
 
 	@Override
 	public GDo reconstruct(CommonTree source,
-			GProtocolName proto, List<Role> roles,
+			GProtoName proto, List<Role> roles,
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
 		return new GDo(source, proto, roles, args);

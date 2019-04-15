@@ -40,9 +40,9 @@ import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.MessageSigName;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
 import org.scribble.lang.LangContext;
@@ -56,14 +56,14 @@ public class CBEndpointApiGenerator3
 {
 	public final Lang lang;
 	public final Job job;
-	public final GProtocolName proto;
+	public final GProtoName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
 	protected final Map<Integer, String> stateNames = new HashMap<>();
 	
 	//private final boolean subtypes;  // Generate full hierarchy (states -> states, not just indivdual state -> cases) -- cf. ioifaces
 
-	public CBEndpointApiGenerator3(Lang lang, GProtocolName fullname, Role self,
+	public CBEndpointApiGenerator3(Lang lang, GProtoName fullname, Role self,
 			boolean subtypes)
 	{
 		this.lang = lang;
@@ -716,7 +716,7 @@ public class CBEndpointApiGenerator3
 				branchAbstract += "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + ") m.op";
 			}
 			int i = 0;
-			for (PayloadElemType<?> pet : a.payload.elems)
+			for (PayElemType<?> pet : a.payload.elems)
 			{
 				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
 				branchAbstract += ", (" + dtd.getExtName() + ") m.payload[" + i++ + "]";
@@ -754,7 +754,7 @@ public class CBEndpointApiGenerator3
 					.getEndpointApiRootPackageName(this.proto) + ".ops."
 					+ SessionApiGenerator.getOpClassName(a.mid) + " op";
 			int i = 1;
-			for (PayloadElemType<?> pet : a.payload.elems)
+			for (PayElemType<?> pet : a.payload.elems)
 			{
 				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
 				receiveInterface += ", " + dtd.getExtName() + " arg" + i++;
@@ -998,7 +998,7 @@ public class CBEndpointApiGenerator3
 		return rootPack + ".handlers." + this.self + ".states.messages";
 	}
 	
-	protected SigDecl getMessageSigNameDecl(MessageSigName mid)
+	protected SigDecl getMessageSigNameDecl(SigName mid)
 	{
 		return (SigDecl)
 				this.lang.getContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
@@ -1007,7 +1007,7 @@ public class CBEndpointApiGenerator3
 	}
 
 	//protected final Function<PayloadElemType<?>, String> getExtName = e ->
-	protected String getExtName(PayloadElemType<?> e)
+	protected String getExtName(PayElemType<?> e)
 	{
 		String extName = this.lang.getContext().getMainModule().getDataTypeDeclChild((DataType) e).getExtName();
 		return (extName.indexOf(".") != -1)

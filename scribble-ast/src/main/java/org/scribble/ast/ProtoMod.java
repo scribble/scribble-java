@@ -11,26 +11,39 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.type.name;
+package org.scribble.ast;
 
-import org.scribble.core.type.kind.ProtocolKind;
+import org.antlr.runtime.Token;
+import org.scribble.util.ScribException;
+import org.scribble.visit.AstVisitor;
 
-
-// Potentially qualified/canonical protocol name; not the AST primitive identifier
-public abstract class ProtocolName<K extends ProtocolKind> extends MemberName<K>
+public abstract class ProtoMod extends ScribNodeBase
 {
-	private static final long serialVersionUID = 1L;
-
-	public ProtocolName(K kind, ModuleName modname, ProtocolName<K> membname)
+	// ScribTreeAdaptor#create constructor
+	public ProtoMod(Token t)
 	{
-		super(kind, modname, membname);
+		super(t);
 	}
 	
-	public ProtocolName(K kind, String simpname)
+	// Tree#dupNode constructor
+	protected ProtoMod(ProtoMod node)
 	{
-		super(kind, simpname);
+		super(node);
 	}
-
+	
+	public boolean isAux()
+	{
+		return false;
+	}
+	
+	public boolean isExplicit()
+	{
+		return false;
+	}
+	
 	@Override
-	public abstract ProtocolName<K> getSimpleName();
+	public ProtoMod visitChildren(AstVisitor nv) throws ScribException
+	{
+		return this;
+	}
 }

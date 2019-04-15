@@ -15,12 +15,12 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.qualified.DataNameNode;
-import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.Constants;
 
-public class DataDecl extends NonProtoDecl<DataTypeKind>
+public class DataDecl extends NonProtoDecl<DataKind>
 {
 	// ScribTreeAdaptor#create constructor
 	public DataDecl(Token payload)

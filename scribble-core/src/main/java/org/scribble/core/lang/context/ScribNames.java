@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.ProtoName;
 
 // TODO: fix mutable public collection fields -- currently hacked for ModuleContext(Collector) internal use
 // TODO: rename better
@@ -30,9 +30,9 @@ public class ScribNames
 	// names -> fully qualified names
 	public final Map<ModuleName, ModuleName> modules = new HashMap<>();
 	public final Map<DataType, DataType> data = new HashMap<>();
-	public final Map<MessageSigName, MessageSigName> sigs = new HashMap<>();
-	public final Map<GProtocolName, GProtocolName> globals = new HashMap<>();
-	public final Map<LProtocolName, LProtocolName> locals = new HashMap<>();
+	public final Map<SigName, SigName> sigs = new HashMap<>();
+	public final Map<GProtoName, GProtoName> globals = new HashMap<>();
+	public final Map<LProtoName, LProtoName> locals = new HashMap<>();
 	
 	@Override
 	public String toString()
@@ -43,7 +43,7 @@ public class ScribNames
 				+ ")";
 	}
 
-	public boolean isVisibleProtocolDeclName(ProtocolName<?> visname)
+	public boolean isVisibleProtocolDeclName(ProtoName<?> visname)
 	{
 		return this.globals.containsKey(visname)
 				|| this.locals.containsKey(visname);

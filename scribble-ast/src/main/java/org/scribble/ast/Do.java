@@ -16,17 +16,17 @@ package org.scribble.ast;
 import java.util.Iterator;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.name.qualified.ProtocolNameNode;
+import org.scribble.ast.name.qualified.ProtoNameNode;
 import org.scribble.core.lang.context.ModuleContext;
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.LangContext;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
-public abstract class Do<K extends ProtocolKind>
+public abstract class Do<K extends ProtoKind>
 		extends SimpleSessionNode<K> // implements ScopedNode
 {
 	public static final int NAME_CHILD_INDEX = 0;
@@ -45,7 +45,7 @@ public abstract class Do<K extends ProtocolKind>
 		super(node);
 	}
 	
-	public abstract ProtocolNameNode<K> getProtocolNameNode();
+	public abstract ProtoNameNode<K> getProtocolNameNode();
 
 	public NonRoleArgList getNonRoleListChild()
 	{
@@ -61,7 +61,7 @@ public abstract class Do<K extends ProtocolKind>
 	public abstract Do<K> dupNode();
 
 	public Do<K> reconstruct(RoleArgList roles, NonRoleArgList args,
-			ProtocolNameNode<K> proto)
+			ProtoNameNode<K> proto)
 	{
 		Do<K> sig = dupNode();
 		sig.addChild(proto);  // Order re. getter indices
@@ -76,7 +76,7 @@ public abstract class Do<K extends ProtocolKind>
 	{
 		RoleArgList ril = (RoleArgList) visitChild(getRoleListChild(), nv);
 		NonRoleArgList al = (NonRoleArgList) visitChild(getNonRoleListChild(), nv);
-		ProtocolNameNode<K> proto = visitChildWithClassEqualityCheck(this,
+		ProtoNameNode<K> proto = visitChildWithClassEqualityCheck(this,
 				getProtocolNameNode(), nv);
 		return reconstruct(ril, al, proto);
 	}
@@ -84,7 +84,7 @@ public abstract class Do<K extends ProtocolKind>
 	// FIXME: mcontext now redundant because NameDisambiguator converts all targets to full names -- NO: currently disamb doesn't
 	// To get full name from original target name, use mcontext visible names (e.g. in or before name disambiguation pass)
 	// This is still useful for subclass casting to G/LProtocolName
-	public ProtocolName<K> getTargetProtocolDeclFullName(ModuleContext mcontext)
+	public ProtoName<K> getTargetProtocolDeclFullName(ModuleContext mcontext)
 	{
 		//return mcontext.checkProtocolDeclDependencyFullName(this.proto.toName());
 		return getProtocolNameNode().toName();  // Pre: use after name disambiguation (maybe drop FullName suffix)

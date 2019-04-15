@@ -15,16 +15,16 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.DataParamNode;
-import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.util.Constants;
 
-public class DataParamDecl extends NonRoleParamDecl<DataTypeKind>
+public class DataParamDecl extends NonRoleParamDecl<DataKind>
 {
 	// ScribTreeAdaptor#create constructor
 	public DataParamDecl(Token t)
 	{
-		super(t, DataTypeKind.KIND);
+		super(t, DataKind.KIND);
 	}
 
 	// Tree#dupNode constructor

@@ -13,36 +13,49 @@
  */
 package org.scribble.core.type.name;
 
-import org.scribble.core.type.kind.Local;
+import org.scribble.core.type.kind.SigKind;
+import org.scribble.core.type.session.Message;
 
 
-public class LProtocolName extends ProtocolName<Local> 
-		implements PayloadElemType<Local> // @Deprecated -- not used, deleg elems currently have to be (Global@Role)
+// The name of a declared (imported) message signature member
+public class SigName extends MemberName<SigKind> implements Message, MsgId<SigKind>
 {
 	private static final long serialVersionUID = 1L;
+	
+	public SigName(ModuleName modname, SigName simplename)
+	{
+		super(SigKind.KIND, modname, simplename);
+	}
 
-	public LProtocolName(ModuleName modname, ProtocolName<Local> membname)
+	public SigName(String simplename)
 	{
-		super(Local.KIND, modname, membname);
+		super(SigKind.KIND, simplename);
 	}
-	
-	public LProtocolName(String simpname)
-	{
-		super(Local.KIND, simpname);
-	}
-	
-	/*@Override
-	public boolean isLDelegationType()
-	{
-		return true;
-	}*/
 
 	@Override
-	public LProtocolName getSimpleName()
+	public SigKind getKind()
 	{
-		return new LProtocolName(getLastElement());
+		return SigKind.KIND;  // Same as this.kind
+	}
+
+	@Override
+	public SigName getSimpleName()
+	{
+		return new SigName(getLastElement());
 	}
 	
+	@Override 
+	public MsgId<SigKind> getId()
+	{
+		return this;  // FIXME: should be resolved to a canonical name
+	}
+
+	@Override
+	public boolean isMessageSigName()
+	{
+		return true;
+	}
+
 	@Override
 	public boolean equals(Object o)
 	{
@@ -50,23 +63,23 @@ public class LProtocolName extends ProtocolName<Local>
 		{
 			return true;
 		}
-		if (!(o instanceof LProtocolName))
+		if (!(o instanceof SigName))
 		{
 			return false;
 		}
-		LProtocolName n = (LProtocolName) o;
+		SigName n = (SigName) o;
 		return n.canEqual(this) && super.equals(o);
 	}
 	
 	public boolean canEqual(Object o)
 	{
-		return o instanceof LProtocolName;
+		return o instanceof SigName;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int hash = 2789;
+		int hash = 2791;
 		hash = 31 * super.hashCode();
 		return hash;
 	}

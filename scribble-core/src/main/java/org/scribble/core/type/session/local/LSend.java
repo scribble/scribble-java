@@ -17,9 +17,9 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
-import org.scribble.core.type.session.MessageTransfer;
+import org.scribble.core.type.session.MsgTransfer;
 
-public class LSend extends MessageTransfer<Local, LSeq>
+public class LSend extends MsgTransfer<Local, LSeq>
 		implements LType
 {
 

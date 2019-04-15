@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
-public abstract class InteractionSeq<K extends ProtocolKind>
-		extends ScribNodeBase implements ProtocolKindNode<K>
+public abstract class InteractionSeq<K extends ProtoKind>
+		extends ScribNodeBase implements ProtoKindNode<K>
 {
 	// ScribTreeAdaptor#create constructor
 	public InteractionSeq(Token t)

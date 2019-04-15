@@ -17,8 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -29,7 +29,7 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 import org.scribble.util.ScribException;
 
-public abstract class STypeAgg<K extends ProtocolKind, B extends Seq<K, B>, T>
+public abstract class STypeAgg<K extends ProtoKind, B extends Seq<K, B>, T>
 {
 	// Internal use
 	// Pre: agg(Stream.of(unit())) = unit()
@@ -66,7 +66,7 @@ public abstract class STypeAgg<K extends ProtocolKind, B extends Seq<K, B>, T>
 		return unit(n);
 	}
 
-	public <N extends ProtocolName<K>> T visitDo(Do<K, B, N> n)
+	public <N extends ProtoName<K>> T visitDo(Do<K, B, N> n)
 			throws ScribException
 	{
 		return unit(n);

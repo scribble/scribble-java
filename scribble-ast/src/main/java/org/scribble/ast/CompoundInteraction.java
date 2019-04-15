@@ -14,9 +14,9 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 
-public abstract class CompoundInteraction<K extends ProtocolKind>
+public abstract class CompoundInteraction<K extends ProtoKind>
 		extends CompoundSessionNode<K>
 {
 	// ScribTreeAdaptor#create constructor

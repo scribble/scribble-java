@@ -19,18 +19,18 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageSigName;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Seq;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.util.Constants;
 
-public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>, B extends Seq<K, B>>
+public abstract class Protocol<K extends ProtoKind, N extends ProtoName<K>, B extends Seq<K, B>>
 		implements SNode
 {
 	private final CommonTree source;  // CHECKME: factor out with SType(Base) ?
@@ -111,7 +111,7 @@ public abstract class Protocol<K extends ProtocolKind, N extends ProtocolName<K>
 						{
 							k = Constants.TYPE_KW;
 						}
-						else if (x instanceof MessageSigName)
+						else if (x instanceof SigName)
 						{
 							k = Constants.SIG_KW;
 						}

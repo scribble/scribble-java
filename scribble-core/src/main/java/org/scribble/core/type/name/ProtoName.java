@@ -11,10 +11,26 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.type.kind;
+package org.scribble.core.type.name;
+
+import org.scribble.core.type.kind.ProtoKind;
 
 
-public interface MessageIdKind extends Kind
+// Potentially qualified/canonical protocol name; not the AST primitive identifier
+public abstract class ProtoName<K extends ProtoKind> extends MemberName<K>
 {
+	private static final long serialVersionUID = 1L;
 
+	public ProtoName(K kind, ModuleName modname, ProtoName<K> membname)
+	{
+		super(kind, modname, membname);
+	}
+	
+	public ProtoName(K kind, String simpname)
+	{
+		super(kind, simpname);
+	}
+
+	@Override
+	public abstract ProtoName<K> getSimpleName();
 }

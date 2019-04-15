@@ -14,23 +14,23 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
-public abstract class ProtocolBlock<K extends ProtocolKind>
+public abstract class ProtoBlock<K extends ProtoKind>
 		extends ScribNodeBase
 {
 	public static final int SEQ_CHILD_INDEX = 0;
 
 	// ScribTreeAdaptor#create constructor
-	public ProtocolBlock(Token t)
+	public ProtoBlock(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	protected ProtocolBlock(ProtocolBlock<K> node)
+	protected ProtoBlock(ProtoBlock<K> node)
 	{
 		super(node);
 	}
@@ -43,18 +43,18 @@ public abstract class ProtocolBlock<K extends ProtocolKind>
 	}
 	
 	@Override
-	public abstract ProtocolBlock<K> dupNode();
+	public abstract ProtoBlock<K> dupNode();
 
-	public ProtocolBlock<K> reconstruct(InteractionSeq<K> seq)
+	public ProtoBlock<K> reconstruct(InteractionSeq<K> seq)
 	{
-		ProtocolBlock<K> pd = dupNode();
+		ProtoBlock<K> pd = dupNode();
 		pd.addChild(seq);
 		pd.setDel(del());  // No copy
 		return pd;
 	}
 
 	@Override
-	public ProtocolBlock<K> visitChildren(AstVisitor nv) throws ScribException
+	public ProtoBlock<K> visitChildren(AstVisitor nv) throws ScribException
 	{
 		InteractionSeq<K> seq = 
 				visitChildWithClassEqualityCheck(this, getInteractSeqChild(), nv);

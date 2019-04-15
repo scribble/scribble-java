@@ -26,8 +26,8 @@ import org.scribble.core.job.JobArgs;
 import org.scribble.core.job.JobContext;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.lang.Lang;
@@ -46,7 +46,7 @@ public class StateChannelApiGenerator extends ApiGen
 	public static final String SCRIBMESSAGE_OP_FIELD = "op";
 
 	private final Role self;
-	private final LProtocolName lpn;
+	private final LProtoName lpn;
 	private final EState init;
 	//private final String root;
 
@@ -57,7 +57,7 @@ public class StateChannelApiGenerator extends ApiGen
 
 	private Map<String, TypeBuilder> types = new HashMap<>();  // class/iface name key
 
-	public StateChannelApiGenerator(Lang lang, GProtocolName fullname, Role self)
+	public StateChannelApiGenerator(Lang lang, GProtoName fullname, Role self)
 			throws ScribException // CHECKME: APIGenerationException?
 	{
 		super(lang, fullname);
@@ -193,7 +193,7 @@ public class StateChannelApiGenerator extends ApiGen
 		}
 	}
 	
-	public GProtocolName getGProtocolName()
+	public GProtoName getGProtocolName()
 	{
 		return this.gpn;
 	}

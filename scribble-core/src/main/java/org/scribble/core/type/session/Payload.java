@@ -17,17 +17,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.core.type.kind.PayloadTypeKind;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.kind.PayElemKind;
+import org.scribble.core.type.name.PayElemType;
 
 public class Payload
 {
 	public static final Payload EMPTY_PAYLOAD = new Payload(
 			Collections.emptyList());
 	
-	public final List<PayloadElemType<? extends PayloadTypeKind>> elems;
+	public final List<PayElemType<? extends PayElemKind>> elems;
 
-	public Payload(List<PayloadElemType<? extends PayloadTypeKind>> elems)
+	public Payload(List<PayElemType<? extends PayElemKind>> elems)
 	{
 		this.elems = Collections.unmodifiableList(elems);
 	}

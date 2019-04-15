@@ -24,9 +24,9 @@ public class AmbigName extends AbstractName<AmbigKind>
 		super(AmbigKind.KIND, text);
 	}
 	
-	public MessageSigName toMessageSigName()
+	public SigName toMessageSigName()
 	{
-		return new MessageSigName(getLastElement());
+		return new SigName(getLastElement());
 	}
 
 	public DataType toDataType()

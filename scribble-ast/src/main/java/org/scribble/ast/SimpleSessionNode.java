@@ -14,10 +14,10 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 
 // Name should be read (Simple ( SessionNode ))
-public abstract class SimpleSessionNode<K extends ProtocolKind>
+public abstract class SimpleSessionNode<K extends ProtoKind>
 		extends ScribNodeBase implements SessionNode<K>
 {
 	// ScribTreeAdaptor#create constructor

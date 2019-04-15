@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
 
-public abstract class Choice<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class Choice<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeBase<K, B> implements SType<K, B>
 {
 	public final Role subj;

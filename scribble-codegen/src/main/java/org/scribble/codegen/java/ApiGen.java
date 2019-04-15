@@ -16,7 +16,7 @@ package org.scribble.codegen.java;
 import java.util.Map;
 
 import org.scribble.core.job.Job;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
 
@@ -25,9 +25,9 @@ public abstract class ApiGen
 {
 	public final Lang lang;
 	public final Job job;
-	public final GProtocolName gpn;  // full name
+	public final GProtoName gpn;  // full name
 
-	public ApiGen(Lang job, GProtocolName fullname)
+	public ApiGen(Lang job, GProtoName fullname)
 	{
 		this.lang = job;
 		try

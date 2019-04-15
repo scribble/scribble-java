@@ -15,13 +15,13 @@ package org.scribble.core.model.endpoint.actions;
 
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.global.actions.SAccept;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
 public class EAccept extends EAction
 {
-	public EAccept(ModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
+	public EAccept(ModelFactory ef, Role peer, MsgId<?> mid, Payload payload)
 	//public Accept(Role peer)
 	{
 		super(ef, peer, mid, payload);

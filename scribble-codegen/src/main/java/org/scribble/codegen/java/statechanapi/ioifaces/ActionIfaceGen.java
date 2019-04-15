@@ -23,8 +23,8 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.model.endpoint.actions.EReceive;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.util.ScribException;
 
 public class ActionIfaceGen extends IOIfaceGen
@@ -41,7 +41,7 @@ public class ActionIfaceGen extends IOIfaceGen
 	@Override
 	public InterfaceBuilder generateType() throws ScribException
 	{
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 
 		this.ib.setName(getActionInterfaceName(this.a));
 		this.ib.setPackage(IOInterfacesGenerator.getIOInterfacePackageName(this.apigen.getGProtocolName(), this.apigen.getSelf()));
@@ -130,7 +130,7 @@ public class ActionIfaceGen extends IOIfaceGen
 	{
 		//String name = a.peer + "$" + a.mid;
 		String name = a.obj + "_" + a.mid;
-		for (PayloadElemType<?> pay : a.payload.elems)
+		for (PayElemType<?> pay : a.payload.elems)
 		{
 			//name += "$" + pay;
 			name += "_" + pay;

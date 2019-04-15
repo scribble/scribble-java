@@ -20,7 +20,7 @@ import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.util.Constants;
 
 // General name: simple or full (a central class for value comparison)
-public class ModuleName extends QualifiedName<ModuleKind>
+public class ModuleName extends QualName<ModuleKind>
 {
 	private static final long serialVersionUID = 1L;
 	

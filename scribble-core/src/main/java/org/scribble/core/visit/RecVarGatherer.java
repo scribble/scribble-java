@@ -15,12 +15,12 @@ package org.scribble.core.visit;
 
 import java.util.stream.Stream;
 
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.Seq;
 
-public class RecVarGatherer<K extends ProtocolKind, B extends Seq<K, B>>
+public class RecVarGatherer<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeGatherer<K, B, RecVar>
 {
 	@Override

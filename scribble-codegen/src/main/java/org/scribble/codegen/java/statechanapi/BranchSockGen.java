@@ -30,8 +30,8 @@ import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.MessageSigName;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.ScribException;
 
@@ -291,7 +291,7 @@ public class BranchSockGen extends ScribSockGen
 				{
 					String buffSuper = JavaBuilder.NEW + " " + BUF_CLASS + "<>(";
 					int i = 0;
-					for (PayloadElemType<?> pt : a.payload.elems)
+					for (PayElemType<?> pt : a.payload.elems)
 					{
 						DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
@@ -300,7 +300,7 @@ public class BranchSockGen extends ScribSockGen
 			}
 			else
 			{
-				SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.getExtName() + ") " +  RECEIVE_MESSAGE_PARAM 
 						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
 						+ ")";
@@ -378,7 +378,7 @@ public class BranchSockGen extends ScribSockGen
 				{
 					String buffSuper = JavaBuilder.NEW + " " + BUF_CLASS + "<>(";
 					int i = 0;
-					for (PayloadElemType<?> pt : a.payload.elems)
+					for (PayElemType<?> pt : a.payload.elems)
 					{
 						DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
@@ -387,7 +387,7 @@ public class BranchSockGen extends ScribSockGen
 			}
 			else
 			{
-				SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.getExtName() + ") " +  RECEIVE_MESSAGE_PARAM
 						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
 						+ ")";

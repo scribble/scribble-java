@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.MessageSigName;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.Arg;
@@ -34,7 +34,7 @@ import org.scribble.core.type.session.Message;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
-public class Substitutor<K extends ProtocolKind, B extends Seq<K, B>>
+public class Substitutor<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeVisitorNoThrow<K, B>
 {
 	private Substitutions subs;
@@ -78,7 +78,7 @@ public class Substitutor<K extends ProtocolKind, B extends Seq<K, B>>
 	}
 
 	@Override
-	public <N extends ProtocolName<K>> SType<K, B> visitDo(Do<K, B, N> n)
+	public <N extends ProtoName<K>> SType<K, B> visitDo(Do<K, B, N> n)
 	{
 		List<Role> roles = n.roles.stream().map(x -> this.subs.subsRole(x))
 				.collect(Collectors.toList());
@@ -91,9 +91,9 @@ public class Substitutor<K extends ProtocolKind, B extends Seq<K, B>>
 				{
 					a = this.subs.subsArg((DataType) a);
 				}
-				else if (a instanceof MessageSigName)
+				else if (a instanceof SigName)
 				{
-					a = this.subs.subsArg((MessageSigName) a);
+					a = this.subs.subsArg((SigName) a);
 				}
 			}
 			args.add(a);

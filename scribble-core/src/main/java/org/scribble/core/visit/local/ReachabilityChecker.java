@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
@@ -74,7 +74,7 @@ public class ReachabilityChecker extends STypeVisitor<Local, LSeq>
 	}
 
 	@Override
-	public final <N extends ProtocolName<Local>> SType<Local, LSeq> visitDo(
+	public final <N extends ProtoName<Local>> SType<Local, LSeq> visitDo(
 			Do<Local, LSeq, N> n) throws ScribException
 	{
 		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);

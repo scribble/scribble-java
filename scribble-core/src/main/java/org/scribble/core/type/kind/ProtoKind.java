@@ -11,21 +11,9 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast;
+package org.scribble.core.type.kind;
 
-import org.scribble.core.type.kind.ProtocolKind;
-
-public interface ProtocolKindNode<K extends ProtocolKind> extends ScribNode
+public interface ProtoKind extends ModuleMemberKind
 {
-	K getKind(); 
 
-	default boolean isGlobal()
-	{
-		return false;
-	}
-
-	default boolean isLocal()
-	{
-		return false;
-	}
 }

@@ -38,8 +38,8 @@ import org.scribble.core.model.global.actions.SRequest;
 import org.scribble.core.model.global.actions.SSend;
 import org.scribble.core.model.global.actions.SWrapClient;
 import org.scribble.core.model.global.actions.SWrapServer;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
@@ -49,25 +49,25 @@ public class ModelFactoryImpl implements ModelFactory
 {
 
 	@Override
-	public ESend newESend(Role peer, MessageId<?> mid, Payload payload)
+	public ESend newESend(Role peer, MsgId<?> mid, Payload payload)
 	{
 		return new ESend(this, peer, mid, payload);
 	}
 
 	@Override
-	public EReceive newEReceive(Role peer, MessageId<?> mid, Payload payload)
+	public EReceive newEReceive(Role peer, MsgId<?> mid, Payload payload)
 	{
 		return new EReceive(this, peer, mid, payload);
 	}
 
 	@Override
-	public ERequest newERequest(Role peer, MessageId<?> mid, Payload payload)
+	public ERequest newERequest(Role peer, MsgId<?> mid, Payload payload)
 	{
 		return new ERequest(this, peer, mid, payload);
 	}
 
 	@Override
-	public EAccept newEAccept(Role peer, MessageId<?> mid, Payload payload)
+	public EAccept newEAccept(Role peer, MsgId<?> mid, Payload payload)
 	{
 		return new EAccept(this, peer, mid, payload);
 	}
@@ -103,25 +103,25 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public SSend newSSend(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SSend newSSend(Role subj, Role obj, MsgId<?> mid, Payload payload)
 	{
 		return new SSend(subj, obj, mid, payload);
 	}
 
 	@Override
-	public SReceive newSReceive(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SReceive newSReceive(Role subj, Role obj, MsgId<?> mid, Payload payload)
 	{
 		return new SReceive(subj, obj, mid, payload);
 	}
 
 	@Override
-	public SRequest newSConnect(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SRequest newSConnect(Role subj, Role obj, MsgId<?> mid, Payload payload)
 	{
 		return new SRequest(subj, obj, mid, payload);
 	}
 	
 	@Override
-	public SAccept newSAccept(Role subj, Role obj, MessageId<?> mid, Payload payload)
+	public SAccept newSAccept(Role subj, Role obj, MsgId<?> mid, Payload payload)
 	{
 		return new SAccept(subj, obj, mid, payload);
 	}
@@ -151,7 +151,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public SGraph newSGraph(GProtocolName proto, Map<Integer, SState> states, SState init)
+	public SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init)
 	{
 		return new SGraph(proto, states, init);
 	}

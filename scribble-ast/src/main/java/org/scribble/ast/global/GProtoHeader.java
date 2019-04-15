@@ -14,13 +14,13 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.ProtocolHeader;
+import org.scribble.ast.ProtoHeader;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.util.Constants;
 
-public class GProtoHeader extends ProtocolHeader<Global> implements GScribNode
+public class GProtoHeader extends ProtoHeader<Global> implements GScribNode
 {
 	// ScribTreeAdaptor#create constructor
 	public GProtoHeader(Token t)
@@ -47,9 +47,9 @@ public class GProtoHeader extends ProtocolHeader<Global> implements GScribNode
 	}
 
 	@Override
-	public GProtocolName getDeclName()
+	public GProtoName getDeclName()
 	{
-		return (GProtocolName) super.getDeclName();
+		return (GProtoName) super.getDeclName();
 	}
 	
 	@Override

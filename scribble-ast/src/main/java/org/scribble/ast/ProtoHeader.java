@@ -14,37 +14,37 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.ast.name.qualified.ProtoNameNode;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.del.ScribDel;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // TODO: parameterize on global/local name node and role decl list (i.e. self roles)
-public abstract class ProtocolHeader<K extends ProtocolKind>
-		extends NameDeclNode<K> implements ProtocolKindNode<K>
+public abstract class ProtoHeader<K extends ProtoKind>
+		extends NameDeclNode<K> implements ProtoKindNode<K>
 {
 	public static final int NAMENODE_CHILD = 0;
 	public static final int PARAMDECLLIST_CHILD = 1;
 	public static final int ROLEDECLLIST_CHILD = 2;
 	
 	// ScribTreeAdaptor#create constructor
-	public ProtocolHeader(Token t)
+	public ProtoHeader(Token t)
 	{
 		super(t);
 	}
 	
 	// Tree#dupNode constructor
-	protected ProtocolHeader(ProtocolHeader<K> node)
+	protected ProtoHeader(ProtoHeader<K> node)
 	{
 		super(node);
 	}
 	
 	// Simple name
 	@Override
-	public abstract ProtocolNameNode<K> getNameNodeChild();
+	public abstract ProtoNameNode<K> getNameNodeChild();
 	
 	public NonRoleParamDeclList getParamDeclListChild()
 	{
@@ -61,12 +61,12 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 		return getParamDeclListChild().isEmpty();
 	}
 	
-	public abstract ProtocolHeader<K> dupNode();
+	public abstract ProtoHeader<K> dupNode();
 	
-	public ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name,
+	public ProtoHeader<K> reconstruct(ProtoNameNode<K> name,
 			RoleDeclList rdl, NonRoleParamDeclList pdl)
 	{
-		ProtocolHeader<K> pd = dupNode();
+		ProtoHeader<K> pd = dupNode();
 		ScribDel del = del();
 		pd.addChild(name);
 		pd.addChild(pdl);  // Cf. above TODO (rdl/pdl child order)
@@ -76,7 +76,7 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 	}
 	
 	@Override
-	public ProtocolHeader<K> visitChildren(AstVisitor nv) throws ScribException
+	public ProtoHeader<K> visitChildren(AstVisitor nv) throws ScribException
 	{
 		/*ProtocolNameNode<K> nameNodeChild = (ProtocolNameNode<K>) visitChild(
 				getNameNodeChild(), nv);*/  // Don't really need to visit, and can avoid generic cast
@@ -87,7 +87,7 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 	}
 
 	@Override
-	public ProtocolName<K> getDeclName()
+	public ProtoName<K> getDeclName()
 	{
 		return getNameNodeChild().toName();
 	}

@@ -21,10 +21,10 @@ import java.util.stream.Stream;
 
 import org.scribble.core.job.Job;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ModuleName;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
@@ -128,7 +128,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	}
 
 	@Override
-	public <N extends ProtocolName<Global>> LType visitDo(Do<Global, GSeq, N> n)
+	public <N extends ProtoName<Global>> LType visitDo(Do<Global, GSeq, N> n)
 	{
 		throw new RuntimeException("Unsupported for Do: " + n);
 	}
@@ -162,25 +162,25 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 				// So a projection never contains an empty LSeq -- i.e., "empty choice/rec" pruning unnecessary
 	}
 
-	public static LProtocolName getSimpledProjectionName(GProtocolName simpname,
+	public static LProtoName getSimpledProjectionName(GProtoName simpname,
 			Role role)
 	{
-		return new LProtocolName(simpname.toString() + "_" + role.toString());
+		return new LProtoName(simpname.toString() + "_" + role.toString());
 	}
 
 	// Role is the target subprotocol parameter (not the current projector self -- actually the self just popped) -- ?
-	public static LProtocolName getFullProjectionName(GProtocolName fullname,
+	public static LProtoName getFullProjectionName(GProtoName fullname,
 			Role role)
 	{
-		LProtocolName simplename = InlinedProjector.getSimpledProjectionName(
+		LProtoName simplename = InlinedProjector.getSimpledProjectionName(
 				fullname.getSimpleName(), role);
 		ModuleName modname = getProjectionModuleName(fullname.getPrefix(), simplename);
-		return new LProtocolName(modname, simplename);
+		return new LProtoName(modname, simplename);
 	}
 
 	// fullname is the un-projected name; localname is the already projected simple name
 	public static ModuleName getProjectionModuleName(ModuleName fullname,
-			LProtocolName localname)
+			LProtoName localname)
 	{
 		ModuleName simpname = new ModuleName(
 				fullname.getSimpleName().toString() + "_" + localname.toString());

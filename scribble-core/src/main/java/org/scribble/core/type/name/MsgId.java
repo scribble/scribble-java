@@ -11,10 +11,20 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.type.kind;
+package org.scribble.core.type.name;
+
+import org.scribble.core.type.kind.MsgIdKind;
 
 
-public interface NonProtocolKind extends Kind
+public interface MsgId<M extends MsgIdKind> extends Name<M>
 {
+	default boolean isOp()
+	{
+		return false;
+	}
 
+	default boolean isMessageSigName()
+	{
+		return false;
+	}
 }

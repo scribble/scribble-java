@@ -18,8 +18,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
@@ -27,13 +27,13 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 // Not supported for Do
-public abstract class STypeUnfolder<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class STypeUnfolder<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeVisitorNoThrow<K, B>
 {
 	private final Map<RecVar, Seq<K, ?>> recs = new HashMap<>(); 
 
 	@Override
-	public final <N extends ProtocolName<K>> SType<K, B> visitDo(Do<K, B, N> n)
+	public final <N extends ProtoName<K>> SType<K, B> visitDo(Do<K, B, N> n)
 	{
 		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
 	}

@@ -14,10 +14,10 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 
 // Redundant?  Is always a CompoundInteraction -- cf. SimpleSessionNode
-public abstract class CompoundSessionNode<K extends ProtocolKind>
+public abstract class CompoundSessionNode<K extends ProtoKind>
 		extends ScribNodeBase implements SessionNode<K>
 {
 	// ScribTreeAdaptor#create constructor

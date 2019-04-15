@@ -18,7 +18,7 @@ import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.PackageName;
 
-public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
+public class ModuleNameNode extends QualNameNode<ModuleKind>
 {
 	// ScribTreeAdaptor#create constructor
 	public ModuleNameNode(Token t)

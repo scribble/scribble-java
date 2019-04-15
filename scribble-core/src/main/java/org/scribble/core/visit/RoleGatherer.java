@@ -15,14 +15,14 @@ package org.scribble.core.visit;
 
 import java.util.stream.Stream;
 
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.Seq;
 
-public class RoleGatherer<K extends ProtocolKind, B extends Seq<K, B>>
+public class RoleGatherer<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeGatherer<K, B, Role>
 {
 

@@ -17,16 +17,16 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.MsgNode;
 import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.AmbigKind;
-import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.kind.NonRoleArgKind;
 import org.scribble.core.type.name.AmbigName;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Message;
 
 // Primitive payload type, MessageSigName or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 public class AmbigNameNode extends SimpleNameNode<AmbigKind>
-		implements MsgNode, PayElemNameNode<DataTypeKind>  // FIXME: currently hardcoded to DataTypeKind for payload elems ?
+		implements MsgNode, PayElemNameNode<DataKind>  // FIXME: currently hardcoded to DataTypeKind for payload elems ?
 {
 	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
@@ -62,7 +62,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	}
 
 	@Override
-	public PayloadElemType<DataTypeKind> toPayloadType()  // As a payload elem, currently hardcoded to expect only DataTypeKind (protocol payloads not supported)
+	public PayElemType<DataKind> toPayloadType()  // As a payload elem, currently hardcoded to expect only DataTypeKind (protocol payloads not supported)
 	{
 		throw new RuntimeException(
 				"Ambiguous name node not disambiguated: " + this);

@@ -19,7 +19,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.lang.context.ModuleContext;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.SigName;
 import org.scribble.del.ScribDelBase;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
@@ -43,7 +43,7 @@ public class MessageSigNameNodeDel extends ScribDelBase
 		}
 		ModuleContext mc = disamb.getModuleContext();
 		SigNameNode msnn = (SigNameNode) visited;
-		MessageSigName fullname = 
+		SigName fullname = 
 				mc.getVisibleMessageSigNameFullName(msnn.toName());
 		/*return (MessageSigNameNode) disamb.job.config.af.QualifiedNameNode(
 				msnn.getSource(), SigKind.KIND, fullname.getElements());*/

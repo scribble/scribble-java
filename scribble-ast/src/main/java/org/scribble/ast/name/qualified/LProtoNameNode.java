@@ -14,13 +14,12 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.session.Arg;
 
-public class LProtoNameNode extends ProtocolNameNode<Local>
+public class LProtoNameNode extends ProtoNameNode<Local>
 		implements PayElemNameNode<Local>
 {
 	// ScribTreeAdaptor#create constructor
@@ -42,16 +41,16 @@ public class LProtoNameNode extends ProtocolNameNode<Local>
 	}
 	
 	@Override
-	public LProtocolName toName()
+	public LProtoName toName()
 	{
-		LProtocolName membname = new LProtocolName(getLastElement());
+		LProtoName membname = new LProtoName(getLastElement());
 		return isPrefixed()
-				? new LProtocolName(getModuleNamePrefix(), membname)
+				? new LProtoName(getModuleNamePrefix(), membname)
 				: membname;
 	}
 
 	@Override
-	public LProtocolName toPayloadType()
+	public LProtoName toPayloadType()
 	{
 		return toName();
 	}

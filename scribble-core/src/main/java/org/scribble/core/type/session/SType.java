@@ -17,7 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.scribble.core.lang.SNode;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
@@ -28,7 +28,7 @@ import org.scribble.util.ScribException;
 // N.B. Taking G/LSeq as the B param "limits" the "cast-freeness" of this hierarchy at this point -- i.e., potential G/LSeq subclasses would be beyond that point
 // However, the framework is mainly intended to be extended "horizontally" w.r.t. node types (additional types), and "vertically" (subclasses) for behaviour only via Visitors
 // In case of "vertical" extension of node types (e.g., additional node fields), still considering extension of Seq necessary less often
-public interface SType<K extends ProtocolKind, B extends Seq<K, B>>
+public interface SType<K extends ProtoKind, B extends Seq<K, B>>
 		extends SNode
 {
 	// N.B. visitWith should be considered a "top-level" entry point only

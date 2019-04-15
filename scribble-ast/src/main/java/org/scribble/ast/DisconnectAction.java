@@ -15,14 +15,14 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // (G)Disconnect is symmetric (send/receive asymmetric/async; request/accept asymmetric/sync; (g)disconnect symmetric/async)
 // However, LDisconnect is "symmetric" but self-oriented -- "left" used for self
-public abstract class DisconnectAction<K extends ProtocolKind>
+public abstract class DisconnectAction<K extends ProtoKind>
 		extends BasicInteraction<K>
 {
 	public static final int LEFT_CHILD_INDEX = 0;

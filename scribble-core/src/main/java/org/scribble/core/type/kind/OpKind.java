@@ -16,7 +16,7 @@ package org.scribble.core.type.kind;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class OpKind extends AbstractKind implements MessageIdKind, Serializable
+public class OpKind extends AbstractKind implements MsgIdKind, Serializable
 {
 	private static final long serialVersionUID = 1L;
 

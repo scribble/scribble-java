@@ -17,7 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtoDecl;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 
 public class GProtoDecl extends ProtoDecl<Global> implements GScribNode
 {
@@ -53,10 +53,10 @@ public class GProtoDecl extends ProtoDecl<Global> implements GScribNode
 	}
 
 	@Override
-	public GProtocolName getFullMemberName(Module mod)  // TODO: remove mod from meth sig
+	public GProtoName getFullMemberName(Module mod)  // TODO: remove mod from meth sig
 	{
 		Module m = (Module) getParent();
-		return new GProtocolName(m.getFullModuleName(),
+		return new GProtoName(m.getFullModuleName(),
 				getHeaderChild().getDeclName());
 	}
 }

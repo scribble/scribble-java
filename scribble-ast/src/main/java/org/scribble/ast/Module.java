@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.scribble.ast.global.GProtoDecl;
 import org.scribble.core.type.kind.Kind;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -139,7 +139,7 @@ public class Module extends ScribNodeBase
 	}
 
 	// CHECKME: allow sig and type decls with same decl name in same module?
-	public SigDecl getMessageSigDeclChild(MessageSigName simpname)
+	public SigDecl getMessageSigDeclChild(SigName simpname)
 	{
 		Optional<SigDecl> res = getNonProtoDeclChildren().stream()
 				.filter(x -> (x instanceof SigDecl)
@@ -162,7 +162,7 @@ public class Module extends ScribNodeBase
 	}
 	
 	// CHECKME: allow global and local protocols with same simpname in same module? -- currently, no?
-	public boolean hasGProtocolDecl(GProtocolName simpname)
+	public boolean hasGProtocolDecl(GProtoName simpname)
 	{
 		return getGProtoDeclChildren().stream()
 				.anyMatch(x -> x.getHeaderChild().getDeclName().equals(simpname));
@@ -170,7 +170,7 @@ public class Module extends ScribNodeBase
 	
 	// Pre: hasProtocolDecl(simpname)
 	public GProtoDecl getGProtocolDeclChild(
-			GProtocolName simpname)
+			GProtoName simpname)
 	{
 		Optional<GProtoDecl> res = getGProtoDeclChildren().stream()
 				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
@@ -194,7 +194,7 @@ public class Module extends ScribNodeBase
 		{
 			s += "\n" + dtd;
 		}
-		for (ProtoDecl<? extends ProtocolKind> pd : getProtoDeclChildren())
+		for (ProtoDecl<? extends ProtoKind> pd : getProtoDeclChildren())
 		{
 			s += "\n" + pd;
 		}

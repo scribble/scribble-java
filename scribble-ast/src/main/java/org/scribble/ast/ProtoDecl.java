@@ -16,15 +16,15 @@ package org.scribble.ast;
 import java.util.List;
 
 import org.antlr.runtime.Token;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // CHECKME: visitChildren for modifiers
-public abstract class ProtoDecl<K extends ProtocolKind> extends ScribNodeBase
-		implements ModuleMember, ProtocolKindNode<K>
+public abstract class ProtoDecl<K extends ProtoKind> extends ScribNodeBase
+		implements ModuleMember, ProtoKindNode<K>
 {
 	public static final int MODLIST_CHILD = 0;
 	public static final int HEADER_CHILD = 1;
@@ -60,8 +60,8 @@ public abstract class ProtoDecl<K extends ProtocolKind> extends ScribNodeBase
 	}
 
 	// Implement in subclasses to avoid generic cast
-	public abstract ProtocolHeader<K> getHeaderChild();
-	public abstract ProtocolDef<K> getDefChild();
+	public abstract ProtoHeader<K> getHeaderChild();
+	public abstract ProtoDef<K> getDefChild();
 	
 	public List<Role> getRoles()
 	{
@@ -70,7 +70,7 @@ public abstract class ProtoDecl<K extends ProtocolKind> extends ScribNodeBase
 	}
 
 	public ProtoDecl<K> reconstruct(ProtoModList mods,
-			ProtocolHeader<K> header,	ProtocolDef<K> def)  
+			ProtoHeader<K> header,	ProtoDef<K> def)  
 			//, ProtocolDeclContext pdcontext, Env env);
 	{
 		ProtoDecl<K> pd = dupNode();
@@ -87,9 +87,9 @@ public abstract class ProtoDecl<K extends ProtocolKind> extends ScribNodeBase
 	{
 		ProtoModList mods = visitChildWithClassEqualityCheck(this,
 				getModifierListChild(), nv);
-		ProtocolHeader<K> header = 
+		ProtoHeader<K> header = 
 				visitChildWithClassEqualityCheck(this, getHeaderChild(), nv);
-		ProtocolDef<K> def = visitChildWithClassEqualityCheck(this, getDefChild(), nv);
+		ProtoDef<K> def = visitChildWithClassEqualityCheck(this, getDefChild(), nv);
 		return reconstruct(mods, header, def);
 	}
 	

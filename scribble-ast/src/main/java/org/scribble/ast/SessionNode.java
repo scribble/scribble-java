@@ -13,11 +13,11 @@
  */
 package org.scribble.ast;
 
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 
 // A SessionNode is an AST node that corresponds to a session type constructor -- elements of InteractionSeq nodes
 // The SessionNodeDel hierarchy corresponds to this SessionNode hierarchy
-public interface SessionNode<K extends ProtocolKind> extends ProtocolKindNode<K>
+public interface SessionNode<K extends ProtoKind> extends ProtoKindNode<K>
 {
 
 }

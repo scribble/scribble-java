@@ -27,8 +27,8 @@ import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.AutGraphParser;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.global.SGraph;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.LProtocolName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.global.InlinedProjector;
@@ -48,29 +48,29 @@ public class JobContext
 	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
 	// Protos retain original decl role list (and args)
   // Keys are full names (though GProtocol already includes full name)
-	private final Map<GProtocolName, GProtocol> imeds;
+	private final Map<GProtoName, GProtocol> imeds;
 
 	// Protos have pruned role decls -- CHECKME: prune args?
   // Keys are full names (though GProtocol already includes full name)
-	private final Map<GProtocolName, GProtocol> inlined = new HashMap<>();
+	private final Map<GProtoName, GProtocol> inlined = new HashMap<>();
 
   // Projected from inlined; keys are full names
-	private final Map<LProtocolName, LProtocol> iprojs = new HashMap<>();
+	private final Map<LProtoName, LProtocol> iprojs = new HashMap<>();
 	
 	// Projected from intermediates
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	// LProtocolName key is LProtocol value fullname (i.e., redundant)
-	private final Map<LProtocolName, LProtocol> projs = new HashMap<>();
+	private final Map<LProtoName, LProtocol> projs = new HashMap<>();
 
 	// Built from inlined
-	private final Map<LProtocolName, EGraph> fEGraphs = new HashMap<>();
-	private final Map<LProtocolName, EGraph> uEGraphs = new HashMap<>();
-	private final Map<LProtocolName, EGraph> mEGraphs = new HashMap<>();  
+	private final Map<LProtoName, EGraph> fEGraphs = new HashMap<>();
+	private final Map<LProtoName, EGraph> uEGraphs = new HashMap<>();
+	private final Map<LProtoName, EGraph> mEGraphs = new HashMap<>();  
 			// Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
 			// FIXME: currently only minimising "fair" graph, need to consider minimisation orthogonally to fairness -- NO: minimising (of fair) is for API gen only, unfair-transform does not use minimisation (regardless of user flag) for WF
 
-	private final Map<GProtocolName, SGraph> fSGraphs = new HashMap<>();
-	private final Map<GProtocolName, SGraph> uSGraphs = new HashMap<>();
+	private final Map<GProtoName, SGraph> fSGraphs = new HashMap<>();
+	private final Map<GProtoName, SGraph> uSGraphs = new HashMap<>();
 	
 	protected JobContext(Job job, //Map<ModuleName, ModuleContext> modcs,
 			Set<GProtocol> imeds)
@@ -104,7 +104,7 @@ public class JobContext
 				.collect(Collectors.toSet());
 	}
 	
-	public GProtocol getIntermediate(GProtocolName fullname)
+	public GProtocol getIntermediate(GProtoName fullname)
 	{
 		return this.imeds.get(fullname);
 	}
@@ -114,12 +114,12 @@ public class JobContext
 		return this.imeds.values().stream().collect(Collectors.toSet());
 	}
 	
-	public void addInlined(GProtocolName fullname, GProtocol g)
+	public void addInlined(GProtoName fullname, GProtocol g)
 	{
 		this.inlined.put(fullname, g);
 	}
 	
-	public GProtocol getInlined(GProtocolName fullname)
+	public GProtocol getInlined(GProtoName fullname)
 	{
 		return this.inlined.get(fullname);
 	}
@@ -129,24 +129,24 @@ public class JobContext
 		return this.inlined.values().stream().collect(Collectors.toSet());
 	}
 	
-	public void addInlinedProjection(LProtocolName fullname, LProtocol l)
+	public void addInlinedProjection(LProtoName fullname, LProtocol l)
 	{
 		this.iprojs.put(fullname, l);
 	}
 	
   // Projected from inlined
-	public LProtocol getInlinedProjection(GProtocolName fullname, Role self)
+	public LProtocol getInlinedProjection(GProtoName fullname, Role self)
 	{
-		LProtocolName p = InlinedProjector.getFullProjectionName(fullname, self);
+		LProtoName p = InlinedProjector.getFullProjectionName(fullname, self);
 		return getInlinedProjection(p);
 	}
 
-	public LProtocol getInlinedProjection(LProtocolName fullname)
+	public LProtocol getInlinedProjection(LProtoName fullname)
 	{
 		return this.iprojs.get(fullname);
 	}
 	
-	public Map<LProtocolName, LProtocol> getInlinedProjections()
+	public Map<LProtoName, LProtocol> getInlinedProjections()
 	{
 		return Collections.unmodifiableMap(this.iprojs);
 	}
@@ -161,14 +161,14 @@ public class JobContext
 	}
 	
 	public //Module 
-			LProtocol getProjection(GProtocolName fullname, Role role)
+			LProtocol getProjection(GProtoName fullname, Role role)
 			throws ScribException
 	{
 		return getProjection(InlinedProjector.getFullProjectionName(fullname, role));
 	}
 
 	public //Module 
-			LProtocol getProjection(LProtocolName fullname)
+			LProtocol getProjection(LProtoName fullname)
 			//throws ScribbleException
 	{
 		/*Module proj = this.projected.get(fullname);
@@ -183,16 +183,16 @@ public class JobContext
 		return this.projs.get(fullname);
 	}
 	
-	protected void addEGraph(LProtocolName fullname, EGraph graph)
+	protected void addEGraph(LProtoName fullname, EGraph graph)
 	{
 		this.fEGraphs.put(fullname, graph);
 	}
 	
 	// N.B. graphs built from inlined (not unfolded)
-	public EGraph getEGraph(GProtocolName fullname, Role role)
+	public EGraph getEGraph(GProtoName fullname, Role role)
 			throws ScribException
 	{
-		LProtocolName fulllpn = InlinedProjector.getFullProjectionName(fullname,
+		LProtoName fulllpn = InlinedProjector.getFullProjectionName(fullname,
 				role);
 		// Moved form LProtocolDecl
 		EGraph graph = this.fEGraphs.get(fulllpn);
@@ -208,15 +208,15 @@ public class JobContext
 		return graph;
 	}
 	
-	protected void addUnfairEGraph(LProtocolName fullname, EGraph graph)
+	protected void addUnfairEGraph(LProtoName fullname, EGraph graph)
 	{
 		this.uEGraphs.put(fullname, graph);
 	}
 	
-	public EGraph getUnfairEGraph(GProtocolName fullname, Role role)
+	public EGraph getUnfairEGraph(GProtoName fullname, Role role)
 			throws ScribException
 	{
-		LProtocolName fulllpn = InlinedProjector.getFullProjectionName(fullname,
+		LProtoName fulllpn = InlinedProjector.getFullProjectionName(fullname,
 				role);
 
 		EGraph unfair = this.uEGraphs.get(fulllpn);
@@ -229,12 +229,12 @@ public class JobContext
 		return unfair;
 	}
 
-	protected void addSGraph(GProtocolName fullname, SGraph graph)
+	protected void addSGraph(GProtoName fullname, SGraph graph)
 	{
 		this.fSGraphs.put(fullname, graph);
 	}
 	
-	public SGraph getSGraph(GProtocolName fullname) throws ScribException
+	public SGraph getSGraph(GProtoName fullname) throws ScribException
 	{
 		SGraph graph = this.fSGraphs.get(fullname);
 		if (graph == null)
@@ -253,7 +253,7 @@ public class JobContext
 		return graph;
 	}
 
-	private Map<Role, EGraph> getEGraphsForSGraphBuilding(GProtocolName fullname,
+	private Map<Role, EGraph> getEGraphsForSGraphBuilding(GProtoName fullname,
 			//GProtocolDecl gpd, 
 			boolean fair) throws ScribException
 	{
@@ -268,12 +268,12 @@ public class JobContext
 		return egraphs;
 	}
 
-	protected void addUnfairSGraph(GProtocolName fullname, SGraph graph)
+	protected void addUnfairSGraph(GProtoName fullname, SGraph graph)
 	{
 		this.uSGraphs.put(fullname, graph);
 	}
 
-	public SGraph getUnfairSGraph(GProtocolName fullname) throws ScribException
+	public SGraph getUnfairSGraph(GProtoName fullname) throws ScribException
 	{
 		SGraph graph = this.uSGraphs.get(fullname);
 		if (graph == null)
@@ -291,15 +291,15 @@ public class JobContext
 		return graph;
 	}
 	
-	protected void addMinimisedEGraph(LProtocolName fullname, EGraph graph)
+	protected void addMinimisedEGraph(LProtoName fullname, EGraph graph)
 	{
 		this.mEGraphs.put(fullname, graph);
 	}
 	
-	public EGraph getMinimisedEGraph(GProtocolName fullname, Role role)
+	public EGraph getMinimisedEGraph(GProtoName fullname, Role role)
 			throws ScribException
 	{
-		LProtocolName fulllpn = InlinedProjector.getFullProjectionName(fullname,
+		LProtoName fulllpn = InlinedProjector.getFullProjectionName(fullname,
 				role);
 
 		EGraph minimised = this.mEGraphs.get(fulllpn);

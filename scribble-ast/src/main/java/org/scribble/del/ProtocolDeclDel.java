@@ -14,11 +14,11 @@
 package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
 
-public abstract class ProtocolDeclDel<K extends ProtocolKind>
+public abstract class ProtocolDeclDel<K extends ProtoKind>
 		extends ScribDelBase
 {
 	protected ProtocolDeclDel()

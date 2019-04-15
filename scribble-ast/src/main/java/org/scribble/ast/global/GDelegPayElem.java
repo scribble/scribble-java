@@ -19,8 +19,8 @@ import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.GDelegationType;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.GDelegType;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -86,9 +86,9 @@ public class GDelegPayElem extends ScribNodeBase implements PayElem<Local>
 	}
 
 	@Override
-	public PayloadElemType<Local> toPayloadType()
+	public PayElemType<Local> toPayloadType()
 	{
-		return new GDelegationType(getProtocolChild().toName(),
+		return new GDelegType(getProtocolChild().toName(),
 				getRoleChild().toName());
 	}
 	

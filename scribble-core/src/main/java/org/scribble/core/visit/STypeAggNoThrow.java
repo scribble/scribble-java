@@ -15,8 +15,8 @@ package org.scribble.core.visit;
 
 import java.util.stream.Stream;
 
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -27,7 +27,7 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
 // Worth it to maintain alongside STypeAgg? -- does touch a lot of places 
-public abstract class STypeAggNoThrow<K extends ProtocolKind, B extends Seq<K, B>, T>
+public abstract class STypeAggNoThrow<K extends ProtoKind, B extends Seq<K, B>, T>
 		//extends STypeAgg<K, B, T>  // Not worth it, ex/no-ex method variants easily confused
 {
 	// Internal use
@@ -59,7 +59,7 @@ public abstract class STypeAggNoThrow<K extends ProtocolKind, B extends Seq<K, B
 		return unit(n);
 	}
 
-	public <N extends ProtocolName<K>> T visitDo(Do<K, B, N> n)
+	public <N extends ProtoName<K>> T visitDo(Do<K, B, N> n)
 	{
 		return unit(n);
 	}

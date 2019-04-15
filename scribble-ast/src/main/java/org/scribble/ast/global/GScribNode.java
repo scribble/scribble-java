@@ -13,10 +13,10 @@
  */
 package org.scribble.ast.global;
 
-import org.scribble.ast.ProtocolKindNode;
+import org.scribble.ast.ProtoKindNode;
 import org.scribble.core.type.kind.Global;
 
-public interface GScribNode extends ProtocolKindNode<Global>
+public interface GScribNode extends ProtoKindNode<Global>
 {
 	@Override
 	default boolean isGlobal()

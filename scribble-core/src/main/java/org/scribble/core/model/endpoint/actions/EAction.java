@@ -17,7 +17,7 @@ import org.scribble.core.model.MAction;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
@@ -29,7 +29,7 @@ public abstract class EAction extends MAction<Local>
 
 	protected ModelFactory ef;
 
-	protected EAction(ModelFactory ef, Role peer, MessageId<?> mid, Payload payload)
+	protected EAction(ModelFactory ef, Role peer, MsgId<?> mid, Payload payload)
 	{
 		/*this.mid = mid;
 		this.payload = payload;*/

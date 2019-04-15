@@ -24,8 +24,8 @@ import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.MessageId;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.ScribException;
 
@@ -207,7 +207,7 @@ public abstract class ScribSockGen extends StateChanTypeGen
 	
 	// Not fully qualified, just Session API class prefix
 	// The constant singleton value of this type in the Session API (which is the same "name" as the class)
-	protected String getSessionApiOpConstant(MessageId<?> mid)
+	protected String getSessionApiOpConstant(MsgId<?> mid)
 	{
 		return SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + "." + SessionApiGenerator.getOpClassName(mid);
 	}
@@ -251,7 +251,7 @@ public abstract class ScribSockGen extends StateChanTypeGen
 		String ret;
 		if (succ.isTerminal())
 		{
-			GProtocolName gpn = apigen.getGProtocolName();
+			GProtoName gpn = apigen.getGProtocolName();
 			Role self = apigen.getSelf();
 			ret = SessionApiGenerator.getStateChannelPackageName(gpn, self) + "." + GENERATED_ENDSOCKET_NAME;
 					//+ "<" + SessionApiGenerator.getSessionClassName(gpn) + ", " + SessionApiGenerator.getRoleClassName(self) + ">";

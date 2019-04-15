@@ -28,9 +28,9 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.MessageSigName;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.util.ScribException;
 
 public class InputFutureGen extends AuxStateChanTypeGen
@@ -51,7 +51,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 	{
 		final String FUTURE_PARAM = "fut";
 		Module main = this.apigen.getMainModule();
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 
 		String futureClass = getInputFutureName(this.parent.getName());  // Fresh enough? need only one future class per receive (unary receive)
 
@@ -74,7 +74,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 			if (!a.payload.isEmpty())
 			{
 				int i = 1;
-				for (PayloadElemType<?> pt : a.payload.elems)
+				for (PayElemType<?> pt : a.payload.elems)
 				{
 					if (!pt.isDataType())
 					{
@@ -92,7 +92,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 		}
 		else
 		{
-			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());
 			ScribSockGen.checkMessageSigNameDecl(msd);
 			String type = msd.getExtName();
 			types.add(type);

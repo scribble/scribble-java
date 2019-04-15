@@ -75,7 +75,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.kind.PayloadTypeKind;
+import org.scribble.core.type.kind.PayElemKind;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
@@ -484,7 +484,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public <K extends PayloadTypeKind> UnaryPayElem<K> UnaryPayElem(
+	public <K extends PayElemKind> UnaryPayElem<K> UnaryPayElem(
 			PayElemNameNode<K> name)
 	{
 		CommonToken t = newToken(ScribbleParser.UNARY_PAYELEM);  

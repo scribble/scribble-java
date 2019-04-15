@@ -19,14 +19,14 @@ import java.io.Serializable;
 import org.scribble.core.type.kind.Local;
 
 // CHECKME: factor out of name package?  (and then PayloadType also needs to be moved out of name?)
-public class GDelegationType implements PayloadElemType<Local>, Serializable
+public class GDelegType implements PayElemType<Local>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
-	private GProtocolName proto;  // Cannot be final, for Serializable
+	private GProtoName proto;  // Cannot be final, for Serializable
 	private Role role;
 
-	public GDelegationType(GProtocolName proto, Role role)
+	public GDelegType(GProtoName proto, Role role)
 	{
 		this.proto = proto;
 		this.role = role;
@@ -38,7 +38,7 @@ public class GDelegationType implements PayloadElemType<Local>, Serializable
 		return true;
 	}
 	
-	public GProtocolName getGlobalProtocol()
+	public GProtoName getGlobalProtocol()
 	{
 		return this.proto;
 	}
@@ -61,17 +61,17 @@ public class GDelegationType implements PayloadElemType<Local>, Serializable
 		{
 			return true;
 		}
-		if (!(o instanceof GDelegationType))
+		if (!(o instanceof GDelegType))
 		{
 			return false;
 		}
-		GDelegationType them = (GDelegationType) o;
+		GDelegType them = (GDelegType) o;
 		return them.canEqual(this) && this.proto.equals(them.proto) && this.role.equals(them.role);
 	}
 	
 	public boolean canEqual(Object o)
 	{
-		return o instanceof GDelegationType;
+		return o instanceof GDelegType;
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class GDelegationType implements PayloadElemType<Local>, Serializable
 
 	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
-		this.proto = (GProtocolName) in.readObject();
+		this.proto = (GProtoName) in.readObject();
 		this.role = (Role) in.readObject();
 	}
 }

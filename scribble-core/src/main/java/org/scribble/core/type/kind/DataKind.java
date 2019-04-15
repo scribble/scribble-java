@@ -11,26 +11,34 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.name.qualified;
+package org.scribble.core.type.kind;
 
-import org.antlr.runtime.Token;
-import org.scribble.core.type.kind.ProtocolKind;
-import org.scribble.core.type.name.ProtocolName;
-
-public abstract class ProtocolNameNode<K extends ProtocolKind>
-		extends MemberNameNode<K>
+public class DataKind extends AbstractKind implements PayElemKind, ImportKind, ModuleMemberKind
 {
-	// ScribTreeAdaptor#create constructor
-	public ProtocolNameNode(Token t)
+	public static final DataKind KIND = new DataKind();
+	
+	protected DataKind()
 	{
-		super(t);
+		super("DataType");
 	}
 
-	// Tree#dupNode constructor
-	protected ProtocolNameNode(ProtocolNameNode<K> node)
+	@Override
+	public boolean equals(Object o)
 	{
-		super(node);
+		if (o == this)
+		{
+			return true;
+		}
+		if (!(o instanceof DataKind))
+		{
+			return false;
+		}
+		return ((DataKind) o).canEqual(this);
 	}
-
-	public abstract ProtocolName<K> toName();
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof DataKind;
+	}
 }

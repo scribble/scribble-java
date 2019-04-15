@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.ProtocolName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.Do;
@@ -59,7 +59,7 @@ public class SingleContinueChecker extends STypeAggNoThrow<Local, LSeq, Boolean>
 	}
 
 	@Override
-	public <N extends ProtocolName<Local>> Boolean visitDo(Do<Local, LSeq, N> n)
+	public <N extends ProtoName<Local>> Boolean visitDo(Do<Local, LSeq, N> n)
 	{
 		//return (Boolean) InlinedVisitor1.super.visitDo(n);
 		//return (Boolean) super.visitDo(n);  // CHECKME: resolves to the extends super, even with a default i/f implementation ?

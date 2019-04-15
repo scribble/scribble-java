@@ -13,24 +13,24 @@
  */
 package org.scribble.core.type.name;
 
-import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.kind.DataKind;
 
 
 // Potentially qualified/canonical payload type name; not the AST primitive identifier
 // FIXME: record "external type name" from DataTypeDecl (for API gen)?  cf. OutputSockGen#addSendOpParams
-public class DataType extends MemberName<DataTypeKind>
-		implements PayloadElemType<DataTypeKind>
+public class DataType extends MemberName<DataKind>
+		implements PayElemType<DataKind>
 {
 	private static final long serialVersionUID = 1L;
 
 	public DataType(ModuleName modname, DataType membname)
 	{
-		super(DataTypeKind.KIND, modname, membname);
+		super(DataKind.KIND, modname, membname);
 	}
 	
 	public DataType(String simplename)
 	{
-		super(DataTypeKind.KIND, simplename);
+		super(DataKind.KIND, simplename);
 	}
 
 	public boolean isDataType()
@@ -39,9 +39,9 @@ public class DataType extends MemberName<DataTypeKind>
 	}
 
 	@Override
-	public DataTypeKind getKind()
+	public DataKind getKind()
 	{
-		return DataTypeKind.KIND;
+		return DataKind.KIND;
 	}
 
 	@Override

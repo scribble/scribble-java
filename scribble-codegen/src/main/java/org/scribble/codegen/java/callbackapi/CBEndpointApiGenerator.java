@@ -34,8 +34,8 @@ import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataType;
-import org.scribble.core.type.name.GProtocolName;
-import org.scribble.core.type.name.PayloadElemType;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.name.Role;
 import org.scribble.lang.Lang;
 import org.scribble.util.ScribException;
@@ -47,12 +47,12 @@ public class CBEndpointApiGenerator
 {
 	public final Lang lang;
 	public final Job job;
-	public final GProtocolName proto;
+	public final GProtoName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
 	private final boolean subtypes;
 
-	public CBEndpointApiGenerator(Lang job, GProtocolName fullname, Role self, boolean subtypes)
+	public CBEndpointApiGenerator(Lang job, GProtoName fullname, Role self, boolean subtypes)
 	{
 		this.lang = job;
 		try
@@ -298,7 +298,7 @@ public class CBEndpointApiGenerator
 					else
 					{
 						int i = 1;
-						for (PayloadElemType<?> pet : a.payload.elems)
+						for (PayElemType<?> pet : a.payload.elems)
 						{
 							DataDecl dtd = main.getDataTypeDeclChild((DataType) pet);
 							messageClass += ", " + dtd.getExtName() + " arg" + i++;
@@ -442,7 +442,7 @@ public class CBEndpointApiGenerator
 								.getEndpointApiRootPackageName(this.proto) + ".ops."
 								+ SessionApiGenerator.getOpClassName(a.mid) + " op";
 						int i = 1;
-						for (PayloadElemType<?> pet : a.payload.elems)
+						for (PayElemType<?> pet : a.payload.elems)
 						{
 							DataDecl dtd = main.getDataTypeDeclChild((DataType) pet);
 							receiveInterface += ", " + dtd.getExtName() 
@@ -479,7 +479,7 @@ public class CBEndpointApiGenerator
 								+ ") m.op";
 					}
 					int i = 0;
-					for (PayloadElemType<?> pet : a.payload.elems)
+					for (PayElemType<?> pet : a.payload.elems)
 					{
 						DataDecl dtd = main.getDataTypeDeclChild((DataType) pet);
 						branchAbstract += ", (" + dtd.getExtName() + ") m.payload[" + i++ + "]";
@@ -523,7 +523,7 @@ public class CBEndpointApiGenerator
 		return gpn.getSimpleName() + "_" + self + "_" + s.id;
 	}*/
 
-	private String generateRegister(GProtocolName gpn, Role self, EState s)
+	private String generateRegister(GProtoName gpn, Role self, EState s)
 	{
 		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + "." ;
 		String res = "";

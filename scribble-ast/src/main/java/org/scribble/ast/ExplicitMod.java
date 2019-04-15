@@ -15,7 +15,7 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 
-public class ExplicitMod extends ProtocolMod
+public class ExplicitMod extends ProtoMod
 {
 	// ScribTreeAdaptor#create constructor
 	public ExplicitMod(Token t)

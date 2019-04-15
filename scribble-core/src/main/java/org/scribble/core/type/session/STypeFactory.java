@@ -15,7 +15,7 @@ package org.scribble.core.type.session;
 
 import java.util.Arrays;
 
-import org.scribble.core.type.name.GProtocolName;
+import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.PackageName;
 
@@ -34,7 +34,7 @@ public class STypeFactory
 
 	// Currently used by generated Session API
 	// From fullname
-	public static GProtocolName parseGlobalProtocolName(String name)
+	public static GProtoName parseGlobalProtocolName(String name)
 	{
 		String[] elems = name.split("\\.");
 		if (elems.length < 2)
@@ -48,8 +48,8 @@ public class STypeFactory
 			PackageName packname = new PackageName(Arrays.copyOfRange(elems, 0, elems.length - 2));
 			modname = new ModuleName(packname, modname);
 		}
-		GProtocolName gpn = new GProtocolName(membname);
-		return new GProtocolName(modname, gpn);
+		GProtoName gpn = new GProtoName(membname);
+		return new GProtoName(modname, gpn);
 	}
 	
 	/*public static Scope parseScope(String name)

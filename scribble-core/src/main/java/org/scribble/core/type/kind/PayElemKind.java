@@ -15,7 +15,7 @@ package org.scribble.core.type.kind;
 
 
 // Following sesstype.Arg hierarchy
-public interface PayloadTypeKind extends NonRoleParamKind //ArgKind
+public interface PayElemKind extends NonRoleParamKind //ArgKind
 {
 
 }

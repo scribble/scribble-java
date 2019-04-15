@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.scribble.core.type.kind.ProtocolKind;
+import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
@@ -29,7 +29,7 @@ import org.scribble.util.ScribException;
 // T = SType, unit = empty, agg = reconstruct, ns = "structural" (i.e, B) children -- issues with generic cast to B inside agg
 // T = SType, unit = n.getChildren(), agg = reconstruct, ns = all children -- all children require dynamic casts
 // T = B ... ? Considering Stream like a Seq, and elems as singleton Seqs -- cf. Stream<B>, for Choice/etc reconstruct
-public abstract class STypeVisitor<K extends ProtocolKind, B extends Seq<K, B>>
+public abstract class STypeVisitor<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeAgg<K, B, SType<K, B>>  // T = SType gives reconstruction flexibility/extensibility
 {
 	@Override
