@@ -188,8 +188,8 @@ public class SGraphBuilderUtil
 		SGraph graph = core.config.mf.newSGraph(fullname, seen, init);
 
 		core.verbosePrintln(
-				"(" + fullname + ") Built global model..\n" + graph.init.toDot() + "\n("
-						+ fullname + ") .." + graph.states.size() + " states");
+				"(" + fullname + ") Built global model...\n" + graph.init.toDot() + "\n("
+						+ fullname + ") ..." + graph.states.size() + " states");
 
 		return graph;
 	}

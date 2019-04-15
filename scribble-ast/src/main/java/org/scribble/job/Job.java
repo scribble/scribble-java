@@ -138,10 +138,10 @@ public class Job
 	private void runVisitorPass(AstVisitor v, Set<ModuleName> fullnames)
 			throws ScribException
 	{
-			for (ModuleName fullname : fullnames)
-			{
-				runVisitorOnModule(fullname, v);
-			}
+		for (ModuleName fullname : fullnames)
+		{
+			runVisitorOnModule(fullname, v);
+		}
 	}
 
 	private void runVisitorOnModule(ModuleName modname, AstVisitor v)

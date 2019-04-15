@@ -93,21 +93,6 @@ public class Core
 	{
 		return new EGraphBuilderUtil(this.config.mf);
 	}
-	
-	//public SGraphBuilderUtil newSGraphBuilderUtil()  // FIXME TODO global builder util
-	public SGraph buildSGraph(GProtoName fullname, Map<Role, EGraph> egraphs,
-			boolean explicit) throws ScribException
-	{
-		verbosePrintln("(" + fullname + ") Building global model using:");
-		for (Role r : egraphs.keySet())
-		{
-			// FIXME: refactor
-			verbosePrintln("-- EFSM for "
-					+ r + ":\n" + egraphs.get(r).init.toDot());
-		}
-		//return SGraph.buildSGraph(this, fullname, createInitialSConfig(this, egraphs, explicit));
-		return this.sgraphb.buildSGraph(this, fullname, egraphs, explicit);  // FIXME: factor out util
-	}
 
 	public void runPasses() throws ScribException
 	{
@@ -138,6 +123,7 @@ public class Core
 		
 		runProjectionPasses();  // Do before any validation (i.e., including global WF), to promote greater tool feedback
 				
+		verbosePrintPass("Building EFSMs for all projected inlineds...");
 		for (Entry<LProtoName, LProtocol> e : this.context.getProjectedInlineds()
 				.entrySet())
 		{
@@ -182,7 +168,8 @@ public class Core
 	
 	public void runValidationPasses() throws ScribException
 	{
-		verbosePrintPass("Checking for unused role decls on all inlined globals...");
+		verbosePrintPass(
+				"Checking for unused role decls on all inlined globals...");
 		for (GProtocol inlined : this.context.getInlined())
 		{
 			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
@@ -209,7 +196,8 @@ public class Core
 			inlined.unfoldAllOnce(v).checkRoleEnabling();
 		}
 
-		verbosePrintPass("Checking consistent external choice subjects on all inlined globals...");
+		verbosePrintPass(
+				"Checking consistent external choice subjects on all inlined globals...");
 		for (GProtocol inlined : (Iterable<GProtocol>) this.context.getInlined()
 				.stream().filter(x -> !x.isAux())::iterator)
 		{
@@ -225,43 +213,43 @@ public class Core
 		}
 
 		verbosePrintPass("Building and checking models from projected inlineds...");
-		//runVisitorPassOnAllModules(GProtocolValidator.class);
-		//for (Module mod : this.context.getParsed().values())
+		// CHECKME: refactor whole validation into lang.GProtocol ?
+		for (GProtocol iproj : (Iterable<GProtocol>) this.context.getInlined()
+				.stream().filter(x -> !x.isAux())::iterator)
 		{
-			// FIXME: refactor validation into lang.GProtocol
-			//for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
-			for (GProtocol gpd : this.context.getInlined()) //mod.getGProtoDeclChildren())
+			verbosePrintPass("Validating: " + iproj.fullname);
+			if (this.config.args.get(CoreArgs.SPIN))
 			{
-				if (gpd.isAux())
+				if (this.config.args.get(CoreArgs.FAIR))
 				{
-					continue;
+					throw new RuntimeException(
+							"[TODO]: -spin currently does not support fair ouput choices.");
 				}
-
-				GProtoName fullname = gpd.fullname;//.getFullMemberName(mod);
-
-				verbosePrintln("\nValidating " + fullname + ":");
-
-				if (this.config.args.get(CoreArgs.SPIN))
+				GProtocol.validateBySpin(this, iproj.fullname);
+			}
+			else
+			{
+				GProtocol.validateByScribble(this, iproj.fullname, true);
+				if (!this.config.args.get(CoreArgs.FAIR))
 				{
-					if (this.config.args.get(CoreArgs.FAIR))
-					{
-						throw new RuntimeException(
-								"[TODO]: -spin currently does not support fair ouput choices.");
-					}
-					GProtocol.validateBySpin(this, fullname);
-				}
-				else
-				{
-					GProtocol.validateByScribble(this, fullname, true);
-					if (!this.config.args.get(CoreArgs.FAIR))
-					{
-						verbosePrintln(
-								"(" + fullname + ") Validating with \"unfair\" output choices.. ");
-						GProtocol.validateByScribble(this, fullname, false);  // TODO: only need to check progress, not full validation
-					}
+					verbosePrintPass(
+							"Validating with \"unfair\" output choices: " + iproj.fullname);
+					GProtocol.validateByScribble(this, iproj.fullname, false);  // TODO: only need to check progress, not full validation
 				}
 			}
 		}
+	}
+	
+	public SGraph buildSGraph(GProtoName fullname, Map<Role, EGraph> egraphs,
+			boolean explicit) throws ScribException
+	{
+		/*verbosePrintln("(" + fullname + ") Building global model using:");
+		for (Role r : egraphs.keySet())
+		{
+			verbosePrintln("-- EFSM for "
+					+ r + ":\n" + egraphs.get(r).init.toDot());
+		}*/
+		return this.sgraphb.buildSGraph(this, fullname, egraphs, explicit);  // CHECKME: factor out util ?
 	}
 
 	// Pre: checkWellFormedness 
