@@ -599,7 +599,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public NonRoleArgList NonRoleArgList(List<NonRoleArg> as)
 	{
-		CommonToken t = newToken(ScribbleParser.ARG_LIST);
+		CommonToken t = newToken(ScribbleParser.NONROLEARG_LIST);
 		NonRoleArgList n = new NonRoleArgList(t);
 		n.addChildren(as);
 		del(n, new NonRoleArgListDel());
@@ -609,7 +609,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public NonRoleArg NonRoleArg(NonRoleArgNode arg)
 	{
-		CommonToken t = newToken(ScribbleParser.ARG);
+		CommonToken t = newToken(ScribbleParser.NONROLEARG);
 		NonRoleArg n = new NonRoleArg(t);
 		n.addChild(arg);
 		del(n, createDefaultDelegate());

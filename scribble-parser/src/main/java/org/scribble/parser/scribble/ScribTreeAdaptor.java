@@ -131,8 +131,8 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 				
 			case ScribbleParser.ROLEARG_LIST: return new RoleArgList(t);
 			case ScribbleParser.ROLEARG: return new RoleArg(t);
-			case ScribbleParser.ARG_LIST: return new NonRoleArgList(t);
-			case ScribbleParser.ARG: return new NonRoleArg(t);
+			case ScribbleParser.NONROLEARG_LIST: return new NonRoleArgList(t);
+			case ScribbleParser.NONROLEARG: return new NonRoleArg(t);
 
 			case ScribbleParser.GCHOICE: return new GChoice(t);
 			case ScribbleParser.GRECURSION: return new GRecursion(t);

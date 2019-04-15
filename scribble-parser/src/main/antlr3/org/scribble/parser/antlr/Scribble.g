@@ -128,8 +128,8 @@ tokens
 
   ROLEARG_LIST = 'ROLEARG_LIST';  // Cf. ROLEDECL
   ROLEARG = 'ROLEARG';
-  ARG_LIST = 'ARG_LIST';  // Cf. PARAM_DECL
-  ARG = 'ARG';
+  NONROLEARG_LIST = 'NONROLEARG_LIST';  // Cf. ...PARAMDECL
+  NONROLEARG = 'NONROLEARG';
 
   GCHOICE = 'GCHOICE';
   GRECURSION = 'GRECURSION';
@@ -561,18 +561,18 @@ rolearg:
 	rolename -> ^(ROLEARG rolename) ;
 
 nonroleargs:
-	-> ^(ARG_LIST)
+	-> ^(NONROLEARG_LIST)
 |
-	t='<' nonrolearg (',' nonrolearg)* '>' -> ^(ARG_LIST[$t] nonrolearg+)
+	t='<' nonrolearg (',' nonrolearg)* '>' -> ^(NONROLEARG_LIST[$t] nonrolearg+)
 ;
 
 // Grammatically same as message, but qualifiedname case may also be a payload type
 nonrolearg:
-	siglit -> ^(ARG siglit)
+	siglit -> ^(NONROLEARG siglit)
 |
-	ambigname -> ^(ARG ambigname)
+	ambigname -> ^(NONROLEARG ambigname)
 |
-	qualifieddataname -> ^(ARG qualifieddataname)  // FIXME: sig name -- need an ambig qualified name
+	qualifieddataname -> ^(NONROLEARG qualifieddataname)  // FIXME: sig name -- need an ambig qualified name
 ;
 //	{ parseNonRoleArg($qualifiedname.tree) }  // Like payelem, simple names need disambiguation
 
