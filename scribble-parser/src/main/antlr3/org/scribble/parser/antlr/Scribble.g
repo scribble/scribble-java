@@ -10,7 +10,7 @@
 
 /**
  * Pattern: each node type must give its "node type constant" as its text, e.g., module: ... -> ^(MODULE ...) -- all info in its children
- * i.e. Each Token will be equivalent to, e.g., new CommonToken(ScribbleParser.MODULE, "MODULE")
+ * i.e. Each token will be equivalent to, e.g., new CommonToken(ScribbleParser.MODULE, "MODULE")
  * Except for IDENTIFIER/IdNode: text is the IDENTIFIER value, i.e., new CommonToken(ScribbleParser.IDENTIFIER, "...")
  */
 
@@ -62,12 +62,17 @@ tokens
   DO_KW = 'do';
   
 
-  /* Parser "output" Token types (corresponding to the Scribble BNF), i.e., the
-   * values used to distinguish resulting AST nodes.  
-   * They are used by ScribTreeAdaptor to create the output using the org.scribble.ast classes. 
-   * The specific value of these tokens aren't important (constants accessed via
-   * fields of ScribbleParser).
-	 * These Token types denote ANTLR "imaginary nodes".
+  /* Scribble AST token types (corresponding to the Scribble BNF).  
+   * These token types are used by ScribTreeAdaptor to create the output nodes
+   * using the org.scribble.ast classes.
+   * (Trying to construct those classes directly from here doesn't seem to work
+   * well for most cases.)
+   * These tokens are ANTLR "imaginary tokens": they are derived by the ANTLR
+   * "rewrite rules" on the actual source tokens.
+   * The specific value of these tokens aren't important (the constants are
+   * accessed via fields of ScribbleParser).
+   * As a naming convention, we use a few "_" suffixes: _KW, _NAME, _LIT and
+   * _LIST.
    */
   // CHECKME: split naming of type int constant from String label ?
   // CHECKME: split imaginary node types ?
@@ -113,16 +118,16 @@ tokens
   GPROTOBLOCK = 'GPROTOBLOCK';
   GACTIONSEQ = 'GACTIONSEQ';
 
-  GMSGTRANSFER = 'GMSGTRANSFER';
   GCONNECT = 'GCONNECT';
-  GWRAP = 'GWRAP';
-  GDCONN = 'GDCONN';
   GCONTINUE = 'GCONTINUE';
+  GDCONN = 'GDCONN';
   GDO = 'GDO';
+  GMSGTRANSFER = 'GMSGTRANSFER';
+  GWRAP = 'GWRAP';
 
-  ROLEARG_LIST = 'ROLEARG_LIST';
+  ROLEARG_LIST = 'ROLEARG_LIST';  // Cf. ROLEDECL
   ROLEARG = 'ROLEARG_LIST';
-  ARG_LIST = 'ARG_LIST';
+  ARG_LIST = 'ARG_LIST';  // Cf. PARAM_DECL
   ARG = 'ARG';
 
   GCHOICE = 'GCHOICE';
@@ -449,8 +454,8 @@ module:
   ^(MODULE[$t] ^(MODULEDECL[$t] modulename) importmodule* datatypedecl*
   protocoldecl*)
 ;
-// TODO: add token arg to other imag nodes 
-// moduledecl: MODULE_KW<ModuleDecl>^ modulename ';'  // "Become root" ^ cannot be on rhs?
+// moduledecl: MODULE_KW<ModuleDecl>^ modulename ';'  
+		// "Become root" ^ cannot be on rhs? -- so "manually" rewrite to Scribble AST token types
 
 
 /**

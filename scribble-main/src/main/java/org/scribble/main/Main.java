@@ -53,6 +53,7 @@ public class Main
 	public final ModuleName main;
 	public final Map<JobArgs, Boolean> args;
 
+	private final ScribAntlrWrapper antlr;
 	//private final ResourceLocator locator;  // Path -> Resource
 	private final ScribModuleLoader loader;  // ModuleName -> Pair<Resource, Module>
 
@@ -82,18 +83,20 @@ public class Main
 	private Main(Pair<ResourceLocator, String> hack, Path mainpath,
 			Map<JobArgs, Boolean> args) throws ScribException, ScribParserException
 	{
+		this.antlr = new ScribAntlrWrapper();
+
 		// Set this.loader and load main
 		Pair<Resource, Module> main;
 		if (hack.right == null)
 		{
 			//this.locator = hack.left;
-			this.loader = new ScribModuleLoader(hack.left, newAntlr());
+			this.loader = new ScribModuleLoader(hack.left, this.antlr);
 			main = this.loader.loadMainModule(mainpath);
 		}
 		else
 		{
 			//this.locator = null;
-			this.loader = new ScribModuleLoader(null, newAntlr());  // CHECKME: null locator OK?
+			this.loader = new ScribModuleLoader(null, this.antlr);  // CHECKME: null locator OK?
 			main = this.loader.loadMainModule(hack.right);
 			if (main.right.getImportDeclChildren().stream()
 					.anyMatch(x -> x.isImportModule()))
@@ -119,7 +122,7 @@ public class Main
 	protected Lang newLang(Map<ModuleName, Module> parsed,
 			Map<JobArgs, Boolean> args, ModuleName mainFullname) throws ScribException
 	{
-		AstFactoryImpl af = new AstFactoryImpl();  
+		AstFactoryImpl af = new AstFactoryImpl(this.antlr);  
 				// Was previously made inside Lang, but AstFactoryImpl now lives in scribble-parser, to access ScribbleParser constants
 		return new Lang(mainFullname, args, parsed, af);
 	}

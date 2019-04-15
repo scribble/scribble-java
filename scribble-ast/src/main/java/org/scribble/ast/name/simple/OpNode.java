@@ -29,7 +29,7 @@ public class OpNode extends SimpleNameNode<OpKind>
 	}
 
 	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
-	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
+	// ttype is just ScribblParser.IDENTIFIER, t is the IDENTIFIER token
 	public OpNode(int ttype, Token t)
 	{
 		this(t);

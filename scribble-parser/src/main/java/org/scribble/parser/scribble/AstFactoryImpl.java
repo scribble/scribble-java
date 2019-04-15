@@ -13,7 +13,10 @@
  */
 package org.scribble.parser.scribble;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.runtime.CommonToken;
 import org.scribble.ast.AstFactory;
@@ -112,9 +115,47 @@ import org.scribble.parser.antlr.ScribbleParser;
 
 public class AstFactoryImpl implements AstFactory
 {
-	public AstFactoryImpl()
+	// Purely for the convenience of newToken(type)
+	protected final ScribbleParser parser;
+	protected final Map<Integer, String> tokens;
+	
+	public AstFactoryImpl(ScribAntlrWrapper antlr)
 	{
-		
+		try
+		{
+			Class<ScribbleParser> parserC = 
+					org.scribble.parser.antlr.ScribbleParser.class;
+			this.parser = antlr.newScribbleParser(null);
+			Map<Integer, String> tokens = new HashMap<>();
+			for (String t : ScribbleParser.tokenNames)
+			{
+				char c = t.charAt(0);
+				if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+				{
+					tokens.put(parserC.getField(t).getInt(this.parser), t);
+				}
+			}
+			this.tokens = Collections.unmodifiableMap(tokens);
+		}
+		catch (IllegalArgumentException | IllegalAccessException
+				| NoSuchFieldException | SecurityException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+	// type comes from the int constants in ScribbleParser, which come from the tokens in Scribble.g
+	// Pre: type is an "imaginary token" type from ScribbleParser -- (not IDENTIFIER)
+	protected CommonToken newToken(int type)
+	{
+		// As a default, token text is set to the textual name of the token type int field (also the Scribble.g default)
+		String text = this.tokens.get(type);
+		return new CommonToken(type, text);
+	}
+
+	protected CommonToken newIdToken(String text)
+	{
+		return new CommonToken(ScribbleParser.IDENTIFIER, text);
 	}
 
 	protected ScribDel createDefaultDelegate()
@@ -132,7 +173,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public IdNode IdNode(String text)
 	{
-		CommonToken t = new CommonToken(ScribbleParser.IDENTIFIER, text);  
+		CommonToken t = newIdToken(text);  
 				// IdNode is the only token with a "different" text to its node type -- info stored directly as its the text, no children
 		IdNode n = new IdNode(t);
 		return n;
@@ -142,8 +183,8 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public AmbigNameNode AmbiguousNameNode(String text)
 	{
-		int ttype = ScribbleParser.AMBIG_NAME;
-		CommonToken t = newToken(ttype, text);
+		int ttype = ScribbleParser.IDENTIFIER;
+		CommonToken t = newIdToken(text);
 		AmbigNameNode n = new AmbigNameNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 		n.del(new AmbigNameNodeDel());
 		return n;
@@ -153,7 +194,7 @@ public class AstFactoryImpl implements AstFactory
 	public OpNode OpNode(String text)
 	{
 		int ttype = ScribbleParser.IDENTIFIER;
-		CommonToken t = newToken(ttype, "OPNAME");
+		CommonToken t = newIdToken(text);
 		OpNode n = new OpNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 		del(n, createDefaultDelegate());
 		return n;
@@ -163,7 +204,7 @@ public class AstFactoryImpl implements AstFactory
 	public RecVarNode RecVarNode(String text)
 	{
 		int ttype = ScribbleParser.IDENTIFIER;
-		CommonToken t = newToken(ttype, "RECURSIONVAR");
+		CommonToken t = newIdToken(text);
 		RecVarNode n = new RecVarNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 		del(n, new RecVarNodeDel());
 		return n;
@@ -173,7 +214,7 @@ public class AstFactoryImpl implements AstFactory
 	public RoleNode RoleNode(String text)
 	{
 		int ttype = ScribbleParser.IDENTIFIER;
-		CommonToken t = newToken(ttype, "ROLENAME");
+		CommonToken t = newIdToken(text);
 		RoleNode n = new RoleNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 		del(n, new RoleNodeDel());
 		return n;
@@ -183,7 +224,7 @@ public class AstFactoryImpl implements AstFactory
 	public SigParamNode SigParamNode(String text)
 	{
 		int ttype = ScribbleParser.IDENTIFIER;  // N.B. cf. ScribbleParser.SIGNAME
-		CommonToken t = newToken(ttype, text);
+		CommonToken t = newIdToken(text);
 		SigParamNode n = new SigParamNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 		n.del(new NonRoleParamNodeDel());
 		return n;
@@ -193,7 +234,7 @@ public class AstFactoryImpl implements AstFactory
 	public TypeParamNode TypeParamNode(String text)
 	{
 		int ttype = ScribbleParser.IDENTIFIER;  // N.B. cf. ScribbleParser.TYPENAME
-		CommonToken t = newToken(ttype, text);
+		CommonToken t = newIdToken(text);
 		TypeParamNode n = new TypeParamNode(ttype, t);  // Cf. Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 		n.del(new NonRoleParamNodeDel());
 		return n;
@@ -206,13 +247,13 @@ public class AstFactoryImpl implements AstFactory
 		QualifiedNameNode<? extends Kind> n = null;
 		if (kind.equals(SigKind.KIND))
 		{
-			CommonToken t = newToken(ScribbleParser.SIG_NAME, "SIG_NAME");
+			CommonToken t = newToken(ScribbleParser.SIG_NAME);
 			n = new MessageSigNameNode(t);
 			del(n, new MessageSigNameNodeDel());
 		}
 		else if (kind.equals(DataTypeKind.KIND))
 		{
-			CommonToken t = newToken(ScribbleParser.TYPE_NAME, "TYPE_NAME");
+			CommonToken t = newToken(ScribbleParser.TYPE_NAME);
 			n = new DataTypeNode(t);
 			del(n, new DataTypeNodeDel());
 		}
@@ -224,12 +265,12 @@ public class AstFactoryImpl implements AstFactory
 
 		if (kind.equals(ModuleKind.KIND))
 		{
-			CommonToken t = newToken(ScribbleParser.MODULE_NAME, "MODULE_NAME");
+			CommonToken t = newToken(ScribbleParser.MODULE_NAME);
 			n = new ModuleNameNode(t);
 		}
 		else if (kind.equals(Global.KIND))
 		{
-			CommonToken t = newToken(ScribbleParser.GPROTO_NAME, "GPROTO_NAME");
+			CommonToken t = newToken(ScribbleParser.GPROTO_NAME);
 			n = new GProtocolNameNode(t);
 		}
 		else
@@ -251,24 +292,11 @@ public class AstFactoryImpl implements AstFactory
 		T tmp = (T) n;
 		return tmp;
 	}
-	
-	// type comes from the int constants in ScribbleParser, which come from the tokens in Scribble.g
-	// Pre: any type from ScribbleParser, except IDENTIFIER (IdNode)
-	private CommonToken newToken(int type)
-	{
-		String text = null;  // CHECKEME: use reflection to get token int field name?
-		return new CommonToken(type, text);
-	}
-	
-	private CommonToken newToken(int type, String text)
-	{
-		return new CommonToken(type, text);
-	}
 
 	@Override
 	public MessageSigNode MessageSigNode(OpNode op, PayloadElemList pay)
 	{
-		CommonToken t = newToken(ScribbleParser.SIG_LIT, "SIG_LIT");  
+		CommonToken t = newToken(ScribbleParser.SIG_LIT);  
 		MessageSigNode n = new MessageSigNode(t);
 		n.addChild(op);
 		n.addChild(pay);
@@ -279,7 +307,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public PayloadElemList PayloadElemList(List<PayloadElem<?>> elems)
 	{
-		CommonToken t = newToken(ScribbleParser.PAYELEM_LIST, "PAYELEM_LIST");  
+		CommonToken t = newToken(ScribbleParser.PAYELEM_LIST);  
 		PayloadElemList n = new PayloadElemList(t);
 		n.addChildren(elems);
 		del(n, createDefaultDelegate());
@@ -291,7 +319,7 @@ public class AstFactoryImpl implements AstFactory
 	public <K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(
 			PayloadElemNameNode<K> name)
 	{
-		CommonToken t = newToken(ScribbleParser.UNARY_PAYELEM, "UNARY_PAYELEM");  
+		CommonToken t = newToken(ScribbleParser.UNARY_PAYELEM);  
 		UnaryPayloadElem<K> n = new UnaryPayloadElem<>(t);
 		// Cf. Scribble.g children order
 		n.addChild(name);
@@ -302,7 +330,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GDelegationElem GDelegationElem(GProtocolNameNode proto, RoleNode role)
 	{
-		CommonToken t = newToken(ScribbleParser.DELEG_PAYELEM, "DELEG_PAYELEM");  
+		CommonToken t = newToken(ScribbleParser.DELEG_PAYELEM);  
 		GDelegationElem n = new GDelegationElem(t);
 		n.addChild(proto);
 		n.addChild(role);
@@ -316,7 +344,7 @@ public class AstFactoryImpl implements AstFactory
 			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
 			List<ProtocolDecl<?>> protos)
 	{
-		CommonToken t = newToken(ScribbleParser.MODULE, "MODULE");  
+		CommonToken t = newToken(ScribbleParser.MODULE);  
 		Module n = new Module(t);
 		n.addChild(moddecl);
 		n.addChildren(imports);
@@ -329,7 +357,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public ModuleDecl ModuleDecl(ModuleNameNode fullmodname)
 	{
-		CommonToken t = newToken(ScribbleParser.MODULEDECL, "MODULEDECL");  
+		CommonToken t = newToken(ScribbleParser.MODULEDECL);  
 		ModuleDecl n = new ModuleDecl(t);
 		n.addChild(fullmodname);
 		del(n, createDefaultDelegate());
@@ -340,7 +368,7 @@ public class AstFactoryImpl implements AstFactory
 	public ImportModule ImportModule(ModuleNameNode modname,
 			ModuleNameNode alias)
 	{
-		CommonToken t = newToken(ScribbleParser.IMPORTMODULE, "IMPORTMODULE");  
+		CommonToken t = newToken(ScribbleParser.IMPORTMODULE);  
 		ImportModule n = new ImportModule(t);
 		n.addChild(modname);
 		if (alias != null)
@@ -355,8 +383,7 @@ public class AstFactoryImpl implements AstFactory
 	public MessageSigNameDecl MessageSigNameDecl(IdNode schema,
 			IdNode extName, IdNode extSource, MessageSigNameNode alias)
 	{
-		CommonToken t = newToken(ScribbleParser.SIGDECL,
-				"SIGDECL");
+		CommonToken t = newToken(ScribbleParser.SIGDECL);
 		MessageSigNameDecl n = new MessageSigNameDecl(t);
 		n.addChild(schema);
 		n.addChild(extName);
@@ -370,8 +397,7 @@ public class AstFactoryImpl implements AstFactory
 	public DataTypeDecl DataTypeDecl(IdNode schema,
 			IdNode extName, IdNode extSource, DataTypeNode alias)
 	{
-		CommonToken t = newToken(ScribbleParser.DATADECL,
-				"DATADECL");
+		CommonToken t = newToken(ScribbleParser.DATADECL);
 		DataTypeDecl n = new DataTypeDecl(t);
 		n.addChild(schema);
 		n.addChild(extName);
@@ -385,8 +411,7 @@ public class AstFactoryImpl implements AstFactory
 	public GProtocolDecl GProtocolDecl(ProtocolModList mods,
 			GProtocolHeader header, GProtocolDef def)
 	{
-		CommonToken t = newToken(ScribbleParser.GPROTODECL,
-				"GPROTODECL");
+		CommonToken t = newToken(ScribbleParser.GPROTODECL);
 		GProtocolDecl n = new GProtocolDecl(t);
 		n.addChild(mods);
 		n.addChild(header);
@@ -399,8 +424,7 @@ public class AstFactoryImpl implements AstFactory
 	public GProtocolHeader GProtocolHeader(GProtocolNameNode name,
 			RoleDeclList rs, NonRoleParamDeclList ps)
 	{
-		CommonToken t = newToken(ScribbleParser.GPROTOHEADER,
-				"GPROTOHEADER");
+		CommonToken t = newToken(ScribbleParser.GPROTOHEADER);
 		GProtocolHeader n = new GProtocolHeader(t);
 		n.addChild(name);
 		n.addChild(ps);
@@ -412,8 +436,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public RoleDeclList RoleDeclList(List<RoleDecl> ds)
 	{
-		CommonToken t = newToken(ScribbleParser.ROLEDECL_LIST,
-				"ROLEDECL_LIST");
+		CommonToken t = newToken(ScribbleParser.ROLEDECL_LIST);
 		RoleDeclList n = new RoleDeclList(t);
 		// Cf. Scribble.g children order
 		n.addChildren(ds);
@@ -424,8 +447,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public RoleDecl RoleDecl(RoleNode r)
 	{
-		CommonToken t = newToken(ScribbleParser.ROLEDECL,
-				"ROLEDECL");
+		CommonToken t = newToken(ScribbleParser.ROLEDECL);
 		RoleDecl n = new RoleDecl(t);
 		n.addChild(r);
 		del(n, new RoleDeclDel());
@@ -436,8 +458,7 @@ public class AstFactoryImpl implements AstFactory
 	public NonRoleParamDeclList NonRoleParamDeclList(
 			List<NonRoleParamDecl<NonRoleParamKind>> ds)
 	{
-		CommonToken t = newToken(ScribbleParser.PARAMDECL_LIST,
-				"PARAMDECL_LIST");
+		CommonToken t = newToken(ScribbleParser.PARAMDECL_LIST);
 		NonRoleParamDeclList n = new NonRoleParamDeclList(t);
 		// Cf. Scribble.g children order
 		n.addChildren(ds);
@@ -459,8 +480,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GProtocolDef GProtocolDef(GProtocolBlock block)
 	{
-		CommonToken t = newToken(ScribbleParser.GPROTODEF,
-				"GPROTODEF");
+		CommonToken t = newToken(ScribbleParser.GPROTODEF);
 		GProtocolDef n = new GProtocolDef(t);
 		n.addChild(block);
 		del(n, new GProtocolDefDel());
@@ -470,8 +490,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GProtocolBlock GProtocolBlock(GInteractionSeq seq)
 	{
-		CommonToken t = newToken(ScribbleParser.GPROTOBLOCK,
-				"GPROTOBLOCK");
+		CommonToken t = newToken(ScribbleParser.GPROTOBLOCK);
 		GProtocolBlock n = new GProtocolBlock(t);
 		n.addChild(seq);
 		del(n, new GProtocolBlockDel());
@@ -481,8 +500,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GInteractionSeq GInteractionSeq(List<GSessionNode> elems)
 	{
-		CommonToken t = newToken(ScribbleParser.GACTIONSEQ,
-				"GACTIONSEQ");
+		CommonToken t = newToken(ScribbleParser.GACTIONSEQ);
 		GInteractionSeq n = new GInteractionSeq(t);
 		n.addChildren(elems);
 		del(n, new GInteractionSeqDel());
@@ -493,8 +511,7 @@ public class AstFactoryImpl implements AstFactory
 	public GMessageTransfer GMessageTransfer(RoleNode src,
 			MessageNode msg, List<RoleNode> dsts)
 	{
-		CommonToken t = newToken(ScribbleParser.GMSGTRANSFER,
-				"GMSGTRANSFER");
+		CommonToken t = newToken(ScribbleParser.GMSGTRANSFER);
 		GMessageTransfer n = new GMessageTransfer(t);
 		n.addChild(msg);
 		n.addChild(src);
@@ -506,8 +523,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dst)
 	{
-		CommonToken t = newToken(ScribbleParser.GCONNECT,
-				"GCONNECT");
+		CommonToken t = newToken(ScribbleParser.GCONNECT);
 		GConnect n = new GConnect(t);
 		n.addChild(msg);
 		n.addChild(src);
@@ -519,8 +535,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GDisconnect GDisconnect(RoleNode left, RoleNode right)
 	{
-		CommonToken t = newToken(ScribbleParser.GDCONN,
-				"GDCONN");
+		CommonToken t = newToken(ScribbleParser.GDCONN);
 		GDisconnect n = new GDisconnect(t);
 		n.addChild(left);
 		n.addChild(right);
@@ -531,8 +546,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GWrap GWrap(RoleNode src, RoleNode dst)
 	{
-		CommonToken t = newToken(ScribbleParser.GWRAP,
-				"GWRAP");
+		CommonToken t = newToken(ScribbleParser.GWRAP);
 		GWrap n = new GWrap(t);
 		n.addChild(src);
 		n.addChild(dst);
@@ -543,8 +557,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks)
 	{
-		CommonToken t = newToken(ScribbleParser.GCHOICE,
-				"GCHOICE");
+		CommonToken t = newToken(ScribbleParser.GCHOICE);
 		GChoice n = new GChoice(t);
 		n.addChild(subj);
 		n.addChildren(blocks);
@@ -556,8 +569,7 @@ public class AstFactoryImpl implements AstFactory
 	public GRecursion GRecursion(RecVarNode rv,
 			GProtocolBlock block)
 	{
-		CommonToken t = newToken(ScribbleParser.GRECURSION,
-				"GRECURSION");
+		CommonToken t = newToken(ScribbleParser.GRECURSION);
 		GRecursion n = new GRecursion(t);
 		n.addChild(rv);
 		n.addChild(block);
@@ -568,8 +580,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GContinue GContinue(RecVarNode rv)
 	{
-		CommonToken t = newToken(ScribbleParser.GCONTINUE,
-				"GCONTINUE");
+		CommonToken t = newToken(ScribbleParser.GCONTINUE);
 		GContinue n = new GContinue(t);
 		n.addChild(rv);
 		del(n, new GContinueDel());
@@ -579,8 +590,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public GDo GDo(RoleArgList rs, NonRoleArgList as, GProtocolNameNode proto)
 	{
-		CommonToken t = newToken(ScribbleParser.GDO,
-				"GDO");
+		CommonToken t = newToken(ScribbleParser.GDO);
 		GDo n = new GDo(t);
 		n.addChild(proto);
 		n.addChild(rs);
@@ -592,8 +602,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public RoleArgList RoleArgList(List<RoleArg> rs)
 	{
-		CommonToken t = newToken(ScribbleParser.ROLEARG_LIST,
-				"ROLEARG_LIST");
+		CommonToken t = newToken(ScribbleParser.ROLEARG_LIST);
 		RoleArgList n = new RoleArgList(t);
 		n.addChildren(rs);
 		del(n, new RoleArgListDel());
@@ -603,8 +612,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public RoleArg RoleArg(RoleNode r)
 	{
-		CommonToken t = newToken(ScribbleParser.ROLEARG,
-				"ROLEARG");
+		CommonToken t = newToken(ScribbleParser.ROLEARG);
 		RoleArg n = new RoleArg(t);
 		n.addChild(r);
 		del(n, createDefaultDelegate());
@@ -614,8 +622,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public NonRoleArgList NonRoleArgList(List<NonRoleArg> as)
 	{
-		CommonToken t = newToken(ScribbleParser.ARG_LIST,
-				"ARG_LIST");
+		CommonToken t = newToken(ScribbleParser.ARG_LIST);
 		NonRoleArgList n = new NonRoleArgList(t);
 		n.addChildren(as);
 		del(n, new NonRoleArgListDel());
@@ -625,8 +632,7 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public NonRoleArg NonRoleArg(NonRoleArgNode arg)
 	{
-		CommonToken t = newToken(ScribbleParser.ARG,
-				"ARG");
+		CommonToken t = newToken(ScribbleParser.ARG);
 		NonRoleArg n = new NonRoleArg(t);
 		n.addChild(arg);
 		del(n, createDefaultDelegate());

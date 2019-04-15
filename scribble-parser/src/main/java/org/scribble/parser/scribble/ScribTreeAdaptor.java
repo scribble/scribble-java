@@ -93,21 +93,22 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.MODULE: return new Module(t);
 			case ScribbleParser.MODULEDECL: return new ModuleDecl(t);
 			case ScribbleParser.IMPORTMODULE: return new ImportModule(t);
+
 			case ScribbleParser.DATADECL: return new DataTypeDecl(t);
 			case ScribbleParser.SIGDECL: return new MessageSigNameDecl(t);
 			case ScribbleParser.GPROTODECL: return new GProtocolDecl(t);
  
 			// CHECKME: refactor into header?
 			case ScribbleParser.PROTOMOD_LIST: return new ProtocolModList(t);
-			case ScribbleParser.AUX_KW: return new AuxMod(t);  // FIXME: KW being used directly
+			case ScribbleParser.AUX_KW: return new AuxMod(t);  // FIXME: KW return by parser directly (cf. other tokens are imaginary)
 			case ScribbleParser.EXPLICIT_KW: return new ExplicitMod(t);
 
 			case ScribbleParser.GPROTOHEADER: return new GProtocolHeader(t);
 			case ScribbleParser.ROLEDECL_LIST: return new RoleDeclList(t);
 			case ScribbleParser.ROLEDECL: return new RoleDecl(t);
 			case ScribbleParser.PARAMDECL_LIST: return new NonRoleParamDeclList(t);
-			case ScribbleParser.TYPEPARAMDECL: return new TypeParamDecl(t);
 			case ScribbleParser.SIGPARAMDECL: return new SigParamDecl(t);
+			case ScribbleParser.TYPEPARAMDECL: return new TypeParamDecl(t);
 
 			case ScribbleParser.GPROTODEF: return new GProtocolDef(t);
 			case ScribbleParser.GPROTOBLOCK: return new GProtocolBlock(t);
@@ -116,11 +117,12 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.SIG_LIT: return new MessageSigNode(t);
 			case ScribbleParser.PAYELEM_LIST: return new PayloadElemList(t);  // N.B. UnaryPayloadElem parsed "manually" in Scribble.g
 
-			case ScribbleParser.GMSGTRANSFER: return new GMessageTransfer(t);
 			case ScribbleParser.GCONNECT: return new GConnect(t);
 			case ScribbleParser.GCONTINUE: return new GContinue(t);
 			case ScribbleParser.GDCONN: return new GDisconnect(t);
 			case ScribbleParser.GDO: return new GDo(t);
+			case ScribbleParser.GMSGTRANSFER: return new GMessageTransfer(t);
+			case ScribbleParser.GWRAP: throw new RuntimeException("[TODO] GWrap: " + t);
 				
 			case ScribbleParser.ROLEARG_LIST: return new RoleArgList(t);
 			case ScribbleParser.ROLEARG: return new RoleArg(t);
