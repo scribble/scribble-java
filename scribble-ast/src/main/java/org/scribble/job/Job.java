@@ -44,32 +44,31 @@ public class Job
 			Map<ModuleName, Module> parsed, AstFactory af) throws ScribException
 	{
 		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
-		// FIXME: wrap flags in Map and move Config construction to Lang
 		this.config = newJobConfig(mainFullname, args, af);
-		this.context = newJobContext(this, parsed);  // Single instance per Lang, should not be shared between Langs
+		this.context = newJobContext(this, parsed);  // Single instance per Job, should not be shared between Jobs
 	}
 
-	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
+	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
 	protected JobConfig newJobConfig(ModuleName mainFullname,
 			Map<CoreArgs, Boolean> args, AstFactory af)
 	{
 		return new JobConfig(mainFullname, args, af);
 	}
 
-	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
+	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
 	protected JobContext newJobContext(Job job,
 			Map<ModuleName, Module> parsed) throws ScribException
 	{
 		return new JobContext(this, parsed);
 	}
 
-	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
+	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
 	protected GTypeTranslator newTranslator(ModuleName rootFullname)
 	{
 		return new GTypeTranslator(this, rootFullname);
 	}
 	
-	// A Scribble extension should override newLangConfig/Context/Translator and toJob as appropriate
+	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
 	protected Core newJob(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
 			//Map<ModuleName, ModuleContext> modcs, 
 			Set<GProtocol> imeds)
@@ -82,16 +81,22 @@ public class Job
 	// Base implementation: ambigname disamb pass only
 	public void runPasses() throws ScribException
 	{
+		verbosePrintPass("Starting Job passes on:");
+		for (ModuleName fullname : this.context.getFullModuleNames())
+		{
+			verbosePrintln(this.context.getModule(fullname).toString());
+		}
+		
 		// Disamb is a "leftover" aspect of parsing -- so not in core
 		// N.B. disamb is mainly w.r.t. ambignames -- e.g., doesn't fully qualify names (currently mainly done by imed translation)
 		// CHECKME: disamb also currently does checks like do-arg kind and arity -- refactor into core? -- also does, e.g., distinct roledecls, protodecls, etc.
 		runVisitorPassOnAllModules(new NameDisambiguator(this));  // Includes validating names used in subprotocol calls..
 	}
 	
-	// "Finalises" this Lang -- initialises the Job at this point, and cannot run futher Visitor passes on Lang
-	// So, typically, Lang passes should be finished before calling this
-	// Job passes may subsequently mutate Job(Context) though
-	// CHECKME: revise this pattern? -- maybe fork Job for a snapshot of current Lang(Context) -- and, possibly, convert Job back to Lang
+	// "Finalises" this Job -- initialises the Job at this point, and cannot run futher Visitor passes on Job
+	// So, typically, Job passes should be finished before calling this
+	// Core passes may subsequently mutate Core(Context) though
+	// CHECKME: revise this pattern? -- maybe fork Core for a snapshot of current Job(Context) -- and, possibly, convert Core back to Job
 	public final Core getCore() throws ScribException
 	{
 		if (this.core == null)
@@ -101,12 +106,15 @@ public class Job
 			for (ModuleName fullname : parsed.keySet())
 			{
 				GTypeTranslator t = newTranslator(fullname);
-				for (GProtoDecl gpd : parsed.get(fullname).getGProtoDeclChildren())
+				Module m = parsed.get(fullname);
+				for (GProtoDecl ast : m.getGProtoDeclChildren())
 				{
-					GProtocol g = (GProtocol) gpd.visitWith(t);
-					imeds.add(g);
-					verbosePrintln(
-							"\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
+					GProtocol imed = (GProtocol) ast.visitWith(t);
+					imeds.add(imed);
+					verbosePrintPass(
+							//"\nParsed:\n" + gpd + 
+							"Translated Scribble intermediate: " + ast.getFullMemberName(m)
+									+ "\n" + imed);
 				}
 			}
 			this.core = newJob(this.config.main, this.config.args,
@@ -123,12 +131,12 @@ public class Job
 
 	public void runVisitorPassOnAllModules(AstVisitor v) throws ScribException
 	{
-		verbosePrintPass("Running " + v.getClass() + " on all modules:");
+		verbosePrintPass("Running " + v.getClass() + " on all modules...");
 		runVisitorPass(v, this.context.getFullModuleNames());
 	}
 
-	private void runVisitorPass(AstVisitor v,
-			Set<ModuleName> fullnames) throws ScribException
+	private void runVisitorPass(AstVisitor v, Set<ModuleName> fullnames)
+			throws ScribException
 	{
 			for (ModuleName fullname : fullnames)
 			{
@@ -143,8 +151,9 @@ public class Job
 		{
 			throw new RuntimeException("toJob already finalised: ");
 		}
-		verbosePrintPass("- Running " + v.getClass() + " on:\n" + modname);
+		verbosePrintPass("Running " + v.getClass() + " on: " + modname);
 		Module visited = (Module) this.context.getModule(modname).accept(v);
+		verbosePrintln(visited.toString());
 		this.context.replaceModule(visited);
 	}
 	
@@ -163,6 +172,6 @@ public class Job
 	
 	private void verbosePrintPass(String s)
 	{
-		verbosePrintln("\n[Lang] " + s);
+		verbosePrintln("\n[Job] " + s);
 	}
 }

@@ -14,7 +14,6 @@
 package org.scribble.core.job;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -109,7 +108,7 @@ public class CoreContext
 		return this.imeds.get(fullname);
 	}
 
-	public Collection<GProtocol> getIntermediates()
+	public Set<GProtocol> getIntermediates()
 	{
 		return this.imeds.values().stream().collect(Collectors.toSet());
 	}

@@ -431,7 +431,7 @@ roledecl:
 paramdecls:
 	-> ^(PARAMDECL_LIST)
 |
-	t='<' paramdecl (',' paramdecl)* '>' -> ^(PARAMDECL_LIST[$t] paramdecl+)
+	t='<' (paramdecl (',' paramdecl)*)? '>' -> ^(PARAMDECL_LIST[$t] paramdecl*)
 ;
 
 paramdecl: dataparamdecl | sigparamdecl ;
@@ -564,7 +564,7 @@ rolearg:
 nonroleargs:
 	-> ^(NONROLEARG_LIST)
 |
-	t='<' nonrolearg (',' nonrolearg)* '>' -> ^(NONROLEARG_LIST[$t] nonrolearg+)
+	t='<' (nonrolearg (',' nonrolearg)*)? '>' -> ^(NONROLEARG_LIST[$t] nonrolearg*)
 ;
 
 // Grammatically same as message, but qualifiedname case may also be a payload type

@@ -25,6 +25,6 @@ public class NonRoleParamDeclDel extends ScribDelBase
 			throws ScribException
 	{
 		NonRoleParamDecl<?> pd = (NonRoleParamDecl<?>) child;
-		disamb.addParameter(pd.getDeclName(), pd.kind);
+		disamb.addParam(pd.getDeclName(), pd.kind);
 	}
 }

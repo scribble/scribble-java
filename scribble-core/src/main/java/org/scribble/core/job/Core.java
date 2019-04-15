@@ -59,11 +59,11 @@ public class Core
 	{
 		this.config = newCoreConfig(mainFullname, args);
 		this.context = newCoreContext(//modcs, 
-				imeds);  // Single instance per Job and should never be shared
+				imeds);  // Single instance per Core and should never be shared
 		this.sgraphb = newSGraphBuilderUtil();
 	}
 
-	// A Scribble extension should override newJobConfig/Context/etc as appropriate
+	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
 	protected CoreConfig newCoreConfig(ModuleName mainFullname,
 			Map<CoreArgs, Boolean> args)
 	{
@@ -72,7 +72,7 @@ public class Core
 				// CHECKME: combine E/SModelFactory?
 	}
 
-	// A Scribble extension should override newJobConfig/Context/etc as appropriate
+	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
 	protected CoreContext newCoreContext(//Map<ModuleName, ModuleContext> modcs,
 			Set<GProtocol> imeds)
 	{
@@ -81,14 +81,14 @@ public class Core
 	}
 	
 	// TODO: deprecate, caller should go through config
-	// A Scribble extension should override newJobConfig/Context/etc as appropriate
+	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
 	public SGraphBuilderUtil newSGraphBuilderUtil()
 	{
 		return this.config.mf.newSGraphBuilderUtil();
 	}
 
 	// TODO: deprecate, caller should go through config
-	// A Scribble extension should override newJobConfig/Context/etc as appropriate
+	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
 	public EGraphBuilderUtil newEGraphBuilderUtil()
 	{
 		return new EGraphBuilderUtil(this.config.mf);
@@ -112,58 +112,70 @@ public class Core
 	public void runPasses() throws ScribException
 	{
 		runContextBuildingPasses();
-		//runUnfoldingPass();
 		runValidationPasses();
 	}
 	
-	public void runContextBuildingPasses() throws ScribException
+	public void runContextBuildingPasses()  // No ScribException, no errors expected
 	{
-		/*// FIXME TODO: refactor into a runVisitorPassOnAllModules for SimpleVisitor (and add operation to ModuleDel)
-		Set<ModuleName> fullmodnames = this.context.getFullModuleNames();
-		for (ModuleName fullmodname : fullmodnames)
+		verbosePrintPass("Inlining subprotocols for all globals...");
+		for (GProtocol imed : this.context.getIntermediates())
 		{
-			Module mod = this.context.getModule(fullmodname);
-			GTypeTranslator t = new GTypeTranslator(this, fullmodname);
-			for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
-			{
-				GProtocol g = (GProtocol) gpd.visitWith(t);
-				this.context.addIntermediate(g.fullname, g);
-				debugPrintln("\nParsed:\n" + gpd + "\n\nScribble intermediate:\n" + g);
-			}
-		}*/
-				
-		for (GProtocol g : this.context.getIntermediates())
-		{
-			/*SubprotoSig sig = new SubprotoSig(g.fullname, g.roles, params);
-			//Deque<SubprotoSig> stack = new LinkedList<>();
-			STypeInliner i = new STypeInliner(this);
-			i.pushSig(sig);  // TODO: factor into constructor*/
 			GTypeInliner v = new GTypeInliner(this);
-			GProtocol inlined = g.getInlined(v);  // Protocol.getInlined does pruneRecs
-			verbosePrintln("\nSubprotocols inlined:\n" + inlined);
-			this.context.addInlined(g.fullname, inlined);
+			GProtocol inlined = imed.getInlined(v);  // Protocol.getInlined does pruneRecs
+			verbosePrintPass(
+					"Inlined subprotocols: " + imed.fullname + "\n" + inlined);
+			this.context.addInlined(imed.fullname, inlined);
 		}
 				
-		//runUnfoldingPass();
+		verbosePrintPass("Unfolding all recursions once for all inlined globals...");
 		for (GProtocol inlined : this.context.getInlined())
 		{
-				//STypeUnfolder<Global> unf1 = new STypeUnfolder<>();
-				////GTypeUnfolder unf2 = new GTypeUnfolder();
-				GTypeUnfolder v = new GTypeUnfolder();
-				GProtocol unf = (GProtocol) inlined.unfoldAllOnce(v);//.unfoldAllOnce(unf2);  CHECKME: twice unfolding? instead of "unguarded"-unfolding?
-				verbosePrintln("\nAll recursions unfolded once:\n" + unf);
+			GTypeUnfolder v = new GTypeUnfolder();
+			GProtocol unf = (GProtocol) inlined.unfoldAllOnce(v);//.unfoldAllOnce(unf2);  // CHECKME: twice unfolding? instead of "unguarded"-unfolding?
+			verbosePrintPass(
+					"Unfolded all recursions once: " + inlined.fullname + "\n" + unf);
 		}
 		
 		runProjectionPasses();
 				
-		for (Entry<LProtoName, LProtocol> e : 
-				this.context.getInlinedProjections().entrySet())
+		for (Entry<LProtoName, LProtocol> e : this.context.getInlinedProjections()
+				.entrySet())
 		{
-			//LProtocolName lname = e.getKey();
 			LProtocol proj = e.getValue();
 			EGraph graph = proj.toEGraph(this);
 			this.context.addEGraph(proj.fullname, graph);
-			verbosePrintln("\nEFSM for " + proj.fullname + ":\n" + graph.toDot());
+			verbosePrintPass("Built EFSM: " + proj.fullname + ":\n" + graph.toDot());
+		}
+	}
+
+	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
+	// SubprotocolVisitor it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
+	// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
+	protected void runProjectionPasses()  // No ScribException, no errors expected
+	{
+		verbosePrintPass("Projecting all inlined globals...");
+		for (GProtocol inlined : this.context.getInlined())
+		{
+			for (Role self : inlined.roles)
+			{
+				// pruneRecs already done (see runContextBuildingPasses)
+				LProtocol iproj = inlined.projectInlined(this, self);  // CHECKME: projection and inling commutative?
+				this.context.addInlinedProjection(iproj.fullname, iproj);
+				verbosePrintPass("Projected inlined onto " + self + ": "
+						+ inlined.fullname + "\n" + iproj);
+			}
+		}
+
+		// Pre: inlined already projected -- used for Do projection
+		verbosePrintPass("Projecting all intermediate globals...");
+		for (GProtocol imed : this.context.getIntermediates())
+		{
+			for (Role self : imed.roles)
+			{
+				LProtocol proj = imed.project(this, self);  // Does pruneRecs
+				this.context.addProjection(proj);
+				verbosePrintPass("Projected intermediate onto " + self + ":" + imed.fullname + "\n" + proj);
+			}
 		}
 	}
 	
@@ -240,42 +252,6 @@ public class Core
 						GProtocol.validateByScribble(this, fullname, false);  // TODO: only need to check progress, not full validation
 					}
 				}
-			}
-		}
-	}
-
-	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
-	// SubprotocolVisitor it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
-	// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
-	protected void runProjectionPasses() throws ScribException
-	{
-		/*runVisitorPassOnAllModules(Projector.class);
-		runProjectionContextBuildingPasses();
-		runProjectionUnfoldingPass();
-		if (!this.config.noAcceptCorrelationCheck)
-		{
-			runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
-		}*/
-				
-		for (GProtocol g : this.context.getInlined())
-		{
-			for (Role self : g.roles)
-			{
-				GProtocol inlined = this.context.getInlined(g.fullname);  // pruneRecs already done for pruneRecs (cf. runContextBuildingPasses)
-				LProtocol iproj = inlined.projectInlined(this, self);  // CHECKME: projection and inling commutative?
-				this.context.addInlinedProjection(iproj.fullname, iproj);
-				verbosePrintln("\nProjected inlined onto " + self + ":\n" + iproj);
-			}
-		}
-
-		// Pre: inlined already projected -- used for Do projection
-		for (GProtocol g : this.context.getIntermediates())
-		{
-			for (Role self : g.roles)
-			{
-				LProtocol proj = g.project(this, self);  // Does pruneRecs
-				this.context.addProjection(proj);
-				verbosePrintln("\nProjected onto " + self + ":\n" + proj);
 			}
 		}
 	}
@@ -375,8 +351,8 @@ public class Core
 		}
 	}
 	
-	/*private void debugPrintPass(String s)
+	private void verbosePrintPass(String s)
 	{
-		debugPrintln("\n[Job] " + s);
-	}*/
+		verbosePrintln("\n[Core] " + s);
+	}
 }

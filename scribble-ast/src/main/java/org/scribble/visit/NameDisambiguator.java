@@ -30,7 +30,7 @@ import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
-// Also canonicalises recvars
+// Also canonicalises recvars -- CHECKME ?
 public class NameDisambiguator extends ModuleContextVisitor
 {
   // For implicit scope generation: reset per ProtocolDecl
@@ -117,19 +117,19 @@ public class NameDisambiguator extends ModuleContextVisitor
 		return this.roles.contains(role);
 	}
 
-	public void addParameter(Name<? extends NonRoleParamKind> param,
+	public void addParam(Name<? extends NonRoleParamKind> param,
 			NonRoleParamKind kind)
 	{
 		this.params.put(param.toString(), kind);
 	}
 	
 	// name is a simple name (compound names are not ambiguous)
-	public boolean isBoundParameter(Name<? extends NonRoleArgKind> name)  // ArgKind allows AmbigNames
+	public boolean isBoundParam(Name<? extends NonRoleArgKind> name)  // ArgKind allows AmbigNames
 	{
 		return this.params.containsKey(name.toString());
 	}
 
-	public NonRoleParamKind getParameterKind(Name<? extends NonRoleArgKind> name)  // ArgKind allows AmbigNames
+	public NonRoleParamKind getParamKind(Name<? extends NonRoleArgKind> name)  // ArgKind allows AmbigNames
 	{
 		return this.params.get(name.toString());
 	}
@@ -181,9 +181,18 @@ public class NameDisambiguator extends ModuleContextVisitor
 			this.recvars.put(rv, i - 1);
 		}
 	}
+}
 
 	
 	
+
+
+
+
+
+
+
+
 	/*public String getCanonicalRecVarName(RecVar rv)
 	{
 		return getCanonicalRecVarName(this.getModuleContext().root, this.root.header.getDeclName(), rv.toString() + "_" + this.recvars.get(rv));
@@ -195,4 +204,3 @@ public class NameDisambiguator extends ModuleContextVisitor
 		//return rv.toString();
 		return ("__" + fullmodname + "_" + simpprotoname + "_" + rv).replace('.', '_');
 	}*/
-}
