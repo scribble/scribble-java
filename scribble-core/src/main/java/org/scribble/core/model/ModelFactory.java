@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.core.model.endpoint.EFSM;
+import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAccept;
 import org.scribble.core.model.endpoint.actions.EDisconnect;
@@ -46,6 +47,8 @@ import org.scribble.core.type.session.Payload;
 
 public interface ModelFactory
 {
+	EGraphBuilderUtil newEGraphBuilderUtil();
+
 	ESend newESend(Role peer, MsgId<?> mid, Payload payload);
 	EReceive newEReceive(Role peer, MsgId<?> mid, Payload payload);
 	ERequest newERequest(Role peer, MsgId<?> mid, Payload payload);

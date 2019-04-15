@@ -38,7 +38,7 @@ import org.scribble.util.ScribUtil;
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
 public class CoreContext
 {
-	public final Core core;
+	private final Core core;
 
 	// Keys are full names
 	// CHECKME: not currently used by core? -- core fully independent of modules, etc., because full disamb already done? (by imed translation)
@@ -54,14 +54,14 @@ public class CoreContext
 	private final Map<GProtoName, GProtocol> inlined = new HashMap<>();
 
   // Projected from inlined; keys are full names
-	private final Map<LProtoName, LProtocol> iprojs = new HashMap<>();
+	private final Map<LProtoName, LProtocol> iprojs = new HashMap<>();  // CHECKME: rename projis?
 	
 	// Projected from intermediates
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	// LProtocolName key is LProtocol value fullname (i.e., redundant)
 	private final Map<LProtoName, LProtocol> projs = new HashMap<>();
 
-	// Built from inlined
+	// Built from projected inlined
 	private final Map<LProtoName, EGraph> fEGraphs = new HashMap<>();
 	private final Map<LProtoName, EGraph> uEGraphs = new HashMap<>();
 	private final Map<LProtoName, EGraph> mEGraphs = new HashMap<>();  
@@ -123,17 +123,17 @@ public class CoreContext
 		return this.inlined.get(fullname);
 	}
 
-	public Set<GProtocol> getInlined()
+	public Set<GProtocol> getInlineds()
 	{
 		return this.inlined.values().stream().collect(Collectors.toSet());
 	}
 	
+  // Projected from inlined
 	public void addProjectedInlined(LProtoName fullname, LProtocol l)
 	{
 		this.iprojs.put(fullname, l);
 	}
 	
-  // Projected from inlined
 	public LProtocol getProjectedInlined(GProtoName fullname, Role self)
 	{
 		LProtoName p = InlinedProjector.getFullProjectionName(fullname, self);

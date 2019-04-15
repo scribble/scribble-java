@@ -25,7 +25,6 @@ import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.ModelFactoryImpl;
 import org.scribble.core.model.endpoint.EGraph;
-import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.model.global.SGraphBuilderUtil;
 import org.scribble.core.type.kind.Global;
@@ -60,7 +59,7 @@ public class Core
 		this.config = newCoreConfig(mainFullname, args);
 		this.context = newCoreContext(//modcs, 
 				imeds);  // Single instance per Core and should never be shared
-		this.sgraphb = newSGraphBuilderUtil();
+		this.sgraphb = this.config.mf.newSGraphBuilderUtil();
 	}
 
 	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
@@ -79,24 +78,10 @@ public class Core
 		return new CoreContext(this, //modcs, 
 				imeds);
 	}
-	
-	// TODO: deprecate, caller should go through config
-	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
-	public SGraphBuilderUtil newSGraphBuilderUtil()
-	{
-		return this.config.mf.newSGraphBuilderUtil();
-	}
-
-	// TODO: deprecate, caller should go through config
-	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
-	public EGraphBuilderUtil newEGraphBuilderUtil()
-	{
-		return new EGraphBuilderUtil(this.config.mf);
-	}
 
 	public void runPasses() throws ScribException
 	{
-		runContextBuildingPasses();
+		runContextBuildingPasses();  // Includes runProjectionPasses
 		runValidationPasses();
 	}
 	
@@ -113,7 +98,7 @@ public class Core
 		}
 				
 		verbosePrintPass("Unfolding all recursions once for all inlined globals...");
-		for (GProtocol inlined : this.context.getInlined())
+		for (GProtocol inlined : this.context.getInlineds())
 		{
 			GTypeUnfolder v = new GTypeUnfolder();
 			GProtocol unf = (GProtocol) inlined.unfoldAllOnce(v);//.unfoldAllOnce(unf2);  // CHECKME: twice unfolding? instead of "unguarded"-unfolding?
@@ -140,7 +125,7 @@ public class Core
 	protected void runProjectionPasses()  // No ScribException, no errors expected
 	{
 		verbosePrintPass("Projecting all inlined globals...");
-		for (GProtocol inlined : this.context.getInlined())
+		for (GProtocol inlined : this.context.getInlineds())
 		{
 			for (Role self : inlined.roles)
 			{
@@ -170,7 +155,7 @@ public class Core
 	{
 		verbosePrintPass(
 				"Checking for unused role decls on all inlined globals...");
-		for (GProtocol inlined : this.context.getInlined())
+		for (GProtocol inlined : this.context.getInlineds())
 		{
 			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
 			// TODO: refactor as Visitor
@@ -188,7 +173,7 @@ public class Core
 		}
 
 		verbosePrintPass("Checking role enabling on all inlined globals...");
-		for (GProtocol inlined : (Iterable<GProtocol>) this.context.getInlined()
+		for (GProtocol inlined : (Iterable<GProtocol>) this.context.getInlineds()
 				.stream().filter(x -> !x.isAux())::iterator)
 		{
 			GTypeUnfolder v = new GTypeUnfolder();
@@ -198,7 +183,7 @@ public class Core
 
 		verbosePrintPass(
 				"Checking consistent external choice subjects on all inlined globals...");
-		for (GProtocol inlined : (Iterable<GProtocol>) this.context.getInlined()
+		for (GProtocol inlined : (Iterable<GProtocol>) this.context.getInlineds()
 				.stream().filter(x -> !x.isAux())::iterator)
 		{
 			inlined.checkExtChoiceConsistency();
@@ -213,8 +198,8 @@ public class Core
 		}
 
 		verbosePrintPass("Building and checking models from projected inlineds...");
-		// CHECKME: refactor whole validation into lang.GProtocol ?
-		for (GProtocol iproj : (Iterable<GProtocol>) this.context.getInlined()
+		// CHECKME: refactor more/whole validation into lang.GProtocol ?
+		for (GProtocol iproj : (Iterable<GProtocol>) this.context.getInlineds()
 				.stream().filter(x -> !x.isAux())::iterator)
 		{
 			verbosePrintPass("Validating: " + iproj.fullname);
@@ -249,7 +234,7 @@ public class Core
 			verbosePrintln("-- EFSM for "
 					+ r + ":\n" + egraphs.get(r).init.toDot());
 		}*/
-		return this.sgraphb.buildSGraph(this, fullname, egraphs, explicit);  // CHECKME: factor out util ?
+		return this.sgraphb.buildSGraph(this, fullname, egraphs, explicit);  // CHECKME: factor out util -- ?
 	}
 
 	// Pre: checkWellFormedness 
@@ -286,6 +271,66 @@ public class Core
 				//FIXME: build output Modules
 				//FIXME: (interleaved) ordering between proto and nonproto (Module) imports -- order by original Global import order?
 	}
+	
+	public CoreContext getContext()
+	{
+		return this.context;
+	}
+	
+	public boolean isVerbose()
+	{
+		return this.config.args.get(CoreArgs.VERBOSE);
+	}
+	
+	public void verbosePrintln(String s)
+	{
+		if (isVerbose())
+		{
+			System.out.println(s);
+		}
+	}
+	
+	private void verbosePrintPass(String s)
+	{
+		verbosePrintln("\n[Core] " + s);
+	}
+	
+	public void warningPrintln(String s)
+	{
+		System.err.println("[Warning] " + s);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	/*// TODO: deprecate, caller should go through config
+	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
+	public SGraphBuilderUtil newSGraphBuilderUtil()
+	{
+		return this.config.mf.newSGraphBuilderUtil();
+	}*/
+
+	/*// TODO: deprecate, caller should go through config  // CHECKME: refactor more uniformly with mf.newSGraphBuilderUtil ?
+	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
+	public EGraphBuilderUtil newEGraphBuilderUtil()
+	{
+		return new EGraphBuilderUtil(this.config.mf);
+	}*/
 
 	/*public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
 	{
@@ -323,32 +368,3 @@ public class Core
 		}
 		return api;
 	}*/
-	
-	public CoreContext getContext()
-	{
-		return this.context;
-	}
-	
-	public boolean isVerbose()
-	{
-		return this.config.args.get(CoreArgs.VERBOSE);
-	}
-	
-	public void verbosePrintln(String s)
-	{
-		if (isVerbose())
-		{
-			System.out.println(s);
-		}
-	}
-	
-	private void verbosePrintPass(String s)
-	{
-		verbosePrintln("\n[Core] " + s);
-	}
-	
-	public void warningPrintln(String s)
-	{
-		System.err.println("[Warning] " + s);
-	}
-}

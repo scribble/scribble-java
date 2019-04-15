@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.core.model.endpoint.EFSM;
+import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAccept;
 import org.scribble.core.model.endpoint.actions.EDisconnect;
@@ -47,6 +48,12 @@ import org.scribble.core.type.session.Payload;
 // Separate E/SModelFactories fits protected E/SState constructor pattern
 public class ModelFactoryImpl implements ModelFactory
 {
+
+	@Override
+	public EGraphBuilderUtil newEGraphBuilderUtil()
+	{
+		return new EGraphBuilderUtil(this);
+	}
 
 	@Override
 	public ESend newESend(Role peer, MsgId<?> mid, Payload payload)

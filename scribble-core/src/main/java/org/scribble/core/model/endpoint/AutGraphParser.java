@@ -116,7 +116,7 @@ public class AutGraphParser
 		}
 		//EGraphBuilderUtil util = new EGraphBuilderUtil(ef);
 		//EGraphBuilderUtil util = this.job2.newEGraphBuilderUtil2();
-		EGraphBuilderUtil util = this.core.newEGraphBuilderUtil();
+		EGraphBuilderUtil util = this.core.config.mf.newEGraphBuilderUtil();
 		//util.init(null);  // FIXME: arg is deprecated
 		Map<Integer, EState> map = new HashMap<>();
 		map.put(init, util.getEntry());
