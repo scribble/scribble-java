@@ -33,7 +33,7 @@ import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 
 // Supports Do -- can use on parsed (intermed)
-public class Projector extends InlinedProjector  // This way or the other way round?
+public class Projector extends InlinedProjector  // CHECKME: this way, or the other way round?
 {
 	public Projector(Core core, Role self)
 	{

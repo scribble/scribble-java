@@ -33,7 +33,7 @@ public abstract class STypeVisitorNoThrow<K extends ProtoKind, B extends Seq<K, 
 		return n;
 	}
 
-	// Should generally disregard agg for STypeVisitors -- pattern is now to manually do reconstruct within visit dispatches
+	// Should disregard agg for STypeVisitors -- the STypeVisitor pattern is instead to manually reconstruct within each visit[Node]
 	@Override
 	protected final SType<K, B> agg(SType<K, B> n, Stream<SType<K, B>> ns)
 	{
@@ -45,14 +45,14 @@ public abstract class STypeVisitorNoThrow<K extends ProtoKind, B extends Seq<K, 
 	{
 		List<B> blocks = n.blocks.stream().map(x -> visitSeq(x))
 				.collect(Collectors.toList());
-		return n.reconstruct(n.getSource(), n.subj, blocks);  // Skipping agg (reconstruction done here)
+		return n.reconstruct(n.getSource(), n.subj, blocks);  // Disregarding agg (reconstruction done here)
 	}
 
 	@Override
 	public SType<K, B> visitRecursion(Recursion<K, B> n)
 	{
 		B body = visitSeq(n.body);
-		return n.reconstruct(n.getSource(), n.recvar, body);  // Skipping agg (reconstruction done here)
+		return n.reconstruct(n.getSource(), n.recvar, body);  // Disregarding agg (reconstruction done here)
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public abstract class STypeVisitorNoThrow<K extends ProtoKind, B extends Seq<K, 
 	{
 		List<SType<K, B>> elems = n.elems.stream().map(x -> x.visitWithNoThrow(this))
 				.collect(Collectors.toList());
-		return n.reconstruct(n.getSource(), elems);  // N.B. skipping agg (reconstruction done here)
+		return n.reconstruct(n.getSource(), elems);  // Disregarding agg (reconstruction done here)
 	}
 
 }

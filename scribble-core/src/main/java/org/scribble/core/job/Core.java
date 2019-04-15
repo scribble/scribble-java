@@ -237,8 +237,8 @@ public class Core
 	}
 
 	// Pre: checkWellFormedness 
-	// Returns: fullname -> Module -- CHECKME TODO: refactor local Module creation to Lang?
-	// CHECKME: generate projection Modules for an inline main?
+	// Returns: fullname -> Module -- CHECKME TODO: refactor local Module creation to Job?
+	// CHECKME: generate projection Modules for an inline main? -- no: TODO refactor to Job
 	public Map<LProtoName, LProtocol> getProjections(GProtoName fullname,
 			Role role) throws ScribException
 	{

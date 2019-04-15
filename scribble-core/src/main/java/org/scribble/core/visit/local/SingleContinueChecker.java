@@ -71,13 +71,14 @@ public class SingleContinueChecker extends STypeAggNoThrow<Local, LSeq, Boolean>
 	{
 		Set<RecVar> tmp = new HashSet<>(this.rvs);
 		tmp.add(n.recvar);
-		//return n.body.aggregateNoEx(new SingleContinueChecker(tmp));
+		//return n.body.visitWithNoThrow(new SingleContinueChecker(tmp));
 		return new SingleContinueChecker(tmp).visitSeq(n.body);
 	}
 
 	@Override
 	public Boolean visitSeq(LSeq n)
 	{
-		return n.elems.size() == 1 && ((LType) n.elems.get(0)).visitWithNoThrow(this);
+		return n.elems.size() == 1
+				&& ((LType) n.elems.get(0)).visitWithNoThrow(this);
 	}
 }

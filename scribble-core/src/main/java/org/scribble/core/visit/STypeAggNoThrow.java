@@ -34,7 +34,7 @@ public abstract class STypeAggNoThrow<K extends ProtoKind, B extends Seq<K, B>, 
 	// Pre: agg(Stream.of(unit())) = unit()
 	protected abstract T unit(SType<K, B> n);
 
-	// Internal use
+	// Internal use -- by default, agg is applied to the "compound" cases (choice, recursion, seq)
 	// Pre: agg(Stream.of(unit())) = unit()
 	protected abstract T agg(SType<K, B> n, Stream<T> ts);  // Cf. generic varargs, heap pollution issue
 	
