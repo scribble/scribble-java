@@ -45,7 +45,7 @@ public abstract class MAction<K extends ProtoKind>
 
 	public String toStringWithMessageIdHack()
 	{
-		String m = this.mid.isMessageSigName() ? "^" + this.mid : this.mid.toString();  // HACK
+		String m = this.mid.isSigName() ? "^" + this.mid : this.mid.toString();  // HACK
 		return this.obj + getCommSymbol() + m + this.payload;
 	}
 	

@@ -16,6 +16,7 @@ package org.scribble.core.type.name;
 import org.scribble.core.type.kind.Kind;
 
 
+// A (potenitally" qualified name -- a compound name
 public abstract class QualName<K extends Kind> extends AbstractName<K>
 {
 	private static final long serialVersionUID = 1L;

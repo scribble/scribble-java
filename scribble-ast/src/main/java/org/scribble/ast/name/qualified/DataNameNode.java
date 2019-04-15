@@ -16,7 +16,7 @@ package org.scribble.ast.name.qualified;
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.DataKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.session.Arg;
 
 //public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
@@ -42,11 +42,11 @@ public class DataNameNode extends MemberNameNode<DataKind>
 	}
 
 	@Override
-	public DataType toName()
+	public DataName toName()
 	{
-		DataType membname = new DataType(getLastElement());
+		DataName membname = new DataName(getLastElement());
 		return isPrefixed()
-				? new DataType(getModuleNamePrefix(), membname)
+				? new DataName(getModuleNamePrefix(), membname)
 		    : membname;
 	}
 
@@ -63,7 +63,7 @@ public class DataNameNode extends MemberNameNode<DataKind>
 	}
 
 	@Override
-	public DataType toPayloadType()
+	public DataName toPayloadType()
 	{
 		return toName();
 	}

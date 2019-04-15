@@ -13,12 +13,12 @@
  */
 package org.scribble.ast;
 
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 
 // A sig kind node: MessageSignatureNode, MessageSignatureNameNode or NonRoleParamNode
 public interface MsgNode extends NonRoleArgNode
 {
-	Message toMessage();
+	Msg toMessage();
 
 	//Arg<? extends SigKind> toArg();  // Not possible due to "diamond" with PayloadElemNameNode at AmbigNameNode
 }

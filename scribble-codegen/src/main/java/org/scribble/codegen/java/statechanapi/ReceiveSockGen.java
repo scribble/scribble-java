@@ -22,7 +22,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.PayElemType;
 import org.scribble.util.ScribException;
@@ -182,11 +182,11 @@ public class ReceiveSockGen extends ScribSockGen
 			int i = 1;
 			for (PayElemType<?> pt : a.payload.elems)
 			{
-				if (!pt.isDataType())
+				if (!pt.isDataName())
 				{
 					throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 				}
-				DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
+				DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
 				ScribSockGen.checkJavaDataTypeDecl(dtd);
 				mb.addParameters(buffSuper + dtd.getExtName() + "> " + RECEIVE_ARG_PREFIX + i++);
 			}
@@ -200,7 +200,7 @@ public class ReceiveSockGen extends ScribSockGen
 			int i = 1;
 			for (PayElemType<?> pt : a.payload.elems)  // Could factor out this loop (arg names) with addReceiveOpParams (as for send)
 			{
-				DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
+				DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
 				mb.addBodyLine(RECEIVE_ARG_PREFIX + i + "." + BUFF_VAL_FIELD + " = (" + dtd.getExtName() + ") "
 							+ RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + (i++ - 1) +"];");
 			}

@@ -17,14 +17,14 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.ConnectAction;
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 
 public class LAcc extends ConnectAction<Local, LSeq> implements LType
 {
 
 	// this.dst == Role.SELF
 	public LAcc(CommonTree source,
-			Role src, Message msg)
+			Role src, Msg msg)
 	{
 		super(source, msg, src, Role.SELF);
 	}
@@ -32,7 +32,7 @@ public class LAcc extends ConnectAction<Local, LSeq> implements LType
 	// FIXME: unnecessary dst 
 	@Override
 	public LAcc reconstruct(
-			CommonTree source, Message msg, Role src,
+			CommonTree source, Msg msg, Role src,
 			Role dst)
 	{
 		return new LAcc(source, src, msg);

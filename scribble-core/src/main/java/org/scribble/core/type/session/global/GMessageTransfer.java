@@ -16,7 +16,7 @@ package org.scribble.core.type.session.global;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 import org.scribble.core.type.session.MsgTransfer;
 
 public class GMessageTransfer extends MsgTransfer<Global, GSeq>
@@ -24,14 +24,14 @@ public class GMessageTransfer extends MsgTransfer<Global, GSeq>
 {
 
 	public GMessageTransfer(CommonTree source,
-			Role src, Message msg, Role dst)
+			Role src, Msg msg, Role dst)
 	{
 		super(source, msg, src, dst);
 	}
 
 	@Override
 	public GMessageTransfer reconstruct(
-			CommonTree source, Message msg, Role src,
+			CommonTree source, Msg msg, Role src,
 			Role dst)
 	{
 		return new GMessageTransfer(source, src, msg, dst);

@@ -24,7 +24,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.global.GProtoDecl;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ModuleName;
@@ -125,7 +125,7 @@ public class Module extends ScribNodeBase
 		return reconstruct(moddecl, imports, data, protos);
 	}
 	
-	public DataDecl getDataTypeDeclChild(DataType simpname)  // Simple name (as for getProtocolDecl)
+	public DataDecl getDataTypeDeclChild(DataName simpname)  // Simple name (as for getProtocolDecl)
 	{
 		Optional<DataDecl> res = getNonProtoDeclChildren().stream()
 				.filter(x -> (x instanceof DataDecl)

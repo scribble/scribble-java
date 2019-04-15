@@ -16,7 +16,7 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.core.type.kind.DataKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.Constants;
 
@@ -55,16 +55,16 @@ public class DataDecl extends NonProtoDecl<DataKind>
 
   // Simple name (ModuleDecl is the only NameDeclNode that uses qualified names)
 	@Override
-	public DataType getDeclName()
+	public DataName getDeclName()
 	{
 		return getNameNodeChild().toName();
 	}
 
 	@Override
-	public DataType getFullMemberName(Module mod)
+	public DataName getFullMemberName(Module mod)
 	{
 		ModuleName fullmodname = mod.getFullModuleName();
-		return new DataType(fullmodname, getDeclName());
+		return new DataName(fullmodname, getDeclName());
 	}
 
 	@Override

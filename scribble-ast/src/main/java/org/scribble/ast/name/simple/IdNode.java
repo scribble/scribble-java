@@ -17,7 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.IdKind;
 import org.scribble.core.type.name.Id;
 
-// N.B. no del attached, so not currently visited
+// Kind can be disregarded, the "true" kind (for qualified names) recorded by the parent
 public class IdNode extends SimpleNameNode<IdKind>
 {
 	// ScribTreeAdaptor#create constructor

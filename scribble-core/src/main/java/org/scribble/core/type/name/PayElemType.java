@@ -19,7 +19,7 @@ import org.scribble.core.type.session.Arg;
 
 public interface PayElemType<K extends PayElemKind> extends Arg<K>
 {
-	default boolean isDataType()
+	default boolean isDataName()
 	{
 		return false;
 	}

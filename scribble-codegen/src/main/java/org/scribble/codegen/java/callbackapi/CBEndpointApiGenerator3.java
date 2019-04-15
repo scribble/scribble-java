@@ -39,7 +39,7 @@ import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.PayElemType;
@@ -610,7 +610,7 @@ public class CBEndpointApiGenerator3
 					else 
 					{
 						opCons = opClass.newConstructor(a.payload.elems.stream().map(e ->
-									main.getDataTypeDeclChild((DataType) e).getExtName() + " arg" + i[0]++
+									main.getDataTypeDeclChild((DataName) e).getExtName() + " arg" + i[0]++
 							).collect(Collectors.joining(", ")));
 					}
 					opCons.addModifiers("public");
@@ -718,7 +718,7 @@ public class CBEndpointApiGenerator3
 			int i = 0;
 			for (PayElemType<?> pet : a.payload.elems)
 			{
-				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
+				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataName) pet);
 				branchAbstract += ", (" + dtd.getExtName() + ") m.payload[" + i++ + "]";
 			}
 			branchAbstract += "); break;\n";
@@ -756,7 +756,7 @@ public class CBEndpointApiGenerator3
 			int i = 1;
 			for (PayElemType<?> pet : a.payload.elems)
 			{
-				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
+				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataName) pet);
 				receiveInterface += ", " + dtd.getExtName() + " arg" + i++;
 			}
 		}
@@ -1009,7 +1009,7 @@ public class CBEndpointApiGenerator3
 	//protected final Function<PayloadElemType<?>, String> getExtName = e ->
 	protected String getExtName(PayElemType<?> e)
 	{
-		String extName = this.lang.getContext().getMainModule().getDataTypeDeclChild((DataType) e).getExtName();
+		String extName = this.lang.getContext().getMainModule().getDataTypeDeclChild((DataName) e).getExtName();
 		return (extName.indexOf(".") != -1)
 				? extName.substring(extName.lastIndexOf(".")+1, extName.length())
 				: extName;

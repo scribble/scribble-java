@@ -33,7 +33,7 @@ import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.name.Role;
@@ -300,7 +300,7 @@ public class CBEndpointApiGenerator
 						int i = 1;
 						for (PayElemType<?> pet : a.payload.elems)
 						{
-							DataDecl dtd = main.getDataTypeDeclChild((DataType) pet);
+							DataDecl dtd = main.getDataTypeDeclChild((DataName) pet);
 							messageClass += ", " + dtd.getExtName() + " arg" + i++;
 						}
 					}
@@ -444,7 +444,7 @@ public class CBEndpointApiGenerator
 						int i = 1;
 						for (PayElemType<?> pet : a.payload.elems)
 						{
-							DataDecl dtd = main.getDataTypeDeclChild((DataType) pet);
+							DataDecl dtd = main.getDataTypeDeclChild((DataName) pet);
 							receiveInterface += ", " + dtd.getExtName() 
 							+ " arg" + i++;
 						}
@@ -481,7 +481,7 @@ public class CBEndpointApiGenerator
 					int i = 0;
 					for (PayElemType<?> pet : a.payload.elems)
 					{
-						DataDecl dtd = main.getDataTypeDeclChild((DataType) pet);
+						DataDecl dtd = main.getDataTypeDeclChild((DataName) pet);
 						branchAbstract += ", (" + dtd.getExtName() + ") m.payload[" + i++ + "]";
 					}
 					branchAbstract += "); break;\n";

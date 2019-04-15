@@ -14,11 +14,11 @@
 package org.scribble.core.type.name;
 
 import org.scribble.core.type.kind.SigKind;
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 
 
 // The name of a declared (imported) message signature member
-public class SigName extends MemberName<SigKind> implements Message, MsgId<SigKind>
+public class SigName extends MemberName<SigKind> implements Msg, MsgId<SigKind>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -51,7 +51,7 @@ public class SigName extends MemberName<SigKind> implements Message, MsgId<SigKi
 	}
 
 	@Override
-	public boolean isMessageSigName()
+	public boolean isSigName()
 	{
 		return true;
 	}

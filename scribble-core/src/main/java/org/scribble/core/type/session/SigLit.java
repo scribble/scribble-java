@@ -18,7 +18,7 @@ import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Op;
 
-public class SigLit implements Message
+public class SigLit implements Msg
 {
 	public final Op op;
 	public final Payload payload;
@@ -30,7 +30,7 @@ public class SigLit implements Message
 	}
 
 	@Override
-	public boolean isMessageSig()
+	public boolean isSigLit()
 	{
 		return true;
 	}

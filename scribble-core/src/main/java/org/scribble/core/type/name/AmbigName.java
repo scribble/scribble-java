@@ -24,14 +24,14 @@ public class AmbigName extends AbstractName<AmbigKind>
 		super(AmbigKind.KIND, text);
 	}
 	
-	public SigName toMessageSigName()
+	public SigName toSigName()
 	{
 		return new SigName(getLastElement());
 	}
 
-	public DataType toDataType()
+	public DataName toDataName()
 	{
-		return new DataType(getLastElement());
+		return new DataName(getLastElement());
 	}
 
 	@Override

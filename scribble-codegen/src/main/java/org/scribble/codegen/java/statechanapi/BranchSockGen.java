@@ -29,7 +29,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.name.Role;
@@ -293,7 +293,7 @@ public class BranchSockGen extends ScribSockGen
 					int i = 0;
 					for (PayElemType<?> pt : a.payload.elems)
 					{
-						DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
+						DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
 					}
 				}
@@ -380,7 +380,7 @@ public class BranchSockGen extends ScribSockGen
 					int i = 0;
 					for (PayElemType<?> pt : a.payload.elems)
 					{
-						DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
+						DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
 					}
 				}

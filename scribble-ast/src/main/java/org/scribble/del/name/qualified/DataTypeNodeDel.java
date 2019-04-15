@@ -19,7 +19,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.lang.context.ModuleContext;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.del.ScribDelBase;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
@@ -43,13 +43,13 @@ public class DataTypeNodeDel extends ScribDelBase
 		}
 		ModuleContext mc = disamb.getModuleContext();
 		DataNameNode dtn = (DataNameNode) visited;
-		DataType dt = dtn.toName();
+		DataName dt = dtn.toName();
 		if (!mc.isVisibleDataType(dt))
 		{
 			throw new ScribException(dtn.getSource(),
 					"Data type not visible: " + dt);
 		}
-		DataType fullname = mc.getVisibleDataTypeFullName(dt);
+		DataName fullname = mc.getVisibleDataTypeFullName(dt);
 		/*return (DataTypeNode) disamb.job.config.af.QualifiedNameNode(
 				dtn.getSource(), DataTypeKind.KIND, fullname.getElements());*/
 		DataNameNode res = new DataNameNode(dtn.token);

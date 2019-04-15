@@ -39,7 +39,7 @@ import org.scribble.core.model.global.SGraph;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
@@ -139,9 +139,9 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
 		for (MemberName<? extends NonRoleParamKind> n : this.params)
 		{
-			if (n instanceof DataType)
+			if (n instanceof DataName)
 			{
-				params.add((DataType) n);
+				params.add((DataName) n);
 			}
 			else if (n instanceof SigName)
 			{

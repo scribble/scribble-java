@@ -177,7 +177,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 			throw new RuntimeException("Unknown action type: " + n);
 		}
 		MsgId<?> mid = n.msg.getId();
-		Payload payload = n.msg.isMessageSig()  // CHECKME: generalise? (e.g., hasPayload)
+		Payload payload = n.msg.isSigLit()  // CHECKME: generalise? (e.g., hasPayload)
 				? ((SigLit) n.msg).payload
 				: Payload.EMPTY_PAYLOAD;
 		// TODO: add toAction method to base Interaction

@@ -20,16 +20,16 @@ import org.scribble.core.type.name.MsgId;
 
 
 // A sig kind name: MessageSignature value (or parameter)
-public interface Message extends Arg<SigKind>
+public interface Msg extends Arg<SigKind>
 {
 	MsgId<? extends MsgIdKind> getId();
 	
-	default boolean isMessageSig()
+	default boolean isSigLit()
 	{
 		return false;
 	}
 
-	default boolean isMessageSigName()
+	default boolean isSigName()
 	{
 		return false;
 	}

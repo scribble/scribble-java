@@ -26,7 +26,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.ScribException;
@@ -97,7 +97,7 @@ public class CaseSockGen extends ScribSockGen
 			EState succ = this.curr.getSuccessor(a);
 			addReceiveMethod(this.cb, a, succ);
 			addCaseReceiveMethod(this.cb, a, succ);
-			if (!a.payload.isEmpty() || a.mid.isMessageSigName())
+			if (!a.payload.isEmpty() || a.mid.isSigName())
 			{
 				addCaseReceiveDiscardMethod(this.cb, a, succ);
 			}
@@ -193,7 +193,7 @@ public class CaseSockGen extends ScribSockGen
 		if (a.mid.isOp())
 		{
 			ln += a.payload.elems.stream()
-						 .map((pt) -> getGarbageBuf(main.getDataTypeDeclChild(((DataType) pt)).getExtName())).collect(Collectors.joining(", ")) + ");";
+						 .map((pt) -> getGarbageBuf(main.getDataTypeDeclChild(((DataName) pt)).getExtName())).collect(Collectors.joining(", ")) + ");";
 		}
 		else
 		{

@@ -17,21 +17,21 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.ConnectAction;
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 
 public class GConnect extends ConnectAction<Global, GSeq>
 		implements GType
 {
 
 	public GConnect(CommonTree source,  // DirectedInteraction not ideal (imprecise)
-			Role src, Message msg, Role dst)
+			Role src, Msg msg, Role dst)
 	{
 		super(source, msg, src, dst);
 	}
 
 	@Override
 	public GConnect reconstruct(
-			CommonTree source, Message msg, Role src,
+			CommonTree source, Msg msg, Role src,
 			Role dst)
 	{
 		return new GConnect(source, src, msg, dst);

@@ -16,7 +16,7 @@ package org.scribble.core.lang.context;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.SigName;
@@ -29,7 +29,7 @@ public class ScribNames
 {
 	// names -> fully qualified names
 	public final Map<ModuleName, ModuleName> modules = new HashMap<>();
-	public final Map<DataType, DataType> data = new HashMap<>();
+	public final Map<DataName, DataName> data = new HashMap<>();
 	public final Map<SigName, SigName> sigs = new HashMap<>();
 	public final Map<GProtoName, GProtoName> globals = new HashMap<>();
 	public final Map<LProtoName, LProtoName> locals = new HashMap<>();
@@ -49,7 +49,7 @@ public class ScribNames
 				|| this.locals.containsKey(visname);
 	}
 
-	public boolean isVisibleDataType(DataType visname)
+	public boolean isVisibleDataType(DataName visname)
 	{
 		return this.data.containsKey(visname);
 	}

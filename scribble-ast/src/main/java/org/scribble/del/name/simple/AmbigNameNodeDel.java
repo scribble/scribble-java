@@ -51,7 +51,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 		AmbigName name = ann.toName();
 		// By well-formedness (checked later), payload type and parameter names are distinct
 		// FIXME: are conflicts checked elsewhere?
-		if (mcontext.isDataTypeVisible(name.toDataType()))
+		if (mcontext.isDataTypeVisible(name.toDataName()))
 		{
 			if (parent instanceof MessageTransfer<?>)  // FIXME HACK: MessageTransfer assumes MessageNode (cast in visitChildren), so this needs to be caught here  // FIXME: other similar cases?
 			{
@@ -73,7 +73,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 
 			return res;
 		}
-		else if (mcontext.isMessageSigNameVisible(name.toMessageSigName()))
+		else if (mcontext.isMessageSigNameVisible(name.toSigName()))
 		{
 			if (parent instanceof PayElem) // FIXME HACK
 			{

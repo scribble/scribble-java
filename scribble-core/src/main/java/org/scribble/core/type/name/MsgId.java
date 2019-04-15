@@ -23,7 +23,7 @@ public interface MsgId<M extends MsgIdKind> extends Name<M>
 		return false;
 	}
 
-	default boolean isMessageSigName()
+	default boolean isSigName()
 	{
 		return false;
 	}

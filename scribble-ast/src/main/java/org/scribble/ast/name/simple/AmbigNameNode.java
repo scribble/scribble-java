@@ -22,7 +22,7 @@ import org.scribble.core.type.kind.NonRoleArgKind;
 import org.scribble.core.type.name.AmbigName;
 import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.session.Arg;
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 
 // Primitive payload type, MessageSigName or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 public class AmbigNameNode extends SimpleNameNode<AmbigKind>
@@ -55,7 +55,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	}
 
 	@Override
-	public Message toMessage()
+	public Msg toMessage()
 	{
 		throw new RuntimeException(
 				"Ambiguous name node not disambiguated: " + this);

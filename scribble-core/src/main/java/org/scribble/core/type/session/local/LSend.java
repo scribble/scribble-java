@@ -16,7 +16,7 @@ package org.scribble.core.type.session.local;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 import org.scribble.core.type.session.MsgTransfer;
 
 public class LSend extends MsgTransfer<Local, LSeq>
@@ -25,7 +25,7 @@ public class LSend extends MsgTransfer<Local, LSeq>
 
 	// this.src == Role.SELF
 	public LSend(CommonTree source,
-			Message msg, Role dst)
+			Msg msg, Role dst)
 	{
 		super(source, msg, Role.SELF, dst);
 	}
@@ -33,7 +33,7 @@ public class LSend extends MsgTransfer<Local, LSeq>
 	// CHECKME: remove unnecessary src ?
 	@Override
 	public LSend reconstruct(
-			CommonTree source, Message msg, Role src,
+			CommonTree source, Msg msg, Role src,
 			Role dst)
 	{
 		return new LSend(source, msg, dst);

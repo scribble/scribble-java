@@ -16,7 +16,7 @@ package org.scribble.core.type.session.local;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 import org.scribble.core.type.session.MsgTransfer;
 
 public class LRcv extends MsgTransfer<Local, LSeq>
@@ -25,7 +25,7 @@ public class LRcv extends MsgTransfer<Local, LSeq>
 
 	// this.dst == Role.SELF
 	public LRcv(CommonTree source,
-			Role src, Message msg)
+			Role src, Msg msg)
 	{
 		super(source, msg, src, Role.SELF);
 	}
@@ -33,7 +33,7 @@ public class LRcv extends MsgTransfer<Local, LSeq>
 	// FIXME: unnecessary dst 
 	@Override
 	public LRcv reconstruct(
-			CommonTree source, Message msg, Role src,
+			CommonTree source, Msg msg, Role src,
 			Role dst)
 	{
 		return new LRcv(source, src, msg);

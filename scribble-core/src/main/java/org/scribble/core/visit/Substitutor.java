@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ProtoName;
@@ -30,7 +30,7 @@ import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
@@ -57,13 +57,13 @@ public class Substitutor<K extends ProtoKind, B extends Seq<K, B>>
 	@Override
 	public SType<K, B> visitDirectedInteraction(DirectedInteraction<K, B> n)
 	{
-		Message msg = n.msg;
+		Msg msg = n.msg;
 		if (msg instanceof MemberName)
 		{
 			MemberName<?> name = (MemberName<?>) msg;
 			if (this.subs.hasArg(name))
 			{
-				msg = (Message) this.subs.subsArg(name);
+				msg = (Msg) this.subs.subsArg(name);
 			}
 		}
 		return n.reconstruct(n.getSource(), msg, this.subs.subsRole(n.src),
@@ -87,9 +87,9 @@ public class Substitutor<K extends ProtoKind, B extends Seq<K, B>>
 		{
 			if (a instanceof MemberName<?> && this.subs.hasArg((MemberName<?>) a))
 			{
-				if (a instanceof DataType)
+				if (a instanceof DataName)
 				{
-					a = this.subs.subsArg((DataType) a);
+					a = this.subs.subsArg((DataName) a);
 				}
 				else if (a instanceof SigName)
 				{

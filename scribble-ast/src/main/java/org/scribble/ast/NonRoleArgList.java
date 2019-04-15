@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.NonRoleArgKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.SigLit;
@@ -76,9 +76,9 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 			{
 				cast.add((SigLit) a);
 			}
-			else if (a instanceof DataType)
+			else if (a instanceof DataName)
 			{
-				cast.add((DataType) a);
+				cast.add((DataName) a);
 			}
 			else if (a instanceof SigName)
 			{

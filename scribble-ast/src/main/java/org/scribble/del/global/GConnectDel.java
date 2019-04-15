@@ -19,7 +19,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
@@ -53,7 +53,7 @@ public class GConnectDel extends ConnectionActionDel
 			throw new RuntimeException("TODO: multiple destination roles: " + source);
 		}
 		Role dst = ds.get(0).toName();
-		Message msg = source.getMessageNodeChild().toMessage();
+		Msg msg = source.getMessageNodeChild().toMessage();
 		return new org.scribble.core.type.session.global.GConnect(source, src, msg, dst);
 	}
 }

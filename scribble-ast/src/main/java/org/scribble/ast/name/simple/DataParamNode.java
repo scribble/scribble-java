@@ -16,7 +16,7 @@ package org.scribble.ast.name.simple;
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.DataKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 
 public class DataParamNode extends NonRoleParamNode<DataKind>
 		implements PayElemNameNode<DataKind>  // As a payload, can only be a DataType (so hardcode)
@@ -41,20 +41,20 @@ public class DataParamNode extends NonRoleParamNode<DataKind>
 	}
 	
 	@Override
-	public DataType toName()
+	public DataName toName()
 	{
-		return new DataType(getText());
+		return new DataName(getText());
 	}
 
 	@Override
-	public DataType toArg()
+	public DataName toArg()
 	{
 		// As a payload kind, currently hardcorded to data type kinds (protocol payloads not supported)
 		return toPayloadType();
 	}
 
 	@Override
-	public DataType toPayloadType()  // Currently can assume the only possible kind for NonRoleParamNode is DataTypeKind
+	public DataName toPayloadType()  // Currently can assume the only possible kind for NonRoleParamNode is DataTypeKind
 	{
 		return toName();
 	}

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GDelegType;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.SigName;
@@ -56,7 +56,7 @@ public class NonProtoDepsGatherer<K extends ProtoKind, B extends Seq<K, B>>
 	{
 		{
 			List<MemberName<?>> res = new LinkedList<>();
-			if (n.msg.isMessageSigName())
+			if (n.msg.isSigName())
 			{
 				res.add((SigName) n.msg);
 			}
@@ -65,9 +65,9 @@ public class NonProtoDepsGatherer<K extends ProtoKind, B extends Seq<K, B>>
 				Payload pay = ((SigLit) n.msg).payload;
 				for (PayElemType<?> p : pay.elems)
 				{
-					if (p.isDataType())
+					if (p.isDataName())
 					{
-						res.add((DataType) p);
+						res.add((DataName) p);
 					}
 					else if (p.isGDelegationType())  // TODO FIXME: should be projected to local name
 					{
@@ -92,7 +92,7 @@ public class NonProtoDepsGatherer<K extends ProtoKind, B extends Seq<K, B>>
 			Do<K, B, N> n)
 	{
 		return n.args.stream()
-				.filter(x -> (x instanceof SigLit) || (x instanceof DataType))  // CHECKME: refactor?
+				.filter(x -> (x instanceof SigLit) || (x instanceof DataName))  // CHECKME: refactor?
 				.map(x -> (MemberName<?>) x);
 	}
 }

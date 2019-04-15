@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import org.scribble.core.job.Job;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.Op;
@@ -245,24 +245,24 @@ public class AutGraphParser
 		{
 			case "!":
 			{
-				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
+				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
 				return ef.newESend(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames? -- currently OK, treated as empty payload (cf. ModelAction)
 			}
 			case "?":
 			{
-				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
+				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
 				return ef.newEReceive(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
 			}
 			case "!!":
 			{
 				//return new Connect(new Role(peer));
-				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
+				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
 				return ef.newERequest(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "??":
 			{
 				//return new Accept(new Role(peer));
-				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
+				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
 				return ef.newEAccept(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "(!!)":

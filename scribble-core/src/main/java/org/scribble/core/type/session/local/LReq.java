@@ -17,7 +17,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.ConnectAction;
-import org.scribble.core.type.session.Message;
+import org.scribble.core.type.session.Msg;
 
 public class LReq extends ConnectAction<Local, LSeq>
 		implements LType
@@ -25,7 +25,7 @@ public class LReq extends ConnectAction<Local, LSeq>
 
 	// this.src == Role.SELF
 	public LReq(CommonTree source,
-			Message msg, Role dst)
+			Msg msg, Role dst)
 	{
 		super(source, msg, Role.SELF, dst);
 	}
@@ -33,7 +33,7 @@ public class LReq extends ConnectAction<Local, LSeq>
 	// CHECKME: remove unnecessary src ?
 	@Override
 	public LReq reconstruct(
-			CommonTree source, Message msg, Role src,
+			CommonTree source, Msg msg, Role src,
 			Role dst)
 	{
 		return new LReq(source, msg, dst);

@@ -28,7 +28,7 @@ import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.SigName;
@@ -82,9 +82,9 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
 		for (MemberName<? extends NonRoleParamKind> n : this.params)
 		{
-			if (n instanceof DataType)
+			if (n instanceof DataName)
 			{
-				params.add((DataType) n);
+				params.add((DataName) n);
 			}
 			else if (n instanceof SigName)
 			{

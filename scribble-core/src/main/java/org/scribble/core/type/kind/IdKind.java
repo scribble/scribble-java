@@ -13,7 +13,8 @@
  */
 package org.scribble.core.type.kind;
 
-
+ 
+// IdKind can be disregarded, the "true" kind (for qualified names) recorded by the IdNode parent
 public class IdKind extends AbstractKind
 {
 	public static final IdKind KIND = new IdKind();

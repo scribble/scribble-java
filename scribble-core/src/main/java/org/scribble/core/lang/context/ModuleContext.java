@@ -19,7 +19,7 @@ import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.kind.SigKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.SigName;
@@ -72,7 +72,7 @@ public class ModuleContext
 		return getProtocolDeclFullName(this.deps, proto);
 	}
 
-	public boolean isDataTypeVisible(DataType typename)
+	public boolean isDataTypeVisible(DataName typename)
 	{
 		return this.visible.data.keySet().contains(typename);
 	}
@@ -82,12 +82,12 @@ public class ModuleContext
 		return this.visible.sigs.containsKey(signame);
 	}
 	
-	public DataType getVisibleDataTypeFullName(DataType visname)
+	public DataName getVisibleDataTypeFullName(DataName visname)
 	{
 		return getFullName(this.visible.data, visname);
 	}
 	
-	public boolean isVisibleDataType(DataType visname)
+	public boolean isVisibleDataType(DataName visname)
 	{
 		return this.visible.isVisibleDataType(visname);
 	}

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ProtoName;
@@ -107,7 +107,7 @@ public abstract class Protocol<K extends ProtoKind, N extends ProtoName<K>, B ex
 				.map(x ->
 					{
 						String k;
-						if (x instanceof DataType) // CHECKME: refactor?
+						if (x instanceof DataName) // CHECKME: refactor?
 						{
 							k = Constants.TYPE_KW;
 						}

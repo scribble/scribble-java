@@ -21,7 +21,7 @@ public abstract class MsgTransfer<K extends ProtoKind, B extends Seq<K, B>>
 		extends DirectedInteraction<K, B>
 {
 	public MsgTransfer(CommonTree source,
-			Message msg, Role src, Role dst)
+			Msg msg, Role src, Role dst)
 	{
 		super(source, msg, src, dst);
 	}

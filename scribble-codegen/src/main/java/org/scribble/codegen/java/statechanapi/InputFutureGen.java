@@ -27,7 +27,7 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.PayElemType;
@@ -76,11 +76,11 @@ public class InputFutureGen extends AuxStateChanTypeGen
 				int i = 1;
 				for (PayElemType<?> pt : a.payload.elems)
 				{
-					if (!pt.isDataType())
+					if (!pt.isDataName())
 					{
 						throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 					}
-					DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);
+					DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);
 					ScribSockGen.checkJavaDataTypeDecl(dtd);
 					String type = dtd.getExtName();
 					types.add(type);

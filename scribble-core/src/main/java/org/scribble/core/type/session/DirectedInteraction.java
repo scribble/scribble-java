@@ -28,12 +28,12 @@ public abstract class DirectedInteraction<K extends ProtoKind, B extends Seq<K, 
 		extends BasicInteraction<K, B>
 {
 	// Following ast children order
-	public final Message msg;
+	public final Msg msg;
 	public final Role src;
 	public final Role dst;
 
 	public DirectedInteraction(CommonTree source,
-			Message msg, Role src, Role dst)
+			Msg msg, Role src, Role dst)
 	{
 		super(source);
 		this.msg = msg;
@@ -42,7 +42,7 @@ public abstract class DirectedInteraction<K extends ProtoKind, B extends Seq<K, 
 	}
 	
 	public abstract DirectedInteraction<K, B> reconstruct(
-			CommonTree source, Message msg, Role src,
+			CommonTree source, Msg msg, Role src,
 			Role dst);
 	
 	@Override

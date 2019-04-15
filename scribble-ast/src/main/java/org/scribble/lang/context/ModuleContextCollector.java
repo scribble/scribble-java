@@ -24,7 +24,7 @@ import org.scribble.ast.NonProtoDecl;
 import org.scribble.ast.global.GProtoDecl;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.context.ScribNames;
-import org.scribble.core.type.name.DataType;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ModuleName;
@@ -91,7 +91,7 @@ public class ModuleContextCollector
 			if (npd.isDataTypeDecl())
 			{
 				DataDecl dtd = (DataDecl) npd;
-				DataType qualif = new DataType(modname, dtd.getDeclName());
+				DataName qualif = new DataName(modname, dtd.getDeclName());
 				names.data.put(qualif, dtd.getFullMemberName(mod));
 			}
 			else //if (npd.isMessageSigNameDecl())
@@ -174,8 +174,8 @@ public class ModuleContextCollector
 			if (npd.isDataTypeDecl())
 			{
 				DataDecl dtd = (DataDecl) npd;
-				DataType visname = new DataType(dtd.getDeclName().toString());
-				DataType fullname = dtd.getFullMemberName(root);
+				DataName visname = new DataName(dtd.getDeclName().toString());
+				DataName fullname = dtd.getFullMemberName(root);
 				this.visible.data.put(fullname, fullname);
 				this.visible.data.put(visname, fullname);
 			}
