@@ -16,8 +16,8 @@ package org.scribble.codegen.java.statechanapi;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
@@ -26,12 +26,12 @@ import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.MessageSigName;
-import org.scribble.type.name.PayloadElemType;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.DataName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.PayElemType;
+import org.scribble.util.ScribException;
 
 public class InputFutureGen extends AuxStateChanTypeGen
 {
@@ -47,11 +47,11 @@ public class InputFutureGen extends AuxStateChanTypeGen
 	}
 
 	@Override
-	public ClassBuilder generateType() throws ScribbleException
+	public ClassBuilder generateType() throws ScribException
 	{
 		final String FUTURE_PARAM = "fut";
 		Module main = this.apigen.getMainModule();
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 
 		String futureClass = getInputFutureName(this.parent.getName());  // Fresh enough? need only one future class per receive (unary receive)
 
@@ -74,15 +74,15 @@ public class InputFutureGen extends AuxStateChanTypeGen
 			if (!a.payload.isEmpty())
 			{
 				int i = 1;
-				for (PayloadElemType<?> pt : a.payload.elems)
+				for (PayElemType<?> pt : a.payload.elems)
 				{
-					if (!pt.isDataType())
+					if (!pt.isDataName())
 					{
-						throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
+						throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 					}
-					DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);
+					DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);
 					ScribSockGen.checkJavaDataTypeDecl(dtd);
-					String type = dtd.extName;
+					String type = dtd.getExtName();
 					types.add(type);
 					FieldBuilder f = future.newField("pay" + i++);
 					f.setType(type);
@@ -92,9 +92,9 @@ public class InputFutureGen extends AuxStateChanTypeGen
 		}
 		else
 		{
-			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());
 			ScribSockGen.checkMessageSigNameDecl(msd);
-			String type = msd.extName;
+			String type = msd.getExtName();
 			types.add(type);
 			FieldBuilder f = future.newField("msg");
 			f.setType(type);

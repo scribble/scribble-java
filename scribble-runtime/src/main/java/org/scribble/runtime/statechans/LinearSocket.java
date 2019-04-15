@@ -16,11 +16,11 @@ package org.scribble.runtime.statechans;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 
+import org.scribble.core.type.name.Role;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.BinaryChannelWrapper;
 import org.scribble.runtime.session.Session;
 import org.scribble.runtime.session.SessionEndpoint;
-import org.scribble.type.name.Role;
 
 // Not AutoClosable -- leave that to InitSocket
 public abstract class LinearSocket<S extends Session, R extends Role> extends ScribSocket<S, R>

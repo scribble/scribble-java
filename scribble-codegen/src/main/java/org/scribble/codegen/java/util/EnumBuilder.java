@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.main.RuntimeScribbleException;
+import org.scribble.util.RuntimeScribException;
 
 public class EnumBuilder extends TypeBuilder
 {
@@ -72,48 +72,48 @@ public class EnumBuilder extends TypeBuilder
 	@Override
 	public void setPackage(String packname)
 	{
-		throw new RuntimeScribbleException("Invalid for enums");
+		throw new RuntimeScribException("Invalid for enums");
 	}
 	
 	@Override
 	public void addImports(String... imports)
 	{
-		throw new RuntimeScribbleException("Invalid for enums");
+		throw new RuntimeScribException("Invalid for enums");
 	}
 
 	@Override
 	public FieldBuilder newField(String name)
 	{
-		throw new RuntimeScribbleException("Invalid for enums");
+		throw new RuntimeScribException("Invalid for enums");
 	}
 	
 	@Override
 	public AbstractMethodBuilder newAbstractMethod()
 	{
-		throw new RuntimeScribbleException("Invalid for enums");
+		throw new RuntimeScribException("Invalid for enums");
 	}
 	
 	@Override
 	public ClassBuilder newTopLevelClass()
 	{
-		throw new RuntimeScribbleException("Invalid for enums");
+		throw new RuntimeScribException("Invalid for enums");
 	}
 
 	@Override
 	protected String buildFields(String clazz)
 	{
-		throw new RuntimeScribbleException("Invalid for enums");
+		throw new RuntimeScribException("Invalid for enums");
 	}
 
 	@Override
 	protected String buildMethods(String clazz)
 	{
-		throw new RuntimeScribbleException("Invalid for enums");
+		throw new RuntimeScribException("Invalid for enums");
 	}
 
 	@Override
 	protected String buildMemberTypes(String clazz)
 	{
-		throw new RuntimeScribbleException("Invalid for enums");
+		throw new RuntimeScribException("Invalid for enums");
 	}
 }

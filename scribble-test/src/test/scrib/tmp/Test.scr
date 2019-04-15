@@ -1,9 +1,10 @@
 //Raymond@HZHL3 ~/code/scribble-java/scribble-java
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/Test.scr
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr
-
 //$ bin/scribblec.sh -ip scribble-test/src/test/scrib/ -d scribble-test/src/test/scrib/tmp/ scribble-test/src/test/scrib/tmp/Test.scr
 //$ bin/scribblec.sh -ip scribble-test/src/test/scrib/ -d scribble-test/src/test/scrib/tmp/ scribble-test/src/test/scrib/tmp/Test.scr -api Proto1 B
+
+// OLD:
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/Test.scr
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr
 
 
 //http://sandbox.kidstrythisathome.com/erdos/
@@ -30,10 +31,464 @@ module tmp.Test;
 // Add a unit test for validation to bypass aux
 
 
-// FIXME TODO: port forwarding version of P2 -- funny case of "session" persisting over full disconnect, should/how to correlate?
+// TODO: port forwarding version of P2 -- funny case of "session" persisting over full disconnect, should/how to correlate?
+// FIXME: good.liveness.Test02, reachability check (empty rec projection)
 
 
 
+
+
+
+
+//-------------
+//- drop unused recs -- partly done by inlining, but not done yet for subprotos
+
+//- projection dependencies (projections as modules?)
+//- check projected role/choice/do pruning/fixing? -- applies only to above proj? (i.e., proto decls) -- CHECKME: can do role fixing by getting roles from iproj? similarly do-pruning?
+
+//- connections
+//- refactor ast to parser, refactor lang to type? -- separate protocol classes?
+//- or: ast/del to new lang -- core lang to type, except protocol
+//- remove unused visitors and del code -- move new visitors there?
+//- shorten class names (e.g., Protocol->Proto), rename parser constants, revise ScribTreeAdaptor and DelDecorator
+//- refactor model building
+//- refactor do param/arg ast classes -- generally clean up AST class hierarchy
+//- refactor parsing and CL
+//- check demos
+		
+		// TODO make test framework to check proj->inline matches inline->proj
+		// TODO make test framework to check global-"proj"-via-taus matches actual proj -- matches mean language acceptance?
+		// could also test once-unfold-all against model
+
+
+// Done: -- parser/ast refactoring
+	// change parsed to in jobcontext to record original roledecls (for GDo::project) -- and change getInlined on proto to prune (via getRoles on def)
+	// separate Job into core and lang parts (mainly parsed Module)
+	// move ast/del, old visit and new frontend to lang
+	// integrate new frontend with MainContext?
+	// move lang types to type.sess, and move new visit
+	// try modulecontextvisitor by "static lookup"
+	// try move antlrwrapper to parser again
+	//for isSingleConts (and project, buildGraph), make T visitWith(STypeReducer<K, B> v) ? -- roleenabling and extchoicecons are more like reducers?
+	// refactor scribble.g, simplify ast/del/etc class names and deprecated class code
+	//...remove Token args from af constructors -- removed, and re-added
+	//refactor reconstructs to use af? -- refactored af and reconstruct to use addChildren1 -- FIXME
+		//...fix simp node constructors and af (no IdNode child) --- fix ambignodel to use af -- separate af methods
+
+
+// Outstanding:
+	//...disallow/check for reserved __ -- do in gtype translation?
+	// FIXME: qualifed sig name as non-role do-arg
+	// TODO: rename addChildren1
+	// CHECKME: duplicate proto mods
+
+
+// For model build/check refactoring:
+	// add exp conn checks to model validation
+	// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
+			// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
+	// refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
+		// -- otoh, ast errors give source feedback -- maybe implement both
+	// use stypefactory in core -- also make a visitorfactory (core and ast)
+
+// codegen refactoring:
+
+// Test refactoring:
+	// refactor test to use main instead of cli
+
+
+sig <java> "..." from "..." as T;
+
+
+/*
+global protocol Proto1<sig M>(role A, role B)
+{
+	M from A to B;
+	do Proto1<Test.T>(A, B);  // TODO: add unit test, testing qualified sig name as nonrole arg
+}
+//*/
+
+//*
+explicit global protocol Proto1(role A__, role B)
+{
+	() connect A__ to B;
+	rec X
+	{
+		() from A__ to B;
+		continue X;
+	}
+}
+//*/
+/*
+global protocol Proto1<sig M>(role A, role B)
+{
+	rec X {
+	//1() from A to B;
+		//1(Test.T) from A to B;
+		1(T) from A to B;
+		M from B to A;
+		//do Proto1(A, B);
+		continue X;
+		}
+}
+//*/
+
+
+/*
+explicit global protocol Foo(role A, role B, role C)
+{
+	connect A to B;
+	do FooAux(A, B, C);
+}
+
+aux explicit global protocol FooAux(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		do FooAux(A, B, C);
+	}
+	or
+	{
+		2() from A to B;
+		connect A to C;
+		3() from A to C;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Foo(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+		connect A to C;
+		3() from A to C;
+	}		
+}
+//*/
+
+
+/*
+explicit global protocol Foo(role A, role B)
+{
+	//connect A to B;
+	1() from A to B;
+	disconnect A and B;
+	connect A to B;
+	1() from A to B;
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B, role C)
+{
+	1() from A to B;	
+	do Bar(A, C);
+}
+
+aux global protocol Bar(role D, role E)
+{
+	2() from D to E;	
+}
+//*/
+
+
+/*
+explicit global protocol Foo(role A, role B, role C)
+{
+	0() connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		do Foo(A, B, C);
+	}
+	or
+	{
+		2() from A to B;
+		foo() connect A to C;
+		3() from A to C;
+	}
+}
+//*/
+
+
+
+/*// Add unit test -- testing: inlining of shadowed recvars
+global protocol Foo(role A, role B)
+{
+	rec X
+	{
+		rec X
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*  // Add unit test -- testing: repeat rec sigs in inlining due to multilple do's, w.r.t. unfolding
+global protocol Foo(role A, role B)
+{
+	do Bar(A, B);
+	do Bar(A, B);
+}
+
+aux global protocol Bar(role A, role B)
+{
+	1() from A to B;
+}
+//*/
+
+
+/*  // Add unit test -- testing: repeat rec sigs in inlining due to multilple do's, w.r.t. unfolding
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		do Bar(A, B);
+	}
+	or
+	{
+		do Bar(A, B);
+	}
+}
+
+aux global protocol Bar(role C, role D)
+{
+	3() from C to D;
+	do Bar(C, D);
+}
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X 
+	{	
+		1() from A to B;
+		choice at A
+		{
+			rec Y
+			{
+				0() from A to B;
+				//do Proto1(A, B);
+				continue X;
+			}
+		}
+	}
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		rec X
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		do Proto1Aux(A, B);
+		//do Proto1(A, B);
+	}
+	or
+	{
+		do Proto1Aux2(A, B);
+	}
+	or
+	{
+		2() from A to B;
+	}
+}
+
+aux global protocol Proto1Aux(role A, role B)
+{
+	0() from A to B;
+	do Proto1(A, B);
+	//do Proto1Aux(A, B);
+}
+
+global protocol Proto1Aux2(role A, role B)
+{
+	3() from A to B;
+	do Proto1Aux2(A, B);
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		0() from A to B;
+		choice at A
+		{
+			1() from A to B;	
+			//do Proto1(A, B);
+			continue X;
+			//3() from A to B;	
+		}
+		or
+		{
+			2() from A to B;	
+		}
+		//4() from A to B;	
+	}
+	5() from A to B;	
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		//1() from A to B;
+		1() from A to C;
+	}
+	or
+	{
+		//2() from C to A;
+		//2() from A to B;
+		2() from A to C;
+		//2() from B to C;
+	}	
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	do Proto1Aux(A, B);
+}
+
+global protocol Proto1Aux(role AA, role BB)
+{
+	() from AA to BB;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	0() from A to B;
+	choice at A
+	{
+		1() from A to B;
+		do Proto1(A, B);
+	}
+	or
+	{
+		2() from A to B;
+		3() from A to B;
+	}
+	4() from A to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		rec X
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		2() from A to B;	
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		do Proto1(A, B);	
+	}
+	or
+	{
+		2() from A to B;
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+		}
+		or
+		{
+			2() from A to B;
+			3() from B to A;
+			//do Proto1(A, B);
+			//continue X;
+			do Proto1(B, A);
+		}
+	}
+}
+//*/
 
 
 /*
@@ -109,7 +564,7 @@ aux global protocol Loop2(role P, role R, role C)
 
 
 
-//*
+/*
 type <dotnet> "System.UInt32" from "..." as int;
 
 global protocol SH(role P, role R, role C)

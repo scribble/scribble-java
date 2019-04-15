@@ -15,7 +15,7 @@ package org.scribble.codegen.java.statechanapi;
 
 import java.util.stream.Collectors;
 
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.statechanapi.ioifaces.BranchIfaceGen;
@@ -24,12 +24,12 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
-import org.scribble.type.name.MessageSigName;
-import org.scribble.type.name.Role;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.DataName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 public class CaseSockGen extends ScribSockGen
 {
@@ -78,7 +78,7 @@ public class CaseSockGen extends ScribSockGen
 
 	//private String constructCaseClass(EndpointState curr, Module main)
 	@Override
-	protected void addMethods() throws ScribbleException
+	protected void addMethods() throws ScribException
 	{
 		String branchName = this.apigen.getSocketClassName(curr);  // Name of "parent" branch class (curr state is the branch state)
 		String enumClassName = branchName + "." + BranchSockGen.getBranchEnumClassName(this.apigen, this.curr);
@@ -97,7 +97,7 @@ public class CaseSockGen extends ScribSockGen
 			EState succ = this.curr.getSuccessor(a);
 			addReceiveMethod(this.cb, a, succ);
 			addCaseReceiveMethod(this.cb, a, succ);
-			if (!a.payload.isEmpty() || a.mid.isMessageSigName())
+			if (!a.payload.isEmpty() || a.mid.isSigName())
 			{
 				addCaseReceiveDiscardMethod(this.cb, a, succ);
 			}
@@ -117,7 +117,7 @@ public class CaseSockGen extends ScribSockGen
 	}
 
 	// Same as in ReceiveSocketGenerator
-	private MethodBuilder makeReceiveHeader(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
+	private MethodBuilder makeReceiveHeader(ClassBuilder cb, EAction a, EState succ) throws ScribException
 	{
 		MethodBuilder mb = cb.newMethod();
 		ReceiveSockGen.setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -125,7 +125,7 @@ public class CaseSockGen extends ScribSockGen
 		return mb;
 	}
 
-	private void addReceiveMethod(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
+	private void addReceiveMethod(ClassBuilder cb, EAction a, EState succ) throws ScribException
 	{
 		Module main = this.apigen.getMainModule();
 
@@ -138,15 +138,15 @@ public class CaseSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			mb.addBodyLine(JavaBuilder.SUPER + ".use();");
 			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
-			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + CASE_MESSAGE_FIELD + ";");
+			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.getExtName() + ") " + CASE_MESSAGE_FIELD + ";");
 		}
 		addReturnNextSocket(mb, succ);
 	}
 
-	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
+	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, EAction a, EState succ) throws ScribException
 	{
 		MethodBuilder mb = cb.newMethod();
 		setCaseReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -154,7 +154,7 @@ public class CaseSockGen extends ScribSockGen
 		return mb;
 	}
 
-	private void addCaseReceiveMethod(ClassBuilder cb, EAction a, EState succ) throws ScribbleException
+	private void addCaseReceiveMethod(ClassBuilder cb, EAction a, EState succ) throws ScribException
 	{
 		MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
 		String ln = JavaBuilder.RETURN + " " + "receive(" + getSessionApiRoleConstant(a.obj) + ", ";
@@ -193,12 +193,12 @@ public class CaseSockGen extends ScribSockGen
 		if (a.mid.isOp())
 		{
 			ln += a.payload.elems.stream()
-						 .map((pt) -> getGarbageBuf(main.getDataTypeDecl(((DataType) pt)).extName)).collect(Collectors.joining(", ")) + ");";
+						 .map((pt) -> getGarbageBuf(main.getDataTypeDeclChild(((DataName) pt)).getExtName())).collect(Collectors.joining(", ")) + ");";
 		}
 		else
 		{
-			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // Factor out? (send/receive/branchreceive/...)
-			ln += getGarbageBuf(msd.extName) + ");";
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // Factor out? (send/receive/branchreceive/...)
+			ln += getGarbageBuf(msd.getExtName()) + ");";
 		}
 		mb.addBodyLine(ln);
 	}
@@ -212,7 +212,7 @@ public class CaseSockGen extends ScribSockGen
 	}
 
 	// As for ReceiveSocket, but without peer param
-	public static void setCaseReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribbleException
+	public static void setCaseReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribException
 	{
 		//final String ROLE_PARAM = "role";
 		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?
@@ -228,7 +228,7 @@ public class CaseSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			ReceiveSockGen.addReceiveMessageSigNameParams(mb, msd, true);
 		}
 	}

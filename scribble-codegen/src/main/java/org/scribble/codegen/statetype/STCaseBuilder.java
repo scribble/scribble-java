@@ -13,9 +13,9 @@
  */
 package org.scribble.codegen.statetype;
 
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.model.endpoint.actions.EReceive;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.model.endpoint.actions.EReceive;
 
 public abstract class STCaseBuilder extends STStateChanBuilder  // Is a distinct type but not a state -- OK for now
 {

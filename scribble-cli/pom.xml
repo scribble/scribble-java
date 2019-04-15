@@ -23,7 +23,15 @@
 		</dependency>
 		<dependency>
 			<groupId>org.scribble</groupId>
+			<artifactId>scribble-ast</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
 			<artifactId>scribble-codegen</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-main</artifactId>
 		</dependency>
 
 		<dependency>

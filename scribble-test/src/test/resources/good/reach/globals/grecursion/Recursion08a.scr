@@ -18,4 +18,3 @@ global protocol Recursion8a(role A, role B, role C, role D)
 	}
 	l3() from C to D;
 }
-

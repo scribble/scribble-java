@@ -19,48 +19,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
-
-import org.scribble.ast.AstFactory;
-import org.scribble.ast.ScribNode;
-import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleException;
 
 public class ScribUtil
 {
-	// Strict class equality, cf. ScribNodeBase#visitChildWithClassCheck
-	// C is expected to be of a ground class type
-	// Maybe pointless (in terms of formal guarantees) to use equality instead of assignable
-	public static <C extends ScribNode> C checkNodeClassEquality(C c, ScribNode n)
-	{
-		if (!c.getClass().equals(n.getClass()))
-		{
-			throw new RuntimeException("Node class not equal: " + c.getClass() + ", " + n.getClass());
-		}
-		@SuppressWarnings("unchecked")
-		C tmp = (C) n;
-		return tmp;
-	}
-
-	// C is expected to be of a ground class type
-	public static <C extends ScribNode> C castNodeByClass(C cast, ScribNode n)
-	{
-		if (!cast.getClass().isAssignableFrom(n.getClass()))
-		{
-			throw new RuntimeException("Node class cast error: " + cast.getClass() + ", " + n.getClass());
-		}
-		@SuppressWarnings("unchecked")
-		C tmp = (C) n;
-		return tmp;
-	}
-	
-	public static <N extends ScribNode> List<N> cloneList(AstFactory af, List<N> ns)
-	{
-		return ns.stream().map(n -> checkNodeClassEquality(n, n.clone(af))).collect(Collectors.toList());
-	}
-	
 	public static <T> T handleLambdaScribbleException(Callable<T> c)
 	{
 		try
@@ -69,22 +31,26 @@ public class ScribUtil
 		}
 		catch (Exception se)
 		{
-			throw new RuntimeScribbleException(se);  // Maybe this hack is not worth it?  Better to throw directly as ScribbleException from a regular foreach
+			throw new RuntimeScribException(se);  
+					// Maybe this hack is not worth it?  Better to throw directly as ScribbleException from a regular foreach
 		}
 	}
 
 	// Returns [ stdout, stderr ]
-	public static String[] runProcess(String... cmdAndArgs) throws ScribbleException
+	public static String[] runProcess(String... cmdAndArgs)
+			throws ScribException
 	{
-			try
-			{
+		try
+		{
 			ProcessBuilder pb = new ProcessBuilder(cmdAndArgs);
 			Process p = pb.start();
 			p.waitFor();
 	
 			InputStream is = p.getInputStream(), eis = p.getErrorStream();
-			InputStreamReader isr = new InputStreamReader(is), eisr = new InputStreamReader(eis);
-			BufferedReader br = new BufferedReader(isr), ebr = new BufferedReader(eisr);
+			InputStreamReader isr = new InputStreamReader(is);
+			InputStreamReader eisr = new InputStreamReader(eis);
+			BufferedReader br = new BufferedReader(isr);
+			BufferedReader ebr = new BufferedReader(eisr);
 			String stdout = "", stderr = "", line;
 			while ((line = br.readLine()) != null)
 			{
@@ -98,12 +64,13 @@ public class ScribUtil
 		}
 		catch (IOException | InterruptedException e)
 		{
-			throw new ScribbleException(e);
+			throw new ScribException(e);
 		}
 	}
 
 	// Warning: doesn't check if file exists
-	public static void writeToFile(String path, String text) throws ScribbleException
+	public static void writeToFile(String path, String text)
+			throws ScribException
 	{
 		File file = new File(path);
 		File parent = file.getParentFile();
@@ -118,7 +85,7 @@ public class ScribUtil
 		}
 		catch (IOException e)
 		{
-			throw new ScribbleException(e);
+			throw new ScribException(e);
 		}
 	}
 }

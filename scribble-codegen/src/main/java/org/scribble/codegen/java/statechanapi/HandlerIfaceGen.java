@@ -13,7 +13,7 @@
  */
 package org.scribble.codegen.java.statechanapi;
 
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
@@ -21,11 +21,11 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.MessageSigName;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.util.ScribException;
 
 // Factor out
 public class HandlerIfaceGen extends AuxStateChanTypeGen
@@ -40,9 +40,9 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 	}
 
 	@Override
-	public InterfaceBuilder generateType() throws ScribbleException
+	public InterfaceBuilder generateType() throws ScribException
 	{
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 
 		// Handler interface
 		InterfaceBuilder ib = new InterfaceBuilder();
@@ -93,7 +93,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
 	}
 	
-	public static void addHandleMethodOpAndPayloadParams(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribbleException
+	public static void addHandleMethodOpAndPayloadParams(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribException
 	{
 		Module main = apigen.getMainModule();
 		String opClass = SessionApiGenerator.getOpClassName(a.mid);
@@ -106,7 +106,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			ReceiveSockGen.addReceiveMessageSigNameParams(mb, msd, false);
 		}
 	}

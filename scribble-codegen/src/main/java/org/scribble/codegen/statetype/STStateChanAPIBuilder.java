@@ -18,19 +18,19 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.main.Job;
-import org.scribble.model.MState;
-import org.scribble.model.endpoint.EGraph;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
+import org.scribble.core.model.MState;
+import org.scribble.core.model.endpoint.EGraph;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.Role;
+import org.scribble.job.Job;
 
 public abstract class STStateChanAPIBuilder
 {
 	public final Job job;
 	
-	public final GProtocolName gpn;
+	public final GProtoName gpn;
 	public final Role role;
 	public final EGraph graph;
 
@@ -42,8 +42,9 @@ public abstract class STStateChanAPIBuilder
 
 	private Map<Integer, String> names = new HashMap<>();
 	
-	protected STStateChanAPIBuilder(Job job, GProtocolName gpn, Role role, EGraph graph,
-			STOutputStateBuilder ob, STReceiveStateBuilder rb, STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
+	protected STStateChanAPIBuilder(Job job, GProtoName gpn, Role role,
+			EGraph graph, STOutputStateBuilder ob, STReceiveStateBuilder rb,
+			STBranchStateBuilder bb, STCaseBuilder cb, STEndStateBuilder eb)
 	{
 		this.job = job;
 

@@ -13,7 +13,7 @@
  */
 package org.scribble.codegen.java.statechanapi;
 
-import org.scribble.model.endpoint.EState;
+import org.scribble.core.model.endpoint.EState;
 
 public class EndSockGen extends ScribSockGen
 {

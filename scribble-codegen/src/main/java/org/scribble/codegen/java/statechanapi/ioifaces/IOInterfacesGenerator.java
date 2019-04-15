@@ -37,14 +37,15 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.main.JobContext;
-import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.EStateKind;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
+import org.scribble.core.job.CoreArgs;
+import org.scribble.core.job.CoreContext;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.EStateKind;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.Role;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 
 // Cf. StateChannelApiGenerator
 // TODO: concrete state channel "to" casts for supertype i/f's (the info is there in the Java type hierachy though)
@@ -70,17 +71,19 @@ public class IOInterfacesGenerator extends ApiGen
 	//private final Map<EndpointState, Set<InterfaceBuilder>> branchSuccs = new HashMap<>();
 	private final Map<String, List<EAction>> branchSuccs = new HashMap<>();  // key: HandleInterface name  // Sorted when collected
 	
-	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes) throws RuntimeScribbleException, ScribbleException
+	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes) throws RuntimeScribException, ScribException
 	{
 		super(apigen.getJob(), apigen.getGProtocolName());
 		this.apigen = apigen;
 		this.SUBTYPES = subtypes;
 
-		GProtocolName fullname = apigen.getGProtocolName();
+		GProtoName fullname = apigen.getGProtocolName();
 		Role self = getSelf();
 		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext jc = this.job.getContext();
-		EState init = this.job.minEfsm ? jc.getMinimisedEGraph(fullname, self).init : jc.getEGraph(fullname, self).init;
+		CoreContext corec = this.core.getContext();
+		EState init = this.job.config.args.get(CoreArgs.MIN_EFSM)
+				? corec.getMinimisedEGraph(fullname, self).init
+				: corec.getEGraph(fullname, self).init;
 		
 		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{
@@ -88,7 +91,10 @@ public class IOInterfacesGenerator extends ApiGen
 			Set<EAction> as = EState.getReachableActions(init);
 			if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 			{
-				throw new RuntimeScribbleException("[TODO] I/O Interface generation not supported for: " + as.stream().filter((a) -> !a.isSend() && !a.isReceive()).collect(Collectors.toList()));
+				throw new RuntimeScribException(
+						"[TODO] I/O Interface generation not supported for: "
+								+ as.stream().filter(a -> !a.isSend() && !a.isReceive())
+										.collect(Collectors.toList()));
 			}
 		}
 
@@ -194,7 +200,7 @@ public class IOInterfacesGenerator extends ApiGen
 	}
 	
 	// Factor out FSM visitor?
-	private void generateActionAndSuccessorInterfacesAndCollectPreActions(Set<EState> visited, EState s) throws ScribbleException
+	private void generateActionAndSuccessorInterfacesAndCollectPreActions(Set<EState> visited, EState s) throws ScribException
 	{
 		if (visited.contains(s) || s.isTerminal())
 		{
@@ -257,7 +263,7 @@ public class IOInterfacesGenerator extends ApiGen
 	}
 
 	// Generates partial IO State Interfaces
-	private void generateIOStateInterfacesFirstPass(Set<EState> visited, EState s) throws ScribbleException
+	private void generateIOStateInterfacesFirstPass(Set<EState> visited, EState s) throws ScribException
 	{
 		if (visited.contains(s) || s.isTerminal())
 		{
@@ -350,7 +356,7 @@ public class IOInterfacesGenerator extends ApiGen
 		}
 	}
 
-	private void generateHandleInterfaces(Set<EState> visited, EState s) throws ScribbleException
+	private void generateHandleInterfaces(Set<EState> visited, EState s) throws ScribException
 	{
 		if (visited.contains(s) || s.isTerminal())
 		{
@@ -1035,7 +1041,7 @@ public class IOInterfacesGenerator extends ApiGen
 		return this.apigen.getSelf();
 	}
 
-	protected static String getIOInterfacePackageName(GProtocolName gpn, Role self)
+	protected static String getIOInterfacePackageName(GProtoName gpn, Role self)
 	{
 		return SessionApiGenerator.getStateChannelPackageName(gpn, self) + ".ioifaces";
 	}

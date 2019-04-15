@@ -25,11 +25,11 @@ import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 public class CaseIfaceGen extends IOStateIfaceGen
 {
@@ -39,7 +39,7 @@ public class CaseIfaceGen extends IOStateIfaceGen
 	}
 
 	@Override
-	protected void constructInterface() throws ScribbleException
+	protected void constructInterface() throws ScribException
 	{
 		super.constructInterface();
 		addBranchEnumField();
@@ -49,7 +49,7 @@ public class CaseIfaceGen extends IOStateIfaceGen
 	@Override
 	protected void addHeader()
 	{
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 		Role self = this.apigen.getSelf();
 		String packname = IOInterfacesGenerator.getIOInterfacePackageName(gpn, self);
 		String ifname = getCasesInterfaceName(self, this.curr);
@@ -76,7 +76,7 @@ public class CaseIfaceGen extends IOStateIfaceGen
 				
 	protected void addCaseReceiveDiscardMethods()
 	{
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 		//Set<EAction> as = this.curr.getActions();
 		List<EAction> as = this.curr.getActions();
 

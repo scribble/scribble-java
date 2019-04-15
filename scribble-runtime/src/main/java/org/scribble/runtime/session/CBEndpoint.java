@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
+import org.scribble.core.type.name.Role;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.handlers.ScribBranch;
 import org.scribble.runtime.handlers.ScribOutputEvent;
@@ -32,7 +33,6 @@ import org.scribble.runtime.handlers.states.ScribOutputState;
 import org.scribble.runtime.handlers.states.ScribState;
 import org.scribble.runtime.message.ScribMessage;
 import org.scribble.runtime.message.ScribMessageFormatter;
-import org.scribble.type.name.Role;
 
 public class CBEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoint<S, R>
 {

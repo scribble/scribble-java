@@ -22,10 +22,10 @@ import org.scribble.codegen.java.statechanapi.ScribSockGen;
 import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.GProtocolName;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.util.ScribException;
 
 public class ReceiveIfaceGen extends IOStateIfaceGen
 {
@@ -35,7 +35,7 @@ public class ReceiveIfaceGen extends IOStateIfaceGen
 	}
 
 	@Override
-	public InterfaceBuilder generateType() throws ScribbleException
+	public InterfaceBuilder generateType() throws ScribException
 	{
 		if (this.curr.getAllActions().stream().anyMatch((a) -> !a.isReceive())) // TODO (connect/disconnect)
 		{
@@ -46,7 +46,7 @@ public class ReceiveIfaceGen extends IOStateIfaceGen
 	}
 
 	@Override
-	protected void constructInterface() throws ScribbleException
+	protected void constructInterface() throws ScribException
 	{
 		super.constructInterface();
 		addAsyncDiscardMethod();
@@ -54,7 +54,7 @@ public class ReceiveIfaceGen extends IOStateIfaceGen
 
 	protected void addAsyncDiscardMethod()
 	{
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 		EAction first = this.curr.getActions().iterator().next();
 
 		MethodBuilder mb = this.ib.newAbstractMethod();

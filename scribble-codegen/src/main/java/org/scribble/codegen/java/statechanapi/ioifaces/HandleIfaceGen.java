@@ -23,11 +23,11 @@ import org.scribble.codegen.java.statechanapi.ScribSockGen;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 // Cf. HandlerInterfaceGenerator
 public class HandleIfaceGen extends IOStateIfaceGen
@@ -45,7 +45,7 @@ public class HandleIfaceGen extends IOStateIfaceGen
 	}
 
 	@Override
-	protected void constructInterface() throws ScribbleException
+	protected void constructInterface() throws ScribException
 	{
 		super.constructInterface();
 		addHandleMethods();
@@ -54,7 +54,7 @@ public class HandleIfaceGen extends IOStateIfaceGen
 	@Override
 	protected void addHeader()
 	{
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 		Role self = this.apigen.getSelf();
 		String packname = IOInterfacesGenerator.getIOInterfacePackageName(gpn, self);
 		String ifname = getHandleInterfaceName(self, this.curr);
@@ -114,9 +114,9 @@ public class HandleIfaceGen extends IOStateIfaceGen
 		return as;
 	}*/
 
-	protected void addHandleMethods() throws ScribbleException
+	protected void addHandleMethods() throws ScribException
 	{
-		GProtocolName gpn = this.apigen.getGProtocolName();
+		GProtoName gpn = this.apigen.getGProtocolName();
 		//Role self = this.apigen.getSelf();
 		//Set<EAction> as = this.curr.getActions();
 		List<EAction> as = this.curr.getActions();

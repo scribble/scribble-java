@@ -15,12 +15,12 @@ package org.scribble.runtime.statechans;
 
 import java.io.IOException;
 
+import org.scribble.core.type.name.Role;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.session.MPSTEndpoint;
 import org.scribble.runtime.session.Session;
 import org.scribble.runtime.session.SessionEndpoint;
-import org.scribble.type.name.Role;
 
 public abstract class AcceptSocket<S extends Session, R extends Role> extends LinearSocket<S, R>
 {

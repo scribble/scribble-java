@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.scribble.main.ScribbleException;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.Role;
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
+import org.scribble.util.ScribException;
 
 public abstract class Session
 {
@@ -32,12 +32,12 @@ public abstract class Session
 
 	public final List<String> impath;
 	public final String modpath;
-	public final GProtocolName proto;
+	public final GProtoName proto;
 	
 	//private final Map<Role, MPSTEndpoint<?, ?>> endpoints = new HashMap<>();  // Only for local endpoints
 	private final Map<Role, SessionEndpoint<?, ?>> endpoints = new HashMap<>();  // Only for local endpoints
 
-	public Session(int id, List<String> impath, String modpath, GProtocolName proto)
+	public Session(int id, List<String> impath, String modpath, GProtoName proto)
 	{
 		this.id = id;
 		this.impath = impath;
@@ -47,7 +47,7 @@ public abstract class Session
 		Session.sessions.put(id, this);
 	}
 
-	public Session(List<String> importPath, String source, GProtocolName proto)
+	public Session(List<String> importPath, String source, GProtoName proto)
 	{
 		this(getFreshId(), importPath, source, proto);
 	}
@@ -120,11 +120,11 @@ public abstract class Session
 	}
 
 	//public SessionEndpoint getEndpoint(Role role) throws ScribbleException
-	public <S extends Session, R extends Role> MPSTEndpoint<S, R> getEndpoint(R role) throws ScribbleException
+	public <S extends Session, R extends Role> MPSTEndpoint<S, R> getEndpoint(R role) throws ScribException
 	{
 		if (!this.endpoints.containsKey(role))
 		{
-			throw new ScribbleException("No endpoint for: " + role);
+			throw new ScribException("No endpoint for: " + role);
 		}
 		@SuppressWarnings("unchecked")
 		MPSTEndpoint<S, R> cast = (MPSTEndpoint<S, R>) this.endpoints.get(role);  // FIXME:
@@ -136,11 +136,11 @@ public abstract class Session
 		return Session.sessions.containsKey(id);
 	}*/
 
-	public static Session getSession(int id) throws ScribbleException
+	public static Session getSession(int id) throws ScribException
 	{
 		if (!Session.sessions.containsKey(id))
 		{
-			throw new ScribbleException("No such session: " + id);
+			throw new ScribException("No such session: " + id);
 		}
 		return Session.sessions.get(id);
 	}

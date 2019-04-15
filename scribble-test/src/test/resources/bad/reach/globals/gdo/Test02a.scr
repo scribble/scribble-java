@@ -8,7 +8,8 @@ global protocol Proto1(role A, role B)
 	//3() from A to B;
 }
 
-aux global protocol Proto2(role C, role D)
+//aux 
+global protocol Proto2(role C, role D)
 {
 	2() from C to D;
 	do Proto2(C, D);

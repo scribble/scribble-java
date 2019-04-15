@@ -15,8 +15,8 @@ package org.scribble.codegen.java.statechanapi;
 
 import java.util.stream.Collectors;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.statechanapi.ioifaces.BranchIfaceGen;
@@ -27,13 +27,13 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.EnumBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
-import org.scribble.type.name.MessageSigName;
-import org.scribble.type.name.PayloadElemType;
-import org.scribble.type.name.Role;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.DataName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.PayElemType;
+import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 public class BranchSockGen extends ScribSockGen
 {
@@ -57,7 +57,7 @@ public class BranchSockGen extends ScribSockGen
 
 	//private void addBranchMethod(ClassBuilder cb, EndpointState curr)
 	@Override
-	protected void addMethods() throws ScribbleException
+	protected void addMethods() throws ScribException
 	{
 		final String ROLE_PARAM = "role";
 		final String MESSAGE_VAR = "m";
@@ -291,17 +291,17 @@ public class BranchSockGen extends ScribSockGen
 				{
 					String buffSuper = JavaBuilder.NEW + " " + BUF_CLASS + "<>(";
 					int i = 0;
-					for (PayloadElemType<?> pt : a.payload.elems)
+					for (PayElemType<?> pt : a.payload.elems)
 					{
-						DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
-						ln += ", " + buffSuper + "(" + dtd.extName + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
+						DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
+						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
 					}
 				}
 			}
 			else
 			{
-				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM 
+				SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.getExtName() + ") " +  RECEIVE_MESSAGE_PARAM 
 						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
 						+ ")";
 			}
@@ -378,17 +378,17 @@ public class BranchSockGen extends ScribSockGen
 				{
 					String buffSuper = JavaBuilder.NEW + " " + BUF_CLASS + "<>(";
 					int i = 0;
-					for (PayloadElemType<?> pt : a.payload.elems)
+					for (PayElemType<?> pt : a.payload.elems)
 					{
-						DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
-						ln += ", " + buffSuper + "(" + dtd.extName + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
+						DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
+						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
 					}
 				}
 			}
 			else
 			{
-				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM
+				SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.getExtName() + ") " +  RECEIVE_MESSAGE_PARAM
 						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
 						+ ")";
 			}

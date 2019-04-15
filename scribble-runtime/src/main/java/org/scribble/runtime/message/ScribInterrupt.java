@@ -13,7 +13,7 @@
  */
 package org.scribble.runtime.message;
 
-import org.scribble.type.name.Op;
+import org.scribble.core.type.name.Op;
 
 public class ScribInterrupt extends ScribMessage
 {

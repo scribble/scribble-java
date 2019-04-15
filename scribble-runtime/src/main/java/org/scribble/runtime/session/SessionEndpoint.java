@@ -20,14 +20,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.main.RuntimeScribbleException;
+import org.scribble.core.type.name.Role;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.runtime.message.ScribMessageFormatter;
 import org.scribble.runtime.net.BinaryChannelEndpoint;
 import org.scribble.runtime.net.BinaryChannelWrapper;
 import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.util.Buf;
-import org.scribble.type.name.Role;
+import org.scribble.util.RuntimeScribException;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 //.. initiator and joiner endpoints
@@ -150,7 +150,7 @@ public abstract class SessionEndpoint<S extends Session, R extends Role> impleme
 	{
 		if (!this.chans.containsKey(role))
 		{
-			throw new RuntimeScribbleException(this.self + " is not connected to: " + role);
+			throw new RuntimeScribException(this.self + " is not connected to: " + role);
 		}
 		return this.chans.get(role);
 	}
@@ -191,7 +191,7 @@ public abstract class SessionEndpoint<S extends Session, R extends Role> impleme
 		ScribServerSocket ss = this.servs.get(this.self);
 		if (ss == null)
 		{
-			throw new RuntimeScribbleException("No server registered.");
+			throw new RuntimeScribException("No server registered.");
 		}
 		return ss;
 	}

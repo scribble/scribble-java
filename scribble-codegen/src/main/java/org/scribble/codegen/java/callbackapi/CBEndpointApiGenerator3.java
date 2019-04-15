@@ -1,3 +1,16 @@
+/**
+ * Copyright 2008 The Scribble Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.scribble.codegen.java.callbackapi;
 
 import java.util.Comparator;
@@ -10,8 +23,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
@@ -19,18 +32,21 @@ import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.main.Job;
-import org.scribble.main.JobContext;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.MState;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.EStateKind;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.MessageSigName;
-import org.scribble.type.name.PayloadElemType;
-import org.scribble.type.name.Role;
+import org.scribble.core.job.Core;
+import org.scribble.core.job.CoreArgs;
+import org.scribble.core.job.CoreContext;
+import org.scribble.core.model.MState;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.EStateKind;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.DataName;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.job.Job;
+import org.scribble.job.JobContext;
+import org.scribble.core.type.name.PayElemType;
+import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
 // FIXME: consider collecting up all interfaces as statics inside a container class -- also states?
@@ -39,16 +55,26 @@ import org.scribble.type.name.Role;
 public class CBEndpointApiGenerator3
 {
 	public final Job job;
-	public final GProtocolName proto;
+	public final Core core;
+	public final GProtoName proto;
 	public final Role self;  // FIXME: base endpoint API gen is role-oriented, while session API generator should be neutral
 	
 	protected final Map<Integer, String> stateNames = new HashMap<>();
 	
 	//private final boolean subtypes;  // Generate full hierarchy (states -> states, not just indivdual state -> cases) -- cf. ioifaces
 
-	public CBEndpointApiGenerator3(Job job, GProtocolName fullname, Role self, boolean subtypes)
+	public CBEndpointApiGenerator3(Job job, GProtoName fullname, Role self,
+			boolean subtypes)
 	{
 		this.job = job;
+		try
+		{
+			this.core = job.getCore();
+		}
+		catch (ScribException e)  // TODO: refactor
+		{
+			throw new RuntimeException(e);
+		}
 		this.proto = fullname;
 		this.self = self;
 		
@@ -59,7 +85,7 @@ public class CBEndpointApiGenerator3
 		}
 	}
 
-	public Map<String, String> build() throws ScribbleException
+	public Map<String, String> build() throws ScribException
 	{
 		this.stateNames.clear();
 		Map<String, String> res = new HashMap<>();  // filepath -> source 
@@ -68,9 +94,9 @@ public class CBEndpointApiGenerator3
 	}
 
 	// FIXME: factor out -- integrate with JEndpointApiGenerator
-	public Map<String, String> buildSessionApi() throws ScribbleException
+	public Map<String, String> buildSessionApi() throws ScribException
 	{
-		this.job.debugPrintln("\n[param-core] Running " + CBEndpointApiGenerator3.class + " for " + this.proto + "@" + this.self);
+		this.job.verbosePrintln("\n[param-core] Running " + CBEndpointApiGenerator3.class + " for " + this.proto + "@" + this.self);
 
 		Map<String, String> res = new HashMap<>();
 		res.putAll(new SessionApiGenerator(this.job, this.proto).generateApi());
@@ -78,12 +104,17 @@ public class CBEndpointApiGenerator3
 		return res;
 	}
 	
-	public Map<String, String> buildEndpointClass() throws ScribbleException
+	public Map<String, String> buildEndpointClass() throws ScribException
 	{
+		Module main = this.job.getContext().getMainModule();
 		Map<String, String> res = new HashMap<>();
 
-		JobContext jc = this.job.getContext();
-		EState init = (this.job.minEfsm ? jc.getMinimisedEGraph(this.proto, this.self) : jc.getEGraph(this.proto, this.self)).init;  // FIXME: factor out with StateChannelApiGenerator constructor
+		CoreContext jobc2 = this.core.getContext();
+		EState init = (this.core.config.args.get(CoreArgs.MIN_EFSM)
+				? jobc2.getMinimisedEGraph(this.proto, this.self)
+				: jobc2.getEGraph(this.proto, this.self)
+				).init;
+				// TODO: factor out with StateChannelApiGenerator constructor
 		Set<EState> states = new HashSet<>();
 		states.add(init);
 		states.addAll(MState.getReachableStates(init));
@@ -192,6 +223,7 @@ public class CBEndpointApiGenerator3
 		}*/
 			
 		// branches
+		JobContext jobc = this.job.getContext();
 		for (EState s : states)
 		{
 			if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
@@ -202,13 +234,18 @@ public class CBEndpointApiGenerator3
 				for (EAction a : s.getAllActions())
 				{
 					// FIXME: factor out
-					boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
-						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
-					MessageSigNameDecl msnd = null;
+					boolean isSig = main.getNonProtoDeclChildren().stream()
+							.anyMatch(npd -> (npd instanceof SigDecl)
+									&& ((SigDecl) npd).getDeclName().toString()
+											.equals(a.mid.toString()));
+					SigDecl msnd = null;
 					if (isSig)
 					{
-						msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtocolDecls().stream()
-								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+						msnd = (SigDecl) main.getNonProtoDeclChildren().stream()
+								.filter(npd -> (npd instanceof SigDecl)
+										&& ((SigDecl) npd).getDeclName().toString()
+												.equals(a.mid.toString()))
+								.iterator().next();
 					}
 					
 					String receiveIfName =
@@ -216,11 +253,13 @@ public class CBEndpointApiGenerator3
 							  "ICallback__"  // CHECKME: confusing against "icallback"
 							+ a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid)
 							+ a.payload.elems.stream().map(e -> "_" + getExtName(e)).collect(Collectors.joining());  // FIXME: factor out
-					String receiveInterface = generateReceiveInterface(isSig, msnd, jc, a, rootPack, receiveIfName);
-					res.put((getHandlersSelfPackage() + ".inputs.").replace('.', '/') + receiveIfName + ".java", receiveInterface);
+					String receiveInterface = generateReceiveInterface(isSig, msnd, jobc, a, rootPack, receiveIfName);
+					res.put((getHandlersSelfPackage() + ".inputs.").replace('.', '/')
+							+ receiveIfName + ".java", receiveInterface);
 				}
 
-				String branchAbstract = generateBranch(bprefix, jc, s, endpointName, rootPack, branchName);
+				String branchAbstract = generateBranch(bprefix, jobc, s, endpointName,
+						rootPack, branchName);
 				res.put(bprefix + branchName + ".java", branchAbstract);
 			}
 		}
@@ -550,28 +589,28 @@ public class CBEndpointApiGenerator3
 					int[] i = { 0 };
 					
 					// FIXME: factor out
-					boolean isSig = main.getNonProtocolDecls().stream()
-						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
-					MessageSigNameDecl msnd = null;
+					boolean isSig = main.getNonProtoDeclChildren().stream()
+						.anyMatch(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+					SigDecl msnd = null;
 					if (isSig)
 					{
-						msnd = (MessageSigNameDecl) main.getNonProtocolDecls().stream()
-								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+						msnd = (SigDecl) main.getNonProtoDeclChildren().stream()
+								.filter(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 						FieldBuilder m = opClass.newField("m");
 						m.addModifiers("private", "final");
-						m.setType(msnd.extName);
+						m.setType(msnd.getExtName());
 					}
 					
 					ConstructorBuilder opCons; 
 					if (isSig)
 					{
-						opCons = opClass.newConstructor(msnd.extName + " m");
+						opCons = opClass.newConstructor(msnd.getExtName() + " m");
 						opClass.addInterfaces("org.scribble.runtime.handlers.ScribSigMessage");
 					}
 					else 
 					{
 						opCons = opClass.newConstructor(a.payload.elems.stream().map(e ->
-									main.getDataTypeDecl((DataType) e).extName + " arg" + i[0]++
+									main.getDataTypeDeclChild((DataName) e).getExtName() + " arg" + i[0]++
 							).collect(Collectors.joining(", ")));
 					}
 					opCons.addModifiers("public");
@@ -658,29 +697,29 @@ public class CBEndpointApiGenerator3
 		for (EAction a : s.getAllActions())
 		{
 			// FIXME: factor out
-			boolean isSig = jc.getMainModule().getNonProtocolDecls().stream()
-				.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
-			MessageSigNameDecl msnd = null;
+			boolean isSig = jc.getMainModule().getNonProtoDeclChildren().stream()
+				.anyMatch(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+			SigDecl msnd = null;
 			if (isSig)
 			{
-				msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtocolDecls().stream()
-						.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+				msnd = (SigDecl) jc.getMainModule().getNonProtoDeclChildren().stream()
+						.filter(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 			}
 
 			branchAbstract += "case \"" + SessionApiGenerator.getOpClassName(a.mid) + "\": receive(data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + "." + a.peer + ", ";
 			if (isSig)
 			{
-				branchAbstract += "(" + msnd.extName + ") m";
+				branchAbstract += "(" + msnd.getExtName() + ") m";
 			}
 			else
 			{
 				branchAbstract += "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + ") m.op";
 			}
 			int i = 0;
-			for (PayloadElemType<?> pet : a.payload.elems)
+			for (PayElemType<?> pet : a.payload.elems)
 			{
-				DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
-				branchAbstract += ", (" + dtd.extName + ") m.payload[" + i++ + "]";
+				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataName) pet);
+				branchAbstract += ", (" + dtd.getExtName() + ") m.payload[" + i++ + "]";
 			}
 			branchAbstract += "); break;\n";
 		}
@@ -692,7 +731,9 @@ public class CBEndpointApiGenerator3
 		return branchAbstract;
 	}
 	
-	protected String generateReceiveInterface(boolean isSig, MessageSigNameDecl msnd, JobContext jc, EAction a, String rootPack, String receiveIfName)
+	protected String generateReceiveInterface(boolean isSig,
+			SigDecl msnd, JobContext jc, EAction a, String rootPack,
+			String receiveIfName)
 	{
 		String receiveInterface = "";
 		receiveInterface += "package " + getHandlersSelfPackage() + ".inputs;\n";
@@ -700,19 +741,23 @@ public class CBEndpointApiGenerator3
 		receiveInterface += "public interface " + receiveIfName + "<D> {\n";  // Cf. original callback API, have extra <D> parameter (o/w same)
 
 		// Cf. output-callback i/f, only specifies peer and message (not self)
-		receiveInterface += "\nvoid receive(D data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer, ";
+		receiveInterface += "\nvoid receive(D data, "
+				+ SessionApiGenerator.getEndpointApiRootPackageName(this.proto)
+				+ ".roles." + a.peer + " peer, ";
 		if (isSig)
 		{
-			receiveInterface += msnd.extName + " m";
+			receiveInterface += msnd.getExtName() + " m";
 		}
 		else
 		{
-			receiveInterface += SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + " op"; 
+			receiveInterface += SessionApiGenerator
+					.getEndpointApiRootPackageName(this.proto) + ".ops."
+					+ SessionApiGenerator.getOpClassName(a.mid) + " op";
 			int i = 1;
-			for (PayloadElemType<?> pet : a.payload.elems)
+			for (PayElemType<?> pet : a.payload.elems)
 			{
-				DataTypeDecl dtd = jc.getMainModule().getDataTypeDecl((DataType) pet);
-				receiveInterface += ", " + dtd.extName + " arg" + i++;
+				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataName) pet);
+				receiveInterface += ", " + dtd.getExtName() + " arg" + i++;
 			}
 		}
 		receiveInterface += ");\n";
@@ -777,7 +822,7 @@ public class CBEndpointApiGenerator3
 			String[] args = new String[a.payload.elems.size() + 2];
 			args[0] = getRolesPackage() + "." + a.peer + " peer";
 			args[1] = getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + " op";
-			a.payload.elems.forEach(e -> args[i[0]++] = main.getDataTypeDecl((DataType) e).extName + " arg" + (i[0]-3));
+			a.payload.elems.forEach(e -> args[i[0]++] = main.getDataTypeDecl((DataType) e).getExtName() + " arg" + (i[0]-3));
 			ConstructorBuilder ob = messageClass.newConstructor(args);
 			ob.addModifiers("public");
 			ob.addBodyLine("super(op" + IntStream.range(0, a.payload.elems.size()).mapToObj(j -> ", arg" + j).collect(Collectors.joining()) + ");");
@@ -809,7 +854,7 @@ public class CBEndpointApiGenerator3
 						? "Unit"
 						: a.payload.elems.stream().map(e ->
 								{
-									String extName = main.getDataTypeDecl((DataType) e).extName;
+									String extName = main.getDataTypeDecl((DataType) e).getExtName();
 									return (extName.indexOf(".") != -1)
 											? extName.substring(extName.lastIndexOf(".")+1, extName.length())
 											: extName;
@@ -862,13 +907,13 @@ public class CBEndpointApiGenerator3
 		messageClass += "private static final long serialVersionUID = 1L;\n";
 		if (isSig)
 		{
-			messageClass += "private final " + msnd.extName + " m;\n";
+			messageClass += "private final " + msnd.getExtName() + " m;\n";
 		}
 		messageClass += "\n";
 		messageClass += "public " + messageName + "(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + " peer";
 		if (isSig)
 		{
-			messageClass += ", " + msnd.extName + " m"; 
+			messageClass += ", " + msnd.getExtName() + " m"; 
 		}
 		else
 		{
@@ -877,7 +922,7 @@ public class CBEndpointApiGenerator3
 			for (PayloadElemType<?> pet : a.payload.elems)
 			{
 				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pet);
-				messageClass += ", " + dtd.extName + " arg" + i++;
+				messageClass += ", " + dtd.getExtName() + " arg" + i++;
 			}
 		}
 		messageClass += ") {\n";
@@ -953,18 +998,18 @@ public class CBEndpointApiGenerator3
 		return rootPack + ".handlers." + this.self + ".states.messages";
 	}
 	
-	protected MessageSigNameDecl getMessageSigNameDecl(MessageSigName mid)
+	protected SigDecl getMessageSigNameDecl(SigName mid)
 	{
-		return (MessageSigNameDecl)
-				this.job.getContext().getMainModule().getNonProtocolDecls().stream()  // FIXME: main module?
-					.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(mid.toString()))
+		return (SigDecl)
+				this.job.getContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
+					.filter(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(mid.toString()))
 					.iterator().next();
 	}
 
 	//protected final Function<PayloadElemType<?>, String> getExtName = e ->
-	protected String getExtName(PayloadElemType<?> e)
+	protected String getExtName(PayElemType<?> e)
 	{
-		String extName = this.job.getContext().getMainModule().getDataTypeDecl((DataType) e).extName;
+		String extName = this.job.getContext().getMainModule().getDataTypeDeclChild((DataName) e).getExtName();
 		return (extName.indexOf(".") != -1)
 				? extName.substring(extName.lastIndexOf(".")+1, extName.length())
 				: extName;

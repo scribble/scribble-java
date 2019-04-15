@@ -22,15 +22,16 @@ import org.scribble.codegen.java.ApiGen;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.main.Job;
-import org.scribble.main.JobContext;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.LProtocolName;
-import org.scribble.type.name.Role;
-import org.scribble.visit.context.Projector;
+import org.scribble.core.job.CoreArgs;
+import org.scribble.core.job.CoreContext;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
+import org.scribble.core.type.name.Role;
+import org.scribble.core.visit.global.InlinedProjector;
+import org.scribble.job.Job;
+import org.scribble.util.ScribException;
 
 // TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
 // TODO: "functional state interfaces", e.g. for smtp ehlo and quit actions
@@ -45,7 +46,7 @@ public class StateChannelApiGenerator extends ApiGen
 	public static final String SCRIBMESSAGE_OP_FIELD = "op";
 
 	private final Role self;
-	private final LProtocolName lpn;
+	private final LProtoName lpn;
 	private final EState init;
 	//private final String root;
 
@@ -56,15 +57,18 @@ public class StateChannelApiGenerator extends ApiGen
 
 	private Map<String, TypeBuilder> types = new HashMap<>();  // class/iface name key
 
-	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self) throws ScribbleException  // FIXME: APIGenerationException?
+	public StateChannelApiGenerator(Job job, GProtoName fullname, Role self)
+			throws ScribException // CHECKME: APIGenerationException?
 	{
 		super(job, fullname);
 
 		this.self = self;
-		this.lpn = Projector.projectFullProtocolName(fullname, self);
+		this.lpn = InlinedProjector.getFullProjectionName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
-		JobContext jc = job.getContext();
-		this.init = job.minEfsm ? jc.getMinimisedEGraph(fullname, self).init : jc.getEGraph(fullname, self).init;
+		CoreContext corec = this.core.getContext();
+		this.init = this.job.config.args.get(CoreArgs.MIN_EFSM)
+				? corec.getMinimisedEGraph(fullname, self).init
+				: corec.getEGraph(fullname, self).init;
 		
 		this.skipIOInterfacesGeneration = skipIOInterfacesGeneration(this.init);
 			
@@ -98,7 +102,8 @@ public class StateChannelApiGenerator extends ApiGen
 	{
 		Map<String, String> map = new HashMap<String, String>();
 		// FIXME: factor out with ScribSocketBuilder.getPackageName
-		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.gpn).replace('.', '/') + "/statechans/" + this.self + "/" ;
+		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.gpn)
+				.replace('.', '/') + "/statechans/" + this.self + "/";
 		for (String s : this.types.keySet())
 		{
 			String path = prefix + s + ".java";
@@ -130,7 +135,7 @@ public class StateChannelApiGenerator extends ApiGen
 		return this.lpn.getSimpleName().toString() +  "_" + this.counter++;
 	}
 
-	private void constructClasses(EState curr) throws ScribbleException
+	private void constructClasses(EState curr) throws ScribException
 	{
 		if (curr.isTerminal())
 		{
@@ -153,7 +158,7 @@ public class StateChannelApiGenerator extends ApiGen
 	}
 	
 	// Pre: curr is not terminal state
-	private ClassBuilder constructClass(EState curr) throws ScribbleException  // FIXME: APIGenerationException?
+	private ClassBuilder constructClass(EState curr) throws ScribException  // FIXME: APIGenerationException?
 	{
 		switch (curr.getStateKind())
 		{
@@ -181,12 +186,14 @@ public class StateChannelApiGenerator extends ApiGen
 			}
 			default:
 			{
-				throw new RuntimeException("[TODO] State Channel API generation not supported for: " + curr.getStateKind() + ", " + curr.toLongString());
+				throw new RuntimeException(
+						"[TODO] State Channel API generation not supported for: "
+								+ curr.getStateKind() + ", " + curr.toLongString());
 			}
 		}
 	}
 	
-	public GProtocolName getGProtocolName()
+	public GProtoName getGProtocolName()
 	{
 		return this.gpn;
 	}

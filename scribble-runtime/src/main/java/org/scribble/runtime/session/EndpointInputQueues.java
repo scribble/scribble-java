@@ -20,11 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-
-import org.scribble.main.RuntimeScribbleException;
+import org.scribble.core.type.name.Role;
 import org.scribble.runtime.message.ScribInterrupt;
 import org.scribble.runtime.message.ScribMessage;
-import org.scribble.type.name.Role;
+import org.scribble.util.RuntimeScribException;
 
 @Deprecated
 public class EndpointInputQueues
@@ -90,13 +89,13 @@ public class EndpointInputQueues
 						ScribMessage m = dequeue(peer, getTicket(peer));
 						if (m instanceof ScribInterrupt)  // FIXME: hacked in
 						{
-							throw new RuntimeScribbleException((Throwable) ((ScribInterrupt) m).payload[0]);
+							throw new RuntimeScribException((Throwable) ((ScribInterrupt) m).payload[0]);
 						}
 						return m;
 					}
 					catch(IOException e)
 					{
-						throw new RuntimeScribbleException(e);
+						throw new RuntimeScribException(e);
 					}
 				});
 	}

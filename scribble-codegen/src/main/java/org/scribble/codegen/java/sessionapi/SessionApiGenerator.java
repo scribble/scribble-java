@@ -20,20 +20,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.codegen.java.util.JavaBuilder;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.codegen.java.ApiGen;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
+import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.del.ModuleDel;
-import org.scribble.main.Job;
-import org.scribble.main.ScribbleException;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.MessageId;
-import org.scribble.type.name.Role;
-import org.scribble.visit.util.MessageIdCollector;
+import org.scribble.core.lang.global.GProtocol;
+import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.name.Role;
+import org.scribble.core.type.session.global.GSeq;
+import org.scribble.core.visit.MessageIdGatherer;
+import org.scribble.job.Job;
+import org.scribble.util.ScribException;
 
 public class SessionApiGenerator extends ApiGen
 {
@@ -48,12 +50,12 @@ public class SessionApiGenerator extends ApiGen
 	private static final String PROTO_FIELD = "PROTO";
 
 	private final Set<Role> roles = new HashSet<>();
-	private final Set<MessageId<?>> mids = new HashSet<>();
+	private final Set<MsgId<?>> mids = new HashSet<>();
 	
 	private final ClassBuilder cb = new ClassBuilder();
 	private final Map<String, ClassBuilder> classes = new HashMap<>();  // All classes in same package, for protected constructor access
 	
-	public SessionApiGenerator(Job job, GProtocolName fullname) throws ScribbleException
+	public SessionApiGenerator(Job job, GProtoName fullname) throws ScribException
 	{
 		super(job, fullname);
 		constructRoleClasses();
@@ -78,7 +80,7 @@ public class SessionApiGenerator extends ApiGen
 		return map;
 	}
 
-	private static String makePath(GProtocolName gpn, String simpname)
+	private static String makePath(GProtoName gpn, String simpname)
 	{
 		return getEndpointApiRootPackageName(gpn).replace('.', '/') + "/" + simpname + ".java";
 	}
@@ -165,7 +167,7 @@ public class SessionApiGenerator extends ApiGen
 		addSingletonConstant(cb, "roles", getRoleClassName(role));  // FIXME: factor out 
 	}
 	
-	private void addOpField(ClassBuilder cb, MessageId<?> mid)
+	private void addOpField(ClassBuilder cb, MsgId<?> mid)
 	{
 		addSingletonConstant(cb, "ops", getOpClassName(mid));  // FIXME: factor out 
 	}
@@ -179,14 +181,18 @@ public class SessionApiGenerator extends ApiGen
 		fb.setExpression(getEndpointApiRootPackageName(this.gpn) + "." + subpack + "." + type + "." + type);  // Currently requires source Scribble to be in a package that is not the root -- can fix by generating to a subpackage based on Module and/or protocol
 	}
 	
-	private void constructOpClasses() throws ScribbleException
+	private void constructOpClasses() throws ScribException
 	{
-		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
+		/*Module mod = this.lang.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
-		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
-		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
+		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDeclChild(simpname);
+		MessageIdCollector coll = new MessageIdCollector(this.lang, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
-		for (MessageId<?> mid : coll.getNames())
+		for (MessageId<?> mid : coll.getNames())*/
+		GProtocol inlined = this.core.getContext().getInlined(this.gpn);
+		for (MsgId<?> mid : inlined.def
+				.gather(new MessageIdGatherer<Global, GSeq>()::visit)
+				.collect(Collectors.toList()))
 		{
 			//constructOpClass(this.cb.newClass(), mid);
 			//constructOpClass(new ClassBuilder(), getEndpointApiRootPackageName(this.gpn), mid);
@@ -195,12 +201,12 @@ public class SessionApiGenerator extends ApiGen
 		}
 	}
 
-	private void constructRoleClasses() throws ScribbleException
+	private void constructRoleClasses() throws ScribException
 	{
 		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
-		GProtocolName simpname = this.gpn.getSimpleName();
-		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
-		for (Role r : gpd.header.roledecls.getRoles())
+		GProtoName simpname = this.gpn.getSimpleName();
+		GProtoDecl gpd = (GProtoDecl) mod.getGProtocolDeclChild(simpname);
+		for (Role r : gpd.getRoles())
 		{
 			//constructRoleClass(this.cb.newClass(), r);
 			//constructRoleClass(new ClassBuilder(), getEndpointApiRootPackageName(this.gpn), r);
@@ -214,7 +220,7 @@ public class SessionApiGenerator extends ApiGen
 		return constructSingletonClass(cb, pack, SessionApiGenerator.ROLE_CLASS, getRoleClassName(r));
 	}
 
-	private ClassBuilder constructOpClass(ClassBuilder cb, String pack, MessageId<?> mid)
+	private ClassBuilder constructOpClass(ClassBuilder cb, String pack, MsgId<?> mid)
 	{
 		return constructSingletonClass(cb, pack, SessionApiGenerator.OP_CLASS, getOpClassName(mid));
 	}
@@ -245,13 +251,13 @@ public class SessionApiGenerator extends ApiGen
 	}
 	
 	// Returns the simple Session Class name
-	public static String getSessionClassName(GProtocolName gpn)
+	public static String getSessionClassName(GProtoName gpn)
 	{
 		return gpn.getSimpleName().toString();
 	}
 
 	// Returns the Java output package: currently the Scribble package excluding the Module
-	public static String getEndpointApiRootPackageName(GProtocolName gpn)
+	public static String getEndpointApiRootPackageName(GProtoName gpn)
 	{
 		//return gpn.getPrefix().getPrefix().toString();  // Java output package name (not Scribble package)
 		// FIXME: factor out with StateChannelApiGenerator.generateClasses
@@ -259,17 +265,17 @@ public class SessionApiGenerator extends ApiGen
 		return gpn.toString();
 	}
 
-	public static String getRolesPackageName(GProtocolName gpn)
+	public static String getRolesPackageName(GProtoName gpn)
 	{
 		return getEndpointApiRootPackageName(gpn) + ".roles";
 	}
 
-	public static String getOpsPackageName(GProtocolName gpn)
+	public static String getOpsPackageName(GProtoName gpn)
 	{
 		return getEndpointApiRootPackageName(gpn) + ".ops";
 	}
 
-	public static String getStateChannelPackageName(GProtocolName gpn, Role self)
+	public static String getStateChannelPackageName(GProtoName gpn, Role self)
 	{
 		return getEndpointApiRootPackageName(gpn) + ".statechans." + self;
 	}
@@ -281,7 +287,7 @@ public class SessionApiGenerator extends ApiGen
 	}
 	
 	// Returns the simple Op Class name: names starting with a digit are prefixed by '_'
-	public static String getOpClassName(MessageId<?> mid)
+	public static String getOpClassName(MsgId<?> mid)
 	{
 		String s = mid.toString();
 		return (s.isEmpty() || s.charAt(0) < 65) ? "_" + s : s;  // Hacky?

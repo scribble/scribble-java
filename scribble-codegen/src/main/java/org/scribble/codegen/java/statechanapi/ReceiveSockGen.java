@@ -13,19 +13,19 @@
  */
 package org.scribble.codegen.java.statechanapi;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.type.name.DataType;
-import org.scribble.type.name.MessageSigName;
-import org.scribble.type.name.PayloadElemType;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.type.name.DataName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.PayElemType;
+import org.scribble.util.ScribException;
 
 public class ReceiveSockGen extends ScribSockGen
 {
@@ -52,7 +52,7 @@ public class ReceiveSockGen extends ScribSockGen
 	// FIXME: most general async would also allow whole input-only compound statements (choice, recursion) to be bypassed
 	//private void addReceiveMethods(ClassBuilder cb, EndpointState curr)
 	@Override
-	protected void addMethods() throws ScribbleException
+	protected void addMethods() throws ScribException
 	{
 		EAction a = curr.getActions().iterator().next();
 		//String nextClass = this.apigen.getSocketClassName(curr.accept(a));
@@ -69,7 +69,7 @@ public class ReceiveSockGen extends ScribSockGen
 
   // [nextClass] receive([opClass] op, Buf<? super T> arg, ...)
 	//private void makeReceiveMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
-	private void makeReceiveMethod(EAction a, EState succ) throws ScribbleException
+	private void makeReceiveMethod(EAction a, EState succ) throws ScribException
 	{
 		Module main = this.apigen.getMainModule();  // FIXME: main not necessarily the right module?
 
@@ -84,17 +84,17 @@ public class ReceiveSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			//addReceiveMessageSigNameParams(mb, a, msd);*/
 			mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = "
 						+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.obj) + ");");
-			mb.addBodyLine(RECEIVE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + RECEIVE_MESSAGE_PARAM + ";");
+			mb.addBodyLine(RECEIVE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + ";");
 		}
 		addReturnNextSocket(mb, succ);
 	}
 
 	// Payload parameters added later
-	private MethodBuilder makeReceiveHeader(EAction a, EState succ) throws ScribbleException
+	private MethodBuilder makeReceiveHeader(EAction a, EState succ) throws ScribException
 	{
 		MethodBuilder mb = this.cb.newMethod();
 		setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -151,7 +151,7 @@ public class ReceiveSockGen extends ScribSockGen
 
 	// Doesn't include return type
 	//public static void makeReceiveHeader(StateChannelApiGenerator apigen, IOAction a, EndpointState succ, MethodBuilder mb)
-	public static void setReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribbleException
+	public static void setReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, EAction a, MethodBuilder mb) throws ScribException
 	{
 		final String ROLE_PARAM = "role";
 		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?
@@ -168,27 +168,27 @@ public class ReceiveSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			addReceiveMessageSigNameParams(mb, msd, true);
 		}
 	}
 
 	// FIXME: main may not be the right module
-	protected static void addReceiveOpParams(MethodBuilder mb, Module main, EAction a, boolean superr) throws ScribbleException
+	protected static void addReceiveOpParams(MethodBuilder mb, Module main, EAction a, boolean superr) throws ScribException
 	{
 		if (!a.payload.isEmpty())
 		{
 			String buffSuper = BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "");
 			int i = 1;
-			for (PayloadElemType<?> pt : a.payload.elems)
+			for (PayElemType<?> pt : a.payload.elems)
 			{
-				if (!pt.isDataType())
+				if (!pt.isDataName())
 				{
-					throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
+					throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 				}
-				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
+				DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
 				ScribSockGen.checkJavaDataTypeDecl(dtd);
-				mb.addParameters(buffSuper + dtd.extName + "> " + RECEIVE_ARG_PREFIX + i++);
+				mb.addParameters(buffSuper + dtd.getExtName() + "> " + RECEIVE_ARG_PREFIX + i++);
 			}
 		}
 	}
@@ -198,19 +198,19 @@ public class ReceiveSockGen extends ScribSockGen
 		if (!a.payload.isEmpty())
 		{
 			int i = 1;
-			for (PayloadElemType<?> pt : a.payload.elems)  // Could factor out this loop (arg names) with addReceiveOpParams (as for send)
+			for (PayElemType<?> pt : a.payload.elems)  // Could factor out this loop (arg names) with addReceiveOpParams (as for send)
 			{
-				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
-				mb.addBodyLine(RECEIVE_ARG_PREFIX + i + "." + BUFF_VAL_FIELD + " = (" + dtd.extName + ") "
+				DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
+				mb.addBodyLine(RECEIVE_ARG_PREFIX + i + "." + BUFF_VAL_FIELD + " = (" + dtd.getExtName() + ") "
 							+ RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + (i++ - 1) +"];");
 			}
 		}
 	}
 
-	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd, boolean superr) throws ScribbleException
+	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, SigDecl msd, boolean superr) throws ScribException
 	{
 		ScribSockGen.checkMessageSigNameDecl(msd);
-		mb.addParameters(BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "") + msd.extName + "> " + RECEIVE_ARG_PREFIX);
+		mb.addParameters(BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "") + msd.getExtName() + "> " + RECEIVE_ARG_PREFIX);
 	}
 
 	// Similar to setReceiveHeader

@@ -1,3 +1,5 @@
+// bin/scribblec.sh scribble-test/src/test/resources/good/syntax/disamb/imports/Import01a.scr -ip scribble-test/src/test/resources -project Import1a C
+
 module good.syntax.disamb.imports.Import01a;
 
 import good.syntax.disamb.imports.pack1.Import01b as Test3;

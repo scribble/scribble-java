@@ -13,21 +13,21 @@
  */
 package org.scribble.codegen.java.statechanapi;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
-import org.scribble.ast.NonProtocolDecl;
-import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
+import org.scribble.ast.NonProtoDecl;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.endpoint.EState;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.MessageId;
-import org.scribble.type.name.Role;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.name.Role;
+import org.scribble.util.ScribException;
 
 // Parameterize on output class type
 public abstract class ScribSockGen extends StateChanTypeGen
@@ -85,13 +85,13 @@ public abstract class ScribSockGen extends StateChanTypeGen
 	}
 
 	@Override
-	public ClassBuilder generateType() throws ScribbleException
+	public ClassBuilder generateType() throws ScribException
 	{
 		constructClass();  // So className can be "overridden" in subclass constructor (CaseSocket)
 		return this.cb;
 	}
 
-	protected void constructClass() throws ScribbleException
+	protected void constructClass() throws ScribException
 	{
 		constructClassExceptMethods();
 		addMethods();
@@ -153,9 +153,13 @@ public abstract class ScribSockGen extends StateChanTypeGen
 		mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
 
-		GProtocolDecl gpd = (GProtocolDecl) this.apigen.getJob().getContext().getModule(this.apigen.gpn.getPrefix()).getProtocolDecl(this.apigen.gpn.getSimpleName());
-		String epClass = gpd.isExplicitModifier() ? EXPLICITENDPOINT_CLASS : MPSTENDPOINT_CLASS;
-		ConstructorBuilder ctor2 = cb.newConstructor(epClass + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
+		GProtoDecl gpd = (GProtoDecl) this.apigen.getJob().getContext()
+				.getModule(this.apigen.gpn.getPrefix())
+				.getGProtocolDeclChild(this.apigen.gpn.getSimpleName());
+		String epClass = gpd.isExplicit() ? EXPLICITENDPOINT_CLASS
+				: MPSTENDPOINT_CLASS;
+		ConstructorBuilder ctor2 = cb.newConstructor(
+				epClass + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
 
 		ctor2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		ctor2.addModifiers(JavaBuilder.PUBLIC);
@@ -163,7 +167,7 @@ public abstract class ScribSockGen extends StateChanTypeGen
 		ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 	}
 	
-	protected abstract void addMethods() throws ScribbleException;
+	protected abstract void addMethods() throws ScribException;
 	
 	/*@Deprecated
 	protected void setNextSocketReturnType(MethodBuilder mb, EState succ)
@@ -203,7 +207,7 @@ public abstract class ScribSockGen extends StateChanTypeGen
 	
 	// Not fully qualified, just Session API class prefix
 	// The constant singleton value of this type in the Session API (which is the same "name" as the class)
-	protected String getSessionApiOpConstant(MessageId<?> mid)
+	protected String getSessionApiOpConstant(MsgId<?> mid)
 	{
 		return SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + "." + SessionApiGenerator.getOpClassName(mid);
 	}
@@ -247,7 +251,7 @@ public abstract class ScribSockGen extends StateChanTypeGen
 		String ret;
 		if (succ.isTerminal())
 		{
-			GProtocolName gpn = apigen.getGProtocolName();
+			GProtoName gpn = apigen.getGProtocolName();
 			Role self = apigen.getSelf();
 			ret = SessionApiGenerator.getStateChannelPackageName(gpn, self) + "." + GENERATED_ENDSOCKET_NAME;
 					//+ "<" + SessionApiGenerator.getSessionClassName(gpn) + ", " + SessionApiGenerator.getRoleClassName(self) + ">";
@@ -259,21 +263,21 @@ public abstract class ScribSockGen extends StateChanTypeGen
 		mb.setReturn(ret);
 	}
 	
-	protected static void checkJavaDataTypeDecl(DataTypeDecl dtd) throws ScribbleException
+	protected static void checkJavaDataTypeDecl(DataDecl dtd) throws ScribException
 	{
 		checkJavaSchema(dtd);
 	}
 
-	protected static void checkMessageSigNameDecl(MessageSigNameDecl msd) throws ScribbleException
+	protected static void checkMessageSigNameDecl(SigDecl msd) throws ScribException
 	{
 		checkJavaSchema(msd);
 	}
 	
-	protected static void checkJavaSchema(NonProtocolDecl<?> npd) throws ScribbleException
+	protected static void checkJavaSchema(NonProtoDecl<?> npd) throws ScribException
 	{
-		if (!npd.schema.equals(ScribSockGen.JAVA_SCHEMA))  // FIXME: factor out
+		if (!npd.getSchema().equals(ScribSockGen.JAVA_SCHEMA))  // FIXME: factor out
 		{
-			throw new ScribbleException(npd.getSource(), "Unsupported data type schema: " + npd.schema);
+			throw new ScribException(npd.getSource(), "Unsupported data type schema: " + npd.getSchema());
 		}
 	}
 	
