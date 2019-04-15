@@ -404,15 +404,14 @@ simplemembername:           simplename;  // Only for member declarations*/
 // "The TreeAdaptor is not called; instead [the] constructors are invoked directly."
 // "Note that parameters are not allowed on token references to the left of ->:"
 // "Use imaginary nodes as you normally would, but with the addition of the node type:"  // Pointless?  token itself unchanged and ttype int ends up unused
-rolenamenode: IDENTIFIER -> IDENTIFIER<RoleNode>[$IDENTIFIER];
-recursionvarnamenode: IDENTIFIER -> IDENTIFIER<RecVarNode>[$IDENTIFIER];
-ambiguousnamenode: IDENTIFIER -> IDENTIFIER<AmbigNameNode>[$IDENTIFIER];
+rolenamenode: t=IDENTIFIER -> IDENTIFIER<RoleNode>[$t];
+recursionvarnamenode: t=IDENTIFIER -> IDENTIFIER<RecVarNode>[$t];
+ambiguousnamenode: t=IDENTIFIER -> IDENTIFIER<AmbigNameNode>[$t];
 opnamenode:
-IDENTIFIER -> IDENTIFIER<OpNode>[$IDENTIFIER]
+t=IDENTIFIER -> IDENTIFIER<OpNode>[$t]
 | -> ^(EMPTY_OPERATOR);
-//emptyopnamenode: IDENTIFIER<OpNode>[EMPTY_OPERATOR];  // empty "left" of rewrite not allowed
-typeparamnamenode: IDENTIFIER -> IDENTIFIER<TypeParamNode>[$IDENTIFIER]; 
-sigparamnamenode: IDENTIFIER -> IDENTIFIER<SigParamNode>[$IDENTIFIER];
+typeparamnamenode: t=IDENTIFIER -> IDENTIFIER<TypeParamNode>[$t]; 
+sigparamnamenode: t=IDENTIFIER -> IDENTIFIER<SigParamNode>[$t];
 
 
 
@@ -421,41 +420,41 @@ sigparamnamenode: IDENTIFIER -> IDENTIFIER<SigParamNode>[$IDENTIFIER];
  */
 
 // Using qualified to rep simple
-simplemodulename: IDENTIFIER -> ^(MODULENAME IDENTIFIER) ;
-simplepayloadtypename: IDENTIFIER -> ^(TYPENAME IDENTIFIER) ; 
+simplemodulename: t=IDENTIFIER -> ^(MODULENAME[$t] IDENTIFIER) ;
+simplepayloadtypename: t=IDENTIFIER -> ^(TYPENAME[$t] IDENTIFIER) ; 
     // TODO factor out with typedecl?  NO: params distinct from "literals"
-simplemessagesignaturename: IDENTIFIER -> ^(SIGNAME IDENTIFIER) ;
+simplemessagesignaturename: t=IDENTIFIER -> ^(SIGNAME[$t] IDENTIFIER) ;
     // TODO factor out with sigparamdecl?  NO: params distinct from "literals"
-simpleprotocolname: IDENTIFIER -> ^(GPROTOCOLNAME IDENTIFIER) ;
+simpleprotocolname: t=IDENTIFIER -> ^(GPROTOCOLNAME[$t] IDENTIFIER) ;
 
 qualifiedname:
-  IDENTIFIER ('.' IDENTIFIER)*
+  t=IDENTIFIER ('.' IDENTIFIER)*
 ->
-  ^(QUALIFIEDNAME IDENTIFIER+)
+  ^(QUALIFIEDNAME[$t] IDENTIFIER+)
 ;
 
 packagename:          qualifiedname;
 membername:           qualifiedname;
 
 modulename:
-  IDENTIFIER ('.' IDENTIFIER)*
+  t=IDENTIFIER ('.' IDENTIFIER)*
 ->
-  ^(MODULENAME IDENTIFIER+)
+  ^(MODULENAME[$t] IDENTIFIER+)
 ;
 
 protocolname:         membername;
 payloadtypename:      membername;
 
 messagesignaturename:
-  IDENTIFIER ('.' IDENTIFIER)*
+  t=IDENTIFIER ('.' IDENTIFIER)*
 ->
-  ^(SIGNAME IDENTIFIER+)
+  ^(SIGNAME[$t] IDENTIFIER+)
 ;
 
 gprotocolnamenode:
-    IDENTIFIER ('.' IDENTIFIER)*
+    t=IDENTIFIER ('.' IDENTIFIER)*
   ->
-  ^(GPROTOCOLNAME IDENTIFIER+)
+  ^(GPROTOCOLNAME[$t] IDENTIFIER+)
 ;
 
 
