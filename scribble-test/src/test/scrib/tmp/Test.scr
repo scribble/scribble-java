@@ -91,12 +91,12 @@ module tmp.Test;
 type <java> "..." from "..." as T;
 
 
-explicit global protocol Proto1(role A, role B)
+explicit global protocol Proto1(role A__, role B)
 {
 	() connect A__ to B;
 	rec X
 	{
-		() from A to B;
+		() from A__ to B;
 		continue X;
 	}
 }
