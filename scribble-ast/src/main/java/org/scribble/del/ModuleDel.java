@@ -20,8 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.ast.NonProtocolDecl;
-import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.NonProtoDecl;
+import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
@@ -39,7 +39,7 @@ public class ModuleDel extends ScribDelBase
 	{
 		Module mod = (Module) visited;
 		// Imports checked in ModuleContext -- that is built before disamb is run
-		List<NonProtocolDecl<?>> npds = mod.getNonProtoDeclChildren();
+		List<NonProtoDecl<?>> npds = mod.getNonProtoDeclChildren();
 		List<String> npdnames = npds.stream()
 				.map(x -> x.getDeclName().toString())
 				.collect(Collectors.toList());
@@ -47,14 +47,14 @@ public class ModuleDel extends ScribDelBase
 		final Set<String> dups1 = getDuplicates(npdnames);
 		if (!dups1.isEmpty())
 		{
-			NonProtocolDecl<?> first =
+			NonProtoDecl<?> first =
 					npds.stream()
 							.filter(x -> dups1.contains(x.getDeclName().toString()))
 							.collect(Collectors.toList()).get(0);
 			throw new ScribException(first.getSource(),
 					"Duplicate non-protocol decls: " + first.getDeclName());
 		}
-		List<ProtocolDecl<?>> pds = mod.getProtoDeclChildren();
+		List<ProtoDecl<?>> pds = mod.getProtoDeclChildren();
 		List<String> pdnames = pds.stream()
 				.map(pd -> pd.getHeaderChild().getDeclName().toString())
 				.collect(Collectors.toList());
@@ -63,7 +63,7 @@ public class ModuleDel extends ScribDelBase
 		if (pds.size() != pdnames.stream().distinct().count())
 		if (!dups2.isEmpty())
 		{
-			ProtocolDecl<?> first =
+			ProtoDecl<?> first =
 						pds.stream()
 								.filter(x -> dups2
 										.contains(x.getHeaderChild().getDeclName().toString()))

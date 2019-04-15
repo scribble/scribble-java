@@ -15,8 +15,8 @@ package org.scribble.codegen.java.statechanapi;
 
 import java.util.stream.Collectors;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.statechanapi.ioifaces.BranchIfaceGen;
@@ -293,14 +293,14 @@ public class BranchSockGen extends ScribSockGen
 					int i = 0;
 					for (PayloadElemType<?> pt : a.payload.elems)
 					{
-						DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
+						DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
 					}
 				}
 			}
 			else
 			{
-				MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.getExtName() + ") " +  RECEIVE_MESSAGE_PARAM 
 						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
 						+ ")";
@@ -380,14 +380,14 @@ public class BranchSockGen extends ScribSockGen
 					int i = 0;
 					for (PayloadElemType<?> pt : a.payload.elems)
 					{
-						DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
+						DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
 					}
 				}
 			}
 			else
 			{
-				MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.getExtName() + ") " +  RECEIVE_MESSAGE_PARAM
 						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
 						+ ")";

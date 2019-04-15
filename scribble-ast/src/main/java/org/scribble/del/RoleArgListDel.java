@@ -15,7 +15,7 @@ package org.scribble.del;
 
 import java.util.List;
 
-import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
@@ -48,7 +48,7 @@ public class RoleArgListDel extends DoArgListDel
 	}
 
 	@Override
-	protected RoleDeclList getDeclList(ProtocolDecl<?> pd)
+	protected RoleDeclList getDeclList(ProtoDecl<?> pd)
 	{
 		return pd.getHeaderChild().getRoleDeclListChild();
 	}

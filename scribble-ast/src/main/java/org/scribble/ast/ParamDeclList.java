@@ -24,25 +24,25 @@ import org.scribble.visit.AstVisitor;
 
 
 // RoleKind or (NonRole)ParamKind
-public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNodeBase 
+public abstract class ParamDeclList<K extends ParamKind> extends ScribNodeBase 
 {
 	// ScribTreeAdaptor#create constructor
-	public HeaderParamDeclList(Token t)
+	public ParamDeclList(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public HeaderParamDeclList(HeaderParamDeclList<K> node)
+	public ParamDeclList(ParamDeclList<K> node)
 	{
 		super(node);
 	}
 	
-	public abstract List<? extends HeaderParamDecl<K>> getParamDeclChildren();
+	public abstract List<? extends ParamDecl<K>> getDeclChildren();
 	
 	public final int length()
 	{
-		return getParamDeclChildren().size();
+		return getDeclChildren().size();
 	}
 
 	public final boolean isEmpty()
@@ -51,24 +51,24 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 	}
 	
 	@Override
-	public abstract HeaderParamDeclList<K> dupNode();
+	public abstract ParamDeclList<K> dupNode();
 	
-	public HeaderParamDeclList<K> reconstruct(
-			List<? extends HeaderParamDecl<K>> decls)
+	public ParamDeclList<K> reconstruct(
+			List<? extends ParamDecl<K>> decls)
 	{
-		HeaderParamDeclList<K> sig = dupNode();
-		sig.addChildren(decls);
+		ParamDeclList<K> n = dupNode();
+		n.addChildren(decls);
 		ScribDel del = del();
-		sig.setDel(del);  // No copy
-		return sig;
+		n.setDel(del);  // No copy
+		return n;
 	}
 	
 	@Override
-	public HeaderParamDeclList<? extends K> visitChildren(AstVisitor v)
+	public ParamDeclList<? extends K> visitChildren(AstVisitor v)
 			throws ScribException
 	{
-		List<? extends HeaderParamDecl<K>> ps = 
-				visitChildListWithClassEqualityCheck(this, getParamDeclChildren(), v);
+		List<? extends ParamDecl<K>> ps = 
+				visitChildListWithClassEqualityCheck(this, getDeclChildren(), v);
 		return reconstruct(ps);
 	}
 
@@ -76,7 +76,7 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 	@Override
 	public String toString()
 	{
-		return getParamDeclChildren().stream().map(x -> x.toString())
+		return getDeclChildren().stream().map(x -> x.toString())
 				.collect(Collectors.joining(", "));
 	}
 }

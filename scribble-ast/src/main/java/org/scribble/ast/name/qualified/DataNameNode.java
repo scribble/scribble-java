@@ -14,14 +14,14 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.name.PayloadElemNameNode;
+import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.DataTypeKind;
 import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.session.Arg;
 
 //public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
 public class DataNameNode extends MemberNameNode<DataTypeKind>
-		implements PayloadElemNameNode<DataTypeKind>
+		implements PayElemNameNode<DataTypeKind>
 {
 	// ScribTreeAdaptor#create constructor
 	public DataNameNode(Token t)

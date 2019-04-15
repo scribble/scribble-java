@@ -19,18 +19,18 @@ import java.util.List;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.scribble.ast.AuxMod;
-import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.DataDecl;
 import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ImportModule;
-import org.scribble.ast.MessageSigNameDecl;
-import org.scribble.ast.MessageSigNode;
+import org.scribble.ast.SigDecl;
+import org.scribble.ast.SigLitNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonRoleArg;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleParamDeclList;
-import org.scribble.ast.PayloadElemList;
-import org.scribble.ast.ProtocolModList;
+import org.scribble.ast.PayElemList;
+import org.scribble.ast.ProtoModList;
 import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
@@ -38,19 +38,19 @@ import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNil;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.SigParamDecl;
-import org.scribble.ast.TypeParamDecl;
-import org.scribble.ast.UnaryPayloadElem;
+import org.scribble.ast.DataParamDecl;
+import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.ast.global.GMessageTransfer;
-import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.ast.global.GProtocolDef;
-import org.scribble.ast.global.GProtocolHeader;
+import org.scribble.ast.global.GMsgTransfer;
+import org.scribble.ast.global.GProtoBlock;
+import org.scribble.ast.global.GProtoDecl;
+import org.scribble.ast.global.GProtoDef;
+import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.qualified.DataNameNode;
@@ -97,36 +97,37 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.MODULEDECL: return new ModuleDecl(t);
 			case ScribbleParser.IMPORTMODULE: return new ImportModule(t);
 
-			case ScribbleParser.DATADECL: return new DataTypeDecl(t);
-			case ScribbleParser.SIGDECL: return new MessageSigNameDecl(t);
-			case ScribbleParser.GPROTODECL: return new GProtocolDecl(t);
+			case ScribbleParser.DATADECL: return new DataDecl(t);
+			case ScribbleParser.SIGDECL: return new SigDecl(t);
+			case ScribbleParser.GPROTODECL: return new GProtoDecl(t);
  
 			// CHECKME: refactor into header?
-			case ScribbleParser.PROTOMOD_LIST: return new ProtocolModList(t);
+			case ScribbleParser.PROTOMOD_LIST: return new ProtoModList(t);
 			case ScribbleParser.AUX_KW: return new AuxMod(t);  // FIXME: KW return by parser directly (cf. other tokens are imaginary)
 			case ScribbleParser.EXPLICIT_KW: return new ExplicitMod(t);
 
-			case ScribbleParser.GPROTOHEADER: return new GProtocolHeader(t);
+			case ScribbleParser.GPROTOHEADER: return new GProtoHeader(t);
 			case ScribbleParser.ROLEDECL_LIST: return new RoleDeclList(t);
 			case ScribbleParser.ROLEDECL: return new RoleDecl(t);
 			case ScribbleParser.PARAMDECL_LIST: return new NonRoleParamDeclList(t);
-			case ScribbleParser.DATAPARAMDECL: return new TypeParamDecl(t);
+			case ScribbleParser.DATAPARAMDECL: return new DataParamDecl(t);
 			case ScribbleParser.SIGPARAMDECL: return new SigParamDecl(t);
 
-			case ScribbleParser.GPROTODEF: return new GProtocolDef(t);
-			case ScribbleParser.GPROTOBLOCK: return new GProtocolBlock(t);
+			case ScribbleParser.GPROTODEF: return new GProtoDef(t);
+			case ScribbleParser.GPROTOBLOCK: return new GProtoBlock(t);
 			case ScribbleParser.GINTERSEQ: return new GInteractionSeq(t);
 
-			case ScribbleParser.SIG_LIT: return new MessageSigNode(t);
-			case ScribbleParser.PAYELEM_LIST: return new PayloadElemList(t);
-			case ScribbleParser.UNARY_PAYELEM: return new UnaryPayloadElem<>(t);
+			case ScribbleParser.SIG_LIT: return new SigLitNode(t);
+			case ScribbleParser.PAYELEM_LIST: return new PayElemList(t);
+			case ScribbleParser.UNARY_PAYELEM: return new UnaryPayElem<>(t);
 
 			case ScribbleParser.GCONNECT: return new GConnect(t);
-			case ScribbleParser.GCONTINUE: return new GContinue(t);
 			case ScribbleParser.GDCONN: return new GDisconnect(t);
-			case ScribbleParser.GDO: return new GDo(t);
-			case ScribbleParser.GMSGTRANSFER: return new GMessageTransfer(t);
+			case ScribbleParser.GMSGTRANSFER: return new GMsgTransfer(t);
 			case ScribbleParser.GWRAP: return new GWrap(t);
+
+			case ScribbleParser.GCONTINUE: return new GContinue(t);
+			case ScribbleParser.GDO: return new GDo(t);
 				
 			case ScribbleParser.ROLEARG_LIST: return new RoleArgList(t);
 			case ScribbleParser.ROLEARG: return new RoleArg(t);

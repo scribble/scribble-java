@@ -13,7 +13,7 @@
  */
 package org.scribble.codegen.java.statechanapi;
 
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
@@ -106,7 +106,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			ReceiveSockGen.addReceiveMessageSigNameParams(mb, msd, false);
 		}
 	}

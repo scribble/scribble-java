@@ -15,13 +15,13 @@ package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.name.PayloadElemNameNode;
+import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.LProtocolName;
 import org.scribble.core.type.session.Arg;
 
 public class LProtoNameNode extends ProtocolNameNode<Local>
-		implements PayloadElemNameNode<Local>
+		implements PayElemNameNode<Local>
 {
 	// ScribTreeAdaptor#create constructor
 	public LProtoNameNode(Token t)

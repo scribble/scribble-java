@@ -19,7 +19,7 @@ import java.util.Set;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
-import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.core.job.Job;
 import org.scribble.core.job.JobArgs;
 import org.scribble.core.lang.global.GProtocol;
@@ -101,7 +101,7 @@ public class Lang
 			for (ModuleName fullname : parsed.keySet())
 			{
 				GTypeTranslator t = newTranslator(fullname);
-				for (GProtocolDecl gpd : parsed.get(fullname).getGProtoDeclChildren())
+				for (GProtoDecl gpd : parsed.get(fullname).getGProtoDeclChildren())
 				{
 					GProtocol g = (GProtocol) gpd.visitWith(t);
 					imeds.add(g);

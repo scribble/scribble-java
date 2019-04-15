@@ -14,62 +14,63 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.name.qualified.SigNameNode;
-import org.scribble.core.type.kind.SigKind;
-import org.scribble.core.type.name.MessageSigName;
+import org.scribble.ast.name.qualified.DataNameNode;
+import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.name.DataType;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.util.Constants;
 
-public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
+public class DataDecl extends NonProtoDecl<DataTypeKind>
 {
 	// ScribTreeAdaptor#create constructor
-	public MessageSigNameDecl(Token payload)
+	public DataDecl(Token payload)
 	{
 		super(payload);
 	}
 
 	// Tree#dupNode constructor
-	protected MessageSigNameDecl(MessageSigNameDecl node)
+	protected DataDecl(DataDecl node)
 	{
 		super(node);
 	}
-	
+
 	@Override
-	public SigNameNode getNameNodeChild()
+	public DataNameNode getNameNodeChild()
 	{
-		return (SigNameNode) getRawNameNodeChild();
+		return (DataNameNode) getRawNameNodeChild();
 	}
 
 	// Cf. CommonTree#dupNode
 	@Override
-	public MessageSigNameDecl dupNode()
+	public DataDecl dupNode()
 	{
-		return new MessageSigNameDecl(this);
+		return new DataDecl(this);
 	}
 	
 	@Override
-	public boolean isMessageSigNameDecl()
+	public boolean isDataTypeDecl()
 	{
 		return true;
 	}
 
+  // Simple name (ModuleDecl is the only NameDeclNode that uses qualified names)
 	@Override
-	public MessageSigName getDeclName()
+	public DataType getDeclName()
 	{
 		return getNameNodeChild().toName();
 	}
 
 	@Override
-	public MessageSigName getFullMemberName(Module mod)
+	public DataType getFullMemberName(Module mod)
 	{
 		ModuleName fullmodname = mod.getFullModuleName();
-		return new MessageSigName(fullmodname, getDeclName());
+		return new DataType(fullmodname, getDeclName());
 	}
 
 	@Override
 	public String toString()
 	{
-		return Constants.SIG_KW + " <" + getSchemaChild() + "> "
+		return Constants.TYPE_KW + " <" + getSchemaChild() + "> "
 				+ getExtNameChild() + " " 
 				+ Constants.FROM_KW + " " + getExtSourceChild() + " " 
 				+ Constants.AS_KW + " " + getDeclName()

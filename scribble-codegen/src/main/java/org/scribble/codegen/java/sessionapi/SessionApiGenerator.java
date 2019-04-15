@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.codegen.java.ApiGen;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
@@ -205,7 +205,7 @@ public class SessionApiGenerator extends ApiGen
 	{
 		Module mod = this.lang.getContext().getModule(this.gpn.getPrefix());
 		GProtocolName simpname = this.gpn.getSimpleName();
-		GProtocolDecl gpd = (GProtocolDecl) mod.getGProtocolDeclChild(simpname);
+		GProtoDecl gpd = (GProtoDecl) mod.getGProtocolDeclChild(simpname);
 		for (Role r : gpd.getRoles())
 		{
 			//constructRoleClass(this.cb.newClass(), r);

@@ -11,23 +11,35 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast;
+package org.scribble.ast.global;
 
-import org.scribble.core.type.kind.PayloadTypeKind;
-import org.scribble.core.type.name.PayloadElemType;
+import org.antlr.runtime.Token;
+import org.scribble.ast.ProtocolDef;
+import org.scribble.core.type.kind.Global;
 
-// Not in grammar file -- but cf. DoArg (and PayloadElemList cf. DoArgList) -- i.e. need a wrapper for mixed and initially ambiguous name kinds
-public interface PayloadElem<K extends PayloadTypeKind> extends ScribNode
+public class GProtoDef extends ProtocolDef<Global> implements GScribNode
 {
-	PayloadElemType<? extends PayloadTypeKind> toPayloadType();  // Mainly a wrapper method for the wrapped NameNode
-
-	default boolean isGlobalDelegationElem()
+	// ScribTreeAdaptor#create constructor
+	public GProtoDef(Token t)
 	{
-		return false;
+		super(t);
 	}
 
-	default boolean isLocalDelegationElem()
+	// Tree#dupNode constructor
+	protected GProtoDef(GProtoDef node)
 	{
-		return false;
+		super(node);
+	}
+
+	@Override
+	public GProtoBlock getBlockChild()
+	{
+		return (GProtoBlock) getChild(ProtocolDef.BLOCK_CHILD_INDEX);
+	}
+	
+	@Override
+	public GProtoDef dupNode()
+	{
+		return new GProtoDef(this);
 	}
 }

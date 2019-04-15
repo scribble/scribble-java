@@ -14,7 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.PayloadElem;
+import org.scribble.ast.PayElem;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.simple.RoleNode;
@@ -27,19 +27,19 @@ import org.scribble.visit.AstVisitor;
 // A "name pair" payload elem (current AST hierarchy induces this pattern), cf. UnaryPayloadElem (also differs in no parsing ambig against parameters)
 // The this.name will be global kind, but overall this node is local kind
 //public class DelegationElem extends PayloadElem<Local>
-public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
+public class GDelegPayElem extends ScribNodeBase implements PayElem<Local>
 {
 	public static final int PROTO_CHILD_INDEX = 0;
 	public static final int ROLE_CHILD_INDEX = 1;
 
 	// ScribTreeAdaptor#create constructor
-	public GDelegationElem(Token t)
+	public GDelegPayElem(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public GDelegationElem(GDelegationElem node)
+	public GDelegPayElem(GDelegPayElem node)
 	{
 		super(node);
 	}
@@ -56,22 +56,22 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	}
 	
 	@Override
-	public GDelegationElem dupNode()
+	public GDelegPayElem dupNode()
 	{
-		return new GDelegationElem(this);
+		return new GDelegPayElem(this);
 	}
 
-	public GDelegationElem reconstruct(GProtoNameNode proto, RoleNode role)
+	public GDelegPayElem reconstruct(GProtoNameNode proto, RoleNode role)
 	{
-		GDelegationElem dup = dupNode();
+		GDelegPayElem dup = dupNode();
 		dup.addChild(proto);
 		dup.addChild(role);
-		dup = (GDelegationElem) dup.del(del());
+		dup = (GDelegPayElem) dup.del(del());
 		return dup;
 	}
 
 	@Override
-	public GDelegationElem visitChildren(AstVisitor nv) throws ScribException
+	public GDelegPayElem visitChildren(AstVisitor nv) throws ScribException
 	{
 		GProtoNameNode name = (GProtoNameNode) 
 				visitChild(getProtocolChild(), nv);

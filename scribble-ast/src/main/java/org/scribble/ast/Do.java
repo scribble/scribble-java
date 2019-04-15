@@ -91,7 +91,7 @@ public abstract class Do<K extends ProtocolKind>
 	}
 	
 	// CHECKME: mcontext redundant, because redundant for getTargetProtocolDeclFullName
-	public abstract ProtocolDecl<K> getTargetProtocolDecl(LangContext jcontext,
+	public abstract ProtoDecl<K> getTargetProtocolDecl(LangContext jcontext,
 			ModuleContext mcontext);
 	
 	public Role getTargetRoleParameter(LangContext jcontext,

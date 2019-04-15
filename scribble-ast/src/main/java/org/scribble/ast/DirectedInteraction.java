@@ -43,9 +43,9 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 		super(node);
 	}
 	
-	public MessageNode getMessageNodeChild()
+	public MsgNode getMessageNodeChild()
 	{
-		return (MessageNode) getChild(MSG_CHILD_INDEX);
+		return (MsgNode) getChild(MSG_CHILD_INDEX);
 	}
 	
 	public RoleNode getSourceChild()
@@ -68,7 +68,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 	
 	public abstract DirectedInteraction<K> dupNode();
 
-	public DirectedInteraction<K> reconstruct(MessageNode msg, RoleNode src,
+	public DirectedInteraction<K> reconstruct(MsgNode msg, RoleNode src,
 			List<RoleNode> dests)
 	{
 		DirectedInteraction<K> mt = dupNode();
@@ -84,7 +84,7 @@ public abstract class DirectedInteraction<K extends ProtocolKind>
 	public DirectedInteraction<K> visitChildren(AstVisitor nv)
 			throws ScribException
 	{
-		MessageNode msg = (MessageNode) visitChild(getMessageNodeChild(), nv);
+		MsgNode msg = (MsgNode) visitChild(getMessageNodeChild(), nv);
 		RoleNode src = (RoleNode) visitChild(getSourceChild(), nv);
 		List<RoleNode> dests = visitChildListWithClassEqualityCheck(this,
 				getDestinationChildren(), nv);

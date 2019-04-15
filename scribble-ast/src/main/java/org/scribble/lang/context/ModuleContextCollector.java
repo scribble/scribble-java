@@ -15,13 +15,13 @@ package org.scribble.lang.context;
 
 import java.util.Map;
 
-import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.DataDecl;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
-import org.scribble.ast.NonProtocolDecl;
-import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.NonProtoDecl;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.lang.context.ScribNames;
 import org.scribble.core.type.name.DataType;
@@ -86,22 +86,22 @@ public class ModuleContextCollector
 			ModuleName modname) throws ScribException
 	{
 		names.modules.put(modname, mod.getFullModuleName());
-		for (NonProtocolDecl<?> npd : mod.getNonProtoDeclChildren())
+		for (NonProtoDecl<?> npd : mod.getNonProtoDeclChildren())
 		{
 			if (npd.isDataTypeDecl())
 			{
-				DataTypeDecl dtd = (DataTypeDecl) npd;
+				DataDecl dtd = (DataDecl) npd;
 				DataType qualif = new DataType(modname, dtd.getDeclName());
 				names.data.put(qualif, dtd.getFullMemberName(mod));
 			}
 			else //if (npd.isMessageSigNameDecl())
 			{
-				MessageSigNameDecl msnd = (MessageSigNameDecl) npd;
+				SigDecl msnd = (SigDecl) npd;
 				MessageSigName qualif = new MessageSigName(modname, msnd.getDeclName());
 				names.sigs.put(qualif, msnd.getFullMemberName(mod));
 			}
 		}
-		for (GProtocolDecl gpd : mod.getGProtoDeclChildren())
+		for (GProtoDecl gpd : mod.getGProtoDeclChildren())
 		{
 			GProtocolName qualif = new GProtocolName(modname,
 					gpd.getHeaderChild().getDeclName());
@@ -126,7 +126,7 @@ public class ModuleContextCollector
 					addImportDependencies(parsed, imported);
 
 					// FIXME: also do for npds -- factor out with below
-					for (GProtocolDecl gpd : imported.getGProtoDeclChildren())
+					for (GProtoDecl gpd : imported.getGProtoDeclChildren())
 					{
 						GProtocolName fullname = gpd.getFullMemberName(root);
 						this.visible.globals.put(fullname, fullname);
@@ -169,11 +169,11 @@ public class ModuleContextCollector
 			}
 		}
 		
-		for (NonProtocolDecl<?> npd : root.getNonProtoDeclChildren())
+		for (NonProtoDecl<?> npd : root.getNonProtoDeclChildren())
 		{
 			if (npd.isDataTypeDecl())
 			{
-				DataTypeDecl dtd = (DataTypeDecl) npd;
+				DataDecl dtd = (DataDecl) npd;
 				DataType visname = new DataType(dtd.getDeclName().toString());
 				DataType fullname = dtd.getFullMemberName(root);
 				this.visible.data.put(fullname, fullname);
@@ -181,7 +181,7 @@ public class ModuleContextCollector
 			}
 			else // if (npd.isMessageSigNameDecl())
 			{
-				MessageSigNameDecl msnd = (MessageSigNameDecl) npd;
+				SigDecl msnd = (SigDecl) npd;
 				MessageSigName fullname = msnd.getFullMemberName(root);
 				MessageSigName visname = new MessageSigName(
 						msnd.getDeclName().toString());
@@ -190,7 +190,7 @@ public class ModuleContextCollector
 			}
 		}
 
-		for (GProtocolDecl gpd : root.getGProtoDeclChildren())
+		for (GProtoDecl gpd : root.getGProtoDeclChildren())
 		{
 			GProtocolName visname = new GProtocolName(
 					gpd.getHeaderChild().getDeclName().toString());

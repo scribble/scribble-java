@@ -21,16 +21,16 @@ import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // (Currently) a list of mod leaf nodes as AmbigNameNodes (cf., NameNode "elements")
-public class ProtocolModList extends ScribNodeBase
+public class ProtoModList extends ScribNodeBase
 {
 	// ScribTreeAdaptor#create constructor
-	public ProtocolModList(Token t)
+	public ProtoModList(Token t)
 	{
 		super(t);
 	}
 	
 	// Tree#dupNode constructor
-	protected ProtocolModList(ProtocolModList node)
+	protected ProtoModList(ProtoModList node)
 	{
 		super(node);
 	}
@@ -58,13 +58,13 @@ public class ProtocolModList extends ScribNodeBase
 	}
 	
 	@Override
-	public ProtocolModList dupNode()
+	public ProtoModList dupNode()
 	{
-		return new ProtocolModList(this);
+		return new ProtoModList(this);
 	}
 	
 	@Override
-	public ProtocolModList visitChildren(AstVisitor nv) throws ScribException
+	public ProtoModList visitChildren(AstVisitor nv) throws ScribException
 	{
 		// CHECKME: no child visiting, no reconstruct?
 		return this;

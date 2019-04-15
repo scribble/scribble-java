@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.JavaBuilder;
@@ -170,7 +170,7 @@ public class OutputSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			addSendMessageSigNameParams(mb, msd);
 		}
 	}
@@ -222,14 +222,14 @@ public class OutputSockGen extends ScribSockGen
 				{
 					throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 				}
-				DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // FIXME: might not belong to main module  // TODO: if not DataType
+				DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // FIXME: might not belong to main module  // TODO: if not DataType
 				ScribSockGen.checkJavaDataTypeDecl(dtd);
 				mb.addParameters(dtd.getExtName() + " " + as.next());
 			}
 		}
 	}
 
-	protected static void addSendMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd) throws ScribException
+	protected static void addSendMessageSigNameParams(MethodBuilder mb, SigDecl msd) throws ScribException
 	{
 		final String MESSAGE_PARAM = "m";
 

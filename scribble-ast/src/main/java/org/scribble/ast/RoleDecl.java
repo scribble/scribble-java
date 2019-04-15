@@ -19,7 +19,7 @@ import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.Constants;
 
-public class RoleDecl extends HeaderParamDecl<RoleKind>
+public class RoleDecl extends ParamDecl<RoleKind>
 {
 	// ScribTreeAdaptor#create constructor
 	public RoleDecl(Token t)

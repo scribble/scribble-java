@@ -19,7 +19,7 @@ import org.scribble.core.type.name.MemberName;
 
 // CHECKME: drop generic parameter and kind?
 public abstract class NonRoleParamDecl<K extends NonRoleParamKind>
-		extends HeaderParamDecl<K>
+		extends ParamDecl<K>
 {
 	public final K kind;  // CHECKME: factor up to super?
 	

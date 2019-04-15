@@ -13,10 +13,10 @@
  */
 package org.scribble.codegen.java.statechanapi;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
-import org.scribble.ast.NonProtocolDecl;
-import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
+import org.scribble.ast.NonProtoDecl;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
@@ -153,7 +153,7 @@ public abstract class ScribSockGen extends StateChanTypeGen
 		mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
 
-		GProtocolDecl gpd = (GProtocolDecl) this.apigen.getJob().getContext()
+		GProtoDecl gpd = (GProtoDecl) this.apigen.getJob().getContext()
 				.getModule(this.apigen.gpn.getPrefix())
 				.getGProtocolDeclChild(this.apigen.gpn.getSimpleName());
 		String epClass = gpd.isExplicit() ? EXPLICITENDPOINT_CLASS
@@ -263,17 +263,17 @@ public abstract class ScribSockGen extends StateChanTypeGen
 		mb.setReturn(ret);
 	}
 	
-	protected static void checkJavaDataTypeDecl(DataTypeDecl dtd) throws ScribException
+	protected static void checkJavaDataTypeDecl(DataDecl dtd) throws ScribException
 	{
 		checkJavaSchema(dtd);
 	}
 
-	protected static void checkMessageSigNameDecl(MessageSigNameDecl msd) throws ScribException
+	protected static void checkMessageSigNameDecl(SigDecl msd) throws ScribException
 	{
 		checkJavaSchema(msd);
 	}
 	
-	protected static void checkJavaSchema(NonProtocolDecl<?> npd) throws ScribException
+	protected static void checkJavaSchema(NonProtoDecl<?> npd) throws ScribException
 	{
 		if (!npd.getSchema().equals(ScribSockGen.JAVA_SCHEMA))  // FIXME: factor out
 		{

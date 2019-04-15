@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Do;
 import org.scribble.ast.DoArgList;
-import org.scribble.ast.HeaderParamDeclList;
+import org.scribble.ast.ParamDeclList;
 import org.scribble.ast.Module;
-import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.ProtocolName;
@@ -43,8 +43,8 @@ public abstract class DoArgListDel extends ScribDelBase
 		ScribNode parent = child.getParent();
 		DoArgList<?> dal = (DoArgList<?>) visited;
 		List<?> args = dal.getArgChildren();
-		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
-		if (args.size() != getDeclList(pd).getParamDeclChildren().size())
+		ProtoDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
+		if (args.size() != getDeclList(pd).getDeclChildren().size())
 		{
 			throw new ScribException(child.getSource(),
 					"Do arity mismatch for " + pd.getHeaderChild() + ": " + args);
@@ -54,7 +54,7 @@ public abstract class DoArgListDel extends ScribDelBase
 	}
 
 	// Not using Do#getTargetProtocolDecl, because that currently relies on namedisamb pass to convert targets to fullnames (because it just gets the full name dependency, it doesn't do visible name resolution)
-	protected ProtocolDecl<?> getTargetProtocolDecl(Do<?> parent,
+	protected ProtoDecl<?> getTargetProtocolDecl(Do<?> parent,
 			NameDisambiguator disamb) throws ScribException
 	{
 		ModuleContext mc = disamb.getModuleContext();
@@ -68,7 +68,7 @@ public abstract class DoArgListDel extends ScribDelBase
 		ProtocolName<?> fullname = mc.getVisibleProtocolDeclFullName(pn);  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
 		Module mod = jc.getModule(fullname.getPrefix());
 		//return mod.getProtocolDeclChild(pn.getSimpleName());
-		List<ProtocolDecl<?>> pd = mod.getProtoDeclChildren().stream()
+		List<ProtoDecl<?>> pd = mod.getProtoDeclChildren().stream()
 				.filter(  // cf. Module::hasProtocolDecl
 						x -> x.getHeaderChild().getDeclName().equals(pn.getSimpleName()))
 				.collect(Collectors.toList());
@@ -79,6 +79,6 @@ public abstract class DoArgListDel extends ScribDelBase
 		return pd.get(0);
 	}
 	
-	protected abstract HeaderParamDeclList<?> getDeclList(
-			ProtocolDecl<?> pd);
+	protected abstract ParamDeclList<?> getDeclList(
+			ProtoDecl<?> pd);
 }

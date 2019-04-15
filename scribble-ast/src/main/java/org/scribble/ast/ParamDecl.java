@@ -21,17 +21,17 @@ import org.scribble.visit.AstVisitor;
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
 // RoleKind or (NonRole)ParamKind
-public abstract class HeaderParamDecl<K extends ParamKind>
+public abstract class ParamDecl<K extends ParamKind>
 		extends NameDeclNode<K>
 {
 	// ScribTreeAdaptor#create constructor
-	public HeaderParamDecl(Token t)
+	public ParamDecl(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public HeaderParamDecl(HeaderParamDecl<K> node)
+	public ParamDecl(ParamDecl<K> node)
 	{
 		super(node);
 	}
@@ -41,18 +41,18 @@ public abstract class HeaderParamDecl<K extends ParamKind>
 
 	public abstract String getKeyword();
 
-	public abstract HeaderParamDecl<K> dupNode();
+	public abstract ParamDecl<K> dupNode();
 
-	public HeaderParamDecl<K> reconstruct(NameNode<K> name)  // Always a "simple" name (e.g., like Role), but Type/Sig names are not SimpleNames
+	public ParamDecl<K> reconstruct(NameNode<K> name)  // Always a "simple" name (e.g., like Role), but Type/Sig names are not SimpleNames
 	{
-		HeaderParamDecl<K> dup = dupNode();
+		ParamDecl<K> dup = dupNode();
 		dup.addChild(name);
 		dup.setDel(del());  // No copy
 		return dup;
 	}
 	
 	@Override
-	public HeaderParamDecl<K> visitChildren(AstVisitor nv)
+	public ParamDecl<K> visitChildren(AstVisitor nv)
 			throws ScribException
 	{
 		NameNode<K> name = 

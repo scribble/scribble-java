@@ -21,7 +21,7 @@ import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
-import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.core.type.kind.DataTypeKind;
@@ -47,10 +47,10 @@ public class NonRoleArgListDel extends DoArgListDel
 				// Checks matching arity
 
 		Do<?> parent = (Do<?>) child.getParent();
-		ProtocolDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
+		ProtoDecl<?> pd = getTargetProtocolDecl((Do<?>) parent, disamb);
 		Iterator<NonRoleArg> args = nral.getArgChildren().iterator();
 		for (NonRoleParamDecl<?> param : pd.getHeaderChild().getParamDeclListChild()
-				.getParamDeclChildren())
+				.getDeclChildren())
 		{
 			NonRoleParamKind pkind = param.kind;
 			NonRoleArg arg = args.next();
@@ -89,7 +89,7 @@ public class NonRoleArgListDel extends DoArgListDel
 	}
 
 	@Override
-	protected NonRoleParamDeclList getDeclList(ProtocolDecl<?> pd)
+	protected NonRoleParamDeclList getDeclList(ProtoDecl<?> pd)
 	{
 		return pd.getHeaderChild().getParamDeclListChild();
 	}

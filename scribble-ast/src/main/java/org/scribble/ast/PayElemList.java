@@ -23,23 +23,23 @@ import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // Cf. DoArgList, but here we don't need as much abstraction (cf. RoleArgList, NonRoleArgList)
-public class PayloadElemList extends ScribNodeBase
+public class PayElemList extends ScribNodeBase
 {
 	// ScribTreeAdaptor#create constructor
-	public PayloadElemList(Token t)
+	public PayElemList(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public PayloadElemList(PayloadElemList node)
+	public PayElemList(PayElemList node)
 	{
 		super(node);
 	}
 	
-	List<PayloadElem<?>> getElementChildren()
+	List<PayElem<?>> getElementChildren()
 	{
-		return getChildren().stream().map(x -> (PayloadElem<?>) x)
+		return getChildren().stream().map(x -> (PayElem<?>) x)
 				.collect(Collectors.toList());
 	}
 
@@ -56,23 +56,23 @@ public class PayloadElemList extends ScribNodeBase
 	}
 		
 	@Override
-	public PayloadElemList dupNode()
+	public PayElemList dupNode()
 	{
-		return new PayloadElemList(this);
+		return new PayElemList(this);
 	}
 
-	protected PayloadElemList reconstruct(List<PayloadElem<?>> elems)
+	protected PayElemList reconstruct(List<PayElem<?>> elems)
 	{
-		PayloadElemList pay = dupNode();
+		PayElemList pay = dupNode();
 		pay.addChildren(elems);
 		pay.setDel(del());  // No copy
 		return pay;
 	}
 	
 	@Override
-	public PayloadElemList visitChildren(AstVisitor nv) throws ScribException
+	public PayElemList visitChildren(AstVisitor nv) throws ScribException
 	{
-		List<PayloadElem<?>> elems = 
+		List<PayElem<?>> elems = 
 				visitChildListWithClassEqualityCheck(this, getElementChildren(), nv);
 		return reconstruct(elems);
 	}

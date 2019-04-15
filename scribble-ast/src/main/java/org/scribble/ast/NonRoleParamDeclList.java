@@ -24,7 +24,7 @@ import org.scribble.del.ScribDel;
 // Can contain "mixed" type/sig kinds
 // Typing a bit awkward that this list has to use NonRoleParamKind as the "concrete" kind, while the NonRoleParamDecl elements use the actual concrete kind
 // But OK because the NonRoleParamDecl nodes are immutable (the generic kind value is never rewritten after instantiation, only read)
-public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
+public class NonRoleParamDeclList extends ParamDeclList<NonRoleParamKind>
 {
 	// ScribTreeAdaptor#create constructor
 	public NonRoleParamDeclList(Token t)
@@ -39,7 +39,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 	}
 
 	@Override
-	public List<NonRoleParamDecl<NonRoleParamKind>> getParamDeclChildren()
+	public List<NonRoleParamDecl<NonRoleParamKind>> getDeclChildren()
 	{
 		@SuppressWarnings("unchecked")
 		List<NonRoleParamDecl<NonRoleParamKind>> cast =
@@ -51,7 +51,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 
 	public List<MemberName<? extends NonRoleParamKind>> getParameters()
 	{
-		return getParamDeclChildren().stream().map(decl -> decl.getDeclName())
+		return getDeclChildren().stream().map(decl -> decl.getDeclName())
 				.collect(Collectors.toList());
 	}
 
@@ -63,7 +63,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 
 	@Override
 	public NonRoleParamDeclList reconstruct(
-			List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
+			List<? extends ParamDecl<NonRoleParamKind>> decls)
 	{
 		NonRoleParamDeclList sig = dupNode();
 		sig.addChildren(decls);

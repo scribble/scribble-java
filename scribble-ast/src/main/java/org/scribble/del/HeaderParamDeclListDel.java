@@ -15,8 +15,8 @@ package org.scribble.del;
 
 import java.util.List;
 
-import org.scribble.ast.HeaderParamDecl;
-import org.scribble.ast.HeaderParamDeclList;
+import org.scribble.ast.ParamDecl;
+import org.scribble.ast.ParamDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
@@ -30,11 +30,11 @@ public abstract class HeaderParamDeclListDel extends ScribDelBase
 
 	// Doing in leave allows the arguments to be individually checked first
 	@Override
-	public HeaderParamDeclList<?> leaveDisambiguation(ScribNode child,
+	public ParamDeclList<?> leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
-		HeaderParamDeclList<?> pdl = (HeaderParamDeclList<?>) visited;
-		List<? extends HeaderParamDecl<?>> decls = pdl.getParamDeclChildren();
+		ParamDeclList<?> pdl = (ParamDeclList<?>) visited;
+		List<? extends ParamDecl<?>> decls = pdl.getDeclChildren();
 			// grammar enforces RoleDeclList size > 0
 		if (decls.size() != decls.stream().map(d -> d.getDeclName()).distinct()
 				.count())

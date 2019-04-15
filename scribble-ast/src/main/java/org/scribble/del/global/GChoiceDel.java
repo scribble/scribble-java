@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GChoice;
-import org.scribble.ast.global.GProtocolBlock;
+import org.scribble.ast.global.GProtoBlock;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.del.ChoiceDel;
@@ -35,7 +35,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundSessionNodeDel
 		GChoice source = (GChoice) n;
 		Role subj = source.getSubjectChild().toName();
 		List<GSeq> blocks = new LinkedList<>();
-		for (GProtocolBlock b : source.getBlockChildren())
+		for (GProtoBlock b : source.getBlockChildren())
 		{
 			blocks.add((GSeq) b.visitWith(t));
 		}

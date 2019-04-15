@@ -23,8 +23,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
@@ -235,15 +235,15 @@ public class CBEndpointApiGenerator3
 				{
 					// FIXME: factor out
 					boolean isSig = main.getNonProtoDeclChildren().stream()
-							.anyMatch(npd -> (npd instanceof MessageSigNameDecl)
-									&& ((MessageSigNameDecl) npd).getDeclName().toString()
+							.anyMatch(npd -> (npd instanceof SigDecl)
+									&& ((SigDecl) npd).getDeclName().toString()
 											.equals(a.mid.toString()));
-					MessageSigNameDecl msnd = null;
+					SigDecl msnd = null;
 					if (isSig)
 					{
-						msnd = (MessageSigNameDecl) main.getNonProtoDeclChildren().stream()
-								.filter(npd -> (npd instanceof MessageSigNameDecl)
-										&& ((MessageSigNameDecl) npd).getDeclName().toString()
+						msnd = (SigDecl) main.getNonProtoDeclChildren().stream()
+								.filter(npd -> (npd instanceof SigDecl)
+										&& ((SigDecl) npd).getDeclName().toString()
 												.equals(a.mid.toString()))
 								.iterator().next();
 					}
@@ -590,12 +590,12 @@ public class CBEndpointApiGenerator3
 					
 					// FIXME: factor out
 					boolean isSig = main.getNonProtoDeclChildren().stream()
-						.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
-					MessageSigNameDecl msnd = null;
+						.anyMatch(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+					SigDecl msnd = null;
 					if (isSig)
 					{
-						msnd = (MessageSigNameDecl) main.getNonProtoDeclChildren().stream()
-								.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+						msnd = (SigDecl) main.getNonProtoDeclChildren().stream()
+								.filter(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 						FieldBuilder m = opClass.newField("m");
 						m.addModifiers("private", "final");
 						m.setType(msnd.getExtName());
@@ -698,12 +698,12 @@ public class CBEndpointApiGenerator3
 		{
 			// FIXME: factor out
 			boolean isSig = jc.getMainModule().getNonProtoDeclChildren().stream()
-				.anyMatch(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString()));
-			MessageSigNameDecl msnd = null;
+				.anyMatch(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(a.mid.toString()));
+			SigDecl msnd = null;
 			if (isSig)
 			{
-				msnd = (MessageSigNameDecl) jc.getMainModule().getNonProtoDeclChildren().stream()
-						.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
+				msnd = (SigDecl) jc.getMainModule().getNonProtoDeclChildren().stream()
+						.filter(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(a.mid.toString())).iterator().next();
 			}
 
 			branchAbstract += "case \"" + SessionApiGenerator.getOpClassName(a.mid) + "\": receive(data, " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + a.peer + "." + a.peer + ", ";
@@ -718,7 +718,7 @@ public class CBEndpointApiGenerator3
 			int i = 0;
 			for (PayloadElemType<?> pet : a.payload.elems)
 			{
-				DataTypeDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
+				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
 				branchAbstract += ", (" + dtd.getExtName() + ") m.payload[" + i++ + "]";
 			}
 			branchAbstract += "); break;\n";
@@ -732,7 +732,7 @@ public class CBEndpointApiGenerator3
 	}
 	
 	protected String generateReceiveInterface(boolean isSig,
-			MessageSigNameDecl msnd, LangContext jc, EAction a, String rootPack,
+			SigDecl msnd, LangContext jc, EAction a, String rootPack,
 			String receiveIfName)
 	{
 		String receiveInterface = "";
@@ -756,7 +756,7 @@ public class CBEndpointApiGenerator3
 			int i = 1;
 			for (PayloadElemType<?> pet : a.payload.elems)
 			{
-				DataTypeDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
+				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataType) pet);
 				receiveInterface += ", " + dtd.getExtName() + " arg" + i++;
 			}
 		}
@@ -998,11 +998,11 @@ public class CBEndpointApiGenerator3
 		return rootPack + ".handlers." + this.self + ".states.messages";
 	}
 	
-	protected MessageSigNameDecl getMessageSigNameDecl(MessageSigName mid)
+	protected SigDecl getMessageSigNameDecl(MessageSigName mid)
 	{
-		return (MessageSigNameDecl)
+		return (SigDecl)
 				this.lang.getContext().getMainModule().getNonProtoDeclChildren().stream()  // FIXME: main module?
-					.filter(npd -> (npd instanceof MessageSigNameDecl) && ((MessageSigNameDecl) npd).getDeclName().toString().equals(mid.toString()))
+					.filter(npd -> (npd instanceof SigDecl) && ((SigDecl) npd).getDeclName().toString().equals(mid.toString()))
 					.iterator().next();
 	}
 

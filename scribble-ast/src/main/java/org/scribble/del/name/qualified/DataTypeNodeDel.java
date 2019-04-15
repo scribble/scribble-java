@@ -14,7 +14,7 @@
 package org.scribble.del.name.qualified;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.DataDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.simple.IdNode;
@@ -37,7 +37,7 @@ public class DataTypeNodeDel extends ScribDelBase
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		ScribNode parent = child.getParent();
-		if (parent instanceof DataTypeDecl)  // Hacky? don't want to do for decl simplenames (generally, don't do if parent is namedeclnode)
+		if (parent instanceof DataDecl)  // Hacky? don't want to do for decl simplenames (generally, don't do if parent is namedeclnode)
 		{
 			return visited;
 		}

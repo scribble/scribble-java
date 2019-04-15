@@ -15,7 +15,7 @@ package org.scribble.codegen.java.statechanapi;
 
 import java.util.stream.Collectors;
 
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.statechanapi.ioifaces.BranchIfaceGen;
@@ -138,7 +138,7 @@ public class CaseSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			mb.addBodyLine(JavaBuilder.SUPER + ".use();");
 			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
 			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.getExtName() + ") " + CASE_MESSAGE_FIELD + ";");
@@ -197,7 +197,7 @@ public class CaseSockGen extends ScribSockGen
 		}
 		else
 		{
-			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // Factor out? (send/receive/branchreceive/...)
+			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // Factor out? (send/receive/branchreceive/...)
 			ln += getGarbageBuf(msd.getExtName()) + ");";
 		}
 		mb.addBodyLine(ln);
@@ -228,7 +228,7 @@ public class CaseSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			ReceiveSockGen.addReceiveMessageSigNameParams(mb, msd, true);
 		}
 	}

@@ -18,38 +18,37 @@ import java.util.List;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
-import org.scribble.ast.global.GDelegationElem;
+import org.scribble.ast.global.GDelegPayElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.ast.global.GMessageTransfer;
-import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.ast.global.GProtocolDef;
-import org.scribble.ast.global.GProtocolHeader;
+import org.scribble.ast.global.GMsgTransfer;
+import org.scribble.ast.global.GProtoDecl;
+import org.scribble.ast.global.GProtoHeader;
+import org.scribble.ast.global.GProtoBlock;
+import org.scribble.ast.global.GProtoDef;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
-import org.scribble.ast.name.PayloadElemNameNode;
+import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
-import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
-import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.PayloadTypeKind;
 
 
 // CHECKME: add Token params back (for better transformation, cf. ScribNodeBase.source), and use null for "fresh"?
-// AstFactory is for making "fresh" nodes ("fresh" Tokens) -- cf. reconstruct (for Token preservation)
+// AstFactory is for making "fresh" nodes ("fresh" Tokens) with new dels -- cf. ScribNode reconstruct pattern (for Token and del preservation)
 // Implementations located in scribble-parser, use ScribbleParser for Token construction
 // Currently, used only in relatively niche places (since ANTLR now constructs all parsed nodes "directly")
 public interface AstFactory
@@ -69,81 +68,54 @@ public interface AstFactory
 	ModuleNameNode ModuleNameNode(List<IdNode> elems);
 	SigNameNode SigNameNode(List<IdNode> elems);
 	
-	Module Module(ModuleDecl mdecl,
-			List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data,
-			List<ProtocolDecl<?>> protos);
+	Module Module(ModuleDecl mdecl, List<ImportDecl<?>> imports,
+			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos);
+	ModuleDecl ModuleDecl(ModuleNameNode fullname);
+	ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias);
 
-	MessageSigNode MessageSigNode(OpNode op, PayloadElemList pay);
+	DataDecl DataDecl(IdNode schema, IdNode extName, IdNode extSource,
+			DataNameNode name);
+	SigDecl SigDecl(IdNode schema, IdNode extName, IdNode extSource,
+			SigNameNode name);
+	GProtoDecl GProtoDecl(ProtoModList mods, GProtoHeader header,
+			GProtoDef def);
 
-	GDelegationElem GDelegationElem(GProtoNameNode name,
-			RoleNode r);
+	// TODO: add ProtoModList, etc.
 
-	PayloadElemList PayloadElemList(List<PayloadElem<?>> elems);
-
-	// PayloadElem PayloadElem(PayloadElemNameNode name);
-	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(
-			PayloadElemNameNode<K> name);
-
-	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
-
-	ImportModule ImportModule(ModuleNameNode modname,
-			ModuleNameNode alias);
-
-	MessageSigNameDecl MessageSigNameDecl(IdNode schema, IdNode extName,
-			IdNode extSource, SigNameNode name);
-
-	DataTypeDecl DataTypeDecl(IdNode schema, IdNode extName,
-			IdNode extSource, DataNameNode name);
-
-	GProtocolDecl GProtocolDecl(ProtocolModList modifiers,
-			GProtocolHeader header, GProtocolDef def);
-
-	GProtocolHeader GProtocolHeader(GProtoNameNode name,
-			RoleDeclList rdecls, NonRoleParamDeclList paramdecls);
-
+	GProtoHeader GProtocolHeader(GProtoNameNode name, RoleDeclList rs,
+			NonRoleParamDeclList ps);
 	RoleDeclList RoleDeclList(List<RoleDecl> ds);
-
 	RoleDecl RoleDecl(RoleNode r);
-
-	// ConnectDecl ConnectDecl(RoleNode src, RoleNode r);
-
 	NonRoleParamDeclList NonRoleParamDeclList(
 			List<NonRoleParamDecl<NonRoleParamKind>> ds);
+	DataParamDecl DataParamDecl(DataParamNode p);
+	SigParamDecl SigParamDecl(SigParamNode p);
 
-	@Deprecated
-	<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(
-			K kind, NonRoleParamNode<K> name);
-
-	GProtocolDef GProtocolDef(GProtocolBlock block);
-
-	GProtocolBlock GProtocolBlock(GInteractionSeq seq);
-
+	GProtoDef GProtoDef(GProtoBlock block);
+	GProtoBlock GProtoBlock(GInteractionSeq seq);
 	GInteractionSeq GInteractionSeq(List<GSessionNode> elems);
 
-	GMessageTransfer GMessageTransfer(RoleNode src, MessageNode msg,
-			List<RoleNode> dsts);
+	SigLitNode SigLitNode(OpNode op, PayElemList pay);
+	PayElemList PayElemList(List<PayElem<?>> elems);
+	<K extends PayloadTypeKind> UnaryPayElem<K> UnaryPayElem(
+			PayElemNameNode<K> name);
+	GDelegPayElem GDelegPayElem(GProtoNameNode name, RoleNode r);
 
-	GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dst);
-
+	GConnect GConnect(RoleNode src, MsgNode msg, RoleNode dst);
 	GDisconnect GDisconnect(RoleNode src, RoleNode dst);
-
+	GMsgTransfer GMsgTransfer(RoleNode src, MsgNode msg, List<RoleNode> dsts);
 	GWrap GWrap(RoleNode src, RoleNode dst);
 
-	GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks);
-
-	GRecursion GRecursion(RecVarNode rv, GProtocolBlock block);
-
 	GContinue GContinue(RecVarNode rv);
-
 	GDo GDo(RoleArgList rs, NonRoleArgList args,
 			GProtoNameNode proto);
 
+	GChoice GChoice(RoleNode subj, List<GProtoBlock> blocks);
+	GRecursion GRecursion(RecVarNode rv, GProtoBlock block);
+
 	RoleArgList RoleArgList(List<RoleArg> rs);
-
 	RoleArg RoleArg(RoleNode r);
-
 	NonRoleArgList NonRoleArgList(List<NonRoleArg> args);
-
 	NonRoleArg NonRoleArg(NonRoleArgNode arg);
 }
 

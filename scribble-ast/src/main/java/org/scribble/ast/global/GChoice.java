@@ -36,11 +36,11 @@ public class GChoice extends Choice<Global> implements GCompoundSessionNode
 	}
 	
 	@Override
-	public List<GProtocolBlock> getBlockChildren()
+	public List<GProtoBlock> getBlockChildren()
 	{
 		List<? extends ScribNode> cs = getChildren();
 		return cs.subList(GChoice.BLOCK_CHILDREN_START_INDEX, cs.size()).stream()
-				.map(x -> (GProtocolBlock) x).collect(Collectors.toList());
+				.map(x -> (GProtoBlock) x).collect(Collectors.toList());
 	}
 	
 	@Override

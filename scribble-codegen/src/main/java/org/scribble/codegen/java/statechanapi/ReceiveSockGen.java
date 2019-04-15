@@ -13,8 +13,8 @@
  */
 package org.scribble.codegen.java.statechanapi;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
@@ -84,7 +84,7 @@ public class ReceiveSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			//addReceiveMessageSigNameParams(mb, a, msd);*/
 			mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = "
 						+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.obj) + ");");
@@ -168,7 +168,7 @@ public class ReceiveSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			addReceiveMessageSigNameParams(mb, msd, true);
 		}
 	}
@@ -186,7 +186,7 @@ public class ReceiveSockGen extends ScribSockGen
 				{
 					throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 				}
-				DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
+				DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
 				ScribSockGen.checkJavaDataTypeDecl(dtd);
 				mb.addParameters(buffSuper + dtd.getExtName() + "> " + RECEIVE_ARG_PREFIX + i++);
 			}
@@ -200,14 +200,14 @@ public class ReceiveSockGen extends ScribSockGen
 			int i = 1;
 			for (PayloadElemType<?> pt : a.payload.elems)  // Could factor out this loop (arg names) with addReceiveOpParams (as for send)
 			{
-				DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
+				DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);  // TODO: if not DataType
 				mb.addBodyLine(RECEIVE_ARG_PREFIX + i + "." + BUFF_VAL_FIELD + " = (" + dtd.getExtName() + ") "
 							+ RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + (i++ - 1) +"];");
 			}
 		}
 	}
 
-	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd, boolean superr) throws ScribException
+	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, SigDecl msd, boolean superr) throws ScribException
 	{
 		ScribSockGen.checkMessageSigNameDecl(msd);
 		mb.addParameters(BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "") + msd.getExtName() + "> " + RECEIVE_ARG_PREFIX);

@@ -16,7 +16,7 @@ package org.scribble.del.global;
 import java.util.List;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GMessageTransfer;
+import org.scribble.ast.global.GMsgTransfer;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Message;
@@ -37,7 +37,7 @@ public class GMessageTransferDel extends MessageTransferDel
 	public ScribNode leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
-		GMessageTransfer gmt = (GMessageTransfer) visited;
+		GMsgTransfer gmt = (GMsgTransfer) visited;
 		Role src = gmt.getSourceChild().toName();
 		List<Role> dests = gmt.getDestinationRoles();
 		if (dests.contains(src))
@@ -53,7 +53,7 @@ public class GMessageTransferDel extends MessageTransferDel
 	public org.scribble.core.type.session.global.GMessageTransfer translate(ScribNode n,
 			GTypeTranslator t) throws ScribException
 	{
-		GMessageTransfer source = (GMessageTransfer) n;
+		GMsgTransfer source = (GMsgTransfer) n;
 		Role src = source.getSourceChild().toName();
 		List<RoleNode> ds = source.getDestinationChildren();
 		if (ds.size() > 1)

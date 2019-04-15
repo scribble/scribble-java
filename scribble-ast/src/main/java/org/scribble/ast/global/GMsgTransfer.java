@@ -13,50 +13,42 @@
  */
 package org.scribble.ast.global;
 
-import org.antlr.runtime.Token;
-import org.scribble.ast.Module;
-import org.scribble.ast.ProtocolDecl;
-import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtocolName;
+import java.util.stream.Collectors;
 
-public class GProtocolDecl extends ProtocolDecl<Global> implements GScribNode
+import org.antlr.runtime.Token;
+import org.scribble.ast.MessageTransfer;
+import org.scribble.core.type.kind.Global;
+import org.scribble.util.Constants;
+
+public class GMsgTransfer extends MessageTransfer<Global>
+		implements GSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
-	public GProtocolDecl(Token t)
+	public GMsgTransfer(Token t)
 	{
 		super(t);
 	}
-	
+
 	// Tree#dupNode constructor
-	protected GProtocolDecl(GProtocolDecl node)
+	public GMsgTransfer(GMsgTransfer node)
 	{
 		super(node);
 	}
-
+	
 	@Override
-	public GProtocolHeader getHeaderChild()
+	public GMsgTransfer dupNode()
 	{
-		return (GProtocolHeader) getChild(ProtocolDecl.HEADER_CHILD);
+		return new GMsgTransfer(this);
 	}
 
 	@Override
-	public GProtocolDef getDefChild()
+	public String toString()
 	{
-		return (GProtocolDef) getChild(ProtocolDecl.DEF_CHILD);
-	}
-
-	// Cf. CommonTree#dupNode
-	@Override
-	public GProtocolDecl dupNode()
-	{
-		return new GProtocolDecl(this);
-	}
-
-	@Override
-	public GProtocolName getFullMemberName(Module mod)  // TODO: remove mod from meth sig
-	{
-		Module m = (Module) getParent();
-		return new GProtocolName(m.getFullModuleName(),
-				getHeaderChild().getDeclName());
+		return getMessageNodeChild() + " " + Constants.FROM_KW
+				+ " " + getSourceChild() + " " + Constants.TO_KW
+				+ " "
+				+ getDestinationChildren().stream().map(x -> x.toString())
+						.collect(Collectors.joining(", "))
+				+ ";";
 	}
 }

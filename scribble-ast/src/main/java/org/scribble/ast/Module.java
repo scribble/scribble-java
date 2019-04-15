@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtocolKind;
 import org.scribble.core.type.name.DataType;
@@ -58,16 +58,16 @@ public class Module extends ScribNodeBase
 				x -> (ImportDecl<?>) x);
 	}
 
-	public List<NonProtocolDecl<?>> getNonProtoDeclChildren()
+	public List<NonProtoDecl<?>> getNonProtoDeclChildren()
 	{
-		return getMemberChildren(x -> x instanceof NonProtocolDecl,
-				x -> (NonProtocolDecl<?>) x);
+		return getMemberChildren(x -> x instanceof NonProtoDecl,
+				x -> (NonProtoDecl<?>) x);
 	}
 	
-	public List<ProtocolDecl<?>> getProtoDeclChildren()
+	public List<ProtoDecl<?>> getProtoDeclChildren()
 	{
-		return getMemberChildren(x -> x instanceof ProtocolDecl,
-				x -> (ProtocolDecl<?>) x);
+		return getMemberChildren(x -> x instanceof ProtoDecl,
+				x -> (ProtoDecl<?>) x);
 	}
 
 	// Not requiring T extends ModuleMember, ImportDecl is not a ModuleMember
@@ -100,7 +100,7 @@ public class Module extends ScribNodeBase
 	
 	// Set args as children on a dup of this -- children *not* cloned
 	protected Module reconstruct(ModuleDecl moddecl, List<ImportDecl<?>> imports,
-			List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos)
+			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos)
 	{
 		Module dup = dupNode();
 		dup.addChild(moddecl);
@@ -118,19 +118,19 @@ public class Module extends ScribNodeBase
 		// class equality check probably too restrictive -- FIXME: remove class checks
 		List<ImportDecl<?>> imports = ScribNodeBase
 				.visitChildListWithClassEqualityCheck(this, getImportDeclChildren(), nv);
-		List<NonProtocolDecl<?>> data = ScribNodeBase
+		List<NonProtoDecl<?>> data = ScribNodeBase
 				.visitChildListWithClassEqualityCheck(this, getNonProtoDeclChildren(), nv);
-		List<ProtocolDecl<?>> protos = ScribNodeBase
+		List<ProtoDecl<?>> protos = ScribNodeBase
 				.visitChildListWithClassEqualityCheck(this, getProtoDeclChildren(), nv);
 		return reconstruct(moddecl, imports, data, protos);
 	}
 	
-	public DataTypeDecl getDataTypeDeclChild(DataType simpname)  // Simple name (as for getProtocolDecl)
+	public DataDecl getDataTypeDeclChild(DataType simpname)  // Simple name (as for getProtocolDecl)
 	{
-		Optional<DataTypeDecl> res = getNonProtoDeclChildren().stream()
-				.filter(x -> (x instanceof DataTypeDecl)
+		Optional<DataDecl> res = getNonProtoDeclChildren().stream()
+				.filter(x -> (x instanceof DataDecl)
 						&& x.getDeclName().equals(simpname))
-				.map(x -> (DataTypeDecl) x).findFirst();  // No duplication check, rely on WF
+				.map(x -> (DataDecl) x).findFirst();  // No duplication check, rely on WF
 		if (!res.isPresent())
 		{
 			throw new RuntimeException("Type decl not found: " + simpname);
@@ -139,12 +139,12 @@ public class Module extends ScribNodeBase
 	}
 
 	// CHECKME: allow sig and type decls with same decl name in same module?
-	public MessageSigNameDecl getMessageSigDeclChild(MessageSigName simpname)
+	public SigDecl getMessageSigDeclChild(MessageSigName simpname)
 	{
-		Optional<MessageSigNameDecl> res = getNonProtoDeclChildren().stream()
-				.filter(x -> (x instanceof MessageSigNameDecl)
+		Optional<SigDecl> res = getNonProtoDeclChildren().stream()
+				.filter(x -> (x instanceof SigDecl)
 						&& x.getDeclName().equals(simpname))
-				.map(x -> (MessageSigNameDecl) x).findFirst();  // No duplication check, rely on WF
+				.map(x -> (SigDecl) x).findFirst();  // No duplication check, rely on WF
 		if (!res.isPresent())
 		{
 			throw new RuntimeException("Sig decl not found: " + simpname);
@@ -152,12 +152,12 @@ public class Module extends ScribNodeBase
 		return res.get();
 	}
 	
-	public List<GProtocolDecl> getGProtoDeclChildren()
+	public List<GProtoDecl> getGProtoDeclChildren()
 	{
 		/*return getChildren().stream().filter(IS_GPROTOCOLDECL).map(TO_GPROTOCOLDECL)
 				.collect(Collectors.toList());*/
 		return getProtoDeclChildren().stream().filter(x -> x.isGlobal())
-				.map(x -> (GProtocolDecl) x).collect(Collectors.toList());
+				.map(x -> (GProtoDecl) x).collect(Collectors.toList());
 						// Less efficient, but smaller code
 	}
 	
@@ -169,10 +169,10 @@ public class Module extends ScribNodeBase
 	}
 	
 	// Pre: hasProtocolDecl(simpname)
-	public GProtocolDecl getGProtocolDeclChild(
+	public GProtoDecl getGProtocolDeclChild(
 			GProtocolName simpname)
 	{
-		Optional<GProtocolDecl> res = getGProtoDeclChildren().stream()
+		Optional<GProtoDecl> res = getGProtoDeclChildren().stream()
 				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
 				.findFirst();  // No duplication check, rely on WF
 		if (!res.isPresent())
@@ -190,11 +190,11 @@ public class Module extends ScribNodeBase
 		{
 			s += "\n" + id;
 		}
-		for (NonProtocolDecl<? extends Kind> dtd : getNonProtoDeclChildren())
+		for (NonProtoDecl<? extends Kind> dtd : getNonProtoDeclChildren())
 		{
 			s += "\n" + dtd;
 		}
-		for (ProtocolDecl<? extends ProtocolKind> pd : getProtoDeclChildren())
+		for (ProtoDecl<? extends ProtocolKind> pd : getProtoDeclChildren())
 		{
 			s += "\n" + pd;
 		}

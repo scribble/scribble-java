@@ -19,19 +19,19 @@ import org.scribble.core.type.session.MessageSig;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
-public class MessageSigNode extends ScribNodeBase implements MessageNode
+public class SigLitNode extends ScribNodeBase implements MsgNode
 {
 	public static final int OP_CHILD_INDEX = 0;
 	public static final int PAYLOAD_CHILD_INDEX = 1;
 
 	// ScribTreeAdaptor#create constructor
-	public MessageSigNode(Token t)
+	public SigLitNode(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public MessageSigNode(MessageSigNode node)
+	public SigLitNode(SigLitNode node)
 	{
 		super(node);
 	}
@@ -41,20 +41,20 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 		return (OpNode) getChild(OP_CHILD_INDEX);
 	}
 	
-	public PayloadElemList getPayloadListChild()
+	public PayElemList getPayloadListChild()
 	{
-		return (PayloadElemList) getChild(PAYLOAD_CHILD_INDEX);
+		return (PayElemList) getChild(PAYLOAD_CHILD_INDEX);
 	}
 	
 	@Override
-	public MessageSigNode dupNode()
+	public SigLitNode dupNode()
 	{
-		return new MessageSigNode(this);
+		return new SigLitNode(this);
 	}
 
-	public MessageSigNode reconstruct(OpNode op, PayloadElemList payload)
+	public SigLitNode reconstruct(OpNode op, PayElemList payload)
 	{
-		MessageSigNode sig = dupNode();
+		SigLitNode sig = dupNode();
 		sig.addChild(op);
 		sig.addChild(payload);
 		sig.setDel(del());  // No copy
@@ -62,10 +62,10 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	}
 	
 	@Override
-	public MessageSigNode visitChildren(AstVisitor nv) throws ScribException
+	public SigLitNode visitChildren(AstVisitor nv) throws ScribException
 	{
 		OpNode op = (OpNode) visitChild(getOpChild(), nv);
-		PayloadElemList pay = (PayloadElemList) 
+		PayElemList pay = (PayElemList) 
 				visitChild(getPayloadListChild(), nv);
 		return reconstruct(op, pay);
 	}

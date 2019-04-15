@@ -11,37 +11,23 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.global;
+package org.scribble.ast;
 
-import org.antlr.runtime.Token;
-import org.scribble.ast.Recursion;
-import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.kind.PayloadTypeKind;
+import org.scribble.core.type.name.PayloadElemType;
 
-
-public class GRecursion extends Recursion<Global>
-		implements GCompoundSessionNode
+// Not in grammar file -- but cf. DoArg (and PayloadElemList cf. DoArgList) -- i.e. need a wrapper for mixed and initially ambiguous name kinds
+public interface PayElem<K extends PayloadTypeKind> extends ScribNode
 {
-	// ScribTreeAdaptor#create constructor
-	public GRecursion(Token t)
+	PayloadElemType<? extends PayloadTypeKind> toPayloadType();  // Mainly a wrapper method for the wrapped NameNode
+
+	default boolean isGlobalDelegationElem()
 	{
-		super(t);
+		return false;
 	}
 
-	// Tree#dupNode constructor
-	protected GRecursion(GRecursion node)
+	default boolean isLocalDelegationElem()
 	{
-		super(node);
-	}
-
-	@Override
-	public GProtoBlock getBlockChild()
-	{
-		return (GProtoBlock) getChild(Recursion.BODY_CHILD_INDEX);
-	}
-	
-	@Override
-	public GRecursion dupNode()
-	{
-		return new GRecursion(this);
+		return false;
 	}
 }

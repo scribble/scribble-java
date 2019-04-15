@@ -42,7 +42,7 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	}
 
 	@Override
-	public GProtocolDecl getTargetProtocolDecl(LangContext jcontext,
+	public GProtoDecl getTargetProtocolDecl(LangContext jcontext,
 			ModuleContext mcontext)
 	{
 		GProtocolName fullname = getTargetProtocolDeclFullName(mcontext);

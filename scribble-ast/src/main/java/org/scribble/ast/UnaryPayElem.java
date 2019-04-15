@@ -14,7 +14,7 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.name.PayloadElemNameNode;
+import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.PayloadTypeKind;
 import org.scribble.core.type.name.PayloadElemType;
 import org.scribble.del.ScribDel;
@@ -29,42 +29,42 @@ import org.scribble.visit.AstVisitor;
 // PayloadTypeKind is DataType or Local, but Local has its own special subclass (and protocol params not allowed), so this should implicitly be for DataType only
 // AST hierarchy requires unary and delegation (binary pair) payloads to be structurally distinguished
 //public class DataTypeElem extends PayloadElem<DataTypeKind>
-public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase
-		implements PayloadElem<K>// extends PayloadElem
+public class UnaryPayElem<K extends PayloadTypeKind> extends ScribNodeBase
+		implements PayElem<K>// extends PayloadElem
 {
 	// cf. Scribble.g
 	public static final int NAME_CHILD_INDEX = 0;
 	
 	// ScribTreeAdaptor#create constructor
-	public UnaryPayloadElem(Token t)
+	public UnaryPayElem(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public UnaryPayloadElem(UnaryPayloadElem<K> node)
+	public UnaryPayElem(UnaryPayElem<K> node)
 	{
 		super(node);
 	}
 	
-	public PayloadElemNameNode<K> getNameChild()
+	public PayElemNameNode<K> getNameChild()
 	{
 		// FIXME
-		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) getChild(NAME_CHILD_INDEX);  
+		PayElemNameNode<K> name = (PayElemNameNode<K>) getChild(NAME_CHILD_INDEX);  
 				// CHECKME: probably need to record an explicit kind token, for "cast checking"
 				// Cannot use ScribNodeBase.visitChildWithCastCheck because this is not a ProtocolKindNode
 		return name;
 	}
 	
 	@Override
-	public UnaryPayloadElem<K> dupNode()
+	public UnaryPayElem<K> dupNode()
 	{
-		return new UnaryPayloadElem<>(this);
+		return new UnaryPayElem<>(this);
 	}
 
-	public UnaryPayloadElem<K> reconstruct(PayloadElemNameNode<K> name)
+	public UnaryPayElem<K> reconstruct(PayElemNameNode<K> name)
 	{
-		UnaryPayloadElem<K> elem = dupNode();
+		UnaryPayElem<K> elem = dupNode();
 		elem.addChild(name);
 		ScribDel del = del();
 		elem.setDel(del);  // No copy
@@ -72,11 +72,11 @@ public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase
 	}
 
 	@Override
-	public UnaryPayloadElem<K> visitChildren(AstVisitor nv)
+	public UnaryPayElem<K> visitChildren(AstVisitor nv)
 			throws ScribException
 	{
 		@SuppressWarnings("unchecked")
-		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChild(
+		PayElemNameNode<K> name = (PayElemNameNode<K>) visitChild(
 				getNameChild(), nv);
 				// CHECKME: probably need to record an explicit kind token, for "cast checking"
 				// Cannot use ScribNodeBase.visitChildWithCastCheck because this is not a ProtocolKindNode

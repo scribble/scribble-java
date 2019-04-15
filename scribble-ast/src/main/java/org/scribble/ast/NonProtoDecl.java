@@ -22,7 +22,7 @@ import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // Rename to something better
-public abstract class NonProtocolDecl<K extends NonProtocolKind>
+public abstract class NonProtoDecl<K extends NonProtocolKind>
 		extends NameDeclNode<K> implements ModuleMember
 {
 	// NameDeclNode.NAMENODE_CHILD_INDEX = 0;
@@ -31,13 +31,13 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 	public static final int EXTSOURCE_NODE_CHILD_INDEX = 3;
 
 	// ScribTreeAdaptor#create constructor
-	public NonProtocolDecl(Token payload)
+	public NonProtoDecl(Token payload)
 	{
 		super(payload);
 	}
 
 	// Tree#dupNode constructor
-	protected NonProtocolDecl(NonProtocolDecl<K> node)
+	protected NonProtoDecl(NonProtoDecl<K> node)
 	{
 		super(node);
 	}
@@ -88,12 +88,12 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 	}
 	
 	@Override
-	public abstract NonProtocolDecl<K> dupNode();
+	public abstract NonProtoDecl<K> dupNode();
 	
-	public NonProtocolDecl<K> reconstruct(NameNode<K> name, IdNode schema,
+	public NonProtoDecl<K> reconstruct(NameNode<K> name, IdNode schema,
 			IdNode extName, IdNode extSource)
 	{
-		NonProtocolDecl<K> n = dupNode();
+		NonProtoDecl<K> n = dupNode();
 		n.addChild(name);
 		n.addChild(schema);
 		n.addChild(extName);
@@ -103,7 +103,7 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind>
 	}
 
 	@Override
-	public NonProtocolDecl<K> visitChildren(AstVisitor nv)
+	public NonProtoDecl<K> visitChildren(AstVisitor nv)
 			throws ScribException
 	{
 		NameNode<K> name = (NameNode<K>) visitChildWithClassEqualityCheck(this,

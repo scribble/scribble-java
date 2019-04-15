@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
@@ -42,7 +42,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
 	public GProtocol translate(ScribNode n, GTypeTranslator t)
 			throws ScribException
 	{
-		GProtocolDecl source = (GProtocolDecl) n;
+		GProtoDecl source = (GProtoDecl) n;
 		Module m = (Module) n.getParent();
 		List<ProtocolMod> mods = source.getModifierListChild().getModList().stream()
 				.map(x -> ProtocolMod.fromAst(x)).collect(Collectors.toList());

@@ -23,7 +23,7 @@ import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // CHECKME: visitChildren for modifiers
-public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
+public abstract class ProtoDecl<K extends ProtocolKind> extends ScribNodeBase
 		implements ModuleMember, ProtocolKindNode<K>
 {
 	public static final int MODLIST_CHILD = 0;
@@ -31,18 +31,18 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	public static final int DEF_CHILD = 2;
 
 	// ScribTreeAdaptor#create constructor
-	protected ProtocolDecl(Token t)
+	protected ProtoDecl(Token t)
 	{
 		super(t);
 	}
 	
 	// Tree#dupNode constructor
-	protected ProtocolDecl(ProtocolDecl<K> node)
+	protected ProtoDecl(ProtoDecl<K> node)
 	{
 		super(node);
 	}
 	
-	public abstract ProtocolDecl<K> dupNode();
+	public abstract ProtoDecl<K> dupNode();
 
 	public boolean isAux()
 	{
@@ -54,9 +54,9 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 		return getModifierListChild().hasExplicit();
 	}
 	
-	public ProtocolModList getModifierListChild()
+	public ProtoModList getModifierListChild()
 	{
-		return (ProtocolModList) getChild(MODLIST_CHILD);
+		return (ProtoModList) getChild(MODLIST_CHILD);
 	}
 
 	// Implement in subclasses to avoid generic cast
@@ -69,11 +69,11 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 		return getHeaderChild().getRoleDeclListChild().getRoles();
 	}
 
-	public ProtocolDecl<K> reconstruct(ProtocolModList mods,
+	public ProtoDecl<K> reconstruct(ProtoModList mods,
 			ProtocolHeader<K> header,	ProtocolDef<K> def)  
 			//, ProtocolDeclContext pdcontext, Env env);
 	{
-		ProtocolDecl<K> pd = dupNode();
+		ProtoDecl<K> pd = dupNode();
 		ScribDel del = del();
 		pd.addChild(mods);
 		pd.addChild(header);
@@ -83,9 +83,9 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	}
 
 	@Override
-	public ProtocolDecl<K> visitChildren(AstVisitor nv) throws ScribException
+	public ProtoDecl<K> visitChildren(AstVisitor nv) throws ScribException
 	{
-		ProtocolModList mods = visitChildWithClassEqualityCheck(this,
+		ProtoModList mods = visitChildWithClassEqualityCheck(this,
 				getModifierListChild(), nv);
 		ProtocolHeader<K> header = 
 				visitChildWithClassEqualityCheck(this, getHeaderChild(), nv);
@@ -96,7 +96,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	@Override
 	public String toString()
 	{
-		ProtocolModList mods = getModifierListChild();
+		ProtoModList mods = getModifierListChild();
 		return (mods.isEmpty() ? "" : mods + " ") + getHeaderChild() + " "
 				+ getDefChild();
 	}

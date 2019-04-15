@@ -49,12 +49,12 @@ public abstract class ConnectAction<K extends ProtocolKind>
 	// CHECKME: currently only used for toString, because current syntax allows "connect" with no explicit message ?
 	protected boolean isUnitMessage()
 	{
-		MessageNode n = getMessageNodeChild();
+		MsgNode n = getMessageNodeChild();
 		if (!n.isMessageSigNode())
 		{
 			return false;
 		}
-		MessageSigNode msn = (MessageSigNode) n;
+		SigLitNode msn = (SigLitNode) n;
 		return msn.getOpChild().isEmpty() && msn.getPayloadListChild().isEmpty();
 	}
 }

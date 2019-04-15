@@ -11,50 +11,50 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast;
+package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.name.simple.DataParamNode;
-import org.scribble.core.type.kind.DataTypeKind;
-import org.scribble.core.type.name.DataType;
+import org.scribble.ast.ProtocolHeader;
+import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.name.GProtocolName;
 import org.scribble.util.Constants;
 
-public class TypeParamDecl extends NonRoleParamDecl<DataTypeKind>
+public class GProtoHeader extends ProtocolHeader<Global> implements GScribNode
 {
 	// ScribTreeAdaptor#create constructor
-	public TypeParamDecl(Token t)
+	public GProtoHeader(Token t)
 	{
-		super(t, DataTypeKind.KIND);
+		super(t);
 	}
-
+	
 	// Tree#dupNode constructor
-	public TypeParamDecl(TypeParamDecl node)
+	protected GProtoHeader(GProtoHeader node)
 	{
 		super(node);
 	}
-	
+
 	@Override
-	public DataParamNode getNameNodeChild()
+	public GProtoHeader dupNode()
 	{
-		return (DataParamNode) getRawNameNodeChild();  // CHECKME: make Type/SigParamNode?
+		return new GProtoHeader(this);
 	}
 	
 	@Override
-	public TypeParamDecl dupNode()
+	public GProtoNameNode getNameNodeChild()
 	{
-		return new TypeParamDecl(this);
+		return (GProtoNameNode) getRawNameNodeChild();
 	}
 
 	@Override
-	//public Name<DataTypeKind> getDeclName()
-	public DataType getDeclName()
+	public GProtocolName getDeclName()
 	{
-		return (DataType) getNameNodeChild().toName();
+		return (GProtocolName) super.getDeclName();
 	}
 	
 	@Override
-	public String getKeyword()
+	public String toString()
 	{
-		return Constants.TYPE_KW;
+		return Constants.GLOBAL_KW + " " + super.toString();
 	}
 }

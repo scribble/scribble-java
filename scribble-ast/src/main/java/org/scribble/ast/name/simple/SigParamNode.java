@@ -14,12 +14,12 @@
 package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.MessageNode;
+import org.scribble.ast.MsgNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.MessageSigName;
 
 public class SigParamNode extends NonRoleParamNode<SigKind>
-		implements MessageNode
+		implements MsgNode
 {
 	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type

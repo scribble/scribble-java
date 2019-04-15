@@ -119,11 +119,12 @@ tokens
   GINTERSEQ = 'GINTERSEQ';
 
   GCONNECT = 'GCONNECT';
-  GCONTINUE = 'GCONTINUE';
   GDCONN = 'GDCONN';
-  GDO = 'GDO';
   GMSGTRANSFER = 'GMSGTRANSFER';
   GWRAP = 'GWRAP';
+
+  GCONTINUE = 'GCONTINUE';
+  GDO = 'GDO';
 
   ROLEARG_LIST = 'ROLEARG_LIST';  // Cf. ROLEDECL
   ROLEARG = 'ROLEARG';
@@ -160,15 +161,15 @@ tokens
   
   import org.scribble.ast.NonRoleArg;
   import org.scribble.ast.ScribNodeBase;
-  import org.scribble.ast.UnaryPayloadElem;
+  import org.scribble.ast.UnaryPayElem;
   import org.scribble.ast.name.simple.AmbigNameNode;
   import org.scribble.ast.name.simple.IdNode;
   import org.scribble.ast.name.simple.OpNode;
   import org.scribble.ast.name.simple.RecVarNode;
   import org.scribble.ast.name.simple.RoleNode;
   import org.scribble.ast.name.simple.SigParamNode;
-  import org.scribble.ast.name.simple.TypeParamNode;
-  import org.scribble.ast.name.qualified.DataTypeNode;
+  import org.scribble.ast.name.simple.DataParamNode;
+  import org.scribble.ast.name.qualified.DataNameNode;
 }
 
 
@@ -281,7 +282,7 @@ fragment UNDERSCORE:
 // "Note that parameters are not allowed on token references to the left of ->:"
 // "Use imaginary nodes as you normally would, but with the addition of the node type:"  // But currently, ID token itself unchanged and ttype int ends up discarded
 ambigname: t=ID -> ID<AmbigNameNode>[$t];
-dataparamname: t=ID -> ID<TypeParamNode>[$t]; 
+dataparamname: t=ID -> ID<DataParamNode>[$t]; 
 opname: -> ^(EMPTY_OP) | t=ID -> ID<OpNode>[$t] ;
 recvarname: t=ID -> ID<RecVarNode>[$t];
 rolename: t=ID -> ID<RoleNode>[$t];
@@ -608,11 +609,11 @@ nonrolearg:
     if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
     {
 			// Cf. AstFactoryImpl, token creation
-      DataTypeNode dt = new DataTypeNode(new CommonToken(DATA_NAME, "DATA_NAME"));
+      DataNameNode dt = new DataNameNode(new CommonToken(DATA_NAME, "DATA_NAME"));
       ((List<?>) qn.getChildren()).forEach(x -> 
           dt.addChild(new IdNode(new CommonToken(ID, ((CommonTree) x).getText()))));
-      UnaryPayloadElem pe = 
-          new UnaryPayloadElem(new CommonToken(UNARY_PAYELEM, "UNARYPAYLOADELEM"));
+      UnaryPayElem pe = 
+          new UnaryPayElem(new CommonToken(UNARY_PAYELEM, "UNARYPAYLOADELEM"));
       pe.addChild(dt);
       return pe;
     }
@@ -623,7 +624,7 @@ nonrolearg:
       String text = qn.getChild(0).getText();
       AmbigNameNode an = 
           new AmbigNameNode(AMBIG_NAME, new CommonToken(ID, text));
-      UnaryPayloadElem e = new UnaryPayloadElem(
+      UnaryPayElem e = new UnaryPayElem(
           new CommonToken(UNARY_PAYELEM, "UNARYPAYLOADELEM"));
       e.addChild(an);
       return e;
@@ -631,15 +632,15 @@ nonrolearg:
   }
 
   // qn is an IdNode "holder" for a "qualifiedname" COMPOUND_NAME -- see ScribTreeAdaptor
-  // Only for "qualifiedName" (DataTypeNode or AmbigNameNode), not sig literals
+  // Only for "qualifiedName" (DataNameNode or AmbigNameNode), not sig literals
 	// Use by: { parseNonRoleArg($qualifiedname.tree) }
   public static CommonTree parseNonRoleArg(CommonTree qn) throws RecognitionException
   {
     if (qn.getChildCount() > 1)  // qn has IdNode children, elements of the qualifiedname
     {
 			// Cf. AstFactoryImpl, token creation
-      DataTypeNode dt =
-      		new DataTypeNode(new CommonToken(DATA_NAME, "DATA_NAME"));  // FIXME: could be a sig name arg...
+      DataNameNode dt =
+      		new DataNameNode(new CommonToken(DATA_NAME, "DATA_NAME"));  // FIXME: could be a sig name arg...
       ((List<?>) qn.getChildren()).forEach(x -> 
           dt.addChild(new IdNode(new CommonToken(ID, ((CommonTree) x).getText()))));
       NonRoleArg a = 

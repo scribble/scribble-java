@@ -14,7 +14,7 @@
 package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GProtocolBlock;
+import org.scribble.ast.global.GProtoBlock;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.del.ProtocolBlockDel;
 import org.scribble.util.ScribException;
@@ -26,6 +26,6 @@ public class GProtocolBlockDel extends ProtocolBlockDel implements GDel
 	public GSeq translate(ScribNode n, GTypeTranslator t)
 			throws ScribException
 	{
-		return (GSeq) ((GProtocolBlock) n).getInteractSeqChild().visitWith(t);
+		return (GSeq) ((GProtoBlock) n).getInteractSeqChild().visitWith(t);
 	}
 }

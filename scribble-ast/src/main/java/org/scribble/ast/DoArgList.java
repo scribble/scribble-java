@@ -54,10 +54,10 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 
 	public DoArgList<T> reconstruct(List<T> args)
 	{
-		DoArgList<T> argList = dupNode();
-		argList.addChildren(args);
-		argList.setDel(del());  // No copy
-		return argList;
+		DoArgList<T> n = dupNode();
+		n.addChildren(args);
+		n.setDel(del());  // No copy
+		return n;
 	}
 	
 	@Override

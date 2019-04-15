@@ -14,12 +14,12 @@
 package org.scribble.ast.name.qualified;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.MessageNode;
+import org.scribble.ast.MsgNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.MessageSigName;
 
 public class SigNameNode extends MemberNameNode<SigKind>
-		implements MessageNode
+		implements MsgNode
 {
 	// ScribTreeAdaptor#create constructor
 	public SigNameNode(Token t)

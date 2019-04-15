@@ -17,9 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GDelegationElem;
+import org.scribble.ast.global.GDelegPayElem;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.RoleNode;
@@ -44,7 +44,7 @@ public class GDelegationElemDel extends ScribDelBase
 			NameDisambiguator disamb) throws ScribException
 	{
 		ModuleContext mc = disamb.getModuleContext();
-		GDelegationElem de = (GDelegationElem) child;
+		GDelegPayElem de = (GDelegPayElem) child;
 		GProtoNameNode proto = de.getProtocolChild();
 		GProtocolName gpn = proto.toName();
 		if (!mc.isVisibleProtocolDeclName(gpn))
@@ -56,8 +56,8 @@ public class GDelegationElemDel extends ScribDelBase
 
 	// Duplicated from DoDel
 	//@Override
-	public GDelegationElem visitForNameDisambiguation(NameDisambiguator disamb,  // CHECKME: why "visitFor" pattern?
-			GDelegationElem de) throws ScribException
+	public GDelegPayElem visitForNameDisambiguation(NameDisambiguator disamb,  // CHECKME: why "visitFor" pattern?
+			GDelegPayElem de) throws ScribException
 	{
 		ModuleContext mc = disamb.getModuleContext();
 		GProtocolName fullname = (GProtocolName) mc
@@ -65,7 +65,7 @@ public class GDelegationElemDel extends ScribDelBase
 		RoleNode r = de.getRoleChild();
 
 		Role rn = r.toName();
-		ProtocolDecl<Global> gpd = disamb.lang.getContext()
+		ProtoDecl<Global> gpd = disamb.lang.getContext()
 				.getModule(fullname.getPrefix())
 				.getGProtocolDeclChild(fullname.getSimpleName());
 		if (!gpd.getHeaderChild().getRoleDeclListChild().getRoles().contains(rn))

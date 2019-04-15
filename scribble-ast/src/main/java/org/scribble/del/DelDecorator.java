@@ -14,37 +14,37 @@
 package org.scribble.del;
 
 import org.scribble.ast.AuxMod;
-import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.DataDecl;
 import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ImportModule;
-import org.scribble.ast.MessageSigNameDecl;
-import org.scribble.ast.MessageSigNode;
+import org.scribble.ast.SigDecl;
+import org.scribble.ast.SigLitNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonRoleArg;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleParamDeclList;
-import org.scribble.ast.PayloadElemList;
-import org.scribble.ast.ProtocolModList;
+import org.scribble.ast.PayElemList;
+import org.scribble.ast.ProtoModList;
 import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.SigParamDecl;
-import org.scribble.ast.TypeParamDecl;
-import org.scribble.ast.UnaryPayloadElem;
+import org.scribble.ast.DataParamDecl;
+import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.ast.global.GMessageTransfer;
-import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.ast.global.GProtocolDef;
-import org.scribble.ast.global.GProtocolHeader;
+import org.scribble.ast.global.GMsgTransfer;
+import org.scribble.ast.global.GProtoBlock;
+import org.scribble.ast.global.GProtoDecl;
+import org.scribble.ast.global.GProtoDef;
+import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
@@ -61,6 +61,8 @@ import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.ast.name.simple.DataParamNode;
 
 
+// Use after ANTLR parsing (specifically, ScribTreeAdaptor) -- not needed for AstFactory constructions
+// (Perhaps could integrate with ScribTreeAdaptor, but easier to do after -- AST construction technically may further create/dup nodes during the ongoing pass)
 // A dec method for each AST class -- method name must be the same as target class name
 // Implementations (DelDecoratorImpl) in scribble-parser, can depend on parser implementation
 // E.g., DelDecoratorImpl: each method named after the class name -- currently dispatched by reflection
@@ -79,59 +81,56 @@ public interface DelDecorator
 	void SigParamNode(SigParamNode n);
 
 	void DataNameNode(DataNameNode n);
-	void ModuleNameNode(ModuleNameNode n);
 	void GProtoNameNode(GProtoNameNode n);
 	void LProtoNameNode(LProtoNameNode n);
+	void ModuleNameNode(ModuleNameNode n);
 	void SigNameNode(SigNameNode n);
 	
 	void Module(Module m);
-
 	void ModuleDecl(ModuleDecl n);
 	void ImportModule(ImportModule n);
 	
-	void MessageSigNameDecl(MessageSigNameDecl n);
-	void DataTypeDecl(DataTypeDecl n);
+	void DataDecl(DataDecl n);
+	void SigDecl(SigDecl n);
+	void GProtoDecl(GProtoDecl n);
 
-	void GProtocolDecl(GProtocolDecl n);
-	void ProtocolModList(ProtocolModList n);
+	void ProtoModList(ProtoModList n);
 	void AuxMod(AuxMod n);
 	void ExplicitMod(ExplicitMod n);
 
-	void GProtocolHeader(GProtocolHeader n);
+	void GProtoHeader(GProtoHeader n);
 	void RoleDeclList(RoleDeclList n);
 	void RoleDecl(RoleDecl n);
 	void NonRoleParamDeclList(NonRoleParamDeclList n);
-	//<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> name);
-	void TypeParamDecl(TypeParamDecl n);
+	void DataParamDecl(DataParamDecl n);
 	void SigParamDecl(SigParamDecl n);
 	
-	void GProtocolDef(GProtocolDef n);
-	void GProtocolBlock(GProtocolBlock n);
+	void GProtoDef(GProtoDef n);
+	void GProtoBlock(GProtoBlock n);
 	void GInteractionSeq(GInteractionSeq n);
-
-	void GMessageTransfer(GMessageTransfer n);
-	void GConnect(GConnect n);
-	void GDisconnect(GDisconnect n);
-	/*GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);*/
-	void GChoice(GChoice n);
-	void GRecursion(GRecursion n);
-	void GContinue(GContinue n);
-	void GDo(GDo n);
 	
-	void MessageSigNode(MessageSigNode n);
-	void PayloadElemList(PayloadElemList n);
-	void UnaryPayloadElem(UnaryPayloadElem<?> n);
+	void SigLitNode(SigLitNode n);
+	void PayElemList(PayElemList n);
+	void UnaryPayElem(UnaryPayElem<?> n);
 	/*GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
 	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);*/
+
+	void GConnect(GConnect n);
+	void GDisconnect(GDisconnect n);
+	void GMsgTransfer(GMsgTransfer n);
+	/*GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);*/
+
+	void GContinue(GContinue n);
+	void GDo(GDo n);
 	
 	void RoleArgList(RoleArgList n);
 	void RoleArg(RoleArg r);
 	void NonRoleArgList(NonRoleArgList n);
 	void NonRoleArg(NonRoleArg n);
 
-	/*<K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier);
-	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source, K kind, String... elems);*/
-
+	void GChoice(GChoice n);
+	void GRecursion(GRecursion n);
+}
 	
 	
 	
@@ -176,4 +175,3 @@ public interface DelDecorator
 	LRecursion LRecursion(CommonTree source, RecVarNode recvar, LProtocolBlock block);
 	LContinue LContinue(CommonTree source, RecVarNode recvar);
 	LDo LDo(CommonTree source, RoleArgList roles, NonRoleArgList args, LProtocolNameNode proto);*/
-}

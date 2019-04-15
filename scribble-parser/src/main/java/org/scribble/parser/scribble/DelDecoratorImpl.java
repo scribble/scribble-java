@@ -17,18 +17,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.scribble.ast.AuxMod;
-import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.DataDecl;
 import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ImportModule;
-import org.scribble.ast.MessageSigNameDecl;
-import org.scribble.ast.MessageSigNode;
+import org.scribble.ast.SigDecl;
+import org.scribble.ast.SigLitNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonRoleArg;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleParamDeclList;
-import org.scribble.ast.PayloadElemList;
-import org.scribble.ast.ProtocolModList;
+import org.scribble.ast.PayElemList;
+import org.scribble.ast.ProtoModList;
 import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
@@ -36,19 +36,19 @@ import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.SigParamDecl;
-import org.scribble.ast.TypeParamDecl;
-import org.scribble.ast.UnaryPayloadElem;
+import org.scribble.ast.DataParamDecl;
+import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.ast.global.GMessageTransfer;
-import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.ast.global.GProtocolDef;
-import org.scribble.ast.global.GProtocolHeader;
+import org.scribble.ast.global.GMsgTransfer;
+import org.scribble.ast.global.GProtoBlock;
+import org.scribble.ast.global.GProtoDecl;
+import org.scribble.ast.global.GProtoDef;
+import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
@@ -150,6 +150,84 @@ public class DelDecoratorImpl implements DelDecorator
 		copy.setDel(del);
 		return ScribUtil.castNodeByClass(n, copy);*/
 	}
+
+	@Override
+	public void IdNode(IdNode n)
+	{
+		setDel(n, createDefaultDelegate());
+	}
+
+	@Override
+	public void ExtIdNode(ExtIdNode n)
+	{
+		setDel(n, createDefaultDelegate());
+	}
+
+	@Override
+	public void AmbigNameNode(AmbigNameNode n)
+	{
+		setDel(n, new AmbigNameNodeDel());
+	}
+
+	@Override
+	public void DataParamNode(DataParamNode n)
+	{
+		setDel(n, new NonRoleParamNodeDel());
+	}
+
+	@Override
+	public void OpNode(OpNode n)
+	{
+		setDel(n, createDefaultDelegate());
+	}
+
+	@Override
+	public void RecVarNode(RecVarNode n)
+	{
+		setDel(n, new RecVarNodeDel());
+	}
+
+	@Override
+	public void RoleNode(RoleNode r)
+	{
+		setDel(r, new RoleNodeDel());
+	}
+
+	@Override
+	public void SigParamNode(SigParamNode n)
+	{
+		setDel(n, new NonRoleParamNodeDel());
+	}
+
+	@Override
+	public void DataNameNode(DataNameNode n)
+	{
+		setDel(n, new DataTypeNodeDel());
+	}
+
+	@Override
+	public void GProtoNameNode(GProtoNameNode n)
+	{
+		setDel(n, createDefaultDelegate());
+	}
+
+	@Override
+	public void LProtoNameNode(LProtoNameNode n)
+	{
+		setDel(n, createDefaultDelegate());
+	}
+
+	@Override
+	public void ModuleNameNode(ModuleNameNode n)
+	{
+		setDel(n, createDefaultDelegate());
+	}
+
+	@Override
+	public void SigNameNode(SigNameNode n)
+	{
+		setDel(n, new MessageSigNameNodeDel());
+	}
 	
 	@Override
 	public void Module(Module n)
@@ -168,27 +246,27 @@ public class DelDecoratorImpl implements DelDecorator
 	{
 		setDel(n, new ImportModuleDel());
 	}
+
+	@Override
+	public void DataDecl(DataDecl n)
+	{
+		setDel(n, createDefaultDelegate());
+	}
 	
 	@Override
-	public void MessageSigNameDecl(MessageSigNameDecl n)
+	public void SigDecl(SigDecl n)
 	{
 		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void DataTypeDecl(DataTypeDecl n)
-	{
-		setDel(n, createDefaultDelegate());
-	}
-
-	@Override
-	public void GProtocolDecl(GProtocolDecl n)
+	public void GProtoDecl(GProtoDecl n)
 	{
 		setDel(n, new GProtocolDeclDel());
 	}
 
 	@Override
-	public void ProtocolModList(ProtocolModList n)
+	public void ProtoModList(ProtoModList n)
 	{
 		setDel(n, createDefaultDelegate());
 	}
@@ -206,7 +284,7 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 
 	@Override
-	public void GProtocolHeader(GProtocolHeader n)
+	public void GProtoHeader(GProtoHeader n)
 	{
 		setDel(n, createDefaultDelegate());
 	}
@@ -229,16 +307,8 @@ public class DelDecoratorImpl implements DelDecorator
 		setDel(n, new NonRoleParamDeclListDel());
 	}
 
-	/*@Override
-	public <K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(CommonTree source, K kind, NonRoleParamNode<K> namenode)
-	{
-		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(source, kind, namenode);
-		pd = setDel(pd, new NonRoleParamDeclDel());
-		return pd;
-	}*/
-
 	@Override
-	public void TypeParamDecl(TypeParamDecl n)
+	public void DataParamDecl(DataParamDecl n)
 	{
 		setDel(n, new NonRoleParamDeclDel());
 	}
@@ -250,13 +320,13 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 
 	@Override
-	public void GProtocolDef(GProtocolDef n)
+	public void GProtoDef(GProtoDef n)
 	{
 		setDel(n, new GProtocolDefDel());
 	}
 
 	@Override
-	public void GProtocolBlock(GProtocolBlock n)
+	public void GProtoBlock(GProtoBlock n)
 	{
 		setDel(n, new GProtocolBlockDel());
 	}
@@ -268,70 +338,20 @@ public class DelDecoratorImpl implements DelDecorator
 	}
 
 	@Override
-	public void GMessageTransfer(GMessageTransfer n)
-	{
-		setDel(n, new GMessageTransferDel());
-	}
-
-	@Override
-	public void GConnect(GConnect n)
-	{
-		setDel(n, new GConnectDel());
-	}
-
-	@Override
-	public void GDisconnect(GDisconnect n)
-	{
-		setDel(n, new GDisconnectDel());
-	}
-
-	/*@Override
-	public GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest)
-	{
-		GWrap gw = new GWrap(source, UnitMessageSigNode(), src, dest);
-		gw = setDel(gw, new GWrapDel());
-		return gw;
-	}*/
-
-	@Override
-	public void GChoice(GChoice n)
-	{
-		setDel(n, new GChoiceDel());
-	}
-
-	@Override
-	public void GRecursion(GRecursion n)
-	{
-		setDel(n, new GRecursionDel());
-	}
-
-	@Override
-	public void GContinue(GContinue n)
-	{
-		setDel(n, new GContinueDel());
-	}
-
-	@Override
-	public void GDo(GDo n)
-	{
-		setDel(n, new GDoDel());
-	}
-
-	@Override
-	public void MessageSigNode(MessageSigNode n)
+	public void SigLitNode(SigLitNode n)
 	{
 		setDel(n, createDefaultDelegate());
 	}
 
 	@Override
-	public void PayloadElemList(PayloadElemList n)
+	public void PayElemList(PayElemList n)
 	{
 		setDel(n, createDefaultDelegate());
 		//setDel(pay, new PayloadElemListDel());
 	}
 
 	@Override
-	public void UnaryPayloadElem(UnaryPayloadElem<?> n)
+	public void UnaryPayElem(UnaryPayElem<?> n)
 	{
 		setDel(n, createDefaultDelegate());
 	}
@@ -352,6 +372,44 @@ public class DelDecoratorImpl implements DelDecorator
 		de = setDel(de, createDefaultDelegate());
 		return de;
 	}*/
+
+	@Override
+	public void GConnect(GConnect n)
+	{
+		setDel(n, new GConnectDel());
+	}
+
+	@Override
+	public void GDisconnect(GDisconnect n)
+	{
+		setDel(n, new GDisconnectDel());
+	}
+
+	@Override
+	public void GMsgTransfer(GMsgTransfer n)
+	{
+		setDel(n, new GMessageTransferDel());
+	}
+
+	/*@Override
+	public GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest)
+	{
+		GWrap gw = new GWrap(source, UnitMessageSigNode(), src, dest);
+		gw = setDel(gw, new GWrapDel());
+		return gw;
+	}*/
+
+	@Override
+	public void GContinue(GContinue n)
+	{
+		setDel(n, new GContinueDel());
+	}
+
+	@Override
+	public void GDo(GDo n)
+	{
+		setDel(n, new GDoDel());
+	}
 
 	@Override
 	public void RoleArgList(RoleArgList n)
@@ -376,174 +434,20 @@ public class DelDecoratorImpl implements DelDecorator
 	{
 		setDel(n, createDefaultDelegate());
 	}
-	
-	/*@Override
-	public <K extends Kind> NameNode<K> SimpleNameNode(CommonTree source, K kind, String identifier)
-	{
-		NameNode<? extends Kind> snn = null;
-		
-		// "Custom" del's
-		if (kind.equals(RecVarKind.KIND))
-		{
-			snn = new RecVarNode(source, identifier);
-			snn = setDel(snn, new RecVarNodeDel());
-		}
-		else if (kind.equals(RoleKind.KIND))
-		{
-			snn = new RoleNode(source, identifier);
-			snn = setDel(snn, new RoleNodeDel());
-		}
-		if (snn != null)
-		{
-			return castNameNode(kind, snn);
-		}
-
-		// Default del's
-		if (kind.equals(OpKind.KIND))
-		{
-			snn = new OpNode(source, identifier);
-		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get in here: " + kind);
-		}
-		return castNameNode(kind, setDel(snn, createDefaultDelegate()));
-	}*/
 
 	@Override
-	public void RoleNode(RoleNode r)
+	public void GChoice(GChoice n)
 	{
-		setDel(r, new RoleNodeDel());
+		setDel(n, new GChoiceDel());
 	}
 
 	@Override
-	public void RecVarNode(RecVarNode n)
+	public void GRecursion(GRecursion n)
 	{
-		setDel(n, new RecVarNodeDel());
-	}
-
-	@Override
-	public void OpNode(OpNode n)
-	{
-		setDel(n, createDefaultDelegate());
-	}
-
-	@Override
-	public void SigNameNode(SigNameNode n)
-	{
-		setDel(n, new MessageSigNameNodeDel());
-	}
-
-	@Override
-	public void DataNameNode(DataNameNode n)
-	{
-		setDel(n, new DataTypeNodeDel());
-	}
-
-	@Override
-	public void ModuleNameNode(ModuleNameNode n)
-	{
-		setDel(n, createDefaultDelegate());
-	}
-
-	@Override
-	public void GProtoNameNode(GProtoNameNode n)
-	{
-		setDel(n, createDefaultDelegate());
-	}
-
-	@Override
-	public void LProtoNameNode(LProtoNameNode n)
-	{
-		setDel(n, createDefaultDelegate());
-	}
-
-	/*@Override
-	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(CommonTree source, K kind, String... elems)
-	{
-		QualifiedNameNode<? extends Kind> qnn = null;
-		if (kind.equals(SigKind.KIND))
-		{
-			qnn = new MessageSigNameNode(source, elems);
-			qnn = setDel(qnn, new MessageSigNameNodeDel());
-		}
-		else if (kind.equals(DataTypeKind.KIND))
-		{
-			qnn = new DataTypeNode(source, elems);
-			qnn = setDel(qnn, new DataTypeNodeDel());
-		}
-		if (qnn != null)
-		{
-			return castNameNode(kind, qnn);
-		}
-
-		if (kind.equals(ModuleKind.KIND))
-		{
-			qnn = new ModuleNameNode(source, elems);
-		}
-		else if (kind.equals(Global.KIND))
-		{
-			qnn = new GProtocolNameNode(source, elems);
-		}
-		else if (kind.equals(Local.KIND))
-		{
-			qnn = new LProtocolNameNode(source,elems);
-		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get in here: " + kind);
-		}
-		return castNameNode(kind, setDel(qnn, createDefaultDelegate()));
+		setDel(n, new GRecursionDel());
 	}
 	
-	protected static <T extends NameNode<K>, K extends Kind> T castNameNode(K kind, NameNode<? extends Kind> n)
-	{
-		if (!n.toName().getKind().equals(kind))
-		{
-			throw new RuntimeException("Shouldn't get in here: " + kind + ", " + n);
-		}
-		@SuppressWarnings("unchecked")
-		T tmp = (T) n;
-		return tmp;
-	}*/
-
-	@Override
-	public void AmbigNameNode(AmbigNameNode n)
-	{
-		setDel(n, new AmbigNameNodeDel());
-	}
-
-	@Override
-	public void IdNode(IdNode n)
-	{
-		setDel(n, createDefaultDelegate());
-	}
-
-	@Override
-	public void ExtIdNode(ExtIdNode n)
-	{
-		setDel(n, createDefaultDelegate());
-	}
-
-	/*@Override
-	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(CommonTree source, K kind, String identifier)
-	{
-		NonRoleParamNode<K> pn = new NonRoleParamNode<K>(source, kind, identifier);
-		pn = setDel(pn, new ParamNodeDel());
-		return pn;
-	}*/
-
-	@Override
-	public void SigParamNode(SigParamNode n)
-	{
-		setDel(n, new NonRoleParamNodeDel());
-	}
-
-	@Override
-	public void DataParamNode(DataParamNode n)
-	{
-		setDel(n, new NonRoleParamNodeDel());
-	}
+}
 
 	
 	
@@ -742,4 +646,3 @@ public class DelDecoratorImpl implements DelDecorator
 		ld = setDel(ld, new LDoDel());
 		return ld;
 	}*/
-}

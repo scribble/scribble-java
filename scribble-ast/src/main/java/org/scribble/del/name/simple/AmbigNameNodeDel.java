@@ -16,7 +16,7 @@ package org.scribble.del.name.simple;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.MessageTransfer;
-import org.scribble.ast.PayloadElem;
+import org.scribble.ast.PayElem;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.SigNameNode;
@@ -75,7 +75,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 		}
 		else if (mcontext.isMessageSigNameVisible(name.toMessageSigName()))
 		{
-			if (parent instanceof PayloadElem) // FIXME HACK
+			if (parent instanceof PayElem) // FIXME HACK
 			{
 				throw new ScribException(ann.getSource(),
 						"Invalid occurrence of message signature name: " + parent);

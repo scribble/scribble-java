@@ -16,7 +16,7 @@ package org.scribble.ast;
 import org.scribble.core.type.session.Message;
 
 // A sig kind node: MessageSignatureNode, MessageSignatureNameNode or NonRoleParamNode
-public interface MessageNode extends NonRoleArgNode
+public interface MsgNode extends NonRoleArgNode
 {
 	Message toMessage();
 

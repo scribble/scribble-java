@@ -14,32 +14,32 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.ProtocolDef;
+import org.scribble.ast.ProtocolBlock;
 import org.scribble.core.type.kind.Global;
 
-public class GProtocolDef extends ProtocolDef<Global> implements GScribNode
+public class GProtoBlock extends ProtocolBlock<Global> implements GScribNode
 {
 	// ScribTreeAdaptor#create constructor
-	public GProtocolDef(Token t)
+	public GProtoBlock(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	protected GProtocolDef(GProtocolDef node)
+	protected GProtoBlock(GProtoBlock node)
 	{
 		super(node);
 	}
 
 	@Override
-	public GProtocolBlock getBlockChild()
+	public GInteractionSeq getInteractSeqChild()
 	{
-		return (GProtocolBlock) getChild(ProtocolDef.BLOCK_CHILD_INDEX);
+		return (GInteractionSeq) getChild(ProtocolBlock.SEQ_CHILD_INDEX);
 	}
-	
+
 	@Override
-	public GProtocolDef dupNode()
+	public GProtoBlock dupNode()
 	{
-		return new GProtocolDef(this);
+		return new GProtoBlock(this);
 	}
 }

@@ -16,8 +16,8 @@ package org.scribble.codegen.java.statechanapi;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble.ast.DataTypeDecl;
-import org.scribble.ast.MessageSigNameDecl;
+import org.scribble.ast.DataDecl;
+import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
@@ -80,7 +80,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 					{
 						throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 					}
-					DataTypeDecl dtd = main.getDataTypeDeclChild((DataType) pt);
+					DataDecl dtd = main.getDataTypeDeclChild((DataType) pt);
 					ScribSockGen.checkJavaDataTypeDecl(dtd);
 					String type = dtd.getExtName();
 					types.add(type);
@@ -92,7 +92,7 @@ public class InputFutureGen extends AuxStateChanTypeGen
 		}
 		else
 		{
-			MessageSigNameDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());
+			SigDecl msd = main.getMessageSigDeclChild(((MessageSigName) a.mid).getSimpleName());
 			ScribSockGen.checkMessageSigNameDecl(msd);
 			String type = msd.getExtName();
 			types.add(type);

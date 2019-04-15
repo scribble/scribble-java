@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.Module;
-import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.name.GProtocolName;
 import org.scribble.core.type.name.ModuleName;
@@ -83,7 +83,7 @@ public class LangContext
 		return Collections.unmodifiableMap(this.parsed);
 	}
 
-	public GProtocolDecl getParsed(GProtocolName fullname)
+	public GProtoDecl getParsed(GProtocolName fullname)
 	{
 		return this.parsed.get(fullname.getPrefix())
 				.getGProtoDeclChildren().stream().filter(x -> x.getHeaderChild()

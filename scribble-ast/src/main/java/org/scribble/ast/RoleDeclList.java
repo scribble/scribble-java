@@ -20,7 +20,7 @@ import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.name.Role;
 
-public class RoleDeclList extends HeaderParamDeclList<RoleKind>
+public class RoleDeclList extends ParamDeclList<RoleKind>
 {
 	// ScribTreeAdaptor#create constructor
 	public RoleDeclList(Token t)
@@ -35,7 +35,7 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 	}
 	
 	@Override
-	public List<RoleDecl> getParamDeclChildren()
+	public List<RoleDecl> getDeclChildren()
 	{
 		return ((List<?>) getChildren()).stream().map(x -> (RoleDecl) x)
 				.collect(Collectors.toList());
@@ -43,7 +43,7 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 
 	public List<Role> getRoles()
 	{
-		return getParamDeclChildren().stream().map(decl -> decl.getDeclName())
+		return getDeclChildren().stream().map(decl -> decl.getDeclName())
 				.collect(Collectors.toList());
 	}
 	

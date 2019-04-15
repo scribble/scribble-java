@@ -11,35 +11,50 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.global;
+package org.scribble.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.ProtocolBlock;
-import org.scribble.core.type.kind.Global;
+import org.scribble.ast.name.simple.DataParamNode;
+import org.scribble.core.type.kind.DataTypeKind;
+import org.scribble.core.type.name.DataType;
+import org.scribble.util.Constants;
 
-public class GProtocolBlock extends ProtocolBlock<Global> implements GScribNode
+public class DataParamDecl extends NonRoleParamDecl<DataTypeKind>
 {
 	// ScribTreeAdaptor#create constructor
-	public GProtocolBlock(Token t)
+	public DataParamDecl(Token t)
 	{
-		super(t);
+		super(t, DataTypeKind.KIND);
 	}
 
 	// Tree#dupNode constructor
-	protected GProtocolBlock(GProtocolBlock node)
+	public DataParamDecl(DataParamDecl node)
 	{
 		super(node);
 	}
-
+	
 	@Override
-	public GInteractionSeq getInteractSeqChild()
+	public DataParamNode getNameNodeChild()
 	{
-		return (GInteractionSeq) getChild(ProtocolBlock.SEQ_CHILD_INDEX);
+		return (DataParamNode) getRawNameNodeChild();
+	}
+	
+	@Override
+	public DataParamDecl dupNode()
+	{
+		return new DataParamDecl(this);
 	}
 
 	@Override
-	public GProtocolBlock dupNode()
+	//public Name<DataTypeKind> getDeclName()
+	public DataType getDeclName()
 	{
-		return new GProtocolBlock(this);
+		return (DataType) getNameNodeChild().toName();
+	}
+	
+	@Override
+	public String getKeyword()
+	{
+		return Constants.TYPE_KW;
 	}
 }

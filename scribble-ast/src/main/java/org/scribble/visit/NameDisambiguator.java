@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GDelegationElem;
+import org.scribble.ast.global.GDelegPayElem;
 import org.scribble.core.type.kind.NonRoleArgKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.Name;
@@ -70,10 +70,10 @@ public class NameDisambiguator extends ModuleContextVisitor
   // CHECKME: why "visitFor" pattern?
 	protected ScribNode visitForDisamb(ScribNode child) throws ScribException
 	{
-		if (child instanceof GDelegationElem)
+		if (child instanceof GDelegPayElem)
 		{
 			return ((GDelegationElemDel) child.del()).visitForNameDisambiguation(this,
-					(GDelegationElem) child);
+					(GDelegPayElem) child);
 		}
 		else
 		{
