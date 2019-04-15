@@ -61,35 +61,40 @@ module tmp.Test;
 		// could also test once-unfold-all against model
 
 
-//...
-// change parsed to in jobcontext to record original roledecls (for GDo::project) -- and change getInlined on proto to prune (via getRoles on def)
-// separate Job into core and lang parts (mainly parsed Module)
-// move ast/del, old visit and new frontend to lang
-// integrate new frontend with MainContext?
-// move lang types to type.sess, and move new visit
-// try modulecontextvisitor by "static lookup"
-// try move antlrwrapper to parser again
-//for isSingleConts (and project, buildGraph), make T visitWith(STypeReducer<K, B> v) ? -- roleenabling and extchoicecons are more like reducers?
+// Done: -- parser/ast refactoring
+	// change parsed to in jobcontext to record original roledecls (for GDo::project) -- and change getInlined on proto to prune (via getRoles on def)
+	// separate Job into core and lang parts (mainly parsed Module)
+	// move ast/del, old visit and new frontend to lang
+	// integrate new frontend with MainContext?
+	// move lang types to type.sess, and move new visit
+	// try modulecontextvisitor by "static lookup"
+	// try move antlrwrapper to parser again
+	//for isSingleConts (and project, buildGraph), make T visitWith(STypeReducer<K, B> v) ? -- roleenabling and extchoicecons are more like reducers?
+	// refactor scribble.g, simplify ast/del/etc class names and deprecated class code
+	//...remove Token args from af constructors -- removed, and re-added
+	//refactor reconstructs to use af? -- refactored af and reconstruct to use addChildren1 -- FIXME
+		//...fix simp node constructors and af (no IdNode child) --- fix ambignodel to use af -- separate af methods
 
-// refactor scribble.g, simplify ast/del/etc class names and deprecated class code
-		// CHECKME: duplicte proto mods
 
-			//...HERE fix simp node constructors and af (no IdNode child) --- fix ambignodel to use af -- fix ambignodel to use af -- fix ambignodel to use af -- fix ambignodel to use af - separate af methods
-			//...remove Token args from af constructors -- refactor reconstructs to use af?  
-			//...disallow/check for reserved __ -- do in gtype translation?
-			// FIXME: qualifed sig name as non role arg
-			
-			// TODO: rename addChildren1
+// Outstanding:
+	//...disallow/check for reserved __ -- do in gtype translation?
+	// FIXME: qualifed sig name as non-role do-arg
+	// TODO: rename addChildren1
+	// CHECKME: duplicate proto mods
 
-// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
-		// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
-// refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
-	// -- otoh, ast errors give source feedback -- maybe implement both
-	//make a visitor factory
 
-// add exp conn checks to model validation
-// use stypefactory in core -- also make a visitorfactory
-// refactor test to use main instead of cli
+// For model build/check refactoring:
+	// add exp conn checks to model validation
+	// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
+			// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
+	// refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
+		// -- otoh, ast errors give source feedback -- maybe implement both
+	// use stypefactory in core -- also make a visitorfactory (core and ast)
+
+// codegen refactoring:
+
+// Test refactoring:
+	// refactor test to use main instead of cli
 
 
 sig <java> "..." from "..." as T;
