@@ -157,14 +157,14 @@ public class Job
 		this.context.replaceModule(visited);
 	}
 	
-	public void warningPrintln(String s)
+	public boolean isVerbose()
 	{
-		System.err.println("[Warning] " + s);
+		return this.config.args.get(CoreArgs.VERBOSE);
 	}
 	
 	public void verbosePrintln(String s)
 	{
-		if (this.config.args.get(CoreArgs.VERBOSE))
+		if (isVerbose())
 		{
 			System.out.println(s);
 		}
@@ -173,5 +173,10 @@ public class Job
 	private void verbosePrintPass(String s)
 	{
 		verbosePrintln("\n[Job] " + s);
+	}
+	
+	public void warningPrintln(String s)
+	{
+		System.err.println("[Warning] " + s);
 	}
 }

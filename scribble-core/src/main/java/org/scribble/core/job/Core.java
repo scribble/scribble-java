@@ -136,9 +136,9 @@ public class Core
 					"Unfolded all recursions once: " + inlined.fullname + "\n" + unf);
 		}
 		
-		runProjectionPasses();
+		runProjectionPasses();  // Do before any validation (i.e., including global WF), to promote greater tool feedback
 				
-		for (Entry<LProtoName, LProtocol> e : this.context.getInlinedProjections()
+		for (Entry<LProtoName, LProtocol> e : this.context.getProjectedInlineds()
 				.entrySet())
 		{
 			LProtocol proj = e.getValue();
@@ -160,7 +160,7 @@ public class Core
 			{
 				// pruneRecs already done (see runContextBuildingPasses)
 				LProtocol iproj = inlined.projectInlined(this, self);  // CHECKME: projection and inling commutative?
-				this.context.addInlinedProjection(iproj.fullname, iproj);
+				this.context.addProjectedInlined(iproj.fullname, iproj);
 				verbosePrintPass("Projected inlined onto " + self + ": "
 						+ inlined.fullname + "\n" + iproj);
 			}
@@ -174,17 +174,19 @@ public class Core
 			{
 				LProtocol proj = imed.project(this, self);  // Does pruneRecs
 				this.context.addProjection(proj);
-				verbosePrintPass("Projected intermediate onto " + self + ":" + imed.fullname + "\n" + proj);
+				verbosePrintPass("Projected intermediate onto " + self + ": "
+						+ imed.fullname + "\n" + proj);
 			}
 		}
 	}
 	
 	public void runValidationPasses() throws ScribException
 	{
+		verbosePrintPass("Checking for unused role decls on all inlined globals...");
 		for (GProtocol inlined : this.context.getInlined())
 		{
 			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
-			// Check unused roles
+			// TODO: refactor as Visitor
 			Set<Role> used = inlined.def
 					.gather(new RoleGatherer<Global, GSeq>()::visit)
 					.collect(Collectors.toSet());
@@ -196,27 +198,33 @@ public class Core
 				throw new ScribException(
 						"Unused roles in " + inlined.fullname + ": " + unused);
 			}
+		}
 
-			if (inlined.isAux())
-			{
-				continue;
-			}
-			//STypeUnfolder<Global> u = new STypeUnfolder<>();  
+		verbosePrintPass("Checking role enabling on all inlined globals...");
+		for (GProtocol inlined : (Iterable<GProtocol>) this.context.getInlined()
+				.stream().filter(x -> !x.isAux())::iterator)
+		{
 			GTypeUnfolder v = new GTypeUnfolder();
 					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
 			inlined.unfoldAllOnce(v).checkRoleEnabling();
+		}
+
+		verbosePrintPass("Checking consistent external choice subjects on all inlined globals...");
+		for (GProtocol inlined : (Iterable<GProtocol>) this.context.getInlined()
+				.stream().filter(x -> !x.isAux())::iterator)
+		{
 			inlined.checkExtChoiceConsistency();
 		}
 		
-		for (LProtocol proj : this.context.getInlinedProjections().values())
+		verbosePrintPass("Checking reachability on all projected inlineds...");
+		for (LProtocol proj : (Iterable<LProtocol>) this.context
+				.getProjectedInlineds().values().stream()
+				.filter(x -> !x.isAux())::iterator)  // CHECKME? e.g., bad.reach.globals.gdo.Test01b 
 		{
-			if (proj.isAux())  // CHECKME? e.g., bad.reach.globals.gdo.Test01b 
-			{
-				continue;
-			}
 			proj.checkReachability();
 		}
 
+		verbosePrintPass("Building and checking models from projected inlineds...");
 		//runVisitorPassOnAllModules(GProtocolValidator.class);
 		//for (Module mod : this.context.getParsed().values())
 		{
@@ -338,14 +346,9 @@ public class Core
 		return this.config.args.get(CoreArgs.VERBOSE);
 	}
 	
-	public void warningPrintln(String s)
-	{
-		System.err.println("[Warning] " + s);
-	}
-	
 	public void verbosePrintln(String s)
 	{
-		if (this.config.args.get(CoreArgs.VERBOSE))
+		if (isVerbose())
 		{
 			System.out.println(s);
 		}
@@ -354,5 +357,10 @@ public class Core
 	private void verbosePrintPass(String s)
 	{
 		verbosePrintln("\n[Core] " + s);
+	}
+	
+	public void warningPrintln(String s)
+	{
+		System.err.println("[Warning] " + s);
 	}
 }

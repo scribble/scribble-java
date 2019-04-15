@@ -100,11 +100,19 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
-global protocol Proto1(role A, role B)
+global protocol Proto1<>(role A, role B)
 {
 	(T) from A to B;
 }
 
+
+/*
+global protocol Proto1<>(role A, role B)  // TODO: add unit test, testing empty paramdecls
+{
+	() from A to B;
+	do Proto1<>(A, B);  // TODO: add unit test, testing empty nonroleargs
+}
+//*/
 
 /*
 sig <java> "..." from "..." as M;

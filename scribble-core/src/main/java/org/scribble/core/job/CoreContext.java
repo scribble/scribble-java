@@ -128,24 +128,24 @@ public class CoreContext
 		return this.inlined.values().stream().collect(Collectors.toSet());
 	}
 	
-	public void addInlinedProjection(LProtoName fullname, LProtocol l)
+	public void addProjectedInlined(LProtoName fullname, LProtocol l)
 	{
 		this.iprojs.put(fullname, l);
 	}
 	
   // Projected from inlined
-	public LProtocol getInlinedProjection(GProtoName fullname, Role self)
+	public LProtocol getProjectedInlined(GProtoName fullname, Role self)
 	{
 		LProtoName p = InlinedProjector.getFullProjectionName(fullname, self);
-		return getInlinedProjection(p);
+		return getProjectedInlined(p);
 	}
 
-	public LProtocol getInlinedProjection(LProtoName fullname)
+	public LProtocol getProjectedInlined(LProtoName fullname)
 	{
 		return this.iprojs.get(fullname);
 	}
 	
-	public Map<LProtoName, LProtocol> getInlinedProjections()
+	public Map<LProtoName, LProtocol> getProjectedInlineds()
 	{
 		return Collections.unmodifiableMap(this.iprojs);
 	}
