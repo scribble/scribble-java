@@ -118,7 +118,7 @@ global protocol Proto1(role A, role B)
 		1() from A to B;
 		3() from A to B;
 	}
-	do Proto1(A, B);
+	//do Proto1(A, B);
 }
 
 

@@ -204,7 +204,7 @@ public abstract class MState
 				}
 			}
 		}
-		return new HashSet<>(all.values());
+		return new HashSet<>(all.values());  // Often will want to add this
 	}
 
 	public Set<A> getReachableActions()

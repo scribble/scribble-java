@@ -34,7 +34,8 @@ public abstract class MPrettyState
 	{
 		String s = "\"" + this.id + "\":[";
 		Iterator<S> ss = this.succs.iterator();
-		s += this.actions.stream().map(x -> x + "=\"" + ss.next().id + "\"").collect(Collectors.joining(", "));
+		s += this.actions.stream().map(x -> x + "=\"" + ss.next().id + "\"")
+				.collect(Collectors.joining(", "));
 		return s + "]";
 	}
 	
@@ -42,13 +43,12 @@ public abstract class MPrettyState
 	@Override
 	public final String toDot()
 	{
-		Set<S> ss = getReachableStates();
-		@SuppressWarnings("unchecked")
-		S cast = (S) this;
-		ss.add(cast);
 		StringBuilder b = new StringBuilder();
 		b.append("digraph G {\n"); // rankdir=LR;\n
 		b.append("compound = true;\n");
+		b.append(toStateDot() + "\n");
+		Set<S> ss = getReachableStates();
+		ss.remove(this);  // Avoids generic cast of alternative, ss.add((S) this)
 		ss.forEach(x -> b.append(x.toStateDot() + "\n"));
 		b.append("}");
 		return b.toString();
