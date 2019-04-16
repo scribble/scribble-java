@@ -167,7 +167,8 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	}
 
 	@Override
-	public SType<Local, LSeq> visitDirectedInteraction(DirectedInteraction<Local, LSeq> n)
+	public SType<Local, LSeq> visitDirectedInteraction(
+			DirectedInteraction<Local, LSeq> n)
 	{
 		Role peer = ((n instanceof LSend) || (n instanceof LReq)) ? n.dst
 				: ((n instanceof LRecv) || (n instanceof LAcc)) ? n.src
@@ -200,7 +201,8 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	}
 
 	@Override
-	public final <N extends ProtoName<Local>> SType<Local, LSeq> visitDo(Do<Local, LSeq, N> n)
+	public final <N extends ProtoName<Local>> SType<Local, LSeq> visitDo(
+			Do<Local, LSeq, N> n)
 	{
 		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
 	}

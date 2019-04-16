@@ -78,7 +78,60 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		return clones.get(this.id);
 	}
 
-	/*.. move back to endpointstate
+	// Pre: succ is the root of the subgraph, and succ is a successor of *"this"* (which is inside the subgraph)
+	// i.e., this-a->succ ("a" is possibly non-det)
+	// Returns the clone of the subgraph rooted at succ, with all non- "this-a->succ" actions pruned from the clone of "this" state
+	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
+	private EState unfairClone(ModelFactory mf, EState term, EAction a, EState succ) // Need succ param for non-det
+	{
+		Set<EState> all = succ.getReachableStates();
+		all.add(succ);
+		Map<Integer, EState> clones = new HashMap<>();  // original s.id -> clones
+		for (EState s : all)
+		{
+			if (term != null && s.id == term.id)
+			{
+				clones.put(term.id, term);  
+						// Special case: term not cloned, otherwise a mixture of exapanded (and non-expanded) cases may lead to the term being cloned...
+						// ...potentially multiple times and potentially while the original still remains
+			}
+			else
+			{
+				clones.put(s.id, s.cloneNode(mf, Collections.emptySet()));  // CHECKME: remove labs arg from cloneNode and just clear the lab set here ?
+			}
+		}
+		for (EState s : all)
+		{
+			Iterator<EAction> as = s.getActions().iterator();
+			Iterator<EState> succs = s.getSuccs().iterator();
+			EState clone = clones.get(s.id);
+			boolean done = false;  
+					// Used to add *at most* one edge, out of potentially multiple non-det a, from this-a->succ
+					// i.e., unfair expansion prunes non-det "a" ("determinizes" entry) from "this" into the cloned subgraph
+					// Cf. MState.addEdge(A, S), previously implicitly pruned all non-det "this-a->s" for the same "s"
+			while (as.hasNext())
+			{
+				EAction na = as.next();
+				EState ns = succs.next();
+				if (s.id != this.id)
+				{
+					clone.addEdge(na, clones.get(ns.id));
+				}
+				else if (na.equals(a) && ns.equals(succ) && !done)  
+						// Non-det (to different succ) also pruned from clone of this -- but OK? non-det still preserved on original state, so any safety violations due to non-det will still come out?...
+						// ...this is like non-fairness extended to defeat even non-determinism ?
+				{
+					// s.id == this.id, so "clone" is the clone of "this"
+					clone.addEdge(na, clones.get(ns.id));
+					done = true;
+				}
+			}
+		}
+		return clones.get(succ.id);
+	}
+	
+
+	/*.. move back to endpointstate ?
 	.. use getallreachable to get subgraph, make a graph clone method
 	.. for each poly output, clone a (non-det) edge to clone of the reachable subgraph with the clone of the current node pruned to this single choice
 	..     be careful of original non-det edges, need to do each separately
@@ -90,7 +143,6 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	public EState unfairTransform(ModelFactory mf)
 	{
 		EState init = clone(mf);
-		
 		EState term = init.getTerminal();
 		Set<EState> seen = new HashSet<>();
 		Set<EState> todo = new LinkedHashSet<>();
@@ -107,92 +159,10 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			}
 			seen.add(curr);
 			
-			if (curr.getStateKind() == EStateKind.OUTPUT && curr.getActions().size() > 1)  // >1 is what makes this algorithm terminating
+			if (curr.getStateKind() == EStateKind.OUTPUT
+					&& curr.getActions().size() > 1)  // >1 is what makes this algorithm terminating -- in the expanded subgraph, the clone of curr will have all other edges pruned
 			{
-				//if (curr.getAllTakeable().size() > 1)
-				{
-					Iterator<EAction> as = curr.getActions().iterator();
-					Iterator<EState> ss = curr.getSuccs().iterator();
-					//Map<IOAction, EndpointState> clones = new HashMap<>();
-					List<EAction> cloneas = new LinkedList<>();
-					List<EState> cloness = new LinkedList<>();
-					//LinkedHashMap<EndpointState, EndpointState> cloness = new LinkedHashMap<>();  // clone -> original
-					Map<EState, List<EAction>> toRemove = new HashMap<>();  // List needed for multiple edges to remove to the same state: e.g. mu X . (A->B:1 + A->B:2).X
-					while (as.hasNext())
-					{
-						EAction a = as.next();
-						EState s = ss.next();
-						if (!s.canReach(curr))
-						{
-							todo.add(s);
-						}
-						else
-						{
-							EState clone = curr.unfairClone(mf, term, a, s);  // s is a succ of curr
-							//try { s.removeEdge(a, tmps); } catch (ScribbleException e) { throw new RuntimeException(e); }
-							//clones.put(a, clone);
-							cloneas.add(a);
-							cloness.add(clone);
-							//cloness.put(clone, s);
-							
-							//toRemove.put(s, a);
-							List<EAction> tmp = toRemove.get(s);
-							if (tmp == null)
-							{
-								tmp = new LinkedList<>();
-								toRemove.put(s, tmp);
-							}
-							tmp.add(a);
-						}
-					}
-					//if (!clones.isEmpty())  // Redundant, but more clear
-					if (!cloneas.isEmpty())  // Redundant, but more clear
-					{
-						/*as = new LinkedList<>(curr.getAllTakeable()).iterator();
-						//Iterator<EndpointState>
-						ss = new LinkedList<>(curr.getSuccessors()).iterator();
-						while (as.hasNext())
-						{
-							IOAction a = as.next();
-							EndpointState s = ss.next();
-							//if (clones.containsKey(a))  // Still OK for non-det edges?
-							//if (cloneas.contains(a))  // Still OK for non-det edges? -- no: removing *all* non-det a's for this a, so non-recursive cases are lost
-							if (cloneas.contains(a) && ...succ == orig...)
-							{
-								try { curr.removeEdge(a, s); } catch (ScribbleException e) { throw new RuntimeException(e); }
-							}
-						}*/
-						for (EState s : toRemove.keySet())
-						{
-							//try
-							{
-								//curr.removeEdge(toRemove.get(s), s);
-								for (EAction tmp : toRemove.get(s))
-								{
-									curr.removeEdge(tmp, s);
-								}
-							}
-							//catch (ScribException e) { throw new RuntimeException(e); }
-						}
-						//for (Entry<IOAction, EndpointState> e : clones.entrySet())
-						Iterator<EAction> icloneas = cloneas.iterator();
-						Iterator<EState> icloness = cloness.iterator();
-						//Iterator<EndpointState> icloness = cloness.keySet().iterator();
-						while (icloneas.hasNext())
-						{
-							EAction a = icloneas.next();
-							EState s = icloness.next();
-							/*curr.addEdge(e.getKey(), e.getValue());
-							todo.add(e.getValue());
-							seen.add(e.getValue());*/
-							curr.addEdge(a, s);
-							todo.add(s);  // Doesn't work if non-det preserved by the "unfairClone" aux (recursively edges>1)
-							/*seen.add(s);  // Idea is to bypass succ clone (for non-det, edges>1) but in general this will be cloned again before returning to it, so bypass doesn't work -- to solve this more generally probably need to keep a record of all clones to bypass future clones
-							todo.addAll(s.getSuccessors());*/
-						}
-						//continue;
-					}
-				}
+				expandUnfairCases(mf, term, todo, curr);
 			}
 			else
 			{
@@ -202,48 +172,57 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 
 		return init;
 	}
-	
-	// Pre: succ is the root of the subgraph, and succ is a successor of "this" (which is inside the subgraph)
-	// i.e., this -a-> succ (maybe non-det)
-	// Returns the clone of the subgraph rooted at succ, with all non- "this-a->succ" actions pruned from the clone of "this" state
-	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
-	protected EState unfairClone(ModelFactory ef, EState term, EAction a, EState succ) // Need succ param for non-det
+
+	private void expandUnfairCases(ModelFactory mf, EState term, Set<EState> todo,
+			EState curr)
 	{
-		//EndpointState succ = take(a);
-		Set<EState> all = new HashSet<>();
-		all.add(succ);
-		all.addAll(succ.getReachableStates());
-		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
-		for (EState s : all)
+		Iterator<EAction> as = curr.getActions().iterator();
+		Iterator<EState> succs = curr.getSuccs().iterator();
+		List<EAction> cloneas = new LinkedList<>();
+		List<EState> cloness = new LinkedList<>();
+		Map<EState, List<EAction>> toRemove = new HashMap<>();  // List needed for multiple edges to remove to the same state: e.g. mu X.(A->B:1 + A->B:2).X
+
+		while (as.hasNext())
 		{
-			if (term != null && s.id == term.id)
+			EAction a = as.next();
+			EState succ = succs.next();
+			if (!succ.canReach(curr))
 			{
-				map.put(term.id, term);
+				todo.add(succ);
+				continue;
 			}
-			else
+			EState clone = curr.unfairClone(mf, term, a, succ);  // succ is a successor of curr
+			cloneas.add(a);
+			cloness.add(clone);
+			List<EAction> tmp = toRemove.get(succ);
+			if (tmp == null)
 			{
-				//map.put(s.id, newState(s.labs));
-				map.put(s.id, s.cloneNode(ef, Collections.emptySet()));  // FIXME: remove labs arg from cloneNode and just clear the lab set here?
+				tmp = new LinkedList<>();
+				toRemove.put(succ, tmp);
 			}
+			tmp.add(a);
 		}
-		for (EState s : all)
+
+		if (!cloneas.isEmpty())  // Redundant, but more clear
 		{
-			Iterator<EAction> as = s.getActions().iterator();
-			Iterator<EState> ss = s.getSuccs().iterator();
-			EState clone = map.get(s.id);
-			while (as.hasNext())
+			for (EState succ : toRemove.keySet())
 			{
-				EAction tmpa = as.next();
-				EState tmps = ss.next();
-				if (s.id != this.id
-						|| (tmpa.equals(a) && tmps.equals(succ)))  // Non-det also pruned from clone of this -- but OK? non-det still preserved on original state, so any safety violations due to non-det will still come out?
-					                                             // ^ Currently, this is like non-fairness is extended to even defeat non-determinism
+				for (EAction a1 : toRemove.get(succ))
 				{
-					clone.addEdge(tmpa, map.get(tmps.id));
+					curr.removeEdge(a1, succ);
 				}
 			}
+			Iterator<EAction> icloneas = cloneas.iterator();
+			Iterator<EState> icloness = cloness.iterator();
+			while (icloneas.hasNext())
+			{
+				EAction a = icloneas.next();
+				EState s = icloness.next();  // clones of the succs from toRemove above
+				curr.addEdge(a, s);
+				todo.add(s);  // Doesn't work if non-det preserved by the "unfairClone" aux (recursively edges>1)
+						// Idea is to bypass succ clone (for non-det, edges>1) but in general this will be cloned again before returning to it, so bypass doesn't work -- to solve this more generally probably need to keep a record of all clones to bypass future clones
+			}
 		}
-		return map.get(succ.id);
 	}
 	
 	public String toPml(Role r)

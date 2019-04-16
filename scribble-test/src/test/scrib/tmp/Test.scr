@@ -111,15 +111,33 @@ global protocol Proto1(role A, role B)
 	choice at A
 	{
 		1() from A to B;
-		2() from A to B;
+		//2() from A to B;
 	}
 	or
 	{
 		1() from A to B;
-		3() from A to B;
+		//3() from A to B;
 	}
+	//4() from B to A;
 	do Proto1(A, B);
 }
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+	}  // CHECKME: gives a non-det global model, correct/intended?
+	//4() from B to A;
+	do Proto1(A, B);
+}
+//*/
 
 
 /*

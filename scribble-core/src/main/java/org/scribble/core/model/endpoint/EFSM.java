@@ -58,7 +58,7 @@ public class EFSM
 
 	public List<EFSM> fireAll(EAction a)
 	{
-		return this.curr.getSuccs(a).stream().map(s -> new EFSM(this.graph, s))
+		return this.curr.getSuccs(a).stream().map(x -> new EFSM(this.graph, x))
 				.collect(Collectors.toList());
 	}
 

@@ -64,9 +64,14 @@ public abstract class MState
 	// Mutable (can also overwrite edges)
 	protected void addEdge(A a, S s)
 	{
-		if (this.equals(s))  // CHECKME: refactor unfair transform to eliminate this special case
+		/*if (this.equals(s)) 
 		{
+			// CHECKME: refactor unfair transform to eliminate this special case -- or better to have? generalise to all "identical" non-det paths?...
+			// ...special case was previously for all non-det "this-a->s" for the same "s", but also works when specialised to recursive such cases, i.e., this.equals(s) (because only recursion is relevant to unfair transform)
+			//
 			// Needed? -- seems so, for the unfair transform (specifically for recursive non-det paths of length 1, see good.efsm.gchoice.Test09)
+			// Cf. EState.unfairTransform... ? -- if (curr.getStateKind() == EStateKind.OUTPUT && curr.getActions().size() > 1)  // >1 is what makes this algorithm terminating
+			// ...because of unfairClone, na.equals(a) && ns.equals(succ) -- a pair of non-det (a, s) edges will *both* be added in the unfair-clone, instead of pruned down to one output-case, so above >1 termination condition never reached
 			Iterator<A> as = this.actions.iterator(); 
 			Iterator<S> ss = this.succs.iterator();
 			while (as.hasNext())  // Duplicate edges preemptively pruned here, but could leave to later minimisation
@@ -78,7 +83,7 @@ public abstract class MState
 					return;
 				}
 			}
-		}
+		}*/
 		this.actions.add(a);
 		this.succs.add(s);
 	}

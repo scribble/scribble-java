@@ -215,16 +215,19 @@ public class CoreContext
 	public EGraph getUnfairEGraph(GProtoName fullname, Role role)
 			throws ScribException
 	{
-		LProtoName fulllpn = InlinedProjector.getFullProjectionName(fullname,
+		LProtoName projFullname = InlinedProjector.getFullProjectionName(fullname,
 				role);
 
-		EGraph unfair = this.uEGraphs.get(fulllpn);
+		EGraph unfair = this.uEGraphs.get(projFullname);
 		if (unfair == null)
 		{
 			unfair = getEGraph(fullname, role).init
 					.unfairTransform(this.core.config.mf).toGraph();
-			addUnfairEGraph(fulllpn, unfair);
+			addUnfairEGraph(projFullname, unfair);
 		}
+
+		//System.out.println("\nunfair " + projFullname + ":\n" + unfair.toDot());  // TODO: verbose printing for unfair EGraphs
+		
 		return unfair;
 	}
 
