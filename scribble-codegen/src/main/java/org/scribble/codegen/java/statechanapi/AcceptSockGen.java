@@ -51,7 +51,7 @@ public class AcceptSockGen extends ScribSockGen
 			throw new RuntimeException("AcceptSocket generation not yet supported for accept-branches: " + as);
 		}
 		EAction a = as.iterator().next();
-		EState succ = curr.getSuccessor(a);
+		EState succ = curr.getDetSuccessor(a);
 		makeAcceptMethod(a, succ);
 	}
 

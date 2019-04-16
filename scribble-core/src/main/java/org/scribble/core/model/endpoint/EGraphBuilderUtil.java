@@ -417,7 +417,7 @@ public class EGraphBuilderUtil
 	// Returns List, cf. getAllSucessors/Actions
 	public List<EState> getAllPredecessors(EState s)
 	{
-		return this.states.stream().filter(x -> x.getSuccessors().contains(s))
+		return this.states.stream().filter(x -> x.getSuccs().contains(s))
 				.collect(Collectors.toList());
 	}
 	
@@ -461,7 +461,7 @@ public class EGraphBuilderUtil
 		}
 		seen.add(orig);
 		Iterator<EAction> as = orig.getActions().iterator();
-		Iterator<EState> ss = orig.getSuccessors().iterator();
+		Iterator<EState> ss = orig.getSuccs().iterator();
 		while (as.hasNext())
 		{
 			EAction a = as.next();
@@ -490,7 +490,7 @@ public class EGraphBuilderUtil
 				RecVar rv = new RecVar(ice.mid.toString());
 				for (EAction e : this.enactingMap.get(origSucc).get(rv))
 				{
-					for (EState n : origSucc.getSuccessors(e))
+					for (EState n : origSucc.getSuccs(e))
 					{
 						cloneSucc = getClone(clones, n);
 						addEdgeAux(clone, e, cloneSucc);

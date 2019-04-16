@@ -78,7 +78,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 							  "::\n"
 							+ "skip ->\n"
 							+ "s_" + r + "_" + a.peer + "!" + a.mid + ";\n"
-							+ "goto " + getLabel(seen, getSuccessor(a), r) + "\n"
+							+ "goto " + getLabel(seen, getDetSuccessor(a), r) + "\n"
 						)
 						.collect(Collectors.joining(""))
 					+ "fi\n";
@@ -91,7 +91,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 							  "::\n"
 							+ "r_" + a.peer + "_" + r + "?[" + a.mid + "] ->\n"
 							+ "r_" + a.peer + "_" + r + "?" + a.mid + ";\n"
-							+ "goto " + getLabel(seen, getSuccessor(a), r) + "\n"
+							+ "goto " + getLabel(seen, getDetSuccessor(a), r) + "\n"
 						)
 						.collect(Collectors.joining("")) 
 					+ "fi\n";
@@ -105,7 +105,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			throw new RuntimeException("TODO: " + kind);
 		}
 
-		res += as.stream().map(a -> "\n" + getSuccessor(a).toPml(tmp, r)).collect(Collectors.joining(""));
+		res += as.stream().map(a -> "\n" + getDetSuccessor(a).toPml(tmp, r)).collect(Collectors.joining(""));
 
 		return res;
 	}
@@ -169,7 +169,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 				//if (curr.getAllTakeable().size() > 1)
 				{
 					Iterator<EAction> as = curr.getActions().iterator();
-					Iterator<EState> ss = curr.getSuccessors().iterator();
+					Iterator<EState> ss = curr.getSuccs().iterator();
 					//Map<IOAction, EndpointState> clones = new HashMap<>();
 					List<EAction> cloneas = new LinkedList<>();
 					List<EState> cloness = new LinkedList<>();
@@ -253,7 +253,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			}
 			else
 			{
-				todo.addAll(curr.getSuccessors());
+				todo.addAll(curr.getSuccs());
 			}
 		}
 
@@ -274,7 +274,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		for (EState s : all)
 		{
 			Iterator<EAction> as = s.getActions().iterator();
-			Iterator<EState> ss = s.getSuccessors().iterator();
+			Iterator<EState> ss = s.getSuccs().iterator();
 			EState clone = map.get(s.id);
 			while (as.hasNext())
 			{
@@ -312,7 +312,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		for (EState s : all)
 		{
 			Iterator<EAction> as = s.getActions().iterator();
-			Iterator<EState> ss = s.getSuccessors().iterator();
+			Iterator<EState> ss = s.getSuccs().iterator();
 			EState clone = map.get(s.id);
 			while (as.hasNext())
 			{

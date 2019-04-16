@@ -106,7 +106,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 						init.getActions().stream().distinct()::iterator)
 						// Enabling actions
 				{
-					for (EState s : init.getSuccessors(a))
+					for (EState s : init.getSuccs(a))
 					{
 						util.addEdge(entry, a, s);
 					}
@@ -145,7 +145,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 			{
 				// Following is because pred.getSuccessor doesn't support non-det edges
 				// FIXME: refactor actions/successor Lists in MState to list of edges?
-				for (EState succ : pred.getSuccessors(a))
+				for (EState succ : pred.getSuccs(a))
 				{
 					if (succ.equals(curr))
 					{

@@ -54,7 +54,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 
 		for (EAction a : this.curr.getDetActions())  // Doesn't need to be sorted
 		{
-			EState succ = this.curr.getSuccessor(a);
+			EState succ = this.curr.getDetSuccessor(a);
 			String nextClass = this.apigen.getSocketClassName(succ);
 
 			AbstractMethodBuilder mb3 = ib.newAbstractMethod();
@@ -73,7 +73,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 			}
 			addHandleMethodOpAndPayloadParams(this.apigen, a, mb3);
 			
-			if (this.curr.getSuccessor(a).isTerminal())
+			if (this.curr.getDetSuccessor(a).isTerminal())
 			{
 				// FIXME: potentially repeated (but OK)
 				ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder

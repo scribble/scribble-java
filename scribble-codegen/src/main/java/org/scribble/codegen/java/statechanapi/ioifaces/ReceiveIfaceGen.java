@@ -60,7 +60,7 @@ public class ReceiveIfaceGen extends IOStateIfaceGen
 		MethodBuilder mb = this.ib.newAbstractMethod();
 		ReceiveSockGen.setAsyncDiscardHeaderWithoutReturnType(this.apigen, first, mb, InputFutureGen.getInputFutureName(this.apigen.getSocketClassName(this.curr)));
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
-		EState succ = this.curr.getSuccessor(first);
+		EState succ = this.curr.getDetSuccessor(first);
 		if (succ.isTerminal())
 		{
 			ScribSockGen.setNextSocketReturnType(this.apigen, mb, succ);

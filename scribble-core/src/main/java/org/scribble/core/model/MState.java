@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.RuntimeScribException;
@@ -72,9 +71,9 @@ public abstract class MState
 			Iterator<S> ss = this.succs.iterator();
 			while (as.hasNext())  // Duplicate edges preemptively pruned here, but could leave to later minimisation
 			{
-				A tmpa = as.next();
-				S tmps = ss.next();
-				if (tmpa.equals(a) && tmps.equals(s))
+				A na = as.next();
+				S ns = ss.next();
+				if (na.equals(a) && ns.equals(s))
 				{
 					return;
 				}
@@ -88,33 +87,20 @@ public abstract class MState
 	protected final void removeEdge(A a, S s)
 			//throws ScribException  // CHECKME: used? -- cf., Hack? EFSM building on bad-reachability protocols now done before actual reachability check
 	{
-		Iterator<A> ia = this.actions.iterator();
-		Iterator<S> is = this.succs.iterator();
-		while (ia.hasNext())
+		Iterator<A> as = this.actions.iterator();
+		Iterator<S> ss = this.succs.iterator();
+		while (as.hasNext())
 		{
-			A tmpa = ia.next();
-			S tmps = is.next();
-			if (tmpa.equals(a) && tmps.equals(s))
+			A na = as.next();
+			S ns = ss.next();
+			if (na.equals(a) && ns.equals(s))
 			{
-				ia.remove();
-				is.remove();
+				as.remove();
+				ss.remove();
 				return;
 			}
 		}
 		throw new RuntimeException("No such transition: " + a + "->" + s);
-	}
-	
-	// Variant of getActions with a run-time check on determinism -- currently used by codegen utils (that have that assumption)
-	public final List<A> getDetActions()
-	{
-		Set<A> as = new HashSet<>(this.actions);
-		if (as.size() != this.actions.size())
-		{
-			throw new RuntimeScribException("[TODO] Non-deterministic state: "
-					+ this.actions + "  (Try -minlts if available)");
-					// This getter checks for determinism -- mainly affects API generation  
-		}
-		return getActions();
 	}
 
 	public final List<A> getActions()
@@ -127,33 +113,68 @@ public abstract class MState
 		return this.actions.contains(a);
 	}
 
-	public S getSuccessor(A a)
+	public final List<S> getSuccs()
+	{
+		return Collections.unmodifiableList(this.succs);
+	}
+
+	public final List<S> getSuccs(A a)
+	{
+		Iterator<A> as = this.actions.iterator();
+		Iterator<S> ss = this.succs.iterator();
+		List<S> res = new LinkedList<>();
+		while (as.hasNext())
+		{
+			A na = as.next();
+			S ns = ss.next();
+			if (na.equals(a))
+			{
+				res.add(ns);
+			}
+		}
+		return res;
+	}
+	
+	// Variant of getActions with implicit run-time check on determinism -- currently used by codegen utils (that have that assumption)
+	public final List<A> getDetActions()
+	{
+		Set<A> as = new HashSet<>(this.actions);
+		if (as.size() != this.actions.size())
+		{
+			throw new RuntimeScribException("[TODO] Non-deterministic state: "
+					+ this.actions + "  (Try -minlts if available)");
+					// This getter checks for determinism -- mainly affects API generation  
+		}
+		return getActions();
+	}
+
+	// Variant with implicit run-time check on determinism
+	public S getDetSuccessor(A a)
 	{
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
 			throw new RuntimeException("[FIXME] : " + this.actions);
 		}
-		return getSuccessors(a).get(0);
-	}
-
-	// For non-deterministic actions
-	public final List<S> getSuccessors(A a)
-	{
-		return IntStream.range(0, this.actions.size())
-			.filter(i -> this.actions.get(i).equals(a))
-			.mapToObj(i -> this.succs.get(i))
-			.collect(Collectors.toList());
-	}
-
-	public final List<S> getSuccessors()
-	{
-		return Collections.unmodifiableList(this.succs);
+		return getSuccs(a).get(0);
 	}
 
 	public final boolean isTerminal()
 	{
 		return this.actions.isEmpty();
+	}
+
+	public S getTerminal()
+	{
+		//getReachableStates().stream().filter(x -> x.isTerminal()).findFirst();
+		Set<S> terms = getReachableStates().stream()
+				.filter(s -> s.isTerminal()).collect(Collectors.toSet());
+		if (terms.size() > 1)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + terms);
+		}
+		return terms.isEmpty() //.isPresent()
+				? null : terms.iterator().next();  // CHECKME: return empty Set instead of null?
 	}
 
 	// CHECKME: add "caching" versions to, e.g., Graphs?
@@ -172,7 +193,7 @@ public abstract class MState
 			Iterator<Entry<Integer, S>> i = todo.entrySet().iterator();
 			Entry<Integer, S> next = i.next();
 			i.remove();
-			for (S s : next.getValue().getSuccessors())
+			for (S s : next.getValue().getSuccs())
 			{
 				if (!all.containsKey(s.id))
 				{	
@@ -182,19 +203,6 @@ public abstract class MState
 			}
 		}
 		return new HashSet<>(all.values());
-	}
-
-	public S getTerminal()
-	{
-		//getReachableStates().stream().filter(x -> x.isTerminal()).findFirst();
-		Set<S> terms = getReachableStates().stream()
-				.filter(s -> s.isTerminal()).collect(Collectors.toSet());
-		if (terms.size() > 1)
-		{
-			throw new RuntimeException("Shouldn't get in here: " + terms);
-		}
-		return terms.isEmpty() //.isPresent()
-				? null : terms.iterator().next();  // CHECKME: return empty Set instead of null?
 	}
 
 	public Set<A> getReachableActions()

@@ -124,7 +124,7 @@ public abstract class MPrettyState
 			}
 			seen.add(s.id);
 			Iterator<A> as = s.getActions().iterator();
-			Iterator<S> ss = s.getSuccessors().iterator();
+			Iterator<S> ss = s.getSuccs().iterator();
 			for (; as.hasNext(); edges++)
 			{
 				A a = as.next();

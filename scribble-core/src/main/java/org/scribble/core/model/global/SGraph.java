@@ -119,7 +119,7 @@ public class SGraph implements MPrettyPrint
 
 		SState curr = this.states.get(currid);
 		Iterator<SAction> as = curr.getActions().iterator();
-		Iterator<SState> ss = curr.getSuccessors().iterator();
+		Iterator<SState> ss = curr.getSuccs().iterator();
 		while (as.hasNext())
 		{
 			SAction a = as.next();
@@ -183,7 +183,7 @@ public class SGraph implements MPrettyPrint
 
 		for (Integer s1id : idToIndex.keySet())
 		{
-			for (SState s2 : this.states.get(s1id).getSuccessors())
+			for (SState s2 : this.states.get(s1id).getSuccs())
 			{
 				reach[idToIndex.get(s1id)][idToIndex.get(s2.id)] = true;
 			}

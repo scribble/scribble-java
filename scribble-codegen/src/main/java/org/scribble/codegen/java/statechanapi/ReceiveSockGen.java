@@ -56,7 +56,7 @@ public class ReceiveSockGen extends ScribSockGen
 	{
 		EAction a = curr.getDetActions().iterator().next();
 		//String nextClass = this.apigen.getSocketClassName(curr.accept(a));
-		EState succ = curr.getSuccessor(a);
+		EState succ = curr.getDetSuccessor(a);
 		ClassBuilder futureClass = new InputFutureGen(this.apigen, this.cb, a).generateType();  // Wraps all payload elements as fields (set by future completion)
 		// FIXME: problem if package and protocol have the same name -- still?
 		this.apigen.addTypeDecl(futureClass);
