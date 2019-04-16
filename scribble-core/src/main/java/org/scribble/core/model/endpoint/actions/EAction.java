@@ -24,30 +24,18 @@ import org.scribble.core.type.session.Payload;
 public abstract class EAction extends MAction<Local>
 {
 	public final Role peer;
-	/*public final MessageId<?> mid;
-	public final Payload payload;  // Empty for MessageSigNames*/
 
-	protected ModelFactory ef;
+	protected final ModelFactory mf;
 
-	protected EAction(ModelFactory ef, Role peer, MsgId<?> mid, Payload payload)
+	protected EAction(ModelFactory mf, Role peer, MsgId<?> mid, Payload pay)
 	{
-		/*this.mid = mid;
-		this.payload = payload;*/
-		super(peer, mid, payload);
+		super(peer, mid, pay);
 		this.peer = peer;
-
-		this.ef = ef;
-	}
-	
-	public ModelFactory getEModelFactory()
-	{
-		return this.ef;
+		this.mf = mf;
 	}
 	
 	public abstract EAction toDual(Role self);
-
-	//public abstract GModelAction toGlobal(Role self);
-	public abstract SAction toGlobal(ModelFactory sf, Role self);
+	public abstract SAction toGlobal(Role self);
 
 	public boolean isSend()
 	{
@@ -83,6 +71,19 @@ public abstract class EAction extends MAction<Local>
 	{
 		return false;
 	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	/*@Override
 	public String toString()
@@ -118,4 +119,3 @@ public abstract class EAction extends MAction<Local>
 	}
 	
 	public abstract boolean canEqual(Object o);*/
-}

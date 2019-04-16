@@ -62,10 +62,10 @@ public class DataName extends MemberName<DataKind>
 			return false;
 		}
 		DataName n = (DataName) o;
-		return n.canEqual(this) && super.equals(o);
+		return n.canEquals(this) && super.equals(o);
 	}
 	
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof DataName;
 	}

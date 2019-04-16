@@ -27,9 +27,9 @@ public abstract class SAction extends MAction<Global>
 {
 	public final Role subj;
 
-	public SAction(Role subj, Role obj, MsgId<?> mid, Payload payload)
+	public SAction(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		super(obj, mid, payload);
+		super(obj, mid, pay);
 		this.subj = subj; 
 	}
 
@@ -68,6 +68,60 @@ public abstract class SAction extends MAction<Global>
 		return this.subj.equals(role) || this.obj.equals(role);
 	}
 	
+	@Override
+	public String toString()
+	{
+		return this.subj + getCommSymbol() + this.obj + ":" + this.mid + this.payload;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 149;
+		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + this.subj.hashCode();
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof SAction))
+		{
+			return false;
+		}
+		SAction them = (SAction) o;
+		return super.equals(o)   // Does canEquals
+				&& this.subj.equals(them.subj);
+	}
+
+	@Override
+	public boolean canEquals(Object o)
+	{
+		return o instanceof SAction;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 	/*public IOAction project(Role self)
 	{
 		if (this.subj.equals(self))
@@ -94,40 +148,3 @@ public abstract class SAction extends MAction<Global>
 			}
 		}
 	}*/
-	
-	@Override
-	public String toString()
-	{
-		return this.subj + getCommSymbol() + this.obj + ":" + this.mid + this.payload;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hash = 149;
-		hash = 31 * hash + super.hashCode();
-		hash = 31 * hash + this.subj.hashCode();
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object o)  // FIXME: kind
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (!(o instanceof SAction))
-		{
-			return false;
-		}
-		SAction a = (SAction) o;
-		return super.equals(o) && this.subj.equals(a.subj);
-	}
-
-	@Override
-	public boolean canEqual(Object o)
-	{
-		return o instanceof SAction;
-	}
-}

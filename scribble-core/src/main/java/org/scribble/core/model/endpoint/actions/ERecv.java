@@ -14,41 +14,42 @@
 package org.scribble.core.model.endpoint.actions;
 
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.global.actions.SWrapServer;
-import org.scribble.core.type.name.Op;
+import org.scribble.core.model.global.actions.SRecv;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-// Duplicated from Disconnect
-public class EWrapServer extends EAction
+public class ERecv extends EAction
 {
-	public EWrapServer(ModelFactory ef, Role peer)
+
+	public ERecv(ModelFactory ef, Role peer, MsgId<?> mid, Payload pay)
 	{
-		super(ef, peer, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
+		super(ef, peer, mid, pay);
 	}
 	
 	@Override
-	public EWrapClient toDual(Role self)
+	public ESend toDual(Role self)
 	{
-		return this.ef.newEWrapClient(self);
+		return this.mf.newESend(self, this.mid, this.payload);
 	}
 
 	@Override
-	public SWrapServer toGlobal(ModelFactory sf, Role self)
+	public SRecv toGlobal(Role self)
 	{
-		return sf.newSWrapServer(self, this.peer);
+		return this.mf.newSRecv(self, this.peer, this.mid, this.payload);
+
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 1063;
+		int hash = 947;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 	
 	@Override
-	public boolean isWrapServer()
+	public boolean isReceive()
 	{
 		return true;
 	}
@@ -60,21 +61,22 @@ public class EWrapServer extends EAction
 		{
 			return true;
 		}
-		if (!(o instanceof EWrapServer))
+		if (!(o instanceof ERecv))
 		{
 			return false;
 		}
-		return ((EWrapServer) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	public boolean canEqual(Object o)
+	@Override
+	public boolean canEquals(Object o)
 	{
-		return o instanceof EWrapServer;
+		return o instanceof ERecv;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "(??)";
+		return "?";
 	}
 }

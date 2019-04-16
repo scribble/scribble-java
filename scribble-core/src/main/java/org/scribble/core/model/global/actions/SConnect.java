@@ -19,11 +19,9 @@ import org.scribble.core.type.session.Payload;
 
 public class SConnect extends SAction
 {
-	public SConnect(Role subj, Role obj, MsgId<?> mid, Payload payload)
-	//public GConnect(Role subj, Role obj)
+	public SConnect(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		super(subj, obj, mid, payload);
-		//super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(subj, obj, mid, pay);
 	}
 	
 	@Override
@@ -51,11 +49,11 @@ public class SConnect extends SAction
 		{
 			return false;
 		}
-		return ((SConnect) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof SConnect;
 	}

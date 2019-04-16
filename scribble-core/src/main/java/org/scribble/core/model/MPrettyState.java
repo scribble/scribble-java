@@ -129,7 +129,7 @@ public abstract class MPrettyState
 			{
 				A a = as.next();
 				S succ = ss.next();
-				String msg = a.toStringWithMessageIdHack();  // HACK
+				String msg = a.toStringWithMsgIdHack();  // HACK
 				aut += "\n(" + s.id + ",\"" + msg + "\"," + succ.id + ")";
 			}
 		}

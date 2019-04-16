@@ -61,11 +61,11 @@ public class IdNode extends SimpleNameNode<IdKind>
 		{
 			return false;
 		}
-		return ((IdNode) o).canEqual(this) && super.equals(o);
+		return ((IdNode) o).canEquals(this) && super.equals(o);
 	}
 	
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof IdNode;
 	}

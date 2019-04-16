@@ -28,14 +28,14 @@ import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.EFSM;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
-import org.scribble.core.model.endpoint.actions.EAccept;
+import org.scribble.core.model.endpoint.actions.EAcc;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.model.endpoint.actions.EDisconnect;
-import org.scribble.core.model.endpoint.actions.EReceive;
-import org.scribble.core.model.endpoint.actions.ERequest;
+import org.scribble.core.model.endpoint.actions.ERecv;
+import org.scribble.core.model.endpoint.actions.EReq;
 import org.scribble.core.model.endpoint.actions.ESend;
-import org.scribble.core.model.endpoint.actions.EWrapClient;
-import org.scribble.core.model.endpoint.actions.EWrapServer;
+import org.scribble.core.model.endpoint.actions.EClientWrap;
+import org.scribble.core.model.endpoint.actions.EServerWrap;
 import org.scribble.core.type.name.Role;
 
 public class SConfig
@@ -136,7 +136,7 @@ public class SConfig
 			}*/
 			SBuffers tmp2 = 
 					a.isSend()       ? this.buffs.send(r, (ESend) a)
-				: a.isReceive()    ? this.buffs.receive(r, (EReceive) a)
+				: a.isReceive()    ? this.buffs.receive(r, (ERecv) a)
 				: a.isDisconnect() ? this.buffs.disconnect(r, (EDisconnect) a)
 				: null;
 			if (tmp2 == null)
@@ -189,9 +189,9 @@ public class SConfig
 	}
 
 	// Deadlock from non handle-able messages (reception errors)
-	public Map<Role, EReceive> getStuckMessages()
+	public Map<Role, ERecv> getStuckMessages()
 	{
-		Map<Role, EReceive> res = new HashMap<>();
+		Map<Role, ERecv> res = new HashMap<>();
 		for (Role r : this.efsms.keySet())
 		{
 			//EndpointState s = this.states.get(r);
@@ -211,7 +211,7 @@ public class SConfig
 				ESend send = this.buffs.get(r).get(peer);
 				if (send != null)
 				{
-					EReceive recv = send.toDual(peer);
+					ERecv recv = send.toDual(peer);
 					if (!s.hasFireable(recv))
 					//res.put(r, new IOError(peer));
 					res.put(r, recv);
@@ -547,7 +547,7 @@ public class SConfig
 						else if (a.isRequest())
 						{
 							// FIXME: factor out
-							ERequest c = (ERequest) a;
+							EReq c = (EReq) a;
 							//EndpointState speer = this.states.get(c.peer);
 							EFSM speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
@@ -585,7 +585,7 @@ public class SConfig
 						else if (a.isWrapClient())
 						{
 							// FIXME: factor out
-							EWrapClient wc = (EWrapClient) a;
+							EClientWrap wc = (EClientWrap) a;
 							EFSM speer = this.efsms.get(wc.peer);
 							List<EAction> peeras = speer.getAllFireable();
 							for (EAction peera : peeras)
@@ -704,7 +704,7 @@ public class SConfig
 						if (a.isAccept())
 						{
 							// FIXME: factor out
-							EAccept c = (EAccept) a;
+							EAcc c = (EAcc) a;
 							//EndpointState speer = this.states.get(c.peer);
 							EFSM speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.OUTPUT)
@@ -739,7 +739,7 @@ public class SConfig
 					{
 						if (a.isWrapServer())
 						{
-							EWrapServer ws = (EWrapServer) a;
+							EServerWrap ws = (EServerWrap) a;
 							EFSM speer = this.efsms.get(ws.peer);
 							{
 								List<EAction> peeras = speer.getAllFireable();

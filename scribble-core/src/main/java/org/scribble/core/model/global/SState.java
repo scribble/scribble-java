@@ -22,7 +22,7 @@ import org.scribble.core.model.MPrettyState;
 import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.model.endpoint.actions.EReceive;
+import org.scribble.core.model.endpoint.actions.ERecv;
 import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.kind.Global;
@@ -66,7 +66,7 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 	
 	public SStateErrors getErrors()
 	{
-		Map<Role, EReceive> stuck = this.config.getStuckMessages();
+		Map<Role, ERecv> stuck = this.config.getStuckMessages();
 		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
 		//Set<Set<Role>> waitfor = Collections.emptySet();
 		Map<Role, Set<ESend>> orphs = this.config.getOrphanMessages();

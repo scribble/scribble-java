@@ -40,7 +40,7 @@ import org.scribble.core.type.session.local.LAcc;
 import org.scribble.core.type.session.local.LChoice;
 import org.scribble.core.type.session.local.LContinue;
 import org.scribble.core.type.session.local.LDisconnect;
-import org.scribble.core.type.session.local.LRcv;
+import org.scribble.core.type.session.local.LRecv;
 import org.scribble.core.type.session.local.LRecursion;
 import org.scribble.core.type.session.local.LReq;
 import org.scribble.core.type.session.local.LSend;
@@ -110,7 +110,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		else //if (n instanceof GMessageTransfer)
 		{
 			return n.src.equals(self) ? new LSend(null, n.msg, n.dst)
-					: n.dst.equals(self)  ? new LRcv(null, n.src, n.msg)
+					: n.dst.equals(self)  ? new LRecv(null, n.src, n.msg)
 					: LSkip.SKIP;
 		}
 	}

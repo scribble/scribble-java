@@ -87,7 +87,7 @@ public class SigParamNode extends NonRoleParamNode<SigKind>
 	}
 	
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof SigParamNode;
 	}

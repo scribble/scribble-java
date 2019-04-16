@@ -251,27 +251,27 @@ public class AutGraphParser
 			case "?":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return ef.newEReceive(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
+				return ef.newERecv(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
 			}
 			case "!!":
 			{
 				//return new Connect(new Role(peer));
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return ef.newERequest(new Role(peer), getMessageIdHack(msg), payload);
+				return ef.newEReq(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "??":
 			{
 				//return new Accept(new Role(peer));
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return ef.newEAccept(new Role(peer), getMessageIdHack(msg), payload);
+				return ef.newEAcc(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "(!!)":
 			{				
-				return ef.newEWrapClient(new Role(peer));
+				return ef.newEClientWrap(new Role(peer));
 			}
 			case "(??)":
 			{				
-				return ef.newEWrapServer(new Role(peer));
+				return ef.newEServerWrap(new Role(peer));
 			}
 			case "-/-":
 			{				

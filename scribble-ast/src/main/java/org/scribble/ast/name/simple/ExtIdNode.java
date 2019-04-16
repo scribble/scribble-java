@@ -47,11 +47,11 @@ public class ExtIdNode extends IdNode  // CHECKME: e.g., toName gives Id
 		{
 			return false;
 		}
-		return ((ExtIdNode) o).canEqual(this) && super.equals(o);
+		return ((ExtIdNode) o).canEquals(this) && super.equals(o);
 	}
 	
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof ExtIdNode;
 	}

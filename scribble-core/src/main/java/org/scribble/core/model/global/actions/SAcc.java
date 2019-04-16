@@ -11,29 +11,31 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.type.name;
+package org.scribble.core.model.global.actions;
 
-import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.name.Role;
+import org.scribble.core.type.session.Payload;
 
-
-public class GProtoName extends ProtoName<Global>
+public class SAcc extends SAction
 {
-	private static final long serialVersionUID = 1L;
-
-	public GProtoName(ModuleName modname, ProtoName<Global> membname)
+	public SAcc(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		super(Global.KIND, modname, membname);
+		super(subj, obj, mid, pay);
 	}
 	
-	public GProtoName(String simpname)
+	@Override
+	public boolean isAccept()
 	{
-		super(Global.KIND, simpname);
+		return true;
 	}
 
 	@Override
-	public GProtoName getSimpleName()
+	public int hashCode()
 	{
-		return new GProtoName(getLastElement());
+		int hash = 967;
+		hash = 31 * hash + super.hashCode();
+		return hash;
 	}
 
 	@Override
@@ -43,24 +45,22 @@ public class GProtoName extends ProtoName<Global>
 		{
 			return true;
 		}
-		if (!(o instanceof GProtoName))
+		if (!(o instanceof SAcc))
 		{
 			return false;
 		}
-		GProtoName n = (GProtoName) o;
-		return n.canEquals(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
-	
+
 	public boolean canEquals(Object o)
 	{
-		return o instanceof GProtoName;
+		return o instanceof SAcc;
 	}
 
 	@Override
-	public int hashCode()
+	protected String getCommSymbol()
 	{
-		int hash = 2777;
-		hash = 31 * super.hashCode();
-		return hash;
+		//return "??";
+		return "<<-";
 	}
 }

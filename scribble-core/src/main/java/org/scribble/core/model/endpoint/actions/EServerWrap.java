@@ -11,31 +11,47 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.model.global.actions;
+package org.scribble.core.model.endpoint.actions;
 
-import org.scribble.core.type.name.MsgId;
+import org.scribble.core.model.ModelFactory;
+import org.scribble.core.model.global.actions.SServerWrap;
+import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class SReceive extends SAction
+// Wrap at the server side
+// Duplicated from Disconnect
+public class EServerWrap extends EAction
 {
-	public SReceive(Role subj, Role obj, MsgId<?> mid, Payload payload)
+	public EServerWrap(ModelFactory ef, Role peer)
 	{
-		super(subj, obj, mid, payload);
+		super(ef, peer, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
-	public boolean isReceive()
+	public EClientWrap toDual(Role self)
 	{
-		return true;
+		return this.mf.newEClientWrap(self);
 	}
 
 	@Override
+	public SServerWrap toGlobal(Role self)
+	{
+		return this.mf.newSServerWrap(self, this.peer);
+	}
+	
+	@Override
 	public int hashCode()
 	{
-		int hash = 977;
+		int hash = 1063;
 		hash = 31 * hash + super.hashCode();
 		return hash;
+	}
+	
+	@Override
+	public boolean isWrapServer()
+	{
+		return true;
 	}
 
 	@Override
@@ -45,21 +61,22 @@ public class SReceive extends SAction
 		{
 			return true;
 		}
-		if (!(o instanceof SReceive))
+		if (!(o instanceof EServerWrap))
 		{
 			return false;
 		}
-		return ((SReceive) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	public boolean canEqual(Object o)
+	@Override
+	public boolean canEquals(Object o)
 	{
-		return o instanceof SReceive;
+		return o instanceof EServerWrap;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "?";
+		return "(??)";
 	}
 }

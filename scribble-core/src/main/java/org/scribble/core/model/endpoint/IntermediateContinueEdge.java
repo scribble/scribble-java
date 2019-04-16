@@ -35,7 +35,7 @@ class IntermediateContinueEdge extends EAction
 	}
 
 	@Override
-	public SAction toGlobal(ModelFactory sf, Role self)
+	public SAction toGlobal(Role self)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}
@@ -65,11 +65,11 @@ class IntermediateContinueEdge extends EAction
 		{
 			return false;
 		}
-		return ((IntermediateContinueEdge) o).canEqual(this) && super.equals(o);
+		return ((IntermediateContinueEdge) o).canEquals(this) && super.equals(o);
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof IntermediateContinueEdge;
 	}

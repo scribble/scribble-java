@@ -22,11 +22,11 @@ public abstract class MAction<K extends ProtoKind>
 {
 	/*private static int count = 0;
 	
-	public final int id;  // Was using for trace enumeration, but breaks isAcceptable -- but need for non-det models*/
+	public final int id;  // Was using for trace enumeration, but breaks isAcceptable -- but would be better for non-det models?*/
 	
 	public final Role obj;
 	public final MsgId<?> mid;
-	public final Payload payload;  // EMPTY_PAYLOAD for MessageSigNames
+	public final Payload payload;  // Payload.EMPTY_PAYLOAD for SigName mid
 	
 	protected MAction(Role obj, MsgId<?> mid, Payload payload)
 	{
@@ -43,7 +43,8 @@ public abstract class MAction<K extends ProtoKind>
 		return this.obj + getCommSymbol() + this.mid + this.payload;
 	}
 
-	public String toStringWithMessageIdHack()
+	// Used by toAut
+	public String toStringWithMsgIdHack()
 	{
 		String m = this.mid.isSigName() ? "^" + this.mid : this.mid.toString();  // HACK
 		return this.obj + getCommSymbol() + m + this.payload;
@@ -61,31 +62,8 @@ public abstract class MAction<K extends ProtoKind>
 		return hash;
 	}
 
-	/*@Override
-	public final int hashCode()
-	{
-		int hash = 79;
-		hash = 31 * hash + this.id;
-		return hash;
-	}*/
-	
-	/*public boolean equiv(Object o)
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (!(o instanceof ModelAction))
-		{
-			return false;
-		}
-		ModelAction<?> a = (ModelAction<?>) o;  // Refactor as "compatible"
-		return a.canEqual(this) && 
-				this.obj.equals(a.obj) && this.mid.equals(a.mid) && this.payload.equals(a.payload);
-	}*/
-
 	@Override
-	public boolean equals(Object o)  // FIXME: kind
+	public boolean equals(Object o)
 	{
 		if (this == o)
 		{
@@ -95,11 +73,10 @@ public abstract class MAction<K extends ProtoKind>
 		{
 			return false;
 		}
-		MAction<?> a = (MAction<?>) o;  // Refactor as "compatible"
-		return a.canEqual(this) && 
-				this.obj.equals(a.obj) && this.mid.equals(a.mid) && this.payload.equals(a.payload);
-		//return this.id == ((ModelAction<?>) o).id;
+		MAction<?> them = (MAction<?>) o;  // Refactor as "compatible"
+		return them.canEquals(this) && this.obj.equals(them.obj)
+				&& this.mid.equals(them.mid) && this.payload.equals(them.payload);
 	}
 	
-	public abstract boolean canEqual(Object o);
+	public abstract boolean canEquals(Object o);
 }

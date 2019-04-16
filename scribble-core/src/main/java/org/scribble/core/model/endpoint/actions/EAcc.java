@@ -14,44 +14,40 @@
 package org.scribble.core.model.endpoint.actions;
 
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.global.actions.SRequest;
+import org.scribble.core.model.global.actions.SAcc;
 import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class ERequest extends EAction
+public class EAcc extends EAction
 {
-	public ERequest(ModelFactory ef, Role peer, MsgId<?> mid, Payload payload)
-	//public Connect(Role peer)
+	public EAcc(ModelFactory mf, Role peer, MsgId<?> mid, Payload pay)
 	{
-		super(ef, peer, mid, payload);
-		//super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(mf, peer, mid, pay);
 	}
 	
 	@Override
-	public EAccept toDual(Role self)
+	public EReq toDual(Role self)
 	{
-		//return new Accept(self);
-		return this.ef.newEAccept(self, this.mid, this.payload);
+		return this.mf.newEReq(self, this.mid, this.payload);
 	}
 
 	@Override
-	public SRequest toGlobal(ModelFactory sf, Role self)
+	public SAcc toGlobal(Role self)
 	{
-		//return new GConnect(self, this.peer);
-		return sf.newSConnect(self, this.peer, this.mid, this.payload);
+		return this.mf.newSAcc(self, this.peer, this.mid, this.payload);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 929;
+		int hash = 937;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 	
 	@Override
-	public boolean isRequest()
+	public boolean isAccept()
 	{
 		return true;
 	}
@@ -63,22 +59,21 @@ public class ERequest extends EAction
 		{
 			return true;
 		}
-		if (!(o instanceof ERequest))
+		if (!(o instanceof EAcc))
 		{
 			return false;
 		}
-		return ((ERequest) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
-		return o instanceof ERequest;
+		return o instanceof EAcc;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "!!";
+		return "??";
 	}
 }

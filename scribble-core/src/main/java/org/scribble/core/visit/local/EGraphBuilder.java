@@ -39,7 +39,7 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LAcc;
 import org.scribble.core.type.session.local.LContinue;
 import org.scribble.core.type.session.local.LDisconnect;
-import org.scribble.core.type.session.local.LRcv;
+import org.scribble.core.type.session.local.LRecv;
 import org.scribble.core.type.session.local.LRecursion;
 import org.scribble.core.type.session.local.LReq;
 import org.scribble.core.type.session.local.LSend;
@@ -170,22 +170,22 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	public SType<Local, LSeq> visitDirectedInteraction(DirectedInteraction<Local, LSeq> n)
 	{
 		Role peer = ((n instanceof LSend) || (n instanceof LReq)) ? n.dst
-				: ((n instanceof LRcv) || (n instanceof LAcc)) ? n.src
+				: ((n instanceof LRecv) || (n instanceof LAcc)) ? n.src
 				: null;
 		if (peer == null)
 		{
 			throw new RuntimeException("Unknown action type: " + n);
 		}
 		MsgId<?> mid = n.msg.getId();
-		Payload payload = n.msg.isSigLit()  // CHECKME: generalise? (e.g., hasPayload)
+		Payload pay = n.msg.isSigLit()  // CHECKME: generalise? (e.g., hasPayload)
 				? ((SigLit) n.msg).payload
 				: Payload.EMPTY_PAYLOAD;
 		// TODO: add toAction method to base Interaction
-		EAction a = (n instanceof LSend) ? this.util.ef.newESend(peer, mid, payload)
-				: (n instanceof LRcv)  ? this.util.ef.newEReceive(peer, mid, payload)
-				: (n instanceof LReq)  ? this.util.ef.newERequest(peer, mid, payload)
+		EAction a = (n instanceof LSend) ? this.util.ef.newESend(peer, mid, pay)
+				: (n instanceof LRecv)  ? this.util.ef.newERecv(peer, mid, pay)
+				: (n instanceof LReq)  ? this.util.ef.newEReq(peer, mid, pay)
 				: //(n instanceof LAcc)  ? 
-					this.util.ef.newEAccept(peer, mid, payload);  // Action type already checked above
+					this.util.ef.newEAcc(peer, mid, pay);  // Action type already checked above
 		this.util.addEdge(this.util.getEntry(), a, this.util.getExit());
 		return n;
 	}

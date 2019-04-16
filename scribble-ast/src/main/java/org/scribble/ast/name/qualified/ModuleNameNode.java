@@ -60,11 +60,11 @@ public class ModuleNameNode extends QualNameNode<ModuleKind>
 		{
 			return false;
 		}
-		return ((ModuleNameNode) o).canEqual(this) && super.equals(o);
+		return ((ModuleNameNode) o).canEquals(this) && super.equals(o);
 	}
 	
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof ModuleNameNode;
 	}

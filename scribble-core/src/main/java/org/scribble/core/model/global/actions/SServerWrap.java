@@ -11,43 +11,18 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.model.endpoint.actions;
+package org.scribble.core.model.global.actions;
 
-import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.global.actions.SAccept;
-import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class EAccept extends EAction
+// Wrap at the server side
+public class SServerWrap extends SAction
 {
-	public EAccept(ModelFactory ef, Role peer, MsgId<?> mid, Payload payload)
-	//public Accept(Role peer)
+	public SServerWrap(Role subj, Role obj)
 	{
-		super(ef, peer, mid, payload);
-		//super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
-	}
-	
-	@Override
-	public ERequest toDual(Role self)
-	{
-		//return new Connect(self);
-		return this.ef.newERequest(self, this.mid, this.payload);
-	}
-
-	@Override
-	public SAccept toGlobal(ModelFactory sf, Role self)
-	{
-		return sf.newSAccept(self, this.peer, this.mid, this.payload);
-		//return new GAccept(self, this.peer);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		int hash = 937;
-		hash = 31 * hash + super.hashCode();
-		return hash;
+		super(subj, obj, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
@@ -57,27 +32,36 @@ public class EAccept extends EAction
 	}
 
 	@Override
+	public int hashCode()
+	{
+		int hash = 1087;
+		hash = 31 * hash + super.hashCode();
+		return hash;
+	}
+
+	@Override
 	public boolean equals(Object o)
 	{
 		if (this == o)
 		{
 			return true;
 		}
-		if (!(o instanceof EAccept))
+		if (!(o instanceof SServerWrap))
 		{
 			return false;
 		}
-		return ((EAccept) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	public boolean canEqual(Object o)
+	@Override
+	public boolean canEquals(Object o)
 	{
-		return o instanceof EAccept;
+		return o instanceof SServerWrap;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "??";
+		return "(<<-)";
 	}
 }

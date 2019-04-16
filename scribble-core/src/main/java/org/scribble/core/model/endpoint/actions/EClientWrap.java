@@ -14,29 +14,30 @@
 package org.scribble.core.model.endpoint.actions;
 
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.global.actions.SWrapClient;
+import org.scribble.core.model.global.actions.SClientWrap;
 import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
+// Wrap at the client side
 // Duplicated from Disconnect
-public class EWrapClient extends EAction
+public class EClientWrap extends EAction
 {
-	public EWrapClient(ModelFactory ef, Role peer)
+	public EClientWrap(ModelFactory ef, Role peer)
 	{
 		super(ef, peer, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
-	public EWrapServer toDual(Role self)
+	public EServerWrap toDual(Role self)
 	{
-		return this.ef.newEWrapServer(self);
+		return this.mf.newEServerWrap(self);
 	}
 
 	@Override
-	public SWrapClient toGlobal(ModelFactory sf, Role self)
+	public SClientWrap toGlobal(Role self)
 	{
-		return sf.newSWrapClient(self, this.peer);
+		return this.mf.newSClientWrap(self, this.peer);
 	}
 	
 	@Override
@@ -60,17 +61,17 @@ public class EWrapClient extends EAction
 		{
 			return true;
 		}
-		if (!(o instanceof EWrapClient))
+		if (!(o instanceof EClientWrap))
 		{
 			return false;
 		}
-		return ((EWrapClient) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
-		return o instanceof EWrapClient;
+		return o instanceof EClientWrap;
 	}
 
 	@Override

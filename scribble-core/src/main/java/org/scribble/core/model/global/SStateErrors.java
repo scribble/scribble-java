@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.model.endpoint.actions.EReceive;
+import org.scribble.core.model.endpoint.actions.ERecv;
 import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.type.name.Role;
 
@@ -26,12 +26,12 @@ public class SStateErrors
 {
 	// FIXME: factor out explicit error classes -- for error message formatting
 	// FIXME: could also check for roles stuck on unconnected sends here (probably better, than current syntax check)
-	public final Map<Role, EReceive> stuck;      // Reception errors
+	public final Map<Role, ERecv> stuck;      // Reception errors
 	public final Set<Set<Role>> waitFor;         // Deadlock cycles
 	public final Map<Role, Set<ESend>> orphans;  // Orphan messages
 	public Map<Role, EState> unfinished;         // Unfinished roles
 
-	public SStateErrors(Map<Role, EReceive> receptionErrors, Set<Set<Role>> deadlocks, Map<Role, Set<ESend>> orphans, Map<Role, EState> unfinished)
+	public SStateErrors(Map<Role, ERecv> receptionErrors, Set<Set<Role>> deadlocks, Map<Role, Set<ESend>> orphans, Map<Role, EState> unfinished)
 	{
 		this.stuck = Collections.unmodifiableMap(receptionErrors);
 		this.waitFor = Collections.unmodifiableSet(deadlocks);

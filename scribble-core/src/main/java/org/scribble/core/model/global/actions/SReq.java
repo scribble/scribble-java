@@ -17,13 +17,11 @@ import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class SRequest extends SAction
+public class SReq extends SAction
 {
-	public SRequest(Role subj, Role obj, MsgId<?> mid, Payload payload)
-	//public GConnect(Role subj, Role obj)
+	public SReq(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		super(subj, obj, mid, payload);
-		//super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(subj, obj, mid, pay);
 	}
 	
 	@Override
@@ -47,23 +45,22 @@ public class SRequest extends SAction
 		{
 			return true;
 		}
-		if (!(o instanceof SRequest))
+		if (!(o instanceof SReq))
 		{
 			return false;
 		}
-		return ((SRequest) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
-		return o instanceof SRequest;
+		return o instanceof SReq;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		//return "!!";
 		return "->>";
 	}
 }

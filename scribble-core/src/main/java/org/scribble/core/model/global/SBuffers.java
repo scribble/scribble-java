@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.model.endpoint.actions.EAccept;
+import org.scribble.core.model.endpoint.actions.EAcc;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.model.endpoint.actions.EDisconnect;
-import org.scribble.core.model.endpoint.actions.EReceive;
-import org.scribble.core.model.endpoint.actions.ERequest;
+import org.scribble.core.model.endpoint.actions.ERecv;
+import org.scribble.core.model.endpoint.actions.EReq;
 import org.scribble.core.model.endpoint.actions.ESend;
-import org.scribble.core.model.endpoint.actions.EWrapClient;
-import org.scribble.core.model.endpoint.actions.EWrapServer;
+import org.scribble.core.model.endpoint.actions.EClientWrap;
+import org.scribble.core.model.endpoint.actions.EServerWrap;
 import org.scribble.core.type.name.Role;
 
 public class SBuffers
@@ -132,14 +132,14 @@ public class SBuffers
 		return b != null && b;
 	}
 
-	public boolean canAccept(Role self, EAccept a)
+	public boolean canAccept(Role self, EAcc a)
 	//public boolean canAccept(Role r1, Role r2)
 	{
 		return !isConnected(self, a.peer);
 		//return canConnect(r2, r1);
 	}
 
-	public boolean canConnect(Role self, ERequest c)
+	public boolean canConnect(Role self, EReq c)
 	//public boolean canConnect(Role r1, Role r2)
 	{
 		return !isConnected(self, c.peer);
@@ -151,12 +151,12 @@ public class SBuffers
 		return isConnected(self, d.peer);
 	}
 
-	public boolean canWrapClient(Role self, EWrapClient wc)
+	public boolean canWrapClient(Role self, EClientWrap wc)
 	{
 		return isConnected(self, wc.peer);
 	}
 
-	public boolean canWrapServer(Role self, EWrapServer ws)
+	public boolean canWrapServer(Role self, EServerWrap ws)
 	{
 		return isConnected(self, ws.peer);
 	}
@@ -261,7 +261,7 @@ public class SBuffers
 		List<EAction> as = curr.getAllActions();
 		for (EAction a : as)
 		{
-			res.add((EAccept) a);
+			res.add((EAcc) a);
 		}
 		return res;
 	}
@@ -274,7 +274,7 @@ public class SBuffers
 		{
 			this.connected.keySet().stream()
 				.filter(k -> tmp.containsKey(k) && tmp.get(k))
-				.forEach(k -> res.add(this.ef.newEWrapServer(k)));
+				.forEach(k -> res.add(this.ef.newEServerWrap(k)));
 		}
 		return res;
 	}
@@ -295,7 +295,7 @@ public class SBuffers
 		return tmp;
 	}*/
 
-	public SBuffers receive(Role self, EReceive a)
+	public SBuffers receive(Role self, ERecv a)
 	{
 		SBuffers copy = new SBuffers(this);
 		copy.buffs.get(self).put(a.peer, null);

@@ -13,19 +13,19 @@
  */
 package org.scribble.core.model.global.actions;
 
-import org.scribble.core.type.name.Op;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class SWrapClient extends SAction
+public class SRecv extends SAction
 {
-	public SWrapClient(Role subj, Role obj)
+	public SRecv(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		super(subj, obj, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);
+		super(subj, obj, mid, pay);
 	}
 	
 	@Override
-	public boolean isConnect()
+	public boolean isReceive()
 	{
 		return true;
 	}
@@ -33,7 +33,7 @@ public class SWrapClient extends SAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 1069;
+		int hash = 977;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -45,22 +45,21 @@ public class SWrapClient extends SAction
 		{
 			return true;
 		}
-		if (!(o instanceof SWrapClient))
+		if (!(o instanceof SRecv))
 		{
 			return false;
 		}
-		return ((SWrapClient) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
-		return o instanceof SWrapClient;
+		return o instanceof SRecv;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "(->>)";
+		return "?";
 	}
 }

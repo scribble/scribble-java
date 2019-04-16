@@ -76,7 +76,7 @@ public class LProtoNameNode extends ProtoNameNode<Local>
 	}
 	
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof LProtoNameNode;
 	}

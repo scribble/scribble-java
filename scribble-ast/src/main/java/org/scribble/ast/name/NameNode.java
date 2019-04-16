@@ -102,11 +102,11 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase
 			return false;
 		}
 		NameNode<?> them = (NameNode<?>) o;
-		return them.canEqual(this)
+		return them.canEquals(this)
 				&& getElements().equals(them.getElements());
 	}
 	
-	public abstract boolean canEqual(Object o);
+	public abstract boolean canEquals(Object o);
 	
 	@Override
 	public int hashCode()

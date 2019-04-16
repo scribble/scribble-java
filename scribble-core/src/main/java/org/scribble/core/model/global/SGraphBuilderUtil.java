@@ -146,7 +146,7 @@ public class SGraphBuilderUtil
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
 						getNextStates(core.config.mf, todo, seen, curr,
-								a.toGlobal(core.config.mf, r), curr.fire(r, a));
+								a.toGlobal(r), curr.fire(r, a));
 					}
 					else if (a.isAccept() || a.isRequest())
 					{	
@@ -157,8 +157,8 @@ public class SGraphBuilderUtil
 							as.remove(d);  // Removes one occurrence
 							//getNextStates(seen, todo, curr.sync(r, a, a.peer, d));
 							SAction g = (a.isRequest()) 
-									? a.toGlobal(core.config.mf, r)
-									: d.toGlobal(core.config.mf, a.peer);
+									? a.toGlobal(r)
+									: d.toGlobal(a.peer);
 									// Edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label)
 							getNextStates(core.config.mf, todo, seen, curr, g,
 									curr.sync(r, a, a.peer, d));
@@ -172,8 +172,8 @@ public class SGraphBuilderUtil
 						{
 							as.remove(w);  // Removes one occurrence
 							SAction g = (a.isRequest()) 
-									? a.toGlobal(core.config.mf, r)
-									: w.toGlobal(core.config.mf, a.peer);
+									? a.toGlobal(r)
+									: w.toGlobal(a.peer);
 							getNextStates(core.config.mf, todo, seen, curr, g, curr.sync(r, a, a.peer, w));
 						}
 					}

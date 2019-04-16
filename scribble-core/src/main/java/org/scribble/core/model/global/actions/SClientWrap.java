@@ -13,21 +13,20 @@
  */
 package org.scribble.core.model.global.actions;
 
-import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class SAccept extends SAction
+// Wrap at the client side
+public class SClientWrap extends SAction
 {
-	public SAccept(Role subj, Role obj, MsgId<?> mid, Payload payload)
-	//public GAccept(Role subj, Role obj)
+	public SClientWrap(Role subj, Role obj)
 	{
-		super(subj, obj, mid, payload);
-		//super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(subj, obj, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
-	public boolean isAccept()
+	public boolean isConnect()
 	{
 		return true;
 	}
@@ -35,7 +34,7 @@ public class SAccept extends SAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 967;
+		int hash = 1069;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -47,22 +46,22 @@ public class SAccept extends SAction
 		{
 			return true;
 		}
-		if (!(o instanceof SAccept))
+		if (!(o instanceof SClientWrap))
 		{
 			return false;
 		}
-		return ((SAccept) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	public boolean canEqual(Object o)
+	@Override
+	public boolean canEquals(Object o)
 	{
-		return o instanceof SAccept;
+		return o instanceof SClientWrap;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		//return "??";
-		return "<<-";
+		return "(->>)";
 	}
 }
