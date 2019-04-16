@@ -221,7 +221,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 						}*/
 						for (EState s : toRemove.keySet())
 						{
-							try
+							//try
 							{
 								//curr.removeEdge(toRemove.get(s), s);
 								for (EAction tmp : toRemove.get(s))
@@ -229,7 +229,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 									curr.removeEdge(tmp, s);
 								}
 							}
-							catch (ScribException e) { throw new RuntimeException(e); }
+							//catch (ScribException e) { throw new RuntimeException(e); }
 						}
 						//for (Entry<IOAction, EndpointState> e : clones.entrySet())
 						Iterator<EAction> icloneas = cloneas.iterator();

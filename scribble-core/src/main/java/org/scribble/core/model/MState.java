@@ -27,7 +27,6 @@ import java.util.stream.IntStream;
 
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.RuntimeScribException;
-import org.scribble.util.ScribException;
 
 public abstract class MState
 <
@@ -85,7 +84,9 @@ public abstract class MState
 		this.succs.add(s);
 	}
 	
-	protected final void removeEdge(A a, S s) throws ScribException
+	// Pre: (this, a, s) is a current edge
+	protected final void removeEdge(A a, S s)
+			//throws ScribException  // CHECKME: used? -- cf., Hack? EFSM building on bad-reachability protocols now done before actual reachability check
 	{
 		Iterator<A> ia = this.actions.iterator();
 		Iterator<S> is = this.succs.iterator();
@@ -100,10 +101,7 @@ public abstract class MState
 				return;
 			}
 		}
-		//throw new RuntimeException("No such transition to remove: " + a + "->" + s);
-		throw new ScribException(
-				"No such transition to remove: " + a + "->" + s);
-				// Hack? EFSM building on bad-reachability protocols now done before actual reachability check
+		throw new RuntimeException("No such transition: " + a + "->" + s);
 	}
 	
 	// The "deterministic" variant, cf., getAllActions
@@ -211,9 +209,10 @@ public abstract class MState
 		return terms.isEmpty() //.isPresent()
 				? null : terms.iterator().next();  // CHECKME: return empty Set instead of null?
 	}
+
 	public Set<A> getReachableActions()
 	{
-		return getReachableStates().stream().flatMap(x -> x.getActions().stream())
+		return getReachableStates().stream().flatMap(x -> x.getAllActions().stream())
 				.collect(Collectors.toSet());
 	}
 	
