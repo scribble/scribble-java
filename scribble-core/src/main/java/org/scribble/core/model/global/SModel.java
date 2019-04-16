@@ -172,7 +172,7 @@ public class SModel
 					}
 					else*/
 					{
-						for (SAction a : next.getAllActions())
+						for (SAction a : next.getActions())
 						{
 							if (a.containsRole(r))
 							{

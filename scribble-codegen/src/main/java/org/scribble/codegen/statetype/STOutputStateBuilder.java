@@ -36,7 +36,7 @@ public abstract class STOutputStateBuilder extends STStateChanBuilder
 				+ "\n"
 				+ "type " + getSTStateName(gpn, role, s) + " struct{}";*/
 		
-		for (EAction a : s.getActions())
+		for (EAction a : s.getDetActions())
 		{
 			out += "\n\n";
 			if (a instanceof ESend)  // FIXME: factor out action kind

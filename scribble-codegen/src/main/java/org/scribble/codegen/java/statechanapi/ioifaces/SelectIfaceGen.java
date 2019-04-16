@@ -31,7 +31,7 @@ public class SelectIfaceGen extends IOStateIfaceGen
 	@Override
 	public InterfaceBuilder generateType() throws ScribException
 	{
-		if (this.curr.getAllActions().stream().anyMatch((a) -> !a.isSend())) // TODO (connect/disconnect)
+		if (this.curr.getActions().stream().anyMatch((a) -> !a.isSend())) // TODO (connect/disconnect)
 		{
 			//return null;
 			throw new RuntimeException("TODO: " + this.curr);

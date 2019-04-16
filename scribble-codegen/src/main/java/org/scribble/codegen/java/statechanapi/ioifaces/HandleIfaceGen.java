@@ -78,7 +78,7 @@ public class HandleIfaceGen extends IOStateIfaceGen
 		int i = 1;
 		//for (IOAction a : getHandleInterfaceIOActionParams(this.curr))  // Branch successor state successors, not the "direct" successors
 		// Duplicated from BranchInterfaceGenerator
-		for (EAction a : this.curr.getActions().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getDetActions().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			this.ib.addParameters("__Succ" + i + " extends " + SuccessorIfaceGen.getSuccessorInterfaceName(a));
 			this.ib.addInterfaces(this.caseActions.get(a).getName() + "<__Succ" + i + ">");
@@ -119,7 +119,7 @@ public class HandleIfaceGen extends IOStateIfaceGen
 		GProtoName gpn = this.apigen.getGProtocolName();
 		//Role self = this.apigen.getSelf();
 		//Set<EAction> as = this.curr.getActions();
-		List<EAction> as = this.curr.getActions();
+		List<EAction> as = this.curr.getDetActions();
 
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
 		int i = 1; 
@@ -173,7 +173,7 @@ public class HandleIfaceGen extends IOStateIfaceGen
 		
 			//Map<IOAction, Integer> ount = new HashMap<>();
 			boolean first = true;
-			for (EAction a : succ.getActions().stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR).collect(Collectors.toList()))
+			for (EAction a : succ.getDetActions().stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
 				int offset;
 				if (!count.containsKey(a))
@@ -206,7 +206,7 @@ public class HandleIfaceGen extends IOStateIfaceGen
 	public static String getHandleInterfaceName(Role self, EState s)
 	{
 		// FIXME: factor out (CaseInterfaceGenerator, IOStateInterfaceGenerator.getIOStateInterfaceName)
-		String name = "Handle_" + self + "_" + s.getActions().stream().sorted(IOACTION_COMPARATOR)
+		String name = "Handle_" + self + "_" + s.getDetActions().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionIfaceGen.getActionString(a)).collect(Collectors.joining("__"));
 		IOStateIfaceGen.checkIOStateInterfaceNameLength(name);
 		return name;

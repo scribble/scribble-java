@@ -74,7 +74,7 @@ public class BranchSockGen extends ScribSockGen
 		//cb.addImports("java.util.concurrent.ExecutionException");
 		
 		//boolean first;
-		Role peer = this.curr.getActions().iterator().next().obj;
+		Role peer = this.curr.getDetActions().iterator().next().obj;
 
 		// Branch method
 		addBranchMethod(ROLE_PARAM, MESSAGE_VAR, OPENUM_VAR, OP, peer, next, enumClass);
@@ -85,7 +85,7 @@ public class BranchSockGen extends ScribSockGen
 			EnumBuilder eb = cb.newMemberEnum(enumClass);
 			eb.addModifiers(JavaBuilder.PUBLIC);
 			eb.addInterfaces(OPENUM_INTERFACE);
-			this.curr.getActions().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+			this.curr.getDetActions().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
 
 			addDirectBranchCallbackMethod(ROLE_PARAM, MESSAGE_VAR, OP, main, peer);  // Hack: callback apigen while i/o i/f's not supported for connect/accept/etc
 		}
@@ -105,7 +105,7 @@ public class BranchSockGen extends ScribSockGen
 	{
 		MethodBuilder mb = cb.newMethod("branch");
 		mb.setReturn(next);
-		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getActions().iterator().next().obj) + " " + ROLE_PARAM);
+		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getDetActions().iterator().next().obj) + " " + ROLE_PARAM);
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		if (!this.apigen.skipIOInterfacesGeneration)
@@ -117,7 +117,7 @@ public class BranchSockGen extends ScribSockGen
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		mb.addBodyLine(enumClass + " " + OPENUM_VAR + ";");
 		boolean first = true;
-		for (EAction a : this.curr.getActions())
+		for (EAction a : this.curr.getDetActions())
 		{
 			mb.addBodyLine(((first) ? "" : "else ") + "if (" + OP + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
 			mb.addBodyLine(1, OPENUM_VAR + " = "
@@ -146,7 +146,7 @@ public class BranchSockGen extends ScribSockGen
 		mb2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		first = true;
 		handleif += "<";
-		for (EAction a : this.curr.getActions().stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (EAction a : this.curr.getDetActions().stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (first)
 			{
@@ -250,7 +250,7 @@ public class BranchSockGen extends ScribSockGen
 		MethodBuilder mb4 = this.cb.newMethod("handle");
 		mb4.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		String tmp = HandleIfaceGen.getHandleInterfaceName(this.apigen.getSelf(), this.curr) + "<";
-		tmp += this.curr.getActions().stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR)
+		tmp += this.curr.getDetActions().stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR)
 				.map((a) -> SuccessorIfaceGen.getSuccessorInterfaceName(a)).collect(Collectors.joining(", ")) + ">";
 		mb4.addParameters(tmp + " handler");
 		mb4.setReturn(JavaBuilder.VOID);
@@ -260,7 +260,7 @@ public class BranchSockGen extends ScribSockGen
 		mb4.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
-		for (EAction a : this.curr.getActions())
+		for (EAction a : this.curr.getDetActions())
 		{
 			EState succ = this.curr.getSuccessor(a);
 			if (first)
@@ -347,7 +347,7 @@ public class BranchSockGen extends ScribSockGen
 		mb2.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
-		for (EAction a : this.curr.getActions())
+		for (EAction a : this.curr.getDetActions())
 		{
 			EState succ = this.curr.getSuccessor(a);
 			if (first)

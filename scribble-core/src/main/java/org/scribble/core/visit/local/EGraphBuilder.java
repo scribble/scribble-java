@@ -103,7 +103,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 				}
 				EState init = nestedEntry;
 				for (EAction a : (Iterable<EAction>) 
-						init.getAllActions().stream().distinct()::iterator)
+						init.getActions().stream().distinct()::iterator)
 						// Enabling actions
 				{
 					for (EState s : init.getSuccessors(a))
@@ -141,7 +141,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 		EState curr = this.util.getEntry();
 		for (EState pred : this.util.getAllPredecessors(curr))  // Does getAllSuccessors
 		{
-			for (EAction a : new LinkedList<>(pred.getAllActions()))
+			for (EAction a : new LinkedList<>(pred.getActions()))
 			{
 				// Following is because pred.getSuccessor doesn't support non-det edges
 				// FIXME: refactor actions/successor Lists in MState to list of edges?

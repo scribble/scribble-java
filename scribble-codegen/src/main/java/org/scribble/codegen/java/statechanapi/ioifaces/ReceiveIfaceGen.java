@@ -37,7 +37,7 @@ public class ReceiveIfaceGen extends IOStateIfaceGen
 	@Override
 	public InterfaceBuilder generateType() throws ScribException
 	{
-		if (this.curr.getAllActions().stream().anyMatch((a) -> !a.isReceive())) // TODO (connect/disconnect)
+		if (this.curr.getActions().stream().anyMatch((a) -> !a.isReceive())) // TODO (connect/disconnect)
 		{
 			//return null;
 			throw new RuntimeException("TODO: " + this.curr);
@@ -55,7 +55,7 @@ public class ReceiveIfaceGen extends IOStateIfaceGen
 	protected void addAsyncDiscardMethod()
 	{
 		GProtoName gpn = this.apigen.getGProtocolName();
-		EAction first = this.curr.getActions().iterator().next();
+		EAction first = this.curr.getDetActions().iterator().next();
 
 		MethodBuilder mb = this.ib.newAbstractMethod();
 		ReceiveSockGen.setAsyncDiscardHeaderWithoutReturnType(this.apigen, first, mb, InputFutureGen.getInputFutureName(this.apigen.getSocketClassName(this.curr)));

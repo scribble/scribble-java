@@ -141,7 +141,7 @@ public class CBEndpointApiGenerator3
 		Map<String, Set<Set<String>>> reg = new HashMap<>();  // e.g., Proto1_A__B__1_Int -> { Proto1_A__B__1_Int__C__2_Int__C__4_Str, ... }
 		for (EState s : (Iterable<EState>) states.stream().filter(x -> x.getStateKind() == EStateKind.OUTPUT)::iterator)
 		{
-			List<EAction> as = s.getAllActions();
+			List<EAction> as = s.getActions();
 			Set<String> set = as.stream().map(this.getCallbackSuffix).collect(Collectors.toSet());
 			for (EAction a : as)
 			{
@@ -230,7 +230,7 @@ public class CBEndpointApiGenerator3
 				String bprefix = getHandlersSelfPackage().replace('.', '/') + "/";
 				String branchName = this.stateNames.get(s.id) + "_Branch";
 
-				for (EAction a : s.getAllActions())
+				for (EAction a : s.getActions())
 				{
 					// FIXME: factor out
 					boolean isSig = main.getNonProtoDeclChildren().stream()
@@ -376,10 +376,10 @@ public class CBEndpointApiGenerator3
 					icallback.addModifiers("public");
 					icallback.setReturn(endpointName + "<D>");
 					String iface = getHandlersSelfPackage()
-							+ ((s.getAllActions().size() > 1) ? ".outputs.choices.Select" : ".outputs.OCallback")  // FIXME: factor out
+							+ ((s.getActions().size() > 1) ? ".outputs.choices.Select" : ".outputs.OCallback")  // FIXME: factor out
 							//+ endpointName
 							+ "_" + this.self
-							+ s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
+							+ s.getActions().stream().sorted(Comparator.comparing(a -> a.toString()))
 									.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 					icallback.addTypeParameters("T extends " + iface + " & org.scribble.runtime.handlers.ScribOutputEvent");
 					icallback.addParameters(getStatesSelfPackage() + "." + this.stateNames.get(s.id) + " sid",  // FIXME: factor out
@@ -408,7 +408,7 @@ public class CBEndpointApiGenerator3
 					MethodBuilder icallback = endpointClass.newMethod("icallback");
 					icallback.addModifiers("public");
 					icallback.setReturn(endpointName + "<D>");
-					String typepar = s.getAllActions().stream().map(a -> 
+					String typepar = s.getActions().stream().map(a -> 
 							  getHandlersSelfPackage() + ".inputs."
 							//+ this.proto.getSimpleName() + "_" + this.self  // i.e, endpointName
 							+ "ICallback"  // FIXME: factor out
@@ -533,11 +533,11 @@ public class CBEndpointApiGenerator3
 				? new String[] { "org.scribble.type.name.Role peer" } : new String[0];*/
 		ConstructorBuilder stateCons = stateClass.newConstructor();
 		stateCons.addModifiers("private");
-		Role peer = (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? s.getActions().iterator().next().peer : null;
+		Role peer = (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? s.getDetActions().iterator().next().peer : null;
 		stateCons.addBodyLine("super(\"" + stateName + "\""
 				+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? ", " + getRolesPackage() + "." + peer + "." + peer : "")  // FIXME: factor out
 				+ ");");
-		for (EAction a : s.getAllActions())
+		for (EAction a : s.getActions())
 		{
 			EState succ = s.getSuccessor(a);
 			stateCons.addBodyLine("this.succs.put(" + getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)  // FIXME: factor out
@@ -551,26 +551,26 @@ public class CBEndpointApiGenerator3
 		
 		if (s.getStateKind() == EStateKind.OUTPUT)  // FIXME: factor out
 		{
-			if (s.getActions().size() > 0)
+			if (s.getDetActions().size() > 0)
 			{
 				InterfaceBuilder messageIf = stateClass.newMemberInterface("Message");  // FIXME: factor out
 				messageIf.addModifiers("public", "static");
 				messageIf.addInterfaces("org.scribble.runtime.handlers.ScribOutputEvent");
 				String iface = getHandlersSelfPackage()  // FIXME: factor out with generateRegister
-						+ ((s.getAllActions().size() > 1) ? ".outputs.choices.Select" : ".outputs.OCallback")  // FIXME: factor out
+						+ ((s.getActions().size() > 1) ? ".outputs.choices.Select" : ".outputs.OCallback")  // FIXME: factor out
 						//+ endpointName
 						+ "_" + this.self
-						+ s.getAllActions().stream().sorted(Comparator.comparing(a -> a.toString()))
+						+ s.getActions().stream().sorted(Comparator.comparing(a -> a.toString()))
 								.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 				messageIf.addInterfaces(iface);
 			}
-			s.getAllActions().stream().map(a -> a.peer).distinct().forEach(r ->
+			s.getActions().stream().map(a -> a.peer).distinct().forEach(r ->
 			{
 				ClassBuilder roleClass = stateClass.newMemberClass(r.toString());
 				roleClass.addModifiers("public", "static");
 				ConstructorBuilder roleCons = roleClass.newConstructor();
 				roleCons.addModifiers("private");
-				s.getAllActions().stream().filter(a -> a.peer.equals(r)).forEach(a ->
+				s.getActions().stream().filter(a -> a.peer.equals(r)).forEach(a ->
 				{
 					String opName = SessionApiGenerator.getOpClassName(a.mid);
 					ClassBuilder opClass = roleClass.newMemberClass(opName);
@@ -680,7 +680,7 @@ public class CBEndpointApiGenerator3
 		branchAbstract += "package " + getHandlersSelfPackage() + ";\n";
 		branchAbstract += "";
 		branchAbstract += "public abstract class " + branchName + "<D> implements org.scribble.runtime.handlers.ScribBranch<D>";
-		branchAbstract += s.getAllActions().stream().map(a ->
+		branchAbstract += s.getActions().stream().map(a ->
 				", " + getHandlersSelfPackage() + ".inputs."
 				//+ endpointName
 				+ "ICallback"  // FIXME: factor out
@@ -693,7 +693,7 @@ public class CBEndpointApiGenerator3
 		branchAbstract += "@Override\n";
 		branchAbstract += "public void dispatch(D data, org.scribble.runtime.message.ScribMessage m) {\n";
 		branchAbstract += "switch (m.op.toString()) {\n";
-		for (EAction a : s.getAllActions())
+		for (EAction a : s.getActions())
 		{
 			// FIXME: factor out
 			boolean isSig = jc.getMainModule().getNonProtoDeclChildren().stream()

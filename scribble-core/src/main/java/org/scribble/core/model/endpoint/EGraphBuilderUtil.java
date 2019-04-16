@@ -417,7 +417,7 @@ public class EGraphBuilderUtil
 	// Returns List, cf. getAllSucessors/Actions
 	public List<EState> getAllPredecessors(EState s)
 	{
-		return this.states.stream().filter(x -> x.getAllSuccessors().contains(s))
+		return this.states.stream().filter(x -> x.getSuccessors().contains(s))
 				.collect(Collectors.toList());
 	}
 	
@@ -460,8 +460,8 @@ public class EGraphBuilderUtil
 			return;
 		}
 		seen.add(orig);
-		Iterator<EAction> as = orig.getAllActions().iterator();
-		Iterator<EState> ss = orig.getAllSuccessors().iterator();
+		Iterator<EAction> as = orig.getActions().iterator();
+		Iterator<EState> ss = orig.getSuccessors().iterator();
 		while (as.hasNext())
 		{
 			EAction a = as.next();

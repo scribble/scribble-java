@@ -61,7 +61,7 @@ public class OutputSockGen extends ScribSockGen
 		// Mixed sends and connects
 		boolean hasConnect = false;
 		boolean hasWrap = false;
-		for (EAction a : curr.getActions())  // (Scribble ensures all "a" are input or all are output)
+		for (EAction a : curr.getDetActions())  // (Scribble ensures all "a" are input or all are output)
 		{
 			EState succ = curr.getSuccessor(a);
 			

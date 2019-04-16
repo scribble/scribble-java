@@ -189,13 +189,13 @@ public class CBEndpointApiGenerator
 			stateClass += "\n";
 			stateClass += "public final class " + stateId + " extends " + stateKind + " {\n";
 			stateClass += "public static final " + stateId + " id = new " + stateId + "("
-					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + s.getActions().get(0).peer + "." + s.getActions().get(0).peer : "")
+					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + s.getDetActions().get(0).peer + "." + s.getDetActions().get(0).peer : "")
 					+ ");\n";
 			stateClass += "private " + stateId + "("
 					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? "org.scribble.type.name.Role peer" : "")
 					+ ") {\n";
 			stateClass += ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? "super(\"" + stateId + "\", peer);" : "super(\"" + stateId + "\");") + "\n";
-			for (EAction a : s.getAllActions())
+			for (EAction a : s.getActions())
 			{
 				stateClass += "this.succs.put(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)
 						+ ", "
@@ -218,7 +218,7 @@ public class CBEndpointApiGenerator
 				// FIXME: generate lattice -- cf. original handler i/f's (with "subtyping")
 				String messageIfName = name + 
 						//a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining());
-						s.getActions().stream().map(a -> "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining())).collect(Collectors.joining());
+						s.getDetActions().stream().map(a -> "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining())).collect(Collectors.joining());
 				String messageInterface = "";
 				messageInterface += "package " + pack + ".handlers.states." + this.self + ".messages.interfaces;\n";
 				messageInterface += "\n";
@@ -239,7 +239,7 @@ public class CBEndpointApiGenerator
 				messageAbstract += "}\n";
 				res.put(mprefix + messageAbstractName + ".java", messageAbstract);
 
-				for (EAction a : s.getAllActions())
+				for (EAction a : s.getActions())
 				{
 					/*String messageIfName = name + "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining());
 					String messageInterface = "";
@@ -361,7 +361,7 @@ public class CBEndpointApiGenerator
 				branchAbstract += "";
 				branchAbstract += "public abstract class " + branchName
 						+ "<D> implements org.scribble.runtime.handlers.ScribBranch<D>";
-				branchAbstract += s.getAllActions().stream()
+				branchAbstract += s.getActions().stream()
 						.map(a -> ", " + pack + ".handlers." + this.self + ".interfaces."
 								+ name + "__" + a.peer + "_"
 								+ SessionApiGenerator.getOpClassName(a.mid)
@@ -404,7 +404,7 @@ public class CBEndpointApiGenerator
 				branchAbstract += "@Override\n";
 				branchAbstract += "public void dispatch(D data, org.scribble.runtime.message.ScribMessage m) {\n";
 				branchAbstract += "switch (m.op.toString()) {\n";
-				for (EAction a : s.getAllActions())
+				for (EAction a : s.getActions())
 				{
 					String receiveIfName = name + "__" + a.peer + "_"
 							+ SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems
@@ -552,7 +552,7 @@ public class CBEndpointApiGenerator
 					res += "\n";
 				}*/
 				String messageIfName = name + 
-						s.getActions().stream().map(a -> "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining())).collect(Collectors.joining());
+						s.getDetActions().stream().map(a -> "__" + a.peer + "_" + SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining())).collect(Collectors.joining());
 				res += "public\n"
 						+ "<T extends " + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers.states." + this.self + ".messages.interfaces." + messageIfName + " & org.scribble.runtime.handlers.ScribOutputEvent>\n"  // FIXME: factor out
 						+ name + "<D> icallback(" + prefix + name + "_" + s.id
@@ -589,7 +589,7 @@ public class CBEndpointApiGenerator
 				res += "return icallback(sid, b);\n";
 				res += "}\n";
 				res += "\n";
-				String T = s.getAllActions().stream().map(a -> SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers." + this.self + ".interfaces." + name + "__" + a.peer + "_"
+				String T = s.getActions().stream().map(a -> SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".handlers." + this.self + ".interfaces." + name + "__" + a.peer + "_"
 						+ SessionApiGenerator.getOpClassName(a.mid) + a.payload.elems.stream().map(e -> "_" + e).collect(Collectors.joining("")) + "<D>").collect(Collectors.joining(" & "))
 						+ " & org.scribble.runtime.handlers.ScribBranch<D>";
 				res += "public " + "<T extends " + T + ">\n" 

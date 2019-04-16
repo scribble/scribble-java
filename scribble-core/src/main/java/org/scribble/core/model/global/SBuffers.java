@@ -258,7 +258,7 @@ public class SBuffers
 				return res;
 			}
 		}
-		List<EAction> as = curr.getAllActions();
+		List<EAction> as = curr.getActions();
 		for (EAction a : as)
 		{
 			res.add((EAcc) a);

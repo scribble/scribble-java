@@ -104,21 +104,20 @@ public abstract class MState
 		throw new RuntimeException("No such transition: " + a + "->" + s);
 	}
 	
-	// The "deterministic" variant, cf., getAllActions
-	public final List<A> getActions()
+	// Variant of getActions with a run-time check on determinism -- currently used by codegen utils (that have that assumption)
+	public final List<A> getDetActions()
 	{
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
 			throw new RuntimeScribException("[TODO] Non-deterministic state: "
 					+ this.actions + "  (Try -minlts if available)");
-					// This getter checks for determinism -- affects e.g. API generation  
+					// This getter checks for determinism -- mainly affects API generation  
 		}
-		//return as;
-		return getAllActions();
+		return getActions();
 	}
 
-	public final List<A> getAllActions()
+	public final List<A> getActions()
 	{
 		return Collections.unmodifiableList(this.actions);
 	}
@@ -133,21 +132,9 @@ public abstract class MState
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeException("FIXME: " + this.actions);
+			throw new RuntimeException("[FIXME] : " + this.actions);
 		}
 		return getSuccessors(a).get(0);
-	}
-	
-	public final List<S> getSuccessors()
-	{
-		Set<A> as = new HashSet<>(this.actions);
-		if (as.size() != this.actions.size())
-		{
-			throw new RuntimeScribException("[TODO] Non-deterministic state: "
-					+ this.actions + "  (Try -minlts if available)");
-					// This getter checks for determinism -- affects e.g. API generation  
-		}
-		return getAllSuccessors();
 	}
 
 	// For non-deterministic actions
@@ -159,7 +146,7 @@ public abstract class MState
 			.collect(Collectors.toList());
 	}
 
-	public final List<S> getAllSuccessors()
+	public final List<S> getSuccessors()
 	{
 		return Collections.unmodifiableList(this.succs);
 	}
@@ -185,7 +172,7 @@ public abstract class MState
 			Iterator<Entry<Integer, S>> i = todo.entrySet().iterator();
 			Entry<Integer, S> next = i.next();
 			i.remove();
-			for (S s : next.getValue().getAllSuccessors())
+			for (S s : next.getValue().getSuccessors())
 			{
 				if (!all.containsKey(s.id))
 				{	
@@ -212,7 +199,7 @@ public abstract class MState
 
 	public Set<A> getReachableActions()
 	{
-		return getReachableStates().stream().flatMap(x -> x.getAllActions().stream())
+		return getReachableStates().stream().flatMap(x -> x.getActions().stream())
 				.collect(Collectors.toSet());
 	}
 	
@@ -268,6 +255,18 @@ public abstract class MState
 
 
 	/*
+	public final List<S> getDetSuccessors()
+	{
+		Set<A> as = new HashSet<>(this.actions);
+		if (as.size() != this.actions.size())
+		{
+			throw new RuntimeScribException("[TODO] Non-deterministic state: "
+					+ this.actions + "  (Try -minlts if available)");
+					// This getter checks for determinism -- affects e.g. API generation  
+		}
+		return getSuccessors();
+	}
+
 	// TODO: make protected
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtoKind>
 			S getTerminal(S start)

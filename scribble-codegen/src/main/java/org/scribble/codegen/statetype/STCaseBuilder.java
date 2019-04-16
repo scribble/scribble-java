@@ -31,7 +31,7 @@ public abstract class STCaseBuilder extends STStateChanBuilder  // Is a distinct
 	{
 		String out = getPreamble(api, s);
 		
-		for (EAction a : s.getActions())
+		for (EAction a : s.getDetActions())
 		{
 			out += "\n\n";
 			if (a instanceof ERecv)  // FIXME: factor out action kind

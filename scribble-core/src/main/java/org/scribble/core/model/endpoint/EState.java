@@ -64,7 +64,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 
 		String res = lab + ":\n";
 		EStateKind kind = getStateKind();
-		List<EAction> as = getActions();
+		List<EAction> as = getDetActions();
 		if (kind == EStateKind.OUTPUT)
 		{
 			if (as.stream().anyMatch(a -> !a.isSend()))
@@ -164,12 +164,12 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			}
 			seen.add(curr);
 			
-			if (curr.getStateKind() == EStateKind.OUTPUT && curr.getAllActions().size() > 1)  // >1 is what makes this algorithm terminating
+			if (curr.getStateKind() == EStateKind.OUTPUT && curr.getActions().size() > 1)  // >1 is what makes this algorithm terminating
 			{
 				//if (curr.getAllTakeable().size() > 1)
 				{
-					Iterator<EAction> as = curr.getAllActions().iterator();
-					Iterator<EState> ss = curr.getAllSuccessors().iterator();
+					Iterator<EAction> as = curr.getActions().iterator();
+					Iterator<EState> ss = curr.getSuccessors().iterator();
 					//Map<IOAction, EndpointState> clones = new HashMap<>();
 					List<EAction> cloneas = new LinkedList<>();
 					List<EState> cloness = new LinkedList<>();
@@ -253,7 +253,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			}
 			else
 			{
-				todo.addAll(curr.getAllSuccessors());
+				todo.addAll(curr.getSuccessors());
 			}
 		}
 
@@ -273,8 +273,8 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		}
 		for (EState s : all)
 		{
-			Iterator<EAction> as = s.getAllActions().iterator();
-			Iterator<EState> ss = s.getAllSuccessors().iterator();
+			Iterator<EAction> as = s.getActions().iterator();
+			Iterator<EState> ss = s.getSuccessors().iterator();
 			EState clone = map.get(s.id);
 			while (as.hasNext())
 			{
@@ -311,8 +311,8 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		}
 		for (EState s : all)
 		{
-			Iterator<EAction> as = s.getAllActions().iterator();
-			Iterator<EState> ss = s.getAllSuccessors().iterator();
+			Iterator<EAction> as = s.getActions().iterator();
+			Iterator<EState> ss = s.getSuccessors().iterator();
 			EState clone = map.get(s.id);
 			while (as.hasNext())
 			{
@@ -332,12 +332,12 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction
 	public boolean isConnectOrWrapClientOnly()
 	{
-		return getStateKind() == EStateKind.OUTPUT && getAllActions().stream().allMatch((a) -> a.isRequest() || a.isWrapClient());
+		return getStateKind() == EStateKind.OUTPUT && getActions().stream().allMatch((a) -> a.isRequest() || a.isWrapClient());
 	}
 	
 	public EStateKind getStateKind()
 	{
-		List<EAction> as = this.getAllActions();
+		List<EAction> as = this.getActions();
 		if (as.size() == 0)
 		{
 			return EStateKind.TERMINAL;

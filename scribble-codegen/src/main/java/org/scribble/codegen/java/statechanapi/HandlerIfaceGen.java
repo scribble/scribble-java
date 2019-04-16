@@ -52,7 +52,7 @@ public class HandlerIfaceGen extends AuxStateChanTypeGen
 		ib.setName(getHandlerInterfaceName(this.parent.getName()));
 		ib.addModifiers(InterfaceBuilder.PUBLIC);
 
-		for (EAction a : this.curr.getActions())  // Doesn't need to be sorted
+		for (EAction a : this.curr.getDetActions())  // Doesn't need to be sorted
 		{
 			EState succ = this.curr.getSuccessor(a);
 			String nextClass = this.apigen.getSocketClassName(succ);

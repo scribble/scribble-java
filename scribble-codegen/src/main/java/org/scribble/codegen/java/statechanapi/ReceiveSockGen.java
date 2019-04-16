@@ -54,7 +54,7 @@ public class ReceiveSockGen extends ScribSockGen
 	@Override
 	protected void addMethods() throws ScribException
 	{
-		EAction a = curr.getActions().iterator().next();
+		EAction a = curr.getDetActions().iterator().next();
 		//String nextClass = this.apigen.getSocketClassName(curr.accept(a));
 		EState succ = curr.getSuccessor(a);
 		ClassBuilder futureClass = new InputFutureGen(this.apigen, this.cb, a).generateType();  // Wraps all payload elements as fields (set by future completion)

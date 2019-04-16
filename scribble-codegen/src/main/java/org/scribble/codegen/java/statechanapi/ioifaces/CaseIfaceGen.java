@@ -78,7 +78,7 @@ public class CaseIfaceGen extends IOStateIfaceGen
 	{
 		GProtoName gpn = this.apigen.getGProtocolName();
 		//Set<EAction> as = this.curr.getActions();
-		List<EAction> as = this.curr.getActions();
+		List<EAction> as = this.curr.getDetActions();
 
 		int i = 1;
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
@@ -105,7 +105,7 @@ public class CaseIfaceGen extends IOStateIfaceGen
 	protected static String getCasesInterfaceName(Role self, EState s)
 	{
 		//return "Case_" + braif.substring("Branch_".length(), braif.length());
-		return "Case_" + self + "_" + s.getActions().stream().sorted(IOACTION_COMPARATOR)
+		return "Case_" + self + "_" + s.getDetActions().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionIfaceGen.getActionString(a)).collect(Collectors.joining("__"));
 	}
 }

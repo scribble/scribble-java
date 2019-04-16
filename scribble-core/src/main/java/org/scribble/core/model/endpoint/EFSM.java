@@ -63,7 +63,7 @@ public class EFSM
 
 	public List<EAction> getAllFireable()
 	{
-		return this.curr.getAllActions();
+		return this.curr.getActions();
 	}
 	
 	public boolean hasFireable(EAction a)
