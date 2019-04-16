@@ -13,16 +13,12 @@
  */
 package org.scribble.del;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.AuxMod;
 import org.scribble.ast.DataDecl;
+import org.scribble.ast.DataParamDecl;
 import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ImportModule;
-import org.scribble.ast.SigDecl;
-import org.scribble.ast.SigLitNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonRoleArg;
@@ -34,10 +30,10 @@ import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
-import org.scribble.ast.ScribNode;
 import org.scribble.ast.ScribNodeBase;
+import org.scribble.ast.SigDecl;
+import org.scribble.ast.SigLitNode;
 import org.scribble.ast.SigParamDecl;
-import org.scribble.ast.DataParamDecl;
 import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
@@ -54,27 +50,16 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.qualified.LProtoNameNode;
-import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.ast.name.simple.DataParamNode;
-import org.scribble.del.DefaultDel;
-import org.scribble.del.DelDecorator;
-import org.scribble.del.ImportModuleDel;
-import org.scribble.del.ModuleDel;
-import org.scribble.del.NonRoleArgListDel;
-import org.scribble.del.NonRoleParamDeclDel;
-import org.scribble.del.NonRoleParamDeclListDel;
-import org.scribble.del.RoleArgListDel;
-import org.scribble.del.RoleDeclDel;
-import org.scribble.del.RoleDeclListDel;
-import org.scribble.del.ScribDel;
 import org.scribble.del.global.GChoiceDel;
 import org.scribble.del.global.GConnectDel;
 import org.scribble.del.global.GContinueDel;
@@ -96,42 +81,11 @@ import org.scribble.del.name.simple.RoleNodeDel;
 
 //CHECKME: refactor decoration methods into AST interface, to ensure they are implemented and called?
 //CHECKME: to what extent are del's still needed?
-public class DelDecoratorImpl implements DelDecorator
+public class DelFactoryImpl implements DelFactory
 {
-	public DelDecoratorImpl()
+	public DelFactoryImpl()
 	{
 		
-	}
-	
-	// Visitor enter/leave framework uses dels -- DelDecorator is a "protovisitor" (akin to parsing)
-	public void decorate(ScribNode n)
-	{
-		decorateNode(n);
-		decorateChildren(n);
-	}
-
-	protected void decorateNode(ScribNode n)
-	{
-		Class<DelDecorator> ddec = DelDecorator.class;
-		try
-		{
-			String cname = n.getClass().getName();
-			String mname = cname.substring(cname.lastIndexOf('.')+1, cname.length());
-			Class<?> param = Class.forName(cname);
-			Method m = ddec.getMethod(mname, param);
-			m.invoke(this, n);
-		}
-		catch (NoSuchMethodException | SecurityException | ClassNotFoundException
-				| IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected void decorateChildren(ScribNode n)
-	{
-		n.getChildren().stream().forEach(x -> decorate(x));
 	}
 
 	protected ScribDel createDefaultDelegate()
@@ -440,7 +394,6 @@ public class DelDecoratorImpl implements DelDecorator
 	{
 		setDel(n, new GRecursionDel());
 	}
-	
 }
 
 	

@@ -37,10 +37,8 @@ public abstract class ModuleContextVisitor extends AstVisitor
 			throws ScribException
 	{
 		super.enter(child);
-		if (child instanceof Module)  // Factor out?
+		if (child instanceof Module)  // Factor out?  (e.g., Module?)
 		{
-			/*ModuleDel del = (ModuleDel) ((Module) child).del();
-			setModuleContext(del.getModuleContext());*/
 			ModuleName fullname = ((Module) child).getFullModuleName();
 			setModuleContext(this.job.getContext().getModuleContext(fullname));
 		}

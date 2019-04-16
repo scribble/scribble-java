@@ -24,8 +24,10 @@ import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
+import org.scribble.visit.DelDecorator;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.NameDisambiguator;
 
@@ -41,18 +43,19 @@ public class Job
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	public Job(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
-			Map<ModuleName, Module> parsed, AstFactory af) throws ScribException
+			Map<ModuleName, Module> parsed, AstFactory af, DelFactory df)
+			throws ScribException
 	{
 		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
-		this.config = newJobConfig(mainFullname, args, af);
+		this.config = newJobConfig(mainFullname, args, af, df);
 		this.context = newJobContext(this, parsed);  // Single instance per Job, should not be shared between Jobs
 	}
 
 	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
 	protected JobConfig newJobConfig(ModuleName mainFullname,
-			Map<CoreArgs, Boolean> args, AstFactory af)
+			Map<CoreArgs, Boolean> args, AstFactory af, DelFactory df)
 	{
-		return new JobConfig(mainFullname, args, af);
+		return new JobConfig(mainFullname, args, af, df);
 	}
 
 	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
@@ -91,6 +94,7 @@ public class Job
 		// Disamb is a "leftover" aspect of parsing -- so not in core
 		// N.B. disamb is mainly w.r.t. ambignames -- e.g., doesn't fully qualify names (currently mainly done by imed translation)
 		// CHECKME: disamb also currently does checks like do-arg kind and arity -- refactor into core? -- also does, e.g., distinct roledecls, protodecls, etc.
+		runVisitorPassOnAllModules(new DelDecorator(this, this.config.df));  // Includes validating names used in subprotocol calls..
 		runVisitorPassOnAllModules(new NameDisambiguator(this));  // Includes validating names used in subprotocol calls..
 	}
 	

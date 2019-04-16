@@ -19,6 +19,7 @@ import java.util.Map;
 import org.scribble.ast.AstFactory;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.del.DelFactory;
 
 // The "static" (constant) info for Lang -- cf. LangContext "dynamic" state
 public class JobConfig
@@ -29,13 +30,15 @@ public class JobConfig
 			// CHECKME: verbose/debug printing parameter?
 
 	public final AstFactory af;
+	public final DelFactory df;
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
 	public JobConfig(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
-			AstFactory af)
+			AstFactory af, DelFactory df)
 	{
 		this.main = mainFullname;
 		this.args = Collections.unmodifiableMap(args);
 		this.af = af;
+		this.df = df;
 	}
 }
