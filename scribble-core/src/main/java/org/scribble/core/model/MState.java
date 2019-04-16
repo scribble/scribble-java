@@ -48,7 +48,7 @@ public abstract class MState
 	protected final List<A> actions;
 	protected final List<S> succs;
 	
-	//Pair ?
+	//Pair ?  rename getAll...
 	
 	public MState(Set<L> labs)  // Immutable singleton node
 	{

@@ -63,13 +63,14 @@ public class Job
 	}
 
 	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
-	protected GTypeTranslator newTranslator(ModuleName rootFullname)
+	// CHECKME: STypeTranslator, for future locals
+	protected GTypeTranslator newGTypeTranslator(ModuleName rootFullname)
 	{
 		return new GTypeTranslator(this, rootFullname);
 	}
 	
 	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
-	protected Core newJob(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
+	protected Core newCore(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
 			//Map<ModuleName, ModuleContext> modcs, 
 			Set<GProtocol> imeds)
 	{
@@ -105,7 +106,7 @@ public class Job
 			Set<GProtocol> imeds = new HashSet<>();
 			for (ModuleName fullname : parsed.keySet())
 			{
-				GTypeTranslator t = newTranslator(fullname);
+				GTypeTranslator t = newGTypeTranslator(fullname);
 				Module m = parsed.get(fullname);
 				for (GProtoDecl ast : m.getGProtoDeclChildren())
 				{
@@ -117,7 +118,7 @@ public class Job
 									+ "\n" + imed);
 				}
 			}
-			this.core = newJob(this.config.main, this.config.args,
+			this.core = newCore(this.config.main, this.config.args,
 					//this.context.getModuleContexts(), 
 					imeds);
 		}

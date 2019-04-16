@@ -150,7 +150,9 @@ public class AstFactoryImpl implements AstFactory
 		return new DefaultDel();
 	}
 	
-	protected static void setDel(ScribNodeBase n, ScribDel del)
+	// Mutating setter
+	// public for DelDecoratorImpl
+	public static void setDel(ScribNodeBase n, ScribDel del)
 	{
 		//ScribNodeBase.del(n, del);  // Defensive setter -- unnecessary ?
 		n.setDel(del);  // Mutating setter

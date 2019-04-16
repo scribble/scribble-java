@@ -20,12 +20,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.del.DelDecorator;
+import org.scribble.del.DelDecoratorImpl;
 import org.scribble.job.Job;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.loader.ScribModuleLoader;
@@ -83,7 +86,7 @@ public class Main
 	private Main(Pair<ResourceLocator, String> hack, Path mainpath,
 			Map<CoreArgs, Boolean> args) throws ScribException, ScribParserException
 	{
-		this.antlr = new ScribAntlrWrapper();
+		this.antlr = newAntlr(newDelDecorator());
 
 		// Set this.loader and load main
 		Pair<Resource, Module> main;
@@ -113,16 +116,25 @@ public class Main
 	}
 	
 	// A Scribble extension should override newAntlr/Job as appropriate
-	protected ScribAntlrWrapper newAntlr()
+	protected ScribAntlrWrapper newAntlr(DelDecorator df)
 	{
-		return new ScribAntlrWrapper();
+		return new ScribAntlrWrapper(df);
+	}
+	
+	protected AstFactory newAstFactory(ScribAntlrWrapper antlr)
+	{
+		return new AstFactoryImpl(antlr);
+	}
+	
+	protected DelDecorator newDelDecorator()
+	{
+		return new DelDecoratorImpl();
 	}
 
 	// A Scribble extension should override newAntlr/Job as appropriate
 	protected Job newJob(Map<ModuleName, Module> parsed,
-			Map<CoreArgs, Boolean> args, ModuleName mainFullname) throws ScribException
+			Map<CoreArgs, Boolean> args, ModuleName mainFullname, AstFactory af) throws ScribException
 	{
-		AstFactoryImpl af = new AstFactoryImpl(this.antlr);  
 				// Was previously made inside Job, but AstFactoryImpl now lives in scribble-parser, to access ScribbleParser constants
 		return new Job(mainFullname, args, parsed, af);
 	}
@@ -155,10 +167,11 @@ public class Main
 		}
 	}
 	
-	// For a Scribble extension, override newJob(parsed, args, mainFullname)
+	// For a Scribble extension, override newJob(parsed, args, mainFullname, AstFactory)
 	public final Job newJob() throws ScribException
 	{
-		return newJob(getParsedModules(), this.args, this.main);
+		AstFactory af = newAstFactory(this.antlr);  
+		return newJob(getParsedModules(), this.args, this.main, af);
 	}
 	
 	public Map<ModuleName, Module> getParsedModules()

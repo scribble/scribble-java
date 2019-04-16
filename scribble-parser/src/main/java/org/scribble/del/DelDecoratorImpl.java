@@ -11,11 +11,12 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast;
+package org.scribble.del;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.AuxMod;
 import org.scribble.ast.DataDecl;
 import org.scribble.ast.ExplicitMod;
@@ -138,17 +139,10 @@ public class DelDecoratorImpl implements DelDecorator
 		return new DefaultDel();
 	}
 	
-	// Non-defensive
-	//protected static <T extends ScribNodeBase> T setDel(T n, ScribDel del)
+	// Mutating setter
 	protected static void setDel(ScribNodeBase n, ScribDel del)
 	{
-		n.setDel(del);
-		//return n;
-		/*// Defensive helper with cast check
-		ScribNodeBase copy = ((ScribNodeBase) n).clone();  // Need deep clone, since children have parent field
-		//copy.del = del;
-		copy.setDel(del);
-		return ScribUtil.castNodeByClass(n, copy);*/
+		AstFactoryImpl.setDel(n, del);
 	}
 
 	@Override

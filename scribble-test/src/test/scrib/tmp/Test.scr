@@ -78,7 +78,7 @@ module tmp.Test;
 
 // For model build/check refactoring:
 
-HERE refactor model states, remove intermedrecedge
+//HERE refactor model states, remove intermedrecedge
 
 		// Outstanding:
 			//...disallow/check for reserved __ -- do in gtype translation?
