@@ -176,7 +176,7 @@ public abstract class MState
 			throw new RuntimeException("Shouldn't get in here: " + terms);
 		}
 		return terms.isEmpty() //.isPresent()
-				? null : terms.iterator().next();  // CHECKME: return empty Set instead of null?
+				? null : terms.iterator().next();  // CHECKME: return empty Set instead of null?  null used by EState.toGraph
 	}
 
 	// CHECKME: add "caching" versions to, e.g., Graphs?

@@ -48,7 +48,7 @@ public abstract class MPrettyState
 		b.append("compound = true;\n");
 		b.append(toStateDot() + "\n");
 		Set<S> ss = getReachableStates();
-		ss.remove(this);  // Avoids generic cast of alternative, ss.add((S) this)
+		ss.remove(this);  // Avoids generic cast of alternative, ss.add((S) this) -- or else do Set<MPrettyState<L, A, S, K>>
 		ss.forEach(x -> b.append(x.toStateDot() + "\n"));
 		b.append("}");
 		return b.toString();
@@ -114,29 +114,23 @@ public abstract class MPrettyState
 	{
 		Set<MPrettyState<L, A, S, K>> all = new HashSet<>();
 		all.add(this);
-		all.addAll(getReachableStates());
+		all.addAll(getReachableStates());  // The only way to avoid generic cast?  not ideal though
 		String aut = "";
 		int edges = 0;
-		Set<Integer> seen = new HashSet<>();
 		for (MPrettyState<L, A, S, K> s : all)
 		{
-			if (seen.contains(s.id))
-			{
-				continue;
-			}
-			seen.add(s.id);
 			Iterator<A> as = s.getActions().iterator();
-			Iterator<S> ss = s.getSuccs().iterator();
+			Iterator<S> succs = s.getSuccs().iterator();
 			for (; as.hasNext(); edges++)
 			{
 				A a = as.next();
-				S succ = ss.next();
+				S succ = succs.next();
 				String msg = a.toStringWithMsgIdHack();  // HACK
 				aut += "\n(" + s.id + ",\"" + msg + "\"," + succ.id + ")";
 			}
 		}
-		return "des (" + this.id + "," + edges + "," + all.size() + ")" + aut
-				+ "\n";
+		return "des (" + this.id + "," + edges + "," + all.size() + ")"
+				+ aut + "\n";
 	}
 
 	@Override
