@@ -38,6 +38,7 @@ import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDelegPayElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
@@ -47,6 +48,7 @@ import org.scribble.ast.global.GProtoDecl;
 import org.scribble.ast.global.GProtoDef;
 import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.qualified.LProtoNameNode;
@@ -63,16 +65,18 @@ import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.del.global.GChoiceDel;
 import org.scribble.del.global.GConnectDel;
 import org.scribble.del.global.GContinueDel;
+import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.del.global.GDisconnectDel;
 import org.scribble.del.global.GDoDel;
 import org.scribble.del.global.GInteractionSeqDel;
 import org.scribble.del.global.GMessageTransferDel;
-import org.scribble.del.global.GProtocolBlockDel;
-import org.scribble.del.global.GProtocolDeclDel;
-import org.scribble.del.global.GProtocolDefDel;
+import org.scribble.del.global.GProtoBlockDel;
+import org.scribble.del.global.GProtoDeclDel;
+import org.scribble.del.global.GProtoDefDel;
 import org.scribble.del.global.GRecursionDel;
-import org.scribble.del.name.qualified.DataTypeNodeDel;
-import org.scribble.del.name.qualified.MessageSigNameNodeDel;
+import org.scribble.del.global.GWrapDel;
+import org.scribble.del.name.qualified.DataNameNodeDel;
+import org.scribble.del.name.qualified.SigNameNodeDel;
 import org.scribble.del.name.simple.AmbigNameNodeDel;
 import org.scribble.del.name.simple.NonRoleParamNodeDel;
 import org.scribble.del.name.simple.RecVarNodeDel;
@@ -88,7 +92,7 @@ public class DelFactoryImpl implements DelFactory
 		
 	}
 
-	protected ScribDel createDefaultDelegate()
+	protected ScribDel createDefaultDel()
 	{
 		return new DefaultDel();
 	}
@@ -102,13 +106,13 @@ public class DelFactoryImpl implements DelFactory
 	@Override
 	public void IdNode(IdNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());  // Necessary?
 	}
 
 	@Override
 	public void ExtIdNode(ExtIdNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());  // Necessary?
 	}
 
 	@Override
@@ -126,7 +130,7 @@ public class DelFactoryImpl implements DelFactory
 	@Override
 	public void OpNode(OpNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
@@ -150,31 +154,31 @@ public class DelFactoryImpl implements DelFactory
 	@Override
 	public void DataNameNode(DataNameNode n)
 	{
-		setDel(n, new DataTypeNodeDel());
+		setDel(n, new DataNameNodeDel());
 	}
 
 	@Override
 	public void GProtoNameNode(GProtoNameNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void LProtoNameNode(LProtoNameNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void ModuleNameNode(ModuleNameNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void SigNameNode(SigNameNode n)
 	{
-		setDel(n, new MessageSigNameNodeDel());
+		setDel(n, new SigNameNodeDel());
 	}
 	
 	@Override
@@ -186,7 +190,7 @@ public class DelFactoryImpl implements DelFactory
 	@Override
 	public void ModuleDecl(ModuleDecl n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
@@ -198,43 +202,43 @@ public class DelFactoryImpl implements DelFactory
 	@Override
 	public void DataDecl(DataDecl n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 	
 	@Override
 	public void SigDecl(SigDecl n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void GProtoDecl(GProtoDecl n)
 	{
-		setDel(n, new GProtocolDeclDel());
+		setDel(n, new GProtoDeclDel());
 	}
 
 	@Override
 	public void ProtoModList(ProtoModList n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void AuxMod(AuxMod n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void ExplicitMod(ExplicitMod n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void GProtoHeader(GProtoHeader n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
@@ -270,13 +274,13 @@ public class DelFactoryImpl implements DelFactory
 	@Override
 	public void GProtoDef(GProtoDef n)
 	{
-		setDel(n, new GProtocolDefDel());
+		setDel(n, new GProtoDefDel());
 	}
 
 	@Override
 	public void GProtoBlock(GProtoBlock n)
 	{
-		setDel(n, new GProtocolBlockDel());
+		setDel(n, new GProtoBlockDel());
 	}
 
 	@Override
@@ -288,32 +292,30 @@ public class DelFactoryImpl implements DelFactory
 	@Override
 	public void SigLitNode(SigLitNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void PayElemList(PayElemList n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 		//setDel(pay, new PayloadElemListDel());
 	}
 
 	@Override
 	public void UnaryPayElem(UnaryPayElem<?> n)
 	{
-		setDel(n, createDefaultDelegate());
-	}
-
-	/*@Override
-	public GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
-	{
-		GDelegationElem de = new GDelegationElem(source, proto, role);
-		//de = del(de, createDefaultDelegate());
-		de = setDel(de, new GDelegationElemDel());  // FIXME: GDelegationElemDel
-		return de;
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
+	public void GDelegPayElem(GDelegPayElem n)
+	{
+		//setDel(n, createDefaultDelegate());
+		setDel(n, new GDelegationElemDel());
+	}
+
+	/*@Override
 	public LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode proto)
 	{
 		LDelegationElem de = new LDelegationElem(source, proto);
@@ -339,13 +341,11 @@ public class DelFactoryImpl implements DelFactory
 		setDel(n, new GMessageTransferDel());
 	}
 
-	/*@Override
-	public GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest)
+	@Override
+	public void GWrap(GWrap n)
 	{
-		GWrap gw = new GWrap(source, UnitMessageSigNode(), src, dest);
-		gw = setDel(gw, new GWrapDel());
-		return gw;
-	}*/
+		setDel(n, new GWrapDel());
+	}
 
 	@Override
 	public void GContinue(GContinue n)
@@ -368,7 +368,7 @@ public class DelFactoryImpl implements DelFactory
 	@Override
 	public void RoleArg(RoleArg n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
@@ -380,7 +380,7 @@ public class DelFactoryImpl implements DelFactory
 	@Override
 	public void NonRoleArg(NonRoleArg n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override

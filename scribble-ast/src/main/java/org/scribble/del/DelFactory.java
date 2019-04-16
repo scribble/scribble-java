@@ -36,6 +36,7 @@ import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDelegPayElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
@@ -45,6 +46,7 @@ import org.scribble.ast.global.GProtoDecl;
 import org.scribble.ast.global.GProtoDef;
 import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.qualified.LProtoNameNode;
@@ -110,13 +112,13 @@ public interface DelFactory
 	void SigLitNode(SigLitNode n);
 	void PayElemList(PayElemList n);
 	void UnaryPayElem(UnaryPayElem<?> n);
-	/*GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
-	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);*/
+	void GDelegPayElem(GDelegPayElem n);
+	//void LDelegationElem(CommonTree source, LProtocolNameNode name);
 
 	void GConnect(GConnect n);
 	void GDisconnect(GDisconnect n);
 	void GMsgTransfer(GMsgTransfer n);
-	/*GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);*/
+	void GWrap(GWrap n);
 
 	void GContinue(GContinue n);
 	void GDo(GDo n);

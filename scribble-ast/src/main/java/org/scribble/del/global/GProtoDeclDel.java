@@ -31,9 +31,9 @@ import org.scribble.del.ProtocolDeclDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
-public class GProtocolDeclDel extends ProtocolDeclDel<Global> implements GDel
+public class GProtoDeclDel extends ProtocolDeclDel<Global> implements GDel
 {
-	public GProtocolDeclDel()
+	public GProtoDeclDel()
 	{
 
 	}

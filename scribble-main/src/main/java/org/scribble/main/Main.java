@@ -121,9 +121,9 @@ public class Main
 		return new ScribAntlrWrapper();
 	}
 	
-	protected AstFactory newAstFactory(ScribAntlrWrapper antlr)
+	protected AstFactory newAstFactory(ScribAntlrWrapper antlr, DelFactory df)
 	{
-		return new AstFactoryImpl(antlr);
+		return new AstFactoryImpl(antlr, df);
 	}
 	
 	protected DelFactory newDelFactory()
@@ -171,8 +171,8 @@ public class Main
 	// For a Scribble extension, override newJob(parsed, args, mainFullname, AstFactory)
 	public final Job newJob() throws ScribException
 	{
-		AstFactory af = newAstFactory(this.antlr);  
 		DelFactory df = newDelFactory();  
+		AstFactory af = newAstFactory(this.antlr, df);  
 		return newJob(getParsedModules(), this.args, this.main, af, df);
 	}
 	
