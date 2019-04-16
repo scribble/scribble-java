@@ -50,6 +50,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	}
 
 	// Fully clones the reachable graph (i.e. the "general" graph -- cf., EGraph, the specific Scribble concept of an endpoint protocol graph)
+	// N.B. cloning means the states, actions are immutable
 	protected EState clone(ModelFactory mf)
 	{
 		Map<Integer, EState> clones = new HashMap<>();  // Original s.id -> clone
@@ -82,7 +83,8 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	// i.e., this-a->succ ("a" is possibly non-det)
 	// Returns the clone of the subgraph rooted at succ, with all non- "this-a->succ" actions pruned from the clone of "this" state
 	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
-	private EState unfairClone(ModelFactory mf, EState term, EAction a, EState succ) // Need succ param for non-det
+	// N.B. cloning means the states, actions are immutable
+	private EState unfairCloneSubgraph(ModelFactory mf, EState term, EAction a, EState succ) // Need succ param for non-det
 	{
 		Map<Integer, EState> clones = new HashMap<>();  // Original s.id -> clone
 		Function<EState, EState> getClone = x ->
@@ -109,7 +111,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			Iterator<EState> succs = s.getSuccs().iterator();
 			EState clone = getClone.apply(s);
 			boolean done = false;  
-					// Used to add *at most* one edge, out of potentially multiple non-det a, from this-a->succ
+					// Restricts adding of *at most* one "this-a->succ" edge out of potentially multiple non-det "a"
 					// i.e., unfair expansion prunes non-det "a" ("determinizes" entry) from "this" into the cloned subgraph
 					// Cf. MState.addEdge(A, S), previously implicitly pruned all non-det "this-a->s" for the same "s"
 			while (as.hasNext())
@@ -145,18 +147,19 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles*/
 	public EState unfairTransform(ModelFactory mf)
 	{
-		EState init = clone(mf);
+		EState init = clone(mf);  // All state refs from here on are clones
 		EState term = init.getTerminal();
 		Set<EState> seen = new HashSet<>();
-		Set<EState> todo = new LinkedHashSet<>();
+		Set<EState> todo = new LinkedHashSet<>();  // Linked unnecessary, but to follow the iteration pattern
 		todo.add(init);
 		while (!todo.isEmpty())
 		{
 			Iterator<EState> i = todo.iterator();
 			EState curr = i.next();
 			i.remove();
-
-			if (seen.contains(curr))
+			if (seen.contains(curr))  
+					// Convenient to check here (even though may get curr multiple times) to avoid doing the check before every todo.add
+					// N.B. todo is also aliased from expandUnfairCases
 			{
 				continue;
 			}
@@ -172,57 +175,61 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 				todo.addAll(curr.getSuccs());
 			}
 		}
-
 		return init;
 	}
 
+	// N.B. todo alias from unfairTransform -- refactor as return? (slower)
+	// Pre: curr.getStateKind() == EStateKind.OUTPUT && curr.getActions().size() > 1
+	// All involved states are already clones
 	private void expandUnfairCases(ModelFactory mf, EState term, Set<EState> todo,
 			EState curr)
 	{
 		Iterator<EAction> as = curr.getActions().iterator();
 		Iterator<EState> succs = curr.getSuccs().iterator();
-		List<EAction> cloneas = new LinkedList<>();
-		List<EState> cloness = new LinkedList<>();
-		Map<EState, List<EAction>> toRemove = new HashMap<>();  // List needed for multiple edges to remove to the same state: e.g. mu X.(A->B:1 + A->B:2).X
+		List<EAction> aclones = new LinkedList<>();  // Actions involved in clones (not actually cloned themselves, immutable)
+		List<EState> succClones = new LinkedList<>();
+		Map<EState, List<EAction>> toRemove = new HashMap<>();  // Original succ -> actions "a" where "curr-a->succ"
+				// List needed to handle removing multiple edges to the same state: e.g. mu X.(A->B:1 + A->B:2).X
 
 		while (as.hasNext())
 		{
 			EAction a = as.next();
 			EState succ = succs.next();
-			if (!succ.canReach(curr))
+			if (!succ.canReach(curr))  // Do unfairCloneSubgraph for each (potentially) "recursive" action
 			{
 				todo.add(succ);
 				continue;
 			}
-			EState clone = curr.unfairClone(mf, term, a, succ);  // succ is a successor of curr
-			cloneas.add(a);
-			cloness.add(clone);
+			EState succClone = curr.unfairCloneSubgraph(mf, term, a, succ);  // succ is a successor of curr
+			aclones.add(a);
+			succClones.add(succClone);
 			List<EAction> tmp = toRemove.get(succ);
 			if (tmp == null)
 			{
 				tmp = new LinkedList<>();
 				toRemove.put(succ, tmp);
 			}
-			tmp.add(a);
+			tmp.add(a);  // To replace original edge with new edge into unfair-cloned subgraph
 		}
 
-		if (!cloneas.isEmpty())  // Redundant, but more clear
+		if (!aclones.isEmpty())  // Redundant (toRemove would also be empty), but more clear
 		{
 			for (EState succ : toRemove.keySet())
 			{
 				for (EAction a1 : toRemove.get(succ))
 				{
-					curr.removeEdge(a1, succ);
+					curr.removeEdge(a1, succ);  // First, remove original edge to original succ
 				}
 			}
-			Iterator<EAction> icloneas = cloneas.iterator();
-			Iterator<EState> icloness = cloness.iterator();
-			while (icloneas.hasNext())
+			Iterator<EAction> iaclones = aclones.iterator();
+			Iterator<EState> isuccClones = succClones.iterator();
+			while (iaclones.hasNext())
 			{
-				EAction a = icloneas.next();
-				EState s = icloness.next();  // clones of the succs from toRemove above
-				curr.addEdge(a, s);
-				todo.add(s);  // Doesn't work if non-det preserved by the "unfairClone" aux (recursively edges>1)
+				EAction a = iaclones.next();  // Same actions involved in toRemove loop above
+				EState succClone = isuccClones.next();  // Clones of the succs involved in toRemove loop above
+				curr.addEdge(a, succClone);  // Second, add edge to cloned succ (entry to the unfair-cloned subgraph)
+				todo.add(succClone);  // This will cause unfairTransform to "recursively" visit the nodes of the unfair-cloned subgraph
+						// Doesn't work if non-det preserved by the "unfairClone" aux (recursively, edges always >1 -- termination condition never met)
 						// Idea is to bypass succ clone (for non-det, edges>1) but in general this will be cloned again before returning to it, so bypass doesn't work -- to solve this more generally probably need to keep a record of all clones to bypass future clones
 			}
 		}

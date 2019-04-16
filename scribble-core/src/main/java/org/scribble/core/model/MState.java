@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -193,7 +194,7 @@ public abstract class MState
 	protected Set<S> getReachableStatesAux(S start)
 	{
 		Map<Integer, S> all = new HashMap<>();
-		Map<Integer, S> todo = new HashMap<>(); //LinkedHashMap<>(); -- ?
+		Map<Integer, S> todo = new LinkedHashMap<>();  // Linked unnecessary, but to follow the iteration pattern
 		todo.put(this.id, start);  // Suppressed: assumes ModelState subclass correctly instantiates S parameter
 		while (!todo.isEmpty())
 		{
