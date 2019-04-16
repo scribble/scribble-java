@@ -74,7 +74,7 @@ public class EFSM
 	
 	public boolean isConnectOrWrapClientOnly()
 	{
-		return this.curr.isConnectOrWrapClientOnly();
+		return this.curr.isRequestOrClientWrapOnly();
 	}
 
 	@Override

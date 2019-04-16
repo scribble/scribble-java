@@ -13,13 +13,13 @@
  */
 package org.scribble.core.model.endpoint;
 
-// FIXME: consider that enums cannot be "extended"
+// CHECKME: consider that enums cannot be "extended", for Scribble extensions
 public enum EStateKind
 {
-	OUTPUT,      // SEND, CONNECT and WRAP_CLIENT
+	TERMINAL,
+	OUTPUT,      // SEND, REQUEST and CLIENT_WRAP
 	UNARY_INPUT,
 	POLY_INPUT,
-	TERMINAL,
-	ACCEPT,      // Unary/multi accept?
-	WRAP_SERVER,
+	ACCEPT,      // CHECKME: distinguish unary/multi accept?
+	SERVER_WRAP,
 }

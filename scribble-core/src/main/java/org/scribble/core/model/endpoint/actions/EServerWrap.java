@@ -49,7 +49,7 @@ public class EServerWrap extends EAction
 	}
 	
 	@Override
-	public boolean isWrapServer()
+	public boolean isServerWrap()
 	{
 		return true;
 	}

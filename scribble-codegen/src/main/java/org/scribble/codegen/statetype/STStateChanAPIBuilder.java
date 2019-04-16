@@ -85,7 +85,7 @@ public abstract class STStateChanAPIBuilder
 					//api.put(getFilePath(getStateChanName(s) + "_Cases"), this.cb.build(this, s));  // FIXME: factor out
 					break;
 				}
-				case WRAP_SERVER: throw new RuntimeException("TODO");
+				case SERVER_WRAP: throw new RuntimeException("TODO");
 				default:          throw new RuntimeException("Shouldn't get in here: " + s);
 			}
 		}

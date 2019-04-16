@@ -163,7 +163,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			seen.add(curr);
 			
 			if (curr.getStateKind() == EStateKind.OUTPUT
-					&& curr.getActions().size() > 1)  // >1 is what makes this algorithm terminating -- in the expanded subgraph, the clone of curr will have all other edges pruned
+					&& curr.getActions().size() > 1)  // >1 makes this algorithm terminating -- in the expanded subgraph, the clone of curr will have all other edges pruned
 			{
 				expandUnfairCases(mf, term, todo, curr);
 			}
@@ -292,7 +292,8 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			throw new RuntimeException("TODO: " + kind);
 		}
 
-		res += as.stream().map(a -> "\n" + getDetSuccessor(a).toPml(tmp, r)).collect(Collectors.joining(""));
+		res += as.stream().map(x -> "\n" + getDetSuccessor(x).toPml(tmp, r))
+				.collect(Collectors.joining(""));
 
 		return res;
 	}
@@ -309,11 +310,11 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	}
 	
 	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction
-	public boolean isConnectOrWrapClientOnly()
+	public boolean isRequestOrClientWrapOnly()
 	{
 		return getStateKind() == EStateKind.OUTPUT
 				&& getActions().stream()
-						.allMatch(x -> x.isRequest() || x.isWrapClient());
+						.allMatch(x -> x.isRequest() || x.isClientWrap());
 	}
 	
 	public EStateKind getStateKind()
@@ -325,14 +326,8 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		}
 		else
 		{
-			/*EAction a = as.iterator().next();
-			return (a.isSend() || a.isConnect() || a.isDisconnect() || a.isWrapClient() ) ? EStateKind.OUTPUT
-						//: (a.isConnect() || a.isAccept()) ? Kind.CONNECTION  // FIXME: states can have mixed connects and sends
-						//: (a.isConnect()) ? Kind.CONNECT
-						: (a.isAccept()) ? EStateKind.ACCEPT  // Accept is always unary, guaranteed by treating as a unit message id (wrt. branching)  // No: not any more, connect-with-message
-						: (a.isWrapServer()) ? EStateKind.WRAP_SERVER   // WrapServer is always unary, guaranteed by treating as a unit message id (wrt. branching)
-						: (as.size() > 1) ? EStateKind.POLY_INPUT : EStateKind.UNARY_INPUT;*/
-			if (as.stream().allMatch(a -> a.isSend() || a.isRequest() || a.isWrapClient()))  // wrapClient should be unary?
+			if (as.stream()
+					.allMatch(a -> a.isSend() || a.isRequest() || a.isClientWrap()))  // ClientWrap should be unary?
 			{
 				return EStateKind.OUTPUT;
 			}
@@ -348,9 +343,9 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			{
 				return EStateKind.OUTPUT;
 			}
-			else if (as.size() == 1 && as.get(0).isWrapServer())
+			else if (as.size() == 1 && as.get(0).isServerWrap())
 			{
-				return EStateKind.WRAP_SERVER;
+				return EStateKind.SERVER_WRAP;
 			}
 			else
 			{
@@ -366,7 +361,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	}
 
 	@Override
-	public Set<EState> getReachableStates()
+	public Set<EState> getReachableStates()  // CHECKME: consider a "lazy" version?  Maybe as an Iterator or Stream
 	{
 		return getReachableStatesAux(this);
 	}
@@ -375,7 +370,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	public int hashCode()
 	{
 		int hash = 83;
-		hash = 31 * hash + super.hashCode();  // N.B. uses state ID only
+		hash = 31 * hash + super.hashCode();  // N.B. ultimately uses state ID only
 		return hash;
 	}
 

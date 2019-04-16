@@ -49,7 +49,7 @@ public class EClientWrap extends EAction
 	}
 	
 	@Override
-	public boolean isWrapClient()
+	public boolean isClientWrap()
 	{
 		return true;
 	}

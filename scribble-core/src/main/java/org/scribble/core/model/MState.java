@@ -249,9 +249,9 @@ public abstract class MState
 		{
 			return false;
 		}
-		return ((MState<?, ?, ?, ?>) o).canEquals(this)
-				&& this.id == ((MState<?, ?, ?, ?>) o).id;
-				// Good to use id, due to edge mutability
+		MState<?, ?, ?, ?> them = (MState<?, ?, ?, ?>) o;
+		return them.canEquals(this) && this.id == them.id;
+				// Convenient to use id, due to edge mutability
 	}
 	
 	protected abstract boolean canEquals(MState<?, ?, ?, ?> s);

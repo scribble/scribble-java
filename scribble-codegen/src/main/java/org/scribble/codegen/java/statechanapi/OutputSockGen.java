@@ -79,7 +79,7 @@ public class OutputSockGen extends ScribSockGen
 			{
 				setDisconnectHeaderWithoutReturnType(apigen, a, mb);
 			}
-			else if (a.isWrapClient())
+			else if (a.isClientWrap())
 			{
 				hasWrap = true;
 				setWrapClientHeaderWithoutReturnType(apigen, a, mb);
@@ -124,7 +124,7 @@ public class OutputSockGen extends ScribSockGen
 			{
 				mb.addBodyLine(JavaBuilder.SUPER + ".disconnect(" + ROLE_PARAM + ");\n");
 			}
-			else if (a.isWrapClient())
+			else if (a.isClientWrap())
 			{
 				mb.addBodyLine(JavaBuilder.SUPER + ".wrapClient(" + ROLE_PARAM + ", wrapper);\n");
 			}

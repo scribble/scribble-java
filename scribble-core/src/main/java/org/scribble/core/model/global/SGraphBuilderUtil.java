@@ -164,7 +164,7 @@ public class SGraphBuilderUtil
 									curr.sync(r, a, a.peer, d));
 						}
 					}
-					else if (a.isWrapClient() || a.isWrapServer())
+					else if (a.isClientWrap() || a.isServerWrap())
 					{
 						List<EAction> as = fireable.get(a.peer);
 						EAction w = a.toDual(r);

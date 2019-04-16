@@ -173,7 +173,7 @@ public class SConfig
 				{
 					tmp2 = this.buffs.connect(r1, r2);
 				}
-				else if (((a1.isWrapClient() && a2.isWrapServer()) || (a1.isWrapServer() && a2.isWrapClient())))
+				else if (((a1.isClientWrap() && a2.isServerWrap()) || (a1.isServerWrap() && a2.isClientWrap())))
 				{
 					tmp2 = this.buffs;  // OK, immutable?
 				}
@@ -582,7 +582,7 @@ public class SConfig
 								tmp.add(a);
 							}
 						}
-						else if (a.isWrapClient())
+						else if (a.isClientWrap())
 						{
 							// FIXME: factor out
 							EClientWrap wc = (EClientWrap) a;
@@ -733,11 +733,11 @@ public class SConfig
 					}
 					break;
 				}
-				case WRAP_SERVER:
+				case SERVER_WRAP:
 				{
 					for (EAction a : this.buffs.wrapable(r))
 					{
-						if (a.isWrapServer())
+						if (a.isServerWrap())
 						{
 							EServerWrap ws = (EServerWrap) a;
 							EFSM speer = this.efsms.get(ws.peer);

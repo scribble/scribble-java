@@ -421,7 +421,7 @@ public class CBEndpointApiGenerator3
 					icallback.addBodyLine("return this;");
 					break;
 				}
-				case WRAP_SERVER:
+				case SERVER_WRAP:
 				case ACCEPT:
 				{
 					throw new RuntimeException("TODO: " + s.getStateKind());
@@ -513,7 +513,7 @@ public class CBEndpointApiGenerator3
 			case POLY_INPUT: stateKind = "org.scribble.runtime.handlers.states.ScribInputState";  break;
 			case TERMINAL:   stateKind = "org.scribble.runtime.handlers.states.ScribEndState";    break;
 			case ACCEPT:
-			case WRAP_SERVER:
+			case SERVER_WRAP:
 				throw new RuntimeException("TODO");
 			default:
 				throw new RuntimeException("TODO");

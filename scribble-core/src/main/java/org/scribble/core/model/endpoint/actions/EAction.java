@@ -62,12 +62,12 @@ public abstract class EAction extends MAction<Local>
 		return false;
 	}
 
-	public boolean isWrapClient()
+	public boolean isClientWrap()
 	{
 		return false;
 	}
 
-	public boolean isWrapServer()
+	public boolean isServerWrap()
 	{
 		return false;
 	}

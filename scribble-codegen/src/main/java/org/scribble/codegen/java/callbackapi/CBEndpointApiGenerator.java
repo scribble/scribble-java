@@ -179,7 +179,7 @@ public class CBEndpointApiGenerator
 				case POLY_INPUT: stateKind = "org.scribble.runtime.handlers.states.ScribInputState";  break;
 				case TERMINAL:   stateKind = "org.scribble.runtime.handlers.states.ScribEndState";    break;
 				case ACCEPT:
-				case WRAP_SERVER:
+				case SERVER_WRAP:
 					throw new RuntimeException("TODO");
 				default:
 					throw new RuntimeException("TODO");
@@ -608,7 +608,7 @@ public class CBEndpointApiGenerator
 				break;
 			}
 			case ACCEPT:
-			case WRAP_SERVER:
+			case SERVER_WRAP:
 			{
 				throw new RuntimeException("[scrib] TODO: " + s);
 			}
