@@ -30,7 +30,7 @@ public abstract class MPrettyState
 		super(labs);
 	}
 	
-	public String toLongString()
+	public String toVerboseString()
 	{
 		String s = "\"" + this.id + "\":[";
 		Iterator<S> ss = this.succs.iterator();

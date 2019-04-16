@@ -71,7 +71,7 @@ public abstract class MState
 			Iterator<S> ss = this.succs.iterator();
 			while (as.hasNext())  // Duplicate edges preemptively pruned here, but could leave to later minimisation
 			{
-				A na = as.next();
+				A na = as.next();  // N.B. cannot "inline" into below if-condition, due to short circuiting
 				S ns = ss.next();
 				if (na.equals(a) && ns.equals(s))
 				{
@@ -91,11 +91,11 @@ public abstract class MState
 		Iterator<S> ss = this.succs.iterator();
 		while (as.hasNext())
 		{
-			A na = as.next();
+			A na = as.next();  // N.B. cannot "inline" into below if-condition, due to short circuiting
 			S ns = ss.next();
 			if (na.equals(a) && ns.equals(s))
 			{
-				as.remove();
+				as.remove();  // Must follow next
 				ss.remove();
 				return;
 			}
@@ -136,6 +136,7 @@ public abstract class MState
 	}
 	
 	// Variant of getActions with implicit run-time check on determinism -- currently used by codegen utils (that have that assumption)
+	// (Pre: actions are deterministic)
 	public final List<A> getDetActions()
 	{
 		Set<A> as = new HashSet<>(this.actions);
@@ -149,6 +150,7 @@ public abstract class MState
 	}
 
 	// Variant with implicit run-time check on determinism
+	// (Pre: actions are deterministic)
 	public S getDetSuccessor(A a)
 	{
 		Set<A> as = new HashSet<>(this.actions);
@@ -192,7 +194,7 @@ public abstract class MState
 		{
 			Iterator<Entry<Integer, S>> i = todo.entrySet().iterator();
 			Entry<Integer, S> next = i.next();
-			i.remove();
+			i.remove();  // Must follow next
 			for (S s : next.getValue().getSuccs())
 			{
 				if (!all.containsKey(s.id))

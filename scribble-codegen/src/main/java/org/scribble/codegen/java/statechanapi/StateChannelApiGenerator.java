@@ -188,7 +188,7 @@ public class StateChannelApiGenerator extends ApiGen
 			{
 				throw new RuntimeException(
 						"[TODO] State Channel API generation not supported for: "
-								+ curr.getStateKind() + ", " + curr.toLongString());
+								+ curr.getStateKind() + ", " + curr.toVerboseString());
 			}
 		}
 	}
