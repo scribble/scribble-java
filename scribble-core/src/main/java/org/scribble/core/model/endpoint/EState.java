@@ -243,7 +243,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 							todo.add(e.getValue());
 							seen.add(e.getValue());*/
 							curr.addEdge(a, s);
-							todo.add(s);  // Doesn't work if non-det preserved by unfairClone aux (recursively edges>1)
+							todo.add(s);  // Doesn't work if non-det preserved by the "unfairClone" aux (recursively edges>1)
 							/*seen.add(s);  // Idea is to bypass succ clone (for non-det, edges>1) but in general this will be cloned again before returning to it, so bypass doesn't work -- to solve this more generally probably need to keep a record of all clones to bypass future clones
 							todo.addAll(s.getSuccessors());*/
 						}

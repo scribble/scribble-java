@@ -37,18 +37,13 @@ public abstract class MState
 		K extends ProtoKind            // Global/Local
 >
 {
-	private static int count = 1;
+	private static int count = 1;  // A shared index counter for every single MState (and subclass) instance
 	
 	public final int id;
 
 	protected final Set<L> labs;  // Was RecVar and SubprotocolSigs, now using inlined protocol for FSM building so just RecVar
-
-	// **: clients should use the pair of getAllAcceptable/getSuccessors for correctness -- getAcceptable/accept don't support non-det
-	//protected final LinkedHashMap<A, S> edges;  // Want predictable ordering of entries for e.g. API generation (state enumeration)*/
 	protected final List<A> actions;
 	protected final List<S> succs;
-	
-	//Pair ?  rename getAll...
 	
 	public MState(Set<L> labs)  // Immutable singleton node
 	{
@@ -71,18 +66,21 @@ public abstract class MState
 	// Mutable (can also overwrite edges)
 	protected void addEdge(A a, S s)
 	{
-		//this.edges.put(a, s);
-		Iterator<A> as = this.actions.iterator();  // Needed?..
-		Iterator<S> ss = this.succs.iterator();
-		while (as.hasNext())  // Duplicate edges preemptively pruned here, but could leave to later minimisation
+		if (this.equals(s))  // CHECKME: refactor unfair transform to eliminate this special case
 		{
-			A tmpa = as.next();
-			S tmps = ss.next();
-			if (tmpa.equals(a) && tmps.equals(s))
+			// Needed? -- seems so, for the unfair transform (specifically for recursive non-det paths of length 1, see good.efsm.gchoice.Test09)
+			Iterator<A> as = this.actions.iterator(); 
+			Iterator<S> ss = this.succs.iterator();
+			while (as.hasNext())  // Duplicate edges preemptively pruned here, but could leave to later minimisation
 			{
-				return;
+				A tmpa = as.next();
+				S tmps = ss.next();
+				if (tmpa.equals(a) && tmps.equals(s))
+				{
+					return;
+				}
 			}
-		}  // ..needed?
+		}
 		this.actions.add(a);
 		this.succs.add(s);
 	}
