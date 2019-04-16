@@ -77,7 +77,7 @@ public class StateChannelApiGenerator extends ApiGen
 		constructClasses(this.init);
 
 		//EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
-		EState term = EState.getTerminal(this.init);
+		EState term = this.init.getTerminal();
 		if (term != null)
 		{
 			ClassBuilder cb = new EndSockGen(this, term).generateType();
@@ -88,7 +88,7 @@ public class StateChannelApiGenerator extends ApiGen
 	// Cf. IOInterfacesGenerator constructor
 	private static boolean skipIOInterfacesGeneration(EState init)
 	{
-		Set<EAction> as = EState.getReachableActions(init);
+		Set<EAction> as = init.getReachableActions();
 		if (as.stream().anyMatch(a -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 		{
 			return true;

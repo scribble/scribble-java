@@ -17,10 +17,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -29,14 +29,15 @@ import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.RuntimeScribException;
 import org.scribble.util.ScribException;
 
-public abstract class MState<
+public abstract class MState
+<
 		L,                             // Node label type (cosmetic)
 		A extends MAction<K>,          // Edge type
 		S extends MState<L, A, S, K>,  // State type
-		K extends ProtoKind         // Global/Local
+		K extends ProtoKind            // Global/Local
 >
 {
-	private static int count = 0;  // FIXME: factor out with ModelAction
+	private static int count = 1;
 	
 	public final int id;
 
@@ -46,6 +47,8 @@ public abstract class MState<
 	//protected final LinkedHashMap<A, S> edges;  // Want predictable ordering of entries for e.g. API generation (state enumeration)*/
 	protected final List<A> actions;
 	protected final List<S> succs;
+	
+	//Pair ?
 	
 	public MState(Set<L> labs)  // Immutable singleton node
 	{
@@ -67,7 +70,6 @@ public abstract class MState<
 	
 	// Mutable (can also overwrite edges)
 	protected void addEdge(A a, S s)
-	//public final void addEdge(A a, S s)  // FIXME: currently public for SGraph building -- make a global version of EGraphBuilderUtil
 	{
 		//this.edges.put(a, s);
 		Iterator<A> as = this.actions.iterator();  // Needed?..
@@ -170,10 +172,56 @@ public abstract class MState<
 	{
 		return this.actions.isEmpty();
 	}
+
+	// CHECKME: add "caching" versions to, e.g., Graphs?
+	// N.B. doesn't implicitly include start (only if start is reachable from start by at least one transition)
+  // Concrete subclass implementation should call, e.g., getReachableStatesAux(this) -- for S param, putting "this" into Map
+	public abstract Set<S> getReachableStates();
+
+	// N.B. doesn't implicitly include start (only if start is explicitly reachable from start by at least one transition)
+	protected Set<S> getReachableStatesAux(S start)
+	{
+		Map<Integer, S> all = new HashMap<>();
+		Map<Integer, S> todo = new HashMap<>(); //LinkedHashMap<>(); -- ?
+		todo.put(this.id, start);  // Suppressed: assumes ModelState subclass correctly instantiates S parameter
+		while (!todo.isEmpty())
+		{
+			Iterator<Entry<Integer, S>> i = todo.entrySet().iterator();
+			Entry<Integer, S> next = i.next();
+			i.remove();
+			for (S s : next.getValue().getAllSuccessors())
+			{
+				if (!all.containsKey(s.id))
+				{	
+					all.put(s.id, s);
+					todo.put(s.id, s);
+				}
+			}
+		}
+		return new HashSet<>(all.values());
+	}
+
+	public S getTerminal()
+	{
+		//getReachableStates().stream().filter(x -> x.isTerminal()).findFirst();
+		Set<S> terms = getReachableStates().stream()
+				.filter(s -> s.isTerminal()).collect(Collectors.toSet());
+		if (terms.size() > 1)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + terms);
+		}
+		return terms.isEmpty() //.isPresent()
+				? null : terms.iterator().next();  // CHECKME: return empty Set instead of null?
+	}
+	public Set<A> getReachableActions()
+	{
+		return getReachableStates().stream().flatMap(x -> x.getActions().stream())
+				.collect(Collectors.toSet());
+	}
 	
 	public boolean canReach(MState<L, A, S, K> s)
 	{
-		return MState.getReachableStates(this).contains(s);
+		return getReachableStates().contains(s);
 	}
 
 	@Override
@@ -208,11 +256,21 @@ public abstract class MState<
 	}
 	
 	protected abstract boolean canEquals(MState<?, ?, ?, ?> s);
+}
 
-	public abstract S getTerminal();
-	public abstract Set<S> getReachableStates();
-	public abstract Set<A> getReachableActions();
 
+
+
+
+
+
+
+
+
+
+
+
+	/*
 	// TODO: make protected
 	public static <L, A extends MAction<K>, S extends MState<L, A, S, K>, K extends ProtoKind>
 			S getTerminal(S start)
@@ -221,7 +279,7 @@ public abstract class MState<
 		{
 			return start;
 		}
-		Set<S> terms = MState.getReachableStates(start).stream()
+		Set<S> terms = start.getReachableStates().stream()
 				.filter(s -> s.isTerminal()).collect(Collectors.toSet());
 		if (terms.size() > 1)
 		{
@@ -232,7 +290,7 @@ public abstract class MState<
 
 	// Note: doesn't implicitly include start (only if start is explicitly reachable from start, of course)
 	/*public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
-			Set<S> getAllReachable(S start)*/
+			Set<S> getAllReachable(S start)* /
 	// TODO: make protected
 	// CHECKME: cache results?
 	@SuppressWarnings("unchecked")
@@ -251,13 +309,13 @@ public abstract class MState<
 			{
 				continue;
 			}
-			all.put(next.id, next);*/
+			all.put(next.id, next);* /
 			for (S s : next.getAllSuccessors())
 			{
 				/*if (!all.containsKey(s.id) && !todo.containsKey(s.id))
 				{
 					todo.put(s.id, s);
-				}*/
+				}* /
 				if (!all.containsKey(s.id))
 				{	
 					all.put(s.id, s);
@@ -270,7 +328,7 @@ public abstract class MState<
 		}
 		return new HashSet<>(all.values());
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	// TODO: make protected
 	// CHECKME: cache results?
@@ -287,5 +345,4 @@ public abstract class MState<
 			as.addAll(s.getAllActions());
 		}
 		return as;
-	}
-}
+	}*/

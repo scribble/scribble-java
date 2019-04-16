@@ -23,13 +23,12 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.scribble.ast.DataDecl;
-import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
+import org.scribble.ast.SigDecl;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.job.CoreContext;
-import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
@@ -101,7 +100,7 @@ public class CBEndpointApiGenerator
 				// TODO: factor out with StateChannelApiGenerator constructor
 		Set<EState> states = new HashSet<>();
 		states.add(init);
-		states.addAll(MState.getReachableStates(init));
+		states.addAll(init.getReachableStates());
 
 		// frontend handler class
 		String pack = SessionApiGenerator.getEndpointApiRootPackageName(this.proto);

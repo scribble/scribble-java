@@ -76,20 +76,26 @@ module tmp.Test;
 		//...fix simp node constructors and af (no IdNode child) --- fix ambignodel to use af -- separate af methods
 
 
-// Outstanding:
-	//...disallow/check for reserved __ -- do in gtype translation?
-	// FIXME: qualifed sig name as non-role do-arg
-	// TODO: rename addChildren1
-	// CHECKME: duplicate proto mods
-
-
 // For model build/check refactoring:
+
+HERE refactor model states, remove intermedrecedge
+
+		// Outstanding:
+			//...disallow/check for reserved __ -- do in gtype translation?
+			// FIXME: qualifed sig name as non-role do-arg
+			// TODO: rename addChildren1
+			// CHECKME: duplicate proto mods
+			// ...check ad hoc ScribNode constructions go through af properly
+			
+			
 	// add exp conn checks to model validation
 	// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 			// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
 	// refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
 		// -- otoh, ast errors give source feedback -- maybe implement both
-	// use stypefactory in core -- also make a visitorfactory (core and ast)
+	// use stypefactory in core -- also make visitorfactorys (both core and ast)
+	
+	
 
 // codegen refactoring:
 

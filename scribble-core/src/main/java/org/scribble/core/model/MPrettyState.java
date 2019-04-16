@@ -112,7 +112,7 @@ public abstract class MPrettyState
 	{
 		Set<MPrettyState<L, A, S, K>> all = new HashSet<>();
 		all.add(this);
-		all.addAll(getReachableStates(this));
+		all.addAll(getReachableStates());
 		String aut = "";
 		int edges = 0;
 		Set<Integer> seen = new HashSet<>();

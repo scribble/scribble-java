@@ -132,7 +132,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	// Helper factory method for deriving an EGraph from an arbitary EState (but not the primary way to construct EGraphs; cf., EGraphBuilderUtil)
 	public EGraph toGraph()
 	{
-		return new EGraph(this, getTerminal(this));  // Throws exception if >1 terminal; null if no terminal
+		return new EGraph(this, getTerminal());  // Throws exception if >1 terminal; null if no terminal
 	}
 
 	/*.. move back to endpointstate
@@ -148,7 +148,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	{
 		EState init = clone(ef);
 		
-		EState term = MPrettyState.getTerminal(init);
+		EState term = init.getTerminal();
 		Set<EState> seen = new HashSet<>();
 		Set<EState> todo = new LinkedHashSet<>();
 		todo.add(init);
@@ -265,7 +265,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	{
 		Set<EState> all = new HashSet<>();
 		all.add(this);
-		all.addAll(MPrettyState.getReachableStates(this));
+		all.addAll(this.getReachableStates());
 		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
 		for (EState s : all)
 		{
@@ -295,7 +295,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		//EndpointState succ = take(a);
 		Set<EState> all = new HashSet<>();
 		all.add(succ);
-		all.addAll(MPrettyState.getReachableStates(succ));
+		all.addAll(succ.getReachableStates());
 		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
 		for (EState s : all)
 		{
@@ -379,22 +379,9 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	}
 
 	@Override
-	public EState getTerminal()
-	{
-		return MState.getTerminal(this);
-	}
-
-	@Override
 	public Set<EState> getReachableStates()
 	{
-		
-		return MState.getReachableStates(this);
-	}
-
-	@Override
-	public Set<EAction> getReachableActions()
-	{
-		return MState.getReachableActions(this);
+		return getReachableStatesAux(this);
 	}
 
 	@Override

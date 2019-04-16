@@ -32,7 +32,6 @@ import org.scribble.core.lang.Protocol;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.local.LProjection;
-import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.global.SGraph;
@@ -44,9 +43,9 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.MsgId;
-import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
@@ -307,7 +306,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 			Set<EState> tmp = new HashSet<>();
 			EGraph g = corec.getEGraph(fullname, r);
 			tmp.add(g.init);
-			tmp.addAll(MState.getReachableStates(g.init));
+			tmp.addAll(g.init.getReachableStates());
 			if (g.term != null)
 			{
 				tmp.remove(g.term);

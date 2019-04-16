@@ -30,17 +30,15 @@ import org.scribble.core.type.name.GProtoName;
 
 public class SGraph implements MPrettyPrint
 {
-	public final GProtoName proto;
-	//private final Map<Role, EGraph> efsms;
-	//private final boolean fair;
+	public final GProtoName proto;  // For debugging only?  deprecate?
 	
 	public final SState init;
-	public Map<Integer, SState> states; // State ID -> GMState
+	public Map<Integer, SState> states;
 
 	private Map<Integer, Set<Integer>> reach; // State ID -> reachable states (not reflexive)
 	private Set<Set<Integer>> termSets;
 
-	// Unlike EState, SGraph is not just a "simple wrapper" for an existing graph of nodes -- it is a "semantic structure" that needs to be fully built properly (so no arbitrary "toGraph" method; cf., EState)
+	// Unlike EState, SGraph is not just a "simple wrapper" for an existing graph of nodes -- it is a computed structure, so no lightweight "toGraph" wrapper method; cf., EState
 	public SGraph(GProtoName proto, Map<Integer, SState> states, SState init)
 	{
 		this.proto = proto;
@@ -48,11 +46,6 @@ public class SGraph implements MPrettyPrint
 		this.states = Collections.unmodifiableMap(states);
 		this.reach = getReachabilityMap();
 	}
-	
-	/*public SModel toModel()
-	{
-		return new SModel(this);
-	}*/
 
 	public Set<Set<Integer>> getTerminalSets()
 	{

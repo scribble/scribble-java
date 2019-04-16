@@ -18,7 +18,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
@@ -66,7 +65,7 @@ public abstract class STStateChanAPIBuilder
 		Map<String, String> api = new HashMap<>();
 		Set<EState> states = new LinkedHashSet<>();
 		states.add(this.graph.init);
-		states.addAll(MState.getReachableStates(this.graph.init));
+		states.addAll(this.graph.init.getReachableStates());
 		for (EState s : states)
 		{
 			switch (s.getStateKind())

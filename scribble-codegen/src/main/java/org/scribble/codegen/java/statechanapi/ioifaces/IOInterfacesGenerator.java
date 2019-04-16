@@ -88,7 +88,7 @@ public class IOInterfacesGenerator extends ApiGen
 		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{
 			// FIXME: factor out with skipIOInterfacesGeneration
-			Set<EAction> as = EState.getReachableActions(init);
+			Set<EAction> as = init.getReachableActions();
 			if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 			{
 				throw new RuntimeScribException(
@@ -103,7 +103,7 @@ public class IOInterfacesGenerator extends ApiGen
 		collectPreds();
 		
 		//EndpointState term = EndpointState.findTerminalState(new HashSet<>(), init);
-		EState term = EState.getTerminal(init);
+		EState term = init.getTerminal();
 		ClassBuilder endsock = null;
 		if (term != null)
 		{

@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.scribble.ast.DataDecl;
-import org.scribble.ast.SigDecl;
 import org.scribble.ast.Module;
+import org.scribble.ast.SigDecl;
 import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
@@ -35,17 +35,16 @@ import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.job.CoreContext;
-import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.PayElemType;
+import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.SigName;
 import org.scribble.job.Job;
 import org.scribble.job.JobContext;
-import org.scribble.core.type.name.PayElemType;
-import org.scribble.core.type.name.Role;
 import org.scribble.util.ScribException;
 
 // FIXME: integrate with JEndpointApiGenerator -- this class should correspond to StateChanApiGenerator (relying on the common SessionApiGenerator)
@@ -117,7 +116,7 @@ public class CBEndpointApiGenerator3
 				// TODO: factor out with StateChannelApiGenerator constructor
 		Set<EState> states = new HashSet<>();
 		states.add(init);
-		states.addAll(MState.getReachableStates(init));
+		states.addAll(init.getReachableStates());
 
 		String endpointName = this.proto.getSimpleName() + "_" + this.self;
 		int i = 1;

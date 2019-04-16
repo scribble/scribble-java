@@ -82,22 +82,9 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 	}
 
 	@Override
-	public SState getTerminal()
-	{
-		return MState.getTerminal(this);
-	}
-
-	@Override
 	public Set<SState> getReachableStates()
 	{
-		
-		return MState.getReachableStates(this);
-	}
-
-	@Override
-	public Set<SAction> getReachableActions()
-	{
-		return MState.getReachableActions(this);
+		return getReachableStatesAux(this);
 	}
 	
 	// FIXME? doesn't use super.hashCode (cf., equals)

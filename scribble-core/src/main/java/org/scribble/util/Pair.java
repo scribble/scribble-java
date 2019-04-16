@@ -44,8 +44,7 @@ public class Pair<T1, T2>
 		{
 			return false;
 		}
-		@SuppressWarnings("rawtypes")
-		Pair p = (Pair) o;  // Could store T1.class and T2.class as fields, but probably better to do "structurally" as here
-		return this.left.equals(p.left) && this.right.equals(p.right);
+		Pair<?, ?> them = (Pair<?, ?>) o;
+		return this.left.equals(them.left) && this.right.equals(them.right);
 	}
 }
