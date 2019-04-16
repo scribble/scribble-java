@@ -52,12 +52,10 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	// Fully clones the reachable graph (i.e. the "general" graph -- cf., EGraph, the specific Scribble concept of an endpoint protocol graph)
 	protected EState clone(ModelFactory mf)
 	{
-		Set<EState> all = getReachableStates();
-		all.add(this);
-		Map<Integer, EState> clones = new HashMap<>();  // original s.id -> clone
+		Map<Integer, EState> clones = new HashMap<>();  // Original s.id -> clone
 		Function<EState, EState> getClone = x ->
 		{
-			EState clone = clones.get(x.id);  // "clones" effectively final
+			EState clone = clones.get(x.id);  // "clones" is effectively final
 			if (clone == null)
 			{
 				clone = x.cloneNode(mf, x.labs);
@@ -65,7 +63,9 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			}
 			return clone;
 		};
-		for (EState s : all)
+		Set<EState> all = getReachableStates();
+		all.add(this);
+		for (EState s : all)  // Quadratic after getReachableStates, but simpler code for now
 		{
 			Iterator<EAction> as = s.getActions().iterator();
 			Iterator<EState> succs = s.getSuccs().iterator();
@@ -84,27 +84,30 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
 	private EState unfairClone(ModelFactory mf, EState term, EAction a, EState succ) // Need succ param for non-det
 	{
+		Map<Integer, EState> clones = new HashMap<>();  // Original s.id -> clone
+		Function<EState, EState> getClone = x ->
+		{
+			EState clone = clones.get(x.id);  // "clones" is effectively final
+			if (clone == null)
+			{
+				clone = (term != null && x.id == term.id)
+						? term
+								// Special case: term not cloned, otherwise a mixture of exapanded (and non-expanded) cases may lead to the term being cloned...
+								// ...potentially multiple times and potentially while the original still remains
+						: x.cloneNode(mf, Collections.emptySet());  
+								// CHECKME: remove labs arg from cloneNode and just clear the lab set here ?
+								// Cf. clone, keeps x.labs
+				clones.put(x.id, clone);
+			}
+			return clone;
+		};
 		Set<EState> all = succ.getReachableStates();
 		all.add(succ);
-		Map<Integer, EState> clones = new HashMap<>();  // original s.id -> clones
-		for (EState s : all)
-		{
-			if (term != null && s.id == term.id)
-			{
-				clones.put(term.id, term);  
-						// Special case: term not cloned, otherwise a mixture of exapanded (and non-expanded) cases may lead to the term being cloned...
-						// ...potentially multiple times and potentially while the original still remains
-			}
-			else
-			{
-				clones.put(s.id, s.cloneNode(mf, Collections.emptySet()));  // CHECKME: remove labs arg from cloneNode and just clear the lab set here ?
-			}
-		}
-		for (EState s : all)
+		for (EState s : all)  // Quadratic after getReachableStates, but simpler code for now
 		{
 			Iterator<EAction> as = s.getActions().iterator();
 			Iterator<EState> succs = s.getSuccs().iterator();
-			EState clone = clones.get(s.id);
+			EState clone = getClone.apply(s);
 			boolean done = false;  
 					// Used to add *at most* one edge, out of potentially multiple non-det a, from this-a->succ
 					// i.e., unfair expansion prunes non-det "a" ("determinizes" entry) from "this" into the cloned subgraph
@@ -115,14 +118,14 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 				EState ns = succs.next();
 				if (s.id != this.id)
 				{
-					clone.addEdge(na, clones.get(ns.id));
+					clone.addEdge(na, getClone.apply(ns));
 				}
 				else if (na.equals(a) && ns.equals(succ) && !done)  
 						// Non-det (to different succ) also pruned from clone of this -- but OK? non-det still preserved on original state, so any safety violations due to non-det will still come out?...
 						// ...this is like non-fairness extended to defeat even non-determinism ?
 				{
 					// s.id == this.id, so "clone" is the clone of "this"
-					clone.addEdge(na, clones.get(ns.id));
+					clone.addEdge(na, getClone.apply(ns));
 					done = true;
 				}
 			}
