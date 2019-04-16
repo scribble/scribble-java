@@ -34,7 +34,7 @@ public abstract class MPrettyState
 	{
 		String s = "\"" + this.id + "\":[";
 		Iterator<S> ss = this.succs.iterator();
-		s += this.actions.stream().map(a -> a + "=\"" + ss.next().id + "\"").collect(Collectors.joining(", "));
+		s += this.actions.stream().map(x -> x + "=\"" + ss.next().id + "\"").collect(Collectors.joining(", "));
 		return s + "]";
 	}
 	
@@ -42,36 +42,31 @@ public abstract class MPrettyState
 	@Override
 	public final String toDot()
 	{
-		String s = "digraph G {\n" // rankdir=LR;\n
-				+ "compound = true;\n";
-		s += toDot(new HashSet<>());
-		return s + "\n}";
+		Set<S> ss = getReachableStates();
+		@SuppressWarnings("unchecked")
+		S cast = (S) this;
+		ss.add(cast);
+		StringBuilder b = new StringBuilder();
+		b.append("digraph G {\n"); // rankdir=LR;\n
+		b.append("compound = true;\n");
+		ss.forEach(x -> b.append(x.toStateDot() + "\n"));
+		b.append("}");
+		return b.toString();
 	}
 
-	//protected final String toDot(Set<S> seen)
-	protected final String toDot(Set<MPrettyState<L, A, S, K>> seen)
+	protected final String toStateDot()
 	{
-		seen.add(this);
-		String dot = toNodeDot();
-		//for (Entry<A, S> e : this.edges.entrySet())
-		for (int i = 0; i < this.actions.size(); i ++)
+		StringBuilder b = new StringBuilder();
+		b.append(toNodeDot());
+		Iterator<A> as = getActions().iterator();
+		Iterator<S> ss = getSuccs().iterator();
+		while (as.hasNext())
 		{
-			/*A msg = e.getKey();
-			S p = e.getValue();*/
-			A a = this.actions.get(i);
-			S s = this.succs.get(i);
-			dot += "\n" + toEdgeDot(a, s);
-			if (!seen.contains(s))
-			{
-				dot += "\n" + s.toDot(seen);
-			}
+			A na = as.next();
+			S ns = ss.next();
+			b.append("\n" + toEdgeDot(na, ns));
 		}
-		return dot;
-	}
-
-	protected final String toEdgeDot(String src, String dest, String lab)
-	{
-		return src + " -> " + dest + " [ " + lab + " ];";
+		return b.toString();
 	}
 
 	// dot node declaration
@@ -81,22 +76,24 @@ public abstract class MPrettyState
 		return getDotNodeId() + " [ " + getNodeLabel() + " ];";
 	}
 	
-	protected String getNodeLabel()
-	{
-		String labs = this.labs.toString();
-		//return "label=\"" + labs.substring(1, labs.length() - 1) + "\"";
-		return "label=\"" + this.id + ": " + labs.substring(1, labs.length() - 1) + "\"";  // FIXME
-	}
-	
 	protected String getDotNodeId()
 	{
 		return "\"" + this.id + "\"";
+	}
+	
+	protected String getNodeLabel()
+	{
+		String labs = this.labs.toString();
+		return "label=\"" + this.id + ": " + labs.substring(1, labs.length() - 1)
+				+ "\"";
+				// TODO: revise ?
 	}
 
 	// Override to change edge drawing from "this" as src
 	protected String toEdgeDot(A msg, S next)
 	{
-		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));  // CHECKME: next.getEdgeLabel or this.?
+		return toEdgeDot(getDotNodeId(), next.getDotNodeId(),
+				next.getEdgeLabel(msg));  // CHECKME: next.getEdgeLabel or this.?
 	}
 	
 	// "this" is the dest node of the edge
@@ -104,6 +101,11 @@ public abstract class MPrettyState
 	protected String getEdgeLabel(A msg)
 	{
 		return "label=\"" + msg + "\"";
+	}
+
+	protected String toEdgeDot(String src, String dest, String lab)
+	{
+		return src + " -> " + dest + " [ " + lab + " ];";
 	}
 	
 	// Move up to MState?
@@ -133,7 +135,8 @@ public abstract class MPrettyState
 				aut += "\n(" + s.id + ",\"" + msg + "\"," + succ.id + ")";
 			}
 		}
-		return "des (" + this.id + "," + edges + "," + all.size() + ")" + aut + "\n";
+		return "des (" + this.id + "," + edges + "," + all.size() + ")" + aut
+				+ "\n";
 	}
 
 	@Override
@@ -156,11 +159,5 @@ public abstract class MPrettyState
 			return false;
 		}
 		return super.equals(o);  // Checks canEquals
-	}
-
-	@Override
-	public String toString()
-	{
-		return Integer.toString(this.id);  // FIXME -- ?
 	}
 }
