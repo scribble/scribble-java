@@ -135,7 +135,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	{
 		// TODO: factor out with LProtocol
 		List<Arg<? extends NonRoleParamKind>> params = new LinkedList<>();
-		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
+		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs -- TODO: factor out
 		for (MemberName<? extends NonRoleParamKind> n : this.params)
 		{
 			if (n instanceof DataName)
@@ -156,8 +156,8 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 
 		Substitutor<Global, GSeq> subs = new Substitutor<>(this.roles, sig.roles,
 				this.params, sig.args);
-		/*GSeq body = (GSeq) this.def.visitWithNoEx(subs).visitWithNoEx(v)
-				.visitWithNoEx(new RecPruner<>());*/
+		/*GSeq body = (GSeq) this.def.visitWithNoThrow(subs).visitWithNoThrow(v)
+				.visitWithNoThrow(new RecPruner<>());*/
 		GSeq body = new RecPruner<Global, GSeq>()
 				.visitSeq(v.visitSeq(subs.visitSeq(this.def)));
 		RecVar rv = v.getInlinedRecVar(sig);

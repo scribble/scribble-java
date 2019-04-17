@@ -189,12 +189,15 @@ public class CoreContext
 	
 	// N.B. graphs built from inlined (not unfolded)
 	public EGraph getEGraph(GProtoName fullname, Role role)
-			throws ScribException
 	{
-		LProtoName fulllpn = InlinedProjector.getFullProjectionName(fullname,
-				role);
+		return getEGraph(InlinedProjector.getFullProjectionName(fullname,
+				role));
 		// Moved form LProtocolDecl
-		EGraph graph = this.fEGraphs.get(fulllpn);
+	}
+
+	public EGraph getEGraph(LProtoName fullname)
+	{
+		EGraph graph = this.fEGraphs.get(fullname);
 		if (graph == null)
 		{
 			/*Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
@@ -202,7 +205,7 @@ public class CoreContext
 			proj.accept(builder);
 			graph = builder.util.finalise();
 			addEGraph(fulllpn, graph);*/
-			throw new RuntimeException("Shouldn't get in here: ");
+			throw new RuntimeException("Shouldn't get in here: ");  // FIXME: restore previous pattern, construct on (first) get
 		}
 		return graph;
 	}
@@ -213,21 +216,23 @@ public class CoreContext
 	}
 	
 	public EGraph getUnfairEGraph(GProtoName fullname, Role role)
-			throws ScribException
 	{
-		LProtoName projFullname = InlinedProjector.getFullProjectionName(fullname,
-				role);
+		return getUnfairEGraph(
+				InlinedProjector.getFullProjectionName(fullname, role));
+	}
 
-		EGraph unfair = this.uEGraphs.get(projFullname);
+	public EGraph getUnfairEGraph(LProtoName fullname)
+	{
+		EGraph unfair = this.uEGraphs.get(fullname);
 		if (unfair == null)
 		{
-			unfair = getEGraph(fullname, role).init
+			unfair = getEGraph(fullname).init
 					.unfairTransform(this.core.config.mf).toGraph();
-			addUnfairEGraph(projFullname, unfair);
+			addUnfairEGraph(fullname, unfair);
+			
+			//System.out.println("\nUnfair: " + fullname + "\n" + unfair.toDot());
+			
 		}
-
-		//System.out.println("\nunfair " + projFullname + ":\n" + unfair.toDot());  // TODO: verbose printing for unfair EGraphs
-		
 		return unfair;
 	}
 

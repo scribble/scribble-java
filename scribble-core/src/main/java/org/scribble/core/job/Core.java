@@ -81,11 +81,20 @@ public class Core
 
 	public void runPasses() throws ScribException
 	{
-		runContextBuildingPasses();  // Includes runProjectionPasses
-		runValidationPasses();
+		runContextBuildingPasses();  // Populates JobContext -- includes runProjectionPasses and runEfsmBuildingPasses
+		runSyntacticWfPasses();
+		runModelCheckingPasses();
 	}
 	
+	// Populates JobContext -- although patten is to do on-demand via (first) getter, so (partially) OK to delay population
 	public void runContextBuildingPasses()  // No ScribException, no errors expected
+	{
+		runInliningAndUnfoldingPasses();
+		runProjectionPasses();  // Do before any validation (i.e., including global WF), to promote greater tool feedback
+		runEfsmBuildingPasses();
+	}
+
+	private void runInliningAndUnfoldingPasses()
 	{
 		verbosePrintPass("Inlining subprotocols for all globals...");
 		for (GProtocol imed : this.context.getIntermediates())
@@ -104,18 +113,6 @@ public class Core
 			GProtocol unf = (GProtocol) inlined.unfoldAllOnce(v);//.unfoldAllOnce(unf2);  // CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 			verbosePrintPass(
 					"Unfolded all recursions once: " + inlined.fullname + "\n" + unf);
-		}
-		
-		runProjectionPasses();  // Do before any validation (i.e., including global WF), to promote greater tool feedback
-				
-		verbosePrintPass("Building EFSMs for all projected inlineds...");
-		for (Entry<LProtoName, LProtocol> e : this.context.getProjectedInlineds()
-				.entrySet())
-		{
-			LProtocol proj = e.getValue();
-			EGraph graph = proj.toEGraph(this);
-			this.context.addEGraph(proj.fullname, graph);
-			verbosePrintPass("Built EFSM: " + proj.fullname + ":\n" + graph.toDot());
 		}
 	}
 
@@ -150,8 +147,34 @@ public class Core
 			}
 		}
 	}
+
+	private void runEfsmBuildingPasses()
+	{
+		verbosePrintPass("Building EFSMs for all projected inlineds...");
+		for (Entry<LProtoName, LProtocol> e : this.context.getProjectedInlineds()
+				.entrySet())
+		{
+			LProtocol proj = e.getValue();
+			EGraph graph = proj.toEGraph(this);  // CHECKME: refactor actual construction back to on-demand in Context, and just use getters here?  And for other passes?
+			this.context.addEGraph(proj.fullname, graph);
+			verbosePrintPass("Built EFSM: " + proj.fullname + ":\n" + graph.toDot());
+		}
+				
+		/*if (!this.config.args.get(CoreArgs.FAIR))
+		{
+			// Pre: runSyntacticWfPasses -- depends on WF (role enabling, e.g., bad.wfchoice.enabling.threeparty.Test02), for graph building algorithm to work 
+			verbosePrintPass("Building \"unfair\" EFSMs for all projected inlineds...");
+			for (Entry<LProtoName, LProtocol> e : this.context.getProjectedInlineds()
+					.entrySet())
+			{
+				LProtocol proj = e.getValue();  // FIXME: don't need actual proj
+				EGraph graph = this.context.getUnfairEGraph(proj.fullname);  // CHECKME: refactor actual construction back to on-demand in Context, and just use getters here?  And for other passes?
+				verbosePrintPass("Built \"unfair\" EFSM: " + proj.fullname + ":\n" + graph.toDot());
+			}
+		}*/
+	}
 	
-	public void runValidationPasses() throws ScribException
+	public void runSyntacticWfPasses() throws ScribException
 	{
 		verbosePrintPass(
 				"Checking for unused role decls on all inlined globals...");
@@ -195,8 +218,11 @@ public class Core
 		{
 			proj.checkReachability();
 		}
+	}
 
-		verbosePrintPass("Building and checking models from projected inlineds...");
+	public void runModelCheckingPasses() throws ScribException
+	{
+		verbosePrintPass("Building and checking models from projected inlineds...");  // Move model building earlier?
 		// CHECKME: refactor more/whole validation into lang.GProtocol ?
 		for (GProtocol iproj : (Iterable<GProtocol>) this.context.getInlineds()
 				.stream().filter(x -> !x.isAux())::iterator)

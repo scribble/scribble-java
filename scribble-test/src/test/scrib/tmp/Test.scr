@@ -98,6 +98,7 @@ module tmp.Test;
 	
 
 // codegen refactoring:
+	// choice-specific fairness annotations
 
 // Test refactoring:
 	// refactor test to use main instead of cli
@@ -105,7 +106,24 @@ module tmp.Test;
 
 data <java> "..." from "..." as T;
 
+//*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+		{
+			1() from A to C;
+			do Proto1(A, B, C);
+		}
+		or
+		{
+			2() from A to B;
+			2() from A to C;
+		}
+}
+//*/
 
+
+/*
 global protocol Proto1(role A, role B)
 {
 	choice at A
@@ -121,6 +139,7 @@ global protocol Proto1(role A, role B)
 	//4() from B to A;
 	do Proto1(A, B);
 }
+//*/
 
 
 /*

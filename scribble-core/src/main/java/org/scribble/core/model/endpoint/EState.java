@@ -84,6 +84,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	// Returns the clone of the subgraph rooted at succ, with all non- "this-a->succ" actions pruned from the clone of "this" state
 	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
 	// N.B. cloning means the states, actions are immutable
+	// Consider gproto annotations to specify which states to unfair-clone, i.e., choice-specific fairness
 	private EState unfairCloneSubgraph(ModelFactory mf, EState term, EAction a, EState succ) // Need succ param for non-det
 	{
 		Map<Integer, EState> clones = new HashMap<>();  // Original s.id -> clone
@@ -147,7 +148,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles*/
 	public EState unfairTransform(ModelFactory mf)
 	{
-		EState init = clone(mf);  // All state refs from here on are clones
+		EState init = clone(mf);  // All state refs from here on are clones, original Graph unmodified
 		EState term = init.getTerminal();
 		Set<EState> seen = new HashSet<>();
 		Set<EState> todo = new LinkedHashSet<>();  // Linked unnecessary, but to follow the iteration pattern

@@ -36,6 +36,7 @@ import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
+// Relocate to util?
 public class AutGraphParser
 {
 	private final Core core;
