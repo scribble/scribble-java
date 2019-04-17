@@ -44,15 +44,13 @@ public class CoreContext
 
 	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
 	// Protos retain original decl role list (and args)
-  // Keys are full names (though GProtocol already includes full name)
-	private final Map<GProtoName, GProtocol> imeds;
+	private final Map<GProtoName, GProtocol> imeds;  // Keys are full names (though GProtocol already includes full name)
 
-	// Protos have pruned role decls -- CHECKME: prune args?
-  // Keys are full names (though GProtocol already includes full name)
-	private final Map<GProtoName, GProtocol> inlined = new HashMap<>();
+	// N.B. protos have pruned role decls -- CHECKME: prune args?
+	private final Map<GProtoName, GProtocol> inlined = new HashMap<>();  // Keys are full names (though GProtocol already includes full name)
 
-  // Projected from inlined; keys are full names
-	private final Map<LProtoName, LProjection> iprojs = new HashMap<>();  // CHECKME: rename projis?
+	// CHECKME: rename projis?
+	private final Map<LProtoName, LProjection> iprojs = new HashMap<>();  // Projected from inlined; keys are full names
 	
 	// Projected from intermediates
 	// LProtocolName is the full local protocol name (module name is the prefix)
@@ -226,11 +224,6 @@ public class CoreContext
 		this.fEGraphs.put(fullname, graph);
 	}
 	
-	protected void addUnfairEGraph(LProtoName fullname, EGraph graph)
-	{
-		this.uEGraphs.put(fullname, graph);
-	}
-	
 	// Pre: Core.runSyntacticWfPasses
 	public EGraph getUnfairEGraph(GProtoName fullname, Role role)
 	{
@@ -253,10 +246,10 @@ public class CoreContext
 		}
 		return unfair;
 	}
-
-	protected void addSGraph(GProtoName fullname, SGraph graph)
+	
+	protected void addUnfairEGraph(LProtoName fullname, EGraph graph)
 	{
-		this.fSGraphs.put(fullname, graph);
+		this.uEGraphs.put(fullname, graph);
 	}
 	
 	public SGraph getSGraph(GProtoName fullname) throws ScribException
@@ -293,9 +286,9 @@ public class CoreContext
 		return egraphs;
 	}
 
-	protected void addUnfairSGraph(GProtoName fullname, SGraph graph)
+	protected void addSGraph(GProtoName fullname, SGraph graph)
 	{
-		this.uSGraphs.put(fullname, graph);
+		this.fSGraphs.put(fullname, graph);
 	}
 
 	public SGraph getUnfairSGraph(GProtoName fullname) throws ScribException
@@ -314,6 +307,11 @@ public class CoreContext
 			addUnfairSGraph(fullname, graph);
 		}
 		return graph;
+	}
+
+	protected void addUnfairSGraph(GProtoName fullname, SGraph graph)
+	{
+		this.uSGraphs.put(fullname, graph);
 	}
 	
 	protected void addMinimisedEGraph(LProtoName fullname, EGraph graph)

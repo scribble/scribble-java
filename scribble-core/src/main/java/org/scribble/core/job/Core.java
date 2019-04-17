@@ -80,20 +80,16 @@ public class Core
 
 	public void runPasses() throws ScribException
 	{
-		runContextBuildingPasses();  // Populates JobContext -- includes runProjectionPasses and runEfsmBuildingPasses
+		// Passes populate JobContext on-demand by each individual getter
+		runSyntacticTransformPasses();
 		runSyntacticWfPasses();
+		runProjectionPasses();  // CHECKME: can try before validation (i.e., including syntactic WF), to promote greater tool feedback? (cf. CommandLine output "barrier")
+		runEfsmBuildingPasses();  // Currently, unfair-transform graph building must come after syntactic WF --- TODO fix graph building to prevent crash ?
 		runModelCheckingPasses();
 	}
 	
 	// Populates JobContext -- although patten is to do on-demand via (first) getter, so (partially) OK to delay population
-	public void runContextBuildingPasses()  // No ScribException, no errors expected
-	{
-		runInliningAndUnfoldingPasses();
-		runProjectionPasses();  // Do before any validation (i.e., including global WF), to promote greater tool feedback
-		runEfsmBuildingPasses();
-	}
-
-	private void runInliningAndUnfoldingPasses()
+	protected void runSyntacticTransformPasses()  // No ScribException, no errors expected
 	{
 		verbosePrintPass("Inlining subprotocols for all globals...");
 		for (GProtoName fullname : this.context.getParsedFullnames())
@@ -149,36 +145,42 @@ public class Core
 		}
 	}
 
-	private void runEfsmBuildingPasses()
+	// Builds only the fair EFSMs, unfair EFSM building depends on WF (role enabling, e.g., bad.wfchoice.enabling.threeparty.Test02) for building algorithm to work...
+	// ...or patch unfair-transform graph building to not crash?
+	protected void runEfsmBuildingPasses()
 	{
 		verbosePrintPass("Building EFSMs for all projected inlineds...");
 		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
-			GProtocol imed = this.context.getIntermediate(fullname);
-			for (Role self : imed.roles)
+			GProtocol inlined = this.context.getInlined(fullname);
+			for (Role self : inlined.roles)
 			{
 				// Seems to be OK even if runSyntacticWfPasses fails (cf. unfair transform)
 				EGraph graph = this.context.getEGraph(fullname, self);
 				verbosePrintPass(
-						"Built EFSM: " + imed.fullname + ":\n" + graph.toDot());
+						"Built EFSM: " + inlined.fullname + ":\n" + graph.toDot());
 			}
 		}
 				
-		/*if (!this.config.args.get(CoreArgs.FAIR))
+		if (!this.config.args.get(CoreArgs.FAIR))
 		{
-			// Pre: runSyntacticWfPasses -- depends on WF (role enabling, e.g., bad.wfchoice.enabling.threeparty.Test02), for graph building algorithm to work 
-			verbosePrintPass("Building \"unfair\" EFSMs for all projected inlineds...");
-			for (Entry<LProtoName, LProtocol> e : this.context.getProjectedInlineds()
-					.entrySet())
+			verbosePrintPass(
+					"Building \"unfair\" EFSMs for all projected inlineds...");
+			for (GProtoName fullname : this.context.getParsedFullnames())
 			{
-				LProtocol iproj = e.getValue();  // FIXME: don't need actual proj
-				EGraph graph = this.context.getUnfairEGraph(iproj.fullname);  // CHECKME: refactor actual construction back to on-demand in Context, and just use getters here?  And for other passes?
-				verbosePrintPass("Built \"unfair\" EFSM: " + iproj.fullname + ":\n" + graph.toDot());
+				GProtocol inlined = this.context.getInlined(fullname);
+				for (Role self : inlined.roles)
+				{
+					// Pre: runSyntacticWfPasses -- e.g., bad.wfchoice.enabling.threeparty.Test02
+					EGraph graph = this.context.getUnfairEGraph(inlined.fullname, self);
+					verbosePrintPass("Built \"unfair\" EFSM: " + inlined.fullname + ":\n"
+							+ graph.toDot());
+				}
 			}
-		}*/
+		}
 	}
 	
-	public void runSyntacticWfPasses() throws ScribException
+	protected void runSyntacticWfPasses() throws ScribException
 	{
 		verbosePrintPass(
 				"Checking for unused role decls on all inlined globals...");
@@ -209,7 +211,7 @@ public class Core
 			GTypeUnfolder v = new GTypeUnfolder();
 					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
 			inlined.unfoldAllOnce(v).checkRoleEnabling();
-				// TODO: get unfolded from Context
+					// TODO: get unfolded from Context
 		}
 
 		verbosePrintPass(
@@ -227,12 +229,12 @@ public class Core
 		verbosePrintPass("Checking reachability on all projected inlineds...");
 		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
-			GProtocol imed = this.context.getIntermediate(fullname);
-			if (imed.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
+			GProtocol inlined = this.context.getInlined(fullname);
+			if (inlined.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
 			{
 				continue;
 			}
-			for (Role r : imed.roles)
+			for (Role r : inlined.roles)
 			{
 				LProjection iproj = this.context.getProjectedInlined(fullname, r);
 				iproj.checkReachability();
@@ -240,9 +242,9 @@ public class Core
 		}
 	}
 
-	public void runModelCheckingPasses() throws ScribException
+	protected void runModelCheckingPasses() throws ScribException
 	{
-		verbosePrintPass("Building and checking models from projected inlineds...");  // Move model building earlier?
+		verbosePrintPass("Building and checking models from projected inlineds...");  // CHECKME: separate and move model building earlier?
 		// CHECKME: refactor more/whole validation into lang.GProtocol ?
 		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
