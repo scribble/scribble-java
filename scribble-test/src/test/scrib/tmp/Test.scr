@@ -110,18 +110,16 @@ data <java> "..." from "..." as T;
 //*
 global protocol Proto1(role A, role B, role C)
 {
-	1() from A to B;
-	1() from A to C;
-	/*choice at A
+	choice at A
 	{
-		1() from A to C;
+		1() from A to C;  // FIXME: -project Proto1 B -fair
 		do Proto1(A, B, C);
 	}
 	or
 	{
 		2() from A to B;
 		2() from A to C;
-	}*/
+	}
 }
 //*/
 
