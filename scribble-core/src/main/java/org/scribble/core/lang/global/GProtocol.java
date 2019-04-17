@@ -98,8 +98,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
 	public LProjection projectInlined(Core core, Role self)
 	{
-		LSeq body = (LSeq) this.def
-				.visitWithNoThrow(new InlinedProjector(core, self));
+		LSeq body = new InlinedProjector(core, self).visitSeq(this.def);
 		return projectAux(self, this.roles, body);
 	}
 
