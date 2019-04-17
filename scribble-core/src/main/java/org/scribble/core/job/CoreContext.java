@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.lang.global.GProtocol;
+import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.AutGraphParser;
 import org.scribble.core.model.endpoint.EGraph;
@@ -54,12 +55,12 @@ public class CoreContext
 	private final Map<GProtoName, GProtocol> inlined = new HashMap<>();
 
   // Projected from inlined; keys are full names
-	private final Map<LProtoName, LProtocol> iprojs = new HashMap<>();  // CHECKME: rename projis?
+	private final Map<LProtoName, LProjection> iprojs = new HashMap<>();  // CHECKME: rename projis?
 	
 	// Projected from intermediates
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	// LProtocolName key is LProtocol value fullname (i.e., redundant)
-	private final Map<LProtoName, LProtocol> projs = new HashMap<>();
+	private final Map<LProtoName, LProjection> projs = new HashMap<>();
 
 	// Built from projected inlined
 	private final Map<LProtoName, EGraph> fEGraphs = new HashMap<>();
@@ -129,57 +130,71 @@ public class CoreContext
 	}
 	
   // Projected from inlined
-	public void addProjectedInlined(LProtoName fullname, LProtocol l)
+	public LProjection getProjectedInlined(GProtoName fullname, Role self)
 	{
-		this.iprojs.put(fullname, l);
-	}
-	
-	public LProtocol getProjectedInlined(GProtoName fullname, Role self)
-	{
-		LProtoName p = InlinedProjector.getFullProjectionName(fullname, self);
-		return getProjectedInlined(p);
+		LProtoName projFullname = InlinedProjector.getFullProjectionName(fullname, self);
+		LProjection iproj = this.iprojs.get(fullname);
+		if (iproj == null)
+		{
+			iproj = getInlined(fullname).projectInlined(this.core, self);
+			addProjectedInlined(projFullname, iproj);
+		}
+		return iproj;
 	}
 
-	public LProtocol getProjectedInlined(LProtoName fullname)
+	/*public LProjection getProjectedInlined(LProtoName fullname)
 	{
-		return this.iprojs.get(fullname);
-	}
+		LProjection iproj = this.iprojs.get(fullname);
+		if (iproj == null)
+		{
+			// FIXME: need global inlined to build (reverse derive from fullname?)
+			throw new RuntimeException("[TODO]: " + fullname);
+		}
+		return iproj;
+	}*/
 	
 	public Map<LProtoName, LProtocol> getProjectedInlineds()
 	{
 		return Collections.unmodifiableMap(this.iprojs);
 	}
 	
+	protected void addProjectedInlined(LProtoName fullname, LProjection iproj)
+	{
+		this.iprojs.put(fullname, iproj);
+	}
+
 	// Projected from intermediate
-	public void addProjection(LProtocol p)
+	// Core gives LProjection -- projection Modules should be by Job
+	public LProjection getProjection(GProtoName fullname, Role self)
+	{
+		LProtoName projFullname = InlinedProjector.getFullProjectionName(fullname,
+				self);
+		LProjection proj = this.projs.get(fullname);
+		if (proj == null)
+		{
+			proj = getInlined(fullname).project(this.core, self);
+			addProjectedInlined(projFullname, proj);
+		}
+		return proj;
+	}
+
+	public LProjection getProjection(LProtoName fullname)
+	{
+		LProjection proj = this.projs.get(fullname);
+		if (proj == null)
+		{
+			// FIXME: need global imed to build (reverse derive from fullname?)
+			throw new RuntimeException("[TODO]: " + fullname);
+		}
+		return proj;
+	}
+	
+	protected void addProjection(LProjection proj)
 	{
 		/*LProtocolName lpn = (LProtocolName) mod.getProtoDeclChildren().get(0)
 				.getFullMemberName(mod);
 		this.projected.put(lpn, mod);*/
-		this.projs.put(p.fullname, p);
-	}
-	
-	public //Module 
-			LProtocol getProjection(GProtoName fullname, Role role)
-			throws ScribException
-	{
-		return getProjection(InlinedProjector.getFullProjectionName(fullname, role));
-	}
-
-	public //Module 
-			LProtocol getProjection(LProtoName fullname)
-			//throws ScribbleException
-	{
-		/*Module proj = this.projected.get(fullname);
-		if (proj == null)*/
-		/*if (!this.projected.containsKey(fullname))
-		{
-			throw new ScribbleException(
-					"Projection not found: " + fullname);
-					// E.g. disamb/enabling error before projection passes (e.g. CommandLine -fsm arg)
-					//CHECKME: should not occur any more?
-		}*/
-		return this.projs.get(fullname);
+		this.projs.put(proj.fullname, proj);
 	}
 	
 	protected void addEGraph(LProtoName fullname, EGraph graph)
@@ -215,12 +230,14 @@ public class CoreContext
 		this.uEGraphs.put(fullname, graph);
 	}
 	
+	// Pre: Core.runSyntacticWfPasses
 	public EGraph getUnfairEGraph(GProtoName fullname, Role role)
 	{
 		return getUnfairEGraph(
 				InlinedProjector.getFullProjectionName(fullname, role));
 	}
 
+	// Pre: Core.runSyntacticWfPasses
 	public EGraph getUnfairEGraph(LProtoName fullname)
 	{
 		EGraph unfair = this.uEGraphs.get(fullname);

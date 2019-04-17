@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.lang.global.GProtocol;
+import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.ModelFactoryImpl;
@@ -127,8 +128,10 @@ public class Core
 			for (Role self : inlined.roles)
 			{
 				// pruneRecs already done (see runContextBuildingPasses)
-				LProtocol iproj = inlined.projectInlined(this, self);  // CHECKME: projection and inling commutative?
-				this.context.addProjectedInlined(iproj.fullname, iproj);
+				/*LProtocol iproj = inlined.projectInlined(this, self);  // CHECKME: projection and inling commutative?
+				this.context.addProjectedInlined(iproj.fullname, iproj);*/
+				LProjection iproj = this.context.getProjectedInlined(inlined.fullname,
+						self);
 				verbosePrintPass("Projected inlined onto " + self + ": "
 						+ inlined.fullname + "\n" + iproj);
 			}
@@ -140,8 +143,9 @@ public class Core
 		{
 			for (Role self : imed.roles)
 			{
-				LProtocol proj = imed.project(this, self);  // Does pruneRecs
-				this.context.addProjection(proj);
+				/*LProjection proj = imed.project(this, self);  // Does pruneRecs
+				this.context.addProjection(proj);*/
+				LProjection proj = this.context.getProjection(imed.fullname, self);
 				verbosePrintPass("Projected intermediate onto " + self + ": "
 						+ imed.fullname + "\n" + proj);
 			}
@@ -154,6 +158,7 @@ public class Core
 		for (Entry<LProtoName, LProtocol> e : this.context.getProjectedInlineds()
 				.entrySet())
 		{
+			// Seems to be OK even if runSyntacticWfPasses fails (cf. unfair transform)
 			LProtocol proj = e.getValue();
 			EGraph graph = proj.toEGraph(this);  // CHECKME: refactor actual construction back to on-demand in Context, and just use getters here?  And for other passes?
 			this.context.addEGraph(proj.fullname, graph);
