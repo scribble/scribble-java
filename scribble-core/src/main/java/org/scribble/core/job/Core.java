@@ -16,7 +16,6 @@ package org.scribble.core.job;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,6 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.NonProtoDepsGatherer;
 import org.scribble.core.visit.ProtoDepsCollector;
 import org.scribble.core.visit.RoleGatherer;
-import org.scribble.core.visit.global.GTypeInliner;
 import org.scribble.core.visit.global.GTypeUnfolder;
 import org.scribble.util.ScribException;
 
@@ -98,18 +96,18 @@ public class Core
 	private void runInliningAndUnfoldingPasses()
 	{
 		verbosePrintPass("Inlining subprotocols for all globals...");
-		for (GProtocol imed : this.context.getIntermediates())
+		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
-			GTypeInliner v = new GTypeInliner(this);
-			GProtocol inlined = imed.getInlined(v);  // Protocol.getInlined does pruneRecs
+			GProtocol inlined = this.context.getInlined(fullname);
 			verbosePrintPass(
-					"Inlined subprotocols: " + imed.fullname + "\n" + inlined);
-			this.context.addInlined(imed.fullname, inlined);
+					"Inlined subprotocols: " + fullname + "\n" + inlined);
 		}
 				
 		verbosePrintPass("Unfolding all recursions once for all inlined globals...");
-		for (GProtocol inlined : this.context.getInlineds())
+		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
+			// TODO: currently, unfolded not actually stored by Context -- unfoldAllOnce repeated manually when needed, e.g., runSyntacticWfPasses
+			GProtocol inlined = this.context.getInlined(fullname);
 			GTypeUnfolder v = new GTypeUnfolder();
 			GProtocol unf = (GProtocol) inlined.unfoldAllOnce(v);//.unfoldAllOnce(unf2);  // CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 			verbosePrintPass(
@@ -123,13 +121,13 @@ public class Core
 	protected void runProjectionPasses()  // No ScribException, no errors expected
 	{
 		verbosePrintPass("Projecting all inlined globals...");
-		for (GProtocol inlined : this.context.getInlineds())
+		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
+			GProtocol inlined = this.context.getInlined(fullname);
 			for (Role self : inlined.roles)
 			{
 				// pruneRecs already done (see runContextBuildingPasses)
-				/*LProtocol iproj = inlined.projectInlined(this, self);  // CHECKME: projection and inling commutative?
-				this.context.addProjectedInlined(iproj.fullname, iproj);*/
+				// CHECKME: projection and inling commutative?
 				LProjection iproj = this.context.getProjectedInlined(inlined.fullname,
 						self);
 				verbosePrintPass("Projected inlined onto " + self + ": "
@@ -139,12 +137,11 @@ public class Core
 
 		// Pre: inlined already projected -- used for Do projection
 		verbosePrintPass("Projecting all intermediate globals...");
-		for (GProtocol imed : this.context.getIntermediates())
+		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
+			GProtocol imed = this.context.getIntermediate(fullname);
 			for (Role self : imed.roles)
 			{
-				/*LProjection proj = imed.project(this, self);  // Does pruneRecs
-				this.context.addProjection(proj);*/
 				LProjection proj = this.context.getProjection(imed.fullname, self);
 				verbosePrintPass("Projected intermediate onto " + self + ": "
 						+ imed.fullname + "\n" + proj);
@@ -155,14 +152,16 @@ public class Core
 	private void runEfsmBuildingPasses()
 	{
 		verbosePrintPass("Building EFSMs for all projected inlineds...");
-		for (Entry<LProtoName, LProtocol> e : this.context.getProjectedInlineds()
-				.entrySet())
+		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
-			// Seems to be OK even if runSyntacticWfPasses fails (cf. unfair transform)
-			LProtocol proj = e.getValue();
-			EGraph graph = proj.toEGraph(this);  // CHECKME: refactor actual construction back to on-demand in Context, and just use getters here?  And for other passes?
-			this.context.addEGraph(proj.fullname, graph);
-			verbosePrintPass("Built EFSM: " + proj.fullname + ":\n" + graph.toDot());
+			GProtocol imed = this.context.getIntermediate(fullname);
+			for (Role self : imed.roles)
+			{
+				// Seems to be OK even if runSyntacticWfPasses fails (cf. unfair transform)
+				EGraph graph = this.context.getEGraph(fullname, self);
+				verbosePrintPass(
+						"Built EFSM: " + imed.fullname + ":\n" + graph.toDot());
+			}
 		}
 				
 		/*if (!this.config.args.get(CoreArgs.FAIR))
@@ -172,9 +171,9 @@ public class Core
 			for (Entry<LProtoName, LProtocol> e : this.context.getProjectedInlineds()
 					.entrySet())
 			{
-				LProtocol proj = e.getValue();  // FIXME: don't need actual proj
-				EGraph graph = this.context.getUnfairEGraph(proj.fullname);  // CHECKME: refactor actual construction back to on-demand in Context, and just use getters here?  And for other passes?
-				verbosePrintPass("Built \"unfair\" EFSM: " + proj.fullname + ":\n" + graph.toDot());
+				LProtocol iproj = e.getValue();  // FIXME: don't need actual proj
+				EGraph graph = this.context.getUnfairEGraph(iproj.fullname);  // CHECKME: refactor actual construction back to on-demand in Context, and just use getters here?  And for other passes?
+				verbosePrintPass("Built \"unfair\" EFSM: " + iproj.fullname + ":\n" + graph.toDot());
 			}
 		}*/
 	}
@@ -183,45 +182,61 @@ public class Core
 	{
 		verbosePrintPass(
 				"Checking for unused role decls on all inlined globals...");
-		for (GProtocol inlined : this.context.getInlineds())
+		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
 			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
-			Set<Role> used = inlined.def
+			Set<Role> used = this.context.getInlined(fullname).def
 					.gather(new RoleGatherer<Global, GSeq>()::visit)
 					.collect(Collectors.toSet());
-			Set<Role> unused = this.context.getIntermediate(inlined.fullname).roles
+			Set<Role> unused = this.context.getIntermediate(fullname).roles
 							// imeds have original role decls (inlined's are pruned)
 					.stream().filter(x -> !used.contains(x)).collect(Collectors.toSet());
 			if (!unused.isEmpty())
 			{
 				throw new ScribException(
-						"Unused roles in " + inlined.fullname + ": " + unused);
+						"Unused roles in " + fullname + ": " + unused);
 			}
 		}
 
 		verbosePrintPass("Checking role enabling on all inlined globals...");
-		for (GProtocol inlined : (Iterable<GProtocol>) this.context.getInlineds()
-				.stream().filter(x -> !x.isAux())::iterator)
+		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
+			GProtocol inlined = this.context.getInlined(fullname);
+			if (inlined.isAux())
+			{
+				continue;
+			}
 			GTypeUnfolder v = new GTypeUnfolder();
 					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
 			inlined.unfoldAllOnce(v).checkRoleEnabling();
+				// TODO: get unfolded from Context
 		}
 
 		verbosePrintPass(
 				"Checking consistent external choice subjects on all inlined globals...");
-		for (GProtocol inlined : (Iterable<GProtocol>) this.context.getInlineds()
-				.stream().filter(x -> !x.isAux())::iterator)
+		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
+			GProtocol inlined = this.context.getInlined(fullname);
+			if (inlined.isAux())
+			{
+				continue;
+			}
 			inlined.checkExtChoiceConsistency();
 		}
 		
 		verbosePrintPass("Checking reachability on all projected inlineds...");
-		for (LProtocol proj : (Iterable<LProtocol>) this.context
-				.getProjectedInlineds().values().stream()
-				.filter(x -> !x.isAux())::iterator)  // CHECKME? e.g., bad.reach.globals.gdo.Test01b 
+		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
-			proj.checkReachability();
+			GProtocol imed = this.context.getIntermediate(fullname);
+			if (imed.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
+			{
+				continue;
+			}
+			for (Role r : imed.roles)
+			{
+				LProjection iproj = this.context.getProjectedInlined(fullname, r);
+				iproj.checkReachability();
+			}
 		}
 	}
 
@@ -229,10 +244,13 @@ public class Core
 	{
 		verbosePrintPass("Building and checking models from projected inlineds...");  // Move model building earlier?
 		// CHECKME: refactor more/whole validation into lang.GProtocol ?
-		for (GProtocol iproj : (Iterable<GProtocol>) this.context.getInlineds()
-				.stream().filter(x -> !x.isAux())::iterator)
+		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
-			verbosePrintPass("Validating: " + iproj.fullname);
+			if (this.context.getIntermediate(fullname).isAux())
+			{
+				continue;
+			}
+			verbosePrintPass("Validating: " + fullname);
 			if (this.config.args.get(CoreArgs.SPIN))
 			{
 				if (this.config.args.get(CoreArgs.FAIR))
@@ -240,16 +258,16 @@ public class Core
 					throw new RuntimeException(
 							"[TODO]: -spin currently does not support fair ouput choices.");
 				}
-				GProtocol.validateBySpin(this, iproj.fullname);
+				GProtocol.validateBySpin(this, fullname);
 			}
 			else
 			{
-				GProtocol.validateByScribble(this, iproj.fullname, true);
+				GProtocol.validateByScribble(this, fullname, true);
 				if (!this.config.args.get(CoreArgs.FAIR))
 				{
 					verbosePrintPass(
-							"Validating with \"unfair\" output choices: " + iproj.fullname);
-					GProtocol.validateByScribble(this, iproj.fullname, false);  // TODO: only need to check progress, not full validation
+							"Validating with \"unfair\" output choices: " + fullname);
+					GProtocol.validateByScribble(this, fullname, false);  // TODO: only need to check progress, not full validation
 				}
 			}
 		}
@@ -277,14 +295,14 @@ public class Core
 		LProtocol proj =
 				this.context.getProjection(fullname, role);
 		
-		List<ProtoName<Local>> ps = proj.def
+		List<ProtoName<Local>> pfullnames = proj.def
 				.gather(new ProtoDepsCollector<Local, LSeq>()::visit)
 				.collect(Collectors.toList());
-		for (ProtoName<Local> p : ps)
+		for (ProtoName<Local> pfullname : pfullnames)
 		{
-			System.out.println("\n" + this.context.getProjection((LProtoName) p));
+			System.out.println("\n" + this.context.getProjection((LProtoName) pfullname));
 		}
-		if (!ps.contains(proj.fullname))
+		if (!pfullnames.contains(proj.fullname))
 		{
 			System.out.println("\n" + proj);
 		}
@@ -294,7 +312,7 @@ public class Core
 				.collect(Collectors.toList());
 
 		warningPrintln("");
-		warningPrintln("[TODO] Full module projection and imports: "
+		warningPrintln("[TODO] Full module projection (with imports): "
 				+ fullname + "@" + role);
 		
 		return Collections.emptyMap();

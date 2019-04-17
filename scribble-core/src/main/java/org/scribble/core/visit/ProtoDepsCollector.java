@@ -43,6 +43,6 @@ public class ProtoDepsCollector<K extends ProtoKind, B extends Seq<K, B>>
 	public <N extends ProtoName<K>> Stream<ProtoName<K>> visitDo(
 			Do<K, B, N> n)
 	{
-		return Stream.of(n.proto);
+		return Stream.of(n.proto);  // Should be full names
 	}
 }
