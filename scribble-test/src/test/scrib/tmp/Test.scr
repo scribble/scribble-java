@@ -112,7 +112,7 @@ global protocol Proto1(role A, role B, role C)
 {
 	choice at A
 	{
-		1() from A to C;  // FIXME: -project Proto1 B -fair
+		1() from A to C;  // FIXME: -project Proto1 B [-fair]
 		do Proto1(A, B, C);
 	}
 	or

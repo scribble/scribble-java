@@ -102,14 +102,18 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 				this.params, sig.args);
 		/*LSeq body = (LSeq) this.def.visitWithNoEx(subs).visitWithNoEx(v)
 				.visitWithNoEx(new RecPruner<>());*/
-		LSeq body = new RecPruner<Local, LSeq>()
-				.visitSeq(v.visitSeq(subs.visitSeq(this.def)));
+		LSeq inlined = v.visitSeq(subs.visitSeq(this.def));
 		RecVar rv = v.getInlinedRecVar(sig);
-		LRecursion rec = new LRecursion(null, rv, body);  // CHECKME: or protodecl source?
-		CommonTree source = getSource();  // CHECKME: or null source?
-		LSeq def = new LSeq(null, Stream.of(rec).collect(Collectors.toList()));
-		return new LProtocol(source, this.mods, this.fullname, this.roles,
-				this.self, this.params, def);
+		LRecursion rec = new LRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
+		LSeq seq = new LSeq(null, Stream.of(rec).collect(Collectors.toList()));
+		LSeq def = new RecPruner<Local, LSeq>().visitSeq(seq);
+		/*//CHECKME: necessary for LProtocol/Projection? cf. global
+		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)
+				.collect(Collectors.toSet());
+		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls
+				.collect(Collectors.toList());*/
+		return new LProtocol(getSource(), this.mods, this.fullname, this.roles,
+				this.self, this.params, def);  // CHECKME: or null source?
 	}
 	
 	@Override

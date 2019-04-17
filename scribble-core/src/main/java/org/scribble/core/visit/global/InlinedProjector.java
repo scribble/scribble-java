@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ModuleName;
@@ -47,7 +48,9 @@ import org.scribble.core.type.session.local.LSend;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
+import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.STypeAggNoThrow;
+import org.scribble.core.visit.local.RecPruner1;
 import org.scribble.core.visit.local.SingleContinueChecker;
 
 // Pre: use on inlined (i.e., Do inlined, roles pruned)
@@ -147,6 +150,11 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		{
 			return LSkip.SKIP;
 		}
+		/*LSeq pruned = new RecPruner1(this.core, n.recvar).visitSeq(body);
+		if (pruned.isEmpty())
+		{
+			return LSkip.SKIP;
+		}*/
 		return new LRecursion(null, n.recvar, body);
 	}
 
