@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ModuleName;
@@ -41,16 +40,14 @@ import org.scribble.core.type.session.local.LAcc;
 import org.scribble.core.type.session.local.LChoice;
 import org.scribble.core.type.session.local.LContinue;
 import org.scribble.core.type.session.local.LDisconnect;
-import org.scribble.core.type.session.local.LRecv;
 import org.scribble.core.type.session.local.LRecursion;
+import org.scribble.core.type.session.local.LRecv;
 import org.scribble.core.type.session.local.LReq;
 import org.scribble.core.type.session.local.LSend;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.STypeAggNoThrow;
-import org.scribble.core.visit.local.RecPruner1;
 import org.scribble.core.visit.local.SingleContinueChecker;
 
 // Pre: use on inlined (i.e., Do inlined, roles pruned)
@@ -140,7 +137,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	public LType visitRecursion(Recursion<Global, GSeq> n)
 	{
 		LSeq body = visitSeq(n.body);
-		if (body.isEmpty())  // N.B. projection is doing empty-rec pruning
+		if (body.isEmpty())  // A simple special case of empty-rec pruning -- leave it to proper rec pruning?
 		{
 			return LSkip.SKIP;
 		}

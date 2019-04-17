@@ -105,11 +105,11 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 
 	public LProjection project(Core core, Role self)
 	{
-		LSeq body = (LSeq) this.def.visitWithNoThrow(new Projector(core, self))
-				.visitWithNoThrow(new RecPruner<>());
+		LSeq def = new Projector(core, self).visitSeq(this.def);
+		LSeq pruned = new RecPruner<Local, LSeq>().visitSeq(def);
 		return projectAux(self,
 				core.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
-				body);
+				pruned);
 	}
 	
 	private LProjection projectAux(Role self, List<Role> decls, LSeq body)
