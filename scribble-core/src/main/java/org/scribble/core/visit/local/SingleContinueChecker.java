@@ -30,6 +30,7 @@ import org.scribble.core.visit.STypeAggNoThrow;
 
 // Return true iff this LType is "equivalent" to a single "continue X", where X is in rvs
 // Would be an "InlinedAgg"
+@Deprecated
 public class SingleContinueChecker extends STypeAggNoThrow<Local, LSeq, Boolean>
 {
 	private Set<RecVar> rvs;

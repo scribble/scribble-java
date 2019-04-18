@@ -98,24 +98,24 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
 	public LProjection projectInlined(Core core, Role self)
 	{
-		LSeq body = new InlinedProjector(core, self).visitSeq(this.def);
-		return projectAux(self, this.roles, body);
+		LSeq def = new InlinedProjector(core, self).visitSeq(this.def);
+		return projectAux(self, this.roles, def);
 	}
 
 	public LProjection project(Core core, Role self)
 	{
 		LSeq def = new Projector(core, self).visitSeq(this.def);
-		LSeq pruned = new RecPruner<Local, LSeq>().visitSeq(def);
 		return projectAux(self,
 				core.getContext().getInlined(this.fullname).roles,  // Use inlined decls, already pruned
-				pruned);
+				def);
 	}
 	
 	private LProjection projectAux(Role self, List<Role> decls, LSeq body)
 	{
+		LSeq pruned = new RecPruner<Local, LSeq>().visitSeq(body);
 		LProtoName fullname = InlinedProjector
 				.getFullProjectionName(this.fullname, self);
-		Set<Role> tmp = body.gather(new RoleGatherer<Local, LSeq>()::visit)
+		Set<Role> tmp = pruned.gather(new RoleGatherer<Local, LSeq>()::visit)
 				.collect(Collectors.toSet());
 		List<Role> roles = decls.stream()
 				.filter(x -> x.equals(self) || tmp.contains(x))  // Implicitly filters Role.SELF
@@ -123,7 +123,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		List<MemberName<? extends NonRoleParamKind>> params =
 				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
 		return new LProjection(this.mods, fullname, roles, self, params,
-				this.fullname, body);
+				this.fullname, pruned);
 	}
 	
 	// CHECKME: drop from Protocol (after removing Protocol from SType?)

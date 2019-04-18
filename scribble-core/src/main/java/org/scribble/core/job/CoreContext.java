@@ -52,6 +52,7 @@ public class CoreContext
 	// CHECKME: rename projis?
 	private final Map<LProtoName, LProjection> iprojs = new HashMap<>();  // Projected from inlined; keys are full names
 	
+	// CHECKME: refactor to Job ?
 	// Projected from intermediates
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	// LProtocolName key is LProtocol value fullname (i.e., redundant)
