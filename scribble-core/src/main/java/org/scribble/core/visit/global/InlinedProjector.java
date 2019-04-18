@@ -14,6 +14,7 @@
 package org.scribble.core.visit.global;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ModuleName;
@@ -48,11 +50,15 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeAggNoThrow;
-import org.scribble.core.visit.local.SingleContinueChecker;
 
 // Pre: use on inlined (i.e., Do inlined, roles pruned)
 public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 {
+	
+	//HERE make Map<RecVar, Boolean> for guarded or not, prune continues as part of projection -- then fix RecPruner to be general (including pruning empty choice blocks), and prune recs after continues pruned
+	//private Map<RecVar, Boolean> guarded = new HashMap<>();
+	private final Set<RecVar> unguarded;
+	
 	public final Core core;
 	public final Role self;
 
@@ -60,6 +66,15 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	{
 		this.core = core;
 		this.self = self;
+		this.unguarded = new HashSet<>();
+	}
+
+	// Copy constructor for "nested" Seq visiting
+	protected InlinedProjector(InlinedProjector v)
+	{
+		this.core = v.core;
+		this.self = v.self;
+		this.unguarded = new HashSet<>(v.unguarded);
 	}
 
 	@Override
@@ -79,13 +94,26 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	{
 		Role subj = n.subj.equals(self) ? Role.SELF : n.subj;
 				// CHECKME: "self" also explcitily used for Do, but implicitly for MessageTransfer, inconsistent?
-		List<LSeq> tmp = n.blocks.stream().map(x -> visitSeq(x))
-				.filter(x -> !x.isEmpty()).collect(Collectors.toList());
+		List<LSeq> tmp = n.blocks.stream()
+				.map(x -> new InlinedProjector(this).visitSeq(x))
+				.filter(x -> !x.isEmpty() && !isUnguardedSingleContinue(x))
+				.collect(Collectors.toList());
 		if (tmp.isEmpty())
 		{
 			return LSkip.SKIP; // CHECKME: OK, or "empty" choice at subj still important?
 		}
 		return new LChoice(null, subj, tmp);
+	}
+	
+	private boolean isUnguardedSingleContinue(LSeq block)
+	{
+		if (block.elems.size() != 1)
+		{
+			return false;
+		}
+		SType<Local, LSeq> e = block.elems.get(0);
+		return (e instanceof LContinue)
+				&& this.unguarded.contains(((LContinue) e).recvar);
 	}
 	
 	@Override
@@ -136,22 +164,29 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	@Override
 	public LType visitRecursion(Recursion<Global, GSeq> n)
 	{
-		LSeq body = visitSeq(n.body);
-		if (body.isEmpty())  // A simple special case of empty-rec pruning -- leave it to proper rec pruning?
+		this.unguarded.add(n.recvar);
+		LSeq body = visitSeq(n.body);  // Single "nested" Seq, don't need to copy visitor
+		if (body.isEmpty())  // A simple special case of empty-rec pruning -- leave it to "official" rec pruning?
 		{
 			return LSkip.SKIP;
 		}
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(n.recvar);
-		if (body.visitWithNoThrow(new SingleContinueChecker(rvs)))
-		{
-			return LSkip.SKIP;
+		//if (body.visitWithNoThrow(new SingleContinueChecker(rvs)))  // "Generalised" single-continue checked now unnecessary, single-continues pruned in choice visiting above
+		if (body.elems.size() == 1)
+		{	
+			SType<Local, LSeq> e = body.elems.get(0);
+			if(e instanceof LContinue && ((LContinue) e).recvar.equals(n.recvar))
+			{
+				return LSkip.SKIP;
+			}
 		}
 		/*LSeq pruned = new RecPruner1(this.core, n.recvar).visitSeq(body);
 		if (pruned.isEmpty())
 		{
 			return LSkip.SKIP;
 		}*/
+		this.unguarded.remove(n.recvar);
 		return new LRecursion(null, n.recvar, body);
 	}
 
@@ -159,9 +194,21 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	@Override
 	public LSeq visitSeq(GSeq n)
 	{
-		List<LType> elems = n.elems.stream().map(x -> x.visitWithNoThrow(this))
-				.filter(x -> !x.equals(LSkip.SKIP)).collect(Collectors.toList());
-		return new LSeq(null, elems);  
+		/*List<LType> elems = n.elems.stream().map(x -> x.visitWithNoThrow(this))
+				.filter(x -> !x.equals(LSkip.SKIP)).collect(Collectors.toList());*/
+		List<LType> elems = new LinkedList<>();
+		for (SType<Global, GSeq> e : n.elems)
+		{
+			LType e1 = e.visitWithNoThrow(this);
+			elems.add(e1);
+			if (!(e1 instanceof LSkip))
+			{
+				this.unguarded.clear();
+			}
+		}
+		elems = elems.stream().filter(x -> !x.equals(LSkip.SKIP))
+				.collect(Collectors.toList());
+		return new LSeq(null, elems);
 				// Empty seqs converted to LSkip by GChoice/Recursion projection
 				// And a WF top-level protocol cannot produce empty LSeq
 				// So a projection never contains an empty LSeq -- i.e., "empty choice/rec" pruning unnecessary

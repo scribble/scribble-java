@@ -7,7 +7,9 @@ global protocol Proto1(role A, role B)
 	{
 		choice at A
 		{
-			continue X;
+			continue X;  
+					// CHECKME: was previously considered bad -- but now, projection implicitly removes this continue so the 1() is not a bad continuation any more...
+					// TODO: check as global WF instead?  unguarded continue? (cf. reachability) -- or consider good?
 		}
 		or
 		{

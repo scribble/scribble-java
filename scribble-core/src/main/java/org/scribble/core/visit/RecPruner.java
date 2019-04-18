@@ -35,8 +35,9 @@ public class RecPruner<K extends ProtoKind, B extends Seq<K, B>>
 		Set<RecVar> rvs = n.body.gather(new RecVarGatherer<K, B>()::visit)
 				.collect(Collectors.toSet());
 		return rvs.contains(n.recvar)
-				? n
+				? n  // FIXME: doesn't do a recursive call -- this is just a wrapper for checking getRecVars ... ?
 				: n.body;  // i.e., return a Seq, to be "inlined" by Seq.pruneRecs -- N.B. must handle empty Seq case
+						// By itself, this can leave an empty choice case (pruned rec under a choice) -- rely on inlining/projection use sites to take care of that
 	}
 
 	@Override
