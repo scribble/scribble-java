@@ -54,8 +54,14 @@ import org.scribble.core.visit.STypeAggNoThrow;
 // Pre: use on inlined (i.e., Do inlined, roles pruned)
 public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 {
-	
 	//HERE make Map<RecVar, Boolean> for guarded or not, prune continues as part of projection -- then fix RecPruner to be general (including pruning empty choice blocks), and prune recs after continues pruned
+	/*HERE
+	-- try clone in seq, rather than choice
+	-- fix choice context merging w.r.t. unguarded clear
+	-- fix rec pruning
+	-- fix projector unguarded inheritance
+	-- need old style subproto visitor for imed-projection do-pruning*/
+
 	protected final Set<RecVar> unguarded;  
 			// Projection "prunes" unguarded continues from choice cases, e.g., mu X.(A->B:1.X + A->B:2.A->C:2) for C, i.e., travel agent
 			// N.B. projection does not "merge" choice cases in , e.g., rec X { 1() from A; choice at A { continue X; } or { continue X; } }...
@@ -71,13 +77,13 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		this.unguarded = new HashSet<>();
 	}
 
-	/*// Copy constructor for "nested" Seq visiting
+	// Copy constructor for dup
 	protected InlinedProjector(InlinedProjector v)
 	{
 		this.core = v.core;
 		this.self = v.self;
 		this.unguarded = new HashSet<>(v.unguarded);
-	}*/
+	}
 
 	@Override
 	protected LType unit(SType<Global, GSeq> n)
@@ -91,11 +97,11 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		throw new RuntimeException("Disregarded for Projector: " + n + " ,, " + ts);
 	}
 	
+	// N.B. subclasses should override
+	// To visit a node with a copy of the current context (this.unguarded), e.g., for "nested" context visiting (Choice)
 	protected InlinedProjector dup()
 	{
-		InlinedProjector v = new InlinedProjector(this.core, this.self);
-		v.unguarded.addAll(this.unguarded);
-		return v;
+		return new InlinedProjector(this);
 	}
 
 	@Override
@@ -111,6 +117,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		{
 			return LSkip.SKIP; // CHECKME: OK, or "empty" choice at subj still important?
 		}
+		this.unguarded.clear();  // At least one block is non-empty, consider continues guarded
 		return new LChoice(null, subj, tmp);
 	}
 	

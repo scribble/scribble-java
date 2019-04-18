@@ -39,13 +39,17 @@ public class Projector extends InlinedProjector  // CHECKME: this way, or the ot
 	{
 		super(core, self);
 	}
+
+	// Copy constructor for dup
+	protected Projector(Projector v)
+	{
+		super(v);
+	}
 	
 	@Override
 	protected Projector dup()
 	{
-		Projector v = new Projector(this.core, this.self);
-		v.unguarded.addAll(this.unguarded);
-		return v;
+		return new Projector(this);
 	}
 
 	@Override
