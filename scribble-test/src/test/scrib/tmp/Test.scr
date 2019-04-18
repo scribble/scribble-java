@@ -78,6 +78,7 @@ module tmp.Test;
 
 // For model build/check refactoring:
 
+// TODO: fix imed-projection choice subjects -- inlined-projection is a single proto with all roles
 //HERE refactor model states, remove intermedrecedge
 
 		// Outstanding:
@@ -95,11 +96,12 @@ module tmp.Test;
 		// -- otoh, ast errors give source feedback -- maybe implement both
 	// use stypefactory in core -- also make visitorfactorys (both core and ast)
 	
-	
-
-// codegen refactoring:
+// Job/codegen refactoring:
+	// old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
+	// also do-arg pruning, for role-pruned projection decls
 	// choice-specific fairness annotations
 	// fix codegen when -fair
+
 
 // Test refactoring:
 	// refactor test to use main instead of cli
@@ -136,7 +138,21 @@ global protocol Proto1(role A, role B, role C)
 }
 //*/
 
-//*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A  // TODO: add junit test, testing core inlined projection choice subjects (for C)
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C;
+	}
+}
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A

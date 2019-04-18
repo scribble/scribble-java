@@ -106,7 +106,9 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	{
 		LSeq def = new Projector(core, self).visitSeq(this.def);
 		return projectAux(self,
-				core.getContext().getInlined(this.fullname).roles,  // Use inlined decls, already pruned
+				core.getContext().getInlined(this.fullname).roles,  
+						// Using inlined global, global role decls already pruned -- CHECKME: is this still relevant?
+						// Actual projection role decl pruning done by projectAux
 				def);
 	}
 	
@@ -118,7 +120,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		Set<Role> tmp = pruned.gather(new RoleGatherer<Local, LSeq>()::visit)
 				.collect(Collectors.toSet());
 		List<Role> roles = decls.stream()
-				.filter(x -> x.equals(self) || tmp.contains(x))  // Implicitly filters Role.SELF
+				.filter(x -> x.equals(self) || tmp.contains(x))
 				.collect(Collectors.toList());
 		List<MemberName<? extends NonRoleParamKind>> params =
 				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
@@ -164,7 +166,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		GSeq def = new RecPruner<Global, GSeq>().visitSeq(seq);
 		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)
 				.collect(Collectors.toSet());
-		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls
+		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls -- CHECKME: what is an example? was this from before unused role checking?
 				.collect(Collectors.toList());
 		return new GProtocol(getSource(), this.mods, this.fullname, rs,
 				this.params, def);

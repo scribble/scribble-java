@@ -54,16 +54,9 @@ import org.scribble.core.visit.STypeAggNoThrow;
 // Pre: use on inlined (i.e., Do inlined, roles pruned)
 public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 {
-	//HERE make Map<RecVar, Boolean> for guarded or not, prune continues as part of projection -- then fix RecPruner to be general (including pruning empty choice blocks), and prune recs after continues pruned
-	/*HERE
-	-- try clone in seq, rather than choice
-	-- fix choice context merging w.r.t. unguarded clear
-	-- fix rec pruning
-	-- fix projector unguarded inheritance
-	-- need old style subproto visitor for imed-projection do-pruning*/
-
 	protected final Set<RecVar> unguarded;  
 			// Projection "prunes" unguarded continues from choice cases, e.g., mu X.(A->B:1.X + A->B:2.A->C:2) for C, i.e., travel agent
+			// ...this can be followed by RecPruner to remove recs that are "orphaned" by continue pruning
 			// N.B. projection does not "merge" choice cases in , e.g., rec X { 1() from A; choice at A { continue X; } or { continue X; } }...
 			// ...that is a non-det branch, same as rec X { choice at A { 1() from A; } or { 1() from A; } }
 	
