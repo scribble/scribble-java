@@ -84,6 +84,13 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		this.self = v.self;
 		this.unguarded = new HashSet<>(v.unguarded);
 	}
+	
+	// Use to visit a node with a copy of the current context (this.unguarded), e.g., for "nested" context visiting (Choice)
+	// N.B. subclasses should override
+	protected InlinedProjector dup()
+	{
+		return new InlinedProjector(this);
+	}
 
 	@Override
 	protected LType unit(SType<Global, GSeq> n)
@@ -95,13 +102,6 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	protected LType agg(SType<Global, GSeq> n, Stream<LType> ts)
 	{
 		throw new RuntimeException("Disregarded for Projector: " + n + " ,, " + ts);
-	}
-	
-	// N.B. subclasses should override
-	// To visit a node with a copy of the current context (this.unguarded), e.g., for "nested" context visiting (Choice)
-	protected InlinedProjector dup()
-	{
-		return new InlinedProjector(this);
 	}
 
 	@Override
@@ -188,7 +188,8 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		}
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(n.recvar);
-		//if (body.visitWithNoThrow(new SingleContinueChecker(rvs)))  // "Generalised" single-continue checked now unnecessary, single-continues pruned in choice visiting above
+		//if (body.visitWithNoThrow(new SingleContinueChecker(rvs)))  
+				// "Generalised" single-continue checked now unnecessary, single-continues pruned in choice visiting above
 		if (body.elems.size() == 1)
 		{	
 			SType<Local, LSeq> e = body.elems.get(0);
@@ -197,11 +198,6 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 				return LSkip.SKIP;
 			}
 		}
-		/*LSeq pruned = new RecPruner1(this.core, n.recvar).visitSeq(body);
-		if (pruned.isEmpty())
-		{
-			return LSkip.SKIP;
-		}*/
 		this.unguarded.remove(n.recvar);
 		return new LRecursion(null, n.recvar, body);
 	}
@@ -210,8 +206,6 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	@Override
 	public LSeq visitSeq(GSeq n)
 	{
-		/*List<LType> elems = n.elems.stream().map(x -> x.visitWithNoThrow(this))
-				.filter(x -> !x.equals(LSkip.SKIP)).collect(Collectors.toList());*/
 		List<LType> elems = new LinkedList<>();
 		for (SType<Global, GSeq> e : n.elems)
 		{
