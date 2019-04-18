@@ -302,7 +302,8 @@ public class Core
 				.collect(Collectors.toList());
 		for (ProtoName<Local> pfullname : pfullnames)
 		{
-			System.out.println("\n" + this.context.getProjection((LProtoName) pfullname));
+			System.out
+					.println("\n" + this.context.getProjection((LProtoName) pfullname));
 		}
 		if (!pfullnames.contains(proj.fullname))
 		{

@@ -141,7 +141,7 @@ global protocol Proto1(role A, role B, role C)
 {
 	choice at A
 	{
-		1() from A to C;  // FIXME: -project Proto1 B [-fair]
+		1() from A to B;  // TODO: add junit, testing -project C [-fair] -- basically, Travel Agent
 		do Proto1(A, B, C);
 	}
 	or

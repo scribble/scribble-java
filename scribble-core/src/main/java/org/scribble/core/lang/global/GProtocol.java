@@ -107,7 +107,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		LSeq def = new Projector(core, self).visitSeq(this.def);
 		LSeq pruned = new RecPruner<Local, LSeq>().visitSeq(def);
 		return projectAux(self,
-				core.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
+				core.getContext().getInlined(this.fullname).roles,  // Use inlined decls, already pruned
 				pruned);
 	}
 	

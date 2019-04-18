@@ -39,6 +39,14 @@ public class Projector extends InlinedProjector  // CHECKME: this way, or the ot
 	{
 		super(core, self);
 	}
+	
+	@Override
+	protected Projector dup()
+	{
+		Projector v = new Projector(this.core, this.self);
+		v.unguarded.addAll(this.unguarded);
+		return v;
+	}
 
 	@Override
 	public <N extends ProtoName<Global>> LType visitDo(Do<Global, GSeq, N> n)

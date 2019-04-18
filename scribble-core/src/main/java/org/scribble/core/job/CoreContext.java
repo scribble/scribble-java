@@ -128,11 +128,11 @@ public class CoreContext
 	public LProjection getProjectedInlined(GProtoName fullname, Role self)
 	{
 		LProtoName projFullname = InlinedProjector.getFullProjectionName(fullname, self);
-		LProjection iproj = this.iprojs.get(fullname);
+		LProjection iproj = this.iprojs.get(projFullname);
 		if (iproj == null)
 		{
 			iproj = getInlined(fullname).projectInlined(this.core, self);
-			addProjectedInlined(projFullname, iproj);
+			addProjectedInlined(iproj);
 		}
 		return iproj;
 	}
@@ -155,9 +155,9 @@ public class CoreContext
 	}
 	//*/
 	
-	protected void addProjectedInlined(LProtoName fullname, LProjection iproj)
+	protected void addProjectedInlined(LProjection iproj)
 	{
-		this.iprojs.put(fullname, iproj);
+		this.iprojs.put(iproj.fullname, iproj);
 	}
 
 	// Projected from intermediate
@@ -166,11 +166,11 @@ public class CoreContext
 	{
 		LProtoName projFullname = InlinedProjector.getFullProjectionName(fullname,
 				self);
-		LProjection proj = this.projs.get(fullname);
+		LProjection proj = this.projs.get(projFullname);
 		if (proj == null)
 		{
-			proj = getInlined(fullname).project(this.core, self);
-			addProjectedInlined(projFullname, proj);
+			proj = getIntermediate(fullname).project(this.core, self);
+			addProjection(proj);
 		}
 		return proj;
 	}

@@ -56,8 +56,10 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 {
 	
 	//HERE make Map<RecVar, Boolean> for guarded or not, prune continues as part of projection -- then fix RecPruner to be general (including pruning empty choice blocks), and prune recs after continues pruned
-	//private Map<RecVar, Boolean> guarded = new HashMap<>();
-	private final Set<RecVar> unguarded;
+	protected final Set<RecVar> unguarded;  
+			// Projection "prunes" unguarded continues from choice cases, e.g., mu X.(A->B:1.X + A->B:2.A->C:2) for C, i.e., travel agent
+			// N.B. projection does not "merge" choice cases in , e.g., rec X { 1() from A; choice at A { continue X; } or { continue X; } }...
+			// ...that is a non-det branch, same as rec X { choice at A { 1() from A; } or { 1() from A; } }
 	
 	public final Core core;
 	public final Role self;
@@ -69,13 +71,13 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		this.unguarded = new HashSet<>();
 	}
 
-	// Copy constructor for "nested" Seq visiting
+	/*// Copy constructor for "nested" Seq visiting
 	protected InlinedProjector(InlinedProjector v)
 	{
 		this.core = v.core;
 		this.self = v.self;
 		this.unguarded = new HashSet<>(v.unguarded);
-	}
+	}*/
 
 	@Override
 	protected LType unit(SType<Global, GSeq> n)
@@ -88,6 +90,13 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	{
 		throw new RuntimeException("Disregarded for Projector: " + n + " ,, " + ts);
 	}
+	
+	protected InlinedProjector dup()
+	{
+		InlinedProjector v = new InlinedProjector(this.core, this.self);
+		v.unguarded.addAll(this.unguarded);
+		return v;
+	}
 
 	@Override
 	public LType visitChoice(Choice<Global, GSeq> n)
@@ -95,7 +104,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		Role subj = n.subj.equals(self) ? Role.SELF : n.subj;
 				// CHECKME: "self" also explcitily used for Do, but implicitly for MessageTransfer, inconsistent?
 		List<LSeq> tmp = n.blocks.stream()
-				.map(x -> new InlinedProjector(this).visitSeq(x))
+				.map(x -> dup().visitSeq(x))
 				.filter(x -> !x.isEmpty() && !isUnguardedSingleContinue(x))
 				.collect(Collectors.toList());
 		if (tmp.isEmpty())
@@ -158,7 +167,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	@Override
 	public <N extends ProtoName<Global>> LType visitDo(Do<Global, GSeq, N> n)
 	{
-		throw new RuntimeException("Unsupported for Do: " + n);
+		throw new RuntimeException("Unsupported for Do: " + n + " ,, " + this.getClass());
 	}
 
 	@Override
