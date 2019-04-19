@@ -87,18 +87,6 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	}
 
 	@Override
-	protected LType unit(SType<Global, GSeq> n)
-	{
-		throw new RuntimeException("Disregarded for Projector: " + n);
-	}
-
-	@Override
-	protected LType agg(SType<Global, GSeq> n, Stream<LType> ts)
-	{
-		throw new RuntimeException("Disregarded for Projector: " + n + " ,, " + ts);
-	}
-
-	@Override
 	public LType visitChoice(Choice<Global, GSeq> n)
 	{
 		List<LSeq> blocks = n.blocks.stream()
@@ -129,8 +117,6 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		SType<Local, LSeq> e = block.elems.get(0);
 		return (e instanceof LContinue)
 				&& this.unguarded.contains(((LContinue) e).recvar);  // Bound recvars already checked
-				/*&& (!this.unguarded.get(((LContinue) e).recvar).isPresent()
-				|| this.unguarded.get(((LContinue) e).recvar).get() == null);*/
 	}
 	
 	@Override
@@ -225,6 +211,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 				// So a projection never contains an empty LSeq -- i.e., "empty choice/rec" pruning unnecessary
 	}
 
+	// CHECKME: relocate?
 	public static LProtoName getSimpledProjectionName(GProtoName simpname,
 			Role role)
 	{
@@ -237,7 +224,8 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	{
 		LProtoName simplename = InlinedProjector.getSimpledProjectionName(
 				fullname.getSimpleName(), role);
-		ModuleName modname = getProjectionModuleName(fullname.getPrefix(), simplename);
+		ModuleName modname = getProjectionModuleName(fullname.getPrefix(),
+				simplename);
 		return new LProtoName(modname, simplename);
 	}
 
@@ -248,5 +236,18 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		ModuleName simpname = new ModuleName(
 				fullname.getSimpleName().toString() + "_" + localname.toString());
 		return new ModuleName(fullname.getPrefix(), simpname); // Supports unary fullname
+	}
+
+	@Override
+	protected LType unit(SType<Global, GSeq> n)
+	{
+		throw new RuntimeException("Unsupported for InlinedProjector: " + n);
+	}
+
+	@Override
+	protected LType agg(SType<Global, GSeq> n, Stream<LType> ts)
+	{
+		throw new RuntimeException(
+				"Unsupported for InlinedProjector: " + n + " ,, " + ts);
 	}
 }
