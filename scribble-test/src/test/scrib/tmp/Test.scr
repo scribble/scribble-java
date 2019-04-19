@@ -109,7 +109,27 @@ module tmp.Test;
 
 data <java> "..." from "..." as T;
 
-//*
+global protocol Proto1(role A, role B)
+{
+	rec X 
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			3() from A to B;
+		}
+	}
+		choice at B
+		{
+			2() from B to A;
+		}
+}
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X

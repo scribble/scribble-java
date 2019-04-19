@@ -55,7 +55,7 @@ public class EGraphBuilderUtil
 	// -- On block exit, pop the block list into the parent choice list for *all* recvars
 	// - On choice exit, pop the choice list into the parent (recursion/choice-block) list for all *open* recvars, i.e., if the parent list is *still empty*
 	// - On recursion exit, pop the list into the enacting map for the recEntries state for that recvar (n.b. enacting for a state is the same for its recvars)
-	private final Map<RecVar, Deque<List<EAction>>> working = new HashMap<>();
+	private final Map<EState, Deque<List<EAction>>> collecting = new HashMap<>();
 
 	// Record enacting per-recvar, since a state could have multi-recvars -- CHECKME: caters for shadowing? (cf. recording only per unique recvar)
 	// CHECKME: for a given state, the enacting list is the same for each recvar?
@@ -97,7 +97,7 @@ public class EGraphBuilderUtil
 	protected void clear()
 	{
 		this.recEntries.clear();
-		this.working.clear();
+		this.collecting.clear();
 		
 		this.enacting.clear();
 		
@@ -125,7 +125,7 @@ public class EGraphBuilderUtil
 		addEdgeAux(s, a, succ);
 		
 		//for (Deque<Set<EAction>> ens : this.enacting.values())
-		for (Deque<List<EAction>> ens : this.working.values())
+		for (Deque<List<EAction>> ens : this.collecting.values())
 		{
 			if (!ens.isEmpty())  // Unnecessary?
 			{
@@ -145,10 +145,10 @@ public class EGraphBuilderUtil
 	 */
 	public void enterChoice()
 	{
-		for (RecVar rv : this.working.keySet())
+		for (EState entry : this.collecting.keySet())
 		{
 			////Deque<Set<EAction>> tmp = this.enacting.get(rv);
-			Deque<List<EAction>> tmp = this.working.get(rv);
+			Deque<List<EAction>> tmp = this.collecting.get(entry);
 			////tmp.push(new HashSet<>(tmp.peek()));
 			//tmp.push(new HashSet<>());  // Initially empty to record nested enablings in choice blocks
 			tmp.push(new LinkedList<>());  // Initially empty to record nested enablings in choice blocks
@@ -157,10 +157,10 @@ public class EGraphBuilderUtil
 
 	public void leaveChoice()
 	{
-		for (RecVar rv : this.working.keySet())
+		for (EState entry : this.collecting.keySet())
 		{
-			List<EAction> pop = this.working.get(rv).pop();
-			List<EAction> peek = this.working.get(rv).peek();
+			List<EAction> pop = this.collecting.get(entry).pop();
+			List<EAction> peek = this.collecting.get(entry).peek();
 			if (peek.isEmpty())  // Cf. addEdge
 			{
 				peek.addAll(pop);
@@ -170,10 +170,10 @@ public class EGraphBuilderUtil
 
 	public void pushChoiceBlock()
 	{
-		for (RecVar rv : this.working.keySet())
+		for (EState entry : this.collecting.keySet())
 		{
 			//Deque<Set<EAction>> tmp = this.enacting.get(rv);
-			Deque<List<EAction>> tmp = this.working.get(rv);
+			Deque<List<EAction>> tmp = this.collecting.get(entry);
 			//tmp.push(new HashSet<>());  // Must be empty for addEdge to record (nested) enabling
 			tmp.push(new LinkedList<>());
 		}
@@ -181,12 +181,12 @@ public class EGraphBuilderUtil
 
 	public void popChoiceBlock()
 	{
-		for (RecVar rv : this.working.keySet())
+		for (EState entry : this.collecting.keySet())
 		{
 			/*Set<EAction> pop = this.enacting.get(rv).pop();
 			Set<EAction> peek = this.enacting.get(rv).peek();*/
-			List<EAction> pop = this.working.get(rv).pop();
-			List<EAction> peek = this.working.get(rv).peek();
+			List<EAction> pop = this.collecting.get(entry).pop();
+			List<EAction> peek = this.collecting.get(entry).peek();
 			//if (peek.isEmpty())
 			{
 				peek.addAll(pop);
@@ -205,7 +205,7 @@ public class EGraphBuilderUtil
 			this.entry.addLabel(recvar);
 		}*/
 		//this.recvars.put(recvar, this.entry);
-		Deque<EState> tmp = this.recEntries.get(rv);
+		Deque<EState> tmp = this.recEntries.get(rv);  // Should be same as getEntry()
 		if (tmp == null)
 		{
 			tmp = new LinkedList<>();
@@ -221,34 +221,49 @@ public class EGraphBuilderUtil
 		}*/
 		tmp.push(entry);
 		
-		//Deque<Set<EAction>> tmp2 = this.enacting.get(recvar);
-		Deque<List<EAction>> tmp2 = this.working.get(rv);  
+		if (this.collecting.containsKey(entry))
+		{
+			return;
+		}
+		/////Deque<Set<EAction>> tmp2 = this.enacting.get(recvar);
+		//Deque<List<EAction>> tmp2 = this.collecting.get(entry);  
 				// Collecting per recvar: unnecessary as all recvars for a given state are equivalent (i.e., have the same enacting) -- so could just do per rec entry state
 				// But easier to do per recvar, to avoid distinguishing between recvars in nested contexts
-		if (tmp2 == null)
-		{
-			tmp2 = new LinkedList<>();  // New Stack for this recvar
-			this.working.put(rv, tmp2);
-		}
+		//if (tmp2 == null)
+		//{
+			Deque<List<EAction>> tmp2 = new LinkedList<>();  // New Stack for this recvar
+			this.collecting.put(entry, tmp2);
+		//}
 		//tmp2.push(new HashSet<>());  // Push new Set element onto stack
 		tmp2.push(new LinkedList<>());  // Push new Set element onto stack
 	}	
 	
 	public void popRecursionEntry(RecVar rv)
 	{
-		this.recEntries.get(rv).pop();  // Pop the entry of this rec
-
-		//Set<EAction> pop = this.enacting.get(recvar).pop();
-		List<EAction> pop = this.working.get(rv).pop();
-		if (this.working.get(rv).isEmpty())  // All Lists popped from the stack of this recvar -- could just clear instead
-		{
-			this.working.remove(rv);
-		}
-		
-		EState curr = getEntry();  
-				// Same as getRecursionEntry(rv)
+		EState entry = this.recEntries.get(rv).pop();  // Pop the entry of this rec
+				// Same as getEntry()
 				// Because contract for GraphBuilderUtil is entry on leaving a node is the same as on entry, cf., EGraphBuilder.visitSeq restores original entry on leaving
 				// (And visitRecursion just does visitSeq for the recursion body, with the current entry/exit)
+		if (!getEntry().equals(entry))  // TODO: deprecate, temporary testing
+		{
+			throw new RuntimeException("Shouldn't get here: ");
+		}
+		
+		if (!this.collecting.containsKey(entry))
+		{
+			// This state already done -- i.e., already popped another recvar for this same state, e.g., good.efsm.gcontinue.choiceunguarded.Test05b
+			return;
+		}
+
+		//Set<EAction> pop = this.enacting.get(recvar).pop();
+		List<EAction> pop = this.collecting.get(entry).pop();
+		if (this.collecting.get(entry).isEmpty())  // All Lists popped from the stack of this recvar -- could just clear instead
+		{
+			this.collecting.remove(entry);  
+					// N.B. we pushed on entry of *outermost rec*, but above popped on exit of *innermost* rec (due to checking entry in this.collecting)
+					// This remove is necessary to prevent above containsKey check also succeeding  when leaving the outer rec, e.g., good.efsm.gcontinue.choiceunguarded.Test05b
+					// Also necessary to prevent continued updating of this.collecting after leaving a rec (because this.collecting still has entry), e.g., good.efsm.gchoice.Test10
+		}
 
 		/*Map<RecVar, List<EAction>> tmp = this.enacting.get(curr);
 		if (tmp == null)
@@ -257,15 +272,15 @@ public class EGraphBuilderUtil
 			this.enacting.put(curr, tmp);
 		}
 		tmp.put(rv, pop);*/
-		if (!this.enacting.containsKey(curr))  
+		if (!this.enacting.containsKey(entry))  
 				// For a given state, the enacting for all associated recvars is the same (the recvars are "equivalent) -- so only need to record per state
 		{
-			this.enacting.put(curr, pop);
+			this.enacting.put(entry, pop);
 		}
-		else if (!this.enacting.get(curr).equals(pop))  // TODO: deprecate, temporary testing
+		else if (!this.enacting.get(entry).equals(pop))  // TODO: deprecate, temporary testing
 		{
-			throw new RuntimeException("Shouldn't get in here: " + curr + " ,, "
-					+ this.enacting.get(curr) + " ,, " + rv + " ,, " + pop);
+			throw new RuntimeException("Shouldn't get in here: " + entry + " ,, "
+					+ this.enacting.get(entry) + " ,, " + rv + " ,, " + pop);
 		}
 	}	
 	
