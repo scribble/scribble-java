@@ -44,7 +44,7 @@ public class InlinedExtChoiceSubjFixer
 	@Override
 	public Choice<Local, LSeq> visitChoice(Choice<Local, LSeq> n)
 	{
-		InlinedEnablerInferer1 v = new InlinedEnablerInferer1(this.recs);
+		InlinedEnablerInferer v = new InlinedEnablerInferer(this.recs);
 		Optional<Role> subj = n.visitWithNoThrow(v);
 		return n.reconstruct(n.getSource(), subj.get(), n.blocks);
 	}
@@ -59,18 +59,18 @@ public class InlinedExtChoiceSubjFixer
 	@Override
 	public Recursion<Local, LSeq> visitRecursion(Recursion<Local, LSeq> n)
 	{
-		Optional<Role> r = new InlinedEnablerInferer1(this.recs).visitSeq(n.body);  // recs unnecessary?
+		Optional<Role> r = new InlinedEnablerInferer(this.recs).visitSeq(n.body);  // recs unnecessary?
 		this.recs.put(n.recvar, r);  // null, empty or OK
 		return n.reconstruct(n.getSource(), n.recvar, visitSeq(n.body));
 	}
 }
 
-class InlinedEnablerInferer1
+class InlinedEnablerInferer
 		extends STypeAggNoThrow<Local, LSeq, Optional<Role>>
 {
 	private Map<RecVar, Optional<Role>> recs;
 
-	public InlinedEnablerInferer1(Map<RecVar, Optional<Role>> recs)
+	public InlinedEnablerInferer(Map<RecVar, Optional<Role>> recs)
 	{
 		this.recs = Collections.unmodifiableMap(recs);
 	}

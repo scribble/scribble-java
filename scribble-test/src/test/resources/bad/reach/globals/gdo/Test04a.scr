@@ -1,0 +1,16 @@
+module bad.reach.globals.gdo.Test04a;
+
+
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		do Foo(A, B);  // Unguarded gets unfolded..
+		2() from A to B;   // ..becomes unreachable after continue once unfolded
+	}
+	or
+	{
+		1() from A to B;
+	}
+}
+
