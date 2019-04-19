@@ -16,9 +16,7 @@ package org.scribble.core.model;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.ScribException;
 
-// Helper class for EndpointGraphBuilder -- can access the protected setters of S
-// GraphBuilderUtil usage contract (1): this.entry on leaving a node is the same as on entering
-// N.B. must call init before every "new visit", including first
+// Helper class for (Endpoint)GraphBuilder -- can access the protected setters of S
 public abstract class GraphBuilderUtil
 		<L,                             // Labels on states (cosmetic)
 		 A extends MAction<K>,          // Action type: labels on edges

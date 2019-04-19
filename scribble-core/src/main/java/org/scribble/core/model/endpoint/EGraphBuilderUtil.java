@@ -31,13 +31,15 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.util.ScribException;
 
-// N.B. init must be called before every "new visit", including first -- no: now init implicit on construction, and finalise also does init
-// (E)GraphBuilderUtil usage contract (2): all states must be made via newState
-// Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
+// EGraphBuilderUtil usage contract (1): this.entry on leaving a node is the same as on entering
+// EGraphBuilderUtil usage contract (2): all states must be made via newState
 // Tailored to support graph building from syntactic local protocol choice and recursion
 public class EGraphBuilderUtil
 		extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
+	protected EState entry;	// GraphBuilderUtil usage contract: entry on leaving a node is the same as on entering -- cf., EGraphBuilderUtil.visitSeq restores the original entry on leaving
+	protected EState exit;  // Tracking exit is convenient for merges (otherwise have to generate dummy merge nodes)
+
   // N.B. new states should be made by this.newState, not this.mf.newEState
 	private final Set<EState> states = new HashSet<>();
 
@@ -63,16 +65,13 @@ public class EGraphBuilderUtil
 	// - On recursion exit, pop the list into the enacting map for the rec entry state
 	private final Map<EState, Deque<List<EAction>>> collecting = new HashMap<>();
 
-	protected EState entry;	// GraphBuilderUtil usage contract: entry on leaving a node is the same as on entering -- cf., EGraphBuilderUtil.visitSeq restores the original entry on leaving
-	protected EState exit;   // Tracking exit is convenient for merges (otherwise have to generate dummy merge nodes)
-
 	public EGraphBuilderUtil(ModelFactory mf)
 	{
 		super(mf);
 		reset();
 	}
 	
-	// N.B. must be called before every "new visit", including first -- called by constructor and finalise
+	// N.B. called before every "new visit", including first (so util is reusable) -- called by constructor and finalise
 	protected void reset()  
 	{
 		//clear();
@@ -181,7 +180,7 @@ public class EGraphBuilderUtil
 			this.entry.addLabel(recvar);
 		}*/
 		//this.recvars.put(recvar, this.entry);
-		Deque<EState> tmp = this.recEntries.get(rv);  // Should be same as getEntry()
+		Deque<EState> tmp = this.recEntries.get(rv);  // Should be same as this.entry
 		if (tmp == null)
 		{
 			tmp = new LinkedList<>();
@@ -217,10 +216,10 @@ public class EGraphBuilderUtil
 	public void popRecursionEntry(RecVar rv)
 	{
 		EState entry = this.recEntries.get(rv).pop();  // Pop the entry of this rec
-				// Same as getEntry()
+				// Same as this.entry
 				// Because contract for GraphBuilderUtil is entry on leaving a node is the same as on entry, cf., EGraphBuilder.visitSeq restores original entry on leaving
 				// (And visitRecursion just does visitSeq for the recursion body, with the current entry/exit)
-		if (!getEntry().equals(entry))  // TODO: deprecate, temporary testing
+		if (!this.entry.equals(entry))  // TODO: deprecate, temporary testing
 		{
 			throw new RuntimeException("Shouldn't get here: ");
 		}
