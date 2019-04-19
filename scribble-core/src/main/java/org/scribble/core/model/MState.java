@@ -40,11 +40,12 @@ public abstract class MState
 	
 	public final int id;
 
+	// Labels and edges are mutable (via protected methods)
 	protected final Set<L> labs;  // Was RecVar and SubprotocolSigs, now using inlined protocol for FSM building so just RecVar
 	protected final List<A> actions;
 	protected final List<S> succs;
 	
-	public MState(Set<L> labs)  // Immutable singleton node
+	public MState(Set<L> labs)
 	{
 		this.id = MState.count++;
 		this.labs = new HashSet<>(labs);

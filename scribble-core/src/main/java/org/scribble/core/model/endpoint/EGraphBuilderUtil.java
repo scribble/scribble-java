@@ -38,7 +38,8 @@ import org.scribble.util.ScribException;
 public class EGraphBuilderUtil
 		extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
-	//public final ModelFactory mf;  // N.B. new states should be made by this.newState, not this.ef.newEState
+  // N.B. new states should be made by this.newState, not this.mf.newEState
+	private final Set<EState> states = new HashSet<>();
 
 	// Entry state for each recursion
 	private final Map<RecVar, Deque<EState>> recEntries = new HashMap<>();  // CHECKME: Deque is for shadowing?
@@ -62,42 +63,34 @@ public class EGraphBuilderUtil
 	// - On recursion exit, pop the list into the enacting map for the rec entry state
 	private final Map<EState, Deque<List<EAction>>> collecting = new HashMap<>();
 
+	protected EState entry;	// GraphBuilderUtil usage contract: entry on leaving a node is the same as on entering -- cf., EGraphBuilderUtil.visitSeq restores the original entry on leaving
+	protected EState exit;   // Tracking exit is convenient for merges (otherwise have to generate dummy merge nodes)
+
 	public EGraphBuilderUtil(ModelFactory mf)
 	{
-		//this.mf = mf;
 		super(mf);
-		init(null);
+		reset();
 	}
 	
-	// N.B. must be called before every "new visit", including first
-	public void init(EState init)  
-			// FIXME: init not used (but inherited from super)
+	// N.B. must be called before every "new visit", including first -- called by constructor and finalise
+	protected void reset()  
 	{
 		clear();
-		/*reset(this.ef.newEState(Collections.emptySet()),
-				this.ef.newEState(Collections.emptySet()));*/
-		reset(newState(Collections.emptySet()), newState(Collections.emptySet()));
+		this.entry = newState(Collections.emptySet());
+		this.exit = newState(Collections.emptySet());
 	}
 
-	protected void clear()
+	protected void clear()  // CHECKME: redundant?
 	{
-		this.recEntries.clear();
-		this.collecting.clear();
-		
-		this.enacting.clear();
-		
 		this.states.clear();
+		this.recEntries.clear();
+		this.enacting.clear();
+		this.collecting.clear();
 	}
 	
-	private final Set<EState> states = new HashSet<>();
-	
-	// For the util to additionally record states 
-	// CHECKME: make interface less messy w.r.t. this.ef.newEState 
-	// CHECKME: factor up to super?
-	//@Override
+	// For the util to additionally record states -- use this, don't use this.mf.newEState
 	public EState newState(Set<RecVar> labs)
 	{
-		//return new EState(labs);
 		EState s = this.mf.newEState(labs);
 		this.states.add(s);
 		return s;
@@ -107,7 +100,7 @@ public class EGraphBuilderUtil
 	@Override
 	public void addEdge(EState s, EAction a, EState succ)
 	{
-		addEdgeAux(s, a, succ);
+		super.addEdge(s, a, succ);
 		
 		//for (Deque<Set<EAction>> ens : this.enacting.values())
 		for (Deque<List<EAction>> ens : this.collecting.values())
@@ -123,7 +116,6 @@ public class EGraphBuilderUtil
 			}
 		}
 	}
-	
 
 	/*
 	 * Dealing with Choice contexts
@@ -179,7 +171,6 @@ public class EGraphBuilderUtil
 		}
 	}
 	
-
 	/*
 	 * Dealing with Recursion contexts
 	 */
@@ -273,11 +264,9 @@ public class EGraphBuilderUtil
 		}
 	}	
 	
-
 	/*
 	 * Edge construction for Continues
 	 */
-
 	// Choice-unguarded continues -- fixed in finalise pass
 	// Now currently used for all continues, cf. LContinue::buildGraph
 	public void addContinueEdge(EState s, RecVar rv)
@@ -311,6 +300,7 @@ public class EGraphBuilderUtil
 	// Returns List, cf. getSuccessors/Actions (vs. GetDet...)
 	public List<EState> getPredecessors(EState s)
 	{
+		// TODO: make more efficient
 		return this.states.stream().filter(x -> x.getSuccs().contains(s))
 				.collect(Collectors.toList());
 	}
@@ -337,7 +327,7 @@ public class EGraphBuilderUtil
 		EndpointState dfa = determinise(all, res, resTerm);
 		System.out.println("111: " + dfa.toDot());*/
 		
-		init(null);
+		reset();
 		
 		return new EGraph(entry, exit);
 	}
@@ -399,6 +389,31 @@ public class EGraphBuilderUtil
 			clones.put(orig, res);
 		}
 		return res;
+	}
+	
+	public void addEntryLabel(RecVar lab)
+	{
+		addEntryLabel(this.entry, lab);
+	}
+
+	public EState getEntry()
+	{
+		return this.entry;
+	}
+
+	public void setEntry(EState entry)
+	{
+		this.entry = entry;
+	}
+
+	public EState getExit()
+	{
+		return this.exit;
+	}
+
+	public void setExit(EState exit)
+	{
+		this.exit = exit;
 	}
 }
 

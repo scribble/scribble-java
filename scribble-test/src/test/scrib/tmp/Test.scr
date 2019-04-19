@@ -123,10 +123,10 @@ global protocol Proto1(role A, role B)
 			3() from A to B;
 		}
 	}
-		choice at B
-		{
-			2() from B to A;
-		}
+	choice at B  // Testing this.collections remove in EGraphBuilderUtil
+	{
+		2() from B to A;
+	}
 }
 
 /*

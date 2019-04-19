@@ -44,17 +44,17 @@ public class SGraphBuilderUtil
 	{
 		//this.mf = sf;
 		super(mf);
-		//reset();
-		init(mf.newSState(null));
+		////reset();
+		//init(mf.newSState(null));
 	}
 	
-	// N.B. must be called before every "new visit", including first
-	@Override
-	public void init(SState init)
+	/*// N.B. must be called before every "new visit", including first
+	//@Override
+	protected void init(SState init)
 	{
 		//init(this.sf.newSState(null), this.sf.newSState(null));  // configs
 		reset(init, this.mf.newSState(null));
-	}
+	}*/
 
 	// Do as an initial state rather than config?
 	protected SConfig createInitialSConfig(ModelFactory ef, Map<Role, EGraph> egraphs, boolean explicit)  // FIXME: ef
