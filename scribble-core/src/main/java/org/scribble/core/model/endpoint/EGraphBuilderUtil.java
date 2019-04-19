@@ -31,7 +31,7 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.util.ScribException;
 
-	// N.B. init must be called before every "new visit", including first -- no: now init implicit on construction, and finalise also does init
+// N.B. init must be called before every "new visit", including first -- no: now init implicit on construction, and finalise also does init
 // (E)GraphBuilderUtil usage contract (2): all states must be made via newState
 // FIXME TODO replace EGraphBuilderUtil
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
@@ -41,7 +41,8 @@ public class EGraphBuilderUtil
 {
 	public final ModelFactory ef;  // N.B. new states should be made by this.newState, not this.ef.newEState
 
-	private final Map<RecVar, Deque<EState>> recvars = new HashMap<>();  // CHECKME: Deque is for shadowing?
+	// Entry state for each recursion
+	private final Map<RecVar, Deque<EState>> recEntries = new HashMap<>();  // CHECKME: Deque is for shadowing?
 
 	// First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
 	// These are collected by:
@@ -52,12 +53,15 @@ public class EGraphBuilderUtil
 	// -- On block entry, push another new list for *all* recvars for recording the current block
 	// -- (Record, via addEdge, the first action of the current block for all open recvars)
 	// -- On block exit, pop the block list into the parent choice list for *all* recvars
-	// -- On choice exit, pop the choice list into the parent (recursion/choice-block) list for all *open* recvars, i.e., if the parent list is *still empty*
-	// -- On recursion exit, just pop the list
-	private final Map<RecVar, Deque<List<EAction>>> enacting = new HashMap<>();
+	// - On choice exit, pop the choice list into the parent (recursion/choice-block) list for all *open* recvars, i.e., if the parent list is *still empty*
+	// - On recursion exit, pop the list into the enacting map for the recEntries state for that recvar (n.b. enacting for a state is the same for its recvars)
+	private final Map<RecVar, Deque<List<EAction>>> working = new HashMap<>();
 
-	//private final Map<EState, Map<RecVar, Set<EAction>>> enactingMap = new HashMap<>();  // Record enacting per-recvar, since a state could have multi-recvars
-	private final Map<EState, Map<RecVar, List<EAction>>> enactingMap = new HashMap<>();
+	// Record enacting per-recvar, since a state could have multi-recvars -- CHECKME: caters for shadowing? (cf. recording only per unique recvar)
+	// CHECKME: for a given state, the enacting list is the same for each recvar?
+	//private final Map<EState, Map<RecVar, List<EAction>>> enacting 
+	private final Map<EState, List<EAction>> enacting 
+			= new HashMap<>();
 
 	public EGraphBuilderUtil(ModelFactory ef)
 	{
@@ -92,10 +96,10 @@ public class EGraphBuilderUtil
 
 	protected void clear()
 	{
-		this.recvars.clear();
-		this.enacting.clear();
+		this.recEntries.clear();
+		this.working.clear();
 		
-		this.enactingMap.clear();
+		this.enacting.clear();
 		
 		this.states.clear();
 	}
@@ -121,7 +125,7 @@ public class EGraphBuilderUtil
 		addEdgeAux(s, a, succ);
 		
 		//for (Deque<Set<EAction>> ens : this.enacting.values())
-		for (Deque<List<EAction>> ens : this.enacting.values())
+		for (Deque<List<EAction>> ens : this.working.values())
 		{
 			if (!ens.isEmpty())  // Unnecessary?
 			{
@@ -141,10 +145,10 @@ public class EGraphBuilderUtil
 	 */
 	public void enterChoice()
 	{
-		for (RecVar rv : this.enacting.keySet())
+		for (RecVar rv : this.working.keySet())
 		{
 			////Deque<Set<EAction>> tmp = this.enacting.get(rv);
-			Deque<List<EAction>> tmp = this.enacting.get(rv);
+			Deque<List<EAction>> tmp = this.working.get(rv);
 			////tmp.push(new HashSet<>(tmp.peek()));
 			//tmp.push(new HashSet<>());  // Initially empty to record nested enablings in choice blocks
 			tmp.push(new LinkedList<>());  // Initially empty to record nested enablings in choice blocks
@@ -153,10 +157,10 @@ public class EGraphBuilderUtil
 
 	public void leaveChoice()
 	{
-		for (RecVar rv : this.enacting.keySet())
+		for (RecVar rv : this.working.keySet())
 		{
-			List<EAction> pop = this.enacting.get(rv).pop();
-			List<EAction> peek = this.enacting.get(rv).peek();
+			List<EAction> pop = this.working.get(rv).pop();
+			List<EAction> peek = this.working.get(rv).peek();
 			if (peek.isEmpty())  // Cf. addEdge
 			{
 				peek.addAll(pop);
@@ -166,10 +170,10 @@ public class EGraphBuilderUtil
 
 	public void pushChoiceBlock()
 	{
-		for (RecVar rv : this.enacting.keySet())
+		for (RecVar rv : this.working.keySet())
 		{
 			//Deque<Set<EAction>> tmp = this.enacting.get(rv);
-			Deque<List<EAction>> tmp = this.enacting.get(rv);
+			Deque<List<EAction>> tmp = this.working.get(rv);
 			//tmp.push(new HashSet<>());  // Must be empty for addEdge to record (nested) enabling
 			tmp.push(new LinkedList<>());
 		}
@@ -177,12 +181,12 @@ public class EGraphBuilderUtil
 
 	public void popChoiceBlock()
 	{
-		for (RecVar rv : this.enacting.keySet())
+		for (RecVar rv : this.working.keySet())
 		{
 			/*Set<EAction> pop = this.enacting.get(rv).pop();
 			Set<EAction> peek = this.enacting.get(rv).peek();*/
-			List<EAction> pop = this.enacting.get(rv).pop();
-			List<EAction> peek = this.enacting.get(rv).peek();
+			List<EAction> pop = this.working.get(rv).pop();
+			List<EAction> peek = this.working.get(rv).peek();
 			//if (peek.isEmpty())
 			{
 				peek.addAll(pop);
@@ -201,11 +205,11 @@ public class EGraphBuilderUtil
 			this.entry.addLabel(recvar);
 		}*/
 		//this.recvars.put(recvar, this.entry);
-		Deque<EState> tmp = this.recvars.get(rv);
+		Deque<EState> tmp = this.recEntries.get(rv);
 		if (tmp == null)
 		{
 			tmp = new LinkedList<>();
-			this.recvars.put(rv, tmp);
+			this.recEntries.put(rv, tmp);
 		}
 		/*if (isUnguardedInChoice())
 		{
@@ -218,11 +222,13 @@ public class EGraphBuilderUtil
 		tmp.push(entry);
 		
 		//Deque<Set<EAction>> tmp2 = this.enacting.get(recvar);
-		Deque<List<EAction>> tmp2 = this.enacting.get(rv);
+		Deque<List<EAction>> tmp2 = this.working.get(rv);  
+				// Collecting per recvar: unnecessary as all recvars for a given state are equivalent (i.e., have the same enacting) -- so could just do per rec entry state
+				// But easier to do per recvar, to avoid distinguishing between recvars in nested contexts
 		if (tmp2 == null)
 		{
 			tmp2 = new LinkedList<>();  // New Stack for this recvar
-			this.enacting.put(rv, tmp2);
+			this.working.put(rv, tmp2);
 		}
 		//tmp2.push(new HashSet<>());  // Push new Set element onto stack
 		tmp2.push(new LinkedList<>());  // Push new Set element onto stack
@@ -230,13 +236,13 @@ public class EGraphBuilderUtil
 	
 	public void popRecursionEntry(RecVar rv)
 	{
-		this.recvars.get(rv).pop();  // Pop the entry of this rec
+		this.recEntries.get(rv).pop();  // Pop the entry of this rec
 
 		//Set<EAction> pop = this.enacting.get(recvar).pop();
-		List<EAction> pop = this.enacting.get(rv).pop();
-		if (this.enacting.get(rv).isEmpty())  // All Lists popped from the stack of this recvar -- could just clear instead
+		List<EAction> pop = this.working.get(rv).pop();
+		if (this.working.get(rv).isEmpty())  // All Lists popped from the stack of this recvar -- could just clear instead
 		{
-			this.enacting.remove(rv);
+			this.working.remove(rv);
 		}
 		
 		EState curr = getEntry();  
@@ -244,14 +250,23 @@ public class EGraphBuilderUtil
 				// Because contract for GraphBuilderUtil is entry on leaving a node is the same as on entry, cf., EGraphBuilder.visitSeq restores original entry on leaving
 				// (And visitRecursion just does visitSeq for the recursion body, with the current entry/exit)
 
-		//Map<RecVar, Set<EAction>> tmp = this.enactingMap.get(curr);
-		Map<RecVar, List<EAction>> tmp = this.enactingMap.get(curr);
+		/*Map<RecVar, List<EAction>> tmp = this.enacting.get(curr);
 		if (tmp == null)
 		{
 			tmp = new HashMap<>();
-			this.enactingMap.put(curr, tmp);
+			this.enacting.put(curr, tmp);
 		}
-		tmp.put(rv, pop);
+		tmp.put(rv, pop);*/
+		if (!this.enacting.containsKey(curr))  
+				// For a given state, the enacting for all associated recvars is the same (the recvars are "equivalent) -- so only need to record per state
+		{
+			this.enacting.put(curr, pop);
+		}
+		else if (!this.enacting.get(curr).equals(pop))  // TODO: deprecate, temporary testing
+		{
+			throw new RuntimeException("Shouldn't get in here: " + curr + " ,, "
+					+ this.enacting.get(curr) + " ,, " + rv + " ,, " + pop);
+		}
 	}	
 	
 
@@ -286,7 +301,7 @@ public class EGraphBuilderUtil
 
 	public EState getRecursionEntry(RecVar recvar)
 	{
-		return this.recvars.get(recvar).peek();
+		return this.recEntries.get(recvar).peek();
 	}	
 	
 	// Returns List, cf. getSuccessors/Actions (vs. GetDet...)
@@ -348,10 +363,11 @@ public class EGraphBuilderUtil
 			}
 			else
 			{
-				IntermediateContinueEdge ice = (IntermediateContinueEdge) a;  // Choice --imed--> recursion entry (origSucc)
-				//for (IOAction e : this.enactingMap.get(succ))
-				RecVar rv = new RecVar(ice.mid.toString());
-				for (EAction e : this.enactingMap.get(origSucc).get(rv))
+				//IntermediateContinueEdge ice = (IntermediateContinueEdge) a;  // Choice --imed--> recursion entry (origSucc)
+				////for (IOAction e : this.enactingMap.get(succ))
+				//RecVar rv = new RecVar(ice.mid.toString());
+				//for (EAction e : this.enacting.get(origSucc).get(rv))
+				for (EAction e : this.enacting.get(origSucc))
 				{
 					for (EState n : origSucc.getSuccs(e))
 					{
