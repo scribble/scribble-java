@@ -145,8 +145,7 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	}
 	
 	// Non-defensive
-	// CHECKME: make protected again after refactoring ast to parser ?
-	public final void setDel(ScribDel del)
+	protected final void setDel(ScribDel del)
 	{
 		this.del = del;
 	}
