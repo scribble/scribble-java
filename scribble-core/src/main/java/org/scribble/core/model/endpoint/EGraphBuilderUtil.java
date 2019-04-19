@@ -75,18 +75,18 @@ public class EGraphBuilderUtil
 	// N.B. must be called before every "new visit", including first -- called by constructor and finalise
 	protected void reset()  
 	{
-		clear();
+		//clear();
 		this.entry = newState(Collections.emptySet());
 		this.exit = newState(Collections.emptySet());
 	}
 
-	protected void clear()  // CHECKME: redundant?
+	/*protected void clear()  // CHECKME: redundant? -- ideally builder should be implemented so that it is redundant?
 	{
 		this.states.clear();
 		this.recEntries.clear();
 		this.enacting.clear();
 		this.collecting.clear();
-	}
+	}*/
 	
 	// For the util to additionally record states -- use this, don't use this.mf.newEState
 	public EState newState(Set<RecVar> labs)
@@ -393,7 +393,7 @@ public class EGraphBuilderUtil
 	
 	public void addEntryLabel(RecVar lab)
 	{
-		addEntryLabel(this.entry, lab);
+		addEntryLabAux(this.entry, lab);
 	}
 
 	public EState getEntry()

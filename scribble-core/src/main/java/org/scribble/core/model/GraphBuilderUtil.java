@@ -32,13 +32,9 @@ public abstract class GraphBuilderUtil
 		this.mf = mf;
 	}
 	
-	//public abstract S newState(L labs);  // Can't factor out with SState, doesn't use L and takes SConfig
+	//public abstract S newState(L labs);  // Doesn't factor out well with SState, doesn't use L and takes an SConfig
 	
-	// N.B. must be called before every "new visit", including first
-	// Separated from constructor in order to use newState
-	//public abstract void init(S init);
-	
-	public void addEntryLabel(S s, L lab)
+	protected void addEntryLabAux(S s, L lab)
 	{
 		s.addLabel(lab);
 	}
