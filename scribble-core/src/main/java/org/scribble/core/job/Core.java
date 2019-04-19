@@ -84,6 +84,23 @@ public class Core
 		runSyntacticTransformPasses();
 		runSyntacticWfPasses();
 		runProjectionPasses();  // CHECKME: can try before validation (i.e., including syntactic WF), to promote greater tool feedback? (cf. CommandLine output "barrier")
+		
+		// FIXME: move
+		verbosePrintPass("Checking reachability on all projected inlineds...");
+		for (GProtoName fullname : this.context.getParsedFullnames())
+		{
+			GProtocol inlined = this.context.getInlined(fullname);
+			if (inlined.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
+			{
+				continue;
+			}
+			for (Role r : inlined.roles)
+			{
+				LProjection iproj = this.context.getProjectedInlined(fullname, r);
+				iproj.checkReachability();
+			}
+		}
+
 		runEfsmBuildingPasses();  // Currently, unfair-transform graph building must come after syntactic WF --- TODO fix graph building to prevent crash ?
 		runModelCheckingPasses();
 	}
@@ -224,21 +241,6 @@ public class Core
 				continue;
 			}
 			inlined.checkExtChoiceConsistency();
-		}
-		
-		verbosePrintPass("Checking reachability on all projected inlineds...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
-		{
-			GProtocol inlined = this.context.getInlined(fullname);
-			if (inlined.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
-			{
-				continue;
-			}
-			for (Role r : inlined.roles)
-			{
-				LProjection iproj = this.context.getProjectedInlined(fullname, r);
-				iproj.checkReachability();
-			}
 		}
 	}
 

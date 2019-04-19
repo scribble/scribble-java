@@ -50,6 +50,7 @@ import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
+import org.scribble.core.visit.InlinedExtChoiceSubjFixer;
 import org.scribble.core.visit.MessageIdGatherer;
 import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.RoleGatherer;
@@ -99,6 +100,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	public LProjection projectInlined(Core core, Role self)
 	{
 		LSeq def = new InlinedProjector(core, self).visitSeq(this.def);
+		def = new InlinedExtChoiceSubjFixer().visitSeq(def);
 		return projectAux(self, this.roles, def);
 	}
 

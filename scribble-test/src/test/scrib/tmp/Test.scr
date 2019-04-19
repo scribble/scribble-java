@@ -109,13 +109,21 @@ module tmp.Test;
 
 data <java> "..." from "..." as T;
 
-/*
-global protocol Proto1(role A, role B)
+//*
+global protocol Proto1(role A, role B, role C)
 {
-	1() from A to B;
 	rec X
 	{
-		continue X;
+		1() from A to B;
+		2() from B to C;
+		choice at A
+		{
+			continue X;  // TODO: add junit test, testing inlined choice subj fixing
+		}
+		or
+		{
+			continue X;
+		}
 	}
 }
 //*/
@@ -138,9 +146,10 @@ global protocol Proto1(role A, role B, role C)
 }
 //*/
 
+/*
 global protocol Proto1(role A, role B, role C)
 {
-	choice at A  // TODO: add junit test, testing core inlined projection choice subjects (for C)
+	choice at A  // TODO: add junit test, testing core inlined projection choice subjects (for C) -- already exists?
 	{
 		1() from A to B;
 		1() from B to C;
@@ -151,6 +160,7 @@ global protocol Proto1(role A, role B, role C)
 		2() from B to C;
 	}
 }
+//*/
 
 /*
 global protocol Proto1(role A, role B, role C)

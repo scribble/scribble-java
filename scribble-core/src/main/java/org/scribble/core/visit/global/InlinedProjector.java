@@ -54,6 +54,7 @@ import org.scribble.core.visit.STypeAggNoThrow;
 // Pre: use on inlined (i.e., Do inlined, roles pruned)
 public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 {
+	//protected final Set<RecVar> unguarded;  
 	protected final Set<RecVar> unguarded;  
 			// Projection "prunes" unguarded continues from choice cases, e.g., mu X.(A->B:1.X + A->B:2.A->C:2) for C, i.e., travel agent
 			// ...this can be followed by RecPruner to remove recs that are "orphaned" by continue pruning
@@ -100,20 +101,25 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	@Override
 	public LType visitChoice(Choice<Global, GSeq> n)
 	{
-		Role subj = n.subj.equals(self) ? Role.SELF : n.subj;
-				// CHECKME: "self" also explcitily used for Do, but implicitly for MessageTransfer, inconsistent?
-		List<LSeq> tmp = n.blocks.stream()
+		List<LSeq> blocks = n.blocks.stream()
 				.map(x -> dup().visitSeq(x))
 				.filter(x -> !x.isEmpty() && !isUnguardedSingleContinue(x))
 				.collect(Collectors.toList());
-		if (tmp.isEmpty())
+		if (blocks.isEmpty())
 		{
 			return LSkip.SKIP; // CHECKME: OK, or "empty" choice at subj still important?
 		}
-		this.unguarded.clear();  // At least one block is non-empty, consider continues guarded
-		return new LChoice(null, subj, tmp);
+		//this.unguarded.clear();  // At least one block is non-empty, consider continues guarded -- done in Seq
+		
+		//InlinedEnablerInferer v = new InlinedEnablerInferer(this.unguarded);
+		Role subj = n.subj.equals(this.self) 
+				? Role.SELF  // i.e., internal choice
+				: n.subj;//v.visitSeq(blocks.get(0)).get();  // CHECKME: consistent ext choice means can infer from any one seq?
+				// CHECKME: "self" also explcitily used for Do, but implicitly for MessageTransfer, inconsistent?
+		return new LChoice(null, subj, blocks);
 	}
 	
+	// N.B. won't prune unguarded continues that have a bad sequence, will be caught later by reachability checking (e.g., bad.reach.globals.gdo.Test04)
 	private boolean isUnguardedSingleContinue(LSeq block)
 	{
 		if (block.elems.size() != 1)
@@ -122,7 +128,9 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		}
 		SType<Local, LSeq> e = block.elems.get(0);
 		return (e instanceof LContinue)
-				&& this.unguarded.contains(((LContinue) e).recvar);
+				&& this.unguarded.contains(((LContinue) e).recvar);  // Bound recvars already checked
+				/*&& (!this.unguarded.get(((LContinue) e).recvar).isPresent()
+				|| this.unguarded.get(((LContinue) e).recvar).get() == null);*/
 	}
 	
 	@Override
