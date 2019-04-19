@@ -34,12 +34,12 @@ import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LSeq;
 
-// Post: Optional<Role> return is populated for "well-formed" locals, e.g., projections from WF globals
-// Return Optional(null) for "failed" inference (n.b., cf. !isPresent, for an "empty" local)
-public class InlinedExtChoiceSubjFixer
-		extends STypeVisitorNoThrow<Local, LSeq>
+// Easier to separate from InlinedProjector (i.e., finish projection first, then fix)
+// (Doing "at the time" during projection requires, e.g., recursion body projections for "inference" on recursion entry, but the body can't really be projected yet without that upfront "inference")
+public class InlinedExtChoiceSubjFixer extends STypeVisitorNoThrow<Local, LSeq>
 {
 	private Map<RecVar, Optional<Role>> recs = new HashMap<>();
+			// Record on entering rec states, to give to InlinedEnablerInferer on nested choice states (for unguarded continues)
 
 	@Override
 	public Choice<Local, LSeq> visitChoice(Choice<Local, LSeq> n)
@@ -67,6 +67,7 @@ public class InlinedExtChoiceSubjFixer
 
 class InlinedEnablerInferer
 		extends STypeAggNoThrow<Local, LSeq, Optional<Role>>
+		// Optional.empty signifies inference did not succeed, either outright bad (should be caught by WF somewhere) or an "empty" context
 {
 	private Map<RecVar, Optional<Role>> recs;
 
@@ -78,9 +79,9 @@ class InlinedEnablerInferer
 	@Override
 	public Optional<Role> visitChoice(Choice<Local, LSeq> n)
 	{
-		// If inference does not succeed (e.g., any inconsistency) keep the original
-		// Such cases due to bad WF should be caught somewhere else (e.g., reachability)
-		// Otherwise, should be "empty" cases, so keep original
+		// If inference does not succeed, keep the original
+		// Such bad cases due, e.g., any inconsistency, will be caught as bad WF somewhere else (e.g., reachability)
+		// Otherwise, should be "empty" cases, so keep original as a default
 		List<Optional<Role>> enablers = n.blocks.stream().map(x -> visitSeq(x))
 				.collect(Collectors.toList());  // Each elem is null, empty or isPresent
 		if (enablers.stream().anyMatch(x -> !x.isPresent()))
@@ -136,7 +137,7 @@ class InlinedEnablerInferer
 	@Override
 	protected Optional<Role> unit(SType<Local, LSeq> n)
 	{
-		return Optional.empty();  // Empty signifies inference did not succeed, either outright bad (should be caught by WF somewhere) or an "empty" context
+		return Optional.empty();
 	}
 
 	// Currently only used by Recursion, Choice/Seq overrides don't use

@@ -21,7 +21,7 @@ public class EGraph implements MPrettyPrint
 	public final EState init;
 	public final EState term;
 
-	//protected EGraph(EState init, EState term)
+	//protected EGraph(EState init, EState term)  // Use factory?
 	public EGraph(EState init, EState term)
 	{
 		this.init = init;

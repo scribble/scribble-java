@@ -100,13 +100,14 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	public LProjection projectInlined(Core core, Role self)
 	{
 		LSeq def = new InlinedProjector(core, self).visitSeq(this.def);
-		def = new InlinedExtChoiceSubjFixer().visitSeq(def);
-		return projectAux(self, this.roles, def);
+		LSeq fixed = new InlinedExtChoiceSubjFixer().visitSeq(def);
+		return projectAux(self, this.roles, fixed);
 	}
 
 	public LProjection project(Core core, Role self)
 	{
 		LSeq def = new Projector(core, self).visitSeq(this.def);
+			// FIXME: ext choice subj fixing, do pruning -- refactor to Job and use AstVisitor?
 		return projectAux(self,
 				core.getContext().getInlined(this.fullname).roles,  
 						// Using inlined global, global role decls already pruned -- CHECKME: is this still relevant?

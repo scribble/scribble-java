@@ -57,6 +57,7 @@ public class CoreContext
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	// LProtocolName key is LProtocol value fullname (i.e., redundant)
 	private final Map<LProtoName, LProjection> projs = new HashMap<>();
+			// FIXME: choice-subj fixing, do-pruning -- factor out to Job and do there via AstVisitor? -- make testing compare the two sides 
 
 	// Built from projected inlined
 	private final Map<LProtoName, EGraph> fEGraphs = new HashMap<>();
