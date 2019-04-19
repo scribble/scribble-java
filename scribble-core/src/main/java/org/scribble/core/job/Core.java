@@ -103,7 +103,7 @@ public class Core
 		verbosePrintPass("Unfolding all recursions once for all inlined globals...");
 		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
-			// TODO: currently, unfolded not actually stored by Context -- unfoldAllOnce repeated manually when needed, e.g., runSyntacticWfPasses
+			// TODO: currently, unfolded not actually stored by Context -- unfoldAllOnce repeated manually when needed, e.g., runSyntaxWfPasses
 			GProtocol inlined = this.context.getInlined(fullname);
 			GTypeUnfolder v = new GTypeUnfolder();
 			GProtocol unf = (GProtocol) inlined.unfoldAllOnce(v);//.unfoldAllOnce(unf2);  // CHECKME: twice unfolding? instead of "unguarded"-unfolding?
@@ -146,7 +146,7 @@ public class Core
 		}
 	}
 
-	// Builds only the fair EFSMs, unfair EFSM building depends on WF (role enabling, e.g., bad.wfchoice.enabling.threeparty.Test02) for building algorithm to work...
+	// Pre: runGlobalSyntaxWfPasses -- unfair EFSM building depends on WF (role enabling, e.g., bad.wfchoice.enabling.threeparty.Test02) for building algorithm to work...
 	// ...or patch unfair-transform graph building to not crash?
 	protected void runEfsmBuildingPasses()
 	{
@@ -156,7 +156,7 @@ public class Core
 			GProtocol inlined = this.context.getInlined(fullname);
 			for (Role self : inlined.roles)
 			{
-				// Seems to be OK even if runSyntacticWfPasses fails (cf. unfair transform)
+				// Seems to be OK even if runSyntaxWfPasses does not succeed (cf. unfair transform)
 				EGraph graph = this.context.getEGraph(fullname, self);
 				verbosePrintPass(
 						"Built EFSM: " + inlined.fullname + ":\n" + graph.toDot());
@@ -172,7 +172,7 @@ public class Core
 				GProtocol inlined = this.context.getInlined(fullname);
 				for (Role self : inlined.roles)
 				{
-					// Pre: runSyntacticWfPasses -- e.g., bad.wfchoice.enabling.threeparty.Test02
+					// Pre: runGlobalSyntaxWfPasses -- e.g., bad.wfchoice.enabling.threeparty.Test02
 					EGraph graph = this.context.getUnfairEGraph(inlined.fullname, self);
 					verbosePrintPass("Built \"unfair\" EFSM: " + inlined.fullname + ":\n"
 							+ graph.toDot());

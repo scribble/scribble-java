@@ -17,6 +17,7 @@ import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.ScribException;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of S
+// GraphBuilderUtil usage contract (1): this.entry on leaving a node is the same as on entering
 // N.B. must call init before every "new visit", including first
 public abstract class GraphBuilderUtil
 		<L,                             // Labels on states (cosmetic)
@@ -24,7 +25,7 @@ public abstract class GraphBuilderUtil
 		 S extends MState<L, A, S, K>,  // State type
 		 K extends ProtoKind>        // Global/local actions/states -- Need to quantify K explicitly
 {
-	protected S entry;
+	protected S entry;	// GraphBuilderUtil usage contract: entry on leaving a node is the same as on entering -- cf., EGraphBuilderUtil.visitSeq restores the original entry on leaving
 	protected S exit;   // Tracking exit is convenient for merges (otherwise have to generate dummy merge nodes)
 	
 	protected GraphBuilderUtil()

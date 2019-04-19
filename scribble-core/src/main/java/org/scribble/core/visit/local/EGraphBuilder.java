@@ -78,49 +78,16 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 		{
 			List<LType> elems = block.getElements();
 			LType first = elems.get(0);
-			if (first instanceof LRecursion)  // CHECKME: do this here?  refactor into builderutil?
+			if (first instanceof LContinue)
 			{
-				EState entry = util.getEntry();
-				EState exit = util.getExit();
-
-				EState nestedEntry = util.newState(Collections.emptySet());
-				util.setEntry(nestedEntry);
-				if (elems.size() == 1)
-				{
-					first.visitWithNoThrow(this);
-				}	
-				else
-				{
-					// Reuse existing b, to directly add continue-edges back to the "outer" graph
-					EState nestedExit = util.newState(Collections.emptySet());
-					util.setExit(nestedExit);
-					first.visitWithNoThrow(this);
-
-					util.setEntry(nestedExit);  // Must be non null
-					util.setExit(exit);
-					LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
-					tail.visitWithNoThrow(this);
-				}
-				EState init = nestedEntry;
-				for (EAction a : (Iterable<EAction>) 
-						init.getActions().stream().distinct()::iterator)
-						// Enabling actions
-				{
-					for (EState s : init.getSuccs(a))
-					{
-						util.addEdge(entry, a, s);
-					}
-				}
-				
-				util.setEntry(entry);
-				util.setExit(exit);
-			}
-			else if (first instanceof LContinue)
-			{
-				// Cannot treat choice-unguarded-continue in "a single pass" because may not have built all recursion enacting edges yet 
+				// Cannot treat choice-unguarded-continue in "a single pass", because may not have built all recursion enacting edges yet 
 				// (Single-pass building would be sensitive to order of choice block visiting)
 				LContinue cont = (LContinue) first;  // First and only element
 				util.addContinueEdge(util.getEntry(), cont.recvar); 
+			}
+			else if (first instanceof LRecursion)  // CHECKME: do this here?  refactor into builderutil?
+			{
+				buildUnguardedRecursion(util, elems, first);
 			}
 			else
 			{
@@ -133,13 +100,53 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 		return n;
 	}
 
+	private void buildUnguardedRecursion(EGraphBuilderUtil util,
+			List<LType> elems, LType first)
+	{
+		EState entry = util.getEntry();
+		EState exit = util.getExit();
+
+		EState nestedEntry = util.newState(Collections.emptySet());
+		util.setEntry(nestedEntry);
+		if (elems.size() == 1)
+		{
+			first.visitWithNoThrow(this);
+		}	
+		else
+		{
+			// Reuse existing b, to directly add continue-edges back to the "outer" graph
+			EState nestedExit = util.newState(Collections.emptySet());
+			util.setExit(nestedExit);
+			first.visitWithNoThrow(this);
+
+			util.setEntry(nestedExit);  // Must be non null
+			util.setExit(exit);
+			LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
+			tail.visitWithNoThrow(this);
+		}
+
+		EState init = nestedEntry;
+		for (EAction a : (Iterable<EAction>) 
+				init.getActions().stream().distinct()::iterator)
+				// Enabling actions
+		{
+			for (EState s : init.getSuccs(a))
+			{
+				util.addEdge(entry, a, s);
+			}
+		}
+		
+		util.setEntry(entry);
+		util.setExit(exit);
+	}
+
 	@Override
 	public SType<Local, LSeq> visitContinue(Continue<Local, LSeq> n)
 	{
 		// CHECKME: identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
 		// Choice-guarded continue -- choice-unguarded continue detected and handled in LChoice
 		EState curr = this.util.getEntry();
-		for (EState pred : this.util.getAllPredecessors(curr))  // Does getAllSuccessors
+		for (EState pred : this.util.getPredecessors(curr))  // Does getAllSuccessors
 		{
 			for (EAction a : new LinkedList<>(pred.getActions()))
 			{
