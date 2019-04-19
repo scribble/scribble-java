@@ -131,7 +131,7 @@ public class AutGraphParser
 		{
 			if (i != init && i != term)
 			{
-				map.put(i, util.ef.newEState(Collections.emptySet()));
+				map.put(i, util.mf.newEState(Collections.emptySet()));
 			}
 		}
 		//for (int i : succs)
@@ -139,7 +139,7 @@ public class AutGraphParser
 		{
 			if (!map.containsKey(i) && i != init && i != term)
 			{
-				map.put(i, util.ef.newEState(Collections.emptySet()));
+				map.put(i, util.mf.newEState(Collections.emptySet()));
 			}
 		}
 		//for (int i : edges.keySet())

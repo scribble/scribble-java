@@ -49,7 +49,8 @@ public class Core
 	public final CoreConfig config;  // Immutable
 
 	private final CoreContext context;  // Mutable (Visitor passes replace modules)
-	private final SGraphBuilderUtil sgraphb;
+
+	private final SGraphBuilderUtil sgraphb;  // FIXME: refactor?
 	
 	public Core(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
 			//Map<ModuleName, ModuleContext> modcs, 

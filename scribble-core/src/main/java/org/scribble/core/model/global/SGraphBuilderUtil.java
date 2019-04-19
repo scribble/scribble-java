@@ -38,13 +38,14 @@ import org.scribble.util.ScribException;
 public class SGraphBuilderUtil
 		extends GraphBuilderUtil<Void, SAction, SState, Global>
 {
-	public final ModelFactory sf;
+	//public final ModelFactory mf;
 
-	public SGraphBuilderUtil(ModelFactory sf)
+	public SGraphBuilderUtil(ModelFactory mf)
 	{
-		this.sf = sf;
+		//this.mf = sf;
+		super(mf);
 		//reset();
-		init(sf.newSState(null));
+		init(mf.newSState(null));
 	}
 	
 	// N.B. must be called before every "new visit", including first
@@ -52,7 +53,7 @@ public class SGraphBuilderUtil
 	public void init(SState init)
 	{
 		//init(this.sf.newSState(null), this.sf.newSState(null));  // configs
-		reset(init, this.sf.newSState(null));
+		reset(init, this.mf.newSState(null));
 	}
 
 	// Do as an initial state rather than config?
@@ -61,7 +62,7 @@ public class SGraphBuilderUtil
 		Map<Role, EFSM> efsms = egraphs.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().toFsm()));
 		SBuffers b0 = new SBuffers(ef, efsms.keySet(), !explicit);
 		//return job.sf.newSConfig(efsms, b0);
-		return this.sf.newSConfig(efsms, b0);
+		return this.mf.newSConfig(efsms, b0);
 	}
 	
 	// Factory method: not fully integrated with SGraph constructor because of Job arg (debug printing)

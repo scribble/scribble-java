@@ -13,6 +13,9 @@
  */
 package org.scribble.core.model;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.util.ScribException;
 
@@ -25,21 +28,23 @@ public abstract class GraphBuilderUtil
 		 S extends MState<L, A, S, K>,  // State type
 		 K extends ProtoKind>        // Global/local actions/states -- Need to quantify K explicitly
 {
+	public final ModelFactory mf;  // N.B. new states should be made by this.newState, not this.ef.newEState
+
 	protected S entry;	// GraphBuilderUtil usage contract: entry on leaving a node is the same as on entering -- cf., EGraphBuilderUtil.visitSeq restores the original entry on leaving
 	protected S exit;   // Tracking exit is convenient for merges (otherwise have to generate dummy merge nodes)
 	
-	protected GraphBuilderUtil()
+	protected GraphBuilderUtil(ModelFactory mf)
 	{
-
+		this.mf = mf;
 	}
 	
-	//public abstract S newState(Set<RecVar> labs);
+	//public abstract S newState(L labs);  // Can't factor out with SState, doesn't use L and takes SConfig
 	
 	// N.B. must be called before every "new visit", including first
 	// Separated from constructor in order to use newState
 	public abstract void init(S init);
 	
-	protected void reset(S entry, S exit)  // Should be used by init
+	protected void reset(S entry, S exit)
 	{
 		this.entry = entry;//newState(Collections.emptySet());
 		this.exit = exit;//newState(Collections.emptySet());

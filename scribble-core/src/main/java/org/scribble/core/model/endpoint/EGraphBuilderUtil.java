@@ -33,60 +33,45 @@ import org.scribble.util.ScribException;
 
 // N.B. init must be called before every "new visit", including first -- no: now init implicit on construction, and finalise also does init
 // (E)GraphBuilderUtil usage contract (2): all states must be made via newState
-// FIXME TODO replace EGraphBuilderUtil
 // Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
 // Tailored to support graph building from syntactic local protocol choice and recursion
 public class EGraphBuilderUtil
 		extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
-	public final ModelFactory ef;  // N.B. new states should be made by this.newState, not this.ef.newEState
+	//public final ModelFactory mf;  // N.B. new states should be made by this.newState, not this.ef.newEState
 
 	// Entry state for each recursion
 	private final Map<RecVar, Deque<EState>> recEntries = new HashMap<>();  // CHECKME: Deque is for shadowing?
 
-	// First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
-	// These are collected by:
-	// - On each recursion entry, push a new list for that recvar -- list pushing/popping mainly for handling choices (see below)
-	// - General idea: via addEdge, record the first action encountered for all "*open*" recvars, i.e., add the action to all current lists that are *still empty*
-	// - For choice: 
-	// -- On choice entry, first push a new list for *all* recvars for recording the choice cases (all, including "non-open", because inconvenient to distinguish open/non-open from nested contexts)
-	// -- On block entry, push another new list for *all* recvars for recording the current block
-	// -- (Record, via addEdge, the first action of the current block for all open recvars)
-	// -- On block exit, pop the block list into the parent choice list for *all* recvars
-	// - On choice exit, pop the choice list into the parent (recursion/choice-block) list for all *open* recvars, i.e., if the parent list is *still empty*
-	// - On recursion exit, pop the list into the enacting map for the recEntries state for that recvar (n.b. enacting for a state is the same for its recvars)
-	private final Map<EState, Deque<List<EAction>>> collecting = new HashMap<>();
-
 	// Record enacting per-recvar, since a state could have multi-recvars -- CHECKME: caters for shadowing? (cf. recording only per unique recvar)
 	// CHECKME: for a given state, the enacting list is the same for each recvar?
-	//private final Map<EState, Map<RecVar, List<EAction>>> enacting 
-	private final Map<EState, List<EAction>> enacting 
-			= new HashMap<>();
+	private final Map<EState, List<EAction>> enacting = new HashMap<>();
 
-	public EGraphBuilderUtil(ModelFactory ef)
+	// Temporary storage of enacting while collecting in progress
+	// First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
+	// These are collected by:
+	// - On each recursion entry, push a new list for its entry state -- list pushing/popping mainly for handling choices (see below)
+	// - (N.B. only need to do per state, not per rec(var) -- all recvars of a given state equivalently identify that state)
+	// - General idea: via addEdge, record the first action encountered for all "*open*" rec states, i.e., add the action to all current lists that are *still empty*
+	// - For choice: 
+	// -- On choice entry, first push a new list for *all* rec states for recording the choice cases (all, including "non-open", because inconvenient to distinguish open/non-open from nested contexts)
+	// -- On block entry, push another new list for *all* rec states for recording the current block
+	// -- (Record, via addEdge, the first action of the current block for all open rec states)
+	// -- On block exit, pop the block list into the parent choice list for *all* rec states
+	// - On choice exit, pop the choice list into the parent (recursion/choice-block) list for all *open* rec states, i.e., if the parent list is *still empty*
+	// - On recursion exit, pop the list into the enacting map for the rec entry state
+	private final Map<EState, Deque<List<EAction>>> collecting = new HashMap<>();
+
+	public EGraphBuilderUtil(ModelFactory mf)
 	{
-		this.ef = ef;
-		////clear();
-		//reset();
+		//this.mf = mf;
+		super(mf);
 		init(null);
 	}
-
-	/*// FIXME: cannot be reused for different protos, because of recvars and clear/reset
-	// CHECKME: refactor as factory method?  (e.g., push?)
-	public EGraphBuilderUtil2(EGraphBuilderUtil2 b)
-	{
-		this.ef = b.ef;
-		init(null);  // FIXME: init param not used
-		b.outerRecvars.entrySet().forEach(x ->
-				this.outerRecvars.put(x.getKey(), x.getValue()));
-		b.recvars.entrySet().forEach(x ->
-				this.outerRecvars.put(x.getKey(), x.getValue().peek()));
-	}*/
 	
 	// N.B. must be called before every "new visit", including first
-	// FIXME: now cannot be reused for different protos, because of recvars and clear/reset
-	@Override
-	public void init(EState init)  // FIXME: init not used (but inherited from super)
+	public void init(EState init)  
+			// FIXME: init not used (but inherited from super)
 	{
 		clear();
 		/*reset(this.ef.newEState(Collections.emptySet()),
@@ -113,7 +98,7 @@ public class EGraphBuilderUtil
 	public EState newState(Set<RecVar> labs)
 	{
 		//return new EState(labs);
-		EState s = this.ef.newEState(labs);
+		EState s = this.mf.newEState(labs);
 		this.states.add(s);
 		return s;
 	}
@@ -248,6 +233,10 @@ public class EGraphBuilderUtil
 		{
 			throw new RuntimeException("Shouldn't get here: ");
 		}
+		if (this.recEntries.get(rv).isEmpty())
+		{
+			this.recEntries.remove(rv);
+		}
 		
 		if (!this.collecting.containsKey(entry))
 		{
@@ -296,7 +285,7 @@ public class EGraphBuilderUtil
 		/*this.contStates.add(s);
 		this.contRecVars.add(rv);*/
 		EState entry = getRecursionEntry(rv);
-		addEdgeAux(s, new IntermediateContinueEdge(this.ef, rv), entry);
+		addEdgeAux(s, new IntermediateContinueEdge(this.mf, rv), entry);
 		//addEdge(s, new IntermediateContinueEdge(rv), entry); // **FIXME: broken on purpose for testing
 	}
 
@@ -331,8 +320,8 @@ public class EGraphBuilderUtil
 	 */
 	public EGraph finalise()
 	{
-		EState entry = this.entry.cloneNode(this.ef, this.entry.getLabels()); //this.ef.newEState(this.entry.getLabels());
-		EState exit = this.exit.cloneNode(this.ef, this.exit.getLabels()); //this.ef.newEState(this.exit.getLabels());
+		EState entry = this.entry.cloneNode(this.mf, this.entry.getLabels()); //this.ef.newEState(this.entry.getLabels());
+		EState exit = this.exit.cloneNode(this.mf, this.exit.getLabels()); //this.ef.newEState(this.exit.getLabels());
 
 		Map<EState, EState> map = new HashMap<>();
 		map.put(this.entry, entry);
@@ -406,7 +395,7 @@ public class EGraphBuilderUtil
 		else
 		{
 			//next = this.ef.newEState(succ.getLabels());
-			res = orig.cloneNode(this.ef, orig.getLabels());
+			res = orig.cloneNode(this.mf, orig.getLabels());
 			clones.put(orig, res);
 		}
 		return res;
