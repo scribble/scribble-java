@@ -42,6 +42,7 @@ public class InlinedExtChoiceSubjFixer extends STypeVisitorNoThrow<Local, LSeq>
 {
 	private Map<RecVar, Optional<Role>> recs = new HashMap<>();
 			// Record on entering rec states, to give to InlinedEnablerInferer on nested choice states (for unguarded continues)
+			// CHECKME: Optional necessary?  InlinedEnablerInferer may not succeed due to empty/bad contexts, but should that be reflected here?
 
 	@Override
 	public Choice<Local, LSeq> visitChoice(Choice<Local, LSeq> n)
@@ -61,7 +62,7 @@ public class InlinedExtChoiceSubjFixer extends STypeVisitorNoThrow<Local, LSeq>
 	@Override
 	public Recursion<Local, LSeq> visitRecursion(Recursion<Local, LSeq> n)
 	{
-		Optional<Role> r = new InlinedEnablerInferer(this.recs).visitSeq(n.body);  // recs unnecessary?
+		Optional<Role> r = new InlinedEnablerInferer(this.recs).visitSeq(n.body);  // this.recs necessary?
 		this.recs.put(n.recvar, r);  // null, empty or OK
 		return n.reconstruct(n.getSource(), n.recvar, visitSeq(n.body));
 	}
