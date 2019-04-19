@@ -81,32 +81,16 @@ public class Core
 	public void runPasses() throws ScribException
 	{
 		// Passes populate JobContext on-demand by each individual getter
-		runSyntacticTransformPasses();
-		runSyntacticWfPasses();
+		runSyntaxTransformPasses();
+		runGlobalSyntaxWfPasses();
 		runProjectionPasses();  // CHECKME: can try before validation (i.e., including syntactic WF), to promote greater tool feedback? (cf. CommandLine output "barrier")
-		
-		// FIXME: move
-		verbosePrintPass("Checking reachability on all projected inlineds...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
-		{
-			GProtocol inlined = this.context.getInlined(fullname);
-			if (inlined.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
-			{
-				continue;
-			}
-			for (Role r : inlined.roles)
-			{
-				LProjection iproj = this.context.getProjectedInlined(fullname, r);
-				iproj.checkReachability();
-			}
-		}
-
+		runProjectionSyntaxWfPasses();
 		runEfsmBuildingPasses();  // Currently, unfair-transform graph building must come after syntactic WF --- TODO fix graph building to prevent crash ?
 		runModelCheckingPasses();
 	}
 	
 	// Populates JobContext -- although patten is to do on-demand via (first) getter, so (partially) OK to delay population
-	protected void runSyntacticTransformPasses()  // No ScribException, no errors expected
+	protected void runSyntaxTransformPasses()  // No ScribException, no errors expected
 	{
 		verbosePrintPass("Inlining subprotocols for all globals...");
 		for (GProtoName fullname : this.context.getParsedFullnames())
@@ -197,7 +181,7 @@ public class Core
 		}
 	}
 	
-	protected void runSyntacticWfPasses() throws ScribException
+	protected void runGlobalSyntaxWfPasses() throws ScribException
 	{
 		verbosePrintPass(
 				"Checking for unused role decls on all inlined globals...");
@@ -241,6 +225,25 @@ public class Core
 				continue;
 			}
 			inlined.checkExtChoiceConsistency();
+		}
+	}
+		
+	// Pre: runGlobalSyntaxWfPasses
+	protected void runProjectionSyntaxWfPasses() throws ScribException
+	{
+		verbosePrintPass("Checking reachability on all projected inlineds...");
+		for (GProtoName fullname : this.context.getParsedFullnames())
+		{
+			GProtocol inlined = this.context.getInlined(fullname);
+			if (inlined.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
+			{
+				continue;
+			}
+			for (Role r : inlined.roles)
+			{
+				LProjection iproj = this.context.getProjectedInlined(fullname, r);
+				iproj.checkReachability();
+			}
 		}
 	}
 
