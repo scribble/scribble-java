@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.visit;
+package org.scribble.core.visit.local;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +33,8 @@ import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LSeq;
+import org.scribble.core.visit.STypeAggNoThrow;
+import org.scribble.core.visit.STypeVisitorNoThrow;
 
 // Easier to separate from InlinedProjector (i.e., finish projection first, then fix)
 // (Doing "at the time" during projection requires, e.g., recursion body projections for "inference" on recursion entry, but the body can't really be projected yet without that upfront "inference")

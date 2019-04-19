@@ -50,7 +50,6 @@ import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.visit.InlinedExtChoiceSubjFixer;
 import org.scribble.core.visit.MessageIdGatherer;
 import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.RoleGatherer;
@@ -61,6 +60,7 @@ import org.scribble.core.visit.global.ExtChoiceConsistencyChecker;
 import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.core.visit.global.Projector;
 import org.scribble.core.visit.global.RoleEnablingChecker;
+import org.scribble.core.visit.local.InlinedExtChoiceSubjFixer;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribUtil;
 
