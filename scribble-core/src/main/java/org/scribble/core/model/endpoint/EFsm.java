@@ -19,26 +19,21 @@ import java.util.stream.Collectors;
 import org.scribble.core.model.endpoint.actions.EAction;
 
 // Factor out with SModel?
-public class EFSM
+public class EFsm
 {
 	public final EGraph graph;
 	public final EState curr;
 	
-	protected EFSM(EGraph graph)
+	protected EFsm(EGraph graph)
 	{
 		this(graph, graph.init);
 	}
 
-	protected EFSM(EGraph graph, EState curr)
+	protected EFsm(EGraph graph, EState curr)
 	{
-		this.graph = graph;//new EGraph(init, term);
+		this.graph = graph;
 		this.curr = curr;
 	}
-	
-	/*public EndpointState getCurrent()
-	{
-		return this.curr;
-	}*/
 
 	// CHECKME: check if unfolded initial accept is possible, and if it breaks anything
 	public boolean isInitial()
@@ -56,9 +51,10 @@ public class EFSM
 		return this.curr.getStateKind();
 	}
 
-	public List<EFSM> fireAll(EAction a)
+	// CHECKME: Set?  List is for non-det actions, but is that relevant to EFsm's?
+	public List<EFsm> fireAll(EAction a)
 	{
-		return this.curr.getSuccs(a).stream().map(x -> new EFSM(this.graph, x))
+		return this.curr.getSuccs(a).stream().map(x -> new EFsm(this.graph, x))
 				.collect(Collectors.toList());
 	}
 
@@ -93,11 +89,11 @@ public class EFSM
 		{
 			return true;
 		}
-		if (!(o instanceof EFSM))
+		if (!(o instanceof EFsm))
 		{
 			return false;
 		}
-		EFSM them = (EFSM) o;
+		EFsm them = (EFsm) o;
 		return this.graph.equals(them.graph) && this.curr.equals(them.curr);
 	}
 	

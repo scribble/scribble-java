@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.endpoint.EFSM;
+import org.scribble.core.model.endpoint.EFsm;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAcc;
@@ -40,17 +40,17 @@ import org.scribble.core.type.name.Role;
 
 public class SConfig
 {
-	protected final ModelFactory sf;
+	protected final ModelFactory mf;
 	
 	//public final Map<Role, EndpointState> states;
-	public final Map<Role, EFSM> efsms;
+	public final Map<Role, EFsm> efsms;
 	public final SBuffers buffs;
 	
 	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> buff)
 	//public WFConfig(Map<Role, EndpointState> state, WFBuffers buffs)
-	public SConfig(ModelFactory sf, Map<Role, EFSM> state, SBuffers buffs)
+	public SConfig(ModelFactory mf, Map<Role, EFsm> state, SBuffers buffs)
 	{
-		this.sf = sf;
+		this.mf = mf;
 		
 		this.efsms = Collections.unmodifiableMap(state);
 		//this.buffs = Collections.unmodifiableMap(buff.keySet().stream() .collect(Collectors.toMap((k) -> k, (k) -> Collections.unmodifiableMap(buff.get(k)))));
@@ -77,7 +77,7 @@ public class SConfig
 	public boolean canSafelyTerminate(Role r)
 	{
 		//EndpointState s = this.states.get(r);
-		EFSM s = this.efsms.get(r);
+		EFsm s = this.efsms.get(r);
 		//return
 		/*boolean cannotSafelyTerminate =  // FIXME: check and cleanup
 				(s.isTerminal() && !this.buffs.isEmpty(r))
@@ -113,12 +113,12 @@ public class SConfig
 		List<SConfig> res = new LinkedList<>();
 		
 		//List<EndpointState> succs = this.states.get(r).takeAll(a);
-		List<EFSM> succs = this.efsms.get(r).fireAll(a);
+		List<EFsm> succs = this.efsms.get(r).fireAll(a);
 		//for (EndpointState succ : succs)
-		for (EFSM succ : succs)
+		for (EFsm succ : succs)
 		{
 			//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
-			Map<Role, EFSM> tmp1 = new HashMap<>(this.efsms);
+			Map<Role, EFsm> tmp1 = new HashMap<>(this.efsms);
 			//Map<Role, Map<Role, Send>> tmp2 = new HashMap<>(this.buffs);
 		
 			tmp1.put(r, succ);
@@ -143,7 +143,7 @@ public class SConfig
 			{
 				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
-			res.add(this.sf.newSConfig(tmp1, tmp2));
+			res.add(this.mf.newSConfig(tmp1, tmp2));
 		}
 
 		return res;
@@ -156,15 +156,15 @@ public class SConfig
 		/*List<EndpointState> succs1 = this.states.get(r1).takeAll(a1);
 		List<EndpointState> succs2 = this.states.get(r2).takeAll(a2);
 		for (EndpointState succ1 : succs1)*/
-		List<EFSM> succs1 = this.efsms.get(r1).fireAll(a1);
-		List<EFSM> succs2 = this.efsms.get(r2).fireAll(a2);
-		for (EFSM succ1 : succs1)
+		List<EFsm> succs1 = this.efsms.get(r1).fireAll(a1);
+		List<EFsm> succs2 = this.efsms.get(r2).fireAll(a2);
+		for (EFsm succ1 : succs1)
 		{
 			//for (EndpointState succ2 : succs2)
-			for (EFSM succ2 : succs2)
+			for (EFsm succ2 : succs2)
 			{
 				//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
-				Map<Role, EFSM> tmp1 = new HashMap<>(this.efsms);
+				Map<Role, EFsm> tmp1 = new HashMap<>(this.efsms);
 				tmp1.put(r1, succ1);
 				tmp1.put(r2, succ2);
 				SBuffers tmp2;
@@ -181,7 +181,7 @@ public class SConfig
 				{
 					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
 				}
-				res.add(this.sf.newSConfig(tmp1, tmp2));
+				res.add(this.mf.newSConfig(tmp1, tmp2));
 			}
 		}
 
@@ -195,7 +195,7 @@ public class SConfig
 		for (Role r : this.efsms.keySet())
 		{
 			//EndpointState s = this.states.get(r);
-			EFSM s = this.efsms.get(r);
+			EFsm s = this.efsms.get(r);
 			EStateKind k = s.getStateKind();
 			if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 			{
@@ -301,7 +301,7 @@ public class SConfig
 			candidate.add(r);
 			
 			//EndpointState s = this.states.get(r);
-			EFSM s = this.efsms.get(r);
+			EFsm s = this.efsms.get(r);
 			
 			if (s == null)
 			{
@@ -348,7 +348,7 @@ public class SConfig
 	private Set<Role> isWaitingFor(Role r)
 	{
 		//EndpointState s = this.states.get(r);
-		EFSM s = this.efsms.get(r);
+		EFsm s = this.efsms.get(r);
 		EStateKind k = s.getStateKind();
 		if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 		{
@@ -456,7 +456,7 @@ public class SConfig
 		for (Role r : this.efsms.keySet())
 		{
 			//EndpointState s = this.states.get(r);
-			EFSM s = this.efsms.get(r);
+			EFsm s = this.efsms.get(r);
 			if (s.isTerminated())  // Local termination of r, i.e. not necessarily "full deadlock"
 			{
 				Set<ESend> orphs = this.buffs.get(r).values().stream().filter((v) -> v != null).collect(Collectors.toSet());
@@ -523,7 +523,7 @@ public class SConfig
 		for (Role r : this.efsms.keySet())
 		{
 			//EndpointState s = this.states.get(r);
-			EFSM fsm = this.efsms.get(r);
+			EFsm fsm = this.efsms.get(r);
 			switch (fsm.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
 			{
 				case OUTPUT:
@@ -549,7 +549,7 @@ public class SConfig
 							// FIXME: factor out
 							EReq c = (EReq) a;
 							//EndpointState speer = this.states.get(c.peer);
-							EFSM speer = this.efsms.get(c.peer);
+							EFsm speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
 								List<EAction> peeras = speer.getAllFireable();
@@ -586,7 +586,7 @@ public class SConfig
 						{
 							// FIXME: factor out
 							EClientWrap wc = (EClientWrap) a;
-							EFSM speer = this.efsms.get(wc.peer);
+							EFsm speer = this.efsms.get(wc.peer);
 							List<EAction> peeras = speer.getAllFireable();
 							for (EAction peera : peeras)
 							{
@@ -706,7 +706,7 @@ public class SConfig
 							// FIXME: factor out
 							EAcc c = (EAcc) a;
 							//EndpointState speer = this.states.get(c.peer);
-							EFSM speer = this.efsms.get(c.peer);
+							EFsm speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.OUTPUT)
 							{
 								List<EAction> peeras = speer.getAllFireable();
@@ -740,7 +740,7 @@ public class SConfig
 						if (a.isServerWrap())
 						{
 							EServerWrap ws = (EServerWrap) a;
-							EFSM speer = this.efsms.get(ws.peer);
+							EFsm speer = this.efsms.get(ws.peer);
 							{
 								List<EAction> peeras = speer.getAllFireable();
 								for (EAction peera : peeras)

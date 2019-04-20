@@ -16,7 +16,7 @@ package org.scribble.core.model;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.core.model.endpoint.EFSM;
+import org.scribble.core.model.endpoint.EFsm;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAcc;
@@ -164,7 +164,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public SConfig newSConfig(Map<Role, EFSM> state, SBuffers buffs)
+	public SConfig newSConfig(Map<Role, EFsm> state, SBuffers buffs)
 	{
 		return new SConfig(this, state, buffs);
 	}

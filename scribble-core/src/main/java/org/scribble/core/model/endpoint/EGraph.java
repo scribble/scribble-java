@@ -28,9 +28,9 @@ public class EGraph implements MPrettyPrint
 		this.term = term;
 	}
 
-	public EFSM toFsm()
+	public EFsm toFsm()
 	{
-		return new EFSM(this);
+		return new EFsm(this);
 	}
 	
 	public String toPml(Role r)

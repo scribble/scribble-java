@@ -25,7 +25,7 @@ import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.model.GraphBuilderUtil;
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.endpoint.EFSM;
+import org.scribble.core.model.endpoint.EFsm;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
@@ -59,7 +59,7 @@ public class SGraphBuilderUtil
 	// Do as an initial state rather than config?
 	protected SConfig createInitialSConfig(ModelFactory ef, Map<Role, EGraph> egraphs, boolean explicit)  // FIXME: ef
 	{
-		Map<Role, EFSM> efsms = egraphs.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().toFsm()));
+		Map<Role, EFsm> efsms = egraphs.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().toFsm()));
 		SBuffers b0 = new SBuffers(ef, efsms.keySet(), !explicit);
 		//return job.sf.newSConfig(efsms, b0);
 		return this.mf.newSConfig(efsms, b0);
@@ -112,7 +112,7 @@ public class SGraphBuilderUtil
 				
 				// Hacky?  // FIXME: factor out and make more robust (e.g. for new state kinds) -- e.g. "hasPayload" in IOAction
 				//EndpointState currstate = curr.config.states.get(r);
-				EFSM currfsm = curr.config.efsms.get(r);
+				EFsm currfsm = curr.config.efsms.get(r);
 				EStateKind k = currfsm.getStateKind();
 				if (k == EStateKind.OUTPUT)
 				{

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
-import org.scribble.core.model.endpoint.EFSM;
+import org.scribble.core.model.endpoint.EFsm;
 import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.name.Role;
@@ -161,7 +161,7 @@ public class SModel
 		while (i.hasNext())
 		{
 			SState next = states.get(i.next());
-			Map<Role, EFSM> tmp = next.config.efsms;
+			Map<Role, EFsm> tmp = next.config.efsms;
 			for (Role r : tmp.keySet())
 			{
 				if (ss.get(r) != null)
@@ -189,7 +189,7 @@ public class SModel
 			SState foo = ss.get(r);
 			if (foo != null)
 			{
-				EFSM tmp = foo.config.efsms.get(r);
+				EFsm tmp = foo.config.efsms.get(r);
 				if (tmp != null)
 				{
 					if (!foo.config.canSafelyTerminate(r))

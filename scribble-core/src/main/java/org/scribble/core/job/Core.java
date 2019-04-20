@@ -26,7 +26,7 @@ import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.ModelFactoryImpl;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.global.SGraph;
-import org.scribble.core.model.global.SGraphBuilderUtil;
+import org.scribble.core.model.global.SGraphBuilder;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GProtoName;
@@ -50,7 +50,8 @@ public class Core
 
 	private final CoreContext context;  // Mutable (Visitor passes replace modules)
 
-	private final SGraphBuilderUtil sgraphb;  // FIXME: refactor?
+	//private final SGraphBuilderUtil sgraphb;  // FIXME: refactor?
+	private final SGraphBuilder sgraphb;  // FIXME: refactor?
 	
 	public Core(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
 			//Map<ModuleName, ModuleContext> modcs, 
@@ -59,7 +60,7 @@ public class Core
 		this.config = newCoreConfig(mainFullname, args);
 		this.context = newCoreContext(//modcs, 
 				imeds);  // Single instance per Core and should never be shared
-		this.sgraphb = this.config.mf.newSGraphBuilderUtil();
+		this.sgraphb = new SGraphBuilder(this.config.mf);//this.config.mf.newSGraphBuilderUtil();
 	}
 
 	// A Scribble extension should override newCoreConfig/Context/etc as appropriate

@@ -16,7 +16,7 @@ package org.scribble.core.model;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.core.model.endpoint.EFSM;
+import org.scribble.core.model.endpoint.EFsm;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAcc;
@@ -54,7 +54,7 @@ public interface ModelFactory
 
 	SState newSState(SConfig config);
 	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);
-	SConfig newSConfig(Map<Role, EFSM> state, SBuffers buffs);
+	SConfig newSConfig(Map<Role, EFsm> state, SBuffers buffs);
 	SModel newSModel(SGraph g);
 
 	ESend newESend(Role peer, MsgId<?> mid, Payload pay);
