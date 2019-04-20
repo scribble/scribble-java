@@ -108,7 +108,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 
 		EState nestedEntry = util.newState(Collections.emptySet());
 		util.setEntry(nestedEntry);
-		if (elems.size() == 1)
+		if (elems.size() == 1)  // Cf. visitSeq last element or not
 		{
 			first.visitWithNoThrow(this);
 		}	
@@ -134,13 +134,13 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 			util.addEdge(entry, a, succ);  // Add edges from original entry into "nested" graph, offset by enacting to nestedEntry succs
 		}
 		
-		util.setEntry(entry);  // EGraphBuilderUtil entry on leaving a node should be the same as on entering
+		util.setEntry(entry);  // EGraphBuilderUtil contract, entry on leaving a node should be the same as on entering
 	}
 
 	@Override
 	public SType<Local, LSeq> visitContinue(Continue<Local, LSeq> n)
 	{
-		// Choice-guarded continue -- choice-unguarded continue detected and handled in LChoice
+		// Choice-guarded continue -- choice-unguarded continue detected and handled above in visitChoice
 		EState curr = this.util.getEntry();
 		for (EState pred : this.util.getPreds(curr))  // Does getSuccs (i.e., gets all), e.g., choice sequenced to continue
 		{
@@ -175,11 +175,11 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 		Payload pay = n.msg.isSigLit()  // CHECKME: generalise? (e.g., hasPayload)
 				? ((SigLit) n.msg).payload
 				: Payload.EMPTY_PAYLOAD;
-		// TODO: add toAction method to base Interaction
+		// TODO: add toAction method to BasicInteraction (cf. toName methods of NameNodes)
 		EAction a = (n instanceof LSend) ? this.util.mf.newESend(peer, mid, pay)
-				: (n instanceof LRecv)  ? this.util.mf.newERecv(peer, mid, pay)
-				: (n instanceof LReq)  ? this.util.mf.newEReq(peer, mid, pay)
-				: //(n instanceof LAcc)  ? 
+				: (n instanceof LRecv) ? this.util.mf.newERecv(peer, mid, pay)
+				: (n instanceof LReq) ? this.util.mf.newEReq(peer, mid, pay)
+				: //(n instanceof LAcc) ? 
 					this.util.mf.newEAcc(peer, mid, pay);  // Action type already checked above
 		this.util.addEdge(this.util.getEntry(), a, this.util.getExit());
 		return n;
@@ -188,8 +188,8 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	@Override
 	public SType<Local, LSeq> visitDisconnect(DisconnectAction<Local, LSeq> n)
 	{
-		Role peer = ((LDisconnect) n).getPeer();  // CHECKME
-		EAction a = this.util.mf.newEDisconnect(peer);  // TODO: add toAction method to base Interaction
+		Role peer = ((LDisconnect) n).getPeer();  // CHECKME -- ?
+		EAction a = this.util.mf.newEDisconnect(peer);  // TODO: add toAction method to BasicInteraction
 		this.util.addEdge(this.util.getEntry(), a, this.util.getExit());
 		return n;
 	}
@@ -239,7 +239,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 						// CHECKME: exit may not be tmp, entry/exit can be modified, e.g. continue
 			}
 		}
-		util.setEntry(entry);
+		util.setEntry(entry);  // EGraphBuilderUtil contract, entry on leaving a node should be the same as on entering
 		return n;
 	}
 }
