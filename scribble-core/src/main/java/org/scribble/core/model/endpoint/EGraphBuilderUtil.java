@@ -30,8 +30,8 @@ import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 
-// EGraphBuilderUtil usage contract (1): this.entry on leaving a node is the same as on entering
-// EGraphBuilderUtil usage contract (2): all states must be made via newState
+// EGraphBuilderUtil usage contract (1): all states must be made via newState
+// EGraphBuilderUtil usage contract (2): this.entry on leaving a node is the same as on entering
 // Tailored to support graph building from syntactic local protocol choice and recursion
 public class EGraphBuilderUtil
 		extends GraphBuilderUtil<RecVar, EAction, EState, Local>

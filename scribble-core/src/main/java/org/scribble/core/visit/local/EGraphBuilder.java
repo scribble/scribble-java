@@ -86,11 +86,11 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 			}
 			else if (first instanceof LRecursion)  // CHECKME: do this here?  refactor into builderutil?
 			{
-				buildUnguardedRecursion(util, elems, first);
+				buildUnguardedRecursion(util, elems);
 			}
 			else
 			{
-				util.enterChoiceBlock();  // CHECKME: still needed?  LContinue doesn't check isUnguardedInChoice any more
+				util.enterChoiceBlock();
 				block.visitWithNoThrow(this);
 				util.leaveChoiceBlock();
 			}
@@ -99,11 +99,12 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 		return n;
 	}
 
+	// Recursion is first element of choice case
 	private void buildUnguardedRecursion(EGraphBuilderUtil util,
-			List<LType> elems, LType first)
+			List<LType> elems)
 	{
+		LRecursion first = (LRecursion) elems.get(0);
 		EState entry = util.getEntry();
-		EState exit = util.getExit();
 
 		EState nestedEntry = util.newState(Collections.emptySet());
 		util.setEntry(nestedEntry);
@@ -113,30 +114,27 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 		}	
 		else
 		{
-			// Reuse existing b, to directly add continue-edges back to the "outer" graph
+			EState exit = util.getExit();
 			EState nestedExit = util.newState(Collections.emptySet());
 			util.setExit(nestedExit);
-			first.visitWithNoThrow(this);
+			first.visitWithNoThrow(this);  // entry to nestedExit -- reuse existing builder, to directly add continue-edges back to the "outer" graph
 
 			util.setEntry(nestedExit);  // Must be non null
 			util.setExit(exit);
 			LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
-			tail.visitWithNoThrow(this);
+			tail.visitWithNoThrow(this);  // nestedExit to exit
 		}
 
-		EState init = nestedEntry;
-		for (EAction a : (Iterable<EAction>) 
-				init.getActions().stream().distinct()::iterator)
-				// Enabling actions
+		Iterator<EAction> as = nestedEntry.getActions().iterator();  // "Enacting" actions
+		Iterator<EState> succs = nestedEntry.getSuccs().iterator();
+		while (as.hasNext())
 		{
-			for (EState s : init.getSuccs(a))
-			{
-				util.addEdge(entry, a, s);
-			}
+			EAction a = as.next();
+			EState succ = succs.next();
+			util.addEdge(entry, a, succ);  // Add edges from original entry into "nested" graph, offset by enacting to nestedEntry succs
 		}
 		
-		util.setEntry(entry);
-		util.setExit(exit);
+		util.setEntry(entry);  // EGraphBuilderUtil entry on leaving a node should be the same as on entering
 	}
 
 	@Override
