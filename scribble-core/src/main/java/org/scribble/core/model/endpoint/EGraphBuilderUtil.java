@@ -213,7 +213,7 @@ public class EGraphBuilderUtil
 	/*
 	 * Edge construction for Continues
 	 */
-	public void addContinueEdge(EState pred, EAction a, EState curr, RecVar rv)
+	public void fixContinueEdge(EState pred, EAction a, EState curr, RecVar rv)
 	{
 		removeEdgeAux(pred, a, curr);  // N.B. "a" could be an enacting, that's fine (removeEdgeAux doesn't change that)
 		EState entry = getRecursionEntry(rv);
@@ -224,7 +224,7 @@ public class EGraphBuilderUtil
 	public void addUnguardedContinueEdge(EState s, RecVar rv)  // Intermed continue edge makes its own dummy action
 	{
 		EState entry = getRecursionEntry(rv);
-		addEdgeAux(s, new IntermediateContinueEdge(this.mf, rv), entry);
+		addEdgeAux(s, new UnguardedContinueEdge(this.mf, rv), entry);
 	}
 
 	/*// CHECKME: update enacting? (cf. this.addEdge)
@@ -239,10 +239,11 @@ public class EGraphBuilderUtil
 		return this.recEntries.get(recvar).peek();
 	}	
 	
-	// Returns List, cf. getSuccessors/Actions (vs. GetDet...)
-	public List<EState> getPredecessors(EState s)
+	// Returns List (not Set), cf. getSuccs/Actions
+	public List<EState> getPreds(EState s)
 	{
-		// TODO: make more efficient -- maybe not: maintaining predecessors complicated by this.collecting, like addEdge ?
+		// Easier to recompute than "cache" (this.preds), due to removeEdge(Aux)? Cf. addEdge (Or due to maintaining this.collecting/enacting)
+		// (Only currently used by visitContinue, so cost OK)
 		return this.states.stream().filter(x -> x.getSuccs().contains(s))
 				.collect(Collectors.toList());
 	}
@@ -252,65 +253,58 @@ public class EGraphBuilderUtil
 	 */
 	public EGraph finalise()
 	{
-		EState entry = this.entry.cloneNode(this.mf, this.entry.getLabels()); //this.ef.newEState(this.entry.getLabels());
-		EState exit = this.exit.cloneNode(this.mf, this.exit.getLabels()); //this.ef.newEState(this.exit.getLabels());
-
-		Map<EState, EState> map = new HashMap<>();
-		map.put(this.entry, entry);
-		map.put(this.exit, exit);
-		Set<EState> seen = new HashSet<>();
-		fixContinueEdges(seen, map, this.entry, entry);
-		if (!seen.contains(this.exit))
+		EState entryClone = this.entry.cloneNode(this.mf, this.entry.getLabels());
+		EState exitClone = this.exit.cloneNode(this.mf, this.exit.getLabels());
+		Map<EState, EState> clones = new HashMap<>();  // Will be mostly populated by fixUnguardedContinueEdges
+		clones.put(this.entry, entryClone);
+		clones.put(this.exit, exitClone);
+		Set<EState> seenOrig = new HashSet<>();
+		fixUnguardedContinueEdges(seenOrig, clones, this.entry, entryClone);
+		if (!seenOrig.contains(this.exit))
 		{
-			exit = null;
+			exitClone = null;
 		}
-		
-		/*Map<Integer, EndpointState> all = getAllStates(res);
-		EndpointState dfa = determinise(all, res, resTerm);
-		System.out.println("111: " + dfa.toDot());*/
-		
 		reset();
-		
-		return new EGraph(entry, exit);
+		return new EGraph(entryClone, exitClone);
 	}
 	
-	// FIXME: incomplete -- won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
-	protected void fixContinueEdges(Set<EState> seen, Map<EState, EState> clones,
-			EState orig, EState clone)
+	protected void fixUnguardedContinueEdges(Set<EState> seenOrig,
+			Map<EState, EState> clones, EState currOrig, EState currClone)
 	{
-		if (seen.contains(orig))
+		if (seenOrig.contains(currOrig))
 		{
 			return;
 		}
-		seen.add(orig);
-		Iterator<EAction> as = orig.getActions().iterator();
-		Iterator<EState> ss = orig.getSuccs().iterator();
+		seenOrig.add(currOrig);
+		Iterator<EAction> as = currOrig.getActions().iterator();  // Actions are immutable (no orig/clone)
+		Iterator<EState> succsOrig = currOrig.getSuccs().iterator();
 		while (as.hasNext())
 		{
 			EAction a = as.next();
-			EState origSucc = ss.next();
-			EState cloneSucc = getClone(clones, origSucc);
-			
-			if (!(a instanceof IntermediateContinueEdge))
+			EState succOrig = succsOrig.next();
+			if (!(a instanceof UnguardedContinueEdge))
 			{
-				addEdgeAux(clone, a, cloneSucc);
-			
-				fixContinueEdges(seen, clones, origSucc, cloneSucc);
+				EState succClone = getClone(clones, succOrig);
+				addEdgeAux(currClone, a, succClone);
+				fixUnguardedContinueEdges(seenOrig, clones, succOrig, succClone);
 			}
-			else
+			else  // Choice--unguardedcontedge-->succOrig, i.e., curr is a Choice, succOrig is a rec entry state
 			{
-				//IntermediateContinueEdge ice = (IntermediateContinueEdge) a;  // Choice --imed--> recursion entry (origSucc)
-				////for (IOAction e : this.enactingMap.get(succ))
-				//RecVar rv = new RecVar(ice.mid.toString());
-				//for (EAction e : this.enacting.get(origSucc).get(rv))
-				for (EAction e : this.enacting.get(origSucc))
+				EState recEntry = succOrig;
+				for (EAction e : this.enacting.get(recEntry)) // recEntry--enacting-->succEntry
 				{
-					for (EState n : origSucc.getSuccs(e))
+					for (EState succEntry : recEntry.getSuccs(e))
 					{
-						cloneSucc = getClone(clones, n);  // cloneSucc is a successor of origSucc
-						addEdgeAux(clone, e, cloneSucc);  // Choice --enacting--> cloneSucc, i.e., succ(rec-entry, enacting)
-
-						fixContinueEdges(seen, clones, origSucc, cloneSucc);
+						EState succEntryClone = getClone(clones, succEntry);  // succEntryClone is a (cloned) successor of recEntry
+						addEdgeAux(currClone, e, succEntryClone);  
+								// Choice--enacting-->succSuccClone, where succSuccClone is succ(rec-entry, enacting) (rec-entry is SuccOrig)
+								// i.e., skip recEntry
+						fixUnguardedContinueEdges(seenOrig, clones, recEntry,  // Carry on from recEntry, that's where this edge was going "morally"
+								getClone(clones, recEntry));
+						
+						// CHECKME: "transitive" (nested?) unguarded-continue-edge rewriting possible?  supported?
+						// ...CHECKME: incomplete -- won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
+						
 					}
 				}
 			}
@@ -319,17 +313,12 @@ public class EGraphBuilderUtil
 
 	private EState getClone(Map<EState, EState> clones, EState orig)
 	{
-		EState res;
 		if (clones.containsKey(orig))
 		{
-			 res = clones.get(orig);
+			 return clones.get(orig);
 		}
-		else
-		{
-			//next = this.ef.newEState(succ.getLabels());
-			res = orig.cloneNode(this.mf, orig.getLabels());
-			clones.put(orig, res);
-		}
+		EState res = orig.cloneNode(this.mf, orig.getLabels());
+		clones.put(orig, res);
 		return res;
 	}
 	

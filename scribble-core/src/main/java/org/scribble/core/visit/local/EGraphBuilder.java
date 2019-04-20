@@ -144,7 +144,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	{
 		// Choice-guarded continue -- choice-unguarded continue detected and handled in LChoice
 		EState curr = this.util.getEntry();
-		for (EState pred : this.util.getPredecessors(curr))  // Does getSuccs (i.e., gets all), e.g., choice sequenced to continue
+		for (EState pred : this.util.getPreds(curr))  // Does getSuccs (i.e., gets all), e.g., choice sequenced to continue
 		{
 			// CHECKME: identical edges? i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
 			for (EAction a : new LinkedList<>(pred.getActions()))
@@ -154,7 +154,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 				{
 					if (succ.equals(curr))
 					{
-						this.util.addContinueEdge(pred, a, curr, n.recvar);
+						this.util.fixContinueEdge(pred, a, curr, n.recvar);
 					}
 				}
 			}

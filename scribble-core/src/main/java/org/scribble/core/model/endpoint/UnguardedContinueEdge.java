@@ -21,9 +21,9 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-class IntermediateContinueEdge extends EAction
+class UnguardedContinueEdge extends EAction
 {
-	public IntermediateContinueEdge(ModelFactory mf, RecVar rv)
+	public UnguardedContinueEdge(ModelFactory mf, RecVar rv)
 	{
 		super(mf, Role.EMPTY_ROLE, new Op(rv.toString()), Payload.EMPTY_PAYLOAD);  // HACK
 	}
@@ -61,7 +61,7 @@ class IntermediateContinueEdge extends EAction
 		{
 			return true;
 		}
-		if (!(o instanceof IntermediateContinueEdge))
+		if (!(o instanceof UnguardedContinueEdge))
 		{
 			return false;
 		}
@@ -71,6 +71,6 @@ class IntermediateContinueEdge extends EAction
 	@Override
 	public boolean canEquals(Object o)
 	{
-		return o instanceof IntermediateContinueEdge;
+		return o instanceof UnguardedContinueEdge;
 	}
 }
