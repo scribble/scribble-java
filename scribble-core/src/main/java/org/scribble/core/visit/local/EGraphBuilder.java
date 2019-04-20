@@ -32,21 +32,20 @@ import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.type.session.SigLit;
 import org.scribble.core.type.session.Payload;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
+import org.scribble.core.type.session.SigLit;
 import org.scribble.core.type.session.local.LAcc;
 import org.scribble.core.type.session.local.LContinue;
 import org.scribble.core.type.session.local.LDisconnect;
-import org.scribble.core.type.session.local.LRecv;
 import org.scribble.core.type.session.local.LRecursion;
+import org.scribble.core.type.session.local.LRecv;
 import org.scribble.core.type.session.local.LReq;
 import org.scribble.core.type.session.local.LSend;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeVisitorNoThrow;
-import org.scribble.util.ScribException;
 
 // Pre: use on inlined or later (unsupported for Do, also Protocol)
 // Uses EGraphBuilderUtil2 to build graph "progressively" (working graph is mutable)
@@ -83,7 +82,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 				// Cannot treat choice-unguarded-continue in "a single pass", because may not have built all recursion enacting edges yet 
 				// (Single-pass building would be sensitive to order of choice block visiting)
 				LContinue cont = (LContinue) first;  // First and only element
-				util.addContinueEdge(util.getEntry(), cont.recvar); 
+				util.addUnguardedContinueEdge(util.getEntry(), cont.recvar); 
 			}
 			else if (first instanceof LRecursion)  // CHECKME: do this here?  refactor into builderutil?
 			{
@@ -91,9 +90,9 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 			}
 			else
 			{
-				util.pushChoiceBlock();  // CHECKME: still needed?  LContinue doesn't check isUnguardedInChoice any more
+				util.enterChoiceBlock();  // CHECKME: still needed?  LContinue doesn't check isUnguardedInChoice any more
 				block.visitWithNoThrow(this);
-				util.popChoiceBlock();
+				util.leaveChoiceBlock();
 			}
 		}
 		util.leaveChoice();
@@ -143,29 +142,19 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	@Override
 	public SType<Local, LSeq> visitContinue(Continue<Local, LSeq> n)
 	{
-		// CHECKME: identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
 		// Choice-guarded continue -- choice-unguarded continue detected and handled in LChoice
 		EState curr = this.util.getEntry();
-		for (EState pred : this.util.getPredecessors(curr))  // Does getAllSuccessors
+		for (EState pred : this.util.getPredecessors(curr))  // Does getSuccs (i.e., gets all), e.g., choice sequenced to continue
 		{
+			// CHECKME: identical edges? i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
 			for (EAction a : new LinkedList<>(pred.getActions()))
 			{
-				// Following is because pred.getSuccessor doesn't support non-det edges
-				// FIXME: refactor actions/successor Lists in MState to list of edges?
+				// Following caters for non-det edges (to different succs)
 				for (EState succ : pred.getSuccs(a))
 				{
 					if (succ.equals(curr))
 					{
-						try
-						{
-							this.util.removeEdge(pred, a, curr);  //b.removeEdgeFromPredecessor(pred, prev);
-							//b.addEdge(pred, a, entry);   //b.addRecursionEdge(pred, prev, b.getRecursionEntry(this.recvar));
-							this.util.addRecursionEdge(pred, a, n.recvar);
-						}
-						catch (ScribException e)  // CHECKME: necessary for removeEdge to have throws?
-						{
-							throw new RuntimeException(e);
-						}
+						this.util.addContinueEdge(pred, a, curr, n.recvar);
 					}
 				}
 			}
@@ -218,9 +207,9 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	public SType<Local, LSeq> visitRecursion(Recursion<Local, LSeq> n)
 	{
 		this.util.addEntryLabel(n.recvar);
-		this.util.pushRecursionEntry(n.recvar, this.util.getEntry());
+		this.util.enterRecursion(n.recvar, this.util.getEntry());
 		n.body.visitWithNoThrow(this);
-		this.util.popRecursionEntry(n.recvar);
+		this.util.leaveRecursion(n.recvar);
 		return n;
 	}
 

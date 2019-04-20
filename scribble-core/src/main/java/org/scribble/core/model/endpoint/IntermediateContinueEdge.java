@@ -23,9 +23,9 @@ import org.scribble.core.type.session.Payload;
 
 class IntermediateContinueEdge extends EAction
 {
-	public IntermediateContinueEdge(ModelFactory ef, RecVar rv)
+	public IntermediateContinueEdge(ModelFactory mf, RecVar rv)
 	{
-		super(ef, Role.EMPTY_ROLE, new Op(rv.toString()), Payload.EMPTY_PAYLOAD);  // HACK
+		super(mf, Role.EMPTY_ROLE, new Op(rv.toString()), Payload.EMPTY_PAYLOAD);  // HACK
 	}
 	
 	@Override
@@ -65,7 +65,7 @@ class IntermediateContinueEdge extends EAction
 		{
 			return false;
 		}
-		return ((IntermediateContinueEdge) o).canEquals(this) && super.equals(o);
+		return super.equals(o);  // Checks canEquals
 	}
 
 	@Override

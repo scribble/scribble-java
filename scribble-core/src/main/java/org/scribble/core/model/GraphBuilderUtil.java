@@ -14,7 +14,6 @@
 package org.scribble.core.model;
 
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.util.ScribException;
 
 // Helper class for (Endpoint)GraphBuilder -- can access the protected setters of S
 public abstract class GraphBuilderUtil
@@ -48,7 +47,7 @@ public abstract class GraphBuilderUtil
 		s.addEdge(a, succ);
 	}
 	
-	protected void removeEdgeAux(S s, A a, S succ) throws ScribException  // Exception necessary?
+	protected void removeEdgeAux(S s, A a, S succ) //throws ScribException  // Exception necessary?
 	{
 		s.removeEdge(a, succ);
 	}

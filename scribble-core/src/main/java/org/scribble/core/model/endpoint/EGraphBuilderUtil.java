@@ -29,7 +29,6 @@ import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.util.ScribException;
 
 // EGraphBuilderUtil usage contract (1): this.entry on leaving a node is the same as on entering
 // EGraphBuilderUtil usage contract (2): all states must be made via newState
@@ -102,7 +101,7 @@ public class EGraphBuilderUtil
 		super.addEdge(s, a, succ);
 		for (Deque<List<EAction>> ens : this.collecting.values())
 		{
-			List<EAction> tmp = ens.peek();  // pushRecursionEntry always adds an initial List to the Deque 
+			List<EAction> tmp = ens.peek();  // enterRecursion always adds an initial List to the Deque 
 			if (tmp.isEmpty())
 			{
 				tmp.add(a);
@@ -135,7 +134,7 @@ public class EGraphBuilderUtil
 		}
 	}
 
-	public void pushChoiceBlock()
+	public void enterChoiceBlock()
 	{
 		for (EState entry : this.collecting.keySet())
 		{
@@ -144,7 +143,7 @@ public class EGraphBuilderUtil
 		}
 	}
 
-	public void popChoiceBlock()
+	public void leaveChoiceBlock()
 	{
 		for (EState entry : this.collecting.keySet())
 		{
@@ -157,7 +156,7 @@ public class EGraphBuilderUtil
 	/*
 	 * Dealing with Recursion contexts
 	 */
-	public void pushRecursionEntry(RecVar rv, EState entry)
+	public void enterRecursion(RecVar rv, EState entry)
 	{
 		// Update this.recEntries
 		Deque<EState> recdeq = this.recEntries.get(rv);
@@ -176,11 +175,11 @@ public class EGraphBuilderUtil
 			return;
 		}
 		Deque<List<EAction>> coldeq = new LinkedList<>();  // New Deque for this recvar
-		this.collecting.put(entry, coldeq);  // !this.collecting.containsKey(entry), popRecursionEntry does remove -- necessary for addEdge/Choice to correctly add to this.collecting
+		this.collecting.put(entry, coldeq);  // !this.collecting.containsKey(entry), leaveRecursion does remove -- necessary for addEdge/Choice to correctly add to this.collecting
 		coldeq.push(new LinkedList<>());  // Push new List onto deq
 	}	
 	
-	public void popRecursionEntry(RecVar rv)
+	public void leaveRecursion(RecVar rv)
 	{
 		// Update this.recEntries
 		EState entry = this.recEntries.get(rv).pop();  // Pop the entry of this rec
@@ -208,36 +207,32 @@ public class EGraphBuilderUtil
 					// Also necessary to prevent continued updating of this.collecting after leaving a rec (because this.collecting still has entry), e.g., good.efsm.gchoice.Test10
 		}
 		this.enacting.put(entry, coll);
-				// !this.enacting.containsKey(entry) -- if it did contain (remove enacting check from pushRecursionEntry), this.enacting.get(entry).equals(coll)
+				// !this.enacting.containsKey(entry) -- if it did contain (remove enacting check from enterRecursion), this.enacting.get(entry).equals(coll)
 	}	
 	
 	/*
 	 * Edge construction for Continues
 	 */
-	// Choice-unguarded continues -- fixed in finalise pass
-	// Now currently used for all continues, cf. LContinue::buildGraph
-	public void addContinueEdge(EState s, RecVar rv)
+	public void addContinueEdge(EState pred, EAction a, EState curr, RecVar rv)
 	{
-		/*this.contStates.add(s);
-		this.contRecVars.add(rv);*/
+		removeEdgeAux(pred, a, curr);  // N.B. "a" could be an enacting, that's fine (removeEdgeAux doesn't change that)
+		EState entry = getRecursionEntry(rv);
+		addEdge(pred, a, entry);
+	}
+
+	// Choice-unguarded continues -- fixed in finalise pass
+	public void addUnguardedContinueEdge(EState s, RecVar rv)  // Intermed continue edge makes its own dummy action
+	{
 		EState entry = getRecursionEntry(rv);
 		addEdgeAux(s, new IntermediateContinueEdge(this.mf, rv), entry);
-		//addEdge(s, new IntermediateContinueEdge(rv), entry); // **FIXME: broken on purpose for testing
 	}
 
-	// Cf. add ContinueEdge
-	public void addRecursionEdge(EState s, EAction a, RecVar rv)
-	{
-		EState entry = getRecursionEntry(rv);
-		addEdge(s, a, entry);
-	}
-
-	// CHECKME handle preds/prevs like above (cf. this.addEdge)
+	/*// CHECKME: update enacting? (cf. this.addEdge)
 	public void removeEdge(EState s, EAction a, EState succ)
 			throws ScribException
 	{
 		removeEdgeAux(s, a, succ);
-	}
+	}*/
 
 	public EState getRecursionEntry(RecVar recvar)
 	{
@@ -247,7 +242,7 @@ public class EGraphBuilderUtil
 	// Returns List, cf. getSuccessors/Actions (vs. GetDet...)
 	public List<EState> getPredecessors(EState s)
 	{
-		// TODO: make more efficient
+		// TODO: make more efficient -- maybe not: maintaining predecessors complicated by this.collecting, like addEdge ?
 		return this.states.stream().filter(x -> x.getSuccs().contains(s))
 				.collect(Collectors.toList());
 	}
