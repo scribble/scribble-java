@@ -100,18 +100,12 @@ public class EGraphBuilderUtil
 	public void addEdge(EState s, EAction a, EState succ)
 	{
 		super.addEdge(s, a, succ);
-		
-		//for (Deque<Set<EAction>> ens : this.enacting.values())
 		for (Deque<List<EAction>> ens : this.collecting.values())
 		{
-			if (!ens.isEmpty())  // Unnecessary?
+			List<EAction> tmp = ens.peek();  // pushRecursionEntry always adds an initial List to the Deque 
+			if (tmp.isEmpty())
 			{
-				//Set<EAction> tmp = ens.peek();
-				List<EAction> tmp = ens.peek();
-				if (tmp.isEmpty())
-				{
-					tmp.add(a);
-				}
+				tmp.add(a);
 			}
 		}
 	}
@@ -123,11 +117,8 @@ public class EGraphBuilderUtil
 	{
 		for (EState entry : this.collecting.keySet())
 		{
-			////Deque<Set<EAction>> tmp = this.enacting.get(rv);
-			Deque<List<EAction>> tmp = this.collecting.get(entry);
-			////tmp.push(new HashSet<>(tmp.peek()));
-			//tmp.push(new HashSet<>());  // Initially empty to record nested enablings in choice blocks
-			tmp.push(new LinkedList<>());  // Initially empty to record nested enablings in choice blocks
+			Deque<List<EAction>> deq = this.collecting.get(entry);
+			deq.push(new LinkedList<>());  // Initially empty to record nested enablings in choice blocks
 		}
 	}
 
@@ -148,10 +139,8 @@ public class EGraphBuilderUtil
 	{
 		for (EState entry : this.collecting.keySet())
 		{
-			//Deque<Set<EAction>> tmp = this.enacting.get(rv);
-			Deque<List<EAction>> tmp = this.collecting.get(entry);
-			//tmp.push(new HashSet<>());  // Must be empty for addEdge to record (nested) enabling
-			tmp.push(new LinkedList<>());
+			Deque<List<EAction>> deq = this.collecting.get(entry);
+			deq.push(new LinkedList<>());
 		}
 	}
 
@@ -159,14 +148,9 @@ public class EGraphBuilderUtil
 	{
 		for (EState entry : this.collecting.keySet())
 		{
-			/*Set<EAction> pop = this.enacting.get(rv).pop();
-			Set<EAction> peek = this.enacting.get(rv).peek();*/
-			List<EAction> pop = this.collecting.get(entry).pop();
-			List<EAction> peek = this.collecting.get(entry).peek();
-			//if (peek.isEmpty())
-			{
-				peek.addAll(pop);
-			}
+			List<EAction> block = this.collecting.get(entry).pop();
+			List<EAction> blocks = this.collecting.get(entry).peek();  // Parent choice List
+			blocks.addAll(block);
 		}
 	}
 	
@@ -175,67 +159,47 @@ public class EGraphBuilderUtil
 	 */
 	public void pushRecursionEntry(RecVar rv, EState entry)
 	{
-		/*if (!isUnguardedInChoice())  // Don't record rec entry if it is an unguarded choice-rec
+		// Update this.recEntries
+		Deque<EState> recdeq = this.recEntries.get(rv);
+		if (recdeq == null)
 		{
-			this.entry.addLabel(recvar);
-		}*/
-		//this.recvars.put(recvar, this.entry);
-		Deque<EState> tmp = this.recEntries.get(rv);  // Should be same as this.entry
-		if (tmp == null)
-		{
-			tmp = new LinkedList<>();
-			this.recEntries.put(rv, tmp);
+			recdeq = new LinkedList<>();
+			this.recEntries.put(rv, recdeq);
 		}
-		/*if (isUnguardedInChoice())
-		{
-			tmp.push(tmp.peek());  // Works because unguarded recs unfolded (including nested recvar shadowing -- if unguarded choice-rec, it will be unfolded and rec entry recorded for guarded unfolding)
-		}
-		else
-		{
-			tmp.push(this.entry);
-		}*/
-		tmp.push(entry);
+		recdeq.push(entry);  // Same as this.entry
 		
-		if (this.collecting.containsKey(entry))
+		// Udpate this.collecting, if necessary
+		if (this.collecting.containsKey(entry) || this.enacting.containsKey(entry))  
+				// Already doing/done this rec state for another of its recvar
+				// Does checking this.enacting do anything?
 		{
 			return;
 		}
-		/////Deque<Set<EAction>> tmp2 = this.enacting.get(recvar);
-		//Deque<List<EAction>> tmp2 = this.collecting.get(entry);  
-				// Collecting per recvar: unnecessary as all recvars for a given state are equivalent (i.e., have the same enacting) -- so could just do per rec entry state
-				// But easier to do per recvar, to avoid distinguishing between recvars in nested contexts
-		//if (tmp2 == null)
-		//{
-			Deque<List<EAction>> tmp2 = new LinkedList<>();  // New Stack for this recvar
-			this.collecting.put(entry, tmp2);
-		//}
-		//tmp2.push(new HashSet<>());  // Push new Set element onto stack
-		tmp2.push(new LinkedList<>());  // Push new Set element onto stack
+		Deque<List<EAction>> coldeq = new LinkedList<>();  // New Deque for this recvar
+		this.collecting.put(entry, coldeq);  // !this.collecting.containsKey(entry), popRecursionEntry does remove -- necessary for addEdge/Choice to correctly add to this.collecting
+		coldeq.push(new LinkedList<>());  // Push new List onto deq
 	}	
 	
 	public void popRecursionEntry(RecVar rv)
 	{
+		// Update this.recEntries
 		EState entry = this.recEntries.get(rv).pop();  // Pop the entry of this rec
 				// Same as this.entry
 				// Because contract for GraphBuilderUtil is entry on leaving a node is the same as on entry, cf., EGraphBuilder.visitSeq restores original entry on leaving
 				// (And visitRecursion just does visitSeq for the recursion body, with the current entry/exit)
-		if (!this.entry.equals(entry))  // TODO: deprecate, temporary testing
-		{
-			throw new RuntimeException("Shouldn't get here: ");
-		}
 		if (this.recEntries.get(rv).isEmpty())
 		{
-			this.recEntries.remove(rv);
+			this.recEntries.remove(rv);  // To keep util clean, e.g., for reuse
 		}
 		
+		// Udpate this.collecting, if necessary
 		if (!this.collecting.containsKey(entry))
 		{
 			// This state already done -- i.e., already popped another recvar for this same state, e.g., good.efsm.gcontinue.choiceunguarded.Test05b
+			// (For a given state, the enacting for all associated recvars is the same (the recvars are "equivalently" identify the state) -- so only need to record per state)
 			return;
 		}
-
-		//Set<EAction> pop = this.enacting.get(recvar).pop();
-		List<EAction> pop = this.collecting.get(entry).pop();
+		List<EAction> coll = this.collecting.get(entry).pop();
 		if (this.collecting.get(entry).isEmpty())  // All Lists popped from the stack of this recvar -- could just clear instead
 		{
 			this.collecting.remove(entry);  
@@ -243,24 +207,8 @@ public class EGraphBuilderUtil
 					// This remove is necessary to prevent above containsKey check also succeeding  when leaving the outer rec, e.g., good.efsm.gcontinue.choiceunguarded.Test05b
 					// Also necessary to prevent continued updating of this.collecting after leaving a rec (because this.collecting still has entry), e.g., good.efsm.gchoice.Test10
 		}
-
-		/*Map<RecVar, List<EAction>> tmp = this.enacting.get(curr);
-		if (tmp == null)
-		{
-			tmp = new HashMap<>();
-			this.enacting.put(curr, tmp);
-		}
-		tmp.put(rv, pop);*/
-		if (!this.enacting.containsKey(entry))  
-				// For a given state, the enacting for all associated recvars is the same (the recvars are "equivalent) -- so only need to record per state
-		{
-			this.enacting.put(entry, pop);
-		}
-		else if (!this.enacting.get(entry).equals(pop))  // TODO: deprecate, temporary testing
-		{
-			throw new RuntimeException("Shouldn't get in here: " + entry + " ,, "
-					+ this.enacting.get(entry) + " ,, " + rv + " ,, " + pop);
-		}
+		this.enacting.put(entry, coll);
+				// !this.enacting.containsKey(entry) -- if it did contain (remove enacting check from pushRecursionEntry), this.enacting.get(entry).equals(coll)
 	}	
 	
 	/*
