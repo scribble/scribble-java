@@ -47,7 +47,7 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 		super.addEdge(a, s);
 	}
 	
-	// Based on config semantics, not "static" graph edges (cf., super.getAllActions) -- used to build global model graph
+	/*// Based on config semantics, not "static" graph edges (cf., super.getAllActions) -- used to build global model graph
 	public Map<Role, List<EAction>> getFireable()
 	{
 		return this.config.getFireable();
@@ -62,7 +62,7 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
 	{
 		return this.config.sync(r1, a1, r2, a2);
-	}
+	}*/
 	
 	public SStateErrors getErrors()
 	{

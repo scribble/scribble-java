@@ -43,14 +43,15 @@ public class EFsm
 				.collect(Collectors.toList());
 	}
 
-	// Following are a bunch of wrapper methods to curr
 	// CHECKME: check if unfolded initial accept is possible, and if it breaks anything
+
+	// Following are a bunch of wrapper methods to curr
 	public boolean isInitial()
 	{
 		return this.curr.equals(this.graph.init);
 	}
 	
-	public boolean isTerminated()
+	/*public boolean isTerminated()
 	{
 		return this.curr.isTerminal();
 	}
@@ -70,10 +71,10 @@ public class EFsm
 		return this.curr.hasAction(a);
 	}
 	
-	public boolean isConnectOrWrapClientOnly()
+	public boolean isRequesttOrClientWrapOnly()
 	{
 		return this.curr.isRequestOrClientWrapOnly();
-	}
+	}*/
 
 	@Override
 	public final int hashCode()

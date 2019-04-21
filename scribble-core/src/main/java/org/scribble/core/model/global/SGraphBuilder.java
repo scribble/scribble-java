@@ -80,8 +80,9 @@ public class SGraphBuilder
 							"(" + fullname + ") Building global states: " + debugCount);
 				}
 			}
-			
-			Map<Role, List<EAction>> fireable = curr.getFireable();
+
+			// Based on config semantics, not "static" graph edges (cf., super.getActions) -- used to build global model graph
+			Map<Role, List<EAction>> fireable = curr.config.getFireable();
 			for (Role r : fireable.keySet())
 			{
 				for (EAction a : fireable.get(r))
@@ -89,7 +90,7 @@ public class SGraphBuilder
 					// Asynchronous (input/output) actions
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
-						List<SConfig> next = curr.fire(r, a);
+						List<SConfig> next = curr.config.async(r, a);
 						todo.addAll(this.util.getSuccs(curr, a.toGlobal(r), next));
 					}
 					// Synchronous (client/server) actions
@@ -105,7 +106,7 @@ public class SGraphBuilder
 									? a.toGlobal(r)
 									: abar.toGlobal(a.peer);
 									// CHECKME: edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label?)
-							List<SConfig> next = curr.sync(r, a, a.peer, abar);
+							List<SConfig> next = curr.config.sync(r, a, a.peer, abar);
 							todo.addAll(this.util.getSuccs(curr, aglobal, next));
 						}
 					}

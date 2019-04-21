@@ -99,8 +99,10 @@ public class SConfig
 					;*/
 		//return !cannotSafelyTerminate;
 		boolean canSafelyTerminate =
-				(s.isTerminated() && this.buffs.isEmpty(r))
-			|| (s.getStateKind().equals(EStateKind.ACCEPT) && s.isInitial())  // FIXME: should be empty buffs
+				(s.curr.isTerminal() && this.buffs.isEmpty(r))
+						|| (s.curr.getStateKind().equals(EStateKind.ACCEPT)
+								&& s.isInitial())
+					// FIXME: should be empty buffs
 				
 				// FIXME: incorrectly allows stuck accepts?  if inactive not initial, should be clone of initial?
 			//|| (s.getStateKind().equals(Kind.ACCEPT) && this.states.keySet().stream().noneMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr)))
@@ -108,7 +110,7 @@ public class SConfig
 		return canSafelyTerminate;
 	}
 	
-	public List<SConfig> fire(Role r, EAction a)
+	public List<SConfig> async(Role r, EAction a)
 	{
 		List<SConfig> res = new LinkedList<>();
 		
@@ -149,6 +151,7 @@ public class SConfig
 		return res;
 	}
 
+	// "Synchronous version" of fire
 	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
 	{
 		List<SConfig> res = new LinkedList<>();
@@ -196,7 +199,7 @@ public class SConfig
 		{
 			//EndpointState s = this.states.get(r);
 			EFsm s = this.efsms.get(r);
-			EStateKind k = s.getStateKind();
+			EStateKind k = s.curr.getStateKind();
 			if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 			{
 				/*Set<IOAction> duals = this.buffs.get(r).entrySet().stream()
@@ -207,12 +210,12 @@ public class SConfig
 				{
 					break;
 				}*/
-				Role peer = s.getActions().iterator().next().peer;
+				Role peer = s.curr.getActions().iterator().next().peer;
 				ESend send = this.buffs.get(r).get(peer);
 				if (send != null)
 				{
 					ERecv recv = send.toDual(peer);
-					if (!s.hasAction(recv))
+					if (!s.curr.hasAction(recv))
 					//res.put(r, new IOError(peer));
 					res.put(r, recv);
 				}
@@ -264,7 +267,7 @@ public class SConfig
 		{
 			Role r = todo.remove(0);
 			//Set<Role> cycle = isCycle(new HashSet<>(), new HashSet<>(Arrays.asList(r)));
-			if (!this.efsms.get(r).isTerminated())
+			if (!this.efsms.get(r).curr.isTerminal())
 			{
 				Set<Role> cycle = isWaitForChain(r);
 				//if (!cycle.isEmpty())
@@ -308,12 +311,12 @@ public class SConfig
 				System.out.println("AAA: " + this.efsms + ", " + r);
 			}
 			
-			if (s.getStateKind() == EStateKind.OUTPUT && !s.isConnectOrWrapClientOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
+			if (s.curr.getStateKind() == EStateKind.OUTPUT && !s.curr.isRequestOrClientWrapOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
 				// FIXME: move into isWaitingFor
 				return null;
 			}
-			if (s.isTerminated())
+			if (s.curr.isTerminal())
 			{
 				if (todo.isEmpty())
 				{
@@ -349,10 +352,10 @@ public class SConfig
 	{
 		//EndpointState s = this.states.get(r);
 		EFsm s = this.efsms.get(r);
-		EStateKind k = s.getStateKind();
+		EStateKind k = s.curr.getStateKind();
 		if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 		{
-			List<EAction> all = s.getActions();
+			List<EAction> all = s.curr.getActions();
 			EAction a = all.get(0);  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
 			/*if (a.isAccept())  // Sound?
 			{
@@ -395,7 +398,7 @@ public class SConfig
 			// FIXME TODO: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
 			if (!s.isInitial())
 			{
-				List<EAction> all = s.getActions();  // Should be singleton -- no: not any more
+				List<EAction> all = s.curr.getActions();  // Should be singleton -- no: not any more
 				/*Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
 				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Connect(r))))  // cf. getTakeable
 									//if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
@@ -405,7 +408,7 @@ public class SConfig
 				Set<Role> res = new HashSet<Role>();
 				for (EAction a : all)  // Accept  // FIXME: WrapServer
 				{
-					if (this.efsms.get(a.peer).getActions().contains(a.toDual(r)))
+					if (this.efsms.get(a.peer).curr.getActions().contains(a.toDual(r)))
 					{
 						return null;
 					}
@@ -422,9 +425,9 @@ public class SConfig
 				)
 		{
 			//List<IOAction> all = s.getAllAcceptable();
-			if (s.isConnectOrWrapClientOnly())
+			if (s.curr.isRequestOrClientWrapOnly())
 			{
-				List<EAction> all = s.getActions();
+				List<EAction> all = s.curr.getActions();
 				/*Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());  // Should be singleton by enabling conditions
 				if (peers.stream().noneMatch((p) -> this.states.get(p).getAllTakeable().contains(new Accept(r))))  // cf. getTakeable
 				{
@@ -433,7 +436,7 @@ public class SConfig
 				Set<Role> res = new HashSet<Role>();
 				for (EAction a : all)  // Connect or WrapClient
 				{
-					if (this.efsms.get(a.peer).getActions().contains(a.toDual(r)))
+					if (this.efsms.get(a.peer).curr.getActions().contains(a.toDual(r)))
 					{
 						return null;
 					}
@@ -457,9 +460,9 @@ public class SConfig
 		{
 			//EndpointState s = this.states.get(r);
 			EFsm s = this.efsms.get(r);
-			if (s.isTerminated())  // Local termination of r, i.e. not necessarily "full deadlock"
+			if (s.curr.isTerminal())  // Local termination of r, i.e. not necessarily "full deadlock"
 			{
-				Set<ESend> orphs = this.buffs.get(r).values().stream().filter((v) -> v != null).collect(Collectors.toSet());
+				Set<ESend> orphs = this.buffs.get(r).values().stream().filter(v -> v != null).collect(Collectors.toSet());
 				if (!orphs.isEmpty())
 				{
 					Set<ESend> tmp = res.get(r);
@@ -524,11 +527,11 @@ public class SConfig
 		{
 			//EndpointState s = this.states.get(r);
 			EFsm fsm = this.efsms.get(r);
-			switch (fsm.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
+			switch (fsm.curr.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
 			{
 				case OUTPUT:
 				{
-					List<EAction> as = fsm.getActions();
+					List<EAction> as = fsm.curr.getActions();
 					for (EAction a : as)
 					{
 						if (a.isSend())
@@ -552,7 +555,7 @@ public class SConfig
 							EFsm speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
-								List<EAction> peeras = speer.getActions();
+								List<EAction> peeras = speer.curr.getActions();
 								for (EAction peera : peeras)
 								{
 									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))  // Cf. isWaitingFor
@@ -587,7 +590,7 @@ public class SConfig
 							// FIXME: factor out
 							EClientWrap wc = (EClientWrap) a;
 							EFsm speer = this.efsms.get(wc.peer);
-							List<EAction> peeras = speer.getActions();
+							List<EAction> peeras = speer.curr.getActions();
 							for (EAction peera : peeras)
 							{
 								if (peera.equals(wc.toDual(r)) && this.buffs.canWrapClient(r, wc))  // Cf. isWaitingFor
@@ -616,7 +619,7 @@ public class SConfig
 					{
 						if (a.isReceive())
 						{
-							if (fsm.hasAction(a))
+							if (fsm.curr.hasAction(a))
 							{
 								List<EAction> tmp = res.get(r);
 								if (tmp == null)
@@ -709,7 +712,7 @@ public class SConfig
 							EFsm speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.OUTPUT)
 							{
-								List<EAction> peeras = speer.getActions();
+								List<EAction> peeras = speer.curr.getActions();
 								for (EAction peera : peeras)
 								{
 									if (peera.equals(c.toDual(r)) && this.buffs.canAccept(r, c))
@@ -742,7 +745,7 @@ public class SConfig
 							EServerWrap ws = (EServerWrap) a;
 							EFsm speer = this.efsms.get(ws.peer);
 							{
-								List<EAction> peeras = speer.getActions();
+								List<EAction> peeras = speer.curr.getActions();
 								for (EAction peera : peeras)
 								{
 									if (peera.equals(ws.toDual(r)) && this.buffs.canWrapServer(r, ws))
