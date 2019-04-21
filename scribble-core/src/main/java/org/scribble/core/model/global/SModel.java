@@ -194,7 +194,7 @@ public class SModel
 				{
 					if (!foo.config.canSafelyTerminate(r))
 					{
-						if (s.config.queues.get(r).values().stream()
+						if (s.config.queues.getQueue(r).values().stream()
 								.allMatch((v) -> v == null))
 						{
 							starved.add(r);
@@ -234,7 +234,7 @@ public class SModel
 					ESend s0 = b0.get(r1).get(r2);
 					if (s0 != null)
 					{
-						ESend tmp = b.get(r1).get(r2);
+						ESend tmp = b.getQueue(r1).get(r2);
 						if (tmp == null)
 						{
 							b0.get(r1).put(r2, null);

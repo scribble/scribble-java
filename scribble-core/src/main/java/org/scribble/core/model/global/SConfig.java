@@ -177,6 +177,7 @@ public class SConfig
 				}
 				else if (((a1.isClientWrap() && a2.isServerWrap()) || (a1.isServerWrap() && a2.isClientWrap())))
 				{
+					// Doesn't affect queue state
 					tmp2 = this.queues;  // OK, immutable?
 				}
 				else
@@ -210,7 +211,7 @@ public class SConfig
 					break;
 				}*/
 				Role peer = s.curr.getActions().iterator().next().peer;
-				ESend send = this.queues.get(r).get(peer);
+				ESend send = this.queues.getQueue(r).get(peer);
 				if (send != null)
 				{
 					ERecv recv = send.toDual(peer);
@@ -368,7 +369,7 @@ public class SConfig
 			if (a.isReceive())
 			{
 				Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
-				if (peers.stream().noneMatch((p) -> this.queues.get(r).get(p) != null))
+				if (peers.stream().noneMatch((p) -> this.queues.getQueue(r).get(p) != null))
 				{
 					return peers;
 				}
@@ -461,7 +462,7 @@ public class SConfig
 			EFsm s = this.efsms.get(r);
 			if (s.curr.isTerminal())  // Local termination of r, i.e. not necessarily "full deadlock"
 			{
-				Set<ESend> orphs = this.queues.get(r).values().stream().filter(v -> v != null).collect(Collectors.toSet());
+				Set<ESend> orphs = this.queues.getQueue(r).values().stream().filter(v -> v != null).collect(Collectors.toSet());
 				if (!orphs.isEmpty())
 				{
 					Set<ESend> tmp = res.get(r);
@@ -482,7 +483,7 @@ public class SConfig
 						// Connection direction doesn't matter? -- wrong: matters because of async. disconnect
 						if (!this.queues.isConnected(r, rr))
 						{
-							ESend send = this.queues.get(r).get(rr);
+							ESend send = this.queues.getQueue(r).get(rr);
 							if (send != null)
 							{
 								Set<ESend> tmp = res.get(r);

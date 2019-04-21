@@ -16,6 +16,7 @@ package org.scribble.core.model.global;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ import org.scribble.core.type.name.Role;
 public class SQueues
 {
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();  // client -> server -> connected?  (symmetric)
-	private final Map<Role, Map<Role, ESend>> queues = new HashMap<>();  // dest -> src -> msg
+	private final Map<Role, Map<Role, ESend>> queues = new HashMap<>();  // dest -> src -> msg  // null ESend for empty queue
 
 	public SQueues(Set<Role> roles, boolean implicit)
 	{
@@ -60,45 +61,6 @@ public class SQueues
 			this.queues.put(r, new HashMap<>(queues.queues.get(r)));
 		}
 	}
-	
-	public Map<Role, Map<Role, ESend>> getQueues()  // FIXME factor out properly with constructor
-	{
-		//return this.queues;
-		return new SQueues(this).queues;
-	}
-
-	public Map<Role, ESend> get(Role r)
-	{
-		return Collections.unmodifiableMap(this.queues.get(r));
-	}
-	
-	public boolean isEmpty(Role r)
-	{
-		return this.queues.get(r).values().stream().allMatch((v) -> v == null);
-	}
-
-	public boolean isConnected(Role self, Role peer)
-	{
-		Map<Role, Boolean> tmp = this.connected.get(self);
-		if (tmp == null)
-		{
-			return false;
-		}
-		Boolean b = tmp.get(peer);
-		return b != null && b;
-	}
-
-	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canAccept
-	public boolean canAccept(Role self, EAcc a)
-	{
-		return !isConnected(self, a.peer);
-	}
-
-	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canAccept
-	public boolean canRequest(Role self, EReq c)
-	{
-		return !isConnected(self, c.peer);
-	}
 
 	public boolean canSend(Role self, ESend a)
 	{
@@ -111,6 +73,18 @@ public class SQueues
 		// N.B. *not* checking isConnected -- can still receive from our side after other side has closed
 		ESend send = this.queues.get(self).get(a.peer);
 		return send != null && send.toDual(a.peer).equals(a);
+	}
+
+	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canAccept
+	public boolean canRequest(Role self, EReq c)
+	{
+		return !isConnected(self, c.peer);
+	}
+
+	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canAccept
+	public boolean canAccept(Role self, EAcc a)
+	{
+		return !isConnected(self, a.peer);
 	}
 
 	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check peer canDisconnect
@@ -127,12 +101,27 @@ public class SQueues
 	}
 
 	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canClientWrap
-	// N.B. doesn't actually change any state
+	// N.B. doesn't actually change queues state
 	public boolean canServerWrap(Role self, EServerWrap sw)
 	{
 		return isConnected(self, sw.peer);
 	}
+
+	public SQueues send(Role self, ESend a)
+	{
+		SQueues copy = new SQueues(this);
+		copy.queues.get(a.peer).put(self, a);
+		return copy;
+	}
+
+	public SQueues receive(Role self, ERecv a)
+	{
+		SQueues copy = new SQueues(this);
+		copy.queues.get(self).put(a.peer, null);
+		return copy;
+	}
 	
+  // Sync action
 	public SQueues connect(Role src, Role dest)
 	{
 		SQueues copy = new SQueues(this);
@@ -148,18 +137,27 @@ public class SQueues
 		return copy;
 	}
 
-	public SQueues send(Role self, ESend a)
+	public boolean isConnected(Role self, Role peer)
 	{
-		SQueues copy = new SQueues(this);
-		copy.queues.get(a.peer).put(self, a);
-		return copy;
+		return this.connected.get(self).get(peer);
+	}
+	
+	public boolean isEmpty(Role r)  // this.connected doesn't matter
+	{
+		return this.queues.get(r).values().stream().allMatch(v -> v == null);
+	}
+	
+	// Return a (deep) copy -- currently, checkEventualReception expects a modifiable return
+	public Map<Role, Map<Role, ESend>> getQueues()
+	{
+		return this.queues.entrySet().stream().collect(Collectors.toMap(
+				Entry::getKey,
+				x -> new HashMap<>(x.getValue())));
 	}
 
-	public SQueues receive(Role self, ERecv a)
+	public Map<Role, ESend> getQueue(Role r)
 	{
-		SQueues copy = new SQueues(this);
-		copy.queues.get(self).put(a.peer, null);
-		return copy;
+		return Collections.unmodifiableMap(this.queues.get(r));
 	}
 
 	@Override
