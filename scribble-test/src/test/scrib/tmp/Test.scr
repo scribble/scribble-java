@@ -102,6 +102,8 @@ module tmp.Test;
 	// choice-specific fairness annotations
 	// fix codegen when -fair
 
+// parser/ast refactoring
+	// check G/LType casts vs. SType<Global/Local, ...> (favour latter)
 
 // Test refactoring:
 	// refactor test to use main instead of cli

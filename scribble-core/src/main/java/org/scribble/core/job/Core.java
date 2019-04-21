@@ -291,7 +291,7 @@ public class Core
 			verbosePrintln("-- EFSM for "
 					+ r + ":\n" + egraphs.get(r).init.toDot());
 		}*/
-		return this.sgraphb.buildSGraph(this, fullname, egraphs, explicit);  // CHECKME: factor out util -- ?
+		return this.sgraphb.buildSGraph(fullname, egraphs, explicit);  // CHECKME: factor out util -- ?
 	}
 
 	// Pre: checkWellFormedness 
