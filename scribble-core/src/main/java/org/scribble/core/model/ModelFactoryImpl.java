@@ -20,11 +20,11 @@ import org.scribble.core.model.endpoint.EFsm;
 import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAcc;
+import org.scribble.core.model.endpoint.actions.EClientWrap;
 import org.scribble.core.model.endpoint.actions.EDisconnect;
 import org.scribble.core.model.endpoint.actions.ERecv;
 import org.scribble.core.model.endpoint.actions.EReq;
 import org.scribble.core.model.endpoint.actions.ESend;
-import org.scribble.core.model.endpoint.actions.EClientWrap;
 import org.scribble.core.model.endpoint.actions.EServerWrap;
 import org.scribble.core.model.global.SBuffers;
 import org.scribble.core.model.global.SConfig;
@@ -33,11 +33,11 @@ import org.scribble.core.model.global.SGraphBuilderUtil;
 import org.scribble.core.model.global.SModel;
 import org.scribble.core.model.global.SState;
 import org.scribble.core.model.global.actions.SAcc;
+import org.scribble.core.model.global.actions.SClientWrap;
 import org.scribble.core.model.global.actions.SDisconnect;
 import org.scribble.core.model.global.actions.SRecv;
 import org.scribble.core.model.global.actions.SReq;
 import org.scribble.core.model.global.actions.SSend;
-import org.scribble.core.model.global.actions.SClientWrap;
 import org.scribble.core.model.global.actions.SServerWrap;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.MsgId;
@@ -56,27 +56,27 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public ESend newESend(Role peer, MsgId<?> mid, Payload payload)
+	public ESend newESend(Role peer, MsgId<?> mid, Payload pay)
 	{
-		return new ESend(this, peer, mid, payload);
+		return new ESend(this, peer, mid, pay);
 	}
 
 	@Override
-	public ERecv newERecv(Role peer, MsgId<?> mid, Payload payload)
+	public ERecv newERecv(Role peer, MsgId<?> mid, Payload pay)
 	{
-		return new ERecv(this, peer, mid, payload);
+		return new ERecv(this, peer, mid, pay);
 	}
 
 	@Override
-	public EReq newEReq(Role peer, MsgId<?> mid, Payload payload)
+	public EReq newEReq(Role peer, MsgId<?> mid, Payload pay)
 	{
-		return new EReq(this, peer, mid, payload);
+		return new EReq(this, peer, mid, pay);
 	}
 
 	@Override
-	public EAcc newEAcc(Role peer, MsgId<?> mid, Payload payload)
+	public EAcc newEAcc(Role peer, MsgId<?> mid, Payload pay)
 	{
-		return new EAcc(this, peer, mid, payload);
+		return new EAcc(this, peer, mid, pay);
 	}
 
 	@Override
@@ -110,27 +110,27 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public SSend newSSend(Role subj, Role obj, MsgId<?> mid, Payload payload)
+	public SSend newSSend(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		return new SSend(subj, obj, mid, payload);
+		return new SSend(subj, obj, mid, pay);
 	}
 
 	@Override
-	public SRecv newSRecv(Role subj, Role obj, MsgId<?> mid, Payload payload)
+	public SRecv newSRecv(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		return new SRecv(subj, obj, mid, payload);
+		return new SRecv(subj, obj, mid, pay);
 	}
 
 	@Override
-	public SReq newSReq(Role subj, Role obj, MsgId<?> mid, Payload payload)
+	public SReq newSReq(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		return new SReq(subj, obj, mid, payload);
+		return new SReq(subj, obj, mid, pay);
 	}
 	
 	@Override
-	public SAcc newSAcc(Role subj, Role obj, MsgId<?> mid, Payload payload)
+	public SAcc newSAcc(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		return new SAcc(subj, obj, mid, payload);
+		return new SAcc(subj, obj, mid, pay);
 	}
 
 	@Override
@@ -158,7 +158,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init)
+	public SGraph newSGraph(GProtoName proto, Map<Integer, SState> states,
+			SState init)
 	{
 		return new SGraph(proto, states, init);
 	}

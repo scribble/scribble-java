@@ -42,7 +42,6 @@ public class SConfig
 {
 	protected final ModelFactory mf;
 	
-	//public final Map<Role, EndpointState> states;
 	public final Map<Role, EFsm> efsms;
 	public final SBuffers buffs;
 	
@@ -520,6 +519,7 @@ public class SConfig
 		return res;
 	}
 
+	// Based on config semantics, not "static" graph edges (cf., super.getAllActions) -- used to build global model graph
 	public Map<Role, List<EAction>> getFireable()
 	{
 		Map<Role, List<EAction>> res = new HashMap<>();

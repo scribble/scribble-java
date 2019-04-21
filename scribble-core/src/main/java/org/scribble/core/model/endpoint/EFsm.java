@@ -35,7 +35,7 @@ public class EFsm
 		this.curr = curr;
 	}
 
-	// CHECKME: Set?  List is for non-det actions, but is that relevant to EFsm's?
+	// CHECKME: Set? List is for non-det actions, but is that relevant to EFsm's?
 	// Pre: this.curr.getAllFireable().contains(a) ?
 	public List<EFsm> fireAll(EAction a)
 	{
@@ -50,31 +50,6 @@ public class EFsm
 	{
 		return this.curr.equals(this.graph.init);
 	}
-	
-	/*public boolean isTerminated()
-	{
-		return this.curr.isTerminal();
-	}
-
-	public EStateKind getStateKind()
-	{
-		return this.curr.getStateKind();
-	}
-
-	public List<EAction> getActions()
-	{
-		return this.curr.getActions();
-	}
-	
-	public boolean hasAction(EAction a)
-	{
-		return this.curr.hasAction(a);
-	}
-	
-	public boolean isRequesttOrClientWrapOnly()
-	{
-		return this.curr.isRequestOrClientWrapOnly();
-	}*/
 
 	@Override
 	public final int hashCode()
@@ -106,3 +81,43 @@ public class EFsm
 		return Integer.toString(this.curr.id);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	/*public boolean isTerminated()
+	{
+		return this.curr.isTerminal();
+	}
+
+	public EStateKind getStateKind()
+	{
+		return this.curr.getStateKind();
+	}
+
+	public List<EAction> getActions()
+	{
+		return this.curr.getActions();
+	}
+	
+	public boolean hasAction(EAction a)
+	{
+		return this.curr.hasAction(a);
+	}
+	
+	public boolean isRequesttOrClientWrapOnly()
+	{
+		return this.curr.isRequestOrClientWrapOnly();
+	}*/
