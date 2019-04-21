@@ -13,12 +13,12 @@
  */
 package org.scribble.core.model.global;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.job.Core;
@@ -51,7 +51,6 @@ public class SGraphBuilder
 		Map<Role, EFsm> efsms = egraphs.entrySet().stream()
 				.collect(Collectors.toMap(Entry::getKey, e -> e.getValue().toFsm()));
 		SBuffers b0 = new SBuffers(this.core.config.mf, efsms.keySet(), !explicit);
-		//return job.sf.newSConfig(efsms, b0);
 		return this.core.config.mf.newSConfig(efsms, b0);
 	}
 	
@@ -61,51 +60,43 @@ public class SGraphBuilder
 	//public SGraph buildSGraph(Job job, GProtocolName fullname, SConfig c0) throws ScribbleException
 	public SGraph buildSGraph(GProtoName fullname,
 			Map<Role, EGraph> egraphs, boolean explicit) throws ScribException
-				// FIXME core not needed
 	{
 		SConfig c0 = createInitialSConfig(egraphs, explicit);
 
 		SState init = this.util.newState(c0);
 
-		//Map<Integer, SState> seen = new HashMap<>();
-		LinkedHashSet<SState> todo = new LinkedHashSet<>();
+		Set<SState> todo = new LinkedHashSet<>();
 		todo.add(init);
 
 		// FIXME: factor out model building and integrate with getAllNodes (seen == all)
-		int count = 0;
+		int count = 1;
 		while (!todo.isEmpty())
 		{
 			Iterator<SState> i = todo.iterator();
 			SState curr = i.next();
 			i.remove();
-			//seen.put(curr.id, curr);
 
 			if (this.core.config.args.get(CoreArgs.VERBOSE))
 			{
-				count++;
-				if (count % 50 == 0)
+				if (count++ % 50 == 0)
 				{
 					this.core.verbosePrintln("(" + fullname + ") Building global states: " + count);
 				}
 			}
 			
 			Map<Role, List<EAction>> fireable = curr.getFireable();
-
-			//job.debugPrintln("Acceptable at (" + curr.id + "): " + fireable);
-
 			for (Role r : fireable.keySet())
 			{
 				List<EAction> fireable_r = fireable.get(r);
 				
 				// Hacky?  // FIXME: factor out and make more robust (e.g. for new state kinds) -- e.g. "hasPayload" in IOAction
-				//EndpointState currstate = curr.config.states.get(r);
 				EFsm currfsm = curr.config.efsms.get(r);
 				EStateKind k = currfsm.getStateKind();
 				if (k == EStateKind.OUTPUT)
 				{
 					for (EAction a : fireable_r)  // Connect implicitly has no payload (also accept, so skip)
 					{
-						if (fireable_r.stream().anyMatch((x) ->
+						if (fireable_r.stream().anyMatch(x ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
 						{
 							throw new ScribException("Bad non-deterministic action payloads: " + fireable_r);
@@ -116,10 +107,11 @@ public class SGraphBuilder
 				{
 					for (EAction a : fireable_r)
 					{
-						if (currfsm.getAllFireable().stream().anyMatch((x) ->
+						// curr.getFireable vs currfsm.getAllFireable ?
+						if (currfsm.getActions().stream().anyMatch(x ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
 						{
-							throw new ScribException("Bad non-deterministic action payloads: " + currfsm.getAllFireable());
+							throw new ScribException("Bad non-deterministic action payloads: " + currfsm.getActions());
 						}
 					}
 				}
@@ -186,37 +178,4 @@ public class SGraphBuilder
 
 		return graph;
 	}
-
-	/*private void getNextStates(LinkedHashSet<SState> todo,
-			Map<Integer, SState> seen, SState curr, SAction a, List<SConfig> nexts)
-	{
-		for (SConfig next : nexts)
-		{
-			SState news = this.util.newState(next);
-			SState succ = null; 
-			for (SState tmp : seen.values())  // Key point: checking "semantically" if model state already created
-			{
-				if (tmp.equals(news))
-				{
-					succ = tmp;
-				}
-			}
-			if (succ == null)
-			{
-				for (SState tmp : todo)  // If state created but not "seen" yet, then it will be "todo"
-				{
-					if (tmp.equals(news))
-					{
-						succ = tmp;
-					}
-				}
-			}
-			if (succ == null)
-			{
-				succ = news;
-				todo.add(succ);
-			}
-			curr.addEdge(a, succ);  // FIXME: make a Builder util, cf. EGraphBuilderUtil
-		}
-	}*/
 }

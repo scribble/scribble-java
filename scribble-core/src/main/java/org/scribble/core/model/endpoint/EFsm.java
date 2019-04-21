@@ -35,6 +35,15 @@ public class EFsm
 		this.curr = curr;
 	}
 
+	// CHECKME: Set?  List is for non-det actions, but is that relevant to EFsm's?
+	// Pre: this.curr.getAllFireable().contains(a) ?
+	public List<EFsm> fireAll(EAction a)
+	{
+		return this.curr.getSuccs(a).stream().map(x -> new EFsm(this.graph, x))
+				.collect(Collectors.toList());
+	}
+
+	// Following are a bunch of wrapper methods to curr
 	// CHECKME: check if unfolded initial accept is possible, and if it breaks anything
 	public boolean isInitial()
 	{
@@ -51,19 +60,12 @@ public class EFsm
 		return this.curr.getStateKind();
 	}
 
-	// CHECKME: Set?  List is for non-det actions, but is that relevant to EFsm's?
-	public List<EFsm> fireAll(EAction a)
-	{
-		return this.curr.getSuccs(a).stream().map(x -> new EFsm(this.graph, x))
-				.collect(Collectors.toList());
-	}
-
-	public List<EAction> getAllFireable()
+	public List<EAction> getActions()
 	{
 		return this.curr.getActions();
 	}
 	
-	public boolean hasFireable(EAction a)
+	public boolean hasAction(EAction a)
 	{
 		return this.curr.hasAction(a);
 	}

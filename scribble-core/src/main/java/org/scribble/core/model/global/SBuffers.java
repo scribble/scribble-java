@@ -36,14 +36,14 @@ import org.scribble.core.type.name.Role;
 
 public class SBuffers
 {
-	private final ModelFactory ef;  // FIXME: only used by wrapable -- refactor?
+	private final ModelFactory mf;  // FIXME: only used by wrapable -- refactor?
 	
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();
 	private final Map<Role, Map<Role, ESend>> buffs = new HashMap<>();  // dest -> src -> msg
 
-	public SBuffers(ModelFactory ef, Set<Role> roles, boolean implicit)
+	public SBuffers(ModelFactory mf, Set<Role> roles, boolean implicit)
 	{
-		this(ef, roles);
+		this(mf, roles);
 		
 		if (implicit)
 		{
@@ -62,9 +62,9 @@ public class SBuffers
 		}
 	}
 
-	public SBuffers(ModelFactory ef, Set<Role> roles)
+	public SBuffers(ModelFactory mf, Set<Role> roles)
 	{
-		this.ef = ef;
+		this.mf = mf;
 
 		// FIXME: do the same for connected
 		roles.forEach((k) -> 
@@ -83,7 +83,7 @@ public class SBuffers
 
 	public SBuffers(SBuffers buffs)
 	{
-		this.ef = buffs.ef;
+		this.mf = buffs.mf;
 
 		Set<Role> roles = buffs.buffs.keySet();
 		roles.forEach((k) ->
@@ -274,7 +274,7 @@ public class SBuffers
 		{
 			this.connected.keySet().stream()
 				.filter(k -> tmp.containsKey(k) && tmp.get(k))
-				.forEach(k -> res.add(this.ef.newEServerWrap(k)));
+				.forEach(k -> res.add(this.mf.newEServerWrap(k)));
 		}
 		return res;
 	}

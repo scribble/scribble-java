@@ -207,12 +207,12 @@ public class SConfig
 				{
 					break;
 				}*/
-				Role peer = s.getAllFireable().iterator().next().peer;
+				Role peer = s.getActions().iterator().next().peer;
 				ESend send = this.buffs.get(r).get(peer);
 				if (send != null)
 				{
 					ERecv recv = send.toDual(peer);
-					if (!s.hasFireable(recv))
+					if (!s.hasAction(recv))
 					//res.put(r, new IOError(peer));
 					res.put(r, recv);
 				}
@@ -352,7 +352,7 @@ public class SConfig
 		EStateKind k = s.getStateKind();
 		if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 		{
-			List<EAction> all = s.getAllFireable();
+			List<EAction> all = s.getActions();
 			EAction a = all.get(0);  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
 			/*if (a.isAccept())  // Sound?
 			{
@@ -395,7 +395,7 @@ public class SConfig
 			// FIXME TODO: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
 			if (!s.isInitial())
 			{
-				List<EAction> all = s.getAllFireable();  // Should be singleton -- no: not any more
+				List<EAction> all = s.getActions();  // Should be singleton -- no: not any more
 				/*Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
 				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Connect(r))))  // cf. getTakeable
 									//if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
@@ -405,7 +405,7 @@ public class SConfig
 				Set<Role> res = new HashSet<Role>();
 				for (EAction a : all)  // Accept  // FIXME: WrapServer
 				{
-					if (this.efsms.get(a.peer).getAllFireable().contains(a.toDual(r)))
+					if (this.efsms.get(a.peer).getActions().contains(a.toDual(r)))
 					{
 						return null;
 					}
@@ -424,7 +424,7 @@ public class SConfig
 			//List<IOAction> all = s.getAllAcceptable();
 			if (s.isConnectOrWrapClientOnly())
 			{
-				List<EAction> all = s.getAllFireable();
+				List<EAction> all = s.getActions();
 				/*Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());  // Should be singleton by enabling conditions
 				if (peers.stream().noneMatch((p) -> this.states.get(p).getAllTakeable().contains(new Accept(r))))  // cf. getTakeable
 				{
@@ -433,7 +433,7 @@ public class SConfig
 				Set<Role> res = new HashSet<Role>();
 				for (EAction a : all)  // Connect or WrapClient
 				{
-					if (this.efsms.get(a.peer).getAllFireable().contains(a.toDual(r)))
+					if (this.efsms.get(a.peer).getActions().contains(a.toDual(r)))
 					{
 						return null;
 					}
@@ -528,7 +528,7 @@ public class SConfig
 			{
 				case OUTPUT:
 				{
-					List<EAction> as = fsm.getAllFireable();
+					List<EAction> as = fsm.getActions();
 					for (EAction a : as)
 					{
 						if (a.isSend())
@@ -552,7 +552,7 @@ public class SConfig
 							EFsm speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
-								List<EAction> peeras = speer.getAllFireable();
+								List<EAction> peeras = speer.getActions();
 								for (EAction peera : peeras)
 								{
 									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))  // Cf. isWaitingFor
@@ -587,7 +587,7 @@ public class SConfig
 							// FIXME: factor out
 							EClientWrap wc = (EClientWrap) a;
 							EFsm speer = this.efsms.get(wc.peer);
-							List<EAction> peeras = speer.getAllFireable();
+							List<EAction> peeras = speer.getActions();
 							for (EAction peera : peeras)
 							{
 								if (peera.equals(wc.toDual(r)) && this.buffs.canWrapClient(r, wc))  // Cf. isWaitingFor
@@ -616,7 +616,7 @@ public class SConfig
 					{
 						if (a.isReceive())
 						{
-							if (fsm.hasFireable(a))
+							if (fsm.hasAction(a))
 							{
 								List<EAction> tmp = res.get(r);
 								if (tmp == null)
@@ -709,7 +709,7 @@ public class SConfig
 							EFsm speer = this.efsms.get(c.peer);
 							//if (speer.getStateKind() == Kind.OUTPUT)
 							{
-								List<EAction> peeras = speer.getAllFireable();
+								List<EAction> peeras = speer.getActions();
 								for (EAction peera : peeras)
 								{
 									if (peera.equals(c.toDual(r)) && this.buffs.canAccept(r, c))
@@ -742,7 +742,7 @@ public class SConfig
 							EServerWrap ws = (EServerWrap) a;
 							EFsm speer = this.efsms.get(ws.peer);
 							{
-								List<EAction> peeras = speer.getAllFireable();
+								List<EAction> peeras = speer.getActions();
 								for (EAction peera : peeras)
 								{
 									if (peera.equals(ws.toDual(r)) && this.buffs.canWrapServer(r, ws))
