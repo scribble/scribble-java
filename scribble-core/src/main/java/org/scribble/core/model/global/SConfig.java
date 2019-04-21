@@ -534,10 +534,10 @@ public class SConfig
 				case OUTPUT: as = getOutputFireable(r, fsm); break;
 				case UNARY_INPUT:
 				case POLY_INPUT: 
-					as.addAll(getInputFireable(r, fsm));  // addAll for generic typing
+					as.addAll(getReceiveFireable(r, fsm));  // addAll for generic typing
 					break;
 				case ACCEPT: as.addAll(getAcceptFireable(r, fsm)); break;
-				case SERVER_WRAP: as.addAll(getServerWrapFireable(r)); break;
+				case SERVER_WRAP: as.addAll(getServerWrapFireable(r, fsm)); break;
 				default: throw new RuntimeException("Unknown state kind: " + fsm);
 			}
 			if (!as.isEmpty())  // Guards against res.put for empty "as", but perhaps unnecessary?
@@ -548,16 +548,17 @@ public class SConfig
 		return res;
 	}
 
-	private List<EAction> getOutputFireable(Role r, EFsm fsm)
+	// fsm is self's Efsm
+	private List<EAction> getOutputFireable(Role self, EFsm fsm)  // "output" and "client" actions
 	{
 		List<EAction> res = new LinkedList<>();
-		for (EAction a : fsm.curr.getActions())
+		for (EAction a : fsm.curr.getActions())  // Actions may be a mixture of the following
 		{
 			// Async
-			if (a.isSend() || a.isDisconnect())
+			if (a.isSend() || a.isDisconnect())  // For disconnect, only one "a"
 			{
-				if ((a.isSend() && this.buffs.canSend(r, (ESend) a))
-					|| (a.isDisconnect() && this.buffs.canDisconnect(r, (EDisconnect) a)))
+				if ((a.isSend() && this.buffs.canSend(self, (ESend) a))
+					|| (a.isDisconnect() && this.buffs.canDisconnect(self, (EDisconnect) a)))
 				{
 					res.add(a);
 				}
@@ -565,12 +566,12 @@ public class SConfig
 			// Sync
 			else if (a.isRequest() || a.isClientWrap())
 			{
-				if ((a.isRequest() && this.buffs.canConnect(r, (EReq) a))
-					|| (a.isClientWrap() && this.buffs.canWrapClient(r, (EClientWrap) a)))  // Cf. isWaitingFor
+				if ((a.isRequest() && this.buffs.canRequest(self, (EReq) a))
+					|| (a.isClientWrap() && this.buffs.canClientWrap(self, (EClientWrap) a)))  // Cf. isWaitingFor
 				{
 					for (EAction peera : this.efsms.get(a.peer).curr.getActions())
 					{
-						if (a.toDual(r).equals(peera))
+						if (a.toDual(self).equals(peera))
 						{
 							res.add(a);
 						}
@@ -586,50 +587,34 @@ public class SConfig
 	}
 
 	// Unary or poly receive
-	private List<ERecv> getInputFireable(Role r, EFsm fsm)
+	private List<EAction> getReceiveFireable(Role self, EFsm fsm)
 	{
-		List<ERecv> res = new LinkedList<>();
-		for (ERecv a : this.buffs.getInputable(r))  // Buffered contents as intput actions
-		{
-			if (fsm.curr.hasAction(a))
-			{
-				res.add(a);
-			}
-		}
-		return res;
+		return fsm.curr.getActions().stream().map(x -> (ERecv) x)
+				.filter(x -> this.buffs.canReceive(self, x))
+				.collect(Collectors.toList());
 	}
 
-	private List<EAcc> getAcceptFireable(Role r, EFsm fsm)
+	private List<EAcc> getAcceptFireable(Role self, EFsm fsm)
 	{
-		List<EAcc> res = new LinkedList<>();
-		for (EAcc a : this.buffs.getAcceptable(r, fsm.curr))
-		{
-			for (EAction peera : this.efsms.get(a.peer).curr.getActions())
-			{
-				if (a.toDual(r).equals(peera) && this.buffs.canAccept(r, (EAcc) a))
-				{
-					res.add(a);
-				}
-			}
-		}
-		return res;
+		List<EAction> as = fsm.curr.getActions();
+		Role peer = as.get(0).peer;  // All peer's the same
+		List<EAction> peeras = this.efsms.get(peer).curr.getActions();
+		return fsm.curr.getActions().stream().map(x -> (EAcc) x)
+				.filter(x -> this.buffs.canAccept(self, x)
+						&& peeras.stream().anyMatch(y -> y.toDual(self).equals(x)))
+				.collect(Collectors.toList());
 	}
 
-	private List<EServerWrap> getServerWrapFireable(Role r)
+	// Duplicated from getAcceptFireable
+	private List<EServerWrap> getServerWrapFireable(Role self, EFsm fsm)
 	{
-		List<EServerWrap> res = new LinkedList<>();
-		for (EServerWrap a : this.buffs.getWrapable(r))
-		{
-			for (EAction peera : this.efsms.get(a.peer).curr.getActions())
-			{
-				if (a.toDual(r).equals(peera)
-						&& this.buffs.canServerWrap(r, (EServerWrap) a))
-				{
-					res.add(a);
-				}
-			}
-		}
-		return res;
+		List<EAction> as = fsm.curr.getActions();  // Actually for ServerWrap, size() == 1
+		Role peer = as.get(0).peer;  // All peer's the same
+		List<EAction> peeras = this.efsms.get(peer).curr.getActions();
+		return fsm.curr.getActions().stream().map(x -> (EServerWrap) x)
+				.filter(x -> this.buffs.canServerWrap(self, x)
+						&& peeras.stream().anyMatch(y -> y.toDual(self).equals(x)))
+				.collect(Collectors.toList());
 	}
 
 	@Override

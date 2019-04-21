@@ -15,39 +15,31 @@ package org.scribble.core.model.global;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAcc;
-import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.model.endpoint.actions.EClientWrap;
 import org.scribble.core.model.endpoint.actions.EDisconnect;
 import org.scribble.core.model.endpoint.actions.ERecv;
 import org.scribble.core.model.endpoint.actions.EReq;
 import org.scribble.core.model.endpoint.actions.ESend;
-import org.scribble.core.model.endpoint.actions.EClientWrap;
 import org.scribble.core.model.endpoint.actions.EServerWrap;
 import org.scribble.core.type.name.Role;
 
 public class SBuffers
 {
-	private final ModelFactory mf;  // FIXME: only used by wrapable -- refactor?
-	
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();
 	private final Map<Role, Map<Role, ESend>> buffs = new HashMap<>();  // dest -> src -> msg
 
-	public SBuffers(ModelFactory mf, Set<Role> roles, boolean implicit)
+	public SBuffers(Set<Role> roles, boolean implicit)
 	{
-		this(mf, roles);
+		this(roles);
 		
 		if (implicit)
 		{
-			roles.forEach((k) -> 
+			roles.forEach(k -> 
 			{
 				HashMap<Role, Boolean> tmp = new HashMap<>();
 				this.connected.put(k, tmp);
@@ -62,16 +54,14 @@ public class SBuffers
 		}
 	}
 
-	public SBuffers(ModelFactory mf, Set<Role> roles)
+	public SBuffers(Set<Role> roles)
 	{
-		this.mf = mf;
-
 		// FIXME: do the same for connected
-		roles.forEach((k) -> 
+		roles.forEach(k -> 
 		{
 			HashMap<Role, ESend> tmp = new HashMap<>();
 			this.buffs.put(k, tmp);
-			roles.forEach((k2) -> 
+			roles.forEach(k2 -> 
 			{
 				if (!k.equals(k2))
 				{
@@ -83,8 +73,6 @@ public class SBuffers
 
 	public SBuffers(SBuffers buffs)
 	{
-		this.mf = buffs.mf;
-
 		Set<Role> roles = buffs.buffs.keySet();
 		roles.forEach((k) ->
 		{
@@ -94,7 +82,7 @@ public class SBuffers
 				this.connected.put(k, new HashMap<>(tmp));
 			}
 		});
-		roles.forEach((k) -> 
+		roles.forEach(k -> 
 		{
 			this.buffs.put(k, new HashMap<>(buffs.buffs.get(k)));
 		});
@@ -112,10 +100,6 @@ public class SBuffers
 		return Collections.unmodifiableMap(this.buffs.get(r));
 	}
 	
-	/*public boolean isEmpty()
-	{
-		return this.buffs.values().stream().flatMap((m) -> m.values().stream()).allMatch((v) -> v == null);
-	}*/
 	public boolean isEmpty(Role r)
 	{
 		return this.buffs.get(r).values().stream().allMatch((v) -> v == null);
@@ -132,33 +116,53 @@ public class SBuffers
 		return b != null && b;
 	}
 
+	public boolean canSend(Role self, ESend a)
+	{
+		if (!isConnected(self, a.peer))
+		{
+			return false;
+		}
+		return isConnected(self, a.peer)
+				&& this.buffs.get(a.peer).get(self) == null;
+	}
+
+	public boolean canReceive(Role self, ERecv a)
+	{
+		if (!isConnected(self, a.peer))
+		{
+			return false;
+		}
+		ESend send = this.buffs.get(self).get(a.peer);
+		return send != null && send.toDual(a.peer).equals(a);
+	}
+
 	public boolean canAccept(Role self, EAcc a)
-	//public boolean canAccept(Role r1, Role r2)
 	{
 		return !isConnected(self, a.peer);
-		//return canConnect(r2, r1);
 	}
 
-	public boolean canConnect(Role self, EReq c)
-	//public boolean canConnect(Role r1, Role r2)
+	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canAccept
+	public boolean canRequest(Role self, EReq c)
 	{
 		return !isConnected(self, c.peer);
-		//return !isConnected(r1, r2);
 	}
 
+	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check peer canDisconnect
 	public boolean canDisconnect(Role self, EDisconnect d)
 	{
 		return isConnected(self, d.peer);
 	}
 
-	public boolean canWrapClient(Role self, EClientWrap wc)
+	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canServerWrap
+	public boolean canClientWrap(Role self, EClientWrap cw)
 	{
-		return isConnected(self, wc.peer);
+		return isConnected(self, cw.peer);
 	}
 
-	public boolean canServerWrap(Role self, EServerWrap ws)
+	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canClientWrap
+	public boolean canServerWrap(Role self, EServerWrap sw)
 	{
-		return isConnected(self, ws.peer);
+		return isConnected(self, sw.peer);
 	}
 	
 	//public WFBuffers connect(Role src, Connect c, Role dest)
@@ -190,110 +194,12 @@ public class SBuffers
 		return copy;
 	}
 
-	public boolean canSend(Role self, ESend a)
-	{
-		return isConnected(self, a.peer) && (this.buffs.get(a.peer).get(self) == null);
-	}
-
 	public SBuffers send(Role self, ESend a)
 	{
 		SBuffers copy = new SBuffers(this);
 		copy.buffs.get(a.peer).put(self, a);
 		return copy;
 	}
-
-	/*public boolean canReceive(Role self, Receive a)
-	{
-		Send send = this.buffs.get(self).get(a.peer);
-		return send != null && send.toDual(a.peer).equals(a);
-	}*/
-
-	//public Set<Receive> receivable(Role r) 
-	public Set<ERecv> getInputable(Role r)   // FIXME: IAction  // FIXME: OAction version?
-	{
-		/*Map<Role, Boolean> tmp = this.connected.get(r); 
-		if (tmp == null)
-		{
-			return Collections.emptySet();  // Not needed, guarded by state kind
-		}*/
-		Set<ERecv> res = this.buffs.get(r).entrySet().stream()
-				.filter(e -> e.getValue() != null)
-				.map(e -> e.getValue().toDual(e.getKey()))
-				.collect(Collectors.toSet());
-		/*Map<Role, Boolean> tmp = this.connected.get(r);
-		if (tmp == null)
-		{
-			this.buffs.get(r).keySet().forEach((x) -> res.add(new Accept(x)));
-		}
-		else
-		{
-			this.connected.keySet().stream()
-				.filter((k) -> !tmp.containsKey(k) || !tmp.get(k))
-				.forEach((k) -> res.add(new Accept(k)));
-		}*/
-		return res;
-	}
-	
-	//public Set<IOAction> acceptable(Role r)  // Means connection accept actions
-	// Pre: curr is Accept state, r is accept peer
-	public Set<EAcc> getAcceptable(Role r, EState curr)  // Means connection accept actions
-	{
-		Set<EAcc> res = new HashSet<>();
-		Map<Role, Boolean> tmp = this.connected.get(r);
-		/*if (tmp == null)
-		{
-			this.buffs.get(r).keySet().forEach((x) -> res.add(new Accept(x)));
-		}
-		else
-		{
-			this.connected.keySet().stream()
-				.filter((k) -> !tmp.containsKey(k) || !tmp.get(k))
-				.forEach((k) -> res.add(new Accept(k)));
-		}*/
-		List<EAction> as = curr.getActions();
-		if (tmp != null)
-		{
-			Boolean b = tmp.get(as.get(0).peer);  // peer is same for all "as" -- CHECKME: should not assume here?
-			if (b != null && b)
-			{
-				return res;
-			}
-		}
-		for (EAction a : as)
-		{
-			res.add((EAcc) a);
-		}
-		return res;
-	}
-
-	public Set<EServerWrap> getWrapable(Role r)
-	{
-		Set<EServerWrap> res = new HashSet<>();
-		Map<Role, Boolean> tmp = this.connected.get(r);
-		if (tmp != null)
-		{
-			this.connected.keySet().stream()
-				.filter(k -> tmp.containsKey(k) && tmp.get(k))
-				.forEach(k -> res.add(this.mf.newEServerWrap(k)));
-		}
-		return res;
-	}
-	
-	/*//public Map<Role, Receive> receivable() 
-	public Map<Role, IOAction> inputable() 
-	{
-		//Map<Role, Receive> tmp = new HashMap<>();
-		Map<Role, IOAction> tmp = new HashMap<>();
-		for (Role r : this.buffs.keySet())
-		{
-			Map<Role, Send> tmp2 = this.buffs.get(r);
-			for (Role r2: tmp2.keySet())
-			{
-				tmp.put(r, tmp2.get(r2).toDual(r2));
-			}
-		}
-		return tmp;
-	}*/
 
 	public SBuffers receive(Role self, ERecv a)
 	{
@@ -329,14 +235,13 @@ public class SBuffers
 	@Override
 	public String toString()
 	{
-		//return this.buffs.toString();
 		return this.buffs.entrySet().stream()
-				.filter((e) -> e.getValue().values().stream().anyMatch((v) -> v != null))
-				.collect(Collectors.toMap((e) -> e.getKey(),
-						(e) -> (e.getValue().entrySet().stream()
-								.filter((f) -> f.getValue() != null)
-								//.collect(Collectors.toMap((f) -> f.getKey(), (f) -> f.getValue())))  // Inference not working?
-								.collect(Collectors.toMap((Entry<Role, ESend> f) -> f.getKey(), (f) -> f.getValue())))
-					)).toString();
+				.filter(e -> e.getValue().values().stream().anyMatch(v -> v != null))
+				.collect(Collectors.toMap(
+						e -> e.getKey(),
+						e -> e.getValue().entrySet().stream()
+								.filter(f -> f.getValue() != null)
+								.collect(Collectors.toMap(f -> f.getKey(), f -> f.getValue()))
+				)).toString();
 	}
 }
