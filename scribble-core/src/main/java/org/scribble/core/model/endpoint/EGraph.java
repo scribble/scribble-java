@@ -28,7 +28,7 @@ public class EGraph implements MPrettyPrint
 		this.term = term;
 	}
 
-	public EFsm toFsm()
+	public EFsm toFsm()  // CHECKME: refactor to mf?
 	{
 		return new EFsm(this);
 	}

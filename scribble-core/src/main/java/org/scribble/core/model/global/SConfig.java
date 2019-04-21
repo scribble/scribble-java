@@ -524,26 +524,26 @@ public class SConfig
 	public Map<Role, List<EAction>> getFireable()
 	{
 		Map<Role, List<EAction>> res = new HashMap<>();
-		for (Role r : this.efsms.keySet())
+		for (Role self : this.efsms.keySet())
 		{
-			EFsm fsm = this.efsms.get(r);
+			EFsm fsm = this.efsms.get(self);
 			List<EAction> as = new LinkedList<>();
 			switch (fsm.curr.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
 			{
 				// Currently not convenient to delegate to states, as state types not distinguished
 				case TERMINAL: break;
-				case OUTPUT: as = getOutputFireable(r, fsm); break;
+				case OUTPUT: as.addAll(getOutputFireable(self, fsm)); break;
 				case UNARY_INPUT:
 				case POLY_INPUT: 
-					as.addAll(getReceiveFireable(r, fsm));  // addAll for generic typing
+					as.addAll(getReceiveFireable(self, fsm));  // addAll for generic typing
 					break;
-				case ACCEPT: as.addAll(getAcceptFireable(r, fsm)); break;
-				case SERVER_WRAP: as.addAll(getServerWrapFireable(r, fsm)); break;
+				case ACCEPT: as.addAll(getAcceptFireable(self, fsm)); break;
+				case SERVER_WRAP: as.addAll(getServerWrapFireable(self, fsm)); break;
 				default: throw new RuntimeException("Unknown state kind: " + fsm);
 			}
 			if (!as.isEmpty())  // Guards against res.put for empty "as", but perhaps unnecessary?
 			{
-				res.put(r, as);
+				res.put(self, as);
 			}
 		}
 		return res;
@@ -559,7 +559,8 @@ public class SConfig
 			if (a.isSend() || a.isDisconnect())  // For disconnect, only one "a"
 			{
 				if ((a.isSend() && this.queues.canSend(self, (ESend) a))
-					|| (a.isDisconnect() && this.queues.canDisconnect(self, (EDisconnect) a)))
+						|| (a.isDisconnect()
+								&& this.queues.canDisconnect(self, (EDisconnect) a)))
 				{
 					res.add(a);
 				}
@@ -568,14 +569,13 @@ public class SConfig
 			else if (a.isRequest() || a.isClientWrap())
 			{
 				if ((a.isRequest() && this.queues.canRequest(self, (EReq) a))
-					|| (a.isClientWrap() && this.queues.canClientWrap(self, (EClientWrap) a)))  // Cf. isWaitingFor
+						|| (a.isClientWrap()
+								&& this.queues.canClientWrap(self, (EClientWrap) a)))
 				{
-					for (EAction peera : this.efsms.get(a.peer).curr.getActions())
+					if (this.efsms.get(a.peer).curr.getActions().stream()
+							.anyMatch(x -> a.toDual(self).equals(x)))  // anyMatch (i.e., add "a" at most once), cf. getAcceptable
 					{
-						if (a.toDual(self).equals(peera))
-						{
-							res.add(a);
-						}
+						res.add(a);
 					}
 				}
 			}
@@ -588,7 +588,7 @@ public class SConfig
 	}
 
 	// Unary or poly receive
-	private List<EAction> getReceiveFireable(Role self, EFsm fsm)
+	private List<ERecv> getReceiveFireable(Role self, EFsm fsm)
 	{
 		return fsm.curr.getActions().stream().map(x -> (ERecv) x)
 				.filter(x -> this.queues.canReceive(self, x))

@@ -152,7 +152,7 @@ public class SQueues
 	{
 		return this.queues.entrySet().stream().collect(Collectors.toMap(
 				Entry::getKey,
-				x -> new HashMap<>(x.getValue())));
+				x -> new HashMap<>(x.getValue())));  // Collections.unmodifiableMap(x.getValue())
 	}
 
 	public Map<Role, ESend> getQueue(Role r)
@@ -164,8 +164,8 @@ public class SQueues
 	public final int hashCode()
 	{
 		int hash = 131;
-		hash = 31 * hash + this.queues.hashCode();
 		hash = 31 * hash + this.connected.hashCode();
+		hash = 31 * hash + this.queues.hashCode();
 		return hash;
 	}
 
@@ -181,7 +181,7 @@ public class SQueues
 			return false;
 		}
 		SQueues b = (SQueues) o;
-		return this.queues.equals(b.queues) && this.connected.equals(b.connected);
+		return this.connected.equals(b.connected) && this.queues.equals(b.queues);
 	}
 	
 	@Override
