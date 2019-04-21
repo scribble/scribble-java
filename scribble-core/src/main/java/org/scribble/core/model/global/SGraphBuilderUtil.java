@@ -45,7 +45,7 @@ public class SGraphBuilderUtil
 	// Pre: this.states.containsKey(curr.config)
 	public Set<SState> getSuccs(SState curr, SAction a, List<SConfig> succs)
 	{
-		Set<SState> res = new LinkedHashSet<>();
+		Set<SState> res = new LinkedHashSet<>();  // Takes care of duplicates (o/w should also do "|| res.containsKey(c)" below) 
 		for (SConfig c : succs)
 		{
 			if (this.states.containsKey(c))

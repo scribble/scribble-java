@@ -67,11 +67,4 @@ public class NonDetPayChecker extends EStateVisitor
 		super.visitOutput(s);  // Does setSeen
 		checkNonDetPays(s);
 	}
-
-	@Override
-	public void visitUnaryInput(EState s) throws ScribException
-	{
-		super.visitOutput(s);  // Does setSeen
-		checkNonDetPays(s);
-	}
 }	

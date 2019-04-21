@@ -44,39 +44,6 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		super(labs);
 	}
 	
-	// CHECKME: return
-	public void traverse(EStateVisitor v) throws ScribException
-	{
-		visitState(v);  // "visitNode"
-
-		// "visitChildren"
-		for (Iterator<EState> succs = this.succs.iterator(); succs.hasNext(); )
-		{
-			EState succ = succs.next();
-			if (!v.hasSeen(succ))
-			{
-				succ.traverse(v);
-			}
-		}
-	}
-	
-	protected void visitState(EStateVisitor v) throws ScribException
-	{
-		// "visitNode"
-		EStateKind kind = getStateKind();
-		switch (kind)
-		{
-			case ACCEPT: v.visitAccept(this); break;
-			case OUTPUT: v.visitOutput(this); break;
-			case POLY_INPUT: v.visitPolyInput(this); break;
-			case SERVER_WRAP: v.visitServerWrap(this); break;
-			case TERMINAL: v.visitTerminal(this); break;
-			case UNARY_INPUT: v.visitUnaryInput(this); break;
-			default: throw new RuntimeException("Unknown state kind: " + kind);
-		}
-	}
-
-	
 	// To be overridden by subclasses, to obtain the subclass nodes
   // CHECKME: remove labs arg, and modify the underlying Set if needed ?
 	protected EState cloneNode(ModelFactory mf, Set<RecVar> labs)
@@ -361,6 +328,38 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		return getStateKind() == EStateKind.OUTPUT
 				&& getActions().stream()
 						.allMatch(x -> x.isRequest() || x.isClientWrap());
+	}
+	
+	// CHECKME: return
+	public void traverse(EStateVisitor v) throws ScribException
+	{
+		visitState(v);  // "visitNode"
+
+		// "visitChildren"
+		for (Iterator<EState> succs = this.succs.iterator(); succs.hasNext(); )
+		{
+			EState succ = succs.next();
+			if (!v.hasSeen(succ))
+			{
+				succ.traverse(v);
+			}
+		}
+	}
+	
+	protected void visitState(EStateVisitor v) throws ScribException
+	{
+		// "visitNode"
+		EStateKind kind = getStateKind();  // CHECKME: explicitly cache kind in EState?  this lookup is slow?
+		switch (kind)
+		{
+			case ACCEPT: v.visitAccept(this); break;
+			case OUTPUT: v.visitOutput(this); break;
+			case POLY_INPUT: v.visitPolyInput(this); break;
+			case SERVER_WRAP: v.visitServerWrap(this); break;
+			case TERMINAL: v.visitTerminal(this); break;
+			case UNARY_INPUT: v.visitUnaryInput(this); break;
+			default: throw new RuntimeException("Unknown state kind: " + kind);
+		}
 	}
 	
 	public EStateKind getStateKind()

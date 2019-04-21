@@ -61,76 +61,57 @@ public class SGraphBuilder
 			Map<Role, EGraph> egraphs, boolean explicit) throws ScribException
 	{
 		SConfig c0 = createInitialSConfig(egraphs, explicit);
-
 		SState init = this.util.newState(c0);
-
 		Set<SState> todo = new LinkedHashSet<>();
 		todo.add(init);
 
 		// FIXME: factor out model building and integrate with getAllNodes (seen == all)
-		int count = 1;
+		int debugCount = 1;
 		while (!todo.isEmpty())
 		{
 			Iterator<SState> i = todo.iterator();
 			SState curr = i.next();
 			i.remove();
-
 			if (this.core.config.args.get(CoreArgs.VERBOSE))
 			{
-				if (count++ % 50 == 0)
+				if (debugCount++ % 50 == 0)
 				{
-					this.core.verbosePrintln("(" + fullname + ") Building global states: " + count);
+					this.core.verbosePrintln(
+							"(" + fullname + ") Building global states: " + debugCount);
 				}
 			}
 			
 			Map<Role, List<EAction>> fireable = curr.getFireable();
 			for (Role r : fireable.keySet())
 			{
-				List<EAction> fireable_r = fireable.get(r);
-				
-				for (EAction a : fireable_r)
+				for (EAction a : fireable.get(r))
 				{
+					// Asynchronous (input/output) actions
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
-						//getNextStates(todo, seen, curr, a.toGlobal(r), curr.fire(r, a));
-						todo.addAll(
-								this.util.getSuccs(curr, a.toGlobal(r), curr.fire(r, a)));
+						List<SConfig> next = curr.fire(r, a);
+						todo.addAll(this.util.getSuccs(curr, a.toGlobal(r), next));
 					}
-					else if (a.isAccept() || a.isRequest())
+					// Synchronous (client/server) actions
+					else if (a.isAccept() || a.isRequest() || a.isClientWrap()
+							|| a.isServerWrap())
 					{	
 						List<EAction> as = fireable.get(a.peer);
-						EAction d = a.toDual(r);
-						if (as != null && as.contains(d))
+						EAction abar = a.toDual(r);
+						if (as != null && as.contains(abar))
 						{
-							as.remove(d);  // Removes one occurrence
-							//getNextStates(seen, todo, curr.sync(r, a, a.peer, d));
-							SAction g = (a.isRequest()) 
+							as.remove(abar);  // Removes one occurrence
+							SAction aglobal = (a.isRequest() || a.isClientWrap()) // "client" side action
 									? a.toGlobal(r)
-									: d.toGlobal(a.peer);
-									// Edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label)
-							//getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, d));
-							todo.addAll(
-									this.util.getSuccs(curr, g, curr.sync(r, a, a.peer, d)));
-						}
-					}
-					else if (a.isClientWrap() || a.isServerWrap())
-					{
-						List<EAction> as = fireable.get(a.peer);
-						EAction w = a.toDual(r);
-						if (as != null && as.contains(w))
-						{
-							as.remove(w);  // Removes one occurrence
-							SAction g = (a.isRequest()) 
-									? a.toGlobal(r)
-									: w.toGlobal(a.peer);
-							//getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, w));
-							todo.addAll(
-									this.util.getSuccs(curr, g, curr.sync(r, a, a.peer, w)));
+									: abar.toGlobal(a.peer);
+									// CHECKME: edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label?)
+							List<SConfig> next = curr.sync(r, a, a.peer, abar);
+							todo.addAll(this.util.getSuccs(curr, aglobal, next));
 						}
 					}
 					else
 					{
-						throw new RuntimeException("Shouldn't get in here: " + a);
+						throw new RuntimeException("Unknown action type: " + a);
 					}
 				}
 			}
@@ -138,11 +119,9 @@ public class SGraphBuilder
 
 		SGraph graph = this.core.config.mf.newSGraph(fullname,
 				this.util.getStates(), init);
-
 		this.core.verbosePrintln(
 				"(" + fullname + ") Built global model...\n" + graph.init.toDot() + "\n("
 						+ fullname + ") ..." + graph.states.size() + " states");
-
 		return graph;
 	}
 }
