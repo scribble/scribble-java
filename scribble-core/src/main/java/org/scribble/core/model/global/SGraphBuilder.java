@@ -112,7 +112,7 @@ public class SGraphBuilder
 					}
 					else
 					{
-						throw new RuntimeException("Unknown action type: " + a);
+						throw new RuntimeException("Unknown action kind: " + a);
 					}
 				}
 			}

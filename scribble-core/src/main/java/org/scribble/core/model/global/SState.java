@@ -26,8 +26,8 @@ import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.Role;
 
-// FIXME? make a WFModel front-end class? (cf. EGraph)
-// Only uses MState.id cosmetically, cf. MState equals/hash -- overrides equals/hash based on this.config (maybe extending MState is a bit misleading)
+// CHECKME: make a WFModel front-end class? (cf. EGraph)
+// N.B. only uses MState.id cosmetically, cf. MState equals/hashCode -- overrides equals/hashCode based on this.config (maybe extending MState is a bit misleading)
 public class SState extends MPrettyState<Void, SAction, SState, Global>
 {
 	public final SConfig config;

@@ -525,256 +525,165 @@ public class SConfig
 		Map<Role, List<EAction>> res = new HashMap<>();
 		for (Role r : this.efsms.keySet())
 		{
-			//EndpointState s = this.states.get(r);
 			EFsm fsm = this.efsms.get(r);
+			List<EAction> as = new LinkedList<>();
 			switch (fsm.curr.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
 			{
-				case OUTPUT:
-				{
-					List<EAction> as = fsm.curr.getActions();
-					for (EAction a : as)
-					{
-						if (a.isSend())
-						{
-							if (this.buffs.canSend(r, (ESend) a))
-							{
-								List<EAction> tmp = res.get(r);  // FIXME: factor out
-								if (tmp == null)
-								{
-									tmp = new LinkedList<>();
-									res.put(r, tmp);
-								}
-								tmp.add(a);
-							}
-						}
-						else if (a.isRequest())
-						{
-							// FIXME: factor out
-							EReq c = (EReq) a;
-							//EndpointState speer = this.states.get(c.peer);
-							EFsm speer = this.efsms.get(c.peer);
-							//if (speer.getStateKind() == Kind.UNARY_INPUT)
-							{
-								List<EAction> peeras = speer.curr.getActions();
-								for (EAction peera : peeras)
-								{
-									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))  // Cf. isWaitingFor
-									{
-										List<EAction> tmp = res.get(r);
-										if (tmp == null)
-										{
-											tmp = new LinkedList<>();
-											res.put(r, tmp);
-										}
-										tmp.add(a);
-									}
-								}
-							}
-						}
-						else if (a.isDisconnect())
-						{
-							// Duplicated from Send
-							if (this.buffs.canDisconnect(r, (EDisconnect) a))
-							{
-								List<EAction> tmp = res.get(r);  // FIXME: factor out
-								if (tmp == null)
-								{
-									tmp = new LinkedList<>();
-									res.put(r, tmp);
-								}
-								tmp.add(a);
-							}
-						}
-						else if (a.isClientWrap())
-						{
-							// FIXME: factor out
-							EClientWrap wc = (EClientWrap) a;
-							EFsm speer = this.efsms.get(wc.peer);
-							List<EAction> peeras = speer.curr.getActions();
-							for (EAction peera : peeras)
-							{
-								if (peera.equals(wc.toDual(r)) && this.buffs.canWrapClient(r, wc))  // Cf. isWaitingFor
-								{
-									List<EAction> tmp = res.get(r);
-									if (tmp == null)
-									{
-										tmp = new LinkedList<>();
-										res.put(r, tmp);
-									}
-									tmp.add(a);
-								}
-							}
-						}
-						else
-						{
-							throw new RuntimeException("Shouldn't get in here: " + a);
-						}
-					}
-					break;
-				}
+				// Currently not convenient to delegate to states, as state types not distinguished
+				case TERMINAL: break;
+				case OUTPUT: as = getOutputFireable(r, fsm); break;
 				case UNARY_INPUT:
 				case POLY_INPUT:
-				{
-					for (EAction a : this.buffs.inputable(r))
-					{
-						if (a.isReceive())
-						{
-							if (fsm.curr.hasAction(a))
-							{
-								List<EAction> tmp = res.get(r);
-								if (tmp == null)
-								{
-									tmp = new LinkedList<>();
-									res.put(r, tmp);
-								}
-								tmp.add(a);
-							}
-						}
-						/*else if (a.isAccept())
-						{
-							// FIXME: factor out
-							Accept c = (Accept) a;
-							EndpointState speer = this.states.get(c.peer);
-							//if (speer.getStateKind() == Kind.OUTPUT)
-							{
-								List<IOAction> peeras = speer.getAllAcceptable();
-								for (IOAction peera : peeras)
-								{
-									if (peera.equals(c.toDual(r)) && this.buffs.canAccept(r, c))
-									{
-										List<IOAction> tmp = res.get(r);
-										if (tmp == null)
-										{
-											tmp = new LinkedList<>();
-											res.put(r, tmp);
-										}
-										tmp.add(a);
-										//break;  // Add all of them
-									}
-								}
-							}
-						}*/
-						else
-						{
-							throw new RuntimeException("Shouldn't get in here: " + a);
-						}
-					}
+					getInputFireable(res, r, fsm);
 					break;
+				case ACCEPT: getAcceptFireable(res, r, fsm); break;
+				case SERVER_WRAP: getServerWrapFireable(res, r); break;
+				default: throw new RuntimeException("Unknown state kind: " + fsm);
+			}
+			if (!as.isEmpty())  // Guards res.put against empty "as", but maybe unnecessary
+			{
+				List<EAction> tmp = res.get(r);
+				if (tmp == null)
+				{
+					res.put(r, as);
 				}
-				case TERMINAL:
+				else
 				{
-					break;
-				}
-				/*case CONNECT:
-				{
-					List<IOAction> as = s.getAllTakeable();
-					for (IOAction a : as)
-					{
-						if (a.isConnect())  ..// FIXME: could be send actions
-						{
-							// FIXME: factor out
-							Connect c = (Connect) a;
-							EndpointState speer = this.states.get(c.peer);
-							//if (speer.getStateKind() == Kind.UNARY_INPUT)
-							{
-								List<IOAction> peeras = speer.getAllTakeable();
-								for (IOAction peera : peeras)
-								{
-									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
-									{
-										List<IOAction> tmp = res.get(r);
-										if (tmp == null)
-										{
-											tmp = new LinkedList<>();
-											res.put(r, tmp);
-										}
-										tmp.add(a);
-									}
-								}
-							}
-						}
-						else
-						{
-							throw new RuntimeException("Shouldn't get in here: " + s);
-						}	
-					}
-					break;
-				}*/
-				case ACCEPT:
-				{
-					for (EAction a : this.buffs.acceptable(r, fsm.curr))
-					{
-						if (a.isAccept())
-						{
-							// FIXME: factor out
-							EAcc c = (EAcc) a;
-							//EndpointState speer = this.states.get(c.peer);
-							EFsm speer = this.efsms.get(c.peer);
-							//if (speer.getStateKind() == Kind.OUTPUT)
-							{
-								List<EAction> peeras = speer.curr.getActions();
-								for (EAction peera : peeras)
-								{
-									if (peera.equals(c.toDual(r)) && this.buffs.canAccept(r, c))
-									{
-										List<EAction> tmp = res.get(r);
-										if (tmp == null)
-										{
-											tmp = new LinkedList<>();
-											res.put(r, tmp);
-										}
-										tmp.add(a);
-										//break;  // Add all of them
-									}
-								}
-							}
-						}
-						else
-						{
-							throw new RuntimeException("Shouldn't get in here: " + a);
-						}
-					}
-					break;
-				}
-				case SERVER_WRAP:
-				{
-					for (EAction a : this.buffs.wrapable(r))
-					{
-						if (a.isServerWrap())
-						{
-							EServerWrap ws = (EServerWrap) a;
-							EFsm speer = this.efsms.get(ws.peer);
-							{
-								List<EAction> peeras = speer.curr.getActions();
-								for (EAction peera : peeras)
-								{
-									if (peera.equals(ws.toDual(r)) && this.buffs.canWrapServer(r, ws))
-									{
-										List<EAction> tmp = res.get(r);
-										if (tmp == null)
-										{
-											tmp = new LinkedList<>();
-											res.put(r, tmp);
-										}
-										tmp.add(a);
-									}
-								}
-							}
-						}
-						else
-						{
-							throw new RuntimeException("Shouldn't get in here: " + a);
-						}
-					}
-					break;
-				}
-				default:
-				{
-					throw new RuntimeException("Shouldn't get in here: " + fsm);
+					tmp.addAll(as);
 				}
 			}
 		}
 		return res;
+	}
+
+	private List<EAction> getOutputFireable(Role r, EFsm fsm)
+	{
+		List<EAction> res = new LinkedList<>();
+		for (EAction a : fsm.curr.getActions())
+		{
+			// Async
+			if (a.isSend() || a.isDisconnect())
+			{
+				if ((a.isSend() && this.buffs.canSend(r, (ESend) a))
+					|| (a.isDisconnect() && this.buffs.canDisconnect(r, (EDisconnect) a)))
+				{
+					res.add(a);
+				}
+			}
+			// Sync
+			else if (a.isRequest() || a.isClientWrap())
+			{
+				if ((a.isRequest() && this.buffs.canConnect(r, (EReq) a))
+					|| (a.isClientWrap() && this.buffs.canWrapClient(r, (EClientWrap) a)))  // Cf. isWaitingFor
+				{
+					for (EAction peera : this.efsms.get(a.peer).curr.getActions())
+					{
+						if (peera.equals(a.toDual(r)))
+						{
+							res.add(a);
+						}
+					}
+				}
+			}
+			else
+			{
+				throw new RuntimeException("Unknown output action kind: " + a);
+			}
+		}
+		return res;
+	}
+
+	// Unary or poly input
+	private void getInputFireable(Map<Role, List<EAction>> res, Role r, EFsm fsm)
+	{
+		for (EAction a : this.buffs.inputable(r))
+		{
+			if (a.isReceive())
+			{
+				if (fsm.curr.hasAction(a))
+				{
+					List<EAction> tmp = res.get(r);
+					if (tmp == null)
+					{
+						tmp = new LinkedList<>();
+						res.put(r, tmp);
+					}
+					tmp.add(a);
+				}
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + a);
+			}
+		}
+	}
+
+	private void getAcceptFireable(Map<Role, List<EAction>> res, Role r, EFsm fsm)
+	{
+		for (EAction a : this.buffs.acceptable(r, fsm.curr))
+		{
+			if (a.isAccept())
+			{
+				// FIXME: factor out
+				EAcc c = (EAcc) a;
+				//EndpointState speer = this.states.get(c.peer);
+				EFsm speer = this.efsms.get(c.peer);
+				//if (speer.getStateKind() == Kind.OUTPUT)
+				{
+					List<EAction> peeras = speer.curr.getActions();
+					for (EAction peera : peeras)
+					{
+						if (peera.equals(c.toDual(r)) && this.buffs.canAccept(r, c))
+						{
+							List<EAction> tmp = res.get(r);
+							if (tmp == null)
+							{
+								tmp = new LinkedList<>();
+								res.put(r, tmp);
+							}
+							tmp.add(a);
+							//break;  // Add all of them
+						}
+					}
+				}
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + a);
+			}
+		}
+	}
+
+	private void getServerWrapFireable(Map<Role, List<EAction>> res, Role r)
+	{
+		for (EAction a : this.buffs.wrapable(r))
+		{
+			if (a.isServerWrap())
+			{
+				EServerWrap ws = (EServerWrap) a;
+				EFsm speer = this.efsms.get(ws.peer);
+				{
+					List<EAction> peeras = speer.curr.getActions();
+					for (EAction peera : peeras)
+					{
+						if (peera.equals(ws.toDual(r)) && this.buffs.canWrapServer(r, ws))
+						{
+							List<EAction> tmp = res.get(r);
+							if (tmp == null)
+							{
+								tmp = new LinkedList<>();
+								res.put(r, tmp);
+							}
+							tmp.add(a);
+						}
+					}
+				}
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + a);
+			}
+		}
 	}
 
 	@Override
