@@ -540,17 +540,9 @@ public class SConfig
 				case SERVER_WRAP: getServerWrapFireable(res, r); break;
 				default: throw new RuntimeException("Unknown state kind: " + fsm);
 			}
-			if (!as.isEmpty())  // Guards res.put against empty "as", but maybe unnecessary
+			if (!as.isEmpty())  // Guards against res.put for empty "as", but perhaps unnecessary?
 			{
-				List<EAction> tmp = res.get(r);
-				if (tmp == null)
-				{
-					res.put(r, as);
-				}
-				else
-				{
-					tmp.addAll(as);
-				}
+				res.put(r, as);
 			}
 		}
 		return res;
