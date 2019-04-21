@@ -156,7 +156,7 @@ public class SBuffers
 		return isConnected(self, wc.peer);
 	}
 
-	public boolean canWrapServer(Role self, EServerWrap ws)
+	public boolean canServerWrap(Role self, EServerWrap ws)
 	{
 		return isConnected(self, ws.peer);
 	}
@@ -209,14 +209,14 @@ public class SBuffers
 	}*/
 
 	//public Set<Receive> receivable(Role r) 
-	public Set<EAction> inputable(Role r)   // FIXME: IAction  // FIXME: OAction version?
+	public Set<ERecv> getInputable(Role r)   // FIXME: IAction  // FIXME: OAction version?
 	{
 		/*Map<Role, Boolean> tmp = this.connected.get(r); 
 		if (tmp == null)
 		{
 			return Collections.emptySet();  // Not needed, guarded by state kind
 		}*/
-		Set<EAction> res = this.buffs.get(r).entrySet().stream()
+		Set<ERecv> res = this.buffs.get(r).entrySet().stream()
 				.filter(e -> e.getValue() != null)
 				.map(e -> e.getValue().toDual(e.getKey()))
 				.collect(Collectors.toSet());
@@ -236,9 +236,9 @@ public class SBuffers
 	
 	//public Set<IOAction> acceptable(Role r)  // Means connection accept actions
 	// Pre: curr is Accept state, r is accept peer
-	public Set<EAction> acceptable(Role r, EState curr)  // Means connection accept actions
+	public Set<EAcc> getAcceptable(Role r, EState curr)  // Means connection accept actions
 	{
-		Set<EAction> res = new HashSet<>();
+		Set<EAcc> res = new HashSet<>();
 		Map<Role, Boolean> tmp = this.connected.get(r);
 		/*if (tmp == null)
 		{
@@ -252,11 +252,11 @@ public class SBuffers
 		}*/
 		if (tmp != null)
 		{
-			Boolean b = tmp.get(r);
+			/*Boolean b = tmp.get(r);  // r connected to r ???
 			if (b != null && b)
 			{
 				return res;
-			}
+			}*/
 		}
 		List<EAction> as = curr.getActions();
 		for (EAction a : as)
@@ -266,9 +266,9 @@ public class SBuffers
 		return res;
 	}
 
-	public Set<EAction> wrapable(Role r)
+	public Set<EServerWrap> getWrapable(Role r)
 	{
-		Set<EAction> res = new HashSet<>();
+		Set<EServerWrap> res = new HashSet<>();
 		Map<Role, Boolean> tmp = this.connected.get(r);
 		if (tmp != null)
 		{
