@@ -13,8 +13,12 @@
  */
 package org.scribble.core.model.global;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.core.model.GraphBuilderUtil;
 import org.scribble.core.model.ModelFactory;
@@ -24,7 +28,7 @@ import org.scribble.core.type.kind.Global;
 public class SGraphBuilderUtil
 		extends GraphBuilderUtil<Void, SAction, SState, Global>
 {
-	private Set<SState> states = new HashSet<>();
+	private Map<SConfig, SState> states = new HashMap<>();
 	
 	public SGraphBuilderUtil(ModelFactory mf)
 	{
@@ -34,7 +38,31 @@ public class SGraphBuilderUtil
 	public SState newState(SConfig c)
 	{
 		SState s = this.mf.newSState(c);
-		this.states.add(s);
+		this.states.put(c, s);
 		return s;
+	}
+
+	// Pre: this.states.containsKey(curr.config)
+	public Set<SState> getSuccs(SState curr, SAction a, List<SConfig> succs)
+	{
+		Set<SState> res = new LinkedHashSet<>();
+		for (SConfig c : succs)
+		{
+			if (this.states.containsKey(c))
+			{
+				curr.addEdge(a, this.states.get(c));
+				continue;
+			}
+			SState s = newState(c);
+			curr.addEdge(a, s);
+			res.add(s);
+		}
+		return res;
+	}
+	
+	public Map<Integer, SState> getStates()
+	{
+		return this.states.values().stream()
+				.collect(Collectors.toMap(x -> x.id, x -> x));
 	}
 }
