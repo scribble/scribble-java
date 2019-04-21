@@ -250,15 +250,15 @@ public class SBuffers
 				.filter((k) -> !tmp.containsKey(k) || !tmp.get(k))
 				.forEach((k) -> res.add(new Accept(k)));
 		}*/
+		List<EAction> as = curr.getActions();
 		if (tmp != null)
 		{
-			/*Boolean b = tmp.get(r);  // r connected to r ???
+			Boolean b = tmp.get(as.get(0).peer);  // peer is same for all "as" -- CHECKME: should not assume here?
 			if (b != null && b)
 			{
 				return res;
-			}*/
+			}
 		}
-		List<EAction> as = curr.getActions();
 		for (EAction a : as)
 		{
 			res.add((EAcc) a);
