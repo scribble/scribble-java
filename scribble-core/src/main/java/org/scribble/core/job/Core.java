@@ -25,8 +25,10 @@ import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.ModelFactoryImpl;
 import org.scribble.core.model.endpoint.EGraph;
+import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.model.global.SGraphBuilder;
+import org.scribble.core.model.visit.local.NonDetPayChecker;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GProtoName;
@@ -88,7 +90,8 @@ public class Core
 		runProjectionPasses();  // CHECKME: can try before validation (i.e., including syntactic WF), to promote greater tool feedback? (cf. CommandLine output "barrier")
 		runProjectionSyntaxWfPasses();
 		runEfsmBuildingPasses();  // Currently, unfair-transform graph building must come after syntactic WF --- TODO fix graph building to prevent crash ?
-		runModelCheckingPasses();
+		runLocalModelCheckingPasses();
+		runGlobalModelCheckingPasses();
 	}
 	
 	// Populates JobContext -- although patten is to do on-demand via (first) getter, so (partially) OK to delay population
@@ -241,15 +244,32 @@ public class Core
 			{
 				continue;
 			}
-			for (Role r : inlined.roles)
+			for (Role self : inlined.roles)
 			{
-				LProjection iproj = this.context.getProjectedInlined(fullname, r);
+				LProjection iproj = this.context.getProjectedInlined(fullname, self);
 				iproj.checkReachability();
 			}
 		}
 	}
 
-	protected void runModelCheckingPasses() throws ScribException
+	protected void runLocalModelCheckingPasses() throws ScribException
+	{
+		for (GProtoName fullname : this.context.getParsedFullnames())
+		{
+			GProtocol inlined = this.context.getInlined(fullname);
+			if (inlined.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
+			{
+				continue;
+			}
+			for (Role self : inlined.roles)
+			{
+				EState init = this.context.getEGraph(fullname, self).init;
+				init.traverse(new NonDetPayChecker());
+			}
+		}
+	}
+
+	protected void runGlobalModelCheckingPasses() throws ScribException
 	{
 		verbosePrintPass("Building and checking models from projected inlineds...");  // CHECKME: separate and move model building earlier?
 		// CHECKME: refactor more/whole validation into lang.GProtocol ?

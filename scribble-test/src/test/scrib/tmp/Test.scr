@@ -114,14 +114,13 @@ data <java> "..." from "..." as T;
 //*
 global protocol Proto1(role A, role B)
 {
-	1() from A to B;	
 	choice at A
 	{
-		do Proto1(A, B);
+		1() from A to B;	
 	}
 	or
 	{
-		2() from A to B;
+		1(T) from A to B;
 	}
 }
 //*/

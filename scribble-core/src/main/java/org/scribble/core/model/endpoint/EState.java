@@ -29,9 +29,12 @@ import org.scribble.core.model.MPrettyState;
 import org.scribble.core.model.MState;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.model.visit.local.EStateVisitor;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.Pair;
+import org.scribble.util.ScribException;
 
 // Label types used to be both RecVar and SubprotocolSigs; now using inlined protocol for FSM building so just RecVar
 public class EState extends MPrettyState<RecVar, EAction, EState, Local>
@@ -40,6 +43,39 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	{
 		super(labs);
 	}
+	
+	// CHECKME: return
+	public void traverse(EStateVisitor v) throws ScribException
+	{
+		visitState(v);  // "visitNode"
+
+		// "visitChildren"
+		for (Iterator<EState> succs = this.succs.iterator(); succs.hasNext(); )
+		{
+			EState succ = succs.next();
+			if (!v.hasSeen(succ))
+			{
+				succ.traverse(v);
+			}
+		}
+	}
+	
+	protected void visitState(EStateVisitor v) throws ScribException
+	{
+		// "visitNode"
+		EStateKind kind = getStateKind();
+		switch (kind)
+		{
+			case ACCEPT: v.visitAccept(this); break;
+			case OUTPUT: v.visitOutput(this); break;
+			case POLY_INPUT: v.visitPolyInput(this); break;
+			case SERVER_WRAP: v.visitServerWrap(this); break;
+			case TERMINAL: v.visitTerminal(this); break;
+			case UNARY_INPUT: v.visitUnaryInput(this); break;
+			default: throw new RuntimeException("Unknown state kind: " + kind);
+		}
+	}
+
 	
 	// To be overridden by subclasses, to obtain the subclass nodes
   // CHECKME: remove labs arg, and modify the underlying Set if needed ?
@@ -137,7 +173,8 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	}
 	
 
-	/*.. move back to endpointstate ?
+	/* Returns Pair<>(init, term)
+	 * 
 	.. use getallreachable to get subgraph, make a graph clone method
 	.. for each poly output, clone a (non-det) edge to clone of the reachable subgraph with the clone of the current node pruned to this single choice
 	..     be careful of original non-det edges, need to do each separately
@@ -145,8 +182,9 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	.. is it equiv to requiring all roles to see every choice path?  except initial accepting roles -- yes
 	.. easier to implement as a direct check on the standard global model, rather than model hacking -- i.e. liveness is not just about terminal sets, but about "branching condition", c.f. julien?
 	.. the issue is connect/accept -- makes direct check a bit more complicated, maybe value in doing it by model hacking to rely on standard liveness checking?
-	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles*/
-	public EState unfairTransform(ModelFactory mf)
+	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles
+	*/
+	public Pair<EState, EState> unfairTransform(ModelFactory mf)
 	{
 		EState init = clone(mf);  // All state refs from here on are clones, original Graph unmodified
 		EState term = init.getTerminal();
@@ -176,7 +214,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 				todo.addAll(curr.getSuccs());
 			}
 		}
-		return init;
+		return new Pair<>(init, term);
 	}
 
 	// N.B. todo alias from unfairTransform -- refactor as return? (slower)
@@ -362,11 +400,11 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		}
 	}
 	
-	// Helper factory method for deriving an EGraph from an arbitary EState (but not the primary way to construct EGraphs; cf., EGraphBuilderUtil)
+	/*// Helper factory method for deriving an EGraph from an arbitary EState (but not the primary way to construct EGraphs; cf., EGraphBuilderUtil)
 	public EGraph toGraph()
 	{
 		return new EGraph(this, getTerminal());  // Throws exception if >1 terminal; null if no terminal
-	}
+	}*/
 
 	@Override
 	public Set<EState> getReachableStates()  // CHECKME: consider a "lazy" version?  Maybe as an Iterator or Stream

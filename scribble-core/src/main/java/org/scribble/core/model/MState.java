@@ -33,7 +33,7 @@ public abstract class MState
 		L,                             // Node label type (cosmetic)
 		A extends MAction<K>,          // Edge type
 		S extends MState<L, A, S, K>,  // State type
-		K extends ProtoKind            // Global/Local
+		K extends ProtoKind            // Global/Local -- CHECKME: useful?
 >
 {
 	private static int count = 1;  // A shared index counter for every single MState (and subclass) instance
@@ -53,6 +53,7 @@ public abstract class MState
 		this.succs = new LinkedList<>();
 	}
 	
+	// Mutating setter
 	protected final void addLabel(L lab)
 	{
 		this.labs.add(lab);
@@ -63,7 +64,7 @@ public abstract class MState
 		return Collections.unmodifiableSet(this.labs);
 	}
 	
-	// Mutable (can also overwrite edges)
+	// Mutating setter (can also overwrite edges)
 	protected void addEdge(A a, S s)
 	{
 		/*if (this.equals(s)) 
@@ -90,7 +91,7 @@ public abstract class MState
 		this.succs.add(s);
 	}
 	
-	// Pre: (this, a, s) is a current edge
+	// Pre: (this, a, s) is a current edge -- mutating setter
 	protected final void removeEdge(A a, S s)
 			//throws ScribException  // CHECKME: used? -- cf., Hack? EFSM building on bad-reachability protocols now done before actual reachability check
 	{

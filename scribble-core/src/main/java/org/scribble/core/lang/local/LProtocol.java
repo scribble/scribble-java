@@ -132,7 +132,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 		{
 			//EState s = b.getEntry();
 			EState s = core.config.mf.newEState(Collections.emptySet());
-			return new EGraph(s, s);
+			return new EGraph(s, s);  // TODO: refactor constructor inside mf
 		}
 		EGraphBuilder b = new EGraphBuilder(core);
 		this.def.visitWithNoThrow(b);

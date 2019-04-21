@@ -23,12 +23,14 @@ import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.model.endpoint.AutGraphParser;
 import org.scribble.core.model.endpoint.EGraph;
+import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.global.GTypeInliner;
 import org.scribble.core.visit.global.InlinedProjector;
+import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribUtil;
 
@@ -239,12 +241,10 @@ public class CoreContext
 		EGraph unfair = this.uEGraphs.get(fullname);
 		if (unfair == null)
 		{
-			unfair = getEGraph(fullname).init
-					.unfairTransform(this.core.config.mf).toGraph();
+			Pair<EState, EState> p = getEGraph(fullname).init
+					.unfairTransform(this.core.config.mf);//.toGraph();
+			unfair = new EGraph(p.left, p.right);
 			addUnfairEGraph(fullname, unfair);
-			
-			//System.out.println("\nUnfair: " + fullname + "\n" + unfair.toDot());
-			
 		}
 		return unfair;
 	}

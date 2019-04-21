@@ -25,7 +25,6 @@ import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.model.endpoint.EFsm;
 import org.scribble.core.model.endpoint.EGraph;
-import org.scribble.core.model.endpoint.EStateKind;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.name.GProtoName;
@@ -85,38 +84,6 @@ public class SGraphBuilder
 			}
 			
 			Map<Role, List<EAction>> fireable = curr.getFireable();
-			for (Role r : fireable.keySet())
-			{
-				List<EAction> fireable_r = fireable.get(r);
-				
-				// Hacky?  // FIXME: factor out and make more robust (e.g. for new state kinds) -- e.g. "hasPayload" in IOAction
-				EFsm currfsm = curr.config.efsms.get(r);
-				EStateKind k = currfsm.getStateKind();
-				if (k == EStateKind.OUTPUT)
-				{
-					for (EAction a : fireable_r)  // Connect implicitly has no payload (also accept, so skip)
-					{
-						if (fireable_r.stream().anyMatch(x ->
-								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
-						{
-							throw new ScribException("Bad non-deterministic action payloads: " + fireable_r);
-						}
-					}
-				}
-				else if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT || k == EStateKind.ACCEPT)
-				{
-					for (EAction a : fireable_r)
-					{
-						// curr.getFireable vs currfsm.getAllFireable ?
-						if (currfsm.getActions().stream().anyMatch(x ->
-								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
-						{
-							throw new ScribException("Bad non-deterministic action payloads: " + currfsm.getActions());
-						}
-					}
-				}
-			}  // Need to do all action payload checking before next building step, because doing sync actions will also remove peer's actions from takeable set
-
 			for (Role r : fireable.keySet())
 			{
 				List<EAction> fireable_r = fireable.get(r);
