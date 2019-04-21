@@ -26,7 +26,7 @@ import org.scribble.core.model.endpoint.actions.ERecv;
 import org.scribble.core.model.endpoint.actions.EReq;
 import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.model.endpoint.actions.EServerWrap;
-import org.scribble.core.model.global.SBuffers;
+import org.scribble.core.model.global.SQueues;
 import org.scribble.core.model.global.SConfig;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.model.global.SGraphBuilderUtil;
@@ -54,7 +54,7 @@ public interface ModelFactory
 
 	SState newSState(SConfig config);
 	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);
-	SConfig newSConfig(Map<Role, EFsm> state, SBuffers buffs);
+	SConfig newSConfig(Map<Role, EFsm> state, SQueues buffs);
 	SModel newSModel(SGraph g);
 
 	ESend newESend(Role peer, MsgId<?> mid, Payload pay);

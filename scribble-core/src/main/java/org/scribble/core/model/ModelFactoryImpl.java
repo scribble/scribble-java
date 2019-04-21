@@ -26,7 +26,7 @@ import org.scribble.core.model.endpoint.actions.ERecv;
 import org.scribble.core.model.endpoint.actions.EReq;
 import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.model.endpoint.actions.EServerWrap;
-import org.scribble.core.model.global.SBuffers;
+import org.scribble.core.model.global.SQueues;
 import org.scribble.core.model.global.SConfig;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.model.global.SGraphBuilderUtil;
@@ -165,7 +165,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public SConfig newSConfig(Map<Role, EFsm> state, SBuffers buffs)
+	public SConfig newSConfig(Map<Role, EFsm> state, SQueues buffs)
 	{
 		return new SConfig(this, state, buffs);
 	}

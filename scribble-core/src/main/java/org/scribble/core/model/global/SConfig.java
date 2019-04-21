@@ -43,25 +43,25 @@ public class SConfig
 	protected final ModelFactory mf;
 	
 	public final Map<Role, EFsm> efsms;
-	public final SBuffers buffs;
+	public final SQueues queues;
 	
-	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> buff)
-	//public WFConfig(Map<Role, EndpointState> state, WFBuffers buffs)
-	public SConfig(ModelFactory mf, Map<Role, EFsm> state, SBuffers buffs)
+	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> queue)
+	//public WFConfig(Map<Role, EndpointState> state, WFqueueers queues)
+	public SConfig(ModelFactory mf, Map<Role, EFsm> state, SQueues queues)
 	{
 		this.mf = mf;
 		
 		this.efsms = Collections.unmodifiableMap(state);
-		//this.buffs = Collections.unmodifiableMap(buff.keySet().stream() .collect(Collectors.toMap((k) -> k, (k) -> Collections.unmodifiableMap(buff.get(k)))));
-		//this.buffs = Collections.unmodifiableMap(buff);
-		this.buffs = buffs;
+		//this.queues = Collections.unmodifiableMap(queue.keySet().stream() .collect(Collectors.toMap((k) -> k, (k) -> Collections.unmodifiableMap(queue.get(k)))));
+		//this.queues = Collections.unmodifiableMap(queue);
+		this.queues = queues;
 	}
 
 	// FIXME: rename: not just termination, could be unconnected/uninitiated
 	//public boolean isEnd()
 	public boolean isSafeTermination()
 	{
-		//return this.states.values().stream().allMatch((s) -> s.isTerminal()) && this.buffs.isEmpty();
+		//return this.states.values().stream().allMatch((s) -> s.isTerminal()) && this.queues.isEmpty();
 		for (Role r : this.efsms.keySet())
 		{
 			if (!canSafelyTerminate(r))
@@ -79,7 +79,7 @@ public class SConfig
 		EFsm s = this.efsms.get(r);
 		//return
 		/*boolean cannotSafelyTerminate =  // FIXME: check and cleanup
-				(s.isTerminal() && !this.buffs.isEmpty(r))
+				(s.isTerminal() && !this.queues.isEmpty(r))
 					||
 					(!s.isTerminal() &&
 						//(!(s.getStateKind().equals(Kind.UNARYINPUT) && s.getTakeable().iterator().next().isAccept())  // Accept state now distinguished
@@ -87,24 +87,24 @@ public class SConfig
 							!(s.getStateKind().equals(Kind.ACCEPT) && s.isInitial())  // FIXME: check stable
 								// FIXME: needs initial state check -- although if there is an accept, there should a connect, and waitfor-errors checked via connects) -- this should be OK because connect/accept are sync -- but not fully sufficient by itself, see next
 								// So could be blocked on unary accept part way through the protocol -- but also could be unfolded initial accept
-							////|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
-							//&& this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))
+							////|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.queues.isConnected(r, rr))))
+							//&& this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.queues.isConnected(r, rr))
 									// FIXME: isConnected is not symmetric, and could disconnect all part way through protocol -- but can't happen?
-							// Above assumes initial is not terminal (holds for EFSMs), and doesn't check buffer is empty (i.e. for orphan messages)
+							// Above assumes initial is not terminal (holds for EFSMs), and doesn't check queueer is empty (i.e. for orphan messages)
 						)
 					)
 					||
-					(!s.isTerminal() && this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr)))
+					(!s.isTerminal() && this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.queues.isConnected(r, rr)))
 					;*/
 		//return !cannotSafelyTerminate;
 		boolean canSafelyTerminate =
-				(s.curr.isTerminal() && this.buffs.isEmpty(r))
+				(s.curr.isTerminal() && this.queues.isEmpty(r))
 						|| (s.curr.getStateKind().equals(EStateKind.ACCEPT)
 								&& s.isInitial())
-					// FIXME: should be empty buffs
+					// FIXME: should be empty queues
 				
 				// FIXME: incorrectly allows stuck accepts?  if inactive not initial, should be clone of initial?
-			//|| (s.getStateKind().equals(Kind.ACCEPT) && this.states.keySet().stream().noneMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr)))
+			//|| (s.getStateKind().equals(Kind.ACCEPT) && this.states.keySet().stream().noneMatch((rr) -> !r.equals(rr) && this.queues.isConnected(r, rr)))
 			;
 		return canSafelyTerminate;
 	}
@@ -120,7 +120,7 @@ public class SConfig
 		{
 			//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
 			Map<Role, EFsm> tmp1 = new HashMap<>(this.efsms);
-			//Map<Role, Map<Role, Send>> tmp2 = new HashMap<>(this.buffs);
+			//Map<Role, Map<Role, Send>> tmp2 = new HashMap<>(this.queues);
 		
 			tmp1.put(r, succ);
 
@@ -135,10 +135,10 @@ public class SConfig
 			{
 				tmp3.put(r, null);
 			}*/
-			SBuffers tmp2 = 
-					a.isSend()       ? this.buffs.send(r, (ESend) a)
-				: a.isReceive()    ? this.buffs.receive(r, (ERecv) a)
-				: a.isDisconnect() ? this.buffs.disconnect(r, (EDisconnect) a)
+			SQueues tmp2 = 
+					a.isSend()       ? this.queues.send(r, (ESend) a)
+				: a.isReceive()    ? this.queues.receive(r, (ERecv) a)
+				: a.isDisconnect() ? this.queues.disconnect(r, (EDisconnect) a)
 				: null;
 			if (tmp2 == null)
 			{
@@ -169,15 +169,15 @@ public class SConfig
 				Map<Role, EFsm> tmp1 = new HashMap<>(this.efsms);
 				tmp1.put(r1, succ1);
 				tmp1.put(r2, succ2);
-				SBuffers tmp2;
+				SQueues tmp2;
 				if (((a1.isRequest() && a2.isAccept()) || (a1.isAccept() && a2.isRequest())))
-						//&& this.buffs.canConnect(r1, r2))
+						//&& this.queues.canConnect(r1, r2))
 				{
-					tmp2 = this.buffs.connect(r1, r2);
+					tmp2 = this.queues.connect(r1, r2);
 				}
 				else if (((a1.isClientWrap() && a2.isServerWrap()) || (a1.isServerWrap() && a2.isClientWrap())))
 				{
-					tmp2 = this.buffs;  // OK, immutable?
+					tmp2 = this.queues;  // OK, immutable?
 				}
 				else
 				{
@@ -201,7 +201,7 @@ public class SConfig
 			EStateKind k = s.curr.getStateKind();
 			if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
 			{
-				/*Set<IOAction> duals = this.buffs.get(r).entrySet().stream()
+				/*Set<IOAction> duals = this.queues.get(r).entrySet().stream()
 						.filter((e) -> e.getValue() != null)
 						.map((e) -> e.getValue().toDual(e.getKey()))
 						.collect(Collectors.toSet());
@@ -210,7 +210,7 @@ public class SConfig
 					break;
 				}*/
 				Role peer = s.curr.getActions().iterator().next().peer;
-				ESend send = this.buffs.get(r).get(peer);
+				ESend send = this.queues.get(r).get(peer);
 				if (send != null)
 				{
 					ERecv recv = send.toDual(peer);
@@ -361,14 +361,14 @@ public class SConfig
 				return null;
 			}*/
 			/*Role peer = a.peer;
-			if (a.isReceive() && this.buffs.get(r).get(peer) == null)
+			if (a.isReceive() && this.queues.get(r).get(peer) == null)
 			{
 				//return peer;
 			}*/
 			if (a.isReceive())
 			{
 				Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
-				if (peers.stream().noneMatch((p) -> this.buffs.get(r).get(p) != null))
+				if (peers.stream().noneMatch((p) -> this.queues.get(r).get(p) != null))
 				{
 					return peers;
 				}
@@ -380,7 +380,7 @@ public class SConfig
 				boolean tmp = true;
 				for (Role p : peers)
 				{
-					if (this.buffs.get(r).get(p) != null)
+					if (this.queues.get(r).get(p) != null)
 					{
 						tmp = false;
 						break;
@@ -400,7 +400,7 @@ public class SConfig
 				List<EAction> all = s.curr.getActions();  // Should be singleton -- no: not any more
 				/*Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
 				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Connect(r))))  // cf. getTakeable
-									//if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
+									//if (peera.equals(c.toDual(r)) && this.queues.canConnect(r, c))
 				{
 					return rs;
 				}*/
@@ -461,7 +461,7 @@ public class SConfig
 			EFsm s = this.efsms.get(r);
 			if (s.curr.isTerminal())  // Local termination of r, i.e. not necessarily "full deadlock"
 			{
-				Set<ESend> orphs = this.buffs.get(r).values().stream().filter(v -> v != null).collect(Collectors.toSet());
+				Set<ESend> orphs = this.queues.get(r).values().stream().filter(v -> v != null).collect(Collectors.toSet());
 				if (!orphs.isEmpty())
 				{
 					Set<ESend> tmp = res.get(r);
@@ -480,9 +480,9 @@ public class SConfig
 					if (!rr.equals(r))
 					{
 						// Connection direction doesn't matter? -- wrong: matters because of async. disconnect
-						if (!this.buffs.isConnected(r, rr))
+						if (!this.queues.isConnected(r, rr))
 						{
-							ESend send = this.buffs.get(r).get(rr);
+							ESend send = this.queues.get(r).get(rr);
 							if (send != null)
 							{
 								Set<ESend> tmp = res.get(r);
@@ -557,8 +557,8 @@ public class SConfig
 			// Async
 			if (a.isSend() || a.isDisconnect())  // For disconnect, only one "a"
 			{
-				if ((a.isSend() && this.buffs.canSend(self, (ESend) a))
-					|| (a.isDisconnect() && this.buffs.canDisconnect(self, (EDisconnect) a)))
+				if ((a.isSend() && this.queues.canSend(self, (ESend) a))
+					|| (a.isDisconnect() && this.queues.canDisconnect(self, (EDisconnect) a)))
 				{
 					res.add(a);
 				}
@@ -566,8 +566,8 @@ public class SConfig
 			// Sync
 			else if (a.isRequest() || a.isClientWrap())
 			{
-				if ((a.isRequest() && this.buffs.canRequest(self, (EReq) a))
-					|| (a.isClientWrap() && this.buffs.canClientWrap(self, (EClientWrap) a)))  // Cf. isWaitingFor
+				if ((a.isRequest() && this.queues.canRequest(self, (EReq) a))
+					|| (a.isClientWrap() && this.queues.canClientWrap(self, (EClientWrap) a)))  // Cf. isWaitingFor
 				{
 					for (EAction peera : this.efsms.get(a.peer).curr.getActions())
 					{
@@ -590,7 +590,7 @@ public class SConfig
 	private List<EAction> getReceiveFireable(Role self, EFsm fsm)
 	{
 		return fsm.curr.getActions().stream().map(x -> (ERecv) x)
-				.filter(x -> this.buffs.canReceive(self, x))
+				.filter(x -> this.queues.canReceive(self, x))
 				.collect(Collectors.toList());
 	}
 
@@ -600,7 +600,7 @@ public class SConfig
 		Role peer = as.get(0).peer;  // All peer's the same
 		List<EAction> peeras = this.efsms.get(peer).curr.getActions();
 		return fsm.curr.getActions().stream().map(x -> (EAcc) x)
-				.filter(x -> this.buffs.canAccept(self, x)
+				.filter(x -> this.queues.canAccept(self, x)
 						&& peeras.stream().anyMatch(y -> y.toDual(self).equals(x)))
 				.collect(Collectors.toList());
 	}
@@ -612,7 +612,7 @@ public class SConfig
 		Role peer = as.get(0).peer;  // All peer's the same
 		List<EAction> peeras = this.efsms.get(peer).curr.getActions();
 		return fsm.curr.getActions().stream().map(x -> (EServerWrap) x)
-				.filter(x -> this.buffs.canServerWrap(self, x)
+				.filter(x -> this.queues.canServerWrap(self, x)
 						&& peeras.stream().anyMatch(y -> y.toDual(self).equals(x)))
 				.collect(Collectors.toList());
 	}
@@ -622,7 +622,7 @@ public class SConfig
 	{
 		int hash = 71;
 		hash = 31 * hash + this.efsms.hashCode();
-		hash = 31 * hash + this.buffs.hashCode();
+		hash = 31 * hash + this.queues.hashCode();
 		return hash;
 	}
 
@@ -638,12 +638,12 @@ public class SConfig
 			return false;
 		}
 		SConfig c = (SConfig) o;
-		return this.efsms.equals(c.efsms) && this.buffs.equals(c.buffs);
+		return this.efsms.equals(c.efsms) && this.queues.equals(c.queues);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "(" + this.efsms + ", " + this.buffs + ")";
+		return "(" + this.efsms + ", " + this.queues + ")";
 	}
 }

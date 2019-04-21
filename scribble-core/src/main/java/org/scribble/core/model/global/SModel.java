@@ -194,7 +194,7 @@ public class SModel
 				{
 					if (!foo.config.canSafelyTerminate(r))
 					{
-						if (s.config.buffs.get(r).values().stream()
+						if (s.config.queues.get(r).values().stream()
 								.allMatch((v) -> v == null))
 						{
 							starved.add(r);
@@ -221,12 +221,12 @@ public class SModel
 				.keySet();
 
 		Iterator<Integer> i = termset.iterator();
-		Map<Role, Map<Role, ESend>> b0 = states.get(i.next()).config.buffs
-				.getBuffers();
+		Map<Role, Map<Role, ESend>> b0 = states.get(i.next()).config.queues
+				.getQueues();
 		while (i.hasNext())
 		{
 			SState s = states.get(i.next());
-			SBuffers b = s.config.buffs;
+			SQueues b = s.config.queues;
 			for (Role r1 : roles)
 			{
 				for (Role r2 : roles)

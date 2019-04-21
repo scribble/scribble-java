@@ -49,7 +49,7 @@ public class SGraphBuilder
 	{
 		Map<Role, EFsm> efsms = egraphs.entrySet().stream()
 				.collect(Collectors.toMap(Entry::getKey, e -> e.getValue().toFsm()));
-		SBuffers b0 = new SBuffers(efsms.keySet(), !explicit);
+		SQueues b0 = new SQueues(efsms.keySet(), !explicit);
 		return this.core.config.mf.newSConfig(efsms, b0);
 	}
 	
