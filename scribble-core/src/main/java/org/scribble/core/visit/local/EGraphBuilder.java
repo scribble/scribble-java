@@ -60,7 +60,6 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	{
 		this.core = core;
 		this.util = core.config.mf.newEGraphBuilderUtil();
-		//this.util.init(null);
 	}
 	
 	public EGraph finalise()

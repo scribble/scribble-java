@@ -35,6 +35,7 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.ScribException;
 
+@Deprecated  // CHECKME: refactor to use this
 public class SGraphBuilderUtil
 		extends GraphBuilderUtil<Void, SAction, SState, Global>
 {

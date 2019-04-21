@@ -32,10 +32,11 @@ public class EGraph implements MPrettyPrint
 	{
 		return new EFsm(this);
 	}
-	
-	public String toPml(Role r)
+
+	@Override
+	public String toDot()
 	{
-		return this.init.toPml(r);
+		return this.init.toDot();
 	}
 
 	@Override
@@ -43,18 +44,23 @@ public class EGraph implements MPrettyPrint
 	{
 		return this.init.toAut();
 	}
+	
+	public String toPml(Role r)
+	{
+		return this.init.toPml(r);
+	}
 
 	@Override
-	public String toDot()
+	public String toString()
 	{
-		return this.init.toDot();
+		return this.init.toString();
 	}
 	
 	@Override
 	public final int hashCode()
 	{
 		int hash = 1051;
-		hash = 31 * hash + this.init.hashCode();  // FIXME: uses (init) state ID only -- although OK since state IDs globall unique
+		hash = 31 * hash + this.init.hashCode();  // Use init state only, OK since state IDs globally unique
 		return hash;
 	}
 
@@ -70,12 +76,7 @@ public class EGraph implements MPrettyPrint
 			return false;
 		}
 		EGraph them = (EGraph) o;
-		return this.init.equals(them.init);// && this.term.equals(them.term);  // N.B. EState.equals checks state ID only, but OK because EStates have globally unique IDs -- any need to do a proper graph equality?
-	}
-
-	@Override
-	public String toString()
-	{
-		return this.init.toString();
+		return this.init.equals(them.init);
+				// && this.term.equals(them.term);  // N.B. EState.equals checks state ID only, but OK because EStates have globally unique IDs -- any need to do a proper graph equality?
 	}
 }

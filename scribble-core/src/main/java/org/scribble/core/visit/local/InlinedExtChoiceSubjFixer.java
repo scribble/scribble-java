@@ -70,7 +70,7 @@ public class InlinedExtChoiceSubjFixer extends STypeVisitorNoThrow<Local, LSeq>
 
 class InlinedEnablerInferer
 		extends STypeAggNoThrow<Local, LSeq, Optional<Role>>
-		// Optional.empty signifies inference did not succeed, either outright bad (should be caught by WF somewhere) or an "empty" context
+		// Optional.empty signifies "inference" did not succeed, either an outright bad (should be caught by WF somewhere) or an "empty" context
 {
 	private Map<RecVar, Optional<Role>> recs;
 

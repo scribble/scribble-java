@@ -60,7 +60,7 @@ public class Core
 		this.config = newCoreConfig(mainFullname, args);
 		this.context = newCoreContext(//modcs, 
 				imeds);  // Single instance per Core and should never be shared
-		this.sgraphb = new SGraphBuilder(this.config.mf);//this.config.mf.newSGraphBuilderUtil();
+		this.sgraphb = new SGraphBuilder(this);//this.config.mf.newSGraphBuilderUtil();
 	}
 
 	// A Scribble extension should override newCoreConfig/Context/etc as appropriate

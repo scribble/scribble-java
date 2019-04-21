@@ -35,6 +35,7 @@ public class SGraph implements MPrettyPrint
 	public final SState init;
 	public Map<Integer, SState> states;
 
+	// CHECKME: reach only used for termsets?  find faster way for termsets? check local types? recursion?
 	private Map<Integer, Set<Integer>> reach; // State ID -> reachable states (not reflexive)
 	private Set<Set<Integer>> termSets;
 
