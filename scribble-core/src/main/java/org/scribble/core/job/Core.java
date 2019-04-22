@@ -317,7 +317,8 @@ public class Core
 									: dot));
 		}
 
-		verbosePrintPass("Checking " + (!fair ? "\"unfair\" " : "") + "global model: " + fullname);
+		verbosePrintPass("Checking " + (!fair ? "\"unfair\" " : "")
+				+ "global model: " + fullname);
 		this.config.mf.newSModel(graph).validate(this);
 	}
 

@@ -115,7 +115,7 @@ data <java> "..." from "..." as T;
 //*
 explicit global protocol Proto1(role A, role B, role C)
 {
-	connect A to B;
+	connect A to B;  // TODO: junit tests for explicit
 	rec X
 	{	
 		choice at A
@@ -132,6 +132,7 @@ explicit global protocol Proto1(role A, role B, role C)
 	}
 }
 //*/
+
 
 /*
 global protocol Proto1(role A, role B)

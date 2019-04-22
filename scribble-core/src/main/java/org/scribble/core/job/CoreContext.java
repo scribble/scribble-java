@@ -319,7 +319,7 @@ public class CoreContext
 	}
 
 	// TODO: relocate
-	// Duplicated from CommandLine.runDot -- TODO: update to use createTmpFile
+	// Duplicated from CommandLine.runDot -- TODO: update to use createTmpFile (cf. runDot)
 	// Minimises the FSM up to bisimulation
 	// N.B. ltsconvert will typically re-number the states
 	private static String runAut(String fsm, String aut) throws ScribException

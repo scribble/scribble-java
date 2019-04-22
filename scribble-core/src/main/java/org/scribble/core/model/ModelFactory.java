@@ -50,13 +50,6 @@ public interface ModelFactory
 	EGraphBuilderUtil newEGraphBuilderUtil();
 	SGraphBuilderUtil newSGraphBuilderUtil();
 
-	EState newEState(Set<RecVar> labs);
-
-	SState newSState(SConfig config);
-	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);
-	SConfig newSConfig(Map<Role, EFsm> state, SQueues buffs);
-	SModel newSModel(SGraph g);
-
 	ESend newESend(Role peer, MsgId<?> mid, Payload pay);
 	ERecv newERecv(Role peer, MsgId<?> mid, Payload pay);
 	EReq newEReq(Role peer, MsgId<?> mid, Payload pay);
@@ -64,6 +57,9 @@ public interface ModelFactory
 	EDisconnect newEDisconnect(Role peer);
 	EClientWrap newEClientWrap(Role peer);
 	EServerWrap newEServerWrap(Role peer);
+
+	EState newEState(Set<RecVar> labs);
+	//EFsm new EFsm(...)
 	
 	SSend newSSend(Role subj, Role obj, MsgId<?> mid, Payload pay);
 	SRecv newSRecv(Role subj, Role obj, MsgId<?> mid, Payload pay);
@@ -72,4 +68,9 @@ public interface ModelFactory
 	SDisconnect newSDisconnect(Role subj, Role obj);
 	SClientWrap newSClientWrap(Role subj, Role obj);
 	SServerWrap newSServerWrap(Role subj, Role obj);
+
+	SState newSState(SConfig config);
+	SConfig newSConfig(Map<Role, EFsm> state, SQueues buffs);
+	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);
+	SModel newSModel(SGraph g);
 }

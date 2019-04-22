@@ -220,8 +220,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 
 	
 	
-	// TODO FIXME: refactor following methods (e.g., make non-static?)
-
+	// TODO FIXME: refactor following methods (e.g., non-static?)
 	public static void validateBySpin(Core core, GProtoName fullname)
 			throws ScribException
 	{
