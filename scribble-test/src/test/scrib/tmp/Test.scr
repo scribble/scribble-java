@@ -112,10 +112,12 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
+/*
 global protocol Proto1(role A, role B)
 {
-	connect A to B;
+	connect A to B;  // Testing SGraph.getTraceFromInit, error in init state (empty trace)
 }
+//*/
 
 /*
 explicit global protocol Proto1(role A, role B, role C)
@@ -692,7 +694,7 @@ global protocol Proto1(role A, role B)
 
 
 
-/*
+//*
 type <dotnet> "System.UInt32" from "..." as int;
 
 global protocol SH(role P, role R, role C)

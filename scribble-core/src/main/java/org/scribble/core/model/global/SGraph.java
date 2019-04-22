@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble.core.model.MPrettyPrint;
 import org.scribble.core.model.global.actions.SAction;
@@ -36,7 +35,7 @@ public class SGraph implements MPrettyPrint
 	public final SState init;
 	public Map<Integer, SState> states;
 
-	private Set<Set<Integer>> termSets;
+	private Set<Set<SState>> termSets;
 
 	// Unlike EState, SGraph is not just a "simple wrapper" for an existing graph of nodes -- it is a computed structure, so no lightweight "toGraph" wrapper method; cf., EState
 	public SGraph(GProtoName proto, Map<Integer, SState> states, SState init)
@@ -48,7 +47,7 @@ public class SGraph implements MPrettyPrint
 		
 		// TODO: refactor
 		tarjan();
-		Set<Set<Integer>> termSets = new HashSet<>();
+		Set<Set<SState>> termSets = new HashSet<>();
 		for (Set<SState> scc : this.sscs)
 		{
 			if (scc.size() == 1 && scc.iterator().next().isTerminal() 
@@ -57,12 +56,13 @@ public class SGraph implements MPrettyPrint
 			{
 				continue;
 			}
-			termSets.add(scc.stream().map(x -> x.id).collect(Collectors.toSet()));
+			//termSets.add(scc.stream().map(x -> x.id).collect(Collectors.toSet()));
+			termSets.add(Collections.unmodifiableSet(scc));
 		}
 		this.termSets = Collections.unmodifiableSet(termSets);
 	}
 	
-	public Set<Set<Integer>> getTermSets()
+	public Set<Set<SState>> getTermSets()
 	{
 		return this.termSets;
 	}

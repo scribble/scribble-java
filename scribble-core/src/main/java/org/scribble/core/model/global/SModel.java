@@ -102,8 +102,8 @@ public class SModel
 	private String checkProgress(SState init, Map<Integer, SState> states,
 			String errorMsg) throws ScribException
 	{
-		Set<Set<Integer>> termsets = this.graph.getTermSets();
-		for (Set<Integer> termset : termsets)
+		Set<Set<SState>> termsets = this.graph.getTermSets();
+		for (Set<SState> termset : termsets)
 		{
 			/*job.debugPrintln("(" + this.graph.proto + ") Checking terminal set: "
 						+ termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(",")));  // Incompatible with current errorMsg approach*/
@@ -141,7 +141,7 @@ public class SModel
 
 	protected String appendProgressErrorMessages(String errorMsg,
 			Set<Role> starved, Map<Role, Set<ESend>> ignored, 
-			Map<Integer, SState> states, Set<Integer> termset)
+			Map<Integer, SState> states, Set<SState> termset)
 	{
 		if (!starved.isEmpty())
 		{
@@ -158,28 +158,28 @@ public class SModel
 		return errorMsg;
 	}
 	
-	protected String termSetToString(Set<Integer> termset,
+	protected String termSetToString(Set<SState> termset,
 			Map<Integer, SState> all)
 	{
 		return this.core.config.args.get(CoreArgs.VERBOSE)
-				? termset.stream().map(i -> all.get(i).toString())
+				? termset.stream().map(x -> x.toString())
 						.collect(Collectors.joining(","))
-				: termset.stream().map(i -> new Integer(all.get(i).id).toString())
+				: termset.stream().map(x -> Integer.toString(x.id))
 						.collect(Collectors.joining(","));
 	}
 
 	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but not a good approach)
 	protected static Set<Role> checkRoleProgress(Map<Integer, SState> states,
-			SState init, Set<Integer> termset) throws ScribException
+			SState init, Set<SState> termset) throws ScribException
 	{
 		Set<Role> starved = new HashSet<>();
-		Iterator<Integer> i = termset.iterator();
-		SState s = states.get(i.next());
+		Iterator<SState> i = termset.iterator();
+		SState s = i.next();//states.get(i.next());
 		Map<Role, SState> ss = new HashMap<>();
 		s.config.efsms.keySet().forEach(r -> ss.put(r, s));
 		while (i.hasNext())
 		{
-			SState next = states.get(i.next());
+			SState next = i.next();//states.get(i.next());
 			Map<Role, EFsm> tmp = next.config.efsms;
 			for (Role r : tmp.keySet())
 			{
@@ -233,18 +233,20 @@ public class SModel
 
 	// (eventual reception)
 	protected static Map<Role, Set<ESend>> checkEventualReception(
-			Map<Integer, SState> states, SState init, Set<Integer> termset)
+			Map<Integer, SState> states, SState init, Set<SState> termset)
 			throws ScribException
 	{
-		Set<Role> roles = states.get(termset.iterator().next()).config.efsms
-				.keySet();
+		Set<Role> roles = //states.get(termset.iterator().next())
+				termset.iterator().next()
+				.config.efsms.keySet();
 
-		Iterator<Integer> i = termset.iterator();
-		Map<Role, Map<Role, ESend>> b0 = states.get(i.next()).config.queues
+		Iterator<SState> i = termset.iterator();
+		Map<Role, Map<Role, ESend>> b0 = i.next()//states.get(i.next())
+				.config.queues
 				.getQueues();
 		while (i.hasNext())
 		{
-			SState s = states.get(i.next());
+			SState s = i.next();//states.get(i.next());
 			SQueues b = s.config.queues;
 			for (Role r1 : roles)
 			{
