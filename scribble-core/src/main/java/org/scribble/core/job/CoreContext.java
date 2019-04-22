@@ -25,6 +25,7 @@ import org.scribble.core.model.endpoint.AutGraphParser;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.global.SGraph;
+import org.scribble.core.model.global.SGraphBuilder;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.Role;
@@ -259,26 +260,18 @@ public class CoreContext
 		SGraph graph = this.fSGraphs.get(fullname);
 		if (graph == null)
 		{
-			/*GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
-					.getProtocolDeclChild(fullname.getSimpleName());*/
-			Map<Role, EGraph> egraphs = 
-					getEGraphsForSGraphBuilding(fullname, //gpd,
-							true);
-			boolean explicit = //gpd.isExplicit();
-					this.imeds.get(fullname).isExplicit();
-					//graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
-			graph = this.core.buildSGraph(fullname, egraphs, explicit);
+			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, true);
+			boolean explicit = this.imeds.get(fullname).isExplicit();
+			graph = new SGraphBuilder(this.core).build(fullname, egraphs, explicit);
 			addSGraph(fullname, graph);
 		}
 		return graph;
 	}
 
 	private Map<Role, EGraph> getEGraphsForSGraphBuilding(GProtoName fullname,
-			//GProtocolDecl gpd, 
 			boolean fair) throws ScribException
 	{
 		Map<Role, EGraph> egraphs = new HashMap<>();
-		//for (Role self : gpd.getHeaderChild().getRoleDeclListChild().getRoles())
 		for (Role self : this.imeds.get(fullname).roles)
 		{
 			egraphs.put(self, fair 
@@ -298,14 +291,9 @@ public class CoreContext
 		SGraph graph = this.uSGraphs.get(fullname);
 		if (graph == null)
 		{
-			/*GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
-					.getProtocolDeclChild(fullname.getSimpleName());*/
-			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, //gpd, 
-					false);
-			boolean explicit = //gpd.isExplicit();
-					this.imeds.get(fullname).isExplicit();
-			//graph = SGraph.buildSGraph(this.job, fullname, this.job.createInitialSConfig(job, egraphs, explicit));
-			graph = this.core.buildSGraph(fullname, egraphs, explicit);
+			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, false);
+			boolean explicit = this.imeds.get(fullname).isExplicit();
+			graph = new SGraphBuilder(this.core).build(fullname, egraphs, explicit);
 			addUnfairSGraph(fullname, graph);
 		}
 		return graph;
@@ -314,11 +302,6 @@ public class CoreContext
 	protected void addUnfairSGraph(GProtoName fullname, SGraph graph)
 	{
 		this.uSGraphs.put(fullname, graph);
-	}
-	
-	protected void addMinimisedEGraph(LProtoName fullname, EGraph graph)
-	{
-		this.mEGraphs.put(fullname, graph);
 	}
 	
 	public EGraph getMinimisedEGraph(GProtoName fullname, Role role)
@@ -338,13 +321,13 @@ public class CoreContext
 		return minimised;
 	}
 	
-	/*public ModuleContext getModuleContext(ModuleName fullname)
+	protected void addMinimisedEGraph(LProtoName fullname, EGraph graph)
 	{
-		return this.modcs.get(fullname);
-	}*/
+		this.mEGraphs.put(fullname, graph);
+	}
 
 	// TODO: relocate
-	// Duplicated from CommandLine.runDot
+	// Duplicated from CommandLine.runDot -- TODO: update to use createTmpFile
 	// Minimises the FSM up to bisimulation
 	// N.B. ltsconvert will typically re-number the states
 	private static String runAut(String fsm, String aut) throws ScribException

@@ -26,8 +26,6 @@ import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.ModelFactoryImpl;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.model.global.SGraph;
-import org.scribble.core.model.global.SGraphBuilder;
 import org.scribble.core.model.visit.local.NonDetPayChecker;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
@@ -51,9 +49,6 @@ public class Core
 	public final CoreConfig config;  // Immutable
 
 	private final CoreContext context;  // Mutable (Visitor passes replace modules)
-
-	//private final SGraphBuilderUtil sgraphb;  // FIXME: refactor?
-	private final SGraphBuilder sgraphb;  // FIXME: refactor?
 	
 	public Core(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
 			//Map<ModuleName, ModuleContext> modcs, 
@@ -62,7 +57,6 @@ public class Core
 		this.config = newCoreConfig(mainFullname, args);
 		this.context = newCoreContext(//modcs, 
 				imeds);  // Single instance per Core and should never be shared
-		this.sgraphb = new SGraphBuilder(this);//this.config.mf.newSGraphBuilderUtil();
 	}
 
 	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
@@ -300,18 +294,6 @@ public class Core
 				}
 			}
 		}
-	}
-	
-	public SGraph buildSGraph(GProtoName fullname, Map<Role, EGraph> egraphs,
-			boolean explicit) throws ScribException
-	{
-		/*verbosePrintln("(" + fullname + ") Building global model using:");
-		for (Role r : egraphs.keySet())
-		{
-			verbosePrintln("-- EFSM for "
-					+ r + ":\n" + egraphs.get(r).init.toDot());
-		}*/
-		return this.sgraphb.build(fullname, egraphs, explicit);  // CHECKME: factor out util -- ?
 	}
 
 	// Pre: checkWellFormedness 

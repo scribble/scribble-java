@@ -125,6 +125,9 @@ public class SGraphBuilder
 		this.core.verbosePrintln(
 				"(" + fullname + ") Built global model...\n" + graph.init.toDot() + "\n("
 						+ fullname + ") ..." + graph.states.size() + " states");
+		
+				// FIXME: refactor verbose print to Core
+		
 		return graph;
 	}
 }
