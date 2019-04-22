@@ -26,6 +26,7 @@ import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.ModelFactoryImpl;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.global.SGraph;
 import org.scribble.core.model.visit.local.NonDetPayChecker;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
@@ -248,6 +249,7 @@ public class Core
 
 	protected void runLocalModelCheckingPasses() throws ScribException
 	{
+		verbosePrintPass("Checking non-deterministic messaging action payloads...");
 		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
 			GProtocol inlined = this.context.getInlined(fullname);
@@ -265,7 +267,7 @@ public class Core
 
 	protected void runGlobalModelCheckingPasses() throws ScribException
 	{
-		verbosePrintPass("Building and checking models from projected inlineds...");  // CHECKME: separate and move model building earlier?
+		verbosePrintPass("Building and checking global models from projected inlineds...");  // CHECKME: separate and move model building earlier?
 		// CHECKME: refactor more/whole validation into lang.GProtocol ?
 		for (GProtoName fullname : this.context.getParsedFullnames())
 		{
@@ -273,7 +275,6 @@ public class Core
 			{
 				continue;
 			}
-			verbosePrintPass("Validating: " + fullname);
 			if (this.config.args.get(CoreArgs.SPIN))
 			{
 				if (this.config.args.get(CoreArgs.FAIR))
@@ -281,19 +282,30 @@ public class Core
 					throw new RuntimeException(
 							"[TODO]: -spin currently does not support fair ouput choices.");
 				}
+				verbosePrintPass("Validating by Spin: " + fullname);
 				GProtocol.validateBySpin(this, fullname);
 			}
 			else
 			{
-				GProtocol.validateByScribble(this, fullname, true);
+				verbosePrintPass("Validating by Scribble: " + fullname);
+				validateByScribble(fullname, true);
 				if (!this.config.args.get(CoreArgs.FAIR))
 				{
 					verbosePrintPass(
-							"Validating with \"unfair\" output choices: " + fullname);
-					GProtocol.validateByScribble(this, fullname, false);  // TODO: only need to check progress, not full validation
+							"Validating by Scribble with \"unfair\" output choices: " + fullname);
+					validateByScribble(fullname, false);  // TODO: only need to check progress, not full validation
 				}
 			}
 		}
+	}
+	
+	protected void validateByScribble(GProtoName fullname, boolean fair)
+			throws ScribException
+	{
+		SGraph graph = fair
+				? this.context.getSGraph(fullname)
+				: this.context.getUnfairSGraph(fullname);
+		this.config.mf.newSModel(graph).validate(this);
 	}
 
 	// Pre: checkWellFormedness 

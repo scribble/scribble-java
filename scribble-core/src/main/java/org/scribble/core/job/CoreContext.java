@@ -208,21 +208,6 @@ public class CoreContext
 		}
 		return graph;
 	}
-
-	public EGraph getEGraph(LProtoName fullname)
-	{
-		EGraph graph = this.fEGraphs.get(fullname);
-		if (graph == null)
-		{
-			/*Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
-			EGraphBuilder builder = new EGraphBuilder(this.job);  // Obtains an EGraphBuilderUtil from Job
-			proj.accept(builder);
-			graph = builder.util.finalise();
-			addEGraph(fulllpn, graph);*/
-			throw new RuntimeException("Shouldn't get in here: ");  // FIXME: restore previous pattern, construct on (first) get
-		}
-		return graph;
-	}
 	
 	protected void addEGraph(LProtoName fullname, EGraph graph)
 	{
@@ -237,13 +222,20 @@ public class CoreContext
 	}
 
 	// Pre: Core.runSyntacticWfPasses
+	// Pre: getEGraph(Global, Role) -- currently (CHECKME: revise ?)
 	public EGraph getUnfairEGraph(LProtoName fullname)
 	{
 		EGraph unfair = this.uEGraphs.get(fullname);
 		if (unfair == null)
 		{
-			Pair<EState, EState> p = getEGraph(fullname).init
-					.unfairTransform(this.core.config.mf);//.toGraph();
+			EGraph fair = this.fEGraphs.get(fullname);  // Getting fair EGraph directly by projected fullname (cf. getEGraph(GProtoName, Role))
+			if (fair == null)
+			{
+				throw new RuntimeException(
+						"Call getEGraph(Global, Role) before getUnfairEGraph: " + fullname);
+						// CHECKME: refactor ?
+			}
+			Pair<EState, EState> p = fair.init.unfairTransform(this.core.config.mf); //.toGraph();
 			unfair = new EGraph(p.left, p.right);
 			addUnfairEGraph(fullname, unfair);
 		}

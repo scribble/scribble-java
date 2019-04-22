@@ -221,17 +221,6 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	
 	
 	// TODO FIXME: refactor following methods (e.g., make non-static?)
-	
-	public static void validateByScribble(Core core, GProtoName fullname,
-			boolean fair) throws ScribException
-	{
-		CoreContext corec = core.getContext();
-		SGraph graph = (fair) 
-				? corec.getSGraph(fullname)
-				: corec.getUnfairSGraph(fullname);
-		//graph.toModel().validate(job);
-		core.config.mf.newSModel(graph).validate(core);
-	}
 
 	public static void validateBySpin(Core core, GProtoName fullname)
 			throws ScribException
