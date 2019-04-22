@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.job.Core;
-import org.scribble.core.job.CoreArgs;
 import org.scribble.core.model.endpoint.EFsm;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.actions.EAction;
@@ -66,7 +65,8 @@ public class SGraphBuilder
 		SState init = this.util.newState(c0);
 		Set<SState> todo = new LinkedHashSet<>();
 		todo.add(init);
-		for (int debugCount = 1; !todo.isEmpty(); ) // Compute configs and use util to construct graph, until no more new configs
+		for (//int debugCount = 1
+				; !todo.isEmpty(); ) // Compute configs and use util to construct graph, until no more new configs
 		{
 			Iterator<SState> i = todo.iterator();
 			SState curr = i.next();
