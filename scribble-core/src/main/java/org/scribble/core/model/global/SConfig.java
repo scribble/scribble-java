@@ -143,24 +143,28 @@ public class SConfig
 		{
 			for (EFsm succ2 : succs2)
 			{
-				Map<Role, EFsm> tmp1 = new HashMap<>(this.efsms);
-				tmp1.put(r1, succ1);
-				tmp1.put(r2, succ2);
-				SQueues tmp2;
-				if (((a1.isRequest() && a2.isAccept()) || (a1.isAccept() && a2.isRequest())))
+				Map<Role, EFsm> efsms = new HashMap<>(this.efsms);
+				// a1 and a2 are a "sync" pair, add all combinations of succ1 and succ2 that may arise
+				efsms.put(r1, succ1);  // Overwrite existing r1/r2 entries
+				efsms.put(r2, succ2);
+				SQueues queues;
+				// a1 and a2 definitely "sync", now just determine whether it is a connect or wrap
+				if (((a1.isRequest() && a2.isAccept())
+						|| (a1.isAccept() && a2.isRequest())))
 				{
-					tmp2 = this.queues.connect(r1, r2);
+					queues = this.queues.connect(r1, r2);
 				}
-				else if (((a1.isClientWrap() && a2.isServerWrap()) || (a1.isServerWrap() && a2.isClientWrap())))
+				else if (((a1.isClientWrap() && a2.isServerWrap())
+						|| (a1.isServerWrap() && a2.isClientWrap())))
 				{
 					// Doesn't affect queue state
-					tmp2 = this.queues;  // OK, immutable?
+					queues = this.queues;  // OK, immutable?
 				}
 				else
 				{
 					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
 				}
-				res.add(this.mf.newSConfig(tmp1, tmp2));
+				res.add(this.mf.newSConfig(efsms, queues));
 			}
 		}
 		return res;
