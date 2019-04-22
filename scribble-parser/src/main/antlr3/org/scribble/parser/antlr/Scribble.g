@@ -1,4 +1,7 @@
-/* > scribble-java
+/**
+ * N.B. in Eclipse do Package Explorer, right click -> Open With -> Java Editor at least once for .g file association and syntax highlighting to work properly
+ * 
+ *  > scribble-java
  * $ java -cp scribble-parser/lib/antlr-3.5.2-complete.jar org.antlr.Tool -o scribble-parser/target/generated-sources/antlr3 scribble-parser/src/main/antlr3/org/scribble/parser/antlr/Scribble.g
  * 
  * Cygwin/Windows
