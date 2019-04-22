@@ -17,15 +17,15 @@ import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class SConnect extends SAction
+public class SRequest extends SAction
 {
-	public SConnect(Role subj, Role obj, MsgId<?> mid, Payload pay)
+	public SRequest(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
 		super(subj, obj, mid, pay);
 	}
 	
 	@Override
-	public boolean isConnect()
+	public boolean isRequest()
 	{
 		return true;
 	}
@@ -45,7 +45,7 @@ public class SConnect extends SAction
 		{
 			return true;
 		}
-		if (!(o instanceof SConnect))
+		if (!(o instanceof SRequest))
 		{
 			return false;
 		}
@@ -55,7 +55,7 @@ public class SConnect extends SAction
 	@Override
 	public boolean canEquals(Object o)
 	{
-		return o instanceof SConnect;
+		return o instanceof SRequest;
 	}
 
 	@Override

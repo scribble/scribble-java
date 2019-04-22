@@ -71,6 +71,7 @@ public class EGraphBuilderUtil
 	}
 	
 	// N.B. called before every "new visit", including first (so util is reusable) -- called by constructor and finalise
+	@Override
 	protected void reset()  
 	{
 		//clear();
@@ -249,7 +250,8 @@ public class EGraphBuilderUtil
 	}
 
 	/*
-	 * Finalise graph by treating IntermediateContinueEdges
+	 * Finalise graph by treating IntermediateContinueEdges.
+	 * Calls reset() on completion.
 	 */
 	public EGraph finalise()
 	{

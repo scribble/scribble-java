@@ -24,10 +24,13 @@ public abstract class GraphBuilderUtil
 {
 	public final ModelFactory mf;  // N.B. new states should be made by this.newState, not this.ef.newEState
 	
+	// Doesn't call reset
 	protected GraphBuilderUtil(ModelFactory mf)
 	{
 		this.mf = mf;
 	}
+	
+	protected abstract void reset();
 	
 	//public abstract S newState(L labs);  // Doesn't factor out well with SState, doesn't use L and takes an SConfig
 	

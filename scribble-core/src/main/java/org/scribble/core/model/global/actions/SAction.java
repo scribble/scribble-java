@@ -23,6 +23,7 @@ import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
+// N.B. these are not exactly global type constructors -- they are "endpoint-oriented" like locals, but record both subj/obj roles (so more like locals with self)
 public abstract class SAction extends MAction<Global>
 {
 	public final Role subj;
@@ -33,12 +34,17 @@ public abstract class SAction extends MAction<Global>
 		this.subj = subj; 
 	}
 
-	public boolean isConnect()
+	public boolean isSend()
 	{
 		return false;
 	}
 
-	public boolean isDisconnect()
+	public boolean isReceive()
+	{
+		return false;
+	}
+
+	public boolean isRequest()
 	{
 		return false;
 	}
@@ -48,12 +54,17 @@ public abstract class SAction extends MAction<Global>
 		return false;
 	}
 
-	public boolean isSend()
+	public boolean isDisconnect()
 	{
 		return false;
 	}
 
-	public boolean isReceive()
+	public boolean isClientWrap()
+	{
+		return false;
+	}
+
+	public boolean isServerWrap()
 	{
 		return false;
 	}
@@ -71,7 +82,8 @@ public abstract class SAction extends MAction<Global>
 	@Override
 	public String toString()
 	{
-		return this.subj + getCommSymbol() + this.obj + ":" + this.mid + this.payload;
+		return this.subj + getCommSymbol() + this.obj + ":" + this.mid
+				+ this.payload;
 	}
 
 	@Override
@@ -95,7 +107,7 @@ public abstract class SAction extends MAction<Global>
 			return false;
 		}
 		SAction them = (SAction) o;
-		return super.equals(o)   // Does canEquals
+		return super.equals(o)   // Checks canEquals
 				&& this.subj.equals(them.subj);
 	}
 

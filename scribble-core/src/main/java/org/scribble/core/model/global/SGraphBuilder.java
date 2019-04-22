@@ -44,7 +44,7 @@ public class SGraphBuilder
 	}
 
 	// Do as an initial state rather than config?
-	protected SConfig createInitialSConfig(Map<Role, EGraph> egraphs,
+	protected SConfig createInitConfig(Map<Role, EGraph> egraphs,
 			boolean explicit)
 	{
 		Map<Role, EFsm> efsms = egraphs.entrySet().stream()
@@ -57,10 +57,12 @@ public class SGraphBuilder
 	// Also checks for non-deterministic payloads
 	// Maybe refactor into an SGraph builder util; cf., EGraphBuilderUtil -- but not Visitor-based building (cf. EndpointGraphBuilder), this isn't an AST algorithm
 	//public SGraph buildSGraph(Job job, GProtocolName fullname, SConfig c0) throws ScribbleException
-	public SGraph buildSGraph(GProtoName fullname,
-			Map<Role, EGraph> egraphs, boolean explicit) throws ScribException
+	public SGraph build(GProtoName fullname, Map<Role, EGraph> egraphs,
+			boolean explicit) throws ScribException
 	{
-		SConfig c0 = createInitialSConfig(egraphs, explicit);
+		this.util.reset();
+		
+		SConfig c0 = createInitConfig(egraphs, explicit);
 		SState init = this.util.newState(c0);
 		Set<SState> todo = new LinkedHashSet<>();
 		todo.add(init);

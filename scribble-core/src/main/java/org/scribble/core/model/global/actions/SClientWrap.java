@@ -26,7 +26,7 @@ public class SClientWrap extends SAction
 	}
 	
 	@Override
-	public boolean isConnect()
+	public boolean isClientWrap()
 	{
 		return true;
 	}

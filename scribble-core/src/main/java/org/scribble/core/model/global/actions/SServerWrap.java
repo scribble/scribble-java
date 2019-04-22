@@ -26,7 +26,7 @@ public class SServerWrap extends SAction
 	}
 	
 	@Override
-	public boolean isAccept()
+	public boolean isServerWrap()
 	{
 		return true;
 	}

@@ -25,7 +25,7 @@ public class SReq extends SAction
 	}
 	
 	@Override
-	public boolean isConnect()
+	public boolean isRequest()
 	{
 		return true;
 	}

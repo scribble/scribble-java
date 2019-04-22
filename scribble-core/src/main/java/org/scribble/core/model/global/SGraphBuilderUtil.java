@@ -33,6 +33,13 @@ public class SGraphBuilderUtil
 	public SGraphBuilderUtil(ModelFactory mf)
 	{
 		super(mf);
+		reset();
+	}
+	
+	@Override
+	protected void reset()
+	{
+		this.states.clear();
 	}
 	
 	public SState newState(SConfig c)
