@@ -34,7 +34,7 @@ public abstract class EAction extends MAction<Local>
 		this.mf = mf;
 	}
 	
-	// Self means "current" self
+	// "self" means self of "this" (self of dual is this.peer) 
 	public abstract EAction toDual(Role self);
 	public abstract SAction toGlobal(Role self);
 
