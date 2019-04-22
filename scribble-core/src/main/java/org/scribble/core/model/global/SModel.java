@@ -39,9 +39,13 @@ public class SModel
 	{
 		this.graph = graph;
 	}
+	
+	private Core core;  // FIXME
 
 	public void validate(Core core) throws ScribException
 	{
+		this.core = core;
+		
 		SState init = this.graph.init;
 		Map<Integer, SState> states = this.graph.states;
 
@@ -87,7 +91,7 @@ public class SModel
 				Set<Role> starved = checkRoleProgress(states, init, termset);
 				Map<Role, Set<ESend>> ignored = 
 						checkEventualReception(states, init, termset);
-				errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored, core,
+				errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored, 
 						states, termset);
 			}
 		}
@@ -123,31 +127,31 @@ public class SModel
 	}
 
 	protected String appendProgressErrorMessages(String errorMsg,
-			Set<Role> starved, Map<Role, Set<ESend>> ignored, Core core,
+			Set<Role> starved, Map<Role, Set<ESend>> ignored, 
 			Map<Integer, SState> states, Set<Integer> termset)
 	{
 		if (!starved.isEmpty())
 		{
 			errorMsg += "\nRole progress violation for " + starved
 					+ " in session state terminal set:\n    "
-					+ termSetToString(core, termset, states);
+					+ termSetToString(termset, states);
 		}
 		if (!ignored.isEmpty())
 		{
 			errorMsg += "\nEventual reception violation for " + ignored
 					+ " in session state terminal set:\n    "
-					+ termSetToString(core, termset, states);
+					+ termSetToString(termset, states);
 		}
 		return errorMsg;
 	}
 	
-	protected String termSetToString(Core core, Set<Integer> termset,
+	protected String termSetToString(Set<Integer> termset,
 			Map<Integer, SState> all)
 	{
-		return core.config.args.get(CoreArgs.VERBOSE)
-				? termset.stream().map((i) -> all.get(i).toString())
+		return this.core.config.args.get(CoreArgs.VERBOSE)
+				? termset.stream().map(i -> all.get(i).toString())
 						.collect(Collectors.joining(","))
-				: termset.stream().map((i) -> new Integer(all.get(i).id).toString())
+				: termset.stream().map(i -> new Integer(all.get(i).id).toString())
 						.collect(Collectors.joining(","));
 	}
 
@@ -265,11 +269,5 @@ public class SModel
 			}
 		}
 		return ignored;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return this.graph.toString();
 	}
 }

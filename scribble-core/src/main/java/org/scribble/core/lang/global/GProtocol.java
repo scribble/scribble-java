@@ -34,7 +34,6 @@ import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.model.global.SGraph;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
