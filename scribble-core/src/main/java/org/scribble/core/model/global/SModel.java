@@ -29,6 +29,8 @@ import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.ScribException;
 
+
+// For doing validation operations on an SGraph (cf. EFsm, use Graph as an FSM)
 public class SModel
 {
 	public final SGraph graph;

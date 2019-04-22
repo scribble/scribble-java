@@ -44,8 +44,6 @@ public class EFsm
 	}
 
 	// CHECKME: check if unfolded initial accept is possible, and if it breaks anything
-
-	// Following are a bunch of wrapper methods to curr
 	public boolean isInitial()
 	{
 		return this.curr.equals(this.graph.init);

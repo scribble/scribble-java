@@ -93,7 +93,8 @@ public class SGraphBuilder
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
 						List<SConfig> next = curr.config.async(r, a);
-						todo.addAll(this.util.getSuccs(curr, a.toGlobal(r), next));
+						Set<SState> succs = this.util.getSuccs(curr, a.toGlobal(r), next);  // util.getSuccs constructs the edges
+						todo.addAll(succs);
 					}
 					// Synchronous (client/server) actions
 					else if (a.isAccept() || a.isRequest() || a.isClientWrap()
@@ -109,7 +110,8 @@ public class SGraphBuilder
 									: abar.toGlobal(a.peer);
 									// CHECKME: edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label?)
 							List<SConfig> next = curr.config.sync(r, a, a.peer, abar);
-							todo.addAll(this.util.getSuccs(curr, aglobal, next));
+							Set<SState> succs = this.util.getSuccs(curr, aglobal, next);  // util.getSuccs constructs the edges
+							todo.addAll(succs);
 						}
 					}
 					else
