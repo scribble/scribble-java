@@ -159,7 +159,7 @@ public class Core
 				// Seems to be OK even if runSyntaxWfPasses does not succeed (cf. unfair transform)
 				EGraph graph = this.context.getEGraph(fullname, self);
 				verbosePrintPass(
-						"Built EFSM: " + inlined.fullname + ":\n" + graph.toDot());
+						"Built EFSM: " + inlined.fullname + "\n" + graph.toDot());
 			}
 		}
 				
@@ -282,18 +282,17 @@ public class Core
 					throw new RuntimeException(
 							"[TODO]: -spin currently does not support fair ouput choices.");
 				}
-				verbosePrintPass("Validating by Spin: " + fullname);
+				//verbosePrintPass("Validating by Spin: " + fullname);
 				GProtocol.validateBySpin(this, fullname);
 			}
 			else
 			{
-				verbosePrintPass("Validating by Scribble: " + fullname);
+				//verbosePrintPass("Validating by Scribble: " + fullname);
 				validateByScribble(fullname, true);
 				if (!this.config.args.get(CoreArgs.FAIR))
 				{
-					verbosePrintPass(
-							"Validating by Scribble with \"unfair\" output choices: " + fullname);
-					validateByScribble(fullname, false);  // TODO: only need to check progress, not full validation
+					//verbosePrintPass("Validating by Scribble with \"unfair\" output choices: " + fullname);
+					validateByScribble(fullname, false);  // TODO: only need to check progress, not "full" validation
 				}
 			}
 		}
@@ -305,6 +304,20 @@ public class Core
 		SGraph graph = fair
 				? this.context.getSGraph(fullname)
 				: this.context.getUnfairSGraph(fullname);
+		if (this.config.args.containsKey(CoreArgs.VERBOSE))
+		{
+			String dot = graph.init.toDot();
+			String[] lines = dot.split("\\R");
+			verbosePrintPass(
+					//"(" + fullname + ") Built global model...\n" + graph.init.toDot() + "\n(" + fullname + ") ..." + graph.states.size() + " states");
+					"Built " + (!fair ? "\"unfair\" " : "") + "global model ("
+							+ graph.states.size() + " states): " + fullname + "\n"
+							+ ((lines.length > 50)  // CHECKME: factor out constant?
+									? "...[snip]...  (model text over 50 lines, try -[u]model)"
+									: dot));
+		}
+
+		verbosePrintPass("Checking " + (!fair ? "\"unfair\" " : "") + "global model: " + fullname);
 		this.config.mf.newSModel(graph).validate(this);
 	}
 

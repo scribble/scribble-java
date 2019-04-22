@@ -122,14 +122,6 @@ public class SGraphBuilder
 			}
 		}
 
-		SGraph graph = this.core.config.mf.newSGraph(fullname,
-				this.util.getStates(), init);
-		this.core.verbosePrintln(
-				"(" + fullname + ") Built global model...\n" + graph.init.toDot() + "\n("
-						+ fullname + ") ..." + graph.states.size() + " states");
-		
-				// FIXME: refactor verbose print to Core
-		
-		return graph;
+		return this.core.config.mf.newSGraph(fullname, this.util.getStates(), init);
 	}
 }
