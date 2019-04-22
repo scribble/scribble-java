@@ -313,7 +313,7 @@ public class Core
 					"Built " + (!fair ? "\"unfair\" " : "") + "global model ("
 							+ graph.states.size() + " states): " + fullname + "\n"
 							+ ((lines.length > 50)  // CHECKME: factor out constant?
-									? "...[snip]...  (model text over 50 lines, try -[u]model)"
+									? "...[snip]...  (model text over 50 lines, try -[u]model[png])"
 									: dot));
 		}
 

@@ -51,6 +51,25 @@ public class SModel
 
 		String errorMsg = "";
 
+		errorMsg = checkSafety(core, init, states, errorMsg);
+		
+		if (!core.config.args.get(CoreArgs.NO_PROGRESS))
+		{
+			//job.debugPrintln("(" + this.graph.proto + ") Checking progress: ");  // Incompatible with current errorMsg approach*/
+			errorMsg = checkProgress(init, states, errorMsg);
+		}
+
+		if (!errorMsg.equals(""))
+		{
+			//throw new ScribbleException("\n" + init.toDot() + errorMsg);
+			throw new ScribException(errorMsg);
+		}
+		//job.debugPrintln("(" + this.graph.proto + ") Progress satisfied.");  // Also safety... current errorMsg approach
+	}
+
+	private String checkSafety(Core core, SState init,
+			Map<Integer, SState> states, String errorMsg)
+	{
 		int count = 0;
 		for (SState s : states.values())
 		{
@@ -68,7 +87,7 @@ public class SModel
 			if (!errors.isEmpty())
 			{
 				// FIXME: getTrace can get stuck when local choice subjects are disabled
-				List<SAction> trace = this.graph.getTrace(init, s);  // FIXME: getTrace broken on non-det self loops?
+				List<SAction> trace = this.graph.getTraceFromInit(s);  // FIXME: getTrace broken on non-det self loops?
 				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
 				errorMsg += "\nSafety violation(s) at session state " + s.id
 						+ ":\n    Trace=" + trace;
@@ -76,32 +95,26 @@ public class SModel
 			errorMsg = appendSafetyErrorMessages(errorMsg, errors);
 		}
 		core.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + count);  // May include unsafe states
-		//*/
-		
-		if (!core.config.args.get(CoreArgs.NO_PROGRESS))
+				// FIXME: progress still to be checked below
+		return errorMsg;
+	}
+
+	private String checkProgress(SState init, Map<Integer, SState> states,
+			String errorMsg) throws ScribException
+	{
+		Set<Set<Integer>> termsets = this.graph.getTermSets();
+		for (Set<Integer> termset : termsets)
 		{
-			//job.debugPrintln("(" + this.graph.proto + ") Checking progress: ");  // Incompatible with current errorMsg approach*/
+			/*job.debugPrintln("(" + this.graph.proto + ") Checking terminal set: "
+						+ termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(",")));  // Incompatible with current errorMsg approach*/
 
-			Set<Set<Integer>> termsets = this.graph.getTerminalSets();
-			for (Set<Integer> termset : termsets)
-			{
-				/*job.debugPrintln("(" + this.graph.proto + ") Checking terminal set: "
-							+ termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(",")));  // Incompatible with current errorMsg approach*/
-
-				Set<Role> starved = checkRoleProgress(states, init, termset);
-				Map<Role, Set<ESend>> ignored = 
-						checkEventualReception(states, init, termset);
-				errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored, 
-						states, termset);
-			}
+			Set<Role> starved = checkRoleProgress(states, init, termset);
+			Map<Role, Set<ESend>> ignored = 
+					checkEventualReception(states, init, termset);
+			errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored, 
+					states, termset);
 		}
-
-		if (!errorMsg.equals(""))
-		{
-			//throw new ScribbleException("\n" + init.toDot() + errorMsg);
-			throw new ScribException(errorMsg);
-		}
-		//job.debugPrintln("(" + this.graph.proto + ") Progress satisfied.");  // Also safety... current errorMsg approach
+		return errorMsg;
 	}
 
 	protected String appendSafetyErrorMessages(String errorMsg,

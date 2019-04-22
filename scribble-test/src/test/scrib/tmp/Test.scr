@@ -112,7 +112,12 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
-//*
+global protocol Proto1(role A, role B)
+{
+	connect A to B;
+}
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;  // TODO: junit tests for explicit
@@ -685,58 +690,6 @@ global protocol Proto1(role A, role B)
 
 
 
-/*
-global protocol SH2(role P, role R, role C)
-{
-	plane(x1:int, x2:int, x3:int, x4:int) from P to R;
-	do Loop2(P, R, C);
-}
-
-aux global protocol Loop2(role P, role R, role C)
-{
-	choice at P
-	{
-		Above(v1:int) from P to R;   
-		Res(b1:int) from R to P;
-		Above(v2:int) from P to R;   
-		Res(b2:int) from R to P;
-		choice at P
-		{
-			BothIn() from P to R;
-			BothIn(r1:int) from P to C;
-			do Loop2(P, R, C);
-		}
-		or
-		{
-			BothOut() from P to R;
-			BothOut() from P to C;
-			do Loop2(P, R, C);
-		}
-		or
-		{
-			Intersect() from P to R;
-			Res(i:int) from R to P;
-			choice at P
-			{
-				One(r2:int) from P to C;
-				do Loop2(P, R, C);
-			}
-			or
-			{
-				Two(r3:int, r4:int) from P to C;
-				do Loop2(P, R, C);
-			}
-		}
-	}
-	or
-	{
-		Close() from P to R;   
-		Close() from P to C;
-	}
-}
-//*/
-
-
 
 
 /*
@@ -792,6 +745,58 @@ aux global protocol Loop(role P, role R, role C)
 	}
 }
 //*/
+
+/*
+global protocol SH2(role P, role R, role C)
+{
+	plane(x1:int, x2:int, x3:int, x4:int) from P to R;
+	do Loop2(P, R, C);
+}
+
+aux global protocol Loop2(role P, role R, role C)
+{
+	choice at P
+	{
+		Above(v1:int) from P to R;   
+		Res(b1:int) from R to P;
+		Above(v2:int) from P to R;   
+		Res(b2:int) from R to P;
+		choice at P
+		{
+			BothIn() from P to R;
+			BothIn(r1:int) from P to C;
+			do Loop2(P, R, C);
+		}
+		or
+		{
+			BothOut() from P to R;
+			BothOut() from P to C;
+			do Loop2(P, R, C);
+		}
+		or
+		{
+			Intersect() from P to R;
+			Res(i:int) from R to P;
+			choice at P
+			{
+				One(r2:int) from P to C;
+				do Loop2(P, R, C);
+			}
+			or
+			{
+				Two(r3:int, r4:int) from P to C;
+				do Loop2(P, R, C);
+			}
+		}
+	}
+	or
+	{
+		Close() from P to R;   
+		Close() from P to C;
+	}
+}
+//*/
+
 
 
 

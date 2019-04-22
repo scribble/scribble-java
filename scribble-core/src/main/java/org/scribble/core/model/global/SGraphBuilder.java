@@ -66,22 +66,19 @@ public class SGraphBuilder
 		SState init = this.util.newState(c0);
 		Set<SState> todo = new LinkedHashSet<>();
 		todo.add(init);
-
-		// FIXME: factor out model building and integrate with getAllNodes (seen == all)
-		int debugCount = 1;
-		while (!todo.isEmpty())
+		for (int debugCount = 1; !todo.isEmpty(); ) // Compute configs and use util to construct graph, until no more new configs
 		{
 			Iterator<SState> i = todo.iterator();
 			SState curr = i.next();
 			i.remove();
-			if (this.core.config.args.get(CoreArgs.VERBOSE))
+			/*if (this.core.config.args.get(CoreArgs.VERBOSE))
 			{
 				if (debugCount++ % 50 == 0)
 				{
 					this.core.verbosePrintln(
 							"(" + fullname + ") Building global states: " + debugCount);
 				}
-			}
+			}*/
 
 			// Based on config semantics, not "static" graph edges (cf., super.getActions) -- used to build global model graph
 			Map<Role, List<EAction>> fireable = curr.config.getFireable();
