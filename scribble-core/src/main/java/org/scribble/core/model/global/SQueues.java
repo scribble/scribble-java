@@ -75,32 +75,31 @@ public class SQueues
 		return send != null && send.toDual(a.peer).equals(a);
 	}
 
-	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canAccept
+	// N.B. "sync" action but only considers the self side, i.e., to actually fire, must also explicitly check canAccept
 	public boolean canRequest(Role self, EReq c)
 	{
 		return !isConnected(self, c.peer);
 	}
 
-	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canAccept
+	// N.B. "sync" action but only considers the self side, i.e., to actually fire, must also explicitly check canRequest
 	public boolean canAccept(Role self, EAcc a)
 	{
 		return !isConnected(self, a.peer);
 	}
 
-	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check peer canDisconnect
 	public boolean canDisconnect(Role self, EDisconnect d)
 	{
 		return isConnected(self, d.peer);
 	}
 
-	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canServerWrap
+	// N.B. "sync" action but only considers the self side, i.e., to actually fire, must also explicitly check canServerWrap
 	// N.B. doesn't actually change any state
 	public boolean canClientWrap(Role self, EClientWrap cw)
 	{
 		return isConnected(self, cw.peer);
 	}
 
-	// N.B. only considers the self side, i.e., to actually fire (sync), must also explicitly check canClientWrap
+	// N.B. "sync" action but only considers the self side, i.e., to actually fire, must also explicitly check canClientWrap
 	// N.B. doesn't actually change queues state
 	public boolean canServerWrap(Role self, EServerWrap sw)
 	{
@@ -137,6 +136,7 @@ public class SQueues
 		return copy;
 	}
 
+	// N.B. direction sensitive (viz., after some disconnect)
 	public boolean isConnected(Role self, Role peer)
 	{
 		return this.connected.get(self).get(peer);

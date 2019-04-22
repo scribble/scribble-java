@@ -109,69 +109,45 @@ public class SConfig
 		return canSafelyTerminate;
 	}
 	
-	public List<SConfig> async(Role r, EAction a)
+	// Pre: getFireable().get(self).contains(a)
+	public List<SConfig> async(Role self, EAction a)
 	{
 		List<SConfig> res = new LinkedList<>();
-		
-		//List<EndpointState> succs = this.states.get(r).takeAll(a);
-		List<EFsm> succs = this.efsms.get(r).fireAll(a);
-		//for (EndpointState succ : succs)
+		List<EFsm> succs = this.efsms.get(self).getSuccs(a);
 		for (EFsm succ : succs)
 		{
-			//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
-			Map<Role, EFsm> tmp1 = new HashMap<>(this.efsms);
-			//Map<Role, Map<Role, Send>> tmp2 = new HashMap<>(this.queues);
-		
-			tmp1.put(r, succ);
-
-			/*Map<Role, Send> tmp3 = new HashMap<>(tmp2.get(a.peer));
-			tmp2.put(a.peer, tmp3);* /
-			Map<Role, Send> tmp3 = tmp2.get(a.peer);
-			if (a.isSend())
-			{
-				tmp3.put(r, (Send) a);
-			}
-			else
-			{
-				tmp3.put(r, null);
-			}*/
-			SQueues tmp2 = 
-					a.isSend()       ? this.queues.send(r, (ESend) a)
-				: a.isReceive()    ? this.queues.receive(r, (ERecv) a)
-				: a.isDisconnect() ? this.queues.disconnect(r, (EDisconnect) a)
+			Map<Role, EFsm> efsms = new HashMap<>(this.efsms);
+			efsms.put(self, succ);
+			SQueues queues = 
+				  a.isSend()       ? this.queues.send(self, (ESend) a)
+				: a.isReceive()    ? this.queues.receive(self, (ERecv) a)
+				: a.isDisconnect() ? this.queues.disconnect(self, (EDisconnect) a)
 				: null;
-			if (tmp2 == null)
+			if (queues == null)
 			{
 				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
-			res.add(this.mf.newSConfig(tmp1, tmp2));
+			res.add(this.mf.newSConfig(efsms, queues));
 		}
-
 		return res;
 	}
 
 	// "Synchronous version" of fire
+	// Pre: getFireable().get(r1).contains(a1) && getFireable().get(r2).contains(a2), where a1 and a2 are a "sync" pair
 	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
 	{
 		List<SConfig> res = new LinkedList<>();
-		
-		/*List<EndpointState> succs1 = this.states.get(r1).takeAll(a1);
-		List<EndpointState> succs2 = this.states.get(r2).takeAll(a2);
-		for (EndpointState succ1 : succs1)*/
-		List<EFsm> succs1 = this.efsms.get(r1).fireAll(a1);
-		List<EFsm> succs2 = this.efsms.get(r2).fireAll(a2);
+		List<EFsm> succs1 = this.efsms.get(r1).getSuccs(a1);
+		List<EFsm> succs2 = this.efsms.get(r2).getSuccs(a2);
 		for (EFsm succ1 : succs1)
 		{
-			//for (EndpointState succ2 : succs2)
 			for (EFsm succ2 : succs2)
 			{
-				//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
 				Map<Role, EFsm> tmp1 = new HashMap<>(this.efsms);
 				tmp1.put(r1, succ1);
 				tmp1.put(r2, succ2);
 				SQueues tmp2;
 				if (((a1.isRequest() && a2.isAccept()) || (a1.isAccept() && a2.isRequest())))
-						//&& this.queues.canConnect(r1, r2))
 				{
 					tmp2 = this.queues.connect(r1, r2);
 				}
@@ -187,7 +163,6 @@ public class SConfig
 				res.add(this.mf.newSConfig(tmp1, tmp2));
 			}
 		}
-
 		return res;
 	}
 
@@ -602,7 +577,7 @@ public class SConfig
 		List<EAction> peeras = this.efsms.get(peer).curr.getActions();
 		return fsm.curr.getActions().stream().map(x -> (EAcc) x)
 				.filter(x -> this.queues.canAccept(self, x)
-						&& peeras.stream().anyMatch(y -> y.toDual(self).equals(x)))
+						&& peeras.stream().anyMatch(y -> y.toDual(peer).equals(x)))
 				.collect(Collectors.toList());
 	}
 
@@ -614,7 +589,7 @@ public class SConfig
 		List<EAction> peeras = this.efsms.get(peer).curr.getActions();
 		return fsm.curr.getActions().stream().map(x -> (EServerWrap) x)
 				.filter(x -> this.queues.canServerWrap(self, x)
-						&& peeras.stream().anyMatch(y -> y.toDual(self).equals(x)))
+						&& peeras.stream().anyMatch(y -> y.toDual(peer).equals(x)))
 				.collect(Collectors.toList());
 	}
 

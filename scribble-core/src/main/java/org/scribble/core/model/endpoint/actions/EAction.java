@@ -34,6 +34,7 @@ public abstract class EAction extends MAction<Local>
 		this.mf = mf;
 	}
 	
+	// Self means "current" self
 	public abstract EAction toDual(Role self);
 	public abstract SAction toGlobal(Role self);
 

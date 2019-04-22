@@ -36,8 +36,8 @@ public class EFsm
 	}
 
 	// CHECKME: Set? List is for non-det actions, but is that relevant to EFsm's?
-	// Pre: this.curr.getAllFireable().contains(a) ?
-	public List<EFsm> fireAll(EAction a)
+	// N.B. this just means "follow an edge", it is agnostic to an "actual semantics" (e.g., queues, queue sizes, etc.), cf. "fire"
+	public List<EFsm> getSuccs(EAction a)
 	{
 		return this.curr.getSuccs(a).stream().map(x -> new EFsm(this.graph, x))
 				.collect(Collectors.toList());
