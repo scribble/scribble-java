@@ -13,6 +13,7 @@
  */
 package org.scribble.core.model.global;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -88,7 +89,7 @@ public class SGraphBuilder
 					// Asynchronous (input/output) actions
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
-						List<SConfig> next = curr.config.async(r, a);
+						Set<SConfig> next = new HashSet<>(curr.config.async(r, a));
 						Set<SState> succs = this.util.getSuccs(curr, a.toGlobal(r), next);  // util.getSuccs constructs the edges
 						todo.addAll(succs);
 					}
@@ -105,7 +106,7 @@ public class SGraphBuilder
 									? a.toGlobal(r)
 									: abar.toGlobal(a.peer);
 									// CHECKME: edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label?)
-							List<SConfig> next = curr.config.sync(r, a, a.peer, abar);
+							Set<SConfig> next = new HashSet<>(curr.config.sync(r, a, a.peer, abar));
 							Set<SState> succs = this.util.getSuccs(curr, aglobal, next);  // util.getSuccs constructs the edges
 							todo.addAll(succs);
 						}

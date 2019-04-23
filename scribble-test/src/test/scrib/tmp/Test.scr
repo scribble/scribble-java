@@ -112,6 +112,21 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
+global protocol Proto1(role A, role B)
+{
+	choice at A  // FIXME: smodel too many edges
+	{
+		1() from A to B;
+		//2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		//3() from B to A;
+	}
+}
+
+
 /*
 global protocol Proto1(role A, role B)
 {
@@ -119,7 +134,8 @@ global protocol Proto1(role A, role B)
 }
 //*/
 
-//*
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;  // TODO: junit tests for explicit

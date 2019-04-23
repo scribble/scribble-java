@@ -107,6 +107,7 @@ public class SConfig
 	}
 	
 	// Pre: getFireable().get(self).contains(a)
+  // Here, produce a (non-det) List (CHECKME: shouldn't?) -- but actual global model building (SGraphBuilderUtil.getSuccs) will collapse identical configs
 	public List<SConfig> async(Role self, EAction a)
 	{
 		List<SConfig> res = new LinkedList<>();
@@ -220,51 +221,25 @@ public class SConfig
 	}
 	
 	// Return: null if no chain
-	// Includes dependencies from input-blocking, termination and connect-blocking  // CHECKME: should also include connect?
+	// Includes connect dependencies -- and includes when peer is terminated (CHECKME: no, and shouldn't?)
 	// N.B. if this.states.get(init).isTerminal() then orig is returned as "singleton deadlock" -- CHECKME
 	public Set<Role> isWaitForChain(Role init)
 	{
-		Set<Role> candidate = new LinkedHashSet<>();
+		Set<Role> chain = new LinkedHashSet<>();  // CHECKME: rename chain ?
 		Set<Role> todo = new LinkedHashSet<>(Arrays.asList(init));
 		while (!todo.isEmpty())
 		{
 			Role r = todo.iterator().next();
 			todo.remove(r);
-			candidate.add(r);
-			
-			EFsm s = this.efsms.get(r);
-			if (s.curr.getStateKind() == EStateKind.OUTPUT && !s.curr.isSyncClientOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
-			{
-				// FIXME: move into isWaitingFor
-				return null;
-			}
-			if (s.curr.isTerminal())
-			{
-				if (todo.isEmpty())
-				{
-					return candidate;
-				}
-				continue;
-			}
-			Set<Role> blocked = isWaitingFor(r);
-			if (blocked == null)
+			chain.add(r);
+			Set<Role> waitingFor = isWaitingFor(r);
+			if (waitingFor == null)  // "r" is not necessarily waiting for anyone
 			{
 				return null;
 			}
-			if (todo.isEmpty() && candidate.containsAll(blocked))
-			{
-				return candidate;
-			}
-			blocked.forEach((x) ->
-			{
-				if (!candidate.contains(x))
-				{
-					//candidate.add(x);
-					todo.add(x);
-				}
-			});
+			waitingFor.stream().filter(x -> !chain.contains(x)).forEach(x -> todo.add(x));  // todo is a Set, so re-add existing doesn't matter
 		}
-		return null;
+		return chain;
 	}
 	
 	// Return: set of roles that "r" *must* wait for one of them in order to proceed;.. 

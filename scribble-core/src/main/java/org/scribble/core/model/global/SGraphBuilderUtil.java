@@ -15,7 +15,6 @@ package org.scribble.core.model.global;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,7 +49,9 @@ public class SGraphBuilderUtil
 	}
 
 	// Pre: this.states.containsKey(curr.config)
-	public Set<SState> getSuccs(SState curr, SAction a, List<SConfig> succs)
+	public Set<SState> getSuccs(SState curr, SAction a, //List<SConfig> succs)
+			Set<SConfig> succs)
+			// SConfig.a/sync currently produces a List, but here collapse identical configs for global model (represent non-det "by edges", not "by model states")
 	{
 		Set<SState> res = new LinkedHashSet<>();  // Takes care of duplicates (o/w should also do "|| res.containsKey(c)" below) 
 		for (SConfig c : succs)
