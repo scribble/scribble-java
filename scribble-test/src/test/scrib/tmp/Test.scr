@@ -101,6 +101,7 @@ module tmp.Test;
 	// also do-arg pruning, for role-pruned projection decls
 	// choice-specific fairness annotations
 	// fix codegen when -fair
+	// CHECKME: accept branching on messages (and safety properties)
 
 // parser/ast refactoring
 	// check G/LType casts vs. SType<Global/Local, ...> (favour latter)
@@ -110,6 +111,29 @@ module tmp.Test;
 
 
 data <java> "..." from "..." as T;
+
+
+//*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X
+	{
+		5() from C to D;
+		continue X;
+	}
+
+	choice at A
+	{
+		1() from A to B;
+		2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to A;  // Testing wait-for cycle detection
+	}
+}
+//*/
 
 
 /*

@@ -55,18 +55,9 @@ public class SConfig
 	}
 
 	// FIXME: rename: not just termination, could be unconnected/uninitiated
-	//public boolean isEnd()
 	public boolean isSafeTermination()
 	{
-		//return this.states.values().stream().allMatch((s) -> s.isTerminal()) && this.queues.isEmpty();
-		for (Role r : this.efsms.keySet())
-		{
-			if (!canSafelyTerminate(r))
-			{
-				return false;
-			}
-		}
-		return true;
+		return this.efsms.keySet().stream().allMatch(x -> canSafelyTerminate(x));
 	}
 
 	// Should work both with and without accept-correlation?
@@ -105,73 +96,8 @@ public class SConfig
 			;
 		return canSafelyTerminate;
 	}
-	
-	// Pre: getFireable().get(self).contains(a)
-  // Here, produce a List that distinguishes non-det to identical configs -- CHECKME: shouldn't? (Set would be sufficient for non-det to different configs) 
-	// (Actual global model building (e.g., SGraphBuilderUtil.getSuccs) will collapse identical configs)
-	public List<SConfig> async(Role self, EAction a)
-	{
-		List<SConfig> res = new LinkedList<>();
-		List<EFsm> succs = this.efsms.get(self).getSuccs(a);
-		for (EFsm succ : succs)
-		{
-			Map<Role, EFsm> efsms = new HashMap<>(this.efsms);
-			efsms.put(self, succ);
-			SingleBuffers queues =  // N.B. queue updates are insensitive to non-det "a"
-				  a.isSend()       ? this.queues.send(self, (ESend) a)
-				: a.isReceive()    ? this.queues.receive(self, (ERecv) a)
-				: a.isDisconnect() ? this.queues.disconnect(self, (EDisconnect) a)
-				: null;
-			if (queues == null)
-			{
-				throw new RuntimeException("Shouldn't get in here: " + a);
-			}
-			res.add(this.mf.newSConfig(efsms, queues));
-		}
-		return res;
-	}
 
-	// "Synchronous version" of fire
-	// Pre: getFireable().get(r1).contains(a1) && getFireable().get(r2).contains(a2), where a1 and a2 are a "sync" pair
-  // Here, produce a List that distinguishes non-det to identical configs -- CHECKME: shouldn't? (Set would be sufficient for non-det to different configs) 
-	// (Actual global model building (e.g., SGraphBuilderUtil.getSuccs) will collapse identical configs)
-	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
-	{
-		List<SConfig> res = new LinkedList<>();
-		List<EFsm> succs1 = this.efsms.get(r1).getSuccs(a1);
-		List<EFsm> succs2 = this.efsms.get(r2).getSuccs(a2);
-		for (EFsm succ1 : succs1)
-		{
-			for (EFsm succ2 : succs2)
-			{
-				Map<Role, EFsm> efsms = new HashMap<>(this.efsms);
-				// a1 and a2 are a "sync" pair, add all combinations of succ1 and succ2 that may arise
-				efsms.put(r1, succ1);  // Overwrite existing r1/r2 entries
-				efsms.put(r2, succ2);
-				SingleBuffers queues;
-				// a1 and a2 definitely "sync", now just determine whether it is a connect or wrap
-				if (((a1.isRequest() && a2.isAccept())
-						|| (a1.isAccept() && a2.isRequest())))
-				{
-					queues = this.queues.connect(r1, r2);  // N.B. queue updates are insensitive to non-det "a"
-				}
-				else if (((a1.isClientWrap() && a2.isServerWrap())
-						|| (a1.isServerWrap() && a2.isClientWrap())))
-				{
-					// Doesn't affect queue state
-					queues = this.queues;  // OK, immutable?
-				}
-				else
-				{
-					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
-				}
-				res.add(this.mf.newSConfig(efsms, queues));
-			}
-		}
-		return res;
-	}
-
-	// Deadlock from non handle-able messages (reception errors)
+	// Stuck due to non-consumable messages (reception errors)
 	public Map<Role, ERecv> getStuckMessages()
 	{
 		Map<Role, ERecv> res = new HashMap<>();
@@ -207,52 +133,54 @@ public class SConfig
 	{
 		Set<Set<Role>> res = new HashSet<>();
 		List<Role> todo = new LinkedList<>(this.efsms.keySet());
-		while (!todo.isEmpty())  // CHECKME: maybe better to do directly on states, rather than via roles
+		while (!todo.isEmpty())  // CHECKME: maybe better to do directly on states, rather than via roles -- ?
 		{
 			Role r = todo.remove(0);
-			if (!this.efsms.get(r).curr.isTerminal())
+			if (this.efsms.get(r).curr.isTerminal())
 			{
-				Set<Role> cycle = isWaitForChain(r);
-				if (cycle != null)
-				{
-					todo.removeAll(cycle);
-					res.add(cycle);
-				}
+				continue;
+			}
+			Set<Role> cycle = isWaitForCycle(r);
+			if (cycle != null)
+			{
+				res.add(cycle);
+				todo.removeAll(cycle);
 			}
 		}
 		return res;
 	}
 	
-	// Return: null if no chain
-	// Includes connect dependencies -- and includes when peer is terminated (CHECKME: no, and shouldn't?)
+	// Return: null if no cycle -- terminated peer means no cycle (cf. getUnfinishedRoles)
+	// Includes connect dependencies
 	// N.B. if this.states.get(init).isTerminal() then orig is returned as "singleton deadlock" -- CHECKME
-	public Set<Role> isWaitForChain(Role init)
+	protected Set<Role> isWaitForCycle(Role init)
 	{
-		Set<Role> chain = new LinkedHashSet<>();  // CHECKME: rename chain ?
+		Set<Role> cycle = new LinkedHashSet<>();
 		Set<Role> todo = new LinkedHashSet<>(Arrays.asList(init));
 		while (!todo.isEmpty())
 		{
 			Role r = todo.iterator().next();
 			todo.remove(r);
-			chain.add(r);
-			Set<Role> waitingFor = isWaitingFor(r);
-			if (waitingFor == null)  // "r" is not necessarily waiting for anyone
+			cycle.add(r);
+			Set<Role> waitingFor = getWaitingFor(r);
+			if (waitingFor == null)  // "r" is not necessarily waiting for anyone, so report no cycle
 			{
 				return null;
 			}
-			waitingFor.stream().filter(x -> !chain.contains(x)).forEach(x -> todo.add(x));  // todo is a Set, so re-add existing doesn't matter
+			waitingFor.stream().filter(x -> !cycle.contains(x))  // Only more than one when client-sync cases
+					.forEach(x -> todo.add(x));  // todo is a Set, so re-add existing doesn't matter
 		}
-		return chain;
+		return cycle;
 	}
 	
 	// Return: set of roles that "r" *must* wait for one of them in order to proceed;.. 
 	// ..or null if "r" is not *necessarily* blocked waiting for *another role*
 	// Wait-for blocking includes sync-client (request, clientWrap) roles
-	private Set<Role> isWaitingFor(Role r)
+	protected Set<Role> getWaitingFor(Role r)
 	{
 		EFsm fsm = this.efsms.get(r);
 		EStateKind k = fsm.curr.getStateKind();
-		if (k != EStateKind.TERMINAL) 
+		if (k == EStateKind.TERMINAL) 
 		{
 			return null;
 		}
@@ -369,6 +297,71 @@ public class SConfig
 		}
 		return res;
 	}
+	
+	// Pre: getFireable().get(self).contains(a)
+  // Here, produce a List that distinguishes non-det to identical configs -- CHECKME: shouldn't? (Set would be sufficient for non-det to different configs) 
+	// (Actual global model building (e.g., SGraphBuilderUtil.getSuccs) will collapse identical configs)
+	public List<SConfig> async(Role self, EAction a)
+	{
+		List<SConfig> res = new LinkedList<>();
+		List<EFsm> succs = this.efsms.get(self).getSuccs(a);
+		for (EFsm succ : succs)
+		{
+			Map<Role, EFsm> efsms = new HashMap<>(this.efsms);
+			efsms.put(self, succ);
+			SingleBuffers queues =  // N.B. queue updates are insensitive to non-det "a"
+				  a.isSend()       ? this.queues.send(self, (ESend) a)
+				: a.isReceive()    ? this.queues.receive(self, (ERecv) a)
+				: a.isDisconnect() ? this.queues.disconnect(self, (EDisconnect) a)
+				: null;
+			if (queues == null)
+			{
+				throw new RuntimeException("Shouldn't get in here: " + a);
+			}
+			res.add(this.mf.newSConfig(efsms, queues));
+		}
+		return res;
+	}
+
+	// "Synchronous version" of fire
+	// Pre: getFireable().get(r1).contains(a1) && getFireable().get(r2).contains(a2), where a1 and a2 are a "sync" pair
+  // Here, produce a List that distinguishes non-det to identical configs -- CHECKME: shouldn't? (Set would be sufficient for non-det to different configs) 
+	// (Actual global model building (e.g., SGraphBuilderUtil.getSuccs) will collapse identical configs)
+	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
+	{
+		List<SConfig> res = new LinkedList<>();
+		List<EFsm> succs1 = this.efsms.get(r1).getSuccs(a1);
+		List<EFsm> succs2 = this.efsms.get(r2).getSuccs(a2);
+		for (EFsm succ1 : succs1)
+		{
+			for (EFsm succ2 : succs2)
+			{
+				Map<Role, EFsm> efsms = new HashMap<>(this.efsms);
+				// a1 and a2 are a "sync" pair, add all combinations of succ1 and succ2 that may arise
+				efsms.put(r1, succ1);  // Overwrite existing r1/r2 entries
+				efsms.put(r2, succ2);
+				SingleBuffers queues;
+				// a1 and a2 definitely "sync", now just determine whether it is a connect or wrap
+				if (((a1.isRequest() && a2.isAccept())
+						|| (a1.isAccept() && a2.isRequest())))
+				{
+					queues = this.queues.connect(r1, r2);  // N.B. queue updates are insensitive to non-det "a"
+				}
+				else if (((a1.isClientWrap() && a2.isServerWrap())
+						|| (a1.isServerWrap() && a2.isClientWrap())))
+				{
+					// Doesn't affect queue state
+					queues = this.queues;  // OK, immutable?
+				}
+				else
+				{
+					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
+				}
+				res.add(this.mf.newSConfig(efsms, queues));
+			}
+		}
+		return res;
+	}
 
 	// N.B. Set<EAction> (not List<EAction), at global level only need to know the set of possible actions...
 	// ...non-det (i.e., multiple possible outcomes from firing one action) handled by return of async/sync
@@ -404,7 +397,7 @@ public class SConfig
 	// Pre: fsm.curr.getStateKind() == EStateKind.OUTPUT
 	// fsm is self's Efsm
 	// (N.B. return Set, not List -- see getFireable)
-	private Set<EAction> getOutputFireable(Role self, EFsm fsm)  // "output" and "client" actions
+	protected Set<EAction> getOutputFireable(Role self, EFsm fsm)  // "output" and "client" actions
 	{
 		Set<EAction> res = new LinkedHashSet<>();
 		for (EAction a : fsm.curr.getActions())  // Actions may be a mixture of the following cases
@@ -444,7 +437,7 @@ public class SConfig
 	// Pre: fsm.curr.getStateKind() == EStateKind.UNARY_RECEIVE or POLY_RECIEVE
 	// Unary or poly receive
 	// (N.B. return Set, not List -- see getFireable)
-	private Set<ERecv> getReceiveFireable(Role self, EFsm fsm)
+	protected Set<ERecv> getReceiveFireable(Role self, EFsm fsm)
 	{
 		return fsm.curr.getActions().stream().map(x -> (ERecv) x)
 				.filter(x -> this.queues.canReceive(self, x))
@@ -453,7 +446,7 @@ public class SConfig
 
 	// Pre: fsm.curr.getStateKind() == EStateKind.ACCEPT
 	// (N.B. return Set, not List -- see getFireable)
-	private Set<EAcc> getAcceptFireable(Role self, EFsm fsm)
+	protected Set<EAcc> getAcceptFireable(Role self, EFsm fsm)
 	{
 		List<EAction> as = fsm.curr.getActions();
 		Role peer = as.get(0).peer;  // All peer's the same
@@ -467,7 +460,7 @@ public class SConfig
 	// Pre: fsm.curr.getStateKind() == EStateKind.SERVER_WRAP
 	// (N.B. return Set, not List -- see getFireable)
 	// Duplicated from getAcceptFireable
-	private Set<EServerWrap> getServerWrapFireable(Role self, EFsm fsm)
+	protected Set<EServerWrap> getServerWrapFireable(Role self, EFsm fsm)
 	{
 		List<EAction> as = fsm.curr.getActions();  // Actually for ServerWrap, size() == 1
 		Role peer = as.get(0).peer;  // All peer's the same
