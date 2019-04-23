@@ -21,6 +21,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -52,49 +53,6 @@ public class SConfig
 		this.mf = mf;
 		this.efsms = Collections.unmodifiableMap(state);
 		this.queues = queues;
-	}
-
-	// FIXME: rename: not just termination, could be unconnected/uninitiated
-	public boolean isSafeTermination()
-	{
-		return this.efsms.keySet().stream().allMatch(x -> canSafelyTerminate(x));
-	}
-
-	// Should work both with and without accept-correlation?
-	public boolean canSafelyTerminate(Role r)
-	{
-		//EndpointState s = this.states.get(r);
-		EFsm s = this.efsms.get(r);
-		//return
-		/*boolean cannotSafelyTerminate =  // FIXME: check and cleanup
-				(s.isTerminal() && !this.queues.isEmpty(r))
-					||
-					(!s.isTerminal() &&
-						//(!(s.getStateKind().equals(Kind.UNARYINPUT) && s.getTakeable().iterator().next().isAccept())  // Accept state now distinguished
-						(
-							!(s.getStateKind().equals(Kind.ACCEPT) && s.isInitial())  // FIXME: check stable
-								// FIXME: needs initial state check -- although if there is an accept, there should a connect, and waitfor-errors checked via connects) -- this should be OK because connect/accept are sync -- but not fully sufficient by itself, see next
-								// So could be blocked on unary accept part way through the protocol -- but also could be unfolded initial accept
-							////|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.queues.isConnected(r, rr))))
-							//&& this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.queues.isConnected(r, rr))
-									// FIXME: isConnected is not symmetric, and could disconnect all part way through protocol -- but can't happen?
-							// Above assumes initial is not terminal (holds for EFSMs), and doesn't check queueer is empty (i.e. for orphan messages)
-						)
-					)
-					||
-					(!s.isTerminal() && this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.queues.isConnected(r, rr)))
-					;*/
-		//return !cannotSafelyTerminate;
-		boolean canSafelyTerminate =
-				(s.curr.isTerminal() && this.queues.isEmpty(r))
-						|| (s.curr.getStateKind().equals(EStateKind.ACCEPT)
-								&& s.isInitial())
-					// FIXME: should be empty queues
-				
-				// FIXME: incorrectly allows stuck accepts?  if inactive not initial, should be clone of initial?
-			//|| (s.getStateKind().equals(Kind.ACCEPT) && this.states.keySet().stream().noneMatch((rr) -> !r.equals(rr) && this.queues.isConnected(r, rr)))
-			;
-		return canSafelyTerminate;
 	}
 
 	// Stuck due to non-consumable messages (reception errors)
@@ -230,7 +188,7 @@ public class SConfig
 		throw new RuntimeException("[TODO] " + k);
 	}
 
-	// Generalised to include "unconnected" messages -- should unconnected messages be treated via stuck instead?
+	// Includes "unconnected" messages -- CHECKME: should unconnected messages be considered as "stuck" instead?
 	public Map<Role, Set<ESend>> getOrphanMessages()
 	{
 		Map<Role, Set<ESend>> res = new HashMap<>();
@@ -281,21 +239,18 @@ public class SConfig
 	}
 	
 	// Not just "unfinished", but also "non-initiated" (accept guarded) -- though could be non-initiated after some previous completions
-	// Maybe not needed -- previously not used (even without accept-correlation check)
+	// Maybe not needed? previously not used (even without accept-correlation check)
 	public Map<Role, EState> getUnfinishedRoles()
 	{
-		Map<Role, EState> res = new HashMap<>();
-		if (getFireable().isEmpty() && !isSafeTermination())
+		if (!getFireable().isEmpty())  
+				// Once no fireable, then finished (no further fireable will be produced)
+				// N.B. must check getFireable -- cf. terminal state kind is only when no actions, does not include when actions are stuck
 		{
-			for (Role r : this.efsms.keySet())
-			{
-				if (!canSafelyTerminate(r))
-				{
-					res.put(r, this.efsms.get(r).curr);
-				}
-			}
+			return Collections.emptyMap();
 		}
-		return res;
+		return this.efsms.entrySet().stream()
+				.filter(x -> !canSafelyTerminate(x.getKey()))
+				.collect(Collectors.toMap(Entry::getKey, x -> x.getValue().curr));
 	}
 	
 	// Pre: getFireable().get(self).contains(a)
@@ -361,6 +316,24 @@ public class SConfig
 			}
 		}
 		return res;
+	}
+
+	/*// CHECKME: rename -- not just termination, could be unconnected/uninitiated
+	public boolean isSafeTermination()
+	{
+		return this.efsms.keySet().stream().allMatch(x -> canSafelyTerminate(x));
+	}*/
+
+	// Should work both with and without accept-correlation?
+	public boolean canSafelyTerminate(Role r)
+	{
+		EFsm fsm = this.efsms.get(r);
+		boolean safe = this.queues.isEmpty(r) && (fsm.curr.isTerminal() || 
+				(fsm.curr.getStateKind().equals(EStateKind.ACCEPT) && fsm.isInitial())); // Specifically the initial state
+				
+			// CHECKME: incorrectly allows stuck accepts?  if inactive not initial, should be clone of initial?
+			//|| (s.getStateKind().equals(Kind.ACCEPT) && this.states.keySet().stream().noneMatch((rr) -> !r.equals(rr) && this.queues.isConnected(r, rr)))
+		return safe;
 	}
 
 	// N.B. Set<EAction> (not List<EAction), at global level only need to know the set of possible actions...

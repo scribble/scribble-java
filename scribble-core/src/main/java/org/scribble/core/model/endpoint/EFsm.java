@@ -46,7 +46,7 @@ public class EFsm
 	// CHECKME: check if unfolded initial accept is possible, and if it breaks anything
 	public boolean isInitial()
 	{
-		return this.curr.equals(this.graph.init);
+		return this.curr.equals(this.graph.init);  // i.e., "literally" in the initial state (not "semantically")
 	}
 
 	@Override

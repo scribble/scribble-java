@@ -101,8 +101,7 @@ module tmp.Test;
 	// also do-arg pruning, for role-pruned projection decls
 	// choice-specific fairness annotations
 	// fix codegen when -fair
-	// CHECKME: accept branching on messages (and safety properties)
-
+	// CHECKME: accept branching on messages (and safety properties) -- connection should not be established if message stuck? (cf. reception error) -- issue is implementation: what is a realistic semantics for sync-connect-branching (i.e., prevent client from async progressing after messaging) -- consider reversing client/server branching side? i.e. client requests, but then receives? (and consider serverside-branching a sugar?)
 // parser/ast refactoring
 	// check G/LType casts vs. SType<Global/Local, ...> (favour latter)
 
@@ -113,7 +112,7 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
-//*
+/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	rec X
@@ -736,7 +735,7 @@ global protocol Proto1(role A, role B)
 
 
 
-/*
+//*
 type <dotnet> "System.UInt32" from "..." as int;
 
 global protocol SH(role P, role R, role C)
