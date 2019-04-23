@@ -267,8 +267,9 @@ public class SConfig
 		return null;
 	}
 	
-	// Return: set of roles that r *must* "wait for" one of them in order to proceed; null if not "r" is not *necessarily* blocked waiting for *another role*
-	// Generalised to include sync-client (request, clientWrap) roles
+	// Return: set of roles that "r" *must* wait for one of them in order to proceed;.. 
+	// ..or null if "r" is not *necessarily* blocked waiting for *another role*
+	// Wait-for blocking includes sync-client (request, clientWrap) roles
 	private Set<Role> isWaitingFor(Role r)
 	{
 		EFsm fsm = this.efsms.get(r);
