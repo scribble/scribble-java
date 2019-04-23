@@ -13,40 +13,79 @@
  */
 package org.scribble.core.model.global;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.ERecv;
 import org.scribble.core.model.endpoint.actions.ESend;
+import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.name.Role;
 
 public class SStateErrors
 {
+	public final SState state;
+	
 	// FIXME: factor out explicit error classes -- for error message formatting
 	// FIXME: could also check for roles stuck on unconnected sends here (probably better, than current syntax check)
-	public final Map<Role, ERecv> stuck;      // Reception errors
+	public final Map<Role, ERecv> stuck;         // Reception errors
 	public final Set<Set<Role>> waitFor;         // Deadlock cycles
 	public final Map<Role, Set<ESend>> orphans;  // Orphan messages
-	public Map<Role, EState> unfinished;         // Unfinished roles
+	public final Map<Role, EState> unfinished;   // Unfinished roles
 
-	public SStateErrors(Map<Role, ERecv> receptionErrors, Set<Set<Role>> deadlocks, Map<Role, Set<ESend>> orphans, Map<Role, EState> unfinished)
+	public SStateErrors(SState state)
 	{
-		this.stuck = Collections.unmodifiableMap(receptionErrors);
-		this.waitFor = Collections.unmodifiableSet(deadlocks);
-		this.orphans = Collections.unmodifiableMap(orphans);
-		this.unfinished = Collections.unmodifiableMap(unfinished);
+		this.state = state;
+		this.stuck = state.config.getStuckMessages();
+		this.waitFor = state.config.getWaitForCycles();
+		this.orphans = state.config.getOrphanMessages();
+		this.unfinished = state.config.getUnfinishedRoles();
 	}
 	
 	public boolean isEmpty()
 	{
-		return this.stuck.isEmpty() && this.waitFor.isEmpty() && this.orphans.isEmpty() && this.unfinished.isEmpty();
+		return this.stuck.isEmpty() && this.waitFor.isEmpty()
+				&& this.orphans.isEmpty() && this.unfinished.isEmpty();
 	}
 	
 	@Override
 	public String toString()
 	{
 		return "stuck=" + this.stuck + ", watiFor=" + this.waitFor + ", orphans=" + this.orphans + ", unfinished=" + this.unfinished;
+	}
+
+	public String toErrorMessage(SGraph graph)
+	{
+		String errorMsg = "";
+		if (!isEmpty())
+		{
+			// CHECKME: getTrace can get stuck when local choice subjects are disabled ? (has since been rewritten)
+			List<SAction> trace = graph.getTraceFromInit(this.state);  // CHECKME: getTrace broken on non-det self loops?
+			errorMsg += "\nSafety violation(s) at session state " + this.state.id
+					+ ":\n    Trace=" + trace;
+		}
+		return appendSafetyErrorMessages(errorMsg);
+	}
+
+	protected String appendSafetyErrorMessages(String errorMsg)
+	{
+		if (!this.stuck.isEmpty())
+		{
+			errorMsg += "\n    Stuck messages: " + this.stuck;  // Deadlock from reception error
+		}
+		if (!this.waitFor.isEmpty())
+		{
+			errorMsg += "\n    Wait-for this: " + this.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
+		}
+		if (!this.orphans.isEmpty())
+		{
+			errorMsg += "\n    Orphan messages: " + this.orphans;  // FIXME: add sender of orphan to error message 
+		}
+		if (!this.unfinished.isEmpty())
+		{
+			errorMsg += "\n    Unfinished roles: " + this.unfinished;
+		}
+		return errorMsg;
 	}
 }

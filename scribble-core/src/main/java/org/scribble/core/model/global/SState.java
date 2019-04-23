@@ -14,17 +14,12 @@
 package org.scribble.core.model.global;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 import org.scribble.core.model.MPrettyState;
 import org.scribble.core.model.MState;
-import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.model.endpoint.actions.ERecv;
-import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.Role;
 
 // CHECKME: make a WFModel front-end class? (cf. EGraph)
 // N.B. only uses MState.id cosmetically, cf. MState equals/hashCode -- overrides equals/hashCode based on this.config (maybe extending MState is a bit misleading)
@@ -48,24 +43,27 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 	
 	public SStateErrors getErrors()  // Means safety (i.e., individual state) errors
 	{
-		Map<Role, ERecv> stuck = this.config.getStuckMessages();
-		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
-		Map<Role, Set<ESend>> orphs = this.config.getOrphanMessages();
-		Map<Role, EState> unfinished = this.config.getUnfinishedRoles();
-		return new SStateErrors(stuck, waitfor, orphs, unfinished);
+		return new SStateErrors(this);
 	}
 	
 	@Override
 	protected String getNodeLabel()
 	{
 		String labs = this.config.toString();
-		return "label=\"" + this.id + ":" + labs.substring(1, labs.length() - 1) + "\"";
+		return "label=\"" + this.id + ":" + labs.substring(1, labs.length() - 1)
+				+ "\"";
 	}
 
 	@Override
 	public Set<SState> getReachableStates()
 	{
 		return getReachableStatesAux(this);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return this.id + ":" + this.config.toString();
 	}
 	
 	// N.B. does not use super.hashCode, need "semantic" equality of configs for model construction
@@ -99,12 +97,6 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 	protected boolean canEquals(MState<?, ?, ?, ?> s)
 	{
 		return s instanceof SState;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return this.id + ":" + this.config.toString();
 	}
 }
 

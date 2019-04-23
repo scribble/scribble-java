@@ -16,8 +16,8 @@ package org.scribble.core.model.global;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,7 +48,9 @@ public class SModel
 
 		String errorMsg = "";
 
-		errorMsg = checkSafety(errorMsg);
+		errorMsg = getSafetyErrors().values().stream()
+				.map(x -> x.toErrorMessage(this.graph))
+				.collect(Collectors.joining(""));
 		
 		if (!core.config.args.get(CoreArgs.NO_PROGRESS))
 		{
@@ -64,9 +66,10 @@ public class SModel
 		//job.debugPrintln("(" + this.graph.proto + ") Progress satisfied.");  // Also safety... current errorMsg approach
 	}
 
-	private String checkSafety(String errorMsg)
+	//private String checkSafety(String errorMsg)
+	protected Map<Integer, SStateErrors> getSafetyErrors()  // s.id key lighter than full SConfig
 	{
-		int debugCount = 1;
+		/*//int debugCount = 1;
 		for (SState s : this.graph.states.values())
 		{
 			if (this.core.config.args.get(CoreArgs.VERBOSE))
@@ -91,7 +94,9 @@ public class SModel
 		}
 		this.core.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + debugCount);  // May include unsafe states
 				// FIXME: progress still to be checked below
-		return errorMsg;
+		return errorMsg;*/
+		return this.graph.states.entrySet().stream().collect(
+				Collectors.toMap(Entry::getKey, x -> x.getValue().getErrors()));
 	}
 
 	private String checkProgress(String errorMsg) throws ScribException
@@ -107,28 +112,6 @@ public class SModel
 					checkEventualReception(termset);
 			errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored,
 					termset);
-		}
-		return errorMsg;
-	}
-
-	protected String appendSafetyErrorMessages(String errorMsg,
-			SStateErrors errors)
-	{
-		if (!errors.stuck.isEmpty())
-		{
-			errorMsg += "\n    Stuck messages: " + errors.stuck;  // Deadlock from reception error
-		}
-		if (!errors.waitFor.isEmpty())
-		{
-			errorMsg += "\n    Wait-for errors: " + errors.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
-		}
-		if (!errors.orphans.isEmpty())
-		{
-			errorMsg += "\n    Orphan messages: " + errors.orphans;  // FIXME: add sender of orphan to error message 
-		}
-		if (!errors.unfinished.isEmpty())
-		{
-			errorMsg += "\n    Unfinished roles: " + errors.unfinished;
 		}
 		return errorMsg;
 	}

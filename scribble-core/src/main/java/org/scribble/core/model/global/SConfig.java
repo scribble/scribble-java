@@ -278,7 +278,7 @@ public class SConfig
 	}
 	
 	// Doesn't include locally terminated (single term state does not induce a deadlock cycle)
-	public Set<Set<Role>> getWaitForErrors()
+	public Set<Set<Role>> getWaitForCycles()
 	{
 		Set<Set<Role>> res = new HashSet<>();
 		List<Role> todo = new LinkedList<>(this.efsms.keySet());

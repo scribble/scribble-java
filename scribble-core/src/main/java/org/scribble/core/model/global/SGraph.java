@@ -33,7 +33,7 @@ public class SGraph implements MPrettyPrint
 	public final GProtoName proto;  // For debugging only?  deprecate?
 	
 	public final SState init;
-	public final Map<Integer, SState> states;
+	public final Map<Integer, SState> states;  // s.id -> s
 
 	private final Set<Set<SState>> termSets;
 
@@ -42,7 +42,7 @@ public class SGraph implements MPrettyPrint
 	{
 		this.proto = proto;
 		this.init = init;
-		this.states = Collections.unmodifiableMap(states);
+		this.states = Collections.unmodifiableMap(states);  // s.id -> s
 		//this.reach = getReachabilityMap();
 		
 		// TODO: refactor
@@ -84,6 +84,7 @@ public class SGraph implements MPrettyPrint
 	// Returns null if end cannot be reached
 	private Map<Integer, Pair<SAction, Integer>> bfsFromInit(SState end)  // (cf., Dijkstra's with all weights 1)
 	{
+		// SState.id faster as keys than full SConfig
 		Set<Integer> seen = new HashSet<>();
 		List<Integer> todo = new LinkedList<>();
 		seen.add(this.init.id);
@@ -134,6 +135,7 @@ public class SGraph implements MPrettyPrint
 	}
 
 	// Following are "one-time" usage, on instance construction
+	// SState.id faster as keys than full SConfig
 	private int counter = 0;
 	private Map<Integer, Integer> indices = new HashMap<>();  // s.id -> index
 	private Map<Integer, Integer> lowlinks = new HashMap<>();  // s.id -> lowlink

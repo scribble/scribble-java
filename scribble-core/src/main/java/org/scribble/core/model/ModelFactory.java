@@ -71,6 +71,6 @@ public interface ModelFactory
 
 	SState newSState(SConfig config);
 	SConfig newSConfig(Map<Role, EFsm> state, SingleBuffers buffs);
-	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);
+	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);  // states: s.id -> s
 	SModel newSModel(SGraph g);
 }

@@ -157,6 +157,7 @@ public class ModelFactoryImpl implements ModelFactory
 		return new SState(config);
 	}
 
+	// states: s.id -> s
 	@Override
 	public SGraph newSGraph(GProtoName proto, Map<Integer, SState> states,
 			SState init)

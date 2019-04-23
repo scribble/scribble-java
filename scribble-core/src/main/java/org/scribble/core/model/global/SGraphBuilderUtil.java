@@ -69,6 +69,7 @@ public class SGraphBuilderUtil
 		return res;
 	}
 	
+	// s.id -> s
 	public Map<Integer, SState> getStates()
 	{
 		return this.states.values().stream()

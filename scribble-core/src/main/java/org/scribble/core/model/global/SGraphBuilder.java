@@ -62,7 +62,7 @@ public class SGraphBuilder
 		
 		SConfig c0 = createInitConfig(egraphs, explicit);
 		SState init = this.util.newState(c0);
-		Set<SState> todo = new LinkedHashSet<>();
+		Set<SState> todo = new LinkedHashSet<>();  // Consider Map<s.id, s>, faster than full SConfig hash ?
 		todo.add(init);
 		for (//int debugCount = 1
 				; !todo.isEmpty(); ) // Compute configs and use util to construct graph, until no more new configs
