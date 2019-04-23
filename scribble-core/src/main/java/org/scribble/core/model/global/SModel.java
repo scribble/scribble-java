@@ -17,8 +17,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.scribble.core.job.Core;
@@ -66,37 +67,12 @@ public class SModel
 		//job.debugPrintln("(" + this.graph.proto + ") Progress satisfied.");  // Also safety... current errorMsg approach
 	}
 
-	//private String checkSafety(String errorMsg)
-	protected Map<Integer, SStateErrors> getSafetyErrors()  // s.id key lighter than full SConfig
+	protected SortedMap<Integer, SStateErrors> getSafetyErrors()  // s.id key lighter than full SConfig
 	{
-		/*//int debugCount = 1;
-		for (SState s : this.graph.states.values())
-		{
-			if (this.core.config.args.get(CoreArgs.VERBOSE))
-			{
-				if (debugCount++ % 50 == 0)
-				{
-					//job.debugPrintln("(" + this.graph.proto + ") Checking safety: " + count + " states");
-					this.core.verbosePrintln(
-							"(" + this.graph.proto + ") Checking states: " + debugCount);
-				}
-			}
-
-			SStateErrors errors = s.getErrors();
-			if (!errors.isEmpty())
-			{
-				// CHECKME: getTrace can get stuck when local choice subjects are disabled ? (has since been rewritten)
-				List<SAction> trace = this.graph.getTraceFromInit(s);  // FIXME: getTrace broken on non-det self loops?
-				errorMsg += "\nSafety violation(s) at session state " + s.id
-						+ ":\n    Trace=" + trace;
-			}
-			errorMsg = appendSafetyErrorMessages(errorMsg, errors);
-		}
-		this.core.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + debugCount);  // May include unsafe states
-				// FIXME: progress still to be checked below
-		return errorMsg;*/
-		return this.graph.states.entrySet().stream().collect(
-				Collectors.toMap(Entry::getKey, x -> x.getValue().getErrors()));
+		SortedMap<Integer, SStateErrors> res = new TreeMap<>();
+		this.graph.states.entrySet().stream().forEach(x ->
+				res.put(x.getKey(), x.getValue().getErrors()));
+		return res;
 	}
 
 	private String checkProgress(String errorMsg) throws ScribException
