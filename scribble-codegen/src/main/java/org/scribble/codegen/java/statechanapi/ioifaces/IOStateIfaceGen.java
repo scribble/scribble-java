@@ -132,8 +132,8 @@ public abstract class IOStateIfaceGen extends IOIfaceGen
 		switch (s.getStateKind())
 		{
 			case OUTPUT:      name = "Select";  break;
-			case UNARY_INPUT: name = "Receive"; break;
-			case POLY_INPUT:  name = "Branch";  break;
+			case UNARY_RECEIVE: name = "Receive"; break;
+			case POLY_RECIEVE:  name = "Branch";  break;
 			case TERMINAL:    throw new RuntimeScribException("Shouldn't get in here: " + s);
 			default:          throw new RuntimeException("(TODO) I/O interface generation: " + s.getStateKind());
 		}

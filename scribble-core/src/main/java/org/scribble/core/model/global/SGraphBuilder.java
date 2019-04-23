@@ -48,14 +48,13 @@ public class SGraphBuilder
 	{
 		Map<Role, EFsm> efsms = egraphs.entrySet().stream()
 				.collect(Collectors.toMap(Entry::getKey, e -> e.getValue().toFsm()));
-		SQueues b0 = new SQueues(efsms.keySet(), !explicit);
+		SingleBuffers b0 = new SingleBuffers(efsms.keySet(), !explicit);
 		return this.core.config.mf.newSConfig(efsms, b0);
 	}
 	
 	// Factory method: not fully integrated with SGraph constructor because of Job arg (debug printing)
 	// Also checks for non-deterministic payloads
 	// Maybe refactor into an SGraph builder util; cf., EGraphBuilderUtil -- but not Visitor-based building (cf. EndpointGraphBuilder), this isn't an AST algorithm
-	//public SGraph buildSGraph(Job job, GProtocolName fullname, SConfig c0) throws ScribbleException
 	public SGraph build(GProtoName fullname, Map<Role, EGraph> egraphs,
 			boolean explicit) throws ScribException
 	{

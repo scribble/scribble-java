@@ -29,12 +29,15 @@ import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.model.endpoint.actions.EServerWrap;
 import org.scribble.core.type.name.Role;
 
-public class SQueues
+// Immutable -- send/receive/etc return updated copies
+public class SingleBuffers
 {
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();  // client -> server -> connected?  (symmetric)
-	private final Map<Role, Map<Role, ESend>> queues = new HashMap<>();  // dest -> src -> msg  // null ESend for empty queue
+	private final Map<Role, Map<Role, ESend>> buffs = new HashMap<>();  // dest -> src -> msg  
+			// N.B. hardcoded to capacity one -- SQueues would be the generalisation
+			// null ESend for empty queue
 
-	public SQueues(Set<Role> roles, boolean implicit)
+	public SingleBuffers(Set<Role> roles, boolean implicit)
 	{
 		for(Role r1 : roles)
 		{
@@ -49,29 +52,29 @@ public class SQueues
 				}
 			}
 			this.connected.put(r1, connected);
-			this.queues.put(r1, queues);
+			this.buffs.put(r1, queues);
 		}
 	}
 
-	protected SQueues(SQueues queues)
+	protected SingleBuffers(SingleBuffers queues)
 	{
-		for (Role r : queues.queues.keySet())
+		for (Role r : queues.buffs.keySet())
 		{
 			this.connected.put(r, new HashMap<>(queues.connected.get(r)));
-			this.queues.put(r, new HashMap<>(queues.queues.get(r)));
+			this.buffs.put(r, new HashMap<>(queues.buffs.get(r)));
 		}
 	}
 
 	public boolean canSend(Role self, ESend a)
 	{
 		return isConnected(self, a.peer)
-				&& this.queues.get(a.peer).get(self) == null;
+				&& this.buffs.get(a.peer).get(self) == null;
 	}
 
 	public boolean canReceive(Role self, ERecv a)
 	{
 		// N.B. *not* checking isConnected -- can still receive from our side after other side has closed
-		ESend send = this.queues.get(self).get(a.peer);
+		ESend send = this.buffs.get(self).get(a.peer);
 		return send != null && send.toDual(a.peer).equals(a);
 	}
 
@@ -106,32 +109,36 @@ public class SQueues
 		return isConnected(self, sw.peer);
 	}
 
-	public SQueues send(Role self, ESend a)
+	// Return an updated copy
+	public SingleBuffers send(Role self, ESend a)
 	{
-		SQueues copy = new SQueues(this);
-		copy.queues.get(a.peer).put(self, a);
+		SingleBuffers copy = new SingleBuffers(this);
+		copy.buffs.get(a.peer).put(self, a);
 		return copy;
 	}
 
-	public SQueues receive(Role self, ERecv a)
+	// Return an updated copy
+	public SingleBuffers receive(Role self, ERecv a)
 	{
-		SQueues copy = new SQueues(this);
-		copy.queues.get(self).put(a.peer, null);
+		SingleBuffers copy = new SingleBuffers(this);
+		copy.buffs.get(self).put(a.peer, null);
 		return copy;
 	}
 	
   // Sync action
-	public SQueues connect(Role src, Role dest)
+	// Return an updated copy
+	public SingleBuffers connect(Role src, Role dest)
 	{
-		SQueues copy = new SQueues(this);
+		SingleBuffers copy = new SingleBuffers(this);
 		copy.connected.get(src).put(dest, true);
 		copy.connected.get(dest).put(src, true);
 		return copy;
 	}
 
-	public SQueues disconnect(Role self, EDisconnect d)
+	// Return an updated copy
+	public SingleBuffers disconnect(Role self, EDisconnect d)
 	{
-		SQueues copy = new SQueues(this);
+		SingleBuffers copy = new SingleBuffers(this);
 		copy.connected.get(self).put(d.peer, false);
 		return copy;
 	}
@@ -144,20 +151,22 @@ public class SQueues
 	
 	public boolean isEmpty(Role r)  // this.connected doesn't matter
 	{
-		return this.queues.get(r).values().stream().allMatch(v -> v == null);
+		return this.buffs.get(r).values().stream().allMatch(v -> v == null);
 	}
 	
 	// Return a (deep) copy -- currently, checkEventualReception expects a modifiable return
+	// N.B. hardcoded to capacity one
 	public Map<Role, Map<Role, ESend>> getQueues()
 	{
-		return this.queues.entrySet().stream().collect(Collectors.toMap(
+		return this.buffs.entrySet().stream().collect(Collectors.toMap(
 				Entry::getKey,
 				x -> new HashMap<>(x.getValue())));  // Collections.unmodifiableMap(x.getValue())
 	}
 
+	// N.B. hardcoded to capacity one
 	public Map<Role, ESend> getQueue(Role r)
 	{
-		return Collections.unmodifiableMap(this.queues.get(r));
+		return Collections.unmodifiableMap(this.buffs.get(r));
 	}
 
 	@Override
@@ -165,7 +174,7 @@ public class SQueues
 	{
 		int hash = 131;
 		hash = 31 * hash + this.connected.hashCode();
-		hash = 31 * hash + this.queues.hashCode();
+		hash = 31 * hash + this.buffs.hashCode();
 		return hash;
 	}
 
@@ -176,18 +185,18 @@ public class SQueues
 		{
 			return true;
 		}
-		if (!(o instanceof SQueues))
+		if (!(o instanceof SingleBuffers))
 		{
 			return false;
 		}
-		SQueues b = (SQueues) o;
-		return this.connected.equals(b.connected) && this.queues.equals(b.queues);
+		SingleBuffers b = (SingleBuffers) o;
+		return this.connected.equals(b.connected) && this.buffs.equals(b.buffs);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return this.queues.entrySet().stream()
+		return this.buffs.entrySet().stream()
 				.filter(e -> e.getValue().values().stream().anyMatch(v -> v != null))
 				.collect(Collectors.toMap(
 						e -> e.getKey(),

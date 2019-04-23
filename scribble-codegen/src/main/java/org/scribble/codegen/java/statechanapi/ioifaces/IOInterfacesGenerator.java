@@ -222,7 +222,7 @@ public class IOInterfacesGenerator extends ApiGen
 				this.actions.put(a, new ActionIfaceGen(this.apigen, s, a).generateType());
 				this.succs.put(a, new SuccessorIfaceGen(this.apigen, s, a).generateType());
 
-				if (s.getStateKind() == EStateKind.POLY_INPUT)
+				if (s.getStateKind() == EStateKind.POLY_RECIEVE)
 				{
 					// Duplicated from ActionInterfaceGenerator
 					InterfaceBuilder ib = new InterfaceBuilder();
@@ -246,7 +246,7 @@ public class IOInterfacesGenerator extends ApiGen
 			EState succ = s.getDetSuccessor(a);
 			putPreAction(succ, a);
 
-			if (s.getStateKind() == EStateKind.POLY_INPUT)
+			if (s.getStateKind() == EStateKind.POLY_RECIEVE)
 			{
 				/*for (IOAction b : s.accept(a).getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 				{
@@ -280,10 +280,10 @@ public class IOInterfacesGenerator extends ApiGen
 				case OUTPUT:  // Send, connect, disconnect
 					ifgen = new SelectIfaceGen(this.apigen, this.actions, s);
 					break;
-				case UNARY_INPUT:
+				case UNARY_RECEIVE:
 					ifgen = new ReceiveIfaceGen(this.apigen, this.actions, s);
 					break;
-				case POLY_INPUT:
+				case POLY_RECIEVE:
 					InterfaceBuilder cases = new CaseIfaceGen(this.apigen, this.actions, s).generateType();
 					this.iostates.put(cases.getName(), cases);
 					ifgen = new BranchIfaceGen(this.apigen, this.actions, s);
@@ -363,7 +363,7 @@ public class IOInterfacesGenerator extends ApiGen
 			return;
 		}
 
-		if (s.getStateKind() == EStateKind.POLY_INPUT)
+		if (s.getStateKind() == EStateKind.POLY_RECIEVE)
 		{
 			//Set<InterfaceBuilder> succifs = this.preds.get(s);
 			String key = HandleIfaceGen.getHandleInterfaceName(getSelf(), s);
@@ -388,7 +388,7 @@ public class IOInterfacesGenerator extends ApiGen
 			return;
 		}
 
-		if (s.getStateKind() == EStateKind.POLY_INPUT)
+		if (s.getStateKind() == EStateKind.POLY_RECIEVE)
 		{
 			//GProtocolName gpn = this.apigen.getGProtocolName();
 			Role self = this.apigen.getSelf();
@@ -481,7 +481,7 @@ public class IOInterfacesGenerator extends ApiGen
 			iostate.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, self) + ".*");
 		}
 
-		if (s.getStateKind() == EStateKind.POLY_INPUT)
+		if (s.getStateKind() == EStateKind.POLY_RECIEVE)
 		{
 			// Add CaseInterface to each CaseSocket
 			TypeBuilder cases = this.apigen.getType(CaseSockGen.getCaseSocketName(this.apigen.getSocketClassName(s)));

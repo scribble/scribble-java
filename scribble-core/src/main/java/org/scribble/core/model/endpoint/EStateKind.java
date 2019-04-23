@@ -18,8 +18,8 @@ public enum EStateKind
 {
 	TERMINAL,
 	OUTPUT,      // SEND, REQUEST and CLIENT_WRAP
-	UNARY_INPUT,
-	POLY_INPUT,
+	UNARY_RECEIVE,
+	POLY_RECIEVE,
 	ACCEPT,      // CHECKME: distinguish unary/multi accept?
 	SERVER_WRAP,
 }

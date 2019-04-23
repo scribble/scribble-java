@@ -32,8 +32,8 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 {
 	public final SConfig config;
 	
-	//protected SState(SConfig config)
-	public SState(SConfig config)  // FIXME: now publically mutable
+	//protected
+	public SState(SConfig config)  // FIXME? now publically mutable (for mf imple), same for EState
 	{
 		super(Collections.emptySet());
 		this.config = config;
@@ -46,7 +46,7 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 		super.addEdge(a, s);
 	}
 	
-	public SStateErrors getErrors()
+	public SStateErrors getErrors()  // Means safety (i.e., individual state) errors
 	{
 		Map<Role, ERecv> stuck = this.config.getStuckMessages();
 		Set<Set<Role>> waitfor = this.config.getWaitForErrors();

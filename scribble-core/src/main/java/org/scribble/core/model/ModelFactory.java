@@ -30,7 +30,7 @@ import org.scribble.core.model.global.SConfig;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.model.global.SGraphBuilderUtil;
 import org.scribble.core.model.global.SModel;
-import org.scribble.core.model.global.SQueues;
+import org.scribble.core.model.global.SingleBuffers;
 import org.scribble.core.model.global.SState;
 import org.scribble.core.model.global.actions.SAcc;
 import org.scribble.core.model.global.actions.SClientWrap;
@@ -70,7 +70,7 @@ public interface ModelFactory
 	SServerWrap newSServerWrap(Role subj, Role obj);
 
 	SState newSState(SConfig config);
-	SConfig newSConfig(Map<Role, EFsm> state, SQueues buffs);
+	SConfig newSConfig(Map<Role, EFsm> state, SingleBuffers buffs);
 	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);
 	SModel newSModel(SGraph g);
 }

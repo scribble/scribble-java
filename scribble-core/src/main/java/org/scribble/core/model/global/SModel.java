@@ -34,13 +34,13 @@ import org.scribble.util.ScribException;
 public class SModel
 {
 	public final SGraph graph;
+	
+	private Core core;  // only used for debug printing  // CHECKME: refactor?  but avoiding in constructor to keep mf more independent/uniform
 
 	public SModel(SGraph graph)
 	{
 		this.graph = graph;
 	}
-	
-	private Core core;  // FIXME
 
 	public void validate(Core core) throws ScribException
 	{
@@ -70,31 +70,30 @@ public class SModel
 	private String checkSafety(Core core, SState init,
 			Map<Integer, SState> states, String errorMsg)
 	{
-		int count = 0;
+		int debugCount = 1;
 		for (SState s : states.values())
 		{
 			if (core.config.args.get(CoreArgs.VERBOSE))
 			{
-				count++;
-				if (count % 50 == 0)
+				if (debugCount++ % 50 == 0)
 				{
 					//job.debugPrintln("(" + this.graph.proto + ") Checking safety: " + count + " states");
 					core.verbosePrintln(
-							"(" + this.graph.proto + ") Checking states: " + count);
+							"(" + this.graph.proto + ") Checking states: " + debugCount);
 				}
 			}
+
 			SStateErrors errors = s.getErrors();
 			if (!errors.isEmpty())
 			{
-				// FIXME: getTrace can get stuck when local choice subjects are disabled
+				// CHECKME: getTrace can get stuck when local choice subjects are disabled ? (has since been rewritten)
 				List<SAction> trace = this.graph.getTraceFromInit(s);  // FIXME: getTrace broken on non-det self loops?
-				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
 				errorMsg += "\nSafety violation(s) at session state " + s.id
 						+ ":\n    Trace=" + trace;
 			}
 			errorMsg = appendSafetyErrorMessages(errorMsg, errors);
 		}
-		core.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + count);  // May include unsafe states
+		core.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + debugCount);  // May include unsafe states
 				// FIXME: progress still to be checked below
 		return errorMsg;
 	}
@@ -247,7 +246,7 @@ public class SModel
 		while (i.hasNext())
 		{
 			SState s = i.next();//states.get(i.next());
-			SQueues b = s.config.queues;
+			SingleBuffers b = s.config.queues;
 			for (Role r1 : roles)
 			{
 				for (Role r2 : roles)

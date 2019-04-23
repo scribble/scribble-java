@@ -225,7 +225,7 @@ public class CBEndpointApiGenerator3
 		JobContext jobc = this.job.getContext();
 		for (EState s : states)
 		{
-			if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
+			if (s.getStateKind() == EStateKind.UNARY_RECEIVE || s.getStateKind() == EStateKind.POLY_RECIEVE)
 			{
 				String bprefix = getHandlersSelfPackage().replace('.', '/') + "/";
 				String branchName = this.stateNames.get(s.id) + "_Branch";
@@ -392,8 +392,8 @@ public class CBEndpointApiGenerator3
 
 					break;
 				}
-				case UNARY_INPUT:
-				case POLY_INPUT:
+				case UNARY_RECEIVE:
+				case POLY_RECIEVE:
 				{
 					MethodBuilder callback = endpointClass.newMethod("callback");
 					callback.addModifiers("public");
@@ -509,8 +509,8 @@ public class CBEndpointApiGenerator3
 		switch (kind)
 		{
 			case OUTPUT:     stateKind = "org.scribble.runtime.handlers.states.ScribOutputState"; break;
-			case UNARY_INPUT:
-			case POLY_INPUT: stateKind = "org.scribble.runtime.handlers.states.ScribInputState";  break;
+			case UNARY_RECEIVE:
+			case POLY_RECIEVE: stateKind = "org.scribble.runtime.handlers.states.ScribInputState";  break;
 			case TERMINAL:   stateKind = "org.scribble.runtime.handlers.states.ScribEndState";    break;
 			case ACCEPT:
 			case SERVER_WRAP:
@@ -533,9 +533,9 @@ public class CBEndpointApiGenerator3
 				? new String[] { "org.scribble.type.name.Role peer" } : new String[0];*/
 		ConstructorBuilder stateCons = stateClass.newConstructor();
 		stateCons.addModifiers("private");
-		Role peer = (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? s.getDetActions().iterator().next().peer : null;
+		Role peer = (kind == EStateKind.UNARY_RECEIVE || kind == EStateKind.POLY_RECIEVE) ? s.getDetActions().iterator().next().peer : null;
 		stateCons.addBodyLine("super(\"" + stateName + "\""
-				+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? ", " + getRolesPackage() + "." + peer + "." + peer : "")  // FIXME: factor out
+				+ ((kind == EStateKind.UNARY_RECEIVE || kind == EStateKind.POLY_RECIEVE) ? ", " + getRolesPackage() + "." + peer + "." + peer : "")  // FIXME: factor out
 				+ ");");
 		for (EAction a : s.getActions())
 		{

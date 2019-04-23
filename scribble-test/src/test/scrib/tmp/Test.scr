@@ -87,7 +87,7 @@ module tmp.Test;
 			// TODO: rename addChildren1
 			// CHECKME: duplicate proto mods
 			// ...check ad hoc ScribNode constructions go through af properly
-			
+			// ...refactor -spin as an ext
 			
 	// add exp conn checks to model validation
 	// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
@@ -119,7 +119,7 @@ global protocol Proto1(role A, role B)
 }
 //*/
 
-/*
+//*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;  // TODO: junit tests for explicit
@@ -694,7 +694,7 @@ global protocol Proto1(role A, role B)
 
 
 
-//*
+/*
 type <dotnet> "System.UInt32" from "..." as int;
 
 global protocol SH(role P, role R, role C)

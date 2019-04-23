@@ -175,11 +175,11 @@ public class StateChannelApiGenerator extends ApiGen
 			{
 				return new AcceptSockGen(this, curr).generateType();
 			}
-			case UNARY_INPUT:
+			case UNARY_RECEIVE:
 			{
 				return new ReceiveSockGen(this, curr).generateType();
 			}
-			case POLY_INPUT:
+			case POLY_RECIEVE:
 			{
 				// Receive only
 				return new BranchSockGen(this, curr).generateType();

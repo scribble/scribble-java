@@ -283,7 +283,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 						.collect(Collectors.joining(""))
 					+ "fi\n";
 		}
-		else if (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT)
+		else if (kind == EStateKind.UNARY_RECEIVE || kind == EStateKind.POLY_RECIEVE)
 		{
 			res +=
 					  "if\n"
@@ -322,8 +322,9 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		return lab;
 	}
 	
-	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction
-	public boolean isRequestOrClientWrapOnly()
+	// CHECKME: make an isSync in IOAction ?
+  // This state is a *necessarily* "blocking" output sync-client (request, clientwrap) state
+	public boolean isSyncClientOnly()
 	{
 		return getStateKind() == EStateKind.OUTPUT
 				&& getActions().stream()
@@ -354,10 +355,10 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		{
 			case ACCEPT: v.visitAccept(this); break;
 			case OUTPUT: v.visitOutput(this); break;
-			case POLY_INPUT: v.visitPolyInput(this); break;
+			case POLY_RECIEVE: v.visitPolyInput(this); break;
 			case SERVER_WRAP: v.visitServerWrap(this); break;
 			case TERMINAL: v.visitTerminal(this); break;
-			case UNARY_INPUT: v.visitUnaryInput(this); break;
+			case UNARY_RECEIVE: v.visitUnaryInput(this); break;
 			default: throw new RuntimeException("Unknown state kind: " + kind);
 		}
 	}
@@ -378,7 +379,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			}
 			else if (as.stream().allMatch(EAction::isReceive))
 			{
-				return (as.size() == 1) ? EStateKind.UNARY_INPUT : EStateKind.POLY_INPUT;
+				return (as.size() == 1) ? EStateKind.UNARY_RECEIVE : EStateKind.POLY_RECIEVE;
 			}
 			else if (as.stream().allMatch(EAction::isAccept))
 			{

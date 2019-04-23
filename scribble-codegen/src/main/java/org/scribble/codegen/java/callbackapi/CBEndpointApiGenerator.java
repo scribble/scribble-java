@@ -175,8 +175,8 @@ public class CBEndpointApiGenerator
 			switch (kind)
 			{
 				case OUTPUT:     stateKind = "org.scribble.runtime.handlers.states.ScribOutputState"; break;
-				case UNARY_INPUT:
-				case POLY_INPUT: stateKind = "org.scribble.runtime.handlers.states.ScribInputState";  break;
+				case UNARY_RECEIVE:
+				case POLY_RECIEVE: stateKind = "org.scribble.runtime.handlers.states.ScribInputState";  break;
 				case TERMINAL:   stateKind = "org.scribble.runtime.handlers.states.ScribEndState";    break;
 				case ACCEPT:
 				case SERVER_WRAP:
@@ -189,12 +189,12 @@ public class CBEndpointApiGenerator
 			stateClass += "\n";
 			stateClass += "public final class " + stateId + " extends " + stateKind + " {\n";
 			stateClass += "public static final " + stateId + " id = new " + stateId + "("
-					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + s.getDetActions().get(0).peer + "." + s.getDetActions().get(0).peer : "")
+					+ ((kind == EStateKind.UNARY_RECEIVE || kind == EStateKind.POLY_RECIEVE) ? SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".roles." + s.getDetActions().get(0).peer + "." + s.getDetActions().get(0).peer : "")
 					+ ");\n";
 			stateClass += "private " + stateId + "("
-					+ ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? "org.scribble.type.name.Role peer" : "")
+					+ ((kind == EStateKind.UNARY_RECEIVE || kind == EStateKind.POLY_RECIEVE) ? "org.scribble.type.name.Role peer" : "")
 					+ ") {\n";
-			stateClass += ((kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT) ? "super(\"" + stateId + "\", peer);" : "super(\"" + stateId + "\");") + "\n";
+			stateClass += ((kind == EStateKind.UNARY_RECEIVE || kind == EStateKind.POLY_RECIEVE) ? "super(\"" + stateId + "\", peer);" : "super(\"" + stateId + "\");") + "\n";
 			for (EAction a : s.getActions())
 			{
 				stateClass += "this.succs.put(" + SessionApiGenerator.getEndpointApiRootPackageName(this.proto) + ".ops." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid)
@@ -350,7 +350,7 @@ public class CBEndpointApiGenerator
 			}
 			
 			// branches
-			if (s.getStateKind() == EStateKind.UNARY_INPUT || s.getStateKind() == EStateKind.POLY_INPUT)
+			if (s.getStateKind() == EStateKind.UNARY_RECEIVE || s.getStateKind() == EStateKind.POLY_RECIEVE)
 			{
 				String bprefix = SessionApiGenerator
 						.getEndpointApiRootPackageName(this.proto).replace('.', '/')
@@ -563,8 +563,8 @@ public class CBEndpointApiGenerator
 				res += "\n";
 				break;
 			}
-			case UNARY_INPUT:
-			case POLY_INPUT:
+			case UNARY_RECEIVE:
+			case POLY_RECIEVE:
 			{
 				res += "public " + name + "<D> callback(" + prefix + name + "_" + s.id + " sid";
 				/*for (EAction a : s.getAllActions())

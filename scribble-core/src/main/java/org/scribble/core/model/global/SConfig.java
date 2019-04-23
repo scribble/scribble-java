@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.EFsm;
@@ -38,22 +39,18 @@ import org.scribble.core.model.endpoint.actions.EClientWrap;
 import org.scribble.core.model.endpoint.actions.EServerWrap;
 import org.scribble.core.type.name.Role;
 
+// Immutable -- async/sync (i.e, "fire") return updated copies (in the general case, they must return List anyway due to non-det)
 public class SConfig
 {
 	protected final ModelFactory mf;
 	
 	public final Map<Role, EFsm> efsms;
-	public final SQueues queues;
+	public final SingleBuffers queues;  // N.B. currently hardcoded to capacity one
 	
-	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> queue)
-	//public WFConfig(Map<Role, EndpointState> state, WFqueueers queues)
-	public SConfig(ModelFactory mf, Map<Role, EFsm> state, SQueues queues)
+	public SConfig(ModelFactory mf, Map<Role, EFsm> state, SingleBuffers queues)
 	{
 		this.mf = mf;
-		
 		this.efsms = Collections.unmodifiableMap(state);
-		//this.queues = Collections.unmodifiableMap(queue.keySet().stream() .collect(Collectors.toMap((k) -> k, (k) -> Collections.unmodifiableMap(queue.get(k)))));
-		//this.queues = Collections.unmodifiableMap(queue);
 		this.queues = queues;
 	}
 
@@ -118,7 +115,7 @@ public class SConfig
 		{
 			Map<Role, EFsm> efsms = new HashMap<>(this.efsms);
 			efsms.put(self, succ);
-			SQueues queues = 
+			SingleBuffers queues = 
 				  a.isSend()       ? this.queues.send(self, (ESend) a)
 				: a.isReceive()    ? this.queues.receive(self, (ERecv) a)
 				: a.isDisconnect() ? this.queues.disconnect(self, (EDisconnect) a)
@@ -147,7 +144,7 @@ public class SConfig
 				// a1 and a2 are a "sync" pair, add all combinations of succ1 and succ2 that may arise
 				efsms.put(r1, succ1);  // Overwrite existing r1/r2 entries
 				efsms.put(r2, succ2);
-				SQueues queues;
+				SingleBuffers queues;
 				// a1 and a2 definitely "sync", now just determine whether it is a connect or wrap
 				if (((a1.isRequest() && a2.isAccept())
 						|| (a1.isAccept() && a2.isRequest())))
@@ -174,34 +171,26 @@ public class SConfig
 	public Map<Role, ERecv> getStuckMessages()
 	{
 		Map<Role, ERecv> res = new HashMap<>();
-		for (Role r : this.efsms.keySet())
+		for (Role self : this.efsms.keySet())
 		{
-			//EndpointState s = this.states.get(r);
-			EFsm s = this.efsms.get(r);
+			EFsm s = this.efsms.get(self);
 			EStateKind k = s.curr.getStateKind();
-			if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
+			if (k == EStateKind.UNARY_RECEIVE || k == EStateKind.POLY_RECIEVE)
 			{
-				/*Set<IOAction> duals = this.queues.get(r).entrySet().stream()
-						.filter((e) -> e.getValue() != null)
-						.map((e) -> e.getValue().toDual(e.getKey()))
-						.collect(Collectors.toSet());
-				if (duals.stream().anyMatch((a) -> s.isAcceptable(a)))
-				{
-					break;
-				}*/
-				Role peer = s.curr.getActions().iterator().next().peer;
-				ESend send = this.queues.getQueue(r).get(peer);
+				Role peer = s.curr.getActions().get(0).peer;  // Pre: consistent ext choice subj
+				ESend send = this.queues.getQueue(self).get(peer);
 				if (send != null)
 				{
 					ERecv recv = send.toDual(peer);
 					if (!s.curr.hasAction(recv))
-					//res.put(r, new IOError(peer));
-					res.put(r, recv);
+					{
+						res.put(self, recv);
+					}
 				}
 			}
-			/*else if (k == Kind.ACCEPT)  // FIXME: ..and connect
+			/*else if (k == Kind.ACCEPT)  // CHECKME: ..and request (Client/ServerWrap? -- factor out "blocking"? async. blocking vs. sync? n.b. outputs blocking on queue space)
 			{
-				// FIXME: issue is, unlike regular input states, blocked connect/accept may become unblocked later, so queued messages may not be stuck
+				// CHECKME: issue is, unlike regular input states, blocked connect/accept may become unblocked later, so queued messages may not actually be stuck
 				// (if message is queued on the actual blocked connection, it should be orphan message)
 				// so, message is stuck only if connect/accept is genuinely deadlocked, which will be detected as that
 			}*/
@@ -209,47 +198,17 @@ public class SConfig
 		return res;
 	}
 	
-	// Doesn't include locally terminated (single term state does not induce a deadlock cycle) -- i.e. only "bad" deadlocks
+	// Doesn't include locally terminated (single term state does not induce a deadlock cycle)
 	public Set<Set<Role>> getWaitForErrors()
 	{
 		Set<Set<Role>> res = new HashSet<>();
 		List<Role> todo = new LinkedList<>(this.efsms.keySet());
-		/*while (!todo.isEmpty())
-		{
-			Role r = todo.get(0);
-			todo.remove(r);
-			Set<Role> seen = new HashSet<>();
-			while (true)
-			{
-				if (seen.contains(r))
-				{
-					res.add(seen);
-					break;
-				}
-				seen.add(r);
-				Role rr = isInputBlocked(r);
-				if (rr == null)
-				{
-					break;
-				}
-				todo.remove(rr);
-				if (this.states.get(rr).isTerminal())
-				{
-					seen.add(rr);
-					res.add(seen);
-					break;
-				}
-				r = rr;
-			}
-		}*/
-		while (!todo.isEmpty())  // FIXME: maybe better to do directly on states, rather than via roles
+		while (!todo.isEmpty())  // CHECKME: maybe better to do directly on states, rather than via roles
 		{
 			Role r = todo.remove(0);
-			//Set<Role> cycle = isCycle(new HashSet<>(), new HashSet<>(Arrays.asList(r)));
 			if (!this.efsms.get(r).curr.isTerminal())
 			{
 				Set<Role> cycle = isWaitForChain(r);
-				//if (!cycle.isEmpty())
 				if (cycle != null)
 				{
 					todo.removeAll(cycle);
@@ -260,37 +219,21 @@ public class SConfig
 		return res;
 	}
 	
-	// Includes dependencies from input-blocking, termination and connect-blocking
-	// FIXME: should also include connect?
-	// NB: if this.states.get(orig).isTerminal() then orig is returned as "singleton deadlock"
-	//public Set<Role> isCycle(Set<Role> candidate, Set<Role> todo)
-	public Set<Role> isWaitForChain(Role orig)
+	// Return: null if no chain
+	// Includes dependencies from input-blocking, termination and connect-blocking  // CHECKME: should also include connect?
+	// N.B. if this.states.get(init).isTerminal() then orig is returned as "singleton deadlock" -- CHECKME
+	public Set<Role> isWaitForChain(Role init)
 	{
-		/*if (todo.isEmpty())
-		{
-			return candidate;
-		}*/
-		/*Set<Role> tmp = new HashSet<Role>(todo);
-		Role r = tmp.iterator().next();
-		tmp.remove(r);
-		candidate.add(r);*/
 		Set<Role> candidate = new LinkedHashSet<>();
-		Set<Role> todo = new LinkedHashSet<>(Arrays.asList(orig));
+		Set<Role> todo = new LinkedHashSet<>(Arrays.asList(init));
 		while (!todo.isEmpty())
 		{
 			Role r = todo.iterator().next();
 			todo.remove(r);
 			candidate.add(r);
 			
-			//EndpointState s = this.states.get(r);
 			EFsm s = this.efsms.get(r);
-			
-			if (s == null)
-			{
-				System.out.println("AAA: " + this.efsms + ", " + r);
-			}
-			
-			if (s.curr.getStateKind() == EStateKind.OUTPUT && !s.curr.isRequestOrClientWrapOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
+			if (s.curr.getStateKind() == EStateKind.OUTPUT && !s.curr.isSyncClientOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
 				// FIXME: move into isWaitingFor
 				return null;
@@ -304,7 +247,6 @@ public class SConfig
 				continue;
 			}
 			Set<Role> blocked = isWaitingFor(r);
-			//if (blocked.isEmpty())
 			if (blocked == null)
 			{
 				return null;
@@ -325,110 +267,60 @@ public class SConfig
 		return null;
 	}
 	
-	// Generalised to include connect-blocked roles
-	//private Role isInputBlocked(Role r)
+	// Return: set of roles that r *must* "wait for" one of them in order to proceed; null if not "r" is not *necessarily* blocked waiting for *another role*
+	// Generalised to include sync-client (request, clientWrap) roles
 	private Set<Role> isWaitingFor(Role r)
 	{
-		//EndpointState s = this.states.get(r);
-		EFsm s = this.efsms.get(r);
-		EStateKind k = s.curr.getStateKind();
-		if (k == EStateKind.UNARY_INPUT || k == EStateKind.POLY_INPUT)
+		EFsm fsm = this.efsms.get(r);
+		EStateKind k = fsm.curr.getStateKind();
+		if (k != EStateKind.TERMINAL) 
 		{
-			List<EAction> all = s.curr.getActions();
-			EAction a = all.get(0);  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
-			/*if (a.isAccept())  // Sound?
+			return null;
+		}
+
+		if (k == EStateKind.UNARY_RECEIVE || k == EStateKind.POLY_RECIEVE)
+		{
+			ERecv a = (ERecv) fsm.curr.getActions().get(0);  // Pre: consistent ext choice subject -- CHECKME: generalise?
+			if (this.queues.getQueue(r).get(a.peer) != null)  // Here, only looking for any message (not a.toDual, nor dual of any action, cf. stuck error)
 			{
 				return null;
-			}*/
-			/*Role peer = a.peer;
-			if (a.isReceive() && this.queues.get(r).get(peer) == null)
-			{
-				//return peer;
-			}*/
-			if (a.isReceive())
-			{
-				Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
-				if (peers.stream().noneMatch((p) -> this.queues.getQueue(r).get(p) != null))
-				{
-					return peers;
-				}
-				/*Set<Role> peers = new HashSet<>();  // Debugging AllTest/BadTest bad.efsm.grecursion.unfair.Test01; problem
-				for (EAction ea : all)
-				{
-					peers.add(ea.peer);
-				}
-				boolean tmp = true;
-				for (Role p : peers)
-				{
-					if (this.queues.get(r).get(p) != null)
-					{
-						tmp = false;
-						break;
-					}
-				}
-				if (tmp)
-				{
-					return peers;
-				}*/
 			}
+			return Stream.of(a.peer).collect(Collectors.toSet());
 		}
 		else if (k == EStateKind.ACCEPT)
 		{
-			// FIXME TODO: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
-			if (!s.isInitial())
+			if (!fsm.isInitial())  // TODO CHECKME: if analysing ACCEPTs, check if "s" is initial (not "deadlock blocked" if initial) -- no: instead, analysing requests
 			{
-				List<EAction> all = s.curr.getActions();  // Should be singleton -- no: not any more
-				/*Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
-				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Connect(r))))  // cf. getTakeable
-									//if (peera.equals(c.toDual(r)) && this.queues.canConnect(r, c))
+				List<EAction> as = fsm.curr.getActions();  // All accept
+				Role peer = as.get(0).peer;  // Pre: consistent ext choice subject -- CHECKME: generalise?
+				if (this.efsms.get(peer).curr.getActions().stream()
+						.anyMatch(x -> as.contains(x.toDual(peer))))
 				{
-					return rs;
-				}*/
-				Set<Role> res = new HashSet<Role>();
-				for (EAction a : all)  // Accept  // FIXME: WrapServer
-				{
-					if (this.efsms.get(a.peer).curr.getActions().contains(a.toDual(r)))
-					{
-						return null;
-					}
-					res.add(a.peer);
+					return null;
 				}
-				if (!res.isEmpty())
-				{
-					return res;
-				}
+				return Stream.of(peer).collect(Collectors.toSet());
 			}
 		}
-		//else if (k == Kind.CONNECTION)
-		else if (k == EStateKind.OUTPUT //|| k == Kind.ACCEPT  ..// FIXME: check connects if no available sends
-				)
+		else if (k == EStateKind.OUTPUT) //|| k == Kind.ACCEPT .. // CHECKME: check requests if no available sends -- ?
 		{
-			//List<IOAction> all = s.getAllAcceptable();
-			if (s.curr.isRequestOrClientWrapOnly())
+			if (!fsm.curr.isSyncClientOnly())  // Request, ClientWrap
 			{
-				List<EAction> all = s.curr.getActions();
-				/*Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());  // Should be singleton by enabling conditions
-				if (peers.stream().noneMatch((p) -> this.states.get(p).getAllTakeable().contains(new Accept(r))))  // cf. getTakeable
-				{
-					return peers;
-				}*/
-				Set<Role> res = new HashSet<Role>();
-				for (EAction a : all)  // Connect or WrapClient
-				{
-					if (this.efsms.get(a.peer).curr.getActions().contains(a.toDual(r)))
-					{
-						return null;
-					}
-					res.add(a.peer);
-				}
-				if (!res.isEmpty())
-				{
-					return res;
-				}
+				return null;
 			}
+			List<EAction> as = fsm.curr.getActions();
+			Set<Role> res = new HashSet<Role>();
+			for (EAction a : as)
+			{
+				if (this.efsms.get(a.peer).curr.getActions().contains(a.toDual(r)))
+				{
+					return null;
+				}
+				res.add(a.peer);
+			}
+			return res;  // Non-empty, because as.size() > 0 and didn't already return
 		}
-		return null;
-		//return Collections.emptySet();
+		// TODO FIXME: ServerWrap
+		throw new RuntimeException("[TODO] " + k);
 	}
 
 	// Generalised to include "unconnected" messages -- should unconnected messages be treated via stuck instead?
@@ -512,8 +404,8 @@ public class SConfig
 				// Currently not convenient to delegate to states, as state types not distinguished
 				case TERMINAL: break;
 				case OUTPUT: as.addAll(getOutputFireable(self, fsm)); break;
-				case UNARY_INPUT:
-				case POLY_INPUT: 
+				case UNARY_RECEIVE:
+				case POLY_RECIEVE: 
 					as.addAll(getReceiveFireable(self, fsm));  // addAll for generic typing
 					break;
 				case ACCEPT: as.addAll(getAcceptFireable(self, fsm)); break;
@@ -528,6 +420,7 @@ public class SConfig
 		return res;
 	}
 
+	// Pre: fsm.curr.getStateKind() == EStateKind.OUTPUT
 	// fsm is self's Efsm
 	private List<EAction> getOutputFireable(Role self, EFsm fsm)  // "output" and "client" actions
 	{
@@ -566,6 +459,7 @@ public class SConfig
 		return res;
 	}
 
+	// Pre: fsm.curr.getStateKind() == EStateKind.UNARY_RECEIVE or POLY_RECIEVE
 	// Unary or poly receive
 	private List<ERecv> getReceiveFireable(Role self, EFsm fsm)
 	{
@@ -574,6 +468,7 @@ public class SConfig
 				.collect(Collectors.toList());
 	}
 
+	// Pre: fsm.curr.getStateKind() == EStateKind.ACCEPT
 	private List<EAcc> getAcceptFireable(Role self, EFsm fsm)
 	{
 		List<EAction> as = fsm.curr.getActions();
@@ -585,6 +480,7 @@ public class SConfig
 				.collect(Collectors.toList());
 	}
 
+	// Pre: fsm.curr.getStateKind() == EStateKind.SERVER_WRAP
 	// Duplicated from getAcceptFireable
 	private List<EServerWrap> getServerWrapFireable(Role self, EFsm fsm)
 	{
