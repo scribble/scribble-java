@@ -24,9 +24,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
-import org.scribble.core.model.endpoint.EFsm;
 import org.scribble.core.model.endpoint.actions.ESend;
-import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.name.Role;
 import org.scribble.util.ScribException;
 
@@ -120,70 +118,30 @@ public class SModel
 						.collect(Collectors.joining(","));
 	}
 
-	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but not a good approach)
-	protected static Set<Role> checkRoleProgress(Set<SState> termset) throws ScribException
+	// Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but not a good approach)
+	protected Set<Role> checkRoleProgress(Set<SState> termset)
+			throws ScribException
 	{
-		Set<Role> starved = new HashSet<>();
-		Iterator<SState> i = termset.iterator();
-		SState s = i.next();//states.get(i.next());
-		Map<Role, SState> ss = new HashMap<>();
-		s.config.efsms.keySet().forEach(r -> ss.put(r, s));
-		while (i.hasNext())
+		SState s = termset.iterator().next();  // Pick any state to check canSafelyTerminate (later, if needed), if non progressing equivalent for all
+		Set<Role> todo = new HashSet<>(s.config.efsms.keySet());
+		for (Iterator<SState> i = termset.iterator(); 
+				i.hasNext() && !todo.isEmpty(); )
 		{
-			SState next = i.next();//states.get(i.next());
-			Map<Role, EFsm> tmp = next.config.efsms;
-			for (Role r : tmp.keySet())
-			{
-				if (ss.get(r) != null)
-				{
-					/*if (!ss.get(r).equals(tmp.get(r)))
-					{	
-						ss.put(r, null);
-					}
-					else*/
-					{
-						for (SAction a : next.getActions())
-						{
-							if (a.containsRole(r))
-							{
-								ss.put(r, null);
-								break;
-							}
-						}
-					}
-				}
-			}
+			i.next().getActions().stream().map(x -> x.subj).distinct()
+					.forEach(x -> todo.remove(x));
+				// cf. a.containsRole(r) -- implies obj will be subj for the counterpart action somewhere in the termset?
 		}
-		for (Role r : ss.keySet())
-		{
-			SState foo = ss.get(r);
-			if (foo != null)
-			{
-				EFsm tmp = foo.config.efsms.get(r);
-				if (tmp != null)
-				{
-					if (!foo.config.canSafelyTerminate(r))
-					{
-						if (s.config.queues.getQueue(r).values().stream()
-								.allMatch((v) -> v == null))
-						{
-							starved.add(r);
-						}
-						/*
-						// Should be redundant given explicit reception error etc checking
-						else
-						{
-							safety.add(r);
-						}*/
-					}
-				}
-			}
-		}
-		return starved;
+
+		// todo is now all roles that are not the subj of any action in the termset
+		return todo.stream()
+				.filter(x -> !s.config.canSafelyTerminate(x)
+						&& s.config.queues.getQueue(x).values().stream()
+								.allMatch(y -> y == null))  // Check empty queues for starved -- o/w, is a stuck-message
+				.collect(Collectors.toSet());
 	}
 
-	// (eventual reception)
-	protected static Map<Role, Set<ESend>> checkEventualReception(
+	// cf. eventual stability (could also check within termsets)
+	protected Map<Role, Set<ESend>> checkEventualReception(
 			Set<SState> termset) throws ScribException
 	{
 		Set<Role> roles = //states.get(termset.iterator().next())

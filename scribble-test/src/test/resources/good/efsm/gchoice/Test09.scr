@@ -1,3 +1,5 @@
+//$ bin/scribblec.sh scribble-test/src/test/resources/good/efsm/gchoice/Test09.scr
+
 module good.efsm.gchoice.Test09;
 
 

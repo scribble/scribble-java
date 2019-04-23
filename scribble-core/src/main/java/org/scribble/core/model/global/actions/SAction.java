@@ -74,10 +74,10 @@ public abstract class SAction extends MAction<Global>
 		return new HashSet<>(Arrays.asList(this.subj, this.obj));
 	}
 	
-	public boolean containsRole(Role role)
+	/*public boolean containsRole(Role role)
 	{
 		return this.subj.equals(role) || this.obj.equals(role);
-	}
+	}*/
 	
 	@Override
 	public String toString()
