@@ -67,14 +67,15 @@ public class SingleBuffers
 
 	public boolean canSend(Role self, ESend a)
 	{
-		return isConnected(self, a.peer) //&& isConnected(a.peer, self)  // CHECKME: only consider local?
+		return isConnected(self, a.peer) //&& isConnected(a.peer, self)  // CHECKME: only consider local side?
 				&& this.buffs.get(a.peer).get(self) == null;
 	}
 
 	public boolean canReceive(Role self, ERecv a)
 	{
 		ESend send = this.buffs.get(self).get(a.peer);
-		return send != null && send.toDual(a.peer).equals(a);
+		return isConnected(self, a.peer)  // Other direction doesn't matter, local can still receive after peer disconnected
+				&& send != null && send.toDual(a.peer).equals(a);
 	}
 
 	// N.B. "sync" action but only considers the self side, i.e., to actually fire, must also explicitly check canAccept
@@ -108,6 +109,7 @@ public class SingleBuffers
 		return isConnected(self, sw.peer);
 	}
 
+	// Pre: canSend, e.g., via via SConfig.getFireable
 	// Return an updated copy
 	public SingleBuffers send(Role self, ESend a)
 	{
@@ -116,6 +118,7 @@ public class SingleBuffers
 		return copy;
 	}
 
+	// Pre: canReceive, e.g., via SConfig.getFireable
 	// Return an updated copy
 	public SingleBuffers receive(Role self, ERecv a)
 	{
@@ -125,15 +128,17 @@ public class SingleBuffers
 	}
 	
   // Sync action
+	// Pre: canRequest(r1, [[r2]]) and canAccept(r2, [[r1]]), where [[r]] is a matching action with peer r -- e.g., via via SConfig.getFireable
 	// Return an updated copy
-	public SingleBuffers connect(Role src, Role dest)
+	public SingleBuffers connect(Role r1, Role r2)  // Role sides and message don't matter
 	{
 		SingleBuffers copy = new SingleBuffers(this);
-		copy.connected.get(src).put(dest, true);
-		copy.connected.get(dest).put(src, true);
+		copy.connected.get(r1).put(r2, true);
+		copy.connected.get(r2).put(r1, true);
 		return copy;
 	}
 
+	// Pre: canDisconnect(self, d), e.g., via SConfig.via getFireable
 	// Return an updated copy
 	public SingleBuffers disconnect(Role self, EDisconnect d)
 	{

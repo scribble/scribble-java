@@ -112,7 +112,7 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
-//*
+/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	rec X
@@ -160,7 +160,7 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-/*
+//*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;  // TODO: junit tests for explicit
