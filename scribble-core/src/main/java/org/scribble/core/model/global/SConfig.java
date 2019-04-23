@@ -107,7 +107,8 @@ public class SConfig
 	}
 	
 	// Pre: getFireable().get(self).contains(a)
-  // Here, produce a (non-det) List (CHECKME: shouldn't?) -- but actual global model building (SGraphBuilderUtil.getSuccs) will collapse identical configs
+  // Here, produce a List that distinguishes non-det to identical configs -- CHECKME: shouldn't? (Set would be sufficient for non-det to different configs) 
+	// (Actual global model building (e.g., SGraphBuilderUtil.getSuccs) will collapse identical configs)
 	public List<SConfig> async(Role self, EAction a)
 	{
 		List<SConfig> res = new LinkedList<>();
@@ -116,7 +117,7 @@ public class SConfig
 		{
 			Map<Role, EFsm> efsms = new HashMap<>(this.efsms);
 			efsms.put(self, succ);
-			SingleBuffers queues = 
+			SingleBuffers queues =  // N.B. queue updates are insensitive to non-det "a"
 				  a.isSend()       ? this.queues.send(self, (ESend) a)
 				: a.isReceive()    ? this.queues.receive(self, (ERecv) a)
 				: a.isDisconnect() ? this.queues.disconnect(self, (EDisconnect) a)
@@ -132,6 +133,8 @@ public class SConfig
 
 	// "Synchronous version" of fire
 	// Pre: getFireable().get(r1).contains(a1) && getFireable().get(r2).contains(a2), where a1 and a2 are a "sync" pair
+  // Here, produce a List that distinguishes non-det to identical configs -- CHECKME: shouldn't? (Set would be sufficient for non-det to different configs) 
+	// (Actual global model building (e.g., SGraphBuilderUtil.getSuccs) will collapse identical configs)
 	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
 	{
 		List<SConfig> res = new LinkedList<>();
@@ -150,7 +153,7 @@ public class SConfig
 				if (((a1.isRequest() && a2.isAccept())
 						|| (a1.isAccept() && a2.isRequest())))
 				{
-					queues = this.queues.connect(r1, r2);
+					queues = this.queues.connect(r1, r2);  // N.B. queue updates are insensitive to non-det "a"
 				}
 				else if (((a1.isClientWrap() && a2.isServerWrap())
 						|| (a1.isServerWrap() && a2.isClientWrap())))
@@ -367,14 +370,16 @@ public class SConfig
 		return res;
 	}
 
+	// N.B. Set<EAction> (not List<EAction), at global level only need to know the set of possible actions...
+	// ...non-det (i.e., multiple possible outcomes from firing one action) handled by return of async/sync
 	// Based on config semantics, not "static" graph edges (cf., super.getAllActions) -- used to build global model graph
-	public Map<Role, List<EAction>> getFireable()
+	public Map<Role, Set<EAction>> getFireable()
 	{
-		Map<Role, List<EAction>> res = new HashMap<>();
+		Map<Role, Set<EAction>> res = new HashMap<>();
 		for (Role self : this.efsms.keySet())
 		{
 			EFsm fsm = this.efsms.get(self);
-			List<EAction> as = new LinkedList<>();
+			Set<EAction> as = new LinkedHashSet<>();
 			switch (fsm.curr.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
 			{
 				// Currently not convenient to delegate to states, as state types not distinguished
@@ -398,10 +403,11 @@ public class SConfig
 
 	// Pre: fsm.curr.getStateKind() == EStateKind.OUTPUT
 	// fsm is self's Efsm
-	private List<EAction> getOutputFireable(Role self, EFsm fsm)  // "output" and "client" actions
+	// (N.B. return Set, not List -- see getFireable)
+	private Set<EAction> getOutputFireable(Role self, EFsm fsm)  // "output" and "client" actions
 	{
-		List<EAction> res = new LinkedList<>();
-		for (EAction a : fsm.curr.getActions())  // Actions may be a mixture of the following
+		Set<EAction> res = new LinkedHashSet<>();
+		for (EAction a : fsm.curr.getActions())  // Actions may be a mixture of the following cases
 		{
 			// Async
 			if (a.isSend() || a.isDisconnect())  // For disconnect, only one "a"
@@ -437,15 +443,17 @@ public class SConfig
 
 	// Pre: fsm.curr.getStateKind() == EStateKind.UNARY_RECEIVE or POLY_RECIEVE
 	// Unary or poly receive
-	private List<ERecv> getReceiveFireable(Role self, EFsm fsm)
+	// (N.B. return Set, not List -- see getFireable)
+	private Set<ERecv> getReceiveFireable(Role self, EFsm fsm)
 	{
 		return fsm.curr.getActions().stream().map(x -> (ERecv) x)
 				.filter(x -> this.queues.canReceive(self, x))
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 	}
 
 	// Pre: fsm.curr.getStateKind() == EStateKind.ACCEPT
-	private List<EAcc> getAcceptFireable(Role self, EFsm fsm)
+	// (N.B. return Set, not List -- see getFireable)
+	private Set<EAcc> getAcceptFireable(Role self, EFsm fsm)
 	{
 		List<EAction> as = fsm.curr.getActions();
 		Role peer = as.get(0).peer;  // All peer's the same
@@ -453,12 +461,13 @@ public class SConfig
 		return fsm.curr.getActions().stream().map(x -> (EAcc) x)
 				.filter(x -> this.queues.canAccept(self, x)
 						&& peeras.stream().anyMatch(y -> y.toDual(peer).equals(x)))
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 	}
 
 	// Pre: fsm.curr.getStateKind() == EStateKind.SERVER_WRAP
+	// (N.B. return Set, not List -- see getFireable)
 	// Duplicated from getAcceptFireable
-	private List<EServerWrap> getServerWrapFireable(Role self, EFsm fsm)
+	private Set<EServerWrap> getServerWrapFireable(Role self, EFsm fsm)
 	{
 		List<EAction> as = fsm.curr.getActions();  // Actually for ServerWrap, size() == 1
 		Role peer = as.get(0).peer;  // All peer's the same
@@ -466,7 +475,7 @@ public class SConfig
 		return fsm.curr.getActions().stream().map(x -> (EServerWrap) x)
 				.filter(x -> this.queues.canServerWrap(self, x)
 						&& peeras.stream().anyMatch(y -> y.toDual(peer).equals(x)))
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 	}
 
 	@Override

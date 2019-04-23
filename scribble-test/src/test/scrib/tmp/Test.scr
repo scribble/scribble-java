@@ -112,12 +112,13 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
+/*
 global protocol Proto1(role A, role B)
 {
-	choice at A  // FIXME: smodel too many edges
+	choice at A
 	{
-		1() from A to B;
-		//2() from A to B;
+		1() from A to B;  // Testing global model building, non-det edges (identical configs collapsed)
+		2() from A to B;  // Un/comment, test combinations
 	}
 	or
 	{
@@ -125,6 +126,7 @@ global protocol Proto1(role A, role B)
 		//3() from B to A;
 	}
 }
+//*/
 
 
 /*

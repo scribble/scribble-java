@@ -56,14 +56,15 @@ public class SGraphBuilderUtil
 		Set<SState> res = new LinkedHashSet<>();  // Takes care of duplicates (o/w should also do "|| res.containsKey(c)" below) 
 		for (SConfig c : succs)
 		{
-			if (this.states.containsKey(c))
+			boolean seen = this.states.containsKey(c);
+			SState next = seen
+					? this.states.get(c)
+					: newState(c);
+			curr.addEdge(a, next);
+			if (!seen)  // Must use cached test, newState changes adds the key
 			{
-				curr.addEdge(a, this.states.get(c));
-				continue;
+				res.add(next);
 			}
-			SState s = newState(c);
-			curr.addEdge(a, s);
-			res.add(s);
 		}
 		return res;
 	}

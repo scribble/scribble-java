@@ -16,7 +16,6 @@ package org.scribble.core.model.global;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -81,7 +80,7 @@ public class SGraphBuilder
 			}*/
 
 			// Based on config semantics, not "static" graph edges (cf., super.getActions) -- used to build global model graph
-			Map<Role, List<EAction>> fireable = curr.config.getFireable();
+			Map<Role, Set<EAction>> fireable = curr.config.getFireable();
 			for (Role r : fireable.keySet())
 			{
 				for (EAction a : fireable.get(r))
@@ -90,6 +89,7 @@ public class SGraphBuilder
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
 						Set<SConfig> next = new HashSet<>(curr.config.async(r, a));
+								// SConfig.a/sync currently produces a List, but here collapse identical configs for global model (represent non-det "by edges", not "by model states")
 						Set<SState> succs = this.util.getSuccs(curr, a.toGlobal(r), next);  // util.getSuccs constructs the edges
 						todo.addAll(succs);
 					}
@@ -97,7 +97,7 @@ public class SGraphBuilder
 					else if (a.isAccept() || a.isRequest() || a.isClientWrap()
 							|| a.isServerWrap())
 					{	
-						List<EAction> as = fireable.get(a.peer);
+						Set<EAction> as = fireable.get(a.peer);
 						EAction abar = a.toDual(r);
 						if (as != null && as.contains(abar))
 						{
@@ -107,6 +107,7 @@ public class SGraphBuilder
 									: abar.toGlobal(a.peer);
 									// CHECKME: edge will be drawn as the connect, but should be read as the sync. of both -- something like "r1, r2: sync" may be more consistent (or take a set of actions as the edge label?)
 							Set<SConfig> next = new HashSet<>(curr.config.sync(r, a, a.peer, abar));
+									// SConfig.a/sync currently produces a List, but here collapse identical configs for global model (represent non-det "by edges", not "by model states")
 							Set<SState> succs = this.util.getSuccs(curr, aglobal, next);  // util.getSuccs constructs the edges
 							todo.addAll(succs);
 						}
