@@ -194,45 +194,23 @@ public class SConfig
 		Map<Role, Set<ESend>> res = new HashMap<>();
 		for (Role r : this.efsms.keySet())
 		{
-			//EndpointState s = this.states.get(r);
-			EFsm s = this.efsms.get(r);
-			if (s.curr.isTerminal())  // Local termination of r, i.e. not necessarily "full deadlock"
+			Set<ESend> orphs = new HashSet<>();
+			EFsm fsm = this.efsms.get(r);
+			if (fsm.curr.isTerminal())  // Local termination of r, i.e. not necessarily "full deadlock cycle"
 			{
-				Set<ESend> orphs = this.queues.getQueue(r).values().stream().filter(v -> v != null).collect(Collectors.toSet());
-				if (!orphs.isEmpty())
-				{
-					Set<ESend> tmp = res.get(r);
-					if (tmp == null)
-					{
-						tmp = new HashSet<>();
-						res.put(r, tmp);
-					}
-					tmp.addAll(orphs);
-				}
+				orphs.addAll(this.queues.getQueue(r).values().stream()
+						.filter(v -> v != null).collect(Collectors.toSet()));
 			}
 			else
 			{
-				this.efsms.keySet().forEach((rr) ->
-				{
-					if (!rr.equals(r))
-					{
-						// Connection direction doesn't matter? -- wrong: matters because of async. disconnect
-						if (!this.queues.isConnected(r, rr))
-						{
-							ESend send = this.queues.getQueue(r).get(rr);
-							if (send != null)
-							{
-								Set<ESend> tmp = res.get(r);
-								if (tmp == null)
-								{
-									tmp = new HashSet<>();
-									res.put(r, tmp);
-								}
-								tmp.add(send);
-							}
-						}
-					}
-				}); 
+				this.efsms.keySet().stream()
+						.filter(x -> !r.equals(x) && !this.queues.isConnected(r, x))  // !isConnected(r, x), means r considers its side closed
+						.map(x -> this.queues.getQueue(r).get(x)).filter(x -> x != null)  // r's side is closed, but remaining message(s) in r's buff
+						.forEach(x -> orphs.add(x));
+			}
+			if (!orphs.isEmpty())
+			{
+				res.put(r, orphs);
 			}
 		}
 		return res;

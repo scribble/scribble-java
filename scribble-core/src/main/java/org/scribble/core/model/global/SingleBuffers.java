@@ -32,8 +32,8 @@ import org.scribble.core.type.name.Role;
 // Immutable -- send/receive/etc return updated copies
 public class SingleBuffers
 {
-	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();  // client -> server -> connected?  (symmetric)
-	private final Map<Role, Map<Role, ESend>> buffs = new HashMap<>();  // dest -> src -> msg  
+	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();  // local -> peer -> does-local-consider-connected  (symmetric)
+	private final Map<Role, Map<Role, ESend>> buffs = new HashMap<>();  // dest -> src -> msg -- N.B. connected.get(A).get(B) => can send into buffs.get(B).get(A) ("reversed")
 			// N.B. hardcoded to capacity one -- SQueues would be the generalisation
 			// null ESend for empty queue
 
@@ -67,13 +67,12 @@ public class SingleBuffers
 
 	public boolean canSend(Role self, ESend a)
 	{
-		return isConnected(self, a.peer)
+		return isConnected(self, a.peer) //&& isConnected(a.peer, self)  // CHECKME: only consider local?
 				&& this.buffs.get(a.peer).get(self) == null;
 	}
 
 	public boolean canReceive(Role self, ERecv a)
 	{
-		// N.B. *not* checking isConnected -- can still receive from our side after other side has closed
 		ESend send = this.buffs.get(self).get(a.peer);
 		return send != null && send.toDual(a.peer).equals(a);
 	}
@@ -139,7 +138,7 @@ public class SingleBuffers
 	public SingleBuffers disconnect(Role self, EDisconnect d)
 	{
 		SingleBuffers copy = new SingleBuffers(this);
-		copy.connected.get(self).put(d.peer, false);
+		copy.connected.get(self).put(d.peer, false);  // Didn't update buffs (cf. SConfig.getOrphanMessages)
 		return copy;
 	}
 
