@@ -45,18 +45,15 @@ public class SModel
 	public void validate(Core core) throws ScribException
 	{
 		this.core = core;
-		
-		SState init = this.graph.init;
-		Map<Integer, SState> states = this.graph.states;
 
 		String errorMsg = "";
 
-		errorMsg = checkSafety(core, init, states, errorMsg);
+		errorMsg = checkSafety(errorMsg);
 		
 		if (!core.config.args.get(CoreArgs.NO_PROGRESS))
 		{
 			//job.debugPrintln("(" + this.graph.proto + ") Checking progress: ");  // Incompatible with current errorMsg approach*/
-			errorMsg = checkProgress(init, states, errorMsg);
+			errorMsg = checkProgress(errorMsg);
 		}
 
 		if (!errorMsg.equals(""))
@@ -67,18 +64,17 @@ public class SModel
 		//job.debugPrintln("(" + this.graph.proto + ") Progress satisfied.");  // Also safety... current errorMsg approach
 	}
 
-	private String checkSafety(Core core, SState init,
-			Map<Integer, SState> states, String errorMsg)
+	private String checkSafety(String errorMsg)
 	{
 		int debugCount = 1;
-		for (SState s : states.values())
+		for (SState s : this.graph.states.values())
 		{
-			if (core.config.args.get(CoreArgs.VERBOSE))
+			if (this.core.config.args.get(CoreArgs.VERBOSE))
 			{
 				if (debugCount++ % 50 == 0)
 				{
 					//job.debugPrintln("(" + this.graph.proto + ") Checking safety: " + count + " states");
-					core.verbosePrintln(
+					this.core.verbosePrintln(
 							"(" + this.graph.proto + ") Checking states: " + debugCount);
 				}
 			}
@@ -93,13 +89,12 @@ public class SModel
 			}
 			errorMsg = appendSafetyErrorMessages(errorMsg, errors);
 		}
-		core.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + debugCount);  // May include unsafe states
+		this.core.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + debugCount);  // May include unsafe states
 				// FIXME: progress still to be checked below
 		return errorMsg;
 	}
 
-	private String checkProgress(SState init, Map<Integer, SState> states,
-			String errorMsg) throws ScribException
+	private String checkProgress(String errorMsg) throws ScribException
 	{
 		Set<Set<SState>> termsets = this.graph.getTermSets();
 		for (Set<SState> termset : termsets)
@@ -107,11 +102,11 @@ public class SModel
 			/*job.debugPrintln("(" + this.graph.proto + ") Checking terminal set: "
 						+ termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(",")));  // Incompatible with current errorMsg approach*/
 
-			Set<Role> starved = checkRoleProgress(states, init, termset);
+			Set<Role> starved = checkRoleProgress(termset);
 			Map<Role, Set<ESend>> ignored = 
-					checkEventualReception(states, init, termset);
-			errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored, 
-					states, termset);
+					checkEventualReception(termset);
+			errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored,
+					termset);
 		}
 		return errorMsg;
 	}
@@ -139,20 +134,19 @@ public class SModel
 	}
 
 	protected String appendProgressErrorMessages(String errorMsg,
-			Set<Role> starved, Map<Role, Set<ESend>> ignored, 
-			Map<Integer, SState> states, Set<SState> termset)
+			Set<Role> starved, Map<Role, Set<ESend>> ignored, Set<SState> termset)
 	{
 		if (!starved.isEmpty())
 		{
 			errorMsg += "\nRole progress violation for " + starved
 					+ " in session state terminal set:\n    "
-					+ termSetToString(termset, states);
+					+ termSetToString(termset, this.graph.states);
 		}
 		if (!ignored.isEmpty())
 		{
 			errorMsg += "\nEventual reception violation for " + ignored
 					+ " in session state terminal set:\n    "
-					+ termSetToString(termset, states);
+					+ termSetToString(termset, this.graph.states);
 		}
 		return errorMsg;
 	}
@@ -168,8 +162,7 @@ public class SModel
 	}
 
 	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but not a good approach)
-	protected static Set<Role> checkRoleProgress(Map<Integer, SState> states,
-			SState init, Set<SState> termset) throws ScribException
+	protected static Set<Role> checkRoleProgress(Set<SState> termset) throws ScribException
 	{
 		Set<Role> starved = new HashSet<>();
 		Iterator<SState> i = termset.iterator();
@@ -232,8 +225,7 @@ public class SModel
 
 	// (eventual reception)
 	protected static Map<Role, Set<ESend>> checkEventualReception(
-			Map<Integer, SState> states, SState init, Set<SState> termset)
-			throws ScribException
+			Set<SState> termset) throws ScribException
 	{
 		Set<Role> roles = //states.get(termset.iterator().next())
 				termset.iterator().next()

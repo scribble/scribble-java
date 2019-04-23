@@ -160,7 +160,7 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-//*
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;  // TODO: junit tests for explicit
@@ -735,7 +735,7 @@ global protocol Proto1(role A, role B)
 
 
 
-/*
+//*
 type <dotnet> "System.UInt32" from "..." as int;
 
 global protocol SH(role P, role R, role C)
