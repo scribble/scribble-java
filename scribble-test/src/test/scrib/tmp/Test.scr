@@ -12,8 +12,8 @@
 
 module tmp.Test;
 
-// replace a lot of FACTORY name calls by clone
-// -minlts states IDs don't match validation output
+// TODO: replace a lot of FACTORY name calls by clone
+// FIXME: -minlts states IDs don't match validation output
 
 // CHECKME: playing multiple roles in the same session instance (but what is the concrete notion of "process id"? -- if actually try to use, e.g., ThreadID, then have to track ownership of endpoints)
 
@@ -79,17 +79,16 @@ module tmp.Test;
 // For model build/check refactoring:
 
 // TODO: fix imed-projection choice subjects -- inlined-projection is a single proto with all roles
-//HERE refactor model states, remove intermedrecedge
 
 		// Outstanding:
-			//...disallow/check for reserved __ -- do in gtype translation?
+			// ...disallow/check for reserved __ -- do in gtype translation?
 			// FIXME: qualifed sig name as non-role do-arg
 			// TODO: rename addChildren1
 			// CHECKME: duplicate proto mods
 			// ...check ad hoc ScribNode constructions go through af properly
 			// ...refactor -spin as an ext
 			
-	// add exp conn checks to model validation
+	// add exp conn checks to model validation -- maybe just as estatevisitor?  (cf. prev syntactic connection checks)
 	// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 			// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
 	// refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
@@ -131,7 +130,7 @@ global protocol Proto1(role A, role B, role C, role D)
 	or
 	{
 		1() from A to B;
-		3() from B to A;  // Testing wait-for cycle detection
+		3() from B to A;  // Testing wait-for cycle detection  // Also tests eventual reception
 	}
 }
 //*/

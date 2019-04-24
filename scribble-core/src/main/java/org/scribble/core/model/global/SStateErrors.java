@@ -52,40 +52,44 @@ public class SStateErrors
 	@Override
 	public String toString()
 	{
-		return "stuck=" + this.stuck + ", watiFor=" + this.waitFor + ", orphans=" + this.orphans + ", unfinished=" + this.unfinished;
+		return "stuck=" + this.stuck + ", watiFor=" + this.waitFor + ", orphans="
+				+ this.orphans + ", unfinished=" + this.unfinished;
 	}
 
 	public String toErrorMessage(SGraph graph)
 	{
-		String errorMsg = "";
+		String msg = "";  // Return empty when no error?
 		if (!isEmpty())
 		{
 			// CHECKME: getTrace can get stuck when local choice subjects are disabled ? (has since been rewritten)
 			List<SAction> trace = graph.getTraceFromInit(this.state);  // CHECKME: getTrace broken on non-det self loops?
-			errorMsg += "\nSafety violation(s) at session state " + this.state.id
-					+ ":\n    Trace=" + trace;
+			msg += "\nSafety violation(s) at session state " + this.state.id
+					+ ":\n    Trace=" + trace
+					+ appendErrors();  // Does leading "\n"
 		}
-		return appendSafetyErrorMessages(errorMsg);
+		return msg;
 	}
 
-	protected String appendSafetyErrorMessages(String errorMsg)
+	// TODO: snip if too long? -- maybe not, let user pipe to file
+	protected String appendErrors()
 	{
+		String res = "";
 		if (!this.stuck.isEmpty())
 		{
-			errorMsg += "\n    Stuck messages: " + this.stuck;  // Deadlock from reception error
+			res += "\n    Stuck messages: " + this.stuck;  // Deadlock from reception error
 		}
 		if (!this.waitFor.isEmpty())
 		{
-			errorMsg += "\n    Wait-for this: " + this.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
+			res += "\n    Wait-for this: " + this.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
 		}
 		if (!this.orphans.isEmpty())
 		{
-			errorMsg += "\n    Orphan messages: " + this.orphans;  // FIXME: add sender of orphan to error message 
+			res += "\n    Orphan messages: " + this.orphans;  // FIXME: add sender of orphan to error message 
 		}
 		if (!this.unfinished.isEmpty())
 		{
-			errorMsg += "\n    Unfinished roles: " + this.unfinished;
+			res += "\n    Unfinished roles: " + this.unfinished;
 		}
-		return errorMsg;
+		return res;
 	}
 }
