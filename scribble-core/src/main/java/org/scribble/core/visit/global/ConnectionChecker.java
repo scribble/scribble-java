@@ -36,7 +36,7 @@ import org.scribble.core.visit.STypeVisitor;
 import org.scribble.util.ScribException;
 
 // Pre: use on inlined or later (unsupported for Do, also Protocol)
-// CHECKME: connection check at global vs. local ?
+// CHECKME: connection check at global vs. local level?
 public class ConnectionChecker extends STypeVisitor<Global, GSeq>
 {
 	protected enum Status { CONN, DIS, AMBIG }

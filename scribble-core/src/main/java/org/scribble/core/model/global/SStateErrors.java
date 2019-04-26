@@ -80,11 +80,11 @@ public class SStateErrors
 		}
 		if (!this.waitFor.isEmpty())
 		{
-			res += "\n    Wait-for this: " + this.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
+			res += "\n    Wait-for cycles: " + this.waitFor;  // Deadlock from input-blocked cycles -- not from terminated dependencies, cf. unfinished roles
 		}
 		if (!this.orphans.isEmpty())
 		{
-			res += "\n    Orphan messages: " + this.orphans;  // FIXME: add sender of orphan to error message 
+			res += "\n    Orphan messages: " + this.orphans;  // TODO: add sender of orphan to error message 
 		}
 		if (!this.unfinished.isEmpty())
 		{

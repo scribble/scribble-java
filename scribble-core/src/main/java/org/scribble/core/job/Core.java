@@ -236,7 +236,9 @@ public class Core
 			{
 				continue;
 			}
-			inlined.checkConnectedness(!inlined.isExplicit());
+			GTypeUnfolder v = new GTypeUnfolder();  // FIXME: record unfoldings in Context (factor out with role enabling)
+					//e.g., rec X { connect A to B; continue X; }
+			inlined.unfoldAllOnce(v).checkConnectedness(!inlined.isExplicit());
 		}
 	}
 		
