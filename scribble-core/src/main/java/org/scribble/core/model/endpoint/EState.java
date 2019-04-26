@@ -337,12 +337,15 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		visitState(v);  // "visitNode"
 
 		// "visitChildren"
-		for (Iterator<EState> succs = this.succs.iterator(); succs.hasNext(); )
+		Iterator<EAction> as = this.actions.iterator();
+		Iterator<EState> succs = this.succs.iterator();
+		while (as.hasNext())
 		{
+			EAction a = as.next();
 			EState succ = succs.next();
-			if (!v.hasSeen(succ))
+			if (!v.hasSeen(succ))  // cf. EdgeVisitor
 			{
-				succ.traverse(v);
+				succ.traverse(v.enter(this, a, succ));
 			}
 		}
 	}

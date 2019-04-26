@@ -89,6 +89,8 @@ module tmp.Test;
 			// ...refactor -spin as an ext
 			
 	// add exp conn checks to model validation -- maybe just as estatevisitor?  (cf. prev syntactic connection checks)
+			//HERE	^^^
+	
 	// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 			// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
 	// refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
@@ -113,7 +115,7 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
-//*
+/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	rec X
@@ -736,7 +738,7 @@ global protocol Proto1(role A, role B)
 
 
 
-/*
+//*
 type <dotnet> "System.UInt32" from "..." as int;
 
 global protocol SH(role P, role R, role C)
@@ -757,13 +759,13 @@ aux global protocol Loop(role P, role R, role C)
 		{
 			BothIn() from P to R;
 			BothIn(int) from P to C;
-			//do Loop(P, R, C);
+			do Loop(P, R, C);
 		}
 		or
 		{
 			BothOut() from P to R;
 			BothOut() from P to C;
-			//do Loop(P, R, C);
+			do Loop(P, R, C);
 		}
 		or
 		{
@@ -772,15 +774,15 @@ aux global protocol Loop(role P, role R, role C)
 			choice at P
 			{
 				One(int) from P to C;
-				//do Loop(P, R, C);
+				do Loop(P, R, C);
 			}
 			or
 			{
 				Two(int, int) from P to C;
-				//do Loop(P, R, C);
+				do Loop(P, R, C);
 			}
 		}
-		do Loop(P, R, C);  // FIXME: -spin fail if commented
+		//do Loop(P, R, C);  // FIXME: -spin fail if commented
 	}
 	or
 	{

@@ -33,6 +33,8 @@ import org.scribble.core.type.name.Role;
 public class SingleBuffers
 {
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();  // local -> peer -> does-local-consider-connected  (symmetric)
+			// CHECKME: refactor as Map<Role, Set<Role>> ?  cf. ConnectionChecker
+
 	private final Map<Role, Map<Role, ESend>> buffs = new HashMap<>();  // dest -> src -> msg -- N.B. connected.get(A).get(B) => can send into buffs.get(B).get(A) ("reversed")
 			// N.B. hardcoded to capacity one -- SQueues would be the generalisation
 			// null ESend for empty queue

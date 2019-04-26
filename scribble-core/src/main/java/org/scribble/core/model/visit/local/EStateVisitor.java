@@ -23,6 +23,14 @@ import org.scribble.util.ScribException;
 public abstract class EStateVisitor
 		extends StateVisitor<RecVar, EAction, EState, Local>
 {
+	
+	// Allows to visit branch succs with fresh visitors, but limited usefulness? because pattern doesn't support merge (but could do? e.g., by using EGraph to join visitors)
+	// CHECKME: take "self" generic param, use as return?  or just override
+	public EStateVisitor enter(EState s, EAction a, EState succ)
+	{
+		return this;
+	}
+	
 	public void visitAccept(EState s) throws ScribException
 	{
 		setSeen(s);
